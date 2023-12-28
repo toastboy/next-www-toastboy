@@ -37,4 +37,4 @@ next-env.d.ts
 # local env
 .env
 
-nextjs-mysql
+next-www-toastboy

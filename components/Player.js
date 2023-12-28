@@ -5,9 +5,9 @@ export default function Player({ player }) {
   const { id, is_admin, login, first_name, last_name, email, joined, finished, born, introduced_by, comment, anonymous, goalie } = player
 
   const [errorImage, setErrorImage] = useState(null)
-  const errorImageUrl = "/images/mugshots/manofmystery.jpg"
+  const errorImageUrl = "http://localhost:3880/footy/images/mugshots/manofmystery.jpg"
 
-  const url = errorImage ? errorImageUrl : "/images/mugshots/" + login + ".jpg"
+  const url = errorImage ? errorImageUrl : "http://localhost:3880/footy/images/mugshots/" + login + ".jpg"
 
   return (
     <div

@@ -10,14 +10,7 @@ async function getPlayers() {
         },
     })
 
-    // Make sure things are serialisable as JSON
-    const players = data.map((player) => ({
-        ...player,
-        born: player.born == null ? "" : player.born.toLocaleDateString('sv'),
-        finished: player.finished == null ? "" : player.finished.toLocaleDateString('sv'),
-        joined: player.joined == null ? "" : player.joined.toLocaleDateString('sv'),
-    }))
-    return players
+    return data
 }
 
 export default async function Page() {

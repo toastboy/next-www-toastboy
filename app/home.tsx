@@ -1,16 +1,13 @@
 'use client'
 
-import Player from '../components/Player'
-import PropTypes from 'prop-types';
+import PlayerTile from '../components/PlayerTile'
+import { player } from '@prisma/client'
 
-HomePage.propTypes = {
-    players: PropTypes.object.isRequired,
-};
+interface HomePageProps {
+    players: Array<player>,
+}
 
-// This is a Client Component. It receives data as props and
-// has access to state and effects just like Page components
-// in the `pages` directory.
-export default function HomePage({ players }) {
+export default function HomePage({ players }: HomePageProps) {
     return (
         <div>
             <main className="p-10 mx-auto max-w-4xl">
@@ -20,7 +17,7 @@ export default function HomePage({ players }) {
                 </p>
                 <div className="grid md:grid-cols-3 sm:grid-cols-2 grid-cols-1 justify-items-center  gap-4">
                     {players.map((player) => (
-                        <Player player={player} key={player.id} />
+                        <PlayerTile player={player} key={player.id} />
                     ))}
                 </div>
             </main>

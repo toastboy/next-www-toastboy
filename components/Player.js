@@ -1,8 +1,15 @@
+'use client'
+
 import Image from 'next/image'
 import React, { useState } from 'react'
+import PropTypes from 'prop-types';
+
+Player.propTypes = {
+  player: PropTypes.object.isRequired,
+};
 
 export default function Player({ player }) {
-  const { id, is_admin, login, first_name, last_name, email, joined, finished, born, introduced_by, comment, anonymous, goalie } = player
+  const { id, login, first_name, last_name, email, born, } = player
 
   const [errorImage, setErrorImage] = useState(null)
   const errorImageUrl = "http://localhost:3880/footy/images/mugshots/manofmystery.jpg"
@@ -10,10 +17,7 @@ export default function Player({ player }) {
   const url = errorImage ? errorImageUrl : "http://localhost:3880/footy/images/mugshots/" + login + ".jpg"
 
   return (
-    <div
-      className="w-[250px] rounded overflow-hidden shadow-lg"
-      key={player.id}
-    >
+    <div className="w-[250px] rounded overflow-hidden shadow-lg" key={id}>
       <Image
         className="w-full"
         width={250}
@@ -23,6 +27,7 @@ export default function Player({ player }) {
         onError={(e) => {
           if (!errorImage) {
             setErrorImage(true)
+            console.log(e)
           }
         }}
       />

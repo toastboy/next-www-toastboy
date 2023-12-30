@@ -1,0 +1,16 @@
+# See https://gourav.io/blog/nextjs-cheatsheet
+
+# Don't ever lint node_modules
+**/node_modules/*
+# Don't lint build output (make sure it's set to your correct build folder name)
+dist
+# Don't lint nyc coverage output
+coverage
+**/.next/*
+*.json
+*.lock
+*.css
+*.scss
+**/out/*
+next-env.d.ts
+# next.config.js

@@ -1,5 +1,5 @@
 import HomePage from './home'
-import prisma from '../lib/prisma'
+import prisma from '@/lib/prisma'
 
 async function getPlayers() {
     const data = await prisma.player.findMany({

@@ -4,11 +4,11 @@ import Image from 'next/image'
 import { useState } from 'react'
 import { player } from '@prisma/client'
 
-interface PlayerTileProps {
+export default function PlayerTile({
+  player,
+}: {
   player: player,
-}
-
-export default function PlayerTile({ player }: PlayerTileProps) {
+}) {
   const { id, login, first_name, last_name, email, born } = player
   const born_string = born == null ? "Unknown" : born.toLocaleDateString('sv')
 

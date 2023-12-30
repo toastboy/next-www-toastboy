@@ -1,13 +1,13 @@
 'use client'
 
-import PlayerTile from '../components/PlayerTile'
+import PlayerTile from '@/components/PlayerTile'
 import { player } from '@prisma/client'
 
-interface HomePageProps {
+export default function HomePage({
+    players,
+}: {
     players: Array<player>,
-}
-
-export default function HomePage({ players }: HomePageProps) {
+}) {
     return (
         <div>
             <main className="p-10 mx-auto max-w-4xl">

@@ -12,7 +12,7 @@ export default function PlayerTile({
   const { id, login, first_name, last_name, email, born } = player
   const born_string = born == null ? "Unknown" : born.toLocaleDateString('sv')
 
-  const [errorImage, setErrorImage] = useState(null)
+  const [errorImage, setErrorImage] = useState<boolean>(false)
   const errorImageUrl = "http://localhost:3880/footy/images/mugshots/manofmystery.jpg"
 
   const url = errorImage ? errorImageUrl : "http://localhost:3880/footy/images/mugshots/" + login + ".jpg"
@@ -24,7 +24,7 @@ export default function PlayerTile({
         width={250}
         height={250}
         src={url}
-        alt={first_name}
+        alt={first_name || "Player"}
         onError={(e) => {
           if (!errorImage) {
             setErrorImage(true)

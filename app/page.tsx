@@ -1,19 +1,5 @@
-import HomePage from './home'
-import prisma from '@/lib/prisma'
+import { redirect } from 'next/navigation'
 
-async function getPlayers() {
-    const data = await prisma.player.findMany({
-        where: {
-            finished: {
-                equals: null,
-            },
-        },
-    })
-
-    return data
-}
-
-export default async function Page() {
-    const players = await getPlayers()
-    return <HomePage players={players} />
+export default async function RootPage() {
+    redirect('/footy')
 }

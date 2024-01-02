@@ -1,19 +1,14 @@
-import HomePage from './home'
-import prisma from '@/lib/prisma'
+import Image from 'next/image'
+import crest from '../../../public/images/crest.jpg'
 
-async function getPlayers() {
-    const data = await prisma.player.findMany({
-        where: {
-            finished: {
-                equals: null,
-            },
-        },
-    })
-
-    return data
-}
-
-export default async function Page() {
-    const players = await getPlayers()
-    return <HomePage players={players} />
+export default function Page() {
+    return (
+        <div className="m-auto w-[283px] rounded overflow-hidden shadow-lg" >
+            <Image
+                src={crest}
+                priority={true}
+                alt="Toastboy FC Crest"
+            />
+        </div>
+    )
 }

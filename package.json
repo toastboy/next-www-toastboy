@@ -2,7 +2,7 @@
   "name": "next-www-toastboy",
   "private": true,
   "scripts": {
-    "dev": "cross-env NODE_OPTIONS='--trace-deprecation' next dev",
+    "dev": "next dev",
     "build": "npx prisma generate && next build",
     "start": "next start",
     "lint": "next lint"
@@ -24,7 +24,6 @@
     "@typescript-eslint/eslint-plugin": "^6",
     "@typescript-eslint/parser": "^6",
     "autoprefixer": "^10",
-    "cross-env": "^7.0.3",
     "eslint": "^8",
     "eslint-config-next": "^14",
     "eslint-plugin-react": "^7",

@@ -1,6 +1,6 @@
 'use client'
 
-import PlayerTile from '@/components/PlayerTile'
+import PlayerTile from 'components/PlayerTile'
 import { player } from '@prisma/client'
 
 export default function HomePage({

@@ -1,19 +1,7 @@
 import HomePage from './home'
-import prisma from '@/lib/prisma'
-
-async function getPlayers() {
-    const data = await prisma.player.findMany({
-        where: {
-            finished: {
-                equals: null,
-            },
-        },
-    })
-
-    return data
-}
+import * as players from 'lib/players'
 
 export default async function Page() {
-    const players = await getPlayers()
-    return <HomePage players={players} />
+    const allPlayers = await players.getAll()
+    return <HomePage players={allPlayers} />
 }

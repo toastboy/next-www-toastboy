@@ -1,8 +1,15 @@
-// __tests__/example.test.ts
-function sum(a: number, b: number): number {
-    return a + b;
-}
+import { getAll } from 'lib/players'
 
-test('adds 1 + 2 to equal 3', () => {
-    expect(sum(1, 2)).toBe(3);
-});
+test('list of all players should be more than 200 ', async () => {
+    const players = await getAll(false)
+
+    expect(players).toBeDefined()
+    expect(players.length).toBeGreaterThan(200)
+})
+
+test('list of active players should be more than 0 ', async () => {
+    const players = await getAll(true)
+
+    expect(players).toBeDefined()
+    expect(players.length).toBeGreaterThan(0)
+})

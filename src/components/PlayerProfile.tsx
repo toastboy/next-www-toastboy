@@ -1,8 +1,6 @@
-'use client'
-
-import Image from 'next/image'
-import { useState } from 'react'
 import { player } from '@prisma/client'
+import { getName } from 'lib/players'
+import PlayerMugshot from 'components/PlayerMugshot'
 
 export default function PlayerProfile({
     player,
@@ -12,26 +10,10 @@ export default function PlayerProfile({
     const { id, login, first_name, last_name, email, born } = player
     const born_string = born == null ? "Unknown" : born.toLocaleDateString('sv')
 
-    const [errorImage, setErrorImage] = useState<boolean>(false)
-    const errorImageUrl = "http://localhost:3880/footy/images/mugshots/manofmystery.jpg"
-
-    const url = errorImage ? errorImageUrl : "http://localhost:3880/footy/images/mugshots/" + login + ".jpg"
-
     return (
-        <div className="w-[250px] rounded overflow-hidden shadow-lg" key={id}>
-            <Image
-                className="w-full"
-                width={250}
-                height={250}
-                src={url}
-                alt={first_name || "Player"}
-                onError={(e) => {
-                    if (!errorImage) {
-                        setErrorImage(true)
-                        console.log(e)
-                    }
-                }}
-            />
+        <div className="w-[600px] rounded overflow-hidden shadow-lg" key={id}>
+            <h1 className="text-6xl font-bold mb-4 text-center">{getName(player)}</h1>
+            <PlayerMugshot player={player} />
             <div className="px-6 py-4">
                 <div className="font-bold text-xl mb-2">{first_name} {last_name}</div>
                 <p className="text-gray-700 text-base">{email}</p>

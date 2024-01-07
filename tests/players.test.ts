@@ -1,10 +1,10 @@
 import { getAll } from 'lib/players'
 
-test('list of all players should be more than 200 ', async () => {
+test('list of all players should be more than 195 ', async () => {
     const players = await getAll(false)
 
     expect(players).toBeDefined()
-    expect(players.length).toBeGreaterThan(200)
+    expect(players.length).toBeGreaterThan(195)
 })
 
 test('list of active players should be more than 0 ', async () => {

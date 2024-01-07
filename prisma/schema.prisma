@@ -140,6 +140,7 @@ model player {
   comment       String?   @db.VarChar(32)
   anonymous     Int?      @db.TinyInt
   goalie        Int?      @db.TinyInt
+  mugshot       String?   @db.VarChar(20)
 }
 
 model standings {

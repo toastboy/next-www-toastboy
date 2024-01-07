@@ -14,9 +14,9 @@ export default function PlayerTile({
     <div className="w-[250px] rounded overflow-hidden shadow-lg" key={id}>
       <PlayerMugshot player={player} />
       <div className="px-6 py-4">
-        <div className="font-bold text-xl mb-2">{first_name} {last_name}</div>
-        <p className="text-gray-700 text-base">{email}</p>
-        <Link href="/footy/players/{login}" className="text-gray-900 text-xl">{login}</Link>
+        <div className="font-bold text-xl mb-2"><Link href={"/footy/player/" + login}>{first_name} {last_name}</Link></div>
+        <Link href={"/footy/player/" + login} className="block text-gray-700 text-base">{email}</Link>
+        <Link href={"/footy/player/" + login} className="block text-gray-900 text-xl">{login}</Link>
       </div>
       <div className="px-6 pt-4 pb-2">
         <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">

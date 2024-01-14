@@ -20,6 +20,7 @@ export default function PlayerMugshot({
                 width={250}
                 height={250}
                 src={url}
+                priority={true}
                 alt={getName(player) || "Player"}
             />
         </Link>

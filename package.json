@@ -19,11 +19,14 @@
     "react-icons": "^4.12.0",
     "sharp": "^0"
   },
+  "prisma": {
+    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+  },
   "devDependencies": {
     "@next/eslint-plugin-next": "^14",
     "@playwright/test": "^1",
     "@types/jest": "^29",
-    "@types/node": "^20",
+    "@types/node": "^20.11.5",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "@typescript-eslint/eslint-plugin": "^6",
@@ -39,6 +42,7 @@
     "prisma": "^5",
     "tailwindcss": "3",
     "ts-jest": "^29",
-    "typescript": "^5"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.3.3"
   }
 }

@@ -24,6 +24,22 @@
                 "uriFormat": "%s",
                 "action": "debugWithChrome"
             }
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Debug Prisma Seed",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}/node_modules/.bin/ts-node",
+            "args": [
+                "${workspaceFolder}/prisma/seed.ts"
+            ],
+            "env": {
+                "TS_NODE_COMPILER_OPTIONS": "{\"module\":\"CommonJS\"}"
+            },
+            "internalConsoleOptions": "openOnSessionStart"
         }
     ]
 }

@@ -41,6 +41,7 @@ next-env.d.ts
 
 # Terraform local files
 .terraform*
+terraform*
 
 # Don't track the seed data files: private information in there
 /prisma/data/

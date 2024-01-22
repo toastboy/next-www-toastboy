@@ -5,6 +5,14 @@ terraform {
       version = "3.88.0"
     }
   }
+
+  cloud {
+    organization = "toastboy"
+
+    workspaces {
+      name = "next-www-toastboy"
+    }
+  }
 }
 
 provider "azurerm" {

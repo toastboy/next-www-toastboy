@@ -12,11 +12,6 @@ resource "azurerm_storage_account" "this" {
   account_tier             = "Standard"
   account_replication_type = "LRS"
 
-  network_rules {
-    default_action = "Deny"
-    ip_rules       = ["82.68.10.159"]
-  }
-
   blob_properties {
     versioning_enabled = true
   }
@@ -28,4 +23,10 @@ resource "azurerm_storage_container" "this" {
   name                  = var.container_name
   storage_account_name  = azurerm_storage_account.this.name
   container_access_type = "private"
+}
+
+resource "azurerm_role_assignment" "toastboy" {
+  scope                = azurerm_storage_account.this.id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = "0880111d-a115-4828-b165-5469557a50d5"
 }

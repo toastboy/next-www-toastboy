@@ -22,10 +22,24 @@ provider "azurerm" {
   features {}
 }
 
+data "azuread_client_config" "current" {}
+
+resource "azuread_application" "next_www_toastboy_db_seed" {
+  display_name = "Next www toastboy db seed"
+  owners       = [data.azuread_client_config.current.object_id]
+}
+
+resource "azuread_service_principal" "next_www_toastboy_db_seed" {
+  client_id                    = azuread_application.next_www_toastboy_db_seed.client_id
+  app_role_assignment_required = false
+  owners                       = [data.azuread_client_config.current.object_id]
+}
+
 module "db-seed" {
   source = "./modules/azure-blob-storage"
 
-  container_name = "dbseeddata"
+  container_name              = "dbseeddata"
+  service_principal_object_id = azuread_application.next_www_toastboy_db_seed.object_id
 
   tags = {
     Terraform = "true"

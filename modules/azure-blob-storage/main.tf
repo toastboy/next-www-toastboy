@@ -28,5 +28,11 @@ resource "azurerm_storage_container" "this" {
 resource "azurerm_role_assignment" "toastboy" {
   scope                = azurerm_storage_account.this.id
   role_definition_name = "Storage Blob Data Contributor"
-  principal_id         = "0880111d-a115-4828-b165-5469557a50d5"
+  principal_id         = var.toastboy_object_id
+}
+
+resource "azurerm_role_assignment" "serviceprincipal" {
+  scope                = azurerm_storage_account.this.id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = var.service_principal_object_id
 }

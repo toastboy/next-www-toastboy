@@ -2,12 +2,12 @@ terraform {
   required_providers {
     azuread = {
       source  = "hashicorp/azuread"
-      version = "2.47.0"
+      version = "~> 2.0"
     }
 
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "3.88.0"
+      version = "~> 3.0"
     }
   }
 
@@ -42,6 +42,16 @@ resource "azuread_service_principal" "next_www_toastboy_db_seed" {
   app_role_assignment_required = false
 }
 
+resource "random_password" "password" {
+  length  = 16
+  special = true
+}
+
+resource "azuread_service_principal_password" "next_www_toastboy_db_seed" {
+  service_principal_id = azuread_service_principal.next_www_toastboy_db_seed.id
+  end_date_relative    = "8760h" # 1 year in hours
+}
+
 module "db-seed" {
   source = "./modules/azure-blob-storage"
 
@@ -51,4 +61,14 @@ module "db-seed" {
   tags = {
     Terraform = "true"
   }
+}
+
+output "client_id" {
+  value     = azuread_service_principal_password.next_www_toastboy_db_seed.service_principal_id
+  sensitive = true
+}
+
+output "client_secret" {
+  value     = azuread_service_principal_password.next_www_toastboy_db_seed.value
+  sensitive = true
 }

@@ -16,8 +16,7 @@ variable "container_name" {
 }
 
 variable "toastboy_object_id" {
-  type    = string
-  default = "0880111d-a115-4828-b165-5469557a50d5"
+  type = string
 }
 
 variable "service_principal_object_id" {

@@ -26,6 +26,10 @@ resource "azuread_service_principal_password" "next_www_toastboy_db_seed" {
   end_date_relative    = "8760h" # 1 year in hours
 }
 
+data "azuread_user" "toastboy" {
+  user_principal_name = "toastboy@toastboy.co.uk"
+}
+
 module "db-seed" {
   source = "./modules/azure-blob-storage"
 
@@ -33,6 +37,7 @@ module "db-seed" {
   resource_group_name         = azurerm_resource_group.this.name
   container_name              = "dbseeddata"
   service_principal_object_id = azuread_service_principal.next_www_toastboy_db_seed.object_id
+  toastboy_object_id          = data.azuread_user.toastboy.object_id
 
   tags = var.tags
 }
@@ -50,6 +55,19 @@ resource "azurerm_key_vault" "next_www_toastboy" {
   access_policy {
     tenant_id = data.azurerm_client_config.current.tenant_id
     object_id = data.azurerm_client_config.current.object_id
+
+    secret_permissions = [
+      "Set",
+      "Get",
+      "Delete",
+      "Purge",
+      "Recover"
+    ]
+  }
+
+  access_policy {
+    tenant_id = data.azurerm_client_config.current.tenant_id
+    object_id = data.azuread_user.toastboy.object_id
 
     secret_permissions = [
       "Set",

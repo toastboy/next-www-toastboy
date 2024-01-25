@@ -57,6 +57,7 @@ resource "azurerm_key_vault" "next_www_toastboy" {
     object_id = data.azurerm_client_config.current.object_id
 
     secret_permissions = [
+      "List",
       "Set",
       "Get",
       "Delete",
@@ -70,6 +71,7 @@ resource "azurerm_key_vault" "next_www_toastboy" {
     object_id = data.azuread_user.toastboy.object_id
 
     secret_permissions = [
+      "List",
       "Set",
       "Get",
       "Delete",

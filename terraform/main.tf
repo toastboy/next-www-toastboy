@@ -49,3 +49,15 @@ resource "azurerm_key_vault" "next_www_toastboy" {
 
   tags = var.tags
 }
+
+resource "azurerm_key_vault_secret" "client_id" {
+  name         = "client-id"
+  value        = azuread_service_principal_password.next_www_toastboy_db_seed.service_principal_id
+  key_vault_id = azurerm_key_vault.next_www_toastboy.id
+}
+
+resource "azurerm_key_vault_secret" "client_secret" {
+  name         = "client-secret"
+  value        = azuread_service_principal_password.next_www_toastboy_db_seed.value
+  key_vault_id = azurerm_key_vault.next_www_toastboy.id
+}

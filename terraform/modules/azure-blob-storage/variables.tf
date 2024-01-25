@@ -1,11 +1,9 @@
 variable "location" {
-  type    = string
-  default = "uksouth"
+  type = string
 }
 
 variable "resource_group_name" {
-  type    = string
-  default = "RG-WWW-STORAGE"
+  type = string
 }
 
 variable "storage_account_name" {

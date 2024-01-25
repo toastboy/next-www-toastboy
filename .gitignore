@@ -40,8 +40,8 @@ next-env.d.ts
 /playwright/.cache/
 
 # Terraform local files
-.terraform*
-terraform*
+terraform/.terraform*
+terraform/terraform*
 
 # Don't track the seed data files: private information in there
 /prisma/data/

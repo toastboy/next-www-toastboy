@@ -35,13 +35,11 @@ data "azuread_client_config" "current" {}
 
 resource "azuread_application" "next_www_toastboy_db_seed" {
   display_name = "Next www toastboy db seed"
-  owners       = [data.azuread_client_config.current.object_id]
 }
 
 resource "azuread_service_principal" "next_www_toastboy_db_seed" {
   client_id                    = azuread_application.next_www_toastboy_db_seed.client_id
   app_role_assignment_required = false
-  owners                       = [data.azuread_client_config.current.object_id]
 }
 
 module "db-seed" {

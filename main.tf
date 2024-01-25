@@ -46,7 +46,7 @@ module "db-seed" {
   source = "./modules/azure-blob-storage"
 
   container_name              = "dbseeddata"
-  service_principal_object_id = azuread_application.next_www_toastboy_db_seed.object_id
+  service_principal_object_id = azuread_service_principal.next_www_toastboy_db_seed.object_id
 
   tags = {
     Terraform = "true"

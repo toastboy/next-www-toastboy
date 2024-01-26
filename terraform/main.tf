@@ -1,3 +1,5 @@
+data "azurerm_client_config" "current" {}
+
 resource "azurerm_resource_group" "this" {
   name     = var.resource_group_name
   location = var.location
@@ -5,24 +7,17 @@ resource "azurerm_resource_group" "this" {
   tags = var.tags
 }
 
-data "azurerm_client_config" "current" {}
-
-resource "azuread_application" "next_www_toastboy_db_seed" {
-  display_name = "Next www toastboy db seed"
+resource "azuread_application" "next_www_toastboy" {
+  display_name = "Next www toastboy"
 }
 
-resource "azuread_service_principal" "next_www_toastboy_db_seed" {
-  client_id                    = azuread_application.next_www_toastboy_db_seed.client_id
+resource "azuread_service_principal" "next_www_toastboy" {
+  client_id                    = azuread_application.next_www_toastboy.client_id
   app_role_assignment_required = false
 }
 
-resource "random_password" "password" {
-  length  = 16
-  special = true
-}
-
-resource "azuread_service_principal_password" "next_www_toastboy_db_seed" {
-  service_principal_id = azuread_service_principal.next_www_toastboy_db_seed.id
+resource "azuread_service_principal_password" "next_www_toastboy" {
+  service_principal_id = azuread_service_principal.next_www_toastboy.id
   end_date_relative    = "8760h" # 1 year in hours
 }
 
@@ -30,16 +25,36 @@ data "azuread_user" "toastboy" {
   user_principal_name = "toastboy@toastboy.co.uk"
 }
 
-module "db-seed" {
-  source = "./modules/azure-blob-storage"
+resource "azurerm_storage_account" "this" {
+  name                     = var.storage_account_name
+  resource_group_name      = azurerm_resource_group.this.name
+  location                 = azurerm_resource_group.this.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
 
-  location                    = var.location
-  resource_group_name         = azurerm_resource_group.this.name
-  container_name              = "dbseeddata"
-  service_principal_object_id = azuread_service_principal.next_www_toastboy_db_seed.object_id
-  toastboy_object_id          = data.azuread_user.toastboy.object_id
+  blob_properties {
+    versioning_enabled = true
+  }
 
   tags = var.tags
+}
+
+resource "azurerm_storage_container" "this" {
+  name                  = var.db_seed_container
+  storage_account_name  = azurerm_storage_account.this.name
+  container_access_type = "private"
+}
+
+resource "azurerm_role_assignment" "toastboy" {
+  scope                = azurerm_storage_account.this.id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = data.azuread_user.toastboy.object_id
+}
+
+resource "azurerm_role_assignment" "serviceprincipal" {
+  scope                = azurerm_storage_account.this.id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = azuread_service_principal.next_www_toastboy.object_id
 }
 
 resource "azurerm_key_vault" "next_www_toastboy" {
@@ -52,6 +67,7 @@ resource "azurerm_key_vault" "next_www_toastboy" {
   soft_delete_retention_days = 7
   purge_protection_enabled   = false
 
+  # Terraform itself needs to manage the secrets in the vault
   access_policy {
     tenant_id = data.azurerm_client_config.current.tenant_id
     object_id = data.azurerm_client_config.current.object_id
@@ -66,6 +82,7 @@ resource "azurerm_key_vault" "next_www_toastboy" {
     ]
   }
 
+  # I want my identity to have access interactively
   access_policy {
     tenant_id = data.azurerm_client_config.current.tenant_id
     object_id = data.azuread_user.toastboy.object_id
@@ -85,12 +102,12 @@ resource "azurerm_key_vault" "next_www_toastboy" {
 
 resource "azurerm_key_vault_secret" "client_id" {
   name         = "client-id"
-  value        = azuread_service_principal_password.next_www_toastboy_db_seed.service_principal_id
+  value        = azuread_service_principal_password.next_www_toastboy.service_principal_id
   key_vault_id = azurerm_key_vault.next_www_toastboy.id
 }
 
 resource "azurerm_key_vault_secret" "client_secret" {
   name         = "client-secret"
-  value        = azuread_service_principal_password.next_www_toastboy_db_seed.value
+  value        = azuread_service_principal_password.next_www_toastboy.value
   key_vault_id = azurerm_key_vault.next_www_toastboy.id
 }

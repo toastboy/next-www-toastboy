@@ -1,6 +1,6 @@
 data "azurerm_client_config" "current" {}
 
-resource "azurerm_resource_group" "this" {
+resource "azurerm_resource_group" "next_www_toastboy" {
   name     = var.resource_group_name
   location = var.location
 
@@ -25,10 +25,10 @@ data "azuread_user" "toastboy" {
   user_principal_name = "toastboy@toastboy.co.uk"
 }
 
-resource "azurerm_storage_account" "this" {
+resource "azurerm_storage_account" "next_www_toastboy" {
   name                     = var.storage_account_name
-  resource_group_name      = azurerm_resource_group.this.name
-  location                 = azurerm_resource_group.this.location
+  resource_group_name      = azurerm_resource_group.next_www_toastboy.name
+  location                 = azurerm_resource_group.next_www_toastboy.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
 
@@ -39,28 +39,28 @@ resource "azurerm_storage_account" "this" {
   tags = var.tags
 }
 
-resource "azurerm_storage_container" "this" {
+resource "azurerm_storage_container" "db_seed" {
   name                  = var.db_seed_container
-  storage_account_name  = azurerm_storage_account.this.name
+  storage_account_name  = azurerm_storage_account.next_www_toastboy.name
   container_access_type = "private"
 }
 
 resource "azurerm_role_assignment" "toastboy" {
-  scope                = azurerm_storage_account.this.id
+  scope                = azurerm_storage_account.next_www_toastboy.id
   role_definition_name = "Storage Blob Data Contributor"
   principal_id         = data.azuread_user.toastboy.object_id
 }
 
-resource "azurerm_role_assignment" "serviceprincipal" {
-  scope                = azurerm_storage_account.this.id
+resource "azurerm_role_assignment" "next_www_toastboy" {
+  scope                = azurerm_storage_account.next_www_toastboy.id
   role_definition_name = "Storage Blob Data Contributor"
   principal_id         = azuread_service_principal.next_www_toastboy.object_id
 }
 
 resource "azurerm_key_vault" "next_www_toastboy" {
   name                = "next-www-toastboy"
-  location            = azurerm_resource_group.this.location
-  resource_group_name = azurerm_resource_group.this.name
+  location            = azurerm_resource_group.next_www_toastboy.location
+  resource_group_name = azurerm_resource_group.next_www_toastboy.name
   tenant_id           = data.azurerm_client_config.current.tenant_id
   sku_name            = "standard"
 

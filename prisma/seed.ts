@@ -39,12 +39,10 @@ async function processJsonData<T>(
     containerClient: ContainerClient,
     fileName: string,
     prismaModel: {
-        deleteMany: () => Prisma.PrismaPromise<Prisma.BatchPayload>;
         create: (data: { data: T }) => Prisma.PrismaPromise<T>;
     }
 ) {
     const dataItems: T[] = await downloadAndParseJson(containerClient, fileName) as T[];
-    await prismaModel.deleteMany();
     for (const item of dataItems) {
         await prismaModel.create({ data: item });
     }
@@ -85,17 +83,36 @@ async function main() {
 
     const containerClient = blobServiceClient.getContainerClient(containerName);
 
-    await processJsonData<arse>(containerClient, "arses.json", prisma.arse);
-    await processJsonData<club_supporter>(containerClient, "club_supporters.json", prisma.club_supporter);
-    await processJsonData<club>(containerClient, "clubs.json", prisma.club);
-    await processJsonData<country>(containerClient, "countries.json", prisma.country);
-    await processJsonData<game_chat>(containerClient, "game_chatss.json", prisma.game_chat);
-    await processJsonData<game_day>(containerClient, "game_days.json", prisma.game_day);
-    await processJsonData<invitation>(containerClient, "invitations.json", prisma.invitation);
-    await processJsonData<nationality>(containerClient, "nationalities.json", prisma.nationality);
-    await processJsonData<outcome>(containerClient, "outcomes.json", prisma.outcome);
+    // We have to be careful to empty existing tables in the right order for the
+    // foreign key constraints
+    await prisma.misc.deleteMany();
+    await prisma.arse.deleteMany();
+    await prisma.club_supporter.deleteMany();
+    await prisma.club.deleteMany();
+    await prisma.nationality.deleteMany();
+    await prisma.country.deleteMany();
+    await prisma.game_chat.deleteMany();
+    await prisma.invitation.deleteMany();
+    await prisma.outcome.deleteMany();
+    await prisma.standings.deleteMany();
+    await prisma.game_day.deleteMany();
+    await prisma.diffs.deleteMany();
+    await prisma.picker.deleteMany();
+    await prisma.picker_teams.deleteMany();
+    await prisma.player.deleteMany();
+
+    // Now we must populate the tables in the reverse of the order above
     await processJsonData<player>(containerClient, "players.json", prisma.player);
+    await processJsonData<game_day>(containerClient, "game_days.json", prisma.game_day);
     await processJsonData<standings>(containerClient, "standings.json", prisma.standings);
+    await processJsonData<outcome>(containerClient, "outcomes.json", prisma.outcome);
+    await processJsonData<invitation>(containerClient, "invitations.json", prisma.invitation);
+    await processJsonData<game_chat>(containerClient, "game_chats.json", prisma.game_chat);
+    await processJsonData<country>(containerClient, "countries.json", prisma.country);
+    await processJsonData<nationality>(containerClient, "nationalities.json", prisma.nationality);
+    await processJsonData<club>(containerClient, "clubs.json", prisma.club);
+    await processJsonData<club_supporter>(containerClient, "club_supporters.json", prisma.club_supporter);
+    await processJsonData<arse>(containerClient, "arses.json", prisma.arse);
 }
 
 main()

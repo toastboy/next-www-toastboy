@@ -39,6 +39,9 @@ resource "azurerm_storage_account" "next_www_toastboy" {
   tags = var.tags
 }
 
+# Storage container for database seed JSON files: only my own identity and the
+# app's should have any access
+
 resource "azurerm_storage_container" "db_seed" {
   name                  = var.db_seed_container
   storage_account_name  = azurerm_storage_account.next_www_toastboy.name
@@ -56,6 +59,28 @@ resource "azurerm_role_assignment" "next_www_toastboy" {
   role_definition_name = "Storage Blob Data Contributor"
   principal_id         = azuread_service_principal.next_www_toastboy.object_id
 }
+
+# Storage for our public-accessible images
+
+resource "azurerm_storage_container" "mugshots" {
+  name                  = var.mugshots_container
+  storage_account_name  = azurerm_storage_account.next_www_toastboy.name
+  container_access_type = "blob"
+}
+
+resource "azurerm_storage_container" "clubs" {
+  name                  = var.clubs_container
+  storage_account_name  = azurerm_storage_account.next_www_toastboy.name
+  container_access_type = "blob"
+}
+
+resource "azurerm_storage_container" "countries" {
+  name                  = var.countries_container
+  storage_account_name  = azurerm_storage_account.next_www_toastboy.name
+  container_access_type = "blob"
+}
+
+# Key vault to store the deployment secrets
 
 resource "azurerm_key_vault" "next_www_toastboy" {
   name                = "next-www-toastboy"

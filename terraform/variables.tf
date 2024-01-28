@@ -18,6 +18,21 @@ variable "db_seed_container" {
   default = "dbseeddata"
 }
 
+variable "mugshots_container" {
+  type    = string
+  default = "mugshots"
+}
+
+variable "clubs_container" {
+  type    = string
+  default = "clubs"
+}
+
+variable "countries_container" {
+  type    = string
+  default = "countries"
+}
+
 variable "tags" {
   type    = map(string)
   default = {}

@@ -85,7 +85,6 @@ async function main() {
 
     // We have to be careful to empty existing tables in the right order for the
     // foreign key constraints
-    await prisma.misc.deleteMany();
     await prisma.arse.deleteMany();
     await prisma.club_supporter.deleteMany();
     await prisma.club.deleteMany();

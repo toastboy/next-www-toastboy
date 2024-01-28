@@ -68,12 +68,12 @@ model game_chat {
 }
 
 model game_day {
-  game_number          Int            @id
-  game_date            DateTime?      @db.Date
-  game                 Boolean?       @default(true)
-  mail_sent            DateTime?      @db.DateTime(0)
-  comment              String?        @db.VarChar(255)
-  bibs                 game_day_bibs?
+  game_number          Int       @id
+  game_date            DateTime? @db.Date
+  game                 Boolean?  @default(true)
+  mail_sent            DateTime? @db.DateTime(0)
+  comment              String?   @db.VarChar(255)
+  bibs                 team?
   picker_games_history Int?
 }
 
@@ -98,14 +98,14 @@ model nationality {
 model outcome {
   game_day     Int
   player       Int
-  response     String?       @db.VarChar(20)
-  responsetime DateTime?     @db.DateTime(0)
+  response     String?   @db.VarChar(20)
+  responsetime DateTime? @db.DateTime(0)
   points       Int?
-  team         outcome_team?
-  comment      String?       @db.VarChar(127)
-  pub          Int?          @db.TinyInt
+  team         team?
+  comment      String?   @db.VarChar(127)
+  pub          Int?      @db.TinyInt
   paid         Boolean?
-  goalie       Int?          @db.TinyInt
+  goalie       Int?      @db.TinyInt
 
   @@unique([player, game_day], map: "unique_outcome")
   @@index([game_day], map: "game_day")
@@ -122,8 +122,8 @@ model picker {
 }
 
 model picker_teams {
-  player Int                @unique(map: "player")
-  team   picker_teams_team?
+  player Int   @unique(map: "player")
+  team   team?
 }
 
 model player {
@@ -167,22 +167,7 @@ model standings {
   @@index([game_day], map: "standings_ibfk_2")
 }
 
-model misc {
-  id            Int       @id @default(autoincrement())
-  last_game_mod DateTime? @db.DateTime(0)
-}
-
-enum picker_teams_team {
-  A
-  B
-}
-
-enum game_day_bibs {
-  A
-  B
-}
-
-enum outcome_team {
+enum team {
   A
   B
 }

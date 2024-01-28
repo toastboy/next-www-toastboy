@@ -10,6 +10,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@azure/identity": "^4",
+    "@azure/storage-blob": "^12",
     "@prisma/client": "^5",
     "@testing-library/jest-dom": "^6",
     "@testing-library/react": "^14",

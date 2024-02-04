@@ -2,14 +2,14 @@ import { player } from '@prisma/client'
 import prisma from 'lib/prisma'
 
 /**
- * Get the player login corresponding to the given string. Note that this
- * function does not guarantee that the returned string is a valid player login:
- * it only converts a valid id string to a login.
+ * Get the player login corresponding to the given string. If idOrLogin is a
+ * string then we check whether a player with the given login exists. If it's a
+ * number then we look up the player with that id.
  *
  * @param idOrLogin A string which may contain a player id or a login
  *
- * @returns The original string if it was not a number, the player login if
- * idOrLogin was a valid player id, or undefined otherwise.
+ * @returns A string containing the login of the player identified by idOrLogin
+ * if such a player exists, or undefined otherwise.
  */
 
 export async function getLogin(idOrLogin: string): Promise<string | undefined> {
@@ -26,10 +26,21 @@ export async function getLogin(idOrLogin: string): Promise<string | undefined> {
             },
         })
 
-        return data[0].login || undefined
+        return data.length > 0 ? data[0].login : undefined
+    }
+    else {
+        const data = await prisma.player.findMany({
+            where: {
+                login: {
+                    equals: idOrLogin,
+                },
+            },
+        })
+
+        return data.length > 0 ? data[0].login : undefined
     }
 
-    return idOrLogin
+    return undefined
 }
 
 /**

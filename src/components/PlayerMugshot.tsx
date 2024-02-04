@@ -4,14 +4,14 @@ import Link from 'next/link'
 import { player } from '@prisma/client'
 import { getName } from 'lib/players'
 
+import { createAbsoluteApiUrl } from 'lib/utils'
+
 export default function PlayerMugshot({
     player,
 }: {
     player: player,
 }) {
-    const url = player.mugshot ?
-        "http://localhost:3880/footy/images/mugshots/" + player.mugshot :
-        "http://localhost:3880/footy/images/mugshots/manofmystery.jpg"
+    const url = createAbsoluteApiUrl("footy/player/mugshot/" + player.login)
 
     return (
         <Link href={"/footy/player/" + player.login}>

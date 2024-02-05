@@ -1,0 +1,44 @@
+import AzureCache from 'lib/azure';
+import { streamToBuffer } from 'lib/utils';
+
+import { notFound } from 'next/navigation'
+
+import { getAllIds } from 'lib/clubs'
+
+export async function generateStaticParams() {
+    return getAllIds()
+}
+
+export async function GET(
+    request: Request,
+    { params }: { params: { id: number } }) {
+
+    try {
+        const azureCache = AzureCache.getInstance();
+        const containerClient = await azureCache.getContainerClient("clubs");
+        const blobClient = containerClient.getBlobClient(params.id.toString() + ".png");
+
+        if (!(await blobClient.exists())) {
+            return notFound();
+            // blobClient = containerClient.getBlobClient('manofmystery.jpg');
+        }
+
+        const downloadBlockBlobResponse = await blobClient.download(0);
+        if (!downloadBlockBlobResponse.readableStreamBody) {
+            throw new Error('Image body download failed.');
+        }
+        const imageBuffer = await streamToBuffer(downloadBlockBlobResponse.readableStreamBody);
+
+        return new Response(imageBuffer, {
+            status: 200,
+            headers: {
+                'Content-Type': 'image/png'
+            },
+        });
+    } catch (error) {
+        console.error('Error fetching image:', error);
+        return new Response('Internal Server Error', {
+            status: 500,
+        });
+    }
+}

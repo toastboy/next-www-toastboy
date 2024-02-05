@@ -45,3 +45,6 @@ terraform/terraform*
 
 # Don't track the seed data files: private information in there
 /prisma/data/
+
+# Build log
+build.txt

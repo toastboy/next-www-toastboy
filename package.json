@@ -12,7 +12,7 @@
   "dependencies": {
     "@azure/identity": "^4",
     "@azure/storage-blob": "^12",
-    "@prisma/client": "^5.8.1",
+    "@prisma/client": "^5.9.1",
     "@testing-library/jest-dom": "^6",
     "@testing-library/react": "^14",
     "next": "^14",
@@ -41,7 +41,7 @@
     "jest-environment-jsdom": "^29",
     "jest-mock-extended": "^3.0.5",
     "postcss": "8",
-    "prisma": "^5.8.1",
+    "prisma": "^5.9.1",
     "tailwindcss": "3",
     "ts-jest": "^29",
     "ts-node": "^10.9.2",

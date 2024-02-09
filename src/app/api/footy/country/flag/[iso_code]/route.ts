@@ -36,7 +36,7 @@ export async function GET(
             },
         });
     } catch (error) {
-        console.error('Error fetching image:', error);
+        console.error('Error fetching flag image:', error);
         return new Response('Internal Server Error', {
             status: 500,
         });

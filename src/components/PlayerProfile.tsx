@@ -1,6 +1,10 @@
+'use client'
+
 import { player } from '@prisma/client'
 import { getName } from 'lib/players'
 import PlayerMugshot from 'components/PlayerMugshot'
+import { arseService } from 'lib/arse'
+import { useEffect, useState } from 'react';
 
 export default function PlayerProfile({
     player,
@@ -9,11 +13,23 @@ export default function PlayerProfile({
 }) {
     const { id, login, first_name, last_name, email, born } = player
     const born_string = born == null ? "Unknown" : born.toLocaleDateString('sv')
+    const [arse, setArse] = useState(null);
+
+    useEffect(() => {
+        async function fetchArse() {
+            const arse = arseService.get(1);
+            setArse(arse);
+        }
+        fetchArse();
+    }, []); // Empty dependency array means this runs once on mount
 
     return (
         <div className="w-[600px] rounded overflow-hidden shadow-lg" key={id}>
             <h1 className="text-6xl font-bold mb-4 text-center">{getName(player)}</h1>
             <PlayerMugshot player={player} />
+            <div className="px-6 py-4">
+                <p className="text-gray-900 text-xl">{arse}</p>
+            </div>
             <div className="px-6 py-4">
                 <div className="font-bold text-xl mb-2">{first_name} {last_name}</div>
                 <p className="text-gray-700 text-base">{email}</p>

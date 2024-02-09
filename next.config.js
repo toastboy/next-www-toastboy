@@ -6,8 +6,8 @@ module.exports = {
       {
         protocol: 'http',
         hostname: 'localhost',
-        port: '3880',
-        pathname: '/footy/images/**',
+        port: '3000',
+        pathname: '/api/**',
       },
     ],
   },

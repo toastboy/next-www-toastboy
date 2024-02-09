@@ -1,9 +1,8 @@
-'use client'
+'use client';
 
-import { player } from '@prisma/client'
-import { getName } from 'lib/players'
-import PlayerMugshot from 'components/PlayerMugshot'
-import { arseService } from 'lib/arse'
+import { player, arse } from '@prisma/client';
+import { getName } from 'lib/players';
+import PlayerMugshot from 'components/PlayerMugshot';
 import { useEffect, useState } from 'react';
 
 export default function PlayerProfile({
@@ -11,14 +10,19 @@ export default function PlayerProfile({
 }: {
     player: player,
 }) {
-    const { id, login, first_name, last_name, email, born } = player
-    const born_string = born == null ? "Unknown" : born.toLocaleDateString('sv')
+    const { id, login, first_name, last_name, email, born } = player;
+    const born_string = born == null ? "Unknown" : born.toLocaleDateString('sv');
     const [arse, setArse] = useState(null);
 
     useEffect(() => {
         async function fetchArse() {
-            const arse = arseService.get(1);
-            setArse(arse);
+            const response = await fetch("/api/footy/arse/1");
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const data = await response.json();
+            const arse = data.arse as arse;
+            setArse(arse.rater.toString());
         }
         fetchArse();
     }, []); // Empty dependency array means this runs once on mount
@@ -28,7 +32,7 @@ export default function PlayerProfile({
             <h1 className="text-6xl font-bold mb-4 text-center">{getName(player)}</h1>
             <PlayerMugshot player={player} />
             <div className="px-6 py-4">
-                <p className="text-gray-900 text-xl">{arse}</p>
+                <p className="text-gray-900 text-xl">The Arse: {arse}</p>
             </div>
             <div className="px-6 py-4">
                 <div className="font-bold text-xl mb-2">{first_name} {last_name}</div>
@@ -41,5 +45,5 @@ export default function PlayerProfile({
                 </span>
             </div>
         </div>
-    )
+    );
 }

@@ -39,5 +39,8 @@ module.exports = {
         "react/react-in-jsx-scope": "off",
         // Allow jsx syntax in js and ts files (for next.js project)
         "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".ts", ".tsx",] }],
+
+        // Insist on semicolons
+        "semi": ["error", "always"]
     }
-}
+};

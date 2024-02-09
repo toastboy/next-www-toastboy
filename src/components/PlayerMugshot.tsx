@@ -1,17 +1,15 @@
-import Image from 'next/image'
-import Link from 'next/link'
+import Image from 'next/image';
+import Link from 'next/link';
 
-import { player } from '@prisma/client'
-import { getName } from 'lib/players'
-
-import { createAbsoluteApiUrl } from 'lib/utils'
+import { player } from '@prisma/client';
+import { getName } from 'lib/players';
 
 export default function PlayerMugshot({
     player,
 }: {
     player: player,
 }) {
-    const url = createAbsoluteApiUrl("footy/player/mugshot/" + player.login)
+    const url = "/api/footy/player/mugshot/" + player.login;
 
     return (
         <Link href={"/footy/player/" + player.login}>
@@ -24,5 +22,5 @@ export default function PlayerMugshot({
                 alt={getName(player) || "Player"}
             />
         </Link>
-    )
+    );
 }

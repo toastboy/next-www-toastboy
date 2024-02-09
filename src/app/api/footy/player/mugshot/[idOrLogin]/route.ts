@@ -1,8 +1,6 @@
 import AzureCache from 'lib/azure';
 import { streamToBuffer } from 'lib/utils';
 
-import { notFound } from 'next/navigation'
-
 import { getLogin, getAllIdsAndLogins } from 'lib/players'
 
 export async function generateStaticParams() {
@@ -16,7 +14,9 @@ export async function GET(
     const login = await getLogin(idOrLogin);
 
     if (!login) {
-        return notFound();
+        return new Response(login + " not found", {
+            status: 404,
+        });
     }
 
     try {

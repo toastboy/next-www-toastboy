@@ -2,7 +2,6 @@ import AzureCache from 'lib/azure';
 import { streamToBuffer } from 'lib/utils';
 
 import { getAllIds } from 'lib/countries'
-import { notFound } from 'next/navigation';
 
 export async function generateStaticParams() {
     return getAllIds()
@@ -19,8 +18,9 @@ export async function GET(
         const blobClient = containerClient.getBlobClient(iso_code + ".png");
 
         if (!(await blobClient.exists())) {
-            return notFound();
-            // blobClient = containerClient.getBlobClient('manofmystery.jpg');
+            return new Response(iso_code + ".png not found", {
+                status: 404,
+            });
         }
 
         const downloadBlockBlobResponse = await blobClient.download(0);

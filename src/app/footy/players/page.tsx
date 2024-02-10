@@ -1,9 +1,9 @@
-import { getAll } from 'lib/players'
+import { getAll } from 'lib/players';
 
-import PlayerTile from 'components/PlayerTile'
+import PlayerTile from 'components/PlayerTile';
 
 export default async function Page() {
-    const players = await getAll()
+    const players = await getAll();
 
     return (
         <div>
@@ -22,5 +22,5 @@ export default async function Page() {
             <footer>
             </footer>
         </div>
-    )
+    );
 }

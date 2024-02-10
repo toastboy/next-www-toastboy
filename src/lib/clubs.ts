@@ -1,5 +1,5 @@
-import { club } from '@prisma/client'
-import prisma from 'lib/prisma'
+import { club } from '@prisma/client';
+import prisma from 'lib/prisma';
 
 /**
  * Get all clubs
@@ -8,7 +8,7 @@ import prisma from 'lib/prisma'
  */
 
 export async function getAll(): Promise<club[]> {
-    return await prisma.club.findMany({})
+    return await prisma.club.findMany({});
 }
 
 /**
@@ -18,11 +18,11 @@ export async function getAll(): Promise<club[]> {
  */
 
 export async function getAllIds() {
-    const data = await prisma.club.findMany({})
+    const data = await prisma.club.findMany({});
 
     return data.map((club: club) => ({
         id: club.id.toString(),
-    }))
+    }));
 }
 
 /**
@@ -35,7 +35,7 @@ export async function getAllIds() {
 
 export async function getById(id: number): Promise<club | null> {
     if (id == null || isNaN(id)) {
-        return null
+        return null;
     }
 
     const data = await prisma.club.findMany({
@@ -44,7 +44,7 @@ export async function getById(id: number): Promise<club | null> {
                 equals: id,
             },
         },
-    })
+    });
 
-    return data[0] as club
+    return data[0] as club;
 }

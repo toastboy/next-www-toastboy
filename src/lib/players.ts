@@ -1,5 +1,5 @@
-import { player } from '@prisma/client'
-import prisma from 'lib/prisma'
+import { player } from '@prisma/client';
+import prisma from 'lib/prisma';
 
 /**
  * Get the player login corresponding to the given string. If idOrLogin is a
@@ -15,7 +15,7 @@ import prisma from 'lib/prisma'
 export async function getLogin(idOrLogin: string): Promise<string | undefined> {
     if (idOrLogin == undefined ||
         idOrLogin == "") {
-        return undefined
+        return undefined;
     }
     else if (!isNaN(Number(idOrLogin))) {
         const data = await prisma.player.findMany({
@@ -24,9 +24,9 @@ export async function getLogin(idOrLogin: string): Promise<string | undefined> {
                     equals: Number(idOrLogin),
                 },
             },
-        })
+        });
 
-        return data.length > 0 ? data[0].login : undefined
+        return data.length > 0 ? data[0].login : undefined;
     }
     else {
         const data = await prisma.player.findMany({
@@ -35,12 +35,12 @@ export async function getLogin(idOrLogin: string): Promise<string | undefined> {
                     equals: idOrLogin,
                 },
             },
-        })
+        });
 
-        return data.length > 0 ? data[0].login : undefined
+        return data.length > 0 ? data[0].login : undefined;
     }
 
-    return undefined
+    return undefined;
 }
 
 /**
@@ -59,10 +59,10 @@ export async function getAll(active = true): Promise<player[]> {
                     equals: null,
                 },
             },
-        })
+        });
     }
     else {
-        return await prisma.player.findMany({})
+        return await prisma.player.findMany({});
     }
 }
 
@@ -74,14 +74,14 @@ export async function getAll(active = true): Promise<player[]> {
  */
 
 export async function getAllIdsAndLogins() {
-    const data = await prisma.player.findMany({})
+    const data = await prisma.player.findMany({});
 
     const ids = data.map((player: player) => ({
         idOrLogin: player.id.toString(),
-    }))
+    }));
     const logins = data.map((player: player) => ({
         idOrLogin: player.login,
-    }))
+    }));
 
     return new Map([...Array.from(ids.entries()), ...Array.from(logins.entries())]);
 }
@@ -101,9 +101,9 @@ export async function getByLogin(login: string): Promise<player | null> {
                 equals: login,
             },
         },
-    })
+    });
 
-    return data[0] as player
+    return data[0] as player;
 }
 
 /**
@@ -116,7 +116,7 @@ export async function getByLogin(login: string): Promise<player | null> {
 
 export async function getById(id: number): Promise<player | null> {
     if (id == null || isNaN(id)) {
-        return null
+        return null;
     }
 
     const data = await prisma.player.findMany({
@@ -125,9 +125,9 @@ export async function getById(id: number): Promise<player | null> {
                 equals: id,
             },
         },
-    })
+    });
 
-    return data[0] as player
+    return data[0] as player;
 }
 
 /**
@@ -141,12 +141,12 @@ export async function getById(id: number): Promise<player | null> {
 
 export function getName(player: player) {
     if (player == null || player == undefined) {
-        return null
+        return null;
     }
 
     if (player.anonymous) {
-        return "Anonymous"
+        return "Anonymous";
     }
 
-    return player.first_name + " " + player.last_name
+    return player.first_name + " " + player.last_name;
 }

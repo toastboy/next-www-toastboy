@@ -1,11 +1,21 @@
-import { notFound, redirect } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation';
 
-import { getLogin, getByLogin, getAllIdsAndLogins } from 'lib/players'
+import { getLogin, getByLogin, getAllIdsAndLogins } from 'lib/players';
 
-import PlayerProfile from 'components/PlayerProfile'
+import PlayerProfile from 'components/PlayerProfile';
+
+export async function generateMetadata({
+    params,
+}: {
+    params: { idOrLogin: string },
+}) {
+    return {
+        title: "idOrLogin: " + params.idOrLogin.toString(),
+    };
+}
 
 export async function generateStaticParams() {
-    return getAllIdsAndLogins()
+    return getAllIdsAndLogins();
 }
 
 export default async function Page({
@@ -14,16 +24,16 @@ export default async function Page({
     params: { idOrLogin: string },
 })
     : Promise<JSX.Element> {
-    const login = await getLogin(params.idOrLogin)
+    const login = await getLogin(params.idOrLogin);
 
     if (login != params.idOrLogin) {
-        redirect("/footy/player/" + login)
+        redirect("/footy/player/" + login);
     }
 
-    const player = await getByLogin(login)
+    const player = await getByLogin(login);
 
     if (!player) {
-        return notFound()
+        return notFound();
     }
 
     return (
@@ -35,5 +45,5 @@ export default async function Page({
             <footer>
             </footer>
         </div>
-    )
+    );
 }

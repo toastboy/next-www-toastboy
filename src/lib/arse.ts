@@ -1,5 +1,5 @@
-import { arse } from '@prisma/client'
-import prisma from 'lib/prisma'
+import { arse } from '@prisma/client';
+import prisma from 'lib/prisma';
 
 type ArseData = {
     id?: number;
@@ -27,7 +27,7 @@ class ArseService {
             where: {
                 id: id
             },
-        })
+        });
     }
 
     /**

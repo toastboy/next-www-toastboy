@@ -1,14 +1,14 @@
-import { player } from '@prisma/client'
-import Link from 'next/link'
-import PlayerMugshot from 'components/PlayerMugshot'
+import { player } from '@prisma/client';
+import Link from 'next/link';
+import PlayerMugshot from 'components/PlayerMugshot';
 
 export default function PlayerTile({
   player,
 }: {
   player: player,
 }) {
-  const { id, login, first_name, last_name, email, born } = player
-  const born_string = born == null ? "Unknown" : born.toLocaleDateString('sv')
+  const { id, login, first_name, last_name, email, born } = player;
+  const born_string = born == null ? "Unknown" : born.toLocaleDateString('sv');
 
   return (
     <div className="w-[250px] rounded overflow-hidden shadow-lg" key={id}>
@@ -24,5 +24,5 @@ export default function PlayerTile({
         </span>
       </div>
     </div>
-  )
+  );
 }

@@ -1,5 +1,5 @@
-import Image from 'next/image'
-import crest from '../../../public/images/crest.jpg'
+import Image from 'next/image';
+import crest from '../../../public/images/crest.jpg';
 
 export default function Page() {
     return (
@@ -10,5 +10,5 @@ export default function Page() {
                 alt="Toastboy FC Crest"
             />
         </div>
-    )
+    );
 }

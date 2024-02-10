@@ -1,5 +1,5 @@
-import { country } from '@prisma/client'
-import prisma from 'lib/prisma'
+import { country } from '@prisma/client';
+import prisma from 'lib/prisma';
 
 /**
  * Get all countries
@@ -8,7 +8,7 @@ import prisma from 'lib/prisma'
  */
 
 export async function getAll(): Promise<country[]> {
-    return await prisma.country.findMany({})
+    return await prisma.country.findMany({});
 }
 
 /**
@@ -18,11 +18,11 @@ export async function getAll(): Promise<country[]> {
  */
 
 export async function getAllIds() {
-    const data = await prisma.country.findMany({})
+    const data = await prisma.country.findMany({});
 
     return data.map((country: country) => ({
         iso_code: country.iso_code,
-    }))
+    }));
 }
 
 /**
@@ -40,7 +40,7 @@ export async function getById(iso_code: string): Promise<country | null> {
                 equals: iso_code,
             },
         },
-    })
+    });
 
-    return data[0] as country
+    return data[0] as country;
 }

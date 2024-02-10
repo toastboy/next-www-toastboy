@@ -6,5 +6,5 @@ export default function Page({
         year: string,
     },
 }) {
-    return <h1>{params.login} - {params.year}</h1>
+    return <h1>{params.login} - {params.year}</h1>;
 }

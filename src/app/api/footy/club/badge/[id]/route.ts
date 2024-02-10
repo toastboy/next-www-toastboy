@@ -1,10 +1,10 @@
 import AzureCache from 'lib/azure';
 import { streamToBuffer } from 'lib/utils';
 
-import { getAllIds } from 'lib/clubs'
+import { getAllIds } from 'lib/clubs';
 
 export async function generateStaticParams() {
-    return getAllIds()
+    return getAllIds();
 }
 
 export async function GET(

@@ -26,7 +26,8 @@ module.exports = {
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
         "ecmaVersion": "latest",
-        "sourceType": "module"
+        "sourceType": "module",
+        "project": "./tsconfig.json"
     },
     "plugins": [
         "@typescript-eslint",
@@ -41,6 +42,10 @@ module.exports = {
         "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".ts", ".tsx",] }],
 
         // Insist on semicolons
-        "semi": ["error", "always"]
+        "semi": ["error", "always"],
+
+        // Help identify situations where a Promise (or thenable) is not being
+        // awaited
+        "@typescript-eslint/await-thenable": "error"
     }
 };

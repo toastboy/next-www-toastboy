@@ -1,10 +1,10 @@
 import AzureCache from 'lib/azure';
 import { streamToBuffer } from 'lib/utils';
 
-import { getLogin, getAllIdsAndLogins } from 'lib/players'
+import { getLogin, getAllIdsAndLogins } from 'lib/players';
 
 export async function generateStaticParams() {
-    return getAllIdsAndLogins()
+    return getAllIdsAndLogins();
 }
 
 export async function GET(

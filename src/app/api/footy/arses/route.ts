@@ -11,7 +11,7 @@ export const POST = async (req: NextRequest) => {
 };
 
 export const GET = async () => {
-    const arses = arseService.getAll();
+    const arses = await arseService.getAll();
 
     return NextResponse.json({
         arses,

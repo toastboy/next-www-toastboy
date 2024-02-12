@@ -1,5 +1,6 @@
 import { arse, club_supporter, club, country, game_chat, game_day, invitation, nationality, outcome, player, standings } from '@prisma/client';
 import prisma from '../src/lib/prisma';
+import { streamToBuffer } from '../src/lib/utils';
 import { Prisma } from '@prisma/client';
 import { BlobServiceClient, ContainerClient } from '@azure/storage-blob';
 import { ClientSecretCredential } from '@azure/identity';
@@ -20,20 +21,6 @@ async function downloadAndParseJson(containerClient: ContainerClient, blobName: 
         console.error("An error occurred during download: ", error);
         throw error;
     }
-}
-
-// TODO: Use utility function
-async function streamToBuffer(readableStream: NodeJS.ReadableStream): Promise<Buffer> {
-    return new Promise((resolve, reject) => {
-        const chunks: Buffer[] = [];
-        readableStream.on('data', (data: Buffer | string) => {
-            chunks.push(data instanceof Buffer ? data : Buffer.from(data));
-        });
-        readableStream.on('end', () => {
-            resolve(Buffer.concat(chunks));
-        });
-        readableStream.on('error', reject);
-    });
 }
 
 async function processJsonData<T>(

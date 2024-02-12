@@ -56,20 +56,17 @@ class PlayerService {
      * if such a player exists, or undefined otherwise.
      */
     async getLogin(idOrLogin: string): Promise<string | undefined> {
-        if (idOrLogin == undefined ||
-            idOrLogin == "") {
+        if (!idOrLogin) {
             return undefined;
         }
-        else if (!isNaN(Number(idOrLogin))) {
-            const player = await this.getById(Number(idOrLogin));
-            return player ? player.login : undefined;
-        }
-        else {
-            const player = await this.getByLogin(idOrLogin);
-            return player ? player.login : undefined;
-        }
 
-        return undefined;
+        if (!isNaN(Number(idOrLogin))) {
+            const player = await this.getById(Number(idOrLogin));
+            return player?.login;
+        } else {
+            const player = await this.getByLogin(idOrLogin);
+            return player?.login;
+        }
     }
 
     /**
@@ -78,55 +75,47 @@ class PlayerService {
      * @returns A promise that resolves to all players
      */
     async getAll(active = true): Promise<player[]> {
-        if (active) {
-            return await prisma.player.findMany({
-                where: {
-                    finished: {
-                        equals: null,
-                    },
-                },
-            });
-        }
-        else {
-            return await prisma.player.findMany({});
-        }
+        return prisma.player.findMany({
+            where: {
+                finished: active ? null : { not: null },
+            },
+        });
     }
 
     /**
-     * Return a list of all player ids and logins, so that either can be used to
+     * Return a map of all player ids and logins, so that either can be used to
      * refer to a given player
-     * @returns A map containing all logins and ids
+     * @returns A promise that resolves to a map containing all logins and ids
+     * as keys and the player objects as values
      */
-    async getAllIdsAndLogins() {
-        const data = await prisma.player.findMany({});
+    async getAllIdsAndLogins(): Promise<Map<string, player>> {
+        const players = await prisma.player.findMany({});
+        const map = new Map<string, player>();
 
-        const ids = data.map((player: player) => ({
-            idOrLogin: player.id.toString(),
-        }));
-        const logins = data.map((player: player) => ({
-            idOrLogin: player.login,
-        }));
+        players.forEach((player: player) => {
+            map.set(player.id.toString(), player);
+            map.set(player.login, player);
+        });
 
-        return new Map([...Array.from(ids.entries()), ...Array.from(logins.entries())]);
+        return map;
     }
 
     /**
-     * Player name: allows for returning "Anonymous" if desired, otherwise
-     * concatenates the first name and the last name.
-     * @param player The player model object in question
+     * Player name: allows for returning an anonymised name if desired,
+     * otherwise concatenates the first name and the last name.
+     * @param player The player object in question
      * @returns The player name string or null if there was an error
      */
-
-    getName(player: player) {
-        if (player == null || player == undefined) {
+    getName(player: player | null): string | null {
+        if (player == null) {
             return null;
         }
 
         if (player.anonymous) {
-            return "Player " + player.id.toString();
+            return `Player ${player.id}`;
         }
 
-        return player.first_name + " " + player.last_name;
+        return `${player.first_name} ${player.last_name}`;
     }
 
     /**

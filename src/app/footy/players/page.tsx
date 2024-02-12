@@ -1,9 +1,9 @@
-import { getAll } from 'lib/players';
+import { playerService } from "lib/player";
 
 import PlayerTile from 'components/PlayerTile';
 
 export default async function Page() {
-    const players = await getAll();
+    const players = await playerService.getAll();
 
     return (
         <div>

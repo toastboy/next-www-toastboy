@@ -1,6 +1,6 @@
 import { notFound, redirect } from 'next/navigation';
 
-import { getLogin, getByLogin, getAllIdsAndLogins } from 'lib/players';
+import { playerService } from "lib/player";
 
 import PlayerProfile from 'components/PlayerProfile';
 
@@ -9,13 +9,22 @@ export async function generateMetadata({
 }: {
     params: { idOrLogin: string },
 }) {
-    return {
-        title: "idOrLogin: " + params.idOrLogin.toString(),
-    };
+    try {
+        // TODO: Error checking
+        const login = await playerService.getLogin(params.idOrLogin);
+        const player = await playerService.getByLogin(login);
+        const name = playerService.getName(player);
+        return {
+            title: `${name}`,
+        };
+    }
+    catch (error) {
+        throw new Error("Getting player metadata: ", error);
+    }
 }
 
 export async function generateStaticParams() {
-    return getAllIdsAndLogins();
+    return playerService.getAllIdsAndLogins();
 }
 
 export default async function Page({
@@ -24,13 +33,17 @@ export default async function Page({
     params: { idOrLogin: string },
 })
     : Promise<JSX.Element> {
-    const login = await getLogin(params.idOrLogin);
+    const login = await playerService.getLogin(params.idOrLogin);
 
-    if (login != params.idOrLogin) {
-        redirect("/footy/player/" + login);
+    if (!login) {
+        return notFound();
     }
 
-    const player = await getByLogin(login);
+    if (login != params.idOrLogin) {
+        redirect(`/footy/player/${login}`);
+    }
+
+    const player = await playerService.getByLogin(login);
 
     if (!player) {
         return notFound();

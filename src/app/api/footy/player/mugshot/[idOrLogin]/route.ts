@@ -1,17 +1,17 @@
 import AzureCache from 'lib/azure';
 import { streamToBuffer } from 'lib/utils';
 
-import { getLogin, getAllIdsAndLogins } from 'lib/players';
+import { playerService } from "lib/player";
 
 export async function generateStaticParams() {
-    return getAllIdsAndLogins();
+    return playerService.getAllIdsAndLogins();
 }
 
 export async function GET(
     request: Request,
     { params }: { params: { idOrLogin: string } }) {
     const { idOrLogin } = params;
-    const login = await getLogin(idOrLogin);
+    const login = await playerService.getLogin(idOrLogin);
 
     if (!login) {
         return new Response(login + " not found", {

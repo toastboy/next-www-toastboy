@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   title: "Toastboy FC",
   description: "Toastboy FC: five-a-side footy on Tuesdays at Kelsey Kerridge, Cambridge",
   icons: {
-    icon: "favicon.ico",
+    icon: "/favicon.ico",
   },
 };
 

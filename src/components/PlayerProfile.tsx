@@ -1,7 +1,7 @@
 'use client';
 
 import { player, arse } from '@prisma/client';
-import { getName } from 'lib/players';
+import { playerService } from "lib/player";
 import PlayerMugshot from 'components/PlayerMugshot';
 import { useEffect, useState } from 'react';
 
@@ -29,7 +29,7 @@ export default function PlayerProfile({
 
     return (
         <div className="w-[600px] rounded overflow-hidden shadow-lg" key={id}>
-            <h1 className="text-6xl font-bold mb-4 text-center">{getName(player)}</h1>
+            <h1 className="text-6xl font-bold mb-4 text-center">{playerService.getName(player)}</h1>
             <PlayerMugshot player={player} />
             <div className="px-6 py-4">
                 <p className="text-gray-900 text-xl">The Arse: {arse}</p>

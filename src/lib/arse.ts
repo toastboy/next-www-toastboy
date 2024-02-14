@@ -36,7 +36,7 @@ function validateArse(arse: arse) {
     return arse;
 }
 
-class ServerArseService {
+export class ServerArseService {
     /**
      * Gets a single arse by id
      * @param id The numeric ID for the arse
@@ -105,7 +105,7 @@ class ServerArseService {
     }
 }
 
-class ClientArseService {
+export class ClientArseService {
     /**
      * Gets a single arse by id
      * @param id The numeric ID for the arse

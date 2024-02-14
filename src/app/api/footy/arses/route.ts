@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { arseService } from "lib/arse";
+import arseService from "lib/arse";
 
 export const POST = async (req: NextRequest) => {
     const data = await req.json();

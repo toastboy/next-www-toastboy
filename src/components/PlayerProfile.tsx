@@ -4,6 +4,7 @@ import { player, arse } from '@prisma/client';
 import { playerService } from "lib/player";
 import PlayerMugshot from 'components/PlayerMugshot';
 import { useEffect, useState } from 'react';
+import arseService from 'lib/arse';
 
 export default function PlayerProfile({
     player,
@@ -16,12 +17,7 @@ export default function PlayerProfile({
 
     useEffect(() => {
         async function fetchArse() {
-            const response = await fetch("/api/footy/arse/1");
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const data = await response.json();
-            const arse = data.arse as arse;
+            const arse: arse = await arseService.get(1);
             setArse(arse.rater.toString());
         }
         fetchArse();

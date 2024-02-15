@@ -27,6 +27,18 @@ type ArseData = {
 };
 
 /**
+ * Take a generic object from a JSON API response and turn it into an arse
+ * @param {object} json The arse to parse
+ * @returns the parsed arse
+ */
+function parseJSONArse(json: object) {
+    return validateArse({
+        ...json,
+        stamp: new Date(json["stamp"]),
+    } as arse);
+}
+
+/**
  * Validate an arse: throws an error if there's something wrong
  * @param {arse} arse The arse to validate
  * @returns the validated arse
@@ -114,8 +126,8 @@ export class ClientArseService {
      */
     async get(id: number): Promise<arse | undefined> {
         try {
-            const response = await axios.get<arse>(`/api/footy/arse/${id}`);
-            return validateArse(response.data["arse"]);
+            const response = await axios.get(`/api/footy/arse/${id}`);
+            return parseJSONArse(response.data["arse"]);
         } catch (error) {
             console.error('Error fetching arse:', error);
             throw error;

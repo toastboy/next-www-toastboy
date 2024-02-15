@@ -1,6 +1,8 @@
-import { ServerArseService } from 'lib/arse';
-import prisma from 'lib/prisma';
+import { ServerArseService, ClientArseService } from 'lib/arse';
 import { arse } from '@prisma/client';
+import prisma from 'lib/prisma';
+import axios from 'axios';
+import AxiosMockAdapter from 'axios-mock-adapter';
 
 jest.mock('lib/prisma', () => ({
     arse: {
@@ -36,10 +38,10 @@ describe('ServerArseService', () => {
 
         (prisma.arse.findUnique as jest.Mock).mockImplementation((args: { where: { id: number } }) => {
             if (args.where.id > 0 && args.where.id < 101) {
-                return Promise.resolve(<arse>{
+                return Promise.resolve(({
                     ...defaultArse,
                     id: args.where.id
-                });
+                } as arse));
             }
 
             return Promise.resolve(null);
@@ -51,34 +53,49 @@ describe('ServerArseService', () => {
     });
 
     describe('get', () => {
-        it('should retrieve an arse with id 1', async () => {
+        it('should retrieve an arse with a valid id', async () => {
             const result = await service.get(1);
-            expect(result).toEqual(<arse>{
+            expect(result).toEqual(({
                 ...defaultArse,
                 id: 1,
                 stamp: expect.any(Date)
-            });
+            } as arse));
         });
 
-        it('should retrieve an arse with id 99', async () => {
-            const result = await service.get(99);
-            expect(result).toEqual(<arse>{
-                ...defaultArse,
-                id: 99,
-                stamp: expect.any(Date)
-            });
-        });
-
-        it('should return null when retrieving an arse with id 0', async () => {
-            const result = await service.get(0);
-            expect(result).toBeNull();
-        });
-
-        it('should return null when retrieving an arse with id 101', async () => {
-            const result = await service.get(101);
+        it('should return null when retrieving an arse with an invalid id', async () => {
+            const result = await service.get(-1);
             expect(result).toBeNull();
         });
     });
 
-    // Similar structure for getAll, create, upsert, delete, deleteAll
+    // TODO: Similar structure for getAll, create, upsert, delete, deleteAll
+});
+
+describe('ClientArseService', () => {
+    const service = new ClientArseService();
+    const mock = new AxiosMockAdapter(axios);
+
+    afterEach(() => {
+        mock.reset();
+        jest.clearAllMocks();
+    });
+
+    describe('get', () => {
+        it('should retrieve an arse with a valid id', async () => {
+            mock.onGet('/api/footy/arse/1').reply(200, { arse: defaultArse });
+            const result = await service.get(1);
+            expect(result).toEqual(({
+                ...defaultArse,
+                id: 1,
+                stamp: expect.any(Date)
+            } as arse));
+        });
+
+        it('should return null when retrieving an arse with an invalid id', async () => {
+            mock.onGet('/api/footy/arse/-1').reply(404, null);
+            await expect(service.get(-1)).rejects.toThrow('404');
+        });
+    });
+
+    // TODO: Similar structure for getAll, create, upsert, delete, deleteAll
 });

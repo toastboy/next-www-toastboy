@@ -12,16 +12,11 @@ module.exports = {
     ],
     "overrides": [
         {
-            "env": {
-                "node": true
+            files: ['.eslintrc.js'],
+            parserOptions: {
+                project: null,
             },
-            "files": [
-                ".eslintrc.{js,cjs}"
-            ],
-            "parserOptions": {
-                "sourceType": "script"
-            }
-        }
+        },
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -46,6 +41,15 @@ module.exports = {
 
         // Help identify situations where a Promise (or thenable) is not being
         // awaited
-        "@typescript-eslint/await-thenable": "error"
+        "@typescript-eslint/await-thenable": "error",
+
+        // Make sure I use the "as" assertion rather than <type>
+        '@typescript-eslint/consistent-type-assertions': [
+            'error',
+            {
+                assertionStyle: 'as',
+                objectLiteralTypeAssertions: 'allow-as-parameter',
+            },
+        ],
     }
 };

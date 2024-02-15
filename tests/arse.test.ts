@@ -34,23 +34,51 @@ describe('ServerArseService', () => {
         service = new ServerArseService();
         jest.clearAllMocks();
 
-        (prisma.arse.findUnique as jest.Mock).mockResolvedValue(defaultArse);
+        (prisma.arse.findUnique as jest.Mock).mockImplementation((args: { where: { id: number } }) => {
+            if (args.where.id > 0 && args.where.id < 101) {
+                return Promise.resolve(<arse>{
+                    ...defaultArse,
+                    id: args.where.id
+                });
+            }
+
+            return Promise.resolve(null);
+        });
     });
 
     afterEach(() => {
         jest.clearAllMocks();
     });
 
-    describe('get method', () => {
-        it('should retrieve an arse by id', async () => {
+    describe('get', () => {
+        it('should retrieve an arse with id 1', async () => {
             const result = await service.get(1);
-            expect(prisma.arse.findUnique).toHaveBeenCalledWith({ where: { id: 1 } });
             expect(result).toEqual(<arse>{
                 ...defaultArse,
+                id: 1,
                 stamp: expect.any(Date)
             });
         });
+
+        it('should retrieve an arse with id 99', async () => {
+            const result = await service.get(99);
+            expect(result).toEqual(<arse>{
+                ...defaultArse,
+                id: 99,
+                stamp: expect.any(Date)
+            });
+        });
+
+        it('should return null when retrieving an arse with id 0', async () => {
+            const result = await service.get(0);
+            expect(result).toBeNull();
+        });
+
+        it('should return null when retrieving an arse with id 101', async () => {
+            const result = await service.get(101);
+            expect(result).toBeNull();
+        });
     });
 
-    // TODO: Similar structure for getAll, create, upsert, delete, deleteAll
+    // Similar structure for getAll, create, upsert, delete, deleteAll
 });

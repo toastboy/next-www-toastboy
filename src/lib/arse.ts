@@ -2,13 +2,16 @@ import { isServer } from 'lib/utils';
 import { arse } from '@prisma/client';
 import prisma from 'lib/prisma';
 import axios from 'axios';
+import debug from 'debug';
+
+const log = debug('footy:api');
 
 interface ArseInterface {
-    get(id: number): Promise<arse | undefined>;
-    getAll(): Promise<arse[]>;
-    create(data: ArseData): Promise<arse>;
-    upsert(data: ArseData): Promise<arse>;
-    delete(id: number): Promise<arse | undefined>;
+    get(id: number): Promise<arse | null>;
+    getAll(): Promise<arse[] | null>;
+    create(data: ArseData): Promise<arse | null>;
+    upsert(data: ArseData): Promise<arse | null>;
+    delete(id: number): Promise<void>;
     deleteAll(): Promise<void>;
 }
 
@@ -55,7 +58,7 @@ export class ServerArseService {
      * @returns A promise that resolves to the arse or undefined if none was
      * found
      */
-    async get(id: number): Promise<arse | undefined> {
+    async get(id: number): Promise<arse | null> {
         return prisma.arse.findUnique({
             where: {
                 id: id
@@ -67,7 +70,7 @@ export class ServerArseService {
      * Gets all arses at once
      * @returns A promise that resolves to all arses
      */
-    async getAll(): Promise<arse[]> {
+    async getAll(): Promise<arse[] | null> {
         return prisma.arse.findMany({});
     }
 
@@ -76,7 +79,7 @@ export class ServerArseService {
      * @param data The properties to add to the arse
      * @returns A promise that resolves to the newly-created arse
      */
-    async create(data: ArseData): Promise<arse> {
+    async create(data: ArseData): Promise<arse | null> {
         return await prisma.arse.create({
             data: data
         });
@@ -87,7 +90,7 @@ export class ServerArseService {
      * @param data The properties to add to the arse
      * @returns A promise that resolves to the updated or created arse
      */
-    async upsert(data: ArseData): Promise<arse> {
+    async upsert(data: ArseData): Promise<arse | null> {
         return await prisma.arse.upsert({
             where: { id: data.id },
             update: data,
@@ -98,11 +101,9 @@ export class ServerArseService {
     /**
      * Deletes an arse. If no such arse exists, that's not an error.
      * @param id The ID of the arse to delete
-     * @returns A promise that resolves to the deleted arse if there was one, or
-     * undefined otherwise
      */
-    async delete(id: number): Promise<arse | undefined> {
-        return await prisma.arse.delete({
+    async delete(id: number): Promise<void> {
+        await prisma.arse.delete({
             where: {
                 id: id,
             },
@@ -124,13 +125,13 @@ export class ClientArseService {
      * @returns A promise that resolves to the arse or undefined if none was
      * found
      */
-    async get(id: number): Promise<arse | undefined> {
+    async get(id: number): Promise<arse | null> {
         try {
             const response = await axios.get(`/api/footy/arse/${id}`);
             return parseJSONArse(response.data["arse"]);
         } catch (error) {
-            console.error('Error fetching arse:', error);
-            throw error;
+            log('Error fetching arse:', error);
+            return null;
         }
     }
 
@@ -138,7 +139,7 @@ export class ClientArseService {
      * Gets all arses at once
      * @returns A promise that resolves to all arses
      */
-    async getAll(): Promise<arse[]> {
+    async getAll(): Promise<arse[] | null> {
         try {
             const response = await axios.get<arse[]>(`/api/footy/arses`);
             response.data.forEach(arse => {
@@ -146,8 +147,8 @@ export class ClientArseService {
             });
             return response.data;
         } catch (error) {
-            console.error('Error fetching all arses:', error);
-            throw error;
+            log('Error fetching all arses:', error);
+            return null;
         }
     }
 
@@ -156,12 +157,12 @@ export class ClientArseService {
      * @param data The properties to add to the arse
      * @returns A promise that resolves to the newly-created arse
      */
-    async create(data: ArseData): Promise<arse> {
+    async create(data: ArseData): Promise<arse | null> {
         try {
             const response = await axios.post<arse>(`/api/footy/arses`, data);
             return validateArse(response.data);
         } catch (error) {
-            console.error('Error creating arse:', error);
+            log('Error creating arse:', error);
             throw error;
         }
     }
@@ -171,12 +172,12 @@ export class ClientArseService {
      * @param data The properties to add to the arse
      * @returns A promise that resolves to the updated or created arse
      */
-    async upsert(data: ArseData): Promise<arse> {
+    async upsert(data: ArseData): Promise<arse | null> {
         try {
             const response = await axios.put<arse>(`/api/footy/arses`, data);
             return validateArse(response.data);
         } catch (error) {
-            console.error('Error upserting arse:', error);
+            log('Error upserting arse:', error);
             throw error;
         }
     }
@@ -184,16 +185,13 @@ export class ClientArseService {
     /**
      * Deletes an arse. If no such arse exists, that's not an error.
      * @param id The ID of the arse to delete
-     * @returns A promise that resolves to the deleted arse if there was one, or
-     * undefined otherwise
      */
-    async delete(id: number): Promise<arse | undefined> {
+    async delete(id: number): Promise<void> {
         try {
             const response = await axios.delete<arse>(`/api/footy/arse/${id}`);
-            return validateArse(response.data);
+            validateArse(response.data);
         } catch (error) {
-            console.error('Error deleting arse:', error);
-            throw error;
+            log('Error deleting arse:', error);
         }
     }
 
@@ -204,8 +202,7 @@ export class ClientArseService {
         try {
             await axios.delete<arse>(`/api/footy/arses`);
         } catch (error) {
-            console.error('Error deleting arses:', error);
-            throw error;
+            log('Error deleting arses:', error);
         }
     }
 }

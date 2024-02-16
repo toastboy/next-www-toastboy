@@ -68,7 +68,31 @@ describe('ServerArseService', () => {
         });
     });
 
-    // TODO: Similar structure for getAll, create, upsert, delete, deleteAll
+    describe('getAll', () => {
+        it.todo('should return a list of arses');
+    });
+
+    describe('create', () => {
+        it.todo('should create an arse');
+        it.todo('should refuse to create an arse with invalid data');
+    });
+
+    describe('upsert', () => {
+        it.todo('should create an arse where the id did not exist');
+        it.todo('should update an existing arse where the id already existed');
+        it.todo('should refuse to create an arse with invalid data where the id did not exist');
+        it.todo('should refuse to update an arse with invalid data where the id already existed');
+    });
+
+    describe('delete', () => {
+        it.todo('should delete an existing arse');
+        it.todo('should silently return when asked to delete an arse that does not exist');
+    });
+
+    describe('deleteAll', () => {
+        it.todo('should delete all arses');
+        it.todo('should silently return if there are no arses to delete');
+    });
 });
 
 describe('ClientArseService', () => {
@@ -93,9 +117,34 @@ describe('ClientArseService', () => {
 
         it('should return null when retrieving an arse with an invalid id', async () => {
             mock.onGet('/api/footy/arse/-1').reply(404, null);
-            await expect(service.get(-1)).rejects.toThrow('404');
+            const result = await service.get(-1);
+            expect(result).toBeNull();
         });
     });
 
-    // TODO: Similar structure for getAll, create, upsert, delete, deleteAll
+    describe('getAll', () => {
+        it.todo('should return a list of arses');
+    });
+
+    describe('create', () => {
+        it.todo('should create an arse');
+        it.todo('should refuse to create an arse with invalid data');
+    });
+
+    describe('upsert', () => {
+        it.todo('should create an arse where the id did not exist');
+        it.todo('should update an existing arse where the id already existed');
+        it.todo('should refuse to create an arse with invalid data where the id did not exist');
+        it.todo('should refuse to update an arse with invalid data where the id already existed');
+    });
+
+    describe('delete', () => {
+        it.todo('should delete an existing arse');
+        it.todo('should silently return when asked to delete an arse that does not exist');
+    });
+
+    describe('deleteAll', () => {
+        it.todo('should delete all arses');
+        it.todo('should silently return if there are no arses to delete');
+    });
 });

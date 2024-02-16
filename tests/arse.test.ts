@@ -29,11 +29,15 @@ const defaultArse: arse = {
     defending: 10,
 };
 
+const arseList: arse[] = Array.from({ length: 100 }, (_, index) => ({
+    ...defaultArse,
+    id: index + 1,
+}));
+
 describe('ServerArseService', () => {
-    let service: ServerArseService;
+    const service = new ServerArseService();
 
     beforeEach(() => {
-        service = new ServerArseService();
         jest.clearAllMocks();
 
         (prisma.arse.findUnique as jest.Mock).mockImplementation((args: { where: { id: number } }) => {
@@ -45,6 +49,9 @@ describe('ServerArseService', () => {
             }
 
             return Promise.resolve(null);
+        });
+        (prisma.arse.findMany as jest.Mock).mockImplementation(() => {
+            return Promise.resolve(arseList);
         });
     });
 
@@ -69,7 +76,12 @@ describe('ServerArseService', () => {
     });
 
     describe('getAll', () => {
-        it.todo('should return a list of arses');
+        it('should return a list of 100 arses', async () => {
+            const result = await service.getAll();
+            expect(result.length).toEqual(100);
+            expect(result[11].id).toEqual(12);
+            expect(result[41].stamp).toEqual(expect.any(Date));
+        });
     });
 
     describe('create', () => {
@@ -99,14 +111,23 @@ describe('ClientArseService', () => {
     const service = new ClientArseService();
     const mock = new AxiosMockAdapter(axios);
 
+    beforeEach(() => {
+        mock.onGet('/api/footy/arse/1').reply(200, { arse: defaultArse });
+        mock.onGet('/api/footy/arse/-1').reply(404, null);
+        mock.onGet('/api/footy/arses').reply(200, arseList);
+    });
+
     afterEach(() => {
         mock.reset();
         jest.clearAllMocks();
     });
 
+    afterAll(() => {
+        mock.restore();
+    });
+
     describe('get', () => {
         it('should retrieve an arse with a valid id', async () => {
-            mock.onGet('/api/footy/arse/1').reply(200, { arse: defaultArse });
             const result = await service.get(1);
             expect(result).toEqual(({
                 ...defaultArse,
@@ -116,14 +137,18 @@ describe('ClientArseService', () => {
         });
 
         it('should return null when retrieving an arse with an invalid id', async () => {
-            mock.onGet('/api/footy/arse/-1').reply(404, null);
             const result = await service.get(-1);
             expect(result).toBeNull();
         });
     });
 
     describe('getAll', () => {
-        it.todo('should return a list of arses');
+        it('should return a list of 100 arses', async () => {
+            const result = await service.getAll();
+            expect(result.length).toEqual(100);
+            expect(result[11].id).toEqual(12);
+            expect(result[41].stamp).toEqual(expect.any(Date));
+        });
     });
 
     describe('create', () => {

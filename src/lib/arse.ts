@@ -142,8 +142,8 @@ export class ClientArseService {
     async getAll(): Promise<arse[] | null> {
         try {
             const response = await axios.get<arse[]>(`/api/footy/arses`);
-            response.data.forEach(arse => {
-                validateArse(arse);
+            response.data.forEach((arse, index) => {
+                response.data[index] = parseJSONArse(arse);
             });
             return response.data;
         } catch (error) {

@@ -1,5 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
+import debug from 'debug';
+
+const log = debug('footy:api');
 
 const prisma = new PrismaClient();
 
@@ -28,17 +31,18 @@ export const POST = async (req: NextRequest) => {
         },
     });
 
-    return NextResponse.json({
-        game_day,
-    });
+    return NextResponse.json(game_day);
 };
 
 export const GET = async () => {
-    const game_days = await prisma.game_day.findMany({});
+    try {
+        const game_days = await prisma.game_day.findMany({});
 
-    return NextResponse.json({
-        game_days,
-    });
+        return NextResponse.json(game_days);
+    } catch (error) {
+        log('Error in GET:', error);
+        return new NextResponse('Error fetching data', { status: 500 });
+    }
 };
 
 export const PUT = async (req: NextRequest) => {
@@ -70,9 +74,7 @@ export const PUT = async (req: NextRequest) => {
         },
     });
 
-    return NextResponse.json({
-        game_day,
-    });
+    return NextResponse.json(game_day);
 };
 
 export const DELETE = async (req: NextRequest) => {
@@ -86,14 +88,10 @@ export const DELETE = async (req: NextRequest) => {
     });
 
     if (!game_day) {
-        return NextResponse.json(
-            {
-                message: "Error",
-            },
-            {
-                status: 500,
-            }
-        );
+        return NextResponse.json({
+            message: "Error",
+            status: 500,
+        });
     }
 
     return NextResponse.json({});

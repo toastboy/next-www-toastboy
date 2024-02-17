@@ -18,7 +18,7 @@ async function fetchData(baseURL: string, table: string) {
 }
 
 async function main() {
-    const baseURL = "http://localhost:3000/api/footy/";
+    const baseURL = "http://localhost:3000/api/footy";
 
     await fetchData(baseURL, "arses");
     await fetchData(baseURL, "club_supporters");

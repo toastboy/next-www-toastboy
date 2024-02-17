@@ -32,17 +32,13 @@ export const POST = async (req: NextRequest) => {
         },
     });
 
-    return NextResponse.json({
-        outcome,
-    });
+    return NextResponse.json(outcome);
 };
 
 export const GET = async () => {
     const outcomes = await prisma.outcome.findMany({});
 
-    return NextResponse.json({
-        outcomes,
-    });
+    return NextResponse.json(outcomes);
 };
 
 // TODO: These won't work because it seems the schema doesn't express that the
@@ -81,9 +77,7 @@ export const GET = async () => {
 //         },
 //     });
 
-//     return NextResponse.json({
-//         outcome,
-//     });
+//     return NextResponse.json(outcome);
 // };
 
 // export const DELETE = async (req: NextRequest) => {
@@ -97,14 +91,10 @@ export const GET = async () => {
 //     });
 
 //     if (!outcome) {
-//         return NextResponse.json(
-//             {
-//                 message: "Error",
-//             },
-//             {
-//                 status: 500,
-//             }
-//         );
+//         return NextResponse.json({
+//             message: "Error",
+//             status: 500,
+//         });
 //     }
 
 //     return NextResponse.json({});

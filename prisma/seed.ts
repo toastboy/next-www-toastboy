@@ -30,6 +30,7 @@ async function processJsonData<T>(
         create: (data: { data: T }) => Prisma.PrismaPromise<T>;
     }
 ) {
+    console.log("Starting: " + fileName);
     const dataItems: T[] = await downloadAndParseJson(containerClient, fileName) as T[];
     for (const item of dataItems) {
         await prismaModel.create({ data: item });
@@ -89,8 +90,8 @@ async function main() {
     await prisma.player.deleteMany();
 
     // Now we must populate the tables in the reverse of the order above
-    await processJsonData<player>(containerClient, "players.json", prisma.player);
     await processJsonData<game_day>(containerClient, "game_days.json", prisma.game_day);
+    await processJsonData<player>(containerClient, "players.json", prisma.player);
     await processJsonData<standings>(containerClient, "standings.json", prisma.standings);
     await processJsonData<outcome>(containerClient, "outcomes.json", prisma.outcome);
     await processJsonData<invitation>(containerClient, "invitations.json", prisma.invitation);

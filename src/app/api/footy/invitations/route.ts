@@ -18,17 +18,13 @@ export const POST = async (req: NextRequest) => {
         },
     });
 
-    return NextResponse.json({
-        invitation,
-    });
+    return NextResponse.json(invitation);
 };
 
 export const GET = async () => {
     const invitations = await prisma.invitation.findMany({});
 
-    return NextResponse.json({
-        invitations,
-    });
+    return NextResponse.json(invitations);
 };
 
 export const PUT = async (req: NextRequest) => {
@@ -50,9 +46,7 @@ export const PUT = async (req: NextRequest) => {
         },
     });
 
-    return NextResponse.json({
-        invitation,
-    });
+    return NextResponse.json(invitation);
 };
 
 export const DELETE = async (req: NextRequest) => {
@@ -66,14 +60,10 @@ export const DELETE = async (req: NextRequest) => {
     });
 
     if (!invitation) {
-        return NextResponse.json(
-            {
-                message: "Error",
-            },
-            {
-                status: 500,
-            }
-        );
+        return NextResponse.json({
+            message: "Error",
+            status: 500,
+        });
     }
 
     return NextResponse.json({});

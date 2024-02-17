@@ -16,7 +16,7 @@ export const POST = async (req: NextRequest) => {
         points,
         averages,
         stalwart,
-        speedy_seconds,
+        speedy,
         pub,
         rank_points,
         rank_averages,
@@ -38,7 +38,7 @@ export const POST = async (req: NextRequest) => {
             points,
             averages,
             stalwart,
-            speedy_seconds,
+            speedy,
             pub,
             rank_points,
             rank_averages,
@@ -48,17 +48,13 @@ export const POST = async (req: NextRequest) => {
         },
     });
 
-    return NextResponse.json({
-        standings,
-    });
+    return NextResponse.json(standings);
 };
 
 export const GET = async () => {
     const standingss = await prisma.standings.findMany({});
 
-    return NextResponse.json({
-        standingss,
-    });
+    return NextResponse.json(standingss);
 };
 
 // TODO: Another one where this should have some kind of composite unique index
@@ -112,9 +108,7 @@ export const GET = async () => {
 //         },
 //     });
 
-//     return NextResponse.json({
-//         standings,
-//     });
+//     return NextResponse.json(standings);
 // };
 
 // export const DELETE = async (req: NextRequest) => {
@@ -128,14 +122,10 @@ export const GET = async () => {
 //     });
 
 //     if (!standings) {
-//         return NextResponse.json(
-//             {
-//                 message: "Error",
-//             },
-//             {
-//                 status: 500,
-//             }
-//         );
+//         return NextResponse.json({
+//             message: "Error",
+//             status: 500,
+//         });
 //     }
 
 //     return NextResponse.json({});

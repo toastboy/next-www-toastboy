@@ -18,17 +18,13 @@ export const POST = async (req: NextRequest) => {
         },
     });
 
-    return NextResponse.json({
-        club_supporter,
-    });
+    return NextResponse.json(club_supporter);
 };
 
 export const GET = async () => {
     const club_supporters = await prisma.club_supporter.findMany({});
 
-    return NextResponse.json({
-        club_supporters,
-    });
+    return NextResponse.json(club_supporters);
 };
 
 export const PUT = async (req: NextRequest) => {
@@ -50,9 +46,7 @@ export const PUT = async (req: NextRequest) => {
         },
     });
 
-    return NextResponse.json({
-        club_supporter,
-    });
+    return NextResponse.json(club_supporter);
 };
 
 export const DELETE = async (req: NextRequest) => {
@@ -66,14 +60,10 @@ export const DELETE = async (req: NextRequest) => {
     });
 
     if (!club_supporter) {
-        return NextResponse.json(
-            {
-                message: "Error",
-            },
-            {
-                status: 500,
-            }
-        );
+        return NextResponse.json({
+            message: "Error",
+            status: 500,
+        });
     }
 
     return NextResponse.json({});

@@ -22,17 +22,13 @@ export const POST = async (req: NextRequest) => {
         },
     });
 
-    return NextResponse.json({
-        club,
-    });
+    return NextResponse.json(club);
 };
 
 export const GET = async () => {
     const clubs = await prisma.club.findMany({});
 
-    return NextResponse.json({
-        clubs,
-    });
+    return NextResponse.json(clubs);
 };
 
 export const PUT = async (req: NextRequest) => {
@@ -58,9 +54,7 @@ export const PUT = async (req: NextRequest) => {
         },
     });
 
-    return NextResponse.json({
-        club,
-    });
+    return NextResponse.json(club);
 };
 
 export const DELETE = async (req: NextRequest) => {
@@ -74,14 +68,10 @@ export const DELETE = async (req: NextRequest) => {
     });
 
     if (!club) {
-        return NextResponse.json(
-            {
-                message: "Error",
-            },
-            {
-                status: 500,
-            }
-        );
+        return NextResponse.json({
+            message: "Error",
+            status: 500,
+        });
     }
 
     return NextResponse.json({});

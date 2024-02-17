@@ -16,17 +16,13 @@ export const POST = async (req: NextRequest) => {
         },
     });
 
-    return NextResponse.json({
-        country,
-    });
+    return NextResponse.json(country);
 };
 
 export const GET = async () => {
     const countrys = await prisma.country.findMany({});
 
-    return NextResponse.json({
-        countrys,
-    });
+    return NextResponse.json(countrys);
 };
 
 export const PUT = async (req: NextRequest) => {
@@ -46,9 +42,7 @@ export const PUT = async (req: NextRequest) => {
         },
     });
 
-    return NextResponse.json({
-        country,
-    });
+    return NextResponse.json(country);
 };
 
 export const DELETE = async (req: NextRequest) => {
@@ -62,14 +56,10 @@ export const DELETE = async (req: NextRequest) => {
     });
 
     if (!country) {
-        return NextResponse.json(
-            {
-                message: "Error",
-            },
-            {
-                status: 500,
-            }
-        );
+        return NextResponse.json({
+            message: "Error",
+            status: 500,
+        });
     }
 
     return NextResponse.json({});

@@ -144,27 +144,32 @@ model player {
 }
 
 model standings {
-  player         Int      @default(0)
-  table_year     Int
-  game_day       Int      @default(0)
-  responses      Int?     @default(0)
-  P              Int?     @default(0)
-  W              Int?     @default(0)
-  D              Int?     @default(0)
-  L              Int?     @default(0)
-  points         Int?     @default(0)
-  averages       Decimal? @default(0.000) @db.Decimal(10, 3)
-  stalwart       Int?     @default(0)
-  pub            Int?     @default(0)
-  rank_points    Int?
-  rank_averages  Int?
-  rank_stalwart  Int?
-  rank_speedy    Int?
-  rank_pub       Int?
-  speedy_seconds Int?
+  player        Int      @default(0)
+  table_year    Int
+  game_day      Int      @default(0)
+  responses     Int?     @default(0)
+  P             Int?     @default(0)
+  W             Int?     @default(0)
+  D             Int?     @default(0)
+  L             Int?     @default(0)
+  points        Int?     @default(0)
+  averages      Decimal? @default(0.000) @db.Decimal(10, 3)
+  stalwart      Int?     @default(0)
+  pub           Int?     @default(0)
+  rank_points   Int?
+  rank_averages Int?
+  rank_stalwart Int?
+  rank_speedy   Int?
+  rank_pub      Int?
+  speedy        Int?
 
   @@id([player, table_year, game_day])
   @@index([game_day], map: "standings_ibfk_2")
+}
+
+model misc {
+  id            Int       @id @default(autoincrement())
+  last_game_mod DateTime? @db.DateTime(0)
 }
 
 enum team {

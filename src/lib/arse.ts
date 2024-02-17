@@ -9,25 +9,11 @@ const log = debug('footy:api');
 interface ArseInterface {
     get(id: number): Promise<arse | null>;
     getAll(): Promise<arse[] | null>;
-    create(data: ArseData): Promise<arse | null>;
-    upsert(data: ArseData): Promise<arse | null>;
+    create(data: arse): Promise<arse | null>;
+    upsert(data: arse): Promise<arse | null>;
     delete(id: number): Promise<void>;
     deleteAll(): Promise<void>;
 }
-
-type ArseData = {
-    id?: number;
-    stamp?: Date;
-    player: number;
-    rater: number;
-    in_goal: number;
-    running: number;
-    shooting: number;
-    passing: number;
-    ball_skill: number;
-    attacking: number;
-    defending: number;
-};
 
 /**
  * Take a generic object from a JSON API response and turn it into an arse
@@ -46,8 +32,45 @@ function parseJSONArse(json: object) {
  * @param {arse} arse The arse to validate
  * @returns the validated arse
  */
-function validateArse(arse: arse) {
-    // TODO: Add some arse validation steps
+function validateArse(arse: arse): arse {
+    const now = new Date();
+
+    if (!arse.id || !Number.isInteger(arse.id) || arse.id < 0) {
+        throw new Error('Invalid id value');
+    }
+    if (!arse.stamp || isNaN(arse.stamp.getTime()) || arse.stamp > now) {
+        throw new Error('Invalid stamp value');
+    }
+
+    if (!arse.player || !Number.isInteger(arse.player)) {
+        throw new Error('Invalid player value');
+    }
+    if (!arse.rater || !Number.isInteger(arse.rater)) {
+        throw new Error('Invalid rater value');
+    }
+
+    if (!arse.in_goal || !Number.isInteger(arse.in_goal) || arse.in_goal < 0 || arse.in_goal > 10) {
+        throw new Error('Invalid in_goal value');
+    }
+    if (!arse.running || !Number.isInteger(arse.running) || arse.running < 0 || arse.running > 10) {
+        throw new Error('Invalid running value');
+    }
+    if (!arse.shooting || !Number.isInteger(arse.shooting) || arse.shooting < 0 || arse.shooting > 10) {
+        throw new Error('Invalid shooting value');
+    }
+    if (!arse.passing || !Number.isInteger(arse.passing) || arse.passing < 0 || arse.passing > 10) {
+        throw new Error('Invalid passing value');
+    }
+    if (!arse.ball_skill || !Number.isInteger(arse.ball_skill) || arse.ball_skill < 0 || arse.ball_skill > 10) {
+        throw new Error('Invalid ball_skill value');
+    }
+    if (!arse.attacking || !Number.isInteger(arse.attacking) || arse.attacking < 0 || arse.attacking > 10) {
+        throw new Error('Invalid attacking value');
+    }
+    if (!arse.defending || !Number.isInteger(arse.defending) || arse.defending < 0 || arse.defending > 10) {
+        throw new Error('Invalid defending value');
+    }
+
     return arse;
 }
 
@@ -79,7 +102,7 @@ export class ServerArseService {
      * @param data The properties to add to the arse
      * @returns A promise that resolves to the newly-created arse
      */
-    async create(data: ArseData): Promise<arse | null> {
+    async create(data: arse): Promise<arse | null> {
         return await prisma.arse.create({
             data: data
         });
@@ -90,7 +113,7 @@ export class ServerArseService {
      * @param data The properties to add to the arse
      * @returns A promise that resolves to the updated or created arse
      */
-    async upsert(data: ArseData): Promise<arse | null> {
+    async upsert(data: arse): Promise<arse | null> {
         return await prisma.arse.upsert({
             where: { id: data.id },
             update: data,
@@ -128,7 +151,7 @@ export class ClientArseService {
     async get(id: number): Promise<arse | null> {
         try {
             const response = await axios.get(`/api/footy/arse/${id}`);
-            return parseJSONArse(response.data["arse"]);
+            return parseJSONArse(response.data);
         } catch (error) {
             log('Error fetching arse:', error);
             return null;
@@ -157,7 +180,7 @@ export class ClientArseService {
      * @param data The properties to add to the arse
      * @returns A promise that resolves to the newly-created arse
      */
-    async create(data: ArseData): Promise<arse | null> {
+    async create(data: arse): Promise<arse | null> {
         try {
             const response = await axios.post<arse>(`/api/footy/arses`, data);
             return validateArse(response.data);
@@ -172,7 +195,7 @@ export class ClientArseService {
      * @param data The properties to add to the arse
      * @returns A promise that resolves to the updated or created arse
      */
-    async upsert(data: ArseData): Promise<arse | null> {
+    async upsert(data: arse): Promise<arse | null> {
         try {
             const response = await axios.put<arse>(`/api/footy/arses`, data);
             return validateArse(response.data);

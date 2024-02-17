@@ -112,7 +112,7 @@ describe('ClientArseService', () => {
     const mock = new AxiosMockAdapter(axios);
 
     beforeEach(() => {
-        mock.onGet('/api/footy/arse/1').reply(200, { arse: defaultArse });
+        mock.onGet('/api/footy/arse/1').reply(200, defaultArse);
         mock.onGet('/api/footy/arse/-1').reply(404, null);
         mock.onGet('/api/footy/arses').reply(200, arseList);
     });

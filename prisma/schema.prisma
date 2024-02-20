@@ -167,11 +167,6 @@ model standings {
   @@index([game_day], map: "standings_ibfk_2")
 }
 
-model misc {
-  id            Int       @id @default(autoincrement())
-  last_game_mod DateTime? @db.DateTime(0)
-}
-
 enum team {
   A
   B

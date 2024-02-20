@@ -187,7 +187,7 @@ CREATE TABLE `standings` (
     `rank_stalwart` INTEGER NULL,
     `rank_speedy` INTEGER NULL,
     `rank_pub` INTEGER NULL,
-    `speedy_seconds` INTEGER NULL,
+    `speedy` INTEGER NULL,
 
     INDEX `standings_ibfk_2`(`game_day`),
     PRIMARY KEY (`player`, `table_year`, `game_day`)

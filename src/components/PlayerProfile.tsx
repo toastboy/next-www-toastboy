@@ -18,7 +18,7 @@ export default function PlayerProfile({
     useEffect(() => {
         async function fetchArse() {
             const arse: arse = await arseService.get(1);
-            setArse(arse.rater.toString());
+            setArse(arse.raterId.toString());
         }
         fetchArse();
     }, []); // Empty dependency array means this runs once on mount

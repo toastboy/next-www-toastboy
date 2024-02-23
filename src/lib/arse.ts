@@ -42,10 +42,10 @@ function validateArse(arse: arse): arse {
         throw new Error('Invalid stamp value');
     }
 
-    if (!arse.player || !Number.isInteger(arse.player)) {
+    if (!arse.playerId || !Number.isInteger(arse.playerId)) {
         throw new Error('Invalid player value');
     }
-    if (!arse.rater || !Number.isInteger(arse.rater)) {
+    if (!arse.raterId || !Number.isInteger(arse.raterId)) {
         throw new Error('Invalid rater value');
     }
 

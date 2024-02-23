@@ -9,10 +9,9 @@ datasource db {
 }
 
 model arse {
-  id         Int      @id @default(autoincrement())
-  stamp      DateTime @default(now()) @db.Timestamp(0)
-  player     Int?
-  rater      Int?
+  id    Int      @id @default(autoincrement())
+  stamp DateTime @default(now()) @db.Timestamp(0)
+
   in_goal    Int?
   running    Int?
   shooting   Int?
@@ -21,7 +20,15 @@ model arse {
   attacking  Int?
   defending  Int?
 
-  @@index([player], map: "player")
+  playerId Int
+  raterId  Int
+
+  player player @relation("player", fields: [playerId], references: [id])
+  rater  player @relation("rater", fields: [raterId], references: [id])
+
+  @@unique([playerId, raterId])
+  @@index([playerId])
+  @@index([raterId])
 }
 
 model club {
@@ -141,6 +148,9 @@ model player {
   anonymous     Int?      @db.TinyInt
   goalie        Int?      @db.TinyInt
   mugshot       String?   @db.VarChar(20)
+
+  ratingsOfPlayer arse[] @relation("player")
+  ratingsByPlayer arse[] @relation("rater")
 }
 
 model standings {

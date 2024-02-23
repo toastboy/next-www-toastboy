@@ -18,8 +18,8 @@ jest.mock('lib/prisma', () => ({
 const defaultArse: arse = {
     id: 1,
     stamp: new Date(),
-    player: 12,
-    rater: 12,
+    playerId: 12,
+    raterId: 12,
     in_goal: 10,
     running: 10,
     shooting: 10,

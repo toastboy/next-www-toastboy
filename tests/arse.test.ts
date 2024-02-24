@@ -26,6 +26,11 @@ const defaultArse: arse = {
     defending: 10,
 };
 
+const invalidArse: arse = {
+    ...defaultArse,
+    playerId: -1,
+};
+
 const arseList: arse[] = Array.from({ length: 100 }, (_, index) => ({
     ...defaultArse,
     playerId: index % 10 + 1,
@@ -55,8 +60,40 @@ describe('ArseService', () => {
                 return Promise.reject(new Error('Arse already exists'));
             }
             else {
-                return args.data;
+                return Promise.resolve(args.data);
             }
+        });
+
+        (prisma.arse.upsert as jest.Mock).mockImplementation((args: {
+            where: {
+                playerId_raterId: {
+                    playerId: number,
+                    raterId: number
+                }
+            },
+            update: arse,
+            create: arse,
+        }) => {
+            const arse = arseList.find((arse) => arse.playerId === args.where.playerId_raterId.playerId && arse.raterId === args.where.playerId_raterId.raterId);
+
+            if (arse) {
+                return Promise.resolve(args.update);
+            }
+            else {
+                return Promise.resolve(args.create);
+            }
+        });
+
+        (prisma.arse.delete as jest.Mock).mockImplementation((args: {
+            where: {
+                playerId_raterId: {
+                    playerId: number,
+                    raterId: number
+                }
+            }
+        }) => {
+            const arse = arseList.find((arse) => arse.playerId === args.where.playerId_raterId.playerId && arse.raterId === args.where.playerId_raterId.raterId);
+            return Promise.resolve(arse ? arse : null);
         });
     });
 
@@ -155,10 +192,7 @@ describe('ArseService', () => {
         });
 
         it('should refuse to create an arse with invalid data', async () => {
-            await expect(arseService.create({
-                ...defaultArse,
-                playerId: -1,
-            })).rejects.toThrow();
+            await expect(arseService.create(invalidArse)).rejects.toThrow();
         });
 
         it('should refuse to create an arse that has the same player ID and rater ID as an existing one', async () => {
@@ -171,19 +205,44 @@ describe('ArseService', () => {
     });
 
     describe('upsert', () => {
-        it.todo('should create an arse where the id did not exist');
-        it.todo('should update an existing arse where the id already existed');
-        it.todo('should refuse to create an arse with invalid data where the id did not exist');
-        it.todo('should refuse to update an arse with invalid data where the id already existed');
+        it('should create an arse where the combination of player ID and rater ID did not exist', async () => {
+            const result = await arseService.upsert(defaultArse);
+            expect(result).toEqual(defaultArse);
+        });
+
+        it('should update an existing arse where the combination of player ID and rater ID already existed', async () => {
+            const updatedArse = {
+                ...defaultArse,
+                playerId: 6,
+                raterId: 16,
+                in_goal: 7,
+            };
+            const result = await arseService.upsert(updatedArse);
+            expect(result).toEqual(updatedArse);
+        });
+
+        it('should refuse to create an arse with invalid data where the combination of player ID and rater ID did not exist', async () => {
+            await expect(arseService.create(invalidArse)).rejects.toThrow();
+        });
+
+        it('should refuse to update an arse with invalid data where the combination of player ID and rater ID already existed', async () => {
+            await expect(arseService.create(invalidArse)).rejects.toThrow();
+        });
     });
 
     describe('delete', () => {
-        it.todo('should delete an existing arse');
-        it.todo('should silently return when asked to delete an arse that does not exist');
+        it('should delete an existing arse', async () => {
+            await arseService.delete(6, 16);
+        });
+
+        it('should silently return when asked to delete an arse that does not exist', async () => {
+            await arseService.delete(7, 16);
+        });
     });
 
     describe('deleteAll', () => {
-        it.todo('should delete all arses');
-        it.todo('should silently return if there are no arses to delete');
+        it('should delete all arses', async () => {
+            await arseService.deleteAll();
+        });
     });
 });

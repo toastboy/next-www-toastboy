@@ -47,6 +47,17 @@ describe('ArseService', () => {
             const arse = arseList.find((arse) => arse.playerId === args.where.playerId_raterId.playerId && arse.raterId === args.where.playerId_raterId.raterId);
             return Promise.resolve(arse ? arse : null);
         });
+
+        (prisma.arse.create as jest.Mock).mockImplementation((args: { data: arse }) => {
+            const arse = arseList.find((arse) => arse.playerId === args.data.playerId && arse.raterId === args.data.raterId);
+
+            if (arse) {
+                return Promise.reject(new Error('Arse already exists'));
+            }
+            else {
+                return args.data;
+            }
+        });
     });
 
     afterEach(() => {
@@ -138,8 +149,25 @@ describe('ArseService', () => {
     });
 
     describe('create', () => {
-        it.todo('should create an arse');
-        it.todo('should refuse to create an arse with invalid data');
+        it('should create an arse', async () => {
+            const result = await arseService.create(defaultArse);
+            expect(result).toEqual(defaultArse);
+        });
+
+        it('should refuse to create an arse with invalid data', async () => {
+            await expect(arseService.create({
+                ...defaultArse,
+                playerId: -1,
+            })).rejects.toThrow();
+        });
+
+        it('should refuse to create an arse that has the same player ID and rater ID as an existing one', async () => {
+            await expect(arseService.create({
+                ...defaultArse,
+                playerId: 6,
+                raterId: 16,
+            })).rejects.toThrow();
+        });
     });
 
     describe('upsert', () => {

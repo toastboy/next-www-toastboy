@@ -18,10 +18,10 @@ export class ArseService {
             throw new Error(`Invalid stamp value: ${arse.stamp}`);
         }
 
-        if (!arse.playerId || !Number.isInteger(arse.playerId)) {
+        if (!arse.playerId || !Number.isInteger(arse.playerId) || arse.playerId < 0) {
             throw new Error(`Invalid player value: ${arse.playerId}`);
         }
-        if (!arse.raterId || !Number.isInteger(arse.raterId)) {
+        if (!arse.raterId || !Number.isInteger(arse.raterId) || arse.raterId < 0) {
             throw new Error(`Invalid rater value: ${arse.raterId}`);
         }
 

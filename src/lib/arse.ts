@@ -13,9 +13,6 @@ export class ArseService {
     validate(arse: arse): arse {
         const now = new Date();
 
-        if (!arse.id || !Number.isInteger(arse.id) || arse.id < 0) {
-            throw new Error(`Invalid id value: ${arse.id}`);
-        }
         if (!arse.stamp || isNaN(arse.stamp.getTime()) || arse.stamp > now) {
             throw new Error(`Invalid stamp value: ${arse.stamp}`);
         }
@@ -53,25 +50,6 @@ export class ArseService {
     }
 
     /**
-     * Gets a single arse by id
-     * @param id The numeric ID for the arse
-     * @returns A promise that resolves to the arse or undefined if none was
-     * found
-     */
-    async get(id: number): Promise<arse | null> {
-        try {
-            return prisma.arse.findUnique({
-                where: {
-                    id: id
-                },
-            });
-        } catch (error) {
-            log(`Error fetching arse: ${error}`);
-            throw error;
-        }
-    }
-
-    /**
      * Gets all arses at once
      * @returns A promise that resolves to all arses
      */
@@ -85,9 +63,45 @@ export class ArseService {
     }
 
     /**
-     * Creates an arse
-     * @param data The properties to add to the arse
-     * @returns A promise that resolves to the newly-created arse
+     * Retrieves arses by player ID.
+     * @param playerId - The ID of the player.
+     * @returns A promise that resolves to an array of arses or null.
+     */
+    async getByPlayer(playerId: number): Promise<arse[] | null> {
+        try {
+            return prisma.arse.findMany({
+                where: {
+                    playerId: playerId
+                },
+            });
+        } catch (error) {
+            log(`Error fetching arses by player: ${error}`);
+            throw error;
+        }
+    }
+
+    /**
+     * Retrieves arses by rater ID.
+     * @param playerId - The ID of the rater.
+     * @returns A promise that resolves to an array of arses or null.
+     */
+    async getByRater(raterId: number): Promise<arse[] | null> {
+        try {
+            return prisma.arse.findMany({
+                where: {
+                    raterId: raterId
+                },
+            });
+        } catch (error) {
+            log(`Error fetching arses by rater: ${error}`);
+            throw error;
+        }
+    }
+
+    /**
+     * Creates a new arse.
+     * @param data The data for the arse.
+     * @returns A promise that resolves to the created arse, or null if an error occurs.
      */
     async create(data: arse): Promise<arse | null> {
         try {
@@ -101,14 +115,21 @@ export class ArseService {
     }
 
     /**
-     * Updates an arse if it exists, or creates it if not
-     * @param data The properties to add to the arse
-     * @returns A promise that resolves to the updated or created arse
+     * Upserts an arse.
+     *
+     * @param data The data to be upserted.
+     * @returns A promise that resolves to the upserted arse, or null if the upsert failed.
+     * @throws An error if the upsert operation encounters an error.
      */
     async upsert(data: arse): Promise<arse | null> {
         try {
             return await prisma.arse.upsert({
-                where: { id: data.id },
+                where: {
+                    playerId_raterId: {
+                        playerId: data.playerId,
+                        raterId: data.raterId
+                    }
+                },
                 update: data,
                 create: data,
             });
@@ -119,14 +140,21 @@ export class ArseService {
     }
 
     /**
-     * Deletes an arse. If no such arse exists, that's not an error.
-     * @param id The ID of the arse to delete
+     * Deletes an arse.
+     *
+     * @param playerId - The ID of the player.
+     * @param raterId - The ID of the rater.
+     * @returns A Promise that resolves to void.
+     * @throws If there is an error deleting the arse record.
      */
-    async delete(id: number): Promise<void> {
+    async delete(playerId: number, raterId: number): Promise<void> {
         try {
             await prisma.arse.delete({
                 where: {
-                    id: id,
+                    playerId_raterId: {
+                        playerId: playerId,
+                        raterId: raterId
+                    }
                 },
             });
         } catch (error) {
@@ -136,7 +164,9 @@ export class ArseService {
     }
 
     /**
-     * Deletes all arses
+     * Deletes all arses.
+     * @returns A promise that resolves when all arses are deleted.
+     * @throws If there is an error deleting the arses.
      */
     async deleteAll(): Promise<void> {
         try {

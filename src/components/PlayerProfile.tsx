@@ -1,7 +1,7 @@
 import { player } from '@prisma/client';
 import { playerService } from "lib/player";
 import PlayerMugshot from 'components/PlayerMugshot';
-import arseService from 'lib/arse';
+import PlayerArse from 'components/PlayerArse';
 
 export default async function PlayerProfile({
     player,
@@ -10,15 +10,12 @@ export default async function PlayerProfile({
 }) {
     const { id, login, first_name, last_name, email, born } = player;
     const born_string = born == null ? "Unknown" : born.toLocaleDateString('sv');
-    const arse = await arseService.get(1);
 
     return (
         <div className="w-[600px] rounded overflow-hidden shadow-lg" key={id}>
             <h1 className="text-6xl font-bold mb-4 text-center">{playerService.getName(player)}</h1>
             <PlayerMugshot player={player} />
-            <div className="px-6 py-4">
-                <p className="text-gray-900 text-xl">The Arse: {arse.raterId}</p>
-            </div>
+            <PlayerArse player={player} />
             <div className="px-6 py-4">
                 <div className="font-bold text-xl mb-2">{first_name} {last_name}</div>
                 <p className="text-gray-700 text-base">{email}</p>

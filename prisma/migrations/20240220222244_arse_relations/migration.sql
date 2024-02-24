@@ -10,7 +10,7 @@
 */
 -- DropIndex
 -- Added this line:
-ALTER TABLE `arse` DROP FOREIGN KEY `arse_ibfk_1`;
+ALTER TABLE `arse` DROP FOREIGN KEY IF EXISTS `arse_ibfk_1`;
 DROP INDEX `player` ON `arse`;
 
 -- AlterTable

@@ -28,7 +28,7 @@ const defaultArse: arse = {
 
 const arseList: arse[] = Array.from({ length: 100 }, (_, index) => ({
     ...defaultArse,
-    playerId: (index + 1) % 10,
+    playerId: index % 10 + 1,
     raterId: index + 1,
 }));
 
@@ -36,20 +36,38 @@ describe('ArseService', () => {
     beforeEach(() => {
         jest.clearAllMocks();
 
-        // (prisma.arse.findUnique as jest.Mock).mockImplementation((args: { where: { id: number } }) => {
-        //     if (args.where.id > 0 && args.where.id < 101) {
-        //         return Promise.resolve(({
-        //             ...defaultArse,
-        //             id: args.where.id
-        //         } as arse));
-        //     }
-
-        //     return Promise.resolve(null);
-        // });
+        (prisma.arse.findUnique as jest.Mock).mockImplementation((args: {
+            where: {
+                playerId_raterId: {
+                    playerId: number,
+                    raterId: number
+                }
+            }
+        }) => {
+            const arse = arseList.find((arse) => arse.playerId === args.where.playerId_raterId.playerId && arse.raterId === args.where.playerId_raterId.raterId);
+            return Promise.resolve(arse ? arse : null);
+        });
     });
 
     afterEach(() => {
         jest.clearAllMocks();
+    });
+
+    describe('get', () => {
+        it('should retrieve the correct arse for player 6, rater 16', async () => {
+            const result = await arseService.get(6, 16);
+            expect(result).toEqual({
+                ...defaultArse,
+                playerId: 6,
+                raterId: 16,
+                stamp: expect.any(Date)
+            } as arse);
+        });
+
+        it('should return null for player 7, rater 16', async () => {
+            const result = await arseService.get(7, 16);
+            expect(result).toBeNull();
+        });
     });
 
     describe('getByPlayer', () => {

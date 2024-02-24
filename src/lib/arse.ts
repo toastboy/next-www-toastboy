@@ -6,9 +6,10 @@ const log = debug('footy:api');
 
 export class ArseService {
     /**
-     * Validate an arse: throws an error if there's something wrong
+     * Validate an arse
      * @param {arse} arse The arse to validate
      * @returns the validated arse
+     * @throws An error if the arse is invalid.
      */
     validate(arse: arse): arse {
         const now = new Date();
@@ -50,8 +51,32 @@ export class ArseService {
     }
 
     /**
-     * Gets all arses at once
-     * @returns A promise that resolves to all arses
+     * Retrieves an arse for the given player ID rated by rater ID.
+     * @param playerId - The ID of the player.
+     * @param raterId - The ID of the rater.
+     * @returns A promise that resolves to the "arse" object if found, otherwise null.
+     * @throws An error if there is a failure.
+     */
+    async get(playerId: number, raterId: number): Promise<arse | null> {
+        try {
+            return prisma.arse.findUnique({
+                where: {
+                    playerId_raterId: {
+                        playerId: playerId,
+                        raterId: raterId
+                    }
+                },
+            });
+        } catch (error) {
+            log(`Error fetching arses: ${error}`);
+            throw error;
+        }
+    }
+
+    /**
+     * Retrieves all arses.
+     * @returns A promise that resolves to an array of arses or null if an error occurs.
+     * @throws An error if there is a failure.
      */
     async getAll(): Promise<arse[] | null> {
         try {
@@ -66,6 +91,7 @@ export class ArseService {
      * Retrieves arses by player ID.
      * @param playerId - The ID of the player.
      * @returns A promise that resolves to an array of arses or null.
+     * @throws An error if there is a failure.
      */
     async getByPlayer(playerId: number): Promise<arse[] | null> {
         try {
@@ -84,6 +110,7 @@ export class ArseService {
      * Retrieves arses by rater ID.
      * @param playerId - The ID of the rater.
      * @returns A promise that resolves to an array of arses or null.
+     * @throws An error if there is a failure.
      */
     async getByRater(raterId: number): Promise<arse[] | null> {
         try {
@@ -100,8 +127,9 @@ export class ArseService {
 
     /**
      * Creates a new arse.
-     * @param data The data for the arse.
+     * @param data The data for the new arse.
      * @returns A promise that resolves to the created arse, or null if an error occurs.
+     * @throws An error if there is a failure.
      */
     async create(data: arse): Promise<arse | null> {
         try {
@@ -116,10 +144,9 @@ export class ArseService {
 
     /**
      * Upserts an arse.
-     *
      * @param data The data to be upserted.
      * @returns A promise that resolves to the upserted arse, or null if the upsert failed.
-     * @throws An error if the upsert operation encounters an error.
+     * @throws An error if there is a failure.
      */
     async upsert(data: arse): Promise<arse | null> {
         try {
@@ -141,11 +168,10 @@ export class ArseService {
 
     /**
      * Deletes an arse.
-     *
      * @param playerId - The ID of the player.
      * @param raterId - The ID of the rater.
      * @returns A Promise that resolves to void.
-     * @throws If there is an error deleting the arse record.
+     * @throws An error if there is a failure.
      */
     async delete(playerId: number, raterId: number): Promise<void> {
         try {
@@ -166,7 +192,7 @@ export class ArseService {
     /**
      * Deletes all arses.
      * @returns A promise that resolves when all arses are deleted.
-     * @throws If there is an error deleting the arses.
+     * @throws An error if there is a failure.
      */
     async deleteAll(): Promise<void> {
         try {

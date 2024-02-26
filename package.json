@@ -7,7 +7,8 @@
     "dev": "next dev",
     "build": "npx prisma generate && DEBUG=app:* next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "importlivedb": "pushd src/lib/importlivedb && npx ts-node --compiler-options '{\"module\":\"CommonJS\"}' importlivedb.ts && popd"
   },
   "dependencies": {
     "@azure/identity": "^4.0.1",

@@ -4,6 +4,8 @@ import prisma from '../prisma';
 import path from "path";
 import dotenv from 'dotenv';
 import fs from 'fs';
+import { ClientSecretCredential } from "@azure/identity";
+import { BlobServiceClient } from "@azure/storage-blob";
 
 /**
  * Imports a MySQL backup file and runs migrations to set up the database
@@ -19,6 +21,19 @@ import fs from 'fs';
  */
 async function importBackup(): Promise<void> {
     try {
+        const tables = new Map<string, string>([
+            ['arse', 'arses'],
+            ['club_supporter', 'club_supporters'],
+            ['club', 'clubs'],
+            ['country', 'countries'],
+            ['game_chat', 'game_chats'],
+            ['game_day', 'game_days'],
+            ['nationality', 'nationalities'],
+            ['outcome', 'outcomes'],
+            ['player', 'players'],
+            ['standings', 'standings']
+        ]);
+
         // Load the .env file into process.env
         dotenv.config();
 
@@ -47,6 +62,22 @@ async function importBackup(): Promise<void> {
             throw new Error('MYSQL_DATABASE undefined');
         }
 
+        if (!process.env.AZURE_TENANT_ID) {
+            throw new Error('AZURE_TENANT_ID undefined');
+        }
+        if (!process.env.AZURE_CLIENT_ID) {
+            throw new Error('AZURE_CLIENT_ID undefined');
+        }
+        if (!process.env.AZURE_CLIENT_SECRET) {
+            throw new Error('AZURE_CLIENT_SECRET undefined');
+        }
+        if (!process.env.AZURE_STORAGE_ACCOUNT_NAME) {
+            throw new Error('AZURE_STORAGE_ACCOUNT_NAME undefined');
+        }
+        if (!process.env.AZURE_CONTAINER_NAME) {
+            throw new Error('AZURE_CONTAINER_NAME undefined');
+        }
+
         const prodMysqlUser = process.env.PROD_MYSQL_USER;
         const prodMysqlHost = process.env.PROD_MYSQL_HOST;
         const prodMysqlPassword = process.env.PROD_MYSQL_PASSWORD;
@@ -56,9 +87,23 @@ async function importBackup(): Promise<void> {
         const devMysqlPassword = process.env.DEV_MYSQL_PASSWORD;
 
         const mysqlDatabase = process.env.MYSQL_DATABASE;
+        const tenantId = process.env.AZURE_TENANT_ID;
+
+        const clientId = process.env.AZURE_CLIENT_ID;
+        const clientSecret = process.env.AZURE_CLIENT_SECRET;
+        const storageAccountName = process.env.AZURE_STORAGE_ACCOUNT_NAME;
+        const containerName = process.env.AZURE_CONTAINER_NAME;
+
+        const credentials = new ClientSecretCredential(tenantId, clientId, clientSecret);
+        const blobServiceClient = new BlobServiceClient(
+            `https://${storageAccountName}.blob.core.windows.net`,
+            credentials
+        );
+
+        const containerClient = blobServiceClient.getContainerClient(containerName);
 
         // Take a backup of the current live database
-        execSync(`mysqldump -h ${prodMysqlHost} -u ${prodMysqlUser} -p${prodMysqlPassword} ${mysqlDatabase} > /tmp/${mysqlDatabase}.sql`);
+        execSync(`mysqldump -h ${prodMysqlHost} -u ${prodMysqlUser} -p${prodMysqlPassword} ${mysqlDatabase} arse club club_supporter country diffs game_chat game_day invitation misc nationality outcome picker picker_teams player standings > /tmp/${mysqlDatabase}.sql`);
         console.log('Backup taken successfully.');
 
         // Get the list of directories in the migrations directory
@@ -81,24 +126,10 @@ async function importBackup(): Promise<void> {
             execSync(`cat ${migration} | mysql -h ${devMysqlHost} -u ${devMysqlUser} -p${devMysqlPassword} ${mysqlDatabase}`);
             console.log(`Migration ${migration} completed.`);
         }
-
         console.log('All migrations completed.');
 
         // Write each table in ${mysqlDatabase} to a JSON file in /tmp/importlivedb
         execSync(`mkdir -p /tmp/importlivedb`);
-        const tables = new Map<string, string>([
-            ['arse', 'arses'],
-            ['club_supporter', 'club_supporters'],
-            ['club', 'clubs'],
-            ['country', 'countries'],
-            ['game_chat', 'game_chats'],
-            ['game_day', 'game_days'],
-            ['invitation', 'invitations'],
-            ['nationality', 'nationalities'],
-            ['outcome', 'outcomes'],
-            ['player', 'players'],
-            ['standings', 'standings']
-        ]);
         for (const [table, file] of Array.from(tables.entries())) {
             console.log(`Writing ${table} to ${file}.json...`);
             const data = await prisma[table].findMany({});
@@ -106,8 +137,21 @@ async function importBackup(): Promise<void> {
             const filePath = path.join('/tmp/importlivedb', `${file}.json`);
             fs.writeFileSync(filePath, json);
         }
-
         console.log('All JSON files written.');
+
+        // Upload the JSON files to Azure Blob Storage
+        const files = await readdir('/tmp/importlivedb');
+        for (const file of files) {
+            const filePath = path.join('/tmp/importlivedb', file);
+            const blockBlobClient = containerClient.getBlockBlobClient(file);
+            await blockBlobClient.uploadFile(filePath);
+            console.log(`Uploaded ${file} successfully.`);
+        }
+
+        // Now the dev database is up to date with the live one and the seed
+        // files in blob storage reflect that, we can do a final Prisma migrate
+        // reset and seed to ensure the dev database is in a good state.
+        execSync(`cd ../../.. && pwd && npx prisma migrate reset --force`);
     } catch (error) {
         console.error('An error occurred:', error);
     }

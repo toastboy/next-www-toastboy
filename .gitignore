@@ -55,5 +55,5 @@ build.txt
 # The fetch js intermediate file gets generated when needed
 prisma/fetch.js
 
-# The footy live site backup file for importing using importlivedb.js
-.scripts/footy.sql.gz
+# The footy live site backup file for importing
+footy.sql.gz

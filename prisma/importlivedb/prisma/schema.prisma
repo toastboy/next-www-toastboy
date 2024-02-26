@@ -1,0 +1,213 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model arse {
+  id                         Int      @id @default(autoincrement())
+  stamp                      DateTime @default(now()) @db.Timestamp(0)
+  player                     Int?
+  rater                      Int?
+  in_goal                    Int?
+  running                    Int?
+  shooting                   Int?
+  passing                    Int?
+  ball_skill                 Int?
+  attacking                  Int?
+  defending                  Int?
+  player_arse_playerToplayer player?  @relation("arse_playerToplayer", fields: [player], references: [id], onDelete: Restrict, onUpdate: Restrict, map: "arse_ibfk_1")
+
+  @@index([player], map: "player")
+}
+
+model club {
+  id                                       Int              @unique(map: "id") @default(autoincrement())
+  soccerway_id                             Int?
+  club_name                                String?          @db.VarChar(255)
+  uri                                      String?          @db.VarChar(255)
+  country                                  String?          @db.VarChar(255)
+  club_supporter_club_supporter_clubToclub club_supporter[] @relation("club_supporter_clubToclub")
+}
+
+model club_supporter {
+  id                                   Int    @id @default(autoincrement())
+  player                               Int    @default(0)
+  club                                 Int    @default(0)
+  player_club_supporter_playerToplayer player @relation("club_supporter_playerToplayer", fields: [player], references: [id], onUpdate: Restrict, map: "club_ibfk_1")
+  club_club_supporter_clubToclub       club   @relation("club_supporter_clubToclub", fields: [club], references: [id], onUpdate: Restrict, map: "club_ibfk_2")
+
+  @@index([player], map: "club_ibfk_1")
+  @@index([club], map: "club_ibfk_2")
+}
+
+model country {
+  iso_code     String        @id @unique(map: "iso_code") @db.VarChar(6)
+  country_name String        @unique(map: "country_name") @db.VarChar(255)
+  nationality  nationality[]
+}
+
+model diffs {
+  id               Int      @id @default(autoincrement())
+  a                String?  @db.Text
+  b                String?  @db.Text
+  diff_age         Float?
+  diff_unknown_age Int?
+  diff_goalies     Int?     @db.TinyInt
+  diff_average     Decimal? @db.Decimal(10, 3)
+  diff_played      Int?
+}
+
+model game_chat {
+  id                              Int      @id @default(autoincrement())
+  game_day                        Int
+  stamp                           DateTime @default(now()) @db.Timestamp(0)
+  player                          Int
+  body                            String?  @db.MediumText
+  player_game_chat_playerToplayer player   @relation("game_chat_playerToplayer", fields: [player], references: [id], onUpdate: Restrict, map: "game_chat_ibfk_1")
+
+  @@index([player], map: "player")
+}
+
+model game_day {
+  game_number                              Int            @id
+  game_date                                DateTime?      @db.Date
+  game                                     Boolean?       @default(true)
+  mail_sent                                DateTime?      @db.DateTime(0)
+  comment                                  String?        @db.VarChar(255)
+  bibs                                     game_day_bibs?
+  picker_games_history                     Int?
+  invitation_invitation_game_dayTogame_day invitation[]   @relation("invitation_game_dayTogame_day")
+  outcome_outcome_game_dayTogame_day       outcome[]      @relation("outcome_game_dayTogame_day")
+  standings_standings_game_dayTogame_day   standings[]    @relation("standings_game_dayTogame_day")
+}
+
+model invitation {
+  uuid                                   String   @id @db.Char(38)
+  player                                 Int      @default(0)
+  game_day                               Int      @default(0)
+  player_invitation_playerToplayer       player   @relation("invitation_playerToplayer", fields: [player], references: [id], onUpdate: Restrict, map: "invitation_ibfk_1")
+  game_day_invitation_game_dayTogame_day game_day @relation("invitation_game_dayTogame_day", fields: [game_day], references: [game_number], onUpdate: Restrict, map: "invitation_ibfk_2")
+
+  @@index([player], map: "invitation_ibfk_1")
+  @@index([game_day], map: "invitation_ibfk_2")
+}
+
+model misc {
+  id            Int       @id @default(autoincrement())
+  last_game_mod DateTime? @db.DateTime(0)
+}
+
+model nationality {
+  id                                Int     @id @default(autoincrement())
+  player                            Int
+  iso_code                          String  @db.VarChar(6)
+  player_nationality_playerToplayer player  @relation("nationality_playerToplayer", fields: [player], references: [id], onUpdate: Restrict, map: "nationality_ibfk_1")
+  country                           country @relation(fields: [iso_code], references: [iso_code], onUpdate: Restrict, map: "nationality_ibfk_2")
+
+  @@index([iso_code], map: "iso_code")
+  @@index([player], map: "player")
+}
+
+model outcome {
+  game_day                            Int
+  player                              Int
+  response                            String?       @db.VarChar(20)
+  responsetime                        DateTime?     @db.DateTime(0)
+  points                              Int?
+  team                                outcome_team?
+  comment                             String?       @db.VarChar(127)
+  pub                                 Int?          @db.TinyInt
+  paid                                Boolean?
+  goalie                              Int?          @db.TinyInt
+  player_outcome_playerToplayer       player        @relation("outcome_playerToplayer", fields: [player], references: [id], onUpdate: Restrict, map: "outcome_ibfk_1")
+  game_day_outcome_game_dayTogame_day game_day      @relation("outcome_game_dayTogame_day", fields: [game_day], references: [game_number], onUpdate: Restrict, map: "outcome_ibfk_2")
+
+  @@unique([player, game_day], map: "unique_outcome")
+  @@index([game_day], map: "game_day")
+  @@index([player, game_day], map: "idx_outcome")
+}
+
+model picker {
+  player      Int      @id
+  player_name String?  @db.VarChar(255)
+  age         Int?
+  average     Decimal? @db.Decimal(10, 3)
+  goalie      Int?     @db.TinyInt
+  played      Int?
+}
+
+model picker_teams {
+  player                             Int                @unique(map: "player")
+  team                               picker_teams_team?
+  player_picker_teams_playerToplayer player             @relation("picker_teams_playerToplayer", fields: [player], references: [id], onUpdate: Restrict, map: "picker_teams_ibfk_1")
+}
+
+model player {
+  id                                           Int              @id @default(autoincrement())
+  is_admin                                     Int?             @db.TinyInt
+  login                                        String?          @unique(map: "login") @db.VarChar(16)
+  first_name                                   String?          @db.VarChar(32)
+  last_name                                    String?          @db.VarChar(32)
+  email                                        String?          @db.VarChar(255)
+  joined                                       DateTime?        @db.Date
+  finished                                     DateTime?        @db.Date
+  born                                         DateTime?        @db.Date
+  introduced_by                                Int?
+  comment                                      String?          @db.VarChar(32)
+  anonymous                                    Int?             @db.TinyInt
+  goalie                                       Int?             @db.TinyInt
+  mugshot                                      String?          @db.VarChar(20)
+  arse_arse_playerToplayer                     arse[]           @relation("arse_playerToplayer")
+  club_supporter_club_supporter_playerToplayer club_supporter[] @relation("club_supporter_playerToplayer")
+  game_chat_game_chat_playerToplayer           game_chat[]      @relation("game_chat_playerToplayer")
+  invitation_invitation_playerToplayer         invitation[]     @relation("invitation_playerToplayer")
+  nationality_nationality_playerToplayer       nationality[]    @relation("nationality_playerToplayer")
+  outcome_outcome_playerToplayer               outcome[]        @relation("outcome_playerToplayer")
+  picker_teams_picker_teams_playerToplayer     picker_teams?    @relation("picker_teams_playerToplayer")
+  standings_standings_playerToplayer           standings[]      @relation("standings_playerToplayer")
+}
+
+model standings {
+  player                                Int      @default(0)
+  table_year                            Int
+  game_day                              Int      @default(0)
+  responses                             Int?     @default(0)
+  P                                     Int?     @default(0)
+  W                                     Int?     @default(0)
+  D                                     Int?     @default(0)
+  L                                     Int?     @default(0)
+  points                                Int?     @default(0)
+  averages                              Decimal? @default(0.000) @db.Decimal(10, 3)
+  stalwart                              Int?     @default(0)
+  pub                                   Int?     @default(0)
+  rank_points                           Int?
+  rank_averages                         Int?
+  rank_stalwart                         Int?
+  rank_speedy                           Int?
+  rank_pub                              Int?
+  speedy                                Int?
+  player_standings_playerToplayer       player   @relation("standings_playerToplayer", fields: [player], references: [id], onUpdate: Restrict, map: "standings_ibfk_1")
+  game_day_standings_game_dayTogame_day game_day @relation("standings_game_dayTogame_day", fields: [game_day], references: [game_number], onUpdate: Restrict, map: "standings_ibfk_2")
+
+  @@id([player, table_year, game_day])
+  @@index([game_day], map: "standings_ibfk_2")
+}
+
+enum picker_teams_team {
+  A
+  B
+}
+
+enum outcome_team {
+  A
+  B
+}
+
+enum game_day_bibs {
+  A
+  B
+}

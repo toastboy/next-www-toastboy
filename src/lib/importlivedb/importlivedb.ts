@@ -1,6 +1,9 @@
 import { execSync } from "child_process";
 import { readdir } from "fs/promises";
+import prisma from '../prisma';
 import path from "path";
+import dotenv from 'dotenv';
+import fs from 'fs';
 
 /**
  * Imports a MySQL backup file and runs migrations to set up the database
@@ -17,8 +20,7 @@ import path from "path";
 async function importBackup(): Promise<void> {
     try {
         // Load the .env file into process.env
-        console.log('Loading environment variables from .env...');
-        require('dotenv').config();
+        dotenv.config();
 
         // Get all MYSQL environment variables
         if (!process.env.PROD_MYSQL_USER) {
@@ -60,7 +62,7 @@ async function importBackup(): Promise<void> {
         console.log('Backup taken successfully.');
 
         // Get the list of directories in the migrations directory
-        const migrationsDir = path.join(__dirname, '..', '..', 'migrations');
+        const migrationsDir = path.join(__dirname, '..', '..', '..', 'prisma', 'migrations');
         const migrations = await readdir(migrationsDir);
 
         // Import the mysqldump backup created above
@@ -80,6 +82,8 @@ async function importBackup(): Promise<void> {
             console.log(`Migration ${migration} completed.`);
         }
 
+        console.log('All migrations completed.');
+
         // Write each table in ${mysqlDatabase} to a JSON file in /tmp/importlivedb
         execSync(`mkdir -p /tmp/importlivedb`);
         const tables = new Map<string, string>([
@@ -96,9 +100,14 @@ async function importBackup(): Promise<void> {
             ['standings', 'standings']
         ]);
         for (const [table, file] of Array.from(tables.entries())) {
+            console.log(`Writing ${table} to ${file}.json...`);
+            const data = await prisma[table].findMany({});
+            const json = JSON.stringify(data, null, 2);
+            const filePath = path.join('/tmp/importlivedb', `${file}.json`);
+            fs.writeFileSync(filePath, json);
         }
 
-        console.log('All migrations completed.');
+        console.log('All JSON files written.');
     } catch (error) {
         console.error('An error occurred:', error);
     }

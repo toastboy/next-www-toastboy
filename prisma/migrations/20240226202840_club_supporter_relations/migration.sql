@@ -9,9 +9,11 @@
 
 */
 -- DropIndex
+ALTER TABLE `club_supporter` DROP FOREIGN KEY IF EXISTS `club_ibfk_1`;
 DROP INDEX `club_ibfk_1` ON `club_supporter`;
 
 -- DropIndex
+ALTER TABLE `club_supporter` DROP FOREIGN KEY IF EXISTS `club_ibfk_2`;
 DROP INDEX `club_ibfk_2` ON `club_supporter`;
 
 -- AlterTable

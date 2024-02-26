@@ -159,4 +159,4 @@ async function importBackup(): Promise<void> {
 
 importBackup();
 
-// To run: npx ts-node --compiler-options '{"module":"CommonJS"}' src/importlivedb.ts
+// To run: npm run importlivedb

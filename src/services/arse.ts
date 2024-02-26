@@ -108,7 +108,7 @@ export class ArseService {
 
     /**
      * Retrieves arses by rater ID.
-     * @param playerId - The ID of the rater.
+     * @param raterId - The ID of the rater.
      * @returns A promise that resolves to an array of arses or null.
      * @throws An error if there is a failure.
      */

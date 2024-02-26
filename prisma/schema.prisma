@@ -36,15 +36,20 @@ model club {
   club_name    String? @db.VarChar(255)
   uri          String? @db.VarChar(255)
   country      String? @db.VarChar(255)
+
+  supporters club_supporter[]
 }
 
 model club_supporter {
-  id     Int @id @default(autoincrement())
-  player Int @default(0)
-  club   Int @default(0)
+  playerId Int @default(0)
+  clubId   Int @default(0)
 
-  @@index([player], map: "club_ibfk_1")
-  @@index([club], map: "club_ibfk_2")
+  player player @relation(fields: [playerId], references: [id])
+  club   club   @relation(fields: [clubId], references: [id])
+
+  @@unique([playerId, clubId])
+  @@index([playerId])
+  @@index([clubId])
 }
 
 model country {
@@ -148,8 +153,9 @@ model player {
   goalie        Int?      @db.TinyInt
   mugshot       String?   @db.VarChar(20)
 
-  ratingsOfPlayer arse[] @relation("player")
-  ratingsByPlayer arse[] @relation("rater")
+  ratingsOfPlayer arse[]           @relation("player")
+  ratingsByPlayer arse[]           @relation("rater")
+  clubsSupported  club_supporter[]
 }
 
 model standings {

@@ -1,5 +1,5 @@
 import { player } from '@prisma/client';
-import arseService from 'lib/arse';
+import arseService from 'services/arse';
 
 export default async function PlayerArse({
     player,

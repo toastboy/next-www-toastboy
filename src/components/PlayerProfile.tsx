@@ -2,6 +2,7 @@ import { player } from '@prisma/client';
 import { playerService } from "lib/player";
 import PlayerMugshot from 'components/PlayerMugshot';
 import PlayerArse from 'components/PlayerArse';
+import PlayerClubs from './PlayerClubs';
 
 export default async function PlayerProfile({
     player,
@@ -15,6 +16,7 @@ export default async function PlayerProfile({
         <div className="w-[600px] rounded overflow-hidden shadow-lg" key={id}>
             <h1 className="text-6xl font-bold mb-4 text-center">{playerService.getName(player)}</h1>
             <PlayerMugshot player={player} />
+            <PlayerClubs player={player} />
             <PlayerArse player={player} />
             <div className="px-6 py-4">
                 <div className="font-bold text-xl mb-2">{first_name} {last_name}</div>

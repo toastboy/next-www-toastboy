@@ -10,7 +10,6 @@ export async function generateMetadata({
     params: { idOrLogin: string },
 }) {
     try {
-        // TODO: Error checking
         const login = await playerService.getLogin(params.idOrLogin);
         const player = await playerService.getByLogin(login);
         const name = playerService.getName(player);

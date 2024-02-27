@@ -2,7 +2,7 @@ import { player } from '@prisma/client';
 import { playerService } from "lib/player";
 import PlayerMugshot from 'components/PlayerMugshot';
 import PlayerArse from 'components/PlayerArse';
-import PlayerClubs from './PlayerClubs';
+import PlayerClubs from 'components/PlayerClubs';
 
 export default async function PlayerProfile({
     player,

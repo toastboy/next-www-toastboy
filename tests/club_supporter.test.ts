@@ -175,16 +175,16 @@ describe('ClubSupporterService', () => {
     });
 
     describe('create', () => {
-        it('should create an club_supporter', async () => {
+        it('should create a club_supporter', async () => {
             const result = await ClubSupporterService.create(defaultClubSupporter);
             expect(result).toEqual(defaultClubSupporter);
         });
 
-        it('should refuse to create an club_supporter with invalid data', async () => {
+        it('should refuse to create a club_supporter with invalid data', async () => {
             await expect(ClubSupporterService.create(invalidclub_supporter)).rejects.toThrow();
         });
 
-        it('should refuse to create an club_supporter that has the same player ID and rater ID as an existing one', async () => {
+        it('should refuse to create a club_supporter that has the same player ID and rater ID as an existing one', async () => {
             await expect(ClubSupporterService.create({
                 ...defaultClubSupporter,
                 playerId: 6,
@@ -194,7 +194,7 @@ describe('ClubSupporterService', () => {
     });
 
     describe('upsert', () => {
-        it('should create an club_supporter where the combination of player ID and rater ID did not exist', async () => {
+        it('should create a club_supporter where the combination of player ID and rater ID did not exist', async () => {
             const result = await ClubSupporterService.upsert(defaultClubSupporter);
             expect(result).toEqual(defaultClubSupporter);
         });
@@ -210,11 +210,11 @@ describe('ClubSupporterService', () => {
             expect(result).toEqual(updatedclub_supporter);
         });
 
-        it('should refuse to create an club_supporter with invalid data where the combination of player ID and rater ID did not exist', async () => {
+        it('should refuse to create a club_supporter with invalid data where the combination of player ID and rater ID did not exist', async () => {
             await expect(ClubSupporterService.create(invalidclub_supporter)).rejects.toThrow();
         });
 
-        it('should refuse to update an club_supporter with invalid data where the combination of player ID and rater ID already existed', async () => {
+        it('should refuse to update a club_supporter with invalid data where the combination of player ID and rater ID already existed', async () => {
             await expect(ClubSupporterService.create(invalidclub_supporter)).rejects.toThrow();
         });
     });
@@ -224,7 +224,7 @@ describe('ClubSupporterService', () => {
             await ClubSupporterService.delete(6, 16);
         });
 
-        it('should silently return when asked to delete an club_supporter that does not exist', async () => {
+        it('should silently return when asked to delete a club_supporter that does not exist', async () => {
             await ClubSupporterService.delete(7, 16);
         });
     });

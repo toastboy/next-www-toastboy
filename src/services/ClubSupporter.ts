@@ -1,4 +1,4 @@
-import { club_supporter } from '@prisma/client';
+import { ClubSupporter } from '@prisma/client';
 import prisma from 'lib/prisma';
 import debug from 'debug';
 
@@ -6,32 +6,37 @@ const log = debug('footy:api');
 
 export class ClubSupporterService {
     /**
-     * Validate a club_supporter
-     * @param {club_supporter} club_supporter The club_supporter to validate
-     * @returns the validated club_supporter
-     * @throws An error if the club_supporter is invalid.
+    * Validate a ClubSuppor
+     *te
+    * @param {ClubSupporter} ClubSupporter T
+     *he ClubSupporter to validate
+     * @returns the validated ClubSupporter
+    * @throws An error if the ClubSupporter is invalid.
      */
-    validate(club_supporter: club_supporter): club_supporter {
-        if (!club_supporter.playerId || !Number.isInteger(club_supporter.playerId) || club_supporter.playerId < 0) {
-            throw new Error(`Invalid playerId value: ${club_supporter.playerId}`);
+    validate(ClubSupporter:
+        ClubSupporter): ClubSupporter {
+        if (!ClubSupporter.playerId || !Number.isInteger(ClubSupporter
+            .playerId) || ClubSupporter.playerId < 0) {
+            throw new Error(`Invalid playerId value: ${ClubSupporter.playerId}`);
         }
-        if (!club_supporter.clubId || !Number.isInteger(club_supporter.clubId) || club_supporter.clubId < 0) {
-            throw new Error(`Invalid clubId value: ${club_supporter.clubId}`);
+        if (!ClubSupporter.clubId || !Number.isInteger(ClubSupporter
+            .clubId) || ClubSupporter.clubId < 0) {
+            throw new Error(`Invalid clubId value: ${ClubSupporter.clubId}`);
         }
 
-        return club_supporter;
+        return ClubSupporter;
     }
 
     /**
      * Retrieves a club supporter for the given player ID rated by club ID.
      * @param playerId - The ID of the player.
      * @param clubId - The ID of the club.
-     * @returns A promise that resolves to the "club_supporter" object if found, otherwise null.
+    * @returns A promise that resolves to the "ClubSupporter" object if found, otherwise null.
      * @throws An error if there is a failure.
      */
-    async get(playerId: number, clubId: number): Promise<club_supporter | null> {
+    async get(playerId: number, clubId: number): Promise<ClubSupporter | null> {
         try {
-            return prisma.club_supporter.findUnique({
+            return prisma.clubSupporter.findUnique({
                 where: {
                     playerId_clubId: {
                         playerId: playerId,
@@ -40,7 +45,7 @@ export class ClubSupporterService {
                 },
             });
         } catch (error) {
-            log(`Error fetching club_supporter: ${error}`);
+            log(`Error fetching ClubSupporter: ${error}`);
             throw error;
         }
     }
@@ -50,9 +55,9 @@ export class ClubSupporterService {
      * @returns A promise that resolves to an array of club_supporters or null if an error occurs.
      * @throws An error if there is a failure.
      */
-    async getAll(): Promise<club_supporter[] | null> {
+    async getAll(): Promise<ClubSupporter[] | null> {
         try {
-            return prisma.club_supporter.findMany({});
+            return prisma.clubSupporter.findMany({});
         } catch (error) {
             log(`Error fetching club_supporters: ${error}`);
             throw error;
@@ -65,9 +70,9 @@ export class ClubSupporterService {
      * @returns A promise that resolves to an array of club_supporters or null.
      * @throws An error if there is a failure.
      */
-    async getByPlayer(playerId: number): Promise<club_supporter[] | null> {
+    async getByPlayer(playerId: number): Promise<ClubSupporter[] | null> {
         try {
-            return prisma.club_supporter.findMany({
+            return prisma.clubSupporter.findMany({
                 where: {
                     playerId: playerId
                 },
@@ -84,9 +89,9 @@ export class ClubSupporterService {
      * @returns A promise that resolves to an array of club_supporters or null.
      * @throws An error if there is a failure.
      */
-    async getByClub(clubId: number): Promise<club_supporter[] | null> {
+    async getByClub(clubId: number): Promise<ClubSupporter[] | null> {
         try {
-            return prisma.club_supporter.findMany({
+            return prisma.clubSupporter.findMany({
                 where: {
                     clubId: clubId
                 },
@@ -98,18 +103,18 @@ export class ClubSupporterService {
     }
 
     /**
-     * Creates a new club_supporter.
-     * @param data The data for the new club_supporter.
-     * @returns A promise that resolves to the created club_supporter, or null if an error occurs.
+    * Creates a new ClubSupporter.
+    * @param data The data for the new ClubSupporter.
+    * @returns A promise that resolves to the created ClubSupporter, or null if an error occurs.
      * @throws An error if there is a failure.
      */
-    async create(data: club_supporter): Promise<club_supporter | null> {
+    async create(data: ClubSupporter): Promise<ClubSupporter | null> {
         try {
-            return await prisma.club_supporter.create({
+            return await prisma.clubSupporter.create({
                 data: this.validate(data)
             });
         } catch (error) {
-            log(`Error creating club_supporter: ${error}`);
+            log(`Error creating ClubSupporter: ${error}`);
             throw error;
         }
     }
@@ -117,12 +122,12 @@ export class ClubSupporterService {
     /**
      * Upserts a club supporter.
      * @param data The data to be upserted.
-     * @returns A promise that resolves to the upserted club_supporter, or null if the upsert failed.
+    * @returns A promise that resolves to the upserted ClubSupporter, or null if the upsert failed.
      * @throws An error if there is a failure.
      */
-    async upsert(data: club_supporter): Promise<club_supporter | null> {
+    async upsert(data: ClubSupporter): Promise<ClubSupporter | null> {
         try {
-            return await prisma.club_supporter.upsert({
+            return await prisma.clubSupporter.upsert({
                 where: {
                     playerId_clubId: {
                         playerId: data.playerId,
@@ -133,7 +138,7 @@ export class ClubSupporterService {
                 create: data,
             });
         } catch (error) {
-            log(`Error upserting club_supporter: ${error}`);
+            log(`Error upserting ClubSupporter: ${error}`);
             throw error;
         }
     }
@@ -147,7 +152,7 @@ export class ClubSupporterService {
      */
     async delete(playerId: number, clubId: number): Promise<void> {
         try {
-            await prisma.club_supporter.delete({
+            await prisma.clubSupporter.delete({
                 where: {
                     playerId_clubId: {
                         playerId: playerId,
@@ -156,7 +161,7 @@ export class ClubSupporterService {
                 },
             });
         } catch (error) {
-            log(`Error deleting club_supporter: ${error}`);
+            log(`Error deleting ClubSupporter: ${error}`);
             throw error;
         }
     }
@@ -168,7 +173,7 @@ export class ClubSupporterService {
      */
     async deleteAll(): Promise<void> {
         try {
-            await prisma.club_supporter.deleteMany();
+            await prisma.clubSupporter.deleteMany();
         } catch (error) {
             log(`Error deleting club_supporters: ${error}`);
             throw error;

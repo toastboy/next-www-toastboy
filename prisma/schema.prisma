@@ -37,10 +37,10 @@ model club {
   uri          String? @db.VarChar(255)
   country      String? @db.VarChar(255)
 
-  supporters club_supporter[]
+  supporters ClubSupporter[]
 }
 
-model club_supporter {
+model ClubSupporter {
   playerId Int @default(0)
   clubId   Int @default(0)
 
@@ -53,8 +53,22 @@ model club_supporter {
 }
 
 model country {
-  iso_code     String @id @unique(map: "iso_code") @db.VarChar(6)
-  country_name String @unique(map: "country_name") @db.VarChar(255)
+  isoCode String @id @unique(map: "isoCode") @db.VarChar(6)
+  name    String @unique(map: "name") @db.VarChar(255)
+
+  supporters CountrySupporter[]
+}
+
+model CountrySupporter {
+  playerId       Int
+  countryISOcode String @db.VarChar(6)
+
+  country country @relation(fields: [countryISOcode], references: [isoCode])
+  player  player  @relation(fields: [playerId], references: [id])
+
+  @@unique([playerId, countryISOcode])
+  @@index([playerId])
+  @@index([countryISOcode])
 }
 
 model diffs {
@@ -95,15 +109,6 @@ model invitation {
 
   @@index([player], map: "invitation_ibfk_1")
   @@index([game_day], map: "invitation_ibfk_2")
-}
-
-model nationality {
-  id       Int    @id @default(autoincrement())
-  player   Int
-  iso_code String @db.VarChar(6)
-
-  @@index([iso_code], map: "iso_code")
-  @@index([player], map: "player")
 }
 
 model outcome {
@@ -153,9 +158,10 @@ model player {
   goalie        Int?      @db.TinyInt
   mugshot       String?   @db.VarChar(20)
 
-  ratingsOfPlayer arse[]           @relation("player")
-  ratingsByPlayer arse[]           @relation("rater")
-  clubsSupported  club_supporter[]
+  ratingsOfPlayer arse[]             @relation("player")
+  ratingsByPlayer arse[]             @relation("rater")
+  clubs           ClubSupporter[]
+  countries       CountrySupporter[]
 }
 
 model standings {

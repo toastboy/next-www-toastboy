@@ -1,4 +1,4 @@
-import { arse, club_supporter, club, country, game_chat, game_day, invitation, nationality, outcome, player, standings } from '@prisma/client';
+import { arse, ClubSupporter, club, country, CountrySupporter, game_chat, game_day, outcome, player, standings } from '@prisma/client';
 import prisma from '../src/lib/prisma';
 import { streamToBuffer } from '../src/lib/utils';
 import { Prisma } from '@prisma/client';
@@ -11,14 +11,14 @@ async function downloadAndParseJson(containerClient: ContainerClient, blobName: 
         const downloadBlockBlobResponse = await blobClient.download(0);
 
         if (!downloadBlockBlobResponse.readableStreamBody) {
-            throw new Error("Reading " + blobName + " failed");
+            throw new Error(`Reading  ${blobName} failed`);
         }
 
         const downloadedContent = (await streamToBuffer(downloadBlockBlobResponse.readableStreamBody)).toString();
 
         return JSON.parse(downloadedContent);
     } catch (error) {
-        console.error("An error occurred during download: ", error);
+        console.error(`An error occurred during download: ${error}`);
         throw error;
     }
 }
@@ -30,12 +30,12 @@ async function processJsonData<T>(
         create: (data: { data: T }) => Prisma.PrismaPromise<T>;
     }
 ) {
-    console.log("Starting: " + fileName);
+    console.log(`Starting: ${fileName}`);
     const dataItems: T[] = await downloadAndParseJson(containerClient, fileName) as T[];
     for (const item of dataItems) {
         await prismaModel.create({ data: item });
     }
-    console.log("Complete: " + fileName);
+    console.log(`Complete:  ${fileName}`);
 }
 
 async function main() {
@@ -75,9 +75,9 @@ async function main() {
     // We have to be careful to empty existing tables in the right order for the
     // foreign key constraints
     await prisma.arse.deleteMany();
-    await prisma.club_supporter.deleteMany();
+    await prisma.clubSupporter.deleteMany();
     await prisma.club.deleteMany();
-    await prisma.nationality.deleteMany();
+    await prisma.countrySupporter.deleteMany();
     await prisma.country.deleteMany();
     await prisma.game_chat.deleteMany();
     await prisma.invitation.deleteMany();
@@ -90,17 +90,16 @@ async function main() {
     await prisma.player.deleteMany();
 
     // Now we must populate the tables in the reverse of the order above
-    await processJsonData<game_day>(containerClient, "game_days.json", prisma.game_day);
-    await processJsonData<player>(containerClient, "players.json", prisma.player);
+    await processJsonData<game_day>(containerClient, "game_day.json", prisma.game_day);
+    await processJsonData<player>(containerClient, "player.json", prisma.player);
     await processJsonData<standings>(containerClient, "standings.json", prisma.standings);
-    await processJsonData<outcome>(containerClient, "outcomes.json", prisma.outcome);
-    await processJsonData<invitation>(containerClient, "invitations.json", prisma.invitation);
-    await processJsonData<game_chat>(containerClient, "game_chats.json", prisma.game_chat);
-    await processJsonData<country>(containerClient, "countries.json", prisma.country);
-    await processJsonData<nationality>(containerClient, "nationalities.json", prisma.nationality);
-    await processJsonData<club>(containerClient, "clubs.json", prisma.club);
-    await processJsonData<club_supporter>(containerClient, "club_supporters.json", prisma.club_supporter);
-    await processJsonData<arse>(containerClient, "arses.json", prisma.arse);
+    await processJsonData<outcome>(containerClient, "outcome.json", prisma.outcome);
+    await processJsonData<game_chat>(containerClient, "game_chat.json", prisma.game_chat);
+    await processJsonData<country>(containerClient, "country.json", prisma.country);
+    await processJsonData<CountrySupporter>(containerClient, "CountrySupporter.json", prisma.countrySupporter);
+    await processJsonData<club>(containerClient, "club.json", prisma.club);
+    await processJsonData<ClubSupporter>(containerClient, "ClubSupporter.json", prisma.clubSupporter);
+    await processJsonData<arse>(containerClient, "arse.json", prisma.arse);
 }
 
 main()

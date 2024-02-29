@@ -21,7 +21,7 @@ export async function getAllIds() {
     const data = await prisma.country.findMany({});
 
     return data.map((country: country) => ({
-        iso_code: country.iso_code,
+        isoCode: country.isoCode,
     }));
 }
 
@@ -33,11 +33,11 @@ export async function getAllIds() {
  * @returns A country model object or null if there is no such country
  */
 
-export async function getById(iso_code: string): Promise<country | null> {
+export async function getById(isoCode: string): Promise<country | null> {
     const data = await prisma.country.findMany({
         where: {
-            iso_code: {
-                equals: iso_code,
+            isoCode: {
+                equals: isoCode,
             },
         },
     });

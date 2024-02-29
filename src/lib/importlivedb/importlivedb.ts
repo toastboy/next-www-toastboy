@@ -21,19 +21,6 @@ import { BlobServiceClient } from "@azure/storage-blob";
  */
 async function importBackup(): Promise<void> {
     try {
-        const tables = new Map<string, string>([
-            ['arse', 'arses'],
-            ['club_supporter', 'club_supporters'],
-            ['club', 'clubs'],
-            ['country', 'countries'],
-            ['game_chat', 'game_chats'],
-            ['game_day', 'game_days'],
-            ['nationality', 'nationalities'],
-            ['outcome', 'outcomes'],
-            ['player', 'players'],
-            ['standings', 'standings']
-        ]);
-
         // Load the .env file into process.env
         dotenv.config();
 
@@ -128,13 +115,26 @@ async function importBackup(): Promise<void> {
         }
         console.log('All migrations completed.');
 
+        const tables = [
+            'arse',
+            'ClubSupporter',
+            'club',
+            'country',
+            'CountrySupporter',
+            'game_chat',
+            'game_day',
+            'outcome',
+            'player',
+            'standings',
+        ];
+
         // Write each table in ${mysqlDatabase} to a JSON file in /tmp/importlivedb
         execSync(`mkdir -p /tmp/importlivedb`);
-        for (const [table, file] of Array.from(tables.entries())) {
-            console.log(`Writing ${table} to ${file}.json...`);
+        for (const table of tables) {
+            console.log(`Writing ${table} to ${table}.json...`);
             const data = await prisma[table].findMany({});
             const json = JSON.stringify(data, null, 2);
-            const filePath = path.join('/tmp/importlivedb', `${file}.json`);
+            const filePath = path.join('/tmp/importlivedb', `${table}.json`);
             fs.writeFileSync(filePath, json);
         }
         console.log('All JSON files written.');

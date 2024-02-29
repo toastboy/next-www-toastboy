@@ -1,5 +1,5 @@
 import { player } from '@prisma/client';
-import clubSupporterService from 'services/club_supporter';
+import clubSupporterService from 'services/ClubSupporter';
 import clubService from 'services/club';
 import ClubBadge from 'components/ClubBadge';
 

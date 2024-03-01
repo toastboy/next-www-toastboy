@@ -6,32 +6,27 @@ const log = debug('footy:api');
 
 export class ClubSupporterService {
     /**
-    * Validate a ClubSuppor
-     *te
-    * @param {ClubSupporter} ClubSupporter T
-     *he ClubSupporter to validate
+     * Validate a ClubSupporter
+     * @param {ClubSupporter} clubSupporter The ClubSupporter to validate
      * @returns the validated ClubSupporter
-    * @throws An error if the ClubSupporter is invalid.
+     * @throws An error if the ClubSupporter is invalid.
      */
-    validate(ClubSupporter:
-        ClubSupporter): ClubSupporter {
-        if (!ClubSupporter.playerId || !Number.isInteger(ClubSupporter
-            .playerId) || ClubSupporter.playerId < 0) {
-            throw new Error(`Invalid playerId value: ${ClubSupporter.playerId}`);
+    validate(clubSupporter: ClubSupporter): ClubSupporter {
+        if (!clubSupporter.playerId || !Number.isInteger(clubSupporter.playerId) || clubSupporter.playerId < 0) {
+            throw new Error(`Invalid playerId value: ${clubSupporter.playerId}`);
         }
-        if (!ClubSupporter.clubId || !Number.isInteger(ClubSupporter
-            .clubId) || ClubSupporter.clubId < 0) {
-            throw new Error(`Invalid clubId value: ${ClubSupporter.clubId}`);
+        if (!clubSupporter.clubId || !Number.isInteger(clubSupporter.clubId) || clubSupporter.clubId < 0) {
+            throw new Error(`Invalid clubId value: ${clubSupporter.clubId}`);
         }
 
-        return ClubSupporter;
+        return clubSupporter;
     }
 
     /**
-     * Retrieves a club supporter for the given player ID rated by club ID.
+     * Retrieves a ClubSupporter for the given player ID and club ID.
      * @param playerId - The ID of the player.
      * @param clubId - The ID of the club.
-    * @returns A promise that resolves to the "ClubSupporter" object if found, otherwise null.
+     * @returns A promise that resolves to the ClubCupporter if found, otherwise null.
      * @throws An error if there is a failure.
      */
     async get(playerId: number, clubId: number): Promise<ClubSupporter | null> {
@@ -51,23 +46,23 @@ export class ClubSupporterService {
     }
 
     /**
-     * Retrieves all club_supporters.
-     * @returns A promise that resolves to an array of club_supporters or null if an error occurs.
+     * Retrieves all ClubSupporters.
+     * @returns A promise that resolves to an array of ClubSupporters or null if an error occurs.
      * @throws An error if there is a failure.
      */
     async getAll(): Promise<ClubSupporter[] | null> {
         try {
             return prisma.clubSupporter.findMany({});
         } catch (error) {
-            log(`Error fetching club_supporters: ${error}`);
+            log(`Error fetching ClubSupporters: ${error}`);
             throw error;
         }
     }
 
     /**
-     * Retrieves club_supporters by player ID.
+     * Retrieves ClubSupporters by player ID.
      * @param playerId - The ID of the player.
-     * @returns A promise that resolves to an array of club_supporters or null.
+     * @returns A promise that resolves to an array of ClubSupporters or null.
      * @throws An error if there is a failure.
      */
     async getByPlayer(playerId: number): Promise<ClubSupporter[] | null> {
@@ -78,15 +73,15 @@ export class ClubSupporterService {
                 },
             });
         } catch (error) {
-            log(`Error fetching club_supporters by player: ${error}`);
+            log(`Error fetching ClubSupporters by player: ${error}`);
             throw error;
         }
     }
 
     /**
-     * Retrieves club_supporters by club ID.
+     * Retrieves ClubSupporters by club ID.
      * @param clubId - The ID of the club.
-     * @returns A promise that resolves to an array of club_supporters or null.
+     * @returns A promise that resolves to an array of ClubSupporter or null.
      * @throws An error if there is a failure.
      */
     async getByClub(clubId: number): Promise<ClubSupporter[] | null> {
@@ -97,15 +92,15 @@ export class ClubSupporterService {
                 },
             });
         } catch (error) {
-            log(`Error fetching club_supporters by club: ${error}`);
+            log(`Error fetching ClubSupporters by club: ${error}`);
             throw error;
         }
     }
 
     /**
-    * Creates a new ClubSupporter.
-    * @param data The data for the new ClubSupporter.
-    * @returns A promise that resolves to the created ClubSupporter, or null if an error occurs.
+     * Creates a new ClubSupporter.
+     * @param data The data for the new ClubSupporter.
+     * @returns A promise that resolves to the created ClubSupporter, or null if an error occurs.
      * @throws An error if there is a failure.
      */
     async create(data: ClubSupporter): Promise<ClubSupporter | null> {
@@ -120,9 +115,9 @@ export class ClubSupporterService {
     }
 
     /**
-     * Upserts a club supporter.
+     * Upserts a ClubSupporter.
      * @param data The data to be upserted.
-    * @returns A promise that resolves to the upserted ClubSupporter, or null if the upsert failed.
+     * @returns A promise that resolves to the upserted ClubSupporter, or null if the upsert failed.
      * @throws An error if there is a failure.
      */
     async upsert(data: ClubSupporter): Promise<ClubSupporter | null> {
@@ -144,7 +139,7 @@ export class ClubSupporterService {
     }
 
     /**
-     * Deletes a club supporter.
+     * Deletes a ClubSupporter.
      * @param playerId - The ID of the player.
      * @param clubId - The ID of the club.
      * @returns A Promise that resolves to void.
@@ -167,15 +162,15 @@ export class ClubSupporterService {
     }
 
     /**
-     * Deletes all club_supporters.
-     * @returns A promise that resolves when all club_supporters are deleted.
+     * Deletes all ClubSupporters.
+     * @returns A promise that resolves when all ClubSupporters are deleted.
      * @throws An error if there is a failure.
      */
     async deleteAll(): Promise<void> {
         try {
             await prisma.clubSupporter.deleteMany();
         } catch (error) {
-            log(`Error deleting club_supporters: ${error}`);
+            log(`Error deleting ClubSupporter: ${error}`);
             throw error;
         }
     }

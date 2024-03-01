@@ -1,9 +1,9 @@
 import { ClubSupporter } from '@prisma/client';
-import ClubSupporterService from 'services/ClubSupporter';
+import clubSupporterService from 'services/ClubSupporter';
 import prisma from 'lib/prisma';
 
 jest.mock('lib/prisma', () => ({
-    ClubSupporter: {
+    clubSupporter: {
         findUnique: jest.fn(),
         findMany: jest.fn(),
         create: jest.fn(),
@@ -29,7 +29,7 @@ const clubSupporterList: ClubSupporter[] = Array.from({ length: 100 }, (_, index
     clubId: index + 1,
 }));
 
-describe('ClubSupporterService', () => {
+describe('clubSupporterService', () => {
     beforeEach(() => {
         jest.clearAllMocks();
 
@@ -41,8 +41,8 @@ describe('ClubSupporterService', () => {
                 }
             }
         }) => {
-            const ClubSupporter = clubSupporterList.find((ClubSupporter) => ClubSupporter.playerId === args.where.playerId_clubId.playerId && ClubSupporter.clubId === args.where.playerId_clubId.clubId);
-            return Promise.resolve(ClubSupporter ? ClubSupporter : null);
+            const clubSupporter = clubSupporterList.find((clubSupporter) => clubSupporter.playerId === args.where.playerId_clubId.playerId && clubSupporter.clubId === args.where.playerId_clubId.clubId);
+            return Promise.resolve(clubSupporter ? clubSupporter : null);
         });
 
         (prisma.clubSupporter.create as jest.Mock).mockImplementation((args: { data: ClubSupporter }) => {
@@ -89,13 +89,9 @@ describe('ClubSupporterService', () => {
         });
     });
 
-    afterEach(() => {
-        jest.clearAllMocks();
-    });
-
     describe('get', () => {
-        it('should retrieve the correct ClubSupporter for player 6, rater 16', async () => {
-            const result = await ClubSupporterService.get(6, 16);
+        it('should retrieve the correct ClubSupporter for player 6, club 16', async () => {
+            const result = await clubSupporterService.get(6, 16);
             expect(result).toEqual({
                 ...defaultClubSupporter,
                 playerId: 6,
@@ -103,8 +99,8 @@ describe('ClubSupporterService', () => {
             } as ClubSupporter);
         });
 
-        it('should return null for player 7, rater 16', async () => {
-            const result = await ClubSupporterService.get(7, 16);
+        it('should return null for player 7, club 16', async () => {
+            const result = await clubSupporterService.get(7, 16);
             expect(result).toBeNull();
         });
     });
@@ -117,7 +113,7 @@ describe('ClubSupporterService', () => {
         });
 
         it('should retrieve the correct ClubSupporters for player id 1', async () => {
-            const result = await ClubSupporterService.getByPlayer(1);
+            const result = await clubSupporterService.getByPlayer(1);
             expect(result.length).toEqual(10);
             for (const ClubSupporterResult of result) {
                 expect(ClubSupporterResult).toEqual({
@@ -129,7 +125,7 @@ describe('ClubSupporterService', () => {
         });
 
         it('should return an empty list when retrieving ClubSupporters for player id 11', async () => {
-            const result = await ClubSupporterService.getByPlayer(11);
+            const result = await clubSupporterService.getByPlayer(11);
             expect(result).toEqual([]);
         });
     });
@@ -142,7 +138,7 @@ describe('ClubSupporterService', () => {
         });
 
         it('should retrieve the correct ClubSupporters for rater id 1', async () => {
-            const result = await ClubSupporterService.getByClub(1);
+            const result = await clubSupporterService.getByClub(1);
             expect(result.length).toEqual(1);
             for (const ClubSupporterResult of result) {
                 expect(ClubSupporterResult).toEqual({
@@ -154,7 +150,7 @@ describe('ClubSupporterService', () => {
         });
 
         it('should return an empty list when retrieving ClubSupporters for rater id 101', async () => {
-            const result = await ClubSupporterService.getByClub(101);
+            const result = await clubSupporterService.getByClub(101);
             expect(result).toEqual([]);
         });
     });
@@ -167,7 +163,7 @@ describe('ClubSupporterService', () => {
         });
 
         it('should return the correct, complete list of 100 ClubSupporters', async () => {
-            const result = await ClubSupporterService.getAll();
+            const result = await clubSupporterService.getAll();
             expect(result.length).toEqual(100);
             expect(result[11].playerId).toEqual(2);
             expect(result[11].clubId).toEqual(12);
@@ -176,16 +172,16 @@ describe('ClubSupporterService', () => {
 
     describe('create', () => {
         it('should create a ClubSupporter', async () => {
-            const result = await ClubSupporterService.create(defaultClubSupporter);
+            const result = await clubSupporterService.create(defaultClubSupporter);
             expect(result).toEqual(defaultClubSupporter);
         });
 
         it('should refuse to create a ClubSupporter with invalid data', async () => {
-            await expect(ClubSupporterService.create(invalidClubSupporter)).rejects.toThrow();
+            await expect(clubSupporterService.create(invalidClubSupporter)).rejects.toThrow();
         });
 
         it('should refuse to create a ClubSupporter that has the same player ID and rater ID as an existing one', async () => {
-            await expect(ClubSupporterService.create({
+            await expect(clubSupporterService.create({
                 ...defaultClubSupporter,
                 playerId: 6,
                 clubId: 16,
@@ -195,7 +191,7 @@ describe('ClubSupporterService', () => {
 
     describe('upsert', () => {
         it('should create a ClubSupporter where the combination of player ID and rater ID did not exist', async () => {
-            const result = await ClubSupporterService.upsert(defaultClubSupporter);
+            const result = await clubSupporterService.upsert(defaultClubSupporter);
             expect(result).toEqual(defaultClubSupporter);
         });
 
@@ -206,32 +202,32 @@ describe('ClubSupporterService', () => {
                 clubId: 16,
                 in_goal: 7,
             };
-            const result = await ClubSupporterService.upsert(updatedClubSupporter);
+            const result = await clubSupporterService.upsert(updatedClubSupporter);
             expect(result).toEqual(updatedClubSupporter);
         });
 
         it('should refuse to create a ClubSupporter with invalid data where the combination of player ID and rater ID did not exist', async () => {
-            await expect(ClubSupporterService.create(invalidClubSupporter)).rejects.toThrow();
+            await expect(clubSupporterService.create(invalidClubSupporter)).rejects.toThrow();
         });
 
         it('should refuse to update a ClubSupporter with invalid data where the combination of player ID and rater ID already existed', async () => {
-            await expect(ClubSupporterService.create(invalidClubSupporter)).rejects.toThrow();
+            await expect(clubSupporterService.create(invalidClubSupporter)).rejects.toThrow();
         });
     });
 
     describe('delete', () => {
         it('should delete an existing ClubSupporter', async () => {
-            await ClubSupporterService.delete(6, 16);
+            await clubSupporterService.delete(6, 16);
         });
 
         it('should silently return when asked to delete a ClubSupporter that does not exist', async () => {
-            await ClubSupporterService.delete(7, 16);
+            await clubSupporterService.delete(7, 16);
         });
     });
 
     describe('deleteAll', () => {
         it('should delete all ClubSupporters', async () => {
-            await ClubSupporterService.deleteAll();
+            await clubSupporterService.deleteAll();
         });
     });
 });

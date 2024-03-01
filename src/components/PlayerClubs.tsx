@@ -8,17 +8,16 @@ export default async function PlayerClubs({
 }: {
     player: player,
 }) {
-    const club_supporters = await clubSupporterService.getByPlayer(player.id);
+    const clubSupporters = await clubSupporterService.getByPlayer(player.id);
 
-    if (club_supporters.length === 0) {
+    if (clubSupporters.length === 0) {
         return null;
     }
 
-    const clubs = await Promise.all(club_supporters.map(async (item) => {
+    const clubs = await Promise.all(clubSupporters.map(async (item) => {
         const club = await clubService.get(item.clubId);
         return club;
     }));
-
 
     return (
         <div className="px-6 py-4">

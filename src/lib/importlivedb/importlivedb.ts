@@ -116,10 +116,10 @@ async function importBackup(): Promise<void> {
         console.log('All migrations completed.');
 
         const tables = [
-            'arse',
+            'Arse',
             'ClubSupporter',
-            'club',
-            'country',
+            'Club',
+            'Country',
             'CountrySupporter',
             'game_chat',
             'game_day',
@@ -147,6 +147,7 @@ async function importBackup(): Promise<void> {
             await blockBlobClient.uploadFile(filePath);
             console.log(`Uploaded ${file} successfully.`);
         }
+        execSync('rm -rf /tmp/importlivedb');
 
         // Now the dev database is up to date with the live one and the seed
         // files in blob storage reflect that, we can do a final Prisma migrate

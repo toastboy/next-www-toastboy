@@ -1,24 +1,33 @@
 import AzureCache from 'lib/azure';
 import { streamToBuffer } from 'lib/utils';
 
-import { getAllIds } from 'lib/countries';
+import { Country } from '@prisma/client';
+import countryService from 'services/Country';
 
 export async function generateStaticParams() {
-    return getAllIds();
+    const countries: Country[] = await countryService.getAll();
+
+    return countries.map((country) => {
+        return {
+            params: {
+                isoCode: country.isoCode
+            },
+        };
+    });
 }
 
 export async function GET(
     request: Request,
-    { params }: { params: { iso_code: string } }) {
-    const { iso_code } = params;
+    { params }: { params: { isoCode: string } }) {
+    const { isoCode } = params;
 
     try {
         const azureCache = AzureCache.getInstance();
         const containerClient = await azureCache.getContainerClient("countries");
-        const blobClient = containerClient.getBlobClient(iso_code + ".png");
+        const blobClient = containerClient.getBlobClient(isoCode + ".png");
 
         if (!(await blobClient.exists())) {
-            return new Response(iso_code + ".png not found", {
+            return new Response(isoCode + ".png not found", {
                 status: 404,
             });
         }

@@ -1,5 +1,5 @@
-import { arse } from '@prisma/client';
-import arseService from 'services/arse';
+import { Arse } from '@prisma/client';
+import arseService from 'services/Arse';
 import prisma from 'lib/prisma';
 
 jest.mock('lib/prisma', () => ({
@@ -13,7 +13,7 @@ jest.mock('lib/prisma', () => ({
     },
 }));
 
-const defaultArse: arse = {
+const defaultArse: Arse = {
     stamp: new Date(),
     playerId: 12,
     raterId: 12,
@@ -26,12 +26,12 @@ const defaultArse: arse = {
     defending: 10,
 };
 
-const invalidArse: arse = {
+const invalidArse: Arse = {
     ...defaultArse,
     playerId: -1,
 };
 
-const arseList: arse[] = Array.from({ length: 100 }, (_, index) => ({
+const arseList: Arse[] = Array.from({ length: 100 }, (_, index) => ({
     ...defaultArse,
     playerId: index % 10 + 1,
     raterId: index + 1,
@@ -53,7 +53,7 @@ describe('ArseService', () => {
             return Promise.resolve(arse ? arse : null);
         });
 
-        (prisma.arse.create as jest.Mock).mockImplementation((args: { data: arse }) => {
+        (prisma.arse.create as jest.Mock).mockImplementation((args: { data: Arse }) => {
             const arse = arseList.find((arse) => arse.playerId === args.data.playerId && arse.raterId === args.data.raterId);
 
             if (arse) {
@@ -71,8 +71,8 @@ describe('ArseService', () => {
                     raterId: number
                 }
             },
-            update: arse,
-            create: arse,
+            update: Arse,
+            create: Arse,
         }) => {
             const arse = arseList.find((arse) => arse.playerId === args.where.playerId_raterId.playerId && arse.raterId === args.where.playerId_raterId.raterId);
 
@@ -109,7 +109,7 @@ describe('ArseService', () => {
                 playerId: 6,
                 raterId: 16,
                 stamp: expect.any(Date)
-            } as arse);
+            } as Arse);
         });
 
         it('should return null for player 7, rater 16', async () => {
@@ -134,7 +134,7 @@ describe('ArseService', () => {
                     playerId: 1,
                     raterId: expect.any(Number),
                     stamp: expect.any(Date)
-                } as arse);
+                } as Arse);
             }
         });
 
@@ -160,7 +160,7 @@ describe('ArseService', () => {
                     playerId: expect.any(Number),
                     raterId: 1,
                     stamp: expect.any(Date)
-                } as arse);
+                } as Arse);
             }
         });
 

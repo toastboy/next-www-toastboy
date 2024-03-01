@@ -1,6 +1,6 @@
 import { player } from '@prisma/client';
 import clubSupporterService from 'services/ClubSupporter';
-import clubService from 'services/club';
+import clubService from 'services/Club';
 import ClubBadge from 'components/ClubBadge';
 
 export default async function PlayerClubs({

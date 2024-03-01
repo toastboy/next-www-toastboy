@@ -1,10 +1,17 @@
 import AzureCache from 'lib/azure';
 import { streamToBuffer } from 'lib/utils';
-
-import { getAllIds } from 'lib/clubs';
+import clubService from 'services/Club';
 
 export async function generateStaticParams() {
-    return getAllIds();
+    const clubs = await clubService.getAll();
+
+    return clubs.map((club) => {
+        return {
+            params: {
+                id: club.id
+            },
+        };
+    });
 }
 
 export async function GET(

@@ -1,11 +1,11 @@
 import Image from 'next/image';
 
-import { club } from '@prisma/client';
+import { Club } from '@prisma/client';
 
 export default function ClubBadge({
     club,
 }: {
-    club: club,
+    club: Club,
 }) {
     const url = `/api/footy/club/badge/${club.id}`;
 

@@ -1,4 +1,4 @@
-import { country } from '@prisma/client';
+import { Country } from '@prisma/client';
 import prisma from 'lib/prisma';
 import debug from 'debug';
 
@@ -11,7 +11,7 @@ export class CountryService {
      * @returns the validated country
      * @throws An error if the country is invalid.
      */
-    validate(country: country): country {
+    validate(country: Country): Country {
         if (!country.isoCode || (!/^[A-Z]{2}$/.test(country.isoCode) && !/^[A-Z]{2}-[A-Z]{3}$/.test(country.isoCode))) {
             throw new Error(`Invalid isoCode value: ${country.isoCode}`);
         }
@@ -25,7 +25,7 @@ export class CountryService {
      * @returns A Promise that resolves to the country object if found, or null if not found.
      * @throws If there is an error while fetching the country.
      */
-    async get(isoCode: string): Promise<country | null> {
+    async get(isoCode: string): Promise<Country | null> {
         try {
             return prisma.country.findUnique({
                 where: {
@@ -39,15 +39,15 @@ export class CountryService {
     }
 
     /**
-     * Retrieves all clubs.
-     * @returns A promise that resolves to an array of clubs or null if an error occurs.
+     * Retrieves all countries.
+     * @returns A promise that resolves to an array of countries or null if an error occurs.
      * @throws An error if there is a failure.
      */
-    async getAll(): Promise<country[] | null> {
+    async getAll(): Promise<Country[] | null> {
         try {
             return prisma.country.findMany({});
         } catch (error) {
-            log(`Error fetching clubs: ${error}`);
+            log(`Error fetching countries: ${error}`);
             throw error;
         }
     }
@@ -58,7 +58,7 @@ export class CountryService {
      * @returns A promise that resolves to the created country, or null if an error occurs.
      * @throws An error if there is a failure.
      */
-    async create(data: country): Promise<country | null> {
+    async create(data: Country): Promise<Country | null> {
         try {
             return await prisma.country.create({
                 data: this.validate(data)
@@ -75,7 +75,7 @@ export class CountryService {
      * @returns A promise that resolves to the upserted country, or null if the upsert failed.
      * @throws An error if there is a failure.
      */
-    async upsert(data: country): Promise<country | null> {
+    async upsert(data: Country): Promise<Country | null> {
         try {
             return await prisma.country.upsert({
                 where: {
@@ -109,19 +109,19 @@ export class CountryService {
     }
 
     /**
-     * Deletes all clubs.
-     * @returns A promise that resolves when all clubs are deleted.
+     * Deletes all countries.
+     * @returns A promise that resolves when all countries are deleted.
      * @throws An error if there is a failure.
      */
     async deleteAll(): Promise<void> {
         try {
             await prisma.country.deleteMany();
         } catch (error) {
-            log(`Error deleting clubs: ${error}`);
+            log(`Error deleting countries: ${error}`);
             throw error;
         }
     }
 }
 
-const clubService = new CountryService();
-export default clubService;
+const countryService = new CountryService();
+export default countryService;

@@ -8,7 +8,7 @@ datasource db {
   relationMode = "prisma"
 }
 
-model arse {
+model Arse {
   stamp DateTime @default(now()) @db.Timestamp(0)
 
   in_goal    Int?
@@ -30,7 +30,7 @@ model arse {
   @@index([raterId])
 }
 
-model club {
+model Club {
   id           Int     @unique(map: "id") @default(autoincrement())
   soccerway_id Int?
   club_name    String? @db.VarChar(255)
@@ -45,14 +45,14 @@ model ClubSupporter {
   clubId   Int @default(0)
 
   player player @relation(fields: [playerId], references: [id])
-  club   club   @relation(fields: [clubId], references: [id])
+  club   Club   @relation(fields: [clubId], references: [id])
 
   @@unique([playerId, clubId])
   @@index([playerId])
   @@index([clubId])
 }
 
-model country {
+model Country {
   isoCode String @id @unique(map: "isoCode") @db.VarChar(6)
   name    String @unique(map: "name") @db.VarChar(255)
 
@@ -63,7 +63,7 @@ model CountrySupporter {
   playerId       Int
   countryISOcode String @db.VarChar(6)
 
-  country country @relation(fields: [countryISOcode], references: [isoCode])
+  country Country @relation(fields: [countryISOcode], references: [isoCode])
   player  player  @relation(fields: [playerId], references: [id])
 
   @@unique([playerId, countryISOcode])
@@ -158,8 +158,8 @@ model player {
   goalie        Int?      @db.TinyInt
   mugshot       String?   @db.VarChar(20)
 
-  ratingsOfPlayer arse[]             @relation("player")
-  ratingsByPlayer arse[]             @relation("rater")
+  ratingsOfPlayer Arse[]             @relation("player")
+  ratingsByPlayer Arse[]             @relation("rater")
   clubs           ClubSupporter[]
   countries       CountrySupporter[]
 }

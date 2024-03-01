@@ -1,5 +1,5 @@
-import { club } from '@prisma/client';
-import ClubService from 'services/club';
+import { Club } from '@prisma/client';
+import ClubService from 'services/Club';
 import prisma from 'lib/prisma';
 
 jest.mock('lib/prisma', () => ({
@@ -13,7 +13,7 @@ jest.mock('lib/prisma', () => ({
     },
 }));
 
-const defaultClub: club = {
+const defaultClub: Club = {
     id: 1,
     soccerway_id: 1000,
     club_name: "Wittering United",
@@ -21,12 +21,12 @@ const defaultClub: club = {
     country: "england"
 };
 
-const invalidClub: club = {
+const invalidClub: Club = {
     ...defaultClub,
     id: -1,
 };
 
-const clubList: club[] = Array.from({ length: 100 }, (_, index) => ({
+const clubList: Club[] = Array.from({ length: 100 }, (_, index) => ({
     ...defaultClub,
     id: index + 1,
     soccerway_id: 1000 + index,
@@ -43,7 +43,7 @@ describe('ClubService', () => {
             return Promise.resolve(club ? club : null);
         });
 
-        (prisma.club.create as jest.Mock).mockImplementation((args: { data: club }) => {
+        (prisma.club.create as jest.Mock).mockImplementation((args: { data: Club }) => {
             const club = clubList.find((club) => club.id === args.data.id);
 
             if (club) {
@@ -55,9 +55,9 @@ describe('ClubService', () => {
         });
 
         (prisma.club.upsert as jest.Mock).mockImplementation((args: {
-            where: { id },
-            update: club,
-            create: club,
+            where: { id: number },
+            update: Club,
+            create: Club,
         }) => {
             const club = clubList.find((club) => club.id === args.where.id);
 
@@ -88,7 +88,7 @@ describe('ClubService', () => {
                 ...defaultClub,
                 id: 6,
                 soccerway_id: 1005,
-            } as club);
+            } as Club);
         });
 
         it('should return null for id 107', async () => {
@@ -113,8 +113,8 @@ describe('ClubService', () => {
     });
 
     describe('create', () => {
-        it('should create an club', async () => {
-            const newClub: club = {
+        it('should create a club', async () => {
+            const newClub: Club = {
                 ...defaultClub,
                 id: 106,
                 soccerway_id: 1005,
@@ -123,11 +123,11 @@ describe('ClubService', () => {
             expect(result).toEqual(newClub);
         });
 
-        it('should refuse to create an club with invalid data', async () => {
+        it('should refuse to create a club with invalid data', async () => {
             await expect(ClubService.create(invalidClub)).rejects.toThrow();
         });
 
-        it('should refuse to create an club that has the same id as an existing one', async () => {
+        it('should refuse to create a club that has the same id as an existing one', async () => {
             await expect(ClubService.create({
                 ...defaultClub,
                 id: 6,
@@ -143,7 +143,7 @@ describe('ClubService', () => {
         });
 
         it('should update an existing club where one with the id already existed', async () => {
-            const updatedClub: club = {
+            const updatedClub: Club = {
                 ...defaultClub,
                 id: 6,
                 soccerway_id: 1006,

@@ -1,11 +1,11 @@
 import Image from 'next/image';
 
-import { country } from '@prisma/client';
+import { Country } from '@prisma/client';
 
 export default function CountryFlag({
     country,
 }: {
-    country: country,
+    country: Country,
 }) {
     const flag = country.isoCode.toLowerCase();
     const url = `/api/footy/country/flag/${flag}`;

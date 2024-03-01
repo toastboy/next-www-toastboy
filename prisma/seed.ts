@@ -1,4 +1,4 @@
-import { arse, ClubSupporter, club, country, CountrySupporter, game_chat, game_day, outcome, player, standings } from '@prisma/client';
+import { Arse, ClubSupporter, Club, Country, CountrySupporter, game_chat, game_day, outcome, player, standings } from '@prisma/client';
 import prisma from '../src/lib/prisma';
 import { streamToBuffer } from '../src/lib/utils';
 import { Prisma } from '@prisma/client';
@@ -95,11 +95,11 @@ async function main() {
     await processJsonData<standings>(containerClient, "standings.json", prisma.standings);
     await processJsonData<outcome>(containerClient, "outcome.json", prisma.outcome);
     await processJsonData<game_chat>(containerClient, "game_chat.json", prisma.game_chat);
-    await processJsonData<country>(containerClient, "country.json", prisma.country);
+    await processJsonData<Country>(containerClient, "Country.json", prisma.country);
     await processJsonData<CountrySupporter>(containerClient, "CountrySupporter.json", prisma.countrySupporter);
-    await processJsonData<club>(containerClient, "club.json", prisma.club);
+    await processJsonData<Club>(containerClient, "Club.json", prisma.club);
     await processJsonData<ClubSupporter>(containerClient, "ClubSupporter.json", prisma.clubSupporter);
-    await processJsonData<arse>(containerClient, "arse.json", prisma.arse);
+    await processJsonData<Arse>(containerClient, "Arse.json", prisma.arse);
 }
 
 main()

@@ -1,4 +1,4 @@
-import { arse } from '@prisma/client';
+import { Arse } from '@prisma/client';
 import prisma from 'lib/prisma';
 import debug from 'debug';
 
@@ -11,7 +11,7 @@ export class ArseService {
      * @returns the validated arse
      * @throws An error if the arse is invalid.
      */
-    validate(arse: arse): arse {
+    validate(arse: Arse): Arse {
         const now = new Date();
 
         if (!arse.stamp || isNaN(arse.stamp.getTime()) || arse.stamp > now) {
@@ -57,7 +57,7 @@ export class ArseService {
      * @returns A promise that resolves to the "arse" object if found, otherwise null.
      * @throws An error if there is a failure.
      */
-    async get(playerId: number, raterId: number): Promise<arse | null> {
+    async get(playerId: number, raterId: number): Promise<Arse | null> {
         try {
             return prisma.arse.findUnique({
                 where: {
@@ -78,7 +78,7 @@ export class ArseService {
      * @returns A promise that resolves to an array of arses or null if an error occurs.
      * @throws An error if there is a failure.
      */
-    async getAll(): Promise<arse[] | null> {
+    async getAll(): Promise<Arse[] | null> {
         try {
             return prisma.arse.findMany({});
         } catch (error) {
@@ -93,7 +93,7 @@ export class ArseService {
      * @returns A promise that resolves to an array of arses or null.
      * @throws An error if there is a failure.
      */
-    async getByPlayer(playerId: number): Promise<arse[] | null> {
+    async getByPlayer(playerId: number): Promise<Arse[] | null> {
         try {
             return prisma.arse.findMany({
                 where: {
@@ -112,7 +112,7 @@ export class ArseService {
      * @returns A promise that resolves to an array of arses or null.
      * @throws An error if there is a failure.
      */
-    async getByRater(raterId: number): Promise<arse[] | null> {
+    async getByRater(raterId: number): Promise<Arse[] | null> {
         try {
             return prisma.arse.findMany({
                 where: {
@@ -131,7 +131,7 @@ export class ArseService {
      * @returns A promise that resolves to the created arse, or null if an error occurs.
      * @throws An error if there is a failure.
      */
-    async create(data: arse): Promise<arse | null> {
+    async create(data: Arse): Promise<Arse | null> {
         try {
             return await prisma.arse.create({
                 data: this.validate(data)
@@ -148,7 +148,7 @@ export class ArseService {
      * @returns A promise that resolves to the upserted arse, or null if the upsert failed.
      * @throws An error if there is a failure.
      */
-    async upsert(data: arse): Promise<arse | null> {
+    async upsert(data: Arse): Promise<Arse | null> {
         try {
             return await prisma.arse.upsert({
                 where: {

@@ -1,4 +1,4 @@
-import { club } from '@prisma/client';
+import { Club } from '@prisma/client';
 import prisma from 'lib/prisma';
 import debug from 'debug';
 
@@ -11,7 +11,7 @@ export class ClubService {
      * @returns the validated club
      * @throws An error if the club is invalid.
      */
-    validate(club: club): club {
+    validate(club: Club): Club {
         if (!club.id || !Number.isInteger(club.id) || club.id < 0) {
             throw new Error(`Invalid id value: ${club.id}`);
         }
@@ -25,7 +25,7 @@ export class ClubService {
      * @returns A Promise that resolves to the club object if found, or null if not found.
      * @throws If there is an error while fetching the club.
      */
-    async get(id: number): Promise<club | null> {
+    async get(id: number): Promise<Club | null> {
         try {
             return prisma.club.findUnique({
                 where: {
@@ -43,7 +43,7 @@ export class ClubService {
      * @returns A promise that resolves to an array of clubs or null if an error occurs.
      * @throws An error if there is a failure.
      */
-    async getAll(): Promise<club[] | null> {
+    async getAll(): Promise<Club[] | null> {
         try {
             return prisma.club.findMany({});
         } catch (error) {
@@ -58,7 +58,7 @@ export class ClubService {
      * @returns A promise that resolves to the created club, or null if an error occurs.
      * @throws An error if there is a failure.
      */
-    async create(data: club): Promise<club | null> {
+    async create(data: Club): Promise<Club | null> {
         try {
             return await prisma.club.create({
                 data: this.validate(data)
@@ -75,7 +75,7 @@ export class ClubService {
      * @returns A promise that resolves to the upserted club, or null if the upsert failed.
      * @throws An error if there is a failure.
      */
-    async upsert(data: club): Promise<club | null> {
+    async upsert(data: Club): Promise<Club | null> {
         try {
             return await prisma.club.upsert({
                 where: {

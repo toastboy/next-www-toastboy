@@ -1,6 +1,6 @@
 import { player } from '@prisma/client';
 import countrySupporterService from 'services/CountrySupporter';
-import countryService from 'services/country';
+import countryService from 'services/Country';
 import CountryFlag from 'components/CountryFlag';
 
 export default async function PlayerClubs({

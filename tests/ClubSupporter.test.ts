@@ -137,7 +137,7 @@ describe('clubSupporterService', () => {
             });
         });
 
-        it('should retrieve the correct ClubSupporters for rater id 1', async () => {
+        it('should retrieve the correct ClubSupporters for club id 1', async () => {
             const result = await clubSupporterService.getByClub(1);
             expect(result.length).toEqual(1);
             for (const ClubSupporterResult of result) {
@@ -149,7 +149,7 @@ describe('clubSupporterService', () => {
             }
         });
 
-        it('should return an empty list when retrieving ClubSupporters for rater id 101', async () => {
+        it('should return an empty list when retrieving ClubSupporters for club id 101', async () => {
             const result = await clubSupporterService.getByClub(101);
             expect(result).toEqual([]);
         });
@@ -180,7 +180,7 @@ describe('clubSupporterService', () => {
             await expect(clubSupporterService.create(invalidClubSupporter)).rejects.toThrow();
         });
 
-        it('should refuse to create a ClubSupporter that has the same player ID and rater ID as an existing one', async () => {
+        it('should refuse to create a ClubSupporter that has the same player ID and club ID as an existing one', async () => {
             await expect(clubSupporterService.create({
                 ...defaultClubSupporter,
                 playerId: 6,
@@ -190,12 +190,12 @@ describe('clubSupporterService', () => {
     });
 
     describe('upsert', () => {
-        it('should create a ClubSupporter where the combination of player ID and rater ID did not exist', async () => {
+        it('should create a ClubSupporter where the combination of player ID and club ID did not exist', async () => {
             const result = await clubSupporterService.upsert(defaultClubSupporter);
             expect(result).toEqual(defaultClubSupporter);
         });
 
-        it('should update an existing ClubSupporter where the combination of player ID and rater ID already existed', async () => {
+        it('should update an existing ClubSupporter where the combination of player ID and club ID already existed', async () => {
             const updatedClubSupporter = {
                 ...defaultClubSupporter,
                 playerId: 6,
@@ -206,11 +206,11 @@ describe('clubSupporterService', () => {
             expect(result).toEqual(updatedClubSupporter);
         });
 
-        it('should refuse to create a ClubSupporter with invalid data where the combination of player ID and rater ID did not exist', async () => {
+        it('should refuse to create a ClubSupporter with invalid data where the combination of player ID and club ID did not exist', async () => {
             await expect(clubSupporterService.create(invalidClubSupporter)).rejects.toThrow();
         });
 
-        it('should refuse to update a ClubSupporter with invalid data where the combination of player ID and rater ID already existed', async () => {
+        it('should refuse to update a ClubSupporter with invalid data where the combination of player ID and club ID already existed', async () => {
             await expect(clubSupporterService.create(invalidClubSupporter)).rejects.toThrow();
         });
     });

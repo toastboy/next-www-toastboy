@@ -3,6 +3,7 @@ import { playerService } from "lib/player";
 import PlayerMugshot from 'components/PlayerMugshot';
 import PlayerArse from 'components/PlayerArse';
 import PlayerClubs from 'components/PlayerClubs';
+import PlayerCountries from 'components/PlayerCountries';
 
 export default async function PlayerProfile({
     player,
@@ -17,6 +18,7 @@ export default async function PlayerProfile({
             <h1 className="text-6xl font-bold mb-4 text-center">{playerService.getName(player)}</h1>
             <PlayerMugshot player={player} />
             <PlayerClubs player={player} />
+            <PlayerCountries player={player} />
             <PlayerArse player={player} />
             <div className="px-6 py-4">
                 <div className="font-bold text-xl mb-2">{first_name} {last_name}</div>

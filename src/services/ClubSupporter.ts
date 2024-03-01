@@ -26,7 +26,7 @@ export class ClubSupporterService {
      * Retrieves a ClubSupporter for the given player ID and club ID.
      * @param playerId - The ID of the player.
      * @param clubId - The ID of the club.
-     * @returns A promise that resolves to the ClubCupporter if found, otherwise null.
+     * @returns A promise that resolves to the ClubSupporter if found, otherwise null.
      * @throws An error if there is a failure.
      */
     async get(playerId: number, clubId: number): Promise<ClubSupporter | null> {

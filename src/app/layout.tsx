@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import Navbar from "components/navbar";
+import NavBar from "components/NavBar";
 
 import './globals.css';
 
@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <Navbar />
+        <NavBar />
         <div className="relative translate-y-24">
           {children}
         </div>

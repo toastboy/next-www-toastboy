@@ -1,4 +1,4 @@
-import { Arse, ClubSupporter, Club, Country, CountrySupporter, game_chat, game_day, outcome, Player, standings } from '@prisma/client';
+import { Arse, ClubSupporter, Club, Country, CountrySupporter, GameChat, GameDay, Outcome, Player, Standings } from '@prisma/client';
 import prisma from '../src/lib/prisma';
 import { streamToBuffer } from '../src/lib/utils';
 import { Prisma } from '@prisma/client';
@@ -79,22 +79,22 @@ async function main() {
     await prisma.club.deleteMany();
     await prisma.countrySupporter.deleteMany();
     await prisma.country.deleteMany();
-    await prisma.game_chat.deleteMany();
+    await prisma.gameChat.deleteMany();
     await prisma.invitation.deleteMany();
     await prisma.outcome.deleteMany();
     await prisma.standings.deleteMany();
-    await prisma.game_day.deleteMany();
+    await prisma.gameDay.deleteMany();
     await prisma.diffs.deleteMany();
     await prisma.picker.deleteMany();
-    await prisma.picker_teams.deleteMany();
+    await prisma.pickerTeams.deleteMany();
     await prisma.player.deleteMany();
 
     // Now we must populate the tables in the reverse of the order above
-    await processJsonData<game_day>(containerClient, "game_day.json", prisma.game_day);
+    await processJsonData<GameDay>(containerClient, "GameDay.json", prisma.gameDay);
     await processJsonData<Player>(containerClient, "Player.json", prisma.player);
-    await processJsonData<standings>(containerClient, "standings.json", prisma.standings);
-    await processJsonData<outcome>(containerClient, "outcome.json", prisma.outcome);
-    await processJsonData<game_chat>(containerClient, "game_chat.json", prisma.game_chat);
+    await processJsonData<Standings>(containerClient, "Standings.json", prisma.standings);
+    await processJsonData<Outcome>(containerClient, "Outcome.json", prisma.outcome);
+    await processJsonData<GameChat>(containerClient, "GameChat.json", prisma.gameChat);
     await processJsonData<Country>(containerClient, "Country.json", prisma.country);
     await processJsonData<CountrySupporter>(containerClient, "CountrySupporter.json", prisma.countrySupporter);
     await processJsonData<Club>(containerClient, "Club.json", prisma.club);

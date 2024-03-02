@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { FaBars, FaTimes } from "react-icons/fa";
 
-const Navbar = () => {
+const NavBar = () => {
     const [nav, setNav] = useState(false);
 
     const links = [
@@ -65,4 +65,4 @@ const Navbar = () => {
     );
 };
 
-export default Navbar;
+export default NavBar;

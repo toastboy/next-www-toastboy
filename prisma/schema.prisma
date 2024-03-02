@@ -71,7 +71,7 @@ model CountrySupporter {
   @@index([countryISOcode])
 }
 
-model diffs {
+model Diffs {
   id               Int      @id @default(autoincrement())
   a                String?  @db.Text
   b                String?  @db.Text
@@ -82,7 +82,7 @@ model diffs {
   diff_played      Int?
 }
 
-model game_chat {
+model GameChat {
   id       Int      @id @default(autoincrement())
   game_day Int
   stamp    DateTime @default(now()) @db.Timestamp(0)
@@ -92,17 +92,17 @@ model game_chat {
   @@index([player], map: "player")
 }
 
-model game_day {
+model GameDay {
   game_number          Int       @id
   game_date            DateTime? @db.Date
   game                 Boolean?  @default(true)
   mail_sent            DateTime? @db.DateTime(0)
   comment              String?   @db.VarChar(255)
-  bibs                 team?
+  bibs                 Team?
   picker_games_history Int?
 }
 
-model invitation {
+model Invitation {
   uuid     String @id @db.Char(38)
   player   Int    @default(0)
   game_day Int    @default(0)
@@ -111,13 +111,13 @@ model invitation {
   @@index([game_day], map: "invitation_ibfk_2")
 }
 
-model outcome {
+model Outcome {
   game_day     Int
   player       Int
   response     String?   @db.VarChar(20)
   responsetime DateTime? @db.DateTime(0)
   points       Int?
-  team         team?
+  team         Team?
   comment      String?   @db.VarChar(127)
   pub          Int?      @db.TinyInt
   paid         Boolean?
@@ -128,7 +128,7 @@ model outcome {
   @@index([player, game_day], map: "idx_outcome")
 }
 
-model picker {
+model Picker {
   player      Int      @id
   player_name String?  @db.VarChar(255)
   age         Int?
@@ -137,9 +137,9 @@ model picker {
   played      Int?
 }
 
-model picker_teams {
+model PickerTeams {
   player Int   @unique(map: "player")
-  team   team?
+  team   Team?
 }
 
 model Player {
@@ -163,7 +163,7 @@ model Player {
   countries       CountrySupporter[]
 }
 
-model standings {
+model Standings {
   player        Int      @default(0)
   table_year    Int
   game_day      Int      @default(0)
@@ -187,7 +187,7 @@ model standings {
   @@index([game_day], map: "standings_ibfk_2")
 }
 
-enum team {
+enum Team {
   A
   B
 }

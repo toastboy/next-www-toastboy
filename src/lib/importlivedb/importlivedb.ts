@@ -98,6 +98,8 @@ async function importBackup(): Promise<void> {
         const migrations = await readdir(migrationsDir);
 
         // Import the mysqldump backup created above
+        execSync(`mysql -h ${devMysqlHost} -u ${devMysqlUser} -p${devMysqlPassword} -e'DROP DATABASE IF EXISTS footy;'`);
+        execSync(`mysql -h ${devMysqlHost} -u ${devMysqlUser} -p${devMysqlPassword} -e'CREATE DATABASE footy;'`);
         execSync(`cat /tmp/${mysqlDatabase}.sql | mysql -h ${devMysqlHost} -u ${devMysqlUser} -p${devMysqlPassword} ${mysqlDatabase}`);
         console.log('Backup imported successfully.');
 
@@ -121,11 +123,11 @@ async function importBackup(): Promise<void> {
             'Club',
             'Country',
             'CountrySupporter',
-            'game_chat',
-            'game_day',
-            'outcome',
+            'GameChat',
+            'GameDay',
+            'Outcome',
             'Player',
-            'standings',
+            'Standings',
         ];
 
         // Write each table in ${mysqlDatabase} to a JSON file in /tmp/importlivedb

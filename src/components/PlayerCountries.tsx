@@ -1,4 +1,4 @@
-import { player } from '@prisma/client';
+import { Player } from '@prisma/client';
 import countrySupporterService from 'services/CountrySupporter';
 import countryService from 'services/Country';
 import CountryFlag from 'components/CountryFlag';
@@ -6,7 +6,7 @@ import CountryFlag from 'components/CountryFlag';
 export default async function PlayerClubs({
     player,
 }: {
-    player: player,
+    player: Player,
 }) {
     const countrySupporters = await countrySupporterService.getByPlayer(player.id);
 

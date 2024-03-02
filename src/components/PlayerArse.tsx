@@ -1,10 +1,10 @@
-import { player } from '@prisma/client';
+import { Player } from '@prisma/client';
 import arseService from 'services/Arse';
 
 export default async function PlayerArse({
     player,
 }: {
-    player: player,
+    player: Player,
 }) {
     const fields = ['in_goal', 'running', 'shooting', 'passing', 'ball_skill', 'attacking', 'defending'];
     const arses = await arseService.getByPlayer(player.id);

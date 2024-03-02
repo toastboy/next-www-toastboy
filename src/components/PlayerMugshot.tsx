@@ -1,13 +1,13 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { player } from '@prisma/client';
-import { playerService } from "lib/player";
+import { Player } from '@prisma/client';
+import playerService from "services/Player";
 
 export default function PlayerMugshot({
     player,
 }: {
-    player: player,
+    player: Player,
 }) {
     const url = `/api/footy/player/mugshot/${player.login}`;
 

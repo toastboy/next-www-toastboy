@@ -22,8 +22,8 @@ model Arse {
   playerId Int
   raterId  Int
 
-  player player @relation("player", fields: [playerId], references: [id])
-  rater  player @relation("rater", fields: [raterId], references: [id])
+  player Player @relation("player", fields: [playerId], references: [id])
+  rater  Player @relation("rater", fields: [raterId], references: [id])
 
   @@unique([playerId, raterId])
   @@index([playerId])
@@ -44,7 +44,7 @@ model ClubSupporter {
   playerId Int @default(0)
   clubId   Int @default(0)
 
-  player player @relation(fields: [playerId], references: [id])
+  player Player @relation(fields: [playerId], references: [id])
   club   Club   @relation(fields: [clubId], references: [id])
 
   @@unique([playerId, clubId])
@@ -64,7 +64,7 @@ model CountrySupporter {
   countryISOcode String @db.VarChar(6)
 
   country Country @relation(fields: [countryISOcode], references: [isoCode])
-  player  player  @relation(fields: [playerId], references: [id])
+  player  Player  @relation(fields: [playerId], references: [id])
 
   @@unique([playerId, countryISOcode])
   @@index([playerId])
@@ -142,9 +142,9 @@ model picker_teams {
   team   team?
 }
 
-model player {
+model Player {
   id            Int       @id @default(autoincrement())
-  is_admin      Int?      @db.TinyInt
+  is_admin      Boolean?  @db.TinyInt
   login         String?   @unique(map: "login") @db.VarChar(16)
   first_name    String?   @db.VarChar(32)
   last_name     String?   @db.VarChar(32)
@@ -154,9 +154,8 @@ model player {
   born          DateTime? @db.Date
   introduced_by Int?
   comment       String?   @db.VarChar(32)
-  anonymous     Int?      @db.TinyInt
-  goalie        Int?      @db.TinyInt
-  mugshot       String?   @db.VarChar(20)
+  anonymous     Boolean?  @db.TinyInt
+  goalie        Boolean?  @db.TinyInt
 
   ratingsOfPlayer Arse[]             @relation("player")
   ratingsByPlayer Arse[]             @relation("rater")

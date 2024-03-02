@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { playerService } from "lib/player";
+import playerService from "services/Player";
 
 export const POST = async (req: NextRequest) => {
     const data = await req.json();

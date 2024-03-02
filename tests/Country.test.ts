@@ -1,5 +1,5 @@
 import { Country } from '@prisma/client';
-import CountryService from 'services/Country';
+import countryService from 'services/Country';
 import prisma from 'lib/prisma';
 
 jest.mock('lib/prisma', () => ({
@@ -79,7 +79,7 @@ describe('CountryService', () => {
 
     describe('get', () => {
         it('should retrieve the correct country with isoCode "GB-SCO"', async () => {
-            const result = await CountryService.get("GB-SCT");
+            const result = await countryService.get("GB-SCT");
             expect(result).toEqual({
                 ...defaultCountry,
                 isoCode: "GB-SCT",
@@ -87,7 +87,7 @@ describe('CountryService', () => {
         });
 
         it('should return null for isoCode "ZZZ"', async () => {
-            const result = await CountryService.get("ZZZ");
+            const result = await countryService.get("ZZZ");
             expect(result).toBeNull();
         });
     });
@@ -100,7 +100,7 @@ describe('CountryService', () => {
         });
 
         it('should return the correct, complete list of 4 countries', async () => {
-            const result = await CountryService.getAll();
+            const result = await countryService.getAll();
             expect(result.length).toEqual(4);
             expect(result[0].isoCode).toEqual("GB-ENG");
         });
@@ -113,16 +113,16 @@ describe('CountryService', () => {
                 isoCode: "IT",
                 name: "Italia",
             };
-            const result = await CountryService.create(newCountry);
+            const result = await countryService.create(newCountry);
             expect(result).toEqual(newCountry);
         });
 
         it('should refuse to create a country with invalid data', async () => {
-            await expect(CountryService.create(invalidCountry)).rejects.toThrow();
+            await expect(countryService.create(invalidCountry)).rejects.toThrow();
         });
 
         it('should refuse to create a country that has the same id as an existing one', async () => {
-            await expect(CountryService.create({
+            await expect(countryService.create({
                 ...defaultCountry,
                 isoCode: "GB-ENG",
                 name: "Engerland",
@@ -132,7 +132,7 @@ describe('CountryService', () => {
 
     describe('upsert', () => {
         it('should create a country', async () => {
-            const result = await CountryService.upsert(defaultCountry);
+            const result = await countryService.upsert(defaultCountry);
             expect(result).toEqual(defaultCountry);
         });
 
@@ -142,32 +142,32 @@ describe('CountryService', () => {
                 isoCode: "GB-ENG",
                 name: "England",
             };
-            const result = await CountryService.upsert(updatedCountry);
+            const result = await countryService.upsert(updatedCountry);
             expect(result).toEqual(updatedCountry);
         });
 
         it('should refuse to create a country with invalid data where one with the id did not exist', async () => {
-            await expect(CountryService.create(invalidCountry)).rejects.toThrow();
+            await expect(countryService.create(invalidCountry)).rejects.toThrow();
         });
 
         it('should refuse to update a country with invalid data where one with the id already existed', async () => {
-            await expect(CountryService.create(invalidCountry)).rejects.toThrow();
+            await expect(countryService.create(invalidCountry)).rejects.toThrow();
         });
     });
 
     describe('delete', () => {
         it('should delete an existing country', async () => {
-            await CountryService.delete("GB-NIR");
+            await countryService.delete("GB-NIR");
         });
 
         it('should silently return when asked to delete a country that does not exist', async () => {
-            await CountryService.delete("ZIM");
+            await countryService.delete("ZIM");
         });
     });
 
     describe('deleteAll', () => {
         it('should delete all countries', async () => {
-            await CountryService.deleteAll();
+            await countryService.deleteAll();
         });
     });
 });

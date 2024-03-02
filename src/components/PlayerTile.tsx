@@ -1,11 +1,11 @@
-import { player } from '@prisma/client';
+import { Player } from '@prisma/client';
 import Link from 'next/link';
 import PlayerMugshot from 'components/PlayerMugshot';
 
 export default function PlayerTile({
   player,
 }: {
-  player: player,
+  player: Player,
 }) {
   const { id, login, first_name, last_name, email, born } = player;
   const born_string = born == null ? "Unknown" : born.toLocaleDateString('sv');

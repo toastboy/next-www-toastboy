@@ -124,7 +124,7 @@ async function importBackup(): Promise<void> {
             'game_chat',
             'game_day',
             'outcome',
-            'player',
+            'Player',
             'standings',
         ];
 

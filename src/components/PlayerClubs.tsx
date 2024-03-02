@@ -1,4 +1,4 @@
-import { player } from '@prisma/client';
+import { Player } from '@prisma/client';
 import clubSupporterService from 'services/ClubSupporter';
 import clubService from 'services/Club';
 import ClubBadge from 'components/ClubBadge';
@@ -6,7 +6,7 @@ import ClubBadge from 'components/ClubBadge';
 export default async function PlayerClubs({
     player,
 }: {
-    player: player,
+    player: Player,
 }) {
     const clubSupporters = await clubSupporterService.getByPlayer(player.id);
 

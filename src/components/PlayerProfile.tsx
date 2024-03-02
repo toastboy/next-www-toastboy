@@ -1,5 +1,5 @@
-import { player } from '@prisma/client';
-import { playerService } from "lib/player";
+import { Player } from '@prisma/client';
+import playerService from "services/Player";
 import PlayerMugshot from 'components/PlayerMugshot';
 import PlayerArse from 'components/PlayerArse';
 import PlayerClubs from 'components/PlayerClubs';
@@ -8,7 +8,7 @@ import PlayerCountries from 'components/PlayerCountries';
 export default async function PlayerProfile({
     player,
 }: {
-    player: player,
+    player: Player,
 }) {
     const { id, login, first_name, last_name, email, born } = player;
     const born_string = born == null ? "Unknown" : born.toLocaleDateString('sv');

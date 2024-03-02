@@ -1,4 +1,4 @@
-import { Arse, ClubSupporter, Club, Country, CountrySupporter, game_chat, game_day, outcome, player, standings } from '@prisma/client';
+import { Arse, ClubSupporter, Club, Country, CountrySupporter, game_chat, game_day, outcome, Player, standings } from '@prisma/client';
 import prisma from '../src/lib/prisma';
 import { streamToBuffer } from '../src/lib/utils';
 import { Prisma } from '@prisma/client';
@@ -91,7 +91,7 @@ async function main() {
 
     // Now we must populate the tables in the reverse of the order above
     await processJsonData<game_day>(containerClient, "game_day.json", prisma.game_day);
-    await processJsonData<player>(containerClient, "player.json", prisma.player);
+    await processJsonData<Player>(containerClient, "Player.json", prisma.player);
     await processJsonData<standings>(containerClient, "standings.json", prisma.standings);
     await processJsonData<outcome>(containerClient, "outcome.json", prisma.outcome);
     await processJsonData<game_chat>(containerClient, "game_chat.json", prisma.game_chat);

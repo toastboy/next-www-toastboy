@@ -1,31 +1,64 @@
-import { player } from '@prisma/client';
+import { Player } from '@prisma/client';
 import prisma from 'lib/prisma';
 
-type PlayerData = {
-    id: number;
-    is_admin?: number;
-    login?: string;
-    first_name?: string;
-    last_name?: string;
-    email?: string;
-    joined?: Date;
-    finished?: Date;
-    born?: Date;
-    introduced_by?: number;
-    comment?: string;
-    anonymous?: number;
-    goalie?: number;
-    mugshot?: string;
-};
-
 class PlayerService {
+    /**
+     * Validate a Player
+     * @param {Player} player The Player to validate
+     * @returns the validated Player
+     * @throws An error if the Player is invalid.
+     */
+    validate(player: Player): Player {
+        if (!player.id || !Number.isInteger(player.id) || player.id < 0) {
+            throw new Error(`Invalid id value: ${player.id}`);
+        }
+        if (player.is_admin !== null && typeof player.is_admin !== 'boolean') {
+            throw new Error(`Invalid is_admin value: ${player.is_admin}`);
+        }
+        if (player.login !== null && typeof player.login !== 'string') {
+            throw new Error(`Invalid login value: ${player.login}`);
+        }
+        if (player.first_name !== null && typeof player.first_name !== 'string') {
+            throw new Error(`Invalid first_name value: ${player.first_name}`);
+        }
+        if (player.last_name !== null && typeof player.last_name !== 'string') {
+            throw new Error(`Invalid last_name value: ${player.last_name}`);
+        }
+        if (player.email !== null && typeof player.email !== 'string') {
+            throw new Error(`Invalid email value: ${player.email}`);
+        }
+        if (player.joined !== null && !(player.joined instanceof Date)) {
+            throw new Error(`Invalid joined value: ${player.joined}`);
+        }
+        if (player.finished !== null && !(player.finished instanceof Date)) {
+            throw new Error(`Invalid finished value: ${player.finished}`);
+        }
+        if (player.born !== null && !(player.born instanceof Date)) {
+            throw new Error(`Invalid born value: ${player.born}`);
+        }
+        if (player.introduced_by !== null && !Number.isInteger(player.introduced_by)) {
+            throw new Error(`Invalid introduced_by value: ${player.introduced_by}`);
+        }
+        if (player.comment !== null && typeof player.comment !== 'string') {
+            throw new Error(`Invalid comment value: ${player.comment}`);
+        }
+        if (player.anonymous !== null && typeof player.anonymous !== 'boolean') {
+            throw new Error(`Invalid anonymous value: ${player.anonymous}`);
+        }
+        if (player.goalie !== null && typeof player.goalie !== 'boolean') {
+            throw new Error(`Invalid goalie value: ${player.goalie}`);
+        }
+
+        return player;
+    }
+
     /**
      * Get a single player by id
      * @param id The numeric ID for the player
      * @returns A promise that resolves to the player or undefined if none was
      * found
      */
-    async getById(id: number): Promise<player | undefined> {
+    async getById(id: number): Promise<Player | undefined> {
         return prisma.player.findUnique({
             where: {
                 id: id
@@ -39,7 +72,7 @@ class PlayerService {
      * @returns A promise that resolves to the player or undefined if none was
      * found
      */
-    async getByLogin(login: string): Promise<player | undefined> {
+    async getByLogin(login: string): Promise<Player | undefined> {
         return prisma.player.findUnique({
             where: {
                 login: login
@@ -74,7 +107,7 @@ class PlayerService {
      * @param active Only return active players
      * @returns A promise that resolves to all players
      */
-    async getAll(active = true): Promise<player[]> {
+    async getAll(active = true): Promise<Player[]> {
         return prisma.player.findMany({
             where: {
                 finished: active ? null : { not: null },
@@ -88,11 +121,11 @@ class PlayerService {
      * @returns A promise that resolves to a map containing all logins and ids
      * as keys and the player objects as values
      */
-    async getAllIdsAndLogins(): Promise<Map<string, player>> {
+    async getAllIdsAndLogins(): Promise<Map<string, Player>> {
         const players = await prisma.player.findMany({});
-        const map = new Map<string, player>();
+        const map = new Map<string, Player>();
 
-        players.forEach((player: player) => {
+        players.forEach((player: Player) => {
             map.set(player.id.toString(), player);
             map.set(player.login, player);
         });
@@ -106,7 +139,7 @@ class PlayerService {
      * @param player The player object in question
      * @returns The player name string or null if there was an error
      */
-    getName(player: player | null): string | null {
+    getName(player: Player | null): string | null {
         if (player == null) {
             return null;
         }
@@ -123,9 +156,9 @@ class PlayerService {
      * @param data The properties to add to the player
      * @returns A promise that resolves to the newly-created player
      */
-    async create(data: PlayerData): Promise<player> {
+    async create(data: Player): Promise<Player> {
         return await prisma.player.create({
-            data: data
+            data: this.validate(data)
         });
     }
 
@@ -134,7 +167,7 @@ class PlayerService {
      * @param data The properties to add to the player
      * @returns A promise that resolves to the updated or created player
      */
-    async upsert(data: PlayerData): Promise<player> {
+    async upsert(data: Player): Promise<Player> {
         return await prisma.player.upsert({
             where: { id: data.id },
             update: data,
@@ -148,7 +181,7 @@ class PlayerService {
      * @returns A promise that resolves to the deleted player if there was one, or
      * undefined otherwise
      */
-    async delete(id: number): Promise<player | undefined> {
+    async delete(id: number): Promise<Player | undefined> {
         return await prisma.player.delete({
             where: {
                 id: id,
@@ -164,4 +197,5 @@ class PlayerService {
     }
 }
 
-export const playerService = new PlayerService();
+const playerService = new PlayerService();
+export default playerService;

@@ -1,4 +1,4 @@
-import { playerService } from "lib/player";
+import playerService from "services/Player";
 
 import PlayerTile from 'components/PlayerTile';
 

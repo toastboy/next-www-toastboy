@@ -1,7 +1,7 @@
 import AzureCache from 'lib/azure';
 import { streamToBuffer } from 'lib/utils';
 
-import { playerService } from "lib/player";
+import playerService from "services/Player";
 
 export async function generateStaticParams() {
     return playerService.getAllIdsAndLogins();

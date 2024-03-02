@@ -1,6 +1,6 @@
 import { notFound, redirect } from 'next/navigation';
 
-import { playerService } from "lib/player";
+import playerService from "services/Player";
 
 import PlayerProfile from 'components/PlayerProfile';
 

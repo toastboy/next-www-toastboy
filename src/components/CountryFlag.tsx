@@ -18,6 +18,7 @@ export default function CountryFlag({
             src={url}
             priority={true}
             alt={country.name}
+            title={country.name}
         />
     );
 }

@@ -20,6 +20,7 @@ export default function PlayerMugshot({
                 src={url}
                 priority={true}
                 alt={playerService.getName(player) || "Player"}
+                title={playerService.getName(player) || "Player"}
             />
         </Link>
     );

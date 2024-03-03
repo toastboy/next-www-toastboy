@@ -17,6 +17,7 @@ export default function ClubBadge({
             src={url}
             priority={true}
             alt={club.club_name}
+            title={club.club_name}
         />
     );
 }

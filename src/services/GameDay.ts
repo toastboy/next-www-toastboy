@@ -15,14 +15,14 @@ export class GameDayService {
         if (!gameDay.id || !Number.isInteger(gameDay.id) || gameDay.id < 0) {
             throw new Error(`Invalid id value: ${gameDay.id}`);
         }
-        if (gameDay.game_date !== null && !(gameDay.game_date instanceof Date)) {
-            throw new Error(`Invalid game_date value: ${gameDay.game_date}`);
+        if (gameDay.date !== null && !(gameDay.date instanceof Date)) {
+            throw new Error(`Invalid date value: ${gameDay.date}`);
         }
         if (gameDay.game !== null && typeof gameDay.game !== 'boolean') {
             throw new Error(`Invalid game value: ${gameDay.game}`);
         }
-        if (gameDay.mail_sent !== null && !(gameDay.mail_sent instanceof Date)) {
-            throw new Error(`Invalid mail_sent value: ${gameDay.mail_sent}`);
+        if (gameDay.mailSent !== null && !(gameDay.mailSent instanceof Date)) {
+            throw new Error(`Invalid mailSent value: ${gameDay.mailSent}`);
         }
         if (gameDay.comment !== null && typeof gameDay.comment !== 'string') {
             throw new Error(`Invalid comment value: ${gameDay.comment}`);

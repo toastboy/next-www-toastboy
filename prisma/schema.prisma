@@ -94,9 +94,9 @@ model GameChat {
 
 model GameDay {
   id                   Int       @id
-  game_date            DateTime? @db.Date
-  game                 Boolean?  @default(true)
-  mail_sent            DateTime? @db.DateTime(0)
+  date                 DateTime  @db.Date
+  game                 Boolean   @default(true)
+  mailSent             DateTime? @db.DateTime(0)
   comment              String?   @db.VarChar(255)
   bibs                 Team?
   picker_games_history Int?

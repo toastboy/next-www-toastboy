@@ -15,9 +15,9 @@ jest.mock('lib/prisma', () => ({
 
 const defaultGameDay: GameDay = {
     id: 1,
-    game_date: new Date('2021-01-03'),
+    date: new Date('2021-01-03'),
     game: true,
-    mail_sent: new Date('2021-01-01'),
+    mailSent: new Date('2021-01-01'),
     comment: 'I heart footy',
     bibs: 'A',
     picker_games_history: 10,

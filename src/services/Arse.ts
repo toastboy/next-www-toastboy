@@ -7,7 +7,7 @@ const log = debug('footy:api');
 export class ArseService {
     /**
      * Validate an arse
-     * @param {arse} arse The arse to validate
+     * @param arse The arse to validate
      * @returns the validated arse
      * @throws An error if the arse is invalid.
      */

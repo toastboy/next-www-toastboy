@@ -7,7 +7,7 @@ const log = debug('footy:api');
 export class GameChatService {
     /**
      * Validate a GameChat
-     * @param {gameChat} gameChat The GameChat to validate
+     * @param gameChat The GameChat to validate
      * @returns the validated GameChat
      * @throws An error if the GameChat is invalid.
      */
@@ -16,7 +16,7 @@ export class GameChatService {
             throw new Error(`Invalid id value: ${gameChat.id}`);
         }
         if (!gameChat.game_day || !Number.isInteger(gameChat.game_day) || gameChat.game_day < 0) {
-            throw new Error(`Invalid id value: ${gameChat.id}`);
+            throw new Error(`Invalid game_day value: ${gameChat.game_day}`);
         }
         if (!gameChat.stamp || !(gameChat.stamp instanceof Date)) {
             throw new Error(`Invalid stamp value: ${gameChat.stamp}`);

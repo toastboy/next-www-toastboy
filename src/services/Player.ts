@@ -1,10 +1,13 @@
 import { Player } from '@prisma/client';
 import prisma from 'lib/prisma';
+import debug from 'debug';
+
+const log = debug('footy:api');
 
 class PlayerService {
     /**
      * Validate a Player
-     * @param {Player} player The Player to validate
+     * @param player The Player to validate
      * @returns the validated Player
      * @throws An error if the Player is invalid.
      */
@@ -59,11 +62,16 @@ class PlayerService {
      * found
      */
     async getById(id: number): Promise<Player | undefined> {
-        return prisma.player.findUnique({
-            where: {
-                id: id
-            },
-        });
+        try {
+            return prisma.player.findUnique({
+                where: {
+                    id: id
+                },
+            });
+        } catch (error) {
+            log(`Error fetching Player: ${error}`);
+            throw error;
+        }
     }
 
     /**
@@ -73,11 +81,16 @@ class PlayerService {
      * found
      */
     async getByLogin(login: string): Promise<Player | undefined> {
-        return prisma.player.findUnique({
-            where: {
-                login: login
-            },
-        });
+        try {
+            return prisma.player.findUnique({
+                where: {
+                    login: login
+                },
+            });
+        } catch (error) {
+            log(`Error fetching Player: ${error}`);
+            throw error;
+        }
     }
 
     /**
@@ -89,16 +102,21 @@ class PlayerService {
      * if such a player exists, or undefined otherwise.
      */
     async getLogin(idOrLogin: string): Promise<string | undefined> {
-        if (!idOrLogin) {
-            return undefined;
-        }
+        try {
+            if (!idOrLogin) {
+                return undefined;
+            }
 
-        if (!isNaN(Number(idOrLogin))) {
-            const player = await this.getById(Number(idOrLogin));
-            return player?.login;
-        } else {
-            const player = await this.getByLogin(idOrLogin);
-            return player?.login;
+            if (!isNaN(Number(idOrLogin))) {
+                const player = await this.getById(Number(idOrLogin));
+                return player?.login;
+            } else {
+                const player = await this.getByLogin(idOrLogin);
+                return player?.login;
+            }
+        } catch (error) {
+            log(`Error getting Player login: ${error}`);
+            throw error;
         }
     }
 
@@ -108,11 +126,16 @@ class PlayerService {
      * @returns A promise that resolves to all players
      */
     async getAll(active = true): Promise<Player[]> {
-        return prisma.player.findMany({
-            where: {
-                finished: active ? null : { not: null },
-            },
-        });
+        try {
+            return prisma.player.findMany({
+                where: {
+                    finished: active ? null : { not: null },
+                },
+            });
+        } catch (error) {
+            log(`Error fetching Players: ${error}`);
+            throw error;
+        }
     }
 
     /**
@@ -122,15 +145,20 @@ class PlayerService {
      * as keys and the player objects as values
      */
     async getAllIdsAndLogins(): Promise<Map<string, Player>> {
-        const players = await prisma.player.findMany({});
-        const map = new Map<string, Player>();
+        try {
+            const players = await prisma.player.findMany({});
+            const map = new Map<string, Player>();
 
-        players.forEach((player: Player) => {
-            map.set(player.id.toString(), player);
-            map.set(player.login, player);
-        });
+            players.forEach((player: Player) => {
+                map.set(player.id.toString(), player);
+                map.set(player.login, player);
+            });
 
-        return map;
+            return map;
+        } catch (error) {
+            log(`Error fetching Player ids and logins: ${error}`);
+            throw error;
+        }
     }
 
     /**
@@ -140,15 +168,20 @@ class PlayerService {
      * @returns The player name string or null if there was an error
      */
     getName(player: Player | null): string | null {
-        if (player == null) {
-            return null;
-        }
+        try {
+            if (player == null) {
+                return null;
+            }
 
-        if (player.anonymous) {
-            return `Player ${player.id}`;
-        }
+            if (player.anonymous) {
+                return `Player ${player.id}`;
+            }
 
-        return `${player.first_name} ${player.last_name}`;
+            return `${player.first_name} ${player.last_name}`;
+        } catch (error) {
+            log(`Error fetching Player name: ${error}`);
+            throw error;
+        }
     }
 
     /**
@@ -157,9 +190,14 @@ class PlayerService {
      * @returns A promise that resolves to the newly-created player
      */
     async create(data: Player): Promise<Player> {
-        return await prisma.player.create({
-            data: this.validate(data)
-        });
+        try {
+            return await prisma.player.create({
+                data: this.validate(data)
+            });
+        } catch (error) {
+            log(`Error creating Player: ${error}`);
+            throw error;
+        }
     }
 
     /**
@@ -168,11 +206,16 @@ class PlayerService {
      * @returns A promise that resolves to the updated or created player
      */
     async upsert(data: Player): Promise<Player> {
-        return await prisma.player.upsert({
-            where: { id: data.id },
-            update: data,
-            create: data,
-        });
+        try {
+            return await prisma.player.upsert({
+                where: { id: data.id },
+                update: data,
+                create: data,
+            });
+        } catch (error) {
+            log(`Error upserting Player: ${error}`);
+            throw error;
+        }
     }
 
     /**
@@ -182,18 +225,28 @@ class PlayerService {
      * undefined otherwise
      */
     async delete(id: number): Promise<Player | undefined> {
-        return await prisma.player.delete({
-            where: {
-                id: id,
-            },
-        });
+        try {
+            return await prisma.player.delete({
+                where: {
+                    id: id,
+                },
+            });
+        } catch (error) {
+            log(`Error deleting Player: ${error}`);
+            throw error;
+        }
     }
 
     /**
      * Deletes all players
      */
     async deleteAll(): Promise<void> {
-        await prisma.player.deleteMany();
+        try {
+            await prisma.player.deleteMany();
+        } catch (error) {
+            log(`Error deleting Players: ${error}`);
+            throw error;
+        }
     }
 }
 

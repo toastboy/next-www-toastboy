@@ -93,7 +93,7 @@ model GameChat {
 }
 
 model GameDay {
-  game_number          Int       @id
+  id                   Int       @id
   game_date            DateTime? @db.Date
   game                 Boolean?  @default(true)
   mail_sent            DateTime? @db.DateTime(0)

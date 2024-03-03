@@ -7,7 +7,7 @@ const log = debug('footy:api');
 export class ClubService {
     /**
      * Validate a club
-     * @param {club} club The club to validate
+     * @param club The club to validate
      * @returns the validated club
      * @throws An error if the club is invalid.
      */

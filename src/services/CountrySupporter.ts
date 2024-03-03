@@ -7,7 +7,7 @@ const log = debug('footy:api');
 export class CountrySupporterService {
     /**
      * Validate a CountrySupporter
-     * @param {CountrySupporter} countrySupporter The CountrySupporter to validate
+     * @param countrySupporter The CountrySupporter to validate
      * @returns the validated CountrySupporter
      * @throws An error if the CountrySupporter is invalid.
      */

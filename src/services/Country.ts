@@ -7,7 +7,7 @@ const log = debug('footy:api');
 export class CountryService {
     /**
      * Validate a country
-     * @param {country} country The country to validate
+     * @param country The country to validate
      * @returns the validated country
      * @throws An error if the country is invalid.
      */

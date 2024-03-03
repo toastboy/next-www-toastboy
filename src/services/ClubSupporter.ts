@@ -7,7 +7,7 @@ const log = debug('footy:api');
 export class ClubSupporterService {
     /**
      * Validate a ClubSupporter
-     * @param {ClubSupporter} clubSupporter The ClubSupporter to validate
+     * @param clubSupporter The ClubSupporter to validate
      * @returns the validated ClubSupporter
      * @throws An error if the ClubSupporter is invalid.
      */

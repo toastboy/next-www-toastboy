@@ -97,6 +97,9 @@ async function importBackup(): Promise<void> {
         const migrationsDir = path.join(__dirname, '..', '..', '..', 'prisma', 'migrations');
         const migrations = await readdir(migrationsDir);
 
+        // Run prisma generate to ensure the Prisma Client is up to date
+        execSync('npx prisma generate');
+
         // Import the mysqldump backup created above
         execSync(`mysql -h ${devMysqlHost} -u ${devMysqlUser} -p${devMysqlPassword} -e'DROP DATABASE IF EXISTS footy;'`);
         execSync(`mysql -h ${devMysqlHost} -u ${devMysqlUser} -p${devMysqlPassword} -e'CREATE DATABASE footy;'`);

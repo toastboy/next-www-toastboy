@@ -100,6 +100,8 @@ model GameDay {
   comment              String?   @db.VarChar(255)
   bibs                 Team?
   picker_games_history Int?
+
+  outcome Outcome[]
 }
 
 model Invitation {
@@ -112,8 +114,6 @@ model Invitation {
 }
 
 model Outcome {
-  game_day     Int
-  player       Int
   response     String?   @db.VarChar(20)
   responsetime DateTime? @db.DateTime(0)
   points       Int?
@@ -123,9 +123,15 @@ model Outcome {
   paid         Boolean?
   goalie       Int?      @db.TinyInt
 
-  @@unique([player, game_day], map: "unique_outcome")
-  @@index([game_day], map: "game_day")
-  @@index([player, game_day], map: "idx_outcome")
+  gameDayId Int
+  playerId  Int
+
+  gameDay GameDay @relation(fields: [gameDayId], references: [id])
+  player  Player  @relation(fields: [playerId], references: [id])
+
+  @@unique([gameDayId, playerId])
+  @@index([gameDayId])
+  @@index([playerId])
 }
 
 model Picker {
@@ -161,6 +167,7 @@ model Player {
   ratingsByPlayer Arse[]             @relation("rater")
   clubs           ClubSupporter[]
   countries       CountrySupporter[]
+  outcome         Outcome[]
 }
 
 model Standings {

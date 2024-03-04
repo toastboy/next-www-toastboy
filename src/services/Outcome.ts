@@ -14,11 +14,11 @@ export class OutcomeService {
     validate(outcome: Outcome): Outcome {
         const now = new Date();
 
-        if (!outcome.response || outcome.response.length === 0) {
+        if (outcome.response && !['Yes', 'No', 'Dunno', 'Excused', 'Flaked', 'Injured'].includes(outcome.response)) {
             throw new Error(`Invalid response value: ${outcome.response}`);
         }
-        if (outcome.responsetime && (!(outcome.responsetime instanceof Date) || outcome.responsetime > now)) {
-            throw new Error(`Invalid responsetime value: ${outcome.responsetime}`);
+        if (outcome.responseTime && (!(outcome.responseTime instanceof Date) || outcome.responseTime > now)) {
+            throw new Error(`Invalid responseTime value: ${outcome.responseTime}`);
         }
         if (outcome.points && (!Number.isInteger(outcome.points) || (outcome.points != 0 && outcome.points != 1 && outcome.points != 3))) {
             throw new Error(`Invalid points value: ${outcome.points}`);
@@ -29,13 +29,13 @@ export class OutcomeService {
         if (outcome.comment && outcome.comment.length === 0) {
             throw new Error(`Invalid comment value: ${outcome.comment}`);
         }
-        if (outcome.pub && !Number.isInteger(outcome.pub)) {
+        if (outcome.pub && typeof outcome.pub !== 'boolean') {
             throw new Error(`Invalid pub value: ${outcome.pub}`);
         }
         if (outcome.paid && typeof outcome.paid !== 'boolean') {
             throw new Error(`Invalid paid value: ${outcome.paid}`);
         }
-        if (outcome.goalie && !Number.isInteger(outcome.goalie)) {
+        if (outcome.goalie && typeof outcome.goalie !== 'boolean') {
             throw new Error(`Invalid goalie value: ${outcome.goalie}`);
         }
         if (!outcome.gameDayId || !Number.isInteger(outcome.gameDayId) || outcome.gameDayId < 0) {

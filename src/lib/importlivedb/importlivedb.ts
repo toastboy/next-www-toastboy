@@ -25,61 +25,61 @@ async function importBackup(): Promise<void> {
         dotenv.config();
 
         // Get all MYSQL environment variables
-        if (!process.env.PROD_MYSQL_USER) {
-            throw new Error('PROD_MYSQL_USER undefined');
+        if (!process.env.IMP_PROD_MYSQL_USER) {
+            throw new Error('IMP_PROD_MYSQL_USER undefined');
         }
-        if (!process.env.PROD_MYSQL_HOST) {
-            throw new Error('PROD_MYSQL_HOST undefined');
+        if (!process.env.IMP_PROD_MYSQL_HOST) {
+            throw new Error('IMP_PROD_MYSQL_HOST undefined');
         }
-        if (!process.env.PROD_MYSQL_PASSWORD) {
-            throw new Error('PROD_MYSQL_PASSWORD undefined');
-        }
-
-        if (!process.env.DEV_MYSQL_USER) {
-            throw new Error('DEV_MYSQL_USER undefined');
-        }
-        if (!process.env.DEV_MYSQL_HOST) {
-            throw new Error('DEV_MYSQL_HOST undefined');
-        }
-        if (!process.env.DEV_MYSQL_PASSWORD) {
-            throw new Error('DEV_MYSQL_PASSWORD undefined');
+        if (!process.env.IMP_PROD_MYSQL_PASSWORD) {
+            throw new Error('IMP_PROD_MYSQL_PASSWORD undefined');
         }
 
-        if (!process.env.MYSQL_DATABASE) {
-            throw new Error('MYSQL_DATABASE undefined');
+        if (!process.env.IMP_DEV_MYSQL_USER) {
+            throw new Error('IMP_DEV_MYSQL_USER undefined');
+        }
+        if (!process.env.IMP_DEV_MYSQL_HOST) {
+            throw new Error('IMP_DEV_MYSQL_HOST undefined');
+        }
+        if (!process.env.IMP_DEV_MYSQL_PASSWORD) {
+            throw new Error('IMP_DEV_MYSQL_PASSWORD undefined');
         }
 
-        if (!process.env.AZURE_TENANT_ID) {
-            throw new Error('AZURE_TENANT_ID undefined');
-        }
-        if (!process.env.AZURE_CLIENT_ID) {
-            throw new Error('AZURE_CLIENT_ID undefined');
-        }
-        if (!process.env.AZURE_CLIENT_SECRET) {
-            throw new Error('AZURE_CLIENT_SECRET undefined');
-        }
-        if (!process.env.AZURE_STORAGE_ACCOUNT_NAME) {
-            throw new Error('AZURE_STORAGE_ACCOUNT_NAME undefined');
-        }
-        if (!process.env.AZURE_CONTAINER_NAME) {
-            throw new Error('AZURE_CONTAINER_NAME undefined');
+        if (!process.env.IMP_MYSQL_DATABASE) {
+            throw new Error('IMP_MYSQL_DATABASE undefined');
         }
 
-        const prodMysqlUser = process.env.PROD_MYSQL_USER;
-        const prodMysqlHost = process.env.PROD_MYSQL_HOST;
-        const prodMysqlPassword = process.env.PROD_MYSQL_PASSWORD;
+        if (!process.env.IMP_AZURE_TENANT_ID) {
+            throw new Error('IMP_AZURE_TENANT_ID undefined');
+        }
+        if (!process.env.IMP_AZURE_CLIENT_ID) {
+            throw new Error('IMP_AZURE_CLIENT_ID undefined');
+        }
+        if (!process.env.IMP_AZURE_CLIENT_SECRET) {
+            throw new Error('IMP_AZURE_CLIENT_SECRET undefined');
+        }
+        if (!process.env.IMP_AZURE_STORAGE_ACCOUNT_NAME) {
+            throw new Error('IMP_AZURE_STORAGE_ACCOUNT_NAME undefined');
+        }
+        if (!process.env.IMP_AZURE_CONTAINER_NAME) {
+            throw new Error('IMP_AZURE_CONTAINER_NAME undefined');
+        }
 
-        const devMysqlUser = process.env.DEV_MYSQL_USER;
-        const devMysqlHost = process.env.DEV_MYSQL_HOST;
-        const devMysqlPassword = process.env.DEV_MYSQL_PASSWORD;
+        const prodMysqlUser = process.env.IMP_PROD_MYSQL_USER;
+        const prodMysqlHost = process.env.IMP_PROD_MYSQL_HOST;
+        const prodMysqlPassword = process.env.IMP_PROD_MYSQL_PASSWORD;
 
-        const mysqlDatabase = process.env.MYSQL_DATABASE;
-        const tenantId = process.env.AZURE_TENANT_ID;
+        const devMysqlUser = process.env.IMP_DEV_MYSQL_USER;
+        const devMysqlHost = process.env.IMP_DEV_MYSQL_HOST;
+        const devMysqlPassword = process.env.IMP_DEV_MYSQL_PASSWORD;
 
-        const clientId = process.env.AZURE_CLIENT_ID;
-        const clientSecret = process.env.AZURE_CLIENT_SECRET;
-        const storageAccountName = process.env.AZURE_STORAGE_ACCOUNT_NAME;
-        const containerName = process.env.AZURE_CONTAINER_NAME;
+        const mysqlDatabase = process.env.IMP_MYSQL_DATABASE;
+        const tenantId = process.env.IMP_AZURE_TENANT_ID;
+
+        const clientId = process.env.IMP_AZURE_CLIENT_ID;
+        const clientSecret = process.env.IMP_AZURE_CLIENT_SECRET;
+        const storageAccountName = process.env.IMP_AZURE_STORAGE_ACCOUNT_NAME;
+        const containerName = process.env.IMP_AZURE_CONTAINER_NAME;
 
         const credentials = new ClientSecretCredential(tenantId, clientId, clientSecret);
         const blobServiceClient = new BlobServiceClient(
@@ -90,7 +90,7 @@ async function importBackup(): Promise<void> {
         const containerClient = blobServiceClient.getContainerClient(containerName);
 
         // Take a backup of the current live database
-        execSync(`mysqldump -h ${prodMysqlHost} -u ${prodMysqlUser} -p${prodMysqlPassword} ${mysqlDatabase} arse club club_supporter country diffs game_chat game_day invitation misc nationality outcome picker picker_teams player standings > /tmp/${mysqlDatabase}.sql`);
+        execSync(`mysqldump -h ${prodMysqlHost} -u ${prodMysqlUser} -p${prodMysqlPassword} ${mysqlDatabase} arse club club_supporter country diffs game_chat game_day invitation misc nationality outcome picker picker_teams player > /tmp/${mysqlDatabase}.sql`);
         console.log('Backup taken successfully.');
 
         // Get the list of directories in the migrations directory
@@ -130,7 +130,6 @@ async function importBackup(): Promise<void> {
             'GameDay',
             'Outcome',
             'Player',
-            'Standings',
         ];
 
         // Write each table in ${mysqlDatabase} to a JSON file in /tmp/importlivedb

@@ -192,6 +192,5 @@ DROP TABLE IF EXISTS PickerTeams;
 
 RENAME TABLE picker_teams TO PickerTeams;
 
-DROP TABLE IF EXISTS Standings;
-
-RENAME TABLE standings TO Standings;
+-- DROP TABLE IF EXISTS Standings;
+-- RENAME TABLE standings TO Standings;

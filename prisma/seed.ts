@@ -1,4 +1,4 @@
-import { Arse, ClubSupporter, Club, Country, CountrySupporter, GameChat, GameDay, Outcome, Player, Standings } from '@prisma/client';
+import { Arse, ClubSupporter, Club, Country, CountrySupporter, GameChat, GameDay, Outcome, Player, PlayerRecord } from '@prisma/client';
 import prisma from '../src/lib/prisma';
 import { streamToBuffer } from '../src/lib/utils';
 import { Prisma } from '@prisma/client';
@@ -18,7 +18,7 @@ async function downloadAndParseJson(containerClient: ContainerClient, blobName: 
 
         return JSON.parse(downloadedContent);
     } catch (error) {
-        console.error(`An error occurred during download: ${error}`);
+        console.error(`An error occurred during ${blobName} download: ${error}`);
         throw error;
     }
 }
@@ -82,7 +82,7 @@ async function main() {
     await prisma.gameChat.deleteMany();
     await prisma.invitation.deleteMany();
     await prisma.outcome.deleteMany();
-    await prisma.standings.deleteMany();
+    await prisma.playerRecord.deleteMany();
     await prisma.gameDay.deleteMany();
     await prisma.diffs.deleteMany();
     await prisma.picker.deleteMany();
@@ -92,7 +92,6 @@ async function main() {
     // Now we must populate the tables in the reverse of the order above
     await processJsonData<GameDay>(containerClient, "GameDay.json", prisma.gameDay);
     await processJsonData<Player>(containerClient, "Player.json", prisma.player);
-    await processJsonData<Standings>(containerClient, "Standings.json", prisma.standings);
     await processJsonData<Outcome>(containerClient, "Outcome.json", prisma.outcome);
     await processJsonData<GameChat>(containerClient, "GameChat.json", prisma.gameChat);
     await processJsonData<Country>(containerClient, "Country.json", prisma.country);
@@ -100,6 +99,8 @@ async function main() {
     await processJsonData<Club>(containerClient, "Club.json", prisma.club);
     await processJsonData<ClubSupporter>(containerClient, "ClubSupporter.json", prisma.clubSupporter);
     await processJsonData<Arse>(containerClient, "Arse.json", prisma.arse);
+
+    // TODO: Calculate PlayerRecord from the data in the database
 }
 
 main()

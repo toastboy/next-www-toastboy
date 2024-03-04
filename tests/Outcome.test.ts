@@ -1,4 +1,4 @@
-import { Outcome } from '@prisma/client';
+import { Outcome, PlayerResponse, Team } from '@prisma/client';
 import outcomeService from 'services/Outcome';
 import prisma from 'lib/prisma';
 
@@ -17,18 +17,19 @@ const defaultOutcome: Outcome = {
     gameDayId: 1,
     playerId: 12,
     response: 'Yes',
-    responsetime: new Date(),
+    responseTime: new Date(),
     points: 3,
     team: 'A',
     comment: 'Test comment',
-    pub: 1,
+    pub: true,
     paid: false,
-    goalie: 0,
+    goalie: false,
 };
 
 const invalidOutcome: Outcome = {
     ...defaultOutcome,
-    playerId: -1,
+    response: 'No',
+    team: 'X' as Team,
 };
 
 const outcomeList: Outcome[] = Array.from({ length: 100 }, (_, index) => ({
@@ -178,7 +179,7 @@ describe('OutcomeService', () => {
             const result = await outcomeService.getAll();
             expect(result.length).toEqual(100);
             expect(result[11].playerId).toEqual(2);
-            expect(result[41].responsetime).toEqual(expect.any(Date));
+            expect(result[41].responseTime).toEqual(expect.any(Date));
         });
     });
 
@@ -212,8 +213,8 @@ describe('OutcomeService', () => {
                 ...defaultOutcome,
                 playerId: 1,
                 gameDayId: 1,
-                response: 'No',
-                Comment: 'Updated comment',
+                response: 'No' as PlayerResponse,
+                comment: 'Updated comment',
             };
             const result = await outcomeService.upsert(updatedOutcome);
             expect(result).toEqual(updatedOutcome);

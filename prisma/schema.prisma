@@ -22,8 +22,8 @@ model Arse {
   playerId Int
   raterId  Int
 
-  player Player @relation("player", fields: [playerId], references: [id])
-  rater  Player @relation("rater", fields: [raterId], references: [id])
+  Player Player @relation("player", fields: [playerId], references: [id])
+  Rater  Player @relation("rater", fields: [raterId], references: [id])
 
   @@unique([playerId, raterId])
   @@index([playerId])
@@ -37,7 +37,7 @@ model Club {
   uri          String? @db.VarChar(255)
   country      String? @db.VarChar(255)
 
-  supporters ClubSupporter[]
+  Supporters ClubSupporter[]
 }
 
 model ClubSupporter {
@@ -56,7 +56,7 @@ model Country {
   isoCode String @id @unique(map: "isoCode") @db.VarChar(6)
   name    String @unique(map: "name") @db.VarChar(255)
 
-  supporters CountrySupporter[]
+  Supporters CountrySupporter[]
 }
 
 model CountrySupporter {
@@ -101,7 +101,8 @@ model GameDay {
   bibs                 Team?
   picker_games_history Int?
 
-  outcome Outcome[]
+  Outcomes      Outcome[]
+  PlayerRecords PlayerRecord[]
 }
 
 model Invitation {
@@ -114,14 +115,14 @@ model Invitation {
 }
 
 model Outcome {
-  response     String?   @db.VarChar(20)
-  responsetime DateTime? @db.DateTime(0)
+  response     PlayerResponse?
+  responseTime DateTime?       @db.DateTime(0)
   points       Int?
   team         Team?
-  comment      String?   @db.VarChar(127)
-  pub          Int?      @db.TinyInt
+  comment      String?         @db.VarChar(127)
+  pub          Boolean?
   paid         Boolean?
-  goalie       Int?      @db.TinyInt
+  goalie       Boolean?
 
   gameDayId Int
   playerId  Int
@@ -163,17 +164,16 @@ model Player {
   anonymous     Boolean?  @db.TinyInt
   goalie        Boolean?  @db.TinyInt
 
-  ratingsOfPlayer Arse[]             @relation("player")
-  ratingsByPlayer Arse[]             @relation("rater")
-  clubs           ClubSupporter[]
-  countries       CountrySupporter[]
-  outcome         Outcome[]
+  ArsesOfPlayer Arse[]             @relation("player")
+  ArsesByPlayer Arse[]             @relation("rater")
+  Clubs         ClubSupporter[]
+  Countries     CountrySupporter[]
+  Outcomes      Outcome[]
+  PlayerRecords PlayerRecord[]
 }
 
-model Standings {
-  player        Int      @default(0)
-  table_year    Int
-  game_day      Int      @default(0)
+model PlayerRecord {
+  year          Int
   responses     Int?     @default(0)
   P             Int?     @default(0)
   W             Int?     @default(0)
@@ -190,11 +190,28 @@ model Standings {
   rank_pub      Int?
   speedy        Int?
 
-  @@id([player, table_year, game_day])
-  @@index([game_day], map: "standings_ibfk_2")
+  playerId  Int
+  gameDayId Int
+
+  Player  Player  @relation(fields: [playerId], references: [id])
+  GameDay GameDay @relation(fields: [gameDayId], references: [id])
+
+  @@unique([playerId, year, gameDayId])
+  @@index([playerId])
+  @@index([year])
+  @@index([gameDayId])
 }
 
 enum Team {
   A
   B
+}
+
+enum PlayerResponse {
+  Yes
+  No
+  Dunno
+  Excused
+  Flaked
+  Injured
 }

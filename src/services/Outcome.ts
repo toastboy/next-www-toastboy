@@ -1,6 +1,11 @@
-import { Outcome } from '@prisma/client';
+import { Outcome, Prisma } from '@prisma/client';
 import prisma from 'lib/prisma';
 import debug from 'debug';
+
+const outcomeWithGameDay = Prisma.validator<Prisma.OutcomeDefaultArgs>()({
+    include: { gameDay: true },
+});
+type OutcomeWithGameDay = Prisma.OutcomeGetPayload<typeof outcomeWithGameDay>
 
 const log = debug('footy:api');
 
@@ -78,7 +83,7 @@ export class OutcomeService {
      * @param history - The number of previous outcomes to consider.
      * @returns A promise that resolves to an array of outcomes.
      */
-    async getPlayerForm(playerId: number, gameDayId: number, history: number): Promise<Outcome[] | null> {
+    async getPlayerForm(playerId: number, gameDayId: number, history: number): Promise<OutcomeWithGameDay[] | null> {
         try {
             return prisma.outcome.findMany({
                 where: {
@@ -91,7 +96,10 @@ export class OutcomeService {
                 orderBy: {
                     gameDayId: 'desc'
                 },
-                take: history
+                take: history,
+                include: {
+                    gameDay: true
+                },
             });
         } catch (error) {
             log(`Error fetching outcomes: ${error}`);

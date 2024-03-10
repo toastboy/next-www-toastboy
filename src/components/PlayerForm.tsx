@@ -15,7 +15,7 @@ export default async function PlayerForm({
     return (
         <div className="px-6 py-4">
             {outcomes.map((outcome, index) => (
-                <p key={index} className="text-gray-700 text-base">Game {outcome.gameDayId}: {outcome.points}</p>
+                <p key={index} className="text-gray-700 text-base">Game {outcome.gameDay.date.toLocaleDateString('sv')}: {outcome.points}</p>
             ))}
         </div>
     );

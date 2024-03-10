@@ -35,7 +35,7 @@ const invalidOutcome: Outcome = {
 const outcomeList: Outcome[] = Array.from({ length: 100 }, (_, index) => ({
     ...defaultOutcome,
     playerId: index % 10 + 1,
-    gameDayId: index + 1,
+    gameDayId: index / 10 + 1,
 }));
 
 describe('OutcomeService', () => {
@@ -52,6 +52,10 @@ describe('OutcomeService', () => {
         }) => {
             const outcome = outcomeList.find((outcome) => outcome.gameDayId === args.where.gameDayId_playerId.gameDayId && outcome.playerId === args.where.gameDayId_playerId.playerId);
             return Promise.resolve(outcome ? outcome : null);
+        });
+
+        (prisma.outcome.findMany as jest.Mock).mockImplementation((args: { where: { playerId: number, gameDayId: number }, take: number, orderBy: { responseTime: 'desc' } }) => {
+            return Promise.resolve(outcomeList.filter((outcome) => outcome.playerId === args.where.playerId && outcome.gameDayId < args.where.gameDayId).slice(0, args.take));
         });
 
         (prisma.outcome.create as jest.Mock).mockImplementation((args: { data: Outcome }) => {
@@ -168,18 +172,47 @@ describe('OutcomeService', () => {
         });
     });
 
-    describe('getAll', () => {
-        beforeEach(() => {
-            (prisma.outcome.findMany as jest.Mock).mockImplementation(() => {
-                return Promise.resolve(outcomeList);
-            });
+    describe('getPlayerForm', () => {
+        it('should retrieve the correct player form for Player ID 1 and GameDay ID 5 with history of 3', async () => {
+            // Mock the outcomeList data
+            const outcomeListMock: Outcome[] = [
+                {
+                    ...defaultOutcome,
+                    playerId: 1,
+                    gameDayId: 4,
+                },
+                {
+                    ...defaultOutcome,
+                    playerId: 1,
+                    gameDayId: 3,
+                },
+                {
+                    ...defaultOutcome,
+                    playerId: 1,
+                    gameDayId: 2,
+                },
+            ];
+
+            // Mock the prisma.outcome.findMany function
+            (prisma.outcome.findMany as jest.Mock).mockResolvedValueOnce(outcomeListMock);
+
+            const result = await outcomeService.getPlayerForm(1, 5, 3);
+            expect(result).toEqual(outcomeListMock);
         });
 
-        it('should return the correct, complete list of 100 Outcomes', async () => {
-            const result = await outcomeService.getAll();
-            expect(result.length).toEqual(100);
-            expect(result[11].playerId).toEqual(2);
-            expect(result[41].responseTime).toEqual(expect.any(Date));
+        it('should return an empty list when retrieving player form for Player ID 2 and GameDay ID 1 with history of 5', async () => {
+            // Mock the prisma.outcome.findMany function
+            (prisma.outcome.findMany as jest.Mock).mockResolvedValueOnce([]);
+
+            const result = await outcomeService.getPlayerForm(2, 1, 5);
+            expect(result).toEqual([]);
+        });
+
+        it('should handle errors and throw an error', async () => {
+            // Mock the prisma.outcome.findMany function to throw an error
+            (prisma.outcome.findMany as jest.Mock).mockRejectedValueOnce(new Error('Test error'));
+
+            await expect(outcomeService.getPlayerForm(1, 5, 3)).rejects.toThrow('Test error');
         });
     });
 

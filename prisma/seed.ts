@@ -1,4 +1,4 @@
-import { Arse, ClubSupporter, Club, Country, CountrySupporter, GameChat, GameDay, Outcome, Player, PlayerRecord } from '@prisma/client';
+import { Arse, ClubSupporter, Club, Country, CountrySupporter, GameChat, GameDay, Outcome, Player } from '@prisma/client';
 import prisma from '../src/lib/prisma';
 import { streamToBuffer } from '../src/lib/utils';
 import { Prisma } from '@prisma/client';

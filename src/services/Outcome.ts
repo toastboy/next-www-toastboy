@@ -72,6 +72,34 @@ export class OutcomeService {
     }
 
     /**
+     * Retrieves the form of a player for a given game day, based on their previous outcomes.
+     * @param playerId - The ID of the player.
+     * @param gameDayId - The ID of the game day.
+     * @param history - The number of previous outcomes to consider.
+     * @returns A promise that resolves to an array of outcomes.
+     */
+    async getPlayerForm(playerId: number, gameDayId: number, history: number): Promise<Outcome[] | null> {
+        try {
+            return prisma.outcome.findMany({
+                where: {
+                    gameDayId: gameDayId !== 0 ? { lt: gameDayId } : {},
+                    playerId: playerId,
+                    points: {
+                        not: null
+                    }
+                },
+                orderBy: {
+                    gameDayId: 'desc'
+                },
+                take: history
+            });
+        } catch (error) {
+            log(`Error fetching outcomes: ${error}`);
+            throw error;
+        }
+    }
+
+    /**
      * Retrieves all outcomes.
      * @returns A promise that resolves to an array of outcomes or null if an error occurs.
      * @throws An error if there is a failure.

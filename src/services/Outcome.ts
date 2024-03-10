@@ -108,6 +108,34 @@ export class OutcomeService {
     }
 
     /**
+     * Retrieves the last played game outcome for a given player.
+     * @param playerId - The ID of the player.
+     * @returns A promise that resolves to an array of `OutcomeWithGameDay` objects or `null`.
+     */
+    async getPlayerLastPlayed(playerId: number): Promise<OutcomeWithGameDay | null> {
+        try {
+            return prisma.outcome.findFirst({
+                where: {
+                    playerId: playerId,
+                    points: {
+                        not: null
+                    }
+                },
+                orderBy: {
+                    gameDayId: 'desc'
+                },
+                take: 1,
+                include: {
+                    gameDay: true
+                },
+            });
+        } catch (error) {
+            log(`Error fetching outcomes: ${error}`);
+            throw error;
+        }
+    }
+
+    /**
      * Retrieves all outcomes.
      * @returns A promise that resolves to an array of outcomes or null if an error occurs.
      * @throws An error if there is a failure.

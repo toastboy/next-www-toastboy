@@ -5,6 +5,7 @@ import prisma from 'lib/prisma';
 jest.mock('lib/prisma', () => ({
     countrySupporter: {
         findUnique: jest.fn(),
+        findFirst: jest.fn(),
         findMany: jest.fn(),
         create: jest.fn(),
         upsert: jest.fn(),

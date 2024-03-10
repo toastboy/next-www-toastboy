@@ -5,6 +5,7 @@ import prisma from 'lib/prisma';
 jest.mock('lib/prisma', () => ({
     outcome: {
         findUnique: jest.fn(),
+        findFirst: jest.fn(),
         findMany: jest.fn(),
         create: jest.fn(),
         upsert: jest.fn(),
@@ -213,6 +214,37 @@ describe('OutcomeService', () => {
             (prisma.outcome.findMany as jest.Mock).mockRejectedValueOnce(new Error('Test error'));
 
             await expect(outcomeService.getPlayerForm(1, 5, 3)).rejects.toThrow('Test error');
+        });
+    });
+
+    describe('getPlayerLastPlayed', () => {
+        beforeEach(() => {
+            (prisma.outcome.findFirst as jest.Mock).mockImplementation(
+                (args: {
+                    where: {
+                        playerId: number,
+                        points: { not: null }
+                    },
+                    take: number,
+                    orderBy: { gameDayId: 'desc' },
+                    include: { gameDay: true }
+                }) => {
+                    const playedList = outcomeList.filter(
+                        (outcome) => outcome.playerId === args.where.playerId && outcome.points !== null)
+                        .sort((a, b) => b.gameDayId - a.gameDayId);
+                    const lastPlayed = playedList.slice(0, args.take)[0];
+                    return Promise.resolve(lastPlayed || null);
+                });
+        });
+
+        it('should retrieve the correct last played GameDay for Player ID 1', async () => {
+            const result = await outcomeService.getPlayerLastPlayed(1);
+            expect(result.gameDayId).toEqual(10);
+        });
+
+        it('should return null for Player ID 11', async () => {
+            const result = await outcomeService.getPlayerLastPlayed(11);
+            expect(result).toBeNull();
         });
     });
 

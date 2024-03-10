@@ -5,6 +5,7 @@ import PlayerArse from 'components/PlayerArse';
 import PlayerClubs from 'components/PlayerClubs';
 import PlayerCountries from 'components/PlayerCountries';
 import PlayerForm from './PlayerForm';
+import PlayerLastPlayed from './PlayerLastPlayed';
 
 export default async function PlayerProfile({
     player,
@@ -18,6 +19,7 @@ export default async function PlayerProfile({
         <div className="w-[600px] rounded overflow-hidden shadow-lg" key={id}>
             <h1 className="text-6xl font-bold mb-4 text-center">{playerService.getName(player)}</h1>
             <PlayerMugshot player={player} />
+            <PlayerLastPlayed player={player} />
             <PlayerClubs player={player} />
             <PlayerCountries player={player} />
             <PlayerArse player={player} />

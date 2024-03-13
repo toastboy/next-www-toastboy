@@ -31,9 +31,13 @@ resource "azurerm_storage_account" "next_www_toastboy" {
   location                 = azurerm_resource_group.next_www_toastboy.location
   account_tier             = "Standard"
   account_replication_type = "LRS"
+  min_tls_version          = "TLS1_2"
 
   blob_properties {
     versioning_enabled = true
+    delete_retention_policy {
+      days = 30
+    }
   }
 
   tags = var.tags
@@ -65,19 +69,19 @@ resource "azurerm_role_assignment" "next_www_toastboy" {
 resource "azurerm_storage_container" "mugshots" {
   name                  = var.mugshots_container
   storage_account_name  = azurerm_storage_account.next_www_toastboy.name
-  container_access_type = "blob"
+  container_access_type = "private"
 }
 
 resource "azurerm_storage_container" "clubs" {
   name                  = var.clubs_container
   storage_account_name  = azurerm_storage_account.next_www_toastboy.name
-  container_access_type = "blob"
+  container_access_type = "private"
 }
 
 resource "azurerm_storage_container" "countries" {
   name                  = var.countries_container
   storage_account_name  = azurerm_storage_account.next_www_toastboy.name
-  container_access_type = "blob"
+  container_access_type = "private"
 }
 
 # Key vault to store the deployment secrets
@@ -88,9 +92,6 @@ resource "azurerm_key_vault" "next_www_toastboy" {
   resource_group_name = azurerm_resource_group.next_www_toastboy.name
   tenant_id           = data.azurerm_client_config.current.tenant_id
   sku_name            = "standard"
-
-  soft_delete_retention_days = 7
-  purge_protection_enabled   = false
 
   # Terraform itself needs to manage the secrets in the vault
   access_policy {

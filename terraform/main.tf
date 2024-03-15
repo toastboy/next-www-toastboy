@@ -87,7 +87,6 @@ resource "azurerm_storage_container" "countries" {
 # Key vault to store the deployment secrets
 
 resource "azurerm_key_vault" "next_www_toastboy" {
-  count               = 0
   name                = "next-www-toastboy"
   location            = azurerm_resource_group.next_www_toastboy.location
   resource_group_name = azurerm_resource_group.next_www_toastboy.name
@@ -127,14 +126,14 @@ resource "azurerm_key_vault" "next_www_toastboy" {
   tags = var.tags
 }
 
-# resource "azurerm_key_vault_secret" "client_id" {
-#   name         = "client-id"
-#   value        = azuread_service_principal_password.next_www_toastboy.service_principal_id
-#   key_vault_id = azurerm_key_vault.next_www_toastboy.id
-# }
+resource "azurerm_key_vault_secret" "client_id" {
+  name         = "client-id"
+  value        = azuread_service_principal_password.next_www_toastboy.service_principal_id
+  key_vault_id = azurerm_key_vault.next_www_toastboy.id
+}
 
-# resource "azurerm_key_vault_secret" "client_secret" {
-#   name         = "client-secret"
-#   value        = azuread_service_principal_password.next_www_toastboy.value
-#   key_vault_id = azurerm_key_vault.next_www_toastboy.id
-# }
+resource "azurerm_key_vault_secret" "client_secret" {
+  name         = "client-secret"
+  value        = azuread_service_principal_password.next_www_toastboy.value
+  key_vault_id = azurerm_key_vault.next_www_toastboy.id
+}

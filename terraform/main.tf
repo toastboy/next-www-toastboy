@@ -30,7 +30,7 @@ resource "azurerm_storage_account" "next_www_toastboy" {
   resource_group_name      = azurerm_resource_group.next_www_toastboy.name
   location                 = azurerm_resource_group.next_www_toastboy.location
   account_tier             = "Standard"
-  account_replication_type = "LRS"
+  account_replication_type = "ZRS"
   min_tls_version          = "TLS1_2"
 
   blob_properties {
@@ -87,11 +87,12 @@ resource "azurerm_storage_container" "countries" {
 # Key vault to store the deployment secrets
 
 resource "azurerm_key_vault" "next_www_toastboy" {
-  name                = "next-www-toastboy"
-  location            = azurerm_resource_group.next_www_toastboy.location
-  resource_group_name = azurerm_resource_group.next_www_toastboy.name
-  tenant_id           = data.azurerm_client_config.current.tenant_id
-  sku_name            = "standard"
+  name                     = "next-www-toastboy"
+  location                 = azurerm_resource_group.next_www_toastboy.location
+  resource_group_name      = azurerm_resource_group.next_www_toastboy.name
+  tenant_id                = data.azurerm_client_config.current.tenant_id
+  sku_name                 = "standard"
+  purge_protection_enabled = true
 
   # Terraform itself needs to manage the secrets in the vault
   access_policy {
@@ -127,13 +128,15 @@ resource "azurerm_key_vault" "next_www_toastboy" {
 }
 
 resource "azurerm_key_vault_secret" "client_id" {
-  name         = "client-id"
-  value        = azuread_service_principal_password.next_www_toastboy.service_principal_id
-  key_vault_id = azurerm_key_vault.next_www_toastboy.id
+  name            = "client-id"
+  value           = azuread_service_principal_password.next_www_toastboy.service_principal_id
+  key_vault_id    = azurerm_key_vault.next_www_toastboy.id
+  expiration_date = timeadd(formatdate("YYYY-MM-DD'T'HH:mm:ssZ", timestamp()), "2160h") # 90 days
 }
 
 resource "azurerm_key_vault_secret" "client_secret" {
-  name         = "client-secret"
-  value        = azuread_service_principal_password.next_www_toastboy.value
-  key_vault_id = azurerm_key_vault.next_www_toastboy.id
+  name            = "client-secret"
+  value           = azuread_service_principal_password.next_www_toastboy.value
+  key_vault_id    = azurerm_key_vault.next_www_toastboy.id
+  expiration_date = timeadd(formatdate("YYYY-MM-DD'T'HH:mm:ssZ", timestamp()), "2160h") # 90 days
 }

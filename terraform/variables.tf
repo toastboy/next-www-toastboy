@@ -33,16 +33,6 @@ variable "countries_container" {
   default = "countries"
 }
 
-variable "postgresql_server_name" {
-  type    = string
-  default = "nextwwwtoastboy"
-}
-
-variable "postgresql_database_name" {
-  type    = string
-  default = "footy"
-}
-
 variable "tags" {
   type    = map(string)
   default = {}

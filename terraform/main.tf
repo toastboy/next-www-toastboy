@@ -140,3 +140,42 @@ resource "azurerm_key_vault_secret" "client_secret" {
   key_vault_id    = azurerm_key_vault.next_www_toastboy.id
   expiration_date = timeadd(formatdate("YYYY-MM-DD'T'HH:mm:ssZ", timestamp()), "2160h") # 90 days
 }
+
+resource "random_password" "postgresql_admin_password" {
+  length           = 32
+  special          = true
+  upper            = true
+  lower            = true
+  numeric          = true
+  override_special = "_%@"
+}
+
+resource "azurerm_key_vault_secret" "postgresql_admin_password" {
+  name            = "postgresql-admin-password"
+  value           = random_password.postgresql_admin_password.result
+  key_vault_id    = azurerm_key_vault.next_www_toastboy.id
+  expiration_date = timeadd(formatdate("YYYY-MM-DD'T'HH:mm:ssZ", timestamp()), "2160h") # 90 days
+}
+
+resource "azurerm_postgresql_server" "next_www_toastboy" {
+  name                    = var.postgresql_server_name
+  location                = azurerm_resource_group.next_www_toastboy.location
+  resource_group_name     = azurerm_resource_group.next_www_toastboy.name
+  sku_name                = "GP_Gen5_2"
+  storage_mb              = 5120
+  version                 = "11"
+  ssl_enforcement_enabled = true
+
+  administrator_login          = "toastboy"
+  administrator_login_password = azurerm_key_vault_secret.postgresql_admin_password.value
+
+  tags = var.tags
+}
+
+resource "azurerm_postgresql_database" "next_www_toastboy" {
+  name                = var.postgresql_database_name
+  resource_group_name = azurerm_resource_group.next_www_toastboy.name
+  server_name         = azurerm_postgresql_server.next_www_toastboy.name
+  charset             = "UTF8"
+  collation           = "English_United States.1252"
+}

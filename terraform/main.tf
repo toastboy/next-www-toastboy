@@ -25,64 +25,64 @@ data "azuread_user" "toastboy" {
   user_principal_name = "toastboy@toastboy.co.uk"
 }
 
-# resource "azurerm_storage_account" "next_www_toastboy" {
-#   name                     = var.storage_account_name
-#   resource_group_name      = azurerm_resource_group.next_www_toastboy.name
-#   location                 = azurerm_resource_group.next_www_toastboy.location
-#   account_tier             = "Standard"
-#   account_replication_type = "GRS"
-#   min_tls_version          = "TLS1_2"
+resource "azurerm_storage_account" "next_www_toastboy" {
+  name                     = var.storage_account_name
+  resource_group_name      = azurerm_resource_group.next_www_toastboy.name
+  location                 = azurerm_resource_group.next_www_toastboy.location
+  account_tier             = "Standard"
+  account_replication_type = "GRS"
+  min_tls_version          = "TLS1_2"
 
-#   blob_properties {
-#     versioning_enabled = true
-#     delete_retention_policy {
-#       days = 30
-#     }
-#   }
+  blob_properties {
+    versioning_enabled = true
+    delete_retention_policy {
+      days = 30
+    }
+  }
 
-#   tags = var.tags
-# }
+  tags = var.tags
+}
 
-# # Storage container for database seed JSON files: only my own identity and the
-# # app's should have any access
+# Storage container for database seed JSON files: only my own identity and the
+# app's should have any access
 
-# resource "azurerm_storage_container" "db_seed" {
-#   name                  = var.db_seed_container
-#   storage_account_name  = azurerm_storage_account.next_www_toastboy.name
-#   container_access_type = "private"
-# }
+resource "azurerm_storage_container" "db_seed" {
+  name                  = var.db_seed_container
+  storage_account_name  = azurerm_storage_account.next_www_toastboy.name
+  container_access_type = "private"
+}
 
-# resource "azurerm_role_assignment" "toastboy" {
-#   scope                = azurerm_storage_account.next_www_toastboy.id
-#   role_definition_name = "Storage Blob Data Contributor"
-#   principal_id         = data.azuread_user.toastboy.object_id
-# }
+resource "azurerm_role_assignment" "toastboy" {
+  scope                = azurerm_storage_account.next_www_toastboy.id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = data.azuread_user.toastboy.object_id
+}
 
-# resource "azurerm_role_assignment" "next_www_toastboy" {
-#   scope                = azurerm_storage_account.next_www_toastboy.id
-#   role_definition_name = "Storage Blob Data Contributor"
-#   principal_id         = azuread_service_principal.next_www_toastboy.object_id
-# }
+resource "azurerm_role_assignment" "next_www_toastboy" {
+  scope                = azurerm_storage_account.next_www_toastboy.id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = azuread_service_principal.next_www_toastboy.object_id
+}
 
-# # Storage for our public-accessible images
+# Storage for our public-accessible images
 
-# resource "azurerm_storage_container" "mugshots" {
-#   name                  = var.mugshots_container
-#   storage_account_name  = azurerm_storage_account.next_www_toastboy.name
-#   container_access_type = "private"
-# }
+resource "azurerm_storage_container" "mugshots" {
+  name                  = var.mugshots_container
+  storage_account_name  = azurerm_storage_account.next_www_toastboy.name
+  container_access_type = "private"
+}
 
-# resource "azurerm_storage_container" "clubs" {
-#   name                  = var.clubs_container
-#   storage_account_name  = azurerm_storage_account.next_www_toastboy.name
-#   container_access_type = "private"
-# }
+resource "azurerm_storage_container" "clubs" {
+  name                  = var.clubs_container
+  storage_account_name  = azurerm_storage_account.next_www_toastboy.name
+  container_access_type = "private"
+}
 
-# resource "azurerm_storage_container" "countries" {
-#   name                  = var.countries_container
-#   storage_account_name  = azurerm_storage_account.next_www_toastboy.name
-#   container_access_type = "private"
-# }
+resource "azurerm_storage_container" "countries" {
+  name                  = var.countries_container
+  storage_account_name  = azurerm_storage_account.next_www_toastboy.name
+  container_access_type = "private"
+}
 
 # Key vault to store the deployment secrets
 

@@ -1,11 +1,32 @@
 import { execSync } from "child_process";
 import { readdir } from "fs/promises";
 import prisma from '../prisma';
+import { Prisma } from '@prisma/client';
 import path from "path";
 import dotenv from 'dotenv';
 import fs from 'fs';
 import { ClientSecretCredential } from "@azure/identity";
 import { BlobServiceClient } from "@azure/storage-blob";
+
+/**
+ * Writes the data from a Prisma model to a JSON file.
+ *
+ * @param fileName - The name of the JSON file to be created.
+ * @param prismaModel - The Prisma model object with a `findMany` method.
+ * @returns A Promise that resolves when the JSON file is written.
+ */
+async function writeTableToJSONFile<T>(
+    fileName: string,
+    prismaModel: {
+        findMany: () => Prisma.PrismaPromise<T[]>;
+    }
+) {
+    console.log(`Writing ${fileName}...`);
+    const data = await prismaModel.findMany();
+    const json = JSON.stringify(data, null, 2);
+    const filePath = path.join('/tmp/importlivedb', `${fileName}`);
+    fs.writeFileSync(filePath, json);
+}
 
 /**
  * Imports a MySQL backup file and runs migrations to set up the database
@@ -120,27 +141,17 @@ async function importBackup(): Promise<void> {
         }
         console.log('All migrations completed.');
 
-        const tables = [
-            'Arse',
-            'ClubSupporter',
-            'Club',
-            'Country',
-            'CountrySupporter',
-            'GameChat',
-            'GameDay',
-            'Outcome',
-            'Player',
-        ];
-
         // Write each table in ${mysqlDatabase} to a JSON file in /tmp/importlivedb
         execSync(`mkdir -p /tmp/importlivedb`);
-        for (const table of tables) {
-            console.log(`Writing ${table} to ${table}.json...`);
-            const data = await prisma[table].findMany({});
-            const json = JSON.stringify(data, null, 2);
-            const filePath = path.join('/tmp/importlivedb', `${table}.json`);
-            fs.writeFileSync(filePath, json);
-        }
+        await writeTableToJSONFile('Arse.json', prisma.arse);
+        await writeTableToJSONFile('ClubSupporter.json', prisma.clubSupporter);
+        await writeTableToJSONFile('Club.json', prisma.club);
+        await writeTableToJSONFile('Country.json', prisma.country);
+        await writeTableToJSONFile('CountrySupporter.json', prisma.countrySupporter);
+        await writeTableToJSONFile('GameChat.json', prisma.gameChat);
+        await writeTableToJSONFile('GameDay.json', prisma.gameDay);
+        await writeTableToJSONFile('Outcome.json', prisma.outcome);
+        await writeTableToJSONFile('Player.json', prisma.player);
         console.log('All JSON files written.');
 
         // Upload the JSON files to Azure Blob Storage

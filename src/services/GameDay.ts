@@ -58,7 +58,7 @@ export class GameDayService {
     }
 
     /**
-     * Retrieves all GameDay.
+     * Retrieves all GameDays.
      * @returns A promise that resolves to an array of GameDays or null if an error occurs.
      * @throws An error if there is a failure.
      */
@@ -67,6 +67,32 @@ export class GameDayService {
             return prisma.gameDay.findMany({});
         } catch (error) {
             log(`Error fetching GameDay: ${error}`);
+            throw error;
+        }
+    }
+
+    /**
+     * Retrieves all the years from the game days where a game has taken or will
+     * take place.
+     * @returns A promise that resolves to an array of distinct years or null if
+     * there are no such game days.
+     */
+    async getAllYears(): Promise<number[] | null> {
+        try {
+            const gameDays = await prisma.gameDay.findMany({
+                where: {
+                    game: true,
+                },
+                select: {
+                    date: true,
+                },
+            });
+            const years = gameDays.map(gd => gd.date.getFullYear());
+            const distinctYears = Array.from(new Set(years));
+
+            return Promise.resolve(distinctYears);
+        } catch (error) {
+            log(`Error fetching GameDays: ${error}`);
             throw error;
         }
     }

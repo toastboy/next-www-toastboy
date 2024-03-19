@@ -132,13 +132,18 @@ describe('OutcomeService', () => {
 
         it('should retrieve the correct Outcomes for GameDay id 1', async () => {
             const result = await outcomeService.getByGameDay(1);
-            expect(result.length).toEqual(1);
-            for (const outcomeResult of result) {
-                expect(outcomeResult).toEqual({
-                    ...defaultOutcome,
-                    playerId: expect.any(Number),
-                    gameDayId: 1,
-                } as Outcome);
+            if (result) {
+                expect(result.length).toEqual(1);
+                for (const outcomeResult of result) {
+                    expect(outcomeResult).toEqual({
+                        ...defaultOutcome,
+                        playerId: expect.any(Number),
+                        gameDayId: 1,
+                    } as Outcome);
+                }
+            }
+            else {
+                fail('Result is null');
             }
         });
 
@@ -157,13 +162,18 @@ describe('OutcomeService', () => {
 
         it('should retrieve the correct Outcomes for Player ID 1', async () => {
             const result = await outcomeService.getByPlayer(1);
-            expect(result.length).toEqual(10);
-            for (const outcomeResult of result) {
-                expect(outcomeResult).toEqual({
-                    ...defaultOutcome,
-                    playerId: 1,
-                    gameDayId: expect.any(Number),
-                } as Outcome);
+            if (result) {
+                expect(result.length).toEqual(10);
+                for (const outcomeResult of result) {
+                    expect(outcomeResult).toEqual({
+                        ...defaultOutcome,
+                        playerId: 1,
+                        gameDayId: expect.any(Number),
+                    } as Outcome);
+                }
+            }
+            else {
+                fail('Result is null');
             }
         });
 
@@ -239,7 +249,12 @@ describe('OutcomeService', () => {
 
         it('should retrieve the correct last played GameDay for Player ID 1', async () => {
             const result = await outcomeService.getPlayerLastPlayed(1);
-            expect(result.gameDayId).toEqual(10);
+            if (result) {
+                expect(result.gameDayId).toEqual(10);
+            }
+            else {
+                fail('Result is null');
+            }
         });
 
         it('should return null for Player ID 11', async () => {

@@ -107,8 +107,13 @@ describe('GameDayService', () => {
 
         it('should return the correct, complete list of 100 GameDays', async () => {
             const result = await gameDayService.getAll();
-            expect(result && result.length).toEqual(100);
-            expect(result && result[11].id).toEqual(12);
+            if (result) {
+                expect(result.length).toEqual(100);
+                expect(result[11].id).toEqual(12);
+            }
+            else {
+                fail('Result is null');
+            }
         });
     });
 
@@ -121,8 +126,13 @@ describe('GameDayService', () => {
 
         it('should return the correct, complete list of a single year, 2021', async () => {
             const result = await gameDayService.getAllYears();
-            expect(result && result.length).toEqual(1);
-            expect(result && result[0]).toEqual(2021);
+            if (result) {
+                expect(result.length).toEqual(1);
+                expect(result[0]).toEqual(2021);
+            }
+            else {
+                fail('Result is null');
+            }
         });
     });
 

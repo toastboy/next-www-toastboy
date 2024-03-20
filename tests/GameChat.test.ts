@@ -72,7 +72,7 @@ describe('GameChatService', () => {
         });
 
         (prisma.gameChat.delete as jest.Mock).mockImplementation((args: {
-            where: { id }
+            where: { id: number }
         }) => {
             const gameChat = gameChatList.find((gameChat) => gameChat.id === args.where.id);
             return Promise.resolve(gameChat ? gameChat : null);
@@ -109,8 +109,13 @@ describe('GameChatService', () => {
 
         it('should return the correct, complete list of 100 GameChat', async () => {
             const result = await gameChatService.getAll();
-            expect(result.length).toEqual(100);
-            expect(result[11].id).toEqual(12);
+            if (result) {
+                expect(result.length).toEqual(100);
+                expect(result[11].id).toEqual(12);
+            }
+            else {
+                fail('Result is null');
+            }
         });
     });
 

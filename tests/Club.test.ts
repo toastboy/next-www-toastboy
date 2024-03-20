@@ -71,7 +71,7 @@ describe('ClubService', () => {
         });
 
         (prisma.club.delete as jest.Mock).mockImplementation((args: {
-            where: { id }
+            where: { id: number }
         }) => {
             const club = clubList.find((club) => club.id === args.where.id);
             return Promise.resolve(club ? club : null);
@@ -107,9 +107,14 @@ describe('ClubService', () => {
 
         it('should return the correct, complete list of 100 clubs', async () => {
             const result = await clubService.getAll();
-            expect(result.length).toEqual(100);
-            expect(result[11].id).toEqual(12);
-            expect(result[11].soccerway_id).toEqual(1011);
+            if (result) {
+                expect(result.length).toEqual(100);
+                expect(result[11].id).toEqual(12);
+                expect(result[11].soccerway_id).toEqual(1011);
+            }
+            else {
+                fail('Result is null');
+            }
         });
     });
 

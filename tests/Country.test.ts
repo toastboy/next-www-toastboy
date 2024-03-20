@@ -102,8 +102,13 @@ describe('CountryService', () => {
 
         it('should return the correct, complete list of 4 countries', async () => {
             const result = await countryService.getAll();
-            expect(result.length).toEqual(4);
-            expect(result[0].isoCode).toEqual("GB-ENG");
+            if (result) {
+                expect(result.length).toEqual(4);
+                expect(result[0].isoCode).toEqual("GB-ENG");
+            }
+            else {
+                fail('Result is null');
+            }
         });
     });
 

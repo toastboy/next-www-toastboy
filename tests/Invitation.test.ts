@@ -68,7 +68,7 @@ describe('InvitationService', () => {
         });
 
         (prisma.invitation.delete as jest.Mock).mockImplementation((args: {
-            where: { uuid }
+            where: { uuid: string }
         }) => {
             const invitation = invitationList.find((invitation) => invitation.uuid === args.where.uuid);
             return Promise.resolve(invitation ? invitation : null);
@@ -103,8 +103,13 @@ describe('InvitationService', () => {
 
         it('should return the correct, complete list of 100 Invitation', async () => {
             const result = await invitationService.getAll();
-            expect(result.length).toEqual(100);
-            expect(result[11].uuid).toEqual('123412');
+            if (result) {
+                expect(result.length).toEqual(100);
+                expect(result[11].uuid).toEqual('123412');
+            }
+            else {
+                fail('Result is null');
+            }
         });
     });
 

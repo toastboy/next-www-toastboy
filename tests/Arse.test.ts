@@ -105,12 +105,16 @@ describe('ArseService', () => {
     describe('get', () => {
         it('should retrieve the correct arse for player 6, rater 16', async () => {
             const result = await arseService.get(6, 16);
-            expect(result).toEqual({
-                ...defaultArse,
-                playerId: 6,
-                raterId: 16,
-                stamp: expect.any(Date)
-            } as Arse);
+            if (result) {
+                expect(result).toEqual({
+                    ...defaultArse,
+                    playerId: 6,
+                    raterId: 16,
+                    stamp: expect.any(Date)
+                } as Arse);
+            } else {
+                fail("Result is null");
+            }
         });
 
         it('should return null for player 7, rater 16', async () => {
@@ -128,20 +132,30 @@ describe('ArseService', () => {
 
         it('should retrieve the correct arses for player id 1', async () => {
             const result = await arseService.getByPlayer(1);
-            expect(result.length).toEqual(10);
-            for (const arseResult of result) {
-                expect(arseResult).toEqual({
-                    ...defaultArse,
-                    playerId: 1,
-                    raterId: expect.any(Number),
-                    stamp: expect.any(Date)
-                } as Arse);
+            if (result) {
+                expect(result.length).toEqual(10);
+                for (const arseResult of result) {
+                    expect(arseResult).toEqual({
+                        ...defaultArse,
+                        playerId: 1,
+                        raterId: expect.any(Number),
+                        stamp: expect.any(Date)
+                    } as Arse);
+                }
+            }
+            else {
+                fail('Result is null');
             }
         });
 
         it('should return an empty list when retrieving arses for player id 11', async () => {
             const result = await arseService.getByPlayer(11);
-            expect(result).toEqual([]);
+            if (result) {
+                expect(result).toEqual([]);
+            }
+            else {
+                fail('Result is null');
+            }
         });
     });
 
@@ -154,20 +168,30 @@ describe('ArseService', () => {
 
         it('should retrieve the correct arses for rater id 1', async () => {
             const result = await arseService.getByRater(1);
-            expect(result.length).toEqual(1);
-            for (const arseResult of result) {
-                expect(arseResult).toEqual({
-                    ...defaultArse,
-                    playerId: expect.any(Number),
-                    raterId: 1,
-                    stamp: expect.any(Date)
-                } as Arse);
+            if (result) {
+                expect(result.length).toEqual(1);
+                for (const arseResult of result) {
+                    expect(arseResult).toEqual({
+                        ...defaultArse,
+                        playerId: expect.any(Number),
+                        raterId: 1,
+                        stamp: expect.any(Date)
+                    } as Arse);
+                }
+            }
+            else {
+                fail('Result is null');
             }
         });
 
         it('should return an empty list when retrieving arses for rater id 101', async () => {
             const result = await arseService.getByRater(101);
-            expect(result).toEqual([]);
+            if (result) {
+                expect(result).toEqual([]);
+            }
+            else {
+                fail('Result is null');
+            }
         });
     });
 
@@ -180,16 +204,26 @@ describe('ArseService', () => {
 
         it('should return the correct, complete list of 100 arses', async () => {
             const result = await arseService.getAll();
-            expect(result.length).toEqual(100);
-            expect(result[11].playerId).toEqual(2);
-            expect(result[41].stamp).toEqual(expect.any(Date));
+            if (result) {
+                expect(result.length).toEqual(100);
+                expect(result[11].playerId).toEqual(2);
+                expect(result[41].stamp).toEqual(expect.any(Date));
+            }
+            else {
+                fail('Result is null');
+            }
         });
     });
 
     describe('create', () => {
         it('should create an arse', async () => {
             const result = await arseService.create(defaultArse);
-            expect(result).toEqual(defaultArse);
+            if (result) {
+                expect(result).toEqual(defaultArse);
+            }
+            else {
+                fail('Result is null');
+            }
         });
 
         it('should refuse to create an arse with invalid data', async () => {
@@ -208,7 +242,12 @@ describe('ArseService', () => {
     describe('upsert', () => {
         it('should create an arse where the combination of player ID and rater ID did not exist', async () => {
             const result = await arseService.upsert(defaultArse);
-            expect(result).toEqual(defaultArse);
+            if (result) {
+                expect(result).toEqual(defaultArse);
+            }
+            else {
+                fail('Result is null');
+            }
         });
 
         it('should update an existing arse where the combination of player ID and rater ID already existed', async () => {
@@ -219,7 +258,12 @@ describe('ArseService', () => {
                 in_goal: 7,
             };
             const result = await arseService.upsert(updatedArse);
-            expect(result).toEqual(updatedArse);
+            if (result) {
+                expect(result).toEqual(updatedArse);
+            }
+            else {
+                fail('Result is null');
+            }
         });
 
         it('should refuse to create an arse with invalid data where the combination of player ID and rater ID did not exist', async () => {

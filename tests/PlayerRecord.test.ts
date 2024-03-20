@@ -276,6 +276,14 @@ describe('PlayerRecordService', () => {
         });
     });
 
+    describe('upsertForGameDay', () => {
+        it.todo('should create or update all PlayerRecords for a given GameDay');
+        it.todo('should refuse to create or update any PlayerRecord with invalid data');
+        it.todo('should do nothing if no Outcomes exist for the given GameDay');
+        it.todo('should update the table ranks for all PlayerRecords with GameDays on or after the given GameDay');
+        it.todo('should set values for both the year the game took place and for all time (year 0)');
+    });
+
     describe('delete', () => {
         it('should delete an existing PlayerRecord', async () => {
             await playerRecordService.delete(12, 2021, 15);

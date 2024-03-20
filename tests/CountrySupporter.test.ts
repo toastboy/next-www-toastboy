@@ -93,11 +93,16 @@ describe('countrySupporterService', () => {
     describe('get', () => {
         it('should retrieve the correct CountrySupporter for player 6, country "GB"', async () => {
             const result = await countrySupporterService.get(6, "GB");
-            expect(result).toEqual({
-                ...defaultCountrySupporter,
-                playerId: 6,
-                countryISOcode: "GB"
-            } as CountrySupporter);
+            if (result) {
+                expect(result).toEqual({
+                    ...defaultCountrySupporter,
+                    playerId: 6,
+                    countryISOcode: "GB"
+                } as CountrySupporter);
+            }
+            else {
+                fail('Result is null');
+            }
         });
 
         it('should return null for player 7, country "ZZ"', async () => {
@@ -115,13 +120,18 @@ describe('countrySupporterService', () => {
 
         it('should retrieve the correct ClubSupporters for player id 1', async () => {
             const result = await countrySupporterService.getByPlayer(1);
-            expect(result.length).toEqual(10);
-            for (const ClubSupporterResult of result) {
-                expect(ClubSupporterResult).toEqual({
-                    ...defaultCountrySupporter,
-                    playerId: 1,
-                    countryISOcode: expect.any(String)
-                } as CountrySupporter);
+            if (result) {
+                expect(result.length).toEqual(10);
+                for (const ClubSupporterResult of result) {
+                    expect(ClubSupporterResult).toEqual({
+                        ...defaultCountrySupporter,
+                        playerId: 1,
+                        countryISOcode: expect.any(String)
+                    } as CountrySupporter);
+                }
+            }
+            else {
+                fail('Result is null');
             }
         });
 
@@ -140,13 +150,18 @@ describe('countrySupporterService', () => {
 
         it('should retrieve the correct ClubSupporters for rater id 1', async () => {
             const result = await countrySupporterService.getByCountry("GB");
-            expect(result.length).toEqual(100);
-            for (const ClubSupporterResult of result) {
-                expect(ClubSupporterResult).toEqual({
-                    ...defaultCountrySupporter,
-                    playerId: expect.any(Number),
-                    countryISOcode: "GB"
-                } as CountrySupporter);
+            if (result) {
+                expect(result.length).toEqual(100);
+                for (const ClubSupporterResult of result) {
+                    expect(ClubSupporterResult).toEqual({
+                        ...defaultCountrySupporter,
+                        playerId: expect.any(Number),
+                        countryISOcode: "GB"
+                    } as CountrySupporter);
+                }
+            }
+            else {
+                fail('Result is null');
             }
         });
 
@@ -165,9 +180,14 @@ describe('countrySupporterService', () => {
 
         it('should return the correct, complete list of 100 ClubSupporters', async () => {
             const result = await countrySupporterService.getAll();
-            expect(result.length).toEqual(100);
-            expect(result[11].playerId).toEqual(2);
-            expect(result[11].countryISOcode).toEqual("GB");
+            if (result) {
+                expect(result.length).toEqual(100);
+                expect(result[11].playerId).toEqual(2);
+                expect(result[11].countryISOcode).toEqual("GB");
+            }
+            else {
+                fail('Result is null');
+            }
         });
     });
 

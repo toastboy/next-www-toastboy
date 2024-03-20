@@ -115,13 +115,18 @@ describe('clubSupporterService', () => {
 
         it('should retrieve the correct ClubSupporters for player id 1', async () => {
             const result = await clubSupporterService.getByPlayer(1);
-            expect(result.length).toEqual(10);
-            for (const ClubSupporterResult of result) {
-                expect(ClubSupporterResult).toEqual({
-                    ...defaultClubSupporter,
-                    playerId: 1,
-                    clubId: expect.any(Number)
-                } as ClubSupporter);
+            if (result) {
+                expect(result.length).toEqual(10);
+                for (const ClubSupporterResult of result) {
+                    expect(ClubSupporterResult).toEqual({
+                        ...defaultClubSupporter,
+                        playerId: 1,
+                        clubId: expect.any(Number)
+                    } as ClubSupporter);
+                }
+            }
+            else {
+                fail('Result is null');
             }
         });
 
@@ -140,13 +145,18 @@ describe('clubSupporterService', () => {
 
         it('should retrieve the correct ClubSupporters for club id 1', async () => {
             const result = await clubSupporterService.getByClub(1);
-            expect(result.length).toEqual(1);
-            for (const ClubSupporterResult of result) {
-                expect(ClubSupporterResult).toEqual({
-                    ...defaultClubSupporter,
-                    playerId: expect.any(Number),
-                    clubId: 1
-                } as ClubSupporter);
+            if (result) {
+                expect(result.length).toEqual(1);
+                for (const ClubSupporterResult of result) {
+                    expect(ClubSupporterResult).toEqual({
+                        ...defaultClubSupporter,
+                        playerId: expect.any(Number),
+                        clubId: 1
+                    } as ClubSupporter);
+                }
+            }
+            else {
+                fail('Result is null');
             }
         });
 
@@ -165,9 +175,14 @@ describe('clubSupporterService', () => {
 
         it('should return the correct, complete list of 100 ClubSupporters', async () => {
             const result = await clubSupporterService.getAll();
-            expect(result.length).toEqual(100);
-            expect(result[11].playerId).toEqual(2);
-            expect(result[11].clubId).toEqual(12);
+            if (result) {
+                expect(result.length).toEqual(100);
+                expect(result[11].playerId).toEqual(2);
+                expect(result[11].clubId).toEqual(12);
+            }
+            else {
+                fail('Result is null');
+            }
         });
     });
 

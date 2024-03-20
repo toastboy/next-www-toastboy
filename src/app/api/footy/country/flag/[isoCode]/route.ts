@@ -1,19 +1,18 @@
 import AzureCache from 'lib/azure';
 import { streamToBuffer } from 'lib/utils';
 
-import { Country } from '@prisma/client';
 import countryService from 'services/Country';
 
 export async function generateStaticParams() {
-    const countries: Country[] = await countryService.getAll();
+    const countries = await countryService.getAll();
 
-    return countries.map((country) => {
+    return countries ? countries.map((country) => {
         return {
             params: {
                 isoCode: country.isoCode
             },
         };
-    });
+    }) : null;
 }
 
 export async function GET(

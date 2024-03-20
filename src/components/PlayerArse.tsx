@@ -6,17 +6,26 @@ export default async function PlayerArse({
 }: {
     player: Player,
 }) {
-    const fields = ['in_goal', 'running', 'shooting', 'passing', 'ball_skill', 'attacking', 'defending'];
+    type SkillField = 'in_goal' | 'running' | 'shooting' | 'passing' | 'ball_skill' | 'attacking' | 'defending';
+
     const arses = await arseService.getByPlayer(player.id);
 
-    if (arses.length === 0) {
+    if (!arses || arses.length === 0) {
         return null;
     }
 
-    const average = (field: string) => {
-        const sum = arses.reduce((acc, arse) => acc + arse[field], 0);
+    const average = (field: SkillField) => {
+        const sum = arses.reduce((acc, arse) => {
+            const fieldValue = arse[field];
+            if (fieldValue !== null) {
+                return acc + fieldValue;
+            } else {
+                return acc;
+            }
+        }, 0);
         return sum / arses.length;
     };
+    const fields: SkillField[] = ['in_goal', 'running', 'shooting', 'passing', 'ball_skill', 'attacking', 'defending'];
     const fieldAverages = fields.map((field) => average(field));
 
     return (

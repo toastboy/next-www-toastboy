@@ -8,7 +8,7 @@ export default async function PlayerForm({
 }) {
     const outcomes = await outcomeService.getPlayerForm(player.id, 0, 10);
 
-    if (outcomes.length === 0) {
+    if (!outcomes || outcomes.length === 0) {
         return null;
     }
 

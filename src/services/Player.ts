@@ -61,7 +61,7 @@ class PlayerService {
      * @returns A promise that resolves to the player or undefined if none was
      * found
      */
-    async getById(id: number): Promise<Player | undefined> {
+    async getById(id: number): Promise<Player | null> {
         try {
             return prisma.player.findUnique({
                 where: {
@@ -80,7 +80,7 @@ class PlayerService {
      * @returns A promise that resolves to the player or undefined if none was
      * found
      */
-    async getByLogin(login: string): Promise<Player | undefined> {
+    async getByLogin(login: string): Promise<Player | null> {
         try {
             return prisma.player.findUnique({
                 where: {
@@ -101,18 +101,18 @@ class PlayerService {
      * @returns A string containing the login of the player identified by idOrLogin
      * if such a player exists, or undefined otherwise.
      */
-    async getLogin(idOrLogin: string): Promise<string | undefined> {
+    async getLogin(idOrLogin: string): Promise<string | null> {
         try {
             if (!idOrLogin) {
-                return undefined;
+                return null;
             }
 
             if (!isNaN(Number(idOrLogin))) {
                 const player = await this.getById(Number(idOrLogin));
-                return player?.login;
+                return player ? player.login : null;
             } else {
                 const player = await this.getByLogin(idOrLogin);
-                return player?.login;
+                return player ? player.login : null;
             }
         } catch (error) {
             log(`Error getting Player login: ${error}`);

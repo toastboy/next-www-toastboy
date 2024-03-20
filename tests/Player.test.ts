@@ -78,7 +78,7 @@ describe('PlayerService', () => {
         });
 
         (prisma.player.delete as jest.Mock).mockImplementation((args: {
-            where: { id }
+            where: { id: number }
         }) => {
             const player = playerList.find((player) => player.id === args.where.id);
             return Promise.resolve(player ? player : null);

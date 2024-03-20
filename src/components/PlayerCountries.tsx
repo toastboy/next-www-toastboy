@@ -10,7 +10,7 @@ export default async function PlayerClubs({
 }) {
     const countrySupporters = await countrySupporterService.getByPlayer(player.id);
 
-    if (countrySupporters.length === 0) {
+    if (!countrySupporters || countrySupporters.length === 0) {
         return null;
     }
 
@@ -19,9 +19,11 @@ export default async function PlayerClubs({
         return club;
     }));
 
+    const nonNullCountries = countries.filter((item): item is NonNullable<typeof item> => item !== null);
+
     return (
         <div className="px-6 py-4">
-            {countries.map((item) => (
+            {nonNullCountries.map((item) => (
                 <CountryFlag key={item.isoCode} country={item} />
             ))}
         </div>

@@ -33,7 +33,7 @@ model Arse {
 model Club {
   id           Int     @unique(map: "id") @default(autoincrement())
   soccerway_id Int?
-  club_name    String? @db.VarChar(255)
+  club_name    String  @db.VarChar(255)
   uri          String? @db.VarChar(255)
   country      String? @db.VarChar(255)
 
@@ -152,7 +152,7 @@ model PickerTeams {
 model Player {
   id            Int       @id @default(autoincrement())
   is_admin      Boolean?  @db.TinyInt
-  login         String?   @unique(map: "login") @db.VarChar(16)
+  login         String    @unique(map: "login") @db.VarChar(16)
   first_name    String?   @db.VarChar(32)
   last_name     String?   @db.VarChar(32)
   email         String?   @db.VarChar(255)

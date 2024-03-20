@@ -11,14 +11,20 @@ export async function generateMetadata({
 }) {
     try {
         const login = await playerService.getLogin(params.idOrLogin);
+        if (!login) {
+            return {};
+        }
         const player = await playerService.getByLogin(login);
+        if (!player) {
+            return {};
+        }
         const name = playerService.getName(player);
-        return {
+        return name ? {
             title: `${name}`,
-        };
+        } : {};
     }
     catch (error) {
-        throw new Error("Getting player metadata: ", error);
+        throw new Error(`Getting player metadata: ${error}`);
     }
 }
 

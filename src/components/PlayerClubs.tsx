@@ -10,7 +10,7 @@ export default async function PlayerClubs({
 }) {
     const clubSupporters = await clubSupporterService.getByPlayer(player.id);
 
-    if (clubSupporters.length === 0) {
+    if (!clubSupporters || clubSupporters.length === 0) {
         return null;
     }
 
@@ -19,9 +19,11 @@ export default async function PlayerClubs({
         return club;
     }));
 
+    const nonNullClubs = clubs.filter((item): item is NonNullable<typeof item> => item !== null);
+
     return (
         <div className="px-6 py-4">
-            {clubs.map((item) => (
+            {nonNullClubs.map((item) => (
                 <ClubBadge key={item.id} club={item} />
             ))}
         </div>

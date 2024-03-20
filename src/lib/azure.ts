@@ -19,25 +19,25 @@ class AzureCache {
         if (!AzureCache.instance) {
             AzureCache.instance = new AzureCache();
 
-            AzureCache.tenantId = process.env.AZURE_TENANT_ID;
-            if (!AzureCache.tenantId) {
+            if (!process.env.AZURE_TENANT_ID) {
                 throw new Error('AZURE_TENANT_ID undefined');
             }
+            AzureCache.tenantId = process.env.AZURE_TENANT_ID;
 
-            AzureCache.clientId = process.env.AZURE_CLIENT_ID;
-            if (!AzureCache.clientId) {
+            if (!process.env.AZURE_CLIENT_ID) {
                 throw new Error('AZURE_CLIENT_ID undefined');
             }
+            AzureCache.clientId = process.env.AZURE_CLIENT_ID;
 
-            AzureCache.clientSecret = process.env.AZURE_CLIENT_SECRET;
-            if (!AzureCache.clientSecret) {
+            if (!process.env.AZURE_CLIENT_SECRET) {
                 throw new Error('AZURE_CLIENT_SECRET undefined');
             }
+            AzureCache.clientSecret = process.env.AZURE_CLIENT_SECRET;
 
-            AzureCache.storageAccountName = process.env.AZURE_STORAGE_ACCOUNT_NAME;
-            if (!AzureCache.storageAccountName) {
+            if (!process.env.AZURE_STORAGE_ACCOUNT_NAME) {
                 throw new Error('AZURE_STORAGE_ACCOUNT_NAME undefined');
             }
+            AzureCache.storageAccountName = process.env.AZURE_STORAGE_ACCOUNT_NAME;
         }
         return AzureCache.instance;
     }

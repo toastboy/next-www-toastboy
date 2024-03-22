@@ -1,6 +1,10 @@
 import { PlayerRecord } from '@prisma/client';
+import outcomeService from 'services/Outcome';
 import prisma from 'lib/prisma';
 import debug from 'debug';
+import gameDayService from './GameDay';
+import { Decimal } from '@prisma/client/runtime/library';
+
 
 const log = debug('footy:api');
 
@@ -73,7 +77,7 @@ export class PlayerRecordService {
     }
 
     /**
-     * Retrieves an PlayerRecord for the given Player ID, year and GameDay ID.
+     * Retrieves a PlayerRecord for the given Player ID, year and GameDay ID.
      * @param playerId - The ID of the Player.
      * @param year - The year of the GameDay, or zero for all years.
      * @param gameDayId - The ID of the GameDay.
@@ -167,7 +171,7 @@ export class PlayerRecordService {
     }
 
     /**
-     * Upserts an PlayerRecord.
+     * Upserts a PlayerRecord.
      * @param data The data to be upserted.
      * @returns A promise that resolves to the upserted PlayerRecord, or null if the upsert failed.
      * @throws An error if there is a failure.
@@ -185,6 +189,55 @@ export class PlayerRecordService {
                 update: data,
                 create: data,
             });
+        } catch (error) {
+            log(`Error upserting PlayerRecord: ${error}`);
+            throw error;
+        }
+    }
+
+    /**
+     * Upserts all PlayerRecords for a single GameDay.
+     * @param gameDayId The ID of the GameDay.
+     * @returns A promise that resolves to an array of all the upserted PlayerRecords, or null if the upsert failed.
+     * @throws An error if there is a failure.
+     */
+    async upsertForGameDay(gameDayId: number): Promise<PlayerRecord[] | null> {
+        try {
+            const gameDay = await gameDayService.get(gameDayId);
+            const outcomes = await outcomeService.getByGameDay(gameDayId);
+            if (!gameDay || !outcomes) {
+                return null;
+            }
+
+            const playerRecords: PlayerRecord[] = [];
+            for (const outcome of outcomes) {
+                const playerRecord = await this.upsert({
+                    playerId: outcome.playerId,
+                    year: gameDay.date.getFullYear() || 0,
+                    gameDayId: gameDayId,
+                    responses: 0,
+                    P: 0,
+                    W: 0,
+                    D: 0,
+                    L: 0,
+                    points: 0,
+                    averages: new Decimal(0),
+                    stalwart: 0,
+                    pub: 0,
+                    rank_points: 0,
+                    rank_averages: 0,
+                    rank_stalwart: 0,
+                    rank_speedy: 0,
+                    rank_pub: 0,
+                    speedy: 0,
+                });
+
+                if (playerRecord) {
+                    playerRecords.push(playerRecord);
+                }
+            }
+
+            return Promise.resolve(playerRecords);
         } catch (error) {
             log(`Error upserting PlayerRecord: ${error}`);
             throw error;

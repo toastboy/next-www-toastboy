@@ -13,6 +13,24 @@ jest.mock('lib/prisma', () => ({
         delete: jest.fn(),
         deleteMany: jest.fn(),
     },
+    gameDay: {
+        findUnique: jest.fn(),
+        findFirst: jest.fn(),
+        findMany: jest.fn(),
+        create: jest.fn(),
+        upsert: jest.fn(),
+        delete: jest.fn(),
+        deleteMany: jest.fn(),
+    },
+    outcome: {
+        findUnique: jest.fn(),
+        findFirst: jest.fn(),
+        findMany: jest.fn(),
+        create: jest.fn(),
+        upsert: jest.fn(),
+        delete: jest.fn(),
+        deleteMany: jest.fn(),
+    },
 }));
 
 const defaultPlayerRecord: PlayerRecord = {
@@ -277,7 +295,11 @@ describe('PlayerRecordService', () => {
     });
 
     describe('upsertForGameDay', () => {
-        it.todo('should create or update all PlayerRecords for a given GameDay');
+        it('should create or update all PlayerRecords for a given GameDay', async () => {
+            await playerRecordService.upsertForGameDay(15);
+
+        });
+
         it.todo('should refuse to create or update any PlayerRecord with invalid data');
         it.todo('should do nothing if no Outcomes exist for the given GameDay');
         it.todo('should update the table ranks for all PlayerRecords with GameDays on or after the given GameDay');

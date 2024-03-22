@@ -188,6 +188,37 @@ export class OutcomeService {
     }
 
     /**
+     * Retrieves the number of games played by player ID in the given year.
+     * @param playerId - The ID of the player.
+     * @param year - The year to filter by, or zero for all years.
+     * @returns A promise that resolves to the number of games or null.
+     * @throws An error if there is a failure.
+     */
+    async getGamesPlayed(playerId: number, year: number): Promise<number> {
+        try {
+            return prisma.outcome.count({
+                where: {
+                    playerId: playerId,
+                    points: {
+                        not: null
+                    },
+                    ...(year !== 0 ? {
+                        gameDay: {
+                            date: {
+                                gte: new Date(year, 0, 1),
+                                lt: new Date(year + 1, 0, 1)
+                            }
+                        }
+                    } : {})
+                },
+            });
+        } catch (error) {
+            log(`Error fetching outcomes by player: ${error}`);
+            throw error;
+        }
+    }
+
+    /**
      * Creates a new outcome.
      * @param data The data for the new outcome.
      * @returns A promise that resolves to the created outcome, or null if an error occurs.

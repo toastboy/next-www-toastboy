@@ -7,6 +7,7 @@ jest.mock('lib/prisma', () => ({
         findUnique: jest.fn(),
         findFirst: jest.fn(),
         findMany: jest.fn(),
+        count: jest.fn(),
         create: jest.fn(),
         upsert: jest.fn(),
         delete: jest.fn(),
@@ -51,16 +52,50 @@ describe('OutcomeService', () => {
                 }
             }
         }) => {
-            const outcome = outcomeList.find((outcome) => outcome.gameDayId === args.where.gameDayId_playerId.gameDayId && outcome.playerId === args.where.gameDayId_playerId.playerId);
+            const outcome = outcomeList.find((outcome) =>
+                outcome.gameDayId === args.where.gameDayId_playerId.gameDayId &&
+                outcome.playerId === args.where.gameDayId_playerId.playerId
+            );
             return Promise.resolve(outcome ? outcome : null);
         });
 
-        (prisma.outcome.findMany as jest.Mock).mockImplementation((args: { where: { playerId: number, gameDayId: number }, take: number, orderBy: { responseTime: 'desc' } }) => {
-            return Promise.resolve(outcomeList.filter((outcome) => outcome.playerId === args.where.playerId && outcome.gameDayId < args.where.gameDayId).slice(0, args.take));
+        (prisma.outcome.findMany as jest.Mock).mockImplementation((args: {
+            where: {
+                playerId: number,
+                gameDayId: number
+            },
+            take: number,
+            orderBy: { responseTime: 'desc' }
+        }) => {
+            return Promise.resolve(outcomeList.filter((outcome) =>
+                outcome.playerId === args.where.playerId &&
+                outcome.gameDayId < args.where.gameDayId).slice(0, args.take)
+            );
+        });
+
+        (prisma.outcome.count as jest.Mock).mockImplementation((args: {
+            where: {
+                playerId: number,
+                points: {
+                    not: null
+                },
+                gameDay: {
+                    date: {
+                        gte: Date,
+                        lt: Date
+                    }
+                }
+            }
+        }) => {
+            return Promise.resolve(outcomeList.filter((outcome) =>
+                outcome.playerId === args.where.playerId).length);
         });
 
         (prisma.outcome.create as jest.Mock).mockImplementation((args: { data: Outcome }) => {
-            const outcome = outcomeList.find((outcome) => outcome.gameDayId === args.data.gameDayId && outcome.playerId === args.data.playerId);
+            const outcome = outcomeList.find((outcome) =>
+                outcome.gameDayId === args.data.gameDayId &&
+                outcome.playerId === args.data.playerId
+            );
 
             if (outcome) {
                 return Promise.reject(new Error('Outcome already exists'));
@@ -80,7 +115,10 @@ describe('OutcomeService', () => {
             update: Outcome,
             create: Outcome,
         }) => {
-            const outcome = outcomeList.find((outcome) => outcome.gameDayId === args.where.gameDayId_playerId.gameDayId && outcome.playerId === args.where.gameDayId_playerId.playerId);
+            const outcome = outcomeList.find((outcome) =>
+                outcome.gameDayId === args.where.gameDayId_playerId.gameDayId &&
+                outcome.playerId === args.where.gameDayId_playerId.playerId
+            );
 
             if (outcome) {
                 return Promise.resolve(args.update);
@@ -98,7 +136,10 @@ describe('OutcomeService', () => {
                 }
             }
         }) => {
-            const outcome = outcomeList.find((outcome) => outcome.gameDayId === args.where.gameDayId_playerId.gameDayId && outcome.playerId === args.where.gameDayId_playerId.playerId);
+            const outcome = outcomeList.find((outcome) =>
+                outcome.gameDayId === args.where.gameDayId_playerId.gameDayId &&
+                outcome.playerId === args.where.gameDayId_playerId.playerId
+            );
             return Promise.resolve(outcome ? outcome : null);
         });
     });
@@ -261,6 +302,15 @@ describe('OutcomeService', () => {
             const result = await outcomeService.getPlayerLastPlayed(11);
             expect(result).toBeNull();
         });
+    });
+
+    describe('getGamesPlayed', () => {
+        it('should retrieve the correct number of games played for Player ID 1, year 2021', async () => {
+            const result = await outcomeService.getGamesPlayed(1, 2021);
+            expect(result).toEqual(10);
+        });
+
+        it.todo('should return 0 for Player ID 11');
     });
 
     describe('create', () => {

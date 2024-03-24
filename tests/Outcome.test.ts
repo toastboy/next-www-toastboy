@@ -184,7 +184,7 @@ describe('OutcomeService', () => {
                 }
             }
             else {
-                fail('Result is null');
+                throw new Error("Result is null");
             }
         });
 
@@ -214,7 +214,7 @@ describe('OutcomeService', () => {
                 }
             }
             else {
-                fail('Result is null');
+                throw new Error("Result is null");
             }
         });
 
@@ -294,7 +294,7 @@ describe('OutcomeService', () => {
                 expect(result.gameDayId).toEqual(10);
             }
             else {
-                fail('Result is null');
+                throw new Error("Result is null");
             }
         });
 

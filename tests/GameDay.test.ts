@@ -112,7 +112,7 @@ describe('GameDayService', () => {
                 expect(result[11].id).toEqual(12);
             }
             else {
-                fail('Result is null');
+                throw new Error("Result is null");
             }
         });
     });
@@ -131,7 +131,7 @@ describe('GameDayService', () => {
                 expect(result[0]).toEqual(2021);
             }
             else {
-                fail('Result is null');
+                throw new Error("Result is null");
             }
         });
     });

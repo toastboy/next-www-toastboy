@@ -201,7 +201,7 @@ describe('PlayerRecordService', () => {
                 }
             }
             else {
-                fail('Result is null');
+                throw new Error("Result is null");
             }
         });
 
@@ -231,7 +231,7 @@ describe('PlayerRecordService', () => {
                 }
             }
             else {
-                fail('Result is null');
+                throw new Error("Result is null");
             }
         });
 

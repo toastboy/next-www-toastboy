@@ -113,7 +113,7 @@ describe('ArseService', () => {
                     stamp: expect.any(Date)
                 } as Arse);
             } else {
-                fail("Result is null");
+                throw new Error("Result is null");
             }
         });
 
@@ -144,7 +144,7 @@ describe('ArseService', () => {
                 }
             }
             else {
-                fail('Result is null');
+                throw new Error("Result is null");
             }
         });
 
@@ -154,7 +154,7 @@ describe('ArseService', () => {
                 expect(result).toEqual([]);
             }
             else {
-                fail('Result is null');
+                throw new Error("Result is null");
             }
         });
     });
@@ -180,7 +180,7 @@ describe('ArseService', () => {
                 }
             }
             else {
-                fail('Result is null');
+                throw new Error("Result is null");
             }
         });
 
@@ -190,7 +190,7 @@ describe('ArseService', () => {
                 expect(result).toEqual([]);
             }
             else {
-                fail('Result is null');
+                throw new Error("Result is null");
             }
         });
     });
@@ -210,7 +210,7 @@ describe('ArseService', () => {
                 expect(result[41].stamp).toEqual(expect.any(Date));
             }
             else {
-                fail('Result is null');
+                throw new Error("Result is null");
             }
         });
     });
@@ -222,7 +222,7 @@ describe('ArseService', () => {
                 expect(result).toEqual(defaultArse);
             }
             else {
-                fail('Result is null');
+                throw new Error("Result is null");
             }
         });
 
@@ -246,7 +246,7 @@ describe('ArseService', () => {
                 expect(result).toEqual(defaultArse);
             }
             else {
-                fail('Result is null');
+                throw new Error("Result is null");
             }
         });
 
@@ -262,7 +262,7 @@ describe('ArseService', () => {
                 expect(result).toEqual(updatedArse);
             }
             else {
-                fail('Result is null');
+                throw new Error("Result is null");
             }
         });
 

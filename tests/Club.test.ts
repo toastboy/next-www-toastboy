@@ -113,7 +113,7 @@ describe('ClubService', () => {
                 expect(result[11].soccerway_id).toEqual(1011);
             }
             else {
-                fail('Result is null');
+                throw new Error("Result is null");
             }
         });
     });

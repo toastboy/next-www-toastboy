@@ -108,7 +108,7 @@ describe('InvitationService', () => {
                 expect(result[11].uuid).toEqual('123412');
             }
             else {
-                fail('Result is null');
+                throw new Error("Result is null");
             }
         });
     });

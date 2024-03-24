@@ -114,7 +114,7 @@ describe('GameChatService', () => {
                 expect(result[11].id).toEqual(12);
             }
             else {
-                fail('Result is null');
+                throw new Error("Result is null");
             }
         });
     });

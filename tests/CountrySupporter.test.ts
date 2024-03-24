@@ -101,7 +101,7 @@ describe('countrySupporterService', () => {
                 } as CountrySupporter);
             }
             else {
-                fail('Result is null');
+                throw new Error("Result is null");
             }
         });
 
@@ -131,7 +131,7 @@ describe('countrySupporterService', () => {
                 }
             }
             else {
-                fail('Result is null');
+                throw new Error("Result is null");
             }
         });
 
@@ -161,7 +161,7 @@ describe('countrySupporterService', () => {
                 }
             }
             else {
-                fail('Result is null');
+                throw new Error("Result is null");
             }
         });
 
@@ -186,7 +186,7 @@ describe('countrySupporterService', () => {
                 expect(result[11].countryISOcode).toEqual("GB");
             }
             else {
-                fail('Result is null');
+                throw new Error("Result is null");
             }
         });
     });

@@ -107,7 +107,7 @@ describe('CountryService', () => {
                 expect(result[0].isoCode).toEqual("GB-ENG");
             }
             else {
-                fail('Result is null');
+                throw new Error("Result is null");
             }
         });
     });

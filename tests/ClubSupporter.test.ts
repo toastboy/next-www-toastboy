@@ -126,7 +126,7 @@ describe('clubSupporterService', () => {
                 }
             }
             else {
-                fail('Result is null');
+                throw new Error("Result is null");
             }
         });
 
@@ -156,7 +156,7 @@ describe('clubSupporterService', () => {
                 }
             }
             else {
-                fail('Result is null');
+                throw new Error("Result is null");
             }
         });
 
@@ -181,7 +181,7 @@ describe('clubSupporterService', () => {
                 expect(result[11].clubId).toEqual(12);
             }
             else {
-                fail('Result is null');
+                throw new Error("Result is null");
             }
         });
     });

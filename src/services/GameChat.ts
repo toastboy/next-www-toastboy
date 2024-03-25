@@ -18,14 +18,8 @@ export class GameChatService {
         if (!gameChat.game_day || !Number.isInteger(gameChat.game_day) || gameChat.game_day < 0) {
             throw new Error(`Invalid game_day value: ${gameChat.game_day}`);
         }
-        if (!gameChat.stamp || !(gameChat.stamp instanceof Date)) {
-            throw new Error(`Invalid stamp value: ${gameChat.stamp}`);
-        }
         if (!gameChat.player || !Number.isInteger(gameChat.player) || gameChat.player < 0) {
             throw new Error(`Invalid player value: ${gameChat.player}`);
-        }
-        if (gameChat.body && typeof gameChat.body !== 'string') {
-            throw new Error(`Invalid body value: ${gameChat.body}`);
         }
 
         return gameChat;

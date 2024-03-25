@@ -15,23 +15,9 @@ export class GameDayService {
         if (!gameDay.id || !Number.isInteger(gameDay.id) || gameDay.id < 0) {
             throw new Error(`Invalid id value: ${gameDay.id}`);
         }
-        if (gameDay.date !== null && !(gameDay.date instanceof Date)) {
-            throw new Error(`Invalid date value: ${gameDay.date}`);
-        }
-        if (gameDay.game !== null && typeof gameDay.game !== 'boolean') {
-            throw new Error(`Invalid game value: ${gameDay.game}`);
-        }
-        if (gameDay.mailSent !== null && !(gameDay.mailSent instanceof Date)) {
-            throw new Error(`Invalid mailSent value: ${gameDay.mailSent}`);
-        }
-        if (gameDay.comment !== null && typeof gameDay.comment !== 'string') {
-            throw new Error(`Invalid comment value: ${gameDay.comment}`);
-        }
-        if (gameDay.bibs !== null && typeof gameDay.bibs !== 'string') {
-            throw new Error(`Invalid bibs value: ${gameDay.bibs}`);
-        }
-        if (gameDay.picker_games_history !== null && !Number.isInteger(gameDay.picker_games_history) ||
-            !(gameDay.picker_games_history == 5 || gameDay.picker_games_history == 10)) {
+        if (gameDay.picker_games_history &&
+            (!Number.isInteger(gameDay.picker_games_history) ||
+                !(gameDay.picker_games_history == 5 || gameDay.picker_games_history == 10))) {
             throw new Error(`Invalid picker_games_history value: ${gameDay.picker_games_history}`);
         }
 

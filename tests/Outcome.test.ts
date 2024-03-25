@@ -28,12 +28,6 @@ const defaultOutcome: Outcome = {
     goalie: false,
 };
 
-const invalidOutcome: Outcome = {
-    ...defaultOutcome,
-    response: 'No',
-    team: 'X' as Team,
-};
-
 const outcomeList: Outcome[] = Array.from({ length: 100 }, (_, index) => ({
     ...defaultOutcome,
     playerId: index % 10 + 1,
@@ -164,6 +158,25 @@ describe('OutcomeService', () => {
         });
     });
 
+    describe('getAll', () => {
+        beforeEach(() => {
+            (prisma.outcome.findMany as jest.Mock).mockImplementation(() => {
+                return Promise.resolve(outcomeList);
+            });
+        });
+
+        it('should return the correct, complete list of 100 Outcomes', async () => {
+            const result = await outcomeService.getAll();
+            if (result) {
+                expect(result.length).toEqual(100);
+                expect(result[11].playerId).toEqual(2);
+            }
+            else {
+                throw new Error("Result is null");
+            }
+        });
+    });
+
     describe('getByGameDay', () => {
         beforeEach(() => {
             (prisma.outcome.findMany as jest.Mock).mockImplementation((args: { where: { gameDayId: number } }) => {
@@ -225,7 +238,7 @@ describe('OutcomeService', () => {
     });
 
     describe('getPlayerForm', () => {
-        it('should retrieve the correct player form for Player ID 1 and GameDay ID 5 with history of 3', async () => {
+        it('should retrieve the correct player form for Player ID 1 and GameDay ID 5 or zero with history of 3', async () => {
             // Mock the outcomeList data
             const outcomeListMock: Outcome[] = [
                 {
@@ -248,8 +261,10 @@ describe('OutcomeService', () => {
             // Mock the prisma.outcome.findMany function
             (prisma.outcome.findMany as jest.Mock).mockResolvedValueOnce(outcomeListMock);
 
-            const result = await outcomeService.getPlayerForm(1, 5, 3);
+            let result = await outcomeService.getPlayerForm(1, 5, 3);
             expect(result).toEqual(outcomeListMock);
+            result = await outcomeService.getPlayerForm(1, 0, 3);
+            expect(result).toEqual([]);
         });
 
         it('should return an empty list when retrieving player form for Player ID 2 and GameDay ID 1 with history of 5', async () => {
@@ -309,6 +324,10 @@ describe('OutcomeService', () => {
             const result = await outcomeService.getGamesPlayed(1, 2021);
             expect(result).toEqual(10);
         });
+        it('should retrieve the correct number of games played for Player ID 1, year 0', async () => {
+            const result = await outcomeService.getGamesPlayed(1, 0);
+            expect(result).toEqual(10);
+        });
 
         it.todo('should return 0 for Player ID 11');
     });
@@ -320,7 +339,30 @@ describe('OutcomeService', () => {
         });
 
         it('should refuse to create an Outcome with invalid data', async () => {
-            await expect(outcomeService.create(invalidOutcome)).rejects.toThrow();
+            await expect(outcomeService.create({
+                ...defaultOutcome,
+                response: 'Wibble' as PlayerResponse,
+            })).rejects.toThrow();
+            await expect(outcomeService.create({
+                ...defaultOutcome,
+                responseTime: new Date(new Date().getTime() + 24 * 60 * 60 * 1000),
+            })).rejects.toThrow();
+            await expect(outcomeService.create({
+                ...defaultOutcome,
+                points: 2,
+            })).rejects.toThrow();
+            await expect(outcomeService.create({
+                ...defaultOutcome,
+                team: 'X' as Team,
+            })).rejects.toThrow();
+            await expect(outcomeService.create({
+                ...defaultOutcome,
+                playerId: -1,
+            })).rejects.toThrow();
+            await expect(outcomeService.create({
+                ...defaultOutcome,
+                gameDayId: -1,
+            })).rejects.toThrow();
         });
 
         it('should refuse to create an Outcome that has the same GameDay ID and Player ID as an existing one', async () => {
@@ -348,14 +390,6 @@ describe('OutcomeService', () => {
             };
             const result = await outcomeService.upsert(updatedOutcome);
             expect(result).toEqual(updatedOutcome);
-        });
-
-        it('should refuse to create an Outcome with invalid data where the combination of GameDay ID and Player ID did not exist', async () => {
-            await expect(outcomeService.create(invalidOutcome)).rejects.toThrow();
-        });
-
-        it('should refuse to update an Outcome with invalid data where the combination of GameDay ID and Player ID already existed', async () => {
-            await expect(outcomeService.create(invalidOutcome)).rejects.toThrow();
         });
     });
 

@@ -37,8 +37,7 @@ export class PlayerRecordService {
         if (!playerRecord.points || !Number.isInteger(playerRecord.points) || playerRecord.points < 0) {
             throw new Error(`Invalid points value: ${playerRecord.points}`);
         }
-        // TODO: Validate averages Decimal value
-        if (!playerRecord.averages || typeof playerRecord.averages !== 'object') {
+        if (!playerRecord.averages || !(playerRecord.averages instanceof Decimal) || playerRecord.averages.lt(0)) {
             throw new Error(`Invalid averages value: ${playerRecord.averages}`);
         }
         if (!playerRecord.stalwart || !Number.isInteger(playerRecord.stalwart) || playerRecord.stalwart < 0) {

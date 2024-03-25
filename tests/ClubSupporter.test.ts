@@ -19,11 +19,6 @@ const defaultClubSupporter: ClubSupporter = {
     clubId: 2270
 };
 
-const invalidClubSupporter: ClubSupporter = {
-    ...defaultClubSupporter,
-    playerId: -1,
-};
-
 const clubSupporterList: ClubSupporter[] = Array.from({ length: 100 }, (_, index) => ({
     ...defaultClubSupporter,
     playerId: index % 10 + 1,
@@ -193,7 +188,14 @@ describe('clubSupporterService', () => {
         });
 
         it('should refuse to create a ClubSupporter with invalid data', async () => {
-            await expect(clubSupporterService.create(invalidClubSupporter)).rejects.toThrow();
+            await expect(clubSupporterService.create({
+                ...defaultClubSupporter,
+                playerId: -1,
+            })).rejects.toThrow();
+            await expect(clubSupporterService.create({
+                ...defaultClubSupporter,
+                clubId: -1,
+            })).rejects.toThrow();
         });
 
         it('should refuse to create a ClubSupporter that has the same player ID and club ID as an existing one', async () => {
@@ -220,14 +222,6 @@ describe('clubSupporterService', () => {
             };
             const result = await clubSupporterService.upsert(updatedClubSupporter);
             expect(result).toEqual(updatedClubSupporter);
-        });
-
-        it('should refuse to create a ClubSupporter with invalid data where the combination of player ID and club ID did not exist', async () => {
-            await expect(clubSupporterService.create(invalidClubSupporter)).rejects.toThrow();
-        });
-
-        it('should refuse to update a ClubSupporter with invalid data where the combination of player ID and club ID already existed', async () => {
-            await expect(clubSupporterService.create(invalidClubSupporter)).rejects.toThrow();
         });
     });
 

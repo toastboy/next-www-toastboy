@@ -15,42 +15,6 @@ class PlayerService {
         if (!player.id || !Number.isInteger(player.id) || player.id < 0) {
             throw new Error(`Invalid id value: ${player.id}`);
         }
-        if (player.is_admin !== null && typeof player.is_admin !== 'boolean') {
-            throw new Error(`Invalid is_admin value: ${player.is_admin}`);
-        }
-        if (player.login !== null && typeof player.login !== 'string') {
-            throw new Error(`Invalid login value: ${player.login}`);
-        }
-        if (player.first_name !== null && typeof player.first_name !== 'string') {
-            throw new Error(`Invalid first_name value: ${player.first_name}`);
-        }
-        if (player.last_name !== null && typeof player.last_name !== 'string') {
-            throw new Error(`Invalid last_name value: ${player.last_name}`);
-        }
-        if (player.email !== null && typeof player.email !== 'string') {
-            throw new Error(`Invalid email value: ${player.email}`);
-        }
-        if (player.joined !== null && !(player.joined instanceof Date)) {
-            throw new Error(`Invalid joined value: ${player.joined}`);
-        }
-        if (player.finished !== null && !(player.finished instanceof Date)) {
-            throw new Error(`Invalid finished value: ${player.finished}`);
-        }
-        if (player.born !== null && !(player.born instanceof Date)) {
-            throw new Error(`Invalid born value: ${player.born}`);
-        }
-        if (player.introduced_by !== null && !Number.isInteger(player.introduced_by)) {
-            throw new Error(`Invalid introduced_by value: ${player.introduced_by}`);
-        }
-        if (player.comment !== null && typeof player.comment !== 'string') {
-            throw new Error(`Invalid comment value: ${player.comment}`);
-        }
-        if (player.anonymous !== null && typeof player.anonymous !== 'boolean') {
-            throw new Error(`Invalid anonymous value: ${player.anonymous}`);
-        }
-        if (player.goalie !== null && typeof player.goalie !== 'boolean') {
-            throw new Error(`Invalid goalie value: ${player.goalie}`);
-        }
 
         return player;
     }
@@ -103,10 +67,6 @@ class PlayerService {
      */
     async getLogin(idOrLogin: string): Promise<string | null> {
         try {
-            if (!idOrLogin) {
-                return null;
-            }
-
             if (!isNaN(Number(idOrLogin))) {
                 const player = await this.getById(Number(idOrLogin));
                 return player ? player.login : null;
@@ -167,21 +127,12 @@ class PlayerService {
      * @param player The player object in question
      * @returns The player name string or null if there was an error
      */
-    getName(player: Player | null): string | null {
-        try {
-            if (player == null) {
-                return null;
-            }
-
-            if (player.anonymous) {
-                return `Player ${player.id}`;
-            }
-
-            return `${player.first_name} ${player.last_name}`;
-        } catch (error) {
-            log(`Error fetching Player name: ${error}`);
-            throw error;
+    getName(player: Player): string | null {
+        if (player.anonymous) {
+            return `Player ${player.id}`;
         }
+
+        return `${player.first_name} ${player.last_name}`;
     }
 
     /**

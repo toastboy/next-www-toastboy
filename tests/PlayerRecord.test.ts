@@ -55,11 +55,6 @@ const defaultPlayerRecord: PlayerRecord = {
     playerId: 12,
 };
 
-const invalidPlayerRecord: PlayerRecord = {
-    ...defaultPlayerRecord,
-    stalwart: -1,
-};
-
 const playerRecordList: PlayerRecord[] = Array.from({ length: 100 }, (_, index) => ({
     ...defaultPlayerRecord,
     gameDayId: 10 + index / 10 + 1,
@@ -181,6 +176,30 @@ describe('PlayerRecordService', () => {
         });
     });
 
+    describe('getAll', () => {
+        beforeEach(() => {
+            (prisma.playerRecord.findMany as jest.Mock).mockImplementation(() => {
+                return Promise.resolve(playerRecordList);
+            });
+        });
+
+        it('should retrieve all PlayerRecords', async () => {
+            const result = await playerRecordService.getAll();
+            if (result) {
+                expect(result.length).toEqual(100);
+                for (const playerRecord of result) {
+                    expect(playerRecord).toEqual({
+                        ...defaultPlayerRecord,
+                        gameDayId: expect.any(Number)
+                    } as PlayerRecord);
+                }
+            }
+            else {
+                throw new Error("Result is null");
+            }
+        });
+    });
+
     describe('getByGameDay', () => {
         beforeEach(() => {
             (prisma.playerRecord.findMany as jest.Mock).mockImplementation((args: { where: { gameDayId: number } }) => {
@@ -254,7 +273,78 @@ describe('PlayerRecordService', () => {
         });
 
         it('should refuse to create an PlayerRecord with invalid data', async () => {
-            await expect(playerRecordService.create(invalidPlayerRecord)).rejects.toThrow();
+            await expect(playerRecordService.create({
+                ...defaultPlayerRecord,
+                year: -1,
+            })).rejects.toThrow();
+            await expect(playerRecordService.create({
+                ...defaultPlayerRecord,
+                responses: -1,
+            })).rejects.toThrow();
+            await expect(playerRecordService.create({
+                ...defaultPlayerRecord,
+                P: -1,
+            })).rejects.toThrow();
+            await expect(playerRecordService.create({
+                ...defaultPlayerRecord,
+                W: -1,
+            })).rejects.toThrow();
+            await expect(playerRecordService.create({
+                ...defaultPlayerRecord,
+                D: -1,
+            })).rejects.toThrow();
+            await expect(playerRecordService.create({
+                ...defaultPlayerRecord,
+                L: -1,
+            })).rejects.toThrow();
+            await expect(playerRecordService.create({
+                ...defaultPlayerRecord,
+                points: -1,
+            })).rejects.toThrow();
+            await expect(playerRecordService.create({
+                ...defaultPlayerRecord,
+                averages: new Prisma.Decimal(-1),
+            })).rejects.toThrow();
+            await expect(playerRecordService.create({
+                ...defaultPlayerRecord,
+                stalwart: -1,
+            })).rejects.toThrow();
+            await expect(playerRecordService.create({
+                ...defaultPlayerRecord,
+                pub: -1,
+            })).rejects.toThrow();
+            await expect(playerRecordService.create({
+                ...defaultPlayerRecord,
+                rank_points: -1,
+            })).rejects.toThrow();
+            await expect(playerRecordService.create({
+                ...defaultPlayerRecord,
+                rank_averages: -1,
+            })).rejects.toThrow();
+            await expect(playerRecordService.create({
+                ...defaultPlayerRecord,
+                rank_stalwart: -1,
+            })).rejects.toThrow();
+            await expect(playerRecordService.create({
+                ...defaultPlayerRecord,
+                rank_speedy: -1,
+            })).rejects.toThrow();
+            await expect(playerRecordService.create({
+                ...defaultPlayerRecord,
+                rank_pub: -1,
+            })).rejects.toThrow();
+            await expect(playerRecordService.create({
+                ...defaultPlayerRecord,
+                speedy: -1,
+            })).rejects.toThrow();
+            await expect(playerRecordService.create({
+                ...defaultPlayerRecord,
+                gameDayId: -1,
+            })).rejects.toThrow();
+            await expect(playerRecordService.create({
+                ...defaultPlayerRecord,
+                playerId: -1,
+            })).rejects.toThrow();
         });
 
         it('should refuse to create an PlayerRecord that has the same Player ID, year and GameDay ID as an existing one', async () => {
@@ -283,14 +373,6 @@ describe('PlayerRecordService', () => {
             };
             const result = await playerRecordService.upsert(updatedPlayerRecord);
             expect(result).toEqual(updatedPlayerRecord);
-        });
-
-        it('should refuse to create an PlayerRecord with invalid data where the combination of GameDay ID and Player ID did not exist', async () => {
-            await expect(playerRecordService.create(invalidPlayerRecord)).rejects.toThrow();
-        });
-
-        it('should refuse to update an PlayerRecord with invalid data where the combination of GameDay ID and Player ID already existed', async () => {
-            await expect(playerRecordService.create(invalidPlayerRecord)).rejects.toThrow();
         });
     });
 

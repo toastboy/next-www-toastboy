@@ -31,18 +31,6 @@ export class OutcomeService {
         if (outcome.team && !['A', 'B'].includes(outcome.team)) {
             throw new Error(`Invalid team value: ${outcome.team}`);
         }
-        if (outcome.comment && outcome.comment.length === 0) {
-            throw new Error(`Invalid comment value: ${outcome.comment}`);
-        }
-        if (outcome.pub && typeof outcome.pub !== 'boolean') {
-            throw new Error(`Invalid pub value: ${outcome.pub}`);
-        }
-        if (outcome.paid && typeof outcome.paid !== 'boolean') {
-            throw new Error(`Invalid paid value: ${outcome.paid}`);
-        }
-        if (outcome.goalie && typeof outcome.goalie !== 'boolean') {
-            throw new Error(`Invalid goalie value: ${outcome.goalie}`);
-        }
         if (!outcome.gameDayId || !Number.isInteger(outcome.gameDayId) || outcome.gameDayId < 0) {
             throw new Error(`Invalid gameDay value: ${outcome.gameDayId}`);
         }

@@ -20,11 +20,6 @@ const defaultInvitation: Invitation = {
     game_day: 1,
 };
 
-const invalidInvitation: Invitation = {
-    ...defaultInvitation,
-    uuid: '',
-};
-
 const invitationList: Invitation[] = Array.from({ length: 100 }, (_, index) => ({
     ...defaultInvitation,
     uuid: `1234${index + 1}`,
@@ -124,7 +119,18 @@ describe('InvitationService', () => {
         });
 
         it('should refuse to create a Invitation with invalid data', async () => {
-            await expect(invitationService.create(invalidInvitation)).rejects.toThrow();
+            await expect(invitationService.create({
+                ...defaultInvitation,
+                uuid: '',
+            })).rejects.toThrow();
+            await expect(invitationService.create({
+                ...defaultInvitation,
+                player: -1,
+            })).rejects.toThrow();
+            await expect(invitationService.create({
+                ...defaultInvitation,
+                game_day: -1,
+            })).rejects.toThrow();
         });
 
         it('should refuse to create a Invitation that has the same uuid as an existing one', async () => {
@@ -148,14 +154,6 @@ describe('InvitationService', () => {
             };
             const result = await invitationService.upsert(updatedInvitation);
             expect(result).toEqual(updatedInvitation);
-        });
-
-        it('should refuse to create a Invitation with invalid data where one with the uuid did not exist', async () => {
-            await expect(invitationService.create(invalidInvitation)).rejects.toThrow();
-        });
-
-        it('should refuse to update a Invitation with invalid data where one with the uuid already existed', async () => {
-            await expect(invitationService.create(invalidInvitation)).rejects.toThrow();
         });
     });
 

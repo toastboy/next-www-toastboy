@@ -27,11 +27,6 @@ const defaultArse: Arse = {
     defending: 10,
 };
 
-const invalidArse: Arse = {
-    ...defaultArse,
-    playerId: -1,
-};
-
 const arseList: Arse[] = Array.from({ length: 100 }, (_, index) => ({
     ...defaultArse,
     playerId: index % 10 + 1,
@@ -227,7 +222,46 @@ describe('ArseService', () => {
         });
 
         it('should refuse to create an arse with invalid data', async () => {
-            await expect(arseService.create(invalidArse)).rejects.toThrow();
+            await expect(arseService.create({
+                ...defaultArse,
+                stamp: new Date(new Date().getTime() + 24 * 60 * 60 * 1000),
+            })).rejects.toThrow();
+            await expect(arseService.create({
+                ...defaultArse,
+                playerId: -1,
+            })).rejects.toThrow();
+            await expect(arseService.create({
+                ...defaultArse,
+                raterId: -1,
+            })).rejects.toThrow();
+            await expect(arseService.create({
+                ...defaultArse,
+                in_goal: 11,
+            })).rejects.toThrow();
+            await expect(arseService.create({
+                ...defaultArse,
+                running: 11,
+            })).rejects.toThrow();
+            await expect(arseService.create({
+                ...defaultArse,
+                shooting: 11,
+            })).rejects.toThrow();
+            await expect(arseService.create({
+                ...defaultArse,
+                passing: 11,
+            })).rejects.toThrow();
+            await expect(arseService.create({
+                ...defaultArse,
+                ball_skill: 11,
+            })).rejects.toThrow();
+            await expect(arseService.create({
+                ...defaultArse,
+                attacking: 11,
+            })).rejects.toThrow();
+            await expect(arseService.create({
+                ...defaultArse,
+                defending: 11,
+            })).rejects.toThrow();
         });
 
         it('should refuse to create an arse that has the same player ID and rater ID as an existing one', async () => {
@@ -264,14 +298,6 @@ describe('ArseService', () => {
             else {
                 throw new Error("Result is null");
             }
-        });
-
-        it('should refuse to create an arse with invalid data where the combination of player ID and rater ID did not exist', async () => {
-            await expect(arseService.create(invalidArse)).rejects.toThrow();
-        });
-
-        it('should refuse to update an arse with invalid data where the combination of player ID and rater ID already existed', async () => {
-            await expect(arseService.create(invalidArse)).rejects.toThrow();
         });
     });
 

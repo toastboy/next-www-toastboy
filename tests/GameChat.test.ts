@@ -22,11 +22,6 @@ const defaultGameChat: GameChat = {
     body: "Hello, world!",
 };
 
-const invalidGameChat: GameChat = {
-    ...defaultGameChat,
-    id: -1,
-};
-
 const gameChatList: GameChat[] = Array.from({ length: 100 }, (_, index) => ({
     ...defaultGameChat,
     id: index + 1,
@@ -130,7 +125,18 @@ describe('GameChatService', () => {
         });
 
         it('should refuse to create a GameChat with invalid data', async () => {
-            await expect(gameChatService.create(invalidGameChat)).rejects.toThrow();
+            await expect(gameChatService.create({
+                ...defaultGameChat,
+                id: -1,
+            })).rejects.toThrow();
+            await expect(gameChatService.create({
+                ...defaultGameChat,
+                game_day: -1,
+            })).rejects.toThrow();
+            await expect(gameChatService.create({
+                ...defaultGameChat,
+                player: -1,
+            })).rejects.toThrow();
         });
 
         it('should refuse to create a GameChat that has the same id as an existing one', async () => {
@@ -154,14 +160,6 @@ describe('GameChatService', () => {
             };
             const result = await gameChatService.upsert(updatedGameChat);
             expect(result).toEqual(updatedGameChat);
-        });
-
-        it('should refuse to create a GameChat with invalid data where one with the id did not exist', async () => {
-            await expect(gameChatService.create(invalidGameChat)).rejects.toThrow();
-        });
-
-        it('should refuse to update a GameChat with invalid data where one with the id already existed', async () => {
-            await expect(gameChatService.create(invalidGameChat)).rejects.toThrow();
         });
     });
 

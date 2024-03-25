@@ -24,11 +24,6 @@ const defaultGameDay: GameDay = {
     picker_games_history: 10,
 };
 
-const invalidGameDay: GameDay = {
-    ...defaultGameDay,
-    id: -1,
-};
-
 const gameDayList: GameDay[] = Array.from({ length: 100 }, (_, index) => ({
     ...defaultGameDay,
     id: index + 1,
@@ -147,7 +142,14 @@ describe('GameDayService', () => {
         });
 
         it('should refuse to create a GameDay with invalid data', async () => {
-            await expect(gameDayService.create(invalidGameDay)).rejects.toThrow();
+            await expect(gameDayService.create({
+                ...defaultGameDay,
+                id: -1,
+            })).rejects.toThrow();
+            await expect(gameDayService.create({
+                ...defaultGameDay,
+                picker_games_history: 7,
+            })).rejects.toThrow();
         });
 
         it('should refuse to create a GameDay that has the same id as an existing one', async () => {
@@ -171,14 +173,6 @@ describe('GameDayService', () => {
             };
             const result = await gameDayService.upsert(updatedGameDay);
             expect(result).toEqual(updatedGameDay);
-        });
-
-        it('should refuse to create a GameDay with invalid data where one with the id did not exist', async () => {
-            await expect(gameDayService.create(invalidGameDay)).rejects.toThrow();
-        });
-
-        it('should refuse to update a GameDay with invalid data where one with the id already existed', async () => {
-            await expect(gameDayService.create(invalidGameDay)).rejects.toThrow();
         });
     });
 

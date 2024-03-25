@@ -19,11 +19,6 @@ const defaultCountrySupporter: CountrySupporter = {
     countryISOcode: "GB"
 };
 
-const invalidCountrySupporter: CountrySupporter = {
-    ...defaultCountrySupporter,
-    countryISOcode: "XYZ",
-};
-
 const countrySupporterList: CountrySupporter[] = Array.from({ length: 100 }, (_, index) => ({
     ...defaultCountrySupporter,
     playerId: index % 10 + 1,
@@ -198,7 +193,14 @@ describe('countrySupporterService', () => {
         });
 
         it('should refuse to create a CountrySupporter with invalid data', async () => {
-            await expect(countrySupporterService.create(invalidCountrySupporter)).rejects.toThrow();
+            await expect(countrySupporterService.create({
+                ...defaultCountrySupporter,
+                playerId: -1,
+            })).rejects.toThrow();
+            await expect(countrySupporterService.create({
+                ...defaultCountrySupporter,
+                countryISOcode: "XYZ",
+            })).rejects.toThrow();
         });
 
         it('should refuse to create a CountrySupporter that has the same player ID and country ISO code as an existing one', async () => {
@@ -225,14 +227,6 @@ describe('countrySupporterService', () => {
             };
             const result = await countrySupporterService.upsert(updatedClubSupporter);
             expect(result).toEqual(updatedClubSupporter);
-        });
-
-        it('should refuse to create a CountrySupporter with invalid data where the combination of player ID and country ISO code did not exist', async () => {
-            await expect(countrySupporterService.create(invalidCountrySupporter)).rejects.toThrow();
-        });
-
-        it('should refuse to update a CountrySupporter with invalid data where the combination of player ID and country ISO code already existed', async () => {
-            await expect(countrySupporterService.create(invalidCountrySupporter)).rejects.toThrow();
         });
     });
 

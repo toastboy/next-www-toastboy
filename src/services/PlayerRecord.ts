@@ -203,8 +203,11 @@ export class PlayerRecordService {
     async upsertForGameDay(gameDayId: number): Promise<PlayerRecord[] | null> {
         try {
             const gameDay = await gameDayService.get(gameDayId);
+            if (!gameDay) {
+                throw new Error(`GameDay not found: ${gameDayId}`);
+            }
             const outcomes = await outcomeService.getByGameDay(gameDayId);
-            if (!gameDay || !outcomes) {
+            if (!outcomes) {
                 return null;
             }
 

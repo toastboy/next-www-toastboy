@@ -376,8 +376,72 @@ describe('PlayerRecordService', () => {
         });
     });
 
-    describe('upsertForGameDay', () => {
-        it.todo('should create or update all PlayerRecords for a given GameDay');
+    describe('upsertForGameDay for unknown GameDay', () => {
+        beforeEach(() => {
+            (prisma.gameDay.findUnique as jest.Mock).mockResolvedValue(null);
+        });
+
+        it('should not create or modify any PlayerRecords for a non-existent GameDay', async () => {
+            await expect(playerRecordService.upsertForGameDay(14)).rejects.toThrow();
+        });
+    });
+
+    describe('upsertForGameDay for known GameDay with no outcomes', () => {
+        beforeEach(() => {
+            (prisma.gameDay.findUnique as jest.Mock).mockResolvedValue({
+                id: 15,
+                date: new Date('2021-01-03'),
+                game: true,
+                mailSent: new Date('2021-01-01'),
+                comment: 'I heart footy',
+                bibs: 'A',
+                picker_games_history: 10,
+            });
+        });
+
+        it('should create not PlayerRecords for a GameDay with no outcomes', async () => {
+            const result = await playerRecordService.upsertForGameDay(15);
+            expect(result).toBeNull();
+        });
+    });
+
+    describe('upsertForGameDay for known GameDay with outcomes', () => {
+        beforeEach(() => {
+            (prisma.gameDay.findUnique as jest.Mock).mockResolvedValue({
+                id: 15,
+                date: new Date('2021-01-03'),
+                game: true,
+                mailSent: new Date('2021-01-01'),
+                comment: 'I heart footy',
+                bibs: 'A',
+                picker_games_history: 10,
+            });
+
+            (prisma.outcome.findMany as jest.Mock).mockResolvedValue(
+                Array.from({ length: 15 }, (_, index) => ({
+                    gameDayId: 15,
+                    playerId: index % 10 + 1,
+                    response: index < 11 ? 'Yes' : 'No',
+                    responseTime: new Date(),
+                    points: index < 11 ? index % 2 ? 3 : 0 : null,
+                    team: index < 11 ? index % 2 ? 'A' : 'B' : null,
+                    pub: true,
+                    paid: false,
+                    goalie: false,
+                }))
+            );
+        });
+
+        it('should create or update all PlayerRecords for a given GameDay', async () => {
+            const result = await playerRecordService.upsertForGameDay(15);
+            if (result) {
+                expect(result.length).toEqual(15);
+            }
+            else {
+                throw new Error("Result is null");
+            }
+        });
+
         it.todo('should refuse to create or update any PlayerRecord with invalid data');
         it.todo('should do nothing if no Outcomes exist for the given GameDay');
         it.todo('should update the table ranks for all PlayerRecords with GameDays on or after the given GameDay');

@@ -215,7 +215,7 @@ export class PlayerRecordService {
             for (const outcome of outcomes) {
                 const playerRecord = await this.upsert({
                     playerId: outcome.playerId,
-                    year: gameDay.date.getFullYear() || 0,
+                    year: gameDay.date.getFullYear(),
                     gameDayId: gameDayId,
                     responses: 0,
                     P: 0,

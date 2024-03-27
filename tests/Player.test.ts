@@ -1,9 +1,27 @@
-import { Player } from '@prisma/client';
+import { Player, Outcome } from '@prisma/client';
 import playerService from 'services/Player';
 import prisma from 'lib/prisma';
 
 jest.mock('lib/prisma', () => ({
     player: {
+        findUnique: jest.fn(),
+        findFirst: jest.fn(),
+        findMany: jest.fn(),
+        create: jest.fn(),
+        upsert: jest.fn(),
+        delete: jest.fn(),
+        deleteMany: jest.fn(),
+    },
+    outcome: {
+        findUnique: jest.fn(),
+        findFirst: jest.fn(),
+        findMany: jest.fn(),
+        create: jest.fn(),
+        upsert: jest.fn(),
+        delete: jest.fn(),
+        deleteMany: jest.fn(),
+    },
+    gameDay: {
         findUnique: jest.fn(),
         findFirst: jest.fn(),
         findMany: jest.fn(),
@@ -225,6 +243,99 @@ describe('PlayerService', () => {
                 anonymous: true,
             });
             expect(result).toEqual("Player 1");
+        });
+    });
+
+    describe('getForm', () => {
+        it('should retrieve the correct player form for Player ID 1 and GameDay ID 5 or zero with history of 3', async () => {
+            const defaultOutcome: Outcome = {
+                gameDayId: 1,
+                playerId: 12,
+                response: 'Yes',
+                responseTime: new Date(),
+                points: 3,
+                team: 'A',
+                comment: 'Test comment',
+                pub: true,
+                paid: false,
+                goalie: false,
+            };
+            const outcomeListMock: Outcome[] = [
+                {
+                    ...defaultOutcome,
+                    playerId: 1,
+                    gameDayId: 4,
+                },
+                {
+                    ...defaultOutcome,
+                    playerId: 1,
+                    gameDayId: 3,
+                },
+                {
+                    ...defaultOutcome,
+                    playerId: 1,
+                    gameDayId: 2,
+                },
+            ];
+
+            (prisma.outcome.findMany as jest.Mock).mockResolvedValueOnce(outcomeListMock);
+
+            let result = await playerService.getForm(1, 5, 3);
+            expect(result).toEqual(outcomeListMock);
+
+            (prisma.outcome.findMany as jest.Mock).mockResolvedValueOnce([]);
+
+            result = await playerService.getForm(1, 0, 3);
+            expect(result).toEqual([]);
+        });
+
+        it('should return an empty list when retrieving player form for Player ID 2 and GameDay ID 1 with history of 5', async () => {
+            // Mock the prisma.outcome.findMany function
+            (prisma.outcome.findMany as jest.Mock).mockResolvedValueOnce([]);
+
+            const result = await playerService.getForm(2, 1, 5);
+            expect(result).toEqual([]);
+        });
+
+        it('should handle errors and throw an error', async () => {
+            // Mock the prisma.outcome.findMany function to throw an error
+            (prisma.outcome.findMany as jest.Mock).mockRejectedValueOnce(new Error('Test error'));
+
+            await expect(playerService.getForm(1, 5, 3)).rejects.toThrow('Test error');
+        });
+    });
+
+    describe('getLastPlayed', () => {
+        beforeEach(() => {
+            (prisma.outcome.findFirst as jest.Mock).mockResolvedValue(
+                {
+                    gameDayId: 10,
+                    playerId: 1,
+                    response: 'Yes',
+                    responseTime: new Date(),
+                    points: 3,
+                    team: 'A',
+                    comment: 'Test comment',
+                    pub: true,
+                    paid: false,
+                    goalie: false,
+                    gameDay: {
+                        id: 10,
+                        date: new Date(),
+                        game: 1,
+                    },
+                }
+            );
+        });
+
+        it('should retrieve the correct last played GameDay for Player ID 1', async () => {
+            const result = await playerService.getLastPlayed(1);
+            if (result) {
+                expect(result.gameDayId).toEqual(10);
+            }
+            else {
+                throw new Error("Result is null");
+            }
         });
     });
 

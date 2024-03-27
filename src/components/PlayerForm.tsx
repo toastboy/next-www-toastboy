@@ -1,12 +1,12 @@
 import { Player } from '@prisma/client';
-import outcomeService from 'services/Outcome';
+import playerService from 'services/Player';
 
 export default async function PlayerForm({
     player,
 }: {
     player: Player,
 }) {
-    const outcomes = await outcomeService.getPlayerForm(player.id, 0, 10);
+    const outcomes = await playerService.getForm(player.id, 0, 10);
 
     if (!outcomes || outcomes.length === 0) {
         return null;

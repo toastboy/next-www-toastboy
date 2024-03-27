@@ -1,6 +1,11 @@
-import { Player } from '@prisma/client';
+import { Prisma, Player } from '@prisma/client';
 import prisma from 'lib/prisma';
 import debug from 'debug';
+
+const outcomeWithGameDay = Prisma.validator<Prisma.OutcomeDefaultArgs>()({
+    include: { gameDay: true },
+});
+type OutcomeWithGameDay = Prisma.OutcomeGetPayload<typeof outcomeWithGameDay>
 
 const log = debug('footy:api');
 
@@ -133,6 +138,65 @@ class PlayerService {
         }
 
         return `${player.first_name} ${player.last_name}`;
+    }
+
+    /**
+     * Retrieves the form of a player for a given game day, based on their previous outcomes.
+     * @param playerId - The ID of the player.
+     * @param gameDayId - The ID of the game day.
+     * @param history - The number of previous outcomes to consider.
+     * @returns A promise that resolves to an array of outcomes.
+     */
+    async getForm(playerId: number, gameDayId: number, history: number): Promise<OutcomeWithGameDay[] | null> {
+        try {
+            return prisma.outcome.findMany({
+                where: {
+                    gameDayId: gameDayId !== 0 ? { lt: gameDayId } : {},
+                    playerId: playerId,
+                    points: {
+                        not: null
+                    }
+                },
+                orderBy: {
+                    gameDayId: 'desc'
+                },
+                take: history,
+                include: {
+                    gameDay: true
+                },
+            });
+        } catch (error) {
+            log(`Error fetching outcomes: ${error}`);
+            throw error;
+        }
+    }
+
+    /**
+     * Retrieves the last played game outcome for a given player.
+     * @param playerId - The ID of the player.
+     * @returns A promise that resolves to an array of `OutcomeWithGameDay` objects or `null`.
+     */
+    async getLastPlayed(playerId: number): Promise<OutcomeWithGameDay | null> {
+        try {
+            return prisma.outcome.findFirst({
+                where: {
+                    playerId: playerId,
+                    points: {
+                        not: null
+                    }
+                },
+                orderBy: {
+                    gameDayId: 'desc'
+                },
+                take: 1,
+                include: {
+                    gameDay: true
+                },
+            });
+        } catch (error) {
+            log(`Error fetching outcomes: ${error}`);
+            throw error;
+        }
     }
 
     /**

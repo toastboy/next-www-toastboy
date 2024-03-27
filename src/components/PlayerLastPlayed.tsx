@@ -1,12 +1,12 @@
 import { Player } from '@prisma/client';
-import outcomeService from 'services/Outcome';
+import playerService from 'services/Player';
 
 export default async function PlayerLastPlayed({
     player,
 }: {
     player: Player,
 }) {
-    const outcome = await outcomeService.getPlayerLastPlayed(player.id);
+    const outcome = await playerService.getLastPlayed(player.id);
 
     if (!outcome) {
         return null;

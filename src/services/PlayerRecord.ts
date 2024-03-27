@@ -202,6 +202,10 @@ export class PlayerRecordService {
      */
     async upsertForGameDay(gameDayId: number): Promise<PlayerRecord[] | null> {
         try {
+            //  JOIN outcome o
+            //    ON p.id = o.player
+            //  JOIN game_day g
+            //    ON g.game_number = o.game_day
             const gameDay = await gameDayService.get(gameDayId);
             if (!gameDay) {
                 throw new Error(`GameDay not found: ${gameDayId}`);
@@ -222,7 +226,7 @@ export class PlayerRecordService {
                     W: 0,
                     D: 0,
                     L: 0,
-                    points: 0,
+                    points: outcome.points,
                     averages: new Decimal(0),
                     stalwart: 0,
                     pub: 0,

@@ -1,6 +1,11 @@
-import { Outcome } from '@prisma/client';
+import { Prisma, Outcome } from '@prisma/client';
 import prisma from 'lib/prisma';
 import debug from 'debug';
+
+const outcomeWithGameDay = Prisma.validator<Prisma.OutcomeDefaultArgs>()({
+    include: { gameDay: true },
+});
+type OutcomeWithGameDay = Prisma.OutcomeGetPayload<typeof outcomeWithGameDay>
 
 const log = debug('footy:api');
 
@@ -67,6 +72,37 @@ export class OutcomeService {
     async getAll(): Promise<Outcome[] | null> {
         try {
             return prisma.outcome.findMany({});
+        } catch (error) {
+            log(`Error fetching outcomes: ${error}`);
+            throw error;
+        }
+    }
+
+    /**
+     * Retrieves all the outcomes for gameDays in a given year, or all years if
+     * `year` is zero.
+     * @returns A promise that resolves to an array of outcomes sorted by
+     * gameDay, most recent first, or null if there are none.
+     * @throws An error if there is a failure.
+     */
+    async getAllForYear(year: number): Promise<OutcomeWithGameDay[] | null> {
+        try {
+            return prisma.outcome.findMany({
+                where: {
+                    gameDay: {
+                        date: year !== 0 ? {
+                            gte: new Date(year, 0, 1),
+                            lt: new Date(year + 1, 0, 1),
+                        } : {},
+                    },
+                },
+                orderBy: {
+                    gameDayId: 'desc'
+                },
+                include: {
+                    gameDay: true
+                },
+            });
         } catch (error) {
             log(`Error fetching outcomes: ${error}`);
             throw error;

@@ -290,7 +290,6 @@ describe('PlayerService', () => {
         });
 
         it('should return an empty list when retrieving player form for Player ID 2 and GameDay ID 1 with history of 5', async () => {
-            // Mock the prisma.outcome.findMany function
             (prisma.outcome.findMany as jest.Mock).mockResolvedValueOnce([]);
 
             const result = await playerService.getForm(2, 1, 5);

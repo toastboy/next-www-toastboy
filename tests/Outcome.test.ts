@@ -19,7 +19,7 @@ const defaultOutcome: Outcome = {
     gameDayId: 1,
     playerId: 12,
     response: 'Yes',
-    responseTime: new Date(),
+    responseTime: new Date('2021-01-01T00:00:00Z'),
     points: 3,
     team: 'A',
     comment: 'Test comment',
@@ -170,6 +170,29 @@ describe('OutcomeService', () => {
             if (result) {
                 expect(result.length).toEqual(100);
                 expect(result[11].playerId).toEqual(2);
+            }
+            else {
+                throw new Error("Result is null");
+            }
+        });
+    });
+
+    describe('getAllForYear', () => {
+        it('should return the correct, complete list of 100 Outcomes', async () => {
+            (prisma.outcome.findMany as jest.Mock).mockResolvedValueOnce(outcomeList);
+
+            let result = await outcomeService.getAllForYear(2021);
+            if (result) {
+                expect(result.length).toEqual(100);
+                expect(result[11].playerId).toEqual(2);
+            }
+            else {
+                throw new Error("Result is null");
+            }
+
+            result = await outcomeService.getAllForYear(0);
+            if (result) {
+                expect(result.length).toEqual(0);
             }
             else {
                 throw new Error("Result is null");

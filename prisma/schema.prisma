@@ -120,7 +120,7 @@ model Outcome {
   points       Int?
   team         Team?
   comment      String?         @db.VarChar(127)
-  pub          Boolean?
+  pub          Int?
   paid         Boolean?
   goalie       Boolean?
 

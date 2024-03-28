@@ -5,7 +5,6 @@ import debug from 'debug';
 import gameDayService from './GameDay';
 import { Decimal } from '@prisma/client/runtime/library';
 
-
 const log = debug('footy:api');
 
 export class PlayerRecordService {
@@ -202,40 +201,51 @@ export class PlayerRecordService {
      */
     async upsertForGameDay(gameDayId: number): Promise<PlayerRecord[] | null> {
         try {
-            //  JOIN outcome o
-            //    ON p.id = o.player
-            //  JOIN game_day g
-            //    ON g.game_number = o.game_day
             const gameDay = await gameDayService.get(gameDayId);
             if (!gameDay) {
                 throw new Error(`GameDay not found: ${gameDayId}`);
             }
-            const outcomes = await outcomeService.getByGameDay(gameDayId);
-            if (!outcomes) {
+            const year = gameDay.date.getFullYear();
+            const gamesPlayed = await outcomeService.getGamesPlayed(year, gameDayId);
+            const allTimeOutcomes = await outcomeService.getAllForYear(0);
+            if (!allTimeOutcomes) {
+                return null;
+            }
+            const yearOutcomes = await outcomeService.getAllForYear(year);
+            if (!yearOutcomes) {
+                return null;
+            }
+            const gameDayOutcomes = await outcomeService.getByGameDay(gameDayId);
+            if (!gameDayOutcomes) {
                 return null;
             }
 
             const playerRecords: PlayerRecord[] = [];
-            for (const outcome of outcomes) {
+            for (const outcome of gameDayOutcomes) {
+                const playerYearOutcomes = yearOutcomes.filter(o => o.playerId === outcome.playerId);
+                const playerYearRespondedOutcomes = playerYearOutcomes.filter(o => o.response != null);
+                const playerYearPlayedOutcomes = playerYearOutcomes.filter(o => o.points != null);
                 const playerRecord = await this.upsert({
                     playerId: outcome.playerId,
-                    year: gameDay.date.getFullYear(),
+                    year: year,
                     gameDayId: gameDayId,
-                    responses: 0,
-                    P: 0,
-                    W: 0,
-                    D: 0,
-                    L: 0,
-                    points: outcome.points,
-                    averages: new Decimal(0),
-                    stalwart: 0,
-                    pub: 0,
+                    responses: playerYearRespondedOutcomes.length,
+                    P: playerYearPlayedOutcomes.length,
+                    W: playerYearPlayedOutcomes.filter(o => o.points == 3).length,
+                    D: playerYearPlayedOutcomes.filter(o => o.points == 1).length,
+                    L: playerYearPlayedOutcomes.filter(o => o.points == 0).length,
+                    points: playerYearPlayedOutcomes.reduce((acc, o) => acc + (o.points || 0), 0),
+                    averages: new Decimal(playerYearPlayedOutcomes.reduce((acc, o) => acc + (o.points || 0), 0) / playerYearPlayedOutcomes.length),
+                    stalwart: 100.0 * playerYearPlayedOutcomes.length / gamesPlayed,
+                    pub: playerYearOutcomes.reduce((acc, o) => acc + (o.pub || 0), 0),
                     rank_points: 0,
                     rank_averages: 0,
                     rank_stalwart: 0,
                     rank_speedy: 0,
                     rank_pub: 0,
-                    speedy: 0,
+                    speedy: playerYearRespondedOutcomes.reduce((acc, o) =>
+                        acc + (o.responseTime && gameDay.mailSent ?
+                            o.responseTime.getTime() - gameDay.mailSent.getTime() : 0), 0) / 1000 / playerYearRespondedOutcomes.length
                 });
 
                 if (playerRecord) {

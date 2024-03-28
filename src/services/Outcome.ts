@@ -81,11 +81,14 @@ export class OutcomeService {
     /**
      * Retrieves all the outcomes for gameDays in a given year, or all years if
      * `year` is zero.
+     * @param year - The year to include, or zero for all year.
+     * @param untilGameDay - The gameDay ID to stop at (inclusive), or undefined
+     * to include all.
      * @returns A promise that resolves to an array of outcomes sorted by
      * gameDay, most recent first, or null if there are none.
      * @throws An error if there is a failure.
      */
-    async getAllForYear(year: number): Promise<OutcomeWithGameDay[] | null> {
+    async getAllForYear(year: number, untilGameDay?: number): Promise<OutcomeWithGameDay[] | null> {
         try {
             return prisma.outcome.findMany({
                 where: {
@@ -93,6 +96,9 @@ export class OutcomeService {
                         date: year !== 0 ? {
                             gte: new Date(year, 0, 1),
                             lt: new Date(year + 1, 0, 1),
+                        } : {},
+                        id: untilGameDay ? {
+                            lte: untilGameDay
                         } : {},
                     },
                 },

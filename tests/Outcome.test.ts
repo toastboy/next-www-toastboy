@@ -23,7 +23,7 @@ const defaultOutcome: Outcome = {
     points: 3,
     team: 'A',
     comment: 'Test comment',
-    pub: true,
+    pub: 1,
     paid: false,
     goalie: false,
 };
@@ -31,7 +31,7 @@ const defaultOutcome: Outcome = {
 const outcomeList: Outcome[] = Array.from({ length: 100 }, (_, index) => ({
     ...defaultOutcome,
     playerId: index % 10 + 1,
-    gameDayId: index / 10 + 1,
+    gameDayId: Math.floor(index / 10 + 1),
 }));
 
 describe('OutcomeService', () => {
@@ -190,6 +190,17 @@ describe('OutcomeService', () => {
                 throw new Error("Result is null");
             }
 
+            (prisma.outcome.findMany as jest.Mock).mockResolvedValueOnce(outcomeList.filter((outcome) => outcome.gameDayId <= 7));
+
+            result = await outcomeService.getAllForYear(2021, 7);
+            if (result) {
+                expect(result.length).toEqual(70);
+                expect(result[11].playerId).toEqual(2);
+            }
+            else {
+                throw new Error("Result is null");
+            }
+
             result = await outcomeService.getAllForYear(0);
             if (result) {
                 expect(result.length).toEqual(0);
@@ -210,7 +221,7 @@ describe('OutcomeService', () => {
         it('should retrieve the correct Outcomes for GameDay id 1', async () => {
             const result = await outcomeService.getByGameDay(1);
             if (result) {
-                expect(result.length).toEqual(1);
+                expect(result.length).toEqual(10);
                 for (const outcomeResult of result) {
                     expect(outcomeResult).toEqual({
                         ...defaultOutcome,

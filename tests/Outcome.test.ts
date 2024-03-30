@@ -70,19 +70,21 @@ describe('OutcomeService', () => {
         (prisma.outcome.count as jest.Mock).mockImplementation((args: {
             where: {
                 playerId: number,
-                points: {
-                    not: null
-                },
                 gameDay: {
                     date: {
                         gte: Date,
                         lt: Date
+                    },
+                    id?: {
+                        lte: number
                     }
                 }
             }
         }) => {
+            console.log(JSON.stringify(args));
             return Promise.resolve(outcomeList.filter((outcome) =>
-                outcome.playerId === args.where.playerId).length);
+                outcome.playerId === args.where.playerId &&
+                (args.where.gameDay.id ? outcome.gameDayId <= args.where.gameDay.id.lte : true)).length);
         });
 
         (prisma.outcome.create as jest.Mock).mockImplementation((args: { data: Outcome }) => {
@@ -271,14 +273,18 @@ describe('OutcomeService', () => {
         });
     });
 
-    describe('getGamesPlayed', () => {
+    describe('getGamesPlayedByPlayer', () => {
         it('should retrieve the correct number of games played for Player ID 1, year 2021', async () => {
-            const result = await outcomeService.getGamesPlayed(1, 2021);
+            const result = await outcomeService.getGamesPlayedByPlayer(1, 2021);
             expect(result).toEqual(10);
         });
         it('should retrieve the correct number of games played for Player ID 1, year 0', async () => {
-            const result = await outcomeService.getGamesPlayed(1, 0);
+            const result = await outcomeService.getGamesPlayedByPlayer(1, 0);
             expect(result).toEqual(10);
+        });
+        it('should retrieve the correct number of games played for Player ID 1, year 0, untilGameDayId 8', async () => {
+            const result = await outcomeService.getGamesPlayedByPlayer(1, 0, 8);
+            expect(result).toEqual(8);
         });
 
         it.todo('should return 0 for Player ID 11');

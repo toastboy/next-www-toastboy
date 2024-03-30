@@ -112,6 +112,18 @@ describe('GameDayService', () => {
         });
     });
 
+    describe('getGamesPlayed', () => {
+        it.todo('should return the correct number of games played for year 2021');
+        it.todo('should return the correct number of games played for all years');
+        it.todo('should return zero games played for year 9999');
+    });
+
+    describe('getGamesRemaining', () => {
+        it.todo('should return the correct number of games remaining for year 2021');
+        it.todo('should return the correct number of games remaining for all years');
+        it.todo('should return zero games remaining for year 9999');
+    });
+
     describe('getAllYears', () => {
         beforeEach(() => {
             (prisma.gameDay.findMany as jest.Mock).mockImplementation(() => {

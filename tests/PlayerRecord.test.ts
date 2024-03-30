@@ -379,16 +379,6 @@ describe('PlayerRecordService', () => {
         });
     });
 
-    describe('upsertForGameDay for unknown GameDay', () => {
-        beforeEach(() => {
-            (prisma.gameDay.findUnique as jest.Mock).mockResolvedValue(null);
-        });
-
-        it('should not create or modify any PlayerRecords for a non-existent GameDay', async () => {
-            await expect(playerRecordService.upsertForGameDay(14)).rejects.toThrow();
-        });
-    });
-
     describe('upsertForGameDay for known GameDay with no outcomes', () => {
         beforeEach(() => {
             (prisma.gameDay.findUnique as jest.Mock).mockResolvedValue({
@@ -419,6 +409,18 @@ describe('PlayerRecordService', () => {
                 bibs: 'A',
                 picker_games_history: 10,
             });
+
+            (prisma.gameDay.findMany as jest.Mock).mockResolvedValue(
+                Array.from({ length: 15 }, (_, index) => ({
+                    id: index + 1,
+                    date: new Date('2021-01-03'),
+                    game: true,
+                    mailSent: new Date('2021-01-01'),
+                    comment: 'I heart footy',
+                    bibs: 'A',
+                    picker_games_history: 10,
+                }))
+            );
 
             (prisma.outcome.findMany as jest.Mock).mockResolvedValue(
                 Array.from({ length: 15 }, (_, index) => ({

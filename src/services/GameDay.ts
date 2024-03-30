@@ -58,6 +58,73 @@ export class GameDayService {
     }
 
     /**
+     * Retrieves the number of games played in the given year, optionally
+     * stopping at a given gameDay ID.
+     * @param year - The year to filter by, or zero for all years.
+     * @param untilGameDayId - The gameDay ID to stop at (inclusive), or
+     * undefined
+     * @returns A promise that resolves to the number of games or null.
+     * @throws An error if there is a failure.
+     */
+    async getGamesPlayed(year: number, untilGameDayId?: number): Promise<number> {
+        try {
+            return prisma.gameDay.count({
+                where: {
+                    game: true,
+                    ...(year !== 0 ? {
+                        date: {
+                            gte: new Date(year, 0, 1),
+                            lt: new Date(year + 1, 0, 1)
+                        },
+                    } : {}),
+                    ...(untilGameDayId ? {
+                        id: {
+                            lte: untilGameDayId
+                        },
+                    } : {})
+                },
+            });
+        } catch (error) {
+            log(`Error counting gameDays: ${error}`);
+            throw error;
+        }
+    }
+
+    /**
+     * Retrieves the number of games yet to be played in the given year.
+     * @param year - The year to filter by, or zero for all years.
+     * @returns A promise that resolves to the number of games or null.
+     * @throws An error if there is a failure.
+     */
+    async getGamesRemaining(year: number): Promise<number> {
+        try {
+            return prisma.gameDay.count({
+                where: {
+                    game: true,
+                    AND: [
+                        {
+                            ...(year !== 0 ? {
+                                date: {
+                                    gte: new Date(year, 0, 1),
+                                    lt: new Date(year + 1, 0, 1)
+                                },
+                            } : {})
+                        },
+                        {
+                            date: {
+                                gt: new Date()
+                            }
+                        }
+                    ]
+                },
+            });
+        } catch (error) {
+            log(`Error counting gameDays: ${error}`);
+            throw error;
+        }
+    }
+
+    /**
      * Retrieves all the years from the game days where a game has taken or will
      * take place.
      * @returns A promise that resolves to an array of distinct years or null if

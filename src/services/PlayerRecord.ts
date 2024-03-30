@@ -195,61 +195,85 @@ export class PlayerRecordService {
 
     /**
      * Upserts all PlayerRecords for a single GameDay.
-     * @param gameDayId The ID of the GameDay.
-     * @returns A promise that resolves to an array of all the upserted PlayerRecords, or null if the upsert failed.
+     * @param gameDayId The ID of the GameDay - if undefined then all GameDays
+     * are processed.
+     * @returns A promise that resolves to an array of all the upserted
+     * PlayerRecords, or null if the upsert failed.
      * @throws An error if there is a failure.
      */
-    async upsertForGameDay(gameDayId: number): Promise<PlayerRecord[] | null> {
+    async upsertForGameDay(gameDayId?: number): Promise<PlayerRecord[] | null> {
         try {
-            const gameDay = await gameDayService.get(gameDayId);
-            if (!gameDay) {
-                throw new Error(`GameDay not found: ${gameDayId}`);
-            }
-            const year = gameDay.date.getFullYear();
-            const gamesPlayed = await outcomeService.getGamesPlayed(year, gameDayId);
             const allTimeOutcomes = await outcomeService.getAllForYear(0);
             if (!allTimeOutcomes) {
                 return null;
             }
-            const yearOutcomes = await outcomeService.getAllForYear(year);
-            if (!yearOutcomes) {
+
+            let gameDays = await gameDayService.getAll();
+            if (!gameDays) {
                 return null;
             }
-            const gameDayOutcomes = await outcomeService.getByGameDay(gameDayId);
-            if (!gameDayOutcomes) {
-                return null;
+
+            if (gameDayId) {
+                gameDays = gameDays.filter(g => g.id === gameDayId);
             }
+
+            const years = gameDays.map(gd => gd.date.getFullYear());
+            const distinctYears = Array.from(new Set(years));
 
             const playerRecords: PlayerRecord[] = [];
-            for (const outcome of gameDayOutcomes) {
-                const playerYearOutcomes = yearOutcomes.filter(o => o.playerId === outcome.playerId);
-                const playerYearRespondedOutcomes = playerYearOutcomes.filter(o => o.response != null);
-                const playerYearPlayedOutcomes = playerYearOutcomes.filter(o => o.points != null);
-                const playerRecord = await this.upsert({
-                    playerId: outcome.playerId,
-                    year: year,
-                    gameDayId: gameDayId,
-                    responses: playerYearRespondedOutcomes.length,
-                    P: playerYearPlayedOutcomes.length,
-                    W: playerYearPlayedOutcomes.filter(o => o.points == 3).length,
-                    D: playerYearPlayedOutcomes.filter(o => o.points == 1).length,
-                    L: playerYearPlayedOutcomes.filter(o => o.points == 0).length,
-                    points: playerYearPlayedOutcomes.reduce((acc, o) => acc + (o.points || 0), 0),
-                    averages: new Decimal(playerYearPlayedOutcomes.reduce((acc, o) => acc + (o.points || 0), 0) / playerYearPlayedOutcomes.length),
-                    stalwart: 100.0 * playerYearPlayedOutcomes.length / gamesPlayed,
-                    pub: playerYearOutcomes.reduce((acc, o) => acc + (o.pub || 0), 0),
-                    rank_points: 0,
-                    rank_averages: 0,
-                    rank_stalwart: 0,
-                    rank_speedy: 0,
-                    rank_pub: 0,
-                    speedy: playerYearRespondedOutcomes.reduce((acc, o) =>
-                        acc + (o.responseTime && gameDay.mailSent ?
-                            o.responseTime.getTime() - gameDay.mailSent.getTime() : 0), 0) / 1000 / playerYearRespondedOutcomes.length
-                });
+            for (const year of distinctYears) {
+                const yearOutcomes = await outcomeService.getAllForYear(year);
+                if (!yearOutcomes) {
+                    return null;
+                }
 
-                if (playerRecord) {
-                    playerRecords.push(playerRecord);
+                for (const gameDay of gameDays) {
+                    if (gameDay.date.getFullYear() !== year) {
+                        continue;
+                    }
+
+                    const gameDayOutcomes = await outcomeService.getByGameDay(gameDay.id);
+                    if (!gameDayOutcomes) {
+                        return null;
+                    }
+
+                    for (const outcome of gameDayOutcomes) {
+                        const gamesPlayed = await gameDayService.getGamesPlayed(year, gameDay.id);
+                        const playerYearOutcomes = yearOutcomes.filter(o =>
+                            o.playerId === outcome.playerId &&
+                            o.gameDayId <= gameDay.id);
+                        const playerYearRespondedOutcomes = playerYearOutcomes.filter(o => o.response != null);
+                        const playerYearPlayedOutcomes = playerYearOutcomes.filter(o => o.points != null);
+                        console.log(`Player ${outcome.playerId} game ${gameDay.id} year ${year}`);
+                        const playerRecord = await this.upsert({
+                            playerId: outcome.playerId,
+                            year: year,
+                            gameDayId: gameDay.id,
+                            responses: playerYearRespondedOutcomes.length,
+                            P: playerYearPlayedOutcomes.length,
+                            W: playerYearPlayedOutcomes.filter(o => o.points == 3).length,
+                            D: playerYearPlayedOutcomes.filter(o => o.points == 1).length,
+                            L: playerYearPlayedOutcomes.filter(o => o.points == 0).length,
+                            points: playerYearPlayedOutcomes.reduce((acc, o) => acc + (o.points || 0), 0),
+                            averages: playerYearPlayedOutcomes.length > 0 ?
+                                new Decimal(playerYearPlayedOutcomes.reduce((acc, o) =>
+                                    acc + (o.points || 0), 0) / playerYearPlayedOutcomes.length) : null,
+                            stalwart: gamesPlayed > 0 ? 100.0 * playerYearPlayedOutcomes.length / gamesPlayed : null,
+                            pub: playerYearOutcomes.reduce((acc, o) => acc + (o.pub || 0), 0),
+                            rank_points: 0,
+                            rank_averages: 0,
+                            rank_stalwart: 0,
+                            rank_speedy: 0,
+                            rank_pub: 0,
+                            speedy: playerYearRespondedOutcomes.length > 0 ? playerYearRespondedOutcomes.reduce((acc, o) =>
+                                acc + (o.responseTime && gameDay.mailSent ?
+                                    o.responseTime.getTime() - gameDay.mailSent.getTime() : 0), 0) / 1000 / playerYearRespondedOutcomes.length : null
+                        });
+
+                        if (playerRecord) {
+                            playerRecords.push(playerRecord);
+                        }
+                    }
                 }
             }
 

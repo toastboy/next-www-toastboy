@@ -306,7 +306,8 @@ async function calculateYearPlayerRecords(
     yearPlayerRecords: Record<number, Partial<PlayerRecord>>,
     gameDay: GameDay,
     gameDayOutcomes: Outcome[],
-    playerRecords: PlayerRecord[]) {
+    playerRecords: PlayerRecord[]
+) {
     for (const outcome of gameDayOutcomes) {
         yearPlayerRecords[outcome.playerId] = await calculatePlayerRecord(year, gameDay, yearOutcomes, outcome);
     }
@@ -382,8 +383,9 @@ async function calculatePlayerRecord(
     }
 
     if (outcome.response && playerYearRespondedOutcomes.length > 0) {
-        data.speedy = playerYearRespondedOutcomes.reduce((acc, o) => acc + (o.responseTime && gameDay.mailSent ?
-            o.responseTime.getTime() - gameDay.mailSent.getTime() : 0), 0) / 1000 / playerYearRespondedOutcomes.length;
+        data.speedy = playerYearRespondedOutcomes.reduce((acc, o) =>
+            acc + (o.responseTime && gameDay.mailSent ?
+                o.responseTime.getTime() - gameDay.mailSent.getTime() : 0), 0) / 1000 / playerYearRespondedOutcomes.length;
     }
 
     return data;

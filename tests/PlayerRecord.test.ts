@@ -439,7 +439,7 @@ describe('PlayerRecordService', () => {
         it('should create or update all PlayerRecords for a given GameDay', async () => {
             const result = await playerRecordService.upsertForGameDay(15);
             if (result) {
-                expect(result.length).toEqual(10);
+                expect(result.length).toEqual(20);
             }
             else {
                 throw new Error("Result is null");

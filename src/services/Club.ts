@@ -81,8 +81,8 @@ export class ClubService {
                 where: {
                     id: data.id
                 },
-                update: data,
-                create: data,
+                update: this.validate(data),
+                create: this.validate(data),
             });
         } catch (error) {
             log(`Error upserting club: ${error}`);

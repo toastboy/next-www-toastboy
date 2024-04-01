@@ -224,8 +224,8 @@ class PlayerService {
         try {
             return await prisma.player.upsert({
                 where: { id: data.id },
-                update: data,
-                create: data,
+                update: this.validate(data),
+                create: this.validate(data),
             });
         } catch (error) {
             log(`Error upserting Player: ${error}`);

@@ -224,8 +224,8 @@ export class OutcomeService {
                         playerId: data.playerId,
                     }
                 },
-                update: data,
-                create: data,
+                update: this.validate(data),
+                create: this.validate(data),
             });
         } catch (error) {
             log(`Error upserting Outcome: ${error}`);

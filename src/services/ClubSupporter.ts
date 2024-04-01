@@ -129,8 +129,8 @@ export class ClubSupporterService {
                         clubId: data.clubId
                     }
                 },
-                update: data,
-                create: data,
+                update: this.validate(data),
+                create: this.validate(data),
             });
         } catch (error) {
             log(`Error upserting ClubSupporter: ${error}`);

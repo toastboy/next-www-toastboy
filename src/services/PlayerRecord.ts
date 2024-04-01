@@ -1,9 +1,8 @@
-import { PlayerRecord } from '@prisma/client';
+import { PlayerRecord, GameDay, Outcome } from '@prisma/client';
 import outcomeService from 'services/Outcome';
 import prisma from 'lib/prisma';
 import debug from 'debug';
 import gameDayService from './GameDay';
-import { Decimal } from '@prisma/client/runtime/library';
 
 const log = debug('footy:api');
 
@@ -15,59 +14,59 @@ export class PlayerRecordService {
      * @throws An error if the playerRecord is invalid.
      */
     validate(playerRecord: PlayerRecord): PlayerRecord {
-        if (!playerRecord.year || !Number.isInteger(playerRecord.year) || playerRecord.year < 0) {
+        if (playerRecord.year != null && (!Number.isInteger(playerRecord.year) || playerRecord.year < 0)) {
             throw new Error(`Invalid year value: ${playerRecord.year}`);
         }
-        if (!playerRecord.responses || !Number.isInteger(playerRecord.responses) || playerRecord.responses < 0) {
+        if (playerRecord.responses != null && (!Number.isInteger(playerRecord.responses) || playerRecord.responses < 0)) {
             throw new Error(`Invalid responses value: ${playerRecord.responses}`);
         }
-        if (!playerRecord.P || !Number.isInteger(playerRecord.P) || playerRecord.P < 0) {
+        if (playerRecord.P != null && (!Number.isInteger(playerRecord.P) || playerRecord.P < 0)) {
             throw new Error(`Invalid P value: ${playerRecord.P}`);
         }
-        if (!playerRecord.W || !Number.isInteger(playerRecord.W) || playerRecord.W < 0) {
+        if (playerRecord.W != null && (!Number.isInteger(playerRecord.W) || playerRecord.W < 0)) {
             throw new Error(`Invalid W value: ${playerRecord.W}`);
         }
-        if (!playerRecord.D || !Number.isInteger(playerRecord.D) || playerRecord.D < 0) {
+        if (playerRecord.D != null && (!Number.isInteger(playerRecord.D) || playerRecord.D < 0)) {
             throw new Error(`Invalid D value: ${playerRecord.D}`);
         }
-        if (!playerRecord.L || !Number.isInteger(playerRecord.L) || playerRecord.L < 0) {
+        if (playerRecord.L != null && (!Number.isInteger(playerRecord.L) || playerRecord.L < 0)) {
             throw new Error(`Invalid L value: ${playerRecord.L}`);
         }
-        if (!playerRecord.points || !Number.isInteger(playerRecord.points) || playerRecord.points < 0) {
+        if (playerRecord.points != null && (!Number.isInteger(playerRecord.points) || playerRecord.points < 0)) {
             throw new Error(`Invalid points value: ${playerRecord.points}`);
         }
-        if (!playerRecord.averages || !(playerRecord.averages instanceof Decimal) || playerRecord.averages.lt(0)) {
+        if (playerRecord.averages != null && playerRecord.averages < 0.0) {
             throw new Error(`Invalid averages value: ${playerRecord.averages}`);
         }
-        if (!playerRecord.stalwart || !Number.isInteger(playerRecord.stalwart) || playerRecord.stalwart < 0) {
+        if (playerRecord.stalwart != null && (!Number.isInteger(playerRecord.stalwart) || playerRecord.stalwart < 0)) {
             throw new Error(`Invalid stalwart value: ${playerRecord.stalwart}`);
         }
-        if (!playerRecord.pub || !Number.isInteger(playerRecord.pub) || playerRecord.pub < 0) {
+        if (playerRecord.pub != null && (!Number.isInteger(playerRecord.pub) || playerRecord.pub < 0)) {
             throw new Error(`Invalid pub value: ${playerRecord.pub}`);
         }
-        if (!playerRecord.rank_points || !Number.isInteger(playerRecord.rank_points) || playerRecord.rank_points < 0) {
+        if (playerRecord.rank_points != null && (!Number.isInteger(playerRecord.rank_points) || playerRecord.rank_points < 0)) {
             throw new Error(`Invalid rank_points value: ${playerRecord.rank_points}`);
         }
-        if (!playerRecord.rank_averages || !Number.isInteger(playerRecord.rank_averages) || playerRecord.rank_averages < 0) {
+        if (playerRecord.rank_averages != null && (!Number.isInteger(playerRecord.rank_averages) || playerRecord.rank_averages < 0)) {
             throw new Error(`Invalid rank_averages value: ${playerRecord.rank_averages}`);
         }
-        if (!playerRecord.rank_stalwart || !Number.isInteger(playerRecord.rank_stalwart) || playerRecord.rank_stalwart < 0) {
+        if (playerRecord.rank_stalwart != null && (!Number.isInteger(playerRecord.rank_stalwart) || playerRecord.rank_stalwart < 0)) {
             throw new Error(`Invalid rank_stalwart value: ${playerRecord.rank_stalwart}`);
         }
-        if (!playerRecord.rank_speedy || !Number.isInteger(playerRecord.rank_speedy) || playerRecord.rank_speedy < 0) {
+        if (playerRecord.rank_speedy != null && (!Number.isInteger(playerRecord.rank_speedy) || playerRecord.rank_speedy < 0)) {
             throw new Error(`Invalid rank_speedy value: ${playerRecord.rank_speedy}`);
         }
-        if (!playerRecord.rank_pub || !Number.isInteger(playerRecord.rank_pub) || playerRecord.rank_pub < 0) {
+        if (playerRecord.rank_pub != null && (!Number.isInteger(playerRecord.rank_pub) || playerRecord.rank_pub < 0)) {
             throw new Error(`Invalid rank_pub value: ${playerRecord.rank_pub}`);
         }
-        if (!playerRecord.speedy || !Number.isInteger(playerRecord.speedy) || playerRecord.speedy < 0) {
+        if (playerRecord.speedy != null && playerRecord.speedy < 0.0) {
             throw new Error(`Invalid speedy value: ${playerRecord.speedy}`);
         }
 
-        if (!playerRecord.gameDayId || !Number.isInteger(playerRecord.gameDayId) || playerRecord.gameDayId < 0) {
+        if (!Number.isInteger(playerRecord.gameDayId) || playerRecord.gameDayId < 0) {
             throw new Error(`Invalid gameDay value: ${playerRecord.gameDayId}`);
         }
-        if (!playerRecord.playerId || !Number.isInteger(playerRecord.playerId) || playerRecord.playerId < 0) {
+        if (!Number.isInteger(playerRecord.playerId) || playerRecord.playerId < 0) {
             throw new Error(`Invalid player value: ${playerRecord.playerId}`);
         }
 
@@ -184,8 +183,8 @@ export class PlayerRecordService {
                         gameDayId: data.gameDayId,
                     }
                 },
-                update: data,
-                create: data,
+                update: this.validate(data),
+                create: this.validate(data),
             });
         } catch (error) {
             log(`Error upserting PlayerRecord: ${error}`);
@@ -203,6 +202,7 @@ export class PlayerRecordService {
      */
     async upsertForGameDay(gameDayId?: number): Promise<PlayerRecord[] | null> {
         try {
+            const today = new Date();
             const allTimeOutcomes = await outcomeService.getAllForYear(0);
             if (!allTimeOutcomes) {
                 return null;
@@ -221,14 +221,16 @@ export class PlayerRecordService {
             const distinctYears = Array.from(new Set(years));
 
             const playerRecords: PlayerRecord[] = [];
+            const allTimePlayerRecords: Record<number, Partial<PlayerRecord>> = {};
             for (const year of distinctYears) {
+                const yearPlayerRecords: Record<number, Partial<PlayerRecord>> = {};
                 const yearOutcomes = await outcomeService.getAllForYear(year);
                 if (!yearOutcomes) {
                     return null;
                 }
 
                 for (const gameDay of gameDays) {
-                    if (gameDay.date.getFullYear() !== year) {
+                    if (gameDay.date.getFullYear() !== year || gameDay.date > today) {
                         continue;
                     }
 
@@ -237,43 +239,14 @@ export class PlayerRecordService {
                         return null;
                     }
 
-                    for (const outcome of gameDayOutcomes) {
-                        const gamesPlayed = await gameDayService.getGamesPlayed(year, gameDay.id);
-                        const playerYearOutcomes = yearOutcomes.filter(o =>
-                            o.playerId === outcome.playerId &&
-                            o.gameDayId <= gameDay.id);
-                        const playerYearRespondedOutcomes = playerYearOutcomes.filter(o => o.response != null);
-                        const playerYearPlayedOutcomes = playerYearOutcomes.filter(o => o.points != null);
-                        console.log(`Player ${outcome.playerId} game ${gameDay.id} year ${year}`);
-                        const playerRecord = await this.upsert({
-                            playerId: outcome.playerId,
-                            year: year,
-                            gameDayId: gameDay.id,
-                            responses: playerYearRespondedOutcomes.length,
-                            P: playerYearPlayedOutcomes.length,
-                            W: playerYearPlayedOutcomes.filter(o => o.points == 3).length,
-                            D: playerYearPlayedOutcomes.filter(o => o.points == 1).length,
-                            L: playerYearPlayedOutcomes.filter(o => o.points == 0).length,
-                            points: playerYearPlayedOutcomes.reduce((acc, o) => acc + (o.points || 0), 0),
-                            averages: playerYearPlayedOutcomes.length > 0 ?
-                                new Decimal(playerYearPlayedOutcomes.reduce((acc, o) =>
-                                    acc + (o.points || 0), 0) / playerYearPlayedOutcomes.length) : null,
-                            stalwart: gamesPlayed > 0 ? 100.0 * playerYearPlayedOutcomes.length / gamesPlayed : null,
-                            pub: playerYearOutcomes.reduce((acc, o) => acc + (o.pub || 0), 0),
-                            rank_points: 0,
-                            rank_averages: 0,
-                            rank_stalwart: 0,
-                            rank_speedy: 0,
-                            rank_pub: 0,
-                            speedy: playerYearRespondedOutcomes.length > 0 ? playerYearRespondedOutcomes.reduce((acc, o) =>
-                                acc + (o.responseTime && gameDay.mailSent ?
-                                    o.responseTime.getTime() - gameDay.mailSent.getTime() : 0), 0) / 1000 / playerYearRespondedOutcomes.length : null
-                        });
+                    // 1. Start with a list of PlayerRecords, including those for anyone with any standing this year
+                    // 2. For each one with an outome this game day, add or update the PlayerRecord as appropriate
+                    // 3. Update the scores that vary with game day, regardless of whether the player played this game (e.g. stalwart score)
+                    // 4. Calculate the ranks for the set of PlayerRecords
+                    // 5. Upsert the PlayerRecords
 
-                        if (playerRecord) {
-                            playerRecords.push(playerRecord);
-                        }
-                    }
+                    await calculateYearPlayerRecords(year, yearOutcomes, yearPlayerRecords, gameDay, gameDayOutcomes, playerRecords);
+                    await calculateYearPlayerRecords(0, allTimeOutcomes, allTimePlayerRecords, gameDay, gameDayOutcomes, playerRecords);
                 }
             }
 
@@ -326,3 +299,92 @@ export class PlayerRecordService {
 
 const playerRecordService = new PlayerRecordService();
 export default playerRecordService;
+
+async function calculateYearPlayerRecords(
+    year: number,
+    yearOutcomes: Outcome[],
+    yearPlayerRecords: Record<number, Partial<PlayerRecord>>,
+    gameDay: GameDay,
+    gameDayOutcomes: Outcome[],
+    playerRecords: PlayerRecord[]) {
+    for (const outcome of gameDayOutcomes) {
+        yearPlayerRecords[outcome.playerId] = await calculatePlayerRecord(year, gameDay, yearOutcomes, outcome);
+    }
+
+    const gamesPlayed = await gameDayService.getGamesPlayed(year, gameDay.id);
+
+    for (const recordData of Object.values(yearPlayerRecords)) {
+        recordData.gameDayId = gameDay.id;
+        if (recordData.P && gamesPlayed > 0) {
+            recordData.stalwart = Math.round(100.0 * recordData.P / gamesPlayed);
+        }
+    }
+
+    const pointsArray = Object.values(yearPlayerRecords).map(r => r.points);
+    pointsArray.sort((a, b) => (b || 0) - (a || 0));
+    const averagesArray = Object.values(yearPlayerRecords).map(r => r.averages);
+    averagesArray.sort((a, b) => (b || 0.0) - (a || 0.0));
+    const stalwartArray = Object.values(yearPlayerRecords).map(r => r.stalwart);
+    stalwartArray.sort((a, b) => (b || 0) - (a || 0));
+    const speedyArray = Object.values(yearPlayerRecords).map(r => r.speedy);
+    speedyArray.sort((a, b) => (a || 0) - (b || 0));
+    const pubArray = Object.values(yearPlayerRecords).map(r => r.pub);
+    pubArray.sort((a, b) => (b || 0) - (a || 0));
+
+    for (const recordData of Object.values(yearPlayerRecords)) {
+        recordData.rank_points = recordData.points != null ? pointsArray.indexOf(recordData.points) + 1 : null;
+        recordData.rank_averages = recordData.averages != null ? averagesArray.indexOf(recordData.averages) + 1 : null;
+        recordData.rank_stalwart = recordData.stalwart != null ? stalwartArray.indexOf(recordData.stalwart) + 1 : null;
+        recordData.rank_speedy = recordData.speedy != null ? speedyArray.indexOf(recordData.speedy) + 1 : null;
+        recordData.rank_pub = recordData.pub != null ? pubArray.indexOf(recordData.pub) + 1 : null;
+    }
+
+    for (const recordData of Object.values(yearPlayerRecords)) {
+        const playerRecord = await playerRecordService.upsert(recordData as PlayerRecord);
+
+        if (playerRecord) {
+            playerRecords.push(playerRecord);
+        }
+    }
+}
+
+async function calculatePlayerRecord(
+    year: number, gameDay: GameDay,
+    yearOutcomes: Outcome[],
+    outcome: Outcome
+): Promise<Partial<PlayerRecord>> {
+    const playerYearOutcomes = yearOutcomes.filter(o => o.playerId === outcome.playerId &&
+        o.gameDayId <= gameDay.id);
+    const playerYearRespondedOutcomes = playerYearOutcomes.filter(o => o.response != null);
+    const playerYearPlayedOutcomes = playerYearOutcomes.filter(o => o.points != null);
+    console.log(`Player ${outcome.playerId} game ${gameDay.id} year ${year}`);
+    const data: Partial<PlayerRecord> = {
+        playerId: outcome.playerId,
+        year: year,
+        gameDayId: gameDay.id,
+        responses: playerYearRespondedOutcomes.length,
+    };
+
+    if (playerYearPlayedOutcomes.length > 0) {
+        data.P = playerYearPlayedOutcomes.length;
+        data.W = playerYearPlayedOutcomes.filter(o => o.points == 3).length;
+        data.D = playerYearPlayedOutcomes.filter(o => o.points == 1).length;
+        data.L = playerYearPlayedOutcomes.filter(o => o.points == 0).length;
+    }
+
+    if (data.P && data.P > 0) {
+        data.points = playerYearPlayedOutcomes.reduce((acc, o) => acc + (o.points || 0), 0);
+        data.averages = playerYearPlayedOutcomes.reduce((acc, o) => acc + (o.points || 0), 0) / data.P;
+    }
+
+    if (outcome.pub && outcome.pub > 0) {
+        data.pub = playerYearOutcomes.reduce((acc, o) => acc + (o.pub || 0), 0);
+    }
+
+    if (outcome.response && playerYearRespondedOutcomes.length > 0) {
+        data.speedy = playerYearRespondedOutcomes.reduce((acc, o) => acc + (o.responseTime && gameDay.mailSent ?
+            o.responseTime.getTime() - gameDay.mailSent.getTime() : 0), 0) / 1000 / playerYearRespondedOutcomes.length;
+    }
+
+    return data;
+}

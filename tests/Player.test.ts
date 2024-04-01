@@ -256,7 +256,7 @@ describe('PlayerService', () => {
                 points: 3,
                 team: 'A',
                 comment: 'Test comment',
-                pub: true,
+                pub: 1,
                 paid: false,
                 goalie: false,
             };

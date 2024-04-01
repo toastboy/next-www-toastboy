@@ -81,8 +81,8 @@ export class CountryService {
                 where: {
                     isoCode: data.isoCode
                 },
-                update: data,
-                create: data,
+                update: this.validate(data),
+                create: this.validate(data),
             });
         } catch (error) {
             log(`Error upserting country: ${error}`);

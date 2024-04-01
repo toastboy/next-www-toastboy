@@ -157,8 +157,8 @@ export class ArseService {
                         raterId: data.raterId
                     }
                 },
-                update: data,
-                create: data,
+                update: this.validate(data),
+                create: this.validate(data),
             });
         } catch (error) {
             log(`Error upserting arse: ${error}`);

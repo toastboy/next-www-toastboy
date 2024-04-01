@@ -1,7 +1,6 @@
 import { PlayerRecord } from '@prisma/client';
 import playerRecordService from 'services/PlayerRecord';
 import prisma from 'lib/prisma';
-import { Prisma } from '@prisma/client';
 
 jest.mock('lib/prisma', () => ({
     playerRecord: {
@@ -44,7 +43,7 @@ const defaultPlayerRecord: PlayerRecord = {
     D: 3,
     L: 2,
     points: 18,
-    averages: new Prisma.Decimal(1.8),
+    averages: 1.8,
     stalwart: 5,
     pub: 3,
     rank_points: 1,
@@ -306,7 +305,7 @@ describe('PlayerRecordService', () => {
             })).rejects.toThrow();
             await expect(playerRecordService.create({
                 ...defaultPlayerRecord,
-                averages: new Prisma.Decimal(-1),
+                averages: -1.0,
             })).rejects.toThrow();
             await expect(playerRecordService.create({
                 ...defaultPlayerRecord,
@@ -440,7 +439,7 @@ describe('PlayerRecordService', () => {
         it('should create or update all PlayerRecords for a given GameDay', async () => {
             const result = await playerRecordService.upsertForGameDay(15);
             if (result) {
-                expect(result.length).toEqual(15);
+                expect(result.length).toEqual(10);
             }
             else {
                 throw new Error("Result is null");

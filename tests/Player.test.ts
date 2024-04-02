@@ -59,6 +59,19 @@ const playerList: Player[] = Array.from({ length: 100 }, (_, index) => ({
     finished: index % 2 === 0 ? new Date("2020-01-01") : null,
 }));
 
+const defaultOutcome: Outcome = {
+    gameDayId: 1,
+    playerId: 12,
+    response: 'Yes',
+    responseInterval: 2000,
+    points: 3,
+    team: 'A',
+    comment: 'Test comment',
+    pub: 1,
+    paid: false,
+    goalie: false,
+};
+
 describe('PlayerService', () => {
     beforeEach(() => {
         jest.clearAllMocks();
@@ -248,18 +261,6 @@ describe('PlayerService', () => {
 
     describe('getForm', () => {
         it('should retrieve the correct player form for Player ID 1 and GameDay ID 5 or zero with history of 3', async () => {
-            const defaultOutcome: Outcome = {
-                gameDayId: 1,
-                playerId: 12,
-                response: 'Yes',
-                responseInterval: 2000,
-                points: 3,
-                team: 'A',
-                comment: 'Test comment',
-                pub: 1,
-                paid: false,
-                goalie: false,
-            };
             const outcomeListMock: Outcome[] = [
                 {
                     ...defaultOutcome,
@@ -335,6 +336,55 @@ describe('PlayerService', () => {
             else {
                 throw new Error("Result is null");
             }
+        });
+    });
+
+    describe('getYearsActive', () => {
+        beforeEach(() => {
+            (prisma.outcome.findMany as jest.Mock).mockResolvedValue(
+                [
+                    {
+                        ...defaultOutcome,
+                        gameDayId: 10,
+                        gameDay: {
+                            id: 10,
+                            date: new Date('2021-01-01'),
+                        },
+                    },
+                    {
+                        ...defaultOutcome,
+                        points: null,
+                        gameDayId: 60,
+                        gameDay: {
+                            id: 60,
+                            date: new Date('2022-01-01'),
+                        },
+                    },
+                    {
+                        ...defaultOutcome,
+                        points: null,
+                        pub: 2,
+                        gameDayId: 110,
+                        gameDay: {
+                            id: 110,
+                            date: new Date('2023-01-01'),
+                        },
+                    },
+                ]
+            );
+        });
+        it('should return 3 active years for player ID 1', async () => {
+            const result = await playerService.getYearsActive(1);
+            expect(prisma.outcome.findMany).toHaveBeenCalledTimes(1);
+            expect(prisma.outcome.findMany).toHaveBeenCalledWith({
+                where: {
+                    playerId: 1
+                },
+                include: {
+                    gameDay: true
+                },
+            });
+            expect(result).toEqual([2021, 2022, 2023]);
         });
     });
 

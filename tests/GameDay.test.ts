@@ -7,6 +7,7 @@ jest.mock('lib/prisma', () => ({
         findUnique: jest.fn(),
         findFirst: jest.fn(),
         findMany: jest.fn(),
+        count: jest.fn(),
         create: jest.fn(),
         upsert: jest.fn(),
         delete: jest.fn(),
@@ -34,10 +35,70 @@ describe('GameDayService', () => {
         jest.clearAllMocks();
 
         (prisma.gameDay.findUnique as jest.Mock).mockImplementation((args: {
-            where: { id: number }
+            where: {
+                id: number
+            }
         }) => {
             const gameDay = gameDayList.find((gameDay) => gameDay.id === args.where.id);
             return Promise.resolve(gameDay ? gameDay : null);
+        });
+
+        (prisma.gameDay.findMany as jest.Mock).mockImplementation((args: {
+            where: {
+                game?: boolean,
+                date?: {
+                    gte: Date,
+                    lt: Date,
+                },
+                id?: {
+                    lte: number,
+                },
+            }
+        }) => {
+            const gameDays = args.where ? gameDayList.filter((gameDay) =>
+                (args.where.game ? gameDay.game === args.where.game : true) &&
+                (args.where.id ? gameDay.id <= args.where.id.lte : true) &&
+                (args.where.date ? gameDay.date >= args.where.date.gte : true) &&
+                (args.where.date ? gameDay.date < args.where.date.lt : true)
+            ) : gameDayList;
+            return Promise.resolve(gameDays ? gameDays : null);
+        });
+
+        (prisma.gameDay.count as jest.Mock).mockImplementation((args: {
+            where: {
+                game?: boolean,
+                date?: {
+                    gte: Date,
+                    lt: Date,
+                },
+                id?: {
+                    lte: number,
+                },
+                AND?: [
+                    {
+                        date?: {
+                            gte: Date,
+                            lt: Date,
+                        },
+                    },
+                    {
+                        date?: {
+                            gt: Date
+                        }
+                    }
+                ]
+            }
+        }) => {
+            const gameDays = args.where ? gameDayList.filter((gameDay) =>
+                (args.where.game ? gameDay.game === args.where.game : true) &&
+                (args.where.id ? gameDay.id <= args.where.id.lte : true) &&
+                (args.where.date ? gameDay.date >= args.where.date.gte : true) &&
+                (args.where.date ? gameDay.date < args.where.date.lt : true) &&
+                (args.where.AND && args.where.AND[0].date ? gameDay.date >= args.where.AND[0].date.gte : true) &&
+                (args.where.AND && args.where.AND[0].date ? gameDay.date < args.where.AND[0].date.lt : true) &&
+                (args.where.AND && args.where.AND[1].date ? gameDay.date > args.where.AND[1].date.gt : true)
+            ) : gameDayList;
+            return Promise.resolve(gameDays ? gameDays.length : null);
         });
 
         (prisma.gameDay.create as jest.Mock).mockImplementation((args: { data: GameDay }) => {
@@ -94,12 +155,6 @@ describe('GameDayService', () => {
     });
 
     describe('getAll', () => {
-        beforeEach(() => {
-            (prisma.gameDay.findMany as jest.Mock).mockImplementation(() => {
-                return Promise.resolve(gameDayList);
-            });
-        });
-
         it('should return the correct, complete list of 100 GameDays', async () => {
             const result = await gameDayService.getAll();
             if (result) {
@@ -113,24 +168,40 @@ describe('GameDayService', () => {
     });
 
     describe('getGamesPlayed', () => {
-        it.todo('should return the correct number of games played for year 2021');
-        it.todo('should return the correct number of games played for all years');
-        it.todo('should return zero games played for year 9999');
+        it('should return the correct number of games played for year 2021', async () => {
+            const result = await gameDayService.getGamesPlayed(2021);
+            expect(result).toEqual(100);
+        });
+
+        it('should return the correct number of games played for all years', async () => {
+            const result = await gameDayService.getGamesPlayed(0);
+            expect(result).toEqual(100);
+        });
+
+        it('should return zero games played for year 9999', async () => {
+            const result = await gameDayService.getGamesPlayed(9999);
+            expect(result).toEqual(0);
+        });
     });
 
     describe('getGamesRemaining', () => {
-        it.todo('should return the correct number of games remaining for year 2021');
-        it.todo('should return the correct number of games remaining for all years');
-        it.todo('should return zero games remaining for year 9999');
+        it('should return the correct number of games remaining for year 2021', async () => {
+            const result = await gameDayService.getGamesRemaining(2021);
+            expect(result).toEqual(0);
+        });
+
+        it('should return the correct number of games remaining for all years', async () => {
+            const result = await gameDayService.getGamesRemaining(0);
+            expect(result).toEqual(0);
+        });
+
+        it('should return zero games remaining for year 9999', async () => {
+            const result = await gameDayService.getGamesRemaining(9999);
+            expect(result).toEqual(0);
+        });
     });
 
     describe('getAllYears', () => {
-        beforeEach(() => {
-            (prisma.gameDay.findMany as jest.Mock).mockImplementation(() => {
-                return Promise.resolve(gameDayList);
-            });
-        });
-
         it('should return the correct, complete list of a single year, 2021', async () => {
             const result = await gameDayService.getAllYears();
             if (result) {

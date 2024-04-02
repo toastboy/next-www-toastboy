@@ -90,7 +90,7 @@ describe('PlayerRecordService', () => {
                 playerId: number,
             },
             take: number,
-            orderBy: { responseTime: 'desc' }
+            orderBy: { responseInterval: 'desc' }
         }) => {
             return Promise.resolve(playerRecordList.filter((playerRecord) =>
                 playerRecord.playerId === args.where.playerId &&
@@ -426,7 +426,7 @@ describe('PlayerRecordService', () => {
                     gameDayId: 15,
                     playerId: index % 10 + 1,
                     response: index < 11 ? 'Yes' : 'No',
-                    responseTime: new Date(),
+                    responseInterval: 3000,
                     points: index < 11 ? index % 2 ? 3 : 0 : null,
                     team: index < 11 ? index % 2 ? 'A' : 'B' : null,
                     pub: true,

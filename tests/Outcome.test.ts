@@ -20,6 +20,7 @@ const defaultOutcome: Outcome = {
     playerId: 12,
     response: 'Yes',
     responseTime: new Date('2021-01-01T00:00:00Z'),
+    responseInterval: 1000,
     points: 3,
     team: 'A',
     comment: 'Test comment',
@@ -59,7 +60,7 @@ describe('OutcomeService', () => {
                 gameDayId: number
             },
             take: number,
-            orderBy: { responseTime: 'desc' }
+            orderBy: { responseInterval: 'desc' }
         }) => {
             return Promise.resolve(outcomeList.filter((outcome) =>
                 outcome.playerId === args.where.playerId &&
@@ -303,7 +304,7 @@ describe('OutcomeService', () => {
             })).rejects.toThrow();
             await expect(outcomeService.create({
                 ...defaultOutcome,
-                responseTime: new Date(new Date().getTime() + 24 * 60 * 60 * 1000),
+                responseInterval: -1,
             })).rejects.toThrow();
             await expect(outcomeService.create({
                 ...defaultOutcome,

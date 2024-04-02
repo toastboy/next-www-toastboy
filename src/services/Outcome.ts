@@ -17,13 +17,11 @@ export class OutcomeService {
      * @throws An error if the outcome is invalid.
      */
     validate(outcome: Outcome): Outcome {
-        const now = new Date();
-
         if (outcome.response && !['Yes', 'No', 'Dunno', 'Excused', 'Flaked', 'Injured'].includes(outcome.response)) {
             throw new Error(`Invalid response value: ${outcome.response}`);
         }
-        if (outcome.responseTime && (!(outcome.responseTime instanceof Date) || outcome.responseTime > now)) {
-            throw new Error(`Invalid responseTime value: ${outcome.responseTime}`);
+        if (outcome.responseInterval && outcome.responseInterval < 0) {
+            throw new Error(`Invalid responseInterval value: ${outcome.responseInterval}`);
         }
         if (outcome.points && (!Number.isInteger(outcome.points) || (outcome.points != 0 && outcome.points != 1 && outcome.points != 3))) {
             throw new Error(`Invalid points value: ${outcome.points}`);

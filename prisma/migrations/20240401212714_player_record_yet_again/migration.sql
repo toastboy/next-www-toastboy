@@ -18,4 +18,7 @@ UPDATE
     Outcome
     JOIN GameDay ON Outcome.gameDayId = GameDay.id
 SET
-    Outcome.responseInterval = TIMESTAMPDIFF(SECOND, GameDay.mailSent, Outcome.responseTime);
+    Outcome.responseInterval = CASE
+        WHEN TIMESTAMPDIFF(SECOND, GameDay.mailSent, Outcome.responseTime) > 0 THEN TIMESTAMPDIFF(SECOND, GameDay.mailSent, Outcome.responseTime)
+        ELSE NULL
+    END;

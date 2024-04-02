@@ -386,12 +386,11 @@ async function calculatePlayerRecord(
         data.pub = playerYearOutcomes.reduce((acc, o) => acc + (o.pub || 0), 0);
     }
 
-    const playerYearTimedResponseOutcomes = playerYearRespondedOutcomes.filter(o => o.responseTime != null);
+    const playerYearTimedResponseOutcomes = playerYearRespondedOutcomes.filter(o => o.responseInterval != null);
     if (playerYearTimedResponseOutcomes.length > 0) {
         data.speedy = playerYearTimedResponseOutcomes.reduce((acc, o) =>
-            acc + (o.responseTime != null && gameDay.mailSent != null ?
-                o.responseTime.getTime() - gameDay.mailSent.getTime() : 0), 0
-        ) / 1000 / playerYearTimedResponseOutcomes.length;
+            acc + (o.responseInterval != null ? o.responseInterval : 0), 0
+        ) / playerYearTimedResponseOutcomes.length;
     }
 
     return data;

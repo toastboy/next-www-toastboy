@@ -115,14 +115,15 @@ model Invitation {
 }
 
 model Outcome {
-  response     PlayerResponse?
-  responseTime DateTime?       @db.DateTime(0)
-  points       Int?
-  team         Team?
-  comment      String?         @db.VarChar(127)
-  pub          Int?
-  paid         Boolean?
-  goalie       Boolean?
+  response         PlayerResponse?
+  responseTime     DateTime?       @db.DateTime(0)
+  responseInterval Int?
+  points           Int?
+  team             Team?
+  comment          String?         @db.VarChar(127)
+  pub              Int?
+  paid             Boolean?
+  goalie           Boolean?
 
   gameDayId Int
   playerId  Int

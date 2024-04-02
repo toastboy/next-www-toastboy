@@ -309,7 +309,10 @@ async function calculateYearPlayerRecords(
     playerRecords: PlayerRecord[]
 ) {
     for (const outcome of gameDayOutcomes) {
-        yearPlayerRecords[outcome.playerId] = await calculatePlayerRecord(year, gameDay, yearOutcomes, outcome);
+        yearPlayerRecords[outcome.playerId] = {
+            ...yearPlayerRecords[outcome.playerId],
+            ...await calculatePlayerRecord(year, gameDay, yearOutcomes, outcome)
+        };
     }
 
     const gamesPlayed = await gameDayService.getGamesPlayed(year, gameDay.id);
@@ -350,7 +353,8 @@ async function calculateYearPlayerRecords(
 }
 
 async function calculatePlayerRecord(
-    year: number, gameDay: GameDay,
+    year: number,
+    gameDay: GameDay,
     yearOutcomes: Outcome[],
     outcome: Outcome
 ): Promise<Partial<PlayerRecord>> {
@@ -382,10 +386,12 @@ async function calculatePlayerRecord(
         data.pub = playerYearOutcomes.reduce((acc, o) => acc + (o.pub || 0), 0);
     }
 
-    if (outcome.response && playerYearRespondedOutcomes.length > 0) {
-        data.speedy = playerYearRespondedOutcomes.reduce((acc, o) =>
-            acc + (o.responseTime && gameDay.mailSent ?
-                o.responseTime.getTime() - gameDay.mailSent.getTime() : 0), 0) / 1000 / playerYearRespondedOutcomes.length;
+    const playerYearTimedResponseOutcomes = playerYearRespondedOutcomes.filter(o => o.responseTime != null);
+    if (playerYearTimedResponseOutcomes.length > 0) {
+        data.speedy = playerYearTimedResponseOutcomes.reduce((acc, o) =>
+            acc + (o.responseTime != null && gameDay.mailSent != null ?
+                o.responseTime.getTime() - gameDay.mailSent.getTime() : 0), 0
+        ) / 1000 / playerYearTimedResponseOutcomes.length;
     }
 
     return data;

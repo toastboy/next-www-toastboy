@@ -121,6 +121,9 @@ async function importBackup(): Promise<void> {
         // Run prisma generate to ensure the Prisma Client is up to date
         execSync('npx prisma generate');
 
+        // Run prisma db push to ensure the database is up to date with the schema
+        execSync('npx prisma db push --schema ../../../prisma/schema.prisma');
+
         // Import the mysqldump backup created above
         execSync(`mysql -h ${devMysqlHost} -u ${devMysqlUser} -p${devMysqlPassword} -e'DROP DATABASE IF EXISTS footy;'`);
         execSync(`mysql -h ${devMysqlHost} -u ${devMysqlUser} -p${devMysqlPassword} -e'CREATE DATABASE footy;'`);

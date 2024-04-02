@@ -8,9 +8,12 @@
  */
 -- AlterTable
 ALTER TABLE
-  `Outcome` DROP COLUMN `responsetime`,
-ADD
-  COLUMN `responseTime` DATETIME(0) NULL,
+  `Outcome`
+MODIFY
+  `responseTime` DATETIME(0) NULL;
+
+ALTER TABLE
+  `Outcome`
 MODIFY
   `response` ENUM(
     'Yes',

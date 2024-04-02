@@ -116,7 +116,6 @@ model Invitation {
 
 model Outcome {
   response         PlayerResponse?
-  responseTime     DateTime?       @db.DateTime(0)
   responseInterval Int?
   points           Int?
   team             Team?

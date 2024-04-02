@@ -19,7 +19,6 @@ const defaultOutcome: Outcome = {
     gameDayId: 1,
     playerId: 12,
     response: 'Yes',
-    responseTime: new Date('2021-01-01T00:00:00Z'),
     responseInterval: 1000,
     points: 3,
     team: 'A',

@@ -252,7 +252,6 @@ describe('PlayerService', () => {
                 gameDayId: 1,
                 playerId: 12,
                 response: 'Yes',
-                responseTime: new Date(),
                 responseInterval: 2000,
                 points: 3,
                 team: 'A',

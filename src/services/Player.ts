@@ -200,6 +200,34 @@ class PlayerService {
     }
 
     /**
+     * Retrieves all the years that the given player has participated in any
+     * way. That could be just responding to an invitation, going to the pub, or
+     * playing a game of course.
+     * @returns A promise that resolves to an array of distinct years or null if
+     * there are none.
+     * @throws An error if there is a failure.
+     */
+    async getYearsActive(playerId: number): Promise<number[] | null> {
+        try {
+            const outcomes = await prisma.outcome.findMany({
+                where: {
+                    playerId: playerId,
+                },
+                include: {
+                    gameDay: true
+                },
+            });
+            const years = outcomes.map(o => o.gameDay.date.getFullYear());
+            const distinctYears = Array.from(new Set(years));
+
+            return Promise.resolve(distinctYears);
+        } catch (error) {
+            log(`Error fetching player active years: ${error}`);
+            throw error;
+        }
+    }
+
+    /**
      * Creates a player
      * @param data The properties to add to the player
      * @returns A promise that resolves to the newly-created player

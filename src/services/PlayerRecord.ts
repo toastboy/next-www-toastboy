@@ -239,6 +239,9 @@ export class PlayerRecordService {
                         return null;
                     }
 
+                    // TODO: Remove this log
+                    console.log(`Game ${gameDay.id}`);
+
                     // 1. Start with a list of PlayerRecords, including those for anyone with any standing this year
                     // 2. For each one with an outome this game day, add or update the PlayerRecord as appropriate
                     // 3. Update the scores that vary with game day, regardless of whether the player played this game (e.g. stalwart score)
@@ -362,7 +365,6 @@ async function calculatePlayerRecord(
         o.gameDayId <= gameDay.id);
     const playerYearRespondedOutcomes = playerYearOutcomes.filter(o => o.response != null);
     const playerYearPlayedOutcomes = playerYearOutcomes.filter(o => o.points != null);
-    console.log(`Player ${outcome.playerId} game ${gameDay.id} year ${year}`);
     const data: Partial<PlayerRecord> = {
         playerId: outcome.playerId,
         year: year,

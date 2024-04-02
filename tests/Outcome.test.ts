@@ -81,7 +81,6 @@ describe('OutcomeService', () => {
                 }
             }
         }) => {
-            console.log(JSON.stringify(args));
             return Promise.resolve(outcomeList.filter((outcome) =>
                 outcome.playerId === args.where.playerId &&
                 (args.where.gameDay.id ? outcome.gameDayId <= args.where.gameDay.id.lte : true)).length);

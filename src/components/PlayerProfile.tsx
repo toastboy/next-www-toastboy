@@ -6,7 +6,7 @@ import PlayerClubs from 'components/PlayerClubs';
 import PlayerCountries from 'components/PlayerCountries';
 import PlayerForm from './PlayerForm';
 import PlayerLastPlayed from './PlayerLastPlayed';
-import GameYears from './GameYears';
+import PlayerYearsActive from './PlayerYearsActive';
 
 export default async function PlayerProfile({
     player,
@@ -25,7 +25,7 @@ export default async function PlayerProfile({
             <PlayerCountries player={player} />
             <PlayerArse player={player} />
             <PlayerForm player={player} />
-            <GameYears />
+            <PlayerYearsActive player={player} />
             <div className="px-6 py-4">
                 <div className="font-bold text-xl mb-2">{first_name} {last_name}</div>
                 <p className="text-gray-700 text-base">{email}</p>

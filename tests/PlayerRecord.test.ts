@@ -1,6 +1,7 @@
 import { PlayerRecord } from '@prisma/client';
 import playerRecordService from 'services/PlayerRecord';
 import prisma from 'lib/prisma';
+import fs from 'fs';
 
 jest.mock('lib/prisma', () => ({
     playerRecord: {
@@ -260,6 +261,20 @@ describe('PlayerRecordService', () => {
             const result = await playerRecordService.getByPlayer(11);
             expect(result).toEqual([]);
         });
+    });
+
+    describe('getTable', () => {
+        const file = fs.readFileSync('./tests/data/PlayerRecord.test.json');
+        const playerRecords = JSON.parse(file.toString());
+
+        (prisma.gameDay.findMany as jest.Mock).mockResolvedValue(playerRecords);
+
+        it.todo('should retrieve the correct PlayerRecords for the points table for a given year');
+        it.todo('should retrieve the correct PlayerRecords for the points table for all time');
+        it.todo('should return an empty list when retrieving the points table for a year with no PlayerRecords');
+        it.todo('should return an empty list when retrieving the points table for a year that does not exist');
+        it.todo('should return an empty list when retrieving the points table for a year with no GameDays');
+        it.todo('should return an empty list when retrieving the points table for a year with no Outcomes');
     });
 
     describe('create', () => {

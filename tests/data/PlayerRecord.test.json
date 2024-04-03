@@ -1,0 +1,42 @@
+[
+    {
+        "year": "2021",
+        "responses": "10",
+        "P": "10",
+        "W": "5",
+        "D": "3",
+        "L": "2",
+        "points": "18",
+        "averages": "1.8",
+        "stalwart": "5",
+        "pub": "1",
+        "rank_points": "1",
+        "rank_averages": "2",
+        "rank_stalwart": "3",
+        "rank_speedy": "4",
+        "rank_pub": "5",
+        "speedy": "4",
+        "gameDayId": "15",
+        "playerId": "12"
+    },
+    {
+        "year": "2021",
+        "responses": "11",
+        "P": "11",
+        "W": "6",
+        "D": "3",
+        "L": "2",
+        "points": "21",
+        "averages": "1.9",
+        "stalwart": "5",
+        "pub": "1",
+        "rank_points": "1",
+        "rank_averages": "2",
+        "rank_stalwart": "3",
+        "rank_speedy": "4",
+        "rank_pub": "5",
+        "speedy": "4",
+        "gameDayId": "16",
+        "playerId": "12"
+    }
+]

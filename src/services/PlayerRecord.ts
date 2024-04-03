@@ -206,9 +206,6 @@ export class PlayerRecordService {
             const allTimeOutcomes = await outcomeService.getAllForYear(0);
 
             let gameDays = await gameDayService.getAll();
-            if (!gameDays) {
-                return [];
-            }
             if (gameDayId) {
                 gameDays = gameDays.filter(g => g.id === gameDayId);
             }

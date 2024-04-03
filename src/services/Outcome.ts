@@ -83,10 +83,10 @@ export class OutcomeService {
      * @param untilGameDay - The gameDay ID to stop at (inclusive), or undefined
      * to include all.
      * @returns A promise that resolves to an array of outcomes sorted by
-     * gameDay, most recent first, or null if there are none.
+     * gameDay, most recent first.
      * @throws An error if there is a failure.
      */
-    async getAllForYear(year: number, untilGameDay?: number): Promise<OutcomeWithGameDay[] | null> {
+    async getAllForYear(year: number, untilGameDay?: number): Promise<OutcomeWithGameDay[]> {
         try {
             return prisma.outcome.findMany({
                 where: {
@@ -116,10 +116,10 @@ export class OutcomeService {
     /**
      * Retrieves outcomes by GameDay ID.
      * @param gameDayId - The ID of the GameDay.
-     * @returns A promise that resolves to an array of Outcomes or null.
+     * @returns A promise that resolves to an array of Outcomes.
      * @throws An error if there is a failure.
      */
-    async getByGameDay(gameDayId: number): Promise<Outcome[] | null> {
+    async getByGameDay(gameDayId: number): Promise<Outcome[]> {
         try {
             return prisma.outcome.findMany({
                 where: {
@@ -135,10 +135,10 @@ export class OutcomeService {
     /**
      * Retrieves outcomes by player ID.
      * @param playerId - The ID of the player.
-     * @returns A promise that resolves to an array of outcomes or null.
+     * @returns A promise that resolves to an array of outcomes.
      * @throws An error if there is a failure.
      */
-    async getByPlayer(playerId: number): Promise<Outcome[] | null> {
+    async getByPlayer(playerId: number): Promise<Outcome[]> {
         try {
             return prisma.outcome.findMany({
                 where: {

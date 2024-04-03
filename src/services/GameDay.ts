@@ -45,10 +45,10 @@ export class GameDayService {
 
     /**
      * Retrieves all GameDays.
-     * @returns A promise that resolves to an array of GameDays or null if an error occurs.
+     * @returns A promise that resolves to an array of GameDays.
      * @throws An error if there is a failure.
      */
-    async getAll(): Promise<GameDay[] | null> {
+    async getAll(): Promise<GameDay[]> {
         try {
             return prisma.gameDay.findMany({});
         } catch (error) {

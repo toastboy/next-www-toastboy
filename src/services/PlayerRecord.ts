@@ -200,19 +200,15 @@ export class PlayerRecordService {
      * PlayerRecords, or null if the upsert failed.
      * @throws An error if there is a failure.
      */
-    async upsertForGameDay(gameDayId?: number): Promise<PlayerRecord[] | null> {
+    async upsertForGameDay(gameDayId?: number): Promise<PlayerRecord[]> {
         try {
             const today = new Date();
             const allTimeOutcomes = await outcomeService.getAllForYear(0);
-            if (!allTimeOutcomes) {
-                return null;
-            }
 
             let gameDays = await gameDayService.getAll();
             if (!gameDays) {
-                return null;
+                return [];
             }
-
             if (gameDayId) {
                 gameDays = gameDays.filter(g => g.id === gameDayId);
             }
@@ -225,9 +221,6 @@ export class PlayerRecordService {
             for (const year of distinctYears) {
                 const yearPlayerRecords: Record<number, Partial<PlayerRecord>> = {};
                 const yearOutcomes = await outcomeService.getAllForYear(year);
-                if (!yearOutcomes) {
-                    return null;
-                }
 
                 for (const gameDay of gameDays) {
                     if (gameDay.date.getFullYear() !== year || gameDay.date > today) {
@@ -235,9 +228,6 @@ export class PlayerRecordService {
                     }
 
                     const gameDayOutcomes = await outcomeService.getByGameDay(gameDay.id);
-                    if (!gameDayOutcomes) {
-                        return null;
-                    }
 
                     // TODO: Remove this log
                     console.log(`Game ${gameDay.id}`);

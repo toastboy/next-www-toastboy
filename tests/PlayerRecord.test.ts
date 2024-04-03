@@ -45,7 +45,7 @@ const defaultPlayerRecord: PlayerRecord = {
     points: 18,
     averages: 1.8,
     stalwart: 5,
-    pub: 3,
+    pub: 1,
     rank_points: 1,
     rank_averages: 2,
     rank_stalwart: 3,
@@ -393,7 +393,7 @@ describe('PlayerRecordService', () => {
 
         it('should create not PlayerRecords for a GameDay with no outcomes', async () => {
             const result = await playerRecordService.upsertForGameDay(15);
-            expect(result).toBeNull();
+            expect(result).toEqual([]);
         });
     });
 
@@ -401,9 +401,9 @@ describe('PlayerRecordService', () => {
         beforeEach(() => {
             (prisma.gameDay.findUnique as jest.Mock).mockResolvedValue({
                 id: 15,
-                date: new Date('2021-01-03'),
+                date: new Date('2022-01-03'),
                 game: true,
-                mailSent: new Date('2021-01-01'),
+                mailSent: new Date('2022-01-01'),
                 comment: 'I heart footy',
                 bibs: 'A',
                 picker_games_history: 10,
@@ -412,14 +412,16 @@ describe('PlayerRecordService', () => {
             (prisma.gameDay.findMany as jest.Mock).mockResolvedValue(
                 Array.from({ length: 15 }, (_, index) => ({
                     id: index + 1,
-                    date: new Date('2021-01-03'),
+                    date: index < 11 ? new Date('2021-01-03') : new Date('2022-01-03'),
                     game: true,
-                    mailSent: new Date('2021-01-01'),
+                    mailSent: index < 11 ? new Date('2021-01-01') : new Date('2022-01-01'),
                     comment: 'I heart footy',
                     bibs: 'A',
                     picker_games_history: 10,
                 }))
             );
+
+            (prisma.gameDay.count as jest.Mock).mockResolvedValue(1);
 
             (prisma.outcome.findMany as jest.Mock).mockResolvedValue(
                 Array.from({ length: 15 }, (_, index) => ({
@@ -429,7 +431,7 @@ describe('PlayerRecordService', () => {
                     responseInterval: 3000,
                     points: index < 11 ? index % 2 ? 3 : 0 : null,
                     team: index < 11 ? index % 2 ? 'A' : 'B' : null,
-                    pub: true,
+                    pub: index % 2 ? 1 : null,
                     paid: false,
                     goalie: false,
                 }))
@@ -438,18 +440,49 @@ describe('PlayerRecordService', () => {
 
         it('should create or update all PlayerRecords for a given GameDay', async () => {
             const result = await playerRecordService.upsertForGameDay(15);
-            if (result) {
-                expect(result.length).toEqual(20);
-            }
-            else {
-                throw new Error("Result is null");
-            }
+            expect(result.length).toEqual(20);
         });
 
-        it.todo('should refuse to create or update any PlayerRecord with invalid data');
-        it.todo('should do nothing if no Outcomes exist for the given GameDay');
-        it.todo('should update the table ranks for all PlayerRecords with GameDays on or after the given GameDay');
-        it.todo('should set values for both the year the game took place and for all time (year 0)');
+        it('should create or update all PlayerRecords for every GameDay', async () => {
+            const result = await playerRecordService.upsertForGameDay();
+            expect(result.length).toEqual(300);
+        });
+
+        it('should do nothing if no Outcomes exist for the given GameDay', async () => {
+            (prisma.outcome.findMany as jest.Mock).mockResolvedValue([]);
+            const result = await playerRecordService.upsertForGameDay(15);
+            expect(result).toEqual([]);
+        });
+
+        it('should update the table ranks for all PlayerRecords with GameDays on or after the given GameDay', async () => {
+            await playerRecordService.upsertForGameDay(15);
+            expect(prisma.playerRecord.upsert).toHaveBeenCalledTimes(20);
+        });
+
+        it('should set values for both the year the game took place and for all time (year 0)', async () => {
+            const result = await playerRecordService.upsertForGameDay(15);
+            expect(prisma.playerRecord.upsert).toHaveBeenCalledTimes(20);
+            expect(result).toEqual(expect.arrayContaining([
+                expect.objectContaining({
+                    year: 2022,
+                }),
+                expect.objectContaining({
+                    year: 0,
+                }),
+            ]));
+        });
+
+        it('should do nothing if there are no game days', async () => {
+            (prisma.gameDay.findMany as jest.Mock).mockResolvedValue([]);
+            const result = await playerRecordService.upsertForGameDay(15);
+            expect(result).toEqual([]);
+        });
+
+        it('should do nothing if there are no outcomes', async () => {
+            (prisma.outcome.findMany as jest.Mock).mockResolvedValue([]);
+            const result = await playerRecordService.upsertForGameDay(15);
+            expect(result).toEqual([]);
+        });
     });
 
     describe('delete', () => {

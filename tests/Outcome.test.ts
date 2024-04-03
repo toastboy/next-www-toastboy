@@ -183,32 +183,17 @@ describe('OutcomeService', () => {
             (prisma.outcome.findMany as jest.Mock).mockResolvedValueOnce(outcomeList);
 
             let result = await outcomeService.getAllForYear(2021);
-            if (result) {
-                expect(result.length).toEqual(100);
-                expect(result[11].playerId).toEqual(2);
-            }
-            else {
-                throw new Error("Result is null");
-            }
+            expect(result.length).toEqual(100);
+            expect(result[11].playerId).toEqual(2);
 
             (prisma.outcome.findMany as jest.Mock).mockResolvedValueOnce(outcomeList.filter((outcome) => outcome.gameDayId <= 7));
 
             result = await outcomeService.getAllForYear(2021, 7);
-            if (result) {
-                expect(result.length).toEqual(70);
-                expect(result[11].playerId).toEqual(2);
-            }
-            else {
-                throw new Error("Result is null");
-            }
+            expect(result.length).toEqual(70);
+            expect(result[11].playerId).toEqual(2);
 
             result = await outcomeService.getAllForYear(0);
-            if (result) {
-                expect(result.length).toEqual(0);
-            }
-            else {
-                throw new Error("Result is null");
-            }
+            expect(result.length).toEqual(0);
         });
     });
 
@@ -251,18 +236,13 @@ describe('OutcomeService', () => {
 
         it('should retrieve the correct Outcomes for Player ID 1', async () => {
             const result = await outcomeService.getByPlayer(1);
-            if (result) {
-                expect(result.length).toEqual(10);
-                for (const outcomeResult of result) {
-                    expect(outcomeResult).toEqual({
-                        ...defaultOutcome,
-                        playerId: 1,
-                        gameDayId: expect.any(Number),
-                    } as Outcome);
-                }
-            }
-            else {
-                throw new Error("Result is null");
+            expect(result.length).toEqual(10);
+            for (const outcomeResult of result) {
+                expect(outcomeResult).toEqual({
+                    ...defaultOutcome,
+                    playerId: 1,
+                    gameDayId: expect.any(Number),
+                } as Outcome);
             }
         });
 
@@ -286,7 +266,10 @@ describe('OutcomeService', () => {
             expect(result).toEqual(8);
         });
 
-        it.todo('should return 0 for Player ID 11');
+        it('should return 0 for Player ID 11', async () => {
+            const result = await outcomeService.getGamesPlayedByPlayer(11, 2021);
+            expect(result).toEqual(0);
+        });
     });
 
     describe('create', () => {

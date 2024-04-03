@@ -157,13 +157,8 @@ describe('GameDayService', () => {
     describe('getAll', () => {
         it('should return the correct, complete list of 100 GameDays', async () => {
             const result = await gameDayService.getAll();
-            if (result) {
-                expect(result.length).toEqual(100);
-                expect(result[11].id).toEqual(12);
-            }
-            else {
-                throw new Error("Result is null");
-            }
+            expect(result.length).toEqual(100);
+            expect(result[11].id).toEqual(12);
         });
     });
 

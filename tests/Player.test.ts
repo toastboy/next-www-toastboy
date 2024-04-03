@@ -316,7 +316,7 @@ describe('PlayerService', () => {
                     points: 3,
                     team: 'A',
                     comment: 'Test comment',
-                    pub: true,
+                    pub: 1,
                     paid: false,
                     goalie: false,
                     gameDay: {
@@ -373,6 +373,7 @@ describe('PlayerService', () => {
                 ]
             );
         });
+
         it('should return 3 active years for player ID 1', async () => {
             const result = await playerService.getYearsActive(1);
             expect(prisma.outcome.findMany).toHaveBeenCalledTimes(1);

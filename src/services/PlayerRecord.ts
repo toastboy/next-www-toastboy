@@ -448,6 +448,7 @@ async function calculatePlayerRecord(
         year: year,
         gameDayId: gameDay.id,
         responses: playerYearRespondedOutcomes.length,
+        pub: playerYearOutcomes.reduce((acc, o) => acc + (o.pub || 0), 0),
     };
 
     if (playerYearPlayedOutcomes.length > 0) {
@@ -460,10 +461,6 @@ async function calculatePlayerRecord(
     if (data.P && data.P > 0) {
         data.points = playerYearPlayedOutcomes.reduce((acc, o) => acc + (o.points || 0), 0);
         data.averages = playerYearPlayedOutcomes.reduce((acc, o) => acc + (o.points || 0), 0) / data.P;
-    }
-
-    if (outcome.pub && outcome.pub > 0) {
-        data.pub = playerYearOutcomes.reduce((acc, o) => acc + (o.pub || 0), 0);
     }
 
     const playerYearTimedResponseOutcomes = playerYearRespondedOutcomes.filter(o => o.responseInterval != null);

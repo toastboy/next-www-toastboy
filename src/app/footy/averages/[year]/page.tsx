@@ -11,9 +11,9 @@ export default async function Page({
     return (
         <div>
             <p className="text-2xl font-bold">Top 5 players</p>
-            <Table table={EnumTable.points} year={year} take={5} />
+            <Table table={EnumTable.averages} year={year} take={5} />
             <p className="text-2xl font-bold">All players</p>
-            <Table table={EnumTable.points} year={year} />
+            <Table table={EnumTable.averages} year={year} />
         </div>
     );
 }

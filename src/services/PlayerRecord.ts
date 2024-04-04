@@ -174,11 +174,15 @@ export class PlayerRecordService {
      */
     async getTable(table: EnumTable, year: number, take?: number): Promise<PlayerRecordWithPlayer[]> {
         try {
+            // TODO: Last game played isn't the right thing for pub or speedy
             const gameDayId = await outcomeService.getLatestGamePlayedByYear(year);
             if (!gameDayId) {
                 return [];
             }
 
+            // TODO: Some tables have extra rules, like the 10 game minimum for averages
+            // TODO: I need to sort by rank because sometimes a lower score is better
+            // TODO: Averages need to be rounded to 3 decimal places
             return prisma.playerRecord.findMany({
                 where: {
                     gameDayId: gameDayId,

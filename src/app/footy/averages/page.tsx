@@ -5,9 +5,9 @@ export default async function Page(): Promise<JSX.Element> {
     return (
         <div>
             <p className="text-2xl font-bold">Top 5 players</p>
-            <Table table={EnumTable.points} year={0} take={5} />
+            <Table table={EnumTable.averages} year={0} take={5} />
             <p className="text-2xl font-bold">All players</p>
-            <Table table={EnumTable.points} year={0} />
+            <Table table={EnumTable.averages} year={0} />
         </div>
     );
 }

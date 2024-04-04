@@ -1,7 +1,11 @@
 import { AdminUpdatePlayerRecords } from "components/AdminUpdatePlayerRecords";
+import { AdminExportPlayerRecords } from "components/AdminExportPlayerRecords";
 
 export default function Page() {
     return (
-        <AdminUpdatePlayerRecords />
+        <div>
+            <AdminUpdatePlayerRecords />
+            <AdminExportPlayerRecords />
+        </div>
     );
 }

@@ -193,8 +193,8 @@ model PlayerRecord {
   playerId  Int
   gameDayId Int
 
-  Player  Player  @relation(fields: [playerId], references: [id])
-  GameDay GameDay @relation(fields: [gameDayId], references: [id])
+  player  Player  @relation(fields: [playerId], references: [id])
+  gameDay GameDay @relation(fields: [gameDayId], references: [id])
 
   @@unique([playerId, year, gameDayId])
   @@index([playerId])

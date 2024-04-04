@@ -1,3 +1,4 @@
+import { Prisma } from '@prisma/client';
 import { PlayerRecord, GameDay, Outcome } from '@prisma/client';
 import outcomeService from 'services/Outcome';
 import prisma from 'lib/prisma';
@@ -5,6 +6,19 @@ import debug from 'debug';
 import gameDayService from './GameDay';
 
 const log = debug('footy:api');
+
+export enum EnumTable {
+    points = 'points',
+    averages = 'averages',
+    stalwart = 'stalwart',
+    speedy = 'speedy',
+    pub = 'pub',
+}
+
+const playerRecordWithPlayer = Prisma.validator<Prisma.PlayerRecordDefaultArgs>()({
+    include: { player: true },
+});
+type PlayerRecordWithPlayer = Prisma.PlayerRecordGetPayload<typeof playerRecordWithPlayer>
 
 export class PlayerRecordService {
     /**
@@ -151,9 +165,47 @@ export class PlayerRecordService {
     }
 
     /**
+     * Retrieves player records from the specified table for a given year.
+     * @param table - The table to retrieve player records from.
+     * @param year - The year for which to retrieve player records.
+     * @param take - The maximum number of player records to retrieve (optional).
+     * @returns A promise that resolves to an array of PlayerRecord objects.
+     * @throws If there is an error while fetching the player records.
+     */
+    async getTable(table: EnumTable, year: number, take?: number): Promise<PlayerRecordWithPlayer[]> {
+        try {
+            const gameDayId = await outcomeService.getLatestGamePlayedByYear(year);
+            if (!gameDayId) {
+                return [];
+            }
+
+            return prisma.playerRecord.findMany({
+                where: {
+                    gameDayId: gameDayId,
+                    year: year,
+                    [table]: {
+                        not: null,
+                    }
+                },
+                orderBy: {
+                    [table]: 'desc'
+                },
+                include: {
+                    player: true
+                },
+                take: take
+            });
+        } catch (error) {
+            log(`Error fetching playerRecords for table: ${error}`);
+            throw error;
+        }
+    }
+
+    /**
      * Creates a new playerRecord.
      * @param data The data for the new playerRecord.
-     * @returns A promise that resolves to the created playerRecord, or null if an error occurs.
+     * @returns A promise that resolves to the created playerRecord, or null if
+     * an error occurs.
      * @throws An error if there is a failure.
      */
     async create(data: PlayerRecord): Promise<PlayerRecord | null> {
@@ -170,7 +222,8 @@ export class PlayerRecordService {
     /**
      * Upserts a PlayerRecord.
      * @param data The data to be upserted.
-     * @returns A promise that resolves to the upserted PlayerRecord, or null if the upsert failed.
+     * @returns A promise that resolves to the upserted PlayerRecord, or null if
+     * the upsert failed.
      * @throws An error if there is a failure.
      */
     async upsert(data: PlayerRecord): Promise<PlayerRecord | null> {
@@ -229,14 +282,22 @@ export class PlayerRecordService {
                     // TODO: Remove this log
                     console.log(`Game ${gameDay.id}`);
 
-                    // 1. Start with a list of PlayerRecords, including those for anyone with any standing this year
-                    // 2. For each one with an outome this game day, add or update the PlayerRecord as appropriate
-                    // 3. Update the scores that vary with game day, regardless of whether the player played this game (e.g. stalwart score)
-                    // 4. Calculate the ranks for the set of PlayerRecords
-                    // 5. Upsert the PlayerRecords
-
-                    await calculateYearPlayerRecords(year, yearOutcomes, yearPlayerRecords, gameDay, gameDayOutcomes, playerRecords);
-                    await calculateYearPlayerRecords(0, allTimeOutcomes, allTimePlayerRecords, gameDay, gameDayOutcomes, playerRecords);
+                    await calculateYearPlayerRecords(
+                        year,
+                        yearOutcomes,
+                        yearPlayerRecords,
+                        gameDay,
+                        gameDayOutcomes,
+                        playerRecords
+                    );
+                    await calculateYearPlayerRecords(
+                        0,
+                        allTimeOutcomes,
+                        allTimePlayerRecords,
+                        gameDay,
+                        gameDayOutcomes,
+                        playerRecords
+                    );
                 }
             }
 
@@ -290,6 +351,16 @@ export class PlayerRecordService {
 const playerRecordService = new PlayerRecordService();
 export default playerRecordService;
 
+/**
+ * Calculates the player records for a specific year and game day.
+ *
+ * @param year - The year for which to calculate the player records.
+ * @param yearOutcomes - The outcomes for the entire year.
+ * @param yearPlayerRecords - The player records for the entire year.
+ * @param gameDay - The game day for which to calculate the player records.
+ * @param gameDayOutcomes - The outcomes for the specific game day.
+ * @param playerRecords - The existing player records.
+ */
 async function calculateYearPlayerRecords(
     year: number,
     yearOutcomes: Outcome[],
@@ -298,12 +369,19 @@ async function calculateYearPlayerRecords(
     gameDayOutcomes: Outcome[],
     playerRecords: PlayerRecord[]
 ) {
+    // Start with a list of PlayerRecords, including those for anyone with any
+    // standing this year. For each one with an outome this game day, add or
+    // update the PlayerRecord as appropriate
+
     for (const outcome of gameDayOutcomes) {
         yearPlayerRecords[outcome.playerId] = {
             ...yearPlayerRecords[outcome.playerId],
             ...await calculatePlayerRecord(year, gameDay, yearOutcomes, outcome)
         };
     }
+
+    // Update the scores that vary with game day, regardless of whether the
+    // player played this game (e.g. stalwart score)
 
     const gamesPlayed = await gameDayService.getGamesPlayed(year, gameDay.id);
 
@@ -313,6 +391,8 @@ async function calculateYearPlayerRecords(
             recordData.stalwart = Math.round(100.0 * recordData.P / gamesPlayed);
         }
     }
+
+    // Calculate the ranks for the set of PlayerRecords
 
     const pointsArray = Object.values(yearPlayerRecords).map(r => r.points);
     pointsArray.sort((a, b) => (b || 0) - (a || 0));
@@ -333,6 +413,8 @@ async function calculateYearPlayerRecords(
         recordData.rank_pub = recordData.pub != null ? pubArray.indexOf(recordData.pub) + 1 : null;
     }
 
+    // Upsert the PlayerRecords and add them to the overall list
+
     for (const recordData of Object.values(yearPlayerRecords)) {
         const playerRecord = await playerRecordService.upsert(recordData as PlayerRecord);
 
@@ -342,6 +424,15 @@ async function calculateYearPlayerRecords(
     }
 }
 
+/**
+ * Calculates the player record for a specific year and game day based on the
+ * provided outcomes.
+ * @param year - The year of the player record.
+ * @param gameDay - The game day for which the player record is calculated.
+ * @param yearOutcomes - The outcomes for the entire year.
+ * @param outcome - The outcome for the specific game day.
+ * @returns A promise that resolves to a partial player record object.
+ */
 async function calculatePlayerRecord(
     year: number,
     gameDay: GameDay,

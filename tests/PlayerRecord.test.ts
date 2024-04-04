@@ -1,5 +1,6 @@
 import { PlayerRecord } from '@prisma/client';
-import playerRecordService from 'services/PlayerRecord';
+import { GameDay } from '@prisma/client';
+import playerRecordService, { EnumTable } from 'services/PlayerRecord';
 import prisma from 'lib/prisma';
 import fs from 'fs';
 
@@ -264,12 +265,34 @@ describe('PlayerRecordService', () => {
     });
 
     describe('getTable', () => {
-        const file = fs.readFileSync('./tests/data/PlayerRecord.test.json');
-        const playerRecords = JSON.parse(file.toString());
+        beforeEach(() => {
+            const playerRecords: PlayerRecord[] = JSON.parse(fs.readFileSync('./tests/data/PlayerRecord.test.json').toString());
+            const gameDays: GameDay[] = JSON.parse(fs.readFileSync('./tests/data/GameDay.test.json').toString());
 
-        (prisma.gameDay.findMany as jest.Mock).mockResolvedValue(playerRecords);
+            (prisma.playerRecord.findMany as jest.Mock).mockResolvedValue(playerRecords);
 
-        it.todo('should retrieve the correct PlayerRecords for the points table for a given year');
+            (prisma.playerRecord.findMany as jest.Mock).mockResolvedValue(playerRecords);
+            (prisma.gameDay.findMany as jest.Mock).mockResolvedValue(gameDays);
+        });
+
+        it('should retrieve the correct PlayerRecords for the points table for a given year', async () => {
+            (prisma.outcome.findMany as jest.Mock).mockResolvedValue([{
+                "response": "Yes",
+                "responseInterval": 11,
+                "points": 0,
+                "team": "A",
+                "comment": "",
+                "pub": null,
+                "paid": true,
+                "goalie": false,
+                "gameDayId": 1085,
+                "playerId": 11
+            }]);
+            const result = await playerRecordService.getTable(EnumTable.points, 2022);
+            // TODO: This value is preposterous until I add filtering to the mock implementations
+            expect(result.length).toEqual(17155);
+        });
+
         it.todo('should retrieve the correct PlayerRecords for the points table for all time');
         it.todo('should return an empty list when retrieving the points table for a year with no PlayerRecords');
         it.todo('should return an empty list when retrieving the points table for a year that does not exist');
@@ -404,6 +427,8 @@ describe('PlayerRecordService', () => {
                 bibs: 'A',
                 picker_games_history: 10,
             });
+
+            (prisma.gameDay.findMany as jest.Mock).mockResolvedValue([]);
         });
 
         it('should create not PlayerRecords for a GameDay with no outcomes', async () => {

@@ -191,6 +191,44 @@ export class OutcomeService {
     }
 
     /**
+     * Retrieves the latest game played in a given year.
+     * @param year - The year for which to retrieve the latest game.
+     * @returns A Promise that resolves to the gameDayId of the latest game
+     * played in the given year, or null if no games were played.
+     * @throws If there was an error while fetching the latest game.
+     */
+    async getLatestGamePlayedByYear(year: number): Promise<number | null> {
+        try {
+            const outcomes = await prisma.outcome.findMany({
+                where: {
+                    points: {
+                        not: null
+                    },
+                    ...(year != 0 ? {
+                        gameDay: {
+                            date: {
+                                gte: new Date(year, 0, 1),
+                                lt: new Date(year + 1, 0, 1)
+                            }
+                        }
+                    } : {}),
+                },
+                orderBy: {
+                    gameDayId: 'desc'
+                },
+                take: 1,
+            });
+            if (outcomes.length === 0) {
+                return null;
+            }
+            return outcomes[0].gameDayId;
+        } catch (error) {
+            log(`Error fetching latest game played by year: ${error}`);
+            throw error;
+        }
+    }
+
+    /**
      * Creates a new outcome.
      * @param data The data for the new outcome.
      * @returns A promise that resolves to the created outcome, or null if an error occurs.

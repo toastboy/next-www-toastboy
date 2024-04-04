@@ -272,6 +272,81 @@ describe('OutcomeService', () => {
         });
     });
 
+    describe('getLatestGamePlayedByYear', () => {
+        const defaultGameDay = {
+            id: 1,
+            game: true,
+            mailSent: null,
+            comment: null,
+            bibs: null,
+            picker_games_history: 10,
+        };
+
+        it('should retrieve the correct latest game played for year 2021', async () => {
+            (prisma.outcome.findMany as jest.Mock).mockResolvedValue([{
+                ...defaultOutcome,
+                gameDayId: 1,
+                points: 0,
+                gameDay: {
+                    ...defaultGameDay,
+                    id: 1,
+                    date: new Date('2021-01-01'),
+                },
+            }]);
+            const result = await outcomeService.getLatestGamePlayedByYear(2021);
+            expect(prisma.outcome.findMany).toHaveBeenCalledWith({
+                where: {
+                    points: {
+                        not: null
+                    },
+                    gameDay: {
+                        date: {
+                            gte: new Date('2021-01-01'),
+                            lt: new Date('2022-01-01'),
+                        },
+                    },
+                },
+                take: 1,
+                orderBy: {
+                    gameDayId: 'desc',
+                },
+            });
+            expect(result).toEqual(1);
+        });
+
+        it('should retrieve the correct latest game played for all time', async () => {
+            (prisma.outcome.findMany as jest.Mock).mockResolvedValue([{
+                ...defaultOutcome,
+                gameDayId: 3,
+                points: 0,
+                gameDay: {
+                    ...defaultGameDay,
+                    id: 3,
+                    date: new Date('2023-01-01'),
+                },
+            }]);
+            const result = await outcomeService.getLatestGamePlayedByYear(0);
+            expect(prisma.outcome.findMany).toHaveBeenCalledWith({
+                where: {
+                    points: {
+                        not: null
+                    },
+                },
+                take: 1,
+                orderBy: {
+                    gameDayId: 'desc',
+                },
+            });
+            expect(result).toEqual(3);
+        });
+
+        it('should return null for year 9999', async () => {
+            (prisma.outcome.findMany as jest.Mock).mockResolvedValue([]);
+            const result = await outcomeService.getLatestGamePlayedByYear(9999);
+            expect(result).toBeNull();
+        });
+    });
+
     describe('create', () => {
         it('should create an Outcome', async () => {
             const result = await outcomeService.create(defaultOutcome);

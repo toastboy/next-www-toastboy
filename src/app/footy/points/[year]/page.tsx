@@ -1,0 +1,18 @@
+import TablePoints from 'components/TablePoints';
+
+export default async function Page({
+    params,
+}: {
+    params: { year: string },
+}): Promise<JSX.Element> {
+    const year = parseInt(params.year);
+
+    return (
+        <div>
+            <p className="text-2xl font-bold">Top 5 players</p>
+            <TablePoints year={year} take={5} />
+            <p className="text-2xl font-bold">All players</p>
+            <TablePoints year={year} />
+        </div>
+    );
+}

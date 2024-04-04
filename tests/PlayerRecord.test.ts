@@ -266,13 +266,23 @@ describe('PlayerRecordService', () => {
 
     describe('getTable', () => {
         beforeEach(() => {
-            const playerRecords: PlayerRecord[] = JSON.parse(fs.readFileSync('./tests/data/PlayerRecord.test.json').toString());
-            const gameDays: GameDay[] = JSON.parse(fs.readFileSync('./tests/data/GameDay.test.json').toString());
+            const playerRecordList: PlayerRecord[] = JSON.parse(fs.readFileSync('./tests/data/PlayerRecord.test.json').toString());
+            const gameDayList: GameDay[] = JSON.parse(fs.readFileSync('./tests/data/GameDay.test.json').toString());
 
-            (prisma.playerRecord.findMany as jest.Mock).mockResolvedValue(playerRecords);
+            (prisma.playerRecord.findMany as jest.Mock).mockImplementation((args: {
+                where: {
+                    gameDayId: number,
+                    year: number,
+                },
+                take: number
+            }) => {
+                const playerRecords = playerRecordList.filter((playerRecord) =>
+                    playerRecord.year === args.where.year &&
+                    playerRecord.gameDayId == args.where.gameDayId);
+                return Promise.resolve(playerRecords);
+            });
 
-            (prisma.playerRecord.findMany as jest.Mock).mockResolvedValue(playerRecords);
-            (prisma.gameDay.findMany as jest.Mock).mockResolvedValue(gameDays);
+            (prisma.gameDay.findMany as jest.Mock).mockResolvedValue(gameDayList);
         });
 
         it('should retrieve the correct PlayerRecords for the points table for a given year', async () => {
@@ -289,15 +299,48 @@ describe('PlayerRecordService', () => {
                 "playerId": 11
             }]);
             const result = await playerRecordService.getTable(EnumTable.points, 2022);
-            // TODO: This value is preposterous until I add filtering to the mock implementations
-            expect(result.length).toEqual(17155);
+            expect(result.length).toEqual(22);
         });
 
-        it.todo('should retrieve the correct PlayerRecords for the points table for all time');
-        it.todo('should return an empty list when retrieving the points table for a year with no PlayerRecords');
-        it.todo('should return an empty list when retrieving the points table for a year that does not exist');
-        it.todo('should return an empty list when retrieving the points table for a year with no GameDays');
-        it.todo('should return an empty list when retrieving the points table for a year with no Outcomes');
+        it('should retrieve the correct PlayerRecords for the points table for all time', async () => {
+            (prisma.outcome.findMany as jest.Mock).mockResolvedValue([{
+                "response": "Yes",
+                "responseInterval": 35,
+                "points": null,
+                "team": null,
+                "comment": "",
+                "pub": null,
+                "paid": null,
+                "goalie": false,
+                "gameDayId": 1153,
+                "playerId": 219
+            }]);
+            const result = await playerRecordService.getTable(EnumTable.points, 0);
+            expect(result.length).toEqual(195);
+        });
+
+        it('should return an empty list when retrieving the points table for a year with no PlayerRecords', async () => {
+            (prisma.outcome.findMany as jest.Mock).mockResolvedValue([{
+                "response": "Yes",
+                "responseInterval": 35,
+                "points": null,
+                "team": null,
+                "comment": "",
+                "pub": null,
+                "paid": null,
+                "goalie": false,
+                "gameDayId": 500,
+                "playerId": 219
+            }]);
+            const result = await playerRecordService.getTable(EnumTable.points, 2010);
+            expect(result.length).toEqual(0);
+        });
+
+        it('should return an empty list when retrieving the points table for a year that does not exist', async () => {
+            (prisma.outcome.findMany as jest.Mock).mockResolvedValue([]);
+            const result = await playerRecordService.getTable(EnumTable.points, 1984);
+            expect(result.length).toEqual(0);
+        });
     });
 
     describe('create', () => {

@@ -5,5 +5,5 @@ export default async function Page({
 }: {
     params: { year: string },
 }): Promise<JSX.Element> {
-    permanentRedirect(`/footy/table/points/${params.year}`);
+    permanentRedirect(`/footy/table/pub/${params.year}`);
 }

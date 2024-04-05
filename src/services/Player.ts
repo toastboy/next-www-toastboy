@@ -86,6 +86,30 @@ class PlayerService {
     }
 
     /**
+     * Retrieves the ID of a player based on the provided ID or login. If the
+     * input is a valid number, it retrieves the player by ID. If the input is a
+     * string, it retrieves the player by login.
+     * @param idOrLogin - The ID or login of the player.
+     * @returns A Promise that resolves to the player's ID if found, or null if
+     * not found.
+     * @throws If there is an error retrieving the player's ID.
+     */
+    async getId(idOrLogin: string): Promise<number | null> {
+        try {
+            if (!isNaN(Number(idOrLogin))) {
+                const player = await this.getById(Number(idOrLogin));
+                return player ? player.id : null;
+            } else {
+                const player = await this.getByLogin(idOrLogin);
+                return player ? player.id : null;
+            }
+        } catch (error) {
+            log(`Error getting Player id: ${error}`);
+            throw error;
+        }
+    }
+
+    /**
      * Get all players matching the given criteria
      * @param active Only return active players
      * @returns A promise that resolves to all players

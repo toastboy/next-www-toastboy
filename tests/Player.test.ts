@@ -215,6 +215,47 @@ describe('PlayerService', () => {
         });
     });
 
+    describe('getId with id', () => {
+        beforeEach(() => {
+            (prisma.player.findUnique as jest.Mock).mockImplementation((args: {
+                where: { id: number }
+            }) => {
+                const player = playerList.find((player) => player.id === args.where.id);
+                return Promise.resolve(player ? player : null);
+            });
+        });
+
+        it('should retrieve the correct player login with id 1', async () => {
+            const result = await playerService.getId("1");
+            expect(result).toEqual(1);
+        });
+        it('should return null for id 107', async () => {
+            const result = await playerService.getId("107");
+            expect(result).toBeNull();
+        });
+    });
+
+    describe('getId with login', () => {
+        beforeEach(() => {
+            (prisma.player.findUnique as jest.Mock).mockImplementation((args: {
+                where: { login: string }
+            }) => {
+                const player = playerList.find((player) => player.login === args.where.login);
+                return Promise.resolve(player ? player : null);
+            });
+        });
+
+        it('should retrieve the correct player login with login "garyp"', async () => {
+            const result = await playerService.getId("garyp");
+            expect(result).toEqual(1);
+        });
+
+        it('should return null for login "doofus"', async () => {
+            const result = await playerService.getId("doofus");
+            expect(result).toBeNull();
+        });
+    });
+
     describe('getAll', () => {
         it('should return the correct, complete list of 50 active players', async () => {
             const result = await playerService.getAll();

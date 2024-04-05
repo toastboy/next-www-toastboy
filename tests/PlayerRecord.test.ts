@@ -308,7 +308,7 @@ describe('PlayerRecordService', () => {
         });
 
         it('should return an empty list when retrieving the points table for a year that does not exist', async () => {
-            (prisma.outcome.findMany as jest.Mock).mockResolvedValue([]);
+            (prisma.playerRecord.findFirst as jest.Mock).mockResolvedValue(null);
             const result = await playerRecordService.getTable(EnumTable.points, 1984);
             expect(result.length).toEqual(0);
         });

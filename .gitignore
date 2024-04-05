@@ -46,9 +46,6 @@ terraform/.terraform*
 terraform/terraform*
 terraform.*
 
-# Don't track the seed data files: private information in there
-/prisma/data/
-
 # Build log
 build.txt
 
@@ -57,3 +54,6 @@ prisma/fetch.js
 
 # The footy live site backup file for importing
 footy.sql.gz
+
+# The live site links script output
+src/lib/crawllivesite/livesitelinks.json

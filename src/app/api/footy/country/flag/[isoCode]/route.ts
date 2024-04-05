@@ -9,7 +9,7 @@ export async function generateStaticParams() {
     return countries ? countries.map((country) => {
         return {
             params: {
-                isoCode: country.isoCode
+                isoCode: country.isoCode,
             },
         };
     }) : null;
@@ -40,7 +40,7 @@ export async function GET(
         return new Response(imageBuffer, {
             status: 200,
             headers: {
-                'Content-Type': 'image/png'
+                'Content-Type': 'image/png',
             },
         });
     } catch (error) {

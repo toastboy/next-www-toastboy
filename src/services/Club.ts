@@ -29,7 +29,7 @@ export class ClubService {
         try {
             return prisma.club.findUnique({
                 where: {
-                    id: id
+                    id: id,
                 },
             });
         } catch (error) {
@@ -61,7 +61,7 @@ export class ClubService {
     async create(data: Club): Promise<Club | null> {
         try {
             return await prisma.club.create({
-                data: this.validate(data)
+                data: this.validate(data),
             });
         } catch (error) {
             log(`Error creating club: ${error}`);
@@ -79,7 +79,7 @@ export class ClubService {
         try {
             return await prisma.club.upsert({
                 where: {
-                    id: data.id
+                    id: data.id,
                 },
                 update: this.validate(data),
                 create: this.validate(data),
@@ -99,7 +99,7 @@ export class ClubService {
         try {
             await prisma.club.delete({
                 where: {
-                    id: id
+                    id: id,
                 },
             });
         } catch (error) {

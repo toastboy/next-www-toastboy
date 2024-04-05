@@ -34,7 +34,7 @@ class PlayerService {
         try {
             return prisma.player.findUnique({
                 where: {
-                    id: id
+                    id: id,
                 },
             });
         } catch (error) {
@@ -53,7 +53,7 @@ class PlayerService {
         try {
             return prisma.player.findUnique({
                 where: {
-                    login: login
+                    login: login,
                 },
             });
         } catch (error) {
@@ -178,15 +178,15 @@ class PlayerService {
                     gameDayId: gameDayId !== 0 ? { lt: gameDayId } : {},
                     playerId: playerId,
                     points: {
-                        not: null
-                    }
+                        not: null,
+                    },
                 },
                 orderBy: {
-                    gameDayId: 'desc'
+                    gameDayId: 'desc',
                 },
                 take: history,
                 include: {
-                    gameDay: true
+                    gameDay: true,
                 },
             });
         } catch (error) {
@@ -206,15 +206,15 @@ class PlayerService {
                 where: {
                     playerId: playerId,
                     points: {
-                        not: null
-                    }
+                        not: null,
+                    },
                 },
                 orderBy: {
-                    gameDayId: 'desc'
+                    gameDayId: 'desc',
                 },
                 take: 1,
                 include: {
-                    gameDay: true
+                    gameDay: true,
                 },
             });
         } catch (error) {
@@ -238,7 +238,7 @@ class PlayerService {
                     playerId: playerId,
                 },
                 include: {
-                    gameDay: true
+                    gameDay: true,
                 },
             });
             const years = outcomes.map(o => o.gameDay.date.getFullYear());
@@ -259,7 +259,7 @@ class PlayerService {
     async create(data: Player): Promise<Player> {
         try {
             return await prisma.player.create({
-                data: this.validate(data)
+                data: this.validate(data),
             });
         } catch (error) {
             log(`Error creating Player: ${error}`);

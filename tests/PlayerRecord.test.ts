@@ -80,7 +80,7 @@ describe('PlayerRecordService', () => {
             const playerRecord = playerRecordList.find((playerRecord) =>
                 playerRecord.playerId === args.where.playerId_year_gameDayId.playerId &&
                 playerRecord.year === args.where.playerId_year_gameDayId.year &&
-                playerRecord.gameDayId === args.where.playerId_year_gameDayId.gameDayId
+                playerRecord.gameDayId === args.where.playerId_year_gameDayId.gameDayId,
             );
             return Promise.resolve(playerRecord ? playerRecord : null);
         });
@@ -97,7 +97,7 @@ describe('PlayerRecordService', () => {
             return Promise.resolve(playerRecordList.filter((playerRecord) =>
                 playerRecord.playerId === args.where.playerId &&
                 playerRecord.year === args.where.year &&
-                playerRecord.gameDayId < args.where.gameDayId).slice(0, args.take
+                playerRecord.gameDayId < args.where.gameDayId).slice(0, args.take,
                 ));
         });
 
@@ -105,7 +105,7 @@ describe('PlayerRecordService', () => {
             const playerRecord = playerRecordList.find((playerRecord) =>
                 playerRecord.playerId === args.data.playerId &&
                 playerRecord.year === args.data.year &&
-                playerRecord.gameDayId === args.data.gameDayId
+                playerRecord.gameDayId === args.data.gameDayId,
             );
 
             if (playerRecord) {
@@ -130,7 +130,7 @@ describe('PlayerRecordService', () => {
             const playerRecord = playerRecordList.find((playerRecord) =>
                 playerRecord.playerId === args.where.playerId_year_gameDayId.playerId &&
                 playerRecord.year === args.where.playerId_year_gameDayId.year &&
-                playerRecord.gameDayId === args.where.playerId_year_gameDayId.gameDayId
+                playerRecord.gameDayId === args.where.playerId_year_gameDayId.gameDayId,
             );
 
             if (playerRecord) {
@@ -153,7 +153,7 @@ describe('PlayerRecordService', () => {
             const playerRecord = playerRecordList.find((playerRecord) =>
                 playerRecord.playerId === args.where.playerId_year_gameDayId.playerId &&
                 playerRecord.year === args.where.playerId_year_gameDayId.year &&
-                playerRecord.gameDayId === args.where.playerId_year_gameDayId.gameDayId
+                playerRecord.gameDayId === args.where.playerId_year_gameDayId.gameDayId,
             );
             return Promise.resolve(playerRecord ? playerRecord : null);
         });
@@ -194,7 +194,7 @@ describe('PlayerRecordService', () => {
                 for (const playerRecord of result) {
                     expect(playerRecord).toEqual({
                         ...defaultPlayerRecord,
-                        gameDayId: expect.any(Number)
+                        gameDayId: expect.any(Number),
                     } as PlayerRecord);
                 }
             }
@@ -286,52 +286,23 @@ describe('PlayerRecordService', () => {
         });
 
         it('should retrieve the correct PlayerRecords for the points table for a given year', async () => {
-            (prisma.outcome.findMany as jest.Mock).mockResolvedValue([{
-                "response": "Yes",
-                "responseInterval": 11,
-                "points": 0,
-                "team": "A",
-                "comment": "",
-                "pub": null,
-                "paid": true,
-                "goalie": false,
-                "gameDayId": 1085,
-                "playerId": 11
-            }]);
+            (prisma.playerRecord.findFirst as jest.Mock).mockResolvedValue({
+                "gameDayId": 1087,
+            });
             const result = await playerRecordService.getTable(EnumTable.points, 2022);
             expect(result.length).toEqual(22);
         });
 
         it('should retrieve the correct PlayerRecords for the points table for all time', async () => {
-            (prisma.outcome.findMany as jest.Mock).mockResolvedValue([{
-                "response": "Yes",
-                "responseInterval": 35,
-                "points": null,
-                "team": null,
-                "comment": "",
-                "pub": null,
-                "paid": null,
-                "goalie": false,
+            (prisma.playerRecord.findFirst as jest.Mock).mockResolvedValue({
                 "gameDayId": 1153,
-                "playerId": 219
-            }]);
+            });
             const result = await playerRecordService.getTable(EnumTable.points, 0);
             expect(result.length).toEqual(195);
         });
 
         it('should return an empty list when retrieving the points table for a year with no PlayerRecords', async () => {
-            (prisma.outcome.findMany as jest.Mock).mockResolvedValue([{
-                "response": "Yes",
-                "responseInterval": 35,
-                "points": null,
-                "team": null,
-                "comment": "",
-                "pub": null,
-                "paid": null,
-                "goalie": false,
-                "gameDayId": 500,
-                "playerId": 219
-            }]);
+            (prisma.playerRecord.findFirst as jest.Mock).mockResolvedValue({});
             const result = await playerRecordService.getTable(EnumTable.points, 2010);
             expect(result.length).toEqual(0);
         });
@@ -501,7 +472,7 @@ describe('PlayerRecordService', () => {
                     comment: 'I heart footy',
                     bibs: 'A',
                     picker_games_history: 10,
-                }))
+                })),
             );
 
             (prisma.gameDay.count as jest.Mock).mockResolvedValue(1);
@@ -517,7 +488,7 @@ describe('PlayerRecordService', () => {
                     pub: index % 2 ? 1 : null,
                     paid: false,
                     goalie: false,
-                }))
+                })),
             );
         });
 

@@ -35,7 +35,7 @@ export class GameChatService {
         try {
             return prisma.gameChat.findUnique({
                 where: {
-                    id: id
+                    id: id,
                 },
             });
         } catch (error) {
@@ -67,7 +67,7 @@ export class GameChatService {
     async create(data: GameChat): Promise<GameChat | null> {
         try {
             return await prisma.gameChat.create({
-                data: this.validate(data)
+                data: this.validate(data),
             });
         } catch (error) {
             log(`Error creating gameChat: ${error}`);
@@ -85,7 +85,7 @@ export class GameChatService {
         try {
             return await prisma.gameChat.upsert({
                 where: {
-                    id: data.id
+                    id: data.id,
                 },
                 update: this.validate(data),
                 create: this.validate(data),
@@ -105,7 +105,7 @@ export class GameChatService {
         try {
             await prisma.gameChat.delete({
                 where: {
-                    id: id
+                    id: id,
                 },
             });
         } catch (error) {

@@ -35,8 +35,8 @@ export class CountrySupporterService {
                 where: {
                     playerId_countryISOcode: {
                         playerId: playerId,
-                        countryISOcode: countryISOcode
-                    }
+                        countryISOcode: countryISOcode,
+                    },
                 },
             });
         } catch (error) {
@@ -69,7 +69,7 @@ export class CountrySupporterService {
         try {
             return prisma.countrySupporter.findMany({
                 where: {
-                    playerId: playerId
+                    playerId: playerId,
                 },
             });
         } catch (error) {
@@ -88,7 +88,7 @@ export class CountrySupporterService {
         try {
             return prisma.countrySupporter.findMany({
                 where: {
-                    countryISOcode: countryISOcode
+                    countryISOcode: countryISOcode,
                 },
             });
         } catch (error) {
@@ -106,7 +106,7 @@ export class CountrySupporterService {
     async create(data: CountrySupporter): Promise<CountrySupporter | null> {
         try {
             return await prisma.countrySupporter.create({
-                data: this.validate(data)
+                data: this.validate(data),
             });
         } catch (error) {
             log(`Error creating CountrySupporter: ${error}`);
@@ -126,8 +126,8 @@ export class CountrySupporterService {
                 where: {
                     playerId_countryISOcode: {
                         playerId: data.playerId,
-                        countryISOcode: data.countryISOcode
-                    }
+                        countryISOcode: data.countryISOcode,
+                    },
                 },
                 update: this.validate(data),
                 create: this.validate(data),
@@ -151,8 +151,8 @@ export class CountrySupporterService {
                 where: {
                     playerId_countryISOcode: {
                         playerId: playerId,
-                        countryISOcode: countryISOcode
-                    }
+                        countryISOcode: countryISOcode,
+                    },
                 },
             });
         } catch (error) {

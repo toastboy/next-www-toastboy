@@ -34,7 +34,7 @@ export class GameDayService {
         try {
             return prisma.gameDay.findUnique({
                 where: {
-                    id: id
+                    id: id,
                 },
             });
         } catch (error) {
@@ -74,14 +74,14 @@ export class GameDayService {
                     ...(year !== 0 ? {
                         date: {
                             gte: new Date(year, 0, 1),
-                            lt: new Date(year + 1, 0, 1)
+                            lt: new Date(year + 1, 0, 1),
                         },
                     } : {}),
                     ...(untilGameDayId ? {
                         id: {
-                            lte: untilGameDayId
+                            lte: untilGameDayId,
                         },
-                    } : {})
+                    } : {}),
                 },
             });
         } catch (error) {
@@ -106,16 +106,16 @@ export class GameDayService {
                             ...(year !== 0 ? {
                                 date: {
                                     gte: new Date(year, 0, 1),
-                                    lt: new Date(year + 1, 0, 1)
+                                    lt: new Date(year + 1, 0, 1),
                                 },
-                            } : {})
+                            } : {}),
                         },
                         {
                             date: {
-                                gt: new Date()
-                            }
-                        }
-                    ]
+                                gt: new Date(),
+                            },
+                        },
+                    ],
                 },
             });
         } catch (error) {
@@ -160,7 +160,7 @@ export class GameDayService {
     async create(data: GameDay): Promise<GameDay | null> {
         try {
             return await prisma.gameDay.create({
-                data: this.validate(data)
+                data: this.validate(data),
             });
         } catch (error) {
             log(`Error creating GameDay: ${error}`);
@@ -178,7 +178,7 @@ export class GameDayService {
         try {
             return await prisma.gameDay.upsert({
                 where: {
-                    id: data.id
+                    id: data.id,
                 },
                 update: this.validate(data),
                 create: this.validate(data),
@@ -198,7 +198,7 @@ export class GameDayService {
         try {
             await prisma.gameDay.delete({
                 where: {
-                    id: id
+                    id: id,
                 },
             });
         } catch (error) {

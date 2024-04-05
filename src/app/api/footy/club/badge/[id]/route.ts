@@ -8,7 +8,7 @@ export async function generateStaticParams() {
     return clubs ? clubs.map((club) => {
         return {
             params: {
-                id: club.id
+                id: club.id,
             },
         };
     }) : null;
@@ -38,7 +38,7 @@ export async function GET(
         return new Response(imageBuffer, {
             status: 200,
             headers: {
-                'Content-Type': 'image/png'
+                'Content-Type': 'image/png',
             },
         });
     } catch (error) {

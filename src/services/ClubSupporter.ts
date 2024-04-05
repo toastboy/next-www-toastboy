@@ -35,8 +35,8 @@ export class ClubSupporterService {
                 where: {
                     playerId_clubId: {
                         playerId: playerId,
-                        clubId: clubId
-                    }
+                        clubId: clubId,
+                    },
                 },
             });
         } catch (error) {
@@ -69,7 +69,7 @@ export class ClubSupporterService {
         try {
             return prisma.clubSupporter.findMany({
                 where: {
-                    playerId: playerId
+                    playerId: playerId,
                 },
             });
         } catch (error) {
@@ -88,7 +88,7 @@ export class ClubSupporterService {
         try {
             return prisma.clubSupporter.findMany({
                 where: {
-                    clubId: clubId
+                    clubId: clubId,
                 },
             });
         } catch (error) {
@@ -106,7 +106,7 @@ export class ClubSupporterService {
     async create(data: ClubSupporter): Promise<ClubSupporter | null> {
         try {
             return await prisma.clubSupporter.create({
-                data: this.validate(data)
+                data: this.validate(data),
             });
         } catch (error) {
             log(`Error creating ClubSupporter: ${error}`);
@@ -126,8 +126,8 @@ export class ClubSupporterService {
                 where: {
                     playerId_clubId: {
                         playerId: data.playerId,
-                        clubId: data.clubId
-                    }
+                        clubId: data.clubId,
+                    },
                 },
                 update: this.validate(data),
                 create: this.validate(data),
@@ -151,8 +151,8 @@ export class ClubSupporterService {
                 where: {
                     playerId_clubId: {
                         playerId: playerId,
-                        clubId: clubId
-                    }
+                        clubId: clubId,
+                    },
                 },
             });
         } catch (error) {

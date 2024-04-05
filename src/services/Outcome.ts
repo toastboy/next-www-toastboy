@@ -53,7 +53,7 @@ export class OutcomeService {
                     gameDayId_playerId: {
                         gameDayId: gameDayId,
                         playerId: playerId,
-                    }
+                    },
                 },
             });
         } catch (error) {
@@ -96,15 +96,15 @@ export class OutcomeService {
                             lt: new Date(year + 1, 0, 1),
                         } : {},
                         id: untilGameDay ? {
-                            lte: untilGameDay
+                            lte: untilGameDay,
                         } : {},
                     },
                 },
                 orderBy: {
-                    gameDayId: 'desc'
+                    gameDayId: 'desc',
                 },
                 include: {
-                    gameDay: true
+                    gameDay: true,
                 },
             });
         } catch (error) {
@@ -123,7 +123,7 @@ export class OutcomeService {
         try {
             return prisma.outcome.findMany({
                 where: {
-                    gameDayId: gameDayId
+                    gameDayId: gameDayId,
                 },
             });
         } catch (error) {
@@ -142,7 +142,7 @@ export class OutcomeService {
         try {
             return prisma.outcome.findMany({
                 where: {
-                    playerId: playerId
+                    playerId: playerId,
                 },
             });
         } catch (error) {
@@ -167,21 +167,21 @@ export class OutcomeService {
                 where: {
                     playerId: playerId,
                     points: {
-                        not: null
+                        not: null,
                     },
                     gameDay: {
                         ...(year !== 0 ? {
                             date: {
                                 gte: new Date(year, 0, 1),
-                                lt: new Date(year + 1, 0, 1)
+                                lt: new Date(year + 1, 0, 1),
                             },
                         } : {}),
                         ...(untilGameDayId ? {
                             id: {
-                                lte: untilGameDayId
+                                lte: untilGameDayId,
                             },
-                        } : {})
-                    }
+                        } : {}),
+                    },
                 },
             });
         } catch (error) {
@@ -202,19 +202,19 @@ export class OutcomeService {
             const outcomes = await prisma.outcome.findMany({
                 where: {
                     points: {
-                        not: null
+                        not: null,
                     },
                     ...(year != 0 ? {
                         gameDay: {
                             date: {
                                 gte: new Date(year, 0, 1),
-                                lt: new Date(year + 1, 0, 1)
-                            }
-                        }
+                                lt: new Date(year + 1, 0, 1),
+                            },
+                        },
                     } : {}),
                 },
                 orderBy: {
-                    gameDayId: 'desc'
+                    gameDayId: 'desc',
                 },
                 take: 1,
             });
@@ -237,7 +237,7 @@ export class OutcomeService {
     async create(data: Outcome): Promise<Outcome | null> {
         try {
             return await prisma.outcome.create({
-                data: this.validate(data)
+                data: this.validate(data),
             });
         } catch (error) {
             log(`Error creating outcome: ${error}`);
@@ -258,7 +258,7 @@ export class OutcomeService {
                     gameDayId_playerId: {
                         gameDayId: data.gameDayId,
                         playerId: data.playerId,
-                    }
+                    },
                 },
                 update: this.validate(data),
                 create: this.validate(data),
@@ -283,7 +283,7 @@ export class OutcomeService {
                     gameDayId_playerId: {
                         gameDayId: gameDayId,
                         playerId: playerId,
-                    }
+                    },
                 },
             });
         } catch (error) {

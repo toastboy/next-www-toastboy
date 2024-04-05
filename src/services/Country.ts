@@ -29,7 +29,7 @@ export class CountryService {
         try {
             return prisma.country.findUnique({
                 where: {
-                    isoCode: isoCode
+                    isoCode: isoCode,
                 },
             });
         } catch (error) {
@@ -61,7 +61,7 @@ export class CountryService {
     async create(data: Country): Promise<Country | null> {
         try {
             return await prisma.country.create({
-                data: this.validate(data)
+                data: this.validate(data),
             });
         } catch (error) {
             log(`Error creating country: ${error}`);
@@ -79,7 +79,7 @@ export class CountryService {
         try {
             return await prisma.country.upsert({
                 where: {
-                    isoCode: data.isoCode
+                    isoCode: data.isoCode,
                 },
                 update: this.validate(data),
                 create: this.validate(data),
@@ -99,7 +99,7 @@ export class CountryService {
         try {
             await prisma.country.delete({
                 where: {
-                    isoCode: isoCode
+                    isoCode: isoCode,
                 },
             });
         } catch (error) {

@@ -103,7 +103,7 @@ export class PlayerRecordService {
                         playerId: playerId,
                         year: year,
                         gameDayId: gameDayId,
-                    }
+                    },
                 },
             });
         } catch (error) {
@@ -136,7 +136,7 @@ export class PlayerRecordService {
         try {
             return prisma.playerRecord.findMany({
                 where: {
-                    gameDayId: gameDayId
+                    gameDayId: gameDayId,
                 },
             });
         } catch (error) {
@@ -155,7 +155,7 @@ export class PlayerRecordService {
         try {
             return prisma.playerRecord.findMany({
                 where: {
-                    playerId: playerId
+                    playerId: playerId,
                 },
             });
         } catch (error) {
@@ -174,30 +174,42 @@ export class PlayerRecordService {
      */
     async getTable(table: EnumTable, year: number, take?: number): Promise<PlayerRecordWithPlayer[]> {
         try {
-            // TODO: Last game played isn't the right thing for pub or speedy
-            const gameDayId = await outcomeService.getLatestGamePlayedByYear(year);
-            if (!gameDayId) {
+            const tableRecord = await prisma.playerRecord.findFirst({
+                where: {
+                    year: year,
+                    [table]: {
+                        not: null,
+                    },
+                },
+                orderBy: {
+                    gameDayId: 'desc',
+                },
+                select: {
+                    gameDayId: true,
+                },
+            });
+            if (!tableRecord) {
                 return [];
             }
 
             // TODO: Some tables have extra rules, like the 10 game minimum for averages
-            // TODO: I need to sort by rank because sometimes a lower score is better
             // TODO: Averages need to be rounded to 3 decimal places
+            const rank = `rank_${table}`;
             return prisma.playerRecord.findMany({
                 where: {
-                    gameDayId: gameDayId,
+                    gameDayId: tableRecord.gameDayId,
                     year: year,
                     [table]: {
                         not: null,
-                    }
+                    },
                 },
                 orderBy: {
-                    [table]: 'desc'
+                    [rank]: 'asc',
                 },
                 include: {
-                    player: true
+                    player: true,
                 },
-                take: take
+                take: take,
             });
         } catch (error) {
             log(`Error fetching playerRecords for table: ${error}`);
@@ -215,7 +227,7 @@ export class PlayerRecordService {
     async create(data: PlayerRecord): Promise<PlayerRecord | null> {
         try {
             return await prisma.playerRecord.create({
-                data: this.validate(data)
+                data: this.validate(data),
             });
         } catch (error) {
             log(`Error creating playerRecord: ${error}`);
@@ -238,7 +250,7 @@ export class PlayerRecordService {
                         playerId: data.playerId,
                         year: data.year,
                         gameDayId: data.gameDayId,
-                    }
+                    },
                 },
                 update: this.validate(data),
                 create: this.validate(data),
@@ -292,7 +304,7 @@ export class PlayerRecordService {
                         yearPlayerRecords,
                         gameDay,
                         gameDayOutcomes,
-                        playerRecords
+                        playerRecords,
                     );
                     await calculateYearPlayerRecords(
                         0,
@@ -300,7 +312,7 @@ export class PlayerRecordService {
                         allTimePlayerRecords,
                         gameDay,
                         gameDayOutcomes,
-                        playerRecords
+                        playerRecords,
                     );
                 }
             }
@@ -328,7 +340,7 @@ export class PlayerRecordService {
                         playerId: playerId,
                         year: year,
                         gameDayId: gameDayId,
-                    }
+                    },
                 },
             });
         } catch (error) {
@@ -371,7 +383,7 @@ async function calculateYearPlayerRecords(
     yearPlayerRecords: Record<number, Partial<PlayerRecord>>,
     gameDay: GameDay,
     gameDayOutcomes: Outcome[],
-    playerRecords: PlayerRecord[]
+    playerRecords: PlayerRecord[],
 ) {
     // Start with a list of PlayerRecords, including those for anyone with any
     // standing this year. For each one with an outome this game day, add or
@@ -380,7 +392,7 @@ async function calculateYearPlayerRecords(
     for (const outcome of gameDayOutcomes) {
         yearPlayerRecords[outcome.playerId] = {
             ...yearPlayerRecords[outcome.playerId],
-            ...await calculatePlayerRecord(year, gameDay, yearOutcomes, outcome)
+            ...await calculatePlayerRecord(year, gameDay, yearOutcomes, outcome),
         };
     }
 
@@ -441,7 +453,7 @@ async function calculatePlayerRecord(
     year: number,
     gameDay: GameDay,
     yearOutcomes: Outcome[],
-    outcome: Outcome
+    outcome: Outcome,
 ): Promise<Partial<PlayerRecord>> {
     const playerYearOutcomes = yearOutcomes.filter(o => o.playerId === outcome.playerId &&
         o.gameDayId <= gameDay.id);
@@ -470,7 +482,7 @@ async function calculatePlayerRecord(
     const playerYearTimedResponseOutcomes = playerYearRespondedOutcomes.filter(o => o.responseInterval != null);
     if (playerYearTimedResponseOutcomes.length > 0) {
         data.speedy = playerYearTimedResponseOutcomes.reduce((acc, o) =>
-            acc + (o.responseInterval != null ? o.responseInterval : 0), 0
+            acc + (o.responseInterval != null ? o.responseInterval : 0), 0,
         ) / playerYearTimedResponseOutcomes.length;
     }
 

@@ -19,7 +19,7 @@ async function writeTableToJSONFile<T>(
     fileName: string,
     prismaModel: {
         findMany: () => Prisma.PrismaPromise<T[]>;
-    }
+    },
 ) {
     console.log(`Writing ${fileName}...`);
     const data = await prismaModel.findMany();
@@ -105,7 +105,7 @@ async function importBackup(): Promise<void> {
         const credentials = new ClientSecretCredential(tenantId, clientId, clientSecret);
         const blobServiceClient = new BlobServiceClient(
             `https://${storageAccountName}.blob.core.windows.net`,
-            credentials
+            credentials,
         );
 
         const containerClient = blobServiceClient.getContainerClient(containerName);

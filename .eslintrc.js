@@ -51,5 +51,15 @@ module.exports = {
                 objectLiteralTypeAssertions: 'allow-as-parameter',
             },
         ],
+
+        // Always have dangling commas at the end of multiline lists so
+        // insertion, sorting etc. doesn't cause an unnecessary diff
+        "comma-dangle": ["error", {
+            "arrays": "always-multiline",
+            "objects": "always-multiline",
+            "imports": "always-multiline",
+            "exports": "always-multiline",
+            "functions": "always-multiline"
+        }],
     }
 };

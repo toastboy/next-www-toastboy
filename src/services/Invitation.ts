@@ -35,7 +35,7 @@ export class InvitationService {
         try {
             return prisma.invitation.findUnique({
                 where: {
-                    uuid: uuid
+                    uuid: uuid,
                 },
             });
         } catch (error) {
@@ -67,7 +67,7 @@ export class InvitationService {
     async create(data: Invitation): Promise<Invitation | null> {
         try {
             return await prisma.invitation.create({
-                data: this.validate(data)
+                data: this.validate(data),
             });
         } catch (error) {
             log(`Error creating Invitation: ${error}`);
@@ -85,7 +85,7 @@ export class InvitationService {
         try {
             return await prisma.invitation.upsert({
                 where: {
-                    uuid: data.uuid
+                    uuid: data.uuid,
                 },
                 update: this.validate(data),
                 create: this.validate(data),
@@ -105,7 +105,7 @@ export class InvitationService {
         try {
             await prisma.invitation.delete({
                 where: {
-                    uuid: uuid
+                    uuid: uuid,
                 },
             });
         } catch (error) {

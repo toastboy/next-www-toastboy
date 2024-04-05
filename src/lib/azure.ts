@@ -46,7 +46,7 @@ class AzureCache {
         const credentials = new ClientSecretCredential(AzureCache.tenantId, AzureCache.clientId, AzureCache.clientSecret);
         return new BlobServiceClient(
             `https://${AzureCache.storageAccountName}.blob.core.windows.net`,
-            credentials
+            credentials,
         );
     }
 

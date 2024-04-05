@@ -63,8 +63,8 @@ export class ArseService {
                 where: {
                     playerId_raterId: {
                         playerId: playerId,
-                        raterId: raterId
-                    }
+                        raterId: raterId,
+                    },
                 },
             });
         } catch (error) {
@@ -97,7 +97,7 @@ export class ArseService {
         try {
             return prisma.arse.findMany({
                 where: {
-                    playerId: playerId
+                    playerId: playerId,
                 },
             });
         } catch (error) {
@@ -116,7 +116,7 @@ export class ArseService {
         try {
             return prisma.arse.findMany({
                 where: {
-                    raterId: raterId
+                    raterId: raterId,
                 },
             });
         } catch (error) {
@@ -134,7 +134,7 @@ export class ArseService {
     async create(data: Arse): Promise<Arse | null> {
         try {
             return await prisma.arse.create({
-                data: this.validate(data)
+                data: this.validate(data),
             });
         } catch (error) {
             log(`Error creating arse: ${error}`);
@@ -154,8 +154,8 @@ export class ArseService {
                 where: {
                     playerId_raterId: {
                         playerId: data.playerId,
-                        raterId: data.raterId
-                    }
+                        raterId: data.raterId,
+                    },
                 },
                 update: this.validate(data),
                 create: this.validate(data),
@@ -179,8 +179,8 @@ export class ArseService {
                 where: {
                     playerId_raterId: {
                         playerId: playerId,
-                        raterId: raterId
-                    }
+                        raterId: raterId,
+                    },
                 },
             });
         } catch (error) {

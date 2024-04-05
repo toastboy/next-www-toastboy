@@ -37,7 +37,7 @@ export async function GET(
         return new Response(imageBuffer, {
             status: 200,
             headers: {
-                'Content-Type': 'image/jpeg'
+                'Content-Type': 'image/jpeg',
             },
         });
     } catch (error) {

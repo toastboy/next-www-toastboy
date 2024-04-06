@@ -1,5 +1,4 @@
 import { PlayerRecord } from '@prisma/client';
-import { GameDay } from '@prisma/client';
 import playerRecordService, { EnumTable } from 'services/PlayerRecord';
 import prisma from 'lib/prisma';
 import fs from 'fs';
@@ -267,7 +266,6 @@ describe('PlayerRecordService', () => {
     describe('getTable', () => {
         beforeEach(() => {
             const playerRecordList: PlayerRecord[] = JSON.parse(fs.readFileSync('./tests/data/PlayerRecord.test.json').toString());
-            const gameDayList: GameDay[] = JSON.parse(fs.readFileSync('./tests/data/GameDay.test.json').toString());
 
             (prisma.playerRecord.findMany as jest.Mock).mockImplementation((args: {
                 where: {
@@ -281,8 +279,6 @@ describe('PlayerRecordService', () => {
                     playerRecord.gameDayId == args.where.gameDayId);
                 return Promise.resolve(playerRecords);
             });
-
-            (prisma.gameDay.findMany as jest.Mock).mockResolvedValue(gameDayList);
         });
 
         it('should retrieve the correct PlayerRecords for the points table for a given year', async () => {
@@ -290,6 +286,14 @@ describe('PlayerRecordService', () => {
                 "gameDayId": 1087,
             });
             const result = await playerRecordService.getTable(EnumTable.points, 2022);
+            expect(result.length).toEqual(22);
+        });
+
+        it('should retrieve the same PlayerRecords for the points table when qualified is set explicitly for a given year', async () => {
+            (prisma.playerRecord.findFirst as jest.Mock).mockResolvedValue({
+                "gameDayId": 1087,
+            });
+            const result = await playerRecordService.getTable(EnumTable.points, 2022, true);
             expect(result.length).toEqual(22);
         });
 
@@ -311,6 +315,92 @@ describe('PlayerRecordService', () => {
             (prisma.playerRecord.findFirst as jest.Mock).mockResolvedValue(null);
             const result = await playerRecordService.getTable(EnumTable.points, 1984);
             expect(result.length).toEqual(0);
+        });
+    });
+
+    describe('getTable qualified/unqualified averages', () => {
+        beforeEach(() => {
+            const playerRecordList: PlayerRecord[] = JSON.parse(fs.readFileSync('./tests/data/PlayerRecord.test.json').toString());
+
+            (prisma.playerRecord.findMany as jest.Mock).mockImplementation((args: {
+                where: {
+                    gameDayId: number,
+                    year: number,
+                    P: {
+                        gte?: number,
+                        lt?: number,
+                    }
+                },
+                take: number
+            }) => {
+                const playerRecords = playerRecordList.filter((playerRecord) =>
+                    playerRecord.year === args.where.year &&
+                    playerRecord.gameDayId == args.where.gameDayId &&
+                    playerRecord.P &&
+                    (args.where.P.gte ? (playerRecord.P >= 4) : true &&
+                        args.where.P.lt ? (playerRecord.P < 4) : true
+                    ));
+                return Promise.resolve(playerRecords);
+            });
+        });
+
+        it('should retrieve the correct PlayerRecords for the qualified averages table for a given year', async () => {
+            (prisma.playerRecord.findFirst as jest.Mock).mockResolvedValue({
+                "gameDayId": 1087,
+            });
+            const result = await playerRecordService.getTable(EnumTable.averages, 2022, true);
+            expect(result.length).toEqual(12);
+        });
+
+        it('should retrieve the correct PlayerRecords for the unqualified averages table for a given year', async () => {
+            (prisma.playerRecord.findFirst as jest.Mock).mockResolvedValue({
+                "gameDayId": 1087,
+            });
+            const result = await playerRecordService.getTable(EnumTable.averages, 2022, false);
+            expect(result.length).toEqual(6);
+        });
+    });
+
+    describe('getTable qualified/unqualified speedy', () => {
+        beforeEach(() => {
+            const playerRecordList: PlayerRecord[] = JSON.parse(fs.readFileSync('./tests/data/PlayerRecord.test.json').toString());
+
+            (prisma.playerRecord.findMany as jest.Mock).mockImplementation((args: {
+                where: {
+                    gameDayId: number,
+                    year: number,
+                    responses: {
+                        gte?: number,
+                        lt?: number,
+                    }
+                },
+                take: number
+            }) => {
+                const playerRecords = playerRecordList.filter((playerRecord) =>
+                    playerRecord.year === args.where.year &&
+                    playerRecord.gameDayId == args.where.gameDayId &&
+                    playerRecord.responses &&
+                    (args.where.responses.gte ? (playerRecord.responses >= 4) : true &&
+                        args.where.responses.lt ? (playerRecord.responses < 4) : true
+                    ));
+                return Promise.resolve(playerRecords);
+            });
+        });
+
+        it('should retrieve the correct PlayerRecords for the qualified speedy table for a given year', async () => {
+            (prisma.playerRecord.findFirst as jest.Mock).mockResolvedValue({
+                "gameDayId": 1087,
+            });
+            const result = await playerRecordService.getTable(EnumTable.speedy, 2022, true);
+            expect(result.length).toEqual(15);
+        });
+
+        it('should retrieve the correct PlayerRecords for the unqualified speedy table for a given year', async () => {
+            (prisma.playerRecord.findFirst as jest.Mock).mockResolvedValue({
+                "gameDayId": 1087,
+            });
+            const result = await playerRecordService.getTable(EnumTable.speedy, 2022, false);
+            expect(result.length).toEqual(7);
         });
     });
 

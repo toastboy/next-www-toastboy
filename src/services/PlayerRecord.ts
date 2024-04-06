@@ -1,9 +1,9 @@
-import { Prisma } from '@prisma/client';
-import { PlayerRecord, GameDay, Outcome } from '@prisma/client';
-import outcomeService from 'services/Outcome';
-import prisma from 'lib/prisma';
+import { GameDay, Outcome, PlayerRecord, Prisma } from '@prisma/client';
 import debug from 'debug';
-import gameDayService from './GameDay';
+import config from 'lib/config';
+import prisma from 'lib/prisma';
+import outcomeService from 'services/Outcome';
+import gameDayService from 'services/GameDay';
 
 const log = debug('footy:api');
 
@@ -168,12 +168,24 @@ export class PlayerRecordService {
      * Retrieves player records from the specified table for a given year.
      * @param table - The table to retrieve player records from.
      * @param year - The year for which to retrieve player records.
-     * @param take - The maximum number of player records to retrieve (optional).
+     * @param qualified - Flag indicating whether to exclude unqualified rows -
+     * e.g. players who haven't played enough games for the averages table
+     * (optional). If this is not set, all players are included.
+     * @param take - The maximum number of player records to retrieve
+     * (optional).
      * @returns A promise that resolves to an array of PlayerRecord objects.
      * @throws If there is an error while fetching the player records.
      */
-    async getTable(table: EnumTable, year: number, take?: number): Promise<PlayerRecordWithPlayer[]> {
+    async getTable(
+        table: EnumTable,
+        year: number,
+        qualified?: boolean,
+        take?: number,
+    ): Promise<PlayerRecordWithPlayer[]> {
         try {
+            // Get the most recent game day for the year in question with a
+            // record for the specified table
+
             const tableRecord = await prisma.playerRecord.findFirst({
                 where: {
                     year: year,
@@ -192,8 +204,33 @@ export class PlayerRecordService {
                 return [];
             }
 
-            // TODO: Some tables have extra rules, like the 10 game minimum for averages
-            // TODO: Averages need to be rounded to 3 decimal places
+            // Some tables have extra rules, like the 10 game minimum for
+            // averages
+
+            let filter = {};
+            if (qualified != undefined) {
+                switch (table) {
+                    case EnumTable.averages:
+                        filter = {
+                            P: {
+                                [qualified ? "gte" : "lt"]: config.minGamesForAveragesTable,
+                            },
+                        };
+                        break;
+                    case EnumTable.speedy:
+                        filter = {
+                            responses: {
+                                [qualified ? "gte" : "lt"]: config.minRepliesForSpeedyTable,
+                            },
+                        };
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            // Now generate the query to fetch the player records
+
             const rank = `rank_${table}`;
             return prisma.playerRecord.findMany({
                 where: {
@@ -202,6 +239,7 @@ export class PlayerRecordService {
                     [table]: {
                         not: null,
                     },
+                    ...filter,
                 },
                 orderBy: {
                     [rank]: 'asc',

@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation';
 import gameDayService from 'services/GameDay';
 import { EnumTable } from 'services/PlayerRecord';
 import config from 'lib/config';
+import { getYearName } from 'lib/utils';
 
 /**
  * Generates a qualified table name based on the provided table type and year.
@@ -23,7 +24,7 @@ function QualifiedTableName(table: EnumTable, year: number): string {
             tableName = table.charAt(0).toUpperCase() + table.slice(1) + ' Table';
     }
 
-    return `${year > 0 ? year : 'All-time'} ${tableName}`;
+    return `${getYearName(year)} ${tableName}`;
 }
 
 /**

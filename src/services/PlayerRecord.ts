@@ -165,6 +165,34 @@ export class PlayerRecordService {
     }
 
     /**
+     * Retrieves a player record for a specific year and player.
+     * @param year - The year of the player record.
+     * @param playerId - The ID of the player.
+     * @returns A promise that resolves to the player record for the specified
+     * year and player, or null if not found.
+     * @throws If there was an error fetching the player record.
+     */
+    async getForYearByPlayer(
+        year: number,
+        playerId: number,
+    ): Promise<PlayerRecord | null> {
+        try {
+            return await prisma.playerRecord.findFirst({
+                where: {
+                    year: year,
+                    playerId: playerId,
+                },
+                orderBy: {
+                    gameDayId: 'desc',
+                },
+            });
+        } catch (error) {
+            log(`Error fetching playerRecord for player: ${error}`);
+            throw error;
+        }
+    }
+
+    /**
      * Retrieves player records from the specified table for a given year.
      * @param table - The table to retrieve player records from.
      * @param year - The year for which to retrieve player records.

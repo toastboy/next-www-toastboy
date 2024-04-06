@@ -23,3 +23,13 @@ export async function streamToBuffer(readableStream: NodeJS.ReadableStream): Pro
         readableStream.on('error', reject);
     });
 }
+
+/**
+ * Returns the name of the year. If the year is 0, it returns "All-time".
+ * Otherwise, it returns the year as a string.
+ * @param year - The year to get the name for.
+ * @returns The name of the year.
+ */
+export function getYearName(year: number): string {
+    return year == 0 ? "All-time" : year.toString();
+}

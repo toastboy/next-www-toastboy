@@ -263,6 +263,15 @@ describe('PlayerRecordService', () => {
         });
     });
 
+    describe('getForYearByPlayer', () => {
+        it('should retrieve the correct PlayerRecord for Player ID 12 and Year 2021', async () => {
+            (prisma.playerRecord.findFirst as jest.Mock).mockResolvedValue(defaultPlayerRecord);
+            const result = await playerRecordService.getForYearByPlayer(12, 2021);
+            expect(result).toEqual(defaultPlayerRecord);
+            expect(prisma.playerRecord.findFirst).toHaveBeenCalledTimes(1);
+        });
+    });
+
     describe('getTable', () => {
         beforeEach(() => {
             const playerRecordList: PlayerRecord[] = JSON.parse(fs.readFileSync('./tests/data/PlayerRecord.test.json').toString());

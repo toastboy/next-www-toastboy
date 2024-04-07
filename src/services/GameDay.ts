@@ -125,6 +125,29 @@ export class GameDayService {
     }
 
     /**
+     * Retrieves the maximum gameDay ID for each year where there is a game.
+     * @returns An array of maximum gameDay IDs for each year, or null if there
+     * are no games.
+     */
+    async getSeasonEnders(): Promise<(number | null)[]> {
+        try {
+            const result = await prisma.gameDay.groupBy({
+                by: ['year'],
+                where: {
+                    game: true,
+                },
+                _max: {
+                    id: true,
+                },
+            });
+            return result.map((r) => r._max.id);
+        } catch (error) {
+            log(`Error counting gameDays: ${error}`);
+            throw error;
+        }
+    }
+
+    /**
      * Retrieves all the years from the game days where a game has taken or will
      * take place.
      * @returns A promise that resolves to an array of distinct years or null if

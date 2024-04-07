@@ -193,6 +193,38 @@ export class PlayerRecordService {
     }
 
     /**
+     * Retrieves the winners of a specific table for all years.
+     * @param table - The table for which to retrieve the winners.
+     * @returns A promise that resolves to an array of PlayerRecord objects
+     * representing the winners.
+     * @throws If there is an error fetching the player records.
+     */
+    async getWinners(
+        table: EnumTable,
+    ): Promise<PlayerRecord[]> {
+        try {
+            const rank = `rank_${table}`;
+            const seasonEnders = await gameDayService.getSeasonEnders();
+            const firstPlaceRecords = await prisma.playerRecord.findMany({
+                where: {
+                    year: {
+                        gt: 0,
+                    },
+                    [rank]: 1,
+                },
+                orderBy: {
+                    year: 'desc',
+                },
+            });
+
+            return firstPlaceRecords.filter((record) => seasonEnders.includes(record.gameDayId));
+        } catch (error) {
+            log(`Error fetching playerRecords for winners: ${error}`);
+            throw error;
+        }
+    }
+
+    /**
      * Retrieves player records from the specified table for a given year.
      * @param table - The table to retrieve player records from.
      * @param year - The year for which to retrieve player records.

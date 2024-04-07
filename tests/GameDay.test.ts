@@ -7,6 +7,7 @@ jest.mock('lib/prisma', () => ({
         findUnique: jest.fn(),
         findFirst: jest.fn(),
         findMany: jest.fn(),
+        groupBy: jest.fn(),
         count: jest.fn(),
         create: jest.fn(),
         upsert: jest.fn(),
@@ -17,6 +18,7 @@ jest.mock('lib/prisma', () => ({
 
 const defaultGameDay: GameDay = {
     id: 1,
+    year: 2021,
     date: new Date('2021-01-03'),
     game: true,
     mailSent: new Date('2021-01-01'),
@@ -59,7 +61,7 @@ describe('GameDayService', () => {
                 (args.where.game ? gameDay.game === args.where.game : true) &&
                 (args.where.id ? gameDay.id <= args.where.id.lte : true) &&
                 (args.where.date ? gameDay.date >= args.where.date.gte : true) &&
-                (args.where.date ? gameDay.date < args.where.date.lt : true)
+                (args.where.date ? gameDay.date < args.where.date.lt : true),
             ) : gameDayList;
             return Promise.resolve(gameDays ? gameDays : null);
         });
@@ -96,7 +98,7 @@ describe('GameDayService', () => {
                 (args.where.date ? gameDay.date < args.where.date.lt : true) &&
                 (args.where.AND && args.where.AND[0].date ? gameDay.date >= args.where.AND[0].date.gte : true) &&
                 (args.where.AND && args.where.AND[0].date ? gameDay.date < args.where.AND[0].date.lt : true) &&
-                (args.where.AND && args.where.AND[1].date ? gameDay.date > args.where.AND[1].date.gt : true)
+                (args.where.AND && args.where.AND[1].date ? gameDay.date > args.where.AND[1].date.gt : true),
             ) : gameDayList;
             return Promise.resolve(gameDays ? gameDays.length : null);
         });
@@ -193,6 +195,154 @@ describe('GameDayService', () => {
         it('should return zero games remaining for year 9999', async () => {
             const result = await gameDayService.getGamesRemaining(9999);
             expect(result).toEqual(0);
+        });
+    });
+
+    describe('getSeasonEnders', () => {
+        it('should return the correct, complete list of last GameDays with a game for each year', async () => {
+            (prisma.gameDay.groupBy as jest.Mock).mockResolvedValue([
+                {
+                    _max: {
+                        id: 35,
+                    },
+                    year: 2002,
+                },
+                {
+                    _max: {
+                        id: 94,
+                    },
+                    year: 2003,
+                },
+                {
+                    _max: {
+                        id: 146,
+                    },
+                    year: 2004,
+                },
+                {
+                    _max: {
+                        id: 199,
+                    },
+                    year: 2005,
+                },
+                {
+                    _max: {
+                        id: 251,
+                    },
+                    year: 2006,
+                },
+                {
+                    _max: {
+                        id: 303,
+                    },
+                    year: 2007,
+                },
+                {
+                    _max: {
+                        id: 355,
+                    },
+                    year: 2008,
+                },
+                {
+                    _max: {
+                        id: 407,
+                    },
+                    year: 2009,
+                },
+                {
+                    _max: {
+                        id: 459,
+                    },
+                    year: 2010,
+                },
+                {
+                    _max: {
+                        id: 511,
+                    },
+                    year: 2011,
+                },
+                {
+                    _max: {
+                        id: 564,
+                    },
+                    year: 2012,
+                },
+                {
+                    _max: {
+                        id: 616,
+                    },
+                    year: 2013,
+                },
+                {
+                    _max: {
+                        id: 668,
+                    },
+                    year: 2014,
+                },
+                {
+                    _max: {
+                        id: 720,
+                    },
+                    year: 2015,
+                },
+                {
+                    _max: {
+                        id: 773,
+                    },
+                    year: 2016,
+                },
+                {
+                    _max: {
+                        id: 824,
+                    },
+                    year: 2017,
+                },
+                {
+                    _max: {
+                        id: 872,
+                    },
+                    year: 2018,
+                },
+                {
+                    _max: {
+                        id: 928,
+                    },
+                    year: 2019,
+                },
+                {
+                    _max: {
+                        id: 941,
+                    },
+                    year: 2020,
+                },
+                {
+                    _max: {
+                        id: 1028,
+                    },
+                    year: 2021,
+                },
+                {
+                    _max: {
+                        id: 1085,
+                    },
+                    year: 2022,
+                },
+                {
+                    _max: {
+                        id: 1137,
+                    },
+                    year: 2023,
+                },
+                {
+                    _max: {
+                        id: 1170,
+                    },
+                    year: 2024,
+                },
+            ]);
+            const result = await gameDayService.getSeasonEnders();
+            expect(result.length).toEqual(23);
+            expect(result[11]).toEqual(616);
         });
     });
 

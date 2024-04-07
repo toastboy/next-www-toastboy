@@ -8,6 +8,7 @@ jest.mock('lib/prisma', () => ({
         findUnique: jest.fn(),
         findFirst: jest.fn(),
         findMany: jest.fn(),
+        groupBy: jest.fn(),
         count: jest.fn(),
         create: jest.fn(),
         upsert: jest.fn(),
@@ -18,6 +19,7 @@ jest.mock('lib/prisma', () => ({
         findUnique: jest.fn(),
         findFirst: jest.fn(),
         findMany: jest.fn(),
+        groupBy: jest.fn(),
         count: jest.fn(),
         create: jest.fn(),
         upsert: jest.fn(),
@@ -28,6 +30,7 @@ jest.mock('lib/prisma', () => ({
         findUnique: jest.fn(),
         findFirst: jest.fn(),
         findMany: jest.fn(),
+        groupBy: jest.fn(),
         count: jest.fn(),
         create: jest.fn(),
         upsert: jest.fn(),
@@ -269,6 +272,53 @@ describe('PlayerRecordService', () => {
             const result = await playerRecordService.getForYearByPlayer(12, 2021);
             expect(result).toEqual(defaultPlayerRecord);
             expect(prisma.playerRecord.findFirst).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe('getWinners', () => {
+        beforeEach(() => {
+            (prisma.gameDay.groupBy as jest.Mock).mockResolvedValue([
+                {
+                    _max: {
+                        id: 1085,
+                    },
+                    year: 2022,
+                },
+                {
+                    _max: {
+                        id: 1137,
+                    },
+                    year: 2023,
+                },
+                {
+                    _max: {
+                        id: 1170,
+                    },
+                    year: 2024,
+                },
+            ]);
+
+            const playerRecordList: PlayerRecord[] = JSON.parse(fs.readFileSync('./tests/data/PlayerRecord.test.json').toString());
+
+            (prisma.playerRecord.findMany as jest.Mock).mockImplementation(() => {
+                const playerRecords = playerRecordList.filter((playerRecord) =>
+                    playerRecord.rank_points === 1 &&
+                    playerRecord.year !== 0);
+                return Promise.resolve(playerRecords);
+            });
+        });
+
+        it('should retrieve all the winners for the points table for all years', async () => {
+            const result = await playerRecordService.getWinners(EnumTable.points);
+            expect(result.length).toEqual(2);
+            expect(result[0].year).toEqual(2023);
+            expect(result[1].playerId).toEqual(191);
+        });
+
+        it('should return an empty list when there are no season-ending games', async () => {
+            (prisma.gameDay.groupBy as jest.Mock).mockResolvedValue([]);
+            const result = await playerRecordService.getWinners(EnumTable.points);
+            expect(result).toEqual([]);
         });
     });
 

@@ -3,10 +3,12 @@ import playerService from 'services/Player';
 
 export default async function PlayerForm({
     player,
+    games,
 }: {
     player: Player,
+    games: number,
 }) {
-    const outcomes = await playerService.getForm(player.id, 0, 10);
+    const outcomes = await playerService.getForm(player.id, 0, games);
 
     if (!outcomes || outcomes.length === 0) {
         return null;

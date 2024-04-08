@@ -164,6 +164,30 @@ describe('GameDayService', () => {
         });
     });
 
+    describe('getCurrent', () => {
+        it('should return the correct, current GameDay where one exists', async () => {
+            (prisma.gameDay.findFirst as jest.Mock).mockResolvedValue(defaultGameDay);
+            const result = await gameDayService.getCurrent();
+            expect(result).toEqual(defaultGameDay);
+            expect(prisma.gameDay.findFirst).toHaveBeenCalledWith({
+                where: {
+                    mailSent: {
+                        not: null,
+                    },
+                },
+                orderBy: {
+                    date: 'desc',
+                },
+            });
+        });
+
+        it('should return null where no GameDay with sent email exists', async () => {
+            (prisma.gameDay.findFirst as jest.Mock).mockResolvedValue(null);
+            const result = await gameDayService.getCurrent();
+            expect(result).toBeNull();
+        });
+    });
+
     describe('getGamesPlayed', () => {
         it('should return the correct number of games played for year 2021', async () => {
             const result = await gameDayService.getGamesPlayed(2021);

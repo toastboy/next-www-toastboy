@@ -1,7 +1,5 @@
-import { NYI } from "components/NYI";
+import { permanentRedirect } from 'next/navigation';
 
-export default function Page() {
-    return (
-        <NYI />
-    );
+export default async function Page(): Promise<JSX.Element> {
+    permanentRedirect(`/footy/game`);
 }

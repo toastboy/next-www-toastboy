@@ -58,6 +58,30 @@ export class GameDayService {
     }
 
     /**
+     * Retrieves the current GameDay: the most recent GameDay where the mail has
+     * been sent.
+     * @returns A promise that resolves to an array of GameDays.
+     * @throws An error if there is a failure.
+     */
+    async getCurrent(): Promise<GameDay | null> {
+        try {
+            return prisma.gameDay.findFirst({
+                where: {
+                    mailSent: {
+                        not: null,
+                    },
+                },
+                orderBy: {
+                    date: 'desc',
+                },
+            });
+        } catch (error) {
+            log(`Error fetching current GameDay: ${error}`);
+            throw error;
+        }
+    }
+
+    /**
      * Retrieves the number of games played in the given year, optionally
      * stopping at a given gameDay ID.
      * @param year - The year to filter by, or zero for all years.

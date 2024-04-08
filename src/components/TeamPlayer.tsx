@@ -2,11 +2,14 @@ import PlayerMugshot from 'components/PlayerMugshot';
 import playerService from "services/Player";
 import PlayerForm from './PlayerForm';
 import PlayerLink from './PlayerLink';
+import { Outcome } from '@prisma/client';
 
 export default async function TeamPlayer({
     idOrLogin,
+    outcome,
 }: {
     idOrLogin: string,
+    outcome: Outcome,
 }) {
     const id = await playerService.getId(idOrLogin);
     if (!id) {
@@ -23,6 +26,7 @@ export default async function TeamPlayer({
             <PlayerLink idOrLogin={player.login} />
             <PlayerMugshot player={player} />
             <PlayerForm player={player} games={10} />
+            <p>{outcome.goalie ? "GOALIE!" : ""}</p>
         </div >
     );
 }

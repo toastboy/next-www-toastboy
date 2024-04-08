@@ -230,6 +230,23 @@ describe('PlayerRecordService', () => {
             }
         });
 
+        it('should retrieve the correct PlayerRecords for GameDay id 15 and year 2021', async () => {
+            const result = await playerRecordService.getByGameDay(15, 2021);
+            if (result) {
+                expect(result.length).toEqual(1);
+                for (const playerRecordResult of result) {
+                    expect(playerRecordResult).toEqual({
+                        ...defaultPlayerRecord,
+                        playerId: expect.any(Number),
+                        gameDayId: 15,
+                    } as PlayerRecord);
+                }
+            }
+            else {
+                throw new Error("Result is null");
+            }
+        });
+
         it('should return an empty list when retrieving playerRecords for GameDay id 101', async () => {
             const result = await playerRecordService.getByGameDay(101);
             expect(result).toEqual([]);

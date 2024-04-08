@@ -1,4 +1,4 @@
-import TeamPlayer from "components/TeamPlayer";
+import Team from "components/Team";
 import { notFound } from "next/navigation";
 import gameDayService from "services/GameDay";
 import outcomeService from "services/Outcome";
@@ -24,6 +24,9 @@ export default async function Page({
         return notFound();
     }
 
+    const teamA = outcomes.filter(o => o.team == "A");
+    const teamB = outcomes.filter(o => o.team == "B");
+
     return (
         <div>
             <main className="p-10 mx-auto max-w-4xl">
@@ -33,13 +36,9 @@ export default async function Page({
                     month: "long",
                     day: "numeric",
                 })}</h1>
-                {outcomes.filter(o => o.team == "A").map((o) => (
-                    <TeamPlayer key={o.playerId} idOrLogin={o.playerId.toString()} />
-                ))}
+                <Team outcomes={teamA} />
                 <p>vs.</p>
-                {outcomes.filter(o => o.team == "B").map((o) => (
-                    <TeamPlayer key={o.playerId} idOrLogin={o.playerId.toString()} />
-                ))}
+                <Team outcomes={teamB} />
             </main>
 
             <footer>

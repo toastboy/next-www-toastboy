@@ -1,10 +1,9 @@
+import '@mantine/core/styles.css';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import NavBar from "components/NavBar";
+
+import { ColorSchemeScript, MantineProvider } from '@mantine/core';
 
 import './globals.css';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: "Toastboy FC",
@@ -17,15 +16,15 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
-        <NavBar />
-        <div className="relative translate-y-24">
-          {children}
-        </div>
+      <head>
+        <ColorSchemeScript />
+      </head>
+      <body>
+        <MantineProvider>{children}</MantineProvider>
       </body>
     </html>
   );

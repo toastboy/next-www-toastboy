@@ -1,6 +1,7 @@
-import playerRecordService from 'services/PlayerRecord';
+import { Button } from '@mantine/core';
 import fs from 'fs';
 import path from "path";
+import playerRecordService from 'services/PlayerRecord';
 
 async function exportPlayerRecords() {
     'use server';
@@ -15,7 +16,7 @@ export async function AdminExportPlayerRecords() {
     return (
         <div>
             <form action={exportPlayerRecords}>
-                <button type="submit">Export Player Records (2021 onwards)</button>
+                <Button type="submit">Export Player Records (2021 onwards)</Button>
             </form>
         </div >
     );

@@ -1,3 +1,4 @@
+import { Button } from '@mantine/core';
 import playerRecordService from 'services/PlayerRecord';
 import { revalidatePath } from 'next/cache';
 
@@ -16,7 +17,7 @@ export async function AdminUpdatePlayerRecords() {
         <div>
             <p className="text-center">Player Record count: {playerRecords?.length}</p>
             <form action={updatePlayerRecords}>
-                <button type="submit">Update Player Records</button>
+                <Button type="submit">Update Player Records</Button>
             </form>
         </div >
     );

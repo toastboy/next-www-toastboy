@@ -58,6 +58,26 @@ export class GameDayService {
     }
 
     /**
+     * Retrieves a GameDay object by the specified date.
+     * @param date - The date to search for.
+     * @returns A Promise that resolves to the GameDay object if found, or null
+     * if not found.
+     * @throws If there was an error while fetching the GameDay.
+     */
+    async getByDate(date: Date): Promise<GameDay | null> {
+        try {
+            return prisma.gameDay.findFirst({
+                where: {
+                    date: date,
+                },
+            });
+        } catch (error) {
+            log(`Error fetching GameDay: ${error}`);
+            throw error;
+        }
+    }
+
+    /**
      * Retrieves the current GameDay: the most recent GameDay where the mail has
      * been sent.
      * @returns A promise that resolves to an array of GameDays.

@@ -164,6 +164,19 @@ describe('GameDayService', () => {
         });
     });
 
+    describe('getByDate', () => {
+        it('should retrieve the correct GameDay with date 2021-01-03', async () => {
+            (prisma.gameDay.findFirst as jest.Mock).mockResolvedValue(defaultGameDay);
+            const result = await gameDayService.getByDate(new Date('2021-01-03'));
+            expect(result).toEqual(defaultGameDay);
+            expect(prisma.gameDay.findFirst).toHaveBeenCalledWith({
+                where: {
+                    date: new Date('2021-01-03'),
+                },
+            });
+        });
+    });
+
     describe('getCurrent', () => {
         it('should return the correct, current GameDay where one exists', async () => {
             (prisma.gameDay.findFirst as jest.Mock).mockResolvedValue(defaultGameDay);

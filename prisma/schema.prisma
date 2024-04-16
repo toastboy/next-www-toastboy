@@ -95,7 +95,7 @@ model GameChat {
 model GameDay {
   id                   Int       @id
   year                 Int
-  date                 DateTime  @db.Date
+  date                 DateTime  @db.DateTime
   game                 Boolean   @default(true)
   mailSent             DateTime? @db.DateTime(0)
   comment              String?   @db.VarChar(255)

@@ -17,7 +17,9 @@ export async function generateStaticParams() {
 
 export async function GET(
     request: Request,
-    { params }: { params: { isoCode: string } }) {
+    { params }: {
+        params: { isoCode: string }
+    }) {
     const { isoCode } = params;
 
     try {

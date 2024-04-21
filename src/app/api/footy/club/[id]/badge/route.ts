@@ -41,7 +41,8 @@ export async function GET(
                 'Content-Type': 'image/png',
             },
         });
-    } catch (error) {
+    }
+    catch (error) {
         console.error('Error fetching badge image:', error);
         return new Response('Internal Server Error', {
             status: 500,

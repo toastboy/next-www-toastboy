@@ -1,30 +1,23 @@
-import { Player } from '@prisma/client';
-import clubSupporterService from 'services/ClubSupporter';
-import clubService from 'services/Club';
-import ClubBadge from 'components/ClubBadge';
+'use client';
 
-export default async function PlayerClubs({
-    player,
-}: {
-    player: Player,
-}) {
-    const clubSupporters = await clubSupporterService.getByPlayer(player.id);
+import { usePlayerClubs } from 'use/player';
+import ClubBadge from './ClubBadge';
+import { Loader } from '@mantine/core';
 
-    if (!clubSupporters || clubSupporters.length === 0) {
+export default function PlayerClubs({ idOrLogin }: { idOrLogin: string }) {
+    const { data: clubs, error, isLoading } = usePlayerClubs(idOrLogin);
+
+    if (error) return <div>failed to load</div>;
+    if (isLoading) return <Loader color="gray" type="dots" />;
+
+    if (!clubs || clubs.length === 0) {
         return null;
     }
 
-    const clubs = await Promise.all(clubSupporters.map(async (item) => {
-        const club = await clubService.get(item.clubId);
-        return club;
-    }));
-
-    const nonNullClubs = clubs.filter((item): item is NonNullable<typeof item> => item !== null);
-
     return (
         <div className="px-6 py-4">
-            {nonNullClubs.map((item) => (
-                <ClubBadge key={item.id} club={item} />
+            {clubs.map((item: number) => (
+                <ClubBadge key={item} clubId={item} />
             ))}
         </div>
     );

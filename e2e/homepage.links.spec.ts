@@ -10,10 +10,10 @@ test('enumerate homepage links', async ({ page }) => {
     const hrefs: string[] = [];
     const linktexts: string[] = [];
     for (let i = 0; i < linksCount; i++) {
-        const link = await links.nth(i).getAttribute('href')
+        const link = await links.nth(i).getAttribute('href');
         if (link)
             hrefs.push(link);
-        const text = (await links.nth(i).allInnerTexts()).join()
+        const text = (await links.nth(i).allInnerTexts()).join();
         if (text)
             hrefs.push(text);
     }

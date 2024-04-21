@@ -1,20 +1,19 @@
+import { Loader } from '@mantine/core';
 import Image from 'next/image';
+import { useClub } from 'use/club';
 
-import { Club } from '@prisma/client';
+export default function ClubBadge({ clubId }: { clubId: number }) {
+    const { data: club, error, isLoading } = useClub(clubId);
 
-export default function ClubBadge({
-    club,
-}: {
-    club: Club,
-}) {
-    const url = `/api/footy/club/badge/${club.id}`;
+    if (error) return <div>failed to load</div>;
+    if (isLoading) return <Loader color="gray" type="dots" />;
 
     return (
         <Image
             className="w-full"
             width={150}
             height={150}
-            src={url}
+            src={`/api/footy/club/${clubId}/badge`}
             priority={true}
             alt={club.club_name}
             title={club.club_name}

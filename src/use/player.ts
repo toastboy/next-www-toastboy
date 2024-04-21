@@ -30,3 +30,7 @@ export function usePlayerLastPlayed(idOrLogin: string) {
         playerLastPlayedIsError: error,
     };
 }
+
+export function usePlayerClubs(idOrLogin: string) {
+    return useSWR(`/api/footy/player/${idOrLogin}/clubs`, fetcher);
+}

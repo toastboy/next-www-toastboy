@@ -10,7 +10,8 @@ export async function GET() {
                 'Content-Type': 'text/json',
             },
         });
-    } catch (error) {
+    }
+    catch (error) {
         console.error('Error fetching GameDays:', error);
         return new Response('Internal Server Error', {
             status: 500,

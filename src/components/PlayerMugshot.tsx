@@ -9,7 +9,7 @@ export default function PlayerMugshot({
 }: {
     player: Player,
 }) {
-    const url = `/api/footy/player/mugshot/${player.login}`;
+    const url = `/api/footy/player/${player.login}/mugshot`;
 
     return (
         <Link href={`/footy/player/${player.login}`}>

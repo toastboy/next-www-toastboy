@@ -1,20 +1,21 @@
-import Link from 'next/link';
-import playerService from 'services/Player';
+'use client';
 
-export default async function PlayerLink({ idOrLogin }: { idOrLogin: string }) {
-    const id = await playerService.getId(idOrLogin);
-    if (!id) {
-        return null;
-    }
+import { Anchor, Loader } from '@mantine/core';
+import { usePlayer, usePlayerName } from 'use/player';
 
-    const player = await playerService.getById(id);
-    if (!player) {
-        return null;
-    }
+export default function PlayerLink({ idOrLogin }: { idOrLogin: string }) {
+    const { player, playerIsError, playerIsLoading } = usePlayer(idOrLogin);
+    const { playerName, playerNameIsError, playerNameIsLoading } = usePlayerName(idOrLogin);
+
+    if (playerIsError) return <div>failed to load</div>;
+    if (playerIsLoading) return <Loader color="gray" type="dots" />;
+
+    if (playerNameIsError) return <div>failed to load</div>;
+    if (playerNameIsLoading) return <Loader color="gray" type="dots" />;
 
     return (
-        <Link className="text-gray-700 text-base" href={'/footy/player/' + player.login} >
-            {playerService.getName(player)}
-        </Link>
+        <Anchor href={`/footy/player/${player.login}`} >
+            {playerName}
+        </Anchor>
     );
 }

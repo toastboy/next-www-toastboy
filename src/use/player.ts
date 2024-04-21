@@ -20,3 +20,13 @@ export function usePlayerName(idOrLogin: string) {
         playerNameIsError: error,
     };
 }
+
+export function usePlayerLastPlayed(idOrLogin: string) {
+    const { data, error, isLoading } = useSWR(`/api/footy/player/${idOrLogin}/lastplayed`, fetcher);
+
+    return {
+        playerLastPlayed: data,
+        playerLastPlayedIsLoading: isLoading,
+        playerLastPlayedIsError: error,
+    };
+}

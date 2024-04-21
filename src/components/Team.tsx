@@ -23,9 +23,6 @@ export default async function Team({
             form.push(await playerService.getForm(playerRecord.playerId, 0, 10));
             players.push(await playerService.getById(playerRecord.playerId));
         }
-
-        console.log(form);
-        console.log(players);
     }
 
     return (

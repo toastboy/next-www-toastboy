@@ -1,4 +1,5 @@
 import playerService from 'services/Player';
+import { getPlayer } from '../../common';
 
 export async function generateStaticParams() {
     return playerService.getAllIdsAndLogins();
@@ -10,26 +11,18 @@ export async function GET(
         params: {
             idOrLogin: string
         }
-    }) {
-    const { idOrLogin } = params;
-    const login = await playerService.getLogin(idOrLogin);
-
-    if (!login) {
-        return new Response(`Player ${idOrLogin} not found`, {
-            status: 404,
-        });
-    }
-
-    const player = await playerService.getByLogin(login);
+    },
+) {
+    const player = await getPlayer(params.idOrLogin);
     if (!player) {
-        return new Response(`Player ${idOrLogin} not found`, {
+        return new Response(`Player ${params.idOrLogin} not found`, {
             status: 404,
         });
     }
 
     const name = playerService.getName(player);
     if (!name) {
-        return new Response(`Player ${idOrLogin} not found`, {
+        return new Response(`Player ${params.idOrLogin} not found`, {
             status: 404,
         });
     }

@@ -22,7 +22,7 @@ export default async function PlayerProfile({
         <div className="w-[600px] rounded overflow-hidden shadow-lg" key={id}>
             <h1 className="text-6xl font-bold mb-4 text-center">{playerService.getName(player)}</h1>
             <PlayerMugshot idOrLogin={player.login} />
-            <PlayerLastPlayed player={player} />
+            <PlayerLastPlayed idOrLogin={player.login} />
             <PlayerClubs player={player} />
             <PlayerCountries player={player} />
             <PlayerArse player={player} />

@@ -21,7 +21,7 @@ export default async function PlayerProfile({
     return (
         <div className="w-[600px] rounded overflow-hidden shadow-lg" key={id}>
             <h1 className="text-6xl font-bold mb-4 text-center">{playerService.getName(player)}</h1>
-            <PlayerMugshot player={player} />
+            <PlayerMugshot idOrLogin={player.login} />
             <PlayerLastPlayed player={player} />
             <PlayerClubs player={player} />
             <PlayerCountries player={player} />

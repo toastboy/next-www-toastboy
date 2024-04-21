@@ -12,7 +12,7 @@ export default function PlayerTile({
 
   return (
     <div className="w-[250px] rounded overflow-hidden shadow-lg" key={id}>
-      <PlayerMugshot player={player} />
+      <PlayerMugshot idOrLogin={player.login} />
       <div className="px-6 py-4">
         <div className="font-bold text-xl mb-2"><Link href={"/footy/player/" + login}>{first_name} {last_name}</Link></div>
         <Link href={"/footy/player/" + login} className="block text-gray-700 text-base">{email}</Link>

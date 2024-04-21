@@ -6,7 +6,13 @@ export async function generateStaticParams() {
 
 export async function GET(
     request: Request,
-    { params }: { params: { idOrLogin: string } }) {
+    { params }: {
+        params: {
+            idOrLogin: string
+        }
+    }) {
+    // TODO: This ought to be one query. Probably do the whole SWR refactor and
+    // then see where we are.
     const { idOrLogin } = params;
     const login = await playerService.getLogin(idOrLogin);
 

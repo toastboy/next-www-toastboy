@@ -1,27 +1,28 @@
-import Image from 'next/image';
-import Link from 'next/link';
+'use client';
 
-import { Player } from '@prisma/client';
-import playerService from "services/Player";
+import { Anchor, Image, Loader } from '@mantine/core';
+import { usePlayer, usePlayerName } from 'use/player';
 
-export default function PlayerMugshot({
-    player,
-}: {
-    player: Player,
-}) {
-    const url = `/api/footy/player/${player.login}/mugshot`;
+export default function PlayerMugshot({ idOrLogin }: { idOrLogin: string }) {
+    const { player, playerIsError, playerIsLoading } = usePlayer(idOrLogin);
+    const { playerName, playerNameIsError, playerNameIsLoading } = usePlayerName(idOrLogin);
+
+    if (playerIsError) return <div>failed to load</div>;
+    if (playerIsLoading) return <Loader color="gray" type="dots" />;
+
+    if (playerNameIsError) return <div>failed to load</div>;
+    if (playerNameIsLoading) return <Loader color="gray" type="dots" />;
 
     return (
-        <Link href={`/footy/player/${player.login}`}>
+        <Anchor href={`/footy/player/${player.login}`}>
             <Image
                 className="w-full"
                 width={300}
                 height={300}
-                src={url}
-                priority={true}
-                alt={playerService.getName(player) || "Player"}
-                title={playerService.getName(player) || "Player"}
+                src={`/api/footy/player/${player.login}/mugshot`}
+                alt={playerName}
+                title={playerName}
             />
-        </Link>
+        </Anchor>
     );
 }

@@ -1,42 +1,27 @@
-import { Player } from '@prisma/client';
-import arseService from 'services/Arse';
+'use client';
 
-export default async function PlayerArse({
-    player,
-}: {
-    player: Player,
-}) {
-    type SkillField = 'in_goal' | 'running' | 'shooting' | 'passing' | 'ball_skill' | 'attacking' | 'defending';
+import { Loader } from '@mantine/core';
+import { usePlayerArse } from 'use/player';
 
-    const arses = await arseService.getByPlayer(player.id);
+export default function PlayerLastPlayed({ idOrLogin }: { idOrLogin: string }) {
+    const { data: arse, error, isLoading } = usePlayerArse(idOrLogin);
 
-    if (!arses || arses.length === 0) {
+    if (error) return <div>failed to load</div>;
+    if (isLoading) return <Loader color="gray" type="dots" />;
+
+    if (!arse) {
         return null;
     }
 
-    const average = (field: SkillField) => {
-        const sum = arses.reduce((acc, arse) => {
-            const fieldValue = arse[field];
-            if (fieldValue !== null) {
-                return acc + fieldValue;
-            } else {
-                return acc;
-            }
-        }, 0);
-        return sum / arses.length;
-    };
-    const fields: SkillField[] = ['in_goal', 'running', 'shooting', 'passing', 'ball_skill', 'attacking', 'defending'];
-    const fieldAverages = fields.map((field) => average(field));
-
     return (
         <div className="px-6 py-4">
-            <p className="text-gray-700 text-base">In Goal: {fieldAverages[0]}</p>
-            <p className="text-gray-700 text-base">Running: {fieldAverages[1]}</p>
-            <p className="text-gray-700 text-base">Shooting: {fieldAverages[2]}</p>
-            <p className="text-gray-700 text-base">Passing: {fieldAverages[3]}</p>
-            <p className="text-gray-700 text-base">Ball Skill: {fieldAverages[4]}</p>
-            <p className="text-gray-700 text-base">Attacking: {fieldAverages[5]}</p>
-            <p className="text-gray-700 text-base">Defending: {fieldAverages[6]}</p>
+            <p className="text-gray-700 text-base">In Goal: {arse.in_goal}</p>
+            <p className="text-gray-700 text-base">Running: {arse.running}</p>
+            <p className="text-gray-700 text-base">Shooting: {arse.shooting}</p>
+            <p className="text-gray-700 text-base">Passing: {arse.passing}</p>
+            <p className="text-gray-700 text-base">Ball Skill: {arse.ball_skill}</p>
+            <p className="text-gray-700 text-base">Attacking: {arse.attacking}</p>
+            <p className="text-gray-700 text-base">Defending: {arse.defending}</p>
         </div>
     );
 }

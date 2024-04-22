@@ -93,13 +93,24 @@ export class ArseService {
      * @returns A promise that resolves to an array of arses or null.
      * @throws An error if there is a failure.
      */
-    async getByPlayer(playerId: number): Promise<Arse[] | null> {
+    async getByPlayer(playerId: number): Promise<Partial<Arse> | null> {
         try {
-            return prisma.arse.findMany({
+            const arsegregate = await prisma.arse.aggregate({
                 where: {
                     playerId: playerId,
                 },
+                _avg: {
+                    in_goal: true,
+                    running: true,
+                    shooting: true,
+                    passing: true,
+                    ball_skill: true,
+                    attacking: true,
+                    defending: true,
+                },
             });
+
+            return arsegregate._avg;
         } catch (error) {
             log(`Error fetching arses by player: ${error}`);
             throw error;

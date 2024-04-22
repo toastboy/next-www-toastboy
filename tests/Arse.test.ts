@@ -7,6 +7,7 @@ jest.mock('lib/prisma', () => ({
         findUnique: jest.fn(),
         findFirst: jest.fn(),
         findMany: jest.fn(),
+        aggregate: jest.fn(),
         create: jest.fn(),
         upsert: jest.fn(),
         delete: jest.fn(),
@@ -45,12 +46,18 @@ describe('ArseService', () => {
                 }
             }
         }) => {
-            const arse = arseList.find((arse) => arse.playerId === args.where.playerId_raterId.playerId && arse.raterId === args.where.playerId_raterId.raterId);
+            const arse = arseList.find((arse) =>
+                arse.playerId === args.where.playerId_raterId.playerId &&
+                arse.raterId === args.where.playerId_raterId.raterId,
+            );
             return Promise.resolve(arse ? arse : null);
         });
 
         (prisma.arse.create as jest.Mock).mockImplementation((args: { data: Arse }) => {
-            const arse = arseList.find((arse) => arse.playerId === args.data.playerId && arse.raterId === args.data.raterId);
+            const arse = arseList.find((arse) =>
+                arse.playerId === args.data.playerId &&
+                arse.raterId === args.data.raterId,
+            );
 
             if (arse) {
                 return Promise.reject(new Error('Arse already exists'));
@@ -70,7 +77,10 @@ describe('ArseService', () => {
             update: Arse,
             create: Arse,
         }) => {
-            const arse = arseList.find((arse) => arse.playerId === args.where.playerId_raterId.playerId && arse.raterId === args.where.playerId_raterId.raterId);
+            const arse = arseList.find((arse) =>
+                arse.playerId === args.where.playerId_raterId.playerId &&
+                arse.raterId === args.where.playerId_raterId.raterId,
+            );
 
             if (arse) {
                 return Promise.resolve(args.update);
@@ -88,7 +98,10 @@ describe('ArseService', () => {
                 }
             }
         }) => {
-            const arse = arseList.find((arse) => arse.playerId === args.where.playerId_raterId.playerId && arse.raterId === args.where.playerId_raterId.raterId);
+            const arse = arseList.find((arse) =>
+                arse.playerId === args.where.playerId_raterId.playerId &&
+                arse.raterId === args.where.playerId_raterId.raterId,
+            );
             return Promise.resolve(arse ? arse : null);
         });
     });
@@ -105,7 +118,7 @@ describe('ArseService', () => {
                     ...defaultArse,
                     playerId: 6,
                     raterId: 16,
-                    stamp: expect.any(Date)
+                    stamp: expect.any(Date),
                 } as Arse);
             } else {
                 throw new Error("Result is null");
@@ -119,24 +132,35 @@ describe('ArseService', () => {
     });
 
     describe('getByPlayer', () => {
-        beforeEach(() => {
-            (prisma.arse.findMany as jest.Mock).mockImplementation((args: { where: { playerId: number } }) => {
-                return Promise.resolve(arseList.filter((arse) => arse.playerId === args.where.playerId));
-            });
-        });
-
         it('should retrieve the correct arses for player id 1', async () => {
+            (prisma.arse.aggregate as jest.Mock).mockResolvedValue({
+                _avg: {
+                    in_goal: 10,
+                    running: 10,
+                    shooting: 10,
+                    passing: 10,
+                    ball_skill: 10,
+                    attacking: 10,
+                    defending: 10,
+                },
+            });
             const result = await arseService.getByPlayer(1);
             if (result) {
-                expect(result.length).toEqual(10);
-                for (const arseResult of result) {
-                    expect(arseResult).toEqual({
-                        ...defaultArse,
+                expect(prisma.arse.aggregate).toHaveBeenCalledWith({
+                    where: {
                         playerId: 1,
-                        raterId: expect.any(Number),
-                        stamp: expect.any(Date)
-                    } as Arse);
-                }
+                    },
+                    _avg: {
+                        in_goal: true,
+                        running: true,
+                        shooting: true,
+                        passing: true,
+                        ball_skill: true,
+                        attacking: true,
+                        defending: true,
+                    },
+                });
+                expect(result.in_goal).toEqual(10);
             }
             else {
                 throw new Error("Result is null");
@@ -144,12 +168,34 @@ describe('ArseService', () => {
         });
 
         it('should return an empty list when retrieving arses for player id 11', async () => {
+            (prisma.arse.aggregate as jest.Mock).mockResolvedValue({
+                _avg: {
+                    in_goal: null,
+                    running: null,
+                    shooting: null,
+                    passing: null,
+                    ball_skill: null,
+                    attacking: null,
+                    defending: null,
+                },
+            });
             const result = await arseService.getByPlayer(11);
             if (result) {
-                expect(result).toEqual([]);
-            }
-            else {
-                throw new Error("Result is null");
+                expect(prisma.arse.aggregate).toHaveBeenCalledWith({
+                    where: {
+                        playerId: 11,
+                    },
+                    _avg: {
+                        in_goal: true,
+                        running: true,
+                        shooting: true,
+                        passing: true,
+                        ball_skill: true,
+                        attacking: true,
+                        defending: true,
+                    },
+                });
+                expect(result.in_goal).toEqual(null);
             }
         });
     });
@@ -170,7 +216,7 @@ describe('ArseService', () => {
                         ...defaultArse,
                         playerId: expect.any(Number),
                         raterId: 1,
-                        stamp: expect.any(Date)
+                        stamp: expect.any(Date),
                     } as Arse);
                 }
             }

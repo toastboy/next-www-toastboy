@@ -16,15 +16,17 @@ export async function generateStaticParams() {
 
 export async function GET(
     request: Request,
-    { params }: { params: { id: number } }) {
-
+    { params }: {
+        params: { id: number }
+    },
+) {
     try {
         const azureCache = AzureCache.getInstance();
         const containerClient = await azureCache.getContainerClient("clubs");
-        const blobClient = containerClient.getBlobClient(params.id.toString() + ".png");
+        const blobClient = containerClient.getBlobClient(`${params.id.toString()}.png`);
 
         if (!(await blobClient.exists())) {
-            return new Response(params.id.toString() + ".png not found", {
+            return new Response(`${params.id.toString()}.png not found`, {
                 status: 404,
             });
         }

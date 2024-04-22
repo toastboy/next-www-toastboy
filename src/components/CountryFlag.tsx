@@ -1,22 +1,18 @@
-import Image from 'next/image';
+import { Image, Loader } from '@mantine/core';
+import { useCountry } from 'use/country';
 
-import { Country } from '@prisma/client';
+export default function CountryFlag({ isoCode }: { isoCode: string }) {
+    const { data: country, error, isLoading } = useCountry(isoCode);
 
-export default function CountryFlag({
-    country,
-}: {
-    country: Country,
-}) {
-    const flag = country.isoCode.toLowerCase();
-    const url = `/api/footy/country/flag/${flag}`;
+    if (error) return <div>failed to load</div>;
+    if (isLoading) return <Loader color="gray" type="dots" />;
 
     return (
         <Image
             className="w-full"
             width={150}
             height={150}
-            src={url}
-            priority={true}
+            src={`/api/footy/country/${country.isoCode.toLowerCase()}/flag`}
             alt={country.name}
             title={country.name}
         />

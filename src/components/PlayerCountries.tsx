@@ -1,30 +1,23 @@
-import { Player } from '@prisma/client';
-import countrySupporterService from 'services/CountrySupporter';
-import countryService from 'services/Country';
-import CountryFlag from 'components/CountryFlag';
+'use client';
 
-export default async function PlayerClubs({
-    player,
-}: {
-    player: Player,
-}) {
-    const countrySupporters = await countrySupporterService.getByPlayer(player.id);
+import { usePlayerCountries } from 'use/player';
+import CountryFlag from './CountryFlag';
+import { Loader } from '@mantine/core';
 
-    if (!countrySupporters || countrySupporters.length === 0) {
+export default function PlayerCountries({ idOrLogin }: { idOrLogin: string }) {
+    const { data: countries, error, isLoading } = usePlayerCountries(idOrLogin);
+
+    if (error) return <div>failed to load</div>;
+    if (isLoading) return <Loader color="gray" type="dots" />;
+
+    if (!countries || countries.length === 0) {
         return null;
     }
 
-    const countries = await Promise.all(countrySupporters.map(async (item) => {
-        const club = await countryService.get(item.countryISOcode);
-        return club;
-    }));
-
-    const nonNullCountries = countries.filter((item): item is NonNullable<typeof item> => item !== null);
-
     return (
         <div className="px-6 py-4">
-            {nonNullCountries.map((item) => (
-                <CountryFlag key={item.isoCode} country={item} />
+            {countries.map((item: string) => (
+                <CountryFlag key={item} isoCode={item} />
             ))}
         </div>
     );

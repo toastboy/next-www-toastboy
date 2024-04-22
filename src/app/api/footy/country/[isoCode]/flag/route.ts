@@ -19,16 +19,17 @@ export async function GET(
     request: Request,
     { params }: {
         params: { isoCode: string }
-    }) {
+    },
+) {
     const { isoCode } = params;
 
     try {
         const azureCache = AzureCache.getInstance();
         const containerClient = await azureCache.getContainerClient("countries");
-        const blobClient = containerClient.getBlobClient(isoCode + ".png");
+        const blobClient = containerClient.getBlobClient(`${isoCode}.png`);
 
         if (!(await blobClient.exists())) {
-            return new Response(isoCode + ".png not found", {
+            return new Response(`${isoCode}.png not found`, {
                 status: 404,
             });
         }
@@ -45,7 +46,8 @@ export async function GET(
                 'Content-Type': 'image/png',
             },
         });
-    } catch (error) {
+    }
+    catch (error) {
         console.error('Error fetching flag image:', error);
         return new Response('Internal Server Error', {
             status: 500,

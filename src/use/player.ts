@@ -34,3 +34,7 @@ export function usePlayerLastPlayed(idOrLogin: string) {
 export function usePlayerClubs(idOrLogin: string) {
     return useSWR(`/api/footy/player/${idOrLogin}/clubs`, fetcher);
 }
+
+export function usePlayerCountries(idOrLogin: string) {
+    return useSWR(`/api/footy/player/${idOrLogin}/countries`, fetcher);
+}

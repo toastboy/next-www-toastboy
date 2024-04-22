@@ -1,5 +1,4 @@
-import { Loader } from '@mantine/core';
-import Image from 'next/image';
+import { Image, Loader } from '@mantine/core';
 import { useClub } from 'use/club';
 
 export default function ClubBadge({ clubId }: { clubId: number }) {
@@ -14,7 +13,6 @@ export default function ClubBadge({ clubId }: { clubId: number }) {
             width={150}
             height={150}
             src={`/api/footy/club/${clubId}/badge`}
-            priority={true}
             alt={club.club_name}
             title={club.club_name}
         />

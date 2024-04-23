@@ -25,7 +25,7 @@ export default async function TeamPlayer({
         <div className="w-[600px] rounded overflow-hidden shadow-lg" key={player.id}>
             <PlayerLink idOrLogin={player.login} />
             <PlayerMugshot idOrLogin={player.login} />
-            <PlayerForm player={player} games={10} />
+            <PlayerForm idOrLogin={player.login} games={10} />
             <p>{outcome.goalie ? "GOALIE!" : ""}</p>
         </div >
     );

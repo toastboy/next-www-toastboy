@@ -26,7 +26,7 @@ export default async function PlayerProfile({
             <PlayerClubs idOrLogin={player.login} />
             <PlayerCountries idOrLogin={player.login} />
             <PlayerArse idOrLogin={player.login} />
-            <PlayerForm player={player} games={5} />
+            <PlayerForm idOrLogin={player.login} games={5} />
             <PlayerYearsActive player={player} />
             <PlayerResults player={player} year={0} />
             <PlayerPositions player={player} year={0} />

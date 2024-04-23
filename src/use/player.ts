@@ -22,13 +22,7 @@ export function usePlayerName(idOrLogin: string) {
 }
 
 export function usePlayerLastPlayed(idOrLogin: string) {
-    const { data, error, isLoading } = useSWR(`/api/footy/player/${idOrLogin}/lastplayed`, fetcher);
-
-    return {
-        playerLastPlayed: data,
-        playerLastPlayedIsLoading: isLoading,
-        playerLastPlayedIsError: error,
-    };
+    return useSWR(`/api/footy/player/${idOrLogin}/lastplayed`, fetcher);
 }
 
 export function usePlayerClubs(idOrLogin: string) {
@@ -41,4 +35,8 @@ export function usePlayerCountries(idOrLogin: string) {
 
 export function usePlayerArse(idOrLogin: string) {
     return useSWR(`/api/footy/player/${idOrLogin}/arse`, fetcher);
+}
+
+export function usePlayerForm(idOrLogin: string, games: number) {
+    return useSWR(`/api/footy/player/${idOrLogin}/form/${games}`, fetcher);
 }

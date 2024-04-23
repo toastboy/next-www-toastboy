@@ -1,14 +1,21 @@
-import { Player } from '@prisma/client';
-import playerService from 'services/Player';
+'use client';
 
-export default async function PlayerForm({
-    player,
+import { Loader } from '@mantine/core';
+import { Key } from 'react';
+import { usePlayerForm } from 'use/player';
+import GameDayLink from './GameDayLink';
+
+export default function PlayerForm({
+    idOrLogin,
     games,
 }: {
-    player: Player,
+    idOrLogin: string,
     games: number,
 }) {
-    const outcomes = await playerService.getForm(player.id, 0, games);
+    const { data: outcomes, error, isLoading } = usePlayerForm(idOrLogin, games);
+
+    if (error) return <div>failed to load</div>;
+    if (isLoading) return <Loader color="gray" type="dots" />;
 
     if (!outcomes || outcomes.length === 0) {
         return null;
@@ -16,8 +23,8 @@ export default async function PlayerForm({
 
     return (
         <div className="px-6 py-4">
-            {outcomes.map((outcome, index) => (
-                <p key={index} className="text-gray-700 text-base">Game {outcome.gameDay.date.toLocaleDateString('sv')}: {outcome.points}</p>
+            {outcomes.map((outcome: { gameDayId: number; points: number; }, index: Key) => (
+                <p key={index}>Game <GameDayLink id={outcome.gameDayId} />: {outcome.points}</p>
             ))}
         </div>
     );

@@ -23,7 +23,7 @@ export default function GameCalendar({
     }
 
     useEffect(() => {
-        fetch('/api/footy/gamedays')
+        fetch('/api/footy/gameday')
             .then(response => response.json())
             .then(data => {
                 setGameDays(data);

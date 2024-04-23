@@ -27,7 +27,7 @@ export default async function PlayerProfile({
             <PlayerCountries idOrLogin={player.login} />
             <PlayerArse idOrLogin={player.login} />
             <PlayerForm idOrLogin={player.login} games={5} />
-            <PlayerYearsActive player={player} />
+            <PlayerYearsActive idOrLogin={player.login} />
             <PlayerResults player={player} year={0} />
             <PlayerPositions player={player} year={0} />
             <div className="px-6 py-4">

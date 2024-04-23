@@ -40,3 +40,7 @@ export function usePlayerArse(idOrLogin: string) {
 export function usePlayerForm(idOrLogin: string, games: number) {
     return useSWR(`/api/footy/player/${idOrLogin}/form/${games}`, fetcher);
 }
+
+export function usePlayerYearsActive(idOrLogin: string) {
+    return useSWR(`/api/footy/player/${idOrLogin}/yearsactive`, fetcher);
+}

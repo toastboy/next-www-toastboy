@@ -45,6 +45,6 @@ export function usePlayerYearsActive(idOrLogin: string) {
     return useSWR(`/api/footy/player/${idOrLogin}/yearsactive`, fetcher);
 }
 
-export function usePlayerResults(idOrLogin: string, year: number) {
-    return useSWR(`/api/footy/player/${idOrLogin}/results/${year}`, fetcher);
+export function usePlayerRecord(idOrLogin: string, year: number) {
+    return useSWR(`/api/footy/player/${idOrLogin}/record/${year}`, fetcher);
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import { Loader } from '@mantine/core';
-import { usePlayerName, usePlayerResults } from 'use/player';
+import { usePlayerName, usePlayerRecord } from 'use/player';
 import { getYearName } from 'lib/utils';
 
 export default function PlayerResults({
@@ -11,7 +11,7 @@ export default function PlayerResults({
     idOrLogin: string,
     year: number,
 }) {
-    const { data: record, error, isLoading } = usePlayerResults(idOrLogin, year);
+    const { data: record, error, isLoading } = usePlayerRecord(idOrLogin, year);
     const { playerName, playerNameIsError, playerNameIsLoading } = usePlayerName(idOrLogin);
 
     if (error) return <div>failed to load</div>;

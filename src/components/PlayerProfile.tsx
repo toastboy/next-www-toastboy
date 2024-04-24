@@ -29,7 +29,7 @@ export default async function PlayerProfile({
             <PlayerForm idOrLogin={player.login} games={5} />
             <PlayerYearsActive idOrLogin={player.login} />
             <PlayerResults idOrLogin={player.login} year={0} />
-            <PlayerPositions player={player} year={0} />
+            <PlayerPositions idOrLogin={player.login} year={0} />
             <div className="px-6 py-4">
                 <div className="font-bold text-xl mb-2">{playerService.getName(player)}</div>
                 <p className="text-gray-700 text-base">{email}</p>

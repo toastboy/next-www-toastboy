@@ -1,21 +1,17 @@
 'use client';
 
 import { Anchor, Loader } from '@mantine/core';
-import { usePlayer, usePlayerName } from 'use/player';
+import { usePlayer } from 'use/player';
 
 export default function PlayerLink({ idOrLogin }: { idOrLogin: string }) {
-    const { player, playerIsError, playerIsLoading } = usePlayer(idOrLogin);
-    const { playerName, playerNameIsError, playerNameIsLoading } = usePlayerName(idOrLogin);
+    const { data: player, error, isLoading } = usePlayer(idOrLogin);
 
-    if (playerIsError) return <div>failed to load</div>;
-    if (playerIsLoading) return <Loader color="gray" type="dots" />;
-
-    if (playerNameIsError) return <div>failed to load</div>;
-    if (playerNameIsLoading) return <Loader color="gray" type="dots" />;
+    if (error) return <div>failed to load</div>;
+    if (isLoading) return <Loader color="gray" type="dots" />;
 
     return (
         <Anchor href={`/footy/player/${player.login}`} >
-            {playerName}
+            {player.name}
         </Anchor>
     );
 }

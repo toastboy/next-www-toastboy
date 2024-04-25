@@ -30,7 +30,7 @@ export async function GET(
             });
         }
 
-        return new Response(JSON.stringify(record), {
+        return new Response(JSON.stringify({ ...record, player: player }), {
             status: 200,
             headers: {
                 'Content-Type': 'text/json',

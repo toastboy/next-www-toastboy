@@ -151,19 +151,25 @@ model PickerTeams {
 }
 
 model Player {
-  id            Int       @id @default(autoincrement())
-  is_admin      Boolean?  @db.TinyInt
-  login         String    @unique(map: "login") @db.VarChar(16)
-  first_name    String?   @db.VarChar(32)
-  last_name     String?   @db.VarChar(32)
-  email         String?   @db.VarChar(255)
-  joined        DateTime? @db.Date
-  finished      DateTime? @db.Date
-  born          DateTime? @db.Date
+  id    Int    @id @default(autoincrement())
+  login String @unique(map: "login") @db.VarChar(16)
+
+  is_admin Boolean?
+
+  first_name String?
+  last_name  String?
+  name       String?
+  anonymous  Boolean?
+
+  email String?
+
+  joined   DateTime?
+  finished DateTime?
+  born     DateTime?
+
+  comment String?
+
   introduced_by Int?
-  comment       String?   @db.VarChar(32)
-  anonymous     Boolean?  @db.TinyInt
-  goalie        Boolean?  @db.TinyInt
 
   ArsesOfPlayer Arse[]             @relation("player")
   ArsesByPlayer Arse[]             @relation("rater")

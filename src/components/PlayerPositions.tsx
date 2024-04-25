@@ -1,7 +1,7 @@
 'use client';
 
 import { Loader } from '@mantine/core';
-import { usePlayerName, usePlayerRecord } from 'use/player';
+import { usePlayerRecord } from 'use/player';
 import { getYearName } from 'lib/utils';
 import { EnumTable } from 'services/PlayerRecord';
 
@@ -13,7 +13,6 @@ export default function PlayerResults({
     year: number,
 }) {
     const { data: record, error, isLoading } = usePlayerRecord(idOrLogin, year);
-    const { playerName, playerNameIsError, playerNameIsLoading } = usePlayerName(idOrLogin);
 
     if (error) return <div>failed to load</div>;
     if (isLoading) return <Loader color="gray" type="dots" />;
@@ -22,12 +21,9 @@ export default function PlayerResults({
         return null;
     }
 
-    if (playerNameIsError) return <div>failed to load</div>;
-    if (playerNameIsLoading) return <Loader color="gray" type="dots" />;
-
     return (
         <div className="px-6 py-4">
-            <table summary={`${playerName}'s ${getYearName(year)} table positions`}>
+            <table summary={`${record.player.name}'s ${getYearName(year)} table positions`}>
                 <caption>{getYearName(year)} Positions</caption>
                 <tbody>
                     {Object.keys(EnumTable).map((table) => {

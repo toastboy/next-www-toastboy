@@ -1,20 +1,4 @@
 import gameDayService from 'services/GameDay';
+import { handleGET } from '../common';
 
-export async function GET() {
-    try {
-        const distinctYears = await gameDayService.getAllYears();
-
-        return new Response(JSON.stringify(distinctYears), {
-            status: 200,
-            headers: {
-                'Content-Type': 'text/json',
-            },
-        });
-    }
-    catch (error) {
-        console.error(`Error im API route: ${error} `);
-        return new Response('Internal Server Error', {
-            status: 500,
-        });
-    }
-}
+export const GET = () => handleGET(gameDayService.getAllYears);

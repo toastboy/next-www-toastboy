@@ -6,5 +6,5 @@ export function useGameYears() {
 }
 
 export function useGameDay(id: number) {
-    return useSWR(`/api/footy/gameyears/${id}`, fetcher);
+    return useSWR(`/api/footy/gameday/${id}`, fetcher);
 }

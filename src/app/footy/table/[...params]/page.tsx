@@ -4,6 +4,7 @@ import gameDayService from 'services/GameDay';
 import { EnumTable } from 'services/PlayerRecord';
 import config from 'lib/config';
 import { getYearName } from 'lib/utils';
+import GameYears from 'components/GameYears';
 
 /**
  * Generates a qualified table name based on the provided table type and year.
@@ -79,6 +80,7 @@ export default async function Page({
     if (UnqualifiedTableName(table)) {
         return (
             <div>
+                <GameYears />
                 <p className="text-2xl font-bold">{QualifiedTableName(table, year)}</p>
                 <Table table={table} year={year} qualified={true} />
                 <p className="text-2xl font-bold">{UnqualifiedTableName(table)}</p>
@@ -89,6 +91,7 @@ export default async function Page({
     else {
         return (
             <div>
+                <GameYears />
                 <p className="text-2xl font-bold">{QualifiedTableName(table, year)}</p>
                 <Table table={table} year={year} />
             </div>

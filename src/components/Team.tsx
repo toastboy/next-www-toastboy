@@ -1,5 +1,5 @@
 import { Outcome } from '@prisma/client';
-import TeamPlayer from './TeamPlayer';
+import TeamPlayer from 'components/TeamPlayer';
 import playerRecordService from 'services/PlayerRecord';
 import playerService from 'services/Player';
 
@@ -29,7 +29,7 @@ export default async function Team({
     return (
         <div className="w-[600px] rounded overflow-hidden shadow-lg">
             {outcomes.map((o) => (
-                <TeamPlayer key={o.playerId} idOrLogin={o.playerId.toString()} outcome={o} />
+                <TeamPlayer key={o.playerId} idOrLogin={o.playerId.toString()} goalie={o.goalie} />
             ))}
         </div >
     );

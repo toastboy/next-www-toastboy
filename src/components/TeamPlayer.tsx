@@ -1,33 +1,20 @@
 import PlayerMugshot from 'components/PlayerMugshot';
-import playerService from "services/Player";
-import PlayerForm from './PlayerForm';
-import PlayerLink from './PlayerLink';
-import { Outcome } from '@prisma/client';
+import PlayerForm from 'components/PlayerForm';
+import PlayerLink from 'components/PlayerLink';
 
 export default async function TeamPlayer({
     idOrLogin,
-    outcome,
+    goalie,
 }: {
-    idOrLogin: string,
-    outcome: Outcome,
+    idOrLogin: string;
+    goalie: boolean | null;
 }) {
-    const id = await playerService.getId(idOrLogin);
-    if (!id) {
-        return null;
-    }
-
-    // TODO: use API route
-    const player = await playerService.getById(id);
-    if (!player) {
-        return null;
-    }
-
     return (
-        <div className="w-[600px] rounded overflow-hidden shadow-lg" key={player.id}>
-            <PlayerLink idOrLogin={player.login} />
-            <PlayerMugshot idOrLogin={player.login} />
-            <PlayerForm idOrLogin={player.login} games={10} />
-            <p>{outcome.goalie ? "GOALIE!" : ""}</p>
-        </div >
+        <div className="w-[600px] rounded overflow-hidden shadow-lg" key={idOrLogin}>
+            <PlayerLink idOrLogin={idOrLogin} />
+            <PlayerMugshot idOrLogin={idOrLogin} />
+            <PlayerForm idOrLogin={idOrLogin} games={10} />
+            <p>{goalie ? "GOALIE!" : ""}</p>
+        </div>
     );
 }

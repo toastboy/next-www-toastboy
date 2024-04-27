@@ -6,6 +6,7 @@ export default async function WinnersTable({ table, year }: {
     table: EnumTable,
     year?: number,
 }) {
+    // TODO: use API route
     let winners = await playerRecordService.getWinners(table as EnumTable);
 
     if (year) {

@@ -22,7 +22,7 @@ export default function PlayerResults({
 
     return (
         <div className="px-6 py-4">
-            <table summary={`${record.player.name}'s ${getYearName(year)} results record`}>
+            <table summary={`${record.name}'s ${getYearName(year)} results record`}>
                 <caption>{getYearName(year)} Results</caption>
                 <tbody>
                     <tr><th>Played</th><td>{record.P}</td></tr>

@@ -12,6 +12,7 @@ export default async function Team({
         return null;
     }
 
+    // TODO: use API route
     let playerRecords = await playerRecordService.getByGameDay(outcomes[0].gameDayId, 0);
     if (playerRecords) {
         playerRecords = playerRecords.filter((pr) => outcomes.some((o) => o.playerId == pr.playerId));

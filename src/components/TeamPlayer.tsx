@@ -16,6 +16,7 @@ export default async function TeamPlayer({
         return null;
     }
 
+    // TODO: use API route
     const player = await playerService.getById(id);
     if (!player) {
         return null;

@@ -23,7 +23,7 @@ export default function PlayerResults({
 
     return (
         <div className="px-6 py-4">
-            <table summary={`${record.player.name}'s ${getYearName(year)} table positions`}>
+            <table summary={`${record.name}'s ${getYearName(year)} table positions`}>
                 <caption>{getYearName(year)} Positions</caption>
                 <tbody>
                     {Object.keys(EnumTable).map((table) => {

@@ -8,6 +8,7 @@ export default async function Table({ table, year, qualified, take }: {
     qualified?: boolean,
     take?: number,
 }) {
+    // TODO: use API route
     const playerRecords = await playerRecordService.getTable(table, year, qualified, take);
 
     if (!playerRecords || playerRecords.length === 0) {

@@ -38,6 +38,7 @@ const defaultPlayer: Player = {
     login: "garyp",
     first_name: "Gary",
     last_name: "Player",
+    name: "Gary Player",
     email: "gary.player@example.com",
     joined: new Date("2021-01-01"),
     finished: null,
@@ -45,7 +46,6 @@ const defaultPlayer: Player = {
     introduced_by: 23,
     comment: null,
     anonymous: false,
-    goalie: null
 };
 
 const invalidPlayer: Player = {
@@ -92,7 +92,7 @@ describe('PlayerService', () => {
 
             return Promise.resolve(args.where.finished ?
                 playerList.filter((player) => player.finished != null) :
-                playerList.filter((player) => player.finished == null)
+                playerList.filter((player) => player.finished == null),
             );
         });
 
@@ -139,7 +139,7 @@ describe('PlayerService', () => {
             const result = await playerService.getById(6);
             expect(result).toEqual({
                 ...defaultPlayer,
-                id: 6
+                id: 6,
             } as Player);
         });
 
@@ -365,7 +365,7 @@ describe('PlayerService', () => {
                         date: new Date(),
                         game: 1,
                     },
-                }
+                },
             );
         });
 
@@ -411,7 +411,7 @@ describe('PlayerService', () => {
                             date: new Date('2023-01-01'),
                         },
                     },
-                ]
+                ],
             );
         });
 
@@ -420,10 +420,10 @@ describe('PlayerService', () => {
             expect(prisma.outcome.findMany).toHaveBeenCalledTimes(1);
             expect(prisma.outcome.findMany).toHaveBeenCalledWith({
                 where: {
-                    playerId: 1
+                    playerId: 1,
                 },
                 include: {
-                    gameDay: true
+                    gameDay: true,
                 },
             });
             expect(result).toEqual([2021, 2022, 2023]);

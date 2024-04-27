@@ -1,13 +1,13 @@
 import playerService from 'services/Player';
-import playerRecordService from 'services/PlayerRecord';
 import { getPlayer } from '../../../common';
 import { handleGET } from 'app/api/footy/common';
+import prisma from 'lib/prisma';
 
 export async function generateStaticParams() {
     return playerService.getAllIdsAndLogins();
 }
 
-async function getForYearByPlayer(
+export async function getForYearByPlayer(
     { params }: { params: Record<string, string> },
 ): Promise<Record<string, boolean | number | Date | string | null> | null> {
     const player = await getPlayer(params.idOrLogin);
@@ -15,7 +15,15 @@ async function getForYearByPlayer(
         return null;
     }
 
-    const record = await playerRecordService.getForYearByPlayer(parseInt(params.year), player.id);
+    const record = await prisma.playerRecord.findFirst({
+        where: {
+            year: parseInt(params.year),
+            playerId: player.id,
+        },
+        orderBy: {
+            gameDayId: 'desc',
+        },
+    });
     if (!record) {
         return null;
     }
@@ -23,4 +31,5 @@ async function getForYearByPlayer(
     return { ...record, name: player.name };
 }
 
-export const GET = (request: Request, { params }: { params: Record<string, string> }) => handleGET(getForYearByPlayer, { params });
+export const GET = (request: Request, { params }: { params: Record<string, string> }) =>
+    handleGET(getForYearByPlayer, { params });

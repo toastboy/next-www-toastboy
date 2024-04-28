@@ -1,34 +1,28 @@
-import { Outcome } from '@prisma/client';
+'use client';
+
 import TeamPlayer from 'components/TeamPlayer';
-import playerRecordService from 'services/PlayerRecord';
-import playerService from 'services/Player';
+import { Loader } from '@mantine/core';
+import { useTeam } from 'use/team';
 
-export default async function Team({
-    outcomes,
+export default function Team({
+    gameDayId,
+    team,
 }: {
-    outcomes: Outcome[],
+    gameDayId: number;
+    team: 'A' | 'B';
 }) {
-    if (outcomes.length == 0) {
+    const { data, error, isLoading } = useTeam(gameDayId, team);
+
+    if (error) return <div>failed to load</div>;
+    if (isLoading) return <Loader color="gray" type="dots" />;
+
+    if (!data || data.length == 0) {
         return null;
-    }
-
-    // TODO: use API route
-    let playerRecords = await playerRecordService.getByGameDay(outcomes[0].gameDayId, 0);
-    if (playerRecords) {
-        playerRecords = playerRecords.filter((pr) => outcomes.some((o) => o.playerId == pr.playerId));
-
-        const form = [];
-        const players = [];
-
-        for (const playerRecord of playerRecords) {
-            form.push(await playerService.getForm(playerRecord.playerId, 0, 10));
-            players.push(await playerService.getById(playerRecord.playerId));
-        }
     }
 
     return (
         <div className="w-[600px] rounded overflow-hidden shadow-lg">
-            {outcomes.map((o) => (
+            {data.map((o) => (
                 <TeamPlayer key={o.playerId} idOrLogin={o.playerId.toString()} goalie={o.goalie} />
             ))}
         </div >

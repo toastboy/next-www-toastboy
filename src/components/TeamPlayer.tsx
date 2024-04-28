@@ -1,8 +1,10 @@
+'use client';
+
 import PlayerMugshot from 'components/PlayerMugshot';
 import PlayerForm from 'components/PlayerForm';
 import PlayerLink from 'components/PlayerLink';
 
-export default async function TeamPlayer({
+export default function TeamPlayer({
     idOrLogin,
     goalie,
 }: {

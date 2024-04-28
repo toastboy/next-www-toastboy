@@ -114,16 +114,18 @@ export class OutcomeService {
     }
 
     /**
-     * Retrieves outcomes by GameDay ID.
-     * @param gameDayId - The ID of the GameDay.
-     * @returns A promise that resolves to an array of Outcomes.
-     * @throws An error if there is a failure.
+     * Retrieves outcomes by game day ID and, optionally, team.
+     * @param gameDayId - The ID of the game day.
+     * @param team - Optional team ('A' or 'B').
+     * @returns A promise that resolves to an array of Outcome objects.
+     * @throws If there is an error fetching the outcomes.
      */
-    async getByGameDay(gameDayId: number): Promise<Outcome[]> {
+    async getByGameDay(gameDayId: number, team?: 'A' | 'B'): Promise<Outcome[]> {
         try {
             return prisma.outcome.findMany({
                 where: {
-                    gameDayId: gameDayId,
+                    gameDayId,
+                    team,
                 },
             });
         } catch (error) {

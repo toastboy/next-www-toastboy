@@ -15,10 +15,7 @@ export default function Team({
 
     if (error) return <div>failed to load</div>;
     if (isLoading) return <Loader color="gray" type="dots" />;
-
-    if (!data || data.length == 0) {
-        return null;
-    }
+    if (!data || data.length == 0) return null;
 
     return (
         <div className="w-[600px] rounded overflow-hidden shadow-lg">

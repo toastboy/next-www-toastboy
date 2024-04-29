@@ -1,25 +1,28 @@
-import playerRecordService, { EnumTable } from 'services/PlayerRecord';
+'use client';
+
+import { EnumTable } from 'services/PlayerRecord';
 import PlayerLink from './PlayerLink';
 import TableScore from './TableScore';
+import { Loader } from '@mantine/core';
+import { useTable } from 'use/table';
 
-export default async function Table({ table, year, qualified, take }: {
+export default function Table({ table, year, qualified, take }: {
     table: EnumTable,
     year: number,
     qualified?: boolean,
     take?: number,
 }) {
-    // TODO: use API route
-    const playerRecords = await playerRecordService.getTable(table, year, qualified, take);
+    const { data, error, isLoading } = useTable(table, year, qualified, take);
 
-    if (!playerRecords || playerRecords.length === 0) {
-        return null;
-    }
+    if (error) return <div>failed to load</div>;
+    if (isLoading) return <Loader color="gray" type="dots" />;
+    if (!data || data.length == 0) return null;
 
     return (
         <div className="px-6 py-4">
-            {playerRecords.map((playerRecord, index) => (
+            {data.map((record, index) => (
                 <div key={index}>
-                    <PlayerLink idOrLogin={playerRecord.playerId.toString()} /> : <TableScore table={table} playerRecord={playerRecord} />
+                    <PlayerLink idOrLogin={record.playerId.toString()} /> : <TableScore table={table} playerRecord={record} />
                 </div>
             ))}
         </div>

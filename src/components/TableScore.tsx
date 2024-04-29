@@ -1,7 +1,9 @@
+'use client';
+
 import { PlayerRecord } from '@prisma/client';
 import { EnumTable } from 'services/PlayerRecord';
 
-export default async function TableScore({ table, playerRecord }: {
+export default function TableScore({ table, playerRecord }: {
     table: EnumTable,
     playerRecord: PlayerRecord,
 }) {

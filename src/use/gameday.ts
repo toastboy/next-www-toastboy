@@ -4,7 +4,7 @@ import { fetcher } from './fetcher';
 import useSWR from 'swr';
 
 export function useGameYears() {
-    return useSWR(`/api/footy/gameyears`, fetcher);
+    return useSWR<number[] | null>(`/api/footy/gameyears`, fetcher);
 }
 
 export function useGameDay(id: number) {

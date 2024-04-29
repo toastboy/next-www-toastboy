@@ -203,15 +203,14 @@ export class PlayerRecordService {
      */
     async getWinners(
         table: EnumTable,
+        year?: number,
     ): Promise<PlayerRecord[]> {
         try {
             const rank = `rank_${table}`;
             const seasonEnders = await gameDayService.getSeasonEnders();
             const firstPlaceRecords = await prisma.playerRecord.findMany({
                 where: {
-                    year: {
-                        gt: 0,
-                    },
+                    ...(year != undefined ? { year } : { year: { gt: 0 } }),
                     [rank]: 1,
                 },
                 orderBy: {

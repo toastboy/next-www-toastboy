@@ -1,23 +1,26 @@
+'use client';
+
+import { Loader } from '@mantine/core';
 import PlayerLink from 'components/PlayerLink';
 import { getYearName } from 'lib/utils';
-import playerRecordService, { EnumTable } from 'services/PlayerRecord';
+import { EnumTable } from 'services/PlayerRecord';
+import { useWinners } from 'use/winners';
 
-export default async function WinnersTable({ table, year }: {
+export default function WinnersTable({ table, year }: {
     table: EnumTable,
     year?: number,
 }) {
-    // TODO: use API route
-    let winners = await playerRecordService.getWinners(table as EnumTable);
+    const { data, error, isLoading } = useWinners(table, year);
 
-    if (year) {
-        winners = winners.filter((winner) => winner.year === year);
-    }
+    if (error) return <div>failed to load</div>;
+    if (isLoading) return <Loader color="gray" type="dots" />;
+    if (!data) return null;
 
     return (
         <table>
             <caption>{table.charAt(0).toUpperCase() + table.slice(1)}</caption>
             <tbody>
-                {winners.map((winner, index) => (
+                {data.map((winner, index) => (
                     <tr key={index}>
                         <th>
                             {getYearName(winner.year)}

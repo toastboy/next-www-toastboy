@@ -1,12 +1,14 @@
+'use client';
+
 import WinnersTable from 'components/WinnersTable';
 import { notFound } from 'next/navigation';
 import { EnumTable } from 'services/PlayerRecord';
 
-export default async function Page({
+export default function Page({
     params,
 }: {
     params: { params: string[] },
-}): Promise<JSX.Element> {
+}) {
     let year = undefined;
 
     if (params.params) {

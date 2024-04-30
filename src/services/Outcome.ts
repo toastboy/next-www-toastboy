@@ -77,6 +77,31 @@ export class OutcomeService {
     }
 
     /**
+     * Retrieves the last played outcome.
+     * @returns A Promise that resolves to the last played Outcome, or null if no outcome is found.
+     * @throws An error if there is a failure.
+     */
+    async getLastPlayed(): Promise<Outcome | null> {
+        // TODO: write test
+        try {
+            return prisma.outcome.findFirst({
+                where: {
+                    points: {
+                        not: null,
+                    },
+                },
+                orderBy: {
+                    gameDayId: 'desc',
+                },
+            });
+        }
+        catch (error) {
+            log(`Error fetching outcome: ${error}`);
+            throw error;
+        }
+    }
+
+    /**
      * Retrieves all the outcomes for gameDays in a given year, or all years if
      * `year` is zero.
      * @param year - The year to include, or zero for all year.

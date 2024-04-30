@@ -126,6 +126,27 @@ export class PlayerRecordService {
         }
     }
 
+    async getProgress(): Promise<[number, number] | null> {
+        try {
+            const lastRecord = await prisma.playerRecord.findFirst({
+                orderBy: {
+                    gameDayId: 'desc',
+                },
+            });
+            const total = await outcomeService.getLastPlayed();
+
+            if (!lastRecord || !total) {
+                return null;
+            }
+
+            return [lastRecord.gameDayId, total.gameDayId];
+        }
+        catch (error) {
+            log(`Error fetching playerRecords: ${error}`);
+            throw error;
+        }
+    }
+
     /**
      * Retrieves playerRecords by GameDay ID.
      * @param gameDayId - The ID of the GameDay.
@@ -393,9 +414,6 @@ export class PlayerRecordService {
                     }
 
                     const gameDayOutcomes = await outcomeService.getByGameDay(gameDay.id);
-
-                    // TODO: Remove this log
-                    console.log(`Game ${gameDay.id}`);
 
                     await calculateYearPlayerRecords(
                         year,

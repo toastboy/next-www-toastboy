@@ -28,7 +28,7 @@ async function processJsonData<T>(
     fileName: string,
     prismaModel: {
         create: (data: { data: T }) => Prisma.PrismaPromise<T>;
-    }
+    },
 ) {
     console.log(`Starting: ${fileName}`);
     const dataItems: T[] = await downloadAndParseJson(containerClient, fileName) as T[];
@@ -67,7 +67,7 @@ async function main() {
     const credentials = new ClientSecretCredential(tenantId, clientId, clientSecret);
     const blobServiceClient = new BlobServiceClient(
         `https://${storageAccountName}.blob.core.windows.net`,
-        credentials
+        credentials,
     );
 
     const containerClient = blobServiceClient.getContainerClient(containerName);
@@ -100,7 +100,10 @@ async function main() {
     await processJsonData<ClubSupporter>(containerClient, "ClubSupporter.json", prisma.clubSupporter);
     await processJsonData<Arse>(containerClient, "Arse.json", prisma.arse);
 
-    // TODO: Calculate PlayerRecord from the data in the database
+    // Ideally I'd calculate all the PlayerRecords from the data in the database
+    // at this point but I've struggled to get ts-node to work with the main
+    // app's module config. Instead there's the interactive admin interface at
+    // footy/admin
 }
 
 main()

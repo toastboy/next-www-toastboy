@@ -1,8 +1,8 @@
 'use client';
 
 import { Loader } from '@mantine/core';
-import { usePlayerLastPlayed } from 'use/player';
-import GameDayLink from './GameDayLink';
+import { usePlayerLastPlayed } from 'lib/swr';
+import GameDayLink from 'components/GameDayLink';
 
 export default function PlayerLastPlayed({
     idOrLogin,

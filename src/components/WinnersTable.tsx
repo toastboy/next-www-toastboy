@@ -3,11 +3,10 @@
 import { Loader } from '@mantine/core';
 import PlayerLink from 'components/PlayerLink';
 import { getYearName } from 'lib/utils';
-import { EnumTable } from 'services/PlayerRecord';
-import { useWinners } from 'use/winners';
+import { FootyTable, useWinners } from 'lib/swr';
 
 export default function WinnersTable({ table, year }: {
-    table: EnumTable,
+    table: FootyTable,
     year?: number,
 }) {
     const { data, error, isLoading } = useWinners(table, year);

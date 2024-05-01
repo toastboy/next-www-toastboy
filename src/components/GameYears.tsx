@@ -1,7 +1,7 @@
 'use client';
 
 import { Loader } from '@mantine/core';
-import { useGameYears } from 'use/gameday';
+import { useGameYears } from 'lib/swr';
 
 export default function GameYears() {
     const { data, error, isLoading } = useGameYears();

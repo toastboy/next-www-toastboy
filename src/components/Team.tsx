@@ -2,7 +2,7 @@
 
 import TeamPlayer from 'components/TeamPlayer';
 import { Loader } from '@mantine/core';
-import { useTeam } from 'use/team';
+import { useTeam } from 'lib/swr';
 
 export default function Team({
     gameDayId,

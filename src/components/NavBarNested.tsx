@@ -10,9 +10,9 @@ import {
     IconAdjustments,
     IconLock,
 } from '@tabler/icons-react';
-// import { UserButton } from '../UserButton/UserButton';
-import { LinksGroup } from './NavbarLinksGroup';
-import classes from './NavbarNested.module.css';
+// import { UserButton } from '.components/UserButton/UserButton';
+import { LinksGroup } from 'components/NavbarLinksGroup';
+import classes from 'components/NavbarNested.module.css';
 import Image from 'next/image';
 
 const mockdata = [

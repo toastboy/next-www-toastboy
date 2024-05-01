@@ -1,5 +1,5 @@
 import { Image, Loader } from '@mantine/core';
-import { useCountry } from 'use/country';
+import { useCountry } from 'lib/swr';
 
 export default function CountryFlag({ isoCode }: { isoCode: string }) {
     const { data: country, error, isLoading } = useCountry(isoCode);

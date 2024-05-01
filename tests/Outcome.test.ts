@@ -48,7 +48,7 @@ describe('OutcomeService', () => {
         }) => {
             const outcome = outcomeList.find((outcome) =>
                 outcome.gameDayId === args.where.gameDayId_playerId.gameDayId &&
-                outcome.playerId === args.where.gameDayId_playerId.playerId
+                outcome.playerId === args.where.gameDayId_playerId.playerId,
             );
             return Promise.resolve(outcome ? outcome : null);
         });
@@ -63,7 +63,7 @@ describe('OutcomeService', () => {
         }) => {
             return Promise.resolve(outcomeList.filter((outcome) =>
                 outcome.playerId === args.where.playerId &&
-                outcome.gameDayId < args.where.gameDayId).slice(0, args.take)
+                outcome.gameDayId < args.where.gameDayId).slice(0, args.take),
             );
         });
 
@@ -89,7 +89,7 @@ describe('OutcomeService', () => {
         (prisma.outcome.create as jest.Mock).mockImplementation((args: { data: Outcome }) => {
             const outcome = outcomeList.find((outcome) =>
                 outcome.gameDayId === args.data.gameDayId &&
-                outcome.playerId === args.data.playerId
+                outcome.playerId === args.data.playerId,
             );
 
             if (outcome) {
@@ -112,7 +112,7 @@ describe('OutcomeService', () => {
         }) => {
             const outcome = outcomeList.find((outcome) =>
                 outcome.gameDayId === args.where.gameDayId_playerId.gameDayId &&
-                outcome.playerId === args.where.gameDayId_playerId.playerId
+                outcome.playerId === args.where.gameDayId_playerId.playerId,
             );
 
             if (outcome) {
@@ -133,7 +133,7 @@ describe('OutcomeService', () => {
         }) => {
             const outcome = outcomeList.find((outcome) =>
                 outcome.gameDayId === args.where.gameDayId_playerId.gameDayId &&
-                outcome.playerId === args.where.gameDayId_playerId.playerId
+                outcome.playerId === args.where.gameDayId_playerId.playerId,
             );
             return Promise.resolve(outcome ? outcome : null);
         });
@@ -175,6 +175,24 @@ describe('OutcomeService', () => {
             else {
                 throw new Error("Result is null");
             }
+        });
+    });
+
+    describe('getLastPlayed', () => {
+        it('should return the correct last played GameDay ID', async () => {
+            (prisma.outcome.findFirst as jest.Mock).mockResolvedValueOnce(defaultOutcome);
+            const result = await outcomeService.getLastPlayed();
+            expect(result).toEqual(defaultOutcome);
+            expect(prisma.outcome.findFirst).toHaveBeenCalledWith({
+                where: {
+                    points: {
+                        not: null,
+                    },
+                },
+                orderBy: {
+                    gameDayId: 'desc',
+                },
+            });
         });
     });
 
@@ -297,7 +315,7 @@ describe('OutcomeService', () => {
             expect(prisma.outcome.findMany).toHaveBeenCalledWith({
                 where: {
                     points: {
-                        not: null
+                        not: null,
                     },
                     gameDay: {
                         date: {
@@ -329,7 +347,7 @@ describe('OutcomeService', () => {
             expect(prisma.outcome.findMany).toHaveBeenCalledWith({
                 where: {
                     points: {
-                        not: null
+                        not: null,
                     },
                 },
                 take: 1,

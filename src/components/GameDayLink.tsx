@@ -1,7 +1,7 @@
 'use client';
 
 import { Anchor, Loader } from '@mantine/core';
-import { useGameDay } from 'use/gameday';
+import { useGameDay } from 'lib/swr';
 
 export default function GameDayLink({ id }: { id: number }) {
     const { data: gameDay, error, isLoading } = useGameDay(id);

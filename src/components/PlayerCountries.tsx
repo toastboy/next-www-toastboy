@@ -1,7 +1,7 @@
 'use client';
 
-import { usePlayerCountries } from 'use/player';
-import CountryFlag from './CountryFlag';
+import { usePlayerCountries } from 'lib/swr';
+import CountryFlag from 'components/CountryFlag';
 import { Loader } from '@mantine/core';
 
 export default function PlayerCountries({ idOrLogin }: { idOrLogin: string }) {

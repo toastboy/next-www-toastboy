@@ -126,6 +126,13 @@ export class PlayerRecordService {
         }
     }
 
+    /**
+     * Retrieves the progress of creating PlayerRecords for each GameDay where a
+     * game was played.
+     * @returns A promise that resolves to an array containing the last recorded
+     * game day ID and the last game day ID where there was a game, or null if
+     * the records or last game are not available.
+     */
     async getProgress(): Promise<[number, number] | null> {
         try {
             const lastRecord = await prisma.playerRecord.findFirst({

@@ -2,7 +2,7 @@
 
 import WinnersTable from 'components/WinnersTable';
 import { notFound } from 'next/navigation';
-import { EnumTable } from 'services/PlayerRecord';
+import { FootyTable } from 'lib/swr';
 
 export default function Page({
     params,
@@ -31,8 +31,8 @@ export default function Page({
     return (
         <div className="px-6 py-4">
             <h1 className="text-2xl font-bold">Winners</h1>
-            {Object.keys(EnumTable).map((table) => {
-                return <WinnersTable key={table} table={table as EnumTable} year={year} />;
+            {Object.keys(FootyTable).map((table) => {
+                return <WinnersTable key={table} table={table as FootyTable} year={year} />;
             })}
         </div>
     );

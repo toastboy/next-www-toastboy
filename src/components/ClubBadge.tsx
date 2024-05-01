@@ -1,5 +1,5 @@
 import { Image, Loader } from '@mantine/core';
-import { useClub } from 'use/club';
+import { useClub } from 'lib/swr';
 
 export default function ClubBadge({ clubId }: { clubId: number }) {
     const { data: club, error, isLoading } = useClub(clubId);

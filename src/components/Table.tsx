@@ -1,13 +1,12 @@
 'use client';
 
-import { EnumTable } from 'services/PlayerRecord';
-import PlayerLink from './PlayerLink';
-import TableScore from './TableScore';
+import PlayerLink from 'components/PlayerLink';
+import TableScore from 'components/TableScore';
 import { Loader } from '@mantine/core';
-import { useTable } from 'use/table';
+import { FootyTable, useTable } from 'lib/swr';
 
 export default function Table({ table, year, qualified, take }: {
-    table: EnumTable,
+    table: FootyTable,
     year: number,
     qualified?: boolean,
     take?: number,

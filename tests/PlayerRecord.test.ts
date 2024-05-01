@@ -206,6 +206,34 @@ describe('PlayerRecordService', () => {
         });
     });
 
+    describe('getProgress', () => {
+        it('should retrieve the correct numbers for PlayerRecords and last GameDay', async () => {
+            (prisma.outcome.findFirst as jest.Mock).mockResolvedValue({
+                gameDayId: 15,
+            });
+
+            (prisma.playerRecord.findFirst as jest.Mock).mockResolvedValue({
+                gameDayId: 10,
+            });
+
+            const result = await playerRecordService.getProgress();
+            expect(result).toEqual([10, 15]);
+            expect(prisma.outcome.findFirst).toHaveBeenCalledTimes(1);
+            expect(prisma.playerRecord.findFirst).toHaveBeenCalledTimes(1);
+        });
+
+        it('should return null if there are no PlayerRecords', async () => {
+            (prisma.outcome.findFirst as jest.Mock).mockResolvedValue({
+                gameDayId: 15,
+            });
+
+            (prisma.playerRecord.findFirst as jest.Mock).mockResolvedValue(null);
+
+            const result = await playerRecordService.getProgress();
+            expect(result).toBeNull();
+        });
+    });
+
     describe('getByGameDay', () => {
         beforeEach(() => {
             (prisma.playerRecord.findMany as jest.Mock).mockImplementation((args: { where: { gameDayId: number } }) => {

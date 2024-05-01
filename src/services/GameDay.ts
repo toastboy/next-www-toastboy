@@ -194,11 +194,10 @@ export class GameDayService {
     /**
      * Retrieves all the years from the game days where a game has taken or will
      * take place.
-     * @returns A promise that resolves to an array of distinct years or null if
-     * there are no such game days.
+     * @returns A promise that resolves to an array of distinct years.
      * @throws An error if there is a failure.
      */
-    async getAllYears(): Promise<number[] | null> {
+    async getAllYears(): Promise<number[]> {
         try {
             const gameDays = await prisma.gameDay.findMany({
                 where: {

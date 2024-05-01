@@ -1,7 +1,7 @@
 'use client';
 
 import { Loader } from '@mantine/core';
-import { usePlayerArse } from 'use/player';
+import { usePlayerArse } from 'lib/swr';
 
 export default function PlayerLastPlayed({ idOrLogin }: { idOrLogin: string }) {
     const { data: arse, error, isLoading } = usePlayerArse(idOrLogin);

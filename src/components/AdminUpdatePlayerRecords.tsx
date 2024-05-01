@@ -4,7 +4,7 @@ import { ActionIcon, Button, Center, Container, RingProgress, Text, rem } from '
 import { IconCheck } from '@tabler/icons-react';
 import { updatePlayerRecords } from 'actions/updatePlayerRecords';
 import { useEffect } from 'react';
-import { useRecordsProgress } from 'use/records';
+import { useRecordsProgress } from 'lib/swr';
 
 export function AdminUpdatePlayerRecords() {
     const { data, error, mutate } = useRecordsProgress();

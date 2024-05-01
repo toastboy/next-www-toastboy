@@ -3,11 +3,11 @@ import PlayerMugshot from 'components/PlayerMugshot';
 import PlayerArse from 'components/PlayerArse';
 import PlayerClubs from 'components/PlayerClubs';
 import PlayerCountries from 'components/PlayerCountries';
-import PlayerForm from './PlayerForm';
-import PlayerLastPlayed from './PlayerLastPlayed';
-import PlayerYearsActive from './PlayerYearsActive';
-import PlayerResults from './PlayerResults';
-import PlayerPositions from './PlayerPositions';
+import PlayerForm from 'components/PlayerForm';
+import PlayerLastPlayed from 'components/PlayerLastPlayed';
+import PlayerYearsActive from 'components/PlayerYearsActive';
+import PlayerResults from 'components/PlayerResults';
+import PlayerPositions from 'components/PlayerPositions';
 
 export default async function PlayerProfile({
     player,

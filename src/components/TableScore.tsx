@@ -1,16 +1,15 @@
 'use client';
 
-import { PlayerRecord } from '@prisma/client';
-import { EnumTable } from 'services/PlayerRecord';
+import { FootyTable, FootyPlayerRecord } from 'lib/swr';
 
 export default function TableScore({ table, playerRecord }: {
-    table: EnumTable,
-    playerRecord: PlayerRecord,
+    table: FootyTable,
+    playerRecord: FootyPlayerRecord,
 }) {
     switch (table) {
-        case EnumTable.averages:
+        case FootyTable.averages:
             return `${playerRecord.averages?.toFixed(3)}`;
-        case EnumTable.speedy:
+        case FootyTable.speedy:
             if (playerRecord.speedy) {
                 const date = new Date(0);
                 date.setSeconds(playerRecord.speedy);

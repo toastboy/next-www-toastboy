@@ -2,7 +2,7 @@
 
 import { Loader } from '@mantine/core';
 import { Key } from 'react';
-import { usePlayerYearsActive } from 'use/player';
+import { usePlayerYearsActive } from 'lib/swr';
 
 export default function PlayerYearsActive({
     idOrLogin,

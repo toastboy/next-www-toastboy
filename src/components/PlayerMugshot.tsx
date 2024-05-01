@@ -1,7 +1,7 @@
 'use client';
 
 import { Anchor, Image, Loader } from '@mantine/core';
-import { usePlayer } from 'use/player';
+import { usePlayer } from 'lib/swr';
 
 export default function PlayerMugshot({ idOrLogin }: { idOrLogin: string }) {
     const { data: player, error, isLoading } = usePlayer(idOrLogin);

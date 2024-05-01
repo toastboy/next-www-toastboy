@@ -1,9 +1,8 @@
 'use client';
 
 import { Loader } from '@mantine/core';
-import { usePlayerRecord } from 'use/player';
+import { FootyTable, usePlayerRecord } from 'lib/swr';
 import { getYearName } from 'lib/utils';
-import { EnumTable } from 'services/PlayerRecord';
 
 export default function PlayerResults({
     idOrLogin,
@@ -26,7 +25,7 @@ export default function PlayerResults({
             <table summary={`${record.name}'s ${getYearName(year)} table positions`}>
                 <caption>{getYearName(year)} Positions</caption>
                 <tbody>
-                    {Object.keys(EnumTable).map((table) => {
+                    {Object.keys(FootyTable).map((table) => {
                         const position = record[`rank_${table}` as keyof typeof record];
                         if (position === null) {
                             return null;

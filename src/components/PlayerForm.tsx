@@ -2,8 +2,8 @@
 
 import { Loader } from '@mantine/core';
 import { Key } from 'react';
-import { usePlayerForm } from 'use/player';
-import GameDayLink from './GameDayLink';
+import { usePlayerForm } from 'lib/swr';
+import GameDayLink from 'components/GameDayLink';
 
 export default function PlayerForm({
     idOrLogin,

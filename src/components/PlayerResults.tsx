@@ -1,7 +1,7 @@
 'use client';
 
 import { Loader } from '@mantine/core';
-import { usePlayerRecord } from 'use/player';
+import { usePlayerRecord } from 'lib/swr';
 import { getYearName } from 'lib/utils';
 
 export default function PlayerResults({

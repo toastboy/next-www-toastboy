@@ -1,7 +1,7 @@
 'use client';
 
-import { usePlayerClubs } from 'use/player';
-import ClubBadge from './ClubBadge';
+import { usePlayerClubs } from 'lib/swr';
+import ClubBadge from 'components/ClubBadge';
 import { Loader } from '@mantine/core';
 
 export default function PlayerClubs({ idOrLogin }: { idOrLogin: string }) {

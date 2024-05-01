@@ -1,24 +1,24 @@
 import Table from 'components/Table';
 import { notFound } from 'next/navigation';
 import gameDayService from 'services/GameDay';
-import { EnumTable } from 'services/PlayerRecord';
 import config from 'lib/config';
 import { getYearName } from 'lib/utils';
 import GameYears from 'components/GameYears';
+import { FootyTable } from 'lib/swr';
 
 /**
  * Generates a qualified table name based on the provided table type and year.
- * @param {EnumTable} table - The type of table.
+ * @param {FootyTable} table - The type of table.
  * @param {number} year - The year for which the table is generated.
  * @returns {string} - The qualified table name.
  */
-function QualifiedTableName(table: EnumTable, year: number): string {
+function QualifiedTableName(table: FootyTable, year: number): string {
     let tableName = "";
     switch (table) {
-        case EnumTable.speedy:
+        case FootyTable.speedy:
             tableName = 'Captain Speedy';
             break;
-        case EnumTable.stalwart:
+        case FootyTable.stalwart:
             tableName = 'Stalwart Standings';
             break;
         default:
@@ -31,15 +31,15 @@ function QualifiedTableName(table: EnumTable, year: number): string {
 /**
  * Generates a name for an qualified table name based on the provided table type
  * and year: if no qualification is applicable then it returns null.
- * @param {EnumTable} table - The type of table.
+ * @param {FootyTable} table - The type of table.
  * @param {number} year - The year for which the table is generated.
  * @returns {string} - The qualified table name or null.
  */
-function UnqualifiedTableName(table: EnumTable): string | null {
+function UnqualifiedTableName(table: FootyTable): string | null {
     switch (table) {
-        case EnumTable.averages:
+        case FootyTable.averages:
             return `Played Fewer than ${config.minGamesForAveragesTable} Games`;
-        case EnumTable.speedy:
+        case FootyTable.speedy:
             return `Responded Fewer than ${config.minRepliesForSpeedyTable} Times`;
         default:
             return null;
@@ -52,7 +52,7 @@ export default async function Page({
     params: { params: string[] },
 }): Promise<JSX.Element> {
     let year = 0;
-    let table = EnumTable.points;
+    let table = FootyTable.points;
 
     switch (params.params.length) {
         case 2:
@@ -68,7 +68,7 @@ export default async function Page({
             }
         // falls through
         case 1:
-            table = EnumTable[params.params[0] as keyof typeof EnumTable];
+            table = FootyTable[params.params[0] as keyof typeof FootyTable];
             if (!table) {
                 return notFound();
             }

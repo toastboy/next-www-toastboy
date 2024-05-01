@@ -82,7 +82,6 @@ export class OutcomeService {
      * @throws An error if there is a failure.
      */
     async getLastPlayed(): Promise<Outcome | null> {
-        // TODO: write test
         try {
             return prisma.outcome.findFirst({
                 where: {

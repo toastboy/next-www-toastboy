@@ -204,15 +204,41 @@ export class GameDayService {
                     game: true,
                 },
                 select: {
-                    date: true,
+                    year: true,
                 },
             });
-            const years = gameDays.map(gd => gd.date.getFullYear());
+            const years = gameDays.map(gd => gd.year);
             const distinctYears = Array.from(new Set(years));
 
             return Promise.resolve(distinctYears);
         } catch (error) {
             log(`Error fetching GameDays: ${error}`);
+            throw error;
+        }
+    }
+
+    /**
+     * Checks whether the given year has any games.
+     * @returns A promise that resolves to the corresponding game year or null
+     * if no games were played or will be played in the given year.
+     * @throws An error if there is a failure.
+     */
+    async getYear(year: number): Promise<number | null> {
+        try {
+            const gameDay = await prisma.gameDay.findFirst({
+                where: {
+                    game: true,
+                    year: year,
+                },
+                select: {
+                    year: true,
+                },
+            });
+
+            return gameDay ? Promise.resolve(gameDay.year) : null;
+        }
+        catch (error) {
+            log(`Error fetching GameDay: ${error}`);
             throw error;
         }
     }

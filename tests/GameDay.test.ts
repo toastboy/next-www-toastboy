@@ -396,6 +396,25 @@ describe('GameDayService', () => {
         });
     });
 
+    describe('getYear', () => {
+        it('should return the year when called with a year that has games played or to be played', async () => {
+            (prisma.gameDay.findFirst as jest.Mock).mockResolvedValue(defaultGameDay);
+            const result = await gameDayService.getYear(2021);
+            if (result) {
+                expect(result).toEqual(2021);
+            }
+            else {
+                throw new Error("Result is null");
+            }
+        });
+
+        it('should return null when called with a year that has no games played or to be played', async () => {
+            (prisma.gameDay.findFirst as jest.Mock).mockResolvedValue(null);
+            const result = await gameDayService.getYear(1966);
+            expect(result).toBeNull();
+        });
+    });
+
     describe('create', () => {
         it('should create a GameDay', async () => {
             const newGameDay: GameDay = {

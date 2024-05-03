@@ -44,8 +44,13 @@ export function useClub(id: number) {
 export function useCountry(isoCode: string) {
     return useSWR(`/api/footy/country/${isoCode}`, fetcher);
 }
+
 export function useGameYears() {
-    return useSWR<number[]>(`/api/footy/gameyears`, fetcher);
+    return useSWR<number[]>(`/api/footy/gameyear`, fetcher);
+}
+
+export function useGameYear(year: string) {
+    return useSWR<number>(`/api/footy/gameyear/${year}`, fetcher);
 }
 
 export function useGameDay(id: number) {

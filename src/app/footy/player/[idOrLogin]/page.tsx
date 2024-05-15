@@ -7,7 +7,7 @@ import PlayerProfile from 'components/PlayerProfile';
 export async function generateMetadata({
     params,
 }: {
-    params: { idOrLogin: string },
+    params: Record<string, string>,
 }) {
     try {
         const login = await playerService.getLogin(params.idOrLogin);
@@ -35,9 +35,8 @@ export async function generateStaticParams() {
 export default async function Page({
     params,
 }: {
-    params: { idOrLogin: string },
-})
-    : Promise<JSX.Element> {
+    params: Record<string, string>,
+}) {
     const login = await playerService.getLogin(params.idOrLogin);
 
     if (!login) {

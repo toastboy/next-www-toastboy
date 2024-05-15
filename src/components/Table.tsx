@@ -1,15 +1,23 @@
 'use client';
 
+import { Loader } from '@mantine/core';
 import GameYears from 'components/GameYears';
 import TableQualified from 'components/TableQualified';
 import config from 'lib/config';
-import { FootyTable } from 'lib/swr';
+import { FootyTable, useGameYear } from 'lib/swr';
 import { getYearName } from 'lib/utils';
+import { notFound } from 'next/navigation';
 
 export function Table({ table, year }: {
     table: FootyTable,
     year: number,
 }) {
+    const { data, error, isLoading } = useGameYear(year);
+
+    if (error) return <div>failed to load</div>;
+    if (isLoading) return <Loader color="gray" type="dots" />;
+    if (!data && year != 0) return notFound();
+
     if (UnqualifiedTableName(table)) {
         return (
             <div>

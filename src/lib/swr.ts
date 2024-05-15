@@ -49,7 +49,7 @@ export function useGameYears() {
     return useSWR<number[]>(`/api/footy/gameyear`, fetcher);
 }
 
-export function useGameYear(year: string) {
+export function useGameYear(year: number) {
     return useSWR<number>(`/api/footy/gameyear/${year}`, fetcher);
 }
 

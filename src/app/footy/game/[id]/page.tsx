@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 export default function Page({
     params,
 }: {
-    params: { id: string },
+    params: Record<string, string>,
 }) {
     const gameDayId = parseInt(params.id);
     if (isNaN(gameDayId)) {

@@ -3,7 +3,7 @@ import { permanentRedirect } from 'next/navigation';
 export default async function Page({
     params,
 }: {
-    params: { year: string },
-}): Promise<JSX.Element> {
+    params: Record<string, string>,
+}) {
     permanentRedirect(`/footy/table/pub/${params.year}`);
 }

@@ -1,5 +1,6 @@
 import gameDayService from "services/GameDay";
 import { getGameDay } from "../common";
+import { handleGET } from "../../common";
 
 export async function generateStaticParams() {
     const gameDays = await gameDayService.getAll();
@@ -13,31 +14,5 @@ export async function generateStaticParams() {
     }) : null;
 }
 
-export async function GET(
-    request: Request,
-    { params }: {
-        params: { id: string }
-    },
-) {
-    try {
-        const gameDay = await getGameDay(parseInt(params.id));
-        if (!gameDay) {
-            return new Response(`GameDay ${params.id} not found`, {
-                status: 404,
-            });
-        }
-
-        return new Response(JSON.stringify(gameDay), {
-            status: 200,
-            headers: {
-                'Content-Type': 'text/json',
-            },
-        });
-    }
-    catch (error) {
-        console.error('Error fetching GameDay:', error);
-        return new Response('Internal Server Error', {
-            status: 500,
-        });
-    }
-}
+export const GET = (request: Request, { params }: { params: Record<string, string> }) =>
+    handleGET(() => getGameDay(parseInt(params.id)), { params });

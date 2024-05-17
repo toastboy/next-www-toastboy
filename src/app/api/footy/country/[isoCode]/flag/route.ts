@@ -1,3 +1,4 @@
+import { handleGETPNG } from 'app/api/footy/common';
 import AzureCache from 'lib/azure';
 import { streamToBuffer } from 'lib/utils';
 
@@ -15,42 +16,23 @@ export async function generateStaticParams() {
     }) : null;
 }
 
-export async function GET(
-    request: Request,
-    { params }: {
-        params: { isoCode: string }
-    },
-) {
-    const { isoCode } = params;
+async function getCountryFlag(
+    { params }: { params: Record<string, string> },
+): Promise<Buffer | null> {
+    const azureCache = AzureCache.getInstance();
+    const containerClient = await azureCache.getContainerClient("countries");
+    const blobClient = containerClient.getBlobClient(`${params.isoCode}.png`);
 
-    try {
-        const azureCache = AzureCache.getInstance();
-        const containerClient = await azureCache.getContainerClient("countries");
-        const blobClient = containerClient.getBlobClient(`${isoCode}.png`);
-
-        if (!(await blobClient.exists())) {
-            return new Response(`${isoCode}.png not found`, {
-                status: 404,
-            });
-        }
-
-        const downloadBlockBlobResponse = await blobClient.download(0);
-        if (!downloadBlockBlobResponse.readableStreamBody) {
-            throw new Error('Image body download failed.');
-        }
-        const imageBuffer = await streamToBuffer(downloadBlockBlobResponse.readableStreamBody);
-
-        return new Response(imageBuffer, {
-            status: 200,
-            headers: {
-                'Content-Type': 'image/png',
-            },
-        });
+    if (!(await blobClient.exists())) {
+        return null;
     }
-    catch (error) {
-        console.error('Error fetching flag image:', error);
-        return new Response('Internal Server Error', {
-            status: 500,
-        });
+
+    const downloadBlockBlobResponse = await blobClient.download(0);
+    if (!downloadBlockBlobResponse.readableStreamBody) {
+        throw new Error('Image body download failed.');
     }
+    return await streamToBuffer(downloadBlockBlobResponse.readableStreamBody);
 }
+
+export const GET = (request: Request, { params }: { params: Record<string, string> }) =>
+    handleGETPNG(() => getCountryFlag({ params }), { params });

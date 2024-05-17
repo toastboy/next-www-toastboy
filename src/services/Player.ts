@@ -63,6 +63,27 @@ class PlayerService {
     }
 
     /**
+     * Get the player corresponding to the given string. If idOrLogin is a
+     * string then we check whether a player with the given login exists. If
+     * it's a number then we look up the player with that id.
+     * @param idOrLogin A string which may contain a player id or a login
+     * @returns A promise resolving to the player identified by idOrLogin if
+     * such a player exists, or undefined otherwise.
+     */
+    async getByIdOrLogin(idOrLogin: string): Promise<Player | null> {
+        try {
+            if (!isNaN(Number(idOrLogin))) {
+                return await this.getById(Number(idOrLogin));
+            } else {
+                return await this.getByLogin(idOrLogin);
+            }
+        } catch (error) {
+            log(`Error getting Player login: ${error}`);
+            throw error;
+        }
+    }
+
+    /**
      * Get the player login corresponding to the given string. If idOrLogin is a
      * string then we check whether a player with the given login exists. If it's a
      * number then we look up the player with that id.
@@ -72,13 +93,8 @@ class PlayerService {
      */
     async getLogin(idOrLogin: string): Promise<string | null> {
         try {
-            if (!isNaN(Number(idOrLogin))) {
-                const player = await this.getById(Number(idOrLogin));
-                return player ? player.login : null;
-            } else {
-                const player = await this.getByLogin(idOrLogin);
-                return player ? player.login : null;
-            }
+            const player = await this.getByIdOrLogin(idOrLogin);
+            return player ? player.login : null;
         } catch (error) {
             log(`Error getting Player login: ${error}`);
             throw error;

@@ -1,53 +1,32 @@
 import AzureCache from 'lib/azure';
 import { streamToBuffer } from 'lib/utils';
 import playerService from "services/Player";
-import { getPlayer } from '../../common';
+import { handleGETPNG } from 'app/api/footy/common';
 
 export async function generateStaticParams() {
     return playerService.getAllIdsAndLogins();
 }
 
-export async function GET(
-    request: Request,
-    { params }: {
-        params: {
-            idOrLogin: string
-        }
-    },
-) {
-    try {
-        const player = await getPlayer(params.idOrLogin);
-        if (!player) {
-            return new Response(`Player ${params.idOrLogin} not found`, {
-                status: 404,
-            });
-        }
+async function getPlayerMugshot(
+    { params }: { params: Record<string, string> },
+): Promise<Buffer | null> {
+    const player = await playerService.getByIdOrLogin(params.idOrLogin);
+    if (!player) return null;
 
-        const azureCache = AzureCache.getInstance();
-        const containerClient = await azureCache.getContainerClient("mugshots");
-        let blobClient = containerClient.getBlobClient(`${player.login}.jpg`);
+    const azureCache = AzureCache.getInstance();
+    const containerClient = await azureCache.getContainerClient("mugshots");
+    let blobClient = containerClient.getBlobClient(`${player.login}.jpg`);
 
-        if (!(await blobClient.exists())) {
-            blobClient = containerClient.getBlobClient('manofmystery.jpg');
-        }
-
-        const downloadBlockBlobResponse = await blobClient.download(0);
-        if (!downloadBlockBlobResponse.readableStreamBody) {
-            throw new Error('Image body download failed.');
-        }
-        const imageBuffer = await streamToBuffer(downloadBlockBlobResponse.readableStreamBody);
-
-        return new Response(imageBuffer, {
-            status: 200,
-            headers: {
-                'Content-Type': 'image/jpeg',
-            },
-        });
+    if (!(await blobClient.exists())) {
+        blobClient = containerClient.getBlobClient('manofmystery.jpg');
     }
-    catch (error) {
-        console.error('Error fetching mugshot image:', error);
-        return new Response('Internal Server Error', {
-            status: 500,
-        });
+
+    const downloadBlockBlobResponse = await blobClient.download(0);
+    if (!downloadBlockBlobResponse.readableStreamBody) {
+        throw new Error('Image body download failed.');
     }
+    return await streamToBuffer(downloadBlockBlobResponse.readableStreamBody);
 }
+
+export const GET = (request: Request, { params }: { params: Record<string, string> }) =>
+    handleGETPNG(() => getPlayerMugshot({ params }), { params });

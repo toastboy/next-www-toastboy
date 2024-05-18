@@ -15,10 +15,7 @@ export default function PlayerResults({
 
     if (error) return <div>failed to load</div>;
     if (isLoading) return <Loader color="gray" type="dots" />;
-
-    if (!record) {
-        return null;
-    }
+    if (!record) return null;
 
     return (
         <div className="px-6 py-4">

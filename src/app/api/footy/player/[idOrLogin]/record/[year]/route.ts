@@ -1,4 +1,4 @@
-import { handleGET } from 'app/api/footy/common';
+import { handleGET } from 'lib/api';
 import playerService from 'services/Player';
 import playerRecordService from 'services/PlayerRecord';
 

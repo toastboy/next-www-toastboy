@@ -1,5 +1,5 @@
 import playerService from 'services/Player';
-import { handleGET } from 'app/api/footy/common';
+import { handleGET } from 'lib/api';
 import clubSupporterService from 'services/ClubSupporter';
 
 export async function generateStaticParams() {

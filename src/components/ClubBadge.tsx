@@ -6,6 +6,7 @@ export default function ClubBadge({ clubId }: { clubId: number }) {
 
     if (error) return <div>failed to load</div>;
     if (isLoading) return <Loader color="gray" type="dots" />;
+    if (!club) return null;
 
     return (
         <Image

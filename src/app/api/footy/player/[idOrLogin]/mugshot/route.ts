@@ -1,7 +1,7 @@
+import { handleGETPNG } from 'lib/api';
 import AzureCache from 'lib/azure';
 import { streamToBuffer } from 'lib/utils';
 import playerService from "services/Player";
-import { handleGETPNG } from 'app/api/footy/common';
 
 export async function generateStaticParams() {
     return playerService.getAllIdsAndLogins();

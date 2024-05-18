@@ -2,12 +2,68 @@
 
 import useSWR from 'swr';
 
-export enum FootyTable {
-    points = 'points',
-    averages = 'averages',
-    stalwart = 'stalwart',
-    speedy = 'speedy',
-    pub = 'pub',
+export interface FootyArse {
+    in_goal: number,
+    running: number,
+    shooting: number,
+    passing: number,
+    ball_skill: number,
+    attacking: number,
+    defending: number,
+}
+
+export interface FootyClub {
+    id: number,
+    soccerway_id: number,
+    club_name: string,
+    uri: string,
+    country: string,
+}
+
+export interface FootyCountry {
+    isoCode: string,
+    name: string,
+}
+
+export interface FootyGameDay {
+    id: number,
+    year: number,
+    date: Date,
+    game: boolean,
+    mailSent: Date,
+    comment: string,
+    bibs: FootyTeam,
+    picker_games_history: number,
+}
+
+export interface FootyOutcome {
+    response: FootyResponse,
+    responseInterval: number,
+    points: number,
+    team: FootyTeam,
+    comment: string,
+    pub: number,
+    paid: boolean,
+    goalie: boolean,
+    gameDayId: number,
+    playerId: number,
+    gameDay: FootyGameDay,
+}
+
+export interface FootyPlayer {
+    id: number,
+    login: string,
+    is_admin: boolean,
+    first_name: string,
+    last_name: string,
+    name: string,
+    anonymous: boolean,
+    email: string,
+    joined: Date,
+    finished: Date,
+    born: Date,
+    comment: string,
+    introduced_by: number,
 }
 
 export interface FootyPlayerRecord {
@@ -27,22 +83,37 @@ export interface FootyPlayerRecord {
     speedy: number,
 }
 
-export interface FootyOutcome {
-    playerId: number,
-    gameDayId: number,
-    points: number,
-    goalie: boolean,
+export enum FootyResponse {
+    Yes = 'Yes',
+    No = 'No',
+    Dunno = 'Dunno',
+    Excused = 'Excused',
+    Flaked = 'Flaked',
+    Injured = 'Injured',
+}
+
+export enum FootyTable {
+    points = 'points',
+    averages = 'averages',
+    stalwart = 'stalwart',
+    speedy = 'speedy',
+    pub = 'pub',
+}
+
+export enum FootyTeam {
+    A = 'A',
+    B = 'B',
 }
 
 export const fetcher = (input: URL | RequestInfo, init?: RequestInit | undefined) =>
     fetch(input, init).then((res) => res.json());
 
 export function useClub(id: number) {
-    return useSWR(`/api/footy/club/${id}`, fetcher);
+    return useSWR<FootyClub>(`/api/footy/club/${id}`, fetcher);
 }
 
 export function useCountry(isoCode: string) {
-    return useSWR(`/api/footy/country/${isoCode}`, fetcher);
+    return useSWR<FootyCountry>(`/api/footy/country/${isoCode}`, fetcher);
 }
 
 export function useGameYears() {
@@ -54,31 +125,31 @@ export function useGameYear(year: number) {
 }
 
 export function useGameDay(id: number) {
-    return useSWR(`/api/footy/gameday/${id}`, fetcher);
+    return useSWR<FootyGameDay>(`/api/footy/gameday/${id}`, fetcher);
 }
 
 export function usePlayer(idOrLogin: string) {
-    return useSWR(`/api/footy/player/${idOrLogin}`, fetcher);
+    return useSWR<FootyPlayer>(`/api/footy/player/${idOrLogin}`, fetcher);
 }
 
 export function usePlayerLastPlayed(idOrLogin: string) {
-    return useSWR(`/api/footy/player/${idOrLogin}/lastplayed`, fetcher);
+    return useSWR<FootyOutcome>(`/api/footy/player/${idOrLogin}/lastplayed`, fetcher);
 }
 
 export function usePlayerClubs(idOrLogin: string) {
-    return useSWR(`/api/footy/player/${idOrLogin}/clubs`, fetcher);
+    return useSWR<number[]>(`/api/footy/player/${idOrLogin}/clubs`, fetcher);
 }
 
 export function usePlayerCountries(idOrLogin: string) {
-    return useSWR(`/api/footy/player/${idOrLogin}/countries`, fetcher);
+    return useSWR<string[]>(`/api/footy/player/${idOrLogin}/countries`, fetcher);
 }
 
 export function usePlayerArse(idOrLogin: string) {
-    return useSWR(`/api/footy/player/${idOrLogin}/arse`, fetcher);
+    return useSWR<FootyArse>(`/api/footy/player/${idOrLogin}/arse`, fetcher);
 }
 
 export function usePlayerForm(idOrLogin: string, games: number) {
-    return useSWR(`/api/footy/player/${idOrLogin}/form/${games}`, fetcher);
+    return useSWR<FootyOutcome[]>(`/api/footy/player/${idOrLogin}/form/${games}`, fetcher);
 }
 
 export function usePlayerYearsActive(idOrLogin: string) {

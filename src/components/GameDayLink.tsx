@@ -8,6 +8,7 @@ export default function GameDayLink({ id }: { id: number }) {
 
     if (error) return <div>failed to load</div>;
     if (isLoading) return <Loader color="gray" type="dots" />;
+    if (!gameDay) return null;
 
     return (
         <Anchor href={`/footy/game/${gameDay.id}`} >

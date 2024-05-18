@@ -6,6 +6,7 @@ export default function CountryFlag({ isoCode }: { isoCode: string }) {
 
     if (error) return <div>failed to load</div>;
     if (isLoading) return <Loader color="gray" type="dots" />;
+    if (!country) return null;
 
     return (
         <Image

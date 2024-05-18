@@ -1,5 +1,5 @@
 import countryService from "services/Country";
-import { handleGET } from "../../common";
+import { handleGET } from "lib/api";
 
 export async function generateStaticParams() {
     const countries = await countryService.getAll();

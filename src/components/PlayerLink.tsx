@@ -8,6 +8,7 @@ export default function PlayerLink({ idOrLogin }: { idOrLogin: string }) {
 
     if (error) return <div>failed to load</div>;
     if (isLoading) return <Loader color="gray" type="dots" />;
+    if (!player) return null;
 
     return (
         <Anchor href={`/footy/player/${player.login}`} >

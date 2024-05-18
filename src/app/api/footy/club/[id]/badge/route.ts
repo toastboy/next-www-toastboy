@@ -1,4 +1,4 @@
-import { handleGETPNG } from 'app/api/footy/common';
+import { handleGETPNG } from 'lib/api';
 import AzureCache from 'lib/azure';
 import { streamToBuffer } from 'lib/utils';
 import clubService from 'services/Club';

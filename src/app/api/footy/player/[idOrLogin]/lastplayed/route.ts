@@ -1,5 +1,5 @@
+import { handleGET } from 'lib/api';
 import playerService from 'services/Player';
-import { handleGET } from 'app/api/footy/common';
 
 export async function generateStaticParams() {
     return playerService.getAllIdsAndLogins();

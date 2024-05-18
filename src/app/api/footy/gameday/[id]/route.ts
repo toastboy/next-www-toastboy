@@ -1,6 +1,5 @@
 import gameDayService from "services/GameDay";
-import { getGameDay } from "../common";
-import { handleGET } from "../../common";
+import { handleGET } from "lib/api";
 
 export async function generateStaticParams() {
     const gameDays = await gameDayService.getAll();
@@ -15,4 +14,4 @@ export async function generateStaticParams() {
 }
 
 export const GET = (request: Request, { params }: { params: Record<string, string> }) =>
-    handleGET(() => getGameDay(parseInt(params.id)), { params });
+    handleGET(() => gameDayService.get(parseInt(params.id)), { params });

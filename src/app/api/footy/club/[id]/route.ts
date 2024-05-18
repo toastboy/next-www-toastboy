@@ -1,5 +1,5 @@
 import clubService from "services/Club";
-import { handleGET } from "../../common";
+import { handleGET } from "lib/api";
 
 export async function generateStaticParams() {
     const clubs = await clubService.getAll();

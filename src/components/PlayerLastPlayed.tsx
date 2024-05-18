@@ -13,6 +13,7 @@ export default function PlayerLastPlayed({
 
     if (error) return <div>failed to load</div>;
     if (isLoading) return <Loader color="gray" type="dots" />;
+    if (!lastplayed) return null;
 
     return (
         <div className="px-6 py-4">

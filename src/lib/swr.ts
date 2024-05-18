@@ -105,7 +105,7 @@ export enum FootyTeam {
     B = 'B',
 }
 
-export const fetcher = (input: URL | RequestInfo, init?: RequestInit | undefined) =>
+const fetcher = (input: URL | RequestInfo, init?: RequestInit | undefined) =>
     fetch(input, init).then((res) => res.json());
 
 export function useClub(id: number) {

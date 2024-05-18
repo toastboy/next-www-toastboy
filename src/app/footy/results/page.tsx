@@ -1,7 +1,7 @@
-import { NYI } from "components/NYI";
+import GameCalendar from "components/GameCalendar";
 
 export default function Page() {
     return (
-        <NYI />
+        <GameCalendar date={new Date()} />
     );
 }

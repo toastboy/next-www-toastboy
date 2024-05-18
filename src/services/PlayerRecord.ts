@@ -136,12 +136,13 @@ export class PlayerRecordService {
                 },
             });
             const total = await outcomeService.getLastPlayed();
+            const lastGameDay = lastRecord ? lastRecord.gameDayId : 0;
 
-            if (!lastRecord || !total) {
+            if (!total) {
                 return null;
             }
 
-            return [lastRecord.gameDayId, total.gameDayId];
+            return [lastGameDay, total.gameDayId];
         }
         catch (error) {
             log(`Error fetching playerRecords: ${error}`);
@@ -578,12 +579,13 @@ async function calculatePlayerRecord(
         o.gameDayId <= gameDay.id);
     const playerYearRespondedOutcomes = playerYearOutcomes.filter(o => o.response != null);
     const playerYearPlayedOutcomes = playerYearOutcomes.filter(o => o.points != null);
+    const pub = playerYearOutcomes.reduce((acc, o) => acc + (o.pub || 0), 0);
     const data: Partial<PlayerRecord> = {
         playerId: outcome.playerId,
         year: year,
         gameDayId: gameDay.id,
         responses: playerYearRespondedOutcomes.length,
-        pub: playerYearOutcomes.reduce((acc, o) => acc + (o.pub || 0), 0),
+        ...{ pub: pub > 0 ? pub : null },
     };
 
     if (playerYearPlayedOutcomes.length > 0) {

@@ -16,7 +16,7 @@ export function Table({ table, year }: {
 
     if (error) return <div>failed to load</div>;
     if (isLoading) return <Loader color="gray" type="dots" />;
-    if (!data && year != 0) return notFound();
+    if (data === null) return notFound();
 
     if (UnqualifiedTableName(table)) {
         return (

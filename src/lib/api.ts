@@ -13,7 +13,7 @@ export async function handleGET<T>(
     try {
         const data = await serviceFunction({ params });
 
-        if (data) {
+        if (data != null) {
             return new Response(JSON.stringify(data), {
                 status: 200,
                 headers: {

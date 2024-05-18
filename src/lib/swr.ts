@@ -121,7 +121,7 @@ export function useGameYears() {
 }
 
 export function useGameYear(year: number) {
-    return useSWR<number>(`/api/footy/gameyear/${year}`, fetcher);
+    return useSWR<boolean>(`/api/footy/gameyear/${year}`, fetcher);
 }
 
 export function useGameDay(id: number) {

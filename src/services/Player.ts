@@ -1,11 +1,6 @@
-import { Prisma, Player } from '@prisma/client';
+import { Outcome, Player } from '@prisma/client';
 import prisma from 'lib/prisma';
 import debug from 'debug';
-
-const outcomeWithGameDay = Prisma.validator<Prisma.OutcomeDefaultArgs>()({
-    include: { gameDay: true },
-});
-type OutcomeWithGameDay = Prisma.OutcomeGetPayload<typeof outcomeWithGameDay>
 
 const log = debug('footy:api');
 
@@ -185,9 +180,9 @@ class PlayerService {
      * @param playerId - The ID of the player.
      * @param gameDayId - The ID of the game day.
      * @param history - The number of previous outcomes to consider.
-     * @returns A promise that resolves to an array of outcomes.
+     * @returns A promise that resolves to an array of Outcomes.
      */
-    async getForm(playerId: number, gameDayId: number, history: number): Promise<OutcomeWithGameDay[] | null> {
+    async getForm(playerId: number, gameDayId: number, history: number): Promise<Outcome[] | null> {
         try {
             return prisma.outcome.findMany({
                 where: {
@@ -201,9 +196,6 @@ class PlayerService {
                     gameDayId: 'desc',
                 },
                 take: history,
-                include: {
-                    gameDay: true,
-                },
             });
         } catch (error) {
             log(`Error fetching outcomes: ${error}`);
@@ -214,9 +206,9 @@ class PlayerService {
     /**
      * Retrieves the last played game outcome for a given player.
      * @param playerId - The ID of the player.
-     * @returns A promise that resolves to an array of `OutcomeWithGameDay` objects or `null`.
+     * @returns A promise that resolves to an array of Outcomes or null.
      */
-    async getLastPlayed(playerId: number): Promise<OutcomeWithGameDay | null> {
+    async getLastPlayed(playerId: number): Promise<Outcome | null> {
         try {
             return prisma.outcome.findFirst({
                 where: {
@@ -229,9 +221,6 @@ class PlayerService {
                     gameDayId: 'desc',
                 },
                 take: 1,
-                include: {
-                    gameDay: true,
-                },
             });
         } catch (error) {
             log(`Error fetching outcomes: ${error}`);

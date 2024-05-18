@@ -1,9 +1,9 @@
-import { GameDay, Outcome, PlayerRecord, Prisma } from '@prisma/client';
+import { GameDay, Outcome, PlayerRecord } from '@prisma/client';
 import debug from 'debug';
 import config from 'lib/config';
 import prisma from 'lib/prisma';
-import outcomeService from 'services/Outcome';
 import gameDayService from 'services/GameDay';
+import outcomeService from 'services/Outcome';
 
 const log = debug('footy:api');
 
@@ -14,11 +14,6 @@ export enum EnumTable {
     speedy = 'speedy',
     pub = 'pub',
 }
-
-const playerRecordWithPlayer = Prisma.validator<Prisma.PlayerRecordDefaultArgs>()({
-    include: { player: true },
-});
-type PlayerRecordWithPlayer = Prisma.PlayerRecordGetPayload<typeof playerRecordWithPlayer>
 
 export class PlayerRecordService {
     /**
@@ -270,7 +265,7 @@ export class PlayerRecordService {
         year: number,
         qualified?: boolean,
         take?: number,
-    ): Promise<PlayerRecordWithPlayer[]> {
+    ): Promise<PlayerRecord[]> {
         try {
             // Get the most recent game day for the year in question with a
             // record for the specified table

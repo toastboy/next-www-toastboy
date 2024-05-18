@@ -1,11 +1,6 @@
-import { Prisma, Outcome } from '@prisma/client';
+import { Outcome } from '@prisma/client';
 import prisma from 'lib/prisma';
 import debug from 'debug';
-
-const outcomeWithGameDay = Prisma.validator<Prisma.OutcomeDefaultArgs>()({
-    include: { gameDay: true },
-});
-type OutcomeWithGameDay = Prisma.OutcomeGetPayload<typeof outcomeWithGameDay>
 
 const log = debug('footy:api');
 
@@ -106,11 +101,11 @@ export class OutcomeService {
      * @param year - The year to include, or zero for all year.
      * @param untilGameDay - The gameDay ID to stop at (inclusive), or undefined
      * to include all.
-     * @returns A promise that resolves to an array of outcomes sorted by
+     * @returns A promise that resolves to an array of Outcomes sorted by
      * gameDay, most recent first.
      * @throws An error if there is a failure.
      */
-    async getAllForYear(year: number, untilGameDay?: number): Promise<OutcomeWithGameDay[]> {
+    async getAllForYear(year: number, untilGameDay?: number): Promise<Outcome[]> {
         try {
             return prisma.outcome.findMany({
                 where: {
@@ -126,9 +121,6 @@ export class OutcomeService {
                 },
                 orderBy: {
                     gameDayId: 'desc',
-                },
-                include: {
-                    gameDay: true,
                 },
             });
         } catch (error) {

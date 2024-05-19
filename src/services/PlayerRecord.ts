@@ -530,22 +530,50 @@ async function calculateYearPlayerRecords(
 
     // Calculate the ranks for the set of PlayerRecords
 
-    const pointsArray = Object.values(yearPlayerRecords).map(r => r.points);
+    const pointsArray = Object.values(yearPlayerRecords).map(
+        r => r.points,
+    );
     pointsArray.sort((a, b) => (b || 0) - (a || 0));
-    const averagesArray = Object.values(yearPlayerRecords).map(r => r.averages);
+    const averagesArray = Object.values(yearPlayerRecords).map(
+        r => r.P && r.P >= config.minGamesForAveragesTable ? r.averages : null,
+    );
     averagesArray.sort((a, b) => (b || 0.0) - (a || 0.0));
-    const stalwartArray = Object.values(yearPlayerRecords).map(r => r.stalwart);
+    const averagesArrayUnqualified = Object.values(yearPlayerRecords).map(
+        r => r.P && r.P < config.minGamesForAveragesTable ? r.averages : null,
+    );
+    averagesArrayUnqualified.sort((a, b) => (b || 0.0) - (a || 0.0));
+    const stalwartArray = Object.values(yearPlayerRecords).map(
+        r => r.stalwart,
+    );
     stalwartArray.sort((a, b) => (b || 0) - (a || 0));
-    const speedyArray = Object.values(yearPlayerRecords).map(r => r.speedy);
+    const speedyArray = Object.values(yearPlayerRecords).map(
+        r => r.responses && r.responses >= config.minRepliesForSpeedyTable ? r.speedy : null,
+    );
     speedyArray.sort((a, b) => (a || 0) - (b || 0));
-    const pubArray = Object.values(yearPlayerRecords).map(r => r.pub);
+    const speedyArrayUnqualified = Object.values(yearPlayerRecords).map(
+        r => r.responses && r.responses < config.minRepliesForSpeedyTable ? r.speedy : null,
+    );
+    speedyArrayUnqualified.sort((a, b) => (a || 0) - (b || 0));
+    const pubArray = Object.values(yearPlayerRecords).map(
+        r => r.pub,
+    );
     pubArray.sort((a, b) => (b || 0) - (a || 0));
 
     for (const recordData of Object.values(yearPlayerRecords)) {
         recordData.rank_points = recordData.points != null ? pointsArray.indexOf(recordData.points) + 1 : null;
-        recordData.rank_averages = recordData.averages != null ? averagesArray.indexOf(recordData.averages) + 1 : null;
+        if (recordData.P && recordData.P >= config.minGamesForAveragesTable) {
+            recordData.rank_averages = recordData.averages != null ? averagesArray.indexOf(recordData.averages) + 1 : null;
+        }
+        else {
+            recordData.rank_averages_unqualified = recordData.averages != null ? averagesArrayUnqualified.indexOf(recordData.averages) + 1 : null;
+        }
         recordData.rank_stalwart = recordData.stalwart != null ? stalwartArray.indexOf(recordData.stalwart) + 1 : null;
-        recordData.rank_speedy = recordData.speedy != null ? speedyArray.indexOf(recordData.speedy) + 1 : null;
+        if (recordData.responses && recordData.responses >= config.minRepliesForSpeedyTable) {
+            recordData.rank_speedy = recordData.speedy != null ? speedyArray.indexOf(recordData.speedy) + 1 : null;
+        }
+        else {
+            recordData.rank_speedy_unqualified = recordData.speedy != null ? speedyArrayUnqualified.indexOf(recordData.speedy) + 1 : null;
+        }
         recordData.rank_pub = recordData.pub != null ? pubArray.indexOf(recordData.pub) + 1 : null;
     }
 

@@ -52,8 +52,10 @@ const defaultPlayerRecord: PlayerRecord = {
     pub: 1,
     rank_points: 1,
     rank_averages: 2,
+    rank_averages_unqualified: 2,
     rank_stalwart: 3,
     rank_speedy: 4,
+    rank_speedy_unqualified: 4,
     rank_pub: 5,
     speedy: 4,
 
@@ -230,7 +232,7 @@ describe('PlayerRecordService', () => {
             (prisma.playerRecord.findFirst as jest.Mock).mockResolvedValue(null);
 
             const result = await playerRecordService.getProgress();
-            expect(result).toBeNull();
+            expect(result).toEqual([0, 15]);
         });
     });
 

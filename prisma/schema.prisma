@@ -180,22 +180,24 @@ model Player {
 }
 
 model PlayerRecord {
-  year          Int
-  responses     Int?
-  P             Int?
-  W             Int?
-  D             Int?
-  L             Int?
-  points        Int?
-  averages      Float?
-  stalwart      Int?
-  pub           Int?
-  rank_points   Int?
-  rank_averages Int?
-  rank_stalwart Int?
-  rank_speedy   Int?
-  rank_pub      Int?
-  speedy        Int?
+  year                      Int
+  responses                 Int?
+  P                         Int?
+  W                         Int?
+  D                         Int?
+  L                         Int?
+  points                    Int?
+  averages                  Float?
+  stalwart                  Int?
+  pub                       Int?
+  rank_points               Int?
+  rank_averages             Int?
+  rank_averages_unqualified Int?
+  rank_stalwart             Int?
+  rank_speedy               Int?
+  rank_speedy_unqualified   Int?
+  rank_pub                  Int?
+  speedy                    Int?
 
   playerId  Int
   gameDayId Int

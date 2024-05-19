@@ -151,6 +151,36 @@ export class PlayerRecordService {
     }
 
     /**
+     * Retrieves all the years where there is at least one PlayerRecord, with zero (for all-time) at the end.
+     * @returns A promise that resolves to an array of distinct years.
+     * @throws An error if there is a failure.
+     */
+    async getAllYears(): Promise<number[]> {
+        try {
+            const records = await prisma.playerRecord.findMany({
+                select: {
+                    year: true,
+                },
+                orderBy: {
+                    year: 'asc',
+                },
+            });
+            // Move zero values to the end
+            const years = records.map(r => r.year).sort((a, b) => {
+                if (a === 0) return 1;
+                if (b === 0) return -1;
+                return a - b;
+            });
+            const distinctYears = Array.from(new Set(years));
+
+            return Promise.resolve(distinctYears);
+        } catch (error) {
+            log(`Error fetching playerRecords: ${error}`);
+            throw error;
+        }
+    }
+
+    /**
      * Retrieves playerRecords by GameDay ID.
      * @param gameDayId - The ID of the GameDay.
      * @param year - The year to filter by (optional) - zero means all-time.

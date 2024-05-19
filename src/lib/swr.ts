@@ -168,6 +168,10 @@ export function useRecordsProgress() {
     return useSWR<[number, number]>(`/api/footy/records/progress`, fetcher);
 }
 
+export function useTableYears() {
+    return useSWR<number[]>(`/api/footy/tableyear`, fetcher);
+}
+
 export function useTable(table: FootyTable, year: number, qualified?: boolean, take?: number) {
     let url = `/api/footy/table/${table}/${year}`;
     if (qualified !== undefined) url += `/${qualified}`;

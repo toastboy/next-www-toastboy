@@ -1,6 +1,6 @@
 'use client';
 
-import GameYears from 'components/GameYears';
+import TableYears from 'components/TableYears';
 import { Table } from 'components/Table';
 import { FootyTable } from 'lib/swr';
 import { notFound, useRouter } from 'next/navigation';
@@ -16,7 +16,7 @@ export default function Page({
     const router = useRouter();
 
     const [activeYear, setActiveYear] = useState(() => {
-        const year = parseInt(params.year);
+        const year = params.year === "all-time" ? 0 : parseInt(params.year);
         return isNaN(year) ? 0 : year;
     });
 
@@ -24,8 +24,9 @@ export default function Page({
         if (isNaN(activeYear)) {
             return notFound();
         }
-        if (params.year !== activeYear.toString()) {
-            router.push(pathname.replace(/\/\d+$/, `/${activeYear}`));
+        const targetURL = pathname.replace(/\/[^/]+$/, `/${activeYear === 0 ? "all-time" : activeYear}`);
+        if (pathname !== targetURL) {
+            router.push(targetURL);
         }
     }, [activeYear, params.table, params.year, pathname, router]);
 
@@ -34,7 +35,7 @@ export default function Page({
 
     return (
         <>
-            <GameYears activeYear={activeYear} onYearChange={setActiveYear} />
+            <TableYears activeYear={activeYear} onYearChange={setActiveYear} />
             <Table table={table} year={activeYear} />
         </>
     );

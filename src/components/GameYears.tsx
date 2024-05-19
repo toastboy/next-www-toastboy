@@ -13,6 +13,7 @@ export default function GameYears({
     onYearChange: Dispatch<SetStateAction<number>>,
 }) {
     const { data, error, isLoading } = useGameYears();
+
     const [rootRef, setRootRef] = useState<HTMLDivElement | null>(null);
     const [controlsRefs, setControlsRefs] = useState<Record<string, HTMLButtonElement | null>>({});
     const [active, setActive] = useState(0);

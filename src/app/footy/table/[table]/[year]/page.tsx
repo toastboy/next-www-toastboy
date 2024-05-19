@@ -4,17 +4,23 @@ import GameYears from 'components/GameYears';
 import { Table } from 'components/Table';
 import { FootyTable } from 'lib/swr';
 import { notFound } from 'next/navigation';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 export default function Page({
     params,
 }: {
     params: Record<string, string>,
 }) {
-    const [activeYear, setActiveYear] = useState(new Date().getFullYear());
+    const [activeYear, setActiveYear] = useState(() => {
+        const year = parseInt(params.year);
+        return isNaN(year) ? 0 : year;
+    });
 
-    const year = parseInt(params.year);
-    if (isNaN(year)) return notFound();
+    useEffect(() => {
+        if (isNaN(activeYear)) {
+            return notFound();
+        }
+    }, [activeYear]);
 
     const table = FootyTable[params.table as typeof FootyTable[keyof typeof FootyTable]];
     if (!(table in FootyTable)) return notFound();

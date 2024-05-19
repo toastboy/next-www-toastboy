@@ -1,7 +1,6 @@
 'use client';
 
 import { Loader } from '@mantine/core';
-import GameYears from 'components/GameYears';
 import TableQualified from 'components/TableQualified';
 import config from 'lib/config';
 import { FootyTable, useGameYear } from 'lib/swr';
@@ -21,7 +20,6 @@ export function Table({ table, year }: {
     if (UnqualifiedTableName(table)) {
         return (
             <div>
-                <GameYears />
                 <p className="text-2xl font-bold">{QualifiedTableName(table, year)}</p>
                 <TableQualified table={table} year={year} qualified={true} />
                 <p className="text-2xl font-bold">{UnqualifiedTableName(table)}</p>
@@ -32,7 +30,6 @@ export function Table({ table, year }: {
     else {
         return (
             <div>
-                <GameYears />
                 <p className="text-2xl font-bold">{QualifiedTableName(table, year)}</p>
                 <TableQualified table={table} year={year} />
             </div>

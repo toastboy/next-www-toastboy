@@ -6,4 +6,4 @@ This is a trunk-based development project, so only the tip of branch _main_ is s
 
 ## Reporting a Vulnerability
 
-Please report vulnerabilities by raising an issue at https://github.com/toastboy/next-www-toastboy/issues
+Please report vulnerabilities by using the GitHub "Report a Vulnerability" button at https://github.com/toastboy/next-www-toastboy/security

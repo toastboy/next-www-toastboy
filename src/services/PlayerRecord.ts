@@ -135,12 +135,10 @@ export class PlayerRecordService {
                     gameDayId: 'desc',
                 },
             });
-            const total = await outcomeService.getLastPlayed();
-            const lastGameDay = lastRecord ? lastRecord.gameDayId : 0;
 
-            if (!total) {
-                return null;
-            }
+            const total = await outcomeService.getLastPlayed();
+            if (!total) return null;
+            const lastGameDay = lastRecord ? lastRecord.gameDayId : 0;
 
             return [lastGameDay, total.gameDayId];
         }
@@ -559,52 +557,69 @@ async function calculateYearPlayerRecords(
     }
 
     // Calculate the ranks for the set of PlayerRecords
+    const pointsArray = Object.values(yearPlayerRecords)
+        .map(r => r.points)
+        .filter((p): p is number => p !== null);
+    pointsArray.sort((a, b) => b - a);
 
-    const pointsArray = Object.values(yearPlayerRecords).map(
-        r => r.points,
-    );
-    pointsArray.sort((a, b) => (b || 0) - (a || 0));
-    const averagesArray = Object.values(yearPlayerRecords).map(
-        r => r.P && r.P >= config.minGamesForAveragesTable ? r.averages : null,
-    );
-    averagesArray.sort((a, b) => (b || 0.0) - (a || 0.0));
-    const averagesArrayUnqualified = Object.values(yearPlayerRecords).map(
-        r => r.P && r.P < config.minGamesForAveragesTable ? r.averages : null,
-    );
-    averagesArrayUnqualified.sort((a, b) => (b || 0.0) - (a || 0.0));
-    const stalwartArray = Object.values(yearPlayerRecords).map(
-        r => r.stalwart,
-    );
-    stalwartArray.sort((a, b) => (b || 0) - (a || 0));
-    const speedyArray = Object.values(yearPlayerRecords).map(
-        r => r.responses && r.responses >= config.minRepliesForSpeedyTable ? r.speedy : null,
-    );
-    speedyArray.sort((a, b) => (a || 0) - (b || 0));
-    const speedyArrayUnqualified = Object.values(yearPlayerRecords).map(
-        r => r.responses && r.responses < config.minRepliesForSpeedyTable ? r.speedy : null,
-    );
-    speedyArrayUnqualified.sort((a, b) => (a || 0) - (b || 0));
-    const pubArray = Object.values(yearPlayerRecords).map(
-        r => r.pub,
-    );
-    pubArray.sort((a, b) => (b || 0) - (a || 0));
+    const averagesArray = Object.values(yearPlayerRecords)
+        .map(r => (r.P && r.P >= config.minGamesForAveragesTable ? r.averages : null))
+        .filter((a): a is number => a !== null);
+    averagesArray.sort((a, b) => b - a);
+
+    const averagesArrayUnqualified = Object.values(yearPlayerRecords)
+        .map(r => (r.P && r.P < config.minGamesForAveragesTable ? r.averages : null))
+        .filter((a): a is number => a !== null);
+    averagesArrayUnqualified.sort((a, b) => b - a);
+
+    const stalwartArray = Object.values(yearPlayerRecords)
+        .map(r => r.stalwart)
+        .filter((s): s is number => s !== null);
+    stalwartArray.sort((a, b) => b - a);
+
+    const speedyArray = Object.values(yearPlayerRecords)
+        .map(r => (r.responses && r.responses >= config.minRepliesForSpeedyTable ? r.speedy : null))
+        .filter((s): s is number => s !== null);
+    speedyArray.sort((a, b) => a - b);
+
+    const speedyArrayUnqualified = Object.values(yearPlayerRecords)
+        .map(r => (r.responses && r.responses < config.minRepliesForSpeedyTable ? r.speedy : null))
+        .filter((s): s is number => s !== null);
+    speedyArrayUnqualified.sort((a, b) => a - b);
+
+    const pubArray = Object.values(yearPlayerRecords)
+        .map(r => r.pub)
+        .filter((p): p is number => p !== null);
+    pubArray.sort((a, b) => b - a);
 
     for (const recordData of Object.values(yearPlayerRecords)) {
-        recordData.rank_points = recordData.points != null ? pointsArray.indexOf(recordData.points) + 1 : null;
-        if (recordData.P && recordData.P >= config.minGamesForAveragesTable) {
-            recordData.rank_averages = recordData.averages != null ? averagesArray.indexOf(recordData.averages) + 1 : null;
+        if (recordData.points != null) {
+            recordData.rank_points = pointsArray.indexOf(recordData.points) + 1;
         }
-        else {
-            recordData.rank_averages_unqualified = recordData.averages != null ? averagesArrayUnqualified.indexOf(recordData.averages) + 1 : null;
+        if (recordData.averages != null) {
+            if (recordData.P && recordData.P >= config.minGamesForAveragesTable) {
+                recordData.rank_averages = averagesArray.indexOf(recordData.averages) + 1;
+                recordData.rank_averages_unqualified = null;
+            } else {
+                recordData.rank_averages_unqualified = averagesArrayUnqualified.indexOf(recordData.averages) + 1;
+                recordData.rank_averages = null;
+            }
         }
-        recordData.rank_stalwart = recordData.stalwart != null ? stalwartArray.indexOf(recordData.stalwart) + 1 : null;
-        if (recordData.responses && recordData.responses >= config.minRepliesForSpeedyTable) {
-            recordData.rank_speedy = recordData.speedy != null ? speedyArray.indexOf(recordData.speedy) + 1 : null;
+        if (recordData.stalwart != null) {
+            recordData.rank_stalwart = stalwartArray.indexOf(recordData.stalwart) + 1;
         }
-        else {
-            recordData.rank_speedy_unqualified = recordData.speedy != null ? speedyArrayUnqualified.indexOf(recordData.speedy) + 1 : null;
+        if (recordData.speedy != null) {
+            if (recordData.responses && recordData.responses >= config.minRepliesForSpeedyTable) {
+                recordData.rank_speedy = speedyArray.indexOf(recordData.speedy) + 1;
+                recordData.rank_speedy_unqualified = null;
+            } else {
+                recordData.rank_speedy_unqualified = speedyArrayUnqualified.indexOf(recordData.speedy) + 1;
+                recordData.rank_speedy = null;
+            }
         }
-        recordData.rank_pub = recordData.pub != null ? pubArray.indexOf(recordData.pub) + 1 : null;
+        if (recordData.pub != null) {
+            recordData.rank_pub = pubArray.indexOf(recordData.pub) + 1;
+        }
     }
 
     // Upsert the PlayerRecords and add them to the overall list
@@ -637,7 +652,7 @@ async function calculatePlayerRecord(
         o.gameDayId <= gameDay.id);
     const playerYearRespondedOutcomes = playerYearOutcomes.filter(o => o.response != null);
     const playerYearPlayedOutcomes = playerYearOutcomes.filter(o => o.points != null);
-    const pub = playerYearOutcomes.reduce((acc, o) => acc + (o.pub || 0), 0);
+    const pub = playerYearOutcomes.reduce((acc, o) => acc + (o.pub ?? 0), 0);
     const data: Partial<PlayerRecord> = {
         playerId: outcome.playerId,
         year: year,
@@ -658,11 +673,10 @@ async function calculatePlayerRecord(
         data.averages = playerYearPlayedOutcomes.reduce((acc, o) => acc + (o.points || 0), 0) / data.P;
     }
 
-    const playerYearTimedResponseOutcomes = playerYearRespondedOutcomes.filter(o => o.responseInterval != null);
-    if (playerYearTimedResponseOutcomes.length > 0) {
-        data.speedy = playerYearTimedResponseOutcomes.reduce((acc, o) =>
+    if (playerYearRespondedOutcomes.length > 0) {
+        data.speedy = playerYearRespondedOutcomes.reduce((acc, o) =>
             acc + (o.responseInterval != null ? o.responseInterval : 0), 0,
-        ) / playerYearTimedResponseOutcomes.length;
+        ) / playerYearRespondedOutcomes.length;
     }
 
     return data;

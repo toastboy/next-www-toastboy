@@ -234,6 +234,51 @@ describe('PlayerRecordService', () => {
             const result = await playerRecordService.getProgress();
             expect(result).toEqual([0, 15]);
         });
+
+        it('should return null if there are no Outcomes', async () => {
+            (prisma.outcome.findFirst as jest.Mock).mockResolvedValue(null);
+
+            (prisma.playerRecord.findFirst as jest.Mock).mockResolvedValue(null);
+
+            const result = await playerRecordService.getProgress();
+            expect(result).toBeNull();
+        });
+    });
+
+    describe('getAllYears', () => {
+        it('should retrieve the correct years', async () => {
+            (prisma.playerRecord.findMany as jest.Mock).mockResolvedValue([
+                {
+                    year: 0,
+                },
+                {
+                    year: 2021,
+                },
+                {
+                    year: 2022,
+                },
+            ]);
+
+            const result = await playerRecordService.getAllYears();
+            expect(result).toEqual([2021, 2022, 0]);
+        });
+
+        it('should retrieve the correct years even if the query returns them in a weird order', async () => {
+            (prisma.playerRecord.findMany as jest.Mock).mockResolvedValue([
+                {
+                    year: 2021,
+                },
+                {
+                    year: 0,
+                },
+                {
+                    year: 2022,
+                },
+            ]);
+
+            const result = await playerRecordService.getAllYears();
+            expect(result).toEqual([2021, 2022, 0]);
+        });
     });
 
     describe('getByGameDay', () => {
@@ -357,6 +402,13 @@ describe('PlayerRecordService', () => {
 
         it('should retrieve all the winners for the points table for all years', async () => {
             const result = await playerRecordService.getWinners(EnumTable.points);
+            expect(result.length).toEqual(2);
+            expect(result[0].year).toEqual(2023);
+            expect(result[1].playerId).toEqual(191);
+        });
+
+        it('should retrieve all the winners for the points table for a specific year', async () => {
+            const result = await playerRecordService.getWinners(EnumTable.points, 2023);
             expect(result.length).toEqual(2);
             expect(result[0].year).toEqual(2023);
             expect(result[1].playerId).toEqual(191);
@@ -671,16 +723,16 @@ describe('PlayerRecordService', () => {
                 })),
             );
 
-            (prisma.gameDay.count as jest.Mock).mockResolvedValue(1);
+            (prisma.gameDay.count as jest.Mock).mockResolvedValue(15);
 
             (prisma.outcome.findMany as jest.Mock).mockResolvedValue(
-                Array.from({ length: 15 }, (_, index) => ({
-                    gameDayId: 15,
+                Array.from({ length: 150 }, (_, index) => ({
+                    gameDayId: index / 10 + 1,
                     playerId: index % 10 + 1,
-                    response: index < 11 ? 'Yes' : 'No',
-                    responseInterval: 3000,
-                    points: index < 11 ? index % 2 ? 3 : 0 : null,
-                    team: index < 11 ? index % 2 ? 'A' : 'B' : null,
+                    response: index < 141 ? 'Yes' : 'No',
+                    responseInterval: index != 100 ? 3000 : null,
+                    points: index < 141 ? index % 2 ? 3 : 0 : null,
+                    team: index < 141 ? index % 2 ? 'A' : 'B' : null,
                     pub: index % 2 ? 1 : null,
                     paid: false,
                     goalie: false,

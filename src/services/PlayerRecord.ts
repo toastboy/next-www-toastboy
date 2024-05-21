@@ -317,48 +317,20 @@ export class PlayerRecordService {
                 return [];
             }
 
-            // Some tables have extra rules, like the 10 game minimum for
-            // averages
-
-            let filter = {};
-            if (qualified != undefined) {
-                switch (table) {
-                    case EnumTable.averages:
-                        filter = {
-                            P: {
-                                [qualified ? "gte" : "lt"]: config.minGamesForAveragesTable,
-                            },
-                        };
-                        break;
-                    case EnumTable.speedy:
-                        filter = {
-                            responses: {
-                                [qualified ? "gte" : "lt"]: config.minRepliesForSpeedyTable,
-                            },
-                        };
-                        break;
-                    default:
-                        break;
-                }
-            }
-
             // Now generate the query to fetch the player records
 
-            const rank = `rank_${table}`;
+            const rank = `rank_${table}${qualified === false ? '_unqualified' : ''}`;
+            console.log(rank);
             return prisma.playerRecord.findMany({
                 where: {
                     gameDayId: tableRecord.gameDayId,
                     year: year,
-                    [table]: {
+                    [rank]: {
                         not: null,
                     },
-                    ...filter,
                 },
                 orderBy: {
                     [rank]: 'asc',
-                },
-                include: {
-                    player: true,
                 },
                 take: take,
             });
@@ -673,10 +645,12 @@ async function calculatePlayerRecord(
         data.averages = playerYearPlayedOutcomes.reduce((acc, o) => acc + (o.points || 0), 0) / data.P;
     }
 
-    if (playerYearRespondedOutcomes.length > 0) {
-        data.speedy = playerYearRespondedOutcomes.reduce((acc, o) =>
-            acc + (o.responseInterval != null ? o.responseInterval : 0), 0,
-        ) / playerYearRespondedOutcomes.length;
+    const playerYearResponseIntervalOutcomes = playerYearOutcomes.filter(o => o.responseInterval != null);
+
+    if (playerYearResponseIntervalOutcomes.length > 0) {
+        data.speedy = playerYearResponseIntervalOutcomes.reduce((acc, o) =>
+            acc + (o.responseInterval ?? 0), 0,
+        ) / playerYearResponseIntervalOutcomes.length;
     }
 
     return data;

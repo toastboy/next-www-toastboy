@@ -429,12 +429,16 @@ describe('PlayerRecordService', () => {
                 where: {
                     gameDayId: number,
                     year: number,
+                    rank_points?: {
+                        not: null,
+                    },
                 },
                 take: number
             }) => {
                 const playerRecords = playerRecordList.filter((playerRecord) =>
                     playerRecord.year === args.where.year &&
-                    playerRecord.gameDayId == args.where.gameDayId);
+                    playerRecord.gameDayId == args.where.gameDayId &&
+                    (!args.where.rank_points || (playerRecord.rank_points != null)));
                 return Promise.resolve(playerRecords);
             });
         });
@@ -444,7 +448,7 @@ describe('PlayerRecordService', () => {
                 "gameDayId": 1087,
             });
             const result = await playerRecordService.getTable(EnumTable.points, 2022);
-            expect(result.length).toEqual(22);
+            expect(result.length).toEqual(18);
         });
 
         it('should retrieve the same PlayerRecords for the points table when qualified is set explicitly for a given year', async () => {
@@ -452,7 +456,7 @@ describe('PlayerRecordService', () => {
                 "gameDayId": 1087,
             });
             const result = await playerRecordService.getTable(EnumTable.points, 2022, true);
-            expect(result.length).toEqual(22);
+            expect(result.length).toEqual(18);
         });
 
         it('should retrieve the correct PlayerRecords for the points table for all time', async () => {
@@ -460,7 +464,7 @@ describe('PlayerRecordService', () => {
                 "gameDayId": 1153,
             });
             const result = await playerRecordService.getTable(EnumTable.points, 0);
-            expect(result.length).toEqual(195);
+            expect(result.length).toEqual(179);
         });
 
         it('should return an empty list when retrieving the points table for a year with no PlayerRecords', async () => {
@@ -484,20 +488,20 @@ describe('PlayerRecordService', () => {
                 where: {
                     gameDayId: number,
                     year: number,
-                    P: {
-                        gte?: number,
-                        lt?: number,
-                    }
+                    rank_averages?: {
+                        not: null,
+                    },
+                    rank_averages_unqualified?: {
+                        not: null,
+                    },
                 },
                 take: number
             }) => {
                 const playerRecords = playerRecordList.filter((playerRecord) =>
                     playerRecord.year === args.where.year &&
                     playerRecord.gameDayId == args.where.gameDayId &&
-                    playerRecord.P &&
-                    (args.where.P.gte ? (playerRecord.P >= 4) : true &&
-                        args.where.P.lt ? (playerRecord.P < 4) : true
-                    ));
+                    (!args.where.rank_averages || (playerRecord.rank_averages != null)) &&
+                    (!args.where.rank_averages_unqualified || (playerRecord.rank_averages_unqualified != null)));
                 return Promise.resolve(playerRecords);
             });
         });
@@ -507,7 +511,7 @@ describe('PlayerRecordService', () => {
                 "gameDayId": 1087,
             });
             const result = await playerRecordService.getTable(EnumTable.averages, 2022, true);
-            expect(result.length).toEqual(12);
+            expect(result.length).toEqual(0);
         });
 
         it('should retrieve the correct PlayerRecords for the unqualified averages table for a given year', async () => {
@@ -515,7 +519,7 @@ describe('PlayerRecordService', () => {
                 "gameDayId": 1087,
             });
             const result = await playerRecordService.getTable(EnumTable.averages, 2022, false);
-            expect(result.length).toEqual(6);
+            expect(result.length).toEqual(18);
         });
     });
 
@@ -527,20 +531,20 @@ describe('PlayerRecordService', () => {
                 where: {
                     gameDayId: number,
                     year: number,
-                    responses: {
-                        gte?: number,
-                        lt?: number,
-                    }
+                    rank_speedy?: {
+                        not: null,
+                    },
+                    rank_speedy_unqualified?: {
+                        not: null,
+                    },
                 },
                 take: number
             }) => {
                 const playerRecords = playerRecordList.filter((playerRecord) =>
                     playerRecord.year === args.where.year &&
                     playerRecord.gameDayId == args.where.gameDayId &&
-                    playerRecord.responses &&
-                    (args.where.responses.gte ? (playerRecord.responses >= 4) : true &&
-                        args.where.responses.lt ? (playerRecord.responses < 4) : true
-                    ));
+                    (!args.where.rank_speedy || (playerRecord.rank_speedy != null)) &&
+                    (!args.where.rank_speedy_unqualified || (playerRecord.rank_speedy_unqualified != null)));
                 return Promise.resolve(playerRecords);
             });
         });
@@ -550,7 +554,7 @@ describe('PlayerRecordService', () => {
                 "gameDayId": 1087,
             });
             const result = await playerRecordService.getTable(EnumTable.speedy, 2022, true);
-            expect(result.length).toEqual(15);
+            expect(result.length).toEqual(12);
         });
 
         it('should retrieve the correct PlayerRecords for the unqualified speedy table for a given year', async () => {
@@ -558,7 +562,7 @@ describe('PlayerRecordService', () => {
                 "gameDayId": 1087,
             });
             const result = await playerRecordService.getTable(EnumTable.speedy, 2022, false);
-            expect(result.length).toEqual(7);
+            expect(result.length).toEqual(10);
         });
     });
 

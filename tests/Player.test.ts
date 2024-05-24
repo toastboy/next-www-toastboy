@@ -426,7 +426,7 @@ describe('PlayerService', () => {
                     gameDay: true,
                 },
             });
-            expect(result).toEqual([2021, 2022, 2023]);
+            expect(result).toEqual([2021, 2022, 2023, 0]);
         });
     });
 

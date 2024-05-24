@@ -1,3 +1,5 @@
+'use client';
+
 import { Player } from '@prisma/client';
 import PlayerMugshot from 'components/PlayerMugshot';
 import PlayerArse from 'components/PlayerArse';
@@ -8,12 +10,22 @@ import PlayerLastPlayed from 'components/PlayerLastPlayed';
 import PlayerYearsActive from 'components/PlayerYearsActive';
 import PlayerResults from 'components/PlayerResults';
 import PlayerPositions from 'components/PlayerPositions';
+import { notFound } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-export default async function PlayerProfile({
+export default function PlayerProfile({
     player,
 }: {
     player: Player,
 }) {
+    const [activeYear, setActiveYear] = useState(0);
+
+    useEffect(() => {
+        if (isNaN(activeYear)) {
+            return notFound();
+        }
+    }, [activeYear]);
+
     const { id, login, name, email, born } = player;
     const born_string = born == null ? "Unknown" : born.toLocaleDateString('sv');
 
@@ -26,9 +38,9 @@ export default async function PlayerProfile({
             <PlayerCountries idOrLogin={player.login} />
             <PlayerArse idOrLogin={player.login} />
             <PlayerForm idOrLogin={player.login} games={5} />
-            <PlayerYearsActive idOrLogin={player.login} />
-            <PlayerResults idOrLogin={player.login} year={0} />
-            <PlayerPositions idOrLogin={player.login} year={0} />
+            <PlayerYearsActive idOrLogin={player.login} activeYear={0} onYearChange={setActiveYear} />
+            <PlayerResults idOrLogin={player.login} year={activeYear} />
+            <PlayerPositions idOrLogin={player.login} year={activeYear} />
             <div className="px-6 py-4">
                 <div className="font-bold text-xl mb-2">{name}</div>
                 <p className="text-gray-700 text-base">{email}</p>

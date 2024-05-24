@@ -248,6 +248,9 @@ class PlayerService {
             });
             const years = outcomes.map(o => o.gameDay.date.getFullYear());
             const distinctYears = Array.from(new Set(years));
+            if (distinctYears.length) {
+                distinctYears.push(0);
+            }
 
             return Promise.resolve(distinctYears);
         } catch (error) {

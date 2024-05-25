@@ -1,6 +1,6 @@
 "use client";
 
-import { Group, ScrollArea } from '@mantine/core';
+import { ScrollArea } from '@mantine/core';
 import {
     IconNotes,
     IconCalendarStats,
@@ -13,7 +13,6 @@ import {
 // import { UserButton } from '.components/UserButton/UserButton';
 import { LinksGroup } from 'components/NavbarLinksGroup';
 import classes from 'components/NavbarNested.module.css';
-import Image from 'next/image';
 
 const mockdata = [
     { label: 'Dashboard', icon: IconGauge },
@@ -57,16 +56,6 @@ export function NavbarNested() {
     return (
         <nav className={classes.navbar}>
             <div className={classes.header}>
-                <Group justify="space-between">
-                    <Image
-                        src="/crest.jpg"
-                        width={72}
-                        height={72}
-                        priority={true}
-                        alt="Toastboy FC Crest"
-                    />
-                    <p>Toastboy FC</p>
-                </Group>
             </div>
 
             <ScrollArea className={classes.links}>

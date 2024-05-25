@@ -1,6 +1,7 @@
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 import type { Metadata } from 'next';
+import CustomAppShell from 'components/CustomAppShell';
 
 import { ColorSchemeScript, MantineProvider } from '@mantine/core';
 
@@ -25,7 +26,11 @@ export default function RootLayout({
         <ColorSchemeScript />
       </head>
       <body>
-        <MantineProvider>{children}</MantineProvider>
+        <MantineProvider>
+          <CustomAppShell>
+            {children}
+          </CustomAppShell>
+        </MantineProvider>
       </body>
     </html>
   );

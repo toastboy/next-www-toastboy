@@ -16,6 +16,7 @@ export default function GameDay({ id }: { id: number }) {
         return (
             <>
                 <h1>Game {gameDay.id}: <GameDayLink id={gameDay.id} /></h1>
+                <Text>{gameDay.comment ? `(${gameDay.comment})` : ''}</Text>
                 <Team gameDayId={gameDay.id} team={'A'} />
                 <p>vs.</p>
                 <Team gameDayId={gameDay.id} team={'B'} />

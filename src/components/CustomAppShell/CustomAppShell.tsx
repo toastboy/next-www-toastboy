@@ -2,7 +2,7 @@
 
 import { AppShell, Burger, Group } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { NavbarNested } from 'components/NavBarNested';
+import { NavbarNested } from 'components/NavBarNested/NavBarNested';
 import Image from 'next/image';
 
 export default function CustomAppShell({ children }: { children: React.ReactNode }) {
@@ -19,14 +19,14 @@ export default function CustomAppShell({ children }: { children: React.ReactNode
             padding="md"
         >
             <AppShell.Header>
-                <Burger
-                    opened={opened}
-                    onClick={toggle}
-                    hiddenFrom="sm"
-                    size="sm"
-                />
                 <div>
                     <Group justify="space-between">
+                        <Burger
+                            opened={opened}
+                            onClick={toggle}
+                            hiddenFrom="sm"
+                            size="sm"
+                        />
                         <Image
                             src="/crest.jpg"
                             width={60}

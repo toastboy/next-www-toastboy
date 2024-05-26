@@ -1,7 +1,7 @@
 import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 import type { Metadata } from 'next';
-import CustomAppShell from 'components/CustomAppShell';
+import CustomAppShell from 'components/CustomAppShell/CustomAppShell';
 
 import { ColorSchemeScript, MantineProvider } from '@mantine/core';
 

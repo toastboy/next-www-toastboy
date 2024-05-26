@@ -10,9 +10,9 @@ import {
     IconAdjustments,
     IconLock,
 } from '@tabler/icons-react';
-// import { UserButton } from '.components/UserButton/UserButton';
-import { LinksGroup } from 'components/NavbarLinksGroup';
-import classes from 'components/NavbarNested.module.css';
+import { UserButton } from 'components/UserButton/UserButton';
+import { LinksGroup } from 'components/NavbarLinksGroup/NavbarLinksGroup';
+import classes from 'components/NavbarNested/NavbarNested.module.css';
 
 const mockdata = [
     { label: 'Dashboard', icon: IconGauge },
@@ -63,7 +63,7 @@ export function NavbarNested() {
             </ScrollArea>
 
             <div className={classes.footer}>
-                {/* <UserButton /> */}
+                <UserButton />
             </div>
         </nav>
     );

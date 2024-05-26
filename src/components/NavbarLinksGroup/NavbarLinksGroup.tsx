@@ -1,28 +1,22 @@
-import { useState } from 'react';
-import { Group, Box, Collapse, ThemeIcon, Text, UnstyledButton, rem } from '@mantine/core';
+import { Box, Collapse, Group, UnstyledButton, rem } from '@mantine/core';
 import { IconChevronRight } from '@tabler/icons-react';
 import classes from 'components/NavbarLinksGroup/NavbarLinksGroup.module.css';
+import Link from 'next/link';
+import { useState } from 'react';
 
 interface LinksGroupProps {
-    icon: typeof IconChevronRight;
     label: string;
     initiallyOpened?: boolean;
     links?: { label: string; link: string }[];
 }
 
-export function LinksGroup({ icon: Icon, label, initiallyOpened, links }: LinksGroupProps) {
+export function LinksGroup({ label, initiallyOpened, links }: LinksGroupProps) {
     const hasLinks = Array.isArray(links);
     const [opened, setOpened] = useState(initiallyOpened || false);
     const items = (hasLinks ? links : []).map((link) => (
-        <Text<'a'>
-            component="a"
-            className={classes.link}
-            href={link.link}
-            key={link.label}
-            onClick={(event) => event.preventDefault()}
-        >
+        <Link className={classes.link} href={link.link} key={link.label}>
             {link.label}
-        </Text>
+        </Link>
     ));
 
     return (
@@ -30,9 +24,6 @@ export function LinksGroup({ icon: Icon, label, initiallyOpened, links }: LinksG
             <UnstyledButton onClick={() => setOpened((o) => !o)} className={classes.control}>
                 <Group justify="space-between" gap={0}>
                     <Box style={{ display: 'flex', alignItems: 'center' }}>
-                        <ThemeIcon variant="light" size={30}>
-                            <Icon style={{ width: rem(18), height: rem(18) }} />
-                        </ThemeIcon>
                         <Box ml="md">{label}</Box>
                     </Box>
                     {hasLinks && (

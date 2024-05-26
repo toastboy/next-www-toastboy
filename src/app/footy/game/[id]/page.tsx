@@ -1,6 +1,5 @@
-import GameDayLink from "components/GameDayLink";
-import Team from "components/Team";
 import { notFound } from "next/navigation";
+import GameDay from "components/GameDay";
 
 export default function Page({
     params,
@@ -13,16 +12,6 @@ export default function Page({
     }
 
     return (
-        <div>
-            <main className="p-10 mx-auto max-w-4xl">
-                <h1>Game {gameDayId}: <GameDayLink id={gameDayId} /></h1>
-                <Team gameDayId={gameDayId} team={'A'} />
-                <p>vs.</p>
-                <Team gameDayId={gameDayId} team={'B'} />
-            </main>
-
-            <footer>
-            </footer>
-        </div>
+        <GameDay id={gameDayId} />
     );
 }

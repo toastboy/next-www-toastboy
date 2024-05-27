@@ -1,6 +1,6 @@
 'use client';
 
-import { AppShell, Burger, Group } from '@mantine/core';
+import { AppShell, Burger, Container, Group } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { NavbarNested } from 'components/NavBarNested/NavBarNested';
 import Image from 'next/image';
@@ -44,7 +44,9 @@ export default function CustomAppShell({ children }: { children: React.ReactNode
             </AppShell.Navbar>
 
             <AppShell.Main>
-                {children}
+                <Container fluid p="xl">
+                    {children}
+                </Container>
             </AppShell.Main>
         </AppShell>
     );

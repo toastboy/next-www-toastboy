@@ -6,21 +6,21 @@ import { GameDay } from '@prisma/client';
 import { Indicator } from '@mantine/core';
 import Link from 'next/link';
 
-export default function GameCalendar({
-    date,
-}: {
-    date: Date,
-}) {
+interface GameCalendarProps {
+    date: Date;
+}
+
+const GameCalendar: React.FC<GameCalendarProps> = ({ date }) => {
     const [gameDays, setGameDays] = useState<GameDay[]>([]);
 
-    function getGameDay(date: Date): GameDay | null {
+    const getGameDay = (date: Date): GameDay | null => {
         // TODO: This game day date logic works but it seems clunky
         const localDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 18, 0, 0, 0);
         const dateString = localDate.toISOString();
         const filteredGameDays = gameDays.filter(gameDay => new Date(gameDay.date).toISOString() === dateString);
 
         return filteredGameDays.length > 0 ? filteredGameDays[0] : null;
-    }
+    };
 
     useEffect(() => {
         fetch('/api/footy/gameday')
@@ -58,4 +58,6 @@ export default function GameCalendar({
         renderDay={renderDay}
         getDayProps={getDayProps}
     />;
-}
+};
+
+export default GameCalendar;

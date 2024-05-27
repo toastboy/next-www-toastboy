@@ -4,13 +4,13 @@ import classes from 'components/NavbarLinksGroup/NavbarLinksGroup.module.css';
 import Link from 'next/link';
 import { useState } from 'react';
 
-interface LinksGroupProps {
+interface NavBarLinksGroupProps {
     label: string;
     initiallyOpened?: boolean;
     links?: { label: string; link: string }[];
 }
 
-export function LinksGroup({ label, initiallyOpened, links }: LinksGroupProps) {
+const NavBarLinksGroup: React.FC<NavBarLinksGroupProps> = ({ label, initiallyOpened, links }) => {
     const hasLinks = Array.isArray(links);
     const [opened, setOpened] = useState(initiallyOpened || false);
     const items = (hasLinks ? links : []).map((link) => (
@@ -42,4 +42,6 @@ export function LinksGroup({ label, initiallyOpened, links }: LinksGroupProps) {
             {hasLinks ? <Collapse in={opened}>{items}</Collapse> : null}
         </>
     );
-}
+};
+
+export default NavBarLinksGroup;

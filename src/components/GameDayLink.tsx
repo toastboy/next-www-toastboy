@@ -3,7 +3,11 @@
 import { Anchor, Loader } from '@mantine/core';
 import { useGameDay } from 'lib/swr';
 
-export default function GameDayLink({ id }: { id: number }) {
+interface GameDayLinkProps {
+    id: number;
+}
+
+const GameDayLink: React.FC<GameDayLinkProps> = ({ id }) => {
     const { data: gameDay, error, isLoading } = useGameDay(id);
 
     if (error) return <div>failed to load</div>;
@@ -15,4 +19,6 @@ export default function GameDayLink({ id }: { id: number }) {
             {new Date(gameDay.date).toLocaleDateString('sv')}
         </Anchor>
     );
-}
+};
+
+export default GameDayLink;

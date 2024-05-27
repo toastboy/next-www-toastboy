@@ -1,7 +1,11 @@
 import { Image, Loader } from '@mantine/core';
 import { useCountry } from 'lib/swr';
 
-export default function CountryFlag({ isoCode }: { isoCode: string }) {
+interface CountryFlagProps {
+    isoCode: string;
+}
+
+const CountryFlag: React.FC<CountryFlagProps> = ({ isoCode }) => {
     const { data: country, error, isLoading } = useCountry(isoCode);
 
     if (error) return <div>failed to load</div>;
@@ -18,4 +22,6 @@ export default function CountryFlag({ isoCode }: { isoCode: string }) {
             title={country.name}
         />
     );
-}
+};
+
+export default CountryFlag;

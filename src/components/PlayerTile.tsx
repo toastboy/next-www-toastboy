@@ -2,11 +2,11 @@ import { Player } from '@prisma/client';
 import Link from 'next/link';
 import PlayerMugshot from 'components/PlayerMugshot';
 
-export default function PlayerTile({
-  player,
-}: {
-  player: Player,
-}) {
+interface PlayerTileProps {
+  player: Player;
+}
+
+const PlayerTile: React.FC<PlayerTileProps> = ({ player }) => {
   const { id, login, first_name, last_name, email, born } = player;
   const born_string = born == null ? "Unknown" : born.toLocaleDateString('sv');
 
@@ -25,4 +25,6 @@ export default function PlayerTile({
       </div>
     </div>
   );
-}
+};
+
+export default PlayerTile;

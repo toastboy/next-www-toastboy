@@ -2,10 +2,12 @@
 
 import { FootyTable, FootyPlayerRecord } from 'lib/swr';
 
-export default function TableScore({ table, playerRecord }: {
-    table: FootyTable,
-    playerRecord: FootyPlayerRecord,
-}) {
+interface TableScoreProps {
+    table: FootyTable;
+    playerRecord: FootyPlayerRecord;
+}
+
+const TableScore = ({ table, playerRecord }: TableScoreProps) => {
     switch (table) {
         case FootyTable.averages:
             return `${playerRecord.averages?.toFixed(3)}`;
@@ -21,4 +23,6 @@ export default function TableScore({ table, playerRecord }: {
         default:
             return playerRecord[table];
     }
-}
+};
+
+export default TableScore;

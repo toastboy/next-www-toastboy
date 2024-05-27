@@ -4,7 +4,12 @@ import { usePlayerClubs } from 'lib/swr';
 import ClubBadge from 'components/ClubBadge';
 import { Loader } from '@mantine/core';
 
-export default function PlayerClubs({ idOrLogin }: { idOrLogin: string }) {
+
+interface PlayerClubsProps {
+    idOrLogin: string;
+}
+
+const PlayerClubs: React.FC<PlayerClubsProps> = ({ idOrLogin }) => {
     const { data: clubs, error, isLoading } = usePlayerClubs(idOrLogin);
 
     if (error) return <div>failed to load</div>;
@@ -21,4 +26,6 @@ export default function PlayerClubs({ idOrLogin }: { idOrLogin: string }) {
             ))}
         </div>
     );
-}
+};
+
+export default PlayerClubs;

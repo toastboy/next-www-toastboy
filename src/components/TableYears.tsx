@@ -5,13 +5,12 @@ import { useTableYears } from 'lib/swr';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import classes from './GameYears.module.css';
 
-export default function TableYears({
-    activeYear,
-    onYearChange,
-}: {
-    activeYear: number,
-    onYearChange: Dispatch<SetStateAction<number>>,
-}) {
+interface TableYearsProps {
+    activeYear: number;
+    onYearChange: Dispatch<SetStateAction<number>>;
+}
+
+const TableYears: React.FC<TableYearsProps> = ({ activeYear, onYearChange }) => {
     const { data, error, isLoading } = useTableYears();
 
     const [rootRef, setRootRef] = useState<HTMLDivElement | null>(null);
@@ -59,4 +58,6 @@ export default function TableYears({
             />
         </div>
     );
-}
+};
+
+export default TableYears;

@@ -5,7 +5,11 @@ import GameDayLink from 'components/GameDayLink';
 import Team from 'components/Team';
 import { useGameDay } from 'lib/swr';
 
-export default function GameDay({ id }: { id: number }) {
+interface GameDayProps {
+    id: number;
+}
+
+const GameDay: React.FC<GameDayProps> = ({ id }) => {
     const { data: gameDay, error, isLoading } = useGameDay(id);
 
     if (error) return <div>failed to load</div>;
@@ -32,4 +36,6 @@ export default function GameDay({ id }: { id: number }) {
             </>
         );
     }
-}
+};
+
+export default GameDay;

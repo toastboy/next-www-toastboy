@@ -2,10 +2,14 @@
 
 import { AppShell, Burger, Container, Group } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { NavbarNested } from 'components/NavBarNested/NavBarNested';
+import NavbarNested from 'components/NavBarNested/NavBarNested';
 import Image from 'next/image';
 
-export default function CustomAppShell({ children }: { children: React.ReactNode }) {
+interface CustomAppShellProps {
+    children: React.ReactNode;
+}
+
+const CustomAppShell: React.FC<CustomAppShellProps> = ({ children }: CustomAppShellProps) => {
     const [opened, { toggle }] = useDisclosure();
 
     return (
@@ -50,4 +54,6 @@ export default function CustomAppShell({ children }: { children: React.ReactNode
             </AppShell.Main>
         </AppShell>
     );
-}
+};
+
+export default CustomAppShell;

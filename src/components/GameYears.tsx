@@ -5,13 +5,12 @@ import { useGameYears } from 'lib/swr';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import classes from './GameYears.module.css';
 
-export default function GameYears({
-    activeYear,
-    onYearChange,
-}: {
-    activeYear: number,
-    onYearChange: Dispatch<SetStateAction<number>>,
-}) {
+interface GameYearsProps {
+    activeYear: number;
+    onYearChange: Dispatch<SetStateAction<number>>;
+}
+
+const GameYears: React.FC<GameYearsProps> = ({ activeYear, onYearChange }) => {
     const { data, error, isLoading } = useGameYears();
 
     const [rootRef, setRootRef] = useState<HTMLDivElement | null>(null);
@@ -59,4 +58,6 @@ export default function GameYears({
             />
         </div>
     );
-}
+};
+
+export default GameYears;

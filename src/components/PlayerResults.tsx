@@ -4,13 +4,12 @@ import { Loader } from '@mantine/core';
 import { usePlayerRecord } from 'lib/swr';
 import { getYearName } from 'lib/utils';
 
-export default function PlayerResults({
-    idOrLogin,
-    year,
-}: {
-    idOrLogin: string,
-    year: number,
-}) {
+interface PlayerResultsProps {
+    idOrLogin: string;
+    year: number;
+}
+
+const PlayerResults: React.FC<PlayerResultsProps> = ({ idOrLogin, year }) => {
     const { data: record, error, isLoading } = usePlayerRecord(idOrLogin, year);
 
     if (error) return <div>failed to load</div>;
@@ -33,4 +32,6 @@ export default function PlayerResults({
             </table>
         </div>
     );
-}
+};
+
+export default PlayerResults;

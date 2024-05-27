@@ -7,10 +7,12 @@ import { FootyTable, useGameYear } from 'lib/swr';
 import { getYearName } from 'lib/utils';
 import { notFound } from 'next/navigation';
 
-export function Table({ table, year }: {
-    table: FootyTable,
-    year: number,
-}) {
+interface TableProps {
+    table: FootyTable;
+    year: number;
+}
+
+const Table: React.FC<TableProps> = ({ table, year }) => {
     const { data, error, isLoading } = useGameYear(year);
 
     if (error) return <div>failed to load</div>;
@@ -35,7 +37,7 @@ export function Table({ table, year }: {
             </div>
         );
     }
-}
+};
 
 /**
  * Generates a qualified table name based on the provided table type and year.
@@ -76,3 +78,5 @@ function UnqualifiedTableName(table: FootyTable): string | null {
             return null;
     }
 }
+
+export default Table;

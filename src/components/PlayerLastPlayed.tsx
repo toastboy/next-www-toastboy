@@ -4,11 +4,11 @@ import { Loader } from '@mantine/core';
 import { usePlayerLastPlayed } from 'lib/swr';
 import GameDayLink from 'components/GameDayLink';
 
-export default function PlayerLastPlayed({
-    idOrLogin,
-}: {
-    idOrLogin: string,
-}) {
+interface PlayerLastPlayedProps {
+    idOrLogin: string;
+}
+
+const PlayerLastPlayed: React.FC<PlayerLastPlayedProps> = ({ idOrLogin }) => {
     const { data: lastplayed, error, isLoading } = usePlayerLastPlayed(idOrLogin);
 
     if (error) return <div>failed to load</div>;
@@ -20,4 +20,6 @@ export default function PlayerLastPlayed({
             <p>Last played: <GameDayLink id={lastplayed.gameDayId} /></p>
         </div>
     );
-}
+};
+
+export default PlayerLastPlayed;

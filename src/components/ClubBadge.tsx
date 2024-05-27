@@ -1,7 +1,11 @@
 import { Image, Loader } from '@mantine/core';
 import { useClub } from 'lib/swr';
 
-export default function ClubBadge({ clubId }: { clubId: number }) {
+interface ClubBadgeProps {
+    clubId: number;
+}
+
+const ClubBadge: React.FC<ClubBadgeProps> = ({ clubId }) => {
     const { data: club, error, isLoading } = useClub(clubId);
 
     if (error) return <div>failed to load</div>;
@@ -18,4 +22,6 @@ export default function ClubBadge({ clubId }: { clubId: number }) {
             title={club.club_name}
         />
     );
-}
+};
+
+export default ClubBadge;

@@ -5,10 +5,12 @@ import PlayerLink from 'components/PlayerLink';
 import { getYearName } from 'lib/utils';
 import { FootyTable, useWinners } from 'lib/swr';
 
-export default function WinnersTable({ table, year }: {
-    table: FootyTable,
-    year?: number,
-}) {
+interface WinnersTableProps {
+    table: FootyTable;
+    year?: number;
+}
+
+const WinnersTable: React.FC<WinnersTableProps> = ({ table, year }) => {
     const { data, error, isLoading } = useWinners(table, year);
 
     if (error) return <div>failed to load</div>;
@@ -32,4 +34,6 @@ export default function WinnersTable({ table, year }: {
             </tbody>
         </table>
     );
-}
+};
+
+export default WinnersTable;

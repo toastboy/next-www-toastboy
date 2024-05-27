@@ -4,7 +4,11 @@ import { usePlayerCountries } from 'lib/swr';
 import CountryFlag from 'components/CountryFlag';
 import { Loader } from '@mantine/core';
 
-export default function PlayerCountries({ idOrLogin }: { idOrLogin: string }) {
+interface PlayerCountriesProps {
+    idOrLogin: string;
+}
+
+const PlayerCountries: React.FC<PlayerCountriesProps> = ({ idOrLogin }) => {
     const { data: countries, error, isLoading } = usePlayerCountries(idOrLogin);
 
     if (error) return <div>failed to load</div>;
@@ -21,4 +25,6 @@ export default function PlayerCountries({ idOrLogin }: { idOrLogin: string }) {
             ))}
         </div>
     );
-}
+};
+
+export default PlayerCountries;

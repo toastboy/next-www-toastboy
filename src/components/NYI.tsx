@@ -1,7 +1,9 @@
-export async function NYI() {
+const NYI: React.FC = () => {
     return (
         <div>
             <p>(Not yet implemented)</p>
-        </div >
+        </div>
     );
-}
+};
+
+export default NYI;

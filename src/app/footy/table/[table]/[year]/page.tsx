@@ -1,10 +1,9 @@
 'use client';
 
+import Table from 'components/Table';
 import TableYears from 'components/TableYears';
-import { Table } from 'components/Table';
 import { FootyTable } from 'lib/swr';
-import { notFound, useRouter } from 'next/navigation';
-import { usePathname } from 'next/navigation';
+import { notFound, usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export default function Page({

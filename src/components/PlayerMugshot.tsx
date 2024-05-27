@@ -3,7 +3,11 @@
 import { Anchor, Image, Loader } from '@mantine/core';
 import { usePlayer } from 'lib/swr';
 
-export default function PlayerMugshot({ idOrLogin }: { idOrLogin: string }) {
+interface PlayerMugshotProps {
+    idOrLogin: string;
+}
+
+const PlayerMugshot: React.FC<PlayerMugshotProps> = ({ idOrLogin }) => {
     const { data: player, error, isLoading } = usePlayer(idOrLogin);
 
     if (error) return <div>failed to load</div>;
@@ -22,4 +26,6 @@ export default function PlayerMugshot({ idOrLogin }: { idOrLogin: string }) {
             />
         </Anchor>
     );
-}
+};
+
+export default PlayerMugshot;

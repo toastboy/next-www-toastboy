@@ -3,7 +3,11 @@
 import { Anchor, Loader } from '@mantine/core';
 import { usePlayer } from 'lib/swr';
 
-export default function PlayerLink({ idOrLogin }: { idOrLogin: string }) {
+interface PlayerLinkProps {
+    idOrLogin: string;
+}
+
+const PlayerLink: React.FC<PlayerLinkProps> = ({ idOrLogin }) => {
     const { data: player, error, isLoading } = usePlayer(idOrLogin);
 
     if (error) return <div>failed to load</div>;
@@ -15,4 +19,6 @@ export default function PlayerLink({ idOrLogin }: { idOrLogin: string }) {
             {player.name}
         </Anchor>
     );
-}
+};
+
+export default PlayerLink;

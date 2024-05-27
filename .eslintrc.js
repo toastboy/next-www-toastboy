@@ -61,5 +61,9 @@ module.exports = {
             "exports": "always-multiline",
             "functions": "always-multiline"
         }],
+
+        // Since you're using TypeScript, you don't need to use prop types, but
+        // ESLint might not be aware of this and is still enforcing the rule.
+        'react/prop-types': 'off',
     }
 };

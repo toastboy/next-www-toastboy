@@ -13,11 +13,11 @@ import PlayerPositions from 'components/PlayerPositions';
 import { notFound } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-export default function PlayerProfile({
-    player,
-}: {
-    player: Player,
-}) {
+interface PlayerProfileProps {
+    player: Player;
+}
+
+const PlayerProfile: React.FC<PlayerProfileProps> = ({ player }) => {
     const [activeYear, setActiveYear] = useState(0);
 
     useEffect(() => {
@@ -51,6 +51,8 @@ export default function PlayerProfile({
                     {born_string}
                 </span>
             </div>
-        </div >
+        </div>
     );
-}
+};
+
+export default PlayerProfile;

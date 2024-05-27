@@ -3,7 +3,11 @@
 import { Loader } from '@mantine/core';
 import { usePlayerArse } from 'lib/swr';
 
-export default function PlayerLastPlayed({ idOrLogin }: { idOrLogin: string }) {
+interface PlayerArseProps {
+    idOrLogin: string;
+}
+
+const PlayerArse: React.FC<PlayerArseProps> = ({ idOrLogin }) => {
     const { data: arse, error, isLoading } = usePlayerArse(idOrLogin);
 
     if (error) return <div>failed to load</div>;
@@ -24,4 +28,6 @@ export default function PlayerLastPlayed({ idOrLogin }: { idOrLogin: string }) {
             <p className="text-gray-700 text-base">Defending: {arse.defending}</p>
         </div>
     );
-}
+};
+
+export default PlayerArse;

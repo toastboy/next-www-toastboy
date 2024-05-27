@@ -1,8 +1,8 @@
-import { UnstyledButton, Group, Avatar, Text, rem } from '@mantine/core';
+import { Avatar, Flex, Group, Text, UnstyledButton, rem } from '@mantine/core';
 import { IconChevronRight } from '@tabler/icons-react';
 import classes from './UserButton.module.css';
 
-export function UserButton() {
+const UserButton: React.FC = () => {
   return (
     <UnstyledButton className={classes.user}>
       <Group>
@@ -11,7 +11,7 @@ export function UserButton() {
           radius="xl"
         />
 
-        <div style={{ flex: 1 }}>
+        <Flex direction={'column'}>
           <Text size="sm" fw={500}>
             Harriette Spoonlicker
           </Text>
@@ -19,10 +19,12 @@ export function UserButton() {
           <Text c="dimmed" size="xs">
             hspoonlicker@outlook.com
           </Text>
-        </div>
+        </Flex>
 
         <IconChevronRight style={{ width: rem(14), height: rem(14) }} stroke={1.5} />
       </Group>
     </UnstyledButton>
   );
-}
+};
+
+export default UserButton;

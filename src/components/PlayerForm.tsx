@@ -5,13 +5,12 @@ import { Key } from 'react';
 import { usePlayerForm } from 'lib/swr';
 import GameDayLink from 'components/GameDayLink';
 
-export default function PlayerForm({
-    idOrLogin,
-    games,
-}: {
-    idOrLogin: string,
-    games: number,
-}) {
+interface PlayerFormProps {
+    idOrLogin: string;
+    games: number;
+}
+
+export const PlayerForm: React.FC<PlayerFormProps> = ({ idOrLogin, games }) => {
     const { data: outcomes, error, isLoading } = usePlayerForm(idOrLogin, games);
 
     if (error) return <div>failed to load</div>;
@@ -28,4 +27,6 @@ export default function PlayerForm({
             ))}
         </div>
     );
-}
+};
+
+export default PlayerForm;

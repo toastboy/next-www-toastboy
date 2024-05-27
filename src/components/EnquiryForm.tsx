@@ -1,9 +1,11 @@
 'use client';
 
-import { NYI } from 'components/NYI';
+import NYI from 'components/NYI';
 
-export default function EnquiryForm() {
+const EnquiryForm: React.FC = () => {
     return (
         <NYI />
     );
-}
+};
+
+export default EnquiryForm;

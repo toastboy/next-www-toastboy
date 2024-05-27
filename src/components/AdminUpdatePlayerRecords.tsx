@@ -3,10 +3,10 @@
 import { ActionIcon, Button, Center, Container, RingProgress, Text, rem } from '@mantine/core';
 import { IconCheck } from '@tabler/icons-react';
 import { updatePlayerRecords } from 'actions/updatePlayerRecords';
-import { useEffect } from 'react';
 import { useRecordsProgress } from 'lib/swr';
+import { useEffect } from 'react';
 
-export function AdminUpdatePlayerRecords() {
+const AdminUpdatePlayerRecords: React.FC = () => {
     const { data, error, mutate } = useRecordsProgress();
 
     useEffect(() => {
@@ -47,4 +47,6 @@ export function AdminUpdatePlayerRecords() {
             </Container>
         </>
     );
-}
+};
+
+export default AdminUpdatePlayerRecords;

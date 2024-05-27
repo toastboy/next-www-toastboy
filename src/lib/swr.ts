@@ -185,5 +185,8 @@ export function useTeam(gameDay: number, team: string) {
 }
 
 export function useWinners(table: FootyTable, year?: number) {
-    return useSWR<FootyPlayerRecord[]>(`/api/footy/winners/${table}/${year}`, fetcher);
+    let url = `/api/footy/winners/${table}`;
+    if (year !== undefined) url += `/${year}`;
+
+    return useSWR<FootyPlayerRecord[]>(url, fetcher);
 }

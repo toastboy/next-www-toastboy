@@ -1,7 +1,9 @@
 import { Anchor, Container, Flex, Text, Title } from '@mantine/core';
 import EnquiryForm from 'components/EnquiryForm';
 
-const InfoPage = () => {
+interface InfoPageProps { }
+
+const InfoPage: React.FC<InfoPageProps> = () => {
     return (
         <>
             <Flex gap="md" align="flex-start" direction="column" p="xl">

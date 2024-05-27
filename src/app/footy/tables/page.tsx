@@ -1,8 +1,10 @@
 import Link from "next/link";
 
-export default function Page() {
+interface PageProps { }
+
+const Page: React.FC<PageProps> = () => {
     return (
-        <div>
+        <>
             <h3>The league tables</h3>
 
             <ul>
@@ -11,6 +13,8 @@ export default function Page() {
                 <li><Link href="/footy/table/stalwart">Stalwart</Link> - The one you win just by turning up.</li>
                 <li><Link href="/footy/table/speedy">Captain Speedy</Link> - Rewards people for responding early to the call for players.</li>
             </ul>
-        </div>
+        </>
     );
-}
+};
+
+export default Page;

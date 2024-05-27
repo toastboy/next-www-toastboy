@@ -1,8 +1,9 @@
+import PlayerTile from 'components/PlayerTile';
 import playerService from "services/Player";
 
-import PlayerTile from 'components/PlayerTile';
+interface PageProps { }
 
-export default async function Page() {
+const Page: React.FC<PageProps> = async () => {
     const players = await playerService.getAll();
 
     return (
@@ -23,4 +24,6 @@ export default async function Page() {
             </footer>
         </div>
     );
-}
+};
+
+export default Page;

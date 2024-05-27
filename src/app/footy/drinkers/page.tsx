@@ -1,7 +1,12 @@
-import { NYI } from "components/NYI";
+import NYI from 'components/NYI';
+import React from 'react';
 
-export default function Page() {
+interface PageProps { }
+
+const Page: React.FC<PageProps> = () => {
     return (
         <NYI />
     );
-}
+};
+
+export default Page;

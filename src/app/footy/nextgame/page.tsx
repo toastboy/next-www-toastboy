@@ -1,5 +1,9 @@
 import { permanentRedirect } from 'next/navigation';
 
-export default async function Page() {
+interface PageProps { }
+
+const Page: React.FC<PageProps> = async () => {
     permanentRedirect(`/footy/game`);
-}
+};
+
+export default Page;

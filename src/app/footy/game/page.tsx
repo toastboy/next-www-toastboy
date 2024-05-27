@@ -1,7 +1,9 @@
 import { notFound, redirect } from 'next/navigation';
 import gameDayService from 'services/GameDay';
 
-export default async function Page() {
+interface PageProps { }
+
+const Page: React.FC<PageProps> = async () => {
     const gameDay = await gameDayService.getCurrent();
 
     if (gameDay) {
@@ -10,4 +12,6 @@ export default async function Page() {
     else {
         return notFound();
     }
-}
+};
+
+export default Page;

@@ -1,6 +1,8 @@
 import Image from 'next/image';
 
-export default function Page() {
+interface PageProps { }
+
+const Page: React.FC<PageProps> = () => {
     return (
         <div className="m-auto w-[283px] rounded overflow-hidden shadow-lg" >
             <Image
@@ -12,4 +14,6 @@ export default function Page() {
             />
         </div>
     );
-}
+};
+
+export default Page;

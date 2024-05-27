@@ -6,11 +6,11 @@ import { FootyTable } from 'lib/swr';
 import { notFound, usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-export default function Page({
-    params,
-}: {
-    params: Record<string, string>,
-}) {
+interface PageProps {
+    params: Record<string, string>;
+}
+
+const Page: React.FC<PageProps> = ({ params }) => {
     const pathname = usePathname();
     const router = useRouter();
 
@@ -38,4 +38,6 @@ export default function Page({
             <Table table={table} year={activeYear} />
         </>
     );
-}
+};
+
+export default Page;

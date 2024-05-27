@@ -1,9 +1,11 @@
 import { permanentRedirect } from 'next/navigation';
 
-export default async function Page({
-    params,
-}: {
+interface PageProps {
     params: Record<string, string>,
-}) {
-    permanentRedirect(`/footy/table/points/${params.year}`);
 }
+
+const Page: React.FC<PageProps> = async ({ params }) => {
+    permanentRedirect(`/footy/table/points/${params.year}`);
+};
+
+export default Page;

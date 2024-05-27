@@ -1,9 +1,11 @@
-import { AdminUpdatePlayerRecords } from "components/AdminUpdatePlayerRecords";
+import AdminUpdatePlayerRecords from 'components/AdminUpdatePlayerRecords';
 
-export default function Page() {
+const Page: React.FC = () => {
     return (
-        <div>
+        <>
             <AdminUpdatePlayerRecords />
-        </div>
+        </>
     );
-}
+};
+
+export default Page;

@@ -1,5 +1,7 @@
 import { permanentRedirect } from 'next/navigation';
 
-export default async function Page() {
+const Page: React.FC = async () => {
     permanentRedirect(`/footy/table/averages`);
-}
+};
+
+export default Page;

@@ -1,11 +1,11 @@
-import { notFound } from "next/navigation";
 import GameDay from "components/GameDay";
+import { notFound } from "next/navigation";
 
-export default function Page({
-    params,
-}: {
-    params: Record<string, string>,
-}) {
+interface PageProps {
+    params: Record<string, string>;
+}
+
+const Page: React.FC<PageProps> = ({ params }) => {
     const gameDayId = parseInt(params.id);
     if (isNaN(gameDayId)) {
         return notFound();
@@ -14,4 +14,6 @@ export default function Page({
     return (
         <GameDay id={gameDayId} />
     );
-}
+};
+
+export default Page;

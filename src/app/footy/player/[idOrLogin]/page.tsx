@@ -1,8 +1,6 @@
-import { notFound, redirect } from 'next/navigation';
-
-import playerService from "services/Player";
-
 import PlayerProfile from 'components/PlayerProfile';
+import { notFound, redirect } from 'next/navigation';
+import playerService from "services/Player";
 
 export async function generateMetadata({
     params,
@@ -32,26 +30,20 @@ export async function generateStaticParams() {
     return playerService.getAllIdsAndLogins();
 }
 
-export default async function Page({
-    params,
-}: {
-    params: Record<string, string>,
-}) {
-    const login = await playerService.getLogin(params.idOrLogin);
+interface PageProps {
+    params: Record<string, string>;
+}
 
-    if (!login) {
-        return notFound();
-    }
+const Page: React.FC<PageProps> = async ({ params }) => {
+    const login = await playerService.getLogin(params.idOrLogin);
+    if (!login) return notFound();
 
     if (login != params.idOrLogin) {
         redirect(`/footy/player/${login}`);
     }
 
     const player = await playerService.getByLogin(login);
-
-    if (!player) {
-        return notFound();
-    }
+    if (!player) return notFound();
 
     return (
         <div>
@@ -63,4 +55,6 @@ export default async function Page({
             </footer>
         </div>
     );
-}
+};
+
+export default Page;

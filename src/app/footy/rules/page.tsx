@@ -1,6 +1,8 @@
 import { Flex, Text, Title } from "@mantine/core";
 
-export default function Page() {
+interface PageProps { }
+
+const Page: React.FC<PageProps> = () => {
     return (
         <>
             <Flex gap="md" align="flex-start" direction="column" p="xl">
@@ -44,4 +46,6 @@ export default function Page() {
             </Flex>
         </>
     );
-}
+};
+
+export default Page;

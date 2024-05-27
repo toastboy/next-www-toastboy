@@ -1,14 +1,14 @@
 'use client';
 
 import WinnersTable from 'components/WinnersTable';
-import { notFound } from 'next/navigation';
 import { FootyTable } from 'lib/swr';
+import { notFound } from 'next/navigation';
 
-export default function Page({
-    params,
-}: {
-    params: { params: string[] },
-}) {
+interface PageProps {
+    params: { params: string[] };
+}
+
+export const Page: React.FC<PageProps> = ({ params }) => {
     let year = undefined;
 
     if (params.params) {
@@ -29,11 +29,15 @@ export default function Page({
     }
 
     return (
-        <div className="px-6 py-4">
+        <>
             <h1 className="text-2xl font-bold">Winners</h1>
-            {Object.keys(FootyTable).map((table) => {
-                return <WinnersTable key={table} table={table as FootyTable} year={year} />;
-            })}
-        </div>
+            {
+                Object.keys(FootyTable).map((table) => {
+                    return <WinnersTable key={table} table={table as FootyTable} year={year} />;
+                })
+            }
+        </>
     );
-}
+};
+
+export default Page;

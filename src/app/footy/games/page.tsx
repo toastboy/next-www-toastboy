@@ -1,10 +1,14 @@
 import gameDayService from "services/GameDay";
 
-export default async function Page() {
+interface PageProps { }
+
+const Page: React.FC<PageProps> = async () => {
     return (
-        <div>
+        <>
             <p>{await gameDayService.getGamesPlayed(0)} games played to date.</p>
             <p>{await gameDayService.getGamesRemaining(0)} future games confirmed.</p>
-        </div>
+        </>
     );
-}
+};
+
+export default Page;

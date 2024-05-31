@@ -229,17 +229,17 @@ describe('OutcomeService', () => {
 
     describe('getTurnout', () => {
         const mockResponseCounts = Array.from({ length: 10 }, (_, index) => ({
-            "_count": {
-                "response": 12 - (index % 3),
+            _count: {
+                response: 12 - (index % 3),
             },
-            "response": "Yes",
-            "gameDayId": index + 1,
+            response: "Yes",
+            gameDayId: index + 1,
         }));
         const mockGameDays = Array.from({ length: 10 }, (_, index) => ({
             id: index + 1,
             year: 2021,
             date: new Date('2021-01-03'),
-            game: true,
+            game: (index != 6),
             mailSent: new Date('2021-01-01'),
             comment: 'I heart footy',
             bibs: 'A',
@@ -256,12 +256,14 @@ describe('OutcomeService', () => {
             const result = await outcomeService.getTurnout(1);
             expect(result).toEqual([{
                 ...mockGameDays[0],
-                "Dunno": 0,
-                "Excused": 0,
-                "Flaked": 0,
-                "Injured": 0,
-                "No": 0,
-                "Yes": 12,
+                dunno: 0,
+                excused: 0,
+                flaked: 0,
+                injured: 0,
+                no: 0,
+                yes: 12,
+                responses: 12,
+                cancelled: false,
             }]);
         });
 
@@ -269,12 +271,14 @@ describe('OutcomeService', () => {
             const result = await outcomeService.getTurnout();
             expect(result).toEqual(Array.from({ length: 10 }, (_, index) => ({
                 ...mockGameDays[index],
-                "Dunno": 0,
-                "Excused": 0,
-                "Flaked": 0,
-                "Injured": 0,
-                "No": 0,
-                "Yes": 12 - (index % 3),
+                dunno: 0,
+                excused: 0,
+                flaked: 0,
+                injured: 0,
+                no: 0,
+                yes: 12 - (index % 3),
+                responses: 12 - (index % 3),
+                cancelled: expect.any(Boolean),
             })));
         });
     });

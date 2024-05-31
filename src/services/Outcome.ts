@@ -140,6 +140,38 @@ export class OutcomeService {
     }
 
     /**
+     * Retrieves the response counts for a specific game day or all game days.
+     *
+     * @param gameDayId - Optional. The ID of the game day to retrieve response counts for.
+     * @returns An array of game days with their corresponding response counts.
+     * @throws If there is an error fetching the outcomes.
+     */
+    async getResponseCounts(gameDayId?: number) {
+        try {
+            return await prisma.outcome.groupBy({
+                orderBy: {
+                    gameDayId: 'asc',
+                },
+                where: {
+                    ...(gameDayId ? { gameDayId: gameDayId } : {}),
+                },
+                by: [
+                    'response',
+                    'gameDayId',
+                ],
+                _count: {
+                    response: true,
+                    team: true,
+                },
+            });
+        }
+        catch (error) {
+            log(`Error fetching outcomes: ${error}`);
+            throw error;
+        }
+    }
+
+    /**
      * Retrieves the turnout for a specific game day or all game days.
      *
      * @param gameDayId - Optional. The ID of the game day to retrieve turnout for.
@@ -148,18 +180,7 @@ export class OutcomeService {
      */
     async getTurnout(gameDayId?: number) {
         try {
-            const responses = await prisma.outcome.groupBy({
-                orderBy: {
-                    gameDayId: 'asc',
-                },
-                by: [
-                    'response',
-                    'gameDayId',
-                ],
-                _count: {
-                    response: true,
-                },
-            });
+            const responseCounts = await this.getResponseCounts(gameDayId);
 
             let gameDays = [];
             if (gameDayId === undefined) {
@@ -170,20 +191,29 @@ export class OutcomeService {
             }
 
             return gameDays.map((gameDay) => {
-                const responseCounts = Object.values(EnumResponse).reduce((map, response) => {
-                    const count = responses
+                const gameDayResponseCounts = Object.values(EnumResponse).reduce((map, response) => {
+                    const count = responseCounts
                         .filter((res) =>
                             gameDay && res.gameDayId === gameDay.id &&
                             res.response === `${response}`)
                         .map((res) => res._count.response)[0] || 0;
-                    map.set(`${response}`, count);
+                    map.set(`${response.toLowerCase()}`, count);
                     return map;
                 }, new Map<string, number>());
 
-                return {
-                    ...gameDay,
-                    ...Object.fromEntries(responseCounts),
-                };
+                if (gameDay) {
+                    return {
+                        ...gameDay,
+                        ...Object.fromEntries(gameDayResponseCounts),
+                        responses: responseCounts
+                            .filter((rc) => rc.gameDayId === gameDay.id && rc.response !== null)
+                            .reduce((acc, rc) => acc + rc._count.response, 0),
+                        players: responseCounts
+                            .filter((rc) => rc.gameDayId === gameDay.id && rc.response === EnumResponse.Yes)
+                            .map((rc) => rc._count.team)[0],
+                        cancelled: gameDay.mailSent !== null && !gameDay.game,
+                    };
+                }
             });
         }
         catch (error) {

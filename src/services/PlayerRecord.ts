@@ -645,12 +645,12 @@ async function calculatePlayerRecord(
         data.averages = playerYearPlayedOutcomes.reduce((acc, o) => acc + (o.points || 0), 0) / data.P;
     }
 
-    const playerYearResponseIntervalOutcomes = playerYearOutcomes.filter(o => o.responseInterval != null);
+    const responseIntervals = playerYearOutcomes
+        .map(o => o.responseInterval)
+        .filter((num): num is number => num !== null);
 
-    if (playerYearResponseIntervalOutcomes.length > 0) {
-        data.speedy = playerYearResponseIntervalOutcomes.reduce((acc, o) =>
-            acc + (o.responseInterval ?? 0), 0,
-        ) / playerYearResponseIntervalOutcomes.length;
+    if (responseIntervals.length > 0) {
+        data.speedy = responseIntervals.reduce((acc, ri) => acc + ri, 0) / responseIntervals.length;
     }
 
     return data;

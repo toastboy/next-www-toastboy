@@ -7,6 +7,18 @@ jest.mock('lib/prisma', () => ({
         findUnique: jest.fn(),
         findFirst: jest.fn(),
         findMany: jest.fn(),
+        groupBy: jest.fn(),
+        count: jest.fn(),
+        create: jest.fn(),
+        upsert: jest.fn(),
+        delete: jest.fn(),
+        deleteMany: jest.fn(),
+    },
+    gameDay: {
+        findUnique: jest.fn(),
+        findFirst: jest.fn(),
+        findMany: jest.fn(),
+        groupBy: jest.fn(),
         count: jest.fn(),
         create: jest.fn(),
         upsert: jest.fn(),
@@ -212,6 +224,58 @@ describe('OutcomeService', () => {
 
             result = await outcomeService.getAllForYear(0);
             expect(result.length).toEqual(0);
+        });
+    });
+
+    describe('getTurnout', () => {
+        const mockResponseCounts = Array.from({ length: 10 }, (_, index) => ({
+            "_count": {
+                "response": 12 - (index % 3),
+            },
+            "response": "Yes",
+            "gameDayId": index + 1,
+        }));
+        const mockGameDays = Array.from({ length: 10 }, (_, index) => ({
+            id: index + 1,
+            year: 2021,
+            date: new Date('2021-01-03'),
+            game: true,
+            mailSent: new Date('2021-01-01'),
+            comment: 'I heart footy',
+            bibs: 'A',
+            picker_games_history: 10,
+        }));
+
+        beforeEach(() => {
+            (prisma.outcome.groupBy as jest.Mock).mockResolvedValue(mockResponseCounts);
+            (prisma.gameDay.findMany as jest.Mock).mockResolvedValue(mockGameDays);
+            (prisma.gameDay.findUnique as jest.Mock).mockResolvedValue(mockGameDays[0]);
+        });
+
+        it('should retrieve the turnout for a specific game day', async () => {
+            const result = await outcomeService.getTurnout(1);
+            expect(result).toEqual([{
+                ...mockGameDays[0],
+                "Dunno": 0,
+                "Excused": 0,
+                "Flaked": 0,
+                "Injured": 0,
+                "No": 0,
+                "Yes": 12,
+            }]);
+        });
+
+        it('should retrieve the turnout for all game days', async () => {
+            const result = await outcomeService.getTurnout();
+            expect(result).toEqual(Array.from({ length: 10 }, (_, index) => ({
+                ...mockGameDays[index],
+                "Dunno": 0,
+                "Excused": 0,
+                "Flaked": 0,
+                "Injured": 0,
+                "No": 0,
+                "Yes": 12 - (index % 3),
+            })));
         });
     });
 

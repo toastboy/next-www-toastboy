@@ -1,8 +1,18 @@
-import { Outcome } from '@prisma/client';
+import { Outcome, PlayerResponse } from '@prisma/client';
 import prisma from 'lib/prisma';
 import debug from 'debug';
+import gameDayService from './GameDay';
 
 const log = debug('footy:api');
+
+export enum EnumResponse {
+    Yes = 'Yes',
+    No = 'No',
+    Dunno = 'Dunno',
+    Excused = 'Excused',
+    Flaked = 'Flaked',
+    Injured = 'Injured',
+}
 
 export class OutcomeService {
     /**
@@ -12,7 +22,7 @@ export class OutcomeService {
      * @throws An error if the outcome is invalid.
      */
     validate(outcome: Outcome): Outcome {
-        if (outcome.response && !['Yes', 'No', 'Dunno', 'Excused', 'Flaked', 'Injured'].includes(outcome.response)) {
+        if (outcome.response && !Object.values(PlayerResponse).includes(outcome.response)) {
             throw new Error(`Invalid response value: ${outcome.response}`);
         }
         if (outcome.responseInterval && outcome.responseInterval < 0) {
@@ -124,6 +134,59 @@ export class OutcomeService {
                 },
             });
         } catch (error) {
+            log(`Error fetching outcomes: ${error}`);
+            throw error;
+        }
+    }
+
+    /**
+     * Retrieves the turnout for a specific game day or all game days.
+     *
+     * @param gameDayId - Optional. The ID of the game day to retrieve turnout for.
+     * @returns An array of game days with their corresponding response counts.
+     * @throws If there is an error fetching the outcomes.
+     */
+    async getTurnout(gameDayId?: number) {
+        try {
+            const responses = await prisma.outcome.groupBy({
+                orderBy: {
+                    gameDayId: 'asc',
+                },
+                by: [
+                    'response',
+                    'gameDayId',
+                ],
+                _count: {
+                    response: true,
+                },
+            });
+
+            let gameDays = [];
+            if (gameDayId === undefined) {
+                gameDays = await gameDayService.getAll();
+            }
+            else {
+                gameDays.push(await gameDayService.get(gameDayId));
+            }
+
+            return gameDays.map((gameDay) => {
+                const responseCounts = Object.values(EnumResponse).reduce((map, response) => {
+                    const count = responses
+                        .filter((res) =>
+                            gameDay && res.gameDayId === gameDay.id &&
+                            res.response === `${response}`)
+                        .map((res) => res._count.response)[0] || 0;
+                    map.set(`${response}`, count);
+                    return map;
+                }, new Map<string, number>());
+
+                return {
+                    ...gameDay,
+                    ...Object.fromEntries(responseCounts),
+                };
+            });
+        }
+        catch (error) {
             log(`Error fetching outcomes: ${error}`);
             throw error;
         }

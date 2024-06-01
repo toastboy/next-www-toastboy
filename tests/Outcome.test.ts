@@ -227,7 +227,7 @@ describe('OutcomeService', () => {
         });
     });
 
-    describe('getTurnout', () => {
+    describe('getTurnout + getTurnoutByYear', () => {
         const mockResponseCounts = Array.from({ length: 10 }, (_, index) => ({
             _count: {
                 response: 12 - (index % 3),
@@ -282,6 +282,24 @@ describe('OutcomeService', () => {
                 players: 0,
                 cancelled: expect.any(Boolean),
             })));
+        });
+
+        it('should return the correct turnout summary for all years', async () => {
+            const result = await outcomeService.getTurnoutByYear();
+            expect(result).toEqual([{
+                year: 2021,
+                gameDays: 10,
+                gamesScheduled: 10,
+                gamesInitiated: 10,
+                gamesPlayed: 9,
+                gamesCancelled: 1,
+                responses: 111,
+                yesses: 111,
+                players: 0,
+                responsesPerGameInitiated: 11.1,
+                yessesPerGameInitiated: 11.1,
+                playersPerGamePlayed: 0,
+            }]);
         });
     });
 

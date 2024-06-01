@@ -1,11 +1,12 @@
-import NYI from 'components/NYI';
-import React from 'react';
+import Turnout from "components/Turnout";
 
 interface PageProps { }
 
 const Page: React.FC<PageProps> = () => {
     return (
-        <NYI />
+        <>
+            <Turnout />
+        </>
     );
 };
 

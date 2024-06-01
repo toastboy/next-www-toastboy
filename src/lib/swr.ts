@@ -83,6 +83,21 @@ export interface FootyPlayerRecord {
     speedy: number,
 }
 
+export interface FootyTurnout {
+    year: number,
+    gameDays: number,
+    gamesScheduled: number,
+    gamesInitiated: number,
+    gamesPlayed: number,
+    gamesCancelled: number,
+    responses: number,
+    yesses: number,
+    players: number,
+    responsesPerGameInitiated: number,
+    yessesPerGameInitiated: number,
+    playersPerGamePlayed: number,
+}
+
 export enum FootyResponse {
     Yes = 'Yes',
     No = 'No',
@@ -189,4 +204,8 @@ export function useWinners(table: FootyTable, year?: number) {
     if (year !== undefined) url += `/${year}`;
 
     return useSWR<FootyPlayerRecord[]>(url, fetcher);
+}
+
+export function useTurnoutByYear() {
+    return useSWR<FootyTurnout[]>(`/api/footy/turnout/byyear`, fetcher);
 }

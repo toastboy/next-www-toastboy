@@ -19,7 +19,7 @@ const defaultClub: Club = {
     soccerway_id: 1000,
     club_name: "Wittering United",
     uri: "wittering-united",
-    country: "england"
+    country: "england",
 };
 
 const invalidClub: Club = {

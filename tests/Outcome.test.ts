@@ -263,6 +263,7 @@ describe('OutcomeService', () => {
                 no: 0,
                 yes: 12,
                 responses: 12,
+                players: 0,
                 cancelled: false,
             }]);
         });
@@ -278,6 +279,7 @@ describe('OutcomeService', () => {
                 no: 0,
                 yes: 12 - (index % 3),
                 responses: 12 - (index % 3),
+                players: 0,
                 cancelled: expect.any(Boolean),
             })));
         });

@@ -1,4 +1,4 @@
-import { Outcome, PlayerResponse } from '@prisma/client';
+import { Outcome, PlayerResponse, Team } from '@prisma/client';
 import prisma from 'lib/prisma';
 import debug from 'debug';
 import gameDayService from './GameDay';
@@ -12,6 +12,41 @@ export enum EnumResponse {
     Excused = 'Excused',
     Flaked = 'Flaked',
     Injured = 'Injured',
+}
+
+interface Turnout {
+    responses: number,
+    players: number,
+    cancelled: boolean,
+    id: number,
+    year: number,
+    date: Date,
+    game: boolean,
+    mailSent: Date | null,
+    comment: string | null,
+    bibs: Team | null,
+    picker_games_history: number | null,
+    yes: number,
+    no: number,
+    dunno: number,
+    excused: number,
+    flaked: number,
+    injured: number,
+}
+
+interface TurnoutByYear {
+    year: number,
+    gameDays: number,
+    gamesScheduled: number,
+    gamesInitiated: number,
+    gamesPlayed: number,
+    gamesCancelled: number,
+    responses: number,
+    yesses: number,
+    players: number,
+    responsesPerGameInitiated: number,
+    yessesPerGameInitiated: number,
+    playersPerGamePlayed: number,
 }
 
 export class OutcomeService {
@@ -178,7 +213,7 @@ export class OutcomeService {
      * @returns An array of game days with their corresponding response counts.
      * @throws If there is an error fetching the outcomes.
      */
-    async getTurnout(gameDayId?: number) {
+    async getTurnout(gameDayId?: number): Promise<(Turnout | undefined)[]> {
         try {
             const responseCounts = await this.getResponseCounts(gameDayId);
 
@@ -190,7 +225,7 @@ export class OutcomeService {
                 gameDays.push(await gameDayService.get(gameDayId));
             }
 
-            return gameDays.map((gameDay) => {
+            const result = gameDays.map((gameDay) => {
                 const gameDayResponseCounts = Object.values(EnumResponse).reduce((map, response) => {
                     const count = responseCounts
                         .filter((res) =>
@@ -204,17 +239,68 @@ export class OutcomeService {
                 if (gameDay) {
                     return {
                         ...gameDay,
-                        ...Object.fromEntries(gameDayResponseCounts),
+                        yes: gameDayResponseCounts.get('yes') ?? 0,
+                        no: gameDayResponseCounts.get('no') ?? 0,
+                        dunno: gameDayResponseCounts.get('dunno') ?? 0,
+                        excused: gameDayResponseCounts.get('excused') ?? 0,
+                        flaked: gameDayResponseCounts.get('flaked') ?? 0,
+                        injured: gameDayResponseCounts.get('injured') ?? 0,
                         responses: responseCounts
                             .filter((rc) => rc.gameDayId === gameDay.id && rc.response !== null)
                             .reduce((acc, rc) => acc + rc._count.response, 0),
                         players: responseCounts
                             .filter((rc) => rc.gameDayId === gameDay.id && rc.response === EnumResponse.Yes)
-                            .map((rc) => rc._count.team)[0],
+                            .map((rc) => rc._count.team)[0] || 0,
                         cancelled: gameDay.mailSent !== null && !gameDay.game,
                     };
                 }
             });
+
+            return result ? result : [];
+        }
+        catch (error) {
+            log(`Error fetching outcomes: ${error}`);
+            throw error;
+        }
+    }
+
+    /**
+     * Retrieves the turnout data by year.
+     * @returns A promise that resolves to an array of `TurnoutByYear` objects.
+     * @throws If there is an error fetching the outcomes.
+     */
+    async getTurnoutByYear(): Promise<TurnoutByYear[]> {
+        try {
+            const turnout = await this.getTurnout();
+            const gameYears = await gameDayService.getAllYears();
+
+            return Promise.resolve(gameYears.map((gameYear) => {
+                const yearTurnout = turnout.filter((t) => gameYear === t?.year);
+                const result: TurnoutByYear = {
+                    year: gameYear,
+                    gameDays: yearTurnout.length,
+                    gamesScheduled: yearTurnout.filter((t) => t?.game || t?.mailSent).length,
+                    gamesInitiated: yearTurnout.filter((t) => t?.mailSent).length,
+                    gamesPlayed: yearTurnout.filter((t) => t?.game && t?.mailSent).length,
+                    gamesCancelled: yearTurnout.filter((t) => t?.cancelled).length,
+                    responses: yearTurnout.reduce((acc, t) => acc + (t ? t.responses : 0), 0),
+                    yesses: yearTurnout.reduce((acc, t) => acc + (t ? t.yes : 0), 0),
+                    players: yearTurnout.reduce((acc, t) => acc + (t ? t.players : 0), 0),
+                    responsesPerGameInitiated: 0,
+                    yessesPerGameInitiated: 0,
+                    playersPerGamePlayed: 0,
+                };
+
+                if (result.gamesInitiated > 0) {
+                    result.responsesPerGameInitiated = parseFloat((result.responses / result.gamesInitiated).toFixed(1));
+                    result.yessesPerGameInitiated = parseFloat((result.yesses / result.gamesInitiated).toFixed(1));
+                }
+                if (result.gamesPlayed > 0) {
+                    result.playersPerGamePlayed = parseFloat((result.players / result.gamesPlayed).toFixed(1));
+                }
+
+                return result;
+            }));
         }
         catch (error) {
             log(`Error fetching outcomes: ${error}`);

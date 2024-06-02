@@ -32,7 +32,7 @@ const config: Config = {
   //   "/node_modules/"
   // ],
   coveragePathIgnorePatterns: [
-    "/node_modules/"
+    "/node_modules/",
   ],
 
   // Indicates which provider should be used to instrument code for coverage
@@ -91,6 +91,7 @@ const config: Config = {
   //   "json",
   //   "node"
   // ],
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
 
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
   // moduleNameMapper: {},
@@ -142,6 +143,7 @@ const config: Config = {
 
   // A list of paths to modules that run some code to configure or set up the testing framework before each test
   // setupFilesAfterEnv: [],
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
 
   // The number of seconds after which a test is considered as slow and reported as such in the results.
   // slowTestThreshold: 5,
@@ -151,7 +153,8 @@ const config: Config = {
 
   // The test environment that will be used for testing
   // testEnvironment: "jest-environment-node",
-  testEnvironment: "jest-environment-node",
+  // testEnvironment: "jest-environment-node",
+  testEnvironment: 'jsdom',
 
   // Options that will be passed to the testEnvironment
   // testEnvironmentOptions: {},
@@ -164,7 +167,7 @@ const config: Config = {
   //   "**/__tests__/**/*.[jt]s?(x)",
   //   "**/?(*.)+(spec|test).[tj]s?(x)"
   // ],
-  testMatch: ['<rootDir>/tests/**/*.test.ts'],
+  testMatch: ['<rootDir>/**/*.test.ts', '<rootDir>/**/*.test.tsx'],
   modulePaths: ['<rootDir>/src/'],
 
   // An array of regexp pattern strings that are matched against all test paths, matched tests are skipped
@@ -184,12 +187,17 @@ const config: Config = {
 
   // A map from regular expressions to paths to transformers
   // transform: undefined,
+  transform: {
+    '^.+\\.tsx?$': ['ts-jest', { tsconfig: 'tsconfig.jest.json' }],
+    '^.+\\.jsx?$': 'babel-jest',
+  },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   // transformIgnorePatterns: [
   //   "/node_modules/",
   //   "\\.pnp\\.[^\\/]+$"
   // ],
+  transformIgnorePatterns: ['<rootDir>/node_modules/'],
 
   // An array of regexp pattern strings that are matched against all modules before the module loader will automatically return a mock for them
   // unmockedModulePathPatterns: undefined,

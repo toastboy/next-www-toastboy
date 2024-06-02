@@ -320,7 +320,6 @@ export class PlayerRecordService {
             // Now generate the query to fetch the player records
 
             const rank = `rank_${table}${qualified === false ? '_unqualified' : ''}`;
-            console.log(rank);
             return prisma.playerRecord.findMany({
                 where: {
                     gameDayId: tableRecord.gameDayId,

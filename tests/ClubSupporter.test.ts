@@ -16,7 +16,7 @@ jest.mock('lib/prisma', () => ({
 
 const defaultClubSupporter: ClubSupporter = {
     playerId: 12,
-    clubId: 2270
+    clubId: 2270,
 };
 
 const clubSupporterList: ClubSupporter[] = Array.from({ length: 100 }, (_, index) => ({
@@ -91,7 +91,7 @@ describe('clubSupporterService', () => {
             expect(result).toEqual({
                 ...defaultClubSupporter,
                 playerId: 6,
-                clubId: 16
+                clubId: 16,
             } as ClubSupporter);
         });
 
@@ -116,7 +116,7 @@ describe('clubSupporterService', () => {
                     expect(ClubSupporterResult).toEqual({
                         ...defaultClubSupporter,
                         playerId: 1,
-                        clubId: expect.any(Number)
+                        clubId: expect.any(Number),
                     } as ClubSupporter);
                 }
             }
@@ -146,7 +146,7 @@ describe('clubSupporterService', () => {
                     expect(ClubSupporterResult).toEqual({
                         ...defaultClubSupporter,
                         playerId: expect.any(Number),
-                        clubId: 1
+                        clubId: 1,
                     } as ClubSupporter);
                 }
             }

@@ -13,9 +13,8 @@ interface WinnersTableProps {
 const WinnersTable: React.FC<WinnersTableProps> = ({ table, year }) => {
     const { data, error, isLoading } = useWinners(table, year);
 
-    if (error) return <div>failed to load</div>;
     if (isLoading) return <Loader color="gray" type="dots" />;
-    if (!data) return null;
+    if (error || !data) return <div>failed to load</div>;
 
     const rows = data.map((winner, index) => (
         <Table.Tr key={index}>

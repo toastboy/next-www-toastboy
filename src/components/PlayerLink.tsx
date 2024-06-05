@@ -8,15 +8,14 @@ interface PlayerLinkProps {
 }
 
 const PlayerLink: React.FC<PlayerLinkProps> = ({ idOrLogin }) => {
-    const { data: player, error, isLoading } = usePlayer(idOrLogin);
+    const { data, error, isLoading } = usePlayer(idOrLogin);
 
-    if (error) return <div>failed to load</div>;
     if (isLoading) return <Loader color="gray" type="dots" />;
-    if (!player) return null;
+    if (error || !data) return <div>failed to load</div>;
 
     return (
-        <Anchor href={`/footy/player/${player.login}`} >
-            {player.name}
+        <Anchor href={`/footy/player/${data.login}`} >
+            {data.name}
         </Anchor>
     );
 };

@@ -1,10 +1,4 @@
 /**
- * Utility to determine the runtime environment. If true, we're running on the
- * server and if false, we're on a client.
- */
-export const isServer = typeof window === 'undefined';
-
-/**
  * Helper function to convert a stream to a buffer.
  *
  * @param readableStream A node.js readable stream object

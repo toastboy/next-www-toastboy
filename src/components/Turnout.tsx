@@ -9,9 +9,8 @@ interface TurnoutProps {
 const Turnout: React.FC<TurnoutProps> = () => {
     const { data, error, isLoading } = useTurnoutByYear();
 
-    if (error) return <div>failed to load</div>;
     if (isLoading) return <Loader color="gray" type="dots" />;
-    if (!data || data.length === 0) return null;
+    if (error || !data || data.length === 0) return <div>failed to load</div>;
 
     const rows = data.map((t) => (
         <Table.Tr key={t.year}>

@@ -95,6 +95,9 @@ const config: Config = {
 
   // A map from regular expressions to module names or to arrays of module names that allow to stub out resources with a single module
   // moduleNameMapper: {},
+  moduleNameMapper: {
+    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+  },
 
   // An array of regexp pattern strings, matched against all module paths before considered 'visible' to the module loader
   // modulePathIgnorePatterns: [],
@@ -190,6 +193,7 @@ const config: Config = {
   transform: {
     '^.+\\.tsx?$': ['ts-jest', { tsconfig: 'tsconfig.jest.json' }],
     '^.+\\.jsx?$': 'babel-jest',
+    '^.+\\.css$': 'jest-css-modules-transform',
   },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation

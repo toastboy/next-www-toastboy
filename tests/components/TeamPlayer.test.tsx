@@ -39,7 +39,6 @@ describe('TeamPlayer', () => {
     it('renders with data + goalie', () => {
         const { container } = render(<Wrapper><TeamPlayer idOrLogin={idOrLogin} goalie={true} /></Wrapper>);
         expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        console.log(container.innerHTML);
         expect(screen.getByText('GOALIE!')).toBeInTheDocument();
     });
 });

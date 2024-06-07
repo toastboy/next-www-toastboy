@@ -390,7 +390,7 @@ describe('PlayerRecordService', () => {
                 },
             ]);
 
-            const playerRecordList: PlayerRecord[] = JSON.parse(fs.readFileSync('./tests/data/PlayerRecord.test.json').toString());
+            const playerRecordList: PlayerRecord[] = JSON.parse(fs.readFileSync('./tests/services/data/PlayerRecord.test.json').toString());
 
             (prisma.playerRecord.findMany as jest.Mock).mockImplementation(() => {
                 const playerRecords = playerRecordList.filter((playerRecord) =>
@@ -423,7 +423,7 @@ describe('PlayerRecordService', () => {
 
     describe('getTable', () => {
         beforeEach(() => {
-            const playerRecordList: PlayerRecord[] = JSON.parse(fs.readFileSync('./tests/data/PlayerRecord.test.json').toString());
+            const playerRecordList: PlayerRecord[] = JSON.parse(fs.readFileSync('./tests/services/data/PlayerRecord.test.json').toString());
 
             (prisma.playerRecord.findMany as jest.Mock).mockImplementation((args: {
                 where: {
@@ -482,7 +482,7 @@ describe('PlayerRecordService', () => {
 
     describe('getTable qualified/unqualified averages', () => {
         beforeEach(() => {
-            const playerRecordList: PlayerRecord[] = JSON.parse(fs.readFileSync('./tests/data/PlayerRecord.test.json').toString());
+            const playerRecordList: PlayerRecord[] = JSON.parse(fs.readFileSync('./tests/services/data/PlayerRecord.test.json').toString());
 
             (prisma.playerRecord.findMany as jest.Mock).mockImplementation((args: {
                 where: {
@@ -525,7 +525,7 @@ describe('PlayerRecordService', () => {
 
     describe('getTable qualified/unqualified speedy', () => {
         beforeEach(() => {
-            const playerRecordList: PlayerRecord[] = JSON.parse(fs.readFileSync('./tests/data/PlayerRecord.test.json').toString());
+            const playerRecordList: PlayerRecord[] = JSON.parse(fs.readFileSync('./tests/services/data/PlayerRecord.test.json').toString());
 
             (prisma.playerRecord.findMany as jest.Mock).mockImplementation((args: {
                 where: {

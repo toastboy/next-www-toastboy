@@ -12,9 +12,8 @@ interface TeamProps {
 const Team: React.FC<TeamProps> = ({ gameDayId, team }) => {
     const { data, error, isLoading } = useTeam(gameDayId, team);
 
-    if (error) return <div>failed to load</div>;
     if (isLoading) return <Loader color="gray" type="dots" />;
-    if (!data || data.length === 0) return null;
+    if (error || !data || data.length === 0) return <div>failed to load</div>;
 
     return (
         <div className="w-[600px] rounded overflow-hidden shadow-lg">

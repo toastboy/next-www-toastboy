@@ -1,79 +1,82 @@
 import { render, screen } from '@testing-library/react';
-import Turnout from 'components/Turnout';
-import { useTurnoutByYear } from 'lib/swr';
-import { Wrapper, errorText, loaderClass } from 'lib/tests';
+import WinnersTable from 'components/WinnersTable';
+import { FootyTable, usePlayer, useWinners } from 'lib/swr';
+import { Wrapper, errorText, loaderClass } from './lib/common';
+
+const table = FootyTable.points;
 
 jest.mock('lib/swr');
 
-describe('Turnout', () => {
+describe('WinnersTable', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        (usePlayer as jest.Mock).mockReturnValue({
+            data: {
+                "id": 1,
+                "login": "player1",
+                "name": "Derek Turnipson",
+            },
+            error: undefined,
+            isLoading: false,
+        });
+    });
+
     it('renders loading state', () => {
-        (useTurnoutByYear as jest.Mock).mockReturnValue({
+        (useWinners as jest.Mock).mockReturnValue({
             data: undefined,
             error: undefined,
             isLoading: true,
         });
 
-        const { container } = render(<Wrapper><Turnout /></Wrapper>);
+        const { container } = render(<Wrapper><WinnersTable table={table} /></Wrapper>);
         expect(container.querySelector(loaderClass)).toBeInTheDocument();
     });
 
     it('renders error state', () => {
-        (useTurnoutByYear as jest.Mock).mockReturnValue({
+        (useWinners as jest.Mock).mockReturnValue({
             data: undefined,
             error: new Error(errorText),
             isLoading: false,
         });
 
-        const { container } = render(<Wrapper><Turnout /></Wrapper>);
+        const { container } = render(<Wrapper><WinnersTable table={table} /></Wrapper>);
         expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
         expect(screen.getByText(errorText)).toBeInTheDocument();
     });
 
     it('renders error state when data is null', () => {
-        (useTurnoutByYear as jest.Mock).mockReturnValue({
+        (useWinners as jest.Mock).mockReturnValue({
             data: null,
             error: undefined,
             isLoading: false,
         });
 
-        const { container } = render(<Wrapper><Turnout /></Wrapper>);
+        const { container } = render(<Wrapper><WinnersTable table={table} /></Wrapper>);
         expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
         expect(screen.getByText(errorText)).toBeInTheDocument();
     });
 
     it('renders table with data', () => {
-        (useTurnoutByYear as jest.Mock).mockReturnValue({
+        (useWinners as jest.Mock).mockReturnValue({
             data: [
                 {
                     "year": 2023,
-                    "gamesPlayed": 40,
-                    "gamesCancelled": 1,
-                    "responsesPerGameInitiated": 11.2,
-                    "yessesPerGameInitiated": 10.3,
-                    "playersPerGamePlayed": 10.1,
+                    "playerId": 12,
                 },
                 {
                     "year": 2022,
-                    "gamesPlayed": 41,
-                    "gamesCancelled": 0,
-                    "responsesPerGameInitiated": 11.4,
-                    "yessesPerGameInitiated": 10.1,
-                    "playersPerGamePlayed": 9.9,
+                    "playerId": 1,
                 },
                 {
                     "year": 2021,
-                    "gamesPlayed": 30,
-                    "gamesCancelled": 11,
-                    "responsesPerGameInitiated": 11.8,
-                    "yessesPerGameInitiated": 9.6,
-                    "playersPerGamePlayed": 8.8,
+                    "playerId": 1,
                 },
             ],
             error: undefined,
             isLoading: false,
         });
 
-        const { container } = render(<Wrapper><Turnout /></Wrapper>);
+        const { container } = render(<Wrapper><WinnersTable table={table} /></Wrapper>);
         expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
         expect(screen.queryByText(errorText)).not.toBeInTheDocument();
     });

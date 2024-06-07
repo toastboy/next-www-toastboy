@@ -11,18 +11,14 @@ interface PlayerFormProps {
 }
 
 export const PlayerForm: React.FC<PlayerFormProps> = ({ idOrLogin, games }) => {
-    const { data: outcomes, error, isLoading } = usePlayerForm(idOrLogin, games);
+    const { data, error, isLoading } = usePlayerForm(idOrLogin, games);
 
-    if (error) return <div>failed to load</div>;
     if (isLoading) return <Loader color="gray" type="dots" />;
-
-    if (!outcomes || outcomes.length === 0) {
-        return null;
-    }
+    if (error || !data || data.length === 0) return <div>failed to load</div>;
 
     return (
         <div className="px-6 py-4">
-            {outcomes.map((outcome: { gameDayId: number; points: number; }, index: Key) => (
+            {data.map((outcome, index: Key) => (
                 <p key={index}>Game <GameDayLink id={outcome.gameDayId} />: {outcome.points}</p>
             ))}
         </div>

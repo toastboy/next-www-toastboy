@@ -1,26 +1,20 @@
 import { render, screen } from '@testing-library/react';
 import WinnersTable from 'components/WinnersTable';
-import { FootyTable, usePlayer, useWinners } from 'lib/swr';
+import { FootyTable, useWinners } from 'lib/swr';
 import { Wrapper, errorText, loaderClass } from './lib/common';
 
 const table = FootyTable.points;
 
 jest.mock('lib/swr');
+jest.mock('components/PlayerLink', () => {
+    const PlayerLink = ({ idOrLogin }: { idOrLogin: string }) => (
+        <div>PlayerLink (idOrLogin: {idOrLogin})</div>
+    );
+    PlayerLink.displayName = 'PlayerLink';
+    return PlayerLink;
+});
 
 describe('WinnersTable', () => {
-    beforeEach(() => {
-        jest.clearAllMocks();
-        (usePlayer as jest.Mock).mockReturnValue({
-            data: {
-                "id": 1,
-                "login": "player1",
-                "name": "Derek Turnipson",
-            },
-            error: undefined,
-            isLoading: false,
-        });
-    });
-
     it('renders loading state', () => {
         (useWinners as jest.Mock).mockReturnValue({
             data: undefined,
@@ -77,7 +71,9 @@ describe('WinnersTable', () => {
         });
 
         const { container } = render(<Wrapper><WinnersTable table={table} /></Wrapper>);
+        console.log(container.innerHTML);
         expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
         expect(screen.queryByText(errorText)).not.toBeInTheDocument();
+        expect(screen.getByText('PlayerLink (idOrLogin: 12)')).toBeInTheDocument();
     });
 });

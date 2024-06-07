@@ -71,7 +71,6 @@ describe('WinnersTable', () => {
         });
 
         const { container } = render(<Wrapper><WinnersTable table={table} /></Wrapper>);
-        console.log(container.innerHTML);
         expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
         expect(screen.queryByText(errorText)).not.toBeInTheDocument();
         expect(screen.getByText('PlayerLink (idOrLogin: 12)')).toBeInTheDocument();

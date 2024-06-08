@@ -9,15 +9,14 @@ interface PlayerLastPlayedProps {
 }
 
 const PlayerLastPlayed: React.FC<PlayerLastPlayedProps> = ({ idOrLogin }) => {
-    const { data: lastplayed, error, isLoading } = usePlayerLastPlayed(idOrLogin);
+    const { data, error, isLoading } = usePlayerLastPlayed(idOrLogin);
 
-    if (error) return <div>failed to load</div>;
     if (isLoading) return <Loader color="gray" type="dots" />;
-    if (!lastplayed) return null;
+    if (error || !data) return <div>failed to load</div>;
 
     return (
         <div className="px-6 py-4">
-            <p>Last played: <GameDayLink id={lastplayed.gameDayId} /></p>
+            <p>Last played: <GameDayLink id={data.gameDayId} /></p>
         </div>
     );
 };

@@ -1,55 +1,66 @@
 import { render, screen } from '@testing-library/react';
-import NYI from 'components/NYI';
+import Table from 'components/Table';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
-// import { useNYI } from 'lib/swr';
+import { FootyTable, useGameYear } from 'lib/swr';
 
 jest.mock('lib/swr');
+jest.mock('components/TableQualified', () => {
+    const TableQualified = ({ table, year }: { table: FootyTable, year: number }) => (
+        <div>TableQualified (table: {table}, year: {year})</div>
+    );
+    TableQualified.displayName = 'TableQualified';
+    return TableQualified;
+});
 
-describe('NYI', () => {
+describe('Table', () => {
+    const table = FootyTable.points;
+    const year = 2010;
+
     it('renders loading state', () => {
-        // (useNYI as jest.Mock).mockReturnValue({
-        //     data: undefined,
-        //     error: undefined,
-        //     isLoading: true,
-        // });
+        (useGameYear as jest.Mock).mockReturnValue({
+            data: undefined,
+            error: undefined,
+            isLoading: true,
+        });
 
-        const { container } = render(<Wrapper><NYI /></Wrapper>);
+        const { container } = render(<Wrapper><Table table={table} year={year} /></Wrapper>);
         expect(container.querySelector(loaderClass)).toBeInTheDocument();
     });
 
     it('renders error state', () => {
-        // (useNYI as jest.Mock).mockReturnValue({
-        //     data: undefined,
-        //     error: new Error(errorText),
-        //     isLoading: false,
-        // });
+        (useGameYear as jest.Mock).mockReturnValue({
+            data: undefined,
+            error: new Error(errorText),
+            isLoading: false,
+        });
 
-        const { container } = render(<Wrapper><NYI /></Wrapper>);
+        const { container } = render(<Wrapper><Table table={table} year={year} /></Wrapper>);
         expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
         expect(screen.getByText(errorText)).toBeInTheDocument();
     });
 
     it('renders error state when data is null', () => {
-        // (useNYI as jest.Mock).mockReturnValue({
-        //     data: null,
-        //     error: undefined,
-        //     isLoading: false,
-        // });
+        (useGameYear as jest.Mock).mockReturnValue({
+            data: null,
+            error: undefined,
+            isLoading: false,
+        });
 
-        const { container } = render(<Wrapper><NYI /></Wrapper>);
+        const { container } = render(<Wrapper><Table table={table} year={year} /></Wrapper>);
         expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
         expect(screen.getByText(errorText)).toBeInTheDocument();
     });
 
     it('renders with data', () => {
-        // (useNYI as jest.Mock).mockReturnValue({
-        //     data: [2001, 2002, 2003, 0],
-        //     error: undefined,
-        //     isLoading: false,
-        // });
+        (useGameYear as jest.Mock).mockReturnValue({
+            data: true,
+            error: undefined,
+            isLoading: false,
+        });
 
-        const { container } = render(<Wrapper><NYI /></Wrapper>);
+        const { container } = render(<Wrapper><Table table={table} year={year} /></Wrapper>);
         expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText("NYI")).toBeInTheDocument();
+        expect(screen.getByText("2010 Points Table")).toBeInTheDocument();
+        expect(screen.getByText("TableQualified (table: points, year: 2010)")).toBeInTheDocument();
     });
 });

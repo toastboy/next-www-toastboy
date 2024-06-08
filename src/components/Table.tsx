@@ -5,7 +5,6 @@ import TableQualified from 'components/TableQualified';
 import config from 'lib/config';
 import { FootyTable, useGameYear } from 'lib/swr';
 import { getYearName } from 'lib/utils';
-import { notFound } from 'next/navigation';
 
 interface TableProps {
     table: FootyTable;
@@ -15,9 +14,8 @@ interface TableProps {
 const Table: React.FC<TableProps> = ({ table, year }) => {
     const { data, error, isLoading } = useGameYear(year);
 
-    if (error) return <div>failed to load</div>;
     if (isLoading) return <Loader color="gray" type="dots" />;
-    if (data === null) return notFound();
+    if (error || data === null) return <div>failed to load</div>;
 
     if (UnqualifiedTableName(table)) {
         return (

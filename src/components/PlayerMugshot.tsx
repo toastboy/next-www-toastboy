@@ -8,21 +8,20 @@ interface PlayerMugshotProps {
 }
 
 const PlayerMugshot: React.FC<PlayerMugshotProps> = ({ idOrLogin }) => {
-    const { data: player, error, isLoading } = usePlayer(idOrLogin);
+    const { data, error, isLoading } = usePlayer(idOrLogin);
 
-    if (error) return <div>failed to load</div>;
     if (isLoading) return <Loader color="gray" type="dots" />;
-    if (!player) return null;
+    if (error || !data) return <div>failed to load</div>;
 
     return (
-        <Anchor href={`/footy/player/${player.login}`}>
+        <Anchor href={`/footy/player/${data.login}`}>
             <Image
                 className="w-full"
                 width={300}
                 height={300}
-                src={`/api/footy/player/${player.login}/mugshot`}
-                alt={player.name}
-                title={player.name}
+                src={`/api/footy/player/${data.login}/mugshot`}
+                alt={data.name}
+                title={data.name}
             />
         </Anchor>
     );

@@ -6,20 +6,19 @@ interface CountryFlagProps {
 }
 
 const CountryFlag: React.FC<CountryFlagProps> = ({ isoCode }) => {
-    const { data: country, error, isLoading } = useCountry(isoCode);
+    const { data, error, isLoading } = useCountry(isoCode);
 
-    if (error) return <div>failed to load</div>;
     if (isLoading) return <Loader color="gray" type="dots" />;
-    if (!country) return null;
+    if (error || !data) return <div>failed to load</div>;
 
     return (
         <Image
             className="w-full"
             width={150}
             height={150}
-            src={`/api/footy/country/${country.isoCode.toLowerCase()}/flag`}
-            alt={country.name}
-            title={country.name}
+            src={`/api/footy/country/${data.isoCode.toLowerCase()}/flag`}
+            alt={data.name}
+            title={data.name}
         />
     );
 };

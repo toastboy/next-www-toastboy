@@ -1,15 +1,15 @@
 'use client';
 
 import { Player } from '@prisma/client';
-import PlayerMugshot from 'components/PlayerMugshot';
 import PlayerArse from 'components/PlayerArse';
 import PlayerClubs from 'components/PlayerClubs';
 import PlayerCountries from 'components/PlayerCountries';
 import PlayerForm from 'components/PlayerForm';
 import PlayerLastPlayed from 'components/PlayerLastPlayed';
-import PlayerYearsActive from 'components/PlayerYearsActive';
-import PlayerResults from 'components/PlayerResults';
+import PlayerMugshot from 'components/PlayerMugshot';
 import PlayerPositions from 'components/PlayerPositions';
+import PlayerResults from 'components/PlayerResults';
+import PlayerYearsActive from 'components/PlayerYearsActive';
 import { notFound } from 'next/navigation';
 import { useEffect, useState } from 'react';
 

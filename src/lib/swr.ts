@@ -81,6 +81,12 @@ export interface FootyPlayerRecord {
     stalwart: number,
     pub: number,
     speedy: number,
+
+    rank_points: number,
+    rank_averages: number,
+    rank_stalwart: number,
+    rank_pub: number,
+    rank_speedy: number,
 }
 
 export interface FootyTurnout {

@@ -1,55 +1,80 @@
 import { render, screen } from '@testing-library/react';
-import NYI from 'components/NYI';
+import PlayerPositions from 'components/PlayerPositions';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
-// import { useNYI } from 'lib/swr';
+import { usePlayerRecord } from 'lib/swr';
 
 jest.mock('lib/swr');
 
-describe('NYI', () => {
-    it('renders loading state', () => {
-        // (useNYI as jest.Mock).mockReturnValue({
-        //     data: undefined,
-        //     error: undefined,
-        //     isLoading: true,
-        // });
+describe('PlayerPositions', () => {
+    const idOrLogin = "2";
+    const year = 2021;
 
-        const { container } = render(<Wrapper><NYI /></Wrapper>);
+    it('renders loading state', () => {
+        (usePlayerRecord as jest.Mock).mockReturnValue({
+            data: undefined,
+            error: undefined,
+            isLoading: true,
+        });
+
+        const { container } = render(<Wrapper><PlayerPositions idOrLogin={idOrLogin} year={year} /></Wrapper>);
         expect(container.querySelector(loaderClass)).toBeInTheDocument();
     });
 
     it('renders error state', () => {
-        // (useNYI as jest.Mock).mockReturnValue({
-        //     data: undefined,
-        //     error: new Error(errorText),
-        //     isLoading: false,
-        // });
+        (usePlayerRecord as jest.Mock).mockReturnValue({
+            data: undefined,
+            error: new Error(errorText),
+            isLoading: false,
+        });
 
-        const { container } = render(<Wrapper><NYI /></Wrapper>);
+        const { container } = render(<Wrapper><PlayerPositions idOrLogin={idOrLogin} year={year} /></Wrapper>);
         expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
         expect(screen.getByText(errorText)).toBeInTheDocument();
     });
 
     it('renders error state when data is null', () => {
-        // (useNYI as jest.Mock).mockReturnValue({
-        //     data: null,
-        //     error: undefined,
-        //     isLoading: false,
-        // });
+        (usePlayerRecord as jest.Mock).mockReturnValue({
+            data: null,
+            error: undefined,
+            isLoading: false,
+        });
 
-        const { container } = render(<Wrapper><NYI /></Wrapper>);
+        const { container } = render(<Wrapper><PlayerPositions idOrLogin={idOrLogin} year={year} /></Wrapper>);
         expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
         expect(screen.getByText(errorText)).toBeInTheDocument();
     });
 
     it('renders with data', () => {
-        // (useNYI as jest.Mock).mockReturnValue({
-        //     data: [2001, 2002, 2003, 0],
-        //     error: undefined,
-        //     isLoading: false,
-        // });
+        (usePlayerRecord as jest.Mock).mockReturnValue({
+            data: {
+                year: 2022,
+                playerId: 2,
+                name: "Derek Turnipson",
 
-        const { container } = render(<Wrapper><NYI /></Wrapper>);
+                P: 10,
+                W: 4,
+                D: 3,
+                L: 3,
+
+                points: 15,
+                averages: 1.500,
+                stalwart: 100,
+                pub: 2,
+                speedy: 5000,
+
+                rank_points: 4,
+                rank_averages: 5,
+                rank_stalwart: 1,
+                rank_pub: 9,
+                rank_speedy: 3,
+            },
+            error: undefined,
+            isLoading: false,
+        });
+
+        const { container } = render(<Wrapper><PlayerPositions idOrLogin={idOrLogin} year={year} /></Wrapper>);
         expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText("NYI")).toBeInTheDocument();
+        expect(screen.getByText("2021 Positions")).toBeInTheDocument();
+        // TODO: Add more assertions
     });
 });

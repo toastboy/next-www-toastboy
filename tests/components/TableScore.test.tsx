@@ -21,6 +21,12 @@ describe('TableScore', () => {
         stalwart: 100,
         pub: 0,
         speedy: 2000,
+
+        rank_points: 4,
+        rank_averages: 5,
+        rank_stalwart: 1,
+        rank_pub: 9,
+        rank_speedy: 3,
     };
 
     it('renders correctly for points', () => {

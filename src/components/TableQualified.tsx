@@ -15,9 +15,8 @@ interface TableQualifiedProps {
 const TableQualified: React.FC<TableQualifiedProps> = ({ table, year, qualified, take }) => {
     const { data, error, isLoading } = useTable(table, year, qualified, take);
 
-    if (error) return <div>failed to load</div>;
     if (isLoading) return <Loader color="gray" type="dots" />;
-    if (!data || data.length === 0) return null;
+    if (error || !data || data.length === 0) return <div>failed to load</div>;
 
     return (
         <div className="px-6 py-4">

@@ -23,9 +23,8 @@ const GameYears: React.FC<GameYearsProps> = ({ activeYear, onYearChange }) => {
         }
     }, [activeYear, data]);
 
-    if (error) return <div>failed to load</div>;
     if (isLoading) return <Loader color="gray" type="dots" />;
-    if (!data) return null;
+    if (error || !data) return <div>failed to load</div>;
 
     const setControlRef = (index: number) => (node: HTMLButtonElement) => {
         controlsRefs[index] = node;

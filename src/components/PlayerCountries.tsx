@@ -9,18 +9,14 @@ interface PlayerCountriesProps {
 }
 
 const PlayerCountries: React.FC<PlayerCountriesProps> = ({ idOrLogin }) => {
-    const { data: countries, error, isLoading } = usePlayerCountries(idOrLogin);
+    const { data, error, isLoading } = usePlayerCountries(idOrLogin);
 
-    if (error) return <div>failed to load</div>;
     if (isLoading) return <Loader color="gray" type="dots" />;
-
-    if (!countries || countries.length === 0) {
-        return null;
-    }
+    if (error || !data || data.length === 0) return <div>failed to load</div>;
 
     return (
         <div className="px-6 py-4">
-            {countries.map((item: string) => (
+            {data.map((item: string) => (
                 <CountryFlag key={item} isoCode={item} />
             ))}
         </div>

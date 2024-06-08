@@ -8,9 +8,8 @@ interface ClubBadgeProps {
 const ClubBadge: React.FC<ClubBadgeProps> = ({ clubId }) => {
     const { data: club, error, isLoading } = useClub(clubId);
 
-    if (error) return <div>failed to load</div>;
     if (isLoading) return <Loader color="gray" type="dots" />;
-    if (!club) return null;
+    if (error || !club) return <div>failed to load</div>;
 
     return (
         <Image

@@ -1,10 +1,10 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Indicator } from '@mantine/core';
 import { Calendar, DatePickerProps } from '@mantine/dates';
 import { GameDay } from '@prisma/client';
-import { Indicator } from '@mantine/core';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 
 interface GameCalendarProps {
     date: Date;
@@ -14,6 +14,7 @@ const GameCalendar: React.FC<GameCalendarProps> = ({ date }) => {
     const [gameDays, setGameDays] = useState<GameDay[]>([]);
 
     const getGameDay = (date: Date): GameDay | null => {
+        if (!gameDays || gameDays.length === 0) return null;
         // TODO: This game day date logic works but it seems clunky
         const localDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 18, 0, 0, 0);
         const dateString = localDate.toISOString();

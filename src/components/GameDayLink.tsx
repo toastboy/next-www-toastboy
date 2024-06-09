@@ -8,15 +8,14 @@ interface GameDayLinkProps {
 }
 
 const GameDayLink: React.FC<GameDayLinkProps> = ({ id }) => {
-    const { data: gameDay, error, isLoading } = useGameDay(id);
+    const { data, error, isLoading } = useGameDay(id);
 
-    if (error) return <div>failed to load</div>;
     if (isLoading) return <Loader color="gray" type="dots" />;
-    if (!gameDay) return null;
+    if (error || !data) return <div>failed to load</div>;
 
     return (
-        <Anchor href={`/footy/game/${gameDay.id}`} >
-            {new Date(gameDay.date).toLocaleDateString('sv')}
+        <Anchor href={`/footy/game/${data.id}`} >
+            {new Date(data.date).toLocaleDateString('sv')}
         </Anchor>
     );
 };

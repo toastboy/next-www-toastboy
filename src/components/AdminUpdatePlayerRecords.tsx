@@ -1,13 +1,13 @@
 'use client';
 
-import { ActionIcon, Button, Center, Container, RingProgress, Text, rem } from '@mantine/core';
+import { ActionIcon, Button, Center, Container, Loader, RingProgress, Text, rem } from '@mantine/core';
 import { IconCheck } from '@tabler/icons-react';
 import { updatePlayerRecords } from 'actions/updatePlayerRecords';
 import { useRecordsProgress } from 'lib/swr';
 import { useEffect } from 'react';
 
 const AdminUpdatePlayerRecords: React.FC = () => {
-    const { data, error, mutate } = useRecordsProgress();
+    const { data, error, isLoading, mutate } = useRecordsProgress();
 
     useEffect(() => {
         const intervalId = setInterval(() => {
@@ -17,9 +17,10 @@ const AdminUpdatePlayerRecords: React.FC = () => {
         return () => clearInterval(intervalId);
     }, [mutate]);
 
-    if (error) return <div>failed to load</div>;
+    if (isLoading) return <Loader color="gray" type="dots" />;
+    if (error || !data || data.length != 2) return <div>failed to load</div>;
 
-    const progress = Math.floor(data ? 100 * data[0] / data[1] : 0);
+    const progress = Math.floor(100 * data[0] / data[1]);
 
     return (
         <>

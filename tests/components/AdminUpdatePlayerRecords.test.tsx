@@ -1,55 +1,67 @@
 import { render, screen } from '@testing-library/react';
-import NYI from 'components/NYI';
+import AdminUpdatePlayerRecords from 'components/AdminUpdatePlayerRecords';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
-// import { useNYI } from 'lib/swr';
+import { useRecordsProgress } from 'lib/swr';
 
 jest.mock('lib/swr');
 
-describe('NYI', () => {
+describe('AdminUpdatePlayerRecords', () => {
     it('renders loading state', () => {
-        // (useNYI as jest.Mock).mockReturnValue({
-        //     data: undefined,
-        //     error: undefined,
-        //     isLoading: true,
-        // });
+        (useRecordsProgress as jest.Mock).mockReturnValue({
+            data: undefined,
+            error: undefined,
+            isLoading: true,
+        });
 
-        const { container } = render(<Wrapper><NYI /></Wrapper>);
+        const { container } = render(<Wrapper><AdminUpdatePlayerRecords /></Wrapper>);
         expect(container.querySelector(loaderClass)).toBeInTheDocument();
     });
 
     it('renders error state', () => {
-        // (useNYI as jest.Mock).mockReturnValue({
-        //     data: undefined,
-        //     error: new Error(errorText),
-        //     isLoading: false,
-        // });
+        (useRecordsProgress as jest.Mock).mockReturnValue({
+            data: undefined,
+            error: new Error(errorText),
+            isLoading: false,
+        });
 
-        const { container } = render(<Wrapper><NYI /></Wrapper>);
+        const { container } = render(<Wrapper><AdminUpdatePlayerRecords /></Wrapper>);
         expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
         expect(screen.getByText(errorText)).toBeInTheDocument();
     });
 
     it('renders error state when data is null', () => {
-        // (useNYI as jest.Mock).mockReturnValue({
-        //     data: null,
-        //     error: undefined,
-        //     isLoading: false,
-        // });
+        (useRecordsProgress as jest.Mock).mockReturnValue({
+            data: null,
+            error: undefined,
+            isLoading: false,
+        });
 
-        const { container } = render(<Wrapper><NYI /></Wrapper>);
+        const { container } = render(<Wrapper><AdminUpdatePlayerRecords /></Wrapper>);
         expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
         expect(screen.getByText(errorText)).toBeInTheDocument();
     });
 
-    it('renders with data', () => {
-        // (useNYI as jest.Mock).mockReturnValue({
-        //     data: [2001, 2002, 2003, 0],
-        //     error: undefined,
-        //     isLoading: false,
-        // });
+    it('renders with data < 100%', () => {
+        (useRecordsProgress as jest.Mock).mockReturnValue({
+            data: [800, 2000],
+            error: undefined,
+            isLoading: false,
+        });
 
-        const { container } = render(<Wrapper><NYI /></Wrapper>);
+        const { container } = render(<Wrapper><AdminUpdatePlayerRecords /></Wrapper>);
         expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText("NYI")).toBeInTheDocument();
+        expect(screen.getByText("40%")).toBeInTheDocument();
+    });
+
+    it('renders with data == 100%', () => {
+        (useRecordsProgress as jest.Mock).mockReturnValue({
+            data: [2000, 2000],
+            error: undefined,
+            isLoading: false,
+        });
+
+        const { container } = render(<Wrapper><AdminUpdatePlayerRecords /></Wrapper>);
+        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+        expect(container.querySelector('.tabler-icon-check')).toBeInTheDocument();
     });
 });

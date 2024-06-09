@@ -10,20 +10,19 @@ interface GameDayProps {
 }
 
 const GameDay: React.FC<GameDayProps> = ({ id }) => {
-    const { data: gameDay, error, isLoading } = useGameDay(id);
+    const { data, error, isLoading } = useGameDay(id);
 
-    if (error) return <div>failed to load</div>;
     if (isLoading) return <Loader color="gray" type="dots" />;
-    if (!gameDay) return null;
+    if (error || !data) return <div>failed to load</div>;
 
-    if (gameDay.game) {
+    if (data.game) {
         return (
             <>
-                <h1>Game {gameDay.id}: <GameDayLink id={gameDay.id} /></h1>
-                <Text>{gameDay.comment ? `(${gameDay.comment})` : ''}</Text>
-                <Team gameDayId={gameDay.id} team={'A'} />
+                <h1>Game {data.id}: <GameDayLink id={data.id} /></h1>
+                <Text>{data.comment ? `(${data.comment})` : ''}</Text>
+                <Team gameDayId={data.id} team={'A'} />
                 <p>vs.</p>
-                <Team gameDayId={gameDay.id} team={'B'} />
+                <Team gameDayId={data.id} team={'B'} />
             </>
         );
     }
@@ -31,7 +30,7 @@ const GameDay: React.FC<GameDayProps> = ({ id }) => {
         return (
             <>
                 <Text>
-                    No game {gameDay.comment ? `(${gameDay.comment})` : ''}
+                    No game {data.comment ? `(${data.comment})` : ''}
                 </Text>
             </>
         );

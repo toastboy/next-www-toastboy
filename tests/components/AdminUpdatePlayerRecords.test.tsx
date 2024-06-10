@@ -7,7 +7,9 @@ import { Wrapper, errorText, loaderClass } from "./lib/common";
 jest.mock('lib/swr');
 
 describe('AdminUpdatePlayerRecords', () => {
-    jest.useFakeTimers();
+    beforeEach(() => {
+        jest.useFakeTimers();
+    });
 
     afterEach(() => {
         jest.runOnlyPendingTimers();

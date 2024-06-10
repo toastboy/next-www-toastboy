@@ -115,20 +115,18 @@ describe('GameCalendar', () => {
     });
 
     it('renders game day with link when game day exists and game is on', async () => {
-        const { container } = render(<Wrapper><GameCalendar date={new Date('2004-02-03')} /></Wrapper>);
+        render(<Wrapper><GameCalendar date={new Date('2004-02-03')} /></Wrapper>);
         const gameDayLink = await waitFor(() => screen.getByRole('link', { name: '27' }));
         expect(gameDayLink).toBeInTheDocument();
         expect(gameDayLink).toHaveAttribute('href', '/footy/game/100');
-        console.log(container.innerHTML);
         expect(gameDayLink.querySelector('div')).toHaveStyle({ '--indicator-color': 'var(--mantine-color-green-filled)' });
     });
 
     it('renders game day with link when game day exists and game is off', async () => {
-        const { container } = render(<Wrapper><GameCalendar date={new Date('2004-02-03')} /></Wrapper>);
+        render(<Wrapper><GameCalendar date={new Date('2004-02-03')} /></Wrapper>);
         const gameDayLink = await waitFor(() => screen.getByRole('link', { name: '3' }));
         expect(gameDayLink).toBeInTheDocument();
         expect(gameDayLink).toHaveAttribute('href', '/footy/game/101');
-        console.log(container.innerHTML);
         expect(gameDayLink.querySelector('div')).toHaveStyle({ '--indicator-color': 'var(--mantine-color-red-filled)' });
     });
 

@@ -26,6 +26,7 @@ const CustomAppShell: React.FC<CustomAppShellProps> = ({ children }: CustomAppSh
                 <div>
                     <Group justify="space-between">
                         <Burger
+                            aria-label="Toggle navigation"
                             opened={opened}
                             onClick={toggle}
                             hiddenFrom="sm"

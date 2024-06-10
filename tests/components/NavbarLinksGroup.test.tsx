@@ -1,55 +1,32 @@
-import { render, screen } from '@testing-library/react';
-import NYI from 'components/NYI';
-import { Wrapper, errorText, loaderClass } from "./lib/common";
-// import { useNYI } from 'lib/swr';
+import { render, screen, fireEvent } from '@testing-library/react';
+import NavBarLinksGroup from 'components/NavbarLinksGroup/NavbarLinksGroup';
+import { Wrapper } from "./lib/common";
 
-jest.mock('lib/swr');
+describe('NavBarLinksGroup', () => {
+    const links = [
+        { label: 'Link 1', link: '/link1' },
+        { label: 'Link 2', link: '/link2' },
+        { label: 'Link 3', link: '/link3' },
+    ];
 
-describe('NYI', () => {
-    it('renders loading state', () => {
-        // (useNYI as jest.Mock).mockReturnValue({
-        //     data: undefined,
-        //     error: undefined,
-        //     isLoading: true,
-        // });
-
-        const { container } = render(<Wrapper><NYI /></Wrapper>);
-        expect(container.querySelector(loaderClass)).toBeInTheDocument();
+    it('renders label', () => {
+        render(<Wrapper><NavBarLinksGroup label="Group Label" /></Wrapper>);
+        expect(screen.getByText('Group Label')).toBeInTheDocument();
     });
 
-    it('renders error state', () => {
-        // (useNYI as jest.Mock).mockReturnValue({
-        //     data: undefined,
-        //     error: new Error(errorText),
-        //     isLoading: false,
-        // });
-
-        const { container } = render(<Wrapper><NYI /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText(errorText)).toBeInTheDocument();
+    it('renders links when opened', () => {
+        render(<Wrapper><NavBarLinksGroup label="Group Label" initiallyOpened links={links} /></Wrapper>);
+        fireEvent.click(screen.getByText('Group Label'));
+        links.forEach((link) => {
+            expect(screen.getByText(link.label)).toBeInTheDocument();
+        });
     });
 
-    it('renders error state when data is null', () => {
-        // (useNYI as jest.Mock).mockReturnValue({
-        //     data: null,
-        //     error: undefined,
-        //     isLoading: false,
-        // });
-
-        const { container } = render(<Wrapper><NYI /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText(errorText)).toBeInTheDocument();
-    });
-
-    it('renders with data', () => {
-        // (useNYI as jest.Mock).mockReturnValue({
-        //     data: [2001, 2002, 2003, 0],
-        //     error: undefined,
-        //     isLoading: false,
-        // });
-
-        const { container } = render(<Wrapper><NYI /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText("NYI")).toBeInTheDocument();
+    it('hides when closed', () => {
+        render(<Wrapper><NavBarLinksGroup label="Group Label" initiallyOpened links={links} /></Wrapper>);
+        const collapseElement = screen.getByTestId('collapse');
+        expect(collapseElement).toHaveAttribute('aria-hidden', 'false');
+        fireEvent.click(screen.getByText('Group Label'));
+        expect(collapseElement).toHaveAttribute('aria-hidden', 'true');
     });
 });

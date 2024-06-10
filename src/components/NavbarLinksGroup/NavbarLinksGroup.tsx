@@ -39,7 +39,7 @@ const NavBarLinksGroup: React.FC<NavBarLinksGroupProps> = ({ label, initiallyOpe
                     )}
                 </Group>
             </UnstyledButton>
-            {hasLinks ? <Collapse in={opened}>{items}</Collapse> : null}
+            {hasLinks ? <Collapse data-testid="collapse" in={opened}>{items}</Collapse> : null}
         </>
     );
 };

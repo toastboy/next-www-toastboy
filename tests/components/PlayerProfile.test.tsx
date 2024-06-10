@@ -1,55 +1,41 @@
 import { render, screen } from '@testing-library/react';
-import NYI from 'components/NYI';
-import { Wrapper, errorText, loaderClass } from "./lib/common";
-// import { useNYI } from 'lib/swr';
+import PlayerProfile from 'components/PlayerProfile';
+import { Wrapper } from "./lib/common";
 
-jest.mock('lib/swr');
+describe('PlayerProfile', () => {
+    const player = {
+        id: 1,
+        login: 'john_doe',
+        name: 'John Doe',
+        email: 'john.doe@example.com',
+        born: new Date('1990-01-01'),
+        is_admin: null,
+        first_name: null,
+        last_name: null,
+        anonymous: null,
+        joined: null,
+        finished: null,
+        comment: null,
+        introduced_by: null,
+    };
 
-describe('NYI', () => {
-    it('renders loading state', () => {
-        // (useNYI as jest.Mock).mockReturnValue({
-        //     data: undefined,
-        //     error: undefined,
-        //     isLoading: true,
-        // });
-
-        const { container } = render(<Wrapper><NYI /></Wrapper>);
-        expect(container.querySelector(loaderClass)).toBeInTheDocument();
+    it('renders player name', () => {
+        render(<Wrapper><PlayerProfile player={player} /></Wrapper>);
+        expect(screen.getAllByText('John Doe')[0]).toBeInTheDocument();
     });
 
-    it('renders error state', () => {
-        // (useNYI as jest.Mock).mockReturnValue({
-        //     data: undefined,
-        //     error: new Error(errorText),
-        //     isLoading: false,
-        // });
-
-        const { container } = render(<Wrapper><NYI /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText(errorText)).toBeInTheDocument();
+    it('renders player email', () => {
+        render(<Wrapper><PlayerProfile player={player} /></Wrapper>);
+        expect(screen.getByText('john.doe@example.com')).toBeInTheDocument();
     });
 
-    it('renders error state when data is null', () => {
-        // (useNYI as jest.Mock).mockReturnValue({
-        //     data: null,
-        //     error: undefined,
-        //     isLoading: false,
-        // });
-
-        const { container } = render(<Wrapper><NYI /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText(errorText)).toBeInTheDocument();
+    it('renders player login', () => {
+        render(<Wrapper><PlayerProfile player={player} /></Wrapper>);
+        expect(screen.getByText('john_doe')).toBeInTheDocument();
     });
 
-    it('renders with data', () => {
-        // (useNYI as jest.Mock).mockReturnValue({
-        //     data: [2001, 2002, 2003, 0],
-        //     error: undefined,
-        //     isLoading: false,
-        // });
-
-        const { container } = render(<Wrapper><NYI /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText("NYI")).toBeInTheDocument();
+    it('renders player birth date', () => {
+        render(<Wrapper><PlayerProfile player={player} /></Wrapper>);
+        expect(screen.getByText('1990-01-01')).toBeInTheDocument();
     });
 });

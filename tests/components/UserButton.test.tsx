@@ -15,7 +15,7 @@ describe('UserButton', () => {
         expect(avatar).toBeInTheDocument();
         expect(avatar).toHaveAttribute(
             'src',
-            'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-8.png'
+            'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-8.png',
         );
     });
 

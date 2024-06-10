@@ -1,55 +1,20 @@
-import { render, screen } from '@testing-library/react';
-import NYI from 'components/NYI';
-import { Wrapper, errorText, loaderClass } from "./lib/common";
-// import { useNYI } from 'lib/swr';
+import { render } from '@testing-library/react';
+import NavbarNested from 'components/NavBarNested/NavBarNested';
+import { Wrapper } from "./lib/common";
 
-jest.mock('lib/swr');
-
-describe('NYI', () => {
-    it('renders loading state', () => {
-        // (useNYI as jest.Mock).mockReturnValue({
-        //     data: undefined,
-        //     error: undefined,
-        //     isLoading: true,
-        // });
-
-        const { container } = render(<Wrapper><NYI /></Wrapper>);
-        expect(container.querySelector(loaderClass)).toBeInTheDocument();
+describe('NavbarNested', () => {
+    it('renders navbar header', () => {
+        const { container } = render(<Wrapper><NavbarNested /></Wrapper>);
+        expect(container.querySelector('.header')).toBeInTheDocument();
     });
 
-    it('renders error state', () => {
-        // (useNYI as jest.Mock).mockReturnValue({
-        //     data: undefined,
-        //     error: new Error(errorText),
-        //     isLoading: false,
-        // });
-
-        const { container } = render(<Wrapper><NYI /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText(errorText)).toBeInTheDocument();
+    it('renders navbar links', () => {
+        const { container } = render(<Wrapper><NavbarNested /></Wrapper>);
+        expect(container.querySelector('.links')).toBeInTheDocument();
     });
 
-    it('renders error state when data is null', () => {
-        // (useNYI as jest.Mock).mockReturnValue({
-        //     data: null,
-        //     error: undefined,
-        //     isLoading: false,
-        // });
-
-        const { container } = render(<Wrapper><NYI /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText(errorText)).toBeInTheDocument();
-    });
-
-    it('renders with data', () => {
-        // (useNYI as jest.Mock).mockReturnValue({
-        //     data: [2001, 2002, 2003, 0],
-        //     error: undefined,
-        //     isLoading: false,
-        // });
-
-        const { container } = render(<Wrapper><NYI /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText("NYI")).toBeInTheDocument();
+    it('renders navbar footer', () => {
+        const { container } = render(<Wrapper><NavbarNested /></Wrapper>);
+        expect(container.querySelector('.footer')).toBeInTheDocument();
     });
 });

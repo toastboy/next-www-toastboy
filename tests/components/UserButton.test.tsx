@@ -1,55 +1,27 @@
 import { render, screen } from '@testing-library/react';
-import NYI from 'components/NYI';
-import { Wrapper, errorText, loaderClass } from "./lib/common";
-// import { useNYI } from 'lib/swr';
+import UserButton from 'components/UserButton/UserButton';
+import { Wrapper } from "./lib/common";
 
-jest.mock('lib/swr');
-
-describe('NYI', () => {
-    it('renders loading state', () => {
-        // (useNYI as jest.Mock).mockReturnValue({
-        //     data: undefined,
-        //     error: undefined,
-        //     isLoading: true,
-        // });
-
-        const { container } = render(<Wrapper><NYI /></Wrapper>);
-        expect(container.querySelector(loaderClass)).toBeInTheDocument();
+describe('UserButton', () => {
+    it('renders user name and email', () => {
+        render(<Wrapper><UserButton /></Wrapper>);
+        expect(screen.getByText('Harriette Spoonlicker')).toBeInTheDocument();
+        expect(screen.getByText('hspoonlicker@outlook.com')).toBeInTheDocument();
     });
 
-    it('renders error state', () => {
-        // (useNYI as jest.Mock).mockReturnValue({
-        //     data: undefined,
-        //     error: new Error(errorText),
-        //     isLoading: false,
-        // });
-
-        const { container } = render(<Wrapper><NYI /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText(errorText)).toBeInTheDocument();
+    it('renders user avatar', () => {
+        render(<Wrapper><UserButton /></Wrapper>);
+        const avatar = screen.getByRole('img');
+        expect(avatar).toBeInTheDocument();
+        expect(avatar).toHaveAttribute(
+            'src',
+            'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-8.png'
+        );
     });
 
-    it('renders error state when data is null', () => {
-        // (useNYI as jest.Mock).mockReturnValue({
-        //     data: null,
-        //     error: undefined,
-        //     isLoading: false,
-        // });
-
-        const { container } = render(<Wrapper><NYI /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText(errorText)).toBeInTheDocument();
-    });
-
-    it('renders with data', () => {
-        // (useNYI as jest.Mock).mockReturnValue({
-        //     data: [2001, 2002, 2003, 0],
-        //     error: undefined,
-        //     isLoading: false,
-        // });
-
-        const { container } = render(<Wrapper><NYI /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText("NYI")).toBeInTheDocument();
+    it('renders chevron icon', () => {
+        render(<Wrapper><UserButton /></Wrapper>);
+        const chevronIcon = screen.getByTestId('chevron-icon');
+        expect(chevronIcon).toBeInTheDocument();
     });
 });

@@ -1,55 +1,42 @@
 import { render, screen } from '@testing-library/react';
-import NYI from 'components/NYI';
-import { Wrapper, errorText, loaderClass } from "./lib/common";
-// import { useNYI } from 'lib/swr';
+import PlayerTile from 'components/PlayerTile';
+import { Wrapper } from "./lib/common";
 
-jest.mock('lib/swr');
+describe('PlayerTile', () => {
+    const player = {
+        id: 1,
+        login: 'john_doe',
+        name: 'John Doe',
+        email: 'john.doe@example.com',
+        born: new Date('1990-01-01'),
+        is_admin: null,
+        first_name: "John",
+        last_name: "Doe",
+        anonymous: false,
+        joined: null,
+        finished: null,
+        comment: null,
+        introduced_by: null,
+    };
 
-describe('NYI', () => {
-    it('renders loading state', () => {
-        // (useNYI as jest.Mock).mockReturnValue({
-        //     data: undefined,
-        //     error: undefined,
-        //     isLoading: true,
-        // });
+    it('renders player information correctly', () => {
+        render(<Wrapper><PlayerTile player={player} /></Wrapper>);
 
-        const { container } = render(<Wrapper><NYI /></Wrapper>);
-        expect(container.querySelector(loaderClass)).toBeInTheDocument();
+        expect(screen.getByText(`${player.first_name} ${player.last_name}`)).toBeInTheDocument();
+        expect(screen.getByText(player.email)).toBeInTheDocument();
+        expect(screen.getByText(player.login)).toBeInTheDocument();
+        expect(screen.getByText(player.born.toLocaleDateString('sv'))).toBeInTheDocument();
     });
 
-    it('renders error state', () => {
-        // (useNYI as jest.Mock).mockReturnValue({
-        //     data: undefined,
-        //     error: new Error(errorText),
-        //     isLoading: false,
-        // });
+    it('renders correct links', () => {
+        render(<Wrapper><PlayerTile player={player} /></Wrapper>);
 
-        const { container } = render(<Wrapper><NYI /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText(errorText)).toBeInTheDocument();
-    });
+        const profileLink = screen.getByRole('link', { name: `${player.first_name} ${player.last_name}` });
+        const emailLink = screen.getByRole('link', { name: player.email });
+        const loginLink = screen.getByRole('link', { name: player.login });
 
-    it('renders error state when data is null', () => {
-        // (useNYI as jest.Mock).mockReturnValue({
-        //     data: null,
-        //     error: undefined,
-        //     isLoading: false,
-        // });
-
-        const { container } = render(<Wrapper><NYI /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText(errorText)).toBeInTheDocument();
-    });
-
-    it('renders with data', () => {
-        // (useNYI as jest.Mock).mockReturnValue({
-        //     data: [2001, 2002, 2003, 0],
-        //     error: undefined,
-        //     isLoading: false,
-        // });
-
-        const { container } = render(<Wrapper><NYI /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText("NYI")).toBeInTheDocument();
+        expect(profileLink).toHaveAttribute('href', `/footy/player/${player.login}`);
+        expect(emailLink).toHaveAttribute('href', `/footy/player/${player.login}`);
+        expect(loginLink).toHaveAttribute('href', `/footy/player/${player.login}`);
     });
 });

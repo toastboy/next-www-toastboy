@@ -2,8 +2,8 @@
 
 import { ScrollArea } from '@mantine/core';
 import NavbarLinksGroup from 'components/NavbarLinksGroup/NavbarLinksGroup';
-import data from 'components/NavbarNested/NavbarNested.json';
-import classes from 'components/NavbarNested/NavbarNested.module.css';
+import data from './NavbarNested.json';
+import classes from './NavbarNested.module.css';
 import UserButton from 'components/UserButton/UserButton';
 
 const NavbarNested: React.FC = () => {

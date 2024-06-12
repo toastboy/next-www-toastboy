@@ -1,6 +1,6 @@
 'use client';
 
-import { Loader } from '@mantine/core';
+import { Loader, Text } from '@mantine/core';
 import { usePlayerLastPlayed } from 'lib/swr';
 import GameDayLink from 'components/GameDayLink';
 
@@ -15,9 +15,7 @@ const PlayerLastPlayed: React.FC<PlayerLastPlayedProps> = ({ idOrLogin }) => {
     if (error || !data) return <div>failed to load</div>;
 
     return (
-        <div className="px-6 py-4">
-            <p>Last played: <GameDayLink id={data.gameDayId} /></p>
-        </div>
+        <Text>Last played: <GameDayLink id={data.gameDayId} /></Text>
     );
 };
 

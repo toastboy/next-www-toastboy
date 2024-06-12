@@ -1,8 +1,8 @@
+import { Text } from '@mantine/core';
+
 const NYI: React.FC = () => {
     return (
-        <div>
-            <p>(Not yet implemented)</p>
-        </div>
+        <Text>(Not yet implemented)</Text>
     );
 };
 

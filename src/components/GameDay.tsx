@@ -21,7 +21,7 @@ const GameDay: React.FC<GameDayProps> = ({ id }) => {
                 <h1>Game {data.id}: <GameDayLink id={data.id} /></h1>
                 <Text>{data.comment ? `(${data.comment})` : ''}</Text>
                 <Team gameDayId={data.id} team={'A'} />
-                <p>vs.</p>
+                <Text>vs.</Text>
                 <Team gameDayId={data.id} team={'B'} />
             </>
         );

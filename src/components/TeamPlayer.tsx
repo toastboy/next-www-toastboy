@@ -1,8 +1,9 @@
 'use client';
 
-import PlayerMugshot from 'components/PlayerMugshot';
+import { Text } from '@mantine/core';
 import PlayerForm from 'components/PlayerForm';
 import PlayerLink from 'components/PlayerLink';
+import PlayerMugshot from 'components/PlayerMugshot';
 
 export interface TeamPlayerProps {
     idOrLogin: string;
@@ -14,7 +15,7 @@ const TeamPlayer: React.FC<TeamPlayerProps> = ({ idOrLogin, goalie }) => (
         <PlayerLink idOrLogin={idOrLogin} />
         <PlayerMugshot idOrLogin={idOrLogin} />
         <PlayerForm idOrLogin={idOrLogin} games={10} />
-        <p>{goalie ? "GOALIE!" : ""}</p>
+        <Text>{goalie ? "GOALIE!" : ""}</Text>
     </div>
 );
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { Loader } from '@mantine/core';
+import { Loader, Text } from '@mantine/core';
 import { Key } from 'react';
 import { usePlayerForm } from 'lib/swr';
 import GameDayLink from 'components/GameDayLink';
@@ -19,7 +19,9 @@ export const PlayerForm: React.FC<PlayerFormProps> = ({ idOrLogin, games }) => {
     return (
         <div className="px-6 py-4">
             {data.map((outcome, index: Key) => (
-                <p key={index}>Game <GameDayLink id={outcome.gameDayId} />: {outcome.points}</p>
+                <Text key={index} component="span">
+                    Game <GameDayLink id={outcome.gameDayId} />: {outcome.points}
+                </Text>
             ))}
         </div>
     );

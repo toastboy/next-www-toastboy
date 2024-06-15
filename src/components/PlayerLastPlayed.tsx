@@ -15,7 +15,7 @@ const PlayerLastPlayed: React.FC<PlayerLastPlayedProps> = ({ idOrLogin }) => {
     if (error || !data) return <div>failed to load</div>;
 
     return (
-        <Text>Last played: <GameDayLink id={data.gameDayId} /></Text>
+        <Text component="span">Last played: <GameDayLink id={data.gameDayId} /></Text>
     );
 };
 

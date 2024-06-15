@@ -1,5 +1,9 @@
 import '@testing-library/jest-dom';
 import 'whatwg-fetch';
+import { TextDecoder, TextEncoder } from 'util';
+
+global.TextEncoder = TextEncoder;
+global.TextDecoder = TextDecoder as typeof global.TextDecoder;
 
 Object.defineProperty(window, 'matchMedia', {
     writable: true,

@@ -62,6 +62,7 @@
     "jest-environment-jsdom": "^29.7.0",
     "jest-mock-axios": "^4.7.3",
     "jest-mock-extended": "^3.0.5",
+    "msw": "^2.3.1",
     "postcss": "^8.4.38",
     "postcss-preset-mantine": "^1.14.4",
     "postcss-simple-vars": "^7.0.1",

@@ -19,7 +19,7 @@
     "@mantine/hooks": "^7.8.0",
     "@prisma/client": "^5.10.2",
     "@tabler/icons-react": "^3.2.0",
-    "axios": "^1.6.7",
+    "axios": "^1.7.4",
     "dayjs": "^1.11.10",
     "debug": "^4.3.4",
     "dotenv": "^16.4.5",

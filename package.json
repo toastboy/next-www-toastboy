@@ -12,7 +12,7 @@
     "crawllivesite": "pushd src/lib/crawllivesite && npx ts-node --compiler-options '{\"module\":\"CommonJS\"}' crawllivesite.ts && popd"
   },
   "dependencies": {
-    "@azure/identity": "^4.0.1",
+    "@azure/identity": "^4.4.1",
     "@azure/storage-blob": "^12.17.0",
     "@mantine/core": "^7.8.0",
     "@mantine/dates": "^7.8.0",

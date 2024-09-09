@@ -1,4 +1,6 @@
 import '@mantine/core/styles.css';
+import { StackProvider, StackTheme } from "@stackframe/stack";
+import { stackServerApp } from "../stack";
 import '@mantine/dates/styles.css';
 import type { Metadata } from 'next';
 import CustomAppShell from 'components/CustomAppShell/CustomAppShell';
@@ -26,11 +28,15 @@ export default function RootLayout({
         <ColorSchemeScript />
       </head>
       <body>
-        <MantineProvider>
-          <CustomAppShell>
-            {children}
-          </CustomAppShell>
-        </MantineProvider>
+        <StackProvider app={stackServerApp}>
+          <StackTheme>
+            <MantineProvider>
+              <CustomAppShell>
+                {children}
+              </CustomAppShell>
+            </MantineProvider>
+          </StackTheme>
+        </StackProvider>
       </body>
     </html>
   );

@@ -3,7 +3,6 @@
 import { ScrollArea } from '@mantine/core';
 import NavbarLinksGroup from 'components/NavbarLinksGroup/NavbarLinksGroup';
 import classes from './NavbarNested.module.css';
-import UserButton from 'components/UserButton/UserButton';
 
 const NavbarNested: React.FC = () => {
     const links = [
@@ -89,7 +88,6 @@ const NavbarNested: React.FC = () => {
             </ScrollArea>
 
             <div className={classes.footer}>
-                <UserButton />
             </div>
         </nav>
     );

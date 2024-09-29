@@ -4,12 +4,13 @@
   "scripts": {
     "test": "jest",
     "test:watch": "jest --watchAll --passWithNoTests",
-    "dev": "next dev",
+    "dev": "docker compose up -d && next dev",
     "build": "npx prisma generate && DEBUG=app:* next build",
-    "start": "next start",
     "lint": "next lint",
     "importlivedb": "pushd src/lib/importlivedb && npx ts-node --compiler-options '{\"module\":\"CommonJS\"}' importlivedb.ts && popd",
-    "crawllivesite": "pushd src/lib/crawllivesite && npx ts-node --compiler-options '{\"module\":\"CommonJS\"}' crawllivesite.ts && popd"
+    "crawllivesite": "pushd src/lib/crawllivesite && npx ts-node --compiler-options '{\"module\":\"CommonJS\"}' crawllivesite.ts && popd",
+    "start": "docker compose up -d && next start",
+    "stop": "docker compose down"
   },
   "dependencies": {
     "@azure/identity": "^4.4.1",

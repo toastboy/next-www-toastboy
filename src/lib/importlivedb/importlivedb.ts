@@ -62,6 +62,9 @@ async function importBackup(): Promise<void> {
         if (!process.env.IMP_DEV_MYSQL_HOST) {
             throw new Error('IMP_DEV_MYSQL_HOST undefined');
         }
+        if (!process.env.IMP_DEV_MYSQL_PORT) {
+            throw new Error('IMP_DEV_MYSQL_PORT undefined');
+        }
         if (!process.env.IMP_DEV_MYSQL_PASSWORD) {
             throw new Error('IMP_DEV_MYSQL_PASSWORD undefined');
         }
@@ -92,6 +95,7 @@ async function importBackup(): Promise<void> {
 
         const devMysqlUser = process.env.IMP_DEV_MYSQL_USER;
         const devMysqlHost = process.env.IMP_DEV_MYSQL_HOST;
+        const devMysqlPort = process.env.IMP_DEV_MYSQL_PORT;
         const devMysqlPassword = process.env.IMP_DEV_MYSQL_PASSWORD;
 
         const mysqlDatabase = process.env.IMP_MYSQL_DATABASE;
@@ -111,7 +115,7 @@ async function importBackup(): Promise<void> {
         const containerClient = blobServiceClient.getContainerClient(containerName);
 
         // Take a backup of the current live database
-        execSync(`mysqldump -h ${prodMysqlHost} -u ${prodMysqlUser} -p${prodMysqlPassword} ${mysqlDatabase} arse club club_supporter country diffs game_chat game_day invitation misc nationality outcome picker picker_teams player > /tmp/${mysqlDatabase}.sql`);
+        execSync(`mysqldump --skip-ssl -h ${prodMysqlHost} -u ${prodMysqlUser} -p${prodMysqlPassword} ${mysqlDatabase} arse club club_supporter country diffs game_chat game_day invitation misc nationality outcome picker picker_teams player > /tmp/${mysqlDatabase}.sql`);
         console.log('Backup taken successfully.');
 
         // Get the list of directories in the migrations directory
@@ -119,15 +123,15 @@ async function importBackup(): Promise<void> {
         const migrations = await readdir(migrationsDir);
 
         // Run prisma generate to ensure the Prisma Client is up to date
-        execSync('npx prisma generate');
+        execSync('npx prisma generate --schema ../../../prisma/schema.prisma');
 
         // Run prisma db push to ensure the database is up to date with the schema
         execSync('npx prisma db push --accept-data-loss --schema ../../../prisma/schema.prisma');
 
         // Import the mysqldump backup created above
-        execSync(`mysql -h ${devMysqlHost} -u ${devMysqlUser} -p${devMysqlPassword} -e'DROP DATABASE IF EXISTS footy;'`);
-        execSync(`mysql -h ${devMysqlHost} -u ${devMysqlUser} -p${devMysqlPassword} -e'CREATE DATABASE footy;'`);
-        execSync(`cat /tmp/${mysqlDatabase}.sql | mysql -h ${devMysqlHost} -u ${devMysqlUser} -p${devMysqlPassword} ${mysqlDatabase}`);
+        execSync(`mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} -e'DROP DATABASE IF EXISTS footy;'`);
+        execSync(`mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} -e'CREATE DATABASE footy;'`);
+        execSync(`cat /tmp/${mysqlDatabase}.sql | mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} ${mysqlDatabase}`);
         console.log('Backup imported successfully.');
 
         // Run each migration except the first one: the backup created the
@@ -139,7 +143,7 @@ async function importBackup(): Promise<void> {
             }
             const migration = path.join(migrationsDir, migrations[i], 'migration.sql');
             console.log(`Running migration ${migration}...`);
-            execSync(`cat ${migration} | mysql -h ${devMysqlHost} -u ${devMysqlUser} -p${devMysqlPassword} ${mysqlDatabase}`);
+            execSync(`cat ${migration} | mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} ${mysqlDatabase}`);
             console.log(`Migration ${migration} completed.`);
         }
         console.log('All migrations completed.');

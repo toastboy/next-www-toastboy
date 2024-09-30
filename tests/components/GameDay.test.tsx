@@ -118,4 +118,18 @@ describe('GameDay', () => {
         expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
         expect(screen.getByText("No game (Happy New Year)")).toBeInTheDocument();
     });
+
+    it('renders with data (no game, no comment)', () => {
+        (useGameDay as jest.Mock).mockReturnValueOnce({
+            data: {
+                ...gameData,
+                game: false,
+            },
+            error: undefined,
+            isLoading: false,
+        });
+
+        const { container } = render(<Wrapper><GameDay id={id} /></Wrapper>);
+        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+    });
 });

@@ -5,8 +5,8 @@ import { FootyTable, useGameYear } from 'lib/swr';
 
 jest.mock('lib/swr');
 jest.mock('components/TableQualified', () => {
-    const TableQualified = ({ table, year }: { table: FootyTable, year: number }) => (
-        <div>TableQualified (table: {table}, year: {year})</div>
+    const TableQualified = ({ table, year, qualified }: { table: FootyTable, year: number, qualified?: boolean }) => (
+        <div>TableQualified (table: {table}, year: {year}, qualified: {qualified ? "true" : "false"})</div>
     );
     TableQualified.displayName = 'TableQualified';
     return TableQualified;
@@ -51,9 +51,9 @@ describe('Table', () => {
         expect(screen.getByText(errorText)).toBeInTheDocument();
     });
 
-    it('renders with data', () => {
+    it('renders points table with data', () => {
         (useGameYear as jest.Mock).mockReturnValue({
-            data: true,
+            data: 2010,
             error: undefined,
             isLoading: false,
         });
@@ -61,6 +61,60 @@ describe('Table', () => {
         const { container } = render(<Wrapper><Table table={table} year={year} /></Wrapper>);
         expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
         expect(screen.getByText("2010 Points Table")).toBeInTheDocument();
-        expect(screen.getByText("TableQualified (table: points, year: 2010)")).toBeInTheDocument();
+        expect(screen.getByText("TableQualified (table: points, year: 2010, qualified: false)")).toBeInTheDocument();
+    });
+
+    it('renders averages table with data', () => {
+        (useGameYear as jest.Mock).mockReturnValue({
+            data: 2010,
+            error: undefined,
+            isLoading: false,
+        });
+
+        const { container } = render(<Wrapper><Table table={FootyTable.averages} year={year} /></Wrapper>);
+        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+        expect(screen.getByText("2010 Averages Table")).toBeInTheDocument();
+        expect(screen.getByText("TableQualified (table: averages, year: 2010, qualified: true)")).toBeInTheDocument();
+        expect(screen.getByText("TableQualified (table: averages, year: 2010, qualified: false)")).toBeInTheDocument();
+    });
+
+    it('renders stalwart table with data', () => {
+        (useGameYear as jest.Mock).mockReturnValue({
+            data: 2010,
+            error: undefined,
+            isLoading: false,
+        });
+
+        const { container } = render(<Wrapper><Table table={FootyTable.stalwart} year={year} /></Wrapper>);
+        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+        expect(screen.getByText("2010 Stalwart Standings")).toBeInTheDocument();
+        expect(screen.getByText("TableQualified (table: stalwart, year: 2010, qualified: false)")).toBeInTheDocument();
+    });
+
+    it('renders speedy table with data', () => {
+        (useGameYear as jest.Mock).mockReturnValue({
+            data: 2010,
+            error: undefined,
+            isLoading: false,
+        });
+
+        const { container } = render(<Wrapper><Table table={FootyTable.speedy} year={year} /></Wrapper>);
+        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+        expect(screen.getByText("2010 Captain Speedy")).toBeInTheDocument();
+        expect(screen.getByText("TableQualified (table: speedy, year: 2010, qualified: true)")).toBeInTheDocument();
+        expect(screen.getByText("TableQualified (table: speedy, year: 2010, qualified: false)")).toBeInTheDocument();
+    });
+
+    it('renders pub table with data', () => {
+        (useGameYear as jest.Mock).mockReturnValue({
+            data: 2010,
+            error: undefined,
+            isLoading: false,
+        });
+
+        const { container } = render(<Wrapper><Table table={FootyTable.pub} year={year} /></Wrapper>);
+        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+        expect(screen.getByText("2010 Pub Table")).toBeInTheDocument();
+        expect(screen.getByText("TableQualified (table: pub, year: 2010, qualified: false)")).toBeInTheDocument();
     });
 });

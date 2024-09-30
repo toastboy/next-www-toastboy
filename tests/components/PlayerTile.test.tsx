@@ -19,6 +19,12 @@ describe('PlayerTile', () => {
         introduced_by: null,
     };
 
+    it('renders player unknown date of birth correctly', () => {
+        render(<Wrapper><PlayerTile player={{ ...player, born: null }} /></Wrapper>);
+
+        expect(screen.getByText("Unknown")).toBeInTheDocument();
+    });
+
     it('renders player information correctly', () => {
         render(<Wrapper><PlayerTile player={player} /></Wrapper>);
 

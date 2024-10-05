@@ -70,9 +70,27 @@ describe('WinnersTable', () => {
             isLoading: false,
         });
 
-        const { container } = render(<Wrapper><WinnersTable table={table} /></Wrapper>);
+        const { container } = render(<Wrapper><WinnersTable table={table} year={0} /></Wrapper>);
         expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
         expect(screen.queryByText(errorText)).not.toBeInTheDocument();
         expect(screen.getByText('PlayerLink (idOrLogin: 12)')).toBeInTheDocument();
+    });
+
+    it('renders table for a single year', () => {
+        (useWinners as jest.Mock).mockReturnValue({
+            data: [
+                {
+                    "year": 2022,
+                    "playerId": 1,
+                },
+            ],
+            error: undefined,
+            isLoading: false,
+        });
+
+        const { container } = render(<Wrapper><WinnersTable table={table} year={2022} /></Wrapper>);
+        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+        expect(screen.queryByText(errorText)).not.toBeInTheDocument();
+        expect(screen.getByText('PlayerLink (idOrLogin: 1)')).toBeInTheDocument();
     });
 });

@@ -1,7 +1,7 @@
 import { Anchor, Container, Flex, Text, Title } from '@mantine/core';
 import EnquiryForm from 'components/EnquiryForm';
 
-interface InfoPageProps { }
+type InfoPageProps = object
 
 const InfoPage: React.FC<InfoPageProps> = () => {
     return (

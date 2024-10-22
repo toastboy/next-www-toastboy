@@ -1,6 +1,6 @@
 import Turnout from "components/Turnout";
 
-interface PageProps { }
+type PageProps = object
 
 const Page: React.FC<PageProps> = () => {
     return (

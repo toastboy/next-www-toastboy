@@ -3,8 +3,7 @@
 import { Loader, Table } from '@mantine/core';
 import { useTurnoutByYear } from 'lib/swr';
 
-interface TurnoutProps {
-}
+type TurnoutProps = object
 
 const Turnout: React.FC<TurnoutProps> = () => {
     const { data, error, isLoading } = useTurnoutByYear();

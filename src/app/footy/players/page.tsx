@@ -1,7 +1,7 @@
 import PlayerTile from 'components/PlayerTile';
 import playerService from "services/Player";
 
-interface PageProps { }
+type PageProps = object
 
 const Page: React.FC<PageProps> = async () => {
     const players = await playerService.getAll();

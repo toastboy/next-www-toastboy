@@ -1,7 +1,7 @@
 import { notFound, redirect } from 'next/navigation';
 import gameDayService from 'services/GameDay';
 
-interface PageProps { }
+type PageProps = object
 
 const Page: React.FC<PageProps> = async () => {
     const gameDay = await gameDayService.getCurrent();

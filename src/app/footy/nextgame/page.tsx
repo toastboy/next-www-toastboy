@@ -1,6 +1,6 @@
 import { permanentRedirect } from 'next/navigation';
 
-interface PageProps { }
+type PageProps = object
 
 const Page: React.FC<PageProps> = async () => {
     permanentRedirect(`/footy/game`);

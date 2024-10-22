@@ -1,6 +1,6 @@
 import { Flex, Text, Title } from "@mantine/core";
 
-interface PageProps { }
+type PageProps = object
 
 const Page: React.FC<PageProps> = () => {
     return (
@@ -8,7 +8,7 @@ const Page: React.FC<PageProps> = () => {
             <Flex gap="md" align="flex-start" direction="column" p="xl">
                 <Title order={1}>Toastboy FC: Rules</Title>
 
-                <Text>Broadly speaking, we want a fast, competetive game with as small a
+                <Text>Broadly speaking, we want a fast, competitive game with as small a
                     risk of injury as possible. There&apos;s no referee: we call our own
                     mistakes like the gentlemen we are.</Text>
 

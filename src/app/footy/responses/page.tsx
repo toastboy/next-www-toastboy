@@ -1,7 +1,7 @@
 import NYI from 'components/NYI';
 import React from 'react';
 
-interface PageProps { }
+type PageProps = object
 
 const Page: React.FC<PageProps> = () => {
     return (

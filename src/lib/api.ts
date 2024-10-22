@@ -17,7 +17,7 @@ export async function handleGET<T>(
             return new Response(JSON.stringify(data), {
                 status: 200,
                 headers: {
-                    'Content-Type': 'text/json',
+                    'Content-Type': 'application/json',
                 },
             });
         }

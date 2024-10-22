@@ -1,5 +1,5 @@
 import { handleGETPNG } from 'lib/api';
-import AzureCache from 'lib/azure';
+import azureCache from 'lib/azure';
 import { streamToBuffer } from 'lib/utils';
 
 import countryService from 'services/Country';
@@ -19,7 +19,6 @@ export async function generateStaticParams() {
 async function getCountryFlag(
     { params }: { params: Record<string, string> },
 ): Promise<Buffer | null> {
-    const azureCache = AzureCache.getInstance();
     const containerClient = await azureCache.getContainerClient("countries");
     const blobClient = containerClient.getBlobClient(`${params.isoCode}.png`);
 

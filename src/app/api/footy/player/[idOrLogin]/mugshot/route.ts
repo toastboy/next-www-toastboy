@@ -1,5 +1,5 @@
 import { handleGETPNG } from 'lib/api';
-import AzureCache from 'lib/azure';
+import azureCache from 'lib/azure';
 import { streamToBuffer } from 'lib/utils';
 import playerService from "services/Player";
 
@@ -13,7 +13,6 @@ async function getPlayerMugshot(
     const player = await playerService.getByIdOrLogin(params.idOrLogin);
     if (!player) return null;
 
-    const azureCache = AzureCache.getInstance();
     const containerClient = await azureCache.getContainerClient("mugshots");
     let blobClient = containerClient.getBlobClient(`${player.login}.jpg`);
 

@@ -7,12 +7,13 @@ type ContainerClientCache = {
 
 class AzureCache {
     private static instance: AzureCache;
-    private static tenantId: string;
-    private static clientId: string;
-    private static clientSecret: string;
-    private static storageAccountName: string;
+    private static tenantId: string = '';
+    private static clientId: string = '';
+    private static clientSecret: string = '';
+    private static storageAccountName: string = '';
     private containerClients: ContainerClientCache = {};
 
+    // This is a singleton class, so the constructor is private to prevent external instantiation.
     private constructor() { }
 
     public static getInstance(): AzureCache {
@@ -66,4 +67,4 @@ class AzureCache {
     }
 }
 
-export default AzureCache;
+export default AzureCache.getInstance();

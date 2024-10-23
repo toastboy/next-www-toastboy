@@ -91,6 +91,13 @@ describe('API tests using HTTP', () => {
         consoleErrorMock.mockRestore();
     });
 
+    it('should return null if there are no clubs', async () => {
+        (clubService.getAll as jest.Mock).mockResolvedValue(null);
+
+        const result = await generateStaticParams();
+        expect(result).toEqual(null);
+    });
+
     it('should return club ids as params', async () => {
         const clubs = [{ id: '1' }, { id: '2' }];
         (clubService.getAll as jest.Mock).mockResolvedValue(clubs);
@@ -129,7 +136,18 @@ describe('API tests using HTTP', () => {
         expect(response.text).toBe('Not Found');
     });
 
-    it('should return 500 if there is a server error', async () => {
+    it('should return 500 if the badge download does not return anything', async () => {
+        // Mock the download hook returning a null readableStreamBody
+        (mockBlobClient.exists as jest.Mock).mockResolvedValue(true);
+        (mockBlobClient.download as jest.Mock).mockResolvedValue({});
+
+        const response = await request(mockApp).get('/api/footy/club/1/badge');
+
+        expect(response.status).toBe(500);
+        expect(response.text).toBe('Internal Server Error');
+    });
+
+    it('should return 500 if the badge download fails', async () => {
         // Mock an error in the download function
         (mockBlobClient.exists as jest.Mock).mockResolvedValue(true);
         (mockBlobClient.download as jest.Mock).mockRejectedValue(new Error('Something went wrong'));

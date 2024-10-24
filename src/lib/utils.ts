@@ -1,15 +1,24 @@
 /**
- * Helper function to convert a stream to a buffer.
+ * Converts a readable stream into a Buffer.
  *
- * @param readableStream A node.js readable stream object
+ * @param readableStream - The readable stream to convert.
+ * @returns A promise that resolves to a Buffer containing the data from the stream.
  *
- * @returns A promise for a buffer containing the stream contents.
+ * @example
+ * ```typescript
+ * import { streamToBuffer } from './utils';
+ * import { createReadStream } from 'fs';
+ *
+ * const readableStream = createReadStream('path/to/file');
+ * const buffer = await streamToBuffer(readableStream);
+ * console.log(buffer.toString());
+ * ```
  */
 export async function streamToBuffer(readableStream: NodeJS.ReadableStream): Promise<Buffer> {
     return new Promise((resolve, reject) => {
         const chunks: Buffer[] = [];
         readableStream.on('data', (data) => {
-            chunks.push(data instanceof Buffer ? data : Buffer.from(data));
+            chunks.push(Buffer.from(data));
         });
         readableStream.on('end', () => {
             resolve(Buffer.concat(chunks));
@@ -19,10 +28,10 @@ export async function streamToBuffer(readableStream: NodeJS.ReadableStream): Pro
 }
 
 /**
- * Returns the name of the year. If the year is 0, it returns "All-time".
- * Otherwise, it returns the year as a string.
- * @param year - The year to get the name for.
- * @returns The name of the year.
+ * Returns a string representation of the given year.
+ *
+ * @param year - The year to be converted to a string. If the year is 0, it returns "All-time".
+ * @returns A string representing the year. If the year is 0, it returns "All-time"; otherwise, it returns the year as a string.
  */
 export function getYearName(year: number): string {
     return year == 0 ? "All-time" : year.toString();

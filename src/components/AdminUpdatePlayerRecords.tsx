@@ -42,9 +42,14 @@ const AdminUpdatePlayerRecords: React.FC = () => {
                         { value: progress, color: progress === 100 ? 'teal' : 'blue' },
                     ]}
                 />
-                <form action={updatePlayerRecords}>
-                    <Button type="submit">Update Player Records</Button>
-                </form>
+                <Button
+                    type="button"
+                    onClick={() => {
+                        updatePlayerRecords();
+                    }}
+                >
+                    Update Player Records
+                </Button>
             </Container>
         </>
     );

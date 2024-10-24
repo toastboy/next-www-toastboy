@@ -6,9 +6,7 @@ import { Wrapper } from "./lib/common";
 // Mock the PlayerYearsActive component to control the onYearChange behavior
 jest.mock('components/PlayerYearsActive', () => {
     const MockPlayerYearsActive = ({ onYearChange }: { onYearChange: (year: number) => void }) => (
-        <form action="">
-            <button onClick={() => onYearChange(NaN)}>Change Year to NaN</button>
-        </form>
+        <button type="button" onClick={() => onYearChange(NaN)}>Change Year to NaN</button>
     );
     MockPlayerYearsActive.displayName = 'MockPlayerYearsActive';
     return MockPlayerYearsActive;

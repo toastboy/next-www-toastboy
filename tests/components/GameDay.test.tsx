@@ -1,9 +1,11 @@
+jest.mock('swr');
+
 import { render, screen } from '@testing-library/react';
 import GameDay from 'components/GameDay';
+import { FootyTeam } from 'lib/swr';
+import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
-import { FootyTeam, useGameDay } from 'lib/swr';
 
-jest.mock('lib/swr');
 jest.mock('components/GameDayLink', () => {
     const GameDayLink = ({ id }: { id: number }) => (
         <div>GameDayLink (id: {id})</div>
@@ -27,7 +29,7 @@ describe('GameDay', () => {
     });
 
     it('renders loading state', () => {
-        (useGameDay as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: undefined,
             isLoading: true,
@@ -38,7 +40,7 @@ describe('GameDay', () => {
     });
 
     it('renders error state', () => {
-        (useGameDay as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: new Error(errorText),
             isLoading: false,
@@ -50,7 +52,7 @@ describe('GameDay', () => {
     });
 
     it('renders error state when data is null', () => {
-        (useGameDay as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: null,
             error: undefined,
             isLoading: false,
@@ -73,7 +75,7 @@ describe('GameDay', () => {
     };
 
     it('renders with data', () => {
-        (useGameDay as jest.Mock).mockReturnValueOnce({
+        (useSWR as jest.Mock).mockReturnValueOnce({
             data: {
                 ...gameData,
             },
@@ -89,7 +91,7 @@ describe('GameDay', () => {
     });
 
     it('renders with data + comment', () => {
-        (useGameDay as jest.Mock).mockReturnValueOnce({
+        (useSWR as jest.Mock).mockReturnValueOnce({
             data: {
                 ...gameData,
                 comment: "What a time to be alive",
@@ -104,7 +106,7 @@ describe('GameDay', () => {
     });
 
     it('renders with data (no game)', () => {
-        (useGameDay as jest.Mock).mockReturnValueOnce({
+        (useSWR as jest.Mock).mockReturnValueOnce({
             data: {
                 ...gameData,
                 comment: "Happy New Year",
@@ -120,7 +122,7 @@ describe('GameDay', () => {
     });
 
     it('renders with data (no game, no comment)', () => {
-        (useGameDay as jest.Mock).mockReturnValueOnce({
+        (useSWR as jest.Mock).mockReturnValueOnce({
             data: {
                 ...gameData,
                 game: false,

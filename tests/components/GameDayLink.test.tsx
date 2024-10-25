@@ -1,15 +1,15 @@
+jest.mock('swr');
+
 import { render, screen } from '@testing-library/react';
 import GameDayLink from 'components/GameDayLink';
+import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
-import { useGameDay } from 'lib/swr';
-
-jest.mock('lib/swr');
 
 describe('GameDayLink', () => {
     const id = 123;
 
     it('renders loading state', () => {
-        (useGameDay as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: undefined,
             isLoading: true,
@@ -20,7 +20,7 @@ describe('GameDayLink', () => {
     });
 
     it('renders error state', () => {
-        (useGameDay as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: new Error(errorText),
             isLoading: false,
@@ -32,7 +32,7 @@ describe('GameDayLink', () => {
     });
 
     it('renders error state when data is null', () => {
-        (useGameDay as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: null,
             error: undefined,
             isLoading: false,
@@ -44,7 +44,7 @@ describe('GameDayLink', () => {
     });
 
     it('renders with data', () => {
-        (useGameDay as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: {
                 id: 123,
                 date: new Date('2021-01-01'),

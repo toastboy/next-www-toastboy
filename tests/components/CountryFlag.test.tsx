@@ -1,15 +1,15 @@
+jest.mock('swr');
+
 import { render, screen } from '@testing-library/react';
 import CountryFlag from 'components/CountryFlag';
-import { useCountry } from 'lib/swr';
+import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
-
-jest.mock('lib/swr');
 
 describe('CountryFlag', () => {
     const isoCode = "NG";
 
     it('renders loading state', () => {
-        (useCountry as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: undefined,
             isLoading: true,
@@ -20,7 +20,7 @@ describe('CountryFlag', () => {
     });
 
     it('renders error state', () => {
-        (useCountry as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: new Error(errorText),
             isLoading: false,
@@ -32,7 +32,7 @@ describe('CountryFlag', () => {
     });
 
     it('renders error state when data is null', () => {
-        (useCountry as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: null,
             error: undefined,
             isLoading: false,
@@ -44,7 +44,7 @@ describe('CountryFlag', () => {
     });
 
     it('renders with data', () => {
-        (useCountry as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: {
                 isoCode: "NG",
                 name: "Nigeria",

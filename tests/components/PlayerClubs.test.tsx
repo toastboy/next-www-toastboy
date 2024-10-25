@@ -1,9 +1,10 @@
+jest.mock('swr');
+
 import { render, screen } from '@testing-library/react';
 import PlayerClubs from 'components/PlayerClubs';
-import { usePlayerClubs } from 'lib/swr';
+import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
 
-jest.mock('lib/swr');
 jest.mock('components/ClubBadge', () => {
     const ClubBadge = ({ clubId }: { clubId: number }) => (
         <div>ClubBadge (clubId: {clubId})</div>
@@ -16,7 +17,7 @@ describe('PlayerClubs', () => {
     const idOrLogin = "160";
 
     it('renders loading state', () => {
-        (usePlayerClubs as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: undefined,
             isLoading: true,
@@ -27,7 +28,7 @@ describe('PlayerClubs', () => {
     });
 
     it('renders error state', () => {
-        (usePlayerClubs as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: new Error(errorText),
             isLoading: false,
@@ -39,7 +40,7 @@ describe('PlayerClubs', () => {
     });
 
     it('renders error state when data is null', () => {
-        (usePlayerClubs as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: null,
             error: undefined,
             isLoading: false,
@@ -51,7 +52,7 @@ describe('PlayerClubs', () => {
     });
 
     it('renders with data', () => {
-        (usePlayerClubs as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: [1000, 2000],
             error: undefined,
             isLoading: false,

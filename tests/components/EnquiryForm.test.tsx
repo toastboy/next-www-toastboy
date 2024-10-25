@@ -2,8 +2,6 @@ import { render, screen } from '@testing-library/react';
 import EnquiryForm from 'components/EnquiryForm';
 import { Wrapper, loaderClass } from "./lib/common";
 
-jest.mock('lib/swr');
-
 describe('EnquiryForm', () => {
     it('renders correctly', () => {
         const { container } = render(<Wrapper><EnquiryForm /></Wrapper>);

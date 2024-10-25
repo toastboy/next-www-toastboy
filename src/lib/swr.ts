@@ -181,10 +181,6 @@ export function usePlayerRecord(idOrLogin: string, year: number) {
     return useSWR<FootyPlayerRecord>(`/api/footy/player/${idOrLogin}/record/${year}`, fetcher);
 }
 
-export function useRecords() {
-    return useSWR<FootyPlayerRecord[]>(`/api/footy/records`, fetcher);
-}
-
 export function useRecordsProgress() {
     return useSWR<[number, number]>(`/api/footy/records/progress`, fetcher);
 }

@@ -1,9 +1,10 @@
+jest.mock('swr');
+
 import { render, screen } from '@testing-library/react';
 import PlayerLastPlayed from 'components/PlayerLastPlayed';
+import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
-import { usePlayerLastPlayed } from 'lib/swr';
 
-jest.mock('lib/swr');
 jest.mock('components/GameDayLink', () => {
     const GameDayLink = ({ id }: { id: number }) => (
         <div>GameDayLink (id: {id})</div>
@@ -16,7 +17,7 @@ describe('PlayerLastPlayed', () => {
     const idOrLogin = "15";
 
     it('renders loading state', () => {
-        (usePlayerLastPlayed as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: undefined,
             isLoading: true,
@@ -27,7 +28,7 @@ describe('PlayerLastPlayed', () => {
     });
 
     it('renders error state', () => {
-        (usePlayerLastPlayed as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: new Error(errorText),
             isLoading: false,
@@ -39,7 +40,7 @@ describe('PlayerLastPlayed', () => {
     });
 
     it('renders error state when data is null', () => {
-        (usePlayerLastPlayed as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: null,
             error: undefined,
             isLoading: false,
@@ -51,7 +52,7 @@ describe('PlayerLastPlayed', () => {
     });
 
     it('renders with data', () => {
-        (usePlayerLastPlayed as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: {
                 gameDayId: 1150,
             },

@@ -1,16 +1,16 @@
+jest.mock('swr');
+
 import { render, screen } from '@testing-library/react';
 import PlayerPositions from 'components/PlayerPositions';
-import { usePlayerRecord } from 'lib/swr';
+import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
-
-jest.mock('lib/swr');
 
 describe('PlayerPositions', () => {
     const idOrLogin = "2";
     const year = 2021;
 
     it('renders loading state', () => {
-        (usePlayerRecord as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: undefined,
             isLoading: true,
@@ -21,7 +21,7 @@ describe('PlayerPositions', () => {
     });
 
     it('renders error state', () => {
-        (usePlayerRecord as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: new Error(errorText),
             isLoading: false,
@@ -33,7 +33,7 @@ describe('PlayerPositions', () => {
     });
 
     it('renders error state when data is null', () => {
-        (usePlayerRecord as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: null,
             error: undefined,
             isLoading: false,
@@ -45,7 +45,7 @@ describe('PlayerPositions', () => {
     });
 
     it('renders with data for year', () => {
-        (usePlayerRecord as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: {
                 year: 2022,
                 playerId: 2,
@@ -89,7 +89,7 @@ describe('PlayerPositions', () => {
 
 
     it('renders with data for year', () => {
-        (usePlayerRecord as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: {
                 year: 0,
                 playerId: 2,

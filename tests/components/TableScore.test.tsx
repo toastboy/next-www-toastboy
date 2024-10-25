@@ -3,8 +3,6 @@ import TableScore from 'components/TableScore';
 import { Wrapper, loaderClass } from "./lib/common";
 import { FootyTable, FootyPlayerRecord } from 'lib/swr';
 
-jest.mock('lib/swr');
-
 describe('TableScore', () => {
     const playerRecord: FootyPlayerRecord = {
         year: 2001,

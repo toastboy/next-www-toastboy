@@ -1,13 +1,13 @@
+jest.mock('swr');
+
 import { render, screen } from '@testing-library/react';
 import Turnout from 'components/Turnout';
-import { useTurnoutByYear } from 'lib/swr';
+import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from './lib/common';
-
-jest.mock('lib/swr');
 
 describe('Turnout', () => {
     it('renders loading state', () => {
-        (useTurnoutByYear as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: undefined,
             isLoading: true,
@@ -18,7 +18,7 @@ describe('Turnout', () => {
     });
 
     it('renders error state', () => {
-        (useTurnoutByYear as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: new Error(errorText),
             isLoading: false,
@@ -30,7 +30,7 @@ describe('Turnout', () => {
     });
 
     it('renders error state when data is null', () => {
-        (useTurnoutByYear as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: null,
             error: undefined,
             isLoading: false,
@@ -42,7 +42,7 @@ describe('Turnout', () => {
     });
 
     it('renders table with data', () => {
-        (useTurnoutByYear as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: [
                 {
                     "year": 2023,

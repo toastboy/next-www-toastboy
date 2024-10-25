@@ -1,9 +1,11 @@
+jest.mock('swr');
+
 import { render, screen } from '@testing-library/react';
 import TableQualified from 'components/TableQualified';
-import { FootyPlayerRecord, FootyTable, useTable } from 'lib/swr';
+import { FootyPlayerRecord, FootyTable } from 'lib/swr';
+import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
 
-jest.mock('lib/swr');
 jest.mock('components/PlayerLink', () => {
     const PlayerLink = ({ idOrLogin }: { idOrLogin: string }) => (
         <div>PlayerLink (idOrLogin: {idOrLogin})</div>
@@ -26,7 +28,7 @@ describe('TableQualified', () => {
     const take = 5;
 
     it('renders loading state', () => {
-        (useTable as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: undefined,
             isLoading: true,
@@ -37,7 +39,7 @@ describe('TableQualified', () => {
     });
 
     it('renders error state', () => {
-        (useTable as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: new Error(errorText),
             isLoading: false,
@@ -49,7 +51,7 @@ describe('TableQualified', () => {
     });
 
     it('renders error state when data is null', () => {
-        (useTable as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: null,
             error: undefined,
             isLoading: false,
@@ -61,7 +63,7 @@ describe('TableQualified', () => {
     });
 
     it('renders with data', () => {
-        (useTable as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: Array.from({ length: 15 }, (_, index) => ({
                 year: 2001,
                 playerId: index + 1,

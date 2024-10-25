@@ -1,12 +1,13 @@
+jest.mock('swr');
+
 import { fireEvent, render, screen } from '@testing-library/react';
 import PlayerYearsActive from 'components/PlayerYearsActive';
+import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
-import { usePlayerYearsActive } from 'lib/swr';
 
 const idOrLogin = "1";
 const year = 2001;
 
-jest.mock('lib/swr');
 jest.mock('@mantine/core', () => {
     return {
         ...jest.requireActual('@mantine/core'),
@@ -18,7 +19,7 @@ jest.mock('@mantine/core', () => {
 
 describe('PlayerYearsActive', () => {
     it('renders loading state', () => {
-        (usePlayerYearsActive as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: undefined,
             isLoading: true,
@@ -29,7 +30,7 @@ describe('PlayerYearsActive', () => {
     });
 
     it('renders error state', () => {
-        (usePlayerYearsActive as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: new Error(errorText),
             isLoading: false,
@@ -41,7 +42,7 @@ describe('PlayerYearsActive', () => {
     });
 
     it('renders error state when data is null', () => {
-        (usePlayerYearsActive as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: null,
             error: undefined,
             isLoading: false,
@@ -53,7 +54,7 @@ describe('PlayerYearsActive', () => {
     });
 
     it('renders with data', () => {
-        (usePlayerYearsActive as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: [2001, 2002, 2003, 0],
             error: undefined,
             isLoading: false,

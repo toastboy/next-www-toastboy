@@ -4,7 +4,6 @@ import { Wrapper, loaderClass } from "./lib/common";
 
 const idOrLogin = "dturnipson";
 
-jest.mock('lib/swr');
 jest.mock('components/PlayerLink', () => {
     const PlayerLink = ({ idOrLogin }: { idOrLogin: string }) => (
         <div>PlayerLink (idOrLogin: {idOrLogin})</div>

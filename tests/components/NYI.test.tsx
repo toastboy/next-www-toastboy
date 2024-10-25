@@ -2,8 +2,6 @@ import { render, screen } from '@testing-library/react';
 import NYI from 'components/NYI';
 import { Wrapper, loaderClass } from "./lib/common";
 
-jest.mock('lib/swr');
-
 describe('NYI', () => {
     it('renders correctly', () => {
         const { container } = render(<Wrapper><NYI /></Wrapper>);

@@ -1,9 +1,11 @@
+jest.mock('swr');
+
 import { render, screen } from '@testing-library/react';
 import Table from 'components/Table';
+import { FootyTable } from 'lib/swr';
+import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
-import { FootyTable, useGameYear } from 'lib/swr';
 
-jest.mock('lib/swr');
 jest.mock('components/TableQualified', () => {
     const TableQualified = ({ table, year, qualified }: { table: FootyTable, year: number, qualified?: boolean }) => (
         <div>TableQualified (table: {table}, year: {year}, qualified: {qualified ? "true" : "false"})</div>
@@ -17,7 +19,7 @@ describe('Table', () => {
     const year = 2010;
 
     it('renders loading state', () => {
-        (useGameYear as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: undefined,
             isLoading: true,
@@ -28,7 +30,7 @@ describe('Table', () => {
     });
 
     it('renders error state', () => {
-        (useGameYear as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: new Error(errorText),
             isLoading: false,
@@ -40,7 +42,7 @@ describe('Table', () => {
     });
 
     it('renders error state when data is null', () => {
-        (useGameYear as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: null,
             error: undefined,
             isLoading: false,
@@ -52,7 +54,7 @@ describe('Table', () => {
     });
 
     it('renders points table with data', () => {
-        (useGameYear as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: 2010,
             error: undefined,
             isLoading: false,
@@ -65,7 +67,7 @@ describe('Table', () => {
     });
 
     it('renders averages table with data', () => {
-        (useGameYear as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: 2010,
             error: undefined,
             isLoading: false,
@@ -79,7 +81,7 @@ describe('Table', () => {
     });
 
     it('renders stalwart table with data', () => {
-        (useGameYear as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: 2010,
             error: undefined,
             isLoading: false,
@@ -92,7 +94,7 @@ describe('Table', () => {
     });
 
     it('renders speedy table with data', () => {
-        (useGameYear as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: 2010,
             error: undefined,
             isLoading: false,
@@ -106,7 +108,7 @@ describe('Table', () => {
     });
 
     it('renders pub table with data', () => {
-        (useGameYear as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: 2010,
             error: undefined,
             isLoading: false,

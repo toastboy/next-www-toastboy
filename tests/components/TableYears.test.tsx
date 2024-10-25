@@ -1,11 +1,12 @@
+jest.mock('swr');
+
 import { fireEvent, render, screen } from '@testing-library/react';
 import TableYears from 'components/TableYears';
+import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
-import { useTableYears } from 'lib/swr';
 
 const year = 2001;
 
-jest.mock('lib/swr');
 jest.mock('@mantine/core', () => {
     return {
         ...jest.requireActual('@mantine/core'),
@@ -17,7 +18,7 @@ jest.mock('@mantine/core', () => {
 
 describe('TableYears', () => {
     it('renders loading state', () => {
-        (useTableYears as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: undefined,
             isLoading: true,
@@ -28,7 +29,7 @@ describe('TableYears', () => {
     });
 
     it('renders error state', () => {
-        (useTableYears as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: new Error(errorText),
             isLoading: false,
@@ -40,7 +41,7 @@ describe('TableYears', () => {
     });
 
     it('renders error state when data is null', () => {
-        (useTableYears as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: null,
             error: undefined,
             isLoading: false,
@@ -52,7 +53,7 @@ describe('TableYears', () => {
     });
 
     it('renders with data', () => {
-        (useTableYears as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: [2001, 2002, 2003, 0],
             error: undefined,
             isLoading: false,

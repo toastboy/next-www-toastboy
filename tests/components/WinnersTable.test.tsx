@@ -1,11 +1,13 @@
+jest.mock('swr');
+
 import { render, screen } from '@testing-library/react';
 import WinnersTable from 'components/WinnersTable';
-import { FootyTable, useWinners } from 'lib/swr';
+import { FootyTable } from 'lib/swr';
+import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from './lib/common';
 
 const table = FootyTable.points;
 
-jest.mock('lib/swr');
 jest.mock('components/PlayerLink', () => {
     const PlayerLink = ({ idOrLogin }: { idOrLogin: string }) => (
         <div>PlayerLink (idOrLogin: {idOrLogin})</div>
@@ -16,7 +18,7 @@ jest.mock('components/PlayerLink', () => {
 
 describe('WinnersTable', () => {
     it('renders loading state', () => {
-        (useWinners as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: undefined,
             isLoading: true,
@@ -27,7 +29,7 @@ describe('WinnersTable', () => {
     });
 
     it('renders error state', () => {
-        (useWinners as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: new Error(errorText),
             isLoading: false,
@@ -39,7 +41,7 @@ describe('WinnersTable', () => {
     });
 
     it('renders error state when data is null', () => {
-        (useWinners as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: null,
             error: undefined,
             isLoading: false,
@@ -51,7 +53,7 @@ describe('WinnersTable', () => {
     });
 
     it('renders table with data', () => {
-        (useWinners as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: [
                 {
                     "year": 2023,
@@ -77,7 +79,7 @@ describe('WinnersTable', () => {
     });
 
     it('renders table for a single year', () => {
-        (useWinners as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: [
                 {
                     "year": 2022,

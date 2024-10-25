@@ -1,15 +1,15 @@
+jest.mock('swr');
+
 import { render, screen } from '@testing-library/react';
 import PlayerLink from 'components/PlayerLink';
+import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
-import { usePlayer } from 'lib/swr';
-
-jest.mock('lib/swr');
 
 describe('PlayerLink', () => {
     const idOrLogin = "derekt";
 
     it('renders loading state', () => {
-        (usePlayer as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: undefined,
             isLoading: true,
@@ -20,7 +20,7 @@ describe('PlayerLink', () => {
     });
 
     it('renders error state', () => {
-        (usePlayer as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: new Error(errorText),
             isLoading: false,
@@ -32,7 +32,7 @@ describe('PlayerLink', () => {
     });
 
     it('renders error state when data is null', () => {
-        (usePlayer as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: null,
             error: undefined,
             isLoading: false,
@@ -44,7 +44,7 @@ describe('PlayerLink', () => {
     });
 
     it('renders with data', () => {
-        (usePlayer as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: {
                 login: "derekt",
                 name: "Derek Turnipson",

@@ -1,12 +1,14 @@
+jest.mock('swr');
+
 import { render, screen } from '@testing-library/react';
 import Team from 'components/Team';
-import { FootyTeam, useTeam } from 'lib/swr';
+import { FootyTeam } from 'lib/swr';
+import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from './lib/common';
 
 const gamedayId = 1000;
 const team: FootyTeam = FootyTeam.A;
 
-jest.mock('lib/swr');
 jest.mock('components/TeamPlayer', () => {
     const TeamPlayer = ({ idOrLogin, goalie }: { idOrLogin: string, goalie: boolean }) => (
         <div>TeamPlayer (idOrLogin: {idOrLogin}, goalie: {goalie.toString()})</div>
@@ -17,7 +19,7 @@ jest.mock('components/TeamPlayer', () => {
 
 describe('Team', () => {
     it('renders loading state', () => {
-        (useTeam as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: undefined,
             isLoading: true,
@@ -28,7 +30,7 @@ describe('Team', () => {
     });
 
     it('renders error state', () => {
-        (useTeam as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: new Error(errorText),
             isLoading: false,
@@ -40,7 +42,7 @@ describe('Team', () => {
     });
 
     it('renders error state when data is null', () => {
-        (useTeam as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: null,
             error: undefined,
             isLoading: false,
@@ -52,7 +54,7 @@ describe('Team', () => {
     });
 
     it('renders table with data', () => {
-        (useTeam as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: [
                 {
                     "playerId": 1,

@@ -1,10 +1,11 @@
+jest.mock('swr');
+
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import AdminUpdatePlayerRecords from 'components/AdminUpdatePlayerRecords';
-import { useRecordsProgress } from 'lib/swr';
 import { act } from 'react';
+import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
 
-jest.mock('lib/swr');
 jest.mock('next/cache');
 jest.mock('services/PlayerRecord');
 
@@ -20,7 +21,7 @@ describe('AdminUpdatePlayerRecords', () => {
     });
 
     it('renders loading state', () => {
-        (useRecordsProgress as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: undefined,
             isLoading: true,
@@ -32,7 +33,7 @@ describe('AdminUpdatePlayerRecords', () => {
     });
 
     it('renders error state', () => {
-        (useRecordsProgress as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: new Error(errorText),
             isLoading: false,
@@ -45,7 +46,7 @@ describe('AdminUpdatePlayerRecords', () => {
     });
 
     it('renders error state when data is null', () => {
-        (useRecordsProgress as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: null,
             error: undefined,
             isLoading: false,
@@ -58,7 +59,7 @@ describe('AdminUpdatePlayerRecords', () => {
     });
 
     it('renders with data < 100%', () => {
-        (useRecordsProgress as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: [800, 2000],
             error: undefined,
             isLoading: false,
@@ -72,7 +73,7 @@ describe('AdminUpdatePlayerRecords', () => {
 
     it('renders with data == 100%', async () => {
         const mutateMock = jest.fn();
-        (useRecordsProgress as jest.Mock).mockReturnValue({
+        (useSWR as jest.Mock).mockReturnValue({
             data: [2000, 2000],
             error: undefined,
             isLoading: false,

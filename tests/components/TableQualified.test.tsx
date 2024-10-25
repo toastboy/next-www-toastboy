@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import TableQualified from 'components/TableQualified';
-import { Wrapper, errorText, loaderClass } from "./lib/common";
 import { FootyPlayerRecord, FootyTable, useTable } from 'lib/swr';
+import { Wrapper, errorText, loaderClass } from "./lib/common";
 
 jest.mock('lib/swr');
 jest.mock('components/PlayerLink', () => {
@@ -84,7 +84,13 @@ describe('TableQualified', () => {
 
         const { container } = render(<Wrapper><TableQualified table={table} year={year} qualified={qualified} take={take} /></Wrapper>);
         expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+        expect(screen.getByText("PlayerLink (idOrLogin: 1)")).toBeInTheDocument();
         expect(screen.getByText("TableScore (table: points, playerRecord.playerId: 1)")).toBeInTheDocument();
-        // TODO: more assertions
+        expect(screen.getByText("PlayerLink (idOrLogin: 2)")).toBeInTheDocument();
+        expect(screen.getByText("TableScore (table: points, playerRecord.playerId: 2)")).toBeInTheDocument();
+        expect(screen.getByText("PlayerLink (idOrLogin: 3)")).toBeInTheDocument();
+        expect(screen.getByText("TableScore (table: points, playerRecord.playerId: 3)")).toBeInTheDocument();
+        expect(screen.getByText("PlayerLink (idOrLogin: 4)")).toBeInTheDocument();
+        expect(screen.getByText("TableScore (table: points, playerRecord.playerId: 4)")).toBeInTheDocument();
     });
 });

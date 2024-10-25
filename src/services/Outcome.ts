@@ -213,7 +213,7 @@ export class OutcomeService {
      * @returns An array of game days with their corresponding response counts.
      * @throws If there is an error fetching the outcomes.
      */
-    async getTurnout(gameDayId?: number): Promise<(Turnout | undefined)[]> {
+    async getTurnout(gameDayId?: number): Promise<Turnout[]> {
         try {
             const responseCounts = await this.getResponseCounts(gameDayId);
 
@@ -226,6 +226,14 @@ export class OutcomeService {
             }
 
             const result = gameDays.map((gameDay) => {
+                const initialResponseCounts = new Map<string, number>([
+                    ['yes', 0],
+                    ['no', 0],
+                    ['dunno', 0],
+                    ['excused', 0],
+                    ['flaked', 0],
+                    ['injured', 0],
+                ]);
                 const gameDayResponseCounts = Object.values(EnumResponse).reduce((map, response) => {
                     const count = responseCounts
                         .filter((res) =>
@@ -234,17 +242,17 @@ export class OutcomeService {
                         .map((res) => res._count.response)[0] || 0;
                     map.set(`${response.toLowerCase()}`, count);
                     return map;
-                }, new Map<string, number>());
+                }, initialResponseCounts);
 
                 if (gameDay) {
                     return {
                         ...gameDay,
-                        yes: gameDayResponseCounts.get('yes') ?? 0,
-                        no: gameDayResponseCounts.get('no') ?? 0,
-                        dunno: gameDayResponseCounts.get('dunno') ?? 0,
-                        excused: gameDayResponseCounts.get('excused') ?? 0,
-                        flaked: gameDayResponseCounts.get('flaked') ?? 0,
-                        injured: gameDayResponseCounts.get('injured') ?? 0,
+                        yes: gameDayResponseCounts.get('yes'),
+                        no: gameDayResponseCounts.get('no'),
+                        dunno: gameDayResponseCounts.get('dunno'),
+                        excused: gameDayResponseCounts.get('excused'),
+                        flaked: gameDayResponseCounts.get('flaked'),
+                        injured: gameDayResponseCounts.get('injured'),
                         responses: responseCounts
                             .filter((rc) => rc.gameDayId === gameDay.id && rc.response !== null)
                             .reduce((acc, rc) => acc + rc._count.response, 0),
@@ -256,7 +264,7 @@ export class OutcomeService {
                 }
             });
 
-            return result ? result : [];
+            return result as Turnout[];
         }
         catch (error) {
             log(`Error fetching outcomes: ${error}`);
@@ -275,17 +283,17 @@ export class OutcomeService {
             const gameYears = await gameDayService.getAllYears();
 
             return Promise.resolve(gameYears.map((gameYear) => {
-                const yearTurnout = turnout.filter((t) => gameYear === t?.year);
+                const yearTurnout = turnout.filter((t) => gameYear === t.year);
                 const result: TurnoutByYear = {
                     year: gameYear,
                     gameDays: yearTurnout.length,
-                    gamesScheduled: yearTurnout.filter((t) => t?.game || t?.mailSent).length,
-                    gamesInitiated: yearTurnout.filter((t) => t?.mailSent).length,
-                    gamesPlayed: yearTurnout.filter((t) => t?.game && t?.mailSent).length,
-                    gamesCancelled: yearTurnout.filter((t) => t?.cancelled).length,
-                    responses: yearTurnout.reduce((acc, t) => acc + (t ? t.responses : 0), 0),
-                    yesses: yearTurnout.reduce((acc, t) => acc + (t ? t.yes : 0), 0),
-                    players: yearTurnout.reduce((acc, t) => acc + (t ? t.players : 0), 0),
+                    gamesScheduled: yearTurnout.filter((t) => t.game || t.mailSent).length,
+                    gamesInitiated: yearTurnout.filter((t) => t.mailSent).length,
+                    gamesPlayed: yearTurnout.filter((t) => t.game && t.mailSent).length,
+                    gamesCancelled: yearTurnout.filter((t) => t.cancelled).length,
+                    responses: yearTurnout.reduce((acc, t) => acc + t.responses, 0),
+                    yesses: yearTurnout.reduce((acc, t) => acc + t.yes, 0),
+                    players: yearTurnout.reduce((acc, t) => acc + t.players, 0),
                     responsesPerGameInitiated: 0,
                     yessesPerGameInitiated: 0,
                     playersPerGamePlayed: 0,

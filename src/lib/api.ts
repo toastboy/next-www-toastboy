@@ -1,70 +1,40 @@
 /**
- * Handles GET requests for API routes where the return type is JSON.
+ * Handles a GET request by invoking a service function and returning the appropriate response.
  *
- * @template T - The type of data returned by the service function.
- * @param {({ params }: { params: Record<string, string> }) => Promise<T>} serviceFunction - The service function to be called.
- * @param {{ params: Record<string, string> }} params - The parameters for the service function.
- * @returns {Promise<Response>} - A promise that resolves to a Response object.
+ * @template T - The type of the data returned by the service function.
+ * @param serviceFunction - A function that takes an object with `params` and returns a Promise resolving to data of type `T` or null.
+ * @param params - An object containing the parameters to be passed to the service function.
+ * @param responseType - The type of response to return, either 'json' or 'png'.
+ * @returns A Promise that resolves to a Response object. The response will have a status of 200 if data is found,
+ *          404 if data is not found, or 500 if an error occurs.
  */
 export async function handleGET<T>(
-    serviceFunction: ({ params }: { params: Record<string, string> }) =>
-        Promise<T | null>, { params }: { params: Record<string, string> },
+    serviceFunction: ({ params }: { params: Record<string, string> }) => Promise<T | null>,
+    { params }: { params: Record<string, string> },
+    responseType: 'json' | 'png' = 'json',
 ): Promise<Response> {
     try {
         const data = await serviceFunction({ params });
 
         if (data != null) {
-            return new Response(JSON.stringify(data), {
+            const headers: HeadersInit = {
+                'Content-Type': responseType === 'json' ? 'application/json' : 'image/png',
+            };
+            const body = responseType === 'json' ? JSON.stringify(data) : data as string;
+            return new Response(body, {
                 status: 200,
-                headers: {
-                    'Content-Type': 'application/json',
+                headers,
+            });
+        } else {
+            return new Response(
+                responseType === 'json' ? 'Data not found' : 'PNG image not found',
+                {
+                    status: 404,
                 },
-            });
+            );
         }
-        else {
-            return new Response(`Data not found`, {
-                status: 404,
-            });
-        }
-    }
-    catch (error) {
-        console.error(`Error in API route: ${error} `);
-        return new Response('Internal Server Error', {
-            status: 500,
-        });
-    }
-}
-
-/**
- * Handles GET requests for API routes where the return type is PNG.
- *
- * @param {({ params }: { params: Record<string, string> }) => Promise<Buffer>} serviceFunction - The service function to be called.
- * @param {{ params: Record<string, string> }} params - The parameters for the service function.
- * @returns {Promise<Response>} - A promise that resolves to a Response object.
- */
-export async function handleGETPNG(
-    serviceFunction: ({ params }: { params: Record<string, string> }) =>
-        Promise<Buffer | null>, { params }: { params: Record<string, string> },
-): Promise<Response> {
-    try {
-        const data = await serviceFunction({ params });
-
-        if (data) {
-            return new Response(data, {
-                status: 200,
-                headers: {
-                    'Content-Type': 'image/png',
-                },
-            });
-        }
-        else {
-            return new Response(`PNG image not found`, {
-                status: 404,
-            });
-        }
-    }
-    catch (error) {
-        console.error(`Error in API route: ${error} `);
+    } catch (error) {
+        console.error(`Error in API route: ${error}`);
         return new Response('Internal Server Error', {
             status: 500,
         });

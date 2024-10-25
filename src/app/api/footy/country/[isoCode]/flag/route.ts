@@ -1,4 +1,4 @@
-import { handleGETPNG } from 'lib/api';
+import { handleGET } from 'lib/api';
 import azureCache from 'lib/azure';
 import { streamToBuffer } from 'lib/utils';
 
@@ -34,4 +34,4 @@ async function getCountryFlag(
 }
 
 export const GET = (request: Request, { params }: { params: Record<string, string> }) =>
-    handleGETPNG(() => getCountryFlag({ params }), { params });
+    handleGET(() => getCountryFlag({ params }), { params }, "png");

@@ -1,10 +1,12 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import AdminUpdatePlayerRecords from 'components/AdminUpdatePlayerRecords';
 import { useRecordsProgress } from 'lib/swr';
 import { act } from 'react';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
 
 jest.mock('lib/swr');
+jest.mock('next/cache');
+jest.mock('services/PlayerRecord');
 
 describe('AdminUpdatePlayerRecords', () => {
     beforeEach(() => {
@@ -80,6 +82,9 @@ describe('AdminUpdatePlayerRecords', () => {
         const { container } = render(<Wrapper><AdminUpdatePlayerRecords /></Wrapper>);
         expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
         expect(container.querySelector('.tabler-icon-check')).toBeInTheDocument();
+
+        const button = screen.getByText("Update Player Records");
+        fireEvent.click(button);
 
         await act(async () => { jest.runOnlyPendingTimers(); });
         await waitFor(() => expect(mutateMock).toHaveBeenCalled());

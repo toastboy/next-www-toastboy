@@ -1,4 +1,4 @@
-import { handleGETPNG } from 'lib/api';
+import { handleGET } from 'lib/api';
 import azureCache from 'lib/azure';
 import { streamToBuffer } from 'lib/utils';
 import playerService from "services/Player";
@@ -28,4 +28,4 @@ async function getPlayerMugshot(
 }
 
 export const GET = (request: Request, { params }: { params: Record<string, string> }) =>
-    handleGETPNG(() => getPlayerMugshot({ params }), { params });
+    handleGET(() => getPlayerMugshot({ params }), { params }, "png");

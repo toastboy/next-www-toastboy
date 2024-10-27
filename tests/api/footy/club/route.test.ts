@@ -1,53 +1,14 @@
-jest.mock('services/Club');
-
-import { GET, generateStaticParams } from 'app/api/footy/club/[id]/route';
-import { createServer } from 'http';
+import { generateStaticParams, GET } from 'app/api/footy/club/[id]/route';
 import clubService from 'services/Club';
 import request from 'supertest';
+import { createMockApp, jsonResponseHandler, suppressConsoleError } from '../../lib/common';
 
-const mockApp = createServer((req, res) => {
-    if (req.url?.includes('/api/footy/club/1')) {
-        const requestObject = new Request(`http://localhost${req.url}`, {
-            method: req.method,
-            headers: req.headers as HeadersInit,
-        });
+suppressConsoleError();
+const mockApp = createMockApp(GET, { path: '/api/footy/club/1', params: { id: '1' } }, jsonResponseHandler);
 
-        GET(requestObject, { params: { id: '1' } })
-            .then(async (response) => {
-                if (response.status === 404) {
-                    res.statusCode = 404;
-                    res.end('Not Found');
-                } else if (response.status === 500) {
-                    res.statusCode = 500;
-                    res.end('Internal Server Error');
-                } else if (response.body) {
-                    res.setHeader('Content-Type', 'application/json');
-                    res.end(await response.text());
-                } else {
-                    res.statusCode = 500;
-                    res.end('Missing Response Body');
-                }
-            })
-            .catch((err) => {
-                res.statusCode = 500;
-                res.end(`Error: ${err.message}`);
-            });
-    }
-});
+jest.mock('services/Club');
 
 describe('API tests using HTTP', () => {
-    // I want console.error to be a noop for the entire test suite.
-
-    let consoleErrorMock: jest.SpyInstance;
-
-    beforeEach(() => {
-        consoleErrorMock = jest.spyOn(console, 'error').mockImplementation(() => { });
-    });
-
-    afterEach(() => {
-        consoleErrorMock.mockRestore();
-    });
-
     it('should return null if there are no clubs', async () => {
         (clubService.getAll as jest.Mock).mockResolvedValue(null);
 

@@ -1,28 +1,4 @@
-const mockBlobClient = {
-    exists: jest.fn(),
-    download: jest.fn(),
-};
-
-const mockContainerClient = {
-    getBlobClient: jest.fn().mockReturnValue(mockBlobClient),
-};
-
-const mockBlobServiceClient = {
-    getContainerClient: jest.fn().mockReturnValue(mockContainerClient),
-};
-
-jest.mock('@azure/storage-blob', () => ({
-    BlobServiceClient: jest.fn(() => mockBlobServiceClient),
-}));
-
-const mockAzureCache = {
-    getContainerClient: jest.fn().mockResolvedValue(mockContainerClient),
-};
-
-jest.mock('lib/azure', () => ({
-    __esModule: true,
-    default: mockAzureCache,
-}));
+import { createMockApp, mockBlobClient, pngResponseHandler, suppressConsoleError } from '../../../lib/common';
 
 jest.mock('services/Club');
 
@@ -30,10 +6,10 @@ import { GET, generateStaticParams } from 'app/api/footy/club/[id]/badge/route';
 import clubService from 'services/Club';
 import { Readable } from 'stream';
 import request from 'supertest';
-import { createMockApp, pngResponseHandler, suppressConsoleError } from '../../../lib/common';
 
 suppressConsoleError();
-const mockApp = createMockApp(GET, { path: '/api/footy/club/1/badge', params: { id: '1' } }, pngResponseHandler);
+const testRoute = '/api/footy/club/1/badge';
+const mockApp = createMockApp(GET, { path: testRoute, params: { id: '1' } }, pngResponseHandler);
 
 describe('API tests using HTTP', () => {
     it('should return null if there are no clubs', async () => {
@@ -54,7 +30,7 @@ describe('API tests using HTTP', () => {
         ]);
     });
 
-    it('should return PNG response for a valid badge', async () => {
+    it('should return PNG response for a valid club', async () => {
         const mockBuffer = Buffer.from('test');
         const mockStream = new Readable();
         mockStream.push(mockBuffer);
@@ -65,7 +41,7 @@ describe('API tests using HTTP', () => {
             readableStreamBody: mockStream,
         });
 
-        const response = await request(mockApp).get('/api/footy/club/1/badge');
+        const response = await request(mockApp).get(testRoute);
 
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('image/png');
@@ -75,7 +51,7 @@ describe('API tests using HTTP', () => {
     it('should return 404 if the badge does not exist', async () => {
         (mockBlobClient.exists as jest.Mock).mockResolvedValue(false);
 
-        const response = await request(mockApp).get('/api/footy/club/1/badge');
+        const response = await request(mockApp).get(testRoute);
 
         expect(response.status).toBe(404);
         expect(response.text).toBe('Not Found');
@@ -85,7 +61,7 @@ describe('API tests using HTTP', () => {
         (mockBlobClient.exists as jest.Mock).mockResolvedValue(true);
         (mockBlobClient.download as jest.Mock).mockResolvedValue({});
 
-        const response = await request(mockApp).get('/api/footy/club/1/badge');
+        const response = await request(mockApp).get(testRoute);
 
         expect(response.status).toBe(500);
         expect(response.text).toBe('Internal Server Error');
@@ -95,7 +71,7 @@ describe('API tests using HTTP', () => {
         (mockBlobClient.exists as jest.Mock).mockResolvedValue(true);
         (mockBlobClient.download as jest.Mock).mockRejectedValue(new Error('Something went wrong'));
 
-        const response = await request(mockApp).get('/api/footy/club/1/badge');
+        const response = await request(mockApp).get(testRoute);
 
         expect(response.status).toBe(500);
         expect(response.text).toBe('Internal Server Error');

@@ -1,5 +1,31 @@
 import { createServer, ServerResponse } from 'http';
 
+export const mockBlobClient = {
+    exists: jest.fn(),
+    download: jest.fn(),
+};
+
+const mockContainerClient = {
+    getBlobClient: jest.fn().mockReturnValue(mockBlobClient),
+};
+
+const mockBlobServiceClient = {
+    getContainerClient: jest.fn().mockReturnValue(mockContainerClient),
+};
+
+jest.mock('@azure/storage-blob', () => ({
+    BlobServiceClient: jest.fn(() => mockBlobServiceClient),
+}));
+
+const mockAzureCache = {
+    getContainerClient: jest.fn().mockResolvedValue(mockContainerClient),
+};
+
+jest.mock('lib/azure', () => ({
+    __esModule: true,
+    default: mockAzureCache,
+}));
+
 /**
  * Suppresses console error messages during tests by mocking `console.error`.
  *

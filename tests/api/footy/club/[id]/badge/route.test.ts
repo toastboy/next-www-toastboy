@@ -1,8 +1,8 @@
-import { createMockApp, mockBlobClient, pngResponseHandler, suppressConsoleError } from '../../../lib/common';
+import { createMockApp, mockBlobClient, pngResponseHandler, suppressConsoleError } from 'tests/lib/api/common';
 
 jest.mock('services/Club');
 
-import { GET, generateStaticParams } from 'app/api/footy/club/[id]/badge/route';
+import { GET, generateStaticParams } from 'api/footy/club/[id]/badge/route';
 import clubService from 'services/Club';
 import { Readable } from 'stream';
 import request from 'supertest';

@@ -31,6 +31,15 @@ module.exports = {
                 '/node_modules/(?!(?:@stackframe/stack|@stackframe/stack-sc)/)',
             ],
             testPathIgnorePatterns: ['/node_modules/', '/e2e/'],
+            moduleNameMapper: {
+                '^actions/(.*)$': '<rootDir>/src/actions/$1',
+                '^api/(.*)$': '<rootDir>/src/app/api/$1',
+                '^components/(.*)$': '<rootDir>/src/components/$1',
+                '^environment/(.*)$': '<rootDir>/src/environments/$1',
+                '^lib/(.*)$': '<rootDir>/src/lib/$1',
+                '^services/(.*)$': '<rootDir>/src/services/$1',
+                '^tests/(.*)$': '<rootDir>/tests/$1'
+            },
         },
         {
             displayName: { name: 'services', color: 'magenta' },
@@ -59,6 +68,15 @@ module.exports = {
                 '/node_modules/(?!(?:@stackframe/stack|@stackframe/stack-sc)/)',
             ],
             testPathIgnorePatterns: ['/node_modules/', '/e2e/'],
+            moduleNameMapper: {
+                '^actions/(.*)$': '<rootDir>/src/actions/$1',
+                '^api/(.*)$': '<rootDir>/src/app/api/$1',
+                '^components/(.*)$': '<rootDir>/src/components/$1',
+                '^environment/(.*)$': '<rootDir>/src/environments/$1',
+                '^lib/(.*)$': '<rootDir>/src/lib/$1',
+                '^services/(.*)$': '<rootDir>/src/services/$1',
+                '^tests/(.*)$': '<rootDir>/tests/$1'
+            },
         },
         {
             displayName: { name: 'components', color: 'blue' },
@@ -81,6 +99,15 @@ module.exports = {
                 '/node_modules/(?!(?:@stackframe/stack|@stackframe/stack-sc)/)',
             ],
             testPathIgnorePatterns: ['/node_modules/', '/e2e/'],
+            moduleNameMapper: {
+                '^actions/(.*)$': '<rootDir>/src/actions/$1',
+                '^api/(.*)$': '<rootDir>/src/app/api/$1',
+                '^components/(.*)$': '<rootDir>/src/components/$1',
+                '^environment/(.*)$': '<rootDir>/src/environments/$1',
+                '^lib/(.*)$': '<rootDir>/src/lib/$1',
+                '^services/(.*)$': '<rootDir>/src/services/$1',
+                '^tests/(.*)$': '<rootDir>/tests/$1'
+            },
         },
     ],
 };

@@ -1,7 +1,7 @@
-import { generateStaticParams, GET } from 'app/api/footy/club/[id]/route';
+import { generateStaticParams, GET } from 'api/footy/club/[id]/route';
 import clubService from 'services/Club';
 import request from 'supertest';
-import { createMockApp, jsonResponseHandler, suppressConsoleError } from '../../lib/common';
+import { createMockApp, jsonResponseHandler, suppressConsoleError } from 'tests/lib/api/common';
 
 suppressConsoleError();
 const mockApp = createMockApp(GET, { path: '/api/footy/club/1', params: { id: '1' } }, jsonResponseHandler);

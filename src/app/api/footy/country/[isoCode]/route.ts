@@ -1,5 +1,5 @@
-import countryService from "services/Country";
 import { handleGET } from "lib/api";
+import countryService from "services/Country";
 
 export async function generateStaticParams() {
     const countries = await countryService.getAll();
@@ -7,7 +7,7 @@ export async function generateStaticParams() {
     return countries ? countries.map((country) => {
         return {
             params: {
-                id: country.isoCode,
+                isoCode: country.isoCode,
             },
         };
     }) : null;

@@ -2,7 +2,7 @@
   "name": "next-www-toastboy",
   "private": true,
   "scripts": {
-    "test": "jest",
+    "test": "jest --runInBand",
     "test:watch": "jest --watchAll --passWithNoTests",
     "dev": "docker compose up -d && next dev",
     "build": "npx prisma generate && DEBUG=app:* next build",

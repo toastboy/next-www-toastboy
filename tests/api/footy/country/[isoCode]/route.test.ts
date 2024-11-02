@@ -6,7 +6,7 @@ import { createMockApp, jsonResponseHandler, suppressConsoleError } from 'tests/
 suppressConsoleError();
 const mockApp = createMockApp(GET, { path: '/api/footy/country/NO', params: { isoCode: 'NO' } }, jsonResponseHandler);
 
-jest.mock('services/country');
+jest.mock('services/Country');
 
 describe('API tests using HTTP', () => {
     it('should return null if there are no countries', async () => {

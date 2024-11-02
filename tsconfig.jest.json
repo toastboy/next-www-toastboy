@@ -3,7 +3,7 @@
     "compilerOptions": {
         "diagnostics": true,
         "incremental": true,
-        "jsx": "preserve",
+        "jsx": "react-jsx",
         "sourceMap": true,
         "types": [
             "jest",

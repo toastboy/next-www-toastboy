@@ -16,7 +16,7 @@ module.exports = {
                 '^environment/(.*)$': '<rootDir>/src/environments/$1',
                 '^lib/(.*)$': '<rootDir>/src/lib/$1',
                 '^services/(.*)$': '<rootDir>/src/services/$1',
-                '^tests/(.*)$': '<rootDir>/tests/$1'
+                '^tests/(.*)$': '<rootDir>/tests/$1',
             },
             modulePaths: ['<rootDir>/src/'],
             preset: 'ts-jest',
@@ -51,7 +51,7 @@ module.exports = {
                 '^environment/(.*)$': '<rootDir>/src/environments/$1',
                 '^lib/(.*)$': '<rootDir>/src/lib/$1',
                 '^services/(.*)$': '<rootDir>/src/services/$1',
-                '^tests/(.*)$': '<rootDir>/tests/$1'
+                '^tests/(.*)$': '<rootDir>/tests/$1',
             },
             modulePaths: ['<rootDir>/src/'],
             preset: 'ts-jest',
@@ -86,7 +86,7 @@ module.exports = {
                 '^environment/(.*)$': '<rootDir>/src/environments/$1',
                 '^lib/(.*)$': '<rootDir>/src/lib/$1',
                 '^services/(.*)$': '<rootDir>/src/services/$1',
-                '^tests/(.*)$': '<rootDir>/tests/$1'
+                '^tests/(.*)$': '<rootDir>/tests/$1',
             },
             modulePaths: ['<rootDir>/src/'],
             preset: 'ts-jest',

@@ -7,7 +7,7 @@ suppressConsoleError();
 const mockURI = '/api/footy/gameday';
 const mockApp = createMockApp(GET, { path: mockURI, params: { id: '1' } }, jsonResponseHandler);
 
-jest.mock('services/Gameday');
+jest.mock('services/GameDay');
 
 describe('API tests using HTTP', () => {
     it('should return JSON response for a valid gameday', async () => {

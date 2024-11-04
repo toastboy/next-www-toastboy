@@ -25,7 +25,7 @@ module.exports = {
             testMatch: ['<rootDir>/**/api/**/*.test.ts'],
             transform: {
                 '^.+\\.tsx?$': ['ts-jest', { tsconfig: 'tsconfig.jest.json' }],
-                "_^.+\\.jsx?$": 'babel-jest',
+                "_^.+\\.jsx?$": ['babel-jest', { configFile: "babel-jest.config.js" }],
                 get "^.+\\.jsx?$"() {
                     return this["_^.+\\.jsx?$"];
                 },
@@ -60,7 +60,7 @@ module.exports = {
             testMatch: ['<rootDir>/**/services/**/*.test.ts'],
             transform: {
                 '^.+\\.tsx?$': ['ts-jest', { tsconfig: 'tsconfig.jest.json' }],
-                "_^.+\\.jsx?$": 'babel-jest',
+                "_^.+\\.jsx?$": ['babel-jest', { configFile: "babel-jest.config.js" }],
                 get "^.+\\.jsx?$"() {
                     return this["_^.+\\.jsx?$"];
                 },

@@ -15,7 +15,7 @@ const mockApp = createMockApp(GET, { path: testURI, params: { idOrLogin: "1" } }
 
 describe('API tests using HTTP', () => {
     setupPlayerMocks();
-    testGenerateStaticParams();
+    testGenerateStaticParams('api/footy/player/[idOrLogin]/arse/route');
 
     it('should return JSON response for a valid player', async () => {
         const mockData = {

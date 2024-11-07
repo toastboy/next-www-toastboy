@@ -1,6 +1,6 @@
-import playerService from 'services/Player';
 import { handleGET } from 'lib/api';
 import clubSupporterService from 'services/ClubSupporter';
+import playerService from 'services/Player';
 
 export async function generateStaticParams() {
     return playerService.getAllIdsAndLogins();

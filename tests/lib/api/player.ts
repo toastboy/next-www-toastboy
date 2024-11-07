@@ -1,6 +1,5 @@
 jest.mock('services/Player');
 
-import { generateStaticParams } from 'api/footy/player/[idOrLogin]/arse/route';
 import playerService from 'services/Player';
 
 export const mockPlayer = {
@@ -25,7 +24,16 @@ export const setupPlayerMocks = () => {
     });
 };
 
-export const testGenerateStaticParams = () => {
+export const testGenerateStaticParams = (importPath: string) => {
+    // TODO: Fix any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let generateStaticParams: any;
+
+    beforeAll(async () => {
+        const importedModule = await import(importPath);
+        generateStaticParams = importedModule.generateStaticParams;
+    });
+
     it('should return null if there are no players', async () => {
         (playerService.getAllIdsAndLogins as jest.Mock).mockResolvedValue(null);
 

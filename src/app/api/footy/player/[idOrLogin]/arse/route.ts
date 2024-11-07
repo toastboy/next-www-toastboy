@@ -1,6 +1,6 @@
+import { handleGET } from 'lib/api';
 import arseService from 'services/Arse';
 import playerService from 'services/Player';
-import { handleGET } from 'lib/api';
 
 export async function generateStaticParams() {
     return playerService.getAllIdsAndLogins();

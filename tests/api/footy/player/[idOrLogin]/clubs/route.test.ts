@@ -1,5 +1,5 @@
 import { createMockApp, jsonResponseHandler, suppressConsoleError } from 'tests/lib/api/common';
-import { setupPlayerMocks, testGenerateStaticParams } from 'tests/lib/api/player';
+import { setupPlayerMocks } from 'tests/lib/api/player';
 
 jest.mock('services/ClubSupporter');
 jest.mock('services/Player');
@@ -15,7 +15,6 @@ const mockApp = createMockApp(GET, { path: testURI, params: { idOrLogin: "1" } }
 
 describe('API tests using HTTP', () => {
     setupPlayerMocks();
-    testGenerateStaticParams('api/footy/player/[idOrLogin]/clubs/route');
 
     it('should return JSON response for a valid player', async () => {
         const mockData = [{

@@ -20,14 +20,11 @@ describe('API tests using HTTP', () => {
     });
 
     it('should return club ids as params', async () => {
-        const clubs = [{ id: '1' }, { id: '2' }];
-        (clubService.getAll as jest.Mock).mockResolvedValue(clubs);
+        const mockData = [{ id: '1' }, { id: '2' }];
+        (clubService.getAll as jest.Mock).mockResolvedValue(mockData);
 
         const result = await generateStaticParams();
-        expect(result).toEqual([
-            { params: { id: '1' } },
-            { params: { id: '2' } },
-        ]);
+        expect(result).toEqual(mockData);
     });
 
     it('should return PNG response for a valid club', async () => {

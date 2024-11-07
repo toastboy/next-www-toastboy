@@ -3,10 +3,6 @@ import azureCache from 'lib/azure';
 import { streamToBuffer } from 'lib/utils';
 import playerService from "services/Player";
 
-export async function generateStaticParams() {
-    return playerService.getAllIdsAndLogins();
-}
-
 async function getPlayerMugshot(
     { params }: { params: Record<string, string> },
 ): Promise<Buffer | null> {

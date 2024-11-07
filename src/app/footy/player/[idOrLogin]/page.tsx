@@ -26,10 +26,6 @@ export async function generateMetadata({
     }
 }
 
-export async function generateStaticParams() {
-    return playerService.getAllIdsAndLogins();
-}
-
 interface PageProps {
     params: Record<string, string>;
 }

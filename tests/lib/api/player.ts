@@ -23,33 +23,3 @@ export const setupPlayerMocks = () => {
         (playerService.getByIdOrLogin as jest.Mock).mockResolvedValue(mockPlayer);
     });
 };
-
-export const testGenerateStaticParams = (importPath: string) => {
-    // TODO: Fix any
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let generateStaticParams: any;
-
-    beforeAll(async () => {
-        const importedModule = await import(importPath);
-        generateStaticParams = importedModule.generateStaticParams;
-    });
-
-    it('should return null if there are no players', async () => {
-        (playerService.getAllIdsAndLogins as jest.Mock).mockResolvedValue(null);
-
-        const result = await generateStaticParams();
-        expect(result).toEqual(null);
-    });
-
-    it('should return player ids as params', async () => {
-        const mockData = [
-            { id: 1, login: 'player1' },
-            { id: 2, login: 'player2' },
-            { id: 3, login: 'player3' },
-        ];
-        (playerService.getAllIdsAndLogins as jest.Mock).mockResolvedValue(mockData);
-
-        const result = await generateStaticParams();
-        expect(result).toEqual(mockData);
-    });
-};

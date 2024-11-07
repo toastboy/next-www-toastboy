@@ -1,6 +1,6 @@
-import { Player, Outcome } from '@prisma/client';
-import playerService from 'services/Player';
+import { Outcome, Player } from '@prisma/client';
 import prisma from 'lib/prisma';
+import playerService from 'services/Player';
 
 jest.mock('lib/prisma', () => ({
     player: {
@@ -279,9 +279,9 @@ describe('PlayerService', () => {
 
         it('should return the correct list of all ids and logins', async () => {
             const result = await playerService.getAllIdsAndLogins();
-            expect(result.size).toEqual(101);
-            expect(result.get("1")?.id).toEqual(1);
-            expect(result.get("garyp")?.id).toEqual(100);
+            expect(result.length).toEqual(200);
+            expect(result[0]).toEqual("1");
+            expect(result[1]).toEqual("garyp");
         });
     });
 

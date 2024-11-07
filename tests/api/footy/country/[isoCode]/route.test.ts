@@ -17,14 +17,11 @@ describe('API tests using HTTP', () => {
     });
 
     it('should return country ids as params', async () => {
-        const countries = [{ isoCode: 'NO' }, { isoCode: 'AY' }];
-        (countryService.getAll as jest.Mock).mockResolvedValue(countries);
+        const mockData = [{ isoCode: 'NO' }, { isoCode: 'AY' }];
+        (countryService.getAll as jest.Mock).mockResolvedValue(mockData);
 
         const result = await generateStaticParams();
-        expect(result).toEqual([
-            { params: { isoCode: 'NO' } },
-            { params: { isoCode: 'AY' } },
-        ]);
+        expect(result).toEqual(mockData);
     });
 
     it('should return JSON response for a valid country', async () => {

@@ -6,13 +6,9 @@ import clubService from 'services/Club';
 export async function generateStaticParams() {
     const clubs = await clubService.getAll();
 
-    return clubs ? clubs.map((club) => {
-        return {
-            params: {
-                id: club.id,
-            },
-        };
-    }) : null;
+    return clubs ? clubs.map((club) => ({
+        id: club.id.toString(),
+    })) : null;
 }
 
 async function getClubBadge(

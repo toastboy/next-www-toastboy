@@ -2,10 +2,6 @@ import { handleGET } from 'lib/api';
 import playerService from 'services/Player';
 import playerRecordService from 'services/PlayerRecord';
 
-export async function generateStaticParams() {
-    return playerService.getAllIdsAndLogins();
-}
-
 export async function getForYearByPlayer(
     { params }: { params: Record<string, string> },
 ): Promise<Record<string, boolean | number | Date | string | null> | null> {

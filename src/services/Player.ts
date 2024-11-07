@@ -1,6 +1,6 @@
 import { Outcome, Player } from '@prisma/client';
-import prisma from 'lib/prisma';
 import debug from 'debug';
+import prisma from 'lib/prisma';
 
 const log = debug('footy:api');
 
@@ -139,22 +139,22 @@ class PlayerService {
     }
 
     /**
-     * Return a map of all player ids and logins, so that either can be used to
-     * refer to a given player
-     * @returns A promise that resolves to a map containing all logins and ids
-     * as keys and the player objects as values
+     * Retrieves all player IDs and logins from the database.
+     *
+     * @returns {Promise<string[]>} A promise that resolves to an array of strings containing player IDs and logins.
+     * @throws Will throw an error if there is an issue fetching the player data.
      */
-    async getAllIdsAndLogins(): Promise<Map<string, Player>> {
+    async getAllIdsAndLogins(): Promise<string[]> {
         try {
             const players = await prisma.player.findMany({});
-            const map = new Map<string, Player>();
+            const idsAndLogins: string[] = [];
 
             players.forEach((player: Player) => {
-                map.set(player.id.toString(), player);
-                map.set(player.login, player);
+                idsAndLogins.push(player.id.toString());
+                idsAndLogins.push(player.login);
             });
 
-            return map;
+            return idsAndLogins;
         } catch (error) {
             log(`Error fetching Player ids and logins: ${error}`);
             throw error;

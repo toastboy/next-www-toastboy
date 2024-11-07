@@ -3,7 +3,10 @@ import arseService from 'services/Arse';
 import playerService from 'services/Player';
 
 export async function generateStaticParams() {
-    return playerService.getAllIdsAndLogins();
+    const idsAndLogins = await playerService.getAllIdsAndLogins();
+    return idsAndLogins.map((item: string) => ({
+        idOrLogin: item,
+    }));
 }
 
 export const GET = (request: Request, { params }: { params: Record<string, string> }) =>

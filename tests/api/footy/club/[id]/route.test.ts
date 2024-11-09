@@ -25,13 +25,15 @@ describe('API tests using HTTP', () => {
     });
 
     it('should return JSON response for a valid club', async () => {
-        (clubService.get as jest.Mock).mockResolvedValue({ id: 1, name: 'Test Club' });
+        const mockData = { id: 1, name: 'Test Club' };
+        (clubService.get as jest.Mock).mockResolvedValue(mockData);
 
         const response = await request(mockApp).get('/api/footy/club/1');
 
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
-        expect(response.body).toEqual({ id: 1, name: 'Test Club' });
+        expect(response.body).toEqual(mockData);
+        expect(clubService.get).toHaveBeenCalledWith(1);
     });
 
     it('should return 404 if the club does not exist', async () => {

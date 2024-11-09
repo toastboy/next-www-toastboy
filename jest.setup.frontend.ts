@@ -1,4 +1,5 @@
 import '@testing-library/jest-dom';
+import { TextEncoder } from 'util';
 import 'whatwg-fetch';
 
 Object.defineProperty(window, 'matchMedia', {
@@ -20,3 +21,7 @@ global.ResizeObserver = class ResizeObserver {
     unobserve() { }
     disconnect() { }
 };
+
+if (typeof global.TextEncoder === 'undefined') {
+    global.TextEncoder = TextEncoder;
+}

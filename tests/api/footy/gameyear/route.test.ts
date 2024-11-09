@@ -4,8 +4,8 @@ import request from 'supertest';
 import { createMockApp, jsonResponseHandler, suppressConsoleError } from 'tests/lib/api/common';
 
 suppressConsoleError();
-const mockURI = '/api/footy/gameyear';
-const mockApp = createMockApp(GET, { path: mockURI, params: {} }, jsonResponseHandler);
+const mockRoute = '/api/footy/gameyear';
+const mockApp = createMockApp(GET, { path: mockRoute, params: {} }, jsonResponseHandler);
 
 jest.mock('services/GameDay');
 
@@ -14,7 +14,7 @@ describe('API tests using HTTP', () => {
         const mockData = [2000, 2001, 2002];
         (gamedayService.getAllYears as jest.Mock).mockResolvedValue(mockData);
 
-        const response = await request(mockApp).get(mockURI);
+        const response = await request(mockApp).get(mockRoute);
 
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
@@ -24,7 +24,7 @@ describe('API tests using HTTP', () => {
     it('should return 404 if the gameyear does not exist', async () => {
         (gamedayService.getAllYears as jest.Mock).mockResolvedValue(null);
 
-        const response = await request(mockApp).get(mockURI);
+        const response = await request(mockApp).get(mockRoute);
 
         expect(response.status).toBe(404);
         expect(response.text).toBe('Not Found');
@@ -33,7 +33,7 @@ describe('API tests using HTTP', () => {
     it('should return 500 if there is an error', async () => {
         (gamedayService.getAllYears as jest.Mock).mockRejectedValue(new Error('Test Error'));
 
-        const response = await request(mockApp).get(mockURI);
+        const response = await request(mockApp).get(mockRoute);
 
         expect(response.status).toBe(500);
         expect(response.text).toBe('Internal Server Error');

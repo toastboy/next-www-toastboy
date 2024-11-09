@@ -1,4 +1,6 @@
 # Next.js + MySQL rewrite of www.toastboy.co.uk
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Ftoastboy%2Fnext-www-toastboy.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Ftoastboy%2Fnext-www-toastboy?ref=badge_shield)
+
 
 This project is based on [Azure + MySQL example code](https://github.com/Azure-Samples/vercel-nextjs-app-azure-db-mysql) from [Prisma](https://www.prisma.io/) using [Tailwind CSS](https://tailwindcss.com/) for styling.
 
@@ -37,3 +39,7 @@ npm run dev
 ```
 
 Open your browser at [localhost:3000](localhost:3000) to see the running application.
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Ftoastboy%2Fnext-www-toastboy.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Ftoastboy%2Fnext-www-toastboy?ref=badge_large)

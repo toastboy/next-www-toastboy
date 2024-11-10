@@ -77,9 +77,7 @@ describe('PlayerResults', () => {
         });
 
         const { container } = render(<Wrapper><PlayerResults idOrLogin={idOrLogin} year={year} /></Wrapper>);
-        screen.debug();
         await waitFor(() => {
-            screen.debug();
             expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
             expect(screen.getByText("Played")).toBeInTheDocument();
             expect(screen.getByText("10")).toBeInTheDocument();

@@ -63,11 +63,11 @@ describe('PlayerResults', () => {
 
                 P: 10,
                 W: 4,
-                D: 3,
-                L: 3,
+                D: 5,
+                L: 1,
 
-                points: 15,
-                averages: 1.500,
+                points: 17,
+                averages: 1.700,
                 stalwart: 100,
                 pub: 2,
                 speedy: 5000,
@@ -77,9 +77,18 @@ describe('PlayerResults', () => {
         });
 
         const { container } = render(<Wrapper><PlayerResults idOrLogin={idOrLogin} year={year} /></Wrapper>);
+        screen.debug();
         await waitFor(() => {
+            screen.debug();
             expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-            expect(screen.getByText("2013 Results")).toBeInTheDocument();
+            expect(screen.getByText("Played")).toBeInTheDocument();
+            expect(screen.getByText("10")).toBeInTheDocument();
+            expect(screen.getByText("Won")).toBeInTheDocument();
+            expect(screen.getByText("4")).toBeInTheDocument();
+            expect(screen.getByText("Drawn")).toBeInTheDocument();
+            expect(screen.getByText("5")).toBeInTheDocument();
+            expect(screen.getByText("Lost")).toBeInTheDocument();
+            expect(screen.getByText("1")).toBeInTheDocument();
         });
     });
 });

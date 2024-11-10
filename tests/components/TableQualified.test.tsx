@@ -1,6 +1,6 @@
 jest.mock('swr');
 
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import TableQualified from 'components/TableQualified';
 import { FootyPlayerRecord, FootyTable } from 'lib/swr';
 import useSWR from 'swr';
@@ -27,7 +27,11 @@ describe('TableQualified', () => {
     const qualified = true;
     const take = 5;
 
-    it('renders loading state', () => {
+    beforeEach(() => {
+        jest.resetAllMocks();
+    });
+
+    it('renders loading state', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: undefined,
@@ -35,10 +39,12 @@ describe('TableQualified', () => {
         });
 
         const { container } = render(<Wrapper><TableQualified table={table} year={year} qualified={qualified} take={take} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).toBeInTheDocument();
+        });
     });
 
-    it('renders error state', () => {
+    it('renders error state', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: new Error(errorText),
@@ -46,11 +52,13 @@ describe('TableQualified', () => {
         });
 
         const { container } = render(<Wrapper><TableQualified table={table} year={year} qualified={qualified} take={take} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText(errorText)).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.getByText(errorText)).toBeInTheDocument();
+        });
     });
 
-    it('renders error state when data is null', () => {
+    it('renders error state when data is null', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: null,
             error: undefined,
@@ -58,11 +66,13 @@ describe('TableQualified', () => {
         });
 
         const { container } = render(<Wrapper><TableQualified table={table} year={year} qualified={qualified} take={take} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText(errorText)).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.getByText(errorText)).toBeInTheDocument();
+        });
     });
 
-    it('renders with data', () => {
+    it('renders with data', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: Array.from({ length: 15 }, (_, index) => ({
                 year: 2001,
@@ -85,14 +95,16 @@ describe('TableQualified', () => {
         });
 
         const { container } = render(<Wrapper><TableQualified table={table} year={year} qualified={qualified} take={take} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText("PlayerLink (idOrLogin: 1)")).toBeInTheDocument();
-        expect(screen.getByText("TableScore (table: points, playerRecord.playerId: 1)")).toBeInTheDocument();
-        expect(screen.getByText("PlayerLink (idOrLogin: 2)")).toBeInTheDocument();
-        expect(screen.getByText("TableScore (table: points, playerRecord.playerId: 2)")).toBeInTheDocument();
-        expect(screen.getByText("PlayerLink (idOrLogin: 3)")).toBeInTheDocument();
-        expect(screen.getByText("TableScore (table: points, playerRecord.playerId: 3)")).toBeInTheDocument();
-        expect(screen.getByText("PlayerLink (idOrLogin: 4)")).toBeInTheDocument();
-        expect(screen.getByText("TableScore (table: points, playerRecord.playerId: 4)")).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.getByText("PlayerLink (idOrLogin: 1)")).toBeInTheDocument();
+            expect(screen.getByText("TableScore (table: points, playerRecord.playerId: 1)")).toBeInTheDocument();
+            expect(screen.getByText("PlayerLink (idOrLogin: 2)")).toBeInTheDocument();
+            expect(screen.getByText("TableScore (table: points, playerRecord.playerId: 2)")).toBeInTheDocument();
+            expect(screen.getByText("PlayerLink (idOrLogin: 3)")).toBeInTheDocument();
+            expect(screen.getByText("TableScore (table: points, playerRecord.playerId: 3)")).toBeInTheDocument();
+            expect(screen.getByText("PlayerLink (idOrLogin: 4)")).toBeInTheDocument();
+            expect(screen.getByText("TableScore (table: points, playerRecord.playerId: 4)")).toBeInTheDocument();
+        });
     });
 });

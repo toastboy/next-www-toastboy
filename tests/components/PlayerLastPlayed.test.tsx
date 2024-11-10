@@ -1,6 +1,6 @@
 jest.mock('swr');
 
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import PlayerLastPlayed from 'components/PlayerLastPlayed';
 import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
@@ -16,7 +16,11 @@ jest.mock('components/GameDayLink', () => {
 describe('PlayerLastPlayed', () => {
     const idOrLogin = "15";
 
-    it('renders loading state', () => {
+    beforeEach(() => {
+        jest.resetAllMocks();
+    });
+
+    it('renders loading state', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: undefined,
@@ -24,10 +28,12 @@ describe('PlayerLastPlayed', () => {
         });
 
         const { container } = render(<Wrapper><PlayerLastPlayed idOrLogin={idOrLogin} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).toBeInTheDocument();
+        });
     });
 
-    it('renders error state', () => {
+    it('renders error state', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: new Error(errorText),
@@ -35,11 +41,13 @@ describe('PlayerLastPlayed', () => {
         });
 
         const { container } = render(<Wrapper><PlayerLastPlayed idOrLogin={idOrLogin} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText(errorText)).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.getByText(errorText)).toBeInTheDocument();
+        });
     });
 
-    it('renders error state when data is null', () => {
+    it('renders error state when data is null', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: null,
             error: undefined,
@@ -47,11 +55,13 @@ describe('PlayerLastPlayed', () => {
         });
 
         const { container } = render(<Wrapper><PlayerLastPlayed idOrLogin={idOrLogin} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText(errorText)).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.getByText(errorText)).toBeInTheDocument();
+        });
     });
 
-    it('renders with data', () => {
+    it('renders with data', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: {
                 gameDayId: 1150,
@@ -61,7 +71,9 @@ describe('PlayerLastPlayed', () => {
         });
 
         const { container } = render(<Wrapper><PlayerLastPlayed idOrLogin={idOrLogin} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText("GameDayLink (id: 1150)")).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.getByText("GameDayLink (id: 1150)")).toBeInTheDocument();
+        });
     });
 });

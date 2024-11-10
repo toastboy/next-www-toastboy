@@ -1,12 +1,16 @@
 jest.mock('swr');
 
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import Turnout from 'components/Turnout';
 import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from './lib/common';
 
 describe('Turnout', () => {
-    it('renders loading state', () => {
+    beforeEach(() => {
+        jest.resetAllMocks();
+    });
+
+    it('renders loading state', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: undefined,
@@ -14,10 +18,12 @@ describe('Turnout', () => {
         });
 
         const { container } = render(<Wrapper><Turnout /></Wrapper>);
-        expect(container.querySelector(loaderClass)).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).toBeInTheDocument();
+        });
     });
 
-    it('renders error state', () => {
+    it('renders error state', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: new Error(errorText),
@@ -25,11 +31,13 @@ describe('Turnout', () => {
         });
 
         const { container } = render(<Wrapper><Turnout /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText(errorText)).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.getByText(errorText)).toBeInTheDocument();
+        });
     });
 
-    it('renders error state when data is null', () => {
+    it('renders error state when data is null', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: null,
             error: undefined,
@@ -37,11 +45,13 @@ describe('Turnout', () => {
         });
 
         const { container } = render(<Wrapper><Turnout /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText(errorText)).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.getByText(errorText)).toBeInTheDocument();
+        });
     });
 
-    it('renders table with data', () => {
+    it('renders table with data', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: [
                 {
@@ -74,7 +84,9 @@ describe('Turnout', () => {
         });
 
         const { container } = render(<Wrapper><Turnout /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.queryByText(errorText)).not.toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.queryByText(errorText)).not.toBeInTheDocument();
+        });
     });
 });

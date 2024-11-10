@@ -1,6 +1,6 @@
 jest.mock('swr');
 
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import GameDayLink from 'components/GameDayLink';
 import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
@@ -8,7 +8,7 @@ import { Wrapper, errorText, loaderClass } from "./lib/common";
 describe('GameDayLink', () => {
     const id = 123;
 
-    it('renders loading state', () => {
+    it('renders loading state', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: undefined,
@@ -16,10 +16,12 @@ describe('GameDayLink', () => {
         });
 
         const { container } = render(<Wrapper><GameDayLink id={id} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).toBeInTheDocument();
+        });
     });
 
-    it('renders error state', () => {
+    it('renders error state', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: new Error(errorText),
@@ -27,11 +29,13 @@ describe('GameDayLink', () => {
         });
 
         const { container } = render(<Wrapper><GameDayLink id={id} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText(errorText)).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.getByText(errorText)).toBeInTheDocument();
+        });
     });
 
-    it('renders error state when data is null', () => {
+    it('renders error state when data is null', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: null,
             error: undefined,
@@ -39,11 +43,13 @@ describe('GameDayLink', () => {
         });
 
         const { container } = render(<Wrapper><GameDayLink id={id} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText(errorText)).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.getByText(errorText)).toBeInTheDocument();
+        });
     });
 
-    it('renders with data', () => {
+    it('renders with data', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: {
                 id: 123,
@@ -54,7 +60,9 @@ describe('GameDayLink', () => {
         });
 
         const { container } = render(<Wrapper><GameDayLink id={id} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByRole('link', { name: "2021-01-01" })).toHaveAttribute('href', '/footy/game/123');
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.getByRole('link', { name: "2021-01-01" })).toHaveAttribute('href', '/footy/game/123');
+        });
     });
 });

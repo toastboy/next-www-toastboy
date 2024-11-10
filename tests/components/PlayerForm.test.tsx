@@ -1,6 +1,6 @@
 jest.mock('swr');
 
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import PlayerForm from 'components/PlayerForm';
 import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
@@ -17,7 +17,11 @@ describe('PlayerForm', () => {
     const idOrLogin = "idOrLogin";
     const games = 10;
 
-    it('renders loading state', () => {
+    beforeEach(() => {
+        jest.resetAllMocks();
+    });
+
+    it('renders loading state', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: undefined,
@@ -25,10 +29,12 @@ describe('PlayerForm', () => {
         });
 
         const { container } = render(<Wrapper><PlayerForm idOrLogin={idOrLogin} games={games} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).toBeInTheDocument();
+        });
     });
 
-    it('renders error state', () => {
+    it('renders error state', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: new Error(errorText),
@@ -36,11 +42,13 @@ describe('PlayerForm', () => {
         });
 
         const { container } = render(<Wrapper><PlayerForm idOrLogin={idOrLogin} games={games} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText(errorText)).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.getByText(errorText)).toBeInTheDocument();
+        });
     });
 
-    it('renders error state when data is null', () => {
+    it('renders error state when data is null', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: null,
             error: undefined,
@@ -48,11 +56,13 @@ describe('PlayerForm', () => {
         });
 
         const { container } = render(<Wrapper><PlayerForm idOrLogin={idOrLogin} games={games} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText(errorText)).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.getByText(errorText)).toBeInTheDocument();
+        });
     });
 
-    it('renders with data', () => {
+    it('renders with data', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: Array.from({ length: 15 }, (_, index) => ({
                 gameDayId: 1150 - index,
@@ -63,7 +73,9 @@ describe('PlayerForm', () => {
         });
 
         const { container } = render(<Wrapper><PlayerForm idOrLogin={idOrLogin} games={games} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText("GameDayLink (id: 1148)")).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.getByText("GameDayLink (id: 1148)")).toBeInTheDocument();
+        });
     });
 });

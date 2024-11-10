@@ -1,7 +1,7 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import TableScore from 'components/TableScore';
+import { FootyPlayerRecord, FootyTable } from 'lib/swr';
 import { Wrapper, loaderClass } from "./lib/common";
-import { FootyTable, FootyPlayerRecord } from 'lib/swr';
 
 describe('TableScore', () => {
     const playerRecord: FootyPlayerRecord = {
@@ -27,21 +27,31 @@ describe('TableScore', () => {
         rank_speedy: 3,
     };
 
-    it('renders correctly for points', () => {
+    beforeEach(() => {
+        jest.resetAllMocks();
+    });
+
+    it('renders correctly for points', async () => {
         const { container } = render(<Wrapper><TableScore table={FootyTable.points} playerRecord={playerRecord} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText("10")).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.getByText("10")).toBeInTheDocument();
+        });
     });
 
-    it('renders correctly for averages', () => {
+    it('renders correctly for averages', async () => {
         const { container } = render(<Wrapper><TableScore table={FootyTable.averages} playerRecord={playerRecord} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText("1.000")).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.getByText("1.000")).toBeInTheDocument();
+        });
     });
 
-    it('renders correctly for speedy', () => {
+    it('renders correctly for speedy', async () => {
         const { container } = render(<Wrapper><TableScore table={FootyTable.speedy} playerRecord={playerRecord} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText("00:33:20")).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.getByText("00:33:20")).toBeInTheDocument();
+        });
     });
 });

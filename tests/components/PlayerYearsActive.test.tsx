@@ -1,6 +1,6 @@
 jest.mock('swr');
 
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import PlayerYearsActive from 'components/PlayerYearsActive';
 import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
@@ -18,7 +18,11 @@ jest.mock('@mantine/core', () => {
 });
 
 describe('PlayerYearsActive', () => {
-    it('renders loading state', () => {
+    beforeEach(() => {
+        jest.resetAllMocks();
+    });
+
+    it('renders loading state', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: undefined,
@@ -26,10 +30,12 @@ describe('PlayerYearsActive', () => {
         });
 
         const { container } = render(<Wrapper><PlayerYearsActive idOrLogin={idOrLogin} activeYear={year} onYearChange={() => { }} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).toBeInTheDocument();
+        });
     });
 
-    it('renders error state', () => {
+    it('renders error state', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: new Error(errorText),
@@ -37,11 +43,13 @@ describe('PlayerYearsActive', () => {
         });
 
         const { container } = render(<Wrapper><PlayerYearsActive idOrLogin={idOrLogin} activeYear={year} onYearChange={() => { }} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText(errorText)).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.getByText(errorText)).toBeInTheDocument();
+        });
     });
 
-    it('renders error state when data is null', () => {
+    it('renders error state when data is null', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: null,
             error: undefined,
@@ -49,11 +57,13 @@ describe('PlayerYearsActive', () => {
         });
 
         const { container } = render(<Wrapper><PlayerYearsActive idOrLogin={idOrLogin} activeYear={year} onYearChange={() => { }} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText(errorText)).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.getByText(errorText)).toBeInTheDocument();
+        });
     });
 
-    it('renders with data', () => {
+    it('renders with data', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: [2001, 2002, 2003, 0],
             error: undefined,
@@ -62,11 +72,13 @@ describe('PlayerYearsActive', () => {
         const onYearChange = jest.fn();
 
         const { container } = render(<Wrapper><PlayerYearsActive idOrLogin={idOrLogin} activeYear={year} onYearChange={onYearChange} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText("2001")).toBeInTheDocument();
-        expect(screen.getByText("2002")).toBeInTheDocument();
-        expect(screen.getByText("2003")).toBeInTheDocument();
-        expect(screen.getByText("All-time")).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.getByText("2001")).toBeInTheDocument();
+            expect(screen.getByText("2002")).toBeInTheDocument();
+            expect(screen.getByText("2003")).toBeInTheDocument();
+            expect(screen.getByText("All-time")).toBeInTheDocument();
+        });
 
         const yearButton = screen.getByText("2001");
         fireEvent.click(yearButton);

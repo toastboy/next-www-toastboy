@@ -1,6 +1,6 @@
 jest.mock('swr');
 
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import PlayerPositions from 'components/PlayerPositions';
 import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
@@ -9,7 +9,11 @@ describe('PlayerPositions', () => {
     const idOrLogin = "2";
     const year = 2021;
 
-    it('renders loading state', () => {
+    beforeEach(() => {
+        jest.resetAllMocks();
+    });
+
+    it('renders loading state', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: undefined,
@@ -17,10 +21,12 @@ describe('PlayerPositions', () => {
         });
 
         const { container } = render(<Wrapper><PlayerPositions idOrLogin={idOrLogin} year={year} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).toBeInTheDocument();
+        });
     });
 
-    it('renders error state', () => {
+    it('renders error state', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: new Error(errorText),
@@ -28,11 +34,13 @@ describe('PlayerPositions', () => {
         });
 
         const { container } = render(<Wrapper><PlayerPositions idOrLogin={idOrLogin} year={year} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText(errorText)).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.getByText(errorText)).toBeInTheDocument();
+        });
     });
 
-    it('renders error state when data is null', () => {
+    it('renders error state when data is null', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: null,
             error: undefined,
@@ -40,11 +48,13 @@ describe('PlayerPositions', () => {
         });
 
         const { container } = render(<Wrapper><PlayerPositions idOrLogin={idOrLogin} year={year} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText(errorText)).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.getByText(errorText)).toBeInTheDocument();
+        });
     });
 
-    it('renders with data for year', () => {
+    it('renders with data for year', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: {
                 year: 2022,
@@ -73,22 +83,24 @@ describe('PlayerPositions', () => {
         });
 
         const { container: container } = render(<Wrapper><PlayerPositions idOrLogin={idOrLogin} year={year} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText("2021 Positions")).toBeInTheDocument();
-        expect(screen.getByText("Points")).toBeInTheDocument();
-        expect(screen.getByText("4")).toBeInTheDocument();
-        expect(screen.getByText("Averages")).toBeInTheDocument();
-        expect(screen.getByText("5")).toBeInTheDocument();
-        expect(screen.getByText("Stalwart")).toBeInTheDocument();
-        expect(screen.getByText("1")).toBeInTheDocument();
-        expect(screen.getByText("Pub")).toBeInTheDocument();
-        expect(screen.getByText("9")).toBeInTheDocument();
-        expect(screen.getByText("Speedy")).toBeInTheDocument();
-        expect(screen.getByText("3")).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.getByText("2021 Positions")).toBeInTheDocument();
+            expect(screen.getByText("Points")).toBeInTheDocument();
+            expect(screen.getByText("4")).toBeInTheDocument();
+            expect(screen.getByText("Averages")).toBeInTheDocument();
+            expect(screen.getByText("5")).toBeInTheDocument();
+            expect(screen.getByText("Stalwart")).toBeInTheDocument();
+            expect(screen.getByText("1")).toBeInTheDocument();
+            expect(screen.getByText("Pub")).toBeInTheDocument();
+            expect(screen.getByText("9")).toBeInTheDocument();
+            expect(screen.getByText("Speedy")).toBeInTheDocument();
+            expect(screen.getByText("3")).toBeInTheDocument();
+        });
     });
 
 
-    it('renders with data for year', () => {
+    it('renders with data for year', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: {
                 year: 0,
@@ -117,17 +129,19 @@ describe('PlayerPositions', () => {
         });
 
         const { container: container } = render(<Wrapper><PlayerPositions idOrLogin={idOrLogin} year={0} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText("All-time Positions")).toBeInTheDocument();
-        expect(screen.getByText("Points")).toBeInTheDocument();
-        expect(screen.getByText("4")).toBeInTheDocument();
-        expect(screen.getByText("Averages")).toBeInTheDocument();
-        expect(screen.getByText("5")).toBeInTheDocument();
-        expect(screen.getByText("Stalwart")).toBeInTheDocument();
-        expect(screen.getByText("1")).toBeInTheDocument();
-        expect(screen.getByText("Pub")).toBeInTheDocument();
-        expect(screen.getByText("9")).toBeInTheDocument();
-        expect(screen.getByText("Speedy")).toBeInTheDocument();
-        expect(screen.getByText("3")).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.getByText("All-time Positions")).toBeInTheDocument();
+            expect(screen.getByText("Points")).toBeInTheDocument();
+            expect(screen.getByText("4")).toBeInTheDocument();
+            expect(screen.getByText("Averages")).toBeInTheDocument();
+            expect(screen.getByText("5")).toBeInTheDocument();
+            expect(screen.getByText("Stalwart")).toBeInTheDocument();
+            expect(screen.getByText("1")).toBeInTheDocument();
+            expect(screen.getByText("Pub")).toBeInTheDocument();
+            expect(screen.getByText("9")).toBeInTheDocument();
+            expect(screen.getByText("Speedy")).toBeInTheDocument();
+            expect(screen.getByText("3")).toBeInTheDocument();
+        });
     });
 });

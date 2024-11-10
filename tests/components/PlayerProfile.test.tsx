@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import PlayerProfile from 'components/PlayerProfile';
 import { notFound } from 'next/navigation';
 import { Wrapper } from "./lib/common";
@@ -33,7 +33,11 @@ describe('PlayerProfile', () => {
         introduced_by: null,
     };
 
-    it('returns not found when active year is NaN', () => {
+    beforeEach(() => {
+        jest.resetAllMocks();
+    });
+
+    it('returns not found when active year is NaN', async () => {
         const { getByText } = render(<Wrapper><PlayerProfile player={player} /></Wrapper>);
 
         // Simulate changing activeYear to NaN via the mocked PlayerYearsActive component
@@ -41,31 +45,43 @@ describe('PlayerProfile', () => {
             getByText('Change Year to NaN').click();
         });
 
-        expect(notFound).toHaveBeenCalledTimes(1);
+        await waitFor(() => {
+            expect(notFound).toHaveBeenCalledTimes(1);
+        });
     });
 
-    it('renders player name', () => {
+    it('renders player name', async () => {
         render(<Wrapper><PlayerProfile player={player} /></Wrapper>);
-        expect(screen.getAllByText('John Doe')[0]).toBeInTheDocument();
+        await waitFor(() => {
+            expect(screen.getAllByText('John Doe')[0]).toBeInTheDocument();
+        });
     });
 
-    it('renders player email', () => {
+    it('renders player email', async () => {
         render(<Wrapper><PlayerProfile player={player} /></Wrapper>);
-        expect(screen.getByText('john.doe@example.com')).toBeInTheDocument();
+        await waitFor(() => {
+            expect(screen.getByText('john.doe@example.com')).toBeInTheDocument();
+        });
     });
 
-    it('renders player login', () => {
+    it('renders player login', async () => {
         render(<Wrapper><PlayerProfile player={player} /></Wrapper>);
-        expect(screen.getByText('john_doe')).toBeInTheDocument();
+        await waitFor(() => {
+            expect(screen.getByText('john_doe')).toBeInTheDocument();
+        });
     });
 
-    it('renders player birth date', () => {
+    it('renders player birth date', async () => {
         render(<Wrapper><PlayerProfile player={player} /></Wrapper>);
-        expect(screen.getByText('1990-01-01')).toBeInTheDocument();
+        await waitFor(() => {
+            expect(screen.getByText('1990-01-01')).toBeInTheDocument();
+        });
     });
 
-    it('renders unknown player birth date', () => {
+    it('renders unknown player birth date', async () => {
         render(<Wrapper><PlayerProfile player={{ ...player, born: null }} /></Wrapper>);
-        expect(screen.getByText('Unknown')).toBeInTheDocument();
+        await waitFor(() => {
+            expect(screen.getByText('Unknown')).toBeInTheDocument();
+        });
     });
 });

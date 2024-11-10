@@ -1,6 +1,6 @@
 jest.mock('swr');
 
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import PlayerArse from 'components/PlayerArse';
 import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
@@ -8,7 +8,11 @@ import { Wrapper, errorText, loaderClass } from "./lib/common";
 describe('PlayerArse', () => {
     const idOrLogin = 'derekt';
 
-    it('renders loading state', () => {
+    beforeAll(() => {
+        jest.resetAllMocks();
+    });
+
+    it('renders loading state', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: undefined,
@@ -16,10 +20,12 @@ describe('PlayerArse', () => {
         });
 
         const { container } = render(<Wrapper><PlayerArse idOrLogin={idOrLogin} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).toBeInTheDocument();
+        });
     });
 
-    it('renders error state', () => {
+    it('renders error state', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: new Error(errorText),
@@ -27,11 +33,13 @@ describe('PlayerArse', () => {
         });
 
         const { container } = render(<Wrapper><PlayerArse idOrLogin={idOrLogin} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText(errorText)).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.getByText(errorText)).toBeInTheDocument();
+        });
     });
 
-    it('renders error state when data is null', () => {
+    it('renders error state when data is null', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: null,
             error: undefined,
@@ -39,11 +47,13 @@ describe('PlayerArse', () => {
         });
 
         const { container } = render(<Wrapper><PlayerArse idOrLogin={idOrLogin} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText(errorText)).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.getByText(errorText)).toBeInTheDocument();
+        });
     });
 
-    it('renders with data', () => {
+    it('renders with data', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: {
                 in_goal: 1,
@@ -59,8 +69,15 @@ describe('PlayerArse', () => {
         });
 
         const { container } = render(<Wrapper><PlayerArse idOrLogin={idOrLogin} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText("In Goal: 1")).toBeInTheDocument();
-        expect(screen.getByText("Defending: 7")).toBeInTheDocument();
+        await waitFor(() => {
+            expect(screen.queryByTestId(loaderClass)).not.toBeInTheDocument();
+            expect(screen.getByText("In Goal: 1")).toBeInTheDocument();
+            expect(screen.getByText("Running: 2")).toBeInTheDocument();
+            expect(screen.getByText("Shooting: 3")).toBeInTheDocument();
+            expect(screen.getByText("Passing: 4")).toBeInTheDocument();
+            expect(screen.getByText("Ball Skill: 5")).toBeInTheDocument();
+            expect(screen.getByText("Attacking: 6")).toBeInTheDocument();
+            expect(screen.getByText("Defending: 7")).toBeInTheDocument();
+        });
     });
 });

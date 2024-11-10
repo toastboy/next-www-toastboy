@@ -1,6 +1,6 @@
 jest.mock('swr');
 
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import Team from 'components/Team';
 import { FootyTeam } from 'lib/swr';
 import useSWR from 'swr';
@@ -18,7 +18,11 @@ jest.mock('components/TeamPlayer', () => {
 });
 
 describe('Team', () => {
-    it('renders loading state', () => {
+    beforeEach(() => {
+        jest.resetAllMocks();
+    });
+
+    it('renders loading state', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: undefined,
@@ -26,10 +30,12 @@ describe('Team', () => {
         });
 
         const { container } = render(<Wrapper><Team gameDayId={gamedayId} team={team} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).toBeInTheDocument();
+        });
     });
 
-    it('renders error state', () => {
+    it('renders error state', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: new Error(errorText),
@@ -37,11 +43,13 @@ describe('Team', () => {
         });
 
         const { container } = render(<Wrapper><Team gameDayId={gamedayId} team={team} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText(errorText)).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.getByText(errorText)).toBeInTheDocument();
+        });
     });
 
-    it('renders error state when data is null', () => {
+    it('renders error state when data is null', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: null,
             error: undefined,
@@ -49,11 +57,13 @@ describe('Team', () => {
         });
 
         const { container } = render(<Wrapper><Team gameDayId={gamedayId} team={team} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText(errorText)).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.getByText(errorText)).toBeInTheDocument();
+        });
     });
 
-    it('renders table with data', () => {
+    it('renders table with data', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: [
                 {
@@ -87,8 +97,10 @@ describe('Team', () => {
         });
 
         const { container } = render(<Wrapper><Team gameDayId={gamedayId} team={team} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.queryByText(errorText)).not.toBeInTheDocument();
-        expect(screen.getByText('TeamPlayer (idOrLogin: 1, goalie: true)')).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.queryByText(errorText)).not.toBeInTheDocument();
+            expect(screen.getByText('TeamPlayer (idOrLogin: 1, goalie: true)')).toBeInTheDocument();
+        });
     });
 });

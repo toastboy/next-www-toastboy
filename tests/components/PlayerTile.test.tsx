@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import PlayerTile from 'components/PlayerTile';
 import { Wrapper } from "./lib/common";
 
@@ -19,30 +19,38 @@ describe('PlayerTile', () => {
         introduced_by: null,
     };
 
-    it('renders player unknown date of birth correctly', () => {
+    beforeEach(() => {
+        jest.resetAllMocks();
+    });
+
+    it('renders player unknown date of birth correctly', async () => {
         render(<Wrapper><PlayerTile player={{ ...player, born: null }} /></Wrapper>);
-
-        expect(screen.getByText("Unknown")).toBeInTheDocument();
+        await waitFor(() => {
+            expect(screen.getByText("Unknown")).toBeInTheDocument();
+        });
     });
 
-    it('renders player information correctly', () => {
+    it('renders player information correctly', async () => {
         render(<Wrapper><PlayerTile player={player} /></Wrapper>);
-
-        expect(screen.getByText(`${player.first_name} ${player.last_name}`)).toBeInTheDocument();
-        expect(screen.getByText(player.email)).toBeInTheDocument();
-        expect(screen.getByText(player.login)).toBeInTheDocument();
-        expect(screen.getByText(player.born.toLocaleDateString('sv'))).toBeInTheDocument();
+        await waitFor(() => {
+            expect(screen.getByText(`${player.first_name} ${player.last_name}`)).toBeInTheDocument();
+            expect(screen.getByText(player.email)).toBeInTheDocument();
+            expect(screen.getByText(player.login)).toBeInTheDocument();
+            expect(screen.getByText(player.born.toLocaleDateString('sv'))).toBeInTheDocument();
+        });
     });
 
-    it('renders correct links', () => {
+    it('renders correct links', async () => {
         render(<Wrapper><PlayerTile player={player} /></Wrapper>);
 
         const profileLink = screen.getByRole('link', { name: `${player.first_name} ${player.last_name}` });
         const emailLink = screen.getByRole('link', { name: player.email });
         const loginLink = screen.getByRole('link', { name: player.login });
 
-        expect(profileLink).toHaveAttribute('href', `/footy/player/${player.login}`);
-        expect(emailLink).toHaveAttribute('href', `/footy/player/${player.login}`);
-        expect(loginLink).toHaveAttribute('href', `/footy/player/${player.login}`);
+        await waitFor(() => {
+            expect(profileLink).toHaveAttribute('href', `/footy/player/${player.login}`);
+            expect(emailLink).toHaveAttribute('href', `/footy/player/${player.login}`);
+            expect(loginLink).toHaveAttribute('href', `/footy/player/${player.login}`);
+        });
     });
 });

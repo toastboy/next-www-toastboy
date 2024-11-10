@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import TeamPlayer from 'components/TeamPlayer';
 import { Wrapper, loaderClass } from "./lib/common";
 
@@ -27,17 +27,25 @@ jest.mock('components/PlayerForm', () => {
 });
 
 describe('TeamPlayer', () => {
-    it('renders with data', () => {
-        const { container } = render(<Wrapper><TeamPlayer idOrLogin={idOrLogin} goalie={false} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText('PlayerLink (idOrLogin: dturnipson)')).toBeInTheDocument();
-        expect(screen.getByText('PlayerMugshot (idOrLogin: dturnipson)')).toBeInTheDocument();
-        expect(screen.getByText('PlayerForm (idOrLogin: dturnipson games: 10)')).toBeInTheDocument();
+    beforeEach(() => {
+        jest.resetAllMocks();
     });
 
-    it('renders with data + goalie', () => {
+    it('renders with data', async () => {
+        const { container } = render(<Wrapper><TeamPlayer idOrLogin={idOrLogin} goalie={false} /></Wrapper>);
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.getByText('PlayerLink (idOrLogin: dturnipson)')).toBeInTheDocument();
+            expect(screen.getByText('PlayerMugshot (idOrLogin: dturnipson)')).toBeInTheDocument();
+            expect(screen.getByText('PlayerForm (idOrLogin: dturnipson games: 10)')).toBeInTheDocument();
+        });
+    });
+
+    it('renders with data + goalie', async () => {
         const { container } = render(<Wrapper><TeamPlayer idOrLogin={idOrLogin} goalie={true} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText('GOALIE!')).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.getByText('GOALIE!')).toBeInTheDocument();
+        });
     });
 });

@@ -1,6 +1,6 @@
 jest.mock('swr');
 
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import WinnersTable from 'components/WinnersTable';
 import { FootyTable } from 'lib/swr';
 import useSWR from 'swr';
@@ -17,7 +17,11 @@ jest.mock('components/PlayerLink', () => {
 });
 
 describe('WinnersTable', () => {
-    it('renders loading state', () => {
+    beforeEach(() => {
+        jest.resetAllMocks();
+    });
+
+    it('renders loading state', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: undefined,
@@ -25,10 +29,12 @@ describe('WinnersTable', () => {
         });
 
         const { container } = render(<Wrapper><WinnersTable table={table} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).toBeInTheDocument();
+        });
     });
 
-    it('renders error state', () => {
+    it('renders error state', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: undefined,
             error: new Error(errorText),
@@ -36,11 +42,13 @@ describe('WinnersTable', () => {
         });
 
         const { container } = render(<Wrapper><WinnersTable table={table} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText(errorText)).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.getByText(errorText)).toBeInTheDocument();
+        });
     });
 
-    it('renders error state when data is null', () => {
+    it('renders error state when data is null', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: null,
             error: undefined,
@@ -48,11 +56,13 @@ describe('WinnersTable', () => {
         });
 
         const { container } = render(<Wrapper><WinnersTable table={table} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText(errorText)).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.getByText(errorText)).toBeInTheDocument();
+        });
     });
 
-    it('renders table with data', () => {
+    it('renders table with data', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: [
                 {
@@ -73,12 +83,14 @@ describe('WinnersTable', () => {
         });
 
         const { container } = render(<Wrapper><WinnersTable table={table} year={0} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.queryByText(errorText)).not.toBeInTheDocument();
-        expect(screen.getByText('PlayerLink (idOrLogin: 12)')).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.queryByText(errorText)).not.toBeInTheDocument();
+            expect(screen.getByText('PlayerLink (idOrLogin: 12)')).toBeInTheDocument();
+        });
     });
 
-    it('renders table for a single year', () => {
+    it('renders table for a single year', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: [
                 {
@@ -91,8 +103,10 @@ describe('WinnersTable', () => {
         });
 
         const { container } = render(<Wrapper><WinnersTable table={table} year={2022} /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.queryByText(errorText)).not.toBeInTheDocument();
-        expect(screen.getByText('PlayerLink (idOrLogin: 1)')).toBeInTheDocument();
+        await waitFor(() => {
+            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+            expect(screen.queryByText(errorText)).not.toBeInTheDocument();
+            expect(screen.getByText('PlayerLink (idOrLogin: 1)')).toBeInTheDocument();
+        });
     });
 });

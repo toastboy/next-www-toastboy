@@ -1,5 +1,7 @@
 import { handleGET } from 'lib/api';
 import outcomeService from 'services/Outcome';
 
-export const GET = (request: Request, { params }: { params: Record<string, string> }) =>
-    handleGET(() => outcomeService.getTurnout(), { params });
+export const GET = async (request: Request, props: { params: Promise<Record<string, string>> }) => {
+    const params = await props.params;
+    return handleGET(() => outcomeService.getTurnout(), { params });
+};

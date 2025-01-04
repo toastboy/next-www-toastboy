@@ -1,5 +1,7 @@
 import playerRecordService from 'services/PlayerRecord';
 import { handleGET } from 'lib/api';
 
-export const GET = (request: Request, { params }: { params: Record<string, string> }) =>
-    handleGET(() => playerRecordService.getAll(), { params });
+export const GET = async (request: Request, props: { params: Promise<Record<string, string>> }) => {
+    const params = await props.params;
+    return handleGET(() => playerRecordService.getAll(), { params });
+};

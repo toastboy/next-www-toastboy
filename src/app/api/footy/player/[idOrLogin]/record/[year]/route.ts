@@ -14,5 +14,7 @@ export async function getForYearByPlayer(
     return { ...record, name: player.name };
 }
 
-export const GET = (request: Request, { params }: { params: Record<string, string> }) =>
-    handleGET(getForYearByPlayer, { params });
+export const GET = async (request: Request, props: { params: Promise<Record<string, string>> }) => {
+    const params = await props.params;
+    return handleGET(getForYearByPlayer, { params });
+};

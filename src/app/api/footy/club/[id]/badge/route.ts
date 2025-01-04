@@ -35,5 +35,7 @@ async function getClubBadge(
     }
 }
 
-export const GET = (request: Request, { params }: { params: Record<string, string> }) =>
-    handleGET(() => getClubBadge({ params }), { params }, "png");
+export const GET = async (request: Request, props: { params: Promise<Record<string, string>> }) => {
+    const params = await props.params;
+    return handleGET(() => getClubBadge({ params }), { params }, "png");
+};

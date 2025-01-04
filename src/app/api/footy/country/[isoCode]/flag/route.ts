@@ -29,5 +29,7 @@ async function getCountryFlag(
     return await streamToBuffer(downloadBlockBlobResponse.readableStreamBody);
 }
 
-export const GET = (request: Request, { params }: { params: Record<string, string> }) =>
-    handleGET(() => getCountryFlag({ params }), { params }, "png");
+export const GET = async (request: Request, props: { params: Promise<Record<string, string>> }) => {
+    const params = await props.params;
+    return handleGET(() => getCountryFlag({ params }), { params }, "png");
+};

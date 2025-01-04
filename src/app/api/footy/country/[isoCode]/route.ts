@@ -9,5 +9,7 @@ export async function generateStaticParams() {
     })) : null;
 }
 
-export const GET = (request: Request, { params }: { params: Record<string, string> }) =>
-    handleGET(() => countryService.get(params.isoCode), { params });
+export const GET = async (request: Request, props: { params: Promise<Record<string, string>> }) => {
+    const params = await props.params;
+    return handleGET(() => countryService.get(params.isoCode), { params });
+};

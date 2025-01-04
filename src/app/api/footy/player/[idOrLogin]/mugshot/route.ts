@@ -23,5 +23,7 @@ async function getPlayerMugshot(
     return await streamToBuffer(downloadBlockBlobResponse.readableStreamBody);
 }
 
-export const GET = (request: Request, { params }: { params: Record<string, string> }) =>
-    handleGET(() => getPlayerMugshot({ params }), { params }, "png");
+export const GET = async (request: Request, props: { params: Promise<Record<string, string>> }) => {
+    const params = await props.params;
+    return handleGET(() => getPlayerMugshot({ params }), { params }, "png");
+};

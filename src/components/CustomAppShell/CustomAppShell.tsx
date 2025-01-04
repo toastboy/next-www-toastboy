@@ -2,7 +2,6 @@
 
 import { AppShell, Burger, Container, Group } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { UserButton } from '@stackframe/stack';
 import NavbarNested from 'components/NavBarNested/NavBarNested';
 import Image from 'next/image';
 
@@ -41,7 +40,6 @@ const CustomAppShell: React.FC<CustomAppShellProps> = ({ children }: CustomAppSh
                             alt="Toastboy FC Crest"
                         />
                         <p>Toastboy FC</p>
-                        <UserButton />
                     </Group>
                 </div>
             </AppShell.Header>

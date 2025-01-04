@@ -34,9 +34,6 @@ module.exports = {
                 },
                 '^.+\\.css$': 'jest-css-modules-transform',
             },
-            transformIgnorePatterns: [
-                '/node_modules/(?!(?:@stackframe/stack|@stackframe/stack-sc)/)',
-            ],
             testPathIgnorePatterns: ['/node_modules/', '/e2e/'],
         },
         {
@@ -69,9 +66,6 @@ module.exports = {
                 },
                 '^.+\\.css$': 'jest-css-modules-transform',
             },
-            transformIgnorePatterns: [
-                '/node_modules/(?!(?:@stackframe/stack|@stackframe/stack-sc)/)',
-            ],
             testPathIgnorePatterns: ['/node_modules/', '/e2e/'],
         },
         {
@@ -98,9 +92,6 @@ module.exports = {
                 '^.+\\.jsx?$': 'babel-jest',
                 '^.+\\.css$': 'jest-css-modules-transform',
             },
-            transformIgnorePatterns: [
-                '/node_modules/(?!(?:@stackframe/stack|@stackframe/stack-sc)/)',
-            ],
             testPathIgnorePatterns: ['/node_modules/', '/e2e/'],
         },
     ],

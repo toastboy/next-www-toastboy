@@ -1,15 +1,18 @@
-'use client';
+'use client';;
 
 import Table from 'components/Table';
 import { FootyTable } from 'lib/swr';
 import { notFound } from 'next/navigation';
+import { use } from "react";
 
 interface PageProps {
-    params: Record<string, string>;
+    params: Promise<{ table: FootyTable }>;
 }
 
-export const Page: React.FC<PageProps> = ({ params }) => {
-    const table = FootyTable[params.table as typeof FootyTable[keyof typeof FootyTable]];
+export const Page: React.FC<PageProps> = props => {
+    const params = use(props.params);
+    const { table } = params;
+
     if (!(table in FootyTable)) return notFound();
 
     return (

@@ -2,13 +2,14 @@ import PlayerProfile from 'components/PlayerProfile';
 import { notFound, redirect } from 'next/navigation';
 import playerService from "services/Player";
 
-export async function generateMetadata({
-    params,
-}: {
-    params: Record<string, string>,
-}) {
+export async function generateMetadata(
+    props: {
+        params: Promise<{ idOrLogin: string }>,
+    },
+) {
     try {
-        const login = await playerService.getLogin(params.idOrLogin);
+        const { idOrLogin } = await props.params;
+        const login = await playerService.getLogin(idOrLogin);
         if (!login) {
             return {};
         }
@@ -27,14 +28,16 @@ export async function generateMetadata({
 }
 
 interface PageProps {
-    params: Record<string, string>;
+    params: Promise<{ idOrLogin: string }>,
 }
 
-const Page: React.FC<PageProps> = async ({ params }) => {
-    const login = await playerService.getLogin(params.idOrLogin);
+const Page: React.FC<PageProps> = async props => {
+    const { idOrLogin } = await props.params;
+    const login = await playerService.getLogin(idOrLogin);
+
     if (!login) return notFound();
 
-    if (login != params.idOrLogin) {
+    if (login != idOrLogin) {
         redirect(`/footy/player/${login}`);
     }
 

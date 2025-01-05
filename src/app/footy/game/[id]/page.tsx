@@ -2,11 +2,13 @@ import GameDay from "components/GameDay";
 import { notFound } from "next/navigation";
 
 interface PageProps {
-    params: Record<string, string>;
+    params: Promise<{ id: string }>,
 }
 
-const Page: React.FC<PageProps> = ({ params }) => {
-    const gameDayId = parseInt(params.id);
+const Page: React.FC<PageProps> = async props => {
+    const { id } = await props.params;
+    const gameDayId = parseInt(id);
+
     if (isNaN(gameDayId)) {
         return notFound();
     }

@@ -5,10 +5,11 @@ import { FootyTable } from 'lib/swr';
 import { notFound } from 'next/navigation';
 
 interface PageProps {
-    params: { params: string[] };
+    params: Promise<{ params: string[] }>,
 }
 
-export const Page: React.FC<PageProps> = ({ params }) => {
+export const Page: React.FC<PageProps> = async props => {
+    const params = await props.params;
     let year = undefined;
 
     if (params.params) {

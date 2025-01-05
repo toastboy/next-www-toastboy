@@ -9,7 +9,7 @@ import { mockTable, setupTableMocks } from 'tests/lib/api/table';
 
 suppressConsoleError();
 const testRoute = '/api/footy/table/points/2010/true';
-const mockApp = createMockApp(GET, { path: testRoute, params: { table: "points", year: "2010", qualified: "true" } }, jsonResponseHandler);
+const mockApp = createMockApp(GET, { path: testRoute, params: Promise.resolve({ table: "points", year: "2010", qualified: "true" }) }, jsonResponseHandler);
 
 describe('API tests using HTTP', () => {
     setupTableMocks();

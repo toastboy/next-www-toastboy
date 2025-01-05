@@ -5,7 +5,7 @@ import { createMockApp, jsonResponseHandler, suppressConsoleError } from 'tests/
 
 suppressConsoleError();
 const mockRoute = '/api/footy/gameday';
-const mockApp = createMockApp(GET, { path: mockRoute, params: { id: '1' } }, jsonResponseHandler);
+const mockApp = createMockApp(GET, { path: mockRoute, params: Promise.resolve({ id: '1' }) }, jsonResponseHandler);
 
 jest.mock('services/GameDay');
 

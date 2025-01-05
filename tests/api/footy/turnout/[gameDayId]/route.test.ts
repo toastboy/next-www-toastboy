@@ -5,7 +5,7 @@ import { createMockApp, jsonResponseHandler, suppressConsoleError } from 'tests/
 
 suppressConsoleError();
 const mockRoute = '/api/footy/turnout/1000/';
-const mockApp = createMockApp(GET, { path: mockRoute, params: { gameDayId: "1000" } }, jsonResponseHandler);
+const mockApp = createMockApp(GET, { path: mockRoute, params: Promise.resolve({ gameDayId: "1000" }) }, jsonResponseHandler);
 
 jest.mock('services/Outcome');
 
@@ -43,7 +43,7 @@ describe('API tests using HTTP', () => {
     });
 
     it('should return valid JSON even if there is no valid gameDayId param', async () => {
-        const mockApp = createMockApp(GET, { path: mockRoute, params: {} }, jsonResponseHandler);
+        const mockApp = createMockApp(GET, { path: mockRoute, params: Promise.resolve({}) }, jsonResponseHandler);
         (outcomeService.getTurnout as jest.Mock).mockResolvedValue(mockData);
 
         const response = await request(mockApp).get(mockRoute);

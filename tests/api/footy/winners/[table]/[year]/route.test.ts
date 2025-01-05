@@ -5,7 +5,7 @@ import { createMockApp, jsonResponseHandler, suppressConsoleError } from 'tests/
 
 suppressConsoleError();
 const mockRoute = '/api/footy/winners/points/2011';
-const mockApp = createMockApp(GET, { path: mockRoute, params: { table: "points", year: "2011" } }, jsonResponseHandler);
+const mockApp = createMockApp(GET, { path: mockRoute, params: Promise.resolve({ table: "points", year: "2011" }) }, jsonResponseHandler);
 
 jest.mock('services/PlayerRecord');
 
@@ -46,7 +46,7 @@ describe('API tests using HTTP', () => {
     });
 
     it('should return JSON response in the absence of a valid year', async () => {
-        const mockApp = createMockApp(GET, { path: mockRoute, params: { table: "points" } }, jsonResponseHandler);
+        const mockApp = createMockApp(GET, { path: mockRoute, params: Promise.resolve({ table: "points" }) }, jsonResponseHandler);
 
         (playerRecordService.getWinners as jest.Mock).mockResolvedValue(mockData);
 

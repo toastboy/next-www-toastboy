@@ -8,7 +8,7 @@ import request from 'supertest';
 
 suppressConsoleError();
 const testURI = '/api/footy/gameday/1';
-const mockApp = createMockApp(GET, { path: testURI, params: { id: "1000" } }, jsonResponseHandler);
+const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({ id: "1000" }) }, jsonResponseHandler);
 
 describe('API tests using HTTP', () => {
     it('should return JSON response for a valid gameday', async () => {

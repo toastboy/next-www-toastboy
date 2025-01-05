@@ -9,7 +9,7 @@ import request from 'supertest';
 
 suppressConsoleError();
 const testRoute = '/api/footy/club/1/badge';
-const mockApp = createMockApp(GET, { path: testRoute, params: { id: '1' } }, pngResponseHandler);
+const mockApp = createMockApp(GET, { path: testRoute, params: Promise.resolve({ id: '1' }) }, pngResponseHandler);
 
 describe('API tests using HTTP', () => {
     it('should return null if there are no clubs', async () => {

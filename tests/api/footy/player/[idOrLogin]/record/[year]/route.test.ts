@@ -11,7 +11,7 @@ import request from 'supertest';
 
 suppressConsoleError();
 const testURI = '/api/footy/player/1/record/0';
-const mockApp = createMockApp(GET, { path: testURI, params: { idOrLogin: "1", year: "0" } }, jsonResponseHandler);
+const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({ idOrLogin: "1", year: "0" }) }, jsonResponseHandler);
 
 describe('API tests using HTTP', () => {
     setupPlayerMocks();

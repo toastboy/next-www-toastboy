@@ -8,11 +8,11 @@ import request from 'supertest';
 
 suppressConsoleError();
 const testURI = '/api/footy/gameyear/2010';
-const mockApp = createMockApp(GET, { path: testURI, params: { year: "2010" } }, jsonResponseHandler);
+const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({ year: "2010" }) }, jsonResponseHandler);
 
 describe('API tests using HTTP', () => {
     it('should return JSON response for year zero', async () => {
-        const mockApp = createMockApp(GET, { path: testURI, params: { year: "0" } }, jsonResponseHandler);
+        const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({ year: "0" }) }, jsonResponseHandler);
 
         const response = await request(mockApp).get(testURI);
 

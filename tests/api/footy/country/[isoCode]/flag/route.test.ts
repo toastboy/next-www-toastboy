@@ -9,7 +9,7 @@ import request from 'supertest';
 
 suppressConsoleError();
 const testRoute = '/api/footy/country/NO/flag';
-const mockApp = createMockApp(GET, { path: testRoute, params: { isoCode: 'NO' } }, pngResponseHandler);
+const mockApp = createMockApp(GET, { path: testRoute, params: Promise.resolve({ isoCode: 'NO' }) }, pngResponseHandler);
 
 describe('API tests using HTTP', () => {
     it('should return null if there are no countries', async () => {

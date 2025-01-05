@@ -10,7 +10,7 @@ import request from 'supertest';
 
 suppressConsoleError();
 const testRoute = '/api/footy/player/1/mugshot';
-const mockApp = createMockApp(GET, { path: testRoute, params: { idOrLogin: "1" } }, pngResponseHandler);
+const mockApp = createMockApp(GET, { path: testRoute, params: Promise.resolve({ idOrLogin: "1" }) }, pngResponseHandler);
 
 describe('API tests using HTTP', () => {
     setupPlayerMocks();

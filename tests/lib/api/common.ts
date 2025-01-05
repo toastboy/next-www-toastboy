@@ -66,8 +66,8 @@ export function suppressConsoleError() {
  * @returns A mock server instance.
  */
 export function createMockApp(
-    getFunction: (request: Request, { params }: { params: Record<string, string> }) => Promise<Response>,
-    routeParams: { path: string; params: Record<string, string> },
+    getFunction: (request: Request, { params }: { params: Promise<Record<string, string>> }) => Promise<Response>,
+    routeParams: { path: string; params: Promise<Record<string, string>> },
     responseHandler: (response: Response, res: ServerResponse) => Promise<void>,
 ) {
     return createServer((req, res) => {

@@ -4,7 +4,7 @@ import request from 'supertest';
 import { createMockApp, jsonResponseHandler, suppressConsoleError } from 'tests/lib/api/common';
 
 suppressConsoleError();
-const mockApp = createMockApp(GET, { path: '/api/footy/club/1', params: { id: '1' } }, jsonResponseHandler);
+const mockApp = createMockApp(GET, { path: '/api/footy/club/1', params: Promise.resolve({ id: '1' }) }, jsonResponseHandler);
 
 jest.mock('services/Club');
 

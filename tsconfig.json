@@ -50,6 +50,7 @@
     "strict": true,
     "target": "es5",
     "types": [
+      "node",
       "@types/jest",
       "@testing-library/jest-dom"
     ]

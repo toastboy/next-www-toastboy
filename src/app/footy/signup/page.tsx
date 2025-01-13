@@ -1,43 +1,125 @@
-"use client";
+'use client';
 
+import {
+    Anchor,
+    Box,
+    Button,
+    Center,
+    Container,
+    Group,
+    Notification,
+    PasswordInput,
+    Stack,
+    TextInput,
+    Title
+} from '@mantine/core';
+import { useForm } from '@mantine/form';
+import { IconX } from '@tabler/icons-react';
 import { useState } from 'react';
 import { authClient } from "src/lib/auth-client";
 
-export default function SignUp() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [name, setName] = useState('');
-    // const [image, setImage] = useState<File | null>(null);
+export default function SignUpPage() {
+    const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-    const signUp = async () => {
-        const { data, error } = await authClient.signUp.email({
-            email,
-            password,
-            name,
-            // image: image ? convertImageToBase64(image) : undefined,
-        }, {
-            onRequest: (ctx) => {
-                //show loading
-            },
-            onSuccess: (ctx) => {
-                //redirect to the dashboard
-            },
-            onError: (ctx) => {
-                alert(ctx.error.message);
-            },
-        });
+    const form = useForm({
+        initialValues: {
+            name: '',
+            email: '',
+            password: '',
+        },
+
+        validate: {
+            email: (value) =>
+                /^\S+@\S+\.\S+$/.test(value) ? null : 'Invalid email format',
+            password: (value) =>
+                value.length >= 8 ? null : 'Password must be at least 8 characters long',
+        },
+    });
+
+    const handleSignUp = async (values: { name: string, email: string; password: string }) => {
+        setLoading(true);
+        setErrorMessage(null);
+
+        try {
+            const result = await authClient.signUp.email({
+                // redirect: false, // Disable automatic redirection
+                name: values.name,
+                email: values.email,
+                password: values.password,
+            }, {
+                onRequest: (ctx) => {
+                    //show loading
+                },
+                onSuccess: (ctx) => {
+                    //redirect to the dashboard
+                },
+                onError: (ctx) => {
+                    alert(ctx.error.message);
+                },
+            });
+        } catch (error) {
+            setErrorMessage('Something went wrong. Please try again.');
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
-        <div>
-            <label htmlFor="name">Name</label>
-            <input id="name" type="text" value={name} placeholder="Enter your name" onChange={(e) => setName(e.target.value)} />
-            <label htmlFor="password">Password</label>
-            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-            <label htmlFor="email">Email</label>
-            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-            {/* <input type="file" onChange={(e) => setImage(e.target.files?.[0])} /> */}
-            <button type="submit" onClick={signUp}>Sign Up</button>
-        </div>
+        <Container size="xs" mt="xl" >
+            <Center>
+                <Title order={2} mb="md" >
+                    Sign up for your account
+                </Title>
+            </Center>
+
+            <Box
+                component="form"
+                onSubmit={form.onSubmit(handleSignUp)}
+            >
+                <Stack>
+                    <TextInput
+                        withAsterisk
+                        label="Name"
+                        placeholder="Enter your name"
+                        // icon={< IconAt size={16} />}
+                        {...form.getInputProps('name')}
+                    />
+                    <TextInput
+                        withAsterisk
+                        label="Email"
+                        placeholder="Enter your email"
+                        // icon={< IconAt size={16} />}
+                        {...form.getInputProps('email')}
+                    />
+                    <PasswordInput
+                        withAsterisk
+                        label="Password"
+                        placeholder="Enter your password"
+                        // icon={< IconLock size={16} />}
+                        {...form.getInputProps('password')}
+                    />
+                    {
+                        errorMessage && (
+                            <Notification
+                                icon={<IconX size={18} />}
+                                color="red"
+                                onClose={() => setErrorMessage(null)
+                                }
+                            >
+                                {errorMessage}
+                            </Notification>
+                        )}
+                    <Group mt="sm" >
+                        <Anchor href="/auth/reset-password" size="sm" >
+                            Forgot your password ?
+                        </Anchor>
+                    </Group>
+                    < Button type="submit" fullWidth loading={loading} >
+                        Sign Up
+                    </Button>
+                </Stack>
+            </Box>
+        </Container>
     );
 }

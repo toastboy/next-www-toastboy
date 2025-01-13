@@ -84,7 +84,7 @@ export default function SignInPage() {
                         // icon={< IconAt size={16} />}
                         {...form.getInputProps('email')}
                     />
-                    < PasswordInput
+                    <PasswordInput
                         withAsterisk
                         label="Password"
                         placeholder="Enter your password"
@@ -114,7 +114,7 @@ export default function SignInPage() {
             </Box>
             <Text mt="md" >
                 Don't have an account?{' '}
-                < Anchor href="/auth/sign-up" size="sm" >
+                <Anchor href="/footy/signup" size="sm" >
                     Sign up
                 </Anchor>
             </Text>

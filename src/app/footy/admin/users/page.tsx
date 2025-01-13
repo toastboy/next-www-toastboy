@@ -1,13 +1,16 @@
 'use client';
 
-import { Container, Loader, Text } from '@mantine/core';
+import { Container, Loader, Table, Text } from '@mantine/core';
+import { UserWithRole } from 'better-auth/plugins/admin';
 import { useEffect, useState } from 'react';
 import { authClient } from 'src/lib/auth-client';
 
 export default function Page() {
     const [loading, setLoading] = useState(true);
-    const [users, setUsers] = useState<{ email: string }[] | null>(null);
+    const [users, setUsers] = useState<UserWithRole[] | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [sortBy, setSortBy] = useState<keyof UserWithRole | null>(null);
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -33,6 +36,36 @@ export default function Page() {
         fetchUsers();
     }, []);
 
+    const handleSort = (key: keyof UserWithRole) => {
+        if (sortBy === key) {
+            setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
+        } else {
+            setSortBy(key);
+            setSortOrder('asc');
+        }
+    };
+
+    const sortedUsers = users ? [...users].sort((a, b) => {
+        if (!sortBy) return 0;
+
+        const aValue = a[sortBy];
+        const bValue = b[sortBy];
+
+        if (typeof aValue === 'string' && typeof bValue === 'string') {
+            return sortOrder === 'asc'
+                ? aValue.localeCompare(bValue)
+                : bValue.localeCompare(aValue);
+        }
+
+        if (aValue instanceof Date && bValue instanceof Date) {
+            return sortOrder === 'asc'
+                ? aValue.getTime() - bValue.getTime()
+                : bValue.getTime() - aValue.getTime();
+        }
+
+        return 0;
+    }) : [];
+
     if (loading) {
         return (
             <Container>
@@ -50,12 +83,29 @@ export default function Page() {
     }
 
     return (
-        <Container>
-            {users?.length ? (
-                users.map((user) => <Text key={user.email}>{user.email}</Text>)
-            ) : (
-                <Text>No users found</Text>
-            )}
-        </Container>
+        <Table>
+            <thead>
+                <tr>
+                    <th style={{ cursor: 'pointer' }} onClick={() => handleSort('email')}>
+                        Email {sortBy === 'email' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
+                    </th>
+                    <th style={{ cursor: 'pointer' }} onClick={() => handleSort('role')}>
+                        Role {sortBy === 'role' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
+                    </th>
+                    <th style={{ cursor: 'pointer' }} onClick={() => handleSort('createdAt')}>
+                        Created At {sortBy === 'createdAt' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {sortedUsers.map((user) => (
+                    <tr key={user.email}>
+                        <td>{user.email}</td>
+                        <td>{user.role}</td>
+                        <td>{user.createdAt.toISOString()}</td>
+                    </tr>
+                ))}
+            </tbody>
+        </Table>
     );
 }

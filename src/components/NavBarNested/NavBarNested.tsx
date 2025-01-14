@@ -76,6 +76,24 @@ const NavbarNested: React.FC = () => {
                 },
             ],
         },
+        {
+            "label": "Admin",
+            "initiallyOpened": true,
+            "links": [
+                {
+                    "label": "Sign Up",
+                    "link": "/footy/signup",
+                },
+                {
+                    "label": "Sign In",
+                    "link": "/footy/signin",
+                },
+                {
+                    "label": "Users",
+                    "link": "/footy/admin/users",
+                },
+            ],
+        }
     ];
 
     return (

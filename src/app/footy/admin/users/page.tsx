@@ -86,6 +86,9 @@ export default function Page() {
         <Table>
             <thead>
                 <tr>
+                    <th style={{ cursor: 'pointer' }} onClick={() => handleSort('name')}>
+                        Name {sortBy === 'name' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
+                    </th>
                     <th style={{ cursor: 'pointer' }} onClick={() => handleSort('email')}>
                         Email {sortBy === 'email' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
                     </th>
@@ -100,6 +103,7 @@ export default function Page() {
             <tbody>
                 {sortedUsers.map((user) => (
                     <tr key={user.email}>
+                        <td>{user.name}</td>
                         <td>{user.email}</td>
                         <td>{user.role}</td>
                         <td>{user.createdAt.toISOString()}</td>

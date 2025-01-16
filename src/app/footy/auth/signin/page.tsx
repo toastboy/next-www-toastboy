@@ -54,7 +54,7 @@ export default function SignInPage() {
                     //redirect to the dashboard
                 },
                 onError: (ctx) => {
-                    alert(ctx.error.message);
+                    alert("Error " + ctx.error.message);
                 },
             });
         } catch (error) {

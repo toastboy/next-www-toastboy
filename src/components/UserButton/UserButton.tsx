@@ -1,23 +1,46 @@
-import { Avatar, Flex, Group, Text, UnstyledButton, rem } from '@mantine/core';
+import { Avatar, Container, Flex, Group, Loader, Text, UnstyledButton, rem } from '@mantine/core';
 import { IconChevronRight } from '@tabler/icons-react';
+import { authClient } from 'src/lib/auth-client';
 import classes from './UserButton.module.css';
 
 const UserButton: React.FC = () => {
+  const {
+    data: session,
+    isPending,
+    error
+  } = authClient.useSession()
+
+  if (isPending) {
+    return (
+      <Container>
+        <Loader />
+      </Container>
+    );
+  }
+
+  if (error) {
+    return (
+      <Container>
+        <Text color="red">Error loading user</Text>
+      </Container>
+    );
+  }
+
   return (
     <UnstyledButton className={classes.user}>
       <Group>
         <Avatar
-          src="https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-8.png"
+          src="http://localhost:3000/api/footy/player/jonw/mugshot" // TODO: Replace with actual user avatar
           radius="xl"
         />
 
         <Flex direction={'column'}>
           <Text size="sm" fw={500}>
-            Harriette Spoonlicker
+            {session?.user?.name}
           </Text>
 
           <Text c="dimmed" size="xs">
-            hspoonlicker@outlook.com
+            {session?.user?.email}
           </Text>
         </Flex>
 

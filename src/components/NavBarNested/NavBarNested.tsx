@@ -1,7 +1,8 @@
 "use client";
 
-import { ScrollArea } from '@mantine/core';
+import { Box, ScrollArea } from '@mantine/core';
 import NavbarLinksGroup from 'components/NavbarLinksGroup/NavbarLinksGroup';
+import UserButton from 'components/UserButton/UserButton';
 import classes from './NavbarNested.module.css';
 
 const NavbarNested: React.FC = () => {
@@ -82,11 +83,11 @@ const NavbarNested: React.FC = () => {
             "links": [
                 {
                     "label": "Sign Up",
-                    "link": "/footy/signup",
+                    "link": "/footy/auth/signup",
                 },
                 {
                     "label": "Sign In",
-                    "link": "/footy/signin",
+                    "link": "/footy/auth/signin",
                 },
                 {
                     "label": "Users",
@@ -97,17 +98,20 @@ const NavbarNested: React.FC = () => {
     ];
 
     return (
-        <nav className={classes.navbar}>
-            <div className={classes.header}>
-            </div>
+        <Box role="navigation" className={classes.navbar}>
+            <Box className={classes.header}>
+            </Box>
 
             <ScrollArea className={classes.links}>
-                <div className={classes.linksInner}>{links.map((item) => <NavbarLinksGroup {...item} key={item.label} />)}</div>
+                <Box className={classes.linksInner}>
+                    {links.map((item) => <NavbarLinksGroup {...item} key={item.label} />)}
+                </Box>
             </ScrollArea>
 
-            <div className={classes.footer}>
-            </div>
-        </nav>
+            <Box className={classes.footer}>
+                <UserButton />
+            </Box>
+        </Box>
     );
 };
 

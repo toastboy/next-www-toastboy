@@ -2,6 +2,7 @@
 
 import { Container, Loader, Table, Text } from '@mantine/core';
 import { UserWithRole } from 'better-auth/plugins/admin';
+import UserButton from 'components/UserButton/UserButton';
 import { useEffect, useState } from 'react';
 import { authClient } from 'src/lib/auth-client';
 
@@ -83,33 +84,36 @@ export default function Page() {
     }
 
     return (
-        <Table>
-            <thead>
-                <tr>
-                    <th style={{ cursor: 'pointer' }} onClick={() => handleSort('name')}>
-                        Name {sortBy === 'name' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
-                    </th>
-                    <th style={{ cursor: 'pointer' }} onClick={() => handleSort('email')}>
-                        Email {sortBy === 'email' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
-                    </th>
-                    <th style={{ cursor: 'pointer' }} onClick={() => handleSort('role')}>
-                        Role {sortBy === 'role' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
-                    </th>
-                    <th style={{ cursor: 'pointer' }} onClick={() => handleSort('createdAt')}>
-                        Created At {sortBy === 'createdAt' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
-                    </th>
-                </tr>
-            </thead>
-            <tbody>
-                {sortedUsers.map((user) => (
-                    <tr key={user.email}>
-                        <td>{user.name}</td>
-                        <td>{user.email}</td>
-                        <td>{user.role}</td>
-                        <td>{user.createdAt.toISOString()}</td>
+        <Container>
+            <Table>
+                <thead>
+                    <tr>
+                        <th style={{ cursor: 'pointer' }} onClick={() => handleSort('name')}>
+                            Name {sortBy === 'name' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
+                        </th>
+                        <th style={{ cursor: 'pointer' }} onClick={() => handleSort('email')}>
+                            Email {sortBy === 'email' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
+                        </th>
+                        <th style={{ cursor: 'pointer' }} onClick={() => handleSort('role')}>
+                            Role {sortBy === 'role' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
+                        </th>
+                        <th style={{ cursor: 'pointer' }} onClick={() => handleSort('createdAt')}>
+                            Created At {sortBy === 'createdAt' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
+                        </th>
                     </tr>
-                ))}
-            </tbody>
-        </Table>
+                </thead>
+                <tbody>
+                    {sortedUsers.map((user) => (
+                        <tr key={user.email}>
+                            <td>{user.name}</td>
+                            <td>{user.email}</td>
+                            <td>{user.role}</td>
+                            <td>{user.createdAt.toISOString()}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </Table>
+            <UserButton />
+        </Container>
     );
 }

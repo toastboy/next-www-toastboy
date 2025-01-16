@@ -1,9 +1,8 @@
 'use client';
 
-import { AppShell, Burger, Container, Group } from '@mantine/core';
+import { AppShell, Burger, Container, Group, Image, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import NavbarNested from 'components/NavBarNested/NavBarNested';
-import Image from 'next/image';
 
 interface CustomAppShellProps {
     children: React.ReactNode;
@@ -23,7 +22,7 @@ const CustomAppShell: React.FC<CustomAppShellProps> = ({ children }: CustomAppSh
             padding="md"
         >
             <AppShell.Header>
-                <div>
+                <Container>
                     <Group justify="space-between" className="px-6">
                         <Burger
                             aria-label="Toggle navigation"
@@ -34,14 +33,14 @@ const CustomAppShell: React.FC<CustomAppShellProps> = ({ children }: CustomAppSh
                         />
                         <Image
                             src="/crest.jpg"
-                            width={60}
-                            height={60}
-                            priority={true}
+                            w={56}
+                            h={56}
+                            fit="contain"
                             alt="Toastboy FC Crest"
                         />
-                        <p>Toastboy FC</p>
+                        <Text>Toastboy FC</Text>
                     </Group>
-                </div>
+                </Container>
             </AppShell.Header>
 
             <AppShell.Navbar p="md">
@@ -53,6 +52,13 @@ const CustomAppShell: React.FC<CustomAppShellProps> = ({ children }: CustomAppSh
                     {children}
                 </Container>
             </AppShell.Main>
+
+            <AppShell.Footer>
+                <Container ta="center">
+                    <Text>© 2025 Toastboy FC</Text>
+                </Container>
+            </AppShell.Footer>
+
         </AppShell>
     );
 };

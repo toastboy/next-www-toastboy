@@ -2,7 +2,6 @@
 
 import { Container, Loader, Table, Text } from '@mantine/core';
 import { UserWithRole } from 'better-auth/plugins/admin';
-import UserButton from 'components/UserButton/UserButton';
 import { useEffect, useState } from 'react';
 import { authClient } from 'src/lib/auth-client';
 
@@ -86,34 +85,33 @@ export default function Page() {
     return (
         <Container>
             <Table>
-                <thead>
-                    <tr>
-                        <th style={{ cursor: 'pointer' }} onClick={() => handleSort('name')}>
+                <Table.Thead>
+                    <Table.Tr>
+                        <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('name')}>
                             Name {sortBy === 'name' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
-                        </th>
-                        <th style={{ cursor: 'pointer' }} onClick={() => handleSort('email')}>
+                        </Table.Th>
+                        <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('email')}>
                             Email {sortBy === 'email' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
-                        </th>
-                        <th style={{ cursor: 'pointer' }} onClick={() => handleSort('role')}>
+                        </Table.Th>
+                        <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('role')}>
                             Role {sortBy === 'role' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
-                        </th>
-                        <th style={{ cursor: 'pointer' }} onClick={() => handleSort('createdAt')}>
+                        </Table.Th>
+                        <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('createdAt')}>
                             Created At {sortBy === 'createdAt' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
+                        </Table.Th>
+                    </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>
                     {sortedUsers.map((user) => (
-                        <tr key={user.email}>
-                            <td>{user.name}</td>
-                            <td>{user.email}</td>
-                            <td>{user.role}</td>
-                            <td>{user.createdAt.toISOString()}</td>
-                        </tr>
+                        <Table.Tr key={user.email}>
+                            <Table.Td>{user.name}</Table.Td>
+                            <Table.Td>{user.email}</Table.Td>
+                            <Table.Td>{user.role}</Table.Td>
+                            <Table.Td>{user.createdAt.toISOString()}</Table.Td>
+                        </Table.Tr>
                     ))}
-                </tbody>
+                </Table.Tbody>
             </Table>
-            <UserButton />
         </Container>
     );
 }

@@ -7,6 +7,7 @@ import {
     Center,
     Container,
     Group,
+    Loader,
     Notification,
     PasswordInput,
     Stack,
@@ -48,7 +49,9 @@ export default function SignInPage() {
                 password: values.password,
             }, {
                 onRequest: (ctx) => {
-                    //show loading
+                    <Container>
+                        <Loader />
+                    </Container>
                 },
                 onSuccess: (ctx) => {
                     //redirect to the dashboard
@@ -63,6 +66,22 @@ export default function SignInPage() {
             setLoading(false);
         }
     };
+
+    if (loading) {
+        return (
+            <Container>
+                <Loader />
+            </Container>
+        );
+    }
+
+    if (errorMessage) {
+        return (
+            <Container>
+                <Text color="red">{errorMessage}</Text>
+            </Container>
+        );
+    }
 
     return (
         <Container size="xs" mt="xl" >

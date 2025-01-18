@@ -90,6 +90,10 @@ const NavbarNested: React.FC = () => {
                     "link": "/footy/auth/signin",
                 },
                 {
+                    "label": "Sign Out",
+                    "link": "/footy/auth/signout",
+                },
+                {
                     "label": "Users",
                     "link": "/footy/admin/users",
                 },

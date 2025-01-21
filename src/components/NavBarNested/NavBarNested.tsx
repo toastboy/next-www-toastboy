@@ -98,7 +98,7 @@ const NavbarNested: React.FC = () => {
                     "link": "/footy/admin/users",
                 },
             ],
-        }
+        },
     ];
 
     return (

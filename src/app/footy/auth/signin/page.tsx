@@ -16,6 +16,7 @@ import {
     Title,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import * as Sentry from '@sentry/react';
 import { IconX } from '@tabler/icons-react';
 import { useState } from 'react';
 import { authClient } from "src/lib/auth-client";
@@ -44,23 +45,24 @@ export default function SignInPage() {
 
         try {
             const result = await authClient.signIn.email({
-                // redirect: false, // Disable automatic redirection
                 email: values.email,
                 password: values.password,
             }, {
-                onRequest: (ctx) => {
-                    <Container>
-                        <Loader />
-                    </Container>
+                onRequest: () => {
+                    // TODO: Show loading
                 },
-                onSuccess: (ctx) => {
-                    //redirect to the dashboard
+                onSuccess: () => {
+                    // TODO: Redirect somewhere sensible
                 },
                 onError: (ctx) => {
+                    Sentry.captureException(JSON.stringify(ctx.error, null, 2));
                     alert("Error " + ctx.error.message);
                 },
             });
+
+            Sentry.captureMessage(`Sign in result: ${JSON.stringify(result, null, 2)}`, 'info');
         } catch (error) {
+            Sentry.captureMessage(`Sign in error: ${JSON.stringify(error, null, 2)}`, 'error');
             setErrorMessage('Something went wrong. Please try again.');
         } finally {
             setLoading(false);
@@ -131,12 +133,6 @@ export default function SignInPage() {
                     </Button>
                 </Stack>
             </Box>
-            <Text mt="md" >
-                Don't have an account?{' '}
-                <Anchor href="/footy/signup" size="sm" >
-                    Sign up
-                </Anchor>
-            </Text>
         </Container>
     );
 }

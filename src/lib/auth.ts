@@ -12,8 +12,8 @@ export const auth = betterAuth({
         enabled: true,
     },
     plugins: [
-        admin()
-    ]
+        admin(),
+    ],
     // socialProviders: {
     //     github: {
     //         clientId: process.env.GITHUB_CLIENT_ID || "",

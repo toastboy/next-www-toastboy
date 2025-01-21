@@ -1,6 +1,7 @@
 'use client';
 
 import { Container, Loader, Table, Text } from '@mantine/core';
+import * as Sentry from '@sentry/react';
 import { UserWithRole } from 'better-auth/plugins/admin';
 import { useEffect, useState } from 'react';
 import { authClient } from 'src/lib/auth-client';
@@ -27,6 +28,7 @@ export default function Page() {
                     setErrorMessage(response.error.message || 'An error occurred while fetching users');
                 }
             } catch (error) {
+                Sentry.captureMessage(`Error fetching users: ${error}`, 'error');
                 setErrorMessage('An error occurred while fetching users');
             } finally {
                 setLoading(false);

@@ -11,9 +11,10 @@ import {
     PasswordInput,
     Stack,
     TextInput,
-    Title
+    Title,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import * as Sentry from '@sentry/react';
 import { IconX } from '@tabler/icons-react';
 import { useState } from 'react';
 import { authClient } from "src/lib/auth-client";
@@ -48,17 +49,20 @@ export default function SignUpPage() {
                 email: values.email,
                 password: values.password,
             }, {
-                onRequest: (ctx) => {
+                onRequest: () => {
                     //show loading
                 },
-                onSuccess: (ctx) => {
+                onSuccess: () => {
                     //redirect to the dashboard
                 },
                 onError: (ctx) => {
                     alert(ctx.error.message);
                 },
             });
+
+            Sentry.captureMessage(`Sign up result: ${result}`, 'info');
         } catch (error) {
+            Sentry.captureMessage(`Sign in error: ${error}`, 'error');
             setErrorMessage('Something went wrong. Please try again.');
         } finally {
             setLoading(false);

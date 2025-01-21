@@ -7,8 +7,8 @@ const UserButton: React.FC = () => {
   const {
     data: session,
     isPending,
-    error
-  } = authClient.useSession()
+    error,
+  } = authClient.useSession();
 
   if (isPending) {
     return (

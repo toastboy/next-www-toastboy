@@ -1,6 +1,6 @@
 import { Avatar, Container, Flex, Group, Loader, Menu, Text, UnstyledButton, rem } from '@mantine/core';
 import { IconArrowsLeftRight, IconChevronRight, IconMessageCircle, IconPhoto, IconSearch, IconSettings, IconTrash } from '@tabler/icons-react';
-import { authClient } from 'src/lib/auth-client';
+import { authClient } from 'lib/auth-client';
 import classes from './UserButton.module.css';
 
 const UserButton: React.FC = () => {
@@ -19,7 +19,6 @@ const UserButton: React.FC = () => {
   }
 
   if (error) {
-    console.log(error.message);
     return (
       <Container>
         <Text color="red">Error loading user: {error.message}</Text>

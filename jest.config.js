@@ -3,6 +3,7 @@ module.exports = {
     coverageDirectory: 'coverage',
     coveragePathIgnorePatterns: ['/node_modules/'],
     coverageProvider: 'v8',
+    maxWorkers: "50%",
     projects: [
         {
             displayName: { name: 'api', color: 'yellow' },
@@ -89,9 +90,12 @@ module.exports = {
             testMatch: ['<rootDir>/tests/components/**/*.test.tsx'],
             transform: {
                 '^.+\\.tsx?$': ['ts-jest', { tsconfig: 'tsconfig.jest.json' }],
-                '^.+\\.jsx?$': 'babel-jest',
+                '^.+\\.[tj]sx?$': ['babel-jest', { configFile: './babel-jest.config.js' }],
                 '^.+\\.css$': 'jest-css-modules-transform',
             },
+            transformIgnorePatterns: [
+                "node_modules/(?!(nanostores|better-auth)/)",
+            ],
             testPathIgnorePatterns: ['/node_modules/', '/e2e/'],
         },
     ],

@@ -38,7 +38,7 @@ describe('UserButton', () => {
             expect(avatar).toBeInTheDocument();
             expect(avatar).toHaveAttribute(
                 'src',
-                "http://localhost:3000/api/footy/player/jonw/mugshot", // TODO: Replace with actual user avatar
+                "/api/footy/player/12/mugshot", // TODO: Replace with actual user avatar
             );
         });
     });

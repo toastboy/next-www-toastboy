@@ -1,3 +1,19 @@
+// Mock the authClient.useSession() to return a user object
+jest.mock('lib/auth-client', () => ({
+    authClient: {
+        useSession: () => ({
+            data: {
+                user: {
+                    name: 'Harriette Spoonlicker',
+                    email: 'hspoonlicker@outlook.com',
+                },
+            },
+            isPending: false,
+            error: null,
+        }),
+    },
+}));
+
 import { render, screen, waitFor } from '@testing-library/react';
 import UserButton from 'components/UserButton/UserButton';
 import { Wrapper } from "./lib/common";
@@ -22,7 +38,7 @@ describe('UserButton', () => {
             expect(avatar).toBeInTheDocument();
             expect(avatar).toHaveAttribute(
                 'src',
-                'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-8.png',
+                "http://localhost:3000/api/footy/player/jonw/mugshot", // TODO: Replace with actual user avatar
             );
         });
     });

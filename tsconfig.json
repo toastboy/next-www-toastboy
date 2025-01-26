@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "allowJs": true,
+    "allowJs": false,
     "baseUrl": "./",
     "diagnostics": true,
     "esModuleInterop": true,
@@ -37,6 +37,9 @@
       ],
       "tests/*": [
         "./tests/*"
+      ],
+      "types/*": [
+        "./src/types/*"
       ]
     },
     "plugins": [
@@ -49,22 +52,24 @@
     "sourceMap": true,
     "strict": true,
     "target": "es5",
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/types"
+    ],
     "types": [
       "node",
-      "@types/jest",
-      "@testing-library/jest-dom"
     ]
   },
   "exclude": [
-    "node_modules",
+    ".eslintrc.js",
     ".next",
-    ".eslintrc.js"
+    "node_modules"
   ],
   "include": [
-    "next-env.d.ts",
     ".next/types/**/*.ts",
+    "**/*.js",
     "**/*.ts",
     "**/*.tsx",
-    "**/*.js"
+    "next-env.d.ts"
   ]
 }

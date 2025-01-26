@@ -6,6 +6,7 @@ jest.mock('lib/auth-client', () => ({
                 user: {
                     name: 'Harriette Spoonlicker',
                     email: 'hspoonlicker@outlook.com',
+                    playerId: 12,
                 },
             },
             isPending: false,
@@ -38,7 +39,7 @@ describe('UserButton', () => {
             expect(avatar).toBeInTheDocument();
             expect(avatar).toHaveAttribute(
                 'src',
-                "/api/footy/player/12/mugshot", // TODO: Replace with actual user avatar
+                "/api/footy/player/12/mugshot",
             );
         });
     });

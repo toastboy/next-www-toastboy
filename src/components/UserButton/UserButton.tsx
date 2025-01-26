@@ -26,15 +26,14 @@ const UserButton: React.FC = () => {
     );
   }
 
-  var name = 'Sign In';
-  var email = '';
-  var playerId = 0;
+  let name = 'Sign In';
+  let email = '';
+  let playerId = 0;
 
   if (session && session.user) {
     name = session.user.name;
     email = session.user.email;
-    // playerId = session.user.playerId;
-    playerId = 12; // TODO: Replace with actual player ID
+    playerId = session.player.id;
   }
 
   return (

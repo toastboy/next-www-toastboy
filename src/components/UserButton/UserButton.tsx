@@ -1,4 +1,4 @@
-import { Avatar, Container, Flex, Group, Loader, Menu, Text, UnstyledButton, rem } from '@mantine/core';
+import { Avatar, Container, Flex, Group, Loader, Menu, rem, Text, UnstyledButton } from '@mantine/core';
 import { IconArrowsLeftRight, IconChevronRight, IconMessageCircle, IconPhoto, IconSearch, IconSettings, IconTrash } from '@tabler/icons-react';
 import { authClient } from 'lib/auth-client';
 import classes from './UserButton.module.css';
@@ -33,7 +33,7 @@ const UserButton: React.FC = () => {
   if (session && session.user) {
     name = session.user.name;
     email = session.user.email;
-    playerId = session.player.id;
+    playerId = session.user.playerId;
   }
 
   return (

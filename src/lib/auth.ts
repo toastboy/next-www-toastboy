@@ -8,6 +8,16 @@ export const auth = betterAuth({
     database: prismaAdapter(prisma, {
         provider: "mysql",
     }),
+    user: {
+        additionalFields: {
+            playerId: {
+                type: "number",
+                required: true,
+                defaultValue: 0,
+                input: false,
+            },
+        },
+    },
     emailAndPassword: {
         enabled: true,
     },
@@ -15,7 +25,7 @@ export const auth = betterAuth({
         admin(),
         customSession(async ({ user, session }) => {
             if (user?.email) {
-                const player = await prisma.player.findMany({
+                const player = await prisma.player.findFirst({
                     where: {
                         email: {
                             contains: user.email,
@@ -23,16 +33,13 @@ export const auth = betterAuth({
                     },
                 });
 
-                if (player.length > 0) {
-                    return {
-                        player: player[0],
-                        user: {
-                            ...user,
-                            playerId: player[0].id,
-                        },
-                        session,
-                    };
-                }
+                return {
+                    user: {
+                        ...user,
+                        playerId: player?.id || 0,
+                    },
+                    session,
+                };
             }
 
             return { user, session };
@@ -46,3 +53,5 @@ export const auth = betterAuth({
     //     }
     // },
 });
+
+export type Session = typeof auth.$Infer.Session;

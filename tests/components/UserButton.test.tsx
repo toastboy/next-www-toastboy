@@ -4,7 +4,7 @@ jest.mock('lib/auth-client', () => ({
     },
 }));
 
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import { BetterFetchError } from 'better-auth/react';
 import UserButton from 'components/UserButton/UserButton';
 import { authClient } from 'lib/auth-client';
@@ -23,6 +23,39 @@ describe('UserButton', () => {
             },
             isPending: false,
             error: null,
+        });
+    });
+
+    it('renders sign in button with no session present', async () => {
+        (authClient.useSession as jest.Mock).mockReturnValue({
+            data: null,
+            isPending: false,
+            error: null,
+        });
+
+        render(<Wrapper><UserButton /></Wrapper>);
+        await waitFor(() => {
+            expect(screen.getByText('Sign In')).toBeInTheDocument();
+        });
+    });
+
+    it('redirects to sign in page when sign in button is clicked', async () => {
+        (authClient.useSession as jest.Mock).mockReturnValue({
+            data: null,
+            isPending: false,
+            error: null,
+        });
+
+        window.location.href = '/';
+
+        render(<Wrapper><UserButton /></Wrapper>);
+
+        act(() => {
+            screen.getByText('Sign In').click();
+        });
+
+        await waitFor(() => {
+            expect(window.location.href).toBe('/footy/auth/signin');
         });
     });
 
@@ -47,7 +80,7 @@ describe('UserButton', () => {
         (authClient.useSession as jest.Mock).mockReturnValue({
             data: {
                 user: {
-                    name: 'Unkown Player',
+                    name: 'Unknown Player',
                     email: '',
                     playerId: 0,
                 },

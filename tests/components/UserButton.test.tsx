@@ -39,14 +39,19 @@ describe('UserButton', () => {
         });
     });
 
-    it('redirects to sign in page when sign in button is clicked', async () => {
+    it('redirects to sign in page when sign in button is clicked with no session', async () => {
         (authClient.useSession as jest.Mock).mockReturnValue({
             data: null,
             isPending: false,
             error: null,
         });
 
-        window.location.href = '/';
+        let originalLocation = window.location;
+
+        Object.defineProperty(window, 'location', {
+            writable: true,
+            value: { ...originalLocation, href: '' },
+        });
 
         render(<Wrapper><UserButton /></Wrapper>);
 
@@ -57,6 +62,35 @@ describe('UserButton', () => {
         await waitFor(() => {
             expect(window.location.href).toBe('/footy/auth/signin');
         });
+
+        window.location = originalLocation;
+    });
+
+    it('redirects to sign in page when sign in button is clicked with no user in the session', async () => {
+        (authClient.useSession as jest.Mock).mockReturnValue({
+            data: { user: null },
+            isPending: false,
+            error: null,
+        });
+
+        let originalLocation = window.location;
+
+        Object.defineProperty(window, 'location', {
+            writable: true,
+            value: { ...originalLocation, href: '' },
+        });
+
+        render(<Wrapper><UserButton /></Wrapper>);
+
+        act(() => {
+            screen.getByText('Sign In').click();
+        });
+
+        await waitFor(() => {
+            expect(window.location.href).toBe('/footy/auth/signin');
+        });
+
+        window.location = originalLocation;
     });
 
     it('renders user name and email', async () => {

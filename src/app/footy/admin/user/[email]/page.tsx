@@ -1,8 +1,10 @@
 'use client';
 
 import { CodeHighlight } from '@mantine/code-highlight';
-import { Container, Loader, Text } from '@mantine/core';
+import { Anchor, Box, Button, Center, Container, Group, Loader, Notification, PasswordInput, Stack, Switch, Text, TextInput, Title } from '@mantine/core';
+import { useForm } from '@mantine/form';
 import * as Sentry from '@sentry/react';
+import { IconX } from '@tabler/icons-react';
 import { UserWithRole } from 'better-auth/plugins/admin';
 import { use, useEffect, useState } from 'react';
 import { authClient } from 'src/lib/auth-client';
@@ -17,8 +19,18 @@ const Page: React.FC<PageProps> = (props) => {
     const [loading, setLoading] = useState(true);
     const [users, setUsers] = useState<UserWithRole[] | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const [sortBy, setSortBy] = useState<keyof UserWithRole | null>(null);
-    const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+
+    const form = useForm({
+        initialValues: {
+            "admin": false,
+            "banned": null,
+            "banReason": null,
+            "banExpires": null,
+        },
+
+        validate: {
+        },
+    });
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -45,7 +57,7 @@ const Page: React.FC<PageProps> = (props) => {
         };
 
         fetchUsers();
-    }, []);
+    }, [email]);
 
     if (loading) {
         return (
@@ -55,7 +67,9 @@ const Page: React.FC<PageProps> = (props) => {
         );
     }
 
-    if (errorMessage) {
+    const user = users?.[0];
+
+    if (errorMessage || !user) {
         return (
             <Container>
                 <Text color="red">{errorMessage}</Text>
@@ -63,9 +77,63 @@ const Page: React.FC<PageProps> = (props) => {
         );
     }
 
+    form.values.admin = user.role == 'admin';
+
     return (
-        <CodeHighlight code={JSON.stringify(users, null, 2)} language="json" />
+        <Container size="xs" mt="xl" >
+            <Center>
+                <Title order={2} mb="md" >
+                    {user.name}
+                </Title>
+            </Center>
+
+            <Box
+                component="form"
+            // onSubmit={form.onSubmit(handleSignUp)}
+            >
+                <Stack>
+                    <Switch
+                        label="Admin"
+                        {...form.getInputProps('admin')}
+                    />
+                    <TextInput
+                        withAsterisk
+                        label="Email"
+                        placeholder="Enter your email"
+                        // icon={< IconAt size={16} />}
+                        {...form.getInputProps('email')}
+                    />
+                    <PasswordInput
+                        withAsterisk
+                        label="Password"
+                        placeholder="Enter your password"
+                        // icon={< IconLock size={16} />}
+                        {...form.getInputProps('password')}
+                    />
+                    {
+                        errorMessage && (
+                            <Notification
+                                icon={<IconX size={18} />}
+                                color="red"
+                                onClose={() => setErrorMessage(null)
+                                }
+                            >
+                                {errorMessage}
+                            </Notification>
+                        )}
+                    <Group mt="sm" >
+                        <Anchor href="/auth/reset-password" size="sm" >
+                            Forgot your password ?
+                        </Anchor>
+                    </Group>
+                    < Button type="submit" fullWidth loading={loading} >
+                        Sign Up
+                    </Button>
+                </Stack>
+            </Box>
+            <CodeHighlight code={JSON.stringify(user, null, 2)} language="json" />
+        </Container>
     );
-}
+};
 
 export default Page;

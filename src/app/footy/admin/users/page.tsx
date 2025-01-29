@@ -3,6 +3,7 @@
 import { Container, Loader, Table, Text } from '@mantine/core';
 import * as Sentry from '@sentry/react';
 import { UserWithRole } from 'better-auth/plugins/admin';
+import { RelativeTime } from 'components/RelativeTime';
 import { useEffect, useState } from 'react';
 import { authClient } from 'src/lib/auth-client';
 
@@ -99,7 +100,7 @@ export default function Page() {
                             Role {sortBy === 'role' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
                         </Table.Th>
                         <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('createdAt')}>
-                            Created At {sortBy === 'createdAt' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
+                            Created {sortBy === 'createdAt' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
                         </Table.Th>
                     </Table.Tr>
                 </Table.Thead>
@@ -109,7 +110,7 @@ export default function Page() {
                             <Table.Td>{user.name}</Table.Td>
                             <Table.Td>{user.email}</Table.Td>
                             <Table.Td>{user.role}</Table.Td>
-                            <Table.Td>{user.createdAt.toISOString()}</Table.Td>
+                            <Table.Td><RelativeTime date={user.createdAt} /></Table.Td>
                         </Table.Tr>
                     ))}
                 </Table.Tbody>

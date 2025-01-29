@@ -109,7 +109,9 @@ export default function Page() {
                     {sortedUsers.map((user) => (
                         <Table.Tr key={user.email}>
                             <Table.Td>
-                                {user.name}
+                                <Link href={`/footy/admin/user/${encodeURIComponent(user.email)}`}>
+                                    {user.name}
+                                </Link>
                             </Table.Td>
                             <Table.Td>
                                 <Link href={`/footy/admin/user/${encodeURIComponent(user.email)}`}>

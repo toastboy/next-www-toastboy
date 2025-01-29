@@ -1,18 +1,18 @@
 'use client';
 
-import { Container, Loader, Table, Text } from '@mantine/core';
+import { CodeHighlight } from '@mantine/code-highlight';
+import { Container, Loader, Text } from '@mantine/core';
 import * as Sentry from '@sentry/react';
 import { UserWithRole } from 'better-auth/plugins/admin';
-import { RelativeTime } from 'components/RelativeTime';
-import { useEffect, useState } from 'react';
+import { use, useEffect, useState } from 'react';
 import { authClient } from 'src/lib/auth-client';
 
 interface PageProps {
     params: Promise<{ email: string }>,
 }
 
-const Page: React.FC<PageProps> = async props => {
-    const { email } = await props.params;
+const Page: React.FC<PageProps> = (props) => {
+    const { email } = use(props.params);
 
     const [loading, setLoading] = useState(true);
     const [users, setUsers] = useState<UserWithRole[] | null>(null);
@@ -27,7 +27,7 @@ const Page: React.FC<PageProps> = async props => {
                     query: {
                         searchField: "email",
                         searchOperator: "contains",
-                        searchValue: email,
+                        searchValue: decodeURIComponent(email),
                     },
                 });
 
@@ -47,36 +47,6 @@ const Page: React.FC<PageProps> = async props => {
         fetchUsers();
     }, []);
 
-    const handleSort = (key: keyof UserWithRole) => {
-        if (sortBy === key) {
-            setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
-        } else {
-            setSortBy(key);
-            setSortOrder('asc');
-        }
-    };
-
-    const sortedUsers = users ? [...users].sort((a, b) => {
-        if (!sortBy) return 0;
-
-        const aValue = a[sortBy];
-        const bValue = b[sortBy];
-
-        if (typeof aValue === 'string' && typeof bValue === 'string') {
-            return sortOrder === 'asc'
-                ? aValue.localeCompare(bValue)
-                : bValue.localeCompare(aValue);
-        }
-
-        if (aValue instanceof Date && bValue instanceof Date) {
-            return sortOrder === 'asc'
-                ? aValue.getTime() - bValue.getTime()
-                : bValue.getTime() - aValue.getTime();
-        }
-
-        return 0;
-    }) : [];
-
     if (loading) {
         return (
             <Container>
@@ -94,36 +64,7 @@ const Page: React.FC<PageProps> = async props => {
     }
 
     return (
-        <Container>
-            <Table>
-                <Table.Thead>
-                    <Table.Tr>
-                        <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('name')}>
-                            Name {sortBy === 'name' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
-                        </Table.Th>
-                        <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('email')}>
-                            Email {sortBy === 'email' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
-                        </Table.Th>
-                        <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('role')}>
-                            Role {sortBy === 'role' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
-                        </Table.Th>
-                        <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('createdAt')}>
-                            Created {sortBy === 'createdAt' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
-                        </Table.Th>
-                    </Table.Tr>
-                </Table.Thead>
-                <Table.Tbody>
-                    {sortedUsers.map((user) => (
-                        <Table.Tr key={user.email}>
-                            <Table.Td>{user.name}</Table.Td>
-                            <Table.Td>{user.email}</Table.Td>
-                            <Table.Td>{user.role}</Table.Td>
-                            <Table.Td><RelativeTime date={user.createdAt} /></Table.Td>
-                        </Table.Tr>
-                    ))}
-                </Table.Tbody>
-            </Table>
-        </Container>
+        <CodeHighlight code={JSON.stringify(users, null, 2)} language="json" />
     );
 }
 

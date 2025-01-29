@@ -1,6 +1,7 @@
 import { Avatar, Container, Flex, Group, Loader, Menu, rem, Text, UnstyledButton } from '@mantine/core';
-import { IconArrowsLeftRight, IconChevronRight, IconMessageCircle, IconPhoto, IconSearch, IconSettings, IconTrash } from '@tabler/icons-react';
+import { IconArrowsLeftRight, IconChevronRight, IconLogout, IconPassword, IconTrash, IconUserScan } from '@tabler/icons-react';
 import { authClient } from 'lib/auth-client';
+import Link from 'next/link';
 import classes from './UserButton.module.css';
 
 const UserButton: React.FC = () => {
@@ -70,40 +71,47 @@ const UserButton: React.FC = () => {
 
       {session?.user && (
         <Menu.Dropdown>
-          <Menu.Label>Application</Menu.Label>
-          <Menu.Item leftSection={<IconSettings size={14} />}>
-            Settings
+          <Menu.Label>Account</Menu.Label>
+          <Menu.Item leftSection={<IconUserScan size={14} />}>
+            <Link className={classes.link} href="/footy/profile">
+              My Profile
+            </Link>
           </Menu.Item>
-          <Menu.Item leftSection={<IconMessageCircle size={14} />}>
-            Messages
+          <Menu.Item leftSection={<IconPassword size={14} />}>
+            <Link className={classes.link} href="/footy/password">
+              Change Password
+            </Link>
           </Menu.Item>
-          <Menu.Item leftSection={<IconPhoto size={14} />}>
-            Gallery
-          </Menu.Item>
-          <Menu.Item
-            leftSection={<IconSearch size={14} />}
-            rightSection={
-              <Text size="xs" c="dimmed">
-                ⌘K
-              </Text>
-            }
-          >
-            Search
+          <Menu.Item leftSection={<IconLogout size={14} />}>
+            <Link className={classes.link} href="/footy/auth/signout">
+              Sign Out
+            </Link>
           </Menu.Item>
 
           <Menu.Divider />
 
-          <Menu.Label>Danger zone</Menu.Label>
+          <Menu.Label>My Data</Menu.Label>
           <Menu.Item
             leftSection={<IconArrowsLeftRight size={14} />}
           >
-            Transfer my data
+            <Link className={classes.link} href="/footy/manage-emails">
+              Email subscriptions
+            </Link>
+          </Menu.Item>
+          <Menu.Item
+            leftSection={<IconArrowsLeftRight size={14} />}
+          >
+            <Link className={classes.link} href="/footy/download-data">
+              Download all data
+            </Link>
           </Menu.Item>
           <Menu.Item
             color="red"
             leftSection={<IconTrash size={14} />}
           >
-            Delete my account
+            <Link className={classes.link} href="/footy/delete-account">
+              Delete account
+            </Link>
           </Menu.Item>
         </Menu.Dropdown>
       )}

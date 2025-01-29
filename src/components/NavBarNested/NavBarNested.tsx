@@ -82,16 +82,8 @@ const NavbarNested: React.FC = () => {
             "initiallyOpened": true,
             "links": [
                 {
-                    "label": "Sign Up",
-                    "link": "/footy/auth/signup",
-                },
-                {
-                    "label": "Sign In",
-                    "link": "/footy/auth/signin",
-                },
-                {
-                    "label": "Sign Out",
-                    "link": "/footy/auth/signout",
+                    "label": "New Player",
+                    "link": "/footy/auth/signup", // TODO: Change to /footy/admin/newplayer when implemented
                 },
                 {
                     "label": "Users",

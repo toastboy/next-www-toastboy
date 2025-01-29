@@ -3,13 +3,14 @@
 import WinnersTable from 'components/WinnersTable';
 import { FootyTable } from 'lib/swr';
 import { notFound } from 'next/navigation';
+import { use } from 'react';
 
 interface PageProps {
     params: Promise<{ params: string[] }>,
 }
 
-export const Page: React.FC<PageProps> = async props => {
-    const params = await props.params;
+export const Page: React.FC<PageProps> = (props) => {
+    const params = use(props.params);
     let year = undefined;
 
     if (params.params) {

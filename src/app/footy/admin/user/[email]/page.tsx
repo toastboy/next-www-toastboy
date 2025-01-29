@@ -4,11 +4,16 @@ import { Container, Loader, Table, Text } from '@mantine/core';
 import * as Sentry from '@sentry/react';
 import { UserWithRole } from 'better-auth/plugins/admin';
 import { RelativeTime } from 'components/RelativeTime';
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { authClient } from 'src/lib/auth-client';
 
-export default function Page() {
+interface PageProps {
+    params: Promise<{ email: string }>,
+}
+
+const Page: React.FC<PageProps> = async props => {
+    const { email } = await props.params;
+
     const [loading, setLoading] = useState(true);
     const [users, setUsers] = useState<UserWithRole[] | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -20,7 +25,9 @@ export default function Page() {
             try {
                 const response = await authClient.admin.listUsers({
                     query: {
-                        limit: 10,
+                        searchField: "email",
+                        searchOperator: "contains",
+                        searchValue: email,
                     },
                 });
 
@@ -108,20 +115,10 @@ export default function Page() {
                 <Table.Tbody>
                     {sortedUsers.map((user) => (
                         <Table.Tr key={user.email}>
-                            <Table.Td>
-                                {user.name}
-                            </Table.Td>
-                            <Table.Td>
-                                <Link href={`/footy/admin/user/${encodeURIComponent(user.email)}`}>
-                                    {user.email}
-                                </Link>
-                            </Table.Td>
-                            <Table.Td>
-                                {user.role}
-                            </Table.Td>
-                            <Table.Td>
-                                <RelativeTime date={user.createdAt} />
-                            </Table.Td>
+                            <Table.Td>{user.name}</Table.Td>
+                            <Table.Td>{user.email}</Table.Td>
+                            <Table.Td>{user.role}</Table.Td>
+                            <Table.Td><RelativeTime date={user.createdAt} /></Table.Td>
                         </Table.Tr>
                     ))}
                 </Table.Tbody>
@@ -129,3 +126,5 @@ export default function Page() {
         </Container>
     );
 }
+
+export default Page;

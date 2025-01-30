@@ -16,7 +16,7 @@
     "@azure/identity": "^4.5.0",
     "@azure/storage-blob": "^12.26.0",
     "@mantine/core": "^7.15.2",
-    "@mantine/dates": "^7.15.2",
+    "@mantine/dates": "^7.15.3",
     "@mantine/hooks": "^7.15.2",
     "@prisma/client": "^6.1.0",
     "@tabler/icons-react": "^3.26.0",

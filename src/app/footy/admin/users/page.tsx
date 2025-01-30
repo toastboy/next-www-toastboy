@@ -1,6 +1,6 @@
 'use client';
 
-import { Container, Loader, Table, Text } from '@mantine/core';
+import { Container, Loader, Switch, Table, Text } from '@mantine/core';
 import * as Sentry from '@sentry/react';
 import { UserWithRole } from 'better-auth/plugins/admin';
 import { RelativeTime } from 'components/RelativeTime';
@@ -46,6 +46,26 @@ export default function Page() {
         } else {
             setSortBy(key);
             setSortOrder('asc');
+        }
+    };
+
+    const toggleAdmin = async (userId: string, isAdmin: boolean) => {
+        try {
+            // Optimistically update state
+            setUsers((prevUsers) =>
+                prevUsers?.map((user) =>
+                    user.id === userId ? { ...user, role: isAdmin ? 'admin' : 'user' } : user,
+                ) || [],
+            );
+
+            // Call API to update user role
+            await authClient.admin.setRole({
+                userId: userId,
+                role: isAdmin ? 'admin' : 'user',
+            });
+        } catch (error) {
+            Sentry.captureMessage(`Error updating user role: ${error}`, 'error');
+            setErrorMessage('Failed to update admin status');
         }
     };
 
@@ -98,7 +118,7 @@ export default function Page() {
                             Email {sortBy === 'email' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
                         </Table.Th>
                         <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('role')}>
-                            Role {sortBy === 'role' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
+                            Admin {sortBy === 'role' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
                         </Table.Th>
                         <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('createdAt')}>
                             Created {sortBy === 'createdAt' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
@@ -119,7 +139,11 @@ export default function Page() {
                                 </Link>
                             </Table.Td>
                             <Table.Td>
-                                {user.role}
+                                <Switch
+                                    checked={user.role === 'admin'}
+                                    onChange={(event) => toggleAdmin(user.id, event.currentTarget.checked)}
+                                    color="blue"
+                                />
                             </Table.Td>
                             <Table.Td>
                                 <RelativeTime date={user.createdAt} />

@@ -1,7 +1,8 @@
 'use client';
 
-import { Container, Loader, Switch, Table, Text, TextInput } from '@mantine/core';
+import { Container, Flex, Loader, Switch, Table, Text, TextInput } from '@mantine/core';
 import * as Sentry from '@sentry/react';
+import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
 import { UserWithRole } from 'better-auth/plugins/admin';
 import { RelativeTime } from 'components/RelativeTime';
 import Link from 'next/link';
@@ -12,7 +13,7 @@ export default function Page() {
     const [loading, setLoading] = useState(true);
     const [users, setUsers] = useState<UserWithRole[] | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const [sortBy, setSortBy] = useState<keyof UserWithRole | null>(null);
+    const [sortBy, setSortBy] = useState<keyof UserWithRole | null>('name');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     const [filter, setFilter] = useState('');
 
@@ -110,7 +111,7 @@ export default function Page() {
     if (errorMessage) {
         return (
             <Container>
-                <Text color="red">{errorMessage}</Text>
+                <Text c="red">{errorMessage}</Text>
             </Container>
         );
     }
@@ -126,16 +127,28 @@ export default function Page() {
                 <Table.Thead>
                     <Table.Tr>
                         <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('name')}>
-                            Name {sortBy === 'name' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
+                            <Flex align="center" gap="xs">
+                                Name
+                                {sortBy === 'name' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
+                            </Flex>
                         </Table.Th>
                         <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('email')}>
-                            Email {sortBy === 'email' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
+                            <Flex align="center" gap="xs">
+                                Email
+                                {sortBy === 'email' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
+                            </Flex>
                         </Table.Th>
                         <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('role')}>
-                            Admin {sortBy === 'role' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
+                            <Flex align="center" gap="xs">
+                                Admin
+                                {sortBy === 'role' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
+                            </Flex>
                         </Table.Th>
                         <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('createdAt')}>
-                            Created {sortBy === 'createdAt' ? (sortOrder === 'asc' ? '↑' : '↓') : ''}
+                            <Flex align="center" gap="xs">
+                                Created
+                                {sortBy === 'createdAt' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
+                            </Flex>
                         </Table.Th>
                     </Table.Tr>
                 </Table.Thead>

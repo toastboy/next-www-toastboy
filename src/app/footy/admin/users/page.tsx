@@ -1,6 +1,6 @@
 'use client';
 
-import { Container, Loader, Switch, Table, Text } from '@mantine/core';
+import { Container, Loader, Switch, Table, Text, TextInput } from '@mantine/core';
 import * as Sentry from '@sentry/react';
 import { UserWithRole } from 'better-auth/plugins/admin';
 import { RelativeTime } from 'components/RelativeTime';
@@ -14,6 +14,7 @@ export default function Page() {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [sortBy, setSortBy] = useState<keyof UserWithRole | null>(null);
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+    const [filter, setFilter] = useState('');
 
     useEffect(() => {
         const fetchUsers = async () => {
@@ -69,7 +70,15 @@ export default function Page() {
         }
     };
 
-    const sortedUsers = users ? [...users].sort((a, b) => {
+    const filteredUsers = users?.filter((user) => {
+        const searchTerm = filter.toLowerCase();
+        return (
+            user.name.toLowerCase().includes(searchTerm) ||
+            user.email.toLowerCase().includes(searchTerm)
+        );
+    }) || [];
+
+    const sortedUsers = filteredUsers ? [...filteredUsers].sort((a, b) => {
         if (!sortBy) return 0;
 
         const aValue = a[sortBy];
@@ -108,7 +117,12 @@ export default function Page() {
 
     return (
         <Container>
-            <Table>
+            <TextInput
+                placeholder="Search users"
+                value={filter}
+                onChange={(event) => setFilter(event.currentTarget.value)}
+            />
+            <Table mt={20}>
                 <Table.Thead>
                     <Table.Tr>
                         <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('name')}>

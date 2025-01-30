@@ -45,13 +45,22 @@ export const auth = betterAuth({
             return { user, session };
         }),
     ],
-    // TODO: Add social providers
-    // socialProviders: {
-    //     github: {
-    //         clientId: process.env.GITHUB_CLIENT_ID || "",
-    //         clientSecret: process.env.GITHUB_CLIENT_SECRET || "",
-    //     }
-    // },
+    socialProviders: {
+        google: {
+            clientId: process.env.GOOGLE_CLIENT_ID as string,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+        },
+    },
+    cookies: {
+        sessionToken: {
+            name: "__Secure-authjs.session-token",
+            options: {
+                httpOnly: true,
+                sameSite: "lax", // Important to avoid browser restrictions
+                secure: process.env.NODE_ENV === "production",
+            },
+        },
+    },
 });
 
 export type Session = typeof auth.$Infer.Session;

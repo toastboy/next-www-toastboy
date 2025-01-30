@@ -9,3 +9,9 @@ export const authClient = createAuthClient({
     ],
     baseURL: process.env.BETTER_AUTH_URL,
 });
+
+export const signInWithGoogle = async () => {
+    return await authClient.signIn.social({
+        provider: "google",
+    });
+};

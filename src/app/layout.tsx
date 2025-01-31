@@ -6,8 +6,6 @@ import type { Metadata } from 'next';
 
 import { MantineProvider } from '@mantine/core';
 
-import './globals.css';
-
 export const metadata: Metadata = {
   title: "Toastboy FC",
   description: "Toastboy FC: five-a-side footy on Tuesdays at Kelsey Kerridge, Cambridge",

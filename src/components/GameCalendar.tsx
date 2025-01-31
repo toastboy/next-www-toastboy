@@ -1,9 +1,8 @@
 'use client';
 
-import { Indicator } from '@mantine/core';
+import { Anchor, Indicator } from '@mantine/core';
 import { Calendar, DatePickerProps } from '@mantine/dates';
 import { GameDay } from '@prisma/client';
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 interface GameCalendarProps {
@@ -36,11 +35,11 @@ const GameCalendar: React.FC<GameCalendarProps> = ({ date }) => {
 
         if (gameDay) {
             return (
-                <Link href={`/footy/game/${gameDay.id}`}>
+                <Anchor href={`/footy/game/${gameDay.id}`}>
                     <Indicator size={6} color={gameDay.game ? "green" : "red"} offset={-5}>
                         <div>{date.getDate()}</div>
                     </Indicator>
-                </Link>
+                </Anchor>
             );
         }
     };

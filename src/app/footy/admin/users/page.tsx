@@ -1,11 +1,10 @@
 'use client';
 
-import { Container, Flex, Loader, Switch, Table, Text, TextInput } from '@mantine/core';
+import { Anchor, Container, Flex, Loader, Switch, Table, Text, TextInput } from '@mantine/core';
 import * as Sentry from '@sentry/react';
 import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
 import { UserWithRole } from 'better-auth/plugins/admin';
 import { RelativeTime } from 'components/RelativeTime';
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { authClient } from 'src/lib/auth-client';
 
@@ -156,14 +155,14 @@ export default function Page() {
                     {sortedUsers.map((user) => (
                         <Table.Tr key={user.email}>
                             <Table.Td>
-                                <Link href={`/footy/admin/user/${encodeURIComponent(user.email)}`}>
+                                <Anchor href={`/footy/admin/user/${encodeURIComponent(user.email)}`}>
                                     {user.name}
-                                </Link>
+                                </Anchor>
                             </Table.Td>
                             <Table.Td>
-                                <Link href={`/footy/admin/user/${encodeURIComponent(user.email)}`}>
+                                <Anchor href={`/footy/admin/user/${encodeURIComponent(user.email)}`}>
                                     {user.email}
-                                </Link>
+                                </Anchor>
                             </Table.Td>
                             <Table.Td>
                                 <Switch

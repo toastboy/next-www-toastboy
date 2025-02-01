@@ -1,4 +1,4 @@
-import PlayerTile from 'components/PlayerTile';
+import PlayerTile from 'components/PlayerTile/PlayerTile';
 import playerService from "services/Player";
 
 type PageProps = object

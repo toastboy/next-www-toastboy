@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import PlayerTile from 'components/PlayerTile';
+import PlayerTile from 'components/PlayerTile/PlayerTile';
 import { Wrapper } from "./lib/common";
 
 describe('PlayerTile', () => {

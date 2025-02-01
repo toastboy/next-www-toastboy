@@ -1,3 +1,19 @@
+variable "azure_tenant_id" {
+  type = string
+}
+
+variable "azure_subscription_id" {
+  type = string
+}
+
+variable "azure_client_id" {
+  type = string
+}
+
+variable "azure_client_secret" {
+  type = string
+}
+
 variable "location" {
   type    = string
   default = "uksouth"
@@ -34,6 +50,10 @@ variable "countries_container" {
 }
 
 variable "tags" {
-  type    = map(string)
-  default = {}
+  type = map(string)
+  default = {
+    environment = "dev"
+    project     = "next-www-toastboy"
+    provisioner = "terraform"
+  }
 }

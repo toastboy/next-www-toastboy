@@ -21,12 +21,16 @@ terraform {
 }
 
 provider "azuread" {
-  tenant_id = "6a192374-f4a3-4ab8-bcaf-7053c1f64ce9"
+  tenant_id     = var.azure_tenant_id
+  client_id     = var.azure_client_id
+  client_secret = var.azure_client_secret
 }
 
 provider "azurerm" {
-  tenant_id       = "6a192374-f4a3-4ab8-bcaf-7053c1f64ce9"
-  subscription_id = "164b8c25-f844-4838-82c4-32d17635dcf0"
+  tenant_id       = var.azure_tenant_id
+  subscription_id = var.azure_subscription_id
+  client_id       = var.azure_client_id
+  client_secret   = var.azure_client_secret
 
   features {}
 }

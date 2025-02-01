@@ -19,7 +19,7 @@ import { useForm } from '@mantine/form';
 import * as Sentry from '@sentry/react';
 import { IconX } from '@tabler/icons-react';
 import { useState } from 'react';
-import { authClient, signInWithGoogle } from "src/lib/auth-client";
+import { authClient, signInWithGoogle, signInWithMicrosoft } from "src/lib/auth-client";
 
 export default function SignInPage() {
     const [loading, setLoading] = useState(false);
@@ -94,6 +94,8 @@ export default function SignInPage() {
             </Center>
 
             <Button onClick={() => signInWithGoogle()}>Sign in with Google</Button>
+
+            <Button onClick={() => signInWithMicrosoft()}>Sign in with Microsoft</Button>
 
             <Box
                 component="form"

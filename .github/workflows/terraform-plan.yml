@@ -5,7 +5,7 @@ on:
 
 env:
   TF_CLOUD_ORGANIZATION: "toastboy"
-  TFC_API_TOKEN: "${{ secrets.TFC_API_TOKEN }}"
+  TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
   TF_WORKSPACE: "next-www-toastboy"
   CONFIG_DIRECTORY: "./"
 

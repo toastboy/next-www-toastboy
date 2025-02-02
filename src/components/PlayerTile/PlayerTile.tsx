@@ -11,6 +11,7 @@ const PlayerTile: React.FC<PlayerTileProps> = ({ player }) => {
   const born_string = born == null ? "Unknown" : born.toLocaleDateString('sv');
 
   return (
+    // TODO: Replace styles with Mantine ones
     <div className="w-[250px] rounded overflow-hidden shadow-lg" key={id}>
       <PlayerMugshot idOrLogin={player.login} />
       <div className="px-6 py-4">

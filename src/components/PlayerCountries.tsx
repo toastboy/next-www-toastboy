@@ -1,8 +1,8 @@
 'use client';
 
-import { usePlayerCountries } from 'lib/swr';
-import CountryFlag from 'components/CountryFlag';
 import { Loader } from '@mantine/core';
+import CountryFlag from 'components/CountryFlag';
+import { usePlayerCountries } from 'lib/swr';
 
 interface PlayerCountriesProps {
     idOrLogin: string;
@@ -15,6 +15,7 @@ const PlayerCountries: React.FC<PlayerCountriesProps> = ({ idOrLogin }) => {
     if (error || !data || data.length === 0) return <div>failed to load</div>;
 
     return (
+        // TODO: Change styles to use Mantine components
         <div className="px-6 py-4">
             {data.map((item: string) => (
                 <CountryFlag key={item} isoCode={item} />

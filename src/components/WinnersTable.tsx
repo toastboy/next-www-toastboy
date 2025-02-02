@@ -1,6 +1,6 @@
 'use client';
 
-import { Loader, Table, Title } from '@mantine/core';
+import { Loader, Paper, Table, Title } from '@mantine/core';
 import PlayerLink from 'components/PlayerLink';
 import { FootyTable, useWinners } from 'lib/swr';
 import { getYearName } from 'lib/utils';
@@ -24,7 +24,7 @@ const WinnersTable: React.FC<WinnersTableProps> = ({ table, year }) => {
     ));
 
     return (
-        <>
+        <Paper shadow="xl" p="xl">
             <Title order={3}>{table.charAt(0).toUpperCase() + table.slice(1)}</Title>
 
             <Table>
@@ -36,7 +36,7 @@ const WinnersTable: React.FC<WinnersTableProps> = ({ table, year }) => {
                 </Table.Thead>
                 <Table.Tbody>{rows}</Table.Tbody>
             </Table>
-        </>
+        </Paper>
     );
 };
 

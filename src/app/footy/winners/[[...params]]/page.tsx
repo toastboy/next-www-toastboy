@@ -1,5 +1,6 @@
 'use client';
 
+import { Grid, Stack, Title } from '@mantine/core';
 import WinnersTable from 'components/WinnersTable';
 import { FootyTable } from 'lib/swr';
 import { notFound } from 'next/navigation';
@@ -31,15 +32,18 @@ export const Page: React.FC<PageProps> = (props) => {
     }
 
     return (
-        // TODO: Change styles to use Mantine components
-        <>
-            <h1 className="text-2xl font-bold">Winners</h1>
-            {
-                Object.keys(FootyTable).map((table) => {
-                    return <WinnersTable key={table} table={table as FootyTable} year={year} />;
-                })
-            }
-        </>
+        <Stack align="stretch" justify="center" gap="md">
+            <Title w="100%" ta="center" order={1}>Winners</Title>
+            <Grid>
+                {
+                    Object.keys(FootyTable).map((table) => {
+                        return (
+                            <Grid.Col span={4} key={table}><WinnersTable table={table as FootyTable} year={year} /></Grid.Col>
+                        );
+                    })
+                }
+            </Grid>
+        </Stack>
     );
 };
 

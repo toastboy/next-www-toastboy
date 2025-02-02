@@ -14,6 +14,7 @@ const PlayerArse: React.FC<PlayerArseProps> = ({ idOrLogin }) => {
     if (error || !data) return <div>failed to load</div>;
 
     return (
+        // TODO: Change styles to use Mantine components
         <div className="px-6 py-4">
             <p className="text-gray-700 text-base">In Goal: {data.in_goal}</p>
             <p className="text-gray-700 text-base">Running: {data.running}</p>

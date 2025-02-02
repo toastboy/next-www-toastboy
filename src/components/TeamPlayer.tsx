@@ -11,6 +11,7 @@ export interface TeamPlayerProps {
 }
 
 const TeamPlayer: React.FC<TeamPlayerProps> = ({ idOrLogin, goalie }) => (
+    // TODO: Change styles to use Mantine components
     <div className="w-[600px] rounded overflow-hidden shadow-lg" key={idOrLogin}>
         <PlayerLink idOrLogin={idOrLogin} />
         <PlayerMugshot idOrLogin={idOrLogin} />

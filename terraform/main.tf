@@ -48,7 +48,7 @@ resource "azurerm_storage_account" "next_www_toastboy" {
 
 resource "azurerm_storage_container" "db_seed" {
   name                  = var.db_seed_container
-  storage_account_id    = azurerm_storage_account.next_www_toastboy.id
+  storage_account_name  = azurerm_storage_account.next_www_toastboy.name
   container_access_type = "private"
 }
 
@@ -68,19 +68,19 @@ resource "azurerm_role_assignment" "next_www_toastboy" {
 
 resource "azurerm_storage_container" "mugshots" {
   name                  = var.mugshots_container
-  storage_account_id    = azurerm_storage_account.next_www_toastboy.id
+  storage_account_name  = azurerm_storage_account.next_www_toastboy.name
   container_access_type = "private"
 }
 
 resource "azurerm_storage_container" "clubs" {
   name                  = var.clubs_container
-  storage_account_id    = azurerm_storage_account.next_www_toastboy.id
+  storage_account_name  = azurerm_storage_account.next_www_toastboy.name
   container_access_type = "private"
 }
 
 resource "azurerm_storage_container" "countries" {
   name                  = var.countries_container
-  storage_account_id    = azurerm_storage_account.next_www_toastboy.id
+  storage_account_name  = azurerm_storage_account.next_www_toastboy.name
   container_access_type = "private"
 }
 

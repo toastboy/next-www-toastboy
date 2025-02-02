@@ -30,6 +30,7 @@ const PlayerProfile: React.FC<PlayerProfileProps> = ({ player }) => {
     const born_string = born == null ? "Unknown" : born.toLocaleDateString('sv');
 
     return (
+        // TODO: Change styles to use Mantine components
         <div className="w-[600px] rounded overflow-hidden shadow-lg" key={id}>
             <h1 className="text-6xl font-bold mb-4 text-center">{name}</h1>
             <PlayerMugshot idOrLogin={player.login} />

@@ -7,6 +7,7 @@ const Page: React.FC<PageProps> = async () => {
     const players = await playerService.getAll();
 
     return (
+        // TODO: Replace styles with Mantine ones
         <div>
             <main className="p-10 mx-auto max-w-4xl">
                 <h1 className="text-6xl font-bold mb-4 text-center">Tuesday Footy Players</h1>

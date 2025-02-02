@@ -42,9 +42,11 @@ next-env.d.ts
 /playwright/.cache/
 
 # Terraform local files
-terraform/.terraform*
-terraform/terraform*
 terraform.*
+terraform/.terraform*
+terraform/*.tfstate
+terraform/*.tfvars
+terraform/terraform*
 
 # Build log
 build.txt

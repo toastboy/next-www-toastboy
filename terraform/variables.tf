@@ -49,11 +49,26 @@ variable "countries_container" {
   default = "countries"
 }
 
+variable "github_server_url" {
+  type = string
+}
+
+variable "github_repository" {
+  type = string
+}
+
+variable "github_sha" {
+  type = string
+}
+
+variable "github_run_id" {
+  type = string
+}
+
 variable "tags" {
   type = map(string)
   default = {
-    environment = "dev"
-    project     = "next-www-toastboy"
-    provisioner = "terraform"
+    Project     = "next-www-toastboy"
+    Provisioner = "terraform"
   }
 }

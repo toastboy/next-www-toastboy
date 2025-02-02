@@ -4,7 +4,7 @@ resource "azurerm_resource_group" "next_www_toastboy" {
   name     = var.resource_group_name
   location = var.location
 
-  tags = var.tags
+  tags = local.tags
 }
 
 resource "azuread_application" "next_www_toastboy" {
@@ -40,7 +40,7 @@ resource "azurerm_storage_account" "next_www_toastboy" {
     }
   }
 
-  tags = var.tags
+  tags = local.tags
 }
 
 # Storage container for database seed JSON files: only my own identity and the
@@ -124,7 +124,7 @@ resource "azurerm_key_vault" "next_www_toastboy" {
     ]
   }
 
-  tags = var.tags
+  tags = local.tags
 }
 
 resource "azurerm_key_vault_secret" "client_id" {

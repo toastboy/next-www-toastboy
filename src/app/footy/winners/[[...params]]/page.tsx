@@ -31,6 +31,7 @@ export const Page: React.FC<PageProps> = (props) => {
     }
 
     return (
+        // TODO: Change styles to use Mantine components
         <>
             <h1 className="text-2xl font-bold">Winners</h1>
             {

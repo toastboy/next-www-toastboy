@@ -121,17 +121,12 @@ class PlayerService {
     }
 
     /**
-     * Get all players matching the given criteria
-     * @param active Only return active players
+     * Get all players
      * @returns A promise that resolves to all players
      */
-    async getAll(active = true): Promise<Player[]> {
+    async getAll(): Promise<Player[]> {
         try {
-            return prisma.player.findMany({
-                where: {
-                    finished: active ? null : { not: null },
-                },
-            });
+            return prisma.player.findMany({});
         } catch (error) {
             log(`Error fetching Players: ${error}`);
             throw error;

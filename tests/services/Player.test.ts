@@ -83,17 +83,8 @@ describe('PlayerService', () => {
             return Promise.resolve(player ? player : null);
         });
 
-        (prisma.player.findMany as jest.Mock).mockImplementation((args: {
-            where: { finished: boolean }
-        }) => {
-            if (args.where.finished === undefined) {
-                return Promise.resolve(playerList);
-            }
-
-            return Promise.resolve(args.where.finished ?
-                playerList.filter((player) => player.finished != null) :
-                playerList.filter((player) => player.finished == null),
-            );
+        (prisma.player.findMany as jest.Mock).mockImplementation(() => {
+            return Promise.resolve(playerList);
         });
 
         (prisma.player.create as jest.Mock).mockImplementation((args: { data: Player }) => {
@@ -257,16 +248,10 @@ describe('PlayerService', () => {
     });
 
     describe('getAll', () => {
-        it('should return the correct, complete list of 50 active players', async () => {
+        it('should return the correct, complete list of 100 players', async () => {
             const result = await playerService.getAll();
-            expect(result.length).toEqual(50);
-            expect(result[11].id).toEqual(24);
-        });
-
-        it('should return the correct, complete list of 50 players when active is false', async () => {
-            const result = await playerService.getAll(false);
-            expect(result.length).toEqual(50);
-            expect(result[11].id).toEqual(23);
+            expect(result.length).toEqual(100);
+            expect(result[11].id).toEqual(12);
         });
     });
 

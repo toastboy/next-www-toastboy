@@ -1,22 +1,22 @@
 'use client';
 
 import { Anchor, Container, Flex, Loader, Switch, Table, Text, TextInput, Title } from '@mantine/core';
-import { Player } from '@prisma/client';
 import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
+import GameDayLink from 'components/GameDayLink';
 import { RelativeTime } from 'components/RelativeTime';
-import { usePlayers } from 'lib/swr';
+import { FootyPlayerData, usePlayers } from 'lib/swr';
 import { useState } from 'react';
 
 type PageProps = object;
 
 const Page: React.FC<PageProps> = () => {
     const { data: players, error, isLoading } = usePlayers();
-    const [sortBy, setSortBy] = useState<keyof Player | null>('name');
+    const [sortBy, setSortBy] = useState<keyof FootyPlayerData | null>('name');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     const [filter, setFilter] = useState('');
     const [active, setActive] = useState(true);
 
-    const handleSort = (key: keyof Player) => {
+    const handleSort = (key: keyof FootyPlayerData) => {
         if (sortBy === key) {
             setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
         } else {
@@ -38,6 +38,13 @@ const Page: React.FC<PageProps> = () => {
 
         const aValue = a[sortBy];
         const bValue = b[sortBy];
+
+        if (typeof aValue === 'number' || typeof bValue === 'number') {
+            const naValue = aValue as number || 0;
+            const nbValue = bValue as number || 0;
+
+            return sortOrder === 'asc' ? naValue - nbValue : nbValue - naValue;
+        }
 
         if (typeof aValue === 'string' && typeof bValue === 'string') {
             return sortOrder === 'asc'
@@ -115,6 +122,12 @@ const Page: React.FC<PageProps> = () => {
                                 {sortBy === 'email' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
                             </Flex>
                         </Table.Th>
+                        <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('lastPlayed')}>
+                            <Flex align="center" gap="xs">
+                                Last Played
+                                {sortBy === 'lastPlayed' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
+                            </Flex>
+                        </Table.Th>
                         <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('joined')}>
                             <Flex align="center" gap="xs">
                                 Joined
@@ -153,6 +166,11 @@ const Page: React.FC<PageProps> = () => {
                                         <div key={index}>{email}</div>
                                     ))}
                                 </Anchor>
+                            </Table.Td>
+                            <Table.Td>
+                                {player.lastPlayed &&
+                                    <GameDayLink id={player.lastPlayed} />
+                                }
                             </Table.Td>
                             <Table.Td>
                                 {player.joined &&

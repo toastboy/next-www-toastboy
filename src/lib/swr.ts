@@ -66,6 +66,10 @@ export interface FootyPlayer {
     introduced_by: number,
 }
 
+export interface FootyPlayerData extends FootyPlayer {
+    lastPlayed: number | null;
+}
+
 export interface FootyPlayerRecord {
     year: number,
     playerId: number,
@@ -182,7 +186,7 @@ export function usePlayerRecord(idOrLogin: string, year: number) {
 }
 
 export function usePlayers() {
-    return useSWR<FootyPlayer[]>(`/api/footy/players`, fetcher);
+    return useSWR<FootyPlayerData[]>(`/api/footy/players`, fetcher);
 }
 
 export function useRecordsProgress() {

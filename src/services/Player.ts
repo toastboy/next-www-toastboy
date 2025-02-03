@@ -4,6 +4,10 @@ import prisma from 'lib/prisma';
 
 const log = debug('footy:api');
 
+interface PlayerData extends Player {
+    lastPlayed: number | null;
+}
+
 class PlayerService {
     /**
      * Validate a Player
@@ -121,12 +125,31 @@ class PlayerService {
     }
 
     /**
-     * Get all players
-     * @returns A promise that resolves to all players
+     * Get all players with the game day number when they last played
+     * @returns A promise that resolves to all players with their last game day number
      */
-    async getAll(): Promise<Player[]> {
+    async getAll(): Promise<PlayerData[]> {
         try {
-            return prisma.player.findMany({});
+            const players = await prisma.player.findMany({
+                include: {
+                    Outcomes: {
+                        where: {
+                            points: {
+                                not: null,
+                            },
+                        },
+                        orderBy: {
+                            gameDayId: 'desc',
+                        },
+                        take: 1,
+                    },
+                },
+            });
+
+            return players.map(player => ({
+                ...player,
+                lastPlayed: player.Outcomes.length > 0 ? player.Outcomes[0].gameDayId : null,
+            }));
         } catch (error) {
             log(`Error fetching Players: ${error}`);
             throw error;

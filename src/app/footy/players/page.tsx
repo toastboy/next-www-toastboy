@@ -1,20 +1,21 @@
 'use client';
 
-import { Anchor, Container, Flex, Loader, Switch, Table, Text, TextInput, Title } from '@mantine/core';
+import { Anchor, Container, Flex, Loader, Slider, Switch, Table, Text, TextInput, Title } from '@mantine/core';
 import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
-import GameDayLink from 'components/GameDayLink';
-import { RelativeTime } from 'components/RelativeTime';
-import { FootyPlayerData, usePlayers } from 'lib/swr';
+import PlayerTimeline from 'components/PlayerTimeline/PlayerTimeline';
+import { FootyPlayerData, useCurrentGame, usePlayers } from 'lib/swr';
 import { useState } from 'react';
 
 type PageProps = object;
 
 const Page: React.FC<PageProps> = () => {
-    const { data: players, error, isLoading } = usePlayers();
+    const { data: players, error: playersError, isLoading: playersLoading } = usePlayers();
+    const { data: currentGame, error: currentGameError, isLoading: currentGameLoading } = useCurrentGame();
     const [sortBy, setSortBy] = useState<keyof FootyPlayerData | null>('name');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     const [filter, setFilter] = useState('');
     const [active, setActive] = useState(true);
+    const [replySince, setReplySince] = useState(0);
 
     const handleSort = (key: keyof FootyPlayerData) => {
         if (sortBy === key) {
@@ -33,7 +34,11 @@ const Page: React.FC<PageProps> = () => {
         return searchResult && (!active || player.finished === null);
     }) || [];
 
-    const sortedPlayers = filteredPlayers ? [...filteredPlayers].sort((a, b) => {
+    const playersRepliedSince = filteredPlayers.filter((player) => {
+        return player.lastResponded && (player.lastResponded >= (currentGame?.id || 0) - replySince);
+    });
+
+    const sortedPlayers = playersRepliedSince ? [...playersRepliedSince].sort((a, b) => {
         if (!sortBy) return 0;
 
         const aValue = a[sortBy];
@@ -61,7 +66,7 @@ const Page: React.FC<PageProps> = () => {
         return 0;
     }) : [];
 
-    if (isLoading) {
+    if (playersLoading || currentGameLoading) {
         return (
             <Container>
                 <Loader />
@@ -69,10 +74,20 @@ const Page: React.FC<PageProps> = () => {
         );
     }
 
-    if (error) {
+    if (playersError) {
+        // TODO: This isn't an error message
         return (
             <Container>
-                <Text c="red">{error}</Text>
+                <Text c="red">{playersError}</Text>
+            </Container>
+        );
+    }
+
+    if (currentGameError) {
+        // TODO: This isn't an error message
+        return (
+            <Container>
+                <Text c="red">{currentGameError}</Text>
             </Container>
         );
     }
@@ -80,6 +95,7 @@ const Page: React.FC<PageProps> = () => {
     return (
         <Container>
             <Title order={1}>{sortedPlayers.length} Active{active ? " " : " and Former "}Players</Title>
+            <Title order={3}>who replied within {replySince} weeks</Title>
             <TextInput
                 mt={20}
                 mb={20}
@@ -95,50 +111,25 @@ const Page: React.FC<PageProps> = () => {
                 color="blue"
                 label="Active"
             />
+            <Slider
+                label={(value) => `${value} weeks`}
+                min={0}
+                max={currentGame?.id || 0}
+                step={1}
+                value={replySince}
+                onChange={(event) => setReplySince(event)}
+            />
             <Table mt={20}>
                 <Table.Thead>
                     <Table.Tr>
-                        <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('id')}>
-                            <Flex align="center" gap="xs">
-                                ID
-                                {sortBy === 'id' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
-                            </Flex>
-                        </Table.Th>
-                        <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('login')}>
-                            <Flex align="center" gap="xs">
-                                Login
-                                {sortBy === 'login' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
-                            </Flex>
-                        </Table.Th>
                         <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('name')}>
                             <Flex align="center" gap="xs">
                                 Name
                                 {sortBy === 'name' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
                             </Flex>
                         </Table.Th>
-                        <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('email')}>
-                            <Flex align="center" gap="xs">
-                                Email
-                                {sortBy === 'email' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
-                            </Flex>
-                        </Table.Th>
-                        <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('lastPlayed')}>
-                            <Flex align="center" gap="xs">
-                                Last Played
-                                {sortBy === 'lastPlayed' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
-                            </Flex>
-                        </Table.Th>
-                        <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('joined')}>
-                            <Flex align="center" gap="xs">
-                                Joined
-                                {sortBy === 'joined' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
-                            </Flex>
-                        </Table.Th>
-                        <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('finished')}>
-                            <Flex align="center" gap="xs">
-                                Finished
-                                {sortBy === 'finished' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
-                            </Flex>
+                        <Table.Th>
+                            Timeline
                         </Table.Th>
                     </Table.Tr>
                 </Table.Thead>
@@ -147,40 +138,11 @@ const Page: React.FC<PageProps> = () => {
                         <Table.Tr key={player.id}>
                             <Table.Td>
                                 <Anchor href={`/footy/player/${encodeURIComponent(player.id || "")}`}>
-                                    {player.id}
-                                </Anchor>
-                            </Table.Td>
-                            <Table.Td>
-                                <Anchor href={`/footy/player/${encodeURIComponent(player.login || "")}`}>
-                                    {player.login}
-                                </Anchor>
-                            </Table.Td>
-                            <Table.Td>
-                                <Anchor href={`/footy/player/${encodeURIComponent(player.id || "")}`}>
                                     {player.name}
                                 </Anchor>
                             </Table.Td>
                             <Table.Td>
-                                <Anchor href={`/footy/player/${encodeURIComponent(player.id || "")}`}>
-                                    {player.email?.split(',').map((email, index) => (
-                                        <div key={index}>{email}</div>
-                                    ))}
-                                </Anchor>
-                            </Table.Td>
-                            <Table.Td>
-                                {player.lastPlayed &&
-                                    <GameDayLink id={player.lastPlayed} />
-                                }
-                            </Table.Td>
-                            <Table.Td>
-                                {player.joined &&
-                                    <RelativeTime date={player.joined} />
-                                }
-                            </Table.Td>
-                            <Table.Td>
-                                {player.finished &&
-                                    <RelativeTime date={player.finished} />
-                                }
+                                <PlayerTimeline player={player} />
                             </Table.Td>
                         </Table.Tr>
                     ))}

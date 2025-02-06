@@ -67,7 +67,14 @@ export interface FootyPlayer {
 }
 
 export interface FootyPlayerData extends FootyPlayer {
+    firstResponded: number | null;
+    lastResponded: number | null;
+    firstPlayed: number | null;
     lastPlayed: number | null;
+    gamesPlayed: number;
+    gamesWon: number;
+    gamesDrawn: number;
+    gamesLost: number;
 }
 
 export interface FootyPlayerRecord {
@@ -151,6 +158,10 @@ export function useGameYear(year: number) {
 
 export function useGameDay(id: number) {
     return useSWR<FootyGameDay>(`/api/footy/gameday/${id}`, fetcher);
+}
+
+export function useCurrentGame() {
+    return useSWR<FootyGameDay>(`/api/footy/currentgame`, fetcher);
 }
 
 export function usePlayer(idOrLogin: string) {

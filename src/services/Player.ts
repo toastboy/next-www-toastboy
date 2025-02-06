@@ -5,7 +5,14 @@ import prisma from 'lib/prisma';
 const log = debug('footy:api');
 
 interface PlayerData extends Player {
+    firstResponded: number | null;
+    lastResponded: number | null;
+    firstPlayed: number | null;
     lastPlayed: number | null;
+    gamesPlayed: number;
+    gamesWon: number;
+    gamesDrawn: number;
+    gamesLost: number;
 }
 
 class PlayerService {
@@ -133,23 +140,29 @@ class PlayerService {
             const players = await prisma.player.findMany({
                 include: {
                     Outcomes: {
-                        where: {
-                            points: {
-                                not: null,
-                            },
-                        },
                         orderBy: {
                             gameDayId: 'desc',
                         },
-                        take: 1,
                     },
                 },
             });
 
-            return players.map(player => ({
-                ...player,
-                lastPlayed: player.Outcomes.length > 0 ? player.Outcomes[0].gameDayId : null,
-            }));
+            return players.map(({ Outcomes, ...player }) => {
+                const gamesResponded = Outcomes.filter(outcome => outcome.response !== null);
+                const gamesPlayed = Outcomes.filter(outcome => outcome.points !== null);
+
+                return {
+                    ...player,
+                    firstResponded: Math.min(...gamesResponded.map(outcome => outcome.gameDayId)),
+                    lastResponded: Math.max(...gamesResponded.map(outcome => outcome.gameDayId)),
+                    firstPlayed: Math.min(...gamesPlayed.map(outcome => outcome.gameDayId)),
+                    lastPlayed: Math.max(...gamesPlayed.map(outcome => outcome.gameDayId)),
+                    gamesPlayed: gamesPlayed.length,
+                    gamesWon: gamesPlayed.filter(outcome => outcome.points === 3).length,
+                    gamesDrawn: gamesPlayed.filter(outcome => outcome.points === 1).length,
+                    gamesLost: gamesPlayed.filter(outcome => outcome.points === 0).length,
+                };
+            });
         } catch (error) {
             log(`Error fetching Players: ${error}`);
             throw error;

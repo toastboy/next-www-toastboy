@@ -21,7 +21,7 @@ resource "azuread_service_principal_password" "next_www_toastboy" {
   end_date             = formatdate("YYYY-MM-DD'T'HH:mm:ssZ", timeadd(timestamp(), "8760h")) # 1 year in hours
 }
 
-data "cccccbjhbvfhklurgddr" "toastboy" {
+data "azuread_user" "toastboy" {
   user_principal_name = "toastboy@toastboy.co.uk"
 }
 

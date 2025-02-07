@@ -1,6 +1,6 @@
 'use client';
 
-import { Anchor, Container, Flex, Loader, RangeSlider, Switch, Table, Text, TextInput, Title } from '@mantine/core';
+import { Anchor, Checkbox, Container, Flex, Loader, RangeSlider, Switch, Table, Text, TextInput, Title } from '@mantine/core';
 import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
 import PlayerTimeline from 'components/PlayerTimeline/PlayerTimeline';
 import { FootyPlayerData, useCurrentGame, usePlayers } from 'lib/swr';
@@ -16,6 +16,7 @@ const Page: React.FC<PageProps> = () => {
     const [filter, setFilter] = useState('');
     const [active, setActive] = useState(true);
     const [replyRange, setReplyRange] = useState<[number, number]>([0, 0]);
+    const [selectedPlayers, setSelectedPlayers] = useState<number[]>([]);
 
     useEffect(() => {
         if (currentGame) {
@@ -75,6 +76,14 @@ const Page: React.FC<PageProps> = () => {
         return 0;
     }) : [];
 
+    const handleSelectPlayer = (playerId: number) => {
+        if (selectedPlayers.includes(playerId)) {
+            setSelectedPlayers((prev) => prev.filter((id) => id !== playerId));
+        } else {
+            setSelectedPlayers((prev) => [...prev, playerId]);
+        }
+    };
+
     if (playersLoading || currentGameLoading) {
         return (
             <Container>
@@ -129,9 +138,25 @@ const Page: React.FC<PageProps> = () => {
                 value={replyRange}
                 onChange={(event) => setReplyRange(event)}
             />
+            <Checkbox
+                mt={20}
+                mb={20}
+                label="Select All"
+                checked={selectedPlayers.length === sortedPlayers.length && sortedPlayers.length > 0}
+                onChange={(event) => {
+                    if (event.currentTarget.checked) {
+                        setSelectedPlayers(sortedPlayers.map((player) => player.id));
+                    } else {
+                        setSelectedPlayers([]);
+                    }
+                }}
+            />
             <Table mt={20}>
                 <Table.Thead>
                     <Table.Tr>
+                        <Table.Th>
+                            Select
+                        </Table.Th>
                         <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('name')}>
                             <Flex align="center" gap="xs">
                                 Name
@@ -146,6 +171,12 @@ const Page: React.FC<PageProps> = () => {
                 <Table.Tbody>
                     {sortedPlayers.map((player) => (
                         <Table.Tr key={player.id}>
+                            <Table.Td>
+                                <Checkbox
+                                    checked={selectedPlayers.includes(player.id)}
+                                    onChange={() => handleSelectPlayer(player.id)}
+                                />
+                            </Table.Td>
                             <Table.Td>
                                 <Anchor href={`/footy/player/${encodeURIComponent(player.id || "")}`}>
                                     {player.name}

@@ -3,7 +3,7 @@ module.exports = {
     coverageDirectory: 'coverage',
     coveragePathIgnorePatterns: ['/node_modules/'],
     coverageProvider: 'v8',
-    maxWorkers: "50%",
+    maxWorkers: "30%",
     projects: [
         {
             displayName: { name: 'api', color: 'yellow' },

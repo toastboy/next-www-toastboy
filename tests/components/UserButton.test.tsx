@@ -46,7 +46,7 @@ describe('UserButton', () => {
             error: null,
         });
 
-        let originalLocation = window.location;
+        const originalLocation = window.location;
 
         Object.defineProperty(window, 'location', {
             writable: true,
@@ -73,7 +73,7 @@ describe('UserButton', () => {
             error: null,
         });
 
-        let originalLocation = window.location;
+        const originalLocation = window.location;
 
         Object.defineProperty(window, 'location', {
             writable: true,

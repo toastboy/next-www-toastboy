@@ -1,11 +1,11 @@
 import { Progress } from '@mantine/core';
 import { FootyPlayerData } from 'lib/swr';
 
-interface PlayerTileProps {
+interface Props {
     player: FootyPlayerData;
 }
 
-const PlayerTimeline: React.FC<PlayerTileProps> = ({ player }) => {
+const PlayerTimeline: React.FC<Props> = ({ player }) => {
     const firstGame = 1;
     const lastGame = 1197;
 

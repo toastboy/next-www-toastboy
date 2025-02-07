@@ -3,6 +3,7 @@
 import { Anchor, Checkbox, Container, Flex, Loader, RangeSlider, Switch, Table, Text, TextInput, Title } from '@mantine/core';
 import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
 import PlayerTimeline from 'components/PlayerTimeline/PlayerTimeline';
+import PlayerWDLChart from 'components/PlayerWDLChart/PlayerWDLChart';
 import { FootyPlayerData, useCurrentGame, usePlayers } from 'lib/swr';
 import { useEffect, useState } from 'react';
 
@@ -164,6 +165,9 @@ const Page: React.FC<PageProps> = () => {
                             </Flex>
                         </Table.Th>
                         <Table.Th>
+                            W-D-L
+                        </Table.Th>
+                        <Table.Th>
                             Timeline
                         </Table.Th>
                     </Table.Tr>
@@ -181,6 +185,9 @@ const Page: React.FC<PageProps> = () => {
                                 <Anchor href={`/footy/player/${encodeURIComponent(player.id || "")}`}>
                                     {player.name}
                                 </Anchor>
+                            </Table.Td>
+                            <Table.Td>
+                                <PlayerWDLChart player={player} />
                             </Table.Td>
                             <Table.Td>
                                 <PlayerTimeline player={player} />

@@ -1,10 +1,10 @@
 'use client';
 
-import { Anchor, Container, Flex, Loader, Slider, Switch, Table, Text, TextInput, Title } from '@mantine/core';
+import { Anchor, Container, Flex, Loader, RangeSlider, Switch, Table, Text, TextInput, Title } from '@mantine/core';
 import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
 import PlayerTimeline from 'components/PlayerTimeline/PlayerTimeline';
 import { FootyPlayerData, useCurrentGame, usePlayers } from 'lib/swr';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type PageProps = object;
 
@@ -15,7 +15,13 @@ const Page: React.FC<PageProps> = () => {
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     const [filter, setFilter] = useState('');
     const [active, setActive] = useState(true);
-    const [replySince, setReplySince] = useState(0);
+    const [replyRange, setReplyRange] = useState<[number, number]>([0, 0]);
+
+    useEffect(() => {
+        if (currentGame) {
+            setReplyRange([0, currentGame.id]);
+        }
+    }, [currentGame]);
 
     const handleSort = (key: keyof FootyPlayerData) => {
         if (sortBy === key) {
@@ -35,7 +41,10 @@ const Page: React.FC<PageProps> = () => {
     }) || [];
 
     const playersRepliedSince = filteredPlayers.filter((player) => {
-        return player.lastResponded && (player.lastResponded >= (currentGame?.id || 0) - replySince);
+        return (player.lastResponded &&
+            ((currentGame?.id || 0) - player.lastResponded) >= replyRange[0] &&
+            ((currentGame?.id || 0) - player.lastResponded) <= replyRange[1]) ||
+            (!player.lastResponded && replyRange[1] === currentGame?.id);
     });
 
     const sortedPlayers = playersRepliedSince ? [...playersRepliedSince].sort((a, b) => {
@@ -95,7 +104,7 @@ const Page: React.FC<PageProps> = () => {
     return (
         <Container>
             <Title order={1}>{sortedPlayers.length} Active{active ? " " : " and Former "}Players</Title>
-            <Title order={3}>who replied within {replySince} weeks</Title>
+            <Title order={3}>who last responded between {replyRange[0]} and {replyRange[1]} weeks ago</Title>
             <TextInput
                 mt={20}
                 mb={20}
@@ -111,13 +120,14 @@ const Page: React.FC<PageProps> = () => {
                 color="blue"
                 label="Active"
             />
-            <Slider
+            <Text size="sm">Last Response Range</Text>
+            <RangeSlider
                 label={(value) => `${value} weeks`}
                 min={0}
                 max={currentGame?.id || 0}
                 step={1}
-                value={replySince}
-                onChange={(event) => setReplySince(event)}
+                value={replyRange}
+                onChange={(event) => setReplyRange(event)}
             />
             <Table mt={20}>
                 <Table.Thead>

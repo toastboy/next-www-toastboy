@@ -1,5 +1,5 @@
 import { Anchor, Container, Flex, Text, Title } from '@mantine/core';
-import EnquiryForm from 'components/EnquiryForm';
+import EnquiryForm from 'components/EnquiryForm/EnquiryForm';
 
 type InfoPageProps = object
 

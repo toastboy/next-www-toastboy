@@ -1,4 +1,4 @@
-import GameDay from "components/GameDay";
+import GameDay from "components/GameDay/GameDay";
 import { notFound } from "next/navigation";
 
 interface PageProps {

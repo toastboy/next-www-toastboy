@@ -1,9 +1,9 @@
 'use client';
 
 import { FloatingIndicator, Loader, UnstyledButton } from '@mantine/core';
+import classes from 'components/GameYears/GameYears.module.css'; // TODO: This smells
 import { useTableYears } from 'lib/swr';
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
-import classes from './GameYears.module.css';
 
 interface TableYearsProps {
     activeYear: number;

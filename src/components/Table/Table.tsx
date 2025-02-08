@@ -1,7 +1,7 @@
 'use client';
 
 import { Loader } from '@mantine/core';
-import TableQualified from 'components/TableQualified';
+import TableQualified from 'components/TableQualified/TableQualified';
 import config from 'lib/config';
 import { FootyTable, useGameYear } from 'lib/swr';
 import { getYearName } from 'lib/utils';

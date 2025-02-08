@@ -1,7 +1,7 @@
 jest.mock('swr');
 
 import { render, screen, waitFor } from '@testing-library/react';
-import PlayerLastPlayed from 'components/PlayerLastPlayed';
+import PlayerLastPlayed from 'components/PlayerLastPlayed/PlayerLastPlayed';
 import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
 

@@ -1,7 +1,7 @@
 jest.mock('swr');
 
 import { render, screen, waitFor } from '@testing-library/react';
-import TableQualified from 'components/TableQualified';
+import TableQualified from 'components/TableQualified/TableQualified';
 import { FootyPlayerRecord, FootyTable } from 'lib/swr';
 import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";

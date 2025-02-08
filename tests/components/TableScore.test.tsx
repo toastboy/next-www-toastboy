@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import TableScore from 'components/TableScore';
+import TableScore from 'components/TableScore/TableScore';
 import { FootyPlayerRecord, FootyTable } from 'lib/swr';
 import { Wrapper, loaderClass } from "./lib/common";
 

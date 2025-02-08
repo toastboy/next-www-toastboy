@@ -1,6 +1,6 @@
 import { Anchor } from '@mantine/core';
 import { Player } from '@prisma/client';
-import PlayerMugshot from 'components/PlayerMugshot';
+import PlayerMugshot from 'components/PlayerMugshot/PlayerMugshot';
 
 interface PlayerTileProps {
   player: Player;

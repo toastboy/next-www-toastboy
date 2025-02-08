@@ -1,7 +1,7 @@
 jest.mock('swr');
 
 import { render, screen, waitFor } from '@testing-library/react';
-import ClubBadge from 'components/ClubBadge';
+import ClubBadge from 'components/ClubBadge/ClubBadge';
 import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
 

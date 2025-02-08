@@ -1,7 +1,7 @@
 jest.mock('swr');
 
 import { render, screen, waitFor } from '@testing-library/react';
-import CountryFlag from 'components/CountryFlag';
+import CountryFlag from 'components/CountryFlag/CountryFlag';
 import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
 

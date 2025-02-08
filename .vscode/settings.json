@@ -11,5 +11,8 @@
     "yaml.schemas": {
         "file:///Users/toastboy/.vscode/extensions/atlassian.atlascode-3.0.10/resources/schemas/pipelines-schema.json": "bitbucket-pipelines.yml",
         "https://json.schemastore.org/github-action.json": "file:///Users/toastboy/next-www-toastboy/.github/workflows/terraform-plan.yml"
+    },
+    "files.associations": {
+        "*.yaml": "home-assistant"
     }
 }

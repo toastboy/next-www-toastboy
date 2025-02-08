@@ -1,9 +1,9 @@
 'use client';
 
 import { FloatingIndicator, Loader, UnstyledButton } from '@mantine/core';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import classes from 'components/GameYears/GameYears.module.css'; // TODO: This smells
 import { usePlayerYearsActive } from 'lib/swr';
-import classes from './GameYears.module.css';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 interface PlayerYearsActiveProps {
     idOrLogin: string;

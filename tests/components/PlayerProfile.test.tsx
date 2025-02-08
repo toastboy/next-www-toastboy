@@ -1,5 +1,5 @@
 import { act, render, screen, waitFor } from '@testing-library/react';
-import PlayerProfile from 'components/PlayerProfile';
+import PlayerProfile from 'components/PlayerProfile/PlayerProfile';
 import { notFound } from 'next/navigation';
 import { Wrapper } from "./lib/common";
 

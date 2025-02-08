@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import EnquiryForm from 'components/EnquiryForm';
+import EnquiryForm from 'components/EnquiryForm/EnquiryForm';
 import { Wrapper, loaderClass } from "./lib/common";
 
 describe('EnquiryForm', () => {

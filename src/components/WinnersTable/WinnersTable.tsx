@@ -1,7 +1,7 @@
 'use client';
 
 import { Loader, Paper, Table, Title } from '@mantine/core';
-import PlayerLink from 'components/PlayerLink';
+import PlayerLink from 'components/PlayerLink/PlayerLink';
 import { FootyTable, useWinners } from 'lib/swr';
 import { getYearName } from 'lib/utils';
 

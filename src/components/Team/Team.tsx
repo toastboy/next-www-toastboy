@@ -1,7 +1,7 @@
 'use client';
 
-import TeamPlayer from 'components/TeamPlayer';
 import { Loader } from '@mantine/core';
+import TeamPlayer from 'components/TeamPlayer/TeamPlayer';
 import { useTeam } from 'lib/swr';
 
 interface TeamProps {

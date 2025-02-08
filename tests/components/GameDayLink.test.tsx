@@ -1,7 +1,7 @@
 jest.mock('swr');
 
 import { render, screen, waitFor } from '@testing-library/react';
-import GameDayLink from 'components/GameDayLink';
+import GameDayLink from 'components/GameDayLink/GameDayLink';
 import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
 

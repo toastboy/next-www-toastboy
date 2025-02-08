@@ -1,7 +1,7 @@
 jest.mock('swr');
 
 import { render, screen, waitFor } from '@testing-library/react';
-import GameDay from 'components/GameDay';
+import GameDay from 'components/GameDay/GameDay';
 import { FootyTeam } from 'lib/swr';
 import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";

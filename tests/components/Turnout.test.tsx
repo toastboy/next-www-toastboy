@@ -1,7 +1,7 @@
 jest.mock('swr');
 
 import { render, screen, waitFor } from '@testing-library/react';
-import Turnout from 'components/Turnout';
+import Turnout from 'components/Turnout/Turnout';
 import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from './lib/common';
 

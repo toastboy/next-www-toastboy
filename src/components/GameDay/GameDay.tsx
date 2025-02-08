@@ -1,8 +1,8 @@
 'use client';
 
 import { Loader, Text } from '@mantine/core';
-import GameDayLink from 'components/GameDayLink';
-import Team from 'components/Team';
+import GameDayLink from 'components/GameDayLink/GameDayLink';
+import Team from 'components/Team/Team';
 import { useGameDay } from 'lib/swr';
 
 interface GameDayProps {

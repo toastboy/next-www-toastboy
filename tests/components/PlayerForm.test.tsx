@@ -1,7 +1,7 @@
 jest.mock('swr');
 
 import { render, screen, waitFor } from '@testing-library/react';
-import PlayerForm from 'components/PlayerForm';
+import PlayerForm from 'components/PlayerForm/PlayerForm';
 import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
 

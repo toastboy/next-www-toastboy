@@ -1,7 +1,7 @@
 jest.mock('swr');
 
 import { render, screen, waitFor } from '@testing-library/react';
-import WinnersTable from 'components/WinnersTable';
+import WinnersTable from 'components/WinnersTable/WinnersTable';
 import { FootyTable } from 'lib/swr';
 import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from './lib/common';

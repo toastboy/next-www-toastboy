@@ -1,7 +1,7 @@
 jest.mock('swr');
 
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import AdminUpdatePlayerRecords from 'components/AdminUpdatePlayerRecords';
+import AdminUpdatePlayerRecords from 'components/AdminUpdatePlayerRecords/AdminUpdatePlayerRecords';
 import { act } from 'react';
 import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";

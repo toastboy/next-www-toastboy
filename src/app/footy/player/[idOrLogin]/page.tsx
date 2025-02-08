@@ -1,4 +1,4 @@
-import PlayerProfile from 'components/PlayerProfile';
+import PlayerProfile from 'components/PlayerProfile/PlayerProfile';
 import { notFound, redirect } from 'next/navigation';
 import playerService from "services/Player";
 

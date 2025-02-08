@@ -1,8 +1,8 @@
 'use client';
 
-import PlayerLink from 'components/PlayerLink';
-import TableScore from 'components/TableScore';
 import { Loader } from '@mantine/core';
+import PlayerLink from 'components/PlayerLink/PlayerLink';
+import TableScore from 'components/TableScore/TableScore';
 import { FootyTable, useTable } from 'lib/swr';
 
 interface TableQualifiedProps {

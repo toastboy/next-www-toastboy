@@ -1,7 +1,7 @@
 'use client';
 
 import { Loader } from '@mantine/core';
-import ClubBadge from 'components/ClubBadge';
+import ClubBadge from 'components/ClubBadge/ClubBadge';
 import { usePlayerClubs } from 'lib/swr';
 
 interface PlayerClubsProps {

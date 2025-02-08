@@ -1,7 +1,7 @@
 'use client';
 
 import { Loader } from '@mantine/core';
-import CountryFlag from 'components/CountryFlag';
+import CountryFlag from 'components/CountryFlag/CountryFlag';
 import { usePlayerCountries } from 'lib/swr';
 
 interface PlayerCountriesProps {

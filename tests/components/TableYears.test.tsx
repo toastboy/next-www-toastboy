@@ -1,7 +1,7 @@
 jest.mock('swr');
 
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import TableYears from 'components/TableYears';
+import TableYears from 'components/TableYears/TableYears';
 import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
 

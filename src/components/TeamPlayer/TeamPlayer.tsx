@@ -1,9 +1,9 @@
 'use client';
 
 import { Text } from '@mantine/core';
-import PlayerForm from 'components/PlayerForm';
-import PlayerLink from 'components/PlayerLink';
-import PlayerMugshot from 'components/PlayerMugshot';
+import PlayerForm from 'components/PlayerForm/PlayerForm';
+import PlayerLink from 'components/PlayerLink/PlayerLink';
+import PlayerMugshot from 'components/PlayerMugshot/PlayerMugshot';
 
 export interface TeamPlayerProps {
     idOrLogin: string;

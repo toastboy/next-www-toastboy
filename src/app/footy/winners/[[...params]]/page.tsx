@@ -1,7 +1,7 @@
 'use client';
 
 import { Grid, Stack, Title } from '@mantine/core';
-import WinnersTable from 'components/WinnersTable';
+import WinnersTable from 'components/WinnersTable/WinnersTable';
 import { FootyTable } from 'lib/swr';
 import { notFound } from 'next/navigation';
 import { use } from 'react';

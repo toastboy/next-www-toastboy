@@ -4,7 +4,7 @@ import { Anchor, Container, Flex, Loader, Switch, Table, Text, TextInput } from 
 import * as Sentry from '@sentry/react';
 import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
 import { UserWithRole } from 'better-auth/plugins/admin';
-import { RelativeTime } from 'components/RelativeTime';
+import { RelativeTime } from 'components/RelativeTime/RelativeTime';
 import { useEffect, useState } from 'react';
 import { authClient } from 'src/lib/auth-client';
 

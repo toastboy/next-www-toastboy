@@ -1,7 +1,7 @@
 'use client';
 
-import Table from 'components/Table';
-import TableYears from 'components/TableYears';
+import Table from 'components/Table/Table';
+import TableYears from 'components/TableYears/TableYears';
 import { FootyTable } from 'lib/swr';
 import { notFound, usePathname, useRouter } from 'next/navigation';
 import { use, useEffect, useState } from 'react';

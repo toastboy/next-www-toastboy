@@ -1,8 +1,8 @@
 'use client';
 
 import { Loader, Text } from '@mantine/core';
+import GameDayLink from 'components/GameDayLink/GameDayLink';
 import { usePlayerLastPlayed } from 'lib/swr';
-import GameDayLink from 'components/GameDayLink';
 
 interface PlayerLastPlayedProps {
     idOrLogin: string;

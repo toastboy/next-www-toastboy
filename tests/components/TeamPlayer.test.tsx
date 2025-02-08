@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import TeamPlayer from 'components/TeamPlayer';
+import TeamPlayer from 'components/TeamPlayer/TeamPlayer';
 import { Wrapper, loaderClass } from "./lib/common";
 
 const idOrLogin = "dturnipson";

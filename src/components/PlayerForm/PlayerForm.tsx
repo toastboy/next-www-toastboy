@@ -1,9 +1,9 @@
 'use client';
 
 import { Loader, Text } from '@mantine/core';
-import { Key } from 'react';
+import GameDayLink from 'components/GameDayLink/GameDayLink';
 import { usePlayerForm } from 'lib/swr';
-import GameDayLink from 'components/GameDayLink';
+import { Key } from 'react';
 
 interface PlayerFormProps {
     idOrLogin: string;

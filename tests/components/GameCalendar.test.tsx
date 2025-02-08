@@ -1,5 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
-import GameCalendar from 'components/GameCalendar';
+import GameCalendar from 'components/GameCalendar/GameCalendar';
 import { Wrapper } from "./lib/common";
 
 describe('GameCalendar', () => {

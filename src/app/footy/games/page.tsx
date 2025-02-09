@@ -1,4 +1,4 @@
-import gameDayService from "services/GameDay";
+import gameDayService from "services/GameDay"; // TODO: use API, not service directly
 
 type PageProps = object
 

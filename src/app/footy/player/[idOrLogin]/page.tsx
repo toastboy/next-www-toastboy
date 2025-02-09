@@ -1,6 +1,6 @@
 import PlayerProfile from 'components/PlayerProfile/PlayerProfile';
 import { notFound, redirect } from 'next/navigation';
-import playerService from "services/Player";
+import playerService from "services/Player"; // TODO: use API, not service directly
 
 export async function generateMetadata(
     props: {

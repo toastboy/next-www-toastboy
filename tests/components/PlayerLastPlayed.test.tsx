@@ -5,13 +5,7 @@ import PlayerLastPlayed from 'components/PlayerLastPlayed/PlayerLastPlayed';
 import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
 
-jest.mock('components/GameDayLink', () => {
-    const GameDayLink = ({ id }: { id: number }) => (
-        <div>GameDayLink (id: {id})</div>
-    );
-    GameDayLink.displayName = 'GameDayLink';
-    return GameDayLink;
-});
+jest.mock('components/GameDayLink/GameDayLink');
 
 describe('PlayerLastPlayed', () => {
     const idOrLogin = "15";

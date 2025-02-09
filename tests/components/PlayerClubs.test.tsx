@@ -5,13 +5,7 @@ import PlayerClubs from 'components/PlayerClubs/PlayerClubs';
 import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
 
-jest.mock('components/ClubBadge', () => {
-    const ClubBadge = ({ clubId }: { clubId: number }) => (
-        <div>ClubBadge (clubId: {clubId})</div>
-    );
-    ClubBadge.displayName = 'ClubBadge';
-    return ClubBadge;
-});
+jest.mock('components/ClubBadge/ClubBadge');
 
 describe('PlayerClubs', () => {
     const idOrLogin = "160";

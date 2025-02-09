@@ -6,13 +6,7 @@ import { FootyTable } from 'lib/swr';
 import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
 
-jest.mock('components/TableQualified', () => {
-    const TableQualified = ({ table, year, qualified }: { table: FootyTable, year: number, qualified?: boolean }) => (
-        <div>TableQualified (table: {table}, year: {year}, qualified: {qualified ? "true" : "false"})</div>
-    );
-    TableQualified.displayName = 'TableQualified';
-    return TableQualified;
-});
+jest.mock('components/TableQualified/TableQualified');
 
 describe('Table', () => {
     const table = FootyTable.points;

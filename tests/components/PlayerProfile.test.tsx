@@ -3,14 +3,15 @@ import PlayerProfile from 'components/PlayerProfile/PlayerProfile';
 import { notFound } from 'next/navigation';
 import { Wrapper } from "./lib/common";
 
-// Mock the PlayerYearsActive component to control the onYearChange behavior
-jest.mock('components/PlayerYearsActive/PlayerYearsActive', () => {
-    const MockPlayerYearsActive = ({ onYearChange }: { onYearChange: (year: number) => void }) => (
-        <button type="button" onClick={() => onYearChange(NaN)}>Change Year to NaN</button>
-    );
-    MockPlayerYearsActive.displayName = 'MockPlayerYearsActive';
-    return MockPlayerYearsActive;
-});
+jest.mock('components/PlayerMugshot/PlayerMugshot');
+jest.mock('components/PlayerLastPlayed/PlayerLastPlayed');
+jest.mock('components/PlayerClubs/PlayerClubs');
+jest.mock('components/PlayerCountries/PlayerCountries');
+jest.mock('components/PlayerArse/PlayerArse');
+jest.mock('components/PlayerForm/PlayerForm');
+jest.mock('components/PlayerYearsActive/PlayerYearsActive');
+jest.mock('components/PlayerResults/PlayerResults');
+jest.mock('components/PlayerPositions/PlayerPositions');
 
 jest.mock('next/navigation', () => ({
     notFound: jest.fn(),

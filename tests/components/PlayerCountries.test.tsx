@@ -5,13 +5,7 @@ import PlayerCountries from 'components/PlayerCountries/PlayerCountries';
 import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
 
-jest.mock('components/CountryFlag', () => {
-    const CountryFlag = ({ isoCode }: { isoCode: string }) => (
-        <div>CountryFlag (isoCode: {isoCode})</div>
-    );
-    CountryFlag.displayName = 'CountryFlag';
-    return CountryFlag;
-});
+jest.mock('components/CountryFlag/CountryFlag');
 
 describe('PlayerCountries', () => {
     const idOrLogin = "160";

@@ -2,24 +2,11 @@ jest.mock('swr');
 
 import { render, screen, waitFor } from '@testing-library/react';
 import GameDay from 'components/GameDay/GameDay';
-import { FootyTeam } from 'lib/swr';
 import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
 
-jest.mock('components/GameDayLink', () => {
-    const GameDayLink = ({ id }: { id: number }) => (
-        <div>GameDayLink (id: {id})</div>
-    );
-    GameDayLink.displayName = 'GameDayLink';
-    return GameDayLink;
-});
-jest.mock('components/Team', () => {
-    const Team = ({ gameDayId, team }: { gameDayId: number, team: FootyTeam }) => (
-        <div>Team (gameDayId: {gameDayId}, team: {team})</div>
-    );
-    Team.displayName = 'Team';
-    return Team;
-});
+jest.mock('components/GameDayLink/GameDayLink');
+jest.mock('components/Team/Team');
 
 describe('GameDay', () => {
     const id = 123;

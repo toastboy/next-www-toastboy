@@ -8,13 +8,7 @@ import { Wrapper, errorText, loaderClass } from './lib/common';
 
 const table = FootyTable.points;
 
-jest.mock('components/PlayerLink', () => {
-    const PlayerLink = ({ idOrLogin }: { idOrLogin: string }) => (
-        <div>PlayerLink (idOrLogin: {idOrLogin})</div>
-    );
-    PlayerLink.displayName = 'PlayerLink';
-    return PlayerLink;
-});
+jest.mock('components/PlayerLink/PlayerLink');
 
 describe('WinnersTable', () => {
     beforeEach(() => {

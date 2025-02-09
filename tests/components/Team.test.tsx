@@ -9,13 +9,7 @@ import { Wrapper, errorText, loaderClass } from './lib/common';
 const gamedayId = 1000;
 const team: FootyTeam = FootyTeam.A;
 
-jest.mock('components/TeamPlayer', () => {
-    const TeamPlayer = ({ idOrLogin, goalie }: { idOrLogin: string, goalie: boolean }) => (
-        <div>TeamPlayer (idOrLogin: {idOrLogin}, goalie: {goalie.toString()})</div>
-    );
-    TeamPlayer.displayName = 'TeamPlayer';
-    return TeamPlayer;
-});
+jest.mock('components/TeamPlayer/TeamPlayer');
 
 describe('Team', () => {
     beforeEach(() => {

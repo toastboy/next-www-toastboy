@@ -1,6 +1,6 @@
 import { GameDay } from '@prisma/client';
-import gameDayService from 'services/GameDay';
 import prisma from 'lib/prisma';
+import gameDayService from 'services/GameDay';
 
 jest.mock('lib/prisma', () => ({
     gameDay: {
@@ -24,7 +24,7 @@ const defaultGameDay: GameDay = {
     mailSent: new Date('2021-01-01'),
     comment: 'I heart footy',
     bibs: 'A',
-    picker_games_history: 10,
+    pickerGamesHistory: 10,
 };
 
 const gameDayList: GameDay[] = Array.from({ length: 100 }, (_, index) => ({
@@ -432,7 +432,7 @@ describe('GameDayService', () => {
             })).rejects.toThrow();
             await expect(gameDayService.create({
                 ...defaultGameDay,
-                picker_games_history: 7,
+                pickerGamesHistory: 7,
             })).rejects.toThrow();
         });
 

@@ -14,7 +14,7 @@ describe('GameCalendar', () => {
                     "mailSent": "2004-01-26T09:00:08.000Z",
                     "comment": null,
                     "bibs": null,
-                    "picker_games_history": null,
+                    "pickerGamesHistory": null,
                 },
                 {
                     "id": 101,
@@ -24,7 +24,7 @@ describe('GameCalendar', () => {
                     "mailSent": "2004-02-02T11:13:35.000Z",
                     "comment": "No game this week.",
                     "bibs": null,
-                    "picker_games_history": null,
+                    "pickerGamesHistory": null,
                 },
                 {
                     "id": 102,
@@ -34,7 +34,7 @@ describe('GameCalendar', () => {
                     "mailSent": "2004-02-09T09:00:10.000Z",
                     "comment": null,
                     "bibs": null,
-                    "picker_games_history": null,
+                    "pickerGamesHistory": null,
                 },
                 {
                     "id": 103,
@@ -44,7 +44,7 @@ describe('GameCalendar', () => {
                     "mailSent": "2004-02-16T09:00:11.000Z",
                     "comment": null,
                     "bibs": null,
-                    "picker_games_history": null,
+                    "pickerGamesHistory": null,
                 },
                 {
                     "id": 104,
@@ -54,7 +54,7 @@ describe('GameCalendar', () => {
                     "mailSent": "2004-02-23T09:00:11.000Z",
                     "comment": null,
                     "bibs": null,
-                    "picker_games_history": null,
+                    "pickerGamesHistory": null,
                 },
                 {
                     "id": 105,
@@ -64,7 +64,7 @@ describe('GameCalendar', () => {
                     "mailSent": "2004-03-01T09:01:54.000Z",
                     "comment": null,
                     "bibs": null,
-                    "picker_games_history": null,
+                    "pickerGamesHistory": null,
                 },
                 {
                     "id": 106,
@@ -74,7 +74,7 @@ describe('GameCalendar', () => {
                     "mailSent": "2004-03-08T09:00:10.000Z",
                     "comment": null,
                     "bibs": null,
-                    "picker_games_history": null,
+                    "pickerGamesHistory": null,
                 },
                 {
                     "id": 107,
@@ -84,7 +84,7 @@ describe('GameCalendar', () => {
                     "mailSent": "2004-03-15T09:00:11.000Z",
                     "comment": null,
                     "bibs": null,
-                    "picker_games_history": null,
+                    "pickerGamesHistory": null,
                 },
                 {
                     "id": 108,
@@ -94,7 +94,7 @@ describe('GameCalendar', () => {
                     "mailSent": "2004-03-22T09:00:18.000Z",
                     "comment": null,
                     "bibs": null,
-                    "picker_games_history": null,
+                    "pickerGamesHistory": null,
                 },
                 {
                     "id": 109,
@@ -104,7 +104,7 @@ describe('GameCalendar', () => {
                     "mailSent": "2004-03-29T09:00:33.000Z",
                     "comment": null,
                     "bibs": null,
-                    "picker_games_history": null,
+                    "pickerGamesHistory": null,
                 },
             ]),
         } as Response);

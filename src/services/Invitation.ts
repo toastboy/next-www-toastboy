@@ -1,6 +1,6 @@
 import { Invitation } from '@prisma/client';
-import prisma from 'lib/prisma';
 import debug from 'debug';
+import prisma from 'lib/prisma';
 
 const log = debug('footy:api');
 
@@ -15,11 +15,11 @@ export class InvitationService {
         if (!invitation.uuid || typeof invitation.uuid !== 'string' || invitation.uuid === '') {
             throw new Error(`Invalid uuid value: ${invitation.uuid}`);
         }
-        if (!invitation.player || !Number.isInteger(invitation.player) || invitation.player < 0) {
-            throw new Error(`Invalid player value: ${invitation.player}`);
+        if (!invitation.playerId || !Number.isInteger(invitation.playerId) || invitation.playerId < 0) {
+            throw new Error(`Invalid playerId value: ${invitation.playerId}`);
         }
-        if (!invitation.game_day || !Number.isInteger(invitation.game_day) || invitation.game_day < 0) {
-            throw new Error(`Invalid game_day value: ${invitation.game_day}`);
+        if (!invitation.gameDayId || !Number.isInteger(invitation.gameDayId) || invitation.gameDayId < 0) {
+            throw new Error(`Invalid gameDayId value: ${invitation.gameDayId}`);
         }
 
         return invitation;

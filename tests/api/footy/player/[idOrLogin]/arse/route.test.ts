@@ -18,11 +18,11 @@ describe('API tests using HTTP', () => {
 
     it('should return JSON response for a valid player', async () => {
         const mockData = {
-            in_goal: 1,
+            inGoal: 1,
             running: 2,
             shooting: 3,
             passing: 4,
-            ball_skill: 5,
+            ballSkill: 5,
             attacking: 6,
             defending: 7,
         };

@@ -1,34 +1,35 @@
-import { GameDay } from '@prisma/client';
-import prisma from 'lib/prisma';
+import { GameDay as PrismaGameDay } from '@prisma/client';
 import debug from 'debug';
+import prisma from 'lib/prisma';
+import { GameDay } from 'lib/types';
 
 const log = debug('footy:api');
 
 export class GameDayService {
     /**
-     * Validate a GameDay
-     * @param gameDay The GameDay to validate
-     * @returns the validated GameDay
-     * @throws An error if the GameDay is invalid.
+     * Validate a PrismaGameDay
+     * @param gameDay The PrismaGameDay to validate
+     * @returns the validated PrismaGameDay
+     * @throws An error if the PrismaGameDay is invalid.
      */
-    validate(gameDay: GameDay): GameDay {
+    validate(gameDay: PrismaGameDay): PrismaGameDay {
         if (!gameDay.id || !Number.isInteger(gameDay.id) || gameDay.id < 0) {
             throw new Error(`Invalid id value: ${gameDay.id}`);
         }
-        if (gameDay.picker_games_history &&
-            (!Number.isInteger(gameDay.picker_games_history) ||
-                !(gameDay.picker_games_history == 5 || gameDay.picker_games_history == 10))) {
-            throw new Error(`Invalid picker_games_history value: ${gameDay.picker_games_history}`);
+        if (gameDay.pickerGamesHistory &&
+            (!Number.isInteger(gameDay.pickerGamesHistory) ||
+                !(gameDay.pickerGamesHistory == 5 || gameDay.pickerGamesHistory == 10))) {
+            throw new Error(`Invalid pickerGamesHistory value: ${gameDay.pickerGamesHistory}`);
         }
 
         return gameDay;
     }
 
     /**
-     * Retrieves a GameDay by its ID.
-     * @param id - The ID of the GameDay to retrieve.
-     * @returns A Promise that resolves to the GameDay object if found, or null if not found.
-     * @throws If there is an error while fetching the GameDay.
+     * Retrieves a PrismaGameDay by its ID.
+     * @param id - The ID of the PrismaGameDay to retrieve.
+     * @returns A Promise that resolves to the PrismaGameDay object if found, or null if not found.
+     * @throws If there is an error while fetching the PrismaGameDay.
      */
     async get(id: number): Promise<GameDay | null> {
         try {
@@ -36,9 +37,16 @@ export class GameDayService {
                 where: {
                     id: id,
                 },
+                include: {
+                    outcomes: {
+                        include: {
+                            player: true,
+                        },
+                    },
+                },
             });
         } catch (error) {
-            log(`Error fetching GameDay: ${error}`);
+            log(`Error fetching PrismaGameDay: ${error}`);
             throw error;
         }
     }
@@ -48,23 +56,23 @@ export class GameDayService {
      * @returns A promise that resolves to an array of GameDays.
      * @throws An error if there is a failure.
      */
-    async getAll(): Promise<GameDay[]> {
+    async getAll(): Promise<PrismaGameDay[]> {
         try {
             return prisma.gameDay.findMany({});
         } catch (error) {
-            log(`Error fetching GameDay: ${error}`);
+            log(`Error fetching PrismaGameDay: ${error}`);
             throw error;
         }
     }
 
     /**
-     * Retrieves a GameDay object by the specified date.
+     * Retrieves a PrismaGameDay object by the specified date.
      * @param date - The date to search for.
-     * @returns A Promise that resolves to the GameDay object if found, or null
+     * @returns A Promise that resolves to the PrismaGameDay object if found, or null
      * if not found.
-     * @throws If there was an error while fetching the GameDay.
+     * @throws If there was an error while fetching the PrismaGameDay.
      */
-    async getByDate(date: Date): Promise<GameDay | null> {
+    async getByDate(date: Date): Promise<PrismaGameDay | null> {
         try {
             return prisma.gameDay.findFirst({
                 where: {
@@ -72,18 +80,18 @@ export class GameDayService {
                 },
             });
         } catch (error) {
-            log(`Error fetching GameDay: ${error}`);
+            log(`Error fetching PrismaGameDay: ${error}`);
             throw error;
         }
     }
 
     /**
-     * Retrieves the current GameDay: the most recent GameDay where the mail has
+     * Retrieves the current PrismaGameDay: the most recent PrismaGameDay where the mail has
      * been sent.
      * @returns A promise that resolves to an array of GameDays.
      * @throws An error if there is a failure.
      */
-    async getCurrent(): Promise<GameDay | null> {
+    async getCurrent(): Promise<PrismaGameDay | null> {
         try {
             return prisma.gameDay.findFirst({
                 where: {
@@ -96,7 +104,7 @@ export class GameDayService {
                 },
             });
         } catch (error) {
-            log(`Error fetching current GameDay: ${error}`);
+            log(`Error fetching current PrismaGameDay: ${error}`);
             throw error;
         }
     }
@@ -238,7 +246,7 @@ export class GameDayService {
             return gameDay ? Promise.resolve(gameDay.year) : null;
         }
         catch (error) {
-            log(`Error fetching GameDay: ${error}`);
+            log(`Error fetching PrismaGameDay: ${error}`);
             throw error;
         }
     }
@@ -249,13 +257,13 @@ export class GameDayService {
      * @returns A promise that resolves to the created gameDay, or null if an error occurs.
      * @throws An error if there is a failure.
      */
-    async create(data: GameDay): Promise<GameDay | null> {
+    async create(data: PrismaGameDay): Promise<PrismaGameDay | null> {
         try {
             return await prisma.gameDay.create({
                 data: this.validate(data),
             });
         } catch (error) {
-            log(`Error creating GameDay: ${error}`);
+            log(`Error creating PrismaGameDay: ${error}`);
             throw error;
         }
     }
@@ -266,7 +274,7 @@ export class GameDayService {
      * @returns A promise that resolves to the upserted gameDay, or null if the upsert failed.
      * @throws An error if there is a failure.
      */
-    async upsert(data: GameDay): Promise<GameDay | null> {
+    async upsert(data: PrismaGameDay): Promise<PrismaGameDay | null> {
         try {
             return await prisma.gameDay.upsert({
                 where: {
@@ -276,7 +284,7 @@ export class GameDayService {
                 create: this.validate(data),
             });
         } catch (error) {
-            log(`Error upserting GameDay: ${error}`);
+            log(`Error upserting PrismaGameDay: ${error}`);
             throw error;
         }
     }
@@ -294,7 +302,7 @@ export class GameDayService {
                 },
             });
         } catch (error) {
-            log(`Error deleting GameDay: ${error}`);
+            log(`Error deleting PrismaGameDay: ${error}`);
             throw error;
         }
     }

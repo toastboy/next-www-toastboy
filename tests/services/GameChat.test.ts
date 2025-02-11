@@ -1,6 +1,6 @@
 import { GameChat } from '@prisma/client';
-import gameChatService from 'services/GameChat';
 import prisma from 'lib/prisma';
+import gameChatService from 'services/GameChat';
 
 jest.mock('lib/prisma', () => ({
     gameChat: {
@@ -16,7 +16,7 @@ jest.mock('lib/prisma', () => ({
 
 const defaultGameChat: GameChat = {
     id: 1,
-    game_day: 1,
+    gameDay: 1,
     stamp: new Date(),
     player: 1,
     body: "Hello, world!",
@@ -25,7 +25,7 @@ const defaultGameChat: GameChat = {
 const gameChatList: GameChat[] = Array.from({ length: 100 }, (_, index) => ({
     ...defaultGameChat,
     id: index + 1,
-    game_day: index + 1,
+    gameDay: index + 1,
     player: index + 1,
 }));
 
@@ -84,7 +84,7 @@ describe('GameChatService', () => {
             expect(result).toEqual({
                 ...defaultGameChat,
                 id: 6,
-                game_day: 6,
+                gameDay: 6,
                 player: 6,
             } as GameChat);
         });
@@ -131,7 +131,7 @@ describe('GameChatService', () => {
             })).rejects.toThrow();
             await expect(gameChatService.create({
                 ...defaultGameChat,
-                game_day: -1,
+                gameDay: -1,
             })).rejects.toThrow();
             await expect(gameChatService.create({
                 ...defaultGameChat,

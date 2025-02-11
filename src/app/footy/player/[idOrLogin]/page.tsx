@@ -27,11 +27,11 @@ export async function generateMetadata(
     }
 }
 
-interface PageProps {
+interface Props {
     params: Promise<{ idOrLogin: string }>,
 }
 
-const Page: React.FC<PageProps> = async props => {
+const Page: React.FC<Props> = async props => {
     const { idOrLogin } = await props.params;
     const login = await playerService.getLogin(idOrLogin);
 

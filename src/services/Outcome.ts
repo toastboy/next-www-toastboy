@@ -1,6 +1,7 @@
-import { Outcome, PlayerResponse, Team } from '@prisma/client';
-import prisma from 'lib/prisma';
+import { PlayerResponse, Outcome as PrismaOutcome, Team } from '@prisma/client';
 import debug from 'debug';
+import prisma from 'lib/prisma';
+import { Outcome } from 'lib/types';
 import gameDayService from './GameDay';
 
 const log = debug('footy:api');
@@ -25,7 +26,7 @@ interface Turnout {
     mailSent: Date | null,
     comment: string | null,
     bibs: Team | null,
-    picker_games_history: number | null,
+    pickerGamesHistory: number | null,
     yes: number,
     no: number,
     dunno: number,
@@ -56,7 +57,7 @@ export class OutcomeService {
      * @returns the validated outcome
      * @throws An error if the outcome is invalid.
      */
-    validate(outcome: Outcome): Outcome {
+    validate(outcome: PrismaOutcome): PrismaOutcome {
         if (outcome.response && !Object.values(PlayerResponse).includes(outcome.response)) {
             throw new Error(`Invalid response value: ${outcome.response}`);
         }
@@ -80,13 +81,13 @@ export class OutcomeService {
     }
 
     /**
-     * Retrieves an Outcome for the given Player ID for the given GameDay ID.
+     * Retrieves an PrismaOutcome for the given Player ID for the given GameDay ID.
      * @param gameDayId - The ID of the GameDay.
      * @param playerId - The ID of the Player.
-     * @returns A promise that resolves to the Outcome if found, otherwise null.
+     * @returns A promise that resolves to the PrismaOutcome if found, otherwise null.
      * @throws An error if there is a failure.
      */
-    async get(gameDayId: number, playerId: number): Promise<Outcome | null> {
+    async get(gameDayId: number, playerId: number): Promise<PrismaOutcome | null> {
         try {
             return prisma.outcome.findUnique({
                 where: {
@@ -107,7 +108,7 @@ export class OutcomeService {
      * @returns A promise that resolves to an array of outcomes or null if an error occurs.
      * @throws An error if there is a failure.
      */
-    async getAll(): Promise<Outcome[] | null> {
+    async getAll(): Promise<PrismaOutcome[] | null> {
         try {
             return prisma.outcome.findMany({});
         } catch (error) {
@@ -118,10 +119,10 @@ export class OutcomeService {
 
     /**
      * Retrieves the last played outcome.
-     * @returns A Promise that resolves to the last played Outcome, or null if no outcome is found.
+     * @returns A Promise that resolves to the last played PrismaOutcome, or null if no outcome is found.
      * @throws An error if there is a failure.
      */
-    async getLastPlayed(): Promise<Outcome | null> {
+    async getLastPlayed(): Promise<PrismaOutcome | null> {
         try {
             return prisma.outcome.findFirst({
                 where: {
@@ -150,7 +151,7 @@ export class OutcomeService {
      * gameDay, most recent first.
      * @throws An error if there is a failure.
      */
-    async getAllForYear(year: number, untilGameDay?: number): Promise<Outcome[]> {
+    async getAllForYear(year: number, untilGameDay?: number): Promise<PrismaOutcome[]> {
         try {
             return prisma.outcome.findMany({
                 where: {
@@ -320,7 +321,7 @@ export class OutcomeService {
      * Retrieves outcomes by game day ID and, optionally, team.
      * @param gameDayId - The ID of the game day.
      * @param team - Optional team ('A' or 'B').
-     * @returns A promise that resolves to an array of Outcome objects.
+     * @returns A promise that resolves to an array of PrismaOutcome objects.
      * @throws If there is an error fetching the outcomes.
      */
     async getByGameDay(gameDayId: number, team?: 'A' | 'B'): Promise<Outcome[]> {
@@ -329,6 +330,9 @@ export class OutcomeService {
                 where: {
                     gameDayId,
                     team,
+                },
+                include: {
+                    player: true,
                 },
             });
         } catch (error) {
@@ -343,7 +347,7 @@ export class OutcomeService {
      * @returns A promise that resolves to an array of outcomes.
      * @throws An error if there is a failure.
      */
-    async getByPlayer(playerId: number): Promise<Outcome[]> {
+    async getByPlayer(playerId: number): Promise<PrismaOutcome[]> {
         try {
             return prisma.outcome.findMany({
                 where: {
@@ -439,7 +443,7 @@ export class OutcomeService {
      * @returns A promise that resolves to the created outcome, or null if an error occurs.
      * @throws An error if there is a failure.
      */
-    async create(data: Outcome): Promise<Outcome | null> {
+    async create(data: PrismaOutcome): Promise<PrismaOutcome | null> {
         try {
             return await prisma.outcome.create({
                 data: this.validate(data),
@@ -451,12 +455,12 @@ export class OutcomeService {
     }
 
     /**
-     * Upserts an Outcome.
+     * Upserts an PrismaOutcome.
      * @param data The data to be upserted.
-     * @returns A promise that resolves to the upserted Outcome, or null if the upsert failed.
+     * @returns A promise that resolves to the upserted PrismaOutcome, or null if the upsert failed.
      * @throws An error if there is a failure.
      */
-    async upsert(data: Outcome): Promise<Outcome | null> {
+    async upsert(data: PrismaOutcome): Promise<PrismaOutcome | null> {
         try {
             return await prisma.outcome.upsert({
                 where: {
@@ -469,13 +473,13 @@ export class OutcomeService {
                 create: this.validate(data),
             });
         } catch (error) {
-            log(`Error upserting Outcome: ${error}`);
+            log(`Error upserting PrismaOutcome: ${error}`);
             throw error;
         }
     }
 
     /**
-     * Deletes an Outcome.
+     * Deletes an PrismaOutcome.
      * @param gameDayId - The ID of the GameDay.
      * @param playerId - The ID of the Player.
      * @returns A Promise that resolves to void.

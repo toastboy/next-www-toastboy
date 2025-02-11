@@ -16,11 +16,11 @@ const PlayerArse: React.FC<PlayerArseProps> = ({ idOrLogin }) => {
     return (
         // TODO: Change styles to use Mantine components
         <div className="px-6 py-4">
-            <p className="text-gray-700 text-base">In Goal: {data.in_goal}</p>
+            <p className="text-gray-700 text-base">In Goal: {data.inGoal}</p>
             <p className="text-gray-700 text-base">Running: {data.running}</p>
             <p className="text-gray-700 text-base">Shooting: {data.shooting}</p>
             <p className="text-gray-700 text-base">Passing: {data.passing}</p>
-            <p className="text-gray-700 text-base">Ball Skill: {data.ball_skill}</p>
+            <p className="text-gray-700 text-base">Ball Skill: {data.ballSkill}</p>
             <p className="text-gray-700 text-base">Attacking: {data.attacking}</p>
             <p className="text-gray-700 text-base">Defending: {data.defending}</p>
         </div>

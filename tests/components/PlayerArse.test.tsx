@@ -56,11 +56,11 @@ describe('PlayerArse', () => {
     it('renders with data', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: {
-                in_goal: 1,
+                inGoal: 1,
                 running: 2,
                 shooting: 3,
                 passing: 4,
-                ball_skill: 5,
+                ballSkill: 5,
                 attacking: 6,
                 defending: 7,
             },

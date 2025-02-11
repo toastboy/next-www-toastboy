@@ -1,4 +1,3 @@
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,21 +9,22 @@ datasource db {
 }
 
 model Arse {
+  id    Int      @id @default(autoincrement())
   stamp DateTime @default(now()) @db.Timestamp(0)
 
-  in_goal    Int?
-  running    Int?
-  shooting   Int?
-  passing    Int?
-  ball_skill Int?
-  attacking  Int?
-  defending  Int?
+  inGoal    Int?
+  running   Int?
+  shooting  Int?
+  passing   Int?
+  ballSkill Int?
+  attacking Int?
+  defending Int?
 
   playerId Int
   raterId  Int
 
-  Player Player @relation("player", fields: [playerId], references: [id])
-  Rater  Player @relation("rater", fields: [raterId], references: [id])
+  player Player @relation(name: "PlayerArse", fields: [playerId], references: [id])
+  rater  Player @relation(name: "RaterArse", fields: [raterId], references: [id])
 
   @@unique([playerId, raterId])
   @@index([playerId])
@@ -32,18 +32,18 @@ model Arse {
 }
 
 model Club {
-  id           Int     @unique(map: "id") @default(autoincrement())
-  soccerway_id Int?
-  club_name    String  @db.VarChar(255)
-  uri          String? @db.VarChar(255)
-  country      String? @db.VarChar(255)
+  id          Int     @id @default(autoincrement())
+  soccerwayId Int?
+  clubName    String  @db.VarChar(255)
+  uri         String? @db.VarChar(255)
+  country     String? @db.VarChar(255)
 
-  Supporters ClubSupporter[]
+  supporters ClubSupporter[]
 }
 
 model ClubSupporter {
-  playerId Int @default(0)
-  clubId   Int @default(0)
+  playerId Int
+  clubId   Int
 
   player Player @relation(fields: [playerId], references: [id])
   club   Club   @relation(fields: [clubId], references: [id])
@@ -54,69 +54,70 @@ model ClubSupporter {
 }
 
 model Country {
-  isoCode String @id @unique(map: "isoCode") @db.VarChar(6)
-  name    String @unique(map: "name") @db.VarChar(255)
+  isoCode String @id @db.VarChar(6)
+  name    String @unique @db.VarChar(255)
 
-  Supporters CountrySupporter[]
+  supporters CountrySupporter[]
 }
 
 model CountrySupporter {
   playerId       Int
-  countryISOcode String @db.VarChar(6)
+  countryISOCode String @db.VarChar(6)
 
-  country Country @relation(fields: [countryISOcode], references: [isoCode])
+  country Country @relation(fields: [countryISOCode], references: [isoCode])
   player  Player  @relation(fields: [playerId], references: [id])
 
-  @@unique([playerId, countryISOcode])
+  @@unique([playerId, countryISOCode])
   @@index([playerId])
-  @@index([countryISOcode])
+  @@index([countryISOCode])
 }
 
 model Diffs {
-  id               Int     @id @default(autoincrement())
-  a                String? @db.Text
-  b                String? @db.Text
-  diff_age         Float?
-  diff_unknown_age Int?
-  diff_goalies     Int?    @db.TinyInt
-  diff_average     Float?
-  diff_played      Int?
+  id             Int     @id @default(autoincrement())
+  a              String? @db.Text
+  b              String? @db.Text
+  diffAge        Float?
+  diffUnknownAge Int?
+  diffGoalies    Int?    @db.TinyInt
+  diffAverage    Float?
+  diffPlayed     Int?
 }
 
 model GameChat {
-  id       Int      @id @default(autoincrement())
-  game_day Int
-  stamp    DateTime @default(now()) @db.Timestamp(0)
-  player   Int
-  body     String?  @db.MediumText
+  id      Int      @id @default(autoincrement())
+  gameDay Int
+  stamp   DateTime @default(now()) @db.Timestamp(0)
+  player  Int
+  body    String?  @db.MediumText
 
-  @@index([player], map: "player")
+  @@index([player])
 }
 
 model GameDay {
-  id                   Int       @id
-  year                 Int
-  date                 DateTime  @db.DateTime(0)
-  game                 Boolean   @default(true)
-  mailSent             DateTime? @db.DateTime(0)
-  comment              String?   @db.VarChar(255)
-  bibs                 Team?
-  picker_games_history Int?
+  id                 Int       @id @default(autoincrement())
+  year               Int
+  date               DateTime  @db.DateTime(0)
+  game               Boolean   @default(true)
+  mailSent           DateTime? @db.DateTime(0)
+  comment            String?   @db.VarChar(255)
+  bibs               Team?
+  pickerGamesHistory Int?
 
-  Outcomes      Outcome[]
-  PlayerRecords PlayerRecord[]
+  outcomes      Outcome[]
+  playerRecords PlayerRecord[]
 }
 
 model Invitation {
-  uuid     String @id @db.Char(38)
-  player   Int    @default(0)
-  game_day Int    @default(0)
+  uuid      String @id @db.Char(38)
+  playerId  Int
+  gameDayId Int
 
-  @@index([player], map: "invitation_ibfk_1")
-  @@index([game_day], map: "invitation_ibfk_2")
+  @@index([playerId])
+  @@index([gameDayId])
 }
 
 model Outcome {
+  id               Int             @id @default(autoincrement())
   response         PlayerResponse?
   responseInterval Int?
   points           Int?
@@ -138,67 +139,66 @@ model Outcome {
 }
 
 model Picker {
-  player      Int     @id
-  player_name String? @db.VarChar(255)
-  age         Int?
-  average     Float?
-  goalie      Int?    @db.TinyInt
-  played      Int?
+  playerId   Int     @id
+  playerName String? @db.VarChar(255)
+  age        Int?
+  average    Float?
+  goalie     Int?    @db.TinyInt
+  played     Int?
 }
 
 model PickerTeams {
-  player Int   @unique(map: "player")
-  team   Team?
+  playerId Int   @unique
+  team     Team?
 }
 
 model Player {
   id    Int    @id @default(autoincrement())
-  login String @unique(map: "login") @db.VarChar(16)
+  login String @unique @db.VarChar(16)
 
-  is_admin Boolean?
+  isAdmin Boolean?
 
-  first_name String?
-  last_name  String?
-  name       String?
-  anonymous  Boolean?
+  firstName String?
+  lastName  String?
+  name      String?
+  anonymous Boolean?
 
-  email String?
-
+  email    String?
   joined   DateTime?
   finished DateTime?
   born     DateTime?
+  comment  String?
 
-  comment String?
+  introducedBy Int?
 
-  introduced_by Int?
-
-  ArsesOfPlayer Arse[]             @relation("player")
-  ArsesByPlayer Arse[]             @relation("rater")
-  Clubs         ClubSupporter[]
-  Countries     CountrySupporter[]
-  Outcomes      Outcome[]
-  PlayerRecords PlayerRecord[]
+  arsesOfPlayer Arse[]             @relation(name: "PlayerArse")
+  arsesByPlayer Arse[]             @relation(name: "RaterArse")
+  clubs         ClubSupporter[]
+  countries     CountrySupporter[]
+  outcomes      Outcome[]
+  playerRecords PlayerRecord[]
 }
 
 model PlayerRecord {
-  year                      Int
-  responses                 Int?
-  P                         Int?
-  W                         Int?
-  D                         Int?
-  L                         Int?
-  points                    Int?
-  averages                  Float?
-  stalwart                  Int?
-  pub                       Int?
-  rank_points               Int?
-  rank_averages             Int?
-  rank_averages_unqualified Int?
-  rank_stalwart             Int?
-  rank_speedy               Int?
-  rank_speedy_unqualified   Int?
-  rank_pub                  Int?
-  speedy                    Int?
+  id                      Int    @id @default(autoincrement())
+  year                    Int
+  responses               Int?
+  played                  Int?
+  won                     Int?
+  drawn                   Int?
+  lost                    Int?
+  points                  Int?
+  averages                Float?
+  stalwart                Int?
+  pub                     Int?
+  rankPoints              Int?
+  rankAverages            Int?
+  rankAveragesUnqualified Int?
+  rankStalwart            Int?
+  rankSpeedy              Int?
+  rankSpeedyUnqualified   Int?
+  rankPub                 Int?
+  speedy                  Int?
 
   playerId  Int
   gameDayId Int

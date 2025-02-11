@@ -1,27 +1,20 @@
-'use client';
+import { Anchor, Image } from '@mantine/core';
+import { Player } from 'lib/types';
 
-import { Anchor, Image, Loader } from '@mantine/core';
-import { usePlayer } from 'lib/swr';
-
-interface PlayerMugshotProps {
-    idOrLogin: string;
+interface Props {
+    player: Player;
 }
 
-const PlayerMugshot: React.FC<PlayerMugshotProps> = ({ idOrLogin }) => {
-    const { data, error, isLoading } = usePlayer(idOrLogin);
-
-    if (isLoading) return <Loader color="gray" type="dots" />;
-    if (error || !data) return <div>failed to load</div>;
-
+const PlayerMugshot: React.FC<Props> = ({ player }) => {
     return (
-        <Anchor href={`/footy/player/${data.login}`}>
+        <Anchor href={`/footy/player/${player.login}`}>
             <Image
                 className="w-full"
                 width={300}
                 height={300}
-                src={`/api/footy/player/${data.login}/mugshot`}
-                alt={data.name}
-                title={data.name}
+                src={`/api/footy/player/${player.login}/mugshot`}
+                alt={player.name || `Player ${player.id}`}
+                title={player.name || `Player ${player.id}`}
             />
         </Anchor>
     );

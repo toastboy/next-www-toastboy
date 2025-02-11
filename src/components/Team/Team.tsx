@@ -1,24 +1,16 @@
-'use client';
-
-import { Loader } from '@mantine/core';
 import TeamPlayer from 'components/TeamPlayer/TeamPlayer';
-import { useTeam } from 'lib/swr';
+import { Outcome } from 'lib/types';
 
-interface TeamProps {
-    gameDayId: number;
-    team: 'A' | 'B';
+export interface Props {
+    team: Outcome[];
 }
 
-const Team: React.FC<TeamProps> = ({ gameDayId, team }) => {
-    const { data, error, isLoading } = useTeam(gameDayId, team);
-
-    if (isLoading) return <Loader color="gray" type="dots" />;
-    if (error || !data || data.length === 0) return <div>failed to load</div>;
-
+const Team: React.FC<Props> = ({ team }) => {
     return (
+        // TODO: Change styles to use Mantine components
         <div className="w-[600px] rounded overflow-hidden shadow-lg">
-            {data.map((o) => (
-                <TeamPlayer key={o.playerId} idOrLogin={o.playerId.toString()} goalie={o.goalie} />
+            {team.map((o) => (
+                <TeamPlayer key={o.playerId} player={o.player} goalie={o.goalie} />
             ))}
         </div>
     );

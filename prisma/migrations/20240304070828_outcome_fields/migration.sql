@@ -1,10 +1,10 @@
 /*
  Warnings:
- 
+
  - You are about to drop the column `responsetime` on the `Outcome` table. All the data in the column will be lost.
  - You are about to alter the column `response` on the `Outcome` table. The data in that column could be lost. The data in that column will be cast from `VarChar(20)` to `Enum(EnumId(1))`.
  - You are about to drop the `Standings` table. If the table is not empty, all the data it contains will be lost.
- 
+
  */
 -- AlterTable
 ALTER TABLE
@@ -26,6 +26,7 @@ MODIFY
 DROP TABLE IF EXISTS `Standings`;
 
 -- CreateTable
+DROP TABLE IF EXISTS `PlayerRecord`;
 CREATE TABLE `PlayerRecord` (
   `year` INTEGER NOT NULL,
   `responses` INTEGER NULL DEFAULT 0,

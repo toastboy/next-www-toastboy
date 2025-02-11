@@ -1,6 +1,6 @@
 import { Invitation } from '@prisma/client';
-import invitationService from 'services/Invitation';
 import prisma from 'lib/prisma';
+import invitationService from 'services/Invitation';
 
 jest.mock('lib/prisma', () => ({
     invitation: {
@@ -16,8 +16,8 @@ jest.mock('lib/prisma', () => ({
 
 const defaultInvitation: Invitation = {
     uuid: '1234',
-    player: 1,
-    game_day: 1,
+    playerId: 1,
+    gameDayId: 1,
 };
 
 const invitationList: Invitation[] = Array.from({ length: 100 }, (_, index) => ({
@@ -125,11 +125,11 @@ describe('InvitationService', () => {
             })).rejects.toThrow();
             await expect(invitationService.create({
                 ...defaultInvitation,
-                player: -1,
+                playerId: -1,
             })).rejects.toThrow();
             await expect(invitationService.create({
                 ...defaultInvitation,
-                game_day: -1,
+                gameDayId: -1,
             })).rejects.toThrow();
         });
 

@@ -1,7 +1,7 @@
 import { PlayerRecord } from '@prisma/client';
-import playerRecordService, { EnumTable } from 'services/PlayerRecord';
-import prisma from 'lib/prisma';
 import fs from 'fs';
+import prisma from 'lib/prisma';
+import playerRecordService, { EnumTable } from 'services/PlayerRecord';
 
 jest.mock('lib/prisma', () => ({
     playerRecord: {
@@ -40,23 +40,24 @@ jest.mock('lib/prisma', () => ({
 }));
 
 const defaultPlayerRecord: PlayerRecord = {
+    id: 1,
     year: 2021,
     responses: 10,
-    P: 10,
-    W: 5,
-    D: 3,
-    L: 2,
+    played: 10,
+    won: 5,
+    drawn: 3,
+    lost: 2,
     points: 18,
     averages: 1.8,
     stalwart: 5,
     pub: 1,
-    rank_points: 1,
-    rank_averages: 2,
-    rank_averages_unqualified: 2,
-    rank_stalwart: 3,
-    rank_speedy: 4,
-    rank_speedy_unqualified: 4,
-    rank_pub: 5,
+    rankPoints: 1,
+    rankAverages: 2,
+    rankAveragesUnqualified: 2,
+    rankStalwart: 3,
+    rankSpeedy: 4,
+    rankSpeedyUnqualified: 4,
+    rankPub: 5,
     speedy: 4,
 
     gameDayId: 15,
@@ -394,7 +395,7 @@ describe('PlayerRecordService', () => {
 
             (prisma.playerRecord.findMany as jest.Mock).mockImplementation(() => {
                 const playerRecords = playerRecordList.filter((playerRecord) =>
-                    playerRecord.rank_points === 1 &&
+                    playerRecord.rankPoints === 1 &&
                     playerRecord.year !== 0);
                 return Promise.resolve(playerRecords);
             });
@@ -429,7 +430,7 @@ describe('PlayerRecordService', () => {
                 where: {
                     gameDayId: number,
                     year: number,
-                    rank_points?: {
+                    rankPoints?: {
                         not: null,
                     },
                 },
@@ -438,7 +439,7 @@ describe('PlayerRecordService', () => {
                 const playerRecords = playerRecordList.filter((playerRecord) =>
                     playerRecord.year === args.where.year &&
                     playerRecord.gameDayId == args.where.gameDayId &&
-                    (!args.where.rank_points || (playerRecord.rank_points != null)));
+                    (!args.where.rankPoints || (playerRecord.rankPoints != null)));
                 return Promise.resolve(playerRecords);
             });
         });
@@ -488,10 +489,10 @@ describe('PlayerRecordService', () => {
                 where: {
                     gameDayId: number,
                     year: number,
-                    rank_averages?: {
+                    rankAverages?: {
                         not: null,
                     },
-                    rank_averages_unqualified?: {
+                    rankAveragesUnqualified?: {
                         not: null,
                     },
                 },
@@ -500,8 +501,8 @@ describe('PlayerRecordService', () => {
                 const playerRecords = playerRecordList.filter((playerRecord) =>
                     playerRecord.year === args.where.year &&
                     playerRecord.gameDayId == args.where.gameDayId &&
-                    (!args.where.rank_averages || (playerRecord.rank_averages != null)) &&
-                    (!args.where.rank_averages_unqualified || (playerRecord.rank_averages_unqualified != null)));
+                    (!args.where.rankAverages || (playerRecord.rankAverages != null)) &&
+                    (!args.where.rankAveragesUnqualified || (playerRecord.rankAveragesUnqualified != null)));
                 return Promise.resolve(playerRecords);
             });
         });
@@ -531,10 +532,10 @@ describe('PlayerRecordService', () => {
                 where: {
                     gameDayId: number,
                     year: number,
-                    rank_speedy?: {
+                    rankSpeedy?: {
                         not: null,
                     },
-                    rank_speedy_unqualified?: {
+                    rankSpeedyUnqualified?: {
                         not: null,
                     },
                 },
@@ -543,8 +544,8 @@ describe('PlayerRecordService', () => {
                 const playerRecords = playerRecordList.filter((playerRecord) =>
                     playerRecord.year === args.where.year &&
                     playerRecord.gameDayId == args.where.gameDayId &&
-                    (!args.where.rank_speedy || (playerRecord.rank_speedy != null)) &&
-                    (!args.where.rank_speedy_unqualified || (playerRecord.rank_speedy_unqualified != null)));
+                    (!args.where.rankSpeedy || (playerRecord.rankSpeedy != null)) &&
+                    (!args.where.rankSpeedyUnqualified || (playerRecord.rankSpeedyUnqualified != null)));
                 return Promise.resolve(playerRecords);
             });
         });
@@ -589,19 +590,19 @@ describe('PlayerRecordService', () => {
             })).rejects.toThrow();
             await expect(playerRecordService.create({
                 ...defaultPlayerRecord,
-                P: -1,
+                played: -1,
             })).rejects.toThrow();
             await expect(playerRecordService.create({
                 ...defaultPlayerRecord,
-                W: -1,
+                won: -1,
             })).rejects.toThrow();
             await expect(playerRecordService.create({
                 ...defaultPlayerRecord,
-                D: -1,
+                drawn: -1,
             })).rejects.toThrow();
             await expect(playerRecordService.create({
                 ...defaultPlayerRecord,
-                L: -1,
+                lost: -1,
             })).rejects.toThrow();
             await expect(playerRecordService.create({
                 ...defaultPlayerRecord,
@@ -621,23 +622,23 @@ describe('PlayerRecordService', () => {
             })).rejects.toThrow();
             await expect(playerRecordService.create({
                 ...defaultPlayerRecord,
-                rank_points: -1,
+                rankPoints: -1,
             })).rejects.toThrow();
             await expect(playerRecordService.create({
                 ...defaultPlayerRecord,
-                rank_averages: -1,
+                rankAverages: -1,
             })).rejects.toThrow();
             await expect(playerRecordService.create({
                 ...defaultPlayerRecord,
-                rank_stalwart: -1,
+                rankStalwart: -1,
             })).rejects.toThrow();
             await expect(playerRecordService.create({
                 ...defaultPlayerRecord,
-                rank_speedy: -1,
+                rankSpeedy: -1,
             })).rejects.toThrow();
             await expect(playerRecordService.create({
                 ...defaultPlayerRecord,
-                rank_pub: -1,
+                rankPub: -1,
             })).rejects.toThrow();
             await expect(playerRecordService.create({
                 ...defaultPlayerRecord,
@@ -691,7 +692,7 @@ describe('PlayerRecordService', () => {
                 mailSent: new Date('2021-01-01'),
                 comment: 'I heart footy',
                 bibs: 'A',
-                picker_games_history: 10,
+                pickerGamesHistory: 10,
             });
 
             (prisma.gameDay.findMany as jest.Mock).mockResolvedValue([]);
@@ -712,7 +713,7 @@ describe('PlayerRecordService', () => {
                 mailSent: new Date('2022-01-01'),
                 comment: 'I heart footy',
                 bibs: 'A',
-                picker_games_history: 10,
+                pickerGamesHistory: 10,
             });
 
             (prisma.gameDay.findMany as jest.Mock).mockResolvedValue(
@@ -723,7 +724,7 @@ describe('PlayerRecordService', () => {
                     mailSent: index < 11 ? new Date('2021-01-01') : new Date('2022-01-01'),
                     comment: 'I heart footy',
                     bibs: 'A',
-                    picker_games_history: 10,
+                    pickerGamesHistory: 10,
                 })),
             );
 

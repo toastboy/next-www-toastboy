@@ -1,6 +1,6 @@
 import { CountrySupporter } from '@prisma/client';
-import countrySupporterService from 'services/CountrySupporter';
 import prisma from 'lib/prisma';
+import countrySupporterService from 'services/CountrySupporter';
 
 jest.mock('lib/prisma', () => ({
     countrySupporter: {
@@ -16,13 +16,13 @@ jest.mock('lib/prisma', () => ({
 
 const defaultCountrySupporter: CountrySupporter = {
     playerId: 12,
-    countryISOcode: "GB"
+    countryISOCode: "GB"
 };
 
 const countrySupporterList: CountrySupporter[] = Array.from({ length: 100 }, (_, index) => ({
     ...defaultCountrySupporter,
     playerId: index % 10 + 1,
-    countryISOcode: "GB",
+    countryISOCode: "GB",
 }));
 
 describe('countrySupporterService', () => {
@@ -31,18 +31,18 @@ describe('countrySupporterService', () => {
 
         (prisma.countrySupporter.findUnique as jest.Mock).mockImplementation((args: {
             where: {
-                playerId_countryISOcode: {
+                playerId_countryISOCode: {
                     playerId: number,
-                    countryISOcode: string
+                    countryISOCode: string
                 }
             }
         }) => {
-            const countrySupporter = countrySupporterList.find((countrySupporter) => countrySupporter.playerId === args.where.playerId_countryISOcode.playerId && countrySupporter.countryISOcode === args.where.playerId_countryISOcode.countryISOcode);
+            const countrySupporter = countrySupporterList.find((countrySupporter) => countrySupporter.playerId === args.where.playerId_countryISOCode.playerId && countrySupporter.countryISOCode === args.where.playerId_countryISOCode.countryISOCode);
             return Promise.resolve(countrySupporter ? countrySupporter : null);
         });
 
         (prisma.countrySupporter.create as jest.Mock).mockImplementation((args: { data: CountrySupporter }) => {
-            const CountrySupporter = countrySupporterList.find((CountrySupporter) => CountrySupporter.playerId === args.data.playerId && CountrySupporter.countryISOcode === args.data.countryISOcode);
+            const CountrySupporter = countrySupporterList.find((CountrySupporter) => CountrySupporter.playerId === args.data.playerId && CountrySupporter.countryISOCode === args.data.countryISOCode);
 
             if (CountrySupporter) {
                 return Promise.reject(new Error('CountrySupporter already exists'));
@@ -54,15 +54,15 @@ describe('countrySupporterService', () => {
 
         (prisma.countrySupporter.upsert as jest.Mock).mockImplementation((args: {
             where: {
-                playerId_countryISOcode: {
+                playerId_countryISOCode: {
                     playerId: number,
-                    countryISOcode: string
+                    countryISOCode: string
                 }
             },
             update: CountrySupporter,
             create: CountrySupporter,
         }) => {
-            const CountrySupporter = countrySupporterList.find((CountrySupporter) => CountrySupporter.playerId === args.where.playerId_countryISOcode.playerId && CountrySupporter.countryISOcode === args.where.playerId_countryISOcode.countryISOcode);
+            const CountrySupporter = countrySupporterList.find((CountrySupporter) => CountrySupporter.playerId === args.where.playerId_countryISOCode.playerId && CountrySupporter.countryISOCode === args.where.playerId_countryISOCode.countryISOCode);
 
             if (CountrySupporter) {
                 return Promise.resolve(args.update);
@@ -74,13 +74,13 @@ describe('countrySupporterService', () => {
 
         (prisma.countrySupporter.delete as jest.Mock).mockImplementation((args: {
             where: {
-                playerId_countryISOcode: {
+                playerId_countryISOCode: {
                     playerId: number,
-                    countryISOcode: string
+                    countryISOCode: string
                 }
             }
         }) => {
-            const CountrySupporter = countrySupporterList.find((CountrySupporter) => CountrySupporter.playerId === args.where.playerId_countryISOcode.playerId && CountrySupporter.countryISOcode === args.where.playerId_countryISOcode.countryISOcode);
+            const CountrySupporter = countrySupporterList.find((CountrySupporter) => CountrySupporter.playerId === args.where.playerId_countryISOCode.playerId && CountrySupporter.countryISOCode === args.where.playerId_countryISOCode.countryISOCode);
             return Promise.resolve(CountrySupporter ? CountrySupporter : null);
         });
     });
@@ -92,7 +92,7 @@ describe('countrySupporterService', () => {
                 expect(result).toEqual({
                     ...defaultCountrySupporter,
                     playerId: 6,
-                    countryISOcode: "GB"
+                    countryISOCode: "GB"
                 } as CountrySupporter);
             }
             else {
@@ -121,7 +121,7 @@ describe('countrySupporterService', () => {
                     expect(ClubSupporterResult).toEqual({
                         ...defaultCountrySupporter,
                         playerId: 1,
-                        countryISOcode: expect.any(String)
+                        countryISOCode: expect.any(String)
                     } as CountrySupporter);
                 }
             }
@@ -138,8 +138,8 @@ describe('countrySupporterService', () => {
 
     describe('getByCountry', () => {
         beforeEach(() => {
-            (prisma.countrySupporter.findMany as jest.Mock).mockImplementation((args: { where: { countryISOcode: string } }) => {
-                return Promise.resolve(countrySupporterList.filter((CountrySupporter) => CountrySupporter.countryISOcode === args.where.countryISOcode));
+            (prisma.countrySupporter.findMany as jest.Mock).mockImplementation((args: { where: { countryISOCode: string } }) => {
+                return Promise.resolve(countrySupporterList.filter((CountrySupporter) => CountrySupporter.countryISOCode === args.where.countryISOCode));
             });
         });
 
@@ -151,7 +151,7 @@ describe('countrySupporterService', () => {
                     expect(ClubSupporterResult).toEqual({
                         ...defaultCountrySupporter,
                         playerId: expect.any(Number),
-                        countryISOcode: "GB"
+                        countryISOCode: "GB"
                     } as CountrySupporter);
                 }
             }
@@ -178,7 +178,7 @@ describe('countrySupporterService', () => {
             if (result) {
                 expect(result.length).toEqual(100);
                 expect(result[11].playerId).toEqual(2);
-                expect(result[11].countryISOcode).toEqual("GB");
+                expect(result[11].countryISOCode).toEqual("GB");
             }
             else {
                 throw new Error("Result is null");
@@ -199,7 +199,7 @@ describe('countrySupporterService', () => {
             })).rejects.toThrow();
             await expect(countrySupporterService.create({
                 ...defaultCountrySupporter,
-                countryISOcode: "XYZ",
+                countryISOCode: "XYZ",
             })).rejects.toThrow();
         });
 
@@ -207,7 +207,7 @@ describe('countrySupporterService', () => {
             await expect(countrySupporterService.create({
                 ...defaultCountrySupporter,
                 playerId: 6,
-                countryISOcode: "GB",
+                countryISOCode: "GB",
             })).rejects.toThrow();
         });
     });
@@ -222,8 +222,8 @@ describe('countrySupporterService', () => {
             const updatedClubSupporter = {
                 ...defaultCountrySupporter,
                 playerId: 6,
-                countryISOcode: "GB",
-                in_goal: 7,
+                countryISOCode: "GB",
+                inGoal: 7,
             };
             const result = await countrySupporterService.upsert(updatedClubSupporter);
             expect(result).toEqual(updatedClubSupporter);

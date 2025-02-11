@@ -11,14 +11,14 @@ describe('PlayerTile', () => {
         name: 'John Doe',
         email: 'john.doe@example.com',
         born: new Date('1990-01-01'),
-        is_admin: null,
-        first_name: "John",
-        last_name: "Doe",
+        isAdmin: null,
+        firstName: "John",
+        lastName: "Doe",
         anonymous: false,
         joined: null,
         finished: null,
         comment: null,
-        introduced_by: null,
+        introducedBy: null,
     };
 
     beforeEach(() => {
@@ -35,7 +35,7 @@ describe('PlayerTile', () => {
     it('renders player information correctly', async () => {
         render(<Wrapper><PlayerTile player={player} /></Wrapper>);
         await waitFor(() => {
-            expect(screen.getByText(`${player.first_name} ${player.last_name}`)).toBeInTheDocument();
+            expect(screen.getByText(`${player.firstName} ${player.lastName}`)).toBeInTheDocument();
             expect(screen.getByText(player.email)).toBeInTheDocument();
             expect(screen.getByText(player.login)).toBeInTheDocument();
             expect(screen.getByText(player.born.toLocaleDateString('sv'))).toBeInTheDocument();
@@ -45,7 +45,7 @@ describe('PlayerTile', () => {
     it('renders correct links', async () => {
         render(<Wrapper><PlayerTile player={player} /></Wrapper>);
 
-        const profileLink = screen.getByRole('link', { name: `${player.first_name} ${player.last_name}` });
+        const profileLink = screen.getByRole('link', { name: `${player.firstName} ${player.lastName}` });
         const emailLink = screen.getByRole('link', { name: player.email });
         const loginLink = screen.getByRole('link', { name: player.login });
 

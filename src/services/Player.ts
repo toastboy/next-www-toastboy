@@ -139,7 +139,7 @@ class PlayerService {
         try {
             const players = await prisma.player.findMany({
                 include: {
-                    Outcomes: {
+                    outcomes: {
                         orderBy: {
                             gameDayId: 'desc',
                         },
@@ -147,9 +147,9 @@ class PlayerService {
                 },
             });
 
-            return players.map(({ Outcomes, ...player }) => {
-                const gamesResponded = Outcomes.filter(outcome => outcome.response !== null);
-                const gamesPlayed = Outcomes.filter(outcome => outcome.points !== null);
+            return players.map(({ outcomes, ...player }) => {
+                const gamesResponded = outcomes.filter(outcome => outcome.response !== null);
+                const gamesPlayed = outcomes.filter(outcome => outcome.points !== null);
 
                 return {
                     ...player,
@@ -203,7 +203,7 @@ class PlayerService {
             return `Player ${player.id}`;
         }
 
-        return `${player.first_name} ${player.last_name}`;
+        return `${player.firstName} ${player.lastName}`;
     }
 
     /**
@@ -211,7 +211,7 @@ class PlayerService {
      * @param playerId - The ID of the player.
      * @param gameDayId - The ID of the game day.
      * @param history - The number of previous outcomes to consider.
-     * @returns A promise that resolves to an array of Outcomes.
+     * @returns A promise that resolves to an array of outcomes.
      */
     async getForm(playerId: number, gameDayId: number, history: number): Promise<Outcome[] | null> {
         try {
@@ -237,7 +237,7 @@ class PlayerService {
     /**
      * Retrieves the last played game outcome for a given player.
      * @param playerId - The ID of the player.
-     * @returns A promise that resolves to an array of Outcomes or null.
+     * @returns A promise that resolves to an array of outcomes or null.
      */
     async getLastPlayed(playerId: number): Promise<Outcome | null> {
         try {

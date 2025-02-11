@@ -1,13 +1,14 @@
 'use client';
 
 import useSWR from 'swr';
+import { GameDay } from './types';
 
 export interface FootyArse {
-    in_goal: number,
+    inGoal: number,
     running: number,
     shooting: number,
     passing: number,
-    ball_skill: number,
+    ballSkill: number,
     attacking: number,
     defending: number,
 }
@@ -33,7 +34,7 @@ export interface FootyGameDay {
     mailSent: Date,
     comment: string,
     bibs: FootyTeam,
-    picker_games_history: number,
+    pickerGamesHistory: number,
 }
 
 export interface FootyOutcome {
@@ -53,9 +54,9 @@ export interface FootyOutcome {
 export interface FootyPlayer {
     id: number,
     login: string,
-    is_admin: boolean,
-    first_name: string,
-    last_name: string,
+    isAdmin: boolean,
+    firstName: string,
+    lastName: string,
     name: string,
     anonymous: boolean,
     email: string,
@@ -63,7 +64,7 @@ export interface FootyPlayer {
     finished: Date,
     born: Date,
     comment: string,
-    introduced_by: number,
+    introducedBy: number,
 }
 
 export interface FootyPlayerData extends FootyPlayer {
@@ -93,11 +94,11 @@ export interface FootyPlayerRecord {
     pub: number,
     speedy: number,
 
-    rank_points: number,
-    rank_averages: number,
-    rank_stalwart: number,
-    rank_pub: number,
-    rank_speedy: number,
+    rankPoints: number,
+    rankAverages: number,
+    rankStalwart: number,
+    rankPub: number,
+    rankSpeedy: number,
 }
 
 export interface FootyTurnout {
@@ -157,7 +158,7 @@ export function useGameYear(year: number) {
 }
 
 export function useGameDay(id: number) {
-    return useSWR<FootyGameDay>(`/api/footy/gameday/${id}`, fetcher);
+    return useSWR<GameDay>(`/api/footy/gameday/${id}`, fetcher);
 }
 
 export function useCurrentGame() {

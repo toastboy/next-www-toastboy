@@ -1,6 +1,6 @@
 import { Arse } from '@prisma/client';
-import arseService from 'services/Arse';
 import prisma from 'lib/prisma';
+import arseService from 'services/Arse';
 
 jest.mock('lib/prisma', () => ({
     arse: {
@@ -16,14 +16,15 @@ jest.mock('lib/prisma', () => ({
 }));
 
 const defaultArse: Arse = {
+    id: 1,
     stamp: new Date(),
     playerId: 12,
     raterId: 12,
-    in_goal: 10,
+    inGoal: 10,
     running: 10,
     shooting: 10,
     passing: 10,
-    ball_skill: 10,
+    ballSkill: 10,
     attacking: 10,
     defending: 10,
 };
@@ -135,11 +136,11 @@ describe('ArseService', () => {
         it('should retrieve the correct arses for player id 1', async () => {
             (prisma.arse.aggregate as jest.Mock).mockResolvedValue({
                 _avg: {
-                    in_goal: 10,
+                    inGoal: 10,
                     running: 10,
                     shooting: 10,
                     passing: 10,
-                    ball_skill: 10,
+                    ballSkill: 10,
                     attacking: 10,
                     defending: 10,
                 },
@@ -151,16 +152,16 @@ describe('ArseService', () => {
                         playerId: 1,
                     },
                     _avg: {
-                        in_goal: true,
+                        inGoal: true,
                         running: true,
                         shooting: true,
                         passing: true,
-                        ball_skill: true,
+                        ballSkill: true,
                         attacking: true,
                         defending: true,
                     },
                 });
-                expect(result.in_goal).toEqual(10);
+                expect(result.inGoal).toEqual(10);
             }
             else {
                 throw new Error("Result is null");
@@ -170,11 +171,11 @@ describe('ArseService', () => {
         it('should return an empty list when retrieving arses for player id 11', async () => {
             (prisma.arse.aggregate as jest.Mock).mockResolvedValue({
                 _avg: {
-                    in_goal: null,
+                    inGoal: null,
                     running: null,
                     shooting: null,
                     passing: null,
-                    ball_skill: null,
+                    ballSkill: null,
                     attacking: null,
                     defending: null,
                 },
@@ -186,16 +187,16 @@ describe('ArseService', () => {
                         playerId: 11,
                     },
                     _avg: {
-                        in_goal: true,
+                        inGoal: true,
                         running: true,
                         shooting: true,
                         passing: true,
-                        ball_skill: true,
+                        ballSkill: true,
                         attacking: true,
                         defending: true,
                     },
                 });
-                expect(result.in_goal).toEqual(null);
+                expect(result.inGoal).toEqual(null);
             }
         });
     });
@@ -282,7 +283,7 @@ describe('ArseService', () => {
             })).rejects.toThrow();
             await expect(arseService.create({
                 ...defaultArse,
-                in_goal: 11,
+                inGoal: 11,
             })).rejects.toThrow();
             await expect(arseService.create({
                 ...defaultArse,
@@ -298,7 +299,7 @@ describe('ArseService', () => {
             })).rejects.toThrow();
             await expect(arseService.create({
                 ...defaultArse,
-                ball_skill: 11,
+                ballSkill: 11,
             })).rejects.toThrow();
             await expect(arseService.create({
                 ...defaultArse,
@@ -335,7 +336,7 @@ describe('ArseService', () => {
                 ...defaultArse,
                 playerId: 6,
                 raterId: 16,
-                in_goal: 7,
+                inGoal: 7,
             };
             const result = await arseService.upsert(updatedArse);
             if (result) {

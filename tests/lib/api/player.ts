@@ -5,9 +5,9 @@ import playerService from 'services/Player';
 export const mockPlayer = {
     id: 1,
     login: "player1",
-    is_admin: null,
-    first_name: "Derek",
-    last_name: "Turnipson",
+    isAdmin: null,
+    firstName: "Derek",
+    lastName: "Turnipson",
     name: "Derek Turnipson",
     anonymous: null,
     email: "derek.turnipson@example.com",
@@ -15,7 +15,7 @@ export const mockPlayer = {
     finished: "2010-12-15T00:00:00.000Z",
     born: "1979-06-19T00:00:00.000Z",
     comment: "",
-    introduced_by: null,
+    introducedBy: null,
 };
 
 export const setupPlayerMocks = () => {

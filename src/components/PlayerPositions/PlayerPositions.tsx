@@ -2,14 +2,14 @@
 
 import { Loader } from '@mantine/core';
 import { FootyTable, usePlayerRecord } from 'lib/swr';
-import { getYearName } from 'lib/utils';
+import { getYearName, rankMap } from 'lib/utils';
 
-interface PlayerResultsProps {
+export interface Props {
     idOrLogin: string;
     year: number;
 }
 
-const PlayerResults: React.FC<PlayerResultsProps> = ({ idOrLogin, year }) => {
+const PlayerPositions: React.FC<Props> = ({ idOrLogin, year }) => {
     const { data, error, isLoading } = usePlayerRecord(idOrLogin, year);
 
     if (isLoading) return <Loader color="gray" type="dots" />;
@@ -21,7 +21,7 @@ const PlayerResults: React.FC<PlayerResultsProps> = ({ idOrLogin, year }) => {
                 <caption>{getYearName(year)} Positions</caption>
                 <tbody>
                     {Object.keys(FootyTable).map((table) => {
-                        const position = data[`rank_${table}` as keyof typeof data];
+                        const position = data[rankMap[table as keyof typeof rankMap] as keyof typeof data];
 
                         return (
                             <tr key={table}>
@@ -36,4 +36,4 @@ const PlayerResults: React.FC<PlayerResultsProps> = ({ idOrLogin, year }) => {
     );
 };
 
-export default PlayerResults;
+export default PlayerPositions;

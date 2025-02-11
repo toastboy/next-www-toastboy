@@ -20,11 +20,11 @@ describe('TableScore', () => {
         pub: 0,
         speedy: 2000,
 
-        rank_points: 4,
-        rank_averages: 5,
-        rank_stalwart: 1,
-        rank_pub: 9,
-        rank_speedy: 3,
+        rankPoints: 4,
+        rankAverages: 5,
+        rankStalwart: 1,
+        rankPub: 9,
+        rankSpeedy: 3,
     };
 
     beforeEach(() => {

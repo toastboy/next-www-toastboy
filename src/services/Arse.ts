@@ -1,6 +1,6 @@
 import { Arse } from '@prisma/client';
-import prisma from 'lib/prisma';
 import debug from 'debug';
+import prisma from 'lib/prisma';
 
 const log = debug('footy:api');
 
@@ -25,8 +25,8 @@ export class ArseService {
             throw new Error(`Invalid rater value: ${arse.raterId}`);
         }
 
-        if (!arse.in_goal || !Number.isInteger(arse.in_goal) || arse.in_goal < 0 || arse.in_goal > 10) {
-            throw new Error(`Invalid in_goal value: ${arse.in_goal}`);
+        if (!arse.inGoal || !Number.isInteger(arse.inGoal) || arse.inGoal < 0 || arse.inGoal > 10) {
+            throw new Error(`Invalid inGoal value: ${arse.inGoal}`);
         }
         if (!arse.running || !Number.isInteger(arse.running) || arse.running < 0 || arse.running > 10) {
             throw new Error(`Invalid running value: ${arse.running}`);
@@ -37,8 +37,8 @@ export class ArseService {
         if (!arse.passing || !Number.isInteger(arse.passing) || arse.passing < 0 || arse.passing > 10) {
             throw new Error(`Invalid passing value: ${arse.passing}`);
         }
-        if (!arse.ball_skill || !Number.isInteger(arse.ball_skill) || arse.ball_skill < 0 || arse.ball_skill > 10) {
-            throw new Error(`Invalid ball_skill value: ${arse.ball_skill}`);
+        if (!arse.ballSkill || !Number.isInteger(arse.ballSkill) || arse.ballSkill < 0 || arse.ballSkill > 10) {
+            throw new Error(`Invalid ballSkill value: ${arse.ballSkill}`);
         }
         if (!arse.attacking || !Number.isInteger(arse.attacking) || arse.attacking < 0 || arse.attacking > 10) {
             throw new Error(`Invalid attacking value: ${arse.attacking}`);
@@ -100,11 +100,11 @@ export class ArseService {
                     playerId: playerId,
                 },
                 _avg: {
-                    in_goal: true,
+                    inGoal: true,
                     running: true,
                     shooting: true,
                     passing: true,
-                    ball_skill: true,
+                    ballSkill: true,
                     attacking: true,
                     defending: true,
                 },

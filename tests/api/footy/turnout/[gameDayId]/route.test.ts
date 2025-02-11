@@ -19,7 +19,7 @@ describe('API tests using HTTP', () => {
             "mailSent": null,
             "comment": "Remain indoors",
             "bibs": null,
-            "picker_games_history": 10,
+            "pickerGamesHistory": 10,
             "yes": 0,
             "no": 0,
             "dunno": 0,

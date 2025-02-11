@@ -1,6 +1,6 @@
 import { ClubSupporter } from '@prisma/client';
-import clubSupporterService from 'services/ClubSupporter';
 import prisma from 'lib/prisma';
+import clubSupporterService from 'services/ClubSupporter';
 
 jest.mock('lib/prisma', () => ({
     clubSupporter: {
@@ -218,7 +218,7 @@ describe('clubSupporterService', () => {
                 ...defaultClubSupporter,
                 playerId: 6,
                 clubId: 16,
-                in_goal: 7,
+                inGoal: 7,
             };
             const result = await clubSupporterService.upsert(updatedClubSupporter);
             expect(result).toEqual(updatedClubSupporter);

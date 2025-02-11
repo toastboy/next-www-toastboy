@@ -7,15 +7,15 @@ interface PlayerTileProps {
 }
 
 const PlayerTile: React.FC<PlayerTileProps> = ({ player }) => {
-  const { id, login, first_name, last_name, email, born } = player;
+  const { id, login, firstName, lastName, email, born } = player;
   const born_string = born == null ? "Unknown" : born.toLocaleDateString('sv');
 
   return (
     // TODO: Replace styles with Mantine ones
     <div className="w-[250px] rounded overflow-hidden shadow-lg" key={id}>
-      <PlayerMugshot idOrLogin={player.login} />
+      <PlayerMugshot player={player} />
       <div className="px-6 py-4">
-        <div className="font-bold text-xl mb-2"><Anchor href={"/footy/player/" + login}>{first_name} {last_name}</Anchor></div>
+        <div className="font-bold text-xl mb-2"><Anchor href={"/footy/player/" + login}>{firstName} {lastName}</Anchor></div>
         <Anchor href={"/footy/player/" + login} className="block text-gray-700 text-base">{email}</Anchor>
         <Anchor href={"/footy/player/" + login} className="block text-gray-900 text-xl">{login}</Anchor>
       </div>

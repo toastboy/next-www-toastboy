@@ -5,6 +5,7 @@ MODIFY
   `date` DATETIME(0) NOT NULL;
 
 -- CreateTable
+DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
     `id` VARCHAR(191) NOT NULL,
     `name` TEXT NOT NULL,
@@ -23,6 +24,7 @@ CREATE TABLE `user` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+DROP TABLE IF EXISTS `session`;
 CREATE TABLE `session` (
     `id` VARCHAR(191) NOT NULL,
     `expiresAt` DATETIME(3) NOT NULL,
@@ -40,6 +42,7 @@ CREATE TABLE `session` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+DROP TABLE IF EXISTS `account`;
 CREATE TABLE `account` (
     `id` VARCHAR(191) NOT NULL,
     `accountId` TEXT NOT NULL,
@@ -60,6 +63,7 @@ CREATE TABLE `account` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+DROP TABLE IF EXISTS `verification`;
 CREATE TABLE `verification` (
     `id` VARCHAR(191) NOT NULL,
     `identifier` TEXT NOT NULL,

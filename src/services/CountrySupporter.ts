@@ -1,6 +1,6 @@
 import { CountrySupporter } from '@prisma/client';
-import prisma from 'lib/prisma';
 import debug from 'debug';
+import prisma from 'lib/prisma';
 
 const log = debug('footy:api');
 
@@ -15,8 +15,8 @@ export class CountrySupporterService {
         if (!countrySupporter.playerId || !Number.isInteger(countrySupporter.playerId) || countrySupporter.playerId < 0) {
             throw new Error(`Invalid playerId value: ${countrySupporter.playerId}`);
         }
-        if (!countrySupporter.countryISOcode || (!/^[A-Z]{2}$/.test(countrySupporter.countryISOcode) && !/^[A-Z]{2}-[A-Z]{3}$/.test(countrySupporter.countryISOcode))) {
-            throw new Error(`Invalid countryISOcode value: ${countrySupporter.countryISOcode}`);
+        if (!countrySupporter.countryISOCode || (!/^[A-Z]{2}$/.test(countrySupporter.countryISOCode) && !/^[A-Z]{2}-[A-Z]{3}$/.test(countrySupporter.countryISOCode))) {
+            throw new Error(`Invalid countryISOCode value: ${countrySupporter.countryISOCode}`);
         }
 
         return countrySupporter;
@@ -25,17 +25,17 @@ export class CountrySupporterService {
     /**
      * Retrieves a CountrySupporter for the given player ID and country ISO code.
      * @param playerId - The ID of the player.
-     * @param countryISOcode - The ISO code of the country.
+     * @param countryISOCode - The ISO code of the country.
      * @returns A promise that resolves to the CountrySupporter if found, otherwise null.
      * @throws An error if there is a failure.
      */
-    async get(playerId: number, countryISOcode: string): Promise<CountrySupporter | null> {
+    async get(playerId: number, countryISOCode: string): Promise<CountrySupporter | null> {
         try {
             return prisma.countrySupporter.findUnique({
                 where: {
-                    playerId_countryISOcode: {
+                    playerId_countryISOCode: {
                         playerId: playerId,
-                        countryISOcode: countryISOcode,
+                        countryISOCode: countryISOCode,
                     },
                 },
             });
@@ -80,15 +80,15 @@ export class CountrySupporterService {
 
     /**
      * Retrieves CountrySupporters by country ISO code.
-     * @param countryISOcode - The ISO code of the country.
+     * @param countryISOCode - The ISO code of the country.
      * @returns A promise that resolves to an array of CountrySupporter or null.
      * @throws An error if there is a failure.
      */
-    async getByCountry(countryISOcode: string): Promise<CountrySupporter[] | null> {
+    async getByCountry(countryISOCode: string): Promise<CountrySupporter[] | null> {
         try {
             return prisma.countrySupporter.findMany({
                 where: {
-                    countryISOcode: countryISOcode,
+                    countryISOCode: countryISOCode,
                 },
             });
         } catch (error) {
@@ -124,9 +124,9 @@ export class CountrySupporterService {
         try {
             return await prisma.countrySupporter.upsert({
                 where: {
-                    playerId_countryISOcode: {
+                    playerId_countryISOCode: {
                         playerId: data.playerId,
-                        countryISOcode: data.countryISOcode,
+                        countryISOCode: data.countryISOCode,
                     },
                 },
                 update: this.validate(data),
@@ -141,17 +141,17 @@ export class CountrySupporterService {
     /**
      * Deletes a CountrySupporter.
      * @param playerId - The ID of the player.
-     * @param countryISOcode - The ISO code of the country.
+     * @param countryISOCode - The ISO code of the country.
      * @returns A Promise that resolves to void.
      * @throws An error if there is a failure.
      */
-    async delete(playerId: number, countryISOcode: string): Promise<void> {
+    async delete(playerId: number, countryISOCode: string): Promise<void> {
         try {
             await prisma.countrySupporter.delete({
                 where: {
-                    playerId_countryISOcode: {
+                    playerId_countryISOCode: {
                         playerId: playerId,
-                        countryISOcode: countryISOcode,
+                        countryISOCode: countryISOCode,
                     },
                 },
             });

@@ -2,6 +2,7 @@ import { GameDay, Outcome, PlayerRecord } from '@prisma/client';
 import debug from 'debug';
 import config from 'lib/config';
 import prisma from 'lib/prisma';
+import { rankMap } from 'lib/utils';
 import gameDayService from 'services/GameDay';
 import outcomeService from 'services/Outcome';
 
@@ -29,17 +30,17 @@ export class PlayerRecordService {
         if (playerRecord.responses != null && (!Number.isInteger(playerRecord.responses) || playerRecord.responses < 0)) {
             throw new Error(`Invalid responses value: ${playerRecord.responses}`);
         }
-        if (playerRecord.P != null && (!Number.isInteger(playerRecord.P) || playerRecord.P < 0)) {
-            throw new Error(`Invalid P value: ${playerRecord.P}`);
+        if (playerRecord.played != null && (!Number.isInteger(playerRecord.played) || playerRecord.played < 0)) {
+            throw new Error(`Invalid played value: ${playerRecord.played}`);
         }
-        if (playerRecord.W != null && (!Number.isInteger(playerRecord.W) || playerRecord.W < 0)) {
-            throw new Error(`Invalid W value: ${playerRecord.W}`);
+        if (playerRecord.won != null && (!Number.isInteger(playerRecord.won) || playerRecord.won < 0)) {
+            throw new Error(`Invalid won value: ${playerRecord.won}`);
         }
-        if (playerRecord.D != null && (!Number.isInteger(playerRecord.D) || playerRecord.D < 0)) {
-            throw new Error(`Invalid D value: ${playerRecord.D}`);
+        if (playerRecord.drawn != null && (!Number.isInteger(playerRecord.drawn) || playerRecord.drawn < 0)) {
+            throw new Error(`Invalid drawn value: ${playerRecord.drawn}`);
         }
-        if (playerRecord.L != null && (!Number.isInteger(playerRecord.L) || playerRecord.L < 0)) {
-            throw new Error(`Invalid L value: ${playerRecord.L}`);
+        if (playerRecord.lost != null && (!Number.isInteger(playerRecord.lost) || playerRecord.lost < 0)) {
+            throw new Error(`Invalid lost value: ${playerRecord.lost}`);
         }
         if (playerRecord.points != null && (!Number.isInteger(playerRecord.points) || playerRecord.points < 0)) {
             throw new Error(`Invalid points value: ${playerRecord.points}`);
@@ -53,20 +54,20 @@ export class PlayerRecordService {
         if (playerRecord.pub != null && (!Number.isInteger(playerRecord.pub) || playerRecord.pub < 0)) {
             throw new Error(`Invalid pub value: ${playerRecord.pub}`);
         }
-        if (playerRecord.rank_points != null && (!Number.isInteger(playerRecord.rank_points) || playerRecord.rank_points < 0)) {
-            throw new Error(`Invalid rank_points value: ${playerRecord.rank_points}`);
+        if (playerRecord.rankPoints != null && (!Number.isInteger(playerRecord.rankPoints) || playerRecord.rankPoints < 0)) {
+            throw new Error(`Invalid rankPoints value: ${playerRecord.rankPoints}`);
         }
-        if (playerRecord.rank_averages != null && (!Number.isInteger(playerRecord.rank_averages) || playerRecord.rank_averages < 0)) {
-            throw new Error(`Invalid rank_averages value: ${playerRecord.rank_averages}`);
+        if (playerRecord.rankAverages != null && (!Number.isInteger(playerRecord.rankAverages) || playerRecord.rankAverages < 0)) {
+            throw new Error(`Invalid rankAverages value: ${playerRecord.rankAverages}`);
         }
-        if (playerRecord.rank_stalwart != null && (!Number.isInteger(playerRecord.rank_stalwart) || playerRecord.rank_stalwart < 0)) {
-            throw new Error(`Invalid rank_stalwart value: ${playerRecord.rank_stalwart}`);
+        if (playerRecord.rankStalwart != null && (!Number.isInteger(playerRecord.rankStalwart) || playerRecord.rankStalwart < 0)) {
+            throw new Error(`Invalid rankStalwart value: ${playerRecord.rankStalwart}`);
         }
-        if (playerRecord.rank_speedy != null && (!Number.isInteger(playerRecord.rank_speedy) || playerRecord.rank_speedy < 0)) {
-            throw new Error(`Invalid rank_speedy value: ${playerRecord.rank_speedy}`);
+        if (playerRecord.rankSpeedy != null && (!Number.isInteger(playerRecord.rankSpeedy) || playerRecord.rankSpeedy < 0)) {
+            throw new Error(`Invalid rankSpeedy value: ${playerRecord.rankSpeedy}`);
         }
-        if (playerRecord.rank_pub != null && (!Number.isInteger(playerRecord.rank_pub) || playerRecord.rank_pub < 0)) {
-            throw new Error(`Invalid rank_pub value: ${playerRecord.rank_pub}`);
+        if (playerRecord.rankPub != null && (!Number.isInteger(playerRecord.rankPub) || playerRecord.rankPub < 0)) {
+            throw new Error(`Invalid rankPub value: ${playerRecord.rankPub}`);
         }
         if (playerRecord.speedy != null && playerRecord.speedy < 0.0) {
             throw new Error(`Invalid speedy value: ${playerRecord.speedy}`);
@@ -258,7 +259,7 @@ export class PlayerRecordService {
         year?: number,
     ): Promise<PlayerRecord[]> {
         try {
-            const rank = `rank_${table}`;
+            const rank = rankMap[table as keyof typeof rankMap];
             const seasonEnders = await gameDayService.getSeasonEnders();
             const firstPlaceRecords = await prisma.playerRecord.findMany({
                 where: {
@@ -319,7 +320,8 @@ export class PlayerRecordService {
 
             // Now generate the query to fetch the player records
 
-            const rank = `rank_${table}${qualified === false ? '_unqualified' : ''}`;
+            const rank = `${rankMap[table as keyof typeof rankMap]}${qualified === false ? 'Unqualified' : ''}`;
+
             return prisma.playerRecord.findMany({
                 where: {
                     gameDayId: tableRecord.gameDayId,
@@ -522,8 +524,8 @@ async function calculateYearPlayerRecords(
 
     for (const recordData of Object.values(yearPlayerRecords)) {
         recordData.gameDayId = gameDay.id;
-        if (recordData.P && gamesPlayed > 0) {
-            recordData.stalwart = Math.round(100.0 * recordData.P / gamesPlayed);
+        if (recordData.played && gamesPlayed > 0) {
+            recordData.stalwart = Math.round(100.0 * recordData.played / gamesPlayed);
         }
     }
 
@@ -534,12 +536,12 @@ async function calculateYearPlayerRecords(
     pointsArray.sort((a, b) => b - a);
 
     const averagesArray = Object.values(yearPlayerRecords)
-        .map(r => (r.P && r.P >= config.minGamesForAveragesTable ? r.averages : null))
+        .map(r => (r.played && r.played >= config.minGamesForAveragesTable ? r.averages : null))
         .filter((a): a is number => a !== null);
     averagesArray.sort((a, b) => b - a);
 
     const averagesArrayUnqualified = Object.values(yearPlayerRecords)
-        .map(r => (r.P && r.P < config.minGamesForAveragesTable ? r.averages : null))
+        .map(r => (r.played && r.played < config.minGamesForAveragesTable ? r.averages : null))
         .filter((a): a is number => a !== null);
     averagesArrayUnqualified.sort((a, b) => b - a);
 
@@ -565,31 +567,31 @@ async function calculateYearPlayerRecords(
 
     for (const recordData of Object.values(yearPlayerRecords)) {
         if (recordData.points != null) {
-            recordData.rank_points = pointsArray.indexOf(recordData.points) + 1;
+            recordData.rankPoints = pointsArray.indexOf(recordData.points) + 1;
         }
         if (recordData.averages != null) {
-            if (recordData.P && recordData.P >= config.minGamesForAveragesTable) {
-                recordData.rank_averages = averagesArray.indexOf(recordData.averages) + 1;
-                recordData.rank_averages_unqualified = null;
+            if (recordData.played && recordData.played >= config.minGamesForAveragesTable) {
+                recordData.rankAverages = averagesArray.indexOf(recordData.averages) + 1;
+                recordData.rankAveragesUnqualified = null;
             } else {
-                recordData.rank_averages_unqualified = averagesArrayUnqualified.indexOf(recordData.averages) + 1;
-                recordData.rank_averages = null;
+                recordData.rankAveragesUnqualified = averagesArrayUnqualified.indexOf(recordData.averages) + 1;
+                recordData.rankAverages = null;
             }
         }
         if (recordData.stalwart != null) {
-            recordData.rank_stalwart = stalwartArray.indexOf(recordData.stalwart) + 1;
+            recordData.rankStalwart = stalwartArray.indexOf(recordData.stalwart) + 1;
         }
         if (recordData.speedy != null) {
             if (recordData.responses && recordData.responses >= config.minRepliesForSpeedyTable) {
-                recordData.rank_speedy = speedyArray.indexOf(recordData.speedy) + 1;
-                recordData.rank_speedy_unqualified = null;
+                recordData.rankSpeedy = speedyArray.indexOf(recordData.speedy) + 1;
+                recordData.rankSpeedyUnqualified = null;
             } else {
-                recordData.rank_speedy_unqualified = speedyArrayUnqualified.indexOf(recordData.speedy) + 1;
-                recordData.rank_speedy = null;
+                recordData.rankSpeedyUnqualified = speedyArrayUnqualified.indexOf(recordData.speedy) + 1;
+                recordData.rankSpeedy = null;
             }
         }
         if (recordData.pub != null) {
-            recordData.rank_pub = pubArray.indexOf(recordData.pub) + 1;
+            recordData.rankPub = pubArray.indexOf(recordData.pub) + 1;
         }
     }
 
@@ -633,15 +635,15 @@ async function calculatePlayerRecord(
     };
 
     if (playerYearPlayedOutcomes.length > 0) {
-        data.P = playerYearPlayedOutcomes.length;
-        data.W = playerYearPlayedOutcomes.filter(o => o.points == 3).length;
-        data.D = playerYearPlayedOutcomes.filter(o => o.points == 1).length;
-        data.L = playerYearPlayedOutcomes.filter(o => o.points == 0).length;
+        data.played = playerYearPlayedOutcomes.length;
+        data.won = playerYearPlayedOutcomes.filter(o => o.points == 3).length;
+        data.drawn = playerYearPlayedOutcomes.filter(o => o.points == 1).length;
+        data.lost = playerYearPlayedOutcomes.filter(o => o.points == 0).length;
     }
 
-    if (data.P && data.P > 0) {
+    if (data.played && data.played > 0) {
         data.points = playerYearPlayedOutcomes.reduce((acc, o) => acc + (o.points || 0), 0);
-        data.averages = playerYearPlayedOutcomes.reduce((acc, o) => acc + (o.points || 0), 0) / data.P;
+        data.averages = playerYearPlayedOutcomes.reduce((acc, o) => acc + (o.points || 0), 0) / data.played;
     }
 
     const responseIntervals = playerYearOutcomes

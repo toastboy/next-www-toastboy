@@ -1,6 +1,6 @@
 import { Outcome, PlayerResponse, Team } from '@prisma/client';
-import outcomeService from 'services/Outcome';
 import prisma from 'lib/prisma';
+import outcomeService from 'services/Outcome';
 
 jest.mock('lib/prisma', () => ({
     outcome: {
@@ -28,6 +28,7 @@ jest.mock('lib/prisma', () => ({
 }));
 
 const defaultOutcome: Outcome = {
+    id: 1,
     gameDayId: 1,
     playerId: 12,
     response: 'Yes',
@@ -243,7 +244,7 @@ describe('OutcomeService', () => {
             mailSent: new Date('2021-01-01'),
             comment: 'I heart footy',
             bibs: 'A',
-            picker_games_history: 10,
+            pickerGamesHistory: 10,
         }));
 
         beforeEach(() => {
@@ -385,7 +386,7 @@ describe('OutcomeService', () => {
             mailSent: null,
             comment: null,
             bibs: null,
-            picker_games_history: 10,
+            pickerGamesHistory: 10,
         };
 
         it('should retrieve the correct latest game played for year 2021', async () => {

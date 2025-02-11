@@ -24,14 +24,14 @@ describe('PlayerProfile', () => {
         name: 'John Doe',
         email: 'john.doe@example.com',
         born: new Date('1990-01-01'),
-        is_admin: null,
-        first_name: null,
-        last_name: null,
+        isAdmin: null,
+        firstName: null,
+        lastName: null,
         anonymous: null,
         joined: null,
         finished: null,
         comment: null,
-        introduced_by: null,
+        introducedBy: null,
     };
 
     beforeEach(() => {

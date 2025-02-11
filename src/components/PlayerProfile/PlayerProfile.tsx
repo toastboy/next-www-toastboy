@@ -33,7 +33,7 @@ const PlayerProfile: React.FC<PlayerProfileProps> = ({ player }) => {
         // TODO: Change styles to use Mantine components
         <div className="w-[600px] rounded overflow-hidden shadow-lg" key={id}>
             <h1 className="text-6xl font-bold mb-4 text-center">{name}</h1>
-            <PlayerMugshot idOrLogin={player.login} />
+            <PlayerMugshot player={player} />
             <PlayerLastPlayed idOrLogin={player.login} />
             <PlayerClubs idOrLogin={player.login} />
             <PlayerCountries idOrLogin={player.login} />

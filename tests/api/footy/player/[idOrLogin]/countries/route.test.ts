@@ -19,7 +19,7 @@ describe('API tests using HTTP', () => {
     it('should return JSON response for a valid player', async () => {
         const mockData = [{
             "playerId": 1,
-            "countryISOcode": "GB-ENG",
+            "countryISOCode": "GB-ENG",
         }];
         (countrySupporterService.getByPlayer as jest.Mock).mockResolvedValue(mockData);
 

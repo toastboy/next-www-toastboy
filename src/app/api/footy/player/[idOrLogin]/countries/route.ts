@@ -9,6 +9,6 @@ export const GET = async (request: Request, props: { params: Promise<Record<stri
         const player = await playerService.getByIdOrLogin(params.idOrLogin);
         if (!player) { return null; }
         const data = await countrySupporterService.getByPlayer(player.id);
-        return data ? data.map((item) => item.countryISOcode) : null;
+        return data ? data.map((item) => item.countryISOCode) : null;
     }, { params });
 };

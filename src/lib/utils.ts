@@ -36,3 +36,23 @@ export async function streamToBuffer(readableStream: NodeJS.ReadableStream): Pro
 export function getYearName(year: number): string {
     return year == 0 ? "All-time" : year.toString();
 }
+
+/**
+ * A mapping of rank types to their corresponding rank identifiers.
+ *
+ * The `rankMap` object provides a way to translate between different rank
+ * types and their associated identifiers used within the application.
+ *
+ * @property {string} points - The rank identifier for points.
+ * @property {string} averages - The rank identifier for averages.
+ * @property {string} stalwart - The rank identifier for stalwart.
+ * @property {string} speedy - The rank identifier for speedy.
+ * @property {string} pub - The rank identifier for pub.
+ */
+export const rankMap = {
+    "points": "rankPoints",
+    "averages": "rankAverages",
+    "stalwart": "rankStalwart",
+    "speedy": "rankSpeedy",
+    "pub": "rankPub",
+};

@@ -1,6 +1,6 @@
 import { GameChat } from '@prisma/client';
-import prisma from 'lib/prisma';
 import debug from 'debug';
+import prisma from 'lib/prisma';
 
 const log = debug('footy:api');
 
@@ -15,8 +15,8 @@ export class GameChatService {
         if (!gameChat.id || !Number.isInteger(gameChat.id) || gameChat.id < 0) {
             throw new Error(`Invalid id value: ${gameChat.id}`);
         }
-        if (!gameChat.game_day || !Number.isInteger(gameChat.game_day) || gameChat.game_day < 0) {
-            throw new Error(`Invalid game_day value: ${gameChat.game_day}`);
+        if (!gameChat.gameDay || !Number.isInteger(gameChat.gameDay) || gameChat.gameDay < 0) {
+            throw new Error(`Invalid gameDay value: ${gameChat.gameDay}`);
         }
         if (!gameChat.player || !Number.isInteger(gameChat.player) || gameChat.player < 0) {
             throw new Error(`Invalid player value: ${gameChat.player}`);

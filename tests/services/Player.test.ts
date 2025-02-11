@@ -34,16 +34,16 @@ jest.mock('lib/prisma', () => ({
 
 const defaultPlayer: Player = {
     id: 1,
-    is_admin: false,
+    isAdmin: false,
     login: "garyp",
-    first_name: "Gary",
-    last_name: "Player",
+    firstName: "Gary",
+    lastName: "Player",
     name: "Gary Player",
     email: "gary.player@example.com",
     joined: new Date("2021-01-01"),
     finished: null,
     born: new Date("1975-11-01"),
-    introduced_by: 23,
+    introducedBy: 23,
     comment: null,
     anonymous: false,
 };
@@ -60,6 +60,7 @@ const playerList: Player[] = Array.from({ length: 100 }, (_, index) => ({
 }));
 
 const defaultOutcome: Outcome = {
+    id: 1,
     gameDayId: 1,
     playerId: 12,
     response: 'Yes',
@@ -253,7 +254,7 @@ describe('PlayerService', () => {
                 ...defaultPlayer,
                 id: outerindex + 1,
                 finished: outerindex % 2 === 0 ? new Date("2020-01-01") : null,
-                Outcomes: Array.from({ length: 10 }, (_, index) => ({
+                outcomes: Array.from({ length: 10 }, (_, index) => ({
                     ...defaultOutcome,
                     playerId: outerindex + 1,
                     points: 3 * (index % 2),

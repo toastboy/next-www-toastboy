@@ -1,12 +1,12 @@
-import { execSync } from "child_process";
-import { readdir } from "fs/promises";
-import prisma from '../prisma';
-import { Prisma } from '@prisma/client';
-import path from "path";
-import dotenv from 'dotenv';
-import fs from 'fs';
 import { ClientSecretCredential } from "@azure/identity";
 import { BlobServiceClient } from "@azure/storage-blob";
+import { Prisma } from '@prisma/client';
+import { execSync } from "child_process";
+import dotenv from 'dotenv';
+import fs from 'fs';
+import { readdir } from "fs/promises";
+import path from "path";
+import prisma from '../prisma';
 
 /**
  * Writes the data from a Prisma model to a JSON file.
@@ -115,24 +115,26 @@ async function importBackup(): Promise<void> {
         const containerClient = blobServiceClient.getContainerClient(containerName);
 
         // Take a backup of the current live database
+        console.log('Taking production mysql backup...');
         execSync(`mysqldump --skip-ssl -h ${prodMysqlHost} -u ${prodMysqlUser} -p${prodMysqlPassword} ${mysqlDatabase} arse club club_supporter country diffs game_chat game_day invitation misc nationality outcome picker picker_teams player > /tmp/${mysqlDatabase}.sql`);
-        console.log('Backup taken successfully.');
 
         // Get the list of directories in the migrations directory
         const migrationsDir = path.join(__dirname, '..', '..', '..', 'prisma', 'migrations');
         const migrations = await readdir(migrationsDir);
 
         // Run prisma generate to ensure the Prisma Client is up to date
+        console.log('Running prisma generate...');
         execSync('npx prisma generate --schema ../../../prisma/schema.prisma');
 
         // Run prisma db push to ensure the database is up to date with the schema
+        console.log('Running prisma db push...');
+        execSync(`mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} -e'DROP DATABASE IF EXISTS footy;'`);
+        execSync(`mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} -e'CREATE DATABASE footy;'`);
         execSync('npx prisma db push --accept-data-loss --schema ../../../prisma/schema.prisma');
 
         // Import the mysqldump backup created above
-        execSync(`mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} -e'DROP DATABASE IF EXISTS footy;'`);
-        execSync(`mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} -e'CREATE DATABASE footy;'`);
+        console.log('Importing mysql backup...');
         execSync(`cat /tmp/${mysqlDatabase}.sql | mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} ${mysqlDatabase}`);
-        console.log('Backup imported successfully.');
 
         // Run each migration except the first one: the backup created the
         // database structure through the conditional comments such as '/*!40000
@@ -141,14 +143,13 @@ async function importBackup(): Promise<void> {
             if (migrations[i].endsWith('migration_lock.toml')) {
                 continue;
             }
+            console.log(`Running migration ${migrations[i]}...`);
             const migration = path.join(migrationsDir, migrations[i], 'migration.sql');
-            console.log(`Running migration ${migration}...`);
             execSync(`cat ${migration} | mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} ${mysqlDatabase}`);
-            console.log(`Migration ${migration} completed.`);
         }
-        console.log('All migrations completed.');
 
         // Write each table in ${mysqlDatabase} to a JSON file in /tmp/importlivedb
+        console.log('Writing tables to JSON files...');
         execSync(`mkdir -p /tmp/importlivedb`);
         await writeTableToJSONFile('Arse.json', prisma.arse);
         await writeTableToJSONFile('ClubSupporter.json', prisma.clubSupporter);
@@ -159,21 +160,21 @@ async function importBackup(): Promise<void> {
         await writeTableToJSONFile('GameDay.json', prisma.gameDay);
         await writeTableToJSONFile('Outcome.json', prisma.outcome);
         await writeTableToJSONFile('Player.json', prisma.player);
-        console.log('All JSON files written.');
 
         // Upload the JSON files to Azure Blob Storage
         const files = await readdir('/tmp/importlivedb');
         for (const file of files) {
+            console.log(`Uploading ${file}...`);
             const filePath = path.join('/tmp/importlivedb', file);
             const blockBlobClient = containerClient.getBlockBlobClient(file);
             await blockBlobClient.uploadFile(filePath);
-            console.log(`Uploaded ${file} successfully.`);
         }
         execSync('rm -rf /tmp/importlivedb');
 
         // Now the dev database is up to date with the live one and the seed
         // files in blob storage reflect that, we can do a final Prisma migrate
         // reset and seed to ensure the dev database is in a good state.
+        console.log('Running final Prisma migrate reset...');
         execSync(`cd ../../.. && pwd && npx prisma migrate reset --force`);
     } catch (error) {
         console.error('An error occurred:', error);

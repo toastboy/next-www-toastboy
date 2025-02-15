@@ -27,7 +27,7 @@ describe('API tests using HTTP', () => {
             "rankAveragesUnqualified": null,
             "rankStalwart": 3,
             "rankSpeedy": 10,
-            "rankSpeedy_unqualified": null,
+            "rankSpeedyUnqualified": null,
             "rankPub": 8,
             "speedy": 22977,
             "playerId": 62,

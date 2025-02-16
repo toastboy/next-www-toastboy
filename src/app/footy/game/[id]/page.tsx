@@ -1,3 +1,5 @@
+"use client";
+
 import { Loader } from "@mantine/core";
 import GameDaySummary from "components/GameDaySummary/GameDaySummary";
 import { useGameDay } from "lib/swr";

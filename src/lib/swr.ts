@@ -1,25 +1,9 @@
 'use client';
 
 import useSWR from 'swr';
-import { Arse, Club, Country, GameDay, Outcome } from './types';
+import { Arse, Club, Country, GameDay, Outcome, Player } from './types';
 
-export interface FootyPlayer {
-    id: number,
-    login: string,
-    isAdmin: boolean,
-    firstName: string,
-    lastName: string,
-    name: string,
-    anonymous: boolean,
-    email: string,
-    joined: Date,
-    finished: Date,
-    born: Date,
-    comment: string,
-    introducedBy: number,
-}
-
-export interface FootyPlayerData extends FootyPlayer {
+export interface PlayerData extends Player {
     firstResponded: number | null;
     lastResponded: number | null;
     firstPlayed: number | null;
@@ -30,7 +14,7 @@ export interface FootyPlayerData extends FootyPlayer {
     gamesLost: number;
 }
 
-export interface FootyPlayerRecord {
+export interface PlayerRecord {
     year: number,
     playerId: number,
     name: string,
@@ -118,7 +102,7 @@ export function useCurrentGame() {
 }
 
 export function usePlayer(idOrLogin: string) {
-    return useSWR<FootyPlayer>(`/api/footy/player/${idOrLogin}`, fetcher);
+    return useSWR<Player>(`/api/footy/player/${idOrLogin}`, fetcher);
 }
 
 export function usePlayerLastPlayed(idOrLogin: string) {
@@ -146,11 +130,11 @@ export function usePlayerYearsActive(idOrLogin: string) {
 }
 
 export function usePlayerRecord(idOrLogin: string, year: number) {
-    return useSWR<FootyPlayerRecord>(`/api/footy/player/${idOrLogin}/record/${year}`, fetcher);
+    return useSWR<PlayerRecord>(`/api/footy/player/${idOrLogin}/record/${year}`, fetcher);
 }
 
 export function usePlayers() {
-    return useSWR<FootyPlayerData[]>(`/api/footy/players`, fetcher);
+    return useSWR<PlayerData[]>(`/api/footy/players`, fetcher);
 }
 
 export function useRecordsProgress() {
@@ -166,7 +150,7 @@ export function useTable(table: FootyTable, year: number, qualified?: boolean, t
     if (qualified !== undefined) url += `/${qualified}`;
     if (take !== undefined) url += `/${take}`;
 
-    return useSWR<FootyPlayerRecord[]>(url, fetcher);
+    return useSWR<PlayerRecord[]>(url, fetcher);
 }
 
 export function useTeam(gameDay: number, team: string) {
@@ -177,7 +161,7 @@ export function useWinners(table: FootyTable, year?: number) {
     let url = `/api/footy/winners/${table}`;
     if (year !== undefined) url += `/${year}`;
 
-    return useSWR<FootyPlayerRecord[]>(url, fetcher);
+    return useSWR<PlayerRecord[]>(url, fetcher);
 }
 
 export function useTurnoutByYear() {

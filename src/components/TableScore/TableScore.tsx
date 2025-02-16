@@ -1,10 +1,10 @@
 'use client';
 
-import { FootyTable, FootyPlayerRecord } from 'lib/swr';
+import { FootyTable, PlayerRecord } from 'lib/swr';
 
 interface TableScoreProps {
     table: FootyTable;
-    playerRecord: FootyPlayerRecord;
+    playerRecord: PlayerRecord;
 }
 
 const TableScore = ({ table, playerRecord }: TableScoreProps) => {

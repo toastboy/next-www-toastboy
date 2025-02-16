@@ -4,7 +4,7 @@ import { Anchor, Checkbox, Container, Flex, Loader, RangeSlider, Switch, Table, 
 import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
 import PlayerTimeline from 'components/PlayerTimeline/PlayerTimeline';
 import PlayerWDLChart from 'components/PlayerWDLChart/PlayerWDLChart';
-import { FootyPlayerData, useCurrentGame, usePlayers } from 'lib/swr';
+import { PlayerData, useCurrentGame, usePlayers } from 'lib/swr';
 import { useEffect, useState } from 'react';
 
 type PageProps = object;
@@ -12,7 +12,7 @@ type PageProps = object;
 const Page: React.FC<PageProps> = () => {
     const { data: players, error: playersError, isLoading: playersLoading } = usePlayers();
     const { data: currentGame, error: currentGameError, isLoading: currentGameLoading } = useCurrentGame();
-    const [sortBy, setSortBy] = useState<keyof FootyPlayerData | null>('name');
+    const [sortBy, setSortBy] = useState<keyof PlayerData | null>('name');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     const [filter, setFilter] = useState('');
     const [active, setActive] = useState(true);
@@ -25,7 +25,7 @@ const Page: React.FC<PageProps> = () => {
         }
     }, [currentGame]);
 
-    const handleSort = (key: keyof FootyPlayerData) => {
+    const handleSort = (key: keyof PlayerData) => {
         if (sortBy === key) {
             setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
         } else {

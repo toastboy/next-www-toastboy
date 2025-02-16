@@ -1,8 +1,8 @@
 import { Progress } from '@mantine/core';
-import { FootyPlayerData } from 'lib/swr';
+import { PlayerData } from 'lib/swr';
 
 interface Props {
-    player: FootyPlayerData;
+    player: PlayerData;
 }
 
 const PlayerTimeline: React.FC<Props> = ({ player }) => {

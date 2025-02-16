@@ -1,10 +1,10 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import TableScore from 'components/TableScore/TableScore';
-import { FootyPlayerRecord, FootyTable } from 'lib/swr';
+import { FootyTable, PlayerRecord } from 'lib/swr';
 import { Wrapper, loaderClass } from "./lib/common";
 
 describe('TableScore', () => {
-    const playerRecord: FootyPlayerRecord = {
+    const playerRecord: PlayerRecord = {
         year: 2001,
         playerId: 1,
         name: "Derek Turnipson",

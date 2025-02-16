@@ -1,18 +1,20 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import TableScore from 'components/TableScore/TableScore';
-import { FootyTable, PlayerRecord } from 'lib/swr';
+import { FootyTable } from 'lib/swr';
+import { PlayerRecord } from 'lib/types';
 import { Wrapper, loaderClass } from "./lib/common";
 
 describe('TableScore', () => {
     const playerRecord: PlayerRecord = {
+        id: 1,
         year: 2001,
         playerId: 1,
-        name: "Derek Turnipson",
+        gameDayId: 1,
 
-        P: 10,
-        W: 2,
-        D: 4,
-        L: 4,
+        played: 10,
+        won: 2,
+        drawn: 4,
+        lost: 4,
 
         points: 10,
         averages: 1.0,
@@ -25,6 +27,27 @@ describe('TableScore', () => {
         rankStalwart: 1,
         rankPub: 9,
         rankSpeedy: 3,
+
+        rankAveragesUnqualified: 0,
+        rankSpeedyUnqualified: 0,
+
+        responses: 10,
+
+        player: {
+            id: 1,
+            isAdmin: false,
+            login: "derekt",
+            firstName: "Derek",
+            lastName: "Turnipson",
+            name: "Derek Turnipson",
+            email: "derek.turnipson@example.com",
+            joined: new Date("2021-01-01"),
+            finished: null,
+            born: new Date("1975-11-01"),
+            introducedBy: 23,
+            comment: null,
+            anonymous: false,
+        },
     };
 
     beforeEach(() => {

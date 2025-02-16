@@ -1,20 +1,23 @@
 'use client';
 
-import { FootyTable, PlayerRecord } from 'lib/swr';
+import { FootyTable } from 'lib/swr';
+import { PlayerRecord } from 'lib/types';
 
-interface TableScoreProps {
+export interface Props {
     table: FootyTable;
     playerRecord: PlayerRecord;
 }
 
-const TableScore = ({ table, playerRecord }: TableScoreProps) => {
+const TableScore = ({ table, playerRecord }: Props) => {
     switch (table) {
         case FootyTable.averages:
-            return `${playerRecord.averages.toFixed(3)}`;
+            return `${playerRecord.averages?.toFixed(3)}`;
         case FootyTable.speedy:
             {
                 const date = new Date(0);
-                date.setSeconds(playerRecord.speedy);
+                if (playerRecord.speedy !== null) {
+                    date.setSeconds(playerRecord.speedy);
+                }
                 return date.toISOString().substring(11, 19);
             }
         default:

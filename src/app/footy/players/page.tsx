@@ -4,7 +4,8 @@ import { Anchor, Checkbox, Container, Flex, Loader, RangeSlider, Switch, Table, 
 import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
 import PlayerTimeline from 'components/PlayerTimeline/PlayerTimeline';
 import PlayerWDLChart from 'components/PlayerWDLChart/PlayerWDLChart';
-import { PlayerData, useCurrentGame, usePlayers } from 'lib/swr';
+import { useCurrentGame, usePlayers } from 'lib/swr';
+import { PlayerData } from 'lib/types';
 import { useEffect, useState } from 'react';
 
 type PageProps = object;

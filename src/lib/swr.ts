@@ -1,41 +1,7 @@
 'use client';
 
 import useSWR from 'swr';
-import { Arse, Club, Country, GameDay, Outcome, Player } from './types';
-
-export interface PlayerData extends Player {
-    firstResponded: number | null;
-    lastResponded: number | null;
-    firstPlayed: number | null;
-    lastPlayed: number | null;
-    gamesPlayed: number;
-    gamesWon: number;
-    gamesDrawn: number;
-    gamesLost: number;
-}
-
-export interface PlayerRecord {
-    year: number,
-    playerId: number,
-    name: string,
-
-    P: number,
-    W: number,
-    D: number,
-    L: number,
-
-    points: number,
-    averages: number,
-    stalwart: number,
-    pub: number,
-    speedy: number,
-
-    rankPoints: number,
-    rankAverages: number,
-    rankStalwart: number,
-    rankPub: number,
-    rankSpeedy: number,
-}
+import { Arse, Club, Country, GameDay, Outcome, Player, PlayerData, PlayerRecord } from './types';
 
 export interface FootyTurnout {
     year: number,

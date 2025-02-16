@@ -1,5 +1,5 @@
 import { Progress, Tooltip } from '@mantine/core';
-import { PlayerData } from 'lib/swr';
+import { PlayerData } from 'lib/types';
 
 interface Props {
     player: PlayerData;

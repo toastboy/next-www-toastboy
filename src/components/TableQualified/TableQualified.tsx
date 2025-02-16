@@ -5,14 +5,14 @@ import PlayerLink from 'components/PlayerLink/PlayerLink';
 import TableScore from 'components/TableScore/TableScore';
 import { FootyTable, useTable } from 'lib/swr';
 
-interface TableQualifiedProps {
+export interface Props {
     table: FootyTable;
     year: number;
     qualified?: boolean;
     take?: number;
 }
 
-const TableQualified: React.FC<TableQualifiedProps> = ({ table, year, qualified, take }) => {
+const TableQualified: React.FC<Props> = ({ table, year, qualified, take }) => {
     const { data, error, isLoading } = useTable(table, year, qualified, take);
 
     if (isLoading) return <Loader color="gray" type="dots" />;

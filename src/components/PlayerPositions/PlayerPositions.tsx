@@ -10,18 +10,20 @@ export interface Props {
 }
 
 const PlayerPositions: React.FC<Props> = ({ idOrLogin, year }) => {
-    const { data, error, isLoading } = usePlayerRecord(idOrLogin, year);
+    const { data: record, error, isLoading } = usePlayerRecord(idOrLogin, year);
 
     if (isLoading) return <Loader color="gray" type="dots" />;
-    if (error || !data) return <div>failed to load</div>;
+    if (error || !record) return <div>failed to load</div>;
+
+    const { player, ...playerRecord } = record;
 
     return (
         <div className="px-6 py-4">
-            <table summary={`${data.name}'s ${getYearName(year)} table positions`}>
+            <table summary={`${player.name}'s ${getYearName(year)} table positions`}>
                 <caption>{getYearName(year)} Positions</caption>
                 <tbody>
                     {Object.keys(FootyTable).map((table) => {
-                        const position = data[rankMap[table as keyof typeof rankMap] as keyof typeof data];
+                        const position = playerRecord[rankMap[table as keyof typeof rankMap] as keyof typeof playerRecord];
 
                         return (
                             <tr key={table}>

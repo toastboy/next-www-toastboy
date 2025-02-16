@@ -1,19 +1,9 @@
 import { Outcome, Player } from '@prisma/client';
 import debug from 'debug';
 import prisma from 'lib/prisma';
+import { PlayerData } from 'lib/types';
 
 const log = debug('footy:api');
-
-interface PlayerData extends Player {
-    firstResponded: number | null;
-    lastResponded: number | null;
-    firstPlayed: number | null;
-    lastPlayed: number | null;
-    gamesPlayed: number;
-    gamesWon: number;
-    gamesDrawn: number;
-    gamesLost: number;
-}
 
 class PlayerService {
     /**

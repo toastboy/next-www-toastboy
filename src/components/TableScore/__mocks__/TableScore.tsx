@@ -1,6 +1,6 @@
-import { FootyTable, PlayerRecord } from "lib/swr";
+import { Props } from "../TableScore";
 
-const TableScore = ({ table, playerRecord }: { table: FootyTable, playerRecord: PlayerRecord }) => (
+const TableScore = ({ table, playerRecord }: Props) => (
     <div>TableScore (table: {table}, playerRecord.playerId: {playerRecord.playerId})</div>
 );
 TableScore.displayName = 'TableScore';

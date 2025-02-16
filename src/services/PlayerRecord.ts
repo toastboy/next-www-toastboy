@@ -240,6 +240,9 @@ export class PlayerRecordService {
                 orderBy: {
                     gameDayId: 'desc',
                 },
+                include: {
+                    player: true,
+                },
             });
         } catch (error) {
             log(`Error fetching playerRecord for player: ${error}`);

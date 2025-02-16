@@ -67,10 +67,10 @@ describe('TableQualified', () => {
                 playerId: index + 1,
                 name: "Derek Turnipson",
 
-                P: 15,
-                W: 15 - index,
-                D: 0,
-                L: index,
+                played: 15,
+                won: 15 - index,
+                drawn: 0,
+                lost: index,
 
                 points: 3 * (15 - index),
                 averages: (3 * (15 - index)) / 15.0,

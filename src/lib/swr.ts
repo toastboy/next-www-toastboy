@@ -1,55 +1,7 @@
 'use client';
 
 import useSWR from 'swr';
-import { GameDay } from './types';
-
-export interface FootyArse {
-    inGoal: number,
-    running: number,
-    shooting: number,
-    passing: number,
-    ballSkill: number,
-    attacking: number,
-    defending: number,
-}
-
-export interface FootyClub {
-    id: number,
-    soccerway_id: number,
-    club_name: string,
-    uri: string,
-    country: string,
-}
-
-export interface FootyCountry {
-    isoCode: string,
-    name: string,
-}
-
-export interface FootyGameDay {
-    id: number,
-    year: number,
-    date: Date,
-    game: boolean,
-    mailSent: Date,
-    comment: string,
-    bibs: FootyTeam,
-    pickerGamesHistory: number,
-}
-
-export interface FootyOutcome {
-    response: FootyResponse,
-    responseInterval: number,
-    points: number,
-    team: FootyTeam,
-    comment: string,
-    pub: number,
-    paid: boolean,
-    goalie: boolean,
-    gameDayId: number,
-    playerId: number,
-    gameDay: FootyGameDay,
-}
+import { Arse, Club, Country, GameDay, Outcome } from './types';
 
 export interface FootyPlayer {
     id: number,
@@ -142,11 +94,11 @@ const fetcher = (input: URL | RequestInfo, init?: RequestInit | undefined) =>
     fetch(input, init).then((res) => res.json());
 
 export function useClub(id: number) {
-    return useSWR<FootyClub>(`/api/footy/club/${id}`, fetcher);
+    return useSWR<Club>(`/api/footy/club/${id}`, fetcher);
 }
 
 export function useCountry(isoCode: string) {
-    return useSWR<FootyCountry>(`/api/footy/country/${isoCode}`, fetcher);
+    return useSWR<Country>(`/api/footy/country/${isoCode}`, fetcher);
 }
 
 export function useGameYears() {
@@ -162,7 +114,7 @@ export function useGameDay(id: number) {
 }
 
 export function useCurrentGame() {
-    return useSWR<FootyGameDay>(`/api/footy/currentgame`, fetcher);
+    return useSWR<GameDay>(`/api/footy/currentgame`, fetcher);
 }
 
 export function usePlayer(idOrLogin: string) {
@@ -170,7 +122,7 @@ export function usePlayer(idOrLogin: string) {
 }
 
 export function usePlayerLastPlayed(idOrLogin: string) {
-    return useSWR<FootyOutcome>(`/api/footy/player/${idOrLogin}/lastplayed`, fetcher);
+    return useSWR<Outcome>(`/api/footy/player/${idOrLogin}/lastplayed`, fetcher);
 }
 
 export function usePlayerClubs(idOrLogin: string) {
@@ -182,11 +134,11 @@ export function usePlayerCountries(idOrLogin: string) {
 }
 
 export function usePlayerArse(idOrLogin: string) {
-    return useSWR<FootyArse>(`/api/footy/player/${idOrLogin}/arse`, fetcher);
+    return useSWR<Arse>(`/api/footy/player/${idOrLogin}/arse`, fetcher);
 }
 
 export function usePlayerForm(idOrLogin: string, games: number) {
-    return useSWR<FootyOutcome[]>(`/api/footy/player/${idOrLogin}/form/${games}`, fetcher);
+    return useSWR<Outcome[]>(`/api/footy/player/${idOrLogin}/form/${games}`, fetcher);
 }
 
 export function usePlayerYearsActive(idOrLogin: string) {
@@ -218,7 +170,7 @@ export function useTable(table: FootyTable, year: number, qualified?: boolean, t
 }
 
 export function useTeam(gameDay: number, team: string) {
-    return useSWR<FootyOutcome[]>(`/api/footy/team/${gameDay}/${team}`, fetcher);
+    return useSWR<Outcome[]>(`/api/footy/team/${gameDay}/${team}`, fetcher);
 }
 
 export function useWinners(table: FootyTable, year?: number) {

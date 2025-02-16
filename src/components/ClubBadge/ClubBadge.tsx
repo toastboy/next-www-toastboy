@@ -17,8 +17,8 @@ const ClubBadge: React.FC<ClubBadgeProps> = ({ clubId }) => {
             width={150}
             height={150}
             src={`/api/footy/club/${clubId}/badge`}
-            alt={club.club_name}
-            title={club.club_name}
+            alt={club.clubName}
+            title={club.clubName}
         />
     );
 };

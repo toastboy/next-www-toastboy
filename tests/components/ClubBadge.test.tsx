@@ -53,7 +53,7 @@ describe('ClubBadge', () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: {
                 id: 4000,
-                club_name: "Nonsense Potters",
+                clubName: "Nonsense Potters",
             },
             error: undefined,
             isLoading: false,

@@ -1,6 +1,6 @@
 import { Club } from '@prisma/client';
-import clubService from 'services/Club';
 import prisma from 'lib/prisma';
+import clubService from 'services/Club';
 
 jest.mock('lib/prisma', () => ({
     club: {
@@ -16,8 +16,8 @@ jest.mock('lib/prisma', () => ({
 
 const defaultClub: Club = {
     id: 1,
-    soccerway_id: 1000,
-    club_name: "Wittering United",
+    soccerwayId: 1000,
+    clubName: "Wittering United",
     uri: "wittering-united",
     country: "england",
 };
@@ -30,7 +30,7 @@ const invalidClub: Club = {
 const clubList: Club[] = Array.from({ length: 100 }, (_, index) => ({
     ...defaultClub,
     id: index + 1,
-    soccerway_id: 1000 + index,
+    soccerwayId: 1000 + index,
 }));
 
 describe('ClubService', () => {
@@ -88,7 +88,7 @@ describe('ClubService', () => {
             expect(result).toEqual({
                 ...defaultClub,
                 id: 6,
-                soccerway_id: 1005,
+                soccerwayId: 1005,
             } as Club);
         });
 
@@ -110,7 +110,7 @@ describe('ClubService', () => {
             if (result) {
                 expect(result.length).toEqual(100);
                 expect(result[11].id).toEqual(12);
-                expect(result[11].soccerway_id).toEqual(1011);
+                expect(result[11].soccerwayId).toEqual(1011);
             }
             else {
                 throw new Error("Result is null");
@@ -123,7 +123,7 @@ describe('ClubService', () => {
             const newClub: Club = {
                 ...defaultClub,
                 id: 106,
-                soccerway_id: 1005,
+                soccerwayId: 1005,
             };
             const result = await clubService.create(newClub);
             expect(result).toEqual(newClub);
@@ -137,7 +137,7 @@ describe('ClubService', () => {
             await expect(clubService.create({
                 ...defaultClub,
                 id: 6,
-                soccerway_id: 1005,
+                soccerwayId: 1005,
             })).rejects.toThrow();
         });
     });
@@ -152,8 +152,8 @@ describe('ClubService', () => {
             const updatedClub: Club = {
                 ...defaultClub,
                 id: 6,
-                soccerway_id: 1006,
-                club_name: "Doddington Rovers",
+                soccerwayId: 1006,
+                clubName: "Doddington Rovers",
                 uri: "doddington-rovers",
             };
             const result = await clubService.upsert(updatedClub);

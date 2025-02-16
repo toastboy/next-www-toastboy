@@ -1,7 +1,7 @@
-import { PlayerResponse, Outcome as PrismaOutcome, Team } from '@prisma/client';
+import { PlayerResponse, Outcome as PrismaOutcome } from '@prisma/client';
 import debug from 'debug';
 import prisma from 'lib/prisma';
-import { Outcome } from 'lib/types';
+import { Outcome, Turnout, TurnoutByYear } from 'lib/types';
 import gameDayService from './GameDay';
 
 const log = debug('footy:api');
@@ -13,41 +13,6 @@ export enum EnumResponse {
     Excused = 'Excused',
     Flaked = 'Flaked',
     Injured = 'Injured',
-}
-
-interface Turnout {
-    responses: number,
-    players: number,
-    cancelled: boolean,
-    id: number,
-    year: number,
-    date: Date,
-    game: boolean,
-    mailSent: Date | null,
-    comment: string | null,
-    bibs: Team | null,
-    pickerGamesHistory: number | null,
-    yes: number,
-    no: number,
-    dunno: number,
-    excused: number,
-    flaked: number,
-    injured: number,
-}
-
-interface TurnoutByYear {
-    year: number,
-    gameDays: number,
-    gamesScheduled: number,
-    gamesInitiated: number,
-    gamesPlayed: number,
-    gamesCancelled: number,
-    responses: number,
-    yesses: number,
-    players: number,
-    responsesPerGameInitiated: number,
-    yessesPerGameInitiated: number,
-    playersPerGamePlayed: number,
 }
 
 export class OutcomeService {

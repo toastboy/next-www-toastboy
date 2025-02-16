@@ -1,31 +1,7 @@
 'use client';
 
 import useSWR from 'swr';
-import { Arse, Club, Country, GameDay, Outcome, Player, PlayerData, PlayerRecord } from './types';
-
-export interface FootyTurnout {
-    year: number,
-    gameDays: number,
-    gamesScheduled: number,
-    gamesInitiated: number,
-    gamesPlayed: number,
-    gamesCancelled: number,
-    responses: number,
-    yesses: number,
-    players: number,
-    responsesPerGameInitiated: number,
-    yessesPerGameInitiated: number,
-    playersPerGamePlayed: number,
-}
-
-export enum FootyResponse {
-    Yes = 'Yes',
-    No = 'No',
-    Dunno = 'Dunno',
-    Excused = 'Excused',
-    Flaked = 'Flaked',
-    Injured = 'Injured',
-}
+import { Arse, Club, Country, GameDay, Outcome, Player, PlayerData, PlayerRecord, TurnoutByYear } from './types';
 
 export enum FootyTable {
     points = 'points',
@@ -33,11 +9,6 @@ export enum FootyTable {
     stalwart = 'stalwart',
     speedy = 'speedy',
     pub = 'pub',
-}
-
-export enum FootyTeam {
-    A = 'A',
-    B = 'B',
 }
 
 const fetcher = (input: URL | RequestInfo, init?: RequestInit | undefined) =>
@@ -131,5 +102,5 @@ export function useWinners(table: FootyTable, year?: number) {
 }
 
 export function useTurnoutByYear() {
-    return useSWR<FootyTurnout[]>(`/api/footy/turnout/byyear`, fetcher);
+    return useSWR<TurnoutByYear[]>(`/api/footy/turnout/byyear`, fetcher);
 }

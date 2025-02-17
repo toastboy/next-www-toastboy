@@ -1,7 +1,8 @@
 import { PlayerRecord } from '@prisma/client';
 import fs from 'fs';
 import prisma from 'lib/prisma';
-import playerRecordService, { EnumTable } from 'services/PlayerRecord';
+import { TableName } from 'lib/types';
+import playerRecordService from 'services/PlayerRecord';
 
 jest.mock('lib/prisma', () => ({
     playerRecord: {
@@ -402,14 +403,14 @@ describe('PlayerRecordService', () => {
         });
 
         it('should retrieve all the winners for the points table for all years', async () => {
-            const result = await playerRecordService.getWinners(EnumTable.points);
+            const result = await playerRecordService.getWinners(TableName.points);
             expect(result.length).toEqual(2);
             expect(result[0].year).toEqual(2023);
             expect(result[1].playerId).toEqual(191);
         });
 
         it('should retrieve all the winners for the points table for a specific year', async () => {
-            const result = await playerRecordService.getWinners(EnumTable.points, 2023);
+            const result = await playerRecordService.getWinners(TableName.points, 2023);
             expect(result.length).toEqual(2);
             expect(result[0].year).toEqual(2023);
             expect(result[1].playerId).toEqual(191);
@@ -417,7 +418,7 @@ describe('PlayerRecordService', () => {
 
         it('should return an empty list when there are no season-ending games', async () => {
             (prisma.gameDay.groupBy as jest.Mock).mockResolvedValue([]);
-            const result = await playerRecordService.getWinners(EnumTable.points);
+            const result = await playerRecordService.getWinners(TableName.points);
             expect(result).toEqual([]);
         });
     });
@@ -448,7 +449,7 @@ describe('PlayerRecordService', () => {
             (prisma.playerRecord.findFirst as jest.Mock).mockResolvedValue({
                 "gameDayId": 1087,
             });
-            const result = await playerRecordService.getTable(EnumTable.points, 2022);
+            const result = await playerRecordService.getTable(TableName.points, 2022);
             expect(result.length).toEqual(18);
         });
 
@@ -456,7 +457,7 @@ describe('PlayerRecordService', () => {
             (prisma.playerRecord.findFirst as jest.Mock).mockResolvedValue({
                 "gameDayId": 1087,
             });
-            const result = await playerRecordService.getTable(EnumTable.points, 2022, true);
+            const result = await playerRecordService.getTable(TableName.points, 2022, true);
             expect(result.length).toEqual(18);
         });
 
@@ -464,19 +465,19 @@ describe('PlayerRecordService', () => {
             (prisma.playerRecord.findFirst as jest.Mock).mockResolvedValue({
                 "gameDayId": 1153,
             });
-            const result = await playerRecordService.getTable(EnumTable.points, 0);
+            const result = await playerRecordService.getTable(TableName.points, 0);
             expect(result.length).toEqual(179);
         });
 
         it('should return an empty list when retrieving the points table for a year with no PlayerRecords', async () => {
             (prisma.playerRecord.findFirst as jest.Mock).mockResolvedValue({});
-            const result = await playerRecordService.getTable(EnumTable.points, 2010);
+            const result = await playerRecordService.getTable(TableName.points, 2010);
             expect(result.length).toEqual(0);
         });
 
         it('should return an empty list when retrieving the points table for a year that does not exist', async () => {
             (prisma.playerRecord.findFirst as jest.Mock).mockResolvedValue(null);
-            const result = await playerRecordService.getTable(EnumTable.points, 1984);
+            const result = await playerRecordService.getTable(TableName.points, 1984);
             expect(result.length).toEqual(0);
         });
     });
@@ -511,7 +512,7 @@ describe('PlayerRecordService', () => {
             (prisma.playerRecord.findFirst as jest.Mock).mockResolvedValue({
                 "gameDayId": 1087,
             });
-            const result = await playerRecordService.getTable(EnumTable.averages, 2022, true);
+            const result = await playerRecordService.getTable(TableName.averages, 2022, true);
             expect(result.length).toEqual(0);
         });
 
@@ -519,7 +520,7 @@ describe('PlayerRecordService', () => {
             (prisma.playerRecord.findFirst as jest.Mock).mockResolvedValue({
                 "gameDayId": 1087,
             });
-            const result = await playerRecordService.getTable(EnumTable.averages, 2022, false);
+            const result = await playerRecordService.getTable(TableName.averages, 2022, false);
             expect(result.length).toEqual(18);
         });
     });
@@ -554,7 +555,7 @@ describe('PlayerRecordService', () => {
             (prisma.playerRecord.findFirst as jest.Mock).mockResolvedValue({
                 "gameDayId": 1087,
             });
-            const result = await playerRecordService.getTable(EnumTable.speedy, 2022, true);
+            const result = await playerRecordService.getTable(TableName.speedy, 2022, true);
             expect(result.length).toEqual(12);
         });
 
@@ -562,7 +563,7 @@ describe('PlayerRecordService', () => {
             (prisma.playerRecord.findFirst as jest.Mock).mockResolvedValue({
                 "gameDayId": 1087,
             });
-            const result = await playerRecordService.getTable(EnumTable.speedy, 2022, false);
+            const result = await playerRecordService.getTable(TableName.speedy, 2022, false);
             expect(result.length).toEqual(10);
         });
     });

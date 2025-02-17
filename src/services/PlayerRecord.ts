@@ -8,14 +8,6 @@ import outcomeService from 'services/Outcome';
 
 const log = debug('footy:api');
 
-export enum EnumTable {
-    points = 'points',
-    averages = 'averages',
-    stalwart = 'stalwart',
-    speedy = 'speedy',
-    pub = 'pub',
-}
-
 export class PlayerRecordService {
     /**
      * Validate a PlayerRecord

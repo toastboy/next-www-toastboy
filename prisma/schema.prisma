@@ -100,7 +100,7 @@ model GameDay {
   game               Boolean   @default(true)
   mailSent           DateTime? @db.DateTime(0)
   comment            String?   @db.VarChar(255)
-  bibs               Team?
+  bibs               TeamName?
   pickerGamesHistory Int?
 
   outcomes      Outcome[]
@@ -121,7 +121,7 @@ model Outcome {
   response         PlayerResponse?
   responseInterval Int?
   points           Int?
-  team             Team?
+  team             TeamName?
   comment          String?         @db.VarChar(127)
   pub              Int?
   paid             Boolean?
@@ -148,8 +148,8 @@ model Picker {
 }
 
 model PickerTeams {
-  playerId Int   @unique
-  team     Team?
+  playerId Int       @unique
+  team     TeamName?
 }
 
 model Player {
@@ -212,7 +212,7 @@ model PlayerRecord {
   @@index([gameDayId])
 }
 
-enum Team {
+enum TeamName {
   A
   B
 }
@@ -224,6 +224,14 @@ enum PlayerResponse {
   Excused
   Flaked
   Injured
+}
+
+enum TableName {
+  points
+  averages
+  stalwart
+  speedy
+  pub
 }
 
 model User {

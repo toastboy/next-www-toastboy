@@ -2,7 +2,7 @@
 
 import { Grid, Stack, Title } from '@mantine/core';
 import WinnersTable from 'components/WinnersTable/WinnersTable';
-import { FootyTable } from 'lib/swr';
+import { TableName } from 'lib/types';
 import { notFound } from 'next/navigation';
 import { use } from 'react';
 
@@ -36,9 +36,9 @@ export const Page: React.FC<PageProps> = (props) => {
             <Title w="100%" ta="center" order={1}>Winners</Title>
             <Grid>
                 {
-                    Object.keys(FootyTable).map((table) => {
+                    Object.keys(TableName).map((table) => {
                         return (
-                            <Grid.Col span={4} key={table}><WinnersTable table={table as FootyTable} year={year} /></Grid.Col>
+                            <Grid.Col span={4} key={table}><WinnersTable table={table as TableName} year={year} /></Grid.Col>
                         );
                     })
                 }

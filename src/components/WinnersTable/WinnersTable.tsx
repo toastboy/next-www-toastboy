@@ -2,11 +2,12 @@
 
 import { Loader, Paper, Table, Title } from '@mantine/core';
 import PlayerLink from 'components/PlayerLink/PlayerLink';
-import { FootyTable, useWinners } from 'lib/swr';
+import { useWinners } from 'lib/swr';
+import { TableName } from 'lib/types';
 import { getYearName } from 'lib/utils';
 
 interface WinnersTableProps {
-    table: FootyTable;
+    table: TableName;
     year?: number;
 }
 

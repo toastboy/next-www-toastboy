@@ -3,11 +3,12 @@
 import { Loader } from '@mantine/core';
 import TableQualified from 'components/TableQualified/TableQualified';
 import config from 'lib/config';
-import { FootyTable, useGameYear } from 'lib/swr';
+import { useGameYear } from 'lib/swr';
+import { TableName } from 'lib/types';
 import { getYearName } from 'lib/utils';
 
 interface TableProps {
-    table: FootyTable;
+    table: TableName;
     year: number;
 }
 
@@ -39,17 +40,17 @@ const Table: React.FC<TableProps> = ({ table, year }) => {
 
 /**
  * Generates a qualified table name based on the provided table type and year.
- * @param {FootyTable} table - The type of table.
+ * @param {TableName} table - The type of table.
  * @param {number} year - The year for which the table is generated.
  * @returns {string} - The qualified table name.
  */
-function QualifiedTableName(table: FootyTable, year: number): string {
+function QualifiedTableName(table: TableName, year: number): string {
     let tableName = "";
     switch (table) {
-        case FootyTable.speedy:
+        case TableName.speedy:
             tableName = 'Captain Speedy';
             break;
-        case FootyTable.stalwart:
+        case TableName.stalwart:
             tableName = 'Stalwart Standings';
             break;
         default:
@@ -62,15 +63,15 @@ function QualifiedTableName(table: FootyTable, year: number): string {
 /**
  * Generates a name for an qualified table name based on the provided table type
  * and year: if no qualification is applicable then it returns null.
- * @param {FootyTable} table - The type of table.
+ * @param {TableName} table - The type of table.
  * @param {number} year - The year for which the table is generated.
  * @returns {string} - The qualified table name or null.
  */
-function UnqualifiedTableName(table: FootyTable): string | null {
+function UnqualifiedTableName(table: TableName): string | null {
     switch (table) {
-        case FootyTable.averages:
+        case TableName.averages:
             return `Played Fewer than ${config.minGamesForAveragesTable} Games`;
-        case FootyTable.speedy:
+        case TableName.speedy:
             return `Responded Fewer than ${config.minRepliesForSpeedyTable} Times`;
         default:
             return null;

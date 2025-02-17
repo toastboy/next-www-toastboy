@@ -1,15 +1,7 @@
 'use client';
 
 import useSWR from 'swr';
-import { Arse, Club, Country, GameDay, Outcome, Player, PlayerData, PlayerRecord, TurnoutByYear } from './types';
-
-export enum FootyTable {
-    points = 'points',
-    averages = 'averages',
-    stalwart = 'stalwart',
-    speedy = 'speedy',
-    pub = 'pub',
-}
+import { Arse, Club, Country, GameDay, Outcome, Player, PlayerData, PlayerRecord, TableName, TurnoutByYear } from './types';
 
 const fetcher = (input: URL | RequestInfo, init?: RequestInit | undefined) =>
     fetch(input, init).then((res) => res.json());
@@ -82,7 +74,7 @@ export function useTableYears() {
     return useSWR<number[]>(`/api/footy/tableyear`, fetcher);
 }
 
-export function useTable(table: FootyTable, year: number, qualified?: boolean, take?: number) {
+export function useTable(table: TableName, year: number, qualified?: boolean, take?: number) {
     let url = `/api/footy/table/${table}/${year}`;
     if (qualified !== undefined) url += `/${qualified}`;
     if (take !== undefined) url += `/${take}`;
@@ -94,7 +86,7 @@ export function useTeam(gameDay: number, team: string) {
     return useSWR<Outcome[]>(`/api/footy/team/${gameDay}/${team}`, fetcher);
 }
 
-export function useWinners(table: FootyTable, year?: number) {
+export function useWinners(table: TableName, year?: number) {
     let url = `/api/footy/winners/${table}`;
     if (year !== undefined) url += `/${year}`;
 

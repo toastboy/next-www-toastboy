@@ -1,18 +1,17 @@
 'use client';
 
-import { FootyTable } from 'lib/swr';
-import { PlayerRecord } from 'lib/types';
+import { PlayerRecord, TableName } from 'lib/types';
 
 export interface Props {
-    table: FootyTable;
+    table: TableName;
     playerRecord: PlayerRecord;
 }
 
 const TableScore = ({ table, playerRecord }: Props) => {
     switch (table) {
-        case FootyTable.averages:
+        case TableName.averages:
             return `${playerRecord.averages?.toFixed(3)}`;
-        case FootyTable.speedy:
+        case TableName.speedy:
             {
                 const date = new Date(0);
                 if (playerRecord.speedy !== null) {

@@ -1,7 +1,8 @@
 'use client';
 
 import { Loader } from '@mantine/core';
-import { FootyTable, usePlayerRecord } from 'lib/swr';
+import { usePlayerRecord } from 'lib/swr';
+import { TableName } from 'lib/types';
 import { getYearName, rankMap } from 'lib/utils';
 
 export interface Props {
@@ -22,7 +23,7 @@ const PlayerPositions: React.FC<Props> = ({ idOrLogin, year }) => {
             <table summary={`${player.name}'s ${getYearName(year)} table positions`}>
                 <caption>{getYearName(year)} Positions</caption>
                 <tbody>
-                    {Object.keys(FootyTable).map((table) => {
+                    {Object.keys(TableName).map((table) => {
                         const position = playerRecord[rankMap[table as keyof typeof rankMap] as keyof typeof playerRecord];
 
                         return (

@@ -2,15 +2,15 @@
 
 import Table from 'components/Table/Table';
 import TableYears from 'components/TableYears/TableYears';
-import { FootyTable } from 'lib/swr';
+import { TableName } from 'lib/types';
 import { notFound, usePathname, useRouter } from 'next/navigation';
 import { use, useEffect, useState } from 'react';
 
-interface PageProps {
-    params: Promise<{ year: string, table: FootyTable }>,
+interface Props {
+    params: Promise<{ year: string, table: TableName }>,
 }
 
-const Page: React.FC<PageProps> = props => {
+const Page: React.FC<Props> = props => {
     const { year, table } = use(props.params);
     const pathname = usePathname();
     const router = useRouter();
@@ -30,7 +30,7 @@ const Page: React.FC<PageProps> = props => {
         }
     }, [activeYear, table, year, pathname, router]);
 
-    if (!(table in FootyTable)) return notFound();
+    if (!(table in TableName)) return notFound();
 
     return (
         <>

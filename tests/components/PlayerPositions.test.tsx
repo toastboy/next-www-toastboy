@@ -57,7 +57,7 @@ describe('PlayerPositions', () => {
     it('renders with data for year', async () => {
         (useSWR as jest.Mock).mockReturnValue({
             data: {
-                year: 2022,
+                year: 2021,
                 playerId: 2,
 
                 played: 10,

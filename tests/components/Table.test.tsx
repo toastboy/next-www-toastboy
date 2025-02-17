@@ -2,14 +2,14 @@ jest.mock('swr');
 
 import { render, screen, waitFor } from '@testing-library/react';
 import Table from 'components/Table/Table';
-import { FootyTable } from 'lib/swr';
+import { TableName } from 'lib/types';
 import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
 
 jest.mock('components/TableQualified/TableQualified');
 
 describe('Table', () => {
-    const table = FootyTable.points;
+    const table = TableName.points;
     const year = 2010;
 
     beforeEach(() => {
@@ -79,7 +79,7 @@ describe('Table', () => {
             isLoading: false,
         });
 
-        const { container } = render(<Wrapper><Table table={FootyTable.averages} year={year} /></Wrapper>);
+        const { container } = render(<Wrapper><Table table={TableName.averages} year={year} /></Wrapper>);
         await waitFor(() => {
             expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
             expect(screen.getByText("2010 Averages Table")).toBeInTheDocument();
@@ -89,13 +89,15 @@ describe('Table', () => {
     });
 
     it('renders stalwart table with data', async () => {
+        const table: TableName = "stalwart";
+
         (useSWR as jest.Mock).mockReturnValue({
             data: 2010,
             error: undefined,
             isLoading: false,
         });
 
-        const { container } = render(<Wrapper><Table table={FootyTable.stalwart} year={year} /></Wrapper>);
+        const { container } = render(<Wrapper><Table table={table} year={year} /></Wrapper>);
         await waitFor(() => {
             expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
             expect(screen.getByText("2010 Stalwart Standings")).toBeInTheDocument();
@@ -104,13 +106,15 @@ describe('Table', () => {
     });
 
     it('renders speedy table with data', async () => {
+        const table: TableName = "speedy";
+
         (useSWR as jest.Mock).mockReturnValue({
             data: 2010,
             error: undefined,
             isLoading: false,
         });
 
-        const { container } = render(<Wrapper><Table table={FootyTable.speedy} year={year} /></Wrapper>);
+        const { container } = render(<Wrapper><Table table={table} year={year} /></Wrapper>);
         await waitFor(() => {
             expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
             expect(screen.getByText("2010 Captain Speedy")).toBeInTheDocument();
@@ -120,13 +124,15 @@ describe('Table', () => {
     });
 
     it('renders pub table with data', async () => {
+        const table: TableName = "pub";
+
         (useSWR as jest.Mock).mockReturnValue({
             data: 2010,
             error: undefined,
             isLoading: false,
         });
 
-        const { container } = render(<Wrapper><Table table={FootyTable.pub} year={year} /></Wrapper>);
+        const { container } = render(<Wrapper><Table table={table} year={year} /></Wrapper>);
         await waitFor(() => {
             expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
             expect(screen.getByText("2010 Pub Table")).toBeInTheDocument();

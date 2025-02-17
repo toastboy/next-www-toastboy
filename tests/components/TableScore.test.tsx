@@ -1,7 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import TableScore from 'components/TableScore/TableScore';
-import { FootyTable } from 'lib/swr';
-import { PlayerRecord } from 'lib/types';
+import { PlayerRecord, TableName } from 'lib/types';
 import { Wrapper, loaderClass } from "./lib/common";
 
 describe('TableScore', () => {
@@ -55,7 +54,7 @@ describe('TableScore', () => {
     });
 
     it('renders correctly for points', async () => {
-        const { container } = render(<Wrapper><TableScore table={FootyTable.points} playerRecord={playerRecord} /></Wrapper>);
+        const { container } = render(<Wrapper><TableScore table={TableName.points} playerRecord={playerRecord} /></Wrapper>);
         await waitFor(() => {
             expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
             expect(screen.getByText("10")).toBeInTheDocument();
@@ -63,7 +62,7 @@ describe('TableScore', () => {
     });
 
     it('renders correctly for averages', async () => {
-        const { container } = render(<Wrapper><TableScore table={FootyTable.averages} playerRecord={playerRecord} /></Wrapper>);
+        const { container } = render(<Wrapper><TableScore table={TableName.averages} playerRecord={playerRecord} /></Wrapper>);
         await waitFor(() => {
             expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
             expect(screen.getByText("1.000")).toBeInTheDocument();
@@ -71,7 +70,7 @@ describe('TableScore', () => {
     });
 
     it('renders correctly for speedy', async () => {
-        const { container } = render(<Wrapper><TableScore table={FootyTable.speedy} playerRecord={playerRecord} /></Wrapper>);
+        const { container } = render(<Wrapper><TableScore table={TableName.speedy} playerRecord={playerRecord} /></Wrapper>);
         await waitFor(() => {
             expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
             expect(screen.getByText("00:33:20")).toBeInTheDocument();

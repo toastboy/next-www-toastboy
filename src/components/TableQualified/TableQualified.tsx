@@ -3,10 +3,11 @@
 import { Loader } from '@mantine/core';
 import PlayerLink from 'components/PlayerLink/PlayerLink';
 import TableScore from 'components/TableScore/TableScore';
-import { FootyTable, useTable } from 'lib/swr';
+import { useTable } from 'lib/swr';
+import { TableName } from 'lib/types';
 
 export interface Props {
-    table: FootyTable;
+    table: TableName;
     year: number;
     qualified?: boolean;
     take?: number;

@@ -2,11 +2,11 @@ jest.mock('swr');
 
 import { render, screen, waitFor } from '@testing-library/react';
 import WinnersTable from 'components/WinnersTable/WinnersTable';
-import { FootyTable } from 'lib/swr';
+import { TableName } from 'lib/types';
 import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from './lib/common';
 
-const table = FootyTable.points;
+const table: TableName = "points";
 
 jest.mock('components/PlayerLink/PlayerLink');
 

@@ -2,7 +2,7 @@ jest.mock('swr');
 
 import { render, screen, waitFor } from '@testing-library/react';
 import TableQualified from 'components/TableQualified/TableQualified';
-import { FootyTable } from 'lib/swr';
+import { TableName } from 'lib/types';
 import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from "./lib/common";
 
@@ -10,7 +10,7 @@ jest.mock('components/PlayerLink/PlayerLink');
 jest.mock('components/TableScore/TableScore');
 
 describe('TableQualified', () => {
-    const table = FootyTable.points;
+    const table: TableName = "points";
     const year = 2002;
     const qualified = true;
     const take = 5;

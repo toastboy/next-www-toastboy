@@ -6,7 +6,9 @@ import {
     Outcome as PrismaOutcome,
     Player as PrismaPlayer,
     PlayerRecord as PrismaPlayerRecord,
-    Team as PrismaTeam,
+    PlayerResponse as PrismaPlayerResponse,
+    TableName as PrismaTableName,
+    TeamName as PrismaTeamName,
 } from '@prisma/client';
 
 export type Arse = PrismaArse
@@ -40,7 +42,17 @@ export interface PlayerRecord extends PrismaPlayerRecord {
     player: Player,
 }
 
-export type Team = PrismaTeam
+export type PlayerResponse = PrismaPlayerResponse
+
+export const PlayerResponse: typeof PrismaPlayerResponse = PrismaPlayerResponse;
+
+export type TableName = PrismaTableName
+
+export const TableName: typeof PrismaTableName = PrismaTableName;
+
+export type TeamName = PrismaTeamName
+
+export const TeamName: typeof PrismaTeamName = PrismaTeamName;
 
 export interface Turnout {
     responses: number,
@@ -52,7 +64,7 @@ export interface Turnout {
     game: boolean,
     mailSent: Date | null,
     comment: string | null,
-    bibs: Team | null,
+    bibs: TeamName | null,
     pickerGamesHistory: number | null,
     yes: number,
     no: number,

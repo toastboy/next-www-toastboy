@@ -2,6 +2,7 @@ import { GameDay, Outcome, PlayerRecord } from '@prisma/client';
 import debug from 'debug';
 import config from 'lib/config';
 import prisma from 'lib/prisma';
+import { TableName } from 'lib/types';
 import { rankMap } from 'lib/utils';
 import gameDayService from 'services/GameDay';
 import outcomeService from 'services/Outcome';
@@ -250,7 +251,7 @@ export class PlayerRecordService {
      * @throws If there is an error fetching the player records.
      */
     async getWinners(
-        table: EnumTable,
+        table: TableName,
         year?: number,
     ): Promise<PlayerRecord[]> {
         try {
@@ -286,7 +287,7 @@ export class PlayerRecordService {
      * @throws If there is an error while fetching the player records.
      */
     async getTable(
-        table: EnumTable,
+        table: TableName,
         year: number,
         qualified?: boolean,
         take?: number,

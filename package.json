@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "test": "jest",
-    "test:watch": "jest --watchAll --passWithNoTests",
+    "test:watch": "jest --watch --passWithNoTests",
     "dev": "docker compose up -d && next dev",
     "build": "npx prisma generate && DEBUG=app:* next build",
     "lint": "next lint",

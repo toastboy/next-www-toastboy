@@ -13,11 +13,11 @@ import PlayerYearsActive from 'components/PlayerYearsActive/PlayerYearsActive';
 import { notFound } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-interface PlayerProfileProps {
+interface Props {
     player: Player;
 }
 
-const PlayerProfile: React.FC<PlayerProfileProps> = ({ player }) => {
+const PlayerProfile: React.FC<Props> = ({ player }) => {
     const [activeYear, setActiveYear] = useState(0);
 
     useEffect(() => {

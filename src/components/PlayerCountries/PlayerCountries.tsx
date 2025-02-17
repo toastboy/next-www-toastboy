@@ -4,11 +4,11 @@ import { Loader } from '@mantine/core';
 import CountryFlag from 'components/CountryFlag/CountryFlag';
 import { usePlayerCountries } from 'lib/swr';
 
-interface PlayerCountriesProps {
+interface Props {
     idOrLogin: string;
 }
 
-const PlayerCountries: React.FC<PlayerCountriesProps> = ({ idOrLogin }) => {
+const PlayerCountries: React.FC<Props> = ({ idOrLogin }) => {
     const { data, error, isLoading } = usePlayerCountries(idOrLogin);
 
     if (isLoading) return <Loader color="gray" type="dots" />;

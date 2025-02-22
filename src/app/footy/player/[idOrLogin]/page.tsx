@@ -45,14 +45,7 @@ const Page: React.FC<Props> = async props => {
     if (!player) return notFound();
 
     return (
-        <div>
-            <main className="p-10 mx-auto max-w-4xl">
-                <PlayerProfile player={player} key={player.id} />
-            </main>
-
-            <footer>
-            </footer>
-        </div>
+        <PlayerProfile player={player} key={player.id} />
     );
 };
 

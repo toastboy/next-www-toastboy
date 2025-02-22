@@ -17,7 +17,7 @@ const TableQualified: React.FC<Props> = ({ table, year, qualified, take }) => {
     const { data, error, isLoading } = useTable(table, year, qualified, take);
 
     if (isLoading) return <Loader color="gray" type="dots" />;
-    if (error || !data || data.length === 0) return <div>failed to load</div>;
+    if (error || !data) return <div>failed to load</div>;
 
     return (
         <div className="px-6 py-4">

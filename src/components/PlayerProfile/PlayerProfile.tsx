@@ -1,5 +1,6 @@
 'use client';
 
+import { Container, Text } from '@mantine/core';
 import { Player } from '@prisma/client';
 import PlayerArse from 'components/PlayerArse/PlayerArse';
 import PlayerClubs from 'components/PlayerClubs/PlayerClubs';
@@ -11,7 +12,7 @@ import PlayerPositions from 'components/PlayerPositions/PlayerPositions';
 import PlayerResults from 'components/PlayerResults/PlayerResults';
 import PlayerYearsActive from 'components/PlayerYearsActive/PlayerYearsActive';
 import { notFound } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 
 interface Props {
     player: Player;
@@ -26,15 +27,16 @@ const PlayerProfile: React.FC<Props> = ({ player }) => {
         }
     }, [activeYear]);
 
-    const { id, login, name, email, born } = player;
-    const born_string = born == null ? "Unknown" : born.toLocaleDateString('sv');
+    // TODO: Dedicated component for this
+    const born_string = player.born == null ? "Unknown" : player.born.toLocaleDateString('sv');
 
     return (
-        // TODO: Change styles to use Mantine components
-        <div className="w-[600px] rounded overflow-hidden shadow-lg" key={id}>
-            <h1 className="text-6xl font-bold mb-4 text-center">{name}</h1>
+        <Container>
+            <h1 className="text-6xl font-bold mb-4 text-center">{player.name}</h1>
             <PlayerMugshot player={player} />
-            <PlayerLastPlayed idOrLogin={player.login} />
+            <Suspense fallback={<Text>Loading...</Text>}>
+                <PlayerLastPlayed idOrLogin={player.login} />
+            </Suspense>
             <PlayerClubs idOrLogin={player.login} />
             <PlayerCountries idOrLogin={player.login} />
             <PlayerArse idOrLogin={player.login} />
@@ -43,16 +45,16 @@ const PlayerProfile: React.FC<Props> = ({ player }) => {
             <PlayerResults idOrLogin={player.login} year={activeYear} />
             <PlayerPositions idOrLogin={player.login} year={activeYear} />
             <div className="px-6 py-4">
-                <div className="font-bold text-xl mb-2">{name}</div>
-                <p className="text-gray-700 text-base">{email}</p>
-                <p className="text-gray-900 text-xl">{login}</p>
+                <div className="font-bold text-xl mb-2">{player.name}</div>
+                <p className="text-gray-700 text-base">{player.email}</p>
+                <p className="text-gray-900 text-xl">{player.login}</p>
             </div>
             <div className="px-6 pt-4 pb-2">
                 <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
                     {born_string}
                 </span>
             </div>
-        </div>
+        </Container>
     );
 };
 

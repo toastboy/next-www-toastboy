@@ -9,7 +9,7 @@ const Turnout: React.FC<TurnoutProps> = () => {
     const { data, error, isLoading } = useTurnoutByYear();
 
     if (isLoading) return <Loader color="gray" type="dots" />;
-    if (error || !data || data.length === 0) return <div>failed to load</div>;
+    if (error || !data) return <div>failed to load</div>;
 
     const rows = data.map((t) => (
         <Table.Tr key={t.year}>

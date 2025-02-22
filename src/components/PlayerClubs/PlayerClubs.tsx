@@ -12,7 +12,7 @@ const PlayerClubs: React.FC<PlayerClubsProps> = ({ idOrLogin }) => {
     const { data, error, isLoading } = usePlayerClubs(idOrLogin);
 
     if (isLoading) return <Loader color="gray" type="dots" />;
-    if (error || !data || data.length === 0) return <div>failed to load</div>;
+    if (error || !data) return <div>failed to load</div>;
 
     return (
         // TODO: Change styles to use Mantine components

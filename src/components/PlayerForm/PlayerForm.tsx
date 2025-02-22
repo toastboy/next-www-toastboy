@@ -14,7 +14,7 @@ export const PlayerForm: React.FC<PlayerFormProps> = ({ idOrLogin, games }) => {
     const { data, error, isLoading } = usePlayerForm(idOrLogin, games);
 
     if (isLoading) return <Loader color="gray" type="dots" />;
-    if (error || !data || data.length === 0) return <div>failed to load</div>;
+    if (error || !data) return <div>failed to load</div>;
 
     return (
         <div className="px-6 py-4">

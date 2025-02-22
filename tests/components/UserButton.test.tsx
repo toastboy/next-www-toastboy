@@ -4,8 +4,8 @@ jest.mock('lib/auth-client', () => ({
     },
 }));
 
+import { BetterFetchError } from '@better-fetch/fetch';
 import { act, render, screen, waitFor } from '@testing-library/react';
-import { BetterFetchError } from 'better-auth/react';
 import UserButton from 'components/UserButton/UserButton';
 import { authClient } from 'lib/auth-client';
 import { loaderClass, Wrapper } from "./lib/common";

@@ -1,32 +1,19 @@
-'use client';
-
 import { Container, Text } from '@mantine/core';
 import { Player } from '@prisma/client';
 import PlayerArse from 'components/PlayerArse/PlayerArse';
 import PlayerClubs from 'components/PlayerClubs/PlayerClubs';
 import PlayerCountries from 'components/PlayerCountries/PlayerCountries';
 import PlayerForm from 'components/PlayerForm/PlayerForm';
+import PlayerHistory from 'components/PlayerHistory/PlayerHistory';
 import PlayerLastPlayed from 'components/PlayerLastPlayed/PlayerLastPlayed';
 import PlayerMugshot from 'components/PlayerMugshot/PlayerMugshot';
-import PlayerPositions from 'components/PlayerPositions/PlayerPositions';
-import PlayerResults from 'components/PlayerResults/PlayerResults';
-import PlayerYearsActive from 'components/PlayerYearsActive/PlayerYearsActive';
-import { notFound } from 'next/navigation';
-import { Suspense, useEffect, useState } from 'react';
+import { Suspense } from 'react';
 
 interface Props {
     player: Player;
 }
 
 const PlayerProfile: React.FC<Props> = ({ player }) => {
-    const [activeYear, setActiveYear] = useState(0);
-
-    useEffect(() => {
-        if (isNaN(activeYear)) {
-            return notFound();
-        }
-    }, [activeYear]);
-
     // TODO: Dedicated component for this
     const born_string = player.born == null ? "Unknown" : player.born.toLocaleDateString('sv');
 
@@ -41,9 +28,7 @@ const PlayerProfile: React.FC<Props> = ({ player }) => {
             <PlayerCountries idOrLogin={player.login} />
             <PlayerArse idOrLogin={player.login} />
             <PlayerForm idOrLogin={player.login} games={5} />
-            <PlayerYearsActive idOrLogin={player.login} activeYear={0} onYearChange={setActiveYear} />
-            <PlayerResults idOrLogin={player.login} year={activeYear} />
-            <PlayerPositions idOrLogin={player.login} year={activeYear} />
+            <PlayerHistory player={player} />
             <div className="px-6 py-4">
                 <div className="font-bold text-xl mb-2">{player.name}</div>
                 <p className="text-gray-700 text-base">{player.email}</p>

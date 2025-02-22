@@ -89,7 +89,7 @@ describe('Table', () => {
     });
 
     it('renders stalwart table with data', async () => {
-        const table: TableName = "stalwart";
+        const table = TableName.stalwart;
 
         (useSWR as jest.Mock).mockReturnValue({
             data: 2010,
@@ -106,7 +106,7 @@ describe('Table', () => {
     });
 
     it('renders speedy table with data', async () => {
-        const table: TableName = "speedy";
+        const table = TableName.speedy;
 
         (useSWR as jest.Mock).mockReturnValue({
             data: 2010,
@@ -124,7 +124,7 @@ describe('Table', () => {
     });
 
     it('renders pub table with data', async () => {
-        const table: TableName = "pub";
+        const table = TableName.pub;
 
         (useSWR as jest.Mock).mockReturnValue({
             data: 2010,

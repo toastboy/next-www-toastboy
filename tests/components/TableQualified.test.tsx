@@ -10,7 +10,7 @@ jest.mock('components/PlayerLink/PlayerLink');
 jest.mock('components/TableScore/TableScore');
 
 describe('TableQualified', () => {
-    const table: TableName = "points";
+    const table = TableName.points;
     const year = 2002;
     const qualified = true;
     const take = 5;

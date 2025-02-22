@@ -24,7 +24,7 @@ const PlayerPositions: React.FC<Props> = ({ idOrLogin, year }) => {
                 <caption>{getYearName(year)} Positions</caption>
                 <tbody>
                     {Object.keys(TableName).map((table) => {
-                        const position = playerRecord[rankMap[table as keyof typeof rankMap] as keyof typeof playerRecord];
+                        const position = playerRecord[rankMap[table as TableName] as keyof typeof playerRecord];
 
                         return (
                             <tr key={table}>

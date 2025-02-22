@@ -6,7 +6,7 @@ import { TableName } from 'lib/types';
 import useSWR from 'swr';
 import { Wrapper, errorText, loaderClass } from './lib/common';
 
-const table: TableName = "points";
+const table = TableName.points;
 
 jest.mock('components/PlayerLink/PlayerLink');
 

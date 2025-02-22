@@ -6,9 +6,6 @@ import {
     Outcome as PrismaOutcome,
     Player as PrismaPlayer,
     PlayerRecord as PrismaPlayerRecord,
-    PlayerResponse as PrismaPlayerResponse,
-    TableName as PrismaTableName,
-    TeamName as PrismaTeamName,
 } from '@prisma/client';
 
 export type Arse = PrismaArse
@@ -42,17 +39,31 @@ export interface PlayerRecord extends PrismaPlayerRecord {
     player: Player,
 }
 
-export type PlayerResponse = PrismaPlayerResponse
+// Really, I'd like these enums to come straight from Prisma but they show up in
+// the client components as undefined. Obviously, they'll need updating if the
+// corresponding bits of the schema ever change.
 
-export const PlayerResponse: typeof PrismaPlayerResponse = PrismaPlayerResponse;
+export enum PlayerResponse {
+    Yes = 'Yes',
+    No = 'No',
+    Dunno = 'Dunno',
+    Excused = 'Excused',
+    Flaked = 'Flaked',
+    Injured = 'Injured',
+};
 
-export type TableName = PrismaTableName
+export enum TableName {
+    points = 'points',
+    averages = 'averages',
+    stalwart = 'stalwart',
+    speedy = 'speedy',
+    pub = 'pub',
+};
 
-export const TableName: typeof PrismaTableName = PrismaTableName;
-
-export type TeamName = PrismaTeamName
-
-export const TeamName: typeof PrismaTeamName = PrismaTeamName;
+export enum TeamName {
+    A = 'A',
+    B = 'B',
+};
 
 export interface Turnout {
     responses: number,

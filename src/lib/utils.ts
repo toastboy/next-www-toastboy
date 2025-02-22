@@ -1,3 +1,5 @@
+import { TableName } from "@prisma/client";
+
 /**
  * Converts a readable stream into a Buffer.
  *
@@ -49,10 +51,10 @@ export function getYearName(year: number): string {
  * @property {string} speedy - The rank identifier for speedy.
  * @property {string} pub - The rank identifier for pub.
  */
-export const rankMap = {
-    "points": "rankPoints",
-    "averages": "rankAverages",
-    "stalwart": "rankStalwart",
-    "speedy": "rankSpeedy",
-    "pub": "rankPub",
+export const rankMap: Record<TableName, string> = {
+    points: "rankPoints",
+    averages: "rankAverages",
+    stalwart: "rankStalwart",
+    speedy: "rankSpeedy",
+    pub: "rankPub",
 };

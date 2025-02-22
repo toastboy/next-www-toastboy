@@ -2,18 +2,9 @@ import { PlayerResponse, Outcome as PrismaOutcome } from '@prisma/client';
 import debug from 'debug';
 import prisma from 'lib/prisma';
 import { Outcome, Turnout, TurnoutByYear } from 'lib/types';
-import gameDayService from './GameDay';
+import gameDayService from 'services/GameDay';
 
 const log = debug('footy:api');
-
-export enum EnumResponse {
-    Yes = 'Yes',
-    No = 'No',
-    Dunno = 'Dunno',
-    Excused = 'Excused',
-    Flaked = 'Flaked',
-    Injured = 'Injured',
-}
 
 export class OutcomeService {
     /**
@@ -200,7 +191,7 @@ export class OutcomeService {
                     ['flaked', 0],
                     ['injured', 0],
                 ]);
-                const gameDayResponseCounts = Object.values(EnumResponse).reduce((map, response) => {
+                const gameDayResponseCounts = Object.values(PlayerResponse).reduce((map, response) => {
                     const count = responseCounts
                         .filter((res) =>
                             gameDay && res.gameDayId === gameDay.id &&
@@ -223,7 +214,7 @@ export class OutcomeService {
                             .filter((rc) => rc.gameDayId === gameDay.id && rc.response !== null)
                             .reduce((acc, rc) => acc + rc._count.response, 0),
                         players: responseCounts
-                            .filter((rc) => rc.gameDayId === gameDay.id && rc.response === EnumResponse.Yes)
+                            .filter((rc) => rc.gameDayId === gameDay.id && rc.response === PlayerResponse.Yes)
                             .map((rc) => rc._count.team)[0] || 0,
                         cancelled: gameDay.mailSent !== null && !gameDay.game,
                     };

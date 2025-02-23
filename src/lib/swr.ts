@@ -1,7 +1,7 @@
 'use client';
 
 import useSWR from 'swr';
-import { Arse, Club, Country, GameDay, Outcome, Player, PlayerData, PlayerRecord, TableName, TurnoutByYear } from './types';
+import { Arse, Club, Country, GameDay, Outcome, Player, PlayerData, PlayerRecord, PlayerRecordWithPlayer, TableName, TurnoutByYear } from './types';
 
 const fetcher = (input: URL | RequestInfo, init?: RequestInit | undefined) =>
     fetch(input, init).then((res) => res.json());
@@ -59,7 +59,7 @@ export function usePlayerYearsActive(idOrLogin: string) {
 }
 
 export function usePlayerRecord(idOrLogin: string, year: number) {
-    return useSWR<PlayerRecord>(`/api/footy/player/${idOrLogin}/record/${year}`, fetcher);
+    return useSWR<PlayerRecordWithPlayer>(`/api/footy/player/${idOrLogin}/record/${year}`, fetcher);
 }
 
 export function usePlayers() {
@@ -90,7 +90,7 @@ export function useWinners(table: TableName, year?: number) {
     let url = `/api/footy/winners/${table}`;
     if (year !== undefined) url += `/${year}`;
 
-    return useSWR<PlayerRecord[]>(url, fetcher);
+    return useSWR<PlayerRecordWithPlayer[]>(url, fetcher);
 }
 
 export function useTurnoutByYear() {

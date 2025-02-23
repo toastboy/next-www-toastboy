@@ -1,21 +1,14 @@
-'use client';
+import { Anchor } from '@mantine/core';
+import { Player } from 'lib/types';
 
-import { Anchor, Loader } from '@mantine/core';
-import { usePlayer } from 'lib/swr';
-
-interface PlayerLinkProps {
-    idOrLogin: string;
+export interface Props {
+    player: Player;
 }
 
-const PlayerLink: React.FC<PlayerLinkProps> = ({ idOrLogin }) => {
-    const { data, error, isLoading } = usePlayer(idOrLogin);
-
-    if (isLoading) return <Loader color="gray" type="dots" />;
-    if (error || !data) return <div>failed to load</div>;
-
+const PlayerLink: React.FC<Props> = async ({ player }) => {
     return (
-        <Anchor href={`/footy/player/${data.login}`} >
-            {data.name}
+        <Anchor href={`/footy/player/${player.login}`} >
+            {player.name}
         </Anchor>
     );
 };

@@ -1,6 +1,7 @@
 import { ClubSupporter } from '@prisma/client';
-import prisma from 'lib/prisma';
 import debug from 'debug';
+import prisma from 'lib/prisma';
+import { ClubSupporterWithClub } from 'lib/types';
 
 const log = debug('footy:api');
 
@@ -62,14 +63,17 @@ export class ClubSupporterService {
     /**
      * Retrieves ClubSupporters by player ID.
      * @param playerId - The ID of the player.
-     * @returns A promise that resolves to an array of ClubSupporters or null.
+     * @returns A promise that resolves to an array of ClubSupporterWithClubs or null.
      * @throws An error if there is a failure.
      */
-    async getByPlayer(playerId: number): Promise<ClubSupporter[] | null> {
+    async getByPlayer(playerId: number): Promise<ClubSupporterWithClub[] | null> {
         try {
             return prisma.clubSupporter.findMany({
                 where: {
                     playerId: playerId,
+                },
+                include: {
+                    club: true,
                 },
             });
         } catch (error) {

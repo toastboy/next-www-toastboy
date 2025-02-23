@@ -2,7 +2,7 @@ import { GameDay, Outcome, PlayerRecord } from '@prisma/client';
 import debug from 'debug';
 import config from 'lib/config';
 import prisma from 'lib/prisma';
-import { TableName } from 'lib/types';
+import { PlayerRecordWithPlayer, TableName } from 'lib/types';
 import { rankMap } from 'lib/utils';
 import gameDayService from 'services/GameDay';
 import outcomeService from 'services/Outcome';
@@ -223,7 +223,7 @@ export class PlayerRecordService {
     async getForYearByPlayer(
         year: number,
         playerId: number,
-    ): Promise<PlayerRecord | null> {
+    ): Promise<PlayerRecordWithPlayer | null> {
         try {
             return await prisma.playerRecord.findFirst({
                 where: {
@@ -253,7 +253,7 @@ export class PlayerRecordService {
     async getWinners(
         table: TableName,
         year?: number,
-    ): Promise<PlayerRecord[]> {
+    ): Promise<PlayerRecordWithPlayer[]> {
         try {
             const rank = rankMap[table as keyof typeof rankMap];
             const seasonEnders = await gameDayService.getSeasonEnders();
@@ -261,6 +261,9 @@ export class PlayerRecordService {
                 where: {
                     ...(year != undefined ? { year } : { year: { gt: 0 } }),
                     [rank]: 1,
+                },
+                include: {
+                    player: true,
                 },
                 orderBy: {
                     year: 'desc',
@@ -283,7 +286,7 @@ export class PlayerRecordService {
      * (optional). If this is not set, all players are included.
      * @param take - The maximum number of player records to retrieve
      * (optional).
-     * @returns A promise that resolves to an array of PlayerRecord objects.
+     * @returns A promise that resolves to an array of PlayerRecordWithPlayer objects.
      * @throws If there is an error while fetching the player records.
      */
     async getTable(
@@ -291,7 +294,7 @@ export class PlayerRecordService {
         year: number,
         qualified?: boolean,
         take?: number,
-    ): Promise<PlayerRecord[]> {
+    ): Promise<PlayerRecordWithPlayer[]> {
         try {
             // Get the most recent game day for the year in question with a
             // record for the specified table
@@ -325,6 +328,9 @@ export class PlayerRecordService {
                     [rank]: {
                         not: null,
                     },
+                },
+                include: {
+                    player: true,
                 },
                 orderBy: {
                     [rank]: 'asc',

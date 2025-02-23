@@ -13,7 +13,7 @@ const TeamPlayer: React.FC<Props> = ({ player, goalie }) => (
     // TODO: Change styles to use Mantine components
     // TODO: Need to pass down the proper gameDayId
     <div className="w-[600px] rounded overflow-hidden shadow-lg" key={player.login}>
-        <PlayerLink idOrLogin={player.login} />
+        <PlayerLink player={player} />
         <PlayerMugshot player={player} />
         <PlayerForm player={player} gameDayId={0} games={10} />
         <Text>{goalie ? "GOALIE!" : ""}</Text>

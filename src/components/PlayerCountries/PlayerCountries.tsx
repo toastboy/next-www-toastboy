@@ -1,24 +1,21 @@
-'use client';
-
-import { Loader } from '@mantine/core';
 import CountryFlag from 'components/CountryFlag/CountryFlag';
-import { usePlayerCountries } from 'lib/swr';
+import { Player } from 'lib/types';
+import countrySupporterService from 'services/CountrySupporter';
 
-interface Props {
-    idOrLogin: string;
+export interface Props {
+    player: Player,
 }
 
-const PlayerCountries: React.FC<Props> = ({ idOrLogin }) => {
-    const { data, error, isLoading } = usePlayerCountries(idOrLogin);
+const PlayerCountries: React.FC<Props> = async ({ player }) => {
+    const data = await countrySupporterService.getByPlayer(player.id);
 
-    if (isLoading) return <Loader color="gray" type="dots" />;
-    if (error || !data) return <div>failed to load</div>;
+    if (!data) return <></>;
 
     return (
         // TODO: Change styles to use Mantine components
         <div className="px-6 py-4">
-            {data.map((item: string) => (
-                <CountryFlag key={item} isoCode={item} />
+            {data.map((item) => (
+                <CountryFlag key={item.countryISOCode} country={item.country} />
             ))}
         </div>
     );

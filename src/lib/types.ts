@@ -1,7 +1,9 @@
 import {
     Arse as PrismaArse,
     Club as PrismaClub,
+    ClubSupporter as PrismaClubSupporter,
     Country as PrismaCountry,
+    CountrySupporter as PrismaCountrySupporter,
     GameDay as PrismaGameDay,
     Outcome as PrismaOutcome,
     Player as PrismaPlayer,
@@ -12,7 +14,19 @@ export type Arse = PrismaArse
 
 export type Club = PrismaClub
 
+export type ClubSupporter = PrismaClubSupporter
+
+export interface ClubSupporterWithClub extends ClubSupporter {
+    club: Club,
+}
+
 export type Country = PrismaCountry
+
+export type CountrySupporter = PrismaCountrySupporter
+
+export interface CountrySupporterWithCountry extends CountrySupporter {
+    country: Country,
+}
 
 export type GameDay = PrismaGameDay
 
@@ -43,7 +57,9 @@ export interface PlayerData extends Player {
     gamesLost: number;
 }
 
-export interface PlayerRecord extends PrismaPlayerRecord {
+export type PlayerRecord = PrismaPlayerRecord
+
+export interface PlayerRecordWithPlayer extends PlayerRecord {
     player: Player,
 }
 

@@ -1,10 +1,7 @@
-'use client';
-
-import { Loader } from '@mantine/core';
 import PlayerLink from 'components/PlayerLink/PlayerLink';
 import TableScore from 'components/TableScore/TableScore';
-import { useTable } from 'lib/swr';
 import { TableName } from 'lib/types';
+import playerRecordService from 'services/PlayerRecord';
 
 export interface Props {
     table: TableName;
@@ -13,17 +10,16 @@ export interface Props {
     take?: number;
 }
 
-const TableQualified: React.FC<Props> = ({ table, year, qualified, take }) => {
-    const { data, error, isLoading } = useTable(table, year, qualified, take);
+const TableQualified: React.FC<Props> = async ({ table, year, qualified, take }) => {
+    const data = await playerRecordService.getTable(table, year, qualified, take);
 
-    if (isLoading) return <Loader color="gray" type="dots" />;
-    if (error || !data) return <div>failed to load</div>;
+    if (!data) return <></>;
 
     return (
         <div className="px-6 py-4">
             {data.map((record, index) => (
                 <div key={index}>
-                    <PlayerLink idOrLogin={record.playerId.toString()} /> : <TableScore table={table} playerRecord={record} />
+                    <PlayerLink player={record.player} /> : <TableScore table={table} playerRecord={record} />
                 </div>
             ))}
         </div>

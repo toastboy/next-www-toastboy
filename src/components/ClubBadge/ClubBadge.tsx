@@ -1,22 +1,17 @@
-import { Image, Loader } from '@mantine/core';
-import { useClub } from 'lib/swr';
+import { Image } from '@mantine/core';
+import { Club } from 'lib/types';
 
-interface ClubBadgeProps {
-    clubId: number;
+interface Props {
+    club: Club,
 }
 
-const ClubBadge: React.FC<ClubBadgeProps> = ({ clubId }) => {
-    const { data: club, error, isLoading } = useClub(clubId);
-
-    if (isLoading) return <Loader color="gray" type="dots" />;
-    if (error || !club) return <div>failed to load</div>;
-
+const ClubBadge: React.FC<Props> = async ({ club }) => {
     return (
         <Image
             className="w-full"
             width={150}
             height={150}
-            src={`/api/footy/club/${clubId}/badge`}
+            src={`/api/footy/club/${club.id}/badge`}
             alt={club.clubName}
             title={club.clubName}
         />

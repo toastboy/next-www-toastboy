@@ -1,6 +1,7 @@
 import { CountrySupporter } from '@prisma/client';
 import debug from 'debug';
 import prisma from 'lib/prisma';
+import { CountrySupporterWithCountry } from 'lib/types';
 
 const log = debug('footy:api');
 
@@ -62,14 +63,17 @@ export class CountrySupporterService {
     /**
      * Retrieves CountrySupporters by player ID.
      * @param playerId - The ID of the player.
-     * @returns A promise that resolves to an array of CountrySupporters or null.
+     * @returns A promise that resolves to an array of CountrySupporterWithCountry objects or null.
      * @throws An error if there is a failure.
      */
-    async getByPlayer(playerId: number): Promise<CountrySupporter[] | null> {
+    async getByPlayer(playerId: number): Promise<CountrySupporterWithCountry[] | null> {
         try {
             return prisma.countrySupporter.findMany({
                 where: {
                     playerId: playerId,
+                },
+                include: {
+                    country: true,
                 },
             });
         } catch (error) {

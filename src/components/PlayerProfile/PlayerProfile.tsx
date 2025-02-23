@@ -1,6 +1,7 @@
 import { Container, Text } from '@mantine/core';
 import { Player } from '@prisma/client';
 import PlayerArse from 'components/PlayerArse/PlayerArse';
+import PlayerBorn from 'components/PlayerBorn/PlayerBorn';
 import PlayerClubs from 'components/PlayerClubs/PlayerClubs';
 import PlayerCountries from 'components/PlayerCountries/PlayerCountries';
 import PlayerForm from 'components/PlayerForm/PlayerForm';
@@ -14,9 +15,6 @@ interface Props {
 }
 
 const PlayerProfile: React.FC<Props> = ({ player }) => {
-    // TODO: Dedicated component for this
-    const born_string = player.born == null ? "Unknown" : player.born.toLocaleDateString('sv');
-
     return (
         <Container>
             <h1 className="text-6xl font-bold mb-4 text-center">{player.name}</h1>
@@ -24,8 +22,8 @@ const PlayerProfile: React.FC<Props> = ({ player }) => {
             <Suspense fallback={<Text>Loading...</Text>}>
                 <PlayerLastPlayed player={player} />
             </Suspense>
-            <PlayerClubs idOrLogin={player.login} />
-            <PlayerCountries idOrLogin={player.login} />
+            <PlayerClubs player={player} />
+            <PlayerCountries player={player} />
             <PlayerArse idOrLogin={player.login} />
             <PlayerForm player={player} gameDayId={0} games={5} />
             <PlayerHistory player={player} />
@@ -34,11 +32,7 @@ const PlayerProfile: React.FC<Props> = ({ player }) => {
                 <p className="text-gray-700 text-base">{player.email}</p>
                 <p className="text-gray-900 text-xl">{player.login}</p>
             </div>
-            <div className="px-6 pt-4 pb-2">
-                <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
-                    {born_string}
-                </span>
-            </div>
+            <PlayerBorn player={player} />
         </Container>
     );
 };

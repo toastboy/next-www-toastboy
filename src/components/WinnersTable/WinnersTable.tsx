@@ -6,12 +6,12 @@ import { useWinners } from 'lib/swr';
 import { TableName } from 'lib/types';
 import { getYearName } from 'lib/utils';
 
-interface WinnersTableProps {
+interface Props {
     table: TableName;
     year?: number;
 }
 
-const WinnersTable: React.FC<WinnersTableProps> = ({ table, year }) => {
+const WinnersTable: React.FC<Props> = ({ table, year }) => {
     const { data, error, isLoading } = useWinners(table, year);
 
     if (isLoading) return <Loader color="gray" type="dots" />;
@@ -20,7 +20,7 @@ const WinnersTable: React.FC<WinnersTableProps> = ({ table, year }) => {
     const rows = data.map((winner, index) => (
         <Table.Tr key={index}>
             <Table.Td>{getYearName(winner.year)}</Table.Td>
-            <Table.Td><PlayerLink idOrLogin={winner.playerId.toString()} /></Table.Td>
+            <Table.Td><PlayerLink player={winner.player} /></Table.Td>
         </Table.Tr>
     ));
 

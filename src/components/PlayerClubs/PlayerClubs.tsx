@@ -1,24 +1,21 @@
-'use client';
-
-import { Loader } from '@mantine/core';
 import ClubBadge from 'components/ClubBadge/ClubBadge';
-import { usePlayerClubs } from 'lib/swr';
+import { Player } from 'lib/types';
+import clubSupporterService from 'services/ClubSupporter';
 
-interface PlayerClubsProps {
-    idOrLogin: string;
+export interface Props {
+    player: Player;
 }
 
-const PlayerClubs: React.FC<PlayerClubsProps> = ({ idOrLogin }) => {
-    const { data, error, isLoading } = usePlayerClubs(idOrLogin);
+const PlayerClubs: React.FC<Props> = async ({ player }) => {
+    const data = await clubSupporterService.getByPlayer(player.id);
 
-    if (isLoading) return <Loader color="gray" type="dots" />;
-    if (error || !data) return <div>failed to load</div>;
+    if (!data) return <></>;
 
     return (
         // TODO: Change styles to use Mantine components
         <div className="px-6 py-4">
-            {data.map((item: number) => (
-                <ClubBadge key={item} clubId={item} />
+            {data.map((item) => (
+                <ClubBadge key={item.clubId} club={item.club} />
             ))}
         </div>
     );

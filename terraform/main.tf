@@ -19,6 +19,10 @@ resource "azuread_service_principal" "next_www_toastboy" {
 resource "azuread_service_principal_password" "next_www_toastboy" {
   service_principal_id = azuread_service_principal.next_www_toastboy.id
   end_date             = formatdate("YYYY-MM-DD'T'HH:mm:ssZ", timeadd(timestamp(), "8760h")) # 1 year in hours
+
+  lifecycle {
+    ignore_changes = [end_date]
+  }
 }
 
 data "azuread_user" "toastboy" {
@@ -132,6 +136,10 @@ resource "azurerm_key_vault_secret" "client_id" {
   value           = azuread_service_principal_password.next_www_toastboy.service_principal_id
   key_vault_id    = azurerm_key_vault.next_www_toastboy.id
   expiration_date = timeadd(formatdate("YYYY-MM-DD'T'HH:mm:ssZ", timestamp()), "2160h") # 90 days
+
+  lifecycle {
+    ignore_changes = [expiration_date]
+  }
 }
 
 resource "azurerm_key_vault_secret" "client_secret" {
@@ -139,4 +147,8 @@ resource "azurerm_key_vault_secret" "client_secret" {
   value           = azuread_service_principal_password.next_www_toastboy.value
   key_vault_id    = azurerm_key_vault.next_www_toastboy.id
   expiration_date = timeadd(formatdate("YYYY-MM-DD'T'HH:mm:ssZ", timestamp()), "2160h") # 90 days
+
+  lifecycle {
+    ignore_changes = [expiration_date]
+  }
 }

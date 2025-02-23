@@ -1,23 +1,14 @@
-'use client';
-
-import { Loader } from '@mantine/core';
 import TableQualified from 'components/TableQualified/TableQualified';
 import config from 'lib/config';
-import { useGameYear } from 'lib/swr';
 import { TableName } from 'lib/types';
 import { getYearName } from 'lib/utils';
 
-interface TableProps {
+interface Props {
     table: TableName;
     year: number;
 }
 
-const Table: React.FC<TableProps> = ({ table, year }) => {
-    const { data, error, isLoading } = useGameYear(year);
-
-    if (isLoading) return <Loader color="gray" type="dots" />;
-    if (error || data === null) return <div>failed to load</div>;
-
+const Table: React.FC<Props> = ({ table, year }) => {
     if (UnqualifiedTableName(table)) {
         return (
             <div>

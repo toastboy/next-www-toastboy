@@ -1,5 +1,3 @@
-'use client';
-
 import { PlayerRecord, TableName } from 'lib/types';
 
 export interface Props {

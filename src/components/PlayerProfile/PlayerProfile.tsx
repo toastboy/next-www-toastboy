@@ -10,7 +10,7 @@ import PlayerLastPlayed from 'components/PlayerLastPlayed/PlayerLastPlayed';
 import PlayerMugshot from 'components/PlayerMugshot/PlayerMugshot';
 import { Suspense } from 'react';
 
-interface Props {
+export interface Props {
     player: Player;
 }
 
@@ -24,7 +24,7 @@ const PlayerProfile: React.FC<Props> = ({ player }) => {
             </Suspense>
             <PlayerClubs player={player} />
             <PlayerCountries player={player} />
-            <PlayerArse idOrLogin={player.login} />
+            <PlayerArse player={player} />
             <PlayerForm player={player} gameDayId={0} games={5} />
             <PlayerHistory player={player} />
             <div className="px-6 py-4">

@@ -1,28 +1,23 @@
-'use client';
+import { Player } from 'lib/types';
+import arseService from 'services/Arse';
 
-import { Loader } from '@mantine/core';
-import { usePlayerArse } from 'lib/swr';
-
-interface PlayerArseProps {
-    idOrLogin: string;
+export interface Props {
+    player: Player,
 }
 
-const PlayerArse: React.FC<PlayerArseProps> = ({ idOrLogin }) => {
-    const { data, error, isLoading } = usePlayerArse(idOrLogin);
-
-    if (isLoading) return <Loader color="gray" type="dots" />;
-    if (error || !data) return <div>failed to load</div>;
+const PlayerArse: React.FC<Props> = async ({ player }) => {
+    const arse = await arseService.getByPlayer(player.id);
 
     return (
         // TODO: Change styles to use Mantine components
         <div className="px-6 py-4">
-            <p className="text-gray-700 text-base">In Goal: {data.inGoal}</p>
-            <p className="text-gray-700 text-base">Running: {data.running}</p>
-            <p className="text-gray-700 text-base">Shooting: {data.shooting}</p>
-            <p className="text-gray-700 text-base">Passing: {data.passing}</p>
-            <p className="text-gray-700 text-base">Ball Skill: {data.ballSkill}</p>
-            <p className="text-gray-700 text-base">Attacking: {data.attacking}</p>
-            <p className="text-gray-700 text-base">Defending: {data.defending}</p>
+            <p className="text-gray-700 text-base">In Goal: {arse?.inGoal}</p>
+            <p className="text-gray-700 text-base">Running: {arse?.running}</p>
+            <p className="text-gray-700 text-base">Shooting: {arse?.shooting}</p>
+            <p className="text-gray-700 text-base">Passing: {arse?.passing}</p>
+            <p className="text-gray-700 text-base">Ball Skill: {arse?.ballSkill}</p>
+            <p className="text-gray-700 text-base">Attacking: {arse?.attacking}</p>
+            <p className="text-gray-700 text-base">Defending: {arse?.defending}</p>
         </div>
     );
 };

@@ -1,5 +1,7 @@
-const PlayerArse = ({ idOrLogin }: { idOrLogin: string }) => (
-    <div>PlayerArse (idOrLogin: {idOrLogin})</div>
+import { Props } from '../PlayerArse';
+
+const PlayerArse = ({ player }: Props) => (
+    <div>PlayerArse (player: {player.id})</div>
 );
 PlayerArse.displayName = 'PlayerArse';
 export default PlayerArse;

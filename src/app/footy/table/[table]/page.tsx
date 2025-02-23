@@ -1,5 +1,3 @@
-'use client';
-
 import Table from 'components/Table/Table';
 import { TableName } from 'lib/types';
 import { notFound } from 'next/navigation';

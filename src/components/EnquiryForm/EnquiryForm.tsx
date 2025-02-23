@@ -1,5 +1,3 @@
-'use client';
-
 import NYI from 'components/NYI/NYI';
 
 const EnquiryForm: React.FC = () => {

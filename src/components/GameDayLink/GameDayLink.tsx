@@ -1,21 +1,14 @@
-'use client';
+import { Anchor } from '@mantine/core';
+import { GameDay } from 'lib/types';
 
-import { Anchor, Loader } from '@mantine/core';
-import { useGameDay } from 'lib/swr';
-
-interface GameDayLinkProps {
-    id: number;
+export interface Props {
+    gameDay: GameDay;
 }
 
-const GameDayLink: React.FC<GameDayLinkProps> = ({ id }) => {
-    const { data, error, isLoading } = useGameDay(id);
-
-    if (isLoading) return <Loader color="gray" type="dots" />;
-    if (error || !data) return <div>failed to load</div>;
-
+const GameDayLink: React.FC<Props> = ({ gameDay }) => {
     return (
-        <Anchor href={`/footy/game/${data.id}`} >
-            {new Date(data.date).toLocaleDateString('sv')}
+        <Anchor href={`/footy/game/${gameDay.id}`} >
+            {new Date(gameDay.date).toLocaleDateString('sv')}
         </Anchor>
     );
 };

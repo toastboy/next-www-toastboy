@@ -1,5 +1,3 @@
-'use client';
-
 import { Text } from '@mantine/core';
 import PlayerForm from 'components/PlayerForm/PlayerForm';
 import PlayerLink from 'components/PlayerLink/PlayerLink';
@@ -13,10 +11,11 @@ export interface Props {
 
 const TeamPlayer: React.FC<Props> = ({ player, goalie }) => (
     // TODO: Change styles to use Mantine components
+    // TODO: Need to pass down the proper gameDayId
     <div className="w-[600px] rounded overflow-hidden shadow-lg" key={player.login}>
         <PlayerLink idOrLogin={player.login} />
         <PlayerMugshot player={player} />
-        <PlayerForm idOrLogin={player.login} games={10} />
+        <PlayerForm player={player} gameDayId={0} games={10} />
         <Text>{goalie ? "GOALIE!" : ""}</Text>
     </div>
 );

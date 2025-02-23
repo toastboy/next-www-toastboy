@@ -1,27 +1,24 @@
-"use client";
-
-import { Loader } from "@mantine/core";
 import GameDaySummary from "components/GameDaySummary/GameDaySummary";
-import { useGameDay } from "lib/swr";
 import { notFound } from "next/navigation";
-import { use } from "react";
+import gameDayService from "services/GameDay";
 
 interface Props {
-    params: Promise<{ id: string }>,
+    params: Promise<{
+        id: string,
+    }>,
 }
 
-const Page: React.FC<Props> = (props) => {
-    const { id } = use(props.params);
+const Page: React.FC<Props> = async (props) => {
+    const { id } = await props.params;
     const gameDayId = parseInt(id);
-    const { data: gameDay, error, isLoading } = useGameDay(gameDayId);
 
     if (isNaN(gameDayId)) return notFound();
-    if (isLoading) return <Loader color="gray" type="dots" />;
-    if (error || !gameDay) return <div>failed to load</div>;
 
-    return (
-        <GameDaySummary gameDay={gameDay} />
-    );
+    const gameDay = await gameDayService.get(gameDayId);
+
+    if (!gameDay) return <></>;
+
+    return <GameDaySummary gameDay={gameDay} />;
 };
 
 export default Page;

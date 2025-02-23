@@ -1,26 +1,25 @@
-'use client';
-
-import { Loader, Text } from '@mantine/core';
+import { Text } from '@mantine/core';
 import GameDayLink from 'components/GameDayLink/GameDayLink';
-import { usePlayerForm } from 'lib/swr';
+import { Player } from 'lib/types';
 import { Key } from 'react';
+import playerService from 'services/Player';
 
-interface PlayerFormProps {
-    idOrLogin: string;
+export interface Props {
+    player: Player;
+    gameDayId: number;
     games: number;
 }
 
-export const PlayerForm: React.FC<PlayerFormProps> = ({ idOrLogin, games }) => {
-    const { data, error, isLoading } = usePlayerForm(idOrLogin, games);
+const PlayerForm: React.FC<Props> = async ({ player, gameDayId, games }) => {
+    const form = await playerService.getForm(player.id, gameDayId, games);
 
-    if (isLoading) return <Loader color="gray" type="dots" />;
-    if (error || !data) return <div>failed to load</div>;
+    if (!form) return <></>;
 
     return (
         <div className="px-6 py-4">
-            {data.map((outcome, index: Key) => (
+            {form.map((outcome, index: Key) => (
                 <Text key={index} component="span">
-                    Game <GameDayLink id={outcome.gameDayId} />: {outcome.points}
+                    Game <GameDayLink gameDay={outcome.gameDay} />: {outcome.points}
                 </Text>
             ))}
         </div>

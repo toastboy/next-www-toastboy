@@ -1,5 +1,7 @@
-const PlayerLastPlayed = ({ idOrLogin }: { idOrLogin: string }) => (
-    <div>PlayerLastPlayed (idOrLogin: {idOrLogin})</div>
+import { Props } from '../PlayerLastPlayed';
+
+const PlayerLastPlayed = ({ player }: Props) => (
+    <div>PlayerLastPlayed (id: {player.id})</div>
 );
 PlayerLastPlayed.displayName = 'PlayerLastPlayed';
 export default PlayerLastPlayed;

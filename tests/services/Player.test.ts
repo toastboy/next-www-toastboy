@@ -1,5 +1,6 @@
 import { Outcome, Player } from '@prisma/client';
 import prisma from 'lib/prisma';
+import { defaultPlayer } from 'mocks/data/player';
 import playerService from 'services/Player';
 
 jest.mock('lib/prisma', () => ({
@@ -31,22 +32,6 @@ jest.mock('lib/prisma', () => ({
         deleteMany: jest.fn(),
     },
 }));
-
-const defaultPlayer: Player = {
-    id: 1,
-    isAdmin: false,
-    login: "garyp",
-    firstName: "Gary",
-    lastName: "Player",
-    name: "Gary Player",
-    email: "gary.player@example.com",
-    joined: new Date("2021-01-01"),
-    finished: null,
-    born: new Date("1975-11-01"),
-    introducedBy: 23,
-    comment: null,
-    anonymous: false,
-};
 
 const invalidPlayer: Player = {
     ...defaultPlayer,

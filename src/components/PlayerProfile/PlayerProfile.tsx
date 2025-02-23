@@ -22,12 +22,12 @@ const PlayerProfile: React.FC<Props> = ({ player }) => {
             <h1 className="text-6xl font-bold mb-4 text-center">{player.name}</h1>
             <PlayerMugshot player={player} />
             <Suspense fallback={<Text>Loading...</Text>}>
-                <PlayerLastPlayed idOrLogin={player.login} />
+                <PlayerLastPlayed player={player} />
             </Suspense>
             <PlayerClubs idOrLogin={player.login} />
             <PlayerCountries idOrLogin={player.login} />
             <PlayerArse idOrLogin={player.login} />
-            <PlayerForm idOrLogin={player.login} games={5} />
+            <PlayerForm player={player} gameDayId={0} games={5} />
             <PlayerHistory player={player} />
             <div className="px-6 py-4">
                 <div className="font-bold text-xl mb-2">{player.name}</div>

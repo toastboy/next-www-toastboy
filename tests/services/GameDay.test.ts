@@ -1,5 +1,6 @@
 import { GameDay } from '@prisma/client';
 import prisma from 'lib/prisma';
+import { defaultGameDay } from 'mocks/data/gameday';
 import gameDayService from 'services/GameDay';
 
 jest.mock('lib/prisma', () => ({
@@ -15,17 +16,6 @@ jest.mock('lib/prisma', () => ({
         deleteMany: jest.fn(),
     },
 }));
-
-const defaultGameDay: GameDay = {
-    id: 1,
-    year: 2021,
-    date: new Date('2021-01-03'),
-    game: true,
-    mailSent: new Date('2021-01-01'),
-    comment: 'I heart footy',
-    bibs: 'A',
-    pickerGamesHistory: 10,
-};
 
 const gameDayList: GameDay[] = Array.from({ length: 100 }, (_, index) => ({
     ...defaultGameDay,

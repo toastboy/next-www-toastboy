@@ -1,5 +1,6 @@
+import { Outcome } from '@prisma/client';
 import prisma from 'lib/prisma';
-import { Outcome, Player, PlayerResponse, TeamName } from 'lib/types';
+import { PlayerResponse, TeamName } from 'lib/types';
 import outcomeService from 'services/Outcome';
 
 jest.mock('lib/prisma', () => ({
@@ -27,22 +28,6 @@ jest.mock('lib/prisma', () => ({
     },
 }));
 
-const defaultPlayer: Player = {
-    id: 1,
-    isAdmin: false,
-    login: "garyp",
-    firstName: "Gary",
-    lastName: "Player",
-    name: "Gary Player",
-    email: "gary.player@example.com",
-    joined: new Date("2021-01-01"),
-    finished: null,
-    born: new Date("1975-11-01"),
-    introducedBy: 23,
-    comment: null,
-    anonymous: false,
-};
-
 const defaultOutcome: Outcome = {
     id: 1,
     gameDayId: 1,
@@ -55,8 +40,6 @@ const defaultOutcome: Outcome = {
     pub: 1,
     paid: false,
     goalie: false,
-
-    player: defaultPlayer,
 };
 
 const outcomeList: Outcome[] = Array.from({ length: 100 }, (_, index) => ({

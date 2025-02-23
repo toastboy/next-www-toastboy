@@ -1,21 +1,21 @@
-'use client';
-
-import { Loader, Text } from '@mantine/core';
+import { Text } from '@mantine/core';
 import GameDayLink from 'components/GameDayLink/GameDayLink';
-import { usePlayerLastPlayed } from 'lib/swr';
+import { Player } from 'lib/types';
+import playerService from 'services/Player';
 
-interface PlayerLastPlayedProps {
-    idOrLogin: string;
+export interface Props {
+    player: Player;
 }
 
-const PlayerLastPlayed: React.FC<PlayerLastPlayedProps> = ({ idOrLogin }) => {
-    const { data, error, isLoading } = usePlayerLastPlayed(idOrLogin);
+const PlayerLastPlayed: React.FC<Props> = async ({ player }) => {
+    const lastPlayed = await playerService.getLastPlayed(player.id);
 
-    if (isLoading) return <Loader color="gray" type="dots" />;
-    if (error || !data) return <div>failed to load</div>;
+    if (!lastPlayed) return <></>;
 
     return (
-        <Text component="span">Last played: <GameDayLink id={data.gameDayId} /></Text>
+        <Text component="span">
+            Last played: <GameDayLink gameDay={lastPlayed.gameDay} />
+        </Text>
     );
 };
 

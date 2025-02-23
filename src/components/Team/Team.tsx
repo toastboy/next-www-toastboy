@@ -1,8 +1,8 @@
 import TeamPlayer from 'components/TeamPlayer/TeamPlayer';
-import { Outcome } from 'lib/types';
+import { OutcomeWithPlayer } from 'lib/types';
 
 export interface Props {
-    team: Outcome[];
+    team: OutcomeWithPlayer[];
 }
 
 const Team: React.FC<Props> = ({ team }) => {

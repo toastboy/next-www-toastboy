@@ -1,7 +1,7 @@
 import { GameDay as PrismaGameDay } from '@prisma/client';
 import debug from 'debug';
 import prisma from 'lib/prisma';
-import { GameDay } from 'lib/types';
+import { GameDayWithOutcomesWithPlayers } from 'lib/types';
 
 const log = debug('footy:api');
 
@@ -26,12 +26,13 @@ export class GameDayService {
     }
 
     /**
-     * Retrieves a PrismaGameDay by its ID.
-     * @param id - The ID of the PrismaGameDay to retrieve.
-     * @returns A Promise that resolves to the PrismaGameDay object if found, or null if not found.
-     * @throws If there is an error while fetching the PrismaGameDay.
+     * Retrieves a GameDayWithOutcomesWithPlayers by its ID.
+     * @param id - The ID of the GameDay to retrieve.
+     * @returns A Promise that resolves to the GameDayWithOutcomesWithPlayers
+     * object if found, or null if not found.
+     * @throws If there is an error while fetching the GameDay.
      */
-    async get(id: number): Promise<GameDay | null> {
+    async get(id: number): Promise<GameDayWithOutcomesWithPlayers | null> {
         try {
             return prisma.gameDay.findUnique({
                 where: {

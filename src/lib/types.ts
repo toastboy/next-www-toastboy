@@ -14,12 +14,20 @@ export type Club = PrismaClub
 
 export type Country = PrismaCountry
 
-export interface GameDay extends PrismaGameDay {
-    outcomes: Outcome[],
+export type GameDay = PrismaGameDay
+
+export interface GameDayWithOutcomesWithPlayers extends PrismaGameDay {
+    outcomes: OutcomeWithPlayer[],
 }
 
-export interface Outcome extends PrismaOutcome {
+export type Outcome = PrismaOutcome
+
+export interface OutcomeWithPlayer extends PrismaOutcome {
     player: Player,
+}
+
+export interface OutcomeWithGameDay extends PrismaOutcome {
+    gameDay: PrismaGameDay,
 }
 
 export type Player = PrismaPlayer
@@ -39,9 +47,9 @@ export interface PlayerRecord extends PrismaPlayerRecord {
     player: Player,
 }
 
-// Really, I'd like these enums to come straight from Prisma but they show up in
-// the client components as undefined. Obviously, they'll need updating if the
-// corresponding bits of the schema ever change.
+// TODO: Really, I'd like these enums to come straight from Prisma but they show
+// up in the client components as undefined. Obviously, they'll need updating if
+// the corresponding bits of the schema ever change.
 
 export enum PlayerResponse {
     Yes = 'Yes',

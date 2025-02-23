@@ -1,73 +1,44 @@
-jest.mock('swr');
-
-import { render, screen, waitFor } from '@testing-library/react';
-import PlayerLastPlayed from 'components/PlayerLastPlayed/PlayerLastPlayed';
-import useSWR from 'swr';
-import { Wrapper, errorText, loaderClass } from "./lib/common";
+/** @jest-environment node */
 
 jest.mock('components/GameDayLink/GameDayLink');
 
-describe('PlayerLastPlayed', () => {
-    const idOrLogin = "15";
+import PlayerLastPlayed from 'components/PlayerLastPlayed/PlayerLastPlayed';
+import { defaultGameDay } from 'mocks/data/gameday';
+import { defaultOutcome } from 'mocks/data/outcome';
+import { defaultPlayer } from 'mocks/data/player';
+import { renderToString } from 'react-dom/server';
+import playerService from 'services/Player';
+import { Wrapper } from './lib/common';
 
+describe('PlayerLastPlayed', () => {
     beforeEach(() => {
         jest.resetAllMocks();
     });
 
-    it('renders loading state', async () => {
-        (useSWR as jest.Mock).mockReturnValue({
-            data: undefined,
-            error: undefined,
-            isLoading: true,
-        });
-
-        const { container } = render(<Wrapper><PlayerLastPlayed idOrLogin={idOrLogin} /></Wrapper>);
-        await waitFor(() => {
-            expect(container.querySelector(loaderClass)).toBeInTheDocument();
-        });
-    });
-
-    it('renders error state', async () => {
-        (useSWR as jest.Mock).mockReturnValue({
-            data: undefined,
-            error: new Error(errorText),
-            isLoading: false,
-        });
-
-        const { container } = render(<Wrapper><PlayerLastPlayed idOrLogin={idOrLogin} /></Wrapper>);
-        await waitFor(() => {
-            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-            expect(screen.getByText(errorText)).toBeInTheDocument();
-        });
-    });
-
-    it('renders error state when data is null', async () => {
-        (useSWR as jest.Mock).mockReturnValue({
-            data: null,
-            error: undefined,
-            isLoading: false,
-        });
-
-        const { container } = render(<Wrapper><PlayerLastPlayed idOrLogin={idOrLogin} /></Wrapper>);
-        await waitFor(() => {
-            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-            expect(screen.getByText(errorText)).toBeInTheDocument();
-        });
-    });
-
-    it('renders with data', async () => {
-        (useSWR as jest.Mock).mockReturnValue({
-            data: {
-                gameDayId: 1150,
+    it('renders a GameDayLink component with the correct text', async () => {
+        jest.spyOn(playerService, 'getLastPlayed').mockImplementation(() => Promise.resolve(
+            {
+                ...defaultOutcome,
+                gameDay: defaultGameDay,
             },
-            error: undefined,
-            isLoading: false,
-        });
+        ));
 
-        const { container } = render(<Wrapper><PlayerLastPlayed idOrLogin={idOrLogin} /></Wrapper>);
-        await waitFor(() => {
-            expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-            expect(screen.getByText("GameDayLink (id: 1150)")).toBeInTheDocument();
-        });
+        const component = await PlayerLastPlayed({ player: defaultPlayer });
+        const renderedHtml = renderToString(<Wrapper>{component}</Wrapper>);
+
+        // TODO: This is clunky but the output can contain escapes etc. which it
+        // seems hard to account for
+        expect(renderedHtml).toContain(`Last played:`);
+        expect(renderedHtml).toContain(`GameDayLink (id:`);
+        expect(renderedHtml).toContain(`${defaultGameDay.id}`);
+    });
+
+    it('renders nothing if lastPlayed is null', async () => {
+        jest.spyOn(playerService, 'getLastPlayed').mockImplementation(() => Promise.resolve(null));
+
+        const component = await PlayerLastPlayed({ player: defaultPlayer });
+        const renderedHtml = renderToString(<Wrapper>{component}</Wrapper>);
+
+        expect(renderedHtml).not.toContain(`Last played:`);
     });
 });

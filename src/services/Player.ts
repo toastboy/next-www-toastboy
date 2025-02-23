@@ -1,7 +1,7 @@
-import { Outcome, Player } from '@prisma/client';
+import { Player } from '@prisma/client';
 import debug from 'debug';
 import prisma from 'lib/prisma';
-import { PlayerData } from 'lib/types';
+import { OutcomeWithGameDay, PlayerData } from 'lib/types';
 
 const log = debug('footy:api');
 
@@ -199,11 +199,11 @@ class PlayerService {
     /**
      * Retrieves the form of a player for a given game day, based on their previous outcomes.
      * @param playerId - The ID of the player.
-     * @param gameDayId - The ID of the game day.
+     * @param gameDayId - The ID of the game day to consider, or 0 for the latest.
      * @param history - The number of previous outcomes to consider.
      * @returns A promise that resolves to an array of outcomes.
      */
-    async getForm(playerId: number, gameDayId: number, history: number): Promise<Outcome[] | null> {
+    async getForm(playerId: number, gameDayId: number, history: number): Promise<OutcomeWithGameDay[] | null> {
         try {
             return prisma.outcome.findMany({
                 where: {
@@ -212,6 +212,9 @@ class PlayerService {
                     points: {
                         not: null,
                     },
+                },
+                include: {
+                    gameDay: true,
                 },
                 orderBy: {
                     gameDayId: 'desc',
@@ -229,7 +232,7 @@ class PlayerService {
      * @param playerId - The ID of the player.
      * @returns A promise that resolves to an array of outcomes or null.
      */
-    async getLastPlayed(playerId: number): Promise<Outcome | null> {
+    async getLastPlayed(playerId: number): Promise<OutcomeWithGameDay | null> {
         try {
             return prisma.outcome.findFirst({
                 where: {
@@ -237,6 +240,9 @@ class PlayerService {
                     points: {
                         not: null,
                     },
+                },
+                include: {
+                    gameDay: true,
                 },
                 orderBy: {
                     gameDayId: 'desc',

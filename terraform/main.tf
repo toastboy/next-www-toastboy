@@ -7,7 +7,7 @@ resource "azurerm_resource_group" "next_www_toastboy" {
   tags = local.tags
 
   lifecycle {
-    ignore_changes = [end_date]
+    ignore_changes = [tags]
   }
 }
 
@@ -51,7 +51,7 @@ resource "azurerm_storage_account" "next_www_toastboy" {
   tags = local.tags
 
   lifecycle {
-    ignore_changes = [end_date]
+    ignore_changes = [tags]
   }
 }
 
@@ -139,7 +139,7 @@ resource "azurerm_key_vault" "next_www_toastboy" {
   tags = local.tags
 
   lifecycle {
-    ignore_changes = [end_date]
+    ignore_changes = [tags]
   }
 }
 

@@ -1,44 +1,43 @@
 'use client';
 
-import { FloatingIndicator, Loader, UnstyledButton } from '@mantine/core';
+import { FloatingIndicator, UnstyledButton } from '@mantine/core';
 import classes from 'components/GameYears/GameYears.module.css'; // TODO: This smells
-import { useTableYears } from 'lib/swr';
-import { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-interface TableYearsProps {
+interface Props {
     activeYear: number;
-    onYearChange: Dispatch<SetStateAction<number>>;
+    tableYears: number[];
 }
 
-const TableYears: React.FC<TableYearsProps> = ({ activeYear, onYearChange }) => {
-    const { data, error, isLoading } = useTableYears();
-
+const TableYears: React.FC<Props> = ({ activeYear, tableYears }) => {
     const [rootRef, setRootRef] = useState<HTMLDivElement | null>(null);
     const [controlsRefs, setControlsRefs] = useState<Record<string, HTMLButtonElement | null>>({});
     const [active, setActive] = useState(0);
 
-    useEffect(() => {
-        if (data) {
-            setActive(data.indexOf(activeYear));
-        }
-    }, [activeYear, data]);
+    const router = useRouter();
+    const pathname = usePathname();
 
-    if (isLoading) return <Loader color="gray" type="dots" />;
-    if (error || !data) return <div>failed to load</div>;
+    useEffect(() => {
+        if (tableYears) {
+            setActive(tableYears.indexOf(activeYear));
+        }
+    }, [activeYear, tableYears]);
 
     const setControlRef = (index: number) => (node: HTMLButtonElement) => {
         controlsRefs[index] = node;
         setControlsRefs(controlsRefs);
     };
 
-    const controls = data.map((year, index) => (
+    const controls = tableYears.map((year, index) => (
         <UnstyledButton
             key={year}
             className={classes.control}
             ref={setControlRef(index)}
             onClick={() => {
                 setActive(index);
-                onYearChange(year);
+                const newPath = pathname.replace(/\/\d+$/, `/${year}`) || `${pathname}/${year}`;
+                router.push(newPath);
             }}
             mod={{ active: active === index }}
         >

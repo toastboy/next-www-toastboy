@@ -1,11 +1,11 @@
 'use client';
 
 import { FloatingIndicator, UnstyledButton } from '@mantine/core';
-import classes from 'components/GameYears/GameYears.module.css';
 import { usePathname, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
+import classes from './YearSelector.module.css';
 
-interface Props {
+export interface Props {
     activeYear: number;
     validYears: number[];
 }

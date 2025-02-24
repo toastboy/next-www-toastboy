@@ -1,5 +1,5 @@
 import Table from 'components/Table/Table';
-import TableYears from 'components/TableYears/TableYears';
+import YearSelector from 'components/YearSelector/YearSelector';
 import { TableName } from 'lib/types';
 import { notFound } from 'next/navigation';
 
@@ -16,13 +16,14 @@ const Page: React.FC<Props> = async (props) => {
     let allYears: number[] = [];
 
     try {
+        // TODO: Construct the API URL properly
         const response = await fetch(`http://localhost:3000/api/footy/tableyear`);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
         allYears = await response.json();
     } catch (error) {
-        console.error('Failed to fetch TableYears:', error);
+        console.error('Failed to fetch YearSelector:', error);
     }
 
     if (!(table in TableName)) return notFound();
@@ -30,7 +31,7 @@ const Page: React.FC<Props> = async (props) => {
 
     return (
         <>
-            <TableYears activeYear={yearnum} tableYears={allYears} />
+            <YearSelector activeYear={yearnum} validYears={allYears} />
             <Table table={table} year={yearnum} />
         </>
     );

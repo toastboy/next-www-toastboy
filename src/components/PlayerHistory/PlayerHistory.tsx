@@ -1,31 +1,23 @@
-'use client';
-
 import { Container } from '@mantine/core';
 import PlayerPositions from 'components/PlayerPositions/PlayerPositions';
 import PlayerResults from 'components/PlayerResults/PlayerResults';
-import PlayerYearsActive from 'components/PlayerYearsActive/PlayerYearsActive';
+import YearSelector from 'components/YearSelector/YearSelector';
+import { fetchData } from 'lib/fetch';
 import { Player } from 'lib/types';
-import { notFound } from 'next/navigation';
-import { useEffect, useState } from 'react';
 
 interface Props {
     player: Player;
+    year: number;
 }
 
-const PlayerHistory: React.FC<Props> = ({ player }) => {
-    const [activeYear, setActiveYear] = useState(0);
-
-    useEffect(() => {
-        if (isNaN(activeYear)) {
-            return notFound();
-        }
-    }, [activeYear]);
+const PlayerHistory: React.FC<Props> = async ({ player, year }) => {
+    const activeYears = await fetchData<number[]>(`/api/footy/player/${player.id}/yearsactive`);
 
     return (
         <Container>
-            <PlayerYearsActive idOrLogin={player.login} activeYear={0} onYearChange={setActiveYear} />
-            <PlayerResults idOrLogin={player.login} year={activeYear} />
-            <PlayerPositions idOrLogin={player.login} year={activeYear} />
+            <YearSelector activeYear={year} validYears={activeYears} />
+            <PlayerResults idOrLogin={player.login} year={year} />
+            <PlayerPositions idOrLogin={player.login} year={year} />
         </Container>
     );
 };

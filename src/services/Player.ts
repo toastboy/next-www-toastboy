@@ -13,8 +13,74 @@ class PlayerService {
      * @throws An error if the Player is invalid.
      */
     validate(player: Player): Player {
-        if (!player.id || !Number.isInteger(player.id) || player.id < 0) {
-            throw new Error(`Invalid id value: ${player.id}`);
+        if (!player.id) {
+            throw new Error(`Missing id value`);
+        }
+        else {
+            if (!Number.isInteger(player.id)) {
+                player.id = parseInt(player.id as unknown as string);
+            }
+
+            if (player.id < 0) {
+                throw new Error(`Invalid id value: ${player.id}`);
+            }
+        }
+
+        if (!player.login) {
+            throw new Error(`Missing login value`);
+        }
+        else {
+            if (typeof player.login !== 'string') {
+                player.login = player.login as unknown as string;
+            }
+
+            if (player.login.length === 0) {
+                throw new Error(`Invalid login value: ${player.login}`);
+            }
+        }
+
+        if (player.isAdmin && typeof player.isAdmin !== 'boolean') {
+            player.isAdmin = Boolean(player.isAdmin);
+        }
+
+        if (player.firstName && typeof player.firstName !== 'string') {
+            throw new Error(`Invalid firstName value: ${player.firstName}`);
+        }
+
+        if (player.lastName && typeof player.lastName !== 'string') {
+            throw new Error(`Invalid lastName value: ${player.lastName}`);
+        }
+
+        if (player.name && typeof player.name !== 'string') {
+            throw new Error(`Invalid name value: ${player.name}`);
+        }
+
+        if (player.anonymous && typeof player.anonymous !== 'boolean') {
+            player.anonymous = Boolean(player.anonymous);
+        }
+
+        if (player.email && typeof player.email !== 'string') {
+            throw new Error(`Invalid email value: ${player.email}`);
+        }
+
+        if (player.joined && !(player.joined instanceof Date)) {
+            player.joined = new Date(player.joined as unknown as string);
+        }
+
+        if (player.finished && !(player.finished instanceof Date)) {
+            player.finished = new Date(player.finished as unknown as string);
+        }
+
+        if (player.born && !(player.born instanceof Date)) {
+            player.born = new Date(player.born as unknown as string);
+        }
+
+        if (player.comment && typeof player.comment !== 'string') {
+            throw new Error(`Invalid comment value: ${player.comment}`);
+        }
+
+        if (player.introducedBy && (!Number.isInteger(player.introducedBy) || player.introducedBy < 0)) {
+            throw new Error(`Invalid introducedBy value: ${player.introducedBy}`);
         }
 
         return player;

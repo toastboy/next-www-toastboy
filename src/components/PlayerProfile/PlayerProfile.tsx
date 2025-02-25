@@ -12,9 +12,10 @@ import { Suspense } from 'react';
 
 export interface Props {
     player: Player;
+    year: number;
 }
 
-const PlayerProfile: React.FC<Props> = ({ player }) => {
+const PlayerProfile: React.FC<Props> = ({ player, year }) => {
     return (
         <Container>
             <h1 className="text-6xl font-bold mb-4 text-center">{player.name}</h1>
@@ -26,7 +27,7 @@ const PlayerProfile: React.FC<Props> = ({ player }) => {
             <PlayerCountries player={player} />
             <PlayerArse player={player} />
             <PlayerForm player={player} gameDayId={0} games={5} />
-            <PlayerHistory player={player} />
+            <PlayerHistory player={player} year={year} />
             <div className="px-6 py-4">
                 <div className="font-bold text-xl mb-2">{player.name}</div>
                 <p className="text-gray-700 text-base">{player.email}</p>

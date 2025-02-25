@@ -42,6 +42,7 @@ const YearSelector: React.FC<Props> = ({ activeYear, validYears }) => {
     };
 
     return (
+        // TODO: Mantine objects
         <div className={classes.root} ref={rootRef}>
             {validYears.map((year, index) => (
                 <UnstyledButton

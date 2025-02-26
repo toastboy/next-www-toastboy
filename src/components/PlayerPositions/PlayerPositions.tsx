@@ -1,22 +1,14 @@
-'use client';
-
-import { Loader } from '@mantine/core';
-import { usePlayerRecord } from 'lib/swr';
-import { TableName } from 'lib/types';
+import { fetchData } from 'lib/fetch';
+import { Player, PlayerRecord, TableName } from 'lib/types';
 import { getYearName, rankMap } from 'lib/utils';
 
 export interface Props {
-    idOrLogin: string;
+    player: Player;
     year: number;
 }
 
-const PlayerPositions: React.FC<Props> = ({ idOrLogin, year }) => {
-    const { data: record, error, isLoading } = usePlayerRecord(idOrLogin, year);
-
-    if (isLoading) return <Loader color="gray" type="dots" />;
-    if (error || !record) return <div>failed to load</div>;
-
-    const { player, ...playerRecord } = record;
+const PlayerPositions: React.FC<Props> = async ({ player, year }) => {
+    const playerRecord = await fetchData<PlayerRecord>(`/api/footy/player/${player.id}/record/${year}`);
 
     return (
         <div className="px-6 py-4">

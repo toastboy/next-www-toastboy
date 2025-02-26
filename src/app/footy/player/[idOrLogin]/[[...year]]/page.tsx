@@ -2,38 +2,24 @@ import { Player } from '@prisma/client';
 import PlayerProfile from 'components/PlayerProfile/PlayerProfile';
 import { fetchData } from 'lib/fetch';
 import { notFound, redirect } from 'next/navigation';
-import playerService from "services/Player"; // TODO: use API, not service directly
-
-export async function generateMetadata(
-    props: {
-        params: Promise<{ idOrLogin: string }>,
-    },
-) {
-    try {
-        const { idOrLogin } = await props.params;
-        const login = await playerService.getLogin(idOrLogin);
-        if (!login) {
-            return {};
-        }
-        const player = await playerService.getByLogin(login);
-        if (!player) {
-            return {};
-        }
-        const name = playerService.getName(player);
-        return name ? {
-            title: `${name}`,
-        } : {};
-    }
-    catch (error) {
-        throw new Error(`Getting player metadata: ${error}`);
-    }
-}
+import playerService from "services/Player";
 
 interface Props {
     params: Promise<{
         idOrLogin: string,
         year: [string],
     }>,
+}
+
+export async function generateMetadata(props: Props) {
+    try {
+        const { idOrLogin } = await props.params;
+        const name = await fetchData<string>(`/api/footy/player/${idOrLogin}/name`);
+        return name ? { title: `${name}` } : {};
+    }
+    catch (error) {
+        throw new Error(`Getting player metadata: ${error}`);
+    }
 }
 
 const Page: React.FC<Props> = async props => {

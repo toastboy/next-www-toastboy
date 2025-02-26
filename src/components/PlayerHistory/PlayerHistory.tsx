@@ -16,8 +16,8 @@ const PlayerHistory: React.FC<Props> = async ({ player, year }) => {
     return (
         <Container>
             <YearSelector activeYear={year} validYears={activeYears} />
-            <PlayerResults idOrLogin={player.login} year={year} />
-            <PlayerPositions idOrLogin={player.login} year={year} />
+            <PlayerResults player={player} year={year} />
+            <PlayerPositions player={player} year={year} />
         </Container>
     );
 };

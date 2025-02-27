@@ -10,6 +10,8 @@ export interface Props {
 const PlayerPositions: React.FC<Props> = async ({ player, year }) => {
     const playerRecord = await fetchData<PlayerRecord>(`/api/footy/player/${player.id}/record/${year}`);
 
+    if (!playerRecord) return null; // TODO: Probably want to show empty UX rather than nothing
+
     return (
         <div className="px-6 py-4">
             <table summary={`${player.name}'s ${getYearName(year)} table positions`}>
@@ -21,7 +23,7 @@ const PlayerPositions: React.FC<Props> = async ({ player, year }) => {
                         return (
                             <tr key={table}>
                                 <th>{table.charAt(0).toUpperCase() + table.slice(1)}</th>
-                                <td>{position}</td>
+                                <td>{position || '-'}</td>
                             </tr>
                         );
                     })}

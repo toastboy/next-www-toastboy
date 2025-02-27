@@ -13,34 +13,16 @@ class PlayerService {
      * @throws An error if the Player is invalid.
      */
     validate(player: Player): Player {
-        if (!player.id) {
-            throw new Error(`Missing id value`);
-        }
-        else {
-            if (!Number.isInteger(player.id)) {
-                player.id = parseInt(player.id as unknown as string);
-            }
-
-            if (player.id < 0) {
-                throw new Error(`Invalid id value: ${player.id}`);
-            }
+        if (player.id && (!Number.isInteger(player.id) || player.id < 0)) {
+            throw new Error(`Invalid id value: ${player.id}`);
         }
 
-        if (!player.login) {
-            throw new Error(`Missing login value`);
-        }
-        else {
-            if (typeof player.login !== 'string') {
-                player.login = player.login as unknown as string;
-            }
-
-            if (player.login.length === 0) {
-                throw new Error(`Invalid login value: ${player.login}`);
-            }
+        if (player.login && typeof player.login !== 'string') {
+            throw new Error(`Invalid login value: ${player.login}`);
         }
 
         if (player.isAdmin && typeof player.isAdmin !== 'boolean') {
-            player.isAdmin = Boolean(player.isAdmin);
+            throw new Error(`Invalid isAdmin value: ${player.isAdmin}`);
         }
 
         if (player.firstName && typeof player.firstName !== 'string') {
@@ -56,7 +38,7 @@ class PlayerService {
         }
 
         if (player.anonymous && typeof player.anonymous !== 'boolean') {
-            player.anonymous = Boolean(player.anonymous);
+            throw new Error(`Invalid anonymous value: ${player.anonymous}`);
         }
 
         if (player.email && typeof player.email !== 'string') {
@@ -64,15 +46,15 @@ class PlayerService {
         }
 
         if (player.joined && !(player.joined instanceof Date)) {
-            player.joined = new Date(player.joined as unknown as string);
+            throw new Error(`Invalid joined value: ${player.joined}`);
         }
 
         if (player.finished && !(player.finished instanceof Date)) {
-            player.finished = new Date(player.finished as unknown as string);
+            throw new Error(`Invalid finished value: ${player.finished}`);
         }
 
         if (player.born && !(player.born instanceof Date)) {
-            player.born = new Date(player.born as unknown as string);
+            throw new Error(`Invalid born value: ${player.born}`);
         }
 
         if (player.comment && typeof player.comment !== 'string') {
@@ -84,6 +66,44 @@ class PlayerService {
         }
 
         return player;
+    }
+
+    /**
+     * Convert a Player object from a JSON object
+     * @param player The Player object which should be in the format of a JSON
+     * object (i.e. coming from an API call)
+     * @returns The validated and strongly-typed Player object
+     */
+    fromJSON(player: Player): Player {
+        if (player.id) {
+            player.id = Number(player.id);
+        }
+
+        if (player.isAdmin) {
+            player.isAdmin = Boolean(player.isAdmin);
+        }
+
+        if (player.anonymous) {
+            player.anonymous = Boolean(player.anonymous);
+        }
+
+        if (player.joined) {
+            player.joined = new Date(player.joined);
+        }
+
+        if (player.finished) {
+            player.finished = new Date(player.finished);
+        }
+
+        if (player.born) {
+            player.born = new Date(player.born);
+        }
+
+        if (player.introducedBy) {
+            player.introducedBy = Number(player.introducedBy);
+        }
+
+        return this.validate(player);
     }
 
     /**

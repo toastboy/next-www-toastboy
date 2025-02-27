@@ -2,7 +2,6 @@ import { Player } from '@prisma/client';
 import PlayerProfile from 'components/PlayerProfile/PlayerProfile';
 import { fetchData } from 'lib/fetch';
 import { notFound, redirect } from 'next/navigation';
-import playerService from "services/Player";
 
 interface Props {
     params: Promise<{
@@ -33,10 +32,8 @@ const Page: React.FC<Props> = async props => {
         redirect(`/footy/player/${player.login}`);
     }
 
-    const validatedPlayer = playerService.validate(player);
-
     return (
-        <PlayerProfile player={validatedPlayer} key={player.id} year={yearnum} />
+        <PlayerProfile player={player} key={player.id} year={yearnum} />
     );
 };
 

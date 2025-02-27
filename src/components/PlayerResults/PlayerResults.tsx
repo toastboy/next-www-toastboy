@@ -10,6 +10,8 @@ export interface Props {
 const PlayerResults: React.FC<Props> = async ({ player, year }) => {
     const playerRecord = await fetchData<PlayerRecordWithPlayer>(`/api/footy/player/${player.id}/record/${year}`);
 
+    if (!playerRecord) return null; // TODO: Probably want to show empty UX rather than nothing
+
     return (
         // TODO Mantine Table
         <div className="px-6 py-4">

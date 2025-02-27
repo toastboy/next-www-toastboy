@@ -13,6 +13,8 @@ interface Props {
 const PlayerHistory: React.FC<Props> = async ({ player, year }) => {
     const activeYears = await fetchData<number[]>(`/api/footy/player/${player.id}/yearsactive`);
 
+    if (activeYears.length === 0) return null; // TODO: Probably want to show empty UX rather than nothing
+
     return (
         <Container>
             <YearSelector activeYear={year} validYears={activeYears} />

@@ -1,40 +1,34 @@
-'use client';
+import { Table, TableTbody, TableTd, TableTh, TableThead, TableTr } from '@mantine/core';
+import { fetchData } from 'lib/fetch';
+import { TurnoutByYear } from 'lib/types';
 
-import { Loader, Table } from '@mantine/core';
-import { useTurnoutByYear } from 'lib/swr';
+const Turnout: React.FC = async () => {
+    const data = await fetchData<TurnoutByYear[]>('/api/footy/turnout/byyear');
 
-type TurnoutProps = object
-
-const Turnout: React.FC<TurnoutProps> = () => {
-    const { data, error, isLoading } = useTurnoutByYear();
-
-    if (isLoading) return <Loader color="gray" type="dots" />;
-    if (error || !data) return <div>failed to load</div>;
-
-    const rows = data.map((t) => (
-        <Table.Tr key={t.year}>
-            <Table.Td>{t.year}</Table.Td>
-            <Table.Td>{t.gamesPlayed}</Table.Td>
-            <Table.Td>{t.gamesCancelled}</Table.Td>
-            <Table.Td>{t.responsesPerGameInitiated.toFixed(1)}</Table.Td>
-            <Table.Td>{t.yessesPerGameInitiated.toFixed(1)}</Table.Td>
-            <Table.Td>{t.playersPerGamePlayed.toFixed(1)}</Table.Td>
-        </Table.Tr>
+    const rows = data.sort((a, b) => b.year - a.year).map((t) => (
+        <TableTr key={t.year}>
+            <TableTd>{t.year}</TableTd>
+            <TableTd>{t.gamesPlayed}</TableTd>
+            <TableTd>{t.gamesCancelled}</TableTd>
+            <TableTd>{t.responsesPerGameInitiated.toFixed(1)}</TableTd>
+            <TableTd>{t.yessesPerGameInitiated.toFixed(1)}</TableTd>
+            <TableTd>{t.playersPerGamePlayed.toFixed(1)}</TableTd>
+        </TableTr>
     ));
 
     return (
         <Table>
-            <Table.Thead>
-                <Table.Tr>
-                    <Table.Th>Year</Table.Th>
-                    <Table.Th>Played</Table.Th>
-                    <Table.Th>Cancelled</Table.Th>
-                    <Table.Th>Response Rate</Table.Th>
-                    <Table.Th>Yes Rate</Table.Th>
-                    <Table.Th>Turnout Rate</Table.Th>
-                </Table.Tr>
-            </Table.Thead>
-            <Table.Tbody>{rows}</Table.Tbody>
+            <TableThead>
+                <TableTr>
+                    <TableTh>Year</TableTh>
+                    <TableTh>Played</TableTh>
+                    <TableTh>Cancelled</TableTh>
+                    <TableTh>Response Rate</TableTh>
+                    <TableTh>Yes Rate</TableTh>
+                    <TableTh>Turnout Rate</TableTh>
+                </TableTr>
+            </TableThead>
+            <TableTbody>{rows}</TableTbody>
         </Table>
     );
 };

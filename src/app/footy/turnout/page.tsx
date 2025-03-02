@@ -1,12 +1,13 @@
+import { Paper } from "@mantine/core";
 import Turnout from "components/Turnout/Turnout";
 
-type PageProps = object
+type Props = object
 
-const Page: React.FC<PageProps> = () => {
+const Page: React.FC<Props> = () => {
     return (
-        <>
+        <Paper shadow="xl" p="xl">
             <Turnout />
-        </>
+        </Paper>
     );
 };
 

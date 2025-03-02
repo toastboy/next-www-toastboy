@@ -19,14 +19,14 @@ const WinnersTable: React.FC<Props> = async ({ table, year }) => {
     ));
 
     return (
-        <Paper shadow="xl" p="xl">
+        <Paper shadow="xl" p="xl" w="20em">
             <Title order={3}>{table.charAt(0).toUpperCase() + table.slice(1)}</Title>
 
             <Table>
                 <TableThead>
                     <TableTr>
-                        <TableTh>Year</TableTh>
-                        <TableTh>Winner(s)</TableTh>
+                        <TableTh w="4em">Year</TableTh>
+                        <TableTh w="auto">Winner(s)</TableTh>
                     </TableTr>
                 </TableThead>
                 <TableTbody>{rows}</TableTbody>

@@ -1,27 +1,21 @@
-'use client';
-
-import { Loader, Paper, Table, Title } from '@mantine/core';
+import { Paper, Table, TableTbody, TableTd, TableTh, TableThead, TableTr, Title } from '@mantine/core';
 import PlayerLink from 'components/PlayerLink/PlayerLink';
-import { useWinners } from 'lib/swr';
-import { TableName } from 'lib/types';
-import { getYearName } from 'lib/utils';
+import { fetchData } from 'lib/fetch';
+import { PlayerRecordWithPlayer, TableName } from 'lib/types';
 
-interface Props {
+export interface Props {
     table: TableName;
     year?: number;
 }
 
-const WinnersTable: React.FC<Props> = ({ table, year }) => {
-    const { data, error, isLoading } = useWinners(table, year);
+const WinnersTable: React.FC<Props> = async ({ table, year }) => {
+    const record = await fetchData<PlayerRecordWithPlayer[]>(`/api/footy/winners/${table}/${year || ''}`);
 
-    if (isLoading) return <Loader color="gray" type="dots" />;
-    if (error || !data) return <div>failed to load</div>;
-
-    const rows = data.map((winner, index) => (
-        <Table.Tr key={index}>
-            <Table.Td>{getYearName(winner.year)}</Table.Td>
-            <Table.Td><PlayerLink player={winner.player} /></Table.Td>
-        </Table.Tr>
+    const rows = record.map((winner, index) => (
+        <TableTr key={index}>
+            <TableTd>{winner.year}</TableTd>
+            <TableTd><PlayerLink player={winner.player} /></TableTd>
+        </TableTr>
     ));
 
     return (
@@ -29,13 +23,13 @@ const WinnersTable: React.FC<Props> = ({ table, year }) => {
             <Title order={3}>{table.charAt(0).toUpperCase() + table.slice(1)}</Title>
 
             <Table>
-                <Table.Thead>
-                    <Table.Tr>
-                        <Table.Th>Year</Table.Th>
-                        <Table.Th>Winner(s)</Table.Th>
-                    </Table.Tr>
-                </Table.Thead>
-                <Table.Tbody>{rows}</Table.Tbody>
+                <TableThead>
+                    <TableTr>
+                        <TableTh>Year</TableTh>
+                        <TableTh>Winner(s)</TableTh>
+                    </TableTr>
+                </TableThead>
+                <TableTbody>{rows}</TableTbody>
             </Table>
         </Paper>
     );

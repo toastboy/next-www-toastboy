@@ -16,23 +16,22 @@ export async function handleGET<T>(
     try {
         const data = await serviceFunction({ params });
 
-        switch (responseType) {
-            case 'json':
-                return Response.json(data, {
-                    status: 200,
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                });
-            case 'png':
-                return new Response(data as string, {
-                    status: 200,
-                    headers: {
-                        'Content-Type': 'image/png',
-                    },
-                });
-            default:
-                throw new Error('Invalid response type');
+        if (data != null) {
+            const headers: HeadersInit = {
+                'Content-Type': responseType === 'json' ? 'application/json' : 'image/png',
+            };
+            const body = responseType === 'json' ? JSON.stringify(data) : data as string;
+            return new Response(body, {
+                status: 200,
+                headers,
+            });
+        } else {
+            return new Response(
+                responseType === 'json' ? 'Data not found' : 'PNG image not found',
+                {
+                    status: 404,
+                },
+            );
         }
     } catch (error) {
         console.error(`Error in API route: ${error}`);

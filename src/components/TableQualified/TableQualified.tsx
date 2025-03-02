@@ -16,6 +16,7 @@ const TableQualified: React.FC<Props> = async ({ table, year, qualified, take })
     if (!data) return <></>;
 
     return (
+        // TODO: Mantine styling
         <div className="px-6 py-4">
             {data.map((record, index) => (
                 <div key={index}>

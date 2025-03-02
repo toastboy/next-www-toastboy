@@ -23,7 +23,7 @@ const Page: React.FC<Props> = async props => {
                 {
                     Object.keys(TableName).map((table, index) => {
                         return (
-                            <GridCol span={3} key={index}>
+                            <GridCol span={{ base: 12, sm: 8, md: 6, lg: 4, xl: 3 }} key={index}>
                                 <WinnersTable table={table as TableName} year={yearnum} />
                             </GridCol>
                         );

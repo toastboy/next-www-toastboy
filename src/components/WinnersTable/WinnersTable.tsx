@@ -10,16 +10,20 @@ export interface Props {
 
 const WinnersTable: React.FC<Props> = async ({ table, year }) => {
     const record = await fetchData<PlayerRecordWithPlayer[]>(`/api/footy/winners/${table}/${year || ''}`);
+    let currentyear: number;
 
-    const rows = record.map((winner, index) => (
-        <TableTr key={index}>
-            <TableTd>{winner.year}</TableTd>
-            <TableTd><PlayerLink player={winner.player} /></TableTd>
-        </TableTr>
-    ));
+    const rows = record.map((winner, index) => {
+        const year = winner.year == currentyear ? '' : (currentyear = winner.year);
+        return (
+            <TableTr key={index}>
+                <TableTd>{year}</TableTd>
+                <TableTd><PlayerLink player={winner.player} /></TableTd>
+            </TableTr>
+        );
+    });
 
     return (
-        <Paper shadow="xl" p="xl" w="20em">
+        <Paper shadow="xl" p="lg" w="16em">
             <Title order={3}>{table.charAt(0).toUpperCase() + table.slice(1)}</Title>
 
             <Table>

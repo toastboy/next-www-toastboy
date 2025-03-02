@@ -1,0 +1,17 @@
+.div {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background-color: var(--mantine-color-black);
+    color: var(--mantine-color-white);
+    padding: var(--mantine-spacing-sm);
+    font-size: var(--mantine-font-size-xs);
+    z-index: 1000;
+    border-radius: var(--mantine-radius-md);
+    font-family: var(--mantine-font-family-monospace);
+    opacity: 0.6;
+}
+
+.p {
+    margin: 0px;
+}

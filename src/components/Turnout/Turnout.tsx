@@ -1,11 +1,12 @@
 import { Table, TableTbody, TableTd, TableTh, TableThead, TableTr } from '@mantine/core';
-import { fetchData } from 'lib/fetch';
 import { TurnoutByYear } from 'lib/types';
 
-const Turnout: React.FC = async () => {
-    const data = await fetchData<TurnoutByYear[]>('/api/footy/turnout/byyear');
+interface Props {
+    turnout: TurnoutByYear[],
+}
 
-    const rows = data.sort((a, b) => b.year - a.year).map((t) => (
+const Turnout: React.FC<Props> = ({ turnout }) => {
+    const rows = turnout.sort((a, b) => b.year - a.year).map((t) => (
         <TableTr key={t.year}>
             <TableTd>{t.year}</TableTd>
             <TableTd>{t.gamesPlayed}</TableTd>

@@ -1,0 +1,5 @@
+.badges {
+    position: absolute;
+    max-width: 5rem;
+    background: rgba(0, 0, 0, 0.4);
+}

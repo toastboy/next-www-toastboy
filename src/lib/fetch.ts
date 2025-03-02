@@ -32,13 +32,7 @@ export async function fetchData<T>(url: string): Promise<T> {
         if (!response.ok) {
             throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
         }
-        const data: T = await response.json();
-        switch (typeof (data) as string) {
-            case "Player":
-                return parsePlayer(data as unknown as Player) as unknown as T;
-            default:
-                return data;
-        }
+        return await response.json() as T;
     }
     catch (error) {
         console.error('Error fetching ${url}:', error);
@@ -61,7 +55,7 @@ export async function fetchData<T>(url: string): Promise<T> {
  * - `born`: Converts to a Date object if it exists.
  * - `introducedBy`: Converts to a number if it exists.
  */
-function parsePlayer(player: Player): Player {
+export function parsePlayer(player: Player): Player {
     if (player.id) {
         player.id = Number(player.id);
     }

@@ -8,9 +8,8 @@ interface Props {
 const ClubBadge: React.FC<Props> = async ({ club }) => {
     return (
         <Image
-            className="w-full"
-            width={150}
-            height={150}
+            w="100%"
+            h="100%"
             src={`/api/footy/club/${club.id}/badge`}
             alt={club.clubName}
             title={club.clubName}

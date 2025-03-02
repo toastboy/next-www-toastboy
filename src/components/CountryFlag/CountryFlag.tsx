@@ -8,9 +8,8 @@ export interface Props {
 const CountryFlag: React.FC<Props> = async ({ country }) => {
     return (
         <Image
-            className="w-full"
-            width={150}
-            height={150}
+            w="100%"
+            h="100%"
             src={`/api/footy/country/${country.isoCode.toLowerCase()}/flag`}
             alt={country.name}
             title={country.name}

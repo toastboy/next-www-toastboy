@@ -9,9 +9,8 @@ const PlayerMugshot: React.FC<Props> = ({ player }) => {
     return (
         <Anchor href={`/footy/player/${player.login}`}>
             <Image
-                className="w-full"
-                width={300}
-                height={300}
+                w="100%"
+                h="100%"
                 src={`/api/footy/player/${player.login}/mugshot`}
                 alt={player.name || `Player ${player.id}`}
                 title={player.name || `Player ${player.id}`}

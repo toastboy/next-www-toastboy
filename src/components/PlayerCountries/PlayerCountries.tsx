@@ -10,7 +10,7 @@ export interface Props {
 const PlayerCountries: React.FC<Props> = async ({ player }) => {
     const data = await countrySupporterService.getByPlayer(player.id);
 
-    if (!data) return <></>;
+    if (!data || data.length == 0) return <></>;
 
     return (
         <Flex gap="xs" p="xs" direction="column">

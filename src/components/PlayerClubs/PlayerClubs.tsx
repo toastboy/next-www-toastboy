@@ -10,7 +10,7 @@ export interface Props {
 const PlayerClubs: React.FC<Props> = async ({ player }) => {
     const data = await clubSupporterService.getByPlayer(player.id);
 
-    if (!data) return <></>;
+    if (!data || data.length == 0) return <></>;
 
     return (
         <Flex gap="xs" p="xs" direction="column">

@@ -8,6 +8,7 @@ import PlayerForm from 'components/PlayerForm/PlayerForm';
 import PlayerHistory from 'components/PlayerHistory/PlayerHistory';
 import PlayerLastPlayed from 'components/PlayerLastPlayed/PlayerLastPlayed';
 import PlayerMugshot from 'components/PlayerMugshot/PlayerMugshot';
+import PlayerTrophies from 'components/PlayerTrophies/PlayerTrophies';
 import { Suspense } from 'react';
 import classes from './PlayerProfile.module.css';
 
@@ -36,6 +37,7 @@ const PlayerProfile: React.FC<Props> = ({ player, year }) => {
             <PlayerForm player={player} gameDayId={0} games={5} />
             <PlayerHistory player={player} year={year} />
             <PlayerBorn player={player} />
+            <PlayerTrophies player={player} year={year} />
         </Container>
     );
 };

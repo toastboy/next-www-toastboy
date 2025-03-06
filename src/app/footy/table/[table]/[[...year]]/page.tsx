@@ -1,5 +1,5 @@
-import Table from 'components/Table/Table';
 import YearSelector from 'components/YearSelector/YearSelector';
+import YearTable from 'components/YearTable/YearTable';
 import { fetchData } from 'lib/fetch';
 import { TableName } from 'lib/types';
 import { notFound } from 'next/navigation';
@@ -22,7 +22,7 @@ const Page: React.FC<Props> = async (props) => {
     return (
         <>
             <YearSelector activeYear={yearnum} validYears={allYears} />
-            <Table table={table} year={yearnum} />
+            <YearTable table={table} year={yearnum} />
         </>
     );
 };

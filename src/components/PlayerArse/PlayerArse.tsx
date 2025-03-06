@@ -1,3 +1,4 @@
+import { Table, TableTbody, TableTd, TableTr } from '@mantine/core';
 import { Player } from 'lib/types';
 import arseService from 'services/Arse';
 
@@ -9,16 +10,17 @@ const PlayerArse: React.FC<Props> = async ({ player }) => {
     const arse = await arseService.getByPlayer(player.id);
 
     return (
-        // TODO: Change styles to use Mantine components
-        <div className="px-6 py-4">
-            <p className="text-gray-700 text-base">In Goal: {arse?.inGoal}</p>
-            <p className="text-gray-700 text-base">Running: {arse?.running}</p>
-            <p className="text-gray-700 text-base">Shooting: {arse?.shooting}</p>
-            <p className="text-gray-700 text-base">Passing: {arse?.passing}</p>
-            <p className="text-gray-700 text-base">Ball Skill: {arse?.ballSkill}</p>
-            <p className="text-gray-700 text-base">Attacking: {arse?.attacking}</p>
-            <p className="text-gray-700 text-base">Defending: {arse?.defending}</p>
-        </div>
+        <Table>
+            <TableTbody>
+                <TableTr><TableTd>In Goal</TableTd><TableTd>{arse?.inGoal || '-'}</TableTd></TableTr>
+                <TableTr><TableTd>Running</TableTd><TableTd>{arse?.running || '-'}</TableTd></TableTr>
+                <TableTr><TableTd>Shooting</TableTd><TableTd>{arse?.shooting || '-'}</TableTd></TableTr>
+                <TableTr><TableTd>Passing</TableTd><TableTd>{arse?.passing || '-'}</TableTd></TableTr>
+                <TableTr><TableTd>Ball Skill</TableTd><TableTd>{arse?.ballSkill || '-'}</TableTd></TableTr>
+                <TableTr><TableTd>Attacking</TableTd><TableTd>{arse?.attacking || '-'}</TableTd></TableTr>
+                <TableTr><TableTd>Defending</TableTd><TableTd>{arse?.defending || '-'}</TableTd></TableTr>
+            </TableTbody>
+        </Table>
     );
 };
 

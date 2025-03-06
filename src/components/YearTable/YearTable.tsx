@@ -1,3 +1,4 @@
+import { Flex } from '@mantine/core';
 import TableQualified from 'components/TableQualified/TableQualified';
 import config from 'lib/config';
 import { TableName } from 'lib/types';
@@ -8,25 +9,15 @@ interface Props {
     year: number;
 }
 
-const Table: React.FC<Props> = ({ table, year }) => {
-    if (UnqualifiedTableName(table)) {
-        return (
-            <div>
-                <p className="text-2xl font-bold">{QualifiedTableName(table, year)}</p>
-                <TableQualified table={table} year={year} qualified={true} />
-                <p className="text-2xl font-bold">{UnqualifiedTableName(table)}</p>
-                <TableQualified table={table} year={year} qualified={false} />
-            </div>
-        );
-    }
-    else {
-        return (
-            <div>
-                <p className="text-2xl font-bold">{QualifiedTableName(table, year)}</p>
-                <TableQualified table={table} year={year} />
-            </div>
-        );
-    }
+const YearTable: React.FC<Props> = ({ table, year }) => {
+    return (
+        <Flex direction="column" gap="md">
+            <TableQualified table={table} title={QualifiedTableName(table, year)} year={year} qualified={true} />
+            {UnqualifiedTableName(table) ?
+                <TableQualified table={table} title={UnqualifiedTableName(table)} year={year} qualified={false} />
+                : null}
+        </Flex>
+    );
 };
 
 /**
@@ -58,15 +49,15 @@ function QualifiedTableName(table: TableName, year: number): string {
  * @param {number} year - The year for which the table is generated.
  * @returns {string} - The qualified table name or null.
  */
-function UnqualifiedTableName(table: TableName): string | null {
+function UnqualifiedTableName(table: TableName): string | undefined {
     switch (table) {
         case TableName.averages:
             return `Played Fewer than ${config.minGamesForAveragesTable} Games`;
         case TableName.speedy:
             return `Responded Fewer than ${config.minRepliesForSpeedyTable} Times`;
         default:
-            return null;
+            return undefined;
     }
 }
 
-export default Table;
+export default YearTable;

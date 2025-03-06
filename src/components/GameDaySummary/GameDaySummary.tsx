@@ -1,5 +1,4 @@
-import { Container, Text } from '@mantine/core';
-import GameDayLink from 'components/GameDayLink/GameDayLink';
+import { Flex, Text, Title } from '@mantine/core';
 import Team from 'components/Team/Team';
 import { GameDayWithOutcomesWithPlayers } from 'lib/types';
 
@@ -10,9 +9,8 @@ interface Props {
 const GameDaySummary: React.FC<Props> = ({ gameDay }) => {
     if (gameDay.game) {
         return (
-            // TODO: Use Mantine components
-            <Container>
-                <h1>Game {gameDay.id}: <GameDayLink gameDay={gameDay} /></h1>
+            <Flex direction="column">
+                <Title order={1}>Game {gameDay.id}: {gameDay.date.toDateString()}</Title>
                 <Text>
                     {gameDay.comment ? `(${gameDay.comment})` : ''}
                 </Text>
@@ -21,14 +19,16 @@ const GameDaySummary: React.FC<Props> = ({ gameDay }) => {
                     vs.
                 </Text>
                 <Team team={gameDay.outcomes.filter((o) => o.team == 'B')} />
-            </Container>
+            </Flex>
         );
     }
     else {
         return (
-            <Text>
-                No game {gameDay.comment ? `(${gameDay.comment})` : ''}
-            </Text>
+            <Flex>
+                <Text>
+                    No game {gameDay.comment ? `(${gameDay.comment})` : ''}
+                </Text>
+            </Flex>
         );
     }
 };

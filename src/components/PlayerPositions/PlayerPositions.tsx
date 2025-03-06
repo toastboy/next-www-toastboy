@@ -1,3 +1,4 @@
+import { Table, TableCaption, TableTbody, TableTd, TableTh, TableTr } from '@mantine/core';
 import { fetchData } from 'lib/fetch';
 import { Player, PlayerRecord, TableName } from 'lib/types';
 import { getYearName, rankMap } from 'lib/utils';
@@ -10,26 +11,22 @@ export interface Props {
 const PlayerPositions: React.FC<Props> = async ({ player, year }) => {
     const playerRecord = await fetchData<PlayerRecord>(`/api/footy/player/${player.id}/record/${year}`);
 
-    if (!playerRecord) return null; // TODO: Probably want to show empty UX rather than nothing
-
     return (
-        <div className="px-6 py-4">
-            <table summary={`${player.name}'s ${getYearName(year)} table positions`}>
-                <caption>{getYearName(year)} Positions</caption>
-                <tbody>
-                    {Object.keys(TableName).map((table) => {
-                        const position = playerRecord[rankMap[table as TableName] as keyof typeof playerRecord];
+        <Table summary={`${player.name}'s ${getYearName(year)} table positions`}>
+            <TableCaption>{getYearName(year)} Positions</TableCaption>
+            <TableTbody>
+                {Object.keys(TableName).map((table) => {
+                    const position = playerRecord[rankMap[table as TableName] as keyof typeof playerRecord] || null;
 
-                        return (
-                            <tr key={table}>
-                                <th>{table.charAt(0).toUpperCase() + table.slice(1)}</th>
-                                <td>{position || '-'}</td>
-                            </tr>
-                        );
-                    })}
-                </tbody>
-            </table>
-        </div>
+                    return (
+                        <TableTr key={table}>
+                            <TableTh>{table.charAt(0).toUpperCase() + table.slice(1)}</TableTh>
+                            <TableTd>{position || '-'}</TableTd>
+                        </TableTr>
+                    );
+                })}
+            </TableTbody>
+        </Table>
     );
 };
 

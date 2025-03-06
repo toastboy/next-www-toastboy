@@ -225,7 +225,7 @@ export class PlayerRecordService {
         playerId: number,
     ): Promise<PlayerRecordWithPlayer | null> {
         try {
-            return await prisma.playerRecord.findFirst({
+            const result = await prisma.playerRecord.findFirst({
                 where: {
                     year: year,
                     playerId: playerId,
@@ -237,6 +237,44 @@ export class PlayerRecordService {
                     player: true,
                 },
             });
+
+            if (result === null) {
+                const player = await prisma.player.findUnique({
+                    where: {
+                        id: playerId,
+                    },
+                });
+
+                if (player === null) return null;
+
+                return {
+                    id: 0,
+                    playerId: playerId,
+                    year: year,
+                    gameDayId: 0,
+                    responses: 0,
+                    played: 0,
+                    won: 0,
+                    drawn: 0,
+                    lost: 0,
+                    points: 0,
+                    averages: 0,
+                    stalwart: 0,
+                    pub: 0,
+                    rankPoints: null,
+                    rankAverages: null,
+                    rankAveragesUnqualified: null,
+                    rankStalwart: null,
+                    rankSpeedy: null,
+                    rankSpeedyUnqualified: null,
+                    rankPub: null,
+                    speedy: 0,
+                    player: player,
+                };
+            }
+            else {
+                return result;
+            }
         } catch (error) {
             log(`Error fetching playerRecord for player: ${error}`);
             throw error;

@@ -8,10 +8,7 @@ export async function getForYearByPlayer(
     const player = await playerService.getByIdOrLogin(params.idOrLogin);
     if (!player) return null;
 
-    const record = await playerRecordService.getForYearByPlayer(parseInt(params.year), player.id);
-    if (!record) return null;
-
-    return record;
+    return await playerRecordService.getForYearByPlayer(parseInt(params.year), player.id);
 }
 
 export const GET = async (request: Request, props: { params: Promise<Record<string, string>> }) => {

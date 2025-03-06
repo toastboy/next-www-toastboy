@@ -1,3 +1,4 @@
+import { Table, TableTbody, TableTd, TableTh, TableTr } from '@mantine/core';
 import { fetchData } from 'lib/fetch';
 import { Player, PlayerRecordWithPlayer } from 'lib/types';
 import { getYearName } from 'lib/utils';
@@ -10,21 +11,16 @@ export interface Props {
 const PlayerResults: React.FC<Props> = async ({ player, year }) => {
     const playerRecord = await fetchData<PlayerRecordWithPlayer>(`/api/footy/player/${player.id}/record/${year}`);
 
-    if (!playerRecord) return null; // TODO: Probably want to show empty UX rather than nothing
-
     return (
-        // TODO Mantine Table
-        <div className="px-6 py-4">
-            <table summary={`${player.name}'s ${getYearName(year)} results record`}>
-                <caption>{getYearName(year)} Results</caption>
-                <tbody>
-                    <tr><th>Played</th><td>{playerRecord.played}</td></tr>
-                    <tr><th>Won</th><td>{playerRecord.won}</td></tr>
-                    <tr><th>Drawn</th><td>{playerRecord.drawn}</td></tr>
-                    <tr><th>Lost</th><td>{playerRecord.lost}</td></tr>
-                </tbody>
-            </table>
-        </div>
+        <Table summary={`${player.name}'s ${getYearName(year)} results record`}>
+            <caption>{getYearName(year)} Results</caption>
+            <TableTbody>
+                <TableTr><TableTh>Played</TableTh><TableTd>{playerRecord.played || '-'}</TableTd></TableTr>
+                <TableTr><TableTh>Won</TableTh><TableTd>{playerRecord.won || '-'}</TableTd></TableTr>
+                <TableTr><TableTh>Drawn</TableTh><TableTd>{playerRecord.drawn || '-'}</TableTd></TableTr>
+                <TableTr><TableTh>Lost</TableTh><TableTd>{playerRecord.lost || '-'}</TableTd></TableTr>
+            </TableTbody>
+        </Table>
     );
 };
 

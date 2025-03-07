@@ -1,4 +1,4 @@
-import { Text } from '@mantine/core';
+import { ProgressRoot, ProgressSection } from '@mantine/core';
 import GameDayLink from 'components/GameDayLink/GameDayLink';
 import { Player } from 'lib/types';
 import { Key } from 'react';
@@ -16,13 +16,17 @@ const PlayerForm: React.FC<Props> = async ({ player, gameDayId, games }) => {
     if (!form) return <></>;
 
     return (
-        <div className="px-6 py-4">
+        <ProgressRoot size="xl">
             {form.map((outcome, index: Key) => (
-                <Text key={index} component="span">
-                    Game <GameDayLink gameDay={outcome.gameDay} />: {outcome.points}
-                </Text>
+                <ProgressSection
+                    key={index}
+                    value={100 / games}
+                    color={outcome.points == 3 ? 'green' : outcome.points == 1 ? 'yellow' : 'red'}
+                >
+                    <GameDayLink gameDay={outcome.gameDay} />
+                </ProgressSection>
             ))}
-        </div>
+        </ProgressRoot>
     );
 };
 

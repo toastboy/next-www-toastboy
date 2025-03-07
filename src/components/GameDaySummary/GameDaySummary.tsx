@@ -25,6 +25,7 @@ const GameDaySummary: React.FC<Props> = ({ gameDay }) => {
     else {
         return (
             <Flex>
+                <Title order={1}>Game {gameDay.id}: {gameDay.date.toDateString()}</Title>
                 <Text>
                     No game {gameDay.comment ? `(${gameDay.comment})` : ''}
                 </Text>

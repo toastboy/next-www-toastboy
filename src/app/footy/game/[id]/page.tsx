@@ -1,3 +1,4 @@
+import { Anchor, Flex } from "@mantine/core";
 import GameDaySummary from "components/GameDaySummary/GameDaySummary";
 import { notFound } from "next/navigation";
 import gameDayService from "services/GameDay";
@@ -18,7 +19,14 @@ const Page: React.FC<Props> = async (props) => {
 
     if (!gameDay) return <></>;
 
-    return <GameDaySummary gameDay={gameDay} />;
+    return (
+        // TODO: Clean up the previous and next links
+        <Flex w="100%" direction="column">
+            <Anchor href={`/footy/game/${gameDayId - 1}`} ta="left">Back</Anchor>
+            <Anchor href={`/footy/game/${gameDayId + 1}`} ta="right">Forward</Anchor>
+            <GameDaySummary gameDay={gameDay} />
+        </Flex>
+    );
 };
 
 export default Page;

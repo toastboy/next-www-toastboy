@@ -17,7 +17,7 @@ const WinnersTable: React.FC<Props> = async ({ table, year }) => {
         return (
             <TableTr key={index}>
                 <TableTd>{year}</TableTd>
-                <TableTd><PlayerLink player={winner.player} /></TableTd>
+                <TableTd><PlayerLink player={winner.player} year={currentyear} /></TableTd>
             </TableTr>
         );
     });

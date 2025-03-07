@@ -1,6 +1,6 @@
 'use client';
 
-import { FloatingIndicator, UnstyledButton } from '@mantine/core';
+import { Flex, FloatingIndicator, ScrollArea, UnstyledButton } from '@mantine/core';
 import { usePathname, useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import classes from './YearSelector.module.css';
@@ -37,33 +37,33 @@ const YearSelector: React.FC<Props> = ({ activeYear, validYears }) => {
     const handleClick = (year: number, index: number) => {
         setActive(index);
         const newPath = `${pathname.replace(/\/\d+$/, '')}/${year || ''}`;
-        console.log("Navigating from", pathname, "to", newPath);
         router.push(newPath);
     };
 
     return (
-        // TODO: Mantine objects
-        <div className={classes.root} ref={rootRef}>
-            {validYears.map((year, index) => (
-                <UnstyledButton
-                    key={year}
-                    className={classes.control}
-                    ref={(node) => setControlRef(node, index)}
-                    onClick={() => handleClick(year, index)}
-                    mod={{ active: active === index }}
-                >
-                    <span className={classes.controlLabel}>
-                        {year === 0 ? "All-time" : year}
-                    </span>
-                </UnstyledButton>
-            ))}
+        <ScrollArea h={'5.4rem'} type="auto">
+            <Flex direction="row" wrap="wrap" gap="md" w="100%" className={classes.root} ref={rootRef}>
+                {validYears.map((year, index) => (
+                    <UnstyledButton
+                        key={year}
+                        className={classes.control}
+                        ref={(node) => setControlRef(node, index)}
+                        onClick={() => handleClick(year, index)}
+                        mod={{ active: active === index }}
+                    >
+                        <span className={classes.controlLabel}>
+                            {year === 0 ? "All" : year}
+                        </span>
+                    </UnstyledButton>
+                ))}
 
-            <FloatingIndicator
-                target={controlsRefs.current[active]}
-                parent={rootRef.current}
-                className={classes.indicator}
-            />
-        </div>
+                <FloatingIndicator
+                    target={controlsRefs.current[active]}
+                    parent={rootRef.current}
+                    className={classes.indicator}
+                />
+            </Flex>
+        </ScrollArea>
     );
 };
 

@@ -576,12 +576,12 @@ async function calculateYearPlayerRecords(
     pointsArray.sort((a, b) => b - a);
 
     const averagesArray = Object.values(yearPlayerRecords)
-        .map(r => (r.played && r.played >= config.minGamesForAveragesTable ? r.averages : null))
+        .map(r => (r.played && r.played > 0 && r.played >= config.minGamesForAveragesTable ? r.averages : null))
         .filter((a): a is number => a !== null);
     averagesArray.sort((a, b) => b - a);
 
     const averagesArrayUnqualified = Object.values(yearPlayerRecords)
-        .map(r => (r.played && r.played < config.minGamesForAveragesTable ? r.averages : null))
+        .map(r => (r.played && r.played > 0 && r.played < config.minGamesForAveragesTable ? r.averages : null))
         .filter((a): a is number => a !== null);
     averagesArrayUnqualified.sort((a, b) => b - a);
 

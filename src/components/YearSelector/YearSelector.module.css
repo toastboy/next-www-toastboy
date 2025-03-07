@@ -8,13 +8,15 @@
 }
 
 .control {
-    padding: 7px 12px;
+    padding: 7px;
     line-height: 1;
     color: light-dark(var(--mantine-color-gray-7), var(--mantine-color-dark-2));
     border-radius: var(--mantine-radius-md);
     font-size: var(--mantine-font-size-sm);
     transition: color 100ms ease;
     font-weight: 500;
+    width: calc(var(--mantine-spacing-md) * 3.4);
+    text-align: center;
 
     @mixin hover {
         color: light-dark(var(--mantine-color-black), var(--mantine-color-white));

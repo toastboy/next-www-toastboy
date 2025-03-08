@@ -19,8 +19,8 @@ const AdminUpdatePlayerRecords: React.FC = () => {
     }, [mutate]);
 
     if (isLoading) return <Loader color="gray" type="dots" />;
-    if (error || !data || data.length != 2) {
-        return <Alert title="Error" icon={errorIcon}>Failed to load player records update</Alert>;
+    if (error || !data || data.length !== 2) {
+        return <Alert title="Error" icon={errorIcon}>{error?.message || 'An unknown error occurred'}</Alert>;
     }
 
     const progress = Math.floor(100 * data[0] / data[1]);

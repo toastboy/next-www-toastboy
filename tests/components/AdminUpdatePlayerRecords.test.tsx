@@ -55,7 +55,7 @@ describe('AdminUpdatePlayerRecords', () => {
 
         const { container } = render(<Wrapper><AdminUpdatePlayerRecords /></Wrapper>);
         expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText(errorText)).toBeInTheDocument();
+        expect(screen.getByText("An unknown error occurred")).toBeInTheDocument();
     });
 
     it('renders with data < 100%', () => {

@@ -8,7 +8,6 @@ import { useEffect } from 'react';
 
 const AdminUpdatePlayerRecords: React.FC = () => {
     const { data, error, isLoading, mutate } = useRecordsProgress();
-    const errorIcon = <IconAlertTriangle />;
 
     useEffect(() => {
         const intervalId = setInterval(() => {
@@ -20,7 +19,7 @@ const AdminUpdatePlayerRecords: React.FC = () => {
 
     if (isLoading) return <Loader color="gray" type="dots" />;
     if (error || !data || data.length !== 2) {
-        return <Alert title="Error" icon={errorIcon}>{error?.message || 'An unknown error occurred'}</Alert>;
+        return <Alert title="Error" icon={<IconAlertTriangle />}>{error?.message || 'An unknown error occurred'}</Alert>;
     }
 
     const progress = Math.floor(100 * data[0] / data[1]);

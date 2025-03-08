@@ -1,7 +1,7 @@
 'use client';
 
-import { Anchor, Checkbox, Container, Flex, Loader, RangeSlider, Switch, Table, Text, TextInput, Title } from '@mantine/core';
-import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
+import { Alert, Anchor, Checkbox, Container, Flex, Loader, RangeSlider, Switch, Table, Text, TextInput, Title } from '@mantine/core';
+import { IconAlertTriangle, IconSortAscending, IconSortDescending } from '@tabler/icons-react';
 import PlayerTimeline from 'components/PlayerTimeline/PlayerTimeline';
 import PlayerWDLChart from 'components/PlayerWDLChart/PlayerWDLChart';
 import { useCurrentGame, usePlayers } from 'lib/swr';
@@ -35,6 +35,34 @@ const Page: React.FC<PageProps> = () => {
         }
     };
 
+    const handleSelectPlayer = (playerId: number) => {
+        if (selectedPlayers.includes(playerId)) {
+            setSelectedPlayers((prev) => prev.filter((id) => id !== playerId));
+        } else {
+            setSelectedPlayers((prev) => [...prev, playerId]);
+        }
+    };
+
+    if (playersLoading || currentGameLoading) {
+        return (
+            <Container>
+                <Loader />
+            </Container>
+        );
+    }
+
+    if (playersError) {
+        return <Alert title="Error" icon={<IconAlertTriangle />}>{playersError?.message || 'An unknown error occurred'}</Alert>;
+    }
+
+    if (currentGameError) {
+        return <Alert title="Error" icon={<IconAlertTriangle />}>{currentGameError?.message || 'An unknown error occurred'}</Alert>;
+    }
+
+    if (!players || !currentGame) {
+        return <></>;
+    }
+
     const filteredPlayers = players?.filter((player) => {
         const searchTerm = filter.toLowerCase();
         const searchResult = (player.name?.toLowerCase().includes(searchTerm) ||
@@ -44,10 +72,15 @@ const Page: React.FC<PageProps> = () => {
     }) || [];
 
     const playersRepliedSince = filteredPlayers.filter((player) => {
-        return (player.lastResponded &&
-            ((currentGame?.id || 0) - player.lastResponded) >= replyRange[0] &&
-            ((currentGame?.id || 0) - player.lastResponded) <= replyRange[1]) ||
-            (!player.lastResponded && replyRange[1] === currentGame?.id);
+        if (!player.lastResponded) {
+            return (replyRange[1] === currentGame?.id);
+        }
+        else {
+            const repliedAfter = ((currentGame?.id || 0) - player.lastResponded) >= replyRange[0];
+            const repliedBefore = ((currentGame?.id || 0) - player.lastResponded) <= replyRange[1];
+
+            return repliedAfter && repliedBefore;
+        }
     });
 
     const sortedPlayers = playersRepliedSince ? [...playersRepliedSince].sort((a, b) => {
@@ -77,40 +110,6 @@ const Page: React.FC<PageProps> = () => {
 
         return 0;
     }) : [];
-
-    const handleSelectPlayer = (playerId: number) => {
-        if (selectedPlayers.includes(playerId)) {
-            setSelectedPlayers((prev) => prev.filter((id) => id !== playerId));
-        } else {
-            setSelectedPlayers((prev) => [...prev, playerId]);
-        }
-    };
-
-    if (playersLoading || currentGameLoading) {
-        return (
-            <Container>
-                <Loader />
-            </Container>
-        );
-    }
-
-    if (playersError) {
-        // TODO: This isn't an error message
-        return (
-            <Container>
-                <Text c="red">{playersError}</Text>
-            </Container>
-        );
-    }
-
-    if (currentGameError) {
-        // TODO: This isn't an error message
-        return (
-            <Container>
-                <Text c="red">{currentGameError}</Text>
-            </Container>
-        );
-    }
 
     return (
         <Container>
@@ -191,7 +190,7 @@ const Page: React.FC<PageProps> = () => {
                                 <PlayerWDLChart player={player} />
                             </Table.Td>
                             <Table.Td>
-                                <PlayerTimeline player={player} />
+                                <PlayerTimeline player={player} currentGame={currentGame} />
                             </Table.Td>
                         </Table.Tr>
                     ))}

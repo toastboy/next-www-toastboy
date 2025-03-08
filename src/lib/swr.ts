@@ -26,6 +26,10 @@ export function useGameDay(id: number) {
     return useSWR<GameDay>(`/api/footy/gameday/${id}`, fetcher);
 }
 
+export function useGameDays() {
+    return useSWR<GameDay[]>(`/api/footy/gameday`, fetcher);
+}
+
 export function useCurrentGame() {
     return useSWR<GameDay>(`/api/footy/currentgame`, fetcher);
 }

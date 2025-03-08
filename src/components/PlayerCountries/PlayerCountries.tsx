@@ -1,20 +1,20 @@
 import { Flex } from '@mantine/core';
 import CountryFlag from 'components/CountryFlag/CountryFlag';
-import { Player } from 'lib/types';
-import countrySupporterService from 'services/CountrySupporter';
+import { fetchData } from 'lib/fetch';
+import { CountrySupporterWithCountry, Player } from 'lib/types';
 
 export interface Props {
     player: Player,
 }
 
 const PlayerCountries: React.FC<Props> = async ({ player }) => {
-    const data = await countrySupporterService.getByPlayer(player.id);
+    const countries = await fetchData<CountrySupporterWithCountry[]>(`/api/footy/player/${player.id}/countries`);
 
-    if (!data || data.length == 0) return <></>;
+    if (!countries || countries.length == 0) return <></>;
 
     return (
         <Flex gap="xs" p="xs" direction="column">
-            {data.map((item) => (
+            {countries.map((item) => (
                 <CountryFlag key={item.countryISOCode} country={item.country} />
             ))}
         </Flex>

@@ -8,7 +8,6 @@ export const GET = async (request: Request, props: { params: Promise<Record<stri
     return handleGET(async () => {
         const player = await playerService.getByIdOrLogin(params.idOrLogin);
         if (!player) { return null; }
-        const data = await countrySupporterService.getByPlayer(player.id);
-        return data ? data.map((item) => item.countryISOCode) : null;
+        return await countrySupporterService.getByPlayer(player.id);
     }, { params });
 };

@@ -1,7 +1,7 @@
 'use client';
 
 import useSWR from 'swr';
-import { Arse, Club, Country, GameDay, Outcome, Player, PlayerData, PlayerRecord, PlayerRecordWithPlayer, TableName, TurnoutByYear } from './types';
+import { Arse, Club, ClubSupporterWithClub, Country, CountrySupporterWithCountry, GameDay, Outcome, Player, PlayerData, PlayerRecord, PlayerRecordWithPlayer, TableName, TurnoutByYear } from './types';
 
 const fetcher = (input: URL | RequestInfo, init?: RequestInit | undefined) =>
     fetch(input, init).then((res) => res.json());
@@ -43,11 +43,11 @@ export function usePlayerLastPlayed(idOrLogin: string) {
 }
 
 export function usePlayerClubs(idOrLogin: string) {
-    return useSWR<number[]>(`/api/footy/player/${idOrLogin}/clubs`, fetcher);
+    return useSWR<ClubSupporterWithClub[]>(`/api/footy/player/${idOrLogin}/clubs`, fetcher);
 }
 
 export function usePlayerCountries(idOrLogin: string) {
-    return useSWR<string[]>(`/api/footy/player/${idOrLogin}/countries`, fetcher);
+    return useSWR<CountrySupporterWithCountry[]>(`/api/footy/player/${idOrLogin}/countries`, fetcher);
 }
 
 export function usePlayerArse(idOrLogin: string) {

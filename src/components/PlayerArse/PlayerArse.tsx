@@ -1,13 +1,13 @@
 import { Table, TableTbody, TableTd, TableTr } from '@mantine/core';
-import { Player } from 'lib/types';
-import arseService from 'services/Arse';
+import { fetchData } from 'lib/fetch';
+import { Arse, Player } from 'lib/types';
 
 export interface Props {
     player: Player,
 }
 
 const PlayerArse: React.FC<Props> = async ({ player }) => {
-    const arse = await arseService.getByPlayer(player.id);
+    const arse = await fetchData<Arse>(`/api/footy/player/${player.id}/arse`);
 
     return (
         <Table>

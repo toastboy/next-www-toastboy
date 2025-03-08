@@ -3,7 +3,7 @@ import { setupPlayerMocks } from 'tests/lib/api/player';
 
 jest.mock('services/Player');
 
-import { GET } from 'api/footy/player/[idOrLogin]/form/[games]/route';
+import { GET } from 'api/footy/player/[idOrLogin]/form/[gameDayId]/[games]/route';
 import playerService from 'services/Player';
 import request from 'supertest';
 

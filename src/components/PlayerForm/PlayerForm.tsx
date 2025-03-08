@@ -1,8 +1,8 @@
 import { ProgressRoot, ProgressSection } from '@mantine/core';
 import GameDayLink from 'components/GameDayLink/GameDayLink';
-import { Player } from 'lib/types';
+import { fetchData } from 'lib/fetch';
+import { OutcomeWithGameDay, Player } from 'lib/types';
 import { Key } from 'react';
-import playerService from 'services/Player';
 
 export interface Props {
     player: Player;
@@ -11,7 +11,7 @@ export interface Props {
 }
 
 const PlayerForm: React.FC<Props> = async ({ player, gameDayId, games }) => {
-    const form = await playerService.getForm(player.id, gameDayId, games);
+    const form = await fetchData<OutcomeWithGameDay[]>(`/api/footy/player/${player.id}/form/${gameDayId}/${games}`);
 
     if (!form) return <></>;
 

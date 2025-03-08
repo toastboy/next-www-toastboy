@@ -27,7 +27,7 @@ describe('API tests using HTTP', () => {
 
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
-        expect(response.body).toEqual([2235]);
+        expect(response.body).toEqual(mockData);
     });
 
     it('should return 404 if the player does not exist', async () => {

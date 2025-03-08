@@ -44,8 +44,8 @@ export default function LogoutPage() {
     }
 
     return (
-        <div>
-            <h1>Successfully logged out</h1>
-        </div>
+        <Container>
+            <Text>Successfully logged out</Text>
+        </Container>
     );
 }

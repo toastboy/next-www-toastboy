@@ -1,4 +1,4 @@
-import { Box, Collapse, Group, UnstyledButton, rem } from '@mantine/core';
+import { Box, Collapse, Flex, Group, UnstyledButton, rem } from '@mantine/core';
 import { IconChevronRight } from '@tabler/icons-react';
 import classes from 'components/NavbarLinksGroup/NavbarLinksGroup.module.css';
 import Link from 'next/link';
@@ -23,9 +23,9 @@ const NavBarLinksGroup: React.FC<NavBarLinksGroupProps> = ({ label, initiallyOpe
         <>
             <UnstyledButton onClick={() => setOpened((o) => !o)} className={classes.control}>
                 <Group justify="space-between" gap={0}>
-                    <Box style={{ display: 'flex', alignItems: 'center' }}>
+                    <Flex align="center">
                         <Box ml="md">{label}</Box>
-                    </Box>
+                    </Flex>
                     {hasLinks && (
                         <IconChevronRight
                             className={classes.chevron}

@@ -1,6 +1,8 @@
 import { Anchor, Flex } from "@mantine/core";
+import { GameDay } from "@prisma/client";
 import GameDaySummary from "components/GameDaySummary/GameDaySummary";
-import { notFound } from "next/navigation";
+import { fetchData } from "lib/fetch";
+import { notFound, redirect } from "next/navigation";
 import gameDayService from "services/GameDay";
 
 interface Props {
@@ -11,6 +13,10 @@ interface Props {
 
 const Page: React.FC<Props> = async (props) => {
     const { id } = await props.params;
+    if (!id) {
+        const currentGame = await fetchData<GameDay>('/api/footy/currentgame');
+        redirect(`/footy/game/${currentGame.id}`);
+    }
     const gameDayId = parseInt(id);
 
     if (isNaN(gameDayId)) return notFound();

@@ -46,11 +46,9 @@ describe('UserButton', () => {
             error: null,
         });
 
-        const originalLocation = window.location;
-
         Object.defineProperty(window, 'location', {
             writable: true,
-            value: { ...originalLocation, href: '' },
+            value: { href: '' } as const,
         });
 
         render(<Wrapper><UserButton /></Wrapper>);
@@ -62,8 +60,6 @@ describe('UserButton', () => {
         await waitFor(() => {
             expect(window.location.href).toBe('/footy/auth/signin');
         });
-
-        window.location = originalLocation;
     });
 
     it('redirects to sign in page when sign in button is clicked with no user in the session', async () => {
@@ -73,11 +69,9 @@ describe('UserButton', () => {
             error: null,
         });
 
-        const originalLocation = window.location;
-
         Object.defineProperty(window, 'location', {
             writable: true,
-            value: { ...originalLocation, href: '' },
+            value: { href: '' } as const,
         });
 
         render(<Wrapper><UserButton /></Wrapper>);
@@ -89,8 +83,6 @@ describe('UserButton', () => {
         await waitFor(() => {
             expect(window.location.href).toBe('/footy/auth/signin');
         });
-
-        window.location = originalLocation;
     });
 
     it('renders user name and email', async () => {

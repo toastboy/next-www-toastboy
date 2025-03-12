@@ -1,3 +1,5 @@
+import { NextResponse } from "next/server";
+
 /**
  * Handles a GET request by invoking a service function and returning the appropriate response.
  *
@@ -12,7 +14,7 @@ export async function handleGET<T>(
     serviceFunction: ({ params }: { params: Record<string, string> }) => Promise<T | null>,
     { params }: { params: Record<string, string> },
     responseType: 'json' | 'png' = 'json',
-): Promise<Response> {
+): Promise<NextResponse> {
     try {
         const data = await serviceFunction({ params });
 
@@ -21,12 +23,12 @@ export async function handleGET<T>(
                 'Content-Type': responseType === 'json' ? 'application/json' : 'image/png',
             };
             const body = responseType === 'json' ? JSON.stringify(data) : data as string;
-            return new Response(body, {
+            return new NextResponse(body, {
                 status: 200,
                 headers,
             });
         } else {
-            return new Response(
+            return new NextResponse(
                 responseType === 'json' ? 'Data not found' : 'PNG image not found',
                 {
                     status: 404,
@@ -35,7 +37,7 @@ export async function handleGET<T>(
         }
     } catch (error) {
         console.error(`Error in API route: ${error}`);
-        return new Response('Internal Server Error', {
+        return new NextResponse('Internal Server Error', {
             status: 500,
         });
     }

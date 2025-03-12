@@ -1,4 +1,5 @@
 import { createServer, ServerResponse } from 'http';
+import { NextRequest, NextResponse } from 'next/server';
 
 export const mockBlobClient = {
     exists: jest.fn(),
@@ -66,13 +67,13 @@ export function suppressConsoleError() {
  * @returns A mock server instance.
  */
 export function createMockApp(
-    getFunction: (request: Request, { params }: { params: Promise<Record<string, string>> }) => Promise<Response>,
+    getFunction: (request: NextRequest, { params }: { params: Promise<Record<string, string>> }) => Promise<NextResponse>,
     routeParams: { path: string; params: Promise<Record<string, string>> },
-    responseHandler: (response: Response, res: ServerResponse) => Promise<void>,
+    responseHandler: (response: NextResponse, res: ServerResponse) => Promise<void>,
 ) {
     return createServer((req, res) => {
         if (req.url?.includes(routeParams.path)) {
-            const requestObject = new Request(`http://localhost${req.url}`, {
+            const requestObject = new NextRequest(`http://localhost${req.url}`, {
                 method: req.method,
                 headers: req.headers as HeadersInit,
             });
@@ -101,7 +102,7 @@ export function createMockApp(
  * - If the response has a body, it sets the 'Content-Type' header to 'application/json' and sends the response body.
  * - If the response does not have a body, it sends a 'Missing Response Body' message with a 500 status code.
  */
-export async function jsonResponseHandler(response: Response, res: ServerResponse) {
+export async function jsonResponseHandler(response: NextResponse, res: ServerResponse) {
     if (response.status === 404) {
         res.statusCode = 404;
         res.end('Not Found');
@@ -129,7 +130,7 @@ export async function jsonResponseHandler(response: Response, res: ServerRespons
  * - If the response body is present, it converts the readable stream to a buffer, sets the 'Content-Type' header to 'image/png', and sends the buffer.
  * - If the response body is missing, it sends a 'Missing Response Body' message with a 500 status code.
  */
-export async function pngResponseHandler(response: Response, res: ServerResponse) {
+export async function pngResponseHandler(response: NextResponse, res: ServerResponse) {
     if (response.status === 404) {
         res.statusCode = 404;
         res.end('Not Found');

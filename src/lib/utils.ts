@@ -58,3 +58,15 @@ export const rankMap: Record<TableName, string> = {
     speedy: "rankSpeedy",
     pub: "rankPub",
 };
+
+/**
+ * Parses a boolean value from a string.
+ *
+ * @param value - The string to parse as a boolean.
+ * @returns `true` if the string is "true", `false` if the string is "false", and `undefined` otherwise.
+ */
+export const parseBoolean = (value: string | null) => {
+    if (value === 'true') return true;
+    if (value === 'false') return false;
+    return undefined;
+};

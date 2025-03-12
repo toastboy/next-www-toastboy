@@ -1,6 +1,7 @@
 import { handleGET } from 'lib/api';
 import azureCache from 'lib/azure';
 import { streamToBuffer } from 'lib/utils';
+import { NextRequest } from 'next/server';
 
 import countryService from 'services/Country';
 
@@ -29,7 +30,7 @@ async function getCountryFlag(
     return await streamToBuffer(downloadBlockBlobResponse.readableStreamBody);
 }
 
-export const GET = async (request: Request, props: { params: Promise<Record<string, string>> }) => {
+export const GET = async (request: NextRequest, props: { params: Promise<Record<string, string>> }) => {
     const params = await props.params;
     return handleGET(() => getCountryFlag({ params }), { params }, "png");
 };

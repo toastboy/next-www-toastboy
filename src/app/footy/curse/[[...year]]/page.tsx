@@ -26,7 +26,7 @@ const Page: React.FC<Props> = (props) => {
 
     return (
         <Flex direction="column" w="100%" align="center">
-            <YearSelector activeYear={0} validYears={allYears} />
+            <YearSelector activeYear={parseInt(year)} validYears={allYears} />
             <PieChart data={pieData} />
         </Flex>
     );

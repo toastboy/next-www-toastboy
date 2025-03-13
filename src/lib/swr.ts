@@ -105,7 +105,6 @@ export function useTurnoutByYear() {
 
 export function useBibs(year?: number) {
     const { data, error } = useSWR<WDL>(`/api/footy/bibs?year=${year}`, fetcher);
-    throw new Error("Buttocksssss");
     if (error) throw error;
     return data || null;
 }

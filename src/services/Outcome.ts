@@ -1,7 +1,7 @@
 import { PlayerResponse } from '@prisma/client';
 import debug from 'debug';
 import prisma from 'lib/prisma';
-import { Outcome, Turnout, TurnoutByYear } from 'lib/types';
+import { Outcome, Turnout, TurnoutByYear, WDL } from 'lib/types';
 import gameDayService from 'services/GameDay';
 
 const log = debug('footy:api');
@@ -389,6 +389,56 @@ export class OutcomeService {
             return outcomes[0].gameDayId;
         } catch (error) {
             log(`Error fetching latest game played by year: ${error}`);
+            throw error;
+        }
+    }
+
+    /**
+     * Retrieves the win-draw-loss (WDL) statistics for team 'A' based on the bibs each game.
+     *
+     * @param {Object} params - The parameters for the query.
+     * @param {number} [params.year] - The specific year to filter the game days. If not provided, all years are considered.
+     * @returns {Promise<WDL>} A promise that resolves to an object containing the counts of games won, drawn, and lost.
+     * @throws Will throw an error if there is an issue fetching the WDL counts.
+     */
+    async getByBibs({ year }: { year?: number }): Promise<WDL> {
+        try {
+            const gameDays = await gameDayService.getAll();
+            const outcomes = await prisma.outcome.groupBy({
+                where: {
+                    team: 'A',
+                },
+                by: [
+                    'gameDayId',
+                    'team',
+                    'points',
+                ],
+            });
+
+            // Count the number of games won, drawn, and lost by the team with
+            // the bibs each game
+            const wdl = outcomes.reduce((acc, outcome) => {
+                const gameDay = gameDays.find((gameDay) => gameDay.id === outcome.gameDayId);
+                if (gameDay &&
+                    gameDay.bibs !== null &&
+                    outcome.points !== null &&
+                    (!year || gameDay.year === year)) {
+                    if (outcome.points === 1) {
+                        acc.drawn++;
+                    } else {
+                        if (gameDay.bibs == "A") {
+                            if (outcome.points === 0) acc.lost++; else acc.won++;
+                        } else {
+                            if (outcome.points === 3) acc.lost++; else acc.won++;
+                        }
+                    }
+                }
+                return acc;
+            }, { won: 0, drawn: 0, lost: 0 });
+
+            return wdl;
+        } catch (error) {
+            log(`Error fetching bibs WDL counts: ${error}`);
             throw error;
         }
     }

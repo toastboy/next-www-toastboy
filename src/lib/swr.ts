@@ -1,7 +1,7 @@
 'use client';
 
 import useSWR from 'swr';
-import { Arse, Club, ClubSupporterWithClub, Country, CountrySupporterWithCountry, GameDay, Outcome, Player, PlayerData, PlayerRecord, PlayerRecordWithPlayer, TableName, TurnoutByYear } from './types';
+import { Arse, Club, ClubSupporterWithClub, Country, CountrySupporterWithCountry, GameDay, Outcome, Player, PlayerData, PlayerRecord, PlayerRecordWithPlayer, TableName, TurnoutByYear, WDL } from './types';
 
 const fetcher = (input: URL | RequestInfo, init?: RequestInit | undefined) =>
     fetch(input, init).then((res) => res.json());
@@ -99,4 +99,8 @@ export function useWinners(table: TableName, year?: number) {
 
 export function useTurnoutByYear() {
     return useSWR<TurnoutByYear[]>(`/api/footy/turnout/byyear`, fetcher);
+}
+
+export function useBibs(year?: number) {
+    return useSWR<WDL>(`/api/footy/bibs?year=${year}`, fetcher);
 }

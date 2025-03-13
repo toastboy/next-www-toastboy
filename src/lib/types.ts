@@ -123,3 +123,9 @@ export interface TurnoutByYear {
     yessesPerGameInitiated: number,
     playersPerGamePlayed: number,
 }
+
+export interface WDL {
+    won: number,
+    drawn: number,
+    lost: number,
+}

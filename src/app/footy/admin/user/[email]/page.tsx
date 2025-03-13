@@ -7,11 +7,11 @@ import { UserWithRole } from 'better-auth/plugins/admin';
 import { use, useEffect, useState } from 'react';
 import { authClient } from 'src/lib/auth-client';
 
-interface PageProps {
+interface Props {
     params: Promise<{ email: string }>,
 }
 
-const Page: React.FC<PageProps> = (props) => {
+const Page: React.FC<Props> = (props) => {
     const { email } = use(props.params);
 
     const [loading, setLoading] = useState(true);

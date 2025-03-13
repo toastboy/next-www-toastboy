@@ -1,13 +1,13 @@
 'use client';
 
-import { ActionIcon, Alert, Button, Center, Container, Loader, RingProgress, Text } from '@mantine/core';
-import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
+import { ActionIcon, Button, Center, Container, RingProgress, Text } from '@mantine/core';
+import { IconCheck } from '@tabler/icons-react';
 import { updatePlayerRecords } from 'actions/updatePlayerRecords';
 import { useRecordsProgress } from 'lib/swr';
 import { useEffect } from 'react';
 
 const AdminUpdatePlayerRecords: React.FC = () => {
-    const { data, error, isLoading, mutate } = useRecordsProgress();
+    const { data, mutate } = useRecordsProgress();
 
     useEffect(() => {
         const intervalId = setInterval(() => {
@@ -17,10 +17,7 @@ const AdminUpdatePlayerRecords: React.FC = () => {
         return () => clearInterval(intervalId);
     }, [mutate]);
 
-    if (isLoading) return <Loader color="gray" type="dots" />;
-    if (error || !data || data.length !== 2) {
-        return <Alert title="Error" icon={<IconAlertTriangle />}>{error?.message || 'An unknown error occurred'}</Alert>;
-    }
+    if (!data || data.length !== 2) return null;
 
     const progress = Math.floor(100 * data[0] / data[1]);
 

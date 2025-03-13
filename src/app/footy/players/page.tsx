@@ -1,7 +1,7 @@
 'use client';
 
-import { Alert, Anchor, Checkbox, Container, Flex, Loader, RangeSlider, Switch, Table, Text, TextInput, Title } from '@mantine/core';
-import { IconAlertTriangle, IconSortAscending, IconSortDescending } from '@tabler/icons-react';
+import { Anchor, Checkbox, Container, Flex, RangeSlider, Switch, Table, Text, TextInput, Title } from '@mantine/core';
+import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
 import PlayerTimeline from 'components/PlayerTimeline/PlayerTimeline';
 import PlayerWDLChart from 'components/PlayerWDLChart/PlayerWDLChart';
 import { useCurrentGame, usePlayers } from 'lib/swr';
@@ -11,8 +11,8 @@ import { useEffect, useState } from 'react';
 type PageProps = object;
 
 const Page: React.FC<PageProps> = () => {
-    const { data: players, error: playersError, isLoading: playersLoading } = usePlayers();
-    const { data: currentGame, error: currentGameError, isLoading: currentGameLoading } = useCurrentGame();
+    const players = usePlayers();
+    const currentGame = useCurrentGame();
     const [sortBy, setSortBy] = useState<keyof PlayerData | null>('name');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     const [filter, setFilter] = useState('');
@@ -43,25 +43,7 @@ const Page: React.FC<PageProps> = () => {
         }
     };
 
-    if (playersLoading || currentGameLoading) {
-        return (
-            <Container>
-                <Loader />
-            </Container>
-        );
-    }
-
-    if (playersError) {
-        return <Alert title="Error" icon={<IconAlertTriangle />}>{playersError?.message || 'An unknown error occurred'}</Alert>;
-    }
-
-    if (currentGameError) {
-        return <Alert title="Error" icon={<IconAlertTriangle />}>{currentGameError?.message || 'An unknown error occurred'}</Alert>;
-    }
-
-    if (!players || !currentGame) {
-        return <></>;
-    }
+    if (!players || !currentGame) return null;
 
     const filteredPlayers = players?.filter((player) => {
         const searchTerm = filter.toLowerCase();

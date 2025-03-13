@@ -7,71 +7,105 @@ const fetcher = (input: URL | RequestInfo, init?: RequestInit | undefined) =>
     fetch(input, init).then((res) => res.json());
 
 export function useClub(id: number) {
-    return useSWR<Club>(`/api/footy/club/${id}`, fetcher);
+    const { data, error } = useSWR<Club>(`/api/footy/club/${id}`, fetcher);
+    if (error) throw error;
+    return data || null;
 }
 
 export function useCountry(isoCode: string) {
-    return useSWR<Country>(`/api/footy/country/${isoCode}`, fetcher);
+    const { data, error } = useSWR<Country>(`/api/footy/country/${isoCode}`, fetcher);
+    if (error) throw error;
+    return data || null;
 }
 
 export function useGameYears() {
-    return useSWR<number[]>(`/api/footy/gameyear`, fetcher);
+    const { data, error } = useSWR<number[]>(`/api/footy/gameyear`, fetcher);
+    if (error) throw error;
+    return data || null;
 }
 
 export function useGameYear(year: number) {
-    return useSWR<boolean>(`/api/footy/gameyear/${year}`, fetcher);
+    const { data, error } = useSWR<boolean>(`/api/footy/gameyear/${year}`, fetcher);
+    if (error) throw error;
+    return data || null;
 }
 
 export function useGameDay(id: number) {
-    return useSWR<GameDay>(`/api/footy/gameday/${id}`, fetcher);
+    const { data, error } = useSWR<GameDay>(`/api/footy/gameday/${id}`, fetcher);
+    if (error) throw error;
+    return data || null;
 }
 
 export function useGameDays() {
-    return useSWR<GameDay[]>(`/api/footy/gameday`, fetcher);
+    const { data, error } = useSWR<GameDay[]>(`/api/footy/gameday`, fetcher);
+    if (error) throw error;
+    return data || null;
 }
 
 export function useCurrentGame() {
-    return useSWR<GameDay>(`/api/footy/currentgame`, fetcher);
+    const { data, error } = useSWR<GameDay>(`/api/footy/currentgame`, fetcher);
+    if (error) throw error;
+    return data || null;
 }
 
 export function usePlayer(idOrLogin: string) {
-    return useSWR<Player>(`/api/footy/player/${idOrLogin}`, fetcher);
+    const { data, error } = useSWR<Player>(`/api/footy/player/${idOrLogin}`, fetcher);
+    if (error) throw error;
+    return data || null;
 }
 
 export function usePlayerLastPlayed(idOrLogin: string) {
-    return useSWR<Outcome>(`/api/footy/player/${idOrLogin}/lastplayed`, fetcher);
+    const { data, error } = useSWR<Outcome>(`/api/footy/player/${idOrLogin}/lastplayed`, fetcher);
+    if (error) throw error;
+    return data || null;
 }
 
 export function usePlayerClubs(idOrLogin: string) {
-    return useSWR<ClubSupporterWithClub[]>(`/api/footy/player/${idOrLogin}/clubs`, fetcher);
+    const { data, error } = useSWR<ClubSupporterWithClub[]>(`/api/footy/player/${idOrLogin}/clubs`, fetcher);
+    if (error) throw error;
+    return data || null;
 }
 
 export function usePlayerCountries(idOrLogin: string) {
-    return useSWR<CountrySupporterWithCountry[]>(`/api/footy/player/${idOrLogin}/countries`, fetcher);
+    const { data, error } = useSWR<CountrySupporterWithCountry[]>(`/api/footy/player/${idOrLogin}/countries`, fetcher);
+    if (error) throw error;
+    return data || null;
 }
 
 export function usePlayerArse(idOrLogin: string) {
-    return useSWR<Arse>(`/api/footy/player/${idOrLogin}/arse`, fetcher);
+    const { data, error } = useSWR<Arse>(`/api/footy/player/${idOrLogin}/arse`, fetcher);
+    if (error) throw error;
+    return data || null;
 }
 
 export function usePlayerForm(idOrLogin: string, games: number) {
-    return useSWR<Outcome[]>(`/api/footy/player/${idOrLogin}/form/${games}`, fetcher);
+    const { data, error } = useSWR<Outcome[]>(`/api/footy/player/${idOrLogin}/form/${games}`, fetcher);
+    if (error) throw error;
+    return data || null;
 }
 
 export function usePlayerYearsActive(idOrLogin: string) {
-    return useSWR<number[]>(`/api/footy/player/${idOrLogin}/yearsactive`, fetcher);
+    const { data, error } = useSWR<number[]>(`/api/footy/player/${idOrLogin}/yearsactive`, fetcher);
+    if (error) throw error;
+    return data || null;
 }
 
 export function usePlayerRecord(idOrLogin: string, year: number) {
-    return useSWR<PlayerRecordWithPlayer>(`/api/footy/player/${idOrLogin}/record/${year}`, fetcher);
+    const { data, error } = useSWR<PlayerRecordWithPlayer>(`/api/footy/player/${idOrLogin}/record/${year}`, fetcher);
+    if (error) throw error;
+    return data || null;
 }
 
 export function usePlayers() {
-    return useSWR<PlayerData[]>(`/api/footy/players`, fetcher);
+    const { data, error } = useSWR<PlayerData[]>(`/api/footy/players`, fetcher);
+    if (error) throw error;
+    return data || null;
 }
 
 export function useRecordsProgress() {
-    return useSWR<[number, number]>(`/api/footy/records/progress`, fetcher);
+    const { data, error, mutate } = useSWR<[number, number]>(`/api/footy/records/progress`, fetcher);
+    if (error) throw error;
+    return { data, mutate };
 }
 
 export function useTableYears() {
@@ -85,22 +119,30 @@ export function useTable(table: TableName, year: number, qualified?: boolean, ta
     if (qualified !== undefined) url += `/${qualified}`;
     if (take !== undefined) url += `/${take}`;
 
-    return useSWR<PlayerRecord[]>(url, fetcher);
+    const { data, error } = useSWR<PlayerRecord[]>(url, fetcher);
+    if (error) throw error;
+    return data || null;
 }
 
 export function useTeam(gameDay: number, team: string) {
-    return useSWR<Outcome[]>(`/api/footy/team/${gameDay}/${team}`, fetcher);
+    const { data, error } = useSWR<Outcome[]>(`/api/footy/team/${gameDay}/${team}`, fetcher);
+    if (error) throw error;
+    return data || null;
 }
 
 export function useWinners(table: TableName, year?: number) {
     let url = `/api/footy/winners/${table}`;
     if (year !== undefined) url += `/${year}`;
 
-    return useSWR<PlayerRecordWithPlayer[]>(url, fetcher);
+    const { data, error } = useSWR<PlayerRecordWithPlayer[]>(url, fetcher);
+    if (error) throw error;
+    return data || null;
 }
 
 export function useTurnoutByYear() {
-    return useSWR<TurnoutByYear[]>(`/api/footy/turnout/byyear`, fetcher);
+    const { data, error } = useSWR<TurnoutByYear[]>(`/api/footy/turnout/byyear`, fetcher);
+    if (error) throw error;
+    return data || null;
 }
 
 export function useBibs(year?: number) {

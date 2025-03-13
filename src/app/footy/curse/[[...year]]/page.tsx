@@ -14,6 +14,7 @@ interface Props {
 
 const Page: React.FC<Props> = (props) => {
     const { year } = use(props.params);
+    const yearnum = parseInt(year) || 0;
     const bibsData = useBibs(parseInt(year));
     const allYears = useTableYears();
 
@@ -26,7 +27,7 @@ const Page: React.FC<Props> = (props) => {
 
     return (
         <Flex direction="column" w="100%" align="center">
-            <YearSelector activeYear={parseInt(year)} validYears={allYears} />
+            <YearSelector activeYear={yearnum} validYears={allYears} />
             <PieChart data={pieData} />
         </Flex>
     );

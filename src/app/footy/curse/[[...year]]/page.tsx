@@ -1,10 +1,9 @@
 'use client';
 
-import { Alert, Flex, Loader } from '@mantine/core';
-import { IconAlertTriangle } from '@tabler/icons-react';
+import { Flex } from '@mantine/core';
 import PieChart from 'components/PieChart/PieChart';
 import YearSelector from 'components/YearSelector/YearSelector';
-import { useBibs } from 'lib/swr';
+import { useBibs, useTableYears } from 'lib/swr';
 import { use } from 'react';
 
 interface Props {
@@ -15,12 +14,10 @@ interface Props {
 
 const Page: React.FC<Props> = (props) => {
     const { year } = use(props.params);
-    const { data: bibsData, error, isLoading } = useBibs(parseInt(year));
+    const bibsData = useBibs(parseInt(year));
+    const allYears = useTableYears();
 
-    if (isLoading) return <Loader color="gray" type="dots" />;
-    if (error || !bibsData) {
-        return <Alert title="Error" icon={<IconAlertTriangle />}>{error?.message || 'An unknown error occurred'}</Alert>;
-    }
+    if (!bibsData || !allYears) return null;
 
     const pieData: { label: string; value: number; }[] = Object.keys(bibsData).map((key) => ({
         label: key,
@@ -29,7 +26,7 @@ const Page: React.FC<Props> = (props) => {
 
     return (
         <Flex direction="column" w="100%" align="center">
-            <YearSelector activeYear={0} validYears={[]} />
+            <YearSelector activeYear={0} validYears={allYears} />
             <PieChart data={pieData} />
         </Flex>
     );

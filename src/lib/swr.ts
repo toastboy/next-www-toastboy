@@ -75,7 +75,9 @@ export function useRecordsProgress() {
 }
 
 export function useTableYears() {
-    return useSWR<number[]>(`/api/footy/tableyear`, fetcher);
+    const { data, error } = useSWR<number[]>(`/api/footy/tableyear`, fetcher);
+    if (error) throw error;
+    return data || null;
 }
 
 export function useTable(table: TableName, year: number, qualified?: boolean, take?: number) {
@@ -102,5 +104,8 @@ export function useTurnoutByYear() {
 }
 
 export function useBibs(year?: number) {
-    return useSWR<WDL>(`/api/footy/bibs?year=${year}`, fetcher);
+    const { data, error } = useSWR<WDL>(`/api/footy/bibs?year=${year}`, fetcher);
+    throw new Error("Buttocksssss");
+    if (error) throw error;
+    return data || null;
 }

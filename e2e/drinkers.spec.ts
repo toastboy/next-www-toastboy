@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test('drinkers page checks', async ({ page }) => {
 
@@ -22,7 +22,7 @@ test('drinkers page checks', async ({ page }) => {
     await page.reload();
     expect(await page.locator(':nth-match(.pubplayer, 3) [type=checkbox]').isChecked());
 
-    const logout = page.getByText('Log Out')
+    const logout = page.getByText('Log Out');
     expect(await logout.count()).toEqual(1);
     await logout.click();
 });

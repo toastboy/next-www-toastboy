@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test('homepage has title and correct links', async ({ page }) => {
   await page.goto('/');
@@ -21,18 +21,18 @@ test('homepage has title and correct links', async ({ page }) => {
     ['Info', '/footy/info'],
     ['Password Reset', '/footy/forgottenpassword'],
     ['Some information about Toastboy FC', 'info'],
-    ['Joe Bright', 'http://www.joebright.co.uk/']
+    ['Joe Bright', 'http://www.joebright.co.uk/'],
   ]);
 
   const hrefs = new Set();
   for (const [key, value] of linkmap) {
     const link = page.getByRole('link', { name: key }).first();
-    const href = await link.getAttribute('href')
-    expect(href).toContain(value)
+    const href = await link.getAttribute('href');
+    expect(href).toContain(value);
     if (href)
       hrefs.add(href.toString());
   }
 
-  console.log(hrefs)
+  console.log(hrefs);
 
 });

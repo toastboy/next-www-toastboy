@@ -55,6 +55,8 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.2.0",
     "@testing-library/user-event": "^14.6.1",
+    "@tsconfig/next": "^2.0.3",
+    "@tsconfig/recommended": "^1.0.8",
     "@types/d3": "^7.4.3",
     "@types/debug": "^4.1.12",
     "@types/jest": "^29.5.14",

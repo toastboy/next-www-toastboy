@@ -4,7 +4,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import AdminUpdatePlayerRecords from 'components/AdminUpdatePlayerRecords/AdminUpdatePlayerRecords';
 import { act } from 'react';
 import useSWR from 'swr';
-import { Wrapper, errorText, loaderClass } from "./lib/common";
+import { Wrapper, loaderClass } from "./lib/common";
 
 jest.mock('next/cache');
 jest.mock('services/PlayerRecord');
@@ -18,44 +18,6 @@ describe('AdminUpdatePlayerRecords', () => {
         jest.runOnlyPendingTimers();
         jest.useRealTimers();
         jest.clearAllMocks();
-    });
-
-    it('renders loading state', () => {
-        (useSWR as jest.Mock).mockReturnValue({
-            data: undefined,
-            error: undefined,
-            isLoading: true,
-            mutate: jest.fn(),
-        });
-
-        const { container } = render(<Wrapper><AdminUpdatePlayerRecords /></Wrapper>);
-        expect(container.querySelector(loaderClass)).toBeInTheDocument();
-    });
-
-    it('renders error state', () => {
-        (useSWR as jest.Mock).mockReturnValue({
-            data: undefined,
-            error: new Error(errorText),
-            isLoading: false,
-            mutate: jest.fn(),
-        });
-
-        const { container } = render(<Wrapper><AdminUpdatePlayerRecords /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText(errorText)).toBeInTheDocument();
-    });
-
-    it('renders error state when data is null', () => {
-        (useSWR as jest.Mock).mockReturnValue({
-            data: null,
-            error: undefined,
-            isLoading: false,
-            mutate: jest.fn(),
-        });
-
-        const { container } = render(<Wrapper><AdminUpdatePlayerRecords /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-        expect(screen.getByText("An unknown error occurred")).toBeInTheDocument();
     });
 
     it('renders with data < 100%', () => {

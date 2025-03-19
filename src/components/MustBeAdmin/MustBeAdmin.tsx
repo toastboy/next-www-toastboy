@@ -1,4 +1,4 @@
-import { Text } from '@mantine/core';
+import { SignIn } from 'components/SignIn/SignIn';
 import { headers } from "next/headers";
 import { ReactNode } from 'react';
 import { authClient } from 'src/lib/auth-client';
@@ -15,7 +15,7 @@ async function MustBeAdmin({ children }: Props) {
     });
 
     if (!session || !session.data || session.data.user.role !== "admin") {
-        return <Text>You must be logged in as an administrator to use this page.</Text>;
+        return <SignIn title="You must be logged in as an administrator to use this page." />;
     }
 
     return <>{children}</>;

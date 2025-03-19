@@ -1,11 +1,14 @@
+import MustBeAdmin from 'components/MustBeAdmin/MustBeAdmin';
 import NYI from 'components/NYI/NYI';
 import React from 'react';
 
-type PageProps = object
+type Props = object
 
-const Page: React.FC<PageProps> = () => {
+const Page: React.FC<Props> = async () => {
     return (
-        <NYI />
+        <MustBeAdmin>
+            <NYI />
+        </MustBeAdmin>
     );
 };
 

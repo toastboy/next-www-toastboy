@@ -1,7 +1,6 @@
 import { expect, test } from '@playwright/test';
 
 test('drinkers page checks', async ({ page }) => {
-
     await page.goto('/footy/drinkers');
 
     expect(await page.getByText('You must be logged in as an administrator to use this page.').count()).toEqual(1);

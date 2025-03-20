@@ -5,7 +5,7 @@ type Props = object
 
 const Page: React.FC<Props> = async () => {
     return (
-        <SignIn />
+        <SignIn redirect='/footy/info' />
     );
 };
 

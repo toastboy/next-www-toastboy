@@ -1,33 +1,23 @@
 'use client';
 
-import {
-    Anchor,
-    Box,
-    Button,
-    Center,
-    Container,
-    Group,
-    Loader,
-    Notification,
-    PasswordInput,
-    Stack,
-    Text,
-    TextInput,
-    Title,
-} from '@mantine/core';
+import { Anchor, Box, Button, Center, Container, Group, Loader, Notification, PasswordInput, Stack, Text, TextInput, Title } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import * as Sentry from '@sentry/react';
 import { IconX } from '@tabler/icons-react';
+import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { authClient, signInWithGoogle, signInWithMicrosoft } from "src/lib/auth-client";
 
-export interface SignInProps {
+export interface Props {
     title?: string;
+    redirect?: string;
 };
 
-export const SignIn: React.FC<SignInProps> = ({ title }) => {
+export const SignIn: React.FC<Props> = ({ title, redirect }) => {
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const router = useRouter();
+    const pathname = usePathname();
 
     const form = useForm({
         initialValues: {
@@ -56,7 +46,7 @@ export const SignIn: React.FC<SignInProps> = ({ title }) => {
                     // TODO: Show loading
                 },
                 onSuccess: () => {
-                    // TODO: Redirect somewhere sensible
+                    router.push(redirect || pathname);
                 },
                 onError: (ctx) => {
                     Sentry.captureException(JSON.stringify(ctx.error, null, 2));
@@ -97,9 +87,9 @@ export const SignIn: React.FC<SignInProps> = ({ title }) => {
                 </Title>
             </Center>
 
-            <Button onClick={() => signInWithGoogle()}>Sign in with Google</Button>
+            <Button onClick={() => signInWithGoogle(redirect || pathname)}>Sign in with Google</Button>
 
-            <Button onClick={() => signInWithMicrosoft()}>Sign in with Microsoft</Button>
+            <Button onClick={() => signInWithMicrosoft(redirect || pathname)}>Sign in with Microsoft</Button>
 
             <Box
                 component="form"

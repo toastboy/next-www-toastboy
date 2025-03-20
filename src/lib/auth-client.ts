@@ -11,14 +11,16 @@ export const authClient = createAuthClient({
     baseURL: process.env.BETTER_AUTH_URL,
 });
 
-export const signInWithGoogle = async () => {
+export const signInWithGoogle = async (callbackURL: string) => {
     return await authClient.signIn.social({
         provider: "google",
+        callbackURL: callbackURL,
     });
 };
 
-export const signInWithMicrosoft = async () => {
+export const signInWithMicrosoft = async (callbackURL: string) => {
     return await authClient.signIn.social({
         provider: "microsoft",
+        callbackURL: callbackURL,
     });
 };

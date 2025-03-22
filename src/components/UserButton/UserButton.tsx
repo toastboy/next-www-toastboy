@@ -1,15 +1,47 @@
+'use client';
+
 import { Avatar, Container, Flex, Group, Loader, Menu, rem, Text, UnstyledButton } from '@mantine/core';
-import { IconArrowsLeftRight, IconChevronRight, IconLogout, IconPassword, IconTrash, IconUserScan } from '@tabler/icons-react';
+import { notifications } from "@mantine/notifications";
+import { IconAlertTriangle, IconArrowsLeftRight, IconCheck, IconChevronRight, IconLogout, IconPassword, IconTrash, IconUserScan } from '@tabler/icons-react';
 import { authClient } from 'lib/auth-client';
 import Link from 'next/link';
 import classes from './UserButton.module.css';
 
 const UserButton: React.FC = () => {
-  const {
-    data: session,
-    isPending,
-    error,
-  } = authClient.useSession();
+  const { data: session, isPending, error } = authClient.useSession();
+
+  async function signOut() {
+    const id = notifications.show({
+      loading: true,
+      title: 'Signing out',
+      message: 'Signing out...',
+      autoClose: false,
+      withCloseButton: false,
+    });
+
+    try {
+      await authClient.signOut();
+      notifications.update({
+        id,
+        color: 'teal',
+        title: 'Signed out',
+        message: 'Signed out successfully',
+        icon: <IconCheck size={18} />,
+        loading: false,
+        autoClose: 2000,
+      });
+    } catch (error) {
+      notifications.update({
+        id,
+        color: 'red',
+        title: 'Error',
+        message: `${error}`,
+        icon: <IconAlertTriangle size={18} />,
+        loading: false,
+        autoClose: 2000,
+      });
+    }
+  }
 
   if (isPending) {
     return (
@@ -82,10 +114,8 @@ const UserButton: React.FC = () => {
               Change Password
             </Link>
           </Menu.Item>
-          <Menu.Item leftSection={<IconLogout size={14} />}>
-            <Link className={classes.link} href="/footy/auth/signout">
-              Sign Out
-            </Link>
+          <Menu.Item leftSection={<IconLogout size={14} />} onClick={async () => { await signOut(); }}>
+            Sign Out
           </Menu.Item>
 
           <Menu.Divider />

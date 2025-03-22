@@ -2,11 +2,13 @@ import '@mantine/core/styles.css';
 
 import "@mantine/code-highlight/styles.css";
 import '@mantine/dates/styles.css';
+import '@mantine/notifications/styles.css';
 
 import CustomAppShell from 'components/CustomAppShell/CustomAppShell';
 import type { Metadata } from 'next';
 
 import { MantineProvider } from '@mantine/core';
+import { Notifications } from "@mantine/notifications";
 
 export const metadata: Metadata = {
   title: "Toastboy FC",
@@ -25,6 +27,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <MantineProvider>
+          <Notifications />
           <CustomAppShell>
             {children}
           </CustomAppShell>

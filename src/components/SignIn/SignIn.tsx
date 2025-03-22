@@ -3,7 +3,7 @@
 import { Anchor, Box, Button, Center, Container, Group, Loader, Notification, PasswordInput, Stack, Text, TextInput, Title } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import * as Sentry from '@sentry/react';
-import { IconX } from '@tabler/icons-react';
+import { IconAt, IconLock, IconX } from '@tabler/icons-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { authClient, signInWithGoogle, signInWithMicrosoft } from "src/lib/auth-client";
@@ -100,14 +100,14 @@ export const SignIn: React.FC<Props> = ({ title, redirect }) => {
                         withAsterisk
                         label="Email"
                         placeholder="Enter your email"
-                        // icon={< IconAt size={16} />}
+                        rightSection={<IconAt size={16} />}
                         {...form.getInputProps('email')}
                     />
                     <PasswordInput
                         withAsterisk
                         label="Password"
                         placeholder="Enter your password"
-                        // icon={< IconLock size={16} />}
+                        rightSection={<IconLock size={16} />}
                         {...form.getInputProps('password')}
                     />
                     {

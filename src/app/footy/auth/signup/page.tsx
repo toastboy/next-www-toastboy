@@ -1,6 +1,6 @@
 'use client';
 
-import { Anchor, Box, Button, Center, Container, Group, Notification, PasswordInput, Stack, TextInput, Title } from '@mantine/core';
+import { Anchor, Box, Button, Container, Group, Notification, PasswordInput, Stack, Text, TextInput, Title } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import * as Sentry from '@sentry/react';
 import { IconAt, IconIdBadge, IconLock, IconX } from '@tabler/icons-react';
@@ -60,11 +60,12 @@ export default function SignUpPage() {
 
     return (
         <Container size="xs" mt="xl" >
-            <Center>
+            <Stack>
                 <Title order={2} mb="md" >
                     Sign up for your account
                 </Title>
-            </Center>
+                <Text mb="lg">If you already have a player profile, you can add a login for each of your email addresses</Text>
+            </Stack>
 
             <Box
                 component="form"

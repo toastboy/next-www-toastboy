@@ -1,12 +1,18 @@
 import { adminClient, inferAdditionalFields } from "better-auth/client/plugins";
 import { createAuthClient } from "better-auth/react";
-import type { auth } from "./auth";
 
 export const authClient = createAuthClient({
     appName: "Toastboy FC",
     plugins: [
         adminClient(),
-        inferAdditionalFields<typeof auth>(),
+        inferAdditionalFields({
+            user: {
+                playerId: {
+                    type: 'number',
+                    required: true,
+                },
+            },
+        }),
     ],
     baseURL: process.env.BETTER_AUTH_URL,
 });

@@ -1,21 +1,9 @@
 'use client';
 
-import {
-    Anchor,
-    Box,
-    Button,
-    Center,
-    Container,
-    Group,
-    Notification,
-    PasswordInput,
-    Stack,
-    TextInput,
-    Title,
-} from '@mantine/core';
+import { Anchor, Box, Button, Center, Container, Group, Notification, PasswordInput, Stack, TextInput, Title } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import * as Sentry from '@sentry/react';
-import { IconX } from '@tabler/icons-react';
+import { IconAt, IconIdBadge, IconLock, IconX } from '@tabler/icons-react';
 import { useState } from 'react';
 import { authClient } from "src/lib/auth-client";
 
@@ -48,6 +36,7 @@ export default function SignUpPage() {
                 name: values.name,
                 email: values.email,
                 password: values.password,
+                playerId: 12, // TODO: Replace with actual player ID
             }, {
                 onRequest: () => {
                     //show loading
@@ -86,21 +75,21 @@ export default function SignUpPage() {
                         withAsterisk
                         label="Name"
                         placeholder="Enter your name"
-                        // icon={< IconAt size={16} />}
+                        rightSection={<IconIdBadge size={16} />}
                         {...form.getInputProps('name')}
                     />
                     <TextInput
                         withAsterisk
                         label="Email"
                         placeholder="Enter your email"
-                        // icon={< IconAt size={16} />}
+                        rightSection={<IconAt size={16} />}
                         {...form.getInputProps('email')}
                     />
                     <PasswordInput
                         withAsterisk
                         label="Password"
                         placeholder="Enter your password"
-                        // icon={< IconLock size={16} />}
+                        rightSection={<IconLock size={16} />}
                         {...form.getInputProps('password')}
                     />
                     {

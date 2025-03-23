@@ -208,6 +208,29 @@ class PlayerService {
     }
 
     /**
+     * Retrieves the player ID associated with the given email address.
+     *
+     * @param email - The email address of the player.
+     * @returns A promise that resolves to the player ID if found, or null if no player is found with the given email.
+     * @throws Will throw an error if there is an issue with the database query.
+     */
+    async getIdByEmail(email: string): Promise<number | null> {
+        try {
+            const player = await prisma.player.findFirst({
+                where: {
+                    email: {
+                        contains: email,
+                    },
+                },
+            });
+            return player ? player.id : null;
+        } catch (error) {
+            log(`Error getting Player id: ${error}`);
+            throw error;
+        }
+    }
+
+    /**
      * Get all players with the game day number when they last played
      * @returns A promise that resolves to all players with their last game day number
      */

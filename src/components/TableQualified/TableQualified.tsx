@@ -13,7 +13,7 @@ export interface Props {
 }
 
 const TableQualified: React.FC<Props> = async ({ table, title, year, qualified, take }) => {
-    const data = await fetchData<PlayerRecordWithPlayer[]>(`/api/footy/table/${table}/${year}${qualified ? `/qualified` : ''}${take ? `/${take}` : ''}`);
+    const data = await fetchData<PlayerRecordWithPlayer[]>(`/api/footy/table/${table}/${year}${qualified ? `/${qualified}` : ''}${take ? `/${take}` : ''}`);
 
     if (!data) return <></>;
 

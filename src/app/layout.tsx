@@ -4,6 +4,8 @@ import "@mantine/code-highlight/styles.css";
 import '@mantine/dates/styles.css';
 import '@mantine/notifications/styles.css';
 
+import '@mantine/tiptap/styles.css';
+
 import CustomAppShell from 'components/CustomAppShell/CustomAppShell';
 import type { Metadata } from 'next';
 

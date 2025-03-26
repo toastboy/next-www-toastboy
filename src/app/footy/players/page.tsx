@@ -1,11 +1,12 @@
 'use client';
 
-import { Anchor, Checkbox, Container, Flex, RangeSlider, Switch, Table, Text, TextInput, Title } from '@mantine/core';
+import { Anchor, Button, Checkbox, Container, Flex, RangeSlider, Switch, Table, Text, TextInput, Title, Tooltip } from '@mantine/core';
 import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
 import PlayerTimeline from 'components/PlayerTimeline/PlayerTimeline';
 import PlayerWDLChart from 'components/PlayerWDLChart/PlayerWDLChart';
+import SendEmailForm from 'components/SendEmailForm/SendEmailForm';
 import { useCurrentGame, usePlayers } from 'lib/swr';
-import { PlayerData } from 'lib/types';
+import { Player, PlayerData } from 'lib/types';
 import { useEffect, useState } from 'react';
 
 type PageProps = object;
@@ -18,7 +19,8 @@ const Page: React.FC<PageProps> = () => {
     const [filter, setFilter] = useState('');
     const [active, setActive] = useState(true);
     const [replyRange, setReplyRange] = useState<[number, number]>([0, 0]);
-    const [selectedPlayers, setSelectedPlayers] = useState<number[]>([]);
+    const [selectedPlayers, setSelectedPlayers] = useState<Player[]>([]);
+    const [modalOpened, setModalOpened] = useState(false);
 
     useEffect(() => {
         if (currentGame) {
@@ -35,11 +37,11 @@ const Page: React.FC<PageProps> = () => {
         }
     };
 
-    const handleSelectPlayer = (playerId: number) => {
-        if (selectedPlayers.includes(playerId)) {
-            setSelectedPlayers((prev) => prev.filter((id) => id !== playerId));
+    const handleSelectPlayer = (player: Player) => {
+        if (selectedPlayers.includes(player)) {
+            setSelectedPlayers((prev) => prev.filter((p) => player !== p));
         } else {
-            setSelectedPlayers((prev) => [...prev, playerId]);
+            setSelectedPlayers((prev) => [...prev, player]);
         }
     };
 
@@ -128,12 +130,18 @@ const Page: React.FC<PageProps> = () => {
                 checked={selectedPlayers.length === sortedPlayers.length && sortedPlayers.length > 0}
                 onChange={(event) => {
                     if (event.currentTarget.checked) {
-                        setSelectedPlayers(sortedPlayers.map((player) => player.id));
+                        setSelectedPlayers(sortedPlayers);
                     } else {
                         setSelectedPlayers([]);
                     }
                 }}
             />
+            <Text size="sm">Selected: {selectedPlayers.length}</Text>
+            <Tooltip label="Send an email to the selected players">
+                <Button disabled={selectedPlayers.length === 0} onClick={() => setModalOpened(true)}>Send Email...</Button>
+            </Tooltip>
+            <SendEmailForm players={selectedPlayers} opened={modalOpened} onClose={() => setModalOpened(false)} />
+
             <Table mt={20}>
                 <Table.Thead>
                     <Table.Tr>
@@ -159,8 +167,8 @@ const Page: React.FC<PageProps> = () => {
                         <Table.Tr key={player.id}>
                             <Table.Td>
                                 <Checkbox
-                                    checked={selectedPlayers.includes(player.id)}
-                                    onChange={() => handleSelectPlayer(player.id)}
+                                    checked={selectedPlayers.includes(player)}
+                                    onChange={() => handleSelectPlayer(player)}
                                 />
                             </Table.Td>
                             <Table.Td>

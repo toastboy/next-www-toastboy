@@ -9,6 +9,6 @@
             "jest",
             "@testing-library/jest-dom"
         ],
-        "importsNotUsedAsValues": "preserve"
-    },
+        "verbatimModuleSyntax": true
+    }
 }

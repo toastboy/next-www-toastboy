@@ -71,5 +71,5 @@
     "**/*.tsx",
     "next-env.d.ts",
     "next.config.mjs"
-  ],
+  ]
 }

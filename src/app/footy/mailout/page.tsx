@@ -1,12 +1,7 @@
-import NYI from 'components/NYI/NYI';
-import React from 'react';
+import { permanentRedirect } from 'next/navigation';
 
-type PageProps = object
-
-const Page: React.FC<PageProps> = () => {
-    return (
-        <NYI />
-    );
+const Page: React.FC = async () => {
+    permanentRedirect(`/footy/players`);
 };
 
 export default Page;

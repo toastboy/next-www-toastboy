@@ -23,7 +23,7 @@ export async function generateMetadata(props: Props) {
 
 const Page: React.FC<Props> = async props => {
     const { idOrLogin, year } = await props.params;
-    const yearnum = year ? parseInt(year[0]) : 0; // Zero or undefined means all-time
+    const yearNum = year ? parseInt(year[0]) : 0; // Zero or undefined means all-time
     const player = parsePlayer(await fetchData<Player>(`/api/footy/player/${idOrLogin}`));
 
     if (!player) return notFound();
@@ -33,7 +33,7 @@ const Page: React.FC<Props> = async props => {
     }
 
     return (
-        <PlayerProfile player={player} key={player.id} year={yearnum} />
+        <PlayerProfile player={player} key={player.id} year={yearNum} />
     );
 };
 

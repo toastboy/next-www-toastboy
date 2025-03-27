@@ -4,6 +4,10 @@ import { Button, Group, Modal, Text, TextInput, Tooltip } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { Link, RichTextEditor } from '@mantine/tiptap';
 import { IconAlertTriangle, IconCheck, IconUser } from '@tabler/icons-react';
+import Highlight from '@tiptap/extension-highlight';
+import Placeholder from '@tiptap/extension-placeholder';
+import TextAlign from '@tiptap/extension-text-align';
+import Underline from '@tiptap/extension-underline';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { sendEmail } from 'lib/mail';
@@ -23,8 +27,15 @@ const SendEmailForm: React.FC<Props> = ({ opened, onClose, players }) => {
     const emails = players.map((player) => player.email).join(',');
 
     const editor = useEditor({
-        extensions: [StarterKit, Link],
-        content: '<p>Hello, this is a test!</p>',
+        extensions: [
+            Highlight,
+            Link,
+            Placeholder.configure({ placeholder: 'Message text' }),
+            StarterKit,
+            TextAlign.configure({ types: ['heading', 'paragraph'] }),
+            Underline,
+        ],
+        content: '',
     });
 
     if (!editor) return null;
@@ -72,7 +83,7 @@ const SendEmailForm: React.FC<Props> = ({ opened, onClose, players }) => {
             title="Send Mail to Players"
             size="lg"
         >
-            <Tooltip label={names} disabled={names.length < 3} multiline>
+            <Tooltip label={names} multiline>
                 <Text size="sm" mt="sm" lineClamp={1}>
                     <IconUser size={16} className={classes.users} />
                     <strong>To:</strong> {names}
@@ -87,13 +98,42 @@ const SendEmailForm: React.FC<Props> = ({ opened, onClose, players }) => {
                     mt="md"
                 />
 
-                <RichTextEditor editor={editor}>
-                    <RichTextEditor.Toolbar sticky>
+                <RichTextEditor editor={editor} mt="md">
+                    <RichTextEditor.Toolbar sticky stickyOffset={60}>
                         <RichTextEditor.ControlsGroup>
                             <RichTextEditor.Bold />
                             <RichTextEditor.Italic />
                             <RichTextEditor.Underline />
+                            <RichTextEditor.Strikethrough />
+                            <RichTextEditor.ClearFormatting />
+                            <RichTextEditor.Highlight />
+                            <RichTextEditor.Code />
+                        </RichTextEditor.ControlsGroup>
+
+                        <RichTextEditor.ControlsGroup>
+                            <RichTextEditor.H1 />
+                            <RichTextEditor.H2 />
+                            <RichTextEditor.H3 />
+                            <RichTextEditor.H4 />
+                        </RichTextEditor.ControlsGroup>
+
+                        <RichTextEditor.ControlsGroup>
+                            <RichTextEditor.Blockquote />
+                            <RichTextEditor.Hr />
+                            <RichTextEditor.BulletList />
+                            <RichTextEditor.OrderedList />
+                        </RichTextEditor.ControlsGroup>
+
+                        <RichTextEditor.ControlsGroup>
                             <RichTextEditor.Link />
+                            <RichTextEditor.Unlink />
+                        </RichTextEditor.ControlsGroup>
+
+                        <RichTextEditor.ControlsGroup>
+                            <RichTextEditor.AlignLeft />
+                            <RichTextEditor.AlignCenter />
+                            <RichTextEditor.AlignJustify />
+                            <RichTextEditor.AlignRight />
                         </RichTextEditor.ControlsGroup>
                     </RichTextEditor.Toolbar>
 

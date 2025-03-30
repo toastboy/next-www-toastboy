@@ -1,13 +1,13 @@
-import { test, expect } from '@playwright/test';
+import { expect, Page, test } from '@playwright/test';
 
-async function checkTable(page) {
+async function checkTable(page: Page) {
     const table = await page.$$eval('.bodytable tbody tr', (table) => {
         return table.map(row => {
             const player = row.querySelector('td:nth-child(1) a');
             const score = row.querySelector('td:nth-child(2)');
             return {
-                player: player?.href?.trim(),
-                score: score?.textContent?.trim()
+                player: (player as HTMLAnchorElement)?.href?.trim(),
+                score: score?.textContent?.trim(),
             };
         });
     });

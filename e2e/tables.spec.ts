@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test('tables page', async ({ page }) => {
 
@@ -11,18 +11,18 @@ test('tables page', async ({ page }) => {
         ['Points', '/footy/points'],
         ['Averages', '/footy/averages'],
         ['Stalwart', '/footy/stalwart'],
-        ['Captain Speedy', '/footy/speedy']
+        ['Captain Speedy', '/footy/speedy'],
     ]);
 
     const hrefs = new Set();
     for (const [key, value] of linkmap) {
         const link = page.getByRole('link', { name: key }).first();
-        const href = await link.getAttribute('href')
-        expect(href).toContain(value)
+        const href = await link.getAttribute('href');
+        expect(href).toContain(value);
         if (href)
             hrefs.add(href.toString());
     }
 
-    console.log(hrefs)
+    console.log(hrefs);
 
 });

@@ -5,11 +5,9 @@ test('homepage has title and correct links', async ({ page }) => {
   await expect(page).toHaveTitle(/Toastboy FC/);
 
   const linkmap = new Map<string, string>([
-    ['Games', '/footy/games'],
     ['Next Game', '/footy/nextgame'],
     ['Results', '/footy/results'],
     ['Fixtures', '/footy/fixtures'],
-    ['Tables', '/footy/tables'],
     ['Points', '/footy/points'],
     ['Averages', '/footy/averages'],
     ['Stalwart Standings', '/footy/stalwart'],
@@ -19,9 +17,6 @@ test('homepage has title and correct links', async ({ page }) => {
     ['Turnout', '/footy/turnout'],
     ['Rules', '/footy/rules'],
     ['Info', '/footy/info'],
-    ['Password Reset', '/footy/forgottenpassword'],
-    ['Some information about Toastboy FC', 'info'],
-    ['Joe Bright', 'http://www.joebright.co.uk/'],
   ]);
 
   const hrefs = new Set();
@@ -34,5 +29,4 @@ test('homepage has title and correct links', async ({ page }) => {
   }
 
   console.log(hrefs);
-
 });

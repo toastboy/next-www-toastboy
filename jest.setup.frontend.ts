@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom';
-import { TextEncoder } from 'util';
+import { TextDecoder as NodeTextDecoder, TextEncoder as NodeTextEncoder } from 'util';
 import 'whatwg-fetch';
 
 global.ResizeObserver = class ResizeObserver {
@@ -8,6 +8,10 @@ global.ResizeObserver = class ResizeObserver {
     disconnect() { }
 };
 
+if (typeof global.TextDecoder === 'undefined') {
+    global.TextDecoder = NodeTextDecoder as unknown as typeof global.TextDecoder;
+}
+
 if (typeof global.TextEncoder === 'undefined') {
-    global.TextEncoder = TextEncoder;
+    global.TextEncoder = NodeTextEncoder as unknown as typeof global.TextEncoder;
 }

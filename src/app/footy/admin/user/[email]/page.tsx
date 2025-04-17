@@ -4,8 +4,9 @@ import { CodeHighlight } from '@mantine/code-highlight';
 import { Center, Container, Loader, Text, Title } from '@mantine/core';
 import * as Sentry from '@sentry/react';
 import { UserWithRole } from 'better-auth/plugins/admin';
+import MustBeAdmin from 'components/MustBeAdmin/MustBeAdmin';
+import { authClient } from 'lib/authClient';
 import { use, useEffect, useState } from 'react';
-import { authClient } from 'src/lib/auth-client';
 
 interface Props {
     params: Promise<{ email: string }>,
@@ -21,19 +22,7 @@ const Page: React.FC<Props> = (props) => {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await authClient.admin.listUsers({
-                    query: {
-                        searchField: "email",
-                        searchOperator: "contains",
-                        searchValue: decodeURIComponent(email),
-                    },
-                });
-
-                if ('data' in response && response.data) {
-                    setUsers(response.data?.users || []);
-                } else {
-                    setErrorMessage(response.error.message || 'An error occurred while fetching users');
-                }
+                setUsers(await authClient.listUsers(decodeURIComponent(email)));
             } catch (error) {
                 Sentry.captureMessage(`Error fetching users: ${error}`, 'error');
                 setErrorMessage('An error occurred while fetching users');
@@ -64,15 +53,17 @@ const Page: React.FC<Props> = (props) => {
     }
 
     return (
-        <Container size="xs" mt="xl">
-            <Center>
-                <Title order={2} mb="md">
-                    {user.name}
-                </Title>
-            </Center>
+        <MustBeAdmin>
+            <Container size="xs" mt="xl">
+                <Center>
+                    <Title order={2} mb="md">
+                        {user.name}
+                    </Title>
+                </Center>
 
-            <CodeHighlight code={JSON.stringify(user, null, 2)} language="json" />
-        </Container>
+                <CodeHighlight code={JSON.stringify(user, null, 2)} language="json" />
+            </Container>
+        </MustBeAdmin>
     );
 };
 

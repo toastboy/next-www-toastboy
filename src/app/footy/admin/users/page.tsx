@@ -5,8 +5,8 @@ import * as Sentry from '@sentry/react';
 import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
 import { UserWithRole } from 'better-auth/plugins/admin';
 import { RelativeTime } from 'components/RelativeTime/RelativeTime';
+import { authClient } from 'lib/authClient';
 import { useEffect, useState } from 'react';
-import { authClient } from 'src/lib/auth-client';
 
 export default function Page() {
     const [users, setUsers] = useState<UserWithRole[] | null>(null);
@@ -18,17 +18,7 @@ export default function Page() {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                const response = await authClient.admin.listUsers({
-                    query: {
-                        limit: 10,
-                    },
-                });
-
-                if ('data' in response && response.data) {
-                    setUsers(response.data?.users || []);
-                } else {
-                    setErrorMessage(response.error.message || 'An error occurred while fetching users');
-                }
+                setUsers(await authClient.listUsers());
             } catch (error) {
                 Sentry.captureMessage(`Error fetching users: ${error}`, 'error');
                 setErrorMessage('An error occurred while fetching users');
@@ -57,10 +47,7 @@ export default function Page() {
             );
 
             // Call API to update user role
-            await authClient.admin.setRole({
-                userId: userId,
-                role: isAdmin ? 'admin' : 'user',
-            });
+            await authClient.setAdmin(userId, isAdmin);
         } catch (error) {
             Sentry.captureMessage(`Error updating user role: ${error}`, 'error');
             setErrorMessage('Failed to update admin status');

@@ -99,7 +99,7 @@ module.exports = {
         {
             displayName: { name: 'components', color: 'blue' },
             clearMocks: true,
-            moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
+            moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node', 'mjs'],
             moduleNameMapper: {
                 '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
                 '^actions/(.*)$': '<rootDir>/src/actions/$1',
@@ -119,10 +119,11 @@ module.exports = {
             transform: {
                 '^.+\\.tsx?$': ['ts-jest', { tsconfig: 'tsconfig.jest.json' }],
                 '^.+\\.[tj]sx?$': ['babel-jest', { configFile: './babel-jest.config.js' }],
+                '^.+\\.mjs$': ['babel-jest', { configFile: './babel-jest.config.js' }],
                 '^.+\\.css$': 'jest-css-modules-transform',
             },
             transformIgnorePatterns: [
-                "node_modules/(?!(nanostores|better-auth)/)",
+                "node_modules/(?!(nanostores|better-auth|uncrypto|jose)/)",
             ],
             testPathIgnorePatterns: ['/node_modules/', '/e2e/'],
             watchPathIgnorePatterns: [

@@ -1,14 +1,14 @@
 'use client';
 
-import { Avatar, Container, Flex, Group, Loader, Menu, rem, Text, UnstyledButton } from '@mantine/core';
+import { Avatar, Flex, Group, Menu, rem, Text, UnstyledButton } from '@mantine/core';
 import { notifications } from "@mantine/notifications";
 import { IconAlertTriangle, IconArrowsLeftRight, IconCheck, IconChevronRight, IconLogout, IconPassword, IconTrash, IconUserScan } from '@tabler/icons-react';
-import { authClient } from 'lib/auth-client';
+import { authClient } from 'lib/authClient';
 import Link from 'next/link';
 import classes from './UserButton.module.css';
 
 const UserButton: React.FC = () => {
-  const { data: session, isPending, error } = authClient.useSession();
+  const user = authClient.getUser();
 
   async function signOut() {
     const id = notifications.show({
@@ -43,30 +43,14 @@ const UserButton: React.FC = () => {
     }
   }
 
-  if (isPending) {
-    return (
-      <Container>
-        <Loader />
-      </Container>
-    );
-  }
-
-  if (error) {
-    return (
-      <Container>
-        <Text color="red">Error loading user: {error.message}</Text>
-      </Container>
-    );
-  }
-
   let name = 'Sign In';
   let email = '';
   let playerId = 0;
 
-  if (session && session.user) {
-    name = session.user.name;
-    email = session.user.email;
-    playerId = session.user.playerId;
+  if (user) {
+    name = user.name;
+    email = user.email;
+    playerId = user.playerId;
   }
 
   return (
@@ -75,7 +59,7 @@ const UserButton: React.FC = () => {
         <UnstyledButton
           className={classes.user}
           onClick={() => {
-            if (!session || !session.user) {
+            if (!user) {
               window.location.href = '/footy/auth/signin';
             }
           }}
@@ -101,7 +85,7 @@ const UserButton: React.FC = () => {
         </UnstyledButton>
       </Menu.Target>
 
-      {session?.user && (
+      {user && (
         <Menu.Dropdown>
           <Menu.Label>Account</Menu.Label>
           <Menu.Item leftSection={<IconUserScan size={14} />}>

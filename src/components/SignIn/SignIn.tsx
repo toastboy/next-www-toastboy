@@ -4,9 +4,10 @@ import { Anchor, Box, Button, Center, Container, Group, Loader, Notification, Pa
 import { useForm } from '@mantine/form';
 import * as Sentry from '@sentry/react';
 import { IconAt, IconLock, IconX } from '@tabler/icons-react';
+import { authClient } from 'lib/authClient';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { authClient, signInWithGoogle, signInWithMicrosoft } from "src/lib/auth-client";
+import { signInWithGoogle, signInWithMicrosoft } from "src/lib/auth-client";
 
 export interface Props {
     title?: string;
@@ -38,23 +39,8 @@ export const SignIn: React.FC<Props> = ({ title, redirect }) => {
         setErrorMessage(null);
 
         try {
-            const result = await authClient.signIn.email({
-                email: values.email,
-                password: values.password,
-            }, {
-                onRequest: () => {
-                    // TODO: Show loading
-                },
-                onSuccess: () => {
-                    router.push(redirect || pathname);
-                },
-                onError: (ctx) => {
-                    Sentry.captureException(JSON.stringify(ctx.error, null, 2));
-                    alert("Error " + ctx.error.message);
-                },
-            });
-
-            Sentry.captureMessage(`Sign in result: ${JSON.stringify(result, null, 2)}`, 'info');
+            await authClient.signInWithEmail(values.email, values.password);
+            router.push(redirect || pathname);
         } catch (error) {
             Sentry.captureMessage(`Sign in error: ${JSON.stringify(error, null, 2)}`, 'error');
             setErrorMessage('Something went wrong. Please try again.');

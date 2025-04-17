@@ -1,6 +1,6 @@
 'use client';
 
-import { Anchor, Container, Flex, Loader, Switch, Table, Text, TextInput } from '@mantine/core';
+import { Anchor, Container, Flex, Switch, Table, Text, TextInput } from '@mantine/core';
 import * as Sentry from '@sentry/react';
 import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
 import { UserWithRole } from 'better-auth/plugins/admin';
@@ -9,7 +9,6 @@ import { useEffect, useState } from 'react';
 import { authClient } from 'src/lib/auth-client';
 
 export default function Page() {
-    const [loading, setLoading] = useState(true);
     const [users, setUsers] = useState<UserWithRole[] | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [sortBy, setSortBy] = useState<keyof UserWithRole | null>('name');
@@ -33,8 +32,6 @@ export default function Page() {
             } catch (error) {
                 Sentry.captureMessage(`Error fetching users: ${error}`, 'error');
                 setErrorMessage('An error occurred while fetching users');
-            } finally {
-                setLoading(false);
             }
         };
 
@@ -98,14 +95,6 @@ export default function Page() {
 
         return 0;
     }) : [];
-
-    if (loading) {
-        return (
-            <Container>
-                <Loader />
-            </Container>
-        );
-    }
 
     if (errorMessage) {
         return (

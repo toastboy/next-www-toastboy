@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { Flex, Text } from "@mantine/core";
 import { fetchData } from "lib/fetch";
 

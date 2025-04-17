@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { Paper } from "@mantine/core";
 import Turnout from "components/Turnout/Turnout";
 import { fetchData } from "lib/fetch";

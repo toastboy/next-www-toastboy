@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { Anchor, Flex } from "@mantine/core";
 import { GameDay } from "@prisma/client";
 import GameDaySummary from "components/GameDaySummary/GameDaySummary";

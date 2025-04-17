@@ -2,6 +2,8 @@
   "name": "next-www-toastboy",
   "private": true,
   "scripts": {
+    "clean": "rm -rf .next",
+    "deepclean": "rm -rf .next node_modules package-lock.json && npm cache clean --force",
     "test": "jest",
     "test:watch": "jest --watch --passWithNoTests",
     "dev": "docker compose up -d && next dev --turbopack",

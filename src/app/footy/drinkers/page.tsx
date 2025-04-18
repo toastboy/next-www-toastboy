@@ -2,9 +2,9 @@ import MustBeAdmin from 'components/MustBeAdmin/MustBeAdmin';
 import NYI from 'components/NYI/NYI';
 import React from 'react';
 
-type Props = object
+type Props = object;
 
-const Page: React.FC<Props> = async () => {
+const Page: React.FC<Props> = () => {
     return (
         <MustBeAdmin>
             <NYI />

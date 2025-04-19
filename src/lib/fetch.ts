@@ -1,7 +1,7 @@
 import { Player } from 'lib/types';
 
 /**
- * Fetches data from the specified URL and returns it as a typed object.
+ * Fetches data from the specified URL and returns it as a typed object. All fetches are revalidated every 60 seconds.
  *
  * @template T - The type of the data expected to be returned.
  * @param {string} url - The URL to fetch data from. If the URL starts with a '/', it will be removed.

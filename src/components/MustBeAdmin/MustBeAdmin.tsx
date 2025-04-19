@@ -19,6 +19,11 @@ function MustBeAdmin({ children }: Props) {
         checkAdmin();
     }, []); // TODO: When the session changes, this should be re-checked.
 
+    if (isAdmin === null) {
+        // While the admin status is being determined, render nothing to allow loading.tsx to take over.
+        return null;
+    }
+
     if (!isAdmin) {
         return <SignIn title="You must be logged in as an administrator to use this page." />;
     }

@@ -2,6 +2,7 @@
 
 import { SignIn } from 'components/SignIn/SignIn';
 import { authClient } from 'lib/authClient';
+import config from 'lib/config';
 import { ReactNode, Suspense, useEffect, useState } from 'react';
 
 type Props = {
@@ -17,7 +18,11 @@ function MustBeAdmin({ children }: Props) {
             const adminStatus = await authClient.isAdmin();
             setIsAdmin(adminStatus);
         };
+
         checkAdmin();
+        const interval = setInterval(checkAdmin, config.sessionRevalidate);
+
+        return () => clearInterval(interval);
     }, [session?.data?.user]);
 
     if (isAdmin === null) {

@@ -4,12 +4,13 @@ import { Anchor, Container, Flex, Switch, Table, Text, TextInput } from '@mantin
 import * as Sentry from '@sentry/react';
 import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
 import { UserWithRole } from 'better-auth/plugins/admin';
-import MustBeAdmin from 'components/MustBeAdmin/MustBeAdmin';
+import MustBeLoggedIn from 'components/MustBeLoggedIn/MustBeLoggedIn';
 import { RelativeTime } from 'components/RelativeTime/RelativeTime';
 import { authClient } from 'lib/authClient';
 import { useEffect, useState } from 'react';
 
 export default function Page() {
+    const [isAllowed, setIsAllowed] = useState<boolean | null>(null);
     const [users, setUsers] = useState<UserWithRole[] | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [sortBy, setSortBy] = useState<keyof UserWithRole | null>('name');
@@ -19,7 +20,7 @@ export default function Page() {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                if (await authClient.isAdmin()) {
+                if (isAllowed) {
                     setUsers(await authClient.listUsers());
                 }
             } catch (error) {
@@ -29,7 +30,7 @@ export default function Page() {
         };
 
         fetchUsers();
-    }, []);
+    }, [isAllowed]);
 
     const handleSort = (key: keyof UserWithRole) => {
         if (sortBy === key) {
@@ -95,7 +96,7 @@ export default function Page() {
     }
 
     return (
-        <MustBeAdmin>
+        <MustBeLoggedIn admin={true} onValidationChange={setIsAllowed}>
             <Container>
                 <TextInput
                     placeholder="Search users"
@@ -159,6 +160,6 @@ export default function Page() {
                     </Table.Tbody>
                 </Table>
             </Container>
-        </MustBeAdmin>
+        </MustBeLoggedIn>
     );
 }

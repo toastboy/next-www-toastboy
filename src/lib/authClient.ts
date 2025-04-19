@@ -10,12 +10,6 @@ export interface User {
     playerId: number;
 }
 
-export interface Session {
-    user: User | null;
-    isPending: boolean;
-    error: Error | null;
-}
-
 export const authClient = {
     useSession: () => {
         return betterAuthClient.useSession();
@@ -32,15 +26,11 @@ export const authClient = {
         });
     },
 
-    isLoggedIn: async (): Promise<boolean> => {
-        const session = await betterAuthClient.getSession();
-
-        return session?.data?.user !== null;
+    isLoggedIn: (session: Awaited<ReturnType<typeof betterAuthClient.getSession>>): boolean => {
+        return session?.data?.user != null;
     },
 
-    isAdmin: async (): Promise<boolean> => {
-        const session = await betterAuthClient.getSession();
-
+    isAdmin: (session: Awaited<ReturnType<typeof betterAuthClient.getSession>>): boolean => {
         return session?.data?.user.role === "admin";
     },
 

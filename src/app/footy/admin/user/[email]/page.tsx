@@ -1,10 +1,10 @@
 'use client';
 
 import { CodeHighlight } from '@mantine/code-highlight';
-import { Center, Container, Loader, Text, Title } from '@mantine/core';
+import { Center, Container, Text, Title } from '@mantine/core';
 import * as Sentry from '@sentry/react';
 import { UserWithRole } from 'better-auth/plugins/admin';
-import MustBeAdmin from 'components/MustBeAdmin/MustBeAdmin';
+import MustBeLoggedIn from 'components/MustBeLoggedIn/MustBeLoggedIn';
 import { authClient } from 'lib/authClient';
 import { use, useEffect, useState } from 'react';
 
@@ -15,32 +15,25 @@ interface Props {
 const Page: React.FC<Props> = (props) => {
     const { email } = use(props.params);
 
-    const [loading, setLoading] = useState(true);
+    const [isAllowed, setIsAllowed] = useState<boolean | null>(null);
     const [users, setUsers] = useState<UserWithRole[] | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                setUsers(await authClient.listUsers(decodeURIComponent(email)));
-            } catch (error) {
+                if (isAllowed) {
+                    setUsers(await authClient.listUsers(decodeURIComponent(email)));
+                }
+            }
+            catch (error) {
                 Sentry.captureMessage(`Error fetching users: ${error}`, 'error');
                 setErrorMessage('An error occurred while fetching users');
-            } finally {
-                setLoading(false);
             }
         };
 
         fetchUsers();
-    }, [email]);
-
-    if (loading) {
-        return (
-            <Container>
-                <Loader />
-            </Container>
-        );
-    }
+    }, [email, isAllowed]);
 
     const user = users?.[0];
 
@@ -53,7 +46,7 @@ const Page: React.FC<Props> = (props) => {
     }
 
     return (
-        <MustBeAdmin>
+        <MustBeLoggedIn admin={true} onValidationChange={setIsAllowed}>
             <Container size="xs" mt="xl">
                 <Center>
                     <Title order={2} mb="md">
@@ -63,7 +56,7 @@ const Page: React.FC<Props> = (props) => {
 
                 <CodeHighlight code={JSON.stringify(user, null, 2)} language="json" />
             </Container>
-        </MustBeAdmin>
+        </MustBeLoggedIn>
     );
 };
 

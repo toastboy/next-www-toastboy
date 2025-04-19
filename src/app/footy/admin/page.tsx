@@ -1,11 +1,11 @@
 import AdminUpdatePlayerRecords from 'components/AdminUpdatePlayerRecords/AdminUpdatePlayerRecords';
-import MustBeAdmin from 'components/MustBeAdmin/MustBeAdmin';
+import MustBeLoggedIn from 'components/MustBeLoggedIn/MustBeLoggedIn';
 
 const Page: React.FC = () => {
     return (
-        <MustBeAdmin>
+        <MustBeLoggedIn admin={true}>
             <AdminUpdatePlayerRecords />
-        </MustBeAdmin>
+        </MustBeLoggedIn>
     );
 };
 

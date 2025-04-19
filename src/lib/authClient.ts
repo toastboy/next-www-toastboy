@@ -17,6 +17,10 @@ export interface Session {
 }
 
 export const authClient = {
+    useSession: () => {
+        return betterAuthClient.useSession();
+    },
+
     signOut: async (): Promise<void> => {
         await betterAuthClient.signOut();
     },

@@ -10,6 +10,7 @@ type Props = {
 
 function MustBeAdmin({ children }: Props) {
     const [isAdmin, setIsAdmin] = useState<boolean | null>(null);
+    const session = authClient.useSession();
 
     useEffect(() => {
         const checkAdmin = async () => {
@@ -17,7 +18,7 @@ function MustBeAdmin({ children }: Props) {
             setIsAdmin(adminStatus);
         };
         checkAdmin();
-    }, []); // TODO: When the session changes, this should be re-checked.
+    }, [session?.data?.user]);
 
     if (isAdmin === null) {
         // While the admin status is being determined, render nothing to allow loading.tsx to take over.

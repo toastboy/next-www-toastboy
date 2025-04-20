@@ -1,3 +1,5 @@
+import 'server-only';
+
 import { Player } from '@prisma/client';
 import debug from 'debug';
 import prisma from 'lib/prisma';

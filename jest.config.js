@@ -27,18 +27,16 @@ module.exports = {
             setupFilesAfterEnv: ['<rootDir>/jest.setup.backend.ts'],
             testEnvironment: 'node',
             testMatch: ['<rootDir>/**/api/**/*.test.ts'],
-            transform: {
-                '^.+\\.tsx?$': ['ts-jest', { tsconfig: 'tsconfig.jest.json' }],
-                "_^.+\\.jsx?$": '@swc-node/jest',
-                get "^.+\\.jsx?$"() {
-                    return this["_^.+\\.jsx?$"];
-                },
-                set "^.+\\.jsx?$"(value) {
-                    this["_^.+\\.jsx?$"] = value;
-                },
-                '^.+\\.css$': 'jest-css-modules-transform',
-            },
             testPathIgnorePatterns: ['/node_modules/', '/e2e/'],
+            transform: {
+                '^.+\\.css$': 'jest-css-modules-transform',
+                '^.+\\.jsx?$': ['babel-jest', { configFile: './babel-jest.config.js' }],
+                '^.+\\.mjs$': ['babel-jest', { configFile: './babel-jest.config.js' }],
+                '^.+\\.tsx?$': ['ts-jest', { tsconfig: 'tsconfig.jest.json' }],
+            },
+            transformIgnorePatterns: [
+                "node_modules/(?!(nanostores|better-auth|uncrypto|jose)/)",
+            ],
             watchPathIgnorePatterns: [
                 "<rootDir>/.git/",
                 "<rootDir>/.github/",
@@ -74,18 +72,16 @@ module.exports = {
             setupFilesAfterEnv: ['<rootDir>/jest.setup.backend.ts'],
             testEnvironment: 'node',
             testMatch: ['<rootDir>/**/services/**/*.test.ts'],
-            transform: {
-                '^.+\\.tsx?$': ['ts-jest', { tsconfig: 'tsconfig.jest.json' }],
-                "_^.+\\.jsx?$": '@swc-node/jest',
-                get "^.+\\.jsx?$"() {
-                    return this["_^.+\\.jsx?$"];
-                },
-                set "^.+\\.jsx?$"(value) {
-                    this["_^.+\\.jsx?$"] = value;
-                },
-                '^.+\\.css$': 'jest-css-modules-transform',
-            },
             testPathIgnorePatterns: ['/node_modules/', '/e2e/'],
+            transform: {
+                '^.+\\.css$': 'jest-css-modules-transform',
+                '^.+\\.jsx?$': ['babel-jest', { configFile: './babel-jest.config.js' }],
+                '^.+\\.mjs$': ['babel-jest', { configFile: './babel-jest.config.js' }],
+                '^.+\\.tsx?$': ['ts-jest', { tsconfig: 'tsconfig.jest.json' }],
+            },
+            transformIgnorePatterns: [
+                "node_modules/(?!(nanostores|better-auth|uncrypto|jose)/)",
+            ],
             watchPathIgnorePatterns: [
                 "<rootDir>/.git/",
                 "<rootDir>/.github/",
@@ -119,16 +115,16 @@ module.exports = {
             setupFilesAfterEnv: ['<rootDir>/jest.setup.frontend.ts'],
             testEnvironment: 'jsdom',
             testMatch: ['<rootDir>/tests/components/**/*.test.tsx'],
+            testPathIgnorePatterns: ['/node_modules/', '/e2e/'],
             transform: {
-                '^.+\\.tsx?$': ['ts-jest', { tsconfig: 'tsconfig.jest.json' }],
-                '^.+\\.[tj]sx?$': ['babel-jest', { configFile: './babel-jest.config.js' }],
-                '^.+\\.mjs$': ['babel-jest', { configFile: './babel-jest.config.js' }],
                 '^.+\\.css$': 'jest-css-modules-transform',
+                '^.+\\.jsx?$': ['babel-jest', { configFile: './babel-jest.config.js' }],
+                '^.+\\.mjs$': ['babel-jest', { configFile: './babel-jest.config.js' }],
+                '^.+\\.tsx?$': ['ts-jest', { tsconfig: 'tsconfig.jest.json' }],
             },
             transformIgnorePatterns: [
                 "node_modules/(?!(nanostores|better-auth|uncrypto|jose)/)",
             ],
-            testPathIgnorePatterns: ['/node_modules/', '/e2e/'],
             watchPathIgnorePatterns: [
                 "<rootDir>/.git/",
                 "<rootDir>/.github/",

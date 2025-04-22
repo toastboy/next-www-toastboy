@@ -4,8 +4,14 @@ import { mockPlayer, setupPlayerMocks } from 'tests/lib/api/player';
 jest.mock('services/Player');
 
 import { GET } from 'api/footy/player/[idOrLogin]/route';
+import { getUserRole } from 'lib/api';
 import playerService from 'services/Player';
 import request from 'supertest';
+
+jest.mock('lib/api', () => ({
+    ...jest.requireActual('lib/api'),
+    getUserRole: jest.fn(),
+}));
 
 suppressConsoleError();
 const testURI = '/api/footy/player/1';
@@ -14,7 +20,9 @@ const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({ id
 describe('API tests using HTTP', () => {
     setupPlayerMocks();
 
-    it('should return JSON response for a valid player', async () => {
+    it('should return a full JSON response for a valid player with a user logged in', async () => {
+        (getUserRole as jest.Mock).mockResolvedValue('user');
+
         const response = await request(mockApp).get(testURI);
 
         expect(response.status).toBe(200);
@@ -22,16 +30,35 @@ describe('API tests using HTTP', () => {
         expect(response.body).toEqual(mockPlayer);
     });
 
-    it('should return 404 if the player does not exist', async () => {
-        (playerService.getByIdOrLogin as jest.Mock).mockResolvedValue(null);
+    it('should return a filtered JSON response for a valid player with no user logged in', async () => {
+        (getUserRole as jest.Mock).mockResolvedValue('none');
 
         const response = await request(mockApp).get(testURI);
 
-        expect(response.status).toBe(404);
-        expect(response.text).toBe('Not Found');
+        expect(response.status).toBe(200);
+        expect(response.headers['content-type']).toBe('application/json');
+        expect(response.body).toEqual(
+            { ...mockPlayer, login: undefined, email: undefined, born: undefined, comment: undefined },
+        );
     });
 
-    it('should return 404 if the arse record does not exist', async () => {
+    it('should return a filtered JSON response with no name values for a valid, anonymous player with no user logged in', async () => {
+        (getUserRole as jest.Mock).mockResolvedValue('none');
+        (playerService.getByIdOrLogin as jest.Mock).mockResolvedValue({
+            ...mockPlayer,
+            anonymous: true,
+        });
+
+        const response = await request(mockApp).get(testURI);
+
+        expect(response.status).toBe(200);
+        expect(response.headers['content-type']).toBe('application/json');
+        expect(response.body).toEqual(
+            { ...mockPlayer, anonymous: true, login: undefined, email: undefined, born: undefined, firstName: undefined, lastName: undefined, comment: undefined },
+        );
+    });
+
+    it('should return 404 if the player does not exist', async () => {
         (playerService.getByIdOrLogin as jest.Mock).mockResolvedValue(null);
 
         const response = await request(mockApp).get(testURI);

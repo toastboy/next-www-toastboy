@@ -1,13 +1,17 @@
-import { createMockApp, jsonResponseHandler, suppressConsoleError } from 'tests/lib/api/common';
-import { setupPlayerMocks } from 'tests/lib/api/player';
-
 jest.mock('services/Arse');
 jest.mock('services/Player');
+jest.mock('lib/api', () => ({
+    ...jest.requireActual('lib/api'),
+    getUserRole: jest.fn(),
+}));
 
 import { GET } from 'api/footy/player/[idOrLogin]/arse/route';
+import { getUserRole } from 'lib/api';
 import arseService from 'services/Arse';
 import playerService from 'services/Player';
 import request from 'supertest';
+import { createMockApp, jsonResponseHandler, suppressConsoleError } from 'tests/lib/api/common';
+import { setupPlayerMocks } from 'tests/lib/api/player';
 
 suppressConsoleError();
 const testURI = '/api/footy/player/1/arse';
@@ -27,12 +31,18 @@ describe('API tests using HTTP', () => {
             defending: 7,
         };
         (arseService.getByPlayer as jest.Mock).mockResolvedValue(mockData);
+        (getUserRole as jest.Mock).mockResolvedValue('admin');
 
         const response = await request(mockApp).get(testURI);
 
+        expect(getUserRole).toHaveBeenCalled();
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
         expect(response.body).toEqual(mockData);
+
+        (getUserRole as jest.Mock).mockResolvedValue('user');
+
+        expect(response.status).toBe(403);
     });
 
     it('should return 404 if the player does not exist', async () => {

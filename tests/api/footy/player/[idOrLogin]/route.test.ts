@@ -2,16 +2,15 @@ import { createMockApp, jsonResponseHandler, suppressConsoleError } from 'tests/
 import { mockPlayer, setupPlayerMocks } from 'tests/lib/api/player';
 
 jest.mock('services/Player');
+jest.mock('lib/api', () => ({
+    ...jest.requireActual('lib/api'),
+    getUserRole: jest.fn(),
+}));
 
 import { GET } from 'api/footy/player/[idOrLogin]/route';
 import { getUserRole } from 'lib/api';
 import playerService from 'services/Player';
 import request from 'supertest';
-
-jest.mock('lib/api', () => ({
-    ...jest.requireActual('lib/api'),
-    getUserRole: jest.fn(),
-}));
 
 suppressConsoleError();
 const testURI = '/api/footy/player/1';
@@ -25,6 +24,7 @@ describe('API tests using HTTP', () => {
 
         const response = await request(mockApp).get(testURI);
 
+        expect(getUserRole).toHaveBeenCalled();
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
         expect(response.body).toEqual(mockPlayer);

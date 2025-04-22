@@ -13,20 +13,25 @@ import { NextResponse } from "next/server";
 export async function handleGET<T>(
     serviceFunction: ({ params }: { params: Record<string, string> }) => Promise<T | null>,
     { params }: { params: Record<string, string> },
-    responseType: 'json' | 'png' = 'json',
-    dataFilter: (data: T) => T = (data) => data as T,
+    buildResponse: (data: T) => Promise<NextResponse> = buildJsonResponse,
 ): Promise<NextResponse> {
     const data = await serviceFunction({ params });
 
     if (data == null) return new NextResponse('Not Found', { status: 404 });
 
-    const filteredData = dataFilter(data);
-    const headers: HeadersInit = {
-        'Content-Type': responseType === 'json' ? 'application/json' : 'image/png',
-    };
-    const body = responseType === 'json' ? JSON.stringify(filteredData) : filteredData as string;
-    return new NextResponse(body, {
+    return buildResponse(data);
+}
+
+export async function buildJsonResponse<T>(data: T): Promise<NextResponse> {
+    return new NextResponse(JSON.stringify(data), {
         status: 200,
-        headers,
+        headers: { 'Content-Type': 'application/json' },
+    });
+}
+
+export async function buildPngResponse<T>(data: T): Promise<NextResponse> {
+    return new NextResponse(data as Buffer, {
+        status: 200,
+        headers: { 'Content-Type': 'image/png' },
     });
 }

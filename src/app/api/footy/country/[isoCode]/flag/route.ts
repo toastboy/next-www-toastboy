@@ -1,4 +1,4 @@
-import { handleGET } from 'lib/api';
+import { buildPngResponse, handleGET } from 'lib/api';
 import azureCache from 'lib/azure';
 import { streamToBuffer } from 'lib/utils';
 import { NextRequest } from 'next/server';
@@ -32,5 +32,5 @@ async function getCountryFlag(
 
 export const GET = async (request: NextRequest, props: { params: Promise<Record<string, string>> }) => {
     const params = await props.params;
-    return handleGET(() => getCountryFlag({ params }), { params }, "png");
+    return handleGET(() => getCountryFlag({ params }), { params }, buildPngResponse);
 };

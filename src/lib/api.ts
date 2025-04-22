@@ -1,3 +1,4 @@
+import { notFound } from "next/navigation";
 import { NextResponse } from "next/server";
 
 /**
@@ -14,31 +15,19 @@ export async function handleGET<T>(
     serviceFunction: ({ params }: { params: Record<string, string> }) => Promise<T | null>,
     { params }: { params: Record<string, string> },
     responseType: 'json' | 'png' = 'json',
+    dataFilter: (data: T) => T = (data) => data as T,
 ): Promise<NextResponse> {
-    try {
-        const data = await serviceFunction({ params });
+    const data = await serviceFunction({ params });
 
-        if (data != null) {
-            const headers: HeadersInit = {
-                'Content-Type': responseType === 'json' ? 'application/json' : 'image/png',
-            };
-            const body = responseType === 'json' ? JSON.stringify(data) : data as string;
-            return new NextResponse(body, {
-                status: 200,
-                headers,
-            });
-        } else {
-            return new NextResponse(
-                responseType === 'json' ? 'Data not found' : 'PNG image not found',
-                {
-                    status: 404,
-                },
-            );
-        }
-    } catch (error) {
-        console.error(`Error in API route: ${error}`);
-        return new NextResponse('Internal Server Error', {
-            status: 500,
-        });
-    }
+    if (data == null) notFound();
+
+    const filteredData = dataFilter(data);
+    const headers: HeadersInit = {
+        'Content-Type': responseType === 'json' ? 'application/json' : 'image/png',
+    };
+    const body = responseType === 'json' ? JSON.stringify(filteredData) : filteredData as string;
+    return new NextResponse(body, {
+        status: 200,
+        headers,
+    });
 }

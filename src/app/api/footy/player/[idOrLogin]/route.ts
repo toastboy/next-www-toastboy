@@ -1,9 +1,13 @@
-import { handleGET } from 'lib/api';
+import { buildUserOnlyResponse, handleGET } from 'lib/api';
 import { Player } from 'lib/types';
 import { NextRequest } from 'next/server';
 import playerService from 'services/Player';
 
+async function buildResponse(data: Player) {
+    return buildUserOnlyResponse(data);
+}
+
 export const GET = async (request: NextRequest, props: { params: Promise<Record<string, string>> }) => {
     const params = await props.params;
-    return handleGET<Player>(() => playerService.getByIdOrLogin(params.idOrLogin), { params });
+    return handleGET<Player>(() => playerService.getByIdOrLogin(params.idOrLogin), { params }, buildResponse);
 };

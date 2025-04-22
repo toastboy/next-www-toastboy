@@ -65,6 +65,8 @@ const config = [...compat.extends(
         }],
 
         "react/prop-types": "off",
+
+        "eol-last": ["error", "always"],
     },
 },
 {

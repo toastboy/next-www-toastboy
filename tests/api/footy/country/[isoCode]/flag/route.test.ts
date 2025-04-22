@@ -61,16 +61,17 @@ describe('API tests using HTTP', () => {
         const response = await request(mockApp).get(testRoute);
 
         expect(response.status).toBe(500);
-        expect(response.text).toBe('Internal Server Error');
+        expect(response.text).toBe('Error: Image body download failed.');
     });
 
     it('should return 500 if the flag download fails', async () => {
+        const errorMessage = 'Something went wrong';
         (mockBlobClient.exists as jest.Mock).mockResolvedValue(true);
-        (mockBlobClient.download as jest.Mock).mockRejectedValue(new Error('Something went wrong'));
+        (mockBlobClient.download as jest.Mock).mockRejectedValue(new Error(errorMessage));
 
         const response = await request(mockApp).get(testRoute);
 
         expect(response.status).toBe(500);
-        expect(response.text).toBe('Internal Server Error');
+        expect(response.text).toBe(`Error: ${errorMessage}`);
     });
 });

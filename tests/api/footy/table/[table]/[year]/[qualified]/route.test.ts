@@ -32,11 +32,12 @@ describe('API tests using HTTP', () => {
     });
 
     it('should return 500 if there is an error', async () => {
-        (playerRecordService.getTable as jest.Mock).mockRejectedValue(new Error('Test Error'));
+        const errorMessage = 'Test Error';
+        (playerRecordService.getTable as jest.Mock).mockRejectedValue(new Error(errorMessage));
 
         const response = await request(mockApp).get(testRoute);
 
         expect(response.status).toBe(500);
-        expect(response.text).toBe('Internal Server Error');
+        expect(response.text).toBe(`Error: ${errorMessage}`);
     });
 });

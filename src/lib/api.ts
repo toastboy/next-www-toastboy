@@ -1,4 +1,3 @@
-import { notFound } from "next/navigation";
 import { NextResponse } from "next/server";
 
 /**
@@ -19,7 +18,7 @@ export async function handleGET<T>(
 ): Promise<NextResponse> {
     const data = await serviceFunction({ params });
 
-    if (data == null) notFound();
+    if (data == null) return new NextResponse('Not Found', { status: 404 });
 
     const filteredData = dataFilter(data);
     const headers: HeadersInit = {

@@ -94,6 +94,6 @@ describe('API tests using HTTP', () => {
         const response = await request(mockApp).get(mockRoute);
 
         expect(response.status).toBe(500);
-        expect(response.text).toBe('Internal Server Error');
+        expect(response.text).toBe('Error: Test Error');
     });
 });

@@ -91,59 +91,52 @@ export function createMockApp(
 }
 
 /**
- * Handles the JSON response from a fetch request and sends the appropriate response to the client.
+ * Handles the conversion of a `NextResponse` object to a Node.js `ServerResponse`.
  *
- * @param response - The response object from a fetch request.
- * @param res - The server response object to send the response to the client.
+ * This function sets the status code and headers of the `ServerResponse` based on the
+ * `NextResponse` object. If the `NextResponse` contains a body, it reads the body as text
+ * and sends it as the response. Otherwise, it ends the response without a body.
  *
- * @remarks
- * - If the response status is 404, it sends a 'Not Found' message with a 404 status code.
- * - If the response status is 500, it sends an 'Internal Server Error' message with a 500 status code.
- * - If the response has a body, it sets the 'Content-Type' header to 'application/json' and sends the response body.
- * - If the response does not have a body, it sends a 'Missing Response Body' message with a 500 status code.
+ * @param response - The `NextResponse` object containing the response data.
+ * @param res - The Node.js `ServerResponse` object to be populated and sent.
+ *
+ * @returns A promise that resolves when the response has been fully handled.
  */
 export async function jsonResponseHandler(response: NextResponse, res: ServerResponse) {
-    if (response.status === 404) {
-        res.statusCode = 404;
-        res.end('Not Found');
-    } else if (response.status === 500) {
-        res.statusCode = 500;
-        res.end('Internal Server Error');
-    } else if (response.body) {
-        res.setHeader('Content-Type', 'application/json');
-        res.end(await response.text());
+    res.statusCode = response.status;
+    response.headers.forEach((value, key) => {
+        res.setHeader(key, value);
+    });
+
+    if (response.body) {
+        const body = await response.text();
+        res.end(body);
     } else {
-        res.statusCode = 500;
-        res.end('Missing Response Body');
+        res.end();
     }
 }
 
 /**
- * Handles the response from a PNG request and sends the appropriate response to the client.
+ * Handles a PNG response by transferring headers and body from a `NextResponse` to a `ServerResponse`.
+ * If the response contains a body, it converts the readable stream to a buffer and sets the appropriate
+ * `Content-Type` header before sending the PNG data. If no body is present, it ends the response without content.
  *
- * @param response - The response object from the PNG request.
- * @param res - The server response object to send the result to the client.
- *
- * @remarks
- * - If the response status is 404, it sends a 'Not Found' message with a 404 status code.
- * - If the response status is 500, it sends an 'Internal Server Error' message with a 500 status code.
- * - If the response body is present, it converts the readable stream to a buffer, sets the 'Content-Type' header to 'image/png', and sends the buffer.
- * - If the response body is missing, it sends a 'Missing Response Body' message with a 500 status code.
+ * @param response - The `NextResponse` object containing the response data to handle.
+ * @param res - The `ServerResponse` object to which the response data will be written.
+ * @returns A promise that resolves when the response handling is complete.
  */
 export async function pngResponseHandler(response: NextResponse, res: ServerResponse) {
-    if (response.status === 404) {
-        res.statusCode = 404;
-        res.end('Not Found');
-    } else if (response.status === 500) {
-        res.statusCode = 500;
-        res.end('Internal Server Error');
-    } else if (response.body) {
+    res.statusCode = response.status;
+    response.headers.forEach((value, key) => {
+        res.setHeader(key, value);
+    });
+
+    if (response.body) {
         const buffer = await readableStreamToBuffer(response.body as ReadableStream<Uint8Array>);
         res.setHeader('Content-Type', 'image/png');
         res.end(buffer);
     } else {
-        res.statusCode = 500;
-        res.end('Missing Response Body');
+        res.end();
     }
 }
 

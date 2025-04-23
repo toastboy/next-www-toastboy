@@ -51,7 +51,6 @@ describe('API tests using HTTP', () => {
         const response = await request(mockApp).get(testRoute);
 
         expect(response.status).toBe(404);
-        expect(response.text).toBe('Not Found');
     });
 
     it('should return 500 if the flag download does not return anything', async () => {

@@ -1,6 +1,5 @@
-import { headers } from "next/headers";
+import { getUserRole } from "lib/authServer";
 import { NextResponse } from "next/server";
-import { authClient } from "./auth-client";
 
 /**
  * Handles a GET request by invoking a service function and building a response.
@@ -34,7 +33,7 @@ export async function handleGET<T>(
  *          a status code of 200, and a `Content-Type` header set to `application/json`.
  */
 export async function buildJsonResponse<T>(data: T): Promise<NextResponse> {
-    return new NextResponse(JSON.stringify(data), {
+    return NextResponse.json(data, {
         status: 200,
         headers: { 'Content-Type': 'application/json' },
     });
@@ -53,35 +52,6 @@ export async function buildPngResponse<T>(data: T): Promise<NextResponse> {
         status: 200,
         headers: { 'Content-Type': 'image/png' },
     });
-}
-
-/**
- * Retrieves the role of the currently authenticated user.
- *
- * @returns A promise that resolves to one of the following roles:
- * - `'none'`: If there is no active session or the session data is null.
- * - `'user'`: If the user is authenticated but does not have an admin role.
- * - `'admin'`: If the user is authenticated and has an admin role.
- *
- * The function uses the `authClient` to fetch the current session and determines
- * the user's role based on the session data.
- */
-export async function getUserRole(): Promise<'none' | 'user' | 'admin'> {
-    const session = await authClient.getSession({
-        fetchOptions: {
-            headers: await headers(),
-        },
-    });
-
-    if (session?.data === null) {
-        return 'none';
-    }
-    else if (session?.data?.user?.role === 'admin') {
-        return 'admin';
-    }
-    else {
-        return 'user';
-    }
 }
 
 /**
@@ -105,13 +75,13 @@ export async function buildAdminOnlyResponse<T>(
 ): Promise<NextResponse> {
     switch (await getUserRole()) {
         case 'none':
-            return new NextResponse('Unauthorized', { status: 401 });
+            return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
         case 'user':
-            return new NextResponse('Forbidden', { status: 403 });
+            return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
         case 'admin':
             return buildResponse(data);
         default:
-            return new NextResponse('Internal Server Error', { status: 500 });
+            return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
     }
 }
 
@@ -135,11 +105,11 @@ export async function buildUserOnlyResponse<T>(
 ): Promise<NextResponse> {
     switch (await getUserRole()) {
         case 'none':
-            return new NextResponse('Unauthorized', { status: 401 });
+            return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
         case 'user':
         case 'admin':
             return buildResponse(data);
         default:
-            return new NextResponse('Internal Server Error', { status: 500 });
+            return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
     }
 }

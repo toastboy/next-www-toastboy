@@ -1,12 +1,9 @@
 jest.mock('services/Arse');
 jest.mock('services/Player');
-jest.mock('lib/api', () => ({
-    ...jest.requireActual('lib/api'),
-    getUserRole: jest.fn(),
-}));
+jest.mock('lib/authServer');
 
 import { GET } from 'api/footy/player/[idOrLogin]/arse/route';
-import { getUserRole } from 'lib/api';
+import { getUserRole } from 'lib/authServer';
 import arseService from 'services/Arse';
 import playerService from 'services/Player';
 import request from 'supertest';
@@ -39,10 +36,27 @@ describe('API tests using HTTP', () => {
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
         expect(response.body).toEqual(mockData);
+    });
 
+    it('should refuse to return any arse when there is no admin logged in', async () => {
+        const mockData = {
+            inGoal: 1,
+            running: 2,
+            shooting: 3,
+            passing: 4,
+            ballSkill: 5,
+            attacking: 6,
+            defending: 7,
+        };
+        (arseService.getByPlayer as jest.Mock).mockResolvedValue(mockData);
         (getUserRole as jest.Mock).mockResolvedValue('user');
 
+        const response = await request(mockApp).get(testURI);
+
+        expect(getUserRole).toHaveBeenCalled();
         expect(response.status).toBe(403);
+        expect(response.headers['content-type']).toBe('application/json');
+        expect(response.body).toEqual({ message: 'Forbidden' });
     });
 
     it('should return 404 if the player does not exist', async () => {

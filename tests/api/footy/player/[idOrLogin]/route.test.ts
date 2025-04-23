@@ -2,13 +2,10 @@ import { createMockApp, jsonResponseHandler, suppressConsoleError } from 'tests/
 import { mockPlayer, setupPlayerMocks } from 'tests/lib/api/player';
 
 jest.mock('services/Player');
-jest.mock('lib/api', () => ({
-    ...jest.requireActual('lib/api'),
-    getUserRole: jest.fn(),
-}));
+jest.mock('lib/authServer');
 
 import { GET } from 'api/footy/player/[idOrLogin]/route';
-import { getUserRole } from 'lib/api';
+import { getUserRole } from 'lib/authServer';
 import playerService from 'services/Player';
 import request from 'supertest';
 

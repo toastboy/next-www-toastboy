@@ -1,4 +1,5 @@
-import { buildJsonResponse, getUserRole, handleGET } from 'lib/api';
+import { buildJsonResponse, handleGET } from 'lib/api';
+import { getUserRole } from 'lib/authServer';
 import { Player } from 'lib/types';
 import { NextRequest } from 'next/server';
 import playerService from 'services/Player';

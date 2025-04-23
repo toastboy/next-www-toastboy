@@ -16,7 +16,7 @@ jest.mock('lib/prisma', () => ({
 
 const defaultCountrySupporter: CountrySupporter = {
     playerId: 12,
-    countryISOCode: "GB"
+    countryISOCode: "GB",
 };
 
 const countrySupporterList: CountrySupporter[] = Array.from({ length: 100 }, (_, index) => ({
@@ -92,7 +92,7 @@ describe('countrySupporterService', () => {
                 expect(result).toEqual({
                     ...defaultCountrySupporter,
                     playerId: 6,
-                    countryISOCode: "GB"
+                    countryISOCode: "GB",
                 } as CountrySupporter);
             }
             else {
@@ -121,7 +121,7 @@ describe('countrySupporterService', () => {
                     expect(ClubSupporterResult).toEqual({
                         ...defaultCountrySupporter,
                         playerId: 1,
-                        countryISOCode: expect.any(String)
+                        countryISOCode: expect.any(String),
                     } as CountrySupporter);
                 }
             }
@@ -151,7 +151,7 @@ describe('countrySupporterService', () => {
                     expect(ClubSupporterResult).toEqual({
                         ...defaultCountrySupporter,
                         playerId: expect.any(Number),
-                        countryISOCode: "GB"
+                        countryISOCode: "GB",
                     } as CountrySupporter);
                 }
             }

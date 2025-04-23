@@ -16,7 +16,7 @@ jest.mock('lib/prisma', () => ({
 
 const defaultCountry: Country = {
     isoCode: "GB-ENG",
-    name: "Engerland"
+    name: "Engerland",
 };
 
 const invalidCountry: Country = {

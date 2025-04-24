@@ -30,7 +30,7 @@ describe('PlayerMugshot', () => {
         const { container } = render(<Wrapper><PlayerMugshot player={player} /></Wrapper>);
         await waitFor(() => {
             expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
-            expect(screen.getByAltText("John Doe")).toHaveAttribute("src", "/api/footy/player/john_doe/mugshot");
+            expect(screen.getByAltText("John Doe")).toHaveAttribute("src", "/api/footy/player/1/mugshot");
         });
     });
 });

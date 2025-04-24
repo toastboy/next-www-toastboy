@@ -1,41 +1,63 @@
+import { createMockApp, jsonResponseHandler, suppressConsoleError } from 'tests/lib/api/common';
+
+jest.mock('services/PlayerRecord');
+jest.mock('lib/authServer');
+
 import { GET } from 'api/footy/winners/[table]/[year]/route';
+import { getUserRole } from 'lib/authServer';
 import playerRecordService from 'services/PlayerRecord';
 import request from 'supertest';
-import { createMockApp, jsonResponseHandler, suppressConsoleError } from 'tests/lib/api/common';
 
 suppressConsoleError();
 const mockRoute = '/api/footy/winners/points/2011';
 const mockApp = createMockApp(GET, { path: mockRoute, params: Promise.resolve({ table: "points", year: "2011" }) }, jsonResponseHandler);
 
-jest.mock('services/PlayerRecord');
-
 describe('API tests using HTTP', () => {
     const mockData = [
         {
-            "year": 2011,
-            "responses": 45,
-            "P": 35,
-            "W": 21,
-            "D": 3,
-            "L": 11,
-            "points": 66,
-            "averages": 1.885714285714286,
-            "stalwart": 80,
-            "pub": 1,
-            "rankPoints": 1,
-            "rankAverages": 4,
-            "rankAveragesUnqualified": null,
-            "rankStalwart": 3,
-            "rankSpeedy": 10,
-            "rankSpeedyUnqualified": null,
-            "rankPub": 8,
-            "speedy": 22977,
-            "playerId": 62,
-            "gameDayId": 511,
+            year: 2011,
+            responses: 45,
+            P: 35,
+            W: 21,
+            D: 3,
+            L: 11,
+            points: 66,
+            averages: 1.885714285714286,
+            stalwart: 80,
+            pub: 1,
+            rankPoints: 1,
+            rankAverages: 4,
+            rankAveragesUnqualified: null,
+            rankStalwart: 3,
+            rankSpeedy: 10,
+            rankSpeedyUnqualified: null,
+            rankPub: 8,
+            speedy: 22977,
+            playerId: 62,
+            gameDayId: 511,
+            player: {
+                // TODO: When I make test data shared, I need to take account of
+                // the fact that the APIs return strings from JSON instead of
+                // e.g. Date objects
+                id: 1,
+                isAdmin: false,
+                login: "garyp",
+                firstName: "Gary",
+                lastName: "Player",
+                name: "Gary Player",
+                email: "gary.player@example.com",
+                joined: "2021-01-01",
+                finished: null,
+                born: "1975-11-01",
+                introducedBy: 23,
+                comment: null,
+                anonymous: false,
+            },
         },
     ];
 
     it('should return JSON response for a valid gameDay', async () => {
+        (getUserRole as jest.Mock).mockResolvedValue('user');
         (playerRecordService.getWinners as jest.Mock).mockResolvedValue(mockData);
 
         const response = await request(mockApp).get(mockRoute);

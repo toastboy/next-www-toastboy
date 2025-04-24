@@ -21,6 +21,7 @@ describe('API tests using HTTP', () => {
             "comment": "Remain indoors",
             "bibs": null,
             "pickerGamesHistory": 10,
+            "outcomes": [],
         };
         (gameDayService.get as jest.Mock).mockResolvedValue(mockData);
 

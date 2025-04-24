@@ -31,13 +31,13 @@ export interface CountrySupporterWithCountry extends CountrySupporter {
 export type GameDay = PrismaGameDay
 
 export interface GameDayWithOutcomesWithPlayers extends PrismaGameDay {
-    outcomes: OutcomeWithPlayer[],
+    outcomes: Partial<OutcomeWithPlayer>[],
 }
 
 export type Outcome = PrismaOutcome
 
 export interface OutcomeWithPlayer extends PrismaOutcome {
-    player: Player,
+    player: Partial<Player>,
 }
 
 export interface OutcomeWithGameDay extends PrismaOutcome {
@@ -60,7 +60,7 @@ export interface PlayerData extends Player {
 export type PlayerRecord = PrismaPlayerRecord
 
 export interface PlayerRecordWithPlayer extends PlayerRecord {
-    player: Player,
+    player: Partial<Player>,
 }
 
 // TODO: Really, I'd like these enums to come straight from Prisma but they show

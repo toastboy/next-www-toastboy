@@ -547,7 +547,7 @@ async function calculateYearPlayerRecords(
     playerRecords: PlayerRecord[],
 ) {
     // Start with a list of PlayerRecords, including those for anyone with any
-    // standing this year. For each one with an outome this game day, add or
+    // standing this year. For each one with an outcome this game day, add or
     // update the PlayerRecord as appropriate
 
     for (const outcome of gameDayOutcomes) {

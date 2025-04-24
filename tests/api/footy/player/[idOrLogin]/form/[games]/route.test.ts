@@ -2,8 +2,10 @@ import { createMockApp, jsonResponseHandler, suppressConsoleError } from 'tests/
 import { setupPlayerMocks } from 'tests/lib/api/player';
 
 jest.mock('services/Player');
+jest.mock('lib/authServer');
 
 import { GET } from 'api/footy/player/[idOrLogin]/form/[gameDayId]/[games]/route';
+import { getUserRole } from 'lib/authServer';
 import playerService from 'services/Player';
 import request from 'supertest';
 
@@ -14,45 +16,79 @@ const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({ id
 describe('API tests using HTTP', () => {
     setupPlayerMocks();
 
-    it('should return JSON response for a valid player', async () => {
-        const mockData = [
-            {
-                response: 'Yes',
-                responseInterval: 89724,
-                points: 0,
-                team: 'B',
-                comment: "How do",
-                pub: null,
-                paid: null,
-                goalie: false,
-                gameDayId: 125,
-                playerId: 1,
-            },
-            {
-                response: 'Yes',
-                responseInterval: 366022,
-                points: 3,
-                team: 'A',
-                comment: "",
-                pub: null,
-                paid: null,
-                goalie: false,
-                gameDayId: 118,
-                playerId: 1,
-            },
-            {
-                response: 'Yes',
-                responseInterval: 111346,
-                points: 0,
-                team: 'B',
-                comment: "",
-                pub: null,
-                paid: null,
-                goalie: false,
-                gameDayId: 117,
-                playerId: 1,
-            },
-        ];
+    const mockData = [
+        {
+            response: 'Yes',
+            responseInterval: 89724,
+            points: 0,
+            team: 'B',
+            comment: "How do",
+            pub: null,
+            paid: null,
+            goalie: false,
+            gameDayId: 125,
+            playerId: 1,
+        },
+        {
+            response: 'Yes',
+            responseInterval: 366022,
+            points: 3,
+            team: 'A',
+            comment: "",
+            pub: null,
+            paid: null,
+            goalie: false,
+            gameDayId: 118,
+            playerId: 1,
+        },
+        {
+            response: 'Yes',
+            responseInterval: 111346,
+            points: 0,
+            team: 'B',
+            comment: "",
+            pub: null,
+            paid: null,
+            goalie: false,
+            gameDayId: 117,
+            playerId: 1,
+        },
+    ];
+
+    it('should return JSON response for a valid player with no logged in user', async () => {
+        (getUserRole as jest.Mock).mockResolvedValue('none');
+        (playerService.getForm as jest.Mock).mockResolvedValue(mockData);
+
+        const response = await request(mockApp).get(testURI);
+
+        expect(response.status).toBe(200);
+        expect(response.headers['content-type']).toBe('application/json');
+        expect(response.body).toEqual(
+            mockData.map((record) => ({
+                ...record,
+                comment: undefined,
+            })),
+        );
+    });
+
+    it('should return JSON response for a valid player with a user logged in', async () => {
+        (getUserRole as jest.Mock).mockResolvedValue('user');
+        (playerService.getForm as jest.Mock).mockResolvedValue(mockData);
+
+        const response = await request(mockApp).get(testURI);
+
+        expect(response.status).toBe(200);
+        expect(response.headers['content-type']).toBe('application/json');
+        expect(response.body).toEqual(
+            mockData.map((record) => ({
+                ...record,
+                comment: undefined,
+            })),
+        );
+    });
+
+    it('should return JSON response for a valid player with an admin logged in', async () => {
+        (getUserRole as jest.Mock).mockResolvedValue('admin');
         (playerService.getForm as jest.Mock).mockResolvedValue(mockData);
 
         const response = await request(mockApp).get(testURI);

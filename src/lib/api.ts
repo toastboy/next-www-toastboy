@@ -1,5 +1,6 @@
 import { getUserRole } from "lib/authServer";
 import { NextResponse } from "next/server";
+import { GameDayWithOutcomesWithPlayers, Outcome, OutcomeWithGameDay, OutcomeWithPlayer, Player, PlayerRecordWithPlayer } from "./types";
 
 /**
  * Handles a GET request by invoking a service function and building a response.
@@ -15,13 +16,23 @@ import { NextResponse } from "next/server";
 export async function handleGET<T>(
     serviceFunction: ({ params }: { params: Record<string, string> }) => Promise<T | null>,
     { params }: { params: Record<string, string> },
-    buildResponse: (data: T) => Promise<NextResponse> = buildJsonResponse,
+    hooks?: {
+        sanitize?: (data: T) => Promise<T>;
+        buildResponse?: (data: T) => Promise<NextResponse>;
+    },
 ): Promise<NextResponse> {
+    const sanitize = hooks?.sanitize || (async data => data);
+    const buildResponse = hooks?.buildResponse || buildJsonResponse;
+
     const data = await serviceFunction({ params });
 
     if (data == null) return new NextResponse('Not Found', { status: 404 });
 
-    return buildResponse(data);
+    const sanitizedData = await sanitize(data);
+
+    if (sanitizedData == null) return new NextResponse('Not Found', { status: 404 });
+
+    return buildResponse(sanitizedData);
 }
 
 /**
@@ -112,4 +123,224 @@ export async function buildUserOnlyResponse<T>(
         default:
             return NextResponse.json({ message: 'Internal Server Error' }, { status: 500 });
     }
+}
+
+/**
+ * Sanitizes player data based on the user's role.
+ *
+ * Depending on the role returned by `getUserRole`, this function removes or retains
+ * specific fields from the provided player data. For users with the role 'none',
+ * sensitive fields such as `login`, `email`, `born`, and optionally `firstName` and
+ * `lastName` (if the `anonymous` flag is set) are removed. For other roles, the data
+ * is returned as-is.
+ *
+ * @param data - A partial object of the `Player` type containing player data to sanitize.
+ * @returns A sanitized version of the player data, with sensitive fields removed
+ *          for users with the role 'none'.
+ */
+export async function sanitizePlayerData(data: Partial<Player>) {
+    switch (await getUserRole()) {
+        case 'none':
+            return {
+                ...data,
+                login: undefined,
+                email: undefined,
+                born: undefined,
+                ...data?.anonymous ? { firstName: undefined, lastName: undefined } : {},
+                comment: undefined,
+            };
+
+        case 'user':
+        case 'admin':
+        default:
+            return data;
+    }
+}
+
+/**
+ * Sanitizes the provided `OutcomeWithGameDay` data based on the user's role.
+ *
+ * - If the user role is 'none' or 'user', the `comment` field in the data will be removed.
+ * - If the user role is 'admin' or any other role, the data will remain unchanged.
+ *
+ * @param data - A partial object of type `OutcomeWithGameDay` to be sanitized.
+ * @returns A sanitized version of the input data based on the user's role.
+ */
+export async function sanitizeOutcomeWithGameDayData(data: Partial<OutcomeWithGameDay> | null) {
+    switch (await getUserRole()) {
+        case 'none':
+        case 'user':
+            return {
+                ...data,
+                comment: undefined,
+            };
+
+        case 'admin':
+        default:
+            return data;
+    }
+}
+
+/**
+ * Sanitizes an array of `OutcomeWithGameDay` objects by applying the
+ * `sanitizeOutcomeWithGameDayData` function to each item in the array. If the
+ * input data is `null`, the function returns `null`.
+ *
+ * @param data - An array of partial `OutcomeWithGameDay` objects or `null`.
+ * @returns A promise that resolves to an array of sanitized
+ * `OutcomeWithGameDay` objects, or `null` if the input is `null`.
+ */
+export async function sanitizeOutcomeWithGameDayArrayData(data: Partial<OutcomeWithGameDay>[] | null): Promise<Partial<OutcomeWithGameDay>[] | null> {
+    if (!data) return null;
+    const sanitizedData = await Promise.all(
+        data.map(async (item) => {
+            return await sanitizeOutcomeWithGameDayData(item);
+        }),
+    );
+    return sanitizedData.filter((item): item is Partial<OutcomeWithGameDay> => item !== null);
+}
+
+/**
+ * Builds a JSON response based on the provided data and the user's role.
+ *
+ * Only admins should be able to see the `comment` field.
+ *
+ * @param data - A partial object of type `OutcomeWithGameDay` or `null` to be included in the response.
+ * @returns A promise that resolves to a JSON response containing the modified data.
+ */
+export async function buildOutcomeWithGameDayResponse(data: Partial<OutcomeWithGameDay> | null) {
+
+    return buildJsonResponse(data);
+}
+
+/**
+ * Sanitizes a partial `PlayerRecordWithPlayer` object by processing its `player` property
+ * using the `sanitizePlayerData` function. If the input data is `null`, it returns `null`.
+ *
+ * @param data - A partial `PlayerRecordWithPlayer` object or `null`.
+ * @returns A sanitized version of the input object with the `player` property processed,
+ *          or `null` if the input is `null`.
+ */
+export async function sanitizePlayerRecordWithPlayerData(data: Partial<PlayerRecordWithPlayer> | null) {
+    if (!data) return null;
+
+    return {
+        ...data,
+        player: data.player ? await sanitizePlayerData(data.player) : undefined,
+    };
+}
+
+export async function sanitizePlayerRecordWithPlayerArrayData(
+    data: Partial<PlayerRecordWithPlayer>[],
+): Promise<Partial<PlayerRecordWithPlayer>[]> {
+    if (!data) return [];
+
+    const sanitizedData = await Promise.all(
+        data.map(async (item) => {
+            return await sanitizePlayerRecordWithPlayerData(item);
+        }),
+    );
+
+    return sanitizedData.filter((item): item is PlayerRecordWithPlayer => item !== null);
+}
+
+/**
+ * Sanitizes the provided outcome data based on the user's role.
+ *
+ * Depending on the role of the user, certain fields in the `Outcome` object
+ * may be removed or modified to restrict access to sensitive information.
+ *
+ * - For users with the role `'none'` or `'user'`, the `comment` field will be removed.
+ * - For users with the role `'admin'`, the data will remain unchanged.
+ *
+ * @param data - The `Outcome` object to sanitize. If `null` or `undefined`, the function returns `null`.
+ * @returns A sanitized version of the `Outcome` object or `null` if the input is invalid.
+ */
+export async function sanitizeOutcomeData(data: Outcome) {
+    if (!data) return null;
+
+    switch (await getUserRole()) {
+        case 'none':
+        case 'user':
+            return {
+                ...data,
+                comment: undefined,
+            };
+
+        case 'admin':
+        default:
+            return data;
+    }
+}
+
+/**
+ * Sanitizes the provided outcome data along with its associated player data.
+ *
+ * This function takes a partial `OutcomeWithPlayer` object or `null` as input.
+ * If the input is `null` or does not contain a `player` property, it returns `null`.
+ * Otherwise, it sanitizes the outcome data and the player data separately and
+ * returns a new object containing the sanitized results.
+ *
+ * @param data - A partial `OutcomeWithPlayer` object or `null` to be sanitized.
+ * @returns A promise that resolves to the sanitized outcome with player data, or `null` if the input is invalid.
+ */
+export async function sanitizeOutcomeWithPlayerData(data: Partial<OutcomeWithPlayer> | null) {
+    if (!data || !data.player) return null;
+
+    return {
+        ...await sanitizeOutcomeData(data as Outcome),
+        player: await sanitizePlayerData(data.player),
+    };
+}
+
+/**
+ * Sanitizes an array of `OutcomeWithPlayer` partial objects by processing each item
+ * through the `sanitizeOutcomeWithPlayerData` function and filtering out invalid entries.
+ *
+ * @param data - An array of partial `OutcomeWithPlayer` objects to be sanitized.
+ * @returns A promise that resolves to an array of sanitized `OutcomeWithPlayer` objects
+ *          where each object includes a `player` property.
+ */
+export async function sanitizeOutcomeWithPlayerArrayData(data: Partial<OutcomeWithPlayer>[]) {
+    const sanitizedData = await Promise.all(
+        data.map(async (item) => {
+            return await sanitizeOutcomeWithPlayerData(item);
+        }),
+    );
+
+    return sanitizedData.filter((item): item is Partial<OutcomeWithPlayer> & { player: Partial<Player> } =>
+        item !== null && item.player !== undefined,
+    );
+}
+
+/**
+ * Sanitizes the provided `GameDayWithOutcomesWithPlayers` data by ensuring
+ * that the `outcomes` property is processed and sanitized. If the input data
+ * is `null`, the function returns `null`.
+ *
+ * @param data - The `GameDayWithOutcomesWithPlayers` object to sanitize, or `null`.
+ * @returns A sanitized version of the `GameDayWithOutcomesWithPlayers` object,
+ *          or `null` if the input is `null`. The `outcomes` property will be
+ *          sanitized using `sanitizeOutcomeWithPlayerArrayData`, or set to an
+ *          empty array if it is not present.
+ */
+export async function sanitizeGameDayWithOutcomesWithPlayersData(data: GameDayWithOutcomesWithPlayers | null) {
+    if (!data) return null;
+
+    return {
+        ...data,
+        outcomes: data.outcomes ? await sanitizeOutcomeWithPlayerArrayData(data.outcomes) : [],
+    };
+}
+
+export async function sanitizeOutcomeArrayData(data: Outcome[] | null) {
+    if (!data) return null;
+
+    const sanitizedData = await Promise.all(
+        data.map(async (item) => {
+            return await sanitizeOutcomeData(item);
+        }),
+    );
+
+    return sanitizedData.filter((item): item is Outcome => item !== null);
 }

@@ -7,11 +7,11 @@ interface Props {
 
 const PlayerMugshot: React.FC<Props> = ({ player }) => {
     return (
-        <Anchor href={`/footy/player/${player.login}`}>
+        <Anchor href={`/footy/player/${player.id}`}>
             <Image
                 w="100%"
                 h="100%"
-                src={`/api/footy/player/${player.login}/mugshot`}
+                src={`/api/footy/player/${player.id}/mugshot`}
                 alt={player.name || `Player ${player.id}`}
                 title={player.name || `Player ${player.id}`}
             />

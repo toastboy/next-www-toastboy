@@ -28,8 +28,8 @@ const Page: React.FC<Props> = async props => {
 
     if (!player) return notFound();
 
-    if (player.login != idOrLogin) {
-        redirect(`/footy/player/${player.login}`);
+    if (player.id.toString() != idOrLogin) {
+        redirect(`/footy/player/${player.id}`);
     }
 
     return (

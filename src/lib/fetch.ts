@@ -1,4 +1,5 @@
 import { Player } from 'lib/types';
+import { headers } from 'next/headers';
 
 /**
  * Fetches data from the specified URL and returns it as a typed object. All fetches are revalidated every 60 seconds.
@@ -19,7 +20,7 @@ import { Player } from 'lib/types';
  * console.log(user.name);
  * ```
  */
-export async function fetchData<T>(url: string): Promise<T> {
+export async function fetchData<T>(url: string, options?: RequestInit): Promise<T> {
     try {
         const serverUrl: string | undefined = process.env.API_URL;
         if (!serverUrl) {
@@ -28,7 +29,18 @@ export async function fetchData<T>(url: string): Promise<T> {
         if (url.startsWith('/')) {
             url = url.slice(1);
         }
-        const response = await fetch(`${serverUrl}/${url}`, { next: { revalidate: 60 } });
+        const incomingHeaders = await headers(); // Get headers from the incoming request
+
+        const response = await fetch(`${serverUrl}/${url}`, {
+            ...options,
+            credentials: 'include', // Ensure cookies are included
+            headers: {
+                ...Object.fromEntries(incomingHeaders.entries()), // Include incoming headers
+                ...options?.headers, // Allow overriding specific headers
+                'Content-Type': 'application/json',
+            },
+            next: { revalidate: 60 },
+        });
         if (!response.ok) {
             throw new Error(`Failed to fetch ${url}: ${response.statusText}`);
         }

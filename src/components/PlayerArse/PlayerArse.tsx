@@ -1,4 +1,5 @@
 import { Table, TableTbody, TableTd, TableTr } from '@mantine/core';
+import { getUserRole } from 'lib/authServer';
 import { fetchData } from 'lib/fetch';
 import { Arse, Player } from 'lib/types';
 
@@ -7,6 +8,10 @@ export interface Props {
 }
 
 const PlayerArse: React.FC<Props> = async ({ player }) => {
+    if (await getUserRole() !== 'admin') {
+        return <></>;
+    }
+
     const arse = await fetchData<Arse>(`/api/footy/player/${player.id}/arse`);
 
     return (

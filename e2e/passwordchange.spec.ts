@@ -22,7 +22,7 @@ test('password change test', async ({ page }) => {
 
     expect(await page.getByText('Password changed successfully.').count()).toEqual(1);
 
-    let logout = page.getByText('Log Out')
+    let logout = page.getByText('Log Out');
     expect(await logout.count()).toEqual(1);
     await logout.click();
 
@@ -39,7 +39,7 @@ test('password change test', async ({ page }) => {
 
     expect(await page.getByText('Password changed successfully.').count()).toEqual(1);
 
-    logout = page.getByText('Log Out')
+    logout = page.getByText('Log Out');
     expect(await logout.count()).toEqual(1);
     await logout.click();
 

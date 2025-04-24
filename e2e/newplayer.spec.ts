@@ -35,7 +35,7 @@ test('new player', async ({ page }) => {
     await page.getByRole('combobox').selectOption('12');
     await page.getByRole('button', { name: 'Submit' }).click();
 
-    const logout = page.getByText('Log Out')
+    const logout = page.getByText('Log Out');
     expect(await logout.count()).toEqual(1);
     await logout.click();
 

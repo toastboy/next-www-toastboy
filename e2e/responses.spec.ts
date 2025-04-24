@@ -51,7 +51,7 @@ test('new game flow', async ({ page }) => {
 
     await page.getByRole('button', { name: 'Choose Teams' }).click();
 
-    const logout = page.getByText('Log Out')
+    const logout = page.getByText('Log Out');
     expect(await logout.count()).toEqual(1);
     await logout.click();
 

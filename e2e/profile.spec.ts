@@ -29,7 +29,7 @@ test('profile page checks', async ({ page }) => {
 
     await page.locator('#playermasthead').screenshot({ path: 'test-results/screenshots/playermasthead.png' });
 
-    const logout = page.getByText('Log Out')
+    const logout = page.getByText('Log Out');
     expect(await logout.count()).toEqual(1);
     await logout.click();
 });

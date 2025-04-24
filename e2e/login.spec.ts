@@ -16,7 +16,7 @@ test('login form denies a bad user', async ({ page }) => {
   await expect(page).toHaveURL('/footy/');
 
   expect(await page.getByText('Bad login: try again').count()).toEqual(1);
-  const logout = page.getByText('Log Out')
+  const logout = page.getByText('Log Out');
   expect(await logout.count()).toEqual(0);
 
 });
@@ -37,7 +37,7 @@ test('login form works for a good ordinary user', async ({ page }) => {
   await expect(page).toHaveURL('/footy/');
 
   expect(await page.getByText('Bad login: try again').count()).toEqual(0);
-  const logout = page.getByText('Log Out')
+  const logout = page.getByText('Log Out');
   expect(await logout.count()).toEqual(1);
   await logout.click();
 });
@@ -58,7 +58,7 @@ test('login form works for a good admin user', async ({ page }) => {
   await expect(page).toHaveURL('/footy/');
 
   expect(await page.getByText('Bad login: try again').count()).toEqual(0);
-  const logout = page.getByText('Log Out')
+  const logout = page.getByText('Log Out');
   expect(await logout.count()).toEqual(1);
   await logout.click();
 });

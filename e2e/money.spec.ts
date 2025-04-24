@@ -16,7 +16,7 @@ test('money', async ({ page }) => {
 
     // TODO More tests go here
 
-    const logout = page.getByText('Log Out')
+    const logout = page.getByText('Log Out');
     expect(await logout.count()).toEqual(1);
     await logout.click();
 

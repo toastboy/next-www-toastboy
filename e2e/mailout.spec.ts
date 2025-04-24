@@ -18,7 +18,7 @@ test('mail active players', async ({ page }) => {
     await page.getByLabel('Body').fill('This is a test of the emergency broadcast system.');
     await page.getByRole('button', { name: 'Send Mail' }).click();
 
-    const logout = page.getByText('Log Out')
+    const logout = page.getByText('Log Out');
     expect(await logout.count()).toEqual(1);
     await logout.click();
 

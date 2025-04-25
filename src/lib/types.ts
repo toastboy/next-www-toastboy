@@ -8,7 +8,7 @@ import {
     Outcome as PrismaOutcome,
     Player as PrismaPlayer,
     PlayerRecord as PrismaPlayerRecord,
-} from '@prisma/client';
+} from 'prisma/generated/prisma/client';
 
 export type Arse = PrismaArse
 

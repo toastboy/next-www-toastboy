@@ -1,7 +1,7 @@
-import { PlayerResponse } from '@prisma/client';
 import debug from 'debug';
 import prisma from 'lib/prisma';
 import { Outcome, Turnout, TurnoutByYear, WDL } from 'lib/types';
+import { PlayerResponse } from 'prisma/generated/prisma/client';
 import gameDayService from 'services/GameDay';
 
 const log = debug('footy:api');

@@ -1,5 +1,4 @@
 import { Box, Container, Text, Title } from '@mantine/core';
-import { Player } from '@prisma/client';
 import PlayerArse from 'components/PlayerArse/PlayerArse';
 import PlayerBorn from 'components/PlayerBorn/PlayerBorn';
 import PlayerClubs from 'components/PlayerClubs/PlayerClubs';
@@ -9,6 +8,7 @@ import PlayerHistory from 'components/PlayerHistory/PlayerHistory';
 import PlayerLastPlayed from 'components/PlayerLastPlayed/PlayerLastPlayed';
 import PlayerMugshot from 'components/PlayerMugshot/PlayerMugshot';
 import PlayerTrophies from 'components/PlayerTrophies/PlayerTrophies';
+import { Player } from 'prisma/generated/prisma/client';
 import { Suspense } from 'react';
 import classes from './PlayerProfile.module.css';
 

@@ -1,9 +1,9 @@
-import { GameDay, Outcome, PlayerRecord } from '@prisma/client';
 import debug from 'debug';
 import config from 'lib/config';
 import prisma from 'lib/prisma';
 import { PlayerRecordWithPlayer, TableName } from 'lib/types';
 import { rankMap } from 'lib/utils';
+import { GameDay, Outcome, PlayerRecord } from 'prisma/generated/prisma/client';
 import gameDayService from 'services/GameDay';
 import outcomeService from 'services/Outcome';
 

@@ -1,4 +1,4 @@
-import { Outcome } from '@prisma/client';
+import { Outcome } from 'prisma/generated/prisma/client';
 
 export const defaultOutcome: Outcome = {
     id: 1000,

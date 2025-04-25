@@ -1,6 +1,6 @@
-import { Country } from '@prisma/client';
-import countryService from 'services/Country';
 import prisma from 'lib/prisma';
+import { Country } from 'prisma/generated/prisma/client';
+import countryService from 'services/Country';
 
 jest.mock('lib/prisma', () => ({
     country: {

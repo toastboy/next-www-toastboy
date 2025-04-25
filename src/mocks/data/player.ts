@@ -1,4 +1,4 @@
-import { Player } from '@prisma/client';
+import { Player } from 'prisma/generated/prisma/client';
 
 export const defaultPlayer: Player = {
     id: 1,

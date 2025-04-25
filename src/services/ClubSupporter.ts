@@ -1,7 +1,7 @@
-import { ClubSupporter } from '@prisma/client';
 import debug from 'debug';
 import prisma from 'lib/prisma';
 import { ClubSupporterWithClub } from 'lib/types';
+import { ClubSupporter } from 'prisma/generated/prisma/client';
 
 const log = debug('footy:api');
 

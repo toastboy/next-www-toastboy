@@ -2,7 +2,7 @@
 
 import { Anchor, Indicator, Text } from '@mantine/core';
 import { Calendar, DatePickerProps } from '@mantine/dates';
-import { GameDay } from '@prisma/client';
+import { GameDay } from 'prisma/generated/prisma/client';
 import { useEffect, useState } from 'react';
 
 interface GameCalendarProps {

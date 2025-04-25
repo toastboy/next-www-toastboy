@@ -1,5 +1,5 @@
 import { Image } from '@mantine/core';
-import { Country } from '@prisma/client';
+import { Country } from 'prisma/generated/prisma/client';
 
 export interface Props {
     country: Country,

@@ -1,7 +1,7 @@
-import { Player } from '@prisma/client';
 import PlayerProfile from 'components/PlayerProfile/PlayerProfile';
 import { fetchData, parsePlayer } from 'lib/fetch';
 import { notFound, redirect } from 'next/navigation';
+import { Player } from 'prisma/generated/prisma/client';
 
 interface Props {
     params: Promise<{

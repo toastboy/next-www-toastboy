@@ -1,6 +1,6 @@
-import { Country } from '@prisma/client';
-import prisma from 'lib/prisma';
 import debug from 'debug';
+import prisma from 'lib/prisma';
+import { Country } from 'prisma/generated/prisma/client';
 
 const log = debug('footy:api');
 

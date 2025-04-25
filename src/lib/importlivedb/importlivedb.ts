@@ -1,6 +1,6 @@
 import { ClientSecretCredential } from "@azure/identity";
 import { BlobServiceClient } from "@azure/storage-blob";
-import { Prisma } from '@prisma/client';
+import { Prisma } from "@prisma/client";
 import { execSync } from "child_process";
 import dotenv from 'dotenv';
 import fs from 'fs';

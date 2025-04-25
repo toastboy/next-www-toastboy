@@ -1,7 +1,7 @@
-import { GameDay as PrismaGameDay } from '@prisma/client';
 import debug from 'debug';
 import prisma from 'lib/prisma';
 import { GameDayWithOutcomesWithPlayers, TeamName } from 'lib/types';
+import { GameDay as PrismaGameDay } from 'prisma/generated/prisma/client';
 
 const log = debug('footy:api');
 

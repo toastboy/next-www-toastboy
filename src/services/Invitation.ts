@@ -1,6 +1,6 @@
-import { Invitation } from '@prisma/client';
 import debug from 'debug';
 import prisma from 'lib/prisma';
+import { Invitation } from 'prisma/generated/prisma/client';
 
 const log = debug('footy:api');
 

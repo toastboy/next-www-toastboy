@@ -1,5 +1,5 @@
-import { Invitation } from '@prisma/client';
 import prisma from 'lib/prisma';
+import { Invitation } from 'prisma/generated/prisma/client';
 import invitationService from 'services/Invitation';
 
 jest.mock('lib/prisma', () => ({

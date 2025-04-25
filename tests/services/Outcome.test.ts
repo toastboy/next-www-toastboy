@@ -1,6 +1,6 @@
-import { Outcome } from '@prisma/client';
 import prisma from 'lib/prisma';
 import { PlayerResponse, TeamName } from 'lib/types';
+import { Outcome } from 'prisma/generated/prisma/client';
 import outcomeService from 'services/Outcome';
 
 jest.mock('lib/prisma', () => ({

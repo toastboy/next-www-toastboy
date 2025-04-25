@@ -51,6 +51,7 @@
     ],
     "resolveJsonModule": true,
     "sourceMap": true,
+    "strictNullChecks": true,
     "typeRoots": [
       "./node_modules/@types",
       "./src/types"

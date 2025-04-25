@@ -1,9 +1,9 @@
 import 'server-only';
 
-import { Player } from '@prisma/client';
 import debug from 'debug';
 import prisma from 'lib/prisma';
 import { OutcomeWithGameDay, PlayerData } from 'lib/types';
+import { Player } from 'prisma/generated/prisma/client';
 
 const log = debug('footy:api');
 

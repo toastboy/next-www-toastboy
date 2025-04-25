@@ -1,5 +1,5 @@
-import { Arse } from '@prisma/client';
 import prisma from 'lib/prisma';
+import { Arse } from 'prisma/generated/prisma/client';
 import arseService from 'services/Arse';
 
 jest.mock('lib/prisma', () => ({

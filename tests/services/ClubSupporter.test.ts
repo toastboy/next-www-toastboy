@@ -1,5 +1,5 @@
-import { ClubSupporter } from '@prisma/client';
 import prisma from 'lib/prisma';
+import { ClubSupporter } from 'prisma/generated/prisma/client';
 import clubSupporterService from 'services/ClubSupporter';
 
 jest.mock('lib/prisma', () => ({

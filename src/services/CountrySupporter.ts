@@ -1,7 +1,7 @@
-import { CountrySupporter } from '@prisma/client';
 import debug from 'debug';
 import prisma from 'lib/prisma';
 import { CountrySupporterWithCountry } from 'lib/types';
+import { CountrySupporter } from 'prisma/generated/prisma/client';
 
 const log = debug('footy:api');
 

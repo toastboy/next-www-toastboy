@@ -1,6 +1,6 @@
-import { GameDay } from '@prisma/client';
 import prisma from 'lib/prisma';
 import { defaultGameDay } from 'mocks/data/gameday';
+import { GameDay } from 'prisma/generated/prisma/client';
 import gameDayService from 'services/GameDay';
 
 jest.mock('lib/prisma', () => ({

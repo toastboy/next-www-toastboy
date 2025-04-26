@@ -1,5 +1,4 @@
-import { handleGET, sanitizeOutcomeWithGameDayArrayData } from 'lib/api';
-import { OutcomeWithGameDay } from 'lib/types';
+import { handleGET, sanitizeOutcomeArrayData } from 'lib/api';
 import { NextRequest } from 'next/server';
 import playerService from 'services/Player';
 
@@ -23,13 +22,13 @@ import playerService from 'services/Player';
 export const GET = async (request: NextRequest, props: { params: Promise<Record<string, string>> }) => {
     const params = await props.params;
 
-    return handleGET<Partial<OutcomeWithGameDay>[] | null>(
+    return handleGET(
         async () => {
             const player = await playerService.getByIdOrLogin(params.idOrLogin);
-            if (!player) { return null; }
+            if (!player) return null;
             return playerService.getForm(player.id, parseInt(params.gameDayId), parseInt(params.games));
         },
         { params },
-        { sanitize: sanitizeOutcomeWithGameDayArrayData },
+        { sanitize: sanitizeOutcomeArrayData },
     );
 };

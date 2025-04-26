@@ -1,4 +1,5 @@
-import { PlayerRecord, TableName } from 'lib/types';
+import { TableName } from 'lib/types';
+import { PlayerRecord } from 'prisma/generated/zod';
 
 export interface Props {
     table: TableName;

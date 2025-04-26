@@ -1,7 +1,8 @@
 'use client';
 
+import { Arse, Club, ClubSupporter, Country, CountrySupporter, GameDay, Outcome, Player, PlayerRecord } from 'prisma/generated/zod';
 import useSWR from 'swr';
-import { Arse, Club, ClubSupporterWithClub, Country, CountrySupporterWithCountry, GameDay, Outcome, Player, PlayerData, PlayerRecord, PlayerRecordWithPlayer, TableName, TurnoutByYear, WDL } from './types';
+import { PlayerData, TableName, TurnoutByYear, WDL } from './types';
 
 const fetcher = (input: URL | RequestInfo, init?: RequestInit | undefined) =>
     fetch(input, init).then((res) => res.json());
@@ -61,13 +62,13 @@ export function usePlayerLastPlayed(idOrLogin: string) {
 }
 
 export function usePlayerClubs(idOrLogin: string) {
-    const { data, error } = useSWR<ClubSupporterWithClub[]>(`/api/footy/player/${idOrLogin}/clubs`, fetcher);
+    const { data, error } = useSWR<ClubSupporter[]>(`/api/footy/player/${idOrLogin}/clubs`, fetcher);
     if (error) throw error;
     return data || null;
 }
 
 export function usePlayerCountries(idOrLogin: string) {
-    const { data, error } = useSWR<CountrySupporterWithCountry[]>(`/api/footy/player/${idOrLogin}/countries`, fetcher);
+    const { data, error } = useSWR<CountrySupporter[]>(`/api/footy/player/${idOrLogin}/countries`, fetcher);
     if (error) throw error;
     return data || null;
 }
@@ -91,7 +92,7 @@ export function usePlayerYearsActive(idOrLogin: string) {
 }
 
 export function usePlayerRecord(idOrLogin: string, year: number) {
-    const { data, error } = useSWR<PlayerRecordWithPlayer>(`/api/footy/player/${idOrLogin}/record/${year}`, fetcher);
+    const { data, error } = useSWR<PlayerRecord>(`/api/footy/player/${idOrLogin}/record/${year}`, fetcher);
     if (error) throw error;
     return data || null;
 }
@@ -134,7 +135,7 @@ export function useWinners(table: TableName, year?: number) {
     let url = `/api/footy/winners/${table}`;
     if (year !== undefined) url += `/${year}`;
 
-    const { data, error } = useSWR<PlayerRecordWithPlayer[]>(url, fetcher);
+    const { data, error } = useSWR<PlayerRecord[]>(url, fetcher);
     if (error) throw error;
     return data || null;
 }

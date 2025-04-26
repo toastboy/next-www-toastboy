@@ -29,6 +29,7 @@ describe('API tests using HTTP', () => {
 
         const response = await request(mockApp).get('/api/footy/country/NO');
 
+        if (response.status !== 200) console.log('Error response:', response.error);
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
         expect(response.body).toEqual({ isoCode: 'NO', name: 'Test country' });

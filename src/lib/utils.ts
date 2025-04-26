@@ -1,4 +1,4 @@
-import { TableName } from "@prisma/client";
+import { TableName } from './types';
 
 /**
  * Converts a readable stream into a Buffer.

@@ -1,8 +1,8 @@
 import YearSelector from 'components/YearSelector/YearSelector';
 import YearTable from 'components/YearTable/YearTable';
-import { fetchData } from 'lib/fetch';
 import { TableName } from 'lib/types';
 import { notFound } from 'next/navigation';
+import playerRecordService from 'services/PlayerRecord';
 
 interface Props {
     params: Promise<{
@@ -14,7 +14,7 @@ interface Props {
 const Page: React.FC<Props> = async (props) => {
     const { year, table } = await props.params;
     const yearnum = year ? parseInt(year[0]) : 0; // Zero or undefined means all-time
-    const allYears = await fetchData<number[]>('/api/footy/tableyear');
+    const allYears = await playerRecordService.getAllYears();
 
     if (!(table in TableName)) return notFound();
     if (!allYears.includes(yearnum)) return notFound();

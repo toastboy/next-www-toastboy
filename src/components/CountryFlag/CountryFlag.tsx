@@ -1,11 +1,15 @@
 import { Image } from '@mantine/core';
-import { Country } from 'prisma/generated/prisma/client';
+import countryService from 'services/Country';
 
 export interface Props {
-    country: Country,
+    countryISOCode: string,
 }
 
-const CountryFlag: React.FC<Props> = async ({ country }) => {
+const CountryFlag: React.FC<Props> = async ({ countryISOCode }) => {
+    const country = await countryService.get(countryISOCode);
+
+    if (!country) return <></>;
+
     return (
         <Image
             w="100%"

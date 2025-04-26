@@ -1,15 +1,15 @@
 import { Flex, Stack, Text, Tooltip } from '@mantine/core';
 import { IconBeer, IconClock, IconMedal, IconStar, IconTrophy } from '@tabler/icons-react';
-import { fetchData } from 'lib/fetch';
-import { Player, PlayerRecordWithPlayer, TableName } from 'lib/types';
+import { TableName } from 'lib/types';
+import playerRecordService from 'services/PlayerRecord';
 
 interface TableProps {
-    player: Player;
+    playerId: number;
     table: TableName;
     year?: number;
 }
 
-const PlayerTableTrophies: React.FC<TableProps> = async ({ player, table, year }) => {
+const PlayerTableTrophies: React.FC<TableProps> = async ({ playerId, table, year }) => {
     const icon = (() => {
         switch (table) {
             case 'points':
@@ -24,10 +24,10 @@ const PlayerTableTrophies: React.FC<TableProps> = async ({ player, table, year }
                 return <IconBeer size={16} />;
         }
     })();
-    let record = await fetchData<PlayerRecordWithPlayer[]>(`/api/footy/winners/${table}/${year || ''}`);
-    record = record.filter((winner) => winner.player.id === player.id);
+    let record = await playerRecordService.getWinners(table, year);
+    record = record.filter((winner) => winner.playerId === playerId);
 
-    if (!record || record.length == 0) return null;
+    if (!record || record.length === 0) return null;
 
     if (record.length > 3) {
         const years = record.map((winner) => winner.year).join(', ').replace(/, ([^,]*)$/, ' & $1');
@@ -55,15 +55,15 @@ const PlayerTableTrophies: React.FC<TableProps> = async ({ player, table, year }
 };
 
 export interface Props {
-    player: Player;
+    playerId: number;
     year: number;
 }
 
-const PlayerTrophies: React.FC<Props> = ({ player, year }) => {
+const PlayerTrophies: React.FC<Props> = ({ playerId, year }) => {
     return (
         <Stack gap="xs">
             {Object.keys(TableName).map((table) => (
-                <PlayerTableTrophies key={table} player={player} table={table as TableName} year={year} />
+                <PlayerTableTrophies key={table} playerId={playerId} table={table as TableName} year={year} />
             ))}
         </Stack>
     );

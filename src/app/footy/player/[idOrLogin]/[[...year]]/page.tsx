@@ -1,7 +1,6 @@
 import PlayerProfile from 'components/PlayerProfile/PlayerProfile';
-import { fetchData, parsePlayer } from 'lib/fetch';
 import { notFound, redirect } from 'next/navigation';
-import { Player } from 'prisma/generated/prisma/client';
+import playerService from 'services/Player';
 
 interface Props {
     params: Promise<{
@@ -13,7 +12,9 @@ interface Props {
 export async function generateMetadata(props: Props) {
     try {
         const { idOrLogin } = await props.params;
-        const name = await fetchData<string>(`/api/footy/player/${idOrLogin}/name`);
+        const player = await playerService.getByIdOrLogin(idOrLogin);
+        if (!player) return {};
+        const name = playerService.getName(player);
         return name ? { title: `${name}` } : {};
     }
     catch (error) {
@@ -24,7 +25,7 @@ export async function generateMetadata(props: Props) {
 const Page: React.FC<Props> = async props => {
     const { idOrLogin, year } = await props.params;
     const yearNum = year ? parseInt(year[0]) : 0; // Zero or undefined means all-time
-    const player = parsePlayer(await fetchData<Player>(`/api/footy/player/${idOrLogin}`));
+    const player = await playerService.getByIdOrLogin(idOrLogin);
 
     if (!player) return notFound();
 

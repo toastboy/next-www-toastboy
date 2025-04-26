@@ -8,7 +8,7 @@ import PlayerHistory from 'components/PlayerHistory/PlayerHistory';
 import PlayerLastPlayed from 'components/PlayerLastPlayed/PlayerLastPlayed';
 import PlayerMugshot from 'components/PlayerMugshot/PlayerMugshot';
 import PlayerTrophies from 'components/PlayerTrophies/PlayerTrophies';
-import { Player } from 'prisma/generated/prisma/client';
+import { Player } from 'prisma/generated/zod';
 import { Suspense } from 'react';
 import classes from './PlayerProfile.module.css';
 
@@ -22,22 +22,22 @@ const PlayerProfile: React.FC<Props> = ({ player, year }) => {
         <Container>
             <Title order={1}>{player.name}</Title>
             <Box pos="relative" maw={"40em"} mah={"40em"}>
-                <PlayerMugshot player={player} />
+                <PlayerMugshot playerId={player.id} />
                 <Box className={classes.badges} right={"0.5em"} bottom={"0.5em"}>
-                    <PlayerClubs player={player} />
+                    <PlayerClubs playerId={player.id} />
                 </Box>
                 <Box className={classes.badges} left={"0.5em"} bottom={"0.5em"}>
-                    <PlayerCountries player={player} />
+                    <PlayerCountries playerId={player.id} />
                 </Box>
             </Box>
             <Suspense fallback={<Text>Loading...</Text>}>
-                <PlayerLastPlayed player={player} />
+                <PlayerLastPlayed playerId={player.id} />
             </Suspense>
-            <PlayerArse player={player} />
-            <PlayerForm player={player} gameDayId={0} games={5} />
-            <PlayerHistory player={player} year={year} />
-            <PlayerBorn player={player} />
-            <PlayerTrophies player={player} year={year} />
+            <PlayerArse playerId={player.id} />
+            <PlayerForm playerId={player.id} gameDayId={0} games={5} />
+            <PlayerHistory playerId={player.id} year={year} />
+            <PlayerBorn playerId={player.id} />
+            <PlayerTrophies playerId={player.id} year={year} />
         </Container>
     );
 };

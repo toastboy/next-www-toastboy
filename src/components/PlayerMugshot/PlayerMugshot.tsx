@@ -1,11 +1,15 @@
 import { Anchor, Image } from '@mantine/core';
-import { Player } from 'lib/types';
+import playerService from 'services/Player';
 
 interface Props {
-    player: Player;
+    playerId: number;
 }
 
-const PlayerMugshot: React.FC<Props> = ({ player }) => {
+const PlayerMugshot: React.FC<Props> = async ({ playerId }) => {
+    const player = await playerService.getById(playerId);
+
+    if (!player) return <></>;
+
     return (
         <Anchor href={`/footy/player/${player.id}`}>
             <Image

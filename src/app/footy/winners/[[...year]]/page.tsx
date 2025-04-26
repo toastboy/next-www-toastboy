@@ -1,8 +1,8 @@
 import { Grid, GridCol, Stack, Title } from "@mantine/core";
 import WinnersTable from "components/WinnersTable/WinnersTable";
 import YearSelector from "components/YearSelector/YearSelector";
-import { fetchData } from "lib/fetch";
 import { TableName } from 'lib/types';
+import playerRecordService from "services/PlayerRecord";
 
 interface Props {
     params: Promise<{
@@ -13,7 +13,7 @@ interface Props {
 const Page: React.FC<Props> = async props => {
     const { year } = await props.params;
     const yearnum = year ? parseInt(year[0]) : 0; // Zero or undefined means all-time
-    const allYears = await fetchData<number[]>('/api/footy/tableyear');
+    const allYears = await playerRecordService.getAllYears();
 
     return (
         <Stack align="stretch" justify="center" gap="md">

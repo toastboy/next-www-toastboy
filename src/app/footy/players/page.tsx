@@ -6,7 +6,8 @@ import PlayerTimeline from 'components/PlayerTimeline/PlayerTimeline';
 import PlayerWDLChart from 'components/PlayerWDLChart/PlayerWDLChart';
 import SendEmailForm from 'components/SendEmailForm/SendEmailForm';
 import { useCurrentGame, usePlayers } from 'lib/swr';
-import { Player, PlayerData } from 'lib/types';
+import { PlayerData } from 'lib/types';
+import { Player } from 'prisma/generated/zod';
 import { useEffect, useState } from 'react';
 
 type PageProps = object;
@@ -180,7 +181,7 @@ const Page: React.FC<PageProps> = () => {
                                 <PlayerWDLChart player={player} />
                             </Table.Td>
                             <Table.Td>
-                                <PlayerTimeline player={player} currentGame={currentGame} />
+                                <PlayerTimeline player={player} currentGameId={currentGame.id} />
                             </Table.Td>
                         </Table.Tr>
                     ))}

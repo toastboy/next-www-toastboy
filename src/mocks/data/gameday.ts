@@ -1,4 +1,4 @@
-import { GameDay } from 'lib/types';
+import { GameDay } from 'prisma/generated/zod';
 
 export const defaultGameDay: GameDay = {
     id: 1,

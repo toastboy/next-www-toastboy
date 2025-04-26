@@ -35,24 +35,6 @@ describe('API tests using HTTP', () => {
             speedy: 22977,
             playerId: 62,
             gameDayId: 511,
-            player: {
-                // TODO: When I make test data shared, I need to take account of
-                // the fact that the APIs return strings from JSON instead of
-                // e.g. Date objects
-                id: 1,
-                isAdmin: false,
-                login: "garyp",
-                firstName: "Gary",
-                lastName: "Player",
-                name: "Gary Player",
-                email: "gary.player@example.com",
-                joined: "2021-01-01",
-                finished: null,
-                born: "1975-11-01",
-                introducedBy: 23,
-                comment: null,
-                anonymous: false,
-            },
         },
     ];
 
@@ -62,6 +44,7 @@ describe('API tests using HTTP', () => {
 
         const response = await request(mockApp).get(mockRoute);
 
+        if (response.status !== 200) console.log('Error response:', response.error);
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
         expect(response.body).toEqual(mockData);
@@ -74,6 +57,7 @@ describe('API tests using HTTP', () => {
 
         const response = await request(mockApp).get(mockRoute);
 
+        if (response.status !== 200) console.log('Error response:', response.error);
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
         expect(response.body).toEqual(mockData);

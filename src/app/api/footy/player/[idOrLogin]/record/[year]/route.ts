@@ -1,5 +1,4 @@
-import { handleGET, sanitizePlayerRecordWithPlayerData } from 'lib/api';
-import { PlayerRecordWithPlayer } from 'lib/types';
+import { handleGET } from 'lib/api';
 import { NextRequest } from 'next/server';
 import playerService from 'services/Player';
 import playerRecordService from 'services/PlayerRecord';
@@ -34,9 +33,8 @@ export async function getForYearByPlayer(
  */
 export const GET = async (request: NextRequest, props: { params: Promise<Record<string, string>> }) => {
     const params = await props.params;
-    return handleGET<Partial<PlayerRecordWithPlayer | null>>(
+    return handleGET(
         () => getForYearByPlayer({ params }),
         { params },
-        { sanitize: sanitizePlayerRecordWithPlayerData },
     );
 };

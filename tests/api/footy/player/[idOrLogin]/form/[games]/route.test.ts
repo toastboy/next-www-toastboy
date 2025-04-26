@@ -18,6 +18,7 @@ describe('API tests using HTTP', () => {
 
     const mockData = [
         {
+            id: 1,
             response: 'Yes',
             responseInterval: 89724,
             points: 0,
@@ -30,6 +31,7 @@ describe('API tests using HTTP', () => {
             playerId: 1,
         },
         {
+            id: 2,
             response: 'Yes',
             responseInterval: 366022,
             points: 3,
@@ -42,6 +44,7 @@ describe('API tests using HTTP', () => {
             playerId: 1,
         },
         {
+            id: 3,
             response: 'Yes',
             responseInterval: 111346,
             points: 0,
@@ -61,12 +64,13 @@ describe('API tests using HTTP', () => {
 
         const response = await request(mockApp).get(testURI);
 
+        if (response.status !== 200) console.log('Error response:', response.error);
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
         expect(response.body).toEqual(
             mockData.map((record) => ({
                 ...record,
-                comment: undefined,
+                comment: null,
             })),
         );
     });
@@ -77,12 +81,13 @@ describe('API tests using HTTP', () => {
 
         const response = await request(mockApp).get(testURI);
 
+        if (response.status !== 200) console.log('Error response:', response.error);
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
         expect(response.body).toEqual(
             mockData.map((record) => ({
                 ...record,
-                comment: undefined,
+                comment: null,
             })),
         );
     });
@@ -93,6 +98,7 @@ describe('API tests using HTTP', () => {
 
         const response = await request(mockApp).get(testURI);
 
+        if (response.status !== 200) console.log('Error response:', response.error);
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
         expect(response.body).toEqual(mockData);

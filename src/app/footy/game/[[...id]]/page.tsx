@@ -1,9 +1,7 @@
 export const dynamic = 'force-dynamic';
 
 import { Anchor, Flex } from "@mantine/core";
-import { GameDay } from "@prisma/client";
 import GameDaySummary from "components/GameDaySummary/GameDaySummary";
-import { fetchData } from "lib/fetch";
 import { notFound, redirect } from "next/navigation";
 import gameDayService from "services/GameDay";
 
@@ -16,7 +14,8 @@ interface Props {
 const Page: React.FC<Props> = async (props) => {
     const { id } = await props.params;
     if (!id) {
-        const currentGame = await fetchData<GameDay>('/api/footy/currentgame');
+        const currentGame = await gameDayService.getCurrent();
+        if (!currentGame) return notFound();
         redirect(`/footy/game/${currentGame.id}`);
     }
     const gameDayId = parseInt(id);

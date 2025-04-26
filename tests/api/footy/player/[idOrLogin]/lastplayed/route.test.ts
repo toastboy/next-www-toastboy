@@ -17,6 +17,7 @@ describe('API tests using HTTP', () => {
     setupPlayerMocks();
 
     const mockData = {
+        id: 1,
         response: 'Yes',
         responseInterval: 89724,
         points: 0,
@@ -35,11 +36,12 @@ describe('API tests using HTTP', () => {
 
         const response = await request(mockApp).get(testURI);
 
+        if (response.status !== 200) console.log('Error response:', response.error);
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
         expect(response.body).toEqual({
             ...mockData,
-            comment: undefined,
+            comment: null,
         });
     });
 
@@ -49,6 +51,7 @@ describe('API tests using HTTP', () => {
 
         const response = await request(mockApp).get(testURI);
 
+        if (response.status !== 200) console.log('Error response:', response.error);
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
         expect(response.body).toEqual(mockData);

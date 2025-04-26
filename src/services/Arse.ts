@@ -1,6 +1,8 @@
+import 'server-only';
+
 import debug from 'debug';
 import prisma from 'lib/prisma';
-import { Arse } from 'prisma/generated/prisma/client';
+import { Arse } from 'prisma/generated/zod';
 
 const log = debug('footy:api');
 

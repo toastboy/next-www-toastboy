@@ -1,14 +1,14 @@
 import { ProgressRoot, ProgressSection } from '@mantine/core';
-import { GameDay, PlayerData } from 'lib/types';
+import { PlayerData } from 'lib/types';
 
 interface Props {
     player: PlayerData;
-    currentGame: GameDay;
+    currentGameId: number;
 }
 
-const PlayerTimeline: React.FC<Props> = ({ player, currentGame }) => {
+const PlayerTimeline: React.FC<Props> = ({ player, currentGameId }) => {
     const firstGame = 1;
-    const lastGame = currentGame.id;
+    const lastGame = currentGameId;
 
     return (
         <ProgressRoot size="xl">

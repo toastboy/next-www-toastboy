@@ -1,11 +1,15 @@
 import { Image } from '@mantine/core';
-import { Club } from 'lib/types';
+import clubService from 'services/Club';
 
 interface Props {
-    club: Club,
+    clubId: number,
 }
 
-const ClubBadge: React.FC<Props> = async ({ club }) => {
+const ClubBadge: React.FC<Props> = async ({ clubId }) => {
+    const club = await clubService.get(clubId);
+
+    if (!club) return <></>;
+
     return (
         <Image
             w="100%"

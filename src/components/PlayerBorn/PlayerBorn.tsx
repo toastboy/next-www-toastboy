@@ -1,11 +1,15 @@
 import { Text } from '@mantine/core';
-import { Player } from 'lib/types';
+import playerService from 'services/Player';
 
 export interface Props {
-    player: Player;
+    playerId: number;
 }
 
-const PlayerBorn: React.FC<Props> = async ({ player }) => {
+const PlayerBorn: React.FC<Props> = async ({ playerId }) => {
+    const player = await playerService.getById(playerId);
+
+    if (!player || player.born == null) return <></>;
+
     return (
         <Text>
             {player.born == null ? "Unknown" : player.born.toLocaleDateString('sv')}

@@ -1,13 +1,13 @@
 export const dynamic = 'force-dynamic';
 
 import { Flex, Text } from "@mantine/core";
-import { fetchData } from "lib/fetch";
+import gameDayService from "services/GameDay";
 
 type PageProps = object
 
 const Page: React.FC<PageProps> = async () => {
-    const gamesPlayed = await fetchData<number>('/api/footy/gamesplayed/0');
-    const gamesRemaining = await fetchData<number>('/api/footy/gamesremaining/0');
+    const gamesPlayed = await gameDayService.getGamesPlayed(0);
+    const gamesRemaining = await gameDayService.getGamesRemaining(0);
 
     return (
         <Flex direction="column" align="center" gap="lg">

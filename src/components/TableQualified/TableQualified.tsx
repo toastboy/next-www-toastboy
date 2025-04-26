@@ -1,8 +1,8 @@
 import { Flex, Table, TableTbody, TableTd, TableTr, Title } from '@mantine/core';
 import PlayerLink from 'components/PlayerLink/PlayerLink';
 import TableScore from 'components/TableScore/TableScore';
-import { fetchData } from 'lib/fetch';
-import { PlayerRecordWithPlayer, TableName } from 'lib/types';
+import { TableName } from 'lib/types';
+import playerRecordService from 'services/PlayerRecord';
 
 export interface Props {
     table: TableName;
@@ -13,7 +13,7 @@ export interface Props {
 }
 
 const TableQualified: React.FC<Props> = async ({ table, title, year, qualified, take }) => {
-    const data = await fetchData<PlayerRecordWithPlayer[]>(`/api/footy/table/${table}/${year}${qualified ? `/${qualified}` : ''}${take ? `/${take}` : ''}`);
+    const data = await playerRecordService.getTable(table, year, qualified, take);
 
     if (!data) return <></>;
 
@@ -25,7 +25,7 @@ const TableQualified: React.FC<Props> = async ({ table, title, year, qualified, 
                     {data.map((record, index) => (
                         <TableTr key={index}>
                             <TableTd>
-                                <PlayerLink player={record.player} year={year} />
+                                <PlayerLink playerId={record.playerId} year={year} />
                             </TableTd>
                             <TableTd>
                                 <TableScore table={table} playerRecord={record} /></TableTd>

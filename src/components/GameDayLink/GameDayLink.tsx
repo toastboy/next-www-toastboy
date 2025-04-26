@@ -1,11 +1,15 @@
 import { Anchor } from '@mantine/core';
-import { GameDay } from 'lib/types';
+import gameDayService from 'services/GameDay';
 
 export interface Props {
-    gameDay: GameDay;
+    gameDayId: number;
 }
 
-const GameDayLink: React.FC<Props> = ({ gameDay }) => {
+const GameDayLink: React.FC<Props> = async ({ gameDayId }) => {
+    const gameDay = await gameDayService.get(gameDayId);
+
+    if (!gameDay) return <></>;
+
     return (
         <Anchor href={`/footy/game/${gameDay.id}`} >
             {new Date(gameDay.date).toLocaleDateString('sv')}

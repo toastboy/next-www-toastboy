@@ -1,7 +1,7 @@
 import { Paper, Table, TableTbody, TableTd, TableTh, TableThead, TableTr, Title } from '@mantine/core';
 import PlayerLink from 'components/PlayerLink/PlayerLink';
-import { fetchData } from 'lib/fetch';
-import { PlayerRecordWithPlayer, TableName } from 'lib/types';
+import { TableName } from 'lib/types';
+import playerRecordService from 'services/PlayerRecord';
 
 export interface Props {
     table: TableName;
@@ -9,15 +9,15 @@ export interface Props {
 }
 
 const WinnersTable: React.FC<Props> = async ({ table, year }) => {
-    const record = await fetchData<PlayerRecordWithPlayer[]>(`/api/footy/winners/${table}/${year || ''}`);
-    let currentyear: number;
+    const record = await playerRecordService.getWinners(table, year && year > 0 ? year : undefined);
+    let currentYear: number;
 
     const rows = record.map((winner, index) => {
-        const year = winner.year == currentyear ? '' : (currentyear = winner.year);
+        const year = winner.year == currentYear ? '' : (currentYear = winner.year);
         return (
             <TableTr key={index}>
                 <TableTd>{year}</TableTd>
-                <TableTd><PlayerLink player={winner.player} year={currentyear} /></TableTd>
+                <TableTd><PlayerLink playerId={winner.playerId} year={currentYear} /></TableTd>
             </TableTr>
         );
     });

@@ -1,24 +1,27 @@
 import { Flex, Text, Title } from '@mantine/core';
 import Team from 'components/Team/Team';
-import { GameDayWithOutcomesWithPlayers } from 'lib/types';
+import { GameDay } from 'prisma/generated/zod';
+import outcomeService from 'services/Outcome';
 
 interface Props {
-    gameDay: GameDayWithOutcomesWithPlayers;
+    gameDay: GameDay;
 }
 
-const GameDaySummary: React.FC<Props> = ({ gameDay }) => {
+const GameDaySummary: React.FC<Props> = async ({ gameDay }) => {
     if (gameDay.game) {
+        const outcomes = await outcomeService.getByGameDay(gameDay.id);
+
         return (
             <Flex direction="column">
                 <Title order={1}>Game {gameDay.id}: {gameDay.date.toDateString()}</Title>
                 <Text>
                     {gameDay.comment ? `(${gameDay.comment})` : ''}
                 </Text>
-                <Team team={gameDay.outcomes.filter((o) => o.team == 'A')} />
+                <Team team={outcomes.filter((o) => o.team == 'A')} />
                 <Text>
                     vs.
                 </Text>
-                <Team team={gameDay.outcomes.filter((o) => o.team == 'B')} />
+                <Team team={outcomes.filter((o) => o.team == 'B')} />
             </Flex>
         );
     }

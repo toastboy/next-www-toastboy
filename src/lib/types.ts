@@ -1,52 +1,8 @@
 import {
-    Arse as PrismaArse,
-    Club as PrismaClub,
-    ClubSupporter as PrismaClubSupporter,
-    Country as PrismaCountry,
-    CountrySupporter as PrismaCountrySupporter,
-    GameDay as PrismaGameDay,
-    Outcome as PrismaOutcome,
     Player as PrismaPlayer,
-    PlayerRecord as PrismaPlayerRecord,
 } from 'prisma/generated/prisma/client';
 
-export type Arse = PrismaArse
-
-export type Club = PrismaClub
-
-export type ClubSupporter = PrismaClubSupporter
-
-export interface ClubSupporterWithClub extends ClubSupporter {
-    club: Club,
-}
-
-export type Country = PrismaCountry
-
-export type CountrySupporter = PrismaCountrySupporter
-
-export interface CountrySupporterWithCountry extends CountrySupporter {
-    country: Country,
-}
-
-export type GameDay = PrismaGameDay
-
-export interface GameDayWithOutcomesWithPlayers extends PrismaGameDay {
-    outcomes: Partial<OutcomeWithPlayer>[],
-}
-
-export type Outcome = PrismaOutcome
-
-export interface OutcomeWithPlayer extends PrismaOutcome {
-    player: Partial<Player>,
-}
-
-export interface OutcomeWithGameDay extends PrismaOutcome {
-    gameDay: PrismaGameDay,
-}
-
-export type Player = PrismaPlayer
-
-export interface PlayerData extends Player {
+export interface PlayerData extends PrismaPlayer {
     firstResponded: number | null;
     lastResponded: number | null;
     firstPlayed: number | null;
@@ -55,12 +11,6 @@ export interface PlayerData extends Player {
     gamesWon: number;
     gamesDrawn: number;
     gamesLost: number;
-}
-
-export type PlayerRecord = PrismaPlayerRecord
-
-export interface PlayerRecordWithPlayer extends PlayerRecord {
-    player: Partial<Player>,
 }
 
 // TODO: Really, I'd like these enums to come straight from Prisma but they show

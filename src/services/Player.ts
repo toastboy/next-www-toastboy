@@ -2,8 +2,9 @@ import 'server-only';
 
 import debug from 'debug';
 import prisma from 'lib/prisma';
-import { OutcomeWithGameDay, PlayerData } from 'lib/types';
+import { PlayerData } from 'lib/types';
 import { Player } from 'prisma/generated/prisma/client';
+import { Outcome } from 'prisma/generated/zod';
 
 const log = debug('footy:api');
 
@@ -314,7 +315,7 @@ class PlayerService {
      * @param history - The number of previous outcomes to consider.
      * @returns A promise that resolves to an array of outcomes.
      */
-    async getForm(playerId: number, gameDayId: number, history: number): Promise<OutcomeWithGameDay[] | null> {
+    async getForm(playerId: number, gameDayId: number, history: number): Promise<Outcome[]> {
         try {
             return prisma.outcome.findMany({
                 where: {
@@ -323,9 +324,6 @@ class PlayerService {
                     points: {
                         not: null,
                     },
-                },
-                include: {
-                    gameDay: true,
                 },
                 orderBy: {
                     gameDayId: 'desc',
@@ -343,7 +341,7 @@ class PlayerService {
      * @param playerId - The ID of the player.
      * @returns A promise that resolves to an array of outcomes or null.
      */
-    async getLastPlayed(playerId: number): Promise<OutcomeWithGameDay | null> {
+    async getLastPlayed(playerId: number): Promise<Outcome | null> {
         try {
             return prisma.outcome.findFirst({
                 where: {
@@ -351,9 +349,6 @@ class PlayerService {
                     points: {
                         not: null,
                     },
-                },
-                include: {
-                    gameDay: true,
                 },
                 orderBy: {
                     gameDayId: 'desc',
@@ -370,11 +365,11 @@ class PlayerService {
      * Retrieves all the years that the given player has participated in any
      * way. That could be just responding to an invitation, going to the pub, or
      * playing a game of course.
-     * @returns A promise that resolves to an array of distinct years or null if
-     * there are none.
+     * @returns A promise that resolves to an array of distinct years: this will
+     * always include 0 for 'all time' if there's at least one active year.
      * @throws An error if there is a failure.
      */
-    async getYearsActive(playerId: number): Promise<number[] | null> {
+    async getYearsActive(playerId: number): Promise<number[]> {
         try {
             const outcomes = await prisma.outcome.findMany({
                 where: {

@@ -1,9 +1,9 @@
 import { Flex, Paper } from '@mantine/core';
 import TeamPlayer from 'components/TeamPlayer/TeamPlayer';
-import { OutcomeWithPlayer } from 'lib/types';
+import { Outcome } from 'prisma/generated/zod';
 
 export interface Props {
-    team: OutcomeWithPlayer[];
+    team: Outcome[];
 }
 
 const Team: React.FC<Props> = ({ team }) => {
@@ -11,7 +11,7 @@ const Team: React.FC<Props> = ({ team }) => {
         <Paper p="md" shadow="xl">
             <Flex direction="column" gap="md">
                 {team.map((o) => (
-                    <TeamPlayer key={o.playerId} player={o.player} gameDayId={o.gameDayId} goalie={o.goalie} />
+                    <TeamPlayer key={o.playerId} playerId={o.playerId} gameDayId={o.gameDayId} goalie={o.goalie} />
                 ))}
             </Flex>
         </Paper>

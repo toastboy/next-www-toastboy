@@ -11,7 +11,7 @@ import Underline from '@tiptap/extension-underline';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { sendEmail } from 'lib/mail';
-import { Player } from 'lib/types';
+import { Player } from 'prisma/generated/zod';
 import { useState } from 'react';
 import classes from './SendEmailForm.module.css';
 

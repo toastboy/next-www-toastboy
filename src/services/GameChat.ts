@@ -1,6 +1,8 @@
+import 'server-only';
+
 import debug from 'debug';
 import prisma from 'lib/prisma';
-import { GameChat } from 'prisma/generated/prisma/client';
+import { GameChat } from 'prisma/generated/zod';
 
 const log = debug('footy:api');
 

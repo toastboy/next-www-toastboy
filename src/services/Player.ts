@@ -3,8 +3,7 @@ import 'server-only';
 import debug from 'debug';
 import prisma from 'lib/prisma';
 import { PlayerData } from 'lib/types';
-import { Player } from 'prisma/generated/prisma/client';
-import { Outcome } from 'prisma/generated/zod';
+import { Outcome, Player } from 'prisma/generated/zod';
 
 const log = debug('footy:api');
 

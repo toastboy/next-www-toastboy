@@ -1,56 +1,62 @@
-import {
-    Player as PrismaPlayer,
-} from 'prisma/generated/prisma/client';
-import { TeamNameType } from 'prisma/generated/zod';
+import { PlayerSchema, TeamNameSchema } from 'prisma/generated/zod';
+import { z } from 'zod';
 
-export interface PlayerData extends PrismaPlayer {
-    firstResponded: number | null;
-    lastResponded: number | null;
-    firstPlayed: number | null;
-    lastPlayed: number | null;
-    gamesPlayed: number;
-    gamesWon: number;
-    gamesDrawn: number;
-    gamesLost: number;
-}
+export const PlayerDataSchema = z.object({
+    firstResponded: z.number().nullable(),
+    lastResponded: z.number().nullable(),
+    firstPlayed: z.number().nullable(),
+    lastPlayed: z.number().nullable(),
+    gamesPlayed: z.number(),
+    gamesWon: z.number(),
+    gamesDrawn: z.number(),
+    gamesLost: z.number(),
+}).merge(PlayerSchema);
 
-export interface Turnout {
-    responses: number,
-    players: number,
-    cancelled: boolean,
-    id: number,
-    year: number,
-    date: Date,
-    game: boolean,
-    mailSent: Date | null,
-    comment: string | null,
-    bibs: TeamNameType | null,
-    pickerGamesHistory: number | null,
-    yes: number,
-    no: number,
-    dunno: number,
-    excused: number,
-    flaked: number,
-    injured: number,
-}
+export type PlayerData = z.infer<typeof PlayerDataSchema>;
 
-export interface TurnoutByYear {
-    year: number,
-    gameDays: number,
-    gamesScheduled: number,
-    gamesInitiated: number,
-    gamesPlayed: number,
-    gamesCancelled: number,
-    responses: number,
-    yesses: number,
-    players: number,
-    responsesPerGameInitiated: number,
-    yessesPerGameInitiated: number,
-    playersPerGamePlayed: number,
-}
+export const TurnoutSchema = z.object({
+    responses: z.number(),
+    players: z.number(),
+    cancelled: z.boolean(),
+    id: z.number(),
+    year: z.number(),
+    date: z.date(),
+    game: z.boolean(),
+    mailSent: z.date().nullable(),
+    comment: z.string().nullable(),
+    bibs: TeamNameSchema.nullable(),
+    pickerGamesHistory: z.number().nullable(),
+    yes: z.number(),
+    no: z.number(),
+    dunno: z.number(),
+    excused: z.number(),
+    flaked: z.number(),
+    injured: z.number(),
+});
 
-export interface WDL {
-    won: number,
-    drawn: number,
-    lost: number,
-}
+export type Turnout = z.infer<typeof TurnoutSchema>;
+
+export const TurnoutByYearSchema = z.object({
+    year: z.number(),
+    gameDays: z.number(),
+    gamesScheduled: z.number(),
+    gamesInitiated: z.number(),
+    gamesPlayed: z.number(),
+    gamesCancelled: z.number(),
+    responses: z.number(),
+    yesses: z.number(),
+    players: z.number(),
+    responsesPerGameInitiated: z.number(),
+    yessesPerGameInitiated: z.number(),
+    playersPerGamePlayed: z.number(),
+});
+
+export type TurnoutByYear = z.infer<typeof TurnoutByYearSchema>;
+
+export const WDLSchema = z.object({
+    won: z.number(),
+    drawn: z.number(),
+    lost: z.number(),
+});
+
+export type WDL = z.infer<typeof WDLSchema>;

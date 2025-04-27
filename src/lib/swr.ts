@@ -1,8 +1,8 @@
 'use client';
 
-import { Arse, Club, ClubSupporter, Country, CountrySupporter, GameDay, Outcome, Player, PlayerRecord } from 'prisma/generated/zod';
+import { Arse, Club, ClubSupporter, Country, CountrySupporter, GameDay, Outcome, Player, PlayerRecord, TableNameType } from 'prisma/generated/zod';
 import useSWR from 'swr';
-import { PlayerData, TableName, TurnoutByYear, WDL } from './types';
+import { PlayerData, TurnoutByYear, WDL } from './types';
 
 const fetcher = (input: URL | RequestInfo, init?: RequestInit | undefined) =>
     fetch(input, init).then((res) => res.json());
@@ -115,7 +115,7 @@ export function useTableYears() {
     return data || null;
 }
 
-export function useTable(table: TableName, year: number, qualified?: boolean, take?: number) {
+export function useTable(table: TableNameType, year: number, qualified?: boolean, take?: number) {
     let url = `/api/footy/table/${table}/${year}`;
     if (qualified !== undefined) url += `/${qualified}`;
     if (take !== undefined) url += `/${take}`;
@@ -131,7 +131,7 @@ export function useTeam(gameDay: number, team: string) {
     return data || null;
 }
 
-export function useWinners(table: TableName, year?: number) {
+export function useWinners(table: TableNameType, year?: number) {
     let url = `/api/footy/winners/${table}`;
     if (year !== undefined) url += `/${year}`;
 

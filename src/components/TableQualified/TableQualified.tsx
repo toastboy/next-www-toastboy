@@ -1,11 +1,11 @@
 import { Flex, Table, TableTbody, TableTd, TableTr, Title } from '@mantine/core';
 import PlayerLink from 'components/PlayerLink/PlayerLink';
 import TableScore from 'components/TableScore/TableScore';
-import { TableName } from 'lib/types';
+import { TableNameType } from 'prisma/generated/zod';
 import playerRecordService from 'services/PlayerRecord';
 
 export interface Props {
-    table: TableName;
+    table: TableNameType;
     title?: string;
     year: number;
     qualified?: boolean;

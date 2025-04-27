@@ -2,9 +2,8 @@ import 'server-only';
 
 import debug from 'debug';
 import prisma from 'lib/prisma';
-import { TeamName } from 'lib/types';
 import { GameDay as PrismaGameDay } from 'prisma/generated/prisma/client';
-import { GameDay } from 'prisma/generated/zod';
+import { GameDay, TeamNameType } from 'prisma/generated/zod';
 
 const log = debug('footy:api');
 
@@ -52,7 +51,7 @@ export class GameDayService {
      * Retrieves all game days based on the provided filters.
      *
      * @param {Object} filters - The filters to apply when retrieving game days.
-     * @param {TeamName | string} [filters.bibs] - The team name or bibs to filter by. If "null", it will be treated as null.
+     * @param {TeamNameType} [filters.bibs] - The team name or bibs to filter by. If "null", it will be treated as null.
      * @param {boolean} [filters.game] - Whether to filter by game status.
      * @param {boolean} [filters.mailSent] - Whether to filter by mail sent status. If true, it will filter for non-null mailSent values.
      * @param {number} [filters.year] - The year to filter by.
@@ -60,7 +59,7 @@ export class GameDayService {
      * @throws Will throw an error if there is an issue fetching the game days.
      */
     async getAll({ bibs, game, mailSent, year }: {
-        bibs?: TeamName | string,
+        bibs?: TeamNameType,
         game?: boolean,
         mailSent?: boolean,
         year?: number,
@@ -68,7 +67,7 @@ export class GameDayService {
         try {
             return prisma.gameDay.findMany({
                 where: {
-                    ...(bibs !== undefined && { bibs: bibs == "null" ? null : bibs as TeamName }),
+                    ...(bibs !== undefined && { bibs: bibs }),
                     ...(game !== undefined && { game: game }),
                     ...(mailSent !== undefined && { mailSent: mailSent ? { not: null } : null }),
                     ...(year !== undefined && { year: year }),

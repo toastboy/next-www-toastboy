@@ -1,6 +1,6 @@
 import { Table, TableCaption, TableTbody, TableTd, TableTh, TableTr } from '@mantine/core';
-import { TableName } from 'lib/types';
 import { getYearName, rankMap } from 'lib/utils';
+import { TableNameSchema } from 'prisma/generated/zod';
 import playerService from 'services/Player';
 import playerRecordService from 'services/PlayerRecord';
 
@@ -20,9 +20,9 @@ const PlayerPositions: React.FC<Props> = async ({ playerId, year }) => {
         <Table summary={`${player.name}'s ${getYearName(year)} table positions`}>
             <TableCaption>{getYearName(year)} Positions</TableCaption>
             <TableTbody>
-                {Object.keys(TableName).map((table) => {
+                {TableNameSchema.options.map((table) => {
                     const position = playerRecord
-                        ? playerRecord[rankMap[table as TableName] as keyof typeof playerRecord] || null
+                        ? playerRecord[rankMap[table] as keyof typeof playerRecord] || null
                         : null;
 
                     return (

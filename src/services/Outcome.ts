@@ -3,8 +3,7 @@ import 'server-only';
 import debug from 'debug';
 import prisma from 'lib/prisma';
 import { Turnout, TurnoutByYear, WDL } from 'lib/types';
-import { PlayerResponse } from 'prisma/generated/prisma/client'; // TODO: Can this be done with zod?
-import { Outcome } from 'prisma/generated/zod';
+import { Outcome, PlayerResponseSchema } from 'prisma/generated/zod';
 import gameDayService from 'services/GameDay';
 
 const log = debug('footy:api');
@@ -17,7 +16,7 @@ export class OutcomeService {
      * @throws An error if the outcome is invalid.
      */
     validate(outcome: Outcome): Outcome {
-        if (outcome.response && !Object.values(PlayerResponse).includes(outcome.response)) {
+        if (outcome.response && !PlayerResponseSchema.options.includes(outcome.response)) {
             throw new Error(`Invalid response value: ${outcome.response}`);
         }
         if (outcome.responseInterval && outcome.responseInterval < 0) {
@@ -194,7 +193,7 @@ export class OutcomeService {
                     ['flaked', 0],
                     ['injured', 0],
                 ]);
-                const gameDayResponseCounts = Object.values(PlayerResponse).reduce((map, response) => {
+                const gameDayResponseCounts = PlayerResponseSchema.options.reduce((map, response) => {
                     const count = responseCounts
                         .filter((res) =>
                             gameDay && res.gameDayId === gameDay.id &&
@@ -217,7 +216,7 @@ export class OutcomeService {
                             .filter((rc) => rc.gameDayId === gameDay.id && rc.response !== null)
                             .reduce((acc, rc) => acc + rc._count.response, 0),
                         players: responseCounts
-                            .filter((rc) => rc.gameDayId === gameDay.id && rc.response === PlayerResponse.Yes)
+                            .filter((rc) => rc.gameDayId === gameDay.id && rc.response === PlayerResponseSchema.enum.Yes)
                             .map((rc) => rc._count.team)[0] || 0,
                         cancelled: gameDay.mailSent !== null && !gameDay.game,
                     };

@@ -1,7 +1,7 @@
 import { Grid, GridCol, Stack, Title } from "@mantine/core";
 import WinnersTable from "components/WinnersTable/WinnersTable";
 import YearSelector from "components/YearSelector/YearSelector";
-import { TableName } from 'lib/types';
+import { TableNameSchema } from "prisma/generated/zod";
 import playerRecordService from "services/PlayerRecord";
 
 interface Props {
@@ -21,10 +21,10 @@ const Page: React.FC<Props> = async props => {
             <Title w="100%" ta="center" order={1}>Winners</Title>
             <Grid>
                 {
-                    Object.keys(TableName).map((table, index) => {
+                    TableNameSchema.options.map((table, index) => {
                         return (
                             <GridCol span={{ base: 12, sm: 8, md: 6, lg: 4, xl: 3 }} key={index}>
-                                <WinnersTable table={table as TableName} year={yearnum} />
+                                <WinnersTable table={table} year={yearnum} />
                             </GridCol>
                         );
                     })

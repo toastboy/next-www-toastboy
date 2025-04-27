@@ -1,16 +1,15 @@
-import { TableName } from 'lib/types';
-import { PlayerRecord } from 'prisma/generated/zod';
+import { PlayerRecord, TableNameSchema, TableNameType } from 'prisma/generated/zod';
 
 export interface Props {
-    table: TableName;
+    table: TableNameType;
     playerRecord: PlayerRecord;
 }
 
 const TableScore = ({ table, playerRecord }: Props) => {
     switch (table) {
-        case TableName.averages:
+        case TableNameSchema.enum.averages:
             return `${playerRecord.averages?.toFixed(3)}`;
-        case TableName.speedy:
+        case TableNameSchema.enum.speedy:
             {
                 const date = new Date(0);
                 if (playerRecord.speedy !== null) {

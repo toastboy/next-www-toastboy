@@ -1,6 +1,6 @@
 import { handleGET } from 'lib/api';
-import { TableName } from 'lib/types';
 import { NextRequest } from 'next/server';
+import { TableNameSchema } from 'prisma/generated/zod';
 import playerRecordService from 'services/PlayerRecord';
 
 /**
@@ -20,7 +20,7 @@ export const GET = async (request: NextRequest, props: { params: Promise<Record<
 
     return handleGET(
         () => playerRecordService.getTable(
-            params.table as TableName,
+            TableNameSchema.parse(params.table),
             parseInt(params.year),
         ),
         { params },

@@ -1,6 +1,6 @@
 import prisma from 'lib/prisma';
-import { PlayerResponse, TeamName } from 'lib/types';
 import { Outcome } from 'prisma/generated/prisma/client';
+import { PlayerResponseSchema, PlayerResponseType, TeamNameType } from 'prisma/generated/zod';
 import outcomeService from 'services/Outcome';
 
 jest.mock('lib/prisma', () => ({
@@ -464,7 +464,7 @@ describe('OutcomeService', () => {
         it('should refuse to create an Outcome with invalid data', async () => {
             await expect(outcomeService.create({
                 ...defaultOutcome,
-                response: 'Wibble' as PlayerResponse,
+                response: 'Wibble' as PlayerResponseType,
             })).rejects.toThrow();
             await expect(outcomeService.create({
                 ...defaultOutcome,
@@ -476,7 +476,7 @@ describe('OutcomeService', () => {
             })).rejects.toThrow();
             await expect(outcomeService.create({
                 ...defaultOutcome,
-                team: 'X' as TeamName,
+                team: 'X' as TeamNameType,
             })).rejects.toThrow();
             await expect(outcomeService.create({
                 ...defaultOutcome,
@@ -508,7 +508,7 @@ describe('OutcomeService', () => {
                 ...defaultOutcome,
                 playerId: 1,
                 gameDayId: 1,
-                response: 'No' as PlayerResponse,
+                response: PlayerResponseSchema.enum.No,
                 comment: 'Updated comment',
             };
             const result = await outcomeService.upsert(updatedOutcome);

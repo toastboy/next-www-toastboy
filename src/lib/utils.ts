@@ -1,4 +1,4 @@
-import { TableName } from './types';
+import { TableNameType } from 'prisma/generated/zod';
 
 /**
  * Converts a readable stream into a Buffer.
@@ -51,7 +51,7 @@ export function getYearName(year: number): string {
  * @property {string} speedy - The rank identifier for speedy.
  * @property {string} pub - The rank identifier for pub.
  */
-export const rankMap: Record<TableName, string> = {
+export const rankMap: Record<TableNameType, string> = {
     points: "rankPoints",
     averages: "rankAverages",
     stalwart: "rankStalwart",

@@ -1,6 +1,7 @@
 import { handleGET } from 'lib/api';
 import { parseBoolean } from 'lib/utils';
 import { NextRequest } from 'next/server';
+import { TeamNameSchema } from 'prisma/generated/zod';
 import gameDayService from 'services/GameDay';
 
 /**
@@ -24,7 +25,7 @@ export const GET = async (request: NextRequest, props: { params: Promise<Record<
 
     return handleGET(
         () => gameDayService.getAll({
-            bibs: searchParams.get('bibs') || undefined,
+            bibs: TeamNameSchema.safeParse(searchParams.get('bibs')).data || undefined,
             game: parseBoolean(searchParams.get('game')),
             mailSent: parseBoolean(searchParams.get('mailSent')),
             year: parseInt(searchParams.get('year') || '') || undefined,

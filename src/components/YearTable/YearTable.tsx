@@ -1,11 +1,11 @@
 import { Flex } from '@mantine/core';
 import TableQualified from 'components/TableQualified/TableQualified';
 import config from 'lib/config';
-import { TableName } from 'lib/types';
 import { getYearName } from 'lib/utils';
+import { TableNameSchema, TableNameType } from 'prisma/generated/zod';
 
 interface Props {
-    table: TableName;
+    table: TableNameType;
     year: number;
 }
 
@@ -22,17 +22,17 @@ const YearTable: React.FC<Props> = ({ table, year }) => {
 
 /**
  * Generates a qualified table name based on the provided table type and year.
- * @param {TableName} table - The type of table.
+ * @param {TableNameType} table - The type of table.
  * @param {number} year - The year for which the table is generated.
  * @returns {string} - The qualified table name.
  */
-function QualifiedTableName(table: TableName, year: number): string {
+function QualifiedTableName(table: TableNameType, year: number): string {
     let tableName = "";
     switch (table) {
-        case TableName.speedy:
+        case TableNameSchema.enum.speedy:
             tableName = 'Captain Speedy';
             break;
-        case TableName.stalwart:
+        case TableNameSchema.enum.stalwart:
             tableName = 'Stalwart Standings';
             break;
         default:
@@ -49,11 +49,11 @@ function QualifiedTableName(table: TableName, year: number): string {
  * @param {number} year - The year for which the table is generated.
  * @returns {string} - The qualified table name or null.
  */
-function UnqualifiedTableName(table: TableName): string | undefined {
+function UnqualifiedTableName(table: TableNameType): string | undefined {
     switch (table) {
-        case TableName.averages:
+        case TableNameSchema.enum.averages:
             return `Played Fewer than ${config.minGamesForAveragesTable} Games`;
-        case TableName.speedy:
+        case TableNameSchema.enum.speedy:
             return `Responded Fewer than ${config.minRepliesForSpeedyTable} Times`;
         default:
             return undefined;

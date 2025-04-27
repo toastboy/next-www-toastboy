@@ -3,9 +3,8 @@ import 'server-only';
 import debug from 'debug';
 import config from 'lib/config';
 import prisma from 'lib/prisma';
-import { TableName } from 'lib/types';
 import { rankMap } from 'lib/utils';
-import { GameDay, Outcome, PlayerRecord } from 'prisma/generated/zod';
+import { GameDay, Outcome, PlayerRecord, TableNameType } from 'prisma/generated/zod';
 import gameDayService from 'services/GameDay';
 import outcomeService from 'services/Outcome';
 
@@ -287,7 +286,7 @@ export class PlayerRecordService {
      * @throws If there is an error fetching the player records.
      */
     async getWinners(
-        table: TableName,
+        table: TableNameType,
         year?: number,
     ): Promise<PlayerRecord[]> {
         try {
@@ -323,7 +322,7 @@ export class PlayerRecordService {
      * @throws If there is an error while fetching the player records.
      */
     async getTable(
-        table: TableName,
+        table: TableNameType,
         year: number,
         qualified?: boolean,
         take?: number,

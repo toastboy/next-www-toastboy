@@ -1,6 +1,7 @@
 import {
     Player as PrismaPlayer,
 } from 'prisma/generated/prisma/client';
+import { TeamNameType } from 'prisma/generated/zod';
 
 export interface PlayerData extends PrismaPlayer {
     firstResponded: number | null;
@@ -13,32 +14,6 @@ export interface PlayerData extends PrismaPlayer {
     gamesLost: number;
 }
 
-// TODO: Really, I'd like these enums to come straight from Prisma but they show
-// up in the client components as undefined. Obviously, they'll need updating if
-// the corresponding bits of the schema ever change.
-
-export enum PlayerResponse {
-    Yes = 'Yes',
-    No = 'No',
-    Dunno = 'Dunno',
-    Excused = 'Excused',
-    Flaked = 'Flaked',
-    Injured = 'Injured',
-};
-
-export enum TableName {
-    points = 'points',
-    averages = 'averages',
-    stalwart = 'stalwart',
-    speedy = 'speedy',
-    pub = 'pub',
-};
-
-export enum TeamName {
-    A = 'A',
-    B = 'B',
-};
-
 export interface Turnout {
     responses: number,
     players: number,
@@ -49,7 +24,7 @@ export interface Turnout {
     game: boolean,
     mailSent: Date | null,
     comment: string | null,
-    bibs: TeamName | null,
+    bibs: TeamNameType | null,
     pickerGamesHistory: number | null,
     yes: number,
     no: number,

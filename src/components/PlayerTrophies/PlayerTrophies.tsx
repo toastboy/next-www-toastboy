@@ -1,26 +1,26 @@
 import { Flex, Stack, Text, Tooltip } from '@mantine/core';
 import { IconBeer, IconClock, IconMedal, IconStar, IconTrophy } from '@tabler/icons-react';
-import { TableName } from 'lib/types';
+import { TableNameSchema, TableNameType } from 'prisma/generated/zod';
 import playerRecordService from 'services/PlayerRecord';
 
 interface TableProps {
     playerId: number;
-    table: TableName;
+    table: TableNameType;
     year?: number;
 }
 
 const PlayerTableTrophies: React.FC<TableProps> = async ({ playerId, table, year }) => {
     const icon = (() => {
         switch (table) {
-            case 'points':
+            case TableNameSchema.enum.points:
                 return <IconTrophy size={16} />;
-            case 'averages':
+            case TableNameSchema.enum.averages:
                 return <IconStar size={16} />;
-            case 'stalwart':
+            case TableNameSchema.enum.stalwart:
                 return <IconMedal size={16} />;
-            case 'speedy':
+            case TableNameSchema.enum.speedy:
                 return <IconClock size={16} />;
-            case 'pub':
+            case TableNameSchema.enum.pub:
                 return <IconBeer size={16} />;
         }
     })();
@@ -62,8 +62,8 @@ export interface Props {
 const PlayerTrophies: React.FC<Props> = ({ playerId, year }) => {
     return (
         <Stack gap="xs">
-            {Object.keys(TableName).map((table) => (
-                <PlayerTableTrophies key={table} playerId={playerId} table={table as TableName} year={year} />
+            {TableNameSchema.options.map((table) => (
+                <PlayerTableTrophies key={table} playerId={playerId} table={table} year={year} />
             ))}
         </Stack>
     );

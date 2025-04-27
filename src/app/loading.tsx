@@ -5,7 +5,7 @@ import { Flex, Loader } from '@mantine/core';
 const Loading = () => {
   return (
     <Flex justify="center" align="center" h="100vh">
-      <Loader color="gray" type="dots" />
+      <Loader data-testid="loading" color="gray" type="dots" />
     </Flex>
   );
 };

@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 function randname(length: number) {
     let result = '';
@@ -12,8 +12,8 @@ function randname(length: number) {
 }
 
 test('new player', async ({ page }) => {
-
     await page.goto('/footy/newplayer');
+    await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
 
     expect(await page.getByText('You must be logged in as an administrator to use this page.').count()).toEqual(1);
 

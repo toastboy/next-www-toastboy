@@ -1,8 +1,8 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test('password change test', async ({ page }) => {
-
     const response = await page.goto('/footy/password');
+    await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
     expect(response?.ok()).toBeTruthy();
     await expect(page).toHaveURL(/.*password/);
     await expect(page).toHaveTitle(/Login required/);

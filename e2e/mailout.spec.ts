@@ -1,8 +1,8 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test('mail active players', async ({ page }) => {
-
     await page.goto('/footy/mailout');
+    await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
 
     expect(await page.getByText('You must be logged in to use this page. If you would like to request an account, please complete this form:').count()).toEqual(1);
 

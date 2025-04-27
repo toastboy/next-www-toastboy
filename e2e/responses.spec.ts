@@ -1,10 +1,10 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test('new game flow', async ({ page }) => {
-
     // Send invitations for a new game
 
     await page.goto('/footy/newgame');
+    await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
 
     expect(await page.getByText('You must be logged in as an administrator to use this page.').count()).toEqual(1);
 

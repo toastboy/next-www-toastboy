@@ -1,7 +1,8 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test('enumerate homepage links', async ({ page }) => {
     await page.goto('/');
+    await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
     await expect(page).toHaveTitle(/Toastboy FC/);
 
     const links = page.locator('a:visible');

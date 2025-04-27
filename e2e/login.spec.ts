@@ -1,8 +1,8 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test('login form denies a bad user', async ({ page }) => {
-
   await page.goto('/footy/');
+  await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
 
   await page.getByLabel('Username:').click();
 

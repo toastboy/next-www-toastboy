@@ -1,8 +1,8 @@
-import { test, expect } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 
 test('profile page checks', async ({ page }) => {
-
     await page.goto('/footy/profile');
+    await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
 
     expect(await page.getByText('You must be logged in to use this page.').count()).toEqual(1);
 

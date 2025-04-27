@@ -1,8 +1,8 @@
 import { expect, test } from '@playwright/test';
 
 test('tables page', async ({ page }) => {
-
     const response = await page.goto('/footy/tables');
+    await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
     expect(response?.ok()).toBeTruthy();
     await expect(page).toHaveURL(/.*tables/);
     await expect(page).toHaveTitle(/Toastboy FC Tables/);
@@ -24,5 +24,4 @@ test('tables page', async ({ page }) => {
     }
 
     console.log(hrefs);
-
 });

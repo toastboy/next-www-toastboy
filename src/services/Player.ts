@@ -27,14 +27,6 @@ class PlayerService {
             throw new Error(`Invalid isAdmin value: ${player.isAdmin}`);
         }
 
-        if (player.firstName && typeof player.firstName !== 'string') {
-            throw new Error(`Invalid firstName value: ${player.firstName}`);
-        }
-
-        if (player.lastName && typeof player.lastName !== 'string') {
-            throw new Error(`Invalid lastName value: ${player.lastName}`);
-        }
-
         if (player.name && typeof player.name !== 'string') {
             throw new Error(`Invalid name value: ${player.name}`);
         }
@@ -304,7 +296,7 @@ class PlayerService {
             return `Player ${player.id}`;
         }
 
-        return `${player.firstName} ${player.lastName}`;
+        return `${player.name}`;
     }
 
     /**

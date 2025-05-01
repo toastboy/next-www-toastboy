@@ -222,8 +222,6 @@ exports.Prisma.PlayerScalarFieldEnum = {
   id: 'id',
   login: 'login',
   isAdmin: 'isAdmin',
-  firstName: 'firstName',
-  lastName: 'lastName',
   name: 'name',
   anonymous: 'anonymous',
   email: 'email',
@@ -361,8 +359,6 @@ exports.Prisma.PickerOrderByRelevanceFieldEnum = {
 
 exports.Prisma.PlayerOrderByRelevanceFieldEnum = {
   login: 'login',
-  firstName: 'firstName',
-  lastName: 'lastName',
   name: 'name',
   email: 'email',
   comment: 'comment'

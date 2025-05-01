@@ -164,8 +164,6 @@ model Player {
 
   isAdmin Boolean?
 
-  firstName String?
-  lastName  String?
   name      String?
   anonymous Boolean?
 

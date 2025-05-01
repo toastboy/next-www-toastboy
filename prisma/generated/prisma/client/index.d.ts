@@ -14147,8 +14147,6 @@ export namespace Prisma {
     id: number | null
     login: string | null
     isAdmin: boolean | null
-    firstName: string | null
-    lastName: string | null
     name: string | null
     anonymous: boolean | null
     email: string | null
@@ -14163,8 +14161,6 @@ export namespace Prisma {
     id: number | null
     login: string | null
     isAdmin: boolean | null
-    firstName: string | null
-    lastName: string | null
     name: string | null
     anonymous: boolean | null
     email: string | null
@@ -14179,8 +14175,6 @@ export namespace Prisma {
     id: number
     login: number
     isAdmin: number
-    firstName: number
-    lastName: number
     name: number
     anonymous: number
     email: number
@@ -14207,8 +14201,6 @@ export namespace Prisma {
     id?: true
     login?: true
     isAdmin?: true
-    firstName?: true
-    lastName?: true
     name?: true
     anonymous?: true
     email?: true
@@ -14223,8 +14215,6 @@ export namespace Prisma {
     id?: true
     login?: true
     isAdmin?: true
-    firstName?: true
-    lastName?: true
     name?: true
     anonymous?: true
     email?: true
@@ -14239,8 +14229,6 @@ export namespace Prisma {
     id?: true
     login?: true
     isAdmin?: true
-    firstName?: true
-    lastName?: true
     name?: true
     anonymous?: true
     email?: true
@@ -14342,8 +14330,6 @@ export namespace Prisma {
     id: number
     login: string
     isAdmin: boolean | null
-    firstName: string | null
-    lastName: string | null
     name: string | null
     anonymous: boolean | null
     email: string | null
@@ -14377,8 +14363,6 @@ export namespace Prisma {
     id?: boolean
     login?: boolean
     isAdmin?: boolean
-    firstName?: boolean
-    lastName?: boolean
     name?: boolean
     anonymous?: boolean
     email?: boolean
@@ -14402,8 +14386,6 @@ export namespace Prisma {
     id?: boolean
     login?: boolean
     isAdmin?: boolean
-    firstName?: boolean
-    lastName?: boolean
     name?: boolean
     anonymous?: boolean
     email?: boolean
@@ -14414,7 +14396,7 @@ export namespace Prisma {
     introducedBy?: boolean
   }
 
-  export type PlayerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "login" | "isAdmin" | "firstName" | "lastName" | "name" | "anonymous" | "email" | "joined" | "finished" | "born" | "comment" | "introducedBy", ExtArgs["result"]["player"]>
+  export type PlayerOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "login" | "isAdmin" | "name" | "anonymous" | "email" | "joined" | "finished" | "born" | "comment" | "introducedBy", ExtArgs["result"]["player"]>
   export type PlayerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     arsesOfPlayer?: boolean | Player$arsesOfPlayerArgs<ExtArgs>
     arsesByPlayer?: boolean | Player$arsesByPlayerArgs<ExtArgs>
@@ -14439,8 +14421,6 @@ export namespace Prisma {
       id: number
       login: string
       isAdmin: boolean | null
-      firstName: string | null
-      lastName: string | null
       name: string | null
       anonymous: boolean | null
       email: string | null
@@ -14827,8 +14807,6 @@ export namespace Prisma {
     readonly id: FieldRef<"Player", 'Int'>
     readonly login: FieldRef<"Player", 'String'>
     readonly isAdmin: FieldRef<"Player", 'Boolean'>
-    readonly firstName: FieldRef<"Player", 'String'>
-    readonly lastName: FieldRef<"Player", 'String'>
     readonly name: FieldRef<"Player", 'String'>
     readonly anonymous: FieldRef<"Player", 'Boolean'>
     readonly email: FieldRef<"Player", 'String'>
@@ -20652,8 +20630,6 @@ export namespace Prisma {
     id: 'id',
     login: 'login',
     isAdmin: 'isAdmin',
-    firstName: 'firstName',
-    lastName: 'lastName',
     name: 'name',
     anonymous: 'anonymous',
     email: 'email',
@@ -20842,8 +20818,6 @@ export namespace Prisma {
 
   export const PlayerOrderByRelevanceFieldEnum: {
     login: 'login',
-    firstName: 'firstName',
-    lastName: 'lastName',
     name: 'name',
     email: 'email',
     comment: 'comment'
@@ -21684,8 +21658,6 @@ export namespace Prisma {
     id?: IntFilter<"Player"> | number
     login?: StringFilter<"Player"> | string
     isAdmin?: BoolNullableFilter<"Player"> | boolean | null
-    firstName?: StringNullableFilter<"Player"> | string | null
-    lastName?: StringNullableFilter<"Player"> | string | null
     name?: StringNullableFilter<"Player"> | string | null
     anonymous?: BoolNullableFilter<"Player"> | boolean | null
     email?: StringNullableFilter<"Player"> | string | null
@@ -21706,8 +21678,6 @@ export namespace Prisma {
     id?: SortOrder
     login?: SortOrder
     isAdmin?: SortOrderInput | SortOrder
-    firstName?: SortOrderInput | SortOrder
-    lastName?: SortOrderInput | SortOrder
     name?: SortOrderInput | SortOrder
     anonymous?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
@@ -21732,8 +21702,6 @@ export namespace Prisma {
     OR?: PlayerWhereInput[]
     NOT?: PlayerWhereInput | PlayerWhereInput[]
     isAdmin?: BoolNullableFilter<"Player"> | boolean | null
-    firstName?: StringNullableFilter<"Player"> | string | null
-    lastName?: StringNullableFilter<"Player"> | string | null
     name?: StringNullableFilter<"Player"> | string | null
     anonymous?: BoolNullableFilter<"Player"> | boolean | null
     email?: StringNullableFilter<"Player"> | string | null
@@ -21754,8 +21722,6 @@ export namespace Prisma {
     id?: SortOrder
     login?: SortOrder
     isAdmin?: SortOrderInput | SortOrder
-    firstName?: SortOrderInput | SortOrder
-    lastName?: SortOrderInput | SortOrder
     name?: SortOrderInput | SortOrder
     anonymous?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
@@ -21778,8 +21744,6 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Player"> | number
     login?: StringWithAggregatesFilter<"Player"> | string
     isAdmin?: BoolNullableWithAggregatesFilter<"Player"> | boolean | null
-    firstName?: StringNullableWithAggregatesFilter<"Player"> | string | null
-    lastName?: StringNullableWithAggregatesFilter<"Player"> | string | null
     name?: StringNullableWithAggregatesFilter<"Player"> | string | null
     anonymous?: BoolNullableWithAggregatesFilter<"Player"> | boolean | null
     email?: StringNullableWithAggregatesFilter<"Player"> | string | null
@@ -22952,8 +22916,6 @@ export namespace Prisma {
   export type PlayerCreateInput = {
     login: string
     isAdmin?: boolean | null
-    firstName?: string | null
-    lastName?: string | null
     name?: string | null
     anonymous?: boolean | null
     email?: string | null
@@ -22974,8 +22936,6 @@ export namespace Prisma {
     id?: number
     login: string
     isAdmin?: boolean | null
-    firstName?: string | null
-    lastName?: string | null
     name?: string | null
     anonymous?: boolean | null
     email?: string | null
@@ -22995,8 +22955,6 @@ export namespace Prisma {
   export type PlayerUpdateInput = {
     login?: StringFieldUpdateOperationsInput | string
     isAdmin?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    firstName?: NullableStringFieldUpdateOperationsInput | string | null
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     anonymous?: NullableBoolFieldUpdateOperationsInput | boolean | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -23017,8 +22975,6 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     login?: StringFieldUpdateOperationsInput | string
     isAdmin?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    firstName?: NullableStringFieldUpdateOperationsInput | string | null
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     anonymous?: NullableBoolFieldUpdateOperationsInput | boolean | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -23039,8 +22995,6 @@ export namespace Prisma {
     id?: number
     login: string
     isAdmin?: boolean | null
-    firstName?: string | null
-    lastName?: string | null
     name?: string | null
     anonymous?: boolean | null
     email?: string | null
@@ -23054,8 +23008,6 @@ export namespace Prisma {
   export type PlayerUpdateManyMutationInput = {
     login?: StringFieldUpdateOperationsInput | string
     isAdmin?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    firstName?: NullableStringFieldUpdateOperationsInput | string | null
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     anonymous?: NullableBoolFieldUpdateOperationsInput | boolean | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -23070,8 +23022,6 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     login?: StringFieldUpdateOperationsInput | string
     isAdmin?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    firstName?: NullableStringFieldUpdateOperationsInput | string | null
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     anonymous?: NullableBoolFieldUpdateOperationsInput | boolean | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -24475,8 +24425,6 @@ export namespace Prisma {
     id?: SortOrder
     login?: SortOrder
     isAdmin?: SortOrder
-    firstName?: SortOrder
-    lastName?: SortOrder
     name?: SortOrder
     anonymous?: SortOrder
     email?: SortOrder
@@ -24496,8 +24444,6 @@ export namespace Prisma {
     id?: SortOrder
     login?: SortOrder
     isAdmin?: SortOrder
-    firstName?: SortOrder
-    lastName?: SortOrder
     name?: SortOrder
     anonymous?: SortOrder
     email?: SortOrder
@@ -24512,8 +24458,6 @@ export namespace Prisma {
     id?: SortOrder
     login?: SortOrder
     isAdmin?: SortOrder
-    firstName?: SortOrder
-    lastName?: SortOrder
     name?: SortOrder
     anonymous?: SortOrder
     email?: SortOrder
@@ -25856,8 +25800,6 @@ export namespace Prisma {
   export type PlayerCreateWithoutArsesOfPlayerInput = {
     login: string
     isAdmin?: boolean | null
-    firstName?: string | null
-    lastName?: string | null
     name?: string | null
     anonymous?: boolean | null
     email?: string | null
@@ -25877,8 +25819,6 @@ export namespace Prisma {
     id?: number
     login: string
     isAdmin?: boolean | null
-    firstName?: string | null
-    lastName?: string | null
     name?: string | null
     anonymous?: boolean | null
     email?: string | null
@@ -25902,8 +25842,6 @@ export namespace Prisma {
   export type PlayerCreateWithoutArsesByPlayerInput = {
     login: string
     isAdmin?: boolean | null
-    firstName?: string | null
-    lastName?: string | null
     name?: string | null
     anonymous?: boolean | null
     email?: string | null
@@ -25923,8 +25861,6 @@ export namespace Prisma {
     id?: number
     login: string
     isAdmin?: boolean | null
-    firstName?: string | null
-    lastName?: string | null
     name?: string | null
     anonymous?: boolean | null
     email?: string | null
@@ -25959,8 +25895,6 @@ export namespace Prisma {
   export type PlayerUpdateWithoutArsesOfPlayerInput = {
     login?: StringFieldUpdateOperationsInput | string
     isAdmin?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    firstName?: NullableStringFieldUpdateOperationsInput | string | null
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     anonymous?: NullableBoolFieldUpdateOperationsInput | boolean | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -25980,8 +25914,6 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     login?: StringFieldUpdateOperationsInput | string
     isAdmin?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    firstName?: NullableStringFieldUpdateOperationsInput | string | null
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     anonymous?: NullableBoolFieldUpdateOperationsInput | boolean | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26011,8 +25943,6 @@ export namespace Prisma {
   export type PlayerUpdateWithoutArsesByPlayerInput = {
     login?: StringFieldUpdateOperationsInput | string
     isAdmin?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    firstName?: NullableStringFieldUpdateOperationsInput | string | null
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     anonymous?: NullableBoolFieldUpdateOperationsInput | boolean | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26032,8 +25962,6 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     login?: StringFieldUpdateOperationsInput | string
     isAdmin?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    firstName?: NullableStringFieldUpdateOperationsInput | string | null
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     anonymous?: NullableBoolFieldUpdateOperationsInput | boolean | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26094,8 +26022,6 @@ export namespace Prisma {
   export type PlayerCreateWithoutClubsInput = {
     login: string
     isAdmin?: boolean | null
-    firstName?: string | null
-    lastName?: string | null
     name?: string | null
     anonymous?: boolean | null
     email?: string | null
@@ -26115,8 +26041,6 @@ export namespace Prisma {
     id?: number
     login: string
     isAdmin?: boolean | null
-    firstName?: string | null
-    lastName?: string | null
     name?: string | null
     anonymous?: boolean | null
     email?: string | null
@@ -26171,8 +26095,6 @@ export namespace Prisma {
   export type PlayerUpdateWithoutClubsInput = {
     login?: StringFieldUpdateOperationsInput | string
     isAdmin?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    firstName?: NullableStringFieldUpdateOperationsInput | string | null
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     anonymous?: NullableBoolFieldUpdateOperationsInput | boolean | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26192,8 +26114,6 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     login?: StringFieldUpdateOperationsInput | string
     isAdmin?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    firstName?: NullableStringFieldUpdateOperationsInput | string | null
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     anonymous?: NullableBoolFieldUpdateOperationsInput | boolean | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26295,8 +26215,6 @@ export namespace Prisma {
   export type PlayerCreateWithoutCountriesInput = {
     login: string
     isAdmin?: boolean | null
-    firstName?: string | null
-    lastName?: string | null
     name?: string | null
     anonymous?: boolean | null
     email?: string | null
@@ -26316,8 +26234,6 @@ export namespace Prisma {
     id?: number
     login: string
     isAdmin?: boolean | null
-    firstName?: string | null
-    lastName?: string | null
     name?: string | null
     anonymous?: boolean | null
     email?: string | null
@@ -26373,8 +26289,6 @@ export namespace Prisma {
   export type PlayerUpdateWithoutCountriesInput = {
     login?: StringFieldUpdateOperationsInput | string
     isAdmin?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    firstName?: NullableStringFieldUpdateOperationsInput | string | null
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     anonymous?: NullableBoolFieldUpdateOperationsInput | boolean | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26394,8 +26308,6 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     login?: StringFieldUpdateOperationsInput | string
     isAdmin?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    firstName?: NullableStringFieldUpdateOperationsInput | string | null
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     anonymous?: NullableBoolFieldUpdateOperationsInput | boolean | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26608,8 +26520,6 @@ export namespace Prisma {
   export type PlayerCreateWithoutOutcomesInput = {
     login: string
     isAdmin?: boolean | null
-    firstName?: string | null
-    lastName?: string | null
     name?: string | null
     anonymous?: boolean | null
     email?: string | null
@@ -26629,8 +26539,6 @@ export namespace Prisma {
     id?: number
     login: string
     isAdmin?: boolean | null
-    firstName?: string | null
-    lastName?: string | null
     name?: string | null
     anonymous?: boolean | null
     email?: string | null
@@ -26699,8 +26607,6 @@ export namespace Prisma {
   export type PlayerUpdateWithoutOutcomesInput = {
     login?: StringFieldUpdateOperationsInput | string
     isAdmin?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    firstName?: NullableStringFieldUpdateOperationsInput | string | null
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     anonymous?: NullableBoolFieldUpdateOperationsInput | boolean | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -26720,8 +26626,6 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     login?: StringFieldUpdateOperationsInput | string
     isAdmin?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    firstName?: NullableStringFieldUpdateOperationsInput | string | null
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     anonymous?: NullableBoolFieldUpdateOperationsInput | boolean | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -27049,8 +26953,6 @@ export namespace Prisma {
   export type PlayerCreateWithoutPlayerRecordsInput = {
     login: string
     isAdmin?: boolean | null
-    firstName?: string | null
-    lastName?: string | null
     name?: string | null
     anonymous?: boolean | null
     email?: string | null
@@ -27070,8 +26972,6 @@ export namespace Prisma {
     id?: number
     login: string
     isAdmin?: boolean | null
-    firstName?: string | null
-    lastName?: string | null
     name?: string | null
     anonymous?: boolean | null
     email?: string | null
@@ -27134,8 +27034,6 @@ export namespace Prisma {
   export type PlayerUpdateWithoutPlayerRecordsInput = {
     login?: StringFieldUpdateOperationsInput | string
     isAdmin?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    firstName?: NullableStringFieldUpdateOperationsInput | string | null
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     anonymous?: NullableBoolFieldUpdateOperationsInput | boolean | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
@@ -27155,8 +27053,6 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     login?: StringFieldUpdateOperationsInput | string
     isAdmin?: NullableBoolFieldUpdateOperationsInput | boolean | null
-    firstName?: NullableStringFieldUpdateOperationsInput | string | null
-    lastName?: NullableStringFieldUpdateOperationsInput | string | null
     name?: NullableStringFieldUpdateOperationsInput | string | null
     anonymous?: NullableBoolFieldUpdateOperationsInput | boolean | null
     email?: NullableStringFieldUpdateOperationsInput | string | null

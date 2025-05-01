@@ -6,8 +6,6 @@ export const mockPlayer = {
     id: 1,
     login: "player1",
     isAdmin: null,
-    firstName: "Derek",
-    lastName: "Turnipson",
     name: "Derek Turnipson",
     anonymous: null,
     email: "derek.turnipson@example.com",

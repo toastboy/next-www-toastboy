@@ -235,13 +235,13 @@ describe('PlayerService', () => {
 
     describe('getAll', () => {
         it('should return the correct, complete list of 100 players', async () => {
-            const playerList: Player[] = Array.from({ length: 100 }, (_, outerindex) => ({
+            const playerList: Player[] = Array.from({ length: 100 }, (_, outerIndex) => ({
                 ...defaultPlayer,
-                id: outerindex + 1,
-                finished: outerindex % 2 === 0 ? new Date("2020-01-01") : null,
+                id: outerIndex + 1,
+                finished: outerIndex % 2 === 0 ? new Date("2020-01-01") : null,
                 outcomes: Array.from({ length: 10 }, (_, index) => ({
                     ...defaultOutcome,
-                    playerId: outerindex + 1,
+                    playerId: outerIndex + 1,
                     points: 3 * (index % 2),
                 })),
             }));

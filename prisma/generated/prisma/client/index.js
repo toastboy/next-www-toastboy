@@ -453,12 +453,11 @@ const config = {
     "db"
   ],
   "activeProvider": "mysql",
-  "postinstall": false,
   "inlineDatasources": {
     "db": {
       "url": {
         "fromEnvVar": "DATABASE_URL",
-        "value": null
+        "value": "mysql://root:vS2-YiaSb8HhOY@127.0.0.1:33306/footy"
       }
     }
   },

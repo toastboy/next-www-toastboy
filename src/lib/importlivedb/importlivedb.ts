@@ -6,7 +6,9 @@ import dotenv from 'dotenv';
 import fs from 'fs';
 import { readdir } from "fs/promises";
 import path from "path";
-import prisma from '../prisma';
+import { PrismaClient } from '../../../prisma/generated/prisma/client';
+
+const prisma = new PrismaClient();
 
 /**
  * Writes the data from a Prisma model to a JSON file.
@@ -116,7 +118,7 @@ async function importBackup(): Promise<void> {
 
         // Take a backup of the current live database
         console.log('Taking production mysql backup...');
-        execSync(`mysqldump -h ${prodMysqlHost} -u ${prodMysqlUser} -p${prodMysqlPassword} ${mysqlDatabase} arse club club_supporter country diffs game_chat game_day invitation misc nationality outcome picker picker_teams player > /tmp/${mysqlDatabase}.sql`);
+        execSync(`mysqldump --skip-ssl -h ${prodMysqlHost} -u ${prodMysqlUser} -p${prodMysqlPassword} ${mysqlDatabase} arse club club_supporter country diffs game_chat game_day invitation misc nationality outcome picker picker_teams player > /tmp/${mysqlDatabase}.sql`);
 
         // Get the list of directories in the migrations directory
         const migrationsDir = path.join(__dirname, '..', '..', '..', 'prisma', 'migrations');
@@ -128,13 +130,13 @@ async function importBackup(): Promise<void> {
 
         // Run prisma db push to ensure the database is up to date with the schema
         console.log('Running prisma db push...');
-        execSync(`mysql -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} -e'DROP DATABASE IF EXISTS footy;'`);
-        execSync(`mysql -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} -e'CREATE DATABASE footy;'`);
+        execSync(`mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} -e'DROP DATABASE IF EXISTS footy;'`);
+        execSync(`mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} -e'CREATE DATABASE footy;'`);
         execSync('npx prisma db push --accept-data-loss --schema ../../../prisma/schema.prisma');
 
         // Import the mysqldump backup created above
         console.log('Importing mysql backup...');
-        execSync(`cat /tmp/${mysqlDatabase}.sql | mysql -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} ${mysqlDatabase}`);
+        execSync(`cat /tmp/${mysqlDatabase}.sql | mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} ${mysqlDatabase}`);
 
         // Run each migration except the first one: the backup created the
         // database structure through the conditional comments such as '/*!40000
@@ -145,7 +147,7 @@ async function importBackup(): Promise<void> {
             }
             console.log(`Running migration ${migrations[i]}...`);
             const migration = path.join(migrationsDir, migrations[i], 'migration.sql');
-            execSync(`cat ${migration} | mysql -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} ${mysqlDatabase}`);
+            execSync(`cat ${migration} | mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} ${mysqlDatabase}`);
         }
 
         // Write each table in ${mysqlDatabase} to a JSON file in /tmp/importlivedb

@@ -1,8 +1,9 @@
 import { ClientSecretCredential } from '@azure/identity';
 import { BlobServiceClient, ContainerClient } from '@azure/storage-blob';
-import { Arse, Club, ClubSupporter, Country, CountrySupporter, GameChat, GameDay, Outcome, Player, Prisma } from 'prisma/generated/prisma/client';
-import prisma from '../src/lib/prisma';
+import { Arse, Club, ClubSupporter, Country, CountrySupporter, GameChat, GameDay, Outcome, Player, Prisma, PrismaClient } from '../prisma/generated/prisma/client';
 import { streamToBuffer } from '../src/lib/utils';
+
+const prisma = new PrismaClient();
 
 async function downloadAndParseJson(containerClient: ContainerClient, blobName: string): Promise<unknown> {
     try {

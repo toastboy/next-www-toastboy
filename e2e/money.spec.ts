@@ -1,23 +1,31 @@
 import { expect, test } from '@playwright/test';
+import { asAdmin, asGuest, asUser } from './utils/auth';
 
-test('money', async ({ page }) => {
-    await page.goto('/footy/money');
-    await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
+test.describe('Money admin page', () => {
+    test('denies access to guest users', async ({ page }) => {
+        await asGuest(page);
+        await page.goto('/footy/money');
+        await page.waitForLoadState('networkidle');
+        await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
 
-    expect(await page.getByText('You must be logged in as an administrator to use this page.').count()).toEqual(1);
+        expect(await page.getByText('You must be logged in as an administrator to use this page.').count()).toEqual(1);
+    });
 
-    await page.getByLabel('Username:').fill('testadmin');
-    await page.getByLabel('Password:').fill('correcthorse');
+    test('denies access to regular users', async ({ page }) => {
+        await asUser(page);
+        await page.goto('/footy/money');
+        await page.waitForLoadState('networkidle');
+        await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
 
-    await page.getByRole('button', { name: 'Log in' }).click();
-    await expect(page).toHaveURL(/\/footy\/money/);
+        expect(await page.getByText('You must be logged in as an administrator to use this page.').count()).toEqual(1);
+    });
 
-    expect(await page.getByText('Bad login: try again').count()).toEqual(0);
+    test('allows access to admin users and shows money table', async ({ page }) => {
+        await asAdmin(page);
+        await page.goto('/footy/money');
+        await page.waitForLoadState('networkidle');
+        await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
 
-    // TODO More tests go here
-
-    const logout = page.getByText('Log Out');
-    expect(await logout.count()).toEqual(1);
-    await logout.click();
-
+        expect(await page.getByText('(Not yet implemented)').count()).toEqual(1);
+    });
 });

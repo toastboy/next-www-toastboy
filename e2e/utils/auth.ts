@@ -17,24 +17,57 @@ export async function setAuthState(page: Page, authState: MockAuthState): Promis
 }
 
 /**
- * Helper function to test functionality as a non-logged-in user
+ * Sets the authentication state of the given Playwright page to "guest" (no
+ * authentication) and optionally navigates to the specified URI.
+ *
+ * @param page - The Playwright Page instance to modify.
+ * @param uri - (Optional) The URI to navigate to after setting the auth state.
+ * @returns A promise that resolves when the authentication state is set,
+ *          navigation (if any) is complete, and the page has reached the
+ *          'networkidle' load state.
  */
-export async function asGuest(page: Page): Promise<void> {
+export async function asGuest(page: Page, uri?: string): Promise<void> {
     await setAuthState(page, 'none');
+    if (uri) {
+        await page.goto(uri);
+    }
+    await page.waitForLoadState('networkidle');
 }
 
 /**
- * Helper function to test functionality as a regular user
+ * Sets the authentication state of the given Playwright page to "user" and
+ * optionally navigates to the specified URI.
+ *
+ * @param page - The Playwright Page instance to modify.
+ * @param uri - (Optional) The URI to navigate to after setting the auth state.
+ * @returns A promise that resolves when the authentication state is set,
+ *          navigation (if any) is complete, and the page has reached the
+ *          'networkidle' load state.
  */
-export async function asUser(page: Page): Promise<void> {
+export async function asUser(page: Page, uri?: string): Promise<void> {
     await setAuthState(page, 'user');
+    if (uri) {
+        await page.goto(uri);
+    }
+    await page.waitForLoadState('networkidle');
 }
 
 /**
- * Helper function to test functionality as an admin
+ * Sets the authentication state of the given Playwright page to "admin" and
+ * optionally navigates to the specified URI.
+ *
+ * @param page - The Playwright Page instance to modify.
+ * @param uri - (Optional) The URI to navigate to after setting the auth state.
+ * @returns A promise that resolves when the authentication state is set,
+ *          navigation (if any) is complete, and the page has reached the
+ *          'networkidle' load state.
  */
-export async function asAdmin(page: Page): Promise<void> {
+export async function asAdmin(page: Page, uri?: string): Promise<void> {
     await setAuthState(page, 'admin');
+    if (uri) {
+        await page.goto(uri);
+    }
+    await page.waitForLoadState('networkidle');
 }
 
 /**

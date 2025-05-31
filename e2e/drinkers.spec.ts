@@ -1,15 +1,25 @@
 import { expect, test } from '@playwright/test';
+import { asAdmin, asGuest, asUser } from './utils/auth';
 
-test('drinkers page checks', async ({ page }) => {
-    await page.goto('/footy/drinkers');
+test.describe('drinkers admin page', () => {
+    test('denies access to guest users', async ({ page }) => {
+        await asGuest(page, '/footy/drinkers');
 
-    await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
+        await expect(page.locator('[data-testid="must-be-admin"]')).toBeVisible();
+    });
 
-    expect(await page.getByText('You must be logged in as an administrator to use this page.').count()).toEqual(1);
+    test('denies access to regular users', async ({ page }) => {
+        await asUser(page, '/footy/drinkers');
 
-    // await page.locator(':nth-match(.pubplayer, 3) [type=checkbox]').check();
-    // await page.getByRole('button', { name: 'Submit' }).click();
+        await expect(page.locator('[data-testid="must-be-admin"]')).toBeVisible();
+    });
 
-    // await page.reload();
-    // expect(await page.locator(':nth-match(.pubplayer, 3) [type=checkbox]').isChecked());
+    test('allows access to admin users and shows drinkers admin interface', async ({ page }) => {
+        await asAdmin(page, '/footy/drinkers');
+
+        await expect(page.locator('[data-testid="must-be-admin"]')).not.toBeVisible();
+
+        // TODO: Add checks for the drinkers admin interface elements
+        await expect(page.locator('[data-testid="not-implemented"]')).toBeVisible();
+    });
 });

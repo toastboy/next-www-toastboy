@@ -59,7 +59,7 @@ function MustBeLoggedIn({ children, admin = false, showSignIn = true, onValidati
 
     if (!isValid) {
         if (showSignIn) {
-            return <SignIn title={`You must be logged in${admin ? ' as an administrator' : ''} to use this page.`} />;
+            return <SignIn admin={admin} />;
         }
         else {
             return <></>;

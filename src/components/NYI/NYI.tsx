@@ -2,7 +2,7 @@ import { Text } from '@mantine/core';
 
 const NYI: React.FC = () => {
     return (
-        <Text>(Not yet implemented)</Text>
+        <Text data-testid="not-implemented">(Not yet implemented)</Text>
     );
 };
 

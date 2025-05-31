@@ -10,11 +10,11 @@ import { useState } from 'react';
 import { signInWithGoogle, signInWithMicrosoft } from "src/lib/auth-client";
 
 export interface Props {
-    title?: string;
+    admin?: boolean;
     redirect?: string;
 };
 
-export const SignIn: React.FC<Props> = ({ title, redirect }) => {
+export const SignIn: React.FC<Props> = ({ admin, redirect }) => {
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const router = useRouter();
@@ -65,11 +65,24 @@ export const SignIn: React.FC<Props> = ({ title, redirect }) => {
         );
     }
 
+    let title = <Text data-testid="sign-in">
+        Sign in to your account
+    </Text>;
+
+    if (admin === true) {
+        title = <Text data-testid="must-be-admin">
+            You must be logged in as an administrator to use this page.
+        </Text>;
+    } else if (admin === false) {
+        title = <Text data-testid="must-be-logged-in">
+            You must be logged in to use this page.
+        </Text>;
+    }
+
     return (
         <Container size="xs" mt="xl" >
             <Center>
-                <Title order={2} mb="md" >
-                    {title || "Sign in to your account"}
+                <Title order={2} mb="md" >                    {title}
                 </Title>
             </Center>
 
@@ -117,6 +130,6 @@ export const SignIn: React.FC<Props> = ({ title, redirect }) => {
                     </Button>
                 </Stack>
             </Box>
-        </Container>
+        </Container >
     );
 };

@@ -1,11 +1,14 @@
+import MustBeLoggedIn from 'components/MustBeLoggedIn/MustBeLoggedIn';
 import NYI from 'components/NYI/NYI';
 import React from 'react';
 
-type PageProps = object
+type Props = object;
 
-const Page: React.FC<PageProps> = () => {
+const Page: React.FC<Props> = () => {
     return (
-        <NYI />
+        <MustBeLoggedIn admin={true}>
+            <NYI />
+        </MustBeLoggedIn>
     );
 };
 

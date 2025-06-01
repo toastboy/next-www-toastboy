@@ -1,5 +1,5 @@
 import YearSelector from 'components/YearSelector/YearSelector';
-import YearTable from 'components/YearTable/YearTable';
+import YearTable, { QualifiedTableName } from 'components/YearTable/YearTable';
 import { notFound } from 'next/navigation';
 import { TableNameType } from 'prisma/generated/zod';
 import playerRecordService from 'services/PlayerRecord';
@@ -9,6 +9,12 @@ interface Props {
         year: [string],
         table: TableNameType,
     }>,
+}
+
+export async function generateMetadata(page: Props) {
+    const { table, year } = await page.params;
+    const yearnum = year ? parseInt(year[0]) : 0; // Zero or undefined means all-time
+    return { title: QualifiedTableName(table, yearnum) };
 }
 
 const Page: React.FC<Props> = async (props) => {

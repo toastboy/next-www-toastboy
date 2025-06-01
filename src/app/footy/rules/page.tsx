@@ -1,8 +1,12 @@
 import { Flex, Text, Title } from "@mantine/core";
 
-type PageProps = object
+type Props = object
 
-const Page: React.FC<PageProps> = () => {
+export async function generateMetadata() {
+    return { title: "Toastboy FC Rules" };
+}
+
+const Page: React.FC<Props> = () => {
     return (
         <>
             <Flex gap="md" align="flex-start" direction="column" p="xl">

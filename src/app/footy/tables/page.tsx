@@ -2,6 +2,10 @@ import Link from "next/link";
 
 type PageProps = object
 
+export async function generateMetadata() {
+    return { title: "Toastboy FC Tables" };
+}
+
 const Page: React.FC<PageProps> = () => {
     return (
         <>

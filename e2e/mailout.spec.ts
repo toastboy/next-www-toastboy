@@ -1,34 +1,47 @@
 import { expect, test } from '@playwright/test';
+import { asGuest, asUser } from './utils/auth';
+
+test.describe('Mail active players', () => {
+    test('denies access to guest users', async ({ page }) => {
+        await asGuest(page, '/footy/mailout');
+
+        await expect(page.locator('[data-testid="must-be-logged-in"]')).toBeVisible();
+    });
+
+    test('denies access to regular users', async ({ page }) => {
+        await asUser(page, '/footy/mailout');
+
+        await expect(page.locator('[data-testid="must-be-logged-in"]')).toBeVisible();
+    });
+});
 
 test('mail active players', async ({ page }) => {
+    const subject = 'Test missive';
+    const body = 'This is a test of the emergency broadcast system.';
+
     await page.goto('/footy/mailout');
     await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
 
-    expect(await page.getByText('You must be logged in to use this page. If you would like to request an account, please complete this form:').count()).toEqual(1);
+    await expect(page.locator('[data-testid="must-be-logged-in"]')).not.toBeVisible();
 
-    await page.getByLabel('Username:').fill('testadmin');
-    await page.getByLabel('Password:').fill('correcthorse');
+    await expect(page).toHaveURL(/\/footy\/players/);
 
-    await page.getByRole('button', { name: 'Log in' }).click();
-    await expect(page).toHaveURL(/\/footy\/mailout/);
+    await page.getByLabel('Select All').click();
+    await page.getByRole('button', { name: 'Send Email...' }).click();
 
-    expect(await page.getByText('Bad login: try again').count()).toEqual(0);
-
-    await page.getByLabel('Subject').fill('Test missive');
-    await page.getByLabel('Body').fill('This is a test of the emergency broadcast system.');
+    await page.getByLabel('Subject').fill(subject);
+    await page.locator('[contenteditable="true"]').fill(body);
     await page.getByRole('button', { name: 'Send Mail' }).click();
 
-    const logout = page.getByText('Log Out');
-    expect(await logout.count()).toEqual(1);
-    await logout.click();
-
-    // Check mailhog for the email, then delete it
+    // Check Mailpit for the email, then delete it
 
     const response = await page.goto('http://localhost:8025/');
     expect(response?.ok()).toBeTruthy();
 
-    await page.locator('.ng-binding', { hasText: 'Toastboy FC Mailer' }).first().click();
-    expect(await page.getByText('This is a test of the emergency broadcast system.').count()).toBeGreaterThanOrEqual(1);
+    expect(await page.getByText(subject).count()).toBeGreaterThanOrEqual(1);
+    expect(await page.getByText(body).count()).toBeGreaterThanOrEqual(1);
 
-    await page.locator('.glyphicon-trash').click();
+    await page.getByRole('button', { name: 'Delete all' }).click();
+    await page.locator('button.btn.btn-danger[data-bs-dismiss="modal"]', { hasText: 'Delete' }).waitFor({ state: 'visible' });
+    await page.locator('button.btn.btn-danger[data-bs-dismiss="modal"]', { hasText: 'Delete' }).click();
 });

@@ -26,7 +26,7 @@ const YearTable: React.FC<Props> = ({ table, year }) => {
  * @param {number} year - The year for which the table is generated.
  * @returns {string} - The qualified table name.
  */
-function QualifiedTableName(table: TableNameType, year: number): string {
+export function QualifiedTableName(table: TableNameType, year: number): string {
     let tableName = "";
     switch (table) {
         case TableNameSchema.enum.speedy:
@@ -49,7 +49,7 @@ function QualifiedTableName(table: TableNameType, year: number): string {
  * @param {number} year - The year for which the table is generated.
  * @returns {string} - The qualified table name or null.
  */
-function UnqualifiedTableName(table: TableNameType): string | undefined {
+export function UnqualifiedTableName(table: TableNameType): string | undefined {
     switch (table) {
         case TableNameSchema.enum.averages:
             return `Played Fewer than ${config.minGamesForAveragesTable} Games`;

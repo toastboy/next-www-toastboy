@@ -1,6 +1,7 @@
 import { Grid, GridCol, Stack, Title } from "@mantine/core";
 import WinnersTable from "components/WinnersTable/WinnersTable";
 import YearSelector from "components/YearSelector/YearSelector";
+import { getYearName } from "lib/utils";
 import { TableNameSchema } from "prisma/generated/zod";
 import playerRecordService from "services/PlayerRecord";
 
@@ -8,6 +9,12 @@ interface Props {
     params: Promise<{
         year: [string],
     }>,
+}
+
+export async function generateMetadata(page: Props) {
+    const { year } = await page.params;
+    const yearnum = year ? parseInt(year[0]) : 0;
+    return { title: `${getYearName(yearnum)} Winners` };
 }
 
 const Page: React.FC<Props> = async props => {

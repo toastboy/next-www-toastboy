@@ -60,7 +60,7 @@ test('pub table', async ({ page }) => {
     await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
     expect(response?.ok()).toBeTruthy();
     await expect(page).toHaveURL(/.*pub/);
-    await expect(page).toHaveTitle(/All-time Drinkers/);
+    await expect(page).toHaveTitle(/All-time Pub Table/);
     await checkTable(page);
 });
 

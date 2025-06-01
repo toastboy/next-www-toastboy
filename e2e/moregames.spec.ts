@@ -1,23 +1,25 @@
 import { expect, test } from '@playwright/test';
+import { asAdmin, asGuest, asUser } from './utils/auth';
 
-test('more games', async ({ page }) => {
-    await page.goto('/footy/moregames');
-    await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
+test.describe('More Games admin page', () => {
+    test('denies access to guest users', async ({ page }) => {
+        await asGuest(page, '/footy/moregames');
 
-    expect(await page.getByText('You must be logged in as an administrator to use this page.').count()).toEqual(1);
+        await expect(page.locator('[data-testid="must-be-admin"]')).toBeVisible();
+    });
 
-    await page.getByLabel('Username:').fill('testadmin');
-    await page.getByLabel('Password:').fill('correcthorse');
+    test('denies access to regular users', async ({ page }) => {
+        await asUser(page, '/footy/moregames');
 
-    await page.getByRole('button', { name: 'Log in' }).click();
-    await expect(page).toHaveURL(/\/footy\/moregames/);
+        await expect(page.locator('[data-testid="must-be-admin"]')).toBeVisible();
+    });
 
-    expect(await page.getByText('Bad login: try again').count()).toEqual(0);
+    test('allows access to admin users and shows moregames admin interface', async ({ page }) => {
+        await asAdmin(page, '/footy/moregames');
 
-    // TODO More tests go here
+        await expect(page.locator('[data-testid="must-be-admin"]')).not.toBeVisible();
 
-    const logout = page.getByText('Log Out');
-    expect(await logout.count()).toEqual(1);
-    await logout.click();
-
+        // TODO: Add checks for the moregames admin interface elements
+        await expect(page.locator('[data-testid="not-implemented"]')).toBeVisible();
+    });
 });

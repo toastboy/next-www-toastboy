@@ -6,6 +6,11 @@ on:
     branches: [main]
 jobs:
   test:
+    env:
+      AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
+      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
+      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      DATABASE_URL: ${{ secrets.DATABASE_URL }}
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:

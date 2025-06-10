@@ -28,7 +28,7 @@
     "@sentry/nextjs": "^9.14.0",
     "@sentry/types": "^9.13.0",
     "@tabler/icons-react": "^3.31.0",
-    "@tiptap/extension-highlight": "^2.11.7",
+    "@tiptap/extension-highlight": "^2.11.9",
     "@tiptap/extension-link": "^2.11.7",
     "@tiptap/extension-placeholder": "^2.11.7",
     "@tiptap/extension-text-align": "^2.11.7",

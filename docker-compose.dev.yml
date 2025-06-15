@@ -1,0 +1,14 @@
+services:
+  db:
+    ports:
+      - "${DATABASE_PORT}:33306"
+
+  mailpit:
+    image: axllent/mailpit
+    restart: always
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+
+volumes:
+  db_data:

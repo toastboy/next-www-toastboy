@@ -6,11 +6,6 @@ on:
     branches: [main]
 jobs:
   test:
-    env:
-      AZURE_CLIENT_SECRET: ${{ secrets.AZURE_CLIENT_SECRET }}
-      AZURE_CLIENT_ID: ${{ secrets.AZURE_CLIENT_ID }}
-      AZURE_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
@@ -20,6 +15,26 @@ jobs:
           node-version: 18
       - name: Install dependencies
         run: npm ci
+      - name: Load secrets from 1Password and export to environment
+        uses: 1password/load-secrets-action@v2
+        with:
+          export-env: true
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          MYSQL_ROOT_PASSWORD: op://next-www-toastboy/MYSQL_ROOT_PASSWORD/password
+          DATABASE_URL: op://next-www-toastboy/DATABASE_URL/Section_4wa3sl6ppxfmyj6xihxrpgbctq/connection string
+          AZURE_TENANT_ID: op://next-www-toastboy/AZURE_TENANT_ID/Section_ylvm7oce47qvgs6ntrhrja2mbm/uuid
+          AZURE_CLIENT_ID: op://next-www-toastboy/AZURE_CLIENT_ID/Section_ueteoth5u6psueairn64jkyfvq/uuid
+          AZURE_CLIENT_SECRET: op://next-www-toastboy/AZURE_CLIENT_SECRET/Section_ozdki26oyupp5sforj3idf6v6e/secret
+          AZURE_STORAGE_ACCOUNT_NAME: op://next-www-toastboy/AZURE_STORAGE_ACCOUNT_NAME/Section_nomnpnz4pz2cjajwak6cvqqwye/account
+          AZURE_CONTAINER_NAME: op://next-www-toastboy/AZURE_CONTAINER_NAME/add more/container
+          BETTER_AUTH_SECRET: op://next-www-toastboy/BETTER_AUTH_SECRET/Section_d2yvz3djw6em7hapssycamzp6m/auth secret
+          BETTER_AUTH_ADMIN_TOKEN: op://next-www-toastboy/BETTER_AUTH_ADMIN_TOKEN/Section_gpf2vskfxjyynrhylxinhsqfam/token
+          GOOGLE_CLIENT_ID: op://next-www-toastboy/GOOGLE_CLIENT_ID/Section_y62ddyjq6qqk3jlsynpk74njzy/client id
+          GOOGLE_CLIENT_SECRET: op://next-www-toastboy/GOOGLE_CLIENT_SECRET/Section_46qnuzd357u5kz6tcsb5igjfqu/secret
+          MICROSOFT_CLIENT_ID: op://next-www-toastboy/MICROSOFT_CLIENT_ID/Section_7mnfxarlhkiqhejcdikeqjetsi/uuid
+          MICROSOFT_CLIENT_SECRET: op://next-www-toastboy/MICROSOFT_CLIENT_SECRET/Section_gf3kdeabpqeqiwci4y32wfezry/secret
+          SENTRY_AUTH_TOKEN: op://next-www-toastboy/SENTRY_AUTH_TOKEN/Section_vi2z4utsexivhdrvq7jpproi5a/auth token
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Run Playwright tests

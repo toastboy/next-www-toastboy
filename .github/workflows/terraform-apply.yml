@@ -58,6 +58,11 @@ jobs:
         with:
           workspace: ${{ env.TF_WORKSPACE }}
           configuration_version: ${{ steps.apply-upload.outputs.configuration_version_id }}
+        env:
+          TF_VAR_azure_tenant_id: '"${{ env.AZURE_TENANT_ID }}"'
+          TF_VAR_azure_subscription_id: '"${{ env.AZURE_SUBSCRIPTION_ID }}"'
+          TF_VAR_azure_client_id: '"${{ env.AZURE_CLIENT_ID }}"'
+          TF_VAR_azure_client_secret: '"${{ env.AZURE_CLIENT_SECRET }}"'
 
       - name: Apply
         uses: hashicorp/tfc-workflows-github/actions/apply-run@v1.3.2

@@ -59,6 +59,11 @@ jobs:
           workspace: ${{ env.TF_WORKSPACE }}
           configuration_version: ${{ steps.plan-upload.outputs.configuration_version_id }}
           plan_only: true
+        env:
+          TF_VAR_azure_tenant_id: '"${{ env.AZURE_TENANT_ID }}"'
+          TF_VAR_azure_subscription_id: '"${{ env.AZURE_SUBSCRIPTION_ID }}"'
+          TF_VAR_azure_client_id: '"${{ env.AZURE_CLIENT_ID }}"'
+          TF_VAR_azure_client_secret: '"${{ env.AZURE_CLIENT_SECRET }}"'
 
       - name: Get Plan Output
         uses: hashicorp/tfc-workflows-github/actions/plan-output@v1.3.2

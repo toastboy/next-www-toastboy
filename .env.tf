@@ -1,0 +1,3 @@
+TF_AZURE_CLIENT_ID=op://next-www-toastboy/TF_AZURE_CLIENT_ID/Section_sbgupoixcvisaemyfdnssgod3u/uuid
+TF_AZURE_TENANT_ID=op://next-www-toastboy/TF_AZURE_TENANT_ID/Section_elpyzkswpwjdt45ytdpuj4zpri/uuid
+TF_AZURE_CLIENT_SECRET=op://next-www-toastboy/TF_AZURE_CLIENT_SECRET/Section_al3t4lplsritwudt5bbhjxh4e4/uuid

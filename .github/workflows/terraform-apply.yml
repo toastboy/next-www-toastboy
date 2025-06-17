@@ -34,10 +34,10 @@ jobs:
           export-env: true
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          AZURE_TENANT_ID: op://next-www-toastboy/AZURE_TENANT_ID/Section_ylvm7oce47qvgs6ntrhrja2mbm/uuid
+          AZURE_TENANT_ID: op://next-www-toastboy/TF_AZURE_TENANT_ID/Section_elpyzkswpwjdt45ytdpuj4zpri/uuid
           AZURE_SUBSCRIPTION_ID: op://next-www-toastboy/AZURE_SUBSCRIPTION_ID/Section_u2slseexl7iz6qq3ab3kwfut5u/uuid
-          AZURE_CLIENT_ID: op://next-www-toastboy/AZURE_CLIENT_ID/Section_ueteoth5u6psueairn64jkyfvq/uuid
-          AZURE_CLIENT_SECRET: op://next-www-toastboy/AZURE_CLIENT_SECRET/Section_ozdki26oyupp5sforj3idf6v6e/secret
+          AZURE_CLIENT_ID: op://next-www-toastboy/TF_AZURE_CLIENT_ID/Section_sbgupoixcvisaemyfdnssgod3u/uuid
+          AZURE_CLIENT_SECRET: op://next-www-toastboy/TF_AZURE_CLIENT_SECRET/Section_al3t4lplsritwudt5bbhjxh4e4/uuid
 
       - name: Upload Configuration
         uses: hashicorp/tfc-workflows-github/actions/upload-configuration@v1.3.2

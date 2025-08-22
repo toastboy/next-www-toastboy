@@ -18,9 +18,16 @@ env:
   TF_VAR_github_sha: '"${{ github.sha }}"'
 
 jobs:
-  terraform:
+  # Only run the self-hosted Terraform apply for trusted contexts:
+  # - Manual runs (workflow_dispatch)
+  # - pull_request events where the head repo is this repository (not a fork)
+  apply:
     name: "Terraform Apply"
+    if: ${{ github.event_name == 'workflow_dispatch' || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository) }}
     runs-on: self-hosted
+    concurrency:
+      group: terraform-apply-${{ github.ref }}
+      cancel-in-progress: true
     permissions:
       # so GitHub can check out this repo using the default github.token
       contents: read

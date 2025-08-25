@@ -54,7 +54,7 @@ jobs:
 
       - name: Terraform Plan (PRs)
         if: github.event_name == 'pull_request'
-        uses: dflook/terraform-plan@v1
+        uses: dflook/terraform-plan@v2
         with:
           path: .
           workspace: tf-cloudflare

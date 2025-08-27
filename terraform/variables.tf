@@ -50,19 +50,23 @@ variable "countries_container" {
 }
 
 variable "github_server_url" {
-  type = string
+  type    = string
+  default = "Unset (manual run)"
 }
 
 variable "github_repository" {
-  type = string
+  type    = string
+  default = "Unset (manual run)"
 }
 
 variable "github_sha" {
-  type = string
+  type    = string
+  default = "Unset (manual run)"
 }
 
 variable "github_run_id" {
-  type = string
+  type    = string
+  default = "Unset (manual run)"
 }
 
 variable "tags" {

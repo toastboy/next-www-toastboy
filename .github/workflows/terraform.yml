@@ -41,7 +41,7 @@ jobs:
 
       - name: Load secrets from 1Password and export to environment
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-        uses: 1password/load-secrets-action@v2
+        uses: 1password/load-secrets-action@v3
         with:
           export-env: true
         env:

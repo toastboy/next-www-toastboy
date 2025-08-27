@@ -52,13 +52,13 @@ jobs:
         if: ${{ github.event_name == 'pull_request' && !github.event.pull_request.head.repo.fork }}
         uses: dflook/terraform-plan@v1
         with:
-          path: .
-          workspace: tf-cloudflare
+          path: terraform
+          workspace: next-www-toastboy
 
       - name: Terraform Apply (main)
         if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         uses: dflook/terraform-apply@v1
         with:
-          path: .
-          workspace: tf-cloudflare
+          path: terraform
+          workspace: next-www-toastboy
           auto_approve: true

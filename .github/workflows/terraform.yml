@@ -50,7 +50,7 @@ jobs:
 
       - name: Terraform Plan (Internal PRs)
         if: ${{ github.event_name == 'pull_request' && !github.event.pull_request.head.repo.fork }}
-        uses: dflook/terraform-plan@v1
+        uses: dflook/terraform-plan@v2
         with:
           path: terraform
           workspace: next-www-toastboy

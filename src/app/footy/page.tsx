@@ -10,6 +10,7 @@ const Page: React.FC<PageProps> = () => {
                 width={283}
                 height={342}
                 alt="Toastboy FC Crest"
+                fit="contain"
             />
         </Center>
     );

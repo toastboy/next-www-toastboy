@@ -36,6 +36,7 @@ const SendEmailForm: React.FC<Props> = ({ opened, onClose, players }) => {
             Underline,
         ],
         content: '',
+        immediatelyRender: false,
     });
 
     if (!editor) return null;

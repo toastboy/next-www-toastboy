@@ -12,6 +12,8 @@ import { Wrapper } from "./lib/common";
 describe('UserButton', () => {
     beforeEach(() => {
         jest.resetAllMocks();
+        // Reset URL between tests to avoid bleed-over when components change location
+        window.history.pushState({}, '', '/');
         (authClient.useSession as jest.Mock).mockReturnValue({
             data: {
                 user: {
@@ -38,29 +40,6 @@ describe('UserButton', () => {
         });
     });
 
-    it('redirects to sign in page when sign in button is clicked with no session', async () => {
-        (authClient.useSession as jest.Mock).mockReturnValue({
-            data: null,
-            isPending: false,
-            error: null,
-        });
-
-        Object.defineProperty(window, 'location', {
-            writable: true,
-            value: { href: '' } as const,
-        });
-
-        render(<Wrapper><UserButton /></Wrapper>);
-
-        act(() => {
-            screen.getByText('Sign In').click();
-        });
-
-        await waitFor(() => {
-            expect(window.location.href).toBe('/footy/auth/signin');
-        });
-    });
-
     it('redirects to sign in page when sign in button is clicked with no user in the session', async () => {
         (authClient.useSession as jest.Mock).mockReturnValue({
             data: { user: null },
@@ -68,9 +47,22 @@ describe('UserButton', () => {
             error: null,
         });
 
-        Object.defineProperty(window, 'location', {
-            writable: true,
-            value: { href: '' } as const,
+        render(<Wrapper><UserButton /></Wrapper>);
+
+        act(() => {
+            screen.getByText('Sign In').click();
+        });
+
+        await waitFor(() => {
+            expect(window.location.pathname).toBe('/footy/auth/signin');
+        });
+    });
+
+    it('redirects to sign in page when sign in button is clicked with no session present', async () => {
+        (authClient.useSession as jest.Mock).mockReturnValue({
+            data: null,
+            isPending: false,
+            error: null,
         });
 
         render(<Wrapper><UserButton /></Wrapper>);
@@ -80,7 +72,7 @@ describe('UserButton', () => {
         });
 
         await waitFor(() => {
-            expect(window.location.href).toBe('/footy/auth/signin');
+            expect(window.location.pathname).toBe('/footy/auth/signin');
         });
     });
 

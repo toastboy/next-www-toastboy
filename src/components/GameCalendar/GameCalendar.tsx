@@ -30,14 +30,15 @@ const GameCalendar: React.FC<GameCalendarProps> = ({ date }) => {
             .catch(error => console.error('Failed to fetch GameDays:', error));
     }, []);
 
-    const renderDay = (date: Date) => {
-        const gameDay = getGameDay(date);
+    const renderDay = (date: string) => {
+        const gameDate = new Date(date);
+        const gameDay = getGameDay(gameDate);
 
         if (gameDay) {
             return (
                 <Anchor href={`/footy/game/${gameDay.id}`}>
                     <Indicator size={6} color={gameDay.game ? "green" : "red"} offset={-5}>
-                        <Text>{date.getDate()}</Text>
+                        <Text>{gameDate.getDate()}</Text>
                     </Indicator>
                 </Anchor>
             );
@@ -45,7 +46,7 @@ const GameCalendar: React.FC<GameCalendarProps> = ({ date }) => {
     };
 
     const getDayProps: DatePickerProps['getDayProps'] = (date) => {
-        const gameDay = getGameDay(date);
+        const gameDay = getGameDay(new Date(date));
 
         return {
             disabled: gameDay ? false : true,

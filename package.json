@@ -7,7 +7,7 @@
     "test": "jest",
     "test:watch": "jest --watch --passWithNoTests",
     "dev": "op run --env-file=.env -- sh -c 'npx prisma generate && docker compose up -d && next dev --turbopack'",
-    "build": "npx prisma generate && DEBUG=app:* next build",
+    "build": "op run --env-file=.env -- npx prisma generate && DEBUG=app:* next build",
     "lint": "next lint",
     "importlivedb": "pushd src/lib/importlivedb && npx ts-node --compiler-options '{\"module\":\"CommonJS\"}' importlivedb.ts && popd",
     "crawllivesite": "pushd src/lib/crawllivesite && npx ts-node --compiler-options '{\"module\":\"CommonJS\"}' crawllivesite.ts && popd",

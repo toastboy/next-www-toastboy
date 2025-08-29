@@ -80,13 +80,12 @@ export async function buildJsonResponse<T>(data: T): Promise<NextResponse> {
 /**
  * Builds a PNG response with the provided data.
  *
- * @template T - The type of the data to be included in the response.
- * @param data - The data to be converted into a PNG response.
+ * @param data - The Buffer to be converted into a PNG response.
  * @returns A promise that resolves to a `NextResponse` object with the data
  *          as a PNG and the appropriate headers.
  */
-export async function buildPngResponse<T>(data: T): Promise<NextResponse> {
-    return new NextResponse(data as Buffer, {
+export async function buildPngResponse(data: Buffer): Promise<NextResponse> {
+    return new NextResponse(new Uint8Array(data), {
         status: 200,
         headers: { 'Content-Type': 'image/png' },
     });

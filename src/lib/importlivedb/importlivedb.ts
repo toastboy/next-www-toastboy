@@ -2,7 +2,6 @@ import { ClientSecretCredential } from "@azure/identity";
 import { BlobServiceClient } from "@azure/storage-blob";
 import { Prisma } from "@prisma/client";
 import { execSync } from "child_process";
-import dotenv from 'dotenv';
 import fs from 'fs';
 import { readdir } from "fs/promises";
 import path from "path";
@@ -44,9 +43,6 @@ async function writeTableToJSONFile<T>(
  */
 async function importBackup(): Promise<void> {
     try {
-        // Load the .env file into process.env
-        dotenv.config();
-
         // Get all MYSQL environment variables
         if (!process.env.IMP_PROD_MYSQL_USER) {
             throw new Error('IMP_PROD_MYSQL_USER undefined');

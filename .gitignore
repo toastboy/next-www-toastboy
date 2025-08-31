@@ -22,7 +22,6 @@ npm-debug.log*
 
 # local env files (.env references 1Password secrets only and is fine to commit)
 .env*.local
-src/lib/importlivedb/.env
 
 # vercel
 .vercel

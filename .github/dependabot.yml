@@ -4,6 +4,12 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    groups:
+      mantine:
+        patterns:
+          - "@mantine/*"
+          - "@tiptap/*"
+          - "@sentry/*"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:

@@ -14,5 +14,10 @@
     },
     "files.associations": {
         "*.yaml": "home-assistant"
+    },
+    "jest.outputConfig": {
+        "revealOn": "run",
+        "revealWithFocus": "none",
+        "clearOnRun": "none"
     }
 }

@@ -12,7 +12,7 @@ const AdminUpdatePlayerRecords: React.FC = () => {
     useEffect(() => {
         const intervalId = setInterval(() => {
             mutate();
-        }, 100);
+        }, 1000);
 
         return () => clearInterval(intervalId);
     }, [mutate]);

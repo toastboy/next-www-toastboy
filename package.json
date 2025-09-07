@@ -6,7 +6,7 @@
     "deepclean": "rm -rf .next node_modules package-lock.json && npm cache clean --force",
     "test": "jest",
     "test:watch": "jest --watch --passWithNoTests",
-    "dev": "sh -c 'npx prisma generate && docker compose up -d && next dev --turbopack'",
+    "dev": "op run --env-file ./.env -- sh -c 'npx prisma generate && docker compose up -d && next dev'",
     "build": "npx prisma generate && DEBUG=app:* next build",
     "lint": "next lint",
     "importlivedb": "pushd src/lib/importlivedb && npx ts-node --compiler-options '{\"module\":\"CommonJS\"}' importlivedb.ts && popd",

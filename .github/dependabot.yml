@@ -8,8 +8,12 @@ updates:
       mantine:
         patterns:
           - "@mantine/*"
-          - "@tiptap/*"
+      sentry:
+        patterns:
           - "@sentry/*"
+      tiptap:
+        patterns:
+          - "@tiptap/*"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:

@@ -15,7 +15,7 @@
     "stop": "docker compose down"
   },
   "dependencies": {
-    "@azure/identity": "^4.9.0",
+    "@azure/identity": "^4.11.2",
     "@azure/storage-blob": "^12.27.0",
     "@mantine/code-highlight": "^8.2.8",
     "@mantine/core": "^8.2.8",

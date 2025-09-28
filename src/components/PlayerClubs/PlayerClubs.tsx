@@ -13,9 +13,9 @@ const PlayerClubs: React.FC<Props> = async ({ playerId }) => {
 
     return (
         <Flex gap="xs" p="xs" direction="column">
-            {await Promise.all(clubs.map((item) => (
+            {clubs.map((item) => (
                 <ClubBadge key={item.clubId} clubId={item.clubId} />
-            )))}
+            ))}
         </Flex>
     );
 };

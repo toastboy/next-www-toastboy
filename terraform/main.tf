@@ -40,6 +40,7 @@ resource "azurerm_storage_account" "next_www_toastboy" {
   account_tier             = "Standard"
   account_replication_type = "GRS"
   min_tls_version          = "TLS1_2"
+  account_kind             = "StorageV2"
 
   blob_properties {
     versioning_enabled = true

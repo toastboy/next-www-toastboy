@@ -46,6 +46,7 @@
     "react-dom": "^19.1.1",
     "react-icons": "^5.5.0",
     "swr": "^2.3.6",
+    "zod": "^3.25.76",
     "zod-prisma-types": "^3.2.4"
   },
   "prisma": {

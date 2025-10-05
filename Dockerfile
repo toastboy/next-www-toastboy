@@ -10,7 +10,8 @@ ENV NEXT_TELEMETRY_DISABLED=1 \
 
 FROM base AS deps
 RUN apt-get update && \
-    apt-get install -y --no-install-recommends build-essential ca-certificates openssl && \
+    # apt-get install -y --no-install-recommends build-essential ca-certificates openssl && \
+    apt-get install -y --no-install-recommends openssl && \
     rm -rf /var/lib/apt/lists/*
 COPY package.json package-lock.json ./
 RUN --mount=type=cache,target=/root/.npm npm ci

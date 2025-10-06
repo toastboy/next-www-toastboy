@@ -59,7 +59,7 @@
     "@babel/preset-typescript": "^7.27.1",
     "@eslint/config-array": "^0.21.0",
     "@eslint/eslintrc": "^3.3.1",
-    "@eslint/js": "^9.36.0",
+    "@eslint/js": "^9.37.0",
     "@eslint/object-schema": "^2.1.6",
     "@jest/globals": "^30.2.0",
     "@next/eslint-plugin-next": "^15.5.4",

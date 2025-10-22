@@ -3,24 +3,6 @@ import { NextRequest } from "next/server";
 import countryService from "services/Country";
 
 /**
- * Generates static parameters for the dynamic route based on country ISO codes.
- *
- * This function retrieves a list of countries from the `countryService` and maps
- * each country to an object containing its `isoCode` as a string. The resulting
- * array of parameters can be used for static site generation in a Next.js application.
- *
- * @returns A promise that resolves to an array of objects containing `isoCode` strings,
- *          or `null` if no countries are available.
- */
-export async function generateStaticParams() {
-    const countries = await countryService.getAll();
-
-    return countries ? countries.map((club) => ({
-        isoCode: club.isoCode.toString(),
-    })) : null;
-}
-
-/**
  * Handles GET requests for retrieving country information based on the provided ISO code.
  *
  * @param request - The incoming Next.js request object.

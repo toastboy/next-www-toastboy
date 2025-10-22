@@ -1,4 +1,4 @@
-import { generateStaticParams, GET } from 'api/footy/country/[isoCode]/route';
+import { GET } from 'api/footy/country/[isoCode]/route';
 import countryService from 'services/Country';
 import request from 'supertest';
 import { createMockApp, jsonResponseHandler, suppressConsoleError } from 'tests/lib/api/common';
@@ -9,21 +9,6 @@ const mockApp = createMockApp(GET, { path: '/api/footy/country/NO', params: Prom
 jest.mock('services/Country');
 
 describe('API tests using HTTP', () => {
-    it('should return null if there are no countries', async () => {
-        (countryService.getAll as jest.Mock).mockResolvedValue(null);
-
-        const result = await generateStaticParams();
-        expect(result).toEqual(null);
-    });
-
-    it('should return country ids as params', async () => {
-        const mockData = [{ isoCode: 'NO' }, { isoCode: 'AY' }];
-        (countryService.getAll as jest.Mock).mockResolvedValue(mockData);
-
-        const result = await generateStaticParams();
-        expect(result).toEqual(mockData);
-    });
-
     it('should return JSON response for a valid country', async () => {
         (countryService.get as jest.Mock).mockResolvedValue({ isoCode: 'NO', name: 'Test country' });
 

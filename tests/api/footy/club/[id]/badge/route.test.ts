@@ -2,8 +2,7 @@ import { createMockApp, mockBlobClient, pngResponseHandler, suppressConsoleError
 
 jest.mock('services/Club');
 
-import { GET, generateStaticParams } from 'api/footy/club/[id]/badge/route';
-import clubService from 'services/Club';
+import { GET } from 'api/footy/club/[id]/badge/route';
 import { Readable } from 'stream';
 import request from 'supertest';
 
@@ -12,21 +11,6 @@ const testRoute = '/api/footy/club/1/badge';
 const mockApp = createMockApp(GET, { path: testRoute, params: Promise.resolve({ id: '1' }) }, pngResponseHandler);
 
 describe('API tests using HTTP', () => {
-    it('should return null if there are no clubs', async () => {
-        (clubService.getAll as jest.Mock).mockResolvedValue(null);
-
-        const result = await generateStaticParams();
-        expect(result).toEqual(null);
-    });
-
-    it('should return club ids as params', async () => {
-        const mockData = [{ id: '1' }, { id: '2' }];
-        (clubService.getAll as jest.Mock).mockResolvedValue(mockData);
-
-        const result = await generateStaticParams();
-        expect(result).toEqual(mockData);
-    });
-
     it('should return PNG response for a valid club', async () => {
         const mockBuffer = Buffer.from('test');
         const mockStream = new Readable();

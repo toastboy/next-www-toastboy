@@ -1,4 +1,4 @@
-import { generateStaticParams, GET } from 'api/footy/club/[id]/route';
+import { GET } from 'api/footy/club/[id]/route';
 import clubService from 'services/Club';
 import request from 'supertest';
 import { createMockApp, jsonResponseHandler, suppressConsoleError } from 'tests/lib/api/common';
@@ -9,21 +9,6 @@ const mockApp = createMockApp(GET, { path: '/api/footy/club/1', params: Promise.
 jest.mock('services/Club');
 
 describe('API tests using HTTP', () => {
-    it('should return null if there are no clubs', async () => {
-        (clubService.getAll as jest.Mock).mockResolvedValue(null);
-
-        const result = await generateStaticParams();
-        expect(result).toEqual(null);
-    });
-
-    it('should return club ids as params', async () => {
-        const mockData = [{ id: '1' }, { id: '2' }];
-        (clubService.getAll as jest.Mock).mockResolvedValue(mockData);
-
-        const result = await generateStaticParams();
-        expect(result).toEqual(mockData);
-    });
-
     it('should return JSON response for a valid club', async () => {
         const mockData = { id: 1, name: 'Test Club' };
         (clubService.get as jest.Mock).mockResolvedValue(mockData);

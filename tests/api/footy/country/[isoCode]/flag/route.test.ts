@@ -2,8 +2,7 @@ import { createMockApp, mockBlobClient, pngResponseHandler, suppressConsoleError
 
 jest.mock('services/Country');
 
-import { GET, generateStaticParams } from 'api/footy/country/[isoCode]/flag/route';
-import countryService from 'services/Country';
+import { GET } from 'api/footy/country/[isoCode]/flag/route';
 import { Readable } from 'stream';
 import request from 'supertest';
 
@@ -12,21 +11,6 @@ const testRoute = '/api/footy/country/NO/flag';
 const mockApp = createMockApp(GET, { path: testRoute, params: Promise.resolve({ isoCode: 'NO' }) }, pngResponseHandler);
 
 describe('API tests using HTTP', () => {
-    it('should return null if there are no countries', async () => {
-        (countryService.getAll as jest.Mock).mockResolvedValue(null);
-
-        const result = await generateStaticParams();
-        expect(result).toEqual(null);
-    });
-
-    it('should return country isoCodes as params', async () => {
-        const mockData = [{ isoCode: 'NO' }, { isoCode: 'AY' }];
-        (countryService.getAll as jest.Mock).mockResolvedValue(mockData);
-
-        const result = await generateStaticParams();
-        expect(result).toEqual(mockData);
-    });
-
     it('should return PNG response for a valid country', async () => {
         const mockBuffer = Buffer.from('test');
         const mockStream = new Readable();

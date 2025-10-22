@@ -12,6 +12,11 @@ import type { Metadata } from 'next';
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from "@mantine/notifications";
 
+// Default to dynamic rendering for all pages
+// https://nextjs.org/docs/app/building-your-application/rendering/static-and-dynamic-rendering
+export const dynamic = "force-dynamic";
+export const revalidate = 0; // belt-and-braces; disables ISR on this segment
+
 export const metadata: Metadata = {
   title: "Toastboy FC",
   description: "Toastboy FC: five-a-side footy on Tuesdays at Kelsey Kerridge, Cambridge",

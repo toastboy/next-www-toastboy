@@ -2,23 +2,6 @@ import { buildPngResponse, handleGET } from 'lib/api';
 import azureCache from 'lib/azure';
 import { streamToBuffer } from 'lib/utils';
 import { NextRequest } from 'next/server';
-import clubService from 'services/Club';
-
-/**
- * Generates static parameters for the route by fetching all club data.
- * This function retrieves a list of clubs and maps their IDs into a format
- * suitable for static generation.
- *
- * @returns A promise that resolves to an array of objects containing the `id`
- *          of each club as a string, or `null` if no clubs are available.
- */
-export async function generateStaticParams() {
-    const clubs = await clubService.getAll();
-
-    return clubs ? clubs.map((club) => ({
-        id: club.id.toString(),
-    })) : null;
-}
 
 /**
  * Retrieves the badge image for a specific club from Azure Blob Storage.

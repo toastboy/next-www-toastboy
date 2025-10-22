@@ -90,7 +90,7 @@
     "debug": "^4.4.3",
     "dotenv": "^17.2.2",
     "eslint": "^9.38.0",
-    "eslint-config-next": "^15.5.4",
+    "eslint-config-next": "^16.0.0",
     "eslint-plugin-react": "^7.37.5",
     "glob": "^11.0.3",
     "globals": "^16.4.0",

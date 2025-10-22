@@ -5,6 +5,10 @@ updates:
     schedule:
       interval: "daily"
     groups:
+      eslint:
+        patterns:
+          - "eslint"
+          - "@eslint/js"
       mantine:
         patterns:
           - "@mantine/*"

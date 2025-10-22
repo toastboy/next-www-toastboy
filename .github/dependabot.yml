@@ -9,6 +9,10 @@ updates:
         patterns:
           - "eslint"
           - "@eslint/js"
+      eslint-next:
+        patterns:
+          - "eslint-config-next"
+          - "eslint-plugin-next"
       mantine:
         patterns:
           - "@mantine/*"

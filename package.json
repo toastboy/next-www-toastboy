@@ -24,7 +24,7 @@
     "@mantine/hooks": "^8.3.5",
     "@mantine/notifications": "^8.3.5",
     "@mantine/tiptap": "^8.3.5",
-    "@prisma/client": "^6.17.1",
+    "@prisma/client": "^6.18.0",
     "@sentry/nextjs": "^10.21.0",
     "@sentry/types": "^10.21.0",
     "@tabler/icons-react": "^3.35.0",

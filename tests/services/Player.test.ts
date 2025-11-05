@@ -1,6 +1,9 @@
 import prisma from 'lib/prisma';
 import { defaultPlayer } from 'mocks/data/player';
-import { Outcome, Player } from 'prisma/generated/prisma/client';
+import {
+    OutcomeType,
+    PlayerType,
+} from 'prisma/generated/schemas';
 import playerService from 'services/Player';
 
 jest.mock('lib/prisma', () => ({
@@ -33,18 +36,18 @@ jest.mock('lib/prisma', () => ({
     },
 }));
 
-const invalidPlayer: Player = {
+const invalidPlayer: PlayerType = {
     ...defaultPlayer,
     id: -1,
 };
 
-const playerList: Player[] = Array.from({ length: 100 }, (_, index) => ({
+const playerList: PlayerType[] = Array.from({ length: 100 }, (_, index) => ({
     ...defaultPlayer,
     id: index + 1,
     finished: index % 2 === 0 ? new Date("2020-01-01") : null,
 }));
 
-const defaultOutcome: Outcome = {
+const defaultOutcome: OutcomeType = {
     id: 1,
     gameDayId: 1,
     playerId: 12,
@@ -73,7 +76,7 @@ describe('PlayerService', () => {
             return Promise.resolve(playerList);
         });
 
-        (prisma.player.create as jest.Mock).mockImplementation((args: { data: Player }) => {
+        (prisma.player.create as jest.Mock).mockImplementation((args: { data: PlayerType }) => {
             const player = playerList.find((player) => player.id === args.data.id);
 
             if (player) {
@@ -86,8 +89,8 @@ describe('PlayerService', () => {
 
         (prisma.player.upsert as jest.Mock).mockImplementation((args: {
             where: { id: number },
-            update: Player,
-            create: Player,
+            update: PlayerType,
+            create: PlayerType,
         }) => {
             const player = playerList.find((player) => player.id === args.where.id);
 
@@ -117,7 +120,7 @@ describe('PlayerService', () => {
             expect(result).toEqual({
                 ...defaultPlayer,
                 id: 6,
-            } as Player);
+            } as PlayerType);
         });
 
         it('should return null for id 107', async () => {
@@ -142,7 +145,7 @@ describe('PlayerService', () => {
                 ...defaultPlayer,
                 finished: expect.any(Date),
                 login: "garyp",
-            } as Player);
+            } as PlayerType);
         });
 
         it('should return null for login "doofus"', async () => {
@@ -235,7 +238,7 @@ describe('PlayerService', () => {
 
     describe('getAll', () => {
         it('should return the correct, complete list of 100 players', async () => {
-            const playerList: Player[] = Array.from({ length: 100 }, (_, outerIndex) => ({
+            const playerList: PlayerType[] = Array.from({ length: 100 }, (_, outerIndex) => ({
                 ...defaultPlayer,
                 id: outerIndex + 1,
                 finished: outerIndex % 2 === 0 ? new Date("2020-01-01") : null,
@@ -288,7 +291,7 @@ describe('PlayerService', () => {
 
     describe('getForm', () => {
         it('should retrieve the correct player form for Player ID 1 and GameDay ID 5 or zero with history of 3', async () => {
-            const outcomeListMock: Outcome[] = [
+            const outcomeListMock: OutcomeType[] = [
                 {
                     ...defaultOutcome,
                     playerId: 1,
@@ -418,7 +421,7 @@ describe('PlayerService', () => {
 
     describe('create', () => {
         it('should create a player', async () => {
-            const newPlayer: Player = {
+            const newPlayer: PlayerType = {
                 ...defaultPlayer,
                 id: 106,
             };
@@ -445,7 +448,7 @@ describe('PlayerService', () => {
         });
 
         it('should update an existing player where one with the id already existed', async () => {
-            const updatedPlayer: Player = {
+            const updatedPlayer: PlayerType = {
                 ...defaultPlayer,
                 id: 6,
             };

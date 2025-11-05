@@ -1,5 +1,5 @@
 import prisma from 'lib/prisma';
-import { Country } from 'prisma/generated/prisma/client';
+import { CountryType } from 'prisma/generated/schemas';
 import countryService from 'services/Country';
 
 jest.mock('lib/prisma', () => ({
@@ -14,17 +14,17 @@ jest.mock('lib/prisma', () => ({
     },
 }));
 
-const defaultCountry: Country = {
+const defaultCountry: CountryType = {
     isoCode: "GB-ENG",
     name: "Engerland",
 };
 
-const invalidCountry: Country = {
+const invalidCountry: CountryType = {
     ...defaultCountry,
     isoCode: "ZZZ",
 };
 
-const countryList: Country[] = Array.from({ length: 4 }, (_, index) => ({
+const countryList: CountryType[] = Array.from({ length: 4 }, (_, index) => ({
     ...defaultCountry,
     isoCode: ["GB-ENG", "GB-NIR", "GB-SCT", "GB-WLS"][index % 4],
 }));
@@ -40,7 +40,7 @@ describe('CountryService', () => {
             return Promise.resolve(country ? country : null);
         });
 
-        (prisma.country.create as jest.Mock).mockImplementation((args: { data: Country }) => {
+        (prisma.country.create as jest.Mock).mockImplementation((args: { data: CountryType }) => {
             const country = countryList.find((country) => country.isoCode === args.data.isoCode);
 
             if (country) {
@@ -53,8 +53,8 @@ describe('CountryService', () => {
 
         (prisma.country.upsert as jest.Mock).mockImplementation((args: {
             where: { isoCode: string },
-            update: Country,
-            create: Country,
+            update: CountryType,
+            create: CountryType,
         }) => {
             const country = countryList.find((country) => country.isoCode === args.where.isoCode);
 
@@ -84,7 +84,7 @@ describe('CountryService', () => {
             expect(result).toEqual({
                 ...defaultCountry,
                 isoCode: "GB-SCT",
-            } as Country);
+            } as CountryType);
         });
 
         it('should return null for isoCode "ZZZ"', async () => {
@@ -114,7 +114,7 @@ describe('CountryService', () => {
 
     describe('create', () => {
         it('should create a country', async () => {
-            const newCountry: Country = {
+            const newCountry: CountryType = {
                 ...defaultCountry,
                 isoCode: "IT",
                 name: "Italia",
@@ -143,7 +143,7 @@ describe('CountryService', () => {
         });
 
         it('should update an existing country where one with the id already existed', async () => {
-            const updatedCountry: Country = {
+            const updatedCountry: CountryType = {
                 ...defaultCountry,
                 isoCode: "GB-ENG",
                 name: "England",

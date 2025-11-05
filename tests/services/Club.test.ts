@@ -1,5 +1,5 @@
 import prisma from 'lib/prisma';
-import { Club } from 'prisma/generated/prisma/client';
+import { ClubType } from 'prisma/generated/schemas';
 import clubService from 'services/Club';
 
 jest.mock('lib/prisma', () => ({
@@ -14,7 +14,7 @@ jest.mock('lib/prisma', () => ({
     },
 }));
 
-const defaultClub: Club = {
+const defaultClub: ClubType = {
     id: 1,
     soccerwayId: 1000,
     clubName: "Wittering United",
@@ -22,12 +22,12 @@ const defaultClub: Club = {
     country: "england",
 };
 
-const invalidClub: Club = {
+const invalidClub: ClubType = {
     ...defaultClub,
     id: -1,
 };
 
-const clubList: Club[] = Array.from({ length: 100 }, (_, index) => ({
+const clubList: ClubType[] = Array.from({ length: 100 }, (_, index) => ({
     ...defaultClub,
     id: index + 1,
     soccerwayId: 1000 + index,
@@ -44,7 +44,7 @@ describe('ClubService', () => {
             return Promise.resolve(club ? club : null);
         });
 
-        (prisma.club.create as jest.Mock).mockImplementation((args: { data: Club }) => {
+        (prisma.club.create as jest.Mock).mockImplementation((args: { data: ClubType }) => {
             const club = clubList.find((club) => club.id === args.data.id);
 
             if (club) {
@@ -57,8 +57,8 @@ describe('ClubService', () => {
 
         (prisma.club.upsert as jest.Mock).mockImplementation((args: {
             where: { id: number },
-            update: Club,
-            create: Club,
+            update: ClubType,
+            create: ClubType,
         }) => {
             const club = clubList.find((club) => club.id === args.where.id);
 
@@ -89,7 +89,7 @@ describe('ClubService', () => {
                 ...defaultClub,
                 id: 6,
                 soccerwayId: 1005,
-            } as Club);
+            } as ClubType);
         });
 
         it('should return null for id 107', async () => {
@@ -120,7 +120,7 @@ describe('ClubService', () => {
 
     describe('create', () => {
         it('should create a club', async () => {
-            const newClub: Club = {
+            const newClub: ClubType = {
                 ...defaultClub,
                 id: 106,
                 soccerwayId: 1005,
@@ -149,7 +149,7 @@ describe('ClubService', () => {
         });
 
         it('should update an existing club where one with the id already existed', async () => {
-            const updatedClub: Club = {
+            const updatedClub: ClubType = {
                 ...defaultClub,
                 id: 6,
                 soccerwayId: 1006,

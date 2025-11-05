@@ -1,5 +1,5 @@
 import prisma from 'lib/prisma';
-import { CountrySupporter } from 'prisma/generated/prisma/client';
+import { CountrySupporterType } from 'prisma/generated/schemas';
 import countrySupporterService from 'services/CountrySupporter';
 
 jest.mock('lib/prisma', () => ({
@@ -14,12 +14,12 @@ jest.mock('lib/prisma', () => ({
     },
 }));
 
-const defaultCountrySupporter: CountrySupporter = {
+const defaultCountrySupporter: CountrySupporterType = {
     playerId: 12,
     countryISOCode: "GB",
 };
 
-const countrySupporterList: CountrySupporter[] = Array.from({ length: 100 }, (_, index) => ({
+const countrySupporterList: CountrySupporterType[] = Array.from({ length: 100 }, (_, index) => ({
     ...defaultCountrySupporter,
     playerId: index % 10 + 1,
     countryISOCode: "GB",
@@ -41,7 +41,7 @@ describe('countrySupporterService', () => {
             return Promise.resolve(countrySupporter ? countrySupporter : null);
         });
 
-        (prisma.countrySupporter.create as jest.Mock).mockImplementation((args: { data: CountrySupporter }) => {
+        (prisma.countrySupporter.create as jest.Mock).mockImplementation((args: { data: CountrySupporterType }) => {
             const CountrySupporter = countrySupporterList.find((CountrySupporter) => CountrySupporter.playerId === args.data.playerId && CountrySupporter.countryISOCode === args.data.countryISOCode);
 
             if (CountrySupporter) {
@@ -59,8 +59,8 @@ describe('countrySupporterService', () => {
                     countryISOCode: string
                 }
             },
-            update: CountrySupporter,
-            create: CountrySupporter,
+            update: CountrySupporterType,
+            create: CountrySupporterType,
         }) => {
             const CountrySupporter = countrySupporterList.find((CountrySupporter) => CountrySupporter.playerId === args.where.playerId_countryISOCode.playerId && CountrySupporter.countryISOCode === args.where.playerId_countryISOCode.countryISOCode);
 
@@ -93,7 +93,7 @@ describe('countrySupporterService', () => {
                     ...defaultCountrySupporter,
                     playerId: 6,
                     countryISOCode: "GB",
-                } as CountrySupporter);
+                } as CountrySupporterType);
             }
             else {
                 throw new Error("Result is null");
@@ -122,7 +122,7 @@ describe('countrySupporterService', () => {
                         ...defaultCountrySupporter,
                         playerId: 1,
                         countryISOCode: expect.any(String),
-                    } as CountrySupporter);
+                    } as CountrySupporterType);
                 }
             }
             else {
@@ -152,7 +152,7 @@ describe('countrySupporterService', () => {
                         ...defaultCountrySupporter,
                         playerId: expect.any(Number),
                         countryISOCode: "GB",
-                    } as CountrySupporter);
+                    } as CountrySupporterType);
                 }
             }
             else {

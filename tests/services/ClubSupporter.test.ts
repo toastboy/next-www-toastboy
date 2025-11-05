@@ -1,5 +1,5 @@
 import prisma from 'lib/prisma';
-import { ClubSupporter } from 'prisma/generated/prisma/client';
+import { ClubSupporterType } from 'prisma/generated/schemas';
 import clubSupporterService from 'services/ClubSupporter';
 
 jest.mock('lib/prisma', () => ({
@@ -14,12 +14,12 @@ jest.mock('lib/prisma', () => ({
     },
 }));
 
-const defaultClubSupporter: ClubSupporter = {
+const defaultClubSupporter: ClubSupporterType = {
     playerId: 12,
     clubId: 2270,
 };
 
-const clubSupporterList: ClubSupporter[] = Array.from({ length: 100 }, (_, index) => ({
+const clubSupporterList: ClubSupporterType[] = Array.from({ length: 100 }, (_, index) => ({
     ...defaultClubSupporter,
     playerId: index % 10 + 1,
     clubId: index + 1,
@@ -41,7 +41,7 @@ describe('clubSupporterService', () => {
             return Promise.resolve(clubSupporter ? clubSupporter : null);
         });
 
-        (prisma.clubSupporter.create as jest.Mock).mockImplementation((args: { data: ClubSupporter }) => {
+        (prisma.clubSupporter.create as jest.Mock).mockImplementation((args: { data: ClubSupporterType }) => {
             const ClubSupporter = clubSupporterList.find((ClubSupporter) => ClubSupporter.playerId === args.data.playerId && ClubSupporter.clubId === args.data.clubId);
 
             if (ClubSupporter) {
@@ -59,8 +59,8 @@ describe('clubSupporterService', () => {
                     clubId: number
                 }
             },
-            update: ClubSupporter,
-            create: ClubSupporter,
+            update: ClubSupporterType,
+            create: ClubSupporterType,
         }) => {
             const ClubSupporter = clubSupporterList.find((ClubSupporter) => ClubSupporter.playerId === args.where.playerId_clubId.playerId && ClubSupporter.clubId === args.where.playerId_clubId.clubId);
 
@@ -92,7 +92,7 @@ describe('clubSupporterService', () => {
                 ...defaultClubSupporter,
                 playerId: 6,
                 clubId: 16,
-            } as ClubSupporter);
+            } as ClubSupporterType);
         });
 
         it('should return null for player 7, club 16', async () => {
@@ -117,7 +117,7 @@ describe('clubSupporterService', () => {
                         ...defaultClubSupporter,
                         playerId: 1,
                         clubId: expect.any(Number),
-                    } as ClubSupporter);
+                    } as ClubSupporterType);
                 }
             }
             else {
@@ -147,7 +147,7 @@ describe('clubSupporterService', () => {
                         ...defaultClubSupporter,
                         playerId: expect.any(Number),
                         clubId: 1,
-                    } as ClubSupporter);
+                    } as ClubSupporterType);
                 }
             }
             else {

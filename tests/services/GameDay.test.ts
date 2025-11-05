@@ -1,6 +1,6 @@
 import prisma from 'lib/prisma';
 import { defaultGameDay } from 'mocks/data/gameday';
-import { GameDay } from 'prisma/generated/prisma/client';
+import { GameDayType } from 'prisma/generated/schemas';
 import gameDayService from 'services/GameDay';
 
 jest.mock('lib/prisma', () => ({
@@ -17,7 +17,7 @@ jest.mock('lib/prisma', () => ({
     },
 }));
 
-const gameDayList: GameDay[] = Array.from({ length: 100 }, (_, index) => ({
+const gameDayList: GameDayType[] = Array.from({ length: 100 }, (_, index) => ({
     ...defaultGameDay,
     id: index + 1,
 }));
@@ -93,7 +93,7 @@ describe('GameDayService', () => {
             return Promise.resolve(gameDays ? gameDays.length : null);
         });
 
-        (prisma.gameDay.create as jest.Mock).mockImplementation((args: { data: GameDay }) => {
+        (prisma.gameDay.create as jest.Mock).mockImplementation((args: { data: GameDayType }) => {
             const gameDay = gameDayList.find((gameDay) => gameDay.id === args.data.id);
 
             if (gameDay) {
@@ -106,8 +106,8 @@ describe('GameDayService', () => {
 
         (prisma.gameDay.upsert as jest.Mock).mockImplementation((args: {
             where: { id: number },
-            update: GameDay,
-            create: GameDay,
+            update: GameDayType,
+            create: GameDayType,
         }) => {
             const gameDay = gameDayList.find((gameDay) => gameDay.id === args.where.id);
 
@@ -137,7 +137,7 @@ describe('GameDayService', () => {
             expect(result).toEqual({
                 ...defaultGameDay,
                 id: 6,
-            } as GameDay);
+            } as GameDayType);
         });
 
         it('should return null for id 107', async () => {
@@ -407,7 +407,7 @@ describe('GameDayService', () => {
 
     describe('create', () => {
         it('should create a GameDay', async () => {
-            const newGameDay: GameDay = {
+            const newGameDay: GameDayType = {
                 ...defaultGameDay,
                 id: 106,
             };
@@ -441,7 +441,7 @@ describe('GameDayService', () => {
         });
 
         it('should update an existing GameDay where one with the id already existed', async () => {
-            const updatedGameDay: GameDay = {
+            const updatedGameDay: GameDayType = {
                 ...defaultGameDay,
                 id: 6,
             };

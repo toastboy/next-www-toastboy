@@ -1,5 +1,5 @@
 import prisma from 'lib/prisma';
-import { GameChat } from 'prisma/generated/prisma/client';
+import { GameChatType } from 'prisma/generated/schemas';
 import gameChatService from 'services/GameChat';
 
 jest.mock('lib/prisma', () => ({
@@ -14,7 +14,7 @@ jest.mock('lib/prisma', () => ({
     },
 }));
 
-const defaultGameChat: GameChat = {
+const defaultGameChat: GameChatType = {
     id: 1,
     gameDay: 1,
     stamp: new Date(),
@@ -22,7 +22,7 @@ const defaultGameChat: GameChat = {
     body: "Hello, world!",
 };
 
-const gameChatList: GameChat[] = Array.from({ length: 100 }, (_, index) => ({
+const gameChatList: GameChatType[] = Array.from({ length: 100 }, (_, index) => ({
     ...defaultGameChat,
     id: index + 1,
     gameDay: index + 1,
@@ -40,7 +40,7 @@ describe('GameChatService', () => {
             return Promise.resolve(gameChat ? gameChat : null);
         });
 
-        (prisma.gameChat.create as jest.Mock).mockImplementation((args: { data: GameChat }) => {
+        (prisma.gameChat.create as jest.Mock).mockImplementation((args: { data: GameChatType }) => {
             const gameChat = gameChatList.find((gameChat) => gameChat.id === args.data.id);
 
             if (gameChat) {
@@ -53,8 +53,8 @@ describe('GameChatService', () => {
 
         (prisma.gameChat.upsert as jest.Mock).mockImplementation((args: {
             where: { id: number },
-            update: GameChat,
-            create: GameChat,
+            update: GameChatType,
+            create: GameChatType,
         }) => {
             const gameChat = gameChatList.find((gameChat) => gameChat.id === args.where.id);
 
@@ -86,7 +86,7 @@ describe('GameChatService', () => {
                 id: 6,
                 gameDay: 6,
                 player: 6,
-            } as GameChat);
+            } as GameChatType);
         });
 
         it('should return null for id 107', async () => {
@@ -116,7 +116,7 @@ describe('GameChatService', () => {
 
     describe('create', () => {
         it('should create a GameChat', async () => {
-            const newGameChat: GameChat = {
+            const newGameChat: GameChatType = {
                 ...defaultGameChat,
                 id: 106,
             };
@@ -154,7 +154,7 @@ describe('GameChatService', () => {
         });
 
         it('should update an existing GameChat where one with the id already existed', async () => {
-            const updatedGameChat: GameChat = {
+            const updatedGameChat: GameChatType = {
                 ...defaultGameChat,
                 id: 6,
             };

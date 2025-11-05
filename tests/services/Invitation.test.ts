@@ -1,5 +1,5 @@
 import prisma from 'lib/prisma';
-import { Invitation } from 'prisma/generated/prisma/client';
+import { InvitationType } from 'prisma/generated/schemas';
 import invitationService from 'services/Invitation';
 
 jest.mock('lib/prisma', () => ({
@@ -14,13 +14,13 @@ jest.mock('lib/prisma', () => ({
     },
 }));
 
-const defaultInvitation: Invitation = {
+const defaultInvitation: InvitationType = {
     uuid: '1234',
     playerId: 1,
     gameDayId: 1,
 };
 
-const invitationList: Invitation[] = Array.from({ length: 100 }, (_, index) => ({
+const invitationList: InvitationType[] = Array.from({ length: 100 }, (_, index) => ({
     ...defaultInvitation,
     uuid: `1234${index + 1}`,
 }));
@@ -36,7 +36,7 @@ describe('InvitationService', () => {
             return Promise.resolve(invitation ? invitation : null);
         });
 
-        (prisma.invitation.create as jest.Mock).mockImplementation((args: { data: Invitation }) => {
+        (prisma.invitation.create as jest.Mock).mockImplementation((args: { data: InvitationType }) => {
             const invitation = invitationList.find((invitation) => invitation.uuid === args.data.uuid);
 
             if (invitation) {
@@ -49,8 +49,8 @@ describe('InvitationService', () => {
 
         (prisma.invitation.upsert as jest.Mock).mockImplementation((args: {
             where: { uuid: string },
-            update: Invitation,
-            create: Invitation,
+            update: InvitationType,
+            create: InvitationType,
         }) => {
             const invitation = invitationList.find((invitation) => invitation.uuid === args.where.uuid);
 
@@ -80,7 +80,7 @@ describe('InvitationService', () => {
             expect(result).toEqual({
                 ...defaultInvitation,
                 uuid: '12346',
-            } as Invitation);
+            } as InvitationType);
         });
 
         it('should return null for uuid "6789"', async () => {
@@ -110,7 +110,7 @@ describe('InvitationService', () => {
 
     describe('create', () => {
         it('should create a Invitation', async () => {
-            const newInvitation: Invitation = {
+            const newInvitation: InvitationType = {
                 ...defaultInvitation,
                 uuid: '4567',
             };
@@ -148,7 +148,7 @@ describe('InvitationService', () => {
         });
 
         it('should update an existing Invitation where one with the uuid already existed', async () => {
-            const updatedInvitation: Invitation = {
+            const updatedInvitation: InvitationType = {
                 ...defaultInvitation,
                 uuid: '1234',
             };

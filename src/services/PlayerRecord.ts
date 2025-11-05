@@ -389,7 +389,7 @@ export class PlayerRecordService {
      * PlayerRecords, or null if the upsert failed.
      * @throws An error if there is a failure.
      */
-    async upsertForPlayerRecord(gameDayId?: number): Promise<PlayerRecordType[]> {
+    async upsertForGameDay(gameDayId?: number): Promise<PlayerRecordType[]> {
         try {
             const today = new Date();
             const allTimeOutcomes = await outcomeService.getAllForYear(0);

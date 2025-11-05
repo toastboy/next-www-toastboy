@@ -1,5 +1,5 @@
 import prisma from 'lib/prisma';
-import { Arse } from 'prisma/generated/prisma/client';
+import { ArseType } from 'prisma/generated/schemas';
 import arseService from 'services/Arse';
 
 jest.mock('lib/prisma', () => ({
@@ -15,7 +15,7 @@ jest.mock('lib/prisma', () => ({
     },
 }));
 
-const defaultArse: Arse = {
+const defaultArse: ArseType = {
     id: 1,
     stamp: new Date(),
     playerId: 12,
@@ -29,7 +29,7 @@ const defaultArse: Arse = {
     defending: 10,
 };
 
-const arseList: Arse[] = Array.from({ length: 100 }, (_, index) => ({
+const arseList: ArseType[] = Array.from({ length: 100 }, (_, index) => ({
     ...defaultArse,
     playerId: index % 10 + 1,
     raterId: index + 1,
@@ -54,7 +54,7 @@ describe('ArseService', () => {
             return Promise.resolve(arse ? arse : null);
         });
 
-        (prisma.arse.create as jest.Mock).mockImplementation((args: { data: Arse }) => {
+        (prisma.arse.create as jest.Mock).mockImplementation((args: { data: ArseType }) => {
             const arse = arseList.find((arse) =>
                 arse.playerId === args.data.playerId &&
                 arse.raterId === args.data.raterId,
@@ -75,8 +75,8 @@ describe('ArseService', () => {
                     raterId: number
                 }
             },
-            update: Arse,
-            create: Arse,
+            update: ArseType,
+            create: ArseType,
         }) => {
             const arse = arseList.find((arse) =>
                 arse.playerId === args.where.playerId_raterId.playerId &&
@@ -120,7 +120,7 @@ describe('ArseService', () => {
                     playerId: 6,
                     raterId: 16,
                     stamp: expect.any(Date),
-                } as Arse);
+                } as ArseType);
             } else {
                 throw new Error("Result is null");
             }
@@ -218,7 +218,7 @@ describe('ArseService', () => {
                         playerId: expect.any(Number),
                         raterId: 1,
                         stamp: expect.any(Date),
-                    } as Arse);
+                    } as ArseType);
                 }
             }
             else {

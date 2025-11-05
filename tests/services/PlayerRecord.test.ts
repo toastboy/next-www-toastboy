@@ -1,7 +1,6 @@
 import fs from 'fs';
 import prisma from 'lib/prisma';
-import { PlayerRecord } from 'prisma/generated/prisma/client';
-import { TableNameSchema } from 'prisma/generated/schemas';
+import { PlayerRecordType, TableNameSchema } from 'prisma/generated/schemas';
 import playerRecordService from 'services/PlayerRecord';
 
 jest.mock('lib/prisma', () => ({
@@ -40,7 +39,7 @@ jest.mock('lib/prisma', () => ({
     },
 }));
 
-const defaultPlayerRecord: PlayerRecord = {
+const defaultPlayerRecord: PlayerRecordType = {
     id: 1,
     year: 2021,
     responses: 10,
@@ -65,7 +64,7 @@ const defaultPlayerRecord: PlayerRecord = {
     playerId: 12,
 };
 
-const playerRecordList: PlayerRecord[] = Array.from({ length: 100 }, (_, index) => ({
+const playerRecordList: PlayerRecordType[] = Array.from({ length: 100 }, (_, index) => ({
     ...defaultPlayerRecord,
     gameDayId: 10 + index / 10 + 1,
 }));
@@ -107,7 +106,7 @@ describe('PlayerRecordService', () => {
                 ));
         });
 
-        (prisma.playerRecord.create as jest.Mock).mockImplementation((args: { data: PlayerRecord }) => {
+        (prisma.playerRecord.create as jest.Mock).mockImplementation((args: { data: PlayerRecordType }) => {
             const playerRecord = playerRecordList.find((playerRecord) =>
                 playerRecord.playerId === args.data.playerId &&
                 playerRecord.year === args.data.year &&
@@ -130,8 +129,8 @@ describe('PlayerRecordService', () => {
                     gameDayId: number,
                 }
             },
-            update: PlayerRecord,
-            create: PlayerRecord,
+            update: PlayerRecordType,
+            create: PlayerRecordType,
         }) => {
             const playerRecord = playerRecordList.find((playerRecord) =>
                 playerRecord.playerId === args.where.playerId_year_gameDayId.playerId &&
@@ -177,7 +176,7 @@ describe('PlayerRecordService', () => {
                 gameDayId: 15,
                 playerId: 12,
                 points: expect.any(Number),
-            } as PlayerRecord);
+            } as PlayerRecordType);
         });
 
         it('should return null for Player 16, Year 2022, GameDay 7', async () => {
@@ -201,7 +200,7 @@ describe('PlayerRecordService', () => {
                     expect(playerRecord).toEqual({
                         ...defaultPlayerRecord,
                         gameDayId: expect.any(Number),
-                    } as PlayerRecord);
+                    } as PlayerRecordType);
                 }
             }
             else {
@@ -299,7 +298,7 @@ describe('PlayerRecordService', () => {
                         ...defaultPlayerRecord,
                         playerId: expect.any(Number),
                         gameDayId: 15,
-                    } as PlayerRecord);
+                    } as PlayerRecordType);
                 }
             }
             else {
@@ -316,7 +315,7 @@ describe('PlayerRecordService', () => {
                         ...defaultPlayerRecord,
                         playerId: expect.any(Number),
                         gameDayId: 15,
-                    } as PlayerRecord);
+                    } as PlayerRecordType);
                 }
             }
             else {
@@ -346,7 +345,7 @@ describe('PlayerRecordService', () => {
                         ...defaultPlayerRecord,
                         playerId: 12,
                         gameDayId: expect.any(Number),
-                    } as PlayerRecord);
+                    } as PlayerRecordType);
                 }
             }
             else {
@@ -392,7 +391,7 @@ describe('PlayerRecordService', () => {
                 },
             ]);
 
-            const playerRecordList: PlayerRecord[] = JSON.parse(fs.readFileSync('./tests/services/data/PlayerRecord.test.json').toString());
+            const playerRecordList: PlayerRecordType[] = JSON.parse(fs.readFileSync('./tests/services/data/PlayerRecord.test.json').toString());
 
             (prisma.playerRecord.findMany as jest.Mock).mockImplementation(() => {
                 const playerRecords = playerRecordList.filter((playerRecord) =>
@@ -425,7 +424,7 @@ describe('PlayerRecordService', () => {
 
     describe('getTable', () => {
         beforeEach(() => {
-            const playerRecordList: PlayerRecord[] = JSON.parse(fs.readFileSync('./tests/services/data/PlayerRecord.test.json').toString());
+            const playerRecordList: PlayerRecordType[] = JSON.parse(fs.readFileSync('./tests/services/data/PlayerRecord.test.json').toString());
 
             (prisma.playerRecord.findMany as jest.Mock).mockImplementation((args: {
                 where: {
@@ -484,7 +483,7 @@ describe('PlayerRecordService', () => {
 
     describe('getTable qualified/unqualified averages', () => {
         beforeEach(() => {
-            const playerRecordList: PlayerRecord[] = JSON.parse(fs.readFileSync('./tests/services/data/PlayerRecord.test.json').toString());
+            const playerRecordList: PlayerRecordType[] = JSON.parse(fs.readFileSync('./tests/services/data/PlayerRecord.test.json').toString());
 
             (prisma.playerRecord.findMany as jest.Mock).mockImplementation((args: {
                 where: {
@@ -527,7 +526,7 @@ describe('PlayerRecordService', () => {
 
     describe('getTable qualified/unqualified speedy', () => {
         beforeEach(() => {
-            const playerRecordList: PlayerRecord[] = JSON.parse(fs.readFileSync('./tests/services/data/PlayerRecord.test.json').toString());
+            const playerRecordList: PlayerRecordType[] = JSON.parse(fs.readFileSync('./tests/services/data/PlayerRecord.test.json').toString());
 
             (prisma.playerRecord.findMany as jest.Mock).mockImplementation((args: {
                 where: {
@@ -570,7 +569,7 @@ describe('PlayerRecordService', () => {
 
     describe('create', () => {
         it('should create an PlayerRecord', async () => {
-            const record: PlayerRecord = {
+            const record: PlayerRecordType = {
                 ...defaultPlayerRecord,
                 playerId: 12,
                 gameDayId: 132,

@@ -1,8 +1,16 @@
 'use client';
 
 import {
+    ArseType,
+    ClubSupporterType,
     ClubType,
+    CountrySupporterType,
     CountryType,
+    GameDayType,
+    OutcomeType,
+    PlayerRecordType,
+    PlayerType,
+    TableName,
 } from 'prisma/generated/schemas';
 import useSWR from 'swr';
 import { PlayerData, TurnoutByYear, WDL } from './types';
@@ -47,43 +55,43 @@ export function useGameDays() {
 }
 
 export function useCurrentGame() {
-    const { data, error } = useSWR<GameDay>(`/api/footy/currentgame`, fetcher);
+    const { data, error } = useSWR<GameDayType>(`/api/footy/currentgame`, fetcher);
     if (error) throw error;
     return data || null;
 }
 
 export function usePlayer(idOrLogin: string) {
-    const { data, error } = useSWR<Player>(`/api/footy/player/${idOrLogin}`, fetcher);
+    const { data, error } = useSWR<PlayerType>(`/api/footy/player/${idOrLogin}`, fetcher);
     if (error) throw error;
     return data || null;
 }
 
 export function usePlayerLastPlayed(idOrLogin: string) {
-    const { data, error } = useSWR<Outcome>(`/api/footy/player/${idOrLogin}/lastplayed`, fetcher);
+    const { data, error } = useSWR<OutcomeType>(`/api/footy/player/${idOrLogin}/lastplayed`, fetcher);
     if (error) throw error;
     return data || null;
 }
 
 export function usePlayerClubs(idOrLogin: string) {
-    const { data, error } = useSWR<ClubSupporter[]>(`/api/footy/player/${idOrLogin}/clubs`, fetcher);
+    const { data, error } = useSWR<ClubSupporterType[]>(`/api/footy/player/${idOrLogin}/clubs`, fetcher);
     if (error) throw error;
     return data || null;
 }
 
 export function usePlayerCountries(idOrLogin: string) {
-    const { data, error } = useSWR<CountrySupporter[]>(`/api/footy/player/${idOrLogin}/countries`, fetcher);
+    const { data, error } = useSWR<CountrySupporterType[]>(`/api/footy/player/${idOrLogin}/countries`, fetcher);
     if (error) throw error;
     return data || null;
 }
 
 export function usePlayerArse(idOrLogin: string) {
-    const { data, error } = useSWR<Arse>(`/api/footy/player/${idOrLogin}/arse`, fetcher);
+    const { data, error } = useSWR<ArseType>(`/api/footy/player/${idOrLogin}/arse`, fetcher);
     if (error) throw error;
     return data || null;
 }
 
 export function usePlayerForm(idOrLogin: string, games: number) {
-    const { data, error } = useSWR<Outcome[]>(`/api/footy/player/${idOrLogin}/form/${games}`, fetcher);
+    const { data, error } = useSWR<OutcomeType[]>(`/api/footy/player/${idOrLogin}/form/${games}`, fetcher);
     if (error) throw error;
     return data || null;
 }
@@ -95,7 +103,7 @@ export function usePlayerYearsActive(idOrLogin: string) {
 }
 
 export function usePlayerRecord(idOrLogin: string, year: number) {
-    const { data, error } = useSWR<PlayerRecord>(`/api/footy/player/${idOrLogin}/record/${year}`, fetcher);
+    const { data, error } = useSWR<PlayerRecordType>(`/api/footy/player/${idOrLogin}/record/${year}`, fetcher);
     if (error) throw error;
     return data || null;
 }
@@ -118,27 +126,27 @@ export function useTableYears() {
     return data || null;
 }
 
-export function useTable(table: TableNameType, year: number, qualified?: boolean, take?: number) {
+export function useTable(table: TableName, year: number, qualified?: boolean, take?: number) {
     let url = `/api/footy/table/${table}/${year}`;
     if (qualified !== undefined) url += `/${qualified}`;
     if (take !== undefined) url += `/${take}`;
 
-    const { data, error } = useSWR<PlayerRecord[]>(url, fetcher);
+    const { data, error } = useSWR<PlayerRecordType[]>(url, fetcher);
     if (error) throw error;
     return data || null;
 }
 
 export function useTeam(gameDay: number, team: string) {
-    const { data, error } = useSWR<Outcome[]>(`/api/footy/team/${gameDay}/${team}`, fetcher);
+    const { data, error } = useSWR<OutcomeType[]>(`/api/footy/team/${gameDay}/${team}`, fetcher);
     if (error) throw error;
     return data || null;
 }
 
-export function useWinners(table: TableNameType, year?: number) {
+export function useWinners(table: TableName, year?: number) {
     let url = `/api/footy/winners/${table}`;
     if (year !== undefined) url += `/${year}`;
 
-    const { data, error } = useSWR<PlayerRecord[]>(url, fetcher);
+    const { data, error } = useSWR<PlayerRecordType[]>(url, fetcher);
     if (error) throw error;
     return data || null;
 }

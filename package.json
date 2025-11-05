@@ -41,7 +41,7 @@
     "dayjs": "^1.11.18",
     "next": "^15.5.4",
     "nodemailer": "^7.0.9",
-    "prisma": "^6.16.2",
+    "prisma": "^6.18.0",
     "prisma-zod-generator": "^1.29.1",
     "react": "^19.1.1",
     "react-dom": "^19.1.1",

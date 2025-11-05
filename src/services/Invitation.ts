@@ -2,44 +2,27 @@ import 'server-only';
 
 import debug from 'debug';
 import prisma from 'lib/prisma';
-import { Invitation } from 'prisma/generated/zod';
+import {
+    InvitationCreateInputObjectSchema,
+    InvitationType,
+    InvitationUpdateInputObjectSchema,
+    InvitationWhereUniqueInputObjectSchema,
+} from 'prisma/generated/schemas';
 
 const log = debug('footy:api');
 
 export class InvitationService {
-    /**
-     * Validate a Invitation
-     * @param invitation The Invitation to validate
-     * @returns the validated Invitation
-     * @throws An error if the Invitation is invalid.
-     */
-    validate(invitation: Invitation): Invitation {
-        if (!invitation.uuid || typeof invitation.uuid !== 'string' || invitation.uuid === '') {
-            throw new Error(`Invalid uuid value: ${invitation.uuid}`);
-        }
-        if (!invitation.playerId || !Number.isInteger(invitation.playerId) || invitation.playerId < 0) {
-            throw new Error(`Invalid playerId value: ${invitation.playerId}`);
-        }
-        if (!invitation.gameDayId || !Number.isInteger(invitation.gameDayId) || invitation.gameDayId < 0) {
-            throw new Error(`Invalid gameDayId value: ${invitation.gameDayId}`);
-        }
-
-        return invitation;
-    }
-
     /**
      * Retrieves a Invitation by its ID.
      * @param uuid - The ID of the Invitation to retrieve.
      * @returns A Promise that resolves to the Invitation object if found, or null if not found.
      * @throws If there is an error while fetching the Invitation.
      */
-    async get(uuid: string): Promise<Invitation | null> {
+    async get(uuid: string): Promise<InvitationType | null> {
         try {
-            return prisma.invitation.findUnique({
-                where: {
-                    uuid: uuid,
-                },
-            });
+            const where = InvitationWhereUniqueInputObjectSchema.parse({ uuid });
+
+            return prisma.invitation.findUnique({ where });
         } catch (error) {
             log(`Error fetching Invitation: ${error}`);
             throw error;
@@ -51,7 +34,7 @@ export class InvitationService {
      * @returns A promise that resolves to an array of Invitations or null if an error occurs.
      * @throws An error if there is a failure.
      */
-    async getAll(): Promise<Invitation[] | null> {
+    async getAll(): Promise<InvitationType[]> {
         try {
             return prisma.invitation.findMany({});
         } catch (error) {
@@ -66,11 +49,11 @@ export class InvitationService {
      * @returns A promise that resolves to the created invitation, or null if an error occurs.
      * @throws An error if there is a failure.
      */
-    async create(data: Invitation): Promise<Invitation | null> {
+    async create(rawData: unknown): Promise<InvitationType | null> {
         try {
-            return await prisma.invitation.create({
-                data: this.validate(data),
-            });
+            const data = InvitationCreateInputObjectSchema.parse(rawData);
+
+            return await prisma.invitation.create({ data });
         } catch (error) {
             log(`Error creating Invitation: ${error}`);
             throw error;
@@ -83,15 +66,13 @@ export class InvitationService {
      * @returns A promise that resolves to the upserted invitation, or null if the upsert failed.
      * @throws An error if there is a failure.
      */
-    async upsert(data: Invitation): Promise<Invitation | null> {
+    async upsert(rawData: unknown): Promise<InvitationType | null> {
         try {
-            return await prisma.invitation.upsert({
-                where: {
-                    uuid: data.uuid,
-                },
-                update: this.validate(data),
-                create: this.validate(data),
-            });
+            const where = InvitationWhereUniqueInputObjectSchema.parse(rawData);
+            const update = InvitationUpdateInputObjectSchema.parse(rawData);
+            const create = InvitationCreateInputObjectSchema.parse(rawData);
+
+            return await prisma.invitation.upsert({ where, update, create });
         } catch (error) {
             log(`Error upserting Invitation: ${error}`);
             throw error;
@@ -105,11 +86,9 @@ export class InvitationService {
      */
     async delete(uuid: string): Promise<void> {
         try {
-            await prisma.invitation.delete({
-                where: {
-                    uuid: uuid,
-                },
-            });
+            const where = InvitationWhereUniqueInputObjectSchema.parse({ uuid });
+
+            await prisma.invitation.delete({ where });
         } catch (error) {
             log(`Error deleting Invitation: ${error}`);
             throw error;

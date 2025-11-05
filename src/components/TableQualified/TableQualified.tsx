@@ -1,7 +1,7 @@
 import { Flex, Table, TableTbody, TableTd, TableTr, Title } from '@mantine/core';
 import PlayerLink from 'components/PlayerLink/PlayerLink';
 import TableScore from 'components/TableScore/TableScore';
-import { TableNameType } from 'prisma/generated/zod';
+import \{ TableNameType \ } from 'prisma/generated/schemas';
 import playerRecordService from 'services/PlayerRecord';
 
 export interface Props {

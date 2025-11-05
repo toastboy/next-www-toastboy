@@ -1,11 +1,10 @@
 import { ClientSecretCredential } from "@azure/identity";
 import { BlobServiceClient } from "@azure/storage-blob";
-import { Prisma } from "@prisma/client";
+import { Prisma, PrismaClient } from "@prisma/client";
 import { execSync } from "child_process";
 import fs from 'fs';
 import { readdir } from "fs/promises";
 import path from "path";
-import { PrismaClient } from '../../../prisma/generated/prisma/client';
 
 const prisma = new PrismaClient();
 

@@ -1,6 +1,6 @@
 import { handleGET } from 'lib/api';
 import { NextRequest } from 'next/server';
-import { TableNameSchema } from 'prisma/generated/zod';
+import { TableNameSchema } from 'prisma/generated/schemas';
 import playerRecordService from 'services/PlayerRecord';
 
 /**

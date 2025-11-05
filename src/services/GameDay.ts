@@ -2,31 +2,30 @@ import 'server-only';
 
 import debug from 'debug';
 import prisma from 'lib/prisma';
-import { GameDay as PrismaGameDay } from 'prisma/generated/prisma/client';
-import { GameDay, TeamNameType } from 'prisma/generated/zod';
+import {
+    GameDayType,
+    GameDayUncheckedCreateInputObjectZodSchema,
+    GameDayUncheckedUpdateInputObjectZodSchema,
+    GameDayWhereInputObjectSchema,
+    GameDayWhereUniqueInputObjectSchema,
+    TeamName
+} from 'prisma/generated/schemas';
+import z from 'zod';
+
+/** Helper for pickerGamesHistory field that can be 5, 10, null or omitted in input */
+const pickerGamesHistory = z.union([z.literal(5), z.literal(10)]).nullable().optional();
+
+/** Schemas for enforcing strict input */
+export const GameDayCreateInputObjectStrictSchema = GameDayUncheckedCreateInputObjectZodSchema.extend({
+    pickerGamesHistory: pickerGamesHistory,
+});
+export const GameDayUpdateInputObjectStrictSchema = GameDayUncheckedUpdateInputObjectZodSchema.extend({
+    pickerGamesHistory: pickerGamesHistory,
+});
 
 const log = debug('footy:api');
 
 export class GameDayService {
-    /**
-     * Validate a PrismaGameDay
-     * @param gameDay The PrismaGameDay to validate
-     * @returns the validated PrismaGameDay
-     * @throws An error if the PrismaGameDay is invalid.
-     */
-    validate(gameDay: PrismaGameDay): PrismaGameDay {
-        if (!gameDay.id || !Number.isInteger(gameDay.id) || gameDay.id < 0) {
-            throw new Error(`Invalid id value: ${gameDay.id}`);
-        }
-        if (gameDay.pickerGamesHistory &&
-            (!Number.isInteger(gameDay.pickerGamesHistory) ||
-                !(gameDay.pickerGamesHistory == 5 || gameDay.pickerGamesHistory == 10))) {
-            throw new Error(`Invalid pickerGamesHistory value: ${gameDay.pickerGamesHistory}`);
-        }
-
-        return gameDay;
-    }
-
     /**
      * Retrieves a GameDayWithOutcomesWithPlayers by its ID.
      * @param id - The ID of the GameDay to retrieve.
@@ -34,15 +33,13 @@ export class GameDayService {
      * if not found.
      * @throws If there is an error while fetching the GameDay.
      */
-    async get(id: number): Promise<GameDay | null> {
+    async get(id: number): Promise<GameDayType | null> {
         try {
-            return prisma.gameDay.findUnique({
-                where: {
-                    id: id,
-                },
-            });
+            const where = GameDayWhereUniqueInputObjectSchema.parse({ id });
+
+            return prisma.gameDay.findUnique({ where });
         } catch (error) {
-            log(`Error fetching PrismaGameDay: ${error}`);
+            log(`Error fetching GameDayType: ${error}`);
             throw error;
         }
     }
@@ -55,73 +52,56 @@ export class GameDayService {
      * @param {boolean} [filters.game] - Whether to filter by game status.
      * @param {boolean} [filters.mailSent] - Whether to filter by mail sent status. If true, it will filter for non-null mailSent values.
      * @param {number} [filters.year] - The year to filter by.
-     * @returns {Promise<PrismaGameDay[]>} A promise that resolves to an array of PrismaGameDay objects.
+     * @returns {Promise<GameDayType[]>} A promise that resolves to an array of GameDayType objects.
      * @throws Will throw an error if there is an issue fetching the game days.
      */
     async getAll({ bibs, game, mailSent, year }: {
-        bibs?: TeamNameType,
+        bibs?: TeamName,
         game?: boolean,
         mailSent?: boolean,
         year?: number,
-    } = {}): Promise<PrismaGameDay[]> {
+    } = {}): Promise<GameDayType[]> {
         try {
-            return prisma.gameDay.findMany({
-                where: {
-                    ...(bibs !== undefined && { bibs: bibs }),
-                    ...(game !== undefined && { game: game }),
-                    ...(mailSent !== undefined && { mailSent: mailSent ? { not: null } : null }),
-                    ...(year !== undefined && { year: year }),
-                },
-                orderBy: {
-                    date: 'asc',
-                },
-            });
+            const where = GameDayWhereInputObjectSchema.parse({ bibs, game, mailSent, year });
+
+            return prisma.gameDay.findMany({ where });
         } catch (error) {
-            log(`Error fetching PrismaGameDay: ${error}`);
+            log(`Error fetching GameDayType: ${error}`);
             throw error;
         }
     }
 
     /**
-     * Retrieves a PrismaGameDay object by the specified date.
+     * Retrieves a GameDayType object by the specified date.
      * @param date - The date to search for.
-     * @returns A Promise that resolves to the PrismaGameDay object if found, or null
+     * @returns A Promise that resolves to the GameDayType object if found, or null
      * if not found.
-     * @throws If there was an error while fetching the PrismaGameDay.
+     * @throws If there was an error while fetching the GameDayType.
      */
-    async getByDate(date: Date): Promise<PrismaGameDay | null> {
+    async getByDate(date: Date): Promise<GameDayType | null> {
         try {
-            return prisma.gameDay.findFirst({
-                where: {
-                    date: date,
-                },
-            });
+            const where = GameDayWhereInputObjectSchema.parse({ date });
+
+            return prisma.gameDay.findFirst({ where });
         } catch (error) {
-            log(`Error fetching PrismaGameDay: ${error}`);
+            log(`Error fetching GameDayType: ${error}`);
             throw error;
         }
     }
 
     /**
-     * Retrieves the current PrismaGameDay: the most recent PrismaGameDay where the mail has
+     * Retrieves the current GameDayType: the most recent GameDayType where the mail has
      * been sent.
      * @returns A promise that resolves to an array of GameDays.
      * @throws An error if there is a failure.
      */
-    async getCurrent(): Promise<PrismaGameDay | null> {
+    async getCurrent(): Promise<GameDayType | null> {
         try {
-            return prisma.gameDay.findFirst({
-                where: {
-                    mailSent: {
-                        not: null,
-                    },
-                },
-                orderBy: {
-                    date: 'desc',
-                },
-            });
+            const where = GameDayWhereInputObjectSchema.parse({ mailSent: { not: null } });
+
+            return prisma.gameDay.findFirst({ where, orderBy: { date: 'desc' } });
         } catch (error) {
-            log(`Error fetching current PrismaGameDay: ${error}`);
+            log(`Error fetching current GameDayType: ${error}`);
             throw error;
         }
     }
@@ -263,7 +243,7 @@ export class GameDayService {
             return gameDay ? Promise.resolve(gameDay.year) : null;
         }
         catch (error) {
-            log(`Error fetching PrismaGameDay: ${error}`);
+            log(`Error fetching GameDayType: ${error}`);
             throw error;
         }
     }
@@ -274,13 +254,13 @@ export class GameDayService {
      * @returns A promise that resolves to the created gameDay, or null if an error occurs.
      * @throws An error if there is a failure.
      */
-    async create(data: PrismaGameDay): Promise<PrismaGameDay | null> {
+    async create(rawData: unknown): Promise<GameDayType | null> {
         try {
-            return await prisma.gameDay.create({
-                data: this.validate(data),
-            });
+            const data = GameDayCreateInputObjectStrictSchema.parse(rawData);
+
+            return await prisma.gameDay.create({ data });
         } catch (error) {
-            log(`Error creating PrismaGameDay: ${error}`);
+            log(`Error creating GameDayType: ${error}`);
             throw error;
         }
     }
@@ -291,17 +271,15 @@ export class GameDayService {
      * @returns A promise that resolves to the upserted gameDay, or null if the upsert failed.
      * @throws An error if there is a failure.
      */
-    async upsert(data: PrismaGameDay): Promise<PrismaGameDay | null> {
+    async upsert(rawData: unknown): Promise<GameDayType | null> {
         try {
-            return await prisma.gameDay.upsert({
-                where: {
-                    id: data.id,
-                },
-                update: this.validate(data),
-                create: this.validate(data),
-            });
+            const where = GameDayWhereUniqueInputObjectSchema.parse(rawData);
+            const update = GameDayUpdateInputObjectStrictSchema.parse(rawData);
+            const create = GameDayCreateInputObjectStrictSchema.parse(rawData);
+
+            return await prisma.gameDay.upsert({ where, update, create });
         } catch (error) {
-            log(`Error upserting PrismaGameDay: ${error}`);
+            log(`Error upserting GameDayType: ${error}`);
             throw error;
         }
     }
@@ -313,13 +291,11 @@ export class GameDayService {
      */
     async delete(id: number): Promise<void> {
         try {
-            await prisma.gameDay.delete({
-                where: {
-                    id: id,
-                },
-            });
+            const where = GameDayWhereUniqueInputObjectSchema.parse({ id });
+
+            await prisma.gameDay.delete({ where });
         } catch (error) {
-            log(`Error deleting PrismaGameDay: ${error}`);
+            log(`Error deleting GameDayType: ${error}`);
             throw error;
         }
     }

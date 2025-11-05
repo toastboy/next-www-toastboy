@@ -1,4 +1,4 @@
-import { createMockApp, jsonResponseHandler, suppressConsoleError } from 'tests/lib/api/common';
+import { createMockApp, jsonResponseHandler, suppressConsoleError, toWire } from 'tests/lib/api/common';
 import { mockPlayer, setupPlayerMocks } from 'tests/lib/api/player';
 
 jest.mock('services/Player');
@@ -26,7 +26,7 @@ describe('API tests using HTTP', () => {
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
         expect(response.body).toEqual({
-            ...mockPlayer, born: null, comment: null,
+            ...toWire(mockPlayer), born: null, comment: null,
         });
     });
 
@@ -39,7 +39,11 @@ describe('API tests using HTTP', () => {
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
         expect(response.body).toEqual({
-            ...mockPlayer, email: null, born: null, comment: null,
+            ...toWire(mockPlayer),
+            login: null,
+            email: null,
+            born: null,
+            comment: null,
         });
     });
 
@@ -56,9 +60,14 @@ describe('API tests using HTTP', () => {
         if (response.status !== 200) console.log('Error response:', response.error);
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
-        expect(response.body).toEqual(
-            { ...mockPlayer, anonymous: true, email: null, born: null, comment: null },
-        );
+        expect(response.body).toEqual({
+            ...toWire(mockPlayer),
+            login: null,
+            anonymous: true,
+            email: null,
+            born: null,
+            comment: null,
+        });
     });
 
     it('should return 404 if the player does not exist', async () => {

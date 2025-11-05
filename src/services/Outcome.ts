@@ -3,41 +3,36 @@ import 'server-only';
 import debug from 'debug';
 import prisma from 'lib/prisma';
 import { Turnout, TurnoutByYear, WDL } from 'lib/types';
-import { Outcome, PlayerResponseSchema } from 'prisma/generated/zod';
+import {
+    OutcomeCreateInputObjectZodSchema,
+    OutcomeType,
+    OutcomeUpdateInputObjectZodSchema,
+    OutcomeWhereUniqueInputObjectSchema,
+    PlayerResponseSchema,
+} from 'prisma/generated/schemas';
 import gameDayService from 'services/GameDay';
+import z from 'zod';
+
+/** Non-negative integer */
+const nonNegativeInteger = z.number().int().min(0);
+
+/** The fields I want to impose stricter checking on */
+const outcomeFields = {
+    responseInterval: nonNegativeInteger.optional().nullable(),
+    points: z.union([z.literal(0), z.literal(1), z.literal(3)]).optional().nullable(),
+};
+
+/** Schemas for enforcing strict input */
+export const OutcomeCreateInputObjectStrictSchema = OutcomeCreateInputObjectZodSchema.extend({
+    ...outcomeFields,
+});
+export const OutcomeUpdateInputObjectStrictSchema = OutcomeUpdateInputObjectZodSchema.extend({
+    ...outcomeFields,
+});
 
 const log = debug('footy:api');
 
 export class OutcomeService {
-    /**
-     * Validate an outcome
-     * @param outcome The outcome to validate
-     * @returns the validated outcome
-     * @throws An error if the outcome is invalid.
-     */
-    validate(outcome: Outcome): Outcome {
-        if (outcome.response && !PlayerResponseSchema.options.includes(outcome.response)) {
-            throw new Error(`Invalid response value: ${outcome.response}`);
-        }
-        if (outcome.responseInterval && outcome.responseInterval < 0) {
-            throw new Error(`Invalid responseInterval value: ${outcome.responseInterval}`);
-        }
-        if (outcome.points && (!Number.isInteger(outcome.points) || (outcome.points != 0 && outcome.points != 1 && outcome.points != 3))) {
-            throw new Error(`Invalid points value: ${outcome.points}`);
-        }
-        if (outcome.team && !['A', 'B'].includes(outcome.team)) {
-            throw new Error(`Invalid team value: ${outcome.team}`);
-        }
-        if (!outcome.gameDayId || !Number.isInteger(outcome.gameDayId) || outcome.gameDayId < 0) {
-            throw new Error(`Invalid gameDay value: ${outcome.gameDayId}`);
-        }
-        if (!outcome.playerId || !Number.isInteger(outcome.playerId) || outcome.playerId < 0) {
-            throw new Error(`Invalid player value: ${outcome.playerId}`);
-        }
-
-        return outcome;
-    }
-
     /**
      * Retrieves an Outcome for the given Player ID for the given GameDay ID.
      * @param gameDayId - The ID of the GameDay.
@@ -45,16 +40,11 @@ export class OutcomeService {
      * @returns A promise that resolves to the Outcome if found, otherwise null.
      * @throws An error if there is a failure.
      */
-    async get(gameDayId: number, playerId: number): Promise<Outcome | null> {
+    async get(gameDayId: number, playerId: number): Promise<OutcomeType | null> {
         try {
-            return prisma.outcome.findUnique({
-                where: {
-                    gameDayId_playerId: {
-                        gameDayId: gameDayId,
-                        playerId: playerId,
-                    },
-                },
-            });
+            const where = OutcomeWhereUniqueInputObjectSchema.parse({ gameDayId, playerId });
+
+            return prisma.outcome.findUnique({ where });
         } catch (error) {
             log(`Error fetching outcomes: ${error}`);
             throw error;
@@ -66,7 +56,7 @@ export class OutcomeService {
      * @returns A promise that resolves to an array of outcomes or null if an error occurs.
      * @throws An error if there is a failure.
      */
-    async getAll(): Promise<Outcome[] | null> {
+    async getAll(): Promise<OutcomeType[]> {
         try {
             return prisma.outcome.findMany({});
         } catch (error) {
@@ -80,7 +70,7 @@ export class OutcomeService {
      * @returns A Promise that resolves to the last played Outcome, or null if no outcome is found.
      * @throws An error if there is a failure.
      */
-    async getLastPlayed(): Promise<Outcome | null> {
+    async getLastPlayed(): Promise<OutcomeType | null> {
         try {
             return prisma.outcome.findFirst({
                 where: {
@@ -109,7 +99,7 @@ export class OutcomeService {
      * gameDay, most recent first.
      * @throws An error if there is a failure.
      */
-    async getAllForYear(year: number, untilGameDay?: number): Promise<Outcome[]> {
+    async getAllForYear(year: number, untilGameDay?: number): Promise<OutcomeType[]> {
         try {
             return prisma.outcome.findMany({
                 where: {
@@ -282,7 +272,7 @@ export class OutcomeService {
      * @returns A promise that resolves to an array of Outcome objects.
      * @throws If there is an error fetching the outcomes.
      */
-    async getByGameDay(gameDayId: number, team?: 'A' | 'B'): Promise<Outcome[]> {
+    async getByGameDay(gameDayId: number, team?: 'A' | 'B'): Promise<OutcomeType[]> {
         try {
             return prisma.outcome.findMany({
                 where: {
@@ -305,7 +295,7 @@ export class OutcomeService {
      * @returns A promise that resolves to an array of outcomes.
      * @throws An error if there is a failure.
      */
-    async getByPlayer(playerId: number): Promise<Outcome[]> {
+    async getByPlayer(playerId: number): Promise<OutcomeType[]> {
         try {
             return prisma.outcome.findMany({
                 where: {
@@ -451,11 +441,11 @@ export class OutcomeService {
      * @returns A promise that resolves to the created outcome, or null if an error occurs.
      * @throws An error if there is a failure.
      */
-    async create(data: Outcome): Promise<Outcome | null> {
+    async create(rawData: unknown): Promise<OutcomeType | null> {
         try {
-            return await prisma.outcome.create({
-                data: this.validate(data),
-            });
+            const data = OutcomeCreateInputObjectStrictSchema.parse(rawData);
+
+            return await prisma.outcome.create({ data });
         } catch (error) {
             log(`Error creating outcome: ${error}`);
             throw error;
@@ -468,18 +458,13 @@ export class OutcomeService {
      * @returns A promise that resolves to the upserted Outcome, or null if the upsert failed.
      * @throws An error if there is a failure.
      */
-    async upsert(data: Outcome): Promise<Outcome | null> {
+    async upsert(rawData: unknown): Promise<OutcomeType | null> {
         try {
-            return await prisma.outcome.upsert({
-                where: {
-                    gameDayId_playerId: {
-                        gameDayId: data.gameDayId,
-                        playerId: data.playerId,
-                    },
-                },
-                update: this.validate(data),
-                create: this.validate(data),
-            });
+            const where = OutcomeWhereUniqueInputObjectSchema.parse(rawData);
+            const update = OutcomeUpdateInputObjectStrictSchema.parse(rawData);
+            const create = OutcomeCreateInputObjectStrictSchema.parse(rawData);
+
+            return await prisma.outcome.upsert({ where, update, create });
         } catch (error) {
             log(`Error upserting Outcome: ${error}`);
             throw error;
@@ -495,14 +480,9 @@ export class OutcomeService {
      */
     async delete(gameDayId: number, playerId: number): Promise<void> {
         try {
-            await prisma.outcome.delete({
-                where: {
-                    gameDayId_playerId: {
-                        gameDayId: gameDayId,
-                        playerId: playerId,
-                    },
-                },
-            });
+            const where = OutcomeWhereUniqueInputObjectSchema.parse({ gameDayId, playerId });
+
+            await prisma.outcome.delete({ where });
         } catch (error) {
             log(`Error deleting outcome: ${error}`);
             throw error;

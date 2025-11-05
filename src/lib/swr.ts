@@ -1,6 +1,9 @@
 'use client';
 
-import { Arse, Club, ClubSupporter, Country, CountrySupporter, GameDay, Outcome, Player, PlayerRecord, TableNameType } from 'prisma/generated/zod';
+import {
+    ClubType,
+    CountryType,
+} from 'prisma/generated/schemas';
 import useSWR from 'swr';
 import { PlayerData, TurnoutByYear, WDL } from './types';
 
@@ -8,13 +11,13 @@ const fetcher = (input: URL | RequestInfo, init?: RequestInit | undefined) =>
     fetch(input, init).then((res) => res.json());
 
 export function useClub(id: number) {
-    const { data, error } = useSWR<Club>(`/api/footy/club/${id}`, fetcher);
+    const { data, error } = useSWR<ClubType>(`/api/footy/club/${id}`, fetcher);
     if (error) throw error;
     return data || null;
 }
 
 export function useCountry(isoCode: string) {
-    const { data, error } = useSWR<Country>(`/api/footy/country/${isoCode}`, fetcher);
+    const { data, error } = useSWR<CountryType>(`/api/footy/country/${isoCode}`, fetcher);
     if (error) throw error;
     return data || null;
 }
@@ -32,13 +35,13 @@ export function useGameYear(year: number) {
 }
 
 export function useGameDay(id: number) {
-    const { data, error } = useSWR<GameDay>(`/api/footy/gameday/${id}`, fetcher);
+    const { data, error } = useSWR<GameDayType>(`/api/footy/gameday/${id}`, fetcher);
     if (error) throw error;
     return data || null;
 }
 
 export function useGameDays() {
-    const { data, error } = useSWR<GameDay[]>(`/api/footy/gameday`, fetcher);
+    const { data, error } = useSWR<GameDayType[]>(`/api/footy/gameday`, fetcher);
     if (error) throw error;
     return data || null;
 }

@@ -2,28 +2,27 @@ import 'server-only';
 
 import debug from 'debug';
 import prisma from 'lib/prisma';
-import { CountrySupporter } from 'prisma/generated/prisma/client';
+import {
+    CountrySupporterCreateInputObjectSchema,
+    CountrySupporterType,
+    CountrySupporterUpdateInputObjectSchema,
+    CountrySupporterWhereInputObjectSchema,
+    CountrySupporterWhereUniqueInputObjectSchema,
+} from 'prisma/generated/schemas';
+import z from 'zod';
+
+/** Defines a valid ISO country code */
+const validISOCode = z.object({
+    isoCode: z.string().regex(/^([A-Z]{2}|[A-Z]{2}-[A-Z]{3})$/, 'Invalid ISO code format'),
+});
+
+/** Schemas for enforcing strict input */
+export const CountrySupporterCreateInputObjectStrictSchema = CountrySupporterCreateInputObjectSchema.and(validISOCode);
+export const CountrySupporterUpdateInputObjectStrictSchema = CountrySupporterUpdateInputObjectSchema.and(validISOCode);
 
 const log = debug('footy:api');
 
 export class CountrySupporterService {
-    /**
-     * Validate a CountrySupporter
-     * @param countrySupporter The CountrySupporter to validate
-     * @returns the validated CountrySupporter
-     * @throws An error if the CountrySupporter is invalid.
-     */
-    validate(countrySupporter: CountrySupporter): CountrySupporter {
-        if (!countrySupporter.playerId || !Number.isInteger(countrySupporter.playerId) || countrySupporter.playerId < 0) {
-            throw new Error(`Invalid playerId value: ${countrySupporter.playerId}`);
-        }
-        if (!countrySupporter.countryISOCode || (!/^[A-Z]{2}$/.test(countrySupporter.countryISOCode) && !/^[A-Z]{2}-[A-Z]{3}$/.test(countrySupporter.countryISOCode))) {
-            throw new Error(`Invalid countryISOCode value: ${countrySupporter.countryISOCode}`);
-        }
-
-        return countrySupporter;
-    }
-
     /**
      * Retrieves a CountrySupporter for the given player ID and country ISO code.
      * @param playerId - The ID of the player.
@@ -31,16 +30,11 @@ export class CountrySupporterService {
      * @returns A promise that resolves to the CountrySupporter if found, otherwise null.
      * @throws An error if there is a failure.
      */
-    async get(playerId: number, countryISOCode: string): Promise<CountrySupporter | null> {
+    async get(playerId: number, countryISOCode: string): Promise<CountrySupporterType | null> {
         try {
-            return prisma.countrySupporter.findUnique({
-                where: {
-                    playerId_countryISOCode: {
-                        playerId: playerId,
-                        countryISOCode: countryISOCode,
-                    },
-                },
-            });
+            const where = CountrySupporterWhereUniqueInputObjectSchema.parse({ playerId, countryISOCode });
+
+            return prisma.countrySupporter.findUnique({ where });
         } catch (error) {
             log(`Error fetching CountrySupporter: ${error}`);
             throw error;
@@ -52,7 +46,7 @@ export class CountrySupporterService {
      * @returns A promise that resolves to an array of CountrySupporters or null if an error occurs.
      * @throws An error if there is a failure.
      */
-    async getAll(): Promise<CountrySupporter[] | null> {
+    async getAll(): Promise<CountrySupporterType[]> {
         try {
             return prisma.countrySupporter.findMany({});
         } catch (error) {
@@ -67,13 +61,11 @@ export class CountrySupporterService {
      * @returns A promise that resolves to an array of CountrySupporterWithCountry objects or null.
      * @throws An error if there is a failure.
      */
-    async getByPlayer(playerId: number): Promise<CountrySupporter[] | null> {
+    async getByPlayer(playerId: number): Promise<CountrySupporterType[] | null> {
         try {
-            return prisma.countrySupporter.findMany({
-                where: {
-                    playerId: playerId,
-                },
-            });
+            const where = CountrySupporterWhereInputObjectSchema.parse({ playerId });
+
+            return prisma.countrySupporter.findMany({ where });
         } catch (error) {
             log(`Error fetching CountrySupporters by player: ${error}`);
             throw error;
@@ -86,13 +78,11 @@ export class CountrySupporterService {
      * @returns A promise that resolves to an array of CountrySupporter or null.
      * @throws An error if there is a failure.
      */
-    async getByCountry(countryISOCode: string): Promise<CountrySupporter[] | null> {
+    async getByCountry(countryISOCode: string): Promise<CountrySupporterType[] | null> {
         try {
-            return prisma.countrySupporter.findMany({
-                where: {
-                    countryISOCode: countryISOCode,
-                },
-            });
+            const where = CountrySupporterWhereInputObjectSchema.parse({ countryISOCode });
+
+            return prisma.countrySupporter.findMany({ where });
         } catch (error) {
             log(`Error fetching CountrySupporters by ISO code: ${error}`);
             throw error;
@@ -105,11 +95,11 @@ export class CountrySupporterService {
      * @returns A promise that resolves to the created CountrySupporter, or null if an error occurs.
      * @throws An error if there is a failure.
      */
-    async create(data: CountrySupporter): Promise<CountrySupporter | null> {
+    async create(rawData: unknown): Promise<CountrySupporterType | null> {
         try {
-            return await prisma.countrySupporter.create({
-                data: this.validate(data),
-            });
+            const data = CountrySupporterCreateInputObjectSchema.parse(rawData);
+
+            return await prisma.countrySupporter.create({ data });
         } catch (error) {
             log(`Error creating CountrySupporter: ${error}`);
             throw error;
@@ -122,18 +112,13 @@ export class CountrySupporterService {
      * @returns A promise that resolves to the upserted CountrySupporter, or null if the upsert failed.
      * @throws An error if there is a failure.
      */
-    async upsert(data: CountrySupporter): Promise<CountrySupporter | null> {
+    async upsert(rawData: unknown): Promise<CountrySupporterType | null> {
         try {
-            return await prisma.countrySupporter.upsert({
-                where: {
-                    playerId_countryISOCode: {
-                        playerId: data.playerId,
-                        countryISOCode: data.countryISOCode,
-                    },
-                },
-                update: this.validate(data),
-                create: this.validate(data),
-            });
+            const where = CountrySupporterWhereUniqueInputObjectSchema.parse(rawData);
+            const update = CountrySupporterUpdateInputObjectSchema.parse(rawData);
+            const create = CountrySupporterCreateInputObjectSchema.parse(rawData);
+
+            return await prisma.countrySupporter.upsert({ where, update, create });
         } catch (error) {
             log(`Error upserting CountrySupporter: ${error}`);
             throw error;
@@ -149,14 +134,9 @@ export class CountrySupporterService {
      */
     async delete(playerId: number, countryISOCode: string): Promise<void> {
         try {
-            await prisma.countrySupporter.delete({
-                where: {
-                    playerId_countryISOCode: {
-                        playerId: playerId,
-                        countryISOCode: countryISOCode,
-                    },
-                },
-            });
+            const where = CountrySupporterWhereUniqueInputObjectSchema.parse({ playerId, countryISOCode });
+
+            await prisma.countrySupporter.delete({ where });
         } catch (error) {
             log(`Error deleting CountrySupporter: ${error}`);
             throw error;

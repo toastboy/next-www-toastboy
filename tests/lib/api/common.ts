@@ -159,3 +159,11 @@ export async function readableStreamToBuffer(stream: ReadableStream<Uint8Array>)
     }
     return Buffer.concat(chunks.map((chunk) => Buffer.from(chunk)));
 }
+
+/**
+ * Small utility to convert values to a format suitable for wire transfer (e.g.,
+ * JSON) - especially for testing API responses and the mock data.
+ */
+export function toWire(v: unknown) {
+    return JSON.parse(JSON.stringify(v));
+}

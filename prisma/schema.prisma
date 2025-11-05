@@ -1,11 +1,11 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "generated/prisma/client"
 }
 
 generator zod {
-  provider = "zod-prisma-types"
-  output   = "generated/zod"
+  provider = "prisma-zod-generator"
+  // optional output = "./prisma/generated" (JSON config can supply if omitted)
+  // optional config = "./zod-generator.config.json" (relative to schema file)
 }
 
 datasource db {

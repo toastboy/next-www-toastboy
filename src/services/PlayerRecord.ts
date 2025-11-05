@@ -4,98 +4,69 @@ import debug from 'debug';
 import config from 'lib/config';
 import prisma from 'lib/prisma';
 import { rankMap } from 'lib/utils';
-import { GameDay, Outcome, PlayerRecord, TableNameType } from 'prisma/generated/zod';
+import {
+    GameDayType,
+    OutcomeType,
+    PlayerRecordCreateInputObjectZodSchema,
+    PlayerRecordType,
+    PlayerRecordUpdateInputObjectZodSchema,
+    PlayerRecordWhereUniqueInputObjectSchema,
+    TableName
+} from 'prisma/generated/schemas';
 import gameDayService from 'services/GameDay';
 import outcomeService from 'services/Outcome';
+import z from 'zod';
+
+/** The fields I want to impose stricter checking on */
+const playerRecordFields = {
+    year: z.number().int().min(0),
+    responses: z.number().int().min(0).optional().nullable(),
+    played: z.number().int().min(0).optional().nullable(),
+    won: z.number().int().min(0).optional().nullable(),
+    drawn: z.number().int().min(0).optional().nullable(),
+    lost: z.number().int().min(0).optional().nullable(),
+    points: z.number().int().min(0).optional().nullable(),
+    averages: z.number().min(0.0).optional().nullable(),
+    stalwart: z.number().int().min(0).optional().nullable(),
+    pub: z.number().int().min(0).optional().nullable(),
+    rankPoints: z.number().int().min(0).optional().nullable(),
+    rankAverages: z.number().int().min(0).optional().nullable(),
+    rankAveragesUnqualified: z.number().int().min(0).optional().nullable(),
+    rankStalwart: z.number().int().min(0).optional().nullable(),
+    rankSpeedy: z.number().int().min(0).optional().nullable(),
+    rankSpeedyUnqualified: z.number().int().min(0).optional().nullable(),
+    rankPub: z.number().int().min(0).optional().nullable(),
+    speedy: z.number().min(0.0).optional().nullable(),
+};
+
+/** Schemas for enforcing strict input */
+export const PlayerRecordCreateInputObjectStrictSchema = PlayerRecordCreateInputObjectZodSchema.extend({
+    ...playerRecordFields,
+});
+export const PlayerRecordUpdateInputObjectStrictSchema = PlayerRecordUpdateInputObjectZodSchema.extend({
+    ...playerRecordFields,
+});
 
 const log = debug('footy:api');
 
 export class PlayerRecordService {
     /**
-     * Validate a PlayerRecord
-     * @param playerRecord The playerRecord to validate
-     * @returns the validated playerRecord
-     * @throws An error if the playerRecord is invalid.
-     */
-    validate(playerRecord: PlayerRecord): PlayerRecord {
-        if (playerRecord.year != null && (!Number.isInteger(playerRecord.year) || playerRecord.year < 0)) {
-            throw new Error(`Invalid year value: ${playerRecord.year}`);
-        }
-        if (playerRecord.responses != null && (!Number.isInteger(playerRecord.responses) || playerRecord.responses < 0)) {
-            throw new Error(`Invalid responses value: ${playerRecord.responses}`);
-        }
-        if (playerRecord.played != null && (!Number.isInteger(playerRecord.played) || playerRecord.played < 0)) {
-            throw new Error(`Invalid played value: ${playerRecord.played}`);
-        }
-        if (playerRecord.won != null && (!Number.isInteger(playerRecord.won) || playerRecord.won < 0)) {
-            throw new Error(`Invalid won value: ${playerRecord.won}`);
-        }
-        if (playerRecord.drawn != null && (!Number.isInteger(playerRecord.drawn) || playerRecord.drawn < 0)) {
-            throw new Error(`Invalid drawn value: ${playerRecord.drawn}`);
-        }
-        if (playerRecord.lost != null && (!Number.isInteger(playerRecord.lost) || playerRecord.lost < 0)) {
-            throw new Error(`Invalid lost value: ${playerRecord.lost}`);
-        }
-        if (playerRecord.points != null && (!Number.isInteger(playerRecord.points) || playerRecord.points < 0)) {
-            throw new Error(`Invalid points value: ${playerRecord.points}`);
-        }
-        if (playerRecord.averages != null && playerRecord.averages < 0.0) {
-            throw new Error(`Invalid averages value: ${playerRecord.averages}`);
-        }
-        if (playerRecord.stalwart != null && (!Number.isInteger(playerRecord.stalwart) || playerRecord.stalwart < 0)) {
-            throw new Error(`Invalid stalwart value: ${playerRecord.stalwart}`);
-        }
-        if (playerRecord.pub != null && (!Number.isInteger(playerRecord.pub) || playerRecord.pub < 0)) {
-            throw new Error(`Invalid pub value: ${playerRecord.pub}`);
-        }
-        if (playerRecord.rankPoints != null && (!Number.isInteger(playerRecord.rankPoints) || playerRecord.rankPoints < 0)) {
-            throw new Error(`Invalid rankPoints value: ${playerRecord.rankPoints}`);
-        }
-        if (playerRecord.rankAverages != null && (!Number.isInteger(playerRecord.rankAverages) || playerRecord.rankAverages < 0)) {
-            throw new Error(`Invalid rankAverages value: ${playerRecord.rankAverages}`);
-        }
-        if (playerRecord.rankStalwart != null && (!Number.isInteger(playerRecord.rankStalwart) || playerRecord.rankStalwart < 0)) {
-            throw new Error(`Invalid rankStalwart value: ${playerRecord.rankStalwart}`);
-        }
-        if (playerRecord.rankSpeedy != null && (!Number.isInteger(playerRecord.rankSpeedy) || playerRecord.rankSpeedy < 0)) {
-            throw new Error(`Invalid rankSpeedy value: ${playerRecord.rankSpeedy}`);
-        }
-        if (playerRecord.rankPub != null && (!Number.isInteger(playerRecord.rankPub) || playerRecord.rankPub < 0)) {
-            throw new Error(`Invalid rankPub value: ${playerRecord.rankPub}`);
-        }
-        if (playerRecord.speedy != null && playerRecord.speedy < 0.0) {
-            throw new Error(`Invalid speedy value: ${playerRecord.speedy}`);
-        }
-
-        if (!Number.isInteger(playerRecord.gameDayId) || playerRecord.gameDayId < 0) {
-            throw new Error(`Invalid gameDay value: ${playerRecord.gameDayId}`);
-        }
-        if (!Number.isInteger(playerRecord.playerId) || playerRecord.playerId < 0) {
-            throw new Error(`Invalid player value: ${playerRecord.playerId}`);
-        }
-
-        return playerRecord;
-    }
-
-    /**
-     * Retrieves a PlayerRecord for the given Player ID, year and GameDay ID.
+     * Retrieves a PlayerRecord for the given Player ID, year and PlayerRecord ID.
      * @param playerId - The ID of the Player.
      * @param year - The year of the GameDay, or zero for all years.
      * @param gameDayId - The ID of the GameDay.
      * @returns A promise that resolves to the PlayerRecord if found, otherwise null.
      * @throws An error if there is a failure.
      */
-    async get(playerId: number, year: number, gameDayId: number): Promise<PlayerRecord | null> {
+    async get(playerId: number, year: number, gameDayId: number): Promise<PlayerRecordType | null> {
         try {
-            return prisma.playerRecord.findUnique({
-                where: {
-                    playerId_year_gameDayId: {
-                        playerId: playerId,
-                        year: year,
-                        gameDayId: gameDayId,
-                    },
-                },
+            const where = PlayerRecordWhereUniqueInputObjectSchema.parse({
+                playerId: playerId,
+                year: year,
+                gameDayId: gameDayId,
             });
+
+            return prisma.playerRecord.findUnique({ where });
         } catch (error) {
             log(`Error fetching playerRecords: ${error}`);
             throw error;
@@ -107,7 +78,7 @@ export class PlayerRecordService {
      * @returns A promise that resolves to an array of playerRecords or null if an error occurs.
      * @throws An error if there is a failure.
      */
-    async getAll(): Promise<PlayerRecord[] | null> {
+    async getAll(): Promise<PlayerRecordType[]> {
         try {
             return prisma.playerRecord.findMany({});
         } catch (error) {
@@ -180,7 +151,7 @@ export class PlayerRecordService {
      * @returns A promise that resolves to an array of PlayerRecords or null.
      * @throws An error if there is a failure.
      */
-    async getByGameDay(gameDayId: number, year?: number): Promise<PlayerRecord[] | null> {
+    async getByGameDay(gameDayId: number, year?: number): Promise<PlayerRecordType[]> {
         try {
             return prisma.playerRecord.findMany({
                 where: {
@@ -200,7 +171,7 @@ export class PlayerRecordService {
      * @returns A promise that resolves to an array of playerRecords or null.
      * @throws An error if there is a failure.
      */
-    async getByPlayer(playerId: number): Promise<PlayerRecord[] | null> {
+    async getByPlayer(playerId: number): Promise<PlayerRecordType[]> {
         try {
             return prisma.playerRecord.findMany({
                 where: {
@@ -224,7 +195,7 @@ export class PlayerRecordService {
     async getForYearByPlayer(
         year: number,
         playerId: number,
-    ): Promise<PlayerRecord | null> {
+    ): Promise<PlayerRecordType | null> {
         try {
             const result = await prisma.playerRecord.findFirst({
                 where: {
@@ -286,9 +257,9 @@ export class PlayerRecordService {
      * @throws If there is an error fetching the player records.
      */
     async getWinners(
-        table: TableNameType,
+        table: TableName,
         year?: number,
-    ): Promise<PlayerRecord[]> {
+    ): Promise<PlayerRecordType[]> {
         try {
             const rank = rankMap[table as keyof typeof rankMap];
             const seasonEnders = await gameDayService.getSeasonEnders();
@@ -322,11 +293,11 @@ export class PlayerRecordService {
      * @throws If there is an error while fetching the player records.
      */
     async getTable(
-        table: TableNameType,
+        table: TableName,
         year: number,
         qualified?: boolean,
         take?: number,
-    ): Promise<PlayerRecord[]> {
+    ): Promise<PlayerRecordType[]> {
         try {
             // Get the most recent game day for the year in question with a
             // record for the specified table
@@ -379,11 +350,11 @@ export class PlayerRecordService {
      * an error occurs.
      * @throws An error if there is a failure.
      */
-    async create(data: PlayerRecord): Promise<PlayerRecord | null> {
+    async create(rawData: unknown): Promise<PlayerRecordType | null> {
         try {
-            return await prisma.playerRecord.create({
-                data: this.validate(data),
-            });
+            const data = PlayerRecordCreateInputObjectStrictSchema.parse(rawData);
+
+            return await prisma.playerRecord.create({ data });
         } catch (error) {
             log(`Error creating playerRecord: ${error}`);
             throw error;
@@ -397,19 +368,13 @@ export class PlayerRecordService {
      * the upsert failed.
      * @throws An error if there is a failure.
      */
-    async upsert(data: PlayerRecord): Promise<PlayerRecord | null> {
+    async upsert(rawData: unknown): Promise<PlayerRecordType | null> {
         try {
-            return await prisma.playerRecord.upsert({
-                where: {
-                    playerId_year_gameDayId: {
-                        playerId: data.playerId,
-                        year: data.year,
-                        gameDayId: data.gameDayId,
-                    },
-                },
-                update: this.validate(data),
-                create: this.validate(data),
-            });
+            const where = PlayerRecordWhereUniqueInputObjectSchema.parse(rawData);
+            const update = PlayerRecordUpdateInputObjectStrictSchema.parse(rawData);
+            const create = PlayerRecordCreateInputObjectStrictSchema.parse(rawData);
+
+            return await prisma.playerRecord.upsert({ where, update, create });
         } catch (error) {
             log(`Error upserting PlayerRecord: ${error}`);
             throw error;
@@ -424,7 +389,7 @@ export class PlayerRecordService {
      * PlayerRecords, or null if the upsert failed.
      * @throws An error if there is a failure.
      */
-    async upsertForGameDay(gameDayId?: number): Promise<PlayerRecord[]> {
+    async upsertForPlayerRecord(gameDayId?: number): Promise<PlayerRecordType[]> {
         try {
             const today = new Date();
             const allTimeOutcomes = await outcomeService.getAllForYear(0);
@@ -437,10 +402,10 @@ export class PlayerRecordService {
             const years = gameDays.map(gd => gd.date.getFullYear());
             const distinctYears = Array.from(new Set(years));
 
-            const playerRecords: PlayerRecord[] = [];
-            const allTimePlayerRecords: Record<number, Partial<PlayerRecord>> = {};
+            const playerRecords: PlayerRecordType[] = [];
+            const allTimePlayerRecords: Record<number, Partial<PlayerRecordType>> = {};
             for (const year of distinctYears) {
-                const yearPlayerRecords: Record<number, Partial<PlayerRecord>> = {};
+                const yearPlayerRecords: Record<number, Partial<PlayerRecordType>> = {};
                 const yearOutcomes = await outcomeService.getAllForYear(year);
 
                 for (const gameDay of gameDays) {
@@ -486,15 +451,13 @@ export class PlayerRecordService {
      */
     async delete(playerId: number, year: number, gameDayId: number): Promise<void> {
         try {
-            await prisma.playerRecord.delete({
-                where: {
-                    playerId_year_gameDayId: {
-                        playerId: playerId,
-                        year: year,
-                        gameDayId: gameDayId,
-                    },
-                },
+            const where = PlayerRecordWhereUniqueInputObjectSchema.parse({
+                playerId,
+                year,
+                gameDayId,
             });
+
+            await prisma.playerRecord.delete({ where });
         } catch (error) {
             log(`Error deleting playerRecord: ${error}`);
             throw error;
@@ -531,11 +494,11 @@ export default playerRecordService;
  */
 async function calculateYearPlayerRecords(
     year: number,
-    yearOutcomes: Outcome[],
-    yearPlayerRecords: Record<number, Partial<PlayerRecord>>,
-    gameDay: GameDay,
-    gameDayOutcomes: Outcome[],
-    playerRecords: PlayerRecord[],
+    yearOutcomes: OutcomeType[],
+    yearPlayerRecords: Record<number, Partial<PlayerRecordType>>,
+    gameDay: GameDayType,
+    gameDayOutcomes: OutcomeType[],
+    playerRecords: PlayerRecordType[],
 ) {
     // Start with a list of PlayerRecords, including those for anyone with any
     // standing this year. For each one with an outcome this game day, add or
@@ -629,7 +592,7 @@ async function calculateYearPlayerRecords(
     // Upsert the PlayerRecords and add them to the overall list
 
     for (const recordData of Object.values(yearPlayerRecords)) {
-        const playerRecord = await playerRecordService.upsert(recordData as PlayerRecord);
+        const playerRecord = await playerRecordService.upsert(recordData as PlayerRecordType);
 
         if (playerRecord) {
             playerRecords.push(playerRecord);
@@ -648,16 +611,16 @@ async function calculateYearPlayerRecords(
  */
 async function calculatePlayerRecord(
     year: number,
-    gameDay: GameDay,
-    yearOutcomes: Outcome[],
-    outcome: Outcome,
-): Promise<Partial<PlayerRecord>> {
+    gameDay: GameDayType,
+    yearOutcomes: OutcomeType[],
+    outcome: OutcomeType,
+): Promise<Partial<PlayerRecordType>> {
     const playerYearOutcomes = yearOutcomes.filter(o => o.playerId === outcome.playerId &&
         o.gameDayId <= gameDay.id);
     const playerYearRespondedOutcomes = playerYearOutcomes.filter(o => o.response != null);
     const playerYearPlayedOutcomes = playerYearOutcomes.filter(o => o.points != null);
     const pub = playerYearOutcomes.reduce((acc, o) => acc + (o.pub ?? 0), 0);
-    const data: Partial<PlayerRecord> = {
+    const data: Partial<PlayerRecordType> = {
         playerId: outcome.playerId,
         year: year,
         gameDayId: gameDay.id,

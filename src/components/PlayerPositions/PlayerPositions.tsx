@@ -1,6 +1,6 @@
 import { Table, TableCaption, TableTbody, TableTd, TableTh, TableTr } from '@mantine/core';
 import { getYearName, rankMap } from 'lib/utils';
-import { TableNameSchema } from 'prisma/generated/zod';
+import { TableNameSchema } from 'prisma/generated/schemas';
 import playerService from 'services/Player';
 import playerRecordService from 'services/PlayerRecord';
 

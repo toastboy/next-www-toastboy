@@ -1,4 +1,4 @@
-import { PlayerSchema, TeamNameSchema } from 'prisma/generated/zod';
+import { PlayerSchema, TeamNameSchema } from 'prisma/generated/schemas';
 import { z } from 'zod';
 
 export const PlayerDataSchema = z.object({

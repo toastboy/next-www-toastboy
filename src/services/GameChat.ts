@@ -2,44 +2,35 @@ import 'server-only';
 
 import debug from 'debug';
 import prisma from 'lib/prisma';
-import { GameChat } from 'prisma/generated/zod';
+import {
+    GameChatCreateInputObjectZodSchema,
+    GameChatType,
+    GameChatUpdateInputObjectZodSchema,
+    GameChatWhereUniqueInputObjectSchema,
+} from 'prisma/generated/schemas';
+import z from 'zod';
+
+/** Non-negative integer */
+const nonNegativeInteger = z.number().int().min(0);
+
+/** Schemas for enforcing strict input */
+export const GameChatCreateInputObjectStrictSchema = GameChatCreateInputObjectZodSchema.extend({ id: nonNegativeInteger });
+export const GameChatUpdateInputObjectStrictSchema = GameChatUpdateInputObjectZodSchema.extend({ id: nonNegativeInteger });
 
 const log = debug('footy:api');
 
 export class GameChatService {
-    /**
-     * Validate a GameChat
-     * @param gameChat The GameChat to validate
-     * @returns the validated GameChat
-     * @throws An error if the GameChat is invalid.
-     */
-    validate(gameChat: GameChat): GameChat {
-        if (!gameChat.id || !Number.isInteger(gameChat.id) || gameChat.id < 0) {
-            throw new Error(`Invalid id value: ${gameChat.id}`);
-        }
-        if (!gameChat.gameDay || !Number.isInteger(gameChat.gameDay) || gameChat.gameDay < 0) {
-            throw new Error(`Invalid gameDay value: ${gameChat.gameDay}`);
-        }
-        if (!gameChat.player || !Number.isInteger(gameChat.player) || gameChat.player < 0) {
-            throw new Error(`Invalid player value: ${gameChat.player}`);
-        }
-
-        return gameChat;
-    }
-
     /**
      * Retrieves a GameChat by its ID.
      * @param id - The ID of the GameChat to retrieve.
      * @returns A Promise that resolves to the GameChat object if found, or null if not found.
      * @throws If there is an error while fetching the GameChat.
      */
-    async get(id: number): Promise<GameChat | null> {
+    async get(id: number): Promise<GameChatType | null> {
         try {
-            return prisma.gameChat.findUnique({
-                where: {
-                    id: id,
-                },
-            });
+            const where = GameChatWhereUniqueInputObjectSchema.parse({ id });
+
+            return prisma.gameChat.findUnique({ where });
         } catch (error) {
             log(`Error fetching gameChat: ${error}`);
             throw error;
@@ -51,7 +42,7 @@ export class GameChatService {
      * @returns A promise that resolves to an array of GameChats or null if an error occurs.
      * @throws An error if there is a failure.
      */
-    async getAll(): Promise<GameChat[] | null> {
+    async getAll(): Promise<GameChatType[]> {
         try {
             return prisma.gameChat.findMany({});
         } catch (error) {
@@ -66,11 +57,11 @@ export class GameChatService {
      * @returns A promise that resolves to the created gameChat, or null if an error occurs.
      * @throws An error if there is a failure.
      */
-    async create(data: GameChat): Promise<GameChat | null> {
+    async create(rawData: unknown): Promise<GameChatType | null> {
         try {
-            return await prisma.gameChat.create({
-                data: this.validate(data),
-            });
+            const data = GameChatCreateInputObjectStrictSchema.parse(rawData);
+
+            return await prisma.gameChat.create({ data });
         } catch (error) {
             log(`Error creating gameChat: ${error}`);
             throw error;
@@ -83,15 +74,13 @@ export class GameChatService {
      * @returns A promise that resolves to the upserted gameChat, or null if the upsert failed.
      * @throws An error if there is a failure.
      */
-    async upsert(data: GameChat): Promise<GameChat | null> {
+    async upsert(rawData: unknown): Promise<GameChatType | null> {
         try {
-            return await prisma.gameChat.upsert({
-                where: {
-                    id: data.id,
-                },
-                update: this.validate(data),
-                create: this.validate(data),
-            });
+            const where = GameChatWhereUniqueInputObjectSchema.parse(rawData);
+            const update = GameChatUpdateInputObjectStrictSchema.parse(rawData);
+            const create = GameChatCreateInputObjectStrictSchema.parse(rawData);
+
+            return await prisma.gameChat.upsert({ where, update, create });
         } catch (error) {
             log(`Error upserting gameChat: ${error}`);
             throw error;
@@ -105,11 +94,9 @@ export class GameChatService {
      */
     async delete(id: number): Promise<void> {
         try {
-            await prisma.gameChat.delete({
-                where: {
-                    id: id,
-                },
-            });
+            const where = GameChatWhereUniqueInputObjectSchema.parse({ id });
+
+            await prisma.gameChat.delete({ where });
         } catch (error) {
             log(`Error deleting gameChat: ${error}`);
             throw error;

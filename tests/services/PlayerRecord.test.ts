@@ -1,7 +1,7 @@
 import fs from 'fs';
 import prisma from 'lib/prisma';
 import { PlayerRecord } from 'prisma/generated/prisma/client';
-import { TableNameSchema } from 'prisma/generated/zod';
+import { TableNameSchema } from 'prisma/generated/schemas';
 import playerRecordService from 'services/PlayerRecord';
 
 jest.mock('lib/prisma', () => ({

@@ -2,38 +2,35 @@ import 'server-only';
 
 import debug from 'debug';
 import prisma from 'lib/prisma';
-import { Club } from 'prisma/generated/zod';
+import {
+    ClubCreateInputObjectZodSchema,
+    ClubType,
+    ClubUpdateInputObjectZodSchema,
+    ClubWhereUniqueInputObjectSchema
+} from 'prisma/generated/schemas';
+import z from 'zod';
+
+/** Non-negative integer */
+const nonNegativeInteger = z.number().int().min(0);
+
+/** Schemas for enforcing strict input */
+export const ClubCreateInputObjectStrictSchema = ClubCreateInputObjectZodSchema.extend({ id: nonNegativeInteger });
+export const ClubUpdateInputObjectStrictSchema = ClubUpdateInputObjectZodSchema.extend({ id: nonNegativeInteger });
 
 const log = debug('footy:api');
 
 export class ClubService {
-    /**
-     * Validate a club
-     * @param club The club to validate
-     * @returns the validated club
-     * @throws An error if the club is invalid.
-     */
-    validate(club: Club): Club {
-        if (!club.id || !Number.isInteger(club.id) || club.id < 0) {
-            throw new Error(`Invalid id value: ${club.id}`);
-        }
-
-        return club;
-    }
-
     /**
      * Retrieves a club by its ID.
      * @param id - The ID of the club to retrieve.
      * @returns A Promise that resolves to the club object if found, or null if not found.
      * @throws If there is an error while fetching the club.
      */
-    async get(id: number): Promise<Club | null> {
+    async get(id: number): Promise<ClubType | null> {
         try {
-            return prisma.club.findUnique({
-                where: {
-                    id: id,
-                },
-            });
+            const where = ClubWhereUniqueInputObjectSchema.parse({ id });
+
+            return prisma.club.findUnique({ where });
         } catch (error) {
             log(`Error fetching club: ${error}`);
             throw error;
@@ -45,7 +42,7 @@ export class ClubService {
      * @returns A promise that resolves to an array of clubs or null if an error occurs.
      * @throws An error if there is a failure.
      */
-    async getAll(): Promise<Club[] | null> {
+    async getAll(): Promise<ClubType[]> {
         try {
             return prisma.club.findMany({});
         } catch (error) {
@@ -60,11 +57,11 @@ export class ClubService {
      * @returns A promise that resolves to the created club, or null if an error occurs.
      * @throws An error if there is a failure.
      */
-    async create(data: Club): Promise<Club | null> {
+    async create(rawData: unknown): Promise<ClubType | null> {
         try {
-            return await prisma.club.create({
-                data: this.validate(data),
-            });
+            const data = ClubCreateInputObjectStrictSchema.parse(rawData);
+
+            return await prisma.club.create({ data });
         } catch (error) {
             log(`Error creating club: ${error}`);
             throw error;
@@ -77,15 +74,13 @@ export class ClubService {
      * @returns A promise that resolves to the upserted club, or null if the upsert failed.
      * @throws An error if there is a failure.
      */
-    async upsert(data: Club): Promise<Club | null> {
+    async upsert(rawData: unknown): Promise<ClubType | null> {
         try {
-            return await prisma.club.upsert({
-                where: {
-                    id: data.id,
-                },
-                update: this.validate(data),
-                create: this.validate(data),
-            });
+            const where = ClubWhereUniqueInputObjectSchema.parse(rawData);
+            const update = ClubUpdateInputObjectStrictSchema.parse(rawData);
+            const create = ClubCreateInputObjectStrictSchema.parse(rawData);
+
+            return await prisma.club.upsert({ where, update, create });
         } catch (error) {
             log(`Error upserting club: ${error}`);
             throw error;
@@ -99,11 +94,9 @@ export class ClubService {
      */
     async delete(id: number): Promise<void> {
         try {
-            await prisma.club.delete({
-                where: {
-                    id: id,
-                },
-            });
+            const where = ClubWhereUniqueInputObjectSchema.parse({ id });
+
+            await prisma.club.delete({ where });
         } catch (error) {
             log(`Error deleting club: ${error}`);
             throw error;

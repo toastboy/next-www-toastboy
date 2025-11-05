@@ -2,38 +2,37 @@ import 'server-only';
 
 import debug from 'debug';
 import prisma from 'lib/prisma';
-import { Country } from 'prisma/generated/zod';
+import {
+    CountryCreateInputObjectSchema,
+    CountryType,
+    CountryUpdateInputObjectSchema,
+    CountryWhereUniqueInputObjectSchema,
+} from 'prisma/generated/schemas';
+import { z } from 'zod';
+
+/** Defines a valid ISO country code */
+const validISOCode = z.object({
+    isoCode: z.string().regex(/^([A-Z]{2}|[A-Z]{2}-[A-Z]{3})$/, 'Invalid ISO code format'),
+});
+
+/** Schemas for enforcing strict input */
+export const CountryCreateInputObjectStrictSchema = CountryCreateInputObjectSchema.and(validISOCode);
+export const CountryUpdateInputObjectStrictSchema = CountryUpdateInputObjectSchema.and(validISOCode);
 
 const log = debug('footy:api');
 
 export class CountryService {
-    /**
-     * Validate a country
-     * @param country The country to validate
-     * @returns the validated country
-     * @throws An error if the country is invalid.
-     */
-    validate(country: Country): Country {
-        if (!country.isoCode || (!/^[A-Z]{2}$/.test(country.isoCode) && !/^[A-Z]{2}-[A-Z]{3}$/.test(country.isoCode))) {
-            throw new Error(`Invalid isoCode value: ${country.isoCode}`);
-        }
-
-        return country;
-    }
-
     /**
      * Retrieves a country by its ID.
      * @param id - The ID of the country to retrieve.
      * @returns A Promise that resolves to the country object if found, or null if not found.
      * @throws If there is an error while fetching the country.
      */
-    async get(isoCode: string): Promise<Country | null> {
+    async get(isoCode: string): Promise<CountryType | null> {
         try {
-            return prisma.country.findUnique({
-                where: {
-                    isoCode: isoCode,
-                },
-            });
+            const where = CountryWhereUniqueInputObjectSchema.parse({ isoCode });
+
+            return prisma.country.findUnique({ where });
         } catch (error) {
             log(`Error fetching country: ${error}`);
             throw error;
@@ -45,7 +44,7 @@ export class CountryService {
      * @returns A promise that resolves to an array of countries or null if an error occurs.
      * @throws An error if there is a failure.
      */
-    async getAll(): Promise<Country[] | null> {
+    async getAll(): Promise<CountryType[]> {
         try {
             return prisma.country.findMany({});
         } catch (error) {
@@ -60,11 +59,11 @@ export class CountryService {
      * @returns A promise that resolves to the created country, or null if an error occurs.
      * @throws An error if there is a failure.
      */
-    async create(data: Country): Promise<Country | null> {
+    async create(rawData: unknown): Promise<CountryType | null> {
         try {
-            return await prisma.country.create({
-                data: this.validate(data),
-            });
+            const data = CountryCreateInputObjectStrictSchema.parse(rawData);
+
+            return await prisma.country.create({ data });
         } catch (error) {
             log(`Error creating country: ${error}`);
             throw error;
@@ -77,15 +76,13 @@ export class CountryService {
      * @returns A promise that resolves to the upserted country, or null if the upsert failed.
      * @throws An error if there is a failure.
      */
-    async upsert(data: Country): Promise<Country | null> {
+    async upsert(rawData: unknown): Promise<CountryType | null> {
         try {
-            return await prisma.country.upsert({
-                where: {
-                    isoCode: data.isoCode,
-                },
-                update: this.validate(data),
-                create: this.validate(data),
-            });
+            const where = CountryWhereUniqueInputObjectSchema.parse(rawData);
+            const update = CountryUpdateInputObjectStrictSchema.parse(rawData);
+            const create = CountryCreateInputObjectStrictSchema.parse(rawData);
+
+            return await prisma.country.upsert({ where, update, create });
         } catch (error) {
             log(`Error upserting country: ${error}`);
             throw error;
@@ -99,11 +96,9 @@ export class CountryService {
      */
     async delete(isoCode: string): Promise<void> {
         try {
-            await prisma.country.delete({
-                where: {
-                    isoCode: isoCode,
-                },
-            });
+            const where = CountryWhereUniqueInputObjectSchema.parse({ isoCode });
+
+            await prisma.country.delete({ where });
         } catch (error) {
             log(`Error deleting country: ${error}`);
             throw error;

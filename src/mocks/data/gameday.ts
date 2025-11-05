@@ -1,6 +1,6 @@
-import { GameDay } from 'prisma/generated/zod';
+import { GameDayType } from "prisma/generated/schemas";
 
-export const defaultGameDay: GameDay = {
+export const defaultGameDay: GameDayType = {
     id: 1,
     year: 2021,
     date: new Date('2021-01-03'),

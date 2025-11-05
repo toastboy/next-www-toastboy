@@ -2,56 +2,36 @@ import 'server-only';
 
 import debug from 'debug';
 import prisma from 'lib/prisma';
-import { Arse } from 'prisma/generated/zod';
+import {
+    ArseCreateInputObjectZodSchema,
+    ArseType,
+    ArseUpdateInputObjectZodSchema,
+    ArseWhereInputObjectSchema,
+    ArseWhereUniqueInputObjectSchema
+} from "prisma/generated/schemas";
+import { z } from 'zod';
+
+/** 0..10 rating used across create and update */
+const rating0to10 = z.number().int().min(0).max(10);
+
+/** The seven rating fields, nullable + optional */
+const ratingFields = {
+    inGoal: rating0to10.nullable().optional(),
+    running: rating0to10.nullable().optional(),
+    shooting: rating0to10.nullable().optional(),
+    passing: rating0to10.nullable().optional(),
+    ballSkill: rating0to10.nullable().optional(),
+    attacking: rating0to10.nullable().optional(),
+    defending: rating0to10.nullable().optional(),
+};
+
+/** Schemas for enforcing strict input */
+export const ArseCreateInputObjectStrictSchema = ArseCreateInputObjectZodSchema.extend({ ...ratingFields });
+export const ArseUpdateInputObjectStrictSchema = ArseUpdateInputObjectZodSchema.extend({ ...ratingFields });
 
 const log = debug('footy:api');
 
 export class ArseService {
-    /**
-     * Validate an arse
-     * @param arse The arse to validate
-     * @returns the validated arse
-     * @throws An error if the arse is invalid.
-     */
-    validate(arse: Arse): Arse {
-        const now = new Date();
-
-        if (!arse.stamp || isNaN(arse.stamp.getTime()) || arse.stamp > now) {
-            throw new Error(`Invalid stamp value: ${arse.stamp}`);
-        }
-
-        if (!arse.playerId || !Number.isInteger(arse.playerId) || arse.playerId < 0) {
-            throw new Error(`Invalid player value: ${arse.playerId}`);
-        }
-        if (!arse.raterId || !Number.isInteger(arse.raterId) || arse.raterId < 0) {
-            throw new Error(`Invalid rater value: ${arse.raterId}`);
-        }
-
-        if (!arse.inGoal || !Number.isInteger(arse.inGoal) || arse.inGoal < 0 || arse.inGoal > 10) {
-            throw new Error(`Invalid inGoal value: ${arse.inGoal}`);
-        }
-        if (!arse.running || !Number.isInteger(arse.running) || arse.running < 0 || arse.running > 10) {
-            throw new Error(`Invalid running value: ${arse.running}`);
-        }
-        if (!arse.shooting || !Number.isInteger(arse.shooting) || arse.shooting < 0 || arse.shooting > 10) {
-            throw new Error(`Invalid shooting value: ${arse.shooting}`);
-        }
-        if (!arse.passing || !Number.isInteger(arse.passing) || arse.passing < 0 || arse.passing > 10) {
-            throw new Error(`Invalid passing value: ${arse.passing}`);
-        }
-        if (!arse.ballSkill || !Number.isInteger(arse.ballSkill) || arse.ballSkill < 0 || arse.ballSkill > 10) {
-            throw new Error(`Invalid ballSkill value: ${arse.ballSkill}`);
-        }
-        if (!arse.attacking || !Number.isInteger(arse.attacking) || arse.attacking < 0 || arse.attacking > 10) {
-            throw new Error(`Invalid attacking value: ${arse.attacking}`);
-        }
-        if (!arse.defending || !Number.isInteger(arse.defending) || arse.defending < 0 || arse.defending > 10) {
-            throw new Error(`Invalid defending value: ${arse.defending}`);
-        }
-
-        return arse;
-    }
-
     /**
      * Retrieves an arse for the given player ID rated by rater ID.
      * @param playerId - The ID of the player.
@@ -59,16 +39,11 @@ export class ArseService {
      * @returns A promise that resolves to the "arse" object if found, otherwise null.
      * @throws An error if there is a failure.
      */
-    async get(playerId: number, raterId: number): Promise<Arse | null> {
+    async get(playerId: number, raterId: number): Promise<ArseType | null> {
         try {
-            return prisma.arse.findUnique({
-                where: {
-                    playerId_raterId: {
-                        playerId: playerId,
-                        raterId: raterId,
-                    },
-                },
-            });
+            const where = ArseWhereUniqueInputObjectSchema.parse({ playerId, raterId });
+
+            return prisma.arse.findUnique({ where });
         } catch (error) {
             log(`Error fetching arses: ${error}`);
             throw error;
@@ -80,7 +55,7 @@ export class ArseService {
      * @returns A promise that resolves to an array of arses or null if an error occurs.
      * @throws An error if there is a failure.
      */
-    async getAll(): Promise<Arse[] | null> {
+    async getAll(): Promise<ArseType[]> {
         try {
             return prisma.arse.findMany({});
         } catch (error) {
@@ -95,12 +70,11 @@ export class ArseService {
      * @returns A promise that resolves to an array of arses or null.
      * @throws An error if there is a failure.
      */
-    async getByPlayer(playerId: number): Promise<Partial<Arse> | null> {
+    async getByPlayer(playerId: number): Promise<Partial<ArseType> | null> {
         try {
+            const where = ArseWhereInputObjectSchema.parse({ playerId });
             const arsegregate = await prisma.arse.aggregate({
-                where: {
-                    playerId: playerId,
-                },
+                where,
                 _avg: {
                     inGoal: true,
                     running: true,
@@ -125,13 +99,11 @@ export class ArseService {
      * @returns A promise that resolves to an array of arses or null.
      * @throws An error if there is a failure.
      */
-    async getByRater(raterId: number): Promise<Arse[] | null> {
+    async getByRater(raterId: number): Promise<ArseType[] | null> {
         try {
-            return prisma.arse.findMany({
-                where: {
-                    raterId: raterId,
-                },
-            });
+            const where = ArseWhereInputObjectSchema.parse({ raterId });
+
+            return prisma.arse.findMany({ where });
         } catch (error) {
             log(`Error fetching arses by rater: ${error}`);
             throw error;
@@ -144,11 +116,11 @@ export class ArseService {
      * @returns A promise that resolves to the created arse, or null if an error occurs.
      * @throws An error if there is a failure.
      */
-    async create(data: Arse): Promise<Arse | null> {
+    async create(rawData: unknown): Promise<ArseType | null> {
         try {
-            return await prisma.arse.create({
-                data: this.validate(data),
-            });
+            const data = ArseCreateInputObjectStrictSchema.parse(rawData);
+
+            return await prisma.arse.create({ data });
         } catch (error) {
             log(`Error creating arse: ${error}`);
             throw error;
@@ -161,18 +133,13 @@ export class ArseService {
      * @returns A promise that resolves to the upserted arse, or null if the upsert failed.
      * @throws An error if there is a failure.
      */
-    async upsert(data: Arse): Promise<Arse | null> {
+    async upsert(rawData: unknown): Promise<ArseType | null> {
         try {
-            return await prisma.arse.upsert({
-                where: {
-                    playerId_raterId: {
-                        playerId: data.playerId,
-                        raterId: data.raterId,
-                    },
-                },
-                update: this.validate(data),
-                create: this.validate(data),
-            });
+            const where = ArseWhereUniqueInputObjectSchema.parse(rawData);
+            const update = ArseUpdateInputObjectStrictSchema.parse(rawData);
+            const create = ArseCreateInputObjectStrictSchema.parse(rawData);
+
+            return await prisma.arse.upsert({ where, update, create });
         } catch (error) {
             log(`Error upserting arse: ${error}`);
             throw error;
@@ -188,14 +155,9 @@ export class ArseService {
      */
     async delete(playerId: number, raterId: number): Promise<void> {
         try {
-            await prisma.arse.delete({
-                where: {
-                    playerId_raterId: {
-                        playerId: playerId,
-                        raterId: raterId,
-                    },
-                },
-            });
+            const where = ArseWhereUniqueInputObjectSchema.parse({ playerId, raterId });
+
+            await prisma.arse.delete({ where });
         } catch (error) {
             log(`Error deleting arse: ${error}`);
             throw error;

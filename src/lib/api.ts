@@ -1,6 +1,11 @@
 import { getUserRole } from "lib/authServer";
 import { NextResponse } from "next/server";
-import { Outcome, OutcomeSchema, Player, PlayerSchema } from "prisma/generated/zod";
+import {
+    OutcomeSchema,
+    OutcomeType,
+    PlayerSchema,
+    PlayerType,
+} from 'prisma/generated/schemas';
 import { z } from "zod";
 
 export const PublicOutcomeSchema = OutcomeSchema.transform((outcome) => ({
@@ -12,17 +17,16 @@ export type PublicOutcome = z.infer<typeof PublicOutcomeSchema>;
 
 export const PublicPlayerSchema = PlayerSchema.transform((player) => ({
     ...player,
-    // login: null, // TODO: Login is sort-of PII and should be removed
+    login: null,
     email: null,
     born: null,
     comment: null,
 }));
 
-export type PublicPlayer = z.infer<typeof UserPlayerSchema>;
+export type PublicPlayer = z.infer<typeof PublicPlayerSchema>;
 
 export const UserPlayerSchema = PlayerSchema.transform((player) => ({
     ...player,
-    // login: null,
     born: null,
     comment: null,
 }));
@@ -165,17 +169,22 @@ export async function buildUserOnlyResponse<T>(
  * @returns The sanitized player data, either parsed or unmodified.
  * @throws Will throw an error if the data does not conform to the expected schema for the user's role.
  */
-export async function sanitizePlayerData(data: Player) {
-    switch (await getUserRole()) {
-        case 'none':
-            return PublicPlayerSchema.parse(data);
+export async function sanitizePlayerData(data: PlayerType) {
+    try {
+        switch (await getUserRole()) {
+            case 'none':
+                return PublicPlayerSchema.parse(data);
 
-        case 'user':
-            return UserPlayerSchema.parse(data);
+            case 'user':
+                return UserPlayerSchema.parse(data);
 
-        case 'admin':
-        default:
-            return data;
+            case 'admin':
+            default:
+                return data;
+        }
+    } catch (error) {
+        console.error('Error sanitizing player data:', error);
+        throw error;
     }
 }
 
@@ -191,15 +200,20 @@ export async function sanitizePlayerData(data: Player) {
  * @param data - The outcome data to be sanitized.
  * @returns A promise that resolves to the sanitized outcome data.
  */
-export async function sanitizeOutcomeData(data: Outcome) {
-    switch (await getUserRole()) {
-        case 'none':
-        case 'user':
-            return PublicOutcomeSchema.parse(data);
+export async function sanitizeOutcomeData(data: OutcomeType) {
+    try {
+        switch (await getUserRole()) {
+            case 'none':
+            case 'user':
+                return PublicOutcomeSchema.parse(data);
 
-        case 'admin':
-        default:
-            return data;
+            case 'admin':
+            default:
+                return data;
+        }
+    } catch (error) {
+        console.error('Error sanitizing outcome data:', error);
+        throw error;
     }
 }
 
@@ -209,6 +223,6 @@ export async function sanitizeOutcomeData(data: Outcome) {
  * @param data - An array of `Outcome` objects to be sanitized.
  * @returns A promise that resolves to an array of sanitized `Outcome` objects.
  */
-export async function sanitizeOutcomeArrayData(data: Outcome[]) {
+export async function sanitizeOutcomeArrayData(data: OutcomeType[]) {
     return await Promise.all(data.map(async (item) => sanitizeOutcomeData(item)));
 }

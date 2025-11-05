@@ -1,6 +1,8 @@
 import prisma from 'lib/prisma';
-import { Outcome } from 'prisma/generated/prisma/client';
-import { PlayerResponseSchema, PlayerResponseType, TeamNameType } from 'prisma/generated/zod';
+import {
+    OutcomeType,
+    PlayerResponseSchema
+} from 'prisma/generated/schemas';
 import outcomeService from 'services/Outcome';
 
 jest.mock('lib/prisma', () => ({
@@ -28,7 +30,7 @@ jest.mock('lib/prisma', () => ({
     },
 }));
 
-const defaultOutcome: Outcome = {
+const defaultOutcome: OutcomeType = {
     id: 1,
     gameDayId: 1,
     playerId: 12,
@@ -42,7 +44,7 @@ const defaultOutcome: Outcome = {
     goalie: false,
 };
 
-const outcomeList: Outcome[] = Array.from({ length: 100 }, (_, index) => ({
+const outcomeList: OutcomeType[] = Array.from({ length: 100 }, (_, index) => ({
     ...defaultOutcome,
     playerId: index % 10 + 1,
     gameDayId: Math.floor(index / 10 + 1),
@@ -100,7 +102,7 @@ describe('OutcomeService', () => {
                 (args.where.gameDay.id ? outcome.gameDayId <= args.where.gameDay.id.lte : true)).length);
         });
 
-        (prisma.outcome.create as jest.Mock).mockImplementation((args: { data: Outcome }) => {
+        (prisma.outcome.create as jest.Mock).mockImplementation((args: { data: OutcomeType }) => {
             const outcome = outcomeList.find((outcome) =>
                 outcome.gameDayId === args.data.gameDayId &&
                 outcome.playerId === args.data.playerId,
@@ -121,8 +123,8 @@ describe('OutcomeService', () => {
                     playerId: number,
                 }
             },
-            update: Outcome,
-            create: Outcome,
+            update: OutcomeType,
+            create: OutcomeType,
         }) => {
             const outcome = outcomeList.find((outcome) =>
                 outcome.gameDayId === args.where.gameDayId_playerId.gameDayId &&
@@ -164,7 +166,7 @@ describe('OutcomeService', () => {
                 ...defaultOutcome,
                 gameDayId: 1,
                 playerId: 1,
-            } as Outcome);
+            } as OutcomeType);
         });
 
         it('should return null for GameDay 7, Player 16', async () => {
@@ -321,7 +323,7 @@ describe('OutcomeService', () => {
                         ...defaultOutcome,
                         playerId: expect.any(Number),
                         gameDayId: 1,
-                    } as Outcome);
+                    } as OutcomeType);
                 }
             }
             else {
@@ -350,7 +352,7 @@ describe('OutcomeService', () => {
                     ...defaultOutcome,
                     playerId: 1,
                     gameDayId: expect.any(Number),
-                } as Outcome);
+                } as OutcomeType);
             }
         });
 
@@ -464,7 +466,7 @@ describe('OutcomeService', () => {
         it('should refuse to create an Outcome with invalid data', async () => {
             await expect(outcomeService.create({
                 ...defaultOutcome,
-                response: 'Wibble' as PlayerResponseType,
+                response: 'Wibble',
             })).rejects.toThrow();
             await expect(outcomeService.create({
                 ...defaultOutcome,
@@ -476,7 +478,7 @@ describe('OutcomeService', () => {
             })).rejects.toThrow();
             await expect(outcomeService.create({
                 ...defaultOutcome,
-                team: 'X' as TeamNameType,
+                team: 'X',
             })).rejects.toThrow();
             await expect(outcomeService.create({
                 ...defaultOutcome,
@@ -508,7 +510,7 @@ describe('OutcomeService', () => {
                 ...defaultOutcome,
                 playerId: 1,
                 gameDayId: 1,
-                response: PlayerResponseSchema.enum.No,
+                response: PlayerResponseSchema.parse('No'),
                 comment: 'Updated comment',
             };
             const result = await outcomeService.upsert(updatedOutcome);

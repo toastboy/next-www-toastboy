@@ -1,7 +1,7 @@
 import { handleGET } from 'lib/api';
 import { parseBoolean } from 'lib/utils';
 import { NextRequest } from 'next/server';
-import { TeamNameSchema } from 'prisma/generated/zod';
+import { TeamNameSchema } from 'prisma/generated/schemas';
 import gameDayService from 'services/GameDay';
 
 /**

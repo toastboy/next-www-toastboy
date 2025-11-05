@@ -1,10 +1,10 @@
 import { Paper, Table, TableTbody, TableTd, TableTh, TableThead, TableTr, Title } from '@mantine/core';
 import PlayerLink from 'components/PlayerLink/PlayerLink';
-import { TableNameType } from 'prisma/generated/zod';
+import { TableName } from 'prisma/generated/schemas';
 import playerRecordService from 'services/PlayerRecord';
 
 export interface Props {
-    table: TableNameType;
+    table: TableName;
     year?: number;
 }
 

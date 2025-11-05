@@ -3,31 +3,37 @@ import 'server-only';
 import debug from 'debug';
 import prisma from 'lib/prisma';
 import {
-    ArseCreateInputObjectZodSchema,
+    ArseSchema,
     ArseType,
-    ArseUpdateInputObjectZodSchema,
+    ArseUncheckedCreateInputObjectZodSchema,
+    ArseUncheckedUpdateInputObjectZodSchema,
     ArseWhereInputObjectSchema,
     ArseWhereUniqueInputObjectSchema
 } from "prisma/generated/schemas";
 import { z } from 'zod';
 
-/** 0..10 rating used across create and update */
-const rating0to10 = z.number().int().min(0).max(10);
-
 /** The seven rating fields, nullable + optional */
-const ratingFields = {
-    inGoal: rating0to10.nullable().optional(),
-    running: rating0to10.nullable().optional(),
-    shooting: rating0to10.nullable().optional(),
-    passing: rating0to10.nullable().optional(),
-    ballSkill: rating0to10.nullable().optional(),
-    attacking: rating0to10.nullable().optional(),
-    defending: rating0to10.nullable().optional(),
+const arseFields = {
+    playerId: z.number().int().min(1),
+    raterId: z.number().int().min(1),
+    inGoal: z.number().int().min(0).max(10).nullable().optional(),
+    running: z.number().int().min(0).max(10).nullable().optional(),
+    shooting: z.number().int().min(0).max(10).nullable().optional(),
+    passing: z.number().int().min(0).max(10).nullable().optional(),
+    ballSkill: z.number().int().min(0).max(10).nullable().optional(),
+    attacking: z.number().int().min(0).max(10).nullable().optional(),
+    defending: z.number().int().min(0).max(10).nullable().optional(),
 };
 
 /** Schemas for enforcing strict input */
-export const ArseCreateInputObjectStrictSchema = ArseCreateInputObjectZodSchema.extend({ ...ratingFields });
-export const ArseUpdateInputObjectStrictSchema = ArseUpdateInputObjectZodSchema.extend({ ...ratingFields });
+export const ArseUncheckedCreateInputObjectStrictSchema =
+    ArseUncheckedCreateInputObjectZodSchema.extend({
+        ...arseFields
+    });
+export const ArseUncheckedUpdateInputObjectStrictSchema =
+    ArseUncheckedUpdateInputObjectZodSchema.extend({
+        ...arseFields
+    });
 
 const log = debug('footy:api');
 
@@ -41,7 +47,9 @@ export class ArseService {
      */
     async get(playerId: number, raterId: number): Promise<ArseType | null> {
         try {
-            const where = ArseWhereUniqueInputObjectSchema.parse({ playerId, raterId });
+            const where = ArseWhereUniqueInputObjectSchema.parse({
+                playerId_raterId: { playerId, raterId }
+            });
 
             return prisma.arse.findUnique({ where });
         } catch (error) {
@@ -116,9 +124,9 @@ export class ArseService {
      * @returns A promise that resolves to the created arse, or null if an error occurs.
      * @throws An error if there is a failure.
      */
-    async create(rawData: unknown): Promise<ArseType | null> {
+    async create(rawData: unknown): Promise<ArseType> {
         try {
-            const data = ArseCreateInputObjectStrictSchema.parse(rawData);
+            const data = ArseUncheckedCreateInputObjectStrictSchema.parse(rawData);
 
             return await prisma.arse.create({ data });
         } catch (error) {
@@ -135,9 +143,13 @@ export class ArseService {
      */
     async upsert(rawData: unknown): Promise<ArseType | null> {
         try {
-            const where = ArseWhereUniqueInputObjectSchema.parse(rawData);
-            const update = ArseUpdateInputObjectStrictSchema.parse(rawData);
-            const create = ArseCreateInputObjectStrictSchema.parse(rawData);
+            const parsed = ArseSchema.parse(rawData);
+            const where = ArseWhereUniqueInputObjectSchema.parse({
+                playerId_raterId: { playerId: parsed.playerId, raterId: parsed.raterId }
+            });
+
+            const update = ArseUncheckedUpdateInputObjectStrictSchema.parse(rawData);
+            const create = ArseUncheckedCreateInputObjectStrictSchema.parse(rawData);
 
             return await prisma.arse.upsert({ where, update, create });
         } catch (error) {
@@ -155,7 +167,9 @@ export class ArseService {
      */
     async delete(playerId: number, raterId: number): Promise<void> {
         try {
-            const where = ArseWhereUniqueInputObjectSchema.parse({ playerId, raterId });
+            const where = ArseWhereUniqueInputObjectSchema.parse({
+                playerId_raterId: { playerId, raterId }
+            });
 
             await prisma.arse.delete({ where });
         } catch (error) {

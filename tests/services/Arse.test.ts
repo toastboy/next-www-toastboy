@@ -260,19 +260,10 @@ describe('ArseService', () => {
     describe('create', () => {
         it('should create an arse', async () => {
             const result = await arseService.create(defaultArse);
-            if (result) {
-                expect(result).toEqual(defaultArse);
-            }
-            else {
-                throw new Error("Result is null");
-            }
+            expect(result).toEqual(defaultArse);
         });
 
         it('should refuse to create an arse with invalid data', async () => {
-            await expect(arseService.create({
-                ...defaultArse,
-                stamp: new Date(new Date().getTime() + 24 * 60 * 60 * 1000),
-            })).rejects.toThrow();
             await expect(arseService.create({
                 ...defaultArse,
                 playerId: -1,

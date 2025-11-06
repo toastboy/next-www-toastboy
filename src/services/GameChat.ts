@@ -3,19 +3,30 @@ import 'server-only';
 import debug from 'debug';
 import prisma from 'lib/prisma';
 import {
-    GameChatCreateInputObjectZodSchema,
-    GameChatType,
-    GameChatUpdateInputObjectZodSchema,
-    GameChatWhereUniqueInputObjectSchema,
+    GameChatUncheckedCreateInputObjectZodSchema,
+    GameChatUncheckedUpdateInputObjectZodSchema,
+    GameChatWhereUniqueInputObjectSchema
 } from 'prisma/generated/schemas';
+import {
+    GameChatSchema,
+    GameChatType,
+} from 'prisma/generated/schemas/models/GameChat.schema';
 import z from 'zod';
 
-/** Non-negative integer */
-const nonNegativeInteger = z.number().int().min(0);
+/** Field definitions with extra validation */
+const extendedFields = {
+    id: z.number().int().min(0),
+};
 
 /** Schemas for enforcing strict input */
-export const GameChatCreateInputObjectStrictSchema = GameChatCreateInputObjectZodSchema.extend({ id: nonNegativeInteger });
-export const GameChatUpdateInputObjectStrictSchema = GameChatUpdateInputObjectZodSchema.extend({ id: nonNegativeInteger });
+export const GameChatUncheckedCreateInputObjectStrictSchema =
+    GameChatUncheckedCreateInputObjectZodSchema.extend({
+        ...extendedFields
+    });
+export const GameChatUncheckedUpdateInputObjectStrictSchema =
+    GameChatUncheckedUpdateInputObjectZodSchema.extend({
+        ...extendedFields
+    });
 
 const log = debug('footy:api');
 
@@ -59,7 +70,7 @@ export class GameChatService {
      */
     async create(rawData: unknown): Promise<GameChatType | null> {
         try {
-            const data = GameChatCreateInputObjectStrictSchema.parse(rawData);
+            const data = GameChatUncheckedCreateInputObjectStrictSchema.parse(rawData);
 
             return await prisma.gameChat.create({ data });
         } catch (error) {
@@ -76,9 +87,10 @@ export class GameChatService {
      */
     async upsert(rawData: unknown): Promise<GameChatType | null> {
         try {
-            const where = GameChatWhereUniqueInputObjectSchema.parse(rawData);
-            const update = GameChatUpdateInputObjectStrictSchema.parse(rawData);
-            const create = GameChatCreateInputObjectStrictSchema.parse(rawData);
+            const parsed = GameChatSchema.parse(rawData);
+            const where = GameChatWhereUniqueInputObjectSchema.parse({ id: parsed.id });
+            const update = GameChatUncheckedUpdateInputObjectStrictSchema.parse(rawData);
+            const create = GameChatUncheckedCreateInputObjectStrictSchema.parse(rawData);
 
             return await prisma.gameChat.upsert({ where, update, create });
         } catch (error) {

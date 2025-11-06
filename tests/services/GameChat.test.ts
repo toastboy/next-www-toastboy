@@ -1,5 +1,5 @@
 import prisma from 'lib/prisma';
-import { GameChatType } from 'prisma/generated/schemas';
+import { GameChatType } from 'prisma/generated/schemas/models/GameChat.schema';
 import gameChatService from 'services/GameChat';
 
 jest.mock('lib/prisma', () => ({

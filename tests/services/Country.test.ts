@@ -1,5 +1,5 @@
 import prisma from 'lib/prisma';
-import { CountryType } from 'prisma/generated/schemas';
+import { CountryType } from 'prisma/generated/schemas/models/Country.schema';
 import countryService from 'services/Country';
 
 jest.mock('lib/prisma', () => ({

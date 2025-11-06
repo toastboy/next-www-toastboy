@@ -3,21 +3,27 @@ import 'server-only';
 import debug from 'debug';
 import prisma from 'lib/prisma';
 import {
-    CountryCreateInputObjectSchema,
-    CountryType,
-    CountryUpdateInputObjectSchema,
-    CountryWhereUniqueInputObjectSchema,
+    CountryUncheckedCreateInputObjectZodSchema,
+    CountryUncheckedUpdateInputObjectZodSchema,
+    CountryWhereUniqueInputObjectSchema
 } from 'prisma/generated/schemas';
+import { CountryType } from 'prisma/generated/schemas/models/Country.schema';
 import { z } from 'zod';
 
-/** Defines a valid ISO country code */
-const validISOCode = z.object({
+/** Field definitions with extra validation */
+const extendedFields = {
     isoCode: z.string().regex(/^([A-Z]{2}|[A-Z]{2}-[A-Z]{3})$/, 'Invalid ISO code format'),
-});
+};
 
 /** Schemas for enforcing strict input */
-export const CountryCreateInputObjectStrictSchema = CountryCreateInputObjectSchema.and(validISOCode);
-export const CountryUpdateInputObjectStrictSchema = CountryUpdateInputObjectSchema.and(validISOCode);
+export const CountryUncheckedCreateInputObjectStrictSchema =
+    CountryUncheckedCreateInputObjectZodSchema.extend({
+        ...extendedFields
+    });
+export const CountryUncheckedUpdateInputObjectStrictSchema =
+    CountryUncheckedUpdateInputObjectZodSchema.extend({
+        ...extendedFields
+    });
 
 const log = debug('footy:api');
 
@@ -61,7 +67,7 @@ export class CountryService {
      */
     async create(rawData: unknown): Promise<CountryType | null> {
         try {
-            const data = CountryCreateInputObjectStrictSchema.parse(rawData);
+            const data = CountryUncheckedCreateInputObjectStrictSchema.parse(rawData);
 
             return await prisma.country.create({ data });
         } catch (error) {
@@ -79,8 +85,8 @@ export class CountryService {
     async upsert(rawData: unknown): Promise<CountryType | null> {
         try {
             const where = CountryWhereUniqueInputObjectSchema.parse(rawData);
-            const update = CountryUpdateInputObjectStrictSchema.parse(rawData);
-            const create = CountryCreateInputObjectStrictSchema.parse(rawData);
+            const update = CountryUncheckedUpdateInputObjectStrictSchema.parse(rawData);
+            const create = CountryUncheckedCreateInputObjectStrictSchema.parse(rawData);
 
             return await prisma.country.upsert({ where, update, create });
         } catch (error) {

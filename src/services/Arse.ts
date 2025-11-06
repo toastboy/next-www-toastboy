@@ -3,17 +3,19 @@ import 'server-only';
 import debug from 'debug';
 import prisma from 'lib/prisma';
 import {
-    ArseSchema,
-    ArseType,
     ArseUncheckedCreateInputObjectZodSchema,
     ArseUncheckedUpdateInputObjectZodSchema,
     ArseWhereInputObjectSchema,
     ArseWhereUniqueInputObjectSchema
 } from "prisma/generated/schemas";
+import {
+    ArseSchema,
+    ArseType,
+} from 'prisma/generated/schemas/models/Arse.schema';
 import { z } from 'zod';
 
-/** The seven rating fields, nullable + optional */
-const arseFields = {
+/** Field definitions with extra validation */
+const extendedFields = {
     playerId: z.number().int().min(1),
     raterId: z.number().int().min(1),
     inGoal: z.number().int().min(0).max(10).nullable().optional(),
@@ -28,11 +30,11 @@ const arseFields = {
 /** Schemas for enforcing strict input */
 export const ArseUncheckedCreateInputObjectStrictSchema =
     ArseUncheckedCreateInputObjectZodSchema.extend({
-        ...arseFields
+        ...extendedFields
     });
 export const ArseUncheckedUpdateInputObjectStrictSchema =
     ArseUncheckedUpdateInputObjectZodSchema.extend({
-        ...arseFields
+        ...extendedFields
     });
 
 const log = debug('footy:api');

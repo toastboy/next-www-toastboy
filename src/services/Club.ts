@@ -3,19 +3,30 @@ import 'server-only';
 import debug from 'debug';
 import prisma from 'lib/prisma';
 import {
-    ClubCreateInputObjectZodSchema,
-    ClubType,
-    ClubUpdateInputObjectZodSchema,
+    ClubUncheckedCreateInputObjectZodSchema,
+    ClubUncheckedUpdateInputObjectZodSchema,
     ClubWhereUniqueInputObjectSchema
 } from 'prisma/generated/schemas';
+import {
+    ClubSchema,
+    ClubType,
+} from 'prisma/generated/schemas/models/Club.schema';
 import z from 'zod';
 
-/** Non-negative integer */
-const nonNegativeInteger = z.number().int().min(0);
+/** Field definitions with extra validation */
+const extendedFields = {
+    id: z.number().int().min(0),
+};
 
 /** Schemas for enforcing strict input */
-export const ClubCreateInputObjectStrictSchema = ClubCreateInputObjectZodSchema.extend({ id: nonNegativeInteger });
-export const ClubUpdateInputObjectStrictSchema = ClubUpdateInputObjectZodSchema.extend({ id: nonNegativeInteger });
+export const ClubUncheckedCreateInputObjectStrictSchema =
+    ClubUncheckedCreateInputObjectZodSchema.extend({
+        ...extendedFields
+    });
+export const ClubUncheckedUpdateInputObjectStrictSchema =
+    ClubUncheckedUpdateInputObjectZodSchema.extend({
+        ...extendedFields
+    });
 
 const log = debug('footy:api');
 
@@ -59,7 +70,7 @@ export class ClubService {
      */
     async create(rawData: unknown): Promise<ClubType | null> {
         try {
-            const data = ClubCreateInputObjectStrictSchema.parse(rawData);
+            const data = ClubUncheckedCreateInputObjectStrictSchema.parse(rawData);
 
             return await prisma.club.create({ data });
         } catch (error) {
@@ -76,9 +87,13 @@ export class ClubService {
      */
     async upsert(rawData: unknown): Promise<ClubType | null> {
         try {
-            const where = ClubWhereUniqueInputObjectSchema.parse(rawData);
-            const update = ClubUpdateInputObjectStrictSchema.parse(rawData);
-            const create = ClubCreateInputObjectStrictSchema.parse(rawData);
+            const parsed = ClubSchema.parse(rawData);
+            const where = ClubWhereUniqueInputObjectSchema.parse({
+                id: parsed.id
+            });
+
+            const update = ClubUncheckedUpdateInputObjectStrictSchema.parse(rawData);
+            const create = ClubUncheckedCreateInputObjectStrictSchema.parse(rawData);
 
             return await prisma.club.upsert({ where, update, create });
         } catch (error) {

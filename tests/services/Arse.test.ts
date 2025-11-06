@@ -1,5 +1,5 @@
 import prisma from 'lib/prisma';
-import { ArseType } from 'prisma/generated/schemas';
+import { ArseType } from 'prisma/generated/schemas/models/Arse.schema';
 import arseService from 'services/Arse';
 
 jest.mock('lib/prisma', () => ({

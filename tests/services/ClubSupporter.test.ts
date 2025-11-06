@@ -218,7 +218,6 @@ describe('clubSupporterService', () => {
                 ...defaultClubSupporter,
                 playerId: 6,
                 clubId: 16,
-                inGoal: 7,
             };
             const result = await clubSupporterService.upsert(updatedClubSupporter);
             expect(result).toEqual(updatedClubSupporter);

@@ -1,5 +1,5 @@
 import prisma from 'lib/prisma';
-import { ClubType } from 'prisma/generated/schemas';
+import { ClubType } from 'prisma/generated/schemas/models/Club.schema';
 import clubService from 'services/Club';
 
 jest.mock('lib/prisma', () => ({

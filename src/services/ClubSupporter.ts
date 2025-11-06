@@ -3,12 +3,32 @@ import 'server-only';
 import debug from 'debug';
 import prisma from 'lib/prisma';
 import {
-    ClubSupporterCreateInputObjectSchema,
-    ClubSupporterType,
-    ClubSupporterUpdateInputObjectSchema,
+    ClubSupporterUncheckedCreateInputObjectZodSchema,
+    ClubSupporterUncheckedUpdateInputObjectZodSchema,
     ClubSupporterWhereInputObjectSchema,
     ClubSupporterWhereUniqueInputObjectSchema
 } from 'prisma/generated/schemas';
+import {
+    ClubSupporterSchema,
+    ClubSupporterType,
+} from 'prisma/generated/schemas/models/ClubSupporter.schema';
+import z from 'zod';
+
+/** Field definitions with extra validation */
+const extendFields = {
+    playerId: z.number().int().min(1),
+    clubId: z.number().int().min(1),
+};
+
+/** Schemas for enforcing strict input */
+export const ClubSupporterUncheckedCreateInputObjectStrictSchema =
+    ClubSupporterUncheckedCreateInputObjectZodSchema.extend({
+        ...extendFields
+    });
+export const ClubSupporterUncheckedUpdateInputObjectStrictSchema =
+    ClubSupporterUncheckedUpdateInputObjectZodSchema.extend({
+        ...extendFields
+    });
 
 const log = debug('footy:api');
 
@@ -22,7 +42,9 @@ export class ClubSupporterService {
      */
     async get(playerId: number, clubId: number): Promise<ClubSupporterType | null> {
         try {
-            const where = ClubSupporterWhereUniqueInputObjectSchema.parse({ playerId, clubId });
+            const where = ClubSupporterWhereUniqueInputObjectSchema.parse({
+                playerId_clubId: { playerId, clubId },
+            });
 
             return prisma.clubSupporter.findUnique({ where });
         } catch (error) {
@@ -87,7 +109,7 @@ export class ClubSupporterService {
      */
     async create(rawData: unknown): Promise<ClubSupporterType | null> {
         try {
-            const data = ClubSupporterCreateInputObjectSchema.parse(rawData);
+            const data = ClubSupporterUncheckedCreateInputObjectStrictSchema.parse(rawData);
 
             return prisma.clubSupporter.create({ data });
         } catch (error) {
@@ -104,9 +126,12 @@ export class ClubSupporterService {
      */
     async upsert(rawData: unknown): Promise<ClubSupporterType | null> {
         try {
-            const where = ClubSupporterWhereUniqueInputObjectSchema.parse(rawData);
-            const update = ClubSupporterUpdateInputObjectSchema.parse(rawData);
-            const create = ClubSupporterCreateInputObjectSchema.parse(rawData);
+            const parsed = ClubSupporterSchema.parse(rawData);
+            const where = ClubSupporterWhereUniqueInputObjectSchema.parse({
+                playerId_clubId: { playerId: parsed.playerId, clubId: parsed.clubId }
+            });
+            const update = ClubSupporterUncheckedUpdateInputObjectStrictSchema.parse(rawData);
+            const create = ClubSupporterUncheckedCreateInputObjectStrictSchema.parse(rawData);
 
             return await prisma.clubSupporter.upsert({ where, update, create });
         } catch (error) {
@@ -124,7 +149,9 @@ export class ClubSupporterService {
      */
     async delete(playerId: number, clubId: number): Promise<void> {
         try {
-            const where = ClubSupporterWhereUniqueInputObjectSchema.parse({ playerId, clubId });
+            const where = ClubSupporterWhereUniqueInputObjectSchema.parse({
+                playerId_clubId: { playerId, clubId },
+            });
 
             await prisma.clubSupporter.delete({ where });
         } catch (error) {

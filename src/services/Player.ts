@@ -3,11 +3,30 @@ import 'server-only';
 import debug from 'debug';
 import prisma from 'lib/prisma';
 import {
-    PlayerCreateInputObjectSchema,
-    PlayerType,
-    PlayerUpdateInputObjectSchema,
-    PlayerWhereUniqueInputObjectSchema,
+    PlayerUncheckedCreateInputObjectZodSchema,
+    PlayerUncheckedUpdateInputObjectZodSchema,
+    PlayerWhereUniqueInputObjectSchema
 } from 'prisma/generated/schemas';
+import {
+    PlayerSchema,
+    PlayerType,
+} from 'prisma/generated/schemas/models/Player.schema';
+import z from 'zod';
+
+/** Field definitions with extra validation */
+const extendedFields = {
+    id: z.number().int().min(1),
+};
+
+/** Schemas for enforcing strict input */
+export const PlayerUncheckedCreateInputObjectStrictSchema =
+    PlayerUncheckedCreateInputObjectZodSchema.extend({
+        ...extendedFields
+    });
+export const PlayerUncheckedUpdateInputObjectStrictSchema =
+    PlayerUncheckedUpdateInputObjectZodSchema.extend({
+        ...extendedFields
+    });
 
 const log = debug('footy:api');
 
@@ -298,7 +317,7 @@ class PlayerService {
      */
     async create(rawData: unknown): Promise<PlayerType> {
         try {
-            const data = PlayerCreateInputObjectSchema.parse(rawData);
+            const data = PlayerUncheckedCreateInputObjectStrictSchema.parse(rawData);
 
             return await prisma.player.create({ data });
         } catch (error) {
@@ -314,9 +333,10 @@ class PlayerService {
      */
     async upsert(rawData: unknown): Promise<PlayerType> {
         try {
-            const where = PlayerWhereUniqueInputObjectSchema.parse(rawData);
-            const update = PlayerUpdateInputObjectSchema.parse(rawData);
-            const create = PlayerCreateInputObjectSchema.parse(rawData);
+            const parsed = PlayerSchema.parse(rawData);
+            const where = PlayerWhereUniqueInputObjectSchema.parse({ id: parsed.id });
+            const update = PlayerUncheckedUpdateInputObjectStrictSchema.parse(rawData);
+            const create = PlayerUncheckedCreateInputObjectStrictSchema.parse(rawData);
 
             return await prisma.player.upsert({ where, update, create });
         } catch (error) {

@@ -3,11 +3,32 @@ import 'server-only';
 import debug from 'debug';
 import prisma from 'lib/prisma';
 import {
-    InvitationCreateInputObjectSchema,
-    InvitationType,
-    InvitationUpdateInputObjectSchema,
-    InvitationWhereUniqueInputObjectSchema,
+    InvitationUncheckedCreateInputObjectZodSchema,
+    InvitationUncheckedUpdateInputObjectZodSchema,
+    InvitationWhereUniqueInputObjectSchema
 } from 'prisma/generated/schemas';
+import {
+    InvitationSchema,
+    InvitationType,
+} from 'prisma/generated/schemas/models/Invitation.schema';
+import z from 'zod';
+
+/** Field definitions with extra validation */
+const extendedFields = {
+    uuid: z.string().min(38).max(38),
+    playerId: z.number().int().min(1),
+    gameDayId: z.number().int().min(1),
+};
+
+/** Schemas for enforcing strict input */
+export const InvitationUncheckedCreateInputObjectStrictSchema =
+    InvitationUncheckedCreateInputObjectZodSchema.extend({
+        ...extendedFields
+    });
+export const InvitationUncheckedUpdateInputObjectStrictSchema =
+    InvitationUncheckedUpdateInputObjectZodSchema.extend({
+        ...extendedFields
+    });
 
 const log = debug('footy:api');
 
@@ -51,7 +72,7 @@ export class InvitationService {
      */
     async create(rawData: unknown): Promise<InvitationType | null> {
         try {
-            const data = InvitationCreateInputObjectSchema.parse(rawData);
+            const data = InvitationUncheckedCreateInputObjectStrictSchema.parse(rawData);
 
             return await prisma.invitation.create({ data });
         } catch (error) {
@@ -68,9 +89,10 @@ export class InvitationService {
      */
     async upsert(rawData: unknown): Promise<InvitationType | null> {
         try {
-            const where = InvitationWhereUniqueInputObjectSchema.parse(rawData);
-            const update = InvitationUpdateInputObjectSchema.parse(rawData);
-            const create = InvitationCreateInputObjectSchema.parse(rawData);
+            const parsed = InvitationSchema.parse(rawData);
+            const where = InvitationWhereUniqueInputObjectSchema.parse({ uuid: parsed.uuid });
+            const update = InvitationUncheckedUpdateInputObjectZodSchema.parse(parsed);
+            const create = InvitationUncheckedCreateInputObjectZodSchema.parse(parsed);
 
             return await prisma.invitation.upsert({ where, update, create });
         } catch (error) {

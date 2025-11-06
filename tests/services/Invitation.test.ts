@@ -1,5 +1,5 @@
 import prisma from 'lib/prisma';
-import { InvitationType } from 'prisma/generated/schemas';
+import { InvitationType } from 'prisma/generated/schemas/models/Invitation.schema';
 import invitationService from 'services/Invitation';
 
 jest.mock('lib/prisma', () => ({
@@ -15,14 +15,21 @@ jest.mock('lib/prisma', () => ({
 }));
 
 const defaultInvitation: InvitationType = {
-    uuid: '1234',
+    uuid: '{123e4567-e89b-12d3-a456-426614174000}',
     playerId: 1,
     gameDayId: 1,
 };
 
+const buildUuidFromIndex = (i: number): string => {
+    const hex = Math.abs(i).toString(16) || '0';
+    const repeated = hex.repeat(Math.ceil(32 / hex.length)).slice(0, 32);
+    const uuid = `${repeated.slice(0, 8)}-${repeated.slice(8, 12)}-${repeated.slice(12, 16)}-${repeated.slice(16, 20)}-${repeated.slice(20, 32)}`;
+    return `{${uuid}}`;
+};
+
 const invitationList: InvitationType[] = Array.from({ length: 100 }, (_, index) => ({
     ...defaultInvitation,
-    uuid: `1234${index + 1}`,
+    uuid: buildUuidFromIndex(index + 1),
 }));
 
 describe('InvitationService', () => {
@@ -76,10 +83,10 @@ describe('InvitationService', () => {
 
     describe('get', () => {
         it('should retrieve the correct Invitation with uuid "12346"', async () => {
-            const result = await invitationService.get('12346');
+            const result = await invitationService.get(invitationList[5].uuid);
             expect(result).toEqual({
                 ...defaultInvitation,
-                uuid: '12346',
+                uuid: invitationList[5].uuid,
             } as InvitationType);
         });
 
@@ -100,7 +107,7 @@ describe('InvitationService', () => {
             const result = await invitationService.getAll();
             if (result) {
                 expect(result.length).toEqual(100);
-                expect(result[11].uuid).toEqual('123412');
+                expect(result[11].uuid).toEqual(invitationList[11].uuid);
             }
             else {
                 throw new Error("Result is null");
@@ -112,7 +119,6 @@ describe('InvitationService', () => {
         it('should create a Invitation', async () => {
             const newInvitation: InvitationType = {
                 ...defaultInvitation,
-                uuid: '4567',
             };
             const result = await invitationService.create(newInvitation);
             expect(result).toEqual(newInvitation);

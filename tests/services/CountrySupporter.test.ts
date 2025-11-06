@@ -1,5 +1,5 @@
 import prisma from 'lib/prisma';
-import { CountrySupporterType } from 'prisma/generated/schemas';
+import { CountrySupporterType } from 'prisma/generated/schemas/models/CountrySupporter.schema';
 import countrySupporterService from 'services/CountrySupporter';
 
 jest.mock('lib/prisma', () => ({
@@ -223,7 +223,6 @@ describe('countrySupporterService', () => {
                 ...defaultCountrySupporter,
                 playerId: 6,
                 countryISOCode: "GB",
-                inGoal: 7,
             };
             const result = await countrySupporterService.upsert(updatedClubSupporter);
             expect(result).toEqual(updatedClubSupporter);

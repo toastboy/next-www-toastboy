@@ -7,7 +7,10 @@ import {
     CountryUncheckedUpdateInputObjectZodSchema,
     CountryWhereUniqueInputObjectSchema
 } from 'prisma/generated/schemas';
-import { CountryType } from 'prisma/generated/schemas/models/Country.schema';
+import {
+    CountrySchema,
+    CountryType,
+} from 'prisma/generated/schemas/models/Country.schema';
 import { z } from 'zod';
 
 /** Field definitions with extra validation */
@@ -84,7 +87,10 @@ export class CountryService {
      */
     async upsert(rawData: unknown): Promise<CountryType | null> {
         try {
-            const where = CountryWhereUniqueInputObjectSchema.parse(rawData);
+            const parsed = CountrySchema.parse(rawData);
+            const where = CountryWhereUniqueInputObjectSchema.parse({
+                isoCode: parsed.isoCode,
+            });
             const update = CountryUncheckedUpdateInputObjectStrictSchema.parse(rawData);
             const create = CountryUncheckedCreateInputObjectStrictSchema.parse(rawData);
 

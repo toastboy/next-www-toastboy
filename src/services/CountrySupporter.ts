@@ -3,22 +3,32 @@ import 'server-only';
 import debug from 'debug';
 import prisma from 'lib/prisma';
 import {
-    CountrySupporterCreateInputObjectSchema,
-    CountrySupporterType,
-    CountrySupporterUpdateInputObjectSchema,
+    CountrySupporterUncheckedCreateInputObjectZodSchema,
+    CountrySupporterUncheckedUpdateInputObjectZodSchema,
     CountrySupporterWhereInputObjectSchema,
-    CountrySupporterWhereUniqueInputObjectSchema,
+    CountrySupporterWhereUniqueInputObjectSchema
 } from 'prisma/generated/schemas';
+import {
+    CountrySupporterSchema,
+    CountrySupporterType,
+} from 'prisma/generated/schemas/models/CountrySupporter.schema';
 import z from 'zod';
 
-/** Defines a valid ISO country code */
-const validISOCode = z.object({
-    isoCode: z.string().regex(/^([A-Z]{2}|[A-Z]{2}-[A-Z]{3})$/, 'Invalid ISO code format'),
-});
+/** Field definitions with extra validation */
+const extendFields = {
+    playerId: z.number().int().min(1),
+    countryISOCode: z.string().regex(/^([A-Z]{2}|[A-Z]{2}-[A-Z]{3})$/, 'Invalid ISO code format'),
+};
 
 /** Schemas for enforcing strict input */
-export const CountrySupporterCreateInputObjectStrictSchema = CountrySupporterCreateInputObjectSchema.and(validISOCode);
-export const CountrySupporterUpdateInputObjectStrictSchema = CountrySupporterUpdateInputObjectSchema.and(validISOCode);
+export const CountrySupporterUncheckedCreateInputObjectStrictSchema =
+    CountrySupporterUncheckedCreateInputObjectZodSchema.extend({
+        ...extendFields
+    });
+export const CountrySupporterUncheckedUpdateInputObjectStrictSchema =
+    CountrySupporterUncheckedUpdateInputObjectZodSchema.extend({
+        ...extendFields
+    });
 
 const log = debug('footy:api');
 
@@ -32,7 +42,9 @@ export class CountrySupporterService {
      */
     async get(playerId: number, countryISOCode: string): Promise<CountrySupporterType | null> {
         try {
-            const where = CountrySupporterWhereUniqueInputObjectSchema.parse({ playerId, countryISOCode });
+            const where = CountrySupporterWhereUniqueInputObjectSchema.parse({
+                playerId_countryISOCode: { playerId, countryISOCode }
+            });
 
             return prisma.countrySupporter.findUnique({ where });
         } catch (error) {
@@ -97,7 +109,7 @@ export class CountrySupporterService {
      */
     async create(rawData: unknown): Promise<CountrySupporterType | null> {
         try {
-            const data = CountrySupporterCreateInputObjectSchema.parse(rawData);
+            const data = CountrySupporterUncheckedCreateInputObjectStrictSchema.parse(rawData);
 
             return await prisma.countrySupporter.create({ data });
         } catch (error) {
@@ -114,9 +126,15 @@ export class CountrySupporterService {
      */
     async upsert(rawData: unknown): Promise<CountrySupporterType | null> {
         try {
-            const where = CountrySupporterWhereUniqueInputObjectSchema.parse(rawData);
-            const update = CountrySupporterUpdateInputObjectSchema.parse(rawData);
-            const create = CountrySupporterCreateInputObjectSchema.parse(rawData);
+            const parsed = CountrySupporterSchema.parse(rawData);
+            const where = CountrySupporterWhereUniqueInputObjectSchema.parse({
+                playerId_countryISOCode: {
+                    playerId: parsed.playerId,
+                    countryISOCode: parsed.countryISOCode,
+                },
+            });
+            const update = CountrySupporterUncheckedUpdateInputObjectStrictSchema.parse(rawData);
+            const create = CountrySupporterUncheckedCreateInputObjectStrictSchema.parse(rawData);
 
             return await prisma.countrySupporter.upsert({ where, update, create });
         } catch (error) {
@@ -134,7 +152,9 @@ export class CountrySupporterService {
      */
     async delete(playerId: number, countryISOCode: string): Promise<void> {
         try {
-            const where = CountrySupporterWhereUniqueInputObjectSchema.parse({ playerId, countryISOCode });
+            const where = CountrySupporterWhereUniqueInputObjectSchema.parse({
+                playerId_countryISOCode: { playerId, countryISOCode }
+            });
 
             await prisma.countrySupporter.delete({ where });
         } catch (error) {

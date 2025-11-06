@@ -3,25 +3,33 @@ import 'server-only';
 import debug from 'debug';
 import prisma from 'lib/prisma';
 import {
-    GameDayType,
     GameDayUncheckedCreateInputObjectZodSchema,
     GameDayUncheckedUpdateInputObjectZodSchema,
     GameDayWhereInputObjectSchema,
     GameDayWhereUniqueInputObjectSchema,
     TeamName
 } from 'prisma/generated/schemas';
+import {
+    GameDaySchema,
+    GameDayType,
+} from 'prisma/generated/schemas/models/GameDay.schema';
 import z from 'zod';
 
-/** Helper for pickerGamesHistory field that can be 5, 10, null or omitted in input */
-const pickerGamesHistory = z.union([z.literal(5), z.literal(10)]).nullable().optional();
+/** Field definitions with extra validation */
+const extendedFields = {
+    id: z.number().int().min(0),
+    pickerGamesHistory: z.union([z.literal(5), z.literal(10)]).nullable().optional(),
+};
 
 /** Schemas for enforcing strict input */
-export const GameDayCreateInputObjectStrictSchema = GameDayUncheckedCreateInputObjectZodSchema.extend({
-    pickerGamesHistory: pickerGamesHistory,
-});
-export const GameDayUpdateInputObjectStrictSchema = GameDayUncheckedUpdateInputObjectZodSchema.extend({
-    pickerGamesHistory: pickerGamesHistory,
-});
+export const GameDayUncheckedCreateInputObjectStrictSchema =
+    GameDayUncheckedCreateInputObjectZodSchema.extend({
+        ...extendedFields
+    });
+export const GameDayUncheckedUpdateInputObjectStrictSchema =
+    GameDayUncheckedUpdateInputObjectZodSchema.extend({
+        ...extendedFields
+    });
 
 const log = debug('footy:api');
 
@@ -80,9 +88,7 @@ export class GameDayService {
      */
     async getByDate(date: Date): Promise<GameDayType | null> {
         try {
-            const where = GameDayWhereInputObjectSchema.parse({ date });
-
-            return prisma.gameDay.findFirst({ where });
+            return prisma.gameDay.findFirst({ where: { date } });
         } catch (error) {
             log(`Error fetching GameDayType: ${error}`);
             throw error;
@@ -256,7 +262,7 @@ export class GameDayService {
      */
     async create(rawData: unknown): Promise<GameDayType | null> {
         try {
-            const data = GameDayCreateInputObjectStrictSchema.parse(rawData);
+            const data = GameDayUncheckedCreateInputObjectStrictSchema.parse(rawData);
 
             return await prisma.gameDay.create({ data });
         } catch (error) {
@@ -273,9 +279,10 @@ export class GameDayService {
      */
     async upsert(rawData: unknown): Promise<GameDayType | null> {
         try {
-            const where = GameDayWhereUniqueInputObjectSchema.parse(rawData);
-            const update = GameDayUpdateInputObjectStrictSchema.parse(rawData);
-            const create = GameDayCreateInputObjectStrictSchema.parse(rawData);
+            const parsed = GameDaySchema.parse(rawData);
+            const where = GameDayWhereUniqueInputObjectSchema.parse({ id: parsed.id });
+            const update = GameDayUncheckedUpdateInputObjectStrictSchema.parse(rawData);
+            const create = GameDayUncheckedCreateInputObjectStrictSchema.parse(rawData);
 
             return await prisma.gameDay.upsert({ where, update, create });
         } catch (error) {

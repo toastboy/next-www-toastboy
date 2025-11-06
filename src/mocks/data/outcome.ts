@@ -1,6 +1,6 @@
-import { Outcome } from 'prisma/generated/prisma/client';
+import { OutcomeType } from 'prisma/generated/schemas/models/Outcome.schema';
 
-export const defaultOutcome: Outcome = {
+export const defaultOutcome: OutcomeType = {
     id: 1000,
     response: 'Yes',
     responseInterval: 89724,

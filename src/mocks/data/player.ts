@@ -1,6 +1,6 @@
-import { Player } from 'prisma/generated/prisma/client';
+import { PlayerType } from 'prisma/generated/schemas/models/Player.schema';
 
-export const defaultPlayer: Player = {
+export const defaultPlayer: PlayerType = {
     id: 1,
     isAdmin: false,
     login: "garyp",

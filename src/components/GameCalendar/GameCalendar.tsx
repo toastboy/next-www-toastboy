@@ -2,7 +2,7 @@
 
 import { Anchor, Indicator, Text } from '@mantine/core';
 import { Calendar, DatePickerProps } from '@mantine/dates';
-import { GameDay } from 'prisma/generated/prisma/client';
+import { GameDayType } from 'prisma/generated/schemas/models/GameDay.schema';
 import { useEffect, useState } from 'react';
 
 interface GameCalendarProps {
@@ -10,9 +10,9 @@ interface GameCalendarProps {
 }
 
 const GameCalendar: React.FC<GameCalendarProps> = ({ date }) => {
-    const [gameDays, setGameDays] = useState<GameDay[]>([]);
+    const [gameDays, setGameDays] = useState<GameDayType[]>([]);
 
-    const getGameDay = (date: Date): GameDay | null => {
+    const getGameDay = (date: Date): GameDayType | null => {
         if (!gameDays || gameDays.length === 0) return null;
         const localDate = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 18, 0, 0, 0);
         const dateString = localDate.toISOString();

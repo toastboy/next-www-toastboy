@@ -5,21 +5,23 @@ import config from 'lib/config';
 import prisma from 'lib/prisma';
 import { rankMap } from 'lib/utils';
 import {
-    GameDayType,
-    OutcomeType,
-    PlayerRecordCreateInputObjectZodSchema,
-    PlayerRecordType,
-    PlayerRecordUpdateInputObjectZodSchema,
+    PlayerRecordUncheckedCreateInputObjectZodSchema,
+    PlayerRecordUncheckedUpdateInputObjectZodSchema,
     PlayerRecordWhereUniqueInputObjectSchema,
     TableName
 } from 'prisma/generated/schemas';
+import { GameDayType } from 'prisma/generated/schemas/models/GameDay.schema';
+import { OutcomeType } from 'prisma/generated/schemas/models/Outcome.schema';
+import { PlayerRecordSchema, PlayerRecordType } from 'prisma/generated/schemas/models/PlayerRecord.schema';
 import gameDayService from 'services/GameDay';
 import outcomeService from 'services/Outcome';
 import z from 'zod';
 
-/** The fields I want to impose stricter checking on */
-const playerRecordFields = {
+/** Field definitions with extra validation */
+const extendedFields = {
+    playerId: z.number().int().min(1),
     year: z.number().int().min(0),
+    gameDayId: z.number().int().min(1),
     responses: z.number().int().min(0).optional().nullable(),
     played: z.number().int().min(0).optional().nullable(),
     won: z.number().int().min(0).optional().nullable(),
@@ -40,12 +42,14 @@ const playerRecordFields = {
 };
 
 /** Schemas for enforcing strict input */
-export const PlayerRecordCreateInputObjectStrictSchema = PlayerRecordCreateInputObjectZodSchema.extend({
-    ...playerRecordFields,
-});
-export const PlayerRecordUpdateInputObjectStrictSchema = PlayerRecordUpdateInputObjectZodSchema.extend({
-    ...playerRecordFields,
-});
+export const PlayerRecordUncheckedCreateInputObjectStrictSchema =
+    PlayerRecordUncheckedCreateInputObjectZodSchema.extend({
+        ...extendedFields
+    });
+export const PlayerRecordUncheckedUpdateInputObjectStrictSchema =
+    PlayerRecordUncheckedUpdateInputObjectZodSchema.extend({
+        ...extendedFields
+    });
 
 const log = debug('footy:api');
 
@@ -61,9 +65,7 @@ export class PlayerRecordService {
     async get(playerId: number, year: number, gameDayId: number): Promise<PlayerRecordType | null> {
         try {
             const where = PlayerRecordWhereUniqueInputObjectSchema.parse({
-                playerId: playerId,
-                year: year,
-                gameDayId: gameDayId,
+                playerId_year_gameDayId: { playerId, year, gameDayId },
             });
 
             return prisma.playerRecord.findUnique({ where });
@@ -352,7 +354,7 @@ export class PlayerRecordService {
      */
     async create(rawData: unknown): Promise<PlayerRecordType | null> {
         try {
-            const data = PlayerRecordCreateInputObjectStrictSchema.parse(rawData);
+            const data = PlayerRecordUncheckedCreateInputObjectStrictSchema.parse(rawData);
 
             return await prisma.playerRecord.create({ data });
         } catch (error) {
@@ -370,9 +372,16 @@ export class PlayerRecordService {
      */
     async upsert(rawData: unknown): Promise<PlayerRecordType | null> {
         try {
-            const where = PlayerRecordWhereUniqueInputObjectSchema.parse(rawData);
-            const update = PlayerRecordUpdateInputObjectStrictSchema.parse(rawData);
-            const create = PlayerRecordCreateInputObjectStrictSchema.parse(rawData);
+            const parsed = PlayerRecordSchema.parse(rawData);
+            const where = PlayerRecordWhereUniqueInputObjectSchema.parse({
+                playerId_year_gameDayId: {
+                    playerId: parsed.playerId,
+                    year: parsed.year,
+                    gameDayId: parsed.gameDayId,
+                },
+            });
+            const update = PlayerRecordUncheckedUpdateInputObjectStrictSchema.parse(rawData);
+            const create = PlayerRecordUncheckedCreateInputObjectStrictSchema.parse(rawData);
 
             return await prisma.playerRecord.upsert({ where, update, create });
         } catch (error) {
@@ -452,9 +461,7 @@ export class PlayerRecordService {
     async delete(playerId: number, year: number, gameDayId: number): Promise<void> {
         try {
             const where = PlayerRecordWhereUniqueInputObjectSchema.parse({
-                playerId,
-                year,
-                gameDayId,
+                playerId_year_gameDayId: { playerId, year, gameDayId },
             });
 
             await prisma.playerRecord.delete({ where });

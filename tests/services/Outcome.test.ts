@@ -1,8 +1,10 @@
 import prisma from 'lib/prisma';
 import {
-    OutcomeType,
-    PlayerResponseSchema
+    PlayerResponseSchema,
 } from 'prisma/generated/schemas';
+import {
+    OutcomeType,
+} from 'prisma/generated/schemas/models/Outcome.schema';
 import outcomeService from 'services/Outcome';
 
 jest.mock('lib/prisma', () => ({

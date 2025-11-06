@@ -4,31 +4,35 @@ import debug from 'debug';
 import prisma from 'lib/prisma';
 import { Turnout, TurnoutByYear, WDL } from 'lib/types';
 import {
-    OutcomeCreateInputObjectZodSchema,
-    OutcomeType,
-    OutcomeUpdateInputObjectZodSchema,
+    OutcomeUncheckedCreateInputObjectZodSchema,
+    OutcomeUncheckedUpdateInputObjectZodSchema,
     OutcomeWhereUniqueInputObjectSchema,
-    PlayerResponseSchema,
+    PlayerResponseSchema
 } from 'prisma/generated/schemas';
+import {
+    OutcomeSchema,
+    OutcomeType,
+} from 'prisma/generated/schemas/models/Outcome.schema';
 import gameDayService from 'services/GameDay';
 import z from 'zod';
 
-/** Non-negative integer */
-const nonNegativeInteger = z.number().int().min(0);
-
-/** The fields I want to impose stricter checking on */
-const outcomeFields = {
-    responseInterval: nonNegativeInteger.optional().nullable(),
+/** Field definitions with extra validation */
+const extendedFields = {
+    playerId: z.number().int().min(1),
+    gameDayId: z.number().int().min(1),
+    responseInterval: z.number().int().min(0).optional().nullable(),
     points: z.union([z.literal(0), z.literal(1), z.literal(3)]).optional().nullable(),
 };
 
 /** Schemas for enforcing strict input */
-export const OutcomeCreateInputObjectStrictSchema = OutcomeCreateInputObjectZodSchema.extend({
-    ...outcomeFields,
-});
-export const OutcomeUpdateInputObjectStrictSchema = OutcomeUpdateInputObjectZodSchema.extend({
-    ...outcomeFields,
-});
+export const OutcomeUncheckedCreateInputObjectStrictSchema =
+    OutcomeUncheckedCreateInputObjectZodSchema.extend({
+        ...extendedFields
+    });
+export const OutcomeUncheckedUpdateInputObjectStrictSchema =
+    OutcomeUncheckedUpdateInputObjectZodSchema.extend({
+        ...extendedFields
+    });
 
 const log = debug('footy:api');
 
@@ -42,7 +46,12 @@ export class OutcomeService {
      */
     async get(gameDayId: number, playerId: number): Promise<OutcomeType | null> {
         try {
-            const where = OutcomeWhereUniqueInputObjectSchema.parse({ gameDayId, playerId });
+            const where = OutcomeWhereUniqueInputObjectSchema.parse({
+                gameDayId_playerId: {
+                    gameDayId: gameDayId,
+                    playerId: playerId
+                },
+            });
 
             return prisma.outcome.findUnique({ where });
         } catch (error) {
@@ -443,7 +452,7 @@ export class OutcomeService {
      */
     async create(rawData: unknown): Promise<OutcomeType | null> {
         try {
-            const data = OutcomeCreateInputObjectStrictSchema.parse(rawData);
+            const data = OutcomeUncheckedCreateInputObjectStrictSchema.parse(rawData);
 
             return await prisma.outcome.create({ data });
         } catch (error) {
@@ -460,9 +469,15 @@ export class OutcomeService {
      */
     async upsert(rawData: unknown): Promise<OutcomeType | null> {
         try {
-            const where = OutcomeWhereUniqueInputObjectSchema.parse(rawData);
-            const update = OutcomeUpdateInputObjectStrictSchema.parse(rawData);
-            const create = OutcomeCreateInputObjectStrictSchema.parse(rawData);
+            const parsed = OutcomeSchema.parse(rawData);
+            const where = OutcomeWhereUniqueInputObjectSchema.parse({
+                gameDayId_playerId: {
+                    gameDayId: parsed.gameDayId,
+                    playerId: parsed.playerId,
+                },
+            });
+            const update = OutcomeUncheckedUpdateInputObjectStrictSchema.parse(rawData);
+            const create = OutcomeUncheckedCreateInputObjectStrictSchema.parse(rawData);
 
             return await prisma.outcome.upsert({ where, update, create });
         } catch (error) {
@@ -480,7 +495,12 @@ export class OutcomeService {
      */
     async delete(gameDayId: number, playerId: number): Promise<void> {
         try {
-            const where = OutcomeWhereUniqueInputObjectSchema.parse({ gameDayId, playerId });
+            const where = OutcomeWhereUniqueInputObjectSchema.parse({
+                gameDayId_playerId: {
+                    gameDayId: gameDayId,
+                    playerId: playerId
+                },
+            });
 
             await prisma.outcome.delete({ where });
         } catch (error) {

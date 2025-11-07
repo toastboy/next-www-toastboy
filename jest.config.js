@@ -37,7 +37,7 @@ module.exports = {
                 '^.+\\.tsx?$': ['ts-jest', { tsconfig: 'tsconfig.jest.json' }],
             },
             transformIgnorePatterns: [
-                "node_modules/(?!(nanostores|better-auth|uncrypto|jose)/)",
+                "node_modules/(?!(nanostores|better-auth|uncrypto|jose|@noble)/)",
             ],
             watchPathIgnorePatterns: [
                 "<rootDir>/.git/",
@@ -84,7 +84,7 @@ module.exports = {
                 '^.+\\.tsx?$': ['ts-jest', { tsconfig: 'tsconfig.jest.json' }],
             },
             transformIgnorePatterns: [
-                "node_modules/(?!(nanostores|better-auth|uncrypto|jose)/)",
+                "node_modules/(?!(nanostores|better-auth|uncrypto|jose|@noble)/)",
             ],
             watchPathIgnorePatterns: [
                 "<rootDir>/.git/",
@@ -129,7 +129,7 @@ module.exports = {
                 '^.+\\.tsx?$': ['ts-jest', { tsconfig: 'tsconfig.jest.json' }],
             },
             transformIgnorePatterns: [
-                "node_modules/(?!(nanostores|better-auth|uncrypto|jose)/)",
+                "node_modules/(?!(nanostores|better-auth|uncrypto|jose|@noble)/)",
             ],
             watchPathIgnorePatterns: [
                 "<rootDir>/.git/",

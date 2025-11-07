@@ -9,7 +9,7 @@ import SendEmailForm from 'components/SendEmailForm/SendEmailForm';
 import { useCurrentGame, usePlayers } from 'lib/swr';
 import { PlayerData } from 'lib/types';
 import { PlayerType } from 'prisma/generated/schemas/models/Player.schema';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 type PageProps = object;
 
@@ -23,12 +23,6 @@ const Page: React.FC<PageProps> = () => {
     const [replyRange, setReplyRange] = useState<[number, number]>([0, 0]);
     const [selectedPlayers, setSelectedPlayers] = useState<PlayerType[]>([]);
     const [modalOpened, setModalOpened] = useState(false);
-
-    useEffect(() => {
-        if (currentGame) {
-            setReplyRange([0, currentGame.id]);
-        }
-    }, [currentGame]);
 
     const handleSort = (key: keyof PlayerData) => {
         if (sortBy === key) {
@@ -48,6 +42,11 @@ const Page: React.FC<PageProps> = () => {
     };
 
     if (!players || !currentGame) return null;
+
+    // Initialize reply range once when currentGame becomes available
+    if (currentGame && replyRange[1] === 0) {
+        setReplyRange([0, currentGame.id]);
+    }
 
     const filteredPlayers = players?.filter((player) => {
         const searchTerm = filter.toLowerCase();

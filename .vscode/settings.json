@@ -1,23 +1,27 @@
 {
-    "testing.openTesting": "neverOpen",
-    "cssVariables.lookupFiles": [
-        "**/*.css",
-        "**/*.scss",
-        "**/*.sass",
-        "**/*.less",
-        "node_modules/@mantine/core/styles.css"
-    ],
     "testing.automaticallyOpenTestResults": "neverOpen",
     "yaml.schemas": {
         "file:///Users/toastboy/.vscode/extensions/atlassian.atlascode-3.0.10/resources/schemas/pipelines-schema.json": "bitbucket-pipelines.yml",
         "https://json.schemastore.org/github-action.json": "file:///Users/toastboy/next-www-toastboy/.github/workflows/terraform-plan.yml"
     },
-    "files.associations": {
-        "*.yaml": "home-assistant"
-    },
     "jest.outputConfig": {
         "revealOn": "run",
         "revealWithFocus": "none",
         "clearOnRun": "none"
+    },
+    "files.exclude": {
+        "**/.DS_Store": true,
+        "**/.env*": true,
+        "**/.git": true
+    },
+    "search.exclude": {
+        "**/.git": true,
+        "**/.next": true,
+        "**/build": true,
+        "**/coverage": true,
+        "**/dist": true,
+        "**/node_modules": true,
+        "**/playwright-report": true,
+        "**/test-results": true
     }
 }

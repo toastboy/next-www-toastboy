@@ -30,7 +30,7 @@ module.exports = {
             testPathIgnorePatterns: ['/node_modules/', '/e2e/'],
             transform: {
                 '^.+\\.(t|j)sx?$': ['@swc/jest'],
-                '^.+\\.css$': 'jest-css-modules-transform'
+                '^.+\\.css$': 'jest-css-modules-transform',
             },
             transformIgnorePatterns: [
                 "node_modules/(?!(nanostores|better-auth|uncrypto|jose|@noble)/)",
@@ -74,7 +74,7 @@ module.exports = {
             testPathIgnorePatterns: ['/node_modules/', '/e2e/'],
             transform: {
                 '^.+\\.(t|j)sx?$': ['@swc/jest'],
-                '^.+\\.css$': 'jest-css-modules-transform'
+                '^.+\\.css$': 'jest-css-modules-transform',
             },
             transformIgnorePatterns: [
                 "node_modules/(?!(nanostores|better-auth|uncrypto|jose|@noble)/)",
@@ -116,7 +116,7 @@ module.exports = {
             testPathIgnorePatterns: ['/node_modules/', '/e2e/'],
             transform: {
                 '^.+\\.(t|j)sx?$': ['@swc/jest'],
-                '^.+\\.css$': 'jest-css-modules-transform'
+                '^.+\\.css$': 'jest-css-modules-transform',
             },
             transformIgnorePatterns: [
                 "node_modules/(?!(nanostores|better-auth|uncrypto|jose|@noble)/)",

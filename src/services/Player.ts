@@ -5,7 +5,7 @@ import prisma from 'lib/prisma';
 import {
     PlayerUncheckedCreateInputObjectZodSchema,
     PlayerUncheckedUpdateInputObjectZodSchema,
-    PlayerWhereUniqueInputObjectSchema
+    PlayerWhereUniqueInputObjectSchema,
 } from 'prisma/generated/schemas';
 import {
     PlayerSchema,
@@ -21,11 +21,11 @@ const extendedFields = {
 /** Schemas for enforcing strict input */
 export const PlayerUncheckedCreateInputObjectStrictSchema =
     PlayerUncheckedCreateInputObjectZodSchema.extend({
-        ...extendedFields
+        ...extendedFields,
     });
 export const PlayerUncheckedUpdateInputObjectStrictSchema =
     PlayerUncheckedUpdateInputObjectZodSchema.extend({
-        ...extendedFields
+        ...extendedFields,
     });
 
 const log = debug('footy:api');

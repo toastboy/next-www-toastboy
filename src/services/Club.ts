@@ -5,7 +5,7 @@ import prisma from 'lib/prisma';
 import {
     ClubUncheckedCreateInputObjectZodSchema,
     ClubUncheckedUpdateInputObjectZodSchema,
-    ClubWhereUniqueInputObjectSchema
+    ClubWhereUniqueInputObjectSchema,
 } from 'prisma/generated/schemas';
 import {
     ClubSchema,
@@ -21,11 +21,11 @@ const extendedFields = {
 /** Schemas for enforcing strict input */
 export const ClubUncheckedCreateInputObjectStrictSchema =
     ClubUncheckedCreateInputObjectZodSchema.extend({
-        ...extendedFields
+        ...extendedFields,
     });
 export const ClubUncheckedUpdateInputObjectStrictSchema =
     ClubUncheckedUpdateInputObjectZodSchema.extend({
-        ...extendedFields
+        ...extendedFields,
     });
 
 const log = debug('footy:api');
@@ -89,7 +89,7 @@ export class ClubService {
         try {
             const parsed = ClubSchema.pick({ id: true }).parse(rawData);
             const where = ClubWhereUniqueInputObjectSchema.parse({
-                id: parsed.id
+                id: parsed.id,
             });
 
             const update = ClubUncheckedUpdateInputObjectStrictSchema.parse(rawData);

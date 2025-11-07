@@ -7,7 +7,7 @@ import {
     OutcomeUncheckedCreateInputObjectZodSchema,
     OutcomeUncheckedUpdateInputObjectZodSchema,
     OutcomeWhereUniqueInputObjectSchema,
-    PlayerResponseSchema
+    PlayerResponseSchema,
 } from 'prisma/generated/schemas';
 import {
     OutcomeSchema,
@@ -27,11 +27,11 @@ const extendedFields = {
 /** Schemas for enforcing strict input */
 export const OutcomeUncheckedCreateInputObjectStrictSchema =
     OutcomeUncheckedCreateInputObjectZodSchema.extend({
-        ...extendedFields
+        ...extendedFields,
     });
 export const OutcomeUncheckedUpdateInputObjectStrictSchema =
     OutcomeUncheckedUpdateInputObjectZodSchema.extend({
-        ...extendedFields
+        ...extendedFields,
     });
 
 const log = debug('footy:api');
@@ -49,7 +49,7 @@ export class OutcomeService {
             const where = OutcomeWhereUniqueInputObjectSchema.parse({
                 gameDayId_playerId: {
                     gameDayId: gameDayId,
-                    playerId: playerId
+                    playerId: playerId,
                 },
             });
 
@@ -501,7 +501,7 @@ export class OutcomeService {
             const where = OutcomeWhereUniqueInputObjectSchema.parse({
                 gameDayId_playerId: {
                     gameDayId: gameDayId,
-                    playerId: playerId
+                    playerId: playerId,
                 },
             });
 

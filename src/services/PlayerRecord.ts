@@ -8,7 +8,7 @@ import {
     PlayerRecordUncheckedCreateInputObjectZodSchema,
     PlayerRecordUncheckedUpdateInputObjectZodSchema,
     PlayerRecordWhereUniqueInputObjectSchema,
-    TableName
+    TableName,
 } from 'prisma/generated/schemas';
 import { GameDayType } from 'prisma/generated/schemas/models/GameDay.schema';
 import { OutcomeType } from 'prisma/generated/schemas/models/Outcome.schema';
@@ -44,11 +44,11 @@ const extendedFields = {
 /** Schemas for enforcing strict input */
 export const PlayerRecordUncheckedCreateInputObjectStrictSchema =
     PlayerRecordUncheckedCreateInputObjectZodSchema.extend({
-        ...extendedFields
+        ...extendedFields,
     });
 export const PlayerRecordUncheckedUpdateInputObjectStrictSchema =
     PlayerRecordUncheckedUpdateInputObjectZodSchema.extend({
-        ...extendedFields
+        ...extendedFields,
     });
 
 const log = debug('footy:api');
@@ -373,7 +373,7 @@ export class PlayerRecordService {
     async upsert(rawData: unknown): Promise<PlayerRecordType | null> {
         try {
             const parsed = PlayerRecordSchema.pick({
-                playerId: true, year: true, gameDayId: true
+                playerId: true, year: true, gameDayId: true,
             }).parse(rawData);
             const where = PlayerRecordWhereUniqueInputObjectSchema.parse({
                 playerId_year_gameDayId: {

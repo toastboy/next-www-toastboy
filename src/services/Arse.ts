@@ -6,7 +6,7 @@ import {
     ArseUncheckedCreateInputObjectZodSchema,
     ArseUncheckedUpdateInputObjectZodSchema,
     ArseWhereInputObjectSchema,
-    ArseWhereUniqueInputObjectSchema
+    ArseWhereUniqueInputObjectSchema,
 } from "prisma/generated/schemas";
 import {
     ArseSchema,
@@ -30,11 +30,11 @@ const extendedFields = {
 /** Schemas for enforcing strict input */
 export const ArseUncheckedCreateInputObjectStrictSchema =
     ArseUncheckedCreateInputObjectZodSchema.extend({
-        ...extendedFields
+        ...extendedFields,
     });
 export const ArseUncheckedUpdateInputObjectStrictSchema =
     ArseUncheckedUpdateInputObjectZodSchema.extend({
-        ...extendedFields
+        ...extendedFields,
     });
 
 const log = debug('footy:api');
@@ -50,7 +50,7 @@ export class ArseService {
     async get(playerId: number, raterId: number): Promise<ArseType | null> {
         try {
             const where = ArseWhereUniqueInputObjectSchema.parse({
-                playerId_raterId: { playerId, raterId }
+                playerId_raterId: { playerId, raterId },
             });
 
             return prisma.arse.findUnique({ where });
@@ -150,7 +150,7 @@ export class ArseService {
                 raterId: true,
             }).parse(rawData);
             const where = ArseWhereUniqueInputObjectSchema.parse({
-                playerId_raterId: { playerId: parsed.playerId, raterId: parsed.raterId }
+                playerId_raterId: { playerId: parsed.playerId, raterId: parsed.raterId },
             });
 
             const update = ArseUncheckedUpdateInputObjectStrictSchema.parse(rawData);
@@ -173,7 +173,7 @@ export class ArseService {
     async delete(playerId: number, raterId: number): Promise<void> {
         try {
             const where = ArseWhereUniqueInputObjectSchema.parse({
-                playerId_raterId: { playerId, raterId }
+                playerId_raterId: { playerId, raterId },
             });
 
             await prisma.arse.delete({ where });

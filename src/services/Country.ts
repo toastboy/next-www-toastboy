@@ -5,7 +5,7 @@ import prisma from 'lib/prisma';
 import {
     CountryUncheckedCreateInputObjectZodSchema,
     CountryUncheckedUpdateInputObjectZodSchema,
-    CountryWhereUniqueInputObjectSchema
+    CountryWhereUniqueInputObjectSchema,
 } from 'prisma/generated/schemas';
 import {
     CountrySchema,
@@ -21,11 +21,11 @@ const extendedFields = {
 /** Schemas for enforcing strict input */
 export const CountryUncheckedCreateInputObjectStrictSchema =
     CountryUncheckedCreateInputObjectZodSchema.extend({
-        ...extendedFields
+        ...extendedFields,
     });
 export const CountryUncheckedUpdateInputObjectStrictSchema =
     CountryUncheckedUpdateInputObjectZodSchema.extend({
-        ...extendedFields
+        ...extendedFields,
     });
 
 const log = debug('footy:api');

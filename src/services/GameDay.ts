@@ -7,7 +7,7 @@ import {
     GameDayUncheckedUpdateInputObjectZodSchema,
     GameDayWhereInputObjectSchema,
     GameDayWhereUniqueInputObjectSchema,
-    TeamName
+    TeamName,
 } from 'prisma/generated/schemas';
 import {
     GameDaySchema,
@@ -24,11 +24,11 @@ const extendedFields = {
 /** Schemas for enforcing strict input */
 export const GameDayUncheckedCreateInputObjectStrictSchema =
     GameDayUncheckedCreateInputObjectZodSchema.extend({
-        ...extendedFields
+        ...extendedFields,
     });
 export const GameDayUncheckedUpdateInputObjectStrictSchema =
     GameDayUncheckedUpdateInputObjectZodSchema.extend({
-        ...extendedFields
+        ...extendedFields,
     });
 
 const log = debug('footy:api');

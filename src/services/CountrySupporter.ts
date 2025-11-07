@@ -6,7 +6,7 @@ import {
     CountrySupporterUncheckedCreateInputObjectZodSchema,
     CountrySupporterUncheckedUpdateInputObjectZodSchema,
     CountrySupporterWhereInputObjectSchema,
-    CountrySupporterWhereUniqueInputObjectSchema
+    CountrySupporterWhereUniqueInputObjectSchema,
 } from 'prisma/generated/schemas';
 import {
     CountrySupporterSchema,
@@ -23,11 +23,11 @@ const extendFields = {
 /** Schemas for enforcing strict input */
 export const CountrySupporterUncheckedCreateInputObjectStrictSchema =
     CountrySupporterUncheckedCreateInputObjectZodSchema.extend({
-        ...extendFields
+        ...extendFields,
     });
 export const CountrySupporterUncheckedUpdateInputObjectStrictSchema =
     CountrySupporterUncheckedUpdateInputObjectZodSchema.extend({
-        ...extendFields
+        ...extendFields,
     });
 
 const log = debug('footy:api');
@@ -43,7 +43,7 @@ export class CountrySupporterService {
     async get(playerId: number, countryISOCode: string): Promise<CountrySupporterType | null> {
         try {
             const where = CountrySupporterWhereUniqueInputObjectSchema.parse({
-                playerId_countryISOCode: { playerId, countryISOCode }
+                playerId_countryISOCode: { playerId, countryISOCode },
             });
 
             return prisma.countrySupporter.findUnique({ where });
@@ -156,7 +156,7 @@ export class CountrySupporterService {
     async delete(playerId: number, countryISOCode: string): Promise<void> {
         try {
             const where = CountrySupporterWhereUniqueInputObjectSchema.parse({
-                playerId_countryISOCode: { playerId, countryISOCode }
+                playerId_countryISOCode: { playerId, countryISOCode },
             });
 
             await prisma.countrySupporter.delete({ where });

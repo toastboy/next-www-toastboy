@@ -5,11 +5,11 @@ import prisma from 'lib/prisma';
 import {
     InvitationUncheckedCreateInputObjectZodSchema,
     InvitationUncheckedUpdateInputObjectZodSchema,
-    InvitationWhereUniqueInputObjectSchema
+    InvitationWhereUniqueInputObjectSchema,
 } from 'prisma/generated/schemas';
 import {
     InvitationSchema,
-    InvitationType
+    InvitationType,
 } from 'prisma/generated/schemas/models/Invitation.schema';
 import z from 'zod';
 
@@ -23,11 +23,11 @@ const extendedFields = {
 /** Schemas for enforcing strict input */
 export const InvitationUncheckedCreateInputObjectStrictSchema =
     InvitationUncheckedCreateInputObjectZodSchema.extend({
-        ...extendedFields
+        ...extendedFields,
     });
 export const InvitationUncheckedUpdateInputObjectStrictSchema =
     InvitationUncheckedUpdateInputObjectZodSchema.extend({
-        ...extendedFields
+        ...extendedFields,
     });
 
 const log = debug('footy:api');

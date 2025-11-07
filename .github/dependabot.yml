@@ -16,6 +16,12 @@ updates:
       mantine:
         patterns:
           - "@mantine/*"
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
       sentry:
         patterns:
           - "@sentry/*"

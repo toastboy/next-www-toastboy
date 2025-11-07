@@ -1,6 +1,5 @@
 module.exports = {
     automock: false,
-    maxWorkers: '50%',
     collectCoverage: true,
     coverageDirectory: 'coverage',
     coveragePathIgnorePatterns: ['/node_modules/'],
@@ -25,16 +24,13 @@ module.exports = {
                 '^tests/(.*)$': '<rootDir>/tests/$1',
             },
             modulePaths: ['<rootDir>/src/'],
-            preset: 'ts-jest',
             setupFilesAfterEnv: ['<rootDir>/jest.setup.backend.ts'],
             testEnvironment: 'node',
             testMatch: ['<rootDir>/**/api/**/*.test.ts'],
             testPathIgnorePatterns: ['/node_modules/', '/e2e/'],
             transform: {
-                '^.+\\.css$': 'jest-css-modules-transform',
-                '^.+\\.jsx?$': ['babel-jest', { configFile: './babel-jest.config.js' }],
-                '^.+\\.mjs$': ['babel-jest', { configFile: './babel-jest.config.js' }],
-                '^.+\\.tsx?$': ['ts-jest', { tsconfig: 'tsconfig.jest.json' }],
+                '^.+\\.(t|j)sx?$': ['@swc/jest'],
+                '^.+\\.css$': 'jest-css-modules-transform'
             },
             transformIgnorePatterns: [
                 "node_modules/(?!(nanostores|better-auth|uncrypto|jose|@noble)/)",
@@ -72,16 +68,13 @@ module.exports = {
                 '^tests/(.*)$': '<rootDir>/tests/$1',
             },
             modulePaths: ['<rootDir>/src/'],
-            preset: 'ts-jest',
             setupFilesAfterEnv: ['<rootDir>/jest.setup.backend.ts'],
             testEnvironment: 'node',
             testMatch: ['<rootDir>/**/services/**/*.test.ts'],
             testPathIgnorePatterns: ['/node_modules/', '/e2e/'],
             transform: {
-                '^.+\\.css$': 'jest-css-modules-transform',
-                '^.+\\.jsx?$': ['babel-jest', { configFile: './babel-jest.config.js' }],
-                '^.+\\.mjs$': ['babel-jest', { configFile: './babel-jest.config.js' }],
-                '^.+\\.tsx?$': ['ts-jest', { tsconfig: 'tsconfig.jest.json' }],
+                '^.+\\.(t|j)sx?$': ['@swc/jest'],
+                '^.+\\.css$': 'jest-css-modules-transform'
             },
             transformIgnorePatterns: [
                 "node_modules/(?!(nanostores|better-auth|uncrypto|jose|@noble)/)",
@@ -117,16 +110,13 @@ module.exports = {
                 '^tests/(.*)$': '<rootDir>/tests/$1',
             },
             modulePaths: ['<rootDir>/src/'],
-            preset: 'ts-jest',
             setupFilesAfterEnv: ['<rootDir>/jest.setup.frontend.ts'],
             testEnvironment: 'jsdom',
             testMatch: ['<rootDir>/tests/components/**/*.test.tsx'],
             testPathIgnorePatterns: ['/node_modules/', '/e2e/'],
             transform: {
-                '^.+\\.css$': 'jest-css-modules-transform',
-                '^.+\\.jsx?$': ['babel-jest', { configFile: './babel-jest.config.js' }],
-                '^.+\\.mjs$': ['babel-jest', { configFile: './babel-jest.config.js' }],
-                '^.+\\.tsx?$': ['ts-jest', { tsconfig: 'tsconfig.jest.json' }],
+                '^.+\\.(t|j)sx?$': ['@swc/jest'],
+                '^.+\\.css$': 'jest-css-modules-transform'
             },
             transformIgnorePatterns: [
                 "node_modules/(?!(nanostores|better-auth|uncrypto|jose|@noble)/)",

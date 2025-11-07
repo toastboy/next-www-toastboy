@@ -4,6 +4,7 @@
   "scripts": {
     "clean": "rm -rf .next",
     "deepclean": "rm -rf .next node_modules package-lock.json && npm cache clean --force",
+    "typecheck": "tsc --noEmit",
     "test": "jest",
     "test:watch": "jest --watch --passWithNoTests",
     "dev": "npx prisma generate && docker compose up -d && next dev",
@@ -50,10 +51,6 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
-    "@babel/core": "^7.28.4",
-    "@babel/preset-env": "^7.28.3",
-    "@babel/preset-react": "^7.27.1",
-    "@babel/preset-typescript": "^7.27.1",
     "@eslint/config-array": "^0.21.0",
     "@eslint/eslintrc": "^3.3.1",
     "@eslint/js": "^9.38.0",
@@ -82,7 +79,6 @@
     "autoprefixer": "^10.4.21",
     "axios": "^1.12.2",
     "axios-mock-adapter": "^2.1.0",
-    "babel-jest": "^30.2.0",
     "cheerio": "^1.1.2",
     "debug": "^4.4.3",
     "dotenv": "^17.2.2",
@@ -98,7 +94,6 @@
     "jest-mock-axios": "^4.9.0",
     "react-test-renderer": "^19.1.1",
     "supertest": "^7.1.4",
-    "ts-jest": "^29.4.5",
     "ts-node": "^10.9.2",
     "typescript": "^5.9.2",
     "whatwg-fetch": "^3.6.20"

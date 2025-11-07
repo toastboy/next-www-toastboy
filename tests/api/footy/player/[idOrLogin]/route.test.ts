@@ -26,7 +26,9 @@ describe('API tests using HTTP', () => {
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
         expect(response.body).toEqual({
-            ...toWire(mockPlayer), born: null, comment: null,
+            ...toWire(mockPlayer),
+            born: undefined,
+            comment: undefined,
         });
     });
 
@@ -40,10 +42,10 @@ describe('API tests using HTTP', () => {
         expect(response.headers['content-type']).toBe('application/json');
         expect(response.body).toEqual({
             ...toWire(mockPlayer),
-            login: null,
-            email: null,
-            born: null,
-            comment: null,
+            login: undefined,
+            email: undefined,
+            born: undefined,
+            comment: undefined,
         });
     });
 
@@ -52,7 +54,9 @@ describe('API tests using HTTP', () => {
         (playerService.getByIdOrLogin as jest.Mock).mockResolvedValue({
             ...mockPlayer,
             anonymous: true,
-            email: null, born: null, comment: null,
+            email: undefined,
+            born: undefined,
+            comment: undefined,
         });
 
         const response = await request(mockApp).get(testURI);
@@ -62,11 +66,11 @@ describe('API tests using HTTP', () => {
         expect(response.headers['content-type']).toBe('application/json');
         expect(response.body).toEqual({
             ...toWire(mockPlayer),
-            login: null,
+            login: undefined,
             anonymous: true,
-            email: null,
-            born: null,
-            comment: null,
+            email: undefined,
+            born: undefined,
+            comment: undefined,
         });
     });
 

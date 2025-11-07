@@ -41,7 +41,7 @@ describe('API tests using HTTP', () => {
         expect(response.headers['content-type']).toBe('application/json');
         expect(response.body).toEqual({
             ...mockData,
-            comment: null,
+            comment: undefined,
         });
     });
 

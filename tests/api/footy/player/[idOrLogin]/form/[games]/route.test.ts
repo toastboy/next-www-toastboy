@@ -70,7 +70,7 @@ describe('API tests using HTTP', () => {
         expect(response.body).toEqual(
             mockData.map((record) => ({
                 ...record,
-                comment: null,
+                comment: undefined,
             })),
         );
     });
@@ -87,7 +87,7 @@ describe('API tests using HTTP', () => {
         expect(response.body).toEqual(
             mockData.map((record) => ({
                 ...record,
-                comment: null,
+                comment: undefined,
             })),
         );
     });

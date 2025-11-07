@@ -93,7 +93,7 @@ describe('API tests using HTTP', () => {
         expect(response.body).toEqual(
             mockData.map((item) => ({
                 ...item,
-                comment: null,
+                comment: undefined,
             })),
         );
     });

@@ -6,7 +6,7 @@ import PlayerMugshot from 'components/PlayerMugshot/PlayerMugshot';
 export interface Props {
     playerId: number;
     gameDayId: number;
-    goalie: boolean | null;
+    goalie: boolean | null | undefined;
 }
 
 const TeamPlayer: React.FC<Props> = ({ playerId, gameDayId, goalie }) => (

@@ -8,12 +8,12 @@ import PlayerHistory from 'components/PlayerHistory/PlayerHistory';
 import PlayerLastPlayed from 'components/PlayerLastPlayed/PlayerLastPlayed';
 import PlayerMugshot from 'components/PlayerMugshot/PlayerMugshot';
 import PlayerTrophies from 'components/PlayerTrophies/PlayerTrophies';
-import { Player } from 'prisma/generated/zod';
+import { PlayerType } from 'prisma/generated/schemas/models/Player.schema';
 import { Suspense } from 'react';
 import classes from './PlayerProfile.module.css';
 
 export interface Props {
-    player: Player;
+    player: PlayerType;
     year: number;
 }
 

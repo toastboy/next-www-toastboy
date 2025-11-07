@@ -1,13 +1,13 @@
 import YearSelector from 'components/YearSelector/YearSelector';
 import YearTable, { QualifiedTableName } from 'components/YearTable/YearTable';
 import { notFound } from 'next/navigation';
-import \{ TableNameType \ } from 'prisma/generated/schemas';
+import { TableName } from 'prisma/generated/schemas';
 import playerRecordService from 'services/PlayerRecord';
 
 interface Props {
     params: Promise<{
         year: [string],
-        table: TableNameType,
+        table: TableName,
     }>,
 }
 

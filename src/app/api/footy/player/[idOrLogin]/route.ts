@@ -1,6 +1,6 @@
 import { handleGET, sanitizePlayerData } from 'lib/api';
 import { NextRequest } from 'next/server';
-import { PlayerType } from 'prisma/generated/schemas';
+import { PlayerType } from 'prisma/generated/schemas/models/Player.schema';
 import playerService from 'services/Player';
 
 /**
@@ -13,7 +13,7 @@ import playerService from 'services/Player';
  */
 export const GET = async (request: NextRequest, props: { params: Promise<Record<string, string>> }) => {
     const params = await props.params;
-    return handleGET<PlayerType>(() =>
+    return handleGET<PlayerType, Partial<PlayerType>>(() =>
         playerService.getByIdOrLogin(params.idOrLogin),
         { params },
         { sanitize: sanitizePlayerData },

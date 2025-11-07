@@ -1,10 +1,10 @@
 import { Flex, Text, Title } from '@mantine/core';
 import Team from 'components/Team/Team';
-import { GameDay } from 'prisma/generated/zod';
+import { GameDayType } from 'prisma/generated/schemas/models/GameDay.schema';
 import outcomeService from 'services/Outcome';
 
 interface Props {
-    gameDay: GameDay;
+    gameDay: GameDayType;
 }
 
 const GameDaySummary: React.FC<Props> = async ({ gameDay }) => {

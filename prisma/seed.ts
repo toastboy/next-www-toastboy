@@ -1,7 +1,16 @@
 import { ClientSecretCredential } from '@azure/identity';
 import { BlobServiceClient, ContainerClient } from '@azure/storage-blob';
-import { Arse, Club, ClubSupporter, Country, CountrySupporter, GameChat, GameDay, Outcome, Player, Prisma, PrismaClient } from '../prisma/generated/prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { streamToBuffer } from '../src/lib/utils';
+import { ArseType } from './generated/schemas/models/Arse.schema';
+import { ClubType } from './generated/schemas/models/Club.schema';
+import { ClubSupporterType } from './generated/schemas/models/ClubSupporter.schema';
+import { CountryType } from './generated/schemas/models/Country.schema';
+import { CountrySupporterType } from './generated/schemas/models/CountrySupporter.schema';
+import { GameChatType } from './generated/schemas/models/GameChat.schema';
+import { GameDayType } from './generated/schemas/models/GameDay.schema';
+import { OutcomeType } from './generated/schemas/models/Outcome.schema';
+import { PlayerType } from './generated/schemas/models/Player.schema';
 
 const prisma = new PrismaClient();
 
@@ -90,15 +99,15 @@ async function main() {
     await prisma.player.deleteMany();
 
     // Now we must populate the tables in the reverse of the order above
-    await processJsonData<GameDay>(containerClient, "GameDay.json", prisma.gameDay);
-    await processJsonData<Player>(containerClient, "Player.json", prisma.player);
-    await processJsonData<Outcome>(containerClient, "Outcome.json", prisma.outcome);
-    await processJsonData<GameChat>(containerClient, "GameChat.json", prisma.gameChat);
-    await processJsonData<Country>(containerClient, "Country.json", prisma.country);
-    await processJsonData<CountrySupporter>(containerClient, "CountrySupporter.json", prisma.countrySupporter);
-    await processJsonData<Club>(containerClient, "Club.json", prisma.club);
-    await processJsonData<ClubSupporter>(containerClient, "ClubSupporter.json", prisma.clubSupporter);
-    await processJsonData<Arse>(containerClient, "Arse.json", prisma.arse);
+    await processJsonData<GameDayType>(containerClient, "GameDay.json", prisma.gameDay);
+    await processJsonData<PlayerType>(containerClient, "Player.json", prisma.player);
+    await processJsonData<OutcomeType>(containerClient, "Outcome.json", prisma.outcome);
+    await processJsonData<GameChatType>(containerClient, "GameChat.json", prisma.gameChat);
+    await processJsonData<CountryType>(containerClient, "Country.json", prisma.country);
+    await processJsonData<CountrySupporterType>(containerClient, "CountrySupporter.json", prisma.countrySupporter);
+    await processJsonData<ClubType>(containerClient, "Club.json", prisma.club);
+    await processJsonData<ClubSupporterType>(containerClient, "ClubSupporter.json", prisma.clubSupporter);
+    await processJsonData<ArseType>(containerClient, "Arse.json", prisma.arse);
 
     // Ideally I'd calculate all the PlayerRecords from the data in the database
     // at this point but I've struggled to get ts-node to work with the main

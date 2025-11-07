@@ -1,8 +1,9 @@
-import { PlayerRecord, TableNameSchema, TableNameType } from 'prisma/generated/zod';
+import { TableName, TableNameSchema } from "prisma/generated/schemas";
+import { PlayerRecordType } from "prisma/generated/schemas/models/PlayerRecord.schema";
 
 export interface Props {
-    table: TableNameType;
-    playerRecord: PlayerRecord;
+    table: TableName;
+    playerRecord: PlayerRecordType;
 }
 
 const TableScore = ({ table, playerRecord }: Props) => {
@@ -12,7 +13,7 @@ const TableScore = ({ table, playerRecord }: Props) => {
         case TableNameSchema.enum.speedy:
             {
                 const date = new Date(0);
-                if (playerRecord.speedy !== null) {
+                if (playerRecord.speedy) {
                     date.setSeconds(playerRecord.speedy);
                 }
                 return date.toISOString().substring(11, 19);

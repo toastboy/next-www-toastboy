@@ -1,9 +1,9 @@
 import { Flex, Paper } from '@mantine/core';
 import TeamPlayer from 'components/TeamPlayer/TeamPlayer';
-import { Outcome } from 'prisma/generated/zod';
+import { OutcomeType } from 'prisma/generated/schemas/models/Outcome.schema';
 
 export interface Props {
-    team: Outcome[];
+    team: OutcomeType[];
 }
 
 const Team: React.FC<Props> = ({ team }) => {

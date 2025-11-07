@@ -1,4 +1,4 @@
-import { GameDayType } from "prisma/generated/schemas";
+import { GameDayType } from "prisma/generated/schemas/models/GameDay.schema";
 
 export const defaultGameDay: GameDayType = {
     id: 1,

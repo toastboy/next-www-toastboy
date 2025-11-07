@@ -2,10 +2,10 @@ import { Flex } from '@mantine/core';
 import TableQualified from 'components/TableQualified/TableQualified';
 import config from 'lib/config';
 import { getYearName } from 'lib/utils';
-import { TableNameSchema, TableNameType } from 'prisma/generated/zod';
+import { TableName, TableNameSchema } from 'prisma/generated/schemas';
 
 interface Props {
-    table: TableNameType;
+    table: TableName;
     year: number;
 }
 
@@ -22,11 +22,11 @@ const YearTable: React.FC<Props> = ({ table, year }) => {
 
 /**
  * Generates a qualified table name based on the provided table type and year.
- * @param {TableNameType} table - The type of table.
+ * @param {TableName} table - The type of table.
  * @param {number} year - The year for which the table is generated.
  * @returns {string} - The qualified table name.
  */
-export function QualifiedTableName(table: TableNameType, year: number): string {
+export function QualifiedTableName(table: TableName, year: number): string {
     let tableName = "";
     switch (table) {
         case TableNameSchema.enum.speedy:
@@ -49,7 +49,7 @@ export function QualifiedTableName(table: TableNameType, year: number): string {
  * @param {number} year - The year for which the table is generated.
  * @returns {string} - The qualified table name or null.
  */
-export function UnqualifiedTableName(table: TableNameType): string | undefined {
+export function UnqualifiedTableName(table: TableName): string | undefined {
     switch (table) {
         case TableNameSchema.enum.averages:
             return `Played Fewer than ${config.minGamesForAveragesTable} Games`;

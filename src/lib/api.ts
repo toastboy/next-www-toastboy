@@ -2,33 +2,33 @@ import { getUserRole } from "lib/authServer";
 import { NextResponse } from "next/server";
 import {
     OutcomeSchema,
-    OutcomeType,
     PlayerSchema,
-    PlayerType,
 } from 'prisma/generated/schemas';
+import { OutcomeType } from "prisma/generated/schemas/models/Outcome.schema";
+import { PlayerType } from "prisma/generated/schemas/models/Player.schema";
 import { z } from "zod";
 
 export const PublicOutcomeSchema = OutcomeSchema.transform((outcome) => ({
     ...outcome,
-    comment: null,
+    comment: undefined,
 }));
 
 export type PublicOutcome = z.infer<typeof PublicOutcomeSchema>;
 
 export const PublicPlayerSchema = PlayerSchema.transform((player) => ({
     ...player,
-    login: null,
-    email: null,
-    born: null,
-    comment: null,
+    login: undefined,
+    email: undefined,
+    born: undefined,
+    comment: undefined,
 }));
 
 export type PublicPlayer = z.infer<typeof PublicPlayerSchema>;
 
 export const UserPlayerSchema = PlayerSchema.transform((player) => ({
     ...player,
-    born: null,
-    comment: null,
+    born: undefined,
+    comment: undefined,
 }));
 
 export type UserPlayer = z.infer<typeof UserPlayerSchema>;
@@ -44,22 +44,23 @@ export type UserPlayer = z.infer<typeof UserPlayerSchema>;
  * @returns A Promise that resolves to a `NextResponse` object. If the service function returns `null`,
  *          a 404 response is returned. Otherwise, the response is built using the `buildResponse` function.
  */
-export async function handleGET<T>(
+export async function handleGET<T, S = T>(
     serviceFunction: ({ params }: { params: Record<string, string> }) => Promise<T | null>,
     { params }: { params: Record<string, string> },
     hooks?: {
-        sanitize?: (data: T) => Promise<T>;
-        buildResponse?: (data: T) => Promise<NextResponse>;
+        sanitize?: (data: T) => Promise<S>;
+        buildResponse?: (data: S) => Promise<NextResponse>;
     },
 ): Promise<NextResponse> {
-    const sanitize = hooks?.sanitize || (async data => data);
-    const buildResponse = hooks?.buildResponse || buildJsonResponse;
+    // If no sanitize hook provided, pass data through (cast via unknown to satisfy TS when S != T)
+    const sanitize: (data: T) => Promise<S> = hooks?.sanitize || (async (data: T) => data as unknown as S);
+    const buildResponse: (data: S) => Promise<NextResponse> = hooks?.buildResponse || buildJsonResponse;
 
     const data = await serviceFunction({ params });
 
     if (data == null) return new NextResponse('Not Found', { status: 404 });
 
-    const sanitizedData = await sanitize(data);
+    const sanitizedData: S = await sanitize(data);
 
     if (sanitizedData == null) return new NextResponse('Not Found', { status: 404 });
 

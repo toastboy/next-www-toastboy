@@ -8,7 +8,7 @@ import PlayerWDLChart from 'components/PlayerWDLChart/PlayerWDLChart';
 import SendEmailForm from 'components/SendEmailForm/SendEmailForm';
 import { useCurrentGame, usePlayers } from 'lib/swr';
 import { PlayerData } from 'lib/types';
-import { Player } from 'prisma/generated/zod';
+import { PlayerType } from 'prisma/generated/schemas/models/Player.schema';
 import { useEffect, useState } from 'react';
 
 type PageProps = object;
@@ -21,7 +21,7 @@ const Page: React.FC<PageProps> = () => {
     const [filter, setFilter] = useState('');
     const [active, setActive] = useState(true);
     const [replyRange, setReplyRange] = useState<[number, number]>([0, 0]);
-    const [selectedPlayers, setSelectedPlayers] = useState<Player[]>([]);
+    const [selectedPlayers, setSelectedPlayers] = useState<PlayerType[]>([]);
     const [modalOpened, setModalOpened] = useState(false);
 
     useEffect(() => {
@@ -39,7 +39,7 @@ const Page: React.FC<PageProps> = () => {
         }
     };
 
-    const handleSelectPlayer = (player: Player) => {
+    const handleSelectPlayer = (player: PlayerType) => {
         if (selectedPlayers.includes(player)) {
             setSelectedPlayers((prev) => prev.filter((p) => player !== p));
         } else {

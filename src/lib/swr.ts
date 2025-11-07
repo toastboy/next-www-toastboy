@@ -1,17 +1,15 @@
 'use client';
 
-import {
-    ArseType,
-    ClubSupporterType,
-    ClubType,
-    CountrySupporterType,
-    CountryType,
-    GameDayType,
-    OutcomeType,
-    PlayerRecordType,
-    PlayerType,
-    TableName,
-} from 'prisma/generated/schemas';
+import { TableName } from '@prisma/client';
+import { ArseType } from 'prisma/generated/schemas/models/Arse.schema';
+import { ClubType } from 'prisma/generated/schemas/models/Club.schema';
+import { ClubSupporterType } from 'prisma/generated/schemas/models/ClubSupporter.schema';
+import { CountryType } from 'prisma/generated/schemas/models/Country.schema';
+import { CountrySupporterType } from 'prisma/generated/schemas/models/CountrySupporter.schema';
+import { GameDayType } from 'prisma/generated/schemas/models/GameDay.schema';
+import { OutcomeType } from 'prisma/generated/schemas/models/Outcome.schema';
+import { PlayerType } from 'prisma/generated/schemas/models/Player.schema';
+import { PlayerRecordType } from 'prisma/generated/schemas/models/PlayerRecord.schema';
 import useSWR from 'swr';
 import { PlayerData, TurnoutByYear, WDL } from './types';
 

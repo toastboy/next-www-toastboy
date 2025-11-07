@@ -1,11 +1,11 @@
 import { Flex, Stack, Text, Tooltip } from '@mantine/core';
 import { IconBeer, IconClock, IconMedal, IconStar, IconTrophy } from '@tabler/icons-react';
-import { TableNameSchema, TableNameType } from 'prisma/generated/zod';
+import { TableName, TableNameSchema } from 'prisma/generated/schemas';
 import playerRecordService from 'services/PlayerRecord';
 
 interface TableProps {
     playerId: number;
-    table: TableNameType;
+    table: TableName;
     year?: number;
 }
 

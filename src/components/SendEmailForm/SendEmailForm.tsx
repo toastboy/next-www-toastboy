@@ -11,14 +11,14 @@ import Underline from '@tiptap/extension-underline';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { sendEmail } from 'lib/mail';
-import { Player } from 'prisma/generated/zod';
+import { PlayerType } from 'prisma/generated/schemas/models/Player.schema';
 import { useState } from 'react';
 import classes from './SendEmailForm.module.css';
 
 export interface Props {
     opened: boolean;
     onClose: () => void;
-    players: Player[];
+    players: PlayerType[];
 }
 
 const SendEmailForm: React.FC<Props> = ({ opened, onClose, players }) => {

@@ -10,14 +10,13 @@ export interface Props {
 
 const WinnersTable: React.FC<Props> = async ({ table, year }) => {
     const record = await playerRecordService.getWinners(table, year && year > 0 ? year : undefined);
-    let currentYear: number;
 
     const rows = record.map((winner, index) => {
-        const year = winner.year == currentYear ? '' : (currentYear = winner.year);
+        const year = index > 0 && record[index - 1].year === winner.year ? '' : winner.year;
         return (
             <TableTr key={index}>
                 <TableTd>{year}</TableTd>
-                <TableTd><PlayerLink playerId={winner.playerId} year={currentYear} /></TableTd>
+                <TableTd><PlayerLink playerId={winner.playerId} year={winner.year} /></TableTd>
             </TableTr>
         );
     });

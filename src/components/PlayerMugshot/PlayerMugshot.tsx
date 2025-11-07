@@ -1,7 +1,7 @@
 import { Anchor, Image } from '@mantine/core';
 import playerService from 'services/Player';
 
-interface Props {
+export interface Props {
     playerId: number;
 }
 

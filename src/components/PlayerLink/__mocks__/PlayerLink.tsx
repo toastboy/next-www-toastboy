@@ -1,7 +1,7 @@
 import { Props } from '../PlayerLink';
 
-const PlayerLink = ({ player }: Props) => (
-    <div>PlayerLink (player: {player.id})</div>
+const PlayerLink = ({ playerId }: Props) => (
+    <div>PlayerLink (playerId: {playerId})</div>
 );
 PlayerLink.displayName = 'PlayerLink';
 export default PlayerLink;

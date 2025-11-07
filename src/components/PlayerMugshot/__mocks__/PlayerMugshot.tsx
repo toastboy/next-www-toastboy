@@ -1,7 +1,7 @@
-import { Player } from 'src/lib/types';
+import { Props } from '../PlayerMugshot';
 
-const PlayerMugshot = ({ player }: { player: Player }) => (
-    <div>PlayerMugshot (id: {player.id})</div>
+const PlayerMugshot = ({ playerId }: Props) => (
+    <div>PlayerMugshot (id: {playerId})</div>
 );
 PlayerMugshot.displayName = 'PlayerMugshot';
 export default PlayerMugshot;

@@ -1,7 +1,7 @@
 import { Props } from '../GameDayLink';
 
-const GameDayLink = ({ gameDay }: Props) => (
-    <div>GameDayLink (id: {gameDay.id})</div>
+const GameDayLink = ({ gameDayId }: Props) => (
+    <div>GameDayLink (gameDayId: {gameDayId})</div>
 );
 GameDayLink.displayName = 'GameDayLink';
 export default GameDayLink;

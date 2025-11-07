@@ -1,7 +1,7 @@
 import { Props } from '../PlayerArse';
 
-const PlayerArse = ({ player }: Props) => (
-    <div>PlayerArse (player: {player.id})</div>
+const PlayerArse = ({ playerId }: Props) => (
+    <div>PlayerArse (playerId: {playerId})</div>
 );
 PlayerArse.displayName = 'PlayerArse';
 export default PlayerArse;

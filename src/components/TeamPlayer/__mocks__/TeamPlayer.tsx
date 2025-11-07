@@ -1,7 +1,7 @@
-import { Player } from "lib/types";
+import { Props } from '../TeamPlayer';
 
-const TeamPlayer = ({ player, goalie }: { player: Player, goalie: boolean }) => (
-    <div>TeamPlayer (id: {player.id}, goalie: {goalie.toString()})</div>
+const TeamPlayer = ({ playerId, gameDayId, goalie }: Props) => (
+    <div>TeamPlayer (playerId: {playerId}, gameDayId: {gameDayId}, goalie: {goalie ? "true" : "false"})</div>
 );
 TeamPlayer.displayName = 'TeamPlayer';
 export default TeamPlayer;

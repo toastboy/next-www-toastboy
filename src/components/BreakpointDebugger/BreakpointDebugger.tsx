@@ -2,7 +2,7 @@
 
 import { Container, Text, useMantineTheme } from "@mantine/core";
 import { useMediaQuery } from "@mantine/hooks";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo } from "react";
 import classes from './BreakpointDebugger.module.css';
 
 const BreakpointDebugger = () => {
@@ -10,22 +10,24 @@ const BreakpointDebugger = () => {
 
     // Define media queries for each breakpoint
     const isXs = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
-    const isSm = useMediaQuery(`(min-width: ${theme.breakpoints.sm}) and (max-width: ${theme.breakpoints.md})`);
-    const isMd = useMediaQuery(`(min-width: ${theme.breakpoints.md}) and (max-width: ${theme.breakpoints.lg})`);
-    const isLg = useMediaQuery(`(min-width: ${theme.breakpoints.lg}) and (max-width: ${theme.breakpoints.xl})`);
+    const isSm = useMediaQuery(`(min-width: ${theme.breakpoints.sm}) and (max-width: calc(${theme.breakpoints.md} - 1px))`);
+    const isMd = useMediaQuery(`(min-width: ${theme.breakpoints.md}) and (max-width: calc(${theme.breakpoints.lg} - 1px))`);
+    const isLg = useMediaQuery(`(min-width: ${theme.breakpoints.lg}) and (max-width: calc(${theme.breakpoints.xl} - 1px))`);
     const isXl = useMediaQuery(`(min-width: ${theme.breakpoints.xl})`);
 
-    const [currentBreakpoint, setCurrentBreakpoint] = useState("Unknown");
+    const currentBreakpoint = useMemo(() => {
+        if (isXs) return "XS (<sm)";
+        if (isSm) return "SM (sm)";
+        if (isMd) return "MD (md)";
+        if (isLg) return "LG (lg)";
+        if (isXl) return "XL+ (xl)";
+        return "Unknown";
+    }, [isXs, isSm, isMd, isLg, isXl]);
 
     useEffect(() => {
-        if (isXs) setCurrentBreakpoint("XS (<sm)");
-        else if (isSm) setCurrentBreakpoint("SM (sm)");
-        else if (isMd) setCurrentBreakpoint("MD (md)");
-        else if (isLg) setCurrentBreakpoint("LG (lg)");
-        else if (isXl) setCurrentBreakpoint("XL+ (xl)");
-
+        // Pure side-effect (no setState) -> avoids cascading renders
         console.log(`Active Breakpoint: ${currentBreakpoint}`);
-    }, [isXs, isSm, isMd, isLg, isXl, currentBreakpoint]);
+    }, [currentBreakpoint]);
 
     return (
         <Container className={classes.div}        >

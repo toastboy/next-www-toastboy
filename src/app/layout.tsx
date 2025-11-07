@@ -35,6 +35,7 @@ export default function RootLayout({
       <body>
         <MantineProvider>
           <Notifications />
+          {/* <BreakpointDebugger /> */}
           <CustomAppShell>
             {children}
           </CustomAppShell>

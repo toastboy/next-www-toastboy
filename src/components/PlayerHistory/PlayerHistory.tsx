@@ -4,7 +4,7 @@ import PlayerResults from 'components/PlayerResults/PlayerResults';
 import YearSelector from 'components/YearSelector/YearSelector';
 import playerService from 'services/Player';
 
-interface Props {
+export interface Props {
     playerId: number;
     year: number;
 }

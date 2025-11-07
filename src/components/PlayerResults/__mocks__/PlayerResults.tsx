@@ -1,5 +1,7 @@
-const PlayerResults = ({ idOrLogin, games }: { idOrLogin: string, games: number }) => (
-    <div>PlayerResults (idOrLogin: {idOrLogin}, games: {games})</div>
+import { Props } from '../PlayerResults';
+
+const PlayerResults = ({ playerId, year }: Props) => (
+    <div>PlayerResults (playerId: {playerId}, year: {year})</div>
 );
 PlayerResults.displayName = 'PlayerResults';
 export default PlayerResults;

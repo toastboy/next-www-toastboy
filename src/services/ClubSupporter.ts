@@ -126,7 +126,10 @@ export class ClubSupporterService {
      */
     async upsert(rawData: unknown): Promise<ClubSupporterType | null> {
         try {
-            const parsed = ClubSupporterSchema.parse(rawData);
+            const parsed = ClubSupporterSchema.pick({
+                playerId: true,
+                clubId: true,
+            }).parse(rawData);
             const where = ClubSupporterWhereUniqueInputObjectSchema.parse({
                 playerId_clubId: { playerId: parsed.playerId, clubId: parsed.clubId }
             });

@@ -126,7 +126,10 @@ export class CountrySupporterService {
      */
     async upsert(rawData: unknown): Promise<CountrySupporterType | null> {
         try {
-            const parsed = CountrySupporterSchema.parse(rawData);
+            const parsed = CountrySupporterSchema.pick({
+                playerId: true,
+                countryISOCode: true,
+            }).parse(rawData);
             const where = CountrySupporterWhereUniqueInputObjectSchema.parse({
                 playerId_countryISOCode: {
                     playerId: parsed.playerId,

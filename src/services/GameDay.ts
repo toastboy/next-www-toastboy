@@ -279,7 +279,7 @@ export class GameDayService {
      */
     async upsert(rawData: unknown): Promise<GameDayType | null> {
         try {
-            const parsed = GameDaySchema.parse(rawData);
+            const parsed = GameDaySchema.pick({ id: true }).parse(rawData);
             const where = GameDayWhereUniqueInputObjectSchema.parse({ id: parsed.id });
             const update = GameDayUncheckedUpdateInputObjectStrictSchema.parse(rawData);
             const create = GameDayUncheckedCreateInputObjectStrictSchema.parse(rawData);

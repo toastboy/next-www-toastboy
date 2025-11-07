@@ -145,7 +145,10 @@ export class ArseService {
      */
     async upsert(rawData: unknown): Promise<ArseType | null> {
         try {
-            const parsed = ArseSchema.parse(rawData);
+            const parsed = ArseSchema.pick({
+                playerId: true,
+                raterId: true,
+            }).parse(rawData);
             const where = ArseWhereUniqueInputObjectSchema.parse({
                 playerId_raterId: { playerId: parsed.playerId, raterId: parsed.raterId }
             });

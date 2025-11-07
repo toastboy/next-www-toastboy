@@ -372,7 +372,9 @@ export class PlayerRecordService {
      */
     async upsert(rawData: unknown): Promise<PlayerRecordType | null> {
         try {
-            const parsed = PlayerRecordSchema.parse(rawData);
+            const parsed = PlayerRecordSchema.pick({
+                playerId: true, year: true, gameDayId: true
+            }).parse(rawData);
             const where = PlayerRecordWhereUniqueInputObjectSchema.parse({
                 playerId_year_gameDayId: {
                     playerId: parsed.playerId,

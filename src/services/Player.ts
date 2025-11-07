@@ -333,7 +333,7 @@ class PlayerService {
      */
     async upsert(rawData: unknown): Promise<PlayerType> {
         try {
-            const parsed = PlayerSchema.parse(rawData);
+            const parsed = PlayerSchema.pick({ id: true }).parse(rawData);
             const where = PlayerWhereUniqueInputObjectSchema.parse({ id: parsed.id });
             const update = PlayerUncheckedUpdateInputObjectStrictSchema.parse(rawData);
             const create = PlayerUncheckedCreateInputObjectStrictSchema.parse(rawData);

@@ -109,6 +109,7 @@ model GameDay {
   bibs               TeamName?
   pickerGamesHistory Int?
 
+  invitations   Invitation[]
   outcomes      Outcome[]
   playerRecords PlayerRecord[]
 }
@@ -118,6 +119,10 @@ model Invitation {
   playerId  Int
   gameDayId Int
 
+  gameDay GameDay @relation(fields: [gameDayId], references: [id])
+  player  Player  @relation(fields: [playerId], references: [id])
+
+  @@unique([gameDayId, playerId])
   @@index([playerId])
   @@index([gameDayId])
 }
@@ -179,6 +184,7 @@ model Player {
   arsesByPlayer Arse[]             @relation(name: "RaterArse")
   clubs         ClubSupporter[]
   countries     CountrySupporter[]
+  invitations   Invitation[]
   outcomes      Outcome[]
   playerRecords PlayerRecord[]
 }

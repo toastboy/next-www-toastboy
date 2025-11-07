@@ -87,7 +87,7 @@ export class ClubService {
      */
     async upsert(rawData: unknown): Promise<ClubType | null> {
         try {
-            const parsed = ClubSchema.parse(rawData);
+            const parsed = ClubSchema.pick({ id: true }).parse(rawData);
             const where = ClubWhereUniqueInputObjectSchema.parse({
                 id: parsed.id
             });

@@ -469,7 +469,10 @@ export class OutcomeService {
      */
     async upsert(rawData: unknown): Promise<OutcomeType | null> {
         try {
-            const parsed = OutcomeSchema.parse(rawData);
+            const parsed = OutcomeSchema.pick({
+                gameDayId: true,
+                playerId: true,
+            }).parse(rawData);
             const where = OutcomeWhereUniqueInputObjectSchema.parse({
                 gameDayId_playerId: {
                     gameDayId: parsed.gameDayId,

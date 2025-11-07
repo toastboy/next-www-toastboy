@@ -87,7 +87,7 @@ export class GameChatService {
      */
     async upsert(rawData: unknown): Promise<GameChatType | null> {
         try {
-            const parsed = GameChatSchema.parse(rawData);
+            const parsed = GameChatSchema.pick({ id: true }).parse(rawData);
             const where = GameChatWhereUniqueInputObjectSchema.parse({ id: parsed.id });
             const update = GameChatUncheckedUpdateInputObjectStrictSchema.parse(rawData);
             const create = GameChatUncheckedCreateInputObjectStrictSchema.parse(rawData);

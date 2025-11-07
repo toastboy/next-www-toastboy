@@ -142,23 +142,23 @@ describe('InvitationService', () => {
         it('should refuse to create a Invitation that has the same uuid as an existing one', async () => {
             await expect(invitationService.create({
                 ...defaultInvitation,
-                uuid: '12341',
+                uuid: buildUuidFromIndex(1),
             })).rejects.toThrow();
         });
     });
 
     describe('upsert', () => {
         it('should create a Invitation', async () => {
-            const result = await invitationService.upsert(defaultInvitation);
+            const result = await invitationService.upsertByUUID(defaultInvitation);
             expect(result).toEqual(defaultInvitation);
         });
 
         it('should update an existing Invitation where one with the uuid already existed', async () => {
             const updatedInvitation: InvitationType = {
                 ...defaultInvitation,
-                uuid: '1234',
+                uuid: buildUuidFromIndex(1),
             };
-            const result = await invitationService.upsert(updatedInvitation);
+            const result = await invitationService.upsertByUUID(updatedInvitation);
             expect(result).toEqual(updatedInvitation);
         });
     });

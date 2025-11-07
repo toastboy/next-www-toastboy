@@ -9,7 +9,7 @@ import {
 } from 'prisma/generated/schemas';
 import {
     InvitationSchema,
-    InvitationType,
+    InvitationType
 } from 'prisma/generated/schemas/models/Invitation.schema';
 import z from 'zod';
 
@@ -81,24 +81,21 @@ export class InvitationService {
         }
     }
 
-    /**
-     * Upserts a invitation.
-     * @param data The data to be upserted.
-     * @returns A promise that resolves to the upserted invitation, or null if the upsert failed.
-     * @throws An error if there is a failure.
-     */
-    async upsert(rawData: unknown): Promise<InvitationType | null> {
-        try {
-            const parsed = InvitationSchema.parse(rawData);
-            const where = InvitationWhereUniqueInputObjectSchema.parse({ uuid: parsed.uuid });
-            const update = InvitationUncheckedUpdateInputObjectZodSchema.parse(parsed);
-            const create = InvitationUncheckedCreateInputObjectZodSchema.parse(parsed);
+    async upsertByUUID(rawData: unknown): Promise<InvitationType | null> {
+        const parsed = InvitationSchema.parse(rawData);
+        const where = InvitationWhereUniqueInputObjectSchema.parse({ uuid: parsed.uuid });
+        return await upsert(where, rawData);
+    }
 
-            return await prisma.invitation.upsert({ where, update, create });
-        } catch (error) {
-            log(`Error upserting Invitation: ${error}`);
-            throw error;
-        }
+    async upsertByGameAndPlayer(rawData: unknown): Promise<InvitationType | null> {
+        const parsed = InvitationSchema.parse(rawData);
+        const where = InvitationWhereUniqueInputObjectSchema.parse({
+            gameDayId_playerId: {
+                playerId: parsed.playerId,
+                gameDayId: parsed.gameDayId,
+            },
+        });
+        return await upsert(where, rawData);
     }
 
     /**
@@ -129,6 +126,21 @@ export class InvitationService {
             log(`Error deleting Invitations: ${error}`);
             throw error;
         }
+    }
+}
+
+async function upsert(
+    where: z.infer<typeof InvitationWhereUniqueInputObjectSchema>,
+    rawData: unknown,
+): Promise<InvitationType | null> {
+    try {
+        const update = InvitationUncheckedUpdateInputObjectZodSchema.parse(rawData);
+        const create = InvitationUncheckedCreateInputObjectZodSchema.parse(rawData);
+
+        return await prisma.invitation.upsert({ where, update, create });
+    } catch (error) {
+        log(`Error upserting Invitation: ${error}`);
+        throw error;
     }
 }
 

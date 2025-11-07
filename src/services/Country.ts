@@ -87,7 +87,7 @@ export class CountryService {
      */
     async upsert(rawData: unknown): Promise<CountryType | null> {
         try {
-            const parsed = CountrySchema.parse(rawData);
+            const parsed = CountrySchema.pick({ isoCode: true }).parse(rawData);
             const where = CountryWhereUniqueInputObjectSchema.parse({
                 isoCode: parsed.isoCode,
             });

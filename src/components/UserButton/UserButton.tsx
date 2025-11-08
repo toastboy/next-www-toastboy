@@ -5,10 +5,12 @@ import { notifications } from "@mantine/notifications";
 import { IconAlertTriangle, IconArrowsLeftRight, IconCheck, IconChevronRight, IconLogout, IconPassword, IconTrash, IconUserScan } from '@tabler/icons-react';
 import { authClient } from 'lib/authClient';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import classes from './UserButton.module.css';
 
 const UserButton: React.FC = () => {
   const user = authClient.getUser();
+  const router = useRouter();
 
   async function signOut() {
     const id = notifications.show({
@@ -59,17 +61,7 @@ const UserButton: React.FC = () => {
         <UnstyledButton
           className={classes.user}
           onClick={() => {
-            if (!user) {
-              const url = '/footy/auth/signin';
-              try {
-                // Trigger real navigation in browsers
-                window.location.href = url;
-              }
-              finally {
-                // Ensure JSDOM-based tests can observe the URL change without actual navigation
-                window.history.pushState({}, '', url);
-              }
-            }
+            if (!user) router.push('/footy/auth/signin');
           }}
         >
           <Group>

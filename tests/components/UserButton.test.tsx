@@ -3,6 +3,10 @@ jest.mock('lib/auth-client', () => ({
         useSession: jest.fn(),
     },
 }));
+const push = jest.fn();
+jest.mock('next/navigation', () => ({
+    useRouter: () => ({ push }),
+}));
 
 import { act, render, screen, waitFor } from '@testing-library/react';
 import UserButton from 'components/UserButton/UserButton';
@@ -54,7 +58,7 @@ describe('UserButton', () => {
         });
 
         await waitFor(() => {
-            expect(window.location.pathname).toBe('/footy/auth/signin');
+            expect(push).toHaveBeenCalledWith('/footy/auth/signin');
         });
     });
 
@@ -72,7 +76,7 @@ describe('UserButton', () => {
         });
 
         await waitFor(() => {
-            expect(window.location.pathname).toBe('/footy/auth/signin');
+            expect(push).toHaveBeenCalledWith('/footy/auth/signin');
         });
     });
 

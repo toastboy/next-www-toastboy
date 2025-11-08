@@ -2,12 +2,20 @@ module.exports = {
     automock: false,
     collectCoverage: true,
     coverageDirectory: 'coverage',
-    coveragePathIgnorePatterns: ['/node_modules/'],
     coverageProvider: 'v8',
     projects: [
         {
             displayName: { name: 'api', color: 'yellow' },
             clearMocks: true,
+            collectCoverageFrom: [
+                '<rootDir>/src/app/api/**/*.{ts,tsx}',
+                '!<rootDir>/src/**/*.d.ts',
+                '!<rootDir>/**/*.stories.tsx',
+            ],
+            coveragePathIgnorePatterns: [
+                '/node_modules/',
+                '/prisma/generated/',
+            ],
             moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
             moduleNameMapper: {
                 '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
@@ -52,6 +60,15 @@ module.exports = {
         {
             displayName: { name: 'services', color: 'magenta' },
             clearMocks: true,
+            collectCoverageFrom: [
+                '<rootDir>/src/services/**/*.{ts,tsx}',
+                '!<rootDir>/src/**/*.d.ts',
+                '!<rootDir>/**/*.stories.tsx',
+            ],
+            coveragePathIgnorePatterns: [
+                '/node_modules/',
+                '/prisma/generated/',
+            ],
             moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
             moduleNameMapper: {
                 '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
@@ -94,6 +111,15 @@ module.exports = {
         {
             displayName: { name: 'components', color: 'blue' },
             clearMocks: true,
+            collectCoverageFrom: [
+                '<rootDir>/src/components/**/*.{ts,tsx}',
+                '!<rootDir>/src/**/*.d.ts',
+                '!<rootDir>/**/*.stories.tsx',
+            ],
+            coveragePathIgnorePatterns: [
+                '/node_modules/',
+                '/prisma/generated/',
+            ],
             moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node', 'mjs'],
             moduleNameMapper: {
                 '\\.(css|less|scss|sass)$': 'identity-obj-proxy',

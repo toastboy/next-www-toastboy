@@ -5,21 +5,34 @@ updates:
     schedule:
       interval: "daily"
     groups:
-      eslint:
+      eslint-core:
         patterns:
           - "eslint"
           - "@eslint/js"
-      eslint-next:
+      jest:
         patterns:
-          - "@next/eslint-plugin-next"
-          - "eslint-config-next"
+          - "jest"
+          - "@jest/globals"
+          - "jest-environment-jsdom"
       mantine:
         patterns:
           - "@mantine/*"
-      react:
+      next:
+        patterns:
+          - "next"
+          - "@next/eslint-plugin-next"
+          - "eslint-config-next"
+      prisma:
+        patterns:
+          - "prisma"
+          - "@prisma/client"
+      react-core:
         patterns:
           - "react"
           - "react-dom"
+          - "react-test-renderer"
+      react-types:
+        patterns:
           - "@types/react"
           - "@types/react-dom"
       sentry:
@@ -28,6 +41,9 @@ updates:
       tiptap:
         patterns:
           - "@tiptap/*"
+      typescript-eslint:
+        patterns:
+          - "@typescript-eslint/*"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:

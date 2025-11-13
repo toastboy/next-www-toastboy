@@ -13,8 +13,7 @@ export const auth = betterAuth({
         additionalFields: {
             playerId: {
                 type: "number",
-                required: true,
-                defaultValue: 0,
+                required: false,
                 input: false,
             },
         },

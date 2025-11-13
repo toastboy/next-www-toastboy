@@ -1,7 +1,7 @@
 'use server';
 
 import nodemailer from 'nodemailer';
-
+import sanitizeHtml from 'sanitize-html';
 /**
  * Sends an email using the appropriate SMTP server configuration based on the environment.
  *
@@ -35,10 +35,13 @@ export async function sendEmail(to: string, subject: string, html: string) {
         });
     }
 
+    // Sanitize HTML before sending email
+    const sanitizedHtml = sanitizeHtml(html);
+
     await transporter.sendMail({
         from: '"Toastboy FC Mailer" <footy@toastboy.co.uk>',
         to: to,
         subject: subject,
-        html: html,
+        html: sanitizedHtml,
     });
 }

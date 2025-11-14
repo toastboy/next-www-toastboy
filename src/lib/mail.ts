@@ -2,6 +2,11 @@
 
 import nodemailer from 'nodemailer';
 import sanitizeHtml from 'sanitize-html';
+
+// Get sender address and name from environment variables, with sensible defaults
+const MAIL_FROM_ADDRESS = process.env.MAIL_FROM_ADDRESS || 'footy@toastboy.co.uk';
+const MAIL_FROM_NAME = process.env.MAIL_FROM_NAME || 'Toastboy FC Mailer';
+
 /**
  * Sends an email using the appropriate SMTP server configuration based on the environment.
  *
@@ -14,34 +19,34 @@ import sanitizeHtml from 'sanitize-html';
  * @throws Will throw an error if the email fails to send.
  */
 export async function sendEmail(to: string, subject: string, html: string) {
-    let transporter;
-
-    if (process.env.NODE_ENV === 'production') {
-        // Use the Outlook SMTP server in production. Note that this will only
-        // work from the HHH IP address since there is a Connector configured to
-        // allow it.
-        transporter = nodemailer.createTransport({
-            host: 'toastboy-co-uk.mail.protection.outlook.com',
+    const transporter = process.env.NODE_ENV === 'production' ?
+        nodemailer.createTransport({
+            host: process.env.SMTP_HOST || 'toastboy-co-uk.mail.protection.outlook.com',
             port: 25,
             secure: false,
-        });
-    }
-    else {
-        // Use MailPit in development
-        transporter = nodemailer.createTransport({
+        }) :
+        nodemailer.createTransport({
             host: 'localhost',
             port: 1025,
             secure: false,
         });
-    }
 
     // Sanitize HTML before sending email
     const sanitizedHtml = sanitizeHtml(html);
 
-    await transporter.sendMail({
-        from: '"Toastboy FC Mailer" <footy@toastboy.co.uk>',
-        to: to,
-        subject: subject,
-        html: sanitizedHtml,
-    });
+    try {
+        await transporter.sendMail({
+            from: `"${MAIL_FROM_NAME}" <${MAIL_FROM_ADDRESS}>`,
+            to: to,
+            subject: subject,
+            html: sanitizedHtml,
+        });
+    } catch (error) {
+        console.error(`Failed to send email`, {
+            to,
+            subject,
+            error,
+        });
+        throw new Error(`Failed to send email to ${to} with subject "${subject}": ${error instanceof Error ? error.message : String(error)}`);
+    }
 }

@@ -37,25 +37,57 @@ jobs:
           MICROSOFT_CLIENT_ID: op://next-www-toastboy/MICROSOFT_CLIENT_ID/Section_7mnfxarlhkiqhejcdikeqjetsi/uuid
           MICROSOFT_CLIENT_SECRET: op://next-www-toastboy/MICROSOFT_CLIENT_SECRET/Section_gf3kdeabpqeqiwci4y32wfezry/secret
           SENTRY_AUTH_TOKEN: op://next-www-toastboy/SENTRY_AUTH_TOKEN/Section_vi2z4utsexivhdrvq7jpproi5a/auth token
-      - name: Write .env file with real secrets
+      - name: Configure local DATABASE_URL for CI
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ env.MYSQL_ROOT_PASSWORD }}
         run: |
-          echo "MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD" > .env
-          echo "DATABASE_URL=$DATABASE_URL" >> .env
-          echo "AZURE_TENANT_ID=$AZURE_TENANT_ID" >> .env
-          echo "AZURE_CLIENT_ID=$AZURE_CLIENT_ID" >> .env
-          echo "AZURE_CLIENT_SECRET=$AZURE_CLIENT_SECRET" >> .env
-          echo "AZURE_STORAGE_ACCOUNT_NAME=$AZURE_STORAGE_ACCOUNT_NAME" >> .env
-          echo "AZURE_CONTAINER_NAME=$AZURE_CONTAINER_NAME" >> .env
-          echo "BETTER_AUTH_SECRET=$BETTER_AUTH_SECRET" >> .env
-          echo "BETTER_AUTH_ADMIN_TOKEN=$BETTER_AUTH_ADMIN_TOKEN" >> .env
-          echo "GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID" >> .env
-          echo "GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET" >> .env
-          echo "MICROSOFT_CLIENT_ID=$MICROSOFT_CLIENT_ID" >> .env
-          echo "MICROSOFT_CLIENT_SECRET=$MICROSOFT_CLIENT_SECRET" >> .env
-          echo "SENTRY_AUTH_TOKEN=$SENTRY_AUTH_TOKEN" >> .env
+          python3 - <<'PY' "$GITHUB_ENV"
+            import os, sys
+            env_path = sys.argv[1]
+            password = os.environ["MYSQL_ROOT_PASSWORD"]
+            with open(env_path, "a", encoding="utf-8") as fh:
+                fh.write(f"DATABASE_URL=mysql://root:{password}@127.0.0.1:33306/footy\n")
+            PY
+      - name: Start database
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ env.MYSQL_ROOT_PASSWORD }}
+        run: docker compose up -d db
+      - name: Wait for database
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ env.MYSQL_ROOT_PASSWORD }}
+        run: |
+          for i in {1..30}; do
+            if docker compose exec -T db mysqladmin ping -h 127.0.0.1 -p"$MYSQL_ROOT_PASSWORD" --silent; then
+              exit 0
+            fi
+            sleep 2
+          done
+          docker compose logs db
+          exit 1
+      - name: Push Prisma schema
+        run: npx prisma db push
+      - name: Seed database
+        run: npx prisma db seed
+      - name: Build Next.js app
+        run: npm run build
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
       - name: Run Playwright tests
+        env:
+          DATABASE_URL: ${{ env.DATABASE_URL }}
+          MYSQL_ROOT_PASSWORD: ${{ env.MYSQL_ROOT_PASSWORD }}
+          AZURE_TENANT_ID: ${{ env.AZURE_TENANT_ID }}
+          AZURE_CLIENT_ID: ${{ env.AZURE_CLIENT_ID }}
+          AZURE_CLIENT_SECRET: ${{ env.AZURE_CLIENT_SECRET }}
+          AZURE_STORAGE_ACCOUNT_NAME: ${{ env.AZURE_STORAGE_ACCOUNT_NAME }}
+          AZURE_CONTAINER_NAME: ${{ env.AZURE_CONTAINER_NAME }}
+          BETTER_AUTH_SECRET: ${{ env.BETTER_AUTH_SECRET }}
+          BETTER_AUTH_ADMIN_TOKEN: ${{ env.BETTER_AUTH_ADMIN_TOKEN }}
+          GOOGLE_CLIENT_ID: ${{ env.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET: ${{ env.GOOGLE_CLIENT_SECRET }}
+          MICROSOFT_CLIENT_ID: ${{ env.MICROSOFT_CLIENT_ID }}
+          MICROSOFT_CLIENT_SECRET: ${{ env.MICROSOFT_CLIENT_SECRET }}
+          SENTRY_AUTH_TOKEN: ${{ env.SENTRY_AUTH_TOKEN }}
         run: npx playwright test
       - uses: actions/upload-artifact@v5
         if: always()

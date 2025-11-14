@@ -10,6 +10,7 @@
     "dev": "npx prisma generate && docker compose up -d && next dev",
     "build": "npx prisma generate && DEBUG=app:* next build",
     "lint": "eslint .",
+    "start:ci": "next start --hostname 127.0.0.1 --port 3000",
     "importlivedb": "pushd src/lib/importlivedb && npx ts-node --compiler-options '{\"module\":\"CommonJS\"}' importlivedb.ts && popd",
     "crawllivesite": "pushd src/lib/crawllivesite && npx ts-node --compiler-options '{\"module\":\"CommonJS\"}' crawllivesite.ts && popd",
     "start": "docker compose up -d && next start",

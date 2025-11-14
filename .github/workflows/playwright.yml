@@ -42,12 +42,12 @@ jobs:
           MYSQL_ROOT_PASSWORD: ${{ env.MYSQL_ROOT_PASSWORD }}
         run: |
           python3 - <<'PY' "$GITHUB_ENV"
-            import os, sys
-            env_path = sys.argv[1]
-            password = os.environ["MYSQL_ROOT_PASSWORD"]
-            with open(env_path, "a", encoding="utf-8") as fh:
-                fh.write(f"DATABASE_URL=mysql://root:{password}@127.0.0.1:33306/footy\n")
-            PY
+          import os, sys
+          env_path = sys.argv[1]
+          password = os.environ["MYSQL_ROOT_PASSWORD"]
+          with open(env_path, "a", encoding="utf-8") as fh:
+              fh.write(f"DATABASE_URL=mysql://root:{password}@127.0.0.1:33306/footy\n")
+          PY
       - name: Start database
         env:
           MYSQL_ROOT_PASSWORD: ${{ env.MYSQL_ROOT_PASSWORD }}

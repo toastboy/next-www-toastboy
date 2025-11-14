@@ -1,6 +1,6 @@
 'use client';
 
-import { TableName } from '@prisma/client';
+import { TableName } from 'prisma/generated/schemas';
 import { ArseType } from 'prisma/generated/schemas/models/Arse.schema';
 import { ClubType } from 'prisma/generated/schemas/models/Club.schema';
 import { ClubSupporterType } from 'prisma/generated/schemas/models/ClubSupporter.schema';

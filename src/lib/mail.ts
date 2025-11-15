@@ -1,11 +1,10 @@
 'use server';
 
+import { getSecrets } from 'lib/secrets';
 import nodemailer from 'nodemailer';
 import sanitizeHtml from 'sanitize-html';
 
-// Get sender address and name from environment variables, with sensible defaults
-const MAIL_FROM_ADDRESS = process.env.MAIL_FROM_ADDRESS || 'footy@toastboy.co.uk';
-const MAIL_FROM_NAME = process.env.MAIL_FROM_NAME || 'Toastboy FC Mailer';
+const secrets = getSecrets();
 
 /**
  * Sends an email using the appropriate SMTP server configuration based on the environment.
@@ -21,7 +20,7 @@ const MAIL_FROM_NAME = process.env.MAIL_FROM_NAME || 'Toastboy FC Mailer';
 export async function sendEmail(to: string, subject: string, html: string) {
     const transporter = process.env.NODE_ENV === 'production' ?
         nodemailer.createTransport({
-            host: process.env.SMTP_HOST || 'toastboy-co-uk.mail.protection.outlook.com',
+            host: secrets.SMTP_HOST,
             port: 25,
             secure: false,
         }) :
@@ -36,7 +35,7 @@ export async function sendEmail(to: string, subject: string, html: string) {
 
     try {
         await transporter.sendMail({
-            from: `"${MAIL_FROM_NAME}" <${MAIL_FROM_ADDRESS}>`,
+            from: `"${secrets.MAIL_FROM_NAME}" <${secrets.MAIL_FROM_ADDRESS}>`,
             to: to,
             subject: subject,
             html: sanitizedHtml,

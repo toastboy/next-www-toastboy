@@ -1,44 +1,38 @@
-import { BlobServiceClient } from "@azure/storage-blob";
-import { ClientSecretCredential } from '@azure/identity';
+import 'server-only';
 
-type ContainerClientCache = {
-    [containerName: string]: ReturnType<BlobServiceClient["getContainerClient"]>;
-};
+import { ClientSecretCredential } from '@azure/identity';
+import { BlobServiceClient } from "@azure/storage-blob";
+import { getSecrets } from 'lib/secrets';
+
+type ContainerClientCache = Record<string, ReturnType<BlobServiceClient["getContainerClient"]>>;
 
 class AzureCache {
     private static instance: AzureCache;
-    private static tenantId: string = '';
-    private static clientId: string = '';
-    private static clientSecret: string = '';
-    private static storageAccountName: string = '';
+    private static tenantId = '';
+    private static clientId = '';
+    private static clientSecret = '';
+    private static storageAccountName = '';
     private containerClients: ContainerClientCache = {};
 
     // This is a singleton class, so the constructor is private to prevent external instantiation.
-    private constructor() { }
+    private constructor() { /* empty */ }
 
     public static getInstance(): AzureCache {
         if (!AzureCache.instance) {
             AzureCache.instance = new AzureCache();
+            const secrets = getSecrets();
 
-            if (!process.env.AZURE_TENANT_ID) {
-                throw new Error('AZURE_TENANT_ID undefined');
-            }
-            AzureCache.tenantId = process.env.AZURE_TENANT_ID;
+            if (!secrets.AZURE_TENANT_ID) throw new Error('AZURE_TENANT_ID undefined');
+            AzureCache.tenantId = secrets.AZURE_TENANT_ID;
 
-            if (!process.env.AZURE_CLIENT_ID) {
-                throw new Error('AZURE_CLIENT_ID undefined');
-            }
-            AzureCache.clientId = process.env.AZURE_CLIENT_ID;
+            if (!secrets.AZURE_CLIENT_ID) throw new Error('AZURE_CLIENT_ID undefined');
+            AzureCache.clientId = secrets.AZURE_CLIENT_ID;
 
-            if (!process.env.AZURE_CLIENT_SECRET) {
-                throw new Error('AZURE_CLIENT_SECRET undefined');
-            }
-            AzureCache.clientSecret = process.env.AZURE_CLIENT_SECRET;
+            if (!secrets.AZURE_CLIENT_SECRET) throw new Error('AZURE_CLIENT_SECRET undefined');
+            AzureCache.clientSecret = secrets.AZURE_CLIENT_SECRET;
 
-            if (!process.env.AZURE_STORAGE_ACCOUNT_NAME) {
-                throw new Error('AZURE_STORAGE_ACCOUNT_NAME undefined');
-            }
-            AzureCache.storageAccountName = process.env.AZURE_STORAGE_ACCOUNT_NAME;
+            if (!secrets.AZURE_STORAGE_ACCOUNT_NAME) throw new Error('AZURE_STORAGE_ACCOUNT_NAME undefined');
+            AzureCache.storageAccountName = secrets.AZURE_STORAGE_ACCOUNT_NAME;
         }
         return AzureCache.instance;
     }

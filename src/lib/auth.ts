@@ -3,9 +3,14 @@ import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { nextCookies } from "better-auth/next-js";
 import { admin, customSession } from "better-auth/plugins";
+import { getSecrets } from 'lib/secrets';
 
 const prisma = new PrismaClient();
+const secrets = getSecrets();
+
 export const auth = betterAuth({
+    baseURL: secrets.BETTER_AUTH_URL,
+    secret: secrets.BETTER_AUTH_SECRET,
     database: prismaAdapter(prisma, {
         provider: "mysql",
     }),
@@ -36,7 +41,7 @@ export const auth = betterAuth({
                 return {
                     user: {
                         ...user,
-                        playerId: player?.id || 0,
+                        playerId: player?.id ?? 0,
                     },
                     session,
                 };
@@ -47,13 +52,17 @@ export const auth = betterAuth({
         nextCookies(), // Must be last: see https://better-auth.vercel.app/docs/integrations/next#server-action-cookies
     ],
     socialProviders: {
-        google: {
-            clientId: process.env.GOOGLE_CLIENT_ID as string,
-            clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+        ...{
+            google: secrets.GOOGLE_CLIENT_ID && secrets.GOOGLE_CLIENT_SECRET ? {
+                clientId: secrets.GOOGLE_CLIENT_ID,
+                clientSecret: secrets.GOOGLE_CLIENT_SECRET,
+            } : undefined,
         },
-        microsoft: {
-            clientId: process.env.MICROSOFT_CLIENT_ID as string,
-            clientSecret: process.env.MICROSOFT_CLIENT_SECRET as string,
+        ...{
+            microsoft: secrets.MICROSOFT_CLIENT_ID && secrets.MICROSOFT_CLIENT_SECRET ? {
+                clientId: secrets.MICROSOFT_CLIENT_ID,
+                clientSecret: secrets.MICROSOFT_CLIENT_SECRET,
+            } : undefined,
         },
     },
     cookies: {

@@ -1,6 +1,7 @@
 import { ClientSecretCredential } from '@azure/identity';
 import { BlobServiceClient, ContainerClient } from '@azure/storage-blob';
 import { Prisma, PrismaClient } from '@prisma/client';
+import { getSecrets } from '../src/lib/secrets';
 import { streamToBuffer } from '../src/lib/utils';
 import { ArseType } from './generated/schemas/models/Arse.schema';
 import { ClubType } from './generated/schemas/models/Club.schema';
@@ -48,30 +49,22 @@ async function processJsonData<T>(
 }
 
 async function main() {
-    const tenantId = process.env.AZURE_TENANT_ID;
-    if (!tenantId) {
-        throw new Error('AZURE_TENANT_ID undefined');
-    }
+    const secrets = getSecrets();
 
-    const clientId = process.env.AZURE_CLIENT_ID;
-    if (!clientId) {
-        throw new Error('AZURE_CLIENT_ID undefined');
-    }
+    const tenantId = secrets.AZURE_TENANT_ID;
+    if (!tenantId) throw new Error('AZURE_TENANT_ID undefined');
 
-    const clientSecret = process.env.AZURE_CLIENT_SECRET;
-    if (!clientSecret) {
-        throw new Error('AZURE_CLIENT_SECRET undefined');
-    }
+    const clientId = secrets.AZURE_CLIENT_ID;
+    if (!clientId) throw new Error('AZURE_CLIENT_ID undefined');
 
-    const storageAccountName = process.env.AZURE_STORAGE_ACCOUNT_NAME;
-    if (!storageAccountName) {
-        throw new Error('AZURE_STORAGE_ACCOUNT_NAME undefined');
-    }
+    const clientSecret = secrets.AZURE_CLIENT_SECRET;
+    if (!clientSecret) throw new Error('AZURE_CLIENT_SECRET undefined');
 
-    const containerName = process.env.AZURE_CONTAINER_NAME;
-    if (!containerName) {
-        throw new Error('AZURE_CONTAINER_NAME undefined');
-    }
+    const storageAccountName = secrets.AZURE_STORAGE_ACCOUNT_NAME;
+    if (!storageAccountName) throw new Error('AZURE_STORAGE_ACCOUNT_NAME undefined');
+
+    const containerName = secrets.AZURE_CONTAINER_NAME;
+    if (!containerName) throw new Error('AZURE_CONTAINER_NAME undefined');
 
     const credentials = new ClientSecretCredential(tenantId, clientId, clientSecret);
     const blobServiceClient = new BlobServiceClient(

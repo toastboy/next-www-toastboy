@@ -1,6 +1,7 @@
 import { ClientSecretCredential } from '@azure/identity';
 import { BlobServiceClient, ContainerClient } from '@azure/storage-blob';
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Prisma } from '@prisma/client';
+import prisma from '../src/lib/prisma';
 import { getSecrets } from '../src/lib/secrets';
 import { streamToBuffer } from '../src/lib/utils';
 import { ArseType } from './generated/schemas/models/Arse.schema';
@@ -12,8 +13,6 @@ import { GameChatType } from './generated/schemas/models/GameChat.schema';
 import { GameDayType } from './generated/schemas/models/GameDay.schema';
 import { OutcomeType } from './generated/schemas/models/Outcome.schema';
 import { PlayerType } from './generated/schemas/models/Player.schema';
-
-const prisma = new PrismaClient();
 
 async function downloadAndParseJson(containerClient: ContainerClient, blobName: string): Promise<unknown> {
     try {

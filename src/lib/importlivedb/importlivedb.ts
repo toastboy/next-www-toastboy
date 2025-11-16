@@ -1,12 +1,11 @@
 import { ClientSecretCredential } from "@azure/identity";
 import { BlobServiceClient } from "@azure/storage-blob";
-import { Prisma, PrismaClient } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { execSync } from "child_process";
-import fs from 'fs';
+import fs from "fs";
 import { readdir } from "fs/promises";
 import path from "path";
-
-const prisma = new PrismaClient();
+import prisma from "../prisma";
 
 /**
  * Writes the data from a Prisma model to a JSON file.
@@ -36,7 +35,6 @@ async function writeTableToJSONFile<T>(
  * development database match the current development schema. This means I can
  * carry on developing the new website while new data is being added to the old
  * one, and then switch over when I'm ready.
- * @param {string} filePath - The path to the MySQL backup file.
  * @returns {Promise<void>} - A promise that resolves when the import and
  * migrations are completed.
  */

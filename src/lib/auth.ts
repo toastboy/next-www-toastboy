@@ -1,11 +1,10 @@
-import { PrismaClient } from '@prisma/client';
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
 import { nextCookies } from "better-auth/next-js";
 import { admin, customSession } from "better-auth/plugins";
+import prisma from 'lib/prisma';
 import { getSecrets } from 'lib/secrets';
 
-const prisma = new PrismaClient();
 const secrets = getSecrets();
 
 export const auth = betterAuth({

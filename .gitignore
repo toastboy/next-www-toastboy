@@ -53,7 +53,7 @@ prisma/fetch.js
 footy.sql.gz
 
 # The live site links script output
-src/lib/crawllivesite/livesitelinks.json
+livesitelinks.json
 
 # Sentry Config File
 .env.sentry-build-plugin

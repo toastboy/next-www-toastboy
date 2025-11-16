@@ -4,6 +4,8 @@ import fs from 'fs';
 import path from "path";
 
 const secrets = {
+    DATABASE_URL: process.env.DATABASE_URL,
+
     AZURE_CLIENT_ID: process.env.AZURE_CLIENT_ID,
     AZURE_CLIENT_SECRET: process.env.AZURE_CLIENT_SECRET,
     AZURE_CONTAINER_NAME: process.env.AZURE_CONTAINER_NAME,

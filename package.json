@@ -11,8 +11,8 @@
     "build": "npx prisma generate && DEBUG=app:* next build",
     "lint": "eslint .",
     "start:ci": "next start --hostname 127.0.0.1 --port 3000",
-    "importlivedb": "pushd src/lib/importlivedb && npx ts-node --compiler-options '{\"module\":\"CommonJS\"}' importlivedb.ts && popd",
-    "crawllivesite": "pushd src/lib/crawllivesite && npx ts-node --compiler-options '{\"module\":\"CommonJS\"}' crawllivesite.ts && popd",
+    "importlivedb": "npx ts-node -r tsconfig-paths/register --project tsconfig.scripts.json --compiler-options '{\"module\":\"CommonJS\"}' src/lib/importlivedb/importlivedb.ts",
+    "crawllivesite": "npx ts-node -r tsconfig-paths/register --project tsconfig.scripts.json --compiler-options '{\"module\":\"CommonJS\"}' src/lib/crawllivesite/crawllivesite.ts",
     "start": "docker compose up -d && next start",
     "stop": "docker compose down"
   },

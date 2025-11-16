@@ -9,7 +9,7 @@ Purpose: Enable fast, safe contributions. Keep changes aligned with existing ser
 - Prisma client singleton in `lib/prisma.ts`; do not instantiate another client. Always validate inputs with appropriate Zod schema (`WhereUnique`, `WhereInput`, etc.) before calling prisma.
 - `lib/config.ts` central numeric thresholds (min games/replies). Reference these instead of hard‑coding values.
 - Utility patterns: `rankMap` in `lib/utils.ts` converts `TableName` enum to rank field names; reuse rather than manual mapping.
-- Sentry instrumentation via `instrumentation.ts` / `instrumentation-client.ts` and wrapped Next config (`next.config.mjs` with `withSentryConfig`). Preserve `tunnelRoute: '/monitoring'` and middleware matcher exclusions when editing middleware.
+- Sentry instrumentation via `instrumentation.ts` / `instrumentation-client.ts` and wrapped Next config (`next.config.mjs` with `withSentryConfig`). Preserve `tunnelRoute: '/monitoring'` and middleware matcher exclusions when editing middleware. Preserve `tunnelRoute: '/monitoring'` and middleware matcher exclusions when editing middleware.
 
 ### Data Model (Prisma)
 

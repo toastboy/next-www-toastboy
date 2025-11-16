@@ -119,13 +119,13 @@ async function importBackup(): Promise<void> {
 
         // Run prisma generate to ensure the Prisma Client is up to date
         console.log('Running prisma generate...');
-        execSync('npx prisma generate --schema ../../../prisma/schema.prisma');
+        execSync('npx prisma generate --schema prisma/schema.prisma');
 
         // Run prisma db push to ensure the database is up to date with the schema
         console.log('Running prisma db push...');
         execSync(`mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} -e'DROP DATABASE IF EXISTS footy;'`);
         execSync(`mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} -e'CREATE DATABASE footy;'`);
-        execSync('npx prisma db push --accept-data-loss --schema ../../../prisma/schema.prisma');
+        execSync('npx prisma db push --accept-data-loss --schema prisma/schema.prisma');
 
         // Import the mysqldump backup created above
         console.log('Importing mysql backup...');
@@ -170,7 +170,7 @@ async function importBackup(): Promise<void> {
         // files in blob storage reflect that, we can do a final Prisma migrate
         // reset and seed to ensure the dev database is in a good state.
         console.log('Running final Prisma migrate reset...');
-        execSync(`cd ../../.. && pwd && npx prisma migrate reset --force`);
+        execSync(`npx prisma migrate reset --force`);
     } catch (error) {
         console.error('An error occurred:', error);
     }
@@ -178,4 +178,4 @@ async function importBackup(): Promise<void> {
 
 importBackup();
 
-// To run: npm run importlivedb
+// To run: `op run --env-file ./src/lib/importlivedb/.env -- sh -c 'npm run importlivedb'`

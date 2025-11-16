@@ -1,4 +1,4 @@
-// import 'server-only'; TODO: re-add if we're staying as .ts
+import 'server-only';
 
 import fs from 'fs';
 import path from "path";

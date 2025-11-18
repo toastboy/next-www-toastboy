@@ -55,7 +55,7 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
-    "@eslint/config-array": "^0.21.1",
+    "@eslint/config-array": "^0.23.0",
     "@eslint/js": "^9.39.1",
     "@eslint/object-schema": "^2.1.7",
     "@jest/globals": "^30.2.0",

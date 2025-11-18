@@ -36,7 +36,7 @@ module.exports = {
             testMatch: ['<rootDir>/**/api/**/*.test.ts'],
             testPathIgnorePatterns: ['/node_modules/', '/e2e/'],
             transform: {
-                '^.+\\.(t|j)sx?$': ['@swc/jest'],
+                '^.+\\.(t|j|mj)sx?$': ['@swc/jest'],
                 '^.+\\.css$': 'jest-css-modules-transform',
             },
             transformIgnorePatterns: [
@@ -88,7 +88,7 @@ module.exports = {
             testMatch: ['<rootDir>/**/services/**/*.test.ts'],
             testPathIgnorePatterns: ['/node_modules/', '/e2e/'],
             transform: {
-                '^.+\\.(t|j)sx?$': ['@swc/jest'],
+                '^.+\\.(t|j|mj)sx?$': ['@swc/jest'],
                 '^.+\\.css$': 'jest-css-modules-transform',
             },
             transformIgnorePatterns: [
@@ -138,7 +138,7 @@ module.exports = {
             testMatch: ['<rootDir>/tests/components/**/*.test.tsx'],
             testPathIgnorePatterns: ['/node_modules/', '/e2e/'],
             transform: {
-                '^.+\\.(t|j)sx?$': ['@swc/jest'],
+                '^.+\\.(t|j|mj)sx?$': ['@swc/jest'],
                 '^.+\\.css$': 'jest-css-modules-transform',
             },
             transformIgnorePatterns: [

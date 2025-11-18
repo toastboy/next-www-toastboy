@@ -1,8 +1,6 @@
 # syntax=docker/dockerfile:1.7
 
-ARG NODE_VERSION=20.19.5
-
-FROM --platform=$BUILDPLATFORM node:${NODE_VERSION}-bookworm-slim AS base
+FROM --platform=$BUILDPLATFORM node:20.19.5-bookworm-slim AS base
 WORKDIR /app
 ENV NEXT_TELEMETRY_DISABLED=1 \
     npm_config_update_notifier=false \
@@ -19,9 +17,7 @@ RUN --mount=type=cache,target=/root/.npm npm ci
 FROM deps AS builder
 COPY . .
 RUN --mount=type=secret,id=DATABASE_URL,required=false \
-    --mount=type=secret,id=MYSQL_ROOT_PASSWORD,required=false \
     --mount=type=secret,id=AZURE_TENANT_ID,required=false \
-    --mount=type=secret,id=AZURE_SUBSCRIPTION_ID,required=false \
     --mount=type=secret,id=AZURE_CLIENT_ID,required=false \
     --mount=type=secret,id=AZURE_CLIENT_SECRET,required=false \
     --mount=type=secret,id=AZURE_STORAGE_ACCOUNT_NAME,required=false \
@@ -33,10 +29,9 @@ RUN --mount=type=secret,id=DATABASE_URL,required=false \
     --mount=type=secret,id=MICROSOFT_CLIENT_ID,required=false \
     --mount=type=secret,id=MICROSOFT_CLIENT_SECRET,required=false \
     --mount=type=secret,id=SENTRY_AUTH_TOKEN,required=false \
-    --mount=type=secret,id=TF_VAR_azure_tenant_id,required=false \
-    --mount=type=secret,id=TF_VAR_azure_subscription_id,required=false \
-    --mount=type=secret,id=TF_VAR_azure_client_id,required=false \
-    --mount=type=secret,id=TF_VAR_azure_client_secret,required=false \
+    --mount=type=secret,id=MAIL_FROM_ADDRESS,required=false \
+    --mount=type=secret,id=MAIL_FROM_NAME,required=false \
+    --mount=type=secret,id=MAIL_SMTP_HOST,required=false \
     --mount=type=cache,target=/root/.npm \
     bash ./scripts/docker/run-build-with-secrets.sh
 
@@ -46,7 +41,7 @@ FROM base AS prod-deps
 COPY package.json package-lock.json ./
 RUN --mount=type=cache,target=/root/.npm npm ci --omit=dev
 
-FROM --platform=$TARGETPLATFORM node:${NODE_VERSION}-bookworm-slim AS runner
+FROM --platform=$TARGETPLATFORM node:20.19.5-bookworm-slim AS runner
 WORKDIR /app
 ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \

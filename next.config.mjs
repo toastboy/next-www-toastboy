@@ -16,7 +16,7 @@ const nextConfig = {
 // Injected content via Sentry wizard below
 
 import { withSentryConfig } from "@sentry/nextjs";
-import { getSecrets } from "./src/lib/secrets-logic.mjs";
+import { getSecrets } from "./secrets-logic.mjs";
 
 const secrets = getSecrets();
 

@@ -1,3 +1,3 @@
 import 'server-only';
 
-export * from './secrets-logic.mjs';
+export * from '../../secrets-logic.mjs';

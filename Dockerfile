@@ -63,6 +63,7 @@ COPY --from=prod-deps /node_modules ./node_modules
 COPY --from=builder /package.json ./package.json
 COPY --from=builder /package-lock.json ./package-lock.json
 COPY --from=builder /next.config.mjs ./next.config.mjs
+COPY --from=builder /secrets-logic.mjs ./secrets-logic.mjs
 COPY --from=builder /public ./public
 COPY --from=builder /.next ./.next
 COPY --from=builder /prisma ./prisma

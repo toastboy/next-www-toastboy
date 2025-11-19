@@ -1,0 +1,62 @@
+services:
+  db:
+    image: mariadb:lts
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    volumes:
+      - db_data:/var/lib/mysql
+
+  nodeapp:
+    image: next-www-toastboy:latest
+    restart: always
+    ports:
+      - "3000:3000"
+    secrets:
+      - DATABASE_URL
+      - AZURE_CLIENT_ID
+      - AZURE_TENANT_ID
+      - AZURE_CLIENT_SECRET
+      - BETTER_AUTH_SECRET
+      - BETTER_AUTH_URL
+      - GOOGLE_CLIENT_ID
+      - GOOGLE_CLIENT_SECRET
+      - MICROSOFT_CLIENT_ID
+      - MICROSOFT_CLIENT_SECRET
+      - SENTRY_AUTH_TOKEN
+      - MAIL_FROM_ADDRESS
+      - MAIL_FROM_NAME
+      - SMTP_HOST
+
+secrets:
+  DATABASE_URL:
+    environment: DATABASE_URL
+  AZURE_CLIENT_ID:
+    environment: AZURE_CLIENT_ID
+  AZURE_TENANT_ID:
+    environment: AZURE_TENANT_ID
+  AZURE_CLIENT_SECRET:
+    environment: AZURE_CLIENT_SECRET
+  BETTER_AUTH_SECRET:
+    environment: BETTER_AUTH_SECRET
+  BETTER_AUTH_URL:
+    environment: BETTER_AUTH_URL
+  GOOGLE_CLIENT_ID:
+    environment: GOOGLE_CLIENT_ID
+  GOOGLE_CLIENT_SECRET:
+    environment: GOOGLE_CLIENT_SECRET
+  MICROSOFT_CLIENT_ID:
+    environment: MICROSOFT_CLIENT_ID
+  MICROSOFT_CLIENT_SECRET:
+    environment: MICROSOFT_CLIENT_SECRET
+  SENTRY_AUTH_TOKEN:
+    environment: SENTRY_AUTH_TOKEN
+  MAIL_FROM_ADDRESS:
+    environment: MAIL_FROM_ADDRESS
+  MAIL_FROM_NAME:
+    environment: MAIL_FROM_NAME
+  SMTP_HOST:
+    environment: SMTP_HOST
+
+volumes:
+  db_data:

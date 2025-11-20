@@ -59,6 +59,10 @@ ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \
     PORT=3000
 
+RUN apt-get update -y && \
+    apt-get install -y openssl && \
+    rm -rf /var/lib/apt/lists/*
+
 COPY --from=prod-deps /node_modules ./node_modules
 COPY --from=builder /package.json ./package.json
 COPY --from=builder /package-lock.json ./package-lock.json
@@ -69,10 +73,15 @@ COPY --from=builder /.next ./.next
 COPY --from=builder /prisma ./prisma
 COPY --from=builder /sentry.edge.config.ts ./sentry.edge.config.ts
 COPY --from=builder /sentry.server.config.ts ./sentry.server.config.ts
+COPY --from=builder /scripts/docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 
-RUN groupadd --system nextjs && useradd --system --gid nextjs nextjs \
+RUN npx prisma generate
+
+RUN groupadd --system nextjs && useradd --system --gid nextjs --create-home nextjs \
+    && chmod +x /usr/local/bin/entrypoint.sh \
     && chown -R nextjs:nextjs /app
 
 USER nextjs
 EXPOSE 3000
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["node", "node_modules/next/dist/bin/next", "start"]

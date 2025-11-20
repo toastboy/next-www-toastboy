@@ -6,17 +6,35 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     volumes:
       - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  ubuntu:
+    image: ubuntu:22.04
+    command: ["sleep", "infinity"]
 
   nodeapp:
     image: next-www-toastboy:latest
     restart: always
     ports:
       - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      RUN_SEED: ${RUN_SEED:-false}
+      SECRETS_DIR: /run/secrets
     secrets:
       - DATABASE_URL
       - AZURE_CLIENT_ID
       - AZURE_TENANT_ID
       - AZURE_CLIENT_SECRET
+      - AZURE_STORAGE_ACCOUNT_NAME
+      - AZURE_CONTAINER_NAME
       - BETTER_AUTH_SECRET
       - BETTER_AUTH_URL
       - GOOGLE_CLIENT_ID
@@ -37,6 +55,10 @@ secrets:
     environment: AZURE_TENANT_ID
   AZURE_CLIENT_SECRET:
     environment: AZURE_CLIENT_SECRET
+  AZURE_STORAGE_ACCOUNT_NAME:
+    environment: AZURE_STORAGE_ACCOUNT_NAME
+  AZURE_CONTAINER_NAME:
+    environment: AZURE_CONTAINER_NAME
   BETTER_AUTH_SECRET:
     environment: BETTER_AUTH_SECRET
   BETTER_AUTH_URL:

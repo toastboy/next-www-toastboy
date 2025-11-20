@@ -26,15 +26,9 @@ services:
         condition: service_healthy
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      RUN_SEED: ${RUN_SEED:-false}
       SECRETS_DIR: /run/secrets
     secrets:
       - DATABASE_URL
-      - AZURE_CLIENT_ID
-      - AZURE_TENANT_ID
-      - AZURE_CLIENT_SECRET
-      - AZURE_STORAGE_ACCOUNT_NAME
-      - AZURE_CONTAINER_NAME
       - BETTER_AUTH_SECRET
       - BETTER_AUTH_URL
       - GOOGLE_CLIENT_ID
@@ -45,6 +39,23 @@ services:
       - MAIL_FROM_ADDRESS
       - MAIL_FROM_NAME
       - SMTP_HOST
+
+  seeder:
+    build:
+      context: .
+      target: seeder
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "mysql://root:${MYSQL_ROOT_PASSWORD}@db:3306/footy"
+      AZURE_TENANT_ID: ${AZURE_TENANT_ID}
+      AZURE_CLIENT_ID: ${AZURE_CLIENT_ID}
+      AZURE_CLIENT_SECRET: ${AZURE_CLIENT_SECRET}
+      AZURE_STORAGE_ACCOUNT_NAME: ${AZURE_STORAGE_ACCOUNT_NAME}
+      AZURE_CONTAINER_NAME: ${AZURE_CONTAINER_NAME}
+    profiles:
+      - seed
 
 secrets:
   DATABASE_URL:

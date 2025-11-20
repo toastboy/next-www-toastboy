@@ -1,9 +1,6 @@
 import { ClientSecretCredential } from '@azure/identity';
 import { BlobServiceClient, ContainerClient } from '@azure/storage-blob';
-import { Prisma } from '@prisma/client';
-import prisma from '../src/lib/prisma';
-import { getSecrets } from '../src/lib/secrets';
-import { streamToBuffer } from '../src/lib/utils';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { ArseType } from './generated/schemas/models/Arse.schema';
 import { ClubType } from './generated/schemas/models/Club.schema';
 import { ClubSupporterType } from './generated/schemas/models/ClubSupporter.schema';
@@ -13,6 +10,21 @@ import { GameChatType } from './generated/schemas/models/GameChat.schema';
 import { GameDayType } from './generated/schemas/models/GameDay.schema';
 import { OutcomeType } from './generated/schemas/models/Outcome.schema';
 import { PlayerType } from './generated/schemas/models/Player.schema';
+
+const prisma = new PrismaClient();
+
+async function streamToBuffer(readableStream: NodeJS.ReadableStream): Promise<Buffer> {
+    return new Promise((resolve, reject) => {
+        const chunks: Uint8Array[] = [];
+        readableStream.on('data', (data) => {
+            chunks.push(data instanceof Buffer ? data : Buffer.from(data));
+        });
+        readableStream.on('end', () => {
+            resolve(Buffer.concat(chunks));
+        });
+        readableStream.on('error', reject);
+    });
+}
 
 async function downloadAndParseJson(containerClient: ContainerClient, blobName: string): Promise<unknown> {
     try {
@@ -48,21 +60,20 @@ async function processJsonData<T>(
 }
 
 async function main() {
-    const secrets = getSecrets();
-
-    const tenantId = secrets.AZURE_TENANT_ID;
+    // Read secrets directly from environment - works in any environment
+    const tenantId = process.env.AZURE_TENANT_ID;
     if (!tenantId) throw new Error('AZURE_TENANT_ID undefined');
 
-    const clientId = secrets.AZURE_CLIENT_ID;
+    const clientId = process.env.AZURE_CLIENT_ID;
     if (!clientId) throw new Error('AZURE_CLIENT_ID undefined');
 
-    const clientSecret = secrets.AZURE_CLIENT_SECRET;
+    const clientSecret = process.env.AZURE_CLIENT_SECRET;
     if (!clientSecret) throw new Error('AZURE_CLIENT_SECRET undefined');
 
-    const storageAccountName = secrets.AZURE_STORAGE_ACCOUNT_NAME;
+    const storageAccountName = process.env.AZURE_STORAGE_ACCOUNT_NAME;
     if (!storageAccountName) throw new Error('AZURE_STORAGE_ACCOUNT_NAME undefined');
 
-    const containerName = secrets.AZURE_CONTAINER_NAME;
+    const containerName = process.env.AZURE_CONTAINER_NAME;
     if (!containerName) throw new Error('AZURE_CONTAINER_NAME undefined');
 
     const credentials = new ClientSecretCredential(tenantId, clientId, clientSecret);

@@ -53,6 +53,15 @@ FROM base AS prod-deps
 COPY package.json package-lock.json ./
 RUN --mount=type=cache,target=/root/.npm npm ci --omit=dev
 
+# Seed stage - includes dev dependencies for running TypeScript seed script
+# Usage: docker compose -f docker-compose.prod.yml run --rm seeder
+FROM deps AS seeder
+WORKDIR /app
+COPY prisma ./prisma
+COPY tsconfig.json tsconfig.scripts.json ./
+ENV NODE_ENV=development
+CMD ["npx", "prisma", "db", "seed"]
+
 FROM --platform=$TARGETPLATFORM node:20.19.5-bookworm-slim AS runner
 WORKDIR /app
 ENV NODE_ENV=production \

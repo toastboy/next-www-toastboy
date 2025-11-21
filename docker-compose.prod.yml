@@ -7,38 +7,14 @@ services:
     volumes:
       - db_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      test:
+        [
+          "CMD-SHELL",
+          "mariadb-admin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD || exit 1",
+        ]
       interval: 10s
       timeout: 5s
       retries: 5
-
-  ubuntu:
-    image: ubuntu:22.04
-    command: ["sleep", "infinity"]
-
-  nodeapp:
-    image: next-www-toastboy:latest
-    restart: always
-    ports:
-      - "3000:3000"
-    depends_on:
-      db:
-        condition: service_healthy
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-      SECRETS_DIR: /run/secrets
-    secrets:
-      - DATABASE_URL
-      - BETTER_AUTH_SECRET
-      - BETTER_AUTH_URL
-      - GOOGLE_CLIENT_ID
-      - GOOGLE_CLIENT_SECRET
-      - MICROSOFT_CLIENT_ID
-      - MICROSOFT_CLIENT_SECRET
-      - SENTRY_AUTH_TOKEN
-      - MAIL_FROM_ADDRESS
-      - MAIL_FROM_NAME
-      - SMTP_HOST
 
   seeder:
     build:
@@ -57,9 +33,35 @@ services:
     profiles:
       - seed
 
+  nodeapp:
+    image: next-www-toastboy:latest
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: "mysql://root:${MYSQL_ROOT_PASSWORD}@db:3306/footy"
+      SECRETS_DIR: /run/secrets
+    secrets:
+      - AZURE_CLIENT_ID
+      - AZURE_TENANT_ID
+      - AZURE_CLIENT_SECRET
+      - AZURE_STORAGE_ACCOUNT_NAME
+      - AZURE_CONTAINER_NAME
+      - BETTER_AUTH_SECRET
+      - BETTER_AUTH_URL
+      - GOOGLE_CLIENT_ID
+      - GOOGLE_CLIENT_SECRET
+      - MICROSOFT_CLIENT_ID
+      - MICROSOFT_CLIENT_SECRET
+      - SENTRY_AUTH_TOKEN
+      - MAIL_FROM_ADDRESS
+      - MAIL_FROM_NAME
+      - SMTP_HOST
+
 secrets:
-  DATABASE_URL:
-    environment: DATABASE_URL
   AZURE_CLIENT_ID:
     environment: AZURE_CLIENT_ID
   AZURE_TENANT_ID:

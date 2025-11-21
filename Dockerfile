@@ -54,13 +54,17 @@ COPY package.json package-lock.json ./
 RUN --mount=type=cache,target=/root/.npm npm ci --omit=dev
 
 # Seed stage - includes dev dependencies for running TypeScript seed script
-# Usage: docker compose -f docker-compose.prod.yml run --rm seeder
+# Usage: op run --env-file ./.env -- docker compose -f docker-compose.prod.yml up --build seeder
 FROM deps AS seeder
 WORKDIR /app
 COPY prisma ./prisma
+COPY prisma.config.ts ./
 COPY tsconfig.json tsconfig.scripts.json ./
+COPY scripts/docker/seeder.sh /usr/local/seeder.sh
+RUN chmod +x /usr/local/seeder.sh
+
 ENV NODE_ENV=development
-CMD ["npx", "prisma", "db", "seed"]
+CMD ["/usr/local/seeder.sh"]
 
 FROM --platform=$TARGETPLATFORM node:20.19.5-bookworm-slim AS runner
 WORKDIR /app
@@ -76,21 +80,18 @@ COPY --from=prod-deps /node_modules ./node_modules
 COPY --from=builder /package.json ./package.json
 COPY --from=builder /package-lock.json ./package-lock.json
 COPY --from=builder /next.config.mjs ./next.config.mjs
-COPY --from=builder /secrets-logic.mjs ./secrets-logic.mjs
 COPY --from=builder /public ./public
 COPY --from=builder /.next ./.next
 COPY --from=builder /prisma ./prisma
+COPY --from=builder /prisma.config.ts ./prisma.config.ts
 COPY --from=builder /sentry.edge.config.ts ./sentry.edge.config.ts
 COPY --from=builder /sentry.server.config.ts ./sentry.server.config.ts
-COPY --from=builder /scripts/docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 
 RUN npx prisma generate
 
 RUN groupadd --system nextjs && useradd --system --gid nextjs --create-home nextjs \
-    && chmod +x /usr/local/bin/entrypoint.sh \
     && chown -R nextjs:nextjs /app
 
 USER nextjs
 EXPOSE 3000
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["node", "node_modules/next/dist/bin/next", "start"]

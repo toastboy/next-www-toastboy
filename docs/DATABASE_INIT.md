@@ -4,14 +4,15 @@
 
 The production stack separates build, runtime, and data operations:
 
-1. **Migrations** (automatic at startup): Schema changes via `npx prisma migrate deploy`
+1. **Migrations** (via seeder): Schema changes applied before seeding via `npx prisma migrate deploy`
 2. **Seeding** (manual, separate service): Full data import from Azure Blob Storage
 
 ## Architecture
 
-- **Production runtime (`nodeapp`)**: Minimal dependencies, only runs Next.js app + migrations
-- **Seeder service**: Separate container with dev dependencies for TypeScript seed script
+- **Production runtime (`nodeapp`)**: Minimal dependencies, runs Next.js only (no migration logic)
+- **Seeder service**: Separate container with dev dependencies; atomically runs migrations **then** seed
 - **Seed script**: Reads directly from environment variables (no secrets abstraction needed)
+- **Migration strategy**: All migrations handled by seeder before data import, ensuring schema correctness
 
 ## Production Usage
 
@@ -25,8 +26,9 @@ This will:
 
 - Start the database
 - Wait for it to be healthy
-- Run pending migrations automatically
-- Start the Next.js app
+- Start the Next.js app (without running migrations)
+
+**Note**: This assumes migrations have already been run via the seeder, or you're starting with a fresh database that will be seeded later.
 
 ### First-Time Setup or Data Reset (with seed)
 
@@ -43,6 +45,7 @@ docker compose -f docker-compose.prod.yml run --rm seeder
 The seeder:
 
 - Runs in a separate container with dev dependencies
+- **Runs migrations first** to ensure schema is current
 - **Deletes all existing data**
 - Downloads JSON files from Azure Blob Storage
 - Repopulates all tables
@@ -70,12 +73,13 @@ npx prisma db seed
 
 ## Technical Details
 
-- **Entrypoint**: `/docker/entrypoint.sh` runs migrations only (no seeding logic)
+- **Runtime**: `nodeapp` runs Next.js directly—no migrations at startup (handled by seeder instead)
+- **Seeder Script**: `/scripts/docker/seeder.sh` runs `prisma migrate deploy` → `prisma db seed` atomically
 - **Seed Config**: Defined in `prisma.config.ts`
-- **Seed Script**: `prisma/seed.ts` reads from `process.env` directly (no secrets.ts dependency)
+- **Seed Source**: `prisma/seed.ts` reads from `process.env` directly (no secrets.ts dependency)
 - **Seeder Service**: Uses `seeder` build stage with dev dependencies included
-- **Profile**: Seeder uses `profiles: [seed]` so it doesn't start with `up -d`
-- **Health Check**: Ensures DB is ready before migrations/seeding run
+- **Profile**: Seeder uses `profiles: [seed]` so it doesn't auto-start with `up -d`
+- **Health Check**: Ensures DB is ready before seeder or nodeapp start
 
 ## Troubleshooting
 

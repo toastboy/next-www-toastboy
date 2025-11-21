@@ -16,9 +16,6 @@ const nextConfig = {
 // Injected content via Sentry wizard below
 
 import { withSentryConfig } from "@sentry/nextjs";
-import { getSecrets } from "./secrets-logic.mjs";
-
-const secrets = getSecrets();
 
 const sentryConfig = {
   // For all available options, see:
@@ -26,7 +23,6 @@ const sentryConfig = {
 
   org: "toastboycouk",
   project: "javascript-nextjs",
-  authToken: secrets.SENTRY_AUTH_TOKEN,
 
   // Only print logs for uploading source maps in CI
   silent: !process.env.CI,

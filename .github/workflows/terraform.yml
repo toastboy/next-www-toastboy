@@ -26,7 +26,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
 
       - name: Ensure TF plugin cache dir exists
         run: mkdir -p .terraform.d/plugin-cache

@@ -5,6 +5,7 @@ import { execSync } from "child_process";
 import fs from "fs";
 import { readdir } from "fs/promises";
 import path from "path";
+import playerRecordService from "services/PlayerRecord";
 import prisma from "../prisma";
 
 /**
@@ -143,6 +144,11 @@ async function importBackup(): Promise<void> {
             execSync(`cat ${migration} | mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} ${mysqlDatabase}`);
         }
 
+        // Now calculate all the player records to ensure they are up to date
+        console.log('Calculating player records...');
+        await playerRecordService.deleteAll();
+        await playerRecordService.upsertForGameDay();
+
         // Write each table in ${mysqlDatabase} to a JSON file in /tmp/importlivedb
         console.log('Writing tables to JSON files...');
         execSync(`mkdir -p /tmp/importlivedb`);
@@ -155,6 +161,7 @@ async function importBackup(): Promise<void> {
         await writeTableToJSONFile('GameDay.json', prisma.gameDay);
         await writeTableToJSONFile('Outcome.json', prisma.outcome);
         await writeTableToJSONFile('Player.json', prisma.player);
+        await writeTableToJSONFile('PlayerRecord.json', prisma.playerRecord);
 
         // Upload the JSON files to Azure Blob Storage
         const files = await readdir('/tmp/importlivedb');

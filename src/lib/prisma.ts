@@ -4,13 +4,13 @@ let prisma: PrismaClient;
 
 if (process.env.NODE_ENV === "production") {
   prisma = new PrismaClient({
-    log: ['error', 'warn'],
+    // log: ['error', 'warn'], // TODO: decide what to do about log levels in production
   });
 } else {
   const globalWithPrisma = global as typeof globalThis & { prisma: PrismaClient; };
   if (!globalWithPrisma.prisma) {
     globalWithPrisma.prisma = new PrismaClient({
-      log: ['query', 'error', 'warn'],
+      // log: ['query', 'error', 'warn'],
     });
   }
   prisma = globalWithPrisma.prisma;

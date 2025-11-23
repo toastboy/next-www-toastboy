@@ -10,6 +10,7 @@ import { GameChatType } from './generated/schemas/models/GameChat.schema';
 import { GameDayType } from './generated/schemas/models/GameDay.schema';
 import { OutcomeType } from './generated/schemas/models/Outcome.schema';
 import { PlayerType } from './generated/schemas/models/Player.schema';
+import { PlayerRecordType } from './generated/schemas/models/PlayerRecord.schema';
 
 const prisma = new PrismaClient();
 
@@ -104,6 +105,7 @@ async function main() {
     // Now we must populate the tables in the reverse of the order above
     await processJsonData<GameDayType>(containerClient, "GameDay.json", prisma.gameDay);
     await processJsonData<PlayerType>(containerClient, "Player.json", prisma.player);
+    await processJsonData<PlayerRecordType>(containerClient, "PlayerRecord.json", prisma.playerRecord);
     await processJsonData<OutcomeType>(containerClient, "Outcome.json", prisma.outcome);
     await processJsonData<GameChatType>(containerClient, "GameChat.json", prisma.gameChat);
     await processJsonData<CountryType>(containerClient, "Country.json", prisma.country);

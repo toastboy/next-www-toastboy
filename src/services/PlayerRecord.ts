@@ -419,10 +419,14 @@ export class PlayerRecordService {
                 const yearPlayerRecords: Record<number, Partial<PlayerRecordType>> = {};
                 const yearOutcomes = await outcomeService.getAllForYear(year);
 
+                console.log(`Processing year ${year}...`);
+
                 for (const gameDay of gameDays) {
                     if (gameDay.date.getFullYear() !== year || gameDay.date > today) {
                         continue;
                     }
+
+                    console.log(`  Processing game day ${gameDay.id} (${gameDay.date.toDateString()})...`);
 
                     const gameDayOutcomes = await outcomeService.getByGameDay(gameDay.id);
 

@@ -40,7 +40,7 @@ module.exports = {
                 '^.+\\.css$': 'jest-css-modules-transform',
             },
             transformIgnorePatterns: [
-                "node_modules/(?!(nanostores|better-auth|uncrypto|jose|@noble)/)",
+                "node_modules/(?!(nanostores|better-auth|@better-auth|uncrypto|jose|@noble)/)",
             ],
             watchPathIgnorePatterns: [
                 "<rootDir>/.git/",
@@ -92,7 +92,7 @@ module.exports = {
                 '^.+\\.css$': 'jest-css-modules-transform',
             },
             transformIgnorePatterns: [
-                "node_modules/(?!(nanostores|better-auth|uncrypto|jose|@noble)/)",
+                "node_modules/(?!(nanostores|better-auth|@better-auth|uncrypto|jose|@noble)/)",
             ],
             watchPathIgnorePatterns: [
                 "<rootDir>/.git/",
@@ -142,7 +142,7 @@ module.exports = {
                 '^.+\\.css$': 'jest-css-modules-transform',
             },
             transformIgnorePatterns: [
-                "node_modules/(?!(nanostores|better-auth|uncrypto|jose|@noble)/)",
+                "node_modules/(?!(nanostores|better-auth|@better-auth|uncrypto|jose|@noble)/)",
             ],
             watchPathIgnorePatterns: [
                 "<rootDir>/.git/",

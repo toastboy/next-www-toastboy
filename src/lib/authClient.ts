@@ -135,6 +135,7 @@ export const authClient = {
                     updatedAt: new Date('2023-01-01'),
                     emailVerified: false,
                     image: null,
+                    banned: false,
                 },
                 {
                     id: 'test-admin-id',
@@ -145,6 +146,7 @@ export const authClient = {
                     updatedAt: new Date('2023-01-01'),
                     emailVerified: false,
                     image: null,
+                    banned: false,
                 },
             ];
 

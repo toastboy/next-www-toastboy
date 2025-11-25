@@ -12,7 +12,7 @@ docker buildx build \
     --build-arg GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET} \
     --build-arg MICROSOFT_CLIENT_ID=${MICROSOFT_CLIENT_ID} \
     --build-arg MICROSOFT_CLIENT_SECRET=${MICROSOFT_CLIENT_SECRET} \
-    --build-arg MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD} \
+    --build-arg DATABASE_PASSWORD=${DATABASE_PASSWORD} \
     --build-arg SENTRY_AUTH_TOKEN=${SENTRY_AUTH_TOKEN} \
     --load \
     -t next-www-toastboy:latest \

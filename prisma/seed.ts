@@ -1,6 +1,6 @@
 import { ClientSecretCredential } from '@azure/identity';
 import { BlobServiceClient, ContainerClient } from '@azure/storage-blob';
-import { Prisma, PrismaClient } from '@prisma/client';
+import { Account, Prisma, PrismaClient, User, Verification } from '@prisma/client';
 import { ArseType } from './generated/schemas/models/Arse.schema';
 import { ClubType } from './generated/schemas/models/Club.schema';
 import { ClubSupporterType } from './generated/schemas/models/ClubSupporter.schema';
@@ -114,10 +114,12 @@ async function main() {
     await processJsonData<ClubSupporterType>(containerClient, "ClubSupporter.json", prisma.clubSupporter);
     await processJsonData<ArseType>(containerClient, "Arse.json", prisma.arse);
 
-    // Ideally I'd calculate all the PlayerRecords from the data in the database
-    // at this point but I've struggled to get ts-node to work with the main
-    // app's module config. Instead there's the interactive admin interface at
-    // footy/admin
+    // Finally, the auth tables
+    await processJsonData<Account>(containerClient, "account.json", prisma.account);
+    await processJsonData<User>(containerClient, "user.json", prisma.user);
+    await processJsonData<Verification>(containerClient, "verification.json", prisma.verification);
+
+    console.log('Database seeding complete.');
 }
 
 main()

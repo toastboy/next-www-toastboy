@@ -4,14 +4,14 @@ services:
     restart: always
     command: --log-warnings=1
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${DATABASE_PASSWORD}
     volumes:
       - db_data:/var/lib/mysql
     healthcheck:
       test:
         [
           "CMD-SHELL",
-          "mariadb-admin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD || exit 1",
+          "mariadb-admin ping -h localhost -u root -p$$DATABASE_PASSWORD || exit 1",
         ]
       interval: 10s
       timeout: 5s
@@ -25,7 +25,7 @@ services:
       db:
         condition: service_healthy
     environment:
-      DATABASE_URL: "mysql://root:${MYSQL_ROOT_PASSWORD}@db:3306/footy?connection_limit=5&pool_timeout=20"
+      DATABASE_URL: "mysql://root:${DATABASE_PASSWORD}@db:3306/footy?connection_limit=5&pool_timeout=20"
       AZURE_TENANT_ID: ${AZURE_TENANT_ID}
       AZURE_CLIENT_ID: ${AZURE_CLIENT_ID}
       AZURE_CLIENT_SECRET: ${AZURE_CLIENT_SECRET}
@@ -53,7 +53,7 @@ services:
       start_period: 40s
       retries: 3
     environment:
-      DATABASE_URL: "mysql://root:${MYSQL_ROOT_PASSWORD}@db:3306/footy?connection_limit=10&pool_timeout=20&connect_timeout=10"
+      DATABASE_URL: "mysql://root:${DATABASE_PASSWORD}@db:3306/footy?connection_limit=10&pool_timeout=20&connect_timeout=10"
       SECRETS_DIR: /run/secrets
     secrets:
       - AZURE_CLIENT_ID

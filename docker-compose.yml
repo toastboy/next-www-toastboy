@@ -3,7 +3,7 @@ services:
     image: mariadb:lts
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${DATABASE_PASSWORD}
     ports:
       - "33306:3306"
     volumes:

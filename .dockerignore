@@ -35,8 +35,6 @@ docker
 tmp
 terraform
 scripts
-!scripts/docker
-!scripts/docker/run-build-with-secrets.sh
 
 # IDE directories
 .vscode

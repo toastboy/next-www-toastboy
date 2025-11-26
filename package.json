@@ -101,5 +101,8 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.3",
     "whatwg-fetch": "^3.6.20"
+  },
+  "overrides": {
+    "@swc/helpers": "0.5.15"
   }
 }

@@ -1,6 +1,10 @@
 import { expect, test } from '@playwright/test';
 
 test('enumerate homepage links', async ({ page }) => {
+    page.on('framenavigated', (frame) => {
+        console.log('[PLAYWRIGHT] Navigated to:', frame.url());
+    });
+
     await page.goto('/');
     await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
     await expect(page).toHaveTitle(/Toastboy FC/);

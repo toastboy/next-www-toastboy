@@ -6,6 +6,8 @@ test('enumerate homepage links', async ({ page }) => {
     });
 
     await page.goto('/');
+    await page.waitForURL('**/footy');
+
     await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
     await expect(page).toHaveTitle(/Toastboy FC/);
 

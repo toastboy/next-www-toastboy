@@ -31,12 +31,11 @@ test.describe('Mail active players', () => {
         await page.waitForLoadState('networkidle');
         expect(response?.ok()).toBeTruthy();
 
-        expect(await page.getByText(subject).count()).toBeGreaterThanOrEqual(1);
-        expect(await page.getByText(body).count()).toBeGreaterThanOrEqual(1);
+        await expect(page.getByText(subject).first()).toBeVisible();
+        await expect(page.getByText(body).first()).toBeVisible();
 
         await page.getByRole('button', { name: 'Delete all' }).click();
         await page.locator('button.btn.btn-danger[data-bs-dismiss="modal"]', { hasText: 'Delete' }).waitFor({ state: 'visible' });
         await page.locator('button.btn.btn-danger[data-bs-dismiss="modal"]', { hasText: 'Delete' }).click();
     });
 });
-

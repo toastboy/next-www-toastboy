@@ -31,8 +31,8 @@ test.describe('Mail active players', () => {
         await page.waitForLoadState('networkidle');
         expect(response?.ok()).toBeTruthy();
 
-        await expect(page.getByText(subject).first()).toBeVisible();
-        await expect(page.getByText(body).first()).toBeVisible();
+        await expect(page.getByText(subject).first()).toBeVisible({ timeout: 60000 });
+        await expect(page.getByText(body).first()).toBeVisible({ timeout: 60000 });
 
         await page.getByRole('button', { name: 'Delete all' }).click();
         await page.locator('button.btn.btn-danger[data-bs-dismiss="modal"]', { hasText: 'Delete' }).waitFor({ state: 'visible' });

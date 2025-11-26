@@ -1,10 +1,6 @@
 import { expect, test } from '@playwright/test';
 
 test('enumerate homepage links', async ({ page }) => {
-    page.on('framenavigated', (frame) => {
-        console.log('[PLAYWRIGHT] Navigated to:', frame.url());
-    });
-
     await page.goto('/');
     await page.waitForURL('**/footy');
 

@@ -26,7 +26,7 @@ jobs:
           export-env: true
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          MYSQL_ROOT_PASSWORD: op://next-www-toastboy/MYSQL_ROOT_PASSWORD/password
+          DATABASE_PASSWORD: op://next-www-toastboy/DATABASE_PASSWORD/password
           DATABASE_URL: op://next-www-toastboy/DATABASE_URL/Section_4wa3sl6ppxfmyj6xihxrpgbctq/connection string
           AZURE_TENANT_ID: op://next-www-toastboy/AZURE_TENANT_ID/Section_ylvm7oce47qvgs6ntrhrja2mbm/uuid
           AZURE_CLIENT_ID: op://next-www-toastboy/AZURE_CLIENT_ID/Section_ueteoth5u6psueairn64jkyfvq/uuid
@@ -41,25 +41,25 @@ jobs:
           SENTRY_AUTH_TOKEN: op://next-www-toastboy/SENTRY_AUTH_TOKEN/Section_vi2z4utsexivhdrvq7jpproi5a/auth token
       - name: Configure local DATABASE_URL for CI
         env:
-          MYSQL_ROOT_PASSWORD: ${{ env.MYSQL_ROOT_PASSWORD }}
+          DATABASE_PASSWORD: ${{ env.DATABASE_PASSWORD }}
         run: |
           python3 - <<'PY' "$GITHUB_ENV"
           import os, sys
           env_path = sys.argv[1]
-          password = os.environ["MYSQL_ROOT_PASSWORD"]
+          password = os.environ["DATABASE_PASSWORD"]
           with open(env_path, "a", encoding="utf-8") as fh:
               fh.write(f"DATABASE_URL=mysql://root:{password}@127.0.0.1:33306/footy\n")
           PY
-      - name: Start database
+      - name: Start docker stack (database, mailpit, etc.)
         env:
-          MYSQL_ROOT_PASSWORD: ${{ env.MYSQL_ROOT_PASSWORD }}
-        run: docker compose up -d db
+          DATABASE_PASSWORD: ${{ env.DATABASE_PASSWORD }}
+        run: docker compose up -d
       - name: Wait for database
         env:
-          MYSQL_ROOT_PASSWORD: ${{ env.MYSQL_ROOT_PASSWORD }}
+          DATABASE_PASSWORD: ${{ env.DATABASE_PASSWORD }}
         run: |
           for i in {1..30}; do
-            if docker compose exec -T db mysqladmin ping -h 127.0.0.1 -p"$MYSQL_ROOT_PASSWORD" --silent; then
+            if docker compose exec -T db mysqladmin ping -h 127.0.0.1 -p"$DATABASE_PASSWORD" --silent; then
               exit 0
             fi
             sleep 2
@@ -77,7 +77,7 @@ jobs:
       - name: Run Playwright tests
         env:
           DATABASE_URL: ${{ env.DATABASE_URL }}
-          MYSQL_ROOT_PASSWORD: ${{ env.MYSQL_ROOT_PASSWORD }}
+          DATABASE_PASSWORD: ${{ env.DATABASE_PASSWORD }}
           AZURE_TENANT_ID: ${{ env.AZURE_TENANT_ID }}
           AZURE_CLIENT_ID: ${{ env.AZURE_CLIENT_ID }}
           AZURE_CLIENT_SECRET: ${{ env.AZURE_CLIENT_SECRET }}

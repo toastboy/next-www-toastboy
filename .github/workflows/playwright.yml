@@ -63,8 +63,6 @@ jobs:
           done
           docker compose logs db
           exit 1
-      - name: Run prisma generate
-        run: npx prisma generate
       - name: Push Prisma schema
         run: npx prisma db push
       - name: Seed database

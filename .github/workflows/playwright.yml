@@ -54,11 +54,9 @@ jobs:
           DATABASE_PASSWORD: ${{ env.DATABASE_PASSWORD }}
         run: docker compose up -d
       - name: Wait for database
-        env:
-          DATABASE_PASSWORD: ${{ env.DATABASE_PASSWORD }}
         run: |
           for i in {1..30}; do
-            if docker compose exec -T db mysqladmin ping -h 127.0.0.1 -p"$DATABASE_PASSWORD" --silent; then
+            if [ "$(docker inspect --format='{{.State.Health.Status}}' $(docker compose ps -q db))" = "healthy" ]; then
               exit 0
             fi
             sleep 2

@@ -3,7 +3,7 @@ import React from 'react';
 
 type Props = object
 
-const Page: React.FC<Props> = async () => {
+const Page: React.FC<Props> = () => {
     return (
         <SignIn redirect='/footy/info' />
     );

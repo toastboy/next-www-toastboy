@@ -24,12 +24,13 @@ export default function Page() {
                     setUsers(await authClient.listUsers());
                 }
             } catch (error) {
-                Sentry.captureMessage(`Error fetching users: ${error}`, 'error');
+                Sentry.captureMessage(`Error fetching users: ${String(error)}`, 'error');
                 setErrorMessage('An error occurred while fetching users');
             }
         };
 
-        fetchUsers();
+        // Errors are handled inside fetchUsers
+        void fetchUsers();
     }, [isAllowed]);
 
     const handleSort = (key: keyof UserWithRole) => {
@@ -47,13 +48,13 @@ export default function Page() {
             setUsers((prevUsers) =>
                 prevUsers?.map((user) =>
                     user.id === userId ? { ...user, role: isAdmin ? 'admin' : 'user' } : user,
-                ) || [],
+                ) ?? [],
             );
 
             // Call API to update user role
             await authClient.setAdmin(userId, isAdmin);
         } catch (error) {
-            Sentry.captureMessage(`Error updating user role: ${error}`, 'error');
+            Sentry.captureMessage(`Error updating user role: ${String(error)}`, 'error');
             setErrorMessage('Failed to update admin status');
         }
     };
@@ -64,7 +65,7 @@ export default function Page() {
             user.name.toLowerCase().includes(searchTerm) ||
             user.email.toLowerCase().includes(searchTerm)
         );
-    }) || [];
+    }) ?? [];
 
     const sortedUsers = filteredUsers ? [...filteredUsers].sort((a, b) => {
         if (!sortBy) return 0;

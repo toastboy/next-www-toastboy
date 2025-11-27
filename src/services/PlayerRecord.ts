@@ -70,7 +70,7 @@ export class PlayerRecordService {
 
             return prisma.playerRecord.findUnique({ where });
         } catch (error) {
-            log(`Error fetching playerRecords: ${error}`);
+            log(`Error fetching playerRecords: ${String(error)}`);
             throw error;
         }
     }
@@ -84,7 +84,7 @@ export class PlayerRecordService {
         try {
             return prisma.playerRecord.findMany({});
         } catch (error) {
-            log(`Error fetching playerRecords: ${error}`);
+            log(`Error fetching playerRecords: ${String(error)}`);
             throw error;
         }
     }
@@ -111,7 +111,7 @@ export class PlayerRecordService {
             return [lastGameDay, total.gameDayId];
         }
         catch (error) {
-            log(`Error fetching playerRecords: ${error}`);
+            log(`Error fetching playerRecords: ${String(error)}`);
             throw error;
         }
     }
@@ -141,7 +141,7 @@ export class PlayerRecordService {
 
             return Promise.resolve(distinctYears);
         } catch (error) {
-            log(`Error fetching playerRecords: ${error}`);
+            log(`Error fetching playerRecords: ${String(error)}`);
             throw error;
         }
     }
@@ -162,7 +162,7 @@ export class PlayerRecordService {
                 },
             });
         } catch (error) {
-            log(`Error fetching playerRecords by GameDay: ${error}`);
+            log(`Error fetching playerRecords by GameDay: ${String(error)}`);
             throw error;
         }
     }
@@ -181,7 +181,7 @@ export class PlayerRecordService {
                 },
             });
         } catch (error) {
-            log(`Error fetching playerRecords by player: ${error}`);
+            log(`Error fetching playerRecords by player: ${String(error)}`);
             throw error;
         }
     }
@@ -246,7 +246,7 @@ export class PlayerRecordService {
                 return result;
             }
         } catch (error) {
-            log(`Error fetching playerRecord for player: ${error}`);
+            log(`Error fetching playerRecord for player: ${String(error)}`);
             throw error;
         }
     }
@@ -277,7 +277,7 @@ export class PlayerRecordService {
 
             return firstPlaceRecords.filter((record) => seasonEnders.includes(record.gameDayId));
         } catch (error) {
-            log(`Error fetching playerRecords for winners: ${error}`);
+            log(`Error fetching playerRecords for winners: ${String(error)}`);
             throw error;
         }
     }
@@ -340,7 +340,7 @@ export class PlayerRecordService {
                 take: take,
             });
         } catch (error) {
-            log(`Error fetching playerRecords for table: ${error}`);
+            log(`Error fetching playerRecords for table: ${String(error)}`);
             throw error;
         }
     }
@@ -358,7 +358,7 @@ export class PlayerRecordService {
 
             return await prisma.playerRecord.create({ data });
         } catch (error) {
-            log(`Error creating playerRecord: ${error}`);
+            log(`Error creating playerRecord: ${String(error)}`);
             throw error;
         }
     }
@@ -387,7 +387,7 @@ export class PlayerRecordService {
 
             return await prisma.playerRecord.upsert({ where, update, create });
         } catch (error) {
-            log(`Error upserting PlayerRecord: ${error}`);
+            log(`Error upserting PlayerRecord: ${String(error)}`);
             throw error;
         }
     }
@@ -451,7 +451,7 @@ export class PlayerRecordService {
 
             return Promise.resolve(playerRecords);
         } catch (error) {
-            log(`Error upserting PlayerRecord: ${error}`);
+            log(`Error upserting PlayerRecord: ${String(error)}`);
             throw error;
         }
     }
@@ -472,7 +472,7 @@ export class PlayerRecordService {
 
             await prisma.playerRecord.delete({ where });
         } catch (error) {
-            log(`Error deleting playerRecord: ${error}`);
+            log(`Error deleting playerRecord: ${String(error)}`);
             throw error;
         }
     }
@@ -486,7 +486,7 @@ export class PlayerRecordService {
         try {
             await prisma.playerRecord.deleteMany();
         } catch (error) {
-            log(`Error deleting playerRecords: ${error}`);
+            log(`Error deleting playerRecords: ${String(error)}`);
             throw error;
         }
     }
@@ -520,7 +520,7 @@ async function calculateYearPlayerRecords(
     for (const outcome of gameDayOutcomes) {
         yearPlayerRecords[outcome.playerId] = {
             ...yearPlayerRecords[outcome.playerId],
-            ...await calculatePlayerRecord(year, gameDay, yearOutcomes, outcome),
+            ...calculatePlayerRecord(year, gameDay, yearOutcomes, outcome),
         };
     }
 
@@ -622,12 +622,12 @@ async function calculateYearPlayerRecords(
  * @param outcome - The outcome for the specific game day.
  * @returns A promise that resolves to a partial player record object.
  */
-async function calculatePlayerRecord(
+function calculatePlayerRecord(
     year: number,
     gameDay: GameDayType,
     yearOutcomes: OutcomeType[],
     outcome: OutcomeType,
-): Promise<Partial<PlayerRecordType>> {
+): Partial<PlayerRecordType> {
     const playerYearOutcomes = yearOutcomes.filter(o => o.playerId === outcome.playerId &&
         o.gameDayId <= gameDay.id);
     const playerYearRespondedOutcomes = playerYearOutcomes.filter(o => o.response != null);
@@ -649,8 +649,8 @@ async function calculatePlayerRecord(
     }
 
     if (data.played && data.played > 0) {
-        data.points = playerYearPlayedOutcomes.reduce((acc, o) => acc + (o.points || 0), 0);
-        data.averages = playerYearPlayedOutcomes.reduce((acc, o) => acc + (o.points || 0), 0) / data.played;
+        data.points = playerYearPlayedOutcomes.reduce((acc, o) => acc + (o.points ?? 0), 0);
+        data.averages = playerYearPlayedOutcomes.reduce((acc, o) => acc + (o.points ?? 0), 0) / data.played;
     }
 
     const responseIntervals = playerYearOutcomes

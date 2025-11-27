@@ -39,19 +39,19 @@ export default function SignUpPage() {
                 playerId: 12, // TODO: Replace with actual player ID
             }, {
                 onRequest: () => {
-                    //show loading
+                    // TODO: show loading
                 },
                 onSuccess: () => {
-                    //redirect to the dashboard
+                    // TODO: redirect to the dashboard
                 },
                 onError: (ctx) => {
                     alert(ctx.error.message);
                 },
             });
 
-            Sentry.captureMessage(`Sign up result: ${result}`, 'info');
+            Sentry.captureMessage(`Sign up result: ${JSON.stringify(result)}`, 'info');
         } catch (error) {
-            Sentry.captureMessage(`Sign in error: ${error}`, 'error');
+            Sentry.captureMessage(`Sign in error: ${String(error)}`, 'error');
             setErrorMessage('Something went wrong. Please try again.');
         } finally {
             setLoading(false);

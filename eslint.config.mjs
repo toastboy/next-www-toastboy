@@ -173,6 +173,7 @@ const config = [
         rules: {
             "@typescript-eslint/no-floating-promises": "error",
             "@typescript-eslint/no-misused-promises": ["error", { checksVoidReturn: false }],
+            "@typescript-eslint/unbound-method": "off",
         },
     },
     // Jest rules for all tests

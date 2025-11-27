@@ -88,7 +88,7 @@ describe('PlayerRecordService', () => {
                 playerRecord.year === args.where.playerId_year_gameDayId.year &&
                 playerRecord.gameDayId === args.where.playerId_year_gameDayId.gameDayId,
             );
-            return Promise.resolve(playerRecord ? playerRecord : null);
+            return Promise.resolve(playerRecord ?? null);
         });
 
         (prisma.playerRecord.findMany as jest.Mock).mockImplementation((args: {
@@ -161,7 +161,7 @@ describe('PlayerRecordService', () => {
                 playerRecord.year === args.where.playerId_year_gameDayId.year &&
                 playerRecord.gameDayId === args.where.playerId_year_gameDayId.gameDayId,
             );
-            return Promise.resolve(playerRecord ? playerRecord : null);
+            return Promise.resolve(playerRecord ?? null);
         });
     });
 
@@ -195,17 +195,12 @@ describe('PlayerRecordService', () => {
 
         it('should retrieve all PlayerRecords', async () => {
             const result = await playerRecordService.getAll();
-            if (result) {
-                expect(result).toHaveLength(100);
-                for (const playerRecord of result) {
-                    expect(playerRecord).toEqual({
-                        ...defaultPlayerRecord,
-                        gameDayId: expect.any(Number),
-                    } as PlayerRecordType);
-                }
-            }
-            else {
-                throw new Error("Result is null");
+            expect(result).toHaveLength(100);
+            for (const playerRecord of result) {
+                expect(playerRecord).toEqual({
+                    ...defaultPlayerRecord,
+                    gameDayId: expect.any(Number),
+                } as PlayerRecordType);
             }
         });
     });
@@ -292,35 +287,25 @@ describe('PlayerRecordService', () => {
 
         it('should retrieve the correct PlayerRecords for GameDay id 15', async () => {
             const result = await playerRecordService.getByGameDay(15);
-            if (result) {
-                expect(result).toHaveLength(1);
-                for (const playerRecordResult of result) {
-                    expect(playerRecordResult).toEqual({
-                        ...defaultPlayerRecord,
-                        playerId: expect.any(Number),
-                        gameDayId: 15,
-                    } as PlayerRecordType);
-                }
-            }
-            else {
-                throw new Error("Result is null");
+            expect(result).toHaveLength(1);
+            for (const playerRecordResult of result) {
+                expect(playerRecordResult).toEqual({
+                    ...defaultPlayerRecord,
+                    playerId: expect.any(Number),
+                    gameDayId: 15,
+                } as PlayerRecordType);
             }
         });
 
         it('should retrieve the correct PlayerRecords for GameDay id 15 and year 2021', async () => {
             const result = await playerRecordService.getByGameDay(15, 2021);
-            if (result) {
-                expect(result).toHaveLength(1);
-                for (const playerRecordResult of result) {
-                    expect(playerRecordResult).toEqual({
-                        ...defaultPlayerRecord,
-                        playerId: expect.any(Number),
-                        gameDayId: 15,
-                    } as PlayerRecordType);
-                }
-            }
-            else {
-                throw new Error("Result is null");
+            expect(result).toHaveLength(1);
+            for (const playerRecordResult of result) {
+                expect(playerRecordResult).toEqual({
+                    ...defaultPlayerRecord,
+                    playerId: expect.any(Number),
+                    gameDayId: 15,
+                } as PlayerRecordType);
             }
         });
 
@@ -339,18 +324,13 @@ describe('PlayerRecordService', () => {
 
         it('should retrieve the correct PlayerRecords for Player ID 12', async () => {
             const result = await playerRecordService.getByPlayer(12);
-            if (result) {
-                expect(result).toHaveLength(100);
-                for (const playerRecordResult of result) {
-                    expect(playerRecordResult).toEqual({
-                        ...defaultPlayerRecord,
-                        playerId: 12,
-                        gameDayId: expect.any(Number),
-                    } as PlayerRecordType);
-                }
-            }
-            else {
-                throw new Error("Result is null");
+            expect(result).toHaveLength(100);
+            for (const playerRecordResult of result) {
+                expect(playerRecordResult).toEqual({
+                    ...defaultPlayerRecord,
+                    playerId: 12,
+                    gameDayId: expect.any(Number),
+                } as PlayerRecordType);
             }
         });
 
@@ -527,7 +507,8 @@ describe('PlayerRecordService', () => {
 
     describe('getTable qualified/unqualified speedy', () => {
         beforeEach(() => {
-            const playerRecordList: PlayerRecordType[] = JSON.parse(fs.readFileSync('./tests/services/data/PlayerRecord.test.json').toString());
+            const playerRecordList: PlayerRecordType[] =
+                JSON.parse(fs.readFileSync('./tests/services/data/PlayerRecord.test.json').toString());
 
             (prisma.playerRecord.findMany as jest.Mock).mockImplementation((args: {
                 where: {
@@ -796,16 +777,19 @@ describe('PlayerRecordService', () => {
     describe('delete', () => {
         it('should delete an existing PlayerRecord', async () => {
             await playerRecordService.delete(12, 2021, 15);
+            expect(prisma.playerRecord.delete).toHaveBeenCalledTimes(1);
         });
 
         it('should silently return when asked to delete an PlayerRecord that does not exist', async () => {
             await playerRecordService.delete(16, 2022, 7);
+            expect(prisma.playerRecord.delete).toHaveBeenCalledTimes(1);
         });
     });
 
     describe('deleteAll', () => {
         it('should delete all PlayerRecords', async () => {
             await playerRecordService.deleteAll();
+            expect(prisma.playerRecord.deleteMany).toHaveBeenCalledTimes(1);
         });
     });
 });

@@ -27,12 +27,13 @@ const Page: React.FC<Props> = (props) => {
                 }
             }
             catch (error) {
-                Sentry.captureMessage(`Error fetching users: ${error}`, 'error');
+                Sentry.captureMessage(`Error fetching users: ${String(error)}`, 'error');
                 setErrorMessage('An error occurred while fetching users');
             }
         };
 
-        fetchUsers();
+        // Errors are handled inside fetchUsers
+        void fetchUsers();
     }, [email, isAllowed]);
 
     const user = users?.[0];

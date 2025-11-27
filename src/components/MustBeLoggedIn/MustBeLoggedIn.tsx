@@ -35,7 +35,7 @@ function MustBeLoggedIn({ children, admin = false, showSignIn = true, onValidati
     const session = authClient.useSession();
 
     useEffect(() => {
-        const checkSession = async () => {
+        const checkSession = () => {
             if (!session.isPending) {
                 const valid = admin ? authClient.isAdmin(session) : authClient.isLoggedIn(session);
                 setIsValid(valid);

@@ -4,9 +4,9 @@ import 'whatwg-fetch';
 import { TextDecoder as NodeTextDecoder, TextEncoder as NodeTextEncoder } from 'util';
 
 global.ResizeObserver = class ResizeObserver {
-    observe() { }
-    unobserve() { }
-    disconnect() { }
+    observe() { /* empty */ }
+    unobserve() { /* empty */ }
+    disconnect() { /* empty */ }
 };
 
 if (typeof global.TextDecoder === 'undefined') {

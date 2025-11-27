@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import PlayerHistory, { Props } from 'components/PlayerHistory/PlayerHistory';
 import playerService from 'services/Player';
 
@@ -28,7 +28,7 @@ describe('PlayerHistory', () => {
         const element = await PlayerHistory({ playerId: 42, year: 2023 } as Props);
         render(<Wrapper>{element}</Wrapper>);
 
-        await waitFor(() => screen.getByText(/YearSelector/));
+        await screen.findByText(/YearSelector/);
 
         expect(playerService.getYearsActive).toHaveBeenCalledWith(42);
         expect(
@@ -48,7 +48,7 @@ describe('PlayerHistory', () => {
         const element = await PlayerHistory({ playerId: 7, year: 2024 } as Props);
         render(<Wrapper>{element}</Wrapper>);
 
-        await waitFor(() => screen.getByText(/YearSelector/));
+        await screen.findByText(/YearSelector/);
 
         expect(playerService.getYearsActive).toHaveBeenCalledWith(7);
         expect(

@@ -27,7 +27,7 @@ const crawlSite = async (startUrl: string, domain: string) => {
     const visited: LinkQueue = {};
 
     while (Object.keys(toVisit).length > 0) {
-        const [currentUrl] = Object.entries(toVisit).find(() => true) || [''];
+        const [currentUrl] = Object.entries(toVisit).find(() => true) ?? [''];
         delete toVisit[currentUrl];
         if (!currentUrl || visited[currentUrl] || !currentUrl.startsWith(domain)) continue;
 

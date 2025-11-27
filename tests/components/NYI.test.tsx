@@ -1,12 +1,12 @@
 import { render, screen } from '@testing-library/react';
 import NYI from 'components/NYI/NYI';
 
-import { loaderClass,Wrapper } from "./lib/common";
+import { Wrapper } from "./lib/common";
 
 describe('NYI', () => {
     it('renders correctly', () => {
-        const { container } = render(<Wrapper><NYI /></Wrapper>);
-        expect(container.querySelector(loaderClass)).not.toBeInTheDocument();
+        render(<Wrapper><NYI /></Wrapper>);
+        expect(screen.queryByRole('status')).not.toBeInTheDocument();
         expect(screen.getByText("(Not yet implemented)")).toBeInTheDocument();
     });
 });

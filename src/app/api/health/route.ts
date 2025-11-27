@@ -1,6 +1,7 @@
+import 'server-only';
+
 import prisma from 'lib/prisma';
 import { NextResponse } from 'next/server';
-import 'server-only';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -28,7 +29,7 @@ export async function GET() {
                     'Connection': 'close',
                     'Cache-Control': 'no-store, no-cache, must-revalidate',
                 },
-            }
+            },
         );
     } catch (error) {
         console.error('Health check failed:', error);
@@ -46,7 +47,7 @@ export async function GET() {
                     'Connection': 'close',
                     'Cache-Control': 'no-store, no-cache, must-revalidate',
                 },
-            }
+            },
         );
     }
 }

@@ -1,5 +1,6 @@
 import { render } from '@testing-library/react';
 import NavbarNested from 'components/NavBarNested/NavBarNested';
+
 import { Wrapper } from "./lib/common";
 
 jest.mock('components/UserButton/UserButton', () => {

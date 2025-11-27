@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import NYI from 'components/NYI/NYI';
-import { Wrapper, loaderClass } from "./lib/common";
+
+import { loaderClass,Wrapper } from "./lib/common";
 
 describe('NYI', () => {
     it('renders correctly', () => {

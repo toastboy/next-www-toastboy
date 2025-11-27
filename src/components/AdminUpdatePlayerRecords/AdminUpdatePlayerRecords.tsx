@@ -17,7 +17,7 @@ const AdminUpdatePlayerRecords: React.FC = () => {
         return () => clearInterval(intervalId);
     }, [mutate]);
 
-    if (!data || data.length !== 2) return null;
+    if (data?.length !== 2) return null;
 
     const progress = Math.floor(100 * data[0] / data[1]);
 

@@ -137,7 +137,7 @@ describe('PlayerService', () => {
             });
         });
 
-        it('should retrieve the correct player with login ', async () => {
+        it('should retrieve the correct player with login', async () => {
             const result = await playerService.getByLogin("garyp");
             expect(result).toEqual({
                 ...defaultPlayer,
@@ -164,7 +164,7 @@ describe('PlayerService', () => {
 
         it('should retrieve the correct player login with id 1', async () => {
             const result = await playerService.getLogin("1");
-            expect(result).toEqual("garyp");
+            expect(result).toBe("garyp");
         });
         it('should return null for id 107', async () => {
             const result = await playerService.getLogin("107");
@@ -184,7 +184,7 @@ describe('PlayerService', () => {
 
         it('should retrieve the correct player login with login "garyp"', async () => {
             const result = await playerService.getLogin("garyp");
-            expect(result).toEqual("garyp");
+            expect(result).toBe("garyp");
         });
 
         it('should return null for login "doofus"', async () => {
@@ -205,7 +205,7 @@ describe('PlayerService', () => {
 
         it('should retrieve the correct player login with id 1', async () => {
             const result = await playerService.getId("1");
-            expect(result).toEqual(1);
+            expect(result).toBe(1);
         });
         it('should return null for id 107', async () => {
             const result = await playerService.getId("107");
@@ -225,7 +225,7 @@ describe('PlayerService', () => {
 
         it('should retrieve the correct player login with login "garyp"', async () => {
             const result = await playerService.getId("garyp");
-            expect(result).toEqual(1);
+            expect(result).toBe(1);
         });
 
         it('should return null for login "doofus"', async () => {
@@ -252,8 +252,8 @@ describe('PlayerService', () => {
             });
 
             const result = await playerService.getAll();
-            expect(result.length).toEqual(100);
-            expect(result[11].id).toEqual(12);
+            expect(result).toHaveLength(100);
+            expect(result[11].id).toBe(12);
         });
     });
 
@@ -266,16 +266,16 @@ describe('PlayerService', () => {
 
         it('should return the correct list of all ids and logins', async () => {
             const result = await playerService.getAllIdsAndLogins();
-            expect(result.length).toEqual(200);
-            expect(result[0]).toEqual("1");
-            expect(result[1]).toEqual("garyp");
+            expect(result).toHaveLength(200);
+            expect(result[0]).toBe("1");
+            expect(result[1]).toBe("garyp");
         });
     });
 
     describe('getName', () => {
         it('should return the correct name for a named player', async () => {
             const result = playerService.getName(defaultPlayer);
-            expect(result).toEqual("Gary Player");
+            expect(result).toBe("Gary Player");
         });
 
         it('should return the correct name for an anonymous player', async () => {
@@ -283,7 +283,7 @@ describe('PlayerService', () => {
                 ...defaultPlayer,
                 anonymous: true,
             });
-            expect(result).toEqual("Player 1");
+            expect(result).toBe("Player 1");
         });
     });
 
@@ -359,7 +359,7 @@ describe('PlayerService', () => {
         it('should retrieve the correct last played GameDay for Player ID 1', async () => {
             const result = await playerService.getLastPlayed(1);
             if (result) {
-                expect(result.gameDayId).toEqual(10);
+                expect(result.gameDayId).toBe(10);
             }
             else {
                 throw new Error("Result is null");

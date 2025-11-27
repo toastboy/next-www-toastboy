@@ -111,7 +111,7 @@ describe('clubSupporterService', () => {
         it('should retrieve the correct ClubSupporters for player id 1', async () => {
             const result = await clubSupporterService.getByPlayer(1);
             if (result) {
-                expect(result.length).toEqual(10);
+                expect(result).toHaveLength(10);
                 for (const ClubSupporterResult of result) {
                     expect(ClubSupporterResult).toEqual({
                         ...defaultClubSupporter,
@@ -141,7 +141,7 @@ describe('clubSupporterService', () => {
         it('should retrieve the correct ClubSupporters for club id 1', async () => {
             const result = await clubSupporterService.getByClub(1);
             if (result) {
-                expect(result.length).toEqual(1);
+                expect(result).toHaveLength(1);
                 for (const ClubSupporterResult of result) {
                     expect(ClubSupporterResult).toEqual({
                         ...defaultClubSupporter,
@@ -171,9 +171,9 @@ describe('clubSupporterService', () => {
         it('should return the correct, complete list of 100 ClubSupporters', async () => {
             const result = await clubSupporterService.getAll();
             if (result) {
-                expect(result.length).toEqual(100);
-                expect(result[11].playerId).toEqual(2);
-                expect(result[11].clubId).toEqual(12);
+                expect(result).toHaveLength(100);
+                expect(result[11].playerId).toBe(2);
+                expect(result[11].clubId).toBe(12);
             }
             else {
                 throw new Error("Result is null");

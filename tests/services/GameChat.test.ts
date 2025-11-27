@@ -105,8 +105,8 @@ describe('GameChatService', () => {
         it('should return the correct, complete list of 100 GameChat', async () => {
             const result = await gameChatService.getAll();
             if (result) {
-                expect(result.length).toEqual(100);
-                expect(result[11].id).toEqual(12);
+                expect(result).toHaveLength(100);
+                expect(result[11].id).toBe(12);
             }
             else {
                 throw new Error("Result is null");

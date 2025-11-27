@@ -1,6 +1,6 @@
 import { updatePlayerRecords } from 'actions/updatePlayerRecords';
-import playerRecordService from 'services/PlayerRecord';
 import { revalidatePath } from 'next/cache';
+import playerRecordService from 'services/PlayerRecord';
 
 jest.mock('services/PlayerRecord');
 jest.mock('next/cache');

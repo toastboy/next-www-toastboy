@@ -19,7 +19,7 @@ describe('API tests using HTTP', () => {
         if (response.status !== 200) console.log('Error response:', response.error);
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
-        expect(response.body).toEqual(true);
+        expect(response.body).toBe(true);
     });
 
     it('should return JSON response for a valid gameyear', async () => {
@@ -30,7 +30,7 @@ describe('API tests using HTTP', () => {
         if (response.status !== 200) console.log('Error response:', response.error);
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
-        expect(response.body).toEqual(true);
+        expect(response.body).toBe(true);
     });
 
     it('should return 404 if the gameyear does not exist', async () => {

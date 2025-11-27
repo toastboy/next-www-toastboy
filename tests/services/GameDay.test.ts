@@ -86,9 +86,9 @@ describe('GameDayService', () => {
                 (args.where.id ? gameDay.id <= args.where.id.lte : true) &&
                 (args.where.date ? gameDay.date >= args.where.date.gte : true) &&
                 (args.where.date ? gameDay.date < args.where.date.lt : true) &&
-                (args.where.AND && args.where.AND[0].date ? gameDay.date >= args.where.AND[0].date.gte : true) &&
-                (args.where.AND && args.where.AND[0].date ? gameDay.date < args.where.AND[0].date.lt : true) &&
-                (args.where.AND && args.where.AND[1].date ? gameDay.date > args.where.AND[1].date.gt : true),
+                (args.where.AND?.[0].date ? gameDay.date >= args.where.AND[0].date.gte : true) &&
+                (args.where.AND?.[0].date ? gameDay.date < args.where.AND[0].date.lt : true) &&
+                (args.where.AND?.[1].date ? gameDay.date > args.where.AND[1].date.gt : true),
             ) : gameDayList;
             return Promise.resolve(gameDays ? gameDays.length : null);
         });
@@ -149,8 +149,8 @@ describe('GameDayService', () => {
     describe('getAll', () => {
         it('should return the correct, complete list of 100 GameDays', async () => {
             const result = await gameDayService.getAll();
-            expect(result.length).toEqual(100);
-            expect(result[11].id).toEqual(12);
+            expect(result).toHaveLength(100);
+            expect(result[11].id).toBe(12);
         });
     });
 
@@ -194,34 +194,34 @@ describe('GameDayService', () => {
     describe('getGamesPlayed', () => {
         it('should return the correct number of games played for year 2021', async () => {
             const result = await gameDayService.getGamesPlayed(2021);
-            expect(result).toEqual(100);
+            expect(result).toBe(100);
         });
 
         it('should return the correct number of games played for all years', async () => {
             const result = await gameDayService.getGamesPlayed(0);
-            expect(result).toEqual(100);
+            expect(result).toBe(100);
         });
 
         it('should return zero games played for year 9999', async () => {
             const result = await gameDayService.getGamesPlayed(9999);
-            expect(result).toEqual(0);
+            expect(result).toBe(0);
         });
     });
 
     describe('getGamesRemaining', () => {
         it('should return the correct number of games remaining for year 2021', async () => {
             const result = await gameDayService.getGamesRemaining(2021);
-            expect(result).toEqual(0);
+            expect(result).toBe(0);
         });
 
         it('should return the correct number of games remaining for all years', async () => {
             const result = await gameDayService.getGamesRemaining(0);
-            expect(result).toEqual(0);
+            expect(result).toBe(0);
         });
 
         it('should return zero games remaining for year 9999', async () => {
             const result = await gameDayService.getGamesRemaining(9999);
-            expect(result).toEqual(0);
+            expect(result).toBe(0);
         });
     });
 
@@ -368,8 +368,8 @@ describe('GameDayService', () => {
                 },
             ]);
             const result = await gameDayService.getSeasonEnders();
-            expect(result.length).toEqual(23);
-            expect(result[11]).toEqual(616);
+            expect(result).toHaveLength(23);
+            expect(result[11]).toBe(616);
         });
     });
 
@@ -377,8 +377,8 @@ describe('GameDayService', () => {
         it('should return the correct, complete list of a single year, 2021', async () => {
             const result = await gameDayService.getAllYears();
             if (result) {
-                expect(result.length).toEqual(1);
-                expect(result[0]).toEqual(2021);
+                expect(result).toHaveLength(1);
+                expect(result[0]).toBe(2021);
             }
             else {
                 throw new Error("Result is null");
@@ -391,7 +391,7 @@ describe('GameDayService', () => {
             (prisma.gameDay.findFirst as jest.Mock).mockResolvedValue(defaultGameDay);
             const result = await gameDayService.getYear(2021);
             if (result) {
-                expect(result).toEqual(2021);
+                expect(result).toBe(2021);
             }
             else {
                 throw new Error("Result is null");

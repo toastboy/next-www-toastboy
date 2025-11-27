@@ -1,4 +1,4 @@
-import { Box, Collapse, Flex, Group, UnstyledButton, rem } from '@mantine/core';
+import { Box, Collapse, Flex, Group, rem, UnstyledButton } from '@mantine/core';
 import { IconChevronRight } from '@tabler/icons-react';
 import classes from 'components/NavbarLinksGroup/NavbarLinksGroup.module.css';
 import Link from 'next/link';

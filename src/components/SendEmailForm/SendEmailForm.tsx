@@ -13,6 +13,7 @@ import StarterKit from '@tiptap/starter-kit';
 import { sendEmail } from 'lib/mail';
 import { PlayerType } from 'prisma/generated/schemas/models/Player.schema';
 import { useState } from 'react';
+
 import classes from './SendEmailForm.module.css';
 
 export interface Props {

@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+
 import { asAdmin, asGuest, asUser } from './utils/auth';
 
 test.describe('Users Admin Page with Auth Mocking', () => {

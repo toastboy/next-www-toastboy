@@ -11,9 +11,10 @@ import { OutcomeType } from 'prisma/generated/schemas/models/Outcome.schema';
 import { PlayerType } from 'prisma/generated/schemas/models/Player.schema';
 import { PlayerRecordType } from 'prisma/generated/schemas/models/PlayerRecord.schema';
 import useSWR from 'swr';
+
 import { PlayerData, TurnoutByYear, WDL } from './types';
 
-const fetcher = (input: URL | RequestInfo, init?: RequestInit | undefined) =>
+const fetcher = (input: URL | RequestInfo, init?: RequestInit  ) =>
     fetch(input, init).then((res) => res.json());
 
 export function useClub(id: number) {

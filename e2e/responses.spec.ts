@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+
 import { asGuest, asUser } from './utils/auth';
 
 test.describe('New game flow', () => {

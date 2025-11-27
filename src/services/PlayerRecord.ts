@@ -263,7 +263,7 @@ export class PlayerRecordService {
         year?: number,
     ): Promise<PlayerRecordType[]> {
         try {
-            const rank = rankMap[table as keyof typeof rankMap];
+            const rank = rankMap[table];
             const seasonEnders = await gameDayService.getSeasonEnders();
             const firstPlaceRecords = await prisma.playerRecord.findMany({
                 where: {
@@ -324,7 +324,7 @@ export class PlayerRecordService {
 
             // Now generate the query to fetch the player records
 
-            const rank = `${rankMap[table as keyof typeof rankMap]}${qualified === false ? 'Unqualified' : ''}`;
+            const rank = `${rankMap[table]}${qualified === false ? 'Unqualified' : ''}`;
 
             return prisma.playerRecord.findMany({
                 where: {

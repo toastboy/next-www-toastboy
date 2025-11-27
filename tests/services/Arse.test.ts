@@ -161,7 +161,7 @@ describe('ArseService', () => {
                         defending: true,
                     },
                 });
-                expect(result.inGoal).toEqual(10);
+                expect(result.inGoal).toBe(10);
             }
             else {
                 throw new Error("Result is null");
@@ -196,7 +196,7 @@ describe('ArseService', () => {
                         defending: true,
                     },
                 });
-                expect(result.inGoal).toEqual(null);
+                expect(result.inGoal).toBeNull();
             }
         });
     });
@@ -211,7 +211,7 @@ describe('ArseService', () => {
         it('should retrieve the correct arses for rater id 1', async () => {
             const result = await arseService.getByRater(1);
             if (result) {
-                expect(result.length).toEqual(1);
+                expect(result).toHaveLength(1);
                 for (const arseResult of result) {
                     expect(arseResult).toEqual({
                         ...defaultArse,
@@ -247,8 +247,8 @@ describe('ArseService', () => {
         it('should return the correct, complete list of 100 arses', async () => {
             const result = await arseService.getAll();
             if (result) {
-                expect(result.length).toEqual(100);
-                expect(result[11].playerId).toEqual(2);
+                expect(result).toHaveLength(100);
+                expect(result[11].playerId).toBe(2);
                 expect(result[41].stamp).toEqual(expect.any(Date));
             }
             else {

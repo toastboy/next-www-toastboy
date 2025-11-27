@@ -3,6 +3,7 @@
 import { Flex, FloatingIndicator, ScrollArea, UnstyledButton } from '@mantine/core';
 import { usePathname, useRouter } from 'next/navigation';
 import { useCallback, useRef, useState } from 'react';
+
 import classes from './YearSelector.module.css';
 
 export interface Props {

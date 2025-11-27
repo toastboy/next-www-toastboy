@@ -4,7 +4,8 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import AdminUpdatePlayerRecords from 'components/AdminUpdatePlayerRecords/AdminUpdatePlayerRecords';
 import { act } from 'react';
 import useSWR from 'swr';
-import { Wrapper, loaderClass } from "./lib/common";
+
+import { loaderClass,Wrapper } from "./lib/common";
 
 jest.mock('next/cache');
 jest.mock('services/PlayerRecord');

@@ -8,7 +8,7 @@ export interface Props {
 const PlayerBorn: React.FC<Props> = async ({ playerId }) => {
     const player = await playerService.getById(playerId);
 
-    if (!player || player.born == null) return <></>;
+    if (player?.born == null) return <></>;
 
     return (
         <Text>

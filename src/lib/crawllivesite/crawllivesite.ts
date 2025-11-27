@@ -2,9 +2,7 @@ import axios from 'axios';
 import * as cheerio from 'cheerio';
 import fs from 'fs';
 
-type LinkQueue = {
-    [url: string]: boolean;
-};
+type LinkQueue = Record<string, boolean>;
 
 const fetchPageLinks = async (url: string): Promise<string[]> => {
     try {

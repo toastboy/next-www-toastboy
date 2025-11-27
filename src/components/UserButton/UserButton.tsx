@@ -6,6 +6,7 @@ import { IconAlertTriangle, IconArrowsLeftRight, IconCheck, IconChevronRight, Ic
 import { authClient } from 'lib/authClient';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+
 import classes from './UserButton.module.css';
 
 const UserButton: React.FC = () => {

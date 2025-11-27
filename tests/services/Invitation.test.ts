@@ -106,7 +106,7 @@ describe('InvitationService', () => {
         it('should return the correct, complete list of 100 Invitation', async () => {
             const result = await invitationService.getAll();
             if (result) {
-                expect(result.length).toEqual(100);
+                expect(result).toHaveLength(100);
                 expect(result[11].uuid).toEqual(invitationList[11].uuid);
             }
             else {

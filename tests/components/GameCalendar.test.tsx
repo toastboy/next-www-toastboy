@@ -1,5 +1,6 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import GameCalendar from 'components/GameCalendar/GameCalendar';
+
 import { Wrapper } from "./lib/common";
 
 describe('GameCalendar', () => {
@@ -116,7 +117,7 @@ describe('GameCalendar', () => {
 
     it('renders game day with link when game day exists and game is on', async () => {
         render(<Wrapper><GameCalendar date={new Date('2004-02-03')} /></Wrapper>);
-        const gameDayLink = await waitFor(() => screen.getByRole('link', { name: '27' }));
+        const gameDayLink = await screen.findByRole('link', { name: '27' });
         expect(gameDayLink).toBeInTheDocument();
         expect(gameDayLink).toHaveAttribute('href', '/footy/game/100');
         expect(gameDayLink.querySelector('div')).toHaveStyle({ '--indicator-color': 'var(--mantine-color-green-filled)' });
@@ -124,7 +125,7 @@ describe('GameCalendar', () => {
 
     it('renders game day with link when game day exists and game is off', async () => {
         render(<Wrapper><GameCalendar date={new Date('2004-02-03')} /></Wrapper>);
-        const gameDayLink = await waitFor(() => screen.getByRole('link', { name: '3' }));
+        const gameDayLink = await screen.findByRole('link', { name: '3' });
         expect(gameDayLink).toBeInTheDocument();
         expect(gameDayLink).toHaveAttribute('href', '/footy/game/101');
         expect(gameDayLink.querySelector('div')).toHaveStyle({ '--indicator-color': 'var(--mantine-color-red-filled)' });
@@ -133,8 +134,8 @@ describe('GameCalendar', () => {
     it('does not render game day with link when game day does not exist', async () => {
         render(<Wrapper><GameCalendar date={new Date('2004-02-03')} /></Wrapper>);
         // Wait for the first game day to render before checking
-        await waitFor(() => screen.getByRole('link', { name: '27' }));
-        const gameDayLink = await waitFor(() => screen.queryByRole('link', { name: '28' }));
+        await screen.findByRole('link', { name: '27' });
+        const gameDayLink = screen.queryByRole('link', { name: '28' });
         expect(gameDayLink).not.toBeInTheDocument();
     });
 });

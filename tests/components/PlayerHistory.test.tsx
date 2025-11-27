@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import PlayerHistory, { Props } from 'components/PlayerHistory/PlayerHistory';
 import playerService from 'services/Player';
+
 import { Wrapper } from './lib/common';
 
 jest.mock('components/YearSelector/YearSelector');

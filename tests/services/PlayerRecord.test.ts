@@ -196,7 +196,7 @@ describe('PlayerRecordService', () => {
         it('should retrieve all PlayerRecords', async () => {
             const result = await playerRecordService.getAll();
             if (result) {
-                expect(result.length).toEqual(100);
+                expect(result).toHaveLength(100);
                 for (const playerRecord of result) {
                     expect(playerRecord).toEqual({
                         ...defaultPlayerRecord,
@@ -293,7 +293,7 @@ describe('PlayerRecordService', () => {
         it('should retrieve the correct PlayerRecords for GameDay id 15', async () => {
             const result = await playerRecordService.getByGameDay(15);
             if (result) {
-                expect(result.length).toEqual(1);
+                expect(result).toHaveLength(1);
                 for (const playerRecordResult of result) {
                     expect(playerRecordResult).toEqual({
                         ...defaultPlayerRecord,
@@ -310,7 +310,7 @@ describe('PlayerRecordService', () => {
         it('should retrieve the correct PlayerRecords for GameDay id 15 and year 2021', async () => {
             const result = await playerRecordService.getByGameDay(15, 2021);
             if (result) {
-                expect(result.length).toEqual(1);
+                expect(result).toHaveLength(1);
                 for (const playerRecordResult of result) {
                     expect(playerRecordResult).toEqual({
                         ...defaultPlayerRecord,
@@ -340,7 +340,7 @@ describe('PlayerRecordService', () => {
         it('should retrieve the correct PlayerRecords for Player ID 12', async () => {
             const result = await playerRecordService.getByPlayer(12);
             if (result) {
-                expect(result.length).toEqual(100);
+                expect(result).toHaveLength(100);
                 for (const playerRecordResult of result) {
                     expect(playerRecordResult).toEqual({
                         ...defaultPlayerRecord,
@@ -404,16 +404,16 @@ describe('PlayerRecordService', () => {
 
         it('should retrieve all the winners for the points table for all years', async () => {
             const result = await playerRecordService.getWinners(TableNameSchema.enum.points);
-            expect(result.length).toEqual(2);
-            expect(result[0].year).toEqual(2023);
-            expect(result[1].playerId).toEqual(191);
+            expect(result).toHaveLength(2);
+            expect(result[0].year).toBe(2023);
+            expect(result[1].playerId).toBe(191);
         });
 
         it('should retrieve all the winners for the points table for a specific year', async () => {
             const result = await playerRecordService.getWinners(TableNameSchema.enum.points, 2023);
-            expect(result.length).toEqual(2);
-            expect(result[0].year).toEqual(2023);
-            expect(result[1].playerId).toEqual(191);
+            expect(result).toHaveLength(2);
+            expect(result[0].year).toBe(2023);
+            expect(result[1].playerId).toBe(191);
         });
 
         it('should return an empty list when there are no season-ending games', async () => {
@@ -450,7 +450,7 @@ describe('PlayerRecordService', () => {
                 "gameDayId": 1087,
             });
             const result = await playerRecordService.getTable(TableNameSchema.enum.points, 2022);
-            expect(result.length).toEqual(18);
+            expect(result).toHaveLength(18);
         });
 
         it('should retrieve the same PlayerRecords for the points table when qualified is set explicitly for a given year', async () => {
@@ -458,7 +458,7 @@ describe('PlayerRecordService', () => {
                 "gameDayId": 1087,
             });
             const result = await playerRecordService.getTable(TableNameSchema.enum.points, 2022, true);
-            expect(result.length).toEqual(18);
+            expect(result).toHaveLength(18);
         });
 
         it('should retrieve the correct PlayerRecords for the points table for all time', async () => {
@@ -466,19 +466,19 @@ describe('PlayerRecordService', () => {
                 "gameDayId": 1153,
             });
             const result = await playerRecordService.getTable(TableNameSchema.enum.points, 0);
-            expect(result.length).toEqual(179);
+            expect(result).toHaveLength(179);
         });
 
         it('should return an empty list when retrieving the points table for a year with no PlayerRecords', async () => {
             (prisma.playerRecord.findFirst as jest.Mock).mockResolvedValue({});
             const result = await playerRecordService.getTable(TableNameSchema.enum.points, 2010);
-            expect(result.length).toEqual(0);
+            expect(result).toHaveLength(0);
         });
 
         it('should return an empty list when retrieving the points table for a year that does not exist', async () => {
             (prisma.playerRecord.findFirst as jest.Mock).mockResolvedValue(null);
             const result = await playerRecordService.getTable(TableNameSchema.enum.points, 1984);
-            expect(result.length).toEqual(0);
+            expect(result).toHaveLength(0);
         });
     });
 
@@ -513,7 +513,7 @@ describe('PlayerRecordService', () => {
                 "gameDayId": 1087,
             });
             const result = await playerRecordService.getTable(TableNameSchema.enum.averages, 2022, true);
-            expect(result.length).toEqual(0);
+            expect(result).toHaveLength(0);
         });
 
         it('should retrieve the correct PlayerRecords for the unqualified averages table for a given year', async () => {
@@ -521,7 +521,7 @@ describe('PlayerRecordService', () => {
                 "gameDayId": 1087,
             });
             const result = await playerRecordService.getTable(TableNameSchema.enum.averages, 2022, false);
-            expect(result.length).toEqual(18);
+            expect(result).toHaveLength(18);
         });
     });
 
@@ -556,7 +556,7 @@ describe('PlayerRecordService', () => {
                 "gameDayId": 1087,
             });
             const result = await playerRecordService.getTable(TableNameSchema.enum.speedy, 2022, true);
-            expect(result.length).toEqual(12);
+            expect(result).toHaveLength(12);
         });
 
         it('should retrieve the correct PlayerRecords for the unqualified speedy table for a given year', async () => {
@@ -564,7 +564,7 @@ describe('PlayerRecordService', () => {
                 "gameDayId": 1087,
             });
             const result = await playerRecordService.getTable(TableNameSchema.enum.speedy, 2022, false);
-            expect(result.length).toEqual(10);
+            expect(result).toHaveLength(10);
         });
     });
 
@@ -748,12 +748,12 @@ describe('PlayerRecordService', () => {
 
         it('should create or update all PlayerRecords for a given GameDay', async () => {
             const result = await playerRecordService.upsertForGameDay(15);
-            expect(result.length).toEqual(20);
+            expect(result).toHaveLength(20);
         });
 
         it('should create or update all PlayerRecords for every GameDay', async () => {
             const result = await playerRecordService.upsertForGameDay();
-            expect(result.length).toEqual(300);
+            expect(result).toHaveLength(300);
         });
 
         it('should do nothing if no Outcomes exist for the given GameDay', async () => {

@@ -11,6 +11,7 @@ jest.mock('next/navigation', () => ({
 import { act, render, screen, waitFor } from '@testing-library/react';
 import UserButton from 'components/UserButton/UserButton';
 import { authClient } from 'lib/auth-client';
+
 import { Wrapper } from "./lib/common";
 
 describe('UserButton', () => {
@@ -93,8 +94,8 @@ describe('UserButton', () => {
         const avatar = screen.getByRole('img');
         await waitFor(() => {
             expect(avatar).toBeInTheDocument();
-            expect(avatar).toHaveAttribute('src', "/api/footy/player/12/mugshot");
         });
+        expect(avatar).toHaveAttribute('src', "/api/footy/player/12/mugshot");;
     });
 
     it('renders placeholder avatar', async () => {

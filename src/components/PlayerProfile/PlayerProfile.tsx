@@ -10,6 +10,7 @@ import PlayerMugshot from 'components/PlayerMugshot/PlayerMugshot';
 import PlayerTrophies from 'components/PlayerTrophies/PlayerTrophies';
 import { PlayerType } from 'prisma/generated/schemas/models/Player.schema';
 import { Suspense } from 'react';
+
 import classes from './PlayerProfile.module.css';
 
 export interface Props {

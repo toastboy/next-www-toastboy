@@ -5,12 +5,12 @@ import { authClient } from 'lib/authClient';
 import config from 'lib/config';
 import { ReactNode, Suspense, useEffect, useState } from 'react';
 
-type Props = {
+interface Props {
     children: ReactNode;
     admin?: boolean;
     showSignIn?: boolean;
     onValidationChange?: (isValid: boolean) => void;
-};
+}
 
 /**
  * A React component that ensures the user is logged in before rendering its children.

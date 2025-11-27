@@ -21,8 +21,8 @@ describe('API tests using HTTP', () => {
         mockStream.push(mockBuffer);
         mockStream.push(null);
 
-        (mockBlobClient.exists as jest.Mock).mockResolvedValue(true);
-        (mockBlobClient.download as jest.Mock).mockResolvedValue({
+        (mockBlobClient.exists).mockResolvedValue(true);
+        (mockBlobClient.download).mockResolvedValue({
             readableStreamBody: mockStream,
         });
 
@@ -40,8 +40,8 @@ describe('API tests using HTTP', () => {
         mockStream.push(mockBuffer);
         mockStream.push(null);
 
-        (mockBlobClient.exists as jest.Mock).mockResolvedValue(false);
-        (mockBlobClient.download as jest.Mock).mockResolvedValue({
+        (mockBlobClient.exists).mockResolvedValue(false);
+        (mockBlobClient.download).mockResolvedValue({
             readableStreamBody: mockStream,
         });
 
@@ -62,8 +62,8 @@ describe('API tests using HTTP', () => {
     });
 
     it('should return 500 if the mugshot download does not return anything', async () => {
-        (mockBlobClient.exists as jest.Mock).mockResolvedValue(true);
-        (mockBlobClient.download as jest.Mock).mockResolvedValue({});
+        (mockBlobClient.exists).mockResolvedValue(true);
+        (mockBlobClient.download).mockResolvedValue({});
 
         const response = await request(mockApp).get(testRoute);
 
@@ -73,8 +73,8 @@ describe('API tests using HTTP', () => {
 
     it('should return 500 if the mugshot download fails', async () => {
         const errorMessage = 'Something went wrong';
-        (mockBlobClient.exists as jest.Mock).mockResolvedValue(true);
-        (mockBlobClient.download as jest.Mock).mockRejectedValue(new Error(errorMessage));
+        (mockBlobClient.exists).mockResolvedValue(true);
+        (mockBlobClient.download).mockRejectedValue(new Error(errorMessage));
 
         const response = await request(mockApp).get(testRoute);
 

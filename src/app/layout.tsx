@@ -1,16 +1,13 @@
 import '@mantine/core/styles.css';
-
 import "@mantine/code-highlight/styles.css";
 import '@mantine/dates/styles.css';
 import '@mantine/notifications/styles.css';
-
 import '@mantine/tiptap/styles.css';
-
-import CustomAppShell from 'components/CustomAppShell/CustomAppShell';
-import type { Metadata } from 'next';
 
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from "@mantine/notifications";
+import CustomAppShell from 'components/CustomAppShell/CustomAppShell';
+import type { Metadata } from 'next';
 
 // Default to dynamic rendering for all pages
 // https://nextjs.org/docs/app/building-your-application/rendering/static-and-dynamic-rendering

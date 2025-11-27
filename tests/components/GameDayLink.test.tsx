@@ -6,6 +6,7 @@ jest.mock('services/GameDay', () => ({
 import { render, screen } from '@testing-library/react';
 import GameDayLink, { Props } from 'components/GameDayLink/GameDayLink';
 import gameDayService from 'services/GameDay';
+
 import { Wrapper } from './lib/common';
 
 describe('GameDayLink', () => {

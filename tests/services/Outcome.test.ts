@@ -187,8 +187,8 @@ describe('OutcomeService', () => {
         it('should return the correct, complete list of 100 Outcomes', async () => {
             const result = await outcomeService.getAll();
             if (result) {
-                expect(result.length).toEqual(100);
-                expect(result[11].playerId).toEqual(2);
+                expect(result).toHaveLength(100);
+                expect(result[11].playerId).toBe(2);
             }
             else {
                 throw new Error("Result is null");
@@ -219,17 +219,17 @@ describe('OutcomeService', () => {
             (prisma.outcome.findMany as jest.Mock).mockResolvedValueOnce(outcomeList);
 
             let result = await outcomeService.getAllForYear(2021);
-            expect(result.length).toEqual(100);
-            expect(result[11].playerId).toEqual(2);
+            expect(result).toHaveLength(100);
+            expect(result[11].playerId).toBe(2);
 
             (prisma.outcome.findMany as jest.Mock).mockResolvedValueOnce(outcomeList.filter((outcome) => outcome.gameDayId <= 7));
 
             result = await outcomeService.getAllForYear(2021, 7);
-            expect(result.length).toEqual(70);
-            expect(result[11].playerId).toEqual(2);
+            expect(result).toHaveLength(70);
+            expect(result[11].playerId).toBe(2);
 
             result = await outcomeService.getAllForYear(0);
-            expect(result.length).toEqual(0);
+            expect(result).toHaveLength(0);
         });
     });
 
@@ -319,7 +319,7 @@ describe('OutcomeService', () => {
         it('should retrieve the correct Outcomes for GameDay id 1', async () => {
             const result = await outcomeService.getByGameDay(1);
             if (result) {
-                expect(result.length).toEqual(10);
+                expect(result).toHaveLength(10);
                 for (const outcomeResult of result) {
                     expect(outcomeResult).toEqual({
                         ...defaultOutcome,
@@ -348,7 +348,7 @@ describe('OutcomeService', () => {
 
         it('should retrieve the correct Outcomes for Player ID 1', async () => {
             const result = await outcomeService.getByPlayer(1);
-            expect(result.length).toEqual(10);
+            expect(result).toHaveLength(10);
             for (const outcomeResult of result) {
                 expect(outcomeResult).toEqual({
                     ...defaultOutcome,
@@ -367,20 +367,20 @@ describe('OutcomeService', () => {
     describe('getGamesPlayedByPlayer', () => {
         it('should retrieve the correct number of games played for Player ID 1, year 2021', async () => {
             const result = await outcomeService.getGamesPlayedByPlayer(1, 2021);
-            expect(result).toEqual(10);
+            expect(result).toBe(10);
         });
         it('should retrieve the correct number of games played for Player ID 1, year 0', async () => {
             const result = await outcomeService.getGamesPlayedByPlayer(1, 0);
-            expect(result).toEqual(10);
+            expect(result).toBe(10);
         });
         it('should retrieve the correct number of games played for Player ID 1, year 0, untilGameDayId 8', async () => {
             const result = await outcomeService.getGamesPlayedByPlayer(1, 0, 8);
-            expect(result).toEqual(8);
+            expect(result).toBe(8);
         });
 
         it('should return 0 for Player ID 11', async () => {
             const result = await outcomeService.getGamesPlayedByPlayer(11, 2021);
-            expect(result).toEqual(0);
+            expect(result).toBe(0);
         });
     });
 
@@ -423,7 +423,7 @@ describe('OutcomeService', () => {
                     gameDayId: 'desc',
                 },
             });
-            expect(result).toEqual(1);
+            expect(result).toBe(1);
         });
 
         it('should retrieve the correct latest game played for all time', async () => {
@@ -449,7 +449,7 @@ describe('OutcomeService', () => {
                     gameDayId: 'desc',
                 },
             });
-            expect(result).toEqual(3);
+            expect(result).toBe(3);
         });
 
         it('should return null for year 9999', async () => {

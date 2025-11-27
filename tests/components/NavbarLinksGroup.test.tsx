@@ -1,5 +1,6 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import NavBarLinksGroup from 'components/NavbarLinksGroup/NavbarLinksGroup';
+
 import { Wrapper } from "./lib/common";
 
 describe('NavBarLinksGroup', () => {

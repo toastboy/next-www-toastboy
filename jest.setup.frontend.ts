@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom';
-import { TextDecoder as NodeTextDecoder, TextEncoder as NodeTextEncoder } from 'util';
 import 'whatwg-fetch';
+
+import { TextDecoder as NodeTextDecoder, TextEncoder as NodeTextEncoder } from 'util';
 
 global.ResizeObserver = class ResizeObserver {
     observe() { }

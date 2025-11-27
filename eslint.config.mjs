@@ -175,24 +175,32 @@ const config = [
             "@typescript-eslint/no-misused-promises": ["error", { checksVoidReturn: false }],
         },
     },
-    // Jest / Testing Library / jest-dom overrides
+    // Jest rules for all tests
     {
         files: ["tests/**/*.test.{ts,tsx,js,jsx}", "jest*.{ts,js}", "jest.setup.*.{ts,js}"],
         plugins: {
             jest,
-            "testing-library": testingLibrary,
-            "jest-dom": jestDom,
         },
         rules: {
             // Pull in recommended rules to avoid drift in rule names across plugin versions
             ...jest.configs.recommended.rules,
             ...jest.configs.style.rules,
-            ...testingLibrary.configs.react.rules,
-            ...jestDom.configs.recommended.rules,
             // Jest recommended & style (expose minimal targeted rules to reduce duplication)
             "jest/expect-expect": "warn",
             "jest/no-identical-title": "error",
             "jest/no-disabled-tests": "warn",
+        },
+    },
+    // Testing Library / jest-dom overrides (Component tests only)
+    {
+        files: ["tests/components/**/*.test.{ts,tsx,js,jsx}"],
+        plugins: {
+            "testing-library": testingLibrary,
+            "jest-dom": jestDom,
+        },
+        rules: {
+            ...testingLibrary.configs.react.rules,
+            ...jestDom.configs.recommended.rules,
             // Correct rule name from plugin (old mistaken name was no-debug)
             "testing-library/no-debugging-utils": "warn",
         },

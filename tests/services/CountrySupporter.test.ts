@@ -116,7 +116,7 @@ describe('countrySupporterService', () => {
         it('should retrieve the correct ClubSupporters for player id 1', async () => {
             const result = await countrySupporterService.getByPlayer(1);
             if (result) {
-                expect(result.length).toEqual(10);
+                expect(result).toHaveLength(10);
                 for (const ClubSupporterResult of result) {
                     expect(ClubSupporterResult).toEqual({
                         ...defaultCountrySupporter,
@@ -146,7 +146,7 @@ describe('countrySupporterService', () => {
         it('should retrieve the correct ClubSupporters for rater id 1', async () => {
             const result = await countrySupporterService.getByCountry("GB");
             if (result) {
-                expect(result.length).toEqual(100);
+                expect(result).toHaveLength(100);
                 for (const ClubSupporterResult of result) {
                     expect(ClubSupporterResult).toEqual({
                         ...defaultCountrySupporter,
@@ -176,9 +176,9 @@ describe('countrySupporterService', () => {
         it('should return the correct, complete list of 100 ClubSupporters', async () => {
             const result = await countrySupporterService.getAll();
             if (result) {
-                expect(result.length).toEqual(100);
-                expect(result[11].playerId).toEqual(2);
-                expect(result[11].countryISOCode).toEqual("GB");
+                expect(result).toHaveLength(100);
+                expect(result[11].playerId).toBe(2);
+                expect(result[11].countryISOCode).toBe("GB");
             }
             else {
                 throw new Error("Result is null");

@@ -108,9 +108,9 @@ describe('ClubService', () => {
         it('should return the correct, complete list of 100 clubs', async () => {
             const result = await clubService.getAll();
             if (result) {
-                expect(result.length).toEqual(100);
-                expect(result[11].id).toEqual(12);
-                expect(result[11].soccerwayId).toEqual(1011);
+                expect(result).toHaveLength(100);
+                expect(result[11].id).toBe(12);
+                expect(result[11].soccerwayId).toBe(1011);
             }
             else {
                 throw new Error("Result is null");

@@ -3,6 +3,7 @@
 import { Box, ScrollArea } from '@mantine/core';
 import NavbarLinksGroup from 'components/NavbarLinksGroup/NavbarLinksGroup';
 import UserButton from 'components/UserButton/UserButton';
+
 import classes from './NavbarNested.module.css';
 
 const NavbarNested: React.FC = () => {

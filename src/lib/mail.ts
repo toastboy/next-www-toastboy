@@ -18,7 +18,7 @@ const secrets = getSecrets();
  * @throws Will throw an error if the email fails to send.
  */
 export async function sendEmail(to: string, subject: string, html: string) {
-    const transporter = process.env.NODE_ENV === 'production' ?
+    const transporter = process.env.NODE_ENV === 'production' && !process.env.CI ?
         nodemailer.createTransport({
             host: secrets.SMTP_HOST,
             port: 25,

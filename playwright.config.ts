@@ -90,6 +90,8 @@ export default defineConfig({
   webServer: {
     command: process.env.CI ? 'npm run start:ci' : 'npm run dev',
     url: 'http://127.0.0.1:3000',
+    stdout: 'pipe',
+    stderr: 'pipe',
     // See https://playwright.dev/docs/test-advanced
     reuseExistingServer: !process.env.CI,
   },

@@ -37,7 +37,7 @@ describe('GameChatService', () => {
             where: { id: number }
         }) => {
             const gameChat = gameChatList.find((gameChat) => gameChat.id === args.where.id);
-            return Promise.resolve(gameChat ? gameChat : null);
+            return Promise.resolve(gameChat ?? null);
         });
 
         (prisma.gameChat.create as jest.Mock).mockImplementation((args: { data: GameChatType }) => {
@@ -70,7 +70,7 @@ describe('GameChatService', () => {
             where: { id: number }
         }) => {
             const gameChat = gameChatList.find((gameChat) => gameChat.id === args.where.id);
-            return Promise.resolve(gameChat ? gameChat : null);
+            return Promise.resolve(gameChat ?? null);
         });
     });
 
@@ -104,13 +104,8 @@ describe('GameChatService', () => {
 
         it('should return the correct, complete list of 100 GameChat', async () => {
             const result = await gameChatService.getAll();
-            if (result) {
-                expect(result).toHaveLength(100);
-                expect(result[11].id).toBe(12);
-            }
-            else {
-                throw new Error("Result is null");
-            }
+            expect(result).toHaveLength(100);
+            expect(result[11].id).toBe(12);
         });
     });
 
@@ -166,16 +161,19 @@ describe('GameChatService', () => {
     describe('delete', () => {
         it('should delete an existing GameChat', async () => {
             await gameChatService.delete(6);
+            expect(prisma.gameChat.delete).toHaveBeenCalledTimes(1);
         });
 
         it('should silently return when asked to delete a GameChat that does not exist', async () => {
             await gameChatService.delete(107);
+            expect(prisma.gameChat.delete).toHaveBeenCalledTimes(1);
         });
     });
 
     describe('deleteAll', () => {
         it('should delete all GameChats', async () => {
             await gameChatService.deleteAll();
+            expect(prisma.gameChat.deleteMany).toHaveBeenCalled();
         });
     });
 });

@@ -273,12 +273,12 @@ describe('PlayerService', () => {
     });
 
     describe('getName', () => {
-        it('should return the correct name for a named player', async () => {
+        it('should return the correct name for a named player', () => {
             const result = playerService.getName(defaultPlayer);
             expect(result).toBe("Gary Player");
         });
 
-        it('should return the correct name for an anonymous player', async () => {
+        it('should return the correct name for an anonymous player', () => {
             const result = playerService.getName({
                 ...defaultPlayer,
                 anonymous: true,

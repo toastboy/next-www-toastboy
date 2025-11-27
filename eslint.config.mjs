@@ -253,6 +253,12 @@ const config = [
             "@typescript-eslint/no-unsafe-member-access": "warn",
         },
     },
+    {
+        files: ["tests/**/*.test.ts", "tests/**/*.test.tsx"],
+        rules: {
+            "@typescript-eslint/no-unsafe-assignment": "off",
+        },
+    },
 ];
 
 export default config;

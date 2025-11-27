@@ -186,13 +186,8 @@ describe('OutcomeService', () => {
 
         it('should return the correct, complete list of 100 Outcomes', async () => {
             const result = await outcomeService.getAll();
-            if (result) {
-                expect(result).toHaveLength(100);
-                expect(result[11].playerId).toBe(2);
-            }
-            else {
-                throw new Error("Result is null");
-            }
+            expect(result).toHaveLength(100);
+            expect(result[11].playerId).toBe(2);
         });
     });
 
@@ -318,18 +313,13 @@ describe('OutcomeService', () => {
 
         it('should retrieve the correct Outcomes for GameDay id 1', async () => {
             const result = await outcomeService.getByGameDay(1);
-            if (result) {
-                expect(result).toHaveLength(10);
-                for (const outcomeResult of result) {
-                    expect(outcomeResult).toEqual({
-                        ...defaultOutcome,
-                        playerId: expect.any(Number),
-                        gameDayId: 1,
-                    } as OutcomeType);
-                }
-            }
-            else {
-                throw new Error("Result is null");
+            expect(result).toHaveLength(10);
+            for (const outcomeResult of result) {
+                expect(outcomeResult).toEqual({
+                    ...defaultOutcome,
+                    playerId: expect.any(Number),
+                    gameDayId: 1,
+                } as OutcomeType);
             }
         });
 
@@ -523,16 +513,19 @@ describe('OutcomeService', () => {
     describe('delete', () => {
         it('should delete an existing Outcome', async () => {
             await outcomeService.delete(1, 1);
+            expect(prisma.outcome.delete).toHaveBeenCalledTimes(1);
         });
 
         it('should silently return when asked to delete an Outcome that does not exist', async () => {
             await outcomeService.delete(7, 16);
+            expect(prisma.outcome.delete).toHaveBeenCalledTimes(1);
         });
     });
 
     describe('deleteAll', () => {
         it('should delete all Outcomes', async () => {
             await outcomeService.deleteAll();
+            expect(prisma.outcome.deleteMany).toHaveBeenCalledTimes(1);
         });
     });
 });

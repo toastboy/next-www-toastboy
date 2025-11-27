@@ -48,7 +48,7 @@ export class CountrySupporterService {
 
             return prisma.countrySupporter.findUnique({ where });
         } catch (error) {
-            log(`Error fetching CountrySupporter: ${error}`);
+            log(`Error fetching CountrySupporter: ${String(error)}`);
             throw error;
         }
     }
@@ -62,7 +62,7 @@ export class CountrySupporterService {
         try {
             return prisma.countrySupporter.findMany({});
         } catch (error) {
-            log(`Error fetching CountrySupporters: ${error}`);
+            log(`Error fetching CountrySupporters: ${String(error)}`);
             throw error;
         }
     }
@@ -73,13 +73,13 @@ export class CountrySupporterService {
      * @returns A promise that resolves to an array of CountrySupporterWithCountry objects or null.
      * @throws An error if there is a failure.
      */
-    async getByPlayer(playerId: number): Promise<CountrySupporterType[] | null> {
+    async getByPlayer(playerId: number): Promise<CountrySupporterType[]> {
         try {
             const where = CountrySupporterWhereInputObjectSchema.parse({ playerId });
 
             return prisma.countrySupporter.findMany({ where });
         } catch (error) {
-            log(`Error fetching CountrySupporters by player: ${error}`);
+            log(`Error fetching CountrySupporters by player: ${String(error)}`);
             throw error;
         }
     }
@@ -90,13 +90,13 @@ export class CountrySupporterService {
      * @returns A promise that resolves to an array of CountrySupporter or null.
      * @throws An error if there is a failure.
      */
-    async getByCountry(countryISOCode: string): Promise<CountrySupporterType[] | null> {
+    async getByCountry(countryISOCode: string): Promise<CountrySupporterType[]> {
         try {
             const where = CountrySupporterWhereInputObjectSchema.parse({ countryISOCode });
 
             return prisma.countrySupporter.findMany({ where });
         } catch (error) {
-            log(`Error fetching CountrySupporters by ISO code: ${error}`);
+            log(`Error fetching CountrySupporters by ISO code: ${String(error)}`);
             throw error;
         }
     }
@@ -113,7 +113,7 @@ export class CountrySupporterService {
 
             return await prisma.countrySupporter.create({ data });
         } catch (error) {
-            log(`Error creating CountrySupporter: ${error}`);
+            log(`Error creating CountrySupporter: ${String(error)}`);
             throw error;
         }
     }
@@ -141,7 +141,7 @@ export class CountrySupporterService {
 
             return await prisma.countrySupporter.upsert({ where, update, create });
         } catch (error) {
-            log(`Error upserting CountrySupporter: ${error}`);
+            log(`Error upserting CountrySupporter: ${String(error)}`);
             throw error;
         }
     }
@@ -161,7 +161,7 @@ export class CountrySupporterService {
 
             await prisma.countrySupporter.delete({ where });
         } catch (error) {
-            log(`Error deleting CountrySupporter: ${error}`);
+            log(`Error deleting CountrySupporter: ${String(error)}`);
             throw error;
         }
     }
@@ -175,7 +175,7 @@ export class CountrySupporterService {
         try {
             await prisma.countrySupporter.deleteMany();
         } catch (error) {
-            log(`Error deleting CountrySupporter: ${error}`);
+            log(`Error deleting CountrySupporter: ${String(error)}`);
             throw error;
         }
     }

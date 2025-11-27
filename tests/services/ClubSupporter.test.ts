@@ -38,7 +38,7 @@ describe('clubSupporterService', () => {
             }
         }) => {
             const clubSupporter = clubSupporterList.find((clubSupporter) => clubSupporter.playerId === args.where.playerId_clubId.playerId && clubSupporter.clubId === args.where.playerId_clubId.clubId);
-            return Promise.resolve(clubSupporter ? clubSupporter : null);
+            return Promise.resolve(clubSupporter ?? null);
         });
 
         (prisma.clubSupporter.create as jest.Mock).mockImplementation((args: { data: ClubSupporterType }) => {
@@ -81,7 +81,7 @@ describe('clubSupporterService', () => {
             }
         }) => {
             const ClubSupporter = clubSupporterList.find((ClubSupporter) => ClubSupporter.playerId === args.where.playerId_clubId.playerId && ClubSupporter.clubId === args.where.playerId_clubId.clubId);
-            return Promise.resolve(ClubSupporter ? ClubSupporter : null);
+            return Promise.resolve(ClubSupporter ?? null);
         });
     });
 
@@ -110,18 +110,13 @@ describe('clubSupporterService', () => {
 
         it('should retrieve the correct ClubSupporters for player id 1', async () => {
             const result = await clubSupporterService.getByPlayer(1);
-            if (result) {
-                expect(result).toHaveLength(10);
-                for (const ClubSupporterResult of result) {
-                    expect(ClubSupporterResult).toEqual({
-                        ...defaultClubSupporter,
-                        playerId: 1,
-                        clubId: expect.any(Number),
-                    } as ClubSupporterType);
-                }
-            }
-            else {
-                throw new Error("Result is null");
+            expect(result).toHaveLength(10);
+            for (const ClubSupporterResult of result) {
+                expect(ClubSupporterResult).toEqual({
+                    ...defaultClubSupporter,
+                    playerId: 1,
+                    clubId: expect.any(Number),
+                } as ClubSupporterType);
             }
         });
 
@@ -140,18 +135,13 @@ describe('clubSupporterService', () => {
 
         it('should retrieve the correct ClubSupporters for club id 1', async () => {
             const result = await clubSupporterService.getByClub(1);
-            if (result) {
-                expect(result).toHaveLength(1);
-                for (const ClubSupporterResult of result) {
-                    expect(ClubSupporterResult).toEqual({
-                        ...defaultClubSupporter,
-                        playerId: expect.any(Number),
-                        clubId: 1,
-                    } as ClubSupporterType);
-                }
-            }
-            else {
-                throw new Error("Result is null");
+            expect(result).toHaveLength(1);
+            for (const ClubSupporterResult of result) {
+                expect(ClubSupporterResult).toEqual({
+                    ...defaultClubSupporter,
+                    playerId: expect.any(Number),
+                    clubId: 1,
+                } as ClubSupporterType);
             }
         });
 
@@ -170,14 +160,9 @@ describe('clubSupporterService', () => {
 
         it('should return the correct, complete list of 100 ClubSupporters', async () => {
             const result = await clubSupporterService.getAll();
-            if (result) {
-                expect(result).toHaveLength(100);
-                expect(result[11].playerId).toBe(2);
-                expect(result[11].clubId).toBe(12);
-            }
-            else {
-                throw new Error("Result is null");
-            }
+            expect(result).toHaveLength(100);
+            expect(result[11].playerId).toBe(2);
+            expect(result[11].clubId).toBe(12);
         });
     });
 
@@ -227,16 +212,19 @@ describe('clubSupporterService', () => {
     describe('delete', () => {
         it('should delete an existing ClubSupporter', async () => {
             await clubSupporterService.delete(6, 16);
+            expect(prisma.clubSupporter.delete).toHaveBeenCalledTimes(1);
         });
 
         it('should silently return when asked to delete a ClubSupporter that does not exist', async () => {
             await clubSupporterService.delete(7, 16);
+            expect(prisma.clubSupporter.delete).toHaveBeenCalledTimes(1);
         });
     });
 
     describe('deleteAll', () => {
         it('should delete all ClubSupporters', async () => {
             await clubSupporterService.deleteAll();
+            expect(prisma.clubSupporter.deleteMany).toHaveBeenCalledTimes(1);
         });
     });
 });

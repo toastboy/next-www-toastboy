@@ -32,7 +32,7 @@ describe('GameDayService', () => {
             }
         }) => {
             const gameDay = gameDayList.find((gameDay) => gameDay.id === args.where.id);
-            return Promise.resolve(gameDay ? gameDay : null);
+            return Promise.resolve(gameDay ?? null);
         });
 
         (prisma.gameDay.findMany as jest.Mock).mockImplementation((args: {
@@ -123,7 +123,7 @@ describe('GameDayService', () => {
             where: { id: number }
         }) => {
             const gameDay = gameDayList.find((gameDay) => gameDay.id === args.where.id);
-            return Promise.resolve(gameDay ? gameDay : null);
+            return Promise.resolve(gameDay ?? null);
         });
     });
 
@@ -376,13 +376,8 @@ describe('GameDayService', () => {
     describe('getAllYears', () => {
         it('should return the correct, complete list of a single year, 2021', async () => {
             const result = await gameDayService.getAllYears();
-            if (result) {
-                expect(result).toHaveLength(1);
-                expect(result[0]).toBe(2021);
-            }
-            else {
-                throw new Error("Result is null");
-            }
+            expect(result).toHaveLength(1);
+            expect(result[0]).toBe(2021);
         });
     });
 
@@ -390,12 +385,7 @@ describe('GameDayService', () => {
         it('should return the year when called with a year that has games played or to be played', async () => {
             (prisma.gameDay.findFirst as jest.Mock).mockResolvedValue(defaultGameDay);
             const result = await gameDayService.getYear(2021);
-            if (result) {
-                expect(result).toBe(2021);
-            }
-            else {
-                throw new Error("Result is null");
-            }
+            expect(result).toBe(2021);
         });
 
         it('should return null when called with a year that has no games played or to be played', async () => {
@@ -453,16 +443,19 @@ describe('GameDayService', () => {
     describe('delete', () => {
         it('should delete an existing GameDay', async () => {
             await gameDayService.delete(6);
+            expect(prisma.gameDay.delete).toHaveBeenCalledTimes(1);
         });
 
         it('should silently return when asked to delete a GameDay that does not exist', async () => {
             await gameDayService.delete(107);
+            expect(prisma.gameDay.delete).toHaveBeenCalledTimes(1);
         });
     });
 
     describe('deleteAll', () => {
         it('should delete all GameDays', async () => {
             await gameDayService.deleteAll();
+            expect(prisma.gameDay.deleteMany).toHaveBeenCalledTimes(1);
         });
     });
 });

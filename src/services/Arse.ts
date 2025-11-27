@@ -55,7 +55,7 @@ export class ArseService {
 
             return prisma.arse.findUnique({ where });
         } catch (error) {
-            log(`Error fetching arses: ${error}`);
+            log(`Error fetching arses: ${String(error)}`);
             throw error;
         }
     }
@@ -69,7 +69,7 @@ export class ArseService {
         try {
             return prisma.arse.findMany({});
         } catch (error) {
-            log(`Error fetching arses: ${error}`);
+            log(`Error fetching arses: ${String(error)}`);
             throw error;
         }
     }
@@ -98,7 +98,7 @@ export class ArseService {
 
             return arsegregate._avg;
         } catch (error) {
-            log(`Error fetching arses by player: ${error}`);
+            log(`Error fetching arses by player: ${String(error)}`);
             throw error;
         }
     }
@@ -109,13 +109,13 @@ export class ArseService {
      * @returns A promise that resolves to an array of arses or null.
      * @throws An error if there is a failure.
      */
-    async getByRater(raterId: number): Promise<ArseType[] | null> {
+    async getByRater(raterId: number): Promise<ArseType[]> {
         try {
             const where = ArseWhereInputObjectSchema.parse({ raterId });
 
             return prisma.arse.findMany({ where });
         } catch (error) {
-            log(`Error fetching arses by rater: ${error}`);
+            log(`Error fetching arses by rater: ${String(error)}`);
             throw error;
         }
     }
@@ -132,7 +132,7 @@ export class ArseService {
 
             return await prisma.arse.create({ data });
         } catch (error) {
-            log(`Error creating arse: ${error}`);
+            log(`Error creating arse: ${String(error)}`);
             throw error;
         }
     }
@@ -158,7 +158,7 @@ export class ArseService {
 
             return await prisma.arse.upsert({ where, update, create });
         } catch (error) {
-            log(`Error upserting arse: ${error}`);
+            log(`Error upserting arse: ${String(error)}`);
             throw error;
         }
     }
@@ -178,7 +178,7 @@ export class ArseService {
 
             await prisma.arse.delete({ where });
         } catch (error) {
-            log(`Error deleting arse: ${error}`);
+            log(`Error deleting arse: ${String(error)}`);
             throw error;
         }
     }
@@ -192,7 +192,7 @@ export class ArseService {
         try {
             await prisma.arse.deleteMany();
         } catch (error) {
-            log(`Error deleting arses: ${error}`);
+            log(`Error deleting arses: ${String(error)}`);
             throw error;
         }
     }

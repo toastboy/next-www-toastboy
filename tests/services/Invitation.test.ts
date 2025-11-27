@@ -161,16 +161,19 @@ describe('InvitationService', () => {
     describe('delete', () => {
         it('should delete an existing Invitation', async () => {
             await invitationService.delete('1234');
+            expect(prisma.invitation.delete).toHaveBeenCalledTimes(1);
         });
 
         it('should silently return when asked to delete a Invitation that does not exist', async () => {
             await invitationService.delete('6789');
+            expect(prisma.invitation.delete).toHaveBeenCalledTimes(1);
         });
     });
 
     describe('deleteAll', () => {
         it('should delete all Invitations', async () => {
             await invitationService.deleteAll();
+            expect(prisma.invitation.deleteMany).toHaveBeenCalledTimes(1);
         });
     });
 });

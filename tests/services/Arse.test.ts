@@ -51,7 +51,7 @@ describe('ArseService', () => {
                 arse.playerId === args.where.playerId_raterId.playerId &&
                 arse.raterId === args.where.playerId_raterId.raterId,
             );
-            return Promise.resolve(arse ? arse : null);
+            return Promise.resolve(arse ?? null);
         });
 
         (prisma.arse.create as jest.Mock).mockImplementation((args: { data: ArseType }) => {
@@ -103,7 +103,7 @@ describe('ArseService', () => {
                 arse.playerId === args.where.playerId_raterId.playerId &&
                 arse.raterId === args.where.playerId_raterId.raterId,
             );
-            return Promise.resolve(arse ? arse : null);
+            return Promise.resolve(arse ?? null);
         });
     });
 
@@ -114,16 +114,12 @@ describe('ArseService', () => {
     describe('get', () => {
         it('should retrieve the correct arse for player 6, rater 16', async () => {
             const result = await arseService.get(6, 16);
-            if (result) {
-                expect(result).toEqual({
-                    ...defaultArse,
-                    playerId: 6,
-                    raterId: 16,
-                    stamp: expect.any(Date),
-                } as ArseType);
-            } else {
-                throw new Error("Result is null");
-            }
+            expect(result).toEqual({
+                ...defaultArse,
+                playerId: 6,
+                raterId: 16,
+                stamp: expect.any(Date),
+            } as ArseType);
         });
 
         it('should return null for player 7, rater 16', async () => {
@@ -146,26 +142,21 @@ describe('ArseService', () => {
                 },
             });
             const result = await arseService.getByPlayer(1);
-            if (result) {
-                expect(prisma.arse.aggregate).toHaveBeenCalledWith({
-                    where: {
-                        playerId: 1,
-                    },
-                    _avg: {
-                        inGoal: true,
-                        running: true,
-                        shooting: true,
-                        passing: true,
-                        ballSkill: true,
-                        attacking: true,
-                        defending: true,
-                    },
-                });
-                expect(result.inGoal).toBe(10);
-            }
-            else {
-                throw new Error("Result is null");
-            }
+            expect(prisma.arse.aggregate).toHaveBeenCalledWith({
+                where: {
+                    playerId: 1,
+                },
+                _avg: {
+                    inGoal: true,
+                    running: true,
+                    shooting: true,
+                    passing: true,
+                    ballSkill: true,
+                    attacking: true,
+                    defending: true,
+                },
+            });
+            expect(result?.inGoal).toBe(10);
         });
 
         it('should return an empty list when retrieving arses for player id 11', async () => {
@@ -181,23 +172,21 @@ describe('ArseService', () => {
                 },
             });
             const result = await arseService.getByPlayer(11);
-            if (result) {
-                expect(prisma.arse.aggregate).toHaveBeenCalledWith({
-                    where: {
-                        playerId: 11,
-                    },
-                    _avg: {
-                        inGoal: true,
-                        running: true,
-                        shooting: true,
-                        passing: true,
-                        ballSkill: true,
-                        attacking: true,
-                        defending: true,
-                    },
-                });
-                expect(result.inGoal).toBeNull();
-            }
+            expect(prisma.arse.aggregate).toHaveBeenCalledWith({
+                where: {
+                    playerId: 11,
+                },
+                _avg: {
+                    inGoal: true,
+                    running: true,
+                    shooting: true,
+                    passing: true,
+                    ballSkill: true,
+                    attacking: true,
+                    defending: true,
+                },
+            });
+            expect(result?.inGoal).toBeNull();
         });
     });
 
@@ -210,30 +199,20 @@ describe('ArseService', () => {
 
         it('should retrieve the correct arses for rater id 1', async () => {
             const result = await arseService.getByRater(1);
-            if (result) {
-                expect(result).toHaveLength(1);
-                for (const arseResult of result) {
-                    expect(arseResult).toEqual({
-                        ...defaultArse,
-                        playerId: expect.any(Number),
-                        raterId: 1,
-                        stamp: expect.any(Date),
-                    } as ArseType);
-                }
-            }
-            else {
-                throw new Error("Result is null");
+            expect(result).toHaveLength(1);
+            for (const arseResult of result) {
+                expect(arseResult).toEqual({
+                    ...defaultArse,
+                    playerId: expect.any(Number),
+                    raterId: 1,
+                    stamp: expect.any(Date),
+                } as ArseType);
             }
         });
 
         it('should return an empty list when retrieving arses for rater id 101', async () => {
             const result = await arseService.getByRater(101);
-            if (result) {
-                expect(result).toEqual([]);
-            }
-            else {
-                throw new Error("Result is null");
-            }
+            expect(result).toEqual([]);
         });
     });
 
@@ -246,14 +225,9 @@ describe('ArseService', () => {
 
         it('should return the correct, complete list of 100 arses', async () => {
             const result = await arseService.getAll();
-            if (result) {
-                expect(result).toHaveLength(100);
-                expect(result[11].playerId).toBe(2);
-                expect(result[41].stamp).toEqual(expect.any(Date));
-            }
-            else {
-                throw new Error("Result is null");
-            }
+            expect(result).toHaveLength(100);
+            expect(result[11].playerId).toBe(2);
+            expect(result[41].stamp).toEqual(expect.any(Date));
         });
     });
 
@@ -314,12 +288,7 @@ describe('ArseService', () => {
     describe('upsert', () => {
         it('should create an arse where the combination of player ID and rater ID did not exist', async () => {
             const result = await arseService.upsert(defaultArse);
-            if (result) {
-                expect(result).toEqual(defaultArse);
-            }
-            else {
-                throw new Error("Result is null");
-            }
+            expect(result).toEqual(defaultArse);
         });
 
         it('should update an existing arse where the combination of player ID and rater ID already existed', async () => {
@@ -330,28 +299,26 @@ describe('ArseService', () => {
                 inGoal: 7,
             };
             const result = await arseService.upsert(updatedArse);
-            if (result) {
-                expect(result).toEqual(updatedArse);
-            }
-            else {
-                throw new Error("Result is null");
-            }
+            expect(result).toEqual(updatedArse);
         });
     });
 
     describe('delete', () => {
         it('should delete an existing arse', async () => {
             await arseService.delete(6, 16);
+            expect(prisma.arse.delete).toHaveBeenCalledTimes(1);
         });
 
         it('should silently return when asked to delete an arse that does not exist', async () => {
             await arseService.delete(7, 16);
+            expect(prisma.arse.delete).toHaveBeenCalledTimes(1);
         });
     });
 
     describe('deleteAll', () => {
         it('should delete all arses', async () => {
             await arseService.deleteAll();
+            expect(prisma.arse.deleteMany).toHaveBeenCalledTimes(1);
         });
     });
 });

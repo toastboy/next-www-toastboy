@@ -38,7 +38,7 @@ describe('countrySupporterService', () => {
             }
         }) => {
             const countrySupporter = countrySupporterList.find((countrySupporter) => countrySupporter.playerId === args.where.playerId_countryISOCode.playerId && countrySupporter.countryISOCode === args.where.playerId_countryISOCode.countryISOCode);
-            return Promise.resolve(countrySupporter ? countrySupporter : null);
+            return Promise.resolve(countrySupporter ?? null);
         });
 
         (prisma.countrySupporter.create as jest.Mock).mockImplementation((args: { data: CountrySupporterType }) => {
@@ -81,23 +81,18 @@ describe('countrySupporterService', () => {
             }
         }) => {
             const CountrySupporter = countrySupporterList.find((CountrySupporter) => CountrySupporter.playerId === args.where.playerId_countryISOCode.playerId && CountrySupporter.countryISOCode === args.where.playerId_countryISOCode.countryISOCode);
-            return Promise.resolve(CountrySupporter ? CountrySupporter : null);
+            return Promise.resolve(CountrySupporter ?? null);
         });
     });
 
     describe('get', () => {
         it('should retrieve the correct CountrySupporter for player 6, country "GB"', async () => {
             const result = await countrySupporterService.get(6, "GB");
-            if (result) {
-                expect(result).toEqual({
-                    ...defaultCountrySupporter,
-                    playerId: 6,
-                    countryISOCode: "GB",
-                } as CountrySupporterType);
-            }
-            else {
-                throw new Error("Result is null");
-            }
+            expect(result).toEqual({
+                ...defaultCountrySupporter,
+                playerId: 6,
+                countryISOCode: "GB",
+            } as CountrySupporterType);
         });
 
         it('should return null for player 7, country "ZZ"', async () => {
@@ -115,18 +110,13 @@ describe('countrySupporterService', () => {
 
         it('should retrieve the correct ClubSupporters for player id 1', async () => {
             const result = await countrySupporterService.getByPlayer(1);
-            if (result) {
-                expect(result).toHaveLength(10);
-                for (const ClubSupporterResult of result) {
-                    expect(ClubSupporterResult).toEqual({
-                        ...defaultCountrySupporter,
-                        playerId: 1,
-                        countryISOCode: expect.any(String),
-                    } as CountrySupporterType);
-                }
-            }
-            else {
-                throw new Error("Result is null");
+            expect(result).toHaveLength(10);
+            for (const ClubSupporterResult of result) {
+                expect(ClubSupporterResult).toEqual({
+                    ...defaultCountrySupporter,
+                    playerId: 1,
+                    countryISOCode: expect.any(String),
+                } as CountrySupporterType);
             }
         });
 
@@ -145,18 +135,13 @@ describe('countrySupporterService', () => {
 
         it('should retrieve the correct ClubSupporters for rater id 1', async () => {
             const result = await countrySupporterService.getByCountry("GB");
-            if (result) {
-                expect(result).toHaveLength(100);
-                for (const ClubSupporterResult of result) {
-                    expect(ClubSupporterResult).toEqual({
-                        ...defaultCountrySupporter,
-                        playerId: expect.any(Number),
-                        countryISOCode: "GB",
-                    } as CountrySupporterType);
-                }
-            }
-            else {
-                throw new Error("Result is null");
+            expect(result).toHaveLength(100);
+            for (const ClubSupporterResult of result) {
+                expect(ClubSupporterResult).toEqual({
+                    ...defaultCountrySupporter,
+                    playerId: expect.any(Number),
+                    countryISOCode: "GB",
+                } as CountrySupporterType);
             }
         });
 
@@ -175,14 +160,9 @@ describe('countrySupporterService', () => {
 
         it('should return the correct, complete list of 100 ClubSupporters', async () => {
             const result = await countrySupporterService.getAll();
-            if (result) {
-                expect(result).toHaveLength(100);
-                expect(result[11].playerId).toBe(2);
-                expect(result[11].countryISOCode).toBe("GB");
-            }
-            else {
-                throw new Error("Result is null");
-            }
+            expect(result).toHaveLength(100);
+            expect(result[11].playerId).toBe(2);
+            expect(result[11].countryISOCode).toBe("GB");
         });
     });
 
@@ -232,16 +212,19 @@ describe('countrySupporterService', () => {
     describe('delete', () => {
         it('should delete an existing CountrySupporter', async () => {
             await countrySupporterService.delete(6, "GB");
+            expect(prisma.countrySupporter.delete).toHaveBeenCalledTimes(1);
         });
 
         it('should silently return when asked to delete a CountrySupporter that does not exist', async () => {
             await countrySupporterService.delete(7, "GB");
+            expect(prisma.countrySupporter.delete).toHaveBeenCalledTimes(1);
         });
     });
 
     describe('deleteAll', () => {
         it('should delete all ClubSupporters', async () => {
             await countrySupporterService.deleteAll();
+            expect(prisma.countrySupporter.deleteMany).toHaveBeenCalledTimes(1);
         });
     });
 });

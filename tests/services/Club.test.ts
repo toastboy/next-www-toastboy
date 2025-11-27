@@ -41,7 +41,7 @@ describe('ClubService', () => {
             where: { id: number }
         }) => {
             const club = clubList.find((club) => club.id === args.where.id);
-            return Promise.resolve(club ? club : null);
+            return Promise.resolve(club ?? null);
         });
 
         (prisma.club.create as jest.Mock).mockImplementation((args: { data: ClubType }) => {
@@ -74,7 +74,7 @@ describe('ClubService', () => {
             where: { id: number }
         }) => {
             const club = clubList.find((club) => club.id === args.where.id);
-            return Promise.resolve(club ? club : null);
+            return Promise.resolve(club ?? null);
         });
     });
 
@@ -107,14 +107,9 @@ describe('ClubService', () => {
 
         it('should return the correct, complete list of 100 clubs', async () => {
             const result = await clubService.getAll();
-            if (result) {
-                expect(result).toHaveLength(100);
-                expect(result[11].id).toBe(12);
-                expect(result[11].soccerwayId).toBe(1011);
-            }
-            else {
-                throw new Error("Result is null");
-            }
+            expect(result).toHaveLength(100);
+            expect(result[11].id).toBe(12);
+            expect(result[11].soccerwayId).toBe(1011);
         });
     });
 
@@ -172,16 +167,19 @@ describe('ClubService', () => {
     describe('delete', () => {
         it('should delete an existing club', async () => {
             await clubService.delete(6);
+            expect(prisma.club.delete).toHaveBeenCalledTimes(1);
         });
 
         it('should silently return when asked to delete a club that does not exist', async () => {
             await clubService.delete(107);
+            expect(prisma.club.delete).toHaveBeenCalledTimes(1);
         });
     });
 
     describe('deleteAll', () => {
         it('should delete all clubs', async () => {
             await clubService.deleteAll();
+            expect(prisma.club.deleteMany).toHaveBeenCalledTimes(1);
         });
     });
 });

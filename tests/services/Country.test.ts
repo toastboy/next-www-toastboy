@@ -37,7 +37,7 @@ describe('CountryService', () => {
             where: { isoCode: string }
         }) => {
             const country = countryList.find((country) => country.isoCode === args.where.isoCode);
-            return Promise.resolve(country ? country : null);
+            return Promise.resolve(country ?? null);
         });
 
         (prisma.country.create as jest.Mock).mockImplementation((args: { data: CountryType }) => {
@@ -70,7 +70,7 @@ describe('CountryService', () => {
             where: { isoCode: string }
         }) => {
             const country = countryList.find((country) => country.isoCode === args.where.isoCode);
-            return Promise.resolve(country ? country : null);
+            return Promise.resolve(country ?? null);
         });
     });
 
@@ -102,13 +102,8 @@ describe('CountryService', () => {
 
         it('should return the correct, complete list of 4 countries', async () => {
             const result = await countryService.getAll();
-            if (result) {
-                expect(result).toHaveLength(4);
-                expect(result[0].isoCode).toBe("GB-ENG");
-            }
-            else {
-                throw new Error("Result is null");
-            }
+            expect(result).toHaveLength(4);
+            expect(result[0].isoCode).toBe("GB-ENG");
         });
     });
 
@@ -164,16 +159,19 @@ describe('CountryService', () => {
     describe('delete', () => {
         it('should delete an existing country', async () => {
             await countryService.delete("GB-NIR");
+            expect(prisma.country.delete).toHaveBeenCalledTimes(1);
         });
 
         it('should silently return when asked to delete a country that does not exist', async () => {
             await countryService.delete("ZIM");
+            expect(prisma.country.delete).toHaveBeenCalledTimes(1);
         });
     });
 
     describe('deleteAll', () => {
         it('should delete all countries', async () => {
             await countryService.deleteAll();
+            expect(prisma.country.deleteMany).toHaveBeenCalledTimes(1);
         });
     });
 });

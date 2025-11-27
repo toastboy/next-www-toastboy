@@ -31,12 +31,13 @@ const AdminUpdatePlayerRecords: React.FC = () => {
                                 loading: false,
                                 autoClose: 2000,
                             });
-                        } catch (error) {
+                        }
+                        catch (error) {
                             notifications.update({
                                 id,
                                 color: 'red',
                                 title: 'Error',
-                                message: 'Failed to export auth data',
+                                message: `Failed to export auth data: ${String(error)}`,
                                 icon: <IconX style={{ width: rem(18), height: rem(18) }} />,
                                 loading: false,
                                 autoClose: 2000,

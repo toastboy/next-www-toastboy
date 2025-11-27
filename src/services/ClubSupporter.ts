@@ -48,7 +48,7 @@ export class ClubSupporterService {
 
             return prisma.clubSupporter.findUnique({ where });
         } catch (error) {
-            log(`Error fetching ClubSupporter: ${error}`);
+            log(`Error fetching ClubSupporter: ${String(error)}`);
             throw error;
         }
     }
@@ -58,11 +58,11 @@ export class ClubSupporterService {
      * @returns A promise that resolves to an array of ClubSupporters or null if an error occurs.
      * @throws An error if there is a failure.
      */
-    async getAll(): Promise<ClubSupporterType[] | null> {
+    async getAll(): Promise<ClubSupporterType[]> {
         try {
             return prisma.clubSupporter.findMany({});
         } catch (error) {
-            log(`Error fetching ClubSupporters: ${error}`);
+            log(`Error fetching ClubSupporters: ${String(error)}`);
             throw error;
         }
     }
@@ -79,7 +79,7 @@ export class ClubSupporterService {
 
             return prisma.clubSupporter.findMany({ where });
         } catch (error) {
-            log(`Error fetching ClubSupporters by player: ${error}`);
+            log(`Error fetching ClubSupporters by player: ${String(error)}`);
             throw error;
         }
     }
@@ -90,13 +90,13 @@ export class ClubSupporterService {
      * @returns A promise that resolves to an array of ClubSupporter or null.
      * @throws An error if there is a failure.
      */
-    async getByClub(clubId: number): Promise<ClubSupporterType[] | null> {
+    async getByClub(clubId: number): Promise<ClubSupporterType[]> {
         try {
             const where = ClubSupporterWhereInputObjectSchema.parse({ clubId });
 
             return prisma.clubSupporter.findMany({ where });
         } catch (error) {
-            log(`Error fetching ClubSupporters by club: ${error}`);
+            log(`Error fetching ClubSupporters by club: ${String(error)}`);
             throw error;
         }
     }
@@ -113,7 +113,7 @@ export class ClubSupporterService {
 
             return prisma.clubSupporter.create({ data });
         } catch (error) {
-            log(`Error creating ClubSupporter: ${error}`);
+            log(`Error creating ClubSupporter: ${String(error)}`);
             throw error;
         }
     }
@@ -138,7 +138,7 @@ export class ClubSupporterService {
 
             return await prisma.clubSupporter.upsert({ where, update, create });
         } catch (error) {
-            log(`Error upserting ClubSupporter: ${error}`);
+            log(`Error upserting ClubSupporter: ${String(error)}`);
             throw error;
         }
     }
@@ -158,7 +158,7 @@ export class ClubSupporterService {
 
             await prisma.clubSupporter.delete({ where });
         } catch (error) {
-            log(`Error deleting ClubSupporter: ${error}`);
+            log(`Error deleting ClubSupporter: ${String(error)}`);
             throw error;
         }
     }
@@ -172,7 +172,7 @@ export class ClubSupporterService {
         try {
             await prisma.clubSupporter.deleteMany();
         } catch (error) {
-            log(`Error deleting ClubSupporter: ${error}`);
+            log(`Error deleting ClubSupporter: ${String(error)}`);
             throw error;
         }
     }

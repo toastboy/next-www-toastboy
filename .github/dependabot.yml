@@ -9,6 +9,9 @@ updates:
         patterns:
           - "eslint"
           - "@eslint/js"
+      eslint-plugins:
+        patterns:
+          - "eslint-plugin-*"
       jest:
         patterns:
           - "jest"
@@ -22,6 +25,9 @@ updates:
           - "next"
           - "@next/eslint-plugin-next"
           - "eslint-config-next"
+      playwright:
+        patterns:
+          - "@playwright/*"
       prisma:
         patterns:
           - "prisma"

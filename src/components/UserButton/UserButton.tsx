@@ -38,7 +38,7 @@ const UserButton: React.FC = () => {
         id,
         color: 'red',
         title: 'Error',
-        message: `${error}`,
+        message: `${String(error)}`,
         icon: <IconAlertTriangle size={18} />,
         loading: false,
         autoClose: 2000,

@@ -1,6 +1,6 @@
 import { permanentRedirect } from 'next/navigation';
 
-const Page: React.FC = async () => {
+const Page: React.FC = () => {
     permanentRedirect(`/footy/players`);
 };
 

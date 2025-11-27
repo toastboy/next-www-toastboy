@@ -25,10 +25,10 @@ export const GET = async (request: NextRequest, props: { params: Promise<Record<
 
     return handleGET(
         () => gameDayService.getAll({
-            bibs: TeamNameSchema.safeParse(searchParams.get('bibs')).data || undefined,
+            bibs: TeamNameSchema.safeParse(searchParams.get('bibs')).data ?? undefined,
             game: parseBoolean(searchParams.get('game')),
             mailSent: parseBoolean(searchParams.get('mailSent')),
-            year: parseInt(searchParams.get('year') || '') || undefined,
+            year: parseInt(searchParams.get('year') ?? '') || undefined,
         }),
         { params },
     );

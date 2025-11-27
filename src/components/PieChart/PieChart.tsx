@@ -43,7 +43,7 @@ const PieChart = ({ data, width = 300, height = 300 }: PieChartProps) => {
             .data(pie(data))
             .enter()
             .append("text")
-            .attr("transform", (d) => `translate(${arc.centroid(d)})`)
+            .attr("transform", (d) => `translate(${arc.centroid(d).join(",")})`)
             .attr("text-anchor", "middle")
             .attr("dy", "0.35em")
             .style("fill", "white")

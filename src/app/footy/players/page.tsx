@@ -50,7 +50,7 @@ const Page: React.FC<PageProps> = () => {
 
     const filteredPlayers = players?.filter((player) => {
         const searchTerm = filter.toLowerCase();
-        const searchResult = (player.name?.toLowerCase().includes(searchTerm) ||
+        const searchResult = (player.name?.toLowerCase().includes(searchTerm) ??
             player.email?.toLowerCase().includes(searchTerm));
 
         return searchResult && (!active || player.finished === null);

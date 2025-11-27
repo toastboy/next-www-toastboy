@@ -18,7 +18,7 @@ export const GET = async (request: NextRequest, props: { params: Promise<Record<
     const params = await props.params;
     const searchParams = request.nextUrl.searchParams; // TODO: Should I be using searchParams?
     return handleGET(
-        () => outcomeService.getByBibs({ year: parseInt(searchParams.get('year') || '') || undefined }),
+        () => outcomeService.getByBibs({ year: parseInt(searchParams.get('year') ?? '') || undefined }),
         { params },
     );
 };

@@ -6,7 +6,7 @@ import outcomeService from "services/Outcome";
 
 type Props = object
 
-export async function generateMetadata() {
+export function generateMetadata() {
     return { title: "Turnout" };
 }
 

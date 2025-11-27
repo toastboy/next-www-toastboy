@@ -2,7 +2,7 @@ import Link from "next/link";
 
 type PageProps = object
 
-export async function generateMetadata() {
+export function generateMetadata() {
     return { title: "Toastboy FC Tables" };
 }
 

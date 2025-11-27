@@ -18,7 +18,7 @@ export async function generateMetadata(props: Props) {
         return name ? { title: `${name}` } : {};
     }
     catch (error) {
-        throw new Error(`Getting player metadata: ${error}`);
+        throw new Error(`Getting player metadata: ${String(error)}`);
     }
 }
 

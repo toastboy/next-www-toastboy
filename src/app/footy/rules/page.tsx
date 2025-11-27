@@ -2,7 +2,7 @@ import { Flex, Text, Title } from "@mantine/core";
 
 type Props = object
 
-export async function generateMetadata() {
+export function generateMetadata() {
     return { title: "Toastboy FC Rules" };
 }
 

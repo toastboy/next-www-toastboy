@@ -49,6 +49,6 @@ export async function sendEmail(to: string, subject: string, html: string) {
             subject,
             error,
         });
-        throw new Error(`Failed to send email to ${to} with subject "${subject}": ${error instanceof Error ? error.message : String(error)}`);
+        throw new Error(`Failed to send email: ${error instanceof Error ? error.message : String(error)}`);
     }
 }

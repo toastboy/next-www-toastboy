@@ -68,7 +68,7 @@ describe('OutcomeService', () => {
                 outcome.gameDayId === args.where.gameDayId_playerId.gameDayId &&
                 outcome.playerId === args.where.gameDayId_playerId.playerId,
             );
-            return Promise.resolve(outcome ? outcome : null);
+            return Promise.resolve(outcome ?? null);
         });
 
         (prisma.outcome.findMany as jest.Mock).mockImplementation((args: {
@@ -153,7 +153,7 @@ describe('OutcomeService', () => {
                 outcome.gameDayId === args.where.gameDayId_playerId.gameDayId &&
                 outcome.playerId === args.where.gameDayId_playerId.playerId,
             );
-            return Promise.resolve(outcome ? outcome : null);
+            return Promise.resolve(outcome ?? null);
         });
     });
 

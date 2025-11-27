@@ -40,7 +40,7 @@ describe('InvitationService', () => {
             where: { uuid: string }
         }) => {
             const invitation = invitationList.find((invitation) => invitation.uuid === args.where.uuid);
-            return Promise.resolve(invitation ? invitation : null);
+            return Promise.resolve(invitation ?? null);
         });
 
         (prisma.invitation.create as jest.Mock).mockImplementation((args: { data: InvitationType }) => {
@@ -73,7 +73,7 @@ describe('InvitationService', () => {
             where: { uuid: string }
         }) => {
             const invitation = invitationList.find((invitation) => invitation.uuid === args.where.uuid);
-            return Promise.resolve(invitation ? invitation : null);
+            return Promise.resolve(invitation ?? null);
         });
     });
 
@@ -105,13 +105,8 @@ describe('InvitationService', () => {
 
         it('should return the correct, complete list of 100 Invitation', async () => {
             const result = await invitationService.getAll();
-            if (result) {
-                expect(result).toHaveLength(100);
-                expect(result[11].uuid).toEqual(invitationList[11].uuid);
-            }
-            else {
-                throw new Error("Result is null");
-            }
+            expect(result).toHaveLength(100);
+            expect(result[11].uuid).toEqual(invitationList[11].uuid);
         });
     });
 

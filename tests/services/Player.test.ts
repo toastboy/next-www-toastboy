@@ -67,7 +67,7 @@ describe('PlayerService', () => {
             where: { id: number }
         }) => {
             const player = playerList.find((player) => player.id === args.where.id);
-            return Promise.resolve(player ? player : null);
+            return Promise.resolve(player ?? null);
         });
 
         (prisma.player.findMany as jest.Mock).mockImplementation(() => {
@@ -104,7 +104,7 @@ describe('PlayerService', () => {
             where: { id: number }
         }) => {
             const player = playerList.find((player) => player.id === args.where.id);
-            return Promise.resolve(player ? player : null);
+            return Promise.resolve(player ?? null);
         });
     });
 
@@ -133,7 +133,7 @@ describe('PlayerService', () => {
                 where: { login: string }
             }) => {
                 const player = playerList.find((player) => player.login === args.where.login);
-                return Promise.resolve(player ? player : null);
+                return Promise.resolve(player ?? null);
             });
         });
 
@@ -158,7 +158,7 @@ describe('PlayerService', () => {
                 where: { id: number }
             }) => {
                 const player = playerList.find((player) => player.id === args.where.id);
-                return Promise.resolve(player ? player : null);
+                return Promise.resolve(player ?? null);
             });
         });
 
@@ -178,7 +178,7 @@ describe('PlayerService', () => {
                 where: { login: string }
             }) => {
                 const player = playerList.find((player) => player.login === args.where.login);
-                return Promise.resolve(player ? player : null);
+                return Promise.resolve(player ?? null);
             });
         });
 
@@ -199,7 +199,7 @@ describe('PlayerService', () => {
                 where: { id: number }
             }) => {
                 const player = playerList.find((player) => player.id === args.where.id);
-                return Promise.resolve(player ? player : null);
+                return Promise.resolve(player ?? null);
             });
         });
 
@@ -219,7 +219,7 @@ describe('PlayerService', () => {
                 where: { login: string }
             }) => {
                 const player = playerList.find((player) => player.login === args.where.login);
-                return Promise.resolve(player ? player : null);
+                return Promise.resolve(player ?? null);
             });
         });
 
@@ -358,12 +358,7 @@ describe('PlayerService', () => {
 
         it('should retrieve the correct last played GameDay for Player ID 1', async () => {
             const result = await playerService.getLastPlayed(1);
-            if (result) {
-                expect(result.gameDayId).toBe(10);
-            }
-            else {
-                throw new Error("Result is null");
-            }
+            expect(result?.gameDayId).toBe(10);
         });
     });
 
@@ -466,16 +461,19 @@ describe('PlayerService', () => {
     describe('delete', () => {
         it('should delete an existing player', async () => {
             await playerService.delete(6);
+            expect(prisma.player.delete).toHaveBeenCalledTimes(1);
         });
 
         it('should silently return when asked to delete a player that does not exist', async () => {
             await playerService.delete(107);
+            expect(prisma.player.delete).toHaveBeenCalledTimes(1);
         });
     });
 
     describe('deleteAll', () => {
         it('should delete all players', async () => {
             await playerService.deleteAll();
+            expect(prisma.player.deleteMany).toHaveBeenCalledTimes(1);
         });
     });
 });

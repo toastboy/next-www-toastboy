@@ -30,9 +30,6 @@ export async function sendEmail(to: string, subject: string, html: string) {
             secure: false,
         });
 
-    console.log(process.env.NODE_ENV === 'production' ? 'Using production SMTP server' : 'Using development SMTP server');
-    console.log(JSON.stringify(transporter.options, null, 2));
-
     // Sanitize HTML before sending email
     const sanitizedHtml = sanitizeHtml(html);
 

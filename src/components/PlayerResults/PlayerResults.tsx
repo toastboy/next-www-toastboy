@@ -19,10 +19,10 @@ const PlayerResults: React.FC<Props> = async ({ playerId, year }) => {
         <Table summary={`${player.name}'s ${getYearName(year)} results record`}>
             <caption>{getYearName(year)} Results</caption>
             <TableTbody>
-                <TableTr><TableTh>Played</TableTh><TableTd>{playerRecord?.played || '-'}</TableTd></TableTr>
-                <TableTr><TableTh>Won</TableTh><TableTd>{playerRecord?.won || '-'}</TableTd></TableTr>
-                <TableTr><TableTh>Drawn</TableTh><TableTd>{playerRecord?.drawn || '-'}</TableTd></TableTr>
-                <TableTr><TableTh>Lost</TableTh><TableTd>{playerRecord?.lost || '-'}</TableTd></TableTr>
+                <TableTr><TableTh>Played</TableTh><TableTd>{playerRecord?.played ?? '-'}</TableTd></TableTr>
+                <TableTr><TableTh>Won</TableTh><TableTd>{playerRecord?.won ?? '-'}</TableTd></TableTr>
+                <TableTr><TableTh>Drawn</TableTh><TableTd>{playerRecord?.drawn ?? '-'}</TableTd></TableTr>
+                <TableTr><TableTh>Lost</TableTh><TableTd>{playerRecord?.lost ?? '-'}</TableTd></TableTr>
             </TableTbody>
         </Table>
     );

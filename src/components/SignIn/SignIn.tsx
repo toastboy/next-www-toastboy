@@ -40,7 +40,7 @@ export const SignIn: React.FC<Props> = ({ admin, redirect }) => {
 
         try {
             await authClient.signInWithEmail(values.email, values.password);
-            router.push(redirect || pathname);
+            router.push(redirect ?? pathname);
         } catch (error) {
             Sentry.captureMessage(`Sign in error: ${JSON.stringify(error, null, 2)}`, 'error');
             setErrorMessage('Something went wrong. Please try again.');
@@ -86,9 +86,9 @@ export const SignIn: React.FC<Props> = ({ admin, redirect }) => {
                 </Title>
             </Center>
 
-            <Button onClick={() => signInWithGoogle(redirect || pathname)}>Sign in with Google</Button>
+            <Button onClick={() => signInWithGoogle(redirect ?? pathname)}>Sign in with Google</Button>
 
-            <Button onClick={() => signInWithMicrosoft(redirect || pathname)}>Sign in with Microsoft</Button>
+            <Button onClick={() => signInWithMicrosoft(redirect ?? pathname)}>Sign in with Microsoft</Button>
 
             <Box
                 component="form"

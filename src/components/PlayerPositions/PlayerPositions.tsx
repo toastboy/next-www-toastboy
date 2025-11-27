@@ -22,13 +22,13 @@ const PlayerPositions: React.FC<Props> = async ({ playerId, year }) => {
             <TableTbody>
                 {TableNameSchema.options.map((table) => {
                     const position = playerRecord
-                        ? playerRecord[rankMap[table] as keyof typeof playerRecord] || null
+                        ? playerRecord[rankMap[table] as keyof typeof playerRecord] ?? null
                         : null;
 
                     return (
                         <TableTr key={table}>
                             <TableTh>{table.charAt(0).toUpperCase() + table.slice(1)}</TableTh>
-                            <TableTd>{position || '-'}</TableTd>
+                            <TableTd>{position ?? '-'}</TableTd>
                         </TableTr>
                     );
                 })}

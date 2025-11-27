@@ -55,7 +55,7 @@ export class OutcomeService {
 
             return prisma.outcome.findUnique({ where });
         } catch (error) {
-            log(`Error fetching outcomes: ${error}`);
+            log(`Error fetching outcomes: ${String(error)}`);
             throw error;
         }
     }
@@ -69,7 +69,7 @@ export class OutcomeService {
         try {
             return prisma.outcome.findMany({});
         } catch (error) {
-            log(`Error fetching outcomes: ${error}`);
+            log(`Error fetching outcomes: ${String(error)}`);
             throw error;
         }
     }
@@ -93,7 +93,7 @@ export class OutcomeService {
             });
         }
         catch (error) {
-            log(`Error fetching outcome: ${error}`);
+            log(`Error fetching outcome: ${String(error)}`);
             throw error;
         }
     }
@@ -127,7 +127,7 @@ export class OutcomeService {
                 },
             });
         } catch (error) {
-            log(`Error fetching outcomes: ${error}`);
+            log(`Error fetching outcomes: ${String(error)}`);
             throw error;
         }
     }
@@ -159,7 +159,7 @@ export class OutcomeService {
             });
         }
         catch (error) {
-            log(`Error fetching outcomes: ${error}`);
+            log(`Error fetching outcomes: ${String(error)}`);
             throw error;
         }
     }
@@ -225,7 +225,7 @@ export class OutcomeService {
             return result as Turnout[];
         }
         catch (error) {
-            log(`Error fetching outcomes: ${error}`);
+            log(`Error fetching outcomes: ${String(error)}`);
             throw error;
         }
     }
@@ -269,7 +269,7 @@ export class OutcomeService {
             }));
         }
         catch (error) {
-            log(`Error fetching outcomes: ${error}`);
+            log(`Error fetching outcomes: ${String(error)}`);
             throw error;
         }
     }
@@ -293,7 +293,7 @@ export class OutcomeService {
                 },
             });
         } catch (error) {
-            log(`Error fetching outcomes by GameDay: ${error}`);
+            log(`Error fetching outcomes by GameDay: ${String(error)}`);
             throw error;
         }
     }
@@ -312,7 +312,7 @@ export class OutcomeService {
                 },
             });
         } catch (error) {
-            log(`Error fetching outcomes by player: ${error}`);
+            log(`Error fetching outcomes by player: ${String(error)}`);
             throw error;
         }
     }
@@ -351,7 +351,7 @@ export class OutcomeService {
                 },
             });
         } catch (error) {
-            log(`Error fetching outcomes by player: ${error}`);
+            log(`Error fetching outcomes by player: ${String(error)}`);
             throw error;
         }
     }
@@ -389,7 +389,7 @@ export class OutcomeService {
             }
             return outcomes[0].gameDayId;
         } catch (error) {
-            log(`Error fetching latest game played by year: ${error}`);
+            log(`Error fetching latest game played by year: ${String(error)}`);
             throw error;
         }
     }
@@ -439,7 +439,7 @@ export class OutcomeService {
 
             return wdl;
         } catch (error) {
-            log(`Error fetching bibs WDL counts: ${error}`);
+            log(`Error fetching bibs WDL counts: ${String(error)}`);
             throw error;
         }
     }
@@ -456,7 +456,7 @@ export class OutcomeService {
 
             return await prisma.outcome.create({ data });
         } catch (error) {
-            log(`Error creating outcome: ${error}`);
+            log(`Error creating outcome: ${String(error)}`);
             throw error;
         }
     }
@@ -484,7 +484,7 @@ export class OutcomeService {
 
             return await prisma.outcome.upsert({ where, update, create });
         } catch (error) {
-            log(`Error upserting Outcome: ${error}`);
+            log(`Error upserting Outcome: ${String(error)}`);
             throw error;
         }
     }
@@ -507,7 +507,7 @@ export class OutcomeService {
 
             await prisma.outcome.delete({ where });
         } catch (error) {
-            log(`Error deleting outcome: ${error}`);
+            log(`Error deleting outcome: ${String(error)}`);
             throw error;
         }
     }
@@ -521,7 +521,7 @@ export class OutcomeService {
         try {
             await prisma.outcome.deleteMany();
         } catch (error) {
-            log(`Error deleting outcomes: ${error}`);
+            log(`Error deleting outcomes: ${String(error)}`);
             throw error;
         }
     }

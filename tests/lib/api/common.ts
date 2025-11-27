@@ -49,7 +49,7 @@ export function suppressConsoleError() {
     let consoleErrorMock: jest.SpyInstance;
 
     beforeEach(() => {
-        consoleErrorMock = jest.spyOn(console, 'error').mockImplementation(() => { });
+        consoleErrorMock = jest.spyOn(console, 'error').mockImplementation(() => { /* empty */ });
     });
 
     afterEach(() => {
@@ -84,7 +84,7 @@ export function createMockApp(
                 })
                 .catch((err) => {
                     res.statusCode = 500;
-                    res.end(`Error: ${err.message}`);
+                    res.end(`Error: ${err instanceof Error ? err.message : String(err)}`);
                 });
         }
     });

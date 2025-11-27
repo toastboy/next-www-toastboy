@@ -43,7 +43,7 @@ class PlayerService {
 
             return prisma.player.findUnique({ where });
         } catch (error) {
-            log(`Error fetching Player: ${error}`);
+            log(`Error fetching Player: ${String(error)}`);
             throw error;
         }
     }
@@ -60,7 +60,7 @@ class PlayerService {
 
             return prisma.player.findUnique({ where });
         } catch (error) {
-            log(`Error fetching Player: ${error}`);
+            log(`Error fetching Player: ${String(error)}`);
             throw error;
         }
     }
@@ -81,7 +81,7 @@ class PlayerService {
                 return await this.getByLogin(idOrLogin);
             }
         } catch (error) {
-            log(`Error getting Player login: ${error}`);
+            log(`Error getting Player login: ${String(error)}`);
             throw error;
         }
     }
@@ -99,7 +99,7 @@ class PlayerService {
             const player = await this.getByIdOrLogin(idOrLogin);
             return player ? player.login : null;
         } catch (error) {
-            log(`Error getting Player login: ${error}`);
+            log(`Error getting Player login: ${String(error)}`);
             throw error;
         }
     }
@@ -123,7 +123,7 @@ class PlayerService {
                 return player ? player.id : null;
             }
         } catch (error) {
-            log(`Error getting Player id: ${error}`);
+            log(`Error getting Player id: ${String(error)}`);
             throw error;
         }
     }
@@ -146,7 +146,7 @@ class PlayerService {
             });
             return player ? player.id : null;
         } catch (error) {
-            log(`Error getting Player id: ${error}`);
+            log(`Error getting Player id: ${String(error)}`);
             throw error;
         }
     }
@@ -184,7 +184,7 @@ class PlayerService {
                 };
             });
         } catch (error) {
-            log(`Error fetching Players: ${error}`);
+            log(`Error fetching Players: ${String(error)}`);
             throw error;
         }
     }
@@ -207,7 +207,7 @@ class PlayerService {
 
             return idsAndLogins;
         } catch (error) {
-            log(`Error fetching Player ids and logins: ${error}`);
+            log(`Error fetching Player ids and logins: ${String(error)}`);
             throw error;
         }
     }
@@ -249,7 +249,7 @@ class PlayerService {
                 take: history,
             });
         } catch (error) {
-            log(`Error fetching outcomes: ${error}`);
+            log(`Error fetching outcomes: ${String(error)}`);
             throw error;
         }
     }
@@ -274,7 +274,7 @@ class PlayerService {
                 take: 1,
             });
         } catch (error) {
-            log(`Error fetching outcomes: ${error}`);
+            log(`Error fetching outcomes: ${String(error)}`);
             throw error;
         }
     }
@@ -305,7 +305,7 @@ class PlayerService {
 
             return Promise.resolve(distinctYears);
         } catch (error) {
-            log(`Error fetching player active years: ${error}`);
+            log(`Error fetching player active years: ${String(error)}`);
             throw error;
         }
     }
@@ -321,7 +321,7 @@ class PlayerService {
 
             return await prisma.player.create({ data });
         } catch (error) {
-            log(`Error creating Player: ${error}`);
+            log(`Error creating Player: ${String(error)}`);
             throw error;
         }
     }
@@ -340,7 +340,7 @@ class PlayerService {
 
             return await prisma.player.upsert({ where, update, create });
         } catch (error) {
-            log(`Error upserting Player: ${error}`);
+            log(`Error upserting Player: ${String(error)}`);
             throw error;
         }
     }
@@ -359,7 +359,7 @@ class PlayerService {
                 },
             });
         } catch (error) {
-            log(`Error deleting Player: ${error}`);
+            log(`Error deleting Player: ${String(error)}`);
             throw error;
         }
     }
@@ -371,7 +371,7 @@ class PlayerService {
         try {
             await prisma.player.deleteMany();
         } catch (error) {
-            log(`Error deleting Players: ${error}`);
+            log(`Error deleting Players: ${String(error)}`);
             throw error;
         }
     }

@@ -47,7 +47,7 @@ export class GameDayService {
 
             return prisma.gameDay.findUnique({ where });
         } catch (error) {
-            log(`Error fetching GameDayType: ${error}`);
+            log(`Error fetching GameDayType: ${String(error)}`);
             throw error;
         }
     }
@@ -74,7 +74,7 @@ export class GameDayService {
 
             return prisma.gameDay.findMany({ where });
         } catch (error) {
-            log(`Error fetching GameDayType: ${error}`);
+            log(`Error fetching GameDayType: ${String(error)}`);
             throw error;
         }
     }
@@ -90,7 +90,7 @@ export class GameDayService {
         try {
             return prisma.gameDay.findFirst({ where: { date } });
         } catch (error) {
-            log(`Error fetching GameDayType: ${error}`);
+            log(`Error fetching GameDayType: ${String(error)}`);
             throw error;
         }
     }
@@ -107,7 +107,7 @@ export class GameDayService {
 
             return prisma.gameDay.findFirst({ where, orderBy: { date: 'desc' } });
         } catch (error) {
-            log(`Error fetching current GameDayType: ${error}`);
+            log(`Error fetching current GameDayType: ${String(error)}`);
             throw error;
         }
     }
@@ -140,7 +140,7 @@ export class GameDayService {
                 },
             });
         } catch (error) {
-            log(`Error counting gameDays: ${error}`);
+            log(`Error counting gameDays: ${String(error)}`);
             throw error;
         }
     }
@@ -174,7 +174,7 @@ export class GameDayService {
                 },
             });
         } catch (error) {
-            log(`Error counting gameDays: ${error}`);
+            log(`Error counting gameDays: ${String(error)}`);
             throw error;
         }
     }
@@ -197,7 +197,7 @@ export class GameDayService {
             });
             return result.map((r) => r._max.id);
         } catch (error) {
-            log(`Error counting gameDays: ${error}`);
+            log(`Error counting gameDays: ${String(error)}`);
             throw error;
         }
     }
@@ -223,7 +223,7 @@ export class GameDayService {
 
             return Promise.resolve(distinctYears);
         } catch (error) {
-            log(`Error fetching GameDays: ${error}`);
+            log(`Error fetching GameDays: ${String(error)}`);
             throw error;
         }
     }
@@ -249,7 +249,7 @@ export class GameDayService {
             return gameDay ? Promise.resolve(gameDay.year) : null;
         }
         catch (error) {
-            log(`Error fetching GameDayType: ${error}`);
+            log(`Error fetching GameDayType: ${String(error)}`);
             throw error;
         }
     }
@@ -266,7 +266,7 @@ export class GameDayService {
 
             return await prisma.gameDay.create({ data });
         } catch (error) {
-            log(`Error creating GameDayType: ${error}`);
+            log(`Error creating GameDayType: ${String(error)}`);
             throw error;
         }
     }
@@ -286,7 +286,7 @@ export class GameDayService {
 
             return await prisma.gameDay.upsert({ where, update, create });
         } catch (error) {
-            log(`Error upserting GameDayType: ${error}`);
+            log(`Error upserting GameDayType: ${String(error)}`);
             throw error;
         }
     }
@@ -302,7 +302,7 @@ export class GameDayService {
 
             await prisma.gameDay.delete({ where });
         } catch (error) {
-            log(`Error deleting GameDayType: ${error}`);
+            log(`Error deleting GameDayType: ${String(error)}`);
             throw error;
         }
     }
@@ -316,7 +316,7 @@ export class GameDayService {
         try {
             await prisma.gameDay.deleteMany();
         } catch (error) {
-            log(`Error deleting GameDays: ${error}`);
+            log(`Error deleting GameDays: ${String(error)}`);
             throw error;
         }
     }

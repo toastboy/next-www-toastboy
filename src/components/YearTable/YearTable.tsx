@@ -10,7 +10,7 @@ interface Props {
 }
 
 const YearTable: React.FC<Props> = ({ table, year }) => {
-    const utn = UnqualifiedTableName(table) || null;
+    const utn = UnqualifiedTableName(table) ?? null;
 
     return (
         <Flex direction="column" gap="md">

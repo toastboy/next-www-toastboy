@@ -43,7 +43,7 @@ export class GameChatService {
 
             return prisma.gameChat.findUnique({ where });
         } catch (error) {
-            log(`Error fetching gameChat: ${error}`);
+            log(`Error fetching gameChat: ${String(error)}`);
             throw error;
         }
     }
@@ -57,7 +57,7 @@ export class GameChatService {
         try {
             return prisma.gameChat.findMany({});
         } catch (error) {
-            log(`Error fetching gameChats: ${error}`);
+            log(`Error fetching gameChats: ${String(error)}`);
             throw error;
         }
     }
@@ -74,7 +74,7 @@ export class GameChatService {
 
             return await prisma.gameChat.create({ data });
         } catch (error) {
-            log(`Error creating gameChat: ${error}`);
+            log(`Error creating gameChat: ${String(error)}`);
             throw error;
         }
     }
@@ -94,7 +94,7 @@ export class GameChatService {
 
             return await prisma.gameChat.upsert({ where, update, create });
         } catch (error) {
-            log(`Error upserting gameChat: ${error}`);
+            log(`Error upserting gameChat: ${String(error)}`);
             throw error;
         }
     }
@@ -110,7 +110,7 @@ export class GameChatService {
 
             await prisma.gameChat.delete({ where });
         } catch (error) {
-            log(`Error deleting gameChat: ${error}`);
+            log(`Error deleting gameChat: ${String(error)}`);
             throw error;
         }
     }
@@ -124,7 +124,7 @@ export class GameChatService {
         try {
             await prisma.gameChat.deleteMany();
         } catch (error) {
-            log(`Error deleting gameChats: ${error}`);
+            log(`Error deleting gameChats: ${String(error)}`);
             throw error;
         }
     }

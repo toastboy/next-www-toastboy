@@ -14,103 +14,103 @@ import useSWR from 'swr';
 
 import { PlayerData, TurnoutByYear, WDL } from './types';
 
-const fetcher = (input: URL | RequestInfo, init?: RequestInit  ) =>
+const fetcher = (input: URL | RequestInfo, init?: RequestInit) =>
     fetch(input, init).then((res) => res.json());
 
 export function useClub(id: number) {
     const { data, error } = useSWR<ClubType>(`/api/footy/club/${id}`, fetcher);
     if (error) throw error;
-    return data || null;
+    return data ?? null;
 }
 
 export function useCountry(isoCode: string) {
     const { data, error } = useSWR<CountryType>(`/api/footy/country/${isoCode}`, fetcher);
     if (error) throw error;
-    return data || null;
+    return data ?? null;
 }
 
 export function useGameYears() {
     const { data, error } = useSWR<number[]>(`/api/footy/gameyear`, fetcher);
     if (error) throw error;
-    return data || null;
+    return data ?? null;
 }
 
 export function useGameYear(year: number) {
     const { data, error } = useSWR<boolean>(`/api/footy/gameyear/${year}`, fetcher);
     if (error) throw error;
-    return data || null;
+    return data ?? null;
 }
 
 export function useGameDay(id: number) {
     const { data, error } = useSWR<GameDayType>(`/api/footy/gameday/${id}`, fetcher);
     if (error) throw error;
-    return data || null;
+    return data ?? null;
 }
 
 export function useGameDays() {
     const { data, error } = useSWR<GameDayType[]>(`/api/footy/gameday`, fetcher);
     if (error) throw error;
-    return data || null;
+    return data ?? null;
 }
 
 export function useCurrentGame() {
     const { data, error } = useSWR<GameDayType>(`/api/footy/currentgame`, fetcher);
     if (error) throw error;
-    return data || null;
+    return data ?? null;
 }
 
 export function usePlayer(idOrLogin: string) {
     const { data, error } = useSWR<PlayerType>(`/api/footy/player/${idOrLogin}`, fetcher);
     if (error) throw error;
-    return data || null;
+    return data ?? null;
 }
 
 export function usePlayerLastPlayed(idOrLogin: string) {
     const { data, error } = useSWR<OutcomeType>(`/api/footy/player/${idOrLogin}/lastplayed`, fetcher);
     if (error) throw error;
-    return data || null;
+    return data ?? null;
 }
 
 export function usePlayerClubs(idOrLogin: string) {
     const { data, error } = useSWR<ClubSupporterType[]>(`/api/footy/player/${idOrLogin}/clubs`, fetcher);
     if (error) throw error;
-    return data || null;
+    return data ?? null;
 }
 
 export function usePlayerCountries(idOrLogin: string) {
     const { data, error } = useSWR<CountrySupporterType[]>(`/api/footy/player/${idOrLogin}/countries`, fetcher);
     if (error) throw error;
-    return data || null;
+    return data ?? null;
 }
 
 export function usePlayerArse(idOrLogin: string) {
     const { data, error } = useSWR<ArseType>(`/api/footy/player/${idOrLogin}/arse`, fetcher);
     if (error) throw error;
-    return data || null;
+    return data ?? null;
 }
 
 export function usePlayerForm(idOrLogin: string, games: number) {
     const { data, error } = useSWR<OutcomeType[]>(`/api/footy/player/${idOrLogin}/form/${games}`, fetcher);
     if (error) throw error;
-    return data || null;
+    return data ?? null;
 }
 
 export function usePlayerYearsActive(idOrLogin: string) {
     const { data, error } = useSWR<number[]>(`/api/footy/player/${idOrLogin}/yearsactive`, fetcher);
     if (error) throw error;
-    return data || null;
+    return data ?? null;
 }
 
 export function usePlayerRecord(idOrLogin: string, year: number) {
     const { data, error } = useSWR<PlayerRecordType>(`/api/footy/player/${idOrLogin}/record/${year}`, fetcher);
     if (error) throw error;
-    return data || null;
+    return data ?? null;
 }
 
 export function usePlayers() {
     const { data, error } = useSWR<PlayerData[]>(`/api/footy/players`, fetcher);
     if (error) throw error;
-    return data || null;
+    return data ?? null;
 }
 
 export function useRecordsProgress() {
@@ -122,7 +122,7 @@ export function useRecordsProgress() {
 export function useTableYears() {
     const { data, error } = useSWR<number[]>(`/api/footy/tableyear`, fetcher);
     if (error) throw error;
-    return data || null;
+    return data ?? null;
 }
 
 export function useTable(table: TableName, year: number, qualified?: boolean, take?: number) {
@@ -132,13 +132,13 @@ export function useTable(table: TableName, year: number, qualified?: boolean, ta
 
     const { data, error } = useSWR<PlayerRecordType[]>(url, fetcher);
     if (error) throw error;
-    return data || null;
+    return data ?? null;
 }
 
 export function useTeam(gameDay: number, team: string) {
     const { data, error } = useSWR<OutcomeType[]>(`/api/footy/team/${gameDay}/${team}`, fetcher);
     if (error) throw error;
-    return data || null;
+    return data ?? null;
 }
 
 export function useWinners(table: TableName, year?: number) {
@@ -147,17 +147,17 @@ export function useWinners(table: TableName, year?: number) {
 
     const { data, error } = useSWR<PlayerRecordType[]>(url, fetcher);
     if (error) throw error;
-    return data || null;
+    return data ?? null;
 }
 
 export function useTurnoutByYear() {
     const { data, error } = useSWR<TurnoutByYear[]>(`/api/footy/turnout/byyear`, fetcher);
     if (error) throw error;
-    return data || null;
+    return data ?? null;
 }
 
 export function useBibs(year?: number) {
     const { data, error } = useSWR<WDL>(`/api/footy/bibs?year=${year}`, fetcher);
     if (error) throw error;
-    return data || null;
+    return data ?? null;
 }

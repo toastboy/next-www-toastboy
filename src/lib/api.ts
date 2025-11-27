@@ -53,8 +53,8 @@ export async function handleGET<T, S = T>(
     },
 ): Promise<NextResponse> {
     // If no sanitize hook provided, pass data through (cast via unknown to satisfy TS when S != T)
-    const sanitize: (data: T) => Promise<S> = hooks?.sanitize || (async (data: T) => data as unknown as S);
-    const buildResponse: (data: S) => Promise<NextResponse> = hooks?.buildResponse || buildJsonResponse;
+    const sanitize: (data: T) => Promise<S> = hooks?.sanitize ?? (async (data: T) => data as unknown as S);
+    const buildResponse: (data: S) => Promise<NextResponse> = hooks?.buildResponse ?? buildJsonResponse;
 
     const data = await serviceFunction({ params });
 

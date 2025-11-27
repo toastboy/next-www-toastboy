@@ -43,7 +43,7 @@ export class ClubService {
 
             return prisma.club.findUnique({ where });
         } catch (error) {
-            log(`Error fetching club: ${error}`);
+            log(`Error fetching club: ${String(error)}`);
             throw error;
         }
     }
@@ -57,7 +57,7 @@ export class ClubService {
         try {
             return prisma.club.findMany({});
         } catch (error) {
-            log(`Error fetching clubs: ${error}`);
+            log(`Error fetching clubs: ${String(error)}`);
             throw error;
         }
     }
@@ -74,7 +74,7 @@ export class ClubService {
 
             return await prisma.club.create({ data });
         } catch (error) {
-            log(`Error creating club: ${error}`);
+            log(`Error creating club: ${String(error)}`);
             throw error;
         }
     }
@@ -97,7 +97,7 @@ export class ClubService {
 
             return await prisma.club.upsert({ where, update, create });
         } catch (error) {
-            log(`Error upserting club: ${error}`);
+            log(`Error upserting club: ${String(error)}`);
             throw error;
         }
     }
@@ -113,7 +113,7 @@ export class ClubService {
 
             await prisma.club.delete({ where });
         } catch (error) {
-            log(`Error deleting club: ${error}`);
+            log(`Error deleting club: ${String(error)}`);
             throw error;
         }
     }
@@ -127,7 +127,7 @@ export class ClubService {
         try {
             await prisma.club.deleteMany();
         } catch (error) {
-            log(`Error deleting clubs: ${error}`);
+            log(`Error deleting clubs: ${String(error)}`);
             throw error;
         }
     }

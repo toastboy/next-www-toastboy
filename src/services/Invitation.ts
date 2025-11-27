@@ -45,7 +45,7 @@ export class InvitationService {
 
             return prisma.invitation.findUnique({ where });
         } catch (error) {
-            log(`Error fetching Invitation: ${error}`);
+            log(`Error fetching Invitation: ${String(error)}`);
             throw error;
         }
     }
@@ -59,7 +59,7 @@ export class InvitationService {
         try {
             return prisma.invitation.findMany({});
         } catch (error) {
-            log(`Error fetching Invitation: ${error}`);
+            log(`Error fetching Invitation: ${String(error)}`);
             throw error;
         }
     }
@@ -76,7 +76,7 @@ export class InvitationService {
 
             return await prisma.invitation.create({ data });
         } catch (error) {
-            log(`Error creating Invitation: ${error}`);
+            log(`Error creating Invitation: ${String(error)}`);
             throw error;
         }
     }
@@ -109,7 +109,7 @@ export class InvitationService {
 
             await prisma.invitation.delete({ where });
         } catch (error) {
-            log(`Error deleting Invitation: ${error}`);
+            log(`Error deleting Invitation: ${String(error)}`);
             throw error;
         }
     }
@@ -123,7 +123,7 @@ export class InvitationService {
         try {
             await prisma.invitation.deleteMany();
         } catch (error) {
-            log(`Error deleting Invitations: ${error}`);
+            log(`Error deleting Invitations: ${String(error)}`);
             throw error;
         }
     }
@@ -139,7 +139,7 @@ async function upsert(
 
         return await prisma.invitation.upsert({ where, update, create });
     } catch (error) {
-        log(`Error upserting Invitation: ${error}`);
+        log(`Error upserting Invitation: ${String(error)}`);
         throw error;
     }
 }

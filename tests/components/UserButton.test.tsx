@@ -8,7 +8,7 @@ jest.mock('next/navigation', () => ({
     useRouter: () => ({ push }),
 }));
 
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import UserButton from 'components/UserButton/UserButton';
 import { authClient } from 'lib/auth-client';
 
@@ -54,9 +54,7 @@ describe('UserButton', () => {
 
         render(<Wrapper><UserButton /></Wrapper>);
 
-        act(() => {
-            screen.getByText('Sign In').click();
-        });
+        fireEvent.click(screen.getByText('Sign In'));
 
         await waitFor(() => {
             expect(push).toHaveBeenCalledWith('/footy/auth/signin');
@@ -72,9 +70,7 @@ describe('UserButton', () => {
 
         render(<Wrapper><UserButton /></Wrapper>);
 
-        act(() => {
-            screen.getByText('Sign In').click();
-        });
+        fireEvent.click(screen.getByText('Sign In'));
 
         await waitFor(() => {
             expect(push).toHaveBeenCalledWith('/footy/auth/signin');
@@ -124,38 +120,4 @@ describe('UserButton', () => {
             expect(chevronIcon).toBeInTheDocument();
         });
     });
-
-    //     it('renders loading spinner', async () => {
-    //         (authClient.useSession as jest.Mock).mockReturnValue({
-    //             data: null,
-    //             isPending: true,
-    //             error: null,
-    //         });
-
-    //         const { container } = render(<Wrapper><UserButton /></Wrapper>);
-    //         await waitFor(() => {
-    //             expect(container.querySelector(loaderClass)).toBeInTheDocument();
-    //         });
-    //     });
-
-    //     it('renders error message', async () => {
-    //         const error: BetterFetchError = {
-    //             name: "BetterFetchError",
-    //             message: "The user is not authorized to perform this action.",
-    //             status: 403,
-    //             statusText: "Forbidden",
-    //             error: "The user is not authorized to perform this action.",
-    //         };
-
-    //         (authClient.useSession as jest.Mock).mockReturnValue({
-    //             data: null,
-    //             isPending: false,
-    //             error: error,
-    //         });
-
-    //         render(<Wrapper><UserButton /></Wrapper>);
-    //         await waitFor(() => {
-    //             expect(screen.getByText('Error loading user: The user is not authorized to perform this action.')).toBeInTheDocument();
-    //         });
-    //     });
 });

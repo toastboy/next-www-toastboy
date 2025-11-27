@@ -43,7 +43,7 @@ export class CountryService {
 
             return prisma.country.findUnique({ where });
         } catch (error) {
-            log(`Error fetching country: ${error}`);
+            log(`Error fetching country: ${String(error)}`);
             throw error;
         }
     }
@@ -57,7 +57,7 @@ export class CountryService {
         try {
             return prisma.country.findMany({});
         } catch (error) {
-            log(`Error fetching countries: ${error}`);
+            log(`Error fetching countries: ${String(error)}`);
             throw error;
         }
     }
@@ -74,7 +74,7 @@ export class CountryService {
 
             return await prisma.country.create({ data });
         } catch (error) {
-            log(`Error creating country: ${error}`);
+            log(`Error creating country: ${String(error)}`);
             throw error;
         }
     }
@@ -96,7 +96,7 @@ export class CountryService {
 
             return await prisma.country.upsert({ where, update, create });
         } catch (error) {
-            log(`Error upserting country: ${error}`);
+            log(`Error upserting country: ${String(error)}`);
             throw error;
         }
     }
@@ -112,7 +112,7 @@ export class CountryService {
 
             await prisma.country.delete({ where });
         } catch (error) {
-            log(`Error deleting country: ${error}`);
+            log(`Error deleting country: ${String(error)}`);
             throw error;
         }
     }
@@ -126,7 +126,7 @@ export class CountryService {
         try {
             await prisma.country.deleteMany();
         } catch (error) {
-            log(`Error deleting countries: ${error}`);
+            log(`Error deleting countries: ${String(error)}`);
             throw error;
         }
     }

@@ -17,7 +17,7 @@ const PlayerPositions: React.FC<Props> = async ({ playerId, year }) => {
     const playerRecord = await playerRecordService.getForYearByPlayer(year, player.id);
 
     return (
-        <Table summary={`${player.name}'s ${getYearName(year)} table positions`}>
+        <Table summary={`${(player.name ?? 'Unknown Player')}'s ${getYearName(year)} table positions`}>
             <TableCaption>{getYearName(year)} Positions</TableCaption>
             <TableTbody>
                 {TableNameSchema.options.map((table) => {

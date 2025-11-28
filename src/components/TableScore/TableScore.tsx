@@ -9,7 +9,7 @@ export interface Props {
 const TableScore = ({ table, playerRecord }: Props) => {
     switch (table) {
         case TableNameSchema.enum.averages:
-            return `${playerRecord.averages?.toFixed(3)}`;
+            return playerRecord.averages?.toFixed(3) ?? '';
         case TableNameSchema.enum.speedy:
             {
                 const date = new Date(0);

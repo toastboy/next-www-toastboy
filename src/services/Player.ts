@@ -223,7 +223,7 @@ class PlayerService {
             return `Player ${player.id}`;
         }
 
-        return `${player.name}`;
+        return player.name ?? `Player ${player.id}`;
     }
 
     /**

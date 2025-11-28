@@ -91,6 +91,10 @@ const config = [
             regexp: regexpPlugin,
         },
 
+        linterOptions: {
+            reportUnusedDisableDirectives: true,
+        },
+
         languageOptions: {
             globals: {
                 ...globals.browser,
@@ -139,12 +143,21 @@ const config = [
             }],
 
             "react/prop-types": "off",
+            "react/jsx-no-leaked-render": ["warn", { validStrategies: ["coerce", "ternary"] }],
+            "react/hook-use-state": "warn",
+            "react/no-unstable-nested-components": ["warn", { allowAsProps: true }],
             "eol-last": ["error", "always"],
             // Import hygiene
             "import-x/no-unresolved": "error",
             "import-x/no-duplicates": "error",
             "import-x/namespace": "error",
             "import-x/no-named-default": "error",
+            "import-x/no-cycle": ["warn", { ignoreExternal: true }],
+            "import-x/no-extraneous-dependencies": ["warn", {
+                devDependencies: true,
+                includeTypes: false,
+            }],
+            "import-x/no-relative-parent-imports": "off",
             "simple-import-sort/imports": "warn",
             "simple-import-sort/exports": "warn",
             "unused-imports/no-unused-imports": "warn",
@@ -153,6 +166,7 @@ const config = [
             "promise/always-return": "warn",
             "promise/no-multiple-resolved": "error",
             "promise/no-nesting": "warn",
+            "promise/no-return-in-finally": "warn",
             // SonarJS examples (keep light to avoid noise)
             "sonarjs/no-all-duplicated-branches": "warn",
             "sonarjs/no-identical-functions": "warn",
@@ -173,6 +187,18 @@ const config = [
         rules: {
             "@typescript-eslint/no-floating-promises": "error",
             "@typescript-eslint/no-misused-promises": ["error", { checksVoidReturn: false }],
+            "@typescript-eslint/non-nullable-type-assertion-style": "warn",
+            "@typescript-eslint/no-unnecessary-type-assertion": "warn",
+            "@typescript-eslint/no-unsafe-enum-comparison": "warn",
+            "@typescript-eslint/prefer-nullish-coalescing": "warn",
+            "@typescript-eslint/prefer-regexp-exec": "warn",
+            "@typescript-eslint/restrict-template-expressions": ["warn", {
+                allowAny: false,
+                allowNumber: true,
+                allowBoolean: false,
+                allowNullish: false,
+                allowRegExp: true,
+            }],
             "@typescript-eslint/unbound-method": "off",
         },
     },

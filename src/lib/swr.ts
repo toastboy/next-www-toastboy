@@ -127,7 +127,7 @@ export function useTableYears() {
 
 export function useTable(table: TableName, year: number, qualified?: boolean, take?: number) {
     let url = `/api/footy/table/${table}/${year}`;
-    if (qualified !== undefined) url += `/${qualified}`;
+    if (qualified !== undefined) url += `/${String(qualified)}`;
     if (take !== undefined) url += `/${take}`;
 
     const { data, error } = useSWR<PlayerRecordType[], Error>(url, fetcher);
@@ -157,7 +157,7 @@ export function useTurnoutByYear() {
 }
 
 export function useBibs(year?: number) {
-    const { data, error } = useSWR<WDL, Error>(`/api/footy/bibs?year=${year}`, fetcher);
+    const { data, error } = useSWR<WDL, Error>(`/api/footy/bibs?year=${String(year)}`, fetcher);
     if (error) throw error;
     return data ?? null;
 }

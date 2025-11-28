@@ -88,7 +88,9 @@ export default defineConfig({
 
   /* Run your local dev server before starting the tests */
   webServer: {
-    command: process.env.CI ? 'npm run start:ci' : 'npm run dev',
+    command: process.env.CI
+      ? 'npm run start:ci'
+      : 'op run --env-file ./.env -- npm run dev',
     url: 'http://127.0.0.1:3000',
     stdout: 'pipe',
     stderr: 'pipe',

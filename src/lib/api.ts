@@ -76,10 +76,10 @@ export async function handleGET<T, S = T>(
  *          a status code of 200, and a `Content-Type` header set to `application/json`.
  */
 export async function buildJsonResponse<T>(data: T): Promise<NextResponse> {
-    return NextResponse.json(data, {
+    return Promise.resolve(NextResponse.json(data, {
         status: 200,
         headers: { 'Content-Type': 'application/json' },
-    });
+    }));
 }
 
 /**
@@ -90,10 +90,10 @@ export async function buildJsonResponse<T>(data: T): Promise<NextResponse> {
  *          as a PNG and the appropriate headers.
  */
 export async function buildPngResponse(data: Buffer): Promise<NextResponse> {
-    return new NextResponse(new Uint8Array(data), {
+    return Promise.resolve(new NextResponse(new Uint8Array(data), {
         status: 200,
         headers: { 'Content-Type': 'image/png' },
-    });
+    }));
 }
 
 /**

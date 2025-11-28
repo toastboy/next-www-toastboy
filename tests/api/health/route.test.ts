@@ -1,7 +1,5 @@
-/**
- * Health check API endpoint tests
- */
-import { GET, HealthResponseSchema } from 'api/health/route';
+import { GET } from 'api/health/route';
+import { HealthResponseSchema } from 'lib/health';
 import prisma from 'lib/prisma';
 
 // Mock the prisma client

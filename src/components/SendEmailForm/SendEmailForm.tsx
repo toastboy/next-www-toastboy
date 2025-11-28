@@ -70,7 +70,7 @@ const SendEmailForm: React.FC<Props> = ({ opened, onClose, players }) => {
                 id,
                 color: 'red',
                 title: 'Error',
-                message: `${err}`,
+                message: `${String(err)}`,
                 icon: <IconAlertTriangle size={18} />,
                 loading: false,
                 autoClose: 2000,
@@ -91,7 +91,7 @@ const SendEmailForm: React.FC<Props> = ({ opened, onClose, players }) => {
                     <strong>To:</strong> {names}
                 </Text>
             </Tooltip>
-            <form onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}>
+            <form onSubmit={(e) => { e.preventDefault(); void handleSubmit(); }}>
                 <TextInput
                     label="Subject"
                     value={subject}

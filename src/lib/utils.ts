@@ -19,8 +19,8 @@ import { TableName } from 'prisma/generated/schemas';
 export async function streamToBuffer(readableStream: NodeJS.ReadableStream): Promise<Buffer> {
     return new Promise((resolve, reject) => {
         const chunks: Buffer[] = [];
-        readableStream.on('data', (data) => {
-            chunks.push(Buffer.from(data));
+        readableStream.on('data', (data: Buffer | Uint8Array) => {
+            chunks.push(Buffer.isBuffer(data) ? data : Buffer.from(data));
         });
         readableStream.on('end', () => {
             resolve(Buffer.concat(chunks));

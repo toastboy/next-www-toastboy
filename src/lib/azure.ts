@@ -1,10 +1,10 @@
 import 'server-only';
 
 import { ClientSecretCredential } from '@azure/identity';
-import { BlobServiceClient } from "@azure/storage-blob";
+import { BlobServiceClient, ContainerClient } from "@azure/storage-blob";
 import { getSecrets } from 'lib/secrets';
 
-type ContainerClientCache = Record<string, ReturnType<BlobServiceClient["getContainerClient"]>>;
+type ContainerClientCache = Record<string, ContainerClient>;
 
 class AzureCache {
     private static instance: AzureCache;
@@ -45,7 +45,7 @@ class AzureCache {
         );
     }
 
-    public async getContainerClient(containerName: string): Promise<ReturnType<BlobServiceClient["getContainerClient"]>> {
+    public getContainerClient(containerName: string): ContainerClient {
         if (!this.containerClients[containerName]) {
             try {
                 const blobServiceClient = this.getBlobServiceClient();

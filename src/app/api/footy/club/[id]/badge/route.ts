@@ -16,7 +16,7 @@ async function getClubBadge(
     { params }: { params: Record<string, string> },
 ): Promise<Buffer | null> {
     try {
-        const containerClient = await azureCache.getContainerClient("clubs");
+        const containerClient = azureCache.getContainerClient("clubs");
         const blobClient = containerClient.getBlobClient(`${params.id.toString()}.png`);
 
         if (!(await blobClient.exists())) {

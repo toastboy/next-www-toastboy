@@ -2,16 +2,16 @@
  * Health check endpoint E2E tests
  */
 import { expect, test } from '@playwright/test';
+import { HealthResponseSchema } from 'lib/health';
 
 test.describe('/api/health endpoint', () => {
     test('should return healthy status with 200 when application and database are running', async ({
         request,
     }) => {
         const response = await request.get('/api/health');
+        const json = HealthResponseSchema.parse(await response.json());
 
         expect(response.status()).toBe(200);
-
-        const json = await response.json();
         expect(json.status).toBe('healthy');
         expect(json.database).toBe('connected');
         expect(json.timestamp).toBeTruthy();

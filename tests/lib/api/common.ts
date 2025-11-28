@@ -19,7 +19,7 @@ jest.mock('@azure/storage-blob', () => ({
 }));
 
 const mockAzureCache = {
-    getContainerClient: jest.fn().mockResolvedValue(mockContainerClient),
+    getContainerClient: jest.fn().mockReturnValue(mockContainerClient),
 };
 
 jest.mock('lib/azure', () => ({

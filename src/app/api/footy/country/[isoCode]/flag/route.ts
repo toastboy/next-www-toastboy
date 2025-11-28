@@ -14,7 +14,7 @@ import { NextRequest } from 'next/server';
 async function getCountryFlag(
     { params }: { params: Record<string, string> },
 ): Promise<Buffer | null> {
-    const containerClient = await azureCache.getContainerClient("countries");
+    const containerClient = azureCache.getContainerClient("countries");
     const blobClient = containerClient.getBlobClient(`${params.isoCode}.png`);
 
     if (!(await blobClient.exists())) {

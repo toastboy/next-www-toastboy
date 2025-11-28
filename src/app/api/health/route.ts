@@ -2,27 +2,9 @@ import 'server-only';
 
 import prisma from 'lib/prisma';
 import { NextResponse } from 'next/server';
-import { z } from 'zod';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
-
-export const HealthResponseSchema = z.discriminatedUnion('status', [
-    z.object({
-        status: z.literal('healthy'),
-        database: z.literal('connected'),
-        error: z.string().optional(),
-        timestamp: z.iso.datetime(),
-    }),
-    z.object({
-        status: z.literal('unhealthy'),
-        database: z.literal('disconnected'),
-        error: z.string(),
-        timestamp: z.iso.datetime(),
-    }),
-]);
-
-export type HealthResponse = z.infer<typeof HealthResponseSchema>;
 
 /**
  * Health check endpoint for Docker healthcheck and monitoring.

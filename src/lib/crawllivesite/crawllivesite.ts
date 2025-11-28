@@ -6,7 +6,8 @@ type LinkQueue = Record<string, boolean>;
 
 const fetchPageLinks = async (url: string): Promise<string[]> => {
     try {
-        const { data } = await axios.get(url);
+        const response = await axios.get<string>(url);
+        const data = response.data;
         const $ = cheerio.load(data);
         const links: string[] = [];
         $('a').each((_, element) => {

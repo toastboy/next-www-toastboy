@@ -184,6 +184,8 @@ async function importBackup(): Promise<void> {
     }
 }
 
-importBackup();
+importBackup().catch((error) => {
+    console.error('An unexpected error occurred:', error);
+});
 
 // To run: `op run --env-file ./src/lib/importlivedb/.env -- sh -c 'npm run importlivedb'`

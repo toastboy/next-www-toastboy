@@ -11,7 +11,12 @@ export interface User {
     playerId: number;
 }
 
-export type Session = Awaited<ReturnType<typeof betterAuthClient.getSession>>;
+type SessionResponse = Awaited<ReturnType<typeof betterAuthClient.getSession>>;
+type SessionData = (typeof betterAuthClient.$Infer.Session) | null;
+
+// `getSession` returns a BetterFetchResponse; retype its `data` to our inferred session payload
+// so downstream consumers see user fields (role, playerId, etc.) without guessing.
+export type Session = Omit<SessionResponse, 'data'> & { data: SessionData };
 
 export const authClient = {
     useSession: () => {

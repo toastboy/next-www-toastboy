@@ -107,9 +107,9 @@ describe('UserButton', () => {
             error: null,
         });
 
-        const { container } = render(<Wrapper><UserButton /></Wrapper>);
+        render(<Wrapper><UserButton /></Wrapper>);
         await waitFor(() => {
-            expect(container.querySelector('.mantine-Avatar-placeholder')).toBeInTheDocument();
+            expect(screen.getByTestId('user-avatar')).toBeInTheDocument();
         });
     });
 

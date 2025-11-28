@@ -96,16 +96,16 @@ const NavbarNested: React.FC = () => {
 
     return (
         <Box role="navigation" className={classes.navbar}>
-            <Box className={classes.header}>
+            <Box className={classes.header} data-testid="navbar-header">
             </Box>
 
-            <ScrollArea className={classes.links}>
+            <ScrollArea className={classes.links} data-testid="navbar-links">
                 <Box className={classes.linksInner}>
                     {links.map((item) => <NavbarLinksGroup {...item} key={item.label} />)}
                 </Box>
             </ScrollArea>
 
-            <Box className={classes.footer}>
+            <Box className={classes.footer} data-testid="navbar-footer">
                 <UserButton />
             </Box>
         </Box>

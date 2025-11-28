@@ -34,9 +34,9 @@ describe('GameDayLink', () => {
         (gameDayService.get as jest.Mock).mockResolvedValueOnce(null);
 
         const element = await GameDayLink({ gameDayId: 9999 } as Props);
-        const { container } = render(<Wrapper>{element}</Wrapper>);
+        render(<Wrapper>{element}</Wrapper>);
 
-        expect(container.querySelector('a')).toBeNull();
+        expect(screen.queryByRole('link')).not.toBeInTheDocument();
         expect(gameDayService.get).toHaveBeenCalledWith(9999);
     });
 });

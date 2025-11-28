@@ -68,6 +68,7 @@ const UserButton: React.FC = () => {
           <Group>
             <Avatar
               src={playerId !== 0 ? `/api/footy/player/${playerId}/mugshot` : undefined}
+              data-testid="user-avatar"
               radius="xl"
             />
 

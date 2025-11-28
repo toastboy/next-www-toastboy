@@ -80,7 +80,7 @@ export function createMockApp(
 
             getFunction(requestObject, { params: routeParams.params })
                 .then(async (response) => {
-                    await responseHandler(response, res);
+                    return await responseHandler(response, res);
                 })
                 .catch((err) => {
                     res.statusCode = 500;
@@ -164,6 +164,6 @@ export async function readableStreamToBuffer(stream: ReadableStream<Uint8Array>)
  * Small utility to convert values to a format suitable for wire transfer (e.g.,
  * JSON) - especially for testing API responses and the mock data.
  */
-export function toWire(v: unknown) {
+export function toWire(v: unknown): unknown {
     return JSON.parse(JSON.stringify(v));
 }

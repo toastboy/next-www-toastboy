@@ -1,113 +1,22 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import GameCalendar from 'components/GameCalendar/GameCalendar';
+import fs from 'fs';
+import { GameDaySchema } from 'prisma/generated/schemas/models/GameDay.schema';
+import { z } from 'zod';
 
 import { Wrapper } from "./lib/common";
+
+const GameDayResponseSchema = GameDaySchema.extend({
+    date: z.coerce.date(),
+    mailSent: z.coerce.date().nullish(),
+});
 
 describe('GameCalendar', () => {
     beforeEach(() => {
         jest.spyOn(global, 'fetch').mockResolvedValueOnce({
-            json: async () => ([
-                {
-                    "id": 100,
-                    "year": 2004,
-                    "date": "2004-01-27T18:00:00.000Z",
-                    "game": true,
-                    "mailSent": "2004-01-26T09:00:08.000Z",
-                    "comment": null,
-                    "bibs": null,
-                    "pickerGamesHistory": null,
-                },
-                {
-                    "id": 101,
-                    "year": 2004,
-                    "date": "2004-02-03T18:00:00.000Z",
-                    "game": false,
-                    "mailSent": "2004-02-02T11:13:35.000Z",
-                    "comment": "No game this week.",
-                    "bibs": null,
-                    "pickerGamesHistory": null,
-                },
-                {
-                    "id": 102,
-                    "year": 2004,
-                    "date": "2004-02-10T18:00:00.000Z",
-                    "game": true,
-                    "mailSent": "2004-02-09T09:00:10.000Z",
-                    "comment": null,
-                    "bibs": null,
-                    "pickerGamesHistory": null,
-                },
-                {
-                    "id": 103,
-                    "year": 2004,
-                    "date": "2004-02-17T18:00:00.000Z",
-                    "game": true,
-                    "mailSent": "2004-02-16T09:00:11.000Z",
-                    "comment": null,
-                    "bibs": null,
-                    "pickerGamesHistory": null,
-                },
-                {
-                    "id": 104,
-                    "year": 2004,
-                    "date": "2004-02-24T18:00:00.000Z",
-                    "game": true,
-                    "mailSent": "2004-02-23T09:00:11.000Z",
-                    "comment": null,
-                    "bibs": null,
-                    "pickerGamesHistory": null,
-                },
-                {
-                    "id": 105,
-                    "year": 2004,
-                    "date": "2004-03-02T18:00:00.000Z",
-                    "game": true,
-                    "mailSent": "2004-03-01T09:01:54.000Z",
-                    "comment": null,
-                    "bibs": null,
-                    "pickerGamesHistory": null,
-                },
-                {
-                    "id": 106,
-                    "year": 2004,
-                    "date": "2004-03-09T18:00:00.000Z",
-                    "game": true,
-                    "mailSent": "2004-03-08T09:00:10.000Z",
-                    "comment": null,
-                    "bibs": null,
-                    "pickerGamesHistory": null,
-                },
-                {
-                    "id": 107,
-                    "year": 2004,
-                    "date": "2004-03-16T18:00:00.000Z",
-                    "game": true,
-                    "mailSent": "2004-03-15T09:00:11.000Z",
-                    "comment": null,
-                    "bibs": null,
-                    "pickerGamesHistory": null,
-                },
-                {
-                    "id": 108,
-                    "year": 2004,
-                    "date": "2004-03-23T18:00:00.000Z",
-                    "game": true,
-                    "mailSent": "2004-03-22T09:00:18.000Z",
-                    "comment": null,
-                    "bibs": null,
-                    "pickerGamesHistory": null,
-                },
-                {
-                    "id": 109,
-                    "year": 2004,
-                    "date": "2004-03-30T17:00:00.000Z",
-                    "game": true,
-                    "mailSent": "2004-03-29T09:00:33.000Z",
-                    "comment": null,
-                    "bibs": null,
-                    "pickerGamesHistory": null,
-                },
-            ]),
+            json: async () => GameDayResponseSchema.array().parse(
+                JSON.parse(await fs.promises.readFile('./tests/components/data/GameCalendar.json', 'utf8')),
+            ),
         } as Response);
     });
 
@@ -120,7 +29,7 @@ describe('GameCalendar', () => {
         const gameDayLink = await screen.findByRole('link', { name: '27' });
         expect(gameDayLink).toBeInTheDocument();
         expect(gameDayLink).toHaveAttribute('href', '/footy/game/100');
-        expect(gameDayLink.querySelector('div')).toHaveStyle({ '--indicator-color': 'var(--mantine-color-green-filled)' });
+        expect(within(gameDayLink).getByTestId('game-day-indicator-true')).toBeInTheDocument();
     });
 
     it('renders game day with link when game day exists and game is off', async () => {
@@ -128,7 +37,7 @@ describe('GameCalendar', () => {
         const gameDayLink = await screen.findByRole('link', { name: '3' });
         expect(gameDayLink).toBeInTheDocument();
         expect(gameDayLink).toHaveAttribute('href', '/footy/game/101');
-        expect(gameDayLink.querySelector('div')).toHaveStyle({ '--indicator-color': 'var(--mantine-color-red-filled)' });
+        expect(within(gameDayLink).getByTestId('game-day-indicator-false')).toBeInTheDocument();
     });
 
     it('does not render game day with link when game day does not exist', async () => {

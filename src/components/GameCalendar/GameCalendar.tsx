@@ -2,8 +2,14 @@
 
 import { Anchor, Indicator, Text } from '@mantine/core';
 import { Calendar, DatePickerProps } from '@mantine/dates';
-import { GameDayType } from 'prisma/generated/schemas/models/GameDay.schema';
+import { GameDaySchema, GameDayType } from 'prisma/generated/schemas/models/GameDay.schema';
 import { useEffect, useState } from 'react';
+import { z } from 'zod';
+
+const GameDayResponseSchema = GameDaySchema.extend({
+    date: z.coerce.date(),
+    mailSent: z.coerce.date().nullish(),
+});
 
 interface GameCalendarProps {
     date: Date;
@@ -25,9 +31,13 @@ const GameCalendar: React.FC<GameCalendarProps> = ({ date }) => {
         fetch('/api/footy/gameday')
             .then(response => response.json())
             .then(data => {
-                setGameDays(data);
+                const parsedGameDays = GameDayResponseSchema.array().parse(data);
+                return setGameDays(parsedGameDays);
             })
-            .catch(error => console.error('Failed to fetch GameDays:', error));
+            .catch(error => {
+                console.error('Failed to fetch GameDays:', error);
+                throw error;
+            });
     }, []);
 
     const renderDay = (date: string) => {
@@ -37,7 +47,12 @@ const GameCalendar: React.FC<GameCalendarProps> = ({ date }) => {
         if (gameDay) {
             return (
                 <Anchor href={`/footy/game/${gameDay.id}`}>
-                    <Indicator size={6} color={gameDay.game ? "green" : "red"} offset={-5}>
+                    <Indicator
+                        size={6}
+                        color={gameDay.game ? "green" : "red"}
+                        data-testid={`game-day-indicator-${gameDay.game ? "true" : "false"}`}
+                        offset={-5}
+                    >
                         <Text>{gameDate.getDate()}</Text>
                     </Indicator>
                 </Anchor>

@@ -6,15 +6,21 @@
  * what auth state to simulate.
  */
 
+import type * as BetterAuthClient from 'lib/auth-client';
+
 export type MockAuthState = 'none' | 'user' | 'admin';
 
-interface MockUser {
-    id: string;
-    name: string;
-    email: string;
-    role: 'user' | 'admin';
-    playerId: number;
-}
+type SessionHook = ReturnType<typeof BetterAuthClient.authClient.useSession>;
+type SessionData = SessionHook['data'];
+type MockUser = NonNullable<SessionData>['user'];
+type MockSessionDetails = NonNullable<SessionData>['session'];
+
+export type MockSession = SessionHook;
+
+const baseUserDates = {
+    createdAt: new Date('2023-01-01T00:00:00Z'),
+    updatedAt: new Date('2023-01-01T00:00:00Z'),
+};
 
 const mockUsers: Record<MockAuthState, MockUser | null> = {
     none: null,
@@ -24,6 +30,12 @@ const mockUsers: Record<MockAuthState, MockUser | null> = {
         email: 'testuser@example.com',
         role: 'user',
         playerId: 1,
+        emailVerified: true,
+        image: null,
+        banned: false,
+        banReason: null,
+        banExpires: null,
+        ...baseUserDates,
     },
     admin: {
         id: 'test-admin-id',
@@ -31,6 +43,39 @@ const mockUsers: Record<MockAuthState, MockUser | null> = {
         email: 'testadmin@example.com',
         role: 'admin',
         playerId: 2,
+        emailVerified: true,
+        image: null,
+        banned: false,
+        banReason: null,
+        banExpires: null,
+        ...baseUserDates,
+    },
+};
+
+const baseSessionDates = {
+    createdAt: new Date('2023-01-01T00:00:00Z'),
+    updatedAt: new Date('2023-01-01T00:00:00Z'),
+    expiresAt: new Date('2099-01-01T00:00:00Z'),
+};
+
+const mockSessionDetails: Record<Exclude<MockAuthState, 'none'>, MockSessionDetails> = {
+    user: {
+        id: 'test-session-id',
+        userId: 'test-user-id',
+        token: 'mock-session-token',
+        ipAddress: '127.0.0.1',
+        userAgent: 'MockUserAgent',
+        impersonatedBy: null,
+        ...baseSessionDates,
+    },
+    admin: {
+        id: 'test-admin-session-id',
+        userId: 'test-admin-id',
+        token: 'mock-admin-session-token',
+        ipAddress: '127.0.0.1',
+        userAgent: 'MockUserAgent',
+        impersonatedBy: null,
+        ...baseSessionDates,
     },
 };
 
@@ -62,20 +107,38 @@ export function isUsingMockAuth(): boolean {
     return typeof window !== 'undefined' && (window as unknown as Record<string, unknown>).__PLAYWRIGHT_TEST__ === true;
 }
 
-export interface MockSession {
-    data: {
-        user: MockUser;
-    } | null;
-    isPending: boolean;
-    error: null;
+function buildSessionData(): SessionData {
+    const user = getMockUser();
+
+    if (!user) {
+        return null;
+    }
+
+    const userRole = user.role === 'admin' ? 'admin' : 'user';
+    const session = mockSessionDetails[userRole];
+
+    return {
+        user,
+        session: {
+            ...session,
+            userId: user.id,
+        },
+    };
 }
 
 export function getMockSession(): MockSession {
-    const user = getMockUser();
-
-    return {
-        data: user ? { user } : null,
+    const session: MockSession = {
+        data: buildSessionData(),
         isPending: false,
+        isRefetching: false,
         error: null,
+        refetch: () => {
+            session.isRefetching = true;
+            session.data = buildSessionData();
+            session.isRefetching = false;
+            return Promise.resolve();
+        },
     };
+
+    return session;
 }

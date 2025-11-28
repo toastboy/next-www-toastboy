@@ -36,9 +36,9 @@ describe('CountryFlag', () => {
         (countryService.get as jest.Mock).mockResolvedValueOnce(null);
 
         const element = await CountryFlag({ countryISOCode: 'ZZ' } as Props);
-        const { container } = render(<Wrapper>{element}</Wrapper>);
+        render(<Wrapper>{element}</Wrapper>);
 
-        expect(container.querySelector('img')).toBeNull();
+        expect(screen.queryByRole('img')).not.toBeInTheDocument();
         expect(countryService.get).toHaveBeenCalledWith('ZZ');
     });
 });

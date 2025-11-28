@@ -11,7 +11,10 @@ const AdminUpdatePlayerRecords: React.FC = () => {
 
     useEffect(() => {
         const intervalId = setInterval(() => {
-            mutate();
+            mutate().catch((err) => {
+                console.error('Failed to mutate player records progress');
+                throw err;
+            });
         }, 1000);
 
         return () => clearInterval(intervalId);
@@ -28,12 +31,25 @@ const AdminUpdatePlayerRecords: React.FC = () => {
                     label={
                         progress === 100 ?
                             <Center>
-                                <ActionIcon color="teal" variant="light" radius="xl" size="xl">
-                                    <IconCheck />
+                                <ActionIcon
+                                    color="teal"
+                                    variant="light"
+                                    radius="xl"
+                                    size="xl"
+                                >
+                                    <IconCheck
+                                        data-testid="update-player-records-compete-icon"
+                                    />
                                 </ActionIcon>
                             </Center>
                             :
-                            <Text c="blue" fw={700} ta="center" size="xl">
+                            <Text
+                                data-testid="update-player-records-progress"
+                                c="blue"
+                                fw={700}
+                                ta="center"
+                                size="xl"
+                            >
                                 {progress}%
                             </Text>
                     }
@@ -43,8 +59,12 @@ const AdminUpdatePlayerRecords: React.FC = () => {
                 />
                 <Button
                     type="button"
+                    data-testid="update-player-records-button"
                     onClick={() => {
-                        updatePlayerRecords();
+                        updatePlayerRecords().catch((err) => {
+                            console.error('Failed to update player records');
+                            throw err;
+                        });
                     }}
                 >
                     Update Player Records

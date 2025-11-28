@@ -1,34 +1,16 @@
 # Next.js + MySQL rewrite of <www.toastboy.co.uk>
 
-This project is based on [Azure + MySQL example code](https://github.com/Azure-Samples/vercel-nextjs-app-azure-db-mysql) from [Prisma](https://www.prisma.io/) using [Tailwind CSS](https://tailwindcss.com/) for styling.
+This project is based on [Azure + MySQL example code](https://github.com/Azure-Samples/vercel-nextjs-app-azure-db-mysql) from [Prisma](https://www.prisma.io/) using [Mantine Components](https://mantine.dev/), [Tabler Icons](https://tabler-icons-react.vercel.app/) and [Better Auth](https://better-auth.vercel.app/). It uses [Sentry](https://sentry.io/) for app monitoring, [Jest](https://jestjs.io/) for unit testing and [Playwright](https://playwright.dev/) for end-to-end testing. Test coverage is uploaded to [Codecov](https://about.codecov.io/) and [ESLint](https://www.npmjs.com/package/eslint) results are monitored in GitHub Actions using [Reviewdog](https://github.com/reviewdog/reviewdog).
 
-## Prerequisites
-
-- [Node.js](https://nodejs.org/en/download/)
-
-## Set up the Next.js app
-
-Execute [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) with [npm](https://docs.npmjs.com/cli/init) to bootstrap:
-
-```bash
-npx create-next-app next-www-toastboy
-```
-
-## MySQL connection string
-
-The environment variable `DATABASE_URL` needs to be set to the correct connection string in `.env`, which includes the URL and the credentials. For now I'm using the debug localhost database:
-
-```text
-DATABASE_URL=mysql://root:{mysqlpassword}@127.0.0.1/footy
-```
-
-## Push the schema into the database
-
-The original example has seed data which can be written into the database using a seed script. I'll revisit that approach for testing, but for now I have used [[Prisma]] introspection to generate a schema directly from what's already in the database (see Obsidian for notes on the data tidying that was needed)
+[![CodeQL](https://github.com/toastboy/next-www-toastboy/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/toastboy/next-www-toastboy/actions/workflows/github-code-scanning/codeql)
+[![Jest Tests](https://github.com/toastboy/next-www-toastboy/actions/workflows/jest.yml/badge.svg)](https://github.com/toastboy/next-www-toastboy/actions/workflows/jest.yml)
+[![Playwright Tests](https://github.com/toastboy/next-www-toastboy/actions/workflows/playwright.yml/badge.svg)](https://github.com/toastboy/next-www-toastboy/actions/workflows/playwright.yml)
+[![Reviewdog](https://github.com/toastboy/next-www-toastboy/actions/workflows/lint.yml/badge.svg)](https://github.com/toastboy/next-www-toastboy/actions/workflows/lint.yml)
+[![Terraform](https://github.com/toastboy/next-www-toastboy/actions/workflows/terraform.yml/badge.svg)](https://github.com/toastboy/next-www-toastboy/actions/workflows/terraform.yml)
 
 ## Secrets
 
-All secrets should be managed by 1Password, in the exclusive vault "next-www-toastboy". Preface all commands which might need secret values in the environment with the op cli, like this:
+All secrets should be managed by 1Password, in the exclusive vault "next-www-toastboy" and referenced from the `.env` file, which is safe to commit to source control since it only contains references, not values. Preface all commands which might need secret values in the environment with the op cli, like this:
 
 ```shell
 op run --env-file ./.env -- npm run build
@@ -47,5 +29,3 @@ Run the app with following command:
 ```shell
 op run --env-file ./.env -- npm run dev
 ```
-
-Open your browser at [localhost:3000](localhost:3000) to see the running application.

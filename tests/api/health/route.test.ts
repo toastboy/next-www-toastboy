@@ -1,7 +1,7 @@
 /**
  * Health check API endpoint tests
  */
-import { GET } from 'api/health/route';
+import { GET, HealthResponseSchema } from 'api/health/route';
 import prisma from 'lib/prisma';
 
 // Mock the prisma client
@@ -22,7 +22,7 @@ describe('/api/health', () => {
         (prisma.$queryRaw as jest.Mock).mockResolvedValue([{ '1': 1 }]);
 
         const response = await GET();
-        const json = await response.json();
+        const json = HealthResponseSchema.parse(await response.json());
 
         expect(response.status).toBe(200);
         expect(json.status).toBe('healthy');
@@ -37,7 +37,7 @@ describe('/api/health', () => {
         (prisma.$queryRaw as jest.Mock).mockRejectedValue(dbError);
 
         const response = await GET();
-        const json = await response.json();
+        const json = HealthResponseSchema.parse(await response.json());
 
         expect(response.status).toBe(503);
         expect(json.status).toBe('unhealthy');
@@ -52,7 +52,7 @@ describe('/api/health', () => {
         (prisma.$queryRaw as jest.Mock).mockRejectedValue('String error');
 
         const response = await GET();
-        const json = await response.json();
+        const json = HealthResponseSchema.parse(await response.json());
 
         expect(response.status).toBe(503);
         expect(json.status).toBe('unhealthy');

@@ -44,7 +44,6 @@ export const SignIn: React.FC<Props> = ({ admin, redirect }) => {
         }
         catch (error) {
             Sentry.captureMessage(`Sign in error: ${JSON.stringify(error, null, 2)}`, 'error');
-            console.log(`Sign in error: ${JSON.stringify(error, null, 2)}`, 'error'); // &&&& TEMP
             setLoginError(true);
         }
         finally {

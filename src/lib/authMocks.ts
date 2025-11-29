@@ -8,6 +8,9 @@
 
 import type * as BetterAuthClient from 'lib/auth-client';
 
+// Shared mock creation/update date for consistency and maintainability
+const MOCK_CREATED_AT = '2023-01-01T00:00:00Z';
+
 export type MockAuthState = 'none' | 'user' | 'admin';
 
 type SessionHook = ReturnType<typeof BetterAuthClient.authClient.useSession>;
@@ -18,8 +21,8 @@ type MockSessionDetails = NonNullable<SessionData>['session'];
 export type MockSession = SessionHook;
 
 const baseUserDates = {
-    createdAt: new Date('2023-01-01T00:00:00Z'),
-    updatedAt: new Date('2023-01-01T00:00:00Z'),
+    createdAt: new Date(MOCK_CREATED_AT),
+    updatedAt: new Date(MOCK_CREATED_AT),
 };
 
 const mockUsers: Record<MockAuthState, MockUser | null> = {
@@ -53,8 +56,8 @@ const mockUsers: Record<MockAuthState, MockUser | null> = {
 };
 
 const baseSessionDates = {
-    createdAt: new Date('2023-01-01T00:00:00Z'),
-    updatedAt: new Date('2023-01-01T00:00:00Z'),
+    createdAt: new Date(MOCK_CREATED_AT),
+    updatedAt: new Date(MOCK_CREATED_AT),
     expiresAt: new Date('2099-01-01T00:00:00Z'),
 };
 
@@ -79,6 +82,11 @@ const mockSessionDetails: Record<Exclude<MockAuthState, 'none'>, MockSessionDeta
     },
 };
 
+// Helper to safely cast window to record for test/shim access
+function getWindowTestRecord(): Record<string, unknown> {
+    return window as unknown as Record<string, unknown>;
+}
+
 export function getMockAuthState(): MockAuthState {
     // Check if we're in a browser environment
     if (typeof window === 'undefined') {
@@ -86,14 +94,14 @@ export function getMockAuthState(): MockAuthState {
     }
 
     // Check for playwright test indicator
-    const isPlaywrightTest = (window as unknown as Record<string, unknown>).__PLAYWRIGHT_TEST__ === true;
+    const isPlaywrightTest = getWindowTestRecord().__PLAYWRIGHT_TEST__ === true;
 
     if (!isPlaywrightTest) {
         return 'none'; // Not in a test, use real auth
     }
 
     // Get mock state from window property set by Playwright
-    const mockState = (window as unknown as Record<string, unknown>).__MOCK_AUTH_STATE__ as MockAuthState;
+    const mockState = getWindowTestRecord().__MOCK_AUTH_STATE__ as MockAuthState;
 
     return mockState || 'none';
 }
@@ -132,11 +140,12 @@ export function getMockSession(): MockSession {
         isPending: false,
         isRefetching: false,
         error: null,
-        refetch: () => {
+        refetch: async () => {
             session.isRefetching = true;
+            // simulate async behavior; allow consumers to observe .isRefetching === true
+            await Promise.resolve();
             session.data = buildSessionData();
             session.isRefetching = false;
-            return Promise.resolve();
         },
     };
 

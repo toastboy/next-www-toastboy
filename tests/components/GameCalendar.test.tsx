@@ -1,6 +1,6 @@
 import { render, screen, within } from '@testing-library/react';
 import GameCalendar from 'components/GameCalendar/GameCalendar';
-import fs from 'fs';
+import * as fs from 'fs';
 import { GameDaySchema } from 'prisma/generated/schemas/models/GameDay.schema';
 import { z } from 'zod';
 

@@ -1,5 +1,4 @@
 import NYI from 'components/NYI/NYI';
-import React from 'react';
 
 type PageProps = object
 

@@ -1,7 +1,6 @@
 import { Text, Tooltip } from "@mantine/core";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import React from "react";
 
 dayjs.extend(relativeTime);
 

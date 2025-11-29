@@ -1,4 +1,4 @@
-import fs from 'fs';
+import * as fs from 'fs';
 import prisma from 'lib/prisma';
 import { TableNameSchema } from 'prisma/generated/schemas';
 import { PlayerRecordType } from 'prisma/generated/schemas/models/PlayerRecord.schema';

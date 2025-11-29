@@ -1,6 +1,6 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
-import fs from 'fs';
+import * as fs from 'fs';
 
 type LinkQueue = Record<string, boolean>;
 

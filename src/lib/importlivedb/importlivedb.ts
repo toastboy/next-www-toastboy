@@ -2,9 +2,9 @@ import { ClientSecretCredential } from "@azure/identity";
 import { BlobServiceClient } from "@azure/storage-blob";
 import { Prisma } from "@prisma/client";
 import { execSync } from "child_process";
-import fs from "fs";
+import * as fs from "fs";
 import { readdir } from "fs/promises";
-import path from "path";
+import * as path from "path";
 import playerRecordService from "services/PlayerRecord";
 
 import prisma from "../prisma";

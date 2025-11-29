@@ -1,0 +1,9 @@
+# Copilot Setup Steps
+# This file defines the environment setup steps for GitHub Copilot coding agent
+
+setup:
+  - name: Install dependencies
+    run: npm ci
+
+  - name: Generate Prisma client
+    run: npx prisma generate

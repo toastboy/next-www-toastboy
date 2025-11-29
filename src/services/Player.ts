@@ -140,7 +140,7 @@ class PlayerService {
             const player = await prisma.player.findFirst({
                 where: {
                     email: {
-                        contains: email,
+                        equals: email,
                     },
                 },
             });
@@ -171,12 +171,15 @@ class PlayerService {
                 const gamesResponded = outcomes.filter(outcome => outcome.response !== null);
                 const gamesPlayed = outcomes.filter(outcome => outcome.points !== null);
 
+                const respondedGameDays = gamesResponded.map(outcome => outcome.gameDayId);
+                const playedGameDays = gamesPlayed.map(outcome => outcome.gameDayId);
+
                 return {
                     ...player,
-                    firstResponded: Math.min(...gamesResponded.map(outcome => outcome.gameDayId)),
-                    lastResponded: Math.max(...gamesResponded.map(outcome => outcome.gameDayId)),
-                    firstPlayed: Math.min(...gamesPlayed.map(outcome => outcome.gameDayId)),
-                    lastPlayed: Math.max(...gamesPlayed.map(outcome => outcome.gameDayId)),
+                    firstResponded: respondedGameDays.length > 0 ? Math.min(...respondedGameDays) : null,
+                    lastResponded: respondedGameDays.length > 0 ? Math.max(...respondedGameDays) : null,
+                    firstPlayed: playedGameDays.length > 0 ? Math.min(...playedGameDays) : null,
+                    lastPlayed: playedGameDays.length > 0 ? Math.max(...playedGameDays) : null,
                     gamesPlayed: gamesPlayed.length,
                     gamesWon: gamesPlayed.filter(outcome => outcome.points === 3).length,
                     gamesDrawn: gamesPlayed.filter(outcome => outcome.points === 1).length,

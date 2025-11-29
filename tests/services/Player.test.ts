@@ -234,6 +234,48 @@ describe('PlayerService', () => {
         });
     });
 
+    describe('getIdByEmail', () => {
+        it('should return player id for exact email match', async () => {
+            (prisma.player.findFirst as jest.Mock).mockResolvedValueOnce({
+                ...defaultPlayer,
+                id: 42,
+                email: 'player@example.com',
+            });
+
+            const result = await playerService.getIdByEmail('player@example.com');
+            expect(result).toBe(42);
+            expect(prisma.player.findFirst).toHaveBeenCalledWith({
+                where: {
+                    email: {
+                        equals: 'player@example.com',
+                    },
+                },
+            });
+        });
+
+        it('should return null when no player found with email', async () => {
+            (prisma.player.findFirst as jest.Mock).mockResolvedValueOnce(null);
+
+            const result = await playerService.getIdByEmail('unknown@example.com');
+            expect(result).toBeNull();
+        });
+
+        it('should use exact matching (not partial matching) for email lookup', async () => {
+            (prisma.player.findFirst as jest.Mock).mockResolvedValueOnce(null);
+
+            await playerService.getIdByEmail('test@example.com');
+
+            // Verify that 'equals' is used instead of 'contains' for exact matching
+            expect(prisma.player.findFirst).toHaveBeenCalledWith({
+                where: {
+                    email: {
+                        equals: 'test@example.com',
+                    },
+                },
+            });
+        });
+    });
+
     describe('getAll', () => {
         it('should return the correct, complete list of 100 players', async () => {
             const playerList: PlayerType[] = Array.from({ length: 100 }, (_, outerIndex) => ({
@@ -254,6 +296,83 @@ describe('PlayerService', () => {
             const result = await playerService.getAll();
             expect(result).toHaveLength(100);
             expect(result[11].id).toBe(12);
+        });
+
+        it('should return null for firstResponded/lastResponded when player has no responses', async () => {
+            const playerWithNoResponses: PlayerType & { outcomes: OutcomeType[] } = {
+                ...defaultPlayer,
+                id: 1,
+                outcomes: [
+                    {
+                        ...defaultOutcome,
+                        response: null,
+                        points: null,
+                    },
+                ],
+            };
+
+            (prisma.player.findMany as jest.Mock).mockImplementation(() => {
+                return Promise.resolve([playerWithNoResponses]);
+            });
+
+            const result = await playerService.getAll();
+            expect(result).toHaveLength(1);
+            expect(result[0].firstResponded).toBeNull();
+            expect(result[0].lastResponded).toBeNull();
+            expect(result[0].firstPlayed).toBeNull();
+            expect(result[0].lastPlayed).toBeNull();
+        });
+
+        it('should return null for firstPlayed/lastPlayed when player has responses but no games played', async () => {
+            const playerWithResponsesButNoGames: PlayerType & { outcomes: OutcomeType[] } = {
+                ...defaultPlayer,
+                id: 1,
+                outcomes: [
+                    {
+                        ...defaultOutcome,
+                        gameDayId: 5,
+                        response: 'Yes',
+                        points: null,
+                    },
+                    {
+                        ...defaultOutcome,
+                        gameDayId: 10,
+                        response: 'No',
+                        points: null,
+                    },
+                ],
+            };
+
+            (prisma.player.findMany as jest.Mock).mockImplementation(() => {
+                return Promise.resolve([playerWithResponsesButNoGames]);
+            });
+
+            const result = await playerService.getAll();
+            expect(result).toHaveLength(1);
+            expect(result[0].firstResponded).toBe(5);
+            expect(result[0].lastResponded).toBe(10);
+            expect(result[0].firstPlayed).toBeNull();
+            expect(result[0].lastPlayed).toBeNull();
+        });
+
+        it('should return correct values when player has empty outcomes array', async () => {
+            const playerWithNoOutcomes: PlayerType & { outcomes: OutcomeType[] } = {
+                ...defaultPlayer,
+                id: 1,
+                outcomes: [],
+            };
+
+            (prisma.player.findMany as jest.Mock).mockImplementation(() => {
+                return Promise.resolve([playerWithNoOutcomes]);
+            });
+
+            const result = await playerService.getAll();
+            expect(result).toHaveLength(1);
+            expect(result[0].firstResponded).toBeNull();
+            expect(result[0].lastResponded).toBeNull();
+            expect(result[0].firstPlayed).toBeNull();
+            expect(result[0].lastPlayed).toBeNull();
+            expect(result[0].gamesPlayed).toBe(0);
         });
     });
 

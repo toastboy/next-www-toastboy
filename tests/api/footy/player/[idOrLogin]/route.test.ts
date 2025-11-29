@@ -22,11 +22,12 @@ describe('API tests using HTTP', () => {
         const response = await request(mockApp).get(testURI);
 
         expect(getUserRole).toHaveBeenCalled();
-        if (response.status !== 200) console.log('Error response:', response.error);
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
+        const wirePlayer = toWire(mockPlayer);
+        if (!wirePlayer) throw new Error("toWire(mockPlayer) returned null/undefined");
         expect(response.body).toEqual({
-            ...toWire(mockPlayer)!,
+            ...wirePlayer,
             born: undefined,
             comment: undefined,
         });
@@ -37,11 +38,12 @@ describe('API tests using HTTP', () => {
 
         const response = await request(mockApp).get(testURI);
 
-        if (response.status !== 200) console.log('Error response:', response.error);
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
+        const wirePlayer = toWire(mockPlayer);
+        if (!wirePlayer) throw new Error("toWire(mockPlayer) returned null/undefined");
         expect(response.body).toEqual({
-            ...toWire(mockPlayer)!,
+            ...wirePlayer,
             login: undefined,
             email: undefined,
             born: undefined,
@@ -61,11 +63,12 @@ describe('API tests using HTTP', () => {
 
         const response = await request(mockApp).get(testURI);
 
-        if (response.status !== 200) console.log('Error response:', response.error);
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
+        const wirePlayer = toWire(mockPlayer);
+        if (!wirePlayer) throw new Error("toWire(mockPlayer) returned null/undefined");
         expect(response.body).toEqual({
-            ...toWire(mockPlayer)!,
+            ...wirePlayer,
             login: undefined,
             anonymous: true,
             email: undefined,

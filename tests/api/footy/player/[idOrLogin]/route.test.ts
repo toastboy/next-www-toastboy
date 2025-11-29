@@ -26,7 +26,7 @@ describe('API tests using HTTP', () => {
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
         expect(response.body).toEqual({
-            ...toWire(mockPlayer),
+            ...toWire(mockPlayer)!,
             born: undefined,
             comment: undefined,
         });
@@ -41,7 +41,7 @@ describe('API tests using HTTP', () => {
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
         expect(response.body).toEqual({
-            ...toWire(mockPlayer),
+            ...toWire(mockPlayer)!,
             login: undefined,
             email: undefined,
             born: undefined,
@@ -65,7 +65,7 @@ describe('API tests using HTTP', () => {
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
         expect(response.body).toEqual({
-            ...toWire(mockPlayer),
+            ...toWire(mockPlayer)!,
             login: undefined,
             anonymous: true,
             email: undefined,

@@ -14,6 +14,9 @@ export const authClient = createAuthClient({
             },
         }),
     ],
+    fetchOptions: {
+        throw: true,
+    },
 });
 
 export const signInWithGoogle = async (callbackURL: string) => {

@@ -19,13 +19,12 @@ export async function getUserRole(): Promise<'none' | 'user' | 'admin'> {
         },
     });
 
-    if (session?.data === null) {
-        return 'none';
-    }
-    else if (session?.data?.user?.role === 'admin') {
-        return 'admin';
-    }
-    else {
-        return 'user';
+    switch (session?.user?.role) {
+        case 'user':
+            return 'user';
+        case 'admin':
+            return 'admin';
+        default:
+            return 'none';
     }
 }

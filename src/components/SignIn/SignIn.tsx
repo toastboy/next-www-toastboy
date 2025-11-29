@@ -16,7 +16,7 @@ export interface Props {
 
 export const SignIn: React.FC<Props> = ({ admin, redirect }) => {
     const [loading, setLoading] = useState(false);
-    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [loginError, setLoginError] = useState<boolean>(false);
     const router = useRouter();
     const pathname = usePathname();
 
@@ -36,15 +36,18 @@ export const SignIn: React.FC<Props> = ({ admin, redirect }) => {
 
     const handleSignIn = async (values: { email: string; password: string }) => {
         setLoading(true);
-        setErrorMessage(null);
+        setLoginError(false);
 
         try {
             await authClient.signInWithEmail(values.email, values.password);
             router.push(redirect ?? pathname);
-        } catch (error) {
+        }
+        catch (error) {
             Sentry.captureMessage(`Sign in error: ${JSON.stringify(error, null, 2)}`, 'error');
-            setErrorMessage('Something went wrong. Please try again.');
-        } finally {
+            console.log(`Sign in error: ${JSON.stringify(error, null, 2)}`, 'error'); // &&&& TEMP
+            setLoginError(true);
+        }
+        finally {
             setLoading(false);
         }
     };
@@ -53,14 +56,6 @@ export const SignIn: React.FC<Props> = ({ admin, redirect }) => {
         return (
             <Container>
                 <Loader />
-            </Container>
-        );
-    }
-
-    if (errorMessage) {
-        return (
-            <Container>
-                <Text color="red">{errorMessage}</Text>
             </Container>
         );
     }
@@ -79,10 +74,21 @@ export const SignIn: React.FC<Props> = ({ admin, redirect }) => {
         </Text>;
     }
 
+    const errorNotification = loginError ? (
+        <Notification
+            icon={<IconX size={18} />}
+            color="red"
+            onClose={() => setLoginError(false)}
+        >
+            Login failed. Please check your details and try again.
+        </Notification>
+    ) : null;
+
     return (
         <Container size="xs" mt="xl" >
             <Center>
-                <Title order={2} mb="md" >                    {title}
+                <Title order={2} mb="md" >
+                    {title}
                 </Title>
             </Center>
 
@@ -101,6 +107,8 @@ export const SignIn: React.FC<Props> = ({ admin, redirect }) => {
                         placeholder="Enter your email"
                         rightSection={<IconAt size={16} />}
                         {...form.getInputProps('email')}
+                        value={form.values.email ?? ''}
+
                     />
                     <PasswordInput
                         withAsterisk
@@ -108,20 +116,12 @@ export const SignIn: React.FC<Props> = ({ admin, redirect }) => {
                         placeholder="Enter your password"
                         rightSection={<IconLock size={16} />}
                         {...form.getInputProps('password')}
+                        value={form.values.password ?? ''}
+
                     />
-                    {
-                        errorMessage && (
-                            <Notification
-                                icon={<IconX size={18} />}
-                                color="red"
-                                onClose={() => setErrorMessage(null)
-                                }
-                            >
-                                {errorMessage}
-                            </Notification>
-                        )}
-                    <Group mt="sm" >
-                        <Anchor href="/auth/reset-password" size="sm" >
+                    {errorNotification}
+                    <Group mt="sm">
+                        <Anchor href="/auth/reset-password" size="sm">
                             Forgot your password ?
                         </Anchor>
                     </Group>

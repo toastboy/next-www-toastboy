@@ -18,6 +18,16 @@ const NavBarLinksGroup: React.FC<NavBarLinksGroupProps> = ({ label, initiallyOpe
             {link.label}
         </Link>
     ));
+    const icon = hasLinks ?
+        <IconChevronRight
+            className={classes.chevron}
+            stroke={1.5}
+            style={{
+                width: rem(16),
+                height: rem(16),
+                transform: opened ? 'rotate(-90deg)' : 'none',
+            }}
+        /> : null;
 
     return (
         <>
@@ -26,17 +36,7 @@ const NavBarLinksGroup: React.FC<NavBarLinksGroupProps> = ({ label, initiallyOpe
                     <Flex align="center">
                         <Box ml="md">{label}</Box>
                     </Flex>
-                    {hasLinks && (
-                        <IconChevronRight
-                            className={classes.chevron}
-                            stroke={1.5}
-                            style={{
-                                width: rem(16),
-                                height: rem(16),
-                                transform: opened ? 'rotate(-90deg)' : 'none',
-                            }}
-                        />
-                    )}
+                    {icon}
                 </Group>
             </UnstyledButton>
             {hasLinks ? <Collapse data-testid="collapse" in={opened}>{items}</Collapse> : null}

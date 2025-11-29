@@ -74,26 +74,11 @@ export const authClient = {
             if (typeof window !== 'undefined') {
                 (window as unknown as Record<string, unknown>).__MOCK_AUTH_STATE__ = newState;
             }
-            return;
         }
-
-        const result = await betterAuthClient.signIn.email({
-            email: email,
-            password: password,
-        }, {
-            onRequest: () => {
-                // TODO: Show loading
-            },
-            onSuccess: () => {
-                // TODO: Hide loading
-            },
-            onError: (ctx) => {
-                Sentry.captureException(JSON.stringify(ctx.error, null, 2));
-                alert("Error " + ctx.error.message);
-            },
-        });
-
-        Sentry.captureMessage(`Sign in result: ${JSON.stringify(result, null, 2)}`, 'info');
+        else {
+            // Better Auth is configured to throw on errors
+            await betterAuthClient.signIn.email({ email, password });
+        }
     },
 
     getUser: (): User | null => {
@@ -175,11 +160,6 @@ export const authClient = {
             },
         });
 
-        if (response.error) {
-            Sentry.captureException(response.error);
-            throw new Error(response.error.message);
-        }
-
-        return response.data?.users || [];
+        return response?.users ?? [];
     },
 };

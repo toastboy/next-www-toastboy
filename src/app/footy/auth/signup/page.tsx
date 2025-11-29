@@ -9,7 +9,7 @@ import { authClient } from "src/lib/auth-client";
 
 export default function SignUpPage() {
     const [loading, setLoading] = useState(false);
-    const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [signupError, setSignupError] = useState<boolean>(false);
 
     const form = useForm({
         initialValues: {
@@ -28,7 +28,7 @@ export default function SignUpPage() {
 
     const handleSignUp = async (values: { name: string, email: string; password: string }) => {
         setLoading(true);
-        setErrorMessage(null);
+        setSignupError(false);
 
         try {
             const result = await authClient.signUp.email({
@@ -52,11 +52,21 @@ export default function SignUpPage() {
             Sentry.captureMessage(`Sign up result: ${JSON.stringify(result)}`, 'info');
         } catch (error) {
             Sentry.captureMessage(`Sign in error: ${String(error)}`, 'error');
-            setErrorMessage('Something went wrong. Please try again.');
+            setSignupError(true);
         } finally {
             setLoading(false);
         }
     };
+
+    const errorNotification = signupError ? (
+        <Notification
+            icon={<IconX size={18} />}
+            color="red"
+            onClose={() => setSignupError(false)}
+        >
+            Something went wrong. Please try again.
+        </Notification>
+    ) : null;
 
     return (
         <Container size="xs" mt="xl" >
@@ -93,17 +103,7 @@ export default function SignUpPage() {
                         rightSection={<IconLock size={16} />}
                         {...form.getInputProps('password')}
                     />
-                    {
-                        errorMessage && (
-                            <Notification
-                                icon={<IconX size={18} />}
-                                color="red"
-                                onClose={() => setErrorMessage(null)
-                                }
-                            >
-                                {errorMessage}
-                            </Notification>
-                        )}
+                    {errorNotification}
                     <Group mt="sm" >
                         <Anchor href="/auth/reset-password" size="sm" >
                             Forgot your password ?

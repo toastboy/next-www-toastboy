@@ -10,13 +10,13 @@ This project is based on [Azure + MySQL example code](https://github.com/Azure-S
 
 ## Secrets
 
-All secrets should be managed by 1Password, in the exclusive vault "next-www-toastboy" and referenced from the `.env` file, which is safe to commit to source control since it only contains references, not values. Preface all commands which might need secret values in the environment with the op cli, like this:
+All secrets should be managed by 1Password, in the exclusive vault "next-www-toastboy" and referenced from the `.env` file. This file is safe to commit to source control since it only contains references, not values. Preface all commands which might need secret values in the environment with the op cli, like this:
 
 ```shell
 op run --env-file ./.env -- npm run build
 ```
 
-The importlivedb script needs two env files:
+The `importlivedb` script needs two env files:
 
 ```shell
 op run --env-file src/lib/importlivedb/.env --env-file ./.env -- npm run importlivedb
@@ -24,7 +24,7 @@ op run --env-file src/lib/importlivedb/.env --env-file ./.env -- npm run importl
 
 ## Run the App
 
-Run the app with following command:
+Run the app with the following command:
 
 ```shell
 op run --env-file ./.env -- npm run dev

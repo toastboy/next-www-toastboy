@@ -1,0 +1,54 @@
+import { render, screen, within } from '@testing-library/react';
+import * as fs from 'fs';
+import path from 'path';
+import { GameDaySchema } from 'prisma/generated/schemas/models/GameDay.schema';
+import { z } from 'zod';
+
+import GameCalendar from '@/components/GameCalendar/GameCalendar';
+
+import { Wrapper } from "./lib/common";
+
+const GameDayResponseSchema = GameDaySchema.extend({
+    date: z.coerce.date(),
+    mailSent: z.coerce.date().nullish(),
+});
+
+const gameCalendarDataPath = path.join(__dirname, 'data/GameCalendar.json');
+
+describe('GameCalendar', () => {
+    beforeEach(() => {
+        jest.spyOn(global, 'fetch').mockResolvedValueOnce({
+            json: async () => GameDayResponseSchema.array().parse(
+                JSON.parse(await fs.promises.readFile(gameCalendarDataPath, 'utf8')),
+            ),
+        } as Response);
+    });
+
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    it('renders game day with link when game day exists and game is on', async () => {
+        render(<Wrapper><GameCalendar date={new Date('2004-02-03')} /></Wrapper>);
+        const gameDayLink = await screen.findByRole('link', { name: '27' });
+        expect(gameDayLink).toBeInTheDocument();
+        expect(gameDayLink).toHaveAttribute('href', '/footy/game/100');
+        expect(within(gameDayLink).getByTestId('game-day-indicator-true')).toBeInTheDocument();
+    });
+
+    it('renders game day with link when game day exists and game is off', async () => {
+        render(<Wrapper><GameCalendar date={new Date('2004-02-03')} /></Wrapper>);
+        const gameDayLink = await screen.findByRole('link', { name: '3' });
+        expect(gameDayLink).toBeInTheDocument();
+        expect(gameDayLink).toHaveAttribute('href', '/footy/game/101');
+        expect(within(gameDayLink).getByTestId('game-day-indicator-false')).toBeInTheDocument();
+    });
+
+    it('does not render game day with link when game day does not exist', async () => {
+        render(<Wrapper><GameCalendar date={new Date('2004-02-03')} /></Wrapper>);
+        // Wait for the first game day to render before checking
+        await screen.findByRole('link', { name: '27' });
+        const gameDayLink = screen.queryByRole('link', { name: '28' });
+        expect(gameDayLink).not.toBeInTheDocument();
+    });
+});

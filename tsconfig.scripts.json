@@ -2,35 +2,14 @@
     "extends": "./tsconfig.json",
     "compilerOptions": {
         "paths": {
-            "actions/*": [
-                "./src/actions/*"
+            "@/*": [
+                "./*"
             ],
-            "api/*": [
-                "./src/app/api/*"
-            ],
-            "components/*": [
-                "./src/components/*"
-            ],
-            "environment/*": [
-                "./src/environments/*"
-            ],
-            "lib/*": [
-                "./src/lib/*"
-            ],
-            "mocks/*": [
-                "./src/mocks/*"
+            "@tests/*": [
+                "tests/*"
             ],
             "prisma/*": [
-                "./prisma/*"
-            ],
-            "services/*": [
-                "./src/services/*"
-            ],
-            "tests/*": [
-                "./tests/*"
-            ],
-            "types/*": [
-                "./src/types/*"
+                "../prisma/*"
             ],
             "server-only": [
                 "./tests/__mocks__/server-only.ts"

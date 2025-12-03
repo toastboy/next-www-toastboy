@@ -280,7 +280,7 @@ const config = [
         },
     },
     {
-        files: ["tests/**/*.test.ts", "tests/**/*.test.tsx"],
+        files: ["src/tests/**/*.test.ts", "src/tests/**/*.test.tsx"],
         rules: {
             "@typescript-eslint/no-unsafe-assignment": "off",
         },

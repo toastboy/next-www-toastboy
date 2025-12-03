@@ -2,7 +2,7 @@
   "extends": "@tsconfig/recommended/tsconfig.json",
   "compilerOptions": {
     "allowJs": true,
-    "baseUrl": "./",
+    "baseUrl": "./src",
     "diagnostics": true,
     "incremental": true,
     "isolatedModules": true,
@@ -18,35 +18,14 @@
     "allowSyntheticDefaultImports": true,
     "noEmit": true,
     "paths": {
-      "actions/*": [
-        "./src/actions/*"
+      "@/*": [
+        "./*"
       ],
-      "api/*": [
-        "./src/app/api/*"
-      ],
-      "components/*": [
-        "./src/components/*"
-      ],
-      "environment/*": [
-        "./src/environments/*"
-      ],
-      "lib/*": [
-        "./src/lib/*"
-      ],
-      "mocks/*": [
-        "./src/mocks/*"
+      "@tests/*": [
+        "tests/*"
       ],
       "prisma/*": [
-        "./prisma/*"
-      ],
-      "services/*": [
-        "./src/services/*"
-      ],
-      "tests/*": [
-        "./tests/*"
-      ],
-      "types/*": [
-        "./src/types/*"
+        "../prisma/*"
       ]
     },
     "plugins": [

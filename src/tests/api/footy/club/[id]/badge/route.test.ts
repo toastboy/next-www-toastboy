@@ -6,6 +6,7 @@ import { Readable } from 'stream';
 import request from 'supertest';
 
 import { GET } from '@/app/api/footy/club/[id]/badge/route';
+import { loadBinaryFixture } from '@/tests/shared/fixtures';
 
 suppressConsoleError();
 const testRoute = '/api/footy/club/1/badge';
@@ -13,14 +14,11 @@ const mockApp = createMockApp(GET, { path: testRoute, params: Promise.resolve({ 
 
 describe('API tests using HTTP', () => {
     it('should return PNG response for a valid club', async () => {
-        const mockBuffer = Buffer.from('test');
-        const mockStream = new Readable();
-        mockStream.push(mockBuffer);
-        mockStream.push(null);
+        const mockBuffer = loadBinaryFixture('mocks/data/football.png');
 
         (mockBlobClient.exists).mockResolvedValue(true);
         (mockBlobClient.download).mockResolvedValue({
-            readableStreamBody: mockStream,
+            readableStreamBody: Readable.from([mockBuffer]),
         });
 
         const response = await request(mockApp).get(testRoute);

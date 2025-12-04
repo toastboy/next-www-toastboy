@@ -34,3 +34,27 @@ export function loadJsonFixture<T = unknown>(relativePath: string): T {
 
     return cache.get(fullPath) as T;
 }
+
+/**
+ * Loads a PNG fixture file from the specified relative path and returns it as a Buffer.
+ * Uses an internal cache to avoid repeated file system reads for the same file.
+ *
+ * @param relativePath - The path to the PNG file relative to the parent directory of the current module
+ * @returns A Buffer containing the PNG file data
+ *
+ * @example
+ * ```typescript
+ * const imageBuffer = loadPNGFixture('fixtures/test-image.png');
+ * ```
+ */
+export function loadBinaryFixture(relativePath: string): Buffer {
+    const fullPath = path.join(__dirname, '..', relativePath);
+
+    if (!cache.has(fullPath)) {
+        const raw = fs.readFileSync(fullPath);
+        const mockBuffer = Buffer.from(raw);
+        cache.set(fullPath, mockBuffer);
+    }
+
+    return cache.get(fullPath) as Buffer;
+}

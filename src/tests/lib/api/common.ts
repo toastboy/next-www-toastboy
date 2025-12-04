@@ -71,7 +71,7 @@ export function createMockApp(
     routeParams: { path: string; params: Promise<Record<string, string>> },
     responseHandler: (response: NextResponse, res: ServerResponse) => Promise<void>,
 ) {
-    const server = createServer((req, res) => {
+    return createServer((req, res) => {
         if (req.url?.includes(routeParams.path)) {
             const requestObject = new NextRequest(`http://localhost${req.url}`, {
                 method: req.method,
@@ -88,52 +88,6 @@ export function createMockApp(
                 });
         }
     });
-
-    // Allow supertest mock to bypass real sockets by calling handlers directly.
-    (server as unknown as { __handle?: (url: string, method?: string) => Promise<unknown> }).__handle = async (url: string, method = 'GET') => {
-        const requestObject = new NextRequest(`http://localhost${url}`, { method });
-
-        let response: NextResponse;
-        try {
-            response = await getFunction(requestObject, { params: routeParams.params });
-        } catch (err) {
-            const message = err instanceof Error ? err.message : String(err);
-            response = new NextResponse(`Error: ${message}`, { status: 500 });
-        }
-
-        const headers = Object.fromEntries(response.headers.entries());
-        const cloned = response.clone();
-        const arrayBuffer = response.body ? await cloned.arrayBuffer() : null;
-        const buffer = arrayBuffer ? Buffer.from(arrayBuffer) : null;
-        const text = buffer ? buffer.toString() : '';
-
-        let body: unknown = text;
-        if (headers['content-type']?.includes('application/json')) {
-            body = text ? JSON.parse(text) : null;
-        } else if (headers['content-type']?.includes('image/png')) {
-            body = buffer;
-        }
-
-        return {
-            status: response.status,
-            headers,
-            body,
-            text,
-        };
-    };
-
-    // Supertest defaults to binding on 0.0.0.0 which is blocked in this sandbox.
-    // Force it to bind on localhost instead to avoid EPERM.
-    const originalListen = server.listen.bind(server);
-    server.listen = ((port?: number, hostname?: string, backlog?: number, listeningListener?: () => void) => {
-        return typeof backlog === 'function'
-            ? originalListen(port ?? 0, '127.0.0.1', backlog as unknown as () => void)
-            : typeof hostname === 'function'
-                ? originalListen(port ?? 0, '127.0.0.1', hostname as unknown as () => void)
-                : originalListen(port ?? 0, '127.0.0.1', backlog, listeningListener);
-    }) as typeof server.listen;
-
-    return server;
 }
 
 /**

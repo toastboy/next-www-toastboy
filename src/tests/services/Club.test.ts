@@ -2,6 +2,7 @@ import { ClubType } from 'prisma/generated/schemas/models/Club.schema';
 
 import prisma from '@/lib/prisma';
 import clubService from '@/services/Club';
+import { defaultClub, defaultClubList, invalidClub } from '@/tests/mocks/data/club';
 
 jest.mock('@/lib/prisma', () => ({
     club: {
@@ -15,25 +16,6 @@ jest.mock('@/lib/prisma', () => ({
     },
 }));
 
-const defaultClub: ClubType = {
-    id: 1,
-    soccerwayId: 1000,
-    clubName: "Wittering United",
-    uri: "wittering-united",
-    country: "england",
-};
-
-const invalidClub: ClubType = {
-    ...defaultClub,
-    id: -1,
-};
-
-const clubList: ClubType[] = Array.from({ length: 100 }, (_, index) => ({
-    ...defaultClub,
-    id: index + 1,
-    soccerwayId: 1000 + index,
-}));
-
 describe('ClubService', () => {
     beforeEach(() => {
         jest.clearAllMocks();
@@ -41,12 +23,12 @@ describe('ClubService', () => {
         (prisma.club.findUnique as jest.Mock).mockImplementation((args: {
             where: { id: number }
         }) => {
-            const club = clubList.find((club) => club.id === args.where.id);
+            const club = defaultClubList.find((club) => club.id === args.where.id);
             return Promise.resolve(club ?? null);
         });
 
         (prisma.club.create as jest.Mock).mockImplementation((args: { data: ClubType }) => {
-            const club = clubList.find((club) => club.id === args.data.id);
+            const club = defaultClubList.find((club) => club.id === args.data.id);
 
             if (club) {
                 return Promise.reject(new Error('club already exists'));
@@ -61,7 +43,7 @@ describe('ClubService', () => {
             update: ClubType,
             create: ClubType,
         }) => {
-            const club = clubList.find((club) => club.id === args.where.id);
+            const club = defaultClubList.find((club) => club.id === args.where.id);
 
             if (club) {
                 return Promise.resolve(args.update);
@@ -74,7 +56,7 @@ describe('ClubService', () => {
         (prisma.club.delete as jest.Mock).mockImplementation((args: {
             where: { id: number }
         }) => {
-            const club = clubList.find((club) => club.id === args.where.id);
+            const club = defaultClubList.find((club) => club.id === args.where.id);
             return Promise.resolve(club ?? null);
         });
     });
@@ -102,7 +84,7 @@ describe('ClubService', () => {
     describe('getAll', () => {
         beforeEach(() => {
             (prisma.club.findMany as jest.Mock).mockImplementation(() => {
-                return Promise.resolve(clubList);
+                return Promise.resolve(defaultClubList);
             });
         });
 

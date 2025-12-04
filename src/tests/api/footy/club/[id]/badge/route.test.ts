@@ -1,4 +1,4 @@
-import { createMockApp, mockBlobClient, pngResponseHandler, suppressConsoleError } from '@tests/lib/api/common';
+import { createMockApp, mockBlobClient, pngResponseHandler, suppressConsoleError } from '@/tests/lib/api/common';
 
 jest.mock('services/Club');
 

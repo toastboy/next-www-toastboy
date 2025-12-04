@@ -1,8 +1,8 @@
-import { createMockApp, jsonResponseHandler, suppressConsoleError } from '@tests/lib/api/common';
 import request from 'supertest';
 
 import { GET } from '@/app/api/footy/gameyear/route';
 import gamedayService from '@/services/GameDay';
+import { createMockApp, jsonResponseHandler, suppressConsoleError } from '@/tests/lib/api/common';
 
 suppressConsoleError();
 const mockRoute = '/api/footy/gameyear';

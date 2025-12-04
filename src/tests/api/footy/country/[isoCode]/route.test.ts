@@ -1,8 +1,8 @@
-import { createMockApp, jsonResponseHandler, suppressConsoleError } from '@tests/lib/api/common';
 import request from 'supertest';
 
 import { GET } from '@/app/api/footy/country/[isoCode]/route';
 import countryService from '@/services/Country';
+import { createMockApp, jsonResponseHandler, suppressConsoleError } from '@/tests/lib/api/common';
 
 suppressConsoleError();
 const mockApp = createMockApp(GET, { path: '/api/footy/country/NO', params: Promise.resolve({ isoCode: 'NO' }) }, jsonResponseHandler);

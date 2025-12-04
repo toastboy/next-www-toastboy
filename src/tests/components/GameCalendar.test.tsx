@@ -1,10 +1,9 @@
 import { render, screen, within } from '@testing-library/react';
-import * as fs from 'fs';
-import path from 'path';
 import { GameDaySchema } from 'prisma/generated/schemas/models/GameDay.schema';
 import { z } from 'zod';
 
 import GameCalendar from '@/components/GameCalendar/GameCalendar';
+import { loadJsonFixture } from '@/tests/shared/fixtures';
 
 import { Wrapper } from "./lib/common";
 
@@ -13,13 +12,13 @@ const GameDayResponseSchema = GameDaySchema.extend({
     mailSent: z.coerce.date().nullish(),
 });
 
-const gameCalendarDataPath = path.join(__dirname, 'data/GameCalendar.json');
+const gameCalendarFixture = loadJsonFixture<unknown>('components/data/GameCalendar.json');
 
 describe('GameCalendar', () => {
     beforeEach(() => {
         jest.spyOn(global, 'fetch').mockResolvedValueOnce({
-            json: async () => GameDayResponseSchema.array().parse(
-                JSON.parse(await fs.promises.readFile(gameCalendarDataPath, 'utf8')),
+            json: () => Promise.resolve(
+                GameDayResponseSchema.array().parse(gameCalendarFixture),
             ),
         } as Response);
     });

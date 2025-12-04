@@ -1,5 +1,5 @@
-import { createMockApp, mockBlobClient, pngResponseHandler, suppressConsoleError } from '@tests/lib/api/common';
-import { setupPlayerMocks } from '@tests/lib/api/player';
+import { createMockApp, mockBlobClient, pngResponseHandler, suppressConsoleError } from '@/tests/lib/api/common';
+import { setupPlayerMocks } from '@/tests/lib/api/player';
 
 jest.mock('services/Player');
 

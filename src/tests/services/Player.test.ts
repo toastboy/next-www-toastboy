@@ -1,9 +1,9 @@
-import { defaultPlayer } from 'mocks/data/player';
 import { OutcomeType } from 'prisma/generated/schemas/models/Outcome.schema';
 import { PlayerType } from 'prisma/generated/schemas/models/Player.schema';
 
 import prisma from '@/lib/prisma';
 import playerService from '@/services/Player';
+import { defaultPlayer } from '@/tests/mocks/data/player';
 
 jest.mock('lib/prisma', () => ({
     player: {

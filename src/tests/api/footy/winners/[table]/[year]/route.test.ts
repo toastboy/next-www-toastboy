@@ -1,4 +1,4 @@
-import { createMockApp, jsonResponseHandler, suppressConsoleError } from '@tests/lib/api/common';
+import { createMockApp, jsonResponseHandler, suppressConsoleError } from '@/tests/lib/api/common';
 
 jest.mock('services/PlayerRecord');
 jest.mock('lib/authServer');

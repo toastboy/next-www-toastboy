@@ -1,9 +1,9 @@
 const moduleNameMapper = {
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
     '^@/(.*)$': '<rootDir>/src/$1',
-    '^@tests/(.*)$': '<rootDir>/src/tests/$1',
     '^prisma/(.*)$': '<rootDir>/prisma/$1',
     '^server-only$': '<rootDir>/src/tests/__mocks__/server-only.ts',
+    '^supertest$': '<rootDir>/src/tests/lib/api/supertest-mock.ts',
 };
 
 module.exports = {
@@ -37,7 +37,7 @@ module.exports = {
                 '^.+\\.css$': 'jest-css-modules-transform',
             },
             transformIgnorePatterns: [
-                "node_modules/(?!(nanostores|better-auth|@better-auth|uncrypto|jose|@noble)/)",
+                "node_modules/(?!(nanostores|better-auth|@better-auth|uncrypto|jose|@noble|msw|until-async)/)",
             ],
             watchPathIgnorePatterns: [
                 "<rootDir>/.git/",
@@ -77,7 +77,7 @@ module.exports = {
                 '^.+\\.css$': 'jest-css-modules-transform',
             },
             transformIgnorePatterns: [
-                "node_modules/(?!(nanostores|better-auth|@better-auth|uncrypto|jose|@noble)/)",
+                "node_modules/(?!(nanostores|better-auth|@better-auth|uncrypto|jose|@noble|msw|until-async)/)",
             ],
             watchPathIgnorePatterns: [
                 "<rootDir>/.git/",
@@ -115,7 +115,7 @@ module.exports = {
                 '^.+\\.css$': 'jest-css-modules-transform',
             },
             transformIgnorePatterns: [
-                "node_modules/(?!(nanostores|better-auth|@better-auth|uncrypto|jose|@noble)/)",
+                "node_modules/(?!(nanostores|better-auth|@better-auth|uncrypto|jose|@noble|msw|until-async)/)",
             ],
             watchPathIgnorePatterns: [
                 "<rootDir>/.git/",

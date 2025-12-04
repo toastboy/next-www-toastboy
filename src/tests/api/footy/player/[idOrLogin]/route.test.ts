@@ -1,5 +1,5 @@
-import { createMockApp, jsonResponseHandler, suppressConsoleError, toWire } from '@tests/lib/api/common';
-import { mockPlayer, setupPlayerMocks } from '@tests/lib/api/player';
+import { createMockApp, jsonResponseHandler, suppressConsoleError, toWire } from '@/tests/lib/api/common';
+import { mockPlayer, setupPlayerMocks } from '@/tests/lib/api/player';
 
 jest.mock('services/Player');
 jest.mock('lib/authServer');

@@ -1,5 +1,5 @@
-import { createMockApp, jsonResponseHandler, suppressConsoleError } from '@tests/lib/api/common';
-import { setupPlayerMocks } from '@tests/lib/api/player';
+import { createMockApp, jsonResponseHandler, suppressConsoleError } from '@/tests/lib/api/common';
+import { setupPlayerMocks } from '@/tests/lib/api/player';
 
 jest.mock('services/Player');
 jest.mock('services/PlayerRecord');

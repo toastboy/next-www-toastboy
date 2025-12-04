@@ -1,1 +1,1 @@
-export { handlers } from '@/mocks/handlers';
+export { handlers } from '@/tests/mocks/handlers';

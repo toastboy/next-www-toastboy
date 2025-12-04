@@ -2,14 +2,14 @@ jest.mock('services/Arse');
 jest.mock('services/Player');
 jest.mock('lib/authServer');
 
-import { createMockApp, jsonResponseHandler, suppressConsoleError } from '@tests/lib/api/common';
-import { setupPlayerMocks } from '@tests/lib/api/player';
 import request from 'supertest';
 
 import { GET } from '@/app/api/footy/player/[idOrLogin]/arse/route';
 import { getUserRole } from '@/lib/authServer';
 import arseService from '@/services/Arse';
 import playerService from '@/services/Player';
+import { createMockApp, jsonResponseHandler, suppressConsoleError } from '@/tests/lib/api/common';
+import { setupPlayerMocks } from '@/tests/lib/api/player';
 
 suppressConsoleError();
 const testURI = '/api/footy/player/1/arse';

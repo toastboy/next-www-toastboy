@@ -5,8 +5,6 @@ import { TransformStream as NodeTransformStream, WritableStream as NodeWritableS
 import { TextDecoder as NodeTextDecoder, TextEncoder as NodeTextEncoder } from 'node:util';
 import { BroadcastChannel as NodeBroadcastChannel } from 'node:worker_threads';
 
-import type { SetupServer } from 'msw/node';
-
 type GlobalPolyfills = Pick<typeof globalThis, 'TextDecoder' | 'TextEncoder' | 'TransformStream' | 'WritableStream' | 'BroadcastChannel'>;
 
 const globalScope = globalThis as typeof globalThis & GlobalPolyfills;
@@ -30,16 +28,6 @@ ensurePolyfill('TextEncoder');
 ensurePolyfill('TransformStream');
 ensurePolyfill('WritableStream');
 ensurePolyfill('BroadcastChannel');
-
-let server: SetupServer;
-
-beforeAll(async () => {
-    const mod = await import('./src/tests/setup/msw-server');
-    server = mod.server;
-    server.listen();
-});
-afterEach(() => server.resetHandlers());
-afterAll(() => server.close());
 
 global.ResizeObserver = class ResizeObserver {
     observe() { /* empty */ }

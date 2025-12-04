@@ -1,20 +1,19 @@
+jest.mock('swr');
+
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { http, HttpResponse } from 'msw';
-import { SWRConfig } from 'swr';
+import { act } from 'react';
+import useSWR from 'swr';
 
 import AdminUpdatePlayerRecords from '@/components/AdminUpdatePlayerRecords/AdminUpdatePlayerRecords';
-import { server } from '@/tests/setup/msw-server';
 
-import { Wrapper } from './lib/common';
+import { Wrapper } from "./lib/common";
 
 jest.mock('next/cache');
-jest.mock('actions/updatePlayerRecords', () => ({
-    updatePlayerRecords: jest.fn().mockResolvedValue(undefined),
-}));
-
-const { updatePlayerRecords } = jest.requireMock('actions/updatePlayerRecords');
+jest.mock('services/PlayerRecord');
 
 describe('AdminUpdatePlayerRecords', () => {
+    const mutateMock = jest.fn().mockResolvedValue(undefined);
+
     beforeEach(() => {
         jest.useFakeTimers();
     });
@@ -23,35 +22,37 @@ describe('AdminUpdatePlayerRecords', () => {
         jest.runOnlyPendingTimers();
         jest.useRealTimers();
         jest.clearAllMocks();
-        server.resetHandlers();
     });
 
-    const renderWithConfig = () => render(
-        <SWRConfig value={{ provider: () => new Map(), dedupingInterval: 0 }}>
-            <Wrapper>
-                <AdminUpdatePlayerRecords />
-            </Wrapper>
-        </SWRConfig>,
-    );
+    it('renders with data < 100%', () => {
+        (useSWR as jest.Mock).mockReturnValue({
+            data: [800, 2000],
+            error: undefined,
+            isLoading: false,
+            mutate: mutateMock,
+        });
 
-    it('renders with data < 100%', async () => {
-        renderWithConfig();
-
-        expect(await screen.findByText("40%")).toBeInTheDocument();
+        render(<Wrapper><AdminUpdatePlayerRecords /></Wrapper>);
+        expect(screen.queryByRole('img')).not.toBeInTheDocument();
+        expect(screen.getByText("40%")).toBeInTheDocument();
     });
 
-    it('renders with data == 100% and calls update action on click', async () => {
-        server.use(http.get('/api/footy/records/progress', () => HttpResponse.json([2000, 2000])));
+    it('renders with data == 100%', async () => {
+        (useSWR as jest.Mock).mockReturnValue({
+            data: [2000, 2000],
+            error: undefined,
+            isLoading: false,
+            mutate: mutateMock,
+        });
 
-        renderWithConfig();
-
-        expect(await screen.findByTestId('update-player-records-compete-icon')).toBeInTheDocument();
+        render(<Wrapper><AdminUpdatePlayerRecords /></Wrapper>);
+        expect(screen.queryByRole('img')).not.toBeInTheDocument();
+        expect(screen.getByTestId('update-player-records-compete-icon')).toBeInTheDocument();
 
         const button = screen.getByText("Update Player Records");
         fireEvent.click(button);
 
-        await waitFor(() => {
-            expect(updatePlayerRecords).toHaveBeenCalled();
-        });
+        act(() => { jest.runOnlyPendingTimers(); });
+        await waitFor(() => expect(mutateMock).toHaveBeenCalled());
     });
 });

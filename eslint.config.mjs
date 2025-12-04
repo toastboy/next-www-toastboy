@@ -157,7 +157,6 @@ const config = [
                 devDependencies: true,
                 includeTypes: false,
             }],
-            "import-x/no-relative-parent-imports": "off",
             "simple-import-sort/imports": "warn",
             "simple-import-sort/exports": "warn",
             "unused-imports/no-unused-imports": "warn",

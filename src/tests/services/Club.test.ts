@@ -3,7 +3,7 @@ import { ClubType } from 'prisma/generated/schemas/models/Club.schema';
 import prisma from '@/lib/prisma';
 import clubService from '@/services/Club';
 
-jest.mock('lib/prisma', () => ({
+jest.mock('@/lib/prisma', () => ({
     club: {
         findUnique: jest.fn(),
         findFirst: jest.fn(),

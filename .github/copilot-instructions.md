@@ -35,6 +35,7 @@ Purpose: Enable fast, safe contributions. Keep changes aligned with existing ser
 
 ### Conventions & Patterns
 
+- **Import paths**: ALWAYS use `@/` alias imports (e.g., `import prisma from '@/lib/prisma'`) instead of relative imports with `../`. Never use `../` in import statements—use the `@/` path alias configured in `tsconfig.json`. Same-directory imports using `./` are acceptable.
 - Always prepend backend-only modules with `import 'server-only';` to prevent client bundling.
 - Use `debug` logging with consistent namespace (`footy:api`) for new service methods; avoid `console.log`.
 - Validate external input early using appropriate `...Where*` or custom strict schema extension; never trust raw request body/query directly in prisma calls.

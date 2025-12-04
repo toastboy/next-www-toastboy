@@ -1,5 +1,7 @@
 import { PlayerRecordType } from "prisma/generated/schemas/models/PlayerRecord.schema";
 
+import { createMockPlayerRecord } from "@/tests/mocks/factories/playerRecordFactory";
+
 export const defaultPlayerRecord: PlayerRecordType = {
     id: 1,
     year: 2021,
@@ -24,3 +26,9 @@ export const defaultPlayerRecord: PlayerRecordType = {
     gameDayId: 15,
     playerId: 12,
 };
+
+export const defaultPlayerRecordList: PlayerRecordType[] = Array.from({ length: 100 }, (_, index) =>
+    createMockPlayerRecord({
+        gameDayId: 10 + Math.floor(index / 10) + 1,
+    }),
+);

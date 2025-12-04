@@ -2,6 +2,7 @@ import { ArseType } from 'prisma/generated/schemas/models/Arse.schema';
 
 import prisma from '@/lib/prisma';
 import arseService from '@/services/Arse';
+import { defaultArse, defaultArseList } from '@/tests/mocks/data/arse';
 
 jest.mock('lib/prisma', () => ({
     arse: {
@@ -16,26 +17,6 @@ jest.mock('lib/prisma', () => ({
     },
 }));
 
-const defaultArse: ArseType = {
-    id: 1,
-    stamp: new Date(),
-    playerId: 12,
-    raterId: 12,
-    inGoal: 10,
-    running: 10,
-    shooting: 10,
-    passing: 10,
-    ballSkill: 10,
-    attacking: 10,
-    defending: 10,
-};
-
-const arseList: ArseType[] = Array.from({ length: 100 }, (_, index) => ({
-    ...defaultArse,
-    playerId: index % 10 + 1,
-    raterId: index + 1,
-}));
-
 describe('ArseService', () => {
     beforeEach(() => {
         jest.clearAllMocks();
@@ -48,7 +29,7 @@ describe('ArseService', () => {
                 }
             }
         }) => {
-            const arse = arseList.find((arse) =>
+            const arse = defaultArseList.find((arse) =>
                 arse.playerId === args.where.playerId_raterId.playerId &&
                 arse.raterId === args.where.playerId_raterId.raterId,
             );
@@ -56,7 +37,7 @@ describe('ArseService', () => {
         });
 
         (prisma.arse.create as jest.Mock).mockImplementation((args: { data: ArseType }) => {
-            const arse = arseList.find((arse) =>
+            const arse = defaultArseList.find((arse) =>
                 arse.playerId === args.data.playerId &&
                 arse.raterId === args.data.raterId,
             );
@@ -79,7 +60,7 @@ describe('ArseService', () => {
             update: ArseType,
             create: ArseType,
         }) => {
-            const arse = arseList.find((arse) =>
+            const arse = defaultArseList.find((arse) =>
                 arse.playerId === args.where.playerId_raterId.playerId &&
                 arse.raterId === args.where.playerId_raterId.raterId,
             );
@@ -100,7 +81,7 @@ describe('ArseService', () => {
                 }
             }
         }) => {
-            const arse = arseList.find((arse) =>
+            const arse = defaultArseList.find((arse) =>
                 arse.playerId === args.where.playerId_raterId.playerId &&
                 arse.raterId === args.where.playerId_raterId.raterId,
             );
@@ -194,7 +175,7 @@ describe('ArseService', () => {
     describe('getByRater', () => {
         beforeEach(() => {
             (prisma.arse.findMany as jest.Mock).mockImplementation((args: { where: { raterId: number } }) => {
-                return Promise.resolve(arseList.filter((arse) => arse.raterId === args.where.raterId));
+                return Promise.resolve(defaultArseList.filter((arse) => arse.raterId === args.where.raterId));
             });
         });
 
@@ -220,7 +201,7 @@ describe('ArseService', () => {
     describe('getAll', () => {
         beforeEach(() => {
             (prisma.arse.findMany as jest.Mock).mockImplementation(() => {
-                return Promise.resolve(arseList);
+                return Promise.resolve(defaultArseList);
             });
         });
 

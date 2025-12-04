@@ -3,6 +3,8 @@ import { ClubSupporterType } from 'prisma/generated/schemas/models/ClubSupporter
 import prisma from '@/lib/prisma';
 import clubSupporterService from '@/services/ClubSupporter';
 
+import { defaultClubSupporter, defaultClubSupporterList } from '../mocks/data/clubSupporter';
+
 jest.mock('lib/prisma', () => ({
     clubSupporter: {
         findUnique: jest.fn(),
@@ -13,17 +15,6 @@ jest.mock('lib/prisma', () => ({
         delete: jest.fn(),
         deleteMany: jest.fn(),
     },
-}));
-
-const defaultClubSupporter: ClubSupporterType = {
-    playerId: 12,
-    clubId: 2270,
-};
-
-const clubSupporterList: ClubSupporterType[] = Array.from({ length: 100 }, (_, index) => ({
-    ...defaultClubSupporter,
-    playerId: index % 10 + 1,
-    clubId: index + 1,
 }));
 
 describe('clubSupporterService', () => {
@@ -38,12 +29,12 @@ describe('clubSupporterService', () => {
                 }
             }
         }) => {
-            const clubSupporter = clubSupporterList.find((clubSupporter) => clubSupporter.playerId === args.where.playerId_clubId.playerId && clubSupporter.clubId === args.where.playerId_clubId.clubId);
+            const clubSupporter = defaultClubSupporterList.find((clubSupporter) => clubSupporter.playerId === args.where.playerId_clubId.playerId && clubSupporter.clubId === args.where.playerId_clubId.clubId);
             return Promise.resolve(clubSupporter ?? null);
         });
 
         (prisma.clubSupporter.create as jest.Mock).mockImplementation((args: { data: ClubSupporterType }) => {
-            const ClubSupporter = clubSupporterList.find((ClubSupporter) => ClubSupporter.playerId === args.data.playerId && ClubSupporter.clubId === args.data.clubId);
+            const ClubSupporter = defaultClubSupporterList.find((ClubSupporter) => ClubSupporter.playerId === args.data.playerId && ClubSupporter.clubId === args.data.clubId);
 
             if (ClubSupporter) {
                 return Promise.reject(new Error('ClubSupporter already exists'));
@@ -63,7 +54,7 @@ describe('clubSupporterService', () => {
             update: ClubSupporterType,
             create: ClubSupporterType,
         }) => {
-            const ClubSupporter = clubSupporterList.find((ClubSupporter) => ClubSupporter.playerId === args.where.playerId_clubId.playerId && ClubSupporter.clubId === args.where.playerId_clubId.clubId);
+            const ClubSupporter = defaultClubSupporterList.find((ClubSupporter) => ClubSupporter.playerId === args.where.playerId_clubId.playerId && ClubSupporter.clubId === args.where.playerId_clubId.clubId);
 
             if (ClubSupporter) {
                 return Promise.resolve(args.update);
@@ -81,7 +72,7 @@ describe('clubSupporterService', () => {
                 }
             }
         }) => {
-            const ClubSupporter = clubSupporterList.find((ClubSupporter) => ClubSupporter.playerId === args.where.playerId_clubId.playerId && ClubSupporter.clubId === args.where.playerId_clubId.clubId);
+            const ClubSupporter = defaultClubSupporterList.find((ClubSupporter) => ClubSupporter.playerId === args.where.playerId_clubId.playerId && ClubSupporter.clubId === args.where.playerId_clubId.clubId);
             return Promise.resolve(ClubSupporter ?? null);
         });
     });
@@ -105,7 +96,7 @@ describe('clubSupporterService', () => {
     describe('getByPlayer', () => {
         beforeEach(() => {
             (prisma.clubSupporter.findMany as jest.Mock).mockImplementation((args: { where: { playerId: number } }) => {
-                return Promise.resolve(clubSupporterList.filter((ClubSupporter) => ClubSupporter.playerId === args.where.playerId));
+                return Promise.resolve(defaultClubSupporterList.filter((ClubSupporter) => ClubSupporter.playerId === args.where.playerId));
             });
         });
 
@@ -130,7 +121,7 @@ describe('clubSupporterService', () => {
     describe('getByClub', () => {
         beforeEach(() => {
             (prisma.clubSupporter.findMany as jest.Mock).mockImplementation((args: { where: { clubId: number } }) => {
-                return Promise.resolve(clubSupporterList.filter((ClubSupporter) => ClubSupporter.clubId === args.where.clubId));
+                return Promise.resolve(defaultClubSupporterList.filter((ClubSupporter) => ClubSupporter.clubId === args.where.clubId));
             });
         });
 
@@ -155,7 +146,7 @@ describe('clubSupporterService', () => {
     describe('getAll', () => {
         beforeEach(() => {
             (prisma.clubSupporter.findMany as jest.Mock).mockImplementation(() => {
-                return Promise.resolve(clubSupporterList);
+                return Promise.resolve(defaultClubSupporterList);
             });
         });
 

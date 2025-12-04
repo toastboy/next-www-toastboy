@@ -8,8 +8,9 @@ import { GET } from '@/app/api/footy/player/[idOrLogin]/arse/route';
 import { getUserRole } from '@/lib/authServer';
 import arseService from '@/services/Arse';
 import playerService from '@/services/Player';
-import { createMockApp, jsonResponseHandler, suppressConsoleError } from '@/tests/lib/api/common';
+import { createMockApp, jsonResponseHandler, suppressConsoleError, toWire } from '@/tests/lib/api/common';
 import { setupPlayerMocks } from '@/tests/lib/api/player';
+import { defaultArse } from '@/tests/mocks/data/arse';
 
 suppressConsoleError();
 const testURI = '/api/footy/player/1/arse';
@@ -19,16 +20,7 @@ describe('API tests using HTTP', () => {
     setupPlayerMocks();
 
     it('should return JSON response for a valid player', async () => {
-        const mockData = {
-            inGoal: 1,
-            running: 2,
-            shooting: 3,
-            passing: 4,
-            ballSkill: 5,
-            attacking: 6,
-            defending: 7,
-        };
-        (arseService.getByPlayer as jest.Mock).mockResolvedValue(mockData);
+        (arseService.getByPlayer as jest.Mock).mockResolvedValue(defaultArse);
         (getUserRole as jest.Mock).mockResolvedValue('admin');
 
         const response = await request(mockApp).get(testURI);
@@ -37,20 +29,11 @@ describe('API tests using HTTP', () => {
         if (response.status !== 200) console.log('Error response:', response.error);
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
-        expect(response.body).toEqual(mockData);
+        expect(response.body).toEqual(toWire(defaultArse));
     });
 
     it('should refuse to return any arse when there is no admin logged in', async () => {
-        const mockData = {
-            inGoal: 1,
-            running: 2,
-            shooting: 3,
-            passing: 4,
-            ballSkill: 5,
-            attacking: 6,
-            defending: 7,
-        };
-        (arseService.getByPlayer as jest.Mock).mockResolvedValue(mockData);
+        (arseService.getByPlayer as jest.Mock).mockResolvedValue(defaultArse);
         (getUserRole as jest.Mock).mockResolvedValue('user');
 
         const response = await request(mockApp).get(testURI);

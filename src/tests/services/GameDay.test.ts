@@ -2,7 +2,7 @@ import { GameDayType } from 'prisma/generated/schemas/models/GameDay.schema';
 
 import prisma from '@/lib/prisma';
 import gameDayService from '@/services/GameDay';
-import { defaultGameDay } from '@/tests/mocks/data/gameday';
+import { defaultGameDay, defaultGameDayList } from '@/tests/mocks/data/gameDay';
 
 jest.mock('lib/prisma', () => ({
     gameDay: {
@@ -18,11 +18,6 @@ jest.mock('lib/prisma', () => ({
     },
 }));
 
-const gameDayList: GameDayType[] = Array.from({ length: 100 }, (_, index) => ({
-    ...defaultGameDay,
-    id: index + 1,
-}));
-
 describe('GameDayService', () => {
     beforeEach(() => {
         jest.clearAllMocks();
@@ -32,7 +27,7 @@ describe('GameDayService', () => {
                 id: number
             }
         }) => {
-            const gameDay = gameDayList.find((gameDay) => gameDay.id === args.where.id);
+            const gameDay = defaultGameDayList.find((gameDay) => gameDay.id === args.where.id);
             return Promise.resolve(gameDay ?? null);
         });
 
@@ -48,12 +43,12 @@ describe('GameDayService', () => {
                 },
             }
         }) => {
-            const gameDays = args.where ? gameDayList.filter((gameDay) =>
+            const gameDays = args.where ? defaultGameDayList.filter((gameDay) =>
                 (args.where.game ? gameDay.game === args.where.game : true) &&
                 (args.where.id ? gameDay.id <= args.where.id.lte : true) &&
                 (args.where.date ? gameDay.date >= args.where.date.gte : true) &&
                 (args.where.date ? gameDay.date < args.where.date.lt : true),
-            ) : gameDayList;
+            ) : defaultGameDayList;
             return Promise.resolve(gameDays ? gameDays : null);
         });
 
@@ -82,7 +77,7 @@ describe('GameDayService', () => {
                 ]
             }
         }) => {
-            const gameDays = args.where ? gameDayList.filter((gameDay) =>
+            const gameDays = args.where ? defaultGameDayList.filter((gameDay) =>
                 (args.where.game ? gameDay.game === args.where.game : true) &&
                 (args.where.id ? gameDay.id <= args.where.id.lte : true) &&
                 (args.where.date ? gameDay.date >= args.where.date.gte : true) &&
@@ -90,12 +85,12 @@ describe('GameDayService', () => {
                 (args.where.AND?.[0].date ? gameDay.date >= args.where.AND[0].date.gte : true) &&
                 (args.where.AND?.[0].date ? gameDay.date < args.where.AND[0].date.lt : true) &&
                 (args.where.AND?.[1].date ? gameDay.date > args.where.AND[1].date.gt : true),
-            ) : gameDayList;
+            ) : defaultGameDayList;
             return Promise.resolve(gameDays ? gameDays.length : null);
         });
 
         (prisma.gameDay.create as jest.Mock).mockImplementation((args: { data: GameDayType }) => {
-            const gameDay = gameDayList.find((gameDay) => gameDay.id === args.data.id);
+            const gameDay = defaultGameDayList.find((gameDay) => gameDay.id === args.data.id);
 
             if (gameDay) {
                 return Promise.reject(new Error('gameDay already exists'));
@@ -110,7 +105,7 @@ describe('GameDayService', () => {
             update: GameDayType,
             create: GameDayType,
         }) => {
-            const gameDay = gameDayList.find((gameDay) => gameDay.id === args.where.id);
+            const gameDay = defaultGameDayList.find((gameDay) => gameDay.id === args.where.id);
 
             if (gameDay) {
                 return Promise.resolve(args.update);
@@ -123,7 +118,7 @@ describe('GameDayService', () => {
         (prisma.gameDay.delete as jest.Mock).mockImplementation((args: {
             where: { id: number }
         }) => {
-            const gameDay = gameDayList.find((gameDay) => gameDay.id === args.where.id);
+            const gameDay = defaultGameDayList.find((gameDay) => gameDay.id === args.where.id);
             return Promise.resolve(gameDay ?? null);
         });
     });

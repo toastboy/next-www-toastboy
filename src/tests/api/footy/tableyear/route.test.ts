@@ -2,7 +2,8 @@ import request from 'supertest';
 
 import { GET } from '@/app/api/footy/tableyear/route';
 import playerRecordService from '@/services/PlayerRecord';
-import { createMockApp, jsonResponseHandler, suppressConsoleError } from '@/tests/lib/api/common';
+import { createMockApp, jsonResponseHandler, suppressConsoleError, toWire } from '@/tests/lib/api/common';
+import { defaultGameYearsAllTime } from '@/tests/mocks/data/gameYears';
 
 suppressConsoleError();
 const mockRoute = '/api/footy/tableyear';
@@ -12,40 +13,14 @@ jest.mock('services/PlayerRecord');
 
 describe('API tests using HTTP', () => {
     it('should return JSON response', async () => {
-        const mockData = [
-            2002,
-            2003,
-            2004,
-            2005,
-            2006,
-            2007,
-            2008,
-            2009,
-            2010,
-            2011,
-            2012,
-            2013,
-            2014,
-            2015,
-            2016,
-            2017,
-            2018,
-            2019,
-            2020,
-            2021,
-            2022,
-            2023,
-            2024,
-            0,
-        ];
-        (playerRecordService.getAllYears as jest.Mock).mockResolvedValue(mockData);
+        (playerRecordService.getAllYears as jest.Mock).mockResolvedValue(defaultGameYearsAllTime);
 
         const response = await request(mockApp).get(mockRoute);
 
         if (response.status !== 200) console.log('Error response:', response.error);
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
-        expect(response.body).toEqual(mockData);
+        expect(response.body).toEqual(toWire(defaultGameYearsAllTime));
     });
 
     it('should return 404 if there are no tableyear', async () => {

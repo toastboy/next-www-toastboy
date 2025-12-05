@@ -1,4 +1,4 @@
-import { createMockApp, jsonResponseHandler, suppressConsoleError } from '@/tests/lib/api/common';
+import { createMockApp, jsonResponseHandler, suppressConsoleError, toWire } from '@/tests/lib/api/common';
 import { setupPlayerMocks } from '@/tests/lib/api/player';
 
 jest.mock('services/Player');
@@ -9,6 +9,7 @@ import request from 'supertest';
 import { GET } from '@/app/api/footy/player/[idOrLogin]/record/[year]/route';
 import playerService from '@/services/Player';
 import playerRecordService from '@/services/PlayerRecord';
+import { defaultPlayerRecord } from '@/tests/mocks';
 
 suppressConsoleError();
 const testURI = '/api/footy/player/1/record/0';
@@ -18,37 +19,13 @@ describe('API tests using HTTP', () => {
     setupPlayerMocks();
 
     it('should return JSON response for a valid player', async () => {
-        const mockData = {
-            year: 0,
-            responses: 72,
-            played: 34,
-            won: 11,
-            drawn: 1,
-            lost: 22,
-            points: 34,
-            averages: 1,
-            stalwart: 4,
-            pub: null,
-            rankPoints: 66,
-            rankAverages: 86,
-            rankAveragesUnqualified: null,
-            rankStalwart: 48,
-            rankSpeedy: 92,
-            rankSpeedyUnqualified: null,
-            rankPub: null,
-            speedy: 50229,
-            playerId: 1,
-            gameDayId: 1182,
-            name: "Derek Turnipson",
-        };
-        (playerRecordService.getForYearByPlayer as jest.Mock).mockResolvedValue(mockData);
-
+        (playerRecordService.getForYearByPlayer as jest.Mock).mockResolvedValue(defaultPlayerRecord);
         const response = await request(mockApp).get(testURI);
 
         if (response.status !== 200) console.log('Error response:', response.error);
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
-        expect(response.body).toEqual(mockData);
+        expect(response.body).toEqual(toWire(defaultPlayerRecord));
     });
 
     it('should return 404 if the player does not exist', async () => {

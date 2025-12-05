@@ -2,7 +2,8 @@ import request from 'supertest';
 
 import { GET } from '@/app/api/footy/turnout/[gameDayId]/route';
 import outcomeService from '@/services/Outcome';
-import { createMockApp, jsonResponseHandler, suppressConsoleError } from '@/tests/lib/api/common';
+import { createMockApp, jsonResponseHandler, suppressConsoleError, toWire } from '@/tests/lib/api/common';
+import { defaultOutcome } from '@/tests/mocks';
 
 suppressConsoleError();
 const mockRoute = '/api/footy/turnout/1000/';
@@ -11,49 +12,27 @@ const mockApp = createMockApp(GET, { path: mockRoute, params: Promise.resolve({ 
 jest.mock('services/Outcome');
 
 describe('API tests using HTTP', () => {
-    const mockData = [
-        {
-            "id": 1000,
-            "year": 2021,
-            "date": "2021-04-27T17:00:00.000Z",
-            "game": false,
-            "mailSent": null,
-            "comment": "Remain indoors",
-            "bibs": null,
-            "pickerGamesHistory": 10,
-            "yes": 0,
-            "no": 0,
-            "dunno": 0,
-            "excused": 0,
-            "flaked": 0,
-            "injured": 0,
-            "responses": 0,
-            "players": 0,
-            "cancelled": false,
-        },
-    ];
-
     it('should return JSON response for a valid gameDay', async () => {
-        (outcomeService.getTurnout as jest.Mock).mockResolvedValue(mockData);
+        (outcomeService.getTurnout as jest.Mock).mockResolvedValue(defaultOutcome);
 
         const response = await request(mockApp).get(mockRoute);
 
         if (response.status !== 200) console.log('Error response:', response.error);
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
-        expect(response.body).toEqual(mockData);
+        expect(response.body).toEqual(toWire(defaultOutcome));
     });
 
     it('should return valid JSON even if there is no valid gameDayId param', async () => {
         const mockApp = createMockApp(GET, { path: mockRoute, params: Promise.resolve({}) }, jsonResponseHandler);
-        (outcomeService.getTurnout as jest.Mock).mockResolvedValue(mockData);
+        (outcomeService.getTurnout as jest.Mock).mockResolvedValue(defaultOutcome);
 
         const response = await request(mockApp).get(mockRoute);
 
         if (response.status !== 200) console.log('Error response:', response.error);
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
-        expect(response.body).toEqual(mockData);
+        expect(response.body).toEqual(toWire(defaultOutcome));
     });
 
     it('should return 404 if the gameDay does not exist', async () => {

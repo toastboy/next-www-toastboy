@@ -2,7 +2,7 @@ import { GameDayType } from 'prisma/generated/schemas/models/GameDay.schema';
 
 import prisma from '@/lib/prisma';
 import gameDayService from '@/services/GameDay';
-import { defaultGameDay, defaultGameDayList } from '@/tests/mocks/data/gameDay';
+import { defaultGameDay, defaultGameDayList } from '@/tests/mocks/data/gameDayx';
 
 jest.mock('lib/prisma', () => ({
     gameDay: {

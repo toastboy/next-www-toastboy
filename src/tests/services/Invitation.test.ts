@@ -3,6 +3,12 @@ import { InvitationType } from 'prisma/generated/schemas/models/Invitation.schem
 import prisma from '@/lib/prisma';
 import invitationService from '@/services/Invitation';
 
+import {
+    buildUuidFromIndex,
+    defaultInvitation,
+    defaultInvitationList,
+} from '../mocks/data/invitation';
+
 jest.mock('lib/prisma', () => ({
     invitation: {
         findUnique: jest.fn(),
@@ -15,24 +21,6 @@ jest.mock('lib/prisma', () => ({
     },
 }));
 
-const defaultInvitation: InvitationType = {
-    uuid: '{123e4567-e89b-12d3-a456-426614174000}',
-    playerId: 1,
-    gameDayId: 1,
-};
-
-const buildUuidFromIndex = (i: number): string => {
-    const hex = Math.abs(i).toString(16) || '0';
-    const repeated = hex.repeat(Math.ceil(32 / hex.length)).slice(0, 32);
-    const uuid = `${repeated.slice(0, 8)}-${repeated.slice(8, 12)}-${repeated.slice(12, 16)}-${repeated.slice(16, 20)}-${repeated.slice(20, 32)}`;
-    return `{${uuid}}`;
-};
-
-const invitationList: InvitationType[] = Array.from({ length: 100 }, (_, index) => ({
-    ...defaultInvitation,
-    uuid: buildUuidFromIndex(index + 1),
-}));
-
 describe('InvitationService', () => {
     beforeEach(() => {
         jest.clearAllMocks();
@@ -40,12 +28,12 @@ describe('InvitationService', () => {
         (prisma.invitation.findUnique as jest.Mock).mockImplementation((args: {
             where: { uuid: string }
         }) => {
-            const invitation = invitationList.find((invitation) => invitation.uuid === args.where.uuid);
+            const invitation = defaultInvitationList.find((invitation) => invitation.uuid === args.where.uuid);
             return Promise.resolve(invitation ?? null);
         });
 
         (prisma.invitation.create as jest.Mock).mockImplementation((args: { data: InvitationType }) => {
-            const invitation = invitationList.find((invitation) => invitation.uuid === args.data.uuid);
+            const invitation = defaultInvitationList.find((invitation) => invitation.uuid === args.data.uuid);
 
             if (invitation) {
                 return Promise.reject(new Error('invitation already exists'));
@@ -60,7 +48,7 @@ describe('InvitationService', () => {
             update: InvitationType,
             create: InvitationType,
         }) => {
-            const invitation = invitationList.find((invitation) => invitation.uuid === args.where.uuid);
+            const invitation = defaultInvitationList.find((invitation) => invitation.uuid === args.where.uuid);
 
             if (invitation) {
                 return Promise.resolve(args.update);
@@ -73,7 +61,7 @@ describe('InvitationService', () => {
         (prisma.invitation.delete as jest.Mock).mockImplementation((args: {
             where: { uuid: string }
         }) => {
-            const invitation = invitationList.find((invitation) => invitation.uuid === args.where.uuid);
+            const invitation = defaultInvitationList.find((invitation) => invitation.uuid === args.where.uuid);
             return Promise.resolve(invitation ?? null);
         });
     });
@@ -84,10 +72,10 @@ describe('InvitationService', () => {
 
     describe('get', () => {
         it('should retrieve the correct Invitation with uuid "12346"', async () => {
-            const result = await invitationService.get(invitationList[5].uuid);
+            const result = await invitationService.get(defaultInvitationList[5].uuid);
             expect(result).toEqual({
                 ...defaultInvitation,
-                uuid: invitationList[5].uuid,
+                uuid: defaultInvitationList[5].uuid,
             } as InvitationType);
         });
 
@@ -100,14 +88,14 @@ describe('InvitationService', () => {
     describe('getAll', () => {
         beforeEach(() => {
             (prisma.invitation.findMany as jest.Mock).mockImplementation(() => {
-                return Promise.resolve(invitationList);
+                return Promise.resolve(defaultInvitationList);
             });
         });
 
         it('should return the correct, complete list of 100 Invitation', async () => {
             const result = await invitationService.getAll();
             expect(result).toHaveLength(100);
-            expect(result[11].uuid).toEqual(invitationList[11].uuid);
+            expect(result[11].uuid).toEqual(defaultInvitationList[11].uuid);
         });
     });
 

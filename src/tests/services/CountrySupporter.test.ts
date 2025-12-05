@@ -2,6 +2,7 @@ import { CountrySupporterType } from 'prisma/generated/schemas/models/CountrySup
 
 import prisma from '@/lib/prisma';
 import countrySupporterService from '@/services/CountrySupporter';
+import { defaultCountrySupporter, defaultCountrySupporterList } from '@/tests/mocks/data/countrySupporter';
 
 jest.mock('lib/prisma', () => ({
     countrySupporter: {
@@ -13,17 +14,6 @@ jest.mock('lib/prisma', () => ({
         delete: jest.fn(),
         deleteMany: jest.fn(),
     },
-}));
-
-const defaultCountrySupporter: CountrySupporterType = {
-    playerId: 12,
-    countryISOCode: "GB",
-};
-
-const countrySupporterList: CountrySupporterType[] = Array.from({ length: 100 }, (_, index) => ({
-    ...defaultCountrySupporter,
-    playerId: index % 10 + 1,
-    countryISOCode: "GB",
 }));
 
 describe('countrySupporterService', () => {
@@ -38,12 +28,12 @@ describe('countrySupporterService', () => {
                 }
             }
         }) => {
-            const countrySupporter = countrySupporterList.find((countrySupporter) => countrySupporter.playerId === args.where.playerId_countryISOCode.playerId && countrySupporter.countryISOCode === args.where.playerId_countryISOCode.countryISOCode);
+            const countrySupporter = defaultCountrySupporterList.find((countrySupporter) => countrySupporter.playerId === args.where.playerId_countryISOCode.playerId && countrySupporter.countryISOCode === args.where.playerId_countryISOCode.countryISOCode);
             return Promise.resolve(countrySupporter ?? null);
         });
 
         (prisma.countrySupporter.create as jest.Mock).mockImplementation((args: { data: CountrySupporterType }) => {
-            const CountrySupporter = countrySupporterList.find((CountrySupporter) => CountrySupporter.playerId === args.data.playerId && CountrySupporter.countryISOCode === args.data.countryISOCode);
+            const CountrySupporter = defaultCountrySupporterList.find((CountrySupporter) => CountrySupporter.playerId === args.data.playerId && CountrySupporter.countryISOCode === args.data.countryISOCode);
 
             if (CountrySupporter) {
                 return Promise.reject(new Error('CountrySupporter already exists'));
@@ -63,7 +53,7 @@ describe('countrySupporterService', () => {
             update: CountrySupporterType,
             create: CountrySupporterType,
         }) => {
-            const CountrySupporter = countrySupporterList.find((CountrySupporter) => CountrySupporter.playerId === args.where.playerId_countryISOCode.playerId && CountrySupporter.countryISOCode === args.where.playerId_countryISOCode.countryISOCode);
+            const CountrySupporter = defaultCountrySupporterList.find((CountrySupporter) => CountrySupporter.playerId === args.where.playerId_countryISOCode.playerId && CountrySupporter.countryISOCode === args.where.playerId_countryISOCode.countryISOCode);
 
             if (CountrySupporter) {
                 return Promise.resolve(args.update);
@@ -81,7 +71,7 @@ describe('countrySupporterService', () => {
                 }
             }
         }) => {
-            const CountrySupporter = countrySupporterList.find((CountrySupporter) => CountrySupporter.playerId === args.where.playerId_countryISOCode.playerId && CountrySupporter.countryISOCode === args.where.playerId_countryISOCode.countryISOCode);
+            const CountrySupporter = defaultCountrySupporterList.find((CountrySupporter) => CountrySupporter.playerId === args.where.playerId_countryISOCode.playerId && CountrySupporter.countryISOCode === args.where.playerId_countryISOCode.countryISOCode);
             return Promise.resolve(CountrySupporter ?? null);
         });
     });
@@ -105,7 +95,7 @@ describe('countrySupporterService', () => {
     describe('getByPlayer', () => {
         beforeEach(() => {
             (prisma.countrySupporter.findMany as jest.Mock).mockImplementation((args: { where: { playerId: number } }) => {
-                return Promise.resolve(countrySupporterList.filter((CountrySupporter) => CountrySupporter.playerId === args.where.playerId));
+                return Promise.resolve(defaultCountrySupporterList.filter((CountrySupporter) => CountrySupporter.playerId === args.where.playerId));
             });
         });
 
@@ -130,7 +120,7 @@ describe('countrySupporterService', () => {
     describe('getByCountry', () => {
         beforeEach(() => {
             (prisma.countrySupporter.findMany as jest.Mock).mockImplementation((args: { where: { countryISOCode: string } }) => {
-                return Promise.resolve(countrySupporterList.filter((CountrySupporter) => CountrySupporter.countryISOCode === args.where.countryISOCode));
+                return Promise.resolve(defaultCountrySupporterList.filter((CountrySupporter) => CountrySupporter.countryISOCode === args.where.countryISOCode));
             });
         });
 
@@ -155,7 +145,7 @@ describe('countrySupporterService', () => {
     describe('getAll', () => {
         beforeEach(() => {
             (prisma.countrySupporter.findMany as jest.Mock).mockImplementation(() => {
-                return Promise.resolve(countrySupporterList);
+                return Promise.resolve(defaultCountrySupporterList);
             });
         });
 

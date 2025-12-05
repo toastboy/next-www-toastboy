@@ -2,7 +2,8 @@ import request from 'supertest';
 
 import { GET } from '@/app/api/footy/records/progress/route';
 import playerRecordService from '@/services/PlayerRecord';
-import { createMockApp, jsonResponseHandler, suppressConsoleError } from '@/tests/lib/api/common';
+import { createMockApp, jsonResponseHandler, suppressConsoleError, toWire } from '@/tests/lib/api/common';
+import { defaultProgress } from '@/tests/mocks/data';
 
 suppressConsoleError();
 const mockRoute = '/api/footy/records/progress';
@@ -12,15 +13,14 @@ jest.mock('services/PlayerRecord');
 
 describe('API tests using HTTP', () => {
     it('should return JSON response', async () => {
-        const mockData = [50, 100];
-        (playerRecordService.getProgress as jest.Mock).mockResolvedValue(mockData);
+        (playerRecordService.getProgress as jest.Mock).mockResolvedValue(defaultProgress);
 
         const response = await request(mockApp).get(mockRoute);
 
         if (response.status !== 200) console.log('Error response:', response.error);
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
-        expect(response.body).toEqual(mockData);
+        expect(response.body).toEqual(toWire(defaultProgress));
     });
 
     it('should return 404 if there is no progress', async () => {

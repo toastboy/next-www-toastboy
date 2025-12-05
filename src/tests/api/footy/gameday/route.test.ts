@@ -2,7 +2,8 @@ import request from 'supertest';
 
 import { GET } from '@/app/api/footy/gameday/route';
 import gamedayService from '@/services/GameDay';
-import { createMockApp, jsonResponseHandler, suppressConsoleError } from '@/tests/lib/api/common';
+import { createMockApp, jsonResponseHandler, suppressConsoleError, toWire } from '@/tests/lib/api/common';
+import { defaultGameDay } from '@/tests/mocks/data/gameDay';
 
 suppressConsoleError();
 const mockRoute = '/api/footy/gameday';
@@ -12,15 +13,14 @@ jest.mock('services/GameDay');
 
 describe('API tests using HTTP', () => {
     it('should return JSON response for a valid gameday', async () => {
-        const mockData = [{ id: '1', name: 'Test gameday 1' }, { id: '2', name: 'Test gameday 2' }];
-        (gamedayService.getAll as jest.Mock).mockResolvedValue(mockData);
+        (gamedayService.getAll as jest.Mock).mockResolvedValue(defaultGameDay);
 
         const response = await request(mockApp).get(mockRoute);
 
         if (response.status !== 200) console.log('Error response:', response.error);
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
-        expect(response.body).toEqual(mockData);
+        expect(response.body).toEqual(toWire(defaultGameDay));
     });
 
     it('should return 404 if the gameday does not exist', async () => {

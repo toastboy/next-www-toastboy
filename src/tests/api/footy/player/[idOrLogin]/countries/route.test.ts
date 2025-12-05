@@ -9,6 +9,7 @@ import request from 'supertest';
 import { GET } from '@/app/api/footy/player/[idOrLogin]/countries/route';
 import countrySupporterService from '@/services/CountrySupporter';
 import playerService from '@/services/Player';
+import { defaultCountrySupporter } from '@/tests/mocks/data/countrySupporter';
 
 suppressConsoleError();
 const testURI = '/api/footy/player/1/countries';
@@ -18,18 +19,14 @@ describe('API tests using HTTP', () => {
     setupPlayerMocks();
 
     it('should return JSON response for a valid player', async () => {
-        const mockData = [{
-            "playerId": 1,
-            "countryISOCode": "GB-ENG",
-        }];
-        (countrySupporterService.getByPlayer as jest.Mock).mockResolvedValue(mockData);
+        (countrySupporterService.getByPlayer as jest.Mock).mockResolvedValue(defaultCountrySupporter);
 
         const response = await request(mockApp).get(testURI);
 
         if (response.status !== 200) console.log('Error response:', response.error);
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
-        expect(response.body).toEqual(mockData);
+        expect(response.body).toEqual(defaultCountrySupporter);
     });
 
     it('should return 404 if the player does not exist', async () => {

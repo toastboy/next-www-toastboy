@@ -22,7 +22,9 @@
     "importlivedb": "npx ts-node -r tsconfig-paths/register --project tsconfig.scripts.json --compiler-options '{\"module\":\"CommonJS\"}' src/lib/importlivedb/importlivedb.ts",
     "crawllivesite": "npx ts-node -r tsconfig-paths/register --project tsconfig.scripts.json --compiler-options '{\"module\":\"CommonJS\"}' src/lib/crawllivesite/crawllivesite.ts",
     "start": "docker compose up -d && next start",
-    "stop": "docker compose down"
+    "stop": "docker compose down",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@azure/identity": "^4.13.0",
@@ -125,7 +127,13 @@
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.3",
-    "whatwg-fetch": "^3.6.20"
+    "whatwg-fetch": "^3.6.20",
+    "storybook": "^10.1.4",
+    "@storybook/nextjs": "^10.1.4",
+    "@storybook/addon-a11y": "^10.1.4",
+    "@storybook/addon-docs": "^10.1.4",
+    "@storybook/addon-onboarding": "^10.1.4",
+    "eslint-plugin-storybook": "^10.1.4"
   },
   "overrides": {
     "@swc/helpers": "0.5.15"

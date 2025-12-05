@@ -44,6 +44,11 @@ updates:
       sentry:
         patterns:
           - "@sentry/*"
+      storybook:
+        patterns:
+          - "storybook"
+          - "@storybook/*"
+          - "eslint-plugin-storybook"
       tiptap:
         patterns:
           - "@tiptap/*"

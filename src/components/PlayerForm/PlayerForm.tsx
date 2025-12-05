@@ -1,3 +1,4 @@
+import gameDayService from '@/services/GameDay';
 import { ProgressRoot, ProgressSection } from '@mantine/core';
 import GameDayLink from 'components/GameDayLink/GameDayLink';
 import { Key } from 'react';
@@ -11,20 +12,25 @@ export interface Props {
 
 const PlayerForm: React.FC<Props> = async ({ playerId, gameDayId, games }) => {
     const form = await playerService.getForm(playerId, gameDayId, games);
+    const colors = ['red', 'yellow', 'green'];
 
     if (!form || form.length === 0) return <></>;
 
     return (
         <ProgressRoot size="xl">
-            {form.map((outcome, index: Key) => (
-                <ProgressSection
+            {form.map(async (outcome, index: Key) => {
+                const gameDay = await gameDayService.get(outcome.gameDayId);
+
+                if (!gameDay) return <></>;
+
+                return <ProgressSection
                     key={index}
                     value={100 / games}
-                    color={outcome.points === 3 ? 'green' : outcome.points === 1 ? 'yellow' : 'red'}
+                    color={colors[outcome.points ?? 0]}
                 >
-                    <GameDayLink gameDayId={outcome.gameDayId} />
-                </ProgressSection>
-            ))}
+                    <GameDayLink gameDay={gameDay} />
+                </ProgressSection>;
+            })}
         </ProgressRoot>
     );
 };

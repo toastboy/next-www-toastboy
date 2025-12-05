@@ -1,15 +1,24 @@
 import { OutcomeType } from 'prisma/generated/schemas/models/Outcome.schema';
 
+import { createMockOutcome } from '@/tests/mocks/factories/outcomeFactory';
+
 export const defaultOutcome: OutcomeType = {
-    id: 1000,
+    id: 1,
+    gameDayId: 1,
+    playerId: 12,
     response: 'Yes',
-    responseInterval: 89724,
-    points: 0,
-    team: 'B',
-    comment: "How do",
-    pub: null,
-    paid: null,
+    responseInterval: 1000,
+    points: 3,
+    team: 'A',
+    comment: 'Test comment',
+    pub: 1,
+    paid: false,
     goalie: false,
-    gameDayId: 125,
-    playerId: 1,
 };
+
+export const defaultOutcomeList: OutcomeType[] = Array.from({ length: 100 }, (_, index) =>
+    createMockOutcome({
+        playerId: index % 10 + 1,
+        gameDayId: Math.floor(index / 10 + 1),
+    }),
+);

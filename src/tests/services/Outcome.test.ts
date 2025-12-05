@@ -7,6 +7,7 @@ import {
 
 import prisma from '@/lib/prisma';
 import outcomeService from '@/services/Outcome';
+import { defaultOutcome, defaultOutcomeList } from '@/tests/mocks/data/outcome';
 
 jest.mock('lib/prisma', () => ({
     outcome: {
@@ -33,26 +34,6 @@ jest.mock('lib/prisma', () => ({
     },
 }));
 
-const defaultOutcome: OutcomeType = {
-    id: 1,
-    gameDayId: 1,
-    playerId: 12,
-    response: 'Yes',
-    responseInterval: 1000,
-    points: 3,
-    team: 'A',
-    comment: 'Test comment',
-    pub: 1,
-    paid: false,
-    goalie: false,
-};
-
-const outcomeList: OutcomeType[] = Array.from({ length: 100 }, (_, index) => ({
-    ...defaultOutcome,
-    playerId: index % 10 + 1,
-    gameDayId: Math.floor(index / 10 + 1),
-}));
-
 describe('OutcomeService', () => {
     beforeEach(() => {
         jest.clearAllMocks();
@@ -65,7 +46,7 @@ describe('OutcomeService', () => {
                 }
             }
         }) => {
-            const outcome = outcomeList.find((outcome) =>
+            const outcome = defaultOutcomeList.find((outcome) =>
                 outcome.gameDayId === args.where.gameDayId_playerId.gameDayId &&
                 outcome.playerId === args.where.gameDayId_playerId.playerId,
             );
@@ -80,7 +61,7 @@ describe('OutcomeService', () => {
             take: number,
             orderBy: { responseInterval: 'desc' }
         }) => {
-            return Promise.resolve(outcomeList.filter((outcome) =>
+            return Promise.resolve(defaultOutcomeList.filter((outcome) =>
                 outcome.playerId === args.where.playerId &&
                 outcome.gameDayId < args.where.gameDayId).slice(0, args.take),
             );
@@ -100,13 +81,13 @@ describe('OutcomeService', () => {
                 }
             }
         }) => {
-            return Promise.resolve(outcomeList.filter((outcome) =>
+            return Promise.resolve(defaultOutcomeList.filter((outcome) =>
                 outcome.playerId === args.where.playerId &&
                 (args.where.gameDay.id ? outcome.gameDayId <= args.where.gameDay.id.lte : true)).length);
         });
 
         (prisma.outcome.create as jest.Mock).mockImplementation((args: { data: OutcomeType }) => {
-            const outcome = outcomeList.find((outcome) =>
+            const outcome = defaultOutcomeList.find((outcome) =>
                 outcome.gameDayId === args.data.gameDayId &&
                 outcome.playerId === args.data.playerId,
             );
@@ -129,7 +110,7 @@ describe('OutcomeService', () => {
             update: OutcomeType,
             create: OutcomeType,
         }) => {
-            const outcome = outcomeList.find((outcome) =>
+            const outcome = defaultOutcomeList.find((outcome) =>
                 outcome.gameDayId === args.where.gameDayId_playerId.gameDayId &&
                 outcome.playerId === args.where.gameDayId_playerId.playerId,
             );
@@ -150,7 +131,7 @@ describe('OutcomeService', () => {
                 }
             }
         }) => {
-            const outcome = outcomeList.find((outcome) =>
+            const outcome = defaultOutcomeList.find((outcome) =>
                 outcome.gameDayId === args.where.gameDayId_playerId.gameDayId &&
                 outcome.playerId === args.where.gameDayId_playerId.playerId,
             );
@@ -181,7 +162,7 @@ describe('OutcomeService', () => {
     describe('getAll', () => {
         beforeEach(() => {
             (prisma.outcome.findMany as jest.Mock).mockImplementation(() => {
-                return Promise.resolve(outcomeList);
+                return Promise.resolve(defaultOutcomeList);
             });
         });
 
@@ -212,13 +193,13 @@ describe('OutcomeService', () => {
 
     describe('getAllForYear', () => {
         it('should return the correct, complete list of 100 Outcomes', async () => {
-            (prisma.outcome.findMany as jest.Mock).mockResolvedValueOnce(outcomeList);
+            (prisma.outcome.findMany as jest.Mock).mockResolvedValueOnce(defaultOutcomeList);
 
             let result = await outcomeService.getAllForYear(2021);
             expect(result).toHaveLength(100);
             expect(result[11].playerId).toBe(2);
 
-            (prisma.outcome.findMany as jest.Mock).mockResolvedValueOnce(outcomeList.filter((outcome) => outcome.gameDayId <= 7));
+            (prisma.outcome.findMany as jest.Mock).mockResolvedValueOnce(defaultOutcomeList.filter((outcome) => outcome.gameDayId <= 7));
 
             result = await outcomeService.getAllForYear(2021, 7);
             expect(result).toHaveLength(70);
@@ -308,7 +289,7 @@ describe('OutcomeService', () => {
     describe('getByGameDay', () => {
         beforeEach(() => {
             (prisma.outcome.findMany as jest.Mock).mockImplementation((args: { where: { gameDayId: number } }) => {
-                return Promise.resolve(outcomeList.filter((outcome) => outcome.gameDayId === args.where.gameDayId));
+                return Promise.resolve(defaultOutcomeList.filter((outcome) => outcome.gameDayId === args.where.gameDayId));
             });
         });
 
@@ -333,7 +314,7 @@ describe('OutcomeService', () => {
     describe('getByPlayer', () => {
         beforeEach(() => {
             (prisma.outcome.findMany as jest.Mock).mockImplementation((args: { where: { playerId: number } }) => {
-                return Promise.resolve(outcomeList.filter((outcome) => outcome.playerId === args.where.playerId));
+                return Promise.resolve(defaultOutcomeList.filter((outcome) => outcome.playerId === args.where.playerId));
             });
         });
 

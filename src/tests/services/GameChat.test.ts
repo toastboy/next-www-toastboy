@@ -3,6 +3,8 @@ import { GameChatType } from 'prisma/generated/schemas/models/GameChat.schema';
 import prisma from '@/lib/prisma';
 import gameChatService from '@/services/GameChat';
 
+import { defaultGameChat, defaultGameChatList } from '../mocks/data/gameChat';
+
 jest.mock('lib/prisma', () => ({
     gameChat: {
         findUnique: jest.fn(),
@@ -15,21 +17,6 @@ jest.mock('lib/prisma', () => ({
     },
 }));
 
-const defaultGameChat: GameChatType = {
-    id: 1,
-    gameDay: 1,
-    stamp: new Date(),
-    player: 1,
-    body: "Hello, world!",
-};
-
-const gameChatList: GameChatType[] = Array.from({ length: 100 }, (_, index) => ({
-    ...defaultGameChat,
-    id: index + 1,
-    gameDay: index + 1,
-    player: index + 1,
-}));
-
 describe('GameChatService', () => {
     beforeEach(() => {
         jest.clearAllMocks();
@@ -37,12 +24,12 @@ describe('GameChatService', () => {
         (prisma.gameChat.findUnique as jest.Mock).mockImplementation((args: {
             where: { id: number }
         }) => {
-            const gameChat = gameChatList.find((gameChat) => gameChat.id === args.where.id);
+            const gameChat = defaultGameChatList.find((gameChat) => gameChat.id === args.where.id);
             return Promise.resolve(gameChat ?? null);
         });
 
         (prisma.gameChat.create as jest.Mock).mockImplementation((args: { data: GameChatType }) => {
-            const gameChat = gameChatList.find((gameChat) => gameChat.id === args.data.id);
+            const gameChat = defaultGameChatList.find((gameChat) => gameChat.id === args.data.id);
 
             if (gameChat) {
                 return Promise.reject(new Error('gameChat already exists'));
@@ -57,7 +44,7 @@ describe('GameChatService', () => {
             update: GameChatType,
             create: GameChatType,
         }) => {
-            const gameChat = gameChatList.find((gameChat) => gameChat.id === args.where.id);
+            const gameChat = defaultGameChatList.find((gameChat) => gameChat.id === args.where.id);
 
             if (gameChat) {
                 return Promise.resolve(args.update);
@@ -70,7 +57,7 @@ describe('GameChatService', () => {
         (prisma.gameChat.delete as jest.Mock).mockImplementation((args: {
             where: { id: number }
         }) => {
-            const gameChat = gameChatList.find((gameChat) => gameChat.id === args.where.id);
+            const gameChat = defaultGameChatList.find((gameChat) => gameChat.id === args.where.id);
             return Promise.resolve(gameChat ?? null);
         });
     });
@@ -99,7 +86,7 @@ describe('GameChatService', () => {
     describe('getAll', () => {
         beforeEach(() => {
             (prisma.gameChat.findMany as jest.Mock).mockImplementation(() => {
-                return Promise.resolve(gameChatList);
+                return Promise.resolve(defaultGameChatList);
             });
         });
 

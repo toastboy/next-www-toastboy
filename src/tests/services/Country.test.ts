@@ -2,8 +2,7 @@ import { CountryType } from 'prisma/generated/schemas/models/Country.schema';
 
 import prisma from '@/lib/prisma';
 import countryService from '@/services/Country';
-
-import { defaultCountry, defaultCountryList, invalidCountry } from '../mocks/data/country';
+import { defaultCountry, defaultCountryList, invalidCountry } from '@/tests/mocks';
 
 jest.mock('lib/prisma', () => ({
     country: {

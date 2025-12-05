@@ -2,7 +2,7 @@ import { CountrySupporterType } from 'prisma/generated/schemas/models/CountrySup
 
 import prisma from '@/lib/prisma';
 import countrySupporterService from '@/services/CountrySupporter';
-import { defaultCountrySupporter, defaultCountrySupporterList } from '@/tests/mocks/data/countrySupporter';
+import { defaultCountrySupporter, defaultCountrySupporterList } from '@/tests/mocks';
 
 jest.mock('lib/prisma', () => ({
     countrySupporter: {

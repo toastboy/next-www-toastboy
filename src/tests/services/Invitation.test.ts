@@ -2,12 +2,11 @@ import { InvitationType } from 'prisma/generated/schemas/models/Invitation.schem
 
 import prisma from '@/lib/prisma';
 import invitationService from '@/services/Invitation';
-
 import {
     buildUuidFromIndex,
     defaultInvitation,
     defaultInvitationList,
-} from '../mocks/data/invitation';
+} from '@/tests/mocks';
 
 jest.mock('lib/prisma', () => ({
     invitation: {

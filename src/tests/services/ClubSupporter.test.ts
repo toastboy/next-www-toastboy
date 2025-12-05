@@ -2,8 +2,7 @@ import { ClubSupporterType } from 'prisma/generated/schemas/models/ClubSupporter
 
 import prisma from '@/lib/prisma';
 import clubSupporterService from '@/services/ClubSupporter';
-
-import { defaultClubSupporter, defaultClubSupporterList } from '../mocks/data/clubSupporter';
+import { defaultClubSupporter, defaultClubSupporterList } from '@/tests/mocks';
 
 jest.mock('lib/prisma', () => ({
     clubSupporter: {

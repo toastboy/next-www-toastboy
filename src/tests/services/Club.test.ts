@@ -2,7 +2,7 @@ import { ClubType } from 'prisma/generated/schemas/models/Club.schema';
 
 import prisma from '@/lib/prisma';
 import clubService from '@/services/Club';
-import { defaultClub, defaultClubList, invalidClub } from '@/tests/mocks/data/club';
+import { defaultClub, defaultClubList, invalidClub } from '@/tests/mocks';
 
 jest.mock('@/lib/prisma', () => ({
     club: {

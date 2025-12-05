@@ -7,7 +7,7 @@ import {
 
 import prisma from '@/lib/prisma';
 import outcomeService from '@/services/Outcome';
-import { defaultOutcome, defaultOutcomeList } from '@/tests/mocks/data/outcome';
+import { defaultOutcome, defaultOutcomeList } from '@/tests/mocks';
 
 jest.mock('lib/prisma', () => ({
     outcome: {

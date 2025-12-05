@@ -3,7 +3,7 @@ import { PlayerRecordType } from 'prisma/generated/schemas/models/PlayerRecord.s
 
 import prisma from '@/lib/prisma';
 import playerRecordService from '@/services/PlayerRecord';
-import { defaultPlayerRecord, defaultPlayerRecordList } from '@/tests/mocks/data/playerRecord';
+import { defaultPlayerRecord, defaultPlayerRecordList } from '@/tests/mocks';
 import { loadJsonFixture } from '@/tests/shared/fixtures';
 
 jest.mock('lib/prisma', () => ({

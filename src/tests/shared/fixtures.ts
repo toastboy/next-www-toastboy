@@ -36,15 +36,17 @@ export function loadJsonFixture<T = unknown>(relativePath: string): T {
 }
 
 /**
- * Loads a PNG fixture file from the specified relative path and returns it as a Buffer.
- * Uses an internal cache to avoid repeated file system reads for the same file.
+ * Loads a binary fixture file (e.g. PNG image) from the specified relative path
+ * and returns it as a Buffer. Uses an internal cache to avoid repeated file
+ * system reads for the same file.
  *
- * @param relativePath - The path to the PNG file relative to the parent directory of the current module
- * @returns A Buffer containing the PNG file data
+ * @param relativePath - The path to the file relative to the parent directory
+ * of the current module
+ * @returns A Buffer containing the file data
  *
  * @example
  * ```typescript
- * const imageBuffer = loadPNGFixture('fixtures/test-image.png');
+ * const imageBuffer = loadBinaryFixture('fixtures/test-image.png');
  * ```
  */
 export function loadBinaryFixture(relativePath: string): Buffer {

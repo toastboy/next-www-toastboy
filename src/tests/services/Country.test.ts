@@ -3,6 +3,8 @@ import { CountryType } from 'prisma/generated/schemas/models/Country.schema';
 import prisma from '@/lib/prisma';
 import countryService from '@/services/Country';
 
+import { defaultCountry, defaultCountryList, invalidCountry } from '../mocks/data/country';
+
 jest.mock('lib/prisma', () => ({
     country: {
         findUnique: jest.fn(),
@@ -15,21 +17,6 @@ jest.mock('lib/prisma', () => ({
     },
 }));
 
-const defaultCountry: CountryType = {
-    isoCode: "GB-ENG",
-    name: "Engerland",
-};
-
-const invalidCountry: CountryType = {
-    ...defaultCountry,
-    isoCode: "ZZZ",
-};
-
-const countryList: CountryType[] = Array.from({ length: 4 }, (_, index) => ({
-    ...defaultCountry,
-    isoCode: ["GB-ENG", "GB-NIR", "GB-SCT", "GB-WLS"][index % 4],
-}));
-
 describe('CountryService', () => {
     beforeEach(() => {
         jest.clearAllMocks();
@@ -37,12 +24,12 @@ describe('CountryService', () => {
         (prisma.country.findUnique as jest.Mock).mockImplementation((args: {
             where: { isoCode: string }
         }) => {
-            const country = countryList.find((country) => country.isoCode === args.where.isoCode);
+            const country = defaultCountryList.find((country) => country.isoCode === args.where.isoCode);
             return Promise.resolve(country ?? null);
         });
 
         (prisma.country.create as jest.Mock).mockImplementation((args: { data: CountryType }) => {
-            const country = countryList.find((country) => country.isoCode === args.data.isoCode);
+            const country = defaultCountryList.find((country) => country.isoCode === args.data.isoCode);
 
             if (country) {
                 return Promise.reject(new Error('country already exists'));
@@ -57,7 +44,7 @@ describe('CountryService', () => {
             update: CountryType,
             create: CountryType,
         }) => {
-            const country = countryList.find((country) => country.isoCode === args.where.isoCode);
+            const country = defaultCountryList.find((country) => country.isoCode === args.where.isoCode);
 
             if (country) {
                 return Promise.resolve(args.update);
@@ -70,7 +57,7 @@ describe('CountryService', () => {
         (prisma.country.delete as jest.Mock).mockImplementation((args: {
             where: { isoCode: string }
         }) => {
-            const country = countryList.find((country) => country.isoCode === args.where.isoCode);
+            const country = defaultCountryList.find((country) => country.isoCode === args.where.isoCode);
             return Promise.resolve(country ?? null);
         });
     });
@@ -82,10 +69,7 @@ describe('CountryService', () => {
     describe('get', () => {
         it('should retrieve the correct country with isoCode "GB-SCO"', async () => {
             const result = await countryService.get("GB-SCT");
-            expect(result).toEqual({
-                ...defaultCountry,
-                isoCode: "GB-SCT",
-            } as CountryType);
+            expect(result).toEqual(defaultCountryList[2]);
         });
 
         it('should return null for isoCode "ZZZ"', async () => {
@@ -97,7 +81,7 @@ describe('CountryService', () => {
     describe('getAll', () => {
         beforeEach(() => {
             (prisma.country.findMany as jest.Mock).mockImplementation(() => {
-                return Promise.resolve(countryList);
+                return Promise.resolve(defaultCountryList);
             });
         });
 

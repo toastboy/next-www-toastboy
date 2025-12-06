@@ -1,7 +1,5 @@
 import { PlayerType } from 'prisma/generated/schemas/models/Player.schema';
 
-import { createMockPlayer } from '@/tests/mocks/factories/playerFactory';
-
 export const defaultPlayer: PlayerType = {
     id: 1,
     isAdmin: false,
@@ -20,6 +18,11 @@ export const invalidPlayer: PlayerType = {
     ...defaultPlayer,
     id: -1,
 };
+
+export const createMockPlayer = (overrides: Partial<PlayerType> = {}): PlayerType => ({
+    ...defaultPlayer,
+    ...overrides,
+});
 
 export const defaultPlayerList: PlayerType[] = Array.from({ length: 100 }, (_, index) =>
     createMockPlayer({

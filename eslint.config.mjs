@@ -1,6 +1,4 @@
 // For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
-import storybook from "eslint-plugin-storybook";
-
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -12,7 +10,6 @@ import next from "eslint-config-next";
 import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
 import nextTypescript from "eslint-config-next/typescript";
 import eslintComments from "eslint-plugin-eslint-comments";
-// Added plugins for improved linting coverage
 import importX from "eslint-plugin-import-x";
 import jest from "eslint-plugin-jest";
 import jestDom from "eslint-plugin-jest-dom";
@@ -23,6 +20,7 @@ import react from "eslint-plugin-react";
 import regexpPlugin from "eslint-plugin-regexp";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 import sonarjs from "eslint-plugin-sonarjs";
+import storybook from "eslint-plugin-storybook";
 import testingLibrary from "eslint-plugin-testing-library";
 import unusedImports from "eslint-plugin-unused-imports";
 import globals from "globals";
@@ -268,7 +266,16 @@ const config = [
         },
     },
     {
-        ignores: ["node_modules/**", ".next/**", "out/**", "build/**", "next-env.d.ts", "prisma/**"],
+        ignores: [
+            "node_modules/**",
+            ".next/**",
+            "out/**",
+            "build/**",
+            "next-env.d.ts",
+            "prisma/**",
+            ".storybook/**",
+            "src/stories/**",
+        ],
     },
     // Optional stricter unsafe usage warnings (keep lightweight to avoid noise).
     {
@@ -287,7 +294,7 @@ const config = [
             "@typescript-eslint/no-unsafe-assignment": "off",
         },
     },
-    ...storybook.configs["flat/recommended"]
+    ...storybook.configs["flat/recommended"],
 ];
 
 export default config;

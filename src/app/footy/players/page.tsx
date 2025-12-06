@@ -7,16 +7,16 @@ import PlayerTimeline from 'components/PlayerTimeline/PlayerTimeline';
 import PlayerWDLChart from 'components/PlayerWDLChart/PlayerWDLChart';
 import SendEmailForm from 'components/SendEmailForm/SendEmailForm';
 import { useCurrentGame, usePlayers } from 'lib/swr';
-import { PlayerData } from 'lib/types';
 import { PlayerType } from 'prisma/generated/schemas/models/Player.schema';
 import { useState } from 'react';
+import { PlayerDataType } from 'types';
 
 type PageProps = object;
 
 const Page: React.FC<PageProps> = () => {
     const players = usePlayers();
     const currentGame = useCurrentGame();
-    const [sortBy, setSortBy] = useState<keyof PlayerData | null>('name');
+    const [sortBy, setSortBy] = useState<keyof PlayerDataType | null>('name');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     const [filter, setFilter] = useState('');
     const [active, setActive] = useState(true);
@@ -24,7 +24,7 @@ const Page: React.FC<PageProps> = () => {
     const [selectedPlayers, setSelectedPlayers] = useState<PlayerType[]>([]);
     const [modalOpened, setModalOpened] = useState(false);
 
-    const handleSort = (key: keyof PlayerData) => {
+    const handleSort = (key: keyof PlayerDataType) => {
         if (sortBy === key) {
             setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
         } else {

@@ -1,5 +1,7 @@
-import { defaultOutcomeList } from '@/tests/mocks';
 import type { Meta, StoryObj } from '@storybook/nextjs';
+
+import { defaultPlayerFormList } from '@/tests/mocks';
+
 import PlayerForm from './PlayerForm';
 
 const meta = {
@@ -11,7 +13,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {
     args: {
-        form: defaultOutcomeList,
+        form: defaultPlayerFormList,
         games: 5,
     },
 };

@@ -1,9 +1,10 @@
-import { Button } from './Button';
 import './header.css';
 
-type User = {
+import { Button } from './Button';
+
+interface User {
   name: string;
-};
+}
 
 export interface HeaderProps {
   user?: User;

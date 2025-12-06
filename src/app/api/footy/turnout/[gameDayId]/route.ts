@@ -1,7 +1,7 @@
 import { handleGET } from 'lib/api';
-import { Turnout } from 'lib/types';
 import { NextRequest } from 'next/server';
 import outcomeService from 'services/Outcome';
+import { Turnout } from 'types';
 
 /**
  * Handles the GET request for fetching turnout data for a specific game day.

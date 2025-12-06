@@ -1,8 +1,8 @@
 import { Table, TableTbody, TableTd, TableTh, TableThead, TableTr } from '@mantine/core';
-import { TurnoutByYear } from 'lib/types';
+import { TurnoutByYearType } from 'types';
 
 interface Props {
-    turnout: TurnoutByYear[],
+    turnout: TurnoutByYearType[],
 }
 
 const Turnout: React.FC<Props> = ({ turnout }) => {

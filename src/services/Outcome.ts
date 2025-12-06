@@ -2,7 +2,6 @@ import 'server-only';
 
 import debug from 'debug';
 import prisma from 'lib/prisma';
-import { Turnout, TurnoutByYear, WDL } from 'lib/types';
 import {
     OutcomeUncheckedCreateInputObjectZodSchema,
     OutcomeUncheckedUpdateInputObjectZodSchema,
@@ -14,6 +13,11 @@ import {
     OutcomeType,
 } from 'prisma/generated/schemas/models/Outcome.schema';
 import gameDayService from 'services/GameDay';
+import {
+    Turnout,
+    TurnoutByYearType,
+    WDLType,
+} from 'types';
 import z from 'zod';
 
 /** Field definitions with extra validation */
@@ -235,14 +239,14 @@ export class OutcomeService {
      * @returns A promise that resolves to an array of `TurnoutByYear` objects.
      * @throws If there is an error fetching the outcomes.
      */
-    async getTurnoutByYear(): Promise<TurnoutByYear[]> {
+    async getTurnoutByYear(): Promise<TurnoutByYearType[]> {
         try {
             const turnout = await this.getTurnout();
             const gameYears = await gameDayService.getAllYears();
 
             return Promise.resolve(gameYears.map((gameYear) => {
                 const yearTurnout = turnout.filter((t) => gameYear === t.year);
-                const result: TurnoutByYear = {
+                const result: TurnoutByYearType = {
                     year: gameYear,
                     gameDays: yearTurnout.length,
                     gamesScheduled: yearTurnout.filter((t) => t.game || t.mailSent).length,
@@ -399,10 +403,10 @@ export class OutcomeService {
      *
      * @param {Object} params - The parameters for the query.
      * @param {number} [params.year] - The specific year to filter the game days. If not provided, all years are considered.
-     * @returns {Promise<WDL>} A promise that resolves to an object containing the counts of games won, drawn, and lost.
+     * @returns {Promise<WDLType>} A promise that resolves to an object containing the counts of games won, drawn, and lost.
      * @throws Will throw an error if there is an issue fetching the WDL counts.
      */
-    async getByBibs({ year }: { year?: number }): Promise<WDL> {
+    async getByBibs({ year }: { year?: number }): Promise<WDLType> {
         try {
             const gameDays = await gameDayService.getAll();
             const outcomes = await prisma.outcome.groupBy({

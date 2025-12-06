@@ -1,12 +1,17 @@
-import { createMockGameDay, createMockOutcome } from '@/tests/mocks';
-import { GameDayType } from 'prisma/generated/schemas/models/GameDay.schema';
-import { OutcomeType } from 'prisma/generated/schemas/models/Outcome.schema';
+import { PlayerFormType } from 'types';
 
-export const defaultPlayerFormList: (OutcomeType & { gameDay: GameDayType })[] =
-    Array.from({ length: 100 }, (_, index) =>
-        createMockOutcome({
-            playerId: index % 10 + 1,
-            gameDayId: Math.floor(index / 10 + 1),
-            gameDay: createMockGameDay(),
-        }),
-    );
+import { createMockGameDay } from '@/tests/mocks/data/gameDay';
+import { createMockOutcome } from '@/tests/mocks/data/outcome';
+
+export const defaultPlayerFormList: PlayerFormType[] =
+    Array.from({ length: 100 }, (_, index) => {
+        const gameDayId = Math.floor(index / 10 + 1);
+
+        return {
+            ...createMockOutcome({
+                playerId: index % 10 + 1,
+                gameDayId,
+            }),
+            gameDay: createMockGameDay({ id: gameDayId }),
+        };
+    });

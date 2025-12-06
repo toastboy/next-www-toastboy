@@ -1,7 +1,5 @@
 import { OutcomeType } from 'prisma/generated/schemas/models/Outcome.schema';
 
-import { createMockOutcome } from '@/tests/mocks/factories/outcomeFactory';
-
 export const defaultOutcome: OutcomeType = {
     id: 1,
     gameDayId: 1,
@@ -15,6 +13,11 @@ export const defaultOutcome: OutcomeType = {
     paid: false,
     goalie: false,
 };
+
+export const createMockOutcome = (overrides: Partial<OutcomeType> = {}): OutcomeType => ({
+    ...defaultOutcome,
+    ...overrides,
+});
 
 export const defaultOutcomeList: OutcomeType[] = Array.from({ length: 100 }, (_, index) =>
     createMockOutcome({

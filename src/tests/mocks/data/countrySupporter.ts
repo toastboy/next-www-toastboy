@@ -1,11 +1,14 @@
 import { CountrySupporterType } from "prisma/generated/schemas/models/CountrySupporter.schema";
 
-import { createMockCountrySupporter } from "@/tests/mocks/factories/countrySupporterFactory";
-
 export const defaultCountrySupporter: CountrySupporterType = {
     playerId: 12,
     countryISOCode: "GB",
 };
+
+export const createMockCountrySupporter = (overrides: Partial<CountrySupporterType> = {}): CountrySupporterType => ({
+    ...defaultCountrySupporter,
+    ...overrides,
+});
 
 export const defaultCountrySupporterList: CountrySupporterType[] = Array.from({ length: 100 }, (_, index) =>
     createMockCountrySupporter({

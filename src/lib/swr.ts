@@ -11,8 +11,12 @@ import { OutcomeType } from 'prisma/generated/schemas/models/Outcome.schema';
 import { PlayerType } from 'prisma/generated/schemas/models/Player.schema';
 import { PlayerRecordType } from 'prisma/generated/schemas/models/PlayerRecord.schema';
 import useSWR from 'swr';
-
-import { PlayerData, TurnoutByYear, WDL } from './types';
+import {
+    PlayerDataType,
+    PlayerFormType,
+    TurnoutByYearType,
+    WDLType,
+} from 'types';
 
 const fetcher = (input: URL | RequestInfo, init?: RequestInit) =>
     fetch(input, init).then((res) => res.json());
@@ -90,7 +94,7 @@ export function usePlayerArse(idOrLogin: string) {
 }
 
 export function usePlayerForm(idOrLogin: string, games: number) {
-    const { data, error } = useSWR<OutcomeType[], Error>(`/api/footy/player/${idOrLogin}/form/${games}`, fetcher);
+    const { data, error } = useSWR<PlayerFormType[], Error>(`/api/footy/player/${idOrLogin}/form/${games}`, fetcher);
     if (error) throw error;
     return data ?? null;
 }
@@ -108,7 +112,7 @@ export function usePlayerRecord(idOrLogin: string, year: number) {
 }
 
 export function usePlayers() {
-    const { data, error } = useSWR<PlayerData[], Error>(`/api/footy/players`, fetcher);
+    const { data, error } = useSWR<PlayerDataType[], Error>(`/api/footy/players`, fetcher);
     if (error) throw error;
     return data ?? null;
 }
@@ -151,13 +155,13 @@ export function useWinners(table: TableName, year?: number) {
 }
 
 export function useTurnoutByYear() {
-    const { data, error } = useSWR<TurnoutByYear[], Error>(`/api/footy/turnout/byyear`, fetcher);
+    const { data, error } = useSWR<TurnoutByYearType[], Error>(`/api/footy/turnout/byyear`, fetcher);
     if (error) throw error;
     return data ?? null;
 }
 
 export function useBibs(year?: number) {
-    const { data, error } = useSWR<WDL, Error>(`/api/footy/bibs?year=${String(year)}`, fetcher);
+    const { data, error } = useSWR<WDLType, Error>(`/api/footy/bibs?year=${String(year)}`, fetcher);
     if (error) throw error;
     return data ?? null;
 }

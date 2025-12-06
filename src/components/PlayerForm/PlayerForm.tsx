@@ -1,11 +1,10 @@
 import { ProgressRoot, ProgressSection } from '@mantine/core';
 import GameDayLink from 'components/GameDayLink/GameDayLink';
-import { GameDayType } from 'prisma/generated/schemas/models/GameDay.schema';
-import { OutcomeType } from 'prisma/generated/schemas/models/Outcome.schema';
 import { Key } from 'react';
+import { PlayerFormType } from 'types';
 
 export interface Props {
-    form: (OutcomeType & { gameDay: GameDayType })[],
+    form: PlayerFormType[],
     games: number,
 }
 
@@ -14,7 +13,7 @@ const PlayerForm: React.FC<Props> = ({ form, games }) => {
 
     return (
         <ProgressRoot size="xl">
-            {form.map(async (data, index: Key) => {
+            {form.map((data, index: Key) => {
                 return <ProgressSection
                     key={index}
                     value={100 / games}

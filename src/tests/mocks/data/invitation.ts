@@ -1,12 +1,15 @@
 import { InvitationType } from "prisma/generated/schemas/models/Invitation.schema";
 
-import { createMockInvitation } from "@/tests/mocks/factories/invitationFactory";
-
 export const defaultInvitation: InvitationType = {
     uuid: '{123e4567-e89b-12d3-a456-426614174000}',
     playerId: 1,
     gameDayId: 1,
 };
+
+export const createMockInvitation = (overrides: Partial<InvitationType> = {}): InvitationType => ({
+    ...defaultInvitation,
+    ...overrides,
+});
 
 export const buildUuidFromIndex = (i: number): string => {
     const hex = Math.abs(i).toString(16) || '0';

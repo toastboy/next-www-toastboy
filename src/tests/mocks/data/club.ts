@@ -1,7 +1,5 @@
 import { ClubType } from "prisma/generated/schemas/models/Club.schema";
 
-import { createMockClub } from "@/tests/mocks/factories/clubFactory";
-
 export const defaultClub: ClubType = {
     id: 1,
     soccerwayId: 1000,
@@ -14,6 +12,11 @@ export const invalidClub: ClubType = {
     ...defaultClub,
     id: -1,
 };
+
+export const createMockClub = (overrides: Partial<ClubType> = {}): ClubType => ({
+    ...defaultClub,
+    ...overrides,
+});
 
 export const defaultClubList: ClubType[] = Array.from({ length: 100 }, (_, index) =>
     createMockClub({

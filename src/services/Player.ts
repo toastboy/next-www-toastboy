@@ -7,12 +7,11 @@ import {
     PlayerUncheckedUpdateInputObjectZodSchema,
     PlayerWhereUniqueInputObjectSchema,
 } from 'prisma/generated/schemas';
-import { GameDayType } from 'prisma/generated/schemas/models/GameDay.schema';
-import { OutcomeType } from 'prisma/generated/schemas/models/Outcome.schema';
 import {
     PlayerSchema,
     PlayerType,
 } from 'prisma/generated/schemas/models/Player.schema';
+import { PlayerDataType, PlayerFormType } from 'types';
 import z from 'zod';
 
 /** Field definitions with extra validation */
@@ -157,7 +156,7 @@ class PlayerService {
      * Get all players with the game day number when they last played
      * @returns A promise that resolves to all players with their last game day number
      */
-    async getAll() {
+    async getAll(): Promise<PlayerDataType[]> {
         try {
             const players = await prisma.player.findMany({
                 include: {
@@ -241,8 +240,8 @@ class PlayerService {
     async getForm(
         playerId: number,
         gameDayId: number,
-        history: number
-    ): Promise<(OutcomeType & { gameDay: GameDayType })[]> {
+        history: number,
+    ): Promise<PlayerFormType[]> {
         try {
             return prisma.outcome.findMany({
                 where: {

@@ -1,8 +1,8 @@
 import { Progress, Tooltip } from '@mantine/core';
-import { PlayerData } from 'lib/types';
+import { PlayerDataType } from 'types';
 
 interface Props {
-    player: PlayerData;
+    player: PlayerDataType;
 }
 
 const PlayerWDLChart: React.FC<Props> = ({ player }) => {

@@ -1,9 +1,10 @@
 import { OutcomeType } from 'prisma/generated/schemas/models/Outcome.schema';
 import { PlayerType } from 'prisma/generated/schemas/models/Player.schema';
+import { PlayerFormType } from 'types';
 
 import prisma from '@/lib/prisma';
 import playerService from '@/services/Player';
-import { defaultPlayer, defaultPlayerList, invalidPlayer } from '@/tests/mocks';
+import { createMockGameDay, defaultPlayer, defaultPlayerList, invalidPlayer } from '@/tests/mocks';
 import { defaultOutcome } from '@/tests/mocks/data/outcome';
 
 jest.mock('lib/prisma', () => ({
@@ -385,21 +386,24 @@ describe('PlayerService', () => {
 
     describe('getForm', () => {
         it('should retrieve the correct player form for Player ID 1 and GameDay ID 5 or zero with history of 3', async () => {
-            const outcomeListMock: OutcomeType[] = [
+            const outcomeListMock: PlayerFormType[] = [
                 {
                     ...defaultOutcome,
                     playerId: 1,
                     gameDayId: 4,
+                    gameDay: createMockGameDay({ id: 4 }),
                 },
                 {
                     ...defaultOutcome,
                     playerId: 1,
                     gameDayId: 3,
+                    gameDay: createMockGameDay({ id: 3 }),
                 },
                 {
                     ...defaultOutcome,
                     playerId: 1,
                     gameDayId: 2,
+                    gameDay: createMockGameDay({ id: 2 }),
                 },
             ];
 

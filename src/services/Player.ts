@@ -7,6 +7,8 @@ import {
     PlayerUncheckedUpdateInputObjectZodSchema,
     PlayerWhereUniqueInputObjectSchema,
 } from 'prisma/generated/schemas';
+import { GameDayType } from 'prisma/generated/schemas/models/GameDay.schema';
+import { OutcomeType } from 'prisma/generated/schemas/models/Outcome.schema';
 import {
     PlayerSchema,
     PlayerType,
@@ -234,9 +236,13 @@ class PlayerService {
      * @param playerId - The ID of the player.
      * @param gameDayId - The ID of the game day to consider, or 0 for the latest.
      * @param history - The number of previous outcomes to consider.
-     * @returns A promise that resolves to an array of outcomes.
+     * @returns A promise that resolves to an array of outcomes with game days.
      */
-    async getForm(playerId: number, gameDayId: number, history: number) {
+    async getForm(
+        playerId: number,
+        gameDayId: number,
+        history: number
+    ): Promise<(OutcomeType & { gameDay: GameDayType })[]> {
         try {
             return prisma.outcome.findMany({
                 where: {
@@ -250,6 +256,9 @@ class PlayerService {
                     gameDayId: 'desc',
                 },
                 take: history,
+                include: {
+                    gameDay: true,
+                },
             });
         } catch (error) {
             log(`Error fetching outcomes: ${String(error)}`);

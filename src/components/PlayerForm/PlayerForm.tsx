@@ -1,34 +1,26 @@
-import gameDayService from '@/services/GameDay';
 import { ProgressRoot, ProgressSection } from '@mantine/core';
 import GameDayLink from 'components/GameDayLink/GameDayLink';
+import { GameDayType } from 'prisma/generated/schemas/models/GameDay.schema';
+import { OutcomeType } from 'prisma/generated/schemas/models/Outcome.schema';
 import { Key } from 'react';
-import playerService from 'services/Player';
 
 export interface Props {
-    playerId: number;
-    gameDayId: number;
-    games: number;
+    form: (OutcomeType & { gameDay: GameDayType })[],
+    games: number,
 }
 
-const PlayerForm: React.FC<Props> = async ({ playerId, gameDayId, games }) => {
-    const form = await playerService.getForm(playerId, gameDayId, games);
+const PlayerForm: React.FC<Props> = ({ form, games }) => {
     const colors = ['red', 'yellow', 'green'];
-
-    if (!form || form.length === 0) return <></>;
 
     return (
         <ProgressRoot size="xl">
-            {form.map(async (outcome, index: Key) => {
-                const gameDay = await gameDayService.get(outcome.gameDayId);
-
-                if (!gameDay) return <></>;
-
+            {form.map(async (data, index: Key) => {
                 return <ProgressSection
                     key={index}
                     value={100 / games}
-                    color={colors[outcome.points ?? 0]}
+                    color={colors[data.points ?? 0]}
                 >
-                    <GameDayLink gameDay={gameDay} />
+                    <GameDayLink gameDay={data.gameDay} />
                 </ProgressSection>;
             })}
         </ProgressRoot>

@@ -19,5 +19,6 @@ export const createMockGameDay = (overrides: Partial<GameDayType> = {}): GameDay
 export const defaultGameDayList: GameDayType[] = Array.from({ length: 100 }, (_, index) =>
     createMockGameDay({
         id: index + 1,
+        date: new Date(defaultGameDay.date.getTime() + index * 7 * 24 * 60 * 60 * 1000),
     }),
 );

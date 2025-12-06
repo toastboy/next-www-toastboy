@@ -113,6 +113,55 @@ export class GameDayService {
     }
 
     /**
+     * Retrieves the previous `GameDayType` based on the provided `gameDayId`.
+     *
+     * This method fetches the current game day using the given ID, then finds the most recent
+     * game day with a date earlier than the current one. If no such game day exists, it returns `null`.
+     *
+     * @param gameDayId - The ID of the current game day.
+     * @returns A promise that resolves to the previous `GameDayType` or `null` if not found.
+     * @throws Will throw an error if fetching fails or an unexpected error occurs.
+     */
+    async getPrevious(gameDayId: number): Promise<GameDayType | null> {
+        try {
+            const currentGameDay = await this.get(gameDayId);
+            if (!currentGameDay) return null;
+
+            const where = GameDayWhereInputObjectSchema.parse({
+                date: { lt: currentGameDay.date },
+            });
+
+            return prisma.gameDay.findFirst({ where, orderBy: { date: 'desc' } });
+        } catch (error) {
+            log(`Error fetching previous GameDayType: ${String(error)}`);
+            throw error;
+        }
+    }
+
+    /**
+     * Retrieves the next `GameDayType` that occurs after the specified game day.
+     *
+     * @param gameDayId - The unique identifier of the current game day.
+     * @returns A promise that resolves to the next `GameDayType` if found, or `null` if there is none.
+     * @throws Will throw an error if fetching the next game day fails.
+     */
+    async getNext(gameDayId: number): Promise<GameDayType | null> {
+        try {
+            const currentGameDay = await this.get(gameDayId);
+            if (!currentGameDay) return null;
+
+            const where = GameDayWhereInputObjectSchema.parse({
+                date: { gt: currentGameDay.date },
+            });
+
+            return prisma.gameDay.findFirst({ where, orderBy: { date: 'asc' } });
+        } catch (error) {
+            log(`Error fetching next GameDayType: ${String(error)}`);
+            throw error;
+        }
+    }
+
+    /**
      * Retrieves the number of games played in the given year, optionally
      * stopping at a given gameDay ID.
      * @param year - The year to filter by, or zero for all years.

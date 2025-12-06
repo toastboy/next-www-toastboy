@@ -8,7 +8,13 @@ export interface Props {
 }
 
 const PlayerForm: React.FC<Props> = ({ form }) => {
-    const colors = ['red', 'yellow', 'green'];
+    const colors = new Map<number | null | undefined, string>([
+        [null, 'gray'],
+        [undefined, 'gray'],
+        [0, 'red'],
+        [1, 'yellow'],
+        [3, 'green'],
+    ]);
 
     return (
         <ProgressRoot size="xl">
@@ -16,7 +22,7 @@ const PlayerForm: React.FC<Props> = ({ form }) => {
                 <ProgressSection
                     key={index}
                     value={100 / form.length}
-                    color={data.points == null ? 'gray' : colors[data.points]}
+                    color={colors.get(data.points)}
                 >
                     <GameDayLink gameDay={data.gameDay} />
                 </ProgressSection>

@@ -130,10 +130,7 @@ describe('GameDayService', () => {
     describe('get', () => {
         it('should retrieve the correct GameDay with id 6', async () => {
             const result = await gameDayService.get(6);
-            expect(result).toEqual({
-                ...defaultGameDay,
-                id: 6,
-            } as GameDayType);
+            expect(result).toEqual(defaultGameDayList[5]);
         });
 
         it('should return null for id 107', async () => {
@@ -187,10 +184,38 @@ describe('GameDayService', () => {
         });
     });
 
+    describe('getPrevious', () => {
+        it('should return the correct previous GameDay for gameDayId 6', async () => {
+            (prisma.gameDay.findFirst as jest.Mock).mockResolvedValue(defaultGameDayList[4]);
+            const result = await gameDayService.getPrevious(6);
+            expect(result).toEqual(defaultGameDayList[4]);
+        });
+
+        it('should return null for gameDayId 1', async () => {
+            (prisma.gameDay.findFirst as jest.Mock).mockResolvedValue(null);
+            const result = await gameDayService.getPrevious(1);
+            expect(result).toBeNull();
+        });
+    });
+
+    describe('getNext', () => {
+        it('should return the correct next GameDay for gameDayId 6', async () => {
+            (prisma.gameDay.findFirst as jest.Mock).mockResolvedValue(defaultGameDayList[6]);
+            const result = await gameDayService.getNext(6);
+            expect(result).toEqual(defaultGameDayList[6]);
+        });
+
+        it('should return null for the last gameDayId 100', async () => {
+            (prisma.gameDay.findFirst as jest.Mock).mockResolvedValue(null);
+            const result = await gameDayService.getNext(100);
+            expect(result).toBeNull();
+        });
+    });
+
     describe('getGamesPlayed', () => {
         it('should return the correct number of games played for year 2021', async () => {
             const result = await gameDayService.getGamesPlayed(2021);
-            expect(result).toBe(100);
+            expect(result).toBe(52);
         });
 
         it('should return the correct number of games played for all years', async () => {

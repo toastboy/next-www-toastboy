@@ -5,6 +5,8 @@ import GameDaySummary from "components/GameDaySummary/GameDaySummary";
 import { notFound, redirect } from "next/navigation";
 import gameDayService from "services/GameDay";
 
+import outcomeService from "@/services/Outcome";
+
 interface Props {
     params: Promise<{
         id: string,
@@ -26,12 +28,31 @@ const Page: React.FC<Props> = async (props) => {
 
     if (!gameDay) return <></>;
 
+    const prevGameDay = await gameDayService.getPrevious(gameDayId);
+    const nextGameDay = await gameDayService.getNext(gameDayId);
+
+    const teamA = await outcomeService.getTeamPlayersByGameDay(gameDay.id, 'A', 10);
+    const teamB = await outcomeService.getTeamPlayersByGameDay(gameDay.id, 'B', 10);
+
     return (
-        // TODO: Clean up the previous and next links
         <Flex w="100%" direction="column">
-            <Anchor href={`/footy/game/${gameDayId - 1}`} ta="left">Back</Anchor>
-            <Anchor href={`/footy/game/${gameDayId + 1}`} ta="right">Forward</Anchor>
-            <GameDaySummary gameDay={gameDay} />
+            {!!prevGameDay && <Anchor
+                href={`/footy/game/${prevGameDay?.id}`}
+                ta="left"
+            >
+                Previous
+            </Anchor>}
+            {!!nextGameDay && <Anchor
+                href={`/footy/game/${nextGameDay?.id}`}
+                ta="right"
+            >
+                Next
+            </Anchor>}
+            <GameDaySummary
+                gameDay={gameDay}
+                teamA={teamA}
+                teamB={teamB}
+            />
         </Flex>
     );
 };

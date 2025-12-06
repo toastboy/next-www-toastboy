@@ -1,17 +1,21 @@
 import { Flex, Paper } from '@mantine/core';
 import TeamPlayer from 'components/TeamPlayer/TeamPlayer';
-import { OutcomeType } from 'prisma/generated/schemas/models/Outcome.schema';
+
+import { TeamPlayerType } from '@/types';
 
 export interface Props {
-    team: OutcomeType[];
+    team: TeamPlayerType[];
 }
 
 const Team: React.FC<Props> = ({ team }) => {
     return (
         <Paper p="md" shadow="xl">
             <Flex direction="column" gap="md">
-                {team.map((o) => (
-                    <TeamPlayer key={o.playerId} playerId={o.playerId} gameDayId={o.gameDayId} goalie={o.goalie} />
+                {team.map((p) => (
+                    <TeamPlayer
+                        key={p.id}
+                        teamPlayer={p}
+                    />
                 ))}
             </Flex>
         </Paper>

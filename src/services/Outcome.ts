@@ -7,6 +7,8 @@ import {
     OutcomeUncheckedUpdateInputObjectZodSchema,
     OutcomeWhereUniqueInputObjectSchema,
     PlayerResponseSchema,
+    TeamName,
+    TeamNameSchema,
 } from 'prisma/generated/schemas';
 import {
     OutcomeSchema,
@@ -18,6 +20,7 @@ import {
     TurnoutByYearType,
     WDLType,
 } from 'types';
+import { TeamPlayerSchema, TeamPlayerType } from 'types/TeamPlayerType';
 import z from 'zod';
 
 /** Field definitions with extra validation */
@@ -298,6 +301,74 @@ export class OutcomeService {
             });
         } catch (error) {
             log(`Error fetching outcomes by GameDay: ${String(error)}`);
+            throw error;
+        }
+    }
+
+    /**
+     * Retrieves all players on a given team for a specific game day, including
+     * their outcome for that day and their recent form.
+     * @param gameDayId - The game day identifier.
+     * @param team - Team to fetch ('A' or 'B').
+     * @param formHistory - Number of previous games to include in each
+     * player's form graph (default 5).
+     * @returns A promise resolving to the enriched player records.
+     * @throws If there is an error fetching the data.
+     */
+    async getTeamPlayersByGameDay(
+        gameDayId: number,
+        team: TeamName,
+        formHistory = 5,
+    ): Promise<TeamPlayerType[]> {
+        try {
+            const validatedGameDayId = z.number().int().min(1).parse(gameDayId);
+            const validatedTeam = TeamNameSchema.parse(team);
+            const validatedHistory = z.number().int().min(0).parse(formHistory);
+
+            const outcomes = await prisma.outcome.findMany({
+                where: {
+                    gameDayId: validatedGameDayId,
+                    team: validatedTeam,
+                },
+                include: {
+                    player: {
+                        include: {
+                            outcomes: {
+                                where: {
+                                    gameDayId: {
+                                        lt: validatedGameDayId,
+                                    },
+                                    points: {
+                                        not: null,
+                                    },
+                                },
+                                orderBy: {
+                                    gameDayId: 'desc',
+                                },
+                                take: validatedHistory,
+                                include: {
+                                    gameDay: true,
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+
+            return outcomes.map(({ player, ...outcome }) => {
+                if (!player) {
+                    throw new Error(`Outcome ${outcome.id} is missing its player relation`);
+                }
+                const { outcomes: form = [], ...playerData } = player;
+
+                return TeamPlayerSchema.parse({
+                    ...playerData,
+                    outcome,
+                    form,
+                });
+            });
+        } catch (error) {
+            log(`Error fetching team players: ${String(error)}`);
             throw error;
         }
     }

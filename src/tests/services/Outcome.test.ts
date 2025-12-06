@@ -7,7 +7,13 @@ import {
 
 import prisma from '@/lib/prisma';
 import outcomeService from '@/services/Outcome';
-import { defaultOutcome, defaultOutcomeList } from '@/tests/mocks';
+import {
+    createMockOutcome,
+    createMockPlayer,
+    defaultOutcome,
+    defaultOutcomeList,
+    defaultPlayerFormList,
+} from '@/tests/mocks';
 
 jest.mock('lib/prisma', () => ({
     outcome: {
@@ -308,6 +314,78 @@ describe('OutcomeService', () => {
         it('should return an empty list when retrieving outcomes for GameDay id 101', async () => {
             const result = await outcomeService.getByGameDay(101);
             expect(result).toEqual([]);
+        });
+    });
+
+    describe('getTeamPlayersByGameDay', () => {
+        it('should return team players with outcomes and form history', async () => {
+            const formHistory = 2;
+            const playerOneForm = defaultPlayerFormList
+                .filter((form) => form.playerId === 1 && form.gameDayId < 10)
+                .slice(0, formHistory);
+            const mockOutcomesWithPlayers = [
+                {
+                    ...createMockOutcome({ id: 201, gameDayId: 10, playerId: 1, team: 'A' }),
+                    player: {
+                        ...createMockPlayer({ id: 1, login: 'player1', name: 'Player One' }),
+                        outcomes: playerOneForm,
+                    },
+                },
+                {
+                    ...createMockOutcome({ id: 202, gameDayId: 10, playerId: 2, team: 'A', goalie: true }),
+                    player: {
+                        ...createMockPlayer({ id: 2, login: 'player2', name: 'Player Two' }),
+                        outcomes: [],
+                    },
+                },
+            ];
+
+            (prisma.outcome.findMany as jest.Mock).mockResolvedValueOnce(mockOutcomesWithPlayers);
+
+            const result = await outcomeService.getTeamPlayersByGameDay(10, 'A', formHistory);
+
+            expect(prisma.outcome.findMany).toHaveBeenCalledWith({
+                where: {
+                    gameDayId: 10,
+                    team: 'A',
+                },
+                include: {
+                    player: {
+                        include: {
+                            outcomes: {
+                                where: {
+                                    gameDayId: {
+                                        lt: 10,
+                                    },
+                                    points: {
+                                        not: null,
+                                    },
+                                },
+                                orderBy: {
+                                    gameDayId: 'desc',
+                                },
+                                take: formHistory,
+                                include: {
+                                    gameDay: true,
+                                },
+                            },
+                        },
+                    },
+                },
+            });
+            expect(result).toHaveLength(2);
+            expect(result[0]).toMatchObject({
+                id: 1,
+                login: 'player1',
+                outcome: {
+                    playerId: 1,
+                    gameDayId: 10,
+                    team: 'A',
+                },
+                form: playerOneForm,
+            });
+            expect(result[1].form).toEqual([]);
+            expect(result[1].outcome.goalie).toBe(true);
         });
     });
 

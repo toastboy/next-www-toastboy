@@ -21,8 +21,9 @@ describe('API tests using HTTP', () => {
     it('should return JSON response for a valid player with no logged in user', async () => {
         (getUserRole as jest.Mock).mockResolvedValue('none');
         (playerService.getForm as jest.Mock).mockResolvedValue(defaultPlayerFormList);
-        const expected = defaultPlayerFormList.map(({ gameDay, ...record }) => ({
+        const expected = defaultPlayerFormList.map((record) => ({
             ...record,
+            gameDay: undefined,
             comment: undefined,
         }));
 
@@ -37,8 +38,9 @@ describe('API tests using HTTP', () => {
     it('should return JSON response for a valid player with a user logged in', async () => {
         (getUserRole as jest.Mock).mockResolvedValue('user');
         (playerService.getForm as jest.Mock).mockResolvedValue(defaultPlayerFormList);
-        const expected = defaultPlayerFormList.map(({ gameDay, ...record }) => ({
+        const expected = defaultPlayerFormList.map((record) => ({
             ...record,
+            gameDay: undefined,
             comment: undefined,
         }));
 

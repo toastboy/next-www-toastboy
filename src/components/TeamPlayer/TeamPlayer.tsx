@@ -3,18 +3,18 @@ import PlayerForm from 'components/PlayerForm/PlayerForm';
 import PlayerLink from 'components/PlayerLink/PlayerLink';
 import PlayerMugshot from 'components/PlayerMugshot/PlayerMugshot';
 
+import { TeamPlayerType } from '@/types';
+
 export interface Props {
-    playerId: number;
-    gameDayId: number;
-    goalie: boolean | null | undefined;
+    teamPlayer: TeamPlayerType;
 }
 
-const TeamPlayer: React.FC<Props> = ({ playerId, gameDayId, goalie }) => (
+const TeamPlayer: React.FC<Props> = ({ teamPlayer }) => (
     <Flex direction="column" gap="md">
-        <PlayerLink playerId={playerId} year={0} />
-        <PlayerMugshot playerId={playerId} />
-        <PlayerForm playerId={playerId} gameDayId={gameDayId} games={10} />
-        <Text>{goalie ? "GOALIE!" : ""}</Text>
+        <PlayerLink playerId={teamPlayer.id} year={0} />
+        <PlayerMugshot playerId={teamPlayer.id} />
+        <PlayerForm form={teamPlayer.form} />
+        <Text>{teamPlayer.outcome.goalie ? "GOALIE!" : ""}</Text>
     </Flex>
 );
 

@@ -1,12 +1,14 @@
 "use client";
 
 import { Box, ScrollArea } from '@mantine/core';
-import NavbarLinksGroup from 'components/NavbarLinksGroup/NavbarLinksGroup';
 import UserButton from 'components/UserButton/UserButton';
 
-import classes from './NavbarNested.module.css';
+import NavBarLinksGroup from '../NavBarLinksGroup/NavBarLinksGroup';
+import classes from './NavBarNested.module.css';
 
-const NavbarNested: React.FC = () => {
+export type Props = unknown;
+
+const NavBarNested: React.FC<Props> = () => {
     const links = [
         {
             "label": "Games",
@@ -101,7 +103,7 @@ const NavbarNested: React.FC = () => {
 
             <ScrollArea className={classes.links} data-testid="navbar-links">
                 <Box className={classes.linksInner}>
-                    {links.map((item) => <NavbarLinksGroup {...item} key={item.label} />)}
+                    {links.map((item) => <NavBarLinksGroup {...item} key={item.label} />)}
                 </Box>
             </ScrollArea>
 
@@ -112,4 +114,4 @@ const NavbarNested: React.FC = () => {
     );
 };
 
-export default NavbarNested;
+export default NavBarNested;

@@ -9,7 +9,9 @@ import { useRouter } from 'next/navigation';
 
 import classes from './UserButton.module.css';
 
-const UserButton: React.FC = () => {
+export type Props = unknown;
+
+const UserButton: React.FC<Props> = () => {
   const user = authClient.getUser();
   const router = useRouter();
 

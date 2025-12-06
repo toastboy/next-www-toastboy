@@ -1,7 +1,7 @@
 import { Props } from '../PlayerMugshot';
 
-const PlayerMugshot = ({ playerId }: Props) => (
-    <div>PlayerMugshot (id: {playerId})</div>
+const PlayerMugshot = (props: Props) => (
+    <div>PlayerMugshot: {JSON.stringify(props)}</div>
 );
 PlayerMugshot.displayName = 'PlayerMugshot';
 export default PlayerMugshot;

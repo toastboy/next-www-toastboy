@@ -1,4 +1,4 @@
-import { Box, Container, Text, Title } from '@mantine/core';
+import { Box, Container, Title } from '@mantine/core';
 import PlayerArse from 'components/PlayerArse/PlayerArse';
 import PlayerBorn from 'components/PlayerBorn/PlayerBorn';
 import PlayerClubs from 'components/PlayerClubs/PlayerClubs';
@@ -9,16 +9,19 @@ import PlayerLastPlayed from 'components/PlayerLastPlayed/PlayerLastPlayed';
 import PlayerMugshot from 'components/PlayerMugshot/PlayerMugshot';
 import PlayerTrophies from 'components/PlayerTrophies/PlayerTrophies';
 import { PlayerType } from 'prisma/generated/schemas/models/Player.schema';
-import { Suspense } from 'react';
+
+import { PlayerFormType } from '@/types';
 
 import classes from './PlayerProfile.module.css';
 
 export interface Props {
     player: PlayerType;
     year: number;
+    form: PlayerFormType[];
+    lastPlayed: PlayerFormType | null;
 }
 
-const PlayerProfile: React.FC<Props> = ({ player, year }) => {
+const PlayerProfile: React.FC<Props> = ({ player, year, form, lastPlayed }) => {
     return (
         <Container>
             <Title order={1}>{player.name}</Title>
@@ -31,11 +34,9 @@ const PlayerProfile: React.FC<Props> = ({ player, year }) => {
                     <PlayerCountries playerId={player.id} />
                 </Box>
             </Box>
-            <Suspense fallback={<Text>Loading...</Text>}>
-                <PlayerLastPlayed playerId={player.id} />
-            </Suspense>
+            <PlayerLastPlayed lastPlayed={lastPlayed} />
             <PlayerArse playerId={player.id} />
-            <PlayerForm playerId={player.id} gameDayId={0} games={5} />
+            <PlayerForm form={form} />
             <PlayerHistory playerId={player.id} year={year} />
             <PlayerBorn playerId={player.id} />
             <PlayerTrophies playerId={player.id} year={year} />

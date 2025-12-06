@@ -1,7 +1,7 @@
 import { Props } from '../PlayerLink';
 
-const PlayerLink = ({ playerId }: Props) => (
-    <div>PlayerLink (playerId: {playerId})</div>
+const PlayerLink = (props: Props) => (
+    <div>PlayerLink: {JSON.stringify(props)}</div>
 );
 PlayerLink.displayName = 'PlayerLink';
 export default PlayerLink;

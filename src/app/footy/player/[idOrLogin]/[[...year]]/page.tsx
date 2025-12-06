@@ -24,7 +24,7 @@ export async function generateMetadata(props: Props) {
 
 const Page: React.FC<Props> = async props => {
     const { idOrLogin, year } = await props.params;
-    const yearNum = year ? parseInt(year[0]) : 0; // Zero or undefined means all-time
+    const yearNum = year ? parseInt(year[0]) : 0;
     const player = await playerService.getByIdOrLogin(idOrLogin);
 
     if (!player) return notFound();
@@ -33,8 +33,18 @@ const Page: React.FC<Props> = async props => {
         redirect(`/footy/player/${player.id}`);
     }
 
+    const lastPlayed = await playerService.getLastPlayed(player.id, yearNum);
+    const gameDayId = lastPlayed ? lastPlayed.gameDayId : 0;
+    const form = await playerService.getForm(player.id, gameDayId, yearNum);
+
     return (
-        <PlayerProfile player={player} key={player.id} year={yearNum} />
+        <PlayerProfile
+            key={player.id}
+            player={player}
+            year={yearNum}
+            form={form}
+            lastPlayed={lastPlayed}
+        />
     );
 };
 

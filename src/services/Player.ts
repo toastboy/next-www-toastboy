@@ -266,11 +266,14 @@ class PlayerService {
     }
 
     /**
-     * Retrieves the last played game outcome for a given player.
-     * @param playerId - The ID of the player.
-     * @returns A promise that resolves to an array of outcomes or null.
+     * Retrieves the most recent outcome for a player, optionally filtered by year.
+     *
+     * @param playerId - The unique identifier of the player.
+     * @param year - An optional year to limit the search range.
+     * @returns A promise that resolves to the player's latest outcome including its game day, or `null` if none is found.
+     * @throws Will propagate any errors encountered during the retrieval process.
      */
-    async getLastPlayed(playerId: number) {
+    async getLastPlayed(playerId: number, year?: number): Promise<PlayerFormType | null> {
         try {
             return prisma.outcome.findFirst({
                 where: {
@@ -278,9 +281,18 @@ class PlayerService {
                     points: {
                         not: null,
                     },
+                    gameDay: {
+                        date: {
+                            gte: year ? new Date(year, 0, 1) : undefined,
+                            lt: year ? new Date(year + 1, 0, 1) : undefined,
+                        },
+                    },
                 },
                 orderBy: {
                     gameDayId: 'desc',
+                },
+                include: {
+                    gameDay: true,
                 },
                 take: 1,
             });

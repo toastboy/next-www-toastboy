@@ -5,7 +5,9 @@ import { notifications } from '@mantine/notifications';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { authExport } from 'actions/auth-export';
 
-const AdminUpdatePlayerRecords: React.FC = () => {
+export type Props = unknown;
+
+const AdminExportAuth: React.FC<Props> = () => {
     return (
         <>
             <Container>
@@ -52,4 +54,4 @@ const AdminUpdatePlayerRecords: React.FC = () => {
     );
 };
 
-export default AdminUpdatePlayerRecords;
+export default AdminExportAuth;

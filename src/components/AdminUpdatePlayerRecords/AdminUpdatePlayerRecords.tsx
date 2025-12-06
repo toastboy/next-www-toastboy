@@ -6,7 +6,9 @@ import { updatePlayerRecords } from 'actions/updatePlayerRecords';
 import { useRecordsProgress } from 'lib/swr';
 import { useEffect } from 'react';
 
-const AdminUpdatePlayerRecords: React.FC = () => {
+export type Props = unknown;
+
+const AdminUpdatePlayerRecords: React.FC<Props> = () => {
     const { data, mutate } = useRecordsProgress();
 
     useEffect(() => {

@@ -16,6 +16,7 @@
     "esModuleInterop": false,
     "allowSyntheticDefaultImports": true,
     "noEmit": true,
+    "target": "es2022",
     "paths": {
       "@/*": [
         "./*"

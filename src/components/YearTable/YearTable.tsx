@@ -4,7 +4,7 @@ import config from 'lib/config';
 import { getYearName } from 'lib/utils';
 import { TableName, TableNameSchema } from 'prisma/generated/schemas';
 
-interface Props {
+export interface Props {
     table: TableName;
     year: number;
 }

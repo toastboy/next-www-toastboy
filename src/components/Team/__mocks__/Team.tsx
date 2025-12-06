@@ -1,11 +1,7 @@
 import { Props } from '../Team';
 
-const Team = ({ team = [] }: Props) => (
-    <>
-        {team.map((o) => (
-            <div key={o.playerId}>TeamPlayer (Player: {o.playerId}, goalie: {o.goalie ? "true" : "false"})</div>
-        ))}
-    </>
+const Team = (props: Props) => (
+    <div>Team: {JSON.stringify(props)}</div>
 );
 Team.displayName = 'Team';
 export default Team;

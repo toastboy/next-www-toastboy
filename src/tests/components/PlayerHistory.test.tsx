@@ -33,13 +33,13 @@ describe('PlayerHistory', () => {
 
         expect(playerService.getYearsActive).toHaveBeenCalledWith(42);
         expect(
-            screen.getByText(/YearSelector\s*\(activeYear:\s*2023,\s*validYears:\s*2022[\s,]*2023[\s,]*0\)/),
+            screen.getByText(/YearSelector:.*"activeYear":2023.*"validYears":\[2022,2023,0\]/s),
         ).toBeInTheDocument();
         expect(
-            screen.getByText(/PlayerResults\s*\(playerId:\s*42,\s*year:\s*2023\)/),
+            screen.getByText(/PlayerResults:.*"playerId":42.*"year":2023/s),
         ).toBeInTheDocument();
         expect(
-            screen.getByText(/PlayerPositions\s*\(playerId:\s*42,\s*year:\s*2023\)/),
+            screen.getByText(/PlayerPositions:.*"playerId":42.*"year":2023/s),
         ).toBeInTheDocument();
     });
 
@@ -53,13 +53,13 @@ describe('PlayerHistory', () => {
 
         expect(playerService.getYearsActive).toHaveBeenCalledWith(7);
         expect(
-            screen.getByText(/YearSelector\s*\(activeYear:\s*2024,\s*validYears:\s*\)/),
+            screen.getByText(/YearSelector:.*"activeYear":2024.*"validYears":\[\]/s),
         ).toBeInTheDocument();
         expect(
-            screen.getByText(/PlayerResults\s*\(playerId:\s*7,\s*year:\s*2024\)/),
+            screen.getByText(/PlayerResults:.*"playerId":7.*"year":2024/s),
         ).toBeInTheDocument();
         expect(
-            screen.getByText(/PlayerPositions\s*\(playerId:\s*7,\s*year:\s*2024\)/),
+            screen.getByText(/PlayerPositions:.*"playerId":7.*"year":2024/s),
         ).toBeInTheDocument();
     });
 });

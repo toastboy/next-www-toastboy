@@ -3,7 +3,7 @@ import Team from 'components/Team/Team';
 import { GameDayType } from 'prisma/generated/schemas/models/GameDay.schema';
 import outcomeService from 'services/Outcome';
 
-interface Props {
+export interface Props {
     gameDay: GameDayType;
 }
 

@@ -11,11 +11,11 @@ const GameDayResponseSchema = GameDaySchema.extend({
     mailSent: z.coerce.date().nullish(),
 });
 
-interface GameCalendarProps {
+export interface Props {
     date: Date;
 }
 
-const GameCalendar: React.FC<GameCalendarProps> = ({ date }) => {
+const GameCalendar: React.FC<Props> = ({ date }) => {
     const [gameDays, setGameDays] = useState<GameDayType[]>([]);
 
     const getGameDay = (date: Date): GameDayType | null => {

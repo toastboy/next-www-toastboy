@@ -1,7 +1,7 @@
 import { Props } from '../PlayerCountries';
 
-const PlayerCountries = ({ playerId }: Props) => (
-    <div>PlayerCountries (playerId: {playerId})</div>
+const PlayerCountries = (props: Props) => (
+    <div>PlayerCountries: {JSON.stringify(props)}</div>
 );
 PlayerCountries.displayName = 'PlayerCountries';
 export default PlayerCountries;

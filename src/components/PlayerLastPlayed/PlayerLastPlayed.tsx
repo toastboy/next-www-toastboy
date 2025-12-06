@@ -1,19 +1,18 @@
 import { Text } from '@mantine/core';
 import GameDayLink from 'components/GameDayLink/GameDayLink';
-import playerService from 'services/Player';
+
+import { PlayerFormType } from '@/types';
 
 export interface Props {
-    playerId: number;
+    lastPlayed: PlayerFormType | null;
 }
 
-const PlayerLastPlayed: React.FC<Props> = async ({ playerId }) => {
-    const lastPlayed = await playerService.getLastPlayed(playerId);
-
-    if (!lastPlayed) return <></>;
+const PlayerLastPlayed: React.FC<Props> = ({ lastPlayed }) => {
+    if (!lastPlayed) return <Text component="span">Last played: never</Text>;
 
     return (
         <Text component="span">
-            Last played: <GameDayLink gameDayId={lastPlayed.gameDayId} />
+            Last played: <GameDayLink gameDay={lastPlayed.gameDay} />
         </Text>
     );
 };

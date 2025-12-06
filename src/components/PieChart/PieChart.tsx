@@ -3,13 +3,13 @@
 import * as d3 from "d3";
 import { useEffect, useRef } from "react";
 
-interface PieChartProps {
+export interface Props {
     data: { label: string; value: number }[];
     width?: number;
     height?: number;
 }
 
-const PieChart = ({ data, width = 300, height = 300 }: PieChartProps) => {
+const PieChart = ({ data, width = 300, height = 300 }: Props) => {
     const chartRef = useRef<SVGSVGElement>(null);
 
     useEffect(() => {

@@ -1,7 +1,7 @@
 import { ProgressRoot, ProgressSection } from '@mantine/core';
 import { PlayerDataType } from 'types';
 
-interface Props {
+export interface Props {
     player: PlayerDataType;
     currentGameId: number;
 }

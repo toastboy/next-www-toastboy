@@ -1,7 +1,7 @@
 import { Props } from '../PlayerClubs';
 
-const PlayerClubs = ({ playerId }: Props) => (
-    <div>PlayerClubs (playerId: {playerId})</div>
+const PlayerClubs = (props: Props) => (
+    <div>PlayerClubs: {JSON.stringify(props)}</div>
 );
 PlayerClubs.displayName = 'PlayerClubs';
 export default PlayerClubs;

@@ -1,7 +1,7 @@
 import { Image } from '@mantine/core';
 import clubService from 'services/Club';
 
-interface Props {
+export interface Props {
     clubId: number,
 }
 

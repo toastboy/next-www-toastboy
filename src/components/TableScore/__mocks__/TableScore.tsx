@@ -1,7 +1,7 @@
-import { Props } from "../TableScore";
+import { Props } from '../TableScore';
 
-const TableScore = ({ table, playerRecord }: Props) => (
-    <div>TableScore (table: {table}, playerRecord.playerId: {playerRecord.playerId})</div>
+const TableScore = (props: Props) => (
+    <div>TableScore: {JSON.stringify(props)}</div>
 );
 TableScore.displayName = 'TableScore';
 export default TableScore;

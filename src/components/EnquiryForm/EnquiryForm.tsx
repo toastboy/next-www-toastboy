@@ -1,6 +1,8 @@
 import NYI from 'components/NYI/NYI';
 
-const EnquiryForm: React.FC = () => {
+export type Props = unknown;
+
+const EnquiryForm: React.FC<Props> = () => {
     return (
         <NYI />
     );

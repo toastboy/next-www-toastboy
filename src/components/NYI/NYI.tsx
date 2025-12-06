@@ -1,6 +1,8 @@
 import { Text } from '@mantine/core';
 
-const NYI: React.FC = () => {
+export type Props = unknown;
+
+const NYI: React.FC<Props> = () => {
     return (
         <Text data-testid="not-implemented">(Not yet implemented)</Text>
     );

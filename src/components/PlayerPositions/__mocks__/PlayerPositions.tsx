@@ -1,7 +1,7 @@
 import { Props } from '../PlayerPositions';
 
-const PlayerPositions = ({ playerId, year }: Props) => (
-    <div>PlayerPositions (playerId: {playerId}, year: {year})</div>
+const PlayerPositions = (props: Props) => (
+    <div>PlayerPositions: {JSON.stringify(props)}</div>
 );
 PlayerPositions.displayName = 'PlayerPositions';
 export default PlayerPositions;

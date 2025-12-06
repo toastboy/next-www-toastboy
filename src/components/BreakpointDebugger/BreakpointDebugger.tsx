@@ -6,7 +6,9 @@ import { useEffect, useMemo } from "react";
 
 import classes from './BreakpointDebugger.module.css';
 
-const BreakpointDebugger = () => {
+export type Props = unknown;
+
+const BreakpointDebugger: React.FC<Props> = () => {
     const theme = useMantineTheme();
 
     // Define media queries for each breakpoint

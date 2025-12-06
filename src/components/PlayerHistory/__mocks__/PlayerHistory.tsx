@@ -1,7 +1,7 @@
 import { Props } from '../PlayerHistory';
 
-const PlayerHistory = ({ playerId, year }: Props) => (
-    <div>PlayerHistory (playerId: {playerId}, year: {year})</div>
+const PlayerHistory = (props: Props) => (
+    <div>PlayerHistory: {JSON.stringify(props)}</div>
 );
 PlayerHistory.displayName = 'PlayerHistory';
 export default PlayerHistory;

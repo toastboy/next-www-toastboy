@@ -1,7 +1,7 @@
 import { Props } from '../PlayerLastPlayed';
 
-const PlayerLastPlayed = ({ playerId }: Props) => (
-    <div>PlayerLastPlayed (playerId: {playerId})</div>
+const PlayerLastPlayed = (props: Props) => (
+    <div>PlayerLastPlayed: {JSON.stringify(props)}</div>
 );
 PlayerLastPlayed.displayName = 'PlayerLastPlayed';
 export default PlayerLastPlayed;

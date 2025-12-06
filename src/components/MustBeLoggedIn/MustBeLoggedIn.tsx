@@ -5,7 +5,7 @@ import { authClient } from 'lib/authClient';
 import config from 'lib/config';
 import { ReactNode, Suspense, useEffect, useState } from 'react';
 
-interface Props {
+export interface Props {
     children: ReactNode;
     admin?: boolean;
     showSignIn?: boolean;

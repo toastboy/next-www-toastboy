@@ -1,7 +1,7 @@
 import { Props } from '../CountryFlag';
 
-const CountryFlag = ({ countryISOCode }: Props) => (
-    <div>CountryFlag (countryISOCode: {countryISOCode})</div>
+const CountryFlag = (props: Props) => (
+    <div>CountryFlag: {JSON.stringify(props)}</div>
 );
 CountryFlag.displayName = 'CountryFlag';
 export default CountryFlag;

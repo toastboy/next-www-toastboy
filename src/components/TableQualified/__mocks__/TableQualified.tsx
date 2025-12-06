@@ -1,7 +1,7 @@
-import { Props } from "../TableQualified";
+import { Props } from '../TableQualified';
 
-const TableQualified = ({ table, year, qualified }: Props) => (
-    <div>TableQualified (table: {table}, year: {year}, qualified: {qualified ? "true" : "false"})</div>
+const TableQualified = (props: Props) => (
+    <div>TableQualified: {JSON.stringify(props)}</div>
 );
 TableQualified.displayName = 'TableQualified';
 export default TableQualified;

@@ -5,23 +5,22 @@ import { PlayerFormType } from 'types';
 
 export interface Props {
     form: PlayerFormType[],
-    games: number,
 }
 
-const PlayerForm: React.FC<Props> = ({ form, games }) => {
+const PlayerForm: React.FC<Props> = ({ form }) => {
     const colors = ['red', 'yellow', 'green'];
 
     return (
         <ProgressRoot size="xl">
-            {form.map((data, index: Key) => {
-                return <ProgressSection
+            {form.map((data, index: Key) => (
+                <ProgressSection
                     key={index}
-                    value={100 / games}
-                    color={colors[data.points ?? 0]}
+                    value={100 / form.length}
+                    color={data.points == null ? 'gray' : colors[data.points]}
                 >
                     <GameDayLink gameDay={data.gameDay} />
-                </ProgressSection>;
-            })}
+                </ProgressSection>
+            ))}
         </ProgressRoot>
     );
 };

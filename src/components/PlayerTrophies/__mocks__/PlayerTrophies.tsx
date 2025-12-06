@@ -1,7 +1,7 @@
 import { Props } from '../PlayerTrophies';
 
-const PlayerTrophies = ({ playerId, year }: Props) => (
-    <div>PlayerTrophies (playerId: {playerId}, year: {year})</div>
+const PlayerTrophies = (props: Props) => (
+    <div>PlayerTrophies: {JSON.stringify(props)}</div>
 );
 PlayerTrophies.displayName = 'PlayerTrophies';
 export default PlayerTrophies;

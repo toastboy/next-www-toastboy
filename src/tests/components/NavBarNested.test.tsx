@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
-import NavbarNested from '@/components/NavBarNested/NavBarNested';
+import NavBarNested from '@/components/NavBarNested/NavBarNested';
 
 import { Wrapper } from "./lib/common";
 
@@ -10,19 +10,19 @@ jest.mock('components/UserButton/UserButton', () => {
     return MockUserButton;
 });
 
-describe('NavbarNested', () => {
+describe('NavBarNested', () => {
     it('renders navbar header', () => {
-        render(<Wrapper><NavbarNested /></Wrapper>);
+        render(<Wrapper><NavBarNested /></Wrapper>);
         expect(screen.getByTestId('navbar-header')).toBeInTheDocument();
     });
 
     it('renders navbar links', () => {
-        render(<Wrapper><NavbarNested /></Wrapper>);
+        render(<Wrapper><NavBarNested /></Wrapper>);
         expect(screen.getByTestId('navbar-links')).toBeInTheDocument();
     });
 
     it('renders navbar footer', () => {
-        render(<Wrapper><NavbarNested /></Wrapper>);
+        render(<Wrapper><NavBarNested /></Wrapper>);
         expect(screen.getByTestId('navbar-footer')).toBeInTheDocument();
     });
 });

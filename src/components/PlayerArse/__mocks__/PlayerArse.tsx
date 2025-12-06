@@ -1,7 +1,7 @@
 import { Props } from '../PlayerArse';
 
-const PlayerArse = ({ playerId }: Props) => (
-    <div>PlayerArse (playerId: {playerId})</div>
+const PlayerArse = (props: Props) => (
+    <div>PlayerArse: {JSON.stringify(props)}</div>
 );
 PlayerArse.displayName = 'PlayerArse';
 export default PlayerArse;

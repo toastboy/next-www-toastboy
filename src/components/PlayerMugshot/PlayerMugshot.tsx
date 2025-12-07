@@ -1,15 +1,11 @@
 import { Anchor, Image } from '@mantine/core';
-import playerService from 'services/Player';
+import { PlayerType } from 'prisma/generated/schemas/models/Player.schema';
 
 export interface Props {
-    playerId: number;
+    player: PlayerType,
 }
 
-const PlayerMugshot: React.FC<Props> = async ({ playerId }) => {
-    const player = await playerService.getById(playerId);
-
-    if (!player) return <></>;
-
+const PlayerMugshot: React.FC<Props> = ({ player }) => {
     return (
         <Anchor href={`/footy/player/${player.id}`}>
             <Image

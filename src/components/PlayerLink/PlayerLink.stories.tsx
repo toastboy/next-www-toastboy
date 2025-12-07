@@ -1,23 +1,24 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
-import { defaultGameDay } from '@/tests/mocks';
+import { defaultPlayer } from '@/tests/mocks';
 
-import GameDayLink from './GameDayLink';
+import PlayerLink from './PlayerLink';
 
 const meta = {
-    title: 'GameDay/GameDayLink',
-    component: GameDayLink,
+    title: 'Player/PlayerLink',
+    component: PlayerLink,
     parameters: {
         layout: 'centered',
     },
     tags: ['autodocs'],
-} satisfies Meta<typeof GameDayLink>;
+} satisfies Meta<typeof PlayerLink>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {
     args: {
-        gameDay: defaultGameDay,
+        player: defaultPlayer,
+        year: 2023,
     },
 };

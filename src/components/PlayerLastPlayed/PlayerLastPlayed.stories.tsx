@@ -2,22 +2,22 @@ import type { Meta, StoryObj } from '@storybook/nextjs';
 
 import { defaultPlayerFormList } from '@/tests/mocks';
 
-import PlayerForm from './PlayerForm';
+import PlayerLastPlayed from './PlayerLastPlayed';
 
 const meta = {
-    title: 'Player/PlayerForm',
-    component: PlayerForm,
+    title: 'Player/PlayerLastPlayed',
+    component: PlayerLastPlayed,
     parameters: {
         layout: 'centered',
     },
     tags: ['autodocs'],
-} satisfies Meta<typeof PlayerForm>;
+} satisfies Meta<typeof PlayerLastPlayed>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {
     args: {
-        form: defaultPlayerFormList,
+        lastPlayed: defaultPlayerFormList[0],
     },
 };

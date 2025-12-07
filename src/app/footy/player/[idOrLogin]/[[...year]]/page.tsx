@@ -3,6 +3,7 @@ import { notFound, redirect } from 'next/navigation';
 import playerService from 'services/Player';
 
 import clubSupporterService from '@/services/ClubSupporter';
+import countrySupporterService from '@/services/CountrySupporter';
 
 interface Props {
     params: Promise<{
@@ -39,6 +40,7 @@ const Page: React.FC<Props> = async props => {
     const gameDayId = lastPlayed ? lastPlayed.gameDayId : 0;
     const form = await playerService.getForm(player.id, gameDayId, yearNum);
     const clubs = await clubSupporterService.getByPlayer(player.id);
+    const countries = await countrySupporterService.getByPlayer(player.id);
 
     return (
         <PlayerProfile
@@ -48,6 +50,7 @@ const Page: React.FC<Props> = async props => {
             form={form}
             lastPlayed={lastPlayed}
             clubs={clubs}
+            countries={countries}
         />
     );
 };

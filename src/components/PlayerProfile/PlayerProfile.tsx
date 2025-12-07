@@ -10,7 +10,7 @@ import PlayerMugshot from 'components/PlayerMugshot/PlayerMugshot';
 import PlayerTrophies from 'components/PlayerTrophies/PlayerTrophies';
 import { PlayerType } from 'prisma/generated/schemas/models/Player.schema';
 
-import { ClubSupporterDataType, PlayerFormType } from '@/types';
+import { ClubSupporterDataType, CountrySupporterDataType, PlayerFormType } from '@/types';
 
 import classes from './PlayerProfile.module.css';
 
@@ -20,6 +20,7 @@ export interface Props {
     form: PlayerFormType[];
     lastPlayed: PlayerFormType | null;
     clubs: ClubSupporterDataType[];
+    countries: CountrySupporterDataType[];
 }
 
 const PlayerProfile: React.FC<Props> = ({
@@ -28,6 +29,7 @@ const PlayerProfile: React.FC<Props> = ({
     form,
     lastPlayed,
     clubs,
+    countries,
 }) => {
     return (
         <Container>
@@ -38,7 +40,7 @@ const PlayerProfile: React.FC<Props> = ({
                     <PlayerClubs clubs={clubs} />
                 </Box>
                 <Box className={classes.badges} left={"0.5em"} bottom={"0.5em"}>
-                    <PlayerCountries playerId={player.id} />
+                    <PlayerCountries countries={countries} />
                 </Box>
             </Box>
             <PlayerLastPlayed lastPlayed={lastPlayed} />

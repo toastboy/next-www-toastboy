@@ -14,6 +14,8 @@ import {
 } from 'prisma/generated/schemas/models/CountrySupporter.schema';
 import z from 'zod';
 
+import { CountrySupporterDataType } from '@/types/CountrySupporterDataType';
+
 /** Field definitions with extra validation */
 const extendFields = {
     playerId: z.number().int().min(1),
@@ -70,14 +72,14 @@ export class CountrySupporterService {
     /**
      * Retrieves CountrySupporters by player ID.
      * @param playerId - The ID of the player.
-     * @returns A promise that resolves to an array of CountrySupporterWithCountry objects or null.
+     * @returns A promise that resolves to an array of CountrySupporterDataType objects or null.
      * @throws An error if there is a failure.
      */
-    async getByPlayer(playerId: number): Promise<CountrySupporterType[]> {
+    async getByPlayer(playerId: number): Promise<CountrySupporterDataType[]> {
         try {
             const where = CountrySupporterWhereInputObjectSchema.parse({ playerId });
 
-            return prisma.countrySupporter.findMany({ where });
+            return prisma.countrySupporter.findMany({ where, include: { country: true } });
         } catch (error) {
             log(`Error fetching CountrySupporters by player: ${String(error)}`);
             throw error;

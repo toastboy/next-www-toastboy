@@ -1,16 +1,11 @@
 import { Table, TableTbody, TableTd, TableTr } from '@mantine/core';
-import { getUserRole } from 'lib/authServer';
-import arseService from 'services/Arse';
+import { ArseType } from 'prisma/generated/schemas/models/Arse.schema';
 
 export interface Props {
-    playerId: number;
+    arse: Partial<ArseType> | null;
 }
 
-const PlayerArse: React.FC<Props> = async ({ playerId }) => {
-    if (await getUserRole() !== 'admin') return <></>;
-
-    const arse = await arseService.getByPlayer(playerId);
-
+const PlayerArse: React.FC<Props> = ({ arse }) => {
     return (
         <Table>
             <TableTbody>

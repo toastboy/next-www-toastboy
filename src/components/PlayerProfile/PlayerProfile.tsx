@@ -8,7 +8,9 @@ import PlayerHistory from 'components/PlayerHistory/PlayerHistory';
 import PlayerLastPlayed from 'components/PlayerLastPlayed/PlayerLastPlayed';
 import PlayerMugshot from 'components/PlayerMugshot/PlayerMugshot';
 import PlayerTrophies from 'components/PlayerTrophies/PlayerTrophies';
+import { ArseType } from 'prisma/generated/schemas/models/Arse.schema';
 import { PlayerType } from 'prisma/generated/schemas/models/Player.schema';
+import { Activity } from 'react';
 
 import { ClubSupporterDataType, CountrySupporterDataType, PlayerFormType } from '@/types';
 
@@ -21,6 +23,7 @@ export interface Props {
     lastPlayed: PlayerFormType | null;
     clubs: ClubSupporterDataType[];
     countries: CountrySupporterDataType[];
+    arse: Partial<ArseType> | null;
 }
 
 const PlayerProfile: React.FC<Props> = ({
@@ -30,6 +33,7 @@ const PlayerProfile: React.FC<Props> = ({
     lastPlayed,
     clubs,
     countries,
+    arse,
 }) => {
     return (
         <Container>
@@ -44,7 +48,9 @@ const PlayerProfile: React.FC<Props> = ({
                 </Box>
             </Box>
             <PlayerLastPlayed lastPlayed={lastPlayed} />
-            <PlayerArse playerId={player.id} />
+            <Activity mode={arse ? 'visible' : 'hidden'}>
+                <PlayerArse arse={arse} />
+            </Activity>
             <PlayerForm form={form} />
             <PlayerHistory playerId={player.id} year={year} />
             <PlayerBorn playerId={player.id} />

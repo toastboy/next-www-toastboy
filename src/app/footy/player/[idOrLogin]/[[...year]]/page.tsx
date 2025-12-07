@@ -2,6 +2,8 @@ import PlayerProfile from 'components/PlayerProfile/PlayerProfile';
 import { notFound, redirect } from 'next/navigation';
 import playerService from 'services/Player';
 
+import { getUserRole } from '@/lib/authServer';
+import arseService from '@/services/Arse';
 import clubSupporterService from '@/services/ClubSupporter';
 import countrySupporterService from '@/services/CountrySupporter';
 
@@ -41,6 +43,9 @@ const Page: React.FC<Props> = async props => {
     const form = await playerService.getForm(player.id, gameDayId, yearNum);
     const clubs = await clubSupporterService.getByPlayer(player.id);
     const countries = await countrySupporterService.getByPlayer(player.id);
+    const arse = (await getUserRole() === 'admin') ?
+        await arseService.getByPlayer(player.id) :
+        null;
 
     return (
         <PlayerProfile
@@ -51,6 +56,7 @@ const Page: React.FC<Props> = async props => {
             lastPlayed={lastPlayed}
             clubs={clubs}
             countries={countries}
+            arse={arse}
         />
     );
 };

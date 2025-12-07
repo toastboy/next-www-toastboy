@@ -2,6 +2,8 @@ jest.mock('services/Player');
 
 import playerService from '@/services/Player';
 
+// TODO: This mock data should be moved to src/tests/mocks/data/player.ts
+
 export const mockPlayer = {
     id: 1,
     login: "player1",

@@ -24,10 +24,18 @@ const Page: React.FC<Props> = async (props) => {
 
     if (!allYears.includes(yearnum)) return notFound();
 
+    const tableQualified = await playerRecordService.getTable(table, yearnum, true);
+    const tableUnqualified = await playerRecordService.getTable(table, yearnum, false);
+
     return (
         <>
             <YearSelector activeYear={yearnum} validYears={allYears} />
-            <YearTable table={table} year={yearnum} />
+            <YearTable
+                table={table}
+                year={yearnum}
+                qualified={tableQualified}
+                unqualified={tableUnqualified}
+            />
         </>
     );
 };

@@ -2,8 +2,10 @@ import { Grid, GridCol, Stack, Title } from "@mantine/core";
 import WinnersTable from "components/WinnersTable/WinnersTable";
 import YearSelector from "components/YearSelector/YearSelector";
 import { getYearName } from "lib/utils";
-import { TableNameSchema } from "prisma/generated/schemas";
+import { TableName, TableNameSchema } from "prisma/generated/schemas";
 import playerRecordService from "services/PlayerRecord";
+
+import { PlayerRecordDataType } from "@/types";
 
 interface Props {
     params: Promise<{
@@ -21,6 +23,12 @@ const Page: React.FC<Props> = async props => {
     const { year } = await props.params;
     const yearnum = year ? parseInt(year[0]) : 0; // Zero or undefined means all-time
     const allYears = await playerRecordService.getAllYears();
+    const winners = new Map<TableName, PlayerRecordDataType[]>();
+
+    await Promise.all(TableNameSchema.options.map(async (table) => {
+        const record = await playerRecordService.getWinners(table, yearnum > 0 ? yearnum : undefined);
+        winners.set(table, record);
+    }));
 
     return (
         <Stack align="stretch" justify="center" gap="md">
@@ -28,10 +36,10 @@ const Page: React.FC<Props> = async props => {
             <Title w="100%" ta="center" order={1}>Winners</Title>
             <Grid>
                 {
-                    TableNameSchema.options.map((table, index) => {
+                    Array.from(winners.entries()).map(([table, records]) => {
                         return (
-                            <GridCol span={{ base: 12, sm: 8, md: 6, lg: 4, xl: 3 }} key={index}>
-                                <WinnersTable table={table} year={yearnum} />
+                            <GridCol span={{ base: 12, sm: 8, md: 6, lg: 4, xl: 3 }} key={table}>
+                                <WinnersTable table={table} records={records} />
                             </GridCol>
                         );
                     })

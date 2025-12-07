@@ -2,30 +2,26 @@ import { Flex, Table, TableTbody, TableTd, TableTr, Title } from '@mantine/core'
 import PlayerLink from 'components/PlayerLink/PlayerLink';
 import TableScore from 'components/TableScore/TableScore';
 import { TableName } from 'prisma/generated/schemas';
-import playerRecordService from 'services/PlayerRecord';
+
+import { PlayerRecordDataType } from '@/types';
 
 export interface Props {
     table: TableName;
     title?: string;
     year: number;
-    qualified?: boolean;
-    take?: number;
+    records: PlayerRecordDataType[];
 }
 
-const TableQualified: React.FC<Props> = async ({ table, title, year, qualified, take }) => {
-    const data = await playerRecordService.getTable(table, year, qualified, take);
-
-    if (!data) return <></>;
-
+const TableQualified: React.FC<Props> = ({ table, title, year, records }) => {
     return (
         <Flex direction="column" gap="md">
             <Title order={1}>{title}</Title>
             <Table>
                 <TableTbody>
-                    {data.map((record, index) => (
+                    {records.map((record, index) => (
                         <TableTr key={index}>
                             <TableTd>
-                                <PlayerLink playerId={record.playerId} year={year} />
+                                <PlayerLink player={record.player} year={year} />
                             </TableTd>
                             <TableTd>
                                 <TableScore table={table} playerRecord={record} /></TableTd>

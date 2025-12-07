@@ -17,6 +17,8 @@ import gameDayService from 'services/GameDay';
 import outcomeService from 'services/Outcome';
 import z from 'zod';
 
+import { PlayerRecordDataType } from '@/types';
+
 /** Field definitions with extra validation */
 const extendedFields = {
     playerId: z.number().int().min(1),
@@ -254,14 +256,14 @@ export class PlayerRecordService {
     /**
      * Retrieves the winners of a specific table for all years.
      * @param table - The table for which to retrieve the winners.
-     * @returns A promise that resolves to an array of PlayerRecord objects
+     * @returns A promise that resolves to an array of PlayerRecordData objects
      * representing the winners.
      * @throws If there is an error fetching the player records.
      */
     async getWinners(
         table: TableName,
         year?: number,
-    ): Promise<PlayerRecordType[]> {
+    ): Promise<PlayerRecordDataType[]> {
         try {
             const rank = rankMap[table];
             const seasonEnders = await gameDayService.getSeasonEnders();
@@ -272,6 +274,9 @@ export class PlayerRecordService {
                 },
                 orderBy: {
                     year: 'desc',
+                },
+                include: {
+                    player: true,
                 },
             });
 
@@ -299,7 +304,7 @@ export class PlayerRecordService {
         year: number,
         qualified?: boolean,
         take?: number,
-    ): Promise<PlayerRecordType[]> {
+    ): Promise<PlayerRecordDataType[]> {
         try {
             // Get the most recent game day for the year in question with a
             // record for the specified table
@@ -338,6 +343,9 @@ export class PlayerRecordService {
                     [rank]: 'asc',
                 },
                 take: take,
+                include: {
+                    player: true,
+                },
             });
         } catch (error) {
             log(`Error fetching playerRecords for table: ${String(error)}`);

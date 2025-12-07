@@ -1,22 +1,21 @@
 import { Paper, Table, TableTbody, TableTd, TableTh, TableThead, TableTr, Title } from '@mantine/core';
 import PlayerLink from 'components/PlayerLink/PlayerLink';
 import { TableName } from 'prisma/generated/schemas';
-import playerRecordService from 'services/PlayerRecord';
+
+import { PlayerRecordDataType } from '@/types';
 
 export interface Props {
     table: TableName;
-    year?: number;
+    records: PlayerRecordDataType[];
 }
 
-const WinnersTable: React.FC<Props> = async ({ table, year }) => {
-    const record = await playerRecordService.getWinners(table, year && year > 0 ? year : undefined);
-
-    const rows = record.map((winner, index) => {
-        const year = index > 0 && record[index - 1].year === winner.year ? '' : winner.year;
+const WinnersTable: React.FC<Props> = ({ table, records }) => {
+    const rows = records.map((winner, index) => {
+        const year = index > 0 && records[index - 1].year === winner.year ? '' : winner.year;
         return (
             <TableTr key={index}>
                 <TableTd>{year}</TableTd>
-                <TableTd><PlayerLink playerId={winner.playerId} year={winner.year} /></TableTd>
+                <TableTd><PlayerLink player={winner.player} year={winner.year} /></TableTd>
             </TableTr>
         );
     });

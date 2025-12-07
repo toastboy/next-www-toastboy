@@ -4,18 +4,35 @@ import config from 'lib/config';
 import { getYearName } from 'lib/utils';
 import { TableName, TableNameSchema } from 'prisma/generated/schemas';
 
+import { PlayerRecordDataType } from '@/types';
+
 export interface Props {
     table: TableName;
     year: number;
+    qualified: PlayerRecordDataType[];
+    unqualified: PlayerRecordDataType[];
 }
 
-const YearTable: React.FC<Props> = ({ table, year }) => {
+const YearTable: React.FC<Props> = ({ table, year, qualified, unqualified }) => {
     const utn = UnqualifiedTableName(table) ?? null;
 
     return (
         <Flex direction="column" gap="md">
-            <TableQualified table={table} title={QualifiedTableName(table, year)} year={year} qualified={true} />
-            {utn ? <TableQualified table={table} title={utn} year={year} qualified={false} /> : null}
+            <TableQualified
+                table={table}
+                title={QualifiedTableName(table, year)}
+                year={year}
+                records={qualified}
+            />
+            {utn ?
+                <TableQualified
+                    table={table}
+                    title={utn}
+                    year={year}
+                    records={unqualified}
+                /> :
+                null
+            }
         </Flex>
     );
 };

@@ -1,15 +1,10 @@
 import { Image } from '@mantine/core';
-import clubService from 'services/Club';
+import { ClubType } from 'prisma/generated/schemas/models/Club.schema';
 
 export interface Props {
-    clubId: number,
+    club: ClubType;
 }
-
-const ClubBadge: React.FC<Props> = async ({ clubId }) => {
-    const club = await clubService.get(clubId);
-
-    if (!club) return <></>;
-
+const ClubBadge: React.FC<Props> = ({ club }) => {
     return (
         <Image
             w="100%"

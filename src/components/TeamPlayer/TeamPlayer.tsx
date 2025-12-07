@@ -11,8 +11,8 @@ export interface Props {
 
 const TeamPlayer: React.FC<Props> = ({ teamPlayer }) => (
     <Flex direction="column" gap="md">
-        <PlayerLink playerId={teamPlayer.id} year={0} />
-        <PlayerMugshot playerId={teamPlayer.id} />
+        <PlayerLink player={teamPlayer} year={0} />
+        <PlayerMugshot player={teamPlayer} />
         <PlayerForm form={teamPlayer.form} />
         <Text>{teamPlayer.outcome.goalie ? "GOALIE!" : ""}</Text>
     </Flex>

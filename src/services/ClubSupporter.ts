@@ -14,6 +14,8 @@ import {
 } from 'prisma/generated/schemas/models/ClubSupporter.schema';
 import z from 'zod';
 
+import { ClubSupporterDataType } from '@/types';
+
 /** Field definitions with extra validation */
 const extendFields = {
     playerId: z.number().int().min(1),
@@ -70,14 +72,14 @@ export class ClubSupporterService {
     /**
      * Retrieves ClubSupporters by player ID.
      * @param playerId - The ID of the player.
-     * @returns A promise that resolves to an array of ClubSupporters or null.
+     * @returns A promise that resolves to an array of ClubSupporterData (which includes the club too) or null.
      * @throws An error if there is a failure.
      */
-    async getByPlayer(playerId: number): Promise<ClubSupporterType[]> {
+    async getByPlayer(playerId: number): Promise<ClubSupporterDataType[]> {
         try {
             const where = ClubSupporterWhereInputObjectSchema.parse({ playerId });
 
-            return prisma.clubSupporter.findMany({ where });
+            return prisma.clubSupporter.findMany({ where, include: { club: true } });
         } catch (error) {
             log(`Error fetching ClubSupporters by player: ${String(error)}`);
             throw error;

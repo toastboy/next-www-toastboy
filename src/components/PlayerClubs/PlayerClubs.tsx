@@ -1,20 +1,20 @@
 import { Flex } from '@mantine/core';
 import ClubBadge from 'components/ClubBadge/ClubBadge';
-import clubSupporterService from 'services/ClubSupporter';
+
+import { ClubSupporterDataType } from '@/types';
 
 export interface Props {
-    playerId: number;
+    clubs: ClubSupporterDataType[];
 }
 
-const PlayerClubs: React.FC<Props> = async ({ playerId }) => {
-    const clubs = await clubSupporterService.getByPlayer(playerId);
-
-    if (!clubs || clubs.length === 0) return <></>;
-
+const PlayerClubs: React.FC<Props> = ({ clubs }) => {
     return (
         <Flex gap="xs" p="xs" direction="column">
             {clubs.map((item) => (
-                <ClubBadge key={item.clubId} clubId={item.clubId} />
+                <ClubBadge
+                    key={item.clubId}
+                    club={item.club}
+                />
             ))}
         </Flex>
     );

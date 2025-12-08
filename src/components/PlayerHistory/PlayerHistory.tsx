@@ -2,21 +2,21 @@ import { Container } from '@mantine/core';
 import PlayerPositions from 'components/PlayerPositions/PlayerPositions';
 import PlayerResults from 'components/PlayerResults/PlayerResults';
 import YearSelector from 'components/YearSelector/YearSelector';
-import playerService from 'services/Player';
+import { PlayerRecordType } from 'prisma/generated/schemas/models/PlayerRecord.schema';
 
 export interface Props {
-    playerId: number;
+    playerName: string;
+    activeYears: number[];
     year: number;
+    record: PlayerRecordType | null;
 }
 
-const PlayerHistory: React.FC<Props> = async ({ playerId, year }) => {
-    const activeYears = await playerService.getYearsActive(playerId);
-
+const PlayerHistory: React.FC<Props> = ({ playerName, activeYears, year, record }) => {
     return (
         <Container>
             <YearSelector activeYear={year} validYears={activeYears} />
-            <PlayerResults playerId={playerId} year={year} />
-            <PlayerPositions playerId={playerId} year={year} />
+            <PlayerResults playerName={playerName} year={year} record={record} />
+            <PlayerPositions playerName={playerName} year={year} record={record} />
         </Container>
     );
 };

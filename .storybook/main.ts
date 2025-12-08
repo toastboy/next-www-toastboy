@@ -25,7 +25,8 @@ const config: StorybookConfig = {
       // Stub server-only modules so client-rendered Storybook can import server components safely
       'server-only': path.resolve(__dirname, './mocks/server-only.ts'),
       // Mock data layer for stories that import GameDay service
-      'services/GameDay': path.resolve(__dirname, './mocks/GameDay.mock.ts'),
+      // Mock Next.js navigation hooks used in client components
+      'next/navigation': path.resolve(__dirname, './mocks/next-navigation.mock.ts'),
     };
 
     return config;

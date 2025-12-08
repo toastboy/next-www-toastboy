@@ -1,15 +1,11 @@
 import { Text } from '@mantine/core';
-import playerService from 'services/Player';
+import { PlayerType } from 'prisma/generated/schemas/models/Player.schema';
 
 export interface Props {
-    playerId: number;
+    player: PlayerType;
 }
 
-const PlayerBorn: React.FC<Props> = async ({ playerId }) => {
-    const player = await playerService.getById(playerId);
-
-    if (player?.born == null) return <></>;
-
+const PlayerBorn: React.FC<Props> = ({ player }) => {
     return (
         <Text>
             {player.born == null ? "Unknown" : player.born.toLocaleDateString('sv')}

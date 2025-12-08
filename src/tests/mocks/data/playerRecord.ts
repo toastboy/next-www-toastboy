@@ -1,4 +1,7 @@
+import { TableName, TableNameSchema } from "prisma/generated/schemas";
 import { PlayerRecordType } from "prisma/generated/schemas/models/PlayerRecord.schema";
+
+import { rankMap } from "@/lib/utils";
 
 export const defaultPlayerRecord: PlayerRecordType = {
     id: 1,
@@ -35,3 +38,14 @@ export const defaultPlayerRecordList: PlayerRecordType[] = Array.from({ length: 
         gameDayId: 10 + Math.floor(index / 10) + 1,
     }),
 );
+
+// Generate default trophies map - winners only
+// TODO: This mock data needs more variety to be truly useful
+export const defaultTrophiesList = new Map<TableName, PlayerRecordType[]>();
+TableNameSchema.options.forEach((table) => {
+    const rank = rankMap[table] as keyof PlayerRecordType;
+    defaultTrophiesList.set(
+        table,
+        defaultPlayerRecordList.filter((record) => record[rank] === 1),
+    );
+});

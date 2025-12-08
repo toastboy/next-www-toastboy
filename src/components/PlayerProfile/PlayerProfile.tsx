@@ -1,4 +1,5 @@
 import { Box, Container, Title } from '@mantine/core';
+import { TableName } from '@prisma/client';
 import PlayerArse from 'components/PlayerArse/PlayerArse';
 import PlayerBorn from 'components/PlayerBorn/PlayerBorn';
 import PlayerClubs from 'components/PlayerClubs/PlayerClubs';
@@ -10,6 +11,7 @@ import PlayerMugshot from 'components/PlayerMugshot/PlayerMugshot';
 import PlayerTrophies from 'components/PlayerTrophies/PlayerTrophies';
 import { ArseType } from 'prisma/generated/schemas/models/Arse.schema';
 import { PlayerType } from 'prisma/generated/schemas/models/Player.schema';
+import { PlayerRecordType } from 'prisma/generated/schemas/models/PlayerRecord.schema';
 import { Activity } from 'react';
 
 import { ClubSupporterDataType, CountrySupporterDataType, PlayerFormType } from '@/types';
@@ -17,6 +19,7 @@ import { ClubSupporterDataType, CountrySupporterDataType, PlayerFormType } from 
 import classes from './PlayerProfile.module.css';
 
 export interface Props {
+    playerName: string;
     player: PlayerType;
     year: number;
     form: PlayerFormType[];
@@ -24,9 +27,13 @@ export interface Props {
     clubs: ClubSupporterDataType[];
     countries: CountrySupporterDataType[];
     arse: Partial<ArseType> | null;
+    activeYears: number[];
+    record: PlayerRecordType | null;
+    trophies: Map<TableName, PlayerRecordType[]>;
 }
 
 const PlayerProfile: React.FC<Props> = ({
+    playerName,
     player,
     year,
     form,
@@ -34,6 +41,9 @@ const PlayerProfile: React.FC<Props> = ({
     clubs,
     countries,
     arse,
+    activeYears,
+    record,
+    trophies,
 }) => {
     return (
         <Container>
@@ -52,9 +62,14 @@ const PlayerProfile: React.FC<Props> = ({
                 <PlayerArse arse={arse} />
             </Activity>
             <PlayerForm form={form} />
-            <PlayerHistory playerId={player.id} year={year} />
-            <PlayerBorn playerId={player.id} />
-            <PlayerTrophies playerId={player.id} year={year} />
+            <PlayerHistory
+                playerName={playerName}
+                activeYears={activeYears}
+                year={year}
+                record={record}
+            />
+            <PlayerBorn player={player} />
+            <PlayerTrophies trophies={trophies} />
         </Container>
     );
 };

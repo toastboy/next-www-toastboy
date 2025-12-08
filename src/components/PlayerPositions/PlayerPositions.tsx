@@ -1,28 +1,22 @@
 import { Table, TableCaption, TableTbody, TableTd, TableTh, TableTr } from '@mantine/core';
 import { getYearName, rankMap } from 'lib/utils';
 import { TableNameSchema } from 'prisma/generated/schemas';
-import playerService from 'services/Player';
-import playerRecordService from 'services/PlayerRecord';
+import { PlayerRecordType } from 'prisma/generated/schemas/models/PlayerRecord.schema';
 
 export interface Props {
-    playerId: number;
+    playerName: string;
     year: number;
+    record: PlayerRecordType | null;
 }
 
-const PlayerPositions: React.FC<Props> = async ({ playerId, year }) => {
-    const player = await playerService.getById(playerId);
-
-    if (!player) return <></>;
-
-    const playerRecord = await playerRecordService.getForYearByPlayer(year, player.id);
-
+const PlayerPositions: React.FC<Props> = ({ playerName, year, record }) => {
     return (
-        <Table summary={`${(player.name ?? 'Unknown Player')}'s ${getYearName(year)} table positions`}>
+        <Table summary={`${playerName}'s ${getYearName(year)} table positions`}>
             <TableCaption>{getYearName(year)} Positions</TableCaption>
             <TableTbody>
                 {TableNameSchema.options.map((table) => {
-                    const position = playerRecord
-                        ? playerRecord[rankMap[table] as keyof typeof playerRecord] ?? null
+                    const position = record
+                        ? record[rankMap[table] as keyof typeof record] ?? null
                         : null;
 
                     return (

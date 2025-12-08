@@ -1,11 +1,15 @@
+import { TableName } from '@prisma/client';
 import PlayerProfile from 'components/PlayerProfile/PlayerProfile';
 import { notFound, redirect } from 'next/navigation';
+import { TableNameSchema } from 'prisma/generated/schemas';
+import { PlayerRecordType } from 'prisma/generated/schemas/models/PlayerRecord.schema';
 import playerService from 'services/Player';
 
 import { getUserRole } from '@/lib/authServer';
 import arseService from '@/services/Arse';
 import clubSupporterService from '@/services/ClubSupporter';
 import countrySupporterService from '@/services/CountrySupporter';
+import playerRecordService from '@/services/PlayerRecord';
 
 interface Props {
     params: Promise<{
@@ -38,6 +42,7 @@ const Page: React.FC<Props> = async props => {
         redirect(`/footy/player/${player.id}`);
     }
 
+    const playerName = playerService.getName(player);
     const lastPlayed = await playerService.getLastPlayed(player.id, yearNum);
     const gameDayId = lastPlayed ? lastPlayed.gameDayId : 0;
     const form = await playerService.getForm(player.id, gameDayId, yearNum);
@@ -46,9 +51,17 @@ const Page: React.FC<Props> = async props => {
     const arse = (await getUserRole() === 'admin') ?
         await arseService.getByPlayer(player.id) :
         null;
+    const activeYears = await playerService.getYearsActive(player.id);
+    const record = await playerRecordService.getForYearByPlayer(yearNum, player.id);
+    const trophies = new Map<TableName, PlayerRecordType[]>();
+    await Promise.all(TableNameSchema.options.map(async (table) => {
+        const winners = await playerRecordService.getWinners(table, yearNum, player.id);
+        trophies.set(table, winners);
+    }));
 
     return (
         <PlayerProfile
+            playerName={playerName}
             key={player.id}
             player={player}
             year={yearNum}
@@ -57,6 +70,9 @@ const Page: React.FC<Props> = async props => {
             clubs={clubs}
             countries={countries}
             arse={arse}
+            activeYears={activeYears}
+            record={record}
+            trophies={trophies}
         />
     );
 };

@@ -1,23 +1,23 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
-import { defaultCountry } from '@/tests/mocks';
+import { defaultTrophiesList } from '@/tests/mocks';
 
-import CountryFlag from './CountryFlag';
+import PlayerTrophies from './PlayerTrophies';
 
 const meta = {
-    title: 'Country/CountryFlag',
-    component: CountryFlag,
+    title: 'Player/PlayerTrophies',
+    component: PlayerTrophies,
     parameters: {
         layout: 'centered',
     },
     tags: ['autodocs'],
-} satisfies Meta<typeof CountryFlag>;
+} satisfies Meta<typeof PlayerTrophies>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {
     args: {
-        country: defaultCountry,
+        trophies: defaultTrophiesList,
     },
 };

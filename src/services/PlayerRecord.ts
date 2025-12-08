@@ -254,15 +254,22 @@ export class PlayerRecordService {
     }
 
     /**
-     * Retrieves the winners of a specific table for all years.
-     * @param table - The table for which to retrieve the winners.
-     * @returns A promise that resolves to an array of PlayerRecordData objects
-     * representing the winners.
-     * @throws If there is an error fetching the player records.
+     * Retrieves the list of player records who achieved first place in a given table and year.
+     *
+     * This method queries the database for player records where the specified rank column equals 1,
+     * optionally filtered by year and/or player ID. It further filters the results to include only
+     * those records whose game day IDs are considered "season enders" as determined by the gameDayService.
+     *
+     * @param table - The name of the table to query for winners (used to determine the rank column).
+     * @param year - (Optional) The year to filter the records by. If not provided, all years greater than 0 are considered.
+     * @param player - (Optional) The player ID to filter the records by. If not provided, all players are considered.
+     * @returns A promise that resolves to an array of player records who achieved first place on season-ending game days.
+     * @throws Will log and rethrow any errors encountered during the database query or filtering process.
      */
     async getWinners(
         table: TableName,
         year?: number,
+        player?: number,
     ): Promise<PlayerRecordDataType[]> {
         try {
             const rank = rankMap[table];
@@ -270,6 +277,7 @@ export class PlayerRecordService {
             const firstPlaceRecords = await prisma.playerRecord.findMany({
                 where: {
                     ...(year != undefined ? { year } : { year: { gt: 0 } }),
+                    ...(player ? { playerId: player } : {}),
                     [rank]: 1,
                 },
                 orderBy: {

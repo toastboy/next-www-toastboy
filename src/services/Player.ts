@@ -310,7 +310,7 @@ class PlayerService {
      * always include 0 for 'all time' if there's at least one active year.
      * @throws An error if there is a failure.
      */
-    async getYearsActive(playerId: number) {
+    async getYearsActive(playerId: number): Promise<number[]> {
         try {
             const outcomes = await prisma.outcome.findMany({
                 where: {

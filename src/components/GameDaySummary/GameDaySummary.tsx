@@ -11,18 +11,7 @@ export interface Props {
 }
 
 const GameDaySummary: React.FC<Props> = ({ gameDay, teamA, teamB }) => {
-    if (gameDay.game) {
-        return (
-            <Flex direction="column">
-                <Title order={1}>Game {gameDay.id}: {gameDay.date.toDateString()}</Title>
-                <Text>{gameDay.comment ? `(${gameDay.comment})` : ''}</Text>
-                <Team team={teamA} />
-                <Text>vs.</Text>
-                <Team team={teamB} />
-            </Flex>
-        );
-    }
-    else {
+    if (!gameDay.game) {
         return (
             <Flex>
                 <Title order={1}>Game {gameDay.id}: {gameDay.date.toDateString()}</Title>
@@ -30,6 +19,16 @@ const GameDaySummary: React.FC<Props> = ({ gameDay, teamA, teamB }) => {
             </Flex>
         );
     }
+
+    return (
+        <Flex direction="column">
+            <Title order={1}>Game {gameDay.id}: {gameDay.date.toDateString()}</Title>
+            <Text>{gameDay.comment ? `(${gameDay.comment})` : ''}</Text>
+            <Team team={teamA} />
+            <Text>vs.</Text>
+            <Team team={teamB} />
+        </Flex>
+    );
 };
 
 export default GameDaySummary;

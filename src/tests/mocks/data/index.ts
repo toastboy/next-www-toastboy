@@ -12,4 +12,6 @@ export * from './player';
 export * from './playerForm';
 export * from './playerRecord';
 export * from './progress';
+export * from './teamPlayer';
 export * from './turnoutByYear';
+

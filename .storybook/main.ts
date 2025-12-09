@@ -27,6 +27,15 @@ const config: StorybookConfig = {
       // Mock data layer for stories that import GameDay service
       // Mock Next.js navigation hooks used in client components
       'next/navigation': path.resolve(__dirname, './mocks/next-navigation.mock.ts'),
+      // Mock mailer to avoid bundling node built-ins (net/tls) in Storybook
+      'lib/mail': path.resolve(__dirname, './mocks/mail.mock.ts'),
+    };
+    config.resolve.fallback = {
+      ...(config.resolve.fallback || {}),
+      net: false,
+      tls: false,
+      dns: false,
+      child_process: false,
     };
 
     return config;

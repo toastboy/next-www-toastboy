@@ -129,6 +129,7 @@ const config = [
 
             semi: ["error", "always"],
             "@typescript-eslint/await-thenable": "error",
+            "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
 
             "@typescript-eslint/consistent-type-assertions": ["error", {
                 assertionStyle: "as",

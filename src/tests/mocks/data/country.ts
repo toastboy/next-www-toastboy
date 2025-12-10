@@ -2,7 +2,7 @@ import { CountryType } from "prisma/generated/schemas/models/Country.schema";
 
 export const defaultCountry: CountryType = {
     isoCode: "GB-ENG",
-    name: "Engerland",
+    name: "England",
 };
 
 export const invalidCountry: CountryType = {
@@ -18,5 +18,6 @@ export const createMockCountry = (overrides: Partial<CountryType> = {}): Country
 export const defaultCountryList: CountryType[] = Array.from({ length: 4 }, (_, index) =>
     createMockCountry({
         isoCode: ["GB-ENG", "GB-NIR", "GB-SCT", "GB-WLS"][index % 4],
+        name: ["England", "Northern Ireland", "Scotland", "Wales"][index % 4],
     }),
 );

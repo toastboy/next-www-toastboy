@@ -1,6 +1,6 @@
 import { CountrySupporterDataType } from "@/types";
 
-import { defaultCountry } from "./country";
+import { defaultCountry, defaultCountryList } from "./country";
 
 export const defaultCountrySupporterData: CountrySupporterDataType = {
     playerId: 12,
@@ -13,8 +13,10 @@ export const createMockCountrySupporterData = (overrides: Partial<CountrySupport
     ...overrides,
 });
 
-export const defaultCountrySupporterDataList: CountrySupporterDataType[] = Array.from({ length: 100 }, (_, index) =>
+export const defaultCountrySupporterDataList: CountrySupporterDataType[] = Array.from({ length: 2 }, (_, index) =>
     createMockCountrySupporterData({
         playerId: index % 10 + 1,
+        countryISOCode: defaultCountryList[index].isoCode,
+        country: defaultCountryList[index],
     }),
 );

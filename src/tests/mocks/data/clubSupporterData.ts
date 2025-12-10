@@ -13,7 +13,7 @@ export const createMockClubSupporterData = (overrides: Partial<ClubSupporterData
     ...overrides,
 });
 
-export const defaultClubSupporterDataList: ClubSupporterDataType[] = Array.from({ length: 100 }, (_, index) =>
+export const defaultClubSupporterDataList: ClubSupporterDataType[] = Array.from({ length: 2 }, (_, index) =>
     createMockClubSupporterData({
         playerId: index % 10 + 1,
         clubId: index + 1,

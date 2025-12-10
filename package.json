@@ -75,6 +75,10 @@
     "@playwright/browser-firefox": "^1.57.0",
     "@playwright/browser-webkit": "^1.57.0",
     "@playwright/test": "^1.56.1",
+    "@storybook/addon-a11y": "^10.1.4",
+    "@storybook/addon-docs": "^10.1.4",
+    "@storybook/addon-onboarding": "^10.1.4",
+    "@storybook/nextjs": "^10.1.4",
     "@swc-node/jest": "^1.9.1",
     "@swc/core": "^1.15.1",
     "@swc/jest": "^0.2.39",
@@ -112,6 +116,7 @@
     "eslint-plugin-regexp": "^2.10.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "eslint-plugin-sonarjs": "^3.0.5",
+    "eslint-plugin-storybook": "^10.1.4",
     "eslint-plugin-testing-library": "^7.13.5",
     "eslint-plugin-unused-imports": "^4.3.0",
     "glob": "^13.0.0",
@@ -121,21 +126,22 @@
     "jest-css-modules-transform": "^4.4.2",
     "jest-environment-jsdom": "^30.2.0",
     "jest-mock-axios": "^4.9.0",
-    "msw": "^2.4.1",
+    "msw": "^2.12.4",
+    "msw-storybook-addon": "^2.0.6",
     "react-test-renderer": "^19.2.0",
+    "storybook": "^10.1.4",
     "supertest": "^7.1.4",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.9.3",
-    "whatwg-fetch": "^3.6.20",
-    "storybook": "^10.1.4",
-    "@storybook/nextjs": "^10.1.4",
-    "@storybook/addon-a11y": "^10.1.4",
-    "@storybook/addon-docs": "^10.1.4",
-    "@storybook/addon-onboarding": "^10.1.4",
-    "eslint-plugin-storybook": "^10.1.4"
+    "whatwg-fetch": "^3.6.20"
   },
   "overrides": {
     "@swc/helpers": "0.5.15"
+  },
+  "msw": {
+    "workerDirectory": [
+      "public"
+    ]
   }
 }

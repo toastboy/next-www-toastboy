@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
-import { useEffect } from 'react';
+import { http, HttpResponse } from 'msw';
 
 import AdminUpdatePlayerRecords from './AdminUpdatePlayerRecords';
 
@@ -9,41 +9,43 @@ const meta = {
     component: AdminUpdatePlayerRecords,
     parameters: {
         layout: 'centered',
+        msw: {
+            handlers: [
+                http.get('*/api/footy/records/progress', () => {
+                    return HttpResponse.json([50, 100]);
+                }),
+            ],
+        },
     },
     tags: ['autodocs'],
-    decorators: [
-        (Story) => {
-            const FetchMock = () => {
-                useEffect(() => {
-                    const originalFetch = global.fetch;
-                    const mockFetch: typeof fetch = async (_input: RequestInfo | URL) => {
-                        await Promise.resolve();
-                        return {
-                            ok: true,
-                            status: 200,
-                            async json() {
-                                await Promise.resolve();
-                                return { success: true };
-                            },
-                        } as unknown as Response;
-                    };
-
-                    global.fetch = mockFetch;
-
-                    return () => {
-                        global.fetch = originalFetch;
-                    };
-                }, []);
-
-                return <Story />;
-            };
-
-            return <FetchMock />;
-        },
-    ],
 } satisfies Meta<typeof AdminUpdatePlayerRecords>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Primary: Story = {};
+export const InProgress: Story = {
+    parameters: {
+        msw: {
+            handlers: [
+                http.get('*/api/footy/records/progress', () => {
+                    return HttpResponse.json([50, 100]);
+                }),
+            ],
+        },
+    },
+};
+
+export const Completed: Story = {
+    parameters: {
+        msw: {
+            handlers: [
+                http.get('*/api/footy/records/progress', () => {
+                    return HttpResponse.json([100, 100]);
+                }),
+            ],
+        },
+    },
+};
+
+export const Primary: Story = InProgress;
+

@@ -13,7 +13,8 @@ const config: StorybookConfig = {
     "@storybook/addon-a11y",
     "@storybook/addon-docs",
     "@storybook/addon-onboarding",
-    "msw-storybook-addon"
+    "msw-storybook-addon",
+    '@chromatic-com/storybook'
   ],
   "framework": "@storybook/nextjs",
   "staticDirs": [

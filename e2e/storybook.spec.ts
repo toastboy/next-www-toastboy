@@ -22,15 +22,15 @@ test.describe('Storybook Stories', () => {
         const response = await request.get('http://127.0.0.1:6006/index.json');
         expect(response.ok()).toBeTruthy();
         storybookIndex = await response.json();
-        
+
         const allEntries = Object.values(storybookIndex.entries);
         console.log(`Total entries in index: ${allEntries.length}`);
-        
+
         // Filter to only get actual stories (type: 'story'), not docs pages
         stories = allEntries.filter((entry) => {
             return (entry as any).type === 'story';
         });
-        
+
         console.log(`Found ${stories.length} stories to test (filtered from ${allEntries.length} total entries)`);
         if (stories.length === 0 && allEntries.length > 0) {
             console.warn('⚠️  No stories found but index has entries. Sample entry:', JSON.stringify(allEntries[0], null, 2));
@@ -57,14 +57,14 @@ test.describe('Storybook Stories', () => {
                 // Use 'domcontentloaded' instead of 'networkidle' to avoid timeout on polling components
                 await page.goto(
                     `http://127.0.0.1:6006/iframe.html?id=${story.id}&viewMode=story`,
-                    { waitUntil: 'domcontentloaded', timeout: 10000 }
+                    { waitUntil: 'domcontentloaded', timeout: 10000 },
                 );
 
                 // Wait for root element to be present
                 await page.waitForSelector('#storybook-root', { timeout: 5000 }).catch(() => {
                     // If no storybook-root, that's okay, might be a different structure
                 });
-                
+
                 // Small delay to let components render
                 await page.waitForTimeout(300);
 
@@ -105,24 +105,24 @@ test.describe('Storybook Stories', () => {
     test('Visual regression testing for all stories', async ({ page }) => {
         // This test takes screenshots of each story for visual comparison
         // Run with --update-snapshots to create new baseline images
-        
+
         const failedSnapshots: string[] = [];
-        
+
         for (const story of stories) {
             try {
                 await page.goto(
                     `http://127.0.0.1:6006/iframe.html?id=${story.id}&viewMode=story`,
-                    { waitUntil: 'domcontentloaded', timeout: 10000 }
+                    { waitUntil: 'domcontentloaded', timeout: 10000 },
                 );
 
                 // Wait for content to be visible
-                await page.waitForSelector('#storybook-root', { timeout: 5000 }).catch(() => {});
+                await page.waitForSelector('#storybook-root', { timeout: 5000 }).catch(() => { });
                 await page.waitForTimeout(300); // Let animations/styles settle
 
                 // Take a screenshot and compare with baseline
                 // Sanitize the story name for filename
                 const screenshotName = `${story.title.replace(/\//g, '-')}--${story.name}`.toLowerCase().replace(/\s+/g, '-');
-                
+
                 await expect(page).toHaveScreenshot(`${screenshotName}.png`, {
                     fullPage: false,
                     maxDiffPixels: 100, // Allow small differences (e.g., anti-aliasing)
@@ -146,7 +146,7 @@ test.describe('Storybook Stories', () => {
         }
 
         console.log(`\n✓ Visual regression test completed for ${stories.length - failedSnapshots.length}/${stories.length} stories`);
-        
+
         // Allow some failures for visual tests (they might just need updating)
         // But fail if too many fail (indicates a real problem)
         expect(failedSnapshots.length, `Too many visual test failures: ${failedSnapshots.length}`).toBeLessThan(stories.length * 0.2);

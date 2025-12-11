@@ -23,6 +23,9 @@ const config: StorybookConfig = {
     config.resolve = config.resolve || {};
     config.resolve.alias = {
       ...(config.resolve.alias || {}),
+      // Path aliases matching tsconfig
+      '@': path.resolve(__dirname, '../src'),
+      'prisma': path.resolve(__dirname, '../prisma'),
       // Stub server-only modules so client-rendered Storybook can import server components safely
       'server-only': path.resolve(__dirname, './mocks/server-only.ts'),
       // Mock Next.js navigation hooks used in client components

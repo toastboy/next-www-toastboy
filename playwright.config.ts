@@ -95,7 +95,8 @@ export default defineConfig({
   outputDir: 'test-results/',
 
   /* Run your local dev server before starting the tests */
-  webServer: {
+  // Skip webServer for storybook tests (they manage their own server via concurrently)
+  webServer: process.env.SKIP_WEBSERVER ? undefined : {
     command: process.env.CI
       ? 'npm run start:ci'
       : 'op run --env-file ./.env -- npm run dev',

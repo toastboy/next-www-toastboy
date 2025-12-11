@@ -1,11 +1,18 @@
 {
-  "extends": "../tsconfig.json",
-  "compilerOptions": {
-    "baseUrl": "../src",
-    "paths": {
-      "@/*": ["./*"],
-      "prisma/*": ["../prisma/*"]
-    }
-  },
-  "include": ["../src/types/**/*", "**/*"]
+    "extends": "../tsconfig.json",
+    "compilerOptions": {
+        "baseUrl": "../src",
+        "paths": {
+            "@/*": [
+                "./*"
+            ],
+            "prisma/*": [
+                "../prisma/*"
+            ]
+        }
+    },
+    "include": [
+        "../src/types/**/*",
+        "**/*"
+    ]
 }

@@ -19,4 +19,9 @@ export const Primary: Story = {
         activeYear: 2019,
         validYears: [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025],
     },
+    play: async function ({ _fargs, canvas, userEvent }) {
+        const button = canvas.getByText('2018');
+
+        await userEvent.click(button);
+    },
 };

@@ -9,8 +9,24 @@ import { Notifications } from '@mantine/notifications';
 import type { Preview } from '@storybook/nextjs';
 import { initialize, mswLoader } from 'msw-storybook-addon';
 
+const shouldIgnoreUnhandledRequest = (url: string) => {
+  try {
+    const { protocol, pathname } = new URL(url);
+    const isExtension = protocol === 'chrome-extension:';
+    const isStaticAsset = pathname.startsWith('/static/');
+
+    return isExtension || isStaticAsset;
+  } catch {
+    return false;
+  }
+};
+
 initialize({
   onUnhandledRequest: ({ url, method }) => {
+    if (shouldIgnoreUnhandledRequest(url)) {
+      return;
+    }
+
     console.error(`Unhandled ${method} request to ${url}.
 
         This exception has been only logged in the console, however, it's strongly recommended to resolve this error as you don't want unmocked data in Storybook stories.

@@ -4,9 +4,13 @@ import '@mantine/dates/styles.css';
 import '@mantine/notifications/styles.css';
 import '@mantine/tiptap/styles.css';
 
+import badgeImage from '@/tests/mocks/data/badge.png';
+import flagImage from '@/tests/mocks/data/flag.png';
+import mugshotImage from '@/tests/mocks/data/mugshot.png';
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import type { Preview } from '@storybook/nextjs';
+import { http, HttpResponse } from 'msw';
 import { initialize, mswLoader } from 'msw-storybook-addon';
 
 const shouldIgnoreUnhandledRequest = (url: string) => {
@@ -14,8 +18,9 @@ const shouldIgnoreUnhandledRequest = (url: string) => {
     const { protocol, pathname } = new URL(url);
     const isExtension = protocol === 'chrome-extension:';
     const isStaticAsset = pathname.startsWith('/static/');
+    const isStoryIndex = pathname === '/index.json';
 
-    return isExtension || isStaticAsset;
+    return isExtension || isStaticAsset || isStoryIndex;
   } catch {
     return false;
   }
@@ -36,6 +41,24 @@ initialize({
   },
 });
 
+const toUrl = (asset: string | { src: string }) =>
+  typeof asset === 'string' ? asset : asset.src;
+
+const serveImage = (assetUrl: string, contentType: string) => async () => {
+  const res = await fetch(assetUrl);
+  const buffer = await res.arrayBuffer();
+
+  return new HttpResponse(buffer, {
+    headers: { 'Content-Type': contentType },
+  });
+};
+
+const imageHandlers = [
+  http.get('*/api/footy/player/:id/mugshot', serveImage(toUrl(mugshotImage), 'image/png')),
+  http.get('*/api/footy/club/:id/badge', serveImage(toUrl(badgeImage), 'image/png')),
+  http.get('*/api/footy/country/:code/flag', serveImage(toUrl(flagImage), 'image/png')),
+];
+
 const preview: Preview = {
   parameters: {
     controls: {
@@ -45,6 +68,9 @@ const preview: Preview = {
       },
     },
     layout: 'fullscreen',
+    msw: {
+      handlers: imageHandlers,
+    },
   },
   decorators: [
     (Story) => (

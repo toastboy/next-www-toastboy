@@ -22,8 +22,8 @@
     "test:coverage": "COVERAGE=true jest",
     "test:services:coverage": "COVERAGE=true jest --selectProjects services",
     "test:services": "jest --selectProjects services",
-    "test:storybook:update-snapshots": "concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"npm run build:storybook && npx http-server storybook-static --port 6006 --silent\" \"npx wait-on http://127.0.0.1:6006 && playwright test e2e/storybook.spec.ts --update-snapshots\"",
-    "test:storybook": "concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"npm run build:storybook && npx http-server storybook-static --port 6006 --silent\" \"npx wait-on http://127.0.0.1:6006 && playwright test e2e/storybook.spec.ts\"",
+    "test:storybook:update-snapshots": "concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"npm run build:storybook && npx http-server storybook-static --port 6006 --silent\" \"npx wait-on http://127.0.0.1:6006 && playwright test --project storybook e2e/storybook.spec.ts --update-snapshots\"",
+    "test:storybook": "concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"npm run build:storybook && npx http-server storybook-static --port 6006 --silent\" \"npx wait-on http://127.0.0.1:6006 && playwright test --project storybook e2e/storybook.spec.ts\"",
     "test:watch": "jest --watch --passWithNoTests",
     "test": "jest",
     "typecheck": "tsc --noEmit"

@@ -63,6 +63,13 @@ export default defineConfig({
       use: { ...devices['Desktop Safari'] },
     },
 
+    // Storybook tests don't need the Next.js webServer
+    {
+      name: 'storybook',
+      testMatch: /.*storybook\.spec\.ts/,
+      use: { ...devices['Desktop Chrome'] },
+    },
+
     /* Test against mobile viewports. */
     // {
     //   name: 'Mobile Chrome',

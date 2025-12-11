@@ -71,6 +71,7 @@ const YearSelector: React.FC<Props> = ({ activeYear, validYears }) => {
                     target={indicatorTarget}
                     parent={indicatorParent}
                     className={classes.indicator}
+                    bg="black"
                 />
             </Flex>
         </ScrollArea>

@@ -13,6 +13,21 @@ import type { Preview } from '@storybook/nextjs';
 import { http, HttpResponse } from 'msw';
 import { initialize, mswLoader } from 'msw-storybook-addon';
 
+// Suppress React DevTools disconnected port errors in Storybook
+if (typeof window !== 'undefined') {
+  const originalError = console.error;
+  console.error = (...args) => {
+    if (
+      typeof args[0] === 'string' &&
+      args[0].includes('disconnected port object')
+    ) {
+      return;
+    }
+    originalError.apply(console, args);
+  };
+}
+
+// Ignore unhandled requests for browser extensions, static assets, and Storybook internals
 const shouldIgnoreUnhandledRequest = (url: string) => {
   try {
     const { protocol, pathname } = new URL(url);

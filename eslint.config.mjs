@@ -276,6 +276,7 @@ const config = [
             "prisma/**",
             ".storybook/**",
             "src/stories/**",
+            "storybook-static/**",
         ],
     },
     // Optional stricter unsafe usage warnings (keep lightweight to avoid noise).

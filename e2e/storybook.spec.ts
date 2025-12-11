@@ -6,6 +6,7 @@ interface Story {
     name: string;
     importPath: string;
     tags?: string[];
+    type: string;
 }
 
 interface StorybookIndex {
@@ -21,14 +22,14 @@ test.describe('Storybook Stories', () => {
         // Fetch the Storybook index to get all stories
         const response = await request.get('http://127.0.0.1:6006/index.json');
         expect(response.ok()).toBeTruthy();
-        storybookIndex = await response.json();
+        storybookIndex = (await response.json()) as StorybookIndex;
 
         const allEntries = Object.values(storybookIndex.entries);
         console.log(`Total entries in index: ${allEntries.length}`);
 
         // Filter to only get actual stories (type: 'story'), not docs pages
         stories = allEntries.filter((entry) => {
-            return (entry as any).type === 'story';
+            return entry.type === 'story';
         });
 
         console.log(`Found ${stories.length} stories to test (filtered from ${allEntries.length} total entries)`);
@@ -37,7 +38,7 @@ test.describe('Storybook Stories', () => {
         }
     });
 
-    test('Storybook index is accessible', async () => {
+    test('Storybook index is accessible', () => {
         expect(storybookIndex).toBeDefined();
         expect(stories.length, 'No stories found in Storybook. Check that stories exist and are built correctly.').toBeGreaterThan(0);
     });
@@ -116,7 +117,7 @@ test.describe('Storybook Stories', () => {
                 );
 
                 // Wait for content to be visible
-                await page.waitForSelector('#storybook-root', { timeout: 5000 }).catch(() => { });
+                await page.waitForSelector('#storybook-root', { timeout: 5000 }).catch(() => { /* empty */ });
                 await page.waitForTimeout(300); // Let animations/styles settle
 
                 // Take a screenshot and compare with baseline

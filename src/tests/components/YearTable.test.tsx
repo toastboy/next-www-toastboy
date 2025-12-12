@@ -1,13 +1,13 @@
 jest.mock('components/TableQualified/TableQualified', () => {
     const MockTableQualified = () => <div data-testid="mock-table-qualified" />;
     MockTableQualified.displayName = 'MockTableQualified';
-    return MockTableQualified;
+    return { TableQualified: MockTableQualified };
 });
 
 import { render, screen } from '@testing-library/react';
 import { TableNameSchema } from 'prisma/generated/schemas';
 
-import YearTable from '@/components/YearTable/YearTable';
+import { YearTable } from '@/components/YearTable/YearTable';
 import { defaultPlayerRecordDataList } from '@/tests/mocks';
 
 import { Wrapper } from './lib/common';

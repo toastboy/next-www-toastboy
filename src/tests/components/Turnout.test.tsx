@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
-import Turnout from '@/components/Turnout/Turnout';
+import { Turnout } from '@/components/Turnout/Turnout';
 import { defaultTurnoutByYearList } from '@/tests/mocks';
 
 import { Wrapper } from './lib/common';

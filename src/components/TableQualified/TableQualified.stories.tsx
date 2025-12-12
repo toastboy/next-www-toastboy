@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs';
 
 import { defaultPlayerRecordDataList } from '@/tests/mocks/data/playerRecordData';
 
-import TableQualified from './TableQualified';
+import { TableQualified } from './TableQualified';
 
 const meta = {
     title: 'Tables/TableQualified',

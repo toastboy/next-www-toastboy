@@ -12,7 +12,7 @@ export interface Props {
     records: PlayerRecordDataType[];
 }
 
-const TableQualified: React.FC<Props> = ({ table, title, year, records }) => {
+export const TableQualified: React.FC<Props> = ({ table, title, year, records }) => {
     return (
         <Flex direction="column" gap="md">
             <Title order={1}>{title}</Title>
@@ -32,5 +32,3 @@ const TableQualified: React.FC<Props> = ({ table, title, year, records }) => {
         </Flex>
     );
 };
-
-export default TableQualified;

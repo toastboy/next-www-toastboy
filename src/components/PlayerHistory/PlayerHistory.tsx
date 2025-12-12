@@ -1,5 +1,5 @@
 import { Container } from '@mantine/core';
-import PlayerPositions from 'components/PlayerPositions/PlayerPositions';
+import { PlayerPositions } from 'components/PlayerPositions/PlayerPositions';
 import { PlayerResults } from 'components/PlayerResults/PlayerResults';
 import { YearSelector } from 'components/YearSelector/YearSelector';
 import { PlayerRecordType } from 'prisma/generated/schemas/models/PlayerRecord.schema';

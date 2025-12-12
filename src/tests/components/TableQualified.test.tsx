@@ -1,19 +1,19 @@
 jest.mock('components/PlayerLink/PlayerLink', () => {
     const MockPlayerLink = () => <div data-testid="mock-player-link" />;
     MockPlayerLink.displayName = 'MockPlayerLink';
-    return MockPlayerLink;
+    return { PlayerLink: MockPlayerLink };
 });
 
 jest.mock('components/TableScore/TableScore', () => {
     const MockTableScore = () => <div data-testid="mock-table-score" />;
     MockTableScore.displayName = 'MockTableScore';
-    return MockTableScore;
+    return { TableScore: MockTableScore };
 });
 
 import { render, screen } from '@testing-library/react';
 import { TableNameSchema } from 'prisma/generated/schemas';
 
-import TableQualified from '@/components/TableQualified/TableQualified';
+import { TableQualified } from '@/components/TableQualified/TableQualified';
 import { defaultPlayerRecordDataList } from '@/tests/mocks';
 
 import { Wrapper } from './lib/common';

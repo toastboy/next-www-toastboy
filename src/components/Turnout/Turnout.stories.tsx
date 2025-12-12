@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs';
 
 import { defaultTurnoutByYearList } from '@/tests/mocks';
 
-import Turnout from './Turnout';
+import { Turnout } from './Turnout';
 
 const meta = {
     title: 'Tables/Turnout',

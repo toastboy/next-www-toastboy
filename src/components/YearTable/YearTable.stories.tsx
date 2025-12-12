@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs';
 
 import { defaultPlayerRecordDataList } from '@/tests/mocks/data/playerRecordData';
 
-import YearTable from './YearTable';
+import { YearTable } from './YearTable';
 
 const meta = {
     title: 'Tables/YearTable',

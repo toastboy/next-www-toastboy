@@ -1,5 +1,5 @@
 import { Flex } from '@mantine/core';
-import TableQualified from 'components/TableQualified/TableQualified';
+import { TableQualified } from 'components/TableQualified/TableQualified';
 import config from 'lib/config';
 import { getYearName } from 'lib/utils';
 import { TableName, TableNameSchema } from 'prisma/generated/schemas';
@@ -13,7 +13,7 @@ export interface Props {
     unqualified: PlayerRecordDataType[];
 }
 
-const YearTable: React.FC<Props> = ({ table, year, qualified, unqualified }) => {
+export const YearTable: React.FC<Props> = ({ table, year, qualified, unqualified }) => {
     const utn = UnqualifiedTableName(table) ?? null;
 
     return (

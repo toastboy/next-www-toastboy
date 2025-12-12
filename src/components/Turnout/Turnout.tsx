@@ -5,7 +5,7 @@ export interface Props {
     turnout: TurnoutByYearType[],
 }
 
-const Turnout: React.FC<Props> = ({ turnout }) => {
+export const Turnout: React.FC<Props> = ({ turnout }) => {
     const rows = turnout.sort((a, b) => b.year - a.year).map((t) => (
         <TableTr key={t.year}>
             <TableTd>{t.year}</TableTd>
@@ -33,5 +33,3 @@ const Turnout: React.FC<Props> = ({ turnout }) => {
         </Table>
     );
 };
-
-export default Turnout;

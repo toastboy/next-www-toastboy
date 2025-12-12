@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
-import PlayerPositions from '@/components/PlayerPositions/PlayerPositions';
+import { PlayerPositions } from '@/components/PlayerPositions/PlayerPositions';
 import { defaultPlayerRecord } from '@/tests/mocks';
 
 import { Wrapper } from './lib/common';

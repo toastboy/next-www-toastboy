@@ -9,7 +9,7 @@ export interface Props {
     record: PlayerRecordType | null;
 }
 
-const PlayerPositions: React.FC<Props> = ({ playerName, year, record }) => {
+export const PlayerPositions: React.FC<Props> = ({ playerName, year, record }) => {
     return (
         <Table summary={`${playerName}'s ${getYearName(year)} table positions`}>
             <TableCaption>{getYearName(year)} Positions</TableCaption>
@@ -30,5 +30,3 @@ const PlayerPositions: React.FC<Props> = ({ playerName, year, record }) => {
         </Table>
     );
 };
-
-export default PlayerPositions;

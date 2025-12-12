@@ -1,32 +1,32 @@
 name: Reviewdog
 on:
-    push:
-    pull_request:
-    workflow_dispatch:
+  push:
+  pull_request:
+  workflow_dispatch:
 
 jobs:
-    eslint:
-        name: runner / eslint
-        runs-on: ubuntu-latest
-        permissions:
-            contents: read
-            pull-requests: write
-            checks: write
+  eslint:
+    name: runner / eslint
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      checks: write
 
-        steps:
-            - uses: actions/checkout@v6
+    steps:
+      - uses: actions/checkout@v6
 
-            - uses: actions/setup-node@v6
-              with:
-                  node-version: 20
-                  cache: "npm"
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 20
+          cache: "npm"
 
-            - run: npm ci
+      - run: npm ci
 
-            - name: Run ESLint with Reviewdog
-              uses: reviewdog/action-eslint@v1
-              with:
-                  github_token: ${{ secrets.GITHUB_TOKEN }}
-                  reporter: github-check
-                  eslint_flags: "."
-                  fail_level: error
+      - name: Run ESLint with Reviewdog
+        uses: reviewdog/action-eslint@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-check
+          eslint_flags: "."
+          fail_level: error

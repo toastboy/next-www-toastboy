@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs';
 
 import { defaultTeamPlayerList } from '@/tests/mocks';
 
-import Team from './Team';
+import { Team } from './Team';
 
 const meta = {
     title: 'Player/Team',

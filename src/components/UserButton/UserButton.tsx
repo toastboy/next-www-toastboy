@@ -11,7 +11,7 @@ import classes from './UserButton.module.css';
 
 export type Props = unknown;
 
-const UserButton: React.FC<Props> = () => {
+export const UserButton: React.FC<Props> = () => {
   const user = authClient.getUser();
   const router = useRouter();
 
@@ -148,5 +148,3 @@ const UserButton: React.FC<Props> = () => {
     </Menu>
   );
 };
-
-export default UserButton;

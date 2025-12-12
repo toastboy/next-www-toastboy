@@ -7,7 +7,7 @@ export interface Props {
     team: TeamPlayerType[];
 }
 
-const Team: React.FC<Props> = ({ team }) => {
+export const Team: React.FC<Props> = ({ team }) => {
     return (
         <Paper p="md" shadow="xl">
             <Flex direction="column" gap="md">
@@ -21,5 +21,3 @@ const Team: React.FC<Props> = ({ team }) => {
         </Paper>
     );
 };
-
-export default Team;

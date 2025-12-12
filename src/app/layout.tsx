@@ -6,7 +6,7 @@ import '@mantine/tiptap/styles.css';
 
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from "@mantine/notifications";
-import CustomAppShell from 'components/CustomAppShell/CustomAppShell';
+import { CustomAppShell } from 'components/CustomAppShell/CustomAppShell';
 import type { Metadata } from 'next';
 
 // Default to dynamic rendering for all pages

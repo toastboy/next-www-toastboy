@@ -8,7 +8,7 @@ export interface Props {
     children: React.ReactNode;
 }
 
-const CustomAppShell: React.FC<Props> = ({ children }) => {
+export const CustomAppShell: React.FC<Props> = ({ children }) => {
     const [opened, { toggle }] = useDisclosure();
 
     return (
@@ -62,5 +62,3 @@ const CustomAppShell: React.FC<Props> = ({ children }) => {
         </AppShell>
     );
 };
-
-export default CustomAppShell;

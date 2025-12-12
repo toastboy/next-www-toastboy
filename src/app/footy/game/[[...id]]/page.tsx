@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic';
 
 import { Anchor, Flex } from "@mantine/core";
-import GameDaySummary from "components/GameDaySummary/GameDaySummary";
+import { GameDaySummary } from "components/GameDaySummary/GameDaySummary";
 import { notFound, redirect } from "next/navigation";
 import gameDayService from "services/GameDay";
 

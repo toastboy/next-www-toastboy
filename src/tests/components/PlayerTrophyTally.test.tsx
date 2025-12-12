@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { TableNameSchema } from 'prisma/generated/schemas';
 
-import PlayerTrophyTally from '@/components/PlayerTrophyTally/PlayerTrophyTally';
+import { PlayerTrophyTally } from '@/components/PlayerTrophyTally/PlayerTrophyTally';
 import { defaultPlayerRecord } from '@/tests/mocks';
 
 import { Wrapper } from './lib/common';

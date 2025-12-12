@@ -1,7 +1,7 @@
 import { Text } from '@mantine/core';
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
-import CustomAppShell from './CustomAppShell';
+import { CustomAppShell } from './CustomAppShell';
 
 const meta = {
     title: 'Layout/CustomAppShell',

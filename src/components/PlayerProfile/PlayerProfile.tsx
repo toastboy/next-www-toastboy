@@ -8,7 +8,7 @@ import { PlayerForm } from 'components/PlayerForm/PlayerForm';
 import PlayerHistory from 'components/PlayerHistory/PlayerHistory';
 import PlayerLastPlayed from 'components/PlayerLastPlayed/PlayerLastPlayed';
 import { PlayerMugshot } from 'components/PlayerMugshot/PlayerMugshot';
-import PlayerTrophies from 'components/PlayerTrophies/PlayerTrophies';
+import { PlayerTrophies } from 'components/PlayerTrophies/PlayerTrophies';
 import { ArseType } from 'prisma/generated/schemas/models/Arse.schema';
 import { PlayerType } from 'prisma/generated/schemas/models/Player.schema';
 import { PlayerRecordType } from 'prisma/generated/schemas/models/PlayerRecord.schema';

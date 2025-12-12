@@ -1,6 +1,6 @@
 import { Stack } from '@mantine/core';
 import { TableName } from '@prisma/client';
-import PlayerTrophyTally from 'components/PlayerTrophyTally/PlayerTrophyTally';
+import { PlayerTrophyTally } from 'components/PlayerTrophyTally/PlayerTrophyTally';
 import { TableNameSchema } from 'prisma/generated/schemas';
 import { PlayerRecordType } from 'prisma/generated/schemas/models/PlayerRecord.schema';
 
@@ -8,7 +8,7 @@ export interface Props {
     trophies: Map<TableName, PlayerRecordType[]>;
 }
 
-const PlayerTrophies: React.FC<Props> = ({ trophies }) => {
+export const PlayerTrophies: React.FC<Props> = ({ trophies }) => {
     return (
         <Stack gap="xs">
             {TableNameSchema.options.map((table) => (
@@ -21,5 +21,3 @@ const PlayerTrophies: React.FC<Props> = ({ trophies }) => {
         </Stack>
     );
 };
-
-export default PlayerTrophies;

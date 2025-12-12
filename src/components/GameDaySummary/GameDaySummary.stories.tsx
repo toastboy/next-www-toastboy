@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs';
 import { defaultGameDay } from '@/tests/mocks';
 import { defaultTeamPlayerList } from '@/tests/mocks/data/teamPlayer';
 
-import GameDaySummary from './GameDaySummary';
+import { GameDaySummary } from './GameDaySummary';
 
 const meta = {
     title: 'GameDay/GameDaySummary',

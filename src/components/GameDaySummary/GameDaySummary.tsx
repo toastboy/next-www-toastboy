@@ -1,5 +1,5 @@
 import { Flex, Text, Title } from '@mantine/core';
-import Team from 'components/Team/Team';
+import { Team } from 'components/Team/Team';
 import { GameDayType } from 'prisma/generated/schemas/models/GameDay.schema';
 
 import { TeamPlayerType } from '@/types';
@@ -10,7 +10,7 @@ export interface Props {
     teamB: TeamPlayerType[];
 }
 
-const GameDaySummary: React.FC<Props> = ({ gameDay, teamA, teamB }) => {
+export const GameDaySummary: React.FC<Props> = ({ gameDay, teamA, teamB }) => {
     if (!gameDay.game) {
         return (
             <Flex>
@@ -30,5 +30,3 @@ const GameDaySummary: React.FC<Props> = ({ gameDay, teamA, teamB }) => {
         </Flex>
     );
 };
-
-export default GameDaySummary;

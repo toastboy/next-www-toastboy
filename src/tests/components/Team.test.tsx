@@ -1,12 +1,12 @@
 jest.mock('components/TeamPlayer/TeamPlayer', () => {
     const MockTeamPlayer = () => <div data-testid="mock-team-player" />;
     MockTeamPlayer.displayName = 'MockTeamPlayer';
-    return MockTeamPlayer;
+    return { TeamPlayer: MockTeamPlayer };
 });
 
 import { render, screen } from '@testing-library/react';
 
-import Team from '@/components/Team/Team';
+import { Team } from '@/components/Team/Team';
 import { defaultTeamPlayerList } from '@/tests/mocks';
 
 import { Wrapper } from './lib/common';

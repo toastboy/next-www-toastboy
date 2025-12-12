@@ -6,7 +6,7 @@ jest.mock('components/NavBarNested/NavBarNested', () => {
 
 import { render, screen } from '@testing-library/react';
 
-import CustomAppShell from '@/components/CustomAppShell/CustomAppShell';
+import { CustomAppShell } from '@/components/CustomAppShell/CustomAppShell';
 
 import { Wrapper } from './lib/common';
 

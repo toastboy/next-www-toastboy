@@ -8,7 +8,7 @@ export interface Props {
     trophies: PlayerRecordType[];
 }
 
-const PlayerTrophyTally: React.FC<Props> = ({ table, trophies }) => {
+export const PlayerTrophyTally: React.FC<Props> = ({ table, trophies }) => {
     const icon = (() => {
         switch (table) {
             case TableNameSchema.enum.points:
@@ -49,5 +49,3 @@ const PlayerTrophyTally: React.FC<Props> = ({ table, trophies }) => {
         </Flex>
     );
 };
-
-export default PlayerTrophyTally;

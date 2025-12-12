@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs';
 
 import { defaultTrophiesList } from '@/tests/mocks';
 
-import PlayerTrophies from './PlayerTrophies';
+import { PlayerTrophies } from './PlayerTrophies';
 
 const meta = {
     title: 'Player/PlayerTrophies',

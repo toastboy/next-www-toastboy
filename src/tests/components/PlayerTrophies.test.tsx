@@ -1,12 +1,12 @@
 jest.mock('components/PlayerTrophyTally/PlayerTrophyTally', () => {
     const MockPlayerTrophyTally = () => <div data-testid="mock-player-trophy-tally" />;
     MockPlayerTrophyTally.displayName = 'MockPlayerTrophyTally';
-    return MockPlayerTrophyTally;
+    return { PlayerTrophyTally: MockPlayerTrophyTally };
 });
 
 import { render, screen } from '@testing-library/react';
 
-import PlayerTrophies from '@/components/PlayerTrophies/PlayerTrophies';
+import { PlayerTrophies } from '@/components/PlayerTrophies/PlayerTrophies';
 import { defaultTrophiesList } from '@/tests/mocks';
 
 import { Wrapper } from './lib/common';

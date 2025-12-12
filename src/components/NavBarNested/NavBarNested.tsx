@@ -1,7 +1,7 @@
 "use client";
 
 import { Box, ScrollArea } from '@mantine/core';
-import UserButton from 'components/UserButton/UserButton';
+import { UserButton } from 'components/UserButton/UserButton';
 
 import NavBarLinksGroup from '../NavBarLinksGroup/NavBarLinksGroup';
 import classes from './NavBarNested.module.css';

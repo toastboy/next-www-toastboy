@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
-import GameDaySummary from '@/components/GameDaySummary/GameDaySummary';
+import { GameDaySummary } from '@/components/GameDaySummary/GameDaySummary';
 import { defaultGameDay, defaultTeamPlayerList } from '@/tests/mocks';
 
 import { Wrapper } from './lib/common';
@@ -8,7 +8,7 @@ import { Wrapper } from './lib/common';
 jest.mock('components/Team/Team', () => {
     const MockTeam = () => <div data-testid="mock-team" />;
     MockTeam.displayName = 'MockTeam';
-    return MockTeam;
+    return { Team: MockTeam };
 });
 
 describe('GameDaySummary', () => {

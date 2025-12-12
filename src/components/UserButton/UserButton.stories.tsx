@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
-import UserButton from './UserButton';
+import { UserButton } from './UserButton';
 
 declare global {
     interface Window {

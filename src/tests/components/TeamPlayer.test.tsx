@@ -1,16 +1,16 @@
-jest.mock('components/PlayerForm/PlayerForm', () => {
+jest.mock('@/components/PlayerForm/PlayerForm', () => {
     const MockPlayerForm = () => <div data-testid="mock-player-form" />;
     MockPlayerForm.displayName = 'MockPlayerForm';
     return { PlayerForm: MockPlayerForm };
 });
 
-jest.mock('components/PlayerLink/PlayerLink', () => {
+jest.mock('@/components/PlayerLink/PlayerLink', () => {
     const MockPlayerLink = () => <div data-testid="mock-player-link" />;
     MockPlayerLink.displayName = 'MockPlayerLink';
     return { PlayerLink: MockPlayerLink };
 });
 
-jest.mock('components/PlayerMugshot/PlayerMugshot', () => {
+jest.mock('@/components/PlayerMugshot/PlayerMugshot', () => {
     const MockPlayerMugshot = () => <div data-testid="mock-player-mugshot" />;
     MockPlayerMugshot.displayName = 'MockPlayerMugshot';
     return { PlayerMugshot: MockPlayerMugshot };

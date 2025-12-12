@@ -1,4 +1,4 @@
-jest.mock('components/PlayerLink/PlayerLink', () => {
+jest.mock('@/components/PlayerLink/PlayerLink', () => {
     const MockPlayerLink = () => <div data-testid="mock-player-link" />;
     MockPlayerLink.displayName = 'MockPlayerLink';
     return { PlayerLink: MockPlayerLink };

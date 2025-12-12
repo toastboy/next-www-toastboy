@@ -1,4 +1,4 @@
-jest.mock('components/TableQualified/TableQualified', () => {
+jest.mock('@/components/TableQualified/TableQualified', () => {
     const MockTableQualified = () => <div data-testid="mock-table-qualified" />;
     MockTableQualified.displayName = 'MockTableQualified';
     return { TableQualified: MockTableQualified };

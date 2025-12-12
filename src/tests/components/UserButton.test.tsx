@@ -1,4 +1,4 @@
-jest.mock('lib/auth-client', () => ({
+jest.mock('@/lib/auth-client', () => ({
     authClient: {
         useSession: jest.fn(),
     },

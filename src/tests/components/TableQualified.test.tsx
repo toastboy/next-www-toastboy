@@ -1,10 +1,10 @@
-jest.mock('components/PlayerLink/PlayerLink', () => {
+jest.mock('@/components/PlayerLink/PlayerLink', () => {
     const MockPlayerLink = () => <div data-testid="mock-player-link" />;
     MockPlayerLink.displayName = 'MockPlayerLink';
     return { PlayerLink: MockPlayerLink };
 });
 
-jest.mock('components/TableScore/TableScore', () => {
+jest.mock('@/components/TableScore/TableScore', () => {
     const MockTableScore = () => <div data-testid="mock-table-score" />;
     MockTableScore.displayName = 'MockTableScore';
     return { TableScore: MockTableScore };

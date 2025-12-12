@@ -5,7 +5,7 @@ import { defaultGameDay, defaultTeamPlayerList } from '@/tests/mocks';
 
 import { Wrapper } from './lib/common';
 
-jest.mock('components/Team/Team', () => {
+jest.mock('@/components/Team/Team', () => {
     const MockTeam = () => <div data-testid="mock-team" />;
     MockTeam.displayName = 'MockTeam';
     return { Team: MockTeam };

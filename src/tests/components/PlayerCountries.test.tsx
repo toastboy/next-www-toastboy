@@ -1,4 +1,4 @@
-jest.mock('components/CountryFlag/CountryFlag', () => {
+jest.mock('@/components/CountryFlag/CountryFlag', () => {
     const MockCountryFlag = () => <div data-testid="mock-country-flag" />;
     MockCountryFlag.displayName = 'MockCountryFlag';
     return { CountryFlag: MockCountryFlag };

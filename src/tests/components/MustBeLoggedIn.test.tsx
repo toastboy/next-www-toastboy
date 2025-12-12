@@ -1,10 +1,10 @@
-jest.mock('components/SignIn/SignIn', () => {
+jest.mock('@/components/SignIn/SignIn', () => {
     const MockSignIn = () => <div data-testid="mock-sign-in" />;
     MockSignIn.displayName = 'MockSignIn';
     return { SignIn: MockSignIn };
 });
 
-jest.mock('lib/authClient', () => ({
+jest.mock('@/lib/authClient', () => ({
     authClient: {
         useSession: jest.fn(),
         isLoggedIn: jest.fn().mockImplementation((session) => session?.data?.user != null),

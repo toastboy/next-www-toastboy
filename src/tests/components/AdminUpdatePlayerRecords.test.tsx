@@ -9,7 +9,7 @@ import { AdminUpdatePlayerRecords } from '@/components/AdminUpdatePlayerRecords/
 import { Wrapper } from "./lib/common";
 
 jest.mock('next/cache');
-jest.mock('services/PlayerRecord');
+jest.mock('@/services/PlayerRecord');
 
 describe('AdminUpdatePlayerRecords', () => {
     const mutateMock = jest.fn().mockResolvedValue(undefined);

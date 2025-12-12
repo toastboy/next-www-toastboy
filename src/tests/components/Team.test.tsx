@@ -1,4 +1,4 @@
-jest.mock('components/TeamPlayer/TeamPlayer', () => {
+jest.mock('@/components/TeamPlayer/TeamPlayer', () => {
     const MockTeamPlayer = () => <div data-testid="mock-team-player" />;
     MockTeamPlayer.displayName = 'MockTeamPlayer';
     return { TeamPlayer: MockTeamPlayer };

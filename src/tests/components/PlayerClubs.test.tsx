@@ -1,4 +1,4 @@
-jest.mock('components/ClubBadge/ClubBadge', () => {
+jest.mock('@/components/ClubBadge/ClubBadge', () => {
     const MockClubBadge = () => <div data-testid="mock-club-badge" />;
     MockClubBadge.displayName = 'MockClubBadge';
     return { ClubBadge: MockClubBadge };

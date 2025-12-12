@@ -4,7 +4,7 @@ import { AdminExportAuth } from '@/components/AdminExportAuth/AdminExportAuth';
 
 import { Wrapper } from './lib/common';
 
-jest.mock('actions/auth-export', () => ({
+jest.mock('@/actions/auth-export', () => ({
     authExport: jest.fn().mockResolvedValue(undefined),
 }));
 

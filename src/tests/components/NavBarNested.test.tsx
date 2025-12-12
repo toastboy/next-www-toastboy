@@ -4,7 +4,7 @@ import { NavBarNested } from '@/components/NavBarNested/NavBarNested';
 
 import { Wrapper } from "./lib/common";
 
-jest.mock('components/UserButton/UserButton', () => {
+jest.mock('@/components/UserButton/UserButton', () => {
     const MockUserButton = () => <div data-testid="mock-user-button" />;
     MockUserButton.displayName = 'MockUserButton';
     return { UserButton: MockUserButton };

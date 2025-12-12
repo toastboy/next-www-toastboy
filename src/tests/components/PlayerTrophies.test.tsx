@@ -1,4 +1,4 @@
-jest.mock('components/PlayerTrophyTally/PlayerTrophyTally', () => {
+jest.mock('@/components/PlayerTrophyTally/PlayerTrophyTally', () => {
     const MockPlayerTrophyTally = () => <div data-testid="mock-player-trophy-tally" />;
     MockPlayerTrophyTally.displayName = 'MockPlayerTrophyTally';
     return { PlayerTrophyTally: MockPlayerTrophyTally };

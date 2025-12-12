@@ -3,7 +3,7 @@ jest.mock('next/navigation', () => ({
     usePathname: () => '/footy/auth/signin',
 }));
 
-jest.mock('lib/authClient', () => ({
+jest.mock('@/lib/authClient', () => ({
     authClient: {
         signInWithEmail: jest.fn(),
         useSession: jest.fn(() => ({

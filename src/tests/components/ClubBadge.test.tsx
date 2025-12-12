@@ -1,4 +1,4 @@
-jest.mock('services/Club', () => ({
+jest.mock('@/services/Club', () => ({
     __esModule: true,
     default: { get: jest.fn() },
 }));

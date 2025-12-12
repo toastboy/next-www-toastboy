@@ -1,5 +1,6 @@
 import { Flex } from '@mantine/core';
 import { CountryFlag } from 'components/CountryFlag/CountryFlag';
+import { Activity } from 'react';
 
 import { CountrySupporterDataType } from '@/types';
 
@@ -8,16 +9,16 @@ export interface Props {
 }
 
 export const PlayerCountries: React.FC<Props> = ({ countries }) => {
-    if (countries.length === 0) return <></>;
-
     return (
-        <Flex gap="xs" p="xs" direction="column">
-            {countries.map((item) => (
-                <CountryFlag
-                    key={item.countryISOCode}
-                    country={item.country}
-                />
-            ))}
-        </Flex>
+        <Activity mode={countries.length > 0 ? 'visible' : 'hidden'}>
+            <Flex gap="xs" p="xs" direction="column">
+                {countries.map((item) => (
+                    <CountryFlag
+                        key={item.countryISOCode}
+                        country={item.country}
+                    />
+                ))}
+            </Flex>
+        </Activity>
     );
 };

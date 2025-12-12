@@ -235,8 +235,6 @@ async function getResponse(event, client, requestId, requestInterceptedAt) {
       }
     }
 
-    console.log('[MSW] Passthrough request to:', requestClone.url);
-
     return fetch(requestClone, { headers })
   }
 

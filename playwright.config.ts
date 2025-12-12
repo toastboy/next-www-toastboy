@@ -1,4 +1,12 @@
+import path from 'node:path';
+
 import { defineConfig, devices } from '@playwright/test';
+
+// Extract base URL to a constant to avoid duplication.
+const BASE_URL = 'http://127.0.0.1:3000';
+
+// Extract env file path using robust path resolution.
+const ENV_PATH = path.join(__dirname, '.env');
 
 /**
  * Read environment variables from file.
@@ -34,7 +42,7 @@ export default defineConfig({
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   use: {
     /* Base URL to use in actions like `await page.goto('/')`. */
-    baseURL: 'http://127.0.0.1:3000',
+    baseURL: BASE_URL,
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
     trace: 'on-first-retry',
@@ -99,8 +107,8 @@ export default defineConfig({
   webServer: process.env.SKIP_WEBSERVER ? undefined : {
     command: process.env.CI
       ? 'npm run start:ci'
-      : 'op run --env-file ./.env -- npm run dev',
-    url: 'http://127.0.0.1:3000',
+      : `op run --env-file ${ENV_PATH} -- npm run dev`,
+    url: BASE_URL,
     stdout: 'pipe',
     stderr: 'pipe',
     // See https://playwright.dev/docs/test-advanced

@@ -6,7 +6,7 @@ jest.mock('components/GameDayLink/GameDayLink', () => {
 
 import { render, screen } from '@testing-library/react';
 
-import PlayerForm from '@/components/PlayerForm/PlayerForm';
+import { PlayerForm } from '@/components/PlayerForm/PlayerForm';
 import { defaultPlayerFormList } from '@/tests/mocks';
 
 import { Wrapper } from './lib/common';

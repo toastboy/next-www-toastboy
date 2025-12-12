@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs';
 
 import { defaultPlayer } from '@/tests/mocks';
 
-import PlayerLink from './PlayerLink';
+import { PlayerLink } from './PlayerLink';
 
 const meta = {
     title: 'Player/PlayerLink',

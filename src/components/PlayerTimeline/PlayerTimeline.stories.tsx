@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
-import PlayerTimeline from './PlayerTimeline';
+import { PlayerTimeline } from './PlayerTimeline';
 
 const samplePlayer = {
     id: 1,

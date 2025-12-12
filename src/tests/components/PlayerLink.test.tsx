@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
-import PlayerLink from '@/components/PlayerLink/PlayerLink';
+import { PlayerLink } from '@/components/PlayerLink/PlayerLink';
 import { defaultPlayer } from '@/tests/mocks';
 
 import { Wrapper } from './lib/common';

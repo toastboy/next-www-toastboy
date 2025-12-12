@@ -1,5 +1,5 @@
 import { Paper, Table, TableTbody, TableTd, TableTh, TableThead, TableTr, Title } from '@mantine/core';
-import PlayerLink from 'components/PlayerLink/PlayerLink';
+import { PlayerLink } from 'components/PlayerLink/PlayerLink';
 import { TableName } from 'prisma/generated/schemas';
 
 import { PlayerRecordDataType } from '@/types';

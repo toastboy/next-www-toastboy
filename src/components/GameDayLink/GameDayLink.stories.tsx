@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs';
 
 import { defaultGameDay } from '@/tests/mocks';
 
-import GameDayLink from './GameDayLink';
+import { GameDayLink } from './GameDayLink';
 
 const meta = {
     title: 'GameDay/GameDayLink',

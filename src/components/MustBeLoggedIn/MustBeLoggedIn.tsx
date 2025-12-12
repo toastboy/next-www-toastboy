@@ -30,7 +30,7 @@ export interface Props {
  * - If the user is not authenticated and `showSignIn` is `true`, a `SignIn` component is rendered with an appropriate message.
  * - If the user is authenticated, the child components are rendered within a `Suspense` boundary.
  */
-function MustBeLoggedIn({ children, admin = false, showSignIn = true, onValidationChange }: Props) {
+export const MustBeLoggedIn: React.FC<Props> = ({ children, admin = false, showSignIn = true, onValidationChange }) => {
     const [isValid, setIsValid] = useState<boolean | null>(null);
     const session = authClient.useSession();
 
@@ -71,6 +71,4 @@ function MustBeLoggedIn({ children, admin = false, showSignIn = true, onValidati
             {children}
         </Suspense>
     );
-}
-
-export default MustBeLoggedIn;
+};

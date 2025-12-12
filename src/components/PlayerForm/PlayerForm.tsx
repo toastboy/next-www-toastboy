@@ -1,5 +1,5 @@
 import { ProgressRoot, ProgressSection } from '@mantine/core';
-import GameDayLink from 'components/GameDayLink/GameDayLink';
+import { GameDayLink } from 'components/GameDayLink/GameDayLink';
 import { Key } from 'react';
 import { PlayerFormType } from 'types';
 
@@ -7,7 +7,7 @@ export interface Props {
     form: PlayerFormType[],
 }
 
-const PlayerForm: React.FC<Props> = ({ form }) => {
+export const PlayerForm: React.FC<Props> = ({ form }) => {
     const colors = new Map<number | null | undefined, string>([
         [null, 'gray'],
         [undefined, 'gray'],
@@ -30,5 +30,3 @@ const PlayerForm: React.FC<Props> = ({ form }) => {
         </ProgressRoot>
     );
 };
-
-export default PlayerForm;

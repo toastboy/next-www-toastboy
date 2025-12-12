@@ -2,8 +2,8 @@
 
 import { Anchor, Button, Checkbox, Flex, RangeSlider, Switch, Table, Text, TextInput, Title, Tooltip } from '@mantine/core';
 import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
-import MustBeLoggedIn from 'components/MustBeLoggedIn/MustBeLoggedIn';
-import PlayerTimeline from 'components/PlayerTimeline/PlayerTimeline';
+import { MustBeLoggedIn } from 'components/MustBeLoggedIn/MustBeLoggedIn';
+import { PlayerTimeline } from 'components/PlayerTimeline/PlayerTimeline';
 import PlayerWDLChart from 'components/PlayerWDLChart/PlayerWDLChart';
 import SendEmailForm from 'components/SendEmailForm/SendEmailForm';
 import { useCurrentGame, usePlayers } from 'lib/swr';

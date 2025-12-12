@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
-import PlayerMugshot from '@/components/PlayerMugshot/PlayerMugshot';
+import { PlayerMugshot } from '@/components/PlayerMugshot/PlayerMugshot';
 import { defaultPlayer } from '@/tests/mocks';
 
 import { Wrapper } from './lib/common';

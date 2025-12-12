@@ -8,7 +8,7 @@ import { useEffect } from 'react';
 
 export type Props = unknown;
 
-const AdminUpdatePlayerRecords: React.FC<Props> = () => {
+export const AdminUpdatePlayerRecords: React.FC<Props> = () => {
     const { data, mutate } = useRecordsProgress();
 
     useEffect(() => {
@@ -75,5 +75,3 @@ const AdminUpdatePlayerRecords: React.FC<Props> = () => {
         </>
     );
 };
-
-export default AdminUpdatePlayerRecords;

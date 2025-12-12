@@ -1,4 +1,4 @@
-import MustBeLoggedIn from 'components/MustBeLoggedIn/MustBeLoggedIn';
+import { MustBeLoggedIn } from 'components/MustBeLoggedIn/MustBeLoggedIn';
 import NYI from 'components/NYI/NYI';
 
 type Props = object;

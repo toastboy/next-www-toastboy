@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
-import GameDayLink from '@/components/GameDayLink/GameDayLink';
+import { GameDayLink } from '@/components/GameDayLink/GameDayLink';
 import { defaultGameDay } from '@/tests/mocks';
 
 import { Wrapper } from './lib/common';

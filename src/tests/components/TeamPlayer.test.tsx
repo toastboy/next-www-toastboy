@@ -1,24 +1,24 @@
 jest.mock('components/PlayerForm/PlayerForm', () => {
     const MockPlayerForm = () => <div data-testid="mock-player-form" />;
     MockPlayerForm.displayName = 'MockPlayerForm';
-    return MockPlayerForm;
+    return { PlayerForm: MockPlayerForm };
 });
 
 jest.mock('components/PlayerLink/PlayerLink', () => {
     const MockPlayerLink = () => <div data-testid="mock-player-link" />;
     MockPlayerLink.displayName = 'MockPlayerLink';
-    return MockPlayerLink;
+    return { PlayerLink: MockPlayerLink };
 });
 
 jest.mock('components/PlayerMugshot/PlayerMugshot', () => {
     const MockPlayerMugshot = () => <div data-testid="mock-player-mugshot" />;
     MockPlayerMugshot.displayName = 'MockPlayerMugshot';
-    return MockPlayerMugshot;
+    return { PlayerMugshot: MockPlayerMugshot };
 });
 
 import { render, screen } from '@testing-library/react';
 
-import TeamPlayer from '@/components/TeamPlayer/TeamPlayer';
+import { TeamPlayer } from '@/components/TeamPlayer/TeamPlayer';
 import { defaultTeamPlayer } from '@/tests/mocks';
 
 import { Wrapper } from './lib/common';

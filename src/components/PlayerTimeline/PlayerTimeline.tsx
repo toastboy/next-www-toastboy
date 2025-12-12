@@ -6,7 +6,7 @@ export interface Props {
     currentGameId: number;
 }
 
-const PlayerTimeline: React.FC<Props> = ({ player, currentGameId }) => {
+export const PlayerTimeline: React.FC<Props> = ({ player, currentGameId }) => {
     const firstGame = 1;
     const lastGame = currentGameId;
 
@@ -20,5 +20,3 @@ const PlayerTimeline: React.FC<Props> = ({ player, currentGameId }) => {
         </ProgressRoot>
     );
 };
-
-export default PlayerTimeline;

@@ -1,20 +1,20 @@
 jest.mock('components/SignIn/SignIn', () => {
     const MockSignIn = () => <div data-testid="mock-sign-in" />;
     MockSignIn.displayName = 'MockSignIn';
-    return MockSignIn;
+    return { SignIn: MockSignIn };
 });
 
 jest.mock('lib/authClient', () => ({
     authClient: {
         useSession: jest.fn(),
-        isLoggedIn: jest.fn(() => true),
-        isAdmin: jest.fn(() => false),
+        isLoggedIn: jest.fn().mockImplementation((session) => session?.data?.user != null),
+        isAdmin: jest.fn().mockImplementation((session) => session?.data?.user?.role === 'admin'),
     },
 }));
 
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 
-import MustBeLoggedIn from '@/components/MustBeLoggedIn/MustBeLoggedIn';
+import { MustBeLoggedIn } from '@/components/MustBeLoggedIn/MustBeLoggedIn';
 import { authClient } from '@/lib/authClient';
 
 import { Wrapper } from './lib/common';
@@ -29,7 +29,7 @@ describe('MustBeLoggedIn', () => {
         });
     });
 
-    it('renders children when user is logged in', () => {
+    it('renders children when user is logged in', async () => {
         render(
             <Wrapper>
                 <MustBeLoggedIn>
@@ -38,7 +38,9 @@ describe('MustBeLoggedIn', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByText('Protected Content')).toBeInTheDocument();
+        await waitFor(() => {
+            expect(screen.getByText('Protected Content')).toBeInTheDocument();
+        });
     });
 
     it('renders sign in when user is not logged in', () => {

@@ -1,7 +1,7 @@
 import { Card, Text } from '@mantine/core';
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
-import MustBeLoggedIn from './MustBeLoggedIn';
+import { MustBeLoggedIn } from './MustBeLoggedIn';
 
 const withMockAuth = () => {
     if (typeof window !== 'undefined') {

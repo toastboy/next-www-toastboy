@@ -6,12 +6,10 @@ export interface Props {
     year: number;
 }
 
-const PlayerLink: React.FC<Props> = ({ player, year }) => {
+export const PlayerLink: React.FC<Props> = ({ player, year }) => {
     return (
         <Anchor href={`/footy/player/${player.id}${year ? `/${year}` : ''}`} >
             {player.name}
         </Anchor>
     );
 };
-
-export default PlayerLink;

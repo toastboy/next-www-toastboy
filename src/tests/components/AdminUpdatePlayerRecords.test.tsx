@@ -4,7 +4,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { act } from 'react';
 import useSWR from 'swr';
 
-import AdminUpdatePlayerRecords from '@/components/AdminUpdatePlayerRecords/AdminUpdatePlayerRecords';
+import { AdminUpdatePlayerRecords } from '@/components/AdminUpdatePlayerRecords/AdminUpdatePlayerRecords';
 
 import { Wrapper } from "./lib/common";
 

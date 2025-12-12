@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
-import RelativeTime from '@/components/RelativeTime/RelativeTime';
+import { RelativeTime } from '@/components/RelativeTime/RelativeTime';
 
 import { Wrapper } from './lib/common';
 
@@ -13,7 +13,7 @@ describe('RelativeTime', () => {
             </Wrapper>,
         );
 
-        const text = screen.getByRole('generic');
+        const text = screen.getByText(/ago/);
         expect(text).toBeInTheDocument();
     });
 });

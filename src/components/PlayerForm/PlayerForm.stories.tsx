@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs';
 
 import { defaultPlayerFormList } from '@/tests/mocks';
 
-import PlayerForm from './PlayerForm';
+import { PlayerForm } from './PlayerForm';
 
 const meta = {
     title: 'Player/PlayerForm',

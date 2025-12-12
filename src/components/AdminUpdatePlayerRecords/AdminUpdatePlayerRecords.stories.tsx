@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 import { http, HttpResponse } from 'msw';
 
-import AdminUpdatePlayerRecords from './AdminUpdatePlayerRecords';
+import { AdminUpdatePlayerRecords } from './AdminUpdatePlayerRecords';
 
 
 const meta = {

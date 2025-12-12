@@ -10,7 +10,7 @@ export interface Props {
     date: Date | string | number;
 }
 
-const RelativeTime: React.FC<Props> = ({ date }) => {
+export const RelativeTime: React.FC<Props> = ({ date }) => {
     const formattedDate = dayjs(date);
     const relativeTime = formattedDate.fromNow();
 
@@ -20,5 +20,3 @@ const RelativeTime: React.FC<Props> = ({ date }) => {
         </Tooltip>
     );
 };
-
-export default RelativeTime;

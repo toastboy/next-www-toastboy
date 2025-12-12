@@ -4,7 +4,7 @@ import { CodeHighlight } from '@mantine/code-highlight';
 import { Center, Container, Text, Title } from '@mantine/core';
 import * as Sentry from '@sentry/react';
 import { UserWithRole } from 'better-auth/plugins/admin';
-import MustBeLoggedIn from 'components/MustBeLoggedIn/MustBeLoggedIn';
+import { MustBeLoggedIn } from 'components/MustBeLoggedIn/MustBeLoggedIn';
 import { authClient } from 'lib/authClient';
 import { use, useEffect, useState } from 'react';
 

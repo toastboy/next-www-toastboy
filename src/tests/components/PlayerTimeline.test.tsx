@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 
-import PlayerTimeline from '@/components/PlayerTimeline/PlayerTimeline';
+import { PlayerTimeline } from '@/components/PlayerTimeline/PlayerTimeline';
 import { defaultPlayerData } from '@/tests/mocks';
 
 import { Wrapper } from './lib/common';

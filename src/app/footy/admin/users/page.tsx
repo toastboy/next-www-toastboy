@@ -5,7 +5,7 @@ import * as Sentry from '@sentry/react';
 import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
 import { UserWithRole } from 'better-auth/plugins/admin';
 import MustBeLoggedIn from 'components/MustBeLoggedIn/MustBeLoggedIn';
-import { RelativeTime } from 'components/RelativeTime/RelativeTime';
+import RelativeTime from 'components/RelativeTime/RelativeTime';
 import { authClient } from 'lib/authClient';
 import { useEffect, useState } from 'react';
 

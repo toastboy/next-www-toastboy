@@ -1,7 +1,7 @@
 import { PlayerSchema } from 'prisma/generated/schemas';
 import { z } from 'zod';
 
-export const PlayerDataSchema = z.object({
+export const PlayerDataSchema = PlayerSchema.extend({
     firstResponded: z.number().nullable(),
     lastResponded: z.number().nullable(),
     firstPlayed: z.number().nullable(),
@@ -10,6 +10,6 @@ export const PlayerDataSchema = z.object({
     gamesWon: z.number(),
     gamesDrawn: z.number(),
     gamesLost: z.number(),
-}).merge(PlayerSchema);
+});
 
 export type PlayerDataType = z.infer<typeof PlayerDataSchema>;

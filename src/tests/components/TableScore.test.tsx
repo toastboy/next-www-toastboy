@@ -17,7 +17,7 @@ describe('TableScore', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByText(defaultPlayerRecord.points)).toBeInTheDocument();
+        expect(screen.getByText(String(defaultPlayerRecord.points))).toBeInTheDocument();
     });
 
     it('renders averages with fixed decimal places', () => {

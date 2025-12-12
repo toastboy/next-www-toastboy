@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
-import { RelativeTime } from './RelativeTime';
+import RelativeTime from './RelativeTime';
 
 const meta = {
     title: 'Utilities/RelativeTime',

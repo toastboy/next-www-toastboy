@@ -7,7 +7,7 @@ export interface Props {
     clubs: ClubSupporterDataType[];
 }
 
-const PlayerClubs: React.FC<Props> = ({ clubs }) => {
+export const PlayerClubs: React.FC<Props> = ({ clubs }) => {
     return (
         <Flex gap="xs" p="xs" direction="column">
             {clubs.map((item) => (
@@ -19,5 +19,3 @@ const PlayerClubs: React.FC<Props> = ({ clubs }) => {
         </Flex>
     );
 };
-
-export default PlayerClubs;

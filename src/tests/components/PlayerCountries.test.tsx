@@ -1,12 +1,12 @@
 jest.mock('components/CountryFlag/CountryFlag', () => {
     const MockCountryFlag = () => <div data-testid="mock-country-flag" />;
     MockCountryFlag.displayName = 'MockCountryFlag';
-    return MockCountryFlag;
+    return { CountryFlag: MockCountryFlag };
 });
 
 import { render, screen } from '@testing-library/react';
 
-import PlayerCountries from '@/components/PlayerCountries/PlayerCountries';
+import { PlayerCountries } from '@/components/PlayerCountries/PlayerCountries';
 import { defaultCountrySupporterDataList } from '@/tests/mocks';
 
 import { Wrapper } from './lib/common';

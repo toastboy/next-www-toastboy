@@ -1,12 +1,12 @@
 jest.mock('components/ClubBadge/ClubBadge', () => {
     const MockClubBadge = () => <div data-testid="mock-club-badge" />;
     MockClubBadge.displayName = 'MockClubBadge';
-    return MockClubBadge;
+    return { ClubBadge: MockClubBadge };
 });
 
 import { render, screen } from '@testing-library/react';
 
-import PlayerClubs from '@/components/PlayerClubs/PlayerClubs';
+import { PlayerClubs } from '@/components/PlayerClubs/PlayerClubs';
 import { defaultClubSupporterDataList } from '@/tests/mocks';
 
 import { Wrapper } from './lib/common';

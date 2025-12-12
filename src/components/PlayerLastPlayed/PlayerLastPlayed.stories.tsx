@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs';
 
 import { defaultPlayerFormList } from '@/tests/mocks';
 
-import PlayerLastPlayed from './PlayerLastPlayed';
+import { PlayerLastPlayed } from './PlayerLastPlayed';
 
 const meta = {
     title: 'Player/PlayerLastPlayed',

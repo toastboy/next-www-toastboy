@@ -1,12 +1,12 @@
 jest.mock('components/GameDayLink/GameDayLink', () => {
     const MockGameDayLink = () => <div data-testid="mock-gameday-link" />;
     MockGameDayLink.displayName = 'MockGameDayLink';
-    return MockGameDayLink;
+    return { GameDayLink: MockGameDayLink };
 });
 
 import { render, screen } from '@testing-library/react';
 
-import PlayerLastPlayed from '@/components/PlayerLastPlayed/PlayerLastPlayed';
+import { PlayerLastPlayed } from '@/components/PlayerLastPlayed/PlayerLastPlayed';
 import { defaultPlayerFormList } from '@/tests/mocks';
 
 import { Wrapper } from './lib/common';

@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
-import PlayerArse from '@/components/PlayerArse/PlayerArse';
+import { PlayerArse } from '@/components/PlayerArse/PlayerArse';
 import { defaultArse } from '@/tests/mocks';
 
 import { Wrapper } from './lib/common';

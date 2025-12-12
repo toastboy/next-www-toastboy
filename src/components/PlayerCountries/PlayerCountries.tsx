@@ -7,7 +7,7 @@ export interface Props {
     countries: CountrySupporterDataType[];
 }
 
-const PlayerCountries: React.FC<Props> = ({ countries }) => {
+export const PlayerCountries: React.FC<Props> = ({ countries }) => {
     if (countries.length === 0) return <></>;
 
     return (
@@ -21,5 +21,3 @@ const PlayerCountries: React.FC<Props> = ({ countries }) => {
         </Flex>
     );
 };
-
-export default PlayerCountries;

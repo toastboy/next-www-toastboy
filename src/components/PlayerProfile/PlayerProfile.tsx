@@ -1,12 +1,12 @@
 import { Box, Container, Title } from '@mantine/core';
 import { TableName } from '@prisma/client';
-import PlayerArse from 'components/PlayerArse/PlayerArse';
-import PlayerBorn from 'components/PlayerBorn/PlayerBorn';
-import PlayerClubs from 'components/PlayerClubs/PlayerClubs';
-import PlayerCountries from 'components/PlayerCountries/PlayerCountries';
+import { PlayerArse } from 'components/PlayerArse/PlayerArse';
+import { PlayerBorn } from 'components/PlayerBorn/PlayerBorn';
+import { PlayerClubs } from 'components/PlayerClubs/PlayerClubs';
+import { PlayerCountries } from 'components/PlayerCountries/PlayerCountries';
 import { PlayerForm } from 'components/PlayerForm/PlayerForm';
-import PlayerHistory from 'components/PlayerHistory/PlayerHistory';
-import PlayerLastPlayed from 'components/PlayerLastPlayed/PlayerLastPlayed';
+import { PlayerHistory } from 'components/PlayerHistory/PlayerHistory';
+import { PlayerLastPlayed } from 'components/PlayerLastPlayed/PlayerLastPlayed';
 import { PlayerMugshot } from 'components/PlayerMugshot/PlayerMugshot';
 import { PlayerTrophies } from 'components/PlayerTrophies/PlayerTrophies';
 import { ArseType } from 'prisma/generated/schemas/models/Arse.schema';

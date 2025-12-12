@@ -11,7 +11,7 @@ export interface Props {
     record: PlayerRecordType | null;
 }
 
-const PlayerHistory: React.FC<Props> = ({ playerName, activeYears, year, record }) => {
+export const PlayerHistory: React.FC<Props> = ({ playerName, activeYears, year, record }) => {
     return (
         <Container>
             <YearSelector activeYear={year} validYears={activeYears} />
@@ -20,5 +20,3 @@ const PlayerHistory: React.FC<Props> = ({ playerName, activeYears, year, record 
         </Container>
     );
 };
-
-export default PlayerHistory;

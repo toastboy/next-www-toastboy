@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs';
 
 import { defaultCountrySupporterDataList } from '@/tests/mocks/data/countrySupporterData';
 
-import PlayerCountries from './PlayerCountries';
+import { PlayerCountries } from './PlayerCountries';
 
 const meta = {
     title: 'Player/PlayerCountries',

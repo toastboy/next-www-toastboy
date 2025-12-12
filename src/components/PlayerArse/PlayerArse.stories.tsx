@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs';
 
 import { defaultArse } from '@/tests/mocks/data/arse';
 
-import PlayerArse from './PlayerArse';
+import { PlayerArse } from './PlayerArse';
 
 const meta = {
     title: 'Player/PlayerArse',

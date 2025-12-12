@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
-import PlayerBorn from '@/components/PlayerBorn/PlayerBorn';
+import { PlayerBorn } from '@/components/PlayerBorn/PlayerBorn';
 import { defaultPlayer } from '@/tests/mocks';
 
 import { Wrapper } from './lib/common';

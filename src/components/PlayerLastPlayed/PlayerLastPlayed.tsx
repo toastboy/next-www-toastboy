@@ -7,7 +7,7 @@ export interface Props {
     lastPlayed: PlayerFormType | null;
 }
 
-const PlayerLastPlayed: React.FC<Props> = ({ lastPlayed }) => {
+export const PlayerLastPlayed: React.FC<Props> = ({ lastPlayed }) => {
     if (!lastPlayed) return <Text component="span">Last played: never</Text>;
 
     return (
@@ -16,5 +16,3 @@ const PlayerLastPlayed: React.FC<Props> = ({ lastPlayed }) => {
         </Text>
     );
 };
-
-export default PlayerLastPlayed;

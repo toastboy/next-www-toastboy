@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs';
 
 import { defaultPlayer } from '@/tests/mocks';
 
-import PlayerBorn from './PlayerBorn';
+import { PlayerBorn } from './PlayerBorn';
 
 const meta = {
     title: 'Player/PlayerBorn',

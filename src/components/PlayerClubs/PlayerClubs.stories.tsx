@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs';
 
 import { defaultClubSupporterDataList } from '@/tests/mocks/data/clubSupporterData';
 
-import PlayerClubs from './PlayerClubs';
+import { PlayerClubs } from './PlayerClubs';
 
 const meta = {
     title: 'Player/PlayerClubs',

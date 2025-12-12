@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
-import BreakpointDebugger from './BreakpointDebugger';
+import { BreakpointDebugger } from './BreakpointDebugger';
 
 const meta = {
     title: 'Utilities/BreakpointDebugger',

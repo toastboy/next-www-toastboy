@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
-import EnquiryForm from './EnquiryForm';
+import { EnquiryForm } from './EnquiryForm';
 
 const meta = {
     title: 'Forms/EnquiryForm',

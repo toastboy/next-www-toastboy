@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
-import BreakpointDebugger from '@/components/BreakpointDebugger/BreakpointDebugger';
+import { BreakpointDebugger } from '@/components/BreakpointDebugger/BreakpointDebugger';
 
 import { Wrapper } from './lib/common';
 

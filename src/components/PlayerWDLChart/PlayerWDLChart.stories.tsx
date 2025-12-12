@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
-import PlayerWDLChart from './PlayerWDLChart';
+import { PlayerWDLChart } from './PlayerWDLChart';
 
 const samplePlayer = {
     id: 2,

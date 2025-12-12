@@ -8,7 +8,7 @@ import classes from './BreakpointDebugger.module.css';
 
 export type Props = unknown;
 
-const BreakpointDebugger: React.FC<Props> = () => {
+export const BreakpointDebugger: React.FC<Props> = () => {
     const theme = useMantineTheme();
 
     // Define media queries for each breakpoint
@@ -39,5 +39,3 @@ const BreakpointDebugger: React.FC<Props> = () => {
         </Container>
     );
 };
-
-export default BreakpointDebugger;

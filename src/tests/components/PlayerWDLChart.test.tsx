@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 
-import PlayerWDLChart from '@/components/PlayerWDLChart/PlayerWDLChart';
+import { PlayerWDLChart } from '@/components/PlayerWDLChart/PlayerWDLChart';
 import { defaultPlayerData } from '@/tests/mocks';
 
 import { Wrapper } from './lib/common';

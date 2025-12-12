@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
-import RichTextMailBody from './RichTextMailBody';
+import { RichTextMailBody } from './RichTextMailBody';
 
 const meta = {
     title: 'Email/RichTextMailBody',

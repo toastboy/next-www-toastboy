@@ -5,7 +5,7 @@ export interface Props {
     player: PlayerDataType;
 }
 
-const PlayerWDLChart: React.FC<Props> = ({ player }) => {
+export const PlayerWDLChart: React.FC<Props> = ({ player }) => {
     return (
         <Progress.Root size="xl">
             <Tooltip
@@ -39,5 +39,3 @@ const PlayerWDLChart: React.FC<Props> = ({ player }) => {
         </Progress.Root>
     );
 };
-
-export default PlayerWDLChart;

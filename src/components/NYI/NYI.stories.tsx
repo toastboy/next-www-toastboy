@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
-import NYI from './NYI';
+import { NYI } from './NYI';
 
 const meta = {
     title: 'Utilities/NYI',

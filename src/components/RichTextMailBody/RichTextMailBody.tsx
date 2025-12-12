@@ -6,7 +6,7 @@ import StarterKit from '@tiptap/starter-kit';
 
 export type Props = unknown;
 
-const RichTextMailBody: React.FC<Props> = () => {
+export const RichTextMailBody: React.FC<Props> = () => {
     const editor = useEditor({
         extensions: [StarterKit, Link],
         content: '<p>Hello, this is a test!</p>',
@@ -29,5 +29,3 @@ const RichTextMailBody: React.FC<Props> = () => {
         </RichTextEditor>
     );
 };
-
-export default RichTextMailBody;

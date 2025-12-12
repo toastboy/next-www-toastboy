@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 
 import { defaultGameDayList } from '@/tests/mocks';
 
-import GameCalendar from './GameCalendar';
+import { GameCalendar } from './GameCalendar';
 
 const meta = {
     title: 'Games/GameCalendar',

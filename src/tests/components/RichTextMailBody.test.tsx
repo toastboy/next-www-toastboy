@@ -6,7 +6,7 @@ jest.mock('@tiptap/react', () => ({
 
 import { render, screen } from '@testing-library/react';
 
-import RichTextMailBody from '@/components/RichTextMailBody/RichTextMailBody';
+import { RichTextMailBody } from '@/components/RichTextMailBody/RichTextMailBody';
 
 import { Wrapper } from './lib/common';
 

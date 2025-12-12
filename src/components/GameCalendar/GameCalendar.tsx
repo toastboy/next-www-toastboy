@@ -15,7 +15,7 @@ export interface Props {
     date: Date;
 }
 
-const GameCalendar: React.FC<Props> = ({ date }) => {
+export const GameCalendar: React.FC<Props> = ({ date }) => {
     const [gameDays, setGameDays] = useState<GameDayType[]>([]);
 
     const getGameDay = (date: Date): GameDayType | null => {
@@ -75,5 +75,3 @@ const GameCalendar: React.FC<Props> = ({ date }) => {
         getDayProps={getDayProps}
     />;
 };
-
-export default GameCalendar;

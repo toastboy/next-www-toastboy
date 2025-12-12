@@ -2,7 +2,7 @@ import { render, screen, within } from '@testing-library/react';
 import { GameDaySchema } from 'prisma/generated/schemas/models/GameDay.schema';
 import { z } from 'zod';
 
-import GameCalendar from '@/components/GameCalendar/GameCalendar';
+import { GameCalendar } from '@/components/GameCalendar/GameCalendar';
 import { loadJsonFixture } from '@/tests/shared/fixtures';
 
 import { Wrapper } from "./lib/common";

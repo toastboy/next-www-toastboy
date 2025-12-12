@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { TableNameSchema } from 'prisma/generated/schemas';
 
-import TableScore from '@/components/TableScore/TableScore';
+import { TableScore } from '@/components/TableScore/TableScore';
 import { defaultPlayerRecord } from '@/tests/mocks';
 
 import { Wrapper } from './lib/common';

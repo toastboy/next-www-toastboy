@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
-import NavBarNested from './NavBarNested';
+import { NavBarNested } from './NavBarNested';
 
 const ensureMockAuth = () => {
     if (typeof window !== 'undefined') {

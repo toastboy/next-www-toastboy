@@ -25,7 +25,7 @@ jest.mock('components/PlayerCountries/PlayerCountries', () => {
 jest.mock('components/PlayerForm/PlayerForm', () => {
     const MockPlayerForm = () => <div data-testid="mock-player-form" />;
     MockPlayerForm.displayName = 'MockPlayerForm';
-    return MockPlayerForm;
+    return { PlayerForm: MockPlayerForm };
 });
 
 jest.mock('components/PlayerHistory/PlayerHistory', () => {
@@ -43,18 +43,18 @@ jest.mock('components/PlayerLastPlayed/PlayerLastPlayed', () => {
 jest.mock('components/PlayerMugshot/PlayerMugshot', () => {
     const MockPlayerMugshot = () => <div data-testid="mock-player-mugshot" />;
     MockPlayerMugshot.displayName = 'MockPlayerMugshot';
-    return MockPlayerMugshot;
+    return { PlayerMugshot: MockPlayerMugshot };
 });
 
 jest.mock('components/PlayerTrophies/PlayerTrophies', () => {
     const MockPlayerTrophies = () => <div data-testid="mock-player-trophies" />;
     MockPlayerTrophies.displayName = 'MockPlayerTrophies';
-    return MockPlayerTrophies;
+    return { PlayerTrophies: MockPlayerTrophies };
 });
 
 import { render, screen } from '@testing-library/react';
 
-import PlayerProfile from '@/components/PlayerProfile/PlayerProfile';
+import { PlayerProfile } from '@/components/PlayerProfile/PlayerProfile';
 import {
     defaultArse,
     defaultClubSupporterDataList,

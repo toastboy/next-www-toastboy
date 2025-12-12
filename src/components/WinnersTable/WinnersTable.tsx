@@ -9,7 +9,7 @@ export interface Props {
     records: PlayerRecordDataType[];
 }
 
-const WinnersTable: React.FC<Props> = ({ table, records }) => {
+export const WinnersTable: React.FC<Props> = ({ table, records }) => {
     const rows = records.map((winner, index) => {
         const year = index > 0 && records[index - 1].year === winner.year ? '' : winner.year;
         return (
@@ -36,5 +36,3 @@ const WinnersTable: React.FC<Props> = ({ table, records }) => {
         </Paper>
     );
 };
-
-export default WinnersTable;

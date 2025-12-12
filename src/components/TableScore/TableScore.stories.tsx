@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs';
 
 import { defaultPlayerRecord } from '@/tests/mocks';
 
-import TableScore from './TableScore';
+import { TableScore } from './TableScore';
 
 const meta = {
     title: 'Tables/TableScore',

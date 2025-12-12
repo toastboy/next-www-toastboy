@@ -2,7 +2,8 @@
 
 import { AppShell, Burger, Container, Group, Image, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import NavBarNested from 'components/NavBarNested/NavBarNested';
+
+import { NavBarNested } from '../NavBarNested/NavBarNested';
 
 export interface Props {
     children: React.ReactNode;

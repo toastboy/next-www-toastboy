@@ -1,5 +1,5 @@
 import { TableName } from '@prisma/client';
-import PlayerProfile from 'components/PlayerProfile/PlayerProfile';
+import { PlayerProfile } from 'components/PlayerProfile/PlayerProfile';
 import { notFound, redirect } from 'next/navigation';
 import { TableNameSchema } from 'prisma/generated/schemas';
 import { PlayerRecordType } from 'prisma/generated/schemas/models/PlayerRecord.schema';

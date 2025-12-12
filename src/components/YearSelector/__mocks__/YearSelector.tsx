@@ -1,7 +1,6 @@
 import { Props } from '../YearSelector';
 
-const YearSelector = (props: Props) => (
+export const YearSelector = (props: Props) => (
     <div>YearSelector: {JSON.stringify(props)}</div>
 );
 YearSelector.displayName = 'YearSelector';
-export default YearSelector;

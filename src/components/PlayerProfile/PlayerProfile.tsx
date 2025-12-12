@@ -32,7 +32,7 @@ export interface Props {
     trophies: Map<TableName, PlayerRecordType[]>;
 }
 
-const PlayerProfile: React.FC<Props> = ({
+export const PlayerProfile: React.FC<Props> = ({
     playerName,
     player,
     year,
@@ -73,5 +73,3 @@ const PlayerProfile: React.FC<Props> = ({
         </Container>
     );
 };
-
-export default PlayerProfile;

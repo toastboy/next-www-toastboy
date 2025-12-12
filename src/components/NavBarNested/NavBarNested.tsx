@@ -8,7 +8,7 @@ import classes from './NavBarNested.module.css';
 
 export type Props = unknown;
 
-const NavBarNested: React.FC<Props> = () => {
+export const NavBarNested: React.FC<Props> = () => {
     const links = [
         {
             "label": "Games",
@@ -113,5 +113,3 @@ const NavBarNested: React.FC<Props> = () => {
         </Box>
     );
 };
-
-export default NavBarNested;

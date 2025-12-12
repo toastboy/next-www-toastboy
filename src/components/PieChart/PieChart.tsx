@@ -9,7 +9,7 @@ export interface Props {
     height?: number;
 }
 
-const PieChart = ({ data, width = 300, height = 300 }: Props) => {
+export const PieChart = ({ data, width = 300, height = 300 }: Props) => {
     const chartRef = useRef<SVGSVGElement>(null);
 
     useEffect(() => {
@@ -55,5 +55,3 @@ const PieChart = ({ data, width = 300, height = 300 }: Props) => {
         <svg ref={chartRef} width={width} height={height} />
     );
 };
-
-export default PieChart;

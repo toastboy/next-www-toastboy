@@ -7,7 +7,7 @@ jest.mock('next/navigation', () => ({
 
 import { fireEvent, render, screen } from '@testing-library/react';
 
-import YearSelector from '@/components/YearSelector/YearSelector';
+import { YearSelector } from '@/components/YearSelector/YearSelector';
 
 import { Wrapper } from './lib/common';
 

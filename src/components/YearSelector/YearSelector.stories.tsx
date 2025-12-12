@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
-import YearSelector from './YearSelector';
+import { YearSelector } from './YearSelector';
 
 const meta = {
     title: 'Tables/YearSelector',

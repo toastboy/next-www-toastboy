@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs';
 
 import { defaultPlayerRecordDataList } from '@/tests/mocks/data/playerRecordData';
 
-import WinnersTable from './WinnersTable';
+import { WinnersTable } from './WinnersTable';
 
 const meta = {
     title: 'Tables/WinnersTable',

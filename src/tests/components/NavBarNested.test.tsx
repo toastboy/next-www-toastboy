@@ -1,13 +1,13 @@
 import { render, screen } from '@testing-library/react';
 
-import NavBarNested from '@/components/NavBarNested/NavBarNested';
+import { NavBarNested } from '@/components/NavBarNested/NavBarNested';
 
 import { Wrapper } from "./lib/common";
 
 jest.mock('components/UserButton/UserButton', () => {
     const MockUserButton = () => <div data-testid="mock-user-button" />;
     MockUserButton.displayName = 'MockUserButton';
-    return MockUserButton;
+    return { UserButton: MockUserButton };
 });
 
 describe('NavBarNested', () => {

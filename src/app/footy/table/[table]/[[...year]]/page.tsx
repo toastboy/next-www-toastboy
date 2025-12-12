@@ -1,4 +1,4 @@
-import YearSelector from 'components/YearSelector/YearSelector';
+import { YearSelector } from 'components/YearSelector/YearSelector';
 import YearTable, { QualifiedTableName } from 'components/YearTable/YearTable';
 import { notFound } from 'next/navigation';
 import { TableName } from 'prisma/generated/schemas';

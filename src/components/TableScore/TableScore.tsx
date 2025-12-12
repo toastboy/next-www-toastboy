@@ -6,7 +6,7 @@ export interface Props {
     playerRecord: PlayerRecordType;
 }
 
-const TableScore = ({ table, playerRecord }: Props) => {
+export const TableScore = ({ table, playerRecord }: Props) => {
     switch (table) {
         case TableNameSchema.enum.averages:
             return playerRecord.averages?.toFixed(3) ?? '';
@@ -22,5 +22,3 @@ const TableScore = ({ table, playerRecord }: Props) => {
             return playerRecord[table];
     }
 };
-
-export default TableScore;

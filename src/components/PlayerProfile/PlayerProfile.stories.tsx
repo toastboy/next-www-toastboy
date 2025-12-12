@@ -4,7 +4,7 @@ import { defaultArse, defaultPlayer, defaultPlayerFormList, defaultPlayerRecord,
 import { defaultClubSupporterDataList } from '@/tests/mocks/data/clubSupporterData';
 import { defaultCountrySupporterDataList } from '@/tests/mocks/data/countrySupporterData';
 
-import PlayerProfile from './PlayerProfile';
+import { PlayerProfile } from './PlayerProfile';
 
 const meta = {
     title: 'Player/PlayerProfile',

@@ -11,7 +11,7 @@ export interface Props {
     validYears: number[];
 }
 
-const YearSelector: React.FC<Props> = ({ activeYear, validYears }) => {
+export const YearSelector: React.FC<Props> = ({ activeYear, validYears }) => {
     const rootRef = useRef<HTMLDivElement | null>(null);
     const controlsRefs = useRef<HTMLButtonElement[]>([]);
     const activeIndex = validYears.indexOf(activeYear);
@@ -77,5 +77,3 @@ const YearSelector: React.FC<Props> = ({ activeYear, validYears }) => {
         </ScrollArea>
     );
 };
-
-export default YearSelector;

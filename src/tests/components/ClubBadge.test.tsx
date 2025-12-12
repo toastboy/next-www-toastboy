@@ -1,8 +1,3 @@
-jest.mock('@/services/Club', () => ({
-    __esModule: true,
-    default: { get: jest.fn() },
-}));
-
 import { render, screen } from '@testing-library/react';
 
 import { ClubBadge } from '@/components/ClubBadge/ClubBadge';

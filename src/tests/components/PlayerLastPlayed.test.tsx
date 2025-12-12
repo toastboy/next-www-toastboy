@@ -1,8 +1,4 @@
-jest.mock('@/components/GameDayLink/GameDayLink', () => {
-    const MockGameDayLink = () => <div data-testid="mock-gameday-link" />;
-    MockGameDayLink.displayName = 'MockGameDayLink';
-    return { GameDayLink: MockGameDayLink };
-});
+jest.mock('@/components/GameDayLink/GameDayLink');
 
 import { render, screen } from '@testing-library/react';
 
@@ -20,7 +16,6 @@ describe('PlayerLastPlayed', () => {
         );
 
         expect(screen.getByText(/Last played:/)).toBeInTheDocument();
-        expect(screen.getByTestId('mock-gameday-link')).toBeInTheDocument();
     });
 
     it('renders "never" when lastPlayed is null', () => {

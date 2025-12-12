@@ -1,8 +1,4 @@
-jest.mock('@/components/NavBarNested/NavBarNested', () => {
-    const MockNavBarNested = () => <div data-testid="mock-navbar-nested" />;
-    MockNavBarNested.displayName = 'MockNavBarNested';
-    return MockNavBarNested;
-});
+jest.mock('@/components/NavBarNested/NavBarNested');
 
 import { render, screen } from '@testing-library/react';
 

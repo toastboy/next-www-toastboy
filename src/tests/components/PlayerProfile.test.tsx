@@ -1,56 +1,12 @@
-jest.mock('@/components/PlayerArse/PlayerArse', () => {
-    const MockPlayerArse = () => <div data-testid="mock-player-arse" />;
-    MockPlayerArse.displayName = 'MockPlayerArse';
-    return MockPlayerArse;
-});
-
-jest.mock('@/components/PlayerBorn/PlayerBorn', () => {
-    const MockPlayerBorn = () => <div data-testid="mock-player-born" />;
-    MockPlayerBorn.displayName = 'MockPlayerBorn';
-    return MockPlayerBorn;
-});
-
-jest.mock('@/components/PlayerClubs/PlayerClubs', () => {
-    const MockPlayerClubs = () => <div data-testid="mock-player-clubs" />;
-    MockPlayerClubs.displayName = 'MockPlayerClubs';
-    return MockPlayerClubs;
-});
-
-jest.mock('@/components/PlayerCountries/PlayerCountries', () => {
-    const MockPlayerCountries = () => <div data-testid="mock-player-countries" />;
-    MockPlayerCountries.displayName = 'MockPlayerCountries';
-    return MockPlayerCountries;
-});
-
-jest.mock('@/components/PlayerForm/PlayerForm', () => {
-    const MockPlayerForm = () => <div data-testid="mock-player-form" />;
-    MockPlayerForm.displayName = 'MockPlayerForm';
-    return { PlayerForm: MockPlayerForm };
-});
-
-jest.mock('@/components/PlayerHistory/PlayerHistory', () => {
-    const MockPlayerHistory = () => <div data-testid="mock-player-history" />;
-    MockPlayerHistory.displayName = 'MockPlayerHistory';
-    return MockPlayerHistory;
-});
-
-jest.mock('@/components/PlayerLastPlayed/PlayerLastPlayed', () => {
-    const MockPlayerLastPlayed = () => <div data-testid="mock-player-last-played" />;
-    MockPlayerLastPlayed.displayName = 'MockPlayerLastPlayed';
-    return MockPlayerLastPlayed;
-});
-
-jest.mock('@/components/PlayerMugshot/PlayerMugshot', () => {
-    const MockPlayerMugshot = () => <div data-testid="mock-player-mugshot" />;
-    MockPlayerMugshot.displayName = 'MockPlayerMugshot';
-    return { PlayerMugshot: MockPlayerMugshot };
-});
-
-jest.mock('@/components/PlayerTrophies/PlayerTrophies', () => {
-    const MockPlayerTrophies = () => <div data-testid="mock-player-trophies" />;
-    MockPlayerTrophies.displayName = 'MockPlayerTrophies';
-    return { PlayerTrophies: MockPlayerTrophies };
-});
+jest.mock('@/components/PlayerArse/PlayerArse');
+jest.mock('@/components/PlayerBorn/PlayerBorn');
+jest.mock('@/components/PlayerClubs/PlayerClubs');
+jest.mock('@/components/PlayerCountries/PlayerCountries');
+jest.mock('@/components/PlayerForm/PlayerForm');
+jest.mock('@/components/PlayerHistory/PlayerHistory');
+jest.mock('@/components/PlayerLastPlayed/PlayerLastPlayed');
+jest.mock('@/components/PlayerMugshot/PlayerMugshot');
+jest.mock('@/components/PlayerTrophies/PlayerTrophies');
 
 import { render, screen } from '@testing-library/react';
 

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs';
 
 import { defaultCountry } from '@/tests/mocks';
 
-import CountryFlag from './CountryFlag';
+import { CountryFlag } from './CountryFlag';
 
 const meta = {
     title: 'Country/CountryFlag',

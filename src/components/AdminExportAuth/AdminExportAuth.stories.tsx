@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
-import AdminExportAuth from './AdminExportAuth';
+import { AdminExportAuth } from './AdminExportAuth';
 
 const meta = {
     title: 'Admin/AdminExportAuth',

@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
-import PlayerResults from '@/components/PlayerResults/PlayerResults';
+import { PlayerResults } from '@/components/PlayerResults/PlayerResults';
 import { defaultPlayerRecord } from '@/tests/mocks';
 
 import { Wrapper } from './lib/common';

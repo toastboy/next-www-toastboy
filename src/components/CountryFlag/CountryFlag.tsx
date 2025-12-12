@@ -5,7 +5,7 @@ export interface Props {
     country: CountryType,
 }
 
-const CountryFlag: React.FC<Props> = ({ country }) => {
+export const CountryFlag: React.FC<Props> = ({ country }) => {
     return (
         <Image
             w="100%"
@@ -16,5 +16,3 @@ const CountryFlag: React.FC<Props> = ({ country }) => {
         />
     );
 };
-
-export default CountryFlag;

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
-import NavBarLinksGroup from './NavBarLinksGroup';
+import { NavBarLinksGroup } from './NavBarLinksGroup';
 
 const meta = {
     title: 'Navigation/NavBarLinksGroup',

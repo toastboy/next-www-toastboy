@@ -4,7 +4,7 @@ import { ClubType } from 'prisma/generated/schemas/models/Club.schema';
 export interface Props {
     club: ClubType;
 }
-const ClubBadge: React.FC<Props> = ({ club }) => {
+export const ClubBadge: React.FC<Props> = ({ club }) => {
     return (
         <Image
             w="100%"
@@ -15,5 +15,3 @@ const ClubBadge: React.FC<Props> = ({ club }) => {
         />
     );
 };
-
-export default ClubBadge;

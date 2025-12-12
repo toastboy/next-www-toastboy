@@ -3,7 +3,7 @@
 import { Box, ScrollArea } from '@mantine/core';
 import { UserButton } from 'components/UserButton/UserButton';
 
-import NavBarLinksGroup from '../NavBarLinksGroup/NavBarLinksGroup';
+import { NavBarLinksGroup } from '../NavBarLinksGroup/NavBarLinksGroup';
 import classes from './NavBarNested.module.css';
 
 export type Props = unknown;

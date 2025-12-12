@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 
-import AdminExportAuth from '@/components/AdminExportAuth/AdminExportAuth';
+import { AdminExportAuth } from '@/components/AdminExportAuth/AdminExportAuth';
 
 import { Wrapper } from './lib/common';
 

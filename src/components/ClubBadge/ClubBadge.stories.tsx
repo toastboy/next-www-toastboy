@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs';
 
 import { defaultClub } from '@/tests/mocks';
 
-import ClubBadge from './ClubBadge';
+import { ClubBadge } from './ClubBadge';
 
 const meta = {
     title: 'Club/ClubBadge',

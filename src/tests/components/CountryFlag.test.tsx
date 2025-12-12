@@ -5,7 +5,7 @@ jest.mock('services/Country', () => ({
 
 import { render, screen } from '@testing-library/react';
 
-import CountryFlag from '@/components/CountryFlag/CountryFlag';
+import { CountryFlag } from '@/components/CountryFlag/CountryFlag';
 
 import { defaultCountry } from '../mocks';
 import { Wrapper } from './lib/common';

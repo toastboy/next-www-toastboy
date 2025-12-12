@@ -22,7 +22,7 @@ export interface Props {
     players: PlayerType[];
 }
 
-const SendEmailForm: React.FC<Props> = ({ opened, onClose, players }) => {
+export const SendEmailForm: React.FC<Props> = ({ opened, onClose, players }) => {
     const [subject, setSubject] = useState('');
     const names = players.map((player) => player.name).join(', ');
     const emails = players.map((player) => player.email).join(',');
@@ -149,5 +149,3 @@ const SendEmailForm: React.FC<Props> = ({ opened, onClose, players }) => {
         </Modal>
     );
 };
-
-export default SendEmailForm;

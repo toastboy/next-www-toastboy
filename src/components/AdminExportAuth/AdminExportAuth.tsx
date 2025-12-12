@@ -7,7 +7,7 @@ import { authExport } from 'actions/auth-export';
 
 export type Props = unknown;
 
-const AdminExportAuth: React.FC<Props> = () => {
+export const AdminExportAuth: React.FC<Props> = () => {
     return (
         <>
             <Container>

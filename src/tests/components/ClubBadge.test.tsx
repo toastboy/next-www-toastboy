@@ -5,7 +5,7 @@ jest.mock('services/Club', () => ({
 
 import { render, screen } from '@testing-library/react';
 
-import ClubBadge from '@/components/ClubBadge/ClubBadge';
+import { ClubBadge } from '@/components/ClubBadge/ClubBadge';
 import { defaultClub } from '@/tests/mocks';
 
 import { Wrapper } from './lib/common';

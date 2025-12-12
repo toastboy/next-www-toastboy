@@ -4,7 +4,7 @@ jest.mock('lib/mail', () => ({
 
 import { render, screen, waitFor } from '@testing-library/react';
 
-import SendEmailForm from '@/components/SendEmailForm/SendEmailForm';
+import { SendEmailForm } from '@/components/SendEmailForm/SendEmailForm';
 import { defaultPlayer } from '@/tests/mocks';
 
 import { Wrapper } from './lib/common';

@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs';
 
 import { defaultPlayerList } from '@/tests/mocks';
 
-import SendEmailForm from './SendEmailForm';
+import { SendEmailForm } from './SendEmailForm';
 
 const meta = {
     title: 'Email/SendEmailForm',

@@ -1,4 +1,4 @@
-import AdminExportAuth from 'components/AdminExportAuth/AdminExportAuth';
+import { AdminExportAuth } from 'components/AdminExportAuth/AdminExportAuth';
 import { AdminUpdatePlayerRecords } from 'components/AdminUpdatePlayerRecords/AdminUpdatePlayerRecords';
 import { MustBeLoggedIn } from 'components/MustBeLoggedIn/MustBeLoggedIn';
 

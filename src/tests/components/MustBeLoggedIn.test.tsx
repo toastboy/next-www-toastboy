@@ -117,28 +117,44 @@ describe('MustBeLoggedIn', () => {
         };
 
         (authClient.useSession as jest.Mock).mockImplementation(() => sessionState);
+        const onValidationChange = jest.fn();
 
         try {
-            render(
+            const { rerender } = render(
                 <Wrapper>
-                    <MustBeLoggedIn>
+                    <MustBeLoggedIn onValidationChange={onValidationChange}>
                         <div data-testid="protected">Protected Content</div>
                     </MustBeLoggedIn>
                 </Wrapper>,
             );
 
             expect(screen.queryByTestId('protected')).not.toBeInTheDocument();
+            expect(onValidationChange).not.toHaveBeenCalled();
 
             act(() => {
                 sessionState.data = { user: { id: '1', role: 'user' } };
                 sessionState.isPending = false;
+            });
+
+            rerender(
+                <Wrapper>
+                    <MustBeLoggedIn onValidationChange={onValidationChange}>
+                        <div data-testid="protected">Protected Content</div>
+                    </MustBeLoggedIn>
+                </Wrapper>,
+            );
+
+            onValidationChange.mockClear();
+
+            act(() => {
                 jest.advanceTimersByTime(config.sessionRevalidate);
             });
 
             const content = await screen.findByTestId('protected');
             expect(content).toBeInTheDocument();
-        }
-        finally {
+            expect(onValidationChange).toHaveBeenCalledTimes(1);
+            expect(onValidationChange).toHaveBeenCalledWith(true);
+        } finally {
             jest.useRealTimers();
         }
     });

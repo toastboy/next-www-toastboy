@@ -1,6 +1,20 @@
 'use client';
 
-import { Anchor, Box, Button, Center, Container, Group, Loader, Notification, PasswordInput, Stack, Text, TextInput, Title } from '@mantine/core';
+import {
+    Anchor,
+    Box,
+    Button,
+    Center,
+    Container,
+    Group,
+    Loader,
+    Notification,
+    PasswordInput,
+    Stack,
+    Text,
+    TextInput,
+    Title,
+} from '@mantine/core';
 import { useForm } from '@mantine/form';
 import * as Sentry from '@sentry/react';
 import { IconAt, IconLock, IconX } from '@tabler/icons-react';

@@ -1,15 +1,10 @@
 import { render, screen } from '@testing-library/react';
 
 import { GameDaySummary } from '@/components/GameDaySummary/GameDaySummary';
+import { Wrapper } from '@/tests/components/lib/common';
 import { defaultGameDay, defaultTeamPlayerList } from '@/tests/mocks';
 
-import { Wrapper } from './lib/common';
-
-jest.mock('@/components/Team/Team', () => {
-    const MockTeam = () => <div data-testid="mock-team" />;
-    MockTeam.displayName = 'MockTeam';
-    return { Team: MockTeam };
-});
+jest.mock('@/components/Team/Team');
 
 describe('GameDaySummary', () => {
     it('renders game title when game exists', () => {

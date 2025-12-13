@@ -1,17 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
+import { YearTable } from '@/components/YearTable/YearTable';
 import { defaultPlayerRecordDataList } from '@/tests/mocks/data/playerRecordData';
 
-import { YearTable } from './YearTable';
-
-const meta = {
+const meta: Meta<typeof YearTable> = {
     title: 'Tables/YearTable',
-    component: YearTable,
+    component: YearTable as Meta<typeof YearTable>['component'],
     parameters: {
         layout: 'centered',
     },
     tags: ['autodocs'],
-} satisfies Meta<typeof YearTable>;
+};
 
 export default meta;
 type Story = StoryObj<typeof meta>;

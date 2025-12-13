@@ -1,15 +1,10 @@
-jest.mock('@/components/CountryFlag/CountryFlag', () => {
-    const MockCountryFlag = () => <div data-testid="mock-country-flag" />;
-    MockCountryFlag.displayName = 'MockCountryFlag';
-    return { CountryFlag: MockCountryFlag };
-});
+jest.mock('@/components/CountryFlag/CountryFlag');
 
 import { render, screen } from '@testing-library/react';
 
 import { PlayerCountries } from '@/components/PlayerCountries/PlayerCountries';
+import { Wrapper } from '@/tests/components/lib/common';
 import { defaultCountrySupporterDataList } from '@/tests/mocks';
-
-import { Wrapper } from './lib/common';
 
 describe('PlayerCountries', () => {
     it('renders country flags', () => {
@@ -19,17 +14,18 @@ describe('PlayerCountries', () => {
             </Wrapper>,
         );
 
-        const flags = screen.getAllByTestId('mock-country-flag');
+        const flags = screen.getAllByText(/CountryFlag:/);
         expect(flags.length).toBeGreaterThan(0);
     });
 
     it('renders nothing when countries list is empty', () => {
-        const { container } = render(
+        render(
             <Wrapper>
                 <PlayerCountries countries={[]} />
             </Wrapper>,
         );
 
-        expect(container.firstChild).toBeEmptyDOMElement();
+        const flags = screen.queryAllByText(/CountryFlag:/);
+        expect(flags.length).toBe(0);
     });
 });

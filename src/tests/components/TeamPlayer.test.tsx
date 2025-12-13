@@ -1,27 +1,12 @@
-jest.mock('@/components/PlayerForm/PlayerForm', () => {
-    const MockPlayerForm = () => <div data-testid="mock-player-form" />;
-    MockPlayerForm.displayName = 'MockPlayerForm';
-    return { PlayerForm: MockPlayerForm };
-});
-
-jest.mock('@/components/PlayerLink/PlayerLink', () => {
-    const MockPlayerLink = () => <div data-testid="mock-player-link" />;
-    MockPlayerLink.displayName = 'MockPlayerLink';
-    return { PlayerLink: MockPlayerLink };
-});
-
-jest.mock('@/components/PlayerMugshot/PlayerMugshot', () => {
-    const MockPlayerMugshot = () => <div data-testid="mock-player-mugshot" />;
-    MockPlayerMugshot.displayName = 'MockPlayerMugshot';
-    return { PlayerMugshot: MockPlayerMugshot };
-});
+jest.mock('@/components/PlayerForm/PlayerForm');
+jest.mock('@/components/PlayerLink/PlayerLink');
+jest.mock('@/components/PlayerMugshot/PlayerMugshot');
 
 import { render, screen } from '@testing-library/react';
 
 import { TeamPlayer } from '@/components/TeamPlayer/TeamPlayer';
+import { Wrapper } from '@/tests/components/lib/common';
 import { defaultTeamPlayer } from '@/tests/mocks';
-
-import { Wrapper } from './lib/common';
 
 describe('TeamPlayer', () => {
     it('renders team player with form and mugshot', () => {

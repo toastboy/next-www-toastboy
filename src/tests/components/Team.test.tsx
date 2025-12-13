@@ -1,15 +1,10 @@
-jest.mock('@/components/TeamPlayer/TeamPlayer', () => {
-    const MockTeamPlayer = () => <div data-testid="mock-team-player" />;
-    MockTeamPlayer.displayName = 'MockTeamPlayer';
-    return { TeamPlayer: MockTeamPlayer };
-});
+jest.mock('@/components/TeamPlayer/TeamPlayer');
 
 import { render, screen } from '@testing-library/react';
 
 import { Team } from '@/components/Team/Team';
+import { Wrapper } from '@/tests/components/lib/common';
 import { defaultTeamPlayerList } from '@/tests/mocks';
-
-import { Wrapper } from './lib/common';
 
 describe('Team', () => {
     it('renders team players', () => {

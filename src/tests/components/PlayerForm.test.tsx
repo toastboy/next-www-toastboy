@@ -1,15 +1,10 @@
-jest.mock('@/components/GameDayLink/GameDayLink', () => {
-    const MockGameDayLink = () => <div data-testid="mock-gameday-link" />;
-    MockGameDayLink.displayName = 'MockGameDayLink';
-    return MockGameDayLink;
-});
+jest.mock('@/components/GameDayLink/GameDayLink');
 
 import { render, screen } from '@testing-library/react';
 
 import { PlayerForm } from '@/components/PlayerForm/PlayerForm';
+import { Wrapper } from '@/tests/components/lib/common';
 import { defaultPlayerFormList } from '@/tests/mocks';
-
-import { Wrapper } from './lib/common';
 
 describe('PlayerForm', () => {
     it('renders progress bar with game links', () => {

@@ -1,9 +1,8 @@
 import { render, screen } from '@testing-library/react';
 
 import { ClubBadge } from '@/components/ClubBadge/ClubBadge';
+import { Wrapper } from '@/tests/components/lib/common';
 import { defaultClub } from '@/tests/mocks';
-
-import { Wrapper } from './lib/common';
 
 describe('ClubBadge', () => {
     it('renders badge image', () => {

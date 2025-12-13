@@ -2,9 +2,8 @@ import { render, screen } from '@testing-library/react';
 import { TableNameSchema } from 'prisma/generated/schemas';
 
 import { TableScore } from '@/components/TableScore/TableScore';
+import { Wrapper } from '@/tests/components/lib/common';
 import { defaultPlayerRecord } from '@/tests/mocks';
-
-import { Wrapper } from './lib/common';
 
 describe('TableScore', () => {
     it('renders points score', () => {

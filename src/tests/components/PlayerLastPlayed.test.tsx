@@ -3,9 +3,8 @@ jest.mock('@/components/GameDayLink/GameDayLink');
 import { render, screen } from '@testing-library/react';
 
 import { PlayerLastPlayed } from '@/components/PlayerLastPlayed/PlayerLastPlayed';
+import { Wrapper } from '@/tests/components/lib/common';
 import { defaultPlayerFormList } from '@/tests/mocks';
-
-import { Wrapper } from './lib/common';
 
 describe('PlayerLastPlayed', () => {
     it('renders last played gameday', () => {

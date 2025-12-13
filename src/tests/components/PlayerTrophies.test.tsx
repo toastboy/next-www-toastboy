@@ -1,15 +1,10 @@
-jest.mock('@/components/PlayerTrophyTally/PlayerTrophyTally', () => {
-    const MockPlayerTrophyTally = () => <div data-testid="mock-player-trophy-tally" />;
-    MockPlayerTrophyTally.displayName = 'MockPlayerTrophyTally';
-    return { PlayerTrophyTally: MockPlayerTrophyTally };
-});
+jest.mock('@/components/PlayerTrophyTally/PlayerTrophyTally');
 
 import { render, screen } from '@testing-library/react';
 
 import { PlayerTrophies } from '@/components/PlayerTrophies/PlayerTrophies';
+import { Wrapper } from '@/tests/components/lib/common';
 import { defaultTrophiesList } from '@/tests/mocks';
-
-import { Wrapper } from './lib/common';
 
 describe('PlayerTrophies', () => {
     it('renders trophy tally for each table', () => {

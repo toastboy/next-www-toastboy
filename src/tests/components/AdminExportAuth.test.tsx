@@ -1,8 +1,7 @@
 import { render, screen } from '@testing-library/react';
 
 import { AdminExportAuth } from '@/components/AdminExportAuth/AdminExportAuth';
-
-import { Wrapper } from './lib/common';
+import { Wrapper } from '@/tests/components/lib/common';
 
 jest.mock('@/actions/auth-export', () => ({
     authExport: jest.fn().mockResolvedValue(undefined),

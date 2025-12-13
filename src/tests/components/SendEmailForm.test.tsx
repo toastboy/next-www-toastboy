@@ -5,9 +5,8 @@ jest.mock('@/lib/mail', () => ({
 import { render, screen, waitFor } from '@testing-library/react';
 
 import { SendEmailForm } from '@/components/SendEmailForm/SendEmailForm';
+import { Wrapper } from '@/tests/components/lib/common';
 import { defaultPlayer } from '@/tests/mocks';
-
-import { Wrapper } from './lib/common';
 
 jest.mock('@tiptap/react', () => ({
     useEditor: jest.fn(() => ({

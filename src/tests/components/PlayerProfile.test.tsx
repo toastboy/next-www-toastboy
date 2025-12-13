@@ -11,6 +11,7 @@ jest.mock('@/components/PlayerTrophies/PlayerTrophies');
 import { render, screen } from '@testing-library/react';
 
 import { PlayerProfile } from '@/components/PlayerProfile/PlayerProfile';
+import { Wrapper } from '@/tests/components/lib/common';
 import {
     defaultArse,
     defaultClubSupporterDataList,
@@ -20,8 +21,6 @@ import {
     defaultPlayerRecord,
     defaultTrophiesList,
 } from '@/tests/mocks';
-
-import { Wrapper } from './lib/common';
 
 describe('PlayerProfile', () => {
     it('renders player name and profile sections', () => {

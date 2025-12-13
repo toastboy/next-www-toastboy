@@ -1,9 +1,8 @@
 import { render } from '@testing-library/react';
 
 import { PlayerWDLChart } from '@/components/PlayerWDLChart/PlayerWDLChart';
+import { Wrapper } from '@/tests/components/lib/common';
 import { defaultPlayerData } from '@/tests/mocks';
-
-import { Wrapper } from './lib/common';
 
 describe('PlayerWDLChart', () => {
     it('renders win/draw/loss progress chart', () => {

@@ -1,8 +1,7 @@
 import { render, screen } from '@testing-library/react';
 
 import { BreakpointDebugger } from '@/components/BreakpointDebugger/BreakpointDebugger';
-
-import { Wrapper } from './lib/common';
+import { Wrapper } from '@/tests/components/lib/common';
 
 describe('BreakpointDebugger', () => {
     it('renders breakpoint information', () => {

@@ -23,8 +23,7 @@ jest.mock('sentry.server.config', () => ({
 import { render, screen } from '@testing-library/react';
 
 import { SignIn } from '@/components/SignIn/SignIn';
-
-import { Wrapper } from './lib/common';
+import { Wrapper } from '@/tests/components/lib/common';
 
 describe('SignIn', () => {
     it('renders sign in form', () => {

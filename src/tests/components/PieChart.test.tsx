@@ -1,8 +1,7 @@
 import { render } from '@testing-library/react';
 
 import { PieChart } from '@/components/PieChart/PieChart';
-
-import { Wrapper } from './lib/common';
+import { Wrapper } from '@/tests/components/lib/common';
 
 describe('PieChart', () => {
     it('renders svg element', () => {

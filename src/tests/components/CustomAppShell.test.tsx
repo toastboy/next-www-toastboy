@@ -3,8 +3,7 @@ jest.mock('@/components/NavBarNested/NavBarNested');
 import { render, screen } from '@testing-library/react';
 
 import { CustomAppShell } from '@/components/CustomAppShell/CustomAppShell';
-
-import { Wrapper } from './lib/common';
+import { Wrapper } from '@/tests/components/lib/common';
 
 describe('CustomAppShell', () => {
     it('renders app shell with header, navbar, and footer', () => {

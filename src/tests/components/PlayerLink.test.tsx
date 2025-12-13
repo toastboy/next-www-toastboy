@@ -1,9 +1,8 @@
 import { render, screen } from '@testing-library/react';
 
 import { PlayerLink } from '@/components/PlayerLink/PlayerLink';
+import { Wrapper } from '@/tests/components/lib/common';
 import { defaultPlayer } from '@/tests/mocks';
-
-import { Wrapper } from './lib/common';
 
 describe('PlayerLink', () => {
     it('renders link to player page', () => {

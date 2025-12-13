@@ -1,27 +1,32 @@
-jest.mock('@/components/SignIn/SignIn', () => {
-    const MockSignIn = () => <div data-testid="mock-sign-in" />;
-    MockSignIn.displayName = 'MockSignIn';
-    return { SignIn: MockSignIn };
-});
-
+jest.mock('@/components/SignIn/SignIn');
 jest.mock('@/lib/authClient', () => ({
     authClient: {
         useSession: jest.fn(),
-        isLoggedIn: jest.fn().mockImplementation((session) => session?.data?.user != null),
-        isAdmin: jest.fn().mockImplementation((session) => session?.data?.user?.role === 'admin'),
+        isLoggedIn: jest.fn().mockImplementation(
+            (session: Session) => session?.data?.user != null,
+        ),
+        isAdmin: jest.fn().mockImplementation(
+            (session: Session) => session?.data?.user?.role === 'admin',
+        ),
     },
 }));
 
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 
 import { MustBeLoggedIn } from '@/components/MustBeLoggedIn/MustBeLoggedIn';
-import { authClient } from '@/lib/authClient';
-
-import { Wrapper } from './lib/common';
+import { authClient, Session } from '@/lib/authClient';
+import config from '@/lib/config';
+import { Wrapper } from '@/tests/components/lib/common';
 
 describe('MustBeLoggedIn', () => {
     beforeEach(() => {
         jest.resetAllMocks();
+        (authClient.isLoggedIn as jest.Mock).mockImplementation(
+            (session: Session) => session?.data?.user != null,
+        );
+        (authClient.isAdmin as jest.Mock).mockImplementation(
+            (session: Session) => session?.data?.user?.role === 'admin',
+        );
         (authClient.useSession as jest.Mock).mockReturnValue({
             data: { user: { id: '1' } },
             isPending: false,
@@ -29,8 +34,14 @@ describe('MustBeLoggedIn', () => {
         });
     });
 
-    it('renders children when user is logged in', async () => {
-        render(
+    it('renders nothing (null) while session is pending', () => {
+        (authClient.useSession as jest.Mock).mockReturnValue({
+            data: null,
+            isPending: true,
+            error: null,
+        });
+
+        const { container } = render(
             <Wrapper>
                 <MustBeLoggedIn>
                     <div>Protected Content</div>
@@ -38,12 +49,11 @@ describe('MustBeLoggedIn', () => {
             </Wrapper>,
         );
 
-        await waitFor(() => {
-            expect(screen.getByText('Protected Content')).toBeInTheDocument();
-        });
+        expect(screen.queryByText(/SignIn/)).not.toBeInTheDocument();
+        expect(container.querySelector('div')).not.toBeInTheDocument();
     });
 
-    it('renders sign in when user is not logged in', () => {
+    it('renders signin form when user is not logged in', () => {
         (authClient.useSession as jest.Mock).mockReturnValue({
             data: null,
             isPending: false,
@@ -52,12 +62,84 @@ describe('MustBeLoggedIn', () => {
 
         render(
             <Wrapper>
-                <MustBeLoggedIn showSignIn={true}>
+                <MustBeLoggedIn>
                     <div>Protected Content</div>
                 </MustBeLoggedIn>
             </Wrapper>,
         );
 
-        expect(screen.getByTestId('mock-sign-in')).toBeInTheDocument();
+        expect(screen.queryByText(/SignIn:\s+\{"admin":false\}/)).toBeInTheDocument();
+    });
+
+    it('renders signin as admin form when admin is not logged in', () => {
+        (authClient.useSession as jest.Mock).mockReturnValue({
+            data: null,
+            isPending: false,
+            error: null,
+        });
+
+        render(
+            <Wrapper>
+                <MustBeLoggedIn admin={true}>
+                    <div>Protected Content</div>
+                </MustBeLoggedIn>
+            </Wrapper>,
+        );
+
+        expect(screen.queryByText(/SignIn:\s+\{"admin":true\}/)).toBeInTheDocument();
+    });
+
+    it('renders nothing when user is not logged in and showSignIn is false', () => {
+        (authClient.useSession as jest.Mock).mockReturnValue({
+            data: null,
+            isPending: false,
+            error: null,
+        });
+
+        render(
+            <Wrapper>
+                <MustBeLoggedIn admin={true} showSignIn={false}>
+                    <div>Protected Content</div>
+                </MustBeLoggedIn>
+            </Wrapper>,
+        );
+
+        expect(screen.queryByText(/SignIn/)).not.toBeInTheDocument();
+    });
+
+    it('sets isValid when checkSession runs after session stops pending', async () => {
+        jest.useFakeTimers();
+
+        const sessionState: { data: { user: { id: string; role: string } } | null; isPending: boolean; error: null } = {
+            data: null,
+            isPending: true,
+            error: null,
+        };
+
+        (authClient.useSession as jest.Mock).mockImplementation(() => sessionState);
+
+        try {
+            render(
+                <Wrapper>
+                    <MustBeLoggedIn>
+                        <div data-testid="protected">Protected Content</div>
+                    </MustBeLoggedIn>
+                </Wrapper>,
+            );
+
+            expect(screen.queryByTestId('protected')).not.toBeInTheDocument();
+
+            act(() => {
+                sessionState.data = { user: { id: '1', role: 'user' } };
+                sessionState.isPending = false;
+                jest.advanceTimersByTime(config.sessionRevalidate);
+            });
+
+            const content = await screen.findByTestId('protected');
+            expect(content).toBeInTheDocument();
+        }
+        finally {
+            jest.useRealTimers();
+        }
     });
 });

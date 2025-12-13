@@ -1,8 +1,7 @@
 import { render, screen } from '@testing-library/react';
 
 import { RelativeTime } from '@/components/RelativeTime/RelativeTime';
-
-import { Wrapper } from './lib/common';
+import { Wrapper } from '@/tests/components/lib/common';
 
 describe('RelativeTime', () => {
     it('renders relative time with tooltip', () => {

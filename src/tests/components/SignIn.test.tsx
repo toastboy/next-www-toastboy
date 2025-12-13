@@ -3,7 +3,7 @@ jest.mock('next/navigation', () => ({
     usePathname: () => '/footy/auth/signin',
 }));
 
-jest.mock('@/lib/authClient', () => ({
+jest.mock('lib/authClient', () => ({
     authClient: {
         signInWithEmail: jest.fn(),
         useSession: jest.fn(() => ({
@@ -12,8 +12,6 @@ jest.mock('@/lib/authClient', () => ({
             error: null,
         })),
     },
-    signInWithGoogle: jest.fn(),
-    signInWithMicrosoft: jest.fn(),
 }));
 
 // jest.mock('sentry.server.config', () => ({
@@ -22,6 +20,7 @@ jest.mock('@/lib/authClient', () => ({
 
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { authClient } from 'lib/authClient';
 
 import { SignIn } from '@/components/SignIn/SignIn';
 import { Wrapper } from '@/tests/components/lib/common';
@@ -97,5 +96,47 @@ describe('SignIn', () => {
         await user.click(submitButton);
 
         expect(await screen.findByText(/Password must be at least 8 characters/i)).toBeInTheDocument();
+    });
+
+    it('shows an error when valid input is provided but the login fails', async () => {
+        const user = userEvent.setup();
+        (authClient.signInWithEmail as jest.Mock).mockRejectedValueOnce(new Error('boom'));
+
+        render(
+            <Wrapper>
+                <SignIn />
+            </Wrapper>,
+        );
+
+        const emailInput = screen.getByLabelText(/Email/i);
+        const passwordInput = screen.getByLabelText(/Password/i);
+        const submitButton = screen.getByRole('button', { name: /Sign In$/i });
+
+        await user.type(emailInput, 'valid.email@example.com');
+        await user.type(passwordInput, 'validPassword123');
+        await user.click(submitButton);
+
+        expect(await screen.findByText(/Login failed. Please check your details and try again./i)).toBeInTheDocument();
+    });
+
+    it('succeeds when valid credentials are provided', async () => {
+        const user = userEvent.setup();
+        (authClient.signInWithEmail as jest.Mock).mockResolvedValueOnce({ user: { id: '123' } });
+
+        render(
+            <Wrapper>
+                <SignIn />
+            </Wrapper>,
+        );
+
+        const emailInput = screen.getByLabelText(/Email/i);
+        const passwordInput = screen.getByLabelText(/Password/i);
+        const submitButton = screen.getByRole('button', { name: /Sign In$/i });
+
+        await user.type(emailInput, 'valid.email@example.com');
+        await user.type(passwordInput, 'validPassword123');
+        await user.click(submitButton);
+
+        expect(screen.queryByText(/Login failed. Please check your details and try again./i)).not.toBeInTheDocument();
     });
 });

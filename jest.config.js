@@ -1,7 +1,7 @@
 const coveragePathIgnorePatterns = [
     '/node_modules/',
     '/prisma/generated/',
-    '/src/tests/mocks/',
+    '/src/tests/',
 ];
 const moduleFileExtensions = ['ts', 'tsx', 'js', 'jsx', 'json', 'node', 'mjs'];
 const moduleNameMapper = {

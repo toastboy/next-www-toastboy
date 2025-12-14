@@ -39,9 +39,14 @@ export const Wrapper: React.FC<WrapperProps> = ({ children }) => {
  * const props = extractProps<MyComponentProps>('myComponent');
  */
 export const extractMockProps = <T,>(id: string) => {
-    const mockElements = screen.queryByText(new RegExp(`^${id}:`));
+    const mockElements = screen.getAllByText(new RegExp(`^${id}:`));
     expect(mockElements).not.toBeNull();
-    const json = mockElements!.textContent?.replace(new RegExp(`^${id}:\\s*`), '');
-    expect(json).toBeDefined();
-    return JSON.parse(json ?? '') as T;
+    const result: T[] = [];
+    for (const element of mockElements) {
+        const json = element.textContent?.replace(new RegExp(`^${id}:\\s*`), '');
+        expect(json).toBeDefined();
+        result.push(JSON.parse(json ?? '') as T);
+    }
+    expect(result.length).toBeGreaterThan(0);
+    return result;
 };

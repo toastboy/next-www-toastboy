@@ -22,8 +22,9 @@ describe('YearTable', () => {
         );
 
         const props = extractMockProps<TableQualifiedProps>("TableQualified");
-        expect(props.title).toBe('2024 Points Table');
-        expect(props.year).toBe(2024);
+        expect(props.length).toBe(1);
+        expect(props[0].title).toBe('2024 Points Table');
+        expect(props[0].year).toBe(2024);
     });
 
     it('renders both qualified and unqualified tables for averages', () => {
@@ -39,7 +40,10 @@ describe('YearTable', () => {
         );
 
         const props = extractMockProps<TableQualifiedProps>("TableQualified");
-        expect(props.title).toBe('2024 Averages Table');
-        expect(props.year).toBe(2024);
+        expect(props.length).toBe(2);
+        expect(props[0].year).toBe(2024);
+        expect(props[0].title).toBe('2024 Averages Table');
+        expect(props[1].year).toBe(2024);
+        expect(props[1].title).toBe('Played Fewer than 10 Games');
     });
 });

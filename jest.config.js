@@ -17,7 +17,7 @@ const transform = {
     '^.+\\.css$': 'jest-css-modules-transform',
 };
 const transformIgnorePatterns = [
-    "node_modules/(?!(nanostores|better-auth|@better-auth|uncrypto|jose|@noble|msw|until-async)/)",
+    "node_modules/(?!(nanostores|better-auth|@better-auth|uncrypto|jose|@noble|msw|until-async|d3|d3-[\\w-]+|internmap|delaunator|robust-predicates)/)",
 ];
 const watchPathIgnorePatterns = [
     "<rootDir>/.git/",

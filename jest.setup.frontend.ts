@@ -37,8 +37,9 @@ global.ResizeObserver = class ResizeObserver {
 
 // Mock @mantine/tiptap to avoid relying on TipTap editor internals in tests
 jest.mock('@mantine/tiptap', () => {
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const React: typeof import('react') = require('react');
+    // Using require keeps this factory synchronous for Jest
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    const React = require('react') as typeof import('react');
 
     type DomProps = Record<string, unknown>;
     type WithChildren = React.PropsWithChildren<DomProps>;
@@ -46,28 +47,63 @@ jest.mock('@mantine/tiptap', () => {
     const omitDomProps = (props: DomProps, keys: string[]): DomProps => {
         const next: DomProps = {};
         for (const k of Object.keys(props ?? {})) {
-            if (!keys.includes(k)) next[k] = (props as DomProps)[k];
+            if (!keys.includes(k)) next[k] = (props)[k];
         }
         return next;
     };
 
-    const EditorContext = React.createContext<any>(null);
-    const RichTextEditor = ({ editor, children, ...props }: WithChildren & { editor?: any }) => (
+    interface EditorLike { options?: { content?: string } }
+    const EditorContext = React.createContext<EditorLike | null>(null);
+
+    interface RichTextEditorComponent extends React.FC<WithChildren & { editor?: EditorLike }> {
+        Toolbar: React.FC<WithChildren>;
+        ControlsGroup: React.FC<WithChildren>;
+        Content: React.FC<DomProps>;
+        Bold: React.FC<DomProps>;
+        Italic: React.FC<DomProps>;
+        Underline: React.FC<DomProps>;
+        Strikethrough: React.FC<DomProps>;
+        ClearFormatting: React.FC<DomProps>;
+        Highlight: React.FC<DomProps>;
+        Code: React.FC<DomProps>;
+        H1: React.FC<DomProps>;
+        H2: React.FC<DomProps>;
+        H3: React.FC<DomProps>;
+        H4: React.FC<DomProps>;
+        Blockquote: React.FC<DomProps>;
+        Hr: React.FC<DomProps>;
+        BulletList: React.FC<DomProps>;
+        OrderedList: React.FC<DomProps>;
+        Link: React.FC<DomProps>;
+        Unlink: React.FC<DomProps>;
+        AlignLeft: React.FC<DomProps>;
+        AlignCenter: React.FC<DomProps>;
+        AlignJustify: React.FC<DomProps>;
+        AlignRight: React.FC<DomProps>;
+    }
+
+    const RichTextEditorBase: React.FC<WithChildren & { editor?: EditorLike }> = ({ editor, children, ...props }) => (
         React.createElement(
             EditorContext.Provider,
-            { value: editor },
-            React.createElement('div', { 'data-mock': 'RichTextEditor', ...omitDomProps(props, ['sticky', 'stickyOffset']) }, children)
+            { value: editor ?? null },
+            React.createElement('div', { 'data-mock': 'RichTextEditor', ...omitDomProps(props, ['sticky', 'stickyOffset']) }, children),
         )
     );
+    const RichTextEditor = RichTextEditorBase as RichTextEditorComponent;
+    RichTextEditor.displayName = 'RichTextEditor';
 
     // Toolbar and content wrappers
-    RichTextEditor.Toolbar = ({ children, ...props }: WithChildren) => (
+    const RichTextEditorToolbar: React.FC<WithChildren> = ({ children, ...props }) => (
         React.createElement('div', { 'data-mock': 'RichTextEditor.Toolbar', ...omitDomProps(props, ['sticky', 'stickyOffset']) }, children)
     );
-    RichTextEditor.ControlsGroup = ({ children, ...props }: WithChildren) => (
+    RichTextEditorToolbar.displayName = 'RichTextEditor.Toolbar';
+
+    const RichTextEditorControlsGroup: React.FC<WithChildren> = ({ children, ...props }) => (
         React.createElement('div', { 'data-mock': 'RichTextEditor.ControlsGroup', ...omitDomProps(props, ['sticky', 'stickyOffset']) }, children)
     );
-    RichTextEditor.Content = (props: DomProps) => {
+    RichTextEditorControlsGroup.displayName = 'RichTextEditor.ControlsGroup';
+
+    const RichTextEditorContent: React.FC<DomProps> = (props) => {
         const editor = React.useContext(EditorContext);
         const html = editor?.options?.content ?? '<p>Hello, this is a test!</p>';
         return React.createElement('div', {
@@ -76,11 +112,20 @@ jest.mock('@mantine/tiptap', () => {
             ...omitDomProps(props, ['sticky', 'stickyOffset']),
         });
     };
+    RichTextEditorContent.displayName = 'RichTextEditor.Content';
+
+    RichTextEditor.Toolbar = RichTextEditorToolbar;
+    RichTextEditor.ControlsGroup = RichTextEditorControlsGroup;
+    RichTextEditor.Content = RichTextEditorContent;
 
     // Controls rendered as simple buttons to satisfy rendering without accessing editor
-    const Control = (name: string) => (props: DomProps) => (
-        React.createElement('button', { 'data-mock': `RichTextEditor.${name}`, type: 'button', ...omitDomProps(props, ['sticky', 'stickyOffset']) }, name)
-    );
+    const Control = (name: string) => {
+        const ControlComponent: React.FC<DomProps> = (props) => (
+            React.createElement('button', { 'data-mock': `RichTextEditor.${name}`, type: 'button', ...omitDomProps(props, ['sticky', 'stickyOffset']) }, name)
+        );
+        ControlComponent.displayName = `RichTextEditor.${name}`;
+        return ControlComponent;
+    };
 
     // Common controls used in our components/tests
     RichTextEditor.Bold = Control('Bold');
@@ -108,5 +153,5 @@ jest.mock('@mantine/tiptap', () => {
     // Provide a minimal Link export as used by mantine tiptap
     const Link = Control('LinkControl');
 
-    return { RichTextEditor, Link };
+    return { __esModule: true, RichTextEditor, Link };
 });

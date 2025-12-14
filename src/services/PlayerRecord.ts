@@ -276,7 +276,7 @@ export class PlayerRecordService {
             const seasonEnders = await gameDayService.getSeasonEnders();
             const firstPlaceRecords = await prisma.playerRecord.findMany({
                 where: {
-                    ...(year != undefined ? { year } : { year: { gt: 0 } }),
+                    ...(year ? { year } : { year: { gt: 0 } }),
                     ...(player ? { playerId: player } : {}),
                     [rank]: 1,
                 },

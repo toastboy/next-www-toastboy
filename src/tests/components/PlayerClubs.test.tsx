@@ -14,8 +14,6 @@ describe('PlayerClubs', () => {
             </Wrapper>,
         );
 
-        screen.debug();
-
         const badges = screen.getAllByText(/ClubBadge:/);
         expect(badges.length).toBeGreaterThan(0);
     });
@@ -26,8 +24,6 @@ describe('PlayerClubs', () => {
                 <PlayerClubs clubs={[]} />
             </Wrapper>,
         );
-
-        screen.debug();
 
         const badges = screen.queryAllByText(/ClubBadge:/);
         expect(badges.length).toBe(0);

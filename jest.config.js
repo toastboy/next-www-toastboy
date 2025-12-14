@@ -23,6 +23,7 @@ module.exports = {
             coveragePathIgnorePatterns: [
                 '/node_modules/',
                 '/prisma/generated/',
+                '/src/tests/mocks/',
             ],
             moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
             moduleNameMapper,
@@ -63,6 +64,7 @@ module.exports = {
             coveragePathIgnorePatterns: [
                 '/node_modules/',
                 '/prisma/generated/',
+                '/src/tests/mocks/',
             ],
             moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node'],
             moduleNameMapper,
@@ -101,6 +103,7 @@ module.exports = {
             coveragePathIgnorePatterns: [
                 '/node_modules/',
                 '/prisma/generated/',
+                '/src/tests/mocks/',
             ],
             moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'json', 'node', 'mjs'],
             moduleNameMapper,

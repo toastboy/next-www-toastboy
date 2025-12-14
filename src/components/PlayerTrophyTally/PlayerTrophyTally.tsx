@@ -12,15 +12,15 @@ export const PlayerTrophyTally: React.FC<Props> = ({ table, trophies }) => {
     const icon = (() => {
         switch (table) {
             case TableNameSchema.enum.points:
-                return <IconTrophy size={16} />;
+                return <IconTrophy role="img" aria-label="trophy" size={16} />;
             case TableNameSchema.enum.averages:
-                return <IconStar size={16} />;
+                return <IconStar role="img" aria-label="star" size={16} />;
             case TableNameSchema.enum.stalwart:
-                return <IconMedal size={16} />;
+                return <IconMedal role="img" aria-label="medal" size={16} />;
             case TableNameSchema.enum.speedy:
-                return <IconClock size={16} />;
+                return <IconClock role="img" aria-label="clock" size={16} />;
             case TableNameSchema.enum.pub:
-                return <IconBeer size={16} />;
+                return <IconBeer role="img" aria-label="beer" size={16} />;
         }
     })();
 

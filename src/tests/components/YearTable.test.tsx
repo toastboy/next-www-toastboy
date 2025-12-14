@@ -1,10 +1,11 @@
 jest.mock('@/components/TableQualified/TableQualified');
 
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { TableNameSchema } from 'prisma/generated/schemas';
 
+import { Props as TableQualifiedProps } from '@/components/TableQualified/TableQualified';
 import { YearTable } from '@/components/YearTable/YearTable';
-import { Wrapper } from '@/tests/components/lib/common';
+import { extractMockProps, Wrapper } from '@/tests/components/lib/common';
 import { defaultPlayerRecordDataList } from '@/tests/mocks';
 
 describe('YearTable', () => {
@@ -20,8 +21,9 @@ describe('YearTable', () => {
             </Wrapper>,
         );
 
-        const tableQualified = screen.getAllByTestId('mock-table-qualified');
-        expect(tableQualified.length).toBeGreaterThan(0);
+        const props = extractMockProps<TableQualifiedProps>("TableQualified");
+        expect(props.title).toBe('2024 Points Table');
+        expect(props.year).toBe(2024);
     });
 
     it('renders both qualified and unqualified tables for averages', () => {
@@ -36,7 +38,8 @@ describe('YearTable', () => {
             </Wrapper>,
         );
 
-        const tableQualified = screen.getAllByTestId('mock-table-qualified');
-        expect(tableQualified.length).toBe(2);
+        const props = extractMockProps<TableQualifiedProps>("TableQualified");
+        expect(props.title).toBe('2024 Averages Table');
+        expect(props.year).toBe(2024);
     });
 });

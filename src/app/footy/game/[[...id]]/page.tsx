@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic';
 import { Anchor, Flex } from "@mantine/core";
 import { GameDaySummary } from "components/GameDaySummary/GameDaySummary";
 import { notFound, redirect } from "next/navigation";
+import { Activity } from "react";
 import gameDayService from "services/GameDay";
 
 import outcomeService from "@/services/Outcome";
@@ -36,18 +37,22 @@ const Page: React.FC<Props> = async (props) => {
 
     return (
         <Flex w="100%" direction="column">
-            {!!prevGameDay && <Anchor
-                href={`/footy/game/${prevGameDay?.id}`}
-                ta="left"
-            >
-                Previous
-            </Anchor>}
-            {!!nextGameDay && <Anchor
-                href={`/footy/game/${nextGameDay?.id}`}
-                ta="right"
-            >
-                Next
-            </Anchor>}
+            <Activity mode={prevGameDay ? 'visible' : 'hidden'}>
+                <Anchor
+                    href={`/footy/game/${prevGameDay?.id ?? 0}`}
+                    ta="left"
+                >
+                    Previous
+                </Anchor>
+            </Activity>
+            <Activity mode={nextGameDay ? 'visible' : 'hidden'}>
+                <Anchor
+                    href={`/footy/game/${nextGameDay?.id ?? 0}`}
+                    ta="right"
+                >
+                    Next
+                </Anchor>
+            </Activity>
             <GameDaySummary
                 gameDay={gameDay}
                 teamA={teamA}

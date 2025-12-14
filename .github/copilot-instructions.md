@@ -1,6 +1,6 @@
 ## AI Coding Agent Guide for `next-www-toastboy`
 
-Purpose: Enable fast, safe contributions. Keep changes aligned with existing service + data patterns, testing setup, and env/secrets workflow.
+Purpose: Enable fast, safe contributions. Keep changes aligned with existing service + data patterns, testing setup, and env/secrets workflow. The policy for this project is to have zero errors or warnings from both 'npm run typecheck' and 'npm run lint' as well as 'npm run build'. New test failures in git commits are acceptable since they fit with the red-green-refactor cycle, but the overall test suite should pass before any deployment. Test coverage should not decrease and should generally be 90% or higher, but small dips are acceptable if justified by the nature of the change.
 
 ### Architecture & Layers
 

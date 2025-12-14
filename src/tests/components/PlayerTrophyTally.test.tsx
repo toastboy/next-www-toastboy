@@ -29,8 +29,6 @@ describe('PlayerTrophyTally', () => {
             </Wrapper>,
         );
 
-        screen.debug();
-
         const iconCount = await screen.findAllByRole('img');
         expect(iconCount).toHaveLength(3);
     });
@@ -44,8 +42,6 @@ describe('PlayerTrophyTally', () => {
                 />
             </Wrapper>,
         );
-
-        screen.debug();
 
         const iconCount = await screen.findAllByRole('img');
         expect(iconCount).toHaveLength(1);

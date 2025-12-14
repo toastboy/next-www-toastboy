@@ -1,9 +1,10 @@
 jest.mock('@/components/TeamPlayer/TeamPlayer');
 
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 
 import { Team } from '@/components/Team/Team';
-import { Wrapper } from '@/tests/components/lib/common';
+import { Props as TeamPlayerProps } from '@/components/TeamPlayer/TeamPlayer';
+import { extractMockProps, Wrapper } from '@/tests/components/lib/common';
 import { defaultTeamPlayerList } from '@/tests/mocks';
 
 describe('Team', () => {
@@ -14,7 +15,8 @@ describe('Team', () => {
             </Wrapper>,
         );
 
-        const teamPlayers = screen.getAllByTestId('mock-team-player');
-        expect(teamPlayers.length).toBe(defaultTeamPlayerList.length);
+        const props = extractMockProps<TeamPlayerProps>('TeamPlayer');
+        expect(props.length).toBe(10);
+        expect(props[0].teamPlayer.name).toEqual("Gary Player");
     });
 });

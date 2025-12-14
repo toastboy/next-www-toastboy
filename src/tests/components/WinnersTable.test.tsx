@@ -3,8 +3,9 @@ jest.mock('@/components/PlayerLink/PlayerLink');
 import { render, screen } from '@testing-library/react';
 import { TableNameSchema } from 'prisma/generated/schemas';
 
+import { Props as PlayerLinkProps } from '@/components/PlayerLink/PlayerLink';
 import { WinnersTable } from '@/components/WinnersTable/WinnersTable';
-import { Wrapper } from '@/tests/components/lib/common';
+import { extractMockProps, Wrapper } from '@/tests/components/lib/common';
 import { defaultPlayerRecordDataList } from '@/tests/mocks';
 
 describe('WinnersTable', () => {
@@ -18,8 +19,9 @@ describe('WinnersTable', () => {
             </Wrapper>,
         );
 
+        const props = extractMockProps<PlayerLinkProps>('PlayerLink');
         expect(screen.getByText('Points')).toBeInTheDocument();
-        const playerLinks = screen.getAllByTestId('mock-player-link');
-        expect(playerLinks.length).toBeGreaterThan(0);
+        expect(props.length).toBe(20);
+        expect(props[0].player.name).toEqual("Gary Player");
     });
 });

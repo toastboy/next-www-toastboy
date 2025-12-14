@@ -4,8 +4,9 @@ jest.mock('@/components/PlayerMugshot/PlayerMugshot');
 
 import { render, screen } from '@testing-library/react';
 
+import { Props as PlayerLinkProps } from '@/components/PlayerLink/PlayerLink';
 import { TeamPlayer } from '@/components/TeamPlayer/TeamPlayer';
-import { Wrapper } from '@/tests/components/lib/common';
+import { extractMockProps, Wrapper } from '@/tests/components/lib/common';
 import { defaultTeamPlayer } from '@/tests/mocks';
 
 describe('TeamPlayer', () => {
@@ -16,9 +17,9 @@ describe('TeamPlayer', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByTestId('mock-player-link')).toBeInTheDocument();
-        expect(screen.getByTestId('mock-player-mugshot')).toBeInTheDocument();
-        expect(screen.getByTestId('mock-player-form')).toBeInTheDocument();
+        const props = extractMockProps<PlayerLinkProps>('PlayerLink');
+        expect(props.length).toBe(1);
+        expect(props[0].player.name).toEqual("Gary Player");
     });
 
     it('displays goalie status when applicable', () => {

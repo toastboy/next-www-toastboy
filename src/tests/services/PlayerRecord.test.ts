@@ -216,31 +216,59 @@ describe('PlayerRecordService', () => {
 
     describe('getAllYears', () => {
         it('should retrieve the correct years', async () => {
+            (prisma.gameDay.groupBy as jest.Mock).mockResolvedValue([
+                {
+                    _max: {
+                        id: 1035,
+                    },
+                    year: 2021,
+                },
+            ]);
             (prisma.playerRecord.findMany as jest.Mock).mockResolvedValue([
                 {
+                    gameDayId: 1085,
                     year: 0,
                 },
                 {
+                    gameDayId: 1035,
                     year: 2021,
                 },
                 {
+                    gameDayId: 1085,
                     year: 2022,
                 },
             ]);
 
             const result = await playerRecordService.getAllYears();
-            expect(result).toEqual([2021, 2022, 0]);
+            expect(result).toEqual([2021, 0]);
         });
 
         it('should retrieve the correct years even if the query returns them in a weird order', async () => {
-            (prisma.playerRecord.findMany as jest.Mock).mockResolvedValue([
+            (prisma.gameDay.groupBy as jest.Mock).mockResolvedValue([
                 {
+                    _max: {
+                        id: 1035,
+                    },
                     year: 2021,
                 },
                 {
+                    _max: {
+                        id: 1085,
+                    },
+                    year: 2022,
+                },
+            ]);
+            (prisma.playerRecord.findMany as jest.Mock).mockResolvedValue([
+                {
+                    gameDayId: 1035,
+                    year: 2021,
+                },
+                {
+                    gameDayId: 1085,
                     year: 0,
                 },
                 {
+                    gameDayId: 1085,
                     year: 2022,
                 },
             ]);

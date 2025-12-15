@@ -238,25 +238,19 @@ export class GameDayService {
             const result = await prisma.gameDay.groupBy({
                 by: ['year'],
                 where: {
-                    AND: [
-                        {
-                            ...(until ? {
-                                date: {
-                                    lte: until,
-                                },
-                            } : {}),
+                    game: true,
+                    ...(until ? {
+                        date: {
+                            lte: until,
                         },
-                        {
-                            game: true,
-                        },
-                    ],
+                    } : {}),
                 },
                 _max: {
                     id: true,
                 },
             });
 
-            return result.map((r) => r._max.id);
+            return result?.map((r) => r._max.id) ?? [];
         } catch (error) {
             log(`Error counting gameDays: ${String(error)}`);
             throw error;

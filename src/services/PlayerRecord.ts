@@ -138,7 +138,7 @@ export class PlayerRecordService {
                 },
             });
             const filteredRecords = records.filter(
-                (record) => seasonEnders.includes(record.gameDayId),
+                (record) => seasonEnders.includes(record.gameDayId) || record.year === 0,
             );
             // Move zero values to the end
             const years = filteredRecords.map(r => r.year).sort((a, b) => {

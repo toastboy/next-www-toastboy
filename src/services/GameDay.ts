@@ -233,17 +233,29 @@ export class GameDayService {
      * @returns An array of maximum gameDay IDs for each year, or null if there
      * are no games.
      */
-    async getSeasonEnders(): Promise<(number | null)[]> {
+    async getSeasonEnders(until?: Date): Promise<(number | null)[]> {
         try {
             const result = await prisma.gameDay.groupBy({
                 by: ['year'],
                 where: {
-                    game: true,
+                    AND: [
+                        {
+                            ...(until ? {
+                                date: {
+                                    lte: until,
+                                },
+                            } : {}),
+                        },
+                        {
+                            game: true,
+                        },
+                    ],
                 },
                 _max: {
                     id: true,
                 },
             });
+
             return result.map((r) => r._max.id);
         } catch (error) {
             log(`Error counting gameDays: ${String(error)}`);

@@ -123,18 +123,25 @@ export class PlayerRecordService {
      * @returns A promise that resolves to an array of distinct years.
      * @throws An error if there is a failure.
      */
-    async getAllYears(): Promise<number[]> {
+    async getAllYears(completed = false): Promise<number[]> {
         try {
+            const seasonEnders = await gameDayService.getSeasonEnders(
+                completed ? new Date() : undefined,
+            );
             const records = await prisma.playerRecord.findMany({
                 select: {
+                    gameDayId: true,
                     year: true,
                 },
                 orderBy: {
                     year: 'asc',
                 },
             });
+            const filteredRecords = records.filter(
+                (record) => seasonEnders.includes(record.gameDayId),
+            );
             // Move zero values to the end
-            const years = records.map(r => r.year).sort((a, b) => {
+            const years = filteredRecords.map(r => r.year).sort((a, b) => {
                 if (a === 0) return 1;
                 if (b === 0) return -1;
                 return a - b;

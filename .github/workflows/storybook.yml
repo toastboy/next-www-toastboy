@@ -1,40 +1,43 @@
-name: UI Tests
+name: Storybook Tests
 
 on: [push]
 
 jobs:
-  test:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      pull-requests: write
-      checks: write
+    test:
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+            pull-requests: write
+            checks: write
 
-    container:
-      # Make sure to grab the latest version of the Playwright image
-      # https://playwright.dev/docs/docker#pull-the-image
-      image: mcr.microsoft.com/playwright:v1.52.0-noble
-    steps:
-      - uses: actions/checkout@v6
+        steps:
+            - uses: actions/checkout@v6
 
-      - name: Setup Node
-        uses: actions/setup-node@v6
-        with:
-          node-version: 20
+            - name: Setup Node
+              uses: actions/setup-node@v6
+              with:
+                  node-version: 20
+                  cache: npm
 
-      - name: Install dependencies
-        run: npm ci
+            - name: Install dependencies
+              run: npm ci
 
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps chromium
+            - name: Build Storybook
+              run: npm run build:storybook
 
-      - name: Run Storybook tests
-        run: npm run test:storybook
+            - name: Start Storybook
+              run: |
+                  npm run storybook -- --ci --disable-telemetry --host 0.0.0.0 --port 6006 > /tmp/storybook.log 2>&1 &
+                  npx wait-on http://127.0.0.1:6006
 
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v5
-        with:
-          name: playwright-storybook-report
-          path: playwright-report/
-          retention-days: 30
+            - name: Run Storybook tests
+              run: npm run test:storybook
+
+            - name: Upload Storybook logs
+              if: always()
+              uses: actions/upload-artifact@v5
+              with:
+                  name: storybook-test-logs
+                  path: /tmp/storybook.log
+                  if-no-files-found: ignore
+                  retention-days: 14

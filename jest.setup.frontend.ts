@@ -46,7 +46,7 @@ jest.mock('@mantine/tiptap', () => {
 
     const omitDomProps = (props: DomProps, keys: string[]): DomProps => {
         const next: DomProps = {};
-        for (const k of Object.keys(props ?? {})) {
+        for (const k of Object.keys(props)) {
             if (!keys.includes(k)) next[k] = props[k];
         }
         return next;

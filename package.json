@@ -22,8 +22,8 @@
         "test:coverage": "COVERAGE=true jest",
         "test:services:coverage": "COVERAGE=true jest --selectProjects services",
         "test:services": "jest --selectProjects services",
-        "test:storybook:update-snapshots": "concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"npm run build:storybook && npx http-server storybook-static --port 6006 --silent\" \"npx wait-on http://127.0.0.1:6006 && SKIP_WEBSERVER=1 playwright test --project storybook --update-snapshots\"",
-        "test:storybook": "concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"npm run build:storybook && npx http-server storybook-static --port 6006 --silent\" \"npx wait-on http://127.0.0.1:6006 && SKIP_WEBSERVER=1 playwright test --project storybook\"",
+        "test:storybook:update-snapshots": "test-storybook --url http://127.0.0.1:6006 --updateSnapshot",
+        "test:storybook": "test-storybook --url http://127.0.0.1:6006",
         "test:watch": "jest --watch --passWithNoTests",
         "test": "jest",
         "typecheck": "tsc --noEmit"
@@ -82,6 +82,7 @@
         "@storybook/addon-docs": "^10.1.4",
         "@storybook/addon-onboarding": "^10.1.4",
         "@storybook/nextjs": "^10.1.4",
+        "@storybook/test-runner": "^0.24.2",
         "@swc-node/jest": "^1.9.1",
         "@swc/core": "^1.15.1",
         "@swc/jest": "^0.2.39",

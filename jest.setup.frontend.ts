@@ -41,7 +41,7 @@ jest.mock('@mantine/tiptap', () => {
     // eslint-disable-next-line @typescript-eslint/no-require-imports
     const React = require('react') as typeof import('react');
 
-    type DomProps = Record<string, unknown>;
+    type DomProps = React.HTMLAttributes<HTMLElement>;
     type WithChildren = React.PropsWithChildren<DomProps>;
 
     const omitDomProps = (props: DomProps, keys: string[]): DomProps => {

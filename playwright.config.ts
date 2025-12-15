@@ -96,8 +96,8 @@ export default defineConfig({
     webServer: {
         command: process.env.CI
             ? 'npm run start:ci'
-            : 'op run --env-file ./.env -- npm run dev',
-        url: 'http://127.0.0.1:3000',
+            : `op run --env-file "${ENV_PATH}" -- npm run dev`,
+        url: BASE_URL,
         stdout: 'pipe',
         stderr: 'pipe',
         // See https://playwright.dev/docs/test-advanced

@@ -47,7 +47,7 @@ jest.mock('@mantine/tiptap', () => {
     const omitDomProps = (props: DomProps, keys: string[]): DomProps => {
         const next: DomProps = {};
         for (const k of Object.keys(props ?? {})) {
-            if (!keys.includes(k)) next[k] = (props)[k];
+            if (!keys.includes(k)) next[k] = props[k];
         }
         return next;
     };
@@ -103,9 +103,10 @@ jest.mock('@mantine/tiptap', () => {
     );
     RichTextEditorControlsGroup.displayName = 'RichTextEditor.ControlsGroup';
 
+    const DEFAULT_RICH_TEXT_EDITOR_CONTENT_HTML = '<p>Hello, this is a test!</p>';
     const RichTextEditorContent: React.FC<DomProps> = (props) => {
         const editor = React.useContext(EditorContext);
-        const html = editor?.options?.content ?? '<p>Hello, this is a test!</p>';
+        const html = editor?.options?.content ?? DEFAULT_RICH_TEXT_EDITOR_CONTENT_HTML;
         return React.createElement('div', {
             'data-mock': 'RichTextEditor.Content',
             dangerouslySetInnerHTML: { __html: html },

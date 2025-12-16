@@ -134,6 +134,7 @@
         "jest-mock-axios": "^4.9.0",
         "msw": "^2.12.4",
         "msw-storybook-addon": "^2.0.6",
+        "npm-check-updates": "^19.2.0",
         "react-test-renderer": "^19.2.3",
         "storybook": "^10.1.4",
         "supertest": "^7.1.4",

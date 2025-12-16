@@ -1,0 +1,29 @@
+name: "Chromatic"
+
+on: push
+
+jobs:
+    chromatic:
+        name: Run Chromatic
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v6
+              with:
+                  fetch-depth: 0
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: 20
+            - name: Install dependencies
+              run: npm ci
+            - name: Load secrets from 1Password and export to environment
+              uses: 1password/load-secrets-action@v3
+              with:
+                  export-env: true
+              env:
+                  OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+                  CHROMATIC_PROJECT_TOKEN: op://next-www-toastboy/Chromatic/credential
+            - name: Run Chromatic
+              uses: chromaui/action@latest
+              with:
+                  projectToken: ${{ env.CHROMATIC_PROJECT_TOKEN }}

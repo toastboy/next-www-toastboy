@@ -17,6 +17,7 @@
         "storybook": "storybook dev -p 6006",
         "test:api:coverage": "COVERAGE=true jest --selectProjects api",
         "test:api": "jest --selectProjects api",
+        "test:chromatic": "npx chromatic",
         "test:components:coverage": "COVERAGE=true  jest --selectProjects components",
         "test:components": "jest --selectProjects components",
         "test:coverage": "COVERAGE=true jest",

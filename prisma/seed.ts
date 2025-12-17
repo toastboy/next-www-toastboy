@@ -1,19 +1,19 @@
 import 'dotenv/config';
 
+import { Account, Prisma, PrismaClient, User, Verification } from '@/generated/prisma/client';
+import { ArseType } from '@/generated/zod/schemas/models/Arse.schema';
+import { ClubType } from '@/generated/zod/schemas/models/Club.schema';
+import { ClubSupporterType } from '@/generated/zod/schemas/models/ClubSupporter.schema';
+import { CountryType } from '@/generated/zod/schemas/models/Country.schema';
+import { CountrySupporterType } from '@/generated/zod/schemas/models/CountrySupporter.schema';
+import { GameChatType } from '@/generated/zod/schemas/models/GameChat.schema';
+import { GameDayType } from '@/generated/zod/schemas/models/GameDay.schema';
+import { OutcomeType } from '@/generated/zod/schemas/models/Outcome.schema';
+import { PlayerType } from '@/generated/zod/schemas/models/Player.schema';
+import { PlayerRecordType } from '@/generated/zod/schemas/models/PlayerRecord.schema';
 import { ClientSecretCredential } from '@azure/identity';
 import { BlobServiceClient, ContainerClient } from '@azure/storage-blob';
 import { PrismaMariaDb } from '@prisma/adapter-mariadb';
-import { Account, Prisma, PrismaClient, User, Verification } from '@/generated/prisma/client';
-import { ArseType } from './generated/schemas/models/Arse.schema';
-import { ClubType } from './generated/schemas/models/Club.schema';
-import { ClubSupporterType } from './generated/schemas/models/ClubSupporter.schema';
-import { CountryType } from './generated/schemas/models/Country.schema';
-import { CountrySupporterType } from './generated/schemas/models/CountrySupporter.schema';
-import { GameChatType } from './generated/schemas/models/GameChat.schema';
-import { GameDayType } from './generated/schemas/models/GameDay.schema';
-import { OutcomeType } from './generated/schemas/models/Outcome.schema';
-import { PlayerType } from './generated/schemas/models/Player.schema';
-import { PlayerRecordType } from './generated/schemas/models/PlayerRecord.schema';
 
 const adapter = new PrismaMariaDb(process.env.DATABASE_URL!);
 const prisma = new PrismaClient({ adapter });

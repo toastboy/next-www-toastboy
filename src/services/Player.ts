@@ -185,7 +185,7 @@ class PlayerService {
                     gamesWon: gamesPlayed.filter(outcome => outcome.points === 3).length,
                     gamesDrawn: gamesPlayed.filter(outcome => outcome.points === 1).length,
                     gamesLost: gamesPlayed.filter(outcome => outcome.points === 0).length,
-                };
+                } satisfies PlayerDataType;
             });
         } catch (error) {
             log(`Error fetching Players: ${String(error)}`);

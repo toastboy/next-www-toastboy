@@ -1,9 +1,23 @@
-import { defineConfig } from 'prisma/config';
+import 'dotenv/config';
+
+import { defineConfig, env } from 'prisma/config';
+
+const databaseUrl =
+    process.env.DATABASE_URL ??
+    // Intentionally invalid credentials so `prisma generate` can run without secrets,
+    // while commands that need a real DB will fail fast.
+    'mysql://invalid:invalid@localhost:3306/invalid';
+
+const shadowDatabaseUrl = process.env.SHADOW_DATABASE_URL;
 
 export default defineConfig({
-    schema: './prisma/schema.prisma',
+    schema: 'prisma/schema.prisma',
     migrations: {
-        path: './prisma/migrations',
-        seed: 'ts-node -r tsconfig-paths/register --project tsconfig.scripts.json --compiler-options {"module":"CommonJS"} prisma/seed.ts',
+        path: 'prisma/migrations',
+        seed: 'tsx -r tsconfig-paths/register prisma/seed.ts',
+    },
+    datasource: {
+        url: process.env.DATABASE_URL ? env('DATABASE_URL') : databaseUrl,
+        ...(shadowDatabaseUrl ? { shadowDatabaseUrl } : {}),
     },
 });

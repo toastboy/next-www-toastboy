@@ -1,314 +1,314 @@
 generator client {
-  provider = "prisma-client-js"
+    provider = "prisma-client"
+    output   = "../src/generated/prisma"
 }
 
 generator zod {
-  provider = "prisma-zod-generator"
-  // optional output = "./prisma/generated" (JSON config can supply if omitted)
-  // optional config = "./zod-generator.config.json" (relative to schema file)
+    provider = "prisma-zod-generator"
+    // optional output = "./prisma/generated" (JSON config can supply if omitted)
+    // optional config = "./zod-generator.config.json" (relative to schema file)
 }
 
 datasource db {
-  provider     = "mysql"
-  url          = env("DATABASE_URL")
-  relationMode = "prisma"
+    provider     = "mysql"
+    relationMode = "prisma"
 }
 
 model Arse {
-  id    Int      @id @default(autoincrement())
-  stamp DateTime @default(now()) @db.Timestamp(0)
+    id    Int      @id @default(autoincrement())
+    stamp DateTime @default(now()) @db.Timestamp(0)
 
-  inGoal    Int?
-  running   Int?
-  shooting  Int?
-  passing   Int?
-  ballSkill Int?
-  attacking Int?
-  defending Int?
+    inGoal    Int?
+    running   Int?
+    shooting  Int?
+    passing   Int?
+    ballSkill Int?
+    attacking Int?
+    defending Int?
 
-  playerId Int
-  raterId  Int
+    playerId Int
+    raterId  Int
 
-  player Player @relation(name: "PlayerArse", fields: [playerId], references: [id])
-  rater  Player @relation(name: "RaterArse", fields: [raterId], references: [id])
+    player Player @relation(name: "PlayerArse", fields: [playerId], references: [id])
+    rater  Player @relation(name: "RaterArse", fields: [raterId], references: [id])
 
-  @@unique([playerId, raterId])
-  @@index([playerId])
-  @@index([raterId])
+    @@unique([playerId, raterId])
+    @@index([playerId])
+    @@index([raterId])
 }
 
 model Club {
-  id          Int     @id @default(autoincrement())
-  soccerwayId Int?
-  clubName    String  @db.VarChar(255)
-  uri         String? @db.VarChar(255)
-  country     String? @db.VarChar(255)
+    id          Int     @id @default(autoincrement())
+    soccerwayId Int?
+    clubName    String  @db.VarChar(255)
+    uri         String? @db.VarChar(255)
+    country     String? @db.VarChar(255)
 
-  supporters ClubSupporter[]
+    supporters ClubSupporter[]
 }
 
 model ClubSupporter {
-  playerId Int
-  clubId   Int
+    playerId Int
+    clubId   Int
 
-  player Player @relation(fields: [playerId], references: [id])
-  club   Club   @relation(fields: [clubId], references: [id])
+    player Player @relation(fields: [playerId], references: [id])
+    club   Club   @relation(fields: [clubId], references: [id])
 
-  @@unique([playerId, clubId])
-  @@index([playerId])
-  @@index([clubId])
+    @@unique([playerId, clubId])
+    @@index([playerId])
+    @@index([clubId])
 }
 
 model Country {
-  isoCode String @id @db.VarChar(6)
-  name    String @unique @db.VarChar(255)
+    isoCode String @id @db.VarChar(6)
+    name    String @unique @db.VarChar(255)
 
-  supporters CountrySupporter[]
+    supporters CountrySupporter[]
 }
 
 model CountrySupporter {
-  playerId       Int
-  countryISOCode String @db.VarChar(6)
+    playerId       Int
+    countryISOCode String @db.VarChar(6)
 
-  country Country @relation(fields: [countryISOCode], references: [isoCode])
-  player  Player  @relation(fields: [playerId], references: [id])
+    country Country @relation(fields: [countryISOCode], references: [isoCode])
+    player  Player  @relation(fields: [playerId], references: [id])
 
-  @@unique([playerId, countryISOCode])
-  @@index([playerId])
-  @@index([countryISOCode])
+    @@unique([playerId, countryISOCode])
+    @@index([playerId])
+    @@index([countryISOCode])
 }
 
 model Diffs {
-  id             Int     @id @default(autoincrement())
-  a              String? @db.Text
-  b              String? @db.Text
-  diffAge        Float?
-  diffUnknownAge Int?
-  diffGoalies    Int?    @db.TinyInt
-  diffAverage    Float?
-  diffPlayed     Int?
+    id             Int     @id @default(autoincrement())
+    a              String? @db.Text
+    b              String? @db.Text
+    diffAge        Float?
+    diffUnknownAge Int?
+    diffGoalies    Int?    @db.TinyInt
+    diffAverage    Float?
+    diffPlayed     Int?
 }
 
 model GameChat {
-  id      Int      @id @default(autoincrement())
-  gameDay Int
-  stamp   DateTime @default(now()) @db.Timestamp(0)
-  player  Int
-  body    String?  @db.MediumText
+    id      Int      @id @default(autoincrement())
+    gameDay Int
+    stamp   DateTime @default(now()) @db.Timestamp(0)
+    player  Int
+    body    String?  @db.MediumText
 
-  @@index([player])
+    @@index([player])
 }
 
 model GameDay {
-  id                 Int       @id @default(autoincrement())
-  year               Int
-  date               DateTime  @db.DateTime(0)
-  game               Boolean   @default(true)
-  mailSent           DateTime? @db.DateTime(0)
-  comment            String?   @db.VarChar(255)
-  bibs               TeamName?
-  pickerGamesHistory Int?
+    id                 Int       @id @default(autoincrement())
+    year               Int
+    date               DateTime  @db.DateTime(0)
+    game               Boolean   @default(true)
+    mailSent           DateTime? @db.DateTime(0)
+    comment            String?   @db.VarChar(255)
+    bibs               TeamName?
+    pickerGamesHistory Int?
 
-  invitations   Invitation[]
-  outcomes      Outcome[]
-  playerRecords PlayerRecord[]
+    invitations   Invitation[]
+    outcomes      Outcome[]
+    playerRecords PlayerRecord[]
 }
 
 model Invitation {
-  uuid      String @id @db.Char(38)
-  playerId  Int
-  gameDayId Int
+    uuid      String @id @db.Char(38)
+    playerId  Int
+    gameDayId Int
 
-  gameDay GameDay @relation(fields: [gameDayId], references: [id])
-  player  Player  @relation(fields: [playerId], references: [id])
+    gameDay GameDay @relation(fields: [gameDayId], references: [id])
+    player  Player  @relation(fields: [playerId], references: [id])
 
-  @@unique([gameDayId, playerId])
-  @@index([playerId])
-  @@index([gameDayId])
+    @@unique([gameDayId, playerId])
+    @@index([playerId])
+    @@index([gameDayId])
 }
 
 model Outcome {
-  id               Int             @id @default(autoincrement())
-  response         PlayerResponse?
-  responseInterval Int?
-  points           Int?
-  team             TeamName?
-  comment          String?         @db.VarChar(127)
-  pub              Int?
-  paid             Boolean?
-  goalie           Boolean?
+    id               Int             @id @default(autoincrement())
+    response         PlayerResponse?
+    responseInterval Int?
+    points           Int?
+    team             TeamName?
+    comment          String?         @db.VarChar(127)
+    pub              Int?
+    paid             Boolean?
+    goalie           Boolean?
 
-  gameDayId Int
-  playerId  Int
+    gameDayId Int
+    playerId  Int
 
-  gameDay GameDay @relation(fields: [gameDayId], references: [id])
-  player  Player  @relation(fields: [playerId], references: [id])
+    gameDay GameDay @relation(fields: [gameDayId], references: [id])
+    player  Player  @relation(fields: [playerId], references: [id])
 
-  @@unique([gameDayId, playerId])
-  @@index([gameDayId])
-  @@index([playerId])
+    @@unique([gameDayId, playerId])
+    @@index([gameDayId])
+    @@index([playerId])
 }
 
 model Picker {
-  playerId   Int     @id
-  playerName String? @db.VarChar(255)
-  age        Int?
-  average    Float?
-  goalie     Int?    @db.TinyInt
-  played     Int?
+    playerId   Int     @id
+    playerName String? @db.VarChar(255)
+    age        Int?
+    average    Float?
+    goalie     Int?    @db.TinyInt
+    played     Int?
 }
 
 model PickerTeams {
-  playerId Int       @unique
-  team     TeamName?
+    playerId Int       @unique
+    team     TeamName?
 }
 
 model Player {
-  id    Int    @id @default(autoincrement())
-  login String @unique @db.VarChar(16)
+    id    Int    @id @default(autoincrement())
+    login String @unique @db.VarChar(16)
 
-  isAdmin Boolean?
+    isAdmin Boolean?
 
-  name      String?
-  anonymous Boolean?
+    name      String?
+    anonymous Boolean?
 
-  email    String?
-  joined   DateTime?
-  finished DateTime?
-  born     DateTime?
-  comment  String?
+    email    String?
+    joined   DateTime?
+    finished DateTime?
+    born     DateTime?
+    comment  String?
 
-  introducedBy Int?
+    introducedBy Int?
 
-  arsesOfPlayer Arse[]             @relation(name: "PlayerArse")
-  arsesByPlayer Arse[]             @relation(name: "RaterArse")
-  clubs         ClubSupporter[]
-  countries     CountrySupporter[]
-  invitations   Invitation[]
-  outcomes      Outcome[]
-  playerRecords PlayerRecord[]
+    arsesOfPlayer Arse[]             @relation(name: "PlayerArse")
+    arsesByPlayer Arse[]             @relation(name: "RaterArse")
+    clubs         ClubSupporter[]
+    countries     CountrySupporter[]
+    invitations   Invitation[]
+    outcomes      Outcome[]
+    playerRecords PlayerRecord[]
 }
 
 model PlayerRecord {
-  id                      Int    @id @default(autoincrement())
-  year                    Int
-  responses               Int?
-  played                  Int?
-  won                     Int?
-  drawn                   Int?
-  lost                    Int?
-  points                  Int?
-  averages                Float?
-  stalwart                Int?
-  pub                     Int?
-  rankPoints              Int?
-  rankAverages            Int?
-  rankAveragesUnqualified Int?
-  rankStalwart            Int?
-  rankSpeedy              Int?
-  rankSpeedyUnqualified   Int?
-  rankPub                 Int?
-  speedy                  Int?
+    id                      Int    @id @default(autoincrement())
+    year                    Int
+    responses               Int?
+    played                  Int?
+    won                     Int?
+    drawn                   Int?
+    lost                    Int?
+    points                  Int?
+    averages                Float?
+    stalwart                Int?
+    pub                     Int?
+    rankPoints              Int?
+    rankAverages            Int?
+    rankAveragesUnqualified Int?
+    rankStalwart            Int?
+    rankSpeedy              Int?
+    rankSpeedyUnqualified   Int?
+    rankPub                 Int?
+    speedy                  Int?
 
-  playerId  Int
-  gameDayId Int
+    playerId  Int
+    gameDayId Int
 
-  player  Player  @relation(fields: [playerId], references: [id])
-  gameDay GameDay @relation(fields: [gameDayId], references: [id])
+    player  Player  @relation(fields: [playerId], references: [id])
+    gameDay GameDay @relation(fields: [gameDayId], references: [id])
 
-  @@unique([playerId, year, gameDayId])
-  @@index([playerId])
-  @@index([year])
-  @@index([gameDayId])
+    @@unique([playerId, year, gameDayId])
+    @@index([playerId])
+    @@index([year])
+    @@index([gameDayId])
 }
 
 enum TeamName {
-  A
-  B
+    A
+    B
 }
 
 enum PlayerResponse {
-  Yes
-  No
-  Dunno
-  Excused
-  Flaked
-  Injured
+    Yes
+    No
+    Dunno
+    Excused
+    Flaked
+    Injured
 }
 
 enum TableName {
-  points
-  averages
-  stalwart
-  speedy
-  pub
+    points
+    averages
+    stalwart
+    speedy
+    pub
 }
 
 model User {
-  id            String    @id
-  name          String    @db.Text
-  email         String
-  emailVerified Boolean
-  image         String?   @db.Text
-  createdAt     DateTime
-  updatedAt     DateTime
-  sessions      Session[]
-  accounts      Account[]
+    id            String    @id
+    name          String    @db.Text
+    email         String
+    emailVerified Boolean
+    image         String?   @db.Text
+    createdAt     DateTime
+    updatedAt     DateTime
+    sessions      Session[]
+    accounts      Account[]
 
-  role       String?   @db.Text
-  banned     Boolean?
-  banReason  String?   @db.Text
-  banExpires DateTime?
+    role       String?   @db.Text
+    banned     Boolean?
+    banReason  String?   @db.Text
+    banExpires DateTime?
 
-  @@unique([email])
-  @@map("user")
+    @@unique([email])
+    @@map("user")
 }
 
 model Session {
-  id        String   @id
-  expiresAt DateTime
-  token     String
-  createdAt DateTime
-  updatedAt DateTime
-  ipAddress String?  @db.Text
-  userAgent String?  @db.Text
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+    id        String   @id
+    expiresAt DateTime
+    token     String
+    createdAt DateTime
+    updatedAt DateTime
+    ipAddress String?  @db.Text
+    userAgent String?  @db.Text
+    userId    String
+    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  impersonatedBy String? @db.Text
+    impersonatedBy String? @db.Text
 
-  @@unique([token])
-  @@index([userId])
-  @@map("session")
+    @@unique([token])
+    @@index([userId])
+    @@map("session")
 }
 
 model Account {
-  id                    String    @id
-  accountId             String    @db.Text
-  providerId            String    @db.Text
-  userId                String
-  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  accessToken           String?   @db.Text
-  refreshToken          String?   @db.Text
-  idToken               String?   @db.Text
-  accessTokenExpiresAt  DateTime?
-  refreshTokenExpiresAt DateTime?
-  scope                 String?   @db.Text
-  password              String?   @db.Text
-  createdAt             DateTime
-  updatedAt             DateTime
+    id                    String    @id
+    accountId             String    @db.Text
+    providerId            String    @db.Text
+    userId                String
+    user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+    accessToken           String?   @db.Text
+    refreshToken          String?   @db.Text
+    idToken               String?   @db.Text
+    accessTokenExpiresAt  DateTime?
+    refreshTokenExpiresAt DateTime?
+    scope                 String?   @db.Text
+    password              String?   @db.Text
+    createdAt             DateTime
+    updatedAt             DateTime
 
-  @@index([userId])
-  @@map("account")
+    @@index([userId])
+    @@map("account")
 }
 
 model Verification {
-  id         String    @id
-  identifier String    @db.Text
-  value      String    @db.Text
-  expiresAt  DateTime
-  createdAt  DateTime?
-  updatedAt  DateTime?
+    id         String    @id
+    identifier String    @db.Text
+    value      String    @db.Text
+    expiresAt  DateTime
+    createdAt  DateTime?
+    updatedAt  DateTime?
 
-  @@map("verification")
+    @@map("verification")
 }

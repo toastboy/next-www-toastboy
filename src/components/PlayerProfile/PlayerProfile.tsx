@@ -1,5 +1,4 @@
 import { Box, Container, Title } from '@mantine/core';
-import { TableName } from '@prisma/client';
 import { PlayerArse } from 'components/PlayerArse/PlayerArse';
 import { PlayerBorn } from 'components/PlayerBorn/PlayerBorn';
 import { PlayerClubs } from 'components/PlayerClubs/PlayerClubs';
@@ -14,6 +13,7 @@ import { PlayerType } from 'prisma/generated/schemas/models/Player.schema';
 import { PlayerRecordType } from 'prisma/generated/schemas/models/PlayerRecord.schema';
 import { Activity } from 'react';
 
+import { TableName } from '@/generated/prisma/enums';
 import { ClubSupporterDataType, CountrySupporterDataType, PlayerFormType } from '@/types';
 
 import classes from './PlayerProfile.module.css';

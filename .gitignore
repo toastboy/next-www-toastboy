@@ -60,6 +60,7 @@ livesitelinks.json
 
 # Generted by Prisma
 prisma/generated/
+src/generated/prisma/
 
 # Storybook files
 *storybook.log

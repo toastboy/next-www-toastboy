@@ -1,8 +1,9 @@
 import { Stack } from '@mantine/core';
-import { TableName } from '@prisma/client';
 import { PlayerTrophyTally } from 'components/PlayerTrophyTally/PlayerTrophyTally';
 import { TableNameSchema } from 'prisma/generated/schemas';
 import { PlayerRecordType } from 'prisma/generated/schemas/models/PlayerRecord.schema';
+
+import { TableName } from '@/generated/prisma/enums';
 
 export interface Props {
     trophies: Map<TableName, PlayerRecordType[]>;

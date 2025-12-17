@@ -1,6 +1,9 @@
+import 'dotenv/config';
+
 import { ClientSecretCredential } from '@azure/identity';
 import { BlobServiceClient, ContainerClient } from '@azure/storage-blob';
-import { Account, Prisma, PrismaClient, User, Verification } from '@prisma/client';
+import { PrismaMariaDb } from '@prisma/adapter-mariadb';
+import { Account, Prisma, PrismaClient, User, Verification } from '@/generated/prisma/client';
 import { ArseType } from './generated/schemas/models/Arse.schema';
 import { ClubType } from './generated/schemas/models/Club.schema';
 import { ClubSupporterType } from './generated/schemas/models/ClubSupporter.schema';
@@ -12,7 +15,8 @@ import { OutcomeType } from './generated/schemas/models/Outcome.schema';
 import { PlayerType } from './generated/schemas/models/Player.schema';
 import { PlayerRecordType } from './generated/schemas/models/PlayerRecord.schema';
 
-const prisma = new PrismaClient();
+const adapter = new PrismaMariaDb(process.env.DATABASE_URL!);
+const prisma = new PrismaClient({ adapter });
 
 async function streamToBuffer(readableStream: NodeJS.ReadableStream): Promise<Buffer> {
     return new Promise((resolve, reject) => {

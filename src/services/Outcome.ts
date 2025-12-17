@@ -2,18 +2,6 @@ import 'server-only';
 
 import debug from 'debug';
 import prisma from 'lib/prisma';
-import {
-    OutcomeUncheckedCreateInputObjectZodSchema,
-    OutcomeUncheckedUpdateInputObjectZodSchema,
-    OutcomeWhereUniqueInputObjectSchema,
-    PlayerResponseSchema,
-    TeamName,
-    TeamNameSchema,
-} from 'prisma/generated/schemas';
-import {
-    OutcomeSchema,
-    OutcomeType,
-} from 'prisma/generated/schemas/models/Outcome.schema';
 import gameDayService from 'services/GameDay';
 import {
     Turnout,
@@ -22,6 +10,19 @@ import {
 } from 'types';
 import { TeamPlayerSchema, TeamPlayerType } from 'types/TeamPlayerType';
 import z from 'zod';
+
+import {
+    OutcomeUncheckedCreateInputObjectZodSchema,
+    OutcomeUncheckedUpdateInputObjectZodSchema,
+    OutcomeWhereUniqueInputObjectSchema,
+    PlayerResponseSchema,
+    TeamName,
+    TeamNameSchema,
+} from '@/generated/zod/schemas';
+import {
+    OutcomeSchema,
+    OutcomeType,
+} from '@/generated/zod/schemas/models/Outcome.schema';
 
 /** Field definitions with extra validation */
 const extendedFields = {

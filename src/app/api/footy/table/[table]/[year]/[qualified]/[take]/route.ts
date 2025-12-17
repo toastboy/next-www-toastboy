@@ -1,7 +1,8 @@
 import { handleGET } from 'lib/api';
 import { NextRequest } from 'next/server';
-import { TableNameSchema } from 'prisma/generated/schemas';
 import playerRecordService from 'services/PlayerRecord';
+
+import { TableNameSchema } from '@/generated/zod/schemas';
 
 /**
  * Handles a GET request to retrieve a player record table based on the provided parameters.

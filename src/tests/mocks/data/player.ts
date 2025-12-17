@@ -1,4 +1,4 @@
-import { PlayerType } from 'prisma/generated/schemas/models/Player.schema';
+import { PlayerType } from '@/generated/zod/schemas/models/Player.schema';
 
 export const defaultPlayer: PlayerType = {
     id: 1,

@@ -2,16 +2,17 @@ import 'server-only';
 
 import debug from 'debug';
 import prisma from 'lib/prisma';
+import z from 'zod';
+
 import {
     GameChatUncheckedCreateInputObjectZodSchema,
     GameChatUncheckedUpdateInputObjectZodSchema,
     GameChatWhereUniqueInputObjectSchema,
-} from 'prisma/generated/schemas';
+} from '@/generated/zod/schemas';
 import {
     GameChatSchema,
     GameChatType,
-} from 'prisma/generated/schemas/models/GameChat.schema';
-import z from 'zod';
+} from '@/generated/zod/schemas/models/GameChat.schema';
 
 /** Field definitions with extra validation */
 const extendedFields = {

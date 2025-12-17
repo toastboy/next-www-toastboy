@@ -2,11 +2,11 @@ jest.mock('@/components/PlayerLink/PlayerLink');
 jest.mock('@/components/TableScore/TableScore');
 
 import { render } from '@testing-library/react';
-import { TableNameSchema } from 'prisma/generated/schemas';
 
 import { Props as PlayerLinkProps } from '@/components/PlayerLink/PlayerLink';
 import { TableQualified } from '@/components/TableQualified/TableQualified';
 import { Props as TableScoreProps } from '@/components/TableScore/TableScore';
+import { TableNameSchema } from '@/generated/zod/schemas';
 import { extractMockProps, Wrapper } from '@/tests/components/lib/common';
 import { defaultPlayerRecordDataList } from '@/tests/mocks';
 

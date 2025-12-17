@@ -1,7 +1,8 @@
 import { handleGET } from 'lib/api';
 import { NextRequest } from 'next/server';
-import { TableNameSchema } from 'prisma/generated/schemas';
 import playerRecordService from 'services/PlayerRecord';
+
+import { TableNameSchema } from '@/generated/zod/schemas';
 
 /**
  * Handles the GET request for retrieving winners from a specific table and year.

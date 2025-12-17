@@ -1,5 +1,4 @@
-import { InvitationType } from 'prisma/generated/schemas/models/Invitation.schema';
-
+import { InvitationType } from '@/generated/zod/schemas/models/Invitation.schema';
 import prisma from '@/lib/prisma';
 import invitationService from '@/services/Invitation';
 import {

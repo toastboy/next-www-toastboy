@@ -1,4 +1,4 @@
-import { OutcomeType } from 'prisma/generated/schemas/models/Outcome.schema';
+import { OutcomeType } from '@/generated/zod/schemas/models/Outcome.schema';
 
 export const defaultOutcome: OutcomeType = {
     id: 1,

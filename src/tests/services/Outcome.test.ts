@@ -1,10 +1,9 @@
 import {
     PlayerResponseSchema,
-} from 'prisma/generated/schemas';
+} from '@/generated/zod/schemas';
 import {
     OutcomeType,
-} from 'prisma/generated/schemas/models/Outcome.schema';
-
+} from '@/generated/zod/schemas/models/Outcome.schema';
 import prisma from '@/lib/prisma';
 import outcomeService from '@/services/Outcome';
 import {

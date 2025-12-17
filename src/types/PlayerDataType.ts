@@ -1,5 +1,6 @@
-import { PlayerSchema } from 'prisma/generated/schemas';
 import { z } from 'zod';
+
+import { PlayerSchema } from '@/generated/zod/schemas';
 
 export const PlayerDataSchema = PlayerSchema.extend({
     firstResponded: z.number().nullable(),

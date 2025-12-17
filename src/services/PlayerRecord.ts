@@ -4,19 +4,19 @@ import debug from 'debug';
 import config from 'lib/config';
 import prisma from 'lib/prisma';
 import { rankMap } from 'lib/utils';
+import gameDayService from 'services/GameDay';
+import outcomeService from 'services/Outcome';
+import z from 'zod';
+
 import {
     PlayerRecordUncheckedCreateInputObjectZodSchema,
     PlayerRecordUncheckedUpdateInputObjectZodSchema,
     PlayerRecordWhereUniqueInputObjectSchema,
     TableName,
-} from 'prisma/generated/schemas';
-import { GameDayType } from 'prisma/generated/schemas/models/GameDay.schema';
-import { OutcomeType } from 'prisma/generated/schemas/models/Outcome.schema';
-import { PlayerRecordSchema, PlayerRecordType } from 'prisma/generated/schemas/models/PlayerRecord.schema';
-import gameDayService from 'services/GameDay';
-import outcomeService from 'services/Outcome';
-import z from 'zod';
-
+} from '@/generated/zod/schemas';
+import { GameDayType } from '@/generated/zod/schemas/models/GameDay.schema';
+import { OutcomeType } from '@/generated/zod/schemas/models/Outcome.schema';
+import { PlayerRecordSchema, PlayerRecordType } from '@/generated/zod/schemas/models/PlayerRecord.schema';
 import { PlayerRecordDataType } from '@/types';
 
 /** Field definitions with extra validation */
@@ -628,7 +628,7 @@ async function calculateYearPlayerRecords(
     // Upsert the PlayerRecords and add them to the overall list
 
     for (const recordData of Object.values(yearPlayerRecords)) {
-        const playerRecord = await playerRecordService.upsert(recordData as PlayerRecordType);
+        const playerRecord = await playerRecordService.upsert(recordData);
 
         if (playerRecord) {
             playerRecords.push(playerRecord);

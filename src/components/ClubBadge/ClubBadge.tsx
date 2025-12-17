@@ -1,5 +1,6 @@
 import { Image } from '@mantine/core';
-import { ClubType } from 'prisma/generated/schemas/models/Club.schema';
+
+import { ClubType } from '@/generated/zod/schemas/models/Club.schema';
 
 export interface Props {
     club: ClubType;

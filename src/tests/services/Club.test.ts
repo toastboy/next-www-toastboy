@@ -1,5 +1,4 @@
-import { ClubType } from 'prisma/generated/schemas/models/Club.schema';
-
+import { ClubType } from '@/generated/zod/schemas/models/Club.schema';
 import prisma from '@/lib/prisma';
 import clubService from '@/services/Club';
 import { defaultClub, defaultClubList, invalidClub } from '@/tests/mocks';

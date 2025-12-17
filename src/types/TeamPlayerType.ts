@@ -1,5 +1,6 @@
-import { OutcomeSchema, PlayerSchema } from 'prisma/generated/schemas';
 import { z } from 'zod';
+
+import { OutcomeSchema, PlayerSchema } from '@/generated/zod/schemas';
 
 import { PlayerFormSchema } from './PlayerFormType';
 

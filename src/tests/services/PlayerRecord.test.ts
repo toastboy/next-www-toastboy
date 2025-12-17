@@ -1,6 +1,5 @@
-import { TableNameSchema } from 'prisma/generated/schemas';
-import { PlayerRecordType } from 'prisma/generated/schemas/models/PlayerRecord.schema';
-
+import { TableNameSchema } from '@/generated/zod/schemas';
+import { PlayerRecordType } from '@/generated/zod/schemas/models/PlayerRecord.schema';
 import prisma from '@/lib/prisma';
 import playerRecordService from '@/services/PlayerRecord';
 import { defaultPlayerRecord, defaultPlayerRecordList } from '@/tests/mocks';

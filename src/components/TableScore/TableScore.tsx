@@ -1,5 +1,5 @@
-import { TableName, TableNameSchema } from "prisma/generated/schemas";
-import { PlayerRecordType } from "prisma/generated/schemas/models/PlayerRecord.schema";
+import { TableName, TableNameSchema } from '@/generated/zod/schemas';
+import { PlayerRecordType } from '@/generated/zod/schemas/models/PlayerRecord.schema';
 
 export interface Props {
     table: TableName;

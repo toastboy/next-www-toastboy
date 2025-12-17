@@ -1,12 +1,13 @@
 import { getUserRole } from "lib/authServer";
 import { NextResponse } from "next/server";
+import { z } from "zod";
+
 import {
     OutcomeSchema,
     PlayerSchema,
-} from 'prisma/generated/schemas';
-import { OutcomeType } from "prisma/generated/schemas/models/Outcome.schema";
-import { PlayerType } from "prisma/generated/schemas/models/Player.schema";
-import { z } from "zod";
+} from '@/generated/zod/schemas';
+import { OutcomeType } from '@/generated/zod/schemas/models/Outcome.schema';
+import { PlayerType } from '@/generated/zod/schemas/models/Player.schema';
 
 export const PublicOutcomeSchema = OutcomeSchema.transform((outcome) => ({
     ...outcome,

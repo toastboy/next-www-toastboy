@@ -2,16 +2,17 @@ import 'server-only';
 
 import debug from 'debug';
 import prisma from 'lib/prisma';
+import z from 'zod';
+
 import {
     InvitationUncheckedCreateInputObjectZodSchema,
     InvitationUncheckedUpdateInputObjectZodSchema,
     InvitationWhereUniqueInputObjectSchema,
-} from 'prisma/generated/schemas';
+} from '@/generated/zod/schemas';
 import {
     InvitationSchema,
     InvitationType,
-} from 'prisma/generated/schemas/models/Invitation.schema';
-import z from 'zod';
+} from '@/generated/zod/schemas/models/Invitation.schema';
 
 /** Field definitions with extra validation */
 const extendedFields = {

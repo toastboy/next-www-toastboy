@@ -1,4 +1,4 @@
-import { TableName } from 'prisma/generated/schemas';
+import { TableName } from '@/generated/zod/schemas';
 
 /**
  * Converts a readable stream into a Buffer.

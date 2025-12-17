@@ -1,5 +1,4 @@
-import { CountrySupporterType } from 'prisma/generated/schemas/models/CountrySupporter.schema';
-
+import { CountrySupporterType } from '@/generated/zod/schemas/models/CountrySupporter.schema';
 import prisma from '@/lib/prisma';
 import countrySupporterService from '@/services/CountrySupporter';
 import { defaultCountrySupporter, defaultCountrySupporterList } from '@/tests/mocks';

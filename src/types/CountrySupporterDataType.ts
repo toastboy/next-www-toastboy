@@ -1,5 +1,6 @@
-import { CountrySchema, CountrySupporterSchema } from 'prisma/generated/schemas';
 import { z } from 'zod';
+
+import { CountrySchema, CountrySupporterSchema } from '@/generated/zod/schemas';
 
 export const CountrySupporterDataSchema = CountrySupporterSchema.extend({
     country: CountrySchema,

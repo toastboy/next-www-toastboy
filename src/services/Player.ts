@@ -2,17 +2,18 @@ import 'server-only';
 
 import debug from 'debug';
 import prisma from 'lib/prisma';
+import { PlayerDataType, PlayerFormType } from 'types';
+import z from 'zod';
+
 import {
     PlayerUncheckedCreateInputObjectZodSchema,
     PlayerUncheckedUpdateInputObjectZodSchema,
     PlayerWhereUniqueInputObjectSchema,
-} from 'prisma/generated/schemas';
+} from '@/generated/zod/schemas';
 import {
     PlayerSchema,
     PlayerType,
-} from 'prisma/generated/schemas/models/Player.schema';
-import { PlayerDataType, PlayerFormType } from 'types';
-import z from 'zod';
+} from '@/generated/zod/schemas/models/Player.schema';
 
 /** Field definitions with extra validation */
 const extendedFields = {

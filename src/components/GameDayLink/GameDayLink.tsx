@@ -1,5 +1,6 @@
 import { Anchor } from '@mantine/core';
-import { GameDayType } from 'prisma/generated/schemas/models/GameDay.schema';
+
+import { GameDayType } from '@/generated/zod/schemas/models/GameDay.schema';
 
 export interface Props {
     gameDay: GameDayType,

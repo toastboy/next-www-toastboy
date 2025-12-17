@@ -1,5 +1,6 @@
 import { Table, TableTbody, TableTd, TableTr } from '@mantine/core';
-import { ArseType } from 'prisma/generated/schemas/models/Arse.schema';
+
+import { ArseType } from '@/generated/zod/schemas/models/Arse.schema';
 
 export interface Props {
     arse: Partial<ArseType> | null;

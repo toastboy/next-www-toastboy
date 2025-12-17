@@ -1,4 +1,4 @@
-import { CountryType } from "prisma/generated/schemas/models/Country.schema";
+import { CountryType } from '@/generated/zod/schemas/models/Country.schema';
 
 export const defaultCountry: CountryType = {
     isoCode: "GB-ENG",

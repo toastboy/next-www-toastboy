@@ -2,9 +2,9 @@ import { Grid, GridCol, Stack, Title } from "@mantine/core";
 import { WinnersTable } from "components/WinnersTable/WinnersTable";
 import { YearSelector } from "components/YearSelector/YearSelector";
 import { getYearName } from "lib/utils";
-import { TableName, TableNameSchema } from "prisma/generated/schemas";
 import playerRecordService from "services/PlayerRecord";
 
+import { TableName, TableNameSchema } from '@/generated/zod/schemas';
 import { PlayerRecordDataType } from "@/types";
 
 interface Props {

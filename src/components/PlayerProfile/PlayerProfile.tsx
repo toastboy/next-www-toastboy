@@ -8,12 +8,12 @@ import { PlayerHistory } from 'components/PlayerHistory/PlayerHistory';
 import { PlayerLastPlayed } from 'components/PlayerLastPlayed/PlayerLastPlayed';
 import { PlayerMugshot } from 'components/PlayerMugshot/PlayerMugshot';
 import { PlayerTrophies } from 'components/PlayerTrophies/PlayerTrophies';
-import { ArseType } from 'prisma/generated/schemas/models/Arse.schema';
-import { PlayerType } from 'prisma/generated/schemas/models/Player.schema';
-import { PlayerRecordType } from 'prisma/generated/schemas/models/PlayerRecord.schema';
 import { Activity } from 'react';
 
 import { TableName } from '@/generated/prisma/enums';
+import { ArseType } from '@/generated/zod/schemas/models/Arse.schema';
+import { PlayerType } from '@/generated/zod/schemas/models/Player.schema';
+import { PlayerRecordType } from '@/generated/zod/schemas/models/PlayerRecord.schema';
 import { ClubSupporterDataType, CountrySupporterDataType, PlayerFormType } from '@/types';
 
 import classes from './PlayerProfile.module.css';

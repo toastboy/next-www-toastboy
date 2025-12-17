@@ -36,6 +36,7 @@ Purpose: Enable fast, safe contributions. Keep changes aligned with existing ser
 ### Conventions & Patterns
 
 - **Import paths**: ALWAYS use `@/` alias imports (e.g., `import prisma from '@/lib/prisma'`) instead of relative imports with `../`. Never use `../` in import statements—use the `@/` path alias configured in `tsconfig.json`. Same-directory imports using `./` are acceptable.
+- Always use single quotes for import paths.
 - Always prepend backend-only modules with `import 'server-only';` to prevent client bundling.
 - Use `debug` logging with consistent namespace (`footy:api`) for new service methods; avoid `console.log`.
 - Validate external input early using appropriate `...Where*` or custom strict schema extension; never trust raw request body/query directly in prisma calls.
@@ -48,7 +49,7 @@ Purpose: Enable fast, safe contributions. Keep changes aligned with existing ser
 import 'server-only';
 import debug from 'debug';
 import prisma from 'lib/prisma';
-import { SomeModelWhereUniqueInputObjectSchema } from 'prisma/generated/schemas';
+import { SomeModelWhereUniqueInputObjectSchema } from '@/generated/zod/schemas';
 import z from 'zod';
 const extendedFields = { /* extra validation */ };
 export const SomeModelCreateStrictSchema = /* extend generated create schema */;

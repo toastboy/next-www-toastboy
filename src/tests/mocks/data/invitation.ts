@@ -1,4 +1,4 @@
-import { InvitationType } from "prisma/generated/schemas/models/Invitation.schema";
+import { InvitationType } from '@/generated/zod/schemas/models/Invitation.schema';
 
 export const defaultInvitation: InvitationType = {
     uuid: '{123e4567-e89b-12d3-a456-426614174000}',

@@ -2,18 +2,18 @@ import 'server-only';
 
 import debug from 'debug';
 import prisma from 'lib/prisma';
+import z from 'zod';
+
 import {
     CountrySupporterUncheckedCreateInputObjectZodSchema,
     CountrySupporterUncheckedUpdateInputObjectZodSchema,
     CountrySupporterWhereInputObjectSchema,
     CountrySupporterWhereUniqueInputObjectSchema,
-} from 'prisma/generated/schemas';
+} from '@/generated/zod/schemas';
 import {
     CountrySupporterSchema,
     CountrySupporterType,
-} from 'prisma/generated/schemas/models/CountrySupporter.schema';
-import z from 'zod';
-
+} from '@/generated/zod/schemas/models/CountrySupporter.schema';
 import { CountrySupporterDataType } from '@/types/CountrySupporterDataType';
 
 /** Field definitions with extra validation */

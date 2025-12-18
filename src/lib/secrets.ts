@@ -1,7 +1,7 @@
 import 'server-only';
 
-import * as fs from "fs";
-import * as path from "path";
+import * as fs from 'fs';
+import * as path from 'path';
 
 const secrets = {
     AZURE_CLIENT_ID: process.env.AZURE_CLIENT_ID,

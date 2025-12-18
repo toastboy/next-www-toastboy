@@ -1,6 +1,6 @@
 import { MantineProvider } from '@mantine/core';
 import { screen } from '@testing-library/react';
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
 
 export const loaderClass = '.mantine-Loader-root';
 export const errorText = 'failed to load';

@@ -1,6 +1,6 @@
-import { ClubSupporterDataType } from "@/types";
+import { ClubSupporterDataType } from '@/types';
 
-import { defaultClub } from "./club";
+import { defaultClub } from './club';
 
 export const defaultClubSupporterData: ClubSupporterDataType = {
     playerId: 12,

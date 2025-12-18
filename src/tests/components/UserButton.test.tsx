@@ -13,7 +13,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { UserButton } from '@/components/UserButton/UserButton';
 import { authClient } from '@/lib/auth-client';
 
-import { Wrapper } from "./lib/common";
+import { Wrapper } from './lib/common';
 
 describe('UserButton', () => {
     beforeEach(() => {

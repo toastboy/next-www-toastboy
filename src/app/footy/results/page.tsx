@@ -1,4 +1,4 @@
-import { GameCalendar } from "components/GameCalendar/GameCalendar";
+import { GameCalendar } from 'components/GameCalendar/GameCalendar';
 
 type PageProps = object
 

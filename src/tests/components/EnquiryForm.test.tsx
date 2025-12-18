@@ -2,7 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 
 import { EnquiryForm } from '@/components/EnquiryForm/EnquiryForm';
 
-import { Wrapper } from "./lib/common";
+import { Wrapper } from './lib/common';
 
 describe('EnquiryForm', () => {
     it('renders correctly', async () => {

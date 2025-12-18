@@ -1,12 +1,12 @@
 export const dynamic = 'force-dynamic';
 
-import { Anchor, Flex } from "@mantine/core";
-import { GameDaySummary } from "components/GameDaySummary/GameDaySummary";
-import { notFound, redirect } from "next/navigation";
-import { Activity } from "react";
-import gameDayService from "services/GameDay";
+import { Anchor, Flex } from '@mantine/core';
+import { GameDaySummary } from 'components/GameDaySummary/GameDaySummary';
+import { notFound, redirect } from 'next/navigation';
+import { Activity } from 'react';
+import gameDayService from 'services/GameDay';
 
-import outcomeService from "@/services/Outcome";
+import outcomeService from '@/services/Outcome';
 
 interface Props {
     params: Promise<{

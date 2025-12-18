@@ -2,7 +2,7 @@ import { buildPngResponse, handleGET } from 'lib/api';
 import azureCache from 'lib/azure';
 import { streamToBuffer } from 'lib/utils';
 import { NextRequest } from 'next/server';
-import playerService from "services/Player";
+import playerService from 'services/Player';
 
 /**
  * Retrieves the mugshot image of a player based on their ID or login.

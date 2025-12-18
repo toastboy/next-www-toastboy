@@ -1,4 +1,4 @@
-import { Center, Image } from "@mantine/core";
+import { Center, Image } from '@mantine/core';
 
 type PageProps = object
 

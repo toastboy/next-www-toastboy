@@ -1,6 +1,6 @@
-import { CountrySupporterDataType } from "@/types";
+import { CountrySupporterDataType } from '@/types';
 
-import { defaultCountry, defaultCountryList } from "./country";
+import { defaultCountry, defaultCountryList } from './country';
 
 export const defaultCountrySupporterData: CountrySupporterDataType = {
     playerId: 12,

@@ -1,7 +1,7 @@
-import { PlayerRecordDataType } from "@/types";
+import { PlayerRecordDataType } from '@/types';
 
-import { defaultPlayer } from "./player";
-import { defaultPlayerRecord } from "./playerRecord";
+import { defaultPlayer } from './player';
+import { defaultPlayerRecord } from './playerRecord';
 
 export const defaultPlayerRecordData: PlayerRecordDataType = {
     ...defaultPlayerRecord,

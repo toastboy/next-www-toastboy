@@ -1,11 +1,11 @@
-import { Grid, GridCol, Stack, Title } from "@mantine/core";
-import { WinnersTable } from "components/WinnersTable/WinnersTable";
-import { YearSelector } from "components/YearSelector/YearSelector";
-import { getYearName } from "lib/utils";
+import { Grid, GridCol, Stack, Title } from '@mantine/core';
+import { WinnersTable } from 'components/WinnersTable/WinnersTable';
+import { YearSelector } from 'components/YearSelector/YearSelector';
+import { getYearName } from 'lib/utils';
 import { TableName, TableNameSchema } from 'prisma/zod/schemas';
-import playerRecordService from "services/PlayerRecord";
+import playerRecordService from 'services/PlayerRecord';
 
-import { PlayerRecordDataType } from "@/types";
+import { PlayerRecordDataType } from '@/types';
 
 interface Props {
     params: Promise<{

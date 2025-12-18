@@ -22,7 +22,7 @@ import { authClient } from 'lib/authClient';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import { signInWithGoogle, signInWithMicrosoft } from "@/lib/auth-client";
+import { signInWithGoogle, signInWithMicrosoft } from '@/lib/auth-client';
 
 export interface Props {
     admin?: boolean;

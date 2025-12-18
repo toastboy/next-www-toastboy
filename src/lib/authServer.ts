@@ -1,5 +1,5 @@
-import { authClient } from "lib/auth-client";
-import { headers } from "next/headers";
+import { authClient } from 'lib/auth-client';
+import { headers } from 'next/headers';
 
 /**
  * Retrieves the role of the currently authenticated user.

@@ -6,7 +6,7 @@ import * as Sentry from '@sentry/react';
 import { IconAt, IconIdBadge, IconLock, IconX } from '@tabler/icons-react';
 import { useState } from 'react';
 
-import { authClient } from "@/lib/auth-client";
+import { authClient } from '@/lib/auth-client';
 
 export default function SignUpPage() {
     const [loading, setLoading] = useState(false);

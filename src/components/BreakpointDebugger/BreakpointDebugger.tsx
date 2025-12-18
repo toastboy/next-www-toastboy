@@ -1,8 +1,8 @@
 "use client";
 
-import { Container, Text, useMantineTheme } from "@mantine/core";
-import { useMediaQuery } from "@mantine/hooks";
-import { useEffect, useMemo } from "react";
+import { Container, Text, useMantineTheme } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
+import { useEffect, useMemo } from 'react';
 
 import classes from './BreakpointDebugger.module.css';
 

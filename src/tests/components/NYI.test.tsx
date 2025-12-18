@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 
 import { NYI } from '@/components/NYI/NYI';
 
-import { Wrapper } from "./lib/common";
+import { Wrapper } from './lib/common';
 
 describe('NYI', () => {
     it('renders correctly', () => {

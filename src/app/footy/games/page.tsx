@@ -1,7 +1,7 @@
 export const dynamic = 'force-dynamic';
 
-import { Flex, Text } from "@mantine/core";
-import gameDayService from "services/GameDay";
+import { Flex, Text } from '@mantine/core';
+import gameDayService from 'services/GameDay';
 
 type PageProps = object
 

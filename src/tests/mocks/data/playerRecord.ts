@@ -1,7 +1,7 @@
 import { TableName, TableNameSchema } from 'prisma/zod/schemas';
 import { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 
-import { rankMap } from "@/lib/utils";
+import { rankMap } from '@/lib/utils';
 
 export const defaultPlayerRecord: PlayerRecordType = {
     id: 1,

@@ -1,13 +1,13 @@
-import { ClientSecretCredential } from "@azure/identity";
-import { BlobServiceClient } from "@azure/storage-blob";
-import { execSync } from "child_process";
-import * as fs from "fs";
-import { readdir } from "fs/promises";
-import * as path from "path";
-import { Prisma } from "prisma/generated/client";
-import playerRecordService from "services/PlayerRecord";
+import { ClientSecretCredential } from '@azure/identity';
+import { BlobServiceClient } from '@azure/storage-blob';
+import { execSync } from 'child_process';
+import * as fs from 'fs';
+import { readdir } from 'fs/promises';
+import * as path from 'path';
+import { Prisma } from 'prisma/generated/client';
+import playerRecordService from 'services/PlayerRecord';
 
-import prisma from "../prisma";
+import prisma from '../prisma';
 
 /**
  * Writes the data from a Prisma model to a JSON file.

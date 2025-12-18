@@ -1,4 +1,5 @@
-import { ClubSupporterType } from '@/generated/zod/schemas/models/ClubSupporter.schema';
+import { ClubSupporterType } from 'prisma/zod/schemas/models/ClubSupporter.schema';
+
 import prisma from '@/lib/prisma';
 import clubSupporterService from '@/services/ClubSupporter';
 import { defaultClubSupporter, defaultClubSupporterList } from '@/tests/mocks';

@@ -4,8 +4,7 @@ import { ClientSecretCredential } from "@azure/identity";
 import { BlobServiceClient, ContainerClient } from "@azure/storage-blob";
 import prisma from "lib/prisma";
 import { getSecrets } from "lib/secrets";
-
-import { Prisma } from "@/generated/prisma/client";
+import { Prisma } from "prisma/generated/client";
 
 /**
  * Writes the results of a Prisma model query to an Azure Blob as a

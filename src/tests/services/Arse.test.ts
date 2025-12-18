@@ -1,4 +1,5 @@
-import { ArseType } from '@/generated/zod/schemas/models/Arse.schema';
+import { ArseType } from 'prisma/zod/schemas/models/Arse.schema';
+
 import prisma from '@/lib/prisma';
 import arseService from '@/services/Arse';
 import { defaultArse, defaultArseList } from '@/tests/mocks';

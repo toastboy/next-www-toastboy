@@ -4,19 +4,19 @@ import debug from 'debug';
 import config from 'lib/config';
 import prisma from 'lib/prisma';
 import { rankMap } from 'lib/utils';
-import gameDayService from 'services/GameDay';
-import outcomeService from 'services/Outcome';
-import z from 'zod';
-
 import {
     PlayerRecordUncheckedCreateInputObjectZodSchema,
     PlayerRecordUncheckedUpdateInputObjectZodSchema,
     PlayerRecordWhereUniqueInputObjectSchema,
     TableName,
-} from '@/generated/zod/schemas';
-import { GameDayType } from '@/generated/zod/schemas/models/GameDay.schema';
-import { OutcomeType } from '@/generated/zod/schemas/models/Outcome.schema';
-import { PlayerRecordSchema, PlayerRecordType } from '@/generated/zod/schemas/models/PlayerRecord.schema';
+} from 'prisma/zod/schemas';
+import { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
+import { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
+import { PlayerRecordSchema, PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
+import gameDayService from 'services/GameDay';
+import outcomeService from 'services/Outcome';
+import z from 'zod';
+
 import { PlayerRecordDataType } from '@/types';
 
 /** Field definitions with extra validation */

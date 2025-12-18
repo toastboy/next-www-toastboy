@@ -1,6 +1,5 @@
 import { Anchor, Image } from '@mantine/core';
-
-import { PlayerType } from '@/generated/zod/schemas/models/Player.schema';
+import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 
 export interface Props {
     player: PlayerType,

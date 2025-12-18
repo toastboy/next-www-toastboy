@@ -1,4 +1,5 @@
-import { CountryType } from '@/generated/zod/schemas/models/Country.schema';
+import { CountryType } from 'prisma/zod/schemas/models/Country.schema';
+
 import prisma from '@/lib/prisma';
 import countryService from '@/services/Country';
 import { defaultCountry, defaultCountryList, invalidCountry } from '@/tests/mocks';

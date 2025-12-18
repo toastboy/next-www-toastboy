@@ -1,10 +1,10 @@
 jest.mock('@/components/PlayerLink/PlayerLink');
 
 import { render, screen } from '@testing-library/react';
+import { TableNameSchema } from 'prisma/zod/schemas';
 
 import { Props as PlayerLinkProps } from '@/components/PlayerLink/PlayerLink';
 import { WinnersTable } from '@/components/WinnersTable/WinnersTable';
-import { TableNameSchema } from '@/generated/zod/schemas';
 import { extractMockProps, Wrapper } from '@/tests/components/lib/common';
 import { defaultPlayerRecordDataList } from '@/tests/mocks';
 

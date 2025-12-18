@@ -49,7 +49,7 @@ Purpose: Enable fast, safe contributions. Keep changes aligned with existing ser
 import 'server-only';
 import debug from 'debug';
 import prisma from 'lib/prisma';
-import { SomeModelWhereUniqueInputObjectSchema } from '@/generated/zod/schemas';
+import { SomeModelWhereUniqueInputObjectSchema } from 'prisma/zod/schemas';
 import z from 'zod';
 const extendedFields = { /* extra validation */ };
 export const SomeModelCreateStrictSchema = /* extend generated create schema */;

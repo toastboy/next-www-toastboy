@@ -7,10 +7,9 @@ import { PlayerTimeline } from 'components/PlayerTimeline/PlayerTimeline';
 import { PlayerWDLChart } from 'components/PlayerWDLChart/PlayerWDLChart';
 import { SendEmailForm } from 'components/SendEmailForm/SendEmailForm';
 import { useCurrentGame, usePlayers } from 'lib/swr';
+import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import { useState } from 'react';
 import { PlayerDataType } from 'types';
-
-import { PlayerType } from '@/generated/zod/schemas/models/Player.schema';
 
 type PageProps = object;
 

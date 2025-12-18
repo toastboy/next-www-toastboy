@@ -59,8 +59,8 @@ livesitelinks.json
 .env.sentry-build-plugin
 
 # Generted by Prisma
-src/generated/prisma/
-src/generated/zod/
+prisma/generated/
+prisma/zod/
 
 # Storybook files
 *storybook.log

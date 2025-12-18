@@ -2,18 +2,18 @@ import 'server-only';
 
 import debug from 'debug';
 import prisma from 'lib/prisma';
-import z from 'zod';
-
 import {
     ClubSupporterUncheckedCreateInputObjectZodSchema,
     ClubSupporterUncheckedUpdateInputObjectZodSchema,
     ClubSupporterWhereInputObjectSchema,
     ClubSupporterWhereUniqueInputObjectSchema,
-} from '@/generated/zod/schemas';
+} from 'prisma/zod/schemas';
 import {
     ClubSupporterSchema,
     ClubSupporterType,
-} from '@/generated/zod/schemas/models/ClubSupporter.schema';
+} from 'prisma/zod/schemas/models/ClubSupporter.schema';
+import z from 'zod';
+
 import { ClubSupporterDataType } from '@/types';
 
 /** Field definitions with extra validation */

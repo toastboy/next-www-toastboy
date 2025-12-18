@@ -1,7 +1,7 @@
+import { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
+import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import { PlayerFormType } from 'types';
 
-import { OutcomeType } from '@/generated/zod/schemas/models/Outcome.schema';
-import { PlayerType } from '@/generated/zod/schemas/models/Player.schema';
 import prisma from '@/lib/prisma';
 import playerService from '@/services/Player';
 import { createMockGameDay, defaultPlayer, defaultPlayerList, invalidPlayer } from '@/tests/mocks';

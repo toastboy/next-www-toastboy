@@ -2,19 +2,18 @@ import 'server-only';
 
 import debug from 'debug';
 import prisma from 'lib/prisma';
-import z from 'zod';
-
 import {
     GameDayUncheckedCreateInputObjectZodSchema,
     GameDayUncheckedUpdateInputObjectZodSchema,
     GameDayWhereInputObjectSchema,
     GameDayWhereUniqueInputObjectSchema,
     TeamName,
-} from '@/generated/zod/schemas';
+} from 'prisma/zod/schemas';
 import {
     GameDaySchema,
     GameDayType,
-} from '@/generated/zod/schemas/models/GameDay.schema';
+} from 'prisma/zod/schemas/models/GameDay.schema';
+import z from 'zod';
 
 /** Field definitions with extra validation */
 const extendedFields = {

@@ -1,57 +1,57 @@
 {
-  "extends": "@tsconfig/recommended/tsconfig.json",
-  "compilerOptions": {
-    "allowJs": true,
-    "baseUrl": "./src",
-    "incremental": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
-    "module": "esnext",
-    "moduleResolution": "bundler",
-    "esModuleInterop": false,
-    "allowSyntheticDefaultImports": true,
-    "noEmit": true,
-    "target": "es2022",
-    "paths": {
-      "@/*": [
-        "./*"
-      ],
-      "prisma/*": [
-        "../prisma/*"
-      ]
+    "extends": "@tsconfig/recommended/tsconfig.json",
+    "compilerOptions": {
+        "allowJs": true,
+        "baseUrl": "./src",
+        "incremental": true,
+        "isolatedModules": true,
+        "jsx": "preserve",
+        "lib": [
+            "dom",
+            "dom.iterable",
+            "esnext"
+        ],
+        "module": "esnext",
+        "moduleResolution": "bundler",
+        "esModuleInterop": false,
+        "allowSyntheticDefaultImports": true,
+        "noEmit": true,
+        "target": "es2022",
+        "paths": {
+            "@/*": [
+                "./*"
+            ],
+            "prisma/*": [
+                "../prisma/*"
+            ]
+        },
+        "plugins": [
+            {
+                "name": "next"
+            }
+        ],
+        "resolveJsonModule": true,
+        "sourceMap": true,
+        "strictNullChecks": true,
+        "typeRoots": [
+            "./node_modules/@types",
+            "./src/types"
+        ],
+        "types": [
+            "node",
+        ]
     },
-    "plugins": [
-      {
-        "name": "next"
-      }
+    "exclude": [
+        ".eslintrc.js",
+        ".next",
+        "node_modules"
     ],
-    "resolveJsonModule": true,
-    "sourceMap": true,
-    "strictNullChecks": true,
-    "typeRoots": [
-      "./node_modules/@types",
-      "./src/types"
-    ],
-    "types": [
-      "node",
+    "include": [
+        ".next/types/**/*.ts",
+        "**/*.js",
+        "**/*.ts",
+        "**/*.tsx",
+        "next-env.d.ts",
+        "next.config.mjs"
     ]
-  },
-  "exclude": [
-    ".eslintrc.js",
-    ".next",
-    "node_modules"
-  ],
-  "include": [
-    ".next/types/**/*.ts",
-    "**/*.js",
-    "**/*.ts",
-    "**/*.tsx",
-    "next-env.d.ts",
-    "next.config.mjs"
-  ]
 }

@@ -1,8 +1,8 @@
 import { Paper, Table, TableTbody, TableTd, TableTh, TableThead, TableTr, Title } from '@mantine/core';
 import { PlayerLink } from 'components/PlayerLink/PlayerLink';
+import { TableName } from 'prisma/zod/schemas';
 import { Activity } from 'react';
 
-import { TableName } from '@/generated/zod/schemas';
 import { PlayerRecordDataType } from '@/types';
 
 export interface Props {

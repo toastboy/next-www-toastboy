@@ -1,6 +1,5 @@
+import { PlayerRecordSchema, PlayerSchema } from 'prisma/zod/schemas';
 import { z } from 'zod';
-
-import { PlayerRecordSchema, PlayerSchema } from '@/generated/zod/schemas';
 
 export const PlayerRecordDataSchema = PlayerRecordSchema.extend({
     player: PlayerSchema,

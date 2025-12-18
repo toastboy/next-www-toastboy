@@ -1,6 +1,5 @@
+import { TeamNameSchema } from 'prisma/zod/schemas';
 import { z } from 'zod';
-
-import { TeamNameSchema } from '@/generated/zod/schemas';
 
 export const TurnoutSchema = z.object({
     responses: z.number(),

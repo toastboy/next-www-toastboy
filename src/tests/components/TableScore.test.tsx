@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
+import { TableNameSchema } from 'prisma/zod/schemas';
 
 import { TableScore } from '@/components/TableScore/TableScore';
-import { TableNameSchema } from '@/generated/zod/schemas';
 import { Wrapper } from '@/tests/components/lib/common';
 import { defaultPlayerRecord } from '@/tests/mocks';
 
@@ -29,7 +29,8 @@ describe('TableScore', () => {
             </Wrapper>,
         );
 
-        const expectedAverage = defaultPlayerRecord.averages?.toFixed(3);
+        expect(defaultPlayerRecord.averages).toBeDefined();
+        const expectedAverage = defaultPlayerRecord.averages!.toFixed(3);
         expect(screen.getByText(expectedAverage)).toBeInTheDocument();
     });
 });

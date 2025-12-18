@@ -1,10 +1,10 @@
 jest.mock('@/components/TableQualified/TableQualified');
 
 import { render } from '@testing-library/react';
+import { TableNameSchema } from 'prisma/zod/schemas';
 
 import { Props as TableQualifiedProps } from '@/components/TableQualified/TableQualified';
 import { YearTable } from '@/components/YearTable/YearTable';
-import { TableNameSchema } from '@/generated/zod/schemas';
 import { extractMockProps, Wrapper } from '@/tests/components/lib/common';
 import { defaultPlayerRecordDataList } from '@/tests/mocks';
 

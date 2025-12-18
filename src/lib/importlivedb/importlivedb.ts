@@ -4,9 +4,8 @@ import { execSync } from "child_process";
 import * as fs from "fs";
 import { readdir } from "fs/promises";
 import * as path from "path";
+import { Prisma } from "prisma/generated/client";
 import playerRecordService from "services/PlayerRecord";
-
-import { Prisma } from "@/generated/prisma/client";
 
 import prisma from "../prisma";
 

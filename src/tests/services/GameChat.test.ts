@@ -1,4 +1,5 @@
-import { GameChatType } from '@/generated/zod/schemas/models/GameChat.schema';
+import { GameChatType } from 'prisma/zod/schemas/models/GameChat.schema';
+
 import prisma from '@/lib/prisma';
 import gameChatService from '@/services/GameChat';
 import { defaultGameChat, defaultGameChatList } from '@/tests/mocks';

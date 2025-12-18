@@ -2,17 +2,16 @@ import 'server-only';
 
 import debug from 'debug';
 import prisma from 'lib/prisma';
-import z from 'zod';
-
 import {
     ClubUncheckedCreateInputObjectZodSchema,
     ClubUncheckedUpdateInputObjectZodSchema,
     ClubWhereUniqueInputObjectSchema,
-} from '@/generated/zod/schemas';
+} from 'prisma/zod/schemas';
 import {
     ClubSchema,
     ClubType,
-} from '@/generated/zod/schemas/models/Club.schema';
+} from 'prisma/zod/schemas/models/Club.schema';
+import z from 'zod';
 
 /** Field definitions with extra validation */
 const extendedFields = {

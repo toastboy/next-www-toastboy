@@ -2,18 +2,17 @@ import 'server-only';
 
 import debug from 'debug';
 import prisma from 'lib/prisma';
-import { z } from 'zod';
-
 import {
     ArseUncheckedCreateInputObjectZodSchema,
     ArseUncheckedUpdateInputObjectZodSchema,
     ArseWhereInputObjectSchema,
     ArseWhereUniqueInputObjectSchema,
-} from '@/generated/zod/schemas';
+} from 'prisma/zod/schemas';
 import {
     ArseSchema,
     ArseType,
-} from '@/generated/zod/schemas/models/Arse.schema';
+} from 'prisma/zod/schemas/models/Arse.schema';
+import { z } from 'zod';
 
 /** Field definitions with extra validation */
 const extendedFields = {

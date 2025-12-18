@@ -2,10 +2,9 @@
 
 import { Anchor, Indicator, Text } from '@mantine/core';
 import { Calendar, DatePickerProps } from '@mantine/dates';
+import { GameDaySchema, GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 import { useEffect, useState } from 'react';
 import { z } from 'zod';
-
-import { GameDaySchema, GameDayType } from '@/generated/zod/schemas/models/GameDay.schema';
 
 const GameDayResponseSchema = GameDaySchema.extend({
     date: z.coerce.date(),

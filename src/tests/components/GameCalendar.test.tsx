@@ -1,8 +1,8 @@
 import { render, screen, within } from '@testing-library/react';
+import { GameDaySchema } from 'prisma/zod/schemas/models/GameDay.schema';
 import { z } from 'zod';
 
 import { GameCalendar } from '@/components/GameCalendar/GameCalendar';
-import { GameDaySchema } from '@/generated/zod/schemas/models/GameDay.schema';
 import { loadJsonFixture } from '@/tests/shared/fixtures';
 
 import { Wrapper } from "./lib/common";

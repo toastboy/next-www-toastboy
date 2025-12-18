@@ -2,17 +2,16 @@ import 'server-only';
 
 import debug from 'debug';
 import prisma from 'lib/prisma';
-import { z } from 'zod';
-
 import {
     CountryUncheckedCreateInputObjectZodSchema,
     CountryUncheckedUpdateInputObjectZodSchema,
     CountryWhereUniqueInputObjectSchema,
-} from '@/generated/zod/schemas';
+} from 'prisma/zod/schemas';
 import {
     CountrySchema,
     CountryType,
-} from '@/generated/zod/schemas/models/Country.schema';
+} from 'prisma/zod/schemas/models/Country.schema';
+import { z } from 'zod';
 
 /** Field definitions with extra validation */
 const extendedFields = {

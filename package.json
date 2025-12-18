@@ -155,6 +155,7 @@
         ]
     },
     "overrides": {
+        "@swc/helpers": "0.5.15",
         "better-auth": {
             "prisma": "$prisma",
             "@prisma/client": "$@prisma/client"

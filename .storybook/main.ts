@@ -1,6 +1,7 @@
 import type { StorybookConfig } from '@storybook/nextjs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import webpack from 'webpack';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -36,11 +37,28 @@ const config: StorybookConfig = {
     };
     config.resolve.fallback = {
       ...(config.resolve.fallback || {}),
+      async_hooks: false,
+      buffer: false,
+      crypto: false,
+      events: false,
+      fs: false,
+      module: false,
+      os: false,
+      path: false,
+      process: false,
+      url: false,
       net: false,
       tls: false,
       dns: false,
       child_process: false,
     };
+    config.plugins = [
+      ...(config.plugins || []),
+      // Strip node: scheme so webpack can apply fallbacks/aliases.
+      new webpack.NormalModuleReplacementPlugin(/^node:/, (resource) => {
+        resource.request = resource.request.replace(/^node:/, '');
+      }),
+    ];
 
     return config;
   }

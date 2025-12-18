@@ -1,4 +1,3 @@
-import 'dotenv/config';
 import 'server-only';
 
 import { PrismaMariaDb } from '@prisma/adapter-mariadb';

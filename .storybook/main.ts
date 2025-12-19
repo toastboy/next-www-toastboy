@@ -25,11 +25,11 @@ const config: StorybookConfig = {
         config.resolve = config.resolve || {};
         config.resolve.alias = {
             ...(config.resolve.alias || {}),
+            // Avoid bundling Prisma client and Node-only deps in Storybook
+            'prisma/prisma$': path.resolve(__dirname, './mocks/prisma.mock.ts'),
             // Path aliases matching tsconfig
             '@': path.resolve(__dirname, '../src'),
             'prisma': path.resolve(__dirname, '../prisma'),
-            // Avoid bundling Prisma client and Node-only deps in Storybook
-            'prisma/prisma': path.resolve(__dirname, './mocks/prisma.mock.ts'),
             // Mock server action used by client component in stories
             'actions/updatePlayerRecords': path.resolve(__dirname, './mocks/actions-updatePlayerRecords.mock.ts'),
             // Stub server-only modules so client-rendered Storybook can import server components safely

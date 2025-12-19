@@ -1,6 +1,6 @@
+import prisma from 'prisma/prisma';
 import { InvitationType } from 'prisma/zod/schemas/models/Invitation.schema';
 
-import prisma from '@/lib/prisma';
 import invitationService from '@/services/Invitation';
 import {
     buildUuidFromIndex,
@@ -8,7 +8,7 @@ import {
     defaultInvitationList,
 } from '@/tests/mocks';
 
-jest.mock('lib/prisma', () => ({
+jest.mock('prisma/prisma', () => ({
     invitation: {
         findUnique: jest.fn(),
         findFirst: jest.fn(),

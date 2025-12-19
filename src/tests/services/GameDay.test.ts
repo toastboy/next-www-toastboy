@@ -1,10 +1,10 @@
+import prisma from 'prisma/prisma';
 import { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 
-import prisma from '@/lib/prisma';
 import gameDayService from '@/services/GameDay';
 import { defaultGameDay, defaultGameDayList } from '@/tests/mocks';
 
-jest.mock('lib/prisma', () => ({
+jest.mock('prisma/prisma', () => ({
     gameDay: {
         findUnique: jest.fn(),
         findFirst: jest.fn(),

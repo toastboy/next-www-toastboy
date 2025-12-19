@@ -1,10 +1,10 @@
+import prisma from 'prisma/prisma';
 import { CountrySupporterType } from 'prisma/zod/schemas/models/CountrySupporter.schema';
 
-import prisma from '@/lib/prisma';
 import countrySupporterService from '@/services/CountrySupporter';
 import { defaultCountrySupporter, defaultCountrySupporterList } from '@/tests/mocks';
 
-jest.mock('lib/prisma', () => ({
+jest.mock('prisma/prisma', () => ({
     countrySupporter: {
         findUnique: jest.fn(),
         findFirst: jest.fn(),

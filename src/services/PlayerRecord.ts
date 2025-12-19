@@ -2,8 +2,8 @@ import 'server-only';
 
 import debug from 'debug';
 import config from 'lib/config';
-import prisma from 'lib/prisma';
 import { rankMap } from 'lib/utils';
+import prisma from 'prisma/prisma';
 import {
     PlayerRecordUncheckedCreateInputObjectZodSchema,
     PlayerRecordUncheckedUpdateInputObjectZodSchema,

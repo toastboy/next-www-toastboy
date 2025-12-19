@@ -1,3 +1,4 @@
+import prisma from 'prisma/prisma';
 import {
     PlayerResponseSchema,
 } from 'prisma/zod/schemas';
@@ -5,7 +6,6 @@ import {
     OutcomeType,
 } from 'prisma/zod/schemas/models/Outcome.schema';
 
-import prisma from '@/lib/prisma';
 import outcomeService from '@/services/Outcome';
 import {
     createMockOutcome,
@@ -15,7 +15,7 @@ import {
     defaultPlayerFormList,
 } from '@/tests/mocks';
 
-jest.mock('lib/prisma', () => ({
+jest.mock('prisma/prisma', () => ({
     outcome: {
         findUnique: jest.fn(),
         findFirst: jest.fn(),

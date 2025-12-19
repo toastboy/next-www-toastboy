@@ -1,7 +1,7 @@
 import 'server-only';
 
 import debug from 'debug';
-import prisma from 'lib/prisma';
+import prisma from 'prisma/prisma';
 import {
     CountryUncheckedCreateInputObjectZodSchema,
     CountryUncheckedUpdateInputObjectZodSchema,

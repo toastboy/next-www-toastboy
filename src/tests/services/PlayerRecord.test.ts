@@ -1,12 +1,12 @@
+import prisma from 'prisma/prisma';
 import { TableNameSchema } from 'prisma/zod/schemas';
 import { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 
-import prisma from '@/lib/prisma';
 import playerRecordService from '@/services/PlayerRecord';
 import { defaultPlayerRecord, defaultPlayerRecordList } from '@/tests/mocks';
 import { loadJsonFixture } from '@/tests/shared/fixtures';
 
-jest.mock('lib/prisma', () => ({
+jest.mock('prisma/prisma', () => ({
     playerRecord: {
         findUnique: jest.fn(),
         findFirst: jest.fn(),

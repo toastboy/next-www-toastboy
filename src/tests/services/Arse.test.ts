@@ -1,10 +1,10 @@
+import prisma from 'prisma/prisma';
 import { ArseType } from 'prisma/zod/schemas/models/Arse.schema';
 
-import prisma from '@/lib/prisma';
 import arseService from '@/services/Arse';
 import { defaultArse, defaultArseList } from '@/tests/mocks';
 
-jest.mock('lib/prisma', () => ({
+jest.mock('prisma/prisma', () => ({
     arse: {
         findUnique: jest.fn(),
         findFirst: jest.fn(),

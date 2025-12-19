@@ -6,7 +6,7 @@ Purpose: Enable fast, safe contributions. Keep changes aligned with existing ser
 
 - Next.js App Router under `src/app/footy/**` for feature pages; API route handlers live in `src/app/api/**` (importable via alias `api/*`).
 - Data access encapsulated in service classes in `src/services/*.ts` (e.g. `GameDay.ts`, `PlayerRecord.ts`). Pattern: `import 'server-only'`; define `extendedFields` (extra validation) + strict Zod schemas (`XUncheckedCreate/Update...StrictSchema`) extending generator output from `prisma/generated/schemas`; use a `debug('footy:api')` logger; expose methods performing validated prisma queries. If I find myself writing direct prisma calls in API routes or components, I should refactor into a service method instead. Equally if I make a query via a service method and then find myself filtering, sorting or otherwise manipulating the results in the calling code, I should consider whether that logic belongs in the service method instead.
-- Prisma client singleton in `lib/prisma.ts`; do not instantiate another client. Always validate inputs with appropriate Zod schema (`WhereUnique`, `WhereInput`, etc.) before calling prisma.
+- Prisma client singleton in `prisma/prisma.ts`; do not instantiate another client. Always validate inputs with appropriate Zod schema (`WhereUnique`, `WhereInput`, etc.) before calling prisma.
 - `lib/config.ts` central numeric thresholds (min games/replies). Reference these instead of hard‑coding values.
 - Utility patterns: `rankMap` in `lib/utils.ts` converts `TableName` enum to rank field names; reuse rather than manual mapping.
 - Sentry instrumentation via `instrumentation.ts` / `instrumentation-client.ts` and wrapped Next config (`next.config.mjs` with `withSentryConfig`). Preserve `tunnelRoute: '/monitoring'` and middleware matcher exclusions when editing middleware. Preserve `tunnelRoute: '/monitoring'` and middleware matcher exclusions when editing middleware.
@@ -35,7 +35,7 @@ Purpose: Enable fast, safe contributions. Keep changes aligned with existing ser
 
 ### Conventions & Patterns
 
-- **Import paths**: ALWAYS use `@/` alias imports (e.g., `import prisma from '@/lib/prisma'`) instead of relative imports with `../`. Never use `../` in import statements—use the `@/` path alias configured in `tsconfig.json`. Same-directory imports using `./` are acceptable.
+- **Import paths**: ALWAYS use `@/` alias imports (e.g., `import prisma from 'prisma/prisma'`) instead of relative imports with `../`. Never use `../` in import statements—use the `@/` path alias configured in `tsconfig.json`. Same-directory imports using `./` are acceptable.
 - Always use single quotes for import paths.
 - Always prepend backend-only modules with `import 'server-only';` to prevent client bundling.
 - Use `debug` logging with consistent namespace (`footy:api`) for new service methods; avoid `console.log`.
@@ -48,7 +48,7 @@ Purpose: Enable fast, safe contributions. Keep changes aligned with existing ser
 ```ts
 import 'server-only';
 import debug from 'debug';
-import prisma from 'lib/prisma';
+import prisma from 'prisma/prisma';
 import { SomeModelWhereUniqueInputObjectSchema } from 'prisma/zod/schemas';
 import z from 'zod';
 const extendedFields = { /* extra validation */ };

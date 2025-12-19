@@ -1,9 +1,10 @@
+import prisma from 'prisma/prisma';
+
 import { GET } from '@/app/api/health/route';
 import { HealthResponseSchema } from '@/lib/health';
-import prisma from '@/lib/prisma';
 
 // Mock the prisma client
-jest.mock('lib/prisma', () => ({
+jest.mock('prisma/prisma', () => ({
     __esModule: true,
     default: {
         $queryRaw: jest.fn(),

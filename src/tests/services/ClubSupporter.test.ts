@@ -1,10 +1,10 @@
+import prisma from 'prisma/prisma';
 import { ClubSupporterType } from 'prisma/zod/schemas/models/ClubSupporter.schema';
 
-import prisma from '@/lib/prisma';
 import clubSupporterService from '@/services/ClubSupporter';
 import { defaultClubSupporter, defaultClubSupporterList } from '@/tests/mocks';
 
-jest.mock('lib/prisma', () => ({
+jest.mock('prisma/prisma', () => ({
     clubSupporter: {
         findUnique: jest.fn(),
         findFirst: jest.fn(),

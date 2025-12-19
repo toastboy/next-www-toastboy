@@ -5,9 +5,8 @@ import * as fs from 'fs';
 import { readdir } from 'fs/promises';
 import * as path from 'path';
 import { Prisma } from 'prisma/generated/client';
+import prisma from 'prisma/prisma';
 import playerRecordService from 'services/PlayerRecord';
-
-import prisma from '../prisma';
 
 /**
  * Writes the data from a Prisma model to a JSON file.

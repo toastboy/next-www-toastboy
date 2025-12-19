@@ -1,7 +1,7 @@
 import 'server-only';
 
-import prisma from 'lib/prisma';
 import { NextResponse } from 'next/server';
+import prisma from 'prisma/prisma';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';

@@ -19,7 +19,10 @@ import {
 } from 'types';
 
 const fetcher = (input: URL | RequestInfo, init?: RequestInit) =>
-    fetch(input, init).then((res) => res.json());
+    fetch(input, init).then((res) => {
+        if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+        return res.json();
+    });
 
 export function useClub(id: number) {
     const { data, error } = useSWR<ClubType, Error>(`/api/footy/club/${id}`, fetcher);

@@ -22,6 +22,7 @@ function shouldIgnoreUrl(url: string): boolean {
     if (url.includes('/__nextjs_font/')) return true;
     if (url.includes('/__nextjs_original-stack-frames')) return true;
     if (url.includes('/api/auth/get-session')) return true;
+    if (url.includes('_rsc=')) return true;
     return false;
 }
 
@@ -82,6 +83,6 @@ export const test = base.extend({
     },
 });
 
-export type { Page } from '@playwright/test';
 export { expect } from '@playwright/test';
+export type { Page } from '@playwright/test';
 

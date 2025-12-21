@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from '@/tests/playwright/fixtures';
 
 test('results page', async ({ page }) => {
     const response = await page.goto('/footy/results');

@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from '@/tests/playwright/fixtures';
 
 test('games list page', async ({ page }) => {
     await page.goto('/footy/games');

@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from '@/tests/playwright/fixtures';
 
 test('check what happens when a nonexistent page is requested', async ({ page }) => {
     const response = await page.goto('/footy/nonexistentpage');

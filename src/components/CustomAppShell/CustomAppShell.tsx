@@ -2,14 +2,16 @@
 
 import { AppShell, Burger, Container, Group, Image, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { AuthUserSummary } from 'types/AuthUser';
 
 import { NavBarNested } from '../NavBarNested/NavBarNested';
 
 export interface Props {
     children: React.ReactNode;
+    user?: AuthUserSummary | null;
 }
 
-export const CustomAppShell: React.FC<Props> = ({ children }) => {
+export const CustomAppShell: React.FC<Props> = ({ children, user }) => {
     const [opened, { toggle }] = useDisclosure();
 
     return (
@@ -45,7 +47,7 @@ export const CustomAppShell: React.FC<Props> = ({ children }) => {
             </AppShell.Header>
 
             <AppShell.Navbar p="md">
-                <NavBarNested />
+                <NavBarNested user={user} />
             </AppShell.Navbar>
 
             <AppShell.Main>

@@ -2,13 +2,16 @@
 
 import { Box, ScrollArea } from '@mantine/core';
 import { UserButton } from 'components/UserButton/UserButton';
+import { AuthUserSummary } from 'types/AuthUser';
 
 import { NavBarLinksGroup } from '../NavBarLinksGroup/NavBarLinksGroup';
 import classes from './NavBarNested.module.css';
 
-export type Props = unknown;
+export interface Props {
+    user?: AuthUserSummary | null;
+}
 
-export const NavBarNested: React.FC<Props> = () => {
+export const NavBarNested: React.FC<Props> = ({ user }) => {
     const links = [
         {
             "label": "Games",
@@ -108,7 +111,7 @@ export const NavBarNested: React.FC<Props> = () => {
             </ScrollArea>
 
             <Box className={classes.footer} data-testid="navbar-footer">
-                <UserButton />
+                <UserButton user={user} />
             </Box>
         </Box>
     );

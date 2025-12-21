@@ -3,9 +3,10 @@
 import { CodeHighlight } from '@mantine/code-highlight';
 import { Center, Container, Text, Title } from '@mantine/core';
 import * as Sentry from '@sentry/react';
+import type { UserWithRolePayload } from 'actions/auth';
+import { listUsersAction } from 'actions/auth';
 import { UserWithRole } from 'better-auth/plugins/admin';
 import { MustBeLoggedIn } from 'components/MustBeLoggedIn/MustBeLoggedIn';
-import { authClient } from 'lib/authClient';
 import { use, useEffect, useState } from 'react';
 
 interface Props {
@@ -23,7 +24,13 @@ const Page: React.FC<Props> = (props) => {
         const fetchUsers = async () => {
             try {
                 if (isAllowed) {
-                    setUsers(await authClient.listUsers(decodeURIComponent(email)));
+                    const response = await listUsersAction(decodeURIComponent(email));
+                    setUsers(response.map((user: UserWithRolePayload) => ({
+                        ...user,
+                        createdAt: new Date(user.createdAt),
+                        updatedAt: new Date(user.updatedAt),
+                        banExpires: user.banExpires ? new Date(user.banExpires) : null,
+                    })));
                 }
             }
             catch (error) {

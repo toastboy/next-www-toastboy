@@ -3,10 +3,11 @@
 import { Anchor, Container, Flex, Switch, Table, Text, TextInput } from '@mantine/core';
 import * as Sentry from '@sentry/react';
 import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
+import type { UserWithRolePayload } from 'actions/auth';
+import { listUsersAction, setAdminRoleAction } from 'actions/auth';
 import { UserWithRole } from 'better-auth/plugins/admin';
 import { MustBeLoggedIn } from 'components/MustBeLoggedIn/MustBeLoggedIn';
 import { RelativeTime } from 'components/RelativeTime/RelativeTime';
-import { authClient } from 'lib/authClient';
 import { useEffect, useState } from 'react';
 
 export default function Page() {
@@ -21,7 +22,13 @@ export default function Page() {
         const fetchUsers = async () => {
             try {
                 if (isAllowed) {
-                    setUsers(await authClient.listUsers());
+                    const response = await listUsersAction();
+                    setUsers(response.map((user: UserWithRolePayload) => ({
+                        ...user,
+                        createdAt: new Date(user.createdAt),
+                        updatedAt: new Date(user.updatedAt),
+                        banExpires: user.banExpires ? new Date(user.banExpires) : null,
+                    })));
                 }
             } catch (error) {
                 Sentry.captureMessage(`Error fetching users: ${String(error)}`, 'error');
@@ -52,7 +59,7 @@ export default function Page() {
             );
 
             // Call API to update user role
-            await authClient.setAdmin(userId, isAdmin);
+            await setAdminRoleAction(userId, isAdmin);
         } catch (error) {
             Sentry.captureMessage(`Error updating user role: ${String(error)}`, 'error');
             setErrorMessage('Failed to update admin status');

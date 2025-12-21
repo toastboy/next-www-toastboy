@@ -3,16 +3,17 @@
 import { Avatar, Flex, Group, Menu, rem, Text, UnstyledButton } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconArrowsLeftRight, IconCheck, IconChevronRight, IconLogout, IconPassword, IconTrash, IconUserScan } from '@tabler/icons-react';
-import { authClient } from 'lib/authClient';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { AuthUserSummary } from 'types/AuthUser';
 
 import classes from './UserButton.module.css';
 
-export type Props = unknown;
+export interface Props {
+    user?: AuthUserSummary | null;
+}
 
-export const UserButton: React.FC<Props> = () => {
-    const user = authClient.getUser();
+export const UserButton: React.FC<Props> = ({ user }) => {
     const router = useRouter();
 
     async function signOut() {
@@ -25,7 +26,16 @@ export const UserButton: React.FC<Props> = () => {
         });
 
         try {
-            await authClient.signOut();
+            const response = await fetch('/api/auth/sign-out', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: '{}',
+            });
+            if (!response.ok) {
+                console.error('Sign out failed', await response.text());
+                throw new Error('Sign out failed');
+            }
+            router.refresh();
             notifications.update({
                 id,
                 color: 'teal',

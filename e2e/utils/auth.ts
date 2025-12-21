@@ -1,6 +1,7 @@
 import { Page } from '@/tests/playwright/fixtures';
 
 export type MockAuthState = 'none' | 'user' | 'admin';
+const MOCK_AUTH_COOKIE = 'mock-auth-state';
 
 /**
  * Sets up authentication state for Playwright tests
@@ -8,6 +9,12 @@ export type MockAuthState = 'none' | 'user' | 'admin';
  * @param authState The desired authentication state
  */
 export async function setAuthState(page: Page, authState: MockAuthState): Promise<void> {
+    await page.context().addCookies([{
+        name: MOCK_AUTH_COOKIE,
+        value: authState,
+        domain: '127.0.0.1',
+        path: '/',
+    }]);
     await page.addInitScript((state) => {
         // Mark that we're in a Playwright test
         (window as unknown as Record<string, unknown>).__PLAYWRIGHT_TEST__ = true;

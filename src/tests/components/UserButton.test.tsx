@@ -1,8 +1,3 @@
-jest.mock('@/lib/auth-client', () => ({
-    authClient: {
-        useSession: jest.fn(),
-    },
-}));
 const push = jest.fn();
 jest.mock('next/navigation', () => ({
     useRouter: () => ({ push }),
@@ -11,49 +6,24 @@ jest.mock('next/navigation', () => ({
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 import { UserButton } from '@/components/UserButton/UserButton';
-import { authClient } from '@/lib/auth-client';
 
 import { Wrapper } from './lib/common';
 
 describe('UserButton', () => {
     beforeEach(() => {
-        jest.resetAllMocks();
         // Reset URL between tests to avoid bleed-over when components change location
         window.history.pushState({}, '', '/');
-        (authClient.useSession as jest.Mock).mockReturnValue({
-            data: {
-                user: {
-                    name: 'Harriette Spoonlicker',
-                    email: 'hspoonlicker@outlook.com',
-                    playerId: 12,
-                },
-            },
-            isPending: false,
-            error: null,
-        });
     });
 
     it('renders sign in button with no session present', async () => {
-        (authClient.useSession as jest.Mock).mockReturnValue({
-            data: null,
-            isPending: false,
-            error: null,
-        });
-
-        render(<Wrapper><UserButton /></Wrapper>);
+        render(<Wrapper><UserButton user={null} /></Wrapper>);
         await waitFor(() => {
             expect(screen.getByText('Sign In')).toBeInTheDocument();
         });
     });
 
     it('redirects to sign in page when sign in button is clicked with no user in the session', async () => {
-        (authClient.useSession as jest.Mock).mockReturnValue({
-            data: { user: null },
-            isPending: false,
-            error: null,
-        });
-
-        render(<Wrapper><UserButton /></Wrapper>);
+        render(<Wrapper><UserButton user={null} /></Wrapper>);
 
         fireEvent.click(screen.getByText('Sign In'));
 
@@ -63,13 +33,7 @@ describe('UserButton', () => {
     });
 
     it('redirects to sign in page when sign in button is clicked with no session present', async () => {
-        (authClient.useSession as jest.Mock).mockReturnValue({
-            data: null,
-            isPending: false,
-            error: null,
-        });
-
-        render(<Wrapper><UserButton /></Wrapper>);
+        render(<Wrapper><UserButton user={null} /></Wrapper>);
 
         fireEvent.click(screen.getByText('Sign In'));
 
@@ -79,7 +43,16 @@ describe('UserButton', () => {
     });
 
     it('renders user name and email', async () => {
-        render(<Wrapper><UserButton /></Wrapper>);
+        render(
+            <Wrapper>
+                <UserButton user={{
+                    name: 'Harriette Spoonlicker',
+                    email: 'hspoonlicker@outlook.com',
+                    playerId: 12,
+                    role: 'user',
+                }} />
+            </Wrapper>,
+        );
         await waitFor(() => {
             expect(screen.getByText('Harriette Spoonlicker')).toBeInTheDocument();
             expect(screen.getByText('hspoonlicker@outlook.com')).toBeInTheDocument();
@@ -87,7 +60,16 @@ describe('UserButton', () => {
     });
 
     it('renders user avatar', async () => {
-        render(<Wrapper><UserButton /></Wrapper>);
+        render(
+            <Wrapper>
+                <UserButton user={{
+                    name: 'Harriette Spoonlicker',
+                    email: 'hspoonlicker@outlook.com',
+                    playerId: 12,
+                    role: 'user',
+                }} />
+            </Wrapper>,
+        );
         const avatar = screen.getByRole('img');
         await waitFor(() => {
             expect(avatar).toBeInTheDocument();
@@ -96,26 +78,32 @@ describe('UserButton', () => {
     });
 
     it('renders placeholder avatar', async () => {
-        (authClient.useSession as jest.Mock).mockReturnValue({
-            data: {
-                user: {
+        render(
+            <Wrapper>
+                <UserButton user={{
                     name: 'Unknown Player',
                     email: '',
                     playerId: 0,
-                },
-            },
-            isPending: false,
-            error: null,
-        });
-
-        render(<Wrapper><UserButton /></Wrapper>);
+                    role: 'user',
+                }} />
+            </Wrapper>,
+        );
         await waitFor(() => {
             expect(screen.getByTestId('user-avatar')).toBeInTheDocument();
         });
     });
 
     it('renders chevron icon', async () => {
-        render(<Wrapper><UserButton /></Wrapper>);
+        render(
+            <Wrapper>
+                <UserButton user={{
+                    name: 'Harriette Spoonlicker',
+                    email: 'hspoonlicker@outlook.com',
+                    playerId: 12,
+                    role: 'user',
+                }} />
+            </Wrapper>,
+        );
         const chevronIcon = screen.getByTestId('chevron-icon');
         await waitFor(() => {
             expect(chevronIcon).toBeInTheDocument();

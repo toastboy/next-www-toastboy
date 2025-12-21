@@ -7,6 +7,7 @@ import '@mantine/tiptap/styles.css';
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import { CustomAppShell } from 'components/CustomAppShell/CustomAppShell';
+import { getCurrentUser } from 'lib/authServer';
 import type { Metadata } from 'next';
 
 // Default to dynamic rendering for all pages
@@ -22,18 +23,20 @@ export const metadata: Metadata = {
     },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
     children,
 }: {
     children: React.ReactNode;
 }) {
+    const user = await getCurrentUser();
+
     return (
         <html lang="en">
             <body>
                 <MantineProvider>
                     <Notifications />
                     {/* <BreakpointDebugger /> */}
-                    <CustomAppShell>
+                    <CustomAppShell user={user}>
                         {children}
                     </CustomAppShell>
                 </MantineProvider>

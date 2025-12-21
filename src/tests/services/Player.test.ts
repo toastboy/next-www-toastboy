@@ -4,7 +4,13 @@ import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import { PlayerFormType } from 'types';
 
 import playerService from '@/services/Player';
-import { createMockGameDay, defaultPlayer, defaultPlayerList, invalidPlayer } from '@/tests/mocks';
+import {
+    createMockGameDay,
+    defaultPlayer,
+    defaultPlayerList,
+    defaultPlayerLoginList,
+    invalidPlayer,
+} from '@/tests/mocks';
 import { defaultOutcome } from '@/tests/mocks/data/outcome';
 
 jest.mock('prisma/prisma', () => ({
@@ -15,6 +21,13 @@ jest.mock('prisma/prisma', () => ({
         create: jest.fn(),
         upsert: jest.fn(),
         delete: jest.fn(),
+        deleteMany: jest.fn(),
+    },
+    playerLogin: {
+        findUnique: jest.fn(),
+        findFirst: jest.fn(),
+        findMany: jest.fn(),
+        create: jest.fn(),
         deleteMany: jest.fn(),
     },
     outcome: {
@@ -50,6 +63,26 @@ describe('PlayerService', () => {
 
         (prisma.player.findMany as jest.Mock).mockImplementation(() => {
             return Promise.resolve(defaultPlayerList);
+        });
+
+        (prisma.playerLogin.findUnique as jest.Mock).mockImplementation((args: {
+            where: { login: string }
+        }) => {
+            const playerLogin = defaultPlayerLoginList.find((login) => login.login === args.where.login);
+            if (!playerLogin) return Promise.resolve(null);
+            const player = defaultPlayerList.find((player) => player.id === playerLogin.playerId);
+            if (!player) return Promise.resolve(null);
+            return Promise.resolve({
+                ...playerLogin,
+                player,
+            });
+        });
+
+        (prisma.playerLogin.findFirst as jest.Mock).mockImplementation((args: {
+            where: { playerId: number }
+        }) => {
+            const playerLogin = defaultPlayerLoginList.find((login) => login.playerId === args.where.playerId);
+            return Promise.resolve(playerLogin ?? null);
         });
 
         (prisma.player.create as jest.Mock).mockImplementation((args: { data: PlayerType }) => {
@@ -106,21 +139,11 @@ describe('PlayerService', () => {
     });
 
     describe('getByLogin', () => {
-        beforeEach(() => {
-            (prisma.player.findUnique as jest.Mock).mockImplementation((args: {
-                where: { login: string }
-            }) => {
-                const player = defaultPlayerList.find((player) => player.login === args.where.login);
-                return Promise.resolve(player ?? null);
-            });
-        });
-
         it('should retrieve the correct player with login', async () => {
             const result = await playerService.getByLogin("garyp");
             expect(result).toEqual({
                 ...defaultPlayer,
                 finished: expect.any(Date),
-                login: "garyp",
             } as PlayerType);
         });
 
@@ -131,15 +154,6 @@ describe('PlayerService', () => {
     });
 
     describe('getLogin with id', () => {
-        beforeEach(() => {
-            (prisma.player.findUnique as jest.Mock).mockImplementation((args: {
-                where: { id: number }
-            }) => {
-                const player = defaultPlayerList.find((player) => player.id === args.where.id);
-                return Promise.resolve(player ?? null);
-            });
-        });
-
         it('should retrieve the correct player login with id 1', async () => {
             const result = await playerService.getLogin("1");
             expect(result).toBe("garyp");
@@ -151,15 +165,6 @@ describe('PlayerService', () => {
     });
 
     describe('getLogin with login', () => {
-        beforeEach(() => {
-            (prisma.player.findUnique as jest.Mock).mockImplementation((args: {
-                where: { login: string }
-            }) => {
-                const player = defaultPlayerList.find((player) => player.login === args.where.login);
-                return Promise.resolve(player ?? null);
-            });
-        });
-
         it('should retrieve the correct player login with login "garyp"', async () => {
             const result = await playerService.getLogin("garyp");
             expect(result).toBe("garyp");
@@ -192,15 +197,6 @@ describe('PlayerService', () => {
     });
 
     describe('getId with login', () => {
-        beforeEach(() => {
-            (prisma.player.findUnique as jest.Mock).mockImplementation((args: {
-                where: { login: string }
-            }) => {
-                const player = defaultPlayerList.find((player) => player.login === args.where.login);
-                return Promise.resolve(player ?? null);
-            });
-        });
-
         it('should retrieve the correct player login with login "garyp"', async () => {
             const result = await playerService.getId("garyp");
             expect(result).toBe(1);
@@ -357,7 +353,12 @@ describe('PlayerService', () => {
     describe('getAllIdsAndLogins', () => {
         beforeEach(() => {
             (prisma.player.findMany as jest.Mock).mockImplementation(() => {
-                return Promise.resolve(defaultPlayerList);
+                return Promise.resolve(defaultPlayerList.map((player) => ({
+                    ...player,
+                    logins: defaultPlayerLoginList
+                        .filter((login) => login.playerId === player.id)
+                        .map((login) => ({ login: login.login })),
+                })));
             });
         });
 

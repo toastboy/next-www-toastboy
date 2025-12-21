@@ -17,7 +17,6 @@ export type PublicOutcome = z.infer<typeof PublicOutcomeSchema>;
 
 export const PublicPlayerSchema = PlayerSchema.transform((player) => ({
     ...player,
-    login: undefined,
     email: undefined,
     born: undefined,
     comment: undefined,

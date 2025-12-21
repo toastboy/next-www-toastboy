@@ -327,14 +327,14 @@ describe('OutcomeService', () => {
                 {
                     ...createMockOutcome({ id: 201, gameDayId: 10, playerId: 1, team: 'A' }),
                     player: {
-                        ...createMockPlayer({ id: 1, login: 'player1', name: 'Player One' }),
+                        ...createMockPlayer({ id: 1, name: 'Player One' }),
                         outcomes: playerOneForm,
                     },
                 },
                 {
                     ...createMockOutcome({ id: 202, gameDayId: 10, playerId: 2, team: 'A', goalie: true }),
                     player: {
-                        ...createMockPlayer({ id: 2, login: 'player2', name: 'Player Two' }),
+                        ...createMockPlayer({ id: 2, name: 'Player Two' }),
                         outcomes: [],
                     },
                 },
@@ -376,7 +376,6 @@ describe('OutcomeService', () => {
             expect(result).toHaveLength(2);
             expect(result[0]).toMatchObject({
                 id: 1,
-                login: 'player1',
                 outcome: {
                     playerId: 1,
                     gameDayId: 10,

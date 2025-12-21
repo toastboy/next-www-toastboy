@@ -18,6 +18,8 @@ import { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema'
 const adapter = new PrismaMariaDb(process.env.DATABASE_URL!);
 const prisma = new PrismaClient({ adapter });
 
+type PlayerSeed = PlayerType & { login?: string | null };
+
 async function streamToBuffer(readableStream: NodeJS.ReadableStream): Promise<Buffer> {
     return new Promise((resolve, reject) => {
         const chunks: Uint8Array[] = [];
@@ -104,11 +106,26 @@ async function main() {
     await prisma.diffs.deleteMany();
     await prisma.picker.deleteMany();
     await prisma.pickerTeams.deleteMany();
+    await prisma.playerLogin.deleteMany();
     await prisma.player.deleteMany();
 
     // Now we must populate the tables in the reverse of the order above
     await processJsonData<GameDayType>(containerClient, "GameDay.json", prisma.gameDay);
-    await processJsonData<PlayerType>(containerClient, "Player.json", prisma.player);
+    console.log('Starting: Player.json');
+    const playerData = await downloadAndParseJson(containerClient, "Player.json") as PlayerSeed[];
+    for (const player of playerData) {
+        const { login, ...playerRecord } = player;
+        await prisma.player.create({ data: playerRecord });
+        if (login) {
+            await prisma.playerLogin.create({
+                data: {
+                    playerId: playerRecord.id,
+                    login: login,
+                },
+            });
+        }
+    }
+    console.log('Complete:  Player.json');
     await processJsonData<PlayerRecordType>(containerClient, "PlayerRecord.json", prisma.playerRecord);
     await processJsonData<OutcomeType>(containerClient, "Outcome.json", prisma.outcome);
     await processJsonData<GameChatType>(containerClient, "GameChat.json", prisma.gameChat);

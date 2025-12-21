@@ -163,8 +163,7 @@ model PickerTeams {
 }
 
 model Player {
-    id    Int    @id @default(autoincrement())
-    login String @unique @db.VarChar(16)
+    id Int @id @default(autoincrement())
 
     isAdmin Boolean?
 
@@ -186,6 +185,17 @@ model Player {
     invitations   Invitation[]
     outcomes      Outcome[]
     playerRecords PlayerRecord[]
+    logins        PlayerLogin[]
+}
+
+model PlayerLogin {
+    playerId Int
+    login    String @unique @db.VarChar(16)
+
+    player Player @relation(fields: [playerId], references: [id])
+
+    @@index([playerId])
+    @@unique([playerId, login])
 }
 
 model PlayerRecord {

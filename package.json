@@ -27,7 +27,7 @@
         "test:services": "jest --selectProjects services",
         "test:storybook:update-snapshots": "test-storybook --url http://127.0.0.1:6006 --updateSnapshot",
         "test:storybook": "test-storybook --url http://127.0.0.1:6006",
-        "test:watch": "jest --watch --passWithNoTests",
+        "test:watch": "jest --watch",
         "test": "jest",
         "typecheck": "tsc --noEmit"
     },

@@ -4,7 +4,6 @@ import { PlayerTimeline } from './PlayerTimeline';
 
 const samplePlayer = {
     id: 1,
-    login: 'jdoe',
     isAdmin: false,
     name: 'Jane Doe',
     anonymous: false,

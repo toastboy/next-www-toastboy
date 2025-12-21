@@ -19,6 +19,10 @@ const extendedFields = {
     id: z.number().int().min(1),
 };
 
+const PlayerLoginWhereUniqueInputSchema = z.object({
+    login: z.string().max(16),
+});
+
 /** Schemas for enforcing strict input */
 export const PlayerUncheckedCreateInputObjectStrictSchema =
     PlayerUncheckedCreateInputObjectZodSchema.extend({
@@ -57,9 +61,15 @@ class PlayerService {
      */
     async getByLogin(login: string) {
         try {
-            const where = PlayerWhereUniqueInputObjectSchema.parse({ login });
+            const where = PlayerLoginWhereUniqueInputSchema.parse({ login });
+            const playerLogin = await prisma.playerLogin.findUnique({
+                where,
+                include: {
+                    player: true,
+                },
+            });
 
-            return prisma.player.findUnique({ where });
+            return playerLogin?.player ?? null;
         } catch (error) {
             log(`Error fetching Player: ${String(error)}`);
             throw error;
@@ -97,8 +107,21 @@ class PlayerService {
      */
     async getLogin(idOrLogin: string) {
         try {
-            const player = await this.getByIdOrLogin(idOrLogin);
-            return player ? player.login : null;
+            if (!isNaN(Number(idOrLogin))) {
+                const playerLogin = await prisma.playerLogin.findFirst({
+                    where: {
+                        playerId: Number(idOrLogin),
+                    },
+                    orderBy: {
+                        login: 'asc',
+                    },
+                });
+                return playerLogin ? playerLogin.login : null;
+            }
+
+            const where = PlayerLoginWhereUniqueInputSchema.parse({ login: idOrLogin });
+            const playerLogin = await prisma.playerLogin.findUnique({ where });
+            return playerLogin ? playerLogin.login : null;
         } catch (error) {
             log(`Error getting Player login: ${String(error)}`);
             throw error;
@@ -120,8 +143,9 @@ class PlayerService {
                 const player = await this.getById(Number(idOrLogin));
                 return player ? player.id : null;
             } else {
-                const player = await this.getByLogin(idOrLogin);
-                return player ? player.id : null;
+                const where = PlayerLoginWhereUniqueInputSchema.parse({ login: idOrLogin });
+                const playerLogin = await prisma.playerLogin.findUnique({ where });
+                return playerLogin ? playerLogin.playerId : null;
             }
         } catch (error) {
             log(`Error getting Player id: ${String(error)}`);
@@ -201,12 +225,26 @@ class PlayerService {
      */
     async getAllIdsAndLogins() {
         try {
-            const players = await prisma.player.findMany({});
+            const players = await prisma.player.findMany({
+                select: {
+                    id: true,
+                    logins: {
+                        select: {
+                            login: true,
+                        },
+                        orderBy: {
+                            login: 'asc',
+                        },
+                    },
+                },
+            });
             const idsAndLogins: string[] = [];
 
             players.forEach((player) => {
                 idsAndLogins.push(player.id.toString());
-                idsAndLogins.push(player.login);
+                player.logins.forEach((login) => {
+                    idsAndLogins.push(login.login);
+                });
             });
 
             return idsAndLogins;

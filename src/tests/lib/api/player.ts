@@ -6,7 +6,6 @@ import playerService from '@/services/Player';
 
 export const mockPlayer = {
     id: 1,
-    login: "player1",
     isAdmin: null,
     name: "Derek Turnipson",
     anonymous: null,
@@ -20,6 +19,7 @@ export const mockPlayer = {
 
 export const setupPlayerMocks = () => {
     beforeEach(() => {
-        (playerService.getByIdOrLogin as jest.Mock).mockResolvedValue(mockPlayer);
+        (playerService.getById as jest.Mock).mockResolvedValue(mockPlayer);
+        (playerService.getLogin as jest.Mock).mockResolvedValue('player1');
     });
 };

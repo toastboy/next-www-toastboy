@@ -1,95 +1,97 @@
 name: Playwright Tests
 on:
-  push:
-    branches: [main]
-  pull_request:
-    branches: [main]
-  workflow_dispatch:
+    push:
+        branches: [main]
+    pull_request:
+        branches: [main]
+    workflow_dispatch:
 
 jobs:
-  test:
-    timeout-minutes: 60
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - uses: actions/checkout@v6
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 20
-      - name: Install dependencies
-        run: npm ci
-      - name: Load secrets from 1Password and export to environment
-        uses: 1password/load-secrets-action@v3
-        with:
-          export-env: true
-        env:
-          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          DATABASE_PASSWORD: op://next-www-toastboy/DATABASE_PASSWORD/password
-          DATABASE_URL: op://next-www-toastboy/DATABASE_URL/Section_4wa3sl6ppxfmyj6xihxrpgbctq/connection string
-          AZURE_TENANT_ID: op://next-www-toastboy/AZURE_TENANT_ID/Section_ylvm7oce47qvgs6ntrhrja2mbm/uuid
-          AZURE_CLIENT_ID: op://next-www-toastboy/AZURE_CLIENT_ID/Section_ueteoth5u6psueairn64jkyfvq/uuid
-          AZURE_CLIENT_SECRET: op://next-www-toastboy/AZURE_CLIENT_SECRET/Section_ozdki26oyupp5sforj3idf6v6e/secret
-          AZURE_STORAGE_ACCOUNT_NAME: op://next-www-toastboy/AZURE_STORAGE_ACCOUNT_NAME/Section_nomnpnz4pz2cjajwak6cvqqwye/account
-          AZURE_CONTAINER_NAME: op://next-www-toastboy/AZURE_CONTAINER_NAME/add more/container
-          BETTER_AUTH_SECRET: op://next-www-toastboy/BETTER_AUTH_SECRET/Section_d2yvz3djw6em7hapssycamzp6m/auth secret
-          GOOGLE_CLIENT_ID: op://next-www-toastboy/GOOGLE_CLIENT_ID/Section_y62ddyjq6qqk3jlsynpk74njzy/client id
-          GOOGLE_CLIENT_SECRET: op://next-www-toastboy/GOOGLE_CLIENT_SECRET/Section_46qnuzd357u5kz6tcsb5igjfqu/secret
-          MICROSOFT_CLIENT_ID: op://next-www-toastboy/MICROSOFT_CLIENT_ID/Section_7mnfxarlhkiqhejcdikeqjetsi/uuid
-          MICROSOFT_CLIENT_SECRET: op://next-www-toastboy/MICROSOFT_CLIENT_SECRET/Section_gf3kdeabpqeqiwci4y32wfezry/secret
-          SENTRY_AUTH_TOKEN: op://next-www-toastboy/SENTRY_AUTH_TOKEN/Section_vi2z4utsexivhdrvq7jpproi5a/auth token
-      - name: Configure local DATABASE_URL for CI
-        env:
-          DATABASE_PASSWORD: ${{ env.DATABASE_PASSWORD }}
-        run: |
-          python3 - <<'PY' "$GITHUB_ENV"
-          import os, sys
-          env_path = sys.argv[1]
-          password = os.environ["DATABASE_PASSWORD"]
-          with open(env_path, "a", encoding="utf-8") as fh:
-              fh.write(f"DATABASE_URL=mysql://root:{password}@127.0.0.1:33306/footy\n")
-          PY
-      - name: Start docker stack (database, mailpit, etc.)
-        env:
-          DATABASE_PASSWORD: ${{ env.DATABASE_PASSWORD }}
-        run: docker compose up -d
-      - name: Wait for database
-        run: |
-          for i in {1..30}; do
-            if [ "$(docker inspect --format='{{.State.Health.Status}}' $(docker compose ps -q db))" = "healthy" ]; then
-              exit 0
-            fi
-            sleep 2
-          done
-          docker compose logs db
-          exit 1
-      - name: Push Prisma schema
-        run: npx prisma db push
-      - name: Seed database
-        run: npx prisma db seed
-      - name: Build Next.js app
-        run: npm run build
-      - name: Install Playwright Browsers
-        run: npx playwright install --with-deps
-      - name: Run Playwright tests
-        env:
-          DATABASE_URL: ${{ env.DATABASE_URL }}
-          DATABASE_PASSWORD: ${{ env.DATABASE_PASSWORD }}
-          AZURE_TENANT_ID: ${{ env.AZURE_TENANT_ID }}
-          AZURE_CLIENT_ID: ${{ env.AZURE_CLIENT_ID }}
-          AZURE_CLIENT_SECRET: ${{ env.AZURE_CLIENT_SECRET }}
-          AZURE_STORAGE_ACCOUNT_NAME: ${{ env.AZURE_STORAGE_ACCOUNT_NAME }}
-          AZURE_CONTAINER_NAME: ${{ env.AZURE_CONTAINER_NAME }}
-          BETTER_AUTH_SECRET: ${{ env.BETTER_AUTH_SECRET }}
-          GOOGLE_CLIENT_ID: ${{ env.GOOGLE_CLIENT_ID }}
-          GOOGLE_CLIENT_SECRET: ${{ env.GOOGLE_CLIENT_SECRET }}
-          MICROSOFT_CLIENT_ID: ${{ env.MICROSOFT_CLIENT_ID }}
-          MICROSOFT_CLIENT_SECRET: ${{ env.MICROSOFT_CLIENT_SECRET }}
-          SENTRY_AUTH_TOKEN: ${{ env.SENTRY_AUTH_TOKEN }}
-        run: npx playwright test
-      - uses: actions/upload-artifact@v6
-        if: always()
-        with:
-          name: playwright-report
-          path: playwright-report/
-          retention-days: 30
+    test:
+        timeout-minutes: 60
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+        steps:
+            - uses: actions/checkout@v6
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: 20
+            - name: Install dependencies
+              run: npm ci
+            - name: Load secrets from 1Password and export to environment
+              uses: 1password/load-secrets-action@v3
+              with:
+                  export-env: true
+              env:
+                  OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+                  DATABASE_PASSWORD: op://next-www-toastboy/DATABASE_PASSWORD/password
+                  DATABASE_URL: op://next-www-toastboy/DATABASE_URL/Section_4wa3sl6ppxfmyj6xihxrpgbctq/connection string
+                  AZURE_TENANT_ID: op://next-www-toastboy/AZURE_TENANT_ID/Section_ylvm7oce47qvgs6ntrhrja2mbm/uuid
+                  AZURE_CLIENT_ID: op://next-www-toastboy/AZURE_CLIENT_ID/Section_ueteoth5u6psueairn64jkyfvq/uuid
+                  AZURE_CLIENT_SECRET: op://next-www-toastboy/AZURE_CLIENT_SECRET/Section_ozdki26oyupp5sforj3idf6v6e/secret
+                  AZURE_STORAGE_ACCOUNT_NAME: op://next-www-toastboy/AZURE_STORAGE_ACCOUNT_NAME/Section_nomnpnz4pz2cjajwak6cvqqwye/account
+                  AZURE_CONTAINER_NAME: op://next-www-toastboy/AZURE_CONTAINER_NAME/add more/container
+                  BETTER_AUTH_SECRET: op://next-www-toastboy/BETTER_AUTH_SECRET/Section_d2yvz3djw6em7hapssycamzp6m/auth secret
+                  GOOGLE_CLIENT_ID: op://next-www-toastboy/GOOGLE_CLIENT_ID/Section_y62ddyjq6qqk3jlsynpk74njzy/client id
+                  GOOGLE_CLIENT_SECRET: op://next-www-toastboy/GOOGLE_CLIENT_SECRET/Section_46qnuzd357u5kz6tcsb5igjfqu/secret
+                  MICROSOFT_CLIENT_ID: op://next-www-toastboy/MICROSOFT_CLIENT_ID/Section_7mnfxarlhkiqhejcdikeqjetsi/uuid
+                  MICROSOFT_CLIENT_SECRET: op://next-www-toastboy/MICROSOFT_CLIENT_SECRET/Section_gf3kdeabpqeqiwci4y32wfezry/secret
+                  SENTRY_AUTH_TOKEN: op://next-www-toastboy/SENTRY_AUTH_TOKEN/Section_vi2z4utsexivhdrvq7jpproi5a/auth token
+            - name: Configure local DATABASE_URL for CI
+              env:
+                  DATABASE_PASSWORD: ${{ env.DATABASE_PASSWORD }}
+              run: |
+                  python3 - <<'PY' "$GITHUB_ENV"
+                  import os, sys
+                  env_path = sys.argv[1]
+                  password = os.environ["DATABASE_PASSWORD"]
+                  with open(env_path, "a", encoding="utf-8") as fh:
+                      fh.write(f"DATABASE_URL=mysql://root:{password}@127.0.0.1:33306/footy\n")
+                  PY
+            - name: Start docker stack (database, mailpit, etc.)
+              env:
+                  DATABASE_PASSWORD: ${{ env.DATABASE_PASSWORD }}
+              run: docker compose up -d
+            - name: Wait for database
+              run: |
+                  for i in {1..30}; do
+                    if [ "$(docker inspect --format='{{.State.Health.Status}}' $(docker compose ps -q db))" = "healthy" ]; then
+                      exit 0
+                    fi
+                    sleep 2
+                  done
+                  docker compose logs db
+                  exit 1
+            - name: Push Prisma schema
+              run: npx prisma db push
+            - name: Seed database (verbose, fail-fast)
+              run: |
+                  set -euo pipefail
+                  stdbuf -oL -eL npx tsx -r tsconfig-paths/register prisma/seed.ts
+            - name: Build Next.js app
+              run: npm run build
+            - name: Install Playwright Browsers
+              run: npx playwright install --with-deps
+            - name: Run Playwright tests
+              env:
+                  DATABASE_URL: ${{ env.DATABASE_URL }}
+                  DATABASE_PASSWORD: ${{ env.DATABASE_PASSWORD }}
+                  AZURE_TENANT_ID: ${{ env.AZURE_TENANT_ID }}
+                  AZURE_CLIENT_ID: ${{ env.AZURE_CLIENT_ID }}
+                  AZURE_CLIENT_SECRET: ${{ env.AZURE_CLIENT_SECRET }}
+                  AZURE_STORAGE_ACCOUNT_NAME: ${{ env.AZURE_STORAGE_ACCOUNT_NAME }}
+                  AZURE_CONTAINER_NAME: ${{ env.AZURE_CONTAINER_NAME }}
+                  BETTER_AUTH_SECRET: ${{ env.BETTER_AUTH_SECRET }}
+                  GOOGLE_CLIENT_ID: ${{ env.GOOGLE_CLIENT_ID }}
+                  GOOGLE_CLIENT_SECRET: ${{ env.GOOGLE_CLIENT_SECRET }}
+                  MICROSOFT_CLIENT_ID: ${{ env.MICROSOFT_CLIENT_ID }}
+                  MICROSOFT_CLIENT_SECRET: ${{ env.MICROSOFT_CLIENT_SECRET }}
+                  SENTRY_AUTH_TOKEN: ${{ env.SENTRY_AUTH_TOKEN }}
+              run: npx playwright test
+            - uses: actions/upload-artifact@v6
+              if: always()
+              with:
+                  name: playwright-report
+                  path: playwright-report/
+                  retention-days: 30

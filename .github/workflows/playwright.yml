@@ -68,7 +68,8 @@ jobs:
             - name: Seed database (verbose, fail-fast)
               run: |
                   set -euo pipefail
-                  stdbuf -oL -eL npx tsx -r tsconfig-paths/register prisma/seed.ts
+                  npx prisma generate
+                  stdbuf -oL -eL npx tsx --tsconfig tsconfig.scripts.json -r tsconfig-paths/register prisma/seed.ts
             - name: Build Next.js app
               run: npm run build
             - name: Install Playwright Browsers

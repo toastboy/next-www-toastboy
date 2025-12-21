@@ -9,7 +9,7 @@
         "deepclean": "rm -rf .next node_modules package-lock.json && npm cache clean --force",
         "dev": "npm run generate && docker compose up -d && next dev",
         "generate": "prisma generate",
-        "importlivedb": "npx ts-node -r tsconfig-paths/register --project tsconfig.scripts.json --compiler-options '{\"module\":\"CommonJS\"}' src/lib/importlivedb/importlivedb.ts",
+        "importlivedb": "TS_NODE_PROJECT=tsconfig.scripts.json TSX_TSCONFIG=tsconfig.scripts.json tsx -r tsconfig-paths/register src/lib/importlivedb/importlivedb.ts",
         "lint:fix": "eslint . --fix",
         "lint": "eslint .",
         "migrate": "prisma migrate dev",

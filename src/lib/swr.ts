@@ -66,49 +66,49 @@ export function useCurrentGame() {
     return data ?? null;
 }
 
-export function usePlayer(id: string) {
+export function usePlayer(id: number) {
     const { data, error } = useSWR<PlayerType, Error>(`/api/footy/player/${id}`, fetcher);
     if (error) throw error;
     return data ?? null;
 }
 
-export function usePlayerLastPlayed(id: string) {
+export function usePlayerLastPlayed(id: number) {
     const { data, error } = useSWR<OutcomeType, Error>(`/api/footy/player/${id}/lastplayed`, fetcher);
     if (error) throw error;
     return data ?? null;
 }
 
-export function usePlayerClubs(id: string) {
+export function usePlayerClubs(id: number) {
     const { data, error } = useSWR<ClubSupporterType[], Error>(`/api/footy/player/${id}/clubs`, fetcher);
     if (error) throw error;
     return data ?? null;
 }
 
-export function usePlayerCountries(id: string) {
+export function usePlayerCountries(id: number) {
     const { data, error } = useSWR<CountrySupporterType[], Error>(`/api/footy/player/${id}/countries`, fetcher);
     if (error) throw error;
     return data ?? null;
 }
 
-export function usePlayerArse(id: string) {
+export function usePlayerArse(id: number) {
     const { data, error } = useSWR<ArseType, Error>(`/api/footy/player/${id}/arse`, fetcher);
     if (error) throw error;
     return data ?? null;
 }
 
-export function usePlayerForm(id: string, games: number) {
+export function usePlayerForm(id: number, games: number) {
     const { data, error } = useSWR<PlayerFormType[], Error>(`/api/footy/player/${id}/form/${games}`, fetcher);
     if (error) throw error;
     return data ?? null;
 }
 
-export function usePlayerYearsActive(id: string) {
+export function usePlayerYearsActive(id: number) {
     const { data, error } = useSWR<number[], Error>(`/api/footy/player/${id}/yearsactive`, fetcher);
     if (error) throw error;
     return data ?? null;
 }
 
-export function usePlayerRecord(id: string, year: number) {
+export function usePlayerRecord(id: number, year: number) {
     const { data, error } = useSWR<PlayerRecordType, Error>(`/api/footy/player/${id}/record/${year}`, fetcher);
     if (error) throw error;
     return data ?? null;

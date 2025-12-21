@@ -7,6 +7,9 @@ import * as path from 'path';
 import { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
 import playerRecordService from 'services/PlayerRecord';
+import { fileURLToPath } from 'url';
+
+const currentDir = path.dirname(fileURLToPath(import.meta.url));
 
 /**
  * Writes the data from a Prisma model to a JSON file.
@@ -115,7 +118,7 @@ async function importBackup(): Promise<void> {
         execSync(`mysqldump --skip-ssl -h ${prodMysqlHost} -u ${prodMysqlUser} -p${prodMysqlPassword} ${mysqlDatabase} arse club club_supporter country diffs game_chat game_day invitation misc nationality outcome picker picker_teams player > /tmp/${mysqlDatabase}.sql`);
 
         // Get the list of directories in the migrations directory
-        const migrationsDir = path.join(__dirname, '..', '..', '..', 'prisma', 'migrations');
+        const migrationsDir = path.join(currentDir, '..', '..', '..', 'prisma', 'migrations');
         const migrations = await readdir(migrationsDir);
 
         // Run prisma generate to ensure the Prisma Client is up to date
@@ -161,6 +164,7 @@ async function importBackup(): Promise<void> {
         await writeTableToJSONFile('GameDay.json', prisma.gameDay);
         await writeTableToJSONFile('Outcome.json', prisma.outcome);
         await writeTableToJSONFile('Player.json', prisma.player);
+        await writeTableToJSONFile('PlayerLogin.json', prisma.playerLogin);
         await writeTableToJSONFile('PlayerRecord.json', prisma.playerRecord);
 
         // Upload the JSON files to Azure Blob Storage
@@ -177,7 +181,7 @@ async function importBackup(): Promise<void> {
         // files in blob storage reflect that, we can do a final Prisma migrate
         // reset and seed to ensure the dev database is in a good state.
         console.log('Running final Prisma migrate reset...');
-        execSync(`npx prisma migrate reset --force`);
+        execSync('npx prisma migrate reset --force --skip-seed');
     } catch (error) {
         console.error('An error occurred:', error);
     }

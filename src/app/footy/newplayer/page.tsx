@@ -1,12 +1,13 @@
 import { MustBeLoggedIn } from 'components/MustBeLoggedIn/MustBeLoggedIn';
-import { NYI } from 'components/NYI/NYI';
+
+import { NewPlayerForm } from '@/components/NewPlayerForm/NewPlayerForm';
 
 type Props = object;
 
 const Page: React.FC<Props> = () => {
     return (
         <MustBeLoggedIn admin={true}>
-            <NYI />
+            <NewPlayerForm />
         </MustBeLoggedIn>
     );
 };

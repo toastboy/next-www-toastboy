@@ -547,7 +547,7 @@ describe('PlayerRecordService', () => {
             expect(result).toHaveLength(10);
         });
 
-        it('should deal with cases where qualified/unqualified does not make sense', async () => {
+        it('should return empty array and not query player records when qualified flag is used for points table', async () => {
             (prisma.playerRecord.findFirst as jest.Mock).mockResolvedValue({
                 "gameDayId": 1087,
             });

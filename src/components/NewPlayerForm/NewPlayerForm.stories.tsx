@@ -1,5 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
+import { defaultPlayerList } from '@/tests/mocks';
+
 import { NewPlayerForm } from './NewPlayerForm';
 
 const meta = {
@@ -14,4 +16,8 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Primary: Story = {};
+export const Primary: Story = {
+    args: {
+        players: defaultPlayerList,
+    },
+};

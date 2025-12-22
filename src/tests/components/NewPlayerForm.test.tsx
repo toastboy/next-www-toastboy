@@ -13,18 +13,26 @@ import { Wrapper } from '@/tests/components/lib/common';
 const mockSendEmail = sendEmail as jest.MockedFunction<typeof sendEmail>;
 
 describe('NewPlayerForm', () => {
+    const players = [
+        { id: 1, name: 'Sam Smith' },
+        { id: 2, name: 'Alex Doe' },
+    ];
+
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    it('renders form with email input and submit button', () => {
+    it('renders form with inputs and submit button', () => {
         render(
             <Wrapper>
-                <NewPlayerForm />
+                <NewPlayerForm players={players} />
             </Wrapper>,
         );
 
+        expect(screen.getByLabelText(/First name/i)).toBeInTheDocument();
+        expect(screen.getByLabelText(/Last name/i)).toBeInTheDocument();
         expect(screen.getByLabelText(/Email address/i)).toBeInTheDocument();
+        expect(screen.getByLabelText(/Introduced by/i)).toBeInTheDocument();
         expect(screen.getByRole('button', { name: /Submit/i })).toBeInTheDocument();
     });
 
@@ -34,13 +42,15 @@ describe('NewPlayerForm', () => {
 
         render(
             <Wrapper>
-                <NewPlayerForm />
+                <NewPlayerForm players={players} />
             </Wrapper>,
         );
 
+        const firstNameInput = screen.getByLabelText(/First name/i);
         const emailInput = screen.getByLabelText(/Email address/i);
         const submitButton = screen.getByRole('button', { name: /Submit/i });
 
+        await user.type(firstNameInput, 'Pat');
         await user.type(emailInput, 'test@example.com');
         await user.click(submitButton);
 
@@ -62,13 +72,15 @@ describe('NewPlayerForm', () => {
         const user = userEvent.setup();
         render(
             <Wrapper>
-                <NewPlayerForm />
+                <NewPlayerForm players={players} />
             </Wrapper>,
         );
 
+        const firstNameInput = screen.getByLabelText(/First name/i);
         const emailInput = screen.getByLabelText(/Email address/i);
         const submitButton = screen.getByRole('button', { name: /Submit/i });
 
+        await user.type(firstNameInput, 'Pat');
         await user.type(emailInput, 'test@example.com');
         await user.click(submitButton);
 
@@ -90,13 +102,15 @@ describe('NewPlayerForm', () => {
         const user = userEvent.setup();
         render(
             <Wrapper>
-                <NewPlayerForm />
+                <NewPlayerForm players={players} />
             </Wrapper>,
         );
 
+        const firstNameInput = screen.getByLabelText(/First name/i);
         const emailInput = screen.getByLabelText(/Email address/i);
         const submitButton = screen.getByRole('button', { name: /Submit/i });
 
+        await user.type(firstNameInput, 'Pat');
         await user.type(emailInput, 'test@example.com');
         await user.click(submitButton);
 
@@ -120,13 +134,15 @@ describe('NewPlayerForm', () => {
         const user = userEvent.setup();
         render(
             <Wrapper>
-                <NewPlayerForm />
+                <NewPlayerForm players={players} />
             </Wrapper>,
         );
 
+        const firstNameInput = screen.getByLabelText(/First name/i);
         const emailInput = screen.getByLabelText(/Email address/i);
         const submitButton = screen.getByRole('button', { name: /Submit/i });
 
+        await user.type(firstNameInput, 'Pat');
         await user.type(emailInput, 'test@example.com');
         await user.click(submitButton);
 
@@ -153,7 +169,7 @@ describe('NewPlayerForm', () => {
         const user = userEvent.setup();
         render(
             <Wrapper>
-                <NewPlayerForm />
+                <NewPlayerForm players={players} />
             </Wrapper>,
         );
 
@@ -170,7 +186,7 @@ describe('NewPlayerForm', () => {
         const user = userEvent.setup();
         render(
             <Wrapper>
-                <NewPlayerForm />
+                <NewPlayerForm players={players} />
             </Wrapper>,
         );
 
@@ -183,7 +199,7 @@ describe('NewPlayerForm', () => {
     it('email input is required', () => {
         render(
             <Wrapper>
-                <NewPlayerForm />
+                <NewPlayerForm players={players} />
             </Wrapper>,
         );
 
@@ -194,7 +210,7 @@ describe('NewPlayerForm', () => {
     it('form has correct email input attributes', () => {
         render(
             <Wrapper>
-                <NewPlayerForm />
+                <NewPlayerForm players={players} />
             </Wrapper>,
         );
 
@@ -203,5 +219,28 @@ describe('NewPlayerForm', () => {
         expect(emailInput).toHaveAttribute('inputmode', 'email');
         expect(emailInput).toHaveAttribute('autocomplete', 'email');
     });
-});
 
+    it('requires first name input', () => {
+        render(
+            <Wrapper>
+                <NewPlayerForm players={players} />
+            </Wrapper>,
+        );
+
+        const firstNameInput = screen.getByLabelText(/First name/i);
+        expect(firstNameInput).toBeRequired();
+    });
+
+    it('renders introducer options', () => {
+        render(
+            <Wrapper>
+                <NewPlayerForm players={players} />
+            </Wrapper>,
+        );
+
+        const introducerSelect = screen.getByLabelText(/Introduced by/i);
+        expect(introducerSelect).toHaveDisplayValue('(Nobody)');
+        expect(screen.getByRole('option', { name: 'Alex Doe' })).toBeInTheDocument();
+        expect(screen.getByRole('option', { name: 'Sam Smith' })).toBeInTheDocument();
+    });
+});

@@ -1,18 +1,35 @@
 'use client';
 
-import { Box, Button, TextInput } from '@mantine/core';
+import { Box, Button, NativeSelect, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
+import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import { z } from 'zod';
 
 import { EmailInput } from '@/components/EmailInput/EmailInput';
 import { sendEmail } from '@/lib/mail';
 
-export type Props = unknown;
+export interface Props {
+    players: PlayerType[];
+}
 
-export const NewPlayerForm: React.FC<Props> = () => {
+/**
+ * A form component for registering new players.
+ * 
+ * Collects player information including first name, last name, email, and an optional introducer.
+ * Upon submission, sends a welcome email to the new player and displays notifications for success or failure.
+ * 
+ * @param props - Component props
+ * @param props.players - Array of existing players used to populate the "Introduced by" dropdown
+ * 
+ * @example
+ * ```tsx
+ * <NewPlayerForm players={existingPlayers} />
+ * ```
+ */
+export const NewPlayerForm: React.FC<Props> = ({ players }) => {
     const schema = z.object({
         firstName: z.string().min(1, { message: 'First name is required' }),
         lastName: z.string().optional(),
@@ -67,6 +84,14 @@ export const NewPlayerForm: React.FC<Props> = () => {
         }
     };
 
+    const introducers = [
+        { label: '(Nobody)', value: '' },
+        ...players.map((player) => ({
+            label: player.name ?? '',
+            value: player.id.toString(),
+        })).sort((a, b) => a.label.localeCompare(b.label)),
+    ];
+
     return (
         <Box
             maw={400}
@@ -86,6 +111,11 @@ export const NewPlayerForm: React.FC<Props> = () => {
                 label="Email address"
                 required
                 {...form.getInputProps('email')}
+            />
+            <NativeSelect
+                label="Introduced by"
+                data={introducers}
+                {...form.getInputProps('introducedBy')}
             />
 
             <Button type="submit" mt="md">

@@ -193,7 +193,7 @@ describe('PlayerRecordService', () => {
             expect(prisma.playerRecord.findFirst).toHaveBeenCalledTimes(1);
         });
 
-        it('should return null if there are no PlayerRecords', async () => {
+        it('should return [0, lastGameDay] if there are no PlayerRecords', async () => {
             (prisma.outcome.findFirst as jest.Mock).mockResolvedValue({
                 gameDayId: 15,
             });

@@ -688,7 +688,7 @@ describe('PlayerRecordService', () => {
             (prisma.gameDay.findMany as jest.Mock).mockResolvedValue([]);
         });
 
-        it('should create not PlayerRecords for a GameDay with no outcomes', async () => {
+        it('should not create PlayerRecords for a GameDay with no outcomes', async () => {
             const result = await playerRecordService.upsertForGameDay(15);
             expect(result).toEqual([]);
         });

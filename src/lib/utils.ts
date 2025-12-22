@@ -51,12 +51,12 @@ export function getYearName(year: number): string {
  * @property {string} speedy - The rank identifier for speedy.
  * @property {string} pub - The rank identifier for pub.
  */
-export const rankMap: Record<TableName, string> = {
-    points: "rankPoints",
-    averages: "rankAverages",
-    stalwart: "rankStalwart",
-    speedy: "rankSpeedy",
-    pub: "rankPub",
+export const rankMap: Record<TableName, [string, string | undefined]> = {
+    points: ["rankPoints", undefined],
+    averages: ["rankAverages", "rankAveragesUnqualified"],
+    stalwart: ["rankStalwart", undefined],
+    speedy: ["rankSpeedy", "rankSpeedyUnqualified"],
+    pub: ["rankPub", undefined],
 };
 
 /**

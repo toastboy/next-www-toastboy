@@ -279,7 +279,7 @@ export class PlayerRecordService {
         player?: number,
     ): Promise<PlayerRecordDataType[]> {
         try {
-            const rank = rankMap[table];
+            const rank = rankMap[table][0];
             const seasonEnders = await gameDayService.getSeasonEnders();
             const firstPlaceRecords = await prisma.playerRecord.findMany({
                 where: {
@@ -338,13 +338,13 @@ export class PlayerRecordService {
                     gameDayId: true,
                 },
             });
-            if (!tableRecord) {
-                return [];
-            }
+            if (!tableRecord) return [];
 
-            // Now generate the query to fetch the player records
+            // Now generate the query to fetch the player records. If there's no
+            // rank defined in the map then the result will always be empty.
 
-            const rank = `${rankMap[table]}${qualified === false ? 'Unqualified' : ''}`;
+            const rank = rankMap[table][qualified === false ? 1 : 0];
+            if (!rank) return [];
 
             return prisma.playerRecord.findMany({
                 where: {

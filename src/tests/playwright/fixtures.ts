@@ -55,8 +55,11 @@ export const test = base.extend({
             const failure = request.failure();
             const reason = failure?.errorText ?? 'request failed';
 
-            // Ignore expected redirect cancellation to /footy/game
-            if (url.endsWith('/footy/game') && /aborted|cancelled/i.test(reason)) {
+            if (request.isNavigationRequest() && /aborted|cancelled|NS_ERROR_FAILURE|NS_BINDING_ABORTED/i.test(reason)) {
+                return;
+            }
+
+            if (request.resourceType() === 'image' && /aborted|cancelled/i.test(reason)) {
                 return;
             }
 

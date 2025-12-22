@@ -16,7 +16,7 @@ export const PlayerPositions: React.FC<Props> = ({ playerName, year, record }) =
             <TableTbody>
                 {TableNameSchema.options.map((table) => {
                     const position = record
-                        ? record[rankMap[table] as keyof typeof record] ?? null
+                        ? record[rankMap[table][0] as keyof typeof record] ?? null
                         : null;
 
                     return (

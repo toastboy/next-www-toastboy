@@ -8,7 +8,7 @@ import { PlayerWDLChart } from 'components/PlayerWDLChart/PlayerWDLChart';
 import { SendEmailForm } from 'components/SendEmailForm/SendEmailForm';
 import { useCurrentGame, usePlayers } from 'lib/swr';
 import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { PlayerDataType } from 'types';
 
 type PageProps = object;
@@ -41,12 +41,12 @@ const Page: React.FC<PageProps> = () => {
         }
     };
 
-    if (!players || !currentGame) return null;
+    useEffect(() => {
+        if (!currentGame) return;
+        setReplyRange((prev) => (prev[1] === 0 ? [0, currentGame.id] : prev));
+    }, [currentGame]);
 
-    // Initialize reply range once when currentGame becomes available
-    if (currentGame && replyRange[1] === 0) {
-        setReplyRange([0, currentGame.id]);
-    }
+    if (!players || !currentGame) return null;
 
     const filteredPlayers = players?.filter((player) => {
         const searchTerm = filter.toLowerCase();

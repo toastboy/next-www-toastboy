@@ -546,6 +546,15 @@ describe('PlayerRecordService', () => {
             const result = await playerRecordService.getTable(TableNameSchema.enum.speedy, 2022, false);
             expect(result).toHaveLength(10);
         });
+
+        it('should deal with cases where qualified/unqualified does not make sense', async () => {
+            (prisma.playerRecord.findFirst as jest.Mock).mockResolvedValue({
+                "gameDayId": 1087,
+            });
+            const result = await playerRecordService.getTable(TableNameSchema.enum.points, 2022, false);
+            expect(prisma.playerRecord.findMany).toHaveBeenCalledTimes(0);
+            expect(result).toHaveLength(0);
+        });
     });
 
     describe('create', () => {

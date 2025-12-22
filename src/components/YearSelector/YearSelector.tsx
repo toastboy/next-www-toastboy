@@ -2,7 +2,7 @@
 
 import { Flex, FloatingIndicator, ScrollArea, UnstyledButton } from '@mantine/core';
 import { usePathname, useRouter } from 'next/navigation';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import classes from './YearSelector.module.css';
 
@@ -17,6 +17,7 @@ export const YearSelector: React.FC<Props> = ({ activeYear, validYears }) => {
     const activeIndex = validYears.indexOf(activeYear);
     const [indicatorParent, setIndicatorParent] = useState<HTMLElement | null>(null);
     const [indicatorTarget, setIndicatorTarget] = useState<HTMLElement | null>(null);
+    const [mounted, setMounted] = useState(false);
 
     const router = useRouter();
     const pathname = usePathname();
@@ -25,11 +26,8 @@ export const YearSelector: React.FC<Props> = ({ activeYear, validYears }) => {
     const setControlRef = useCallback((node: HTMLButtonElement | null, index: number) => {
         if (node) {
             controlsRefs.current[index] = node;
-            if (index === activeIndex) {
-                setIndicatorTarget(node);
-            }
         }
-    }, [activeIndex]);
+    }, []);
 
     // Handle button click to update active index and navigate to a new path
     const handleClick = (year: number, index: number) => {
@@ -37,6 +35,21 @@ export const YearSelector: React.FC<Props> = ({ activeYear, validYears }) => {
         const newPath = `${pathname.replace(/\/\d+$/, '')}/${year || ''}`;
         router.push(newPath);
     };
+
+    useEffect(() => {
+        setMounted(true);
+        if (rootRef.current) {
+            setIndicatorParent(rootRef.current);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (activeIndex < 0) {
+            setIndicatorTarget(null);
+            return;
+        }
+        setIndicatorTarget(controlsRefs.current[activeIndex] ?? null);
+    }, [activeIndex]);
 
     return (
         <ScrollArea h={'5.4rem'} type="auto">
@@ -48,9 +61,6 @@ export const YearSelector: React.FC<Props> = ({ activeYear, validYears }) => {
                 className={classes.root}
                 ref={(el) => {
                     rootRef.current = el;
-                    if (el && indicatorParent !== el) {
-                        setIndicatorParent(el);
-                    }
                 }}
             >
                 {validYears.map((year, index) => (
@@ -67,12 +77,14 @@ export const YearSelector: React.FC<Props> = ({ activeYear, validYears }) => {
                     </UnstyledButton>
                 ))}
 
-                <FloatingIndicator
-                    target={indicatorTarget}
-                    parent={indicatorParent}
-                    className={classes.indicator}
-                    bg="black"
-                />
+                {mounted && indicatorParent && indicatorTarget ? (
+                    <FloatingIndicator
+                        target={indicatorTarget}
+                        parent={indicatorParent}
+                        className={classes.indicator}
+                        bg="black"
+                    />
+                ) : null}
             </Flex>
         </ScrollArea>
     );

@@ -43,7 +43,7 @@ export const defaultPlayerRecordList: PlayerRecordType[] = Array.from({ length: 
 // TODO: This mock data needs more variety to be truly useful
 export const defaultTrophiesList = new Map<TableName, PlayerRecordType[]>();
 TableNameSchema.options.forEach((table) => {
-    const rank = rankMap[table] as keyof PlayerRecordType;
+    const rank = rankMap[table][0] as keyof PlayerRecordType;
     defaultTrophiesList.set(
         table,
         defaultPlayerRecordList.filter((record) => record[rank] === 1),

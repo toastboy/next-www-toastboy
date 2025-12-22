@@ -74,7 +74,7 @@ describe('UserButton', () => {
         await waitFor(() => {
             expect(avatar).toBeInTheDocument();
         });
-        expect(avatar).toHaveAttribute('src', "/api/footy/player/12/mugshot");;
+        expect(avatar).toHaveAttribute('src', "/api/footy/player/12/mugshot");
     });
 
     it('renders placeholder avatar', async () => {

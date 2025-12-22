@@ -1,4 +1,4 @@
-import { expect, Page, test } from '@/tests/playwright/fixtures';
+import { expect, Page, test } from '@playwright/test';
 
 async function checkTable(page: Page) {
     const table = await page.$$eval('.bodytable tbody tr', (table) => {

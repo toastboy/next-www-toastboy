@@ -1,4 +1,4 @@
-import { expect, test } from '@/tests/playwright/fixtures';
+import { expect, test } from '@playwright/test';
 
 import { asAdmin, asGuest, asUser } from './utils/auth';
 

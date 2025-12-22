@@ -1,4 +1,4 @@
-import { Page } from '@/tests/playwright/fixtures';
+import { Page } from '@playwright/test';
 
 export type MockAuthState = 'none' | 'user' | 'admin';
 const MOCK_AUTH_COOKIE = 'mock-auth-state';

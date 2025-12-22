@@ -80,10 +80,10 @@ describe('PlayerRecordService', () => {
         });
 
         (prisma.playerRecord.create as jest.Mock).mockImplementation((args: { data: PlayerRecordType }) => {
-            const playerRecord = defaultPlayerRecordList.find((playerRecord) =>
-                playerRecord.playerId === args.data.playerId &&
-                playerRecord.year === args.data.year &&
-                playerRecord.gameDayId === args.data.gameDayId,
+            const playerRecord = defaultPlayerRecordList.find((record) =>
+                record.playerId === args.data.playerId &&
+                record.year === args.data.year &&
+                record.gameDayId === args.data.gameDayId,
             );
 
             if (playerRecord) {

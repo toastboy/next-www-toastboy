@@ -55,10 +55,10 @@ describe('PlayerRecordService', () => {
                 }
             }
         }) => {
-            const playerRecord = defaultPlayerRecordList.find((playerRecord) =>
-                playerRecord.playerId === args.where.playerId_year_gameDayId.playerId &&
-                playerRecord.year === args.where.playerId_year_gameDayId.year &&
-                playerRecord.gameDayId === args.where.playerId_year_gameDayId.gameDayId,
+            const playerRecord = defaultPlayerRecordList.find((record) =>
+                record.playerId === args.where.playerId_year_gameDayId.playerId &&
+                record.year === args.where.playerId_year_gameDayId.year &&
+                record.gameDayId === args.where.playerId_year_gameDayId.gameDayId,
             );
             return Promise.resolve(playerRecord ?? null);
         });

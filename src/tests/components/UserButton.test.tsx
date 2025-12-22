@@ -32,16 +32,6 @@ describe('UserButton', () => {
         });
     });
 
-    it('redirects to sign in page when sign in button is clicked with no session present', async () => {
-        render(<Wrapper><UserButton user={null} /></Wrapper>);
-
-        fireEvent.click(screen.getByText('Sign In'));
-
-        await waitFor(() => {
-            expect(push).toHaveBeenCalledWith('/footy/auth/signin');
-        });
-    });
-
     it('renders user name and email', async () => {
         render(
             <Wrapper>

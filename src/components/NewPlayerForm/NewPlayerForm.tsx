@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Button } from '@mantine/core';
+import { Box, Button, TextInput } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
@@ -10,15 +10,23 @@ import { z } from 'zod';
 import { EmailInput } from '@/components/EmailInput/EmailInput';
 import { sendEmail } from '@/lib/mail';
 
-const schema = z.object({
-    email: z.email({ message: 'Invalid email' }),
-});
-
 export type Props = unknown;
 
 export const NewPlayerForm: React.FC<Props> = () => {
+    const schema = z.object({
+        firstName: z.string().min(1, { message: 'First name is required' }),
+        lastName: z.string().optional(),
+        email: z.email({ message: 'Invalid email' }),
+        introducedBy: z.string().optional(),
+    });
+
     const form = useForm({
-        initialValues: { email: '' },
+        initialValues: {
+            firstName: '',
+            lastName: '',
+            email: '',
+            introducedBy: '',
+        } satisfies z.infer<typeof schema>,
         validate: zod4Resolver(schema),
     });
 
@@ -60,18 +68,29 @@ export const NewPlayerForm: React.FC<Props> = () => {
     };
 
     return (
-        <Box maw={400}>
-            <form onSubmit={form.onSubmit(handleSubmit)}>
-                <EmailInput
-                    label="Email address"
-                    required
-                    {...form.getInputProps('email')}
-                />
+        <Box
+            maw={400}
+            component="form"
+            onSubmit={form.onSubmit(handleSubmit)}
+        >
+            <TextInput
+                label="First name"
+                required
+                {...form.getInputProps('firstName')}
+            />
+            <TextInput
+                label="Last name"
+                {...form.getInputProps('lastName')}
+            />
+            <EmailInput
+                label="Email address"
+                required
+                {...form.getInputProps('email')}
+            />
 
-                <Button type="submit" mt="md">
-                    Submit
-                </Button>
-            </form>
+            <Button type="submit" mt="md">
+                Submit
+            </Button>
         </Box>
     );
 };

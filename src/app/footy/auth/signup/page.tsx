@@ -110,7 +110,7 @@ export default function SignUpPage() {
                             Forgot your password ?
                         </Anchor>
                     </Group>
-                    < Button type="submit" fullWidth loading={loading} >
+                    <Button type="submit" fullWidth loading={loading} >
                         Sign Up
                     </Button>
                 </Stack>

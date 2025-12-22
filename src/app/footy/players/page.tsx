@@ -8,7 +8,7 @@ import { PlayerWDLChart } from 'components/PlayerWDLChart/PlayerWDLChart';
 import { SendEmailForm } from 'components/SendEmailForm/SendEmailForm';
 import { useCurrentGame, usePlayers } from 'lib/swr';
 import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { PlayerDataType } from 'types';
 
 type PageProps = object;
@@ -41,12 +41,10 @@ const Page: React.FC<PageProps> = () => {
         }
     };
 
-    useEffect(() => {
-        if (!currentGame) return;
-        setReplyRange((prev) => (prev[1] === 0 ? [0, currentGame.id] : prev));
-    }, [currentGame]);
-
     if (!players || !currentGame) return null;
+
+    // Now we know currentGame is defined we can set the default replyRange
+    if (replyRange[1] === 0) setReplyRange([replyRange[0], currentGame.id]);
 
     const filteredPlayers = players?.filter((player) => {
         const searchTerm = filter.toLowerCase();

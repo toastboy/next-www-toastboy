@@ -1,6 +1,7 @@
-import { buildAdminOnlyResponse, handleGET } from 'lib/api';
 import { NextRequest } from 'next/server';
-import arseService from 'services/Arse';
+
+import { buildAdminOnlyResponse, handleGET } from '@/lib/api';
+import arseService from '@/services/Arse';
 
 /**
  * Handles a GET request to retrieve data related to a player's "arse" based on their ID.

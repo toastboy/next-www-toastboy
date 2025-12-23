@@ -3,8 +3,8 @@ import { WinnersTable } from 'components/WinnersTable/WinnersTable';
 import { YearSelector } from 'components/YearSelector/YearSelector';
 import { getYearName } from 'lib/utils';
 import { TableName, TableNameSchema } from 'prisma/zod/schemas';
-import playerRecordService from 'services/PlayerRecord';
 
+import playerRecordService from '@/services/PlayerRecord';
 import { PlayerRecordDataType } from '@/types';
 
 interface Props {

@@ -1,7 +1,7 @@
 import { Flex } from '@mantine/core';
-import { CountryFlag } from 'components/CountryFlag/CountryFlag';
 import { Activity } from 'react';
 
+import { CountryFlag } from '@/components/CountryFlag/CountryFlag';
 import { CountrySupporterDataType } from '@/types';
 
 export interface Props {

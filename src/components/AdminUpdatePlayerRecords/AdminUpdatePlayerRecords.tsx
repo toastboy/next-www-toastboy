@@ -2,9 +2,10 @@
 
 import { ActionIcon, Button, Center, Container, RingProgress, Text } from '@mantine/core';
 import { IconCheck } from '@tabler/icons-react';
-import { updatePlayerRecords } from 'actions/updatePlayerRecords';
-import { useRecordsProgress } from 'lib/swr';
 import { useEffect } from 'react';
+
+import { updatePlayerRecords } from '@/actions/updatePlayerRecords';
+import { useRecordsProgress } from '@/lib/swr';
 
 export type Props = unknown;
 

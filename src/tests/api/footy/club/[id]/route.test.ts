@@ -1,8 +1,8 @@
-import clubService from 'services/Club';
 import request from 'supertest';
 import { createMockApp, jsonResponseHandler, suppressConsoleError } from 'tests/lib/api/common';
 
 import { GET } from '@/app/api/footy/club/[id]/route';
+import clubService from '@/services/Club';
 import { defaultClub } from '@/tests/mocks/data/club';
 
 suppressConsoleError();

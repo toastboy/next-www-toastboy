@@ -3,12 +3,13 @@
 import { Anchor, Container, Flex, Switch, Table, Text, TextInput } from '@mantine/core';
 import * as Sentry from '@sentry/react';
 import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
-import type { UserWithRolePayload } from 'actions/auth';
-import { listUsersAction, setAdminRoleAction } from 'actions/auth';
 import { UserWithRole } from 'better-auth/plugins/admin';
-import { MustBeLoggedIn } from 'components/MustBeLoggedIn/MustBeLoggedIn';
-import { RelativeTime } from 'components/RelativeTime/RelativeTime';
 import { useEffect, useState } from 'react';
+
+import type { UserWithRolePayload } from '@/actions/auth';
+import { listUsersAction, setAdminRoleAction } from '@/actions/auth';
+import { MustBeLoggedIn } from '@/components/MustBeLoggedIn/MustBeLoggedIn';
+import { RelativeTime } from '@/components/RelativeTime/RelativeTime';
 
 export default function Page() {
     const [isAllowed, setIsAllowed] = useState<boolean | null>(null);

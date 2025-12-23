@@ -1,9 +1,10 @@
 'use client';
 
-import { SignIn } from 'components/SignIn/SignIn';
-import { authClient } from 'lib/authClient';
-import config from 'lib/config';
 import { ReactNode, Suspense, useEffect, useState } from 'react';
+
+import { SignIn } from '@/components/SignIn/SignIn';
+import { authClient } from '@/lib/authClient';
+import config from '@/lib/config';
 
 export interface Props {
     children: ReactNode;

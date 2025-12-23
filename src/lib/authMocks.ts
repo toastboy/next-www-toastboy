@@ -6,7 +6,7 @@
  * what auth state to simulate.
  */
 
-import type * as BetterAuthClient from 'lib/auth-client';
+import type * as BetterAuthClient from '@/lib/auth-client';
 
 // Shared mock creation/update date for consistency and maintainability
 const MOCK_CREATED_AT = '2023-01-01T00:00:00Z';

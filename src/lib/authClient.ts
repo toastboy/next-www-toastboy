@@ -2,8 +2,9 @@
 
 import * as Sentry from '@sentry/react';
 import { UserWithRole } from 'better-auth/plugins';
-import { authClient as betterAuthClient } from 'lib/auth-client';
-import { getMockSession, getMockUser, isUsingMockAuth } from 'lib/authMocks';
+
+import { authClient as betterAuthClient } from '@/lib/auth-client';
+import { getMockSession, getMockUser, isUsingMockAuth } from '@/lib/authMocks';
 
 export interface User {
     name: string;

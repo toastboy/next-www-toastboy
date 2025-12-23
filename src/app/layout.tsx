@@ -6,9 +6,10 @@ import '@mantine/tiptap/styles.css';
 
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
-import { CustomAppShell } from 'components/CustomAppShell/CustomAppShell';
-import { getCurrentUser } from 'lib/authServer';
 import type { Metadata } from 'next';
+
+import { CustomAppShell } from '@/components/CustomAppShell/CustomAppShell';
+import { getCurrentUser } from '@/lib/authServer';
 
 // Default to dynamic rendering for all pages
 // https://nextjs.org/docs/app/building-your-application/rendering/static-and-dynamic-rendering

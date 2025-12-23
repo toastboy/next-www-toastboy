@@ -1,8 +1,9 @@
-import { handleGET } from 'lib/api';
-import { parseBoolean } from 'lib/utils';
 import { NextRequest } from 'next/server';
 import { TeamNameSchema } from 'prisma/zod/schemas';
-import gameDayService from 'services/GameDay';
+
+import { handleGET } from '@/lib/api';
+import { parseBoolean } from '@/lib/utils';
+import gameDayService from '@/services/GameDay';
 
 /**
  * Handles the GET request for the gameday API route.

@@ -1,7 +1,8 @@
-import { buildPngResponse, handleGET } from 'lib/api';
-import azureCache from 'lib/azure';
-import { streamToBuffer } from 'lib/utils';
 import { NextRequest } from 'next/server';
+
+import { buildPngResponse, handleGET } from '@/lib/api';
+import azureCache from '@/lib/azure';
+import { streamToBuffer } from '@/lib/utils';
 
 /**
  * Retrieves the badge image for a specific club from Azure Blob Storage.

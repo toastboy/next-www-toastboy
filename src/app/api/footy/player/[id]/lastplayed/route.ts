@@ -1,6 +1,7 @@
-import { handleGET, sanitizeOutcomeData } from 'lib/api';
 import { NextRequest } from 'next/server';
-import playerService from 'services/Player';
+
+import { handleGET, sanitizeOutcomeData } from '@/lib/api';
+import playerService from '@/services/Player';
 
 /**
  * Handles a GET request to retrieve the last played information for a specific player.

@@ -1,6 +1,6 @@
 import { Text } from '@mantine/core';
-import { GameDayLink } from 'components/GameDayLink/GameDayLink';
 
+import { GameDayLink } from '@/components/GameDayLink/GameDayLink';
 import { PlayerFormType } from '@/types';
 
 export interface Props {

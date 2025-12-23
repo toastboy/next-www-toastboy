@@ -1,7 +1,8 @@
-import { handleGET, sanitizePlayerData } from 'lib/api';
 import { NextRequest, NextResponse } from 'next/server';
 import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
-import playerService from 'services/Player';
+
+import { handleGET, sanitizePlayerData } from '@/lib/api';
+import playerService from '@/services/Player';
 
 /**
  * Handles the GET request for retrieving a player's information by their ID.

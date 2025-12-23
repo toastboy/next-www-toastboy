@@ -10,9 +10,10 @@ import TextAlign from '@tiptap/extension-text-align';
 import Underline from '@tiptap/extension-underline';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import { sendEmail } from 'lib/mail';
 import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import { useState } from 'react';
+
+import { sendEmail } from '@/lib/mail';
 
 import classes from './SendEmailForm.module.css';
 

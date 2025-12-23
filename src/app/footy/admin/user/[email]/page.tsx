@@ -3,11 +3,12 @@
 import { CodeHighlight } from '@mantine/code-highlight';
 import { Center, Container, Text, Title } from '@mantine/core';
 import * as Sentry from '@sentry/react';
-import type { UserWithRolePayload } from 'actions/auth';
-import { listUsersAction } from 'actions/auth';
 import { UserWithRole } from 'better-auth/plugins/admin';
-import { MustBeLoggedIn } from 'components/MustBeLoggedIn/MustBeLoggedIn';
 import { use, useEffect, useState } from 'react';
+
+import type { UserWithRolePayload } from '@/actions/auth';
+import { listUsersAction } from '@/actions/auth';
+import { MustBeLoggedIn } from '@/components/MustBeLoggedIn/MustBeLoggedIn';
 
 interface Props {
     params: Promise<{ email: string }>,

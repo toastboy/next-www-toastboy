@@ -1,7 +1,8 @@
-import { handleGET } from 'lib/api';
 import { NextRequest } from 'next/server';
-import countrySupporterService from 'services/CountrySupporter';
-import playerService from 'services/Player';
+
+import { handleGET } from '@/lib/api';
+import countrySupporterService from '@/services/CountrySupporter';
+import playerService from '@/services/Player';
 
 /**
  * Handles a GET request to retrieve the countries associated with a player.

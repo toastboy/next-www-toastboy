@@ -6,8 +6,9 @@ import { readdir } from 'fs/promises';
 import * as path from 'path';
 import { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
-import playerRecordService from 'services/PlayerRecord';
 import { fileURLToPath } from 'url';
+
+import playerRecordService from '@/services/PlayerRecord';
 
 const currentDir = path.dirname(fileURLToPath(import.meta.url));
 

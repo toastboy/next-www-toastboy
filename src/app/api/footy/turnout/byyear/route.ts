@@ -1,6 +1,7 @@
-import { handleGET } from 'lib/api';
 import { NextRequest } from 'next/server';
-import outcomeService from 'services/Outcome';
+
+import { handleGET } from '@/lib/api';
+import outcomeService from '@/services/Outcome';
 
 /**
  * Handles a GET request to retrieve turnout data by year.

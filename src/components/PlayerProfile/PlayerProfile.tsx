@@ -1,19 +1,19 @@
 import { Box, Container, Title } from '@mantine/core';
-import { PlayerArse } from 'components/PlayerArse/PlayerArse';
-import { PlayerBorn } from 'components/PlayerBorn/PlayerBorn';
-import { PlayerClubs } from 'components/PlayerClubs/PlayerClubs';
-import { PlayerCountries } from 'components/PlayerCountries/PlayerCountries';
-import { PlayerForm } from 'components/PlayerForm/PlayerForm';
-import { PlayerHistory } from 'components/PlayerHistory/PlayerHistory';
-import { PlayerLastPlayed } from 'components/PlayerLastPlayed/PlayerLastPlayed';
-import { PlayerMugshot } from 'components/PlayerMugshot/PlayerMugshot';
-import { PlayerTrophies } from 'components/PlayerTrophies/PlayerTrophies';
 import { TableName } from 'prisma/generated/enums';
 import { ArseType } from 'prisma/zod/schemas/models/Arse.schema';
 import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 import { Activity } from 'react';
 
+import { PlayerArse } from '@/components/PlayerArse/PlayerArse';
+import { PlayerBorn } from '@/components/PlayerBorn/PlayerBorn';
+import { PlayerClubs } from '@/components/PlayerClubs/PlayerClubs';
+import { PlayerCountries } from '@/components/PlayerCountries/PlayerCountries';
+import { PlayerForm } from '@/components/PlayerForm/PlayerForm';
+import { PlayerHistory } from '@/components/PlayerHistory/PlayerHistory';
+import { PlayerLastPlayed } from '@/components/PlayerLastPlayed/PlayerLastPlayed';
+import { PlayerMugshot } from '@/components/PlayerMugshot/PlayerMugshot';
+import { PlayerTrophies } from '@/components/PlayerTrophies/PlayerTrophies';
 import { ClubSupporterDataType, CountrySupporterDataType, PlayerFormType } from '@/types';
 
 import classes from './PlayerProfile.module.css';

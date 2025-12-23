@@ -1,6 +1,7 @@
-import { handleGET } from 'lib/api';
 import { NextRequest } from 'next/server';
-import playerRecordService from 'services/PlayerRecord';
+
+import { handleGET } from '@/lib/api';
+import playerRecordService from '@/services/PlayerRecord';
 
 export const GET = async (request: NextRequest, props: { params: Promise<Record<string, string>> }) => {
     /**

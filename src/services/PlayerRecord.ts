@@ -1,8 +1,6 @@
 import 'server-only';
 
 import debug from 'debug';
-import config from 'lib/config';
-import { rankMap } from 'lib/utils';
 import prisma from 'prisma/prisma';
 import {
     PlayerRecordUncheckedCreateInputObjectZodSchema,
@@ -13,10 +11,12 @@ import {
 import { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 import { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
 import { PlayerRecordSchema, PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
-import gameDayService from 'services/GameDay';
-import outcomeService from 'services/Outcome';
 import z from 'zod';
 
+import config from '@/lib/config';
+import { rankMap } from '@/lib/utils';
+import gameDayService from '@/services/GameDay';
+import outcomeService from '@/services/Outcome';
 import { PlayerRecordDataType } from '@/types';
 
 /** Field definitions with extra validation */

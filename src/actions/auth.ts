@@ -1,9 +1,10 @@
 'use server';
 
 import { UserWithRole } from 'better-auth/plugins/admin';
-import { auth } from 'lib/auth';
-import { getMockAuthState, getMockUsersList } from 'lib/authServer';
 import { headers } from 'next/headers';
+
+import { auth } from '@/lib/auth';
+import { getMockAuthState, getMockUsersList } from '@/lib/authServer';
 
 export type UserWithRolePayload = Omit<UserWithRole, 'createdAt' | 'updatedAt' | 'banExpires'> & {
     createdAt: string;

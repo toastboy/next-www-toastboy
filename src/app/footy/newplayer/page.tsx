@@ -1,5 +1,4 @@
-import { MustBeLoggedIn } from 'components/MustBeLoggedIn/MustBeLoggedIn';
-
+import { MustBeLoggedIn } from '@/components/MustBeLoggedIn/MustBeLoggedIn';
 import { NewPlayerForm } from '@/components/NewPlayerForm/NewPlayerForm';
 import playerService from '@/services/Player';
 

@@ -2,7 +2,8 @@ import 'server-only';
 
 import { ClientSecretCredential } from '@azure/identity';
 import { BlobServiceClient, ContainerClient } from '@azure/storage-blob';
-import { getSecrets } from 'lib/secrets';
+
+import { getSecrets } from '@/lib/secrets';
 
 type ContainerClientCache = Record<string, ContainerClient>;
 

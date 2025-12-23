@@ -1,9 +1,9 @@
 import { Flex } from '@mantine/core';
-import { TableQualified } from 'components/TableQualified/TableQualified';
-import config from 'lib/config';
-import { getYearName } from 'lib/utils';
 import { TableName, TableNameSchema } from 'prisma/zod/schemas';
 
+import { TableQualified } from '@/components/TableQualified/TableQualified';
+import config from '@/lib/config';
+import { getYearName } from '@/lib/utils';
 import { PlayerRecordDataType } from '@/types';
 
 export interface Props {

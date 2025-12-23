@@ -1,7 +1,7 @@
 import { Flex, Text, Title } from '@mantine/core';
-import { Team } from 'components/Team/Team';
 import { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 
+import { Team } from '@/components/Team/Team';
 import { TeamPlayerType } from '@/types';
 
 export interface Props {

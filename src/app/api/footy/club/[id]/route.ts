@@ -1,6 +1,7 @@
-import { handleGET } from 'lib/api';
 import { NextRequest } from 'next/server';
-import clubService from 'services/Club';
+
+import { handleGET } from '@/lib/api';
+import clubService from '@/services/Club';
 
 /**
  * Handles the GET request for retrieving club information by ID.

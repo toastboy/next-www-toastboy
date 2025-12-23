@@ -1,7 +1,7 @@
 import { Flex } from '@mantine/core';
-import { ClubBadge } from 'components/ClubBadge/ClubBadge';
 import { Activity } from 'react';
 
+import { ClubBadge } from '@/components/ClubBadge/ClubBadge';
 import { ClubSupporterDataType } from '@/types';
 
 export interface Props {

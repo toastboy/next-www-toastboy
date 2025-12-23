@@ -3,7 +3,8 @@
 import { Button, Container, rem } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { IconCheck, IconX } from '@tabler/icons-react';
-import { authExport } from 'actions/auth-export';
+
+import { authExport } from '@/actions/auth-export';
 
 export type Props = unknown;
 

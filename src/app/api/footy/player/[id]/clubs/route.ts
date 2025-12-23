@@ -1,7 +1,8 @@
-import { handleGET } from 'lib/api';
 import { NextRequest } from 'next/server';
-import clubSupporterService from 'services/ClubSupporter';
-import playerService from 'services/Player';
+
+import { handleGET } from '@/lib/api';
+import clubSupporterService from '@/services/ClubSupporter';
+import playerService from '@/services/Player';
 
 /**
  * Handles a GET request to retrieve the clubs associated with a specific player.

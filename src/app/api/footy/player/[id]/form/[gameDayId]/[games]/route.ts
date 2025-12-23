@@ -1,6 +1,7 @@
-import { handleGET, sanitizeOutcomeArrayData } from 'lib/api';
 import { NextRequest } from 'next/server';
-import playerService from 'services/Player';
+
+import { handleGET, sanitizeOutcomeArrayData } from '@/lib/api';
+import playerService from '@/services/Player';
 
 /**
  * Handles a GET request to retrieve the form of a player for a specific game day and number of games.

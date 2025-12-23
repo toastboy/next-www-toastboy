@@ -1,6 +1,7 @@
-import { handleGET } from 'lib/api';
 import { NextRequest } from 'next/server';
-import outcomeService from 'services/Outcome';
+
+import { handleGET } from '@/lib/api';
+import outcomeService from '@/services/Outcome';
 
 /**
  * Handles the GET request for the turnout API endpoint.

@@ -1,6 +1,6 @@
 import { Flex, Paper } from '@mantine/core';
-import { TeamPlayer } from 'components/TeamPlayer/TeamPlayer';
 
+import { TeamPlayer } from '@/components/TeamPlayer/TeamPlayer';
 import { TeamPlayerType } from '@/types';
 
 export interface Props {

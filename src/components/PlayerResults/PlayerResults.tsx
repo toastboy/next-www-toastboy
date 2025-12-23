@@ -1,6 +1,7 @@
 import { Table, TableTbody, TableTd, TableTh, TableTr } from '@mantine/core';
-import { getYearName } from 'lib/utils';
 import { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
+
+import { getYearName } from '@/lib/utils';
 
 export interface Props {
     playerName: string;

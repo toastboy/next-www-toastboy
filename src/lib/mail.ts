@@ -1,8 +1,9 @@
 'use server';
 
-import { getSecrets } from 'lib/secrets';
 import nodemailer from 'nodemailer';
 import sanitizeHtml from 'sanitize-html';
+
+import { getSecrets } from '@/lib/secrets';
 
 const secrets = getSecrets();
 

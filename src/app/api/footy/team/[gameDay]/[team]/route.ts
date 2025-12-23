@@ -1,6 +1,7 @@
-import { handleGET, sanitizeOutcomeArrayData } from 'lib/api';
 import { NextRequest } from 'next/server';
-import outcomeService from 'services/Outcome';
+
+import { handleGET, sanitizeOutcomeArrayData } from '@/lib/api';
+import outcomeService from '@/services/Outcome';
 
 /**
  * Handles a GET request to retrieve game outcomes for a specific game day and team.

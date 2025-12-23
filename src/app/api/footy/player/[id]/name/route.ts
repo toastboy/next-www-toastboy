@@ -1,6 +1,7 @@
-import { handleGET } from 'lib/api';
 import { NextRequest } from 'next/server';
-import playerService from 'services/Player';
+
+import { handleGET } from '@/lib/api';
+import playerService from '@/services/Player';
 
 /**
  * Handles a GET request to retrieve the name of a player based on their ID.

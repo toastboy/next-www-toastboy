@@ -1,8 +1,9 @@
-import { YearSelector } from 'components/YearSelector/YearSelector';
-import { QualifiedTableName, YearTable } from 'components/YearTable/YearTable';
 import { notFound } from 'next/navigation';
 import { TableName } from 'prisma/zod/schemas';
-import playerRecordService from 'services/PlayerRecord';
+
+import { YearSelector } from '@/components/YearSelector/YearSelector';
+import { QualifiedTableName, YearTable } from '@/components/YearTable/YearTable';
+import playerRecordService from '@/services/PlayerRecord';
 
 interface Props {
     params: Promise<{

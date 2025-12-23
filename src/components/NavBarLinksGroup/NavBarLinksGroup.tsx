@@ -1,8 +1,9 @@
 import { Box, Collapse, Flex, Group, rem, UnstyledButton } from '@mantine/core';
 import { IconChevronRight } from '@tabler/icons-react';
-import classes from 'components/NavBarLinksGroup/NavBarLinksGroup.module.css';
 import Link from 'next/link';
 import { useState } from 'react';
+
+import classes from '@/components/NavBarLinksGroup/NavBarLinksGroup.module.css';
 
 interface NavBarLinksGroupProps {
     label: string;

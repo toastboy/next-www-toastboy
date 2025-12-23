@@ -20,9 +20,9 @@ jest.mock('lib/authClient', () => ({
 
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { authClient } from 'lib/authClient';
 
 import { SignIn } from '@/components/SignIn/SignIn';
+import { authClient } from '@/lib/authClient';
 import { Wrapper } from '@/tests/components/lib/common';
 
 describe('SignIn', () => {

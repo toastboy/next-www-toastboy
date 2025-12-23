@@ -1,4 +1,4 @@
-import { NYI } from 'components/NYI/NYI';
+import { NYI } from '@/components/NYI/NYI';
 
 export type Props = unknown;
 

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
+import { within } from '@storybook/testing-library';
 
 import { defaultPlayerList } from '@/tests/mocks';
 
@@ -18,6 +19,33 @@ type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {
     args: {
-        players: defaultPlayerList,
+        players: defaultPlayerList.slice(0, 3),
+    },
+    play: async function ({ canvasElement, userEvent }) {
+        const canvas = within(canvasElement);
+        const nameInput = await canvas.findByLabelText(/Name/i);
+        const emailInput = await canvas.findByLabelText(/Email address/i);
+        const introducedBySelect = await canvas.findByLabelText(/Introduced by/i);
+        const submitButton = await canvas.findByRole('button', { name: /Submit/i });
+
+        await userEvent.type(nameInput, 'Pat Example');
+        await userEvent.type(emailInput, 'pat@example.com');
+        await userEvent.selectOptions(introducedBySelect, '1');
+        await userEvent.click(submitButton);
+
+        const body = canvasElement.ownerDocument.body;
+        await new Promise<void>((resolve, reject) => {
+            const timeout = window.setTimeout(() => {
+                reject(new Error('Notification not found.'));
+            }, 2000);
+
+            const interval = window.setInterval(() => {
+                if (body.textContent?.includes('Player created successfully')) {
+                    window.clearTimeout(timeout);
+                    window.clearInterval(interval);
+                    resolve();
+                }
+            }, 50);
+        });
     },
 };

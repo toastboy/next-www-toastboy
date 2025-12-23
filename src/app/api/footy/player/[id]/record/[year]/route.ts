@@ -1,7 +1,8 @@
-import { handleGET } from 'lib/api';
 import { NextRequest } from 'next/server';
-import playerService from 'services/Player';
-import playerRecordService from 'services/PlayerRecord';
+
+import { handleGET } from '@/lib/api';
+import playerService from '@/services/Player';
+import playerRecordService from '@/services/PlayerRecord';
 
 /**
  * Retrieves the record for a specific player and year.

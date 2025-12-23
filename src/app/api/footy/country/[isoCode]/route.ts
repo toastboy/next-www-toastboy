@@ -1,6 +1,7 @@
-import { handleGET } from 'lib/api';
 import { NextRequest } from 'next/server';
-import countryService from 'services/Country';
+
+import { handleGET } from '@/lib/api';
+import countryService from '@/services/Country';
 
 /**
  * Handles GET requests for retrieving country information based on the provided ISO code.

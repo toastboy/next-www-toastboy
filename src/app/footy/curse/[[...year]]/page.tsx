@@ -1,10 +1,11 @@
 'use client';
 
 import { Flex } from '@mantine/core';
-import { PieChart } from 'components/PieChart/PieChart';
-import { YearSelector } from 'components/YearSelector/YearSelector';
-import { useBibs, useTableYears } from 'lib/swr';
 import { use } from 'react';
+
+import { PieChart } from '@/components/PieChart/PieChart';
+import { YearSelector } from '@/components/YearSelector/YearSelector';
+import { useBibs, useTableYears } from '@/lib/swr';
 
 interface Props {
     params: Promise<{

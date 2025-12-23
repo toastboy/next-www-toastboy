@@ -1,8 +1,9 @@
 import { Container } from '@mantine/core';
-import { PlayerPositions } from 'components/PlayerPositions/PlayerPositions';
-import { PlayerResults } from 'components/PlayerResults/PlayerResults';
-import { YearSelector } from 'components/YearSelector/YearSelector';
 import { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
+
+import { PlayerPositions } from '@/components/PlayerPositions/PlayerPositions';
+import { PlayerResults } from '@/components/PlayerResults/PlayerResults';
+import { YearSelector } from '@/components/YearSelector/YearSelector';
 
 export interface Props {
     playerName: string;

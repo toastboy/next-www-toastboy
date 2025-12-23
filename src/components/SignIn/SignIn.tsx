@@ -18,11 +18,11 @@ import {
 import { useForm } from '@mantine/form';
 import * as Sentry from '@sentry/react';
 import { IconAt, IconLock, IconX } from '@tabler/icons-react';
-import { authClient } from 'lib/authClient';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { signInWithGoogle, signInWithMicrosoft } from '@/lib/auth-client';
+import { authClient } from '@/lib/authClient';
 
 export interface Props {
     admin?: boolean;

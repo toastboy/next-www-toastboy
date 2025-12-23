@@ -14,7 +14,6 @@ import {
     OutcomeSchema,
     OutcomeType,
 } from 'prisma/zod/schemas/models/Outcome.schema';
-import gameDayService from 'services/GameDay';
 import {
     Turnout,
     TurnoutByYearType,
@@ -22,6 +21,8 @@ import {
 } from 'types';
 import { TeamPlayerSchema, TeamPlayerType } from 'types/TeamPlayerType';
 import z from 'zod';
+
+import gameDayService from '@/services/GameDay';
 
 /** Field definitions with extra validation */
 const extendedFields = {

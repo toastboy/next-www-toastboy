@@ -1,6 +1,7 @@
-import { handleGET } from 'lib/api';
 import { NextRequest } from 'next/server';
-import playerRecordService from 'services/PlayerRecord';
+
+import { handleGET } from '@/lib/api';
+import playerRecordService from '@/services/PlayerRecord';
 
 /**
  * Handles the GET request for retrieving all player records.

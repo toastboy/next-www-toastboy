@@ -2,7 +2,8 @@
  * Health check endpoint E2E tests
  */
 import { expect, test } from '@playwright/test';
-import { HealthResponseSchema } from 'lib/health';
+
+import { HealthResponseSchema } from '@/lib/health';
 
 test.describe('/api/health endpoint', () => {
     test('should return healthy status with 200 when application and database are running', async ({

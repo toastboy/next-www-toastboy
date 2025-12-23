@@ -1,14 +1,14 @@
-import { PlayerProfile } from 'components/PlayerProfile/PlayerProfile';
 import { notFound, redirect } from 'next/navigation';
 import { TableName } from 'prisma/generated/enums';
 import { TableNameSchema } from 'prisma/zod/schemas';
 import { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
-import playerService from 'services/Player';
 
+import { PlayerProfile } from '@/components/PlayerProfile/PlayerProfile';
 import { getUserRole } from '@/lib/authServer';
 import arseService from '@/services/Arse';
 import clubSupporterService from '@/services/ClubSupporter';
 import countrySupporterService from '@/services/CountrySupporter';
+import playerService from '@/services/Player';
 import playerRecordService from '@/services/PlayerRecord';
 
 interface Props {

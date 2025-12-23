@@ -75,7 +75,7 @@ describe('NewPlayerForm', () => {
             });
             expect(mockSendEmail).toHaveBeenCalledWith(
                 "test@example.com",
-                "",
+                "footy@toastboy.co.uk",
                 "Welcome to Toastboy FC!",
                 "&&&& Detailed welcome text goes here: how to log on, where to find info, rules, etc. &&&&",
             );

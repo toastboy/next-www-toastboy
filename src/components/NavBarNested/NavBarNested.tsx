@@ -88,8 +88,12 @@ export const NavBarNested: React.FC<Props> = ({ user }) => {
             "initiallyOpened": true,
             "links": [
                 {
+                    "label": "Dashboard",
+                    "link": "/footy/admin",
+                },
+                {
                     "label": "New Player",
-                    "link": "/footy/auth/signup", // TODO: Change to /footy/admin/newplayer when implemented
+                    "link": "/footy/newplayer",
                 },
                 {
                     "label": "Users",

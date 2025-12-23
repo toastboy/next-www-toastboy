@@ -5,11 +5,13 @@ import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
+import { useRouter } from 'next/navigation';
 import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
-import { z } from 'zod';
 
+import { createPlayer } from '@/actions/createPlayer';
 import { EmailInput } from '@/components/EmailInput/EmailInput';
 import { sendEmail } from '@/lib/mail';
+import { CreatePlayerInput, CreatePlayerSchema } from '@/types/CreatePlayerInput';
 
 export interface Props {
     players: PlayerType[];
@@ -17,34 +19,29 @@ export interface Props {
 
 /**
  * A form component for registering new players.
- * 
+ *
  * Collects player information including first name, last name, email, and an optional introducer.
  * Upon submission, sends a welcome email to the new player and displays notifications for success or failure.
- * 
+ *
  * @param props - Component props
  * @param props.players - Array of existing players used to populate the "Introduced by" dropdown
- * 
+ *
  * @example
  * ```tsx
  * <NewPlayerForm players={existingPlayers} />
  * ```
  */
 export const NewPlayerForm: React.FC<Props> = ({ players }) => {
-    const schema = z.object({
-        firstName: z.string().min(1, { message: 'First name is required' }),
-        lastName: z.string().optional(),
-        email: z.email({ message: 'Invalid email' }),
-        introducedBy: z.string().optional(),
-    });
+    const router = useRouter();
 
     const form = useForm({
         initialValues: {
-            firstName: '',
-            lastName: '',
+            name: '',
             email: '',
             introducedBy: '',
-        } satisfies z.infer<typeof schema>,
-        validate: zod4Resolver(schema),
+        } satisfies CreatePlayerInput,
+        validate: zod4Resolver(CreatePlayerSchema),
+        validateInputOnBlur: true,
     });
 
     const handleSubmit = async (
@@ -52,26 +49,41 @@ export const NewPlayerForm: React.FC<Props> = ({ players }) => {
     ) => {
         const id = notifications.show({
             loading: true,
-            title: 'Sending email',
-            message: 'Sending email...',
+            title: 'Creating player',
+            message: 'Creating player...',
             autoClose: false,
             withCloseButton: false,
         });
 
         try {
-            await sendEmail(values.email, "Test subject", "Test body");
+            const introducerEmail = values.introducedBy
+                ? players.find((p) => p.id.toString() === values.introducedBy)?.email ?? ''
+                : '';
+            const cc = [introducerEmail, 'footy@toastboy.co.uk']
+                .filter((e): e is string => !!e).join(', ');
+            const newPlayer = await createPlayer(values);
+
+            // TODO: Customize welcome email content
+            await sendEmail(
+                values.email,
+                cc,
+                'Welcome to Toastboy FC!',
+                '&&&& Detailed welcome text goes here: how to log on, where to find info, rules, etc. &&&&',
+            );
 
             notifications.update({
                 id,
                 color: 'teal',
-                title: 'Email sent',
-                message: 'Email sent successfully',
+                title: 'Player created',
+                message: 'Player created successfully',
                 icon: <IconCheck size={18} />,
                 loading: false,
                 autoClose: 2000,
             });
+
+            router.push(`/footy/player/${newPlayer.id}`);
         } catch (err) {
-            console.error('Failed to send:', err);
+            console.error('Failed to create player:', err);
             notifications.update({
                 id,
                 color: 'red',
@@ -99,13 +111,9 @@ export const NewPlayerForm: React.FC<Props> = ({ players }) => {
             onSubmit={form.onSubmit(handleSubmit)}
         >
             <TextInput
-                label="First name"
+                label="Name"
                 required
-                {...form.getInputProps('firstName')}
-            />
-            <TextInput
-                label="Last name"
-                {...form.getInputProps('lastName')}
+                {...form.getInputProps('name')}
             />
             <EmailInput
                 label="Email address"

@@ -16,7 +16,7 @@ import z from 'zod';
 
 /** Field definitions with extra validation */
 const extendedFields = {
-    id: z.number().int().min(1),
+    id: z.number().int().min(1).optional(),
 };
 
 const PlayerLoginWhereUniqueInputSchema = z.object({

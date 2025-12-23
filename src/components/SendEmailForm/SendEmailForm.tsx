@@ -52,7 +52,7 @@ export const SendEmailForm: React.FC<Props> = ({ opened, onClose, players }) => 
         });
 
         try {
-            await sendEmail(emails, subject, editor.getHTML());
+            await sendEmail(emails, "", subject, editor.getHTML());
 
             onClose();
             notifications.update({

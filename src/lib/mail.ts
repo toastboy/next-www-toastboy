@@ -17,7 +17,7 @@ const secrets = getSecrets();
  * @param html - The HTML content of the email.
  * @throws Will throw an error if the email fails to send.
  */
-export async function sendEmail(to: string, subject: string, html: string) {
+export async function sendEmail(to: string, cc: string, subject: string, html: string) {
     const transporter = process.env.NODE_ENV === 'production' && !process.env.CI ?
         nodemailer.createTransport({
             host: secrets.SMTP_HOST,
@@ -37,6 +37,7 @@ export async function sendEmail(to: string, subject: string, html: string) {
         await transporter.sendMail({
             from: `"${secrets.MAIL_FROM_NAME}" <${secrets.MAIL_FROM_ADDRESS}>`,
             to: to,
+            cc: cc,
             subject: subject,
             html: sanitizedHtml,
         });

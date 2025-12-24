@@ -7,8 +7,8 @@ export * from './countrySupporter';
 export * from './countrySupporterData';
 export * from './gameChat';
 export * from './gameDay';
+export * from './gameInvitation';
 export * from './gameYears';
-export * from './invitation';
 export * from './outcome';
 export * from './player';
 export * from './playerData';
@@ -18,4 +18,3 @@ export * from './playerRecordData';
 export * from './progress';
 export * from './teamPlayer';
 export * from './turnoutByYear';
-

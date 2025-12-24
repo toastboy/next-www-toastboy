@@ -4,6 +4,7 @@ import { Anchor, Box, Button, Container, Group, Notification, PasswordInput, Sta
 import { useForm } from '@mantine/form';
 import * as Sentry from '@sentry/react';
 import { IconAt, IconIdBadge, IconLock, IconX } from '@tabler/icons-react';
+import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 
 import { authClient } from '@/lib/auth-client';
@@ -11,11 +12,13 @@ import { authClient } from '@/lib/auth-client';
 export default function SignUpPage() {
     const [loading, setLoading] = useState(false);
     const [signupError, setSignupError] = useState<boolean>(false);
+    const searchParams = useSearchParams();
+    const initialEmail = searchParams.get('email') ?? '';
 
     const form = useForm({
         initialValues: {
             name: '',
-            email: '',
+            email: initialEmail,
             password: '',
         },
 

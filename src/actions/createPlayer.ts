@@ -2,6 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 
+import { createPlayerInvitationToken } from '@/lib/playerInvitation';
+import { getSecrets } from '@/lib/secrets';
 import playerService from '@/services/Player';
 import { CreatePlayerSchema } from '@/types/CreatePlayerInput';
 
@@ -38,8 +40,25 @@ export async function createPlayer(rawData: unknown) {
         joined: new Date(),
     });
 
+    await playerService.createPlayerEmail({
+        playerId: player.id,
+        email: data.email,
+    });
+
+    const secrets = getSecrets();
+    const { token, tokenHash, expiresAt } = createPlayerInvitationToken();
+    await playerService.createPlayerInvitation({
+        playerId: player.id,
+        email: data.email,
+        tokenHash,
+        expiresAt,
+    });
+
     revalidatePath('/footy/newplayer');
     revalidatePath('/footy/players');
 
-    return player;
+    return {
+        player,
+        inviteLink: `${secrets.BETTER_AUTH_URL}/footy/auth/claim?token=${token}`,
+    };
 }

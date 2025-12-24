@@ -61,14 +61,16 @@ export const NewPlayerForm: React.FC<Props> = ({ players }) => {
                 : '';
             const cc = [introducerEmail, 'footy@toastboy.co.uk']
                 .filter((e): e is string => !!e).join(', ');
-            const newPlayer = await createPlayer(values);
+            const { player: newPlayer, inviteLink } = await createPlayer(values);
 
             // TODO: Customize welcome email content
             await sendEmail(
                 values.email,
                 cc,
                 'Welcome to Toastboy FC!',
-                '&&&& Detailed welcome text goes here: how to log on, where to find info, rules, etc. &&&&',
+                `&&&& Detailed welcome text goes here: how to log on, where to find info, rules, etc. &&&&
+
+Claim your account: ${inviteLink}`,
             );
 
             notifications.update({

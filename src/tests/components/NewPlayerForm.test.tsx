@@ -33,7 +33,10 @@ describe('NewPlayerForm', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        mockCreatePlayer.mockResolvedValue({} as Awaited<ReturnType<typeof createPlayer>>);
+        mockCreatePlayer.mockResolvedValue({
+            player: { id: 1 },
+            inviteLink: 'http://example.com/footy/auth/claim?token=abc',
+        } as Awaited<ReturnType<typeof createPlayer>>);
     });
 
     it('renders form with inputs and submit button', () => {
@@ -77,7 +80,7 @@ describe('NewPlayerForm', () => {
                 "test@example.com",
                 "footy@toastboy.co.uk",
                 "Welcome to Toastboy FC!",
-                "&&&& Detailed welcome text goes here: how to log on, where to find info, rules, etc. &&&&",
+                "&&&& Detailed welcome text goes here: how to log on, where to find info, rules, etc. &&&&\n\nClaim your account: http://example.com/footy/auth/claim?token=abc",
             );
         });
     });

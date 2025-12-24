@@ -13,6 +13,7 @@ import { GameChatType } from 'prisma/zod/schemas/models/GameChat.schema';
 import { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 import { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
 import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
+import { PlayerEmailType } from 'prisma/zod/schemas/models/PlayerEmail.schema';
 import { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 import { PlayerLoginType } from './zod/schemas/models/PlayerLogin.schema';
 
@@ -66,6 +67,8 @@ async function processJsonData<T>(
 }
 
 async function main() {
+    console.log('🌱 Seed script started');
+
     // Read secrets directly from environment - works in any environment
     const tenantId = process.env.AZURE_TENANT_ID;
     if (!tenantId) throw new Error('AZURE_TENANT_ID undefined');
@@ -98,13 +101,14 @@ async function main() {
     await prisma.countrySupporter.deleteMany();
     await prisma.country.deleteMany();
     await prisma.gameChat.deleteMany();
-    await prisma.invitation.deleteMany();
+    await prisma.gameInvitation.deleteMany();
     await prisma.outcome.deleteMany();
     await prisma.playerRecord.deleteMany();
     await prisma.gameDay.deleteMany();
     await prisma.diffs.deleteMany();
     await prisma.picker.deleteMany();
     await prisma.pickerTeams.deleteMany();
+    await prisma.playerEmail.deleteMany();
     await prisma.player.deleteMany();
     await prisma.playerLogin.deleteMany();
 
@@ -112,6 +116,7 @@ async function main() {
     await processJsonData<GameDayType>(containerClient, "GameDay.json", prisma.gameDay);
     await processJsonData<PlayerLoginType>(containerClient, "PlayerLogin.json", prisma.playerLogin);
     await processJsonData<PlayerType>(containerClient, "Player.json", prisma.player);
+    await processJsonData<PlayerEmailType>(containerClient, "PlayerEmail.json", prisma.playerEmail);
     await processJsonData<PlayerRecordType>(containerClient, "PlayerRecord.json", prisma.playerRecord);
     await processJsonData<OutcomeType>(containerClient, "Outcome.json", prisma.outcome);
     await processJsonData<GameChatType>(containerClient, "GameChat.json", prisma.gameChat);

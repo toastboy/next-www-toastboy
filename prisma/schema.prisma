@@ -108,12 +108,12 @@ model GameDay {
     bibs               TeamName?
     pickerGamesHistory Int?
 
-    invitations   Invitation[]
-    outcomes      Outcome[]
-    playerRecords PlayerRecord[]
+    gameInvitations GameInvitation[]
+    outcomes        Outcome[]
+    playerRecords   PlayerRecord[]
 }
 
-model Invitation {
+model GameInvitation {
     uuid      String @id @db.Char(38)
     playerId  Int
     gameDayId Int
@@ -178,14 +178,43 @@ model Player {
 
     introducedBy Int?
 
-    arsesOfPlayer Arse[]             @relation(name: "PlayerArse")
-    arsesByPlayer Arse[]             @relation(name: "RaterArse")
-    clubs         ClubSupporter[]
-    countries     CountrySupporter[]
-    invitations   Invitation[]
-    outcomes      Outcome[]
-    playerRecords PlayerRecord[]
-    logins        PlayerLogin[]
+    arsesOfPlayer     Arse[]             @relation(name: "PlayerArse")
+    arsesByPlayer     Arse[]             @relation(name: "RaterArse")
+    clubs             ClubSupporter[]
+    countries         CountrySupporter[]
+    gameInvitations   GameInvitation[]
+    outcomes          Outcome[]
+    playerRecords     PlayerRecord[]
+    logins            PlayerLogin[]
+    emails            PlayerEmail[]
+    playerInvitations PlayerInvitation[]
+}
+
+model PlayerEmail {
+    id         Int       @id @default(autoincrement())
+    playerId   Int
+    email      String    @unique @db.VarChar(255)
+    verifiedAt DateTime?
+    createdAt  DateTime  @default(now())
+
+    player Player @relation(fields: [playerId], references: [id])
+
+    @@index([playerId])
+}
+
+model PlayerInvitation {
+    id        Int       @id @default(autoincrement())
+    playerId  Int
+    email     String    @db.VarChar(255)
+    tokenHash String    @unique @db.Char(64)
+    expiresAt DateTime
+    usedAt    DateTime?
+    createdAt DateTime  @default(now())
+
+    player Player @relation(fields: [playerId], references: [id])
+
+    @@index([playerId])
+    @@index([email])
 }
 
 model PlayerLogin {
@@ -194,8 +223,8 @@ model PlayerLogin {
 
     player Player @relation(fields: [playerId], references: [id])
 
-    @@index([playerId])
     @@unique([playerId, login])
+    @@index([playerId])
 }
 
 model PlayerRecord {

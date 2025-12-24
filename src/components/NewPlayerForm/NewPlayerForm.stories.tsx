@@ -24,12 +24,13 @@ export const Primary: Story = {
         players: defaultPlayerList.slice(0, 3),
     },
     play: async function ({ canvasElement, userEvent, viewMode }) {
-        if (viewMode === 'docs') {
-            return;
-        }
+        if (viewMode === 'docs') return;
+
         mocked(createPlayer).mockResolvedValue({
-            id: 123,
+            player: { id: 123 },
+            inviteLink: 'http://example.com/footy/auth/claim?token=storybook',
         } as Awaited<ReturnType<typeof createPlayer>>);
+
         const canvas = within(canvasElement);
         const nameInput = await canvas.findByLabelText(/Name/i);
         const emailInput = await canvas.findByLabelText(/Email address/i);

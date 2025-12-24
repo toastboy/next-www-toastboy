@@ -1,13 +1,13 @@
-import { InvitationType } from 'prisma/zod/schemas/models/Invitation.schema';
+import { GameInvitationType } from 'prisma/zod/schemas/models/GameInvitation.schema';
 
-export const defaultInvitation: InvitationType = {
+export const defaultGameInvitation: GameInvitationType = {
     uuid: '{123e4567-e89b-12d3-a456-426614174000}',
     playerId: 1,
     gameDayId: 1,
 };
 
-export const createMockInvitation = (overrides: Partial<InvitationType> = {}): InvitationType => ({
-    ...defaultInvitation,
+export const createMockGameInvitation = (overrides: Partial<GameInvitationType> = {}): GameInvitationType => ({
+    ...defaultGameInvitation,
     ...overrides,
 });
 
@@ -18,8 +18,8 @@ export const buildUuidFromIndex = (i: number): string => {
     return `{${uuid}}`;
 };
 
-export const defaultInvitationList: InvitationType[] = Array.from({ length: 100 }, (_, index) =>
-    createMockInvitation({
+export const defaultGameInvitationList: GameInvitationType[] = Array.from({ length: 100 }, (_, index) =>
+    createMockGameInvitation({
         uuid: buildUuidFromIndex(index + 1),
     }),
 );

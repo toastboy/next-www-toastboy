@@ -8,6 +8,7 @@ import { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
 import { fileURLToPath } from 'url';
 
+import playerService from '@/services/Player';
 import playerRecordService from '@/services/PlayerRecord';
 
 const currentDir = path.dirname(fileURLToPath(import.meta.url));
@@ -27,9 +28,56 @@ async function writeTableToJSONFile<T>(
 ) {
     console.log(`Writing ${fileName}...`);
     const data = await prismaModel.findMany();
+    writeDataToJSONFile(fileName, data);
+}
+
+interface PlayerEmailSeed {
+    playerId: number;
+    email: string;
+    verifiedAt?: Date | null;
+}
+
+function writeDataToJSONFile<T>(fileName: string, data: T[]) {
     const json = JSON.stringify(data, null, 2);
     const filePath = path.join('/tmp/importlivedb', `${fileName}`);
     fs.writeFileSync(filePath, json);
+}
+
+function splitEmailList(rawEmail: string | null): string[] {
+    if (!rawEmail) {
+        return [];
+    }
+    return rawEmail
+        .split(',')
+        .map((email) => email.trim())
+        .filter((email) => email.length > 0)
+        .map((email) => email.toLowerCase());
+}
+
+function buildPlayerEmailSeedRows(
+    sources: { playerId: number; email: string | null }[],
+): PlayerEmailSeed[] {
+    const rows: PlayerEmailSeed[] = [];
+    const seen = new Map<string, number>();
+
+    sources.forEach((source) => {
+        const emails = Array.from(new Set(splitEmailList(source.email)));
+        emails.forEach((email) => {
+            const existing = seen.get(email);
+            if (existing && existing !== source.playerId) {
+                console.warn(`Skipping duplicate email ${email} for player ${source.playerId}; already assigned to player ${existing}`);
+                return;
+            }
+
+            seen.set(email, source.playerId);
+            rows.push({
+                playerId: source.playerId,
+                email,
+            });
+        });
+    });
+
+    return rows;
 }
 
 /**
@@ -114,9 +162,13 @@ async function importBackup(): Promise<void> {
 
         const containerClient = blobServiceClient.getContainerClient(containerName);
 
+        const shellExec = (cmd: string) => {
+            execSync(cmd, { stdio: 'inherit' });
+        };
+
         // Take a backup of the current live database
         console.log('Taking production mysql backup...');
-        execSync(`mysqldump --skip-ssl -h ${prodMysqlHost} -u ${prodMysqlUser} -p${prodMysqlPassword} ${mysqlDatabase} arse club club_supporter country diffs game_chat game_day invitation misc nationality outcome picker picker_teams player > /tmp/${mysqlDatabase}.sql`);
+        shellExec(`mysqldump --skip-ssl -h ${prodMysqlHost} -u ${prodMysqlUser} -p${prodMysqlPassword} ${mysqlDatabase} arse club club_supporter country diffs game_chat game_day invitation misc nationality outcome picker picker_teams player > /tmp/${mysqlDatabase}.sql`);
 
         // Get the list of directories in the migrations directory
         const migrationsDir = path.join(currentDir, '..', '..', '..', 'prisma', 'migrations');
@@ -124,17 +176,17 @@ async function importBackup(): Promise<void> {
 
         // Run prisma generate to ensure the Prisma Client is up to date
         console.log('Running prisma generate...');
-        execSync('npx prisma generate --schema prisma/schema.prisma');
+        shellExec('npx prisma generate --schema prisma/schema.prisma');
 
         // Run prisma db push to ensure the database is up to date with the schema
         console.log('Running prisma db push...');
-        execSync(`mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} -e'DROP DATABASE IF EXISTS footy;'`);
-        execSync(`mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} -e'CREATE DATABASE footy;'`);
-        execSync('npx prisma db push --accept-data-loss --schema prisma/schema.prisma');
+        shellExec(`mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} -e'DROP DATABASE IF EXISTS footy;'`);
+        shellExec(`mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} -e'CREATE DATABASE footy;'`);
+        shellExec('npx prisma db push --accept-data-loss --schema prisma/schema.prisma');
 
         // Import the mysqldump backup created above
         console.log('Importing mysql backup...');
-        execSync(`cat /tmp/${mysqlDatabase}.sql | mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} ${mysqlDatabase}`);
+        shellExec(`cat /tmp/${mysqlDatabase}.sql | mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} ${mysqlDatabase}`);
 
         // Run each migration except the first one: the backup created the
         // database structure through the conditional comments such as '/*!40000
@@ -145,7 +197,7 @@ async function importBackup(): Promise<void> {
             }
             console.log(`Running migration ${migrations[i]}...`);
             const migration = path.join(migrationsDir, migrations[i], 'migration.sql');
-            execSync(`cat ${migration} | mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} ${mysqlDatabase}`);
+            shellExec(`cat ${migration} | mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} ${mysqlDatabase}`);
         }
 
         // Now calculate all the player records to ensure they are up to date
@@ -155,7 +207,7 @@ async function importBackup(): Promise<void> {
 
         // Write each table in ${mysqlDatabase} to a JSON file in /tmp/importlivedb
         console.log('Writing tables to JSON files...');
-        execSync(`mkdir -p /tmp/importlivedb`);
+        shellExec(`mkdir -p /tmp/importlivedb`);
         await writeTableToJSONFile('Arse.json', prisma.arse);
         await writeTableToJSONFile('ClubSupporter.json', prisma.clubSupporter);
         await writeTableToJSONFile('Club.json', prisma.club);
@@ -168,6 +220,10 @@ async function importBackup(): Promise<void> {
         await writeTableToJSONFile('PlayerLogin.json', prisma.playerLogin);
         await writeTableToJSONFile('PlayerRecord.json', prisma.playerRecord);
 
+        const playerEmailSources = await playerService.getAllEmailSources();
+        const playerEmailRows = buildPlayerEmailSeedRows(playerEmailSources);
+        writeDataToJSONFile('PlayerEmail.json', playerEmailRows);
+
         // Upload the JSON files to Azure Blob Storage
         const files = await readdir('/tmp/importlivedb');
         for (const file of files) {
@@ -176,20 +232,24 @@ async function importBackup(): Promise<void> {
             const blockBlobClient = containerClient.getBlockBlobClient(file);
             await blockBlobClient.uploadFile(filePath);
         }
-        execSync('rm -rf /tmp/importlivedb');
+        shellExec('rm -rf /tmp/importlivedb');
 
         // Now the dev database is up to date with the live one and the seed
         // files in blob storage reflect that, we can do a final Prisma migrate
         // reset and seed to ensure the dev database is in a good state.
         console.log('Running final Prisma migrate reset...');
-        execSync('npx prisma migrate reset --force --skip-seed');
+        shellExec('npx prisma migrate reset --force');
     } catch (error) {
         console.error('An error occurred:', error);
     }
 }
 
-importBackup().catch((error) => {
-    console.error('An unexpected error occurred:', error);
-});
+void importBackup()
+    .catch((error) => {
+        console.error('An unexpected error occurred:', error);
+    })
+    .finally(async () => {
+        await prisma.$disconnect();
+    });
 
 // To run: `op run --env-file ./src/lib/importlivedb/.env -- sh -c 'npm run importlivedb'`

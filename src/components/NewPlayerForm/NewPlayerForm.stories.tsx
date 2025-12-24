@@ -1,6 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 import { within } from '@storybook/testing-library';
+import { mocked } from 'storybook/test';
 
+import { createPlayer } from '@/actions/createPlayer';
 import { defaultPlayerList } from '@/tests/mocks';
 
 import { NewPlayerForm } from './NewPlayerForm';
@@ -21,7 +23,13 @@ export const Primary: Story = {
     args: {
         players: defaultPlayerList.slice(0, 3),
     },
-    play: async function ({ canvasElement, userEvent }) {
+    play: async function ({ canvasElement, userEvent, viewMode }) {
+        if (viewMode === 'docs') {
+            return;
+        }
+        mocked(createPlayer).mockResolvedValue({
+            id: 123,
+        } as Awaited<ReturnType<typeof createPlayer>>);
         const canvas = within(canvasElement);
         const nameInput = await canvas.findByLabelText(/Name/i);
         const emailInput = await canvas.findByLabelText(/Email address/i);
@@ -34,18 +42,6 @@ export const Primary: Story = {
         await userEvent.click(submitButton);
 
         const body = canvasElement.ownerDocument.body;
-        await new Promise<void>((resolve, reject) => {
-            const timeout = window.setTimeout(() => {
-                reject(new Error('Notification not found.'));
-            }, 2000);
-
-            const interval = window.setInterval(() => {
-                if (body.textContent?.includes('Player created successfully')) {
-                    window.clearTimeout(timeout);
-                    window.clearInterval(interval);
-                    resolve();
-                }
-            }, 50);
-        });
+        await within(body).findByText('Player created successfully', {}, { timeout: 6000 });
     },
 };

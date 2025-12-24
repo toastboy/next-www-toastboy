@@ -12,90 +12,110 @@ import { Notifications } from '@mantine/notifications';
 import type { Preview } from '@storybook/nextjs';
 import { http, HttpResponse } from 'msw';
 import { initialize, mswLoader } from 'msw-storybook-addon';
+import { sb } from 'storybook/test';
+
+sb.mock('../src/actions/createPlayer.ts');
+sb.mock('../src/actions/updatePlayerRecords.ts');
+sb.mock('../src/actions/auth-export.ts');
+sb.mock('../prisma/prisma.ts');
 
 // Suppress React DevTools disconnected port errors in Storybook
 if (typeof window !== 'undefined') {
-  const originalError = console.error;
-  console.error = (...args) => {
-    if (
-      typeof args[0] === 'string' &&
-      args[0].includes('disconnected port object')
-    ) {
-      return;
-    }
-    originalError.apply(console, args);
-  };
+    const originalError = console.error;
+    console.error = (...args) => {
+        if (
+            typeof args[0] === 'string' &&
+            args[0].includes('disconnected port object')
+        ) {
+            return;
+        }
+        originalError.apply(console, args);
+    };
 }
 
 // Ignore unhandled requests for browser extensions, static assets, and Storybook internals
 const shouldIgnoreUnhandledRequest = (url: string) => {
-  try {
-    const { protocol, pathname } = new URL(url);
-    const isExtension = protocol === 'chrome-extension:';
-    const isStaticAsset = pathname.startsWith('/static/');
-    const isStoryIndex = pathname === '/index.json';
+    try {
+        const { protocol, pathname } = new URL(url);
+        const isExtension = protocol === 'chrome-extension:';
+        const isStaticAsset = pathname.startsWith('/static/');
+        const isSourceStylesheet = pathname.startsWith('/src/') && pathname.endsWith('.css');
+        const isSourceImage =
+            pathname.startsWith('/src/tests/mocks/data/') &&
+            /\.(png|jpe?g|gif|svg)$/i.test(pathname);
+        const isViteExternal = pathname.startsWith('/@id/__vite-browser-external:');
+        const isStoryIndex = pathname === '/index.json';
 
-    return isExtension || isStaticAsset || isStoryIndex;
-  } catch {
-    return false;
-  }
+        return isExtension || isStaticAsset || isSourceStylesheet || isSourceImage || isViteExternal || isStoryIndex;
+    } catch {
+        return false;
+    }
 };
 
 initialize({
-  onUnhandledRequest: ({ url, method }) => {
-    if (shouldIgnoreUnhandledRequest(url)) {
-      return;
-    }
+    onUnhandledRequest: ({ url, method }) => {
+        if (shouldIgnoreUnhandledRequest(url)) {
+            return;
+        }
 
-    console.error(`Unhandled ${method} request to ${url}.
+        console.error(`Unhandled ${method} request to ${url}.
 
         This exception has been only logged in the console, however, it's strongly recommended to resolve this error as you don't want unmocked data in Storybook stories.
 
         If you wish to mock an error response, please refer to this guide: https://mswjs.io/docs/recipes/mocking-error-responses
       `);
-  },
+    },
 });
 
 const toUrl = (asset: string | { src: string }) =>
-  typeof asset === 'string' ? asset : asset.src;
+    typeof asset === 'string' ? asset : asset.src;
 
 const serveImage = (assetUrl: string, contentType: string) => async () => {
-  const res = await fetch(assetUrl);
-  const buffer = await res.arrayBuffer();
+    const res = await fetch(assetUrl);
+    const buffer = await res.arrayBuffer();
 
-  return new HttpResponse(buffer, {
-    headers: { 'Content-Type': contentType },
-  });
+    return new HttpResponse(buffer, {
+        headers: { 'Content-Type': contentType },
+    });
 };
 
 const imageHandlers = [
-  http.get('*/api/footy/player/:id/mugshot', serveImage(toUrl(mugshotImage), 'image/png')),
-  http.get('*/api/footy/club/:id/badge', serveImage(toUrl(badgeImage), 'image/png')),
-  http.get('*/api/footy/country/:code/flag', serveImage(toUrl(flagImage), 'image/png')),
+    http.get('*/api/footy/player/:id/mugshot', serveImage(toUrl(mugshotImage), 'image/png')),
+    http.get('*/api/footy/club/:id/badge', serveImage(toUrl(badgeImage), 'image/png')),
+    http.get('*/api/footy/country/:code/flag', serveImage(toUrl(flagImage), 'image/png')),
 ];
 
 const preview: Preview = {
-  parameters: {
-    controls: {
-      matchers: {
-        color: /(background|color)$/i,
-        date: /Date$/i,
-      },
+    parameters: {
+        controls: {
+            matchers: {
+                color: /(background|color)$/i,
+                date: /Date$/i,
+            },
+        },
+
+        layout: 'fullscreen',
+
+        msw: {
+            handlers: imageHandlers,
+        },
+
+        a11y: {
+            // 'todo' - show a11y violations in the test UI only
+            // 'error' - fail CI on a11y violations
+            // 'off' - skip a11y checks entirely
+            test: 'todo'
+        }
     },
-    layout: 'fullscreen',
-    msw: {
-      handlers: imageHandlers,
-    },
-  },
-  decorators: [
-    (Story) => (
-      <MantineProvider>
-        <Notifications />
-        <Story />
-      </MantineProvider>
-    ),
-  ],
-  loaders: [mswLoader],
+    decorators: [
+        (Story) => (
+            <MantineProvider>
+                <Notifications />
+                <Story />
+            </MantineProvider>
+        ),
+    ],
+    loaders: [mswLoader],
 };
 
 export default preview;

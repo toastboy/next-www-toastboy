@@ -1,7 +1,7 @@
-import type { StorybookConfig } from '@storybook/nextjs';
+import type { StorybookConfig } from '@storybook/react-vite';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import webpack from 'webpack';
+import tsconfigPaths from 'vite-tsconfig-paths';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -15,57 +15,45 @@ const config: StorybookConfig = {
         "@storybook/addon-docs",
         "@storybook/addon-onboarding",
         "msw-storybook-addon",
-        '@chromatic-com/storybook'
+        '@chromatic-com/storybook',
+        '@storybook/addon-vitest'
     ],
-    "framework": "@storybook/nextjs",
+    "framework": "@storybook/react-vite",
     "staticDirs": [
         "../public"
     ],
-    webpackFinal: async (config) => {
+    viteFinal: async (config) => {
+        config.plugins = config.plugins || [];
+        config.plugins.push(tsconfigPaths());
+        config.esbuild = {
+            ...(config.esbuild || {}),
+            jsx: 'automatic',
+            jsxImportSource: 'react',
+        };
         config.resolve = config.resolve || {};
         config.resolve.alias = {
             ...(config.resolve.alias || {}),
-            // Mock server actions used by client components in stories
-            '@/actions/updatePlayerRecords$': path.resolve(__dirname, './mocks/actions-updatePlayerRecords.mock.ts'),
-            '@/actions/createPlayer$': path.resolve(__dirname, './mocks/actions-createPlayer.mock.ts'),
-            // Mock mailer to avoid bundling node built-ins (net/tls) in Storybook
-            '@/lib/mail': path.resolve(__dirname, './mocks/mail.mock.ts'),
-            // Avoid bundling Prisma client and Node-only deps in Storybook
-            'prisma/prisma$': path.resolve(__dirname, './mocks/prisma.mock.ts'),
-            // Path aliases matching tsconfig
-            'prisma': path.resolve(__dirname, '../prisma'),
-            '@': path.resolve(__dirname, '../src'),
+            // Stub Prisma so it never reaches node-only runtime in Storybook
+            'prisma/prisma': path.resolve(__dirname, './mocks/prisma.mock.ts'),
+            'prisma/generated': path.resolve(__dirname, './mocks/prisma-generated.mock.ts'),
             // Stub server-only modules so client-rendered Storybook can import server components safely
             'server-only': path.resolve(__dirname, './mocks/server-only.ts'),
             // Mock Next.js navigation hooks used in client components
             'next/navigation': path.resolve(__dirname, './mocks/next-navigation.mock.ts'),
+            // Mock Next.js link to avoid process.env usage in Storybook
+            'next/link': path.resolve(__dirname, './mocks/next-link.mock.tsx'),
+            // Stub Next cache helpers used by server actions
+            'next/cache': path.resolve(__dirname, './mocks/next-cache.mock.ts'),
+            // Stub secrets to avoid process.env + fs access in Storybook
+            '@/lib/secrets': path.resolve(__dirname, './mocks/secrets.mock.ts'),
+            // Stub mailer to avoid nodemailer in Storybook
+            '@/lib/mail': path.resolve(__dirname, './mocks/mail.mock.ts'),
+            // Path aliases matching tsconfig - still need zod schema imports to work
+            'prisma': path.resolve(__dirname, '../prisma'),
+            '@': path.resolve(__dirname, '../src'),
         };
-        config.resolve.fallback = {
-            ...(config.resolve.fallback || {}),
-            async_hooks: false,
-            buffer: false,
-            crypto: false,
-            events: false,
-            fs: false,
-            module: false,
-            os: false,
-            path: false,
-            process: false,
-            url: false,
-            net: false,
-            tls: false,
-            dns: false,
-            child_process: false,
-        };
-        config.plugins = [
-            ...(config.plugins || []),
-            // Strip node: scheme so webpack can apply fallbacks/aliases.
-            new webpack.NormalModuleReplacementPlugin(/^node:/, (resource) => {
-                resource.request = resource.request.replace(/^node:/, '');
-            }),
-        ];
 
         return config;
-    }
+    },
 };
 export default config;

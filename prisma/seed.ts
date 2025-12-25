@@ -55,14 +55,12 @@ async function processJsonData<T>(
     containerClient: ContainerClient,
     fileName: string,
     prismaModel: {
-        create: (data: { data: T }) => Prisma.PrismaPromise<T>;
+        createMany: (data: { data: T[] }) => Prisma.PrismaPromise<{ count: number }>;
     },
 ) {
     console.log(`Starting: ${fileName}`);
     const dataItems: T[] = await downloadAndParseJson(containerClient, fileName) as T[];
-    for (const item of dataItems) {
-        await prismaModel.create({ data: item });
-    }
+    await prismaModel.createMany({ data: dataItems });
     console.log(`Complete:  ${fileName}`);
 }
 
@@ -109,14 +107,16 @@ async function main() {
     await prisma.picker.deleteMany();
     await prisma.pickerTeams.deleteMany();
     await prisma.playerEmail.deleteMany();
-    await prisma.player.deleteMany();
     await prisma.playerLogin.deleteMany();
+    await prisma.playerInvitation.deleteMany();
+    await prisma.player.deleteMany();
 
-    // Now we must populate the tables, more or less in the reverse of the order above
-    await processJsonData<GameDayType>(containerClient, "GameDay.json", prisma.gameDay);
-    await processJsonData<PlayerLoginType>(containerClient, "PlayerLogin.json", prisma.playerLogin);
+    // Now we must populate the tables in the reverse of the order above, minus
+    // the ones that are short-lived or generated as part of the picker process
     await processJsonData<PlayerType>(containerClient, "Player.json", prisma.player);
+    await processJsonData<PlayerLoginType>(containerClient, "PlayerLogin.json", prisma.playerLogin);
     await processJsonData<PlayerEmailType>(containerClient, "PlayerEmail.json", prisma.playerEmail);
+    await processJsonData<GameDayType>(containerClient, "GameDay.json", prisma.gameDay);
     await processJsonData<PlayerRecordType>(containerClient, "PlayerRecord.json", prisma.playerRecord);
     await processJsonData<OutcomeType>(containerClient, "Outcome.json", prisma.outcome);
     await processJsonData<GameChatType>(containerClient, "GameChat.json", prisma.gameChat);
@@ -127,11 +127,15 @@ async function main() {
     await processJsonData<ArseType>(containerClient, "Arse.json", prisma.arse);
 
     // Finally, the auth tables
-    await processJsonData<Account>(containerClient, "account.json", prisma.account);
+    await prisma.verification.deleteMany();
+    await prisma.account.deleteMany();
+    await prisma.user.deleteMany();
+
     await processJsonData<User>(containerClient, "user.json", prisma.user);
+    await processJsonData<Account>(containerClient, "account.json", prisma.account);
     await processJsonData<Verification>(containerClient, "verification.json", prisma.verification);
 
-    console.log('Database seeding complete.');
+    console.log('🌱 Database seeding complete.');
 }
 
 main()

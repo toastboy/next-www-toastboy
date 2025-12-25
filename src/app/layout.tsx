@@ -1,10 +1,14 @@
-import '@mantine/code-highlight/styles.css';
+/* eslint-disable simple-import-sort/imports */
+// Mantine styles must be imported in this order: https://mantine.dev/styles/mantine-styles/
 import '@mantine/core/styles.css';
+
+import '@mantine/code-highlight/styles.css';
 import '@mantine/dates/styles.css';
 import '@mantine/notifications/styles.css';
 import '@mantine/tiptap/styles.css';
+/* eslint-enable simple-import-sort/imports */
 
-import { MantineProvider } from '@mantine/core';
+import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
 import type { Metadata } from 'next';
 
@@ -32,9 +36,12 @@ export default async function RootLayout({
     const user = await getCurrentUser();
 
     return (
-        <html lang="en">
+        <html lang="en" {...mantineHtmlProps}>
+            <head>
+                <ColorSchemeScript defaultColorScheme="light" />
+            </head>
             <body>
-                <MantineProvider>
+                <MantineProvider defaultColorScheme="light">
                     <Notifications />
                     {/* <BreakpointDebugger /> */}
                     <CustomAppShell user={user}>

@@ -3,6 +3,32 @@
 import { hashPlayerInvitationToken } from '@/lib/playerInvitation';
 import playerService from '@/services/Player';
 
+/**
+ * Claims a player invitation using a plaintext token.
+ *
+ * Validates the token, resolves the invitation from its hashed token, checks
+ * usage and expiration, enforces email ownership rules, then marks the
+ * invitation as used and records the verified email for the player.
+ *
+ * @param token - The raw invitation token provided to the player.
+ * @returns A promise that resolves with the invitation claim result:
+ *          { playerId, email }.
+ *
+ * @throws Error If:
+ * - Missing invitation token.
+ * - Invitation not found or expired (no invitation matching the token hash).
+ * - Invitation has already been used.
+ * - Invitation has expired.
+ * - Email address already belongs to another player.
+ *
+ * @remarks
+ * - The token is hashed via `hashPlayerInvitationToken` before lookup.
+ * - The invitation is retrieved with `playerService.getPlayerInvitationByTokenHash`.
+ * - Email uniqueness is checked via `playerService.getPlayerEmailByEmail`; if an
+ *   existing email belongs to a different player, the claim is rejected.
+ * - On success, the invitation is marked used and a verified player email is
+ *   upserted with the current timestamp.
+ */
 export async function claimPlayerInvitation(token: string) {
     if (!token) {
         throw new Error('Missing invitation token.');

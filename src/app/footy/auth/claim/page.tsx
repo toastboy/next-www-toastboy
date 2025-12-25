@@ -3,12 +3,13 @@ import Link from 'next/link';
 import { claimPlayerInvitation } from '@/actions/claimPlayerInvitation';
 
 interface PageProps {
-    searchParams?: {
+    searchParams?: Promise<{
         token?: string;
-    };
+    }>;
 }
 
-const Page = async ({ searchParams }: PageProps) => {
+const Page = async ({ searchParams: sp }: PageProps) => {
+    const searchParams = await sp;
     const token = searchParams?.token ?? '';
     let email: string | null = null;
     let errorMessage: string | null = null;

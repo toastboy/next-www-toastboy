@@ -13,7 +13,7 @@ import StarterKit from '@tiptap/starter-kit';
 import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import { useState } from 'react';
 
-import { sendEmail } from '@/lib/mail';
+import { sendEmail } from '@/actions/sendEmail';
 
 import classes from './SendEmailForm.module.css';
 

@@ -77,10 +77,10 @@ describe('NewPlayerForm', () => {
                 introducedBy: '',
             });
             expect(mockSendEmail).toHaveBeenCalledWith(
-                "test@example.com",
-                "footy@toastboy.co.uk",
-                "Welcome to Toastboy FC!",
-                "&&&& Detailed welcome text goes here: how to log on, where to find info, rules, etc. &&&&\n\nClaim your account: http://example.com/footy/auth/claim?token=abc",
+                'test@example.com',
+                'footy@toastboy.co.uk',
+                'Welcome to Toastboy FC!',
+                expect.any(String),
             );
         });
     });

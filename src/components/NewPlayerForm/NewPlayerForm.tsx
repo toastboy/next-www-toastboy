@@ -1,16 +1,26 @@
 'use client';
 
-import { Box, Button, NativeSelect, TextInput } from '@mantine/core';
+import {
+    Anchor,
+    Box,
+    Button,
+    Flex,
+    MantineProvider,
+    NativeSelect,
+    Text,
+    TextInput,
+} from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useRouter } from 'next/navigation';
 import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
+import ReactDOMServer from 'react-dom/server';
 
 import { createPlayer } from '@/actions/createPlayer';
+import { sendEmail } from '@/actions/sendEmail';
 import { EmailInput } from '@/components/EmailInput/EmailInput';
-import { sendEmail } from '@/lib/mail';
 import { CreatePlayerInput, CreatePlayerSchema } from '@/types/CreatePlayerInput';
 
 export interface Props {
@@ -62,16 +72,24 @@ export const NewPlayerForm: React.FC<Props> = ({ players }) => {
             const cc = [introducerEmail, 'footy@toastboy.co.uk']
                 .filter((e): e is string => !!e).join(', ');
             const { player: newPlayer, inviteLink } = await createPlayer(values);
-
-            // TODO: Customize welcome email content
-            await sendEmail(
-                values.email,
-                cc,
-                'Welcome to Toastboy FC!',
-                `&&&& Detailed welcome text goes here: how to log on, where to find info, rules, etc. &&&&
-
-Claim your account: ${inviteLink}`,
+            const html = ReactDOMServer.renderToStaticMarkup(
+                <MantineProvider>
+                    <Flex direction="column" gap="md">
+                        <Text>
+                            Welcome to Toastboy FC!
+                        </Text>
+                        <Text>
+                            Follow this link to get started:
+                            <Anchor href={inviteLink}>confirm your account</Anchor>
+                        </Text>
+                        <Text>
+                            &&&& Detailed welcome text goes here: how to log on, where to find info, rules, etc. &&&&
+                        </Text>
+                    </Flex>
+                </MantineProvider>,
             );
+
+            await sendEmail(values.email, cc, 'Welcome to Toastboy FC!', html);
 
             notifications.update({
                 id,

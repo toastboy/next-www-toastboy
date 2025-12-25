@@ -1,8 +1,8 @@
 import { SignIn } from '@/components/SignIn/SignIn';
 
-type Props = object
+type PageProps = object
 
-const Page: React.FC<Props> = () => {
+const Page: React.FC<PageProps> = () => {
     return (
         <SignIn redirect='/footy/info' />
     );

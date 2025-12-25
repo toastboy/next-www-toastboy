@@ -7,19 +7,19 @@ import { TableName, TableNameSchema } from 'prisma/zod/schemas';
 import playerRecordService from '@/services/PlayerRecord';
 import { PlayerRecordDataType } from '@/types';
 
-interface Props {
+interface PageProps {
     params: Promise<{
         year: [string],
     }>,
 }
 
-export async function generateMetadata(page: Props) {
+export async function generateMetadata(page: PageProps) {
     const { year } = await page.params;
     const yearnum = year ? parseInt(year[0]) : 0;
     return { title: `${getYearName(yearnum)} Winners` };
 }
 
-const Page: React.FC<Props> = async props => {
+const Page: React.FC<PageProps> = async props => {
     const { year } = await props.params;
     const yearnum = year ? parseInt(year[0]) : 0; // Zero or undefined means all-time
     const allYears = await playerRecordService.getAllYears();

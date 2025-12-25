@@ -11,14 +11,14 @@ import countrySupporterService from '@/services/CountrySupporter';
 import playerService from '@/services/Player';
 import playerRecordService from '@/services/PlayerRecord';
 
-interface Props {
+interface PageProps {
     params: Promise<{
         id: string,
         year: [string],
     }>,
 }
 
-export async function generateMetadata(props: Props) {
+export async function generateMetadata(props: PageProps) {
     try {
         const { id } = await props.params;
         const playerId = Number(id);
@@ -34,7 +34,7 @@ export async function generateMetadata(props: Props) {
     }
 }
 
-const Page: React.FC<Props> = async props => {
+const Page: React.FC<PageProps> = async props => {
     const { id, year } = await props.params;
     const yearNum = year ? parseInt(year[0]) : 0;
     const playerId = Number(id);

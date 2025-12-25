@@ -7,13 +7,13 @@ import { PieChart } from '@/components/PieChart/PieChart';
 import { YearSelector } from '@/components/YearSelector/YearSelector';
 import { useBibs, useTableYears } from '@/lib/swr';
 
-interface Props {
+interface PageProps {
     params: Promise<{
         year: string,
     }>,
 }
 
-const Page: React.FC<Props> = (props) => {
+const Page: React.FC<PageProps> = (props) => {
     const { year } = use(props.params);
     const yearnum = parseInt(year) || 0;
     const bibsData = useBibs(parseInt(year));

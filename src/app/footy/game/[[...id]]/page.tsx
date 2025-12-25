@@ -8,13 +8,13 @@ import { GameDaySummary } from '@/components/GameDaySummary/GameDaySummary';
 import gameDayService from '@/services/GameDay';
 import outcomeService from '@/services/Outcome';
 
-interface Props {
+interface PageProps {
     params: Promise<{
         id: string,
     }>,
 }
 
-const Page: React.FC<Props> = async (props) => {
+const Page: React.FC<PageProps> = async (props) => {
     const { id } = await props.params;
     if (!id) {
         const currentGame = await gameDayService.getCurrent();

@@ -2,9 +2,9 @@ import { MustBeLoggedIn } from '@/components/MustBeLoggedIn/MustBeLoggedIn';
 import { NewPlayerForm } from '@/components/NewPlayerForm/NewPlayerForm';
 import playerService from '@/services/Player';
 
-type Props = object;
+type PageProps = object;
 
-const Page: React.FC<Props> = async () => {
+const Page: React.FC<PageProps> = async () => {
     const players = await playerService.getAll();
 
     return (

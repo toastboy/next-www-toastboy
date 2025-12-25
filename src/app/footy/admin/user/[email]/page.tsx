@@ -10,11 +10,11 @@ import type { UserWithRolePayload } from '@/actions/auth';
 import { listUsersAction } from '@/actions/auth';
 import { MustBeLoggedIn } from '@/components/MustBeLoggedIn/MustBeLoggedIn';
 
-interface Props {
+interface PageProps {
     params: Promise<{ email: string }>,
 }
 
-const Page: React.FC<Props> = (props) => {
+const Page: React.FC<PageProps> = (props) => {
     const { email } = use(props.params);
 
     const [isAllowed, setIsAllowed] = useState<boolean | null>(null);

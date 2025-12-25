@@ -143,7 +143,7 @@ src/lib/config.ts
 src/lib/crawllivesite/crawllivesite.ts
 src/lib/health.ts
 src/lib/importlivedb/importlivedb.ts
-src/lib/mail.ts
+src/actions/sendEmail.ts
 src/prisma/prisma.ts
 src/lib/secrets.ts
 src/lib/swr.ts

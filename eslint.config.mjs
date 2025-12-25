@@ -6,9 +6,7 @@ import { FlatCompat } from "@eslint/eslintrc";
 import js from "@eslint/js";
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
 import tsParser from "@typescript-eslint/parser";
-import next from "eslint-config-next";
 import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
-import nextTypescript from "eslint-config-next/typescript";
 import eslintComments from "eslint-plugin-eslint-comments";
 import importX from "eslint-plugin-import-x";
 import jest from "eslint-plugin-jest";
@@ -34,26 +32,24 @@ const compat = new FlatCompat({
     allConfig: js.configs.all,
 });
 
-// Precompute type-aware TypeScript configs and attach file scoping to avoid spreading arrays into objects.
-const tsTypeAware = compat
-    .extends(
-        "plugin:@typescript-eslint/recommended-type-checked",
-        "plugin:@typescript-eslint/stylistic-type-checked",
-    )
-    .map((conf) => ({
-        ...conf,
-        files: ["**/*.ts", "**/*.tsx"],
-        languageOptions: {
-            // Preserve any languageOptions from the compat output while enforcing project parser.
-            ...conf.languageOptions,
-            parser: tsParser,
-            parserOptions: {
-                ...(conf.languageOptions?.parserOptions || {}),
-                project: tsconfigPath,
-                tsconfigRootDir: __dirname,
-            },
+// Precompute type-aware TypeScript rule sets and scope them to TS files only.
+const tsTypeChecked = typescriptEslint.configs["flat/recommended-type-checked"].slice(1);
+const tsStylistic = typescriptEslint.configs["flat/stylistic-type-checked"].slice(1);
+const tsTypeAware = [...tsTypeChecked, ...tsStylistic].map((conf) => ({
+    ...conf,
+    files: ["**/*.ts", "**/*.tsx"],
+}));
+
+const tsProjectConfig = {
+    files: ["**/*.ts", "**/*.tsx"],
+    languageOptions: {
+        parser: tsParser,
+        parserOptions: {
+            project: tsconfigPath,
+            tsconfigRootDir: __dirname,
         },
-    }));
+    },
+};
 
 const importResolver = {
     typescript: {
@@ -68,14 +64,10 @@ const importResolver = {
 
 const config = [
     ...nextCoreWebVitals,
-    ...nextTypescript,
     ...compat.extends("eslint:recommended"),
-    ...next,
-    ...compat.extends("plugin:@typescript-eslint/recommended"),
     ...compat.extends("plugin:react/recommended"),
     {
         plugins: {
-            "@typescript-eslint": typescriptEslint,
             react,
             // New general-purpose plugins
             "import-x": importX,
@@ -102,13 +94,8 @@ const config = [
                 ...globals.node,
             },
 
-            parser: tsParser,
             ecmaVersion: "latest",
             sourceType: "module",
-
-            parserOptions: {
-                project: tsconfigPath,
-            },
         },
 
         settings: {
@@ -128,14 +115,6 @@ const config = [
             }],
 
             semi: ["error", "always"],
-            "@typescript-eslint/await-thenable": "error",
-            "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
-
-            "@typescript-eslint/consistent-type-assertions": ["error", {
-                assertionStyle: "as",
-                objectLiteralTypeAssertions: "allow-as-parameter",
-            }],
-
             "comma-dangle": ["error", {
                 arrays: "always-multiline",
                 objects: "always-multiline",
@@ -177,15 +156,19 @@ const config = [
             "regexp/no-dupe-characters-character-class": "error",
         },
     },
+    tsProjectConfig,
     // Inject the type-aware recommended configs (scoped to TS files).
     ...tsTypeAware,
     // Additional type-aware rule refinements layered AFTER base TS configs.
     {
         files: ["**/*.ts", "**/*.tsx"],
-        plugins: {
-            "@typescript-eslint": typescriptEslint,
-        },
         rules: {
+            "@typescript-eslint/await-thenable": "error",
+            "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
+            "@typescript-eslint/consistent-type-assertions": ["error", {
+                assertionStyle: "as",
+                objectLiteralTypeAssertions: "allow-as-parameter",
+            }],
             "@typescript-eslint/no-floating-promises": "error",
             "@typescript-eslint/no-misused-promises": ["error", { checksVoidReturn: false }],
             "@typescript-eslint/non-nullable-type-assertion-style": "warn",
@@ -256,17 +239,6 @@ const config = [
         },
     },
     {
-        files: ["eslint.config.mjs"],
-        languageOptions: {
-            parserOptions: {
-                project: null,
-            },
-        },
-        rules: {
-            "@typescript-eslint/await-thenable": "off",
-        },
-    },
-    {
         ignores: [
             "node_modules/**",
             ".next/**",
@@ -282,9 +254,6 @@ const config = [
     // Optional stricter unsafe usage warnings (keep lightweight to avoid noise).
     {
         files: ["**/*.ts", "**/*.tsx"],
-        plugins: {
-            "@typescript-eslint": typescriptEslint,
-        },
         rules: {
             "@typescript-eslint/no-unsafe-assignment": "warn",
             "@typescript-eslint/no-unsafe-member-access": "warn",

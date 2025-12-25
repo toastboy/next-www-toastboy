@@ -1,4 +1,4 @@
-jest.mock('@/lib/mail', () => ({
+jest.mock('@/actions/sendEmail', () => ({
     sendEmail: jest.fn(),
 }));
 
@@ -18,8 +18,8 @@ import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { createPlayer } from '@/actions/createPlayer';
+import { sendEmail } from '@/actions/sendEmail';
 import { NewPlayerForm } from '@/components/NewPlayerForm/NewPlayerForm';
-import { sendEmail } from '@/lib/mail';
 import { Wrapper } from '@/tests/components/lib/common';
 
 const mockCreatePlayer = createPlayer as jest.MockedFunction<typeof createPlayer>;

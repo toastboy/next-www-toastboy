@@ -47,7 +47,7 @@ const config: StorybookConfig = {
             // Stub secrets to avoid process.env + fs access in Storybook
             '@/lib/secrets': path.resolve(__dirname, './mocks/secrets.mock.ts'),
             // Stub mailer to avoid nodemailer in Storybook
-            '@/lib/mail': path.resolve(__dirname, './mocks/mail.mock.ts'),
+            '@/actions/sendEmail': path.resolve(__dirname, './mocks/actions-sendEmail.mock.ts'),
             // Path aliases matching tsconfig - still need zod schema imports to work
             'prisma': path.resolve(__dirname, '../prisma'),
             '@': path.resolve(__dirname, '../src'),

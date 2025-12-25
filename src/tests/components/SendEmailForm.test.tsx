@@ -1,4 +1,4 @@
-jest.mock('@/lib/mail', () => ({
+jest.mock('@/actions/sendEmail', () => ({
     sendEmail: jest.fn().mockResolvedValue(undefined),
 }));
 

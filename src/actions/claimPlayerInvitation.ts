@@ -1,14 +1,15 @@
 'use server';
 
 import { hashPlayerInvitationToken } from '@/lib/playerInvitation';
+import authService from '@/services/Auth';
 import playerService from '@/services/Player';
 
 /**
  * Claims a player invitation using a plaintext token.
  *
  * Validates the token, resolves the invitation from its hashed token, checks
- * usage and expiration, enforces email ownership rules, then marks the
- * invitation as used and records the verified email for the player.
+ * usage and expiration, enforces email ownership rules, then resolves the
+ * player record for the invitation.
  *
  * @param token - The raw invitation token provided to the player.
  * @returns A promise that resolves with the invitation claim result:
@@ -26,10 +27,10 @@ import playerService from '@/services/Player';
  * - The invitation is retrieved with `playerService.getPlayerInvitationByTokenHash`.
  * - Email uniqueness is checked via `playerService.getPlayerEmailByEmail`; if an
  *   existing email belongs to a different player, the claim is rejected.
- * - On success, the invitation is marked used and a verified player email is
- *   upserted with the current timestamp.
+ * - To mark the invitation as used and upsert a verified player email, call
+ *   `finalizePlayerInvitationClaim` after the login account is created.
  */
-export async function claimPlayerInvitation(token: string) {
+async function getValidInvitation(token: string) {
     if (!token) {
         throw new Error('Missing invitation token.');
     }
@@ -54,11 +55,11 @@ export async function claimPlayerInvitation(token: string) {
         throw new Error('Email address already belongs to another player.');
     }
 
-    // TODO: Only mark as used and verify email within a transaction (check what this means!)
-    // TODO: Only mark the invitation as used once the login account has been successfully created
-    await playerService.markPlayerInvitationUsed(invitation.id, now);
-    await playerService.upsertVerifiedPlayerEmail(invitation.playerId, invitation.email, now);
+    return { invitation, now };
+}
 
+export async function claimPlayerInvitation(token: string) {
+    const { invitation } = await getValidInvitation(token);
     const player = await playerService.getById(invitation.playerId);
 
     if (!player) {
@@ -69,4 +70,16 @@ export async function claimPlayerInvitation(token: string) {
         player: player,
         email: invitation.email,
     };
+}
+
+export async function finalizePlayerInvitationClaim(token: string) {
+    const { invitation, now } = await getValidInvitation(token);
+    const loginAccount = await authService.getUserByEmail(invitation.email);
+
+    if (!loginAccount) {
+        throw new Error('Login account not found for invitation.');
+    }
+
+    await playerService.upsertVerifiedPlayerEmail(invitation.playerId, invitation.email, now);
+    await playerService.markPlayerInvitationUsed(invitation.id, now);
 }

@@ -25,6 +25,7 @@ import { authClient, signInWithGoogle, signInWithMicrosoft } from '@/lib/auth-cl
 interface ClaimSignupProps {
     name: string
     email: string;
+    token: string;
 }
 
 const ClaimSignupSchema = z.object({
@@ -37,11 +38,11 @@ const ClaimSignupSchema = z.object({
     path: ['confirmPassword'],
 });
 
-export const ClaimSignup = ({ name, email }: ClaimSignupProps) => {
+export const ClaimSignup = ({ name, email, token }: ClaimSignupProps) => {
     const [loading, setLoading] = useState(false);
     const [signupError, setSignupError] = useState<boolean>(false);
     const router = useRouter();
-    const redirect = '/footy/profile';
+    const redirect = `/footy/auth/claim/complete?token=${encodeURIComponent(token)}`;
 
     const form = useForm({
         initialValues: {

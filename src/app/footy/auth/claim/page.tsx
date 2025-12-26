@@ -44,6 +44,7 @@ const Page = async ({ searchParams: sp }: PageProps) => {
         <ClaimSignup
             name={name ?? ''}
             email={email ?? ''}
+            token={token}
         />
     );
 };

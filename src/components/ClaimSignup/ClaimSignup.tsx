@@ -1,29 +1,34 @@
 'use client';
 
-import { Anchor, Box, Button, Container, Divider, Group, Notification, PasswordInput, Stack, Text, TextInput, Title } from '@mantine/core';
+import { Box, Button, Container, Divider, Notification, PasswordInput, Stack, Text, TextInput, Title } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import * as Sentry from '@sentry/react';
 import { IconAt, IconIdBadge, IconLock, IconX } from '@tabler/icons-react';
-import { useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { authClient, signInWithGoogle, signInWithMicrosoft } from '@/lib/auth-client';
 
-export default function SignUpPage() {
+interface ClaimSignupProps {
+    name: string
+    email: string;
+    redirect: string;
+}
+
+export const ClaimSignup = ({ name, email, redirect }: ClaimSignupProps) => {
     const [loading, setLoading] = useState(false);
     const [signupError, setSignupError] = useState<boolean>(false);
-    const searchParams = useSearchParams();
-    const initialEmail = searchParams.get('email') ?? '';
-    const redirect = searchParams.get('redirect') ?? '/footy/info';
+    const router = useRouter();
 
     const form = useForm({
         initialValues: {
-            name: '',
-            email: initialEmail,
+            name,
+            email,
             password: '',
         },
 
         validate: {
+            // TODO: Use zod validation schema
             email: (value) =>
                 /^\S+@\S+\.\S+$/.test(value) ? null : 'Invalid email format',
             password: (value) =>
@@ -31,32 +36,24 @@ export default function SignUpPage() {
         },
     });
 
-    const handleSignUp = async (values: { name: string, email: string; password: string }) => {
+    const handleSignUp = async (values: { name: string; email: string; password: string }) => {
         setLoading(true);
         setSignupError(false);
 
         try {
-            const result = await authClient.signUp.email({
-                // redirect: false, // Disable automatic redirection
+            await authClient.signUp.email({
                 name: values.name,
                 email: values.email,
                 password: values.password,
-                playerId: 12, // TODO: Replace with actual player ID
             }, {
-                onRequest: () => {
-                    // TODO: show loading
-                },
-                onSuccess: () => {
-                    // TODO: redirect to the dashboard
-                },
                 onError: (ctx) => {
                     alert(ctx.error.message);
                 },
             });
 
-            Sentry.captureMessage(`Sign up result: ${JSON.stringify(result)}`, 'info');
+            router.push(redirect);
         } catch (error) {
-            Sentry.captureMessage(`Sign in error: ${String(error)}`, 'error');
+            Sentry.captureMessage(`Sign up error: ${String(error)}`, 'error');
             setSignupError(true);
         } finally {
             setLoading(false);
@@ -77,9 +74,11 @@ export default function SignUpPage() {
         <Container size="xs" mt="xl" >
             <Stack>
                 <Title order={2} mb="md" >
-                    Sign up for your account
+                    Finish creating your login
                 </Title>
-                <Text mb="lg">If you already have a player profile, you can add a login for each of your email addresses</Text>
+                <Text mb="lg">
+                    Your email address &quot;{email}&quot; has been verified. Choose how you want to sign in.
+                </Text>
             </Stack>
 
             <Stack mb="lg">
@@ -109,6 +108,7 @@ export default function SignUpPage() {
                         label="Email"
                         placeholder="Enter your email"
                         rightSection={<IconAt size={16} />}
+                        readOnly
                         {...form.getInputProps('email')}
                     />
                     <PasswordInput
@@ -119,16 +119,11 @@ export default function SignUpPage() {
                         {...form.getInputProps('password')}
                     />
                     {errorNotification}
-                    <Group mt="sm" >
-                        <Anchor href="/auth/reset-password" size="sm" >
-                            Forgot your password ?
-                        </Anchor>
-                    </Group>
                     <Button type="submit" fullWidth loading={loading} >
-                        Sign Up
+                        Create login
                     </Button>
                 </Stack>
             </Box>
         </Container>
     );
-}
+};

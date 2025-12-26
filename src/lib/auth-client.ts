@@ -9,7 +9,7 @@ export const authClient = createAuthClient({
             user: {
                 playerId: {
                     type: 'number',
-                    required: true,
+                    required: false,
                 },
             },
         }),

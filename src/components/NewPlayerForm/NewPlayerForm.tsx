@@ -44,6 +44,7 @@ export interface Props {
 export const NewPlayerForm: React.FC<Props> = ({ players }) => {
     const router = useRouter();
 
+    // TODO: Don't allow an email which is already registered
     const form = useForm({
         initialValues: {
             name: '',
@@ -72,6 +73,7 @@ export const NewPlayerForm: React.FC<Props> = ({ players }) => {
             const cc = [introducerEmail, 'footy@toastboy.co.uk']
                 .filter((e): e is string => !!e).join(', ');
             const { player: newPlayer, inviteLink } = await createPlayer(values);
+            // TODO: Finish off welcome email body
             const html = ReactDOMServer.renderToStaticMarkup(
                 <MantineProvider>
                     <Flex direction="column" gap="md">

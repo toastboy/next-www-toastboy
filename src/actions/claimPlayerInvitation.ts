@@ -12,7 +12,7 @@ import playerService from '@/services/Player';
  *
  * @param token - The raw invitation token provided to the player.
  * @returns A promise that resolves with the invitation claim result:
- *          { playerId, email }.
+ *          { player, email }.
  *
  * @throws Error If:
  * - Missing invitation token.
@@ -54,11 +54,19 @@ export async function claimPlayerInvitation(token: string) {
         throw new Error('Email address already belongs to another player.');
     }
 
+    // TODO: Only mark as used and verify email within a transaction (check what this means!)
+    // TODO: Only mark the invitation as used once the login account has been successfully created
     await playerService.markPlayerInvitationUsed(invitation.id, now);
     await playerService.upsertVerifiedPlayerEmail(invitation.playerId, invitation.email, now);
 
+    const player = await playerService.getById(invitation.playerId);
+
+    if (!player) {
+        throw new Error('Player not found.');
+    }
+
     return {
-        playerId: invitation.playerId,
+        player: player,
         email: invitation.email,
     };
 }

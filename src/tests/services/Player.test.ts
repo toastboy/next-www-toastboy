@@ -392,7 +392,7 @@ describe('PlayerService', () => {
 
     describe('getAll', () => {
         it('should return the correct, complete list of 100 players', async () => {
-            const defaultPlayerList: Array<PlayerType & { outcomes: OutcomeType[]; emails: PlayerEmailType[] }> = Array.from({ length: 100 }, (_, outerIndex) => ({
+            const defaultPlayerList: (PlayerType & { outcomes: OutcomeType[]; emails: PlayerEmailType[] })[] = Array.from({ length: 100 }, (_, outerIndex) => ({
                 ...defaultPlayer,
                 id: outerIndex + 1,
                 finished: outerIndex % 2 === 0 ? new Date("2020-01-01") : null,

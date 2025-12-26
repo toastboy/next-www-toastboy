@@ -15,8 +15,10 @@ import {
 import { useForm } from '@mantine/form';
 import * as Sentry from '@sentry/react';
 import { IconAt, IconIdBadge, IconLock, IconX } from '@tabler/icons-react';
+import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { z } from 'zod';
 
 import { authClient, signInWithGoogle, signInWithMicrosoft } from '@/lib/auth-client';
 
@@ -24,6 +26,16 @@ interface ClaimSignupProps {
     name: string
     email: string;
 }
+
+const ClaimSignupSchema = z.object({
+    name: z.string().min(1, { message: 'Name is required' }),
+    email: z.string().email({ message: 'Invalid email format' }),
+    password: z.string().min(8, { message: 'Password must be at least 8 characters long' }),
+    confirmPassword: z.string().min(1, { message: 'Please confirm your password' }),
+}).refine((data) => data.password === data.confirmPassword, {
+    message: 'Passwords do not match',
+    path: ['confirmPassword'],
+});
 
 export const ClaimSignup = ({ name, email }: ClaimSignupProps) => {
     const [loading, setLoading] = useState(false);
@@ -36,18 +48,13 @@ export const ClaimSignup = ({ name, email }: ClaimSignupProps) => {
             name,
             email,
             password: '',
+            confirmPassword: '',
         },
-
-        validate: {
-            // TODO: Use zod validation schema
-            email: (value) =>
-                /^\S+@\S+\.\S+$/.test(value) ? null : 'Invalid email format',
-            password: (value) =>
-                value.length >= 8 ? null : 'Password must be at least 8 characters long',
-        },
+        validate: zod4Resolver(ClaimSignupSchema),
+        validateInputOnBlur: true,
     });
 
-    const handleSignUp = async (values: { name: string; email: string; password: string }) => {
+    const handleSignUp = async (values: z.infer<typeof ClaimSignupSchema>) => {
         setLoading(true);
         setSignupError(false);
 
@@ -130,6 +137,13 @@ export const ClaimSignup = ({ name, email }: ClaimSignupProps) => {
                         placeholder="Enter your password"
                         rightSection={<IconLock size={16} />}
                         {...form.getInputProps('password')}
+                    />
+                    <PasswordInput
+                        withAsterisk
+                        label="Confirm password"
+                        placeholder="Re-enter your password"
+                        rightSection={<IconLock size={16} />}
+                        {...form.getInputProps('confirmPassword')}
                     />
                     {errorNotification}
                     <Button type="submit" fullWidth loading={loading} >

@@ -45,7 +45,6 @@ describe('API tests using HTTP', () => {
         if (!wirePlayer) throw new Error("toWire(mockPlayer) returned null/undefined");
         expect(response.body).toEqual({
             ...wirePlayer,
-            email: undefined,
             born: undefined,
             comment: undefined,
         });
@@ -56,7 +55,6 @@ describe('API tests using HTTP', () => {
         (playerService.getById as jest.Mock).mockResolvedValue({
             ...mockPlayer,
             anonymous: true,
-            email: undefined,
             born: undefined,
             comment: undefined,
         });
@@ -70,7 +68,6 @@ describe('API tests using HTTP', () => {
         expect(response.body).toEqual({
             ...wirePlayer,
             anonymous: true,
-            email: undefined,
             born: undefined,
             comment: undefined,
         });

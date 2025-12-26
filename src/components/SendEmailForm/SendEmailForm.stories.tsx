@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 
-import { defaultPlayerList } from '@/tests/mocks';
+import { defaultPlayerDataList } from '@/tests/mocks';
 
 import { SendEmailForm } from './SendEmailForm';
 
@@ -20,6 +20,6 @@ export const Primary: Story = {
     args: {
         opened: true,
         onClose: () => undefined,
-        players: defaultPlayerList.slice(0, 3),
+        players: defaultPlayerDataList.slice(0, 3),
     },
 };

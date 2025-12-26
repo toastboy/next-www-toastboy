@@ -7,7 +7,6 @@ import { PlayerTimeline } from 'components/PlayerTimeline/PlayerTimeline';
 import { PlayerWDLChart } from 'components/PlayerWDLChart/PlayerWDLChart';
 import { SendEmailForm } from 'components/SendEmailForm/SendEmailForm';
 import { useCurrentGame, usePlayers } from 'lib/swr';
-import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import { useState } from 'react';
 import { PlayerDataType } from 'types';
 
@@ -21,7 +20,7 @@ const Page: React.FC<PageProps> = () => {
     const [filter, setFilter] = useState('');
     const [active, setActive] = useState(true);
     const [replyRange, setReplyRange] = useState<[number, number]>([0, 0]);
-    const [selectedPlayers, setSelectedPlayers] = useState<PlayerType[]>([]);
+    const [selectedPlayers, setSelectedPlayers] = useState<PlayerDataType[]>([]);
     const [modalOpened, setModalOpened] = useState(false);
 
     const handleSort = (key: keyof PlayerDataType) => {
@@ -33,7 +32,7 @@ const Page: React.FC<PageProps> = () => {
         }
     };
 
-    const handleSelectPlayer = (player: PlayerType) => {
+    const handleSelectPlayer = (player: PlayerDataType) => {
         if (selectedPlayers.includes(player)) {
             setSelectedPlayers((prev) => prev.filter((p) => player !== p));
         } else {
@@ -48,8 +47,11 @@ const Page: React.FC<PageProps> = () => {
 
     const filteredPlayers = players?.filter((player) => {
         const searchTerm = filter.toLowerCase();
-        const searchResult = (player.name?.toLowerCase().includes(searchTerm) ??
-            player.email?.toLowerCase().includes(searchTerm));
+        const nameMatches = player.name?.toLowerCase().includes(searchTerm) ?? false;
+        const emailMatches = player.emails.some((playerEmail) =>
+            playerEmail.email.toLowerCase().includes(searchTerm),
+        );
+        const searchResult = nameMatches || emailMatches;
 
         return searchResult && (!active || player.finished === null);
     }) || [];

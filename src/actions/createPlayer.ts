@@ -35,7 +35,6 @@ export async function createPlayer(rawData: unknown) {
 
     const player = await playerService.create({
         name,
-        email: data.email,
         introducedBy: introducedById,
         joined: new Date(),
     });

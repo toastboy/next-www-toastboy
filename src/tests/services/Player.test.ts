@@ -35,6 +35,7 @@ jest.mock('prisma/prisma', () => ({
     playerEmail: {
         findFirst: jest.fn(),
         findUnique: jest.fn(),
+        findMany: jest.fn(),
         create: jest.fn(),
         upsert: jest.fn(),
     },
@@ -243,33 +244,9 @@ describe('PlayerService', () => {
 
         it('should return null when no player found with email', async () => {
             (prisma.playerEmail.findFirst as jest.Mock).mockResolvedValueOnce(null);
-            (prisma.player.findFirst as jest.Mock).mockResolvedValueOnce(null);
 
             const result = await playerService.getIdByEmail('unknown@example.com');
             expect(result).toBeNull();
-        });
-
-        it('should fall back to legacy email matching when no verified PlayerEmail exists', async () => {
-            (prisma.playerEmail.findFirst as jest.Mock).mockResolvedValueOnce(null);
-            (prisma.player.findFirst as jest.Mock).mockResolvedValueOnce(null);
-
-            await playerService.getIdByEmail('test@example.com');
-
-            expect(prisma.playerEmail.findFirst).toHaveBeenCalledWith({
-                where: {
-                    email: 'test@example.com',
-                    verifiedAt: {
-                        not: null,
-                    },
-                },
-            });
-            expect(prisma.player.findFirst).toHaveBeenCalledWith({
-                where: {
-                    email: {
-                        contains: 'test@example.com',
-                    },
-                },
-            });
         });
     });
 
@@ -415,10 +392,11 @@ describe('PlayerService', () => {
 
     describe('getAll', () => {
         it('should return the correct, complete list of 100 players', async () => {
-            const defaultPlayerList: PlayerType[] = Array.from({ length: 100 }, (_, outerIndex) => ({
+            const defaultPlayerList: Array<PlayerType & { outcomes: OutcomeType[]; emails: PlayerEmailType[] }> = Array.from({ length: 100 }, (_, outerIndex) => ({
                 ...defaultPlayer,
                 id: outerIndex + 1,
                 finished: outerIndex % 2 === 0 ? new Date("2020-01-01") : null,
+                emails: [],
                 outcomes: Array.from({ length: 10 }, (_, index) => ({
                     ...defaultOutcome,
                     playerId: outerIndex + 1,
@@ -436,9 +414,10 @@ describe('PlayerService', () => {
         });
 
         it('should return null for firstResponded/lastResponded when player has no responses', async () => {
-            const playerWithNoResponses: PlayerType & { outcomes: OutcomeType[] } = {
+            const playerWithNoResponses: PlayerType & { outcomes: OutcomeType[]; emails: PlayerEmailType[] } = {
                 ...defaultPlayer,
                 id: 1,
+                emails: [],
                 outcomes: [
                     {
                         ...defaultOutcome,
@@ -461,9 +440,10 @@ describe('PlayerService', () => {
         });
 
         it('should return null for firstPlayed/lastPlayed when player has responses but no games played', async () => {
-            const playerWithResponsesButNoGames: PlayerType & { outcomes: OutcomeType[] } = {
+            const playerWithResponsesButNoGames: PlayerType & { outcomes: OutcomeType[]; emails: PlayerEmailType[] } = {
                 ...defaultPlayer,
                 id: 1,
+                emails: [],
                 outcomes: [
                     {
                         ...defaultOutcome,
@@ -493,9 +473,10 @@ describe('PlayerService', () => {
         });
 
         it('should return correct values when player has empty outcomes array', async () => {
-            const playerWithNoOutcomes: PlayerType & { outcomes: OutcomeType[] } = {
+            const playerWithNoOutcomes: PlayerType & { outcomes: OutcomeType[]; emails: PlayerEmailType[] } = {
                 ...defaultPlayer,
                 id: 1,
+                emails: [],
                 outcomes: [],
             };
 
@@ -515,20 +496,20 @@ describe('PlayerService', () => {
 
     describe('getAllEmailSources', () => {
         it('should return player ids with raw email strings', async () => {
-            (prisma.player.findMany as jest.Mock).mockResolvedValueOnce([
-                { id: 1, email: 'first@example.com' },
-                { id: 2, email: null },
+            (prisma.playerEmail.findMany as jest.Mock).mockResolvedValueOnce([
+                { playerId: 1, email: 'first@example.com' },
+                { playerId: 2, email: 'second@example.com' },
             ]);
 
             const result = await playerService.getAllEmailSources();
 
             expect(result).toEqual([
                 { playerId: 1, email: 'first@example.com' },
-                { playerId: 2, email: null },
+                { playerId: 2, email: 'second@example.com' },
             ]);
-            expect(prisma.player.findMany).toHaveBeenCalledWith({
+            expect(prisma.playerEmail.findMany).toHaveBeenCalledWith({
                 select: {
-                    id: true,
+                    playerId: true,
                     email: true,
                 },
             });

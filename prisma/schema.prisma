@@ -170,7 +170,6 @@ model Player {
     name      String?
     anonymous Boolean?
 
-    email    String?
     joined   DateTime?
     finished DateTime?
     born     DateTime?

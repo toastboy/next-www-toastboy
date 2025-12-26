@@ -5,7 +5,6 @@ export const defaultPlayer: PlayerType = {
     id: 1,
     isAdmin: false,
     name: "Gary Player",
-    email: "gary.player@example.com",
     joined: new Date("2021-01-01"),
     finished: null,
     born: new Date("1975-11-01"),

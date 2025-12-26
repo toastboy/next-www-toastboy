@@ -21,14 +21,15 @@ import { createPlayer } from '@/actions/createPlayer';
 import { sendEmail } from '@/actions/sendEmail';
 import { NewPlayerForm } from '@/components/NewPlayerForm/NewPlayerForm';
 import { Wrapper } from '@/tests/components/lib/common';
+import { createMockPlayerData } from '@/tests/mocks';
 
 const mockCreatePlayer = createPlayer as jest.MockedFunction<typeof createPlayer>;
 const mockSendEmail = sendEmail as jest.MockedFunction<typeof sendEmail>;
 
 describe('NewPlayerForm', () => {
     const players = [
-        { id: 1, name: 'Sam Smith' },
-        { id: 2, name: 'Alex Doe' },
+        createMockPlayerData({ id: 1, name: 'Sam Smith' }),
+        createMockPlayerData({ id: 2, name: 'Alex Doe' }),
     ];
 
     beforeEach(() => {
@@ -219,7 +220,7 @@ describe('NewPlayerForm', () => {
         expect(emailInput).toHaveValue('valid@example.com');
     });
 
-    it('email input is required', () => {
+    it('email input is not required', () => {
         render(
             <Wrapper>
                 <NewPlayerForm players={players} />
@@ -227,7 +228,7 @@ describe('NewPlayerForm', () => {
         );
 
         const emailInput = screen.getByLabelText(/Email address/i);
-        expect(emailInput).toBeRequired();
+        expect(emailInput).not.toBeRequired();
     });
 
     it('form has correct email input attributes', () => {

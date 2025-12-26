@@ -4,6 +4,15 @@ import { defaultPlayer } from './player';
 
 export const defaultPlayerData: PlayerDataType = {
     ...defaultPlayer,
+    emails: [
+        {
+            id: 1,
+            playerId: 1,
+            email: 'gary.player@example.com',
+            verifiedAt: new Date('2021-01-01'),
+            createdAt: new Date('2021-01-01'),
+        },
+    ],
     firstResponded: 1,
     lastResponded: 100,
     firstPlayed: 5,
@@ -14,10 +23,21 @@ export const defaultPlayerData: PlayerDataType = {
     gamesLost: 20,
 };
 
-export const createMockPlayerData = (overrides: Partial<PlayerDataType> = {}): PlayerDataType => ({
-    ...defaultPlayerData,
-    ...overrides,
-});
+export const createMockPlayerData = (overrides: Partial<PlayerDataType> = {}): PlayerDataType => {
+    const playerData: PlayerDataType = {
+        ...defaultPlayerData,
+        ...overrides,
+    };
+
+    if (!overrides.emails) {
+        playerData.emails = playerData.emails.map((email) => ({
+            ...email,
+            playerId: playerData.id,
+        }));
+    }
+
+    return playerData;
+};
 
 export const defaultPlayerDataList: PlayerDataType[] = Array.from({ length: 100 }, (_, index) =>
     createMockPlayerData({

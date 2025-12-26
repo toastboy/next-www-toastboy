@@ -3,7 +3,7 @@ import { within } from '@storybook/testing-library';
 import { mocked } from 'storybook/test';
 
 import { createPlayer } from '@/actions/createPlayer';
-import { defaultPlayerList } from '@/tests/mocks';
+import { defaultPlayerDataList } from '@/tests/mocks';
 
 import { NewPlayerForm } from './NewPlayerForm';
 
@@ -21,7 +21,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {
     args: {
-        players: defaultPlayerList.slice(0, 3),
+        players: defaultPlayerDataList.slice(0, 3),
     },
     play: async function ({ canvasElement, userEvent, viewMode }) {
         if (viewMode === 'docs') return;

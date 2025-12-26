@@ -10,8 +10,8 @@ import TextAlign from '@tiptap/extension-text-align';
 import Underline from '@tiptap/extension-underline';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import { useState } from 'react';
+import { PlayerDataType } from 'types';
 
 import { sendEmail } from '@/actions/sendEmail';
 
@@ -20,13 +20,17 @@ import classes from './SendEmailForm.module.css';
 export interface Props {
     opened: boolean;
     onClose: () => void;
-    players: PlayerType[];
+    players: PlayerDataType[];
 }
 
 export const SendEmailForm: React.FC<Props> = ({ opened, onClose, players }) => {
     const [subject, setSubject] = useState('');
     const names = players.map((player) => player.name).join(', ');
-    const emails = players.map((player) => player.email).join(',');
+    const emails = Array.from(new Set(players.flatMap((player) => {
+        const verifiedEmails = player.emails.filter((playerEmail) => playerEmail.verifiedAt);
+        const preferredEmails = verifiedEmails.length > 0 ? verifiedEmails : player.emails;
+        return preferredEmails.map((playerEmail) => playerEmail.email);
+    }).filter((email) => email.length > 0))).join(',');
 
     const editor = useEditor({
         extensions: [

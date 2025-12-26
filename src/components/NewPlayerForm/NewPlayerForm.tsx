@@ -15,8 +15,8 @@ import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useRouter } from 'next/navigation';
-import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import ReactDOMServer from 'react-dom/server';
+import { PlayerDataType } from 'types';
 
 import { createPlayer } from '@/actions/createPlayer';
 import { sendEmail } from '@/actions/sendEmail';
@@ -24,7 +24,7 @@ import { EmailInput } from '@/components/EmailInput/EmailInput';
 import { CreatePlayerInput, CreatePlayerSchema } from '@/types/CreatePlayerInput';
 
 export interface Props {
-    players: PlayerType[];
+    players: PlayerDataType[];
 }
 
 /**
@@ -43,6 +43,11 @@ export interface Props {
  */
 export const NewPlayerForm: React.FC<Props> = ({ players }) => {
     const router = useRouter();
+    const getPreferredEmail = (player?: PlayerDataType) => {
+        if (!player?.emails.length) return '';
+        const verifiedEmail = player.emails.find((playerEmail) => playerEmail.verifiedAt);
+        return (verifiedEmail ?? player.emails[0])?.email ?? '';
+    };
 
     const form = useForm({
         initialValues: {
@@ -70,7 +75,7 @@ export const NewPlayerForm: React.FC<Props> = ({ players }) => {
 
             if (values.email?.length > 0) {
                 const introducerEmail = values.introducedBy
-                    ? players.find((p) => p.id.toString() === values.introducedBy)?.email ?? ''
+                    ? getPreferredEmail(players.find((p) => p.id.toString() === values.introducedBy))
                     : '';
                 const cc = [introducerEmail, 'footy@toastboy.co.uk']
                     .filter((e): e is string => !!e).join(', ');

@@ -225,15 +225,7 @@ class PlayerService {
             if (playerEmail) {
                 return playerEmail.playerId;
             }
-
-            const player = await prisma.player.findFirst({
-                where: {
-                    email: {
-                        contains: email,
-                    },
-                },
-            });
-            return player ? player.id : null;
+            return null;
         } catch (error) {
             log(`Error getting Player id: ${String(error)}`);
             throw error;
@@ -357,6 +349,12 @@ class PlayerService {
                             gameDayId: 'desc',
                         },
                     },
+                    emails: {
+                        orderBy: [
+                            { verifiedAt: 'desc' },
+                            { createdAt: 'desc' },
+                        ],
+                    },
                 },
             });
 
@@ -391,17 +389,12 @@ class PlayerService {
      */
     async getAllEmailSources(): Promise<{ playerId: number; email: string | null }[]> {
         try {
-            const players = await prisma.player.findMany({
+            return await prisma.playerEmail.findMany({
                 select: {
-                    id: true,
+                    playerId: true,
                     email: true,
                 },
             });
-
-            return players.map((player) => ({
-                playerId: player.id,
-                email: player.email ?? null,
-            }));
         } catch (error) {
             log(`Error fetching Player emails: ${String(error)}`);
             throw error;

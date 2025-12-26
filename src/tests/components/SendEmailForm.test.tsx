@@ -6,7 +6,7 @@ import { render, screen, waitFor } from '@testing-library/react';
 
 import { SendEmailForm } from '@/components/SendEmailForm/SendEmailForm';
 import { Wrapper } from '@/tests/components/lib/common';
-import { defaultPlayer } from '@/tests/mocks';
+import { defaultPlayerData } from '@/tests/mocks';
 
 jest.mock('@tiptap/react', () => ({
     useEditor: jest.fn(() => ({
@@ -19,7 +19,7 @@ describe('SendEmailForm', () => {
         const onClose = jest.fn();
         render(
             <Wrapper>
-                <SendEmailForm opened={true} onClose={onClose} players={[defaultPlayer]} />
+                <SendEmailForm opened={true} onClose={onClose} players={[defaultPlayerData]} />
             </Wrapper>,
         );
 

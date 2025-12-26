@@ -9,12 +9,12 @@ import { CreatePlayerSchema } from '@/types/CreatePlayerInput';
 
 /**
  * Creates a new player in the system with the provided data.
- * 
+ *
  * @param rawData - The raw player data to be validated and processed. Must conform to CreatePlayerSchema.
  * @returns A promise that resolves to the created player object.
  * @throws {Error} When the introducedBy value is provided but not a valid number.
  * @throws {ZodError} When the rawData does not match the CreatePlayerSchema validation.
- * 
+ *
  * @remarks
  * This function performs the following operations:
  * - Validates the input data against CreatePlayerSchema
@@ -40,19 +40,24 @@ export async function createPlayer(rawData: unknown) {
         joined: new Date(),
     });
 
-    await playerService.createPlayerEmail({
-        playerId: player.id,
-        email: data.email,
-    });
-
     const secrets = getSecrets();
     const { token, tokenHash, expiresAt } = createPlayerInvitationToken();
-    await playerService.createPlayerInvitation({
-        playerId: player.id,
-        email: data.email,
-        tokenHash,
-        expiresAt,
-    });
+
+    // It's possible to have a player profile with no email: responses will have
+    // to be entered manually for them.
+    if (data.email && data.email.length > 0) {
+        await playerService.createPlayerEmail({
+            playerId: player.id,
+            email: data.email,
+        });
+
+        await playerService.createPlayerInvitation({
+            playerId: player.id,
+            email: data.email,
+            tokenHash,
+            expiresAt,
+        });
+    }
 
     revalidatePath('/footy/newplayer');
     revalidatePath('/footy/players');

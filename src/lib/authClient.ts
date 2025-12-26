@@ -89,7 +89,7 @@ export const authClient = {
                 return {
                     name: mockUser.name,
                     email: mockUser.email,
-                    playerId: mockUser.playerId,
+                    playerId: mockUser.playerId ?? 0,
                 };
             }
             return null;
@@ -107,7 +107,7 @@ export const authClient = {
             return {
                 name: session.user.name,
                 email: session.user.email,
-                playerId: session.user.playerId,
+                playerId: session.user.playerId ?? 0,
             };
         }
         return null;

@@ -1,18 +1,18 @@
+import { Notification, Text } from '@mantine/core';
+import { IconX } from '@tabler/icons-react';
+
 import { claimPlayerInvitation } from '@/actions/claimPlayerInvitation';
 import { ClaimSignup } from '@/components/ClaimSignup/ClaimSignup';
 
 interface PageProps {
     searchParams?: Promise<{
         token?: string;
-        redirect?: string;
     }>;
 }
 
 const Page = async ({ searchParams: sp }: PageProps) => {
     const searchParams = await sp;
     const token = searchParams?.token ?? '';
-    // TODO: Redirect to player profile
-    const redirect = searchParams?.redirect ?? '/footy/info';
     let name: string | null = null;
     let email: string | null = null;
     let errorMessage: string | null = null;
@@ -25,31 +25,25 @@ const Page = async ({ searchParams: sp }: PageProps) => {
         errorMessage = error instanceof Error ? error.message : 'Unable to claim invitation.';
     }
 
-    if (errorMessage) {
-        // TODO: Improve error UI/UX
-        return (
-            <main>
-                <h1>Invitation problem</h1>
-                <p>{errorMessage}</p>
-            </main>
-        );
+    if (!email || !name) {
+        errorMessage = "Invitation is missing required details.";
     }
 
-    if (!email || !name) {
-        // TODO: Improve error UI/UX
+    if (errorMessage) {
         return (
-            <main>
-                <h1>Invitation problem</h1>
-                <p>Invitation is missing required details.</p>
-            </main>
+            <Notification
+                icon={<IconX size={18} />}
+                color="red"
+            >
+                <Text>Invitation problem: {errorMessage}</Text>
+            </Notification>
         );
     }
 
     return (
         <ClaimSignup
-            name={name}
-            email={email}
-            redirect={redirect}
+            name={name ?? ''}
+            email={email ?? ''}
         />
     );
 };

@@ -1,6 +1,17 @@
 'use client';
 
-import { Box, Button, Container, Divider, Notification, PasswordInput, Stack, Text, TextInput, Title } from '@mantine/core';
+import {
+    Box,
+    Button,
+    Container,
+    Divider,
+    Notification,
+    PasswordInput,
+    Stack,
+    Text,
+    TextInput,
+    Title,
+} from '@mantine/core';
 import { useForm } from '@mantine/form';
 import * as Sentry from '@sentry/react';
 import { IconAt, IconIdBadge, IconLock, IconX } from '@tabler/icons-react';
@@ -12,13 +23,13 @@ import { authClient, signInWithGoogle, signInWithMicrosoft } from '@/lib/auth-cl
 interface ClaimSignupProps {
     name: string
     email: string;
-    redirect: string;
 }
 
-export const ClaimSignup = ({ name, email, redirect }: ClaimSignupProps) => {
+export const ClaimSignup = ({ name, email }: ClaimSignupProps) => {
     const [loading, setLoading] = useState(false);
     const [signupError, setSignupError] = useState<boolean>(false);
     const router = useRouter();
+    const redirect = '/footy/profile';
 
     const form = useForm({
         initialValues: {
@@ -99,6 +110,7 @@ export const ClaimSignup = ({ name, email, redirect }: ClaimSignupProps) => {
                     <TextInput
                         withAsterisk
                         label="Name"
+                        description="This is the name that will be displayed on your profile if you use password login. If you sign in with Google or Microsoft, your profile name will come from your Google or Microsoft account."
                         placeholder="Enter your name"
                         rightSection={<IconIdBadge size={16} />}
                         {...form.getInputProps('name')}
@@ -109,6 +121,7 @@ export const ClaimSignup = ({ name, email, redirect }: ClaimSignupProps) => {
                         placeholder="Enter your email"
                         rightSection={<IconAt size={16} />}
                         readOnly
+                        disabled
                         {...form.getInputProps('email')}
                     />
                     <PasswordInput

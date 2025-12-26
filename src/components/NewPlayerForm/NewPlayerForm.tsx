@@ -44,7 +44,6 @@ export interface Props {
 export const NewPlayerForm: React.FC<Props> = ({ players }) => {
     const router = useRouter();
 
-    // TODO: Don't allow an email which is already registered
     const form = useForm({
         initialValues: {
             name: '',
@@ -67,31 +66,34 @@ export const NewPlayerForm: React.FC<Props> = ({ players }) => {
         });
 
         try {
-            const introducerEmail = values.introducedBy
-                ? players.find((p) => p.id.toString() === values.introducedBy)?.email ?? ''
-                : '';
-            const cc = [introducerEmail, 'footy@toastboy.co.uk']
-                .filter((e): e is string => !!e).join(', ');
             const { player: newPlayer, inviteLink } = await createPlayer(values);
-            // TODO: Finish off welcome email body
-            const html = ReactDOMServer.renderToStaticMarkup(
-                <MantineProvider>
-                    <Flex direction="column" gap="md">
-                        <Text>
-                            Welcome to Toastboy FC!
-                        </Text>
-                        <Text>
-                            Follow this link to get started:
-                            <Anchor href={inviteLink}>confirm your account</Anchor>
-                        </Text>
-                        <Text>
-                            &&&& Detailed welcome text goes here: how to log on, where to find info, rules, etc. &&&&
-                        </Text>
-                    </Flex>
-                </MantineProvider>,
-            );
 
-            await sendEmail(values.email, cc, 'Welcome to Toastboy FC!', html);
+            if (values.email?.length > 0) {
+                // TODO: Finish off welcome email body
+                const introducerEmail = values.introducedBy
+                    ? players.find((p) => p.id.toString() === values.introducedBy)?.email ?? ''
+                    : '';
+                const cc = [introducerEmail, 'footy@toastboy.co.uk']
+                    .filter((e): e is string => !!e).join(', ');
+                const html = ReactDOMServer.renderToStaticMarkup(
+                    <MantineProvider>
+                        <Flex direction="column" gap="md">
+                            <Text>
+                                Welcome to Toastboy FC!
+                            </Text>
+                            <Text>
+                                Follow this link to get started:
+                                <Anchor href={inviteLink}>confirm your account</Anchor>
+                            </Text>
+                            <Text>
+                                &&&& Detailed welcome text goes here: how to log on, where to find info, rules, etc. &&&&
+                            </Text>
+                        </Flex>
+                    </MantineProvider>,
+                );
+
+                await sendEmail(values.email, cc, 'Welcome to Toastboy FC!', html);
+            }
 
             notifications.update({
                 id,
@@ -113,7 +115,8 @@ export const NewPlayerForm: React.FC<Props> = ({ players }) => {
                 message: `${String(err)}`,
                 icon: <IconAlertTriangle size={18} />,
                 loading: false,
-                autoClose: 2000,
+                autoClose: false,
+                withCloseButton: true,
             });
         }
     };
@@ -139,7 +142,7 @@ export const NewPlayerForm: React.FC<Props> = ({ players }) => {
             />
             <EmailInput
                 label="Email address"
-                required
+                description="If no email is provided, the player will not be able to log in but the profile will still be created."
                 {...form.getInputProps('email')}
             />
             <NativeSelect

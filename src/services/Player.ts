@@ -33,19 +33,19 @@ const PlayerLoginWhereUniqueInputSchema = z.object({
 
 const PlayerEmailExtendedFields = {
     playerId: z.number().int().min(1),
-    email: z.string().email(),
+    email: z.email(),
     verifiedAt: z.date().nullish().optional(),
 };
 
 const PlayerEmailExtendedFieldsForUpdate = {
     playerId: z.number().int().min(1).optional(),
-    email: z.string().email().optional(),
+    email: z.email().optional(),
     verifiedAt: z.date().nullish().optional(),
 };
 
 const PlayerInvitationExtendedFields = {
     playerId: z.number().int().min(1),
-    email: z.string().email(),
+    email: z.email(),
     tokenHash: z.string().length(64),
     expiresAt: z.date(),
     usedAt: z.date().nullish().optional(),
@@ -53,7 +53,7 @@ const PlayerInvitationExtendedFields = {
 
 const PlayerInvitationExtendedFieldsForUpdate = {
     playerId: z.number().int().min(1).optional(),
-    email: z.string().email().optional(),
+    email: z.email().optional(),
     tokenHash: z.string().length(64).optional(),
     expiresAt: z.date().optional(),
     usedAt: z.date().nullish().optional(),

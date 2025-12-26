@@ -8,7 +8,6 @@ import { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
 import { fileURLToPath } from 'url';
 
-import playerService from '@/services/Player';
 import playerRecordService from '@/services/PlayerRecord';
 
 const currentDir = path.dirname(fileURLToPath(import.meta.url));
@@ -78,6 +77,18 @@ function buildPlayerEmailSeedRows(
     });
 
     return rows;
+}
+
+async function fetchLegacyPlayerEmailSources(): Promise<{ playerId: number; email: string | null }[]> {
+    // The raw query here is OK because this is a temporary script and there is no user input
+    const rows = await prisma.$queryRawUnsafe<{ id: number; email: string | null }[]>(
+        'SELECT id, email FROM player',
+    );
+
+    return rows.map((row) => ({
+        playerId: row.id,
+        email: row.email ?? null,
+    }));
 }
 
 /**
@@ -188,6 +199,8 @@ async function importBackup(): Promise<void> {
         console.log('Importing mysql backup...');
         shellExec(`cat /tmp/${mysqlDatabase}.sql | mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} ${mysqlDatabase}`);
 
+        const legacyPlayerEmailSources = await fetchLegacyPlayerEmailSources();
+
         // Run each migration except the first one: the backup created the
         // database structure through the conditional comments such as '/*!40000
         // DROP DATABASE IF EXISTS `footy`*/;'
@@ -220,8 +233,7 @@ async function importBackup(): Promise<void> {
         await writeTableToJSONFile('PlayerLogin.json', prisma.playerLogin);
         await writeTableToJSONFile('PlayerRecord.json', prisma.playerRecord);
 
-        const playerEmailSources = await playerService.getAllEmailSources();
-        const playerEmailRows = buildPlayerEmailSeedRows(playerEmailSources);
+        const playerEmailRows = buildPlayerEmailSeedRows(legacyPlayerEmailSources);
         writeDataToJSONFile('PlayerEmail.json', playerEmailRows);
 
         // Upload the JSON files to Azure Blob Storage

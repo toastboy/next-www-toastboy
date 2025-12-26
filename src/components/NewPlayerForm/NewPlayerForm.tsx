@@ -69,7 +69,6 @@ export const NewPlayerForm: React.FC<Props> = ({ players }) => {
             const { player: newPlayer, inviteLink } = await createPlayer(values);
 
             if (values.email?.length > 0) {
-                // TODO: Finish off welcome email body
                 const introducerEmail = values.introducedBy
                     ? players.find((p) => p.id.toString() === values.introducedBy)?.email ?? ''
                     : '';
@@ -86,7 +85,16 @@ export const NewPlayerForm: React.FC<Props> = ({ players }) => {
                                 <Anchor href={inviteLink}>confirm your account</Anchor>
                             </Text>
                             <Text>
-                                &&&& Detailed welcome text goes here: how to log on, where to find info, rules, etc. &&&&
+                                We look forward to seeing you on the pitch! The games are every Tuesday at 18:00 at Kelsey Kerridge in Cambridge. Please arrive a bit early so you&apos;ve got time to park and pay the day membership.
+
+                                All the details are here:
+                            </Text>
+                            <Anchor href={`https://www.toastboy.co.uk/footy/info`}>
+                                Toastboy FC info page
+                            </Anchor>
+                            <Text>
+                                Cheers,
+                                Jon
                             </Text>
                         </Flex>
                     </MantineProvider>,

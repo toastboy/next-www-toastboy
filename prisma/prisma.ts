@@ -10,18 +10,21 @@ const databaseUrl =
     'mysql://invalid:invalid@localhost:3306/invalid';
 const adapter = new PrismaMariaDb(databaseUrl);
 
-if (process.env.NODE_ENV === "production") {
-    prisma = new PrismaClient({
+function createPrismaClient() {
+    const enableQueryLogging = process.env.PRISMA_LOG_QUERIES === "true";
+
+    return new PrismaClient({
         adapter,
-        // log: ['error', 'warn'], // TODO: decide what to do about log levels in production
+        log: enableQueryLogging ? ['query', 'error', 'warn'] : ['error', 'warn'],
     });
+}
+
+if (process.env.NODE_ENV === "production") {
+    prisma = createPrismaClient();
 } else {
     const globalWithPrisma = global as typeof globalThis & { prisma: PrismaClient; };
     if (!globalWithPrisma.prisma) {
-        globalWithPrisma.prisma = new PrismaClient({
-            adapter,
-            // log: ['query', 'error', 'warn'],
-        });
+        globalWithPrisma.prisma = createPrismaClient();
     }
     prisma = globalWithPrisma.prisma;
 }

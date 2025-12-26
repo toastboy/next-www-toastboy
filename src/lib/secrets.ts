@@ -64,6 +64,14 @@ export function getSecrets(): typeof secrets {
         }
     }
 
+    const missingSecrets = Object.entries(result)
+        .filter(([, value]) => value === undefined || value === null || value === '')
+        .map(([key]) => key);
+
+    if (missingSecrets.length > 0 && process.env.NODE_ENV !== 'test') {
+        throw new Error(`Missing required secrets: ${missingSecrets.join(', ')}`);
+    }
+
     cachedSecrets = result;
     return cachedSecrets;
 }

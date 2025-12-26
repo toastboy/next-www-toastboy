@@ -1,19 +1,20 @@
 'use client';
 
-import { Anchor, Box, Button, Container, Group, Notification, PasswordInput, Stack, Text, TextInput, Title } from '@mantine/core';
+import { Anchor, Box, Button, Container, Divider, Group, Notification, PasswordInput, Stack, Text, TextInput, Title } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import * as Sentry from '@sentry/react';
 import { IconAt, IconIdBadge, IconLock, IconX } from '@tabler/icons-react';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 
-import { authClient } from '@/lib/auth-client';
+import { authClient, signInWithGoogle, signInWithMicrosoft } from '@/lib/auth-client';
 
 export default function SignUpPage() {
     const [loading, setLoading] = useState(false);
     const [signupError, setSignupError] = useState<boolean>(false);
     const searchParams = useSearchParams();
     const initialEmail = searchParams.get('email') ?? '';
+    const redirect = searchParams.get('redirect') ?? '/footy/info';
 
     const form = useForm({
         initialValues: {
@@ -79,6 +80,16 @@ export default function SignUpPage() {
                     Sign up for your account
                 </Title>
                 <Text mb="lg">If you already have a player profile, you can add a login for each of your email addresses</Text>
+            </Stack>
+
+            <Stack mb="lg">
+                <Button variant="default" onClick={() => signInWithGoogle(redirect)}>
+                    Continue with Google
+                </Button>
+                <Button variant="default" onClick={() => signInWithMicrosoft(redirect)}>
+                    Continue with Microsoft
+                </Button>
+                <Divider label="or" labelPosition="center" />
             </Stack>
 
             <Box

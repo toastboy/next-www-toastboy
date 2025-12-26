@@ -1,4 +1,9 @@
-import { createMockApp, jsonResponseHandler, suppressConsoleError, toWire } from '@/tests/lib/api/common';
+import {
+    createMockApp,
+    jsonResponseHandler,
+    suppressConsoleError,
+    toWire,
+} from '@/tests/lib/api/common';
 
 jest.mock('services/GameDay');
 

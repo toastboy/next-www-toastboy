@@ -6,6 +6,7 @@ import {
     Button,
     Center,
     Container,
+    Divider,
     Group,
     Loader,
     Notification,
@@ -34,7 +35,6 @@ export const SignIn: React.FC<Props> = ({ admin, redirect }) => {
     const [loginError, setLoginError] = useState<boolean>(false);
     const router = useRouter();
     const pathname = usePathname();
-
     const form = useForm({
         initialValues: {
             email: '',
@@ -106,9 +106,15 @@ export const SignIn: React.FC<Props> = ({ admin, redirect }) => {
                 </Title>
             </Center>
 
-            <Button onClick={() => signInWithGoogle(redirect ?? pathname)}>Sign in with Google</Button>
-
-            <Button onClick={() => signInWithMicrosoft(redirect ?? pathname)}>Sign in with Microsoft</Button>
+            <Stack mb="lg">
+                <Button variant="default" onClick={() => signInWithGoogle(redirect ?? pathname)}>
+                    Sign in with Google
+                </Button>
+                <Button variant="default" onClick={() => signInWithMicrosoft(redirect ?? pathname)}>
+                    Sign in with Microsoft
+                </Button>
+                <Divider label="or" labelPosition="center" />
+            </Stack>
 
             <Box
                 component="form"

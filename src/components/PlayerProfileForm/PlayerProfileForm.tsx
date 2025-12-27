@@ -3,6 +3,7 @@
 import {
     Box,
     Button,
+    NumberInput,
     TextInput,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
@@ -94,10 +95,36 @@ export const PlayerProfileForm: React.FC<Props> = ({ player, emails, allCountrie
                 required
                 {...form.getInputProps('name')}
             />
-            <EmailInput
-                label="Email address"
-                description="If no email is provided, the player will not be able to log in but the profile will still be created."
-                {...form.getInputProps('emails.0')}
+            <Box
+                mt="md"
+                p="md"
+                style={{
+                    border: '1px solid var(--mantine-color-gray-3)',
+                    borderRadius: 'var(--mantine-radius-md)',
+                }}
+            >
+                {form.values.emails.map((_, index) => (
+                    <Box key={index} mb="sm">
+                        <EmailInput
+                            label={`Email address ${index + 1}`}
+                            required={index === 0}
+                            {...form.getInputProps(`emails.${index}`)}
+                        />
+                    </Box>
+                ))}
+
+                <Button
+                    type="button"
+                    variant="light"
+                    onClick={() => form.insertListItem('emails', '')}
+                >
+                    Add another email
+                </Button>
+            </Box>
+
+            <NumberInput
+                label="Year of Birth"
+                {...form.getInputProps('born')}
             />
 
             <Button type="submit" mt="md">

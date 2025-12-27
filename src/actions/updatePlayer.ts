@@ -10,7 +10,7 @@ import { UpdatePlayerSchema } from '@/types/UpdatePlayerInput';
 export async function updatePlayer(playerId: number, rawData: unknown) {
     const data = UpdatePlayerSchema.parse(rawData);
     const name = data.name.trim();
-    const born = new Date(data.born, 0, 1);
+    const born = typeof data.born === 'number' ? new Date(data.born, 0, 1) : null;
 
     const player = await playerService.upsert({
         id: playerId,

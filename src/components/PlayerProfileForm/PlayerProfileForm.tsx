@@ -152,6 +152,8 @@ export const PlayerProfileForm: React.FC<Props> = ({ player, emails, allCountrie
 
             <NumberInput
                 label="Year of Birth"
+                description="Helps pick balanced sides"
+                placeholder="Not shown on the public site"
                 {...form.getInputProps('born')}
             />
 

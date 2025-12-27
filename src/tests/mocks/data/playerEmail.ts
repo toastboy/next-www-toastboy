@@ -15,4 +15,5 @@ export const createMockPlayerEmail = (overrides: Partial<PlayerEmailType> = {}):
 
 export const defaultPlayerEmails: PlayerEmailType[] = [
     defaultPlayerEmail,
+    createMockPlayerEmail({ id: 2, email: 'g.player@hiswork.com' }),
 ];

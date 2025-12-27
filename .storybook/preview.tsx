@@ -15,6 +15,7 @@ import { initialize, mswLoader } from 'msw-storybook-addon';
 import { sb } from 'storybook/test';
 
 sb.mock('../src/actions/createPlayer.ts');
+sb.mock('../src/actions/updatePlayer.ts');
 sb.mock('../src/actions/updatePlayerRecords.ts');
 sb.mock('../src/actions/auth-export.ts');
 sb.mock('../prisma/prisma.ts');

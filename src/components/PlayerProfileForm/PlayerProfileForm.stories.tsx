@@ -40,11 +40,13 @@ export const Primary: Story = {
 
         const canvas = within(canvasElement);
         const nameInput = await canvas.findByLabelText(/Name/i);
-        const emailInput = await canvas.findByLabelText(/Email address/i);
+        const emailInput = await canvas.findByLabelText(/Email address 2/i);
         const submitButton = await canvas.findByRole('button', { name: /Submit/i });
 
-        await userEvent.type(nameInput, 'Pat Example');
-        await userEvent.type(emailInput, 'pat@example.com');
+        await userEvent.clear(nameInput);
+        await userEvent.type(nameInput, 'Gazza Playa');
+        await userEvent.clear(emailInput);
+        await userEvent.type(emailInput, 'g.player@sacked.com');
         await userEvent.click(submitButton);
 
         const body = canvasElement.ownerDocument.body;

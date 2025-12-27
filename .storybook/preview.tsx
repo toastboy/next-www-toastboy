@@ -43,10 +43,17 @@ const shouldIgnoreUnhandledRequest = (url: string) => {
         const isSourceImage =
             pathname.startsWith('/src/tests/mocks/data/') &&
             /\.(png|jpe?g|gif|svg)$/i.test(pathname);
+        const isStorybookAsset = pathname.startsWith('/src/stories/assets/');
         const isViteExternal = pathname.startsWith('/@id/__vite-browser-external:');
         const isStoryIndex = pathname === '/index.json';
 
-        return isExtension || isStaticAsset || isSourceStylesheet || isSourceImage || isViteExternal || isStoryIndex;
+        return isExtension
+            || isStaticAsset
+            || isSourceStylesheet
+            || isSourceImage
+            || isStorybookAsset
+            || isViteExternal
+            || isStoryIndex;
     } catch {
         return false;
     }

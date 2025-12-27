@@ -25,6 +25,10 @@ const config: StorybookConfig = {
     viteFinal: async (config) => {
         config.plugins = config.plugins || [];
         config.plugins.push(tsconfigPaths());
+        config.define = {
+            ...(config.define || {}),
+            'process.env': {},
+        };
         config.esbuild = {
             ...(config.esbuild || {}),
             jsx: 'automatic',
@@ -42,6 +46,8 @@ const config: StorybookConfig = {
             'next/navigation': path.resolve(__dirname, './mocks/next-navigation.mock.ts'),
             // Mock Next.js link to avoid process.env usage in Storybook
             'next/link': path.resolve(__dirname, './mocks/next-link.mock.tsx'),
+            // Mock Next.js image so static assets render in Storybook
+            'next/image': path.resolve(__dirname, './mocks/next-image.mock.tsx'),
             // Stub Next cache helpers used by server actions
             'next/cache': path.resolve(__dirname, './mocks/next-cache.mock.ts'),
             // Stub secrets to avoid process.env + fs access in Storybook

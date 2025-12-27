@@ -34,6 +34,10 @@ const watchPathIgnorePatterns = [
     "<rootDir>/dist/",
     "<rootDir>/node_modules/",
     "<rootDir>/out/",
+    "<rootDir>/playwright-report/",
+    "<rootDir>/storybook-static/",
+    "<rootDir>/test-results/",
+    "<rootDir>/tmp/",
 ];
 
 module.exports = {

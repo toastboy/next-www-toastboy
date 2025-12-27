@@ -8,7 +8,7 @@
         "revealWithFocus": "none",
         "clearOnRun": "none"
     },
-    "jest.runMode": "on-demand",
+    "jest.runMode": "watch",
     "files.exclude": {
         "**/.DS_Store": true,
         "**/.git": true

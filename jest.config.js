@@ -5,7 +5,7 @@ const coveragePathIgnorePatterns = [
     '/.storybook/',
     '/src/tests/',
     '/src/stories/',
-    '/src/**/__mocks__/',
+    '/src/.*/__mocks__/',
 ];
 const moduleFileExtensions = ['ts', 'tsx', 'js', 'jsx', 'json', 'node', 'mjs'];
 const moduleNameMapper = {

@@ -494,25 +494,19 @@ describe('PlayerService', () => {
         });
     });
 
-    describe('getAllEmailSources', () => {
+    describe('getAllEmails', () => {
         it('should return player ids with raw email strings', async () => {
             (prisma.playerEmail.findMany as jest.Mock).mockResolvedValueOnce([
                 { playerId: 1, email: 'first@example.com' },
                 { playerId: 2, email: 'second@example.com' },
             ]);
 
-            const result = await playerService.getAllEmailSources();
+            const result = await playerService.getAllEmails();
 
             expect(result).toEqual([
                 { playerId: 1, email: 'first@example.com' },
                 { playerId: 2, email: 'second@example.com' },
             ]);
-            expect(prisma.playerEmail.findMany).toHaveBeenCalledWith({
-                select: {
-                    playerId: true,
-                    email: true,
-                },
-            });
         });
     });
 

@@ -206,10 +206,13 @@ class PlayerService {
     }
 
     /**
-     * Retrieves the player ID associated with the given email address.
+     * Retrieves the player ID associated with the given email address. It's not
+     * enough to just have a record with that email; the email must also be
+     * verified.
      *
      * @param email - The email address of the player.
-     * @returns A promise that resolves to the player ID if found, or null if no player is found with the given email.
+     * @returns A promise that resolves to the player ID if found, or null if no
+     * player is found with the given email.
      * @throws Will throw an error if there is an issue with the database query.
      */
     async getIdByEmail(email: string) {
@@ -222,10 +225,8 @@ class PlayerService {
                     },
                 },
             });
-            if (playerEmail) {
-                return playerEmail.playerId;
-            }
-            return null;
+
+            return playerEmail?.playerId ?? null;
         } catch (error) {
             log(`Error getting Player id: ${String(error)}`);
             throw error;
@@ -384,16 +385,15 @@ class PlayerService {
     }
 
     /**
-     * Retrieves player IDs with their raw email strings for seed generation.
-     * @returns A promise that resolves to a list of player IDs and emails.
+     * Retrieves all player emails from the database.
+     * @param playerId - Optional player ID to filter emails for a specific player. If not provided, retrieves all player emails.
+     * @returns A promise that resolves to an array of objects containing the player ID and associated email address.
+     * @throws Will throw an error if the database query fails.
      */
-    async getAllEmailSources(): Promise<{ playerId: number; email: string | null }[]> {
+    async getAllEmails(playerId?: number) {
         try {
             return await prisma.playerEmail.findMany({
-                select: {
-                    playerId: true,
-                    email: true,
-                },
+                where: playerId ? { playerId } : undefined,
             });
         } catch (error) {
             log(`Error fetching Player emails: ${String(error)}`);

@@ -4,8 +4,8 @@ import { GET } from '@/app/api/footy/turnout/[gameDayId]/route';
 import outcomeService from '@/services/Outcome';
 import { createMockApp, jsonResponseHandler, toWire } from '@/tests/lib/api/common';
 import { defaultOutcome } from '@/tests/mocks';
-const mockRoute = '/api/footy/turnout/1000/';
-const mockApp = createMockApp(GET, { path: mockRoute, params: Promise.resolve({ gameDayId: "1000" }) }, jsonResponseHandler);
+const testURI = '/api/footy/turnout/1000/';
+const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({ gameDayId: "1000" }) }, jsonResponseHandler);
 
 jest.mock('services/Outcome');
 
@@ -13,7 +13,7 @@ describe('API tests using HTTP', () => {
     it('should return JSON response for a valid gameDay', async () => {
         (outcomeService.getTurnout as jest.Mock).mockResolvedValue(defaultOutcome);
 
-        const response = await request(mockApp).get(mockRoute);
+        const response = await request(mockApp).get(testURI);
 
         if (response.status !== 200) console.log('Error response:', response.error);
         expect(response.status).toBe(200);
@@ -22,10 +22,10 @@ describe('API tests using HTTP', () => {
     });
 
     it('should return valid JSON even if there is no valid gameDayId param', async () => {
-        const mockApp = createMockApp(GET, { path: mockRoute, params: Promise.resolve({}) }, jsonResponseHandler);
+        const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({}) }, jsonResponseHandler);
         (outcomeService.getTurnout as jest.Mock).mockResolvedValue(defaultOutcome);
 
-        const response = await request(mockApp).get(mockRoute);
+        const response = await request(mockApp).get(testURI);
 
         if (response.status !== 200) console.log('Error response:', response.error);
         expect(response.status).toBe(200);
@@ -36,7 +36,7 @@ describe('API tests using HTTP', () => {
     it('should return 404 if the gameDay does not exist', async () => {
         (outcomeService.getTurnout as jest.Mock).mockResolvedValue(null);
 
-        const response = await request(mockApp).get(mockRoute);
+        const response = await request(mockApp).get(testURI);
 
         expect(response.status).toBe(404);
         expect(response.text).toBe('Not Found');
@@ -46,7 +46,7 @@ describe('API tests using HTTP', () => {
         const errorMessage = 'Test Error';
         (outcomeService.getTurnout as jest.Mock).mockRejectedValue(new Error(errorMessage));
 
-        const response = await request(mockApp).get(mockRoute);
+        const response = await request(mockApp).get(testURI);
 
         expect(response.status).toBe(500);
         expect(response.text).toBe(`Error: ${errorMessage}`);

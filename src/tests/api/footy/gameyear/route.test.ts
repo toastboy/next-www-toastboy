@@ -4,8 +4,8 @@ import { GET } from '@/app/api/footy/gameyear/route';
 import gamedayService from '@/services/GameDay';
 import { createMockApp, jsonResponseHandler } from '@/tests/lib/api/common';
 import { defaultGameYears } from '@/tests/mocks';
-const mockRoute = '/api/footy/gameyear';
-const mockApp = createMockApp(GET, { path: mockRoute, params: Promise.resolve({}) }, jsonResponseHandler);
+const testURI = '/api/footy/gameyear';
+const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({}) }, jsonResponseHandler);
 
 jest.mock('services/GameDay');
 
@@ -13,7 +13,7 @@ describe('API tests using HTTP', () => {
     it('should return JSON response for a valid gameyear', async () => {
         (gamedayService.getAllYears as jest.Mock).mockResolvedValue(defaultGameYears);
 
-        const response = await request(mockApp).get(mockRoute);
+        const response = await request(mockApp).get(testURI);
 
         if (response.status !== 200) console.log('Error response:', response.error);
         expect(response.status).toBe(200);
@@ -24,7 +24,7 @@ describe('API tests using HTTP', () => {
     it('should return 404 if the gameyear does not exist', async () => {
         (gamedayService.getAllYears as jest.Mock).mockResolvedValue(null);
 
-        const response = await request(mockApp).get(mockRoute);
+        const response = await request(mockApp).get(testURI);
 
         expect(response.status).toBe(404);
         expect(response.text).toBe('Not Found');
@@ -34,7 +34,7 @@ describe('API tests using HTTP', () => {
         const errorMessage = 'Test Error';
         (gamedayService.getAllYears as jest.Mock).mockRejectedValue(new Error(errorMessage));
 
-        const response = await request(mockApp).get(mockRoute);
+        const response = await request(mockApp).get(testURI);
 
         expect(response.status).toBe(500);
         expect(response.text).toBe(`Error: ${errorMessage}`);

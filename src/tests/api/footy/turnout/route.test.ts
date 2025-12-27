@@ -4,8 +4,8 @@ import { GET } from '@/app/api/footy/turnout/route';
 import outcomeService from '@/services/Outcome';
 import { createMockApp, jsonResponseHandler, toWire } from '@/tests/lib/api/common';
 import { defaultOutcomeList } from '@/tests/mocks';
-const mockRoute = '/api/footy/turnout';
-const mockApp = createMockApp(GET, { path: mockRoute, params: Promise.resolve({}) }, jsonResponseHandler);
+const testURI = '/api/footy/turnout';
+const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({}) }, jsonResponseHandler);
 
 jest.mock('services/Outcome');
 
@@ -13,7 +13,7 @@ describe('API tests using HTTP', () => {
     it('should return JSON response for a valid gameDay', async () => {
         (outcomeService.getTurnout as jest.Mock).mockResolvedValue(defaultOutcomeList);
 
-        const response = await request(mockApp).get(mockRoute);
+        const response = await request(mockApp).get(testURI);
 
         if (response.status !== 200) console.log('Error response:', response.error);
         expect(response.status).toBe(200);
@@ -24,7 +24,7 @@ describe('API tests using HTTP', () => {
     it('should return 404 if there is no data', async () => {
         (outcomeService.getTurnout as jest.Mock).mockResolvedValue(null);
 
-        const response = await request(mockApp).get(mockRoute);
+        const response = await request(mockApp).get(testURI);
 
         expect(response.status).toBe(404);
         expect(response.text).toBe('Not Found');
@@ -33,7 +33,7 @@ describe('API tests using HTTP', () => {
     it('should return 500 if there is an error', async () => {
         (outcomeService.getTurnout as jest.Mock).mockRejectedValue(new Error('Test Error'));
 
-        const response = await request(mockApp).get(mockRoute);
+        const response = await request(mockApp).get(testURI);
 
         expect(response.status).toBe(500);
         expect(response.text).toBe('Error: Test Error');

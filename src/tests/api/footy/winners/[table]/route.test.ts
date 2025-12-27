@@ -8,8 +8,8 @@ import { GET } from '@/app/api/footy/winners/[table]/route';
 import { getUserRole } from '@/lib/authServer';
 import playerRecordService from '@/services/PlayerRecord';
 import { defaultPlayerRecordList } from '@/tests/mocks';
-const mockRoute = '/api/footy/winners/points';
-const mockApp = createMockApp(GET, { path: mockRoute, params: Promise.resolve({ table: "points" }) }, jsonResponseHandler);
+const testURI = '/api/footy/winners/points';
+const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({ table: "points" }) }, jsonResponseHandler);
 
 jest.mock('services/PlayerRecord');
 
@@ -18,7 +18,7 @@ describe('API tests using HTTP', () => {
         (getUserRole as jest.Mock).mockResolvedValue('none');
         (playerRecordService.getWinners as jest.Mock).mockResolvedValue(defaultPlayerRecordList);
 
-        const response = await request(mockApp).get(mockRoute); // TODO: Some are mockRoute, some are testURI
+        const response = await request(mockApp).get(testURI);
 
         if (response.status !== 200) console.log('Error response:', response.error);
         expect(response.status).toBe(200);
@@ -29,7 +29,7 @@ describe('API tests using HTTP', () => {
     it('should return 404 if there is no data', async () => {
         (playerRecordService.getWinners as jest.Mock).mockResolvedValue(null);
 
-        const response = await request(mockApp).get(mockRoute);
+        const response = await request(mockApp).get(testURI);
 
         expect(response.status).toBe(404);
         expect(response.text).toBe('Not Found');
@@ -39,7 +39,7 @@ describe('API tests using HTTP', () => {
         const errorMessage = 'Test Error';
         (playerRecordService.getWinners as jest.Mock).mockRejectedValue(new Error(errorMessage));
 
-        const response = await request(mockApp).get(mockRoute);
+        const response = await request(mockApp).get(testURI);
 
         expect(response.status).toBe(500);
         expect(response.text).toBe(`Error: ${errorMessage}`);

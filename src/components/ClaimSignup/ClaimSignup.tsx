@@ -22,7 +22,7 @@ import { z } from 'zod';
 
 import { authClient, signInWithGoogle, signInWithMicrosoft } from '@/lib/auth-client';
 
-interface ClaimSignupProps {
+export interface Props {
     name: string
     email: string;
     token: string;
@@ -38,7 +38,7 @@ const ClaimSignupSchema = z.object({
     path: ['confirmPassword'],
 });
 
-export const ClaimSignup = ({ name, email, token }: ClaimSignupProps) => {
+export const ClaimSignup = ({ name, email, token }: Props) => {
     const [loading, setLoading] = useState(false);
     const [signupError, setSignupError] = useState<boolean>(false);
     const router = useRouter();

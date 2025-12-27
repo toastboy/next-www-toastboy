@@ -29,6 +29,10 @@ ensurePolyfill('TransformStream');
 ensurePolyfill('WritableStream');
 ensurePolyfill('BroadcastChannel');
 
+beforeEach(() => {
+    jest.useRealTimers();
+});
+
 global.ResizeObserver = class ResizeObserver {
     observe() { /* empty */ }
     unobserve() { /* empty */ }

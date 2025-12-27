@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
+import type { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 
 import { handleGET, sanitizePlayerData } from '@/lib/api';
 import playerService from '@/services/Player';

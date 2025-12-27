@@ -1,4 +1,4 @@
-import { createServer, ServerResponse } from 'http';
+import { ServerResponse } from 'http';
 import { NextRequest, NextResponse } from 'next/server';
 
 export const mockBlobClient = {
@@ -71,23 +71,71 @@ export function createMockApp(
     routeParams: { path: string; params: Promise<Record<string, string>> },
     responseHandler: (response: NextResponse, res: ServerResponse) => Promise<void>,
 ) {
-    return createServer((req, res) => {
-        if (req.url?.includes(routeParams.path)) {
-            const requestObject = new NextRequest(`http://localhost${req.url}`, {
-                method: req.method,
-                headers: req.headers as HeadersInit,
+    return {
+        __handle: async (url: string, method = 'GET') => {
+            if (!url.includes(routeParams.path)) {
+                return {
+                    status: 404,
+                    headers: { 'content-type': 'text/plain' },
+                    body: null,
+                    text: 'Not Found',
+                };
+            }
+
+            const requestObject = new NextRequest(`http://localhost${url}`, {
+                method,
+                headers: {},
             });
 
-            getFunction(requestObject, { params: routeParams.params })
-                .then(async (response) => {
-                    return await responseHandler(response, res);
-                })
-                .catch((err) => {
-                    res.statusCode = 500;
-                    res.end(`Error: ${err instanceof Error ? err.message : String(err)}`);
-                });
-        }
-    });
+            const headers = new Map<string, string>();
+            let statusCode = 200;
+            let endPayload: string | Buffer | undefined;
+
+            const res = {
+                setHeader: (key: string, value: string) => {
+                    headers.set(key.toLowerCase(), value);
+                },
+                end: (payload?: string | Buffer) => {
+                    endPayload = payload;
+                },
+                set statusCode(code: number) {
+                    statusCode = code;
+                },
+                get statusCode() {
+                    return statusCode;
+                },
+            } as unknown as ServerResponse;
+
+            try {
+                const response = await getFunction(requestObject, { params: routeParams.params });
+                await responseHandler(response, res);
+            } catch (err) {
+                statusCode = 500;
+                endPayload = `Error: ${err instanceof Error ? err.message : String(err)}`;
+                headers.set('content-type', 'text/plain');
+            }
+
+            const normalizedHeaders: Record<string, string> = {};
+            for (const [key, value] of headers.entries()) {
+                normalizedHeaders[key] = value;
+            }
+
+            const contentType = normalizedHeaders['content-type'] || '';
+            const text = typeof endPayload === 'string' ? endPayload : '';
+            let body: unknown = endPayload;
+
+            if (typeof endPayload === 'string' && contentType.includes('application/json')) {
+                body = JSON.parse(endPayload);
+            }
+
+            return {
+                status: statusCode,
+                headers: normalizedHeaders,
+                body,
+                text,
+            };
+        },
+    };
 }
 
 /**

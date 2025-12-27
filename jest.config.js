@@ -13,6 +13,7 @@ const moduleNameMapper = {
     '^@/(.*)$': '<rootDir>/src/$1',
     '^prisma/(.*)$': '<rootDir>/prisma/$1',
     '^server-only$': '<rootDir>/src/tests/__mocks__/server-only.ts',
+    '^supertest$': '<rootDir>/src/tests/lib/api/supertest-mock.ts',
 };
 const modulePaths = ['<rootDir>/src/'];
 const testPathIgnorePatterns = ['/node_modules/', '/e2e/'];
@@ -40,7 +41,6 @@ module.exports = {
     collectCoverage: process.env.COVERAGE === 'true' || process.env.CI === 'true',
     coverageDirectory: 'coverage',
     coverageProvider: 'v8',
-    maxWorkers: process.env.JEST_MAX_WORKERS || '50%',
     projects: [
         {
             displayName: { name: 'api', color: 'yellow' },

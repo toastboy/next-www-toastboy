@@ -1,5 +1,5 @@
 import { NextRequest } from 'next/server';
-import { TeamNameSchema } from 'prisma/zod/schemas';
+import { TeamNameSchema } from 'prisma/zod/schemas/enums/TeamName.schema';
 
 import { handleGET } from '@/lib/api';
 import { parseBoolean } from '@/lib/utils';

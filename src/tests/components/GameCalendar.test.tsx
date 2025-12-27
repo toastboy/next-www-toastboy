@@ -16,7 +16,7 @@ const gameCalendarFixture = loadJsonFixture<unknown>('components/data/GameCalend
 
 describe('GameCalendar', () => {
     beforeEach(() => {
-        jest.spyOn(global, 'fetch').mockResolvedValueOnce({
+        jest.spyOn(global, 'fetch').mockResolvedValue({
             json: () => Promise.resolve(
                 GameDayResponseSchema.array().parse(gameCalendarFixture),
             ),

@@ -4,11 +4,14 @@
         "https://json.schemastore.org/github-action.json": "file:///Users/toastboy/next-www-toastboy/.github/workflows/terraform-plan.yml"
     },
     "jest.outputConfig": {
-        "revealOn": "run",
-        "revealWithFocus": "none",
-        "clearOnRun": "none"
+        "revealOn": "error",
+        "revealWithFocus": "test-results",
+        "clearOnRun": "both"
     },
-    "jest.runMode": "watch",
+    "jest.runMode": {
+        "type": "watch",
+        "runAllTestsOnStartup": true
+    },
     "files.exclude": {
         "**/.DS_Store": true,
         "**/.git": true

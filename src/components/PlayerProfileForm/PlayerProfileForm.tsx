@@ -3,6 +3,10 @@
 import {
     Box,
     Button,
+    ComboboxData,
+    ComboboxItem,
+    ComboboxItemGroup,
+    MultiSelect,
     NumberInput,
     TextInput,
 } from '@mantine/core';
@@ -84,6 +88,30 @@ export const PlayerProfileForm: React.FC<Props> = ({ player, emails, allCountrie
         }
     };
 
+    const countryData = allCountries.map((country) => ({
+        label: country.name,
+        value: country.isoCode,
+    }));
+
+    const clubData: ComboboxData = Object.values(
+        allClubs.reduce<Record<string, ComboboxItemGroup>>((acc, club) => {
+            const country = club.country ?? '';
+            const group =
+                country.length > 0
+                    ? `${country.charAt(0).toUpperCase()}${country.slice(1)}`
+                    : 'Unknown';
+
+            const entry: ComboboxItemGroup = acc[group] ?? { group, items: [] as ComboboxItem[] };
+            entry.items.push({
+                label: club.clubName,
+                value: club.id.toString(),
+            });
+
+            acc[group] = entry;
+            return acc;
+        }, {}),
+    );
+
     return (
         <Box
             maw={400}
@@ -125,6 +153,22 @@ export const PlayerProfileForm: React.FC<Props> = ({ player, emails, allCountrie
             <NumberInput
                 label="Year of Birth"
                 {...form.getInputProps('born')}
+            />
+
+            <MultiSelect
+                label="National Team(s)"
+                placeholder="What national team(s) do you support?"
+                data={countryData}
+                searchable
+                {...form.getInputProps('countries')}
+            />
+
+            <MultiSelect
+                label="Club(s)"
+                placeholder="What club(s) do you support?"
+                data={clubData}
+                searchable
+                {...form.getInputProps('clubs')}
             />
 
             <Button type="submit" mt="md">

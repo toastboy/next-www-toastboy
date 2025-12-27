@@ -25,28 +25,43 @@ import { Activity } from 'react';
 
 import { updatePlayer } from '@/actions/updatePlayer';
 import { EmailInput } from '@/components/EmailInput/EmailInput';
+import { ClubSupporterDataType } from '@/types';
+import { CountrySupporterDataType } from '@/types/CountrySupporterDataType';
 import { UpdatePlayerInput, UpdatePlayerSchema } from '@/types/UpdatePlayerInput';
 
 export interface Props {
     player: PlayerType;
     emails: PlayerEmailType[];
+    countries: CountrySupporterDataType[];
+    clubs: ClubSupporterDataType[];
     allCountries: CountryType[];
     allClubs: ClubType[];
 }
 
-export const PlayerProfileForm: React.FC<Props> = ({ player, emails, allCountries, allClubs }) => {
+type PlayerProfileFormValues = Omit<UpdatePlayerInput, 'clubs'> & {
+    clubs: string[];
+};
+
+export const PlayerProfileForm: React.FC<Props> = ({
+    player,
+    emails,
+    countries,
+    clubs,
+    allCountries,
+    allClubs,
+}) => {
     const router = useRouter();
     const initialEmails = emails.map((playerEmail) => playerEmail.email);
     const bornYear = player.born ? player.born.getFullYear() : new Date().getFullYear();
 
-    const form = useForm({
+    const form = useForm<PlayerProfileFormValues>({
         initialValues: {
             name: player.name ?? '',
             emails: initialEmails.length ? initialEmails : [''],
             born: bornYear,
-            countries: [],
-            clubs: [],
-        } satisfies UpdatePlayerInput,
+            countries: countries.map((country) => country.country.isoCode),
+            clubs: clubs.map((club) => club.clubId.toString()),
+        } satisfies PlayerProfileFormValues,
         validate: zod4Resolver(UpdatePlayerSchema),
         validateInputOnBlur: true,
     });
@@ -152,7 +167,8 @@ export const PlayerProfileForm: React.FC<Props> = ({ player, emails, allCountrie
                                 >
                                     <IconTrash size={16} />
                                 </Button>
-                            </Tooltip>                        </Activity>
+                            </Tooltip>
+                        </Activity>
                     </Flex>
                 ))}
 

@@ -17,7 +17,6 @@ export const UpdatePlayerSchema = z.object({
     ),
     emails: z.array(z.preprocess(
         (value) => {
-
             return typeof value === 'string' ? value.trim().toLowerCase() : value;
         },
         z.union([
@@ -26,7 +25,7 @@ export const UpdatePlayerSchema = z.object({
         ]),
     )),
     countries: z.array(z.string()),
-    clubs: z.array(z.number()),
+    clubs: z.array(z.coerce.number()),
 });
 
 export type UpdatePlayerInput = z.infer<typeof UpdatePlayerSchema>;

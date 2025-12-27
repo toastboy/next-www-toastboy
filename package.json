@@ -6,7 +6,7 @@
         "build": "npm run generate && DEBUG=app:* next build",
         "clean": "rm -rf .next",
         "crawllivesite": "npx ts-node -r tsconfig-paths/register --project tsconfig.scripts.json --compiler-options '{\"module\":\"CommonJS\"}' src/lib/crawllivesite/crawllivesite.ts",
-        "deepclean": "rm -rf .next node_modules package-lock.json && npm cache clean --force",
+        "deepclean": "rm -rf .next node_modules package-lock.json storybook-static build-storybook.log coverage test-results playwright-report && npm cache clean --force",
         "dev": "npm run generate && docker compose up -d && next dev",
         "generate": "prisma generate",
         "importlivedb": "TS_NODE_PROJECT=tsconfig.scripts.json TSX_TSCONFIG=tsconfig.scripts.json tsx -r tsconfig-paths/register src/lib/importlivedb/importlivedb.ts",

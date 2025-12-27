@@ -2,10 +2,8 @@ import request from 'supertest';
 
 import { GET } from '@/app/api/footy/turnout/route';
 import outcomeService from '@/services/Outcome';
-import { createMockApp, jsonResponseHandler, suppressConsoleError, toWire } from '@/tests/lib/api/common';
+import { createMockApp, jsonResponseHandler, toWire } from '@/tests/lib/api/common';
 import { defaultOutcomeList } from '@/tests/mocks';
-
-suppressConsoleError();
 const mockRoute = '/api/footy/turnout';
 const mockApp = createMockApp(GET, { path: mockRoute, params: Promise.resolve({}) }, jsonResponseHandler);
 

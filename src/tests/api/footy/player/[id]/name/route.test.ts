@@ -1,4 +1,4 @@
-import { createMockApp, jsonResponseHandler, suppressConsoleError } from '@/tests/lib/api/common';
+import { createMockApp, jsonResponseHandler } from '@/tests/lib/api/common';
 import { setupPlayerMocks } from '@/tests/lib/api/player';
 
 jest.mock('services/Player');
@@ -8,8 +8,6 @@ import request from 'supertest';
 import { GET } from '@/app/api/footy/player/[id]/name/route';
 import playerService from '@/services/Player';
 import { defaultPlayer } from '@/tests/mocks';
-
-suppressConsoleError();
 const testURI = '/api/footy/player/1/name';
 const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({ id: "1" }) }, jsonResponseHandler);
 

@@ -27,35 +27,6 @@ jest.mock('lib/azure', () => ({
     default: mockAzureCache,
 }));
 
-/**
- * Suppresses console error messages during tests by mocking `console.error`.
- *
- * This function sets up a Jest spy on `console.error` before each test and restores
- * the original implementation after each test. This is useful for preventing
- * console error messages from cluttering test output.
- *
- * @example
- * ```typescript
- * describe('some test suite', () => {
- *     suppressConsoleError();
- *
- *     it('should not log errors to the console', () => {
- *         // Your test code here
- *     });
- * });
- * ```
- */
-export function suppressConsoleError() {
-    let consoleErrorMock: jest.SpyInstance;
-
-    beforeEach(() => {
-        consoleErrorMock = jest.spyOn(console, 'error').mockImplementation(() => { /* empty */ });
-    });
-
-    afterEach(() => {
-        consoleErrorMock.mockRestore();
-    });
-}
 
 /**
  * Creates a mock server application for testing purposes.

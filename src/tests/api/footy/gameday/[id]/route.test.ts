@@ -1,9 +1,4 @@
-import {
-    createMockApp,
-    jsonResponseHandler,
-    suppressConsoleError,
-    toWire,
-} from '@/tests/lib/api/common';
+import { createMockApp, jsonResponseHandler, toWire } from '@/tests/lib/api/common';
 
 jest.mock('services/GameDay');
 
@@ -12,8 +7,6 @@ import request from 'supertest';
 import { GET } from '@/app/api/footy/gameday/[id]/route';
 import gameDayService from '@/services/GameDay';
 import { defaultGameDay } from '@/tests/mocks/data/gameDay';
-
-suppressConsoleError();
 const testURI = '/api/footy/gameday/1';
 const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({ id: "1000" }) }, jsonResponseHandler);
 

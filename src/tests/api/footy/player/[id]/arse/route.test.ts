@@ -6,10 +6,8 @@ import request from 'supertest';
 import { GET } from '@/app/api/footy/player/[id]/arse/route';
 import { getUserRole } from '@/lib/authServer';
 import arseService from '@/services/Arse';
-import { createMockApp, jsonResponseHandler, suppressConsoleError, toWire } from '@/tests/lib/api/common';
+import { createMockApp, jsonResponseHandler, toWire } from '@/tests/lib/api/common';
 import { defaultArse } from '@/tests/mocks/data/arse';
-
-suppressConsoleError();
 const testURI = '/api/footy/player/1/arse';
 const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({ id: "1" }) }, jsonResponseHandler);
 

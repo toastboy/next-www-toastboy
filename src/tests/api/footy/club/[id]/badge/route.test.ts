@@ -1,4 +1,4 @@
-import { createMockApp, mockBlobClient, pngResponseHandler, suppressConsoleError } from '@/tests/lib/api/common';
+import { createMockApp, mockBlobClient, pngResponseHandler } from '@/tests/lib/api/common';
 
 jest.mock('services/Club');
 
@@ -7,8 +7,6 @@ import request from 'supertest';
 
 import { GET } from '@/app/api/footy/club/[id]/badge/route';
 import { loadBinaryFixture } from '@/tests/shared/fixtures';
-
-suppressConsoleError();
 const testRoute = '/api/footy/club/1/badge';
 const mockApp = createMockApp(GET, { path: testRoute, params: Promise.resolve({ id: '1' }) }, pngResponseHandler);
 

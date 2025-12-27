@@ -1,4 +1,4 @@
-import { createMockApp, jsonResponseHandler, suppressConsoleError } from '@/tests/lib/api/common';
+import { createMockApp, jsonResponseHandler } from '@/tests/lib/api/common';
 
 jest.mock('services/PlayerRecord');
 
@@ -7,8 +7,6 @@ import request from 'supertest';
 import { GET } from '@/app/api/footy/table/[table]/[year]/[qualified]/route';
 import playerRecordService from '@/services/PlayerRecord';
 import { mockTable, setupTableMocks } from '@/tests/lib/api/table';
-
-suppressConsoleError();
 const testRoute = '/api/footy/table/points/2010/true';
 const mockApp = createMockApp(GET, { path: testRoute, params: Promise.resolve({ table: "points", year: "2010", qualified: "true" }) }, jsonResponseHandler);
 

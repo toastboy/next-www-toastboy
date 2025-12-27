@@ -2,10 +2,8 @@ import request from 'supertest';
 
 import { GET } from '@/app/api/footy/country/[isoCode]/route';
 import countryService from '@/services/Country';
-import { createMockApp, jsonResponseHandler, suppressConsoleError } from '@/tests/lib/api/common';
+import { createMockApp, jsonResponseHandler } from '@/tests/lib/api/common';
 import { defaultCountry } from '@/tests/mocks/data/country';
-
-suppressConsoleError();
 const mockApp = createMockApp(GET, { path: '/api/footy/country/NO', params: Promise.resolve({ isoCode: 'NO' }) }, jsonResponseHandler);
 
 jest.mock('services/Country');

@@ -2,10 +2,8 @@ import request from 'supertest';
 
 import { GET } from '@/app/api/footy/records/progress/route';
 import playerRecordService from '@/services/PlayerRecord';
-import { createMockApp, jsonResponseHandler, suppressConsoleError, toWire } from '@/tests/lib/api/common';
+import { createMockApp, jsonResponseHandler, toWire } from '@/tests/lib/api/common';
 import { defaultProgress } from '@/tests/mocks/data';
-
-suppressConsoleError();
 const mockRoute = '/api/footy/records/progress';
 const mockApp = createMockApp(GET, { path: mockRoute, params: Promise.resolve({}) }, jsonResponseHandler);
 

@@ -1,4 +1,4 @@
-import { createMockApp, jsonResponseHandler, suppressConsoleError } from '@/tests/lib/api/common';
+import { createMockApp, jsonResponseHandler } from '@/tests/lib/api/common';
 
 jest.mock('services/GameDay');
 
@@ -6,8 +6,6 @@ import request from 'supertest';
 
 import { GET } from '@/app/api/footy/gameyear/[year]/route';
 import gameDayService from '@/services/GameDay';
-
-suppressConsoleError();
 const testURI = '/api/footy/gameyear/2010';
 const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({ year: "2010" }) }, jsonResponseHandler);
 

@@ -2,10 +2,8 @@ import request from 'supertest';
 
 import { GET } from '@/app/api/footy/gameyear/route';
 import gamedayService from '@/services/GameDay';
-import { createMockApp, jsonResponseHandler, suppressConsoleError } from '@/tests/lib/api/common';
+import { createMockApp, jsonResponseHandler } from '@/tests/lib/api/common';
 import { defaultGameYears } from '@/tests/mocks';
-
-suppressConsoleError();
 const mockRoute = '/api/footy/gameyear';
 const mockApp = createMockApp(GET, { path: mockRoute, params: Promise.resolve({}) }, jsonResponseHandler);
 

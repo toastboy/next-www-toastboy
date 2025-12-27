@@ -2,10 +2,8 @@ import request from 'supertest';
 
 import { GET } from '@/app/api/footy/tableyear/route';
 import playerRecordService from '@/services/PlayerRecord';
-import { createMockApp, jsonResponseHandler, suppressConsoleError, toWire } from '@/tests/lib/api/common';
+import { createMockApp, jsonResponseHandler, toWire } from '@/tests/lib/api/common';
 import { defaultGameYearsAllTime } from '@/tests/mocks/data/gameYears';
-
-suppressConsoleError();
 const mockRoute = '/api/footy/tableyear';
 const mockApp = createMockApp(GET, { path: mockRoute, params: Promise.resolve({}) }, jsonResponseHandler);
 

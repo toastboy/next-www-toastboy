@@ -24,13 +24,17 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Primary: Story = {
+export const Render: Story = {
     args: {
         player: defaultPlayerData,
         emails: defaultPlayerEmails,
         allCountries: defaultCountryList,
         allClubs: defaultClubList,
     },
+};
+
+export const ValidFill: Story = {
+    ...Render,
     play: async function ({ canvasElement, userEvent, viewMode }) {
         if (viewMode === 'docs') return;
 
@@ -51,5 +55,29 @@ export const Primary: Story = {
 
         const body = canvasElement.ownerDocument.body;
         await within(body).findByText('Profile updated successfully', {}, { timeout: 6000 });
+    },
+};
+
+export const BlankName: Story = {
+    ...Render,
+    play: async function ({ canvasElement, userEvent, viewMode }) {
+        if (viewMode === 'docs') return;
+
+        mocked(updatePlayer).mockResolvedValue({
+            id: 123,
+        } as Awaited<ReturnType<typeof updatePlayer>>);
+
+        const canvas = within(canvasElement);
+        const nameInput = await canvas.findByLabelText(/Name/i);
+        const emailInput = await canvas.findByLabelText(/Email address 2/i);
+        const submitButton = await canvas.findByRole('button', { name: /Submit/i });
+
+        await userEvent.clear(nameInput);
+        await userEvent.clear(emailInput);
+        await userEvent.type(emailInput, 'g.player@sacked.com');
+        await userEvent.click(submitButton);
+
+        const body = canvasElement.ownerDocument.body;
+        await within(body).findByText('Name is required', {}, { timeout: 6000 });
     },
 };

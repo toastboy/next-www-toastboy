@@ -6,19 +6,22 @@ import {
     ComboboxData,
     ComboboxItem,
     ComboboxItemGroup,
+    Flex,
     MultiSelect,
     NumberInput,
     TextInput,
+    Tooltip,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
-import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
+import { IconAlertTriangle, IconCheck, IconTrash } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useRouter } from 'next/navigation';
 import { ClubType } from 'prisma/zod/schemas/models/Club.schema';
 import { CountryType } from 'prisma/zod/schemas/models/Country.schema';
 import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import { PlayerEmailType } from 'prisma/zod/schemas/models/PlayerEmail.schema';
+import { Activity } from 'react';
 
 import { updatePlayer } from '@/actions/updatePlayer';
 import { EmailInput } from '@/components/EmailInput/EmailInput';
@@ -132,13 +135,25 @@ export const PlayerProfileForm: React.FC<Props> = ({ player, emails, allCountrie
                 }}
             >
                 {form.values.emails.map((_, index) => (
-                    <Box key={index} mb="sm">
+                    <Flex key={index} mb="md" gap="sm" align="flex-end">
                         <EmailInput
                             label={`Email address ${index + 1}`}
                             required={index === 0}
+                            style={{ flex: 1 }}
                             {...form.getInputProps(`emails.${index}`)}
                         />
-                    </Box>
+                        <Activity mode={index === 0 ? 'hidden' : 'visible'}>
+                            <Tooltip label={`Delete email address ${index + 1}`} withArrow>
+                                <Button
+                                    variant="subtle"
+                                    color="red"
+                                    aria-label={`Delete email address ${index + 1}`}
+                                    onClick={() => form.removeListItem("emails", index)}
+                                >
+                                    <IconTrash size={16} />
+                                </Button>
+                            </Tooltip>                        </Activity>
+                    </Flex>
                 ))}
 
                 <Button

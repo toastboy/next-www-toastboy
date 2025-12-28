@@ -3,6 +3,8 @@
 import { hashPlayerInvitationToken } from '@/lib/playerInvitation';
 import authService from '@/services/Auth';
 import playerService from '@/services/Player';
+import playerEmailService from '@/services/PlayerEmail';
+import playerInvitationService from '@/services/PlayerInvitation';
 
 /**
  * Claims a player invitation using a plaintext token.
@@ -24,8 +26,8 @@ import playerService from '@/services/Player';
  *
  * @remarks
  * - The token is hashed via `hashPlayerInvitationToken` before lookup.
- * - The invitation is retrieved with `playerService.getPlayerInvitationByTokenHash`.
- * - Email uniqueness is checked via `playerService.getPlayerEmailByEmail`; if an
+ * - The invitation is retrieved with `playerInvitationService.getPlayerInvitationByTokenHash`.
+ * - Email uniqueness is checked via `playerEmailService.getPlayerEmailByEmail`; if an
  *   existing email belongs to a different player, the claim is rejected.
  * - To mark the invitation as used and upsert a verified player email, call
  *   `finalizePlayerInvitationClaim` after the login account is created.
@@ -36,7 +38,7 @@ async function getValidInvitation(token: string) {
     }
 
     const tokenHash = hashPlayerInvitationToken(token);
-    const invitation = await playerService.getPlayerInvitationByTokenHash(tokenHash);
+    const invitation = await playerInvitationService.getPlayerInvitationByTokenHash(tokenHash);
 
     if (!invitation) {
         throw new Error('Invitation not found or expired.');
@@ -50,7 +52,7 @@ async function getValidInvitation(token: string) {
         throw new Error('Invitation has expired.');
     }
 
-    const existingEmail = await playerService.getPlayerEmailByEmail(invitation.email);
+    const existingEmail = await playerEmailService.getPlayerEmailByEmail(invitation.email);
     if (existingEmail && existingEmail.playerId !== invitation.playerId) {
         throw new Error('Email address already belongs to another player.');
     }
@@ -80,6 +82,6 @@ export async function finalizePlayerInvitationClaim(token: string) {
         throw new Error('Login account not found for invitation.');
     }
 
-    await playerService.upsertVerifiedPlayerEmail(invitation.playerId, invitation.email, now);
-    await playerService.markPlayerInvitationUsed(invitation.id, now);
+    await playerEmailService.upsertVerifiedPlayerEmail(invitation.playerId, invitation.email, now);
+    await playerInvitationService.markPlayerInvitationUsed(invitation.id, now);
 }

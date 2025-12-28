@@ -8,6 +8,7 @@ import clubSupporterService from '@/services/ClubSupporter';
 import countryService from '@/services/Country';
 import countrySupporterService from '@/services/CountrySupporter';
 import playerService from '@/services/Player';
+import playerEmailService from '@/services/PlayerEmail';
 
 type PageProps = object
 
@@ -19,7 +20,7 @@ const Page: React.FC<PageProps> = async () => {
 
     const [player, emails, countries, clubs, allCountries, allClubs] = await Promise.all([
         playerService.getById(playerId),
-        playerService.getAllEmails(playerId),
+        playerEmailService.getAllEmails(playerId),
         countrySupporterService.getByPlayer(playerId),
         clubSupporterService.getByPlayer(playerId),
         countryService.getAll(),

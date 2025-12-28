@@ -2,7 +2,6 @@ import prisma from 'prisma/prisma';
 import { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
 import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import { PlayerEmailType } from 'prisma/zod/schemas/models/PlayerEmail.schema';
-import { PlayerInvitationType } from 'prisma/zod/schemas/models/PlayerInvitation.schema';
 import { PlayerFormType } from 'types';
 
 import playerService from '@/services/Player';
@@ -166,174 +165,6 @@ describe('PlayerService', () => {
         });
     });
 
-    describe('getIdByEmail', () => {
-        it('should return player id for exact email match', async () => {
-            (prisma.playerEmail.findFirst as jest.Mock).mockResolvedValueOnce({
-                playerId: 42,
-                email: 'player@example.com',
-                verifiedAt: new Date(),
-            });
-
-            const result = await playerService.getIdByEmail('player@example.com');
-            expect(result).toBe(42);
-            expect(prisma.playerEmail.findFirst).toHaveBeenCalledWith({
-                where: {
-                    email: 'player@example.com',
-                    verifiedAt: {
-                        not: null,
-                    },
-                },
-            });
-        });
-
-        it('should return null when no player found with email', async () => {
-            (prisma.playerEmail.findFirst as jest.Mock).mockResolvedValueOnce(null);
-
-            const result = await playerService.getIdByEmail('unknown@example.com');
-            expect(result).toBeNull();
-        });
-    });
-
-    describe('createPlayerEmail', () => {
-        it('should create a player email record', async () => {
-            const newEmail: PlayerEmailType = {
-                id: 1,
-                playerId: 7,
-                email: 'player@example.com',
-                verifiedAt: null,
-                createdAt: new Date(),
-            };
-
-            (prisma.playerEmail.create as jest.Mock).mockResolvedValueOnce(newEmail);
-
-            const result = await playerService.createPlayerEmail({
-                playerId: 7,
-                email: 'player@example.com',
-            });
-
-            expect(result).toEqual(newEmail);
-            expect(prisma.playerEmail.create).toHaveBeenCalledWith({
-                data: {
-                    playerId: 7,
-                    email: 'player@example.com',
-                },
-            });
-        });
-    });
-
-    describe('createPlayerInvitation', () => {
-        it('should create a player invitation record', async () => {
-            const expiresAt = new Date('2030-01-01');
-            const newInvitation: PlayerInvitationType = {
-                id: 1,
-                playerId: 7,
-                email: 'player@example.com',
-                tokenHash: 'a'.repeat(64),
-                expiresAt,
-                usedAt: null,
-                createdAt: new Date(),
-            };
-
-            (prisma.playerInvitation.create as jest.Mock).mockResolvedValueOnce(newInvitation);
-
-            const result = await playerService.createPlayerInvitation({
-                playerId: 7,
-                email: 'player@example.com',
-                tokenHash: 'a'.repeat(64),
-                expiresAt,
-            });
-
-            expect(result).toEqual(newInvitation);
-            expect(prisma.playerInvitation.create).toHaveBeenCalledWith({
-                data: {
-                    playerId: 7,
-                    email: 'player@example.com',
-                    tokenHash: 'a'.repeat(64),
-                    expiresAt,
-                },
-            });
-        });
-    });
-
-    describe('getPlayerInvitationByTokenHash', () => {
-        it('should retrieve a player invitation by token hash', async () => {
-            const invitation: PlayerInvitationType = {
-                id: 9,
-                playerId: 3,
-                email: 'invite@example.com',
-                tokenHash: 'b'.repeat(64),
-                expiresAt: new Date('2030-01-01'),
-                usedAt: null,
-                createdAt: new Date(),
-            };
-
-            (prisma.playerInvitation.findUnique as jest.Mock).mockResolvedValueOnce(invitation);
-
-            const result = await playerService.getPlayerInvitationByTokenHash('b'.repeat(64));
-
-            expect(result).toEqual(invitation);
-            expect(prisma.playerInvitation.findUnique).toHaveBeenCalledWith({
-                where: { tokenHash: 'b'.repeat(64) },
-            });
-        });
-    });
-
-    describe('markPlayerInvitationUsed', () => {
-        it('should mark a player invitation as used', async () => {
-            const usedAt = new Date('2030-01-02');
-            const invitation: PlayerInvitationType = {
-                id: 9,
-                playerId: 3,
-                email: 'invite@example.com',
-                tokenHash: 'b'.repeat(64),
-                expiresAt: new Date('2030-01-01'),
-                usedAt,
-                createdAt: new Date(),
-            };
-
-            (prisma.playerInvitation.update as jest.Mock).mockResolvedValueOnce(invitation);
-
-            const result = await playerService.markPlayerInvitationUsed(9, usedAt);
-
-            expect(result).toEqual(invitation);
-            expect(prisma.playerInvitation.update).toHaveBeenCalledWith({
-                where: { id: 9 },
-                data: { usedAt },
-            });
-        });
-    });
-
-    describe('upsertVerifiedPlayerEmail', () => {
-        it('should upsert a verified player email record', async () => {
-            const verifiedAt = new Date('2030-01-02');
-            const emailRecord: PlayerEmailType = {
-                id: 1,
-                playerId: 7,
-                email: 'player@example.com',
-                verifiedAt,
-                createdAt: new Date(),
-            };
-
-            (prisma.playerEmail.upsert as jest.Mock).mockResolvedValueOnce(emailRecord);
-
-            const result = await playerService.upsertVerifiedPlayerEmail(7, 'player@example.com', verifiedAt);
-
-            expect(result).toEqual(emailRecord);
-            expect(prisma.playerEmail.upsert).toHaveBeenCalledWith({
-                where: { email: 'player@example.com' },
-                create: {
-                    playerId: 7,
-                    email: 'player@example.com',
-                    verifiedAt,
-                },
-                update: {
-                    playerId: 7,
-                    verifiedAt,
-                },
-            });
-        });
-    });
-
     describe('getAll', () => {
         it('should return the correct, complete list of 100 players', async () => {
             const defaultPlayerList: (PlayerType & { outcomes: OutcomeType[]; emails: PlayerEmailType[] })[] = Array.from({ length: 100 }, (_, outerIndex) => ({
@@ -435,22 +266,6 @@ describe('PlayerService', () => {
             expect(result[0].firstPlayed).toBeNull();
             expect(result[0].lastPlayed).toBeNull();
             expect(result[0].gamesPlayed).toBe(0);
-        });
-    });
-
-    describe('getAllEmails', () => {
-        it('should return player ids with raw email strings', async () => {
-            (prisma.playerEmail.findMany as jest.Mock).mockResolvedValueOnce([
-                { playerId: 1, email: 'first@example.com' },
-                { playerId: 2, email: 'second@example.com' },
-            ]);
-
-            const result = await playerService.getAllEmails();
-
-            expect(result).toEqual([
-                { playerId: 1, email: 'first@example.com' },
-                { playerId: 2, email: 'second@example.com' },
-            ]);
         });
     });
 

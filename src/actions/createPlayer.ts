@@ -5,6 +5,8 @@ import { revalidatePath } from 'next/cache';
 import { createPlayerInvitationToken } from '@/lib/playerInvitation';
 import { getSecrets } from '@/lib/secrets';
 import playerService from '@/services/Player';
+import playerEmailService from '@/services/PlayerEmail';
+import playerInvitationService from '@/services/PlayerInvitation';
 import { CreatePlayerSchema } from '@/types/CreatePlayerInput';
 
 /**
@@ -45,12 +47,12 @@ export async function createPlayer(rawData: unknown) {
     // It's possible to have a player profile with no email: responses will have
     // to be entered manually for them.
     if (data.email && data.email.length > 0) {
-        await playerService.createPlayerEmail({
+        await playerEmailService.createPlayerEmail({
             playerId: player.id,
             email: data.email,
         });
 
-        await playerService.createPlayerInvitation({
+        await playerInvitationService.createPlayerInvitation({
             playerId: player.id,
             email: data.email,
             tokenHash,

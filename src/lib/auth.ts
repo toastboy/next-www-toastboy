@@ -5,7 +5,7 @@ import { admin, customSession } from 'better-auth/plugins';
 import prisma from 'prisma/prisma';
 
 import { getSecrets } from '@/lib/secrets';
-import playerService from '@/services/Player';
+import playerEmailService from '@/services/PlayerEmail';
 
 const secrets = getSecrets();
 
@@ -31,7 +31,7 @@ export const auth = betterAuth({
         admin(),
         customSession(async ({ user, session }) => {
             if (user?.email) {
-                const playerId = await playerService.getIdByEmail(user.email);
+                const playerId = await playerEmailService.getIdByEmail(user.email);
 
                 return {
                     user: {

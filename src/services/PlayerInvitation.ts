@@ -45,7 +45,7 @@ export class PlayerInvitationService {
      * @param rawData The properties to add to the player invitation
      * @returns A promise that resolves to the newly-created player invitation
      */
-    async createPlayerInvitation(rawData: unknown): Promise<PlayerInvitationType> {
+    async create(rawData: unknown): Promise<PlayerInvitationType> {
         try {
             const data = PlayerInvitationUncheckedCreateInputObjectStrictSchema.parse(rawData);
             return await prisma.playerInvitation.create({ data });
@@ -60,7 +60,7 @@ export class PlayerInvitationService {
      * @param tokenHash The token hash for the invitation
      * @returns A promise that resolves to the player invitation or null if not found
      */
-    async getPlayerInvitationByTokenHash(tokenHash: string): Promise<PlayerInvitationType | null> {
+    async getByTokenHash(tokenHash: string): Promise<PlayerInvitationType | null> {
         try {
             const where = PlayerInvitationWhereUniqueInputObjectSchema.parse({ tokenHash });
             return await prisma.playerInvitation.findUnique({ where });
@@ -76,7 +76,7 @@ export class PlayerInvitationService {
      * @param usedAt The timestamp to set
      * @returns A promise that resolves to the updated invitation
      */
-    async markPlayerInvitationUsed(id: number, usedAt: Date): Promise<PlayerInvitationType> {
+    async markUsed(id: number, usedAt: Date): Promise<PlayerInvitationType> {
         try {
             const where = PlayerInvitationWhereUniqueInputObjectSchema.parse({ id });
             const data = PlayerInvitationUncheckedUpdateInputObjectStrictSchema.parse({ usedAt });

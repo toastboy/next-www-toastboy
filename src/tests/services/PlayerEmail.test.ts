@@ -12,7 +12,7 @@ describe('PlayerEmailService', () => {
         jest.clearAllMocks();
     });
 
-    describe('getIdByEmail', () => {
+    describe('getByEmail', () => {
         it('should return player id for exact email match', async () => {
             (prisma.playerEmail.findFirst as jest.Mock).mockResolvedValueOnce({
                 playerId: 42,
@@ -20,8 +20,8 @@ describe('PlayerEmailService', () => {
                 verifiedAt: new Date(),
             });
 
-            const result = await playerEmailService.getIdByEmail('player@example.com');
-            expect(result).toBe(42);
+            const result = await playerEmailService.getByEmail('player@example.com', true);
+            expect(result?.playerId).toBe(42);
             expect(prisma.playerEmail.findFirst).toHaveBeenCalledWith({
                 where: {
                     email: 'player@example.com',
@@ -32,10 +32,26 @@ describe('PlayerEmailService', () => {
             });
         });
 
+        it('should return player id for exact email match with no verification', async () => {
+            (prisma.playerEmail.findFirst as jest.Mock).mockResolvedValueOnce({
+                playerId: 42,
+                email: 'player@example.com',
+                verifiedAt: null,
+            });
+
+            const result = await playerEmailService.getByEmail('player@example.com', false);
+            expect(result?.playerId).toBe(42);
+            expect(prisma.playerEmail.findFirst).toHaveBeenCalledWith({
+                where: {
+                    email: 'player@example.com',
+                },
+            });
+        });
+
         it('should return null when no player found with email', async () => {
             (prisma.playerEmail.findFirst as jest.Mock).mockResolvedValueOnce(null);
 
-            const result = await playerEmailService.getIdByEmail('unknown@example.com');
+            const result = await playerEmailService.getByEmail('unknown@example.com', true);
             expect(result).toBeNull();
         });
     });
@@ -52,7 +68,7 @@ describe('PlayerEmailService', () => {
 
             (prisma.playerEmail.create as jest.Mock).mockResolvedValueOnce(newEmail);
 
-            const result = await playerEmailService.createPlayerEmail({
+            const result = await playerEmailService.create({
                 playerId: 7,
                 email: 'player@example.com',
             });
@@ -80,7 +96,7 @@ describe('PlayerEmailService', () => {
 
             (prisma.playerEmail.upsert as jest.Mock).mockResolvedValueOnce(emailRecord);
 
-            const result = await playerEmailService.upsertVerifiedPlayerEmail(7, 'player@example.com', verifiedAt);
+            const result = await playerEmailService.upsertVerified(7, 'player@example.com', verifiedAt);
 
             expect(result).toEqual(emailRecord);
             expect(prisma.playerEmail.upsert).toHaveBeenCalledWith({
@@ -105,7 +121,7 @@ describe('PlayerEmailService', () => {
                 { playerId: 2, email: 'second@example.com' },
             ]);
 
-            const result = await playerEmailService.getAllEmails();
+            const result = await playerEmailService.getAll();
 
             expect(result).toEqual([
                 { playerId: 1, email: 'first@example.com' },

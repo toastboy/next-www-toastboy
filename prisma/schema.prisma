@@ -199,6 +199,7 @@ model PlayerEmail {
     player Player @relation(fields: [playerId], references: [id])
 
     @@index([playerId])
+    @@index([email])
 }
 
 model PlayerInvitation {

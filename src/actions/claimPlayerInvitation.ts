@@ -38,7 +38,7 @@ async function getValidInvitation(token: string) {
     }
 
     const tokenHash = hashPlayerInvitationToken(token);
-    const invitation = await playerInvitationService.getPlayerInvitationByTokenHash(tokenHash);
+    const invitation = await playerInvitationService.getByTokenHash(tokenHash);
 
     if (!invitation) {
         throw new Error('Invitation not found or expired.');
@@ -52,7 +52,7 @@ async function getValidInvitation(token: string) {
         throw new Error('Invitation has expired.');
     }
 
-    const existingEmail = await playerEmailService.getPlayerEmailByEmail(invitation.email);
+    const existingEmail = await playerEmailService.getByEmail(invitation.email);
     if (existingEmail && existingEmail.playerId !== invitation.playerId) {
         throw new Error('Email address already belongs to another player.');
     }
@@ -82,6 +82,6 @@ export async function finalizePlayerInvitationClaim(token: string) {
         throw new Error('Login account not found for invitation.');
     }
 
-    await playerEmailService.upsertVerifiedPlayerEmail(invitation.playerId, invitation.email, now);
-    await playerInvitationService.markPlayerInvitationUsed(invitation.id, now);
+    await playerEmailService.upsertVerified(invitation.playerId, invitation.email, now);
+    await playerInvitationService.markUsed(invitation.id, now);
 }

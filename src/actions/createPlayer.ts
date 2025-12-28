@@ -47,12 +47,12 @@ export async function createPlayer(rawData: unknown) {
     // It's possible to have a player profile with no email: responses will have
     // to be entered manually for them.
     if (data.email && data.email.length > 0) {
-        await playerEmailService.createPlayerEmail({
+        await playerEmailService.create({
             playerId: player.id,
             email: data.email,
         });
 
-        await playerInvitationService.createPlayerInvitation({
+        await playerInvitationService.create({
             playerId: player.id,
             email: data.email,
             tokenHash,

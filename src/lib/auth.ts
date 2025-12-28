@@ -31,12 +31,12 @@ export const auth = betterAuth({
         admin(),
         customSession(async ({ user, session }) => {
             if (user?.email) {
-                const playerId = await playerEmailService.getIdByEmail(user.email);
+                const playerEmail = await playerEmailService.getByEmail(user.email, true);
 
                 return {
                     user: {
                         ...user,
-                        playerId: playerId ?? 0,
+                        playerId: playerEmail?.playerId ?? 0,
                     },
                     session,
                 };

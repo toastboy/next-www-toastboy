@@ -37,29 +37,25 @@ const log = debug('footy:api');
 
 export class PlayerEmailService {
     /**
-     * Retrieves the player ID associated with the given email address. It's not
+     * Retrieves the player associated with the given email address. It's not
      * enough to just have a record with that email; the email must also be
      * verified.
      *
      * @param email - The email address of the player.
-     * @returns A promise that resolves to the player ID if found, or null if no
-     * player is found with the given email.
+     * @returns A promise that resolves to the player email if found, or null if
+     * no player is found with the given email.
      * @throws Will throw an error if there is an issue with the database query.
      */
-    async getIdByEmail(email: string) {
+    async getByEmail(email: string, verified?: boolean): Promise<PlayerEmailType | null> {
         try {
-            const playerEmail = await prisma.playerEmail.findFirst({
+            return await prisma.playerEmail.findFirst({
                 where: {
                     email,
-                    verifiedAt: {
-                        not: null,
-                    },
+                    ...(verified ? { verifiedAt: { not: null } } : {}),
                 },
             });
-
-            return playerEmail?.playerId ?? null;
         } catch (error) {
-            log(`Error getting Player id: ${String(error)}`);
+            log(`Error getting PlayerEmail: ${String(error)}`);
             throw error;
         }
     }
@@ -69,27 +65,12 @@ export class PlayerEmailService {
      * @param rawData The properties to add to the player email
      * @returns A promise that resolves to the newly-created player email
      */
-    async createPlayerEmail(rawData: unknown): Promise<PlayerEmailType> {
+    async create(rawData: unknown): Promise<PlayerEmailType> {
         try {
             const data = PlayerEmailUncheckedCreateInputObjectStrictSchema.parse(rawData);
             return await prisma.playerEmail.create({ data });
         } catch (error) {
             log(`Error creating PlayerEmail: ${String(error)}`);
-            throw error;
-        }
-    }
-
-    /**
-     * Retrieves a player email record by its email address.
-     * @param email The email address to look up
-     * @returns A promise that resolves to the player email or null if not found
-     */
-    async getPlayerEmailByEmail(email: string): Promise<PlayerEmailType | null> {
-        try {
-            const where = PlayerEmailWhereUniqueInputObjectSchema.parse({ email });
-            return await prisma.playerEmail.findUnique({ where });
-        } catch (error) {
-            log(`Error fetching PlayerEmail: ${String(error)}`);
             throw error;
         }
     }
@@ -101,7 +82,7 @@ export class PlayerEmailService {
      * @param verifiedAt The verification timestamp
      * @returns A promise that resolves to the upserted player email
      */
-    async upsertVerifiedPlayerEmail(playerId: number, email: string, verifiedAt: Date): Promise<PlayerEmailType> {
+    async upsertVerified(playerId: number, email: string, verifiedAt: Date): Promise<PlayerEmailType> {
         try {
             const where = PlayerEmailWhereUniqueInputObjectSchema.parse({ email });
             const create = PlayerEmailUncheckedCreateInputObjectStrictSchema.parse({
@@ -127,7 +108,7 @@ export class PlayerEmailService {
      * @returns A promise that resolves to an array of objects containing the player ID and associated email address.
      * @throws Will throw an error if the database query fails.
      */
-    async getAllEmails(playerId?: number) {
+    async getAll(playerId?: number) {
         try {
             return await prisma.playerEmail.findMany({
                 where: playerId ? { playerId } : undefined,

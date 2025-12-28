@@ -20,7 +20,7 @@ const Page: React.FC<PageProps> = async () => {
 
     const [player, emails, countries, clubs, allCountries, allClubs] = await Promise.all([
         playerService.getById(playerId),
-        playerEmailService.getAllEmails(playerId),
+        playerEmailService.getAll(playerId),
         countrySupporterService.getByPlayer(playerId),
         clubSupporterService.getByPlayer(playerId),
         countryService.getAll(),

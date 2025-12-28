@@ -27,7 +27,7 @@ describe('PlayerInvitationService', () => {
 
             (prisma.playerInvitation.create as jest.Mock).mockResolvedValueOnce(newInvitation);
 
-            const result = await playerInvitationService.createPlayerInvitation({
+            const result = await playerInvitationService.create({
                 playerId: 7,
                 email: 'player@example.com',
                 tokenHash: 'a'.repeat(64),
@@ -60,7 +60,7 @@ describe('PlayerInvitationService', () => {
 
             (prisma.playerInvitation.findUnique as jest.Mock).mockResolvedValueOnce(invitation);
 
-            const result = await playerInvitationService.getPlayerInvitationByTokenHash('b'.repeat(64));
+            const result = await playerInvitationService.getByTokenHash('b'.repeat(64));
 
             expect(result).toEqual(invitation);
             expect(prisma.playerInvitation.findUnique).toHaveBeenCalledWith({
@@ -84,7 +84,7 @@ describe('PlayerInvitationService', () => {
 
             (prisma.playerInvitation.update as jest.Mock).mockResolvedValueOnce(invitation);
 
-            const result = await playerInvitationService.markPlayerInvitationUsed(9, usedAt);
+            const result = await playerInvitationService.markUsed(9, usedAt);
 
             expect(result).toEqual(invitation);
             expect(prisma.playerInvitation.update).toHaveBeenCalledWith({

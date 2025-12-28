@@ -52,7 +52,7 @@ export const PlayerProfileForm: React.FC<Props> = ({
 }) => {
     const router = useRouter();
     const initialEmails = emails.map((playerEmail) => playerEmail.email);
-    const bornYear = player.born ? player.born.getFullYear() : new Date().getFullYear();
+    const bornYear = player.born ?? undefined;
 
     const form = useForm<PlayerProfileFormValues>({
         initialValues: {

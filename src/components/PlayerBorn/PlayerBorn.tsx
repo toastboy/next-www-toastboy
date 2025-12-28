@@ -8,7 +8,7 @@ export interface Props {
 export const PlayerBorn: React.FC<Props> = ({ player }) => {
     return (
         <Text>
-            {player.born == null ? "Unknown" : player.born.toLocaleDateString('sv')}
+            {player.born ?? 'Unknown'}
         </Text>
     );
 };

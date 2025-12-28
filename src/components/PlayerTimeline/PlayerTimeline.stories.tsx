@@ -9,7 +9,7 @@ const samplePlayer = {
     anonymous: false,
     joined: new Date('2020-01-01'),
     finished: null,
-    born: new Date('1990-05-05'),
+    born: 1990,
     comment: null,
     introducedBy: 2,
     emails: [

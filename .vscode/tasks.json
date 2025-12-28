@@ -1,82 +1,139 @@
 {
-  "version": "2.0.0",
-  "tasks": [
-    {
-      "label": "Build (1Password env)",
-      "type": "shell",
-      "command": "op",
-      "args": [
-        "run",
-        "--env-file",
-        "./.env",
-        "--",
-        "sh",
-        "-c",
-        "npm run build"
-      ],
-      "group": "build",
-      "problemMatcher": []
-    },
-    {
-      "label": "Dev (1Password env)",
-      "type": "shell",
-      "command": "op",
-      "args": [
-        "run",
-        "--env-file",
-        "./.env",
-        "--",
-        "sh",
-        "-c",
-        "npm run dev"
-      ],
-      "problemMatcher": []
-    },
-    {
-      "label": "Test (1Password env)",
-      "type": "shell",
-      "command": "op",
-      "args": [
-        "run",
-        "--env-file",
-        "./.env",
-        "--",
-        "sh",
-        "-c",
-        "npm test"
-      ],
-      "group": "test",
-      "problemMatcher": []
-    },
-    {
-      "label": "Lint (1Password env)",
-      "type": "shell",
-      "command": "op",
-      "args": [
-        "run",
-        "--env-file",
-        "./.env",
-        "--",
-        "sh",
-        "-c",
-        "npm run lint"
-      ],
-      "problemMatcher": []
-    },
-    {
-      "label": "Typecheck (1Password env)",
-      "type": "shell",
-      "command": "op",
-      "args": [
-        "run",
-        "--env-file",
-        "./.env",
-        "--",
-        "sh",
-        "-c",
-        "npm run typecheck"
-      ],
-      "problemMatcher": []
-    }
-  ]
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build (1Password env)",
+            "type": "shell",
+            "command": "op",
+            "args": [
+                "run",
+                "--env-file",
+                "./.env",
+                "--",
+                "sh",
+                "-c",
+                "npm run build"
+            ],
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "Dev (1Password env)",
+            "type": "shell",
+            "command": "op",
+            "args": [
+                "run",
+                "--env-file",
+                "./.env",
+                "--",
+                "sh",
+                "-c",
+                "npm run dev"
+            ],
+            "group": "test",
+            "problemMatcher": []
+        },
+        {
+            "label": "Test (1Password env)",
+            "type": "shell",
+            "command": "op",
+            "args": [
+                "run",
+                "--env-file",
+                "./.env",
+                "--",
+                "sh",
+                "-c",
+                "npm test"
+            ],
+            "group": "test",
+            "problemMatcher": []
+        },
+        {
+            "label": "Start (1Password env)",
+            "type": "shell",
+            "command": "op",
+            "args": [
+                "run",
+                "--env-file",
+                "./.env",
+                "--",
+                "sh",
+                "-c",
+                "npm start"
+            ],
+            "group": "test",
+            "problemMatcher": []
+        },
+        {
+            "label": "Lint",
+            "type": "shell",
+            "command": "npm",
+            "args": [
+                "run",
+                "lint"
+            ],
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "Typecheck",
+            "type": "shell",
+            "command": "npm",
+            "args": [
+                "run",
+                "typecheck"
+            ],
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "Prisma migrate (1Password env)",
+            "type": "shell",
+            "command": "op",
+            "args": [
+                "run",
+                "--env-file",
+                "./.env",
+                "--",
+                "sh",
+                "-c",
+                "npx prisma migrate dev"
+            ],
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "Import live DB (1Password env)",
+            "type": "shell",
+            "command": "op",
+            "args": [
+                "run",
+                "--env-file",
+                "./src/lib/importlivedb/.env",
+                "--",
+                "sh",
+                "-c",
+                "npm run importlivedb"
+            ],
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "Prisma seed (1Password env)",
+            "type": "shell",
+            "command": "op",
+            "args": [
+                "run",
+                "--env-file",
+                "./.env",
+                "--",
+                "sh",
+                "-c",
+                "npx prisma db seed"
+            ],
+            "group": "build",
+            "problemMatcher": []
+        }
+    ]
 }

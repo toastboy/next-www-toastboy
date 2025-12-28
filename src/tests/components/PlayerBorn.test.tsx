@@ -12,8 +12,7 @@ describe('PlayerBorn', () => {
             </Wrapper>,
         );
 
-        const dateString = defaultPlayer.born!.toLocaleDateString('sv');
-        expect(screen.getByText(dateString)).toBeInTheDocument();
+        expect(screen.getByText(String(defaultPlayer.born))).toBeInTheDocument();
     });
 
     it('renders "Unknown" when birth date is null', () => {

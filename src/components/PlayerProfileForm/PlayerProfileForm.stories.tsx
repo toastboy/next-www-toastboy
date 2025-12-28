@@ -5,7 +5,9 @@ import { mocked } from 'storybook/test';
 import { updatePlayer } from '@/actions/updatePlayer';
 import {
     defaultClubList,
+    defaultClubSupporterDataList,
     defaultCountryList,
+    defaultCountrySupporterDataList,
     defaultPlayerData,
     defaultPlayerEmails,
 } from '@/tests/mocks';
@@ -28,6 +30,8 @@ export const Render: Story = {
     args: {
         player: defaultPlayerData,
         emails: defaultPlayerEmails,
+        countries: defaultCountrySupporterDataList,
+        clubs: defaultClubSupporterDataList,
         allCountries: defaultCountryList,
         allClubs: defaultClubList,
     },

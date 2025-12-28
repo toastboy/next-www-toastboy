@@ -11,7 +11,7 @@ export const mockPlayer = {
     anonymous: null,
     joined: null,
     finished: new Date("2010-12-15T00:00:00.000Z"),
-    born: new Date("1979-06-19T00:00:00.000Z"),
+    born: 1979,
     comment: "",
     introducedBy: null,
 };

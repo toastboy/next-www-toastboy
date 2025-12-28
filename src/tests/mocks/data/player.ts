@@ -7,7 +7,7 @@ export const defaultPlayer: PlayerType = {
     name: "Gary Player",
     joined: new Date("2021-01-01"),
     finished: null,
-    born: new Date("1975-11-01"),
+    born: 1975,
     introducedBy: 23,
     comment: null,
     anonymous: false,

@@ -172,7 +172,7 @@ model Player {
 
     joined   DateTime?
     finished DateTime?
-    born     DateTime?
+    born     Int?
     comment  String?
 
     introducedBy Int?

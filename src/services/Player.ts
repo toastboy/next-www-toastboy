@@ -583,8 +583,24 @@ class PlayerService {
             const update = PlayerUncheckedUpdateInputObjectStrictSchema.parse(rawData);
             const create = PlayerUncheckedCreateInputObjectStrictSchema.parse(rawData);
 
+            console.error('Player upsert args', {
+                where,
+                update,
+                create,
+                rawDataType: typeof rawData,
+            });
+
             return await prisma.player.upsert({ where, update, create });
         } catch (error) {
+            const err = error as {
+                meta?: { argumentPath?: string[] };
+                message?: string;
+            };
+            console.error('Player upsert error meta', {
+                message: err?.message,
+                argumentPath: err?.meta?.argumentPath,
+                meta: err?.meta,
+            });
             log(`Error upserting Player: ${String(error)}`);
             throw error;
         }

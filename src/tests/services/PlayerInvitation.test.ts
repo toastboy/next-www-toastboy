@@ -71,25 +71,23 @@ describe('PlayerInvitationService', () => {
 
     describe('markPlayerInvitationUsed', () => {
         it('should mark a player invitation as used', async () => {
-            const usedAt = new Date('2030-01-02');
             const invitation: PlayerInvitationType = {
                 id: 9,
                 playerId: 3,
                 email: 'invite@example.com',
                 tokenHash: 'b'.repeat(64),
                 expiresAt: new Date('2030-01-01'),
-                usedAt,
                 createdAt: new Date(),
             };
 
             (prisma.playerInvitation.update as jest.Mock).mockResolvedValueOnce(invitation);
 
-            const result = await playerInvitationService.markUsed(9, usedAt);
+            const result = await playerInvitationService.markUsed(9);
 
             expect(result).toEqual(invitation);
             expect(prisma.playerInvitation.update).toHaveBeenCalledWith({
                 where: { id: 9 },
-                data: { usedAt },
+                data: { usedAt: expect.any(Date) },
             });
         });
     });

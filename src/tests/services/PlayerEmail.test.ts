@@ -85,18 +85,16 @@ describe('PlayerEmailService', () => {
 
     describe('upsertVerifiedPlayerEmail', () => {
         it('should upsert a verified player email record', async () => {
-            const verifiedAt = new Date('2030-01-02');
             const emailRecord: PlayerEmailType = {
                 id: 1,
                 playerId: 7,
                 email: 'player@example.com',
-                verifiedAt,
                 createdAt: new Date(),
             };
 
             (prisma.playerEmail.upsert as jest.Mock).mockResolvedValueOnce(emailRecord);
 
-            const result = await playerEmailService.upsertVerified(7, 'player@example.com', verifiedAt);
+            const result = await playerEmailService.upsert(7, 'player@example.com', true);
 
             expect(result).toEqual(emailRecord);
             expect(prisma.playerEmail.upsert).toHaveBeenCalledWith({
@@ -104,11 +102,11 @@ describe('PlayerEmailService', () => {
                 create: {
                     playerId: 7,
                     email: 'player@example.com',
-                    verifiedAt,
+                    verifiedAt: expect.any(Date),
                 },
                 update: {
                     playerId: 7,
-                    verifiedAt,
+                    verifiedAt: expect.any(Date),
                 },
             });
         });

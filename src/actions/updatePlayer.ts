@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 
 import playerService from '@/services/Player';
+import playerEmailService from '@/services/PlayerEmail';
 import { UpdatePlayerSchema } from '@/types/UpdatePlayerInput';
 
 export async function updatePlayer(playerId: number, rawData: unknown) {
@@ -16,20 +17,11 @@ export async function updatePlayer(playerId: number, rawData: unknown) {
         born: data.born,
     });
 
-    // const emails = Array.from(new Set(
-    //     data.emails
-    //         .map((email) => email.trim().toLowerCase())
-    //         .filter((email) => email.length > 0),
-    // ));
+    // Remove emails that are no longer present
+    await playerEmailService.deleteExcept(playerId, emails);
 
-    // for (const email of emails) {
-    //     const existing = await playerService.getPlayerEmailByEmail(email);
-    //     if (!existing) {
-    //         await playerService.createPlayerEmail({ playerId, email });
-    //     } else if (existing.playerId !== playerId) {
-    //         throw new Error(`Email already in use: ${email}`);
-    //     }
-    // }
+    // Upsert provided emails
+    await playerEmailService.upsertAll(playerId, emails);
 
     // await Promise.all(data.clubs.map((clubId) => (
     //     clubSupporterService.upsert({ playerId, clubId })

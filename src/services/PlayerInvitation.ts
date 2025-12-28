@@ -76,10 +76,12 @@ export class PlayerInvitationService {
      * @param usedAt The timestamp to set
      * @returns A promise that resolves to the updated invitation
      */
-    async markUsed(id: number, usedAt: Date): Promise<PlayerInvitationType> {
+    async markUsed(id: number): Promise<PlayerInvitationType> {
         try {
             const where = PlayerInvitationWhereUniqueInputObjectSchema.parse({ id });
-            const data = PlayerInvitationUncheckedUpdateInputObjectStrictSchema.parse({ usedAt });
+            const data = PlayerInvitationUncheckedUpdateInputObjectStrictSchema.parse({
+                usedAt: new Date(),
+            });
             return await prisma.playerInvitation.update({ where, data });
         } catch (error) {
             log(`Error updating PlayerInvitation: ${String(error)}`);

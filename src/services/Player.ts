@@ -572,36 +572,29 @@ class PlayerService {
     }
 
     /**
-     * Updates a player if it exists, or creates it if not
-     * @param data The properties to add to the player
-     * @returns A promise that resolves to the updated or created player
+     * Updates an existing player record in the database.
+     *
+     * @param rawData - The raw data containing the player ID and fields to update. Must include an `id` field to identify the player.
+     * @returns A promise that resolves to the updated player object.
+     * @throws Will throw an error if the player ID is invalid, the data fails validation, or the database update fails.
+     *
+     * @remarks
+     * This method performs validation on the input data using Zod schemas:
+     * - Extracts and validates the player ID using `PlayerSchema`
+     * - Validates the where clause using `PlayerWhereUniqueInputObjectSchema`
+     * - Validates the update data using `PlayerUncheckedUpdateInputObjectStrictSchema`
+     *
+     * All errors are logged before being re-thrown.
      */
-    async upsert(rawData: unknown): Promise<PlayerType> {
+    async update(rawData: unknown): Promise<PlayerType> {
         try {
             const parsed = PlayerSchema.pick({ id: true }).parse(rawData);
             const where = PlayerWhereUniqueInputObjectSchema.parse({ id: parsed.id });
-            const update = PlayerUncheckedUpdateInputObjectStrictSchema.parse(rawData);
-            const create = PlayerUncheckedCreateInputObjectStrictSchema.parse(rawData);
+            const data = PlayerUncheckedUpdateInputObjectStrictSchema.parse(rawData);
 
-            console.error('Player upsert args', {
-                where,
-                update,
-                create,
-                rawDataType: typeof rawData,
-            });
-
-            return await prisma.player.upsert({ where, update, create });
+            return await prisma.player.update({ where, data });
         } catch (error) {
-            const err = error as {
-                meta?: { argumentPath?: string[] };
-                message?: string;
-            };
-            console.error('Player upsert error meta', {
-                message: err?.message,
-                argumentPath: err?.meta?.argumentPath,
-                meta: err?.meta,
-            });
-            log(`Error upserting Player: ${String(error)}`);
+            log(`Error updating Player: ${String(error)}`);
             throw error;
         }
     }

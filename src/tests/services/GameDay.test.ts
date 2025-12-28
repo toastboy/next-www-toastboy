@@ -4,19 +4,6 @@ import { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 import gameDayService from '@/services/GameDay';
 import { defaultGameDay, defaultGameDayList } from '@/tests/mocks';
 
-jest.mock('prisma/prisma', () => ({
-    gameDay: {
-        findUnique: jest.fn(),
-        findFirst: jest.fn(),
-        findMany: jest.fn(),
-        groupBy: jest.fn(),
-        count: jest.fn(),
-        create: jest.fn(),
-        upsert: jest.fn(),
-        delete: jest.fn(),
-        deleteMany: jest.fn(),
-    },
-}));
 
 describe('GameDayService', () => {
     beforeEach(() => {

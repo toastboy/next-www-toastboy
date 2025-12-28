@@ -4,17 +4,6 @@ import { ClubType } from 'prisma/zod/schemas/models/Club.schema';
 import clubService from '@/services/Club';
 import { defaultClub, defaultClubList, invalidClub } from '@/tests/mocks';
 
-jest.mock('prisma/prisma', () => ({
-    club: {
-        findUnique: jest.fn(),
-        findFirst: jest.fn(),
-        findMany: jest.fn(),
-        create: jest.fn(),
-        upsert: jest.fn(),
-        delete: jest.fn(),
-        deleteMany: jest.fn(),
-    },
-}));
 
 describe('ClubService', () => {
     beforeEach(() => {

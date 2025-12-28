@@ -4,12 +4,6 @@ import { GET } from '@/app/api/health/route';
 import { HealthResponseSchema } from '@/lib/health';
 
 // Mock the prisma client
-jest.mock('prisma/prisma', () => ({
-    __esModule: true,
-    default: {
-        $queryRaw: jest.fn(),
-    },
-}));
 
 describe('/api/health', () => {
     beforeEach(() => {

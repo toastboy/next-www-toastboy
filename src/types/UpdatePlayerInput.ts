@@ -6,14 +6,15 @@ export const UpdatePlayerSchema = z.object({
     born: z.preprocess(
         (value) => {
             if (value === '' || value === null || value === undefined) {
-                return undefined;
+                return null;
             }
             return typeof value === 'string' ? Number(value) : value;
         },
         z.number()
             .min(1900, { message: 'Year must be 1900 or later' })
             .max(new Date().getFullYear(), { message: 'Year cannot be in the future' })
-            .optional(),
+            .optional()
+            .nullable(),
     ),
     emails: z.array(z.preprocess(
         (value) => {

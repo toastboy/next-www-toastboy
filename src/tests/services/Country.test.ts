@@ -4,17 +4,6 @@ import { CountryType } from 'prisma/zod/schemas/models/Country.schema';
 import countryService from '@/services/Country';
 import { defaultCountry, defaultCountryList, invalidCountry } from '@/tests/mocks';
 
-jest.mock('prisma/prisma', () => ({
-    country: {
-        findUnique: jest.fn(),
-        findFirst: jest.fn(),
-        findMany: jest.fn(),
-        create: jest.fn(),
-        upsert: jest.fn(),
-        delete: jest.fn(),
-        deleteMany: jest.fn(),
-    },
-}));
 
 describe('CountryService', () => {
     beforeEach(() => {

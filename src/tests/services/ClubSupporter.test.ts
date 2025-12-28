@@ -4,17 +4,6 @@ import { ClubSupporterType } from 'prisma/zod/schemas/models/ClubSupporter.schem
 import clubSupporterService from '@/services/ClubSupporter';
 import { defaultClubSupporter, defaultClubSupporterList } from '@/tests/mocks';
 
-jest.mock('prisma/prisma', () => ({
-    clubSupporter: {
-        findUnique: jest.fn(),
-        findFirst: jest.fn(),
-        findMany: jest.fn(),
-        create: jest.fn(),
-        upsert: jest.fn(),
-        delete: jest.fn(),
-        deleteMany: jest.fn(),
-    },
-}));
 
 describe('clubSupporterService', () => {
     beforeEach(() => {

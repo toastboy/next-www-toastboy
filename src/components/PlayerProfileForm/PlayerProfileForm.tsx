@@ -16,7 +16,6 @@ import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck, IconTrash } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
-import { useRouter } from 'next/navigation';
 import { ClubType } from 'prisma/zod/schemas/models/Club.schema';
 import { CountryType } from 'prisma/zod/schemas/models/Country.schema';
 import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
@@ -50,7 +49,6 @@ export const PlayerProfileForm: React.FC<Props> = ({
     allCountries,
     allClubs,
 }) => {
-    const router = useRouter();
     const initialEmails = emails.map((playerEmail) => playerEmail.email);
     const bornYear = player.born ?? undefined;
 
@@ -78,7 +76,7 @@ export const PlayerProfileForm: React.FC<Props> = ({
         });
 
         try {
-            const updatedPlayer = await updatePlayer(player.id, values);
+            await updatePlayer(player.id, values);
 
             notifications.update({
                 id,
@@ -89,8 +87,6 @@ export const PlayerProfileForm: React.FC<Props> = ({
                 loading: false,
                 autoClose: 2000,
             });
-
-            router.push(`/footy/player/${updatedPlayer.id}`);
         } catch (err) {
             console.error('Failed to update profile:', err);
             notifications.update({

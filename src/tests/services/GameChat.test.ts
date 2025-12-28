@@ -4,17 +4,6 @@ import { GameChatType } from 'prisma/zod/schemas/models/GameChat.schema';
 import gameChatService from '@/services/GameChat';
 import { defaultGameChat, defaultGameChatList } from '@/tests/mocks';
 
-jest.mock('prisma/prisma', () => ({
-    gameChat: {
-        findUnique: jest.fn(),
-        findFirst: jest.fn(),
-        findMany: jest.fn(),
-        create: jest.fn(),
-        upsert: jest.fn(),
-        delete: jest.fn(),
-        deleteMany: jest.fn(),
-    },
-}));
 
 describe('GameChatService', () => {
     beforeEach(() => {

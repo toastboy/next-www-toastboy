@@ -11,6 +11,7 @@ const moduleFileExtensions = ['ts', 'tsx', 'js', 'jsx', 'json', 'node', 'mjs'];
 const moduleNameMapper = {
     '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
     '^@/(.*)$': '<rootDir>/src/$1',
+    '^prisma/prisma$': '<rootDir>/src/tests/__mocks__/prisma/prisma.ts',
     '^prisma/(.*)$': '<rootDir>/prisma/$1',
     '^server-only$': '<rootDir>/src/tests/__mocks__/server-only.ts',
     '^supertest$': '<rootDir>/src/tests/lib/api/supertest-mock.ts',

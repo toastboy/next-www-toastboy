@@ -10,10 +10,10 @@ export async function updatePlayer(playerId: number, rawData: unknown) {
 
     // TODO: Allow for setting/unsetting anonymous, comment
     const { emails, clubs, countries } = data;
-    const player = await playerService.upsert({
+    const player = await playerService.update({
         id: playerId,
         name: data.name,
-        born: data.born ?? null,
+        born: data.born,
     });
 
     // const emails = Array.from(new Set(

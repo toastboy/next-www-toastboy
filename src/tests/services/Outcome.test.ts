@@ -15,30 +15,6 @@ import {
     defaultPlayerFormList,
 } from '@/tests/mocks';
 
-jest.mock('prisma/prisma', () => ({
-    outcome: {
-        findUnique: jest.fn(),
-        findFirst: jest.fn(),
-        findMany: jest.fn(),
-        groupBy: jest.fn(),
-        count: jest.fn(),
-        create: jest.fn(),
-        upsert: jest.fn(),
-        delete: jest.fn(),
-        deleteMany: jest.fn(),
-    },
-    gameDay: {
-        findUnique: jest.fn(),
-        findFirst: jest.fn(),
-        findMany: jest.fn(),
-        groupBy: jest.fn(),
-        count: jest.fn(),
-        create: jest.fn(),
-        upsert: jest.fn(),
-        delete: jest.fn(),
-        deleteMany: jest.fn(),
-    },
-}));
 
 describe('OutcomeService', () => {
     beforeEach(() => {

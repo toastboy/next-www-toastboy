@@ -4,17 +4,6 @@ import { CountrySupporterType } from 'prisma/zod/schemas/models/CountrySupporter
 import countrySupporterService from '@/services/CountrySupporter';
 import { defaultCountrySupporter, defaultCountrySupporterList } from '@/tests/mocks';
 
-jest.mock('prisma/prisma', () => ({
-    countrySupporter: {
-        findUnique: jest.fn(),
-        findFirst: jest.fn(),
-        findMany: jest.fn(),
-        create: jest.fn(),
-        upsert: jest.fn(),
-        delete: jest.fn(),
-        deleteMany: jest.fn(),
-    },
-}));
 
 describe('countrySupporterService', () => {
     beforeEach(() => {

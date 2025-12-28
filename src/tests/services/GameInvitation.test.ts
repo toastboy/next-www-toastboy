@@ -8,17 +8,6 @@ import {
     defaultGameInvitationList,
 } from '@/tests/mocks';
 
-jest.mock('prisma/prisma', () => ({
-    gameInvitation: {
-        findUnique: jest.fn(),
-        findFirst: jest.fn(),
-        findMany: jest.fn(),
-        create: jest.fn(),
-        upsert: jest.fn(),
-        delete: jest.fn(),
-        deleteMany: jest.fn(),
-    },
-}));
 
 describe('GameInvitationService', () => {
     beforeEach(() => {

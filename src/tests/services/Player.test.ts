@@ -15,54 +15,6 @@ import {
 } from '@/tests/mocks';
 import { defaultOutcome } from '@/tests/mocks/data/outcome';
 
-jest.mock('prisma/prisma', () => ({
-    player: {
-        findUnique: jest.fn(),
-        findFirst: jest.fn(),
-        findMany: jest.fn(),
-        create: jest.fn(),
-        upsert: jest.fn(),
-        delete: jest.fn(),
-        deleteMany: jest.fn(),
-    },
-    playerLogin: {
-        findUnique: jest.fn(),
-        findFirst: jest.fn(),
-        findMany: jest.fn(),
-        create: jest.fn(),
-        deleteMany: jest.fn(),
-    },
-    playerEmail: {
-        findFirst: jest.fn(),
-        findUnique: jest.fn(),
-        findMany: jest.fn(),
-        create: jest.fn(),
-        upsert: jest.fn(),
-    },
-    playerInvitation: {
-        findUnique: jest.fn(),
-        create: jest.fn(),
-        update: jest.fn(),
-    },
-    outcome: {
-        findUnique: jest.fn(),
-        findFirst: jest.fn(),
-        findMany: jest.fn(),
-        create: jest.fn(),
-        upsert: jest.fn(),
-        delete: jest.fn(),
-        deleteMany: jest.fn(),
-    },
-    gameDay: {
-        findUnique: jest.fn(),
-        findFirst: jest.fn(),
-        findMany: jest.fn(),
-        create: jest.fn(),
-        upsert: jest.fn(),
-        delete: jest.fn(),
-        deleteMany: jest.fn(),
-    },
-}));
 
 describe('PlayerService', () => {
     beforeEach(() => {
@@ -110,19 +62,11 @@ describe('PlayerService', () => {
             }
         });
 
-        (prisma.player.upsert as jest.Mock).mockImplementation((args: {
+        (prisma.player.update as jest.Mock).mockImplementation((args: {
             where: { id: number },
-            update: PlayerType,
-            create: PlayerType,
+            data: PlayerType,
         }) => {
-            const player = defaultPlayerList.find((player) => player.id === args.where.id);
-
-            if (player) {
-                return Promise.resolve(args.update);
-            }
-            else {
-                return Promise.resolve(args.create);
-            }
+            return Promise.resolve(args.data);
         });
 
         (prisma.player.delete as jest.Mock).mockImplementation((args: {
@@ -695,18 +639,13 @@ describe('PlayerService', () => {
         });
     });
 
-    describe('upsert', () => {
-        it('should create a player', async () => {
-            const result = await playerService.upsert(defaultPlayer);
-            expect(result).toEqual(defaultPlayer);
-        });
-
+    describe('update', () => {
         it('should update an existing player where one with the id already existed', async () => {
             const updatedPlayer: PlayerType = {
                 ...defaultPlayer,
                 id: 6,
             };
-            const result = await playerService.upsert(updatedPlayer);
+            const result = await playerService.update(updatedPlayer);
             expect(result).toEqual(updatedPlayer);
         });
 

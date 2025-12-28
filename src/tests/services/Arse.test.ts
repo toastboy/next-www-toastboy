@@ -4,18 +4,6 @@ import { ArseType } from 'prisma/zod/schemas/models/Arse.schema';
 import arseService from '@/services/Arse';
 import { defaultArse, defaultArseList } from '@/tests/mocks';
 
-jest.mock('prisma/prisma', () => ({
-    arse: {
-        findUnique: jest.fn(),
-        findFirst: jest.fn(),
-        findMany: jest.fn(),
-        aggregate: jest.fn(),
-        create: jest.fn(),
-        upsert: jest.fn(),
-        delete: jest.fn(),
-        deleteMany: jest.fn(),
-    },
-}));
 
 describe('ArseService', () => {
     beforeEach(() => {

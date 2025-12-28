@@ -213,6 +213,10 @@ async function importBackup(): Promise<void> {
             shellExec(`cat ${migration} | mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} ${mysqlDatabase}`);
         }
 
+        // Run prisma generate again to take account of any schema changes during migrations
+        console.log('Running prisma generate again...');
+        shellExec('npx prisma generate --schema prisma/schema.prisma');
+
         // Now calculate all the player records to ensure they are up to date
         console.log('Calculating player records...');
         await playerRecordService.deleteAll();

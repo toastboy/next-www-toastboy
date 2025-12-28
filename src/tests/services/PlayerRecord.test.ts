@@ -6,41 +6,6 @@ import playerRecordService from '@/services/PlayerRecord';
 import { defaultPlayerRecord, defaultPlayerRecordList } from '@/tests/mocks';
 import { loadJsonFixture } from '@/tests/shared/fixtures';
 
-jest.mock('prisma/prisma', () => ({
-    playerRecord: {
-        findUnique: jest.fn(),
-        findFirst: jest.fn(),
-        findMany: jest.fn(),
-        groupBy: jest.fn(),
-        count: jest.fn(),
-        create: jest.fn(),
-        upsert: jest.fn(),
-        delete: jest.fn(),
-        deleteMany: jest.fn(),
-    },
-    gameDay: {
-        findUnique: jest.fn(),
-        findFirst: jest.fn(),
-        findMany: jest.fn(),
-        groupBy: jest.fn(),
-        count: jest.fn(),
-        create: jest.fn(),
-        upsert: jest.fn(),
-        delete: jest.fn(),
-        deleteMany: jest.fn(),
-    },
-    outcome: {
-        findUnique: jest.fn(),
-        findFirst: jest.fn(),
-        findMany: jest.fn(),
-        groupBy: jest.fn(),
-        count: jest.fn(),
-        create: jest.fn(),
-        upsert: jest.fn(),
-        delete: jest.fn(),
-        deleteMany: jest.fn(),
-    },
-}));
 
 describe('PlayerRecordService', () => {
     beforeEach(() => {

@@ -174,17 +174,22 @@ describe('clubSupporterService', () => {
 
     describe('upsert', () => {
         it('should create a ClubSupporter where the combination of player ID and club ID did not exist', async () => {
-            const result = await clubSupporterService.upsert(defaultClubSupporter);
+            const result = await clubSupporterService.upsert(
+                defaultClubSupporter.playerId,
+                defaultClubSupporter.clubId,
+            );
             expect(result).toEqual(defaultClubSupporter);
         });
 
         it('should update an existing ClubSupporter where the combination of player ID and club ID already existed', async () => {
             const updatedClubSupporter = {
-                ...defaultClubSupporter,
                 playerId: 6,
                 clubId: 16,
             };
-            const result = await clubSupporterService.upsert(updatedClubSupporter);
+            const result = await clubSupporterService.upsert(
+                updatedClubSupporter.playerId,
+                updatedClubSupporter.clubId,
+            );
             expect(result).toEqual(updatedClubSupporter);
         });
     });

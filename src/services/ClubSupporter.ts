@@ -9,7 +9,6 @@ import {
     ClubSupporterWhereUniqueInputObjectSchema,
 } from 'prisma/zod/schemas';
 import {
-    ClubSupporterSchema,
     ClubSupporterType,
 } from 'prisma/zod/schemas/models/ClubSupporter.schema';
 import z from 'zod';
@@ -121,26 +120,60 @@ export class ClubSupporterService {
     }
 
     /**
-     * Upserts a ClubSupporter.
-     * @param data The data to be upserted.
-     * @returns A promise that resolves to the upserted ClubSupporter, or null if the upsert failed.
-     * @throws An error if there is a failure.
+     * Upserts a ClubSupporter relation for the given player and club.
+     *
+     * Validates the composite unique key and payloads, then performs an atomic
+     * Prisma `upsert` to either create the relation or update the existing one.
+     * Errors are logged and rethrown for upstream handling.
+     *
+     * @param playerId - The unique identifier of the player.
+     * @param clubId - The unique identifier of the club.
+     * @returns A promise resolving to the created or updated ClubSupporter entity.
+     *          The value should not be null under normal circumstances.
+     * @throws ZodError If input validation fails.
+     * @throws Prisma.PrismaClientKnownRequestError | Prisma.PrismaClientUnknownRequestError
+     *         If the database operation fails.
+     *
+     * @example
+     * const supporter = await clubSupporterService.upsert(123, 456);
+     * // supporter.playerId === 123; supporter.clubId === 456
+     *
+     * @remarks
+     * - Uniqueness is enforced by the composite key (playerId, clubId).
+     * - The operation is idempotent: repeated calls with the same inputs yield the same relation.
      */
-    async upsert(rawData: unknown): Promise<ClubSupporterType | null> {
+    async upsert(playerId: number, clubId: number): Promise<ClubSupporterType | null> {
         try {
-            const parsed = ClubSupporterSchema.pick({
-                playerId: true,
-                clubId: true,
-            }).parse(rawData);
             const where = ClubSupporterWhereUniqueInputObjectSchema.parse({
-                playerId_clubId: { playerId: parsed.playerId, clubId: parsed.clubId },
+                playerId_clubId: { playerId, clubId },
             });
-            const update = ClubSupporterUncheckedUpdateInputObjectStrictSchema.parse(rawData);
-            const create = ClubSupporterUncheckedCreateInputObjectStrictSchema.parse(rawData);
-
+            const update = ClubSupporterUncheckedUpdateInputObjectStrictSchema.parse({ playerId, clubId });
+            const create = ClubSupporterUncheckedCreateInputObjectStrictSchema.parse({ playerId, clubId });
             return await prisma.clubSupporter.upsert({ where, update, create });
         } catch (error) {
             log(`Error upserting ClubSupporter: ${String(error)}`);
+            throw error;
+        }
+    }
+
+    /**
+     * Inserts or updates a set of club supporter records for the specified
+     * player in parallel.
+     *
+     * @param playerId - The unique identifier of the player whose club
+     * supporter associations are being updated.
+     * @param clubIds - An array of club identifiers to upsert for the given
+     * player.
+     * @returns A promise that resolves when all upsert operations complete
+     * successfully.
+     * @throws Will propagate any error encountered during the upsert
+     * operations.
+     */
+    async upsertAll(playerId: number, clubIds: number[]) {
+        try {
+            await Promise.all(clubIds.map((clubId) => this.upsert(playerId, clubId)));
+        } catch (error) {
+            log(`Error upserting multiple ClubSupporters: ${String(error)}`);
             throw error;
         }
     }
@@ -161,6 +194,39 @@ export class ClubSupporterService {
             await prisma.clubSupporter.delete({ where });
         } catch (error) {
             log(`Error deleting ClubSupporter: ${String(error)}`);
+            throw error;
+        }
+    }
+
+    /**
+     * Deletes all club supporter associations for the specified player except
+     * those whose club IDs are provided to keep.
+     *
+     * The method fetches the player's current club supporters and removes any
+     * association whose `clubId` is not present in the `clubSupportersToKeep`
+     * list. Deletions are performed concurrently.
+     *
+     * @param playerId - The unique identifier of the player whose supporter
+     * associations should be pruned.
+     * @param clubSupportersToKeep - An array of club IDs to retain for the
+     * player; all other existing associations will be deleted.
+     * @returns A promise that resolves once all non-retained associations have
+     * been deleted.
+     * @throws Logs and rethrows any error encountered while reading or deleting
+     * the player's club supporter associations.
+     */
+    async deleteExcept(playerId: number, clubSupportersToKeep: number[]) {
+        try {
+            const currentClubSupporters = await this.getByPlayer(playerId);
+            const ClubSupportersToDelete = currentClubSupporters
+                .filter((current) => !clubSupportersToKeep.some(
+                    (cs) => cs === current.clubId,
+                ));
+            await Promise.all(ClubSupportersToDelete.map(
+                (cs) => this.delete(cs.playerId, cs.clubId)),
+            );
+        } catch (error) {
+            log(`Error deleting PlayerClubSupporters: ${String(error)}`);
             throw error;
         }
     }

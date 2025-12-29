@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 
+import clubSupporterService from '@/services/ClubSupporter';
 import playerService from '@/services/Player';
 import playerEmailService from '@/services/PlayerEmail';
 import { UpdatePlayerSchema } from '@/types/UpdatePlayerInput';
@@ -17,11 +18,11 @@ export async function updatePlayer(playerId: number, rawData: unknown) {
         born: data.born,
     });
 
-    // Remove emails that are no longer present
     await playerEmailService.deleteExcept(playerId, emails);
-
-    // Upsert provided emails
     await playerEmailService.upsertAll(playerId, emails);
+
+    await clubSupporterService.deleteExcept(playerId, clubs);
+    await clubSupporterService.upsertAll(playerId, clubs);
 
     // await Promise.all(data.clubs.map((clubId) => (
     //     clubSupporterService.upsert({ playerId, clubId })

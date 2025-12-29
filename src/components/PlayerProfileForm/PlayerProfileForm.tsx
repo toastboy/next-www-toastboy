@@ -9,6 +9,7 @@ import {
     Flex,
     MultiSelect,
     NumberInput,
+    Switch,
     TextInput,
     Tooltip,
 } from '@mantine/core';
@@ -55,6 +56,7 @@ export const PlayerProfileForm: React.FC<Props> = ({
     const form = useForm<PlayerProfileFormValues>({
         initialValues: {
             name: player.name ?? '',
+            anonymous: player.anonymous ?? false,
             emails: initialEmails.length ? initialEmails : [''],
             born: bornYear,
             countries: countries.map((country) => country.country.isoCode),
@@ -136,6 +138,15 @@ export const PlayerProfileForm: React.FC<Props> = ({
                 label="Name"
                 required
                 {...form.getInputProps('name')}
+            />
+            <Switch
+                mt="sm"
+                mb="md"
+                label="Anonymous"
+                description={
+                    `If selected, you will appear as 'Player ${player.id.toString()}' on the public site, with no picture or other identifying information. Email addresses will never be shown regardless of this setting.`
+                }
+                {...form.getInputProps('anonymous', { type: 'checkbox' })}
             />
             <Box
                 mt="md"

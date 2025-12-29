@@ -48,7 +48,7 @@ export const ValidFill: Story = {
 
         const canvas = within(canvasElement);
         const nameInput = await canvas.findByLabelText(/Name/i);
-        const emailInput = await canvas.findByLabelText(/Email address 2/i);
+        const emailInput = await canvas.findByLabelText(/^Email address 2$/i);
         const submitButton = await canvas.findByRole('button', { name: /Submit/i });
 
         await userEvent.clear(nameInput);
@@ -73,7 +73,7 @@ export const BlankName: Story = {
 
         const canvas = within(canvasElement);
         const nameInput = await canvas.findByLabelText(/Name/i);
-        const emailInput = await canvas.findByLabelText(/Email address 2/i);
+        const emailInput = await canvas.findByLabelText(/^Email address 2$/i);
         const submitButton = await canvas.findByRole('button', { name: /Submit/i });
 
         await userEvent.clear(nameInput);

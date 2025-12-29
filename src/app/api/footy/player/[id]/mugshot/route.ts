@@ -28,7 +28,8 @@ async function getPlayerMugshot(
         const playerLogin = await playerService.getLogin(params.id);
         let blobClient = containerClient.getBlobClient(playerLogin ? `${playerLogin}.jpg` : 'manofmystery.jpg');
 
-        if (playerLogin && !(await blobClient.exists())) {
+        if (player.anonymous ||
+            (playerLogin && !(await blobClient.exists()))) {
             blobClient = containerClient.getBlobClient('manofmystery.jpg');
         }
 

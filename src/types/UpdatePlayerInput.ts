@@ -3,6 +3,7 @@ import { z } from 'zod';
 export const UpdatePlayerSchema = z.object({
     name: z.string()
         .min(1, { message: 'Name is required' }),
+    anonymous: z.boolean().optional(),
     born: z.preprocess(
         (value) => {
             if (value === '' || value === null || value === undefined) {

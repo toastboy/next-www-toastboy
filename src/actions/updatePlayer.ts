@@ -11,10 +11,11 @@ import { UpdatePlayerSchema } from '@/types/UpdatePlayerInput';
 export async function updatePlayer(playerId: number, rawData: unknown) {
     const data = UpdatePlayerSchema.parse(rawData);
 
-    // TODO: Allow for setting/unsetting anonymous, comment
+    // TODO: Allow for setting/unsetting the comment
     const { emails, clubs, countries } = data;
     const player = await playerService.update({
         id: playerId,
+        anonymous: data.anonymous,
         name: data.name,
         born: data.born,
     });

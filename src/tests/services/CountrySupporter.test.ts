@@ -174,7 +174,10 @@ describe('countrySupporterService', () => {
 
     describe('upsert', () => {
         it('should create a CountrySupporter where the combination of player ID and country ISO code did not exist', async () => {
-            const result = await countrySupporterService.upsert(defaultCountrySupporter);
+            const result = await countrySupporterService.upsert(
+                defaultCountrySupporter.playerId,
+                defaultCountrySupporter.countryISOCode,
+            );
             expect(result).toEqual(defaultCountrySupporter);
         });
 
@@ -184,7 +187,10 @@ describe('countrySupporterService', () => {
                 playerId: 6,
                 countryISOCode: "GB",
             };
-            const result = await countrySupporterService.upsert(updatedClubSupporter);
+            const result = await countrySupporterService.upsert(
+                updatedClubSupporter.playerId,
+                updatedClubSupporter.countryISOCode,
+            );
             expect(result).toEqual(updatedClubSupporter);
         });
     });

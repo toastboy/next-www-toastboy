@@ -134,6 +134,17 @@
             ],
             "group": "build",
             "problemMatcher": []
+        },
+        {
+            "label": "Storybook",
+            "type": "shell",
+            "command": "npm",
+            "args": [
+                "run",
+                "storybook"
+            ],
+            "group": "test",
+            "problemMatcher": []
         }
     ]
 }

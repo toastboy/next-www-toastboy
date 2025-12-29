@@ -9,7 +9,6 @@ import {
     CountrySupporterWhereUniqueInputObjectSchema,
 } from 'prisma/zod/schemas';
 import {
-    CountrySupporterSchema,
     CountrySupporterType,
 } from 'prisma/zod/schemas/models/CountrySupporter.schema';
 import z from 'zod';
@@ -121,29 +120,91 @@ export class CountrySupporterService {
     }
 
     /**
-     * Upserts a CountrySupporter.
-     * @param data The data to be upserted.
-     * @returns A promise that resolves to the upserted CountrySupporter, or null if the upsert failed.
-     * @throws An error if there is a failure.
+     * Inserts or updates a country supporter entry for a given player and
+     * country.
+     *
+     * Uses the composite key of player ID and country ISO code to determine
+     * whether to update an existing record or create a new one. Validation is
+     * performed before persistence, and any errors encountered are logged and
+     * rethrown.
+     *
+     * @param playerId - The unique identifier of the player.
+     * @param countryISOCode - The ISO country code to associate with the
+     * player.
+     * @returns The upserted country supporter record, or `null` if none is
+     * created.
+     * @throws Any validation or persistence errors encountered during the
+     * operation.
      */
-    async upsert(rawData: unknown): Promise<CountrySupporterType | null> {
+    async upsert(playerId: number, countryISOCode: string): Promise<CountrySupporterType | null> {
         try {
-            const parsed = CountrySupporterSchema.pick({
-                playerId: true,
-                countryISOCode: true,
-            }).parse(rawData);
             const where = CountrySupporterWhereUniqueInputObjectSchema.parse({
-                playerId_countryISOCode: {
-                    playerId: parsed.playerId,
-                    countryISOCode: parsed.countryISOCode,
-                },
+                playerId_countryISOCode: { playerId, countryISOCode },
             });
-            const update = CountrySupporterUncheckedUpdateInputObjectStrictSchema.parse(rawData);
-            const create = CountrySupporterUncheckedCreateInputObjectStrictSchema.parse(rawData);
-
+            const update = CountrySupporterUncheckedUpdateInputObjectStrictSchema.parse({ playerId, countryISOCode });
+            const create = CountrySupporterUncheckedCreateInputObjectStrictSchema.parse({ playerId, countryISOCode });
             return await prisma.countrySupporter.upsert({ where, update, create });
         } catch (error) {
             log(`Error upserting CountrySupporter: ${String(error)}`);
+            throw error;
+        }
+    }
+
+    /**
+     * Upserts multiple country supporter entries for a given player.
+     *
+     * Iterates through the provided ISO country codes and performs an upsert
+     * operation for each, aggregating the promises for concurrent execution.
+     *
+     * @param playerId - The unique identifier of the player whose supporters
+     * are being upserted.
+     * @param countryISOCodes - An array of ISO country codes to upsert
+     * supporter records for.
+     * @throws If any upsert operation fails, the error is logged and rethrown.
+     */
+    async upsertAll(playerId: number, countryISOCodes: string[]) {
+        try {
+            await Promise.all(countryISOCodes.map(
+                (countryISOCode) => this.upsert(playerId, countryISOCode)),
+            );
+        } catch (error) {
+            log(`Error upserting multiple CountrySupporters: ${String(error)}`);
+            throw error;
+        }
+    }
+
+    /**
+     * Deletes all country supporters for the specified player except those
+     * whose ISO codes are provided to keep.
+     *
+     * Retrieves the player's current country supporters, filters out entries
+     * whose `countryISOCode` does not appear in `keep`, and deletes the
+     * remainder concurrently.
+     *
+     * @param playerId - The numeric identifier of the player whose country
+     * supporters should be pruned.
+     * @param keep - A list of country ISO code strings to preserve; comparison
+     * is strict and case-sensitive.
+     * @returns A promise that resolves when all deletions have completed.
+     * @throws Error - If fetching the player's current supporters fails or if
+     * any delete operation rejects; the error is logged and rethrown.
+     * @remarks
+     * - Deletions are executed in parallel using `Promise.all`.
+     * - This method is effectively idempotent for supporters already absent or
+     *   included in the keep list.
+     */
+    async deleteExcept(playerId: number, keep: string[]) {
+        try {
+            const currentCountrySupporters = await this.getByPlayer(playerId);
+            const CountrySupportersToDelete = currentCountrySupporters
+                .filter((current) => !keep.some(
+                    (cs) => cs === current.countryISOCode,
+                ));
+            await Promise.all(CountrySupportersToDelete.map(
+                (cs) => this.delete(cs.playerId, cs.countryISOCode)),
+            );
+        } catch (error) {
+            log(`Error deleting PlayerClubSupporters: ${String(error)}`);
             throw error;
         }
     }

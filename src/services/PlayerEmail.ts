@@ -133,7 +133,9 @@ export class PlayerEmailService {
      */
     async upsertAll(playerId: number, emails: string[]) {
         try {
-            await Promise.all(emails.map((email) => this.upsert(playerId, email)));
+            await Promise.all(emails.map(
+                (email) => this.upsert(playerId, email),
+            ));
         } catch (error) {
             log(`Error upserting multiple PlayerEmails: ${String(error)}`);
             throw error;
@@ -176,18 +178,23 @@ export class PlayerEmailService {
     }
 
     /**
-     * Deletes all emails associated with a player except those specified in the keep list.
+     * Deletes all emails associated with a player except those specified in the
+     * keep list.
      *
-     * @param playerId - The unique identifier of the player whose emails should be managed
-     * @param emailsToKeep - Array of email addresses that should be preserved (case-insensitive, trimmed)
-     * @throws {Error} Rethrows any error encountered during the deletion process after logging
-     * @returns A promise that resolves when all emails not in the keep list have been deleted
+     * @param playerId - The unique identifier of the player whose emails should
+     * be managed
+     * @param keep - Array of email addresses that should be preserved
+     * (case-insensitive, trimmed)
+     * @throws {Error} Rethrows any error encountered during the deletion
+     * process after logging
+     * @returns A promise that resolves when all emails not in the keep list
+     * have been deleted
      */
-    async deleteExcept(playerId: number, emailsToKeep: string[]) {
+    async deleteExcept(playerId: number, keep: string[]) {
         try {
             const currentEmails = await this.getAll(playerId);
             const emailsToDelete = currentEmails
-                .filter((current) => !emailsToKeep.some(
+                .filter((current) => !keep.some(
                     (email) => email.trim().toLowerCase() === current.email,
                 ));
             await Promise.all(emailsToDelete.map((email) => this.delete(email.email)));

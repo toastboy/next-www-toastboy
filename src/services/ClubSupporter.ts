@@ -171,7 +171,9 @@ export class ClubSupporterService {
      */
     async upsertAll(playerId: number, clubIds: number[]) {
         try {
-            await Promise.all(clubIds.map((clubId) => this.upsert(playerId, clubId)));
+            await Promise.all(clubIds.map(
+                (clubId) => this.upsert(playerId, clubId),
+            ));
         } catch (error) {
             log(`Error upserting multiple ClubSupporters: ${String(error)}`);
             throw error;
@@ -203,23 +205,23 @@ export class ClubSupporterService {
      * those whose club IDs are provided to keep.
      *
      * The method fetches the player's current club supporters and removes any
-     * association whose `clubId` is not present in the `clubSupportersToKeep`
-     * list. Deletions are performed concurrently.
+     * association whose `clubId` is not present in the `keep` list. Deletions
+     * are performed concurrently.
      *
      * @param playerId - The unique identifier of the player whose supporter
      * associations should be pruned.
-     * @param clubSupportersToKeep - An array of club IDs to retain for the
-     * player; all other existing associations will be deleted.
+     * @param keep - An array of club IDs to retain for the player; all other
+     * existing associations will be deleted.
      * @returns A promise that resolves once all non-retained associations have
      * been deleted.
      * @throws Logs and rethrows any error encountered while reading or deleting
      * the player's club supporter associations.
      */
-    async deleteExcept(playerId: number, clubSupportersToKeep: number[]) {
+    async deleteExcept(playerId: number, keep: number[]) {
         try {
             const currentClubSupporters = await this.getByPlayer(playerId);
             const ClubSupportersToDelete = currentClubSupporters
-                .filter((current) => !clubSupportersToKeep.some(
+                .filter((current) => !keep.some(
                     (cs) => cs === current.clubId,
                 ));
             await Promise.all(ClubSupportersToDelete.map(

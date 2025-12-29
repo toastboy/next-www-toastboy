@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 
 import clubSupporterService from '@/services/ClubSupporter';
+import countrySupporterService from '@/services/CountrySupporter';
 import playerService from '@/services/Player';
 import playerEmailService from '@/services/PlayerEmail';
 import { UpdatePlayerSchema } from '@/types/UpdatePlayerInput';
@@ -24,13 +25,8 @@ export async function updatePlayer(playerId: number, rawData: unknown) {
     await clubSupporterService.deleteExcept(playerId, clubs);
     await clubSupporterService.upsertAll(playerId, clubs);
 
-    // await Promise.all(data.clubs.map((clubId) => (
-    //     clubSupporterService.upsert({ playerId, clubId })
-    // )));
-
-    // await Promise.all(data.countries.map((countryISOCode) => (
-    //     countrySupporterService.upsert({ playerId, countryISOCode })
-    // )));
+    await countrySupporterService.deleteExcept(playerId, countries);
+    await countrySupporterService.upsertAll(playerId, countries);
 
     revalidatePath(`/footy/player/${playerId}`);
     revalidatePath('/footy/players');

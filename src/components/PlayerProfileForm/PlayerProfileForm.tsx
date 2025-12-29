@@ -22,7 +22,6 @@ import { ClubType } from 'prisma/zod/schemas/models/Club.schema';
 import { CountryType } from 'prisma/zod/schemas/models/Country.schema';
 import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import { PlayerEmailType } from 'prisma/zod/schemas/models/PlayerEmail.schema';
-import { Activity } from 'react';
 
 import { updatePlayer } from '@/actions/updatePlayer';
 import { EmailInput } from '@/components/EmailInput/EmailInput';
@@ -158,28 +157,65 @@ export const PlayerProfileForm: React.FC<Props> = ({
                     borderRadius: 'var(--mantine-radius-md)',
                 }}
             >
-                {form.values.emails.map((_, index) => (
-                    <Flex key={index} mb="md" gap="sm" align="flex-end">
-                        <EmailInput
-                            label={`Email address ${index + 1}`}
-                            required={index === 0}
-                            style={{ flex: 1 }}
-                            {...form.getInputProps(`emails.${index}`)}
-                        />
-                        <Activity mode={index === 0 ? 'hidden' : 'visible'}>
-                            <Tooltip label={`Delete email address ${index + 1}`} withArrow>
+                {form.values.emails.map((email, index) => {
+                    const address = `address ${index + 1}`;
+                    const isVerified = emails.some(
+                        (value) => (value.email === email && value.verifiedAt !== null),
+                    );
+
+                    return (
+                        <Flex key={index} mb="md" gap="sm" align="flex-end">
+                            <EmailInput
+                                label={`Email ${address}`}
+                                required={index === 0}
+                                style={{ flex: 1 }}
+                                {...form.getInputProps(`emails.${index}`)}
+                            />
+                            <Tooltip
+                                label={
+                                    isVerified ?
+                                        `Email ${address} is verified` :
+                                        `Verify email ${address}`
+                                }
+                                withArrow
+                            >
+                                <Button
+                                    variant={isVerified ? "subtle" : "filled"}
+                                    color={isVerified ? "green" : "gray"}
+                                    aria-label={`Verify email ${address}`}
+                                // onClick={() => form.removeListItem("emails", index)}
+                                >
+                                    <IconCheck size={16} />
+                                </Button>
+                            </Tooltip>
+                            {index === 0 ? (
                                 <Button
                                     variant="subtle"
-                                    color="red"
-                                    aria-label={`Delete email address ${index + 1}`}
-                                    onClick={() => form.removeListItem("emails", index)}
+                                    color="gray"
+                                    aria-label="Primary email cannot be deleted"
+                                    disabled
+                                    style={{ visibility: 'hidden' }}
                                 >
                                     <IconTrash size={16} />
                                 </Button>
-                            </Tooltip>
-                        </Activity>
-                    </Flex>
-                ))}
+                            ) : (
+                                <Tooltip
+                                    label={`Delete email ${address}`}
+                                    withArrow
+                                >
+                                    <Button
+                                        variant="subtle"
+                                        color="red"
+                                        aria-label={`Delete email ${address}`}
+                                        onClick={() => form.removeListItem('emails', index)}
+                                    >
+                                        <IconTrash size={16} />
+                                    </Button>
+                                </Tooltip>
+                            )}
+                        </Flex>
+                    );
+                })}
 
                 <Button
                     type="button"

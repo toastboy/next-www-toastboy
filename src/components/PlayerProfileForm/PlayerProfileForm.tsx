@@ -10,6 +10,7 @@ import {
     MultiSelect,
     NumberInput,
     Switch,
+    Textarea,
     TextInput,
     Tooltip,
 } from '@mantine/core';
@@ -61,6 +62,7 @@ export const PlayerProfileForm: React.FC<Props> = ({
             born: bornYear,
             countries: countries.map((country) => country.country.isoCode),
             clubs: clubs.map((club) => club.clubId.toString()),
+            comment: player.comment ?? '',
         } satisfies PlayerProfileFormValues,
         validate: zod4Resolver(UpdatePlayerSchema),
         validateInputOnBlur: true,
@@ -209,6 +211,12 @@ export const PlayerProfileForm: React.FC<Props> = ({
                 data={clubData}
                 searchable
                 {...form.getInputProps('clubs')}
+            />
+
+            <Textarea
+                label="Comment"
+                placeholder="Add a comment"
+                {...form.getInputProps('comment')}
             />
 
             <Button type="submit" mt="md">

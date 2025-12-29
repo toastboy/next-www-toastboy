@@ -28,6 +28,7 @@ export const UpdatePlayerSchema = z.object({
     )),
     countries: z.array(z.string()),
     clubs: z.array(z.coerce.number()),
+    comment: z.string().optional(),
 });
 
 export type UpdatePlayerInput = z.infer<typeof UpdatePlayerSchema>;

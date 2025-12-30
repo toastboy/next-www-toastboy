@@ -1,4 +1,6 @@
-import { notFound } from 'next/navigation';
+
+import { Notification } from '@mantine/core';
+import { IconX } from '@tabler/icons-react';
 
 import { MustBeLoggedIn } from '@/components/MustBeLoggedIn/MustBeLoggedIn';
 import { PlayerProfileForm } from '@/components/PlayerProfileForm/PlayerProfileForm';
@@ -16,7 +18,7 @@ const Page: React.FC<PageProps> = async () => {
     const user = await getCurrentUser();
     const playerId = user?.playerId;
 
-    if (!playerId) return notFound();
+    if (!playerId) return (<MustBeLoggedIn admin={false} />);
 
     const [player, emails, countries, clubs, allCountries, allClubs] = await Promise.all([
         playerService.getById(playerId),
@@ -27,7 +29,13 @@ const Page: React.FC<PageProps> = async () => {
         clubService.getAll(),
     ]);
 
-    if (!player) return notFound();
+    if (!player) {
+        return (
+            <Notification icon={<IconX size={18} />} color="red">
+                Failed to load player profile.
+            </Notification>
+        );
+    }
 
     return (
         <MustBeLoggedIn admin={false}>

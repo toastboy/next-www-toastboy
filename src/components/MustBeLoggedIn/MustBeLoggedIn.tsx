@@ -7,7 +7,7 @@ import { authClient } from '@/lib/authClient';
 import config from '@/lib/config';
 
 export interface Props {
-    children: ReactNode;
+    children?: ReactNode;
     admin?: boolean;
     showSignIn?: boolean;
     onValidationChange?: (isValid: boolean) => void;
@@ -31,7 +31,12 @@ export interface Props {
  * - If the user is not authenticated and `showSignIn` is `true`, a `SignIn` component is rendered with an appropriate message.
  * - If the user is authenticated, the child components are rendered within a `Suspense` boundary.
  */
-export const MustBeLoggedIn: React.FC<Props> = ({ children, admin = false, showSignIn = true, onValidationChange }) => {
+export const MustBeLoggedIn: React.FC<Props> = ({
+    children,
+    admin = false,
+    showSignIn = true,
+    onValidationChange,
+}) => {
     const [isValid, setIsValid] = useState<boolean | null>(null);
     const session = authClient.useSession();
 

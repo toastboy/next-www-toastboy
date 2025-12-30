@@ -45,7 +45,8 @@ export const auth = betterAuth({
 
             return { user, session };
         }),
-        nextCookies(), // Must be last: see https://better-auth.vercel.app/docs/integrations/next#server-action-cookies
+        // Must be last: see https://better-auth.vercel.app/docs/integrations/next#server-action-cookies
+        nextCookies(),
     ],
     socialProviders: {
         ...{
@@ -67,12 +68,34 @@ export const auth = betterAuth({
         // avoid timing attacks: https://www.better-auth.com/docs/concepts/email
         // eslint-disable-next-line @typescript-eslint/require-await
         sendVerificationEmail: async ({ user, url }) => {
-            // TODO: Use Mantine for email template
+            const body = `
+                <div>
+                    <p>
+                        Welcome to Toastboy FC!
+                    </p>
+                    <p>
+                        Follow this link to get started:
+                        <a href="${url}">confirm your account</a>
+                    </p>
+                    <p>
+                        We look forward to seeing you on the pitch! The games are every Tuesday at 18:00 at Kelsey Kerridge in Cambridge. Please arrive a bit early so you&apos;ve got time to park and pay the day membership.
+                    </p>
+                    <p>
+                        All the details are here:
+                        <a href="https://www.toastboy.co.uk/footy/info">Toastboy FC info page</a>
+                    </p>
+                    <p>
+                        Cheers,<br/>
+                        Jon
+                    </p>
+                </div>
+            `;
+
             void sendEmail(
                 user.email,
                 '',
-                'Verify your email address',
-                `Click the link to verify your email: ${url}`,
+                'Welcome to Toastboy FC!',
+                body,
             );
         },
     },

@@ -20,12 +20,12 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { z } from 'zod';
 
-import { authClient, signInWithGoogle, signInWithMicrosoft } from '@/lib/auth-client';
+import { setPasswordAction, updateUserNameAction } from '@/actions/auth';
+import { signInWithGoogle, signInWithMicrosoft } from '@/lib/auth-client';
 
 export interface Props {
     name: string
     email: string;
-    token: string;
 }
 
 const ClaimSignupSchema = z.object({
@@ -38,11 +38,11 @@ const ClaimSignupSchema = z.object({
     path: ['confirmPassword'],
 });
 
-export const ClaimSignup = ({ name, email, token }: Props) => {
+export const ClaimSignup = ({ name, email }: Props) => {
     const [loading, setLoading] = useState(false);
     const [signupError, setSignupError] = useState<boolean>(false);
     const router = useRouter();
-    const redirect = `/footy/auth/claim/complete?token=${encodeURIComponent(token)}`;
+    const redirect = '/footy/profile';
 
     const form = useForm({
         initialValues: {
@@ -60,16 +60,10 @@ export const ClaimSignup = ({ name, email, token }: Props) => {
         setSignupError(false);
 
         try {
-            await authClient.signUp.email({
-                name: values.name,
-                email: values.email,
-                password: values.password,
-            }, {
-                onError: (ctx) => {
-                    alert(ctx.error.message);
-                },
-            });
-
+            if (values.name.trim() !== name) {
+                await updateUserNameAction(values.name.trim());
+            }
+            await setPasswordAction(values.password);
             router.push(redirect);
         } catch (error) {
             Sentry.captureMessage(`Sign up error: ${String(error)}`, 'error');
@@ -118,7 +112,7 @@ export const ClaimSignup = ({ name, email, token }: Props) => {
                     <TextInput
                         withAsterisk
                         label="Name"
-                        description="This is the name that will be displayed on your profile if you use password login. If you sign in with Google or Microsoft, your profile name will come from your Google or Microsoft account."
+                        description="This is the name shown on your profile when you sign in with a password."
                         placeholder="Enter your name"
                         rightSection={<IconIdBadge size={16} />}
                         {...form.getInputProps('name')}

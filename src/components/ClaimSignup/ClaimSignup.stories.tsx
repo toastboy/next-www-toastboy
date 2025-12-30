@@ -18,6 +18,5 @@ export const Primary: Story = {
     args: {
         name: 'John Doe',
         email: 'john.doe@example.com',
-        token: 'example-token',
     },
 };

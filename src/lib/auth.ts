@@ -4,6 +4,7 @@ import { nextCookies } from 'better-auth/next-js';
 import { admin, customSession } from 'better-auth/plugins';
 import prisma from 'prisma/prisma';
 
+import { sendEmail } from '@/actions/sendEmail';
 import { getSecrets } from '@/lib/secrets';
 import playerEmailService from '@/services/PlayerEmail';
 
@@ -58,6 +59,21 @@ export const auth = betterAuth({
                 clientId: secrets.MICROSOFT_CLIENT_ID,
                 clientSecret: secrets.MICROSOFT_CLIENT_SECRET,
             } : undefined,
+        },
+    },
+    emailVerification: {
+        sendOnSignUp: true,
+        // The documentation specifically says that this shouldn't be awaited to
+        // avoid timing attacks: https://www.better-auth.com/docs/concepts/email
+        // eslint-disable-next-line @typescript-eslint/require-await
+        sendVerificationEmail: async ({ user, url }) => {
+            // TODO: Use Mantine for email template
+            void sendEmail(
+                user.email,
+                '',
+                'Verify your email address',
+                `Click the link to verify your email: ${url}`,
+            );
         },
     },
     cookies: {

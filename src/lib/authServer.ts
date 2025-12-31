@@ -20,6 +20,11 @@ const mockUsers: Record<Exclude<AuthRole, 'none'>, AuthUserSummary> = {
     },
 };
 
+/**
+ * Reads the mock auth role from the request cookies.
+ *
+ * @returns The mock role stored in `MOCK_AUTH_COOKIE`, or `'none'` when absent/invalid.
+ */
 export async function getMockAuthState(): Promise<AuthRole> {
     const cookieHeader = (await headers()).get('cookie');
     if (!cookieHeader) {
@@ -38,6 +43,11 @@ export async function getMockAuthState(): Promise<AuthRole> {
     return 'none';
 }
 
+/**
+ * Returns a mock user summary when a mock auth role is active.
+ *
+ * @returns The mock user for the active role, or `null` when no mock auth is set.
+ */
 export async function getMockUser(): Promise<AuthUserSummary | null> {
     const state = await getMockAuthState();
     if (state === 'user' || state === 'admin') {
@@ -46,6 +56,11 @@ export async function getMockUser(): Promise<AuthUserSummary | null> {
     return null;
 }
 
+/**
+ * Provides a static list of mock users for local/testing scenarios.
+ *
+ * @returns A list of user objects for test fixtures.
+ */
 export function getMockUsersList() {
     return [
         {
@@ -77,6 +92,11 @@ export function getMockUsersList() {
     ];
 }
 
+/**
+ * Fetches the current session, preferring mock user context when present.
+ *
+ * @returns A session object from the auth API or a mock session wrapper.
+ */
 export async function getSession() {
     const mockUser = await getMockUser();
     if (mockUser) {
@@ -88,6 +108,11 @@ export async function getSession() {
     });
 }
 
+/**
+ * Resolves the current user summary from mock state or the auth session.
+ *
+ * @returns The current user summary or `null` when unauthenticated.
+ */
 export async function getCurrentUser(): Promise<AuthUserSummary | null> {
     const mockUser = await getMockUser();
     if (mockUser) {

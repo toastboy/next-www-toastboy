@@ -18,7 +18,15 @@ const Page: React.FC<PageProps> = async () => {
     const user = await getCurrentUser();
     const playerId = user?.playerId;
 
-    if (!playerId) return (<MustBeLoggedIn admin={false} />);
+    if (!user) return (<MustBeLoggedIn admin={false} />);
+
+    if (!playerId) {
+        return (
+            <Notification icon={<IconX size={18} />} color="red">
+                This account is not linked to a player profile yet.
+            </Notification>
+        );
+    }
 
     const [player, emails, countries, clubs, allCountries, allClubs] = await Promise.all([
         playerService.getById(playerId),

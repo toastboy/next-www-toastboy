@@ -31,7 +31,7 @@ export const auth = betterAuth({
         admin(),
         customSession(async ({ user, session }) => {
             if (user?.email) {
-                const playerEmail = await playerEmailService.getByEmail(user.email, true);
+                const playerEmail = await playerEmailService.getByEmail(user.email);
 
                 return {
                     user: {

@@ -121,7 +121,14 @@ export async function getCurrentUser(): Promise<AuthUserSummary | null> {
 
     const session = await auth.api.getSession({
         headers: await headers(),
-    }) as { user?: { name?: string | null; email?: string | null; playerId?: number | null; role?: string | null } | null } | null;
+    }) as {
+        user?: {
+            name?: string | null,
+            email?: string | null,
+            playerId?: number | null,
+            role?: string | null,
+        } | null,
+    } | null;
 
     if (!session?.user) {
         return null;

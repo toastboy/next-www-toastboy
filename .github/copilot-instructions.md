@@ -16,6 +16,7 @@ Purpose: Enable fast, safe contributions. Keep changes aligned with existing ser
 
 - Core entities: `GameDay`, `Outcome`, `PlayerRecord`, `Player` (+ supporter/ratings tables). Aggregated per‑game/per‑season stats stored in `PlayerRecord` (unique composite: `playerId, year, gameDayId`). Use indices already defined—prefer filters on indexed columns (`playerId`, `year`, `gameDayId`) for new queries.
 - Zod schemas are generated (`prisma/generated/**`); extend rather than modify generated files. If schema changes: update `prisma/schema.prisma`, then run `npx prisma generate` (already embedded in `dev`/`build` scripts).
+- Better Auth tables are off-limits: `user`, `account`, `session`, and `verification` must never be modified directly via Prisma or SQL. Use Better Auth APIs/plugins to manage them.
 
 ### Environment & Secrets
 

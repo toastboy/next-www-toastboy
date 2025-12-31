@@ -203,7 +203,7 @@ export class OutcomeService {
                 const gameDayResponseCounts = PlayerResponseSchema.options.reduce((map, response) => {
                     const count = responseCounts
                         .filter((res) =>
-                            gameDay && res.gameDayId === gameDay.id &&
+                            res.gameDayId === gameDay?.id &&
                             res.response === `${response}`)
                         .map((res) => res._count.response)[0] || 0;
                     map.set(`${response.toLowerCase()}`, count);

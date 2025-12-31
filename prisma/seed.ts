@@ -108,7 +108,7 @@ async function main() {
     await prisma.pickerTeams.deleteMany();
     await prisma.playerEmail.deleteMany();
     await prisma.playerLogin.deleteMany();
-    await prisma.playerInvitation.deleteMany();
+    await prisma.emailVerification.deleteMany();
     await prisma.player.deleteMany();
 
     // Now we must populate the tables in the reverse of the order above, minus

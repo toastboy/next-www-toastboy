@@ -23,6 +23,8 @@ import { CountryType } from 'prisma/zod/schemas/models/Country.schema';
 import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import { PlayerEmailType } from 'prisma/zod/schemas/models/PlayerEmail.schema';
 
+import { requestPlayerEmailVerification } from '@/actions/requestPlayerEmailVerification';
+import { sendEmail } from '@/actions/sendEmail';
 import { updatePlayer } from '@/actions/updatePlayer';
 import { EmailInput } from '@/components/EmailInput/EmailInput';
 import { ClubSupporterDataType } from '@/types';
@@ -66,6 +68,66 @@ export const PlayerProfileForm: React.FC<Props> = ({
         validate: zod4Resolver(UpdatePlayerSchema),
         validateInputOnBlur: true,
     });
+
+    const handleVerifyEmail = async (email: string) => {
+        const normalizedEmail = email.trim();
+
+        if (!normalizedEmail) {
+            notifications.show({
+                color: 'red',
+                title: 'Missing email',
+                message: 'Enter an email address before requesting verification.',
+                icon: <IconAlertTriangle size={18} />,
+            });
+            return;
+        }
+
+        const id = notifications.show({
+            loading: true,
+            title: 'Sending verification',
+            message: 'Sending verification email...',
+            autoClose: false,
+            withCloseButton: false,
+        });
+
+        try {
+            const { verificationLink } = await requestPlayerEmailVerification(
+                player.id,
+                normalizedEmail,
+            );
+
+            const html = [
+                `<p>Hello${player.name ? ` ${player.name}` : ''},</p>`,
+                '<p>Please verify your email address by clicking the link below:</p>',
+                `<p><a href="${verificationLink}">Verify your email</a></p>`,
+                '<p>If you did not request this, you can ignore this message.</p>',
+            ].join('');
+
+            await sendEmail(normalizedEmail, '', 'Verify your email address', html);
+
+            notifications.update({
+                id,
+                color: 'teal',
+                title: 'Verification sent',
+                message: 'Verification email sent.',
+                icon: <IconCheck size={18} />,
+                loading: false,
+                autoClose: 2000,
+            });
+        } catch (err) {
+            console.error('Failed to send verification email:', err);
+            notifications.update({
+                id,
+                color: 'red',
+                title: 'Error',
+                message: `${String(err)}`,
+                icon: <IconAlertTriangle size={18} />,
+                loading: false,
+                autoClose: false,
+                withCloseButton: true,
+            });
+        }
+    };
 
     const handleSubmit = async (
         values: typeof form.values,
@@ -180,10 +242,11 @@ export const PlayerProfileForm: React.FC<Props> = ({
                                 withArrow
                             >
                                 <Button
-                                    variant={isVerified ? "subtle" : "filled"}
-                                    color={isVerified ? "green" : "gray"}
+                                    variant={isVerified ? 'subtle' : 'filled'}
+                                    color={isVerified ? 'green' : 'gray'}
                                     aria-label={`Verify email ${address}`}
-                                // onClick={() => form.removeListItem("emails", index)}
+                                    disabled={isVerified}
+                                    onClick={() => handleVerifyEmail(email)}
                                 >
                                     <IconCheck size={16} />
                                 </Button>

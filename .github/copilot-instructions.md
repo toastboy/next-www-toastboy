@@ -44,6 +44,8 @@ Purpose: Enable fast, safe contributions. Keep changes aligned with existing ser
 - Validate external input early using appropriate `...Where*` or custom strict schema extension; never trust raw request body/query directly in prisma calls.
 - Prefer returning `null` over throwing for “not found” lookups; throw only on unexpected failures (see existing service methods).
 - Maintain matcher exclusions in `middleware.ts` when adding routes so monitoring + static assets remain unblocked.
+- Use existing Zod schema extension patterns for custom validation (see `extendedFields` examples in services).
+- Always add comments to new functions/methods explaining purpose, parameters, return values, and thrown errors in the same manner as existing code and using the typical output of issuing the '/doc' command to the inline coding agent.
 
 ### Adding a New Service (Example Skeleton)
 

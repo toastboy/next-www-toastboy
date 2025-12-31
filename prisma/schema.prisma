@@ -186,7 +186,7 @@ model Player {
     playerRecords     PlayerRecord[]
     logins            PlayerLogin[]
     emails            PlayerEmail[]
-    playerInvitations PlayerInvitation[]
+    emailVerifications EmailVerification[]
 }
 
 model PlayerEmail {
@@ -202,16 +202,17 @@ model PlayerEmail {
     @@index([email])
 }
 
-model PlayerInvitation {
-    id        Int       @id @default(autoincrement())
-    playerId  Int
-    email     String    @db.VarChar(255)
-    tokenHash String    @unique @db.Char(64)
+model EmailVerification {
+    id        Int                     @id @default(autoincrement())
+    playerId  Int?
+    email     String                  @db.VarChar(255)
+    tokenHash String                  @unique @db.Char(64)
+    purpose   EmailVerificationPurpose
     expiresAt DateTime
     usedAt    DateTime?
-    createdAt DateTime  @default(now())
+    createdAt DateTime                @default(now())
 
-    player Player @relation(fields: [playerId], references: [id])
+    player Player? @relation(fields: [playerId], references: [id])
 
     @@index([playerId])
     @@index([email])
@@ -258,6 +259,12 @@ model PlayerRecord {
     @@index([playerId])
     @@index([year])
     @@index([gameDayId])
+}
+
+enum EmailVerificationPurpose {
+    player_invite
+    player_email
+    contact_form
 }
 
 enum TeamName {

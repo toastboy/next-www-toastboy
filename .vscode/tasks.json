@@ -77,6 +77,17 @@
             "problemMatcher": []
         },
         {
+            "label": "Lint Fix",
+            "type": "shell",
+            "command": "npm",
+            "args": [
+                "run",
+                "lint:fix",
+            ],
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
             "label": "Typecheck",
             "type": "shell",
             "command": "npm",
@@ -99,6 +110,22 @@
                 "sh",
                 "-c",
                 "npx prisma migrate dev"
+            ],
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
+            "label": "Prisma studio (1Password env)",
+            "type": "shell",
+            "command": "op",
+            "args": [
+                "run",
+                "--env-file",
+                "./.env",
+                "--",
+                "sh",
+                "-c",
+                "npx prisma studio"
             ],
             "group": "build",
             "problemMatcher": []

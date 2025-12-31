@@ -2,11 +2,11 @@
 
 import { revalidatePath } from 'next/cache';
 
-import { createPlayerInvitationToken } from '@/lib/playerInvitation';
 import { getSecrets } from '@/lib/secrets';
+import { createVerificationToken } from '@/lib/verificationToken';
+import emailVerificationService from '@/services/EmailVerification';
 import playerService from '@/services/Player';
 import playerEmailService from '@/services/PlayerEmail';
-import playerInvitationService from '@/services/PlayerInvitation';
 import { CreatePlayerSchema } from '@/types/CreatePlayerInput';
 
 /**
@@ -42,7 +42,7 @@ export async function createPlayer(rawData: unknown) {
     });
 
     const secrets = getSecrets();
-    const { token, tokenHash, expiresAt } = createPlayerInvitationToken();
+    const { token, tokenHash, expiresAt } = createVerificationToken();
 
     // It's possible to have a player profile with no email: responses will have
     // to be entered manually for them.
@@ -52,11 +52,12 @@ export async function createPlayer(rawData: unknown) {
             email: data.email,
         });
 
-        await playerInvitationService.create({
+        await emailVerificationService.create({
             playerId: player.id,
             email: data.email,
             tokenHash,
             expiresAt,
+            purpose: 'player_invite',
         });
     }
 

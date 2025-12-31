@@ -1,9 +1,13 @@
 'use client';
 
 import {
+    Anchor,
     Box,
     Button,
+    Flex,
+    MantineProvider,
     NativeSelect,
+    Text,
     TextInput,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
@@ -11,9 +15,11 @@ import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useRouter } from 'next/navigation';
+import ReactDOMServer from 'react-dom/server';
 import { PlayerDataType } from 'types';
 
 import { createPlayer } from '@/actions/createPlayer';
+import { sendEmail } from '@/actions/sendEmail';
 import { EmailInput } from '@/components/EmailInput/EmailInput';
 import { CreatePlayerInput, CreatePlayerSchema } from '@/types/CreatePlayerInput';
 
@@ -24,8 +30,8 @@ export interface Props {
 /**
  * A form component for registering new players.
  *
- * Collects player information including name, email, and an optional introducer.
- * Upon submission, creates the player and triggers onboarding email verification.
+ * Collects player information including first name, last name, email, and an optional introducer.
+ * Upon submission, sends a welcome email to the new player and displays notifications for success or failure.
  *
  * @param props - Component props
  * @param props.players - Array of existing players used to populate the "Introduced by" dropdown
@@ -37,6 +43,11 @@ export interface Props {
  */
 export const NewPlayerForm: React.FC<Props> = ({ players }) => {
     const router = useRouter();
+    const getPreferredEmail = (player?: PlayerDataType) => {
+        if (!player?.emails.length) return '';
+        const verifiedEmail = player.emails.find((playerEmail) => playerEmail.verifiedAt);
+        return (verifiedEmail ?? player.emails[0])?.email ?? '';
+    };
 
     const form = useForm({
         initialValues: {
@@ -60,7 +71,42 @@ export const NewPlayerForm: React.FC<Props> = ({ players }) => {
         });
 
         try {
-            const { player: newPlayer } = await createPlayer(values);
+            const { player: newPlayer, inviteLink } = await createPlayer(values);
+
+            if (values.email?.length > 0) {
+                const introducerEmail = values.introducedBy
+                    ? getPreferredEmail(players.find((p) => p.id.toString() === values.introducedBy))
+                    : '';
+                const cc = [introducerEmail, 'footy@toastboy.co.uk']
+                    .filter((e): e is string => !!e).join(', ');
+                const html = ReactDOMServer.renderToStaticMarkup(
+                    <MantineProvider>
+                        <Flex direction="column" gap="md">
+                            <Text>
+                                Welcome to Toastboy FC!
+                            </Text>
+                            <Text>
+                                Follow this link to get started:
+                                <Anchor href={inviteLink}>confirm your account</Anchor>
+                            </Text>
+                            <Text>
+                                We look forward to seeing you on the pitch! The games are every Tuesday at 18:00 at Kelsey Kerridge in Cambridge. Please arrive a bit early so you&apos;ve got time to park and pay the day membership.
+
+                                All the details are here:
+                            </Text>
+                            <Anchor href={`https://www.toastboy.co.uk/footy/info`}>
+                                Toastboy FC info page
+                            </Anchor>
+                            <Text>
+                                Cheers,
+                                Jon
+                            </Text>
+                        </Flex>
+                    </MantineProvider>,
+                );
+
+                await sendEmail(values.email, cc, 'Welcome to Toastboy FC!', html);
+            }
 
             notifications.update({
                 id,
@@ -109,7 +155,7 @@ export const NewPlayerForm: React.FC<Props> = ({ players }) => {
             />
             <EmailInput
                 label="Email address"
-                description="If no email is provided, the player will not be able to log in but the profile will still be created. If provided, they will receive a verification email to finish onboarding."
+                description="If no email is provided, the player will not be able to log in but the profile will still be created."
                 {...form.getInputProps('email')}
             />
             <NativeSelect

@@ -5,27 +5,27 @@ jest.mock('next/navigation', () => ({
 }));
 
 jest.mock('@/lib/auth-client', () => ({
+    authClient: {
+        signUp: {
+            email: jest.fn(),
+        },
+    },
     signInWithGoogle: jest.fn(),
     signInWithMicrosoft: jest.fn(),
-}));
-
-jest.mock('@/actions/auth', () => ({
-    setPasswordAction: jest.fn(),
-    updateUserNameAction: jest.fn(),
 }));
 
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { setPasswordAction, updateUserNameAction } from '@/actions/auth';
 import { ClaimSignup } from '@/components/ClaimSignup/ClaimSignup';
-import { signInWithGoogle, signInWithMicrosoft } from '@/lib/auth-client';
+import { authClient, signInWithGoogle, signInWithMicrosoft } from '@/lib/auth-client';
 import { Wrapper } from '@/tests/components/lib/common';
 
 describe('ClaimSignup', () => {
     const props = {
         name: 'Sam Smith',
         email: 'sam@example.com',
+        token: 'token-123',
     };
 
     beforeEach(() => {
@@ -47,7 +47,7 @@ describe('ClaimSignup', () => {
 
     it('triggers social sign in with the claim redirect', async () => {
         const user = userEvent.setup();
-        const redirect = '/footy/profile';
+        const redirect = `/footy/auth/claim/complete?token=${encodeURIComponent(props.token)}`;
 
         render(
             <Wrapper>
@@ -64,11 +64,9 @@ describe('ClaimSignup', () => {
 
     it('submits valid credentials and redirects on success', async () => {
         const user = userEvent.setup();
-        const redirect = '/footy/profile';
-        const mockSetPassword = setPasswordAction as jest.Mock;
-        const mockUpdateUserName = updateUserNameAction as jest.Mock;
-        mockSetPassword.mockResolvedValueOnce(undefined);
-        mockUpdateUserName.mockResolvedValueOnce(undefined);
+        const redirect = `/footy/auth/claim/complete?token=${encodeURIComponent(props.token)}`;
+        const mockSignUpEmail = authClient.signUp.email as jest.Mock;
+        mockSignUpEmail.mockResolvedValueOnce({});
 
         render(
             <Wrapper>
@@ -81,8 +79,16 @@ describe('ClaimSignup', () => {
         await user.click(screen.getByRole('button', { name: /Create login/i }));
 
         await waitFor(() => {
-            expect(mockUpdateUserName).not.toHaveBeenCalled();
-            expect(mockSetPassword).toHaveBeenCalledWith('Password123');
+            expect(mockSignUpEmail).toHaveBeenCalledWith(
+                {
+                    name: props.name,
+                    email: props.email,
+                    password: 'Password123',
+                },
+                expect.objectContaining({
+                    onError: expect.any(Function),
+                }),
+            );
             expect(mockPush).toHaveBeenCalledWith(redirect);
         });
     });

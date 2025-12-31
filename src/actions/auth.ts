@@ -66,31 +66,3 @@ export async function setAdminRoleAction(userId: string, isAdmin: boolean) {
         },
     });
 }
-
-export async function setPasswordAction(newPassword: string) {
-    const mockState = await getMockAuthState();
-    if (mockState !== 'none') {
-        return;
-    }
-
-    await auth.api.setPassword({
-        headers: await headers(),
-        body: {
-            newPassword,
-        },
-    });
-}
-
-export async function updateUserNameAction(name: string) {
-    const mockState = await getMockAuthState();
-    if (mockState !== 'none') {
-        return;
-    }
-
-    await auth.api.updateUser({
-        headers: await headers(),
-        body: {
-            name,
-        },
-    });
-}

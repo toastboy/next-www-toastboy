@@ -64,7 +64,6 @@ export const auth = betterAuth({
     },
     emailVerification: {
         sendOnSignUp: true,
-        autoSignInAfterVerification: true,
         // The documentation specifically says that this shouldn't be awaited to
         // avoid timing attacks: https://www.better-auth.com/docs/concepts/email
         // eslint-disable-next-line @typescript-eslint/require-await
@@ -98,11 +97,6 @@ export const auth = betterAuth({
                 'Welcome to Toastboy FC!',
                 body,
             );
-        },
-        afterEmailVerification: async (user) => {
-            const playerEmail = await playerEmailService.getByEmail(user.email);
-            if (!playerEmail) return;
-            await playerEmailService.upsert(playerEmail.playerId, user.email, true);
         },
     },
     cookies: {

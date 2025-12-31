@@ -1,27 +1,50 @@
 import { Notification, Text } from '@mantine/core';
 import { IconX } from '@tabler/icons-react';
 
+import { claimPlayerInvitation } from '@/actions/claimPlayerInvitation';
 import { ClaimSignup } from '@/components/ClaimSignup/ClaimSignup';
-import { getCurrentUser } from '@/lib/authServer';
 
-const Page = async () => {
-    const user = await getCurrentUser();
+interface PageProps {
+    searchParams?: Promise<{
+        token?: string;
+    }>;
+}
 
-    if (!user?.email) {
+const Page = async ({ searchParams: sp }: PageProps) => {
+    const searchParams = await sp;
+    const token = searchParams?.token ?? '';
+    let name: string | null = null;
+    let email: string | null = null;
+    let errorMessage: string | null = null;
+
+    try {
+        const result = await claimPlayerInvitation(token);
+        name = result.player.name;
+        email = result.email;
+    } catch (error) {
+        errorMessage = error instanceof Error ? error.message : 'Unable to claim invitation.';
+    }
+
+    if (!email || !name) {
+        errorMessage = "Invitation is missing required details.";
+    }
+
+    if (errorMessage) {
         return (
             <Notification
                 icon={<IconX size={18} />}
                 color="red"
             >
-                <Text>Account problem: Please verify your email first.</Text>
+                <Text>Invitation problem: {errorMessage}</Text>
             </Notification>
         );
     }
 
     return (
         <ClaimSignup
-            name={user.name ?? ''}
-            email={user.email}
+            name={name ?? ''}
+            email={email ?? ''}
+            token={token}
         />
     );
 };

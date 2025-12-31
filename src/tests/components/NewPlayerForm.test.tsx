@@ -77,6 +77,12 @@ describe('NewPlayerForm', () => {
                 email: 'test@example.com',
                 introducedBy: '',
             });
+            expect(mockSendEmail).toHaveBeenCalledWith(
+                'test@example.com',
+                'footy@toastboy.co.uk',
+                'Welcome to Toastboy FC!',
+                expect.any(String),
+            );
         });
     });
 

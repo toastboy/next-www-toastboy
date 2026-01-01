@@ -1,42 +1,66 @@
-import { fn } from 'storybook/test';
-
 interface RequestPasswordResetInput {
     email: string;
     redirectTo: string;
 }
 
+interface StorybookFnRegistry {
+    __STORYBOOK_FN__?: MockFn;
+}
+
 /**
- * Mocked Better Auth client for Storybook tests.
+ * Resolve the mock function creator for Jest or Storybook runtimes.
+ */
+const getMockFn = () => {
+    if (typeof jest !== 'undefined' && typeof jest.fn === 'function') {
+        return jest.fn as MockFn;
+    }
+
+    const storybookFn = (globalThis as StorybookFnRegistry).__STORYBOOK_FN__;
+    if (typeof storybookFn === 'function') {
+        return storybookFn;
+    }
+
+    return ((implementation) => implementation ?? (() => undefined)) as MockFn;
+};
+
+type MockFn = <TArgs extends unknown[], TResult>(
+    implementation?: (...args: TArgs) => TResult,
+) => (...args: TArgs) => TResult;
+
+const mockFn = getMockFn();
+
+/**
+ * Mocked Better Auth client for Storybook and Jest tests.
  */
 export const authClient = {
-    requestPasswordReset: fn((_input: RequestPasswordResetInput) => Promise.resolve({ status: true })),
-    resetPassword: fn((_input: { newPassword: string; token?: string }) => Promise.resolve({ status: true })),
+    requestPasswordReset: mockFn((_input: RequestPasswordResetInput) => Promise.resolve({ status: true })),
+    resetPassword: mockFn((_input: { newPassword: string; token?: string }) => Promise.resolve({ status: true })),
     signIn: {
-        social: fn((_args: { provider: string; callbackURL: string }) => Promise.resolve({})),
+        social: mockFn((_args: { provider: string; callbackURL: string }) => Promise.resolve({})),
     },
-    signInWithEmail: fn((_email: string, _password: string) => Promise.resolve({})),
+    signInWithEmail: mockFn((_email: string, _password: string) => Promise.resolve({})),
     signUp: {
-        email: fn((_args: { name: string; email: string; password: string }) => Promise.resolve({})),
+        email: mockFn((_args: { name: string; email: string; password: string }) => Promise.resolve({})),
     },
-    useSession: fn(() => ({
+    useSession: mockFn(() => ({
         data: null,
         isPending: false,
         isRefetching: false,
         error: null,
-        refetch: fn(),
+        refetch: mockFn(),
     })),
 };
 
 /**
  * Mock social sign-in helper for Google.
  */
-export const signInWithGoogle = fn((callbackURL: string) =>
+export const signInWithGoogle = mockFn((callbackURL: string) =>
     authClient.signIn.social({ provider: 'google', callbackURL }),
 );
 
 /**
  * Mock social sign-in helper for Microsoft.
  */
-export const signInWithMicrosoft = fn((callbackURL: string) =>
+export const signInWithMicrosoft = mockFn((callbackURL: string) =>
     authClient.signIn.social({ provider: 'microsoft', callbackURL }),
 );

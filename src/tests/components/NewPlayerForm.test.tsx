@@ -6,13 +6,6 @@ jest.mock('@/actions/createPlayer', () => ({
     createPlayer: jest.fn(),
 }));
 
-jest.mock('next/navigation', () => ({
-    useRouter: jest.fn(() => ({
-        push: jest.fn(),
-        refresh: jest.fn(),
-    })),
-}));
-
 import { notifications } from '@mantine/notifications';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';

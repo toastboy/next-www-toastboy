@@ -1,18 +1,22 @@
-const push = jest.fn();
-
-jest.mock('next/navigation', () => ({
-    useRouter: () => ({ push }),
-    usePathname: () => '/footy/year/2024',
-}));
-
 import { fireEvent, render, screen } from '@testing-library/react';
+import { usePathname, useRouter } from 'next/navigation';
 
 import { YearSelector } from '@/components/YearSelector/YearSelector';
 import { Wrapper } from '@/tests/components/lib/common';
 
 describe('YearSelector', () => {
+    let push: jest.Mock;
+
     beforeEach(() => {
-        push.mockClear();
+        push = jest.fn();
+        (useRouter as jest.Mock).mockReturnValue({
+            push,
+            replace: jest.fn(),
+            back: jest.fn(),
+            refresh: jest.fn(),
+            prefetch: jest.fn(),
+        });
+        (usePathname as jest.Mock).mockReturnValue('/footy/year/2024');
     });
 
     it('renders years and navigates when a year is clicked', () => {

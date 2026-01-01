@@ -1,9 +1,3 @@
-jest.mock('@/lib/auth-client', () => ({
-    authClient: {
-        resetPassword: jest.fn(),
-    },
-}));
-
 import { notifications } from '@mantine/notifications';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';

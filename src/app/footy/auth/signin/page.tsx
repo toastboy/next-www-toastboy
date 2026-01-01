@@ -4,7 +4,7 @@ type PageProps = object
 
 const Page: React.FC<PageProps> = () => {
     return (
-        <SignIn redirect='/footy/info' />
+        <SignIn redirect='/footy/profile' />
     );
 };
 

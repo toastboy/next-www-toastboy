@@ -1,8 +1,3 @@
-jest.mock('next/navigation', () => ({
-    useRouter: () => ({ push: jest.fn() }),
-    usePathname: () => '/footy/auth/signin',
-}));
-
 jest.mock('lib/authClient', () => ({
     authClient: {
         signInWithEmail: jest.fn(),
@@ -14,18 +9,26 @@ jest.mock('lib/authClient', () => ({
     },
 }));
 
-// jest.mock('sentry.server.config', () => ({
-//     __esModule: true,
-// }));
-
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { usePathname, useRouter } from 'next/navigation';
 
 import { SignIn } from '@/components/SignIn/SignIn';
 import { authClient } from '@/lib/authClient';
 import { Wrapper } from '@/tests/components/lib/common';
 
 describe('SignIn', () => {
+    beforeEach(() => {
+        (useRouter as jest.Mock).mockReturnValue({
+            push: jest.fn(),
+            replace: jest.fn(),
+            back: jest.fn(),
+            refresh: jest.fn(),
+            prefetch: jest.fn(),
+        });
+        (usePathname as jest.Mock).mockReturnValue('/footy/auth/signin');
+    });
+
     it('renders sign in form', () => {
         render(
             <Wrapper>

@@ -13,6 +13,7 @@ import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
+import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 
 import { PasswordFields } from '@/components/PasswordFields/PasswordFields';
@@ -37,6 +38,7 @@ const resetPasswordSchema = z.object({
  * Render the password reset flow for a user who has a reset token.
  */
 export const PasswordResetForm: React.FC<Props> = ({ token }) => {
+    const router = useRouter();
     const form = useForm<z.infer<typeof resetPasswordSchema>>({
         initialValues: {
             password: '',
@@ -77,6 +79,8 @@ export const PasswordResetForm: React.FC<Props> = ({ token }) => {
                 loading: false,
                 autoClose: 2000,
             });
+
+            router.push('/footy/auth/signin');
         } catch (error) {
             const message = error instanceof Error ? error.message : 'Unable to reset password.';
             console.error('Failed to reset password:', error);

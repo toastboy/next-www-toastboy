@@ -1,25 +1,12 @@
-const mockPush = jest.fn();
-
-jest.mock('next/navigation', () => ({
-    useRouter: () => ({ push: mockPush }),
-}));
-
-jest.mock('@/lib/auth-client', () => ({
-    authClient: {
-        signUp: {
-            email: jest.fn(),
-        },
-    },
-    signInWithGoogle: jest.fn(),
-    signInWithMicrosoft: jest.fn(),
-}));
-
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useRouter } from 'next/navigation';
 
 import { ClaimSignup } from '@/components/ClaimSignup/ClaimSignup';
 import { authClient, signInWithGoogle, signInWithMicrosoft } from '@/lib/auth-client';
 import { Wrapper } from '@/tests/components/lib/common';
+
+let mockPush: jest.Mock;
 
 describe('ClaimSignup', () => {
     const props = {
@@ -30,6 +17,14 @@ describe('ClaimSignup', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        mockPush = jest.fn();
+        (useRouter as jest.Mock).mockReturnValue({
+            push: mockPush,
+            replace: jest.fn(),
+            back: jest.fn(),
+            refresh: jest.fn(),
+            prefetch: jest.fn(),
+        });
     });
 
     it('renders the form with the provided name and email', () => {

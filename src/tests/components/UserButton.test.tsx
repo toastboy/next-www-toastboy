@@ -1,18 +1,24 @@
-const push = jest.fn();
-jest.mock('next/navigation', () => ({
-    useRouter: () => ({ push }),
-}));
-
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { useRouter } from 'next/navigation';
 
 import { UserButton } from '@/components/UserButton/UserButton';
 
 import { Wrapper } from './lib/common';
 
 describe('UserButton', () => {
+    let push: jest.Mock;
+
     beforeEach(() => {
         // Reset URL between tests to avoid bleed-over when components change location
         window.history.pushState({}, '', '/');
+        push = jest.fn();
+        (useRouter as jest.Mock).mockReturnValue({
+            push,
+            replace: jest.fn(),
+            back: jest.fn(),
+            refresh: jest.fn(),
+            prefetch: jest.fn(),
+        });
     });
 
     it('renders sign in button with no session present', async () => {

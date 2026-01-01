@@ -12,7 +12,7 @@ import { Notifications } from '@mantine/notifications';
 import type { Preview } from '@storybook/nextjs';
 import { http, HttpResponse } from 'msw';
 import { initialize, mswLoader } from 'msw-storybook-addon';
-import { sb } from 'storybook/test';
+import { fn as storybookFn, sb } from 'storybook/test';
 
 sb.mock('../src/actions/createPlayer.ts');
 sb.mock('../src/actions/updatePlayer.ts');
@@ -22,6 +22,10 @@ sb.mock('../src/actions/requestPlayerEmailVerification.ts');
 sb.mock('../src/actions/sendEmail.ts');
 sb.mock('../src/lib/auth-client.ts');
 sb.mock('../prisma/prisma.ts');
+
+if (typeof globalThis !== 'undefined') {
+    (globalThis as Record<string, unknown>).__STORYBOOK_FN__ = storybookFn;
+}
 
 // Suppress React DevTools disconnected port errors in Storybook
 if (typeof window !== 'undefined') {

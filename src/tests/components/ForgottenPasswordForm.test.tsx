@@ -1,9 +1,3 @@
-jest.mock('@/lib/auth-client', () => ({
-    authClient: {
-        requestPasswordReset: jest.fn(),
-    },
-}));
-
 jest.mock('@/lib/urls', () => ({
     getPublicBaseUrl: () => 'http://localhost:3000',
 }));

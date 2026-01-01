@@ -1,6 +1,8 @@
 import '@testing-library/jest-dom';
 import 'whatwg-fetch';
 
+jest.mock('@/lib/auth-client');
+
 import { TransformStream as NodeTransformStream, WritableStream as NodeWritableStream } from 'node:stream/web';
 import { TextDecoder as NodeTextDecoder, TextEncoder as NodeTextEncoder } from 'node:util';
 import { BroadcastChannel as NodeBroadcastChannel } from 'node:worker_threads';

@@ -21,6 +21,7 @@ import { useState } from 'react';
 import { z } from 'zod';
 
 import { authClient, signInWithGoogle, signInWithMicrosoft } from '@/lib/auth-client';
+import { getPublicBaseUrl } from '@/lib/urls';
 
 export interface Props {
     name: string
@@ -42,7 +43,8 @@ export const ClaimSignup = ({ name, email, token }: Props) => {
     const [loading, setLoading] = useState(false);
     const [signupError, setSignupError] = useState<boolean>(false);
     const router = useRouter();
-    const redirect = `/footy/auth/claim/complete?token=${encodeURIComponent(token)}`;
+    const redirectPath = `/footy/auth/claim/complete?token=${encodeURIComponent(token)}`;
+    const socialRedirect = new URL(redirectPath, getPublicBaseUrl()).toString();
 
     const form = useForm({
         initialValues: {
@@ -70,7 +72,7 @@ export const ClaimSignup = ({ name, email, token }: Props) => {
                 },
             });
 
-            router.push(redirect);
+            router.push(redirectPath);
         } catch (error) {
             Sentry.captureMessage(`Sign up error: ${String(error)}`, 'error');
             setSignupError(true);
@@ -101,10 +103,10 @@ export const ClaimSignup = ({ name, email, token }: Props) => {
             </Stack>
 
             <Stack mb="lg">
-                <Button variant="default" onClick={() => signInWithGoogle(redirect)}>
+                <Button variant="default" onClick={() => signInWithGoogle(socialRedirect)}>
                     Continue with Google
                 </Button>
-                <Button variant="default" onClick={() => signInWithMicrosoft(redirect)}>
+                <Button variant="default" onClick={() => signInWithMicrosoft(socialRedirect)}>
                     Continue with Microsoft
                 </Button>
                 <Divider label="or" labelPosition="center" />

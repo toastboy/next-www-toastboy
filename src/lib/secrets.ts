@@ -11,7 +11,10 @@ const secrets = {
     AZURE_TENANT_ID: process.env.AZURE_TENANT_ID,
 
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
-    BETTER_AUTH_URL: process.env.BETTER_AUTH_URL ?? 'http://localhost:3000',
+    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
+    BETTER_AUTH_URL: process.env.BETTER_AUTH_URL
+        ?? process.env.NEXT_PUBLIC_SITE_URL
+        ?? 'http://localhost:3000',
 
     GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
     GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,

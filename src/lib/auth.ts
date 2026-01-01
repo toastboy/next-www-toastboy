@@ -4,13 +4,15 @@ import { nextCookies } from 'better-auth/next-js';
 import { admin, customSession } from 'better-auth/plugins';
 import prisma from 'prisma/prisma';
 
+import { sendEmail } from '@/actions/sendEmail';
 import { getSecrets } from '@/lib/secrets';
+import { getPublicBaseUrl } from '@/lib/urls';
 import playerEmailService from '@/services/PlayerEmail';
 
 const secrets = getSecrets();
 
 export const auth = betterAuth({
-    baseURL: secrets.BETTER_AUTH_URL,
+    baseURL: getPublicBaseUrl(),
     secret: secrets.BETTER_AUTH_SECRET,
     database: prismaAdapter(prisma, {
         provider: "mysql",
@@ -26,6 +28,21 @@ export const auth = betterAuth({
     },
     emailAndPassword: {
         enabled: true,
+        // The documentation specifically says that this shouldn't be awaited to
+        // avoid timing attacks: https://www.better-auth.com/docs/concepts/email
+        // eslint-disable-next-line @typescript-eslint/require-await
+        sendResetPassword: async ({ user, url }, _request) => {
+            void sendEmail(
+                user.email,
+                '',
+                'Reset your Toastboy FC password',
+                `Click the link to reset your password: ${url}`,
+            );
+        },
+        // eslint-disable-next-line @typescript-eslint/require-await
+        onPasswordReset: async ({ user }, _request) => {
+            console.log(`Password for user ${user.email} has been reset.`);
+        },
     },
     plugins: [
         admin(),

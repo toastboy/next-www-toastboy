@@ -47,7 +47,8 @@ describe('ClaimSignup', () => {
 
     it('triggers social sign in with the claim redirect', async () => {
         const user = userEvent.setup();
-        const redirect = `/footy/auth/claim/complete?token=${encodeURIComponent(props.token)}`;
+        const redirectPath = `/footy/auth/claim/complete?token=${encodeURIComponent(props.token)}`;
+        const redirect = new URL(redirectPath, 'http://localhost').toString();
 
         render(
             <Wrapper>

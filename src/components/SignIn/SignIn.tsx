@@ -24,6 +24,7 @@ import { useState } from 'react';
 
 import { signInWithGoogle, signInWithMicrosoft } from '@/lib/auth-client';
 import { authClient } from '@/lib/authClient';
+import { getPublicBaseUrl } from '@/lib/urls';
 
 export interface Props {
     admin?: boolean;
@@ -35,6 +36,8 @@ export const SignIn: React.FC<Props> = ({ admin, redirect }) => {
     const [loginError, setLoginError] = useState<boolean>(false);
     const router = useRouter();
     const pathname = usePathname();
+    const redirectPath = redirect ?? pathname;
+    const socialRedirect = new URL(redirectPath, getPublicBaseUrl()).toString();
     const form = useForm({
         initialValues: {
             email: '',
@@ -55,7 +58,7 @@ export const SignIn: React.FC<Props> = ({ admin, redirect }) => {
 
         try {
             await authClient.signInWithEmail(values.email, values.password);
-            router.push(redirect ?? pathname);
+            router.push(redirectPath);
         }
         catch (error) {
             Sentry.captureMessage(`Sign in error: ${JSON.stringify(error, null, 2)}`, 'error');
@@ -107,10 +110,10 @@ export const SignIn: React.FC<Props> = ({ admin, redirect }) => {
             </Center>
 
             <Stack mb="lg">
-                <Button variant="default" onClick={() => signInWithGoogle(redirect ?? pathname)}>
+                <Button variant="default" onClick={() => signInWithGoogle(socialRedirect)}>
                     Sign in with Google
                 </Button>
-                <Button variant="default" onClick={() => signInWithMicrosoft(redirect ?? pathname)}>
+                <Button variant="default" onClick={() => signInWithMicrosoft(socialRedirect)}>
                     Sign in with Microsoft
                 </Button>
                 <Divider label="or" labelPosition="center" />

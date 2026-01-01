@@ -2,7 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 
-import { getSecrets } from '@/lib/secrets';
+import { getPublicBaseUrl } from '@/lib/urls';
 import { createVerificationToken } from '@/lib/verificationToken';
 import emailVerificationService from '@/services/EmailVerification';
 import playerService from '@/services/Player';
@@ -41,7 +41,6 @@ export async function createPlayer(rawData: unknown) {
         joined: new Date(),
     });
 
-    const secrets = getSecrets();
     const { token, tokenHash, expiresAt } = createVerificationToken();
 
     // It's possible to have a player profile with no email: responses will have
@@ -66,6 +65,6 @@ export async function createPlayer(rawData: unknown) {
 
     return {
         player,
-        inviteLink: `${secrets.BETTER_AUTH_URL}/footy/auth/claim?token=${token}`,
+        inviteLink: new URL(`/footy/auth/claim?token=${token}`, getPublicBaseUrl()).toString(),
     };
 }

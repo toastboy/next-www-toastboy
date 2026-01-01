@@ -1,6 +1,6 @@
 'use server';
 
-import { getSecrets } from '@/lib/secrets';
+import { getPublicBaseUrl } from '@/lib/urls';
 import { createVerificationToken } from '@/lib/verificationToken';
 import emailVerificationService from '@/services/EmailVerification';
 import playerEmailService from '@/services/PlayerEmail';
@@ -41,9 +41,7 @@ export async function requestPlayerEmailVerification(playerId: number, email: st
         purpose: 'player_email',
     });
 
-    const secrets = getSecrets();
-
     return {
-        verificationLink: `${secrets.BETTER_AUTH_URL}/footy/auth/verify?token=${token}`,
+        verificationLink: new URL(`/footy/auth/verify?token=${token}`, getPublicBaseUrl()).toString(),
     };
 }

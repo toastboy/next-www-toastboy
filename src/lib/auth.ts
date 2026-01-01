@@ -36,7 +36,10 @@ export const auth = betterAuth({
                 user.email,
                 '',
                 'Reset your Toastboy FC password',
-                `Click the link to reset your password: ${url}`,
+                [
+                    `<p>Click the link to reset your password:</p>`,
+                    `<a href="${url}">Reset password</a>`,
+                ].join(''),
             );
         },
         // eslint-disable-next-line @typescript-eslint/require-await

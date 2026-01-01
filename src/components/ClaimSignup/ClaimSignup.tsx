@@ -6,7 +6,6 @@ import {
     Container,
     Divider,
     Notification,
-    PasswordInput,
     Stack,
     Text,
     TextInput,
@@ -14,12 +13,13 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import * as Sentry from '@sentry/react';
-import { IconAt, IconIdBadge, IconLock, IconX } from '@tabler/icons-react';
+import { IconAt, IconIdBadge, IconX } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { z } from 'zod';
 
+import { PasswordFields } from '@/components/PasswordFields/PasswordFields';
 import { authClient, signInWithGoogle, signInWithMicrosoft } from '@/lib/auth-client';
 import { getPublicBaseUrl } from '@/lib/urls';
 
@@ -134,19 +134,9 @@ export const ClaimSignup = ({ name, email, token }: Props) => {
                         disabled
                         {...form.getInputProps('email')}
                     />
-                    <PasswordInput
-                        withAsterisk
-                        label="Password"
-                        placeholder="Enter your password"
-                        rightSection={<IconLock size={16} />}
-                        {...form.getInputProps('password')}
-                    />
-                    <PasswordInput
-                        withAsterisk
-                        label="Confirm password"
-                        placeholder="Re-enter your password"
-                        rightSection={<IconLock size={16} />}
-                        {...form.getInputProps('confirmPassword')}
+                    <PasswordFields
+                        passwordProps={form.getInputProps('password')}
+                        confirmPasswordProps={form.getInputProps('confirmPassword')}
                     />
                     {errorNotification}
                     <Button type="submit" fullWidth loading={loading} >

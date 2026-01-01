@@ -10,6 +10,7 @@ interface RequestPasswordResetInput {
  */
 export const authClient = {
     requestPasswordReset: fn((_input: RequestPasswordResetInput) => Promise.resolve({ status: true })),
+    resetPassword: fn((_input: { newPassword: string; token?: string }) => Promise.resolve({ status: true })),
     signIn: {
         social: fn((_args: { provider: string; callbackURL: string }) => Promise.resolve({})),
     },

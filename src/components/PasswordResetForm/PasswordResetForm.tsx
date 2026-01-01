@@ -70,7 +70,7 @@ export const PasswordResetForm: React.FC<Props> = () => {
         try {
             const { status, message } = await authClient.requestPasswordReset({
                 email: values.email,
-                redirectTo: new URL('/reset-password', getPublicBaseUrl()).toString(),
+                redirectTo: new URL('/footy/auth/reset-password', getPublicBaseUrl()).toString(),
             });
 
             if (!status) console.error('Failed to send reset password email:', message);

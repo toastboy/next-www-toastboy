@@ -144,7 +144,7 @@ export const SignIn: React.FC<Props> = ({ admin, redirect }) => {
                     />
                     {errorNotification}
                     <Group mt="sm">
-                        <Anchor href="/auth/reset-password" size="sm">
+                        <Anchor href="/footy/forgottenpassword" size="sm">
                             Forgot your password ?
                         </Anchor>
                     </Group>

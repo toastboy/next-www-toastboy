@@ -68,7 +68,7 @@ describe('PasswordResetForm', () => {
         await waitFor(() => {
             expect(mockRequestPasswordReset).toHaveBeenCalledWith({
                 email: 'test@example.com',
-                redirectTo: 'http://localhost:3000/reset-password',
+                redirectTo: 'http://localhost:3000/footy/auth/reset-password',
             });
         });
 

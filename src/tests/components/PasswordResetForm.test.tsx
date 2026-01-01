@@ -1,11 +1,7 @@
 jest.mock('@/lib/auth-client', () => ({
     authClient: {
-        requestPasswordReset: jest.fn(),
+        resetPassword: jest.fn(),
     },
-}));
-
-jest.mock('@/lib/urls', () => ({
-    getPublicBaseUrl: () => 'http://localhost:3000',
 }));
 
 import { notifications } from '@mantine/notifications';
@@ -16,67 +12,63 @@ import { PasswordResetForm } from '@/components/PasswordResetForm/PasswordResetF
 import { authClient } from '@/lib/auth-client';
 import { Wrapper } from '@/tests/components/lib/common';
 
-const mockRequestPasswordReset =
-    authClient.requestPasswordReset as jest.MockedFunction<typeof authClient.requestPasswordReset>;
+const mockResetPassword =
+    authClient.resetPassword as jest.MockedFunction<typeof authClient.resetPassword>;
 
 describe('PasswordResetForm', () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        mockRequestPasswordReset.mockResolvedValue({
-            status: true,
-        } as Awaited<ReturnType<typeof authClient.requestPasswordReset>>);
+        mockResetPassword.mockResolvedValue({ status: true });
     });
 
-    it('renders the form fields', () => {
+    it('renders password fields and submit button', () => {
         render(
             <Wrapper>
-                <PasswordResetForm />
+                <PasswordResetForm token="token-123" />
             </Wrapper>,
         );
 
-        expect(screen.getByLabelText(/Email/i)).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /Submit/i })).toBeInTheDocument();
+        expect(screen.getByLabelText(/^New password/i)).toBeInTheDocument();
+        expect(screen.getByLabelText(/Confirm new password/i)).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /Reset password/i })).toBeInTheDocument();
     });
 
-    it('shows required validation when submitted empty', async () => {
-        const user = userEvent.setup();
-
+    it('shows a notification when the token is missing', () => {
         render(
             <Wrapper>
-                <PasswordResetForm />
+                <PasswordResetForm token="" />
             </Wrapper>,
         );
 
-        await user.click(screen.getByRole('button', { name: /Submit/i }));
-
-        expect(await screen.findByText('Email is required')).toBeInTheDocument();
+        expect(screen.getByText(/Password reset link is missing or invalid/i)).toBeInTheDocument();
     });
 
-    it('submits a valid email and shows success notification', async () => {
+    it('submits a new password and shows success notification', async () => {
         const user = userEvent.setup();
         const notificationUpdateSpy = jest.spyOn(notifications, 'update');
 
         render(
             <Wrapper>
-                <PasswordResetForm />
+                <PasswordResetForm token="token-123" />
             </Wrapper>,
         );
 
-        await user.type(screen.getByLabelText(/Email/i), 'test@example.com');
-        await user.click(screen.getByRole('button', { name: /Submit/i }));
+        await user.type(screen.getByLabelText(/^New password/i), 'Password123');
+        await user.type(screen.getByLabelText(/Confirm new password/i), 'Password123');
+        await user.click(screen.getByRole('button', { name: /Reset password/i }));
 
         await waitFor(() => {
-            expect(mockRequestPasswordReset).toHaveBeenCalledWith({
-                email: 'test@example.com',
-                redirectTo: 'http://localhost:3000/footy/auth/reset-password',
+            expect(mockResetPassword).toHaveBeenCalledWith({
+                newPassword: 'Password123',
+                token: 'token-123',
             });
         });
 
         await waitFor(() => {
             expect(notificationUpdateSpy).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    title: 'Check your email',
-                    message: 'If that email is linked to an account, a reset link is on the way.',
+                    title: 'Password updated',
+                    message: 'Your password has been reset successfully.',
                 }),
             );
         });

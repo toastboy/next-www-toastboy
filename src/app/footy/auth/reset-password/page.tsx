@@ -1,7 +1,7 @@
 import { Notification, Text } from '@mantine/core';
 import { IconX } from '@tabler/icons-react';
 
-import { PasswordReset } from '@/components/PasswordReset/PasswordReset';
+import { PasswordResetForm } from '@/components/PasswordResetForm/PasswordResetForm';
 
 interface PageProps {
     searchParams?: Promise<{
@@ -24,7 +24,7 @@ const Page = async ({ searchParams: sp }: PageProps) => {
         );
     }
 
-    return <PasswordReset token={token} />;
+    return <PasswordResetForm token={token} />;
 };
 
 export default Page;

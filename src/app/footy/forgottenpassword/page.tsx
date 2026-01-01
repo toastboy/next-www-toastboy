@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 
-import { PasswordResetForm } from '@/components/PasswordResetForm/PasswordResetForm';
+import { ForgottenPasswordForm } from '@/components/ForgottenPasswordForm/ForgottenPasswordForm';
 
 type PageProps = object;
 
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 const Page: React.FC<PageProps> = () => {
     return (
-        <PasswordResetForm />
+        <ForgottenPasswordForm />
     );
 };
 

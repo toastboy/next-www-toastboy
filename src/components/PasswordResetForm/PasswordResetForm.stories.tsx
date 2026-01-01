@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs';
 import { within } from '@storybook/testing-library';
 import { mocked } from 'storybook/test';
 
-import { updatePlayer } from '@/actions/updatePlayer';
+import { authClient } from '@/lib/auth-client';
 
 import { PasswordResetForm } from './PasswordResetForm';
 
@@ -27,12 +27,12 @@ export const ValidFill: Story = {
     play: async function ({ canvasElement, userEvent, viewMode }) {
         if (viewMode === 'docs') return;
 
-        mocked(updatePlayer).mockResolvedValue({
-            id: 123,
-        } as Awaited<ReturnType<typeof updatePlayer>>);
+        mocked(authClient.requestPasswordReset).mockResolvedValue({
+            status: true,
+        } as Awaited<ReturnType<typeof authClient.requestPasswordReset>>);
 
         const canvas = within(canvasElement);
-        const emailInput = await canvas.findByLabelText(/^Email$/i);
+        const emailInput = await canvas.findByLabelText(/Email/i);
         const submitButton = await canvas.findByRole('button', { name: /Submit/i });
 
         await userEvent.clear(emailInput);
@@ -40,7 +40,7 @@ export const ValidFill: Story = {
         await userEvent.click(submitButton);
 
         const body = canvasElement.ownerDocument.body;
-        await within(body).findByText('Profile updated successfully', {}, { timeout: 6000 });
+        await within(body).findByText('Check your email', {}, { timeout: 6000 });
     },
 };
 
@@ -49,16 +49,31 @@ export const BlankFill: Story = {
     play: async function ({ canvasElement, userEvent, viewMode }) {
         if (viewMode === 'docs') return;
 
-        mocked(updatePlayer).mockResolvedValue({
-            id: 123,
-        } as Awaited<ReturnType<typeof updatePlayer>>);
-
         const canvas = within(canvasElement);
+        const emailInput = await canvas.findByLabelText(/Email/i);
         const submitButton = await canvas.findByRole('button', { name: /Submit/i });
 
+        await userEvent.clear(emailInput);
         await userEvent.click(submitButton);
 
         const body = canvasElement.ownerDocument.body;
         await within(body).findByText('Email is required', {}, { timeout: 6000 });
+    },
+};
+
+export const InvalidFill: Story = {
+    ...Render,
+    play: async function ({ canvasElement, userEvent, viewMode }) {
+        if (viewMode === 'docs') return;
+
+        const canvas = within(canvasElement);
+        const emailInput = await canvas.findByLabelText(/Email/i);
+        const submitButton = await canvas.findByRole('button', { name: /Submit/i });
+
+        await userEvent.type(emailInput, 'invalid-email');
+        await userEvent.click(submitButton);
+
+        const body = canvasElement.ownerDocument.body;
+        await within(body).findByText('Invalid email', {}, { timeout: 6000 });
     },
 };

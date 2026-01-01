@@ -44,7 +44,7 @@ export const auth = betterAuth({
         },
         // eslint-disable-next-line @typescript-eslint/require-await
         onPasswordReset: async ({ user }, _request) => {
-            console.log(`Password for user ${user.email} has been reset.`);
+            console.error(`Password for user ${user.email} has been reset.`);
         },
     },
     plugins: [

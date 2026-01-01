@@ -3,7 +3,6 @@
 import {
     Box,
     Button,
-    Text,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
@@ -17,15 +16,32 @@ import { getPublicBaseUrl } from '@/lib/urls';
 
 export type Props = unknown;
 
+/**
+ * Validate a normalized email value for password reset and emit clear messages.
+ */
+const validatePasswordResetEmail = (value: string, ctx: z.RefinementCtx) => {
+    if (!value) {
+        ctx.addIssue({
+            code: 'custom',
+            message: 'Email is required',
+        });
+        return;
+    }
+
+    if (!z.email().safeParse(value).success) {
+        ctx.addIssue({
+            code: 'custom',
+            message: 'Invalid email',
+        });
+    }
+};
+
 const PasswordResetSchema = z.object({
     email: z.preprocess(
         (value) => {
             return typeof value === 'string' ? value.trim().toLowerCase() : value;
         },
-        z.union([
-            z.email({ message: 'Invalid email' }),
-            z.literal(''),
-        ]),
+        z.string().superRefine(validatePasswordResetEmail),
     ),
 });
 
@@ -88,16 +104,17 @@ export const PasswordResetForm: React.FC<Props> = () => {
             maw={400}
             component="form"
             onSubmit={form.onSubmit(handleSubmit)}
+            noValidate
         >
             <EmailInput
                 label="Email"
+                description={[
+                    "If the email is associated with an account, you'll receive a reset link.",
+                    "Note that if you use Google or Microsoft sign-in, you won't have a password to reset.",
+                ].join(' ')}
                 required
                 {...form.getInputProps(`email`)}
             />
-
-            <Text size="sm" c="dimmed" mt="xs">
-                If the email is associated with an account, you&apos;ll receive a reset link.
-            </Text>
 
             <Button type="submit" mt="md">
                 Submit

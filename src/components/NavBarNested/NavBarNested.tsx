@@ -98,7 +98,7 @@ export const NavBarNested: React.FC<Props> = ({ user }) => {
                 },
                 {
                     "label": "Forgot Password",
-                    "link": "/footy/forgot-password",
+                    "link": "/footy/forgottenpassword",
                 },
             ],
         },

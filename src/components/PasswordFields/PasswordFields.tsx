@@ -27,6 +27,7 @@ export const PasswordFields: React.FC<PasswordFieldsProps> = ({
         <>
             <PasswordInput
                 withAsterisk
+                data-testid="password-input"
                 label={passwordLabel}
                 placeholder={passwordPlaceholder}
                 rightSection={<IconLock size={16} />}
@@ -34,6 +35,7 @@ export const PasswordFields: React.FC<PasswordFieldsProps> = ({
             />
             <PasswordInput
                 withAsterisk
+                data-testid="confirm-password-input"
                 label={confirmPasswordLabel}
                 placeholder={confirmPasswordPlaceholder}
                 rightSection={<IconLock size={16} />}

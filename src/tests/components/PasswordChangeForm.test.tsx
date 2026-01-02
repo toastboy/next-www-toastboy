@@ -1,4 +1,3 @@
-import { notifications } from '@mantine/notifications';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
@@ -41,7 +40,6 @@ describe('PasswordChangeForm', () => {
 
     it('submits current and new password and shows success notification', async () => {
         const user = userEvent.setup();
-        const notificationUpdateSpy = jest.spyOn(notifications, 'update');
 
         render(
             <Wrapper>
@@ -62,13 +60,8 @@ describe('PasswordChangeForm', () => {
             });
         });
 
-        await waitFor(() => {
-            expect(notificationUpdateSpy).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    title: 'Password updated',
-                    message: 'Your password has been updated successfully.',
-                }),
-            );
-        });
+        expect(
+            screen.getByText('Your password has been updated successfully.'),
+        ).toBeInTheDocument();
     });
 });

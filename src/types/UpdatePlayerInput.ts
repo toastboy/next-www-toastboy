@@ -1,5 +1,15 @@
 import { z } from 'zod';
 
+const emailList = z.array(z.preprocess(
+    (value) => {
+        return typeof value === 'string' ? value.trim().toLowerCase() : value;
+    },
+    z.union([
+        z.email({ message: 'Invalid email' }),
+        z.literal(''),
+    ]),
+));
+
 export const UpdatePlayerSchema = z.object({
     name: z.string()
         .min(1, { message: 'Name is required' }),
@@ -17,15 +27,9 @@ export const UpdatePlayerSchema = z.object({
             .optional()
             .nullable(),
     ),
-    emails: z.array(z.preprocess(
-        (value) => {
-            return typeof value === 'string' ? value.trim().toLowerCase() : value;
-        },
-        z.union([
-            z.email({ message: 'Invalid email' }),
-            z.literal(''),
-        ]),
-    )),
+    emails: emailList,
+    addedEmails: emailList,
+    removedEmails: emailList,
     countries: z.array(z.string()),
     clubs: z.array(z.coerce.number()),
     comment: z.string().optional(),

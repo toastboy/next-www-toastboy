@@ -11,6 +11,16 @@ import playerEmailService from '@/services/PlayerEmail';
 
 const secrets = getSecrets();
 
+// For some reason while sendResetPassword is properly typed, the
+// sendDeleteAccountVerification just has a bunch of 'any's
+interface DeleteAccountVerificationContext {
+    user: {
+        email?: string;
+    };
+    url: string;
+    token: string;
+}
+
 export const auth = betterAuth({
     baseURL: getPublicBaseUrl(),
     secret: secrets.BETTER_AUTH_SECRET,
@@ -47,6 +57,28 @@ export const auth = betterAuth({
             console.error(`Password for user ${user.email} has been reset.`);
         },
     },
+    deleteUser: {
+        enabled: true,
+        // The documentation specifically says that this shouldn't be awaited to
+        // avoid timing attacks: https://www.better-auth.com/docs/concepts/users-accounts
+        // eslint-disable-next-line @typescript-eslint/require-await
+        sendDeleteAccountVerification: async (
+            { user, url, token: _token }: DeleteAccountVerificationContext,
+            _request: Request | undefined,
+        ) => {
+            if (user.email) {
+                void sendEmail(
+                    user.email,
+                    '',
+                    'Reset your Toastboy FC password',
+                    [
+                        `<p>Click the link to reset your password:</p>`,
+                        `<a href="${url}">Reset password</a>`,
+                    ].join(''),
+                );
+            }
+        },
+    },
     plugins: [
         admin(),
         customSession(async ({ user, session }) => {
@@ -64,7 +96,8 @@ export const auth = betterAuth({
 
             return { user, session };
         }),
-        nextCookies(), // Must be last: see https://better-auth.vercel.app/docs/integrations/next#server-action-cookies
+        // Must be last: see https://better-auth.vercel.app/docs/integrations/next#server-action-cookies
+        nextCookies(),
     ],
     socialProviders: {
         ...{

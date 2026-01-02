@@ -41,19 +41,36 @@ export async function createPlayer(rawData: unknown) {
         joined: new Date(),
     });
 
+    return {
+        player,
+        inviteLink: await addPlayerEmailInvite(player.id, data.email),
+    };
+}
+
+/**
+ * Adds the given email to the player identified by playerId and prepares an
+ * invitation link, then revalidates the relevant footy paths.
+ *
+ * @param playerId - The unique identifier of the player to invite.
+ * @param email - The email address to send the invite to; optional if the
+ * player profile has no email.
+ * @returns A URL string that the player can use to claim their account via the
+ * tokenized verification link.
+ */
+export async function addPlayerEmailInvite(
+    playerId: number,
+    email?: string,
+) {
     const { token, tokenHash, expiresAt } = createVerificationToken();
 
     // It's possible to have a player profile with no email: responses will have
     // to be entered manually for them.
-    if (data.email && data.email.length > 0) {
-        await playerEmailService.create({
-            playerId: player.id,
-            email: data.email,
-        });
+    if (email && email.length > 0) {
+        await playerEmailService.create({ playerId, email });
 
         await emailVerificationService.create({
-            playerId: player.id,
-            email: data.email,
+            playerId,
+            email,
             tokenHash,
             expiresAt,
             purpose: 'player_invite',
@@ -63,8 +80,5 @@ export async function createPlayer(rawData: unknown) {
     revalidatePath('/footy/newplayer');
     revalidatePath('/footy/players');
 
-    return {
-        player,
-        inviteLink: new URL(`/footy/auth/claim?token=${token}`, getPublicBaseUrl()).toString(),
-    };
+    return new URL(`/footy/auth/claim?token=${token}`, getPublicBaseUrl()).toString();
 }

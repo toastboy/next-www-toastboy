@@ -59,9 +59,7 @@ export const NewPlayerForm: React.FC<Props> = ({ players }) => {
         validateInputOnBlur: true,
     });
 
-    const handleSubmit = async (
-        values: typeof form.values,
-    ) => {
+    const handleSubmit = async (values: CreatePlayerInput) => {
         const id = notifications.show({
             loading: true,
             title: 'Creating player',

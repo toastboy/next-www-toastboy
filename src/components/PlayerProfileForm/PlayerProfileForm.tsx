@@ -60,6 +60,8 @@ export const PlayerProfileForm: React.FC<Props> = ({
             name: player.name ?? '',
             anonymous: player.anonymous ?? false,
             emails: initialEmails.length ? initialEmails : [''],
+            addedEmails: [],
+            removedEmails: [],
             born: bornYear,
             countries: countries.map((country) => country.country.isoCode),
             clubs: clubs.map((club) => club.clubId.toString()),
@@ -141,7 +143,19 @@ export const PlayerProfileForm: React.FC<Props> = ({
         });
 
         try {
-            await updatePlayer(player.id, values);
+            const addedEmails = values.emails
+                .map((email) => email.trim())
+                .filter((email) => email.length > 0 && !initialEmails.includes(email));
+            const removedEmails = initialEmails
+                .filter((email) => !values.emails.includes(email));
+            await updatePlayer(
+                player.id,
+                {
+                    ...values,
+                    addedEmails,
+                    removedEmails,
+                },
+            );
 
             notifications.update({
                 id,

@@ -35,6 +35,7 @@ const mockFn = getMockFn();
 export const authClient = {
     requestPasswordReset: mockFn((_input: RequestPasswordResetInput) => Promise.resolve({ status: true })),
     resetPassword: mockFn((_input: { newPassword: string; token?: string }) => Promise.resolve({ status: true })),
+    changePassword: mockFn((_input: { currentPassword: string; newPassword: string; revokeOtherSessions?: boolean }) => Promise.resolve({ status: true })),
     signIn: {
         social: mockFn((_args: { provider: string; callbackURL: string }) => Promise.resolve({})),
     },

@@ -1,10 +1,13 @@
-import { NYI } from '@/components/NYI/NYI';
+import { MustBeLoggedIn } from '@/components/MustBeLoggedIn/MustBeLoggedIn';
+import { PasswordChangeForm } from '@/components/PasswordChangeForm/PasswordChangeForm';
 
 type PageProps = object
 
 const Page: React.FC<PageProps> = () => {
     return (
-        <NYI />
+        <MustBeLoggedIn admin={false}>
+            <PasswordChangeForm />
+        </MustBeLoggedIn>
     );
 };
 

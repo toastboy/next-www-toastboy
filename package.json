@@ -71,7 +71,7 @@
         "sanitize-html": "^2.17.0",
         "server-only": "^0.0.1",
         "swr": "^2.3.8",
-        "zod": "^4.2.1"
+        "zod": "^4.3.5"
     },
     "devDependencies": {
         "@chromatic-com/storybook": "^4.1.3",

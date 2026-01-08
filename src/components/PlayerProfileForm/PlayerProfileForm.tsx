@@ -22,6 +22,7 @@ import { ClubType } from 'prisma/zod/schemas/models/Club.schema';
 import { CountryType } from 'prisma/zod/schemas/models/Country.schema';
 import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import { PlayerEmailType } from 'prisma/zod/schemas/models/PlayerEmail.schema';
+import { useEffect, useRef } from 'react';
 
 import { updatePlayer } from '@/actions/updatePlayer';
 import { EmailInput } from '@/components/EmailInput/EmailInput';
@@ -36,6 +37,7 @@ export interface Props {
     clubs: ClubSupporterDataType[];
     allCountries: CountryType[];
     allClubs: ClubType[];
+    verifiedEmail?: string;
 }
 
 type PlayerProfileFormValues = Omit<UpdatePlayerInput, 'clubs'> & {
@@ -49,9 +51,27 @@ export const PlayerProfileForm: React.FC<Props> = ({
     clubs,
     allCountries,
     allClubs,
+    verifiedEmail,
 }) => {
     const initialEmails = emails.map((playerEmail) => playerEmail.email);
     const bornYear = player.born ?? undefined;
+    const hasShownVerifiedNotification = useRef(false);
+
+    useEffect(() => {
+        if (!verifiedEmail || hasShownVerifiedNotification.current) {
+            return;
+        }
+
+        notifications.show({
+            color: 'teal',
+            title: 'Email verified',
+            message: `Email address ${verifiedEmail} has been successfully verified.`,
+            icon: <IconCheck size={18} />,
+            loading: false,
+            autoClose: 4000,
+        });
+        hasShownVerifiedNotification.current = true;
+    }, [verifiedEmail]);
 
     const form = useForm<PlayerProfileFormValues>({
         initialValues: {
@@ -102,7 +122,7 @@ export const PlayerProfileForm: React.FC<Props> = ({
                 message: 'Profile updated successfully',
                 icon: <IconCheck size={18} />,
                 loading: false,
-                autoClose: 2000,
+                autoClose: 4000,
             });
         } catch (err) {
             console.error('Failed to update profile:', err);

@@ -12,9 +12,18 @@ import countrySupporterService from '@/services/CountrySupporter';
 import playerService from '@/services/Player';
 import playerEmailService from '@/services/PlayerEmail';
 
-type PageProps = object
+interface PageProps {
+    searchParams?: Promise<{
+        purpose?: string;
+        email?: string;
+    }>;
+}
 
-const Page: React.FC<PageProps> = async () => {
+const Page = async ({ searchParams: sp }: PageProps) => {
+    const searchParams = await sp;
+    const { purpose, email } = searchParams ?? {};
+    const verifiedEmail = purpose === 'player_email' ? email : undefined;
+
     const user = await getCurrentUser();
     const playerId = user?.playerId;
 
@@ -54,6 +63,7 @@ const Page: React.FC<PageProps> = async () => {
                 clubs={clubs}
                 allCountries={allCountries}
                 allClubs={allClubs}
+                verifiedEmail={verifiedEmail}
             />
         </MustBeLoggedIn>
     );

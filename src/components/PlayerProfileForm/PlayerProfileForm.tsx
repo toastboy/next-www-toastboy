@@ -16,15 +16,13 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
-import { IconAlertTriangle, IconCheck, IconTrash } from '@tabler/icons-react';
+import { IconAlertTriangle, IconCheck, IconQuestionMark, IconTrash } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { ClubType } from 'prisma/zod/schemas/models/Club.schema';
 import { CountryType } from 'prisma/zod/schemas/models/Country.schema';
 import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import { PlayerEmailType } from 'prisma/zod/schemas/models/PlayerEmail.schema';
 
-import { requestPlayerEmailVerification } from '@/actions/requestPlayerEmailVerification';
-import { sendEmail } from '@/actions/sendEmail';
 import { updatePlayer } from '@/actions/updatePlayer';
 import { EmailInput } from '@/components/EmailInput/EmailInput';
 import { ClubSupporterDataType } from '@/types';
@@ -70,66 +68,6 @@ export const PlayerProfileForm: React.FC<Props> = ({
         validate: zod4Resolver(UpdatePlayerSchema),
         validateInputOnBlur: true,
     });
-
-    const handleVerifyEmail = async (email: string) => {
-        const normalizedEmail = email.trim();
-
-        if (!normalizedEmail) {
-            notifications.show({
-                color: 'red',
-                title: 'Missing email',
-                message: 'Enter an email address before requesting verification.',
-                icon: <IconAlertTriangle size={18} />,
-            });
-            return;
-        }
-
-        const id = notifications.show({
-            loading: true,
-            title: 'Sending verification',
-            message: 'Sending verification email...',
-            autoClose: false,
-            withCloseButton: false,
-        });
-
-        try {
-            const { verificationLink } = await requestPlayerEmailVerification(
-                player.id,
-                normalizedEmail,
-            );
-
-            const html = [
-                `<p>Hello${player.name ? ` ${player.name}` : ''},</p>`,
-                '<p>Please verify your email address by clicking the link below:</p>',
-                `<p><a href="${verificationLink}">Verify your email</a></p>`,
-                '<p>If you did not request this, you can ignore this message.</p>',
-            ].join('');
-
-            await sendEmail(normalizedEmail, '', 'Verify your email address', html);
-
-            notifications.update({
-                id,
-                color: 'teal',
-                title: 'Verification sent',
-                message: 'Verification email sent.',
-                icon: <IconCheck size={18} />,
-                loading: false,
-                autoClose: 2000,
-            });
-        } catch (err) {
-            console.error('Failed to send verification email:', err);
-            notifications.update({
-                id,
-                color: 'red',
-                title: 'Error',
-                message: `${String(err)}`,
-                icon: <IconAlertTriangle size={18} />,
-                loading: false,
-                autoClose: false,
-                withCloseButton: true,
-            });
-        }
-    };
 
     const handleSubmit = async (
         values: typeof form.values,
@@ -213,6 +151,7 @@ export const PlayerProfileForm: React.FC<Props> = ({
         >
             <TextInput
                 label="Name"
+                data-testid="name-input"
                 required
                 {...form.getInputProps('name')}
             />
@@ -220,9 +159,13 @@ export const PlayerProfileForm: React.FC<Props> = ({
                 mt="sm"
                 mb="md"
                 label="Anonymous"
-                description={
-                    `If selected, you will appear as 'Player ${player.id.toString()}' on the public site, with no picture or other identifying information. Email addresses will never be shown regardless of this setting.`
-                }
+                data-testid="anonymous-switch"
+                description={[
+                    `If selected, you will appear as 'Player ${player.id.toString()}' `,
+                    `on the public site, with no picture or other identifying information. `,
+                    `Your email addresses will never be shown regardless of this setting `,
+                    `unless a player is logged in.`,
+                ].join('')}
                 {...form.getInputProps('anonymous', { type: 'checkbox' })}
             />
             <Box
@@ -238,35 +181,42 @@ export const PlayerProfileForm: React.FC<Props> = ({
                     const isVerified = emails.some(
                         (value) => (value.email === email && value.verifiedAt !== null),
                     );
+                    const verificationPending = emails.some(
+                        (value) => (value.email === email && value.verifiedAt === null),
+                    );
+                    const verificationMessage = isVerified ?
+                        `Email ${address} is verified` :
+                        (verificationPending ?
+                            `Verification email has been sent to ${email}` :
+                            `Verification email will be sent to ${email} upon submission`);
 
                     return (
                         <Flex key={index} mb="md" gap="sm" align="flex-end">
                             <EmailInput
                                 label={`Email ${address}`}
+                                data-testid={`email-input-${index}`}
                                 required={index === 0}
                                 style={{ flex: 1 }}
                                 {...form.getInputProps(`emails.${index}`)}
                             />
                             <Tooltip
-                                label={
-                                    isVerified ?
-                                        `Email ${address} is verified` :
-                                        `Verify email ${address}`
-                                }
+                                label={verificationMessage}
                                 withArrow
                             >
-                                <Button
-                                    variant={isVerified ? 'subtle' : 'filled'}
-                                    color={isVerified ? 'green' : 'gray'}
-                                    aria-label={`Verify email ${address}`}
-                                    disabled={isVerified}
-                                    onClick={() => handleVerifyEmail(email)}
-                                >
-                                    <IconCheck size={16} />
-                                </Button>
+                                {isVerified ?
+                                    <IconCheck
+                                        size={16}
+                                        aria-label={verificationMessage}
+                                    /> :
+                                    <IconQuestionMark
+                                        size={16}
+                                        aria-label={verificationMessage}
+                                    />
+                                }
                             </Tooltip>
                             {index === 0 ? (
                                 <Button
+                                    data-testid="primary-email-delete-button"
                                     variant="subtle"
                                     color="gray"
                                     aria-label="Primary email cannot be deleted"
@@ -281,6 +231,7 @@ export const PlayerProfileForm: React.FC<Props> = ({
                                     withArrow
                                 >
                                     <Button
+                                        data-testid={`email-delete-button-${index}`}
                                         variant="subtle"
                                         color="red"
                                         aria-label={`Delete email ${address}`}
@@ -297,6 +248,7 @@ export const PlayerProfileForm: React.FC<Props> = ({
                 <Button
                     type="button"
                     variant="light"
+                    data-testid="add-email-button"
                     onClick={() => form.insertListItem('emails', '')}
                 >
                     Add another email
@@ -305,6 +257,7 @@ export const PlayerProfileForm: React.FC<Props> = ({
 
             <NumberInput
                 label="Year of Birth"
+                data-testid="born-input"
                 description="Helps pick balanced sides"
                 placeholder="Not shown on the public site"
                 {...form.getInputProps('born')}
@@ -312,6 +265,7 @@ export const PlayerProfileForm: React.FC<Props> = ({
 
             <MultiSelect
                 label="National Team(s)"
+                data-testid="countries-multiselect"
                 placeholder="What national team(s) do you support?"
                 data={countryData}
                 searchable
@@ -320,6 +274,7 @@ export const PlayerProfileForm: React.FC<Props> = ({
 
             <MultiSelect
                 label="Club(s)"
+                data-testid="clubs-multiselect"
                 placeholder="What club(s) do you support?"
                 data={clubData}
                 searchable
@@ -328,11 +283,16 @@ export const PlayerProfileForm: React.FC<Props> = ({
 
             <Textarea
                 label="Comment"
+                data-testid="comment-textarea"
                 placeholder="Add a comment"
                 {...form.getInputProps('comment')}
             />
 
-            <Button type="submit" mt="md">
+            <Button
+                type="submit"
+                mt="md"
+                data-testid="submit-button"
+            >
                 Submit
             </Button>
         </Box>

@@ -2,8 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 
-import { addPlayerEmailInvite } from '@/actions/createPlayer';
-import { sendEmail } from '@/actions/sendEmail';
+import { sendEmailVerification } from '@/actions/verifyEmail';
 import clubSupporterService from '@/services/ClubSupporter';
 import countrySupporterService from '@/services/CountrySupporter';
 import playerService from '@/services/Player';
@@ -24,15 +23,11 @@ export async function updatePlayer(playerId: number, rawData: unknown) {
 
     addedEmails.forEach(async (addedEmail) => {
         try {
-            const verificationLink = await addPlayerEmailInvite(playerId, addedEmail);
-            const html = [
-                `<p>Hello${player.name ? ` ${player.name}` : ''},</p>`,
-                '<p>Please verify your email address by clicking the link below:</p>',
-                `<p><a href="${verificationLink}">Verify your email</a></p>`,
-                '<p>If you did not request this, you can ignore this message.</p>',
-            ].join('');
-
-            await sendEmail(addedEmail, '', 'Toastboy FC email verification', html);
+            await playerEmailService.create({
+                playerId,
+                email: addedEmail,
+            });
+            await sendEmailVerification(addedEmail, player);
         } catch (error) {
             console.error('Error sending verification email to:', addedEmail, error);
         }

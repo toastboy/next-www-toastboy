@@ -5,6 +5,8 @@ import { z } from 'zod';
 
 import { getUserRole } from '@/lib/authServer';
 
+import { getPublicBaseUrl } from './urls';
+
 export const PublicOutcomeSchema = OutcomeSchema.transform((outcome) => ({
     ...outcome,
     comment: undefined,
@@ -222,3 +224,25 @@ export async function sanitizeOutcomeData(data: OutcomeType) {
 export async function sanitizeOutcomeArrayData(data: OutcomeType[]) {
     return await Promise.all(data.map(async (item) => sanitizeOutcomeData(item)));
 }
+
+/**
+ * Build a URL by resolving a base URI against the application's public base URL
+ * and appending query parameters.
+ *
+ * @param baseUri - The base path or URL to resolve. Can be absolute or
+ * relative.
+ * @param params - An object whose keys and values will be appended as query
+ * parameters. Multiple values for the same key will be appended (not replaced).
+ * @returns A URL instance representing the resolved URL with the appended query
+ * parameters.
+ */
+export function buildURLWithParams(baseUri: string, params: Record<string, string>) {
+    const url = new URL(baseUri, getPublicBaseUrl().toString());
+
+    Object.entries(params).forEach(([key, value]) => {
+        url.searchParams.append(key, value);
+    });
+
+    return url;
+}
+

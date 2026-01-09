@@ -17,7 +17,7 @@ import outcomeService from '@/services/Outcome';
  */
 export const GET = async (request: NextRequest, props: { params: Promise<Record<string, string>> }) => {
     const params = await props.params;
-    const searchParams = request.nextUrl.searchParams; // TODO: Should I be using searchParams?
+    const searchParams = request.nextUrl.searchParams;
     return handleGET(
         () => outcomeService.getByBibs({ year: parseInt(searchParams.get('year') ?? '') || undefined }),
         { params },

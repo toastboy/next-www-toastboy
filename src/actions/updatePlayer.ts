@@ -12,7 +12,7 @@ import { UpdatePlayerSchema } from '@/types/UpdatePlayerInput';
 export async function updatePlayer(playerId: number, rawData: unknown) {
     const data = UpdatePlayerSchema.parse(rawData);
 
-    const { emails, addedEmails, removedEmails, clubs, countries } = data;
+    const { addedEmails, removedEmails, clubs, countries } = data;
     const player = await playerService.update({
         id: playerId,
         anonymous: data.anonymous,
@@ -33,17 +33,13 @@ export async function updatePlayer(playerId: number, rawData: unknown) {
         }
     });
 
-    removedEmails.forEach((removedEmail) => {
+    removedEmails.forEach(async (removedEmail) => {
         try {
-            // TODO: work out a better way to handle removing user accounts
-            console.log('&&&& remove player account:', removedEmail);
+            await playerEmailService.delete(removedEmail);
         } catch (error) {
-            console.error('Error removing player account for email:', removedEmail, error);
+            console.error('Error removing player email:', removedEmail, error);
         }
     });
-
-    await playerEmailService.deleteExcept(playerId, emails);
-    await playerEmailService.upsertAll(playerId, emails);
 
     await clubSupporterService.deleteExcept(playerId, clubs);
     await clubSupporterService.upsertAll(playerId, clubs);
@@ -51,8 +47,9 @@ export async function updatePlayer(playerId: number, rawData: unknown) {
     await countrySupporterService.deleteExcept(playerId, countries);
     await countrySupporterService.upsertAll(playerId, countries);
 
-    revalidatePath(`/footy/player/${playerId}`);
     revalidatePath('/footy/players');
+    revalidatePath('/footy/profile');
+    revalidatePath(`/footy/player/${playerId}`);
 
     return player;
 }

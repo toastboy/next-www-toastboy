@@ -80,5 +80,5 @@ export async function addPlayerEmailInvite(
     revalidatePath('/footy/newplayer');
     revalidatePath('/footy/players');
 
-    return new URL(`/footy/auth/claim?token=${token}`, getPublicBaseUrl()).toString();
+    return new URL(`/api/footy/auth/claim?token=${token}`, getPublicBaseUrl()).toString();
 }

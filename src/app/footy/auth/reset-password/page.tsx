@@ -9,9 +9,6 @@ interface PageProps {
     }>;
 }
 
-/**
- * Render the reset password page, validating that a token exists before showing the form.
- */
 const Page = async ({ searchParams: sp }: PageProps) => {
     const searchParams = await sp;
     const token = searchParams?.token ?? '';

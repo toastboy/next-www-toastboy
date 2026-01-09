@@ -1,32 +1,26 @@
 import { Notification, Text } from '@mantine/core';
 import { IconX } from '@tabler/icons-react';
 
-import { claimPlayerInvitation } from '@/actions/claimPlayerInvitation';
 import { ClaimSignup } from '@/components/ClaimSignup/ClaimSignup';
 
 interface PageProps {
     searchParams?: Promise<{
+        name?: string;
+        email?: string;
         token?: string;
+        error?: string;
     }>;
 }
 
 const Page = async ({ searchParams: sp }: PageProps) => {
     const searchParams = await sp;
-    const token = searchParams?.token ?? '';
-    let name: string | null = null;
-    let email: string | null = null;
-    let errorMessage: string | null = null;
+    const name = searchParams?.name;
+    const email = searchParams?.email;
+    const token = searchParams?.token;
+    let errorMessage = searchParams?.error;
 
-    try {
-        const result = await claimPlayerInvitation(token);
-        name = result.player.name;
-        email = result.email;
-    } catch (error) {
-        errorMessage = error instanceof Error ? error.message : 'Unable to claim invitation.';
-    }
-
-    if (!email || !name) {
-        errorMessage = "Invitation is missing required details.";
+    if (!errorMessage && (!email || !name || !token)) {
+        errorMessage = 'Missing required invitation details.';
     }
 
     if (errorMessage) {
@@ -35,7 +29,7 @@ const Page = async ({ searchParams: sp }: PageProps) => {
                 icon={<IconX size={18} />}
                 color="red"
             >
-                <Text>Invitation problem: {errorMessage}</Text>
+                <Text>{errorMessage}</Text>
             </Notification>
         );
     }
@@ -44,7 +38,7 @@ const Page = async ({ searchParams: sp }: PageProps) => {
         <ClaimSignup
             name={name ?? ''}
             email={email ?? ''}
-            token={token}
+            token={token ?? ''}
         />
     );
 };

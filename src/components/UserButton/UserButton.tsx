@@ -106,7 +106,7 @@ export const UserButton: React.FC<Props> = ({ user }) => {
                 color="red"
                 leftSection={<IconTrash size={14} />}
             >
-                <Link className={classes.link} href="/footy/delete-account">
+                <Link className={classes.link} href="/footy/deleteaccount">
                     Delete account
                 </Link>
             </Menu.Item>

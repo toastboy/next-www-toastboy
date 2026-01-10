@@ -46,7 +46,7 @@ src/app/footy/auth/signup/page.tsx
 src/app/footy/averages/[year]/page.tsx
 src/app/footy/averages/page.tsx
 src/app/footy/curse/[[...year]]/page.tsx
-src/app/footy/delete-account/page.tsx
+src/app/footy/deleteaccount/page.tsx
 src/app/footy/download-data/page.tsx
 src/app/footy/drinkers/page.tsx
 src/app/footy/fixtures/page.tsx

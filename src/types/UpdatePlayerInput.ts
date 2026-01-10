@@ -19,7 +19,16 @@ export const UpdatePlayerSchema = z.object({
             if (value === '' || value === null || value === undefined) {
                 return null;
             }
-            return typeof value === 'string' ? Number(value) : value;
+            if (typeof value === 'string') {
+                const parsed = Number(value);
+                // If the string is not a valid number, return the original string
+                // so that z.number() will fail validation explicitly.
+                if (Number.isNaN(parsed)) {
+                    return value;
+                }
+                return parsed;
+            }
+            return value;
         },
         z.number()
             .min(1900, { message: 'Year must be 1900 or later' })

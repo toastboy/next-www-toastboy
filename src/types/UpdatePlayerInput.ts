@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 const emailList = z.array(z.preprocess(
-    (value) => {
+    (value: unknown) => {
         return typeof value === 'string' ? value.trim().toLowerCase() : value;
     },
     z.union([

@@ -31,7 +31,20 @@ export const UpdatePlayerSchema = z.object({
     addedExtraEmails: emailList,
     removedExtraEmails: emailList,
     countries: z.array(z.string()),
-    clubs: z.array(z.coerce.number()),
+    clubs: z.array(z.preprocess(
+        (value) => {
+            if (typeof value === 'string') {
+                const trimmed = value.trim();
+                if (trimmed === '') {
+                    // Let z.number() fail validation for empty strings
+                    return NaN;
+                }
+                return Number(trimmed);
+            }
+            return value;
+        },
+        z.number(),
+    )),
     comment: z.string().optional(),
 });
 

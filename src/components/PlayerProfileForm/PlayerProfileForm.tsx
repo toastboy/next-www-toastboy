@@ -22,7 +22,7 @@ import { ClubType } from 'prisma/zod/schemas/models/Club.schema';
 import { CountryType } from 'prisma/zod/schemas/models/Country.schema';
 import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import { PlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
-import { useEffect, useRef } from 'react';
+import { Activity, useEffect, useRef } from 'react';
 
 import { updatePlayer } from '@/actions/updatePlayer';
 import { EmailInput } from '@/components/EmailInput/EmailInput';
@@ -227,23 +227,29 @@ export const PlayerProfileForm: React.FC<Props> = ({
                                 label={`Extra email ${address}`}
                                 data-testid={`extra-email-input-${index}`}
                                 style={{ flex: 1 }}
+                                rightSection={
+                                    <Activity
+                                        mode={email?.trim().length ? 'visible' : 'hidden'}
+                                    >
+                                        <Tooltip
+                                            label={verificationMessage}
+                                            withArrow
+                                        >
+                                            {isVerified ?
+                                                <IconCheck
+                                                    size={16}
+                                                    aria-label={verificationMessage}
+                                                /> :
+                                                <IconQuestionMark
+                                                    size={16}
+                                                    aria-label={verificationMessage}
+                                                />
+                                            }
+                                        </Tooltip>
+                                    </Activity>
+                                }
                                 {...form.getInputProps(`extraEmails.${index}`)}
                             />
-                            <Tooltip
-                                label={verificationMessage}
-                                withArrow
-                            >
-                                {isVerified ?
-                                    <IconCheck
-                                        size={16}
-                                        aria-label={verificationMessage}
-                                    /> :
-                                    <IconQuestionMark
-                                        size={16}
-                                        aria-label={verificationMessage}
-                                    />
-                                }
-                            </Tooltip>
                             <Tooltip
                                 label={`Delete extra email ${address}`}
                                 withArrow

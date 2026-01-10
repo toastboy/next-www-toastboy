@@ -230,13 +230,23 @@ export class CountrySupporterService {
     }
 
     /**
-     * Deletes all CountrySupporters.
-     * @returns A promise that resolves when all CountrySupporters are deleted.
-     * @throws An error if there is a failure.
+     * Delete CountrySupporter records from the database.
+     *
+     * If a playerId is provided, only records matching that playerId will be
+     * deleted. If no playerId is provided, all CountrySupporter records will be
+     * deleted.
+     *
+     * @param playerId - Optional player ID to scope which CountrySupporter
+     * records to delete.
+     * @returns A Promise that resolves when the deletion operation completes.
+     * @throws Will rethrow any error encountered during deletion after logging
+     * it.
      */
-    async deleteAll(): Promise<void> {
+    async deleteAll(playerId?: number): Promise<void> {
         try {
-            await prisma.countrySupporter.deleteMany();
+            await prisma.countrySupporter.deleteMany({
+                where: playerId ? { playerId } : undefined,
+            });
         } catch (error) {
             log(`Error deleting CountrySupporter: ${String(error)}`);
             throw error;

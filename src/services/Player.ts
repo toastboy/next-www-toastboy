@@ -403,6 +403,61 @@ class PlayerService {
     }
 
     /**
+     * Anonymises a player record by its unique identifier.
+     *
+     * This validates the provided id, then updates the player to mark them as
+     * anonymous, clears identifying fields (name and accountEmail), and sets
+     * the finished timestamp to now.
+     *
+     * @param id - The unique identifier of the player to anonymise.
+     * @returns A Promise that resolves to the updated PlayerType.
+     * @throws {ZodError} If the id fails schema validation via
+     * PlayerWhereUniqueInputObjectSchema.
+     * @throws {Error} If the database update operation fails (e.g. Prisma
+     * errors).
+     */
+    async anonymise(id: number): Promise<PlayerType> {
+        try {
+            const where = PlayerWhereUniqueInputObjectSchema.parse({ id });
+            const data = {
+                anonymous: true,
+                name: null,
+                accountEmail: null,
+                finished: new Date(),
+            };
+
+            return await prisma.player.update({ where, data });
+        } catch (error) {
+            log(`Error anonymising Player: ${String(error)}`);
+            throw error;
+        }
+    }
+
+    /**
+     * Set or clear the finished timestamp for a player.
+     *
+     * @param playerId - The unique identifier of the player to update.
+     * @param finished - If true (default), sets the `finished` field to the
+     * current date/time; if false, clears the `finished` field (sets it to
+     * null).
+     * @returns A Promise that resolves to the updated PlayerType.
+     * @throws Will throw if input validation or the database update fails.
+     */
+    async setFinished(playerId: number, finished = true): Promise<PlayerType> {
+        try {
+            const where = PlayerWhereUniqueInputObjectSchema.parse({ id: playerId });
+            const data = {
+                finished: finished ? new Date() : null,
+            };
+
+            return await prisma.player.update({ where, data });
+        } catch (error) {
+            log(`Error setting finished for Player: ${String(error)}`);
+            throw error;
+        }
+    }
+
+    /**
      * Deletes a player. If no such player exists, that's not an error.
      * @param id The ID of the player to delete
      * @returns A promise that resolves to the deleted player if there was one, or

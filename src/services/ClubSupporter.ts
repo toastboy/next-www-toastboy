@@ -234,13 +234,23 @@ export class ClubSupporterService {
     }
 
     /**
-     * Deletes all ClubSupporters.
-     * @returns A promise that resolves when all ClubSupporters are deleted.
-     * @throws An error if there is a failure.
+     * Delete ClubSupporter records from the database.
+     *
+     * If a playerId is provided, only ClubSupporter records associated with
+     * that player will be removed. If no playerId is provided, all
+     * ClubSupporter records will be deleted.
+     *
+     * @param playerId - Optional player identifier to limit which records are
+     * deleted.
+     * @returns A promise that resolves when the deletion completes.
+     * @throws Rethrows any error encountered while attempting to delete records
+     * (errors are logged prior to being thrown).
      */
-    async deleteAll(): Promise<void> {
+    async deleteAll(playerId?: number): Promise<void> {
         try {
-            await prisma.clubSupporter.deleteMany();
+            await prisma.clubSupporter.deleteMany({
+                where: playerId ? { playerId } : undefined,
+            });
         } catch (error) {
             log(`Error deleting ClubSupporter: ${String(error)}`);
             throw error;

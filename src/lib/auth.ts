@@ -33,6 +33,20 @@ export const auth = betterAuth({
                 required: false,
             },
         },
+        deleteUser: {
+            enabled: true,
+            sendDeleteAccountVerification: async ({ user, url }, _request) => {
+                await sendEmail(
+                    user.email,
+                    '',
+                    'Delete your Toastboy FC account',
+                    [
+                        `<p>Click the link to confirm your account deletion:</p>`,
+                        `<a href="${url}">Delete account</a>`,
+                    ].join(''),
+                );
+            },
+        },
     },
     emailAndPassword: {
         enabled: true,

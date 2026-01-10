@@ -178,6 +178,29 @@ export class PlayerExtraEmailService {
     }
 
     /**
+     * Deletes PlayerExtraEmail records.
+     *
+     * If `playerId` is provided, only records for that player will be deleted.
+     * If `playerId` is omitted, all PlayerExtraEmail records will be deleted.
+     *
+     * @param playerId - Optional ID of the player whose extra email records
+     * should be deleted.
+     * @returns A Promise that resolves to the result of the Prisma `deleteMany`
+     * operation (batch payload containing the count of deleted records).
+     * @throws Rethrows any error thrown by the Prisma client after logging it.
+     */
+    async deleteAll(playerId?: number) {
+        try {
+            return await prisma.playerExtraEmail.deleteMany({
+                where: playerId ? { playerId } : undefined,
+            });
+        } catch (error) {
+            log(`Error deleting all PlayerExtraEmails: ${String(error)}`);
+            throw error;
+        }
+    }
+
+    /**
      * Deletes all emails associated with a player except those specified in the
      * keep list.
      *

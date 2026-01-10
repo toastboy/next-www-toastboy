@@ -106,6 +106,36 @@ export class EmailVerificationService {
             throw error;
         }
     }
+
+    /**
+     * Delete email verification records.
+     *
+     * If `playerId` is provided, only records belonging to that player are
+     * deleted; otherwise all email verification records are deleted.
+     *
+     * @param playerId - Optional player ID to filter which EmailVerification
+     * records to delete.
+     * @returns A Promise that resolves to the deletion result (an object
+     * containing the `count` of deleted records).
+     * @throws Will log and rethrow any error encountered while performing the
+     * deletion.
+     * @example
+     * // Delete all records for player with ID 123
+     * await emailVerificationService.deleteAll(123);
+     *
+     * // Delete all email verification records
+     * await emailVerificationService.deleteAll();
+     */
+    async deleteAll(playerId?: number) {
+        try {
+            return await prisma.emailVerification.deleteMany({
+                where: playerId ? { playerId } : undefined,
+            });
+        } catch (error) {
+            log(`Error deleting all EmailVerifications: ${String(error)}`);
+            throw error;
+        }
+    }
 }
 
 const emailVerificationService = new EmailVerificationService();

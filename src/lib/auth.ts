@@ -1,12 +1,15 @@
+
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { nextCookies } from 'better-auth/next-js';
 import { admin } from 'better-auth/plugins';
 import prisma from 'prisma/prisma';
 
+import { beforeDeletePlayer } from '@/actions/deletePlayer';
 import { sendEmail } from '@/actions/sendEmail';
 import { getSecrets } from '@/lib/secrets';
 import { getPublicBaseUrl } from '@/lib/urls';
+import { AuthUserSummary } from '@/types/AuthUser';
 
 const secrets = getSecrets();
 
@@ -45,6 +48,9 @@ export const auth = betterAuth({
                         `<a href="${url}">Delete account</a>`,
                     ].join(''),
                 );
+            },
+            beforeDelete: async (user) => {
+                await beforeDeletePlayer(user as unknown as AuthUserSummary);
             },
         },
     },

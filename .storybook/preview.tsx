@@ -18,7 +18,7 @@ sb.mock('../src/actions/createPlayer.ts');
 sb.mock('../src/actions/updatePlayer.ts');
 sb.mock('../src/actions/updatePlayerRecords.ts');
 sb.mock('../src/actions/auth-export.ts');
-sb.mock('../src/actions/requestPlayerEmailVerification.ts');
+sb.mock('../src/actions/verifyEmail.ts');
 sb.mock('../src/actions/sendEmail.ts');
 sb.mock('../src/lib/auth-client.ts');
 sb.mock('../prisma/prisma.ts');

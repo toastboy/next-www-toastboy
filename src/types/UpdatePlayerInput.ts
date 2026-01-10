@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 const emailList = z.array(z.preprocess(
-    (value) => {
+    (value: unknown) => {
         return typeof value === 'string' ? value.trim().toLowerCase() : value;
     },
     z.union([
@@ -15,11 +15,20 @@ export const UpdatePlayerSchema = z.object({
         .min(1, { message: 'Name is required' }),
     anonymous: z.boolean().optional(),
     born: z.preprocess(
-        (value) => {
+        (value: unknown) => {
             if (value === '' || value === null || value === undefined) {
                 return null;
             }
-            return typeof value === 'string' ? Number(value) : value;
+            if (typeof value === 'string') {
+                const parsed = Number(value);
+                // If the string is not a valid number, return the original string
+                // so that z.number() will fail validation explicitly.
+                if (Number.isNaN(parsed)) {
+                    return value;
+                }
+                return parsed;
+            }
+            return value;
         },
         z.number()
             .min(1900, { message: 'Year must be 1900 or later' })
@@ -31,7 +40,20 @@ export const UpdatePlayerSchema = z.object({
     addedExtraEmails: emailList,
     removedExtraEmails: emailList,
     countries: z.array(z.string()),
-    clubs: z.array(z.coerce.number()),
+    clubs: z.array(z.preprocess(
+        (value) => {
+            if (typeof value === 'string') {
+                const trimmed = value.trim();
+                if (trimmed === '') {
+                    // Let z.number() fail validation for empty strings
+                    return NaN;
+                }
+                return Number(trimmed);
+            }
+            return value;
+        },
+        z.number(),
+    )),
     comment: z.string().optional(),
 });
 

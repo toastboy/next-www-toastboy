@@ -30,7 +30,7 @@ async function writeTableToJSONFile<T>(
     writeDataToJSONFile(fileName, data);
 }
 
-interface PlayerEmailSeed {
+interface PlayerExtraEmailSeed {
     playerId: number;
     email: string;
     verifiedAt?: Date | null;
@@ -53,10 +53,10 @@ function splitEmailList(rawEmail: string | null): string[] {
         .map((email) => email.toLowerCase());
 }
 
-function buildPlayerEmailSeedRows(
+function buildPlayerExtraEmailSeedRows(
     sources: { playerId: number; email: string | null }[],
-): PlayerEmailSeed[] {
-    const rows: PlayerEmailSeed[] = [];
+): PlayerExtraEmailSeed[] {
+    const rows: PlayerExtraEmailSeed[] = [];
     const seen = new Map<string, number>();
 
     sources.forEach((source) => {
@@ -237,7 +237,7 @@ async function importBackup(): Promise<void> {
         await writeTableToJSONFile('PlayerLogin.json', prisma.playerLogin);
         await writeTableToJSONFile('PlayerRecord.json', prisma.playerRecord);
 
-        const playerEmailRows = buildPlayerEmailSeedRows(legacyPlayerEmailSources);
+        const playerEmailRows = buildPlayerExtraEmailSeedRows(legacyPlayerEmailSources);
         writeDataToJSONFile('PlayerEmail.json', playerEmailRows);
 
         // Upload the JSON files to Azure Blob Storage

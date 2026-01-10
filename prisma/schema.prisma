@@ -167,8 +167,9 @@ model Player {
 
     isAdmin Boolean?
 
-    name      String?
-    anonymous Boolean?
+    name         String?
+    accountEmail String?  @db.VarChar(255)
+    anonymous    Boolean?
 
     joined   DateTime?
     finished DateTime?
@@ -177,19 +178,19 @@ model Player {
 
     introducedBy Int?
 
-    arsesOfPlayer     Arse[]             @relation(name: "PlayerArse")
-    arsesByPlayer     Arse[]             @relation(name: "RaterArse")
-    clubs             ClubSupporter[]
-    countries         CountrySupporter[]
-    gameInvitations   GameInvitation[]
-    outcomes          Outcome[]
-    playerRecords     PlayerRecord[]
-    logins            PlayerLogin[]
-    emails            PlayerEmail[]
+    arsesOfPlayer      Arse[]              @relation(name: "PlayerArse")
+    arsesByPlayer      Arse[]              @relation(name: "RaterArse")
+    clubs              ClubSupporter[]
+    countries          CountrySupporter[]
+    gameInvitations    GameInvitation[]
+    outcomes           Outcome[]
+    playerRecords      PlayerRecord[]
+    logins             PlayerLogin[]
+    extraEmails        PlayerExtraEmail[]
     emailVerifications EmailVerification[]
 }
 
-model PlayerEmail {
+model PlayerExtraEmail {
     id         Int       @id @default(autoincrement())
     playerId   Int
     email      String    @unique @db.VarChar(255)
@@ -200,17 +201,18 @@ model PlayerEmail {
 
     @@index([playerId])
     @@index([email])
+    @@map("PlayerEmail")
 }
 
 model EmailVerification {
-    id        Int                     @id @default(autoincrement())
+    id        Int                      @id @default(autoincrement())
     playerId  Int?
-    email     String                  @db.VarChar(255)
-    tokenHash String                  @unique @db.Char(64)
+    email     String                   @db.VarChar(255)
+    tokenHash String                   @unique @db.Char(64)
     purpose   EmailVerificationPurpose
     expiresAt DateTime
     usedAt    DateTime?
-    createdAt DateTime                @default(now())
+    createdAt DateTime                 @default(now())
 
     player Player? @relation(fields: [playerId], references: [id])
 
@@ -305,6 +307,8 @@ model User {
     banReason  String?   @db.Text
     banExpires DateTime?
 
+    playerId Int?
+
     @@unique([email])
     @@map("user")
 }
@@ -355,5 +359,6 @@ model Verification {
     createdAt  DateTime?
     updatedAt  DateTime?
 
+    @@index([identifier(length: 191)])
     @@map("verification")
 }

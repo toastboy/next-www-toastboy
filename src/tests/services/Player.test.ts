@@ -1,7 +1,7 @@
 import prisma from 'prisma/prisma';
 import { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
 import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
-import { PlayerEmailType } from 'prisma/zod/schemas/models/PlayerEmail.schema';
+import { PlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
 import { PlayerFormType } from 'types';
 
 import playerService from '@/services/Player';
@@ -167,11 +167,11 @@ describe('PlayerService', () => {
 
     describe('getAll', () => {
         it('should return the correct, complete list of 100 players', async () => {
-            const defaultPlayerList: (PlayerType & { outcomes: OutcomeType[]; emails: PlayerEmailType[] })[] = Array.from({ length: 100 }, (_, outerIndex) => ({
+            const defaultPlayerList: (PlayerType & { outcomes: OutcomeType[]; extraEmails: PlayerExtraEmailType[] })[] = Array.from({ length: 100 }, (_, outerIndex) => ({
                 ...defaultPlayer,
                 id: outerIndex + 1,
                 finished: outerIndex % 2 === 0 ? new Date("2020-01-01") : null,
-                emails: [],
+                extraEmails: [],
                 outcomes: Array.from({ length: 10 }, (_, index) => ({
                     ...defaultOutcome,
                     playerId: outerIndex + 1,
@@ -189,10 +189,10 @@ describe('PlayerService', () => {
         });
 
         it('should return null for firstResponded/lastResponded when player has no responses', async () => {
-            const playerWithNoResponses: PlayerType & { outcomes: OutcomeType[]; emails: PlayerEmailType[] } = {
+            const playerWithNoResponses: PlayerType & { outcomes: OutcomeType[]; extraEmails: PlayerExtraEmailType[] } = {
                 ...defaultPlayer,
                 id: 1,
-                emails: [],
+                extraEmails: [],
                 outcomes: [
                     {
                         ...defaultOutcome,
@@ -215,10 +215,10 @@ describe('PlayerService', () => {
         });
 
         it('should return null for firstPlayed/lastPlayed when player has responses but no games played', async () => {
-            const playerWithResponsesButNoGames: PlayerType & { outcomes: OutcomeType[]; emails: PlayerEmailType[] } = {
+            const playerWithResponsesButNoGames: PlayerType & { outcomes: OutcomeType[]; extraEmails: PlayerExtraEmailType[] } = {
                 ...defaultPlayer,
                 id: 1,
-                emails: [],
+                extraEmails: [],
                 outcomes: [
                     {
                         ...defaultOutcome,
@@ -248,10 +248,10 @@ describe('PlayerService', () => {
         });
 
         it('should return correct values when player has empty outcomes array', async () => {
-            const playerWithNoOutcomes: PlayerType & { outcomes: OutcomeType[]; emails: PlayerEmailType[] } = {
+            const playerWithNoOutcomes: PlayerType & { outcomes: OutcomeType[]; extraEmails: PlayerExtraEmailType[] } = {
                 ...defaultPlayer,
                 id: 1,
-                emails: [],
+                extraEmails: [],
                 outcomes: [],
             };
 

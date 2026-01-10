@@ -10,7 +10,7 @@ import clubSupporterService from '@/services/ClubSupporter';
 import countryService from '@/services/Country';
 import countrySupporterService from '@/services/CountrySupporter';
 import playerService from '@/services/Player';
-import playerEmailService from '@/services/PlayerEmail';
+import playerExtraEmailService from '@/services/PlayerExtraEmail';
 
 interface PageProps {
     searchParams?: Promise<{
@@ -37,9 +37,9 @@ const Page = async ({ searchParams: sp }: PageProps) => {
         );
     }
 
-    const [player, emails, countries, clubs, allCountries, allClubs] = await Promise.all([
+    const [player, extraEmails, countries, clubs, allCountries, allClubs] = await Promise.all([
         playerService.getById(playerId),
-        playerEmailService.getAll(playerId),
+        playerExtraEmailService.getAll(playerId),
         countrySupporterService.getByPlayer(playerId),
         clubSupporterService.getByPlayer(playerId),
         countryService.getAll(),
@@ -58,7 +58,7 @@ const Page = async ({ searchParams: sp }: PageProps) => {
         <MustBeLoggedIn admin={false}>
             <PlayerProfileForm
                 player={player}
-                emails={emails}
+                extraEmails={extraEmails}
                 countries={countries}
                 clubs={clubs}
                 allCountries={allCountries}

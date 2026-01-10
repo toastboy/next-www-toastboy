@@ -27,9 +27,9 @@ export const UpdatePlayerSchema = z.object({
             .optional()
             .nullable(),
     ),
-    emails: emailList,
-    addedEmails: emailList,
-    removedEmails: emailList,
+    extraEmails: emailList,
+    addedExtraEmails: emailList,
+    removedExtraEmails: emailList,
     countries: z.array(z.string()),
     clubs: z.array(z.coerce.number()),
     comment: z.string().optional(),

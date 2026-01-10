@@ -12,11 +12,12 @@ const samplePlayer = {
     born: 1988,
     comment: null,
     introducedBy: 1,
-    emails: [
+    accountEmail: 'frank@example.com',
+    extraEmails: [
         {
             id: 1,
             playerId: 2,
-            email: 'frank@example.com',
+            email: 'frank+cc@example.com',
             verifiedAt: new Date('2019-08-12'),
             createdAt: new Date('2019-08-12'),
         },

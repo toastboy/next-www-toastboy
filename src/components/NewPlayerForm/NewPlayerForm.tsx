@@ -44,9 +44,12 @@ export interface Props {
 export const NewPlayerForm: React.FC<Props> = ({ players }) => {
     const router = useRouter();
     const getPreferredEmail = (player?: PlayerDataType) => {
-        if (!player?.emails.length) return '';
-        const verifiedEmail = player.emails.find((playerEmail) => playerEmail.verifiedAt);
-        return (verifiedEmail ?? player.emails[0])?.email ?? '';
+        if (player?.accountEmail) {
+            return player.accountEmail;
+        }
+        if (!player?.extraEmails.length) return '';
+        const verifiedEmail = player.extraEmails.find((playerEmail) => playerEmail.verifiedAt);
+        return (verifiedEmail ?? player.extraEmails[0])?.email ?? '';
     };
 
     const form = useForm({

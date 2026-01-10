@@ -27,10 +27,10 @@ export const SendEmailForm: React.FC<Props> = ({ opened, onClose, players }) => 
     const [subject, setSubject] = useState('');
     const names = players.map((player) => player.name).join(', ');
     const emails = Array.from(new Set(players.flatMap((player) => {
-        const verifiedEmails = player.emails.filter((playerEmail) => playerEmail.verifiedAt);
-        const preferredEmails = verifiedEmails.length > 0 ? verifiedEmails : player.emails;
-        return preferredEmails.map((playerEmail) => playerEmail.email);
-    }).filter((email) => email.length > 0))).join(',');
+        const verifiedExtraEmails = player.extraEmails.filter((playerEmail) => playerEmail.verifiedAt);
+        const preferredExtraEmails = verifiedExtraEmails.length > 0 ? verifiedExtraEmails : player.extraEmails;
+        return [player.accountEmail, ...preferredExtraEmails.map((playerEmail) => playerEmail.email)];
+    }).filter((email): email is string => !!email && email.length > 0))).join(',');
 
     const editor = useEditor({
         extensions: [

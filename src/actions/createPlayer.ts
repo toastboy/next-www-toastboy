@@ -6,7 +6,6 @@ import { getPublicBaseUrl } from '@/lib/urls';
 import { createVerificationToken } from '@/lib/verificationToken';
 import emailVerificationService from '@/services/EmailVerification';
 import playerService from '@/services/Player';
-import playerEmailService from '@/services/PlayerEmail';
 import { CreatePlayerSchema } from '@/types/CreatePlayerInput';
 
 /**
@@ -30,6 +29,7 @@ export async function createPlayer(rawData: unknown) {
     const name = data.name.trim();
     const introducedBy = data.introducedBy.trim();
     const introducedById = introducedBy ? Number(introducedBy) : null;
+    const accountEmail = data.email?.trim() ? data.email.trim().toLowerCase() : null;
 
     if (introducedBy && Number.isNaN(introducedById)) {
         throw new Error('Introducer must be a number.');
@@ -39,35 +39,34 @@ export async function createPlayer(rawData: unknown) {
         name,
         introducedBy: introducedById,
         joined: new Date(),
+        accountEmail,
     });
 
     return {
         player,
-        inviteLink: await addPlayerEmailInvite(player.id, data.email),
+        inviteLink: await addPlayerInvite(player.id, data.email),
     };
 }
 
 /**
- * Adds the given email to the player identified by playerId and prepares an
- * invitation link, then revalidates the relevant footy paths.
+ * Creates an invitation verification for the given email and player, then
+ * revalidates the relevant footy paths.
  *
  * @param playerId - The unique identifier of the player to invite.
  * @param email - The email address to send the invite to; optional if the
- * player profile has no email.
+ * player profile has no login email.
  * @returns A URL string that the player can use to claim their account via the
  * tokenized verification link.
  */
-export async function addPlayerEmailInvite(
+export async function addPlayerInvite(
     playerId: number,
     email?: string,
 ) {
     const { token, tokenHash, expiresAt } = createVerificationToken();
 
-    // It's possible to have a player profile with no email: responses will have
-    // to be entered manually for them.
+    // It's possible to have a player profile with no login email: responses will
+    // have to be entered manually for them.
     if (email && email.length > 0) {
-        await playerEmailService.create({ playerId, email });
-
         await emailVerificationService.create({
             playerId,
             email,

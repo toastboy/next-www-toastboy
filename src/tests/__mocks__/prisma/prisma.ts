@@ -30,7 +30,7 @@ const prisma = {
     gameInvitation: makeModelMock(),
     outcome: makeModelMock(),
     player: makeModelMock(),
-    playerEmail: makeModelMock(),
+    playerExtraEmail: makeModelMock(),
     playerLogin: makeModelMock(),
     playerRecord: makeModelMock(),
     user: makeModelMock(),

@@ -6,13 +6,13 @@ import { sendEmailVerification } from '@/actions/verifyEmail';
 import clubSupporterService from '@/services/ClubSupporter';
 import countrySupporterService from '@/services/CountrySupporter';
 import playerService from '@/services/Player';
-import playerEmailService from '@/services/PlayerEmail';
+import playerExtraEmailService from '@/services/PlayerExtraEmail';
 import { UpdatePlayerSchema } from '@/types/UpdatePlayerInput';
 
 export async function updatePlayer(playerId: number, rawData: unknown) {
     const data = UpdatePlayerSchema.parse(rawData);
 
-    const { addedEmails, removedEmails, clubs, countries } = data;
+    const { addedExtraEmails, removedExtraEmails, clubs, countries } = data;
     const player = await playerService.update({
         id: playerId,
         anonymous: data.anonymous,
@@ -21,9 +21,9 @@ export async function updatePlayer(playerId: number, rawData: unknown) {
         comment: data.comment,
     });
 
-    addedEmails.forEach(async (addedEmail) => {
+    addedExtraEmails.forEach(async (addedEmail) => {
         try {
-            await playerEmailService.create({
+            await playerExtraEmailService.create({
                 playerId,
                 email: addedEmail,
             });
@@ -33,11 +33,11 @@ export async function updatePlayer(playerId: number, rawData: unknown) {
         }
     });
 
-    removedEmails.forEach(async (removedEmail) => {
+    removedExtraEmails.forEach(async (removedEmail) => {
         try {
-            await playerEmailService.delete(removedEmail);
+            await playerExtraEmailService.delete(removedEmail);
         } catch (error) {
-            console.error('Error removing player email:', removedEmail, error);
+            console.error('Error removing player extra email:', removedEmail, error);
         }
     });
 

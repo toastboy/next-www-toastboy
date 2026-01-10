@@ -4,7 +4,7 @@ import { hashVerificationToken } from '@/lib/verificationToken';
 import authService from '@/services/Auth';
 import emailVerificationService from '@/services/EmailVerification';
 import playerService from '@/services/Player';
-import playerEmailService from '@/services/PlayerEmail';
+import playerExtraEmailService from '@/services/PlayerExtraEmail';
 
 /**
  * Retrieves and validates a player invitation associated with the provided
@@ -42,8 +42,8 @@ async function getValidInvitation(token: string) {
         throw new Error('Invitation is missing a player reference.');
     }
 
-    const existingEmail = await playerEmailService.getByEmail(invitation.email);
-    if (existingEmail && existingEmail.playerId !== invitation.playerId) {
+    const existingExtraEmail = await playerExtraEmailService.getByEmail(invitation.email);
+    if (existingExtraEmail && existingExtraEmail.playerId !== invitation.playerId) {
         throw new Error('Email address already belongs to another player.');
     }
 
@@ -80,8 +80,8 @@ export async function claimPlayerInvitation(token: string) {
 
 /**
  * Finalizes the claim of a player invitation by validating the invitation,
- * ensuring the associated login account exists, and updating the player's email
- * and invitation status accordingly.
+ * ensuring the associated login account exists, and linking it to the player
+ * before marking the invitation used.
  *
  * @param token - The invitation token used to fetch and validate the invitation.
  * @throws Error if the invitation lacks a player ID or if the login account cannot be found.
@@ -93,12 +93,24 @@ export async function finalizePlayerInvitationClaim(token: string) {
         throw new Error('Player ID is missing from invitation.');
     }
 
-    const loginAccount = await authService.getUserByEmail(invitation.email);
+    const sessionUser = await authService.getSessionUser();
 
-    if (!loginAccount) {
+    if (!sessionUser?.id || !sessionUser.email) {
         throw new Error('Login account not found for invitation.');
     }
 
-    await playerEmailService.upsert(invitation.playerId, invitation.email, true);
+    if (sessionUser.email.toLowerCase() !== invitation.email.toLowerCase()) {
+        throw new Error('Login account email does not match invitation.');
+    }
+
+    if (sessionUser.playerId && sessionUser.playerId !== invitation.playerId) {
+        throw new Error('Login account is already linked to another player.');
+    }
+
+    await authService.updateCurrentUser({ playerId: invitation.playerId });
+    await playerService.update({
+        id: invitation.playerId,
+        accountEmail: invitation.email,
+    });
     await emailVerificationService.markUsed(invitation.id);
 }

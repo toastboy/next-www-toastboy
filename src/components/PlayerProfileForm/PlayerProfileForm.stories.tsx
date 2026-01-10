@@ -9,7 +9,7 @@ import {
     defaultCountryList,
     defaultCountrySupporterDataList,
     defaultPlayerData,
-    defaultPlayerEmails,
+    defaultPlayerExtraEmails,
 } from '@/tests/mocks';
 
 import { PlayerProfileForm } from './PlayerProfileForm';
@@ -29,11 +29,12 @@ type Story = StoryObj<typeof meta>;
 export const Render: Story = {
     args: {
         player: defaultPlayerData,
-        emails: defaultPlayerEmails,
+        extraEmails: defaultPlayerExtraEmails,
         countries: defaultCountrySupporterDataList,
         clubs: defaultClubSupporterDataList,
         allCountries: defaultCountryList,
         allClubs: defaultClubList,
+        verifiedEmail: 'goalie@toastboy.co.uk',
     },
 };
 
@@ -48,7 +49,7 @@ export const ValidFill: Story = {
 
         const canvas = within(canvasElement);
         const nameInput = await canvas.findByLabelText(/Name/i);
-        const emailInput = await canvas.findByLabelText(/^Email address 2$/i);
+        const emailInput = await canvas.findByLabelText(/^Extra email address 2$/i);
         const submitButton = await canvas.findByRole('button', { name: /Submit/i });
 
         await userEvent.clear(nameInput);
@@ -73,7 +74,7 @@ export const BlankName: Story = {
 
         const canvas = within(canvasElement);
         const nameInput = await canvas.findByLabelText(/Name/i);
-        const emailInput = await canvas.findByLabelText(/^Email address 2$/i);
+        const emailInput = await canvas.findByLabelText(/^Extra email address 2$/i);
         const submitButton = await canvas.findByRole('button', { name: /Submit/i });
 
         await userEvent.clear(nameInput);

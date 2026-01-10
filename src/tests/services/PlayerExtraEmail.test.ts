@@ -1,9 +1,9 @@
 import prisma from 'prisma/prisma';
-import { PlayerEmailType } from 'prisma/zod/schemas/models/PlayerEmail.schema';
+import { PlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
 
-import playerEmailService from '@/services/PlayerEmail';
+import playerExtraEmailService from '@/services/PlayerExtraEmail';
 
-describe('PlayerEmailService', () => {
+describe('PlayerExtraEmailService', () => {
     beforeEach(() => {
         jest.clearAllMocks();
     });
@@ -14,15 +14,15 @@ describe('PlayerEmailService', () => {
 
     describe('getByEmail', () => {
         it('should return player id for exact email match', async () => {
-            (prisma.playerEmail.findFirst as jest.Mock).mockResolvedValueOnce({
+            (prisma.playerExtraEmail.findFirst as jest.Mock).mockResolvedValueOnce({
                 playerId: 42,
                 email: 'player@example.com',
                 verifiedAt: new Date(),
             });
 
-            const result = await playerEmailService.getByEmail('player@example.com', true);
+            const result = await playerExtraEmailService.getByEmail('player@example.com', true);
             expect(result?.playerId).toBe(42);
-            expect(prisma.playerEmail.findFirst).toHaveBeenCalledWith({
+            expect(prisma.playerExtraEmail.findFirst).toHaveBeenCalledWith({
                 where: {
                     email: 'player@example.com',
                     verifiedAt: {
@@ -33,15 +33,15 @@ describe('PlayerEmailService', () => {
         });
 
         it('should return player id for exact email match with no verification', async () => {
-            (prisma.playerEmail.findFirst as jest.Mock).mockResolvedValueOnce({
+            (prisma.playerExtraEmail.findFirst as jest.Mock).mockResolvedValueOnce({
                 playerId: 42,
                 email: 'player@example.com',
                 verifiedAt: null,
             });
 
-            const result = await playerEmailService.getByEmail('player@example.com', false);
+            const result = await playerExtraEmailService.getByEmail('player@example.com', false);
             expect(result?.playerId).toBe(42);
-            expect(prisma.playerEmail.findFirst).toHaveBeenCalledWith({
+            expect(prisma.playerExtraEmail.findFirst).toHaveBeenCalledWith({
                 where: {
                     email: 'player@example.com',
                 },
@@ -49,16 +49,16 @@ describe('PlayerEmailService', () => {
         });
 
         it('should return null when no player found with email', async () => {
-            (prisma.playerEmail.findFirst as jest.Mock).mockResolvedValueOnce(null);
+            (prisma.playerExtraEmail.findFirst as jest.Mock).mockResolvedValueOnce(null);
 
-            const result = await playerEmailService.getByEmail('unknown@example.com', true);
+            const result = await playerExtraEmailService.getByEmail('unknown@example.com', true);
             expect(result).toBeNull();
         });
     });
 
-    describe('createPlayerEmail', () => {
+    describe('createPlayerExtraEmail', () => {
         it('should create a player email record', async () => {
-            const newEmail: PlayerEmailType = {
+            const newEmail: PlayerExtraEmailType = {
                 id: 1,
                 playerId: 7,
                 email: 'player@example.com',
@@ -66,15 +66,15 @@ describe('PlayerEmailService', () => {
                 createdAt: new Date(),
             };
 
-            (prisma.playerEmail.create as jest.Mock).mockResolvedValueOnce(newEmail);
+            (prisma.playerExtraEmail.create as jest.Mock).mockResolvedValueOnce(newEmail);
 
-            const result = await playerEmailService.create({
+            const result = await playerExtraEmailService.create({
                 playerId: 7,
                 email: 'player@example.com',
             });
 
             expect(result).toEqual(newEmail);
-            expect(prisma.playerEmail.create).toHaveBeenCalledWith({
+            expect(prisma.playerExtraEmail.create).toHaveBeenCalledWith({
                 data: {
                     playerId: 7,
                     email: 'player@example.com',
@@ -83,21 +83,21 @@ describe('PlayerEmailService', () => {
         });
     });
 
-    describe('upsertVerifiedPlayerEmail', () => {
+    describe('upsertVerifiedPlayerExtraEmail', () => {
         it('should upsert a verified player email record', async () => {
-            const emailRecord: PlayerEmailType = {
+            const emailRecord: PlayerExtraEmailType = {
                 id: 1,
                 playerId: 7,
                 email: 'player@example.com',
                 createdAt: new Date(),
             };
 
-            (prisma.playerEmail.upsert as jest.Mock).mockResolvedValueOnce(emailRecord);
+            (prisma.playerExtraEmail.upsert as jest.Mock).mockResolvedValueOnce(emailRecord);
 
-            const result = await playerEmailService.upsert(7, 'player@example.com', true);
+            const result = await playerExtraEmailService.upsert(7, 'player@example.com', true);
 
             expect(result).toEqual(emailRecord);
-            expect(prisma.playerEmail.upsert).toHaveBeenCalledWith({
+            expect(prisma.playerExtraEmail.upsert).toHaveBeenCalledWith({
                 where: { email: 'player@example.com' },
                 create: {
                     playerId: 7,
@@ -114,12 +114,12 @@ describe('PlayerEmailService', () => {
 
     describe('getAllEmails', () => {
         it('should return player ids with raw email strings', async () => {
-            (prisma.playerEmail.findMany as jest.Mock).mockResolvedValueOnce([
+            (prisma.playerExtraEmail.findMany as jest.Mock).mockResolvedValueOnce([
                 { playerId: 1, email: 'first@example.com' },
                 { playerId: 2, email: 'second@example.com' },
             ]);
 
-            const result = await playerEmailService.getAll();
+            const result = await playerExtraEmailService.getAll();
 
             expect(result).toEqual([
                 { playerId: 1, email: 'first@example.com' },

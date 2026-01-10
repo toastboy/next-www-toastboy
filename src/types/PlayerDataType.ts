@@ -1,9 +1,10 @@
 import { PlayerSchema } from 'prisma/zod/schemas';
-import { PlayerEmailSchema } from 'prisma/zod/schemas/models/PlayerEmail.schema';
+import { PlayerExtraEmailSchema } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
 import { z } from 'zod';
 
 export const PlayerDataSchema = PlayerSchema.extend({
-    emails: z.array(PlayerEmailSchema),
+    accountEmail: z.email().nullable(),
+    extraEmails: z.array(PlayerExtraEmailSchema),
     firstResponded: z.number().nullable(),
     lastResponded: z.number().nullable(),
     firstPlayed: z.number().nullable(),

@@ -21,7 +21,7 @@ import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { ClubType } from 'prisma/zod/schemas/models/Club.schema';
 import { CountryType } from 'prisma/zod/schemas/models/Country.schema';
 import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
-import { PlayerEmailType } from 'prisma/zod/schemas/models/PlayerEmail.schema';
+import { PlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
 import { useEffect, useRef } from 'react';
 
 import { updatePlayer } from '@/actions/updatePlayer';
@@ -31,8 +31,8 @@ import { CountrySupporterDataType } from '@/types/CountrySupporterDataType';
 import { UpdatePlayerInput, UpdatePlayerSchema } from '@/types/UpdatePlayerInput';
 
 export interface Props {
-    player: PlayerType;
-    emails: PlayerEmailType[];
+    player: PlayerType & { accountEmail?: string | null };
+    extraEmails: PlayerExtraEmailType[];
     countries: CountrySupporterDataType[];
     clubs: ClubSupporterDataType[];
     allCountries: CountryType[];
@@ -46,14 +46,14 @@ type PlayerProfileFormValues = Omit<UpdatePlayerInput, 'clubs'> & {
 
 export const PlayerProfileForm: React.FC<Props> = ({
     player,
-    emails,
+    extraEmails,
     countries,
     clubs,
     allCountries,
     allClubs,
     verifiedEmail,
 }) => {
-    const initialEmails = emails.map((playerEmail) => playerEmail.email);
+    const initialExtraEmails = extraEmails.map((playerEmail) => playerEmail.email);
     const bornYear = player.born ?? undefined;
     const hasShownVerifiedNotification = useRef(false);
 
@@ -77,9 +77,9 @@ export const PlayerProfileForm: React.FC<Props> = ({
         initialValues: {
             name: player.name ?? '',
             anonymous: player.anonymous ?? false,
-            emails: initialEmails.length ? initialEmails : [''],
-            addedEmails: [],
-            removedEmails: [],
+            extraEmails: initialExtraEmails.length ? initialExtraEmails : [''],
+            addedExtraEmails: [],
+            removedExtraEmails: [],
             born: bornYear,
             countries: countries.map((country) => country.country.isoCode),
             clubs: clubs.map((club) => club.clubId.toString()),
@@ -101,17 +101,20 @@ export const PlayerProfileForm: React.FC<Props> = ({
         });
 
         try {
-            const addedEmails = values.emails
+            const nextExtraEmails = values.extraEmails
                 .map((email) => email.trim())
-                .filter((email) => email.length > 0 && !initialEmails.includes(email));
-            const removedEmails = initialEmails
-                .filter((email) => !values.emails.includes(email));
+                .filter((email) => email.length > 0);
+            const addedExtraEmails = nextExtraEmails
+                .filter((email) => !initialExtraEmails.includes(email));
+            const removedExtraEmails = initialExtraEmails
+                .filter((email) => !nextExtraEmails.includes(email));
             await updatePlayer(
                 player.id,
                 {
                     ...values,
-                    addedEmails,
-                    removedEmails,
+                    extraEmails: nextExtraEmails,
+                    addedExtraEmails,
+                    removedExtraEmails,
                 },
             );
 
@@ -188,6 +191,14 @@ export const PlayerProfileForm: React.FC<Props> = ({
                 ].join('')}
                 {...form.getInputProps('anonymous', { type: 'checkbox' })}
             />
+            <TextInput
+                label="Account email"
+                data-testid="account-email-input"
+                description="This is the email address you use to log in."
+                value={player.accountEmail ?? ''}
+                readOnly
+                disabled
+            />
             <Box
                 mt="md"
                 p="md"
@@ -196,16 +207,16 @@ export const PlayerProfileForm: React.FC<Props> = ({
                     borderRadius: 'var(--mantine-radius-md)',
                 }}
             >
-                {form.values.emails.map((email, index) => {
+                {form.values.extraEmails.map((email, index) => {
                     const address = `address ${index + 1}`;
-                    const isVerified = emails.some(
+                    const isVerified = extraEmails.some(
                         (value) => (value.email === email && value.verifiedAt !== null),
                     );
-                    const verificationPending = emails.some(
+                    const verificationPending = extraEmails.some(
                         (value) => (value.email === email && value.verifiedAt === null),
                     );
                     const verificationMessage = isVerified ?
-                        `Email ${address} is verified` :
+                        `Extra email ${address} is verified` :
                         (verificationPending ?
                             `Verification email has been sent to ${email}` :
                             `Verification email will be sent to ${email} upon submission`);
@@ -213,11 +224,10 @@ export const PlayerProfileForm: React.FC<Props> = ({
                     return (
                         <Flex key={index} mb="md" gap="sm" align="flex-end">
                             <EmailInput
-                                label={`Email ${address}`}
-                                data-testid={`email-input-${index}`}
-                                required={index === 0}
+                                label={`Extra email ${address}`}
+                                data-testid={`extra-email-input-${index}`}
                                 style={{ flex: 1 }}
-                                {...form.getInputProps(`emails.${index}`)}
+                                {...form.getInputProps(`extraEmails.${index}`)}
                             />
                             <Tooltip
                                 label={verificationMessage}
@@ -234,33 +244,20 @@ export const PlayerProfileForm: React.FC<Props> = ({
                                     />
                                 }
                             </Tooltip>
-                            {index === 0 ? (
+                            <Tooltip
+                                label={`Delete extra email ${address}`}
+                                withArrow
+                            >
                                 <Button
-                                    data-testid="primary-email-delete-button"
+                                    data-testid={`extra-email-delete-button-${index}`}
                                     variant="subtle"
-                                    color="gray"
-                                    aria-label="Primary email cannot be deleted"
-                                    disabled
-                                    style={{ visibility: 'hidden' }}
+                                    color="red"
+                                    aria-label={`Delete extra email ${address}`}
+                                    onClick={() => form.removeListItem('extraEmails', index)}
                                 >
                                     <IconTrash size={16} />
                                 </Button>
-                            ) : (
-                                <Tooltip
-                                    label={`Delete email ${address}`}
-                                    withArrow
-                                >
-                                    <Button
-                                        data-testid={`email-delete-button-${index}`}
-                                        variant="subtle"
-                                        color="red"
-                                        aria-label={`Delete email ${address}`}
-                                        onClick={() => form.removeListItem('emails', index)}
-                                    >
-                                        <IconTrash size={16} />
-                                    </Button>
-                                </Tooltip>
-                            )}
+                            </Tooltip>
                         </Flex>
                     );
                 })}
@@ -268,8 +265,8 @@ export const PlayerProfileForm: React.FC<Props> = ({
                 <Button
                     type="button"
                     variant="light"
-                    data-testid="add-email-button"
-                    onClick={() => form.insertListItem('emails', '')}
+                    data-testid="add-extra-email-button"
+                    onClick={() => form.insertListItem('extraEmails', '')}
                 >
                     Add another email
                 </Button>

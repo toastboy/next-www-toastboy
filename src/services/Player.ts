@@ -17,6 +17,7 @@ import z from 'zod';
 /** Field definitions with extra validation */
 const extendedFields = {
     id: z.number().int().min(1).optional(),
+    accountEmail: z.email().nullable().optional(),
 };
 
 const PlayerLoginWhereUniqueInputSchema = z.object({
@@ -166,7 +167,7 @@ class PlayerService {
                             gameDayId: 'desc',
                         },
                     },
-                    emails: {
+                    extraEmails: {
                         orderBy: [
                             { verifiedAt: 'desc' },
                             { createdAt: 'desc' },
@@ -182,8 +183,11 @@ class PlayerService {
                 const respondedGameDays = gamesResponded.map(outcome => outcome.gameDayId);
                 const playedGameDays = gamesPlayed.map(outcome => outcome.gameDayId);
 
+                const accountEmail = (player as { accountEmail?: string | null }).accountEmail ?? null;
+
                 return {
                     ...player,
+                    accountEmail,
                     firstResponded: respondedGameDays.length > 0 ? Math.min(...respondedGameDays) : null,
                     lastResponded: respondedGameDays.length > 0 ? Math.max(...respondedGameDays) : null,
                     firstPlayed: playedGameDays.length > 0 ? Math.min(...playedGameDays) : null,

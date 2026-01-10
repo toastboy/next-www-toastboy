@@ -3,34 +3,34 @@ import 'server-only';
 import debug from 'debug';
 import prisma from 'prisma/prisma';
 import {
-    PlayerEmailUncheckedCreateInputObjectZodSchema,
-    PlayerEmailUncheckedUpdateInputObjectZodSchema,
-    PlayerEmailWhereUniqueInputObjectSchema,
+    PlayerExtraEmailUncheckedCreateInputObjectZodSchema,
+    PlayerExtraEmailUncheckedUpdateInputObjectZodSchema,
+    PlayerExtraEmailWhereUniqueInputObjectSchema,
 } from 'prisma/zod/schemas';
-import { PlayerEmailType } from 'prisma/zod/schemas/models/PlayerEmail.schema';
+import { PlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
 import z from 'zod';
 
 /** Field definitions with extra validation */
-const PlayerEmailExtendedFields = {
+const PlayerExtraEmailExtendedFields = {
     playerId: z.number().int().min(1),
     email: z.email(),
     verifiedAt: z.date().nullish().optional(),
 };
 
-const PlayerEmailExtendedFieldsForUpdate = {
+const PlayerExtraEmailExtendedFieldsForUpdate = {
     playerId: z.number().int().min(1).optional(),
     email: z.email().optional(),
     verifiedAt: z.date().nullish().optional(),
 };
 
 /** Schemas for enforcing strict input */
-export const PlayerEmailUncheckedCreateInputObjectStrictSchema =
-    PlayerEmailUncheckedCreateInputObjectZodSchema.extend({
-        ...PlayerEmailExtendedFields,
+export const PlayerExtraEmailUncheckedCreateInputObjectStrictSchema =
+    PlayerExtraEmailUncheckedCreateInputObjectZodSchema.extend({
+        ...PlayerExtraEmailExtendedFields,
     });
-export const PlayerEmailUncheckedUpdateInputObjectStrictSchema =
-    PlayerEmailUncheckedUpdateInputObjectZodSchema.extend({
-        ...PlayerEmailExtendedFieldsForUpdate,
+export const PlayerExtraEmailUncheckedUpdateInputObjectStrictSchema =
+    PlayerExtraEmailUncheckedUpdateInputObjectZodSchema.extend({
+        ...PlayerExtraEmailExtendedFieldsForUpdate,
     });
 
 const log = debug('footy:api');
@@ -40,7 +40,7 @@ const log = debug('footy:api');
  *
  * Provides methods to create, retrieve, update, and delete player email records,
  * including support for email verification status. This service handles the
- * interaction with the PlayerEmail database model through Prisma.
+ * interaction with the PlayerExtraEmail database model through Prisma.
  *
  * @remarks
  * All methods include error handling and logging. Database operations are
@@ -48,11 +48,11 @@ const log = debug('footy:api');
  *
  * @example
  * ```typescript
- * const emailService = new PlayerEmailService();
- * const playerEmail = await emailService.getByEmail('player@example.com', true);
+ * const emailService = new PlayerExtraEmailService();
+ * const playerExtraEmail = await emailService.getByEmail('player@example.com', true);
  * ```
  */
-export class PlayerEmailService {
+export class PlayerExtraEmailService {
     /**
      * Retrieves the player associated with the given email address. It's not
      * enough to just have a record with that email; the email must also be
@@ -63,16 +63,16 @@ export class PlayerEmailService {
      * no player is found with the given email.
      * @throws Will throw an error if there is an issue with the database query.
      */
-    async getByEmail(email: string, verified?: boolean): Promise<PlayerEmailType | null> {
+    async getByEmail(email: string, verified?: boolean): Promise<PlayerExtraEmailType | null> {
         try {
-            return await prisma.playerEmail.findFirst({
+            return await prisma.playerExtraEmail.findFirst({
                 where: {
                     email,
                     ...(verified ? { verifiedAt: { not: null } } : {}),
                 },
             });
         } catch (error) {
-            log(`Error getting PlayerEmail: ${String(error)}`);
+            log(`Error getting PlayerExtraEmail: ${String(error)}`);
             throw error;
         }
     }
@@ -82,12 +82,12 @@ export class PlayerEmailService {
      * @param rawData The properties to add to the player email
      * @returns A promise that resolves to the newly-created player email
      */
-    async create(rawData: unknown): Promise<PlayerEmailType> {
+    async create(rawData: unknown): Promise<PlayerExtraEmailType> {
         try {
-            const data = PlayerEmailUncheckedCreateInputObjectStrictSchema.parse(rawData);
-            return await prisma.playerEmail.create({ data });
+            const data = PlayerExtraEmailUncheckedCreateInputObjectStrictSchema.parse(rawData);
+            return await prisma.playerExtraEmail.create({ data });
         } catch (error) {
-            log(`Error creating PlayerEmail: ${String(error)}`);
+            log(`Error creating PlayerExtraEmail: ${String(error)}`);
             throw error;
         }
     }
@@ -99,23 +99,23 @@ export class PlayerEmailService {
      * @param verified Whether the email is verified
      * @returns A promise that resolves to the upserted player email
      */
-    async upsert(playerId: number, email: string, verified?: boolean): Promise<PlayerEmailType> {
+    async upsert(playerId: number, email: string, verified?: boolean): Promise<PlayerExtraEmailType> {
         try {
             const verifiedAt = verified ? new Date() : undefined;
-            const where = PlayerEmailWhereUniqueInputObjectSchema.parse({ email });
-            const create = PlayerEmailUncheckedCreateInputObjectStrictSchema.parse({
+            const where = PlayerExtraEmailWhereUniqueInputObjectSchema.parse({ email });
+            const create = PlayerExtraEmailUncheckedCreateInputObjectStrictSchema.parse({
                 playerId,
                 email,
                 verifiedAt,
             });
-            const update = PlayerEmailUncheckedUpdateInputObjectStrictSchema.parse({
+            const update = PlayerExtraEmailUncheckedUpdateInputObjectStrictSchema.parse({
                 playerId,
                 verifiedAt,
             });
 
-            return await prisma.playerEmail.upsert({ where, update, create });
+            return await prisma.playerExtraEmail.upsert({ where, update, create });
         } catch (error) {
-            log(`Error upserting PlayerEmail: ${String(error)}`);
+            log(`Error upserting PlayerExtraEmail: ${String(error)}`);
             throw error;
         }
     }
@@ -137,7 +137,7 @@ export class PlayerEmailService {
                 (email) => this.upsert(playerId, email),
             ));
         } catch (error) {
-            log(`Error upserting multiple PlayerEmails: ${String(error)}`);
+            log(`Error upserting multiple PlayerExtraEmails: ${String(error)}`);
             throw error;
         }
     }
@@ -150,11 +150,11 @@ export class PlayerEmailService {
      */
     async getAll(playerId?: number) {
         try {
-            return await prisma.playerEmail.findMany({
+            return await prisma.playerExtraEmail.findMany({
                 where: playerId ? { playerId } : undefined,
             });
         } catch (error) {
-            log(`Error fetching Player emails: ${String(error)}`);
+            log(`Error fetching Player extra emails: ${String(error)}`);
             throw error;
         }
     }
@@ -168,11 +168,11 @@ export class PlayerEmailService {
      */
     async delete(email: string) {
         try {
-            return await prisma.playerEmail.delete({
+            return await prisma.playerExtraEmail.delete({
                 where: { email },
             });
         } catch (error) {
-            log(`Error deleting PlayerEmail: ${String(error)}`);
+            log(`Error deleting PlayerExtraEmail: ${String(error)}`);
             throw error;
         }
     }
@@ -199,11 +199,11 @@ export class PlayerEmailService {
                 ));
             await Promise.all(emailsToDelete.map((email) => this.delete(email.email)));
         } catch (error) {
-            log(`Error deleting PlayerEmails: ${String(error)}`);
+            log(`Error deleting PlayerExtraEmails: ${String(error)}`);
             throw error;
         }
     }
 }
 
-const playerEmailService = new PlayerEmailService();
-export default playerEmailService;
+const playerExtraEmailService = new PlayerExtraEmailService();
+export default playerExtraEmailService;

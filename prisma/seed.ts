@@ -13,7 +13,7 @@ import { GameChatType } from 'prisma/zod/schemas/models/GameChat.schema';
 import { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 import { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
 import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
-import { PlayerEmailType } from 'prisma/zod/schemas/models/PlayerEmail.schema';
+import { PlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
 import { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 import { PlayerLoginType } from './zod/schemas/models/PlayerLogin.schema';
 
@@ -106,7 +106,7 @@ async function main() {
     await prisma.diffs.deleteMany();
     await prisma.picker.deleteMany();
     await prisma.pickerTeams.deleteMany();
-    await prisma.playerEmail.deleteMany();
+    await prisma.playerExtraEmail.deleteMany();
     await prisma.playerLogin.deleteMany();
     await prisma.emailVerification.deleteMany();
     await prisma.player.deleteMany();
@@ -115,7 +115,7 @@ async function main() {
     // the ones that are short-lived or generated as part of the picker process
     await processJsonData<PlayerType>(containerClient, "Player.json", prisma.player);
     await processJsonData<PlayerLoginType>(containerClient, "PlayerLogin.json", prisma.playerLogin);
-    await processJsonData<PlayerEmailType>(containerClient, "PlayerEmail.json", prisma.playerEmail);
+    await processJsonData<PlayerExtraEmailType>(containerClient, "PlayerEmail.json", prisma.playerExtraEmail);
     await processJsonData<GameDayType>(containerClient, "GameDay.json", prisma.gameDay);
     await processJsonData<PlayerRecordType>(containerClient, "PlayerRecord.json", prisma.playerRecord);
     await processJsonData<OutcomeType>(containerClient, "Outcome.json", prisma.outcome);

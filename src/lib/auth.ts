@@ -1,13 +1,12 @@
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { nextCookies } from 'better-auth/next-js';
-import { admin, customSession } from 'better-auth/plugins';
+import { admin } from 'better-auth/plugins';
 import prisma from 'prisma/prisma';
 
 import { sendEmail } from '@/actions/sendEmail';
 import { getSecrets } from '@/lib/secrets';
 import { getPublicBaseUrl } from '@/lib/urls';
-import playerEmailService from '@/services/PlayerEmail';
 
 const secrets = getSecrets();
 
@@ -32,7 +31,6 @@ export const auth = betterAuth({
             playerId: {
                 type: "number",
                 required: false,
-                input: false,
             },
         },
     },
@@ -81,21 +79,6 @@ export const auth = betterAuth({
     },
     plugins: [
         admin(),
-        customSession(async ({ user, session }) => {
-            if (user?.email) {
-                const playerEmail = await playerEmailService.getByEmail(user.email);
-
-                return {
-                    user: {
-                        ...user,
-                        playerId: playerEmail?.playerId ?? 0,
-                    },
-                    session,
-                };
-            }
-
-            return { user, session };
-        }),
         // Must be last: see https://better-auth.vercel.app/docs/integrations/next#server-action-cookies
         nextCookies(),
     ],

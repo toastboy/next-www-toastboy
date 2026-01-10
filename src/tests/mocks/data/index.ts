@@ -12,7 +12,7 @@ export * from './gameYears';
 export * from './outcome';
 export * from './player';
 export * from './playerData';
-export * from './playerEmail';
+export * from './playerExtraEmail';
 export * from './playerForm';
 export * from './playerRecord';
 export * from './playerRecordData';

@@ -48,9 +48,9 @@ const Page: React.FC<PageProps> = () => {
     const filteredPlayers = players?.filter((player) => {
         const searchTerm = filter.toLowerCase();
         const nameMatches = player.name?.toLowerCase().includes(searchTerm) ?? false;
-        const emailMatches = player.emails.some((playerEmail) =>
-            playerEmail.email.toLowerCase().includes(searchTerm),
-        );
+        const emailMatches = [player.accountEmail, ...player.extraEmails.map((playerEmail) => playerEmail.email)]
+            .filter((playerEmail): playerEmail is string => !!playerEmail)
+            .some((playerEmail) => playerEmail.toLowerCase().includes(searchTerm));
         const searchResult = nameMatches || emailMatches;
 
         return searchResult && (!active || player.finished === null);

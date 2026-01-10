@@ -19,7 +19,7 @@ import {
     defaultCountryList,
     defaultCountrySupporterDataList,
     defaultPlayer,
-    defaultPlayerEmails,
+    defaultPlayerExtraEmails,
 } from '@/tests/mocks';
 
 const mockUpdatePlayer = updatePlayer as jest.MockedFunction<typeof updatePlayer>;
@@ -35,7 +35,7 @@ describe('PlayerProfileForm', () => {
             <Wrapper>
                 <PlayerProfileForm
                     player={defaultPlayer}
-                    emails={defaultPlayerEmails}
+                    extraEmails={defaultPlayerExtraEmails}
                     countries={defaultCountrySupporterDataList}
                     clubs={defaultClubSupporterDataList}
                     allCountries={defaultCountryList}
@@ -45,7 +45,8 @@ describe('PlayerProfileForm', () => {
         );
 
         expect(screen.getByTestId('name-input')).toBeInTheDocument();
-        expect(screen.getByTestId('email-input-0')).toBeInTheDocument();
+        expect(screen.getByTestId('account-email-input')).toBeInTheDocument();
+        expect(screen.getByTestId('extra-email-input-0')).toBeInTheDocument();
         expect(screen.getByTestId('born-input')).toBeInTheDocument();
         expect(screen.getByTestId('submit-button')).toBeInTheDocument();
     });
@@ -58,7 +59,7 @@ describe('PlayerProfileForm', () => {
             <Wrapper>
                 <PlayerProfileForm
                     player={defaultPlayer}
-                    emails={defaultPlayerEmails}
+                    extraEmails={defaultPlayerExtraEmails}
                     countries={defaultCountrySupporterDataList}
                     clubs={defaultClubSupporterDataList}
                     allCountries={defaultCountryList}
@@ -75,7 +76,7 @@ describe('PlayerProfileForm', () => {
                 expect.objectContaining({
                     name: defaultPlayer.name,
                     anonymous: defaultPlayer.anonymous,
-                    emails: defaultPlayerEmails.map((entry) => entry.email),
+                    extraEmails: defaultPlayerExtraEmails.map((entry) => entry.email),
                     countries: defaultCountrySupporterDataList.map((entry) => entry.country.isoCode),
                     clubs: defaultClubSupporterDataList.map((entry) => entry.clubId.toString()),
                 }),

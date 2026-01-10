@@ -6,7 +6,7 @@ import { sendEmail } from '@/actions/sendEmail';
 import { getPublicBaseUrl } from '@/lib/urls';
 import { createVerificationToken, hashVerificationToken } from '@/lib/verificationToken';
 import emailVerificationService from '@/services/EmailVerification';
-import playerEmailService from '@/services/PlayerEmail';
+import playerExtraEmailService from '@/services/PlayerExtraEmail';
 
 /**
  * Validates a verification token by ensuring it exists, has not been used, and
@@ -63,12 +63,12 @@ export async function verifyEmail(token: string) {
             throw new Error('Verification is missing a player reference.');
         }
 
-        const existingEmail = await playerEmailService.getByEmail(verification.email);
+        const existingEmail = await playerExtraEmailService.getByEmail(verification.email);
         if (existingEmail && existingEmail.playerId !== verification.playerId) {
             throw new Error('Email address already belongs to another player.');
         }
 
-        await playerEmailService.upsert(verification.playerId, verification.email, true);
+        await playerExtraEmailService.upsert(verification.playerId, verification.email, true);
     }
 
     await emailVerificationService.markUsed(verification.id);
@@ -99,7 +99,7 @@ async function requestPlayerEmailVerification(email: string, playerId?: number) 
     }
 
     if (playerId !== undefined) {
-        const existingEmail = await playerEmailService.getByEmail(normalizedEmail);
+        const existingEmail = await playerExtraEmailService.getByEmail(normalizedEmail);
         if (existingEmail?.playerId !== playerId) {
             throw new Error('Email address does not belong to this player.');
         }

@@ -4,7 +4,8 @@ import { defaultPlayer } from './player';
 
 export const defaultPlayerData: PlayerDataType = {
     ...defaultPlayer,
-    emails: [
+    accountEmail: 'gary.login@example.com',
+    extraEmails: [
         {
             id: 1,
             playerId: 1,
@@ -29,8 +30,8 @@ export const createMockPlayerData = (overrides: Partial<PlayerDataType> = {}): P
         ...overrides,
     };
 
-    if (!overrides.emails) {
-        playerData.emails = playerData.emails.map((email) => ({
+    if (!overrides.extraEmails) {
+        playerData.extraEmails = playerData.extraEmails.map((email) => ({
             ...email,
             playerId: playerData.id,
         }));

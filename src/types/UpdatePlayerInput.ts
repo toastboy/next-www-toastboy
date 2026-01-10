@@ -15,7 +15,7 @@ export const UpdatePlayerSchema = z.object({
         .min(1, { message: 'Name is required' }),
     anonymous: z.boolean().optional(),
     born: z.preprocess(
-        (value) => {
+        (value: unknown) => {
             if (value === '' || value === null || value === undefined) {
                 return null;
             }

@@ -24,6 +24,7 @@ const prisma = {
     clubSupporter: makeModelMock(),
     country: makeModelMock(),
     countrySupporter: makeModelMock(),
+    contactEnquiry: makeModelMock(),
     emailVerification: makeModelMock(),
     gameChat: makeModelMock(),
     gameDay: makeModelMock(),

@@ -77,6 +77,7 @@ export async function verifyEmail(token: string) {
         purpose: verification.purpose,
         email: verification.email,
         playerId: verification.playerId,
+        verificationId: verification.id,
     };
 }
 

@@ -214,10 +214,27 @@ model EmailVerification {
     usedAt    DateTime?
     createdAt DateTime                 @default(now())
 
-    player Player? @relation(fields: [playerId], references: [id])
+    player         Player?         @relation(fields: [playerId], references: [id])
+    contactEnquiry ContactEnquiry?
 
     @@index([playerId])
     @@index([email])
+}
+
+model ContactEnquiry {
+    id             Int      @id @default(autoincrement())
+    name           String   @db.VarChar(255)
+    email          String   @db.VarChar(255)
+    message        String   @db.MediumText
+    createdAt      DateTime @default(now())
+    verifiedAt     DateTime?
+    deliveredAt    DateTime?
+    verificationId Int      @unique
+
+    verification EmailVerification @relation(fields: [verificationId], references: [id])
+
+    @@index([email])
+    @@index([createdAt])
 }
 
 model PlayerLogin {

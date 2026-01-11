@@ -13,6 +13,8 @@ import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useEffect } from 'react';
 
 import { sendEnquiry } from '@/actions/sendEnquiry';
 import { EmailInput } from '@/components/EmailInput/EmailInput';
@@ -21,6 +23,10 @@ import { EnquiryInput, EnquirySchema } from '@/types/EnquiryInput';
 export type Props = unknown;
 
 export const EnquiryForm: React.FC<Props> = () => {
+    const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+
     const form = useForm<EnquiryInput>({
         initialValues: {
             name: '',
@@ -30,6 +36,39 @@ export const EnquiryForm: React.FC<Props> = () => {
         validate: zod4Resolver(EnquirySchema),
         validateInputOnBlur: true,
     });
+
+    useEffect(() => {
+        const enquiryStatus = searchParams.get('enquiry');
+        const errorMessage = searchParams.get('error');
+
+        if (!enquiryStatus) {
+            return;
+        }
+
+        if (enquiryStatus === 'verified') {
+            notifications.show({
+                color: 'teal',
+                title: 'Email verified',
+                message: 'Thanks! Your enquiry has been delivered.',
+                icon: <IconCheck size={18} />,
+            });
+        }
+
+        if (enquiryStatus === 'error') {
+            notifications.show({
+                color: 'red',
+                title: 'Verification failed',
+                message: errorMessage ?? 'We could not verify your email.',
+                icon: <IconAlertTriangle size={18} />,
+            });
+        }
+
+        const updatedParams = new URLSearchParams(searchParams.toString());
+        updatedParams.delete('enquiry');
+        updatedParams.delete('error');
+        const query = updatedParams.toString();
+        router.replace(query ? `${pathname}?${query}` : pathname);
+    }, [pathname, router, searchParams]);
 
     const handleSubmit = async (values: EnquiryInput) => {
         const id = notifications.show({
@@ -47,8 +86,8 @@ export const EnquiryForm: React.FC<Props> = () => {
             notifications.update({
                 id,
                 color: 'teal',
-                title: 'Message sent',
-                message: 'Thanks for reaching out. We will get back to you soon.',
+                title: 'Confirm your email',
+                message: 'Check your inbox and verify your email to deliver the message.',
                 icon: <IconCheck size={18} />,
                 loading: false,
                 autoClose: 2000,

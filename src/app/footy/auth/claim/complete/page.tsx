@@ -14,6 +14,8 @@ const Page = async ({ searchParams: sp }: PageProps) => {
     const searchParams = await sp;
     const token = searchParams?.token ?? '';
 
+    // TODO: the logic needs moving into an API route
+
     if (!token) {
         return (
             <Notification

@@ -62,7 +62,7 @@ export async function addPlayerInvite(
     playerId: number,
     email?: string,
 ) {
-    const { token, tokenHash, expiresAt } = createVerificationToken();
+    const { token, expiresAt } = createVerificationToken();
 
     // It's possible to have a player profile with no login email: responses will
     // have to be entered manually for them.
@@ -70,14 +70,16 @@ export async function addPlayerInvite(
         await emailVerificationService.create({
             playerId,
             email,
-            tokenHash,
+            token,
             expiresAt,
-            purpose: 'player_invite',
         });
     }
 
     revalidatePath('/footy/newplayer');
     revalidatePath('/footy/players');
 
-    return new URL(`/api/footy/auth/claim?token=${token}`, getPublicBaseUrl()).toString();
+    return new URL(
+        `/api/footy/auth/verify/player-invite/${token}?redirect=/footy/auth/claim`,
+        getPublicBaseUrl(),
+    ).toString();
 }

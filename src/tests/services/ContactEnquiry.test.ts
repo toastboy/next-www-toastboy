@@ -1,9 +1,13 @@
 import prisma from 'prisma/prisma';
 import { ContactEnquiryType } from 'prisma/zod/schemas/models/ContactEnquiry.schema';
 
+import { hashVerificationToken } from '@/lib/verificationToken';
 import contactEnquiryService from '@/services/ContactEnquiry';
 
 describe('ContactEnquiryService', () => {
+    const token = 'deadbeef'.repeat(8);
+    const tokenHash = hashVerificationToken(token);
+
     beforeEach(() => {
         jest.clearAllMocks();
     });
@@ -14,10 +18,16 @@ describe('ContactEnquiryService', () => {
                 name: 'Test User',
                 email: 'test@example.com',
                 message: 'Hello there',
-                verificationId: 10,
+                token,
+            };
+            const expectedData = {
+                name: rawInput.name,
+                email: rawInput.email,
+                message: rawInput.message,
+                tokenHash,
             };
             const createdEnquiry: ContactEnquiryType = {
-                ...rawInput,
+                ...expectedData,
                 id: 1,
                 createdAt: new Date('2025-01-01T00:00:00.000Z'),
                 verifiedAt: null,
@@ -29,7 +39,7 @@ describe('ContactEnquiryService', () => {
             const result = await contactEnquiryService.create(rawInput);
 
             expect(prisma.contactEnquiry.create).toHaveBeenCalledWith({
-                data: rawInput,
+                data: expectedData,
             });
             expect(result).toEqual(createdEnquiry);
         });
@@ -39,7 +49,20 @@ describe('ContactEnquiryService', () => {
                 name: '',
                 email: 'invalid-email',
                 message: '',
-                verificationId: 0,
+                token: '',
+            };
+
+            await expect(contactEnquiryService.create(invalidInput)).rejects.toThrow();
+            expect(prisma.contactEnquiry.create).not.toHaveBeenCalled();
+        });
+
+        it('should reject when tokenHash is provided', async () => {
+            const invalidInput = {
+                name: 'Test User',
+                email: 'test@example.com',
+                message: 'Hello there',
+                token,
+                tokenHash,
             };
 
             await expect(contactEnquiryService.create(invalidInput)).rejects.toThrow();
@@ -57,15 +80,14 @@ describe('ContactEnquiryService', () => {
                 createdAt: new Date(),
                 verifiedAt: null,
                 deliveredAt: null,
-                verificationId: 22,
+                tokenHash,
             };
 
             (prisma.contactEnquiry.findUnique as jest.Mock).mockResolvedValueOnce(enquiry);
 
-            const result = await contactEnquiryService.getByVerificationId(22);
-
+            const result = await contactEnquiryService.getByToken(token);
             expect(prisma.contactEnquiry.findUnique).toHaveBeenCalledWith({
-                where: { verificationId: 22 },
+                where: { tokenHash },
             });
             expect(result).toEqual(enquiry);
         });
@@ -81,7 +103,7 @@ describe('ContactEnquiryService', () => {
                 createdAt: new Date(),
                 verifiedAt: new Date(),
                 deliveredAt: new Date(),
-                verificationId: 33,
+                tokenHash,
             };
 
             (prisma.contactEnquiry.update as jest.Mock).mockResolvedValueOnce(enquiry);

@@ -205,14 +205,13 @@ model PlayerExtraEmail {
 }
 
 model EmailVerification {
-    id        Int                      @id @default(autoincrement())
+    id        Int       @id @default(autoincrement())
     playerId  Int?
-    email     String                   @db.VarChar(255)
-    tokenHash String                   @unique @db.Char(64)
-    purpose   EmailVerificationPurpose
+    email     String    @db.VarChar(255)
+    tokenHash String    @unique @db.Char(64)
     expiresAt DateTime
     usedAt    DateTime?
-    createdAt DateTime                 @default(now())
+    createdAt DateTime  @default(now())
 
     player         Player?         @relation(fields: [playerId], references: [id])
     contactEnquiry ContactEnquiry?
@@ -222,16 +221,16 @@ model EmailVerification {
 }
 
 model ContactEnquiry {
-    id             Int      @id @default(autoincrement())
-    name           String   @db.VarChar(255)
-    email          String   @db.VarChar(255)
-    message        String   @db.MediumText
-    createdAt      DateTime @default(now())
-    verifiedAt     DateTime?
-    deliveredAt    DateTime?
-    verificationId Int      @unique
+    id          Int       @id @default(autoincrement())
+    name        String    @db.VarChar(255)
+    email       String    @db.VarChar(255)
+    message     String    @db.MediumText
+    createdAt   DateTime  @default(now())
+    verifiedAt  DateTime?
+    deliveredAt DateTime?
+    tokenHash   String    @unique @db.Char(64)
 
-    verification EmailVerification @relation(fields: [verificationId], references: [id])
+    verification EmailVerification @relation(fields: [tokenHash], references: [tokenHash])
 
     @@index([email])
     @@index([createdAt])
@@ -278,12 +277,6 @@ model PlayerRecord {
     @@index([playerId])
     @@index([year])
     @@index([gameDayId])
-}
-
-enum EmailVerificationPurpose {
-    player_invite
-    player_email
-    contact_form
 }
 
 enum TeamName {

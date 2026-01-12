@@ -4,7 +4,7 @@ import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 
 import { sendEmail } from '@/actions/sendEmail';
 import { getPublicBaseUrl } from '@/lib/urls';
-import { createVerificationToken, hashVerificationToken } from '@/lib/verificationToken';
+import { createVerificationToken } from '@/lib/verificationToken';
 import emailVerificationService from '@/services/EmailVerification';
 import playerExtraEmailService from '@/services/PlayerExtraEmail';
 
@@ -23,8 +23,7 @@ async function getValidVerification(token: string) {
         throw new Error('Missing verification token.');
     }
 
-    const tokenHash = hashVerificationToken(token);
-    const verification = await emailVerificationService.getByTokenHash(tokenHash);
+    const verification = await emailVerificationService.getByToken(token);
 
     if (!verification) {
         throw new Error('Verification not found or expired.');
@@ -54,31 +53,47 @@ async function getValidVerification(token: string) {
 export async function verifyEmail(token: string) {
     const verification = await getValidVerification(token);
 
-    if (verification.purpose === 'player_invite') {
-        throw new Error('Use the invitation flow to claim this token.');
-    }
-
-    if (verification.purpose === 'player_email') {
-        if (!verification.playerId) {
-            throw new Error('Verification is missing a player reference.');
-        }
-
-        const existingEmail = await playerExtraEmailService.getByEmail(verification.email);
-        if (existingEmail && existingEmail.playerId !== verification.playerId) {
-            throw new Error('Email address already belongs to another player.');
-        }
-
-        await playerExtraEmailService.upsert(verification.playerId, verification.email, true);
-    }
-
-    await emailVerificationService.markUsed(verification.id);
+    await emailVerificationService.markUsed(token);
 
     return {
-        purpose: verification.purpose,
         email: verification.email,
-        playerId: verification.playerId,
-        verificationId: verification.id,
+        playerId: verification.playerId?.toString(),
+        verificationId: verification.id.toString(),
     };
+}
+
+/**
+ * Verifies an email address for an invitation using a verification token and
+ * associates it with a player.
+ *
+ * This function:
+ * - Validates the provided token and retrieves the corresponding verification
+ *   record.
+ * - Ensures the verification references a player.
+ * - Ensures the email is not already associated with a different player.
+ * - Upserts the email for the referenced player and marks it as verified.
+ *
+ * @param token - The verification token to validate.
+ * @throws Error if the verification is missing a player reference.
+ * @throws Error if the email address already belongs to another player.
+ * @throws Any error thrown by getValidVerification or the
+ * playerExtraEmailService operations.
+ * @returns A promise that resolves when the email has been associated and
+ * marked as verified.
+ */
+export async function verifyEmailForInvite(token: string) {
+    const verification = await getValidVerification(token);
+
+    if (!verification.playerId) {
+        throw new Error('Verification is missing a player reference.');
+    }
+
+    const existingEmail = await playerExtraEmailService.getByEmail(verification.email);
+    if (existingEmail && existingEmail.playerId !== verification.playerId) {
+        throw new Error('Email address already belongs to another player.');
+    }
+
+    await playerExtraEmailService.upsert(verification.playerId, verification.email, true);
 }
 
 /**
@@ -110,17 +125,17 @@ async function requestPlayerEmailVerification(email: string, playerId?: number) 
         }
     }
 
-    const { token, tokenHash, expiresAt } = createVerificationToken();
+    const { token, expiresAt } = createVerificationToken();
     await emailVerificationService.create({
         playerId,
         email: normalizedEmail,
-        tokenHash,
+        token,
         expiresAt,
-        purpose: playerId !== undefined ? 'player_email' : 'contact_form',
+
     });
 
     return {
-        verificationLink: new URL(`/api/footy/auth/verify?token=${token}`, getPublicBaseUrl()).toString(),
+        verificationLink: new URL(`/api/footy/auth/verify/extra-email/${token}?redirect=${encodeURIComponent('/footy/profile')}`, getPublicBaseUrl()).toString(),
     };
 }
 

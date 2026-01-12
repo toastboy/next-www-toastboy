@@ -20,9 +20,11 @@ import { sendEnquiry } from '@/actions/sendEnquiry';
 import { EmailInput } from '@/components/EmailInput/EmailInput';
 import { EnquiryInput, EnquirySchema } from '@/types/EnquiryInput';
 
-export type Props = unknown;
+export interface Props {
+    redirectUrl: string;
+}
 
-export const EnquiryForm: React.FC<Props> = () => {
+export const EnquiryForm: React.FC<Props> = ({ redirectUrl }) => {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -80,7 +82,7 @@ export const EnquiryForm: React.FC<Props> = () => {
         });
 
         try {
-            await sendEnquiry(values);
+            await sendEnquiry(values, redirectUrl);
             form.reset();
 
             notifications.update({

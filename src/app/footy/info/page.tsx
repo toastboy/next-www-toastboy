@@ -43,7 +43,9 @@ const InfoPage: React.FC<InfoPageProps> = () => {
                 <Text>
                     We&apos;re always looking for players, so if you want to join the list, fill in the form below!
                 </Text>
-                <EnquiryForm />
+                <EnquiryForm
+                    redirectUrl='/footy/info'
+                />
             </Flex>
         </>
     );

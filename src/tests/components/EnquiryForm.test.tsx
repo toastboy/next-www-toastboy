@@ -19,7 +19,7 @@ describe('EnquiryForm', () => {
     });
 
     it('renders the form fields', async () => {
-        render(<Wrapper><EnquiryForm /></Wrapper>);
+        render(<Wrapper><EnquiryForm redirectUrl='redirect-url' /></Wrapper>);
         await waitFor(() => {
             expect(screen.getByTestId('enquiry-name')).toBeInTheDocument();
             expect(screen.getByTestId('enquiry-email')).toBeInTheDocument();
@@ -30,7 +30,7 @@ describe('EnquiryForm', () => {
 
     it('validates required fields', async () => {
         const user = userEvent.setup();
-        render(<Wrapper><EnquiryForm /></Wrapper>);
+        render(<Wrapper><EnquiryForm redirectUrl='redirect-url' /></Wrapper>);
 
         await user.click(screen.getByTestId('enquiry-submit'));
 
@@ -41,7 +41,7 @@ describe('EnquiryForm', () => {
 
     it('submits valid data', async () => {
         const user = userEvent.setup();
-        render(<Wrapper><EnquiryForm /></Wrapper>);
+        render(<Wrapper><EnquiryForm redirectUrl='redirect-url' /></Wrapper>);
 
         await user.type(screen.getByTestId('enquiry-name'), 'Test User');
         await user.type(screen.getByTestId('enquiry-email'), 'test@example.com');
@@ -53,7 +53,7 @@ describe('EnquiryForm', () => {
                 name: 'Test User',
                 email: 'test@example.com',
                 message: 'Hello there',
-            });
+            }, 'redirect-url');
         });
     });
 });

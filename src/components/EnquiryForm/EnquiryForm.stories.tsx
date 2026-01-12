@@ -17,7 +17,11 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Render: Story = {};
+export const Render: Story = {
+    args: {
+        redirectUrl: '/thank-you-for-reaching-out',
+    },
+};
 
 export const ValidSubmit: Story = {
     ...Render,

@@ -1,6 +1,5 @@
 'use server';
 
-import { hashVerificationToken } from '@/lib/verificationToken';
 import authService from '@/services/Auth';
 import emailVerificationService from '@/services/EmailVerification';
 import playerService from '@/services/Player';
@@ -20,15 +19,10 @@ async function getValidInvitation(token: string) {
         throw new Error('Missing invitation token.');
     }
 
-    const tokenHash = hashVerificationToken(token);
-    const invitation = await emailVerificationService.getByTokenHash(tokenHash);
+    const invitation = await emailVerificationService.getByToken(token);
 
     if (!invitation) {
         throw new Error('Invitation not found or expired.');
-    }
-
-    if (invitation.purpose !== 'player_invite') {
-        throw new Error('Invalid invitation token.');
     }
 
     if (invitation.usedAt) {
@@ -73,8 +67,9 @@ export async function claimPlayerInvitation(token: string) {
     }
 
     return {
-        player: player,
+        name: player.name,
         email: invitation.email,
+        token,
     };
 }
 
@@ -112,5 +107,5 @@ export async function finalizePlayerInvitationClaim(token: string) {
         id: invitation.playerId,
         accountEmail: invitation.email,
     });
-    await emailVerificationService.markUsed(invitation.id);
+    await emailVerificationService.markUsed(token);
 }

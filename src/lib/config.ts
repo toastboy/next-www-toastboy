@@ -1,22 +1,15 @@
-/**
- * Configuration interface for application settings.
- *
- * @property minGamesForAveragesTable - The minimum number of games required for a player to qualify for the averages table.
- * @property minRepliesForSpeedyTable - The minimum number of replies required for a player to qualify for the speedy table.
- * @property sessionRevalidate - The duration (in milliseconds) after which a session should be revalidated.
- */
-interface Config {
-    minGamesForAveragesTable: number,
-    minRepliesForSpeedyTable: number,
+import { ConfigSchema, ConfigType } from '@/types/config';
 
-    sessionRevalidate: number,
-}
-
-const config: Config = {
+const rawConfig: ConfigType = {
     minGamesForAveragesTable: 10,
     minRepliesForSpeedyTable: 10,
-
+    contactEmailDestination: 'footy@toastboy.co.uk',
     sessionRevalidate: 60000, // 1 minute
 };
 
+// App-wide configuration object which is runtime-validated using zod. If this
+// throws it will surface early during server start / build so misconfiguration
+// is caught quickly.
+
+const config = ConfigSchema.parse(rawConfig);
 export default config;

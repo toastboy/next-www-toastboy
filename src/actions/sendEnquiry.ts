@@ -1,13 +1,12 @@
 'use server';
 
 import { sendEmail } from '@/actions/sendEmail';
+import config from '@/lib/config';
 import { getPublicBaseUrl } from '@/lib/urls';
 import { createVerificationToken } from '@/lib/verificationToken';
 import contactEnquiryService from '@/services/ContactEnquiry';
 import emailVerificationService from '@/services/EmailVerification';
 import { EnquirySchema } from '@/types/EnquiryInput';
-
-const ENQUIRY_RECIPIENT = 'footy@toastboy.co.uk';
 
 const formatMessage = (message: string) => {
     const messageLines = message.split(/\r?\n/).map((line) => line.trim());
@@ -108,7 +107,7 @@ export async function deliverContactEnquiry(token: string) {
         `<p><strong>Message:</strong><br />${formattedMessage || '-'}</p>`,
     ].join('');
 
-    await sendEmail(ENQUIRY_RECIPIENT, '', subject, html);
+    await sendEmail(config.contactEmailDestination, '', subject, html);
 
     await emailVerificationService.markUsed(token);
     await contactEnquiryService.markDelivered(enquiry.id);

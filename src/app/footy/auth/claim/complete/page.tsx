@@ -3,6 +3,7 @@ import { IconX } from '@tabler/icons-react';
 import { redirect } from 'next/navigation';
 
 import { finalizePlayerInvitationClaim } from '@/actions/claimPlayerInvitation';
+import { config } from '@/lib/config';
 
 interface PageProps {
     searchParams?: Promise<{
@@ -19,7 +20,7 @@ const Page = async ({ searchParams: sp }: PageProps) => {
     if (!token) {
         return (
             <Notification
-                icon={<IconX size={18} />}
+                icon={<IconX size={config.notificationIconSize} />}
                 color="red"
             >
                 <Text>Invitation problem: Missing invitation token.</Text>
@@ -33,7 +34,7 @@ const Page = async ({ searchParams: sp }: PageProps) => {
         const message = error instanceof Error ? error.message : 'Unable to finalize invitation.';
         return (
             <Notification
-                icon={<IconX size={18} />}
+                icon={<IconX size={config.notificationIconSize} />}
                 color="red"
             >
                 <Text>Invitation problem: {message}</Text>

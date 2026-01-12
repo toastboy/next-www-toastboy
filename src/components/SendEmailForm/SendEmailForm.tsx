@@ -66,7 +66,7 @@ export const SendEmailForm: React.FC<Props> = ({ opened, onClose, players }) => 
                 color: 'teal',
                 title: 'Email sent',
                 message: 'Email sent successfully',
-                icon: <IconCheck size={18} />,
+                icon: <IconCheck size={config.notificationIconSize} />,
                 loading: false,
                 autoClose: config.notificationAutoClose,
             });
@@ -77,7 +77,7 @@ export const SendEmailForm: React.FC<Props> = ({ opened, onClose, players }) => 
                 color: 'red',
                 title: 'Error',
                 message: `${String(err)}`,
-                icon: <IconAlertTriangle size={18} />,
+                icon: <IconAlertTriangle size={config.notificationIconSize} />,
                 loading: false,
                 autoClose: config.notificationAutoClose,
             });

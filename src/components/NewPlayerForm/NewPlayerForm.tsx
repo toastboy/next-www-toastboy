@@ -115,7 +115,7 @@ export const NewPlayerForm: React.FC<Props> = ({ players }) => {
                 color: 'teal',
                 title: 'Player created',
                 message: 'Player created successfully',
-                icon: <IconCheck size={18} />,
+                icon: <IconCheck size={config.notificationIconSize} />,
                 loading: false,
                 autoClose: config.notificationAutoClose,
             });
@@ -128,7 +128,7 @@ export const NewPlayerForm: React.FC<Props> = ({ players }) => {
                 color: 'red',
                 title: 'Error',
                 message: `${String(err)}`,
-                icon: <IconAlertTriangle size={18} />,
+                icon: <IconAlertTriangle size={config.notificationIconSize} />,
                 loading: false,
                 autoClose: false,
                 withCloseButton: true,

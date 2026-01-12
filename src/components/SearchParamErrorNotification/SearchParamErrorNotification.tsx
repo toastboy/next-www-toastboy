@@ -5,6 +5,8 @@ import { IconX } from '@tabler/icons-react';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 
+import { config } from '@/lib/config';
+
 export const SearchParamErrorNotification = () => {
     const searchParams = useSearchParams();
     const error = searchParams.get('error');
@@ -19,7 +21,7 @@ export const SearchParamErrorNotification = () => {
             color: 'red',
             title: 'Error',
             message: error,
-            icon: <IconX size={18} />,
+            icon: <IconX size={config.notificationIconSize} />,
             loading: false,
             autoClose: false,
             withCloseButton: true,

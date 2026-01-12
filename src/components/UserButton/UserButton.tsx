@@ -43,7 +43,7 @@ export const UserButton: React.FC<Props> = ({ user }) => {
                 color: 'teal',
                 title: 'Signed out',
                 message: 'Signed out successfully',
-                icon: <IconCheck size={18} />,
+                icon: <IconCheck size={config.notificationIconSize} />,
                 loading: false,
                 autoClose: config.notificationAutoClose,
             });
@@ -53,7 +53,7 @@ export const UserButton: React.FC<Props> = ({ user }) => {
                 color: 'red',
                 title: 'Error',
                 message: `${String(error)}`,
-                icon: <IconAlertTriangle size={18} />,
+                icon: <IconAlertTriangle size={config.notificationIconSize} />,
                 loading: false,
                 autoClose: config.notificationAutoClose,
             });

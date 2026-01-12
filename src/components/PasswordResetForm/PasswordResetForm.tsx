@@ -76,7 +76,7 @@ export const PasswordResetForm: React.FC<Props> = ({ token }) => {
                 color: 'teal',
                 title: 'Password updated',
                 message: 'Your password has been reset successfully.',
-                icon: <IconCheck size={18} />,
+                icon: <IconCheck size={config.notificationIconSize} />,
                 loading: false,
                 autoClose: config.notificationAutoClose,
             });
@@ -90,7 +90,7 @@ export const PasswordResetForm: React.FC<Props> = ({ token }) => {
                 color: 'red',
                 title: 'Error',
                 message,
-                icon: <IconX size={18} />,
+                icon: <IconX size={config.notificationIconSize} />,
                 loading: false,
                 autoClose: false,
                 withCloseButton: true,
@@ -101,7 +101,7 @@ export const PasswordResetForm: React.FC<Props> = ({ token }) => {
     if (!token) {
         return (
             <Container size="xs" mt="xl">
-                <Notification icon={<IconX size={18} />} color="red">
+                <Notification icon={<IconX size={config.notificationIconSize} />} color="red">
                     <Text>Password reset link is missing or invalid.</Text>
                 </Notification>
             </Container>

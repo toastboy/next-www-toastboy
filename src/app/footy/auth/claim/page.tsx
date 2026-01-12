@@ -2,6 +2,7 @@ import { Notification, Text } from '@mantine/core';
 import { IconX } from '@tabler/icons-react';
 
 import { ClaimSignup } from '@/components/ClaimSignup/ClaimSignup';
+import { config } from '@/lib/config';
 
 interface PageProps {
     searchParams?: Promise<{
@@ -23,7 +24,7 @@ const Page = async ({ searchParams: sp }: PageProps) => {
     if (errorMessage) {
         return (
             <Notification
-                icon={<IconX size={18} />}
+                icon={<IconX size={config.notificationIconSize} />}
                 color="red"
             >
                 <Text>{errorMessage}</Text>

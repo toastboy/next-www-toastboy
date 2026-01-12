@@ -6,6 +6,7 @@ const rawConfig: ConfigType = {
     contactEmailDestination: 'footy@toastboy.co.uk',
     sessionRevalidate: 60000,
     notificationAutoClose: 4000,
+    notificationIconSize: 18,
 };
 
 // App-wide configuration object which is runtime-validated using zod. If this

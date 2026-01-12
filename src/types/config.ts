@@ -14,6 +14,8 @@ export interface ConfigType {
     sessionRevalidate: number;
     /** Notification auto close interval in milliseconds. */
     notificationAutoClose: number;
+    /** Icon size for notifications. */
+    notificationIconSize: number;
 }
 
 export const ConfigSchema: z.ZodType<ConfigType> = z.object({
@@ -22,4 +24,5 @@ export const ConfigSchema: z.ZodType<ConfigType> = z.object({
     contactEmailDestination: z.email(),
     sessionRevalidate: z.number().int().nonnegative(),
     notificationAutoClose: z.number().int().nonnegative(),
+    notificationIconSize: z.number().int().nonnegative(),
 });

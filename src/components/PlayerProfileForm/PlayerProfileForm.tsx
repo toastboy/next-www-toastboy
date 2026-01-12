@@ -67,7 +67,7 @@ export const PlayerProfileForm: React.FC<Props> = ({
             color: 'teal',
             title: 'Email verified',
             message: `Email address ${verifiedEmail} has been successfully verified.`,
-            icon: <IconCheck size={18} />,
+            icon: <IconCheck size={config.notificationIconSize} />,
             loading: false,
             autoClose: config.notificationAutoClose,
         });
@@ -124,7 +124,7 @@ export const PlayerProfileForm: React.FC<Props> = ({
                 color: 'teal',
                 title: 'Profile updated',
                 message: 'Profile updated successfully',
-                icon: <IconCheck size={18} />,
+                icon: <IconCheck size={config.notificationIconSize} />,
                 loading: false,
                 autoClose: config.notificationAutoClose,
             });
@@ -135,7 +135,7 @@ export const PlayerProfileForm: React.FC<Props> = ({
                 color: 'red',
                 title: 'Error',
                 message: `${String(err)}`,
-                icon: <IconAlertTriangle size={18} />,
+                icon: <IconAlertTriangle size={config.notificationIconSize} />,
                 loading: false,
                 autoClose: false,
                 withCloseButton: true,

@@ -21,6 +21,7 @@ import { z } from 'zod';
 
 import { PasswordFields } from '@/components/PasswordFields/PasswordFields';
 import { authClient, signInWithGoogle, signInWithMicrosoft } from '@/lib/auth-client';
+import { config } from '@/lib/config';
 import { getPublicBaseUrl } from '@/lib/urls';
 
 export interface Props {
@@ -83,7 +84,7 @@ export const ClaimSignup = ({ name, email, token }: Props) => {
 
     const errorNotification = signupError ? (
         <Notification
-            icon={<IconX size={18} />}
+            icon={<IconX size={config.notificationIconSize} />}
             color="red"
             onClose={() => setSignupError(false)}
         >

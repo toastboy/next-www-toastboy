@@ -19,6 +19,7 @@ import { z } from 'zod';
 
 import { PasswordFields } from '@/components/PasswordFields/PasswordFields';
 import { authClient } from '@/lib/auth-client';
+import { config } from '@/lib/config';
 
 export interface Props {
     revokeOtherSessions?: boolean;
@@ -78,7 +79,7 @@ export const PasswordChangeForm: React.FC<Props> = ({ revokeOtherSessions }) => 
     const notification = success ? (
         <Notification
             data-testid="success-notification"
-            icon={<IconCheck size={18} />}
+            icon={<IconCheck size={config.notificationIconSize} />}
             color="green"
         >
             Your password has been updated successfully.
@@ -86,7 +87,7 @@ export const PasswordChangeForm: React.FC<Props> = ({ revokeOtherSessions }) => 
     ) : (errorText ? (
         <Notification
             data-testid="error-notification"
-            icon={<IconX size={18} />}
+            icon={<IconX size={config.notificationIconSize} />}
             color="red"
             onClose={() => setErrorText(null)}
         >

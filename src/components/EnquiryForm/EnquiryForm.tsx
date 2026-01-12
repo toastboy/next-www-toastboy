@@ -53,7 +53,7 @@ export const EnquiryForm: React.FC<Props> = ({ redirectUrl }) => {
                 color: 'teal',
                 title: 'Email verified',
                 message: 'Thanks! Your enquiry has been delivered.',
-                icon: <IconCheck size={18} />,
+                icon: <IconCheck size={config.notificationIconSize} />,
             });
         }
 
@@ -62,7 +62,7 @@ export const EnquiryForm: React.FC<Props> = ({ redirectUrl }) => {
                 color: 'red',
                 title: 'Verification failed',
                 message: errorMessage ?? 'We could not verify your email.',
-                icon: <IconAlertTriangle size={18} />,
+                icon: <IconAlertTriangle size={config.notificationIconSize} />,
             });
         }
 
@@ -91,7 +91,7 @@ export const EnquiryForm: React.FC<Props> = ({ redirectUrl }) => {
                 color: 'teal',
                 title: 'Confirm your email',
                 message: 'Check your inbox and verify your email to deliver the message.',
-                icon: <IconCheck size={18} />,
+                icon: <IconCheck size={config.notificationIconSize} />,
                 loading: false,
                 autoClose: config.notificationAutoClose,
             });
@@ -103,7 +103,7 @@ export const EnquiryForm: React.FC<Props> = ({ redirectUrl }) => {
                 color: 'red',
                 title: 'Error',
                 message,
-                icon: <IconAlertTriangle size={18} />,
+                icon: <IconAlertTriangle size={config.notificationIconSize} />,
                 loading: false,
                 autoClose: false,
                 withCloseButton: true,

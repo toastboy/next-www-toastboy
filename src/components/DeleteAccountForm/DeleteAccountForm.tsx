@@ -18,6 +18,7 @@ import { useState } from 'react';
 import { DeleteAccountInput, DeleteAccountSchema } from 'types/DeleteAccountInput';
 
 import { deletePlayer } from '@/actions/deletePlayer';
+import { config } from '@/lib/config';
 
 export type Props = unknown;
 
@@ -52,7 +53,7 @@ export const DeleteAccountForm: React.FC<Props> = () => {
     const notification = success ? (
         <Notification
             data-testid="success-notification"
-            icon={<IconCheck size={18} />}
+            icon={<IconCheck size={config.notificationIconSize} />}
             color="green"
         >
             An email has been sent containing a link for you to confirm the deletion of your account.
@@ -60,7 +61,7 @@ export const DeleteAccountForm: React.FC<Props> = () => {
     ) : (errorText ? (
         <Notification
             data-testid="error-notification"
-            icon={<IconX size={18} />}
+            icon={<IconX size={config.notificationIconSize} />}
             color="red"
             onClose={() => setErrorText(null)}
         >

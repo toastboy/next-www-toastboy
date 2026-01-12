@@ -5,6 +5,7 @@ import { IconX } from '@tabler/icons-react';
 import { MustBeLoggedIn } from '@/components/MustBeLoggedIn/MustBeLoggedIn';
 import { PlayerProfileForm } from '@/components/PlayerProfileForm/PlayerProfileForm';
 import { getCurrentUser } from '@/lib/authServer';
+import { config } from '@/lib/config';
 import clubService from '@/services/Club';
 import clubSupporterService from '@/services/ClubSupporter';
 import countryService from '@/services/Country';
@@ -31,7 +32,7 @@ const Page = async ({ searchParams: sp }: PageProps) => {
 
     if (!playerId) {
         return (
-            <Notification icon={<IconX size={18} />} color="red">
+            <Notification icon={<IconX size={config.notificationIconSize} />} color="red">
                 This account is not linked to a player profile yet.
             </Notification>
         );
@@ -48,7 +49,7 @@ const Page = async ({ searchParams: sp }: PageProps) => {
 
     if (!player) {
         return (
-            <Notification icon={<IconX size={18} />} color="red">
+            <Notification icon={<IconX size={config.notificationIconSize} />} color="red">
                 Failed to load player profile.
             </Notification>
         );

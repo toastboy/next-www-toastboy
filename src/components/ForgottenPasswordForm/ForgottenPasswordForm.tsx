@@ -81,7 +81,7 @@ export const ForgottenPasswordForm: React.FC<Props> = () => {
                 color: 'teal',
                 title: 'Check your email',
                 message: 'If that email is linked to an account, a reset link is on the way.',
-                icon: <IconCheck size={18} />,
+                icon: <IconCheck size={config.notificationIconSize} />,
                 loading: false,
                 autoClose: config.notificationAutoClose,
             });
@@ -92,7 +92,7 @@ export const ForgottenPasswordForm: React.FC<Props> = () => {
                 color: 'red',
                 title: 'Error',
                 message: `${String(err)}`,
-                icon: <IconAlertTriangle size={18} />,
+                icon: <IconAlertTriangle size={config.notificationIconSize} />,
                 loading: false,
                 autoClose: false,
                 withCloseButton: true,

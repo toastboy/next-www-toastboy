@@ -24,6 +24,7 @@ import { useState } from 'react';
 
 import { signInWithGoogle, signInWithMicrosoft } from '@/lib/auth-client';
 import { authClient } from '@/lib/authClient';
+import { config } from '@/lib/config';
 import { getPublicBaseUrl } from '@/lib/urls';
 
 export interface Props {
@@ -93,7 +94,7 @@ export const SignIn: React.FC<Props> = ({ admin, redirect }) => {
 
     const errorNotification = loginError ? (
         <Notification
-            icon={<IconX size={18} />}
+            icon={<IconX size={config.notificationIconSize} />}
             color="red"
             onClose={() => setLoginError(false)}
         >

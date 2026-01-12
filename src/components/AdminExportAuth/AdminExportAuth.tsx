@@ -5,6 +5,7 @@ import { notifications } from '@mantine/notifications';
 import { IconCheck, IconX } from '@tabler/icons-react';
 
 import { authExport } from '@/actions/auth-export';
+import { config } from '@/lib/config';
 
 export type Props = unknown;
 
@@ -32,7 +33,7 @@ export const AdminExportAuth: React.FC<Props> = () => {
                                 message: 'Auth data exported successfully',
                                 icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
                                 loading: false,
-                                autoClose: 2000,
+                                autoClose: config.notificationAutoClose,
                             });
                         }
                         catch (error) {
@@ -43,7 +44,7 @@ export const AdminExportAuth: React.FC<Props> = () => {
                                 message: `Failed to export auth data: ${String(error)}`,
                                 icon: <IconX style={{ width: rem(18), height: rem(18) }} />,
                                 loading: false,
-                                autoClose: 2000,
+                                autoClose: config.notificationAutoClose,
                             });
                         }
                     }}

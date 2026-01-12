@@ -15,7 +15,7 @@ import { act, render, screen } from '@testing-library/react';
 
 import { MustBeLoggedIn } from '@/components/MustBeLoggedIn/MustBeLoggedIn';
 import { authClient, Session } from '@/lib/authClient';
-import config from '@/lib/config';
+import { config } from '@/lib/config';
 import { Wrapper } from '@/tests/components/lib/common';
 
 describe('MustBeLoggedIn', () => {

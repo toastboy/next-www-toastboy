@@ -1,7 +1,7 @@
 'use server';
 
 import { sendEmail } from '@/actions/sendEmail';
-import config from '@/lib/config';
+import { config } from '@/lib/config';
 import { getPublicBaseUrl } from '@/lib/urls';
 import { createVerificationToken } from '@/lib/verificationToken';
 import contactEnquiryService from '@/services/ContactEnquiry';

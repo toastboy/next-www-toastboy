@@ -21,6 +21,7 @@ import { PlayerDataType } from 'types';
 import { createPlayer } from '@/actions/createPlayer';
 import { sendEmail } from '@/actions/sendEmail';
 import { EmailInput } from '@/components/EmailInput/EmailInput';
+import { config } from '@/lib/config';
 import { CreatePlayerInput, CreatePlayerSchema } from '@/types/CreatePlayerInput';
 
 export interface Props {
@@ -116,7 +117,7 @@ export const NewPlayerForm: React.FC<Props> = ({ players }) => {
                 message: 'Player created successfully',
                 icon: <IconCheck size={18} />,
                 loading: false,
-                autoClose: 2000,
+                autoClose: config.notificationAutoClose,
             });
 
             router.push(`/footy/player/${newPlayer.id}`);

@@ -12,6 +12,8 @@ export interface ConfigType {
     contactEmailDestination: string;
     /** Session revalidation interval in milliseconds. */
     sessionRevalidate: number;
+    /** Notification auto close interval in milliseconds. */
+    notificationAutoClose: number;
 }
 
 export const ConfigSchema: z.ZodType<ConfigType> = z.object({
@@ -19,4 +21,5 @@ export const ConfigSchema: z.ZodType<ConfigType> = z.object({
     minRepliesForSpeedyTable: z.number().int().nonnegative(),
     contactEmailDestination: z.email(),
     sessionRevalidate: z.number().int().nonnegative(),
+    notificationAutoClose: z.number().int().nonnegative(),
 });

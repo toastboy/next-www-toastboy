@@ -13,7 +13,7 @@ import { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
 import { PlayerRecordSchema, PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 import z from 'zod';
 
-import config from '@/lib/config';
+import { config } from '@/lib/config';
 import { rankMap } from '@/lib/utils';
 import gameDayService from '@/services/GameDay';
 import outcomeService from '@/services/Outcome';

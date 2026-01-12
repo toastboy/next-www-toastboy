@@ -12,6 +12,7 @@ import z from 'zod';
 
 import { EmailInput } from '@/components/EmailInput/EmailInput';
 import { authClient } from '@/lib/auth-client';
+import { config } from '@/lib/config';
 import { getPublicBaseUrl } from '@/lib/urls';
 
 export type Props = unknown;
@@ -82,7 +83,7 @@ export const ForgottenPasswordForm: React.FC<Props> = () => {
                 message: 'If that email is linked to an account, a reset link is on the way.',
                 icon: <IconCheck size={18} />,
                 loading: false,
-                autoClose: 2000,
+                autoClose: config.notificationAutoClose,
             });
         } catch (err) {
             console.error('Failed to send reset password email:', err);

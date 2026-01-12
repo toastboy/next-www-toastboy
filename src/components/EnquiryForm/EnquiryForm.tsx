@@ -18,6 +18,7 @@ import { useEffect } from 'react';
 
 import { sendEnquiry } from '@/actions/sendEnquiry';
 import { EmailInput } from '@/components/EmailInput/EmailInput';
+import { config } from '@/lib/config';
 import { EnquiryInput, EnquirySchema } from '@/types/EnquiryInput';
 
 export interface Props {
@@ -92,7 +93,7 @@ export const EnquiryForm: React.FC<Props> = ({ redirectUrl }) => {
                 message: 'Check your inbox and verify your email to deliver the message.',
                 icon: <IconCheck size={18} />,
                 loading: false,
-                autoClose: 2000,
+                autoClose: config.notificationAutoClose,
             });
         } catch (error) {
             console.error('Failed to send enquiry:', error);

@@ -18,6 +18,7 @@ import { z } from 'zod';
 
 import { PasswordFields } from '@/components/PasswordFields/PasswordFields';
 import { authClient } from '@/lib/auth-client';
+import { config } from '@/lib/config';
 
 export interface Props {
     token: string;
@@ -77,7 +78,7 @@ export const PasswordResetForm: React.FC<Props> = ({ token }) => {
                 message: 'Your password has been reset successfully.',
                 icon: <IconCheck size={18} />,
                 loading: false,
-                autoClose: 2000,
+                autoClose: config.notificationAutoClose,
             });
 
             router.push('/footy/auth/signin');

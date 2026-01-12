@@ -14,6 +14,7 @@ import { useState } from 'react';
 import { PlayerDataType } from 'types';
 
 import { sendEmail } from '@/actions/sendEmail';
+import { config } from '@/lib/config';
 
 import classes from './SendEmailForm.module.css';
 
@@ -67,7 +68,7 @@ export const SendEmailForm: React.FC<Props> = ({ opened, onClose, players }) => 
                 message: 'Email sent successfully',
                 icon: <IconCheck size={18} />,
                 loading: false,
-                autoClose: 2000,
+                autoClose: config.notificationAutoClose,
             });
         } catch (err) {
             console.error('Failed to send:', err);
@@ -78,7 +79,7 @@ export const SendEmailForm: React.FC<Props> = ({ opened, onClose, players }) => 
                 message: `${String(err)}`,
                 icon: <IconAlertTriangle size={18} />,
                 loading: false,
-                autoClose: 2000,
+                autoClose: config.notificationAutoClose,
             });
         }
     };

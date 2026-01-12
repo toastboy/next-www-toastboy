@@ -26,6 +26,7 @@ import { Activity, useEffect, useRef } from 'react';
 
 import { updatePlayer } from '@/actions/updatePlayer';
 import { EmailInput } from '@/components/EmailInput/EmailInput';
+import { config } from '@/lib/config';
 import { ClubSupporterDataType } from '@/types';
 import { CountrySupporterDataType } from '@/types/CountrySupporterDataType';
 import { UpdatePlayerInput, UpdatePlayerSchema } from '@/types/UpdatePlayerInput';
@@ -68,7 +69,7 @@ export const PlayerProfileForm: React.FC<Props> = ({
             message: `Email address ${verifiedEmail} has been successfully verified.`,
             icon: <IconCheck size={18} />,
             loading: false,
-            autoClose: 4000,
+            autoClose: config.notificationAutoClose,
         });
         hasShownVerifiedNotification.current = true;
     }, [verifiedEmail]);
@@ -125,7 +126,7 @@ export const PlayerProfileForm: React.FC<Props> = ({
                 message: 'Profile updated successfully',
                 icon: <IconCheck size={18} />,
                 loading: false,
-                autoClose: 4000,
+                autoClose: config.notificationAutoClose,
             });
         } catch (err) {
             console.error('Failed to update profile:', err);

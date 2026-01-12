@@ -7,6 +7,8 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { AuthUserSummary } from 'types/AuthUser';
 
+import { config } from '@/lib/config';
+
 import classes from './UserButton.module.css';
 
 export interface Props {
@@ -43,7 +45,7 @@ export const UserButton: React.FC<Props> = ({ user }) => {
                 message: 'Signed out successfully',
                 icon: <IconCheck size={18} />,
                 loading: false,
-                autoClose: 2000,
+                autoClose: config.notificationAutoClose,
             });
         } catch (error) {
             notifications.update({
@@ -53,7 +55,7 @@ export const UserButton: React.FC<Props> = ({ user }) => {
                 message: `${String(error)}`,
                 icon: <IconAlertTriangle size={18} />,
                 loading: false,
-                autoClose: 2000,
+                autoClose: config.notificationAutoClose,
             });
         }
     }

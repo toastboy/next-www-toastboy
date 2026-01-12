@@ -1,4 +1,6 @@
 -- CreateTable
+DROP TABLE IF EXISTS `ContactEnquiry`;
+
 CREATE TABLE `ContactEnquiry` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(255) NOT NULL,
@@ -8,7 +10,6 @@ CREATE TABLE `ContactEnquiry` (
     `verifiedAt` DATETIME(3) NULL,
     `deliveredAt` DATETIME(3) NULL,
     `verificationId` INTEGER NOT NULL,
-
     UNIQUE INDEX `ContactEnquiry_verificationId_key`(`verificationId`),
     INDEX `ContactEnquiry_email_idx`(`email`),
     INDEX `ContactEnquiry_createdAt_idx`(`createdAt`),

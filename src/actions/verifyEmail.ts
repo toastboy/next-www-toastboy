@@ -53,37 +53,6 @@ async function getValidVerification(token: string) {
 export async function verifyEmail(token: string) {
     const verification = await getValidVerification(token);
 
-    await emailVerificationService.markUsed(token);
-
-    return {
-        email: verification.email,
-        playerId: verification.playerId?.toString(),
-        verificationId: verification.id.toString(),
-    };
-}
-
-/**
- * Verifies an email address for an invitation using a verification token and
- * associates it with a player.
- *
- * This function:
- * - Validates the provided token and retrieves the corresponding verification
- *   record.
- * - Ensures the verification references a player.
- * - Ensures the email is not already associated with a different player.
- * - Upserts the email for the referenced player and marks it as verified.
- *
- * @param token - The verification token to validate.
- * @throws Error if the verification is missing a player reference.
- * @throws Error if the email address already belongs to another player.
- * @throws Any error thrown by getValidVerification or the
- * playerExtraEmailService operations.
- * @returns A promise that resolves when the email has been associated and
- * marked as verified.
- */
-export async function verifyEmailForInvite(token: string) {
-    const verification = await getValidVerification(token);
-
     if (!verification.playerId) {
         throw new Error('Verification is missing a player reference.');
     }
@@ -94,6 +63,14 @@ export async function verifyEmailForInvite(token: string) {
     }
 
     await playerExtraEmailService.upsert(verification.playerId, verification.email, true);
+
+    await emailVerificationService.markUsed(token);
+
+    return {
+        email: verification.email,
+        playerId: verification.playerId?.toString(),
+        verificationId: verification.id.toString(),
+    };
 }
 
 /**

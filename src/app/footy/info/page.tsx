@@ -1,14 +1,49 @@
-import { Anchor, Container, Flex, Text, Title } from '@mantine/core';
+import {
+    Anchor,
+    Container,
+    Flex,
+    Notification,
+    Text,
+    Title,
+} from '@mantine/core';
+import { IconX } from '@tabler/icons-react';
 
 import { EnquiryForm } from '@/components/EnquiryForm/EnquiryForm';
 
-type InfoPageProps = object
+interface PageProps {
+    searchParams?: Promise<{
+        error?: string;
+    }>;
+}
 
-const InfoPage: React.FC<InfoPageProps> = () => {
+const Page = async ({ searchParams: sp }: PageProps) => {
+    const searchParams = await sp;
+    const { error } = searchParams ?? {};
+
+    if (error) {
+        return (
+            <Notification
+                icon={<IconX size={18} />}
+                color="red"
+            >
+                <Text>{error}</Text>
+            </Notification>
+        );
+    }
+
     return (
         <>
-            <Flex gap="md" align="flex-start" direction="column" p="xl">
-                <Title order={1}>Toastboy FC: Tuesday Night Football</Title>
+            <Flex
+                gap="md"
+                align="flex-start"
+                direction="column"
+                p="xl"
+            >
+                <Title
+                    order={1}
+                >
+                    Toastboy FC: Tuesday Night Football
+                </Title>
                 <Text>
                     We play a friendly five-a-side footy game amongst ourselves every Tuesday night between 6 and 7pm at the <Anchor href='http://www.kelseykerridge.co.uk/'>Kelsey Kerridge Sports Centre</Anchor> in Cambridge (for our international visitors, that&apos;s &ldquo;soccer&rdquo;, &ldquo;center&rdquo; and &ldquo;Cambridge, England&rdquo;).
                 </Text>
@@ -23,16 +58,31 @@ const InfoPage: React.FC<InfoPageProps> = () => {
                     />
                 </Container>
                 <Text>
-                    <Anchor href='/footy/rules'>Here&apos;s an outline of the rules of our games.</Anchor> The standard of play&apos;s not too high, although we&apos;re not complete duffers - but we do play to win. After all, there&apos;s the glory of the trophies which are presented at the sumptuous end-of-year awards ceremonies at stake. Here&apos;s how it works. Every player who&apos;s on the winning team each week gets 3 points, or 1 for a draw. There are 3 trophies up for grabs:
+                    <Anchor
+                        href='/footy/rules'
+                    >
+                        Here&apos;s an outline of the rules of our games.
+                    </Anchor>
+                    &nbsp;The standard of play&apos;s not too high, although we&apos;re not complete duffers - but we do play to win. After all, there&apos;s the glory of the trophies which are presented at the sumptuous end-of-year awards ceremonies at stake. Here&apos;s how it works. Every player who&apos;s on the winning team each week gets 3 points, or 1 for a draw. There are 3 trophies up for grabs:
                 </Text>
                 <Text>
-                    <Anchor href='/footy/points'>Points</Anchor>. Simple - whoever has the biggest points total at the end of the year wins the Pewterware.
+                    <Anchor
+                        href='/footy/points'
+                    >
+                        Points
+                    </Anchor>
+                    . Simple - whoever has the biggest points total at the end of the year wins the Pewterware.
                 </Text>
                 <Text>
                     <Anchor href='/footy/averages'>Averages</Anchor>. Just the points total divided by the number of games played, but note you have to have played a minimum of 5 games in a year to qualify.
                 </Text>
                 <Text>
-                    <Anchor href='/footy/stalwart'>Stalwart</Anchor>. To encourage people to play regularly. The winner is the one who&apos;s played the most games in a year.
+                    <Anchor
+                        href='/footy/stalwart'
+                    >
+                        Stalwart
+                    </Anchor>
+                    . To encourage people to play regularly. The winner is the one who&apos;s played the most games in a year.
                 </Text>
                 <Text>
                     Each week an automated email goes out, inviting players to log in to the site and say whether or not they can play. Once we have enough players, we run the picker script which picks the fairest possible teams based on the age and number of wins in the last 10 games played of each player. I ask for four pounds fifty from each player to cover the cost of the hall booking and things like footballs and bibs. We nearly always go for a pint after the game: everyone is welcome. We usually go to the Grain and Hop Store and then often for a bite to eat.
@@ -51,4 +101,4 @@ const InfoPage: React.FC<InfoPageProps> = () => {
     );
 };
 
-export default InfoPage;
+export default Page;

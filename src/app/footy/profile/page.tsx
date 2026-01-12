@@ -1,5 +1,5 @@
 
-import { Notification, Text } from '@mantine/core';
+import { Notification } from '@mantine/core';
 import { IconX } from '@tabler/icons-react';
 
 import { MustBeLoggedIn } from '@/components/MustBeLoggedIn/MustBeLoggedIn';
@@ -16,13 +16,12 @@ interface PageProps {
     searchParams?: Promise<{
         purpose?: string;
         email?: string;
-        error?: string;
     }>;
 }
 
 const Page = async ({ searchParams: sp }: PageProps) => {
     const searchParams = await sp;
-    const { purpose, email, error } = searchParams ?? {};
+    const { purpose, email } = searchParams ?? {};
     const verifiedEmail = purpose === 'player_email' ? email : undefined;
 
     const user = await getCurrentUser();
@@ -34,17 +33,6 @@ const Page = async ({ searchParams: sp }: PageProps) => {
         return (
             <Notification icon={<IconX size={18} />} color="red">
                 This account is not linked to a player profile yet.
-            </Notification>
-        );
-    }
-
-    if (error) {
-        return (
-            <Notification
-                icon={<IconX size={18} />}
-                color="red"
-            >
-                <Text>{error}</Text>
             </Notification>
         );
     }

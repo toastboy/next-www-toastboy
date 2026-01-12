@@ -2,35 +2,13 @@ import {
     Anchor,
     Container,
     Flex,
-    Notification,
     Text,
     Title,
 } from '@mantine/core';
-import { IconX } from '@tabler/icons-react';
 
 import { EnquiryForm } from '@/components/EnquiryForm/EnquiryForm';
 
-interface PageProps {
-    searchParams?: Promise<{
-        error?: string;
-    }>;
-}
-
-const Page = async ({ searchParams: sp }: PageProps) => {
-    const searchParams = await sp;
-    const { error } = searchParams ?? {};
-
-    if (error) {
-        return (
-            <Notification
-                icon={<IconX size={18} />}
-                color="red"
-            >
-                <Text>{error}</Text>
-            </Notification>
-        );
-    }
-
+const Page = () => {
     return (
         <>
             <Flex

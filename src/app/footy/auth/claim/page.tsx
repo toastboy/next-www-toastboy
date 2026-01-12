@@ -8,14 +8,13 @@ interface PageProps {
         name?: string;
         email?: string;
         token?: string;
-        error?: string;
     }>;
 }
 
 const Page = async ({ searchParams: sp }: PageProps) => {
     const searchParams = await sp;
-    const { name, email, token, error } = searchParams ?? {};
-    let errorMessage = error;
+    const { name, email, token } = searchParams ?? {};
+    let errorMessage: string | undefined;
 
     if (!errorMessage && (!email || !name || !token)) {
         errorMessage = 'Missing required invitation details.';

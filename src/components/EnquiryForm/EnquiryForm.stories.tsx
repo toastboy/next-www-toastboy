@@ -39,7 +39,7 @@ export const ValidSubmit: Story = {
         await userEvent.click(await canvas.findByTestId('enquiry-submit'));
 
         const body = canvasElement.ownerDocument.body;
-        await within(body).findByText(/thanks for reaching out/i, {}, { timeout: 6000 });
+        await within(body).findByText(/Check your inbox and verify your email to deliver the message./i, {}, { timeout: 6000 });
     },
 };
 

@@ -99,13 +99,22 @@ export const ClaimSignup = ({ name, email, token }: Props) => {
             </Stack>
 
             <Stack mb="lg">
-                <Button variant="default" onClick={() => signInWithGoogle(socialRedirect)}>
+                <Button
+                    data-testid="google-signin-button"
+                    variant="default" onClick={() => signInWithGoogle(socialRedirect)}
+                >
                     Continue with Google
                 </Button>
-                <Button variant="default" onClick={() => signInWithMicrosoft(socialRedirect)}>
+                <Button
+                    data-testid="microsoft-signin-button"
+                    variant="default" onClick={() => signInWithMicrosoft(socialRedirect)}
+                >
                     Continue with Microsoft
                 </Button>
-                <Divider label="or" labelPosition="center" />
+                <Divider
+                    label="or"
+                    labelPosition="center"
+                />
             </Stack>
 
             <Box
@@ -118,7 +127,12 @@ export const ClaimSignup = ({ name, email, token }: Props) => {
                         confirmPasswordProps={form.getInputProps('confirmPassword')}
                     />
                     {errorNotification}
-                    <Button type="submit" fullWidth loading={loading} >
+                    <Button
+                        data-testid="submit-button"
+                        type="submit"
+                        fullWidth
+                        loading={loading}
+                    >
                         Create login
                     </Button>
                 </Stack>

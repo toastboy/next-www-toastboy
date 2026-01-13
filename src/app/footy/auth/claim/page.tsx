@@ -1,37 +1,29 @@
-import { Notification, Text } from '@mantine/core';
-import { IconX } from '@tabler/icons-react';
+import { redirect } from 'next/navigation';
 
 import { ClaimSignup } from '@/components/ClaimSignup/ClaimSignup';
-import { config } from '@/lib/config';
 
 interface PageProps {
     searchParams?: Promise<{
         name?: string;
         email?: string;
         token?: string;
+        error?: string;
     }>;
 }
 
 const Page = async ({ searchParams: sp }: PageProps) => {
     const searchParams = await sp;
-    const { name, email, token } = searchParams ?? {};
+    const { name, email, token, error } = searchParams ?? {};
     let errorMessage: string | undefined;
 
     if (!errorMessage && (!email || !name || !token)) {
         errorMessage = 'Missing required invitation details.';
     }
 
-    // TODO: redirect to ?error=
-
-    if (errorMessage) {
-        return (
-            <Notification
-                icon={<IconX size={config.notificationIconSize} />}
-                color="red"
-            >
-                <Text>{errorMessage}</Text>
-            </Notification>
-        );
+    if (errorMessage && !error) {
+        const params = new URLSearchParams(searchParams ?? {});
+        params.set('error', errorMessage);
+        redirect(`/footy/auth/claim?${params.toString()}`);
     }
 
     return (

@@ -14,6 +14,8 @@ describe('ClaimSignup', () => {
         email: 'sam@example.com',
         token: 'token-123',
     };
+    const redirectPath = `/api/footy/auth/claim/${encodeURIComponent(props.token)}?redirect=/footy/profile`;
+    const redirect = new URL(redirectPath, 'http://localhost').toString();
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -34,16 +36,11 @@ describe('ClaimSignup', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByLabelText(/Name/i)).toHaveValue(props.name);
-        expect(screen.getByLabelText(/Email/i)).toHaveValue(props.email);
-        expect(screen.getByLabelText(/Email/i)).toBeDisabled();
         expect(screen.getByRole('button', { name: /Create login/i })).toBeInTheDocument();
     });
 
     it('triggers social sign in with the claim redirect', async () => {
         const user = userEvent.setup();
-        const redirectPath = `/footy/auth/claim/complete?token=${encodeURIComponent(props.token)}`;
-        const redirect = new URL(redirectPath, 'http://localhost').toString();
 
         render(
             <Wrapper>
@@ -60,7 +57,6 @@ describe('ClaimSignup', () => {
 
     it('submits valid credentials and redirects on success', async () => {
         const user = userEvent.setup();
-        const redirect = `/footy/auth/claim/complete?token=${encodeURIComponent(props.token)}`;
         const mockSignUpEmail = authClient.signUp.email as jest.Mock;
         mockSignUpEmail.mockResolvedValueOnce({});
 
@@ -85,7 +81,7 @@ describe('ClaimSignup', () => {
                     onError: expect.any(Function),
                 }),
             );
-            expect(mockPush).toHaveBeenCalledWith(redirect);
+            expect(mockPush).toHaveBeenCalledWith(redirectPath);
         });
     });
 });

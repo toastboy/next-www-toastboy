@@ -21,6 +21,8 @@ const Page = async ({ searchParams: sp }: PageProps) => {
         errorMessage = 'Missing required invitation details.';
     }
 
+    // TODO: redirect to ?error=
+
     if (errorMessage) {
         return (
             <Notification

@@ -34,7 +34,6 @@ export const GET = async (request: NextRequest, props: { params: Promise<Record<
     } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Unable to verify email.';
 
-        // TODO: Make sure each redirect target can handle an error query param
         redirect = buildURLWithParams(redirectParam, { error: errorMessage });
     }
 

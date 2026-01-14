@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { useEffect } from 'react';
+import { http, HttpResponse } from 'msw';
 
 import { defaultGameDayList } from '@/tests/mocks';
 
@@ -9,35 +9,13 @@ const meta = {
     title: 'Games/GameCalendar',
     component: GameCalendar,
     tags: ['autodocs'],
-    decorators: [
-        (Story) => {
-            const FetchMock = () => {
-                useEffect(() => {
-                    const originalFetch = global.fetch;
-                    const mockFetch: typeof fetch = async (_input: RequestInfo | URL) => {
-                        await Promise.resolve();
-                        return {
-                            ok: true,
-                            json: async () => {
-                                await Promise.resolve();
-                                return defaultGameDayList;
-                            },
-                        } as unknown as Response;
-                    };
-
-                    global.fetch = mockFetch;
-
-                    return () => {
-                        global.fetch = originalFetch;
-                    };
-                }, []);
-
-                return <Story />;
-            };
-
-            return <FetchMock />;
+    parameters: {
+        msw: {
+            handlers: [
+                http.get('*/api/footy/gameday', () => HttpResponse.json(defaultGameDayList)),
+            ],
         },
-    ],
+    },
 } satisfies Meta<typeof GameCalendar>;
 
 export default meta;

@@ -45,8 +45,8 @@ export const UpdatePlayerSchema = z.object({
             if (typeof value === 'string') {
                 const trimmed = value.trim();
                 if (trimmed === '') {
-                    // Let z.number() fail validation for empty strings
-                    return NaN;
+                    // Let z.number() fail validation for empty strings by returning the original value
+                    return value;
                 }
                 return Number(trimmed);
             }

@@ -9,7 +9,7 @@ import flagImage from '@/tests/mocks/data/flag.png';
 import mugshotImage from '@/tests/mocks/data/mugshot.png';
 import { MantineProvider } from '@mantine/core';
 import { Notifications } from '@mantine/notifications';
-import type { Preview } from '@storybook/nextjs';
+import type { Preview } from '@storybook/nextjs-vite';
 import { http, HttpResponse } from 'msw';
 import { initialize, mswLoader } from 'msw-storybook-addon';
 import { fn as storybookFn, sb } from 'storybook/test';

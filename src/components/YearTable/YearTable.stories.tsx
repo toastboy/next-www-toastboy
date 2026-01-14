@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import { YearTable } from '@/components/YearTable/YearTable';
 import { defaultPlayerRecordDataList } from '@/tests/mocks/data/playerRecordData';

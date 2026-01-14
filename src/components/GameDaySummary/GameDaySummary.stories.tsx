@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import { defaultGameDay } from '@/tests/mocks';
 import { defaultTeamPlayerList } from '@/tests/mocks/data/teamPlayer';

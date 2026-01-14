@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, mocked, within } from 'storybook/test';
 
 import { sendEnquiry } from '@/actions/sendEnquiry';

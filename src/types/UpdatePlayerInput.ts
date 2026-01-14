@@ -41,7 +41,7 @@ export const UpdatePlayerSchema = z.object({
     removedExtraEmails: emailList,
     countries: z.array(z.string()),
     clubs: z.array(z.preprocess(
-        (value) => {
+        (value: unknown) => {
             if (typeof value === 'string') {
                 const trimmed = value.trim();
                 if (trimmed === '') {

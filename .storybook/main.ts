@@ -29,6 +29,11 @@ const config: StorybookConfig = {
         config.plugins = config.plugins || [];
         config.plugins.push(tsconfigPaths());
         config.logLevel = 'error';
+        config.optimizeDeps = config.optimizeDeps || {};
+        config.optimizeDeps.include = [
+            ...(config.optimizeDeps.include || []),
+            'react/jsx-dev-runtime',
+        ];
         config.define = {
             ...(config.define || {}),
             'process.env': {},

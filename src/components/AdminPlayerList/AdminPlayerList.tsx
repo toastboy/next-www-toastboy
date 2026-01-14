@@ -3,15 +3,19 @@
 import {
     Anchor,
     Container,
+    Group,
     Table,
     TableCaption,
     TableTbody,
+    Checkbox,
     TableTd,
     TableTh,
     TableThead,
     TableTr,
     Text,
+    UnstyledButton,
 } from '@mantine/core';
+import { IconChevronDown, IconChevronUp, IconSelector } from '@tabler/icons-react';
 import { useMemo, useState } from 'react';
 
 import { usePlayers } from '@/lib/swr';
@@ -19,7 +23,7 @@ import { PlayerDataType } from '@/types';
 
 export type Props = unknown;
 
-type SortKey = 'id' | 'name' | 'joined' | 'finished' | 'role';
+type SortKey = 'id' | 'name' | 'joined' | 'finished' | 'role' | 'auth' | 'extraEmails';
 type SortDirection = 'asc' | 'desc';
 
 const formatDate = (value: Date | string | null | undefined) => {
@@ -75,6 +79,14 @@ const comparePlayers = (
             );
         case 'role':
             return compareNullableNumber(a.isAdmin ? 1 : 0, b.isAdmin ? 1 : 0, direction);
+        case 'auth':
+            return compareNullableNumber(a.accountEmail ? 1 : 0, b.accountEmail ? 1 : 0, direction);
+        case 'extraEmails':
+            return compareNullableNumber(
+                a.extraEmails.every((email) => email.verifiedAt) ? 1 : 0,
+                b.extraEmails.every((email) => email.verifiedAt) ? 1 : 0,
+                direction,
+            );
         default:
             return 0;
     }
@@ -84,6 +96,14 @@ export const AdminPlayerList: React.FC<Props> = () => {
     const players = usePlayers();
     const [sortKey, setSortKey] = useState<SortKey>('id');
     const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
+    const [selectedIds, setSelectedIds] = useState<number[]>([]);
+
+    const sortedPlayers = useMemo(() => {
+        if (!players) return [];
+        const data = [...players];
+        data.sort((a, b) => comparePlayers(a, b, sortKey, sortDirection));
+        return data;
+    }, [players, sortKey, sortDirection]);
 
     if (!players) {
         return (
@@ -97,16 +117,39 @@ export const AdminPlayerList: React.FC<Props> = () => {
         );
     }
 
-    const sortedPlayers = useMemo(() => {
-        const data = [...players];
-        data.sort((a, b) => comparePlayers(a, b, sortKey, sortDirection));
-        return data;
-    }, [players, sortKey, sortDirection]);
-
-    const getSortLabel = (label: string, key: SortKey) => {
-        if (key !== sortKey) return label;
-        return sortDirection === 'asc' ? `${label} ▲` : `${label} ▼`;
+    const toggleSelectAll = (checked: boolean) => {
+        if (!players) return;
+        setSelectedIds(checked ? players.map((player) => player.id) : []);
     };
+
+    const toggleSelectPlayer = (playerId: number, checked: boolean) => {
+        setSelectedIds((prev) => (
+            checked
+                ? [...prev, playerId]
+                : prev.filter((id) => id !== playerId)
+        ));
+    };
+
+    const allSelected = players.length > 0 && selectedIds.length === players.length;
+    const someSelected = selectedIds.length > 0 && !allSelected;
+
+    const getSortIcon = (key: SortKey) => {
+        if (key !== sortKey) return <IconSelector size={14} />;
+        return sortDirection === 'asc' ? <IconChevronUp size={14} /> : <IconChevronDown size={14} />;
+    };
+
+    const renderSortHeader = (label: string, key: SortKey) => (
+        <UnstyledButton
+            type="button"
+            onClick={() => handleSort(key)}
+            aria-label={`Sort by ${label}`}
+        >
+            <Group gap={6} wrap="nowrap">
+                <Text span>{label}</Text>
+                {getSortIcon(key)}
+            </Group>
+        </UnstyledButton>
+    );
 
     const handleSort = (key: SortKey) => {
         if (key === sortKey) {
@@ -119,9 +162,18 @@ export const AdminPlayerList: React.FC<Props> = () => {
 
     const rows = sortedPlayers.map((player: PlayerDataType) => {
         const playerHref = `/footy/player/${encodeURIComponent(player.id || '')}`;
+        const hasAuthAccount = Boolean(player.accountEmail);
+        const extraEmailsVerified = player.extraEmails.every((email) => email.verifiedAt);
 
         return (
             <TableTr key={player.id}>
+                <TableTd>
+                    <Checkbox
+                        checked={selectedIds.includes(player.id)}
+                        onChange={(event) => toggleSelectPlayer(player.id, event.currentTarget.checked)}
+                        aria-label={`Select ${player.name}`}
+                    />
+                </TableTd>
                 <TableTd>
                     <Anchor href={playerHref}>{player.id}</Anchor>
                 </TableTd>
@@ -131,6 +183,8 @@ export const AdminPlayerList: React.FC<Props> = () => {
                 <TableTd>{formatDate(player.joined)}</TableTd>
                 <TableTd>{formatDate(player.finished)}</TableTd>
                 <TableTd>{player.isAdmin ? 'Admin' : 'Player'}</TableTd>
+                <TableTd>{hasAuthAccount ? 'Yes' : 'No'}</TableTd>
+                <TableTd>{extraEmailsVerified ? 'Yes' : 'No'}</TableTd>
             </TableTr>
         );
     });
@@ -144,50 +198,34 @@ export const AdminPlayerList: React.FC<Props> = () => {
                 <TableCaption>Registered players</TableCaption>
                 <TableThead>
                     <TableTr>
+                        <TableTh>
+                            <Checkbox
+                                checked={allSelected}
+                                indeterminate={someSelected}
+                                onChange={(event) => toggleSelectAll(event.currentTarget.checked)}
+                                aria-label="Select all players"
+                            />
+                        </TableTh>
                         <TableTh aria-sort={sortKey === 'id' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
-                            <button
-                                type="button"
-                                onClick={() => handleSort('id')}
-                                style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', font: 'inherit' }}
-                            >
-                                {getSortLabel('ID', 'id')}
-                            </button>
+                            {renderSortHeader('ID', 'id')}
                         </TableTh>
                         <TableTh aria-sort={sortKey === 'name' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
-                            <button
-                                type="button"
-                                onClick={() => handleSort('name')}
-                                style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', font: 'inherit' }}
-                            >
-                                {getSortLabel('Name', 'name')}
-                            </button>
+                            {renderSortHeader('Name', 'name')}
                         </TableTh>
                         <TableTh aria-sort={sortKey === 'joined' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
-                            <button
-                                type="button"
-                                onClick={() => handleSort('joined')}
-                                style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', font: 'inherit' }}
-                            >
-                                {getSortLabel('Joined', 'joined')}
-                            </button>
+                            {renderSortHeader('Joined', 'joined')}
                         </TableTh>
                         <TableTh aria-sort={sortKey === 'finished' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
-                            <button
-                                type="button"
-                                onClick={() => handleSort('finished')}
-                                style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', font: 'inherit' }}
-                            >
-                                {getSortLabel('Finished', 'finished')}
-                            </button>
+                            {renderSortHeader('Finished', 'finished')}
                         </TableTh>
                         <TableTh aria-sort={sortKey === 'role' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
-                            <button
-                                type="button"
-                                onClick={() => handleSort('role')}
-                                style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', font: 'inherit' }}
-                            >
-                                {getSortLabel('Role', 'role')}
-                            </button>
+                            {renderSortHeader('Role', 'role')}
+                        </TableTh>
+                        <TableTh aria-sort={sortKey === 'auth' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                            {renderSortHeader('Auth', 'auth')}
+                        </TableTh>
+                        <TableTh aria-sort={sortKey === 'extraEmails' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                            {renderSortHeader('Emails Verified', 'extraEmails')}
                         </TableTh>
                     </TableTr>
                 </TableThead>

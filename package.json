@@ -25,8 +25,8 @@
     "test:coverage": "COVERAGE=true jest",
     "test:services:coverage": "COVERAGE=true jest --selectProjects services",
     "test:services": "jest --selectProjects services",
-    "test:storybook:update-snapshots": "test-storybook --url http://127.0.0.1:6006 --updateSnapshot",
-    "test:storybook": "test-storybook --url http://127.0.0.1:6006",
+    "test:storybook:update-snapshots": "vitest run --project storybook -u",
+    "test:storybook": "vitest run --project storybook",
     "test:watch": "jest --watch",
     "test": "jest",
     "typecheck": "tsc --noEmit"
@@ -89,6 +89,7 @@
     "@storybook/addon-onboarding": "^10.1.11",
     "@storybook/addon-vitest": "^10.1.11",
     "@storybook/builder-vite": "^10.1.11",
+    "@storybook/nextjs-vite": "10.1.11",
     "@storybook/react-vite": "^10.1.11",
     "@storybook/testing-library": "^0.2.2",
     "@swc-node/jest": "^1.9.1",
@@ -153,12 +154,11 @@
     "tsconfig-paths": "^4.2.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
+    "vite": "^7.0.0",
     "vite-tsconfig-paths": "^6.0.4",
     "vitest": "^4.0.17",
     "wait-on": "^9.0.3",
-    "whatwg-fetch": "^3.6.20",
-    "@storybook/nextjs-vite": "10.1.11",
-    "vite": "^7.0.0"
+    "whatwg-fetch": "^3.6.20"
   },
   "msw": {
     "workerDirectory": [

@@ -6,7 +6,6 @@ import playerService from '@/services/Player';
 
 export const mockPlayer = {
     id: 1,
-    isAdmin: null,
     name: "Derek Turnipson",
     anonymous: null,
     joined: null,

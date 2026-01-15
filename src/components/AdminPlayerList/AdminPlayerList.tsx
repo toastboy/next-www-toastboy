@@ -37,7 +37,7 @@ export interface Props {
     userIdByEmail?: Record<string, string>;
 }
 
-type SortKey = 'id' | 'name' | 'joined' | 'finished' | 'role' | 'auth' | 'extraEmails';
+type SortKey = 'id' | 'name' | 'joined' | 'finished' | 'auth' | 'extraEmails';
 type SortDirection = 'asc' | 'desc';
 
 /**
@@ -144,8 +144,6 @@ const comparePlayers = (
                 b.finished ? new Date(b.finished).getTime() : null,
                 direction,
             );
-        case 'role':
-            return compareNullableNumber(a.isAdmin ? 1 : 0, b.isAdmin ? 1 : 0, direction);
         case 'auth':
             return compareNullableNumber(
                 isOnboarded(a, userEmailSet) ? 1 : 0,
@@ -486,7 +484,6 @@ export const AdminPlayerList: React.FC<Props> = ({ players, userEmails, userIdBy
                 </TableTd>
                 <TableTd>{formatDate(player.joined)}</TableTd>
                 <TableTd>{formatDate(player.finished)}</TableTd>
-                <TableTd>{player.isAdmin ? 'Admin' : 'Player'}</TableTd>
                 <TableTd>{hasAuthAccount ? 'Yes' : 'No'}</TableTd>
                 <TableTd>{hasExtraEmails ? (extraEmailsVerified ? 'Yes' : 'No') : ''}</TableTd>
                 <TableTd>
@@ -559,9 +556,6 @@ export const AdminPlayerList: React.FC<Props> = ({ players, userEmails, userIdBy
                             </TableTh>
                             <TableTh aria-sort={sortKey === 'finished' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
                                 {renderSortHeader('Finished', 'finished')}
-                            </TableTh>
-                            <TableTh aria-sort={sortKey === 'role' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
-                                {renderSortHeader('Role', 'role')}
                             </TableTh>
                             <TableTh aria-sort={sortKey === 'auth' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
                                 {renderSortHeader('Auth', 'auth')}

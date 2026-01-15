@@ -3,7 +3,6 @@ import { PlayerLoginType } from 'prisma/zod/schemas/models/PlayerLogin.schema';
 
 export const defaultPlayer: PlayerType = {
     id: 1,
-    isAdmin: false,
     name: "Gary Player",
     joined: new Date("2021-01-01"),
     finished: null,

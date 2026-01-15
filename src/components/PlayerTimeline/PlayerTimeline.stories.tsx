@@ -4,7 +4,6 @@ import { PlayerTimeline } from './PlayerTimeline';
 
 const samplePlayer = {
     id: 1,
-    isAdmin: false,
     name: 'Jane Doe',
     anonymous: false,
     joined: new Date('2020-01-01'),

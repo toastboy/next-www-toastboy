@@ -6,13 +6,12 @@ import { createMockPlayerData } from '@/tests/mocks/data/playerData';
 import { Wrapper } from '@/tests/components/lib/common';
 
 describe('AdminPlayerList', () => {
-    it('renders player rows with roles', () => {
+    it('renders player rows with auth status', () => {
         const players = [
-            createMockPlayerData({ id: 1, name: 'Alex Admin', isAdmin: true, accountEmail: 'alex@example.com' }),
+            createMockPlayerData({ id: 1, name: 'Alex Admin', accountEmail: 'alex@example.com' }),
             createMockPlayerData({
                 id: 2,
                 name: 'Pat Player',
-                isAdmin: false,
                 accountEmail: null,
                 extraEmails: [
                     {
@@ -37,8 +36,6 @@ describe('AdminPlayerList', () => {
         expect(within(table).getAllByRole('checkbox').length).toBeGreaterThan(0);
         expect(within(table).getByText('Alex Admin')).toBeInTheDocument();
         expect(within(table).getByText('Pat Player')).toBeInTheDocument();
-        expect(within(table).getByText('Admin')).toBeInTheDocument();
-        expect(within(table).getByText('Player')).toBeInTheDocument();
         expect(within(table).getAllByText('Yes').length).toBeGreaterThan(0);
         expect(within(table).getAllByText('No').length).toBeGreaterThan(0);
     });

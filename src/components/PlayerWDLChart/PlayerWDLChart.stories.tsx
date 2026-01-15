@@ -4,7 +4,6 @@ import { PlayerWDLChart } from './PlayerWDLChart';
 
 const samplePlayer = {
     id: 2,
-    isAdmin: false,
     name: 'Frank Forward',
     anonymous: false,
     joined: new Date('2019-08-12'),

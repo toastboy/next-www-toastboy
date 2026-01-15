@@ -165,8 +165,6 @@ model PickerTeams {
 model Player {
     id Int @id @default(autoincrement())
 
-    isAdmin Boolean?
-
     name         String?
     accountEmail String?  @db.VarChar(255)
     anonymous    Boolean?

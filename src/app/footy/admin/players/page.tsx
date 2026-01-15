@@ -4,10 +4,24 @@ import { headers } from 'next/headers';
 import { AdminPlayerList } from '@/components/AdminPlayerList/AdminPlayerList';
 import { MustBeLoggedIn } from '@/components/MustBeLoggedIn/MustBeLoggedIn';
 import { auth } from '@/lib/auth';
-import { getMockAuthState, getMockUsersList } from '@/lib/authServer';
+import { getMockAuthState, getMockUsersList, getUserRole } from '@/lib/authServer';
 import playerService from '@/services/Player';
 
 const Page: React.FC = async () => {
+    const role = await getUserRole();
+    if (role !== 'admin') {
+        return (
+            <Container fluid mt="xl">
+                <Center>
+                    <Title order={2} mb="md">
+                        Admin: Players
+                    </Title>
+                </Center>
+                <MustBeLoggedIn admin={true} />
+            </Container>
+        );
+    }
+
     const players = await playerService.getAll();
     const mockState = await getMockAuthState();
     const users: { email?: string | null }[] = mockState === 'admin'

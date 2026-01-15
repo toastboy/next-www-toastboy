@@ -21,6 +21,10 @@ type Story = StoryObj<typeof meta>;
 export const Primary: Story = {
     args: {
         players: samplePlayers,
+        userEmails: samplePlayers
+            .map((player) => player.accountEmail)
+            .filter((email): email is string => !!email)
+            .slice(0, 3),
     },
 };
 

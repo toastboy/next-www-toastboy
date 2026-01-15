@@ -33,6 +33,7 @@ import { PlayerDataType } from '@/types';
 
 export interface Props {
     players: PlayerDataType[];
+    userEmails?: string[];
 }
 
 type SortKey = 'id' | 'name' | 'joined' | 'finished' | 'role' | 'auth' | 'extraEmails';
@@ -89,12 +90,33 @@ const compareNullableString = (
 };
 
 /**
+ * Normalizes email addresses for consistent comparisons.
+ *
+ * @param email - The email address to normalize.
+ * @returns The normalized email, or an empty string when missing.
+ */
+const normalizeEmail = (email?: string | null) => (email ?? '').trim().toLowerCase();
+
+/**
+ * Determines whether a player has a Better Auth user account.
+ *
+ * @param player - The player to check.
+ * @param userEmailSet - Known Better Auth user emails (lowercased).
+ * @returns True when the player's accountEmail exists in Better Auth.
+ */
+const isOnboarded = (player: PlayerDataType, userEmailSet: Set<string>) => {
+    const email = normalizeEmail(player.accountEmail);
+    return email.length > 0 && userEmailSet.has(email);
+};
+
+/**
  * Applies the current sort key to two players.
  *
  * @param a - The left-hand player.
  * @param b - The right-hand player.
  * @param key - The player field to compare.
  * @param direction - Sort direction (`asc` or `desc`).
+ * @param userEmailSet - Known Better Auth user emails (lowercased).
  * @returns A comparison value suitable for Array.sort.
  */
 const comparePlayers = (
@@ -102,6 +124,7 @@ const comparePlayers = (
     b: PlayerDataType,
     key: SortKey,
     direction: SortDirection,
+    userEmailSet: Set<string>,
 ) => {
     switch (key) {
         case 'id':
@@ -123,11 +146,15 @@ const comparePlayers = (
         case 'role':
             return compareNullableNumber(a.isAdmin ? 1 : 0, b.isAdmin ? 1 : 0, direction);
         case 'auth':
-            return compareNullableNumber(a.accountEmail ? 1 : 0, b.accountEmail ? 1 : 0, direction);
+            return compareNullableNumber(
+                isOnboarded(a, userEmailSet) ? 1 : 0,
+                isOnboarded(b, userEmailSet) ? 1 : 0,
+                direction,
+            );
         case 'extraEmails':
             return compareNullableNumber(
-                a.extraEmails.every((email) => email.verifiedAt) ? 1 : 0,
-                b.extraEmails.every((email) => email.verifiedAt) ? 1 : 0,
+                a.extraEmails.length > 0 ? (a.extraEmails.every((email) => email.verifiedAt) ? 1 : 0) : null,
+                b.extraEmails.length > 0 ? (b.extraEmails.every((email) => email.verifiedAt) ? 1 : 0) : null,
                 direction,
             );
         default:
@@ -187,9 +214,14 @@ const buildInviteEmail = (inviteLink: string) => ReactDOMServer.renderToStaticMa
  *
  * @param props - Component props.
  * @param props.players - Players to render in the table.
+ * @param props.userEmails - Better Auth user emails to determine onboarding status.
  * @returns The rendered admin player list table.
  */
-export const AdminPlayerList: React.FC<Props> = ({ players }) => {
+export const AdminPlayerList: React.FC<Props> = ({ players, userEmails }) => {
+    const userEmailSet = useMemo(
+        () => new Set((userEmails ?? []).map((email) => normalizeEmail(email)).filter((email) => email.length > 0)),
+        [userEmails],
+    );
     const [sortKey, setSortKey] = useState<SortKey>('id');
     const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
@@ -216,9 +248,9 @@ export const AdminPlayerList: React.FC<Props> = ({ players }) => {
      */
     const sortedPlayers = useMemo(() => {
         const data = [...filteredPlayers];
-        data.sort((a, b) => comparePlayers(a, b, sortKey, sortDirection));
+        data.sort((a, b) => comparePlayers(a, b, sortKey, sortDirection, userEmailSet));
         return data;
-    }, [filteredPlayers, sortKey, sortDirection]);
+    }, [filteredPlayers, sortKey, sortDirection, userEmailSet]);
 
     if (!players) {
         return (
@@ -386,8 +418,9 @@ export const AdminPlayerList: React.FC<Props> = ({ players }) => {
 
     const rows = sortedPlayers.map((player: PlayerDataType) => {
         const playerHref = `/footy/player/${encodeURIComponent(player.id || '')}`;
-        const hasAuthAccount = Boolean(player.accountEmail);
-        const extraEmailsVerified = player.extraEmails.every((email) => email.verifiedAt);
+        const hasAuthAccount = isOnboarded(player, userEmailSet);
+        const hasExtraEmails = player.extraEmails.length > 0;
+        const extraEmailsVerified = hasExtraEmails && player.extraEmails.every((email) => email.verifiedAt);
 
         return (
             <TableTr key={player.id}>
@@ -408,7 +441,7 @@ export const AdminPlayerList: React.FC<Props> = ({ players }) => {
                 <TableTd>{formatDate(player.finished)}</TableTd>
                 <TableTd>{player.isAdmin ? 'Admin' : 'Player'}</TableTd>
                 <TableTd>{hasAuthAccount ? 'Yes' : 'No'}</TableTd>
-                <TableTd>{extraEmailsVerified ? 'Yes' : 'No'}</TableTd>
+                <TableTd>{hasExtraEmails ? (extraEmailsVerified ? 'Yes' : 'No') : ''}</TableTd>
             </TableTr>
         );
     });

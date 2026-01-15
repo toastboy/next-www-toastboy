@@ -53,30 +53,45 @@ function splitEmailList(rawEmail: string | null): string[] {
         .map((email) => email.toLowerCase());
 }
 
-function buildPlayerExtraEmailSeedRows(
+function buildPlayerEmailSeeds(
     sources: { playerId: number; email: string | null }[],
-): PlayerExtraEmailSeed[] {
-    const rows: PlayerExtraEmailSeed[] = [];
+): { accountEmailByPlayerId: Map<number, string>; extraEmailRows: PlayerExtraEmailSeed[] } {
+    const extraEmailRows: PlayerExtraEmailSeed[] = [];
+    const accountEmailByPlayerId = new Map<number, string>();
     const seen = new Map<string, number>();
 
     sources.forEach((source) => {
         const emails = Array.from(new Set(splitEmailList(source.email)));
-        emails.forEach((email) => {
+        if (emails.length === 0) return;
+
+        const [accountEmail, ...extraEmails] = emails;
+
+        if (accountEmail) {
+            const existing = seen.get(accountEmail);
+            if (existing && existing !== source.playerId) {
+                console.warn(`Skipping duplicate account email ${accountEmail} for player ${source.playerId}; already assigned to player ${existing}`);
+            } else {
+                seen.set(accountEmail, source.playerId);
+                accountEmailByPlayerId.set(source.playerId, accountEmail);
+            }
+        }
+
+        extraEmails.forEach((email) => {
             const existing = seen.get(email);
             if (existing && existing !== source.playerId) {
-                console.warn(`Skipping duplicate email ${email} for player ${source.playerId}; already assigned to player ${existing}`);
+                console.warn(`Skipping duplicate extra email ${email} for player ${source.playerId}; already assigned to player ${existing}`);
                 return;
             }
 
             seen.set(email, source.playerId);
-            rows.push({
+            extraEmailRows.push({
                 playerId: source.playerId,
                 email,
             });
         });
     });
 
-    return rows;
+    return { accountEmailByPlayerId, extraEmailRows };
 }
 
 async function fetchLegacyPlayerEmailSources(): Promise<{ playerId: number; email: string | null }[]> {
@@ -217,6 +232,15 @@ async function importBackup(): Promise<void> {
         console.log('Running prisma generate again...');
         shellExec('npx prisma generate --schema prisma/schema.prisma');
 
+        const { accountEmailByPlayerId, extraEmailRows } = buildPlayerEmailSeeds(legacyPlayerEmailSources);
+
+        for (const [playerId, accountEmail] of accountEmailByPlayerId.entries()) {
+            await prisma.player.update({
+                where: { id: playerId },
+                data: { accountEmail },
+            });
+        }
+
         // Now calculate all the player records to ensure they are up to date
         console.log('Calculating player records...');
         await playerRecordService.deleteAll();
@@ -237,8 +261,7 @@ async function importBackup(): Promise<void> {
         await writeTableToJSONFile('PlayerLogin.json', prisma.playerLogin);
         await writeTableToJSONFile('PlayerRecord.json', prisma.playerRecord);
 
-        const playerEmailRows = buildPlayerExtraEmailSeedRows(legacyPlayerEmailSources);
-        writeDataToJSONFile('PlayerEmail.json', playerEmailRows);
+        writeDataToJSONFile('PlayerEmail.json', extraEmailRows);
 
         // Upload the JSON files to Azure Blob Storage
         const files = await readdir('/tmp/importlivedb');

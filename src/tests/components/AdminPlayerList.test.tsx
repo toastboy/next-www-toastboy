@@ -28,7 +28,7 @@ describe('AdminPlayerList', () => {
 
         render(
             <Wrapper>
-                <AdminPlayerList players={players} />
+                <AdminPlayerList players={players} userEmails={['alex@example.com']} />
             </Wrapper>,
         );
 
@@ -46,7 +46,7 @@ describe('AdminPlayerList', () => {
     it('renders empty state', () => {
         render(
             <Wrapper>
-                <AdminPlayerList players={[]} />
+                <AdminPlayerList players={[]} userEmails={[]} />
             </Wrapper>,
         );
 

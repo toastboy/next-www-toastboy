@@ -5,7 +5,7 @@ import { z } from 'zod';
 import { GameCalendar } from '@/components/GameCalendar/GameCalendar';
 import { loadJsonFixture } from '@/tests/shared/fixtures';
 
-import { Wrapper } from './lib/common';
+import { Wrapper } from '@/tests/components/lib/common';
 
 const GameDayResponseSchema = GameDaySchema.extend({
     date: z.coerce.date(),

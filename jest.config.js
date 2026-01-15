@@ -110,7 +110,7 @@ module.exports = {
             modulePaths,
             setupFilesAfterEnv: ['<rootDir>/jest.setup.frontend.ts'],
             testEnvironment: 'jsdom',
-            testMatch: ['<rootDir>/src/tests/components/**/*.test.tsx'],
+            testMatch: ['<rootDir>/src/components/**/*.test.tsx'],
             testPathIgnorePatterns,
             transform,
             transformIgnorePatterns,

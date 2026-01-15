@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { sendEnquiry } from '@/actions/sendEnquiry';
 import { EnquiryForm } from '@/components/EnquiryForm/EnquiryForm';
 
-import { Wrapper } from './lib/common';
+import { Wrapper } from '@/tests/components/lib/common';
 
 jest.mock('@/actions/sendEnquiry', () => ({
     sendEnquiry: jest.fn(),

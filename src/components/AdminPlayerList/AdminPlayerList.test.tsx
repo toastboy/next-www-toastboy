@@ -3,7 +3,7 @@ import { render, screen, within } from '@testing-library/react';
 import { AdminPlayerList } from '@/components/AdminPlayerList/AdminPlayerList';
 import { createMockPlayerData } from '@/tests/mocks/data/playerData';
 
-import { Wrapper } from './lib/common';
+import { Wrapper } from '@/tests/components/lib/common';
 
 describe('AdminPlayerList', () => {
     it('renders player rows with roles', () => {

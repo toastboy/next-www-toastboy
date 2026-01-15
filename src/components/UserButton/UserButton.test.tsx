@@ -3,7 +3,7 @@ import { useRouter } from 'next/navigation';
 
 import { UserButton } from '@/components/UserButton/UserButton';
 
-import { Wrapper } from './lib/common';
+import { Wrapper } from '@/tests/components/lib/common';
 
 describe('UserButton', () => {
     let push: jest.Mock;

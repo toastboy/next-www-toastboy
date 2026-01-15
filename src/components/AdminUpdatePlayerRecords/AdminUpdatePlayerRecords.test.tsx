@@ -6,7 +6,7 @@ import useSWR from 'swr';
 
 import { AdminUpdatePlayerRecords } from '@/components/AdminUpdatePlayerRecords/AdminUpdatePlayerRecords';
 
-import { Wrapper } from './lib/common';
+import { Wrapper } from '@/tests/components/lib/common';
 
 jest.mock('next/cache');
 jest.mock('@/services/PlayerRecord');

@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 
 import { NavBarNested } from '@/components/NavBarNested/NavBarNested';
 
-import { Wrapper } from './lib/common';
+import { Wrapper } from '@/tests/components/lib/common';
 
 jest.mock('@/components/UserButton/UserButton');
 

@@ -1,22 +1,25 @@
 import { Center, Container, Stack, Title } from '@mantine/core';
 
-import { AdminExportAuth } from '@/components/AdminExportAuth/AdminExportAuth';
-import { AdminUpdatePlayerRecords } from '@/components/AdminUpdatePlayerRecords/AdminUpdatePlayerRecords';
+import { AdminPlayerList } from '@/components/AdminPlayerList/AdminPlayerList';
 import { MustBeLoggedIn } from '@/components/MustBeLoggedIn/MustBeLoggedIn';
+import playerService from '@/services/Player';
 
-const Page: React.FC = () => {
+const Page: React.FC = async () => {
+    const players = await playerService.getAll();
+
     return (
-        <Container size="xs" mt="xl" >
+        <Container fluid mt="xl">
             <Center>
                 <Title order={2} mb="md" >
-                    Admin Dashboard
+                    Admin: Players
                 </Title>
             </Center>
 
             <MustBeLoggedIn admin={true}>
                 <Stack mb="lg">
-                    <AdminUpdatePlayerRecords />
-                    <AdminExportAuth />
+                    <AdminPlayerList
+                        players={players}
+                    />
                 </Stack>
             </MustBeLoggedIn>
         </Container >

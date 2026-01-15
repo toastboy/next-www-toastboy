@@ -2,12 +2,12 @@
 
 import {
     Anchor,
+    Checkbox,
     Container,
     Group,
     Table,
     TableCaption,
     TableTbody,
-    Checkbox,
     TableTd,
     TableTh,
     TableThead,
@@ -18,10 +18,11 @@ import {
 import { IconChevronDown, IconChevronUp, IconSelector } from '@tabler/icons-react';
 import { useMemo, useState } from 'react';
 
-import { usePlayers } from '@/lib/swr';
 import { PlayerDataType } from '@/types';
 
-export type Props = unknown;
+export interface Props {
+    players: PlayerDataType[];
+}
 
 type SortKey = 'id' | 'name' | 'joined' | 'finished' | 'role' | 'auth' | 'extraEmails';
 type SortDirection = 'asc' | 'desc';
@@ -92,8 +93,7 @@ const comparePlayers = (
     }
 };
 
-export const AdminPlayerList: React.FC<Props> = () => {
-    const players = usePlayers();
+export const AdminPlayerList: React.FC<Props> = ({ players }) => {
     const [sortKey, setSortKey] = useState<SortKey>('id');
     const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
     const [selectedIds, setSelectedIds] = useState<number[]>([]);
@@ -171,7 +171,7 @@ export const AdminPlayerList: React.FC<Props> = () => {
                     <Checkbox
                         checked={selectedIds.includes(player.id)}
                         onChange={(event) => toggleSelectPlayer(player.id, event.currentTarget.checked)}
-                        aria-label={`Select ${player.name}`}
+                        aria-label={`Select ${player.name ?? ''}`}
                     />
                 </TableTd>
                 <TableTd>
@@ -190,11 +190,11 @@ export const AdminPlayerList: React.FC<Props> = () => {
     });
 
     return (
-        <Container>
+        <Container fluid>
             <Text fw={700} mb="sm" data-testid="admin-player-list-count">
                 Players ({players.length})
             </Text>
-            <Table striped highlightOnHover withTableBorder withColumnBorders>
+            <Table striped highlightOnHover withTableBorder withColumnBorders w="100%">
                 <TableCaption>Registered players</TableCaption>
                 <TableThead>
                     <TableTr>

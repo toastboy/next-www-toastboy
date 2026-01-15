@@ -1,22 +1,13 @@
 import { render, screen, within } from '@testing-library/react';
 
 import { AdminPlayerList } from '@/components/AdminPlayerList/AdminPlayerList';
-import { usePlayers } from '@/lib/swr';
 import { createMockPlayerData } from '@/tests/mocks/data/playerData';
 
 import { Wrapper } from './lib/common';
 
-jest.mock('@/lib/swr', () => ({
-    usePlayers: jest.fn(),
-}));
-
 describe('AdminPlayerList', () => {
-    afterEach(() => {
-        jest.clearAllMocks();
-    });
-
     it('renders player rows with roles', () => {
-        (usePlayers as jest.Mock).mockReturnValue([
+        const players = [
             createMockPlayerData({ id: 1, name: 'Alex Admin', isAdmin: true, accountEmail: 'alex@example.com' }),
             createMockPlayerData({
                 id: 2,
@@ -33,11 +24,11 @@ describe('AdminPlayerList', () => {
                     },
                 ],
             }),
-        ]);
+        ];
 
         render(
             <Wrapper>
-                <AdminPlayerList />
+                <AdminPlayerList players={players} />
             </Wrapper>,
         );
 
@@ -53,11 +44,9 @@ describe('AdminPlayerList', () => {
     });
 
     it('renders empty state', () => {
-        (usePlayers as jest.Mock).mockReturnValue([]);
-
         render(
             <Wrapper>
-                <AdminPlayerList />
+                <AdminPlayerList players={[]} />
             </Wrapper>,
         );
 

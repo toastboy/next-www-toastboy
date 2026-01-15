@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { http, HttpResponse } from 'msw';
 
 import { defaultPlayerDataList } from '@/tests/mocks/data/playerData';
 
@@ -12,13 +11,6 @@ const meta = {
     component: AdminPlayerList,
     parameters: {
         layout: 'padded',
-        msw: {
-            handlers: [
-                http.get('*/api/footy/players', () => {
-                    return HttpResponse.json(samplePlayers);
-                }),
-            ],
-        },
     },
     tags: ['autodocs'],
 } satisfies Meta<typeof AdminPlayerList>;
@@ -26,16 +18,14 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Primary: Story = {};
+export const Primary: Story = {
+    args: {
+        players: samplePlayers,
+    },
+};
 
 export const Empty: Story = {
-    parameters: {
-        msw: {
-            handlers: [
-                http.get('*/api/footy/players', () => {
-                    return HttpResponse.json([]);
-                }),
-            ],
-        },
+    args: {
+        players: [],
     },
 };

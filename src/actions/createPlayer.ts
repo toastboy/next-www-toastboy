@@ -75,7 +75,7 @@ export async function addPlayerInvite(
         });
     }
 
-    revalidatePath('/footy/newplayer');
+    revalidatePath('/footy/admin/newplayer');
     revalidatePath('/footy/players');
 
     return new URL(

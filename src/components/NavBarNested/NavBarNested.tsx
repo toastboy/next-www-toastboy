@@ -111,12 +111,36 @@ export const NavBarNested: React.FC<Props> = ({ user }) => {
                     "link": "/footy/admin",
                 },
                 {
+                    "label": "Drinkers",
+                    "link": "/footy/admin/drinkers",
+                },
+                {
+                    "label": "Money",
+                    "link": "/footy/admin/money",
+                },
+                {
+                    "label": "More Games",
+                    "link": "/footy/admin/moregames",
+                },
+                {
+                    "label": "New Game",
+                    "link": "/footy/admin/newgame",
+                },
+                {
+                    "label": "New Player",
+                    "link": "/footy/admin/newplayer",
+                },
+                {
+                    "label": "Picker",
+                    "link": "/footy/admin/picker",
+                },
+                {
                     "label": "Players",
                     "link": "/footy/admin/players",
                 },
                 {
-                    "label": "New Player",
-                    "link": "/footy/newplayer",
+                    "label": "Responses",
+                    "link": "/footy/admin/responses",
                 },
                 {
                     "label": "Users",

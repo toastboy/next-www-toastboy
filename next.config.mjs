@@ -11,6 +11,55 @@ const nextConfig = {
             },
         ],
     },
+    async redirects() {
+        return [
+            {
+                source: '/footy/drinkers',
+                destination: '/footy/admin/drinkers',
+                permanent: true,
+            },
+            {
+                source: '/footy/money',
+                destination: '/footy/admin/money',
+                permanent: true,
+            },
+            {
+                source: '/footy/moregames',
+                destination: '/footy/admin/moregames',
+                permanent: true,
+            },
+            {
+                source: '/footy/newgame',
+                destination: '/footy/admin/newgame',
+                permanent: true,
+            },
+            {
+                source: '/footy/newplayer',
+                destination: '/footy/admin/newplayer',
+                permanent: true,
+            },
+            {
+                source: '/footy/money',
+                destination: '/footy/admin/money',
+                permanent: true,
+            },
+            {
+                source: '/footy/newplayer',
+                destination: '/footy/admin/newplayer',
+                permanent: true,
+            },
+            {
+                source: '/footy/picker',
+                destination: '/footy/admin/picker',
+                permanent: true,
+            },
+            {
+                source: '/footy/responses',
+                destination: '/footy/admin/responses',
+                permanent: true,
+            },
+        ];
+    },
 };
 
 // Injected content via Sentry wizard below

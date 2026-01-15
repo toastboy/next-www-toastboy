@@ -1,5 +1,6 @@
 'use server';
 
+import { sendEmailVerification } from '@/actions/verifyEmail';
 import authService from '@/services/Auth';
 import emailVerificationService from '@/services/EmailVerification';
 import playerService from '@/services/Player';
@@ -108,4 +109,13 @@ export async function finalizePlayerInvitationClaim(token: string) {
         accountEmail: invitation.email,
     });
     await emailVerificationService.markUsed(token);
+
+    // For players coming from the original site, if they have unverified extra
+    // emails, send verification emails for those as well.
+    const extraEmails = await playerExtraEmailService.getAll(invitation.playerId);
+    const unverifiedExtraEmails = extraEmails.filter((extraEmail) => !extraEmail.verifiedAt);
+    const player = await playerService.getById(invitation.playerId);
+    await Promise.all(
+        unverifiedExtraEmails.map((extraEmail) => sendEmailVerification(extraEmail.email, player ?? undefined)),
+    );
 }

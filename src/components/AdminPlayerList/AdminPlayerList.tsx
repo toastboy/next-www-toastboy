@@ -27,7 +27,6 @@ import ReactDOMServer from 'react-dom/server';
 
 import { addPlayerInvite } from '@/actions/createPlayer';
 import { sendEmail } from '@/actions/sendEmail';
-import { sendEmailVerification } from '@/actions/verifyEmail';
 import { config } from '@/lib/config';
 import { PlayerDataType } from '@/types';
 
@@ -364,9 +363,6 @@ export const AdminPlayerList: React.FC<Props> = ({ players, userEmails }) => {
         try {
             let inviteSent = 0;
             let inviteSkipped = 0;
-            let verificationSent = 0;
-            let verificationSkipped = 0;
-
             for (const player of onboardPlayers) {
                 const email = getPreferredEmail(player);
                 if (!email) {
@@ -377,16 +373,6 @@ export const AdminPlayerList: React.FC<Props> = ({ players, userEmails }) => {
                     await sendEmail(email, 'footy@toastboy.co.uk', 'Welcome to Toastboy FC!', html);
                     inviteSent += 1;
                 }
-
-                const unverified = player.extraEmails.filter((extraEmail) => !extraEmail.verifiedAt);
-                if (unverified.length === 0) {
-                    verificationSkipped += 1;
-                } else {
-                    for (const extraEmail of unverified) {
-                        await sendEmailVerification(extraEmail.email, player);
-                        verificationSent += 1;
-                    }
-                }
             }
 
             notifications.update({
@@ -396,8 +382,6 @@ export const AdminPlayerList: React.FC<Props> = ({ players, userEmails }) => {
                 message: [
                     `Invites: ${inviteSent} sent`,
                     inviteSkipped ? `${inviteSkipped} skipped` : null,
-                    `Verifications: ${verificationSent} sent`,
-                    verificationSkipped ? `${verificationSkipped} skipped` : null,
                 ].filter(Boolean).join('. ') + '.',
                 loading: false,
                 autoClose: config.notificationAutoClose,

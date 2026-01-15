@@ -39,16 +39,6 @@ const nextConfig = {
                 permanent: true,
             },
             {
-                source: '/footy/money',
-                destination: '/footy/admin/money',
-                permanent: true,
-            },
-            {
-                source: '/footy/newplayer',
-                destination: '/footy/admin/newplayer',
-                permanent: true,
-            },
-            {
                 source: '/footy/picker',
                 destination: '/footy/admin/picker',
                 permanent: true,
@@ -56,6 +46,66 @@ const nextConfig = {
             {
                 source: '/footy/responses',
                 destination: '/footy/admin/responses',
+                permanent: true,
+            },
+            {
+                source: '/footy/averages',
+                destination: '/footy/table/averages',
+                permanent: true,
+            },
+            {
+                source: '/footy/averages/:year',
+                destination: '/footy/table/points/:year',
+                permanent: true,
+            },
+            {
+                source: '/footy/mailout',
+                destination: '/footy/players',
+                permanent: true,
+            },
+            {
+                source: '/footy/nextgame',
+                destination: '/footy/game',
+                permanent: true,
+            },
+            {
+                source: '/footy/points',
+                destination: '/footy/table/points',
+                permanent: true,
+            },
+            {
+                source: '/footy/points/:year',
+                destination: '/footy/table/points/:year',
+                permanent: true,
+            },
+            {
+                source: '/footy/pub',
+                destination: '/footy/table/pub',
+                permanent: true,
+            },
+            {
+                source: '/footy/pub/:year',
+                destination: '/footy/table/pub/:year',
+                permanent: true,
+            },
+            {
+                source: '/footy/speedy',
+                destination: '/footy/table/speedy',
+                permanent: true,
+            },
+            {
+                source: '/footy/speedy/:year',
+                destination: '/footy/table/pub/:year',
+                permanent: true,
+            },
+            {
+                source: '/footy/stalwart',
+                destination: '/footy/table/stalwart',
+                permanent: true,
+            },
+            {
+                source: '/footy/stalwart/:year',
+                destination: '/footy/table/pub/:year',
                 permanent: true,
             },
         ];

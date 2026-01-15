@@ -5,4 +5,5 @@ export interface AuthUserSummary {
     email: string | null;
     playerId: number;
     role: AuthRole;
+    impersonatedBy?: string | null;
 }

@@ -16,6 +16,12 @@ const Page: React.FC = async () => {
     const userEmails = users
         .map((user) => user.email)
         .filter((email): email is string => !!email);
+    const userIdByEmail = users.reduce<Record<string, string>>((acc, user) => {
+        if (user.email) {
+            acc[user.email.trim().toLowerCase()] = user.id;
+        }
+        return acc;
+    }, {});
 
     return (
         <Container fluid mt="xl">
@@ -29,6 +35,7 @@ const Page: React.FC = async () => {
                 <AdminPlayerList
                     players={players}
                     userEmails={userEmails}
+                    userIdByEmail={userIdByEmail}
                 />
             </Stack>
         </Container >

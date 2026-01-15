@@ -122,6 +122,9 @@ export async function getCurrentUser(): Promise<AuthUserSummary | null> {
     const session = await auth.api.getSession({
         headers: await headers(),
     }) as {
+        session?: {
+            impersonatedBy?: string | null;
+        } | null;
         user?: {
             name?: string | null,
             email?: string | null,
@@ -139,6 +142,7 @@ export async function getCurrentUser(): Promise<AuthUserSummary | null> {
         email: session.user.email ?? null,
         playerId: session.user.playerId ?? 0,
         role: session.user.role === 'admin' ? 'admin' : 'user',
+        impersonatedBy: session.session?.impersonatedBy ?? null,
     };
 }
 

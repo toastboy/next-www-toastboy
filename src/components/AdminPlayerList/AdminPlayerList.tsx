@@ -22,6 +22,7 @@ import {
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { IconChevronDown, IconChevronUp, IconSelector } from '@tabler/icons-react';
+import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import ReactDOMServer from 'react-dom/server';
 
@@ -33,6 +34,7 @@ import { PlayerDataType } from '@/types';
 export interface Props {
     players: PlayerDataType[];
     userEmails?: string[];
+    userIdByEmail?: Record<string, string>;
 }
 
 type SortKey = 'id' | 'name' | 'joined' | 'finished' | 'role' | 'auth' | 'extraEmails';
@@ -216,7 +218,8 @@ const buildInviteEmail = (inviteLink: string) => ReactDOMServer.renderToStaticMa
  * @param props.userEmails - Better Auth user emails to determine onboarding status.
  * @returns The rendered admin player list table.
  */
-export const AdminPlayerList: React.FC<Props> = ({ players, userEmails }) => {
+export const AdminPlayerList: React.FC<Props> = ({ players, userEmails, userIdByEmail }) => {
+    const router = useRouter();
     const userEmailSet = useMemo(
         () => new Set((userEmails ?? []).map((email) => normalizeEmail(email)).filter((email) => email.length > 0)),
         [userEmails],
@@ -400,11 +403,71 @@ export const AdminPlayerList: React.FC<Props> = ({ players, userEmails }) => {
         }
     };
 
+    const getUserIdForPlayer = (player: PlayerDataType) => {
+        const email = normalizeEmail(player.accountEmail);
+        if (!email) return null;
+        return userIdByEmail?.[email] ?? null;
+    };
+
+    const handleImpersonatePlayer = async (player: PlayerDataType) => {
+        const userId = getUserIdForPlayer(player);
+        if (!userId) {
+            notifications.show({
+                color: 'yellow',
+                title: 'No user account found',
+                message: 'This player does not have a Better Auth account to impersonate.',
+            });
+            return;
+        }
+
+        const id = notifications.show({
+            loading: true,
+            title: 'Starting impersonation',
+            message: 'Switching session...',
+            autoClose: false,
+            withCloseButton: false,
+        });
+
+        try {
+            const response = await fetch('/api/auth/admin/impersonate-user', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId }),
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(errorText || 'Failed to impersonate user.');
+            }
+
+            router.refresh();
+            notifications.update({
+                id,
+                color: 'teal',
+                title: 'Impersonation active',
+                message: `Now impersonating ${player.name ?? player.accountEmail ?? 'player'}.`,
+                loading: false,
+                autoClose: config.notificationAutoClose,
+            });
+        } catch (err) {
+            notifications.update({
+                id,
+                color: 'red',
+                title: 'Error',
+                message: `${String(err)}`,
+                loading: false,
+                autoClose: false,
+                withCloseButton: true,
+            });
+        }
+    };
+
     const rows = sortedPlayers.map((player: PlayerDataType) => {
         const playerHref = `/footy/player/${encodeURIComponent(player.id || '')}`;
         const hasAuthAccount = isOnboarded(player, userEmailSet);
         const hasExtraEmails = player.extraEmails.length > 0;
         const extraEmailsVerified = hasExtraEmails && player.extraEmails.every((email) => email.verifiedAt);
+        const userId = getUserIdForPlayer(player);
 
         return (
             <TableTr key={player.id}>
@@ -426,6 +489,16 @@ export const AdminPlayerList: React.FC<Props> = ({ players, userEmails }) => {
                 <TableTd>{player.isAdmin ? 'Admin' : 'Player'}</TableTd>
                 <TableTd>{hasAuthAccount ? 'Yes' : 'No'}</TableTd>
                 <TableTd>{hasExtraEmails ? (extraEmailsVerified ? 'Yes' : 'No') : ''}</TableTd>
+                <TableTd>
+                    <Button
+                        size="xs"
+                        variant="light"
+                        disabled={!userId}
+                        onClick={() => handleImpersonatePlayer(player)}
+                    >
+                        Impersonate
+                    </Button>
+                </TableTd>
             </TableTr>
         );
     });
@@ -496,6 +569,7 @@ export const AdminPlayerList: React.FC<Props> = ({ players, userEmails }) => {
                             <TableTh aria-sort={sortKey === 'extraEmails' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
                                 {renderSortHeader('Emails Verified', 'extraEmails')}
                             </TableTh>
+                            <TableTh w="7rem">Impersonate</TableTh>
                         </TableTr>
                     </TableThead>
                     <TableTbody>{rows}</TableTbody>

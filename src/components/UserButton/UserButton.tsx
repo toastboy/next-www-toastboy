@@ -2,7 +2,7 @@
 
 import { Avatar, Flex, Group, Menu, rem, Text, UnstyledButton } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { IconAlertTriangle, IconArrowsLeftRight, IconCheck, IconChevronRight, IconLogout, IconPassword, IconTrash, IconUserScan } from '@tabler/icons-react';
+import { IconAlertTriangle, IconArrowsLeftRight, IconCheck, IconChevronRight, IconLogout, IconPassword, IconTrash, IconUserOff, IconUserScan } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { AuthUserSummary } from 'types/AuthUser';
@@ -60,6 +60,48 @@ export const UserButton: React.FC<Props> = ({ user }) => {
         }
     }
 
+    async function stopImpersonating() {
+        const id = notifications.show({
+            loading: true,
+            title: 'Ending impersonation',
+            message: 'Restoring your session...',
+            autoClose: false,
+            withCloseButton: false,
+        });
+
+        try {
+            const response = await fetch('/api/auth/admin/stop-impersonating', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: '{}',
+            });
+            if (!response.ok) {
+                console.error('Stop impersonation failed', await response.text());
+                throw new Error('Stop impersonation failed');
+            }
+            router.refresh();
+            notifications.update({
+                id,
+                color: 'teal',
+                title: 'Impersonation ended',
+                message: 'Back to your account.',
+                icon: <IconCheck size={config.notificationIconSize} />,
+                loading: false,
+                autoClose: config.notificationAutoClose,
+            });
+        } catch (error) {
+            notifications.update({
+                id,
+                color: 'red',
+                title: 'Error',
+                message: `${String(error)}`,
+                icon: <IconAlertTriangle size={config.notificationIconSize} />,
+                loading: false,
+                autoClose: config.notificationAutoClose,
+            });
+        }
+    }
+
     let name = 'Sign In';
     let email = '';
     let playerId = 0;
@@ -83,6 +125,11 @@ export const UserButton: React.FC<Props> = ({ user }) => {
                     Change Password
                 </Link>
             </Menu.Item>
+            {user.impersonatedBy ? (
+                <Menu.Item leftSection={<IconUserOff size={14} />} onClick={async () => { await stopImpersonating(); }}>
+                    End impersonation
+                </Menu.Item>
+            ) : null}
             <Menu.Item leftSection={<IconLogout size={14} />} onClick={async () => { await signOut(); }}>
                 Sign Out
             </Menu.Item>

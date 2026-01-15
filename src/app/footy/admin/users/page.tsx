@@ -8,11 +8,9 @@ import { useEffect, useState } from 'react';
 
 import type { UserWithRolePayload } from '@/actions/auth';
 import { listUsersAction, setAdminRoleAction } from '@/actions/auth';
-import { MustBeLoggedIn } from '@/components/MustBeLoggedIn/MustBeLoggedIn';
 import { RelativeTime } from '@/components/RelativeTime/RelativeTime';
 
 export default function Page() {
-    const [isAllowed, setIsAllowed] = useState<boolean | null>(null);
     const [users, setUsers] = useState<UserWithRole[] | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     const [sortBy, setSortBy] = useState<keyof UserWithRole | null>('name');
@@ -22,15 +20,13 @@ export default function Page() {
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                if (isAllowed) {
-                    const response = await listUsersAction();
-                    setUsers(response.map((user: UserWithRolePayload) => ({
-                        ...user,
-                        createdAt: new Date(user.createdAt),
-                        updatedAt: new Date(user.updatedAt),
-                        banExpires: user.banExpires ? new Date(user.banExpires) : null,
-                    })));
-                }
+                const response = await listUsersAction();
+                setUsers(response.map((user: UserWithRolePayload) => ({
+                    ...user,
+                    createdAt: new Date(user.createdAt),
+                    updatedAt: new Date(user.updatedAt),
+                    banExpires: user.banExpires ? new Date(user.banExpires) : null,
+                })));
             } catch (error) {
                 Sentry.captureMessage(`Error fetching users: ${String(error)}`, 'error');
                 setErrorMessage('An error occurred while fetching users');
@@ -39,7 +35,7 @@ export default function Page() {
 
         // Errors are handled inside fetchUsers
         void fetchUsers();
-    }, [isAllowed]);
+    }, []);
 
     const handleSort = (key: keyof UserWithRole) => {
         if (sortBy === key) {
@@ -105,70 +101,68 @@ export default function Page() {
     }
 
     return (
-        <MustBeLoggedIn admin={true} onValidationChange={setIsAllowed}>
-            <Container>
-                <TextInput
-                    placeholder="Search users"
-                    value={filter}
-                    onChange={(event) => setFilter(event.currentTarget.value)}
-                />
-                <Table mt={20}>
-                    <Table.Thead>
-                        <Table.Tr>
-                            <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('name')}>
-                                <Flex align="center" gap="xs">
-                                    Name
-                                    {sortBy === 'name' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
-                                </Flex>
-                            </Table.Th>
-                            <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('email')}>
-                                <Flex align="center" gap="xs">
-                                    Email
-                                    {sortBy === 'email' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
-                                </Flex>
-                            </Table.Th>
-                            <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('role')}>
-                                <Flex align="center" gap="xs">
-                                    Admin
-                                    {sortBy === 'role' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
-                                </Flex>
-                            </Table.Th>
-                            <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('createdAt')}>
-                                <Flex align="center" gap="xs">
-                                    Created
-                                    {sortBy === 'createdAt' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
-                                </Flex>
-                            </Table.Th>
+        <Container>
+            <TextInput
+                placeholder="Search users"
+                value={filter}
+                onChange={(event) => setFilter(event.currentTarget.value)}
+            />
+            <Table mt={20}>
+                <Table.Thead>
+                    <Table.Tr>
+                        <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('name')}>
+                            <Flex align="center" gap="xs">
+                                Name
+                                {sortBy === 'name' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
+                            </Flex>
+                        </Table.Th>
+                        <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('email')}>
+                            <Flex align="center" gap="xs">
+                                Email
+                                {sortBy === 'email' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
+                            </Flex>
+                        </Table.Th>
+                        <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('role')}>
+                            <Flex align="center" gap="xs">
+                                Admin
+                                {sortBy === 'role' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
+                            </Flex>
+                        </Table.Th>
+                        <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('createdAt')}>
+                            <Flex align="center" gap="xs">
+                                Created
+                                {sortBy === 'createdAt' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
+                            </Flex>
+                        </Table.Th>
+                    </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody>
+                    {sortedUsers.map((user) => (
+                        <Table.Tr key={user.email}>
+                            <Table.Td>
+                                <Anchor href={`/footy/admin/user/${encodeURIComponent(user.email)}`}>
+                                    {user.name}
+                                </Anchor>
+                            </Table.Td>
+                            <Table.Td>
+                                <Anchor href={`/footy/admin/user/${encodeURIComponent(user.email)}`}>
+                                    {user.email}
+                                </Anchor>
+                            </Table.Td>
+                            <Table.Td>
+                                <Switch
+                                    checked={user.role === 'admin'}
+                                    onChange={(event) => toggleAdmin(user.id, event.currentTarget.checked)}
+                                    color="blue"
+                                />
+                            </Table.Td>
+                            <Table.Td>
+                                <RelativeTime date={user.createdAt} />
+                            </Table.Td>
                         </Table.Tr>
-                    </Table.Thead>
-                    <Table.Tbody>
-                        {sortedUsers.map((user) => (
-                            <Table.Tr key={user.email}>
-                                <Table.Td>
-                                    <Anchor href={`/footy/admin/user/${encodeURIComponent(user.email)}`}>
-                                        {user.name}
-                                    </Anchor>
-                                </Table.Td>
-                                <Table.Td>
-                                    <Anchor href={`/footy/admin/user/${encodeURIComponent(user.email)}`}>
-                                        {user.email}
-                                    </Anchor>
-                                </Table.Td>
-                                <Table.Td>
-                                    <Switch
-                                        checked={user.role === 'admin'}
-                                        onChange={(event) => toggleAdmin(user.id, event.currentTarget.checked)}
-                                        color="blue"
-                                    />
-                                </Table.Td>
-                                <Table.Td>
-                                    <RelativeTime date={user.createdAt} />
-                                </Table.Td>
-                            </Table.Tr>
-                        ))}
-                    </Table.Tbody>
-                </Table>
-            </Container>
-        </MustBeLoggedIn>
+                    ))}
+                </Table.Tbody>
+            </Table>
+        </Container>
     );
 }

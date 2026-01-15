@@ -8,7 +8,6 @@ import { use, useEffect, useState } from 'react';
 
 import type { UserWithRolePayload } from '@/actions/auth';
 import { listUsersAction } from '@/actions/auth';
-import { MustBeLoggedIn } from '@/components/MustBeLoggedIn/MustBeLoggedIn';
 
 interface PageProps {
     params: Promise<{ email: string }>,
@@ -17,22 +16,19 @@ interface PageProps {
 const Page: React.FC<PageProps> = (props) => {
     const { email } = use(props.params);
 
-    const [isAllowed, setIsAllowed] = useState<boolean | null>(null);
     const [users, setUsers] = useState<UserWithRole[] | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchUsers = async () => {
             try {
-                if (isAllowed) {
-                    const response = await listUsersAction(decodeURIComponent(email));
-                    setUsers(response.map((user: UserWithRolePayload) => ({
-                        ...user,
-                        createdAt: new Date(user.createdAt),
-                        updatedAt: new Date(user.updatedAt),
-                        banExpires: user.banExpires ? new Date(user.banExpires) : null,
-                    })));
-                }
+                const response = await listUsersAction(decodeURIComponent(email));
+                setUsers(response.map((user: UserWithRolePayload) => ({
+                    ...user,
+                    createdAt: new Date(user.createdAt),
+                    updatedAt: new Date(user.updatedAt),
+                    banExpires: user.banExpires ? new Date(user.banExpires) : null,
+                })));
             }
             catch (error) {
                 Sentry.captureMessage(`Error fetching users: ${String(error)}`, 'error');
@@ -42,7 +38,7 @@ const Page: React.FC<PageProps> = (props) => {
 
         // Errors are handled inside fetchUsers
         void fetchUsers();
-    }, [email, isAllowed]);
+    }, [email]);
 
     const user = users?.[0];
 
@@ -55,17 +51,15 @@ const Page: React.FC<PageProps> = (props) => {
     }
 
     return (
-        <MustBeLoggedIn admin={true} onValidationChange={setIsAllowed}>
-            <Container size="xs" mt="xl">
-                <Center>
-                    <Title order={2} mb="md">
-                        {user.name}
-                    </Title>
-                </Center>
+        <Container size="xs" mt="xl">
+            <Center>
+                <Title order={2} mb="md">
+                    {user.name}
+                </Title>
+            </Center>
 
-                <CodeHighlight code={JSON.stringify(user, null, 2)} language="json" />
-            </Container>
-        </MustBeLoggedIn>
+            <CodeHighlight code={JSON.stringify(user, null, 2)} language="json" />
+        </Container>
     );
 };
 

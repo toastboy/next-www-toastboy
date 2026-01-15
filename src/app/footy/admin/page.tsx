@@ -2,7 +2,6 @@ import { Center, Container, Stack, Title } from '@mantine/core';
 
 import { AdminExportAuth } from '@/components/AdminExportAuth/AdminExportAuth';
 import { AdminUpdatePlayerRecords } from '@/components/AdminUpdatePlayerRecords/AdminUpdatePlayerRecords';
-import { MustBeLoggedIn } from '@/components/MustBeLoggedIn/MustBeLoggedIn';
 
 const Page: React.FC = () => {
     return (
@@ -13,12 +12,10 @@ const Page: React.FC = () => {
                 </Title>
             </Center>
 
-            <MustBeLoggedIn admin={true}>
-                <Stack mb="lg">
-                    <AdminUpdatePlayerRecords />
-                    <AdminExportAuth />
-                </Stack>
-            </MustBeLoggedIn>
+            <Stack mb="lg">
+                <AdminUpdatePlayerRecords />
+                <AdminExportAuth />
+            </Stack>
         </Container >
     );
 };

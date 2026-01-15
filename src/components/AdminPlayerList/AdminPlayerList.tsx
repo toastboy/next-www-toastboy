@@ -306,119 +306,72 @@ export const AdminPlayerList: React.FC<Props> = ({ players }) => {
     };
 
     /**
-     * Sends Better Auth onboarding invitations for the selected players.
+     * Sends onboarding invites and extra email verifications for the selected players.
      *
-     * @param invitePlayers - The players to invite.
-     * @returns A promise that resolves when invitations are handled.
+     * @param onboardPlayers - The players to onboard.
+     * @returns A promise that resolves when onboarding emails are handled.
      */
-    const handleSendInvitations = async (invitePlayers: PlayerDataType[]) => {
-        if (invitePlayers.length === 0) {
+    const handleOnboardPlayers = async (onboardPlayers: PlayerDataType[]) => {
+        if (onboardPlayers.length === 0) {
             notifications.show({
                 color: 'yellow',
                 title: 'No players selected',
-                message: 'Select at least one player to send invitations.',
+                message: 'Select at least one player to onboard.',
             });
             return;
         }
 
         const id = notifications.show({
             loading: true,
-            title: 'Sending invitations',
-            message: 'Sending invitations...',
+            title: 'Onboarding players',
+            message: 'Sending onboarding emails...',
             autoClose: false,
             withCloseButton: false,
         });
 
         try {
-            let sent = 0;
-            let skipped = 0;
+            let inviteSent = 0;
+            let inviteSkipped = 0;
+            let verificationSent = 0;
+            let verificationSkipped = 0;
 
-            for (const player of invitePlayers) {
+            for (const player of onboardPlayers) {
                 const email = getPreferredEmail(player);
                 if (!email) {
-                    skipped += 1;
-                    continue;
+                    inviteSkipped += 1;
+                } else {
+                    const inviteLink = await addPlayerInvite(player.id, email);
+                    const html = buildInviteEmail(inviteLink);
+                    await sendEmail(email, 'footy@toastboy.co.uk', 'Welcome to Toastboy FC!', html);
+                    inviteSent += 1;
                 }
 
-                const inviteLink = await addPlayerInvite(player.id, email);
-                const html = buildInviteEmail(inviteLink);
-                await sendEmail(email, 'footy@toastboy.co.uk', 'Welcome to Toastboy FC!', html);
-                sent += 1;
-            }
-
-            notifications.update({
-                id,
-                color: 'teal',
-                title: 'Invitations sent',
-                message: `Sent ${sent} invitation(s).${skipped ? ` Skipped ${skipped} without email.` : ''}`,
-                loading: false,
-                autoClose: config.notificationAutoClose,
-            });
-        } catch (err) {
-            console.error('Failed to send invitations:', err);
-            notifications.update({
-                id,
-                color: 'red',
-                title: 'Error',
-                message: `${String(err)}`,
-                loading: false,
-                autoClose: false,
-                withCloseButton: true,
-            });
-        }
-    };
-
-    /**
-     * Sends verification emails for any unverified extra addresses.
-     *
-     * @param verifyPlayers - The players whose emails should be verified.
-     * @returns A promise that resolves when verification emails are handled.
-     */
-    const handleSendVerifications = async (verifyPlayers: PlayerDataType[]) => {
-        if (verifyPlayers.length === 0) {
-            notifications.show({
-                color: 'yellow',
-                title: 'No players selected',
-                message: 'Select at least one player to send verification emails.',
-            });
-            return;
-        }
-
-        const id = notifications.show({
-            loading: true,
-            title: 'Sending verifications',
-            message: 'Sending verification emails...',
-            autoClose: false,
-            withCloseButton: false,
-        });
-
-        try {
-            let sent = 0;
-            let skipped = 0;
-
-            for (const player of verifyPlayers) {
-                const unverified = player.extraEmails.filter((email) => !email.verifiedAt);
+                const unverified = player.extraEmails.filter((extraEmail) => !extraEmail.verifiedAt);
                 if (unverified.length === 0) {
-                    skipped += 1;
-                    continue;
-                }
-
-                for (const email of unverified) {
-                    await sendEmailVerification(email.email, player);
-                    sent += 1;
+                    verificationSkipped += 1;
+                } else {
+                    for (const extraEmail of unverified) {
+                        await sendEmailVerification(extraEmail.email, player);
+                        verificationSent += 1;
+                    }
                 }
             }
 
             notifications.update({
                 id,
                 color: 'teal',
-                title: 'Verification emails sent',
-                message: `Sent ${sent} verification email(s).${skipped ? ` Skipped ${skipped} with no unverified emails.` : ''}`,
+                title: 'Onboarding sent',
+                message: [
+                    `Invites: ${inviteSent} sent`,
+                    inviteSkipped ? `${inviteSkipped} skipped` : null,
+                    `Verifications: ${verificationSent} sent`,
+                    verificationSkipped ? `${verificationSkipped} skipped` : null,
+                ].filter(Boolean).join('. ') + '.',
                 loading: false,
                 autoClose: config.notificationAutoClose,
             });
         } catch (err) {
-            console.error('Failed to send verification emails:', err);
+            console.error('Failed to onboard players:', err);
             notifications.update({
                 id,
                 color: 'red',
@@ -477,17 +430,9 @@ export const AdminPlayerList: React.FC<Props> = ({ players }) => {
                             size="xs"
                             type="button"
                             disabled={!hasSelection}
-                            onClick={() => handleSendInvitations(selectedPlayers)}
+                            onClick={() => handleOnboardPlayers(selectedPlayers)}
                         >
-                            Send invitations
-                        </Button>
-                        <Button
-                            size="xs"
-                            type="button"
-                            disabled={!hasSelection}
-                            onClick={() => handleSendVerifications(selectedPlayers)}
-                        >
-                            Send verification emails
+                            Onboard player
                         </Button>
                     </Group>
                 </Group>

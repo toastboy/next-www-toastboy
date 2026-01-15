@@ -2,7 +2,6 @@
 import { Notification } from '@mantine/core';
 import { IconX } from '@tabler/icons-react';
 
-import { MustBeLoggedIn } from '@/components/MustBeLoggedIn/MustBeLoggedIn';
 import { PlayerProfileForm } from '@/components/PlayerProfileForm/PlayerProfileForm';
 import { getCurrentUser } from '@/lib/authServer';
 import { config } from '@/lib/config';
@@ -27,8 +26,6 @@ const Page = async ({ searchParams: sp }: PageProps) => {
 
     const user = await getCurrentUser();
     const playerId = user?.playerId;
-
-    if (!user) return (<MustBeLoggedIn admin={false} />);
 
     if (!playerId) {
         return (
@@ -56,17 +53,15 @@ const Page = async ({ searchParams: sp }: PageProps) => {
     }
 
     return (
-        <MustBeLoggedIn admin={false}>
-            <PlayerProfileForm
-                player={player}
-                extraEmails={extraEmails}
-                countries={countries}
-                clubs={clubs}
-                allCountries={allCountries}
-                allClubs={allClubs}
-                verifiedEmail={verifiedEmail}
-            />
-        </MustBeLoggedIn>
+        <PlayerProfileForm
+            player={player}
+            extraEmails={extraEmails}
+            countries={countries}
+            clubs={clubs}
+            allCountries={allCountries}
+            allClubs={allClubs}
+            verifiedEmail={verifiedEmail}
+        />
     );
 };
 

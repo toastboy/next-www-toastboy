@@ -1,8 +1,7 @@
 'use client';
 
-import { Anchor, Button, Checkbox, Flex, RangeSlider, Switch, Table, Text, TextInput, Title, Tooltip } from '@mantine/core';
+import { Anchor, Box, Button, Checkbox, Flex, RangeSlider, Switch, Table, Text, TextInput, Title, Tooltip } from '@mantine/core';
 import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
-import { MustBeLoggedIn } from 'components/MustBeLoggedIn/MustBeLoggedIn';
 import { PlayerTimeline } from 'components/PlayerTimeline/PlayerTimeline';
 import { PlayerWDLChart } from 'components/PlayerWDLChart/PlayerWDLChart';
 import { SendEmailForm } from 'components/SendEmailForm/SendEmailForm';
@@ -97,7 +96,7 @@ const Page: React.FC<PageProps> = () => {
     }) : [];
 
     return (
-        <MustBeLoggedIn>
+        <Box>
             <Title order={1}>{sortedPlayers.length} Active{active ? " " : " and Former "}Players</Title>
             <Title order={3}>who last responded between {replyRange[0]} and {replyRange[1]} weeks ago</Title>
             <TextInput
@@ -187,7 +186,7 @@ const Page: React.FC<PageProps> = () => {
                     ))}
                 </Table.Tbody>
             </Table>
-        </MustBeLoggedIn>
+        </Box>
     );
 };
 

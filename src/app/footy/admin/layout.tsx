@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 
-import { MustBeLoggedIn } from '@/components/MustBeLoggedIn/MustBeLoggedIn';
+import { SignIn } from '@/components/SignIn/SignIn';
 import { getUserRole } from '@/lib/authServer';
 
 interface AdminLayoutProps {
@@ -18,7 +18,7 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
     const role = await getUserRole();
 
     if (role !== 'admin') {
-        return <MustBeLoggedIn admin={true} />;
+        return <SignIn admin={true} />;
     }
 
     return children;

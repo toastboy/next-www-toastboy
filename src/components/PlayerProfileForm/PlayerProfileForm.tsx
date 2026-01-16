@@ -43,8 +43,9 @@ export interface Props {
     verifiedEmail?: string;
 }
 
-type PlayerProfileFormValues = Omit<UpdatePlayerInput, 'clubs'> & {
+type PlayerProfileFormValues = Omit<UpdatePlayerInput, 'clubs' | 'finished'> & {
     clubs: string[];
+    retired: boolean;
 };
 
 export const PlayerProfileForm: React.FC<Props> = ({
@@ -80,6 +81,7 @@ export const PlayerProfileForm: React.FC<Props> = ({
         initialValues: {
             name: player.name ?? '',
             anonymous: player.anonymous ?? false,
+            retired: Boolean(player.finished),
             extraEmails: initialExtraEmails.length ? initialExtraEmails : [''],
             addedExtraEmails: [],
             removedExtraEmails: [],
@@ -111,10 +113,14 @@ export const PlayerProfileForm: React.FC<Props> = ({
                 .filter((email) => !initialExtraEmails.includes(email));
             const removedExtraEmails = initialExtraEmails
                 .filter((email) => !nextExtraEmails.includes(email));
+            const { retired, ...rest } = values;
+            const finished = retired ? (player.finished ?? new Date()) : null;
+
             await updatePlayer(
                 player.id,
                 {
-                    ...values,
+                    ...rest,
+                    finished,
                     extraEmails: nextExtraEmails,
                     addedExtraEmails,
                     removedExtraEmails,

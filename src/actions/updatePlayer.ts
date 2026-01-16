@@ -19,6 +19,7 @@ export async function updatePlayer(playerId: number, rawData: unknown) {
         name: data.name,
         born: data.born,
         comment: data.comment,
+        finished: data.finished ?? null,
     });
 
     addedExtraEmails.forEach(async (addedEmail) => {

@@ -45,10 +45,18 @@ describe('PlayerProfileForm', () => {
         );
 
         expect(screen.getByTestId('name-input')).toBeInTheDocument();
+        expect(screen.getByTestId('anonymous-switch')).toBeInTheDocument();
+        expect(screen.getByTestId('retired-switch')).toBeInTheDocument();
         expect(screen.getByTestId('account-email-input')).toBeInTheDocument();
         expect(screen.getByTestId('extra-email-input-0')).toBeInTheDocument();
+        expect(screen.getByTestId('extra-email-delete-button-0')).toBeInTheDocument();
+        expect(screen.getByTestId('add-extra-email-button')).toBeInTheDocument();
         expect(screen.getByTestId('born-input')).toBeInTheDocument();
+        expect(screen.getByTestId('countries-multiselect')).toBeInTheDocument();
+        expect(screen.getByTestId('clubs-multiselect')).toBeInTheDocument();
+        expect(screen.getByTestId('comment-textarea')).toBeInTheDocument();
         expect(screen.getByTestId('submit-button')).toBeInTheDocument();
+        expect(screen.getByTestId('delete-button')).toBeInTheDocument();
     });
 
     it('submits the form and shows a success notification', async () => {

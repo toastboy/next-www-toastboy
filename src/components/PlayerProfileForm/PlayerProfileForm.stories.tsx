@@ -48,9 +48,9 @@ export const ValidFill: Story = {
         } as Awaited<ReturnType<typeof updatePlayer>>);
 
         const canvas = within(canvasElement);
-        const nameInput = await canvas.findByLabelText(/Name/i);
-        const emailInput = await canvas.findByLabelText(/^Extra email address 2$/i);
-        const submitButton = await canvas.findByRole('button', { name: /Submit/i });
+        const nameInput = await canvas.findByTestId('name-input');
+        const emailInput = await canvas.findByTestId('extra-email-input-1');
+        const submitButton = await canvas.findByTestId('submit-button');
 
         await userEvent.clear(nameInput);
         await userEvent.type(nameInput, 'Gazza Playa');
@@ -73,9 +73,9 @@ export const BlankName: Story = {
         } as Awaited<ReturnType<typeof updatePlayer>>);
 
         const canvas = within(canvasElement);
-        const nameInput = await canvas.findByLabelText(/Name/i);
-        const emailInput = await canvas.findByLabelText(/^Extra email address 2$/i);
-        const submitButton = await canvas.findByRole('button', { name: /Submit/i });
+        const nameInput = await canvas.findByTestId('name-input');
+        const emailInput = await canvas.findByTestId('extra-email-input-1');
+        const submitButton = await canvas.findByTestId('submit-button');
 
         await userEvent.clear(nameInput);
         await userEvent.clear(emailInput);

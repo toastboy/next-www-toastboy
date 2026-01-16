@@ -104,7 +104,7 @@
     "@types/d3": "^7.4.3",
     "@types/debug": "^4.1.12",
     "@types/jest": "^30.0.0",
-    "@types/node": "^20.19.27",
+    "@types/node": "^20.19.30",
     "@types/nodemailer": "^7.0.5",
     "@types/react": "^19.2.8",
     "@types/react-dom": "^19.2.3",

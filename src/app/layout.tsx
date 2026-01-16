@@ -9,9 +9,11 @@ import '@mantine/tiptap/styles.css';
 /* eslint-enable simple-import-sort/imports */
 
 import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from '@mantine/core';
+
 import { Notifications } from '@mantine/notifications';
 import type { Metadata } from 'next';
 
+import CodeHighlightProvider from '@/components/CodeHighlightProvider/CodeHighlightProvider';
 import { CustomAppShell } from '@/components/CustomAppShell/CustomAppShell';
 import { getCurrentUser } from '@/lib/authServer';
 
@@ -42,11 +44,13 @@ export default async function RootLayout({
             </head>
             <body>
                 <MantineProvider defaultColorScheme="light">
-                    <Notifications />
-                    {/* <BreakpointDebugger /> */}
-                    <CustomAppShell user={user}>
-                        {children}
-                    </CustomAppShell>
+                    <CodeHighlightProvider>
+                        <Notifications />
+                        {/* <BreakpointDebugger /> */}
+                        <CustomAppShell user={user}>
+                            {children}
+                        </CustomAppShell>
+                    </CodeHighlightProvider>
                 </MantineProvider>
             </body>
         </html>

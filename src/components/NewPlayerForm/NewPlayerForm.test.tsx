@@ -167,11 +167,13 @@ describe('NewPlayerForm', () => {
                 expect.objectContaining({
                     color: 'red',
                     title: 'Error',
-                    message: expect.stringContaining('Error'),
                     loading: false,
                 }),
             );
         });
+
+        const [notification] = (notificationUpdateSpy.mock.calls[0] ?? []) as [{ message?: string }];
+        expect(notification?.message ?? '').toContain('Error');
 
         expect(consoleErrorSpy).toHaveBeenCalledWith(
             'Failed to create player:',

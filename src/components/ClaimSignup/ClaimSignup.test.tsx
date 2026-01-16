@@ -77,11 +77,15 @@ describe('ClaimSignup', () => {
                     email: props.email,
                     password: 'Password123',
                 },
-                expect.objectContaining({
-                    onError: expect.any(Function),
-                }),
+                expect.anything(),
             );
             expect(mockPush).toHaveBeenCalledWith(redirectPath);
         });
+
+        const [, options] = (mockSignUpEmail.mock.calls[0] ?? []) as [
+            { name: string; email: string; password: string },
+            { onError?: (error: unknown) => void },
+        ];
+        expect(options?.onError).toEqual(expect.any(Function));
     });
 });

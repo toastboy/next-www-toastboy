@@ -5,6 +5,7 @@ export * from './clubSupporterData';
 export * from './country';
 export * from './countrySupporter';
 export * from './countrySupporterData';
+export * from './downloadMyData';
 export * from './gameChat';
 export * from './gameDay';
 export * from './gameInvitation';

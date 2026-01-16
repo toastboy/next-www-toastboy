@@ -3,9 +3,8 @@ import { GameDaySchema } from 'prisma/zod/schemas/models/GameDay.schema';
 import { z } from 'zod';
 
 import { GameCalendar } from '@/components/GameCalendar/GameCalendar';
-import { loadJsonFixture } from '@/tests/shared/fixtures';
-
 import { Wrapper } from '@/tests/components/lib/common';
+import { loadJsonFixture } from '@/tests/shared/fixtures';
 
 const GameDayResponseSchema = GameDaySchema.extend({
     date: z.coerce.date(),

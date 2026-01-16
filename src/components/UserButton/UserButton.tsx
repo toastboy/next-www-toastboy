@@ -140,8 +140,8 @@ export const UserButton: React.FC<Props> = ({ user }) => {
             <Menu.Item
                 leftSection={<IconArrowsLeftRight size={14} />}
             >
-                <Link className={classes.link} href="/footy/download-data">
-                    Download all data
+                <Link className={classes.link} href="/footy/downloadmydata">
+                    Download my data
                 </Link>
             </Menu.Item>
             <Menu.Item

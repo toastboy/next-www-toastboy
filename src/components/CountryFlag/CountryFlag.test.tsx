@@ -2,7 +2,6 @@ import { render, screen } from '@testing-library/react';
 
 import { CountryFlag } from '@/components/CountryFlag/CountryFlag';
 import { Wrapper } from '@/tests/components/lib/common';
-
 import { defaultCountry } from '@/tests/mocks';
 
 describe('CountryFlag', () => {

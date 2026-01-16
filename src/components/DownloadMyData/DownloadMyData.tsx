@@ -140,6 +140,7 @@ const DownloadMyData: React.FC<Props> = ({ data }) => {
                             label="Games played"
                             checked={sections.outcomes}
                             onChange={(event) => toggleSection('outcomes', event.currentTarget.checked)}
+                            data-testid="downloadmydata-outcomes-toggle"
                         />
                     </Group>
 
@@ -148,6 +149,7 @@ const DownloadMyData: React.FC<Props> = ({ data }) => {
                         // defaultExpanded={false}
                         code={json}
                         language="json"
+                        data-testid="downloadmydata-json-preview"
                     />
                 </Stack>
             </Paper>

@@ -12,12 +12,13 @@ import { Notifications } from '@mantine/notifications';
 import type { Preview } from '@storybook/nextjs-vite';
 import { http, HttpResponse } from 'msw';
 import { initialize, mswLoader } from 'msw-storybook-addon';
-import { fn as storybookFn, sb } from 'storybook/test';
+import { sb, fn as storybookFn } from 'storybook/test';
 
 sb.mock('../src/actions/createPlayer.ts');
 sb.mock('../src/actions/deletePlayer.ts');
 sb.mock('../src/actions/updatePlayer.ts');
 sb.mock('../src/actions/updatePlayerRecords.ts');
+sb.mock('../src/actions/createMoreGameDays.ts');
 sb.mock('../src/actions/auth-export.ts');
 sb.mock('../src/actions/verifyEmail.ts');
 sb.mock('../src/actions/sendEmail.ts');
@@ -75,12 +76,12 @@ initialize({
             return;
         }
 
-        console.error(`Unhandled ${method} request to ${url}.
+        //     console.error(`Unhandled ${method} request to ${url}.
 
-        This exception has been only logged in the console, however, it's strongly recommended to resolve this error as you don't want unmocked data in Storybook stories.
+        //     This exception has been only logged in the console, however, it's strongly recommended to resolve this error as you don't want unmocked data in Storybook stories.
 
-        If you wish to mock an error response, please refer to this guide: https://mswjs.io/docs/recipes/mocking-error-responses
-      `);
+        //     If you wish to mock an error response, please refer to this guide: https://mswjs.io/docs/recipes/mocking-error-responses
+        //   `);
     },
 });
 

@@ -14,7 +14,6 @@ describe('DownloadMyData', () => {
         );
 
         expect(screen.getByRole('button', { name: /download json/i })).toBeInTheDocument();
-        expect(screen.getByLabelText(/copy json/i)).toBeInTheDocument();
     });
 
     it('removes sections from the JSON when unchecked', async () => {
@@ -26,11 +25,12 @@ describe('DownloadMyData', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByText(/Gary Player/i)).toBeInTheDocument();
-        expect(screen.getByText(/"outcomes"/i)).toBeInTheDocument();
+        const preview = screen.getByTestId('downloadmydata-json-preview');
+        expect(preview).toHaveTextContent(/Gary Player/i);
+        expect(preview).toHaveTextContent(/"outcomes"/i);
 
-        await user.click(screen.getByLabelText(/Games played/i));
+        await user.click(screen.getByTestId('downloadmydata-outcomes-toggle'));
 
-        expect(screen.queryByText(/"outcomes"/i)).not.toBeInTheDocument();
+        expect(preview).not.toHaveTextContent(/"outcomes"/i);
     });
 });

@@ -17,7 +17,7 @@ import z from 'zod';
 
 /** Field definitions with extra validation */
 const extendedFields = {
-    id: z.number().int().min(0),
+    id: z.number().int().min(0).optional(),
     pickerGamesHistory: z.union([z.literal(5), z.literal(10)]).nullable().optional(),
 };
 

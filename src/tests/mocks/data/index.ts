@@ -11,6 +11,7 @@ export * from './gameDay';
 export * from './gameInvitation';
 export * from './gameYears';
 export * from './outcome';
+export * from './moreGamesForm';
 export * from './player';
 export * from './playerData';
 export * from './playerExtraEmail';

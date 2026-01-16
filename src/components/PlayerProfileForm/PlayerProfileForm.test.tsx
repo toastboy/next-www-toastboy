@@ -68,17 +68,29 @@ describe('PlayerProfileForm', () => {
             </Wrapper>,
         );
 
-        await user.click(screen.getByTestId('submit-button'));
+        const nameInput = screen.getByTestId('name-input');
+        const submitButton = screen.getByTestId('submit-button');
+
+        await user.clear(nameInput);
+        await user.type(nameInput, `${defaultPlayer.name ?? ''} Jr`);
+        await waitFor(() => {
+            expect(submitButton).toBeEnabled();
+        });
+        await user.click(submitButton);
 
         await waitFor(() => {
             expect(mockUpdatePlayer).toHaveBeenCalledWith(
                 defaultPlayer.id,
                 expect.objectContaining({
-                    name: defaultPlayer.name,
+                    addedExtraEmails: [],
                     anonymous: defaultPlayer.anonymous,
-                    extraEmails: defaultPlayerExtraEmails.map((entry) => entry.email),
-                    countries: defaultCountrySupporterDataList.map((entry) => entry.country.isoCode),
+                    born: defaultPlayer.born,
                     clubs: defaultClubSupporterDataList.map((entry) => entry.clubId.toString()),
+                    countries: defaultCountrySupporterDataList.map((entry) => entry.country.isoCode),
+                    extraEmails: defaultPlayerExtraEmails.map((entry) => entry.email),
+                    finished: defaultPlayer.finished,
+                    name: `${defaultPlayer.name ?? ''} Jr`,
+                    removedExtraEmails: [],
                 }),
             );
         });

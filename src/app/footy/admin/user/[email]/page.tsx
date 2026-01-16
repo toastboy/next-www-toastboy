@@ -58,7 +58,10 @@ const Page: React.FC<PageProps> = (props) => {
                 </Title>
             </Center>
 
-            <CodeHighlight code={JSON.stringify(user, null, 2)} language="json" />
+            <CodeHighlight
+                code={JSON.stringify(user, null, 2)}
+                language="json"
+            />
         </Container>
     );
 };

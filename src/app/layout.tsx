@@ -13,7 +13,6 @@ import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from '@mantine/c
 import { Notifications } from '@mantine/notifications';
 import type { Metadata } from 'next';
 
-import CodeHighlightProvider from '@/components/CodeHighlightProvider/CodeHighlightProvider';
 import { CustomAppShell } from '@/components/CustomAppShell/CustomAppShell';
 import { getCurrentUser } from '@/lib/authServer';
 
@@ -44,13 +43,11 @@ export default async function RootLayout({
             </head>
             <body>
                 <MantineProvider defaultColorScheme="light">
-                    <CodeHighlightProvider>
-                        <Notifications />
-                        {/* <BreakpointDebugger /> */}
-                        <CustomAppShell user={user}>
-                            {children}
-                        </CustomAppShell>
-                    </CodeHighlightProvider>
+                    <Notifications />
+                    {/* <BreakpointDebugger /> */}
+                    <CustomAppShell user={user}>
+                        {children}
+                    </CustomAppShell>
                 </MantineProvider>
             </body>
         </html>

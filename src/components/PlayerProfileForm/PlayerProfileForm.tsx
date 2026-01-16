@@ -6,6 +6,7 @@ import {
     ComboboxData,
     ComboboxItem,
     ComboboxItemGroup,
+    Container,
     Flex,
     MultiSelect,
     NumberInput,
@@ -18,6 +19,7 @@ import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck, IconQuestionMark, IconTrash } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
+import Link from 'next/link';
 import { ClubType } from 'prisma/zod/schemas/models/Club.schema';
 import { CountryType } from 'prisma/zod/schemas/models/Country.schema';
 import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
@@ -168,157 +170,218 @@ export const PlayerProfileForm: React.FC<Props> = ({
     );
 
     return (
-        <Box
-            maw={400}
-            component="form"
-            onSubmit={form.onSubmit(handleSubmit)}
-        >
-            <TextInput
-                label="Name"
-                data-testid="name-input"
-                required
-                {...form.getInputProps('name')}
-            />
-            <Switch
-                mt="sm"
-                mb="md"
-                label="Anonymous"
-                data-testid="anonymous-switch"
-                description={[
-                    `If selected, you will appear as 'Player ${player.id.toString()}' `,
-                    `on the public site, with no picture or other identifying information. `,
-                    `Your email addresses will never be shown regardless of this setting `,
-                    `unless a player is logged in.`,
-                ].join('')}
-                {...form.getInputProps('anonymous', { type: 'checkbox' })}
-            />
-            <TextInput
-                label="Account email"
-                data-testid="account-email-input"
-                description="This is the email address you use to log in."
-                value={player.accountEmail ?? ''}
-                readOnly
-                disabled
-            />
+        <Container size="xs" mt="xl">
             <Box
-                mt="md"
-                p="md"
-                style={{
-                    border: '1px solid var(--mantine-color-gray-3)',
-                    borderRadius: 'var(--mantine-radius-md)',
-                }}
+                maw={400}
+                component="form"
+                onSubmit={form.onSubmit(handleSubmit)}
             >
-                {form.values.extraEmails.map((email, index) => {
-                    const address = `address ${index + 1}`;
-                    const isVerified = extraEmails.some(
-                        (value) => (value.email === email && value.verifiedAt !== null),
-                    );
-                    const verificationPending = extraEmails.some(
-                        (value) => (value.email === email && value.verifiedAt === null),
-                    );
-                    const verificationMessage = isVerified ?
-                        `Extra email ${address} is verified` :
-                        (verificationPending ?
-                            `Verification email has been sent to ${email}` :
-                            `Verification email will be sent to ${email} upon submission`);
-
-                    return (
-                        <Flex key={index} mb="md" gap="sm" align="flex-end">
-                            <EmailInput
-                                label={`Extra email ${address}`}
-                                data-testid={`extra-email-input-${index}`}
-                                style={{ flex: 1 }}
-                                rightSection={
-                                    <Activity
-                                        mode={email?.trim().length ? 'visible' : 'hidden'}
-                                    >
-                                        <Tooltip
-                                            label={verificationMessage}
-                                            withArrow
-                                        >
-                                            {isVerified ?
-                                                <IconCheck
-                                                    size={16}
-                                                    aria-label={verificationMessage}
-                                                /> :
-                                                <IconQuestionMark
-                                                    size={16}
-                                                    aria-label={verificationMessage}
-                                                />
-                                            }
-                                        </Tooltip>
-                                    </Activity>
-                                }
-                                {...form.getInputProps(`extraEmails.${index}`)}
-                            />
-                            <Tooltip
-                                label={`Delete extra email ${address}`}
-                                withArrow
-                            >
-                                <Button
-                                    data-testid={`extra-email-delete-button-${index}`}
-                                    variant="subtle"
-                                    color="red"
-                                    aria-label={`Delete extra email ${address}`}
-                                    onClick={() => form.removeListItem('extraEmails', index)}
-                                >
-                                    <IconTrash size={16} />
-                                </Button>
-                            </Tooltip>
-                        </Flex>
-                    );
-                })}
-
-                <Button
-                    type="button"
-                    variant="light"
-                    data-testid="add-extra-email-button"
-                    onClick={() => form.insertListItem('extraEmails', '')}
+                <TextInput
+                    label="Name"
+                    data-testid="name-input"
+                    required
+                    {...form.getInputProps('name')}
+                />
+                <Flex
+                    align="center"
+                    gap="md"
+                    justify="space-between"
+                    mb="md"
+                    mt="sm"
+                    wrap="wrap"
+                    w="100%"
                 >
-                    Add another email
-                </Button>
+                    <Tooltip
+                        label={[
+                            `If selected, you will appear as 'Player ${player.id.toString()}' `,
+                            `on the public site, with no picture or other identifying information.`,
+                        ].join('')}
+                        withArrow
+                        multiline
+                        w={220}
+                    >
+                        <Box>
+                            <Switch
+                                label="Anonymous"
+                                data-testid="anonymous-switch"
+                                {...form.getInputProps('anonymous', { type: 'checkbox' })}
+                            />
+                        </Box>
+                    </Tooltip>
+                    <Tooltip
+                        label={[
+                            `When selected, you will no longer receive match invitations. `,
+                            `You can always change this later. If instead you want to `,
+                            `delete your account permanently, please use the 'Delete Account' `,
+                            `button below.`,
+                        ].join('')}
+                        withArrow
+                        multiline
+                        w={220}
+                    >
+                        <Box>
+                            <Switch
+                                label="Retired"
+                                data-testid="retired-switch"
+                                {...form.getInputProps('retired', { type: 'checkbox' })}
+                            />
+                        </Box>
+                    </Tooltip>
+                </Flex>
+                <TextInput
+                    label="Account email"
+                    data-testid="account-email-input"
+                    description="This is the email address you use to log in."
+                    value={player.accountEmail ?? ''}
+                    readOnly
+                    disabled
+                />
+                <Box
+                    mt="md"
+                    p="md"
+                    style={{
+                        border: '1px solid var(--mantine-color-gray-3)',
+                        borderRadius: 'var(--mantine-radius-md)',
+                    }}
+                >
+                    {form.values.extraEmails.map((email, index) => {
+                        const address = `address ${index + 1}`;
+                        const isVerified = extraEmails.some(
+                            (value) => (value.email === email && value.verifiedAt !== null),
+                        );
+                        const verificationPending = extraEmails.some(
+                            (value) => (value.email === email && value.verifiedAt === null),
+                        );
+                        const verificationMessage = isVerified ?
+                            `Extra email ${address} is verified` :
+                            (verificationPending ?
+                                `Verification email has been sent to ${email}` :
+                                `Verification email will be sent to ${email} upon submission`);
+
+                        return (
+                            <Flex
+                                key={index}
+                                mb="md"
+                                gap="sm"
+                                align="flex-end"
+                            >
+                                <EmailInput
+                                    label={`Extra email ${address}`}
+                                    data-testid={`extra-email-input-${index}`}
+                                    style={{ flex: 1 }}
+                                    rightSection={
+                                        <Activity
+                                            mode={email?.trim().length ? 'visible' : 'hidden'}
+                                        >
+                                            <Tooltip
+                                                label={verificationMessage}
+                                                withArrow
+                                            >
+                                                {isVerified ?
+                                                    <IconCheck
+                                                        size={16}
+                                                        aria-label={verificationMessage}
+                                                    /> :
+                                                    <IconQuestionMark
+                                                        size={16}
+                                                        aria-label={verificationMessage}
+                                                    />
+                                                }
+                                            </Tooltip>
+                                        </Activity>
+                                    }
+                                    {...form.getInputProps(`extraEmails.${index}`)}
+                                />
+                                <Tooltip
+                                    label={`Delete extra email ${address}`}
+                                    withArrow
+                                >
+                                    <Button
+                                        data-testid={`extra-email-delete-button-${index}`}
+                                        variant="subtle"
+                                        color="red"
+                                        aria-label={`Delete extra email ${address}`}
+                                        onClick={() => form.removeListItem('extraEmails', index)}
+                                    >
+                                        <IconTrash size={16} />
+                                    </Button>
+                                </Tooltip>
+                            </Flex>
+                        );
+                    })}
+
+                    <Button
+                        type="button"
+                        variant="light"
+                        data-testid="add-extra-email-button"
+                        onClick={() => form.insertListItem('extraEmails', '')}
+                    >
+                        Add another email
+                    </Button>
+                </Box>
+
+                <NumberInput
+                    label="Year of Birth"
+                    data-testid="born-input"
+                    description="Helps pick balanced sides"
+                    placeholder="Not shown on the public site"
+                    {...form.getInputProps('born')}
+                />
+
+                <MultiSelect
+                    label="National Team(s)"
+                    data-testid="countries-multiselect"
+                    placeholder="What national team(s) do you support?"
+                    data={countryData}
+                    searchable
+                    {...form.getInputProps('countries')}
+                />
+
+                <MultiSelect
+                    label="Club(s)"
+                    data-testid="clubs-multiselect"
+                    placeholder="What club(s) do you support?"
+                    data={clubData}
+                    searchable
+                    {...form.getInputProps('clubs')}
+                />
+
+                <Textarea
+                    label="Comment"
+                    data-testid="comment-textarea"
+                    placeholder="Add a comment"
+                    {...form.getInputProps('comment')}
+                />
+
+                <Flex
+                    align="center"
+                    gap="md"
+                    justify="space-between"
+                    mb="md"
+                    mt="sm"
+                    wrap="wrap"
+                    w="100%"
+                >
+                    <Button
+                        data-testid="submit-button"
+                        disabled={!form.isDirty()}
+                        mt="md"
+                        type="submit"
+                    >
+                        Save Changes
+                    </Button>
+                    <Button
+                        color="red"
+                        component={Link}
+                        data-testid="delete-button"
+                        href="/footy/deleteaccount"
+                        mt="md"
+                        type="button"
+                    >
+                        Delete Account
+                    </Button>
+                </Flex>
             </Box>
-
-            <NumberInput
-                label="Year of Birth"
-                data-testid="born-input"
-                description="Helps pick balanced sides"
-                placeholder="Not shown on the public site"
-                {...form.getInputProps('born')}
-            />
-
-            <MultiSelect
-                label="National Team(s)"
-                data-testid="countries-multiselect"
-                placeholder="What national team(s) do you support?"
-                data={countryData}
-                searchable
-                {...form.getInputProps('countries')}
-            />
-
-            <MultiSelect
-                label="Club(s)"
-                data-testid="clubs-multiselect"
-                placeholder="What club(s) do you support?"
-                data={clubData}
-                searchable
-                {...form.getInputProps('clubs')}
-            />
-
-            <Textarea
-                label="Comment"
-                data-testid="comment-textarea"
-                placeholder="Add a comment"
-                {...form.getInputProps('comment')}
-            />
-
-            <Button
-                type="submit"
-                mt="md"
-                data-testid="submit-button"
-            >
-                Submit
-            </Button>
-        </Box>
+        </Container>
     );
 };

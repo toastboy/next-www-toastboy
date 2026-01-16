@@ -87,6 +87,10 @@ export const DeleteAccountForm: React.FC<Props> = () => {
                     <Text component="li">
                         Any extra emails will be removed from the system.
                     </Text>
+                    <Text component="li">
+                        Your game statistics will be retained in an anonymized form
+                        for overall site statistics.
+                    </Text>
                 </Box>
             </Stack>
 

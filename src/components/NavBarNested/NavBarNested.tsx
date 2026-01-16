@@ -85,24 +85,6 @@ export const NavBarNested: React.FC<Props> = ({ user }) => {
             ],
         },
         {
-            "label": "Account",
-            "initiallyOpened": true,
-            "links": [
-                {
-                    "label": "Profile",
-                    "link": "/footy/profile",
-                },
-                {
-                    "label": "Change Password",
-                    "link": "/footy/password",
-                },
-                {
-                    "label": "Forgot Password",
-                    "link": "/footy/forgottenpassword",
-                },
-            ],
-        },
-        {
             "label": "Admin",
             "initiallyOpened": true,
             "links": [

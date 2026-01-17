@@ -1,6 +1,7 @@
 'use client';
 
 import {
+    Anchor,
     Box,
     Button,
     Checkbox,
@@ -69,7 +70,6 @@ export const DeleteAccountForm: React.FC<Props> = () => {
         </Notification>
     ) : null);
 
-    // TODO Add blurb and link to email unsubscribe as an alternative to deleting account
     return (
         <Container size="xs" mt="xl">
             <Stack>
@@ -78,7 +78,12 @@ export const DeleteAccountForm: React.FC<Props> = () => {
                 </Title>
                 <Text>
                     This will permanently remove your personal information and any extra emails
-                    linked to your account.
+                    linked to your account. If instead you would like to simply stop receiving
+                    emails from us, you can select 'retired'
+                    in <Anchor href="/footy/profile">your profile</Anchor>.
+                </Text>
+                <Text>
+                    By deleting your account data:
                 </Text>
                 <Box component="ul" pl="md" m={0}>
                     <Text component="li">

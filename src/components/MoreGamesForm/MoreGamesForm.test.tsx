@@ -9,6 +9,7 @@ import { createMoreGameDays } from '@/actions/createMoreGameDays';
 import { MoreGamesForm } from '@/components/MoreGamesForm/MoreGamesForm';
 import { Wrapper } from '@/tests/components/lib/common';
 import { defaultMoreGamesFormData } from '@/tests/mocks';
+import type { CreateMoreGameDaysInput } from '@/types/CreateMoreGameDaysInput';
 
 const mockCreateMoreGameDays = createMoreGameDays as jest.MockedFunction<typeof createMoreGameDays>;
 
@@ -48,15 +49,17 @@ describe('MoreGamesForm', () => {
         await user.click(submitButton);
 
         await waitFor(() => {
-            expect(mockCreateMoreGameDays).toHaveBeenCalledWith({
-                rows: expect.arrayContaining([
+            const payload = mockCreateMoreGameDays.mock.calls[0]?.[0] as CreateMoreGameDaysInput;
+
+            expect(payload.rows).toEqual(
+                expect.arrayContaining([
                     expect.objectContaining({
                         date: firstDate,
                         game: false,
                         comment: 'Updated note',
                     }),
                 ]),
-            });
+            );
         });
     });
 });

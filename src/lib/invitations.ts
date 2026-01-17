@@ -2,7 +2,7 @@ import 'server-only';
 
 import gameDayService from '@/services/GameDay';
 
-export type InvitationDecision = {
+export interface InvitationDecision {
     status: 'ready' | 'skipped';
     reason: 'ready' | 'no-upcoming-game' | 'already-sent' | 'too-early';
     gameDayId?: number;
@@ -10,7 +10,7 @@ export type InvitationDecision = {
     mailDate?: Date;
     overrideTimeCheck: boolean;
     customMessage?: string | null;
-};
+}
 
 const isWorkingDay = (date: Date) => {
     const day = date.getDay();

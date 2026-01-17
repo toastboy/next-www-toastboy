@@ -30,7 +30,7 @@ export const POST = async (request: NextRequest) => {
     let overrideTimeCheck = false;
     let customMessage: string | undefined;
 
-    const body = await request.json().catch(() => null);
+    const body: unknown = await request.json().catch(() => null);
     if (body) {
         const parsed = NewGameInputSchema.partial().safeParse(body);
         if (parsed.success) {

@@ -79,7 +79,7 @@ export const DeleteAccountForm: React.FC<Props> = () => {
                 <Text>
                     This will permanently remove your personal information and any extra emails
                     linked to your account. If instead you would like to simply stop receiving
-                    emails from us, you can select 'retired'
+                    emails from us, you can select &lsquo;retired&rsquo;
                     in <Anchor href="/footy/profile">your profile</Anchor>.
                 </Text>
                 <Text>
@@ -118,6 +118,11 @@ export const DeleteAccountForm: React.FC<Props> = () => {
                         label="I understand that all of my personal data will be deleted."
                         {...form.getInputProps('confirmPii', { type: 'checkbox' })}
                     />
+                    <Text>
+                        Before you delete your account data, you may wish to download your personal
+                        information first. You can do this by going to
+                        the <Anchor href="/footy/downloadmydata">data download page</Anchor>.
+                    </Text>
                     {notification}
                     <Button
                         data-testid="submit-button"

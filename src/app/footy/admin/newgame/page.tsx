@@ -1,10 +1,15 @@
-import { NYI } from '@/components/NYI/NYI';
+import { Container, Title } from '@mantine/core';
+
+import { NewGameForm } from '@/components/NewGameForm/NewGameForm';
 
 type PageProps = object;
 
 const Page: React.FC<PageProps> = () => {
     return (
-        <NYI />
+        <Container size="sm">
+            <Title order={2} mb="md">New game</Title>
+            <NewGameForm />
+        </Container>
     );
 };
 

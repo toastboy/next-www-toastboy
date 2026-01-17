@@ -113,6 +113,24 @@ export class GameDayService {
     }
 
     /**
+     * Retrieves the next upcoming GameDayType where a game is scheduled.
+     * @param from - Optional date to compare against; defaults to now.
+     */
+    async getUpcoming(from: Date = new Date()): Promise<GameDayType | null> {
+        try {
+            const where = GameDayWhereInputObjectSchema.parse({
+                game: true,
+                date: { gte: from },
+            });
+
+            return prisma.gameDay.findFirst({ where, orderBy: { date: 'asc' } });
+        } catch (error) {
+            log(`Error fetching upcoming GameDayType: ${String(error)}`);
+            throw error;
+        }
+    }
+
+    /**
      * Retrieves the previous `GameDayType` based on the provided `gameDayId`.
      *
      * This method fetches the current game day using the given ID, then finds the most recent

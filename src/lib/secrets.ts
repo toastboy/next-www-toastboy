@@ -22,6 +22,8 @@ const secrets = {
     MICROSOFT_CLIENT_ID: process.env.MICROSOFT_CLIENT_ID,
     MICROSOFT_CLIENT_SECRET: process.env.MICROSOFT_CLIENT_SECRET,
 
+    CRON_SECRET: process.env.CRON_SECRET,
+
     MAIL_FROM_ADDRESS: process.env.MAIL_FROM_ADDRESS ?? 'footy@toastboy.co.uk',
     MAIL_FROM_NAME: process.env.MAIL_FROM_NAME ?? 'Toastboy FC Mailer',
     SMTP_HOST: process.env.SMTP_HOST ?? 'toastboy-co-uk.mail.protection.outlook.com',
@@ -78,5 +80,3 @@ export function getSecrets(): typeof secrets {
     cachedSecrets = result;
     return cachedSecrets;
 }
-
-export default getSecrets();

@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 
-import { handleGET } from '@/lib/api';
+import { buildAdminOnlyResponse, handleGET } from '@/lib/api';
 import playerRecordService from '@/services/PlayerRecord';
 
 export const GET = async (request: NextRequest, props: { params: Promise<Record<string, string>> }) => {
@@ -12,5 +12,6 @@ export const GET = async (request: NextRequest, props: { params: Promise<Record<
     return handleGET(
         () => playerRecordService.getProgress(),
         { params },
+        { buildResponse: buildAdminOnlyResponse },
     );
 };

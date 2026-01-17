@@ -100,10 +100,12 @@ export const MoreGamesForm: React.FC<Props> = ({ rows }) => {
         <Box
             component="form"
             onSubmit={form.onSubmit(handleSubmit)}
+            data-testid="moregames-form"
         >
             <Table
                 highlightOnHover
                 withTableBorder
+                data-testid="moregames-table"
             >
                 <TableThead>
                     <TableTr>
@@ -116,13 +118,13 @@ export const MoreGamesForm: React.FC<Props> = ({ rows }) => {
                     {groupedRows.map((group, groupIndex) => (
                         <Fragment key={`${group.label}-${groupIndex}`}>
                             <TableTr>
-                                <TableTh colSpan={3}>
-                                    <Text fw={600} c='gray'>{group.label}</Text>
+                                <TableTh colSpan={3} data-testid="moregames-month">
+                                    <Text fw={600} c="gray">{group.label}</Text>
                                 </TableTh>
                             </TableTr>
                             {group.rows.map(({ row, index }) => {
                                 return (
-                                    <TableTr key={row.date}>
+                                    <TableTr key={row.date} data-testid="moregames-row">
                                         <TableTd>
                                             <Text fw={500}>{row.date}</Text>
                                         </TableTd>
@@ -147,7 +149,7 @@ export const MoreGamesForm: React.FC<Props> = ({ rows }) => {
                 </TableTbody>
             </Table>
 
-            <Button type="submit" mt="md">
+            <Button type="submit" mt="md" data-testid="moregames-submit">
                 Create game days
             </Button>
         </Box>

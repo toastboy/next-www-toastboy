@@ -23,6 +23,7 @@ sb.mock('../src/actions/auth-export.ts');
 sb.mock('../src/actions/verifyEmail.ts');
 sb.mock('../src/actions/sendEmail.ts');
 sb.mock('../src/actions/sendEnquiry.ts');
+sb.mock('../src/actions/triggerInvitations.ts');
 sb.mock('../src/lib/auth-client.ts');
 sb.mock('../prisma/prisma.ts');
 

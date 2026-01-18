@@ -71,5 +71,7 @@ export class SomeModelService { async get(id: number) { const where = SomeModelW
 3. Include targeted Jest tests (service/component) + optional Playwright if user flow changes.
 4. Run with `op run ... npm run build` before shipping (ensures prisma + Sentry ok).
 5. Preserve existing Sentry/middleware settings unless intentionally changing observability.
+6. When checking spelling and grammar, use British English.
+7. All substantive functions should have comprehensive doc comments.
 
 Feedback: Tell us if any section lacks clarity (e.g., data flow, testing boundaries, auth patterns) so we can refine.

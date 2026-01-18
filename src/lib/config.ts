@@ -7,6 +7,7 @@ const rawConfig: ConfigType = {
     sessionRevalidate: 60000,
     notificationAutoClose: 4000,
     notificationIconSize: 18,
+    organiserPhoneNumber: '07802 346128',
 };
 
 // App-wide configuration object which is runtime-validated using zod. If this

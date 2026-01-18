@@ -9,6 +9,7 @@ export * from './downloadMyData';
 export * from './gameChat';
 export * from './gameDay';
 export * from './gameInvitation';
+export * from './gameInvitationResponse';
 export * from './gameYears';
 export * from './moreGamesForm';
 export * from './newGame';

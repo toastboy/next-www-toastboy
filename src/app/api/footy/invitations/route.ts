@@ -1,7 +1,7 @@
 import { timingSafeEqual } from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { getInvitationDecision } from '@/lib/invitations';
+import { triggerInvitations } from '@/actions/triggerInvitations';
 import { getSecrets } from '@/lib/secrets';
 import { NewGameInputSchema } from '@/types/NewGameInput';
 
@@ -74,9 +74,9 @@ export const POST = async (request: NextRequest) => {
         }
     }
 
-    const decision = await getInvitationDecision({
+    const decision = await triggerInvitations({
         overrideTimeCheck,
-        customMessage: customMessage && customMessage.length > 0 ? customMessage : null,
+        customMessage: customMessage && customMessage.length > 0 ? customMessage : '',
     });
 
     return NextResponse.json(decision, { status: 200 });

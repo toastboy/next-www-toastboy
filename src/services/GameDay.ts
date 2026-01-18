@@ -365,6 +365,31 @@ export class GameDayService {
     }
 
     /**
+     * Marks a GameDay as having its mail sent by updating the mailSent timestamp.
+     *
+     * @param gameDayId - The unique identifier of the GameDay to update
+     * @param mailSent - The date when the mail was sent. Defaults to current date/time if not provided
+     * @returns A Promise that resolves to the updated GameDay object
+     * @throws Will throw an error if the database update fails or if the gameDayId is invalid
+     */
+    async markMailSent(gameDayId: number, mailSent: Date = new Date()): Promise<GameDayType> {
+        // TODO: Tests for markMailSent
+        try {
+            const where = GameDayWhereUniqueInputObjectSchema.parse({ id: gameDayId });
+
+            return await prisma.gameDay.update({
+                where,
+                data: {
+                    mailSent,
+                },
+            });
+        } catch (error) {
+            log(`Error marking GameDay mail sent: ${String(error)}`);
+            throw error;
+        }
+    }
+
+    /**
      * Deletes a gameDay by its ID.
      * @param id - The ID of the gameDay to delete.
      * @throws If there is an error deleting the gameDay.

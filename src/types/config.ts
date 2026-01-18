@@ -16,6 +16,8 @@ export interface ConfigType {
     notificationAutoClose: number;
     /** Icon size for notifications. */
     notificationIconSize: number;
+    /** Organiser's phone number for contact. */
+    organiserPhoneNumber: string;
 }
 
 export const ConfigSchema: z.ZodType<ConfigType> = z.object({
@@ -25,4 +27,5 @@ export const ConfigSchema: z.ZodType<ConfigType> = z.object({
     sessionRevalidate: z.number().int().nonnegative(),
     notificationAutoClose: z.number().int().nonnegative(),
     notificationIconSize: z.number().int().nonnegative(),
+    organiserPhoneNumber: z.string().min(1),
 });

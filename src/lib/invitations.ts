@@ -25,8 +25,6 @@ export interface InvitationDecision {
     gameDayId?: number;
     gameDate?: Date;
     mailDate?: Date;
-    overrideTimeCheck: boolean;
-    customMessage?: string | null;
 }
 
 /**
@@ -107,37 +105,27 @@ const getMailDate = (gameDate: Date) => {
  * }
  * ```
  */
-export async function getInvitationDecision({
-    overrideTimeCheck,
-    customMessage,
-}: {
-    overrideTimeCheck: boolean;
-    customMessage?: string | null;
-}): Promise<InvitationDecision> {
+export async function getInvitationDecision(override = false): Promise<InvitationDecision> {
     const upcomingGame = await gameDayService.getUpcoming();
 
     if (!upcomingGame) {
         return {
             status: 'skipped',
             reason: 'no-upcoming-game',
-            overrideTimeCheck,
-            customMessage,
         };
     }
 
-    if (upcomingGame.mailSent) {
+    if (upcomingGame.mailSent && !override) {
         return {
             status: 'skipped',
             reason: 'already-sent',
             gameDayId: upcomingGame.id,
             gameDate: upcomingGame.date,
-            overrideTimeCheck,
-            customMessage,
         };
     }
 
     const mailDate = getMailDate(upcomingGame.date);
-    const shouldSend = overrideTimeCheck || new Date() >= mailDate;
+    const shouldSend = override || new Date() >= mailDate;
 
     return {
         status: shouldSend ? 'ready' : 'skipped',
@@ -145,7 +133,5 @@ export async function getInvitationDecision({
         gameDayId: upcomingGame.id,
         gameDate: upcomingGame.date,
         mailDate,
-        overrideTimeCheck,
-        customMessage,
     };
 }

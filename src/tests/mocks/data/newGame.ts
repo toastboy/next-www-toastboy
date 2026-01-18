@@ -9,8 +9,6 @@ export const defaultNewGameInput: NewGameInput = {
 export const defaultInvitationDecision: InvitationDecision = {
     status: 'ready',
     reason: 'ready',
-    overrideTimeCheck: false,
-    customMessage: null,
 };
 
 export const createMockInvitationDecision = (

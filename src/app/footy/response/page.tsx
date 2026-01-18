@@ -4,28 +4,55 @@ import { Anchor, Box, Text } from '@mantine/core';
 import { redirect } from 'next/navigation';
 
 import { GameInvitationResponseForm } from '@/components/GameInvitationResponseForm/GameInvitationResponseForm';
-import { getGameInvitationResponseDetails } from '@/lib/gameInvitations';
+import type { GameInvitationResponseDetails } from '@/types/GameInvitationResponseDetails';
 
 interface PageProps {
     searchParams?: Promise<{
         token?: string;
-        uuid?: string;
+        playerId?: string;
+        playerName?: string;
+        playerLogin?: string;
+        gameDayId?: string;
+        response?: string;
+        goalie?: string;
+        comment?: string;
+        error?: string;
     }>;
 }
 
 const Page = async ({ searchParams: sp }: PageProps) => {
     const searchParams = await sp;
-    const token = searchParams?.token ?? searchParams?.uuid ?? '';
+    const { token, playerId, playerName, playerLogin, gameDayId, response, goalie, comment } = searchParams ?? {};
+    const errorMessage = searchParams?.error ?? '';
 
-    if (!token) {
+    if (!token && !errorMessage) {
         redirect('/footy/game');
     }
 
-    const details = await getGameInvitationResponseDetails(token);
-    if (!details) {
+    if (errorMessage) {
         return (
             <Box>
-                <Text>Invitation not found.</Text>
+                <Text>{errorMessage}</Text>
+                <Anchor href="/footy/game">Go to the game page</Anchor>
+            </Box>
+        );
+    }
+
+    const details: GameInvitationResponseDetails = {
+        token: token ?? '',
+        playerId: Number(playerId),
+        playerName: playerName ?? '',
+        playerLogin: playerLogin ?? null,
+        gameDayId: Number(gameDayId ?? 0),
+        response: (response as GameInvitationResponseDetails['response']) ?? null,
+        goalie: goalie === 'true',
+        comment: comment ?? null,
+    };
+
+    if (!details.playerId || !details.playerName || !details.gameDayId) {
+        return (
+            <Box>
+                <Text>Invitation details are missing.</Text>
                 <Anchor href="/footy/game">Go to the game page</Anchor>
             </Box>
         );

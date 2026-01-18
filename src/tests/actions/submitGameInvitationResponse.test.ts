@@ -15,7 +15,7 @@ describe('submitGameInvitationResponse', () => {
     beforeEach(() => {
         jest.clearAllMocks();
         mockGameInvitationService.get.mockResolvedValue({
-            uuid: '{123e4567-e89b-12d3-a456-426614174000}',
+            uuid: '123e4567-e89b-12d3-a456-426614174000',
             playerId: 7,
             gameDayId: 99,
         } as Awaited<ReturnType<typeof gameInvitationService.get>>);
@@ -35,7 +35,7 @@ describe('submitGameInvitationResponse', () => {
 
     it('upserts the response and preserves a trimmed comment', async () => {
         await submitGameInvitationResponse({
-            token: '{123e4567-e89b-12d3-a456-426614174000}',
+            token: '123e4567-e89b-12d3-a456-426614174000',
             response: 'Yes',
             goalie: true,
             comment: '  Ready to play  ',
@@ -68,7 +68,7 @@ describe('submitGameInvitationResponse', () => {
         } as Awaited<ReturnType<typeof outcomeService.get>>);
 
         await submitGameInvitationResponse({
-            token: '{123e4567-e89b-12d3-a456-426614174000}',
+            token: '123e4567-e89b-12d3-a456-426614174000',
             response: 'No',
             goalie: false,
             comment: '',

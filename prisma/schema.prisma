@@ -114,7 +114,7 @@ model GameDay {
 }
 
 model GameInvitation {
-    uuid      String @id @db.Char(38)
+    uuid      String @id @db.Char(36)
     playerId  Int
     gameDayId Int
 

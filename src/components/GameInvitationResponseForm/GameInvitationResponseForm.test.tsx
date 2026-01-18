@@ -11,13 +11,9 @@ import { GameInvitationResponseForm } from '@/components/GameInvitationResponseF
 import { Wrapper } from '@/tests/components/lib/common';
 import { defaultGameInvitationResponseDetails } from '@/tests/mocks';
 
-const mockSubmitGameInvitationResponse =
-    submitGameInvitationResponse as jest.MockedFunction<typeof submitGameInvitationResponse>;
-
 describe('GameInvitationResponseForm', () => {
     beforeEach(() => {
         jest.clearAllMocks();
-        mockSubmitGameInvitationResponse.mockResolvedValue(undefined);
     });
 
     it('renders the response form', () => {
@@ -50,7 +46,7 @@ describe('GameInvitationResponseForm', () => {
         await user.click(screen.getByRole('button', { name: /Done/i }));
 
         await waitFor(() => {
-            expect(mockSubmitGameInvitationResponse).toHaveBeenCalledWith({
+            expect(submitGameInvitationResponse).toHaveBeenCalledWith({
                 token: defaultGameInvitationResponseDetails.token,
                 response: 'Yes',
                 goalie: true,

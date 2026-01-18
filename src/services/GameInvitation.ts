@@ -15,7 +15,7 @@ import z from 'zod';
 
 /** Field definitions with extra validation */
 const extendedFields = {
-    uuid: z.string().min(38).max(38),
+    uuid: z.string().min(36).max(36),
     playerId: z.number().int().min(1),
     gameDayId: z.number().int().min(1),
 };
@@ -77,6 +77,22 @@ export class GameInvitationService {
             return await prisma.gameInvitation.create({ data });
         } catch (error) {
             log(`Error creating GameInvitation: ${String(error)}`);
+            throw error;
+        }
+    }
+
+    /**
+     * Creates many invitations in a single query.
+     * @param rawData The data for the new invitations.
+     * @returns A promise that resolves to the number of created invitations.
+     */
+    async createMany(rawData: unknown): Promise<number> {
+        try {
+            const data = z.array(GameInvitationUncheckedCreateInputObjectStrictSchema).parse(rawData);
+            const result = await prisma.gameInvitation.createMany({ data });
+            return result.count;
+        } catch (error) {
+            log(`Error creating GameInvitations: ${String(error)}`);
             throw error;
         }
     }

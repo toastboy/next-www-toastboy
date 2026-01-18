@@ -3,7 +3,7 @@ import { within } from '@storybook/testing-library';
 import { mocked } from 'storybook/test';
 
 import { submitGameInvitationResponse } from '@/actions/submitGameInvitationResponse';
-import { createMockGameInvitationResponseDetails, defaultGameInvitationResponseDetails } from '@/tests/mocks';
+import { createMockGameInvitationResponseDetails } from '@/tests/mocks';
 
 import { GameInvitationResponseForm } from './GameInvitationResponseForm';
 
@@ -27,14 +27,12 @@ export const EmptyResponse: Story = {
 
 export const SubmitResponse: Story = {
     args: {
-        details: defaultGameInvitationResponseDetails,
+        details: createMockGameInvitationResponseDetails(),
     },
     play: async function ({ canvasElement, userEvent, viewMode }) {
         if (viewMode === 'docs') return;
 
-        mocked(submitGameInvitationResponse).mockResolvedValue(
-            undefined as Awaited<ReturnType<typeof submitGameInvitationResponse>>,
-        );
+        mocked(submitGameInvitationResponse).mockResolvedValue(null);
 
         const canvas = within(canvasElement);
         await userEvent.selectOptions(await canvas.findByLabelText(/Response/i), 'Yes');

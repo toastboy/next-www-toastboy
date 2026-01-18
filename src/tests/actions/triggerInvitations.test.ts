@@ -25,7 +25,6 @@ describe('triggerInvitations', () => {
                 status: 'ready',
                 reason: 'ready',
                 gameDayId: 42,
-                customMessage: 'Heads up!',
             }),
         );
 

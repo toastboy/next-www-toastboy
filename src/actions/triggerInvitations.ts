@@ -8,16 +8,10 @@ export async function triggerInvitations(rawData: unknown) {
     const data = NewGameInputSchema.parse(rawData);
     const customMessage = data.customMessage?.trim();
 
-    const decision = await getInvitationDecision({
-        overrideTimeCheck: data.overrideTimeCheck,
-        customMessage: customMessage && customMessage.length > 0 ? customMessage : null,
-    });
+    const decision = await getInvitationDecision(data.overrideTimeCheck);
 
     if (decision.status === 'ready' && decision.gameDayId) {
-        await sendGameInvitations({
-            gameDayId: decision.gameDayId,
-            customMessage: decision.customMessage ?? null,
-        });
+        await sendGameInvitations(decision.gameDayId, customMessage);
     }
 
     return decision;

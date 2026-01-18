@@ -27,7 +27,7 @@ export async function submitGameInvitationResponse(rawData: unknown) {
 
     const comment = data.comment?.trim();
 
-    await outcomeService.upsert({
+    return await outcomeService.upsert({
         gameDayId: invitation.gameDayId,
         playerId: invitation.playerId,
         response: data.response,

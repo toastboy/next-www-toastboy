@@ -11,10 +11,24 @@ import outcomeService from '@/services/Outcome';
 import playerService from '@/services/Player';
 import { GameInvitationResponseDetails } from '@/types/GameInvitationResponseDetails';
 
-const buildInvitationToken = () => `{${crypto.randomUUID()}}`;
+const buildInvitationToken = () => crypto.randomUUID();
 
 const normalizeEmail = (email?: string | null) => (email ?? '').trim().toLowerCase();
 
+/**
+ * Builds an HTML email invitation for a game.
+ *
+ * @param params - The invitation parameters
+ * @param params.playerName - The name of the player being invited
+ * @param params.inviteLink - The URL link for the player to respond to the invitation
+ * @param params.gameDate - The date of the game
+ * @param params.customMessage - Optional custom message to include in the email
+ * @returns An HTML string containing the formatted email invitation
+ *
+ * @remarks
+ * The function escapes all HTML content to prevent injection attacks.
+ * The returned HTML includes inline styles for better email client compatibility.
+ */
 const buildInvitationEmail = ({
     playerName,
     inviteLink,
@@ -45,13 +59,32 @@ const buildInvitationEmail = ({
 };
 
 // TODO: Tests for sendGameInvitations
-export async function sendGameInvitations({
-    gameDayId,
-    customMessage,
-}: {
-    gameDayId: number;
-    customMessage?: string | null;
-}) {
+/**
+ * Sends game invitations to all active players for a specific game day.
+ *
+ * This function retrieves the game day details, filters active players, clears existing invitations,
+ * and sends email invitations to each player with a unique token. Each player receives an invitation
+ * at all their registered email addresses (account email and extra emails).
+ *
+ * @param params - The parameters for sending invitations
+ * @param params.gameDayId - The ID of the game day for which invitations are being sent
+ * @param params.customMessage - Optional custom message to include in the invitation email
+ *
+ * @throws {Error} If the game day with the specified ID is not found
+ *
+ * @returns A promise that resolves when all invitations have been sent and the game day is marked as mail sent
+ *
+ * @remarks
+ * - This function deletes all existing game invitations before creating new ones
+ * - Players with no valid email addresses are skipped
+ * - Duplicate email addresses for the same player are automatically removed
+ * - All emails are normalized before sending
+ * - A unique invitation token is generated for each player to track responses
+ */
+export async function sendGameInvitations(
+    gameDayId: number,
+    customMessage?: string,
+) {
     const gameDay = await gameDayService.get(gameDayId);
     if (!gameDay) {
         throw new Error('Game day not found.');
@@ -65,7 +98,8 @@ export async function sendGameInvitations({
     const baseUrl = getPublicBaseUrl();
     const sendAt = new Date();
 
-    const invitationTasks = activePlayers.map(async (player) => {
+    const invitations: { uuid: string; playerId: number; gameDayId: number }[] = [];
+    const emailTasks = activePlayers.map(async (player) => {
         const emails = [
             player.accountEmail,
             ...player.extraEmails.map((extraEmail) => extraEmail.email),
@@ -79,13 +113,13 @@ export async function sendGameInvitations({
         }
 
         const token = buildInvitationToken();
-        await gameInvitationService.create({
+        invitations.push({
             uuid: token,
             playerId: player.id,
             gameDayId,
         });
 
-        const inviteLink = `${baseUrl}/footy/response?token=${encodeURIComponent(token)}`;
+        const inviteLink = `${baseUrl}/api/footy/response/${encodeURIComponent(token)}`;
         // TODO: Tests for buildInvitationEmail
         const html = buildInvitationEmail({
             playerName: playerService.getName(player),
@@ -98,7 +132,10 @@ export async function sendGameInvitations({
         return token;
     });
 
-    await Promise.all(invitationTasks);
+    if (invitations.length > 0) {
+        await gameInvitationService.createMany(invitations);
+    }
+    await Promise.all(emailTasks);
     await gameDayService.markMailSent(gameDayId, sendAt);
 }
 

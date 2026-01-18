@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { randomUUID } from 'crypto';
+import crypto from 'crypto';
 import escapeHtml from 'escape-html';
 
 import { sendEmail } from '@/actions/sendEmail';
@@ -11,7 +11,7 @@ import outcomeService from '@/services/Outcome';
 import playerService from '@/services/Player';
 import { GameInvitationResponseDetails } from '@/types/GameInvitationResponseDetails';
 
-const buildInvitationToken = () => `{${randomUUID()}}`;
+const buildInvitationToken = () => `{${crypto.randomUUID()}}`;
 
 const normalizeEmail = (email?: string | null) => (email ?? '').trim().toLowerCase();
 

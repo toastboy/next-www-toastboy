@@ -48,7 +48,6 @@ const config: StorybookConfig = {
             ...(config.resolve.alias || {}),
             // Stub Prisma so it never reaches node-only runtime in Storybook
             'prisma/prisma': path.resolve(__dirname, './mocks/prisma.mock.ts'),
-            'prisma/generated': path.resolve(__dirname, './mocks/prisma-generated.mock.ts'),
             // Stub server-only modules so client-rendered Storybook can import server components safely
             'server-only': path.resolve(__dirname, './mocks/server-only.ts'),
             // Mock Next.js navigation hooks used in client components

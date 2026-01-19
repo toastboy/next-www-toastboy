@@ -3,9 +3,14 @@ name: Jest Tests
 on:
     push:
     pull_request:
+    workflow_dispatch:
+
+env:
+    ENABLE_JEST_PLAYWRIGHT: ${{ vars.ENABLE_JEST_PLAYWRIGHT }}
 
 jobs:
     build-and-test:
+        if: ${{ env.ENABLE_JEST_PLAYWRIGHT == 'true' }}
         runs-on: ubuntu-latest
         permissions:
             contents: read

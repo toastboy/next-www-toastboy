@@ -1,22 +1,33 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+import type { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { usePathname, useRouter } from 'next/navigation';
+import { vi } from 'vitest';
 
-import { YearSelector } from '@/components/YearSelector/YearSelector';
-import { Wrapper } from '@/tests/components/lib/common';
+import { Wrapper } from '../../tests/components/lib/common';
+import { YearSelector } from './YearSelector';
+
+vi.mock('next/navigation', () => ({
+    useRouter: vi.fn(),
+    usePathname: vi.fn(),
+}));
 
 describe('YearSelector', () => {
-    let push: jest.Mock;
+    const push = vi.fn();
 
     beforeEach(() => {
-        push = jest.fn();
-        (useRouter as jest.Mock).mockReturnValue({
+        vi.mocked(useRouter).mockReturnValue({
             push,
-            replace: jest.fn(),
-            back: jest.fn(),
-            refresh: jest.fn(),
-            prefetch: jest.fn(),
-        });
-        (usePathname as jest.Mock).mockReturnValue('/footy/year/2024');
+            back: vi.fn(),
+            forward: vi.fn(),
+            refresh: vi.fn(),
+            replace: vi.fn(),
+            prefetch: vi.fn(),
+        } as AppRouterInstance);
+        vi.mocked(usePathname).mockReturnValue('/footy/year/2024');
+    });
+
+    afterEach(() => {
+        vi.clearAllMocks();
     });
 
     it('renders years and navigates when a year is clicked', () => {

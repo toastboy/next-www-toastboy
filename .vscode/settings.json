@@ -9,8 +9,8 @@
         "clearOnRun": "both"
     },
     "jest.runMode": {
-        "type": "watch",
-        "runAllTestsOnStartup": true
+        "type": "on-demand",
+        "runAllTestsOnStartup": false
     },
     "files.exclude": {
         "**/.DS_Store": true,
@@ -32,5 +32,7 @@
         "editor.insertSpaces": true,
         "editor.tabSize": 2,
         "editor.autoIndent": "advanced"
-    }
+    },
+    "vitest.ignoreWorkspace": true,
+    "vitest.rootConfig": "vitest.config.ts"
 }

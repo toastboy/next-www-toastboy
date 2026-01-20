@@ -1,22 +1,7 @@
-import type { Mock } from 'vitest';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-
-vi.mock('prisma/prisma', () => ({
-    default: {
-        arse: {
-            findUnique: vi.fn(),
-            findMany: vi.fn(),
-            aggregate: vi.fn(),
-            create: vi.fn(),
-            upsert: vi.fn(),
-            delete: vi.fn(),
-            deleteMany: vi.fn(),
-        },
-    },
-}));
-
 import prisma from 'prisma/prisma';
 import { ArseType } from 'prisma/zod/schemas/models/Arse.schema';
+import type { Mock } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import arseService from '@/services/Arse';
 import { defaultArse, defaultArseList } from '@/tests/mocks';

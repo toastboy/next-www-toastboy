@@ -1,5 +1,11 @@
 import { afterAll, vi } from 'vitest';
 
+import prismaMock from './src/tests/__mocks__/prisma/prisma.vitest';
+
+vi.mock('prisma/prisma', () => ({
+    default: prismaMock,
+}));
+
 const silenceConsole = () => {
     const noop = () => undefined;
     const spies = [

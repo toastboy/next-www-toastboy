@@ -1,13 +1,6 @@
+import prisma from 'prisma/prisma';
 import type { Mock } from 'vitest';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-
-vi.mock('prisma/prisma', () => ({
-    default: {
-        $queryRaw: vi.fn(),
-    },
-}));
-
-import prisma from 'prisma/prisma';
 
 import { GET } from '@/app/api/health/route';
 import { HealthResponseSchema } from '@/lib/health';

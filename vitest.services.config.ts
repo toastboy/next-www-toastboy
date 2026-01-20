@@ -6,24 +6,23 @@ import { defineConfig } from 'vitest/config';
 const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-    esbuild: {
-        jsx: 'automatic',
-    },
     resolve: {
         alias: {
             '@': path.join(dirname, 'src'),
             prisma: path.join(dirname, 'prisma'),
+            'prisma/prisma': path.join(dirname, 'src/tests/__mocks__/prisma/prisma.vitest.ts'),
+            'server-only': path.join(dirname, 'src/tests/__mocks__/server-only.ts'),
         },
     },
     test: {
-        name: 'components-vitest',
-        environment: 'jsdom',
+        name: 'services-vitest',
+        environment: 'node',
         globals: true,
-        include: ['src/components/**/*.vitest.spec.tsx'],
-        exclude: ['**/src/tests/services/**'],
-        setupFiles: ['vitest.setup.frontend.ts'],
+        include: ['src/tests/services/**/*.vitest.spec.ts'],
+        exclude: ['**/src/tests/api/**', '**/src/tests/components/**'],
+        setupFiles: ['vitest.setup.backend.ts'],
         coverage: {
-            include: ['src/components/**/*.{ts,tsx}'],
+            include: ['src/services/**/*.{ts,tsx}'],
         },
     },
 });

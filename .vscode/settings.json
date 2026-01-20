@@ -35,6 +35,6 @@
     },
     "vitest.enable": true,
     "vitest.ignoreWorkspace": true,
-    "vitest.rootConfig": "vitest.components.config.ts",
+    "vitest.rootConfig": "vitest.unit.config.ts",
     "vitest.shellType": "child_process"
 }

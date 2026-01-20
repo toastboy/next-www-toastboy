@@ -27,7 +27,7 @@
         "test:services": "jest --selectProjects services",
         "test:storybook:update-snapshots": "vitest run --config vitest.storybook.config.ts -u",
         "test:storybook": "vitest run --config vitest.storybook.config.ts",
-        "test:vitest:coverage": "vitest run --config vitest.components.config.ts --coverage",
+        "test:vitest:coverage": "vitest run --config vitest.unit.config.ts --coverage",
         "test:watch": "vitest --config vitest.components.config.ts",
         "test": "vitest run --config vitest.components.config.ts",
         "typecheck": "tsc --noEmit"

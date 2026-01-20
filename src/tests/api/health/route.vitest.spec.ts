@@ -1,18 +1,24 @@
+import type { Mock } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+vi.mock('prisma/prisma', () => ({
+    default: {
+        $queryRaw: vi.fn(),
+    },
+}));
+
 import prisma from 'prisma/prisma';
 
 import { GET } from '@/app/api/health/route';
 import { HealthResponseSchema } from '@/lib/health';
 
-// Mock the prisma client
-
 describe('/api/health', () => {
     beforeEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
     });
 
     it('should return 200 and healthy status when database is connected', async () => {
-        // Mock successful database query
-        (prisma.$queryRaw as jest.Mock).mockResolvedValue([{ '1': 1 }]);
+        (prisma.$queryRaw as Mock).mockResolvedValue([{ '1': 1 }]);
 
         const response = await GET();
         const json = HealthResponseSchema.parse(await response.json());
@@ -25,9 +31,8 @@ describe('/api/health', () => {
     });
 
     it('should return 503 and unhealthy status when database is disconnected', async () => {
-        // Mock database connection error
         const dbError = new Error('Connection refused');
-        (prisma.$queryRaw as jest.Mock).mockRejectedValue(dbError);
+        (prisma.$queryRaw as Mock).mockRejectedValue(dbError);
 
         const response = await GET();
         const json = HealthResponseSchema.parse(await response.json());
@@ -41,8 +46,7 @@ describe('/api/health', () => {
     });
 
     it('should handle non-Error exceptions', async () => {
-        // Mock non-Error exception
-        (prisma.$queryRaw as jest.Mock).mockRejectedValue('String error');
+        (prisma.$queryRaw as Mock).mockRejectedValue('String error');
 
         const response = await GET();
         const json = HealthResponseSchema.parse(await response.json());

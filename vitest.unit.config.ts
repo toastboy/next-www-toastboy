@@ -5,17 +5,20 @@ export default defineConfig({
         // Prevent the root config from collecting tests; use explicit projects instead.
         include: [],
         projects: [
+            'vitest.api.config.ts',
             'vitest.components.config.ts',
             'vitest.services.config.ts',
         ],
         coverage: {
             include: [
+                'src/app/api/**/*.{ts,tsx}',
                 'src/components/**/*.{ts,tsx}',
                 'src/services/**/*.{ts,tsx}',
             ],
             exclude: [
                 '.storybook/**',
                 '**/*.stories.*',
+                '**/*.test.ts',
                 '**/*.test.tsx',
                 '**/prisma/**',
                 'public/**',

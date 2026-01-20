@@ -33,6 +33,8 @@
         "editor.tabSize": 2,
         "editor.autoIndent": "advanced"
     },
+    "vitest.enable": true,
     "vitest.ignoreWorkspace": true,
-    "vitest.rootConfig": "vitest.config.ts"
+    "vitest.rootConfig": "vitest.components.config.ts",
+    "vitest.shellType": "child_process"
 }

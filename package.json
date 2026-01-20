@@ -27,8 +27,8 @@
         "test:services": "node scripts/run-jest.cjs --selectProjects services",
         "test:storybook:update-snapshots": "vitest run --config vitest.storybook.config.ts -u",
         "test:storybook": "vitest run --config vitest.storybook.config.ts",
-        "test:watch": "vitest",
-        "test": "vitest run",
+        "test:watch": "vitest --config vitest.components.config.ts",
+        "test": "vitest run --config vitest.components.config.ts",
         "typecheck": "tsc --noEmit"
     },
     "dependencies": {
@@ -118,6 +118,7 @@
         "@vitejs/plugin-react": "^5.1.2",
         "@vitest/browser-playwright": "^4.0.17",
         "@vitest/coverage-v8": "^4.0.17",
+        "@vitest/ui": "^4.0.17",
         "axios": "^1.13.2",
         "axios-mock-adapter": "^2.1.0",
         "cheerio": "^1.1.2",

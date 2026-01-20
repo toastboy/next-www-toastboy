@@ -1,16 +1,12 @@
-name: Jest Tests
+name: Unit Tests with Coverage
 
 on:
     push:
     pull_request:
     workflow_dispatch:
 
-env:
-    ENABLE_JEST_PLAYWRIGHT: ${{ vars.ENABLE_JEST_PLAYWRIGHT }}
-
 jobs:
     build-and-test:
-        if: ${{ env.ENABLE_JEST_PLAYWRIGHT == 'true' }}
         runs-on: ubuntu-latest
         permissions:
             contents: read
@@ -30,8 +26,8 @@ jobs:
             - name: Generate prisma client and zod schemas
               run: npm run generate
 
-            - name: Run Jest tests
-              run: npm run test:coverage
+            - name: Run tests
+              run: npm run test:vitest:coverage
 
             - name: Upload results to Codecov
               uses: codecov/codecov-action@v5

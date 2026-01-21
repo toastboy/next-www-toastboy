@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 
 import { PlayerHistory } from '@/components/PlayerHistory/PlayerHistory';
 import { Wrapper } from '@/tests/components/lib/common';
@@ -17,19 +17,19 @@ describe('PlayerHistory', () => {
             </Wrapper>,
         );
 
-        expect(await screen.findByRole('button', { name: '2023' })).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: '2020' })).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: '2021' })).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: '2022' })).toBeInTheDocument();
-        expect(screen.getByText((_, node) =>
-            node?.textContent?.replace(/\s+/g, ' ').includes('2023 Results') ?? false,
-        )).toBeInTheDocument();
-        expect(screen.getByText((_, node) =>
-            node?.textContent?.replace(/\s+/g, ' ').includes('2023 Positions') ?? false,
-        )).toBeInTheDocument();
+        const yearSelector = await screen.findByTestId('player-history-year-selector');
+        const results = screen.getByTestId('player-history-results');
+        const positions = screen.getByTestId('player-history-positions');
+
+        expect(within(yearSelector).getByRole('button', { name: '2023' })).toBeInTheDocument();
+        expect(within(yearSelector).getByRole('button', { name: '2020' })).toBeInTheDocument();
+        expect(within(yearSelector).getByRole('button', { name: '2021' })).toBeInTheDocument();
+        expect(within(yearSelector).getByRole('button', { name: '2022' })).toBeInTheDocument();
+        expect(results).toBeInTheDocument();
+        expect(positions).toBeInTheDocument();
     });
 
-    it('handles no active years', async () => {
+    it('handles no active years', () => {
         render(
             <Wrapper>
                 <PlayerHistory
@@ -41,12 +41,12 @@ describe('PlayerHistory', () => {
             </Wrapper>,
         );
 
-        expect(screen.queryByRole('button', { name: '2023' })).not.toBeInTheDocument();
-        expect(screen.getByText((_, node) =>
-            node?.textContent?.replace(/\s+/g, ' ').includes('2023 Results') ?? false,
-        )).toBeInTheDocument();
-        expect(screen.getByText((_, node) =>
-            node?.textContent?.replace(/\s+/g, ' ').includes('2023 Positions') ?? false,
-        )).toBeInTheDocument();
+        const yearSelector = screen.getByTestId('player-history-year-selector');
+        const results = screen.getByTestId('player-history-results');
+        const positions = screen.getByTestId('player-history-positions');
+
+        expect(within(yearSelector).queryByRole('button', { name: '2023' })).not.toBeInTheDocument();
+        expect(results).toBeInTheDocument();
+        expect(positions).toBeInTheDocument();
     });
 });

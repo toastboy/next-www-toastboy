@@ -14,10 +14,16 @@ export interface Props {
 
 export const PlayerHistory: React.FC<Props> = ({ playerName, activeYears, year, record }) => {
     return (
-        <Container>
-            <YearSelector activeYear={year} validYears={activeYears} />
-            <PlayerResults playerName={playerName} year={year} record={record} />
-            <PlayerPositions playerName={playerName} year={year} record={record} />
+        <Container data-testid="player-history">
+            <div data-testid="player-history-year-selector">
+                <YearSelector activeYear={year} validYears={activeYears} />
+            </div>
+            <div data-testid="player-history-results">
+                <PlayerResults playerName={playerName} year={year} record={record} />
+            </div>
+            <div data-testid="player-history-positions">
+                <PlayerPositions playerName={playerName} year={year} record={record} />
+            </div>
         </Container>
     );
 };

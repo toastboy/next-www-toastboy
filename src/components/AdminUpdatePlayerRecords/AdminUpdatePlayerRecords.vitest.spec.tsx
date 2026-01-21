@@ -34,7 +34,7 @@ describe('AdminUpdatePlayerRecords', () => {
         expect(screen.getByText("40%")).toBeInTheDocument();
     });
 
-    it('renders with data == 100%', async () => {
+    it('renders with data == 100%', () => {
         (useSWR as Mock).mockReturnValue({
             data: [2000, 2000],
             error: undefined,

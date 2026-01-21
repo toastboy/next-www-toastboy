@@ -137,10 +137,8 @@ describe('ArseService', () => {
             for (const arseResult of result) {
                 const expectedArse = defaultArseList.find((arse) => arse.raterId === 1);
                 expect(expectedArse).toBeDefined();
-                const { stamp, ...arseWithoutStamp } = arseResult;
-                const { stamp: expectedStamp, ...expectedWithoutStamp } = expectedArse!;
-                expect(arseWithoutStamp).toMatchObject({
-                    ...expectedWithoutStamp,
+                expect(arseResult).toMatchObject({
+                    ...expectedArse,
                     raterId: 1,
                 });
                 expect(typeof arseResult.playerId).toBe('number');

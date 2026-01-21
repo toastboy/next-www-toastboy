@@ -1,26 +1,9 @@
 import '@testing-library/jest-dom/vitest';
 
+import * as React from 'react';
 import { vi } from 'vitest';
 
-const authClientMock = {
-    requestPasswordReset: vi.fn(),
-    resetPassword: vi.fn(),
-    changePassword: vi.fn(),
-    signIn: {
-        social: vi.fn(),
-    },
-    signInWithEmail: vi.fn(),
-    signUp: {
-        email: vi.fn(),
-    },
-    useSession: vi.fn(() => ({
-        data: null,
-        isPending: false,
-        isRefetching: false,
-        error: null,
-        refetch: vi.fn(),
-    })),
-};
+import { authClient as authClientMock, signInWithGoogle, signInWithMicrosoft } from '@/lib/__mocks__/auth-client';
 
 const authClientUiMock = {
     signInWithEmail: vi.fn(),
@@ -39,12 +22,8 @@ const authClientUiMock = {
 
 vi.mock('@/lib/auth-client', () => ({
     authClient: authClientMock,
-    signInWithGoogle: vi.fn((callbackURL: string) =>
-        authClientMock.signIn.social({ provider: 'google', callbackURL }),
-    ),
-    signInWithMicrosoft: vi.fn((callbackURL: string) =>
-        authClientMock.signIn.social({ provider: 'microsoft', callbackURL }),
-    ),
+    signInWithGoogle,
+    signInWithMicrosoft,
 }));
 
 vi.mock('@/lib/authClient', () => ({
@@ -90,6 +69,46 @@ const EditorContent = () => null;
 vi.mock('@tiptap/react', () => ({
     useEditor: vi.fn(() => createTiptapEditorMock()),
     EditorContent,
+}));
+
+const createRichTextNode = (name: string, props?: Record<string, unknown>, children?: React.ReactNode) =>
+    React.createElement('div', { 'data-testid': `rich-text-${name}`, ...props }, children);
+
+const RichTextEditor = ({ children, ...props }: { children?: React.ReactNode }) =>
+    createRichTextNode('editor', props, children);
+
+RichTextEditor.Toolbar = ({ children }: { children?: React.ReactNode }) =>
+    createRichTextNode('toolbar', undefined, children);
+
+RichTextEditor.ControlsGroup = ({ children }: { children?: React.ReactNode }) =>
+    createRichTextNode('controls', undefined, children);
+
+RichTextEditor.Content = () => createRichTextNode('content', undefined, 'Hello, this is a test!');
+RichTextEditor.Bold = () => createRichTextNode('bold');
+RichTextEditor.Italic = () => createRichTextNode('italic');
+RichTextEditor.Underline = () => createRichTextNode('underline');
+RichTextEditor.Strikethrough = () => createRichTextNode('strikethrough');
+RichTextEditor.ClearFormatting = () => createRichTextNode('clear-formatting');
+RichTextEditor.Highlight = () => createRichTextNode('highlight');
+RichTextEditor.Code = () => createRichTextNode('code');
+RichTextEditor.H1 = () => createRichTextNode('h1');
+RichTextEditor.H2 = () => createRichTextNode('h2');
+RichTextEditor.H3 = () => createRichTextNode('h3');
+RichTextEditor.H4 = () => createRichTextNode('h4');
+RichTextEditor.Blockquote = () => createRichTextNode('blockquote');
+RichTextEditor.Hr = () => createRichTextNode('hr');
+RichTextEditor.BulletList = () => createRichTextNode('bullet-list');
+RichTextEditor.OrderedList = () => createRichTextNode('ordered-list');
+RichTextEditor.Link = () => createRichTextNode('link');
+RichTextEditor.Unlink = () => createRichTextNode('unlink');
+RichTextEditor.AlignLeft = () => createRichTextNode('align-left');
+RichTextEditor.AlignCenter = () => createRichTextNode('align-center');
+RichTextEditor.AlignJustify = () => createRichTextNode('align-justify');
+RichTextEditor.AlignRight = () => createRichTextNode('align-right');
+
+vi.mock('@mantine/tiptap', () => ({
+    Link: {},
+    RichTextEditor,
 }));
 
 vi.mock('swr', () => ({

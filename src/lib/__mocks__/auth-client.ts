@@ -15,6 +15,11 @@ const getMockFn = () => {
         return jest.fn as MockFn;
     }
 
+    const vitestFn = (globalThis as { vi?: { fn?: MockFn } }).vi?.fn;
+    if (typeof vitestFn === 'function') {
+        return vitestFn;
+    }
+
     const storybookFn = (globalThis as StorybookFnRegistry).__STORYBOOK_FN__;
     if (typeof storybookFn === 'function') {
         return storybookFn;

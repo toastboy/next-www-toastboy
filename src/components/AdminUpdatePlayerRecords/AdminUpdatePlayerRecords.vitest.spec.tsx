@@ -1,0 +1,55 @@
+
+import { fireEvent, render, screen } from '@testing-library/react';
+import { act } from 'react';
+import useSWR from 'swr';
+import type { Mock } from 'vitest';
+import { vi } from 'vitest';
+
+import { AdminUpdatePlayerRecords } from '@/components/AdminUpdatePlayerRecords/AdminUpdatePlayerRecords';
+import { Wrapper } from '@/tests/components/lib/common';
+
+describe('AdminUpdatePlayerRecords', () => {
+    const mutateMock = vi.fn().mockResolvedValue(undefined);
+
+    beforeEach(() => {
+        vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+        vi.runOnlyPendingTimers();
+        vi.useRealTimers();
+        vi.clearAllMocks();
+    });
+
+    it('renders with data < 100%', () => {
+        (useSWR as Mock).mockReturnValue({
+            data: [800, 2000],
+            error: undefined,
+            isLoading: false,
+            mutate: mutateMock,
+        });
+
+        render(<Wrapper><AdminUpdatePlayerRecords /></Wrapper>);
+        expect(screen.queryByRole('img')).not.toBeInTheDocument();
+        expect(screen.getByText("40%")).toBeInTheDocument();
+    });
+
+    it('renders with data == 100%', async () => {
+        (useSWR as Mock).mockReturnValue({
+            data: [2000, 2000],
+            error: undefined,
+            isLoading: false,
+            mutate: mutateMock,
+        });
+
+        render(<Wrapper><AdminUpdatePlayerRecords /></Wrapper>);
+        expect(screen.queryByRole('img')).not.toBeInTheDocument();
+        expect(screen.getByTestId('update-player-records-compete-icon')).toBeInTheDocument();
+
+        const button = screen.getByText("Update Player Records");
+        fireEvent.click(button);
+
+        act(() => { vi.advanceTimersByTime(1000); });
+        expect(mutateMock).toHaveBeenCalled();
+    });
+});

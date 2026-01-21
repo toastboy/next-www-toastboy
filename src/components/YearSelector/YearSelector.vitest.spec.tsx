@@ -6,11 +6,6 @@ import { vi } from 'vitest';
 import { Wrapper } from '../../tests/components/lib/common';
 import { YearSelector } from './YearSelector';
 
-vi.mock('next/navigation', () => ({
-    useRouter: vi.fn(),
-    usePathname: vi.fn(),
-}));
-
 describe('YearSelector', () => {
     const push = vi.fn();
 

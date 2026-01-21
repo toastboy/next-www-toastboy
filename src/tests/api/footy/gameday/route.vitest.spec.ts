@@ -1,18 +1,20 @@
-import { createMockApp, jsonResponseHandler, toWire } from '@/tests/lib/api/common';
-
-jest.mock('services/GameDay');
-
 import request from 'supertest';
+import type { Mock } from 'vitest';
+import { vi } from 'vitest';
 
-import { GET } from '@/app/api/footy/gameday/[id]/route';
-import gameDayService from '@/services/GameDay';
+import { GET } from '@/app/api/footy/gameday/route';
+import gamedayService from '@/services/GameDay';
+import { createMockApp, jsonResponseHandler, toWire } from '@/tests/lib/api/common';
 import { defaultGameDay } from '@/tests/mocks/data/gameDay';
-const testURI = '/api/footy/gameday/1';
-const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({ id: "1000" }) }, jsonResponseHandler);
+vi.mock('services/GameDay');
+
+const testURI = '/api/footy/gameday';
+const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({ id: '1' }) }, jsonResponseHandler);
+
 
 describe('API tests using HTTP', () => {
     it('should return JSON response for a valid gameday', async () => {
-        (gameDayService.get as jest.Mock).mockResolvedValue(defaultGameDay);
+        (gamedayService.getAll as Mock).mockResolvedValue(defaultGameDay);
 
         const response = await request(mockApp).get(testURI);
 
@@ -23,7 +25,7 @@ describe('API tests using HTTP', () => {
     });
 
     it('should return 404 if the gameday does not exist', async () => {
-        (gameDayService.get as jest.Mock).mockResolvedValue(null);
+        (gamedayService.getAll as Mock).mockResolvedValue(null);
 
         const response = await request(mockApp).get(testURI);
 
@@ -33,7 +35,7 @@ describe('API tests using HTTP', () => {
 
     it('should return 500 if there is an error', async () => {
         const errorMessage = 'Test Error';
-        (gameDayService.get as jest.Mock).mockRejectedValue(new Error(errorMessage));
+        (gamedayService.getAll as Mock).mockRejectedValue(new Error('Test Error'));
 
         const response = await request(mockApp).get(testURI);
 

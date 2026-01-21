@@ -1,16 +1,19 @@
 import request from 'supertest';
+import type { Mock } from 'vitest';
+import { vi } from 'vitest';
 
 import { GET } from '@/app/api/footy/country/[isoCode]/route';
 import countryService from '@/services/Country';
 import { createMockApp, jsonResponseHandler } from '@/tests/lib/api/common';
 import { defaultCountry } from '@/tests/mocks/data/country';
+vi.mock('services/Country');
+
 const mockApp = createMockApp(GET, { path: '/api/footy/country/NO', params: Promise.resolve({ isoCode: 'NO' }) }, jsonResponseHandler);
 
-jest.mock('services/Country');
 
 describe('API tests using HTTP', () => {
     it('should return JSON response for a valid country', async () => {
-        (countryService.get as jest.Mock).mockResolvedValue(defaultCountry);
+        (countryService.get as Mock).mockResolvedValue(defaultCountry);
 
         const response = await request(mockApp).get('/api/footy/country/NO');
 
@@ -21,7 +24,7 @@ describe('API tests using HTTP', () => {
     });
 
     it('should return 404 if the country does not exist', async () => {
-        (countryService.get as jest.Mock).mockResolvedValue(null);
+        (countryService.get as Mock).mockResolvedValue(null);
 
         const response = await request(mockApp).get('/api/footy/country/NO');
 
@@ -31,7 +34,7 @@ describe('API tests using HTTP', () => {
 
     it('should return 500 if there is an error', async () => {
         const errorMessage = 'Test Error';
-        (countryService.get as jest.Mock).mockRejectedValue(new Error(errorMessage));
+        (countryService.get as Mock).mockRejectedValue(new Error(errorMessage));
 
         const response = await request(mockApp).get('/api/footy/country/NO');
 

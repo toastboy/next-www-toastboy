@@ -1,6 +1,9 @@
-jest.mock('services/Player');
+
+import type { Mock } from 'vitest';
+import { vi } from 'vitest';
 
 import playerService from '@/services/Player';
+vi.mock('services/Player');
 
 // TODO: This mock data should be moved to src/tests/mocks/data/player.ts
 
@@ -17,7 +20,7 @@ export const mockPlayer = {
 
 export const setupPlayerMocks = () => {
     beforeEach(() => {
-        (playerService.getById as jest.Mock).mockResolvedValue(mockPlayer);
-        (playerService.getLogin as jest.Mock).mockResolvedValue('player1');
+        (playerService.getById as Mock).mockResolvedValue(mockPlayer);
+        (playerService.getLogin as Mock).mockResolvedValue('player1');
     });
 };

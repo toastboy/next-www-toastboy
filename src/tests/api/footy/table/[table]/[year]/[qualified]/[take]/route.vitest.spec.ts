@@ -1,14 +1,15 @@
-import { createMockApp, jsonResponseHandler } from '@/tests/lib/api/common';
-
-jest.mock('services/PlayerRecord');
-
 import request from 'supertest';
+import type { Mock } from 'vitest';
+import { vi } from 'vitest';
 
-import { GET } from '@/app/api/footy/table/[table]/[year]/route';
+import { GET } from '@/app/api/footy/table/[table]/[year]/[qualified]/[take]/route';
 import playerRecordService from '@/services/PlayerRecord';
+import { createMockApp, jsonResponseHandler } from '@/tests/lib/api/common';
 import { mockTable, setupTableMocks } from '@/tests/lib/api/table';
-const testRoute = '/api/footy/table/points/2010';
-const mockApp = createMockApp(GET, { path: testRoute, params: Promise.resolve({ table: "points", year: "2010" }) }, jsonResponseHandler);
+vi.mock('services/PlayerRecord');
+
+const testRoute = '/api/footy/table/points/2010/true/10';
+const mockApp = createMockApp(GET, { path: testRoute, params: Promise.resolve({ table: "points", year: "2010", qualified: "true", take: "10" }) }, jsonResponseHandler);
 
 describe('API tests using HTTP', () => {
     setupTableMocks();
@@ -23,7 +24,7 @@ describe('API tests using HTTP', () => {
     });
 
     it('should return 404 if the table does not exist', async () => {
-        (playerRecordService.getTable as jest.Mock).mockResolvedValue(null);
+        (playerRecordService.getTable as Mock).mockResolvedValue(null);
 
         const response = await request(mockApp).get(testRoute);
 
@@ -33,7 +34,7 @@ describe('API tests using HTTP', () => {
 
     it('should return 500 if there is an error', async () => {
         const errorMessage = 'Test Error';
-        (playerRecordService.getTable as jest.Mock).mockRejectedValue(new Error(errorMessage));
+        (playerRecordService.getTable as Mock).mockRejectedValue(new Error(errorMessage));
 
         const response = await request(mockApp).get(testRoute);
 

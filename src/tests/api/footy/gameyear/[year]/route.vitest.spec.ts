@@ -1,11 +1,12 @@
-import { createMockApp, jsonResponseHandler } from '@/tests/lib/api/common';
-
-jest.mock('services/GameDay');
-
 import request from 'supertest';
+import type { Mock } from 'vitest';
+import { vi } from 'vitest';
 
 import { GET } from '@/app/api/footy/gameyear/[year]/route';
 import gameDayService from '@/services/GameDay';
+import { createMockApp, jsonResponseHandler } from '@/tests/lib/api/common';
+vi.mock('services/GameDay');
+
 const testURI = '/api/footy/gameyear/2010';
 const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({ year: "2010" }) }, jsonResponseHandler);
 
@@ -22,7 +23,7 @@ describe('API tests using HTTP', () => {
     });
 
     it('should return JSON response for a valid gameyear', async () => {
-        (gameDayService.getYear as jest.Mock).mockResolvedValue(2010);
+        (gameDayService.getYear as Mock).mockResolvedValue(2010);
 
         const response = await request(mockApp).get(testURI);
 
@@ -33,7 +34,7 @@ describe('API tests using HTTP', () => {
     });
 
     it('should return 404 if the gameyear does not exist', async () => {
-        (gameDayService.getYear as jest.Mock).mockResolvedValue(null);
+        (gameDayService.getYear as Mock).mockResolvedValue(null);
 
         const response = await request(mockApp).get(testURI);
 
@@ -43,7 +44,7 @@ describe('API tests using HTTP', () => {
 
     it('should return 500 if there is an error', async () => {
         const errorMessage = 'Test Error';
-        (gameDayService.getYear as jest.Mock).mockRejectedValue(new Error(errorMessage));
+        (gameDayService.getYear as Mock).mockRejectedValue(new Error(errorMessage));
 
         const response = await request(mockApp).get(testURI);
 

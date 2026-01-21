@@ -1,16 +1,19 @@
 import request from 'supertest';
 import { createMockApp, jsonResponseHandler } from 'tests/lib/api/common';
+import type { Mock } from 'vitest';
+import { vi } from 'vitest';
 
 import { GET } from '@/app/api/footy/club/[id]/route';
 import clubService from '@/services/Club';
 import { defaultClub } from '@/tests/mocks/data/club';
+vi.mock('services/Club');
+
 const mockApp = createMockApp(GET, { path: '/api/footy/club/1', params: Promise.resolve({ id: '1' }) }, jsonResponseHandler);
 
-jest.mock('services/Club');
 
 describe('API tests using HTTP', () => {
     it('should return JSON response for a valid club', async () => {
-        (clubService.get as jest.Mock).mockResolvedValue(defaultClub);
+        (clubService.get as Mock).mockResolvedValue(defaultClub);
 
         const response = await request(mockApp).get('/api/footy/club/1');
 
@@ -22,7 +25,7 @@ describe('API tests using HTTP', () => {
     });
 
     it('should return 404 if the club does not exist', async () => {
-        (clubService.get as jest.Mock).mockResolvedValue(null);
+        (clubService.get as Mock).mockResolvedValue(null);
 
         const response = await request(mockApp).get('/api/footy/club/1');
 
@@ -32,7 +35,7 @@ describe('API tests using HTTP', () => {
 
     it('should return 500 if there is an error', async () => {
         const errorMessage = 'Test Error';
-        (clubService.get as jest.Mock).mockRejectedValue(new Error(errorMessage));
+        (clubService.get as Mock).mockRejectedValue(new Error(errorMessage));
 
         const response = await request(mockApp).get('/api/footy/club/1');
 

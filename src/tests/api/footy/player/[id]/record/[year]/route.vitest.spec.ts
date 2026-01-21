@@ -1,32 +1,34 @@
-import { createMockApp, jsonResponseHandler } from '@/tests/lib/api/common';
-import { setupPlayerMocks } from '@/tests/lib/api/player';
-
-jest.mock('services/Player');
-
 import request from 'supertest';
+import type { Mock } from 'vitest';
+import { vi } from 'vitest';
 
-import { GET } from '@/app/api/footy/player/[id]/name/route';
+import { GET } from '@/app/api/footy/player/[id]/record/[year]/route';
 import playerService from '@/services/Player';
-import { defaultPlayer } from '@/tests/mocks';
-const testURI = '/api/footy/player/1/name';
-const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({ id: "1" }) }, jsonResponseHandler);
+import playerRecordService from '@/services/PlayerRecord';
+import { createMockApp, jsonResponseHandler, toWire } from '@/tests/lib/api/common';
+import { setupPlayerMocks } from '@/tests/lib/api/player';
+import { defaultPlayerRecord } from '@/tests/mocks';
+vi.mock('services/Player');
+vi.mock('services/PlayerRecord');
+
+const testURI = '/api/footy/player/1/record/0';
+const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({ id: "1", year: "0" }) }, jsonResponseHandler);
 
 describe('API tests using HTTP', () => {
     setupPlayerMocks();
 
     it('should return JSON response for a valid player', async () => {
-        (playerService.getName as jest.Mock).mockResolvedValue(defaultPlayer.name);
-
+        (playerRecordService.getForYearByPlayer as Mock).mockResolvedValue(defaultPlayerRecord);
         const response = await request(mockApp).get(testURI);
 
         if (response.status !== 200) console.log('Error response:', response.error);
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
-        expect(response.body).toEqual(defaultPlayer.name);
+        expect(response.body).toEqual(toWire(defaultPlayerRecord));
     });
 
     it('should return 404 if the player does not exist', async () => {
-        (playerService.getById as jest.Mock).mockResolvedValue(null);
+        (playerService.getById as Mock).mockResolvedValue(null);
 
         const response = await request(mockApp).get(testURI);
 
@@ -35,7 +37,7 @@ describe('API tests using HTTP', () => {
     });
 
     it('should return 404 if the arse record does not exist', async () => {
-        (playerService.getName as jest.Mock).mockResolvedValue(null);
+        (playerRecordService.getForYearByPlayer as Mock).mockResolvedValue(null);
 
         const response = await request(mockApp).get(testURI);
 
@@ -45,7 +47,7 @@ describe('API tests using HTTP', () => {
 
     it('should return 500 if there is an error', async () => {
         const errorMessage = 'Test Error';
-        (playerService.getName as jest.Mock).mockRejectedValue(new Error(errorMessage));
+        (playerRecordService.getForYearByPlayer as Mock).mockRejectedValue(new Error(errorMessage));
 
         const response = await request(mockApp).get(testURI);
 

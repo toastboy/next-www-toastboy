@@ -1,5 +1,6 @@
+import { vi } from 'vitest';
 const arseService = {
-    getByPlayer: jest.fn(),
+    getByPlayer: vi.fn(),
 };
 
 export default arseService;

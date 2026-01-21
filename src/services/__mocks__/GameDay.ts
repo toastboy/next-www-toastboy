@@ -1,8 +1,9 @@
+import { vi } from 'vitest';
 const gameDayService = {
-    get: jest.fn(),
-    getAll: jest.fn(),
-    getAllYears: jest.fn(),
-    getYear: jest.fn(),
+    get: vi.fn(),
+    getAll: vi.fn(),
+    getAllYears: vi.fn(),
+    getYear: vi.fn(),
 };
 
 export default gameDayService;

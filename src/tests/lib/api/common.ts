@@ -1,28 +1,29 @@
 import { ServerResponse } from 'http';
 import { NextRequest, NextResponse } from 'next/server';
+import { vi } from 'vitest';
 
 export const mockBlobClient = {
-    exists: jest.fn(),
-    download: jest.fn(),
+    exists: vi.fn(),
+    download: vi.fn(),
 };
 
 const mockContainerClient = {
-    getBlobClient: jest.fn().mockReturnValue(mockBlobClient),
+    getBlobClient: vi.fn().mockReturnValue(mockBlobClient),
 };
 
 const mockBlobServiceClient = {
-    getContainerClient: jest.fn().mockReturnValue(mockContainerClient),
+    getContainerClient: vi.fn().mockReturnValue(mockContainerClient),
 };
 
-jest.mock('@azure/storage-blob', () => ({
-    BlobServiceClient: jest.fn(() => mockBlobServiceClient),
+vi.mock('@azure/storage-blob', () => ({
+    BlobServiceClient: vi.fn(() => mockBlobServiceClient),
 }));
 
 const mockAzureCache = {
-    getContainerClient: jest.fn().mockReturnValue(mockContainerClient),
+    getContainerClient: vi.fn().mockReturnValue(mockContainerClient),
 };
 
-jest.mock('lib/azure', () => ({
+vi.mock('lib/azure', () => ({
     __esModule: true,
     default: mockAzureCache,
 }));

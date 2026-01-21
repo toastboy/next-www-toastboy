@@ -1,20 +1,23 @@
 import request from 'supertest';
+import type { Mock } from 'vitest';
+import { vi } from 'vitest';
 
 import { GET } from '@/app/api/footy/records/progress/route';
 import { getUserRole } from '@/lib/authServer';
 import playerRecordService from '@/services/PlayerRecord';
 import { createMockApp, jsonResponseHandler, toWire } from '@/tests/lib/api/common';
 import { defaultProgress } from '@/tests/mocks/data';
+vi.mock('lib/authServer');
+vi.mock('services/PlayerRecord');
+
 const testURI = '/api/footy/records/progress';
 const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({}) }, jsonResponseHandler);
 
-jest.mock('lib/authServer');
-jest.mock('services/PlayerRecord');
 
 describe('API tests using HTTP', () => {
     it('should return JSON response', async () => {
-        (playerRecordService.getProgress as jest.Mock).mockResolvedValue(defaultProgress);
-        (getUserRole as jest.Mock).mockResolvedValue('admin');
+        (playerRecordService.getProgress as Mock).mockResolvedValue(defaultProgress);
+        (getUserRole as Mock).mockResolvedValue('admin');
 
         const response = await request(mockApp).get(testURI);
 
@@ -25,8 +28,8 @@ describe('API tests using HTTP', () => {
     });
 
     it('should return 401 when unauthenticated', async () => {
-        (playerRecordService.getProgress as jest.Mock).mockResolvedValue(defaultProgress);
-        (getUserRole as jest.Mock).mockResolvedValue('none');
+        (playerRecordService.getProgress as Mock).mockResolvedValue(defaultProgress);
+        (getUserRole as Mock).mockResolvedValue('none');
 
         const response = await request(mockApp).get(testURI);
 
@@ -36,8 +39,8 @@ describe('API tests using HTTP', () => {
     });
 
     it('should return 403 when non-admin', async () => {
-        (playerRecordService.getProgress as jest.Mock).mockResolvedValue(defaultProgress);
-        (getUserRole as jest.Mock).mockResolvedValue('user');
+        (playerRecordService.getProgress as Mock).mockResolvedValue(defaultProgress);
+        (getUserRole as Mock).mockResolvedValue('user');
 
         const response = await request(mockApp).get(testURI);
 
@@ -47,7 +50,7 @@ describe('API tests using HTTP', () => {
     });
 
     it('should return 404 if there is no progress', async () => {
-        (playerRecordService.getProgress as jest.Mock).mockResolvedValue(null);
+        (playerRecordService.getProgress as Mock).mockResolvedValue(null);
 
         const response = await request(mockApp).get(testURI);
 
@@ -57,7 +60,7 @@ describe('API tests using HTTP', () => {
 
     it('should return 500 if there is an error', async () => {
         const errorMessage = 'Test Error';
-        (playerRecordService.getProgress as jest.Mock).mockRejectedValue(new Error(errorMessage));
+        (playerRecordService.getProgress as Mock).mockRejectedValue(new Error(errorMessage));
 
         const response = await request(mockApp).get(testURI);
 

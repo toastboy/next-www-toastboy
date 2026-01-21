@@ -1,6 +1,9 @@
-jest.mock('services/PlayerRecord');
+
+import type { Mock } from 'vitest';
+import { vi } from 'vitest';
 
 import playerRecordService from '@/services/PlayerRecord';
+vi.mock('services/PlayerRecord');
 
 export const mockTable = [
     {
@@ -227,6 +230,6 @@ export const mockTable = [
 
 export const setupTableMocks = () => {
     beforeEach(() => {
-        (playerRecordService.getTable as jest.Mock).mockResolvedValue(mockTable);
+        (playerRecordService.getTable as Mock).mockResolvedValue(mockTable);
     });
 };

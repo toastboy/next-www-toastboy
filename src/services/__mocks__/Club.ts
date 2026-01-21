@@ -1,5 +1,6 @@
+import { vi } from 'vitest';
 const clubService = {
-    get: jest.fn(),
+    get: vi.fn(),
 };
 
 export default clubService;

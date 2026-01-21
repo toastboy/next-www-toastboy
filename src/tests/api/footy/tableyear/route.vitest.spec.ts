@@ -1,28 +1,31 @@
 import request from 'supertest';
+import type { Mock } from 'vitest';
+import { vi } from 'vitest';
 
-import { GET } from '@/app/api/footy/gameday/route';
-import gamedayService from '@/services/GameDay';
+import { GET } from '@/app/api/footy/tableyear/route';
+import playerRecordService from '@/services/PlayerRecord';
 import { createMockApp, jsonResponseHandler, toWire } from '@/tests/lib/api/common';
-import { defaultGameDay } from '@/tests/mocks/data/gameDay';
-const testURI = '/api/footy/gameday';
-const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({ id: '1' }) }, jsonResponseHandler);
+import { defaultGameYearsAllTime } from '@/tests/mocks/data/gameYears';
+vi.mock('services/PlayerRecord');
 
-jest.mock('services/GameDay');
+const testURI = '/api/footy/tableyear';
+const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({}) }, jsonResponseHandler);
+
 
 describe('API tests using HTTP', () => {
-    it('should return JSON response for a valid gameday', async () => {
-        (gamedayService.getAll as jest.Mock).mockResolvedValue(defaultGameDay);
+    it('should return JSON response', async () => {
+        (playerRecordService.getAllYears as Mock).mockResolvedValue(defaultGameYearsAllTime);
 
         const response = await request(mockApp).get(testURI);
 
         if (response.status !== 200) console.log('Error response:', response.error);
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('application/json');
-        expect(response.body).toEqual(toWire(defaultGameDay));
+        expect(response.body).toEqual(toWire(defaultGameYearsAllTime));
     });
 
-    it('should return 404 if the gameday does not exist', async () => {
-        (gamedayService.getAll as jest.Mock).mockResolvedValue(null);
+    it('should return 404 if there are no tableyear', async () => {
+        (playerRecordService.getAllYears as Mock).mockResolvedValue(null);
 
         const response = await request(mockApp).get(testURI);
 
@@ -32,7 +35,7 @@ describe('API tests using HTTP', () => {
 
     it('should return 500 if there is an error', async () => {
         const errorMessage = 'Test Error';
-        (gamedayService.getAll as jest.Mock).mockRejectedValue(new Error('Test Error'));
+        (playerRecordService.getAllYears as Mock).mockRejectedValue(new Error('Test Error'));
 
         const response = await request(mockApp).get(testURI);
 

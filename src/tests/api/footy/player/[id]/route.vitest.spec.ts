@@ -1,14 +1,15 @@
-import { createMockApp, jsonResponseHandler, toWire } from '@/tests/lib/api/common';
-import { mockPlayer, setupPlayerMocks } from '@/tests/lib/api/player';
-
-jest.mock('services/Player');
-jest.mock('lib/authServer');
-
 import request from 'supertest';
+import type { Mock } from 'vitest';
+import { vi } from 'vitest';
 
 import { GET } from '@/app/api/footy/player/[id]/route';
 import { getUserRole } from '@/lib/authServer';
 import playerService from '@/services/Player';
+import { createMockApp, jsonResponseHandler, toWire } from '@/tests/lib/api/common';
+import { mockPlayer, setupPlayerMocks } from '@/tests/lib/api/player';
+vi.mock('services/Player');
+vi.mock('lib/authServer');
+
 const testURI = '/api/footy/player/1';
 const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({ id: "1" }) }, jsonResponseHandler);
 
@@ -16,7 +17,7 @@ describe('API tests using HTTP', () => {
     setupPlayerMocks();
 
     it('should return a mostly full JSON response for a valid player with a user logged in', async () => {
-        (getUserRole as jest.Mock).mockResolvedValue('user');
+        (getUserRole as Mock).mockResolvedValue('user');
 
         const response = await request(mockApp).get(testURI);
 
@@ -33,7 +34,7 @@ describe('API tests using HTTP', () => {
     });
 
     it('should return a filtered JSON response for a valid player with no user logged in', async () => {
-        (getUserRole as jest.Mock).mockResolvedValue('none');
+        (getUserRole as Mock).mockResolvedValue('none');
 
         const response = await request(mockApp).get(testURI);
 
@@ -49,8 +50,8 @@ describe('API tests using HTTP', () => {
     });
 
     it('should return a filtered JSON response with no name values for a valid, anonymous player with no user logged in', async () => {
-        (getUserRole as jest.Mock).mockResolvedValue('none');
-        (playerService.getById as jest.Mock).mockResolvedValue({
+        (getUserRole as Mock).mockResolvedValue('none');
+        (playerService.getById as Mock).mockResolvedValue({
             ...mockPlayer,
             anonymous: true,
             born: undefined,
@@ -72,7 +73,7 @@ describe('API tests using HTTP', () => {
     });
 
     it('should return 404 if the player does not exist', async () => {
-        (playerService.getById as jest.Mock).mockResolvedValue(null);
+        (playerService.getById as Mock).mockResolvedValue(null);
 
         const response = await request(mockApp).get(testURI);
 
@@ -82,7 +83,7 @@ describe('API tests using HTTP', () => {
 
     it('should return 500 if there is an error', async () => {
         const errorMessage = 'Test Error';
-        (playerService.getById as jest.Mock).mockRejectedValue(new Error(errorMessage));
+        (playerService.getById as Mock).mockRejectedValue(new Error(errorMessage));
 
         const response = await request(mockApp).get(testURI);
 

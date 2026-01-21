@@ -1,22 +1,23 @@
-import { createMockApp, jsonResponseHandler, toWire } from '@/tests/lib/api/common';
-
-jest.mock('lib/authServer');
-
 import request from 'supertest';
+import type { Mock } from 'vitest';
+import { vi } from 'vitest';
 
 import { GET } from '@/app/api/footy/winners/[table]/route';
 import { getUserRole } from '@/lib/authServer';
 import playerRecordService from '@/services/PlayerRecord';
+import { createMockApp, jsonResponseHandler, toWire } from '@/tests/lib/api/common';
 import { defaultPlayerRecordList } from '@/tests/mocks';
+vi.mock('lib/authServer');
+vi.mock('services/PlayerRecord');
+
 const testURI = '/api/footy/winners/points';
 const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({ table: "points" }) }, jsonResponseHandler);
 
-jest.mock('services/PlayerRecord');
 
 describe('API tests using HTTP', () => {
     it('should return JSON response for a valid gameDay', async () => {
-        (getUserRole as jest.Mock).mockResolvedValue('none');
-        (playerRecordService.getWinners as jest.Mock).mockResolvedValue(defaultPlayerRecordList);
+        (getUserRole as Mock).mockResolvedValue('none');
+        (playerRecordService.getWinners as Mock).mockResolvedValue(defaultPlayerRecordList);
 
         const response = await request(mockApp).get(testURI);
 
@@ -27,7 +28,7 @@ describe('API tests using HTTP', () => {
     });
 
     it('should return 404 if there is no data', async () => {
-        (playerRecordService.getWinners as jest.Mock).mockResolvedValue(null);
+        (playerRecordService.getWinners as Mock).mockResolvedValue(null);
 
         const response = await request(mockApp).get(testURI);
 
@@ -37,7 +38,7 @@ describe('API tests using HTTP', () => {
 
     it('should return 500 if there is an error', async () => {
         const errorMessage = 'Test Error';
-        (playerRecordService.getWinners as jest.Mock).mockRejectedValue(new Error(errorMessage));
+        (playerRecordService.getWinners as Mock).mockRejectedValue(new Error(errorMessage));
 
         const response = await request(mockApp).get(testURI);
 

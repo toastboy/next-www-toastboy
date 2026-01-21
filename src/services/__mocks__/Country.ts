@@ -1,5 +1,6 @@
+import { vi } from 'vitest';
 const countryService = {
-    get: jest.fn(),
+    get: vi.fn(),
 };
 
 export default countryService;

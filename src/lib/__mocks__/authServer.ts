@@ -1,8 +1,10 @@
+import { vi } from 'vitest';
+
 export const MOCK_AUTH_COOKIE = 'mock-auth-state';
 
-export const getMockAuthState = jest.fn();
-export const getMockUser = jest.fn();
-export const getMockUsersList = jest.fn();
-export const getSession = jest.fn();
-export const getCurrentUser = jest.fn();
-export const getUserRole = jest.fn(async () => Promise.resolve('none'));
+export const getMockAuthState = vi.fn();
+export const getMockUser = vi.fn();
+export const getMockUsersList = vi.fn();
+export const getSession = vi.fn();
+export const getCurrentUser = vi.fn();
+export const getUserRole = vi.fn(async () => Promise.resolve('none'));

@@ -1,12 +1,12 @@
-import { createMockApp, mockBlobClient, pngResponseHandler } from '@/tests/lib/api/common';
-
-jest.mock('services/Country');
-
 import { Readable } from 'stream';
 import request from 'supertest';
+import { vi } from 'vitest';
 
 import { GET } from '@/app/api/footy/country/[isoCode]/flag/route';
+import { createMockApp, mockBlobClient, pngResponseHandler } from '@/tests/lib/api/common';
 import { loadBinaryFixture } from '@/tests/shared/fixtures';
+vi.mock('services/Country');
+
 const testRoute = '/api/footy/country/NO/flag';
 const mockApp = createMockApp(GET, { path: testRoute, params: Promise.resolve({ isoCode: 'NO' }) }, pngResponseHandler);
 

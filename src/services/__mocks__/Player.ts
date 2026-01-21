@@ -1,10 +1,11 @@
+import { vi } from 'vitest';
 const playerService = {
-    getById: jest.fn(),
-    getForm: jest.fn(),
-    getLastPlayed: jest.fn(),
-    getLogin: jest.fn(),
-    getName: jest.fn(),
-    getYearsActive: jest.fn(),
+    getById: vi.fn(),
+    getForm: vi.fn(),
+    getLastPlayed: vi.fn(),
+    getLogin: vi.fn(),
+    getName: vi.fn(),
+    getYearsActive: vi.fn(),
 };
 
 export default playerService;

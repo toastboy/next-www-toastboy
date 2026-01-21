@@ -15,11 +15,11 @@ import {
     OutcomeType,
 } from 'prisma/zod/schemas/models/Outcome.schema';
 import {
+    TeamPlayerSchema,
+    TeamPlayerType,
     Turnout,
     TurnoutByYearType,
     WDLType,
-    TeamPlayerSchema,
-    TeamPlayerType,
 } from 'types';
 import z from 'zod';
 

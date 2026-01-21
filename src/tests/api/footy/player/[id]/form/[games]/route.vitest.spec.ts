@@ -1,15 +1,16 @@
-import { createMockApp, jsonResponseHandler, toWire } from '@/tests/lib/api/common';
-import { setupPlayerMocks } from '@/tests/lib/api/player';
-
-jest.mock('services/Player');
-jest.mock('lib/authServer');
-
 import request from 'supertest';
+import type { Mock } from 'vitest';
+import { vi } from 'vitest';
 
 import { GET } from '@/app/api/footy/player/[id]/form/[gameDayId]/[games]/route';
 import { getUserRole } from '@/lib/authServer';
 import playerService from '@/services/Player';
+import { createMockApp, jsonResponseHandler, toWire } from '@/tests/lib/api/common';
+import { setupPlayerMocks } from '@/tests/lib/api/player';
 import { defaultPlayerFormList } from '@/tests/mocks';
+vi.mock('services/Player');
+vi.mock('lib/authServer');
+
 const testURI = '/api/footy/player/1/form/3';
 const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({ id: "1", games: "3" }) }, jsonResponseHandler);
 
@@ -17,8 +18,8 @@ describe('API tests using HTTP', () => {
     setupPlayerMocks();
 
     it('should return JSON response for a valid player with no logged in user', async () => {
-        (getUserRole as jest.Mock).mockResolvedValue('none');
-        (playerService.getForm as jest.Mock).mockResolvedValue(defaultPlayerFormList);
+        (getUserRole as Mock).mockResolvedValue('none');
+        (playerService.getForm as Mock).mockResolvedValue(defaultPlayerFormList);
         const expected = defaultPlayerFormList.map((record) => ({
             ...record,
             gameDay: undefined,
@@ -34,8 +35,8 @@ describe('API tests using HTTP', () => {
     });
 
     it('should return JSON response for a valid player with a user logged in', async () => {
-        (getUserRole as jest.Mock).mockResolvedValue('user');
-        (playerService.getForm as jest.Mock).mockResolvedValue(defaultPlayerFormList);
+        (getUserRole as Mock).mockResolvedValue('user');
+        (playerService.getForm as Mock).mockResolvedValue(defaultPlayerFormList);
         const expected = defaultPlayerFormList.map((record) => ({
             ...record,
             gameDay: undefined,
@@ -51,8 +52,8 @@ describe('API tests using HTTP', () => {
     });
 
     it('should return JSON response for a valid player with an admin logged in', async () => {
-        (getUserRole as jest.Mock).mockResolvedValue('admin');
-        (playerService.getForm as jest.Mock).mockResolvedValue(defaultPlayerFormList);
+        (getUserRole as Mock).mockResolvedValue('admin');
+        (playerService.getForm as Mock).mockResolvedValue(defaultPlayerFormList);
 
         const response = await request(mockApp).get(testURI);
 
@@ -63,7 +64,7 @@ describe('API tests using HTTP', () => {
     });
 
     it('should return 404 if the player does not exist', async () => {
-        (playerService.getById as jest.Mock).mockResolvedValue(null);
+        (playerService.getById as Mock).mockResolvedValue(null);
 
         const response = await request(mockApp).get(testURI);
 
@@ -72,7 +73,7 @@ describe('API tests using HTTP', () => {
     });
 
     it('should return 404 if the arse record does not exist', async () => {
-        (playerService.getForm as jest.Mock).mockResolvedValue(null);
+        (playerService.getForm as Mock).mockResolvedValue(null);
 
         const response = await request(mockApp).get(testURI);
 
@@ -82,7 +83,7 @@ describe('API tests using HTTP', () => {
 
     it('should return 500 if there is an error', async () => {
         const errorMessage = 'Test Error';
-        (playerService.getForm as jest.Mock).mockRejectedValue(new Error(errorMessage));
+        (playerService.getForm as Mock).mockRejectedValue(new Error(errorMessage));
 
         const response = await request(mockApp).get(testURI);
 

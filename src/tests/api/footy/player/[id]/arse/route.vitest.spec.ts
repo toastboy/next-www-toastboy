@@ -1,20 +1,23 @@
-jest.mock('services/Arse');
-jest.mock('lib/authServer');
 
 import request from 'supertest';
+import type { Mock } from 'vitest';
+import { vi } from 'vitest';
 
 import { GET } from '@/app/api/footy/player/[id]/arse/route';
 import { getUserRole } from '@/lib/authServer';
 import arseService from '@/services/Arse';
 import { createMockApp, jsonResponseHandler, toWire } from '@/tests/lib/api/common';
 import { defaultArse } from '@/tests/mocks/data/arse';
+vi.mock('services/Arse');
+vi.mock('lib/authServer');
+
 const testURI = '/api/footy/player/1/arse';
 const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({ id: "1" }) }, jsonResponseHandler);
 
 describe('API tests using HTTP', () => {
     it('should return JSON response for a valid player', async () => {
-        (arseService.getByPlayer as jest.Mock).mockResolvedValue(defaultArse);
-        (getUserRole as jest.Mock).mockResolvedValue('admin');
+        (arseService.getByPlayer as Mock).mockResolvedValue(defaultArse);
+        (getUserRole as Mock).mockResolvedValue('admin');
 
         const response = await request(mockApp).get(testURI);
 
@@ -26,8 +29,8 @@ describe('API tests using HTTP', () => {
     });
 
     it('should refuse to return any arse when there is no admin logged in', async () => {
-        (arseService.getByPlayer as jest.Mock).mockResolvedValue(defaultArse);
-        (getUserRole as jest.Mock).mockResolvedValue('user');
+        (arseService.getByPlayer as Mock).mockResolvedValue(defaultArse);
+        (getUserRole as Mock).mockResolvedValue('user');
 
         const response = await request(mockApp).get(testURI);
 
@@ -38,7 +41,7 @@ describe('API tests using HTTP', () => {
     });
 
     it('should return 404 if the arse record does not exist', async () => {
-        (arseService.getByPlayer as jest.Mock).mockResolvedValue(null);
+        (arseService.getByPlayer as Mock).mockResolvedValue(null);
 
         const response = await request(mockApp).get(testURI);
 
@@ -48,7 +51,7 @@ describe('API tests using HTTP', () => {
 
     it('should return 500 if there is an error', async () => {
         const errorMessage = 'Test Error';
-        (arseService.getByPlayer as jest.Mock).mockRejectedValue(new Error(errorMessage));
+        (arseService.getByPlayer as Mock).mockRejectedValue(new Error(errorMessage));
 
         const response = await request(mockApp).get(testURI);
 

@@ -1,21 +1,22 @@
-import { createMockApp, jsonResponseHandler, toWire } from '@/tests/lib/api/common';
-
-jest.mock('services/PlayerRecord');
-jest.mock('lib/authServer');
-
 import request from 'supertest';
+import type { Mock } from 'vitest';
+import { vi } from 'vitest';
 
 import { GET } from '@/app/api/footy/winners/[table]/[year]/route';
 import { getUserRole } from '@/lib/authServer';
 import playerRecordService from '@/services/PlayerRecord';
+import { createMockApp, jsonResponseHandler, toWire } from '@/tests/lib/api/common';
 import { defaultPlayerRecordList } from '@/tests/mocks';
+vi.mock('services/PlayerRecord');
+vi.mock('lib/authServer');
+
 const testURI = '/api/footy/winners/points/2011';
 const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({ table: "points", year: "2011" }) }, jsonResponseHandler);
 
 describe('API tests using HTTP', () => {
     it('should return JSON response for a valid gameDay', async () => {
-        (getUserRole as jest.Mock).mockResolvedValue('user');
-        (playerRecordService.getWinners as jest.Mock).mockResolvedValue(defaultPlayerRecordList);
+        (getUserRole as Mock).mockResolvedValue('user');
+        (playerRecordService.getWinners as Mock).mockResolvedValue(defaultPlayerRecordList);
 
         const response = await request(mockApp).get(testURI);
 
@@ -28,7 +29,7 @@ describe('API tests using HTTP', () => {
     it('should return JSON response in the absence of a valid year', async () => {
         const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({ table: "points" }) }, jsonResponseHandler);
 
-        (playerRecordService.getWinners as jest.Mock).mockResolvedValue(defaultPlayerRecordList);
+        (playerRecordService.getWinners as Mock).mockResolvedValue(defaultPlayerRecordList);
 
         const response = await request(mockApp).get(testURI);
 
@@ -39,7 +40,7 @@ describe('API tests using HTTP', () => {
     });
 
     it('should return 404 if there is no data', async () => {
-        (playerRecordService.getWinners as jest.Mock).mockResolvedValue(null);
+        (playerRecordService.getWinners as Mock).mockResolvedValue(null);
 
         const response = await request(mockApp).get(testURI);
 
@@ -49,7 +50,7 @@ describe('API tests using HTTP', () => {
 
     it('should return 500 if there is an error', async () => {
         const errorMessage = 'Test Error';
-        (playerRecordService.getWinners as jest.Mock).mockRejectedValue(new Error(errorMessage));
+        (playerRecordService.getWinners as Mock).mockRejectedValue(new Error(errorMessage));
 
         const response = await request(mockApp).get(testURI);
 

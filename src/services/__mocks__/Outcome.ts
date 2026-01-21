@@ -1,7 +1,8 @@
+import { vi } from 'vitest';
 const outcomeService = {
-    getByGameDay: jest.fn(),
-    getTurnout: jest.fn(),
-    getTurnoutByYear: jest.fn(),
+    getByGameDay: vi.fn(),
+    getTurnout: vi.fn(),
+    getTurnoutByYear: vi.fn(),
 };
 
 export default outcomeService;

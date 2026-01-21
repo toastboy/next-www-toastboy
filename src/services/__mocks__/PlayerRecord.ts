@@ -1,12 +1,13 @@
+import { vi } from 'vitest';
 const playerRecordService = {
-    getAll: jest.fn(),
-    getAllYears: jest.fn(),
-    getForYearByPlayer: jest.fn(),
-    getProgress: jest.fn(),
-    getTable: jest.fn(),
-    getWinners: jest.fn(),
-    deleteAll: jest.fn(),
-    upsertForGameDay: jest.fn(),
+    getAll: vi.fn(),
+    getAllYears: vi.fn(),
+    getForYearByPlayer: vi.fn(),
+    getProgress: vi.fn(),
+    getTable: vi.fn(),
+    getWinners: vi.fn(),
+    deleteAll: vi.fn(),
+    upsertForGameDay: vi.fn(),
 };
 
 export default playerRecordService;

@@ -1,20 +1,16 @@
-import { createMockApp, mockBlobClient, pngResponseHandler } from '@/tests/lib/api/common';
-import { setupPlayerMocks } from '@/tests/lib/api/player';
-
-jest.mock('services/Player');
-
 import { Readable } from 'stream';
 import request from 'supertest';
+import { vi } from 'vitest';
 
-import { GET } from '@/app/api/footy/player/[id]/mugshot/route';
-import playerService from '@/services/Player';
+import { GET } from '@/app/api/footy/club/[id]/badge/route';
+import { createMockApp, mockBlobClient, pngResponseHandler } from '@/tests/lib/api/common';
 import { loadBinaryFixture } from '@/tests/shared/fixtures';
-const testRoute = '/api/footy/player/1/mugshot';
-const mockApp = createMockApp(GET, { path: testRoute, params: Promise.resolve({ id: "1" }) }, pngResponseHandler);
+vi.mock('services/Club');
+
+const testRoute = '/api/footy/club/1/badge';
+const mockApp = createMockApp(GET, { path: testRoute, params: Promise.resolve({ id: '1' }) }, pngResponseHandler);
 
 describe('API tests using HTTP', () => {
-    setupPlayerMocks();
-
     it('should return PNG response for a valid club', async () => {
         const mockBuffer = loadBinaryFixture('mocks/data/football.png');
 
@@ -31,34 +27,15 @@ describe('API tests using HTTP', () => {
         expect(response.body).toEqual(mockBuffer);
     });
 
-    it('should return a placeholder image if the mugshot does not exist', async () => {
-        const mockBuffer = Buffer.from('placeholder');
-        const mockStream = new Readable();
-        mockStream.push(mockBuffer);
-        mockStream.push(null);
-
+    it('should return 404 if the badge does not exist', async () => {
         (mockBlobClient.exists).mockResolvedValue(false);
-        (mockBlobClient.download).mockResolvedValue({
-            readableStreamBody: mockStream,
-        });
-
-        const response = await request(mockApp).get(testRoute);
-
-        if (response.status !== 200) console.log('Error response:', response.error);
-        expect(response.status).toBe(200);
-        expect(response.headers['content-type']).toBe('image/png');
-        expect(response.body).toEqual(mockBuffer);
-    });
-
-    it('should return 404 if the player does not exist', async () => {
-        (playerService.getById as jest.Mock).mockResolvedValue(null);
 
         const response = await request(mockApp).get(testRoute);
 
         expect(response.status).toBe(404);
     });
 
-    it('should return 500 if the mugshot download does not return anything', async () => {
+    it('should return 500 if the badge download does not return anything', async () => {
         (mockBlobClient.exists).mockResolvedValue(true);
         (mockBlobClient.download).mockResolvedValue({});
 
@@ -68,7 +45,7 @@ describe('API tests using HTTP', () => {
         expect(response.text).toBe('Error: Image body download failed.');
     });
 
-    it('should return 500 if the mugshot download fails', async () => {
+    it('should return 500 if the badge download fails', async () => {
         const errorMessage = 'Something went wrong';
         (mockBlobClient.exists).mockResolvedValue(true);
         (mockBlobClient.download).mockRejectedValue(new Error(errorMessage));

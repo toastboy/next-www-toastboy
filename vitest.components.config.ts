@@ -22,7 +22,7 @@ export default defineConfig({
         environment: 'jsdom',
         globals: true,
         include: ['src/components/**/*.vitest.spec.tsx'],
-        exclude: ['**/src/tests/services/**'],
+        exclude: ['**/src/services/**'],
         setupFiles: ['vitest.setup.frontend.ts'],
         coverage: {
             include: ['src/components/**/*.{ts,tsx}'],

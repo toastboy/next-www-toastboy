@@ -140,7 +140,7 @@ describe('NewPlayerForm', () => {
 
     it('shows error notification on creation failure', async () => {
         const notificationUpdateSpy = vi.spyOn(notifications, 'update');
-        const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation();
+        const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
         mockCreatePlayer.mockRejectedValueOnce(new Error('Network error'));
 
         const user = userEvent.setup();

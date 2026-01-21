@@ -13,6 +13,7 @@ export default defineConfig({
             'prisma/prisma': path.join(dirname, 'src/tests/__mocks__/prisma/prisma.vitest.ts'),
             'server-only': path.join(dirname, 'src/tests/__mocks__/server-only.ts'),
             supertest: path.join(dirname, 'src/tests/lib/api/supertest-mock.ts'),
+            types: path.join(dirname, 'src/types'),
         },
     },
     test: {

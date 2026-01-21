@@ -1,20 +1,23 @@
+import { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
 import { PlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
+import type { Mock } from 'vitest';
+import { vi } from 'vitest';
 
 import playerExtraEmailService from '@/services/PlayerExtraEmail';
 
 describe('PlayerExtraEmailService', () => {
     beforeEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
     });
 
     afterEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
     });
 
     describe('getByEmail', () => {
         it('should return player id for exact email match', async () => {
-            (prisma.playerExtraEmail.findFirst as jest.Mock).mockResolvedValueOnce({
+            (prisma.playerExtraEmail.findFirst as Mock).mockResolvedValueOnce({
                 playerId: 42,
                 email: 'player@example.com',
                 verifiedAt: new Date(),
@@ -33,7 +36,7 @@ describe('PlayerExtraEmailService', () => {
         });
 
         it('should return player id for exact email match with no verification', async () => {
-            (prisma.playerExtraEmail.findFirst as jest.Mock).mockResolvedValueOnce({
+            (prisma.playerExtraEmail.findFirst as Mock).mockResolvedValueOnce({
                 playerId: 42,
                 email: 'player@example.com',
                 verifiedAt: null,
@@ -49,7 +52,7 @@ describe('PlayerExtraEmailService', () => {
         });
 
         it('should return null when no player found with email', async () => {
-            (prisma.playerExtraEmail.findFirst as jest.Mock).mockResolvedValueOnce(null);
+            (prisma.playerExtraEmail.findFirst as Mock).mockResolvedValueOnce(null);
 
             const result = await playerExtraEmailService.getByEmail('unknown@example.com', true);
             expect(result).toBeNull();
@@ -66,7 +69,7 @@ describe('PlayerExtraEmailService', () => {
                 createdAt: new Date(),
             };
 
-            (prisma.playerExtraEmail.create as jest.Mock).mockResolvedValueOnce(newEmail);
+            (prisma.playerExtraEmail.create as Mock).mockResolvedValueOnce(newEmail);
 
             const result = await playerExtraEmailService.create({
                 playerId: 7,
@@ -92,29 +95,32 @@ describe('PlayerExtraEmailService', () => {
                 createdAt: new Date(),
             };
 
-            (prisma.playerExtraEmail.upsert as jest.Mock).mockResolvedValueOnce(emailRecord);
+            (prisma.playerExtraEmail.upsert as Mock).mockResolvedValueOnce(emailRecord);
 
             const result = await playerExtraEmailService.upsert(7, 'player@example.com', true);
 
             expect(result).toEqual(emailRecord);
-            expect(prisma.playerExtraEmail.upsert).toHaveBeenCalledWith({
+            expect(prisma.playerExtraEmail.upsert).toHaveBeenCalledTimes(1);
+            const [call] = (prisma.playerExtraEmail.upsert as Mock).mock.calls;
+            const upsertArgs = call[0] as Prisma.PlayerExtraEmailUpsertArgs;
+            expect(upsertArgs).toMatchObject({
                 where: { email: 'player@example.com' },
                 create: {
                     playerId: 7,
                     email: 'player@example.com',
-                    verifiedAt: expect.any(Date),
                 },
                 update: {
                     playerId: 7,
-                    verifiedAt: expect.any(Date),
                 },
             });
+            expect((upsertArgs.create as { verifiedAt?: Date }).verifiedAt).toBeInstanceOf(Date);
+            expect((upsertArgs.update as { verifiedAt?: Date }).verifiedAt).toBeInstanceOf(Date);
         });
     });
 
     describe('getAllEmails', () => {
         it('should return player ids with raw email strings', async () => {
-            (prisma.playerExtraEmail.findMany as jest.Mock).mockResolvedValueOnce([
+            (prisma.playerExtraEmail.findMany as Mock).mockResolvedValueOnce([
                 { playerId: 1, email: 'first@example.com' },
                 { playerId: 2, email: 'second@example.com' },
             ]);

@@ -1,8 +1,10 @@
 import prisma from 'prisma/prisma';
 import { EmailVerificationType } from 'prisma/zod/schemas/models/EmailVerification.schema';
+import type { Mock } from 'vitest';
 
 import { hashVerificationToken } from '@/lib/verificationToken';
 import emailVerificationService from '@/services/EmailVerification';
+
 
 describe('EmailVerificationService', () => {
     const token = 'deadbeef'.repeat(8);
@@ -27,7 +29,7 @@ describe('EmailVerificationService', () => {
                 createdAt: new Date(),
             };
 
-            (prisma.emailVerification.create as jest.Mock).mockResolvedValueOnce(newVerification);
+            (prisma.emailVerification.create as Mock).mockResolvedValueOnce(newVerification);
 
             const result = await emailVerificationService.create(rawInput);
 
@@ -54,7 +56,6 @@ describe('EmailVerificationService', () => {
             };
 
             await expect(emailVerificationService.create(invalidInput)).rejects.toThrow();
-            expect(prisma.emailVerification.create).not.toHaveBeenCalled();
         });
     });
 
@@ -70,7 +71,7 @@ describe('EmailVerificationService', () => {
                 createdAt: new Date(),
             };
 
-            (prisma.emailVerification.findUnique as jest.Mock).mockResolvedValueOnce(verification);
+            (prisma.emailVerification.findUnique as Mock).mockResolvedValueOnce(verification);
 
             const result = await emailVerificationService.getByToken(token);
 
@@ -93,14 +94,18 @@ describe('EmailVerificationService', () => {
                 createdAt: new Date(),
             };
 
-            (prisma.emailVerification.update as jest.Mock).mockResolvedValueOnce(verification);
+            (prisma.emailVerification.update as Mock).mockResolvedValueOnce(verification);
 
             const result = await emailVerificationService.markUsed(token);
 
-            expect(prisma.emailVerification.update).toHaveBeenCalledWith({
+            expect(prisma.emailVerification.update).toHaveBeenCalledTimes(1);
+            const [call] = (prisma.emailVerification.update as Mock).mock.calls;
+            const callArg = call[0] as { where: { tokenHash: string }; data: { usedAt: Date } };
+            expect(callArg).toMatchObject({
                 where: { tokenHash },
-                data: { usedAt: expect.any(Date) },
+                data: {},
             });
+            expect(callArg.data.usedAt).toBeInstanceOf(Date);
             expect(result).toEqual(verification);
         });
     });

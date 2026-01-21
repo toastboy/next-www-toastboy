@@ -5,6 +5,8 @@ import {
 import {
     OutcomeType,
 } from 'prisma/zod/schemas/models/Outcome.schema';
+import type { Mock } from 'vitest';
+import { vi } from 'vitest';
 
 import outcomeService from '@/services/Outcome';
 import {
@@ -18,9 +20,9 @@ import {
 
 describe('OutcomeService', () => {
     beforeEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
 
-        (prisma.outcome.findUnique as jest.Mock).mockImplementation((args: {
+        (prisma.outcome.findUnique as Mock).mockImplementation((args: {
             where: {
                 gameDayId_playerId: {
                     gameDayId: number,
@@ -35,7 +37,7 @@ describe('OutcomeService', () => {
             return Promise.resolve(outcome ?? null);
         });
 
-        (prisma.outcome.findMany as jest.Mock).mockImplementation((args: {
+        (prisma.outcome.findMany as Mock).mockImplementation((args: {
             where: {
                 playerId: number,
                 gameDayId: number
@@ -49,7 +51,7 @@ describe('OutcomeService', () => {
             );
         });
 
-        (prisma.outcome.count as jest.Mock).mockImplementation((args: {
+        (prisma.outcome.count as Mock).mockImplementation((args: {
             where: {
                 playerId: number,
                 gameDay: {
@@ -68,7 +70,7 @@ describe('OutcomeService', () => {
                 (args.where.gameDay.id ? outcome.gameDayId <= args.where.gameDay.id.lte : true)).length);
         });
 
-        (prisma.outcome.create as jest.Mock).mockImplementation((args: { data: OutcomeType }) => {
+        (prisma.outcome.create as Mock).mockImplementation((args: { data: OutcomeType }) => {
             const outcome = defaultOutcomeList.find((outcome) =>
                 outcome.gameDayId === args.data.gameDayId &&
                 outcome.playerId === args.data.playerId,
@@ -82,7 +84,7 @@ describe('OutcomeService', () => {
             }
         });
 
-        (prisma.outcome.upsert as jest.Mock).mockImplementation((args: {
+        (prisma.outcome.upsert as Mock).mockImplementation((args: {
             where: {
                 gameDayId_playerId: {
                     gameDayId: number,
@@ -105,7 +107,7 @@ describe('OutcomeService', () => {
             }
         });
 
-        (prisma.outcome.delete as jest.Mock).mockImplementation((args: {
+        (prisma.outcome.delete as Mock).mockImplementation((args: {
             where: {
                 gameDayId_playerId: {
                     gameDayId: number,
@@ -122,7 +124,7 @@ describe('OutcomeService', () => {
     });
 
     afterEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
     });
 
     describe('get', () => {
@@ -143,7 +145,7 @@ describe('OutcomeService', () => {
 
     describe('getAll', () => {
         beforeEach(() => {
-            (prisma.outcome.findMany as jest.Mock).mockImplementation(() => {
+            (prisma.outcome.findMany as Mock).mockImplementation(() => {
                 return Promise.resolve(defaultOutcomeList);
             });
         });
@@ -157,7 +159,7 @@ describe('OutcomeService', () => {
 
     describe('getLastPlayed', () => {
         it('should return the correct last played GameDay ID', async () => {
-            (prisma.outcome.findFirst as jest.Mock).mockResolvedValueOnce(defaultOutcome);
+            (prisma.outcome.findFirst as Mock).mockResolvedValueOnce(defaultOutcome);
             const result = await outcomeService.getLastPlayed();
             expect(result).toEqual(defaultOutcome);
             expect(prisma.outcome.findFirst).toHaveBeenCalledWith({
@@ -175,13 +177,13 @@ describe('OutcomeService', () => {
 
     describe('getAllForYear', () => {
         it('should return the correct, complete list of 100 Outcomes', async () => {
-            (prisma.outcome.findMany as jest.Mock).mockResolvedValueOnce(defaultOutcomeList);
+            (prisma.outcome.findMany as Mock).mockResolvedValueOnce(defaultOutcomeList);
 
             let result = await outcomeService.getAllForYear(2021);
             expect(result).toHaveLength(100);
             expect(result[11].playerId).toBe(2);
 
-            (prisma.outcome.findMany as jest.Mock).mockResolvedValueOnce(defaultOutcomeList.filter((outcome) => outcome.gameDayId <= 7));
+            (prisma.outcome.findMany as Mock).mockResolvedValueOnce(defaultOutcomeList.filter((outcome) => outcome.gameDayId <= 7));
 
             result = await outcomeService.getAllForYear(2021, 7);
             expect(result).toHaveLength(70);
@@ -212,9 +214,9 @@ describe('OutcomeService', () => {
         }));
 
         beforeEach(() => {
-            (prisma.outcome.groupBy as jest.Mock).mockResolvedValue(mockResponseCounts);
-            (prisma.gameDay.findMany as jest.Mock).mockResolvedValue(mockGameDays);
-            (prisma.gameDay.findUnique as jest.Mock).mockResolvedValue(mockGameDays[0]);
+            (prisma.outcome.groupBy as Mock).mockResolvedValue(mockResponseCounts);
+            (prisma.gameDay.findMany as Mock).mockResolvedValue(mockGameDays);
+            (prisma.gameDay.findUnique as Mock).mockResolvedValue(mockGameDays[0]);
         });
 
         it('should retrieve the turnout for a specific game day', async () => {
@@ -235,18 +237,21 @@ describe('OutcomeService', () => {
 
         it('should retrieve the turnout for all game days', async () => {
             const result = await outcomeService.getTurnout();
-            expect(result).toEqual(Array.from({ length: 10 }, (_, index) => ({
-                ...mockGameDays[index],
-                dunno: 0,
-                excused: 0,
-                flaked: 0,
-                injured: 0,
-                no: 0,
-                yes: 12 - (index % 3),
-                responses: 12 - (index % 3),
-                players: 0,
-                cancelled: expect.any(Boolean),
-            })));
+            expect(result).toHaveLength(10);
+            for (const [index, turnout] of result.entries()) {
+                expect(turnout).toMatchObject({
+                    ...mockGameDays[index],
+                    dunno: 0,
+                    excused: 0,
+                    flaked: 0,
+                    injured: 0,
+                    no: 0,
+                    yes: 12 - (index % 3),
+                    responses: 12 - (index % 3),
+                    players: 0,
+                });
+                expect(typeof turnout.cancelled).toBe('boolean');
+            }
         });
 
         it('should return the correct turnout summary for all years', async () => {
@@ -270,21 +275,16 @@ describe('OutcomeService', () => {
 
     describe('getByGameDay', () => {
         beforeEach(() => {
-            (prisma.outcome.findMany as jest.Mock).mockImplementation((args: { where: { gameDayId: number } }) => {
+            (prisma.outcome.findMany as Mock).mockImplementation((args: { where: { gameDayId: number } }) => {
                 return Promise.resolve(defaultOutcomeList.filter((outcome) => outcome.gameDayId === args.where.gameDayId));
             });
         });
 
         it('should retrieve the correct Outcomes for GameDay id 1', async () => {
             const result = await outcomeService.getByGameDay(1);
-            expect(result).toHaveLength(10);
-            for (const outcomeResult of result) {
-                expect(outcomeResult).toEqual({
-                    ...defaultOutcome,
-                    playerId: expect.any(Number),
-                    gameDayId: 1,
-                } as OutcomeType);
-            }
+            const expected = defaultOutcomeList.filter((outcome) => outcome.gameDayId === 1);
+            expect(result).toHaveLength(expected.length);
+            expect(result).toEqual(expected);
         });
 
         it('should return an empty list when retrieving outcomes for GameDay id 101', async () => {
@@ -316,7 +316,7 @@ describe('OutcomeService', () => {
                 },
             ];
 
-            (prisma.outcome.findMany as jest.Mock).mockResolvedValueOnce(mockOutcomesWithPlayers);
+            (prisma.outcome.findMany as Mock).mockResolvedValueOnce(mockOutcomesWithPlayers);
 
             const result = await outcomeService.getTeamPlayersByGameDay(10, 'A', formHistory);
 
@@ -366,21 +366,16 @@ describe('OutcomeService', () => {
 
     describe('getByPlayer', () => {
         beforeEach(() => {
-            (prisma.outcome.findMany as jest.Mock).mockImplementation((args: { where: { playerId: number } }) => {
+            (prisma.outcome.findMany as Mock).mockImplementation((args: { where: { playerId: number } }) => {
                 return Promise.resolve(defaultOutcomeList.filter((outcome) => outcome.playerId === args.where.playerId));
             });
         });
 
         it('should retrieve the correct Outcomes for Player ID 1', async () => {
             const result = await outcomeService.getByPlayer(1);
-            expect(result).toHaveLength(10);
-            for (const outcomeResult of result) {
-                expect(outcomeResult).toEqual({
-                    ...defaultOutcome,
-                    playerId: 1,
-                    gameDayId: expect.any(Number),
-                } as OutcomeType);
-            }
+            const expected = defaultOutcomeList.filter((outcome) => outcome.playerId === 1);
+            expect(result).toHaveLength(expected.length);
+            expect(result).toEqual(expected);
         });
 
         it('should return an empty list when retrieving Outcomes for Player id 11', async () => {
@@ -420,7 +415,7 @@ describe('OutcomeService', () => {
         };
 
         it('should retrieve the correct latest game played for year 2021', async () => {
-            (prisma.outcome.findMany as jest.Mock).mockResolvedValue([{
+            (prisma.outcome.findMany as Mock).mockResolvedValue([{
                 ...defaultOutcome,
                 gameDayId: 1,
                 points: 0,
@@ -452,7 +447,7 @@ describe('OutcomeService', () => {
         });
 
         it('should retrieve the correct latest game played for all time', async () => {
-            (prisma.outcome.findMany as jest.Mock).mockResolvedValue([{
+            (prisma.outcome.findMany as Mock).mockResolvedValue([{
                 ...defaultOutcome,
                 gameDayId: 3,
                 points: 0,
@@ -478,7 +473,7 @@ describe('OutcomeService', () => {
         });
 
         it('should return null for year 9999', async () => {
-            (prisma.outcome.findMany as jest.Mock).mockResolvedValue([]);
+            (prisma.outcome.findMany as Mock).mockResolvedValue([]);
             const result = await outcomeService.getLatestGamePlayedByYear(9999);
             expect(result).toBeNull();
         });

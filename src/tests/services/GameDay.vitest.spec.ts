@@ -1,15 +1,18 @@
 import prisma from 'prisma/prisma';
 import { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
+import type { Mock } from 'vitest';
+import { vi } from 'vitest';
 
 import gameDayService from '@/services/GameDay';
 import { defaultGameDay, defaultGameDayList } from '@/tests/mocks';
 
 
+
 describe('GameDayService', () => {
     beforeEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
 
-        (prisma.gameDay.findUnique as jest.Mock).mockImplementation((args: {
+        (prisma.gameDay.findUnique as Mock).mockImplementation((args: {
             where: {
                 id: number
             }
@@ -18,7 +21,7 @@ describe('GameDayService', () => {
             return Promise.resolve(gameDay ?? null);
         });
 
-        (prisma.gameDay.findMany as jest.Mock).mockImplementation((args: {
+        (prisma.gameDay.findMany as Mock).mockImplementation((args: {
             where: {
                 game?: boolean,
                 date?: {
@@ -39,7 +42,7 @@ describe('GameDayService', () => {
             return Promise.resolve(gameDays ? gameDays : null);
         });
 
-        (prisma.gameDay.count as jest.Mock).mockImplementation((args: {
+        (prisma.gameDay.count as Mock).mockImplementation((args: {
             where: {
                 game?: boolean,
                 date?: {
@@ -76,7 +79,7 @@ describe('GameDayService', () => {
             return Promise.resolve(gameDays ? gameDays.length : null);
         });
 
-        (prisma.gameDay.create as jest.Mock).mockImplementation((args: { data: GameDayType }) => {
+        (prisma.gameDay.create as Mock).mockImplementation((args: { data: GameDayType }) => {
             const gameDay = defaultGameDayList.find((gameDay) => gameDay.id === args.data.id);
 
             if (gameDay) {
@@ -87,7 +90,7 @@ describe('GameDayService', () => {
             }
         });
 
-        (prisma.gameDay.upsert as jest.Mock).mockImplementation((args: {
+        (prisma.gameDay.upsert as Mock).mockImplementation((args: {
             where: { id: number },
             update: GameDayType,
             create: GameDayType,
@@ -102,7 +105,7 @@ describe('GameDayService', () => {
             }
         });
 
-        (prisma.gameDay.delete as jest.Mock).mockImplementation((args: {
+        (prisma.gameDay.delete as Mock).mockImplementation((args: {
             where: { id: number }
         }) => {
             const gameDay = defaultGameDayList.find((gameDay) => gameDay.id === args.where.id);
@@ -111,7 +114,7 @@ describe('GameDayService', () => {
     });
 
     afterEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
     });
 
     describe('get', () => {
@@ -136,7 +139,7 @@ describe('GameDayService', () => {
 
     describe('getByDate', () => {
         it('should retrieve the correct GameDay with date 2021-01-03', async () => {
-            (prisma.gameDay.findFirst as jest.Mock).mockResolvedValue(defaultGameDay);
+            (prisma.gameDay.findFirst as Mock).mockResolvedValue(defaultGameDay);
             const result = await gameDayService.getByDate(new Date('2021-01-03'));
             expect(result).toEqual(defaultGameDay);
             expect(prisma.gameDay.findFirst).toHaveBeenCalledWith({
@@ -149,7 +152,7 @@ describe('GameDayService', () => {
 
     describe('getCurrent', () => {
         it('should return the correct, current GameDay where one exists', async () => {
-            (prisma.gameDay.findFirst as jest.Mock).mockResolvedValue(defaultGameDay);
+            (prisma.gameDay.findFirst as Mock).mockResolvedValue(defaultGameDay);
             const result = await gameDayService.getCurrent();
             expect(result).toEqual(defaultGameDay);
             expect(prisma.gameDay.findFirst).toHaveBeenCalledWith({
@@ -165,7 +168,7 @@ describe('GameDayService', () => {
         });
 
         it('should return null where no GameDay with sent email exists', async () => {
-            (prisma.gameDay.findFirst as jest.Mock).mockResolvedValue(null);
+            (prisma.gameDay.findFirst as Mock).mockResolvedValue(null);
             const result = await gameDayService.getCurrent();
             expect(result).toBeNull();
         });
@@ -173,13 +176,13 @@ describe('GameDayService', () => {
 
     describe('getPrevious', () => {
         it('should return the correct previous GameDay for gameDayId 6', async () => {
-            (prisma.gameDay.findFirst as jest.Mock).mockResolvedValue(defaultGameDayList[4]);
+            (prisma.gameDay.findFirst as Mock).mockResolvedValue(defaultGameDayList[4]);
             const result = await gameDayService.getPrevious(6);
             expect(result).toEqual(defaultGameDayList[4]);
         });
 
         it('should return null for gameDayId 1', async () => {
-            (prisma.gameDay.findFirst as jest.Mock).mockResolvedValue(null);
+            (prisma.gameDay.findFirst as Mock).mockResolvedValue(null);
             const result = await gameDayService.getPrevious(1);
             expect(result).toBeNull();
         });
@@ -187,13 +190,13 @@ describe('GameDayService', () => {
 
     describe('getNext', () => {
         it('should return the correct next GameDay for gameDayId 6', async () => {
-            (prisma.gameDay.findFirst as jest.Mock).mockResolvedValue(defaultGameDayList[6]);
+            (prisma.gameDay.findFirst as Mock).mockResolvedValue(defaultGameDayList[6]);
             const result = await gameDayService.getNext(6);
             expect(result).toEqual(defaultGameDayList[6]);
         });
 
         it('should return null for the last gameDayId 100', async () => {
-            (prisma.gameDay.findFirst as jest.Mock).mockResolvedValue(null);
+            (prisma.gameDay.findFirst as Mock).mockResolvedValue(null);
             const result = await gameDayService.getNext(100);
             expect(result).toBeNull();
         });
@@ -235,7 +238,7 @@ describe('GameDayService', () => {
 
     describe('getSeasonEnders', () => {
         it('should return the correct, complete list of last GameDays with a game for each year', async () => {
-            (prisma.gameDay.groupBy as jest.Mock).mockResolvedValue([
+            (prisma.gameDay.groupBy as Mock).mockResolvedValue([
                 {
                     _max: {
                         id: 35,
@@ -391,13 +394,13 @@ describe('GameDayService', () => {
 
     describe('getYear', () => {
         it('should return the year when called with a year that has games played or to be played', async () => {
-            (prisma.gameDay.findFirst as jest.Mock).mockResolvedValue(defaultGameDay);
+            (prisma.gameDay.findFirst as Mock).mockResolvedValue(defaultGameDay);
             const result = await gameDayService.getYear(2021);
             expect(result).toBe(2021);
         });
 
         it('should return null when called with a year that has no games played or to be played', async () => {
-            (prisma.gameDay.findFirst as jest.Mock).mockResolvedValue(null);
+            (prisma.gameDay.findFirst as Mock).mockResolvedValue(null);
             const result = await gameDayService.getYear(1966);
             expect(result).toBeNull();
         });

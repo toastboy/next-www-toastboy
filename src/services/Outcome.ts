@@ -18,8 +18,9 @@ import {
     Turnout,
     TurnoutByYearType,
     WDLType,
+    TeamPlayerSchema,
+    TeamPlayerType,
 } from 'types';
-import { TeamPlayerSchema, TeamPlayerType } from 'types/TeamPlayerType';
 import z from 'zod';
 
 import gameDayService from '@/services/GameDay';

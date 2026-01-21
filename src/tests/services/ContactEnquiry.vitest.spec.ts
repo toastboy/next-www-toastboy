@@ -1,15 +1,18 @@
 import prisma from 'prisma/prisma';
 import { ContactEnquiryType } from 'prisma/zod/schemas/models/ContactEnquiry.schema';
+import type { Mock } from 'vitest';
+import { vi } from 'vitest';
 
 import { hashVerificationToken } from '@/lib/verificationToken';
 import contactEnquiryService from '@/services/ContactEnquiry';
+
 
 describe('ContactEnquiryService', () => {
     const token = 'deadbeef'.repeat(8);
     const tokenHash = hashVerificationToken(token);
 
     beforeEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
     });
 
     describe('create', () => {
@@ -34,7 +37,7 @@ describe('ContactEnquiryService', () => {
                 deliveredAt: null,
             };
 
-            (prisma.contactEnquiry.create as jest.Mock).mockResolvedValueOnce(createdEnquiry);
+            (prisma.contactEnquiry.create as Mock).mockResolvedValueOnce(createdEnquiry);
 
             const result = await contactEnquiryService.create(rawInput);
 
@@ -83,7 +86,7 @@ describe('ContactEnquiryService', () => {
                 tokenHash,
             };
 
-            (prisma.contactEnquiry.findUnique as jest.Mock).mockResolvedValueOnce(enquiry);
+            (prisma.contactEnquiry.findUnique as Mock).mockResolvedValueOnce(enquiry);
 
             const result = await contactEnquiryService.getByToken(token);
             expect(prisma.contactEnquiry.findUnique).toHaveBeenCalledWith({
@@ -106,17 +109,19 @@ describe('ContactEnquiryService', () => {
                 tokenHash,
             };
 
-            (prisma.contactEnquiry.update as jest.Mock).mockResolvedValueOnce(enquiry);
+            (prisma.contactEnquiry.update as Mock).mockResolvedValueOnce(enquiry);
 
             const result = await contactEnquiryService.markDelivered(3);
 
-            expect(prisma.contactEnquiry.update).toHaveBeenCalledWith({
+            expect(prisma.contactEnquiry.update).toHaveBeenCalledTimes(1);
+            const [call] = (prisma.contactEnquiry.update as Mock).mock.calls;
+            const callArgs = call[0] as { where: { id: number }; data: { verifiedAt: Date; deliveredAt: Date } };
+            expect(callArgs).toMatchObject({
                 where: { id: 3 },
-                data: {
-                    verifiedAt: expect.any(Date),
-                    deliveredAt: expect.any(Date),
-                },
+                data: {},
             });
+            expect(callArgs.data.verifiedAt).toBeInstanceOf(Date);
+            expect(callArgs.data.deliveredAt).toBeInstanceOf(Date);
             expect(result).toEqual(enquiry);
         });
     });

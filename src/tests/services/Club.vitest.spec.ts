@@ -1,61 +1,27 @@
 import prisma from 'prisma/prisma';
 import { ClubType } from 'prisma/zod/schemas/models/Club.schema';
+import type { Mock } from 'vitest';
+import { vi } from 'vitest';
 
 import clubService from '@/services/Club';
-import { defaultClub, defaultClubList, invalidClub } from '@/tests/mocks';
+import { createMockClub, defaultClub, defaultClubList, invalidClub } from '@/tests/mocks';
+
 
 
 describe('ClubService', () => {
     beforeEach(() => {
-        jest.clearAllMocks();
-
-        (prisma.club.findUnique as jest.Mock).mockImplementation((args: {
-            where: { id: number }
-        }) => {
-            const club = defaultClubList.find((club) => club.id === args.where.id);
-            return Promise.resolve(club ?? null);
-        });
-
-        (prisma.club.create as jest.Mock).mockImplementation((args: { data: ClubType }) => {
-            const club = defaultClubList.find((club) => club.id === args.data.id);
-
-            if (club) {
-                return Promise.reject(new Error('club already exists'));
-            }
-            else {
-                return Promise.resolve(args.data);
-            }
-        });
-
-        (prisma.club.upsert as jest.Mock).mockImplementation((args: {
-            where: { id: number },
-            update: ClubType,
-            create: ClubType,
-        }) => {
-            const club = defaultClubList.find((club) => club.id === args.where.id);
-
-            if (club) {
-                return Promise.resolve(args.update);
-            }
-            else {
-                return Promise.resolve(args.create);
-            }
-        });
-
-        (prisma.club.delete as jest.Mock).mockImplementation((args: {
-            where: { id: number }
-        }) => {
-            const club = defaultClubList.find((club) => club.id === args.where.id);
-            return Promise.resolve(club ?? null);
-        });
+        vi.clearAllMocks();
     });
 
     afterEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
     });
 
     describe('get', () => {
         it('should retrieve the correct club with id 6', async () => {
+            (prisma.club.findUnique as Mock).mockResolvedValueOnce(
+                createMockClub({ id: 6, soccerwayId: 1005 }),
+            );
             const result = await clubService.get(6);
             expect(result).toEqual({
                 ...defaultClub,
@@ -65,6 +31,7 @@ describe('ClubService', () => {
         });
 
         it('should return null for id 107', async () => {
+            (prisma.club.findUnique as Mock).mockResolvedValueOnce(null);
             const result = await clubService.get(107);
             expect(result).toBeNull();
         });
@@ -72,9 +39,7 @@ describe('ClubService', () => {
 
     describe('getAll', () => {
         beforeEach(() => {
-            (prisma.club.findMany as jest.Mock).mockImplementation(() => {
-                return Promise.resolve(defaultClubList);
-            });
+            (prisma.club.findMany as Mock).mockResolvedValueOnce(defaultClubList);
         });
 
         it('should return the correct, complete list of 100 clubs', async () => {
@@ -92,6 +57,7 @@ describe('ClubService', () => {
                 id: 106,
                 soccerwayId: 1005,
             };
+            (prisma.club.create as Mock).mockResolvedValueOnce(newClub);
             const result = await clubService.create(newClub);
             expect(result).toEqual(newClub);
         });
@@ -101,6 +67,7 @@ describe('ClubService', () => {
         });
 
         it('should refuse to create a club that has the same id as an existing one', async () => {
+            (prisma.club.create as Mock).mockRejectedValueOnce(new Error('club already exists'));
             await expect(clubService.create({
                 ...defaultClub,
                 id: 6,
@@ -111,6 +78,7 @@ describe('ClubService', () => {
 
     describe('upsert', () => {
         it('should create a club', async () => {
+            (prisma.club.upsert as Mock).mockResolvedValueOnce(defaultClub);
             const result = await clubService.upsert(defaultClub);
             expect(result).toEqual(defaultClub);
         });
@@ -123,6 +91,7 @@ describe('ClubService', () => {
                 clubName: "Doddington Rovers",
                 uri: "doddington-rovers",
             };
+            (prisma.club.upsert as Mock).mockResolvedValueOnce(updatedClub);
             const result = await clubService.upsert(updatedClub);
             expect(result).toEqual(updatedClub);
         });
@@ -138,11 +107,13 @@ describe('ClubService', () => {
 
     describe('delete', () => {
         it('should delete an existing club', async () => {
+            (prisma.club.delete as Mock).mockResolvedValueOnce(defaultClub);
             await clubService.delete(6);
             expect(prisma.club.delete).toHaveBeenCalledTimes(1);
         });
 
         it('should silently return when asked to delete a club that does not exist', async () => {
+            (prisma.club.delete as Mock).mockResolvedValueOnce(null);
             await clubService.delete(107);
             expect(prisma.club.delete).toHaveBeenCalledTimes(1);
         });
@@ -150,6 +121,7 @@ describe('ClubService', () => {
 
     describe('deleteAll', () => {
         it('should delete all clubs', async () => {
+            (prisma.club.deleteMany as Mock).mockResolvedValueOnce({ count: 100 });
             await clubService.deleteAll();
             expect(prisma.club.deleteMany).toHaveBeenCalledTimes(1);
         });

@@ -31,12 +31,12 @@ describe('ArseService', () => {
                     },
                 },
             });
-            expect(result).toEqual({
+            expect(result).toMatchObject({
                 ...defaultArse,
                 playerId: 6,
                 raterId: 16,
-                stamp: expect.any(Date) as unknown as Date,
             } as ArseType);
+            expect(result?.stamp).toBeInstanceOf(Date);
         });
 
         it('should return null for player 7, rater 16', async () => {
@@ -135,12 +135,16 @@ describe('ArseService', () => {
             });
             expect(result).toHaveLength(1);
             for (const arseResult of result) {
-                expect(arseResult).toEqual({
-                    ...defaultArse,
-                    playerId: expect.any(Number) as unknown as number,
+                const expectedArse = defaultArseList.find((arse) => arse.raterId === 1);
+                expect(expectedArse).toBeDefined();
+                const { stamp, ...arseWithoutStamp } = arseResult;
+                const { stamp: expectedStamp, ...expectedWithoutStamp } = expectedArse!;
+                expect(arseWithoutStamp).toMatchObject({
+                    ...expectedWithoutStamp,
                     raterId: 1,
-                    stamp: expect.any(Date) as unknown as Date,
-                } as ArseType);
+                });
+                expect(typeof arseResult.playerId).toBe('number');
+                expect(arseResult.stamp).toBeInstanceOf(Date);
             }
         });
 
@@ -163,7 +167,7 @@ describe('ArseService', () => {
             expect(prisma.arse.findMany).toHaveBeenCalledWith({});
             expect(result).toHaveLength(100);
             expect(result[11].playerId).toBe(2);
-            expect(result[41].stamp).toEqual(expect.any(Date));
+            expect(result[41].stamp).toBeInstanceOf(Date);
         });
     });
 

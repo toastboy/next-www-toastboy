@@ -12,6 +12,7 @@ export default defineConfig({
             prisma: path.join(dirname, 'prisma'),
             'prisma/prisma': path.join(dirname, 'src/tests/__mocks__/prisma/prisma.vitest.ts'),
             'server-only': path.join(dirname, 'src/tests/__mocks__/server-only.ts'),
+            types: path.join(dirname, 'src/types'),
         },
     },
     test: {

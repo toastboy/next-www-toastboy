@@ -3,24 +3,29 @@ import request from 'supertest';
 import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
-import { GET } from '@/app/api/footy/player/[id]/mugshot/route';
-import playerService from '@/services/Player';
-import { createMockApp, mockBlobClient, pngResponseHandler } from '@/tests/lib/api/common';
-import { setupPlayerMocks } from '@/tests/lib/api/player';
-import { loadBinaryFixture } from '@/tests/shared/fixtures';
+vi.mock('@/lib/azure');
 vi.mock('services/Player');
+
+import { GET } from '@/app/api/footy/player/[id]/mugshot/route';
+import azureCache from '@/lib/azure';
+import playerService from '@/services/Player';
+import { createMockApp, pngResponseHandler } from '@/tests/lib/api/common';
+import { loadBinaryFixture } from '@/tests/shared/fixtures';
 
 const testRoute = '/api/footy/player/1/mugshot';
 const mockApp = createMockApp(GET, { path: testRoute, params: Promise.resolve({ id: "1" }) }, pngResponseHandler);
+const containerClient = azureCache.getContainerClient('mugshots');
+const blobClient = containerClient.getBlobClient('manofmystery.jpg') as unknown as {
+    exists: Mock;
+    download: Mock;
+};
 
 describe('API tests using HTTP', () => {
-    setupPlayerMocks();
-
     it('should return PNG response for a valid club', async () => {
         const mockBuffer = loadBinaryFixture('mocks/data/football.png');
 
-        (mockBlobClient.exists).mockResolvedValue(true);
-        (mockBlobClient.download).mockResolvedValue({
+        (blobClient.exists).mockResolvedValue(true);
+        (blobClient.download).mockResolvedValue({
             readableStreamBody: Readable.from([mockBuffer]),
         });
 
@@ -38,8 +43,8 @@ describe('API tests using HTTP', () => {
         mockStream.push(mockBuffer);
         mockStream.push(null);
 
-        (mockBlobClient.exists).mockResolvedValue(false);
-        (mockBlobClient.download).mockResolvedValue({
+        (blobClient.exists).mockResolvedValue(false);
+        (blobClient.download).mockResolvedValue({
             readableStreamBody: mockStream,
         });
 
@@ -60,8 +65,8 @@ describe('API tests using HTTP', () => {
     });
 
     it('should return 500 if the mugshot download does not return anything', async () => {
-        (mockBlobClient.exists).mockResolvedValue(true);
-        (mockBlobClient.download).mockResolvedValue({});
+        (blobClient.exists).mockResolvedValue(true);
+        (blobClient.download).mockResolvedValue({});
 
         const response = await request(mockApp).get(testRoute);
 
@@ -71,8 +76,8 @@ describe('API tests using HTTP', () => {
 
     it('should return 500 if the mugshot download fails', async () => {
         const errorMessage = 'Something went wrong';
-        (mockBlobClient.exists).mockResolvedValue(true);
-        (mockBlobClient.download).mockRejectedValue(new Error(errorMessage));
+        (blobClient.exists).mockResolvedValue(true);
+        (blobClient.download).mockRejectedValue(new Error(errorMessage));
 
         const response = await request(mockApp).get(testRoute);
 

@@ -1,33 +1,5 @@
 import { ServerResponse } from 'http';
 import { NextRequest, NextResponse } from 'next/server';
-import { vi } from 'vitest';
-
-export const mockBlobClient = {
-    exists: vi.fn(),
-    download: vi.fn(),
-};
-
-const mockContainerClient = {
-    getBlobClient: vi.fn().mockReturnValue(mockBlobClient),
-};
-
-const mockBlobServiceClient = {
-    getContainerClient: vi.fn().mockReturnValue(mockContainerClient),
-};
-
-vi.mock('@azure/storage-blob', () => ({
-    BlobServiceClient: vi.fn(() => mockBlobServiceClient),
-}));
-
-const mockAzureCache = {
-    getContainerClient: vi.fn().mockReturnValue(mockContainerClient),
-};
-
-vi.mock('lib/azure', () => ({
-    __esModule: true,
-    default: mockAzureCache,
-}));
-
 
 /**
  * Creates a mock server application for testing purposes.

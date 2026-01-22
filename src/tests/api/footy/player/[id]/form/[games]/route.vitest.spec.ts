@@ -6,7 +6,6 @@ import { GET } from '@/app/api/footy/player/[id]/form/[gameDayId]/[games]/route'
 import { getUserRole } from '@/lib/authServer';
 import playerService from '@/services/Player';
 import { createMockApp, jsonResponseHandler, toWire } from '@/tests/lib/api/common';
-import { setupPlayerMocks } from '@/tests/lib/api/player';
 import { defaultPlayerFormList } from '@/tests/mocks';
 vi.mock('services/Player');
 vi.mock('lib/authServer');
@@ -15,8 +14,6 @@ const testURI = '/api/footy/player/1/form/3';
 const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({ id: "1", games: "3" }) }, jsonResponseHandler);
 
 describe('API tests using HTTP', () => {
-    setupPlayerMocks();
-
     it('should return JSON response for a valid player with no logged in user', async () => {
         (getUserRole as Mock).mockResolvedValue('none');
         (playerService.getForm as Mock).mockResolvedValue(defaultPlayerFormList);

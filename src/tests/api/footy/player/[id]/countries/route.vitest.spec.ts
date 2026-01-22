@@ -6,7 +6,6 @@ import { GET } from '@/app/api/footy/player/[id]/countries/route';
 import countrySupporterService from '@/services/CountrySupporter';
 import playerService from '@/services/Player';
 import { createMockApp, jsonResponseHandler } from '@/tests/lib/api/common';
-import { setupPlayerMocks } from '@/tests/lib/api/player';
 import { defaultCountrySupporter } from '@/tests/mocks/data/countrySupporter';
 vi.mock('services/CountrySupporter');
 vi.mock('services/Player');
@@ -15,8 +14,6 @@ const testURI = '/api/footy/player/1/countries';
 const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({ id: "1" }) }, jsonResponseHandler);
 
 describe('API tests using HTTP', () => {
-    setupPlayerMocks();
-
     it('should return JSON response for a valid player', async () => {
         (countrySupporterService.getByPlayer as Mock).mockResolvedValue(defaultCountrySupporter);
 

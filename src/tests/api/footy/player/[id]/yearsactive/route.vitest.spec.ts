@@ -5,7 +5,6 @@ import { vi } from 'vitest';
 import { GET } from '@/app/api/footy/player/[id]/yearsactive/route';
 import playerService from '@/services/Player';
 import { createMockApp, jsonResponseHandler } from '@/tests/lib/api/common';
-import { setupPlayerMocks } from '@/tests/lib/api/player';
 import { defaultGameYearsAllTime } from '@/tests/mocks';
 vi.mock('services/Player');
 
@@ -13,8 +12,6 @@ const testURI = '/api/footy/player/1/yearsactive';
 const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({ id: "1" }) }, jsonResponseHandler);
 
 describe('API tests using HTTP', () => {
-    setupPlayerMocks();
-
     it('should return JSON response for a valid player', async () => {
         (playerService.getYearsActive as Mock).mockResolvedValue(defaultGameYearsAllTime);
 

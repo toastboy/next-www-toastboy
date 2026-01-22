@@ -1,10 +1,10 @@
 import request from 'supertest';
-import { createMockApp, jsonResponseHandler } from 'tests/lib/api/common';
 import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
 import { GET } from '@/app/api/footy/club/[id]/route';
 import clubService from '@/services/Club';
+import { createMockApp, jsonResponseHandler } from '@/tests/lib/api/common';
 import { defaultClub } from '@/tests/mocks/data/club';
 vi.mock('services/Club');
 

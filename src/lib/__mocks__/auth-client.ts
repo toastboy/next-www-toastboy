@@ -3,70 +3,42 @@ interface RequestPasswordResetInput {
     redirectTo: string;
 }
 
-interface StorybookFnRegistry {
-    __STORYBOOK_FN__?: MockFn;
-}
+import { vi } from 'vitest';
 
 /**
- * Resolve the mock function creator for Jest or Storybook runtimes.
- */
-const getMockFn = () => {
-    if (typeof jest !== 'undefined' && typeof jest.fn === 'function') {
-        return jest.fn as MockFn;
-    }
-
-    const vitestFn = (globalThis as { vi?: { fn?: MockFn } }).vi?.fn;
-    if (typeof vitestFn === 'function') {
-        return vitestFn;
-    }
-
-    const storybookFn = (globalThis as StorybookFnRegistry).__STORYBOOK_FN__;
-    if (typeof storybookFn === 'function') {
-        return storybookFn;
-    }
-
-    return ((implementation) => implementation ?? (() => undefined)) as MockFn;
-};
-
-type MockFn = <TArgs extends unknown[], TResult>(
-    implementation?: (...args: TArgs) => TResult,
-) => (...args: TArgs) => TResult;
-
-const mockFn = getMockFn();
-
-/**
- * Mocked Better Auth client for Storybook and Jest tests.
+ * Mocked Better Auth client for Storybook and Vitest tests.
  */
 export const authClient = {
-    requestPasswordReset: mockFn((_input: RequestPasswordResetInput) => Promise.resolve({ status: true })),
-    resetPassword: mockFn((_input: { newPassword: string; token?: string }) => Promise.resolve({ status: true })),
-    changePassword: mockFn((_input: { currentPassword: string; newPassword: string; revokeOtherSessions?: boolean }) => Promise.resolve({ status: true })),
+    requestPasswordReset: vi.fn((_input: RequestPasswordResetInput) => Promise.resolve({ status: true })),
+    resetPassword: vi.fn((_input: { newPassword: string; token?: string }) => Promise.resolve({ status: true })),
+    changePassword: vi.fn((_input: { currentPassword: string; newPassword: string; revokeOtherSessions?: boolean }) =>
+        Promise.resolve({ status: true })),
     signIn: {
-        social: mockFn((_args: { provider: string; callbackURL: string }) => Promise.resolve({})),
+        social: vi.fn((_args: { provider: string; callbackURL: string }) => Promise.resolve({})),
     },
-    signInWithEmail: mockFn((_email: string, _password: string) => Promise.resolve({})),
+    signInWithEmail: vi.fn((_email: string, _password: string) => Promise.resolve({})),
     signUp: {
-        email: mockFn((_args: { name: string; email: string; password: string }) => Promise.resolve({})),
+        email: vi.fn((_args: { name: string; email: string; password: string }) => Promise.resolve({})),
     },
-    useSession: mockFn(() => ({
+    useSession: vi.fn(() => ({
         data: null,
         isPending: false,
         isRefetching: false,
         error: null,
-        refetch: mockFn(),
+        refetch: vi.fn(),
     })),
 };
 
 /**
  * Mock social sign-in helper for Google.
  */
-export const signInWithGoogle = mockFn((callbackURL: string) =>
+export const signInWithGoogle = vi.fn((callbackURL: string) =>
     authClient.signIn.social({ provider: 'google', callbackURL }),
 );
 
 /**
  * Mock social sign-in helper for Microsoft.
  */
-export const signInWithMicrosoft = mockFn((callbackURL: string) =>
+export const signInWithMicrosoft = vi.fn((callbackURL: string) =>
     authClient.signIn.social({ provider: 'microsoft', callbackURL }),
 );

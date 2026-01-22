@@ -11,7 +11,7 @@ export default defineConfig({
             '@': path.join(dirname, 'src'),
             lib: path.join(dirname, 'src/lib'),
             prisma: path.join(dirname, 'prisma'),
-            'prisma/prisma': path.join(dirname, 'src/tests/__mocks__/prisma/prisma.vitest.ts'),
+            'prisma/prisma': path.join(dirname, 'prisma/__mocks__/prisma.ts'),
             'server-only': path.join(dirname, 'src/tests/__mocks__/server-only.ts'),
             services: path.join(dirname, 'src/services'),
             supertest: path.join(dirname, 'src/tests/lib/api/supertest-mock.ts'),

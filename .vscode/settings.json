@@ -3,15 +3,6 @@
     "yaml.schemas": {
         "https://json.schemastore.org/github-action.json": "file:///Users/toastboy/next-www-toastboy/.github/workflows/terraform-plan.yml"
     },
-    "jest.outputConfig": {
-        "revealOn": "error",
-        "revealWithFocus": "test-results",
-        "clearOnRun": "both"
-    },
-    "jest.runMode": {
-        "type": "on-demand",
-        "runAllTestsOnStartup": false
-    },
     "files.exclude": {
         "**/.DS_Store": true,
         "**/.git": true

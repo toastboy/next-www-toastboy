@@ -1,6 +1,6 @@
 import { afterAll, vi } from 'vitest';
 
-import prismaMock from './src/tests/__mocks__/prisma/prisma.vitest';
+import prismaMock from './prisma/__mocks__/prisma';
 
 vi.mock('prisma/prisma', () => ({
     default: prismaMock,

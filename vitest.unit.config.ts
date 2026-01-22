@@ -20,6 +20,7 @@ export default defineConfig({
                 '**/*.stories.*',
                 '**/*.test.ts',
                 '**/*.test.tsx',
+                '**/index.ts',
                 '**/prisma/**',
                 'public/**',
                 'src/**/__mocks__/**',

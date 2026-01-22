@@ -10,7 +10,7 @@ export default defineConfig({
         alias: {
             '@': path.join(dirname, 'src'),
             prisma: path.join(dirname, 'prisma'),
-            'prisma/prisma': path.join(dirname, 'src/tests/__mocks__/prisma/prisma.vitest.ts'),
+            'prisma/prisma': path.join(dirname, 'prisma/__mocks__/prisma.ts'),
             'server-only': path.join(dirname, 'src/tests/__mocks__/server-only.ts'),
             types: path.join(dirname, 'src/types'),
         },
@@ -24,7 +24,6 @@ export default defineConfig({
         setupFiles: ['vitest.setup.backend.ts'],
         coverage: {
             include: ['src/services/**/*.{ts,tsx}'],
-            exclude: ['**/index.ts'],
         },
     },
 });

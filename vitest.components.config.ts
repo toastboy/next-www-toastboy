@@ -13,7 +13,7 @@ export default defineConfig({
         alias: {
             '@': path.join(dirname, 'src'),
             prisma: path.join(dirname, 'prisma'),
-            'next/navigation': path.join(dirname, 'src/tests/__mocks__/next/navigation.vitest.ts'),
+            'next/navigation': path.join(dirname, 'src/tests/__mocks__/next/navigation.ts'),
             types: path.join(dirname, 'src/types'),
         },
     },

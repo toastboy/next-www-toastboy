@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { expect, mocked, within } from 'storybook/test';
+import type { MockedFunction } from 'vitest';
 
 import { authClient } from '@/lib/auth-client';
 
@@ -58,13 +59,14 @@ export const ValidSubmit: Story = {
             payload: { name: string; email: string; password: string },
             options?: { onError?: (ctx: unknown) => void },
         ) => Promise<unknown>;
-        const mockSignUpEmail = authClient.signUp.email as unknown as jest.MockedFunction<SignUpEmailFn>;
+        const mockSignUpEmail = authClient.signUp.email as unknown as MockedFunction<SignUpEmailFn>;
         await expect(mockSignUpEmail).toHaveBeenCalled();
         const firstCallArg = mockSignUpEmail.mock.calls[0][0] as {
             name: string,
             email: string,
             password: string,
         };
+        // The story should pass the args email/name plus the entered password to signUp.email.
         await expect(firstCallArg).toEqual({
             name: 'John Doe',
             email: 'john.doe@example.com',

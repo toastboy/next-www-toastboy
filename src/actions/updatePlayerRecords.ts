@@ -2,11 +2,10 @@
 
 import { revalidatePath } from 'next/cache';
 
-import playerRecordService from '@/services/PlayerRecord';
+import { updatePlayerRecordsCore } from '@/lib/actions/updatePlayerRecords';
 
 export async function updatePlayerRecords() {
-    await playerRecordService.deleteAll();
-    await playerRecordService.upsertForGameDay();
+    await updatePlayerRecordsCore();
 
     revalidatePath('/footy/admin');
 }

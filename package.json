@@ -19,6 +19,8 @@
         "storybook": "storybook dev -p 6006",
         "test:api:coverage": "vitest run --config vitest.api.config.ts --coverage",
         "test:api": "vitest run --config vitest.api.config.ts",
+        "test:actions:coverage": "vitest run --config vitest.actions.config.ts --coverage",
+        "test:actions": "vitest run --config vitest.actions.config.ts",
         "test:chromatic": "npx chromatic",
         "test:components:coverage": "vitest run --config vitest.components.config.ts --coverage",
         "test:components": "vitest run --config vitest.components.config.ts",

@@ -1,0 +1,1 @@
+export { triggerInvitationsCore } from './triggerInvitations';

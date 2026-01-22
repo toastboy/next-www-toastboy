@@ -1,0 +1,1 @@
+export { submitGameInvitationResponseCore } from './submitGameInvitationResponse';

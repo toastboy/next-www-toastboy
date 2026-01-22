@@ -14,6 +14,7 @@ export default defineConfig({
             include: [
                 'src/app/api/**/*.{ts,tsx}',
                 'src/components/**/*.{ts,tsx}',
+                'src/lib/actions/**/*.{ts,tsx}',
                 'src/services/**/*.{ts,tsx}',
             ],
             exclude: [

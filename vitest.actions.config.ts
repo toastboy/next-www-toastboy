@@ -19,7 +19,7 @@ export default defineConfig({
         name: 'actions-vitest',
         environment: 'node',
         globals: true,
-        include: ['src/tests/actions/**/*.vitest.spec.ts'],
+        include: ['src/lib/actions/**/*.vitest.spec.ts'],
         setupFiles: ['vitest.setup.backend.ts'],
     },
 });

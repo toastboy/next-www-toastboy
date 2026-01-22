@@ -24,6 +24,7 @@ export default defineConfig({
         setupFiles: ['vitest.setup.backend.ts'],
         coverage: {
             include: ['src/services/**/*.{ts,tsx}'],
+            exclude: ['**/index.ts'],
         },
     },
 });

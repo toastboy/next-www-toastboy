@@ -6,12 +6,8 @@ on:
         branches: [main]
     workflow_dispatch:
 
-env:
-    ENABLE_JEST_PLAYWRIGHT: ${{ vars.ENABLE_JEST_PLAYWRIGHT }}
-
 jobs:
     test:
-        if: ${{ env.ENABLE_JEST_PLAYWRIGHT == 'true' }}
         timeout-minutes: 60
         runs-on: ubuntu-latest
         permissions:

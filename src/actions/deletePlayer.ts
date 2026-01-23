@@ -1,14 +1,6 @@
 'use server';
 
-import { headers } from 'next/headers';
-
-import { auth } from '@/lib/auth';
-import { getCurrentUser } from '@/lib/authServer';
-import clubSupporterService from '@/services/ClubSupporter';
-import countrySupporterService from '@/services/CountrySupporter';
-import emailVerificationService from '@/services/EmailVerification';
-import playerService from '@/services/Player';
-import playerExtraEmailService from '@/services/PlayerExtraEmail';
+import { beforeDeletePlayerCore, deletePlayerCore } from '@/lib/actions/deletePlayer';
 import { AuthUserSummary } from '@/types/AuthUser';
 
 /**
@@ -30,16 +22,7 @@ import { AuthUserSummary } from '@/types/AuthUser';
  * @throws Propagates errors thrown by any underlying service calls.
  */
 export async function beforeDeletePlayer(user: AuthUserSummary) {
-    await playerService.setFinished(user.playerId);
-
-    await Promise.all([
-        playerExtraEmailService.deleteAll(user.playerId),
-        emailVerificationService.deleteAll(user.playerId),
-        clubSupporterService.deleteAll(user.playerId),
-        countrySupporterService.deleteAll(user.playerId),
-    ]);
-
-    await playerService.anonymise(user.playerId);
+    await beforeDeletePlayerCore(user);
 }
 
 /**
@@ -55,14 +38,5 @@ export async function beforeDeletePlayer(user: AuthUserSummary) {
  * @remarks TODO: Delete the user's mugshot from storage if present.
  */
 export async function deletePlayer() {
-    const user = await getCurrentUser();
-
-    if (!user) {
-        throw new Error('No authenticated user to delete');
-    }
-
-    await auth.api.deleteUser({
-        body: { callbackURL: '/footy/auth/accountdeleted' },
-        headers: await headers(),
-    });
+    await deletePlayerCore();
 }

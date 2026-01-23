@@ -1,17 +1,7 @@
 'use server';
 
-import { sendEmail } from '@/actions/sendEmail';
-import { config } from '@/lib/config';
-import { getPublicBaseUrl } from '@/lib/urls';
-import { createVerificationToken } from '@/lib/verificationToken';
-import contactEnquiryService from '@/services/ContactEnquiry';
-import emailVerificationService from '@/services/EmailVerification';
+import { deliverContactEnquiryCore, sendEnquiryCore } from '@/lib/actions/sendEnquiry';
 import { EnquirySchema } from '@/types/EnquiryInput';
-
-const formatMessage = (message: string) => {
-    const messageLines = message.split(/\r?\n/).map((line) => line.trim());
-    return messageLines.filter(Boolean).join('<br />');
-};
 
 /**
  * Validate and initiate an enquiry verification flow.
@@ -39,35 +29,7 @@ const formatMessage = (message: string) => {
  */
 export async function sendEnquiry(rawData: unknown, redirectUrl: string) {
     const data = EnquirySchema.parse(rawData);
-    const { token, expiresAt } = createVerificationToken();
-
-    await emailVerificationService.create({
-        email: data.email,
-        token,
-        expiresAt,
-    });
-
-    await contactEnquiryService.create({
-        name: data.name,
-        email: data.email,
-        message: data.message,
-        token,
-    });
-
-    const verificationLink = new URL(
-        `/api/footy/auth/verify/enquiry/${token}?redirect=${encodeURIComponent(redirectUrl)}`,
-        getPublicBaseUrl(),
-    ).toString();
-
-    const html = [
-        `<p>Hello ${data.name},</p>`,
-        '<p>Please confirm your enquiry by clicking the link below:</p>',
-        `<p><a href="${verificationLink}">Verify your email</a></p>`,
-        '<p>We will send your message once this is confirmed.</p>',
-        '<p>If you did not request this, you can ignore this message.</p>',
-    ].join('');
-
-    await sendEmail(data.email, '', 'Confirm your enquiry', html);
+    await sendEnquiryCore(data, redirectUrl);
 }
 
 /**
@@ -87,30 +49,5 @@ export async function sendEnquiry(rawData: unknown, redirectUrl: string) {
  * @throws {Error} If no enquiry is found for the provided token.
  */
 export async function deliverContactEnquiry(token: string) {
-    const enquiry = await contactEnquiryService.getByToken(token);
-
-    if (!enquiry) {
-        throw new Error('Enquiry not found for this verification.');
-    }
-
-    if (enquiry.deliveredAt) {
-        return { enquiry: 'already-delivered' };
-    }
-
-    const formattedMessage = formatMessage(enquiry.message);
-    const subject = `Enquiry from ${enquiry.name}`;
-
-    const html = [
-        '<p>New enquiry received:</p>',
-        `<p><strong>Name:</strong> ${enquiry.name}</p>`,
-        `<p><strong>Email:</strong> <a href="mailto:${enquiry.email}">${enquiry.email}</a></p>`,
-        `<p><strong>Message:</strong><br />${formattedMessage || '-'}</p>`,
-    ].join('');
-
-    await sendEmail(config.contactEmailDestination, '', subject, html);
-
-    await emailVerificationService.markUsed(token);
-    await contactEnquiryService.markDelivered(enquiry.id);
-
-    return { enquiry: 'verified' };
+    return await deliverContactEnquiryCore(token);
 }

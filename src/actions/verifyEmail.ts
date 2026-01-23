@@ -1,43 +1,8 @@
 'use server';
 
-import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
+import type { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 
-import { sendEmail } from '@/actions/sendEmail';
-import { getPublicBaseUrl } from '@/lib/urls';
-import { createVerificationToken } from '@/lib/verificationToken';
-import emailVerificationService from '@/services/EmailVerification';
-import playerExtraEmailService from '@/services/PlayerExtraEmail';
-
-/**
- * Validates a verification token by ensuring it exists, has not been used, and
- * has not expired.
- *
- * @param token - The raw verification token provided by the user.
- * @returns The verification record associated with the provided token.
- *
- * @throws {Error} If the token is missing, verification is not found or
- * expired, already used, or expired.
- */
-async function getValidVerification(token: string) {
-    if (!token) {
-        throw new Error('Missing verification token.');
-    }
-
-    const verification = await emailVerificationService.getByToken(token);
-
-    if (!verification) {
-        throw new Error('Verification not found or expired.');
-    }
-
-    if (verification.usedAt) {
-        throw new Error('Verification has already been used.');
-    }
-    if (verification.expiresAt <= new Date()) {
-        throw new Error('Verification has expired.');
-    }
-
-    return verification;
-}
+import { sendEmailVerificationCore, verifyEmailCore } from '@/lib/actions/verifyEmail';
 
 /**
  * Verifies an email token by ensuring the verification record is valid and
@@ -51,69 +16,7 @@ async function getValidVerification(token: string) {
  * player.
  */
 export async function verifyEmail(token: string) {
-    const verification = await getValidVerification(token);
-
-    if (!verification.playerId) {
-        throw new Error('Verification is missing a player reference.');
-    }
-
-    const existingEmail = await playerExtraEmailService.getByEmail(verification.email);
-    if (existingEmail && existingEmail.playerId !== verification.playerId) {
-        throw new Error('Email address already belongs to another player.');
-    }
-
-    await playerExtraEmailService.upsert(verification.playerId, verification.email, true);
-
-    await emailVerificationService.markUsed(token);
-
-    return {
-        email: verification.email,
-        playerId: verification.playerId?.toString(),
-        verificationId: verification.id.toString(),
-    };
-}
-
-/**
- * Initiates the email verification process for a player.
- *
- * @param playerId - The identifier of the player whose email is being verified.
- * @param email - The email address to verify; it will be trimmed before
- * validation.
- * @throws Error if the normalized email is empty, does not belong to the
- * player, or is already verified.
- * @returns An object containing the verification link ready to be sent to the
- * player.
- */
-async function requestPlayerEmailVerification(email: string, playerId?: number) {
-    const normalizedEmail = email.trim();
-
-    if (!normalizedEmail) {
-        throw new Error('Email address is required.');
-    }
-
-    if (playerId !== undefined) {
-        const existingEmail = await playerExtraEmailService.getByEmail(normalizedEmail);
-        if (existingEmail?.playerId !== playerId) {
-            throw new Error('Email address does not belong to this player.');
-        }
-
-        if (existingEmail.verifiedAt) {
-            throw new Error('Email address is already verified.');
-        }
-    }
-
-    const { token, expiresAt } = createVerificationToken();
-    await emailVerificationService.create({
-        playerId,
-        email: normalizedEmail,
-        token,
-        expiresAt,
-
-    });
-
-    return {
-        verificationLink: new URL(`/api/footy/auth/verify/extra-email/${token}?redirect=${encodeURIComponent('/footy/profile')}`, getPublicBaseUrl()).toString(),
-    };
+    return await verifyEmailCore(token);
 }
 
 /**
@@ -130,23 +33,5 @@ async function requestPlayerEmailVerification(email: string, playerId?: number) 
  * `sendEmail`.
  */
 export async function sendEmailVerification(email: string, player?: PlayerType) {
-    const normalizedEmail = email.trim();
-
-    if (!normalizedEmail) {
-        return;
-    }
-
-    const { verificationLink } = await requestPlayerEmailVerification(
-        normalizedEmail,
-        player?.id,
-    );
-
-    const html = [
-        `<p>Hello${player?.name ? ` ${player.name}` : ''},</p>`,
-        '<p>Please verify your email address by clicking the link below:</p>',
-        `<p><a href="${verificationLink}">Verify your email</a></p>`,
-        '<p>If you did not request this, you can ignore this message.</p>',
-    ].join('');
-
-    await sendEmail(normalizedEmail, '', 'Verify your email address', html);
-};
+    await sendEmailVerificationCore(email, player);
+}

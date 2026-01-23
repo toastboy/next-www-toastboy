@@ -27,7 +27,6 @@ export default defineConfig({
                 'public/**',
                 'src/**/__mocks__/**',
                 'src/actions/**',
-                'src/lib/**',
                 'src/stories/**',
                 'src/tests/**',
                 'src/types/**',

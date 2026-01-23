@@ -21,5 +21,8 @@ export default defineConfig({
         globals: true,
         include: ['src/lib/actions/**/*.vitest.spec.ts'],
         setupFiles: ['vitest.setup.backend.ts'],
+        coverage: {
+            include: ['src/lib/actions/**/*.{ts,tsx}'],
+        },
     },
 });

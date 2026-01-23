@@ -1,0 +1,1 @@
+export { sendEmailCore } from './sendEmail';

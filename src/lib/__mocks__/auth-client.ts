@@ -3,9 +3,9 @@ interface RequestPasswordResetInput {
     redirectTo: string;
 }
 
-type SpyFactory = <T extends (...args: unknown[]) => unknown>(
-    implementation?: T,
-) => T & { mock?: unknown };
+type SpyFactory = <A extends unknown[], R>(
+    implementation?: (...args: A) => R,
+) => ((...args: A) => R) & { mock?: unknown };
 
 const getSpyFactory = (): SpyFactory => {
     if (typeof globalThis !== 'undefined') {
@@ -20,8 +20,16 @@ const getSpyFactory = (): SpyFactory => {
         }
     }
 
-    return ((implementation?: (...args: unknown[]) => unknown) =>
-        ((...args: unknown[]) => implementation?.(...args)) as unknown) as SpyFactory;
+    return (<A extends unknown[], R>(implementation?: (...args: A) => R) => {
+        const fn = ((...args: A): R => {
+            if (implementation) {
+                return implementation(...args);
+            }
+            // No-op spy when no implementation is provided
+            return undefined as R;
+        }) as ((...args: A) => R) & { mock?: unknown };
+        return fn;
+    }) as SpyFactory;
 };
 
 const spy = getSpyFactory();

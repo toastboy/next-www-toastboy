@@ -22,7 +22,7 @@ export default defineConfig({
         name: 'api-vitest',
         environment: 'node',
         globals: true,
-        include: ['src/tests/api/**/*.vitest.spec.ts'],
+        include: ['src/app/api/**/*.vitest.spec.ts'],
         exclude: ['**/src/services/**', '**/src/tests/components/**'],
         setupFiles: ['vitest.setup.backend.ts'],
         coverage: {

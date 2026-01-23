@@ -20,7 +20,7 @@ export default defineConfig({
         environment: 'node',
         globals: true,
         include: ['src/services/**/*.vitest.spec.ts', 'src/services/**/*.vitest.spec.tsx'],
-        exclude: ['**/src/tests/api/**', '**/src/tests/components/**'],
+        exclude: ['**/src/app/api/**', '**/src/tests/components/**'],
         setupFiles: ['vitest.setup.backend.ts'],
         coverage: {
             include: ['src/services/**/*.{ts,tsx}'],

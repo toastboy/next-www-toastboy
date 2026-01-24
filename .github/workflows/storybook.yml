@@ -19,6 +19,12 @@ jobs:
                   node-version: 20
                   cache: npm
 
+            # So Chromatic doesn't get confused
+            - name: Configure git identity
+              run: |
+                  git config --global user.email "ci@github.com"
+                  git config --global user.name "GitHub Actions"
+
             - name: Install dependencies
               run: npm ci
 

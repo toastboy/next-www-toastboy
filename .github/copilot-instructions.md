@@ -49,6 +49,7 @@ Purpose: Enable fast, safe contributions. Keep changes aligned with existing ser
 - Zod deprecated `z.string().email()`; use `z.email()` instead.
 - Always add comments to new functions/methods explaining purpose, parameters, return values, and thrown errors in the same manner as existing code and using the typical output of issuing the '/doc' command to the inline coding agent.
 - Always use `data-testid` selectors in tests and Storybook play functions.
+- TODO: Re-add `eslint-plugin-vitest` once it supports ESLint 9; currently removed to avoid peer dependency warnings.
 
 ### Adding a New Service (Example Skeleton)
 

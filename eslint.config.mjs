@@ -20,7 +20,6 @@ import sonarjs from "eslint-plugin-sonarjs";
 import storybook from "eslint-plugin-storybook";
 import testingLibrary from "eslint-plugin-testing-library";
 import unusedImports from "eslint-plugin-unused-imports";
-import vitest from "eslint-plugin-vitest";
 import globals from "globals";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -197,20 +196,6 @@ const config = [
             ...jestDom.configs.recommended.rules,
             // Correct rule name from plugin (old mistaken name was no-debug)
             "testing-library/no-debugging-utils": "warn",
-        },
-    },
-    // Vitest rules for all Vitest tests/configs
-    {
-        files: [
-            "**/*.vitest.{spec,test}.{ts,tsx,js,jsx}",
-            "**/*.vitest.{ts,tsx,js,jsx}",
-            "vitest*.{ts,js,mjs,cjs}",
-        ],
-        plugins: {
-            vitest,
-        },
-        rules: {
-            ...vitest.configs.recommended.rules,
         },
     },
     // Playwright E2E tests

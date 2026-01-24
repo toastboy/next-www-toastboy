@@ -2,8 +2,6 @@ import 'server-only';
 
 import { headers } from 'next/headers';
 
-import { auth } from '@/lib/auth';
-import { getCurrentUser } from '@/lib/authServer';
 import clubSupporterService from '@/services/ClubSupporter';
 import countrySupporterService from '@/services/CountrySupporter';
 import emailVerificationService from '@/services/EmailVerification';
@@ -11,10 +9,10 @@ import playerService from '@/services/Player';
 import playerExtraEmailService from '@/services/PlayerExtraEmail';
 import type { AuthUserSummary } from '@/types/AuthUser';
 
-interface DeletePlayerDeps {
-    auth: typeof auth;
-    headers: typeof headers;
-    getCurrentUser: typeof getCurrentUser;
+type AuthInstance = typeof import('@/lib/auth').auth;
+type GetCurrentUser = typeof import('@/lib/authServer').getCurrentUser;
+
+interface BeforeDeleteDeps {
     playerService: Pick<typeof playerService, 'anonymise' | 'setFinished'>;
     playerExtraEmailService: Pick<typeof playerExtraEmailService, 'deleteAll'>;
     emailVerificationService: Pick<typeof emailVerificationService, 'deleteAll'>;
@@ -22,16 +20,37 @@ interface DeletePlayerDeps {
     countrySupporterService: Pick<typeof countrySupporterService, 'deleteAll'>;
 }
 
-const defaultDeps: DeletePlayerDeps = {
-    auth,
-    headers,
-    getCurrentUser,
+interface DeletePlayerDeps extends BeforeDeleteDeps {
+    auth: AuthInstance;
+    headers: typeof headers;
+    getCurrentUser: GetCurrentUser;
+}
+
+const defaultBeforeDeleteDeps: BeforeDeleteDeps = {
     playerService,
     playerExtraEmailService,
     emailVerificationService,
     clubSupporterService,
     countrySupporterService,
 };
+
+async function createDefaultDeleteDeps(): Promise<DeletePlayerDeps> {
+    const [{ auth }, { getCurrentUser }] = await Promise.all([
+        import('@/lib/auth'),
+        import('@/lib/authServer'),
+    ]);
+
+    return {
+        auth,
+        headers,
+        getCurrentUser,
+        playerService,
+        playerExtraEmailService,
+        emailVerificationService,
+        clubSupporterService,
+        countrySupporterService,
+    };
+}
 
 /**
  * Performs pre-deletion operations for a player, including marking the player
@@ -40,13 +59,13 @@ const defaultDeps: DeletePlayerDeps = {
  *
  * @param user - The authenticated user summary containing the player's ID.
  * @param deps - Optional dependencies required for player deletion. Defaults to
- * `defaultDeps`.
+ * `defaultBeforeDeleteDeps`.
  * @returns A promise that resolves when all pre-deletion operations are
  * complete.
  */
 export async function beforeDeletePlayerCore(
     user: AuthUserSummary,
-    deps: DeletePlayerDeps = defaultDeps,
+    deps: BeforeDeleteDeps = defaultBeforeDeleteDeps,
 ) {
     await deps.playerService.setFinished(user.playerId);
 
@@ -68,15 +87,16 @@ export async function beforeDeletePlayerCore(
  * @throws {Error} If there is no authenticated user to delete.
  * @returns {Promise<void>} Resolves when the user has been deleted.
  */
-export async function deletePlayerCore(deps: DeletePlayerDeps = defaultDeps) {
-    const user = await deps.getCurrentUser();
+export async function deletePlayerCore(deps?: DeletePlayerDeps) {
+    const resolvedDeps = deps ?? await createDefaultDeleteDeps();
+    const user = await resolvedDeps.getCurrentUser();
 
     if (!user) {
         throw new Error('No authenticated user to delete');
     }
 
-    await deps.auth.api.deleteUser({
+    await resolvedDeps.auth.api.deleteUser({
         body: { callbackURL: '/footy/auth/accountdeleted' },
-        headers: await deps.headers(),
+        headers: await resolvedDeps.headers(),
     });
 }

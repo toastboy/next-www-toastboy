@@ -1,5 +1,5 @@
 // This file has been automatically migrated to valid ESM format by Storybook.
-import type { StorybookConfig } from '@storybook/react-vite';
+import type { StorybookConfig } from '@storybook/nextjs-vite';
 import path, { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import tsconfigPaths from 'vite-tsconfig-paths';
@@ -21,7 +21,7 @@ const config: StorybookConfig = {
         '@chromatic-com/storybook',
         '@storybook/addon-vitest'
     ],
-    "framework": "@storybook/react-vite",
+    "framework": "@storybook/nextjs-vite",
     "staticDirs": [
         "../public"
     ],
@@ -62,6 +62,12 @@ const config: StorybookConfig = {
             '@/lib/secrets': path.resolve(__dirname, './mocks/secrets.mock.ts'),
             // Stub mailer to avoid nodemailer in Storybook
             '@/actions/sendEmail': path.resolve(__dirname, './mocks/actions-sendEmail.mock.ts'),
+            '@/actions/sendEnquiry': path.resolve(__dirname, './mocks/actions-sendEnquiry.mock.ts'),
+            '@/actions/verifyEmail': path.resolve(__dirname, './mocks/actions-verifyEmail.mock.ts'),
+            '@/lib/actions/sendEmail': path.resolve(__dirname, './mocks/lib-actions-sendEmail.mock.ts'),
+            '@/lib/actions/sendEnquiry': path.resolve(__dirname, './mocks/lib-actions-sendEnquiry.mock.ts'),
+            '@/lib/actions/verifyEmail': path.resolve(__dirname, './mocks/lib-actions-verifyEmail.mock.ts'),
+            nodemailer: path.resolve(__dirname, './mocks/nodemailer.mock.ts'),
             // Path aliases matching tsconfig - still need zod schema imports to work
             'prisma': path.resolve(__dirname, '../prisma'),
             '@': path.resolve(__dirname, '../src'),

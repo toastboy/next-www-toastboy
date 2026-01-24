@@ -16,11 +16,6 @@ updates:
       eslint-plugins:
         patterns:
           - "eslint-plugin-*"
-      jest:
-        patterns:
-          - "jest"
-          - "@jest/globals"
-          - "jest-environment-jsdom"
       mantine:
         patterns:
           - "@mantine/*"

@@ -31,9 +31,9 @@ Purpose: Enable fast, safe contributions. Keep changes aligned with existing ser
 
 ### Testing Strategy
 
-- Jest multi‑project config (`jest.config.js`): backend (`api`, `services`) uses Node env; component tests use JSDOM with setup file `jest.setup.frontend.ts`. Place new service tests in `tests/services/**.test.ts`; component tests in `tests/components/**.test.tsx`; API route tests in `tests/api/**`.
-- Use path aliases (see `tsconfig.json` & moduleNameMapper) instead of relative `../../` imports.
-- Avoid direct testing of generated Zod schemas—test service method behavior + validation (e.g., ensure invalid input throws before prisma call).
+- Vitest is the unit/integration test runner. Keep tests alongside the code under test in the same feature folder. Prefer one test subfolder per target (e.g., `src/components/Foo/__tests__/Foo.vitest.spec.tsx` or `src/services/Foo/__tests__/Foo.vitest.spec.ts`). Place `__mocks__` as a sibling to the target code (e.g., `src/components/Foo/__mocks__/**`) and keep mocks feature-scoped.
+- Use path aliases (see `tsconfig.json`) instead of relative `../../` imports.
+- Avoid direct testing of generated Zod schemas—test service method behaviour + validation (e.g., ensure invalid input throws before prisma call).
 - E2E tests: Playwright in `e2e/` (config `playwright.config.ts`). Dev server auto-starts; baseURL `http://127.0.0.1:3000`. Add new page specs as `*.spec.ts`; artifacts land in `test-results/` with HTML report (`playwright-report/`). Keep tests fully parallel-safe (no shared mutable global state).
 
 ### Conventions & Patterns
@@ -68,7 +68,7 @@ export class SomeModelService { async get(id: number) { const where = SomeModelW
 
 1. Use path aliases.
 2. Add/adjust Zod extensions—not generated files.
-3. Include targeted Jest tests (service/component) + optional Playwright if user flow changes.
+3. Include targeted unit tests + optional Playwright if user flow changes.
 4. Run with `op run ... npm run build` before shipping (ensures prisma + Sentry ok).
 5. Preserve existing Sentry/middleware settings unless intentionally changing observability.
 6. When checking spelling and grammar, use British English.

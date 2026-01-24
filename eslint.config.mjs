@@ -9,7 +9,6 @@ import tsParser from "@typescript-eslint/parser";
 import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
 import eslintComments from "eslint-plugin-eslint-comments";
 import importX from "eslint-plugin-import-x";
-import jest from "eslint-plugin-jest";
 import jestDom from "eslint-plugin-jest-dom";
 import pluginN from "eslint-plugin-n";
 import playwright from "eslint-plugin-playwright";
@@ -21,6 +20,7 @@ import sonarjs from "eslint-plugin-sonarjs";
 import storybook from "eslint-plugin-storybook";
 import testingLibrary from "eslint-plugin-testing-library";
 import unusedImports from "eslint-plugin-unused-imports";
+import vitest from "eslint-plugin-vitest";
 import globals from "globals";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -74,7 +74,6 @@ const config = [
             "simple-import-sort": simpleImportSort,
             "unused-imports": unusedImports,
             promise,
-            jest,
             "testing-library": testingLibrary,
             "jest-dom": jestDom,
             playwright,
@@ -186,22 +185,6 @@ const config = [
             "@typescript-eslint/unbound-method": "off",
         },
     },
-    // Jest rules for all tests
-    {
-        files: ["tests/**/*.test.{ts,tsx,js,jsx}", "jest*.{ts,js}", "jest.setup.*.{ts,js}"],
-        plugins: {
-            jest,
-        },
-        rules: {
-            // Pull in recommended rules to avoid drift in rule names across plugin versions
-            ...jest.configs.recommended.rules,
-            ...jest.configs.style.rules,
-            // Jest recommended & style (expose minimal targeted rules to reduce duplication)
-            "jest/expect-expect": "warn",
-            "jest/no-identical-title": "error",
-            "jest/no-disabled-tests": "warn",
-        },
-    },
     // Testing Library / jest-dom overrides (Component tests only)
     {
         files: ["tests/components/**/*.test.{ts,tsx,js,jsx}"],
@@ -214,6 +197,20 @@ const config = [
             ...jestDom.configs.recommended.rules,
             // Correct rule name from plugin (old mistaken name was no-debug)
             "testing-library/no-debugging-utils": "warn",
+        },
+    },
+    // Vitest rules for all Vitest tests/configs
+    {
+        files: [
+            "**/*.vitest.{spec,test}.{ts,tsx,js,jsx}",
+            "**/*.vitest.{ts,tsx,js,jsx}",
+            "vitest*.{ts,js,mjs,cjs}",
+        ],
+        plugins: {
+            vitest,
+        },
+        rules: {
+            ...vitest.configs.recommended.rules,
         },
     },
     // Playwright E2E tests

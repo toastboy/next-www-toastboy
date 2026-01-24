@@ -33,12 +33,10 @@
         "resolveJsonModule": true,
         "sourceMap": true,
         "strictNullChecks": true,
-        "typeRoots": [
-            "./node_modules/@types",
-            "./src/types"
-        ],
         "types": [
             "node",
+            "vitest/globals",
+            "@testing-library/jest-dom"
         ]
     },
     "exclude": [

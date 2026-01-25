@@ -2,6 +2,7 @@
     "name": "next-www-toastboy",
     "private": true,
     "scripts": {
+        "build:storybook": "storybook build",
         "build": "npm run generate && DEBUG=app:* next build",
         "clean": "rm -rf .next",
         "crawllivesite": "npx ts-node -r tsconfig-paths/register --project tsconfig.scripts.json --compiler-options '{\"module\":\"CommonJS\"}' src/lib/crawllivesite/crawllivesite.ts",
@@ -15,10 +16,11 @@
         "start:ci": "next start --hostname 127.0.0.1 --port 3000",
         "start": "docker compose up -d && next start",
         "stop": "docker compose down",
-        "test:api:coverage": "vitest run --config vitest.api.config.ts --coverage",
-        "test:api": "vitest run --config vitest.api.config.ts",
+        "storybook": "storybook dev -p 6006",
         "test:actions:coverage": "vitest run --config vitest.actions.config.ts --coverage",
         "test:actions": "vitest run --config vitest.actions.config.ts",
+        "test:api:coverage": "vitest run --config vitest.api.config.ts --coverage",
+        "test:api": "vitest run --config vitest.api.config.ts",
         "test:chromatic": "npx chromatic",
         "test:components:coverage": "vitest run --config vitest.components.config.ts --coverage",
         "test:components": "vitest run --config vitest.components.config.ts",
@@ -27,9 +29,7 @@
         "test:services": "vitest run --config vitest.services.config.ts",
         "test:watch": "vitest --config vitest.unit.config.ts",
         "test": "vitest run --config vitest.unit.config.ts",
-        "typecheck": "tsc --noEmit",
-        "storybook": "storybook dev -p 6006",
-        "storybook:build": "storybook build"
+        "typecheck": "tsc --noEmit"
     },
     "dependencies": {
         "@azure/identity": "^4.13.0",

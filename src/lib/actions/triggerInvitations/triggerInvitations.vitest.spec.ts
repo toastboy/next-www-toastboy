@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import { triggerInvitationsCore } from '@/lib/actions/triggerInvitations';
-import { createMockInvitationDecision } from '@/tests/mocks';
+import { createMockInvitationDecision } from '@/tests/mocks/data/newGame';
 
 describe('triggerInvitationsCore', () => {
     it('sends invitations when the decision is ready', async () => {

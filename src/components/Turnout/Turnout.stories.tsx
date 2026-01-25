@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import { defaultTurnoutByYearList } from '@/tests/mocks';
+import { defaultTurnoutByYearList } from '@/tests/mocks/data/turnoutByYear';
 
 import { Turnout } from './Turnout';
 

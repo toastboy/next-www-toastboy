@@ -4,7 +4,7 @@ import { vi } from 'vitest';
 
 import { SendEmailForm } from '@/components/SendEmailForm/SendEmailForm';
 import { Wrapper } from '@/tests/components/lib/common';
-import { defaultPlayerData } from '@/tests/mocks';
+import { defaultPlayerData } from '@/tests/mocks/data/playerData';
 
 describe('SendEmailForm', () => {
     it('renders modal with subject input and send button', async () => {

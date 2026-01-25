@@ -3,7 +3,7 @@ import { TableNameSchema } from 'prisma/zod/schemas';
 
 import { TableScore } from '@/components/TableScore/TableScore';
 import { Wrapper } from '@/tests/components/lib/common';
-import { defaultPlayerRecord } from '@/tests/mocks';
+import { defaultPlayerRecord } from '@/tests/mocks/data/playerRecord';
 
 describe('TableScore', () => {
     it('renders points score', () => {

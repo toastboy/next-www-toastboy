@@ -6,7 +6,7 @@ import { GET } from '@/app/api/footy/team/[gameDay]/[team]/route';
 import { getUserRole } from '@/lib/authServer';
 import outcomeService from '@/services/Outcome';
 import { createMockApp, jsonResponseHandler } from '@/tests/lib/api/common';
-import { defaultOutcomeList } from '@/tests/mocks';
+import { defaultOutcomeList } from '@/tests/mocks/data/outcome';
 vi.mock('services/Outcome');
 vi.mock('lib/authServer');
 

@@ -4,7 +4,7 @@ import { vi } from 'vitest';
 
 import { PlayerCountries } from '@/components/PlayerCountries/PlayerCountries';
 import { Wrapper } from '@/tests/components/lib/common';
-import { defaultCountrySupporterDataList } from '@/tests/mocks';
+import { defaultCountrySupporterDataList } from '@/tests/mocks/data/countrySupporterData';
 
 vi.mock('@/components/CountryFlag/CountryFlag');
 

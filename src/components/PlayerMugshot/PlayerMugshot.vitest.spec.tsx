@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 
 import { PlayerMugshot } from '@/components/PlayerMugshot/PlayerMugshot';
 import { Wrapper } from '@/tests/components/lib/common';
-import { defaultPlayer } from '@/tests/mocks';
+import { defaultPlayer } from '@/tests/mocks/data/player';
 
 describe('PlayerMugshot', () => {
     it('renders mugshot image with link to player', () => {

@@ -3,7 +3,8 @@ import { vi } from 'vitest';
 
 import { GameDaySummary } from '@/components/GameDaySummary/GameDaySummary';
 import { Wrapper } from '@/tests/components/lib/common';
-import { defaultGameDay, defaultTeamPlayerList } from '@/tests/mocks';
+import { defaultGameDay } from '@/tests/mocks/data/gameDay';
+import { defaultTeamPlayerList } from '@/tests/mocks/data/teamPlayer';
 
 vi.mock('@/components/Team/Team');
 

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import { defaultClub } from '@/tests/mocks';
+import { defaultClub } from '@/tests/mocks/data/club';
 
 import { ClubBadge } from './ClubBadge';
 

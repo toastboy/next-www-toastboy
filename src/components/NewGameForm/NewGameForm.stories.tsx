@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { mocked,within  } from 'storybook/test';
+import { mocked, within } from 'storybook/test';
 
 import { triggerInvitations } from '@/actions/triggerInvitations';
-import { createMockInvitationDecision } from '@/tests/mocks';
+import { createMockInvitationDecision } from '@/tests/mocks/data/newGame';
 
 import { NewGameForm } from './NewGameForm';
 

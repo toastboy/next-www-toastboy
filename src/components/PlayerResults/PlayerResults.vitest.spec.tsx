@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 
 import { PlayerResults } from '@/components/PlayerResults/PlayerResults';
 import { Wrapper } from '@/tests/components/lib/common';
-import { defaultPlayerRecord } from '@/tests/mocks';
+import { defaultPlayerRecord } from '@/tests/mocks/data/playerRecord';
 
 describe('PlayerResults', () => {
     it('renders results table with data', () => {

@@ -11,12 +11,11 @@ import { vi } from 'vitest';
 import outcomeService from '@/services/Outcome';
 import {
     createMockOutcome,
-    createMockPlayer,
     defaultOutcome,
     defaultOutcomeList,
-    defaultPlayerFormList,
-} from '@/tests/mocks';
-
+} from '@/tests/mocks/data/outcome';
+import { createMockPlayer } from '@/tests/mocks/data/player';
+import { defaultPlayerFormList } from '@/tests/mocks/data/playerForm';
 
 describe('OutcomeService', () => {
     beforeEach(() => {

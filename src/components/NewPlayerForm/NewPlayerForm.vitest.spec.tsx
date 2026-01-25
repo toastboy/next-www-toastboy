@@ -10,7 +10,7 @@ import { createPlayer } from '@/actions/createPlayer';
 import { sendEmail } from '@/actions/sendEmail';
 import { NewPlayerForm } from '@/components/NewPlayerForm/NewPlayerForm';
 import { Wrapper } from '@/tests/components/lib/common';
-import { createMockPlayerData } from '@/tests/mocks';
+import { createMockPlayerData } from '@/tests/mocks/data/playerData';
 
 const mockCreatePlayer = createPlayer as MockedFunction<typeof createPlayer>;
 const mockSendEmail = sendEmail as MockedFunction<typeof sendEmail>;

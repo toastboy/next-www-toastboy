@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 
 import { GameDayLink } from '@/components/GameDayLink/GameDayLink';
 import { Wrapper } from '@/tests/components/lib/common';
-import { defaultGameDay } from '@/tests/mocks';
+import { defaultGameDay } from '@/tests/mocks/data/gameDay';
 
 describe('GameDayLink', () => {
     it('renders link with Swedish-locale date', () => {

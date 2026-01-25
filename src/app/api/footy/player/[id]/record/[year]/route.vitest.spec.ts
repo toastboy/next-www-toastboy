@@ -6,7 +6,7 @@ import { GET } from '@/app/api/footy/player/[id]/record/[year]/route';
 import playerService from '@/services/Player';
 import playerRecordService from '@/services/PlayerRecord';
 import { createMockApp, jsonResponseHandler, toWire } from '@/tests/lib/api/common';
-import { defaultPlayerRecord } from '@/tests/mocks';
+import { defaultPlayerRecord } from '@/tests/mocks/data/playerRecord';
 vi.mock('services/Player');
 vi.mock('services/PlayerRecord');
 

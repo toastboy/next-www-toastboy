@@ -4,9 +4,7 @@ import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
 import countrySupporterService from '@/services/CountrySupporter';
-import { defaultCountrySupporter, defaultCountrySupporterList } from '@/tests/mocks';
-
-
+import { defaultCountrySupporter, defaultCountrySupporterList } from '@/tests/mocks/data/countrySupporter';
 
 describe('countrySupporterService', () => {
     beforeEach(() => {

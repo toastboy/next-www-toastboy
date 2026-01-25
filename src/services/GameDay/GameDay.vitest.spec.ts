@@ -4,9 +4,7 @@ import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
 import gameDayService from '@/services/GameDay';
-import { defaultGameDay, defaultGameDayList } from '@/tests/mocks';
-
-
+import { defaultGameDay, defaultGameDayList } from '@/tests/mocks/data/gameDay';
 
 describe('GameDayService', () => {
     beforeEach(() => {

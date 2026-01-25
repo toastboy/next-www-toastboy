@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import { defaultTrophiesList } from '@/tests/mocks';
+import { defaultTrophiesList } from '@/tests/mocks/data/playerRecord';
 
 import { PlayerTrophies } from './PlayerTrophies';
 

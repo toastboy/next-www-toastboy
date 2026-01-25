@@ -3,7 +3,7 @@ import { TableNameSchema } from 'prisma/zod/schemas';
 
 import { PlayerTrophyTally } from '@/components/PlayerTrophyTally/PlayerTrophyTally';
 import { Wrapper } from '@/tests/components/lib/common';
-import { defaultPlayerRecordList } from '@/tests/mocks';
+import { defaultPlayerRecordList } from '@/tests/mocks/data/playerRecord';
 
 describe('PlayerTrophyTally', () => {
     it('renders nothing when there are no trophies', () => {

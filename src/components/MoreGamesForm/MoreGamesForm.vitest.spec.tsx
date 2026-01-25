@@ -7,7 +7,7 @@ import { vi } from 'vitest';
 import { createMoreGameDays } from '@/actions/createMoreGameDays';
 import { MoreGamesForm } from '@/components/MoreGamesForm/MoreGamesForm';
 import { Wrapper } from '@/tests/components/lib/common';
-import { defaultMoreGamesFormData } from '@/tests/mocks';
+import { defaultMoreGamesFormData } from '@/tests/mocks/data/moreGamesForm';
 import type { CreateMoreGameDaysInput } from '@/types/CreateMoreGameDaysInput';
 
 const mockCreateMoreGameDays = createMoreGameDays as MockedFunction<typeof createMoreGameDays>;

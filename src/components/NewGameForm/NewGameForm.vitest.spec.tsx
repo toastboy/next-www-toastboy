@@ -8,7 +8,7 @@ import { vi } from 'vitest';
 import { triggerInvitations } from '@/actions/triggerInvitations';
 import { NewGameForm } from '@/components/NewGameForm/NewGameForm';
 import { Wrapper } from '@/tests/components/lib/common';
-import { defaultInvitationDecision } from '@/tests/mocks';
+import { defaultInvitationDecision } from '@/tests/mocks/data/newGame';
 
 const mockTriggerInvitations = triggerInvitations as MockedFunction<typeof triggerInvitations>;
 

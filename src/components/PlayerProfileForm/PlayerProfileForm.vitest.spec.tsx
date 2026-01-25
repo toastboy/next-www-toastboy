@@ -9,14 +9,12 @@ import { vi } from 'vitest';
 import { updatePlayer } from '@/actions/updatePlayer';
 import { PlayerProfileForm } from '@/components/PlayerProfileForm/PlayerProfileForm';
 import { Wrapper } from '@/tests/components/lib/common';
-import {
-    defaultClubList,
-    defaultClubSupporterDataList,
-    defaultCountryList,
-    defaultCountrySupporterDataList,
-    defaultPlayer,
-    defaultPlayerExtraEmails,
-} from '@/tests/mocks';
+import { defaultClubList } from '@/tests/mocks/data/club';
+import { defaultClubSupporterDataList } from '@/tests/mocks/data/clubSupporterData';
+import { defaultCountryList } from '@/tests/mocks/data/country';
+import { defaultCountrySupporterDataList } from '@/tests/mocks/data/countrySupporterData';
+import { defaultPlayer } from '@/tests/mocks/data/player';
+import { defaultPlayerExtraEmails } from '@/tests/mocks/data/playerExtraEmail';
 
 const mockUpdatePlayer = updatePlayer as MockedFunction<typeof updatePlayer>;
 

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { http, HttpResponse } from 'msw';
 
-import { defaultGameDayList } from '@/tests/mocks';
+import { defaultGameDayList } from '@/tests/mocks/data/gameDay';
 
 import { GameCalendar } from './GameCalendar';
 

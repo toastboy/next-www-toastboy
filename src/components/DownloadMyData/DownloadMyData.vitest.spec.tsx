@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 
 import DownloadMyData from '@/components/DownloadMyData/DownloadMyData';
 import { Wrapper } from '@/tests/components/lib/common';
-import { defaultDownloadMyDataPayload } from '@/tests/mocks';
+import { defaultDownloadMyDataPayload } from '@/tests/mocks/data/downloadMyData';
 
 describe('DownloadMyData', () => {
     it('renders the download and copy controls', () => {

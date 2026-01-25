@@ -6,7 +6,7 @@ import { GET } from '@/app/api/footy/player/[id]/form/[gameDayId]/[games]/route'
 import { getUserRole } from '@/lib/authServer';
 import playerService from '@/services/Player';
 import { createMockApp, jsonResponseHandler, toWire } from '@/tests/lib/api/common';
-import { defaultPlayerFormList } from '@/tests/mocks';
+import { defaultPlayerFormList } from '@/tests/mocks/data/playerForm';
 vi.mock('services/Player');
 vi.mock('lib/authServer');
 

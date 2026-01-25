@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 
 import { PlayerPositions } from '@/components/PlayerPositions/PlayerPositions';
 import { Wrapper } from '@/tests/components/lib/common';
-import { defaultPlayerRecord } from '@/tests/mocks';
+import { defaultPlayerRecord } from '@/tests/mocks/data/playerRecord';
 
 describe('PlayerPositions', () => {
     it('renders table with position rankings', () => {

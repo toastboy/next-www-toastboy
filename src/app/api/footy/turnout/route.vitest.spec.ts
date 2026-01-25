@@ -5,7 +5,7 @@ import { vi } from 'vitest';
 import { GET } from '@/app/api/footy/turnout/route';
 import outcomeService from '@/services/Outcome';
 import { createMockApp, jsonResponseHandler, toWire } from '@/tests/lib/api/common';
-import { defaultOutcomeList } from '@/tests/mocks';
+import { defaultOutcomeList } from '@/tests/mocks/data/outcome';
 vi.mock('services/Outcome');
 
 const testURI = '/api/footy/turnout';

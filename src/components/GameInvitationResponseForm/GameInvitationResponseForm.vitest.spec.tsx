@@ -7,7 +7,7 @@ import { vi } from 'vitest';
 import { submitGameInvitationResponse } from '@/actions/submitGameInvitationResponse';
 import { GameInvitationResponseForm } from '@/components/GameInvitationResponseForm/GameInvitationResponseForm';
 import { Wrapper } from '@/tests/components/lib/common';
-import { defaultGameInvitationResponseDetails } from '@/tests/mocks';
+import { defaultGameInvitationResponseDetails } from '@/tests/mocks/data/gameInvitationResponse';
 
 describe('GameInvitationResponseForm', () => {
     beforeEach(() => {

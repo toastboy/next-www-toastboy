@@ -5,7 +5,7 @@ import { vi } from 'vitest';
 import { GET } from '@/app/api/footy/gameyear/route';
 import gamedayService from '@/services/GameDay';
 import { createMockApp, jsonResponseHandler } from '@/tests/lib/api/common';
-import { defaultGameYears } from '@/tests/mocks';
+import { defaultGameYears } from '@/tests/mocks/data/gameYears';
 vi.mock('services/GameDay');
 
 const testURI = '/api/footy/gameyear';

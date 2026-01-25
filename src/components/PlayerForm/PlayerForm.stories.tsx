@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import { defaultPlayerFormList } from '@/tests/mocks';
+import { defaultPlayerFormList } from '@/tests/mocks/data/playerForm';
 
 import { PlayerForm } from './PlayerForm';
 

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import { defaultPlayer } from '@/tests/mocks';
+import { defaultPlayer } from '@/tests/mocks/data/player';
 
 import { PlayerBorn } from './PlayerBorn';
 

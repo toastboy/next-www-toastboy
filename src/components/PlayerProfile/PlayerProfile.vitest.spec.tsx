@@ -4,15 +4,12 @@ import { vi } from 'vitest';
 
 import { PlayerProfile } from '@/components/PlayerProfile/PlayerProfile';
 import { Wrapper } from '@/tests/components/lib/common';
-import {
-    defaultArse,
-    defaultClubSupporterDataList,
-    defaultCountrySupporterDataList,
-    defaultPlayer,
-    defaultPlayerFormList,
-    defaultPlayerRecord,
-    defaultTrophiesList,
-} from '@/tests/mocks';
+import { defaultArse } from '@/tests/mocks/data/arse';
+import { defaultClubSupporterDataList } from '@/tests/mocks/data/clubSupporterData';
+import { defaultCountrySupporterDataList } from '@/tests/mocks/data/countrySupporterData';
+import { defaultPlayer } from '@/tests/mocks/data/player';
+import { defaultPlayerFormList } from '@/tests/mocks/data/playerForm';
+import { defaultPlayerRecord, defaultTrophiesList } from '@/tests/mocks/data/playerRecord';
 
 vi.mock('@/components/PlayerArse/PlayerArse');
 vi.mock('@/components/PlayerBorn/PlayerBorn');

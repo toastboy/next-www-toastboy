@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import { defaultCountry } from '@/tests/mocks';
+import { defaultCountry } from '@/tests/mocks/data/country';
 
 import { CountryFlag } from './CountryFlag';
 

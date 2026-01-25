@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 
 import { PlayerArse } from '@/components/PlayerArse/PlayerArse';
 import { Wrapper } from '@/tests/components/lib/common';
-import { defaultArse } from '@/tests/mocks';
+import { defaultArse } from '@/tests/mocks/data/arse';
 
 describe('PlayerArse', () => {
     it('renders arse table with data', () => {

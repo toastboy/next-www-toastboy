@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import { defaultPlayerRecord } from '@/tests/mocks';
+import { defaultPlayerRecord } from '@/tests/mocks/data/playerRecord';
 
 import { PlayerHistory } from './PlayerHistory';
 

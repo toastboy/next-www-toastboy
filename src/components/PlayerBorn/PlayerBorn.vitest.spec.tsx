@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 
 import { PlayerBorn } from '@/components/PlayerBorn/PlayerBorn';
 import { Wrapper } from '@/tests/components/lib/common';
-import { defaultPlayer } from '@/tests/mocks';
+import { defaultPlayer } from '@/tests/mocks/data/player';
 
 describe('PlayerBorn', () => {
     it('renders player birth date', () => {

@@ -2,7 +2,7 @@ import { render, screen, within } from '@testing-library/react';
 
 import { PlayerHistory } from '@/components/PlayerHistory/PlayerHistory';
 import { Wrapper } from '@/tests/components/lib/common';
-import { defaultPlayerRecord } from '@/tests/mocks';
+import { defaultPlayerRecord } from '@/tests/mocks/data/playerRecord';
 
 describe('PlayerHistory', () => {
     it('renders year selector and child components with active years', async () => {

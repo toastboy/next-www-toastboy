@@ -5,7 +5,7 @@ import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
 import playerRecordService from '@/services/PlayerRecord';
-import { defaultPlayerRecord, defaultPlayerRecordList } from '@/tests/mocks';
+import { defaultPlayerRecord, defaultPlayerRecordList } from '@/tests/mocks/data/playerRecord';
 import { loadJsonFixture } from '@/tests/shared/fixtures';
 
 

@@ -4,9 +4,7 @@ import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
 import gameChatService from '@/services/GameChat';
-import { defaultGameChat, defaultGameChatList } from '@/tests/mocks';
-
-
+import { defaultGameChat, defaultGameChatList } from '@/tests/mocks/data/gameChat';
 
 describe('GameChatService', () => {
     beforeEach(() => {

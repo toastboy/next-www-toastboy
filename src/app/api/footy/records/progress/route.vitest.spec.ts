@@ -6,7 +6,7 @@ import { GET } from '@/app/api/footy/records/progress/route';
 import { getUserRole } from '@/lib/authServer';
 import playerRecordService from '@/services/PlayerRecord';
 import { createMockApp, jsonResponseHandler, toWire } from '@/tests/lib/api/common';
-import { defaultProgress } from '@/tests/mocks/data';
+import { defaultProgress } from '@/tests/mocks/data/progress';
 vi.mock('lib/authServer');
 vi.mock('services/PlayerRecord');
 

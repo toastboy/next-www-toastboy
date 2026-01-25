@@ -4,7 +4,7 @@ import { vi } from 'vitest';
 
 import { PlayerLastPlayed } from '@/components/PlayerLastPlayed/PlayerLastPlayed';
 import { Wrapper } from '@/tests/components/lib/common';
-import { defaultPlayerFormList } from '@/tests/mocks';
+import { defaultPlayerFormList } from '@/tests/mocks/data/playerForm';
 
 vi.mock('@/components/GameDayLink/GameDayLink');
 

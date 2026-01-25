@@ -8,8 +8,7 @@ import {
     buildUuidFromIndex,
     defaultGameInvitation,
     defaultGameInvitationList,
-} from '@/tests/mocks';
-
+} from '@/tests/mocks/data/gameInvitation';
 
 describe('GameInvitationService', () => {
     beforeEach(() => {

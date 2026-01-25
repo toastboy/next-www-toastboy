@@ -5,7 +5,7 @@ import { vi } from 'vitest';
 import { GET } from '@/app/api/footy/player/[id]/name/route';
 import playerService from '@/services/Player';
 import { createMockApp, jsonResponseHandler } from '@/tests/lib/api/common';
-import { defaultPlayer } from '@/tests/mocks';
+import { defaultPlayer } from '@/tests/mocks/data/player';
 vi.mock('services/Player');
 
 const testURI = '/api/footy/player/1/name';

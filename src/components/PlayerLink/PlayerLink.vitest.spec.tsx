@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 
 import { PlayerLink } from '@/components/PlayerLink/PlayerLink';
 import { Wrapper } from '@/tests/components/lib/common';
-import { defaultPlayer } from '@/tests/mocks';
+import { defaultPlayer } from '@/tests/mocks/data/player';
 
 describe('PlayerLink', () => {
     it('renders link to player page', () => {

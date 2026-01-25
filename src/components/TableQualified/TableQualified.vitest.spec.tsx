@@ -7,7 +7,7 @@ import { Props as PlayerLinkProps } from '@/components/PlayerLink/PlayerLink';
 import { TableQualified } from '@/components/TableQualified/TableQualified';
 import { Props as TableScoreProps } from '@/components/TableScore/TableScore';
 import { extractMockProps, Wrapper } from '@/tests/components/lib/common';
-import { defaultPlayerRecordDataList } from '@/tests/mocks';
+import { defaultPlayerRecordDataList } from '@/tests/mocks/data/playerRecordData';
 
 vi.mock('@/components/PlayerLink/PlayerLink');
 vi.mock('@/components/TableScore/TableScore');

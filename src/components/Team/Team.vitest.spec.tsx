@@ -5,7 +5,7 @@ import { vi } from 'vitest';
 import { Team } from '@/components/Team/Team';
 import { Props as TeamPlayerProps } from '@/components/TeamPlayer/TeamPlayer';
 import { extractMockProps, Wrapper } from '@/tests/components/lib/common';
-import { defaultTeamPlayerList } from '@/tests/mocks';
+import { defaultTeamPlayerList } from '@/tests/mocks/data/teamPlayer';
 
 vi.mock('@/components/TeamPlayer/TeamPlayer');
 

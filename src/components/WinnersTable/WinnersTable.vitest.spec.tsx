@@ -5,7 +5,7 @@ import { vi } from 'vitest';
 import { Props as PlayerLinkProps } from '@/components/PlayerLink/PlayerLink';
 import { WinnersTable } from '@/components/WinnersTable/WinnersTable';
 import { extractMockProps, Wrapper } from '@/tests/components/lib/common';
-import { defaultPlayerRecordDataList } from '@/tests/mocks';
+import { defaultPlayerRecordDataList } from '@/tests/mocks/data/playerRecordData';
 
 vi.mock('@/components/PlayerLink/PlayerLink');
 

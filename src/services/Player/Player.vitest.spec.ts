@@ -7,16 +7,14 @@ import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
 import playerService from '@/services/Player';
+import { createMockGameDay } from '@/tests/mocks/data/gameDay';
+import { defaultOutcome } from '@/tests/mocks/data/outcome';
 import {
-    createMockGameDay,
     defaultPlayer,
     defaultPlayerList,
     defaultPlayerLoginList,
     invalidPlayer,
-} from '@/tests/mocks';
-import { defaultOutcome } from '@/tests/mocks/data/outcome';
-
-
+} from '@/tests/mocks/data/player';
 
 describe('PlayerService', () => {
     beforeEach(() => {

@@ -5,7 +5,7 @@ import { vi } from 'vitest';
 import { GET } from '@/app/api/footy/records/route';
 import playerRecordService from '@/services/PlayerRecord';
 import { createMockApp, jsonResponseHandler, toWire } from '@/tests/lib/api/common';
-import { defaultPlayerRecordList } from '@/tests/mocks';
+import { defaultPlayerRecordList } from '@/tests/mocks/data/playerRecord';
 vi.mock('services/PlayerRecord');
 
 const testURI = '/api/footy/records';

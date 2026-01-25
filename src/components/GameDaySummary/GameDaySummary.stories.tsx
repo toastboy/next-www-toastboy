@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import { defaultGameDay } from '@/tests/mocks';
+import { defaultGameDay } from '@/tests/mocks/data/gameDay';
 import { defaultTeamPlayerList } from '@/tests/mocks/data/teamPlayer';
 
 import { GameDaySummary } from './GameDaySummary';

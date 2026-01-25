@@ -4,7 +4,7 @@ import { vi } from 'vitest';
 
 import { PlayerClubs } from '@/components/PlayerClubs/PlayerClubs';
 import { Wrapper } from '@/tests/components/lib/common';
-import { defaultClubSupporterDataList } from '@/tests/mocks';
+import { defaultClubSupporterDataList } from '@/tests/mocks/data/clubSupporterData';
 
 vi.mock('@/components/ClubBadge/ClubBadge');
 

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import { defaultPlayerDataList } from '@/tests/mocks';
+import { defaultPlayerDataList } from '@/tests/mocks/data/playerData';
 
 import { SendEmailForm } from './SendEmailForm';
 

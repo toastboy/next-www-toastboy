@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { mocked,within  } from 'storybook/test';
+import { mocked, within } from 'storybook/test';
 
 import { createMoreGameDays } from '@/actions/createMoreGameDays';
-import { defaultMoreGamesFormData } from '@/tests/mocks';
+import { defaultMoreGamesFormData } from '@/tests/mocks/data/moreGamesForm';
 
 import { MoreGamesForm } from './MoreGamesForm';
 

@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 
 import { Turnout } from '@/components/Turnout/Turnout';
 import { Wrapper } from '@/tests/components/lib/common';
-import { defaultTurnoutByYearList } from '@/tests/mocks';
+import { defaultTurnoutByYearList } from '@/tests/mocks/data/turnoutByYear';
 
 describe('Turnout', () => {
     it('renders turnout table with data', () => {

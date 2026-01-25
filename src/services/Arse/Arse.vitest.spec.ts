@@ -4,7 +4,7 @@ import type { Mock } from 'vitest';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import arseService from '@/services/Arse';
-import { defaultArse, defaultArseList } from '@/tests/mocks';
+import { defaultArse, defaultArseList } from '@/tests/mocks/data/arse';
 
 describe('ArseService', () => {
     beforeEach(() => {

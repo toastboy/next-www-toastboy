@@ -6,7 +6,7 @@ import { vi } from 'vitest';
 import { Props as TableQualifiedProps } from '@/components/TableQualified/TableQualified';
 import { YearTable } from '@/components/YearTable/YearTable';
 import { extractMockProps, Wrapper } from '@/tests/components/lib/common';
-import { defaultPlayerRecordDataList } from '@/tests/mocks';
+import { defaultPlayerRecordDataList } from '@/tests/mocks/data/playerRecordData';
 
 vi.mock('@/components/TableQualified/TableQualified');
 

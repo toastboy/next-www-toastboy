@@ -4,9 +4,7 @@ import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
 import clubService from '@/services/Club';
-import { createMockClub, defaultClub, defaultClubList, invalidClub } from '@/tests/mocks';
-
-
+import { createMockClub, defaultClub, defaultClubList, invalidClub } from '@/tests/mocks/data/club';
 
 describe('ClubService', () => {
     beforeEach(() => {

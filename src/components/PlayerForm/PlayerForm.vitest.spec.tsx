@@ -5,7 +5,7 @@ import { vi } from 'vitest';
 import { Props as GameDayLinkProps } from '@/components/GameDayLink/GameDayLink';
 import { PlayerForm } from '@/components/PlayerForm/PlayerForm';
 import { extractMockProps, Wrapper } from '@/tests/components/lib/common';
-import { defaultPlayerFormList } from '@/tests/mocks';
+import { defaultPlayerFormList } from '@/tests/mocks/data/playerForm';
 
 vi.mock('@/components/GameDayLink/GameDayLink');
 

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import { defaultTeamPlayerList } from '@/tests/mocks';
+import { defaultTeamPlayerList } from '@/tests/mocks/data/teamPlayer';
 
 import { Team } from './Team';
 

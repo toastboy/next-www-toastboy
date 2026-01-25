@@ -1,15 +1,13 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { mocked,within  } from 'storybook/test';
+import { mocked, within } from 'storybook/test';
 
 import { updatePlayer } from '@/actions/updatePlayer';
-import {
-    defaultClubList,
-    defaultClubSupporterDataList,
-    defaultCountryList,
-    defaultCountrySupporterDataList,
-    defaultPlayerData,
-    defaultPlayerExtraEmails,
-} from '@/tests/mocks';
+import { defaultClubList } from '@/tests/mocks/data/club';
+import { defaultClubSupporterDataList } from '@/tests/mocks/data/clubSupporterData';
+import { defaultCountryList } from '@/tests/mocks/data/country';
+import { defaultCountrySupporterDataList } from '@/tests/mocks/data/countrySupporterData';
+import { defaultPlayerData } from '@/tests/mocks/data/playerData';
+import { defaultPlayerExtraEmails } from '@/tests/mocks/data/playerExtraEmail';
 
 import { PlayerProfileForm } from './PlayerProfileForm';
 

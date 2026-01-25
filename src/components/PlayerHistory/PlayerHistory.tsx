@@ -1,5 +1,5 @@
 import { Container } from '@mantine/core';
-import { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
+import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 
 import { PlayerPositions } from '@/components/PlayerPositions/PlayerPositions';
 import { PlayerResults } from '@/components/PlayerResults/PlayerResults';

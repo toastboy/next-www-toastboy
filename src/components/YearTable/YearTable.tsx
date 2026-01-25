@@ -1,5 +1,6 @@
 import { Flex } from '@mantine/core';
-import { TableName, TableNameSchema } from 'prisma/zod/schemas';
+import type { TableName } from 'prisma/zod/schemas';
+import { TableNameSchema } from 'prisma/zod/schemas';
 
 import { TableQualified } from '@/components/TableQualified/TableQualified';
 import { config } from '@/lib/config';

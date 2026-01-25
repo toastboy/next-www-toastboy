@@ -1,4 +1,4 @@
-import { PlayerResponse } from 'prisma/generated/enums';
+import { PlayerResponse } from 'prisma/generated/browser';
 
 import { GameInvitationResponseDetails } from '@/types/GameInvitationResponseDetails';
 

@@ -2,7 +2,8 @@
 
 import { Anchor, Indicator, Text } from '@mantine/core';
 import { Calendar, DatePickerProps } from '@mantine/dates';
-import { GameDaySchema, GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
+import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
+import { GameDaySchema } from 'prisma/zod/schemas/models/GameDay.schema';
 import { useEffect, useState } from 'react';
 import { z } from 'zod';
 

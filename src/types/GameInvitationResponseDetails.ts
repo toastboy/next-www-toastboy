@@ -1,4 +1,4 @@
-import { PlayerResponse } from 'prisma/generated/enums';
+import { PlayerResponse } from 'prisma/generated/browser';
 
 export interface GameInvitationResponseDetails {
     token: string;

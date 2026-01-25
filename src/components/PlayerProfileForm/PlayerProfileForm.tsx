@@ -20,10 +20,10 @@ import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck, IconQuestionMark, IconTrash } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import Link from 'next/link';
-import { ClubType } from 'prisma/zod/schemas/models/Club.schema';
-import { CountryType } from 'prisma/zod/schemas/models/Country.schema';
-import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
-import { PlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
+import type { ClubType } from 'prisma/zod/schemas/models/Club.schema';
+import type { CountryType } from 'prisma/zod/schemas/models/Country.schema';
+import type { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
+import type { PlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
 import { Activity, useEffect, useRef } from 'react';
 
 import { updatePlayer } from '@/actions/updatePlayer';

@@ -1,8 +1,8 @@
 import { Box, Container, Title } from '@mantine/core';
-import { TableName } from 'prisma/generated/enums';
-import { ArseType } from 'prisma/zod/schemas/models/Arse.schema';
-import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
-import { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
+import type { TableName } from 'prisma/generated//browser';
+import type { ArseType } from 'prisma/zod/schemas/models/Arse.schema';
+import type { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
+import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 import { Activity } from 'react';
 
 import { PlayerArse } from '@/components/PlayerArse/PlayerArse';

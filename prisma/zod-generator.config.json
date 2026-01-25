@@ -1,5 +1,5 @@
 {
-    "mode": "minimal",
+    "mode": "full",
     "pureModels": true,
     "useMultipleFiles": true,
     "output": "../src/generated/zod"

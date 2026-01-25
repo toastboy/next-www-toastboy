@@ -1,5 +1,5 @@
 import { Table, TableTbody, TableTd, TableTh, TableTr } from '@mantine/core';
-import { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
+import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 
 import { getYearName } from '@/lib/utils';
 

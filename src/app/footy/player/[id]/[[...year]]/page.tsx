@@ -1,5 +1,5 @@
 import { notFound, redirect } from 'next/navigation';
-import { TableName } from 'prisma/generated/enums';
+import { TableName } from 'prisma/generated/browser';
 import { TableNameSchema } from 'prisma/zod/schemas';
 import { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 

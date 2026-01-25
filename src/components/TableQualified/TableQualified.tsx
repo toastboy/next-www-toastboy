@@ -1,5 +1,5 @@
 import { Flex, Table, TableTbody, TableTd, TableTr, Title } from '@mantine/core';
-import { TableName } from 'prisma/zod/schemas';
+import type { TableName } from 'prisma/zod/schemas';
 
 import { PlayerLink } from '@/components/PlayerLink/PlayerLink';
 import { TableScore } from '@/components/TableScore/TableScore';

@@ -1,5 +1,5 @@
 import { Paper, Table, TableTbody, TableTd, TableTh, TableThead, TableTr, Title } from '@mantine/core';
-import { TableName } from 'prisma/zod/schemas';
+import type { TableName } from 'prisma/zod/schemas';
 import { Activity } from 'react';
 
 import { PlayerLink } from '@/components/PlayerLink/PlayerLink';

@@ -1,13 +1,19 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, mocked, within } from 'storybook/test';
+import { expect, within } from 'storybook/test';
+import { vi } from 'vitest';
 
-import { sendEnquiry } from '@/actions/sendEnquiry';
+import { SendEnquiryProxy } from '@/types/actions/SendEnquiry';
 
 import { EnquiryForm } from './EnquiryForm';
+
+const mockSendEnquiry: SendEnquiryProxy = vi.fn().mockResolvedValue(undefined);
 
 const meta = {
     title: 'Forms/EnquiryForm',
     component: EnquiryForm,
+    args: {
+        onSendEnquiry: mockSendEnquiry,
+    },
     parameters: {
         layout: 'centered',
     },
@@ -27,10 +33,6 @@ export const ValidSubmit: Story = {
     ...Render,
     play: async function ({ canvasElement, userEvent, viewMode }) {
         if (viewMode === 'docs') return;
-
-        mocked(sendEnquiry).mockResolvedValue(
-            undefined as Awaited<ReturnType<typeof sendEnquiry>>,
-        );
 
         const canvas = within(canvasElement);
         await userEvent.type(await canvas.findByTestId('enquiry-name'), 'Test User');

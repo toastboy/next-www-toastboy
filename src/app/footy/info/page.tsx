@@ -6,6 +6,7 @@ import {
     Title,
 } from '@mantine/core';
 
+import { sendEnquiry } from '@/actions/sendEnquiry';
 import { EnquiryForm } from '@/components/EnquiryForm/EnquiryForm';
 
 const Page = () => {
@@ -72,7 +73,8 @@ const Page = () => {
                     We&apos;re always looking for players, so if you want to join the list, fill in the form below!
                 </Text>
                 <EnquiryForm
-                    redirectUrl='/footy/info'
+                    redirectUrl="/footy/info"
+                    onSendEnquiry={sendEnquiry}
                 />
             </Flex>
         </>

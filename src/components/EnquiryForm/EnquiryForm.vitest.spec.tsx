@@ -1,22 +1,20 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { MockedFunction } from 'vitest';
 import { vi } from 'vitest';
 
-import { sendEnquiry } from '@/actions/sendEnquiry';
 import { EnquiryForm } from '@/components/EnquiryForm/EnquiryForm';
 import { Wrapper } from '@/tests/components/lib/common';
-
-const mockSendEnquiry = sendEnquiry as MockedFunction<typeof sendEnquiry>;
+import { SendEnquiryProxy } from '@/types/actions/SendEnquiry';
 
 describe('EnquiryForm', () => {
+    const mockSendEnquiry: SendEnquiryProxy = vi.fn().mockResolvedValue(undefined);
+
     beforeEach(() => {
         vi.clearAllMocks();
-        mockSendEnquiry.mockResolvedValue(undefined);
     });
 
     it('renders the form fields', async () => {
-        render(<Wrapper><EnquiryForm redirectUrl='redirect-url' /></Wrapper>);
+        render(<Wrapper><EnquiryForm redirectUrl="redirect-url" onSendEnquiry={mockSendEnquiry} /></Wrapper>);
         await waitFor(() => {
             expect(screen.getByTestId('enquiry-name')).toBeInTheDocument();
             expect(screen.getByTestId('enquiry-email')).toBeInTheDocument();
@@ -27,7 +25,7 @@ describe('EnquiryForm', () => {
 
     it('validates required fields', async () => {
         const user = userEvent.setup();
-        render(<Wrapper><EnquiryForm redirectUrl='redirect-url' /></Wrapper>);
+        render(<Wrapper><EnquiryForm redirectUrl="redirect-url" onSendEnquiry={mockSendEnquiry} /></Wrapper>);
 
         await user.click(screen.getByTestId('enquiry-submit'));
 
@@ -38,7 +36,7 @@ describe('EnquiryForm', () => {
 
     it('submits valid data', async () => {
         const user = userEvent.setup();
-        render(<Wrapper><EnquiryForm redirectUrl='redirect-url' /></Wrapper>);
+        render(<Wrapper><EnquiryForm redirectUrl="redirect-url" onSendEnquiry={mockSendEnquiry} /></Wrapper>);
 
         await user.type(screen.getByTestId('enquiry-name'), 'Test User');
         await user.type(screen.getByTestId('enquiry-email'), 'test@example.com');

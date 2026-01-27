@@ -16,16 +16,17 @@ import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 
-import { sendEnquiry } from '@/actions/sendEnquiry';
 import { EmailInput } from '@/components/EmailInput/EmailInput';
 import { config } from '@/lib/config';
+import { SendEnquiryProxy } from '@/types/actions/SendEnquiry';
 import { EnquiryInput, EnquirySchema } from '@/types/EnquiryInput';
 
 export interface Props {
     redirectUrl: string;
+    onSendEnquiry: SendEnquiryProxy;
 }
 
-export const EnquiryForm: React.FC<Props> = ({ redirectUrl }) => {
+export const EnquiryForm: React.FC<Props> = ({ redirectUrl, onSendEnquiry }) => {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();
@@ -83,7 +84,7 @@ export const EnquiryForm: React.FC<Props> = ({ redirectUrl }) => {
         });
 
         try {
-            await sendEnquiry(values, redirectUrl);
+            await onSendEnquiry(values, redirectUrl);
             form.reset();
 
             notifications.update({

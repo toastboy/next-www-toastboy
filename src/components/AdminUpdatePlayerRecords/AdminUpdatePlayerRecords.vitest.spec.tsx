@@ -7,9 +7,11 @@ import { vi } from 'vitest';
 
 import { AdminUpdatePlayerRecords } from '@/components/AdminUpdatePlayerRecords/AdminUpdatePlayerRecords';
 import { Wrapper } from '@/tests/components/lib/common';
+import { UpdatePlayerRecordsProxy } from '@/types/actions/UpdatePlayerRecords';
 
 describe('AdminUpdatePlayerRecords', () => {
     const mutateMock = vi.fn().mockResolvedValue(undefined);
+    const mockUpdatePlayerRecords: UpdatePlayerRecordsProxy = vi.fn().mockResolvedValue(undefined);
 
     beforeEach(() => {
         vi.useFakeTimers();
@@ -29,7 +31,7 @@ describe('AdminUpdatePlayerRecords', () => {
             mutate: mutateMock,
         });
 
-        render(<Wrapper><AdminUpdatePlayerRecords /></Wrapper>);
+        render(<Wrapper><AdminUpdatePlayerRecords onUpdatePlayerRecords={mockUpdatePlayerRecords} /></Wrapper>);
         expect(screen.queryByRole('img')).not.toBeInTheDocument();
         expect(screen.getByText("40%")).toBeInTheDocument();
     });
@@ -42,7 +44,7 @@ describe('AdminUpdatePlayerRecords', () => {
             mutate: mutateMock,
         });
 
-        render(<Wrapper><AdminUpdatePlayerRecords /></Wrapper>);
+        render(<Wrapper><AdminUpdatePlayerRecords onUpdatePlayerRecords={mockUpdatePlayerRecords} /></Wrapper>);
         expect(screen.queryByRole('img')).not.toBeInTheDocument();
         expect(screen.getByTestId('update-player-records-compete-icon')).toBeInTheDocument();
 

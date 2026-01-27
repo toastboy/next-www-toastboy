@@ -1,12 +1,19 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { http, HttpResponse } from 'msw';
+import { vi } from 'vitest';
+
+import { UpdatePlayerRecordsProxy } from '@/types/actions/UpdatePlayerRecords';
 
 import { AdminUpdatePlayerRecords } from './AdminUpdatePlayerRecords';
 
+const mockUpdatePlayerRecords: UpdatePlayerRecordsProxy = vi.fn().mockResolvedValue(undefined);
 
 const meta = {
     title: 'Admin/AdminUpdatePlayerRecords',
     component: AdminUpdatePlayerRecords,
+    args: {
+        onUpdatePlayerRecords: mockUpdatePlayerRecords,
+    },
     parameters: {
         layout: 'centered',
         msw: {

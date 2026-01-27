@@ -4,12 +4,14 @@ import { ActionIcon, Button, Center, Container, RingProgress, Text } from '@mant
 import { IconCheck } from '@tabler/icons-react';
 import { useEffect } from 'react';
 
-import { updatePlayerRecords } from '@/actions/updatePlayerRecords';
 import { useRecordsProgress } from '@/lib/swr';
+import { UpdatePlayerRecordsProxy } from '@/types/actions/UpdatePlayerRecords';
 
-export type Props = unknown;
+export interface Props {
+    onUpdatePlayerRecords: UpdatePlayerRecordsProxy;
+};
 
-export const AdminUpdatePlayerRecords: React.FC<Props> = () => {
+export const AdminUpdatePlayerRecords: React.FC<Props> = ({ onUpdatePlayerRecords }) => {
     const { data, mutate } = useRecordsProgress();
 
     useEffect(() => {
@@ -64,7 +66,7 @@ export const AdminUpdatePlayerRecords: React.FC<Props> = () => {
                     type="button"
                     data-testid="update-player-records-button"
                     onClick={() => {
-                        updatePlayerRecords().catch((err) => {
+                        onUpdatePlayerRecords().catch((err) => {
                             console.error('Failed to update player records');
                             throw err;
                         });

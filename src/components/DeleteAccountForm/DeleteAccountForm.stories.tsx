@@ -1,13 +1,19 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, mocked, within } from 'storybook/test';
+import { expect, within } from 'storybook/test';
+import { vi } from 'vitest';
 
-import { deletePlayer } from '@/actions/deletePlayer';
+import { DeletePlayerProxy } from '@/types/actions/DeletePlayer';
 
 import { DeleteAccountForm } from './DeleteAccountForm';
+
+const mockDeletePlayer: DeletePlayerProxy = vi.fn().mockResolvedValue(undefined);
 
 const meta = {
     title: 'Forms/DeleteAccountForm',
     component: DeleteAccountForm,
+    args: {
+        onDeletePlayer: mockDeletePlayer,
+    },
     parameters: {
         layout: 'centered',
     },
@@ -25,10 +31,6 @@ export const ValidSubmit: Story = {
     ...Render,
     play: async function ({ canvasElement, userEvent, viewMode }) {
         if (viewMode === 'docs') return;
-
-        mocked(deletePlayer).mockResolvedValue(
-            undefined as Awaited<ReturnType<typeof deletePlayer>>,
-        );
 
         const canvas = within(canvasElement);
         const confirmPhrase = await canvas.findByTestId('confirm-phrase-input');

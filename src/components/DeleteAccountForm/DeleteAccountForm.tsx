@@ -18,12 +18,14 @@ import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useState } from 'react';
 import { DeleteAccountInput, DeleteAccountSchema } from 'types/DeleteAccountInput';
 
-import { deletePlayer } from '@/actions/deletePlayer';
 import { config } from '@/lib/config';
+import { DeletePlayerProxy } from '@/types/actions/DeletePlayer';
 
-export type Props = unknown;
+export interface Props {
+    onDeletePlayer: DeletePlayerProxy;
+}
 
-export const DeleteAccountForm: React.FC<Props> = () => {
+export const DeleteAccountForm: React.FC<Props> = ({ onDeletePlayer }) => {
     const [errorText, setErrorText] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
     const form = useForm<DeleteAccountInput>({
@@ -40,7 +42,7 @@ export const DeleteAccountForm: React.FC<Props> = () => {
             setErrorText(null);
             setSuccess(false);
 
-            await deletePlayer();
+            await onDeletePlayer();
 
             form.reset();
             setSuccess(true);

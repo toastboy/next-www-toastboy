@@ -1,25 +1,23 @@
 
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { MockedFunction } from 'vitest';
 import { vi } from 'vitest';
 
-import { deletePlayer } from '@/actions/deletePlayer';
 import { DeleteAccountForm } from '@/components/DeleteAccountForm/DeleteAccountForm';
 import { Wrapper } from '@/tests/components/lib/common';
-
-const mockDeletePlayer = deletePlayer as MockedFunction<typeof deletePlayer>;
+import { DeletePlayerProxy } from '@/types/actions/DeletePlayer';
 
 describe('DeleteAccountForm', () => {
+    const mockDeletePlayer: DeletePlayerProxy = vi.fn().mockResolvedValue(undefined);
+
     beforeEach(() => {
         vi.clearAllMocks();
-        mockDeletePlayer.mockResolvedValue(undefined);
     });
 
     it('renders the confirmation fields and submit button', () => {
         render(
             <Wrapper>
-                <DeleteAccountForm />
+                <DeleteAccountForm onDeletePlayer={mockDeletePlayer} />
             </Wrapper>,
         );
 
@@ -33,7 +31,7 @@ describe('DeleteAccountForm', () => {
 
         render(
             <Wrapper>
-                <DeleteAccountForm />
+                <DeleteAccountForm onDeletePlayer={mockDeletePlayer} />
             </Wrapper>,
         );
 
@@ -60,7 +58,7 @@ describe('DeleteAccountForm', () => {
 
         render(
             <Wrapper>
-                <DeleteAccountForm />
+                <DeleteAccountForm onDeletePlayer={mockDeletePlayer} />
             </Wrapper>,
         );
 
@@ -78,12 +76,11 @@ describe('DeleteAccountForm', () => {
     it('shows an error message when deletion fails', async () => {
         const user = userEvent.setup();
         const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
-
-        mockDeletePlayer.mockRejectedValueOnce(new Error('Delete failed'));
+        const failingMock: DeletePlayerProxy = vi.fn().mockRejectedValueOnce(new Error('Delete failed'));
 
         render(
             <Wrapper>
-                <DeleteAccountForm />
+                <DeleteAccountForm onDeletePlayer={failingMock} />
             </Wrapper>,
         );
 

@@ -2,13 +2,8 @@ import { notifications } from '@mantine/notifications';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 
-import { authExport } from '@/actions/auth-export';
 import { AdminExportAuth } from '@/components/AdminExportAuth/AdminExportAuth';
 import { Wrapper } from '@/tests/components/lib/common';
-
-vi.mock('@/actions/auth-export', () => ({
-    authExport: vi.fn(),
-}));
 
 vi.mock('@mantine/notifications', () => ({
     notifications: {
@@ -22,10 +17,12 @@ describe('AdminExportAuth', () => {
         vi.clearAllMocks();
     });
 
+    const mockExportAuth = vi.fn();
+
     it('renders export button', () => {
         render(
             <Wrapper>
-                <AdminExportAuth />
+                <AdminExportAuth onExportAuth={mockExportAuth} />
             </Wrapper>,
         );
 
@@ -35,7 +32,7 @@ describe('AdminExportAuth', () => {
 
     it('shows loading notification on button click', async () => {
         vi.mocked(notifications.show).mockReturnValue('notification-id-1');
-        vi.mocked(authExport).mockImplementation(
+        mockExportAuth.mockImplementation(
             () =>
                 new Promise(() => {
                     // Never resolves
@@ -44,7 +41,7 @@ describe('AdminExportAuth', () => {
 
         render(
             <Wrapper>
-                <AdminExportAuth />
+                <AdminExportAuth onExportAuth={mockExportAuth} />
             </Wrapper>,
         );
 
@@ -65,11 +62,11 @@ describe('AdminExportAuth', () => {
     it('shows success notification when export succeeds', async () => {
         const notificationId = 'notification-id-success';
         vi.mocked(notifications.show).mockReturnValue(notificationId);
-        vi.mocked(authExport).mockResolvedValue(undefined);
+        mockExportAuth.mockResolvedValue(undefined);
 
         render(
             <Wrapper>
-                <AdminExportAuth />
+                <AdminExportAuth onExportAuth={mockExportAuth} />
             </Wrapper>,
         );
 
@@ -88,19 +85,19 @@ describe('AdminExportAuth', () => {
             );
         });
 
-        expect(authExport).toHaveBeenCalled();
-        expect(authExport).toHaveBeenCalledTimes(1);
+        expect(mockExportAuth).toHaveBeenCalled();
+        expect(mockExportAuth).toHaveBeenCalledTimes(1);
     });
 
     it('shows error notification when export fails', async () => {
         const notificationId = 'notification-id-error';
         const errorMessage = 'Database connection failed';
         vi.mocked(notifications.show).mockReturnValue(notificationId);
-        vi.mocked(authExport).mockRejectedValue(new Error(errorMessage));
+        mockExportAuth.mockRejectedValue(new Error(errorMessage));
 
         render(
             <Wrapper>
-                <AdminExportAuth />
+                <AdminExportAuth onExportAuth={mockExportAuth} />
             </Wrapper>,
         );
 
@@ -119,7 +116,7 @@ describe('AdminExportAuth', () => {
             );
         });
 
-        expect(authExport).toHaveBeenCalled();
-        expect(authExport).toHaveBeenCalledTimes(1);
+        expect(mockExportAuth).toHaveBeenCalled();
+        expect(mockExportAuth).toHaveBeenCalledTimes(1);
     });
 });

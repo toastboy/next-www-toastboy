@@ -2,6 +2,7 @@
 import { Notification } from '@mantine/core';
 import { IconX } from '@tabler/icons-react';
 
+import { updatePlayer } from '@/actions/updatePlayer';
 import { PlayerProfileForm } from '@/components/PlayerProfileForm/PlayerProfileForm';
 import { getCurrentUser } from '@/lib/authServer';
 import { config } from '@/lib/config';
@@ -61,6 +62,7 @@ const Page = async ({ searchParams: sp }: PageProps) => {
             allCountries={allCountries}
             allClubs={allClubs}
             verifiedEmail={verifiedEmail}
+            onUpdatePlayer={updatePlayer}
         />
     );
 };

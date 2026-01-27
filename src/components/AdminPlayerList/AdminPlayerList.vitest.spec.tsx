@@ -3,6 +3,16 @@ import { render, screen, within } from '@testing-library/react';
 import { AdminPlayerList } from '@/components/AdminPlayerList/AdminPlayerList';
 import { Wrapper } from '@/tests/components/lib/common';
 import { createMockPlayerData } from '@/tests/mocks/data/playerData';
+import { AddPlayerInviteProxy } from '@/types/actions/CreatePlayer';
+import { SendEmailProxy } from '@/types/actions/SendEmail';
+
+const defaultAddPlayerProxy: AddPlayerInviteProxy = async (playerId, email) => {
+    return Promise.resolve(`Invite link for player ${playerId} sent to ${email}`);
+};
+
+const stubSendEmail: SendEmailProxy = async (_to, _cc, _subject, _html) => {
+    return Promise.resolve();
+};
 
 describe('AdminPlayerList', () => {
     it('renders player rows with auth status', () => {
@@ -26,7 +36,12 @@ describe('AdminPlayerList', () => {
 
         render(
             <Wrapper>
-                <AdminPlayerList players={players} userEmails={['alex@example.com']} />
+                <AdminPlayerList
+                    players={players}
+                    userEmails={['alex@example.com']}
+                    onAddPlayerInvite={defaultAddPlayerProxy}
+                    onSendEmail={stubSendEmail}
+                />
             </Wrapper>,
         );
 
@@ -42,7 +57,12 @@ describe('AdminPlayerList', () => {
     it('renders empty state', () => {
         render(
             <Wrapper>
-                <AdminPlayerList players={[]} userEmails={[]} />
+                <AdminPlayerList
+                    players={[]}
+                    userEmails={[]}
+                    onAddPlayerInvite={defaultAddPlayerProxy}
+                    onSendEmail={stubSendEmail}
+                />
             </Wrapper>,
         );
 

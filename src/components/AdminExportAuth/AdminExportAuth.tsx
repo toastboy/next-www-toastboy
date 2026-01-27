@@ -4,12 +4,13 @@ import { Button, Container, rem } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { IconCheck, IconX } from '@tabler/icons-react';
 
-import { authExport } from '@/actions/auth-export';
 import { config } from '@/lib/config';
 
-export type Props = unknown;
+export interface Props {
+    onExportAuth: () => Promise<void>,
+}
 
-export const AdminExportAuth: React.FC<Props> = () => {
+export const AdminExportAuth: React.FC<Props> = ({ onExportAuth }) => {
     return (
         <>
             <Container>
@@ -26,7 +27,7 @@ export const AdminExportAuth: React.FC<Props> = () => {
                         });
 
                         try {
-                            await authExport();
+                            await onExportAuth();
                             notifications.update({
                                 id,
                                 color: 'green',

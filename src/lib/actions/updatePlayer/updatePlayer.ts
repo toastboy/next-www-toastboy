@@ -5,7 +5,7 @@ import clubSupporterService from '@/services/ClubSupporter';
 import countrySupporterService from '@/services/CountrySupporter';
 import playerService from '@/services/Player';
 import playerExtraEmailService from '@/services/PlayerExtraEmail';
-import type { UpdatePlayerInput } from '@/types/UpdatePlayerInput';
+import type { UpdatePlayerInput } from '@/types/actions/UpdatePlayer';
 
 interface UpdatePlayerDeps {
     playerService: Pick<typeof playerService, 'update'>;

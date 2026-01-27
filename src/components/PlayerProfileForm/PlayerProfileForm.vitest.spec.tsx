@@ -3,10 +3,8 @@
 import { notifications } from '@mantine/notifications';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { MockedFunction } from 'vitest';
 import { vi } from 'vitest';
 
-import { updatePlayer } from '@/actions/updatePlayer';
 import { PlayerProfileForm } from '@/components/PlayerProfileForm/PlayerProfileForm';
 import { Wrapper } from '@/tests/components/lib/common';
 import { defaultClubList } from '@/tests/mocks/data/club';
@@ -16,12 +14,13 @@ import { defaultCountrySupporterDataList } from '@/tests/mocks/data/countrySuppo
 import { defaultPlayer } from '@/tests/mocks/data/player';
 import { defaultPlayerExtraEmails } from '@/tests/mocks/data/playerExtraEmail';
 
-const mockUpdatePlayer = updatePlayer as MockedFunction<typeof updatePlayer>;
-
 describe('PlayerProfileForm', () => {
+    const mockUpdatePlayer = vi.fn(
+        async () => Promise.resolve(defaultPlayer),
+    );
+
     beforeEach(() => {
         vi.clearAllMocks();
-        mockUpdatePlayer.mockResolvedValue(defaultPlayer);
     });
 
     it('renders the profile fields', () => {
@@ -34,6 +33,7 @@ describe('PlayerProfileForm', () => {
                     clubs={defaultClubSupporterDataList}
                     allCountries={defaultCountryList}
                     allClubs={defaultClubList}
+                    onUpdatePlayer={mockUpdatePlayer}
                 />
             </Wrapper>,
         );
@@ -66,6 +66,7 @@ describe('PlayerProfileForm', () => {
                     clubs={defaultClubSupporterDataList}
                     allCountries={defaultCountryList}
                     allClubs={defaultClubList}
+                    onUpdatePlayer={mockUpdatePlayer}
                 />
             </Wrapper>,
         );
@@ -87,7 +88,8 @@ describe('PlayerProfileForm', () => {
                     addedExtraEmails: [],
                     anonymous: defaultPlayer.anonymous,
                     born: defaultPlayer.born,
-                    clubs: defaultClubSupporterDataList.map((entry) => entry.clubId.toString()),
+                    clubs: defaultClubSupporterDataList.map((entry) => entry.clubId),
+                    comment: "",
                     countries: defaultCountrySupporterDataList.map((entry) => entry.country.isoCode),
                     extraEmails: defaultPlayerExtraEmails.map((entry) => entry.email),
                     finished: defaultPlayer.finished,

@@ -1,5 +1,6 @@
 import { Center, Container, Stack, Title } from '@mantine/core';
 
+import { authExport } from '@/actions/auth-export';
 import { AdminExportAuth } from '@/components/AdminExportAuth/AdminExportAuth';
 import { AdminUpdatePlayerRecords } from '@/components/AdminUpdatePlayerRecords/AdminUpdatePlayerRecords';
 
@@ -14,7 +15,7 @@ const Page: React.FC = () => {
 
             <Stack mb="lg">
                 <AdminUpdatePlayerRecords />
-                <AdminExportAuth />
+                <AdminExportAuth onExportAuth={authExport} />
             </Stack>
         </Container >
     );

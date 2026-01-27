@@ -24,14 +24,15 @@ import type { ClubType } from 'prisma/zod/schemas/models/Club.schema';
 import type { CountryType } from 'prisma/zod/schemas/models/Country.schema';
 import type { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import type { PlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
+import type React from 'react';
 import { Activity, useEffect, useRef } from 'react';
 
-import { updatePlayer } from '@/actions/updatePlayer';
 import { EmailInput } from '@/components/EmailInput/EmailInput';
 import { config } from '@/lib/config';
 import { ClubSupporterDataType } from '@/types';
+import type { UpdatePlayerProxy } from '@/types/actions/UpdatePlayer';
+import { UpdatePlayerInput, UpdatePlayerSchema } from '@/types/actions/UpdatePlayer';
 import { CountrySupporterDataType } from '@/types/CountrySupporterDataType';
-import { UpdatePlayerInput, UpdatePlayerSchema } from '@/types/UpdatePlayerInput';
 
 export interface Props {
     player: PlayerType & { accountEmail?: string | null };
@@ -41,6 +42,7 @@ export interface Props {
     allCountries: CountryType[];
     allClubs: ClubType[];
     verifiedEmail?: string;
+    onUpdatePlayer: UpdatePlayerProxy;
 }
 
 type PlayerProfileFormValues = Omit<UpdatePlayerInput, 'clubs' | 'finished'> & {
@@ -56,6 +58,7 @@ export const PlayerProfileForm: React.FC<Props> = ({
     allCountries,
     allClubs,
     verifiedEmail,
+    onUpdatePlayer,
 }) => {
     const initialExtraEmails = extraEmails.map((playerEmail) => playerEmail.email);
     const bornYear = player.born ?? undefined;
@@ -113,13 +116,14 @@ export const PlayerProfileForm: React.FC<Props> = ({
                 .filter((email) => !initialExtraEmails.includes(email));
             const removedExtraEmails = initialExtraEmails
                 .filter((email) => !nextExtraEmails.includes(email));
-            const { retired, ...rest } = values;
+            const { retired, clubs, ...rest } = values;
             const finished = retired ? (player.finished ?? new Date()) : null;
 
-            await updatePlayer(
+            await onUpdatePlayer(
                 player.id,
                 {
                     ...rest,
+                    clubs: clubs.map((clubId) => Number(clubId)),
                     finished,
                     extraEmails: nextExtraEmails,
                     addedExtraEmails,

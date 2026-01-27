@@ -1,38 +1,37 @@
-
-
 import { notifications } from '@mantine/notifications';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { MockedFunction } from 'vitest';
 import { vi } from 'vitest';
 
-import { createPlayer } from '@/actions/createPlayer';
-import { sendEmail } from '@/actions/sendEmail';
 import { NewPlayerForm } from '@/components/NewPlayerForm/NewPlayerForm';
 import { Wrapper } from '@/tests/components/lib/common';
 import { createMockPlayerData } from '@/tests/mocks/data/playerData';
-
-const mockCreatePlayer = createPlayer as MockedFunction<typeof createPlayer>;
-const mockSendEmail = sendEmail as MockedFunction<typeof sendEmail>;
 
 describe('NewPlayerForm', () => {
     const players = [
         createMockPlayerData({ id: 1, name: 'Sam Smith' }),
         createMockPlayerData({ id: 2, name: 'Alex Doe' }),
     ];
+    const mockCreatePlayer = vi.fn(
+        async () => Promise.resolve({
+            player: { id: 1 },
+            inviteLink: 'http://example.com/footy/auth/claim?token=abc',
+        }),
+    );
+    const mockSendEmail = vi.fn(async () => Promise.resolve());
 
     beforeEach(() => {
         vi.clearAllMocks();
-        mockCreatePlayer.mockResolvedValue({
-            player: { id: 1 },
-            inviteLink: 'http://example.com/footy/auth/claim?token=abc',
-        } as Awaited<ReturnType<typeof createPlayer>>);
     });
 
     it('renders form with inputs and submit button', () => {
         render(
             <Wrapper>
-                <NewPlayerForm players={players} />
+                <NewPlayerForm
+                    players={players}
+                    onCreatePlayer={mockCreatePlayer}
+                    onSendEmail={mockSendEmail}
+                />
             </Wrapper>,
         );
 
@@ -48,7 +47,11 @@ describe('NewPlayerForm', () => {
 
         render(
             <Wrapper>
-                <NewPlayerForm players={players} />
+                <NewPlayerForm
+                    players={players}
+                    onCreatePlayer={mockCreatePlayer}
+                    onSendEmail={mockSendEmail}
+                />
             </Wrapper>,
         );
 
@@ -84,7 +87,11 @@ describe('NewPlayerForm', () => {
         const user = userEvent.setup();
         render(
             <Wrapper>
-                <NewPlayerForm players={players} />
+                <NewPlayerForm
+                    players={players}
+                    onCreatePlayer={mockCreatePlayer}
+                    onSendEmail={mockSendEmail}
+                />
             </Wrapper>,
         );
 
@@ -114,7 +121,11 @@ describe('NewPlayerForm', () => {
         const user = userEvent.setup();
         render(
             <Wrapper>
-                <NewPlayerForm players={players} />
+                <NewPlayerForm
+                    players={players}
+                    onCreatePlayer={mockCreatePlayer}
+                    onSendEmail={mockSendEmail}
+                />
             </Wrapper>,
         );
 
@@ -146,7 +157,11 @@ describe('NewPlayerForm', () => {
         const user = userEvent.setup();
         render(
             <Wrapper>
-                <NewPlayerForm players={players} />
+                <NewPlayerForm
+                    players={players}
+                    onCreatePlayer={mockCreatePlayer}
+                    onSendEmail={mockSendEmail}
+                />
             </Wrapper>,
         );
 
@@ -183,7 +198,11 @@ describe('NewPlayerForm', () => {
         const user = userEvent.setup();
         render(
             <Wrapper>
-                <NewPlayerForm players={players} />
+                <NewPlayerForm
+                    players={players}
+                    onCreatePlayer={mockCreatePlayer}
+                    onSendEmail={mockSendEmail}
+                />
             </Wrapper>,
         );
 
@@ -201,7 +220,11 @@ describe('NewPlayerForm', () => {
         const user = userEvent.setup();
         render(
             <Wrapper>
-                <NewPlayerForm players={players} />
+                <NewPlayerForm
+                    players={players}
+                    onCreatePlayer={mockCreatePlayer}
+                    onSendEmail={mockSendEmail}
+                />
             </Wrapper>,
         );
 
@@ -214,7 +237,11 @@ describe('NewPlayerForm', () => {
     it('email input is not required', () => {
         render(
             <Wrapper>
-                <NewPlayerForm players={players} />
+                <NewPlayerForm
+                    players={players}
+                    onCreatePlayer={mockCreatePlayer}
+                    onSendEmail={mockSendEmail}
+                />
             </Wrapper>,
         );
 
@@ -225,7 +252,11 @@ describe('NewPlayerForm', () => {
     it('form has correct email input attributes', () => {
         render(
             <Wrapper>
-                <NewPlayerForm players={players} />
+                <NewPlayerForm
+                    players={players}
+                    onCreatePlayer={mockCreatePlayer}
+                    onSendEmail={mockSendEmail}
+                />
             </Wrapper>,
         );
 
@@ -238,7 +269,11 @@ describe('NewPlayerForm', () => {
     it('requires name input', () => {
         render(
             <Wrapper>
-                <NewPlayerForm players={players} />
+                <NewPlayerForm
+                    players={players}
+                    onCreatePlayer={mockCreatePlayer}
+                    onSendEmail={mockSendEmail}
+                />
             </Wrapper>,
         );
 
@@ -249,7 +284,11 @@ describe('NewPlayerForm', () => {
     it('renders introducer options', () => {
         render(
             <Wrapper>
-                <NewPlayerForm players={players} />
+                <NewPlayerForm
+                    players={players}
+                    onCreatePlayer={mockCreatePlayer}
+                    onSendEmail={mockSendEmail}
+                />
             </Wrapper>,
         );
 

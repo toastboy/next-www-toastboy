@@ -1,6 +1,8 @@
 import { Center, Container, Stack, Title } from '@mantine/core';
 import { headers } from 'next/headers';
 
+import { addPlayerInvite } from '@/actions/createPlayer';
+import { sendEmail } from '@/actions/sendEmail';
 import { AdminPlayerList } from '@/components/AdminPlayerList/AdminPlayerList';
 import { auth } from '@/lib/auth';
 import playerService from '@/services/Player';
@@ -36,6 +38,8 @@ const Page: React.FC = async () => {
                     players={players}
                     userEmails={userEmails}
                     userIdByEmail={userIdByEmail}
+                    onAddPlayerInvite={addPlayerInvite}
+                    onSendEmail={sendEmail}
                 />
             </Stack>
         </Container >

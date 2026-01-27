@@ -17,6 +17,7 @@ const config: StorybookConfig = {
     "staticDirs": [
         "../public"
     ],
+    // TODO: Dependency injection for actions should mean this is not needed
     async viteFinal(baseConfig) {
         const storybookDir = path.dirname(fileURLToPath(import.meta.url));
         baseConfig.resolve = baseConfig.resolve ?? {};

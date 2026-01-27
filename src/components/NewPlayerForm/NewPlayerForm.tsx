@@ -18,14 +18,16 @@ import { useRouter } from 'next/navigation';
 import ReactDOMServer from 'react-dom/server';
 import { PlayerDataType } from 'types';
 
-import { createPlayer } from '@/actions/createPlayer';
-import { sendEmail } from '@/actions/sendEmail';
 import { EmailInput } from '@/components/EmailInput/EmailInput';
 import { config } from '@/lib/config';
+import type { CreatePlayerProxy } from '@/types/actions/CreatePlayer';
+import type { SendEmailProxy } from '@/types/actions/SendEmail';
 import { CreatePlayerInput, CreatePlayerSchema } from '@/types/CreatePlayerInput';
 
 export interface Props {
     players: PlayerDataType[];
+    onCreatePlayer: CreatePlayerProxy;
+    onSendEmail: SendEmailProxy;
 }
 
 /**
@@ -42,7 +44,11 @@ export interface Props {
  * <NewPlayerForm players={existingPlayers} />
  * ```
  */
-export const NewPlayerForm: React.FC<Props> = ({ players }) => {
+export const NewPlayerForm: React.FC<Props> = ({
+    players,
+    onCreatePlayer,
+    onSendEmail,
+}) => {
     const router = useRouter();
     const getPreferredEmail = (player?: PlayerDataType) => {
         if (player?.accountEmail) {
@@ -73,7 +79,7 @@ export const NewPlayerForm: React.FC<Props> = ({ players }) => {
         });
 
         try {
-            const { player: newPlayer, inviteLink } = await createPlayer(values);
+            const { player: newPlayer, inviteLink } = await onCreatePlayer(values);
 
             if (values.email?.length > 0) {
                 const introducerEmail = values.introducedBy
@@ -107,7 +113,7 @@ export const NewPlayerForm: React.FC<Props> = ({ players }) => {
                     </MantineProvider>,
                 );
 
-                await sendEmail(values.email, cc, 'Welcome to Toastboy FC!', html);
+                await onSendEmail(values.email, cc, 'Welcome to Toastboy FC!', html);
             }
 
             notifications.update({

@@ -26,15 +26,17 @@ import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 import ReactDOMServer from 'react-dom/server';
 
-import { addPlayerInvite } from '@/actions/createPlayer';
-import { sendEmail } from '@/actions/sendEmail';
 import { config } from '@/lib/config';
 import { PlayerDataType } from '@/types';
+import { AddPlayerInviteProxy } from '@/types/actions/CreatePlayer';
+import { SendEmailProxy } from '@/types/actions/SendEmail';
 
 export interface Props {
     players: PlayerDataType[];
     userEmails?: string[];
     userIdByEmail?: Record<string, string>;
+    onAddPlayerInvite: AddPlayerInviteProxy;
+    onSendEmail: SendEmailProxy;
 }
 
 type SortKey = 'id' | 'name' | 'joined' | 'finished' | 'auth' | 'extraEmails';
@@ -216,7 +218,13 @@ const buildInviteEmail = (inviteLink: string) => ReactDOMServer.renderToStaticMa
  * @param props.userEmails - Better Auth user emails to determine onboarding status.
  * @returns The rendered admin player list table.
  */
-export const AdminPlayerList: React.FC<Props> = ({ players, userEmails, userIdByEmail }) => {
+export const AdminPlayerList: React.FC<Props> = ({
+    players,
+    userEmails,
+    userIdByEmail,
+    onAddPlayerInvite,
+    onSendEmail,
+}) => {
     const router = useRouter();
     const userEmailSet = useMemo(
         () => new Set((userEmails ?? []).map((email) => normalizeEmail(email)).filter((email) => email.length > 0)),
@@ -369,9 +377,10 @@ export const AdminPlayerList: React.FC<Props> = ({ players, userEmails, userIdBy
                 if (!email) {
                     inviteSkipped += 1;
                 } else {
-                    const inviteLink = await addPlayerInvite(player.id, email);
+                    const inviteLink = await onAddPlayerInvite(player.id, email);
                     const html = buildInviteEmail(inviteLink);
-                    await sendEmail(email, 'footy@toastboy.co.uk', 'Welcome to Toastboy FC!', html);
+                    const cc = 'footy@toastboy.co.uk';
+                    await onSendEmail(email, cc, 'Welcome to Toastboy FC!', html);
                     inviteSent += 1;
                 }
             }

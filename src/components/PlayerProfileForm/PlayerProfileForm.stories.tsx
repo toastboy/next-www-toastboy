@@ -1,27 +1,41 @@
+import { Notifications } from '@mantine/notifications';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { mocked, within } from 'storybook/test';
+import { within } from 'storybook/test';
 
-import { updatePlayer } from '@/actions/updatePlayer';
 import { defaultClubList } from '@/tests/mocks/data/club';
 import { defaultClubSupporterDataList } from '@/tests/mocks/data/clubSupporterData';
 import { defaultCountryList } from '@/tests/mocks/data/country';
 import { defaultCountrySupporterDataList } from '@/tests/mocks/data/countrySupporterData';
+import { defaultPlayer } from '@/tests/mocks/data/player';
 import { defaultPlayerData } from '@/tests/mocks/data/playerData';
 import { defaultPlayerExtraEmails } from '@/tests/mocks/data/playerExtraEmail';
+import type { UpdatePlayerProxy } from '@/types/actions/UpdatePlayer';
 
 import { PlayerProfileForm } from './PlayerProfileForm';
 
 const meta = {
     title: 'Forms/PlayerProfileForm',
     component: PlayerProfileForm,
+    decorators: [
+        (Story) => (
+            <>
+                <Notifications />
+                <Story />
+            </>
+        ),
+    ],
     parameters: {
-        layout: 'centered',
+        layout: 'fullscreen',
     },
     tags: ['autodocs'],
 } satisfies Meta<typeof PlayerProfileForm>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
+
+const defaultUpdatePlayerProxy: UpdatePlayerProxy = async (_playerId, _data) => {
+    return Promise.resolve(defaultPlayer);
+};
 
 export const Render: Story = {
     args: {
@@ -32,6 +46,7 @@ export const Render: Story = {
         allCountries: defaultCountryList,
         allClubs: defaultClubList,
         verifiedEmail: 'goalie@toastboy.co.uk',
+        onUpdatePlayer: defaultUpdatePlayerProxy,
     },
 };
 
@@ -39,10 +54,6 @@ export const ValidFill: Story = {
     ...Render,
     play: async function ({ canvasElement, userEvent, viewMode }) {
         if (viewMode === 'docs') return;
-
-        mocked(updatePlayer).mockResolvedValue({
-            id: 123,
-        } as Awaited<ReturnType<typeof updatePlayer>>);
 
         const canvas = within(canvasElement);
         const nameInput = await canvas.findByTestId('name-input');
@@ -64,10 +75,6 @@ export const BlankName: Story = {
     ...Render,
     play: async function ({ canvasElement, userEvent, viewMode }) {
         if (viewMode === 'docs') return;
-
-        mocked(updatePlayer).mockResolvedValue({
-            id: 123,
-        } as Awaited<ReturnType<typeof updatePlayer>>);
 
         const canvas = within(canvasElement);
         const nameInput = await canvas.findByTestId('name-input');

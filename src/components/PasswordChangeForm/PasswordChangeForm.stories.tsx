@@ -1,9 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { mocked, within } from 'storybook/test';
-
-import { authClient } from '@/lib/auth-client';
+import { http, HttpResponse } from 'msw';
+import { expect, fn, within } from 'storybook/test';
 
 import { PasswordChangeForm } from './PasswordChangeForm';
+
+const changePasswordSpy = fn();
 
 const meta = {
     title: 'Forms/PasswordChangeForm',
@@ -21,12 +22,36 @@ export const Render: Story = {
     args: {
         revokeOtherSessions: false,
     },
+    parameters: {
+        msw: {
+            handlers: [
+                http.post('*/api/auth/change-password', async ({ request }) => {
+                    const payload = await request.json();
+                    changePasswordSpy(payload);
+                    return HttpResponse.json({
+                        token: null,
+                        user: {
+                            id: 'user-1',
+                            name: 'Pat Player',
+                            email: 'pat.player@example.com',
+                            createdAt: new Date().toISOString(),
+                            updatedAt: new Date().toISOString(),
+                            emailVerified: true,
+                            image: null,
+                        },
+                    });
+                }),
+            ],
+        },
+    },
 };
 
 export const ValidFill: Story = {
     ...Render,
     play: async function ({ canvasElement, userEvent, viewMode }) {
         if (viewMode === 'docs') return;
+
+        changePasswordSpy.mockClear();
 
         const canvas = within(canvasElement);
         const currentPassword = await canvas.findByTestId('current-password-input');
@@ -48,6 +73,18 @@ export const ValidFill: Story = {
             {},
             { timeout: 6000 },
         );
+
+        await expect(changePasswordSpy).toHaveBeenCalled();
+        const firstCallArg = changePasswordSpy.mock.calls[0][0] as {
+            currentPassword: string;
+            newPassword: string;
+            revokeOtherSessions?: boolean;
+        };
+        await expect(firstCallArg).toEqual({
+            currentPassword: 'current-password',
+            newPassword: 'new-password',
+            revokeOtherSessions: false,
+        });
     },
 };
 
@@ -56,13 +93,7 @@ export const InvalidFill: Story = {
     play: async function ({ canvasElement, userEvent, viewMode }) {
         if (viewMode === 'docs') return;
 
-        mocked(authClient.changePassword).mockImplementationOnce(() => {
-            const error = new Error('Mock password change error') as Error & {
-                error?: { message?: string };
-            };
-            error.error = { message: 'Mock password change error' };
-            return Promise.reject(error);
-        });
+        changePasswordSpy.mockClear();
 
         const canvas = within(canvasElement);
         const currentPassword = await canvas.findByTestId('current-password-input');
@@ -84,5 +115,19 @@ export const InvalidFill: Story = {
             { selector: '.mantine-Notification-description' },
             { timeout: 6000 },
         );
+    },
+    parameters: {
+        msw: {
+            handlers: [
+                http.post('*/api/auth/change-password', async ({ request }) => {
+                    const payload = await request.json();
+                    changePasswordSpy(payload);
+                    return HttpResponse.json(
+                        { error: { message: 'Mock password change error' } },
+                        { status: 400 },
+                    );
+                }),
+            ],
+        },
     },
 };

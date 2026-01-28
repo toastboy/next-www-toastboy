@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { mocked, within } from 'storybook/test';
+import { within } from 'storybook/test';
 
 import { defaultMoreGamesFormData } from '@/tests/mocks/data/moreGamesForm';
 import type { CreateMoreGameDaysProxy } from '@/types/actions/CreateMoreGameDays';
@@ -27,8 +27,6 @@ export const Primary: Story = {
     },
     play: async function ({ canvasElement, userEvent, viewMode }) {
         if (viewMode === 'docs') return;
-
-        mocked(mockCreateMoreGameDays).mockResolvedValue([]);
 
         const canvas = within(canvasElement);
         const firstComment = await canvas.findByLabelText(

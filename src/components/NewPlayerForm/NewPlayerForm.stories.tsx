@@ -1,3 +1,4 @@
+import { Notifications } from '@mantine/notifications';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { mocked, within } from 'storybook/test';
 
@@ -10,6 +11,14 @@ import { NewPlayerForm } from './NewPlayerForm';
 const meta = {
     title: 'Forms/NewPlayerForm',
     component: NewPlayerForm,
+    decorators: [
+        (Story) => (
+            <>
+                <Notifications />
+                <Story />
+            </>
+        ),
+    ],
     parameters: {
         layout: 'centered',
     },

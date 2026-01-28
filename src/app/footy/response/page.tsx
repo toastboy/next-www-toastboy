@@ -3,6 +3,7 @@ export const dynamic = 'force-dynamic';
 import { Anchor, Box, Text } from '@mantine/core';
 import { redirect } from 'next/navigation';
 
+import { submitGameInvitationResponse } from '@/actions/submitGameInvitationResponse';
 import { GameInvitationResponseForm } from '@/components/GameInvitationResponseForm/GameInvitationResponseForm';
 import type { GameInvitationResponseDetails } from '@/types/GameInvitationResponseDetails';
 
@@ -60,7 +61,10 @@ const Page = async ({ searchParams: sp }: PageProps) => {
 
     return (
         <Box maw={560}>
-            <GameInvitationResponseForm details={details} />
+            <GameInvitationResponseForm
+                details={details}
+                onSubmitGameInvitationResponse={submitGameInvitationResponse}
+            />
         </Box>
     );
 };

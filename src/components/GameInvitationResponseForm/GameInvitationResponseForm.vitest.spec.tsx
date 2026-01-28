@@ -1,15 +1,16 @@
-
 import { notifications } from '@mantine/notifications';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 
-import { submitGameInvitationResponse } from '@/actions/submitGameInvitationResponse';
 import { GameInvitationResponseForm } from '@/components/GameInvitationResponseForm/GameInvitationResponseForm';
 import { Wrapper } from '@/tests/components/lib/common';
 import { defaultGameInvitationResponseDetails } from '@/tests/mocks/data/gameInvitationResponse';
+import { SubmitGameInvitationResponseProxy } from '@/types/actions/SubmitGameInvitationResponse';
 
 describe('GameInvitationResponseForm', () => {
+    const mockSubmitGameInvitationResponse: SubmitGameInvitationResponseProxy = vi.fn().mockResolvedValue(undefined);
+
     beforeEach(() => {
         vi.clearAllMocks();
     });
@@ -17,7 +18,7 @@ describe('GameInvitationResponseForm', () => {
     it('renders the response form', () => {
         render(
             <Wrapper>
-                <GameInvitationResponseForm details={defaultGameInvitationResponseDetails} />
+                <GameInvitationResponseForm details={defaultGameInvitationResponseDetails} onSubmitGameInvitationResponse={mockSubmitGameInvitationResponse} />
             </Wrapper>,
         );
 
@@ -34,7 +35,10 @@ describe('GameInvitationResponseForm', () => {
 
         render(
             <Wrapper>
-                <GameInvitationResponseForm details={defaultGameInvitationResponseDetails} />
+                <GameInvitationResponseForm
+                    details={defaultGameInvitationResponseDetails}
+                    onSubmitGameInvitationResponse={mockSubmitGameInvitationResponse}
+                />
             </Wrapper>,
         );
 
@@ -44,7 +48,7 @@ describe('GameInvitationResponseForm', () => {
         await user.click(screen.getByRole('button', { name: /Done/i }));
 
         await waitFor(() => {
-            expect(submitGameInvitationResponse).toHaveBeenCalledWith({
+            expect(mockSubmitGameInvitationResponse).toHaveBeenCalledWith({
                 token: defaultGameInvitationResponseDetails.token,
                 response: 'Yes',
                 goalie: true,

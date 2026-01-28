@@ -9,8 +9,8 @@ import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useState } from 'react';
 import { z } from 'zod';
 
-import { submitGameInvitationResponse } from '@/actions/submitGameInvitationResponse';
 import { config } from '@/lib/config';
+import { SubmitGameInvitationResponseProxy } from '@/types/actions/SubmitGameInvitationResponse';
 import { GameInvitationResponseDetails } from '@/types/GameInvitationResponseDetails';
 import { InvitationResponseInputSchema } from '@/types/InvitationResponseInput';
 
@@ -27,9 +27,10 @@ const responseOptions = [
 
 interface Props {
     details: GameInvitationResponseDetails;
+    onSubmitGameInvitationResponse: SubmitGameInvitationResponseProxy;
 }
 
-export const GameInvitationResponseForm: React.FC<Props> = ({ details }) => {
+export const GameInvitationResponseForm: React.FC<Props> = ({ details, onSubmitGameInvitationResponse }) => {
     const [currentResponse, setCurrentResponse] = useState(details.response);
     const [currentComment, setCurrentComment] = useState(details.comment);
 
@@ -53,7 +54,7 @@ export const GameInvitationResponseForm: React.FC<Props> = ({ details }) => {
         });
 
         try {
-            await submitGameInvitationResponse({
+            await onSubmitGameInvitationResponse({
                 token: details.token,
                 ...values,
             });

@@ -1,14 +1,20 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { mocked, within } from 'storybook/test';
+import { within } from 'storybook/test';
+import { vi } from 'vitest';
 
-import { submitGameInvitationResponse } from '@/actions/submitGameInvitationResponse';
 import { createMockGameInvitationResponseDetails } from '@/tests/mocks/data/gameInvitationResponse';
+import { SubmitGameInvitationResponseProxy } from '@/types/actions/SubmitGameInvitationResponse';
 
 import { GameInvitationResponseForm } from './GameInvitationResponseForm';
+
+const mockSubmitGameInvitationResponse: SubmitGameInvitationResponseProxy = vi.fn().mockResolvedValue(undefined);
 
 const meta = {
     title: 'Forms/GameInvitationResponseForm',
     component: GameInvitationResponseForm,
+    args: {
+        onSubmitGameInvitationResponse: mockSubmitGameInvitationResponse,
+    },
     parameters: {
         layout: 'centered',
     },
@@ -30,8 +36,6 @@ export const SubmitResponse: Story = {
     },
     play: async function ({ canvasElement, userEvent, viewMode }) {
         if (viewMode === 'docs') return;
-
-        mocked(submitGameInvitationResponse).mockResolvedValue(null);
 
         const canvas = within(canvasElement);
         await userEvent.selectOptions(await canvas.findByLabelText(/Response/i), 'Yes');

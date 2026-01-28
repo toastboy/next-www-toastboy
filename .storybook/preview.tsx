@@ -3,6 +3,7 @@ import "@mantine/core/styles.css";
 import { MantineProvider } from "@mantine/core";
 import type { Preview } from "@storybook/nextjs-vite";
 import type { Decorator } from "@storybook/react";
+import { initialize, mswLoader } from "msw-storybook-addon";
 
 const mantineDecorator: Decorator = (Story) => (
     <MantineProvider>
@@ -10,8 +11,11 @@ const mantineDecorator: Decorator = (Story) => (
     </MantineProvider>
 );
 
+initialize({ onUnhandledRequest: "bypass" });
+
 const preview: Preview = {
     decorators: [mantineDecorator],
+    loaders: [mswLoader],
     parameters: {
         nextjs: {
             appDirectory: true,

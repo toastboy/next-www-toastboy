@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, mocked, within } from 'storybook/test';
-import type { MockedFunction } from 'vitest';
-
-import { authClient } from '@/lib/auth-client';
+import { http, HttpResponse } from 'msw';
+import { expect, fn, within } from 'storybook/test';
 
 import { ClaimSignup } from './ClaimSignup';
+
+const signUpEmailSpy = fn();
 
 const meta = {
     title: 'Forms/ClaimSignup',
@@ -24,6 +24,28 @@ export const Render: Story = {
         email: 'john.doe@example.com',
         token: 'example-token',
     },
+    parameters: {
+        msw: {
+            handlers: [
+                http.post('*/api/auth/sign-up/email', async ({ request }) => {
+                    const payload = await request.json();
+                    signUpEmailSpy(payload);
+                    return HttpResponse.json({
+                        token: null,
+                        user: {
+                            id: '123x',
+                            name: 'John Doe',
+                            email: 'john.doe@example.com',
+                            createdAt: new Date().toISOString(),
+                            updatedAt: new Date().toISOString(),
+                            emailVerified: false,
+                            image: null,
+                        },
+                    });
+                }),
+            ],
+        },
+    },
 };
 
 export const ValidSubmit: Story = {
@@ -31,18 +53,7 @@ export const ValidSubmit: Story = {
     play: async function ({ canvasElement, userEvent, viewMode }) {
         if (viewMode === 'docs') return;
 
-        mocked(authClient.signUp.email).mockResolvedValue({
-            token: null,
-            user: {
-                id: '123x',
-                name: 'John Doe',
-                email: 'john.doe@example.com',
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                emailVerified: false,
-                image: null,
-            },
-        });
+        signUpEmailSpy.mockClear();
 
         const canvas = within(canvasElement);
         const password = await canvas.findByTestId('password-input');
@@ -55,16 +66,11 @@ export const ValidSubmit: Story = {
         await userEvent.type(confirmPassword, 'validPassword123');
         await userEvent.click(submitButton);
 
-        type SignUpEmailFn = (
-            payload: { name: string; email: string; password: string },
-            options?: { onError?: (ctx: unknown) => void },
-        ) => Promise<unknown>;
-        const mockSignUpEmail = authClient.signUp.email as unknown as MockedFunction<SignUpEmailFn>;
-        await expect(mockSignUpEmail).toHaveBeenCalled();
-        const firstCallArg = mockSignUpEmail.mock.calls[0][0] as {
-            name: string,
-            email: string,
-            password: string,
+        await expect(signUpEmailSpy).toHaveBeenCalled();
+        const firstCallArg = signUpEmailSpy.mock.calls[0][0] as {
+            name: string;
+            email: string;
+            password: string;
         };
         // The story should pass the args email/name plus the entered password to signUp.email.
         await expect(firstCallArg).toEqual({

@@ -1,9 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { mocked,within  } from 'storybook/test';
-
-import { authClient } from '@/lib/auth-client';
+import { http, HttpResponse } from 'msw';
+import { expect, fn, within } from 'storybook/test';
 
 import { ForgottenPasswordForm } from './ForgottenPasswordForm';
+
+const requestPasswordResetSpy = fn();
 
 const meta = {
     title: 'Forms/ForgottenPasswordForm',
@@ -19,6 +20,20 @@ type Story = StoryObj<typeof meta>;
 
 export const Render: Story = {
     args: {},
+    parameters: {
+        msw: {
+            handlers: [
+                http.post('*/api/auth/request-password-reset', async ({ request }) => {
+                    const payload = await request.json();
+                    requestPasswordResetSpy(payload);
+                    return HttpResponse.json({
+                        status: true,
+                        message: 'If this email exists in our system, check your email for the reset link',
+                    });
+                }),
+            ],
+        },
+    },
 };
 
 export const ValidFill: Story = {
@@ -26,9 +41,7 @@ export const ValidFill: Story = {
     play: async function ({ canvasElement, userEvent, viewMode }) {
         if (viewMode === 'docs') return;
 
-        mocked(authClient.requestPasswordReset).mockResolvedValue({
-            status: true,
-        } as Awaited<ReturnType<typeof authClient.requestPasswordReset>>);
+        requestPasswordResetSpy.mockClear();
 
         const canvas = within(canvasElement);
         const emailInput = await canvas.findByLabelText(/Email/i);
@@ -40,6 +53,14 @@ export const ValidFill: Story = {
 
         const body = canvasElement.ownerDocument.body;
         await within(body).findByText('Check your email', {}, { timeout: 6000 });
+
+        await expect(requestPasswordResetSpy).toHaveBeenCalled();
+        const firstCallArg = requestPasswordResetSpy.mock.calls[0][0] as {
+            email: string;
+            redirectTo?: string;
+        };
+        await expect(firstCallArg.email).toBe('g.player@sacked.com');
+        await expect(firstCallArg.redirectTo ?? '').toMatch(/\/footy\/auth\/reset-password$/);
     },
 };
 

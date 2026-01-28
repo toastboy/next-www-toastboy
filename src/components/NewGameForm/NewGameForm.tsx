@@ -6,11 +6,15 @@ import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 
-import { triggerInvitations } from '@/actions/triggerInvitations';
 import { config } from '@/lib/config';
+import type { TriggerInvitationsProxy } from '@/types/actions/TriggerInvitations';
 import { NewGameInput, NewGameInputSchema } from '@/types/NewGameInput';
 
-export const NewGameForm: React.FC = () => {
+export interface Props {
+    onTriggerInvitations: TriggerInvitationsProxy;
+}
+
+export const NewGameForm: React.FC<Props> = ({ onTriggerInvitations }) => {
     const form = useForm<NewGameInput>({
         initialValues: {
             overrideTimeCheck: false,
@@ -30,7 +34,7 @@ export const NewGameForm: React.FC = () => {
         });
 
         try {
-            const decision = await triggerInvitations(values);
+            const decision = await onTriggerInvitations(values);
 
             notifications.update({
                 id,

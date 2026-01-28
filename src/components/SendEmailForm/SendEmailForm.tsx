@@ -13,8 +13,8 @@ import StarterKit from '@tiptap/starter-kit';
 import { useState } from 'react';
 import { PlayerDataType } from 'types';
 
-import { sendEmail } from '@/actions/sendEmail';
 import { config } from '@/lib/config';
+import { SendEmailProxy } from '@/types/actions/SendEmail';
 
 import classes from './SendEmailForm.module.css';
 
@@ -22,9 +22,10 @@ export interface Props {
     opened: boolean;
     onClose: () => void;
     players: PlayerDataType[];
+    onSendEmail: SendEmailProxy;
 }
 
-export const SendEmailForm: React.FC<Props> = ({ opened, onClose, players }) => {
+export const SendEmailForm: React.FC<Props> = ({ opened, onClose, players, onSendEmail }) => {
     const [subject, setSubject] = useState('');
     const names = players.map((player) => player.name).join(', ');
     const emails = Array.from(new Set(players.flatMap((player) => {
@@ -58,7 +59,7 @@ export const SendEmailForm: React.FC<Props> = ({ opened, onClose, players }) => 
         });
 
         try {
-            await sendEmail(emails, "", subject, editor.getHTML());
+            await onSendEmail(emails, "", subject, editor.getHTML());
 
             onClose();
             notifications.update({

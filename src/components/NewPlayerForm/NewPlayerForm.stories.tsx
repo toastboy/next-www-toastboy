@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { mocked, within } from 'storybook/test';
 
-import { createPlayer } from '@/actions/createPlayer';
 import { defaultPlayerDataList } from '@/tests/mocks/data/playerData';
+import type { CreatePlayerProxy } from '@/types/actions/CreatePlayer';
+import type { SendEmailProxy } from '@/types/actions/SendEmail';
 
 import { NewPlayerForm } from './NewPlayerForm';
 
@@ -18,9 +19,18 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Primary: Story = {
+const createPlayer: CreatePlayerProxy = async () => Promise.resolve({
+    player: { id: 1 },
+    inviteLink: 'http://example.com/footy/auth/claim?token=storybook',
+});
+
+const sendsEmail: SendEmailProxy = async () => Promise.resolve();
+
+export const Render: Story = {
     args: {
         players: defaultPlayerDataList.slice(0, 3),
+        onCreatePlayer: createPlayer,
+        onSendEmail: sendsEmail,
     },
     play: async function ({ canvasElement, userEvent, viewMode }) {
         if (viewMode === 'docs') return;

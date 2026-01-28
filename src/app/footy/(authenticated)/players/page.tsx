@@ -9,6 +9,8 @@ import { useCurrentGame, usePlayers } from 'lib/swr';
 import { useState } from 'react';
 import { PlayerDataType } from 'types';
 
+import { sendEmail } from '@/actions/sendEmail';
+
 type PageProps = object;
 
 const Page: React.FC<PageProps> = () => {
@@ -140,7 +142,12 @@ const Page: React.FC<PageProps> = () => {
             <Tooltip label="Send an email to the selected players">
                 <Button disabled={selectedPlayers.length === 0} onClick={() => setModalOpened(true)}>Send Email...</Button>
             </Tooltip>
-            <SendEmailForm players={selectedPlayers} opened={modalOpened} onClose={() => setModalOpened(false)} />
+            <SendEmailForm
+                players={selectedPlayers}
+                opened={modalOpened}
+                onClose={() => setModalOpened(false)}
+                onSendEmail={sendEmail}
+            />
 
             <Table mt={20}>
                 <Table.Thead>

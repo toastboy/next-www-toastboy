@@ -1,27 +1,29 @@
 
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { MockedFunction } from 'vitest';
 import { vi } from 'vitest';
 
-import { createMoreGameDays } from '@/actions/createMoreGameDays';
 import { MoreGamesForm } from '@/components/MoreGamesForm/MoreGamesForm';
 import { Wrapper } from '@/tests/components/lib/common';
 import { defaultMoreGamesFormData } from '@/tests/mocks/data/moreGamesForm';
+import { CreateMoreGameDaysProxy } from '@/types/actions/CreateMoreGameDays';
 import type { CreateMoreGameDaysInput } from '@/types/CreateMoreGameDaysInput';
 
-const mockCreateMoreGameDays = createMoreGameDays as MockedFunction<typeof createMoreGameDays>;
+const mockCreateMoreGameDays = vi.fn();
 
 describe('MoreGamesForm', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        mockCreateMoreGameDays.mockResolvedValue([] as Awaited<ReturnType<typeof createMoreGameDays>>);
+        mockCreateMoreGameDays.mockResolvedValue([] as Awaited<ReturnType<CreateMoreGameDaysProxy>>);
     });
 
     it('renders a row for each game day', () => {
         render(
             <Wrapper>
-                <MoreGamesForm rows={defaultMoreGamesFormData.rows} />
+                <MoreGamesForm
+                    rows={defaultMoreGamesFormData.rows}
+                    onCreateMoreGameDays={mockCreateMoreGameDays}
+                />
             </Wrapper>,
         );
 
@@ -34,7 +36,10 @@ describe('MoreGamesForm', () => {
 
         render(
             <Wrapper>
-                <MoreGamesForm rows={defaultMoreGamesFormData.rows} />
+                <MoreGamesForm
+                    rows={defaultMoreGamesFormData.rows}
+                    onCreateMoreGameDays={mockCreateMoreGameDays}
+                />
             </Wrapper>,
         );
 

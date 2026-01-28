@@ -2,15 +2,13 @@
 import { notifications } from '@mantine/notifications';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { MockedFunction } from 'vitest';
 import { vi } from 'vitest';
 
-import { triggerInvitations } from '@/actions/triggerInvitations';
 import { NewGameForm } from '@/components/NewGameForm/NewGameForm';
 import { Wrapper } from '@/tests/components/lib/common';
 import { defaultInvitationDecision } from '@/tests/mocks/data/newGame';
 
-const mockTriggerInvitations = triggerInvitations as MockedFunction<typeof triggerInvitations>;
+const mockTriggerInvitations = vi.fn();
 
 describe('NewGameForm', () => {
     beforeEach(() => {
@@ -21,7 +19,9 @@ describe('NewGameForm', () => {
     it('renders the form fields', () => {
         render(
             <Wrapper>
-                <NewGameForm />
+                <NewGameForm
+                    onTriggerInvitations={mockTriggerInvitations}
+                />
             </Wrapper>,
         );
 
@@ -36,7 +36,9 @@ describe('NewGameForm', () => {
 
         render(
             <Wrapper>
-                <NewGameForm />
+                <NewGameForm
+                    onTriggerInvitations={mockTriggerInvitations}
+                />
             </Wrapper>,
         );
 
@@ -69,7 +71,9 @@ describe('NewGameForm', () => {
 
         render(
             <Wrapper>
-                <NewGameForm />
+                <NewGameForm
+                    onTriggerInvitations={mockTriggerInvitations}
+                />
             </Wrapper>,
         );
 

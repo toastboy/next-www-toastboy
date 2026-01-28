@@ -11,7 +11,12 @@ describe('SendEmailForm', () => {
         const onClose = vi.fn();
         render(
             <Wrapper>
-                <SendEmailForm opened={true} onClose={onClose} players={[defaultPlayerData]} />
+                <SendEmailForm
+                    opened={true}
+                    players={[defaultPlayerData]}
+                    onClose={onClose}
+                    onSendEmail={async () => Promise.resolve()}
+                />
             </Wrapper>,
         );
 

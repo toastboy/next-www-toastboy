@@ -1,3 +1,4 @@
+import { createMoreGameDays } from '@/actions/createMoreGameDays';
 import { MoreGamesForm } from '@/components/MoreGamesForm/MoreGamesForm';
 import gameDayService from '@/services/GameDay';
 
@@ -56,7 +57,10 @@ const Page: React.FC<PageProps> = async () => {
     const rows = buildRows(startDate);
 
     return (
-        <MoreGamesForm rows={rows} />
+        <MoreGamesForm
+            rows={rows}
+            onCreateMoreGameDays={createMoreGameDays}
+        />
     );
 };
 

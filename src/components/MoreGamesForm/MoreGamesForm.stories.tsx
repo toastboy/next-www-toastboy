@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { mocked, within } from 'storybook/test';
 
-import { createMoreGameDays } from '@/actions/createMoreGameDays';
 import { defaultMoreGamesFormData } from '@/tests/mocks/data/moreGamesForm';
+import type { CreateMoreGameDaysProxy } from '@/types/actions/CreateMoreGameDays';
 
 import { MoreGamesForm } from './MoreGamesForm';
 
@@ -18,14 +18,17 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+const mockCreateMoreGameDays: CreateMoreGameDaysProxy = async () => Promise.resolve([]);
+
 export const Primary: Story = {
     args: {
         rows: defaultMoreGamesFormData.rows,
+        onCreateMoreGameDays: mockCreateMoreGameDays,
     },
     play: async function ({ canvasElement, userEvent, viewMode }) {
         if (viewMode === 'docs') return;
 
-        mocked(createMoreGameDays).mockResolvedValue([] as Awaited<ReturnType<typeof createMoreGameDays>>);
+        mocked(mockCreateMoreGameDays).mockResolvedValue([]);
 
         const canvas = within(canvasElement);
         const firstComment = await canvas.findByLabelText(

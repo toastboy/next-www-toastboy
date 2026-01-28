@@ -19,15 +19,16 @@ import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { Fragment } from 'react';
 
-import { createMoreGameDays } from '@/actions/createMoreGameDays';
 import { config } from '@/lib/config';
+import type { CreateMoreGameDaysProxy } from '@/types/actions/CreateMoreGameDays';
 import { CreateMoreGameDaysInput, CreateMoreGameDaysSchema } from '@/types/CreateMoreGameDaysInput';
 
 export interface Props {
     rows: CreateMoreGameDaysInput['rows'];
+    onCreateMoreGameDays: CreateMoreGameDaysProxy;
 }
 
-export const MoreGamesForm: React.FC<Props> = ({ rows }) => {
+export const MoreGamesForm: React.FC<Props> = ({ rows, onCreateMoreGameDays }) => {
     const form = useForm<CreateMoreGameDaysInput>({
         initialValues: {
             rows,
@@ -46,7 +47,7 @@ export const MoreGamesForm: React.FC<Props> = ({ rows }) => {
         });
 
         try {
-            await createMoreGameDays(values);
+            await onCreateMoreGameDays(values);
 
             notifications.update({
                 id,

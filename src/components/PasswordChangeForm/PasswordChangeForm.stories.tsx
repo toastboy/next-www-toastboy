@@ -1,3 +1,4 @@
+import { Notifications } from '@mantine/notifications';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { http, HttpResponse } from 'msw';
 import { expect, fn, within } from 'storybook/test';
@@ -9,6 +10,14 @@ const changePasswordSpy = fn();
 const meta = {
     title: 'Forms/PasswordChangeForm',
     component: PasswordChangeForm,
+    decorators: [
+        (Story) => (
+            <>
+                <Notifications />
+                <Story />
+            </>
+        ),
+    ],
     parameters: {
         layout: 'centered',
     },

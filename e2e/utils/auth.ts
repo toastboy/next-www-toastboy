@@ -44,7 +44,7 @@ export async function setAuthState(
         if (user) {
             hostCookies.push({
                 name: MOCK_AUTH_USER_COOKIE,
-                value: encodeURIComponent(JSON.stringify(user)),
+                value: encodeURIComponent(JSON.stringify(user)) as MockAuthState,
                 ...base,
             });
         }

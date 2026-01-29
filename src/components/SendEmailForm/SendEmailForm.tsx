@@ -23,9 +23,18 @@ export interface Props {
     onClose: () => void;
     players: PlayerDataType[];
     onSendEmail: SendEmailProxy;
+    withinPortal?: boolean;
+    withOverlay?: boolean;
 }
 
-export const SendEmailForm: React.FC<Props> = ({ opened, onClose, players, onSendEmail }) => {
+export const SendEmailForm: React.FC<Props> = ({
+    opened,
+    onClose,
+    players,
+    onSendEmail,
+    withinPortal,
+    withOverlay,
+}) => {
     const [subject, setSubject] = useState('');
     const names = players.map((player) => player.name).join(', ');
     const emails = Array.from(new Set(players.flatMap((player) => {
@@ -91,6 +100,8 @@ export const SendEmailForm: React.FC<Props> = ({ opened, onClose, players, onSen
             onClose={onClose}
             title="Send Mail to Players"
             size="lg"
+            withinPortal={withinPortal}
+            withOverlay={withOverlay}
         >
             <Tooltip label={names} multiline>
                 <Text size="sm" mt="sm" lineClamp={1}>

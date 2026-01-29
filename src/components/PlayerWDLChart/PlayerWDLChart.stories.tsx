@@ -37,6 +37,13 @@ const meta = {
     parameters: {
         layout: 'centered',
     },
+    decorators: [
+        (Story) => (
+            <div style={{ width: 320 }}>
+                <Story />
+            </div>
+        ),
+    ],
     tags: ['autodocs'],
 } satisfies Meta<typeof PlayerWDLChart>;
 

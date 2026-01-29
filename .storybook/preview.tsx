@@ -1,4 +1,12 @@
-import "@mantine/core/styles.css";
+/* eslint-disable simple-import-sort/imports */
+// Mantine styles must be imported in this order: https://mantine.dev/styles/mantine-styles/
+import '@mantine/core/styles.css';
+
+import '@mantine/code-highlight/styles.css';
+import '@mantine/dates/styles.css';
+import '@mantine/notifications/styles.css';
+import '@mantine/tiptap/styles.css';
+/* eslint-enable simple-import-sort/imports */
 
 import { MantineProvider } from "@mantine/core";
 import type { Preview } from "@storybook/nextjs-vite";

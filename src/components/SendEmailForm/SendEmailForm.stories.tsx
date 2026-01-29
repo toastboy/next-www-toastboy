@@ -9,7 +9,7 @@ const meta = {
     title: 'Email/SendEmailForm',
     component: SendEmailForm,
     parameters: {
-        layout: 'centered',
+        layout: 'fullscreen',
     },
     tags: ['autodocs'],
 } satisfies Meta<typeof SendEmailForm>;
@@ -25,5 +25,7 @@ export const Primary: Story = {
         players: defaultPlayerDataList.slice(0, 3),
         onClose: () => undefined,
         onSendEmail: sendEmail,
+        withinPortal: false,
+        withOverlay: false,
     },
 };

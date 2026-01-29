@@ -34,6 +34,13 @@ const samplePlayer = {
 const meta = {
     title: 'Player/PlayerTimeline',
     component: PlayerTimeline,
+    decorators: [
+        (Story) => (
+            <div style={{ width: 320 }}>
+                <Story />
+            </div>
+        ),
+    ],
     parameters: {
         layout: 'centered',
     },

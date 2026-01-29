@@ -4,20 +4,47 @@ import { AuthRole, AuthUserSummary } from 'types/AuthUser';
 import { auth } from '@/lib/auth';
 
 export const MOCK_AUTH_COOKIE = 'mock-auth-state';
+export const MOCK_AUTH_USER_COOKIE = 'mock-auth-user';
 
-const mockUsers: Record<Exclude<AuthRole, 'none'>, AuthUserSummary> = {
+const mockUserDefaults = {
     user: {
         name: 'Test User',
         email: 'testuser@example.com',
         playerId: 1,
-        role: 'user',
+        role: 'user' as const,
     },
     admin: {
         name: 'Test Admin',
         email: 'testadmin@example.com',
         playerId: 2,
-        role: 'admin',
+        role: 'admin' as const,
     },
+};
+
+const parseCookieHeader = (cookieHeader: string | null): Record<string, string> => {
+    if (!cookieHeader) return {};
+
+    return cookieHeader.split(';').reduce<Record<string, string>>((acc, cookie) => {
+        const trimmed = cookie.trim();
+        if (!trimmed) return acc;
+        const [name, ...rest] = trimmed.split('=');
+        if (!name) return acc;
+        acc[name] = decodeURIComponent(rest.join('='));
+        return acc;
+    }, {});
+};
+
+const getMockAuthUserFromCookie = (cookieHeader: string | null): Partial<AuthUserSummary> | null => {
+    const cookies = parseCookieHeader(cookieHeader);
+    const rawValue = cookies[MOCK_AUTH_USER_COOKIE];
+    if (!rawValue) return null;
+
+    try {
+        const parsed = JSON.parse(rawValue) as Partial<AuthUserSummary> | null;
+        return parsed ?? null;
+    } catch {
+        return null;
+    }
 };
 
 /**
@@ -27,20 +54,9 @@ const mockUsers: Record<Exclude<AuthRole, 'none'>, AuthUserSummary> = {
  */
 export async function getMockAuthState(): Promise<AuthRole> {
     const cookieHeader = (await headers()).get('cookie');
-    if (!cookieHeader) {
-        return 'none';
-    }
-
-    const cookiesList = cookieHeader.split(';').map((cookie) => cookie.trim());
-    for (const cookie of cookiesList) {
-        const [name, ...rest] = cookie.split('=');
-        if (name === MOCK_AUTH_COOKIE) {
-            const value = decodeURIComponent(rest.join('='));
-            return value === 'admin' || value === 'user' ? value : 'none';
-        }
-    }
-
-    return 'none';
+    const cookies = parseCookieHeader(cookieHeader);
+    const value = cookies[MOCK_AUTH_COOKIE];
+    return value === 'admin' || value === 'user' ? value : 'none';
 }
 
 /**
@@ -50,10 +66,20 @@ export async function getMockAuthState(): Promise<AuthRole> {
  */
 export async function getMockUser(): Promise<AuthUserSummary | null> {
     const state = await getMockAuthState();
-    if (state === 'user' || state === 'admin') {
-        return mockUsers[state];
+    if (state !== 'user' && state !== 'admin') {
+        return null;
     }
-    return null;
+
+    const cookieHeader = (await headers()).get('cookie');
+    const customUser = getMockAuthUserFromCookie(cookieHeader);
+    const baseUser = mockUserDefaults[state];
+    const mergedUser = {
+        ...baseUser,
+        ...customUser,
+        role: state,
+    };
+
+    return mergedUser;
 }
 
 /**

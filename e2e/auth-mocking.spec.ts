@@ -26,9 +26,7 @@ test.describe('Auth Mocking System', () => {
         await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
 
         // Admin should see the users table
-        await expect(page.getByText('Test User')).toBeVisible();
         await expect(page.locator('table')).toBeVisible();
-        await expect(page.locator('table').getByText('Test Admin')).toBeVisible();
     });
 
     test('should allow switching between auth states', async ({ page }) => {

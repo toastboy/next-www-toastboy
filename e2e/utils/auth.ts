@@ -2,25 +2,41 @@ import { Page } from '@playwright/test';
 
 export type MockAuthState = 'none' | 'user' | 'admin';
 const MOCK_AUTH_COOKIE = 'mock-auth-state';
+const MOCK_AUTH_USER_COOKIE = 'mock-auth-user';
+
+export interface MockAuthUser {
+    name?: string | null;
+    email?: string | null;
+    playerId?: number | null;
+}
 
 /**
  * Sets up authentication state for Playwright tests
  * @param page The Playwright page object
  * @param authState The desired authentication state
  */
-export async function setAuthState(page: Page, authState: MockAuthState): Promise<void> {
-    await page.context().addCookies([{
+export async function setAuthState(
+    page: Page,
+    authState: MockAuthState,
+    user?: MockAuthUser,
+): Promise<void> {
+    const cookies = [{
         name: MOCK_AUTH_COOKIE,
         value: authState,
         domain: '127.0.0.1',
         path: '/',
-    }]);
-    await page.addInitScript((state) => {
-        // Mark that we're in a Playwright test
-        (window as unknown as Record<string, unknown>).__PLAYWRIGHT_TEST__ = true;
-        // Set the auth state
-        (window as unknown as Record<string, unknown>).__MOCK_AUTH_STATE__ = state;
-    }, authState);
+    }];
+
+    if (user) {
+        cookies.push({
+            name: MOCK_AUTH_USER_COOKIE,
+            value: encodeURIComponent(JSON.stringify(user)) as MockAuthState,
+            domain: '127.0.0.1',
+            path: '/',
+        });
+    }
+
+    await page.context().addCookies(cookies);
 }
 
 /**
@@ -51,8 +67,8 @@ export async function asGuest(page: Page, uri?: string): Promise<void> {
  *          navigation (if any) is complete, and the page has reached the
  *          'networkidle' load state.
  */
-export async function asUser(page: Page, uri?: string): Promise<void> {
-    await setAuthState(page, 'user');
+export async function asUser(page: Page, uri?: string, user?: MockAuthUser): Promise<void> {
+    await setAuthState(page, 'user', user);
     if (uri) {
         await page.goto(uri);
     }
@@ -69,8 +85,8 @@ export async function asUser(page: Page, uri?: string): Promise<void> {
  *          navigation (if any) is complete, and the page has reached the
  *          'networkidle' load state.
  */
-export async function asAdmin(page: Page, uri?: string): Promise<void> {
-    await setAuthState(page, 'admin');
+export async function asAdmin(page: Page, uri?: string, user?: MockAuthUser): Promise<void> {
+    await setAuthState(page, 'admin', user);
     if (uri) {
         await page.goto(uri);
     }
@@ -89,7 +105,13 @@ export async function clearAuthState(page: Page): Promise<void> {
  */
 export async function getAuthState(page: Page): Promise<MockAuthState> {
     const authState = await page.evaluate(() => {
-        return (window as unknown as Record<string, unknown>).__MOCK_AUTH_STATE__ as MockAuthState;
+        const cookieValue = document.cookie
+            .split(';')
+            .map((cookie) => cookie.trim())
+            .find((cookie) => cookie.startsWith(`${MOCK_AUTH_COOKIE}=`));
+        if (!cookieValue) return 'none';
+        const value = decodeURIComponent(cookieValue.split('=').slice(1).join('='));
+        return value === 'admin' || value === 'user' ? value : 'none';
     });
 
     return authState || 'none';

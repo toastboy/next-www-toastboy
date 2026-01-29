@@ -1,6 +1,7 @@
 import { vi } from 'vitest';
 
 export const MOCK_AUTH_COOKIE = 'mock-auth-state';
+export const MOCK_AUTH_USER_COOKIE = 'mock-auth-user';
 
 export const getMockAuthState = vi.fn();
 export const getMockUser = vi.fn();

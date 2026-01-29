@@ -118,10 +118,12 @@ export const InvalidFill: Story = {
         await userEvent.type(confirmPassword, 'new-password');
         await userEvent.click(submitButton);
 
-        const errorNotification = await canvas.findByTestId('error-notification');
-        await within(errorNotification).findByText(
-            /Mock password change error/,
-            { selector: '.mantine-Notification-description' },
+        await expect(changePasswordSpy).toHaveBeenCalled();
+
+        const body = canvasElement.ownerDocument.body;
+        await within(body).findByText(
+            /Bad Request. Please try again/i,
+            {},
             { timeout: 6000 },
         );
     },

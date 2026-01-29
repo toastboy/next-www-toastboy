@@ -70,7 +70,9 @@ export const PasswordChangeForm: React.FC<Props> = ({ revokeOtherSessions }) => 
             form.reset();
             setSuccess(true);
         } catch (error) {
-            const message = (error as { error?: { message?: string } }).error?.message;
+            const message =
+                (error as { error?: { message?: string } }).error?.message ??
+                (error as { message?: string }).message;
             console.error('Failed to change password:', message);
             setErrorText(message ?? 'An unexpected error occurred. Please try again.');
         }

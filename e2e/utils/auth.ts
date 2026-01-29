@@ -4,6 +4,14 @@ export type MockAuthState = 'none' | 'user' | 'admin';
 const MOCK_AUTH_COOKIE = 'mock-auth-state';
 const MOCK_AUTH_USER_COOKIE = 'mock-auth-user';
 
+// Some parts of the app call back to the canonical base URL (localhost) while
+// Playwright drives the app via 127.0.0.1. Seeding both hosts keeps the mock
+// cookies available regardless of which host the request targets in CI.
+const COOKIE_HOSTS = [
+    'http://127.0.0.1:3000',
+    'http://localhost:3000',
+];
+
 export interface MockAuthUser {
     name?: string | null;
     email?: string | null;
@@ -20,21 +28,29 @@ export async function setAuthState(
     authState: MockAuthState,
     user?: MockAuthUser,
 ): Promise<void> {
-    const cookies = [{
-        name: MOCK_AUTH_COOKIE,
-        value: authState,
-        domain: '127.0.0.1',
-        path: '/',
-    }];
-
-    if (user) {
-        cookies.push({
-            name: MOCK_AUTH_USER_COOKIE,
-            value: encodeURIComponent(JSON.stringify(user)) as MockAuthState,
-            domain: '127.0.0.1',
+    const cookies = COOKIE_HOSTS.flatMap((target) => {
+        const url = new URL(target);
+        const base = {
             path: '/',
-        });
-    }
+            url: url.origin,
+        } as const;
+
+        const hostCookies = [{
+            name: MOCK_AUTH_COOKIE,
+            value: authState,
+            ...base,
+        }];
+
+        if (user) {
+            hostCookies.push({
+                name: MOCK_AUTH_USER_COOKIE,
+                value: encodeURIComponent(JSON.stringify(user)),
+                ...base,
+            });
+        }
+
+        return hostCookies;
+    });
 
     await page.context().addCookies(cookies);
 }

@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { http, HttpResponse } from 'msw';
-import { expect, fn, within } from 'storybook/test';
+import { expect, fn, waitFor, within } from 'storybook/test';
 
 import { ClaimSignup } from './ClaimSignup';
 
@@ -66,7 +66,7 @@ export const ValidSubmit: Story = {
         await userEvent.type(confirmPassword, 'validPassword123');
         await userEvent.click(submitButton);
 
-        await expect(signUpEmailSpy).toHaveBeenCalled();
+        await waitFor(() => expect(signUpEmailSpy).toHaveBeenCalled());
         const firstCallArg = signUpEmailSpy.mock.calls[0][0] as {
             name: string;
             email: string;

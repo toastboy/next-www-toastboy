@@ -1,6 +1,15 @@
+import { PlayerResponseSchema } from 'prisma/zod/schemas';
 import { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
+import { z } from 'zod';
 
-import type { InvitationResponseInput } from '@/types/InvitationResponseInput';
+export const InvitationResponseInputSchema = z.object({
+    token: z.string().min(1),
+    response: PlayerResponseSchema,
+    goalie: z.boolean(),
+    comment: z.string().max(127).optional().nullable(),
+});
+
+export type InvitationResponseInput = z.infer<typeof InvitationResponseInputSchema>;
 
 /**
  * Server action proxy type for the submitGameInvitationResponse action.

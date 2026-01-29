@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 
 import { createMoreGameDaysCore } from '@/lib/actions/createMoreGameDays';
-import { CreateMoreGameDaysSchema } from '@/types/CreateMoreGameDaysInput';
+import { CreateMoreGameDaysSchema } from '@/types/actions/CreateMoreGameDays';
 
 export async function createMoreGameDays(rawData: unknown) {
     const data = CreateMoreGameDaysSchema.parse(rawData);

@@ -8,7 +8,7 @@ import { zod4Resolver } from 'mantine-form-zod-resolver';
 
 import { config } from '@/lib/config';
 import type { TriggerInvitationsProxy } from '@/types/actions/TriggerInvitations';
-import { NewGameInput, NewGameInputSchema } from '@/types/NewGameInput';
+import { NewGameInput, NewGameInputSchema } from '@/types/actions/TriggerInvitations';
 
 export interface Props {
     onTriggerInvitations: TriggerInvitationsProxy;

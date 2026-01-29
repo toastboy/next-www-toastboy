@@ -1,7 +1,7 @@
 import 'server-only';
 
 import gameDayService from '@/services/GameDay';
-import type { CreateMoreGameDaysInput } from '@/types/CreateMoreGameDaysInput';
+import type { CreateMoreGameDaysInput } from '@/types/actions/CreateMoreGameDays';
 
 interface CreateMoreGameDaysDeps {
     gameDayService: Pick<typeof gameDayService, 'create'>;

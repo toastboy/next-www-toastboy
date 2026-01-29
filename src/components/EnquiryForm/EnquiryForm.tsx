@@ -18,8 +18,11 @@ import { useEffect } from 'react';
 
 import { EmailInput } from '@/components/EmailInput/EmailInput';
 import { config } from '@/lib/config';
-import { SendEnquiryProxy } from '@/types/actions/SendEnquiry';
-import { EnquiryInput, EnquirySchema } from '@/types/EnquiryInput';
+import {
+    EnquiryInput,
+    EnquirySchema,
+    SendEnquiryProxy,
+} from '@/types/actions/SendEnquiry';
 
 export interface Props {
     redirectUrl: string;

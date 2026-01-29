@@ -16,10 +16,13 @@ import { useForm } from '@mantine/form';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useState } from 'react';
-import { DeleteAccountInput, DeleteAccountSchema } from 'types/DeleteAccountInput';
 
 import { config } from '@/lib/config';
-import { DeletePlayerProxy } from '@/types/actions/DeletePlayer';
+import {
+    DeleteAccountInput,
+    DeleteAccountSchema,
+    DeletePlayerProxy,
+} from '@/types/actions/DeletePlayer';
 
 export interface Props {
     onDeletePlayer: DeletePlayerProxy;

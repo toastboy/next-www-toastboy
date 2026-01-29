@@ -1,7 +1,7 @@
 'use server';
 
 import { deliverContactEnquiryCore, sendEnquiryCore } from '@/lib/actions/sendEnquiry';
-import { EnquirySchema } from '@/types/EnquiryInput';
+import { EnquirySchema } from '@/types/actions/SendEnquiry';
 
 /**
  * Validate and initiate an enquiry verification flow.

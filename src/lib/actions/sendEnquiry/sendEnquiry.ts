@@ -6,7 +6,7 @@ import { getPublicBaseUrl } from '@/lib/urls';
 import { createVerificationToken } from '@/lib/verificationToken';
 import contactEnquiryService from '@/services/ContactEnquiry';
 import emailVerificationService from '@/services/EmailVerification';
-import type { EnquiryInput } from '@/types/EnquiryInput';
+import type { EnquiryInput } from '@/types/actions/SendEnquiry';
 
 interface SendEnquiryDeps {
     contactEnquiryService: Pick<typeof contactEnquiryService, 'create' | 'getByToken' | 'markDelivered'>;

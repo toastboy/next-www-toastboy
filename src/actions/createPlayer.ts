@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 
 import { addPlayerInviteCore, createPlayerCore } from '@/lib/actions/createPlayer';
-import { CreatePlayerSchema } from '@/types/CreatePlayerInput';
+import { CreatePlayerSchema } from '@/types/actions/CreatePlayer';
 
 /**
  * Creates a new player in the system with the provided data.

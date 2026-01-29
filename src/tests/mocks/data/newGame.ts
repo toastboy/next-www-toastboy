@@ -1,5 +1,5 @@
 import type { InvitationDecision } from '@/lib/invitations';
-import type { NewGameInput } from '@/types/NewGameInput';
+import type { NewGameInput } from '@/types/actions/TriggerInvitations';
 
 export const defaultNewGameInput: NewGameInput = {
     overrideTimeCheck: false,

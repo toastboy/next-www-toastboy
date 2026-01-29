@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { triggerInvitations } from '@/actions/triggerInvitations';
 import { getSecrets } from '@/lib/secrets';
-import { NewGameInputSchema } from '@/types/NewGameInput';
+import { NewGameInputSchema } from '@/types/actions/TriggerInvitations';
 
 /**
  * Validates the authorization of an incoming request using a timing-safe comparison

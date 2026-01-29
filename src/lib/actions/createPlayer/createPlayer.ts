@@ -4,7 +4,7 @@ import { getPublicBaseUrl } from '@/lib/urls';
 import { createVerificationToken } from '@/lib/verificationToken';
 import emailVerificationService from '@/services/EmailVerification';
 import playerService from '@/services/Player';
-import type { CreatePlayerInput } from '@/types/CreatePlayerInput';
+import type { CreatePlayerInput } from '@/types/actions/CreatePlayer';
 
 interface CreatePlayerDeps {
     playerService: Pick<typeof playerService, 'create'>;

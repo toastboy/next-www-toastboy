@@ -6,9 +6,10 @@ import { vi } from 'vitest';
 import { MoreGamesForm } from '@/components/MoreGamesForm/MoreGamesForm';
 import { Wrapper } from '@/tests/components/lib/common';
 import { defaultMoreGamesFormData } from '@/tests/mocks/data/moreGamesForm';
-import { CreateMoreGameDaysProxy } from '@/types/actions/CreateMoreGameDays';
-import type { CreateMoreGameDaysInput } from '@/types/CreateMoreGameDaysInput';
-
+import type {
+    CreateMoreGameDaysInput,
+    CreateMoreGameDaysProxy,
+} from '@/types/actions/CreateMoreGameDays';
 const mockCreateMoreGameDays = vi.fn();
 
 describe('MoreGamesForm', () => {

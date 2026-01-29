@@ -10,9 +10,11 @@ import { useState } from 'react';
 import { z } from 'zod';
 
 import { config } from '@/lib/config';
-import { SubmitGameInvitationResponseProxy } from '@/types/actions/SubmitGameInvitationResponse';
+import {
+    InvitationResponseInputSchema,
+    SubmitGameInvitationResponseProxy,
+} from '@/types/actions/SubmitGameInvitationResponse';
 import { GameInvitationResponseDetails } from '@/types/GameInvitationResponseDetails';
-import { InvitationResponseInputSchema } from '@/types/InvitationResponseInput';
 
 const formSchema = InvitationResponseInputSchema.omit({ token: true }).extend({
     comment: z.string().max(127).optional(),

@@ -1,4 +1,4 @@
-import type { CreateMoreGameDaysInput } from '@/types/CreateMoreGameDaysInput';
+import type { CreateMoreGameDaysInput } from '@/types/actions/CreateMoreGameDays';
 
 export const defaultMoreGamesFormData: CreateMoreGameDaysInput = {
     rows: [

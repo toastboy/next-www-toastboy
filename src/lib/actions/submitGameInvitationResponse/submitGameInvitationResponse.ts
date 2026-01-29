@@ -3,7 +3,7 @@ import 'server-only';
 import gameDayService from '@/services/GameDay';
 import gameInvitationService from '@/services/GameInvitation';
 import outcomeService from '@/services/Outcome';
-import type { InvitationResponseInput } from '@/types/InvitationResponseInput';
+import type { InvitationResponseInput } from '@/types/actions/SubmitGameInvitationResponse';
 
 interface SubmitGameInvitationResponseDeps {
     gameInvitationService: Pick<typeof gameInvitationService, 'get'>;

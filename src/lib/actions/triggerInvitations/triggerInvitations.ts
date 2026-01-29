@@ -2,7 +2,7 @@ import 'server-only';
 
 import { sendGameInvitations } from '@/lib/gameInvitations';
 import { getInvitationDecision } from '@/lib/invitations';
-import type { NewGameInput } from '@/types/NewGameInput';
+import type { NewGameInput } from '@/types/actions/TriggerInvitations';
 
 interface TriggerInvitationsDeps {
     getInvitationDecision: typeof getInvitationDecision;

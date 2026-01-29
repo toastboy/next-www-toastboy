@@ -20,8 +20,13 @@ import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { Fragment } from 'react';
 
 import { config } from '@/lib/config';
-import type { CreateMoreGameDaysProxy } from '@/types/actions/CreateMoreGameDays';
-import { CreateMoreGameDaysInput, CreateMoreGameDaysSchema } from '@/types/CreateMoreGameDaysInput';
+import type {
+    CreateMoreGameDaysInput,
+    CreateMoreGameDaysProxy,
+} from '@/types/actions/CreateMoreGameDays';
+import {
+    CreateMoreGameDaysSchema,
+} from '@/types/actions/CreateMoreGameDays';
 
 export interface Props {
     rows: CreateMoreGameDaysInput['rows'];

@@ -1,5 +1,13 @@
+import { z } from 'zod';
+
 import type { InvitationDecision } from '@/lib/invitations';
-import type { NewGameInput } from '@/types/NewGameInput';
+
+export const NewGameInputSchema = z.object({
+    overrideTimeCheck: z.boolean(),
+    customMessage: z.string().max(5000).optional(),
+});
+
+export type NewGameInput = z.infer<typeof NewGameInputSchema>;
 
 /**
  * Server action proxy type for the triggerInvitations action.

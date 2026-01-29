@@ -21,8 +21,8 @@ import { PlayerDataType } from 'types';
 import { EmailInput } from '@/components/EmailInput/EmailInput';
 import { config } from '@/lib/config';
 import type { CreatePlayerProxy } from '@/types/actions/CreatePlayer';
+import { CreatePlayerInput, CreatePlayerSchema } from '@/types/actions/CreatePlayer';
 import type { SendEmailProxy } from '@/types/actions/SendEmail';
-import { CreatePlayerInput, CreatePlayerSchema } from '@/types/CreatePlayerInput';
 
 export interface Props {
     players: PlayerDataType[];

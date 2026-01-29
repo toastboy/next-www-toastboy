@@ -1,17 +1,32 @@
+import { Notifications } from '@mantine/notifications';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { within } from 'storybook/test';
-import { vi } from 'vitest';
+import { fn, within } from 'storybook/test';
 
-import { createMockGameInvitationResponseDetails } from '@/tests/mocks/data/gameInvitationResponse';
+import {
+    createMockGameInvitationResponseDetails,
+    defaultGameInvitationResponseDetails,
+} from '@/tests/mocks/data/gameInvitationResponse';
 import { SubmitGameInvitationResponseProxy } from '@/types/actions/SubmitGameInvitationResponse';
 
 import { GameInvitationResponseForm } from './GameInvitationResponseForm';
 
-const mockSubmitGameInvitationResponse: SubmitGameInvitationResponseProxy = vi.fn().mockResolvedValue(undefined);
+const mockSubmitGameInvitationResponse =
+    fn<SubmitGameInvitationResponseProxy>().mockResolvedValue({
+        ...defaultGameInvitationResponseDetails,
+        id: 1,
+    });
 
 const meta = {
     title: 'Forms/GameInvitationResponseForm',
     component: GameInvitationResponseForm,
+    decorators: [
+        (Story) => (
+            <>
+                <Notifications />
+                <Story />
+            </>
+        ),
+    ],
     args: {
         onSubmitGameInvitationResponse: mockSubmitGameInvitationResponse,
     },

@@ -1,6 +1,6 @@
 import { Notifications } from '@mantine/notifications';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { mocked, within } from 'storybook/test';
+import { fn, within } from 'storybook/test';
 
 import { defaultPlayerDataList } from '@/tests/mocks/data/playerData';
 import type { CreatePlayerProxy } from '@/types/actions/CreatePlayer';
@@ -28,12 +28,12 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const createPlayer: CreatePlayerProxy = async () => Promise.resolve({
+const createPlayer = fn<CreatePlayerProxy>().mockResolvedValue({
     player: { id: 1 },
     inviteLink: 'http://example.com/footy/auth/claim?token=storybook',
 });
 
-const sendsEmail: SendEmailProxy = async () => Promise.resolve();
+const sendsEmail = fn<SendEmailProxy>().mockResolvedValue(undefined);
 
 export const Render: Story = {
     args: {
@@ -44,7 +44,7 @@ export const Render: Story = {
     play: async function ({ canvasElement, userEvent, viewMode }) {
         if (viewMode === 'docs') return;
 
-        mocked(createPlayer).mockResolvedValue({
+        createPlayer.mockResolvedValue({
             player: { id: 123 },
             inviteLink: 'http://example.com/footy/auth/claim?token=storybook',
         } as Awaited<ReturnType<typeof createPlayer>>);

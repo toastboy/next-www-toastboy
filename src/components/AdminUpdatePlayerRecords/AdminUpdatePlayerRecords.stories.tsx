@@ -1,12 +1,12 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { http, HttpResponse } from 'msw';
-import { vi } from 'vitest';
+import { fn } from 'storybook/test';
 
 import { UpdatePlayerRecordsProxy } from '@/types/actions/UpdatePlayerRecords';
 
 import { AdminUpdatePlayerRecords } from './AdminUpdatePlayerRecords';
 
-const mockUpdatePlayerRecords: UpdatePlayerRecordsProxy = vi.fn().mockResolvedValue(undefined);
+const mockUpdatePlayerRecords = fn<UpdatePlayerRecordsProxy>().mockResolvedValue(undefined);
 
 const meta = {
     title: 'Admin/AdminUpdatePlayerRecords',
@@ -55,4 +55,3 @@ export const Completed: Story = {
 };
 
 export const Primary: Story = InProgress;
-

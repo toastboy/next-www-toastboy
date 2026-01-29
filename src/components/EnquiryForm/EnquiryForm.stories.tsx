@@ -1,16 +1,24 @@
+import { Notifications } from '@mantine/notifications';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, within } from 'storybook/test';
-import { vi } from 'vitest';
+import { expect, fn, within } from 'storybook/test';
 
 import { SendEnquiryProxy } from '@/types/actions/SendEnquiry';
 
 import { EnquiryForm } from './EnquiryForm';
 
-const mockSendEnquiry: SendEnquiryProxy = vi.fn().mockResolvedValue(undefined);
+const mockSendEnquiry = fn<SendEnquiryProxy>().mockResolvedValue(undefined);
 
 const meta = {
     title: 'Forms/EnquiryForm',
     component: EnquiryForm,
+    decorators: [
+        (Story) => (
+            <>
+                <Notifications />
+                <Story />
+            </>
+        ),
+    ],
     args: {
         onSendEnquiry: mockSendEnquiry,
     },

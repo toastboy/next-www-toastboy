@@ -1,12 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect, within } from 'storybook/test';
-import { vi } from 'vitest';
+import { expect, fn, within } from 'storybook/test';
 
 import { DeletePlayerProxy } from '@/types/actions/DeletePlayer';
 
 import { DeleteAccountForm } from './DeleteAccountForm';
 
-const mockDeletePlayer: DeletePlayerProxy = vi.fn().mockResolvedValue(undefined);
+const mockDeletePlayer = fn<DeletePlayerProxy>().mockResolvedValue(undefined);
 
 const meta = {
     title: 'Forms/DeleteAccountForm',

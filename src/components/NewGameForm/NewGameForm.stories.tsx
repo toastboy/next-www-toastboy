@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { mocked, within } from 'storybook/test';
+import { fn, within } from 'storybook/test';
 
 import { createMockInvitationDecision } from '@/tests/mocks/data/newGame';
 import type { TriggerInvitationsProxy } from '@/types/actions/TriggerInvitations';
@@ -18,8 +18,9 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const mockTriggerInvitations: TriggerInvitationsProxy = async () =>
-    Promise.resolve(createMockInvitationDecision({ status: 'ready', reason: 'ready' }));
+const mockTriggerInvitations = fn<TriggerInvitationsProxy>().mockResolvedValue(
+    createMockInvitationDecision({ status: 'ready', reason: 'ready' }),
+);
 
 export const Render: Story = {
     args: {
@@ -34,7 +35,7 @@ export const ReadySubmit: Story = {
     play: async function ({ canvasElement, userEvent, viewMode }) {
         if (viewMode === 'docs') return;
 
-        mocked(mockTriggerInvitations).mockResolvedValue(
+        mockTriggerInvitations.mockResolvedValue(
             createMockInvitationDecision({ status: 'ready', reason: 'ready' }),
         );
 
@@ -55,7 +56,7 @@ export const SkippedSubmit: Story = {
     play: async function ({ canvasElement, userEvent, viewMode }) {
         if (viewMode === 'docs') return;
 
-        mocked(mockTriggerInvitations).mockResolvedValue(
+        mockTriggerInvitations.mockResolvedValue(
             createMockInvitationDecision({ status: 'skipped', reason: 'too-early' }),
         );
 

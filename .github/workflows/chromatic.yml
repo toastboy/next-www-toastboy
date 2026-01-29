@@ -36,3 +36,4 @@ jobs:
               uses: chromaui/action@latest
               with:
                   projectToken: ${{ env.CHROMATIC_PROJECT_TOKEN }}
+                  exitOnceUploaded: true

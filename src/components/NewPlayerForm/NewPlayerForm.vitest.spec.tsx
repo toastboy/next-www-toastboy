@@ -186,7 +186,7 @@ describe('NewPlayerForm', () => {
         const [notification] = (notificationUpdateSpy.mock.calls[0] ?? []) as [{ message?: string }];
         expect(notification?.message ?? '').toContain('Error');
 
-        expect(consoleErrorSpy).toHaveBeenCalledWith(
+        expect(await waitFor(() => consoleErrorSpy)).toHaveBeenCalledWith(
             'Failed to create player:',
             expect.any(Error),
         );

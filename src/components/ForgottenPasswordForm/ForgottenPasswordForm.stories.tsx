@@ -1,7 +1,7 @@
 import { Notifications } from '@mantine/notifications';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { http, HttpResponse } from 'msw';
-import { expect, fn, within } from 'storybook/test';
+import { expect, fn, waitFor, within } from 'storybook/test';
 
 import { ForgottenPasswordForm } from './ForgottenPasswordForm';
 
@@ -63,7 +63,7 @@ export const ValidFill: Story = {
         const body = canvasElement.ownerDocument.body;
         await within(body).findByText('Check your email', {}, { timeout: 6000 });
 
-        await expect(requestPasswordResetSpy).toHaveBeenCalled();
+        await waitFor(() => expect(requestPasswordResetSpy).toHaveBeenCalled());
         const firstCallArg = requestPasswordResetSpy.mock.calls[0][0] as {
             email: string;
             redirectTo?: string;

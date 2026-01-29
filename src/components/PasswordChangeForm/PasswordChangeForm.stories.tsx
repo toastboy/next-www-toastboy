@@ -1,7 +1,7 @@
 import { Notifications } from '@mantine/notifications';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { http, HttpResponse } from 'msw';
-import { expect, fn, within } from 'storybook/test';
+import { expect, fn, waitFor, within } from 'storybook/test';
 
 import { PasswordChangeForm } from './PasswordChangeForm';
 
@@ -83,7 +83,7 @@ export const ValidFill: Story = {
             { timeout: 6000 },
         );
 
-        await expect(changePasswordSpy).toHaveBeenCalled();
+        await waitFor(() => expect(changePasswordSpy).toHaveBeenCalled());
         const firstCallArg = changePasswordSpy.mock.calls[0][0] as {
             currentPassword: string;
             newPassword: string;
@@ -118,7 +118,7 @@ export const InvalidFill: Story = {
         await userEvent.type(confirmPassword, 'new-password');
         await userEvent.click(submitButton);
 
-        await expect(changePasswordSpy).toHaveBeenCalled();
+        await waitFor(() => expect(changePasswordSpy).toHaveBeenCalled());
 
         const body = canvasElement.ownerDocument.body;
         await within(body).findByText(

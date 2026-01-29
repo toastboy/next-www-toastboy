@@ -43,6 +43,7 @@ export const authClient = {
     changePassword: spy((_input: { currentPassword: string; newPassword: string; revokeOtherSessions?: boolean }) =>
         Promise.resolve({ status: true })),
     signIn: {
+        email: spy((_args: { email: string; password: string }) => Promise.resolve({})),
         social: spy((_args: { provider: string; callbackURL: string }) => Promise.resolve({})),
     },
     signInWithEmail: spy((_email: string, _password: string) => Promise.resolve({})),

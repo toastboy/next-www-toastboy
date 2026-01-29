@@ -135,8 +135,6 @@ src/instrumentation.ts
 src/lib/api.ts
 src/lib/auth-client.ts
 src/lib/auth.ts
-src/lib/authClient.ts
-src/lib/authMocks.ts
 src/lib/authServer.ts
 src/lib/azure.ts
 src/lib/config.ts

@@ -3,33 +3,7 @@ import '@testing-library/jest-dom/vitest';
 import * as React from 'react';
 import { vi } from 'vitest';
 
-import { authClient as authClientMock, signInWithGoogle, signInWithMicrosoft } from '@/lib/__mocks__/auth-client';
-
-const authClientUiMock = {
-    signInWithEmail: vi.fn(),
-    useSession: vi.fn(() => ({
-        data: null,
-        isPending: false,
-        error: null,
-    })),
-    signOut: vi.fn(),
-    setAdmin: vi.fn(),
-    isLoggedIn: vi.fn(),
-    isAdmin: vi.fn(),
-    getUser: vi.fn(),
-    listUsers: vi.fn(),
-};
-
-vi.mock('@/lib/auth-client', () => ({
-    authClient: authClientMock,
-    signInWithGoogle,
-    signInWithMicrosoft,
-}));
-
-vi.mock('@/lib/authClient', () => ({
-    authClient: authClientUiMock,
-}));
-
+vi.mock('@/lib/auth-client');
 vi.mock('@/lib/urls', () => ({
     getPublicBaseUrl: () => 'http://localhost',
 }));

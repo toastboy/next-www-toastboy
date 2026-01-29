@@ -22,8 +22,7 @@ import { IconAt, IconLock, IconX } from '@tabler/icons-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import { signInWithGoogle, signInWithMicrosoft } from '@/lib/auth-client';
-import { authClient } from '@/lib/authClient';
+import { authClient, signInWithGoogle, signInWithMicrosoft } from '@/lib/auth-client';
 import { config } from '@/lib/config';
 import { getPublicBaseUrl } from '@/lib/urls';
 
@@ -58,7 +57,10 @@ export const SignIn: React.FC<Props> = ({ admin, redirect }) => {
         setLoginError(false);
 
         try {
-            await authClient.signInWithEmail(values.email, values.password);
+            await authClient.signIn.email({
+                email: values.email,
+                password: values.password,
+            });
             router.push(redirectPath);
         }
         catch (error) {

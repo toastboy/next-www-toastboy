@@ -6,7 +6,7 @@ import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
 import { SignIn } from '@/components/SignIn/SignIn';
-import { authClient } from '@/lib/authClient';
+import { authClient } from '@/lib/auth-client';
 import { Wrapper } from '@/tests/components/lib/common';
 
 describe('SignIn', () => {
@@ -95,7 +95,7 @@ describe('SignIn', () => {
 
     it('shows an error when valid input is provided but the login fails', async () => {
         const user = userEvent.setup();
-        (authClient.signInWithEmail as Mock).mockRejectedValueOnce(new Error('boom'));
+        (authClient.signIn.email as Mock).mockRejectedValueOnce(new Error('boom'));
 
         render(
             <Wrapper>
@@ -116,7 +116,7 @@ describe('SignIn', () => {
 
     it('succeeds when valid credentials are provided', async () => {
         const user = userEvent.setup();
-        (authClient.signInWithEmail as Mock).mockResolvedValueOnce({ user: { id: '123' } });
+        (authClient.signIn.email as Mock).mockResolvedValueOnce({ user: { id: '123' } });
 
         render(
             <Wrapper>

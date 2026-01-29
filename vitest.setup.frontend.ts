@@ -94,6 +94,9 @@ vi.mock('next/cache', () => ({
     revalidateTag: vi.fn(),
 }));
 
+// TODO: Now we have dependency injection for actions, we can remove these
+// mocks, I think
+
 vi.mock('@/actions/sendEmail', () => ({
     sendEmail: vi.fn().mockResolvedValue(undefined),
 }));

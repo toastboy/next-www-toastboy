@@ -27,6 +27,7 @@
         "test:coverage": "vitest run --config vitest.unit.config.ts --coverage",
         "test:services:coverage": "vitest run --config vitest.services.config.ts --coverage",
         "test:services": "vitest run --config vitest.services.config.ts",
+        "test:storybook": "vitest run",
         "test:watch": "vitest --config vitest.unit.config.ts",
         "test": "vitest run --config vitest.unit.config.ts",
         "typecheck": "tsc --noEmit"

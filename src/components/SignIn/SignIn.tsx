@@ -22,7 +22,7 @@ import { IconAt, IconLock, IconX } from '@tabler/icons-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import { authClient, signInWithGoogle, signInWithMicrosoft } from '@/lib/auth-client';
+import { authClient, signInWithGoogle, signInWithMicrosoft } from '@/lib/auth.client';
 import { config } from '@/lib/config';
 import { getPublicBaseUrl } from '@/lib/urls';
 

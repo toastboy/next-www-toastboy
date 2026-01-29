@@ -3,11 +3,11 @@ import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
 import { GET } from '@/app/api/footy/records/progress/route';
-import { getUserRole } from '@/lib/authServer';
+import { getUserRole } from '@/lib/auth.server';
 import playerRecordService from '@/services/PlayerRecord';
 import { createMockApp, jsonResponseHandler, toWire } from '@/tests/lib/api/common';
 import { defaultProgress } from '@/tests/mocks/data/progress';
-vi.mock('lib/authServer');
+vi.mock('lib/auth.server');
 vi.mock('services/PlayerRecord');
 
 const testURI = '/api/footy/records/progress';

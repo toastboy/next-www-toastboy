@@ -5,7 +5,7 @@ import type { MockedFunction } from 'vitest';
 import { vi } from 'vitest';
 
 import { PasswordResetForm } from '@/components/PasswordResetForm/PasswordResetForm';
-import { authClient } from '@/lib/auth-client';
+import { authClient } from '@/lib/auth.client';
 import { Wrapper } from '@/tests/components/lib/common';
 
 const mockResetPassword =

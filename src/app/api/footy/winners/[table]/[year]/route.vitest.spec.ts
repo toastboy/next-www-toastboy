@@ -3,12 +3,12 @@ import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
 import { GET } from '@/app/api/footy/winners/[table]/[year]/route';
-import { getUserRole } from '@/lib/authServer';
+import { getUserRole } from '@/lib/auth.server';
 import playerRecordService from '@/services/PlayerRecord';
 import { createMockApp, jsonResponseHandler, toWire } from '@/tests/lib/api/common';
 import { defaultPlayerRecordList } from '@/tests/mocks/data/playerRecord';
 vi.mock('services/PlayerRecord');
-vi.mock('lib/authServer');
+vi.mock('lib/auth.server');
 
 const testURI = '/api/footy/winners/points/2011';
 const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({ table: "points", year: "2011" }) }, jsonResponseHandler);

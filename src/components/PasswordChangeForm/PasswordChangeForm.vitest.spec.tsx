@@ -4,7 +4,7 @@ import type { MockedFunction } from 'vitest';
 import { vi } from 'vitest';
 
 import { PasswordChangeForm } from '@/components/PasswordChangeForm/PasswordChangeForm';
-import { authClient } from '@/lib/auth-client';
+import { authClient } from '@/lib/auth.client';
 import { Wrapper } from '@/tests/components/lib/common';
 
 const mockChangePassword =

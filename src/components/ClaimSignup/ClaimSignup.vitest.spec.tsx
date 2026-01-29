@@ -5,7 +5,7 @@ import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
 import { ClaimSignup } from '@/components/ClaimSignup/ClaimSignup';
-import { authClient, signInWithGoogle, signInWithMicrosoft } from '@/lib/auth-client';
+import { authClient, signInWithGoogle, signInWithMicrosoft } from '@/lib/auth.client';
 import { Wrapper } from '@/tests/components/lib/common';
 
 let mockPush: Mock;

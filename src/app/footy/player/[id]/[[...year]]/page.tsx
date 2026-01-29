@@ -4,7 +4,7 @@ import { TableNameSchema } from 'prisma/zod/schemas';
 import { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 
 import { PlayerProfile } from '@/components/PlayerProfile/PlayerProfile';
-import { getUserRole } from '@/lib/authServer';
+import { getUserRole } from '@/lib/auth.server';
 import arseService from '@/services/Arse';
 import clubSupporterService from '@/services/ClubSupporter';
 import countrySupporterService from '@/services/CountrySupporter';

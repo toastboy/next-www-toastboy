@@ -4,7 +4,7 @@ import { IconX } from '@tabler/icons-react';
 
 import { updatePlayer } from '@/actions/updatePlayer';
 import { PlayerProfileForm } from '@/components/PlayerProfileForm/PlayerProfileForm';
-import { getCurrentUser } from '@/lib/authServer';
+import { getCurrentUser } from '@/lib/auth.server';
 import { config } from '@/lib/config';
 import clubService from '@/services/Club';
 import clubSupporterService from '@/services/ClubSupporter';

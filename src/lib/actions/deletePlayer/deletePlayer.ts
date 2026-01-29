@@ -10,7 +10,7 @@ import playerExtraEmailService from '@/services/PlayerExtraEmail';
 import type { AuthUserSummary } from '@/types/AuthUser';
 
 type AuthInstance = typeof import('@/lib/auth').auth;
-type GetCurrentUser = typeof import('@/lib/authServer').getCurrentUser;
+type GetCurrentUser = typeof import('@/lib/auth.server').getCurrentUser;
 
 interface BeforeDeleteDeps {
     playerService: Pick<typeof playerService, 'anonymise' | 'setFinished'>;
@@ -37,7 +37,7 @@ const defaultBeforeDeleteDeps: BeforeDeleteDeps = {
 async function createDefaultDeleteDeps(): Promise<DeletePlayerDeps> {
     const [{ auth }, { getCurrentUser }] = await Promise.all([
         import('@/lib/auth'),
-        import('@/lib/authServer'),
+        import('@/lib/auth.server'),
     ]);
 
     return {

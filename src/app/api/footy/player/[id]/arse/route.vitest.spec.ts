@@ -4,12 +4,12 @@ import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
 import { GET } from '@/app/api/footy/player/[id]/arse/route';
-import { getUserRole } from '@/lib/authServer';
+import { getUserRole } from '@/lib/auth.server';
 import arseService from '@/services/Arse';
 import { createMockApp, jsonResponseHandler, toWire } from '@/tests/lib/api/common';
 import { defaultArse } from '@/tests/mocks/data/arse';
 vi.mock('services/Arse');
-vi.mock('lib/authServer');
+vi.mock('lib/auth.server');
 
 const testURI = '/api/footy/player/1/arse';
 const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({ id: "1" }) }, jsonResponseHandler);

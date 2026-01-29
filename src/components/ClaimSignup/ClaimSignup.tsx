@@ -19,7 +19,7 @@ import { useState } from 'react';
 import { z } from 'zod';
 
 import { PasswordFields } from '@/components/PasswordFields/PasswordFields';
-import { authClient, signInWithGoogle, signInWithMicrosoft } from '@/lib/auth-client';
+import { authClient, signInWithGoogle, signInWithMicrosoft } from '@/lib/auth.client';
 import { config } from '@/lib/config';
 import { getPublicBaseUrl } from '@/lib/urls';
 

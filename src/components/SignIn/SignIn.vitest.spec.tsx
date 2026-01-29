@@ -6,7 +6,7 @@ import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
 import { SignIn } from '@/components/SignIn/SignIn';
-import { authClient } from '@/lib/auth-client';
+import { authClient } from '@/lib/auth.client';
 import { Wrapper } from '@/tests/components/lib/common';
 
 describe('SignIn', () => {

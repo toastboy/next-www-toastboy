@@ -3,7 +3,7 @@ import '@testing-library/jest-dom/vitest';
 import * as React from 'react';
 import { vi } from 'vitest';
 
-vi.mock('@/lib/auth-client');
+vi.mock('@/lib/auth.client');
 vi.mock('@/lib/urls', () => ({
     getPublicBaseUrl: () => 'http://localhost',
 }));

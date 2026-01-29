@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 
 import { SignIn } from '@/components/SignIn/SignIn';
-import { getUserRole } from '@/lib/authServer';
+import { getUserRole } from '@/lib/auth.server';
 
 interface AuthenticatedLayoutProps {
     children: ReactNode;

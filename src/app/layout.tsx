@@ -14,7 +14,7 @@ import { Notifications } from '@mantine/notifications';
 import type { Metadata } from 'next';
 
 import { CustomAppShell } from '@/components/CustomAppShell/CustomAppShell';
-import { getCurrentUser } from '@/lib/authServer';
+import { getCurrentUser } from '@/lib/auth.server';
 
 // Default to dynamic rendering for all pages
 // https://nextjs.org/docs/app/building-your-application/rendering/static-and-dynamic-rendering

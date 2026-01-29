@@ -3,7 +3,7 @@ import { IconX } from '@tabler/icons-react';
 
 import type { DownloadMyDataPayload } from '@/components/DownloadMyData/DownloadMyData';
 import DownloadMyData from '@/components/DownloadMyData/DownloadMyData';
-import { getCurrentUser } from '@/lib/authServer';
+import { getCurrentUser } from '@/lib/auth.server';
 import { config } from '@/lib/config';
 import clubSupporterService from '@/services/ClubSupporter';
 import countrySupporterService from '@/services/CountrySupporter';

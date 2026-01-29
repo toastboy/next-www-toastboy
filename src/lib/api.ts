@@ -3,7 +3,7 @@ import { OutcomeSchema, type OutcomeType } from 'prisma/zod/schemas/models/Outco
 import { PlayerSchema, type PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import { z } from 'zod';
 
-import { getUserRole } from '@/lib/authServer';
+import { getUserRole } from '@/lib/auth.server';
 
 import { getPublicBaseUrl } from './urls';
 

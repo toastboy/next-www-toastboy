@@ -133,9 +133,9 @@ src/components/YearTable/YearTable.tsx
 src/instrumentation-client.ts
 src/instrumentation.ts
 src/lib/api.ts
-src/lib/auth-client.ts
+src/lib/auth.client.ts
 src/lib/auth.ts
-src/lib/authServer.ts
+src/lib/auth.server.ts
 src/lib/azure.ts
 src/lib/config.ts
 src/lib/crawllivesite/crawllivesite.ts

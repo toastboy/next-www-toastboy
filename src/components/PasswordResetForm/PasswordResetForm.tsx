@@ -17,7 +17,7 @@ import { useRouter } from 'next/navigation';
 import { z } from 'zod';
 
 import { PasswordFields } from '@/components/PasswordFields/PasswordFields';
-import { authClient } from '@/lib/auth-client';
+import { authClient } from '@/lib/auth.client';
 import { config } from '@/lib/config';
 
 export interface Props {

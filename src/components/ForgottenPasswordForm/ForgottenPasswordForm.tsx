@@ -11,7 +11,7 @@ import { zod4Resolver } from 'mantine-form-zod-resolver';
 import z from 'zod';
 
 import { EmailInput } from '@/components/EmailInput/EmailInput';
-import { authClient } from '@/lib/auth-client';
+import { authClient } from '@/lib/auth.client';
 import { config } from '@/lib/config';
 import { getPublicBaseUrl } from '@/lib/urls';
 

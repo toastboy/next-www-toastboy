@@ -58,7 +58,6 @@ export const defaultPlayerRecordList: PlayerRecordType[] = [
         const rankPosition = (index % 5) + 1; // Cycles through ranks 1-5
         
         // Vary stats based on ranking
-        const basePoints = 20 - (rankPosition - 1) * 4;
         const basePlayed = 10 + (index % 5);
         const baseWon = Math.max(0, basePlayed - rankPosition);
         const baseDrawn = Math.min(3, index % 4);

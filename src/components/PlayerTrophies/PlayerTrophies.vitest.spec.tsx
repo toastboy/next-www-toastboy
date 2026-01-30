@@ -21,10 +21,11 @@ describe('PlayerTrophies', () => {
             const props = extractMockProps<PlayerTrophyTallyProps>('PlayerTrophyTally');
             expect(props.length).toBe(5);
             expect(props[0].table).toEqual("points");
-            // With varied mock data, each table now has ~20 winners (every 5th record has rank 1)
+            // With varied mock data, points table has 20 winners (defaultPlayerRecord + 19 generated with rank 1)
             expect(props[0].trophies.length).toBe(20);
             expect(props[4].table).toEqual("pub");
-            expect(props[4].trophies.length).toBe(20);
+            // Pub table has 19 winners (defaultPlayerRecord has rankPub: 5, so only 19 generated records)
+            expect(props[4].trophies.length).toBe(19);
         }
     });
 });

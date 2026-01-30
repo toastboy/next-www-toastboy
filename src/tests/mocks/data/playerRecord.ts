@@ -39,7 +39,7 @@ export const createMockPlayerRecord = (overrides: Partial<PlayerRecordType> = {}
  * - Multiple players (20 different players)
  * - Multiple years (2020-2024)
  * - Varied game days
- * - Realistic ranking variations (1st, 2nd, 3rd place, unranked)
+ * - Varied ranking positions (cycles through ranks 1-5)
  * - Varied statistics (points, averages, stalwart, speedy, pub)
  * 
  * Note: The first record matches defaultPlayerRecord to maintain backward compatibility.
@@ -54,14 +54,17 @@ export const defaultPlayerRecordList: PlayerRecordType[] = [
         const year = 2020 + Math.floor(index / 20);
         const gameDayId = 10 + Math.floor(index / 10) + 1;
         
-        // Create varied rankings - some winners, some runners-up, some unranked
-        const rankPosition = (index % 5) + 1; // Cycles through ranks 1-5
+        // Create varied rankings - cycles through ranks 1-5
+        const rankPosition = (index % 5) + 1;
         
         // Vary stats based on ranking
         const basePlayed = 10 + (index % 5);
         const baseWon = Math.max(0, basePlayed - rankPosition);
-        const baseDrawn = Math.min(3, index % 4);
-        const baseLost = basePlayed - baseWon - baseDrawn;
+        const baseDrawn = Math.min(3, Math.min(index % 4, basePlayed - baseWon));
+        const baseLost = Math.max(0, basePlayed - baseWon - baseDrawn);
+        
+        // Points table stats (3 points for win, 1 for draw)
+        const points = baseWon * 3 + baseDrawn;
         
         return createMockPlayerRecord({
             id: index + 1,
@@ -76,9 +79,9 @@ export const defaultPlayerRecordList: PlayerRecordType[] = [
             drawn: baseDrawn,
             lost: baseLost,
             
-            // Points table stats (3 points for win, 1 for draw)
-            points: baseWon * 3 + baseDrawn,
-            averages: parseFloat(((baseWon * 3 + baseDrawn) / basePlayed).toFixed(2)),
+            // Points table stats
+            points,
+            averages: parseFloat((points / basePlayed).toFixed(2)),
             
             // Other table stats
             stalwart: basePlayed - (rankPosition - 1),

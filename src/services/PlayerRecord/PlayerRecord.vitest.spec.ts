@@ -251,26 +251,24 @@ describe('PlayerRecordService', () => {
 
         it('should retrieve the correct PlayerRecords for GameDay id 15', async () => {
             const result = await playerRecordService.getByGameDay(15);
-            expect(result).toHaveLength(10);
+            // With varied mock data, gameDayId 15 has 11 records (1 from defaultPlayerRecord + 10 generated)
+            expect(result).toHaveLength(11);
+            // Verify all have the correct gameDayId
             for (const playerRecordResult of result) {
-                expect(playerRecordResult).toMatchObject({
-                    ...defaultPlayerRecord,
-                    gameDayId: 15,
-                } as PlayerRecordType);
+                expect(playerRecordResult.gameDayId).toBe(15);
                 expect(typeof playerRecordResult.playerId).toBe('number');
             }
         });
 
         it('should retrieve the correct PlayerRecords for GameDay id 15 and year 2021', async () => {
             const result = await playerRecordService.getByGameDay(15, 2021);
-            expect(result).toHaveLength(10);
-            for (const playerRecordResult of result) {
-                expect(playerRecordResult).toMatchObject({
-                    ...defaultPlayerRecord,
-                    gameDayId: 15,
-                } as PlayerRecordType);
-                expect(typeof playerRecordResult.playerId).toBe('number');
-            }
+            // With varied mock data, only defaultPlayerRecord matches gameDayId=15 and year=2021
+            expect(result).toHaveLength(1);
+            expect(result[0]).toMatchObject({
+                ...defaultPlayerRecord,
+                gameDayId: 15,
+                year: 2021,
+            } as PlayerRecordType);
         });
 
         it('should return an empty list when retrieving playerRecords for GameDay id 101', async () => {
@@ -293,8 +291,8 @@ describe('PlayerRecordService', () => {
             expect(result).toEqual(expected);
         });
 
-        it('should return an empty list when retrieving PlayerRecords for Player id 11', async () => {
-            const result = await playerRecordService.getByPlayer(11);
+        it('should return an empty list when retrieving PlayerRecords for Player id 21', async () => {
+            const result = await playerRecordService.getByPlayer(21);
             expect(result).toEqual([]);
         });
     });

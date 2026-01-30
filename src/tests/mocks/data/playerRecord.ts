@@ -33,14 +33,77 @@ export const createMockPlayerRecord = (overrides: Partial<PlayerRecordType> = {}
     ...overrides,
 });
 
-export const defaultPlayerRecordList: PlayerRecordType[] = Array.from({ length: 100 }, (_, index) =>
-    createMockPlayerRecord({
-        gameDayId: 10 + Math.floor(index / 10) + 1,
+/**
+ * Generates a list of varied mock player records for testing.
+ * Creates records with:
+ * - Multiple players (20 different players)
+ * - Multiple years (2020-2024)
+ * - Varied game days
+ * - Varied ranking positions (cycles through ranks 1-5)
+ * - Varied statistics (points, averages, stalwart, speedy, pub)
+ * 
+ * Note: The first record matches defaultPlayerRecord to maintain backward compatibility.
+ */
+export const defaultPlayerRecordList: PlayerRecordType[] = [
+    // First record is the default player record for backward compatibility
+    defaultPlayerRecord,
+    // Generate 99 more varied records
+    ...Array.from({ length: 99 }, (_, i) => {
+        const index = i + 1; // Start from 1 since 0 is the default record
+        const playerId = (index % 20) + 1;
+        const year = 2020 + Math.floor(index / 20);
+        const gameDayId = 10 + Math.floor(index / 10) + 1;
+        
+        // Create varied rankings - cycles through ranks 1-5
+        const rankPosition = (index % 5) + 1;
+        
+        // Vary stats based on ranking
+        const basePlayed = 10 + (index % 5);
+        const baseWon = Math.max(0, basePlayed - rankPosition);
+        const baseDrawn = Math.min(3, Math.min(index % 4, basePlayed - baseWon));
+        const baseLost = Math.max(0, basePlayed - baseWon - baseDrawn);
+        
+        // Points table stats (3 points for win, 1 for draw)
+        const points = baseWon * 3 + baseDrawn;
+        
+        return createMockPlayerRecord({
+            id: index + 1,
+            playerId,
+            year,
+            gameDayId,
+            
+            // Varied game statistics
+            responses: basePlayed,
+            played: basePlayed,
+            won: baseWon,
+            drawn: baseDrawn,
+            lost: baseLost,
+            
+            // Points table stats
+            points,
+            averages: parseFloat((points / basePlayed).toFixed(2)),
+            
+            // Other table stats
+            stalwart: basePlayed - (rankPosition - 1),
+            speedy: Math.max(1, 6 - rankPosition),
+            pub: Math.max(1, 6 - rankPosition),
+            
+            // Rankings - vary across different tables
+            rankPoints: rankPosition,
+            rankAverages: ((rankPosition + 1) % 5) + 1,
+            rankAveragesUnqualified: ((rankPosition + 1) % 5) + 1,
+            rankStalwart: ((rankPosition + 2) % 5) + 1,
+            rankSpeedy: ((rankPosition + 3) % 5) + 1,
+            rankSpeedyUnqualified: ((rankPosition + 3) % 5) + 1,
+            rankPub: ((rankPosition + 4) % 5) + 1,
+        });
     }),
-);
+];
 
-// Generate default trophies map - winners only
-// TODO: This mock data needs more variety to be truly useful
+/**
+ * Generates default trophies map with winners across all ranking tables.
+ * Each table will have records where the player ranked 1st.
+ */
 export const defaultTrophiesList = new Map<TableName, PlayerRecordType[]>();
 TableNameSchema.options.forEach((table) => {
     const rank = rankMap[table][0] as keyof PlayerRecordType;

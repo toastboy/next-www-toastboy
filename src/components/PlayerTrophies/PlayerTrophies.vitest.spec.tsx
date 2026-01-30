@@ -21,9 +21,10 @@ describe('PlayerTrophies', () => {
             const props = extractMockProps<PlayerTrophyTallyProps>('PlayerTrophyTally');
             expect(props.length).toBe(5);
             expect(props[0].table).toEqual("points");
-            expect(props[0].trophies.length).toBe(100);
+            // With varied mock data, each table now has ~20 winners (every 5th record has rank 1)
+            expect(props[0].trophies.length).toBe(20);
             expect(props[4].table).toEqual("pub");
-            expect(props[4].trophies.length).toBe(0);
+            expect(props[4].trophies.length).toBe(20);
         }
     });
 });

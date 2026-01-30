@@ -9,6 +9,7 @@ export default defineConfig({
             'vitest.api.config.ts',
             'vitest.components.config.ts',
             'vitest.services.config.ts',
+            'vitest.lib.config.ts',
         ],
         coverage: {
             include: [

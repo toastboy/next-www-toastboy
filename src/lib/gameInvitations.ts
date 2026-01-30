@@ -29,7 +29,7 @@ const normalizeEmail = (email?: string | null) => (email ?? '').trim().toLowerCa
  * The function escapes all HTML content to prevent injection attacks.
  * The returned HTML includes inline styles for better email client compatibility.
  */
-const buildInvitationEmail = ({
+export const buildInvitationEmail = ({
     playerName,
     inviteLink,
     gameDate,
@@ -58,7 +58,6 @@ const buildInvitationEmail = ({
     ].filter(Boolean).join('');
 };
 
-// TODO: Tests for sendGameInvitations
 /**
  * Sends game invitations to all active players for a specific game day.
  *
@@ -120,7 +119,6 @@ export async function sendGameInvitations(
         });
 
         const inviteLink = `${baseUrl}/api/footy/response/${encodeURIComponent(token)}`;
-        // TODO: Tests for buildInvitationEmail
         const html = buildInvitationEmail({
             playerName: playerService.getName(player),
             inviteLink,
@@ -139,7 +137,6 @@ export async function sendGameInvitations(
     await gameDayService.markMailSent(gameDayId, sendAt);
 }
 
-// TODO: Tests for getGameInvitationResponseDetails
 export async function getGameInvitationResponseDetails(token: string): Promise<GameInvitationResponseDetails | null> {
     if (!token) return null;
 

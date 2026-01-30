@@ -6,7 +6,6 @@ import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
 import { UserWithRole } from 'better-auth/plugins/admin';
 import { useEffect, useState } from 'react';
 
-import type { UserWithRolePayload } from '@/actions/auth';
 import { listUsersAction, setAdminRoleAction } from '@/actions/auth';
 import { RelativeTime } from '@/components/RelativeTime/RelativeTime';
 
@@ -21,7 +20,7 @@ export default function Page() {
         const fetchUsers = async () => {
             try {
                 const response = await listUsersAction();
-                setUsers(response.map((user: UserWithRolePayload) => ({
+                setUsers(response.map((user) => ({
                     ...user,
                     createdAt: new Date(user.createdAt),
                     updatedAt: new Date(user.updatedAt),

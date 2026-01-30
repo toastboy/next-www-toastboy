@@ -1,6 +1,6 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
-import { handleGET } from '@/lib/api';
+import { buildJsonResponse } from '@/lib/api';
 import gameDayService from '@/services/GameDay';
 
 /**
@@ -9,12 +9,15 @@ import gameDayService from '@/services/GameDay';
  * @param request - The incoming Next.js request object.
  * @param props - An object containing additional properties for the request.
  * @param props.params - A promise resolving to a record of route parameters.
- * @returns A promise resolving to the result of the `handleGET` function, which fetches the current game data.
+ * @returns A promise resolving to a JSON response containing the current game data,
+ *          or `null` when no current game is available.
  */
-export const GET = async (request: NextRequest, props: { params: Promise<Record<string, string>> }) => {
-    const params = await props.params;
-    return handleGET(
-        () => gameDayService.getCurrent(),
-        { params },
-    );
+export const GET = async (_request: NextRequest, _props: { params: Promise<Record<string, string>> }) => {
+    const currentGame = await gameDayService.getCurrent();
+
+    if (!currentGame) {
+        return NextResponse.json(null, { status: 200 });
+    }
+
+    return buildJsonResponse(currentGame);
 };

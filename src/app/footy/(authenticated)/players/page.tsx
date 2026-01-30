@@ -41,10 +41,13 @@ const Page: React.FC<PageProps> = () => {
         }
     };
 
-    if (!players || !currentGame) return null;
+    if (!players) return null;
+
+    const hasCurrentGame = Boolean(currentGame);
+    const currentGameId = currentGame?.id ?? 0;
 
     // Now we know currentGame is defined we can set the default replyRange
-    if (replyRange[1] === 0) setReplyRange([replyRange[0], currentGame.id]);
+    if (hasCurrentGame && replyRange[1] === 0) setReplyRange([replyRange[0], currentGameId]);
 
     const filteredPlayers = players?.filter((player) => {
         const searchTerm = filter.toLowerCase();
@@ -57,17 +60,17 @@ const Page: React.FC<PageProps> = () => {
         return searchResult && (!active || player.finished === null);
     }) || [];
 
-    const playersRepliedSince = filteredPlayers.filter((player) => {
+    const playersRepliedSince = hasCurrentGame ? filteredPlayers.filter((player) => {
         if (!player.lastResponded) {
-            return (replyRange[1] === currentGame?.id);
+            return (replyRange[1] === currentGameId);
         }
         else {
-            const repliedAfter = ((currentGame?.id || 0) - player.lastResponded) >= replyRange[0];
-            const repliedBefore = ((currentGame?.id || 0) - player.lastResponded) <= replyRange[1];
+            const repliedAfter = (currentGameId - player.lastResponded) >= replyRange[0];
+            const repliedBefore = (currentGameId - player.lastResponded) <= replyRange[1];
 
             return repliedAfter && repliedBefore;
         }
-    });
+    }) : filteredPlayers;
 
     const sortedPlayers = playersRepliedSince ? [...playersRepliedSince].sort((a, b) => {
         if (!sortBy) return 0;
@@ -120,7 +123,7 @@ const Page: React.FC<PageProps> = () => {
             <RangeSlider
                 label={(value) => `${value} weeks`}
                 min={0}
-                max={currentGame?.id || 0}
+                max={currentGameId}
                 step={1}
                 value={replyRange}
                 onChange={(event) => setReplyRange(event)}
@@ -129,6 +132,7 @@ const Page: React.FC<PageProps> = () => {
                 mt={20}
                 mb={20}
                 label="Select All"
+                data-testid="players-select-all"
                 checked={selectedPlayers.length === sortedPlayers.length && sortedPlayers.length > 0}
                 onChange={(event) => {
                     if (event.currentTarget.checked) {
@@ -140,7 +144,13 @@ const Page: React.FC<PageProps> = () => {
             />
             <Text size="sm">Selected: {selectedPlayers.length}</Text>
             <Tooltip label="Send an email to the selected players">
-                <Button disabled={selectedPlayers.length === 0} onClick={() => setModalOpened(true)}>Send Email...</Button>
+                <Button
+                    data-testid="players-send-email"
+                    disabled={selectedPlayers.length === 0}
+                    onClick={() => setModalOpened(true)}
+                >
+                    Send Email...
+                </Button>
             </Tooltip>
             <SendEmailForm
                 players={selectedPlayers}
@@ -149,7 +159,7 @@ const Page: React.FC<PageProps> = () => {
                 onSendEmail={sendEmail}
             />
 
-            <Table mt={20}>
+            <Table mt={20} data-testid="players-table" data-row-count={sortedPlayers.length}>
                 <Table.Thead>
                     <Table.Tr>
                         <Table.Th>
@@ -171,7 +181,7 @@ const Page: React.FC<PageProps> = () => {
                 </Table.Thead>
                 <Table.Tbody>
                     {sortedPlayers.map((player) => (
-                        <Table.Tr key={player.id}>
+                        <Table.Tr key={player.id} data-testid="players-table-row">
                             <Table.Td>
                                 <Checkbox
                                     checked={selectedPlayers.includes(player)}
@@ -187,7 +197,7 @@ const Page: React.FC<PageProps> = () => {
                                 <PlayerWDLChart player={player} />
                             </Table.Td>
                             <Table.Td>
-                                <PlayerTimeline player={player} currentGameId={currentGame.id} />
+                                <PlayerTimeline player={player} currentGameId={currentGameId} />
                             </Table.Td>
                         </Table.Tr>
                     ))}

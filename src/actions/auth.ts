@@ -1,10 +1,8 @@
 'use server';
 
-import { listUsersActionCore, setAdminRoleActionCore, type UserWithRolePayload } from '@/lib/actions/auth';
+import { listUsersActionCore, setAdminRoleActionCore } from '@/lib/actions/auth';
 
-export type { UserWithRolePayload };
-
-export async function listUsersAction(email?: string): Promise<UserWithRolePayload[]> {
+export async function listUsersAction(email?: string) {
     return await listUsersActionCore(email);
 }
 

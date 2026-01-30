@@ -19,12 +19,17 @@ test.describe('Mail active players', () => {
 
         await expect(page).toHaveURL(/\/footy\/players/);
 
-        await page.getByLabel('Select All').click();
-        await page.getByRole('button', { name: 'Send Email...' }).click();
+        await expect(page.getByTestId('players-table')).toHaveAttribute('data-row-count', /[1-9]/);
 
-        await page.getByLabel('Subject').fill(subject);
-        await page.locator('[contenteditable="true"]').fill(body);
-        await page.getByRole('button', { name: 'Send Mail' }).click();
+        await page.getByTestId('players-select-all').click();
+        await expect(page.getByTestId('players-send-email')).toBeEnabled();
+        await page.getByTestId('players-send-email').click();
+
+        await page.getByTestId('send-email-subject').fill(subject);
+        const bodyEditor = page.getByTestId('send-email-body');
+        await bodyEditor.click();
+        await bodyEditor.pressSequentially(body);
+        await page.getByTestId('send-email-submit').click();
         await expect(page.getByText('Email sent successfully')).toBeVisible();
 
         // Check Mailpit for the email, then delete it

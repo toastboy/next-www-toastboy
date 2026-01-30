@@ -244,8 +244,17 @@ describe('PlayerRecordService', () => {
 
     describe('getByGameDay', () => {
         beforeEach(() => {
-            (prisma.playerRecord.findMany as Mock).mockImplementation((args: { where: { gameDayId: number } }) => {
-                return Promise.resolve(defaultPlayerRecordList.filter((playerRecord) => playerRecord.gameDayId === args.where.gameDayId));
+            (prisma.playerRecord.findMany as Mock).mockImplementation((args: { 
+                where: { 
+                    gameDayId: number;
+                    year?: number;
+                } 
+            }) => {
+                return Promise.resolve(defaultPlayerRecordList.filter((playerRecord) => {
+                    const matchesGameDay = playerRecord.gameDayId === args.where.gameDayId;
+                    const matchesYear = args.where.year === undefined || playerRecord.year === args.where.year;
+                    return matchesGameDay && matchesYear;
+                }));
             });
         });
 

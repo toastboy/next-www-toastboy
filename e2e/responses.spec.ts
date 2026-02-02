@@ -1,83 +1,84 @@
 import { expect, test } from '@playwright/test';
 
-import { asGuest, asUser } from './utils/auth';
+import { asAdmin, asGuest, asUser } from './utils/auth';
+
+interface MailpitMessageSummary {
+    ID: string;
+    Subject: string;
+}
+
+interface MailpitMessagesResponse {
+    messages?: MailpitMessageSummary[];
+}
+
+interface MailpitMessageDetail {
+    HTML?: string;
+}
 
 test.describe('New game flow', () => {
     test('denies access to guest users', async ({ page }) => {
-        await asGuest(page, '/footy/newgame');
+        await asGuest(page, '/footy/admin/newgame');
 
         await expect(page.locator('[data-testid="must-be-admin"]')).toBeVisible();
     });
 
     test('denies access to regular users', async ({ page }) => {
-        await asUser(page, '/footy/newgame');
+        await asUser(page, '/footy/admin/newgame');
 
         await expect(page.locator('[data-testid="must-be-admin"]')).toBeVisible();
     });
 
-    // TODO: Uncomment and implement the new game flow tests when the feature is ready
+    test('allows admins to send invitations and players can respond', async ({ page }) => {
+        const customMessage = `Playwright invitation ${Date.now()}`;
+        const responseComment = `Playwright response ${Date.now()}`;
+        const mailpitUrl = 'http://localhost:8025/';
 
-    // // Send invitations for a new game
+        await asAdmin(page, '/footy/admin/newgame');
 
-    // await page.goto('/footy/newgame');
-    // await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
+        await expect(page.locator('[data-testid="must-be-admin"]')).not.toBeVisible();
+        await expect(page.getByRole('heading', { name: /New game/i })).toBeVisible();
 
-    // expect(await page.getByText('You must be logged in as an administrator to use this page.').count()).toEqual(1);
+        await page.getByLabel(/Override time check/i).check();
+        await page.getByLabel(/Custom message/i).fill(customMessage);
+        await page.getByRole('button', { name: 'Submit' }).click();
 
-    // await page.getByLabel('Username:').fill('testadmin');
-    // await page.getByLabel('Password:').fill('correcthorse');
+        await expect(page.getByText('Invitations ready')).toBeVisible({ timeout: 15000 });
+        await expect(page.getByText('Invitations can be sent now.')).toBeVisible({ timeout: 15000 });
 
-    // await page.getByRole('button', { name: 'Log in' }).click();
+        let message: MailpitMessageSummary | undefined;
+        for (let attempt = 0; attempt < 30; attempt += 1) {
+            const res = await page.request.get(`${mailpitUrl}api/v1/messages?limit=20`);
+            const data = await res.json() as MailpitMessagesResponse;
+            message = data.messages?.find((m) => m.Subject === 'Toastboy FC invitation');
+            if (message) break;
+            await page.waitForTimeout(1000);
+        }
 
-    // await page.getByRole('checkbox').check();
-    // await page.getByRole('button', { name: 'Submit' }).click();
+        expect(message).toBeTruthy();
+        const messageId = message?.ID ?? '';
+        expect(messageId).not.toEqual('');
 
-    // // Check mailhog for the invitation emails, then delete them
+        const detailRes = await page.request.get(`${mailpitUrl}api/v1/message/${messageId}`);
+        const detail = await detailRes.json() as MailpitMessageDetail;
+        const html = detail.HTML ?? '';
+        expect(html).toContain(customMessage);
 
-    // let response = await page.goto('http://localhost:8025/');
-    // expect(response?.ok()).toBeTruthy();
+        const linkMatch = /href="([^"]*footy\/response[^"]*)"/i.exec(html);
+        const invitationLink = linkMatch?.[1];
+        expect(invitationLink).toBeTruthy();
 
-    // await page.locator('.ng-binding', { hasText: 'Toastboy FC Mailer' }).first().click();
-    // expect(await page.getByText('Please follow the link to say whether you can play:').count()).toBeGreaterThanOrEqual(1);
+        await page.goto(invitationLink ?? '');
+        await page.waitForLoadState('networkidle');
 
-    // await page.locator('.glyphicon-arrow-left').click();
-    // await page.locator('.glyphicon-remove-circle').click();
-    // await page.locator('.btn-danger').first().click();
+        await expect(page.getByLabel('Response')).toBeVisible();
+        await page.getByLabel('Response').selectOption('Yes');
+        await page.getByLabel('Goalie').check();
+        await page.getByLabel('Optional comment/excuse').fill(responseComment);
+        await page.getByRole('button', { name: 'Done' }).click();
 
-    // // Set reponse to "Yes" for 10 random players
+        await expect(page.getByText('Response saved')).toBeVisible({ timeout: 15000 });
+        await expect(page.getByText(responseComment)).toBeVisible({ timeout: 15000 });
 
-    // await page.goto('/footy/responses');
-    // await expect(page).toHaveURL(/\/footy\/responses/);
-
-    // expect(await page.getByText('Bad login: try again').count()).toEqual(0);
-
-    // const combocount = await page.getByRole('combobox').count();
-
-    // while (await page.locator('h2', { hasText: 'Yes (10)' }).count() != 1) {
-    //     const index = Math.ceil(Math.random() * combocount);
-    //     const combo = page.getByRole('combobox').nth(index);
-    //     await combo.selectOption('Yes');
-    //     const update = combo.locator('..');
-    //     await update.getByRole('button').click();
-    // }
-
-    // // Now pick the sides
-
-    // await page.goto('/footy/picker');
-
-    // await page.getByRole('button', { name: 'Choose Teams' }).click();
-
-    // const logout = page.getByText('Log Out');
-    // expect(await logout.count()).toEqual(1);
-    // await logout.click();
-
-    // // Check mailhog one last time
-
-    // response = await page.goto('http://localhost:8025/');
-    // expect(response?.ok()).toBeTruthy();
-
-    // await page.locator('.ng-binding', { hasText: 'Toastboy FC Mailer' }).first().click();
-    // expect(await page.getByText('Footy: teams picked').count()).toBeGreaterThanOrEqual(1);
-
-    // await page.locator('.glyphicon-trash').click();
+        await page.request.delete(`${mailpitUrl}api/v1/messages`);
+    });
 });

@@ -103,6 +103,22 @@ describe('GameDayService', () => {
             }
         });
 
+        (prisma.gameDay.update as Mock).mockImplementation((args: {
+            where: { id: number },
+            data: { mailSent: Date },
+        }) => {
+            const gameDay = defaultGameDayList.find((gameDay) => gameDay.id === args.where.id);
+
+            if (!gameDay) {
+                return Promise.reject(new Error('gameDay does not exist'));
+            }
+
+            return Promise.resolve({
+                ...gameDay,
+                ...args.data,
+            });
+        });
+
         (prisma.gameDay.delete as Mock).mockImplementation((args: {
             where: { id: number }
         }) => {
@@ -446,6 +462,52 @@ describe('GameDayService', () => {
             };
             const result = await gameDayService.upsert(updatedGameDay);
             expect(result).toEqual(updatedGameDay);
+        });
+    });
+
+    describe('markMailSent', () => {
+        it('should set mailSent to the provided date', async () => {
+            const mailSent = new Date('2024-02-01T10:00:00Z');
+
+            const result = await gameDayService.markMailSent(6, mailSent);
+
+            expect(prisma.gameDay.update).toHaveBeenCalledWith({
+                where: {
+                    id: 6,
+                },
+                data: {
+                    mailSent,
+                },
+            });
+            expect(result.mailSent).toEqual(mailSent);
+        });
+
+        it('should default mailSent to the current date when none is provided', async () => {
+            const now = new Date('2024-03-15T12:00:00Z');
+            vi.useFakeTimers();
+            vi.setSystemTime(now);
+
+            try {
+                const result = await gameDayService.markMailSent(7);
+
+                expect(prisma.gameDay.update).toHaveBeenCalledWith({
+                    where: {
+                        id: 7,
+                    },
+                    data: {
+                        mailSent: now,
+                    },
+                });
+                expect(result.mailSent).toEqual(now);
+            }
+            finally {
+                vi.useRealTimers();
+            }
+        });
+
+        it('should surface errors from the update operation', async () => {
+            await expect(gameDayService.markMailSent(-1)).rejects.toThrow('gameDay does not exist');
+            expect(prisma.gameDay.update).toHaveBeenCalledTimes(1);
         });
     });
 

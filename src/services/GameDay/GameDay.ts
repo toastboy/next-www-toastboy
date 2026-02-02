@@ -373,7 +373,6 @@ export class GameDayService {
      * @throws Will throw an error if the database update fails or if the gameDayId is invalid
      */
     async markMailSent(gameDayId: number, mailSent: Date = new Date()): Promise<GameDayType> {
-        // TODO: Tests for markMailSent
         try {
             const where = GameDayWhereUniqueInputObjectSchema.parse({ id: gameDayId });
 

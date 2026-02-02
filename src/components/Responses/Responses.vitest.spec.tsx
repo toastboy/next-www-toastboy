@@ -61,6 +61,7 @@ describe('Responses (TDD)', () => {
 
         await waitFor(() => {
             expect(mockSave).toHaveBeenCalledWith({
+                gameDayId: 1249,
                 playerId: Number(firstRow.getAttribute('data-player-id')),
                 response: 'Yes',
                 goalie: true,

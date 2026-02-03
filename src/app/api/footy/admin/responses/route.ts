@@ -13,7 +13,7 @@ const PayloadSchema = z.object({
 
 export const POST = async (request: Request) => {
     try {
-        const json = await request.json();
+        const json: unknown = await request.json();
         const data = PayloadSchema.parse(json);
 
         const comment = data.comment?.trim() ?? null;

@@ -1,5 +1,16 @@
 'use client';
 
+import {
+    Button,
+    Card,
+    Checkbox,
+    Flex,
+    Group,
+    Stack,
+    Text,
+    TextInput,
+    Title,
+} from '@mantine/core';
 import React, { useMemo, useState } from 'react';
 
 export type AdminPlayerResponse = 'Yes' | 'No' | 'Dunno' | null;
@@ -16,7 +27,7 @@ export interface ResponsesProps {
     gameId: number;
     gameDate: string;
     responses: AdminResponseRow[];
-    onSave: (update: {
+    onSave?: (update: {
         gameDayId: number;
         playerId: number;
         response: Exclude<AdminPlayerResponse, null>;
@@ -29,6 +40,22 @@ export const Responses: React.FC<ResponsesProps> = ({ gameId, gameDate, response
     const [rows, setRows] = useState<AdminResponseRow[]>(responses);
     const [savingId, setSavingId] = useState<number | null>(null);
     const [message, setMessage] = useState<string>('');
+    const [error, setError] = useState<string>('');
+
+    const saveHandler = onSave ?? (async (update) => {
+        const res = await fetch('/api/footy/admin/responses', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(update),
+        });
+        if (!res.ok) {
+            const body: unknown = await res.json().catch(() => ({}));
+            const msg = typeof (body as { message?: unknown }).message === 'string'
+                ? (body as { message: string }).message
+                : 'Failed to update response';
+            throw new Error(msg);
+        }
+    });
 
     const grouped = useMemo(() => {
         return {
@@ -42,7 +69,7 @@ export const Responses: React.FC<ResponsesProps> = ({ gameId, gameDate, response
         if (!row.response || row.response === 'Dunno') return;
         setSavingId(row.playerId);
         try {
-            await onSave({
+            await saveHandler({
                 gameDayId: gameId,
                 playerId: row.playerId,
                 response: row.response,
@@ -50,54 +77,66 @@ export const Responses: React.FC<ResponsesProps> = ({ gameId, gameDate, response
                 comment: row.comment,
             });
             setMessage('Response updated');
+            setError('');
             setRows((current) =>
                 current.map((r) => (r.playerId === row.playerId ? row : r)),
             );
+        } catch (err) {
+            setError(err instanceof Error ? err.message : 'Failed to update response');
         } finally {
             setSavingId(null);
         }
     };
 
     const renderGroup = (title: string, testId: string, items: AdminResponseRow[]) => (
-        <section data-testid={testId} data-count={items.length}>
-            <h3>{title} ({items.length})</h3>
-            {items.map((row) => (
-                <div
-                    key={row.playerId}
-                    data-testid="response-row"
-                    data-player-id={row.playerId}
-                    style={{ display: 'flex', gap: '8px', alignItems: 'center', marginBottom: '8px' }}
-                >
-                    <span data-testid="player-name" style={{ minWidth: 140 }}>{row.playerName}</span>
-                    <label>
-                        <span className="sr-only">Response</span>
-                        <select
-                            data-testid="response-select"
-                            value={row.response ?? 'None'}
-                            onChange={(e) => {
-                                const value = e.target.value as AdminPlayerResponse | 'None';
-                                setRows((current) =>
-                                    current.map((r) =>
-                                        r.playerId === row.playerId
-                                            ? { ...r, response: value === 'None' ? null : value }
-                                            : r,
-                                    ),
-                                );
-                            }}
-                        >
-                            <option value="Yes">Yes</option>
-                            <option value="No">No</option>
-                            <option value="Dunno">Dunno</option>
-                            <option value="None">None</option>
-                        </select>
-                    </label>
-                    <label style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-                        <input
+        <Card withBorder shadow="xs" p="md" data-testid={testId} data-count={items.length}>
+            <Group justify="space-between" mb="sm">
+                <Title order={4}>{title} ({items.length})</Title>
+            </Group>
+            <Stack gap="sm">
+                {items.map((row) => (
+                    <Flex
+                        key={row.playerId}
+                        data-testid="response-row"
+                        data-player-id={row.playerId}
+                        align="flex-start"
+                        gap="sm"
+                        wrap="wrap"
+                    >
+                        <Text data-testid="player-name" fw={600} w={180}>
+                            {row.playerName}
+                        </Text>
+                        <Flex direction="column" gap="xs">
+                            <label htmlFor={`response-select-${row.playerId}`}>
+                                Response
+                            </label>
+                            <select
+                                id={`response-select-${row.playerId}`}
+                                data-testid="response-select"
+                                value={row.response ?? 'None'}
+                                onChange={(e) => {
+                                    const value = e.currentTarget.value as AdminPlayerResponse | 'None';
+                                    setRows((current) =>
+                                        current.map((r) =>
+                                            r.playerId === row.playerId
+                                                ? { ...r, response: value === 'None' ? null : value }
+                                                : r,
+                                        ),
+                                    );
+                                }}
+                            >
+                                <option value="Yes">Yes</option>
+                                <option value="No">No</option>
+                                <option value="Dunno">Dunno</option>
+                                <option value="None">None</option>
+                            </select>
+                        </Flex>
+                        <Checkbox
                             data-testid="goalie-checkbox"
-                            type="checkbox"
+                            label="Goalie"
                             checked={row.goalie}
                             onChange={(e) => {
-                                const checked = e.target.checked;
+                                const checked = e.currentTarget.checked;
                                 setRows((current) =>
                                     current.map((r) =>
                                         r.playerId === row.playerId ? { ...r, goalie: checked } : r,
@@ -105,44 +144,54 @@ export const Responses: React.FC<ResponsesProps> = ({ gameId, gameDate, response
                                 );
                             }}
                         />
-                        Goalie
-                    </label>
-                    <input
-                        data-testid="comment-input"
-                        type="text"
-                        value={row.comment}
-                        onChange={(e) => {
-                            const value = e.target.value;
-                            setRows((current) =>
-                                current.map((r) =>
-                                    r.playerId === row.playerId ? { ...r, comment: value } : r,
-                                ),
-                            );
-                        }}
-                        placeholder="Comment"
-                    />
-                    <button
-                        data-testid="response-submit"
-                        type="button"
-                        disabled={savingId === row.playerId}
-                        onClick={() => handleSubmit(row)}
-                    >
-                        Update
-                    </button>
-                </div>
-            ))}
-        </section>
+                        <TextInput
+                            data-testid="comment-input"
+                            placeholder="Comment"
+                            value={row.comment}
+                            onChange={(e) => {
+                                const value = e.currentTarget.value;
+                                setRows((current) =>
+                                    current.map((r) =>
+                                        r.playerId === row.playerId ? { ...r, comment: value } : r,
+                                    ),
+                                );
+                            }}
+                            w={240}
+                        />
+                        <Button
+                            data-testid="response-submit"
+                            variant="filled"
+                            disabled={savingId === row.playerId}
+                            onClick={() => handleSubmit(row)}
+                        >
+                            Update
+                        </Button>
+                    </Flex>
+                ))}
+            </Stack>
+        </Card>
     );
 
     // stable ordering: yes, no, none
     return (
-        <div>
-            <h2>Responses</h2>
-            <p>Game {gameId}: {gameDate}</p>
-            {!!message && <div role="status">{message}</div>}
+        <Stack gap="md">
+            <div>
+                <Title order={2}>Responses</Title>
+                <Text c="dimmed">Game {gameId}: {gameDate}</Text>
+            </div>
+            {!!message && (
+                <Text role="status" c="teal" fw={600}>
+                    {message}
+                </Text>
+            )}
+            {!!error && (
+                <Text role="alert" c="red" fw={600}>
+                    {error}
+                </Text>
+            )}
             {renderGroup('Yes', 'response-group-yes', grouped.yes)}
             {renderGroup('No', 'response-group-no', grouped.no)}
             {renderGroup('None', 'response-group-none', grouped.none)}
-        </div>
+        </Stack>
     );
 };

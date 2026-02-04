@@ -11,6 +11,7 @@ import {
     TextInput,
     Title,
 } from '@mantine/core';
+import { useForm } from '@mantine/form';
 import React, { useMemo, useState } from 'react';
 
 import { SubmitAdminResponseProxy } from '@/types/actions/SubmitAdminResponse';
@@ -30,6 +31,17 @@ enum ResponseOption {
     None = 'None',
 }
 
+type ResponseValues = Pick<OutcomePlayerType, 'response' | 'goalie' | 'comment'>;
+interface ResponsesFormValues {
+    byPlayerId: Record<number, ResponseValues>;
+}
+
+const toResponseValues = (row: OutcomePlayerType): ResponseValues => ({
+    response: row.response ?? null,
+    goalie: !!row.goalie,
+    comment: row.comment ?? '',
+});
+
 export const ResponsesForm: React.FC<ResponsesFormProps> = ({
     gameId,
     gameDate,
@@ -37,6 +49,11 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
     submitAdminResponse,
 }) => {
     const [rows, setRows] = useState<OutcomePlayerType[]>(responses);
+    const form = useForm<ResponsesFormValues>({
+        initialValues: {
+            byPlayerId: Object.fromEntries(responses.map((row) => [row.playerId, toResponseValues(row)])),
+        },
+    });
     const [savingId, setSavingId] = useState<number | null>(null);
     const [message, setMessage] = useState<string>('');
     const [error, setError] = useState<string>('');
@@ -67,20 +84,22 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
     });
 
     const handleSubmit = async (row: OutcomePlayerType) => {
-        if (!row.response) return;
+        const responseValues = form.values.byPlayerId[row.playerId] ?? toResponseValues(row);
+        if (!responseValues.response) return;
+
         setSavingId(row.playerId);
         try {
             await submitHandler({
                 gameDayId: gameId,
                 playerId: row.playerId,
-                response: row.response,
-                goalie: !!row.goalie,
-                comment: row.comment,
+                response: responseValues.response,
+                goalie: !!responseValues.goalie,
+                comment: responseValues.comment,
             });
             setMessage('Response updated');
             setError('');
             setRows((current) =>
-                current.map((r) => (r.playerId === row.playerId ? row : r)),
+                current.map((r) => (r.playerId === row.playerId ? { ...r, ...responseValues } : r)),
             );
         } catch (err) {
             setError(err instanceof Error ? err.message : 'Failed to update response');
@@ -95,81 +114,68 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
                 <Title order={4}>{title} ({items.length})</Title>
             </Group>
             <Stack gap="sm">
-                {items.map((row) => (
-                    <Flex
-                        key={row.playerId}
-                        data-testid="response-row"
-                        data-player-id={row.playerId}
-                        align="flex-start"
-                        gap="sm"
-                        wrap="wrap"
-                    >
-                        <Text data-testid="player-name" fw={600} w={180}>
-                            {row.player.name}
-                        </Text>
-                        <Flex direction="column" gap="xs">
-                            <label htmlFor={`response-select-${row.playerId}`}>
-                                Response
-                            </label>
-                            <select
-                                id={`response-select-${row.playerId}`}
-                                data-testid="response-select"
-                                value={row.response ?? 'None'}
-                                onChange={(e) => {
-                                    const value = e.currentTarget.value as OutcomePlayerType['response'] | 'None';
-                                    setRows((current) =>
-                                        current.map((r) =>
-                                            r.playerId === row.playerId
-                                                ? { ...r, response: value === 'None' ? null : value }
-                                                : r,
-                                        ),
-                                    );
-                                }}
-                            >
-                                {Object.values(ResponseOption).map((option) => (
-                                    <option key={option} value={option}>
-                                        {option}
-                                    </option>
-                                ))}
-                            </select>
-                        </Flex>
-                        <Checkbox
-                            data-testid="goalie-checkbox"
-                            label="Goalie"
-                            checked={!!row.goalie}
-                            onChange={(e) => {
-                                const checked = e.currentTarget.checked;
-                                setRows((current) =>
-                                    current.map((r) =>
-                                        r.playerId === row.playerId ? { ...r, goalie: checked } : r,
-                                    ),
-                                );
-                            }}
-                        />
-                        <TextInput
-                            data-testid="comment-input"
-                            placeholder="Comment"
-                            value={row.comment ?? ''}
-                            onChange={(e) => {
-                                const value = e.currentTarget.value;
-                                setRows((current) =>
-                                    current.map((r) =>
-                                        r.playerId === row.playerId ? { ...r, comment: value } : r,
-                                    ),
-                                );
-                            }}
-                            w={240}
-                        />
-                        <Button
-                            data-testid="response-submit"
-                            variant="filled"
-                            disabled={savingId === row.playerId}
-                            onClick={() => handleSubmit(row)}
+                {items.map((row) => {
+                    const responseValues = form.values.byPlayerId[row.playerId] ?? toResponseValues(row);
+                    return (
+                        <Flex
+                            key={row.playerId}
+                            data-testid="response-row"
+                            data-player-id={row.playerId}
+                            align="flex-start"
+                            gap="sm"
+                            wrap="wrap"
                         >
-                            Update
-                        </Button>
-                    </Flex>
-                ))}
+                            <Text data-testid="player-name" fw={600} w={180}>
+                                {row.player.name}
+                            </Text>
+                            <Flex direction="column" gap="xs">
+                                <label htmlFor={`response-select-${row.playerId}`}>
+                                    Response
+                                </label>
+                                <select
+                                    id={`response-select-${row.playerId}`}
+                                    data-testid="response-select"
+                                    value={responseValues.response ?? 'None'}
+                                    onChange={(e) => {
+                                        const value = e.currentTarget.value as OutcomePlayerType['response'] | 'None';
+                                        form.setFieldValue(
+                                            `byPlayerId.${row.playerId}.response`,
+                                            value === 'None' ? null : value,
+                                        );
+                                    }}
+                                >
+                                    {Object.values(ResponseOption).map((option) => (
+                                        <option key={option} value={option}>
+                                            {option}
+                                        </option>
+                                    ))}
+                                </select>
+                            </Flex>
+                            <Checkbox
+                                data-testid="goalie-checkbox"
+                                label="Goalie"
+                                {...form.getInputProps(
+                                    `byPlayerId.${row.playerId}.goalie`,
+                                    { type: 'checkbox' },
+                                )}
+                            />
+                            <TextInput
+                                data-testid="comment-input"
+                                placeholder="Comment"
+                                {...form.getInputProps(`byPlayerId.${row.playerId}.comment`)}
+                                w={240}
+                            />
+                            <Button
+                                data-testid="response-submit"
+                                variant="filled"
+                                disabled={savingId === row.playerId}
+                                onClick={() => handleSubmit(row)}
+                            >
+                                Update
+                            </Button>
+                        </Flex>
+                    );
+                })}
             </Stack>
         </Card>
     );

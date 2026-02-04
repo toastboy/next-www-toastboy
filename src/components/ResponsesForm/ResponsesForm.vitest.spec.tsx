@@ -56,13 +56,9 @@ describe('Responses', () => {
         await user.click(goalie);
         await user.type(comment, 'See you there');
         await user.selectOptions(select, 'Yes');
-
-        const yesGroup = screen.getByTestId('response-group-yes');
-        const movedRow = await within(yesGroup)
-            .findAllByTestId('response-row')
-            .then((rows) => rows.find((row) => Number(row.getAttribute('data-player-id')) === playerId));
-        if (!movedRow) throw new Error('Moved row not found in yes group');
-        const submit = within(movedRow).getByTestId('response-submit');
+        expect(screen.getByTestId('response-group-none')).toHaveAttribute('data-count', '2');
+        expect(screen.getByTestId('response-group-yes')).toHaveAttribute('data-count', '1');
+        const submit = within(firstRow).getByTestId('response-submit');
         await user.click(submit);
 
         await waitFor(() => {
@@ -74,5 +70,7 @@ describe('Responses', () => {
                 comment: 'See you there',
             });
         });
+        expect(screen.getByTestId('response-group-none')).toHaveAttribute('data-count', '1');
+        expect(screen.getByTestId('response-group-yes')).toHaveAttribute('data-count', '2');
     });
 });

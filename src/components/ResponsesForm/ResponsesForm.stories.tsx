@@ -53,14 +53,14 @@ export const Update: Story = {
         await userEvent.click(goalie);
         await userEvent.type(comment, 'Storybook play');
         await userEvent.selectOptions(select, 'Yes');
+        const submit = within(firstRow).getByTestId('response-submit');
+        await userEvent.click(submit);
+
+        await within(canvasElement.ownerDocument.body).findByText('Response updated', {}, { timeout: 6000 });
 
         const yesGroup = await canvas.findByTestId('response-group-yes');
         const movedRow = (await within(yesGroup).findAllByTestId('response-row'))
             .find((row) => Number(row.getAttribute('data-player-id')) === playerId);
-        if (!movedRow) throw new Error('Missing moved row in yes-group');
-        const submit = within(movedRow).getByTestId('response-submit');
-        await userEvent.click(submit);
-
-        await within(canvasElement.ownerDocument.body).findByText('Response updated', {}, { timeout: 6000 });
+        if (!movedRow) throw new Error('Missing moved row in yes-group after update');
     },
 };

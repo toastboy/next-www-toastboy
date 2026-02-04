@@ -57,15 +57,21 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
     const [savingId, setSavingId] = useState<number | null>(null);
     const [message, setMessage] = useState<string>('');
     const [error, setError] = useState<string>('');
+    const [filter, setFilter] = useState('');
 
     const grouped = useMemo(() => {
+        const filteredRows = rows.filter((row) => {
+            const searchTerm = filter.toLowerCase();
+            return (row.player.name?.toLowerCase().includes(searchTerm));
+        }) ?? [];
+
         return {
-            yes: rows.filter((r) => r.response === ResponseOption.Yes),
-            no: rows.filter((r) => r.response === ResponseOption.No),
-            dunno: rows.filter((r) => r.response === ResponseOption.Dunno),
-            none: rows.filter((r) => r.response == null),
+            yes: filteredRows.filter((r) => r.response === ResponseOption.Yes),
+            no: filteredRows.filter((r) => r.response === ResponseOption.No),
+            dunno: filteredRows.filter((r) => r.response === ResponseOption.Dunno),
+            none: filteredRows.filter((r) => r.response == null),
         };
-    }, [rows]);
+    }, [rows, filter]);
 
     const submitHandler = submitAdminResponse ?? (async (input) => {
         const res = await fetch('/api/footy/admin/responses', {
@@ -196,6 +202,11 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
                     {error}
                 </Text>
             )}
+            <TextInput
+                placeholder="Search players"
+                value={filter}
+                onChange={(event) => setFilter(event.currentTarget.value)}
+            />
             {Object.values(ResponseOption).map((option) => (
                 <React.Fragment key={option}>
                     {

@@ -1,6 +1,6 @@
 import { Notifications } from '@mantine/notifications';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { userEvent, within } from 'storybook/test';
+import { expect, userEvent, within } from 'storybook/test';
 
 import { ResponsesForm } from '@/components/ResponsesForm/ResponsesForm';
 import { defaultResponsesAdminData } from '@/tests/mocks/data/responses';
@@ -32,28 +32,42 @@ export const Render: Story = {
         responses: defaultResponsesAdminData,
         submitAdminResponse: async () => Promise.resolve(null),
     },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Baseline rendering of grouped responses with no interaction.',
+            },
+        },
+    },
 };
 
-export const Update: Story = {
+export const SimpleUpdate: Story = {
     ...Render,
+    parameters: {
+        docs: {
+            description: {
+                story: 'Simple happy-path update: edit one pending player and confirm they move into the Yes group.',
+            },
+        },
+    },
     play: async ({ canvasElement, viewMode }) => {
         if (viewMode === 'docs') return;
 
         const canvas = within(canvasElement);
         const noneGroup = await canvas.findByTestId('response-group-none');
-        const firstRow = (await canvas.findAllByTestId('response-row')).find((row) =>
-            noneGroup.contains(row),
+        const row = (await canvas.findAllByTestId('response-row')).find((candidate) =>
+            noneGroup.contains(candidate),
         );
-        if (!firstRow) throw new Error('Missing none-group row');
-        const playerId = Number(firstRow.getAttribute('data-player-id'));
+        if (!row) throw new Error('Missing none-group row');
+        const playerId = Number(row.getAttribute('data-player-id'));
 
-        const select = within(firstRow).getByTestId('response-select');
-        const goalie = within(firstRow).getByTestId('goalie-checkbox');
-        const comment = within(firstRow).getByTestId('comment-input');
+        const select = within(row).getByTestId('response-select');
+        const goalie = within(row).getByTestId('goalie-checkbox');
+        const comment = within(row).getByTestId('comment-input');
         await userEvent.click(goalie);
         await userEvent.type(comment, 'Storybook play');
         await userEvent.selectOptions(select, 'Yes');
-        const submit = within(firstRow).getByTestId('response-submit');
+        const submit = within(row).getByTestId('response-submit');
         await userEvent.click(submit);
 
         await within(canvasElement.ownerDocument.body).findByText('Response updated', {}, { timeout: 6000 });
@@ -62,5 +76,68 @@ export const Update: Story = {
         const movedRow = (await within(yesGroup).findAllByTestId('response-row'))
             .find((row) => Number(row.getAttribute('data-player-id')) === playerId);
         if (!movedRow) throw new Error('Missing moved row in yes-group after update');
+    },
+};
+
+export const Filtering: Story = {
+    ...Render,
+    parameters: {
+        docs: {
+            description: {
+                story: 'Applies a player name filter and verifies group counts and visible rows update accordingly.',
+            },
+        },
+    },
+    play: async ({ canvasElement, viewMode }) => {
+        if (viewMode === 'docs') return;
+
+        const canvas = within(canvasElement);
+        const filterInput = await canvas.findByPlaceholderText('Search players');
+        await userEvent.type(filterInput, 'Casey');
+
+        const yesGroup = await canvas.findByTestId('response-group-yes');
+        const noGroup = await canvas.findByTestId('response-group-no');
+        const dunnoGroup = await canvas.findByTestId('response-group-dunno');
+        const noneGroup = await canvas.findByTestId('response-group-none');
+
+        expect(yesGroup).toHaveAttribute('data-count', '0');
+        expect(noGroup).toHaveAttribute('data-count', '0');
+        expect(dunnoGroup).toHaveAttribute('data-count', '0');
+        expect(noneGroup).toHaveAttribute('data-count', '1');
+        await within(noneGroup).findByText('Casey Mid');
+    },
+};
+
+export const InvalidInput: Story = {
+    args: {
+        ...Render.args,
+        submitAdminResponse: async () => {
+            throw new Error('Invalid response payload');
+        },
+    },
+    parameters: {
+        docs: {
+            description: {
+                story: 'Simulates a rejected submit request and verifies the error alert is rendered for invalid input.',
+            },
+        },
+    },
+    play: async ({ canvasElement, viewMode }) => {
+        if (viewMode === 'docs') return;
+
+        const canvas = within(canvasElement);
+        const noneGroup = await canvas.findByTestId('response-group-none');
+        const row = (await canvas.findAllByTestId('response-row')).find((candidate) =>
+            noneGroup.contains(candidate),
+        );
+        if (!row) throw new Error('Missing none-group row');
+
+        const select = within(row).getByTestId('response-select');
+        const submit = within(row).getByTestId('response-submit');
+        await userEvent.selectOptions(select, 'Yes');
+        await userEvent.click(submit);
+
+        await within(canvasElement.ownerDocument.body).findByRole('alert');
+        await within(canvasElement.ownerDocument.body).findByText('Invalid response payload');
     },
 };

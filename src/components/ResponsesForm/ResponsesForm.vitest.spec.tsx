@@ -29,7 +29,31 @@ describe('Responses', () => {
         expect(screen.getByRole('heading', { name: /Responses/i })).toBeInTheDocument();
         expect(screen.getByTestId('response-group-yes')).toHaveAttribute('data-count', '1');
         expect(screen.getByTestId('response-group-no')).toHaveAttribute('data-count', '1');
+        expect(screen.getByTestId('response-group-dunno')).toHaveAttribute('data-count', '0');
         expect(screen.getByTestId('response-group-none')).toHaveAttribute('data-count', '2');
+    });
+
+    it('filters players before grouping', async () => {
+        const user = userEvent.setup();
+
+        render(
+            <Wrapper>
+                <ResponsesForm
+                    gameId={1249}
+                    gameDate="3rd February 2026"
+                    responses={defaultResponsesAdminData}
+                    submitAdminResponse={mockSave}
+                />
+            </Wrapper>,
+        );
+
+        const filterInput = screen.getByPlaceholderText('Search players');
+        await user.type(filterInput, 'Casey');
+
+        expect(screen.getByTestId('response-group-yes')).toHaveAttribute('data-count', '0');
+        expect(screen.getByTestId('response-group-no')).toHaveAttribute('data-count', '0');
+        expect(screen.getByTestId('response-group-dunno')).toHaveAttribute('data-count', '0');
+        expect(screen.getByTestId('response-group-none')).toHaveAttribute('data-count', '1');
     });
 
     it('updates a player response and calls onSave', async () => {
@@ -46,19 +70,21 @@ describe('Responses', () => {
             </Wrapper>,
         );
 
+        const filterInput = screen.getByPlaceholderText('Search players');
+        await user.type(filterInput, 'Casey');
         const noneGroup = screen.getByTestId('response-group-none');
-        const firstRow = within(noneGroup).getAllByTestId('response-row')[0];
-        const playerId = Number(firstRow.getAttribute('data-player-id'));
+        const row = within(noneGroup).getByTestId('response-row');
+        const playerId = Number(row.getAttribute('data-player-id'));
 
-        const select = within(firstRow).getByTestId('response-select');
-        const goalie = within(firstRow).getByTestId('goalie-checkbox');
-        const comment = within(firstRow).getByTestId('comment-input');
+        const select = within(row).getByTestId('response-select');
+        const goalie = within(row).getByTestId('goalie-checkbox');
+        const comment = within(row).getByTestId('comment-input');
         await user.click(goalie);
         await user.type(comment, 'See you there');
         await user.selectOptions(select, 'Yes');
-        expect(screen.getByTestId('response-group-none')).toHaveAttribute('data-count', '2');
-        expect(screen.getByTestId('response-group-yes')).toHaveAttribute('data-count', '1');
-        const submit = within(firstRow).getByTestId('response-submit');
+        expect(screen.getByTestId('response-group-none')).toHaveAttribute('data-count', '1');
+        expect(screen.getByTestId('response-group-yes')).toHaveAttribute('data-count', '0');
+        const submit = within(row).getByTestId('response-submit');
         await user.click(submit);
 
         await waitFor(() => {
@@ -70,7 +96,7 @@ describe('Responses', () => {
                 comment: 'See you there',
             });
         });
-        expect(screen.getByTestId('response-group-none')).toHaveAttribute('data-count', '1');
-        expect(screen.getByTestId('response-group-yes')).toHaveAttribute('data-count', '2');
+        expect(screen.getByTestId('response-group-none')).toHaveAttribute('data-count', '0');
+        expect(screen.getByTestId('response-group-yes')).toHaveAttribute('data-count', '1');
     });
 });

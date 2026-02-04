@@ -100,10 +100,12 @@ export const Filtering: Story = {
         const dunnoGroup = await canvas.findByTestId('response-group-dunno');
         const noneGroup = await canvas.findByTestId('response-group-none');
 
-        expect(yesGroup).toHaveAttribute('data-count', '0');
-        expect(noGroup).toHaveAttribute('data-count', '0');
-        expect(dunnoGroup).toHaveAttribute('data-count', '0');
-        expect(noneGroup).toHaveAttribute('data-count', '1');
+        await Promise.all([
+            expect(yesGroup).toHaveAttribute('data-count', '0'),
+            expect(noGroup).toHaveAttribute('data-count', '0'),
+            expect(dunnoGroup).toHaveAttribute('data-count', '0'),
+            expect(noneGroup).toHaveAttribute('data-count', '1'),
+        ]);
         await within(noneGroup).findByText('Casey Mid');
     },
 };
@@ -112,7 +114,7 @@ export const InvalidInput: Story = {
     args: {
         ...Render.args,
         submitAdminResponse: async () => {
-            throw new Error('Invalid response payload');
+            return Promise.reject(new Error('Invalid response payload'));
         },
     },
     parameters: {

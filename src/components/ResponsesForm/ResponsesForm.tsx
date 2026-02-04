@@ -1,5 +1,6 @@
 'use client';
 
+import type { MantineColor } from '@mantine/core';
 import {
     Button,
     Card,
@@ -41,6 +42,13 @@ const toResponseValues = (row: OutcomePlayerType): ResponseValues => ({
     goalie: !!row.goalie,
     comment: row.comment ?? '',
 });
+
+const responseGroupBarColor: Record<ResponseOption, MantineColor> = {
+    [ResponseOption.Yes]: 'green.6',
+    [ResponseOption.No]: 'red.6',
+    [ResponseOption.Dunno]: 'yellow.6',
+    [ResponseOption.None]: 'gray.6',
+};
 
 export const ResponsesForm: React.FC<ResponsesFormProps> = ({
     gameId,
@@ -114,8 +122,9 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
         }
     };
 
-    const renderGroup = (title: string, testId: string, items: OutcomePlayerType[]) => (
+    const renderGroup = (title: ResponseOption, testId: string, items: OutcomePlayerType[]) => (
         <Card withBorder shadow="xs" p="md" data-testid={testId} data-count={items.length}>
+            <Card.Section h={6} bg={responseGroupBarColor[title]} />
             <Group justify="space-between" mb="sm">
                 <Title order={4}>{title} ({items.length})</Title>
             </Group>

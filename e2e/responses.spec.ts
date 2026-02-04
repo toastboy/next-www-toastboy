@@ -1,8 +1,18 @@
-import { expect, test } from '@playwright/test';
+import { expect, type Locator, type Page, test } from '@playwright/test';
 
 import { asAdmin, asGuest, asUser } from './utils/auth';
 
-test.describe('Responses admin page (TDD)', () => {
+type ResponseOption = 'Yes' | 'No' | 'Dunno';
+
+const groupCount = async (group: Locator) =>
+    Number((await group.getAttribute('data-count')) ?? '0');
+
+const waitForSave = (page: Page) =>
+    page.waitForResponse((response) =>
+        response.url().includes('/api/footy/admin/responses') &&
+        response.request().method() === 'POST');
+
+test.describe('Responses admin page', () => {
     test('denies access to guest users', async ({ page }) => {
         await asGuest(page, '/footy/responses');
 
@@ -15,7 +25,7 @@ test.describe('Responses admin page (TDD)', () => {
         await expect(page.locator('[data-testid="must-be-admin"]')).toBeVisible();
     });
 
-    test('admin can update a player response and counts adjust', async ({ page }) => {
+    test('admin can update responses form through realistic response changes', async ({ page }) => {
         await asAdmin(page, '/footy/responses');
 
         await expect(page.locator('[data-testid="must-be-admin"]')).not.toBeVisible();
@@ -23,33 +33,98 @@ test.describe('Responses admin page (TDD)', () => {
 
         const yesGroup = page.getByTestId('response-group-yes');
         const noGroup = page.getByTestId('response-group-no');
+        const dunnoGroup = page.getByTestId('response-group-dunno');
         const noneGroup = page.getByTestId('response-group-none');
 
-        const yesCountBefore = Number(await yesGroup.getAttribute('data-count') ?? '0');
-        const noCountBefore = Number(await noGroup.getAttribute('data-count') ?? '0');
-        const noneCountBefore = Number(await noneGroup.getAttribute('data-count') ?? '0');
+        const initialYes = await groupCount(yesGroup);
+        const initialNo = await groupCount(noGroup);
+        const initialDunno = await groupCount(dunnoGroup);
+        const initialNone = await groupCount(noneGroup);
+        expect(initialNone).toBeGreaterThan(0);
 
         const targetRow = noneGroup.getByTestId('response-row').first();
         const playerName = (await targetRow.getByTestId('player-name').innerText()).trim();
+        const playerId = await targetRow.getAttribute('data-player-id');
 
-        await targetRow.getByTestId('response-select').selectOption('Yes');
-        await targetRow.getByTestId('goalie-checkbox').check();
-        await targetRow.getByTestId('comment-input').fill('Playwright admin updated response');
-        await targetRow.getByTestId('response-submit').click();
+        if (!playerId) {
+            throw new Error('Expected response row to include a data-player-id attribute.');
+        }
 
-        await expect(page.getByText('Response updated')).toBeVisible({ timeout: 15000 });
+        const playerRowIn = (group: Locator) =>
+            group.locator(`[data-testid="response-row"][data-player-id="${playerId}"]`);
 
-        const yesCountAfter = Number(await yesGroup.getAttribute('data-count') ?? '0');
-        const noneCountAfter = Number(await noneGroup.getAttribute('data-count') ?? '0');
+        const updateResponse = async (group: Locator, response: ResponseOption, goalie: boolean, comment: string) => {
+            const row = playerRowIn(group);
+            const commentInput = row.getByTestId('comment-input');
+            const responseSelect = row.getByTestId('response-select');
+            const goalieCheckbox = row.getByTestId('goalie-checkbox');
+            await responseSelect.selectOption(response);
+            if (goalie) {
+                await goalieCheckbox.check();
+            } else {
+                await goalieCheckbox.uncheck();
+            }
+            await commentInput.fill(comment);
+            const save = waitForSave(page);
+            await row.getByTestId('response-submit').click();
+            await save;
+        };
 
-        expect(yesCountAfter).toBe(yesCountBefore + 1);
-        expect(noneCountAfter).toBe(Math.max(0, noneCountBefore - 1));
-        expect(noCountBefore).toBe(Number(await noGroup.getAttribute('data-count') ?? '0'));
+        await updateResponse(noneGroup, 'Yes', true, 'Can play and cover goal first half');
 
-        const movedRow = yesGroup.getByTestId('response-row').filter({ hasText: playerName });
-        await expect(movedRow).toBeVisible({ timeout: 10000 });
-        await expect(movedRow.getByTestId('response-select')).toHaveValue('Yes');
-        await expect(movedRow.getByTestId('goalie-checkbox')).toBeChecked();
-        await expect(movedRow.getByTestId('comment-input')).toHaveValue('Playwright admin updated response');
+        await expect.poll(async () => groupCount(yesGroup)).toBe(initialYes + 1);
+        await expect.poll(async () => groupCount(noGroup)).toBe(initialNo);
+        await expect.poll(async () => groupCount(dunnoGroup)).toBe(initialDunno);
+        await expect.poll(async () => groupCount(noneGroup)).toBe(initialNone - 1);
+
+        const yesRow = yesGroup.getByTestId('response-row').filter({ hasText: playerName });
+        await expect(yesRow).toBeVisible({ timeout: 10000 });
+        await expect(yesRow.getByTestId('response-select')).toHaveValue('Yes');
+        await expect(yesRow.getByTestId('goalie-checkbox')).toBeChecked();
+        await expect(yesRow.getByTestId('comment-input')).toHaveValue('Can play and cover goal first half');
+
+        await updateResponse(yesGroup, 'No', false, 'Out of town this week');
+
+        await expect.poll(async () => groupCount(yesGroup)).toBe(initialYes);
+        await expect.poll(async () => groupCount(noGroup)).toBe(initialNo + 1);
+        await expect.poll(async () => groupCount(dunnoGroup)).toBe(initialDunno);
+        await expect.poll(async () => groupCount(noneGroup)).toBe(initialNone - 1);
+
+        const noRow = noGroup.getByTestId('response-row').filter({ hasText: playerName });
+        await expect(noRow).toBeVisible({ timeout: 10000 });
+        await expect(noRow.getByTestId('response-select')).toHaveValue('No');
+        await expect(noRow.getByTestId('goalie-checkbox')).not.toBeChecked();
+        await expect(noRow.getByTestId('comment-input')).toHaveValue('Out of town this week');
+
+        await updateResponse(noGroup, 'Dunno', false, 'Could make it if meeting ends early');
+
+        await expect.poll(async () => groupCount(yesGroup)).toBe(initialYes);
+        await expect.poll(async () => groupCount(noGroup)).toBe(initialNo);
+        await expect.poll(async () => groupCount(dunnoGroup)).toBe(initialDunno + 1);
+        await expect.poll(async () => groupCount(noneGroup)).toBe(initialNone - 1);
+
+        const dunnoRow = dunnoGroup.getByTestId('response-row').filter({ hasText: playerName });
+        await expect(dunnoRow).toBeVisible({ timeout: 10000 });
+        await expect(dunnoRow.getByTestId('response-select')).toHaveValue('Dunno');
+        await expect(dunnoRow.getByTestId('goalie-checkbox')).not.toBeChecked();
+        await expect(dunnoRow.getByTestId('comment-input')).toHaveValue('Could make it if meeting ends early');
+
+        await updateResponse(dunnoGroup, 'Yes', true, 'Back in: definitely available');
+
+        await expect.poll(async () => groupCount(yesGroup)).toBe(initialYes + 1);
+        await expect.poll(async () => groupCount(noGroup)).toBe(initialNo);
+        await expect.poll(async () => groupCount(dunnoGroup)).toBe(initialDunno);
+        await expect.poll(async () => groupCount(noneGroup)).toBe(initialNone - 1);
+
+        const longComment = 'x'.repeat(128);
+        const yesRowFinal = playerRowIn(yesGroup);
+        const commentInput = yesRowFinal.getByTestId('comment-input');
+        await commentInput.fill(longComment);
+        const failedSave = waitForSave(page);
+        await yesRowFinal.getByTestId('response-submit').click();
+        await failedSave;
+
+        await expect(page.getByRole('alert')).toBeVisible();
+        await expect(page.getByRole('alert')).toContainText('at most 127');
     });
 });

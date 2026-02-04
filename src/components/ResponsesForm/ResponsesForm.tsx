@@ -125,8 +125,8 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
     const renderGroup = (title: ResponseOption, testId: string, items: OutcomePlayerType[]) => (
         <Card withBorder shadow="xs" p="md" data-testid={testId} data-count={items.length}>
             <Card.Section h={6} bg={responseGroupBarColor[title]} />
-            <Group justify="space-between" mb="sm">
-                <Title order={4}>{title} ({items.length})</Title>
+            <Group justify="space-between" mb="lg" mt="md">
+                <Title order={2}>{title}: {items.length}</Title>
             </Group>
             <Stack gap="sm">
                 {items.map((row) => {

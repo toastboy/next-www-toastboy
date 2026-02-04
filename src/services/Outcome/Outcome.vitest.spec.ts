@@ -292,6 +292,67 @@ describe('OutcomeService', () => {
         });
     });
 
+    describe('getAdminByGameDay', () => {
+        it('should include active players without outcomes as response none rows', async () => {
+            (prisma.player.findMany as Mock).mockResolvedValueOnce([
+                {
+                    ...createMockPlayer({ id: 1, name: 'Alex Keeper', finished: null }),
+                    outcomes: [
+                        createMockOutcome({
+                            id: 101,
+                            gameDayId: 25,
+                            playerId: 1,
+                            response: PlayerResponseSchema.enum.Yes,
+                        }),
+                    ],
+                },
+                {
+                    ...createMockPlayer({ id: 2, name: 'Britt Winger', finished: null }),
+                    outcomes: [],
+                },
+            ]);
+
+            const result = await outcomeService.getAdminByGameDay(25);
+
+            expect(prisma.player.findMany).toHaveBeenCalledWith({
+                where: {
+                    finished: null,
+                },
+                orderBy: [
+                    { name: 'asc' },
+                    { id: 'asc' },
+                ],
+                include: {
+                    outcomes: {
+                        where: {
+                            gameDayId: 25,
+                        },
+                        take: 1,
+                    },
+                },
+            });
+            expect(result).toEqual([
+                expect.objectContaining({
+                    id: 101,
+                    playerId: 1,
+                    gameDayId: 25,
+                    response: PlayerResponseSchema.enum.Yes,
+                }),
+                expect.objectContaining({
+                    id: -2,
+                    playerId: 2,
+                    gameDayId: 25,
+                    response: null,
+                }),
+            ]);
+        });
+
+        it('should throw for invalid gameDayId', async () => {
+            await expect(outcomeService.getAdminByGameDay(0)).rejects.toThrow();
+            expect(prisma.player.findMany).not.toHaveBeenCalled();
+        });
+    });
+
     describe('getTeamPlayersByGameDay', () => {
         it('should return team players with outcomes and form history', async () => {
             const formHistory = 2;

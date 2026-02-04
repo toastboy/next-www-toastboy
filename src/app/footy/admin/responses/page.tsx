@@ -10,7 +10,7 @@ type PageProps = object;
 const Page: React.FC<PageProps> = async () => {
     const currentGame = await gameDayService.getCurrent();
     if (!currentGame) return notFound();
-    const responses = await outcomeService.getByGameDay(currentGame.id);
+    const responses = await outcomeService.getAdminByGameDay(currentGame.id);
 
     return (
         <Container size="lg" py="lg">

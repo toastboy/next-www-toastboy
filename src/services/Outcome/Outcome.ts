@@ -309,6 +309,65 @@ export class OutcomeService {
     }
 
     /**
+     * Retrieves admin response rows for a game day, including active players
+     * who do not yet have an Outcome for that game day.
+     * @param gameDayId - The ID of the game day.
+     * @returns A promise that resolves to one row per active player.
+     * @throws If there is an error fetching the data.
+     */
+    async getAdminByGameDay(gameDayId: number): Promise<OutcomePlayerType[]> {
+        try {
+            const validatedGameDayId = z.number().int().min(1).parse(gameDayId);
+
+            const activePlayers = await prisma.player.findMany({
+                where: {
+                    finished: null,
+                },
+                orderBy: [
+                    { name: 'asc' },
+                    { id: 'asc' },
+                ],
+                include: {
+                    outcomes: {
+                        where: {
+                            gameDayId: validatedGameDayId,
+                        },
+                        take: 1,
+                    },
+                },
+            });
+
+            return activePlayers.map(({ outcomes, ...player }) => {
+                const outcome = outcomes[0];
+                if (outcome) {
+                    return OutcomePlayerType.parse({
+                        ...outcome,
+                        player,
+                    });
+                }
+
+                return OutcomePlayerType.parse({
+                    id: -player.id,
+                    gameDayId: validatedGameDayId,
+                    playerId: player.id,
+                    response: null,
+                    responseInterval: null,
+                    points: null,
+                    team: null,
+                    comment: null,
+                    pub: null,
+                    paid: null,
+                    goalie: null,
+                    player,
+                });
+            });
+        } catch (error) {
+            log(`Error fetching admin responses by GameDay: ${String(error)}`);
+            throw error;
+        }
+    }
+
+    /**
      * Retrieves all players on a given team for a specific game day, including
      * their outcome for that day and their recent form.
      * @param gameDayId - The game day identifier.

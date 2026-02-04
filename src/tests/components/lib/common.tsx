@@ -23,14 +23,19 @@ export const Wrapper: React.FC<WrapperProps> = ({ children }) => {
 };
 
 /**
- * Extracts and parses props from a rendered element's text content: each standard mock just outputs '<div>MyComponentProps: {JSON.stringify(props)}</div>'.
+ * Extracts and parses props from a rendered element's text content: each
+ * standard mock just outputs '<div>MyComponentProps:
+ * {JSON.stringify(props)}</div>'.
  *
- * This deliberately uses loose JSON parsing rather than zod schema validation to keep tests simple and focused on rendering behavior.
+ * This deliberately uses loose JSON parsing rather than zod schema validation
+ * to keep tests simple and focused on rendering behavior.
  *
  * @template T - The type of the props object to be returned.
- * @param id - The identifier prefix used to locate the element containing the props JSON string.
+ * @param id - The identifier prefix used to locate the element containing the
+ * props JSON string.
  * @returns The parsed props object of type T.
- * @throws Will fail test assertions if the element is not found or if the JSON is invalid.
+ * @throws Will fail test assertions if the element is not found or if the JSON
+ * is invalid.
  *
  * @example
  * const props = extractProps<MyComponentProps>('myComponent');

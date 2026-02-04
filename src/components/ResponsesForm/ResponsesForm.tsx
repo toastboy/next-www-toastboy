@@ -197,10 +197,15 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
 
     return (
         <Stack gap="md">
-            <div>
+            <Stack align="left" gap="xs">
                 <Title order={2}>Responses</Title>
                 <Text c="dimmed">Game {gameId}: {gameDate}</Text>
-            </div>
+                <TextInput
+                    placeholder="Search players"
+                    value={filter}
+                    onChange={(event) => setFilter(event.currentTarget.value)}
+                />
+            </Stack>
             {!!message && (
                 <Text role="status" c="teal" fw={600}>
                     {message}
@@ -211,11 +216,6 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
                     {error}
                 </Text>
             )}
-            <TextInput
-                placeholder="Search players"
-                value={filter}
-                onChange={(event) => setFilter(event.currentTarget.value)}
-            />
             {Object.values(ResponseOption).map((option) => (
                 <React.Fragment key={option}>
                     {

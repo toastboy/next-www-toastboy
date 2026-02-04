@@ -1,4 +1,4 @@
-
+import { Text } from '@mantine/core';
 import { render, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 
@@ -12,7 +12,7 @@ describe('CustomAppShell', () => {
         render(
             <Wrapper>
                 <CustomAppShell>
-                    <div>Test Content</div>
+                    <Text>Test Content</Text>
                 </CustomAppShell>
             </Wrapper>,
         );

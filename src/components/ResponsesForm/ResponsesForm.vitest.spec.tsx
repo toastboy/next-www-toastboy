@@ -81,7 +81,8 @@ describe('Responses', () => {
         const comment = within(row).getByTestId('comment-input');
         await user.click(goalie);
         await user.type(comment, 'See you there');
-        await user.selectOptions(select, 'Yes');
+        await user.click(select);
+        await user.click(await screen.findByRole('option', { name: 'Yes', hidden: true }));
         expect(screen.getByTestId('response-group-none')).toHaveAttribute('data-count', '1');
         expect(screen.getByTestId('response-group-yes')).toHaveAttribute('data-count', '0');
         const submit = within(row).getByTestId('response-submit');

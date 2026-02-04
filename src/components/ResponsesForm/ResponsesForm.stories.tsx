@@ -66,7 +66,8 @@ export const SimpleUpdate: Story = {
         const comment = within(row).getByTestId('comment-input');
         await userEvent.click(goalie);
         await userEvent.type(comment, 'Storybook play');
-        await userEvent.selectOptions(select, 'Yes');
+        await userEvent.click(select);
+        await userEvent.click(await canvas.findByRole('option', { name: 'Yes' }));
         const submit = within(row).getByTestId('response-submit');
         await userEvent.click(submit);
 
@@ -136,7 +137,8 @@ export const InvalidInput: Story = {
 
         const select = within(row).getByTestId('response-select');
         const submit = within(row).getByTestId('response-submit');
-        await userEvent.selectOptions(select, 'Yes');
+        await userEvent.click(select);
+        await userEvent.click(await canvas.findByRole('option', { name: 'Yes' }));
         await userEvent.click(submit);
 
         await within(canvasElement.ownerDocument.body).findByRole('alert');

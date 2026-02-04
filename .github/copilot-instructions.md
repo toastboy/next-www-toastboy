@@ -47,6 +47,7 @@ Purpose: Enable fast, safe contributions. Keep changes aligned with existing ser
 - Maintain matcher exclusions in `middleware.ts` when adding routes so monitoring + static assets remain unblocked.
 - Use existing Zod schema extension patterns for custom validation (see `extendedFields` examples in services).
 - For all form components, use Mantine `useForm` for state handling and submission flow instead of bespoke form state management.
+- Prefer Mantine components and types over native HTML/React elements when Mantine equivalents exist (e.g., use `<Select>` instead of `<select>`).
 - Zod deprecated `z.string().email()`; use `z.email()` instead.
 - Always add comments to new functions/methods explaining purpose, parameters, return values, and thrown errors in the same manner as existing code and using the typical output of issuing the '/doc' command to the inline coding agent.
 - Always use `data-testid` selectors in tests and Storybook play functions.

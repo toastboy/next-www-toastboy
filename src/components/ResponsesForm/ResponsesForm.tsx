@@ -7,6 +7,7 @@ import {
     Checkbox,
     Flex,
     Group,
+    Select,
     Stack,
     Text,
     TextInput,
@@ -136,39 +137,35 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
                             key={row.playerId}
                             data-testid="response-row"
                             data-player-id={row.playerId}
-                            align="flex-start"
+                            align="center"
                             gap="sm"
-                            wrap="wrap"
+                            wrap="nowrap"
                         >
                             <Text data-testid="player-name" fw={600} w={180}>
                                 {row.player.name}
                             </Text>
-                            <Flex direction="column" gap="xs">
-                                <label htmlFor={`response-select-${row.playerId}`}>
-                                    Response
-                                </label>
-                                <select
-                                    id={`response-select-${row.playerId}`}
-                                    data-testid="response-select"
-                                    value={responseValues.response ?? 'None'}
-                                    onChange={(e) => {
-                                        const value = e.currentTarget.value as OutcomePlayerType['response'] | 'None';
-                                        form.setFieldValue(
-                                            `byPlayerId.${row.playerId}.response`,
-                                            value === 'None' ? null : value,
-                                        );
-                                    }}
-                                >
-                                    {Object.values(ResponseOption).map((option) => (
-                                        <option key={option} value={option}>
-                                            {option}
-                                        </option>
-                                    ))}
-                                </select>
-                            </Flex>
+                            <Select
+                                data-testid="response-select"
+                                aria-label="Response"
+                                data={Object.values(ResponseOption).map((option) => ({
+                                    value: option,
+                                    label: option,
+                                }))}
+                                value={responseValues.response ?? ResponseOption.None}
+                                onChange={(value) => {
+                                    const nextValue = value as ResponseOption | null;
+                                    form.setFieldValue(
+                                        `byPlayerId.${row.playerId}.response`,
+                                        nextValue === ResponseOption.None ? null : nextValue,
+                                    );
+                                }}
+                                size="sm"
+                                w={160}
+                            />
                             <Checkbox
                                 data-testid="goalie-checkbox"
                                 label="Goalie"
+                                size="sm"
                                 {...form.getInputProps(
                                     `byPlayerId.${row.playerId}.goalie`,
                                     { type: 'checkbox' },
@@ -178,11 +175,13 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
                                 data-testid="comment-input"
                                 placeholder="Comment"
                                 {...form.getInputProps(`byPlayerId.${row.playerId}.comment`)}
-                                w={240}
+                                size="sm"
+                                style={{ flex: 1, minWidth: 220 }}
                             />
                             <Button
                                 data-testid="response-submit"
                                 variant="filled"
+                                size="sm"
                                 disabled={savingId === row.playerId}
                                 onClick={() => handleSubmit(row)}
                             >

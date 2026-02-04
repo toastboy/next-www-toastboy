@@ -172,3 +172,7 @@ if (!('ResizeObserver' in globalThis)) {
         writable: true,
     });
 }
+
+if (!('scrollIntoView' in HTMLElement.prototype)) {
+    HTMLElement.prototype.scrollIntoView = () => undefined;
+}

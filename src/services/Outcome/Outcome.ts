@@ -24,6 +24,7 @@ import {
 import z from 'zod';
 
 import gameDayService from '@/services/GameDay';
+import { OutcomePlayerType } from '@/types/OutcomePlayerType';
 
 /** Field definitions with extra validation */
 const extendedFields = {
@@ -290,7 +291,7 @@ export class OutcomeService {
      * @returns A promise that resolves to an array of Outcome objects.
      * @throws If there is an error fetching the outcomes.
      */
-    async getByGameDay(gameDayId: number, team?: 'A' | 'B'): Promise<OutcomeType[]> {
+    async getByGameDay(gameDayId: number, team?: 'A' | 'B'): Promise<OutcomePlayerType[]> {
         try {
             return prisma.outcome.findMany({
                 where: {

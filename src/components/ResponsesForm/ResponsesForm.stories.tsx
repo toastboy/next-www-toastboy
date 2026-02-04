@@ -1,13 +1,13 @@
 import { Notifications } from '@mantine/notifications';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { within } from 'storybook/test';
+import { userEvent, within } from 'storybook/test';
 
-import { Responses } from '@/components/Responses/Responses';
+import { ResponsesForm } from '@/components/ResponsesForm/ResponsesForm';
 import { defaultResponsesAdminData } from '@/tests/mocks/data/responses';
 
 const meta = {
     title: 'Admin/Responses',
-    component: Responses,
+    component: ResponsesForm,
     decorators: [
         (Story) => (
             <>
@@ -20,7 +20,7 @@ const meta = {
         layout: 'fullscreen',
     },
     tags: ['autodocs'],
-} satisfies Meta<typeof Responses>;
+} satisfies Meta<typeof ResponsesForm>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -30,9 +30,9 @@ export const Primary: Story = {
         gameId: 1249,
         gameDate: '3rd February 2026',
         responses: defaultResponsesAdminData,
-        onSave: async () => Promise.resolve(),
+        submitAdminResponse: async () => Promise.resolve(null),
     },
-    play: async ({ canvasElement, userEvent, viewMode }) => {
+    play: async ({ canvasElement, viewMode }) => {
         if (viewMode === 'docs') return;
 
         const canvas = within(canvasElement);

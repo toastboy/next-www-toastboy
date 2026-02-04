@@ -13,40 +13,48 @@ import {
 } from '@mantine/core';
 import React, { useMemo, useState } from 'react';
 
-export type AdminPlayerResponse = 'Yes' | 'No' | 'Dunno' | null;
+import { SubmitAdminResponseProxy } from '@/types/actions/SubmitAdminResponse';
+import { OutcomePlayerType } from '@/types/OutcomePlayerType';
 
-export interface AdminResponseRow {
-    playerId: number;
-    playerName: string;
-    response: AdminPlayerResponse;
-    goalie: boolean;
-    comment: string;
-}
-
-export interface ResponsesProps {
+export interface ResponsesFormProps {
     gameId: number;
     gameDate: string;
-    responses: AdminResponseRow[];
-    onSave?: (update: {
-        gameDayId: number;
-        playerId: number;
-        response: Exclude<AdminPlayerResponse, null>;
-        goalie: boolean;
-        comment: string;
-    }) => Promise<void>;
+    responses: OutcomePlayerType[];
+    submitAdminResponse?: SubmitAdminResponseProxy;
 }
 
-export const Responses: React.FC<ResponsesProps> = ({ gameId, gameDate, responses, onSave }) => {
-    const [rows, setRows] = useState<AdminResponseRow[]>(responses);
+enum ResponseOption {
+    Yes = 'Yes',
+    No = 'No',
+    Dunno = 'Dunno',
+    None = 'None',
+}
+
+export const ResponsesForm: React.FC<ResponsesFormProps> = ({
+    gameId,
+    gameDate,
+    responses,
+    submitAdminResponse,
+}) => {
+    const [rows, setRows] = useState<OutcomePlayerType[]>(responses);
     const [savingId, setSavingId] = useState<number | null>(null);
     const [message, setMessage] = useState<string>('');
     const [error, setError] = useState<string>('');
 
-    const saveHandler = onSave ?? (async (update) => {
+    const grouped = useMemo(() => {
+        return {
+            yes: rows.filter((r) => r.response === ResponseOption.Yes),
+            no: rows.filter((r) => r.response === ResponseOption.No),
+            dunno: rows.filter((r) => r.response === ResponseOption.Dunno),
+            none: rows.filter((r) => r.response == null),
+        };
+    }, [rows]);
+
+    const submitHandler = submitAdminResponse ?? (async (input) => {
         const res = await fetch('/api/footy/admin/responses', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(update),
+            body: JSON.stringify(input),
         });
         if (!res.ok) {
             const body: unknown = await res.json().catch(() => ({}));
@@ -55,25 +63,18 @@ export const Responses: React.FC<ResponsesProps> = ({ gameId, gameDate, response
                 : 'Failed to update response';
             throw new Error(msg);
         }
+        return null;
     });
 
-    const grouped = useMemo(() => {
-        return {
-            yes: rows.filter((r) => r.response === 'Yes'),
-            no: rows.filter((r) => r.response === 'No'),
-            none: rows.filter((r) => r.response === null || r.response === 'Dunno'),
-        };
-    }, [rows]);
-
-    const handleSubmit = async (row: AdminResponseRow) => {
-        if (!row.response || row.response === 'Dunno') return;
+    const handleSubmit = async (row: OutcomePlayerType) => {
+        if (!row.response) return;
         setSavingId(row.playerId);
         try {
-            await saveHandler({
+            await submitHandler({
                 gameDayId: gameId,
                 playerId: row.playerId,
                 response: row.response,
-                goalie: row.goalie,
+                goalie: !!row.goalie,
                 comment: row.comment,
             });
             setMessage('Response updated');
@@ -88,7 +89,7 @@ export const Responses: React.FC<ResponsesProps> = ({ gameId, gameDate, response
         }
     };
 
-    const renderGroup = (title: string, testId: string, items: AdminResponseRow[]) => (
+    const renderGroup = (title: string, testId: string, items: OutcomePlayerType[]) => (
         <Card withBorder shadow="xs" p="md" data-testid={testId} data-count={items.length}>
             <Group justify="space-between" mb="sm">
                 <Title order={4}>{title} ({items.length})</Title>
@@ -104,7 +105,7 @@ export const Responses: React.FC<ResponsesProps> = ({ gameId, gameDate, response
                         wrap="wrap"
                     >
                         <Text data-testid="player-name" fw={600} w={180}>
-                            {row.playerName}
+                            {row.player.name}
                         </Text>
                         <Flex direction="column" gap="xs">
                             <label htmlFor={`response-select-${row.playerId}`}>
@@ -115,7 +116,7 @@ export const Responses: React.FC<ResponsesProps> = ({ gameId, gameDate, response
                                 data-testid="response-select"
                                 value={row.response ?? 'None'}
                                 onChange={(e) => {
-                                    const value = e.currentTarget.value as AdminPlayerResponse | 'None';
+                                    const value = e.currentTarget.value as OutcomePlayerType['response'] | 'None';
                                     setRows((current) =>
                                         current.map((r) =>
                                             r.playerId === row.playerId
@@ -125,16 +126,17 @@ export const Responses: React.FC<ResponsesProps> = ({ gameId, gameDate, response
                                     );
                                 }}
                             >
-                                <option value="Yes">Yes</option>
-                                <option value="No">No</option>
-                                <option value="Dunno">Dunno</option>
-                                <option value="None">None</option>
+                                {Object.values(ResponseOption).map((option) => (
+                                    <option key={option} value={option}>
+                                        {option}
+                                    </option>
+                                ))}
                             </select>
                         </Flex>
                         <Checkbox
                             data-testid="goalie-checkbox"
                             label="Goalie"
-                            checked={row.goalie}
+                            checked={!!row.goalie}
                             onChange={(e) => {
                                 const checked = e.currentTarget.checked;
                                 setRows((current) =>
@@ -147,7 +149,7 @@ export const Responses: React.FC<ResponsesProps> = ({ gameId, gameDate, response
                         <TextInput
                             data-testid="comment-input"
                             placeholder="Comment"
-                            value={row.comment}
+                            value={row.comment ?? ''}
                             onChange={(e) => {
                                 const value = e.currentTarget.value;
                                 setRows((current) =>
@@ -172,7 +174,6 @@ export const Responses: React.FC<ResponsesProps> = ({ gameId, gameDate, response
         </Card>
     );
 
-    // stable ordering: yes, no, none
     return (
         <Stack gap="md">
             <div>
@@ -189,9 +190,17 @@ export const Responses: React.FC<ResponsesProps> = ({ gameId, gameDate, response
                     {error}
                 </Text>
             )}
-            {renderGroup('Yes', 'response-group-yes', grouped.yes)}
-            {renderGroup('No', 'response-group-no', grouped.no)}
-            {renderGroup('None', 'response-group-none', grouped.none)}
+            {Object.values(ResponseOption).map((option) => (
+                <React.Fragment key={option}>
+                    {
+                        renderGroup(
+                            option,
+                            `response-group-${option.toLowerCase()}`,
+                            grouped[option.toLowerCase() as keyof typeof grouped],
+                        )
+                    }
+                </React.Fragment>
+            ))}
         </Stack>
     );
 };

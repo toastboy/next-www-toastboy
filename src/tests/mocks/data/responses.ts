@@ -1,32 +1,64 @@
-import type { AdminResponseRow } from '@/components/Responses/Responses';
+import type { OutcomePlayerType } from '@/types/OutcomePlayerType';
 
-export const defaultResponsesAdminData: AdminResponseRow[] = [
-    {
+const createResponsePlayer = (
+    id: number,
+    name: string,
+): OutcomePlayerType['player'] => ({
+    id,
+    name,
+    accountEmail: null,
+    anonymous: false,
+    joined: null,
+    finished: null,
+    born: null,
+    comment: null,
+    introducedBy: null,
+});
+
+const createMockOutcomePlayer = (
+    overrides: Partial<OutcomePlayerType>,
+): OutcomePlayerType => ({
+    id: 1,
+    gameDayId: 1249,
+    playerId: 1,
+    response: null,
+    responseInterval: null,
+    points: null,
+    team: null,
+    comment: null,
+    pub: 1,
+    paid: false,
+    goalie: false,
+    player: createResponsePlayer(1, 'Alex Keeper'),
+    ...overrides,
+});
+
+export const defaultResponsesAdminData: OutcomePlayerType[] = [
+    createMockOutcomePlayer({
+        id: 1,
         playerId: 1,
-        playerName: 'Alex Keeper',
         response: 'Yes',
         goalie: true,
         comment: 'I can cover first half',
-    },
-    {
+        player: createResponsePlayer(1, 'Alex Keeper'),
+    }),
+    createMockOutcomePlayer({
+        id: 2,
         playerId: 2,
-        playerName: 'Britt Winger',
         response: 'No',
-        goalie: false,
         comment: 'Out of town',
-    },
-    {
+        player: createResponsePlayer(2, 'Britt Winger'),
+    }),
+    createMockOutcomePlayer({
+        id: 3,
         playerId: 3,
-        playerName: 'Casey Mid',
-        response: null,
-        goalie: false,
         comment: '',
-    },
-    {
+        player: createResponsePlayer(3, 'Casey Mid'),
+    }),
+    createMockOutcomePlayer({
+        id: 4,
         playerId: 4,
-        playerName: 'Dev Striker',
-        response: null,
-        goalie: false,
         comment: '',
-    },
+        player: createResponsePlayer(4, 'Dev Striker'),
+    }),
 ];

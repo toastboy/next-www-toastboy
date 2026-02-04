@@ -2,13 +2,13 @@ import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 
-import { Responses } from '@/components/Responses/Responses';
+import { ResponsesForm } from '@/components/ResponsesForm/ResponsesForm';
 import { Wrapper } from '@/tests/components/lib/common';
 import { defaultResponsesAdminData } from '@/tests/mocks/data/responses';
 
 const mockSave = vi.fn();
 
-describe('Responses (TDD)', () => {
+describe('Responses', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         mockSave.mockResolvedValue(undefined);
@@ -17,11 +17,11 @@ describe('Responses (TDD)', () => {
     it('groups responses and shows counts', () => {
         render(
             <Wrapper>
-                <Responses
+                <ResponsesForm
                     gameId={1249}
                     gameDate="3rd February 2026"
                     responses={defaultResponsesAdminData}
-                    onSave={mockSave}
+                    submitAdminResponse={mockSave}
                 />
             </Wrapper>,
         );
@@ -37,32 +37,38 @@ describe('Responses (TDD)', () => {
 
         render(
             <Wrapper>
-                <Responses
+                <ResponsesForm
                     gameId={1249}
                     gameDate="3rd February 2026"
                     responses={defaultResponsesAdminData}
-                    onSave={mockSave}
+                    submitAdminResponse={mockSave}
                 />
             </Wrapper>,
         );
 
         const noneGroup = screen.getByTestId('response-group-none');
         const firstRow = within(noneGroup).getAllByTestId('response-row')[0];
+        const playerId = Number(firstRow.getAttribute('data-player-id'));
 
         const select = within(firstRow).getByTestId('response-select');
         const goalie = within(firstRow).getByTestId('goalie-checkbox');
         const comment = within(firstRow).getByTestId('comment-input');
-        const submit = within(firstRow).getByTestId('response-submit');
-
-        await user.selectOptions(select, 'Yes');
         await user.click(goalie);
         await user.type(comment, 'See you there');
+        await user.selectOptions(select, 'Yes');
+
+        const yesGroup = screen.getByTestId('response-group-yes');
+        const movedRow = await within(yesGroup)
+            .findAllByTestId('response-row')
+            .then((rows) => rows.find((row) => Number(row.getAttribute('data-player-id')) === playerId));
+        if (!movedRow) throw new Error('Moved row not found in yes group');
+        const submit = within(movedRow).getByTestId('response-submit');
         await user.click(submit);
 
         await waitFor(() => {
             expect(mockSave).toHaveBeenCalledWith({
                 gameDayId: 1249,
-                playerId: Number(firstRow.getAttribute('data-player-id')),
+                playerId,
                 response: 'Yes',
                 goalie: true,
                 comment: 'See you there',

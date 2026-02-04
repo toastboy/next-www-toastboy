@@ -1,50 +1,23 @@
 import { Container } from '@mantine/core';
+import { notFound } from 'next/navigation';
 
-import { AdminResponseRow, Responses } from '@/components/Responses/Responses';
-
-// Temporary mock data until wired to backend
-const mockGameId = 1249;
-const mockGameDate = '3rd February 2026';
-const mockResponses: AdminResponseRow[] = [
-    {
-        playerId: 1,
-        playerName: 'Alex Keeper',
-        response: 'Yes',
-        goalie: true,
-        comment: 'I can cover first half',
-    },
-    {
-        playerId: 2,
-        playerName: 'Britt Winger',
-        response: 'No',
-        goalie: false,
-        comment: 'Out of town',
-    },
-    {
-        playerId: 3,
-        playerName: 'Casey Mid',
-        response: null,
-        goalie: false,
-        comment: '',
-    },
-    {
-        playerId: 4,
-        playerName: 'Dev Striker',
-        response: null,
-        goalie: false,
-        comment: '',
-    },
-];
+import { ResponsesForm } from '@/components/ResponsesForm/ResponsesForm';
+import gameDayService from '@/services/GameDay';
+import outcomeService from '@/services/Outcome';
 
 type PageProps = object;
 
-const Page: React.FC<PageProps> = () => {
+const Page: React.FC<PageProps> = async () => {
+    const currentGame = await gameDayService.getCurrent();
+    if (!currentGame) return notFound();
+    const responses = await outcomeService.getByGameDay(currentGame.id);
+
     return (
         <Container size="lg" py="lg">
-            <Responses
-                gameId={mockGameId}
-                gameDate={mockGameDate}
-                responses={mockResponses}
+            <ResponsesForm
+                gameId={currentGame.id}
+                gameDate={currentGame.date.toISOString().split('T')[0]}
+                responses={responses}
             />
         </Container>
     );

@@ -1,0 +1,17 @@
+{
+    "recommendations": [
+        "dbaeumer.vscode-eslint",
+        "vercel.nextjs",
+        "prisma.prisma",
+        "vitest.explorer",
+        "ms-playwright.playwright",
+        "storybook.storybook",
+        "sentry.sentry-vscode",
+        "ms-azuretools.vscode-docker",
+        "hashicorp.terraform",
+        "mtxr.sqltools",
+        "mtxr.sqltools-driver-mysql",
+        "redhat.vscode-yaml",
+        "humao.rest-client"
+    ]
+}

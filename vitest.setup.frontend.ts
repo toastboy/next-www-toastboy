@@ -173,6 +173,13 @@ if (!('ResizeObserver' in globalThis)) {
     });
 }
 
-if (!('scrollIntoView' in HTMLElement.prototype)) {
-    HTMLElement.prototype.scrollIntoView = () => undefined;
+type HTMLElementLike = {
+    prototype: {
+        scrollIntoView?: () => void;
+    };
+};
+
+const HTMLElementRef = (globalThis as { HTMLElement?: HTMLElementLike }).HTMLElement;
+if (HTMLElementRef && !('scrollIntoView' in HTMLElementRef.prototype)) {
+    HTMLElementRef.prototype.scrollIntoView = () => undefined;
 }

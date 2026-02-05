@@ -126,6 +126,7 @@ const config = [
             "react/hook-use-state": "warn",
             "react/no-unstable-nested-components": ["warn", { allowAsProps: true }],
             "eol-last": ["error", "always"],
+            "operator-linebreak": ["error", "after"],
             // Import hygiene
             "import-x/no-unresolved": "error",
             "import-x/no-duplicates": "error",

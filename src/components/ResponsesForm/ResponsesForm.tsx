@@ -69,6 +69,17 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
     const [savingId, setSavingId] = useState<number | null>(null);
     const [filter, setFilter] = useState('');
 
+    const isRowDirty = (row: OutcomePlayerType) => {
+        const baseline = toResponseValues(row);
+        const current = form.values.byPlayerId[row.playerId] ?? baseline;
+
+        return (
+            baseline.response !== current.response ||
+            baseline.goalie !== current.goalie ||
+            baseline.comment !== current.comment
+        );
+    };
+
     const grouped = useMemo(() => {
         const filteredRows = rows.filter((row) => {
             const searchTerm = filter.toLowerCase();
@@ -194,7 +205,8 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
                                 data-testid="response-submit"
                                 variant="filled"
                                 size="sm"
-                                disabled={savingId === row.playerId}
+                                disabled={!isRowDirty(row)}
+                                loading={savingId === row.playerId}
                                 onClick={() => handleSubmit(row)}
                             >
                                 Update

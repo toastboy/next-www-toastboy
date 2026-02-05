@@ -40,6 +40,7 @@ Purpose: Enable fast, safe contributions. Keep changes aligned with existing ser
 
 - Use Mantine components + hooks for UI wherever possible and prefer Mantine styles. Avoid native HTML and CSS unless there's no Mantine equivalent.
 - For notifications, use Mantine's `notifications` system with consistent styling and configuration (e.g., autoClose duration from `config`, icons from `@tabler/icons-react`). Employ the consistent pattern established in `ResponsesForm` for async actions: show a loading notification, then update it on success or error with appropriate messaging and icons.
+- Mutations should be implemented as server actions and injected into components via required props (dependency injection). Do not call API routes from components for mutations.
 - **Import paths**: ALWAYS use `@/` alias imports (e.g., `import prisma from 'prisma/prisma'`) instead of relative imports with `../`. Never use `../` in import statements—use the `@/` path alias configured in `tsconfig.json`. Same-directory imports using `./` are acceptable.
 - Always use single quotes for import paths.
 - Always prepend backend-only modules with `import 'server-only';` to prevent client bundling.

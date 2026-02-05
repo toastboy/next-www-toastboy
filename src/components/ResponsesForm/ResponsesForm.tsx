@@ -26,7 +26,7 @@ export interface ResponsesFormProps {
     gameId: number;
     gameDate: string;
     responses: OutcomePlayerType[];
-    submitAdminResponse?: SubmitAdminResponseProxy;
+    submitAdminResponse: SubmitAdminResponseProxy;
 }
 
 enum ResponseOption {
@@ -83,23 +83,6 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
         };
     }, [rows, filter]);
 
-    // TODO: get rid of this API endpoint - always use a server action
-    const submitHandler = submitAdminResponse ?? (async (input) => {
-        const res = await fetch('/api/footy/admin/responses', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(input),
-        });
-        if (!res.ok) {
-            const body: unknown = await res.json().catch(() => ({}));
-            const msg = typeof (body as { message?: unknown }).message === 'string'
-                ? (body as { message: string }).message
-                : 'Failed to update response';
-            throw new Error(msg);
-        }
-        return null;
-    });
-
     const handleSubmit = async (row: OutcomePlayerType) => {
         const responseValues = form.values.byPlayerId[row.playerId] ?? toResponseValues(row);
         if (!responseValues.response) return;
@@ -116,7 +99,7 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
 
         setSavingId(row.playerId);
         try {
-            await submitHandler({
+            await submitAdminResponse({
                 gameDayId: gameId,
                 playerId: row.playerId,
                 response: responseValues.response,

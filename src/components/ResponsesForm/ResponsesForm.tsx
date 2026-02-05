@@ -16,6 +16,7 @@ import {
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
+import { PlayerResponse } from 'prisma/generated/enums';
 import React, { useMemo, useState } from 'react';
 
 import { config } from '@/lib/config';
@@ -29,12 +30,11 @@ export interface ResponsesFormProps {
     submitResponse: SubmitResponseProxy;
 }
 
-enum ResponseOption {
-    Yes = 'Yes',
-    No = 'No',
-    Dunno = 'Dunno',
-    None = 'None',
-}
+type ResponseOption = PlayerResponse | 'None';
+const ResponseOption = {
+    ...PlayerResponse,
+    None: 'None' as const,
+};
 
 type ResponseValues = Pick<OutcomePlayerType, 'response' | 'goalie' | 'comment'>;
 interface ResponsesFormValues {
@@ -51,6 +51,9 @@ const responseGroupBarColor: Record<ResponseOption, MantineColor> = {
     [ResponseOption.Yes]: 'green.6',
     [ResponseOption.No]: 'red.6',
     [ResponseOption.Dunno]: 'yellow.6',
+    [ResponseOption.Excused]: 'gray.6',
+    [ResponseOption.Flaked]: 'gray.6',
+    [ResponseOption.Injured]: 'gray.6',
     [ResponseOption.None]: 'gray.6',
 };
 
@@ -90,6 +93,9 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
             yes: filteredRows.filter((r) => r.response === ResponseOption.Yes),
             no: filteredRows.filter((r) => r.response === ResponseOption.No),
             dunno: filteredRows.filter((r) => r.response === ResponseOption.Dunno),
+            excused: filteredRows.filter((r) => r.response === ResponseOption.Excused),
+            flaked: filteredRows.filter((r) => r.response === ResponseOption.Flaked),
+            injured: filteredRows.filter((r) => r.response === ResponseOption.Injured),
             none: filteredRows.filter((r) => r.response == null),
         };
     }, [rows, filter]);
@@ -146,8 +152,10 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
         }
     };
 
-    const renderGroup = (title: ResponseOption, testId: string, items: OutcomePlayerType[]) => (
-        <Card withBorder shadow="xs" p="md" data-testid={testId} data-count={items.length}>
+    const renderGroup = (title: ResponseOption, testId: string, items: OutcomePlayerType[]) => {
+        if (items.length === 0) return null;
+
+        return (<Card withBorder shadow="xs" p="md" data-testid={testId} data-count={items.length}>
             <Card.Section h={6} bg={responseGroupBarColor[title]} />
             <Group justify="space-between" mb="lg" mt="md">
                 <Title order={2}>{title}: {items.length}</Title>
@@ -170,7 +178,7 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
                             <Select
                                 data-testid="response-select"
                                 aria-label="Response"
-                                data={Object.values(ResponseOption).map((option) => ({
+                                data={Object.values(PlayerResponse).map((option) => ({
                                     value: option,
                                     label: option,
                                 }))}
@@ -215,8 +223,8 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
                     );
                 })}
             </Stack>
-        </Card>
-    );
+        </Card>);
+    };
 
     return (
         <Stack gap="md">

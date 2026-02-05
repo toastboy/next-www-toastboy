@@ -21,7 +21,7 @@ describe('Responses', () => {
                     gameId={1249}
                     gameDate="3rd February 2026"
                     responses={defaultResponsesAdminData}
-                    submitAdminResponse={mockSave}
+                    submitResponse={mockSave}
                 />
             </Wrapper>,
         );
@@ -42,7 +42,7 @@ describe('Responses', () => {
                     gameId={1249}
                     gameDate="3rd February 2026"
                     responses={defaultResponsesAdminData}
-                    submitAdminResponse={mockSave}
+                    submitResponse={mockSave}
                 />
             </Wrapper>,
         );
@@ -65,7 +65,7 @@ describe('Responses', () => {
                     gameId={1249}
                     gameDate="3rd February 2026"
                     responses={defaultResponsesAdminData}
-                    submitAdminResponse={mockSave}
+                    submitResponse={mockSave}
                 />
             </Wrapper>,
         );

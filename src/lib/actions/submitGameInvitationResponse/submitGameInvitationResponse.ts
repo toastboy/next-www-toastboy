@@ -1,5 +1,6 @@
 import 'server-only';
 
+import { SubmitResponseCore } from '@/lib/actions/submitResponse';
 import gameDayService from '@/services/GameDay';
 import gameInvitationService from '@/services/GameInvitation';
 import outcomeService from '@/services/Outcome';
@@ -41,22 +42,14 @@ export async function submitGameInvitationResponseCore(
         throw new Error('Invitation not found.');
     }
 
-    const gameDay = await deps.gameDayService.get(invitation.gameDayId);
-    const existingOutcome = await deps.outcomeService.get(invitation.gameDayId, invitation.playerId);
-
-    let responseInterval = existingOutcome?.responseInterval ?? null;
-    if (responseInterval === null && gameDay?.mailSent) {
-        responseInterval = Math.max(0, Math.floor((Date.now() - gameDay.mailSent.getTime()) / 1000));
-    }
-
-    const comment = data.comment?.trim();
-
-    return await deps.outcomeService.upsert({
-        gameDayId: invitation.gameDayId,
-        playerId: invitation.playerId,
-        response: data.response,
-        goalie: data.goalie,
-        comment: comment && comment.length > 0 ? comment : null,
-        responseInterval,
-    });
+    return await SubmitResponseCore(
+        {
+            gameDayId: invitation.gameDayId,
+            playerId: invitation.playerId,
+            response: data.response,
+            goalie: data.goalie,
+            comment: data.comment,
+        },
+        { gameDayService: deps.gameDayService, outcomeService: deps.outcomeService },
+    );
 }

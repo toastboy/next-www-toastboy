@@ -1,1 +1,0 @@
-export { SubmitAdminResponseCore } from './submitAdminResponse';

@@ -30,7 +30,7 @@ export const Render: Story = {
         gameId: 1249,
         gameDate: '3rd February 2026',
         responses: defaultResponsesAdminData,
-        submitAdminResponse: async () => Promise.resolve(null),
+        submitResponse: async () => Promise.resolve(null),
     },
     parameters: {
         docs: {
@@ -121,7 +121,7 @@ export const Filtering: Story = {
 export const InvalidInput: Story = {
     args: {
         ...Render.args,
-        submitAdminResponse: async () => {
+        submitResponse: async () => {
             return Promise.reject(new Error('Invalid response payload'));
         },
     },

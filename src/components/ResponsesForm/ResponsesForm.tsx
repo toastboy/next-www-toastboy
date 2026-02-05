@@ -19,14 +19,14 @@ import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import React, { useMemo, useState } from 'react';
 
 import { config } from '@/lib/config';
-import { SubmitAdminResponseProxy } from '@/types/actions/SubmitAdminResponse';
+import { SubmitResponseProxy } from '@/types/actions/SubmitResponse';
 import { OutcomePlayerType } from '@/types/OutcomePlayerType';
 
 export interface ResponsesFormProps {
     gameId: number;
     gameDate: string;
     responses: OutcomePlayerType[];
-    submitAdminResponse: SubmitAdminResponseProxy;
+    submitResponse: SubmitResponseProxy;
 }
 
 enum ResponseOption {
@@ -58,7 +58,7 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
     gameId,
     gameDate,
     responses,
-    submitAdminResponse,
+    submitResponse,
 }) => {
     const [rows, setRows] = useState<OutcomePlayerType[]>(responses);
     const form = useForm<ResponsesFormValues>({
@@ -110,7 +110,7 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
 
         setSavingId(row.playerId);
         try {
-            await submitAdminResponse({
+            await submitResponse({
                 gameDayId: gameId,
                 playerId: row.playerId,
                 response: responseValues.response,

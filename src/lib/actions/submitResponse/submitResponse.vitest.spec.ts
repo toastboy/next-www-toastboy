@@ -1,8 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { SubmitAdminResponseCore } from '@/lib/actions/submitAdminResponse';
+import { SubmitResponseCore } from '@/lib/actions/submitResponse';
 
-describe('SubmitAdminResponseCore', () => {
+describe('SubmitResponseCore', () => {
     it('upserts the response and preserves a trimmed comment', async () => {
         const gameDayService = {
             get: vi.fn().mockResolvedValue({
@@ -21,7 +21,7 @@ describe('SubmitAdminResponseCore', () => {
             upsert: vi.fn().mockResolvedValue(null),
         };
 
-        await SubmitAdminResponseCore(
+        await SubmitResponseCore(
             {
                 gameDayId: 99,
                 playerId: 7,
@@ -73,7 +73,7 @@ describe('SubmitAdminResponseCore', () => {
             upsert: vi.fn().mockResolvedValue(null),
         };
 
-        await SubmitAdminResponseCore(
+        await SubmitResponseCore(
             {
                 gameDayId: 99,
                 playerId: 7,

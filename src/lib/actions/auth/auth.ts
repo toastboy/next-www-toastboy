@@ -40,11 +40,11 @@ const serializeUserDates = (user: UserWithRole): UserWithRolePayload => ({
     ...user,
     createdAt: user.createdAt instanceof Date ? user.createdAt.toISOString() : new Date(user.createdAt).toISOString(),
     updatedAt: user.updatedAt instanceof Date ? user.updatedAt.toISOString() : new Date(user.updatedAt).toISOString(),
-    banExpires: user.banExpires instanceof Date
-        ? user.banExpires.toISOString()
-        : user.banExpires
-            ? new Date(user.banExpires).toISOString()
-            : null,
+    banExpires: user.banExpires instanceof Date ?
+        user.banExpires.toISOString() :
+        user.banExpires ?
+            new Date(user.banExpires).toISOString() :
+            null,
 });
 
 /**
@@ -79,13 +79,13 @@ export async function listUsersActionCore(
 
     const response = await deps.auth.api.listUsers({
         headers: await deps.headers(),
-        query: email
-            ? {
+        query: email ?
+            {
                 searchField: 'email',
                 searchOperator: 'contains',
                 searchValue: decodeURIComponent(email),
-            }
-            : {
+            } :
+            {
                 limit: 10,
             },
     });

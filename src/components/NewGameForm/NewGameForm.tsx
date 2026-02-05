@@ -40,9 +40,9 @@ export const NewGameForm: React.FC<Props> = ({ onTriggerInvitations }) => {
                 id,
                 color: decision.status === 'ready' ? 'teal' : 'yellow',
                 title: decision.status === 'ready' ? 'Invitations ready' : 'Invitations skipped',
-                message: decision.reason === 'ready'
-                    ? 'Invitations can be sent now.'
-                    : `Skipped: ${decision.reason.replace(/-/g, ' ')}`,
+                message: decision.reason === 'ready' ?
+                    'Invitations can be sent now.' :
+                    `Skipped: ${decision.reason.replace(/-/g, ' ')}`,
                 icon: <IconCheck size={config.notificationIconSize} />,
                 loading: false,
                 autoClose: config.notificationAutoClose,

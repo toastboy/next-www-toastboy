@@ -46,8 +46,7 @@ export const AdminUpdatePlayerRecords: React.FC<Props> = ({ onUpdatePlayerRecord
                                         data-testid="update-player-records-compete-icon"
                                     />
                                 </ActionIcon>
-                            </Center>
-                            :
+                            </Center>                            :
                             <Text
                                 data-testid="update-player-records-progress"
                                 c="blue"

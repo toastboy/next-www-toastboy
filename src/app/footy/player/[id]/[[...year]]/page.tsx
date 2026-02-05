@@ -22,9 +22,9 @@ export async function generateMetadata(props: PageProps) {
     try {
         const { id } = await props.params;
         const playerId = Number(id);
-        const player = Number.isNaN(playerId)
-            ? await playerService.getByLogin(id)
-            : await playerService.getById(playerId);
+        const player = Number.isNaN(playerId) ?
+            await playerService.getByLogin(id) :
+            await playerService.getById(playerId);
         if (!player) return {};
         const name = playerService.getName(player);
         return name ? { title: `${name}` } : {};
@@ -38,9 +38,9 @@ const Page: React.FC<PageProps> = async props => {
     const { id, year } = await props.params;
     const yearNum = year ? parseInt(year[0]) : 0;
     const playerId = Number(id);
-    const player = Number.isNaN(playerId)
-        ? await playerService.getByLogin(id)
-        : await playerService.getById(playerId);
+    const player = Number.isNaN(playerId) ?
+        await playerService.getByLogin(id) :
+        await playerService.getById(playerId);
 
     if (!player) return notFound();
 

@@ -51,9 +51,9 @@ const Page: React.FC<PageProps> = async () => {
         return gameDay.date > latest ? gameDay.date : latest;
     }, null);
 
-    const startDate = lastGameDay
-        ? addDays(normalizeGameDayTime(lastGameDay), 7)
-        : normalizeGameDayTime(getNextTuesday(new Date()));
+    const startDate = lastGameDay ?
+        addDays(normalizeGameDayTime(lastGameDay), 7) :
+        normalizeGameDayTime(getNextTuesday(new Date()));
     const rows = buildRows(startDate);
 
     return (

@@ -77,15 +77,15 @@ export default function Page() {
         const bValue = b[sortBy];
 
         if (typeof aValue === 'string' && typeof bValue === 'string') {
-            return sortOrder === 'asc'
-                ? aValue.localeCompare(bValue)
-                : bValue.localeCompare(aValue);
+            return sortOrder === 'asc' ?
+                aValue.localeCompare(bValue) :
+                bValue.localeCompare(aValue);
         }
 
         if (aValue instanceof Date && bValue instanceof Date) {
-            return sortOrder === 'asc'
-                ? aValue.getTime() - bValue.getTime()
-                : bValue.getTime() - aValue.getTime();
+            return sortOrder === 'asc' ?
+                aValue.getTime() - bValue.getTime() :
+                bValue.getTime() - aValue.getTime();
         }
 
         return 0;

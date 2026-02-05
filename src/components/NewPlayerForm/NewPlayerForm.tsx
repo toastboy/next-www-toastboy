@@ -82,9 +82,9 @@ export const NewPlayerForm: React.FC<Props> = ({
             const { player: newPlayer, inviteLink } = await onCreatePlayer(values);
 
             if (values.email?.length > 0) {
-                const introducerEmail = values.introducedBy
-                    ? getPreferredEmail(players.find((p) => p.id.toString() === values.introducedBy))
-                    : '';
+                const introducerEmail = values.introducedBy ?
+                    getPreferredEmail(players.find((p) => p.id.toString() === values.introducedBy)) :
+                    '';
                 const cc = [introducerEmail, 'footy@toastboy.co.uk']
                     .filter((e): e is string => !!e).join(', ');
                 const html = ReactDOMServer.renderToStaticMarkup(

@@ -289,9 +289,9 @@ export const AdminPlayerList: React.FC<Props> = ({
      */
     const toggleSelectPlayer = (playerId: number, checked: boolean) => {
         setSelectedIds((prev) => (
-            checked
-                ? [...prev, playerId]
-                : prev.filter((id) => id !== playerId)
+            checked ?
+                [...prev, playerId] :
+                prev.filter((id) => id !== playerId)
         ));
     };
 

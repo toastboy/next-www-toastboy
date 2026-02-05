@@ -19,13 +19,13 @@ import { getSecrets } from '@/lib/secrets';
  */
 export async function sendEmailCore(to: string, cc: string, subject: string, html: string) {
     const secrets = getSecrets();
-    const transporter = process.env.NODE_ENV === 'production' && !process.env.CI
-        ? nodemailer.createTransport({
+    const transporter = process.env.NODE_ENV === 'production' && !process.env.CI ?
+        nodemailer.createTransport({
             host: secrets.SMTP_HOST,
             port: 25,
             secure: false,
-        })
-        : nodemailer.createTransport({
+        }) :
+        nodemailer.createTransport({
             host: 'localhost',
             port: 1025,
             secure: false,

@@ -41,9 +41,9 @@ describe('DeleteAccountForm', () => {
         const confirmPhraseErrorId = confirmPhraseInput.getAttribute('aria-describedby');
         expect(confirmPhraseErrorId).toBeTruthy();
 
-        const confirmPhraseError = confirmPhraseErrorId
-            ? document.getElementById(confirmPhraseErrorId)
-            : null;
+        const confirmPhraseError = confirmPhraseErrorId ?
+            document.getElementById(confirmPhraseErrorId) :
+            null;
         expect(confirmPhraseError).toBeTruthy();
         expect(confirmPhraseError?.textContent ?? '').toBe('Type DELETE to confirm');
 

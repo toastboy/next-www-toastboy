@@ -32,12 +32,12 @@ export default defineConfig({
     /* Opt out of parallel tests on CI. */
     workers: process.env.CI ? 1 : undefined,
     /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-    reporter: process.env.CI
-        ? [
+    reporter: process.env.CI ?
+        [
             ['github'],
             ['html', { open: 'never' }],
-        ]
-        : [['html', { open: 'on-failure' }]],
+        ] :
+        [['html', { open: 'on-failure' }]],
 
     /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
     use: {
@@ -94,9 +94,9 @@ export default defineConfig({
 
     /* Run your local dev server before starting the tests */
     webServer: {
-        command: process.env.CI
-            ? 'npm run start:ci'
-            : `op run --env-file "${ENV_PATH}" -- npm run dev`,
+        command: process.env.CI ?
+            'npm run start:ci' :
+            `op run --env-file "${ENV_PATH}" -- npm run dev`,
         url: BASE_URL,
         stdout: 'pipe',
         stderr: 'pipe',

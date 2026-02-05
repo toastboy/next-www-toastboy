@@ -14,8 +14,11 @@ import {
     Title,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { notifications } from '@mantine/notifications';
+import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import React, { useMemo, useState } from 'react';
 
+import { config } from '@/lib/config';
 import { SubmitAdminResponseProxy } from '@/types/actions/SubmitAdminResponse';
 import { OutcomePlayerType } from '@/types/OutcomePlayerType';
 
@@ -64,8 +67,6 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
         },
     });
     const [savingId, setSavingId] = useState<number | null>(null);
-    const [message, setMessage] = useState<string>('');
-    const [error, setError] = useState<string>('');
     const [filter, setFilter] = useState('');
 
     const grouped = useMemo(() => {
@@ -82,6 +83,7 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
         };
     }, [rows, filter]);
 
+    // TODO: get rid of this API endpoint - always use a server action
     const submitHandler = submitAdminResponse ?? (async (input) => {
         const res = await fetch('/api/footy/admin/responses', {
             method: 'POST',
@@ -102,6 +104,16 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
         const responseValues = form.values.byPlayerId[row.playerId] ?? toResponseValues(row);
         if (!responseValues.response) return;
 
+        const notificationId = `response-${row.playerId}`;
+        notifications.show({
+            id: notificationId,
+            loading: true,
+            title: 'Updating response',
+            message: 'Updating response...',
+            autoClose: false,
+            withCloseButton: false,
+        });
+
         setSavingId(row.playerId);
         try {
             await submitHandler({
@@ -111,13 +123,30 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
                 goalie: !!responseValues.goalie,
                 comment: responseValues.comment,
             });
-            setMessage('Response updated');
-            setError('');
             setRows((current) =>
                 current.map((r) => (r.playerId === row.playerId ? { ...r, ...responseValues } : r)),
             );
+            notifications.update({
+                id: notificationId,
+                color: 'teal',
+                title: 'Response updated',
+                message: 'Response updated successfully',
+                icon: <IconCheck size={config.notificationIconSize} />,
+                loading: false,
+                autoClose: config.notificationAutoClose,
+            });
         } catch (err) {
-            setError(err instanceof Error ? err.message : 'Failed to update response');
+            const errorMessage = err instanceof Error ? err.message : 'Failed to update response';
+            notifications.update({
+                id: notificationId,
+                color: 'red',
+                title: 'Error',
+                message: errorMessage,
+                icon: <IconAlertTriangle size={config.notificationIconSize} />,
+                loading: false,
+                autoClose: false,
+                withCloseButton: true,
+            });
         } finally {
             setSavingId(null);
         }
@@ -205,16 +234,6 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
                     onChange={(event) => setFilter(event.currentTarget.value)}
                 />
             </Stack>
-            {!!message && (
-                <Text role="status" c="teal" fw={600}>
-                    {message}
-                </Text>
-            )}
-            {!!error && (
-                <Text role="alert" c="red" fw={600}>
-                    {error}
-                </Text>
-            )}
             {Object.values(ResponseOption).map((option) => (
                 <React.Fragment key={option}>
                     {

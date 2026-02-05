@@ -67,7 +67,14 @@ export const SimpleUpdate: Story = {
         await userEvent.click(goalie);
         await userEvent.type(comment, 'Storybook play');
         await userEvent.click(select);
-        await userEvent.click(await canvas.findByRole('option', { name: 'Yes' }));
+        const dropdowns = await within(canvasElement.ownerDocument.body).findAllByRole('listbox');
+        const dropdown = dropdowns[dropdowns.length - 1];
+        await userEvent.click(
+            await within(dropdown).findByRole(
+                'option',
+                { name: 'Yes', hidden: true },
+            ),
+        );
         const submit = within(row).getByTestId('response-submit');
         await userEvent.click(submit);
 
@@ -138,7 +145,14 @@ export const InvalidInput: Story = {
         const select = within(row).getByTestId('response-select');
         const submit = within(row).getByTestId('response-submit');
         await userEvent.click(select);
-        await userEvent.click(await canvas.findByRole('option', { name: 'Yes' }));
+        const dropdowns = await within(canvasElement.ownerDocument.body).findAllByRole('listbox');
+        const dropdown = dropdowns[dropdowns.length - 1];
+        await userEvent.click(
+            await within(dropdown).findByRole(
+                'option',
+                { name: 'Yes', hidden: true },
+            ),
+        );
         await userEvent.click(submit);
 
         await within(canvasElement.ownerDocument.body).findByRole('alert');

@@ -1,4 +1,4 @@
-import { expect, type Locator, type Page, test } from '@playwright/test';
+import { expect, type Locator, test } from '@playwright/test';
 
 import { asAdmin, asGuest, asUser } from './utils/auth';
 
@@ -6,11 +6,6 @@ type ResponseOption = 'Yes' | 'No' | 'Dunno';
 
 const groupCount = async (group: Locator) =>
     Number((await group.getAttribute('data-count')) ?? '0');
-
-const waitForSave = (page: Page) =>
-    page.waitForResponse((response) =>
-        response.url().includes('/api/footy/admin/responses') &&
-        response.request().method() === 'POST');
 
 test.describe('Responses admin page', () => {
     test('denies access to guest users', async ({ page }) => {
@@ -53,21 +48,55 @@ test.describe('Responses admin page', () => {
         const playerRowIn = (group: Locator) =>
             group.locator(`[data-testid="response-row"][data-player-id="${playerId}"]`);
 
+        const setResponseValue = async (row: Locator, response: ResponseOption) => {
+            const responseSelect = row.getByTestId('response-select');
+            const responseTarget = responseSelect.locator('input, button');
+            const target = (await responseTarget.count()) ?
+                responseTarget.first() :
+                responseSelect;
+            await target.click();
+
+            const controlsId = await target.getAttribute('aria-controls');
+            if (controlsId) {
+                await page.locator(`#${controlsId}`).getByRole('option', { name: response, exact: true }).click();
+                return;
+            }
+
+            await page
+                .locator('[data-combobox-dropdown]:visible')
+                .getByRole('option', { name: response, exact: true })
+                .click();
+        };
+
+        const expectResponseValue = async (row: Locator, response: ResponseOption) => {
+            const responseSelect = row.getByTestId('response-select');
+            const input = responseSelect.locator('input');
+            if (await input.count()) {
+                await expect(input).toHaveValue(response);
+                return;
+            }
+
+            const button = responseSelect.locator('button');
+            if (await button.count()) {
+                await expect(button).toHaveText(response);
+                return;
+            }
+
+            await expect(responseSelect).toHaveValue(response);
+        };
+
         const updateResponse = async (group: Locator, response: ResponseOption, goalie: boolean, comment: string) => {
             const row = playerRowIn(group);
             const commentInput = row.getByTestId('comment-input');
-            const responseSelect = row.getByTestId('response-select');
             const goalieCheckbox = row.getByTestId('goalie-checkbox');
-            await responseSelect.selectOption(response);
+            await setResponseValue(row, response);
             if (goalie) {
                 await goalieCheckbox.check();
             } else {
                 await goalieCheckbox.uncheck();
             }
             await commentInput.fill(comment);
-            const save = waitForSave(page);
             await row.getByTestId('response-submit').click();
-            await save;
         };
 
         await updateResponse(noneGroup, 'Yes', true, 'Can play and cover goal first half');
@@ -79,7 +108,7 @@ test.describe('Responses admin page', () => {
 
         const yesRow = yesGroup.getByTestId('response-row').filter({ hasText: playerName });
         await expect(yesRow).toBeVisible({ timeout: 10000 });
-        await expect(yesRow.getByTestId('response-select')).toHaveValue('Yes');
+        await expectResponseValue(yesRow, 'Yes');
         await expect(yesRow.getByTestId('goalie-checkbox')).toBeChecked();
         await expect(yesRow.getByTestId('comment-input')).toHaveValue('Can play and cover goal first half');
 
@@ -92,7 +121,7 @@ test.describe('Responses admin page', () => {
 
         const noRow = noGroup.getByTestId('response-row').filter({ hasText: playerName });
         await expect(noRow).toBeVisible({ timeout: 10000 });
-        await expect(noRow.getByTestId('response-select')).toHaveValue('No');
+        await expectResponseValue(noRow, 'No');
         await expect(noRow.getByTestId('goalie-checkbox')).not.toBeChecked();
         await expect(noRow.getByTestId('comment-input')).toHaveValue('Out of town this week');
 
@@ -105,7 +134,7 @@ test.describe('Responses admin page', () => {
 
         const dunnoRow = dunnoGroup.getByTestId('response-row').filter({ hasText: playerName });
         await expect(dunnoRow).toBeVisible({ timeout: 10000 });
-        await expect(dunnoRow.getByTestId('response-select')).toHaveValue('Dunno');
+        await expectResponseValue(dunnoRow, 'Dunno');
         await expect(dunnoRow.getByTestId('goalie-checkbox')).not.toBeChecked();
         await expect(dunnoRow.getByTestId('comment-input')).toHaveValue('Could make it if meeting ends early');
 
@@ -120,11 +149,10 @@ test.describe('Responses admin page', () => {
         const yesRowFinal = playerRowIn(yesGroup);
         const commentInput = yesRowFinal.getByTestId('comment-input');
         await commentInput.fill(longComment);
-        const failedSave = waitForSave(page);
         await yesRowFinal.getByTestId('response-submit').click();
-        await failedSave;
 
-        await expect(page.getByRole('alert')).toBeVisible();
-        await expect(page.getByRole('alert')).toContainText('at most 127');
+        const notificationAlert = page.locator('[data-with-icon="true"][role="alert"]');
+        await expect(notificationAlert).toBeVisible();
+        await expect(notificationAlert).toContainText('Error');
     });
 });

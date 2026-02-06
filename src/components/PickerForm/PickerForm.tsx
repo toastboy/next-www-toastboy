@@ -3,16 +3,17 @@
 import {
     Button,
     Checkbox,
+    Divider,
     Group,
     Stack,
     Table,
-    TableCaption,
     TableTbody,
     TableTd,
     TableTh,
     TableThead,
     TableTr,
     Text,
+    TextInput,
     Title,
     UnstyledButton,
 } from '@mantine/core';
@@ -269,16 +270,14 @@ export const PickerForm: React.FC<PickerFormProps> = ({
             </Stack>
             <Group justify="space-between" align="center" wrap="wrap">
                 <Text fw={700}>Players selected ({selectedIds.length})</Text>
-            </Group>
-            <Group justify="space-between" align="center" wrap="wrap">
                 <Button
-                    size="xs"
                     type="button"
                     onClick={handleSubmit}
                     disabled={!hasSelection}
                     loading={isSubmitting}
+                    w={150}
                 >
-                    Submit selection
+                    Pick sides
                 </Button>
             </Group>
             <Table
@@ -289,7 +288,6 @@ export const PickerForm: React.FC<PickerFormProps> = ({
                 w="100%"
                 style={{ tableLayout: 'fixed' }}
             >
-                <TableCaption>Picker selections</TableCaption>
                 <TableThead>
                     <TableTr>
                         <TableTh w="2.5rem">
@@ -313,6 +311,25 @@ export const PickerForm: React.FC<PickerFormProps> = ({
                 </TableThead>
                 <TableTbody>{rows}</TableTbody>
             </Table>
+            <Divider
+                label="or"
+                labelPosition="center"
+            />
+            <Group justify="space-between" align="center" wrap="wrap">
+                <TextInput
+                    data-testid="cancellation-reason"
+                    placeholder="not enough players"
+                    flex={1}
+                />
+                <Button
+                    data-testid="cancel-game-button"
+                    type="submit"
+                    color="red"
+                    w={150}
+                >
+                    Cancel game
+                </Button>
+            </Group>
         </Stack>
     );
 };

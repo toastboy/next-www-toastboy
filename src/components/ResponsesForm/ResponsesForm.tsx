@@ -86,7 +86,7 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
     const grouped = useMemo(() => {
         const filteredRows = rows.filter((row) => {
             const searchTerm = filter.toLowerCase();
-            return (row.player.name?.toLowerCase().includes(searchTerm));
+            return row.player.name?.toLowerCase().includes(searchTerm) ?? false;
         }) ?? [];
 
         return {

@@ -42,7 +42,6 @@ export const Wrapper: React.FC<WrapperProps> = ({ children }) => {
  */
 export const extractMockProps = <T,>(id: string) => {
     const mockElements = screen.getAllByText(new RegExp(`^${id}:`));
-    expect(mockElements).not.toBeNull();
     const result: T[] = [];
     for (const element of mockElements) {
         const json = element.textContent?.replace(new RegExp(`^${id}:\\s*`), '');

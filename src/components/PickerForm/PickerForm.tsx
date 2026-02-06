@@ -13,7 +13,6 @@ import {
     TableThead,
     TableTr,
     Text,
-    TextInput,
     Title,
     UnstyledButton,
 } from '@mantine/core';
@@ -103,7 +102,6 @@ export const PickerForm: React.FC<PickerFormProps> = ({
     const [sortKey, setSortKey] = useState<SortKey>('responseTime');
     const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
     const [selectedIds, setSelectedIds] = useState<number[]>(() => buildDefaultSelection(eligiblePlayers));
-    const [filter, setFilter] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
     useEffect(() => {
@@ -111,15 +109,8 @@ export const PickerForm: React.FC<PickerFormProps> = ({
         setSelectedIds((prev) => prev.filter((id) => eligibleIdSet.has(id)));
     }, [eligiblePlayers]);
 
-    const filteredPlayers = useMemo(() => {
-        if (!eligiblePlayers) return [];
-        const trimmedFilter = filter.trim().toLowerCase();
-        if (!trimmedFilter) return eligiblePlayers;
-        return eligiblePlayers.filter((player) => getPlayerName(player).toLowerCase().includes(trimmedFilter));
-    }, [eligiblePlayers, filter]);
-
     const sortedPlayers = useMemo(() => {
-        const data = [...filteredPlayers];
+        const data = [...eligiblePlayers];
         data.sort((a, b) => {
             switch (sortKey) {
                 case 'name':
@@ -133,14 +124,14 @@ export const PickerForm: React.FC<PickerFormProps> = ({
             }
         });
         return data;
-    }, [filteredPlayers, sortKey, sortDirection]);
+    }, [eligiblePlayers, sortKey, sortDirection]);
 
     const selectedIdSet = useMemo(() => new Set(selectedIds), [selectedIds]);
     const filteredSelectedCount = useMemo(() => (
-        filteredPlayers.reduce((acc, row) => (selectedIdSet.has(row.playerId) ? acc + 1 : acc), 0)
-    ), [filteredPlayers, selectedIdSet]);
+        eligiblePlayers.reduce((acc, row) => (selectedIdSet.has(row.playerId) ? acc + 1 : acc), 0)
+    ), [eligiblePlayers, selectedIdSet]);
 
-    const allSelected = filteredPlayers.length > 0 && filteredSelectedCount === filteredPlayers.length;
+    const allSelected = eligiblePlayers.length > 0 && filteredSelectedCount === eligiblePlayers.length;
     const someSelected = filteredSelectedCount > 0 && !allSelected;
     const hasSelection = selectedIds.length > 0;
 
@@ -152,13 +143,13 @@ export const PickerForm: React.FC<PickerFormProps> = ({
         if (checked) {
             setSelectedIds((prev) => Array.from(new Set([
                 ...prev,
-                ...filteredPlayers.map((player) => player.playerId),
+                ...eligiblePlayers.map((player) => player.playerId),
             ])));
             return;
         }
 
-        const filteredIds = new Set(filteredPlayers.map((player) => player.playerId));
-        setSelectedIds((prev) => prev.filter((id) => !filteredIds.has(id)));
+        const eligibleIdSet = new Set(eligiblePlayers.map((player) => player.playerId));
+        setSelectedIds((prev) => prev.filter((id) => !eligibleIdSet.has(id)));
     };
 
     const toggleSelectPlayer = (playerId: number, checked: boolean) => {
@@ -280,11 +271,6 @@ export const PickerForm: React.FC<PickerFormProps> = ({
                 <Text fw={700}>Players selected ({selectedIds.length})</Text>
             </Group>
             <Group justify="space-between" align="center" wrap="wrap">
-                <TextInput
-                    placeholder="Search players"
-                    value={filter}
-                    onChange={(event) => setFilter(event.currentTarget.value)}
-                />
                 <Button
                     size="xs"
                     type="button"

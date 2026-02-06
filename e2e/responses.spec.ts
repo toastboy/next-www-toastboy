@@ -4,8 +4,13 @@ import { asAdmin, asGuest, asUser } from './utils/auth';
 
 type ResponseOption = 'Yes' | 'No' | 'Dunno';
 
-const groupCount = async (group: Locator) =>
-    Number((await group.getAttribute('data-count')) ?? '0');
+const groupCount = async (group: Locator) => {
+    if ((await group.count()) === 0) {
+        return 0;
+    }
+
+    return Number((await group.getAttribute('data-count')) ?? '0');
+};
 
 test.describe('Responses admin page', () => {
     test('denies access to guest users', async ({ page }) => {

@@ -54,6 +54,8 @@ export const SimpleUpdate: Story = {
         if (viewMode === 'docs') return;
 
         const canvas = within(canvasElement);
+        const filterInput = await canvas.findByPlaceholderText('Search players');
+        await userEvent.clear(filterInput);
         const noneGroup = await canvas.findByTestId('response-group-none');
         const row = (await canvas.findAllByTestId('response-row')).find((candidate) =>
             noneGroup.contains(candidate),
@@ -101,18 +103,16 @@ export const Filtering: Story = {
 
         const canvas = within(canvasElement);
         const filterInput = await canvas.findByPlaceholderText('Search players');
+        await userEvent.clear(filterInput);
         await userEvent.type(filterInput, 'Casey');
 
-        const yesGroup = await canvas.findByTestId('response-group-yes');
-        const noGroup = await canvas.findByTestId('response-group-no');
-        const dunnoGroup = await canvas.findByTestId('response-group-dunno');
         const noneGroup = await canvas.findByTestId('response-group-none');
 
         await Promise.all([
-            expect(yesGroup).toHaveAttribute('data-count', '0'),
-            expect(noGroup).toHaveAttribute('data-count', '0'),
-            expect(dunnoGroup).toHaveAttribute('data-count', '0'),
             expect(noneGroup).toHaveAttribute('data-count', '1'),
+            expect(canvas.queryByTestId('response-group-yes')).toBeNull(),
+            expect(canvas.queryByTestId('response-group-no')).toBeNull(),
+            expect(canvas.queryByTestId('response-group-dunno')).toBeNull(),
         ]);
         await within(noneGroup).findByText('Casey Mid');
     },
@@ -136,6 +136,8 @@ export const InvalidInput: Story = {
         if (viewMode === 'docs') return;
 
         const canvas = within(canvasElement);
+        const filterInput = await canvas.findByPlaceholderText('Search players');
+        await userEvent.clear(filterInput);
         const noneGroup = await canvas.findByTestId('response-group-none');
         const row = (await canvas.findAllByTestId('response-row')).find((candidate) =>
             noneGroup.contains(candidate),

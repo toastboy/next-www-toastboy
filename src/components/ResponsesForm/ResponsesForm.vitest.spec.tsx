@@ -29,7 +29,7 @@ describe('Responses', () => {
         expect(screen.getByRole('heading', { name: /Responses/i })).toBeInTheDocument();
         expect(screen.getByTestId('response-group-yes')).toHaveAttribute('data-count', '1');
         expect(screen.getByTestId('response-group-no')).toHaveAttribute('data-count', '1');
-        expect(screen.getByTestId('response-group-dunno')).toHaveAttribute('data-count', '0');
+        expect(screen.queryByTestId('response-group-dunno')).toBeNull();
         expect(screen.getByTestId('response-group-none')).toHaveAttribute('data-count', '2');
     });
 
@@ -50,9 +50,9 @@ describe('Responses', () => {
         const filterInput = screen.getByPlaceholderText('Search players');
         await user.type(filterInput, 'Casey');
 
-        expect(screen.getByTestId('response-group-yes')).toHaveAttribute('data-count', '0');
-        expect(screen.getByTestId('response-group-no')).toHaveAttribute('data-count', '0');
-        expect(screen.getByTestId('response-group-dunno')).toHaveAttribute('data-count', '0');
+        expect(screen.queryByTestId('response-group-yes')).toBeNull();
+        expect(screen.queryByTestId('response-group-no')).toBeNull();
+        expect(screen.queryByTestId('response-group-dunno')).toBeNull();
         expect(screen.getByTestId('response-group-none')).toHaveAttribute('data-count', '1');
     });
 
@@ -84,7 +84,7 @@ describe('Responses', () => {
         await user.click(select);
         await user.click(await screen.findByRole('option', { name: 'Yes', hidden: true }));
         expect(screen.getByTestId('response-group-none')).toHaveAttribute('data-count', '1');
-        expect(screen.getByTestId('response-group-yes')).toHaveAttribute('data-count', '0');
+        expect(screen.queryByTestId('response-group-yes')).toBeNull();
         const submit = within(row).getByTestId('response-submit');
         await user.click(submit);
 
@@ -97,7 +97,7 @@ describe('Responses', () => {
                 comment: 'See you there',
             });
         });
-        expect(screen.getByTestId('response-group-none')).toHaveAttribute('data-count', '0');
+        expect(screen.queryByTestId('response-group-none')).toBeNull();
         expect(screen.getByTestId('response-group-yes')).toHaveAttribute('data-count', '1');
     });
 });

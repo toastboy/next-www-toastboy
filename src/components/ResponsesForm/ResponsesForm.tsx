@@ -226,6 +226,15 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
         </Card>);
     };
 
+    const responseOptionToGroupKey: { [K in ResponseOption]: keyof typeof grouped } = {
+        // Map each ResponseOption value to the corresponding key in `grouped`.
+        // Adjust the right-hand side values to match the actual keys used in `grouped`.
+        [ResponseOption.Yes]: 'yes',
+        [ResponseOption.No]: 'no',
+        [ResponseOption.Maybe]: 'maybe',
+        [ResponseOption.None]: 'none',
+    };
+
     return (
         <Stack gap="md">
             <Stack align="left" gap="xs">
@@ -243,7 +252,7 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
                         renderGroup(
                             option,
                             `response-group-${option.toLowerCase()}`,
-                            grouped[option.toLowerCase() as keyof typeof grouped],
+                            grouped[responseOptionToGroupKey[option]],
                         )
                     }
                 </React.Fragment>

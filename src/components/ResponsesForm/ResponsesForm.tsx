@@ -96,7 +96,7 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
             excused: filteredRows.filter((r) => r.response === ResponseOption.Excused),
             flaked: filteredRows.filter((r) => r.response === ResponseOption.Flaked),
             injured: filteredRows.filter((r) => r.response === ResponseOption.Injured),
-            none: filteredRows.filter((r) => r.response == null),
+            none: filteredRows.filter((r) => r.response === null),
         };
     }, [rows, filter]);
 

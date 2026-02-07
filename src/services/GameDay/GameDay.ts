@@ -365,6 +365,30 @@ export class GameDayService {
     }
 
     /**
+     * Updates an existing GameDay record using the provided raw input.
+     *
+     * Parses and validates the identifier and update payload against the
+     * corresponding schemas, removes the `id` from the update data, and then
+     * issues the update via Prisma. Errors are logged and rethrown.
+     *
+     * @param rawData - Untrusted input containing the `id` and fields to update.
+     * @returns The updated GameDay record from the data store.
+     * @throws Rethrows any validation or persistence errors encountered.
+     */
+    async update(rawData: unknown) {
+        try {
+            const parsed = GameDaySchema.pick({ id: true }).parse(rawData);
+            const where = GameDayWhereUniqueInputObjectSchema.parse({ id: parsed.id });
+            const data = GameDayUncheckedUpdateInputObjectStrictSchema.parse(rawData);
+
+            return await prisma.gameDay.update({ where, data });
+        } catch (error) {
+            log(`Error updating GameDayType: ${String(error)}`);
+            throw error;
+        }
+    }
+
+    /**
      * Marks a GameDay as having its mail sent by updating the mailSent timestamp.
      *
      * @param gameDayId - The unique identifier of the GameDay to update

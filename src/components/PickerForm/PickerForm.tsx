@@ -22,6 +22,7 @@ import { IconAlertTriangle, IconCheck, IconChevronDown, IconChevronUp, IconSelec
 import { useEffect, useMemo, useState } from 'react';
 
 import { config } from '@/lib/config';
+import type { CancelGameProxy } from '@/types/actions/CancelGame';
 import type { SubmitPickerProxy } from '@/types/actions/SubmitPicker';
 import type { PickerPlayerType } from '@/types/PickerPlayerType';
 
@@ -30,6 +31,7 @@ export interface PickerFormProps {
     gameDate: string;
     players: PickerPlayerType[];
     submitPicker: SubmitPickerProxy;
+    cancelGame: CancelGameProxy;
 }
 
 type SortKey = 'name' | 'responseTime' | 'gamesPlayed';
@@ -95,6 +97,7 @@ export const PickerForm: React.FC<PickerFormProps> = ({
     gameDate,
     players,
     submitPicker,
+    cancelGame,
 }) => {
     const eligiblePlayers = useMemo(
         () => players.filter((player) => player.response === 'Yes'),
@@ -104,6 +107,8 @@ export const PickerForm: React.FC<PickerFormProps> = ({
     const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
     const [selectedIds, setSelectedIds] = useState<number[]>(() => buildDefaultSelection(eligiblePlayers));
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [cancellationReason, setCancellationReason] = useState('');
+    const [isCancelling, setIsCancelling] = useState(false);
 
     useEffect(() => {
         const eligibleIdSet = new Set(eligiblePlayers.map((player) => player.playerId));
@@ -243,6 +248,49 @@ export const PickerForm: React.FC<PickerFormProps> = ({
         }
     };
 
+    const handleCancelGame = async () => {
+        const notificationId = 'cancel-game';
+        notifications.show({
+            id: notificationId,
+            loading: true,
+            title: 'Cancelling game',
+            message: 'Updating game status...',
+            autoClose: false,
+            withCloseButton: false,
+        });
+
+        setIsCancelling(true);
+        try {
+            await cancelGame({
+                gameDayId: gameId,
+                reason: cancellationReason,
+            });
+            notifications.update({
+                id: notificationId,
+                color: 'teal',
+                title: 'Game cancelled',
+                message: 'The game has been marked as cancelled.',
+                icon: <IconCheck size={config.notificationIconSize} />,
+                loading: false,
+                autoClose: config.notificationAutoClose,
+            });
+        } catch (err) {
+            const errorMessage = err instanceof Error ? err.message : 'Failed to cancel game';
+            notifications.update({
+                id: notificationId,
+                color: 'red',
+                title: 'Error',
+                message: errorMessage,
+                icon: <IconAlertTriangle size={config.notificationIconSize} />,
+                loading: false,
+                autoClose: false,
+                withCloseButton: true,
+            });
+        } finally {
+            setIsCancelling(false);
+        }
+    };
+
     const rows = sortedPlayers.map((player) => {
         const playerName = getPlayerName(player);
 
@@ -273,7 +321,7 @@ export const PickerForm: React.FC<PickerFormProps> = ({
                 <Button
                     type="button"
                     onClick={handleSubmit}
-                    disabled={!hasSelection}
+                    disabled={!hasSelection || isCancelling}
                     loading={isSubmitting}
                     w={150}
                 >
@@ -318,13 +366,20 @@ export const PickerForm: React.FC<PickerFormProps> = ({
             <Group justify="space-between" align="center" wrap="wrap">
                 <TextInput
                     data-testid="cancellation-reason"
+                    aria-label="Cancellation reason"
                     placeholder="not enough players"
+                    value={cancellationReason}
+                    onChange={(event) => setCancellationReason(event.currentTarget.value)}
+                    disabled={isSubmitting || isCancelling}
                     flex={1}
                 />
                 <Button
                     data-testid="cancel-game-button"
-                    type="submit"
+                    type="button"
                     color="red"
+                    onClick={handleCancelGame}
+                    loading={isCancelling}
+                    disabled={isSubmitting || isCancelling}
                     w={150}
                 >
                     Cancel game

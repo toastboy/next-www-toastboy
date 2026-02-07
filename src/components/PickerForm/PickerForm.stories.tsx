@@ -31,6 +31,16 @@ export const Render: Story = {
         gameDate: '3rd February 2026',
         players: defaultPickerAdminData,
         submitPicker: async () => Promise.resolve(),
+        cancelGame: async () => Promise.resolve({
+            id: 1249,
+            year: 2026,
+            date: new Date('2026-02-03T00:00:00Z'),
+            game: false,
+            mailSent: new Date('2026-02-01T09:00:00Z'),
+            comment: null,
+            bibs: null,
+            pickerGamesHistory: 10,
+        }),
     },
     parameters: {
         docs: {

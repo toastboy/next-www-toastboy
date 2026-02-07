@@ -4,7 +4,7 @@ import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 
 import gameDayService from '@/services/GameDay';
 import type { CancelGameInput } from '@/types/actions/CancelGame';
-import { SendEmailProxy } from '@/types/actions/SendEmail';
+import type { SendEmailToAllActivePlayersProxy } from '@/types/actions/SendEmailToAllActivePlayers';
 
 interface CancelGameDeps {
     gameDayService: Pick<typeof gameDayService, 'get' | 'update'>;
@@ -25,7 +25,7 @@ const defaultDeps: CancelGameDeps = {
  */
 export async function cancelGameCore(
     data: CancelGameInput,
-    sendEmail: SendEmailProxy,
+    sendEmailToAllActivePlayers: SendEmailToAllActivePlayersProxy,
     deps: CancelGameDeps = defaultDeps,
 ): Promise<GameDayType> {
     try {
@@ -41,15 +41,12 @@ export async function cancelGameCore(
             comment: data.reason,
         });
 
-        // TODO: This should go to all active players: separate action
-        // sendEmailToAllActivePlayers?
-        await sendEmail(
-            "footy@toastboy.co.uk",
-            "",
-            `Game Cancelled: ${updatedGameDay.date.toDateString()}`,
-            `<p>The game scheduled for ${updatedGameDay.date.toDateString()} has been cancelled.</p>` +
-            (data.reason ? `<p>Reason: ${data.reason}</p>` : ''),
-        );
+        await sendEmailToAllActivePlayers({
+            cc: '',
+            subject: `Game Cancelled: ${updatedGameDay.date.toDateString()}`,
+            html: `<p>The game scheduled for ${updatedGameDay.date.toDateString()} has been cancelled.</p>` +
+                (data.reason ? `<p>Reason: ${data.reason}</p>` : ''),
+        });
 
         return updatedGameDay;
     } catch (error) {

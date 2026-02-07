@@ -41,7 +41,6 @@ export const Render: Story = {
             bibs: null,
             pickerGamesHistory: 10,
         }),
-        sendEmail: async () => Promise.resolve(),
     },
     parameters: {
         docs: {

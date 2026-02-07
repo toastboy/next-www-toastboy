@@ -9,7 +9,6 @@ import type { PickerPlayerType } from '@/types/PickerPlayerType';
 
 const mockSave = vi.fn();
 const mockCancelGame = vi.fn();
-const mockSendEmail = vi.fn();
 
 const createPickerPlayer = (
     id: number,
@@ -67,7 +66,6 @@ describe('PickerForm', () => {
                     players={defaultPickerAdminData}
                     submitPicker={mockSave}
                     cancelGame={mockCancelGame}
-                    sendEmail={mockSendEmail}
                 />
             </Wrapper>,
         );
@@ -97,7 +95,6 @@ describe('PickerForm', () => {
                     players={players}
                     submitPicker={mockSave}
                     cancelGame={mockCancelGame}
-                    sendEmail={mockSendEmail}
                 />
             </Wrapper>,
         );
@@ -119,7 +116,6 @@ describe('PickerForm', () => {
                     players={defaultPickerAdminData}
                     submitPicker={mockSave}
                     cancelGame={mockCancelGame}
-                    sendEmail={mockSendEmail}
                 />
             </Wrapper>,
         );
@@ -149,7 +145,6 @@ describe('PickerForm', () => {
                     players={defaultPickerAdminData}
                     submitPicker={mockSave}
                     cancelGame={mockCancelGame}
-                    sendEmail={mockSendEmail}
                 />
             </Wrapper>,
         );
@@ -163,7 +158,6 @@ describe('PickerForm', () => {
                     gameDayId: 1249,
                     reason: 'Not enough players',
                 },
-                mockSendEmail,
             );
         });
     });

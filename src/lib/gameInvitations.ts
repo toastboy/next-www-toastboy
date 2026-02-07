@@ -20,14 +20,15 @@ const normalizeEmail = (email?: string | null) => (email ?? '').trim().toLowerCa
  *
  * @param params - The invitation parameters
  * @param params.playerName - The name of the player being invited
- * @param params.inviteLink - The URL link for the player to respond to the invitation
+ * @param params.inviteLink - The URL link for the player to respond to the
+ * invitation
  * @param params.gameDate - The date of the game
  * @param params.customMessage - Optional custom message to include in the email
  * @returns An HTML string containing the formatted email invitation
  *
  * @remarks
- * The function escapes all HTML content to prevent injection attacks.
- * The returned HTML includes inline styles for better email client compatibility.
+ * The function escapes all HTML content to prevent injection attacks. The
+ * returned HTML includes inline styles for better email client compatibility.
  */
 export const buildInvitationEmail = ({
     playerName,

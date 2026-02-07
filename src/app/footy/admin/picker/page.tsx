@@ -2,6 +2,7 @@ import { Container } from '@mantine/core';
 import { notFound } from 'next/navigation';
 
 import { cancelGame } from '@/actions/cancelGame';
+import { sendEmail } from '@/actions/sendEmail';
 import { SubmitPicker } from '@/actions/submitPicker';
 import { PickerForm } from '@/components/PickerForm/PickerForm';
 import gameDayService from '@/services/GameDay';
@@ -28,6 +29,7 @@ const Page: React.FC<PageProps> = async () => {
                 players={playersWithGames}
                 submitPicker={SubmitPicker}
                 cancelGame={cancelGame}
+                sendEmail={sendEmail}
             />
         </Container>
     );

@@ -4,6 +4,8 @@ import { cancelGameCore } from '@/lib/actions/cancelGame';
 import { CancelGameInputSchema } from '@/types/actions/CancelGame';
 
 describe('cancelGameCore', () => {
+    const mockSendEmail = vi.fn();
+
     it('marks a game day as cancelled with a trimmed reason', async () => {
         const gameDay = {
             id: 1249,
@@ -29,7 +31,7 @@ describe('cancelGameCore', () => {
             reason: '  Not enough players  ',
         });
 
-        const result = await cancelGameCore(data, { gameDayService });
+        const result = await cancelGameCore(data, mockSendEmail, { gameDayService });
 
         expect(gameDayService.update).toHaveBeenCalledWith({
             id: 1249,
@@ -65,7 +67,7 @@ describe('cancelGameCore', () => {
             reason: '   ',
         });
 
-        await cancelGameCore(data, { gameDayService });
+        await cancelGameCore(data, mockSendEmail, { gameDayService });
 
         expect(gameDayService.update).toHaveBeenCalledWith({
             id: 1249,
@@ -85,6 +87,7 @@ describe('cancelGameCore', () => {
                 gameDayId: 9999,
                 reason: 'weather',
             },
+            mockSendEmail,
             { gameDayService },
         )).rejects.toThrow('Game day not found (id: 9999).');
 

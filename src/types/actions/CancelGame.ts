@@ -1,6 +1,8 @@
 import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 import { z } from 'zod';
 
+import { SendEmailProxy } from './SendEmail';
+
 export const CancelGameInputSchema = z.object({
     gameDayId: z.number().int().min(1),
     reason: z.preprocess(
@@ -30,4 +32,5 @@ export type CancelGameInput = z.infer<typeof CancelGameInputSchema>;
  */
 export type CancelGameProxy = (
     data: CancelGameInput,
+    sendEmail: SendEmailProxy,
 ) => Promise<GameDayType>;

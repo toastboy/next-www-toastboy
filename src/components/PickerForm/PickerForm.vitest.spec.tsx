@@ -9,6 +9,7 @@ import type { PickerPlayerType } from '@/types/PickerPlayerType';
 
 const mockSave = vi.fn();
 const mockCancelGame = vi.fn();
+const mockSendEmail = vi.fn();
 
 const createPickerPlayer = (
     id: number,
@@ -66,6 +67,7 @@ describe('PickerForm', () => {
                     players={defaultPickerAdminData}
                     submitPicker={mockSave}
                     cancelGame={mockCancelGame}
+                    sendEmail={mockSendEmail}
                 />
             </Wrapper>,
         );
@@ -95,6 +97,7 @@ describe('PickerForm', () => {
                     players={players}
                     submitPicker={mockSave}
                     cancelGame={mockCancelGame}
+                    sendEmail={mockSendEmail}
                 />
             </Wrapper>,
         );
@@ -116,6 +119,7 @@ describe('PickerForm', () => {
                     players={defaultPickerAdminData}
                     submitPicker={mockSave}
                     cancelGame={mockCancelGame}
+                    sendEmail={mockSendEmail}
                 />
             </Wrapper>,
         );
@@ -145,6 +149,7 @@ describe('PickerForm', () => {
                     players={defaultPickerAdminData}
                     submitPicker={mockSave}
                     cancelGame={mockCancelGame}
+                    sendEmail={mockSendEmail}
                 />
             </Wrapper>,
         );
@@ -153,10 +158,13 @@ describe('PickerForm', () => {
         await user.click(screen.getByTestId('cancel-game-button'));
 
         await waitFor(() => {
-            expect(mockCancelGame).toHaveBeenCalledWith({
-                gameDayId: 1249,
-                reason: 'Not enough players',
-            });
+            expect(mockCancelGame).toHaveBeenCalledWith(
+                {
+                    gameDayId: 1249,
+                    reason: 'Not enough players',
+                },
+                mockSendEmail,
+            );
         });
     });
 });

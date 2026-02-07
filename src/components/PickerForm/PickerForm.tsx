@@ -23,6 +23,7 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { config } from '@/lib/config';
 import type { CancelGameProxy } from '@/types/actions/CancelGame';
+import { SendEmailProxy } from '@/types/actions/SendEmail';
 import type { SubmitPickerProxy } from '@/types/actions/SubmitPicker';
 import type { PickerPlayerType } from '@/types/PickerPlayerType';
 
@@ -32,6 +33,7 @@ export interface PickerFormProps {
     players: PickerPlayerType[];
     submitPicker: SubmitPickerProxy;
     cancelGame: CancelGameProxy;
+    sendEmail: SendEmailProxy;
 }
 
 type SortKey = 'name' | 'responseTime' | 'gamesPlayed';
@@ -98,6 +100,7 @@ export const PickerForm: React.FC<PickerFormProps> = ({
     players,
     submitPicker,
     cancelGame,
+    sendEmail,
 }) => {
     const eligiblePlayers = useMemo(
         () => players.filter((player) => player.response === 'Yes'),
@@ -261,10 +264,13 @@ export const PickerForm: React.FC<PickerFormProps> = ({
 
         setIsCancelling(true);
         try {
-            await cancelGame({
-                gameDayId: gameId,
-                reason: cancellationReason,
-            });
+            await cancelGame(
+                {
+                    gameDayId: gameId,
+                    reason: cancellationReason,
+                },
+                sendEmail,
+            );
             notifications.update({
                 id: notificationId,
                 color: 'teal',

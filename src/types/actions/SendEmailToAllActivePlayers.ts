@@ -6,7 +6,7 @@ import { z } from 'zod';
 export const SendEmailToAllActivePlayersSchema = z.object({
     cc: z.string().trim().optional().default(''),
     subject: z.string().trim().min(1, { message: 'Subject is required' }),
-    html: z.string().trim().min(1, { message: 'Body is required' }),
+    html: z.string().trim().min(1, { message: 'Body cannot be empty' }),
 });
 
 /**

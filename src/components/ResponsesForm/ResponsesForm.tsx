@@ -86,7 +86,7 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
     const grouped = useMemo(() => {
         const filteredRows = rows.filter((row) => {
             const searchTerm = filter.toLowerCase();
-            return (row.player.name?.toLowerCase().includes(searchTerm));
+            return row.player.name?.toLowerCase().includes(searchTerm) ?? false;
         }) ?? [];
 
         return {
@@ -96,7 +96,7 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
             excused: filteredRows.filter((r) => r.response === ResponseOption.Excused),
             flaked: filteredRows.filter((r) => r.response === ResponseOption.Flaked),
             injured: filteredRows.filter((r) => r.response === ResponseOption.Injured),
-            none: filteredRows.filter((r) => r.response == null),
+            none: filteredRows.filter((r) => r.response === null),
         };
     }, [rows, filter]);
 
@@ -155,75 +155,86 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
     const renderGroup = (title: ResponseOption, testId: string, items: OutcomePlayerType[]) => {
         if (items.length === 0) return null;
 
-        return (<Card withBorder shadow="xs" p="md" data-testid={testId} data-count={items.length}>
-            <Card.Section h={6} bg={responseGroupBarColor[title]} />
-            <Group justify="space-between" mb="lg" mt="md">
-                <Title order={2}>{title}: {items.length}</Title>
-            </Group>
-            <Stack gap="sm">
-                {items.map((row) => {
-                    const responseValues = form.values.byPlayerId[row.playerId] ?? toResponseValues(row);
-                    return (
-                        <Flex
-                            key={row.playerId}
-                            data-testid="response-row"
-                            data-player-id={row.playerId}
-                            align="center"
-                            gap="sm"
-                            wrap="nowrap"
-                        >
-                            <Text data-testid="player-name" fw={600} w={180}>
-                                {row.player.name}
-                            </Text>
-                            <Select
-                                data-testid="response-select"
-                                aria-label="Response"
-                                data={Object.values(PlayerResponse).map((option) => ({
-                                    value: option,
-                                    label: option,
-                                }))}
-                                value={responseValues.response ?? ResponseOption.None}
-                                onChange={(value) => {
-                                    const nextValue = value as ResponseOption | null;
-                                    form.setFieldValue(
-                                        `byPlayerId.${row.playerId}.response`,
-                                        nextValue === ResponseOption.None ? null : nextValue,
-                                    );
-                                }}
-                                size="sm"
-                                w={160}
-                            />
-                            <Checkbox
-                                data-testid="goalie-checkbox"
-                                label="Goalie"
-                                size="sm"
-                                {...form.getInputProps(
-                                    `byPlayerId.${row.playerId}.goalie`,
-                                    { type: 'checkbox' },
-                                )}
-                            />
-                            <TextInput
-                                data-testid="comment-input"
-                                placeholder="Comment"
-                                {...form.getInputProps(`byPlayerId.${row.playerId}.comment`)}
-                                size="sm"
-                                style={{ flex: 1, minWidth: 220 }}
-                            />
-                            <Button
-                                data-testid="response-submit"
-                                variant="filled"
-                                size="sm"
-                                disabled={!isRowDirty(row)}
-                                loading={savingId === row.playerId}
-                                onClick={() => handleSubmit(row)}
+        return (
+            <Card withBorder shadow="xs" p="md" data-testid={testId} data-count={items.length}>
+                <Card.Section h={6} bg={responseGroupBarColor[title]} />
+                <Group justify="space-between" mb="lg" mt="md">
+                    <Title order={2}>{title}: {items.length}</Title>
+                </Group>
+                <Stack gap="sm">
+                    {items.map((row) => {
+                        const responseValues = form.values.byPlayerId[row.playerId] ?? toResponseValues(row);
+                        return (
+                            <Flex
+                                key={row.playerId}
+                                data-testid="response-row"
+                                data-player-id={row.playerId}
+                                align="center"
+                                gap="sm"
+                                wrap="nowrap"
                             >
-                                Update
-                            </Button>
-                        </Flex>
-                    );
-                })}
-            </Stack>
-        </Card>);
+                                <Text data-testid="player-name" fw={600} w={180}>
+                                    {row.player.name}
+                                </Text>
+                                <Select
+                                    data-testid="response-select"
+                                    aria-label="Response"
+                                    data={Object.values(PlayerResponse).map((option) => ({
+                                        value: option,
+                                        label: option,
+                                    }))}
+                                    value={responseValues.response ?? ResponseOption.None}
+                                    onChange={(value) => {
+                                        const nextValue = value as ResponseOption | null;
+                                        form.setFieldValue(
+                                            `byPlayerId.${row.playerId}.response`,
+                                            nextValue === ResponseOption.None ? null : nextValue,
+                                        );
+                                    }}
+                                    size="sm"
+                                    w={160}
+                                />
+                                <Checkbox
+                                    data-testid="goalie-checkbox"
+                                    label="Goalie"
+                                    size="sm"
+                                    {...form.getInputProps(
+                                        `byPlayerId.${row.playerId}.goalie`,
+                                        { type: 'checkbox' },
+                                    )}
+                                />
+                                <TextInput
+                                    data-testid="comment-input"
+                                    placeholder="Comment"
+                                    {...form.getInputProps(`byPlayerId.${row.playerId}.comment`)}
+                                    size="sm"
+                                    style={{ flex: 1, minWidth: 220 }}
+                                />
+                                <Button
+                                    data-testid="response-submit"
+                                    variant="filled"
+                                    size="sm"
+                                    disabled={!isRowDirty(row)}
+                                    loading={savingId === row.playerId}
+                                    onClick={() => handleSubmit(row)}
+                                >
+                                    Update
+                                </Button>
+                            </Flex>
+                        );
+                    })}
+                </Stack>
+            </Card>
+        );
+    };
+
+    const responseOptionToGroupKey: { [K in ResponseOption]: keyof typeof grouped } = {
+        // Map each ResponseOption value to the corresponding key in `grouped`.
+        // Adjust the right-hand side values to match the actual keys used in `grouped`.
+        [ResponseOption.Yes]: 'yes',
+        [ResponseOption.No]: 'no',
+        [ResponseOption.Maybe]: 'maybe',
+        [ResponseOption.None]: 'none',
     };
 
     return (
@@ -243,7 +254,7 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
                         renderGroup(
                             option,
                             `response-group-${option.toLowerCase()}`,
-                            grouped[option.toLowerCase() as keyof typeof grouped],
+                            grouped[responseOptionToGroupKey[option]],
                         )
                     }
                 </React.Fragment>

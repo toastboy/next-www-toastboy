@@ -322,6 +322,7 @@ export const PickerForm: React.FC<PickerFormProps> = ({
                 <Text fw={700}>Players selected ({selectedIds.length})</Text>
                 <Button
                     type="button"
+                    data-testid="submit-picker-button"
                     onClick={handleSubmit}
                     disabled={!hasSelection || isCancelling}
                     loading={isSubmitting}

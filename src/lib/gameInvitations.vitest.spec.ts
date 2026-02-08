@@ -182,12 +182,17 @@ describe('sendGameInvitations', () => {
         ]);
 
         expect(mockSendEmail).toHaveBeenCalledTimes(1);
-        expect(mockSendEmail).toHaveBeenCalledWith(
-            'alice@example.com,alice+kit@example.com',
-            '',
-            'Toastboy FC invitation',
-            expect.stringContaining('Hello Alice'),
-        );
+
+        const [emailPayload] = mockSendEmail.mock.calls[0] ?? [];
+        if (!emailPayload) {
+            throw new Error('Expected email payload to be defined.');
+        }
+
+        expect(emailPayload).toMatchObject({
+            to: 'alice@example.com,alice+kit@example.com',
+            subject: 'Toastboy FC invitation',
+        });
+        expect(emailPayload.html).toContain('Hello Alice');
 
         const mailSentCall = mockGameDayService.markMailSent.mock.calls[0];
         expect(mailSentCall[0]).toBe(99);

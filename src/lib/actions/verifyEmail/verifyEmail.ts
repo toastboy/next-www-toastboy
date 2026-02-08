@@ -191,5 +191,9 @@ export async function sendEmailVerificationCore(
         '<p>If you did not request this, you can ignore this message.</p>',
     ].join('');
 
-    await deps.sendEmailCore(normalizedEmail, '', 'Verify your email address', html);
+    await deps.sendEmailCore({
+        to: normalizedEmail,
+        subject: 'Verify your email address',
+        html,
+    });
 }

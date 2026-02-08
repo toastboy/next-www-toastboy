@@ -1,7 +1,8 @@
 'use server';
 
+import { SendMailOptions } from 'nodemailer';
+
 import { sendEmailToAllActivePlayersCore } from '@/lib/actions/sendEmailToAllActivePlayers';
-import { SendEmailToAllActivePlayersSchema } from '@/types/actions/SendEmailToAllActivePlayers';
 
 /**
  * Sends an email to all active players.
@@ -9,7 +10,8 @@ import { SendEmailToAllActivePlayersSchema } from '@/types/actions/SendEmailToAl
  * @param rawData - The raw input data to validate and use for the email.
  * @returns A summary containing the recipient count.
  */
-export async function sendEmailToAllActivePlayers(rawData: unknown) {
-    const data = SendEmailToAllActivePlayersSchema.parse(rawData);
-    return sendEmailToAllActivePlayersCore(data);
+export async function sendEmailToAllActivePlayers(
+    mailOptions: Omit<SendMailOptions, 'bcc'>,
+) {
+    return sendEmailToAllActivePlayersCore(mailOptions);
 }

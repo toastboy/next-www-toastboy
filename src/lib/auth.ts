@@ -39,15 +39,14 @@ export const auth = betterAuth({
         deleteUser: {
             enabled: true,
             sendDeleteAccountVerification: async ({ user, url }, _request) => {
-                await sendEmail(
-                    user.email,
-                    '',
-                    'Delete your Toastboy FC account',
-                    [
+                await sendEmail({
+                    to: user.email,
+                    subject: 'Delete your Toastboy FC account',
+                    html: [
                         `<p>Click the link to confirm your account deletion:</p>`,
                         `<a href="${url}">Delete account</a>`,
                     ].join(''),
-                );
+                });
             },
             beforeDelete: async (user) => {
                 await beforeDeletePlayer(user as unknown as AuthUserSummary);
@@ -60,15 +59,14 @@ export const auth = betterAuth({
         // avoid timing attacks: https://www.better-auth.com/docs/concepts/email
         // eslint-disable-next-line @typescript-eslint/require-await
         sendResetPassword: async ({ user, url }, _request) => {
-            void sendEmail(
-                user.email,
-                '',
-                'Reset your Toastboy FC password',
-                [
+            void sendEmail({
+                to: user.email,
+                subject: 'Reset your Toastboy FC password',
+                html: [
                     `<p>Click the link to reset your password:</p>`,
                     `<a href="${url}">Reset password</a>`,
                 ].join(''),
-            );
+            });
         },
         // eslint-disable-next-line @typescript-eslint/require-await
         onPasswordReset: async ({ user }, _request) => {
@@ -85,15 +83,14 @@ export const auth = betterAuth({
             _request: Request | undefined,
         ) => {
             if (user.email) {
-                void sendEmail(
-                    user.email,
-                    '',
-                    'Reset your Toastboy FC password',
-                    [
+                void sendEmail({
+                    to: user.email,
+                    subject: 'Reset your Toastboy FC password',
+                    html: [
                         `<p>Click the link to reset your password:</p>`,
                         `<a href="${url}">Reset password</a>`,
                     ].join(''),
-                );
+                });
             }
         },
     },

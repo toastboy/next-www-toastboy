@@ -1,6 +1,6 @@
 import 'server-only';
 
-import nodemailer from 'nodemailer';
+import nodemailer, { type SendMailOptions } from 'nodemailer';
 import sanitizeHtml from 'sanitize-html';
 
 import { getSecrets } from '@/lib/secrets';
@@ -11,13 +11,10 @@ import { getSecrets } from '@/lib/secrets';
  * Depending on the environment, it uses either production SMTP settings or a
  * local SMTP server. The HTML content of the email is sanitized before sending.
  *
- * @param to - The recipient's email address.
- * @param cc - The CC recipient's email address.
- * @param subject - The subject of the email.
- * @param html - The HTML content of the email.
+ * @param mailOptions - Nodemailer mail options payload.
  * @throws Throws an error if the email fails to send.
  */
-export async function sendEmailCore(to: string, cc: string, subject: string, html: string) {
+export async function sendEmailCore(mailOptions: SendMailOptions) {
     const secrets = getSecrets();
     const transporter = process.env.NODE_ENV === 'production' && !process.env.CI ?
         nodemailer.createTransport({
@@ -31,20 +28,20 @@ export async function sendEmailCore(to: string, cc: string, subject: string, htm
             secure: false,
         });
 
-    const sanitizedHtml = sanitizeHtml(html);
+    const sanitizedHtml = typeof mailOptions.html === 'string' ?
+        sanitizeHtml(mailOptions.html) :
+        mailOptions.html;
 
     try {
         await transporter.sendMail({
+            ...mailOptions,
             from: `"${secrets.MAIL_FROM_NAME}" <${secrets.MAIL_FROM_ADDRESS}>`,
-            to,
-            cc,
-            subject,
             html: sanitizedHtml,
         });
     } catch (error) {
         console.error('Failed to send email', {
-            to,
-            subject,
+            to: mailOptions.to,
+            subject: mailOptions.subject,
             error,
         });
         throw new Error(`Failed to send email: ${error instanceof Error ? error.message : String(error)}`);

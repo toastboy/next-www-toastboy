@@ -10,7 +10,7 @@ const defaultAddPlayerProxy: AddPlayerInviteProxy = async (playerId, email) => {
     return Promise.resolve(`Invite link for player ${playerId} sent to ${email}`);
 };
 
-const stubSendEmail: SendEmailProxy = async (_to, _cc, _subject, _html) => {
+const stubSendEmail: SendEmailProxy = async (_mailOptions) => {
     return Promise.resolve();
 };
 

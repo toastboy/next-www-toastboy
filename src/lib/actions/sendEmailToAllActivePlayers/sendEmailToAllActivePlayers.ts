@@ -1,10 +1,11 @@
 import 'server-only';
 
+import type { SendMailOptions } from 'nodemailer';
+
 import { sendEmailCore } from '@/lib/actions/sendEmail';
 import playerService from '@/services/Player';
 import type { SendEmailProxy } from '@/types/actions/SendEmail';
 import type {
-    SendEmailToAllActivePlayersInput,
     SendEmailToAllActivePlayersResult,
 } from '@/types/actions/SendEmailToAllActivePlayers';
 
@@ -41,7 +42,7 @@ const normalizeEmail = (email?: string | null) => (email ?? '').trim().toLowerCa
  * @returns The number of unique recipients emailed.
  */
 export async function sendEmailToAllActivePlayersCore(
-    data: SendEmailToAllActivePlayersInput,
+    mailOptions: Omit<SendMailOptions, 'bcc'>,
     deps: SendEmailToAllActivePlayersDeps = defaultDeps,
 ): Promise<SendEmailToAllActivePlayersResult> {
     const players = await deps.playerService.getAll({ activeOnly: true });
@@ -69,9 +70,10 @@ export async function sendEmailToAllActivePlayersCore(
         return { recipientCount: 0 };
     }
 
-    // TODO: Send bulk emails to bcc recipients instead of a single email with
-    // all recipients in the "to" field.
     const sortedRecipients = Array.from(recipients).sort();
-    await deps.sendEmail(sortedRecipients.join(','), data.cc, data.subject, data.html);
+    await deps.sendEmail({
+        ...mailOptions,
+        bcc: sortedRecipients.join(','),
+    });
     return { recipientCount: recipients.size };
 }

@@ -49,7 +49,6 @@ describe('cancelGameCore', () => {
             subject: string;
             html: string;
         }];
-        expect(firstPayload.cc).toBe('');
         expect(firstPayload.subject).toContain('Game Cancelled:');
         expect(firstPayload.html).toContain('Reason: Not enough players');
         expect(result.game).toBe(false);

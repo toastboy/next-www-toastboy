@@ -9,7 +9,7 @@ import type { SubmitPickerInput } from '@/types/actions/SubmitPicker';
 
 interface SubmitPickerDeps {
     gameDayService: Pick<typeof gameDayService, 'getCurrent'>;
-    outcomeService: Pick<typeof outcomeService, 'getAdminByGameDay' | 'getPlayerGamesPlayed' | 'getRecentAverage' | 'upsert'>;
+    outcomeService: Pick<typeof outcomeService, 'getAdminByGameDay' | 'getPlayerGamesPlayedBeforeGameDay' | 'getRecentAverage' | 'upsert'>;
     sendEmailToAllActivePlayers: SendEmailToAllActivePlayersProxy;
     getPublicBaseUrl: () => string;
 }
@@ -32,7 +32,6 @@ interface PickerCandidate {
 
 interface TeamDiffs {
     diffGoalies: number;
-    diffPlayed: number;
     diffAverage: number;
     diffUnknownAge: number;
     diffAge: number;
@@ -126,8 +125,6 @@ const calculateDiffs = (
 ): TeamDiffs => {
     const teamAGoalies = sum(teamA.map((player) => player.goalie ? 1 : 0));
     const teamBGoalies = sum(teamB.map((player) => player.goalie ? 1 : 0));
-    const teamAPlayed = sum(teamA.map((player) => player.played));
-    const teamBPlayed = sum(teamB.map((player) => player.played));
     const teamAAverage = sum(teamA.map((player) => player.average));
     const teamBAverage = sum(teamB.map((player) => player.average));
     const teamAUnknownAge = sum(teamA.map((player) => player.age === null ? 1 : 0));
@@ -137,7 +134,6 @@ const calculateDiffs = (
 
     return {
         diffGoalies: teamAGoalies - teamBGoalies,
-        diffPlayed: teamAPlayed - teamBPlayed,
         diffAverage: teamAAverage - teamBAverage,
         diffUnknownAge: teamAUnknownAge - teamBUnknownAge,
         diffAge: teamAAge - teamBAge,
@@ -150,7 +146,6 @@ const compareDiffs = (left: TeamDiffs, right: TeamDiffs) => {
     // ABS(diff_unknown_age), ABS(diff_age)
     const comparisons = [
         compareNumber(Math.abs(left.diffGoalies), Math.abs(right.diffGoalies)),
-        compareNumber(Math.abs(left.diffPlayed), Math.abs(right.diffPlayed)),
         compareNumber(Math.abs(left.diffAverage), Math.abs(right.diffAverage)),
         compareNumber(Math.abs(left.diffUnknownAge), Math.abs(right.diffUnknownAge)),
         compareNumber(Math.abs(left.diffAge), Math.abs(right.diffAge)),
@@ -313,7 +308,7 @@ export async function SubmitPickerCore(
     });
 
     const candidates = await Promise.all(selectedOutcomes.map(async (row) => {
-        const played = Math.min(10, await deps.outcomeService.getPlayerGamesPlayed(row.playerId));
+        const played = Math.min(10, await deps.outcomeService.getPlayerGamesPlayedBeforeGameDay(row.playerId, gameDay.id));
         const average = await deps.outcomeService.getRecentAverage(gameDay.id, row.playerId, history);
         const born = row.player.born ?? null;
         const age = (born !== null && born < 1995) ? gameDay.year - born : null;

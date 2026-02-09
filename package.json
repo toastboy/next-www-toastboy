@@ -24,6 +24,7 @@
         "test:chromatic": "npx chromatic",
         "test:components:coverage": "vitest run --config vitest.components.config.ts --coverage",
         "test:components": "vitest run --config vitest.components.config.ts",
+        "test:picker:integration": "vitest run --config vitest.picker.integration.config.ts",
         "test:coverage": "vitest run --config vitest.unit.config.ts --coverage",
         "test:lib:coverage": "vitest run --config vitest.lib.config.ts --coverage",
         "test:lib": "vitest run --config vitest.lib.config.ts",

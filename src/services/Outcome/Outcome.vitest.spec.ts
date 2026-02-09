@@ -549,6 +549,33 @@ describe('OutcomeService', () => {
         });
     });
 
+    describe('getPlayerGamesPlayedBeforeGameDay', () => {
+        it('should count games with a team assigned before the given game day', async () => {
+            (prisma.outcome.count as Mock).mockResolvedValueOnce(9);
+
+            const result = await outcomeService.getPlayerGamesPlayedBeforeGameDay(7, 25);
+
+            expect(prisma.outcome.count).toHaveBeenCalledWith({
+                where: {
+                    playerId: 7,
+                    team: {
+                        not: null,
+                    },
+                    gameDayId: {
+                        lt: 25,
+                    },
+                },
+            });
+            expect(result).toBe(9);
+        });
+
+        it('should throw for invalid input', async () => {
+            await expect(outcomeService.getPlayerGamesPlayedBeforeGameDay(0, 25)).rejects.toThrow();
+            await expect(outcomeService.getPlayerGamesPlayedBeforeGameDay(7, 0)).rejects.toThrow();
+            expect(prisma.outcome.count).not.toHaveBeenCalled();
+        });
+    });
+
     describe('getGamesPlayedByPlayer', () => {
         it('should retrieve the correct number of games played for Player ID 1, year 2021', async () => {
             const result = await outcomeService.getGamesPlayedByPlayer(1, 2021);

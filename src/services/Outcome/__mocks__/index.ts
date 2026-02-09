@@ -7,6 +7,7 @@ const outcomeService = {
     getRecentGamePoints: vi.fn(),
     getRecentAverage: vi.fn(),
     getPlayerGamesPlayed: vi.fn(),
+    getPlayerGamesPlayedBeforeGameDay: vi.fn(),
     upsert: vi.fn(),
 };
 

@@ -579,6 +579,45 @@ export class OutcomeService {
     }
 
     /**
+     * Retrieves the total number of games where a player was assigned a team
+     * before a specific game day.
+     *
+     * Use this for historical picker parity where `played` should reflect
+     * what was known at picker run-time for that game.
+     *
+     * @param playerId - The player ID.
+     * @param gameDayId - The game day ID used as an exclusive upper bound.
+     * @returns A promise resolving to the total count.
+     * @throws An error if there is a failure.
+     */
+    async getPlayerGamesPlayedBeforeGameDay(
+        playerId: number,
+        gameDayId: number,
+    ): Promise<number> {
+        try {
+            const parsed = z.object({
+                playerId: z.number().int().min(1),
+                gameDayId: z.number().int().min(1),
+            }).parse({ playerId, gameDayId });
+
+            return prisma.outcome.count({
+                where: {
+                    playerId: parsed.playerId,
+                    team: {
+                        not: null,
+                    },
+                    gameDayId: {
+                        lt: parsed.gameDayId,
+                    },
+                },
+            });
+        } catch (error) {
+            log(`Error fetching games played before game day by player: ${String(error)}`);
+            throw error;
+        }
+    }
+
+    /**
      * Retrieves the number of games played by player ID in the given year,
      * optionally stopping at a given gameDay ID.
      * @param playerId - The ID of the player.

@@ -88,7 +88,7 @@ describe('SubmitPickerCore', () => {
             },
             outcomeService: {
                 getAdminByGameDay: vi.fn().mockResolvedValue(adminRows),
-                getPlayerGamesPlayed: vi.fn().mockImplementation((playerId: number) => playedByPlayer.get(playerId) ?? 0),
+                getPlayerGamesPlayedBeforeGameDay: vi.fn().mockImplementation((playerId: number) => playedByPlayer.get(playerId) ?? 0),
                 getRecentAverage: vi.fn().mockImplementation((_gameDayId: number, playerId: number) => averageByPlayer.get(playerId) ?? 0),
                 upsert: vi.fn().mockResolvedValue(null),
             },
@@ -196,7 +196,7 @@ describe('SubmitPickerCore', () => {
             },
             outcomeService: {
                 getAdminByGameDay: vi.fn().mockResolvedValue(adminRows),
-                getPlayerGamesPlayed: vi.fn().mockImplementation((playerId: number) => playedByPlayer.get(playerId) ?? 0),
+                getPlayerGamesPlayedBeforeGameDay: vi.fn().mockImplementation((playerId: number) => playedByPlayer.get(playerId) ?? 0),
                 getRecentAverage: vi.fn().mockImplementation((_gameDayId: number, playerId: number) => averageByPlayer.get(playerId) ?? 0),
                 upsert: vi.fn().mockResolvedValue(null),
             },
@@ -229,7 +229,7 @@ describe('SubmitPickerCore', () => {
             },
             outcomeService: {
                 getAdminByGameDay: vi.fn(),
-                getPlayerGamesPlayed: vi.fn(),
+                getPlayerGamesPlayedBeforeGameDay: vi.fn(),
                 getRecentAverage: vi.fn(),
                 upsert: vi.fn(),
             },

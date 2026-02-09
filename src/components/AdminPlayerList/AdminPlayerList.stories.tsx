@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import type { SendMailOptions } from 'nodemailer';
 
 import { defaultPlayerDataList } from '@/tests/mocks/data/playerData';
 
@@ -28,8 +29,13 @@ export const Render: Story = {
         onAddPlayerInvite: async (playerId, email) => {
             return Promise.resolve(`https://example.com/invite/${playerId}?email=${encodeURIComponent(email)}`);
         },
-        onSendEmail: async (to, cc, subject, html) => {
-            console.log(`Sending email to ${to}, cc ${cc} with subject "${subject}": ${html}`);
+        onSendEmail: async (mailOptions: SendMailOptions) => {
+            const htmlContent = typeof mailOptions.html === 'string' ?
+                mailOptions.html :
+                '[non-string content]';
+            const toAddress = typeof mailOptions.to === 'string' ? mailOptions.to : JSON.stringify(mailOptions.to);
+            const ccAddress = typeof mailOptions.cc === 'string' ? mailOptions.cc : JSON.stringify(mailOptions.cc ?? '');
+            console.log(`Sending email to ${toAddress}, cc ${ccAddress} with subject "${mailOptions.subject ?? ''}": ${htmlContent}`);
             return Promise.resolve();
         },
     },

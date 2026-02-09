@@ -2,7 +2,6 @@ import { z } from 'zod';
 
 export const SubmitPickerPlayerSchema = z.object({
     playerId: z.number().min(1),
-    name: z.string().nullish(),
 });
 
 export const SubmitPickerInputSchema = z.array(SubmitPickerPlayerSchema);

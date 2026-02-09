@@ -7,7 +7,7 @@ export const SubmitResponseInputSchema = z.object({
     playerId: z.number().min(1),
     response: PlayerResponseSchema,
     goalie: z.boolean(),
-    comment: z.string().max(127).optional().nullable(),
+    comment: z.string().max(127).nullable(),
 });
 
 export type SubmitResponseInput = z.infer<typeof SubmitResponseInputSchema>;

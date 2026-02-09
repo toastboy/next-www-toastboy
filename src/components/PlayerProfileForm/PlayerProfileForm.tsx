@@ -278,7 +278,7 @@ export const PlayerProfileForm: React.FC<Props> = ({
                                 <EmailInput
                                     label={`Extra email ${address}`}
                                     data-testid={`extra-email-input-${index}`}
-                                    style={{ flex: 1 }}
+                                    flex={1}
                                     rightSection={
                                         <Activity
                                             mode={email?.trim().length ? 'visible' : 'hidden'}

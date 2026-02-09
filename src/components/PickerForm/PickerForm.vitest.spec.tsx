@@ -8,6 +8,7 @@ import { defaultPickerAdminData } from '@/tests/mocks/data/picker';
 import type { PickerPlayerType } from '@/types/PickerPlayerType';
 
 const mockSave = vi.fn();
+const mockCancelGame = vi.fn();
 
 const createPickerPlayer = (
     id: number,
@@ -44,6 +45,16 @@ describe('PickerForm', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         mockSave.mockResolvedValue(undefined);
+        mockCancelGame.mockResolvedValue({
+            id: 1249,
+            year: 2026,
+            date: new Date('2026-02-03T00:00:00Z'),
+            game: false,
+            mailSent: new Date('2026-02-01T09:00:00Z'),
+            comment: 'Not enough players',
+            bibs: null,
+            pickerGamesHistory: 10,
+        });
     });
 
     it('selects all players by default when under the limit', () => {
@@ -54,6 +65,7 @@ describe('PickerForm', () => {
                     gameDate="3rd February 2026"
                     players={defaultPickerAdminData}
                     submitPicker={mockSave}
+                    cancelGame={mockCancelGame}
                 />
             </Wrapper>,
         );
@@ -82,6 +94,7 @@ describe('PickerForm', () => {
                     gameDate="3rd February 2026"
                     players={players}
                     submitPicker={mockSave}
+                    cancelGame={mockCancelGame}
                 />
             </Wrapper>,
         );
@@ -102,6 +115,7 @@ describe('PickerForm', () => {
                     gameDate="3rd February 2026"
                     players={defaultPickerAdminData}
                     submitPicker={mockSave}
+                    cancelGame={mockCancelGame}
                 />
             </Wrapper>,
         );
@@ -109,14 +123,42 @@ describe('PickerForm', () => {
         const devCheckbox = screen.getByLabelText('Select Dev Striker');
         await user.click(devCheckbox);
 
-        await user.click(screen.getByRole('button', { name: /submit selection/i }));
+        await user.click(screen.getByRole('button', { name: /pick sides/i }));
 
         await waitFor(() => {
             expect(mockSave).toHaveBeenCalledWith([
-                { playerId: 1, name: 'Alex Keeper' },
-                { playerId: 2, name: 'Britt Winger' },
-                { playerId: 3, name: 'Casey Mid' },
+                { playerId: 1 },
+                { playerId: 2 },
+                { playerId: 3 },
             ]);
+        });
+    });
+
+    it('cancels the game with a reason', async () => {
+        const user = userEvent.setup();
+
+        render(
+            <Wrapper>
+                <PickerForm
+                    gameId={1249}
+                    gameDate="3rd February 2026"
+                    players={defaultPickerAdminData}
+                    submitPicker={mockSave}
+                    cancelGame={mockCancelGame}
+                />
+            </Wrapper>,
+        );
+
+        await user.type(screen.getByTestId('cancellation-reason'), 'Not enough players');
+        await user.click(screen.getByTestId('cancel-game-button'));
+
+        await waitFor(() => {
+            expect(mockCancelGame).toHaveBeenCalledWith(
+                {
+                    gameDayId: 1249,
+                    reason: 'Not enough players',
+                },
+            );
         });
     });
 });

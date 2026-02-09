@@ -90,22 +90,29 @@ describe('GameDayService', () => {
 
         (prisma.gameDay.upsert as Mock).mockImplementation((args: {
             where: { id: number },
-            update: GameDayType,
-            create: GameDayType,
+            update: Partial<GameDayType>,
+            create: Partial<GameDayType> & { id?: number },
         }) => {
             const gameDay = defaultGameDayList.find((gameDay) => gameDay.id === args.where.id);
 
             if (gameDay) {
-                return Promise.resolve(args.update);
+                return Promise.resolve({
+                    ...gameDay,
+                    ...args.update,
+                    id: args.where.id,
+                });
             }
             else {
-                return Promise.resolve(args.create);
+                return Promise.resolve({
+                    ...args.create,
+                    id: args.create.id ?? args.where.id,
+                });
             }
         });
 
         (prisma.gameDay.update as Mock).mockImplementation((args: {
             where: { id: number },
-            data: { mailSent: Date },
+            data: Partial<GameDayType>,
         }) => {
             const gameDay = defaultGameDayList.find((gameDay) => gameDay.id === args.where.id);
 
@@ -462,6 +469,32 @@ describe('GameDayService', () => {
             };
             const result = await gameDayService.upsert(updatedGameDay);
             expect(result).toEqual(updatedGameDay);
+        });
+    });
+
+    describe('update', () => {
+        it('should update mutable fields while keeping id in the where clause', async () => {
+            const result = await gameDayService.update({
+                id: 6,
+                game: false,
+                comment: 'Pitch frozen',
+            });
+
+            expect(prisma.gameDay.update).toHaveBeenCalledWith({
+                where: {
+                    id: 6,
+                },
+                data: {
+                    game: false,
+                    comment: 'Pitch frozen',
+                    id: 6,
+                },
+            });
+            expect(result).toEqual({
+                ...defaultGameDayList[5],
+                game: false,
+                comment: 'Pitch frozen',
+            });
         });
     });
 

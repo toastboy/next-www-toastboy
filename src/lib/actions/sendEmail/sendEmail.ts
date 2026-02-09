@@ -28,15 +28,16 @@ export async function sendEmailCore(mailOptions: SendMailOptions) {
             secure: false,
         });
 
-    const sanitizedHtml = typeof mailOptions.html === 'string' ?
-        sanitizeHtml(mailOptions.html) :
-        mailOptions.html;
+    const sanitizedHtml =
+        typeof mailOptions.html === 'string'
+            ? sanitizeHtml(mailOptions.html)
+            : mailOptions.html ?? undefined;
 
     try {
         await transporter.sendMail({
             ...mailOptions,
             from: `"${secrets.MAIL_FROM_NAME}" <${secrets.MAIL_FROM_ADDRESS}>`,
-            html: sanitizedHtml,
+            ...(sanitizedHtml !== undefined ? { html: sanitizedHtml } : {}),
         });
     } catch (error) {
         console.error('Failed to send email', {

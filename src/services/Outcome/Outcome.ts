@@ -455,6 +455,169 @@ export class OutcomeService {
     }
 
     /**
+     * Retrieves the recent points list for a player before a specific game day.
+     *
+     * Mirrors the legacy `player_recent_game_points` stored procedure:
+     * - only outcomes before `gameDayId`
+     * - only rows with a team assigned
+     * - newest game first
+     * - maximum 10 rows
+     *
+     * @param gameDayId - The current game day ID.
+     * @param playerId - The player ID.
+     * @returns A promise that resolves to the selected points values.
+     * @throws An error if there is a failure.
+     */
+    async getRecentGamePoints(
+        gameDayId: number,
+        playerId: number,
+    ): Promise<(number | null)[]> {
+        try {
+            const parsed = z.object({
+                gameDayId: z.number().int().min(1),
+                playerId: z.number().int().min(1),
+            }).parse({ gameDayId, playerId });
+
+            const outcomes = await prisma.outcome.findMany({
+                where: {
+                    gameDayId: {
+                        lt: parsed.gameDayId,
+                    },
+                    playerId: parsed.playerId,
+                    team: {
+                        not: null,
+                    },
+                },
+                orderBy: {
+                    gameDayId: 'desc',
+                },
+                take: 10,
+                select: {
+                    points: true,
+                },
+            });
+
+            return outcomes.map((outcome) => outcome.points);
+        } catch (error) {
+            log(`Error fetching recent game points by player: ${String(error)}`);
+            throw error;
+        }
+    }
+
+    /**
+     * Calculates a player's recent average for picker logic using the legacy
+     * PHP behavior:
+     * - use recent game points before `gameDayId`
+     * - include at most `history` rows from that list
+     * - if fewer than `history` games exist, credit 1.45 points per missing game
+     *
+     * @param gameDayId - The current game day ID.
+     * @param playerId - The player ID.
+     * @param history - Number of recent games to consider.
+     * @returns A promise resolving to the recent average.
+     * @throws An error if there is a failure.
+     */
+    async getRecentAverage(
+        gameDayId: number,
+        playerId: number,
+        history: number,
+    ): Promise<number> {
+        try {
+            const parsed = z.object({
+                gameDayId: z.number().int().min(1),
+                playerId: z.number().int().min(1),
+                history: z.number().int().min(1),
+            }).parse({ gameDayId, playerId, history });
+
+            const points = await this.getRecentGamePoints(
+                parsed.gameDayId,
+                parsed.playerId,
+            );
+
+            let total = 0;
+            let count = 0;
+            for (const point of points) {
+                total += point ?? 0;
+                count++;
+                if (count === parsed.history) break;
+            }
+
+            total += 1.45 * (parsed.history - count);
+            return total / parsed.history;
+        } catch (error) {
+            log(`Error fetching recent average by player: ${String(error)}`);
+            throw error;
+        }
+    }
+
+    /**
+     * Retrieves the total number of games where a player was assigned a team.
+     *
+     * Mirrors the legacy `player_games_played` SQL function:
+     * - count outcomes where `team` is not null for the given player.
+     *
+     * @param playerId - The player ID.
+     * @returns A promise resolving to the total count.
+     * @throws An error if there is a failure.
+     */
+    async getPlayerGamesPlayed(playerId: number): Promise<number> {
+        try {
+            const parsedPlayerId = z.number().int().min(1).parse(playerId);
+
+            return prisma.outcome.count({
+                where: {
+                    playerId: parsedPlayerId,
+                    team: {
+                        not: null,
+                    },
+                },
+            });
+        } catch (error) {
+            log(`Error fetching games played by player: ${String(error)}`);
+            throw error;
+        }
+    }
+
+    /**
+     * Retrieves the total number of games where a player was assigned a team
+     * before a specific game day.
+     *
+     * Use this for historical picker parity where `played` should reflect
+     * what was known at picker run-time for that game.
+     *
+     * @param playerId - The player ID.
+     * @param gameDayId - The game day ID used as an exclusive upper bound.
+     * @returns A promise resolving to the total count.
+     * @throws An error if there is a failure.
+     */
+    async getPlayerGamesPlayedBeforeGameDay(
+        playerId: number,
+        gameDayId: number,
+    ): Promise<number> {
+        try {
+            const parsed = z.object({
+                playerId: z.number().int().min(1),
+                gameDayId: z.number().int().min(1),
+            }).parse({ playerId, gameDayId });
+
+            return prisma.outcome.count({
+                where: {
+                    playerId: parsed.playerId,
+                    team: {
+                        not: null,
+                    },
+                    gameDayId: {
+                        lt: parsed.gameDayId,
+                    },
+                },
+            });
+        } catch (error) {
+            log(`Error fetching games played before game day by player: ${String(error)}`);
+            throw error;
+        }
+    }
+
+    /**
      * Retrieves the number of games played by player ID in the given year,
      * optionally stopping at a given gameDay ID.
      * @param playerId - The ID of the player.

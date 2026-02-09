@@ -380,7 +380,12 @@ export const AdminPlayerList: React.FC<Props> = ({
                     const inviteLink = await onAddPlayerInvite(player.id, email);
                     const html = buildInviteEmail(inviteLink);
                     const cc = 'footy@toastboy.co.uk';
-                    await onSendEmail(email, cc, 'Welcome to Toastboy FC!', html);
+                    await onSendEmail({
+                        to: email,
+                        cc,
+                        subject: 'Welcome to Toastboy FC!',
+                        html,
+                    });
                     inviteSent += 1;
                 }
             }

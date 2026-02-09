@@ -3,10 +3,10 @@
 import {
     Button,
     Checkbox,
+    Divider,
     Group,
     Stack,
     Table,
-    TableCaption,
     TableTbody,
     TableTd,
     TableTh,
@@ -22,6 +22,7 @@ import { IconAlertTriangle, IconCheck, IconChevronDown, IconChevronUp, IconSelec
 import { useEffect, useMemo, useState } from 'react';
 
 import { config } from '@/lib/config';
+import type { CancelGameProxy } from '@/types/actions/CancelGame';
 import type { SubmitPickerProxy } from '@/types/actions/SubmitPicker';
 import type { PickerPlayerType } from '@/types/PickerPlayerType';
 
@@ -30,6 +31,7 @@ export interface PickerFormProps {
     gameDate: string;
     players: PickerPlayerType[];
     submitPicker: SubmitPickerProxy;
+    cancelGame: CancelGameProxy;
 }
 
 type SortKey = 'name' | 'responseTime' | 'gamesPlayed';
@@ -95,6 +97,7 @@ export const PickerForm: React.FC<PickerFormProps> = ({
     gameDate,
     players,
     submitPicker,
+    cancelGame,
 }) => {
     const eligiblePlayers = useMemo(
         () => players.filter((player) => player.response === 'Yes'),
@@ -103,23 +106,17 @@ export const PickerForm: React.FC<PickerFormProps> = ({
     const [sortKey, setSortKey] = useState<SortKey>('responseTime');
     const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
     const [selectedIds, setSelectedIds] = useState<number[]>(() => buildDefaultSelection(eligiblePlayers));
-    const [filter, setFilter] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [cancellationReason, setCancellationReason] = useState('');
+    const [isCancelling, setIsCancelling] = useState(false);
 
     useEffect(() => {
         const eligibleIdSet = new Set(eligiblePlayers.map((player) => player.playerId));
         setSelectedIds((prev) => prev.filter((id) => eligibleIdSet.has(id)));
     }, [eligiblePlayers]);
 
-    const filteredPlayers = useMemo(() => {
-        if (!eligiblePlayers) return [];
-        const trimmedFilter = filter.trim().toLowerCase();
-        if (!trimmedFilter) return eligiblePlayers;
-        return eligiblePlayers.filter((player) => getPlayerName(player).toLowerCase().includes(trimmedFilter));
-    }, [eligiblePlayers, filter]);
-
     const sortedPlayers = useMemo(() => {
-        const data = [...filteredPlayers];
+        const data = [...eligiblePlayers];
         data.sort((a, b) => {
             switch (sortKey) {
                 case 'name':
@@ -133,14 +130,14 @@ export const PickerForm: React.FC<PickerFormProps> = ({
             }
         });
         return data;
-    }, [filteredPlayers, sortKey, sortDirection]);
+    }, [eligiblePlayers, sortKey, sortDirection]);
 
     const selectedIdSet = useMemo(() => new Set(selectedIds), [selectedIds]);
     const filteredSelectedCount = useMemo(() => (
-        filteredPlayers.reduce((acc, row) => (selectedIdSet.has(row.playerId) ? acc + 1 : acc), 0)
-    ), [filteredPlayers, selectedIdSet]);
+        eligiblePlayers.reduce((acc, row) => (selectedIdSet.has(row.playerId) ? acc + 1 : acc), 0)
+    ), [eligiblePlayers, selectedIdSet]);
 
-    const allSelected = filteredPlayers.length > 0 && filteredSelectedCount === filteredPlayers.length;
+    const allSelected = eligiblePlayers.length > 0 && filteredSelectedCount === eligiblePlayers.length;
     const someSelected = filteredSelectedCount > 0 && !allSelected;
     const hasSelection = selectedIds.length > 0;
 
@@ -152,13 +149,13 @@ export const PickerForm: React.FC<PickerFormProps> = ({
         if (checked) {
             setSelectedIds((prev) => Array.from(new Set([
                 ...prev,
-                ...filteredPlayers.map((player) => player.playerId),
+                ...eligiblePlayers.map((player) => player.playerId),
             ])));
             return;
         }
 
-        const filteredIds = new Set(filteredPlayers.map((player) => player.playerId));
-        setSelectedIds((prev) => prev.filter((id) => !filteredIds.has(id)));
+        const eligibleIdSet = new Set(eligiblePlayers.map((player) => player.playerId));
+        setSelectedIds((prev) => prev.filter((id) => !eligibleIdSet.has(id)));
     };
 
     const toggleSelectPlayer = (playerId: number, checked: boolean) => {
@@ -222,7 +219,6 @@ export const PickerForm: React.FC<PickerFormProps> = ({
             await submitPicker(
                 selectedPlayers.map((player) => ({
                     playerId: player.playerId,
-                    name: player.player.name ?? null,
                 })),
             );
             notifications.update({
@@ -248,6 +244,51 @@ export const PickerForm: React.FC<PickerFormProps> = ({
             });
         } finally {
             setIsSubmitting(false);
+        }
+    };
+
+    const handleCancelGame = async () => {
+        const notificationId = 'cancel-game';
+        notifications.show({
+            id: notificationId,
+            loading: true,
+            title: 'Cancelling game',
+            message: 'Updating game status...',
+            autoClose: false,
+            withCloseButton: false,
+        });
+
+        setIsCancelling(true);
+        try {
+            await cancelGame(
+                {
+                    gameDayId: gameId,
+                    reason: cancellationReason,
+                },
+            );
+            notifications.update({
+                id: notificationId,
+                color: 'teal',
+                title: 'Game cancelled',
+                message: 'The game has been marked as cancelled.',
+                icon: <IconCheck size={config.notificationIconSize} />,
+                loading: false,
+                autoClose: config.notificationAutoClose,
+            });
+        } catch (err) {
+            const errorMessage = err instanceof Error ? err.message : 'Failed to cancel game';
+            notifications.update({
+                id: notificationId,
+                color: 'red',
+                title: 'Error',
+                message: errorMessage,
+                icon: <IconAlertTriangle size={config.notificationIconSize} />,
+                loading: false,
+                autoClose: false,
+                withCloseButton: true,
+            });
+        } finally {
+            setIsCancelling(false);
         }
     };
 
@@ -278,21 +319,15 @@ export const PickerForm: React.FC<PickerFormProps> = ({
             </Stack>
             <Group justify="space-between" align="center" wrap="wrap">
                 <Text fw={700}>Players selected ({selectedIds.length})</Text>
-            </Group>
-            <Group justify="space-between" align="center" wrap="wrap">
-                <TextInput
-                    placeholder="Search players"
-                    value={filter}
-                    onChange={(event) => setFilter(event.currentTarget.value)}
-                />
                 <Button
-                    size="xs"
                     type="button"
+                    data-testid="submit-picker-button"
                     onClick={handleSubmit}
-                    disabled={!hasSelection}
+                    disabled={!hasSelection || isCancelling}
                     loading={isSubmitting}
+                    w={150}
                 >
-                    Submit selection
+                    Pick sides
                 </Button>
             </Group>
             <Table
@@ -303,7 +338,6 @@ export const PickerForm: React.FC<PickerFormProps> = ({
                 w="100%"
                 style={{ tableLayout: 'fixed' }}
             >
-                <TableCaption>Picker selections</TableCaption>
                 <TableThead>
                     <TableTr>
                         <TableTh w="2.5rem">
@@ -327,6 +361,32 @@ export const PickerForm: React.FC<PickerFormProps> = ({
                 </TableThead>
                 <TableTbody>{rows}</TableTbody>
             </Table>
+            <Divider
+                label="or"
+                labelPosition="center"
+            />
+            <Group justify="space-between" align="center" wrap="wrap">
+                <TextInput
+                    data-testid="cancellation-reason"
+                    aria-label="Cancellation reason"
+                    placeholder="not enough players"
+                    value={cancellationReason}
+                    onChange={(event) => setCancellationReason(event.currentTarget.value)}
+                    disabled={isSubmitting || isCancelling}
+                    flex={1}
+                />
+                <Button
+                    data-testid="cancel-game-button"
+                    type="button"
+                    color="red"
+                    onClick={handleCancelGame}
+                    loading={isCancelling}
+                    disabled={isSubmitting || isCancelling}
+                    w={150}
+                >
+                    Cancel game
+                </Button>
+            </Group>
         </Stack>
     );
 };

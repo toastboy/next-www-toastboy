@@ -155,12 +155,29 @@ class PlayerService {
     }
 
     /**
-     * Get all players with the game day number when they last played
-     * @returns A promise that resolves to all players with their last game day number
+     * Retrieves all players from the database with their outcomes and extra
+     * emails.
+     *
+     * @param active - Optional filter to only return active players (those
+     * without a finished date). Defaults to undefined for all players.
+     * @returns A promise that resolves to an array of PlayerDataType objects
+     * enriched with computed statistics including:
+     *          - accountEmail: The player's account email address
+     *          - firstResponded: The earliest gameDayId where the player responded
+     *          - lastResponded: The latest gameDayId where the player responded
+     *          - firstPlayed: The earliest gameDayId where the player earned points
+     *          - lastPlayed: The latest gameDayId where the player earned points
+     *          - gamesPlayed: Total number of games with recorded points
+     *          - gamesWon: Number of games where the player earned 3 points
+     *          - gamesDrawn: Number of games where the player earned 1 point
+     *          - gamesLost: Number of games where the player earned 0 points
+     * @throws Logs and re-throws any errors that occur during the database
+     * query
      */
-    async getAll(): Promise<PlayerDataType[]> {
+    async getAll(options?: { activeOnly?: boolean }): Promise<PlayerDataType[]> {
         try {
             const players = await prisma.player.findMany({
+                where: options?.activeOnly ? { finished: null } : undefined,
                 include: {
                     outcomes: {
                         orderBy: {

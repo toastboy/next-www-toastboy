@@ -1,6 +1,7 @@
 import { Container } from '@mantine/core';
 import { notFound } from 'next/navigation';
 
+import { cancelGame } from '@/actions/cancelGame';
 import { SubmitPicker } from '@/actions/submitPicker';
 import { PickerForm } from '@/components/PickerForm/PickerForm';
 import gameDayService from '@/services/GameDay';
@@ -26,6 +27,7 @@ const Page: React.FC<PageProps> = async () => {
                 gameDate={currentGame.date.toISOString().split('T')[0]}
                 players={playersWithGames}
                 submitPicker={SubmitPicker}
+                cancelGame={cancelGame}
             />
         </Container>
     );

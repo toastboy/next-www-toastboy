@@ -121,7 +121,7 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
                 playerId: row.playerId,
                 response: responseValues.response,
                 goalie: !!responseValues.goalie,
-                comment: responseValues.comment,
+                comment: responseValues.comment ?? null,
             });
             setRows((current) =>
                 current.map((r) => (r.playerId === row.playerId ? { ...r, ...responseValues } : r)),

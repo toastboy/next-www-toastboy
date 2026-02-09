@@ -113,7 +113,12 @@ export const NewPlayerForm: React.FC<Props> = ({
                     </MantineProvider>,
                 );
 
-                await onSendEmail(values.email, cc, 'Welcome to Toastboy FC!', html);
+                await onSendEmail({
+                    to: values.email,
+                    cc,
+                    subject: 'Welcome to Toastboy FC!',
+                    html,
+                });
             }
 
             notifications.update({

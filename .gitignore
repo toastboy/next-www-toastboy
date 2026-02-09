@@ -65,3 +65,4 @@ prisma/zod/
 # Storybook files
 *storybook.log
 storybook-static
+www-toastboy

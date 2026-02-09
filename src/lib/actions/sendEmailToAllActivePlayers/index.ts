@@ -1,0 +1,1 @@
+export { sendEmailToAllActivePlayersCore } from './sendEmailToAllActivePlayers';

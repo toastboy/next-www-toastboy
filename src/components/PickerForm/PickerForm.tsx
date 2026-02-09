@@ -219,7 +219,6 @@ export const PickerForm: React.FC<PickerFormProps> = ({
             await submitPicker(
                 selectedPlayers.map((player) => ({
                     playerId: player.playerId,
-                    name: player.player.name ?? null,
                 })),
             );
             notifications.update({

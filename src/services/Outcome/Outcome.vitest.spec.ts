@@ -526,6 +526,29 @@ describe('OutcomeService', () => {
         });
     });
 
+    describe('getPlayerGamesPlayed', () => {
+        it('should count games where the player has a team assigned', async () => {
+            (prisma.outcome.count as Mock).mockResolvedValueOnce(14);
+
+            const result = await outcomeService.getPlayerGamesPlayed(7);
+
+            expect(prisma.outcome.count).toHaveBeenCalledWith({
+                where: {
+                    playerId: 7,
+                    team: {
+                        not: null,
+                    },
+                },
+            });
+            expect(result).toBe(14);
+        });
+
+        it('should throw for invalid player id', async () => {
+            await expect(outcomeService.getPlayerGamesPlayed(0)).rejects.toThrow();
+            expect(prisma.outcome.count).not.toHaveBeenCalled();
+        });
+    });
+
     describe('getGamesPlayedByPlayer', () => {
         it('should retrieve the correct number of games played for Player ID 1, year 2021', async () => {
             const result = await outcomeService.getGamesPlayedByPlayer(1, 2021);

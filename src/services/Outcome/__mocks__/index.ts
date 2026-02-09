@@ -5,6 +5,7 @@ const outcomeService = {
     getTurnoutByYear: vi.fn(),
     getRecentGamePoints: vi.fn(),
     getRecentAverage: vi.fn(),
+    getPlayerGamesPlayed: vi.fn(),
 };
 
 export default outcomeService;

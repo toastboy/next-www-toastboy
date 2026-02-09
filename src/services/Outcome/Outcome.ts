@@ -551,6 +551,34 @@ export class OutcomeService {
     }
 
     /**
+     * Retrieves the total number of games where a player was assigned a team.
+     *
+     * Mirrors the legacy `player_games_played` SQL function:
+     * - count outcomes where `team` is not null for the given player.
+     *
+     * @param playerId - The player ID.
+     * @returns A promise resolving to the total count.
+     * @throws An error if there is a failure.
+     */
+    async getPlayerGamesPlayed(playerId: number): Promise<number> {
+        try {
+            const parsedPlayerId = z.number().int().min(1).parse(playerId);
+
+            return prisma.outcome.count({
+                where: {
+                    playerId: parsedPlayerId,
+                    team: {
+                        not: null,
+                    },
+                },
+            });
+        } catch (error) {
+            log(`Error fetching games played by player: ${String(error)}`);
+            throw error;
+        }
+    }
+
+    /**
      * Retrieves the number of games played by player ID in the given year,
      * optionally stopping at a given gameDay ID.
      * @param playerId - The ID of the player.

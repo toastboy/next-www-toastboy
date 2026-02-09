@@ -25,7 +25,6 @@ interface PickerCandidate {
     playerId: number;
     name: string;
     goalie: boolean;
-    played: number;
     average: number;
     age: number | null;
 }
@@ -60,11 +59,10 @@ const sum = (values: number[]) => values.reduce((acc, value) => acc + value, 0);
 
 const combLeastItem = (comb: number) => comb & -comb;
 
-const combNext = (comb: number, parity: number) => {
+const combNext = (comb: number) => {
     const lobit = combLeastItem(comb);
     comb += lobit;
     let hibit = combLeastItem(comb);
-    parity ^= (((hibit | lobit) & 0x77777777) !== 0) ? 1 : 0;
     hibit -= lobit;
 
     while ((hibit & 1) === 0) {
@@ -73,7 +71,7 @@ const combNext = (comb: number, parity: number) => {
 
     comb |= hibit >> 1;
 
-    return { comb, parity };
+    return comb;
 };
 
 const combForeach = <T>(
@@ -92,12 +90,13 @@ const combForeach = <T>(
         mask <<= 1;
     }
 
-    let parity = 0;
     const combLast = shifts[n] - shifts[n - k];
     const combFirst = shifts[k] - 1;
 
     for (let comb = combFirst; comb <= combLast;) {
-        if (!mirror || parity === 1) {
+        // For mirrored team splits, only evaluate combinations where item[0] is
+        // included. This yields exactly one representative per mirrored pair.
+        if (!mirror || (comb & shifts[0]) !== 0) {
             const included: T[] = [];
             const excluded: T[] = [];
             for (let index = 0; index < n; index++) {
@@ -112,9 +111,7 @@ const combForeach = <T>(
         }
 
         if (comb === combLast) break;
-        const next = combNext(comb, parity);
-        comb = next.comb;
-        parity = next.parity;
+        comb = combNext(comb);
     }
 };
 
@@ -201,7 +198,6 @@ const selectMiddleOutfieldPlayer = (players: PickerCandidate[]) => {
     let middle = Math.floor(players.filter((player) => !player.goalie).length / 2);
     const orderedPlayers = [...players].sort((left, right) =>
         compareNumber(left.goalie ? 1 : 0, right.goalie ? 1 : 0) ||
-        compareNumber(left.played, right.played) ||
         compareNumber(left.average, right.average) ||
         compareNullableNumberNullsFirst(left.age, right.age) ||
         (left.playerId - right.playerId),
@@ -308,7 +304,6 @@ export async function SubmitPickerCore(
     });
 
     const candidates = await Promise.all(selectedOutcomes.map(async (row) => {
-        const played = Math.min(10, await deps.outcomeService.getPlayerGamesPlayedBeforeGameDay(row.playerId, gameDay.id));
         const average = await deps.outcomeService.getRecentAverage(gameDay.id, row.playerId, history);
         const born = row.player.born ?? null;
         const age = (born !== null && born < 1995) ? gameDay.year - born : null;
@@ -316,7 +311,6 @@ export async function SubmitPickerCore(
             playerId: row.playerId,
             name: row.player.name ?? `Player ${row.playerId}`,
             goalie: row.goalie === true,
-            played,
             average,
             age,
         } satisfies PickerCandidate;

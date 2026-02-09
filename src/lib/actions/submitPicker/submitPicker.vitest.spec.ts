@@ -143,17 +143,17 @@ describe('SubmitPickerCore', () => {
         });
         expect(upsertPayloads).toContainEqual({
             gameDayId: 1249,
-            playerId: 4,
+            playerId: 2,
             team: 'A',
         });
         expect(upsertPayloads).toContainEqual({
             gameDayId: 1249,
-            playerId: 2,
+            playerId: 3,
             team: 'B',
         });
         expect(upsertPayloads).toContainEqual({
             gameDayId: 1249,
-            playerId: 3,
+            playerId: 4,
             team: 'B',
         });
         expect(upsertPayloads).toContainEqual({
@@ -165,6 +165,73 @@ describe('SubmitPickerCore', () => {
         expect(deps.sendEmailToAllActivePlayers).toHaveBeenCalledWith(expect.objectContaining({
             subject: 'Footy: teams picked',
         }));
+    });
+
+    it('evaluates the full mirrored search space for 8-player splits', async () => {
+        const adminRows: OutcomePlayerType[] = [
+            createOutcomePlayer({ playerId: 12, name: 'P12', born: 1971, goalie: false }),
+            createOutcomePlayer({ playerId: 190, name: 'P190', born: 1991, goalie: false }),
+            createOutcomePlayer({ playerId: 191, name: 'P191', born: null, goalie: false }),
+            createOutcomePlayer({ playerId: 193, name: 'P193', born: 1993, goalie: false }),
+            createOutcomePlayer({ playerId: 196, name: 'P196', born: null, goalie: true }),
+            createOutcomePlayer({ playerId: 200, name: 'P200', born: null, goalie: false }),
+            createOutcomePlayer({ playerId: 201, name: 'P201', born: null, goalie: false }),
+            createOutcomePlayer({ playerId: 239, name: 'P239', born: null, goalie: false }),
+        ];
+        const averageByPlayer = new Map([
+            [12, 1.8],
+            [190, 1.8],
+            [191, 1.5],
+            [193, 0.9],
+            [196, 1.3],
+            [200, 1.8],
+            [201, 1.8],
+            [239, 1.46],
+        ]);
+
+        const deps = {
+            gameDayService: {
+                getCurrent: vi.fn().mockResolvedValue(gameDay),
+            },
+            outcomeService: {
+                getAdminByGameDay: vi.fn().mockResolvedValue(adminRows),
+                getPlayerGamesPlayedBeforeGameDay: vi.fn().mockResolvedValue(10),
+                getRecentAverage: vi.fn().mockImplementation((_gameDayId: number, playerId: number) => averageByPlayer.get(playerId) ?? 0),
+                upsert: vi.fn().mockResolvedValue(null),
+            },
+            sendEmailToAllActivePlayers: vi.fn().mockResolvedValue({ recipientCount: 10 }),
+            getPublicBaseUrl: () => 'https://example.test',
+        };
+
+        await SubmitPickerCore([
+            { playerId: 12 },
+            { playerId: 190 },
+            { playerId: 191 },
+            { playerId: 193 },
+            { playerId: 196 },
+            { playerId: 200 },
+            { playerId: 201 },
+            { playerId: 239 },
+        ], deps);
+
+        const predictedAssignments = new Map<number, TeamName>();
+        for (const call of deps.outcomeService.upsert.mock.calls) {
+            const payload = call[0] as { playerId: number; team: TeamName | null; };
+            if (payload.team === 'A' || payload.team === 'B') {
+                predictedAssignments.set(payload.playerId, payload.team);
+            }
+        }
+        const predictedTeamA = Array.from(predictedAssignments.entries())
+            .filter(([, team]) => team === 'A')
+            .map(([playerId]) => playerId)
+            .sort((left, right) => left - right);
+        const predictedTeamB = Array.from(predictedAssignments.entries())
+            .filter(([, team]) => team === 'B')
+            .map(([playerId]) => playerId)
+            .sort((left, right) => left - right);
+
+        expect(predictedTeamA).toEqual([12, 193, 200, 201]);
+        expect(predictedTeamB).toEqual([190, 191, 196, 239]);
     });
 
     it('removes the middle outfield player for odd counts then adds them to the lower-average team', async () => {

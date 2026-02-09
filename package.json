@@ -138,7 +138,7 @@
         "msw": "^2.12.8",
         "msw-storybook-addon": "^2.0.6",
         "npm-check-updates": "^19.3.2",
-        "playwright": "^1.58.1",
+        "playwright": "^1.58.2",
         "react-test-renderer": "^19.2.4",
         "supertest": "^7.2.2",
         "ts-node": "^10.9.2",

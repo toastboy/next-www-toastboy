@@ -42,7 +42,8 @@
     "exclude": [
         ".eslintrc.js",
         ".next",
-        "node_modules"
+        "node_modules",
+        "www-toastboy"
     ],
     "include": [
         ".next/types/**/*.ts",

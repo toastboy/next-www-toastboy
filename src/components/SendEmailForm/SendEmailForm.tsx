@@ -68,7 +68,11 @@ export const SendEmailForm: React.FC<Props> = ({
         });
 
         try {
-            await onSendEmail(emails, "", subject, editor.getHTML());
+            await onSendEmail({
+                to: emails,
+                subject,
+                html: editor.getHTML(),
+            });
 
             onClose();
             notifications.update({

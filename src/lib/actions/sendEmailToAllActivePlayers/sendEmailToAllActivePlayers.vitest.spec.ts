@@ -66,10 +66,12 @@ describe('sendEmailToAllActivePlayersCore', () => {
 
         expect(sendEmail).toHaveBeenCalledTimes(1);
         expect(sendEmail).toHaveBeenCalledWith(
-            "freeman@example.com,one@example.com",
-            'captain@example.com',
-            'Game Cancelled',
-            '<p>No game this week</p>',
+            {
+                bcc: "freeman@example.com,one@example.com",
+                cc: 'captain@example.com',
+                subject: 'Game Cancelled',
+                html: '<p>No game this week</p>',
+            },
         );
         expect(result).toEqual({ recipientCount: 2 });
     });
@@ -97,7 +99,6 @@ describe('sendEmailToAllActivePlayersCore', () => {
             {
                 subject: 'Subject',
                 html: '<p>Body</p>',
-                cc: '',
             },
             {
                 playerService,

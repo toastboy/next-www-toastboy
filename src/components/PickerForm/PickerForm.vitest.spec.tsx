@@ -127,9 +127,9 @@ describe('PickerForm', () => {
 
         await waitFor(() => {
             expect(mockSave).toHaveBeenCalledWith([
-                { playerId: 1, name: 'Alex Keeper' },
-                { playerId: 2, name: 'Britt Winger' },
-                { playerId: 3, name: 'Casey Mid' },
+                { playerId: 1 },
+                { playerId: 2 },
+                { playerId: 3 },
             ]);
         });
     });

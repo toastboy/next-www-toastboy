@@ -219,7 +219,6 @@ export const PickerForm: React.FC<PickerFormProps> = ({
             await submitPicker(
                 selectedPlayers.map((player) => ({
                     playerId: player.playerId,
-                    name: player.player.name ?? null,
                 })),
             );
             notifications.update({
@@ -322,6 +321,7 @@ export const PickerForm: React.FC<PickerFormProps> = ({
                 <Text fw={700}>Players selected ({selectedIds.length})</Text>
                 <Button
                     type="button"
+                    data-testid="submit-picker-button"
                     onClick={handleSubmit}
                     disabled={!hasSelection || isCancelling}
                     loading={isSubmitting}

@@ -127,7 +127,11 @@ export async function sendGameInvitations(
             customMessage,
         });
 
-        await sendEmail(uniqueEmails.join(','), '', 'Toastboy FC invitation', html);
+        await sendEmail({
+            to: uniqueEmails.join(','),
+            subject: 'Toastboy FC invitation',
+            html,
+        });
         return token;
     });
 

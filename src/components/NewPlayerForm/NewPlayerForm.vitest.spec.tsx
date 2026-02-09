@@ -70,10 +70,12 @@ describe('NewPlayerForm', () => {
                 introducedBy: '',
             });
             expect(mockSendEmail).toHaveBeenCalledWith(
-                'test@example.com',
-                'footy@toastboy.co.uk',
-                'Welcome to Toastboy FC!',
-                expect.any(String),
+                {
+                    to: 'test@example.com',
+                    cc: 'footy@toastboy.co.uk',
+                    subject: 'Welcome to Toastboy FC!',
+                    html: expect.any(String) as string,
+                },
             );
         });
     });

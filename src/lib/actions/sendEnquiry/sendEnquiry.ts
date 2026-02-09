@@ -78,7 +78,11 @@ export async function sendEnquiryCore(
         '<p>If you did not request this, you can ignore this message.</p>',
     ].join('');
 
-    await deps.sendEmailCore(data.email, '', 'Confirm your enquiry', html);
+    await deps.sendEmailCore({
+        to: data.email,
+        subject: 'Confirm your enquiry',
+        html,
+    });
 }
 
 /**
@@ -119,7 +123,11 @@ export async function deliverContactEnquiryCore(
         `<p><strong>Message:</strong><br />${formattedMessage || '-'}</p>`,
     ].join('');
 
-    await deps.sendEmailCore(config.contactEmailDestination, '', subject, html);
+    await deps.sendEmailCore({
+        to: config.contactEmailDestination,
+        subject,
+        html,
+    });
 
     await deps.emailVerificationService.markUsed(token);
     await deps.contactEnquiryService.markDelivered(enquiry.id);

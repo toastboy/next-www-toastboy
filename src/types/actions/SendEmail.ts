@@ -1,3 +1,4 @@
+import type { SendMailOptions } from 'nodemailer';
 import { z } from 'zod';
 
 /**
@@ -21,14 +22,6 @@ export type SendEmailInput = z.infer<typeof SendEmailSchema>;
  * Enables dependency injection for components and stories without importing
  * the server-only action directly.
  *
- * @param to - Primary recipient email address.
- * @param cc - Optional CC recipients, comma-separated when multiple.
- * @param subject - Email subject line.
- * @param html - Sanitized HTML body content.
+ * @param mailOptions - Nodemailer mail options payload.
  */
-export type SendEmailProxy = (
-    to: string,
-    cc: string,
-    subject: string,
-    html: string,
-) => Promise<void>;
+export type SendEmailProxy = (mailOptions: SendMailOptions) => Promise<void>;

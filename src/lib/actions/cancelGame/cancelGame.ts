@@ -42,7 +42,6 @@ export async function cancelGameCore(
         });
 
         await sendEmailToAllActivePlayers({
-            cc: '',
             subject: `Game Cancelled: ${updatedGameDay.date.toDateString()}`,
             html: `<p>The game scheduled for ${updatedGameDay.date.toDateString()} has been cancelled.</p>` +
                 (data.reason ? `<p>Reason: ${data.reason}</p>` : ''),

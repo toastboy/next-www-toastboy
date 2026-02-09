@@ -444,6 +444,138 @@ describe('OutcomeService', () => {
         });
     });
 
+    describe('getRecentGamePoints', () => {
+        it('should retrieve recent points using the legacy stored procedure filters', async () => {
+            const recentPointsRows = [
+                { points: 3 },
+                { points: 1 },
+                { points: 0 },
+                { points: null },
+            ];
+            (prisma.outcome.findMany as Mock).mockResolvedValueOnce(recentPointsRows);
+
+            const result = await outcomeService.getRecentGamePoints(25, 7);
+
+            expect(prisma.outcome.findMany).toHaveBeenCalledWith({
+                where: {
+                    gameDayId: {
+                        lt: 25,
+                    },
+                    playerId: 7,
+                    team: {
+                        not: null,
+                    },
+                },
+                orderBy: {
+                    gameDayId: 'desc',
+                },
+                take: 10,
+                select: {
+                    points: true,
+                },
+            });
+            expect(result).toEqual([3, 1, 0, null]);
+        });
+
+        it('should throw for invalid input values', async () => {
+            await expect(outcomeService.getRecentGamePoints(0, 1)).rejects.toThrow();
+            await expect(outcomeService.getRecentGamePoints(1, 0)).rejects.toThrow();
+            expect(prisma.outcome.findMany).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('getRecentAverage', () => {
+        it('should calculate average from the requested history size', async () => {
+            (prisma.outcome.findMany as Mock).mockResolvedValueOnce([
+                { points: 3 },
+                { points: 1 },
+                { points: 0 },
+                { points: 3 },
+            ]);
+
+            const result = await outcomeService.getRecentAverage(25, 7, 3);
+
+            expect(result).toBeCloseTo(4 / 3, 10);
+        });
+
+        it('should credit 1.45 points for missing recent games', async () => {
+            (prisma.outcome.findMany as Mock).mockResolvedValueOnce([
+                { points: 3 },
+                { points: 0 },
+            ]);
+
+            const result = await outcomeService.getRecentAverage(25, 7, 5);
+
+            expect(result).toBeCloseTo(1.47, 10);
+        });
+
+        it('should treat null points as zero while still counting the game', async () => {
+            (prisma.outcome.findMany as Mock).mockResolvedValueOnce([
+                { points: null },
+                { points: 3 },
+            ]);
+
+            const result = await outcomeService.getRecentAverage(25, 7, 3);
+
+            expect(result).toBeCloseTo(4.45 / 3, 10);
+        });
+
+        it('should throw for invalid history', async () => {
+            await expect(outcomeService.getRecentAverage(1, 1, 0)).rejects.toThrow();
+            expect(prisma.outcome.findMany).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('getPlayerGamesPlayed', () => {
+        it('should count games where the player has a team assigned', async () => {
+            (prisma.outcome.count as Mock).mockResolvedValueOnce(14);
+
+            const result = await outcomeService.getPlayerGamesPlayed(7);
+
+            expect(prisma.outcome.count).toHaveBeenCalledWith({
+                where: {
+                    playerId: 7,
+                    team: {
+                        not: null,
+                    },
+                },
+            });
+            expect(result).toBe(14);
+        });
+
+        it('should throw for invalid player id', async () => {
+            await expect(outcomeService.getPlayerGamesPlayed(0)).rejects.toThrow();
+            expect(prisma.outcome.count).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('getPlayerGamesPlayedBeforeGameDay', () => {
+        it('should count games with a team assigned before the given game day', async () => {
+            (prisma.outcome.count as Mock).mockResolvedValueOnce(9);
+
+            const result = await outcomeService.getPlayerGamesPlayedBeforeGameDay(7, 25);
+
+            expect(prisma.outcome.count).toHaveBeenCalledWith({
+                where: {
+                    playerId: 7,
+                    team: {
+                        not: null,
+                    },
+                    gameDayId: {
+                        lt: 25,
+                    },
+                },
+            });
+            expect(result).toBe(9);
+        });
+
+        it('should throw for invalid input', async () => {
+            await expect(outcomeService.getPlayerGamesPlayedBeforeGameDay(0, 25)).rejects.toThrow();
+            await expect(outcomeService.getPlayerGamesPlayedBeforeGameDay(7, 0)).rejects.toThrow();
+            expect(prisma.outcome.count).not.toHaveBeenCalled();
+        });
+    });
+
     describe('getGamesPlayedByPlayer', () => {
         it('should retrieve the correct number of games played for Player ID 1, year 2021', async () => {
             const result = await outcomeService.getGamesPlayedByPlayer(1, 2021);

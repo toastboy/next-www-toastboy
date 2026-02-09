@@ -3,15 +3,15 @@ import { fileURLToPath } from 'node:url';
 
 import { defineConfig } from 'vitest/config';
 
-const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
+const currentDirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
     resolve: {
         alias: {
-            '@': path.join(dirname, 'src'),
-            prisma: path.join(dirname, 'prisma'),
-            'server-only': path.join(dirname, 'src/tests/__mocks__/server-only.ts'),
-            types: path.join(dirname, 'src/types'),
+            '@': path.join(currentDirname, 'src'),
+            prisma: path.join(currentDirname, 'prisma'),
+            'server-only': path.join(currentDirname, 'src/tests/__mocks__/server-only.ts'),
+            types: path.join(currentDirname, 'src/types'),
         },
     },
     test: {

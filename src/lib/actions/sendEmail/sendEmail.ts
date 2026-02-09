@@ -29,9 +29,9 @@ export async function sendEmailCore(mailOptions: SendMailOptions) {
         });
 
     const sanitizedHtml =
-        typeof mailOptions.html === 'string'
-            ? sanitizeHtml(mailOptions.html)
-            : mailOptions.html ?? undefined;
+        typeof mailOptions.html === 'string' ?
+            sanitizeHtml(mailOptions.html) :
+            mailOptions.html ?? undefined;
 
     try {
         await transporter.sendMail({

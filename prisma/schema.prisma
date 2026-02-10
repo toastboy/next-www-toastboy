@@ -77,17 +77,6 @@ model CountrySupporter {
     @@index([countryISOCode])
 }
 
-model Diffs {
-    id             Int     @id @default(autoincrement())
-    a              String? @db.Text
-    b              String? @db.Text
-    diffAge        Float?
-    diffUnknownAge Int?
-    diffGoalies    Int?    @db.TinyInt
-    diffAverage    Float?
-    diffPlayed     Int?
-}
-
 model GameChat {
     id      Int      @id @default(autoincrement())
     gameDay Int
@@ -146,20 +135,6 @@ model Outcome {
     @@unique([gameDayId, playerId])
     @@index([gameDayId])
     @@index([playerId])
-}
-
-model Picker {
-    playerId   Int     @id
-    playerName String? @db.VarChar(255)
-    age        Int?
-    average    Float?
-    goalie     Int?    @db.TinyInt
-    played     Int?
-}
-
-model PickerTeams {
-    playerId Int       @unique
-    team     TeamName?
 }
 
 model Player {

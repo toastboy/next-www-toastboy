@@ -103,9 +103,6 @@ async function main() {
     await prisma.outcome.deleteMany();
     await prisma.playerRecord.deleteMany();
     await prisma.gameDay.deleteMany();
-    await prisma.diffs.deleteMany();
-    await prisma.picker.deleteMany();
-    await prisma.pickerTeams.deleteMany();
     await prisma.playerExtraEmail.deleteMany();
     await prisma.playerLogin.deleteMany();
     await prisma.emailVerification.deleteMany();

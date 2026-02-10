@@ -48,8 +48,8 @@ export const extractMockProps = <T,>(id: string) => {
     for (const element of mockElements) {
         const json = element.textContent?.replace(new RegExp(`^${id}:\\s*`), '');
         expect(typeof json).toBe('string');
-        expect(json!.trim()).not.toBe('');
-        result.push(JSON.parse(json as string) as T);
+        expect(json.trim()).not.toBe('');
+        result.push(JSON.parse(json) as T);
     }
     expect(result.length).toBeGreaterThan(0);
     return result;

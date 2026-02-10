@@ -42,12 +42,32 @@ interface TeamSplit {
     diffs: TeamDiffs;
 }
 
+/**
+ * Compares two numbers using an epsilon tolerance to account for floating-point
+ * imprecision.
+ *
+ * @param a - The first number to compare.
+ * @param b - The second number to compare.
+ * @param epsilon - The maximum allowed difference to consider the numbers
+ * equal.
+ * @returns `0` if the numbers are within `epsilon`, `-1` if `a` is less than
+ * `b`, or `1` if `a` is greater than `b`.
+ */
 const compareNumber = (a: number, b: number, epsilon = 1e-9) => {
     const delta = a - b;
     if (Math.abs(delta) <= epsilon) return 0;
     return delta < 0 ? -1 : 1;
 };
 
+/**
+ * Compares two nullable numbers, treating null values as coming first in sort
+ * order.
+ * @param a - The first number to compare, or null
+ * @param b - The second number to compare, or null
+ * @returns A negative number if a comes before b, 0 if equal, or a positive
+ *          number if a comes after b. Null values are always sorted before
+ *          non-null values.
+ */
 const compareNullableNumberNullsFirst = (a: number | null, b: number | null) => {
     if (a === null && b === null) return 0;
     if (a === null) return -1;
@@ -55,66 +75,106 @@ const compareNullableNumberNullsFirst = (a: number | null, b: number | null) => 
     return compareNumber(a, b);
 };
 
+/**
+ * Computes the total of all numeric values in the provided array.
+ *
+ * @param values - The list of numbers to add together.
+ * @returns The sum of all numbers in the array.
+ */
 const sum = (values: number[]) => values.reduce((acc, value) => acc + value, 0);
 
-const combLeastItem = (comb: number) => comb & -comb;
-
-const combNext = (comb: number) => {
-    const lobit = combLeastItem(comb);
-    comb += lobit;
-    let hibit = combLeastItem(comb);
-    hibit -= lobit;
-
-    while ((hibit & 1) === 0) {
-        hibit >>= 1;
-    }
-
-    comb |= hibit >> 1;
-
-    return comb;
-};
-
+/**
+ * Iterates over all combinations of k items from a given array and invokes a
+ * callback for each combination.
+ *
+ * @template T - The type of items in the array.
+ * @param k - The size of each combination (number of items to include).
+ * @param items - The array of items to generate combinations from.
+ * @param callback - Function invoked for each combination, receiving:
+ *   - `included` - Array of items included in the current combination.
+ *   - `excluded` - Array of items excluded from the current combination.
+ *   - `includedIndexes` - Indexes of included items in the original array.
+ *   - `includedMask` - Bitmask representation of included item positions.
+ * @param mirror - If true, only evaluates combinations where the first item
+ *   (items[0]) is included, yielding exactly one representative per mirrored
+ *   pair. Defaults to true.
+ *
+ * @example
+ * ```typescript
+ * combForeach(2, ['a', 'b', 'c'], (included, excluded, indexes, mask) => {
+ *   console.log(included); // ['a', 'b'], ['a', 'c'], ['b', 'c']
+ * });
+ * ```
+ */
 const combForeach = <T>(
     k: number,
     items: T[],
-    callback: (included: T[], excluded: T[]) => void,
+    callback: (included: T[], excluded: T[], includedIndexes: number[], includedMask: bigint) => void,
     mirror = true,
 ) => {
     const n = items.length;
     if (k < 0 || k > n) return;
 
-    const shifts: number[] = [];
-    let mask = 1;
-    for (let index = 0; index <= n; index++) {
-        shifts[index] = mask;
-        mask <<= 1;
-    }
+    const included: T[] = [];
+    const includedIndexes: number[] = [];
 
-    const combLast = shifts[n] - shifts[n - k];
-    const combFirst = shifts[k] - 1;
+    const emitSplit = () => {
+        const excluded: T[] = [];
+        let includedCursor = 0;
 
-    for (let comb = combFirst; comb <= combLast;) {
-        // For mirrored team splits, only evaluate combinations where item[0] is
-        // included. This yields exactly one representative per mirrored pair.
-        if (!mirror || (comb & shifts[0]) !== 0) {
-            const included: T[] = [];
-            const excluded: T[] = [];
-            for (let index = 0; index < n; index++) {
-                if ((comb & shifts[index]) !== 0) {
-                    included.push(items[index]);
-                } else {
-                    excluded.push(items[index]);
-                }
+        for (let index = 0; index < n; index++) {
+            if (includedIndexes[includedCursor] === index) {
+                includedCursor++;
+            } else {
+                excluded.push(items[index]);
             }
-
-            callback(included, excluded);
         }
 
-        if (comb === combLast) break;
-        comb = combNext(comb);
+        let includedMask = 0n;
+        for (const index of includedIndexes) {
+            includedMask |= 1n << BigInt(index);
+        }
+
+        callback([...included], excluded, [...includedIndexes], includedMask);
+    };
+
+    const walk = (start: number, needed: number) => {
+        if (needed === 0) {
+            emitSplit();
+            return;
+        }
+
+        for (let index = start; index <= n - needed; index++) {
+            included.push(items[index]);
+            includedIndexes.push(index);
+            walk(index + 1, needed - 1);
+            included.pop();
+            includedIndexes.pop();
+        }
+    };
+
+    // For mirrored team splits, only evaluate combinations where item[0] is
+    // included. This yields exactly one representative per mirrored pair.
+    if (mirror) {
+        if (k === 0 || n === 0) return;
+        included.push(items[0]);
+        includedIndexes.push(0);
+        walk(1, k - 1);
+        return;
     }
+
+    walk(0, k);
 };
 
+/**
+ * Calculates the differences between two teams across multiple metrics.
+ * @param teamA - The first team of picker candidates
+ * @param teamB - The second team of picker candidates
+ * @param unknownAgeValue - The numeric value to use for players with unknown
+ * age
+ * @returns An object containing the differences in goalies, average skill,
+ * unknown age count, and total age between the two teams
+ */
 const calculateDiffs = (
     teamA: PickerCandidate[],
     teamB: PickerCandidate[],
@@ -155,6 +215,28 @@ const compareDiffs = (left: TeamDiffs, right: TeamDiffs) => {
     return 0;
 };
 
+/**
+ * Finds the optimal split of players into two balanced teams.
+ *
+ * The function evaluates all possible team combinations and selects the one that minimizes
+ * the differences in team attributes (e.g., skill level, age). When multiple splits have
+ * equal differences, the lexicographically smallest team mask is preferred for consistency.
+ *
+ * @param players - An array of player candidates to be split into teams. Must contain an even
+ *                  number of at least 2 players.
+ * @returns A {@link TeamSplit} object containing the two balanced teams (teamA and teamB) and
+ *          their calculated differences.
+ * @throws {Error} If the number of players is less than 2 or not an even number.
+ * @throws {Error} If unable to determine balanced teams (should not occur with valid input).
+ *
+ * @remarks
+ * - The function calculates an average age from players with known ages to handle cases where
+ *   some players may have null age values.
+ * - Team balance is determined by comparing differences in various attributes using
+ *   {@link calculateDiffs} and {@link compareDiffs}.
+ * - The algorithm uses bitmasking via {@link combForeach} to efficiently iterate through
+ *   all possible team combinations.
+ */
 const findBestSplit = (players: PickerCandidate[]): TeamSplit => {
     if (players.length < 2 || players.length % 2 !== 0) {
         throw new Error('Cannot split teams: expected an even number of at least two players.');
@@ -169,17 +251,20 @@ const findBestSplit = (players: PickerCandidate[]): TeamSplit => {
         0;
 
     let bestSplit: TeamSplit | null = null;
-    combForeach(teamSize, players, (teamA, teamB) => {
+    let bestSplitMask: bigint | null = null;
+    combForeach(teamSize, players, (teamA, teamB, _teamAIndexes, teamAMask) => {
         const diffs = calculateDiffs(teamA, teamB, averageKnownAge);
 
         if (!bestSplit) {
             bestSplit = { teamA, teamB, diffs };
+            bestSplitMask = teamAMask;
             return;
         }
 
         const diffComparison = compareDiffs(diffs, bestSplit.diffs);
-        if (diffComparison < 0) {
+        if (diffComparison < 0 || (diffComparison === 0 && bestSplitMask !== null && teamAMask < bestSplitMask)) {
             bestSplit = { teamA, teamB, diffs };
+            bestSplitMask = teamAMask;
         }
     });
 
@@ -190,6 +275,20 @@ const findBestSplit = (players: PickerCandidate[]): TeamSplit => {
     return bestSplit;
 };
 
+/**
+ * Selects a middle outfield player from a list of candidates and returns the
+ * remaining players.
+ *
+ * For even-sized lists, returns all players for splitting with no middle
+ * player. For odd-sized lists, sorts players by goalie status, average, age,
+ * and player ID, then selects the middle non-goalie player as the separator.
+ *
+ * @param players - Array of picker candidates to process
+ * @returns An object containing:
+ *   - playersForSplit: Array of players excluding the middle player
+ *   - middlePlayer: The selected middle player, or null for even-sized lists
+ * @throws Error if unable to select a middle player for odd-sized lists
+ */
 const selectMiddleOutfieldPlayer = (players: PickerCandidate[]) => {
     if (players.length % 2 === 0) {
         return { playersForSplit: players, middlePlayer: null as PickerCandidate | null };
@@ -222,6 +321,21 @@ const selectMiddleOutfieldPlayer = (players: PickerCandidate[]) => {
     return { playersForSplit, middlePlayer };
 };
 
+/**
+ * Builds an HTML email message for team selection notification.
+ *
+ * Generates a formatted email containing the two teams that have been picked
+ * for a game, including clickable links to each player's profile page.
+ *
+ * @param options - The configuration object
+ * @param options.gameDayId - The unique identifier for the game day
+ * @param options.teamA - Array of players assigned to Team A
+ * @param options.teamB - Array of players assigned to Team B
+ * @param options.baseUrl - The base URL for constructing player and game page
+ * links
+ * @returns An HTML string formatted as an email body containing team
+ *          information, player links, and a reference to the game page
+ */
 const buildTeamEmail = ({
     gameDayId,
     teamA,
@@ -259,11 +373,25 @@ const buildTeamEmail = ({
 };
 
 /**
- * Calculates and persists balanced teams for the current game.
+ * Core logic for submitting team picker selections and assigning players to teams.
  *
- * @param data - The picker input containing the selected players.
- * @param deps - Optional dependencies for easier testing.
- * @returns A promise resolving when the payload is accepted.
+ * This function performs the following operations:
+ * 1. Validates that at least two players are selected
+ * 2. Retrieves the current game day and player outcomes
+ * 3. Clears existing team assignments for all eligible players
+ * 4. Validates selected players have 'Yes' responses
+ * 5. Calculates player statistics (average performance, age, position)
+ * 6. Determines optimal team split based on player averages
+ * 7. Assigns players to teams and persists assignments
+ * 8. Sends email notification to all active players with team assignments
+ *
+ * @param data - Array of picker inputs containing player selections and metadata
+ * @param deps - Service dependencies for game day, outcomes, email, and configuration (defaults provided)
+ * @returns Promise that resolves when team assignments are complete and notifications sent
+ * @throws Error if fewer than two players are selected
+ * @throws Error if no current game day is available
+ * @throws Error if a selected player is not available for the game day
+ * @throws Error if a selected player has not confirmed participation with 'Yes' response
  */
 export async function SubmitPickerCore(
     data: SubmitPickerInput,

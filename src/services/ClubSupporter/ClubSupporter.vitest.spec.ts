@@ -5,6 +5,7 @@ import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
 import clubSupporterService from '@/services/ClubSupporter';
+import { defaultClub } from '@/tests/mocks/data/club';
 import { defaultClubSupporter, defaultClubSupporterList } from '@/tests/mocks/data/clubSupporter';
 
 describe('clubSupporterService', () => {
@@ -141,6 +142,24 @@ describe('clubSupporterService', () => {
         });
     });
 
+    describe('upsertAll', () => {
+        it('should upsert each club id for a player', async () => {
+            const upsertSpy = vi.spyOn(clubSupporterService, 'upsert').mockResolvedValue({
+                ...defaultClubSupporter,
+                playerId: 7,
+                clubId: 1,
+            });
+
+            await clubSupporterService.upsertAll(7, [1, 2, 3]);
+
+            expect(upsertSpy).toHaveBeenCalledTimes(3);
+            expect(upsertSpy).toHaveBeenNthCalledWith(1, { playerId: 7, clubId: 1 });
+            expect(upsertSpy).toHaveBeenNthCalledWith(2, { playerId: 7, clubId: 2 });
+            expect(upsertSpy).toHaveBeenNthCalledWith(3, { playerId: 7, clubId: 3 });
+            upsertSpy.mockRestore();
+        });
+    });
+
     describe('delete', () => {
         it('should delete an existing ClubSupporter', async () => {
             (prisma.clubSupporter.delete as Mock).mockResolvedValueOnce(defaultClubSupporter);
@@ -161,6 +180,36 @@ describe('clubSupporterService', () => {
             await clubSupporterService.delete(7, 16);
             expect(prisma.clubSupporter.delete).toHaveBeenCalledTimes(1);
         });
+
+        it('should rethrow delete errors that are not P2025', async () => {
+            (prisma.clubSupporter.delete as Mock).mockRejectedValueOnce(new Error('db exploded'));
+            await expect(clubSupporterService.delete(7, 16)).rejects.toThrow('db exploded');
+        });
+    });
+
+    describe('deleteExcept', () => {
+        it('should delete only supporters not present in keep list', async () => {
+            const getByPlayerSpy = vi.spyOn(clubSupporterService, 'getByPlayer').mockResolvedValueOnce([
+                {
+                    playerId: 7,
+                    clubId: 1,
+                    club: { ...defaultClub, id: 1 },
+                },
+                {
+                    playerId: 7,
+                    clubId: 2,
+                    club: { ...defaultClub, id: 2 },
+                },
+            ]);
+            const deleteSpy = vi.spyOn(clubSupporterService, 'delete').mockResolvedValue();
+
+            await clubSupporterService.deleteExcept(7, [1]);
+
+            expect(deleteSpy).toHaveBeenCalledTimes(1);
+            expect(deleteSpy).toHaveBeenCalledWith(7, 2);
+            deleteSpy.mockRestore();
+            getByPlayerSpy.mockRestore();
+        });
     });
 
     describe('deleteAll', () => {
@@ -168,6 +217,16 @@ describe('clubSupporterService', () => {
             (prisma.clubSupporter.deleteMany as Mock).mockResolvedValueOnce({ count: 100 });
             await clubSupporterService.deleteAll();
             expect(prisma.clubSupporter.deleteMany).toHaveBeenCalledTimes(1);
+        });
+
+        it('should delete all ClubSupporters for a specific player', async () => {
+            (prisma.clubSupporter.deleteMany as Mock).mockResolvedValueOnce({ count: 10 });
+            await clubSupporterService.deleteAll(7);
+            expect(prisma.clubSupporter.deleteMany).toHaveBeenCalledWith({
+                where: {
+                    playerId: 7,
+                },
+            });
         });
     });
 });

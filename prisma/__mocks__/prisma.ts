@@ -5,6 +5,7 @@ const makeModelMock = () => ({
     findFirst: vi.fn(),
     findMany: vi.fn(),
     create: vi.fn(),
+    createMany: vi.fn(),
     update: vi.fn(),
     upsert: vi.fn(),
     delete: vi.fn(),

@@ -5,6 +5,7 @@ import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
 import countrySupporterService from '@/services/CountrySupporter';
+import { defaultCountry } from '@/tests/mocks/data/country';
 import { defaultCountrySupporter, defaultCountrySupporterList } from '@/tests/mocks/data/countrySupporter';
 
 describe('countrySupporterService', () => {
@@ -198,6 +199,23 @@ describe('countrySupporterService', () => {
         });
     });
 
+    describe('upsertAll', () => {
+        it('should upsert each country ISO code for a player', async () => {
+            const upsertSpy = vi.spyOn(countrySupporterService, 'upsert').mockResolvedValue({
+                ...defaultCountrySupporter,
+                playerId: 7,
+                countryISOCode: 'GB',
+            });
+
+            await countrySupporterService.upsertAll(7, ['GB', 'FR']);
+
+            expect(upsertSpy).toHaveBeenCalledTimes(2);
+            expect(upsertSpy).toHaveBeenNthCalledWith(1, { playerId: 7, countryISOCode: 'GB' });
+            expect(upsertSpy).toHaveBeenNthCalledWith(2, { playerId: 7, countryISOCode: 'FR' });
+            upsertSpy.mockRestore();
+        });
+    });
+
     describe('delete', () => {
         it('should delete an existing CountrySupporter', async () => {
             await countrySupporterService.delete(6, "GB");
@@ -217,12 +235,51 @@ describe('countrySupporterService', () => {
             await countrySupporterService.delete(7, "GB");
             expect(prisma.countrySupporter.delete).toHaveBeenCalledTimes(1);
         });
+
+        it('should rethrow delete errors that are not P2025', async () => {
+            (prisma.countrySupporter.delete as Mock).mockRejectedValueOnce(new Error('db exploded'));
+            await expect(countrySupporterService.delete(7, 'GB')).rejects.toThrow('db exploded');
+        });
+    });
+
+    describe('deleteExcept', () => {
+        it('should delete only supporters not present in keep list', async () => {
+            const getByPlayerSpy = vi.spyOn(countrySupporterService, 'getByPlayer').mockResolvedValueOnce([
+                {
+                    playerId: 7,
+                    countryISOCode: 'GB',
+                    country: { ...defaultCountry, isoCode: 'GB' },
+                },
+                {
+                    playerId: 7,
+                    countryISOCode: 'FR',
+                    country: { ...defaultCountry, isoCode: 'FR', name: 'France' },
+                },
+            ]);
+            const deleteSpy = vi.spyOn(countrySupporterService, 'delete').mockResolvedValue();
+
+            await countrySupporterService.deleteExcept(7, ['GB']);
+
+            expect(deleteSpy).toHaveBeenCalledTimes(1);
+            expect(deleteSpy).toHaveBeenCalledWith(7, 'FR');
+            deleteSpy.mockRestore();
+            getByPlayerSpy.mockRestore();
+        });
     });
 
     describe('deleteAll', () => {
         it('should delete all ClubSupporters', async () => {
             await countrySupporterService.deleteAll();
             expect(prisma.countrySupporter.deleteMany).toHaveBeenCalledTimes(1);
+        });
+
+        it('should delete all ClubSupporters for a specific player', async () => {
+            await countrySupporterService.deleteAll(7);
+            expect(prisma.countrySupporter.deleteMany).toHaveBeenCalledWith({
+                where: {
+                    playerId: 7,
+                },
+            });
         });
     });
 });

@@ -109,4 +109,30 @@ describe('EmailVerificationService', () => {
             expect(result).toEqual(verification);
         });
     });
+
+    describe('deleteAll', () => {
+        it('should delete all email verifications when no playerId is provided', async () => {
+            (prisma.emailVerification.deleteMany as Mock).mockResolvedValueOnce({ count: 3 });
+
+            const result = await emailVerificationService.deleteAll();
+
+            expect(result).toEqual({ count: 3 });
+            expect(prisma.emailVerification.deleteMany).toHaveBeenCalledWith({
+                where: undefined,
+            });
+        });
+
+        it('should delete email verifications for a specific player', async () => {
+            (prisma.emailVerification.deleteMany as Mock).mockResolvedValueOnce({ count: 1 });
+
+            const result = await emailVerificationService.deleteAll(7);
+
+            expect(result).toEqual({ count: 1 });
+            expect(prisma.emailVerification.deleteMany).toHaveBeenCalledWith({
+                where: {
+                    playerId: 7,
+                },
+            });
+        });
+    });
 });

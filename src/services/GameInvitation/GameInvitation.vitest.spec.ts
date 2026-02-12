@@ -86,6 +86,46 @@ describe('GameInvitationService', () => {
         });
     });
 
+    describe('createMany', () => {
+        it('should create many game invitations and return the count', async () => {
+            (prisma.gameInvitation.createMany as Mock).mockResolvedValueOnce({ count: 2 });
+
+            const count = await gameInvitationService.createMany([
+                {
+                    ...defaultGameInvitation,
+                    uuid: buildUuidFromIndex(1),
+                },
+                {
+                    ...defaultGameInvitation,
+                    uuid: buildUuidFromIndex(2),
+                },
+            ]);
+
+            expect(count).toBe(2);
+            expect(prisma.gameInvitation.createMany).toHaveBeenCalledWith({
+                data: [
+                    {
+                        ...defaultGameInvitation,
+                        uuid: buildUuidFromIndex(1),
+                    },
+                    {
+                        ...defaultGameInvitation,
+                        uuid: buildUuidFromIndex(2),
+                    },
+                ],
+            });
+        });
+
+        it('should reject createMany when uuid is invalid', async () => {
+            await expect(gameInvitationService.createMany([
+                {
+                    ...defaultGameInvitation,
+                    uuid: 'short',
+                },
+            ])).rejects.toThrow();
+        });
+    });
+
     describe('upsert', () => {
         it('should create a game invitation', async () => {
             (prisma.gameInvitation.upsert as Mock).mockResolvedValueOnce(defaultGameInvitation);
@@ -130,6 +170,11 @@ describe('GameInvitationService', () => {
             (prisma.gameInvitation.delete as Mock).mockRejectedValueOnce(notFoundError);
             await gameInvitationService.delete('6789');
             expect(prisma.gameInvitation.delete).toHaveBeenCalledTimes(1);
+        });
+
+        it('should rethrow delete errors that are not P2025', async () => {
+            (prisma.gameInvitation.delete as Mock).mockRejectedValueOnce(new Error('db exploded'));
+            await expect(gameInvitationService.delete(buildUuidFromIndex(3))).rejects.toThrow('db exploded');
         });
     });
 

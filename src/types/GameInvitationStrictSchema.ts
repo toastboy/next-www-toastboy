@@ -13,16 +13,24 @@ import z from 'zod';
 
 const GAME_INVITATION_UUID_LENGTH = 36;
 
-const GameInvitationCreateStrictFields = {
+const GameInvitationStrictFields = {
     uuid: z.string().length(GAME_INVITATION_UUID_LENGTH),
+};
+
+const GameInvitationStrictIds = {
     playerId: z.number().int().min(1),
     gameDayId: z.number().int().min(1),
 };
 
+const GameInvitationCreateStrictFields = {
+    ...GameInvitationStrictFields,
+    ...GameInvitationStrictIds,
+};
+
 const GameInvitationUpdateStrictFields = {
-    uuid: z.string().length(GAME_INVITATION_UUID_LENGTH).optional(),
-    playerId: z.number().int().min(1).optional(),
-    gameDayId: z.number().int().min(1).optional(),
+    uuid: GameInvitationStrictFields.uuid.optional(),
+    playerId: GameInvitationStrictIds.playerId.optional(),
+    gameDayId: GameInvitationStrictIds.gameDayId.optional(),
 };
 
 export const GameInvitationWriteInputSchema = z.object({

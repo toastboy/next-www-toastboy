@@ -12,7 +12,7 @@ import z from 'zod';
 
 const accountEmailStrict = z.email().max(255).nullish();
 
-const PlayerCreateStrictFields = {
+const PlayerStrictFields = {
     name: z.string().nullish(),
     accountEmail: accountEmailStrict,
     anonymous: z.boolean().nullish(),
@@ -23,26 +23,19 @@ const PlayerCreateStrictFields = {
     introducedBy: z.number().int().nullish(),
 };
 
-const PlayerUpdateStrictFields = {
-    name: z.string().nullish(),
-    accountEmail: accountEmailStrict,
-    anonymous: z.boolean().nullish(),
-    joined: z.date().nullish(),
-    finished: z.date().nullish(),
-    born: z.number().int().nullish(),
-    comment: z.string().nullish(),
-    introducedBy: z.number().int().nullish(),
+const PlayerStrictIds = {
+    id: z.number().int().min(1),
 };
 
 export const PlayerCreateWriteInputSchema = z.object({
-    ...PlayerCreateStrictFields,
+    ...PlayerStrictFields,
 }).strip();
 
 export type PlayerCreateWriteInput = z.infer<typeof PlayerCreateWriteInputSchema>;
 
 export const PlayerUpdateWriteInputSchema = z.object({
-    id: z.number().int().min(1),
-    ...PlayerUpdateStrictFields,
+    id: PlayerStrictIds.id,
+    ...PlayerStrictFields,
 }).strip();
 
 export type PlayerUpdateWriteInput = z.infer<typeof PlayerUpdateWriteInputSchema>;
@@ -54,26 +47,8 @@ const PlayerUncheckedUpdateInputWithoutIdSchema =
     PlayerUncheckedUpdateInputObjectZodSchema.omit({ id: true });
 
 const PlayerCreateDataStrictSchema = z.union([
-    PlayerCreateInputObjectZodSchema.extend({
-        name: PlayerCreateStrictFields.name,
-        accountEmail: PlayerCreateStrictFields.accountEmail,
-        anonymous: PlayerCreateStrictFields.anonymous,
-        joined: PlayerCreateStrictFields.joined,
-        finished: PlayerCreateStrictFields.finished,
-        born: PlayerCreateStrictFields.born,
-        comment: PlayerCreateStrictFields.comment,
-        introducedBy: PlayerCreateStrictFields.introducedBy,
-    }),
-    PlayerUncheckedCreateInputWithoutIdSchema.extend({
-        name: PlayerCreateStrictFields.name,
-        accountEmail: PlayerCreateStrictFields.accountEmail,
-        anonymous: PlayerCreateStrictFields.anonymous,
-        joined: PlayerCreateStrictFields.joined,
-        finished: PlayerCreateStrictFields.finished,
-        born: PlayerCreateStrictFields.born,
-        comment: PlayerCreateStrictFields.comment,
-        introducedBy: PlayerCreateStrictFields.introducedBy,
-    }),
+    PlayerCreateInputObjectZodSchema.extend(PlayerStrictFields),
+    PlayerUncheckedCreateInputWithoutIdSchema.extend(PlayerStrictFields),
 ]);
 
 const PlayerCreateOneStrictZodSchema = PlayerCreateOneZodSchema.extend({
@@ -84,26 +59,8 @@ export const PlayerCreateOneStrictSchema: z.ZodType<Prisma.PlayerCreateArgs> =
     PlayerCreateOneStrictZodSchema as unknown as z.ZodType<Prisma.PlayerCreateArgs>;
 
 const PlayerUpdateDataStrictSchema = z.union([
-    PlayerUpdateInputObjectZodSchema.extend({
-        name: PlayerUpdateStrictFields.name,
-        accountEmail: PlayerUpdateStrictFields.accountEmail,
-        anonymous: PlayerUpdateStrictFields.anonymous,
-        joined: PlayerUpdateStrictFields.joined,
-        finished: PlayerUpdateStrictFields.finished,
-        born: PlayerUpdateStrictFields.born,
-        comment: PlayerUpdateStrictFields.comment,
-        introducedBy: PlayerUpdateStrictFields.introducedBy,
-    }),
-    PlayerUncheckedUpdateInputWithoutIdSchema.extend({
-        name: PlayerUpdateStrictFields.name,
-        accountEmail: PlayerUpdateStrictFields.accountEmail,
-        anonymous: PlayerUpdateStrictFields.anonymous,
-        joined: PlayerUpdateStrictFields.joined,
-        finished: PlayerUpdateStrictFields.finished,
-        born: PlayerUpdateStrictFields.born,
-        comment: PlayerUpdateStrictFields.comment,
-        introducedBy: PlayerUpdateStrictFields.introducedBy,
-    }),
+    PlayerUpdateInputObjectZodSchema.extend(PlayerStrictFields),
+    PlayerUncheckedUpdateInputWithoutIdSchema.extend(PlayerStrictFields),
 ]);
 
 const PlayerUpdateOneStrictZodSchema = PlayerUpdateOneZodSchema.extend({

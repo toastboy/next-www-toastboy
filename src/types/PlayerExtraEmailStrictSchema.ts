@@ -12,16 +12,24 @@ import z from 'zod';
 
 const PLAYER_EXTRA_EMAIL_MAX_LENGTH = 255;
 
-const PlayerExtraEmailCreateStrictFields = {
+const PlayerExtraEmailStrictIds = {
     playerId: z.number().int().min(1),
+};
+
+const PlayerExtraEmailStrictFields = {
     email: z.email().max(PLAYER_EXTRA_EMAIL_MAX_LENGTH),
     verifiedAt: z.date().nullish(),
 };
 
+const PlayerExtraEmailCreateStrictFields = {
+    ...PlayerExtraEmailStrictIds,
+    ...PlayerExtraEmailStrictFields,
+};
+
 const PlayerExtraEmailUpdateStrictFields = {
-    playerId: z.number().int().min(1).optional(),
-    email: z.email().max(PLAYER_EXTRA_EMAIL_MAX_LENGTH).optional(),
-    verifiedAt: z.date().nullish(),
+    playerId: PlayerExtraEmailStrictIds.playerId.optional(),
+    email: PlayerExtraEmailStrictFields.email.optional(),
+    verifiedAt: PlayerExtraEmailStrictFields.verifiedAt,
 };
 
 export const PlayerExtraEmailWriteInputSchema = z.object({

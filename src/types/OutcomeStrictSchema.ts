@@ -12,9 +12,12 @@ import {
 } from 'prisma/zod/schemas';
 import z from 'zod';
 
-const OutcomeCreateStrictFields = {
+const OutcomeStrictIds = {
     gameDayId: z.number().int().min(1),
     playerId: z.number().int().min(1),
+};
+
+const OutcomeStrictFields = {
     response: PlayerResponseSchema.nullish(),
     responseInterval: z.number().int().min(0).nullish(),
     points: z.union([z.literal(0), z.literal(1), z.literal(3)]).nullish(),
@@ -25,17 +28,15 @@ const OutcomeCreateStrictFields = {
     goalie: z.boolean().nullish(),
 };
 
+const OutcomeCreateStrictFields = {
+    ...OutcomeStrictIds,
+    ...OutcomeStrictFields,
+};
+
 const OutcomeUpdateStrictFields = {
-    gameDayId: z.number().int().min(1).optional(),
-    playerId: z.number().int().min(1).optional(),
-    response: PlayerResponseSchema.nullish(),
-    responseInterval: z.number().int().min(0).nullish(),
-    points: z.union([z.literal(0), z.literal(1), z.literal(3)]).nullish(),
-    team: TeamNameSchema.nullish(),
-    comment: z.string().max(127).nullish(),
-    pub: z.number().int().nullish(),
-    paid: z.boolean().nullish(),
-    goalie: z.boolean().nullish(),
+    gameDayId: OutcomeStrictIds.gameDayId.optional(),
+    playerId: OutcomeStrictIds.playerId.optional(),
+    ...OutcomeStrictFields,
 };
 
 export const OutcomeWriteInputSchema = z.object({

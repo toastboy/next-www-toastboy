@@ -274,12 +274,15 @@ async function importBackup(): Promise<void> {
         shellExec('rm -rf /tmp/importlivedb');
 
         // Now the dev database is up to date with the live one and the seed
-        // files in blob storage reflect that, we can do a final Prisma migrate
-        // reset and seed to ensure the dev database is in a good state.
+        // files in blob storage reflect that, do a final reset/migrate and then
+        // run seeding explicitly.
         console.log('Running final Prisma migrate reset...');
         shellExec('npx prisma migrate reset --force');
+        console.log('Running final Prisma db seed...');
+        shellExec('npx prisma db seed');
     } catch (error) {
         console.error('An error occurred:', error);
+        throw error;
     }
 }
 

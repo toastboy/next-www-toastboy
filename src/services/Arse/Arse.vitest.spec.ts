@@ -1,3 +1,4 @@
+import { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
 import { ArseType } from 'prisma/zod/schemas/models/Arse.schema';
 import type { Mock } from 'vitest';
@@ -5,6 +6,18 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import arseService from '@/services/Arse';
 import { defaultArse, defaultArseList } from '@/tests/mocks/data/arse';
+
+const toArseWriteData = (arse: ArseType) => ({
+    playerId: arse.playerId,
+    raterId: arse.raterId,
+    inGoal: arse.inGoal,
+    running: arse.running,
+    shooting: arse.shooting,
+    passing: arse.passing,
+    ballSkill: arse.ballSkill,
+    attacking: arse.attacking,
+    defending: arse.defending,
+});
 
 describe('ArseService', () => {
     beforeEach(() => {
@@ -174,7 +187,7 @@ describe('ArseService', () => {
             (prisma.arse.create as Mock).mockResolvedValue(defaultArse);
             const result = await arseService.create(defaultArse);
             expect(prisma.arse.create).toHaveBeenCalledWith({
-                data: defaultArse,
+                data: toArseWriteData(defaultArse),
             });
             expect(result).toEqual(defaultArse);
         });
@@ -227,11 +240,11 @@ describe('ArseService', () => {
                 raterId: 16,
             })).rejects.toThrow();
             expect(prisma.arse.create).toHaveBeenCalledWith({
-                data: {
+                data: toArseWriteData({
                     ...defaultArse,
                     playerId: 6,
                     raterId: 16,
-                },
+                } as ArseType),
             });
         });
     });
@@ -247,8 +260,8 @@ describe('ArseService', () => {
                         raterId: defaultArse.raterId,
                     },
                 },
-                update: defaultArse,
-                create: defaultArse,
+                update: toArseWriteData(defaultArse),
+                create: toArseWriteData(defaultArse),
             });
             expect(result).toEqual(defaultArse);
         });
@@ -269,10 +282,62 @@ describe('ArseService', () => {
                         raterId: updatedArse.raterId,
                     },
                 },
-                update: updatedArse,
-                create: updatedArse,
+                update: toArseWriteData(updatedArse as ArseType),
+                create: toArseWriteData(updatedArse as ArseType),
             });
             expect(result).toEqual(updatedArse);
+        });
+
+        it('should allow partial upsert data and leave omitted fields unchanged', async () => {
+            const partialUpdate = {
+                playerId: 6,
+                raterId: 16,
+                inGoal: 9,
+            };
+            (prisma.arse.upsert as Mock).mockResolvedValue({
+                ...defaultArse,
+                ...partialUpdate,
+            });
+
+            const result = await arseService.upsert(partialUpdate);
+
+            expect(prisma.arse.upsert).toHaveBeenCalledWith({
+                where: {
+                    playerId_raterId: {
+                        playerId: 6,
+                        raterId: 16,
+                    },
+                },
+                update: partialUpdate,
+                create: partialUpdate,
+            });
+            expect(result).toMatchObject(partialUpdate);
+        });
+
+        it('should allow explicitly clearing a rating by setting it to null', async () => {
+            const clearRating = {
+                playerId: 6,
+                raterId: 16,
+                inGoal: null,
+            };
+            (prisma.arse.upsert as Mock).mockResolvedValue({
+                ...defaultArse,
+                ...clearRating,
+            });
+
+            const result = await arseService.upsert(clearRating);
+
+            expect(prisma.arse.upsert).toHaveBeenCalledWith({
+                where: {
+                    playerId_raterId: {
+                        playerId: 6,
+                        raterId: 16,
+                    },
+                },
+                update: clearRating,
+                create: clearRating,
+            });
+            expect(result.inGoal).toBeNull();
         });
     });
 
@@ -295,7 +360,17 @@ describe('ArseService', () => {
         });
 
         it('should silently return when asked to delete an arse that does not exist', async () => {
-            (prisma.arse.delete as Mock).mockResolvedValue(null);
+            const notFoundError = Object.assign(
+                new Error('Record to delete does not exist.'),
+                { code: 'P2025' },
+            );
+            Object.setPrototypeOf(
+                notFoundError,
+                Prisma.PrismaClientKnownRequestError.prototype,
+            );
+            (prisma.arse.delete as Mock).mockRejectedValue(
+                notFoundError,
+            );
             await arseService.delete(7, 16);
             expect(prisma.arse.delete).toHaveBeenCalledWith({
                 where: {

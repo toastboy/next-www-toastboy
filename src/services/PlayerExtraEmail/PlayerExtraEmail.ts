@@ -2,36 +2,16 @@ import 'server-only';
 
 import debug from 'debug';
 import prisma from 'prisma/prisma';
-import {
-    PlayerExtraEmailUncheckedCreateInputObjectZodSchema,
-    PlayerExtraEmailUncheckedUpdateInputObjectZodSchema,
-    PlayerExtraEmailWhereUniqueInputObjectSchema,
-} from 'prisma/zod/schemas';
+import { PlayerExtraEmailWhereUniqueInputObjectSchema } from 'prisma/zod/schemas';
 import { PlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
-import z from 'zod';
 
-/** Field definitions with extra validation */
-const PlayerExtraEmailExtendedFields = {
-    playerId: z.number().int().min(1),
-    email: z.email(),
-    verifiedAt: z.date().nullish().optional(),
-};
-
-const PlayerExtraEmailExtendedFieldsForUpdate = {
-    playerId: z.number().int().min(1).optional(),
-    email: z.email().optional(),
-    verifiedAt: z.date().nullish().optional(),
-};
-
-/** Schemas for enforcing strict input */
-export const PlayerExtraEmailUncheckedCreateInputObjectStrictSchema =
-    PlayerExtraEmailUncheckedCreateInputObjectZodSchema.extend({
-        ...PlayerExtraEmailExtendedFields,
-    });
-export const PlayerExtraEmailUncheckedUpdateInputObjectStrictSchema =
-    PlayerExtraEmailUncheckedUpdateInputObjectZodSchema.extend({
-        ...PlayerExtraEmailExtendedFieldsForUpdate,
-    });
+import { isPrismaNotFoundError } from '@/lib/prismaErrors';
+import {
+    PlayerExtraEmailCreateOneStrictSchema,
+    PlayerExtraEmailUpsertOneStrictSchema,
+    type PlayerExtraEmailWriteInput,
+    PlayerExtraEmailWriteInputSchema,
+} from '@/types/PlayerExtraEmailStrictSchema';
 
 const log = debug('footy:api');
 
@@ -78,14 +58,17 @@ export class PlayerExtraEmailService {
     }
 
     /**
-     * Creates a player email record.
-     * @param rawData The properties to add to the player email
-     * @returns A promise that resolves to the newly-created player email
+     * Creates a player extra-email record from validated write input.
+     * @param data - Write payload with `playerId`, `email`, and optional `verifiedAt`.
+     * @returns The created player extra-email row.
+     * @throws {z.ZodError} If input or Prisma-args validation fails.
+     * @throws {Error} If Prisma create fails.
      */
-    async create(rawData: unknown): Promise<PlayerExtraEmailType> {
+    async create(data: PlayerExtraEmailWriteInput): Promise<PlayerExtraEmailType> {
         try {
-            const data = PlayerExtraEmailUncheckedCreateInputObjectStrictSchema.parse(rawData);
-            return await prisma.playerExtraEmail.create({ data });
+            const writeData = PlayerExtraEmailWriteInputSchema.parse(data);
+            const args = PlayerExtraEmailCreateOneStrictSchema.parse({ data: writeData });
+            return await prisma.playerExtraEmail.create(args);
         } catch (error) {
             log(`Error creating PlayerExtraEmail: ${String(error)}`);
             throw error;
@@ -94,26 +77,36 @@ export class PlayerExtraEmailService {
 
     /**
      * Upserts a player email record for the given player.
-     * @param playerId The player ID to associate
-     * @param email The email address to upsert
-     * @param verified Whether the email is verified
-     * @returns A promise that resolves to the upserted player email
+     * @param playerId - The player ID to associate.
+     * @param email - The email address to upsert (also used as unique key).
+     * @param verified - Whether this upsert should mark the email verified.
+     * @returns The created or updated player extra-email row.
+     * @throws {z.ZodError} If input or Prisma-args validation fails.
+     * @throws {Error} If Prisma upsert fails.
      */
     async upsert(playerId: number, email: string, verified?: boolean): Promise<PlayerExtraEmailType> {
         try {
             const verifiedAt = verified ? new Date() : undefined;
-            const where = PlayerExtraEmailWhereUniqueInputObjectSchema.parse({ email });
-            const create = PlayerExtraEmailUncheckedCreateInputObjectStrictSchema.parse({
+            const writeData = PlayerExtraEmailWriteInputSchema.parse({
                 playerId,
                 email,
                 verifiedAt,
             });
-            const update = PlayerExtraEmailUncheckedUpdateInputObjectStrictSchema.parse({
-                playerId,
-                verifiedAt,
+            const args = PlayerExtraEmailUpsertOneStrictSchema.parse({
+                where: {
+                    email: writeData.email,
+                },
+                create: {
+                    playerId: writeData.playerId,
+                    email: writeData.email,
+                    ...(writeData.verifiedAt ? { verifiedAt: writeData.verifiedAt } : {}),
+                },
+                update: {
+                    playerId: writeData.playerId,
+                    ...(writeData.verifiedAt ? { verifiedAt: writeData.verifiedAt } : {}),
+                },
             });
-
-            return await prisma.playerExtraEmail.upsert({ where, update, create });
+            return await prisma.playerExtraEmail.upsert(args);
         } catch (error) {
             log(`Error upserting PlayerExtraEmail: ${String(error)}`);
             throw error;
@@ -148,7 +141,7 @@ export class PlayerExtraEmailService {
      * @returns A promise that resolves to an array of objects containing the player ID and associated email address.
      * @throws Will throw an error if the database query fails.
      */
-    async getAll(playerId?: number) {
+    async getAll(playerId?: number): Promise<PlayerExtraEmailType[]> {
         try {
             return await prisma.playerExtraEmail.findMany({
                 where: playerId ? { playerId } : undefined,
@@ -163,15 +156,18 @@ export class PlayerExtraEmailService {
      * Deletes a player email from the database.
      *
      * @param email - The email address of the player email to be deleted.
-     * @returns A promise that resolves to the deleted player email object.
-     * @throws Will throw an error if the deletion fails.
+     * @returns Resolves when deletion handling completes.
+     * @throws {z.ZodError} If unique-key validation fails.
+     * @throws {Error} If Prisma delete fails for reasons other than not-found.
      */
-    async delete(email: string) {
+    async delete(email: string): Promise<void> {
         try {
-            return await prisma.playerExtraEmail.delete({
-                where: { email },
-            });
+            const where = PlayerExtraEmailWhereUniqueInputObjectSchema.parse({ email });
+            await prisma.playerExtraEmail.delete({ where });
         } catch (error) {
+            if (isPrismaNotFoundError(error)) {
+                return;
+            }
             log(`Error deleting PlayerExtraEmail: ${String(error)}`);
             throw error;
         }
@@ -185,13 +181,12 @@ export class PlayerExtraEmailService {
      *
      * @param playerId - Optional ID of the player whose extra email records
      * should be deleted.
-     * @returns A Promise that resolves to the result of the Prisma `deleteMany`
-     * operation (batch payload containing the count of deleted records).
-     * @throws Rethrows any error thrown by the Prisma client after logging it.
+     * @returns Resolves when the bulk delete operation completes.
+     * @throws {Error} Rethrows any Prisma error after logging it.
      */
-    async deleteAll(playerId?: number) {
+    async deleteAll(playerId?: number): Promise<void> {
         try {
-            return await prisma.playerExtraEmail.deleteMany({
+            await prisma.playerExtraEmail.deleteMany({
                 where: playerId ? { playerId } : undefined,
             });
         } catch (error) {

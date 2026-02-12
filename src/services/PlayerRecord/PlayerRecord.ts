@@ -3,55 +3,25 @@ import 'server-only';
 import debug from 'debug';
 import prisma from 'prisma/prisma';
 import {
-    PlayerRecordUncheckedCreateInputObjectZodSchema,
-    PlayerRecordUncheckedUpdateInputObjectZodSchema,
     PlayerRecordWhereUniqueInputObjectSchema,
     TableName,
 } from 'prisma/zod/schemas';
 import { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 import { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
-import { PlayerRecordSchema, PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
-import z from 'zod';
+import { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 
 import { config } from '@/lib/config';
+import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import { rankMap } from '@/lib/utils';
 import gameDayService from '@/services/GameDay';
 import outcomeService from '@/services/Outcome';
 import { PlayerRecordDataType } from '@/types';
-
-/** Field definitions with extra validation */
-const extendedFields = {
-    playerId: z.number().int().min(1),
-    year: z.number().int().min(0),
-    gameDayId: z.number().int().min(1),
-    responses: z.number().int().min(0).optional().nullable(),
-    played: z.number().int().min(0).optional().nullable(),
-    won: z.number().int().min(0).optional().nullable(),
-    drawn: z.number().int().min(0).optional().nullable(),
-    lost: z.number().int().min(0).optional().nullable(),
-    points: z.number().int().min(0).optional().nullable(),
-    averages: z.number().min(0.0).optional().nullable(),
-    stalwart: z.number().int().min(0).optional().nullable(),
-    pub: z.number().int().min(0).optional().nullable(),
-    rankPoints: z.number().int().min(0).optional().nullable(),
-    rankAverages: z.number().int().min(0).optional().nullable(),
-    rankAveragesUnqualified: z.number().int().min(0).optional().nullable(),
-    rankStalwart: z.number().int().min(0).optional().nullable(),
-    rankSpeedy: z.number().int().min(0).optional().nullable(),
-    rankSpeedyUnqualified: z.number().int().min(0).optional().nullable(),
-    rankPub: z.number().int().min(0).optional().nullable(),
-    speedy: z.number().min(0.0).optional().nullable(),
-};
-
-/** Schemas for enforcing strict input */
-export const PlayerRecordUncheckedCreateInputObjectStrictSchema =
-    PlayerRecordUncheckedCreateInputObjectZodSchema.extend({
-        ...extendedFields,
-    });
-export const PlayerRecordUncheckedUpdateInputObjectStrictSchema =
-    PlayerRecordUncheckedUpdateInputObjectZodSchema.extend({
-        ...extendedFields,
-    });
+import {
+    PlayerRecordCreateOneStrictSchema,
+    PlayerRecordUpsertOneStrictSchema,
+    type PlayerRecordWriteInput,
+    PlayerRecordWriteInputSchema,
+} from '@/types/PlayerRecordStrictSchema';
 
 const log = debug('footy:api');
 
@@ -369,17 +339,17 @@ export class PlayerRecordService {
     }
 
     /**
-     * Creates a new playerRecord.
-     * @param data The data for the new playerRecord.
-     * @returns A promise that resolves to the created playerRecord, or null if
-     * an error occurs.
-     * @throws An error if there is a failure.
+     * Creates a player record from validated write input.
+     * @param data - Player-record write payload.
+     * @returns The created player-record row.
+     * @throws {z.ZodError} If input or Prisma-args validation fails.
+     * @throws {Error} If Prisma create fails.
      */
-    async create(rawData: unknown): Promise<PlayerRecordType | null> {
+    async create(data: PlayerRecordWriteInput): Promise<PlayerRecordType> {
         try {
-            const data = PlayerRecordUncheckedCreateInputObjectStrictSchema.parse(rawData);
-
-            return await prisma.playerRecord.create({ data });
+            const writeData = PlayerRecordWriteInputSchema.parse(data);
+            const args = PlayerRecordCreateOneStrictSchema.parse({ data: writeData });
+            return await prisma.playerRecord.create(args);
         } catch (error) {
             log(`Error creating playerRecord: ${String(error)}`);
             throw error;
@@ -387,28 +357,27 @@ export class PlayerRecordService {
     }
 
     /**
-     * Upserts a PlayerRecord.
-     * @param data The data to be upserted.
-     * @returns A promise that resolves to the upserted PlayerRecord, or null if
-     * the upsert failed.
-     * @throws An error if there is a failure.
+     * Upserts a player record by `(playerId, year, gameDayId)`.
+     * @param data - Player-record write payload.
+     * @returns The created or updated player-record row.
+     * @throws {z.ZodError} If input or Prisma-args validation fails.
+     * @throws {Error} If Prisma upsert fails.
      */
-    async upsert(rawData: unknown): Promise<PlayerRecordType | null> {
+    async upsert(data: PlayerRecordWriteInput): Promise<PlayerRecordType> {
         try {
-            const parsed = PlayerRecordSchema.pick({
-                playerId: true, year: true, gameDayId: true,
-            }).parse(rawData);
-            const where = PlayerRecordWhereUniqueInputObjectSchema.parse({
-                playerId_year_gameDayId: {
-                    playerId: parsed.playerId,
-                    year: parsed.year,
-                    gameDayId: parsed.gameDayId,
+            const writeData = PlayerRecordWriteInputSchema.parse(data);
+            const args = PlayerRecordUpsertOneStrictSchema.parse({
+                where: {
+                    playerId_year_gameDayId: {
+                        playerId: writeData.playerId,
+                        year: writeData.year,
+                        gameDayId: writeData.gameDayId,
+                    },
                 },
+                create: writeData,
+                update: writeData,
             });
-            const update = PlayerRecordUncheckedUpdateInputObjectStrictSchema.parse(rawData);
-            const create = PlayerRecordUncheckedCreateInputObjectStrictSchema.parse(rawData);
-
-            return await prisma.playerRecord.upsert({ where, update, create });
+            return await prisma.playerRecord.upsert(args);
         } catch (error) {
             log(`Error upserting PlayerRecord: ${String(error)}`);
             throw error;
@@ -484,8 +453,9 @@ export class PlayerRecordService {
      * @param playerId - The ID of the Player.
      * @param year - The year of the GameDay.
      * @param gameDayId - The ID of the GameDay.
-     * @returns A Promise that resolves to void.
-     * @throws An error if there is a failure.
+     * @returns Resolves when deletion handling completes.
+     * @throws {z.ZodError} If key validation fails.
+     * @throws {Error} If Prisma delete fails for reasons other than not-found.
      */
     async delete(playerId: number, year: number, gameDayId: number): Promise<void> {
         try {
@@ -495,6 +465,9 @@ export class PlayerRecordService {
 
             await prisma.playerRecord.delete({ where });
         } catch (error) {
+            if (isPrismaNotFoundError(error)) {
+                return;
+            }
             log(`Error deleting playerRecord: ${String(error)}`);
             throw error;
         }
@@ -628,7 +601,7 @@ async function calculateYearPlayerRecords(
     // Upsert the PlayerRecords and add them to the overall list
 
     for (const recordData of Object.values(yearPlayerRecords)) {
-        const playerRecord = await playerRecordService.upsert(recordData);
+        const playerRecord = await playerRecordService.upsert(recordData as PlayerRecordWriteInput);
 
         if (playerRecord) {
             playerRecords.push(playerRecord);

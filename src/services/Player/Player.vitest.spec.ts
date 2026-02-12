@@ -1,3 +1,4 @@
+import { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
 import { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
 import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
@@ -15,6 +16,7 @@ import {
     defaultPlayerLoginList,
     invalidPlayer,
 } from '@/tests/mocks/data/player';
+import type { PlayerCreateWriteInput } from '@/types/PlayerStrictSchema';
 
 describe('PlayerService', () => {
     beforeEach(() => {
@@ -51,22 +53,23 @@ describe('PlayerService', () => {
             return Promise.resolve(playerLogin ?? null);
         });
 
-        (prisma.player.create as Mock).mockImplementation((args: { data: PlayerType }) => {
-            const player = defaultPlayerList.find((player) => player.id === args.data.id);
-
-            if (player) {
-                return Promise.reject(new Error('player already exists'));
-            }
-            else {
-                return Promise.resolve(args.data);
-            }
+        (prisma.player.create as Mock).mockImplementation((args: { data: Partial<PlayerType> }) => {
+            return Promise.resolve({
+                ...defaultPlayer,
+                id: defaultPlayerList.length + 1,
+                ...args.data,
+            });
         });
 
         (prisma.player.update as Mock).mockImplementation((args: {
             where: { id: number },
-            data: PlayerType,
+            data: Partial<PlayerType>,
         }) => {
-            return Promise.resolve(args.data);
+            return Promise.resolve({
+                ...defaultPlayer,
+                id: args.where.id,
+                ...args.data,
+            });
         });
 
         (prisma.player.delete as Mock).mockImplementation((args: {
@@ -433,23 +436,28 @@ describe('PlayerService', () => {
 
     describe('create', () => {
         it('should create a player', async () => {
-            const newPlayer: PlayerType = {
-                ...defaultPlayer,
-                id: 106,
+            const newPlayer: PlayerCreateWriteInput = {
+                name: defaultPlayer.name,
+                joined: defaultPlayer.joined,
+                finished: defaultPlayer.finished,
+                born: defaultPlayer.born,
+                introducedBy: defaultPlayer.introducedBy,
+                comment: defaultPlayer.comment,
+                anonymous: defaultPlayer.anonymous,
             };
             const result = await playerService.create(newPlayer);
-            expect(result).toEqual(newPlayer);
+            expect(result).toEqual({
+                ...defaultPlayer,
+                ...newPlayer,
+                id: 101,
+            });
         });
 
         it('should refuse to create a player with invalid data', async () => {
-            await expect(playerService.create(invalidPlayer)).rejects.toThrow();
-        });
-
-        it('should refuse to create a player that has the same id as an existing one', async () => {
             await expect(playerService.create({
                 ...defaultPlayer,
-                id: 6,
-            })).rejects.toThrow();
+                accountEmail: 'not-an-email',
+            } as unknown as PlayerCreateWriteInput)).rejects.toThrow();
         });
     });
 
@@ -464,11 +472,11 @@ describe('PlayerService', () => {
         });
 
         it('should refuse to create a player with invalid data where one with the id did not exist', async () => {
-            await expect(playerService.create(invalidPlayer)).rejects.toThrow();
+            await expect(playerService.update(invalidPlayer)).rejects.toThrow();
         });
 
         it('should refuse to update a player with invalid data where one with the id already existed', async () => {
-            await expect(playerService.create(invalidPlayer)).rejects.toThrow();
+            await expect(playerService.update(invalidPlayer)).rejects.toThrow();
         });
     });
 
@@ -479,6 +487,15 @@ describe('PlayerService', () => {
         });
 
         it('should silently return when asked to delete a player that does not exist', async () => {
+            const notFoundError = Object.assign(
+                new Error('Record to delete does not exist.'),
+                { code: 'P2025' },
+            );
+            Object.setPrototypeOf(
+                notFoundError,
+                Prisma.PrismaClientKnownRequestError.prototype,
+            );
+            (prisma.player.delete as Mock).mockRejectedValueOnce(notFoundError);
             await playerService.delete(107);
             expect(prisma.player.delete).toHaveBeenCalledTimes(1);
         });

@@ -1,3 +1,4 @@
+import { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
 import { ClubType } from 'prisma/zod/schemas/models/Club.schema';
 import type { Mock } from 'vitest';
@@ -5,6 +6,7 @@ import { vi } from 'vitest';
 
 import clubService from '@/services/Club';
 import { createMockClub, defaultClub, defaultClubList, invalidClub } from '@/tests/mocks/data/club';
+import type { ClubCreateWriteInput, ClubUpsertInput } from '@/types/ClubStrictSchema';
 
 describe('ClubService', () => {
     beforeEach(() => {
@@ -50,56 +52,88 @@ describe('ClubService', () => {
 
     describe('create', () => {
         it('should create a club', async () => {
-            const newClub: ClubType = {
-                ...defaultClub,
-                id: 106,
+            const newClub: ClubCreateWriteInput = {
                 soccerwayId: 1005,
+                clubName: defaultClub.clubName,
+                uri: defaultClub.uri,
+                country: defaultClub.country,
             };
-            (prisma.club.create as Mock).mockResolvedValueOnce(newClub);
+            (prisma.club.create as Mock).mockResolvedValueOnce({
+                ...newClub,
+                id: 106,
+            });
             const result = await clubService.create(newClub);
-            expect(result).toEqual(newClub);
+            expect(result).toEqual({
+                ...newClub,
+                id: 106,
+            });
         });
 
         it('should refuse to create a club with invalid data', async () => {
-            await expect(clubService.create(invalidClub)).rejects.toThrow();
-        });
-
-        it('should refuse to create a club that has the same id as an existing one', async () => {
-            (prisma.club.create as Mock).mockRejectedValueOnce(new Error('club already exists'));
             await expect(clubService.create({
-                ...defaultClub,
-                id: 6,
-                soccerwayId: 1005,
-            })).rejects.toThrow();
+                ...invalidClub,
+                clubName: 'x'.repeat(256),
+            } as unknown as ClubCreateWriteInput)).rejects.toThrow();
         });
     });
 
     describe('upsert', () => {
-        it('should create a club', async () => {
-            (prisma.club.upsert as Mock).mockResolvedValueOnce(defaultClub);
-            const result = await clubService.upsert(defaultClub);
-            expect(result).toEqual(defaultClub);
+        it('should create a club with a database-generated id when where.id is missing', async () => {
+            (prisma.club.upsert as Mock).mockResolvedValueOnce({
+                ...defaultClub,
+                id: 101,
+            });
+            const input: ClubUpsertInput = {
+                id: 1001,
+                soccerwayId: defaultClub.soccerwayId,
+                clubName: defaultClub.clubName,
+                uri: defaultClub.uri,
+                country: defaultClub.country,
+            };
+            const result = await clubService.upsert(input);
+            expect(result).toEqual({
+                ...defaultClub,
+                id: 101,
+            });
         });
 
         it('should update an existing club where one with the id already existed', async () => {
-            const updatedClub: ClubType = {
-                ...defaultClub,
+            const updatedClub: ClubUpsertInput = {
                 id: 6,
                 soccerwayId: 1006,
                 clubName: "Doddington Rovers",
                 uri: "doddington-rovers",
+                country: defaultClub.country,
             };
-            (prisma.club.upsert as Mock).mockResolvedValueOnce(updatedClub);
+            (prisma.club.upsert as Mock).mockResolvedValueOnce({
+                ...updatedClub,
+                id: 6,
+            });
             const result = await clubService.upsert(updatedClub);
-            expect(result).toEqual(updatedClub);
+            expect(result).toEqual({
+                ...updatedClub,
+                id: 6,
+            });
         });
 
         it('should refuse to create a club with invalid data where one with the id did not exist', async () => {
-            await expect(clubService.create(invalidClub)).rejects.toThrow();
+            await expect(clubService.upsert({
+                id: -1,
+                soccerwayId: defaultClub.soccerwayId,
+                clubName: defaultClub.clubName,
+                uri: defaultClub.uri,
+                country: defaultClub.country,
+            } as unknown as ClubUpsertInput)).rejects.toThrow();
         });
 
         it('should refuse to update a club with invalid data where one with the id already existed', async () => {
-            await expect(clubService.create(invalidClub)).rejects.toThrow();
+            await expect(clubService.upsert({
+                id: 6,
+                soccerwayId: defaultClub.soccerwayId,
+                clubName: 'x'.repeat(256),
+                uri: defaultClub.uri,
+                country: defaultClub.country,
+            } as unknown as ClubUpsertInput)).rejects.toThrow();
         });
     });
 
@@ -111,7 +145,15 @@ describe('ClubService', () => {
         });
 
         it('should silently return when asked to delete a club that does not exist', async () => {
-            (prisma.club.delete as Mock).mockResolvedValueOnce(null);
+            const notFoundError = Object.assign(
+                new Error('Record to delete does not exist.'),
+                { code: 'P2025' },
+            );
+            Object.setPrototypeOf(
+                notFoundError,
+                Prisma.PrismaClientKnownRequestError.prototype,
+            );
+            (prisma.club.delete as Mock).mockRejectedValueOnce(notFoundError);
             await clubService.delete(107);
             expect(prisma.club.delete).toHaveBeenCalledTimes(1);
         });

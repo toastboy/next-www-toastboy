@@ -1,3 +1,4 @@
+import { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
 import { CountryType } from 'prisma/zod/schemas/models/Country.schema';
 import type { Mock } from 'vitest';
@@ -86,11 +87,11 @@ describe('CountryService', () => {
         });
 
         it('should refuse to create a country with invalid data where one with the id did not exist', async () => {
-            await expect(countryService.create(invalidCountry)).rejects.toThrow();
+            await expect(countryService.upsert(invalidCountry)).rejects.toThrow();
         });
 
         it('should refuse to update a country with invalid data where one with the id already existed', async () => {
-            await expect(countryService.create(invalidCountry)).rejects.toThrow();
+            await expect(countryService.upsert(invalidCountry)).rejects.toThrow();
         });
     });
 
@@ -102,7 +103,15 @@ describe('CountryService', () => {
         });
 
         it('should silently return when asked to delete a country that does not exist', async () => {
-            (prisma.country.delete as Mock).mockResolvedValueOnce(null);
+            const notFoundError = Object.assign(
+                new Error('Record to delete does not exist.'),
+                { code: 'P2025' },
+            );
+            Object.setPrototypeOf(
+                notFoundError,
+                Prisma.PrismaClientKnownRequestError.prototype,
+            );
+            (prisma.country.delete as Mock).mockRejectedValueOnce(notFoundError);
             await countryService.delete("ZIM");
             expect(prisma.country.delete).toHaveBeenCalledTimes(1);
         });

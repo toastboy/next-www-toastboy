@@ -2,91 +2,55 @@ import 'server-only';
 
 import debug from 'debug';
 import prisma from 'prisma/prisma';
-import {
-    EmailVerificationUncheckedCreateInputObjectZodSchema,
-    EmailVerificationUncheckedUpdateInputObjectZodSchema,
-    EmailVerificationWhereUniqueInputObjectSchema,
-} from 'prisma/zod/schemas';
+import { EmailVerificationWhereUniqueInputObjectSchema } from 'prisma/zod/schemas';
 import { EmailVerificationType } from 'prisma/zod/schemas/models/EmailVerification.schema';
-import z from 'zod';
 
 import { hashVerificationToken } from '@/lib/verificationToken';
-
-/** Field definitions with extra validation */
-const EmailVerificationExtendedFields = {
-    playerId: z.number().int().min(1).optional(),
-    email: z.email(),
-    tokenHash: z.string().length(64),
-    expiresAt: z.date(),
-    usedAt: z.date().nullish().optional(),
-};
-
-const EmailVerificationExtendedFieldsForUpdate = {
-    playerId: z.number().int().min(1).optional(),
-    email: z.email().optional(),
-    tokenHash: z.string().length(64).optional(),
-    expiresAt: z.date().optional(),
-    usedAt: z.date().nullish().optional(),
-};
-
-const EmailVerificationCreateInputSchema = z
-    .object({
-        id: z.number().int().optional(),
-        playerId: z.number().int().min(1).optional(),
-        email: z.email(),
-        token: z.string().min(1),
-        expiresAt: z.date(),
-        usedAt: z.date().nullish().optional(),
-        createdAt: z.date().optional(),
-    })
-    .strict();
-
-/** Schemas for enforcing strict input */
-export const EmailVerificationUncheckedCreateInputObjectStrictSchema =
-    EmailVerificationUncheckedCreateInputObjectZodSchema.extend({
-        ...EmailVerificationExtendedFields,
-    });
-export const EmailVerificationUncheckedUpdateInputObjectStrictSchema =
-    EmailVerificationUncheckedUpdateInputObjectZodSchema.extend({
-        ...EmailVerificationExtendedFieldsForUpdate,
-    });
+import {
+    EmailVerificationCreateOneStrictSchema,
+    EmailVerificationMarkUsedInputSchema,
+    EmailVerificationUpdateOneStrictSchema,
+    type EmailVerificationWriteInput,
+    EmailVerificationWriteInputSchema,
+} from '@/types/EmailVerificationStrictSchema';
 
 const log = debug('footy:api');
 
 export class EmailVerificationService {
     /**
-     * Generates a hashed representation of a verification token.
-     *
-     * Wraps the `hashVerificationToken` utility to produce a value suitable
-     * for persistent storage and secure comparison.
-     *
-     * @param token - The plaintext verification token to hash.
-     * @returns The hashed token as a string.
-     * @private
+     * Hashes a verification token for lookup and persistence.
+     * @param token - Plaintext verification token.
+     * @returns Deterministic token hash.
      */
     private getTokenHash(token: string) {
         return hashVerificationToken(token);
     }
 
     /**
-     * Creates a new EmailVerification record after validating the provided raw
-     * data. If a raw token is provided, it is hashed before persistence.
+     * Creates an email-verification record from validated write input.
      *
-     * @param rawData - The input data to validate and use for creating the
-     * record.
-     * @returns The newly created EmailVerification record.
-     * @throws Will log and rethrow any validation or persistence errors
-     * encountered during creation.
+     * The raw token is never persisted directly; it is hashed and stored as
+     * `tokenHash`.
+     *
+     * @param data - Write payload containing `email`, `token`, and expiry metadata.
+     * @returns The created email-verification row.
+     * @throws {z.ZodError} If input or Prisma-args validation fails.
+     * @throws {Error} If Prisma create fails.
      */
-    async create(rawData: unknown): Promise<EmailVerificationType> {
+    async create(data: EmailVerificationWriteInput): Promise<EmailVerificationType> {
         try {
-            const input = EmailVerificationCreateInputSchema.parse(rawData);
-            const { token, ...rest } = input;
-            const data = EmailVerificationUncheckedCreateInputObjectStrictSchema.parse({
-                ...rest,
-                tokenHash: this.getTokenHash(token),
+            const writeData = EmailVerificationWriteInputSchema.parse(data);
+            const tokenHash = this.getTokenHash(writeData.token);
+            const args = EmailVerificationCreateOneStrictSchema.parse({
+                data: {
+                    playerId: writeData.playerId,
+                    email: writeData.email,
+                    tokenHash,
+                    expiresAt: writeData.expiresAt,
+                    usedAt: writeData.usedAt,
+                },
             });
-            return await prisma.emailVerification.create({ data });
+            return await prisma.emailVerification.create(args);
         } catch (error) {
             log(`Error creating EmailVerification: ${String(error)}`);
             throw error;
@@ -94,14 +58,11 @@ export class EmailVerificationService {
     }
 
     /**
-     * Retrieves an email verification record that matches the provided token.
-     *
-     * @param token - The raw token used to uniquely identify the email
-     * verification entry.
-     * @returns The matching EmailVerificationType instance, or null if no
-     * record is found.
-     *
-     * @throws When input validation or Prisma query execution fails.
+     * Fetches an email-verification record by plaintext token.
+     * @param token - Plaintext token identifying the record.
+     * @returns The matching row, or `null` when no record exists.
+     * @throws {z.ZodError} If unique-filter validation fails.
+     * @throws {Error} If Prisma query execution fails.
      */
     async getByToken(token: string): Promise<EmailVerificationType | null> {
         try {
@@ -115,23 +76,27 @@ export class EmailVerificationService {
     }
 
     /**
-     * Marks an email verification entry identified by the provided token as used.
+     * Marks an email-verification record as used.
      *
-     * Validates the input and update payload using application schemas, sets `usedAt` to the current date/time,
-     * performs a database update, and returns the updated EmailVerification record.
+     * Sets `usedAt` to the current timestamp for the row matching the supplied
+     * token hash.
      *
-     * @param token - The unique token for the email verification entry.
-     * @returns The updated EmailVerification record.
-     * @throws {Error} If validation fails or the database update operation fails. Errors are logged before being re-thrown.
+     * @param token - Plaintext token identifying the record.
+     * @returns The updated email-verification row.
+     * @throws {z.ZodError} If input or Prisma-args validation fails.
+     * @throws {Error} If Prisma update fails.
      */
     async markUsed(token: string): Promise<EmailVerificationType> {
         try {
-            const tokenHash = this.getTokenHash(token);
-            const where = EmailVerificationWhereUniqueInputObjectSchema.parse({ tokenHash });
-            const data = EmailVerificationUncheckedUpdateInputObjectStrictSchema.parse({
-                usedAt: new Date(),
+            const validatedInput = EmailVerificationMarkUsedInputSchema.parse({ token });
+            const tokenHash = this.getTokenHash(validatedInput.token);
+            const args = EmailVerificationUpdateOneStrictSchema.parse({
+                where: { tokenHash },
+                data: {
+                    usedAt: new Date(),
+                },
             });
-            return await prisma.emailVerification.update({ where, data });
+            return await prisma.emailVerification.update(args);
         } catch (error) {
             log(`Error updating EmailVerification: ${String(error)}`);
             throw error;
@@ -139,23 +104,11 @@ export class EmailVerificationService {
     }
 
     /**
-     * Delete email verification records.
+     * Deletes email-verification records in bulk.
      *
-     * If `playerId` is provided, only records belonging to that player are
-     * deleted; otherwise all email verification records are deleted.
-     *
-     * @param playerId - Optional player ID to filter which EmailVerification
-     * records to delete.
-     * @returns A Promise that resolves to the deletion result (an object
-     * containing the `count` of deleted records).
-     * @throws Will log and rethrow any error encountered while performing the
-     * deletion.
-     * @example
-     * // Delete all records for player with ID 123
-     * await emailVerificationService.deleteAll(123);
-     *
-     * // Delete all email verification records
-     * await emailVerificationService.deleteAll();
+     * @param playerId - Optional filter; when provided, only rows for this player are deleted.
+     * @returns Prisma batch payload containing deleted row count.
+     * @throws {Error} If Prisma deleteMany fails.
      */
     async deleteAll(playerId?: number) {
         try {

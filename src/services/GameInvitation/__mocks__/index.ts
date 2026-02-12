@@ -5,8 +5,7 @@ const gameInvitationService = {
     getAll: vi.fn(),
     create: vi.fn(),
     createMany: vi.fn(),
-    upsertByUUID: vi.fn(),
-    upsertByGameAndPlayer: vi.fn(),
+    upsert: vi.fn(),
     delete: vi.fn(),
     deleteAll: vi.fn(),
 };

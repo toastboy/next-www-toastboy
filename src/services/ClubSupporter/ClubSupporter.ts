@@ -3,50 +3,37 @@ import 'server-only';
 import debug from 'debug';
 import prisma from 'prisma/prisma';
 import {
-    ClubSupporterUncheckedCreateInputObjectZodSchema,
-    ClubSupporterUncheckedUpdateInputObjectZodSchema,
     ClubSupporterWhereInputObjectSchema,
     ClubSupporterWhereUniqueInputObjectSchema,
 } from 'prisma/zod/schemas';
-import {
-    ClubSupporterType,
-} from 'prisma/zod/schemas/models/ClubSupporter.schema';
-import z from 'zod';
+import { ClubSupporterType } from 'prisma/zod/schemas/models/ClubSupporter.schema';
 
+import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import { ClubSupporterDataType } from '@/types';
-
-/** Field definitions with extra validation */
-const extendFields = {
-    playerId: z.number().int().min(1),
-    clubId: z.number().int().min(1),
-};
-
-/** Schemas for enforcing strict input */
-export const ClubSupporterUncheckedCreateInputObjectStrictSchema =
-    ClubSupporterUncheckedCreateInputObjectZodSchema.extend({
-        ...extendFields,
-    });
-export const ClubSupporterUncheckedUpdateInputObjectStrictSchema =
-    ClubSupporterUncheckedUpdateInputObjectZodSchema.extend({
-        ...extendFields,
-    });
+import {
+    ClubSupporterCreateOneStrictSchema,
+    ClubSupporterUpsertOneStrictSchema,
+    type ClubSupporterWriteInput,
+    ClubSupporterWriteInputSchema,
+} from '@/types/ClubSupporterStrictSchema';
 
 const log = debug('footy:api');
 
 export class ClubSupporterService {
     /**
-     * Retrieves a ClubSupporter for the given player ID and club ID.
-     * @param playerId - The ID of the player.
-     * @param clubId - The ID of the club.
-     * @returns A promise that resolves to the ClubSupporter if found, otherwise null.
-     * @throws An error if there is a failure.
+     * Fetches a single club-supporter relationship by its composite key.
+     *
+     * @param playerId - Player identifier in the composite key.
+     * @param clubId - Club identifier in the composite key.
+     * @returns The matching record, or `null` when no record exists.
+     * @throws {z.ZodError} If key validation fails.
+     * @throws {Error} If Prisma query execution fails.
      */
     async get(playerId: number, clubId: number): Promise<ClubSupporterType | null> {
         try {
             const where = ClubSupporterWhereUniqueInputObjectSchema.parse({
                 playerId_clubId: { playerId, clubId },
             });
-
             return prisma.clubSupporter.findUnique({ where });
         } catch (error) {
             log(`Error fetching ClubSupporter: ${String(error)}`);
@@ -55,9 +42,10 @@ export class ClubSupporterService {
     }
 
     /**
-     * Retrieves all ClubSupporters.
-     * @returns A promise that resolves to an array of ClubSupporters or null if an error occurs.
-     * @throws An error if there is a failure.
+     * Fetches all club-supporter relationships.
+     *
+     * @returns All club-supporter rows.
+     * @throws {Error} If Prisma query execution fails.
      */
     async getAll(): Promise<ClubSupporterType[]> {
         try {
@@ -69,15 +57,16 @@ export class ClubSupporterService {
     }
 
     /**
-     * Retrieves ClubSupporters by player ID.
-     * @param playerId - The ID of the player.
-     * @returns A promise that resolves to an array of ClubSupporterData (which includes the club too) or null.
-     * @throws An error if there is a failure.
+     * Fetches club-supporter relationships for a player, including club data.
+     *
+     * @param playerId - Player identifier to filter by.
+     * @returns Matching relationships with `club` included.
+     * @throws {z.ZodError} If filter validation fails.
+     * @throws {Error} If Prisma query execution fails.
      */
     async getByPlayer(playerId: number): Promise<ClubSupporterDataType[]> {
         try {
             const where = ClubSupporterWhereInputObjectSchema.parse({ playerId });
-
             return prisma.clubSupporter.findMany({ where, include: { club: true } });
         } catch (error) {
             log(`Error fetching ClubSupporters by player: ${String(error)}`);
@@ -86,15 +75,16 @@ export class ClubSupporterService {
     }
 
     /**
-     * Retrieves ClubSupporters by club ID.
-     * @param clubId - The ID of the club.
-     * @returns A promise that resolves to an array of ClubSupporter or null.
-     * @throws An error if there is a failure.
+     * Fetches club-supporter relationships for a club.
+     *
+     * @param clubId - Club identifier to filter by.
+     * @returns Matching club-supporter rows.
+     * @throws {z.ZodError} If filter validation fails.
+     * @throws {Error} If Prisma query execution fails.
      */
     async getByClub(clubId: number): Promise<ClubSupporterType[]> {
         try {
             const where = ClubSupporterWhereInputObjectSchema.parse({ clubId });
-
             return prisma.clubSupporter.findMany({ where });
         } catch (error) {
             log(`Error fetching ClubSupporters by club: ${String(error)}`);
@@ -103,16 +93,21 @@ export class ClubSupporterService {
     }
 
     /**
-     * Creates a new ClubSupporter.
-     * @param data The data for the new ClubSupporter.
-     * @returns A promise that resolves to the created ClubSupporter, or null if an error occurs.
-     * @throws An error if there is a failure.
+     * Creates a club-supporter relationship.
+     *
+     * Validates the write payload, then validates Prisma create args
+     * before executing the create mutation.
+     *
+     * @param data - Write payload containing `playerId` and `clubId`.
+     * @returns The created club-supporter row.
+     * @throws {z.ZodError} If input validation fails.
+     * @throws {Error} If Prisma mutation fails.
      */
-    async create(rawData: unknown): Promise<ClubSupporterType | null> {
+    async create(data: ClubSupporterWriteInput): Promise<ClubSupporterType> {
         try {
-            const data = ClubSupporterUncheckedCreateInputObjectStrictSchema.parse(rawData);
-
-            return prisma.clubSupporter.create({ data });
+            const writeData = ClubSupporterWriteInputSchema.parse(data);
+            const args = ClubSupporterCreateOneStrictSchema.parse({ data: writeData });
+            return prisma.clubSupporter.create(args);
         } catch (error) {
             log(`Error creating ClubSupporter: ${String(error)}`);
             throw error;
@@ -120,36 +115,30 @@ export class ClubSupporterService {
     }
 
     /**
-     * Upserts a ClubSupporter relation for the given player and club.
+     * Upserts a club-supporter relationship by composite key.
      *
-     * Validates the composite unique key and payloads, then performs an atomic
-     * Prisma `upsert` to either create the relation or update the existing one.
-     * Errors are logged and rethrown for upstream handling.
+     * The same validated payload is used for `create` and `update`, so the
+     * operation is idempotent for repeated calls with identical data.
      *
-     * @param playerId - The unique identifier of the player.
-     * @param clubId - The unique identifier of the club.
-     * @returns A promise resolving to the created or updated ClubSupporter entity.
-     *          The value should not be null under normal circumstances.
-     * @throws ZodError If input validation fails.
-     * @throws Prisma.PrismaClientKnownRequestError | Prisma.PrismaClientUnknownRequestError
-     *         If the database operation fails.
-     *
-     * @example
-     * const supporter = await clubSupporterService.upsert(123, 456);
-     * // supporter.playerId === 123; supporter.clubId === 456
-     *
-     * @remarks
-     * - Uniqueness is enforced by the composite key (playerId, clubId).
-     * - The operation is idempotent: repeated calls with the same inputs yield the same relation.
+     * @param data - Write payload containing `playerId` and `clubId`.
+     * @returns The created or updated row.
+     * @throws {z.ZodError} If input validation fails.
+     * @throws {Error} If Prisma mutation fails.
      */
-    async upsert(playerId: number, clubId: number): Promise<ClubSupporterType | null> {
+    async upsert(data: ClubSupporterWriteInput): Promise<ClubSupporterType> {
         try {
-            const where = ClubSupporterWhereUniqueInputObjectSchema.parse({
-                playerId_clubId: { playerId, clubId },
+            const writeData = ClubSupporterWriteInputSchema.parse(data);
+            const args = ClubSupporterUpsertOneStrictSchema.parse({
+                where: {
+                    playerId_clubId: {
+                        playerId: writeData.playerId,
+                        clubId: writeData.clubId,
+                    },
+                },
+                create: writeData,
+                update: writeData,
             });
-            const update = ClubSupporterUncheckedUpdateInputObjectStrictSchema.parse({ playerId, clubId });
-            const create = ClubSupporterUncheckedCreateInputObjectStrictSchema.parse({ playerId, clubId });
-            return await prisma.clubSupporter.upsert({ where, update, create });
+            return await prisma.clubSupporter.upsert(args);
         } catch (error) {
             log(`Error upserting ClubSupporter: ${String(error)}`);
             throw error;
@@ -157,22 +146,17 @@ export class ClubSupporterService {
     }
 
     /**
-     * Inserts or updates a set of club supporter records for the specified
-     * player in parallel.
+     * Upserts multiple club-supporter relationships for a player in parallel.
      *
-     * @param playerId - The unique identifier of the player whose club
-     * supporter associations are being updated.
-     * @param clubIds - An array of club identifiers to upsert for the given
-     * player.
-     * @returns A promise that resolves when all upsert operations complete
-     * successfully.
-     * @throws Will propagate any error encountered during the upsert
-     * operations.
+     * @param playerId - Player identifier for all upserts.
+     * @param clubIds - Club identifiers to upsert for the player.
+     * @returns Resolves when all upserts complete.
+     * @throws {Error} Propagates the first upsert error encountered.
      */
     async upsertAll(playerId: number, clubIds: number[]) {
         try {
             await Promise.all(clubIds.map(
-                (clubId) => this.upsert(playerId, clubId),
+                (clubId) => this.upsert({ playerId, clubId }),
             ));
         } catch (error) {
             log(`Error upserting multiple ClubSupporters: ${String(error)}`);
@@ -181,11 +165,15 @@ export class ClubSupporterService {
     }
 
     /**
-     * Deletes a ClubSupporter.
-     * @param playerId - The ID of the player.
-     * @param clubId - The ID of the club.
-     * @returns A Promise that resolves to void.
-     * @throws An error if there is a failure.
+     * Deletes a club-supporter relationship by composite key.
+     *
+     * Not-found deletes (`P2025`) are treated as no-ops.
+     *
+     * @param playerId - Player identifier in the composite key.
+     * @param clubId - Club identifier in the composite key.
+     * @returns Resolves when deletion is complete (or no-op on not found).
+     * @throws {z.ZodError} If key validation fails.
+     * @throws {Error} If Prisma delete fails for reasons other than not found.
      */
     async delete(playerId: number, clubId: number): Promise<void> {
         try {
@@ -195,27 +183,21 @@ export class ClubSupporterService {
 
             await prisma.clubSupporter.delete({ where });
         } catch (error) {
+            if (isPrismaNotFoundError(error)) {
+                return;
+            }
             log(`Error deleting ClubSupporter: ${String(error)}`);
             throw error;
         }
     }
 
     /**
-     * Deletes all club supporter associations for the specified player except
-     * those whose club IDs are provided to keep.
+     * Deletes all of a player's club-supporter relationships except retained IDs.
      *
-     * The method fetches the player's current club supporters and removes any
-     * association whose `clubId` is not present in the `keep` list. Deletions
-     * are performed concurrently.
-     *
-     * @param playerId - The unique identifier of the player whose supporter
-     * associations should be pruned.
-     * @param keep - An array of club IDs to retain for the player; all other
-     * existing associations will be deleted.
-     * @returns A promise that resolves once all non-retained associations have
-     * been deleted.
-     * @throws Logs and rethrows any error encountered while reading or deleting
-     * the player's club supporter associations.
+     * @param playerId - Player identifier whose relationships are being pruned.
+     * @param keep - Club IDs that should remain associated with the player.
+     * @returns Resolves when all non-retained relationships are deleted.
+     * @throws {Error} If fetch or delete operations fail.
      */
     async deleteExcept(playerId: number, keep: number[]) {
         try {
@@ -234,17 +216,11 @@ export class ClubSupporterService {
     }
 
     /**
-     * Delete ClubSupporter records from the database.
+     * Deletes club-supporter relationships in bulk.
      *
-     * If a playerId is provided, only ClubSupporter records associated with
-     * that player will be removed. If no playerId is provided, all
-     * ClubSupporter records will be deleted.
-     *
-     * @param playerId - Optional player identifier to limit which records are
-     * deleted.
-     * @returns A promise that resolves when the deletion completes.
-     * @throws Rethrows any error encountered while attempting to delete records
-     * (errors are logged prior to being thrown).
+     * @param playerId - Optional filter; when provided, only rows for this player are deleted.
+     * @returns Resolves when bulk deletion completes.
+     * @throws {Error} If Prisma deleteMany fails.
      */
     async deleteAll(playerId?: number): Promise<void> {
         try {

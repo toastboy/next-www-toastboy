@@ -16,7 +16,7 @@ class AuthService {
      * Retrieves the current session user.
      * @returns A promise that resolves to the current session user or null.
      */
-    async getSessionUser(): Promise<AuthSessionUser | null> {
+    async getSessionUser() {
         try {
             const session = await auth.api.getSession({
                 headers: await headers(),

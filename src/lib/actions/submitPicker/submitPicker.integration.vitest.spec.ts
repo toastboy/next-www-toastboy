@@ -1,3 +1,4 @@
+import type { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
 import { describe, expect, it } from 'vitest';
 
 import { SubmitPickerCore } from '@/lib/actions/submitPicker';
@@ -207,7 +208,12 @@ describeIntegration('SubmitPicker parity against historical game outcomes', () =
                     upsert: (rawData: unknown) => {
                         const data = rawData as { gameDayId: number; playerId: number; team: 'A' | 'B' | null; };
                         writePayloads.push(data);
-                        return Promise.resolve(null);
+                        return Promise.resolve({
+                            id: 0,
+                            gameDayId: data.gameDayId,
+                            playerId: data.playerId,
+                            team: data.team,
+                        } as OutcomeType);
                     },
                 },
                 sendEmailToAllActivePlayers: () => Promise.resolve({ recipientCount: 0 }),

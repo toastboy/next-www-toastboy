@@ -133,4 +133,52 @@ describe('PlayerExtraEmailService', () => {
             ]);
         });
     });
+
+    describe('delete', () => {
+        it('should delete a player extra email by unique email', async () => {
+            (prisma.playerExtraEmail.delete as Mock).mockResolvedValueOnce({
+                id: 1,
+                playerId: 7,
+                email: 'player@example.com',
+                verifiedAt: null,
+                createdAt: new Date(),
+            });
+
+            await playerExtraEmailService.delete('player@example.com');
+
+            expect(prisma.playerExtraEmail.delete).toHaveBeenCalledWith({
+                where: {
+                    email: 'player@example.com',
+                },
+            });
+        });
+
+        it('should silently return when email does not exist', async () => {
+            const notFoundError = Object.assign(
+                new Error('Record to delete does not exist.'),
+                { code: 'P2025' },
+            );
+            Object.setPrototypeOf(
+                notFoundError,
+                Prisma.PrismaClientKnownRequestError.prototype,
+            );
+            (prisma.playerExtraEmail.delete as Mock).mockRejectedValueOnce(notFoundError);
+
+            await playerExtraEmailService.delete('missing@example.com');
+
+            expect(prisma.playerExtraEmail.delete).toHaveBeenCalledTimes(1);
+        });
+    });
+
+    describe('deleteAll', () => {
+        it('should delete all player extra emails', async () => {
+            (prisma.playerExtraEmail.deleteMany as Mock).mockResolvedValueOnce({ count: 2 });
+
+            await playerExtraEmailService.deleteAll();
+
+            expect(prisma.playerExtraEmail.deleteMany).toHaveBeenCalledWith({
+                where: undefined,
+            });
+        });
+    });
 });

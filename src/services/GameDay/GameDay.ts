@@ -3,34 +3,24 @@ import 'server-only';
 import debug from 'debug';
 import prisma from 'prisma/prisma';
 import {
-    GameDayUncheckedCreateInputObjectZodSchema,
-    GameDayUncheckedUpdateInputObjectZodSchema,
     GameDayWhereInputObjectSchema,
     GameDayWhereUniqueInputObjectSchema,
     TeamName,
 } from 'prisma/zod/schemas';
+import { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
+
+import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import {
-    GameDaySchema,
-    GameDayType,
-} from 'prisma/zod/schemas/models/GameDay.schema';
-import z from 'zod';
-
-/** Field definitions with extra validation */
-const extendedFields = {
-    id: z.number().int().min(0).optional(),
-    pickerGamesHistory: z.union([z.literal(5), z.literal(10)]).nullable().optional(),
-};
-
-/** Schemas for enforcing strict input */
-export const GameDayUncheckedCreateInputObjectStrictSchema =
-    GameDayUncheckedCreateInputObjectZodSchema.extend({
-        ...extendedFields,
-    });
-export const GameDayUncheckedUpdateInputObjectStrictSchema =
-    GameDayUncheckedUpdateInputObjectZodSchema.extend({
-        ...extendedFields,
-    });
-
+    GameDayCreateOneStrictSchema,
+    type GameDayUpdateInput,
+    GameDayUpdateInputSchema,
+    GameDayUpdateOneStrictSchema,
+    type GameDayUpsertInput,
+    GameDayUpsertInputSchema,
+    GameDayUpsertOneStrictSchema,
+    type GameDayWriteInput,
+    GameDayWriteInputSchema,
+} from '@/types/GameDayStrictSchema';
 const log = debug('footy:api');
 
 export class GameDayService {
@@ -71,7 +61,6 @@ export class GameDayService {
     } = {}): Promise<GameDayType[]> {
         try {
             const where = GameDayWhereInputObjectSchema.parse({ bibs, game, mailSent, year });
-
             return prisma.gameDay.findMany({ where });
         } catch (error) {
             log(`Error fetching GameDayType: ${String(error)}`);
@@ -328,16 +317,17 @@ export class GameDayService {
     }
 
     /**
-     * Creates a new gameDay.
-     * @param data The data for the new gameDay.
-     * @returns A promise that resolves to the created gameDay, or null if an error occurs.
-     * @throws An error if there is a failure.
+     * Creates a game-day record from validated write input.
+     * @param data - Write payload for a game day.
+     * @returns The created game-day row.
+     * @throws {z.ZodError} If input or Prisma-args validation fails.
+     * @throws {Error} If Prisma create fails.
      */
-    async create(rawData: unknown): Promise<GameDayType | null> {
+    async create(data: GameDayWriteInput): Promise<GameDayType> {
         try {
-            const data = GameDayUncheckedCreateInputObjectStrictSchema.parse(rawData);
-
-            return await prisma.gameDay.create({ data });
+            const writeData = GameDayWriteInputSchema.parse(data);
+            const args = GameDayCreateOneStrictSchema.parse({ data: writeData });
+            return await prisma.gameDay.create(args);
         } catch (error) {
             log(`Error creating GameDayType: ${String(error)}`);
             throw error;
@@ -345,19 +335,25 @@ export class GameDayService {
     }
 
     /**
-     * Upserts a gameDay.
-     * @param data The data to be upserted.
-     * @returns A promise that resolves to the upserted gameDay, or null if the upsert failed.
-     * @throws An error if there is a failure.
+     * Upserts a game-day record by ID.
+     *
+     * Note: `id` is only used in `where`. Because create payloads never include
+     * `id`, when no row matches the provided id Prisma will insert a new row with
+     * a database-generated autoincrement id.
+     * @param data - Upsert payload; requires `id` for the unique key.
+     * @returns The created or updated game-day row.
+     * @throws {z.ZodError} If input or Prisma-args validation fails.
+     * @throws {Error} If Prisma upsert fails.
      */
-    async upsert(rawData: unknown): Promise<GameDayType | null> {
+    async upsert(data: GameDayUpsertInput): Promise<GameDayType> {
         try {
-            const parsed = GameDaySchema.pick({ id: true }).parse(rawData);
-            const where = GameDayWhereUniqueInputObjectSchema.parse({ id: parsed.id });
-            const update = GameDayUncheckedUpdateInputObjectStrictSchema.parse(rawData);
-            const create = GameDayUncheckedCreateInputObjectStrictSchema.parse(rawData);
-
-            return await prisma.gameDay.upsert({ where, update, create });
+            const { id, ...writeData } = GameDayUpsertInputSchema.parse(data);
+            const args = GameDayUpsertOneStrictSchema.parse({
+                where: { id },
+                create: writeData,
+                update: writeData,
+            });
+            return await prisma.gameDay.upsert(args);
         } catch (error) {
             log(`Error upserting GameDayType: ${String(error)}`);
             throw error;
@@ -371,17 +367,18 @@ export class GameDayService {
      * corresponding schemas, removes the `id` from the update data, and then
      * issues the update via Prisma. Errors are logged and rethrown.
      *
-     * @param rawData - Untrusted input containing the `id` and fields to update.
+     * @param data - Update payload containing `id` and mutable fields.
      * @returns The updated GameDay record from the data store.
      * @throws Rethrows any validation or persistence errors encountered.
      */
-    async update(rawData: unknown) {
+    async update(data: GameDayUpdateInput): Promise<GameDayType> {
         try {
-            const parsed = GameDaySchema.pick({ id: true }).parse(rawData);
-            const where = GameDayWhereUniqueInputObjectSchema.parse({ id: parsed.id });
-            const data = GameDayUncheckedUpdateInputObjectStrictSchema.parse(rawData);
-
-            return await prisma.gameDay.update({ where, data });
+            const { id, ...writeData } = GameDayUpdateInputSchema.parse(data);
+            const args = GameDayUpdateOneStrictSchema.parse({
+                where: { id },
+                data: writeData,
+            });
+            return await prisma.gameDay.update(args);
         } catch (error) {
             log(`Error updating GameDayType: ${String(error)}`);
             throw error;
@@ -413,9 +410,14 @@ export class GameDayService {
     }
 
     /**
-     * Deletes a gameDay by its ID.
-     * @param id - The ID of the gameDay to delete.
-     * @throws If there is an error deleting the gameDay.
+     * Deletes a game day by ID.
+     *
+     * Not-found deletes (`P2025`) are treated as no-ops.
+     *
+     * @param id - The ID of the game day to delete.
+     * @returns Resolves when deletion handling completes.
+     * @throws {z.ZodError} If unique-filter validation fails.
+     * @throws {Error} If Prisma delete fails for reasons other than not-found.
      */
     async delete(id: number): Promise<void> {
         try {
@@ -423,6 +425,9 @@ export class GameDayService {
 
             await prisma.gameDay.delete({ where });
         } catch (error) {
+            if (isPrismaNotFoundError(error)) {
+                return;
+            }
             log(`Error deleting GameDayType: ${String(error)}`);
             throw error;
         }

@@ -1,3 +1,4 @@
+import { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
 import { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 import type { Mock } from 'vitest';
@@ -5,6 +6,7 @@ import { vi } from 'vitest';
 
 import gameDayService from '@/services/GameDay';
 import { defaultGameDay, defaultGameDayList } from '@/tests/mocks/data/gameDay';
+import type { GameDayUpsertInput, GameDayWriteInput } from '@/types/GameDayStrictSchema';
 
 describe('GameDayService', () => {
     beforeEach(() => {
@@ -77,21 +79,17 @@ describe('GameDayService', () => {
             return Promise.resolve(gameDays ? gameDays.length : null);
         });
 
-        (prisma.gameDay.create as Mock).mockImplementation((args: { data: GameDayType }) => {
-            const gameDay = defaultGameDayList.find((gameDay) => gameDay.id === args.data.id);
-
-            if (gameDay) {
-                return Promise.reject(new Error('gameDay already exists'));
-            }
-            else {
-                return Promise.resolve(args.data);
-            }
+        (prisma.gameDay.create as Mock).mockImplementation((args: { data: Omit<GameDayType, 'id'> }) => {
+            return Promise.resolve({
+                id: defaultGameDayList.length + 1,
+                ...args.data,
+            });
         });
 
         (prisma.gameDay.upsert as Mock).mockImplementation((args: {
             where: { id: number },
             update: Partial<GameDayType>,
-            create: Partial<GameDayType> & { id?: number },
+            create: Omit<Partial<GameDayType>, 'id'>,
         }) => {
             const gameDay = defaultGameDayList.find((gameDay) => gameDay.id === args.where.id);
 
@@ -105,7 +103,7 @@ describe('GameDayService', () => {
             else {
                 return Promise.resolve({
                     ...args.create,
-                    id: args.create.id ?? args.where.id,
+                    id: defaultGameDayList.length + 1,
                 });
             }
         });
@@ -429,43 +427,60 @@ describe('GameDayService', () => {
 
     describe('create', () => {
         it('should create a GameDay', async () => {
-            const newGameDay: GameDayType = {
-                ...defaultGameDay,
-                id: 106,
+            const newGameDay: GameDayWriteInput = {
+                year: defaultGameDay.year,
+                date: defaultGameDay.date,
+                game: defaultGameDay.game,
+                mailSent: defaultGameDay.mailSent,
+                comment: defaultGameDay.comment,
+                bibs: defaultGameDay.bibs,
+                pickerGamesHistory: 10,
             };
             const result = await gameDayService.create(newGameDay);
-            expect(result).toEqual(newGameDay);
+            expect(prisma.gameDay.create).toHaveBeenCalledWith({ data: newGameDay });
+            expect(result).toEqual({
+                ...newGameDay,
+                id: 101,
+            });
         });
 
         it('should refuse to create a GameDay with invalid data', async () => {
             await expect(gameDayService.create({
                 ...defaultGameDay,
-                id: -1,
-            })).rejects.toThrow();
-            await expect(gameDayService.create({
-                ...defaultGameDay,
                 pickerGamesHistory: 7,
-            })).rejects.toThrow();
-        });
-
-        it('should refuse to create a GameDay that has the same id as an existing one', async () => {
-            await expect(gameDayService.create({
-                ...defaultGameDay,
-                id: 6,
-            })).rejects.toThrow();
+            } as unknown as GameDayWriteInput)).rejects.toThrow();
         });
     });
 
     describe('upsert', () => {
-        it('should create a GameDay', async () => {
-            const result = await gameDayService.upsert(defaultGameDay);
-            expect(result).toEqual(defaultGameDay);
+        it('should create a GameDay with a database-generated id when where.id is missing', async () => {
+            const gameDay: GameDayUpsertInput = {
+                id: 1001,
+                year: defaultGameDay.year,
+                date: defaultGameDay.date,
+                game: defaultGameDay.game,
+                mailSent: defaultGameDay.mailSent,
+                comment: defaultGameDay.comment,
+                bibs: defaultGameDay.bibs,
+                pickerGamesHistory: 10,
+            };
+            const result = await gameDayService.upsert(gameDay);
+            expect(result).toEqual({
+                ...gameDay,
+                id: 101,
+            });
         });
 
         it('should update an existing GameDay where one with the id already existed', async () => {
-            const updatedGameDay: GameDayType = {
-                ...defaultGameDay,
+            const updatedGameDay: GameDayUpsertInput = {
                 id: 6,
+                year: defaultGameDay.year,
+                date: defaultGameDay.date,
+                game: defaultGameDay.game,
+                mailSent: defaultGameDay.mailSent,
+                comment: defaultGameDay.comment,
+                bibs: defaultGameDay.bibs,
+                pickerGamesHistory: 10,
             };
             const result = await gameDayService.upsert(updatedGameDay);
             expect(result).toEqual(updatedGameDay);
@@ -487,7 +502,6 @@ describe('GameDayService', () => {
                 data: {
                     game: false,
                     comment: 'Pitch frozen',
-                    id: 6,
                 },
             });
             expect(result).toEqual({
@@ -551,6 +565,15 @@ describe('GameDayService', () => {
         });
 
         it('should silently return when asked to delete a GameDay that does not exist', async () => {
+            const notFoundError = Object.assign(
+                new Error('Record to delete does not exist.'),
+                { code: 'P2025' },
+            );
+            Object.setPrototypeOf(
+                notFoundError,
+                Prisma.PrismaClientKnownRequestError.prototype,
+            );
+            (prisma.gameDay.delete as Mock).mockRejectedValueOnce(notFoundError);
             await gameDayService.delete(107);
             expect(prisma.gameDay.delete).toHaveBeenCalledTimes(1);
         });

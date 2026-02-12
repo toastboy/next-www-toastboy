@@ -1,3 +1,4 @@
+import { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
 import { GameInvitationType } from 'prisma/zod/schemas/models/GameInvitation.schema';
 import type { Mock } from 'vitest';
@@ -88,7 +89,7 @@ describe('GameInvitationService', () => {
     describe('upsert', () => {
         it('should create a game invitation', async () => {
             (prisma.gameInvitation.upsert as Mock).mockResolvedValueOnce(defaultGameInvitation);
-            const result = await gameInvitationService.upsertByUUID(defaultGameInvitation);
+            const result = await gameInvitationService.upsert(defaultGameInvitation);
             expect(result).toEqual(defaultGameInvitation);
         });
 
@@ -98,8 +99,15 @@ describe('GameInvitationService', () => {
                 uuid: buildUuidFromIndex(1),
             };
             (prisma.gameInvitation.upsert as Mock).mockResolvedValueOnce(updatedInvitation);
-            const result = await gameInvitationService.upsertByUUID(updatedInvitation);
+            const result = await gameInvitationService.upsert(updatedInvitation);
             expect(result).toEqual(updatedInvitation);
+        });
+
+        it('should reject upsert when uuid is not exactly 36 characters', async () => {
+            await expect(gameInvitationService.upsert({
+                ...defaultGameInvitation,
+                uuid: '1234',
+            })).rejects.toThrow();
         });
     });
 
@@ -111,7 +119,15 @@ describe('GameInvitationService', () => {
         });
 
         it('should silently return when asked to delete a game invitation that does not exist', async () => {
-            (prisma.gameInvitation.delete as Mock).mockResolvedValueOnce(null);
+            const notFoundError = Object.assign(
+                new Error('Record to delete does not exist.'),
+                { code: 'P2025' },
+            );
+            Object.setPrototypeOf(
+                notFoundError,
+                Prisma.PrismaClientKnownRequestError.prototype,
+            );
+            (prisma.gameInvitation.delete as Mock).mockRejectedValueOnce(notFoundError);
             await gameInvitationService.delete('6789');
             expect(prisma.gameInvitation.delete).toHaveBeenCalledTimes(1);
         });

@@ -1,3 +1,4 @@
+import { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
 import { GameChatType } from 'prisma/zod/schemas/models/GameChat.schema';
 import type { Mock } from 'vitest';
@@ -5,6 +6,7 @@ import { vi } from 'vitest';
 
 import gameChatService from '@/services/GameChat';
 import { defaultGameChat, defaultGameChatList } from '@/tests/mocks/data/gameChat';
+import type { GameChatUpsertInput, GameChatWriteInput } from '@/types/GameChatStrictSchema';
 
 describe('GameChatService', () => {
     beforeEach(() => {
@@ -17,29 +19,31 @@ describe('GameChatService', () => {
             return Promise.resolve(gameChat ?? null);
         });
 
-        (prisma.gameChat.create as Mock).mockImplementation((args: { data: GameChatType }) => {
-            const gameChat = defaultGameChatList.find((gameChat) => gameChat.id === args.data.id);
-
-            if (gameChat) {
-                return Promise.reject(new Error('gameChat already exists'));
-            }
-            else {
-                return Promise.resolve(args.data);
-            }
+        (prisma.gameChat.create as Mock).mockImplementation((args: { data: GameChatWriteInput }) => {
+            return Promise.resolve({
+                id: defaultGameChatList.length + 1,
+                ...args.data,
+            });
         });
 
         (prisma.gameChat.upsert as Mock).mockImplementation((args: {
             where: { id: number },
-            update: GameChatType,
-            create: GameChatType,
+            update: Omit<GameChatType, 'id'>,
+            create: Omit<GameChatType, 'id'>,
         }) => {
             const gameChat = defaultGameChatList.find((gameChat) => gameChat.id === args.where.id);
 
             if (gameChat) {
-                return Promise.resolve(args.update);
+                return Promise.resolve({
+                    ...args.update,
+                    id: args.where.id,
+                });
             }
             else {
-                return Promise.resolve(args.create);
+                return Promise.resolve({
+                    ...args.create,
+                    id: defaultGameChatList.length + 1,
+                });
             }
         });
 
@@ -88,19 +92,20 @@ describe('GameChatService', () => {
 
     describe('create', () => {
         it('should create a GameChat', async () => {
-            const newGameChat: GameChatType = {
-                ...defaultGameChat,
-                id: 106,
+            const newGameChat: GameChatWriteInput = {
+                gameDay: defaultGameChat.gameDay,
+                stamp: defaultGameChat.stamp,
+                player: defaultGameChat.player,
+                body: defaultGameChat.body,
             };
             const result = await gameChatService.create(newGameChat);
-            expect(result).toEqual(newGameChat);
+            expect(result).toEqual({
+                ...newGameChat,
+                id: 101,
+            });
         });
 
         it('should refuse to create a GameChat with invalid data', async () => {
-            await expect(gameChatService.create({
-                ...defaultGameChat,
-                id: -1,
-            })).rejects.toThrow();
             await expect(gameChatService.create({
                 ...defaultGameChat,
                 gameDay: -1,
@@ -110,25 +115,31 @@ describe('GameChatService', () => {
                 player: -1,
             })).rejects.toThrow();
         });
-
-        it('should refuse to create a GameChat that has the same id as an existing one', async () => {
-            await expect(gameChatService.create({
-                ...defaultGameChat,
-                id: 6,
-            })).rejects.toThrow();
-        });
     });
 
     describe('upsert', () => {
-        it('should create a GameChat', async () => {
-            const result = await gameChatService.upsert(defaultGameChat);
-            expect(result).toEqual(defaultGameChat);
+        it('should create a GameChat with a database-generated id when where.id is missing', async () => {
+            const input: GameChatUpsertInput = {
+                id: 1001,
+                gameDay: defaultGameChat.gameDay,
+                stamp: defaultGameChat.stamp,
+                player: defaultGameChat.player,
+                body: defaultGameChat.body,
+            };
+            const result = await gameChatService.upsert(input);
+            expect(result).toEqual({
+                ...input,
+                id: 101,
+            });
         });
 
         it('should update an existing GameChat where one with the id already existed', async () => {
-            const updatedGameChat: GameChatType = {
-                ...defaultGameChat,
+            const updatedGameChat: GameChatUpsertInput = {
                 id: 6,
+                gameDay: defaultGameChat.gameDay,
+                stamp: defaultGameChat.stamp,
+                player: defaultGameChat.player,
+                body: defaultGameChat.body,
             };
             const result = await gameChatService.upsert(updatedGameChat);
             expect(result).toEqual(updatedGameChat);
@@ -142,6 +153,15 @@ describe('GameChatService', () => {
         });
 
         it('should silently return when asked to delete a GameChat that does not exist', async () => {
+            const notFoundError = Object.assign(
+                new Error('Record to delete does not exist.'),
+                { code: 'P2025' },
+            );
+            Object.setPrototypeOf(
+                notFoundError,
+                Prisma.PrismaClientKnownRequestError.prototype,
+            );
+            (prisma.gameChat.delete as Mock).mockRejectedValueOnce(notFoundError);
             await gameChatService.delete(107);
             expect(prisma.gameChat.delete).toHaveBeenCalledTimes(1);
         });

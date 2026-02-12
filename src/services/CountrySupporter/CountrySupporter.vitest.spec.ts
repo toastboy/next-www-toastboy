@@ -1,3 +1,4 @@
+import { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
 import { CountrySupporterType } from 'prisma/zod/schemas/models/CountrySupporter.schema';
 import type { Mock } from 'vitest';
@@ -173,8 +174,10 @@ describe('countrySupporterService', () => {
     describe('upsert', () => {
         it('should create a CountrySupporter where the combination of player ID and country ISO code did not exist', async () => {
             const result = await countrySupporterService.upsert(
-                defaultCountrySupporter.playerId,
-                defaultCountrySupporter.countryISOCode,
+                {
+                    playerId: defaultCountrySupporter.playerId,
+                    countryISOCode: defaultCountrySupporter.countryISOCode,
+                },
             );
             expect(result).toEqual(defaultCountrySupporter);
         });
@@ -186,8 +189,10 @@ describe('countrySupporterService', () => {
                 countryISOCode: "GB",
             };
             const result = await countrySupporterService.upsert(
-                updatedClubSupporter.playerId,
-                updatedClubSupporter.countryISOCode,
+                {
+                    playerId: updatedClubSupporter.playerId,
+                    countryISOCode: updatedClubSupporter.countryISOCode,
+                },
             );
             expect(result).toEqual(updatedClubSupporter);
         });
@@ -200,6 +205,15 @@ describe('countrySupporterService', () => {
         });
 
         it('should silently return when asked to delete a CountrySupporter that does not exist', async () => {
+            const notFoundError = Object.assign(
+                new Error('Record to delete does not exist.'),
+                { code: 'P2025' },
+            );
+            Object.setPrototypeOf(
+                notFoundError,
+                Prisma.PrismaClientKnownRequestError.prototype,
+            );
+            (prisma.countrySupporter.delete as Mock).mockRejectedValueOnce(notFoundError);
             await countrySupporterService.delete(7, "GB");
             expect(prisma.countrySupporter.delete).toHaveBeenCalledTimes(1);
         });

@@ -1,3 +1,4 @@
+import { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
 import {
     PlayerResponseSchema,
@@ -16,6 +17,20 @@ import {
 } from '@/tests/mocks/data/outcome';
 import { createMockPlayer } from '@/tests/mocks/data/player';
 import { defaultPlayerFormList } from '@/tests/mocks/data/playerForm';
+import type { OutcomeWriteInput } from '@/types/OutcomeStrictSchema';
+
+const defaultOutcomeInput: OutcomeWriteInput = {
+    gameDayId: defaultOutcome.gameDayId,
+    playerId: defaultOutcome.playerId,
+    response: defaultOutcome.response,
+    responseInterval: defaultOutcome.responseInterval,
+    points: 3,
+    team: defaultOutcome.team,
+    comment: defaultOutcome.comment,
+    pub: defaultOutcome.pub,
+    paid: defaultOutcome.paid,
+    goalie: defaultOutcome.goalie,
+};
 
 describe('OutcomeService', () => {
     beforeEach(() => {
@@ -69,7 +84,12 @@ describe('OutcomeService', () => {
                 (args.where.gameDay.id ? outcome.gameDayId <= args.where.gameDay.id.lte : true)).length);
         });
 
-        (prisma.outcome.create as Mock).mockImplementation((args: { data: OutcomeType }) => {
+        (prisma.outcome.create as Mock).mockImplementation((args: {
+            data: Partial<OutcomeType> & {
+                gameDayId: number,
+                playerId: number,
+            }
+        }) => {
             const outcome = defaultOutcomeList.find((outcome) =>
                 outcome.gameDayId === args.data.gameDayId &&
                 outcome.playerId === args.data.playerId,
@@ -79,7 +99,7 @@ describe('OutcomeService', () => {
                 return Promise.reject(new Error('Outcome already exists'));
             }
             else {
-                return Promise.resolve(args.data);
+                return Promise.resolve(createMockOutcome(args.data));
             }
         });
 
@@ -90,8 +110,8 @@ describe('OutcomeService', () => {
                     playerId: number,
                 }
             },
-            update: OutcomeType,
-            create: OutcomeType,
+            update: Partial<OutcomeType>,
+            create: Partial<OutcomeType>,
         }) => {
             const outcome = defaultOutcomeList.find((outcome) =>
                 outcome.gameDayId === args.where.gameDayId_playerId.gameDayId &&
@@ -99,10 +119,10 @@ describe('OutcomeService', () => {
             );
 
             if (outcome) {
-                return Promise.resolve(args.update);
+                return Promise.resolve(createMockOutcome(args.update));
             }
             else {
-                return Promise.resolve(args.create);
+                return Promise.resolve(createMockOutcome(args.create));
             }
         });
 
@@ -673,40 +693,43 @@ describe('OutcomeService', () => {
 
     describe('create', () => {
         it('should create an Outcome', async () => {
-            const result = await outcomeService.create(defaultOutcome);
-            expect(result).toEqual(defaultOutcome);
+            const result = await outcomeService.create(defaultOutcomeInput);
+            expect(result).toEqual({
+                ...defaultOutcome,
+                ...defaultOutcomeInput,
+            });
         });
 
         it('should refuse to create an Outcome with invalid data', async () => {
             await expect(outcomeService.create({
-                ...defaultOutcome,
+                ...defaultOutcomeInput,
                 response: 'Wibble',
-            })).rejects.toThrow();
+            } as unknown as OutcomeWriteInput)).rejects.toThrow();
             await expect(outcomeService.create({
-                ...defaultOutcome,
+                ...defaultOutcomeInput,
                 responseInterval: -1,
             })).rejects.toThrow();
             await expect(outcomeService.create({
-                ...defaultOutcome,
+                ...defaultOutcomeInput,
                 points: 2,
-            })).rejects.toThrow();
+            } as unknown as OutcomeWriteInput)).rejects.toThrow();
             await expect(outcomeService.create({
-                ...defaultOutcome,
+                ...defaultOutcomeInput,
                 team: 'X',
-            })).rejects.toThrow();
+            } as unknown as OutcomeWriteInput)).rejects.toThrow();
             await expect(outcomeService.create({
-                ...defaultOutcome,
+                ...defaultOutcomeInput,
                 playerId: -1,
             })).rejects.toThrow();
             await expect(outcomeService.create({
-                ...defaultOutcome,
+                ...defaultOutcomeInput,
                 gameDayId: -1,
             })).rejects.toThrow();
         });
 
         it('should refuse to create an Outcome that has the same GameDay ID and Player ID as an existing one', async () => {
             await expect(outcomeService.create({
-                ...defaultOutcome,
+                ...defaultOutcomeInput,
                 playerId: 1,
                 gameDayId: 1,
             })).rejects.toThrow();
@@ -715,20 +738,26 @@ describe('OutcomeService', () => {
 
     describe('upsert', () => {
         it('should create an outcome where the combination of GameDay ID and Player ID did not exist', async () => {
-            const result = await outcomeService.upsert(defaultOutcome);
-            expect(result).toEqual(defaultOutcome);
+            const result = await outcomeService.upsert(defaultOutcomeInput);
+            expect(result).toEqual({
+                ...defaultOutcome,
+                ...defaultOutcomeInput,
+            });
         });
 
         it('should update an existing Outcome where the combination of GameDay ID and Player ID already existed', async () => {
-            const updatedOutcome = {
-                ...defaultOutcome,
+            const updatedOutcome: OutcomeWriteInput = {
+                ...defaultOutcomeInput,
                 playerId: 1,
                 gameDayId: 1,
                 response: PlayerResponseSchema.parse('No'),
                 comment: 'Updated comment',
             };
             const result = await outcomeService.upsert(updatedOutcome);
-            expect(result).toEqual(updatedOutcome);
+            expect(result).toEqual({
+                ...updatedOutcome,
+                id: 1,
+            });
         });
     });
 
@@ -739,6 +768,15 @@ describe('OutcomeService', () => {
         });
 
         it('should silently return when asked to delete an Outcome that does not exist', async () => {
+            const notFoundError = Object.assign(
+                new Error('Record to delete does not exist.'),
+                { code: 'P2025' },
+            );
+            Object.setPrototypeOf(
+                notFoundError,
+                Prisma.PrismaClientKnownRequestError.prototype,
+            );
+            (prisma.outcome.delete as Mock).mockRejectedValueOnce(notFoundError);
             await outcomeService.delete(7, 16);
             expect(prisma.outcome.delete).toHaveBeenCalledTimes(1);
         });

@@ -3,15 +3,12 @@ import 'server-only';
 import debug from 'debug';
 import prisma from 'prisma/prisma';
 import {
-    OutcomeUncheckedCreateInputObjectZodSchema,
-    OutcomeUncheckedUpdateInputObjectZodSchema,
     OutcomeWhereUniqueInputObjectSchema,
     PlayerResponseSchema,
     TeamName,
     TeamNameSchema,
 } from 'prisma/zod/schemas';
 import {
-    OutcomeSchema,
     OutcomeType,
 } from 'prisma/zod/schemas/models/Outcome.schema';
 import {
@@ -23,26 +20,15 @@ import {
 } from 'types';
 import z from 'zod';
 
+import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import gameDayService from '@/services/GameDay';
 import { OutcomePlayerType } from '@/types/OutcomePlayerType';
-
-/** Field definitions with extra validation */
-const extendedFields = {
-    playerId: z.number().int().min(1),
-    gameDayId: z.number().int().min(1),
-    responseInterval: z.number().int().min(0).optional().nullable(),
-    points: z.union([z.literal(0), z.literal(1), z.literal(3)]).optional().nullable(),
-};
-
-/** Schemas for enforcing strict input */
-export const OutcomeUncheckedCreateInputObjectStrictSchema =
-    OutcomeUncheckedCreateInputObjectZodSchema.extend({
-        ...extendedFields,
-    });
-export const OutcomeUncheckedUpdateInputObjectStrictSchema =
-    OutcomeUncheckedUpdateInputObjectZodSchema.extend({
-        ...extendedFields,
-    });
+import {
+    OutcomeCreateOneStrictSchema,
+    OutcomeUpsertOneStrictSchema,
+    type OutcomeWriteInput,
+    OutcomeWriteInputSchema,
+} from '@/types/OutcomeStrictSchema';
 
 const log = debug('footy:api');
 
@@ -745,16 +731,17 @@ export class OutcomeService {
     }
 
     /**
-     * Creates a new outcome.
-     * @param data The data for the new outcome.
-     * @returns A promise that resolves to the created outcome, or null if an error occurs.
-     * @throws An error if there is a failure.
+     * Creates an outcome from validated write input.
+     * @param data - Write payload keyed by `gameDayId` and `playerId`.
+     * @returns The created outcome row.
+     * @throws {z.ZodError} If input or Prisma-args validation fails.
+     * @throws {Error} If Prisma create fails.
      */
-    async create(rawData: unknown): Promise<OutcomeType | null> {
+    async create(data: OutcomeWriteInput): Promise<OutcomeType> {
         try {
-            const data = OutcomeUncheckedCreateInputObjectStrictSchema.parse(rawData);
-
-            return await prisma.outcome.create({ data });
+            const writeData = OutcomeWriteInputSchema.parse(data);
+            const args = OutcomeCreateOneStrictSchema.parse({ data: writeData });
+            return await prisma.outcome.create(args);
         } catch (error) {
             log(`Error creating outcome: ${String(error)}`);
             throw error;
@@ -762,27 +749,26 @@ export class OutcomeService {
     }
 
     /**
-     * Upserts an Outcome.
-     * @param data The data to be upserted.
-     * @returns A promise that resolves to the upserted Outcome, or null if the upsert failed.
-     * @throws An error if there is a failure.
+     * Upserts an outcome by the `(gameDayId, playerId)` composite key.
+     * @param data - Write payload keyed by `gameDayId` and `playerId`.
+     * @returns The created or updated outcome row.
+     * @throws {z.ZodError} If input or Prisma-args validation fails.
+     * @throws {Error} If Prisma upsert fails.
      */
-    async upsert(rawData: unknown): Promise<OutcomeType | null> {
+    async upsert(data: OutcomeWriteInput): Promise<OutcomeType> {
         try {
-            const parsed = OutcomeSchema.pick({
-                gameDayId: true,
-                playerId: true,
-            }).parse(rawData);
-            const where = OutcomeWhereUniqueInputObjectSchema.parse({
-                gameDayId_playerId: {
-                    gameDayId: parsed.gameDayId,
-                    playerId: parsed.playerId,
+            const writeData = OutcomeWriteInputSchema.parse(data);
+            const args = OutcomeUpsertOneStrictSchema.parse({
+                where: {
+                    gameDayId_playerId: {
+                        gameDayId: writeData.gameDayId,
+                        playerId: writeData.playerId,
+                    },
                 },
+                create: writeData,
+                update: writeData,
             });
-            const update = OutcomeUncheckedUpdateInputObjectStrictSchema.parse(rawData);
-            const create = OutcomeUncheckedCreateInputObjectStrictSchema.parse(rawData);
-
-            return await prisma.outcome.upsert({ where, update, create });
+            return await prisma.outcome.upsert(args);
         } catch (error) {
             log(`Error upserting Outcome: ${String(error)}`);
             throw error;
@@ -790,11 +776,15 @@ export class OutcomeService {
     }
 
     /**
-     * Deletes an Outcome.
-     * @param gameDayId - The ID of the GameDay.
-     * @param playerId - The ID of the Player.
-     * @returns A Promise that resolves to void.
-     * @throws An error if there is a failure.
+     * Deletes an outcome by its composite key.
+     *
+     * Not-found deletes (`P2025`) are treated as no-ops.
+     *
+     * @param gameDayId - The ID of the game day.
+     * @param playerId - The ID of the player.
+     * @returns Resolves when deletion handling completes.
+     * @throws {z.ZodError} If key validation fails.
+     * @throws {Error} If Prisma delete fails for reasons other than not-found.
      */
     async delete(gameDayId: number, playerId: number): Promise<void> {
         try {
@@ -807,6 +797,9 @@ export class OutcomeService {
 
             await prisma.outcome.delete({ where });
         } catch (error) {
+            if (isPrismaNotFoundError(error)) {
+                return;
+            }
             log(`Error deleting outcome: ${String(error)}`);
             throw error;
         }

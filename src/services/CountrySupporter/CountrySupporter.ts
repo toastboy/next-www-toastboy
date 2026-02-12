@@ -3,43 +3,30 @@ import 'server-only';
 import debug from 'debug';
 import prisma from 'prisma/prisma';
 import {
-    CountrySupporterUncheckedCreateInputObjectZodSchema,
-    CountrySupporterUncheckedUpdateInputObjectZodSchema,
     CountrySupporterWhereInputObjectSchema,
     CountrySupporterWhereUniqueInputObjectSchema,
 } from 'prisma/zod/schemas';
-import {
-    CountrySupporterType,
-} from 'prisma/zod/schemas/models/CountrySupporter.schema';
-import z from 'zod';
+import { CountrySupporterType } from 'prisma/zod/schemas/models/CountrySupporter.schema';
 
+import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import { CountrySupporterDataType } from '@/types/CountrySupporterDataType';
-
-/** Field definitions with extra validation */
-const extendFields = {
-    playerId: z.number().int().min(1),
-    countryISOCode: z.string().regex(/^([A-Z]{2}|[A-Z]{2}-[A-Z]{3})$/, 'Invalid ISO code format'),
-};
-
-/** Schemas for enforcing strict input */
-export const CountrySupporterUncheckedCreateInputObjectStrictSchema =
-    CountrySupporterUncheckedCreateInputObjectZodSchema.extend({
-        ...extendFields,
-    });
-export const CountrySupporterUncheckedUpdateInputObjectStrictSchema =
-    CountrySupporterUncheckedUpdateInputObjectZodSchema.extend({
-        ...extendFields,
-    });
+import {
+    CountrySupporterCreateOneStrictSchema,
+    CountrySupporterUpsertOneStrictSchema,
+    type CountrySupporterWriteInput,
+    CountrySupporterWriteInputSchema,
+} from '@/types/CountrySupporterStrictSchema';
 
 const log = debug('footy:api');
 
 export class CountrySupporterService {
     /**
-     * Retrieves a CountrySupporter for the given player ID and country ISO code.
-     * @param playerId - The ID of the player.
-     * @param countryISOCode - The ISO code of the country.
-     * @returns A promise that resolves to the CountrySupporter if found, otherwise null.
-     * @throws An error if there is a failure.
+     * Fetches a country-supporter relationship by its composite key.
+     * @param playerId - Player identifier in the composite key.
+     * @param countryISOCode - Country ISO code in the composite key.
+     * @returns The matching row, or `null` when it does not exist.
+     * @throws {z.ZodError} If unique-filter validation fails.
+     * @throws {Error} If Prisma query execution fails.
      */
     async get(playerId: number, countryISOCode: string): Promise<CountrySupporterType | null> {
         try {
@@ -55,9 +42,9 @@ export class CountrySupporterService {
     }
 
     /**
-     * Retrieves all CountrySupporters.
-     * @returns A promise that resolves to an array of CountrySupporters or null if an error occurs.
-     * @throws An error if there is a failure.
+     * Fetches all country-supporter relationships.
+     * @returns All country-supporter rows.
+     * @throws {Error} If Prisma query execution fails.
      */
     async getAll(): Promise<CountrySupporterType[]> {
         try {
@@ -69,15 +56,15 @@ export class CountrySupporterService {
     }
 
     /**
-     * Retrieves CountrySupporters by player ID.
-     * @param playerId - The ID of the player.
-     * @returns A promise that resolves to an array of CountrySupporterDataType objects or null.
-     * @throws An error if there is a failure.
+     * Fetches country-supporter relationships for a player, including country data.
+     * @param playerId - Player identifier to filter by.
+     * @returns Matching relationships with `country` included.
+     * @throws {z.ZodError} If filter validation fails.
+     * @throws {Error} If Prisma query execution fails.
      */
     async getByPlayer(playerId: number): Promise<CountrySupporterDataType[]> {
         try {
             const where = CountrySupporterWhereInputObjectSchema.parse({ playerId });
-
             return prisma.countrySupporter.findMany({ where, include: { country: true } });
         } catch (error) {
             log(`Error fetching CountrySupporters by player: ${String(error)}`);
@@ -86,15 +73,15 @@ export class CountrySupporterService {
     }
 
     /**
-     * Retrieves CountrySupporters by country ISO code.
-     * @param countryISOCode - The ISO code of the country.
-     * @returns A promise that resolves to an array of CountrySupporter or null.
-     * @throws An error if there is a failure.
+     * Fetches country-supporter relationships for a country ISO code.
+     * @param countryISOCode - Country ISO code to filter by.
+     * @returns Matching country-supporter rows.
+     * @throws {z.ZodError} If filter validation fails.
+     * @throws {Error} If Prisma query execution fails.
      */
     async getByCountry(countryISOCode: string): Promise<CountrySupporterType[]> {
         try {
             const where = CountrySupporterWhereInputObjectSchema.parse({ countryISOCode });
-
             return prisma.countrySupporter.findMany({ where });
         } catch (error) {
             log(`Error fetching CountrySupporters by ISO code: ${String(error)}`);
@@ -103,16 +90,17 @@ export class CountrySupporterService {
     }
 
     /**
-     * Creates a new CountrySupporter.
-     * @param data The data for the new CountrySupporter.
-     * @returns A promise that resolves to the created CountrySupporter, or null if an error occurs.
-     * @throws An error if there is a failure.
+     * Creates a country-supporter relationship from validated write input.
+     * @param data - Write payload containing `playerId` and `countryISOCode`.
+     * @returns The created row.
+     * @throws {z.ZodError} If input or Prisma-args validation fails.
+     * @throws {Error} If Prisma create fails.
      */
-    async create(rawData: unknown): Promise<CountrySupporterType | null> {
+    async create(data: CountrySupporterWriteInput): Promise<CountrySupporterType> {
         try {
-            const data = CountrySupporterUncheckedCreateInputObjectStrictSchema.parse(rawData);
-
-            return await prisma.countrySupporter.create({ data });
+            const writeData = CountrySupporterWriteInputSchema.parse(data);
+            const args = CountrySupporterCreateOneStrictSchema.parse({ data: writeData });
+            return await prisma.countrySupporter.create(args);
         } catch (error) {
             log(`Error creating CountrySupporter: ${String(error)}`);
             throw error;
@@ -120,30 +108,26 @@ export class CountrySupporterService {
     }
 
     /**
-     * Inserts or updates a country supporter entry for a given player and
-     * country.
-     *
-     * Uses the composite key of player ID and country ISO code to determine
-     * whether to update an existing record or create a new one. Validation is
-     * performed before persistence, and any errors encountered are logged and
-     * rethrown.
-     *
-     * @param playerId - The unique identifier of the player.
-     * @param countryISOCode - The ISO country code to associate with the
-     * player.
-     * @returns The upserted country supporter record, or `null` if none is
-     * created.
-     * @throws Any validation or persistence errors encountered during the
-     * operation.
+     * Upserts a country-supporter relationship by composite key.
+     * @param data - Write payload containing `playerId` and `countryISOCode`.
+     * @returns The created or updated row.
+     * @throws {z.ZodError} If input or Prisma-args validation fails.
+     * @throws {Error} If Prisma upsert fails.
      */
-    async upsert(playerId: number, countryISOCode: string): Promise<CountrySupporterType | null> {
+    async upsert(data: CountrySupporterWriteInput): Promise<CountrySupporterType> {
         try {
-            const where = CountrySupporterWhereUniqueInputObjectSchema.parse({
-                playerId_countryISOCode: { playerId, countryISOCode },
+            const writeData = CountrySupporterWriteInputSchema.parse(data);
+            const args = CountrySupporterUpsertOneStrictSchema.parse({
+                where: {
+                    playerId_countryISOCode: {
+                        playerId: writeData.playerId,
+                        countryISOCode: writeData.countryISOCode,
+                    },
+                },
+                create: writeData,
+                update: writeData,
             });
-            const update = CountrySupporterUncheckedUpdateInputObjectStrictSchema.parse({ playerId, countryISOCode });
-            const create = CountrySupporterUncheckedCreateInputObjectStrictSchema.parse({ playerId, countryISOCode });
-            return await prisma.countrySupporter.upsert({ where, update, create });
+            return await prisma.countrySupporter.upsert(args);
         } catch (error) {
             log(`Error upserting CountrySupporter: ${String(error)}`);
             throw error;
@@ -151,22 +135,17 @@ export class CountrySupporterService {
     }
 
     /**
-     * Upserts multiple country supporter entries for a given player.
-     *
-     * Iterates through the provided ISO country codes and performs an upsert
-     * operation for each, aggregating the promises for concurrent execution.
-     *
-     * @param playerId - The unique identifier of the player whose supporters
-     * are being upserted.
-     * @param countryISOCodes - An array of ISO country codes to upsert
-     * supporter records for.
-     * @throws If any upsert operation fails, the error is logged and rethrown.
+     * Upserts multiple country-supporter relationships for a player in parallel.
+     * @param playerId - Player identifier for all upserts.
+     * @param countryISOCodes - Country ISO codes to upsert for the player.
+     * @returns Resolves when all upserts complete.
+     * @throws {Error} Propagates the first upsert error encountered.
      */
     async upsertAll(playerId: number, countryISOCodes: string[]) {
         try {
             await Promise.all(countryISOCodes.map(
-                (countryISOCode) => this.upsert(playerId, countryISOCode)),
-            );
+                (countryISOCode) => this.upsert({ playerId, countryISOCode }),
+            ));
         } catch (error) {
             log(`Error upserting multiple CountrySupporters: ${String(error)}`);
             throw error;
@@ -174,33 +153,20 @@ export class CountrySupporterService {
     }
 
     /**
-     * Deletes all country supporters for the specified player except those
-     * whose ISO codes are provided to keep.
-     *
-     * Retrieves the player's current country supporters, filters out entries
-     * whose `countryISOCode` does not appear in `keep`, and deletes the
-     * remainder concurrently.
-     *
-     * @param playerId - The numeric identifier of the player whose country
-     * supporters should be pruned.
-     * @param keep - A list of country ISO code strings to preserve; comparison
-     * is strict and case-sensitive.
-     * @returns A promise that resolves when all deletions have completed.
-     * @throws Error - If fetching the player's current supporters fails or if
-     * any delete operation rejects; the error is logged and rethrown.
-     * @remarks
-     * - Deletions are executed in parallel using `Promise.all`.
-     * - This method is effectively idempotent for supporters already absent or
-     *   included in the keep list.
+     * Deletes all of a player's country-supporter relationships except retained ISO codes.
+     * @param playerId - Player identifier whose relationships are being pruned.
+     * @param keep - Country ISO codes that should remain associated with the player.
+     * @returns Resolves when all non-retained relationships are deleted.
+     * @throws {Error} If fetch or delete operations fail.
      */
     async deleteExcept(playerId: number, keep: string[]) {
         try {
             const currentCountrySupporters = await this.getByPlayer(playerId);
-            const CountrySupportersToDelete = currentCountrySupporters
+            const countrySupportersToDelete = currentCountrySupporters
                 .filter((current) => !keep.some(
                     (cs) => cs === current.countryISOCode,
                 ));
-            await Promise.all(CountrySupportersToDelete.map(
+            await Promise.all(countrySupportersToDelete.map(
                 (cs) => this.delete(cs.playerId, cs.countryISOCode)),
             );
         } catch (error) {
@@ -210,11 +176,15 @@ export class CountrySupporterService {
     }
 
     /**
-     * Deletes a CountrySupporter.
-     * @param playerId - The ID of the player.
-     * @param countryISOCode - The ISO code of the country.
-     * @returns A Promise that resolves to void.
-     * @throws An error if there is a failure.
+     * Deletes a country-supporter relationship by composite key.
+     *
+     * Not-found deletes (`P2025`) are treated as no-ops.
+     *
+     * @param playerId - Player identifier in the composite key.
+     * @param countryISOCode - Country ISO code in the composite key.
+     * @returns Resolves when deletion handling completes.
+     * @throws {z.ZodError} If key validation fails.
+     * @throws {Error} If Prisma delete fails for reasons other than not-found.
      */
     async delete(playerId: number, countryISOCode: string): Promise<void> {
         try {
@@ -224,23 +194,19 @@ export class CountrySupporterService {
 
             await prisma.countrySupporter.delete({ where });
         } catch (error) {
+            if (isPrismaNotFoundError(error)) {
+                return;
+            }
             log(`Error deleting CountrySupporter: ${String(error)}`);
             throw error;
         }
     }
 
     /**
-     * Delete CountrySupporter records from the database.
-     *
-     * If a playerId is provided, only records matching that playerId will be
-     * deleted. If no playerId is provided, all CountrySupporter records will be
-     * deleted.
-     *
-     * @param playerId - Optional player ID to scope which CountrySupporter
-     * records to delete.
-     * @returns A Promise that resolves when the deletion operation completes.
-     * @throws Will rethrow any error encountered during deletion after logging
-     * it.
+     * Deletes country-supporter relationships in bulk.
+     * @param playerId - Optional filter; when provided, only rows for this player are deleted.
+     * @returns Resolves when bulk deletion completes.
+     * @throws {Error} If Prisma deleteMany fails.
      */
     async deleteAll(playerId?: number): Promise<void> {
         try {

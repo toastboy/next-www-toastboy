@@ -1,3 +1,4 @@
+import { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
 import { TableNameSchema } from 'prisma/zod/schemas';
 import { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
@@ -5,7 +6,11 @@ import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
 import playerRecordService from '@/services/PlayerRecord';
-import { defaultPlayerRecord, defaultPlayerRecordList } from '@/tests/mocks/data/playerRecord';
+import {
+    createMockPlayerRecord,
+    defaultPlayerRecord,
+    defaultPlayerRecordList,
+} from '@/tests/mocks/data/playerRecord';
 import { loadJsonFixture } from '@/tests/shared/fixtures';
 
 
@@ -47,7 +52,13 @@ describe('PlayerRecordService', () => {
                 ));
         });
 
-        (prisma.playerRecord.create as Mock).mockImplementation((args: { data: PlayerRecordType }) => {
+        (prisma.playerRecord.create as Mock).mockImplementation((args: {
+            data: Partial<PlayerRecordType> & {
+                playerId: number,
+                year: number,
+                gameDayId: number,
+            }
+        }) => {
             const playerRecord = defaultPlayerRecordList.find((record) =>
                 record.playerId === args.data.playerId &&
                 record.year === args.data.year &&
@@ -58,7 +69,7 @@ describe('PlayerRecordService', () => {
                 return Promise.reject(new Error('PlayerRecord already exists'));
             }
             else {
-                return Promise.resolve(args.data);
+                return Promise.resolve(createMockPlayerRecord(args.data));
             }
         });
 
@@ -70,8 +81,8 @@ describe('PlayerRecordService', () => {
                     gameDayId: number,
                 }
             },
-            update: PlayerRecordType,
-            create: PlayerRecordType,
+            update: Partial<PlayerRecordType>,
+            create: Partial<PlayerRecordType>,
         }) => {
             const playerRecord = defaultPlayerRecordList.find((playerRecord) =>
                 playerRecord.playerId === args.where.playerId_year_gameDayId.playerId &&
@@ -80,10 +91,10 @@ describe('PlayerRecordService', () => {
             );
 
             if (playerRecord) {
-                return Promise.resolve(args.update);
+                return Promise.resolve(createMockPlayerRecord(args.update));
             }
             else {
-                return Promise.resolve(args.create);
+                return Promise.resolve(createMockPlayerRecord(args.create));
             }
         });
 
@@ -755,6 +766,15 @@ describe('PlayerRecordService', () => {
         });
 
         it('should silently return when asked to delete an PlayerRecord that does not exist', async () => {
+            const notFoundError = Object.assign(
+                new Error('Record to delete does not exist.'),
+                { code: 'P2025' },
+            );
+            Object.setPrototypeOf(
+                notFoundError,
+                Prisma.PrismaClientKnownRequestError.prototype,
+            );
+            (prisma.playerRecord.delete as Mock).mockRejectedValueOnce(notFoundError);
             await playerRecordService.delete(16, 2022, 7);
             expect(prisma.playerRecord.delete).toHaveBeenCalledTimes(1);
         });

@@ -3,36 +3,21 @@ import 'server-only';
 import debug from 'debug';
 import prisma from 'prisma/prisma';
 import {
-    PlayerUncheckedCreateInputObjectZodSchema,
-    PlayerUncheckedUpdateInputObjectZodSchema,
+    PlayerLoginWhereUniqueInputObjectSchema,
     PlayerWhereUniqueInputObjectSchema,
 } from 'prisma/zod/schemas';
-import {
-    PlayerSchema,
-    PlayerType,
-} from 'prisma/zod/schemas/models/Player.schema';
+import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import { PlayerDataType, PlayerFormType } from 'types';
-import z from 'zod';
 
-/** Field definitions with extra validation */
-const extendedFields = {
-    id: z.number().int().min(1).optional(),
-    accountEmail: z.email().nullable().optional(),
-};
-
-const PlayerLoginWhereUniqueInputSchema = z.object({
-    login: z.string().max(16),
-});
-
-/** Schemas for enforcing strict input */
-export const PlayerUncheckedCreateInputObjectStrictSchema =
-    PlayerUncheckedCreateInputObjectZodSchema.extend({
-        ...extendedFields,
-    });
-export const PlayerUncheckedUpdateInputObjectStrictSchema =
-    PlayerUncheckedUpdateInputObjectZodSchema.extend({
-        ...extendedFields,
-    });
+import { isPrismaNotFoundError } from '@/lib/prismaErrors';
+import {
+    PlayerCreateOneStrictSchema,
+    type PlayerCreateWriteInput,
+    PlayerCreateWriteInputSchema,
+    PlayerUpdateOneStrictSchema,
+    type PlayerUpdateWriteInput,
+    PlayerUpdateWriteInputSchema,
+} from '@/types/PlayerStrictSchema';
 
 const log = debug('footy:api');
 
@@ -46,7 +31,6 @@ class PlayerService {
     async getById(id: number) {
         try {
             const where = PlayerWhereUniqueInputObjectSchema.parse({ id });
-
             return prisma.player.findUnique({ where });
         } catch (error) {
             log(`Error fetching Player: ${String(error)}`);
@@ -62,7 +46,7 @@ class PlayerService {
      */
     async getByLogin(login: string) {
         try {
-            const where = PlayerLoginWhereUniqueInputSchema.parse({ login });
+            const where = PlayerLoginWhereUniqueInputObjectSchema.parse({ login });
             const playerLogin = await prisma.playerLogin.findUnique({
                 where,
                 include: {
@@ -120,7 +104,7 @@ class PlayerService {
                 return playerLogin ? playerLogin.login : null;
             }
 
-            const where = PlayerLoginWhereUniqueInputSchema.parse({ login: idOrLogin });
+            const where = PlayerLoginWhereUniqueInputObjectSchema.parse({ login: idOrLogin });
             const playerLogin = await prisma.playerLogin.findUnique({ where });
             return playerLogin ? playerLogin.login : null;
         } catch (error) {
@@ -144,7 +128,7 @@ class PlayerService {
                 const player = await this.getById(Number(idOrLogin));
                 return player ? player.id : null;
             } else {
-                const where = PlayerLoginWhereUniqueInputSchema.parse({ login: idOrLogin });
+                const where = PlayerLoginWhereUniqueInputObjectSchema.parse({ login: idOrLogin });
                 const playerLogin = await prisma.playerLogin.findUnique({ where });
                 return playerLogin ? playerLogin.playerId : null;
             }
@@ -376,15 +360,17 @@ class PlayerService {
     }
 
     /**
-     * Creates a player
-     * @param data The properties to add to the player
-     * @returns A promise that resolves to the newly-created player
+     * Creates a player from validated write input.
+     * @param data - Player write payload.
+     * @returns The created player row.
+     * @throws {z.ZodError} If input or Prisma-args validation fails.
+     * @throws {Error} If Prisma create fails.
      */
-    async create(rawData: unknown): Promise<PlayerType> {
+    async create(data: PlayerCreateWriteInput): Promise<PlayerType> {
         try {
-            const data = PlayerUncheckedCreateInputObjectStrictSchema.parse(rawData);
-
-            return await prisma.player.create({ data });
+            const writeData = PlayerCreateWriteInputSchema.parse(data);
+            const args = PlayerCreateOneStrictSchema.parse({ data: writeData });
+            return await prisma.player.create(args);
         } catch (error) {
             log(`Error creating Player: ${String(error)}`);
             throw error;
@@ -392,27 +378,20 @@ class PlayerService {
     }
 
     /**
-     * Updates an existing player record in the database.
-     *
-     * @param rawData - The raw data containing the player ID and fields to update. Must include an `id` field to identify the player.
-     * @returns A promise that resolves to the updated player object.
-     * @throws Will throw an error if the player ID is invalid, the data fails validation, or the database update fails.
-     *
-     * @remarks
-     * This method performs validation on the input data using Zod schemas:
-     * - Extracts and validates the player ID using `PlayerSchema`
-     * - Validates the where clause using `PlayerWhereUniqueInputObjectSchema`
-     * - Validates the update data using `PlayerUncheckedUpdateInputObjectStrictSchema`
-     *
-     * All errors are logged before being re-thrown.
+     * Updates an existing player by id from validated write input.
+     * @param data - Player write payload including `id` and update fields.
+     * @returns The updated player row.
+     * @throws {z.ZodError} If input or Prisma-args validation fails.
+     * @throws {Error} If Prisma update fails.
      */
-    async update(rawData: unknown): Promise<PlayerType> {
+    async update(data: PlayerUpdateWriteInput): Promise<PlayerType> {
         try {
-            const parsed = PlayerSchema.pick({ id: true }).parse(rawData);
-            const where = PlayerWhereUniqueInputObjectSchema.parse({ id: parsed.id });
-            const data = PlayerUncheckedUpdateInputObjectStrictSchema.parse(rawData);
-
-            return await prisma.player.update({ where, data });
+            const { id, ...updateData } = PlayerUpdateWriteInputSchema.parse(data);
+            const args = PlayerUpdateOneStrictSchema.parse({
+                where: { id },
+                data: updateData,
+            });
+            return await prisma.player.update(args);
         } catch (error) {
             log(`Error updating Player: ${String(error)}`);
             throw error;
@@ -475,28 +454,34 @@ class PlayerService {
     }
 
     /**
-     * Deletes a player. If no such player exists, that's not an error.
-     * @param id The ID of the player to delete
-     * @returns A promise that resolves to the deleted player if there was one, or
-     * undefined otherwise
+     * Deletes a player by id.
+     *
+     * Not-found deletes (`P2025`) are treated as no-ops.
+     *
+     * @param id - The player id.
+     * @returns Resolves when deletion handling completes.
+     * @throws {z.ZodError} If id validation fails.
+     * @throws {Error} If Prisma delete fails for reasons other than not-found.
      */
-    async delete(id: number) {
+    async delete(id: number): Promise<void> {
         try {
-            return await prisma.player.delete({
-                where: {
-                    id: id,
-                },
-            });
+            const where = PlayerWhereUniqueInputObjectSchema.parse({ id });
+            await prisma.player.delete({ where });
         } catch (error) {
+            if (isPrismaNotFoundError(error)) {
+                return;
+            }
             log(`Error deleting Player: ${String(error)}`);
             throw error;
         }
     }
 
     /**
-     * Deletes all players
+     * Deletes all players.
+     * @returns Resolves when bulk deletion completes.
+     * @throws {Error} If Prisma deleteMany fails.
      */
-    async deleteAll() {
+    async deleteAll(): Promise<void> {
         try {
             await prisma.player.deleteMany();
         } catch (error) {

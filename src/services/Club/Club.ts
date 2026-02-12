@@ -2,45 +2,31 @@ import 'server-only';
 
 import debug from 'debug';
 import prisma from 'prisma/prisma';
-import {
-    ClubUncheckedCreateInputObjectZodSchema,
-    ClubUncheckedUpdateInputObjectZodSchema,
-    ClubWhereUniqueInputObjectSchema,
-} from 'prisma/zod/schemas';
-import {
-    ClubSchema,
-    ClubType,
-} from 'prisma/zod/schemas/models/Club.schema';
-import z from 'zod';
+import { ClubWhereUniqueInputObjectSchema } from 'prisma/zod/schemas';
+import { ClubType } from 'prisma/zod/schemas/models/Club.schema';
 
-/** Field definitions with extra validation */
-const extendedFields = {
-    id: z.number().int().min(0),
-};
-
-/** Schemas for enforcing strict input */
-export const ClubUncheckedCreateInputObjectStrictSchema =
-    ClubUncheckedCreateInputObjectZodSchema.extend({
-        ...extendedFields,
-    });
-export const ClubUncheckedUpdateInputObjectStrictSchema =
-    ClubUncheckedUpdateInputObjectZodSchema.extend({
-        ...extendedFields,
-    });
+import { isPrismaNotFoundError } from '@/lib/prismaErrors';
+import {
+    ClubCreateOneStrictSchema,
+    type ClubCreateWriteInput,
+    ClubCreateWriteInputSchema,
+    type ClubUpsertInput,
+    ClubUpsertInputSchema,
+    ClubUpsertOneStrictSchema,
+} from '@/types/ClubStrictSchema';
 
 const log = debug('footy:api');
 
 export class ClubService {
     /**
-     * Retrieves a club by its ID.
-     * @param id - The ID of the club to retrieve.
-     * @returns A Promise that resolves to the club object if found, or null if not found.
-     * @throws If there is an error while fetching the club.
+     * Retrieves a single club by ID.
+     * @param id - Club identifier.
+     * @returns The matching club record, or `null` when no record exists.
+     * @throws If input validation fails or the query fails.
      */
     async get(id: number): Promise<ClubType | null> {
         try {
             const where = ClubWhereUniqueInputObjectSchema.parse({ id });
-
             return prisma.club.findUnique({ where });
         } catch (error) {
             log(`Error fetching club: ${String(error)}`);
@@ -49,9 +35,9 @@ export class ClubService {
     }
 
     /**
-     * Retrieves all clubs.
-     * @returns A promise that resolves to an array of clubs or null if an error occurs.
-     * @throws An error if there is a failure.
+     * Retrieves all club records.
+     * @returns All clubs.
+     * @throws If the query fails.
      */
     async getAll(): Promise<ClubType[]> {
         try {
@@ -63,16 +49,16 @@ export class ClubService {
     }
 
     /**
-     * Creates a new club.
-     * @param data The data for the new club.
-     * @returns A promise that resolves to the created club, or null if an error occurs.
-     * @throws An error if there is a failure.
+     * Creates a club from validated write input.
+     * @param data - Club write payload.
+     * @returns The created club record.
+     * @throws If input validation fails or the create query fails.
      */
-    async create(rawData: unknown): Promise<ClubType | null> {
+    async create(data: ClubCreateWriteInput): Promise<ClubType> {
         try {
-            const data = ClubUncheckedCreateInputObjectStrictSchema.parse(rawData);
-
-            return await prisma.club.create({ data });
+            const writeData = ClubCreateWriteInputSchema.parse(data);
+            const args = ClubCreateOneStrictSchema.parse({ data: writeData });
+            return await prisma.club.create(args);
         } catch (error) {
             log(`Error creating club: ${String(error)}`);
             throw error;
@@ -80,22 +66,30 @@ export class ClubService {
     }
 
     /**
-     * Upserts a club.
-     * @param data The data to be upserted.
-     * @returns A promise that resolves to the upserted club, or null if the upsert failed.
-     * @throws An error if there is a failure.
+     * Upserts a club keyed by `id`.
+     *
+     * Note: `id` is only used in `where`. Because create payloads never include
+     * `id`, when no row matches the provided id Prisma will insert a new row with
+     * a database-generated autoincrement id.
+     * @param data - Club write payload.
+     * @returns The created or updated club record.
+     * @throws If input validation fails or the upsert query fails.
      */
-    async upsert(rawData: unknown): Promise<ClubType | null> {
+    async upsert(data: ClubUpsertInput): Promise<ClubType> {
         try {
-            const parsed = ClubSchema.pick({ id: true }).parse(rawData);
-            const where = ClubWhereUniqueInputObjectSchema.parse({
-                id: parsed.id,
+            const { id, ...writeData } = ClubUpsertInputSchema.parse(data);
+            const updateData = {
+                soccerwayId: writeData.soccerwayId,
+                clubName: writeData.clubName,
+                uri: writeData.uri,
+                country: writeData.country,
+            };
+            const args = ClubUpsertOneStrictSchema.parse({
+                where: { id },
+                create: writeData,
+                update: updateData,
             });
-
-            const update = ClubUncheckedUpdateInputObjectStrictSchema.parse(rawData);
-            const create = ClubUncheckedCreateInputObjectStrictSchema.parse(rawData);
-
-            return await prisma.club.upsert({ where, update, create });
+            return await prisma.club.upsert(args);
         } catch (error) {
             log(`Error upserting club: ${String(error)}`);
             throw error;
@@ -103,25 +97,31 @@ export class ClubService {
     }
 
     /**
-     * Deletes a club by its ID.
-     * @param id - The ID of the club to delete.
-     * @throws If there is an error deleting the club.
+     * Deletes a club by ID.
+     *
+     * Missing records are ignored: Prisma not-found (`P2025`) is swallowed.
+     *
+     * @param id - Club identifier.
+     * @returns Resolves when delete handling completes.
+     * @throws If input validation fails or delete fails for reasons other than not-found.
      */
     async delete(id: number): Promise<void> {
         try {
             const where = ClubWhereUniqueInputObjectSchema.parse({ id });
-
             await prisma.club.delete({ where });
         } catch (error) {
+            if (isPrismaNotFoundError(error)) {
+                return;
+            }
             log(`Error deleting club: ${String(error)}`);
             throw error;
         }
     }
 
     /**
-     * Deletes all clubs.
-     * @returns A promise that resolves when all clubs are deleted.
-     * @throws An error if there is a failure.
+     * Deletes all club records.
+     * @returns Resolves when all records are deleted.
+     * @throws If the delete query fails.
      */
     async deleteAll(): Promise<void> {
         try {

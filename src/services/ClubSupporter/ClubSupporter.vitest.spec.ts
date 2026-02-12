@@ -1,3 +1,4 @@
+import { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
 import { ClubSupporterType } from 'prisma/zod/schemas/models/ClubSupporter.schema';
 import type { Mock } from 'vitest';
@@ -116,8 +117,10 @@ describe('clubSupporterService', () => {
         it('should create a ClubSupporter where the combination of player ID and club ID did not exist', async () => {
             (prisma.clubSupporter.upsert as Mock).mockResolvedValueOnce(defaultClubSupporter);
             const result = await clubSupporterService.upsert(
-                defaultClubSupporter.playerId,
-                defaultClubSupporter.clubId,
+                {
+                    playerId: defaultClubSupporter.playerId,
+                    clubId: defaultClubSupporter.clubId,
+                },
             );
             expect(result).toEqual(defaultClubSupporter);
         });
@@ -129,8 +132,10 @@ describe('clubSupporterService', () => {
             };
             (prisma.clubSupporter.upsert as Mock).mockResolvedValueOnce(updatedClubSupporter);
             const result = await clubSupporterService.upsert(
-                updatedClubSupporter.playerId,
-                updatedClubSupporter.clubId,
+                {
+                    playerId: updatedClubSupporter.playerId,
+                    clubId: updatedClubSupporter.clubId,
+                },
             );
             expect(result).toEqual(updatedClubSupporter);
         });
@@ -144,7 +149,15 @@ describe('clubSupporterService', () => {
         });
 
         it('should silently return when asked to delete a ClubSupporter that does not exist', async () => {
-            (prisma.clubSupporter.delete as Mock).mockResolvedValueOnce(null);
+            const notFoundError = Object.assign(
+                new Error('Record to delete does not exist.'),
+                { code: 'P2025' },
+            );
+            Object.setPrototypeOf(
+                notFoundError,
+                Prisma.PrismaClientKnownRequestError.prototype,
+            );
+            (prisma.clubSupporter.delete as Mock).mockRejectedValueOnce(notFoundError);
             await clubSupporterService.delete(7, 16);
             expect(prisma.clubSupporter.delete).toHaveBeenCalledTimes(1);
         });

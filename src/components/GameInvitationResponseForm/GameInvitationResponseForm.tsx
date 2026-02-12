@@ -58,7 +58,9 @@ export const GameInvitationResponseForm: React.FC<Props> = ({ details, onSubmitG
         try {
             await onSubmitGameInvitationResponse({
                 token: details.token,
-                ...values,
+                response: values.response,
+                goalie: values.goalie,
+                comment: values.comment?.trim() ?? null,
             });
 
             setCurrentResponse(values.response);

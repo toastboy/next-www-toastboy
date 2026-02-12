@@ -2,40 +2,28 @@ import 'server-only';
 
 import debug from 'debug';
 import prisma from 'prisma/prisma';
-import {
-    GameChatUncheckedCreateInputObjectZodSchema,
-    GameChatUncheckedUpdateInputObjectZodSchema,
-    GameChatWhereUniqueInputObjectSchema,
-} from 'prisma/zod/schemas';
-import {
-    GameChatSchema,
-    GameChatType,
-} from 'prisma/zod/schemas/models/GameChat.schema';
-import z from 'zod';
+import { GameChatWhereUniqueInputObjectSchema } from 'prisma/zod/schemas';
+import { GameChatType } from 'prisma/zod/schemas/models/GameChat.schema';
 
-/** Field definitions with extra validation */
-const extendedFields = {
-    id: z.number().int().min(0),
-};
-
-/** Schemas for enforcing strict input */
-export const GameChatUncheckedCreateInputObjectStrictSchema =
-    GameChatUncheckedCreateInputObjectZodSchema.extend({
-        ...extendedFields,
-    });
-export const GameChatUncheckedUpdateInputObjectStrictSchema =
-    GameChatUncheckedUpdateInputObjectZodSchema.extend({
-        ...extendedFields,
-    });
+import { isPrismaNotFoundError } from '@/lib/prismaErrors';
+import {
+    GameChatCreateOneStrictSchema,
+    type GameChatUpsertInput,
+    GameChatUpsertInputSchema,
+    GameChatUpsertOneStrictSchema,
+    type GameChatWriteInput,
+    GameChatWriteInputSchema,
+} from '@/types/GameChatStrictSchema';
 
 const log = debug('footy:api');
 
 export class GameChatService {
     /**
-     * Retrieves a GameChat by its ID.
-     * @param id - The ID of the GameChat to retrieve.
-     * @returns A Promise that resolves to the GameChat object if found, or null if not found.
-     * @throws If there is an error while fetching the GameChat.
+     * Fetches a game-chat record by ID.
+     * @param id - Game-chat row identifier.
+     * @returns The matching row, or `null` when it does not exist.
+     * @throws {z.ZodError} If unique-filter validation fails.
+     * @throws {Error} If Prisma query execution fails.
      */
     async get(id: number): Promise<GameChatType | null> {
         try {
@@ -49,9 +37,9 @@ export class GameChatService {
     }
 
     /**
-     * Retrieves all GameChat.
-     * @returns A promise that resolves to an array of GameChats or null if an error occurs.
-     * @throws An error if there is a failure.
+     * Fetches all game-chat records.
+     * @returns All game-chat rows.
+     * @throws {Error} If Prisma query execution fails.
      */
     async getAll(): Promise<GameChatType[]> {
         try {
@@ -63,16 +51,17 @@ export class GameChatService {
     }
 
     /**
-     * Creates a new gameChat.
-     * @param data The data for the new gameChat.
-     * @returns A promise that resolves to the created gameChat, or null if an error occurs.
-     * @throws An error if there is a failure.
+     * Creates a game-chat record from validated write input.
+     * @param data - Write payload for a game-chat row.
+     * @returns The created game-chat row.
+     * @throws {z.ZodError} If input or Prisma-args validation fails.
+     * @throws {Error} If Prisma create fails.
      */
-    async create(rawData: unknown): Promise<GameChatType | null> {
+    async create(data: GameChatWriteInput): Promise<GameChatType> {
         try {
-            const data = GameChatUncheckedCreateInputObjectStrictSchema.parse(rawData);
-
-            return await prisma.gameChat.create({ data });
+            const writeData = GameChatWriteInputSchema.parse(data);
+            const args = GameChatCreateOneStrictSchema.parse({ data: writeData });
+            return await prisma.gameChat.create(args);
         } catch (error) {
             log(`Error creating gameChat: ${String(error)}`);
             throw error;
@@ -80,19 +69,25 @@ export class GameChatService {
     }
 
     /**
-     * Upserts a gameChat.
-     * @param data The data to be upserted.
-     * @returns A promise that resolves to the upserted gameChat, or null if the upsert failed.
-     * @throws An error if there is a failure.
+     * Upserts a game-chat record by ID.
+     *
+     * Note: `id` is only used in `where`. Because create payloads never include
+     * `id`, when no row matches the provided id Prisma will insert a new row with
+     * a database-generated autoincrement id.
+     * @param data - Upsert payload; requires `id` for the unique key.
+     * @returns The created or updated game-chat row.
+     * @throws {z.ZodError} If input or Prisma-args validation fails.
+     * @throws {Error} If Prisma upsert fails.
      */
-    async upsert(rawData: unknown): Promise<GameChatType | null> {
+    async upsert(data: GameChatUpsertInput): Promise<GameChatType> {
         try {
-            const parsed = GameChatSchema.pick({ id: true }).parse(rawData);
-            const where = GameChatWhereUniqueInputObjectSchema.parse({ id: parsed.id });
-            const update = GameChatUncheckedUpdateInputObjectStrictSchema.parse(rawData);
-            const create = GameChatUncheckedCreateInputObjectStrictSchema.parse(rawData);
-
-            return await prisma.gameChat.upsert({ where, update, create });
+            const { id, ...writeData } = GameChatUpsertInputSchema.parse(data);
+            const args = GameChatUpsertOneStrictSchema.parse({
+                where: { id },
+                create: writeData,
+                update: writeData,
+            });
+            return await prisma.gameChat.upsert(args);
         } catch (error) {
             log(`Error upserting gameChat: ${String(error)}`);
             throw error;
@@ -100,9 +95,14 @@ export class GameChatService {
     }
 
     /**
-     * Deletes a gameChat by its ID.
-     * @param id - The ID of the gameChat to delete.
-     * @throws If there is an error deleting the gameChat.
+     * Deletes a game-chat record by ID.
+     *
+     * Not-found deletes (`P2025`) are treated as no-ops.
+     *
+     * @param id - Game-chat row identifier.
+     * @returns Resolves when deletion handling completes.
+     * @throws {z.ZodError} If unique-filter validation fails.
+     * @throws {Error} If Prisma delete fails for reasons other than not-found.
      */
     async delete(id: number): Promise<void> {
         try {
@@ -110,15 +110,18 @@ export class GameChatService {
 
             await prisma.gameChat.delete({ where });
         } catch (error) {
+            if (isPrismaNotFoundError(error)) {
+                return;
+            }
             log(`Error deleting gameChat: ${String(error)}`);
             throw error;
         }
     }
 
     /**
-     * Deletes all gameChats.
-     * @returns A promise that resolves when all gameChats are deleted.
-     * @throws An error if there is a failure.
+     * Deletes all game-chat records.
+     * @returns Resolves when deletion completes.
+     * @throws {Error} If Prisma deleteMany fails.
      */
     async deleteAll(): Promise<void> {
         try {

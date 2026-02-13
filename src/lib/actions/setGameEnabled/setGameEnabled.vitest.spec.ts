@@ -33,6 +33,7 @@ describe('setGameEnabledCore', () => {
 
         const data = SetGameEnabledInputSchema.parse({
             gameDayId: 1249,
+            game: false,
             reason: '  Not enough players  ',
         });
 
@@ -77,6 +78,7 @@ describe('setGameEnabledCore', () => {
 
         const data = SetGameEnabledInputSchema.parse({
             gameDayId: 1249,
+            game: false,
             reason: '   ',
         });
 

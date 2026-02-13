@@ -4,11 +4,12 @@ import { vi } from 'vitest';
 
 import { PickerForm } from '@/components/PickerForm/PickerForm';
 import { Wrapper } from '@/tests/components/lib/common';
+import { defaultGameDay } from '@/tests/mocks/data/gameDay';
 import { defaultPickerAdminData } from '@/tests/mocks/data/picker';
 import type { PickerPlayerType } from '@/types/PickerPlayerType';
 
 const mockSave = vi.fn();
-const mockCancelGame = vi.fn();
+const mockSetGameEnabled = vi.fn();
 
 const createPickerPlayer = (
     id: number,
@@ -45,7 +46,7 @@ describe('PickerForm', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         mockSave.mockResolvedValue(undefined);
-        mockCancelGame.mockResolvedValue({
+        mockSetGameEnabled.mockResolvedValue({
             id: 1249,
             year: 2026,
             date: new Date('2026-02-03T00:00:00Z'),
@@ -61,11 +62,10 @@ describe('PickerForm', () => {
         render(
             <Wrapper>
                 <PickerForm
-                    gameId={1249}
-                    gameDate="3rd February 2026"
+                    gameDay={defaultGameDay}
                     players={defaultPickerAdminData}
                     submitPicker={mockSave}
-                    cancelGame={mockCancelGame}
+                    setGameEnabled={mockSetGameEnabled}
                 />
             </Wrapper>,
         );
@@ -90,11 +90,10 @@ describe('PickerForm', () => {
         render(
             <Wrapper>
                 <PickerForm
-                    gameId={1249}
-                    gameDate="3rd February 2026"
+                    gameDay={defaultGameDay}
                     players={players}
                     submitPicker={mockSave}
-                    cancelGame={mockCancelGame}
+                    setGameEnabled={mockSetGameEnabled}
                 />
             </Wrapper>,
         );
@@ -111,11 +110,10 @@ describe('PickerForm', () => {
         render(
             <Wrapper>
                 <PickerForm
-                    gameId={1249}
-                    gameDate="3rd February 2026"
+                    gameDay={defaultGameDay}
                     players={defaultPickerAdminData}
                     submitPicker={mockSave}
-                    cancelGame={mockCancelGame}
+                    setGameEnabled={mockSetGameEnabled}
                 />
             </Wrapper>,
         );
@@ -140,22 +138,22 @@ describe('PickerForm', () => {
         render(
             <Wrapper>
                 <PickerForm
-                    gameId={1249}
-                    gameDate="3rd February 2026"
+                    gameDay={defaultGameDay}
                     players={defaultPickerAdminData}
                     submitPicker={mockSave}
-                    cancelGame={mockCancelGame}
+                    setGameEnabled={mockSetGameEnabled}
                 />
             </Wrapper>,
         );
 
         await user.type(screen.getByTestId('cancellation-reason'), 'Not enough players');
-        await user.click(screen.getByTestId('cancel-game-button'));
+        await user.click(screen.getByTestId('set-enabled-button'));
 
         await waitFor(() => {
-            expect(mockCancelGame).toHaveBeenCalledWith(
+            expect(mockSetGameEnabled).toHaveBeenCalledWith(
                 {
-                    gameDayId: 1249,
+                    gameDayId: 1,
+                    game: false,
                     reason: 'Not enough players',
                 },
             );

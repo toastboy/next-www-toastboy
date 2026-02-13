@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { cancelGameCore } from '@/lib/actions/cancelGame';
-import { CancelGameInputSchema } from '@/types/actions/CancelGame';
+import { setGameEnabledCore } from '@/lib/actions/setGameEnabled';
+import { SetGameEnabledInputSchema } from '@/types/actions/SetGameEnabled';
 
-describe('cancelGameCore', () => {
+describe('setGameEnabledCore', () => {
     const mockSendEmailToAllActivePlayers = vi.fn();
 
     beforeEach(() => {
@@ -31,12 +31,12 @@ describe('cancelGameCore', () => {
             }),
         };
 
-        const data = CancelGameInputSchema.parse({
+        const data = SetGameEnabledInputSchema.parse({
             gameDayId: 1249,
             reason: '  Not enough players  ',
         });
 
-        const result = await cancelGameCore(data, mockSendEmailToAllActivePlayers, { gameDayService });
+        const result = await setGameEnabledCore(data, mockSendEmailToAllActivePlayers, { gameDayService });
 
         expect(gameDayService.update).toHaveBeenCalledWith({
             id: 1249,
@@ -75,12 +75,12 @@ describe('cancelGameCore', () => {
             }),
         };
 
-        const data = CancelGameInputSchema.parse({
+        const data = SetGameEnabledInputSchema.parse({
             gameDayId: 1249,
             reason: '   ',
         });
 
-        await cancelGameCore(data, mockSendEmailToAllActivePlayers, { gameDayService });
+        await setGameEnabledCore(data, mockSendEmailToAllActivePlayers, { gameDayService });
 
         expect(gameDayService.update).toHaveBeenCalledWith({
             id: 1249,
@@ -102,10 +102,11 @@ describe('cancelGameCore', () => {
             update: vi.fn(),
         };
 
-        await expect(cancelGameCore(
+        await expect(setGameEnabledCore(
             {
                 gameDayId: 9999,
-                reason: 'weather',
+                game: false,
+                reason: 'weather indoors',
             },
             mockSendEmailToAllActivePlayers,
             { gameDayService },

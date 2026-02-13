@@ -19,19 +19,20 @@ import {
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck, IconChevronDown, IconChevronUp, IconSelector } from '@tabler/icons-react';
-import { useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
+import { Activity, useEffect, useMemo, useState } from 'react';
 
 import { config } from '@/lib/config';
-import type { CancelGameProxy } from '@/types/actions/CancelGame';
+import type { SetGameEnabledProxy } from '@/types/actions/SetGameEnabled';
 import type { SubmitPickerProxy } from '@/types/actions/SubmitPicker';
 import type { PickerPlayerType } from '@/types/PickerPlayerType';
 
 export interface PickerFormProps {
-    gameId: number;
-    gameDate: string;
+    gameDay: GameDayType;
     players: PickerPlayerType[];
     submitPicker: SubmitPickerProxy;
-    cancelGame: CancelGameProxy;
+    setGameEnabled: SetGameEnabledProxy;
 }
 
 type SortKey = 'name' | 'responseTime' | 'gamesPlayed';
@@ -93,12 +94,12 @@ const buildDefaultSelection = (rows: PickerPlayerType[], maxSelected = 12) => {
 };
 
 export const PickerForm: React.FC<PickerFormProps> = ({
-    gameId,
-    gameDate,
+    gameDay,
     players,
     submitPicker,
-    cancelGame,
+    setGameEnabled,
 }) => {
+    const router = useRouter();
     const eligiblePlayers = useMemo(
         () => players.filter((player) => player.response === 'Yes'),
         [players],
@@ -107,8 +108,8 @@ export const PickerForm: React.FC<PickerFormProps> = ({
     const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
     const [selectedIds, setSelectedIds] = useState<number[]>(() => buildDefaultSelection(eligiblePlayers));
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [cancellationReason, setCancellationReason] = useState('');
-    const [isCancelling, setIsCancelling] = useState(false);
+    const [reason, setReason] = useState('');
+    const [isSettingEnabled, setIsSettingEnabled] = useState(false);
 
     useEffect(() => {
         const eligibleIdSet = new Set(eligiblePlayers.map((player) => player.playerId));
@@ -230,6 +231,8 @@ export const PickerForm: React.FC<PickerFormProps> = ({
                 loading: false,
                 autoClose: config.notificationAutoClose,
             });
+
+            router.push(`/footy/game/${gameDay.id}`);
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : 'Failed to submit selection';
             notifications.update({
@@ -247,36 +250,37 @@ export const PickerForm: React.FC<PickerFormProps> = ({
         }
     };
 
-    const handleCancelGame = async () => {
-        const notificationId = 'cancel-game';
+    const handleSetGameEnabled = async () => {
+        const notificationId = 'set-enabled';
         notifications.show({
             id: notificationId,
             loading: true,
-            title: 'Cancelling game',
+            title: 'Updating game status',
             message: 'Updating game status...',
             autoClose: false,
             withCloseButton: false,
         });
 
-        setIsCancelling(true);
+        setIsSettingEnabled(true);
         try {
-            await cancelGame(
+            await setGameEnabled(
                 {
-                    gameDayId: gameId,
-                    reason: cancellationReason,
+                    gameDayId: gameDay.id,
+                    game: !gameDay.game,
+                    reason: reason,
                 },
             );
             notifications.update({
                 id: notificationId,
                 color: 'teal',
-                title: 'Game cancelled',
-                message: 'The game has been marked as cancelled.',
+                title: gameDay.game ? 'Game cancelled' : 'Game reinstated',
+                message: gameDay.game ? 'The game has been marked as cancelled.' : 'The game has been reinstated.',
                 icon: <IconCheck size={config.notificationIconSize} />,
                 loading: false,
                 autoClose: config.notificationAutoClose,
             });
         } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : 'Failed to cancel game';
+            const errorMessage = err instanceof Error ? err.message : 'Failed to set game status';
             notifications.update({
                 id: notificationId,
                 color: 'red',
@@ -288,7 +292,7 @@ export const PickerForm: React.FC<PickerFormProps> = ({
                 withCloseButton: true,
             });
         } finally {
-            setIsCancelling(false);
+            setIsSettingEnabled(false);
         }
     };
 
@@ -311,80 +315,83 @@ export const PickerForm: React.FC<PickerFormProps> = ({
         );
     });
 
+    // TODO: New game date component?
     return (
         <Stack gap="md">
             <Stack align="left" gap="xs">
                 <Title order={2}>Picker</Title>
-                <Text c="dimmed">Game {gameId}: {gameDate}</Text>
+                <Text c="dimmed">Game {gameDay.id}: {gameDay.date.toISOString().split('T')[0]}</Text>
             </Stack>
-            <Group justify="space-between" align="center" wrap="wrap">
-                <Text fw={700}>Players selected ({selectedIds.length})</Text>
-                <Button
-                    type="button"
-                    data-testid="submit-picker-button"
-                    onClick={handleSubmit}
-                    disabled={!hasSelection || isCancelling}
-                    loading={isSubmitting}
-                    w={150}
+            <Activity mode={gameDay.game ? 'visible' : 'hidden'}>
+                <Group justify="space-between" align="center" wrap="wrap">
+                    <Text fw={700}>Players selected ({selectedIds.length})</Text>
+                    <Button
+                        type="button"
+                        data-testid="submit-picker-button"
+                        onClick={handleSubmit}
+                        disabled={!hasSelection || isSettingEnabled}
+                        loading={isSubmitting}
+                        w={150}
+                    >
+                        Pick sides
+                    </Button>
+                </Group>
+                <Table
+                    striped
+                    highlightOnHover
+                    withTableBorder
+                    withColumnBorders
+                    w="100%"
+                    style={{ tableLayout: 'fixed' }}
                 >
-                    Pick sides
-                </Button>
-            </Group>
-            <Table
-                striped
-                highlightOnHover
-                withTableBorder
-                withColumnBorders
-                w="100%"
-                style={{ tableLayout: 'fixed' }}
-            >
-                <TableThead>
-                    <TableTr>
-                        <TableTh w="2.5rem">
-                            <Checkbox
-                                checked={allSelected}
-                                indeterminate={someSelected}
-                                onChange={(event) => toggleSelectAll(event.currentTarget.checked)}
-                                aria-label="Select all players"
-                            />
-                        </TableTh>
-                        <TableTh aria-sort={sortKey === 'name' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
-                            {renderSortHeader('Player', 'name')}
-                        </TableTh>
-                        <TableTh aria-sort={sortKey === 'responseTime' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
-                            {renderSortHeader('Response time', 'responseTime')}
-                        </TableTh>
-                        <TableTh aria-sort={sortKey === 'gamesPlayed' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
-                            {renderSortHeader('Total games played', 'gamesPlayed')}
-                        </TableTh>
-                    </TableTr>
-                </TableThead>
-                <TableTbody>{rows}</TableTbody>
-            </Table>
-            <Divider
-                label="or"
-                labelPosition="center"
-            />
+                    <TableThead>
+                        <TableTr>
+                            <TableTh w="2.5rem">
+                                <Checkbox
+                                    checked={allSelected}
+                                    indeterminate={someSelected}
+                                    onChange={(event) => toggleSelectAll(event.currentTarget.checked)}
+                                    aria-label="Select all players"
+                                />
+                            </TableTh>
+                            <TableTh aria-sort={sortKey === 'name' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                                {renderSortHeader('Player', 'name')}
+                            </TableTh>
+                            <TableTh aria-sort={sortKey === 'responseTime' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                                {renderSortHeader('Response time', 'responseTime')}
+                            </TableTh>
+                            <TableTh aria-sort={sortKey === 'gamesPlayed' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                                {renderSortHeader('Total games played', 'gamesPlayed')}
+                            </TableTh>
+                        </TableTr>
+                    </TableThead>
+                    <TableTbody>{rows}</TableTbody>
+                </Table>
+                <Divider
+                    label="or"
+                    labelPosition="center"
+                />
+            </Activity>
             <Group justify="space-between" align="center" wrap="wrap">
                 <TextInput
-                    data-testid="cancellation-reason"
-                    aria-label="Cancellation reason"
-                    placeholder="not enough players"
-                    value={cancellationReason}
-                    onChange={(event) => setCancellationReason(event.currentTarget.value)}
-                    disabled={isSubmitting || isCancelling}
+                    data-testid={gameDay.game ? "cancellation-reason" : "reinstatement-reason"}
+                    aria-label={gameDay.game ? "Cancellation reason" : "Reinstatement reason"}
+                    placeholder={gameDay.game ? "not enough players" : ""}
+                    value={reason}
+                    onChange={(event) => setReason(event.currentTarget.value)}
+                    disabled={isSubmitting || isSettingEnabled}
                     flex={1}
                 />
                 <Button
-                    data-testid="cancel-game-button"
+                    data-testid="set-enabled-button"
                     type="button"
-                    color="red"
-                    onClick={handleCancelGame}
-                    loading={isCancelling}
-                    disabled={isSubmitting || isCancelling}
+                    color={gameDay.game ? "red" : "green"}
+                    onClick={handleSetGameEnabled}
+                    loading={isSettingEnabled}
+                    disabled={isSubmitting || isSettingEnabled}
                     w={150}
                 >
-                    Cancel game
+                    {gameDay.game ? 'Cancel game' : 'Reinstate game'}
                 </Button>
             </Group>
         </Stack>

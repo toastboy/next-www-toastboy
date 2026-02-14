@@ -96,6 +96,7 @@ model GameDay {
     comment            String?   @db.VarChar(255)
     bibs               TeamName?
     pickerGamesHistory Int?
+    cost               Int       @db.UnsignedInt
 
     gameInvitations GameInvitation[]
     outcomes        Outcome[]

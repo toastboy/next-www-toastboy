@@ -35,14 +35,14 @@ export interface MoneyFormProps {
 const formatAmount = (amount: number) => amount.toFixed(2);
 const formatCurrency = (amount: number) => `£${formatAmount(amount)}`;
 
-interface MoneyDebtRowProps {
+interface DebtRowProps {
     row: DebtType;
     payDebt: PayDebtProxy;
     submittingPlayerId: number | null;
     setSubmittingPlayerId: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
-const MoneyDebtRow: React.FC<MoneyDebtRowProps> = ({
+const DebtRow: React.FC<DebtRowProps> = ({
     row,
     payDebt,
     submittingPlayerId,
@@ -173,7 +173,7 @@ export const MoneyForm: React.FC<MoneyFormProps> = ({
             <Stack gap="xs">
                 <Title order={3}>{title}</Title>
                 {rows.map((row) => (
-                    <MoneyDebtRow
+                    <DebtRow
                         key={`${row.playerId}-${row.amount}`}
                         row={row}
                         payDebt={payDebt}

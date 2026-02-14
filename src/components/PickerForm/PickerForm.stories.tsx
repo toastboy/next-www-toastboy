@@ -27,15 +27,23 @@ type Story = StoryObj<typeof meta>;
 
 export const Render: Story = {
     args: {
-        gameId: 1249,
-        gameDate: '3rd February 2026',
-        players: defaultPickerAdminData,
-        submitPicker: async () => Promise.resolve(),
-        cancelGame: async () => Promise.resolve({
+        gameDay: {
             id: 1249,
             year: 2026,
             date: new Date('2026-02-03T00:00:00Z'),
-            game: false,
+            game: true,
+            mailSent: new Date('2026-02-01T09:00:00Z'),
+            comment: null,
+            bibs: null,
+            pickerGamesHistory: 10,
+        },
+        players: defaultPickerAdminData,
+        submitPicker: async () => Promise.resolve(),
+        setGameEnabled: async () => Promise.resolve({
+            id: 1249,
+            year: 2026,
+            date: new Date('2026-02-03T00:00:00Z'),
+            game: true,
             mailSent: new Date('2026-02-01T09:00:00Z'),
             comment: null,
             bibs: null,

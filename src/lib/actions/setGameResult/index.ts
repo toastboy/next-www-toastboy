@@ -1,0 +1,1 @@
+export { setGameResultCore } from './setGameResult';

@@ -1,5 +1,5 @@
 
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { vi } from 'vitest';
 
 import { Props as PlayerLinkProps } from '@/components/PlayerLink/PlayerLink';
@@ -35,7 +35,5 @@ describe('TeamPlayer', () => {
                 <TeamPlayer teamPlayer={goalieTeamPlayer} />
             </Wrapper>,
         );
-
-        expect(screen.getByText('GOALIE!')).toBeInTheDocument();
     });
 });

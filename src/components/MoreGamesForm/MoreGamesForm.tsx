@@ -4,6 +4,8 @@ import {
     Box,
     Button,
     Checkbox,
+    NumberInput,
+    Paper,
     Table,
     TableTbody,
     TableTd,
@@ -29,13 +31,15 @@ import {
 } from '@/types/actions/CreateMoreGameDays';
 
 export interface Props {
+    cost: CreateMoreGameDaysInput['cost'];
     rows: CreateMoreGameDaysInput['rows'];
     onCreateMoreGameDays: CreateMoreGameDaysProxy;
 }
 
-export const MoreGamesForm: React.FC<Props> = ({ rows, onCreateMoreGameDays }) => {
+export const MoreGamesForm: React.FC<Props> = ({ cost, rows, onCreateMoreGameDays }) => {
     const form = useForm<CreateMoreGameDaysInput>({
         initialValues: {
+            cost,
             rows,
         },
         validate: zod4Resolver(CreateMoreGameDaysSchema),
@@ -108,6 +112,19 @@ export const MoreGamesForm: React.FC<Props> = ({ rows, onCreateMoreGameDays }) =
             onSubmit={form.onSubmit(handleSubmit)}
             data-testid="moregames-form"
         >
+            <Paper withBorder p="sm" mb="md">
+                <NumberInput
+                    label="Cost per game (pence)"
+                    description="This cost will be applied to each created game day."
+                    aria-label="Cost per game in pence"
+                    data-testid="moregames-cost"
+                    min={1}
+                    allowDecimal={false}
+                    thousandSeparator=","
+                    hideControls
+                    {...form.getInputProps('cost')}
+                />
+            </Paper>
             <Table
                 highlightOnHover
                 withTableBorder

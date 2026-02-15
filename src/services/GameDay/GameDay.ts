@@ -146,6 +146,27 @@ export class GameDayService {
     }
 
     /**
+     * Retrieves the most recent GameDay record from the database.
+     *
+     * @returns A Promise that resolves to the latest GameDay object if found,
+     * or null if no records exist.
+     * @throws {Error} Throws an error if the database query fails.
+     *
+     * @remarks
+     * This method fetches the GameDay with the highest ID value, assuming IDs
+     * are auto-incrementing. The error is logged before being re-thrown to the
+     * caller.
+     */
+    async getLatest(): Promise<GameDayType | null> {
+        try {
+            return prisma.gameDay.findFirst({ orderBy: { id: 'desc' } });
+        } catch (error) {
+            log(`Error fetching latest GameDayType: ${String(error)}`);
+            throw error;
+        }
+    }
+
+    /**
      * Retrieves the next `GameDayType` that occurs after the specified game day.
      *
      * @param gameDayId - The unique identifier of the current game day.

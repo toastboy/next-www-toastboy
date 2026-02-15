@@ -207,6 +207,25 @@ describe('GameDayService', () => {
         });
     });
 
+    describe('getLatest', () => {
+        it('should return the most recent GameDay ordered by date descending', async () => {
+            (prisma.gameDay.findFirst as Mock).mockResolvedValue(defaultGameDayList[99]);
+            const result = await gameDayService.getLatest();
+            expect(result).toEqual(defaultGameDayList[99]);
+            expect(prisma.gameDay.findFirst).toHaveBeenCalledWith({
+                orderBy: {
+                    id: 'desc',
+                },
+            });
+        });
+
+        it('should return null when no GameDays exist', async () => {
+            (prisma.gameDay.findFirst as Mock).mockResolvedValue(null);
+            const result = await gameDayService.getLatest();
+            expect(result).toBeNull();
+        });
+    });
+
     describe('getNext', () => {
         it('should return the correct next GameDay for gameDayId 6', async () => {
             (prisma.gameDay.findFirst as Mock).mockResolvedValue(defaultGameDayList[6]);
@@ -431,6 +450,7 @@ describe('GameDayService', () => {
                 year: defaultGameDay.year,
                 date: defaultGameDay.date,
                 game: defaultGameDay.game,
+                cost: defaultGameDay.cost,
                 mailSent: defaultGameDay.mailSent,
                 comment: defaultGameDay.comment,
                 bibs: defaultGameDay.bibs,
@@ -459,6 +479,7 @@ describe('GameDayService', () => {
                 year: defaultGameDay.year,
                 date: defaultGameDay.date,
                 game: defaultGameDay.game,
+                cost: defaultGameDay.cost,
                 mailSent: defaultGameDay.mailSent,
                 comment: defaultGameDay.comment,
                 bibs: defaultGameDay.bibs,
@@ -477,6 +498,7 @@ describe('GameDayService', () => {
                 year: defaultGameDay.year,
                 date: defaultGameDay.date,
                 game: defaultGameDay.game,
+                cost: defaultGameDay.cost,
                 mailSent: defaultGameDay.mailSent,
                 comment: defaultGameDay.comment,
                 bibs: defaultGameDay.bibs,

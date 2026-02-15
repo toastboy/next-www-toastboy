@@ -22,6 +22,7 @@ describe('MoreGamesForm', () => {
         render(
             <Wrapper>
                 <MoreGamesForm
+                    cost={defaultMoreGamesFormData.cost}
                     rows={defaultMoreGamesFormData.rows}
                     onCreateMoreGameDays={mockCreateMoreGameDays}
                 />
@@ -38,6 +39,7 @@ describe('MoreGamesForm', () => {
         render(
             <Wrapper>
                 <MoreGamesForm
+                    cost={defaultMoreGamesFormData.cost}
                     rows={defaultMoreGamesFormData.rows}
                     onCreateMoreGameDays={mockCreateMoreGameDays}
                 />
@@ -65,6 +67,7 @@ describe('MoreGamesForm', () => {
                     }),
                 ]),
             );
+            expect(payload.cost).toBe(defaultMoreGamesFormData.cost);
         });
     });
 });

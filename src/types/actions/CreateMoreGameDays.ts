@@ -8,6 +8,7 @@ const GameDayRowSchema = z.object({
 });
 
 export const CreateMoreGameDaysSchema = z.object({
+    cost: z.number().int().min(1, 'Cost must be at least 1 penny.'),
     rows: z.array(GameDayRowSchema).min(1, 'At least one game day is required.'),
 });
 

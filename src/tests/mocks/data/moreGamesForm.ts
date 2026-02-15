@@ -1,6 +1,7 @@
 import type { CreateMoreGameDaysInput } from '@/types/actions/CreateMoreGameDays';
 
 export const defaultMoreGamesFormData: CreateMoreGameDaysInput = {
+    cost: 500,
     rows: [
         {
             date: '2024-01-09',

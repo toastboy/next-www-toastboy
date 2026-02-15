@@ -18,6 +18,8 @@ export interface ConfigType {
     notificationIconSize: number;
     /** Organiser's phone number for contact. */
     organiserPhoneNumber: string;
+    /** Default game cost in pence. */
+    defaultGameCostPence: number;
 }
 
 export const ConfigSchema: z.ZodType<ConfigType> = z.object({
@@ -28,4 +30,5 @@ export const ConfigSchema: z.ZodType<ConfigType> = z.object({
     notificationAutoClose: z.number().int().nonnegative(),
     notificationIconSize: z.number().int().nonnegative(),
     organiserPhoneNumber: z.string().min(1),
+    defaultGameCostPence: z.number().int().min(1),
 });

@@ -52,6 +52,7 @@ export async function createMoreGameDaysCore(
     data: CreateMoreGameDaysInput,
     deps: CreateMoreGameDaysDeps = defaultDeps,
 ) {
+    const { cost } = data;
     return await Promise.all(
         data.rows.map((row) => {
             const date = parseDateString(row.date);
@@ -61,6 +62,7 @@ export async function createMoreGameDaysCore(
                 year: date.getFullYear(),
                 date,
                 game: row.game,
+                cost,
                 comment: comment && comment.length > 0 ? comment : null,
             });
         }),

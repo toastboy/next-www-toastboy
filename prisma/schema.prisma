@@ -1,348 +1,398 @@
 generator client {
-    provider = "prisma-client"
-    output   = "../prisma/generated"
+  provider = "prisma-client"
+  output   = "../prisma/generated"
 }
 
 generator zod {
-    provider = "prisma-zod-generator"
-    output   = "../prisma/zod"
+  provider = "prisma-zod-generator"
+  output   = "../prisma/zod"
 }
 
 datasource db {
-    provider     = "mysql"
-    relationMode = "prisma"
+  provider     = "mysql"
+  relationMode = "prisma"
 }
 
 model Arse {
-    id    Int      @id @default(autoincrement())
-    stamp DateTime @default(now()) @db.Timestamp(0)
+  id    Int      @id @default(autoincrement())
+  stamp DateTime @default(now()) @db.Timestamp(0)
 
-    inGoal    Int?
-    running   Int?
-    shooting  Int?
-    passing   Int?
-    ballSkill Int?
-    attacking Int?
-    defending Int?
+  inGoal    Int?
+  running   Int?
+  shooting  Int?
+  passing   Int?
+  ballSkill Int?
+  attacking Int?
+  defending Int?
 
-    playerId Int
-    raterId  Int
+  playerId Int
+  raterId  Int
 
-    player Player @relation(name: "PlayerArse", fields: [playerId], references: [id])
-    rater  Player @relation(name: "RaterArse", fields: [raterId], references: [id])
+  player Player @relation(name: "PlayerArse", fields: [playerId], references: [id])
+  rater  Player @relation(name: "RaterArse", fields: [raterId], references: [id])
 
-    @@unique([playerId, raterId])
-    @@index([playerId])
-    @@index([raterId])
+  @@unique([playerId, raterId])
+  @@index([playerId])
+  @@index([raterId])
 }
 
 model Club {
-    id          Int     @id @default(autoincrement())
-    soccerwayId Int?
-    clubName    String  @db.VarChar(255)
-    uri         String? @db.VarChar(255)
-    country     String? @db.VarChar(255)
+  id          Int     @id @default(autoincrement())
+  soccerwayId Int?
+  clubName    String  @db.VarChar(255)
+  uri         String? @db.VarChar(255)
+  country     String? @db.VarChar(255)
 
-    supporters ClubSupporter[]
+  supporters ClubSupporter[]
 }
 
 model ClubSupporter {
-    playerId Int
-    clubId   Int
+  playerId Int
+  clubId   Int
 
-    player Player @relation(fields: [playerId], references: [id])
-    club   Club   @relation(fields: [clubId], references: [id])
+  player Player @relation(fields: [playerId], references: [id])
+  club   Club   @relation(fields: [clubId], references: [id])
 
-    @@unique([playerId, clubId])
-    @@index([playerId])
-    @@index([clubId])
+  @@unique([playerId, clubId])
+  @@index([playerId])
+  @@index([clubId])
 }
 
 model Country {
-    isoCode String @id @db.VarChar(6)
-    name    String @unique @db.VarChar(255)
+  isoCode String @id @db.VarChar(6)
+  name    String @unique @db.VarChar(255)
 
-    supporters CountrySupporter[]
+  supporters CountrySupporter[]
 }
 
 model CountrySupporter {
-    playerId       Int
-    countryISOCode String @db.VarChar(6)
+  playerId       Int
+  countryISOCode String @db.VarChar(6)
 
-    country Country @relation(fields: [countryISOCode], references: [isoCode])
-    player  Player  @relation(fields: [playerId], references: [id])
+  country Country @relation(fields: [countryISOCode], references: [isoCode])
+  player  Player  @relation(fields: [playerId], references: [id])
 
-    @@unique([playerId, countryISOCode])
-    @@index([playerId])
-    @@index([countryISOCode])
+  @@unique([playerId, countryISOCode])
+  @@index([playerId])
+  @@index([countryISOCode])
 }
 
 model GameChat {
-    id      Int      @id @default(autoincrement())
-    gameDay Int
-    stamp   DateTime @default(now()) @db.Timestamp(0)
-    player  Int
-    body    String?  @db.MediumText
+  id      Int      @id @default(autoincrement())
+  gameDay Int
+  stamp   DateTime @default(now()) @db.Timestamp(0)
+  player  Int
+  body    String?  @db.MediumText
 
-    @@index([player])
+  @@index([player])
 }
 
 model GameDay {
-    id                 Int       @id @default(autoincrement())
-    year               Int
-    date               DateTime  @db.DateTime(0)
-    game               Boolean   @default(true)
-    mailSent           DateTime? @db.DateTime(0)
-    comment            String?   @db.VarChar(255)
-    bibs               TeamName?
-    pickerGamesHistory Int?
-    cost               Int       @db.UnsignedInt
+  id                 Int       @id @default(autoincrement())
+  year               Int
+  date               DateTime  @db.DateTime(0)
+  game               Boolean   @default(true)
+  mailSent           DateTime? @db.DateTime(0)
+  comment            String?   @db.VarChar(255)
+  bibs               TeamName?
+  pickerGamesHistory Int?
+  cost               Int       @db.UnsignedInt
 
-    gameInvitations GameInvitation[]
-    outcomes        Outcome[]
-    playerRecords   PlayerRecord[]
+  gameInvitations GameInvitation[]
+  outcomes        Outcome[]
+  playerRecords   PlayerRecord[]
+  transactions    Transaction[]
 }
 
 model GameInvitation {
-    uuid      String @id @db.Char(36)
-    playerId  Int
-    gameDayId Int
+  uuid      String @id @db.Char(36)
+  playerId  Int
+  gameDayId Int
 
-    gameDay GameDay @relation(fields: [gameDayId], references: [id])
-    player  Player  @relation(fields: [playerId], references: [id])
+  gameDay GameDay @relation(fields: [gameDayId], references: [id])
+  player  Player  @relation(fields: [playerId], references: [id])
 
-    @@unique([gameDayId, playerId])
-    @@index([playerId])
-    @@index([gameDayId])
+  @@unique([gameDayId, playerId])
+  @@index([playerId])
+  @@index([gameDayId])
 }
 
 model Outcome {
-    id               Int             @id @default(autoincrement())
-    response         PlayerResponse?
-    responseInterval Int?
-    points           Int?
-    team             TeamName?
-    comment          String?         @db.VarChar(127)
-    pub              Int?
-    paid             Boolean?
-    goalie           Boolean?
+  id               Int             @id @default(autoincrement())
+  response         PlayerResponse?
+  responseInterval Int?
+  points           Int?
+  team             TeamName?
+  comment          String?         @db.VarChar(127)
+  pub              Int?
+  paid             Boolean?
+  goalie           Boolean?
 
-    gameDayId Int
-    playerId  Int
+  gameDayId Int
+  playerId  Int
 
-    gameDay GameDay @relation(fields: [gameDayId], references: [id])
-    player  Player  @relation(fields: [playerId], references: [id])
+  gameDay     GameDay      @relation(fields: [gameDayId], references: [id])
+  player      Player       @relation(fields: [playerId], references: [id])
+  transaction Transaction?
 
-    @@unique([gameDayId, playerId])
-    @@index([gameDayId])
-    @@index([playerId])
+  @@unique([gameDayId, playerId])
+  @@index([gameDayId])
+  @@index([playerId])
 }
 
 model Player {
-    id Int @id @default(autoincrement())
+  id Int @id @default(autoincrement())
 
-    name         String?
-    accountEmail String?  @db.VarChar(255)
-    anonymous    Boolean?
+  name         String?
+  accountEmail String?  @db.VarChar(255)
+  anonymous    Boolean?
 
-    joined   DateTime?
-    finished DateTime?
-    born     Int?
-    comment  String?
+  joined   DateTime?
+  finished DateTime?
+  born     Int?
+  comment  String?
 
-    introducedBy Int?
+  introducedBy Int?
 
-    arsesOfPlayer      Arse[]              @relation(name: "PlayerArse")
-    arsesByPlayer      Arse[]              @relation(name: "RaterArse")
-    clubs              ClubSupporter[]
-    countries          CountrySupporter[]
-    gameInvitations    GameInvitation[]
-    outcomes           Outcome[]
-    playerRecords      PlayerRecord[]
-    logins             PlayerLogin[]
-    extraEmails        PlayerExtraEmail[]
-    emailVerifications EmailVerification[]
+  arsesOfPlayer      Arse[]              @relation(name: "PlayerArse")
+  arsesByPlayer      Arse[]              @relation(name: "RaterArse")
+  clubs              ClubSupporter[]
+  countries          CountrySupporter[]
+  gameInvitations    GameInvitation[]
+  outcomes           Outcome[]
+  playerRecords      PlayerRecord[]
+  transactions       Transaction[]
+  logins             PlayerLogin[]
+  extraEmails        PlayerExtraEmail[]
+  emailVerifications EmailVerification[]
 }
 
 model PlayerExtraEmail {
-    id         Int       @id @default(autoincrement())
-    playerId   Int
-    email      String    @unique @db.VarChar(255)
-    verifiedAt DateTime?
-    createdAt  DateTime  @default(now())
+  id         Int       @id @default(autoincrement())
+  playerId   Int
+  email      String    @unique @db.VarChar(255)
+  verifiedAt DateTime?
+  createdAt  DateTime  @default(now())
 
-    player Player @relation(fields: [playerId], references: [id])
+  player Player @relation(fields: [playerId], references: [id])
 
-    @@index([playerId])
-    @@index([email])
-    @@map("PlayerEmail")
+  @@index([playerId])
+  @@index([email])
+  @@map("PlayerEmail")
 }
 
 model EmailVerification {
-    id        Int       @id @default(autoincrement())
-    playerId  Int?
-    email     String    @db.VarChar(255)
-    tokenHash String    @unique @db.Char(64)
-    expiresAt DateTime
-    usedAt    DateTime?
-    createdAt DateTime  @default(now())
+  id        Int       @id @default(autoincrement())
+  playerId  Int?
+  email     String    @db.VarChar(255)
+  tokenHash String    @unique @db.Char(64)
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
 
-    player         Player?         @relation(fields: [playerId], references: [id])
-    contactEnquiry ContactEnquiry?
+  player         Player?         @relation(fields: [playerId], references: [id])
+  contactEnquiry ContactEnquiry?
 
-    @@index([playerId])
-    @@index([email])
+  @@index([playerId])
+  @@index([email])
 }
 
 model ContactEnquiry {
-    id          Int       @id @default(autoincrement())
-    name        String    @db.VarChar(255)
-    email       String    @db.VarChar(255)
-    message     String    @db.MediumText
-    createdAt   DateTime  @default(now())
-    verifiedAt  DateTime?
-    deliveredAt DateTime?
-    tokenHash   String    @unique @db.Char(64)
+  id          Int       @id @default(autoincrement())
+  name        String    @db.VarChar(255)
+  email       String    @db.VarChar(255)
+  message     String    @db.MediumText
+  createdAt   DateTime  @default(now())
+  verifiedAt  DateTime?
+  deliveredAt DateTime?
+  tokenHash   String    @unique @db.Char(64)
 
-    verification EmailVerification @relation(fields: [tokenHash], references: [tokenHash])
+  verification EmailVerification @relation(fields: [tokenHash], references: [tokenHash])
 
-    @@index([email])
-    @@index([createdAt])
+  @@index([email])
+  @@index([createdAt])
 }
 
 model PlayerLogin {
-    playerId Int
-    login    String @unique @db.VarChar(16)
+  playerId Int
+  login    String @unique @db.VarChar(16)
 
-    player Player @relation(fields: [playerId], references: [id])
+  player Player @relation(fields: [playerId], references: [id])
 
-    @@unique([playerId, login])
-    @@index([playerId])
+  @@unique([playerId, login])
+  @@index([playerId])
 }
 
 model PlayerRecord {
-    id                      Int    @id @default(autoincrement())
-    year                    Int
-    responses               Int?
-    played                  Int?
-    won                     Int?
-    drawn                   Int?
-    lost                    Int?
-    points                  Int?
-    averages                Float?
-    stalwart                Int?
-    pub                     Int?
-    rankPoints              Int?
-    rankAverages            Int?
-    rankAveragesUnqualified Int?
-    rankStalwart            Int?
-    rankSpeedy              Int?
-    rankSpeedyUnqualified   Int?
-    rankPub                 Int?
-    speedy                  Int?
+  id                      Int    @id @default(autoincrement())
+  year                    Int
+  responses               Int?
+  played                  Int?
+  won                     Int?
+  drawn                   Int?
+  lost                    Int?
+  points                  Int?
+  averages                Float?
+  stalwart                Int?
+  pub                     Int?
+  rankPoints              Int?
+  rankAverages            Int?
+  rankAveragesUnqualified Int?
+  rankStalwart            Int?
+  rankSpeedy              Int?
+  rankSpeedyUnqualified   Int?
+  rankPub                 Int?
+  speedy                  Int?
 
-    playerId  Int
-    gameDayId Int
+  playerId  Int
+  gameDayId Int
 
-    player  Player  @relation(fields: [playerId], references: [id])
-    gameDay GameDay @relation(fields: [gameDayId], references: [id])
+  player  Player  @relation(fields: [playerId], references: [id])
+  gameDay GameDay @relation(fields: [gameDayId], references: [id])
 
-    @@unique([playerId, year, gameDayId])
-    @@index([playerId])
-    @@index([year])
-    @@index([gameDayId])
+  @@unique([playerId, year, gameDayId])
+  @@index([playerId])
+  @@index([year])
+  @@index([gameDayId])
+}
+
+model Transaction {
+  id          Int             @id @default(autoincrement())
+  createdAt   DateTime        @default(now())
+  effectiveAt DateTime        @default(now())
+  type        TransactionType
+  amountPence Int
+  note        String?         @db.VarChar(255)
+
+  playerId  Int?
+  gameDayId Int?
+  outcomeId Int? @unique
+
+  player  Player?  @relation(fields: [playerId], references: [id])
+  gameDay GameDay? @relation(fields: [gameDayId], references: [id])
+  outcome Outcome? @relation(fields: [outcomeId], references: [id])
+
+  allocationsFrom TransactionAllocation[] @relation("TransactionAllocationFrom")
+  allocationsTo   TransactionAllocation[] @relation("TransactionAllocationTo")
+
+  @@index([playerId, createdAt])
+  @@index([gameDayId, createdAt])
+  @@index([type, createdAt])
+}
+
+model TransactionAllocation {
+  id                Int      @id @default(autoincrement())
+  fromTransactionId Int
+  toTransactionId   Int
+  amountPence       Int      @db.UnsignedInt
+  createdAt         DateTime @default(now())
+
+  fromTransaction Transaction @relation("TransactionAllocationFrom", fields: [fromTransactionId], references: [id])
+  toTransaction   Transaction @relation("TransactionAllocationTo", fields: [toTransactionId], references: [id])
+
+  @@unique([fromTransactionId, toTransactionId])
+  @@index([fromTransactionId])
+  @@index([toTransactionId])
 }
 
 enum TeamName {
-    A
-    B
+  A
+  B
 }
 
 enum PlayerResponse {
-    Yes
-    No
-    Dunno
-    Excused
-    Flaked
-    Injured
+  Yes
+  No
+  Dunno
+  Excused
+  Flaked
+  Injured
 }
 
 enum TableName {
-    points
-    averages
-    stalwart
-    speedy
-    pub
+  points
+  averages
+  stalwart
+  speedy
+  pub
+}
+
+enum TransactionType {
+  PlayerGameCharge
+  PlayerPayment
+  HallHire
+  Adjustment
+  Refund
 }
 
 model User {
-    id            String    @id
-    name          String    @db.Text
-    email         String
-    emailVerified Boolean
-    image         String?   @db.Text
-    createdAt     DateTime
-    updatedAt     DateTime
-    sessions      Session[]
-    accounts      Account[]
+  id            String    @id
+  name          String    @db.Text
+  email         String
+  emailVerified Boolean
+  image         String?   @db.Text
+  createdAt     DateTime
+  updatedAt     DateTime
+  sessions      Session[]
+  accounts      Account[]
 
-    role       String?   @db.Text
-    banned     Boolean?
-    banReason  String?   @db.Text
-    banExpires DateTime?
+  role       String?   @db.Text
+  banned     Boolean?
+  banReason  String?   @db.Text
+  banExpires DateTime?
 
-    playerId Int?
+  playerId Int?
 
-    @@unique([email])
-    @@map("user")
+  @@unique([email])
+  @@map("user")
 }
 
 model Session {
-    id        String   @id
-    expiresAt DateTime
-    token     String
-    createdAt DateTime
-    updatedAt DateTime
-    ipAddress String?  @db.Text
-    userAgent String?  @db.Text
-    userId    String
-    user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?  @db.Text
+  userAgent String?  @db.Text
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    impersonatedBy String? @db.Text
+  impersonatedBy String? @db.Text
 
-    @@unique([token])
-    @@index([userId])
-    @@map("session")
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
 }
 
 model Account {
-    id                    String    @id
-    accountId             String    @db.Text
-    providerId            String    @db.Text
-    userId                String
-    user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-    accessToken           String?   @db.Text
-    refreshToken          String?   @db.Text
-    idToken               String?   @db.Text
-    accessTokenExpiresAt  DateTime?
-    refreshTokenExpiresAt DateTime?
-    scope                 String?   @db.Text
-    password              String?   @db.Text
-    createdAt             DateTime
-    updatedAt             DateTime
+  id                    String    @id
+  accountId             String    @db.Text
+  providerId            String    @db.Text
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?   @db.Text
+  refreshToken          String?   @db.Text
+  idToken               String?   @db.Text
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?   @db.Text
+  password              String?   @db.Text
+  createdAt             DateTime
+  updatedAt             DateTime
 
-    @@index([userId])
-    @@map("account")
+  @@index([userId])
+  @@map("account")
 }
 
 model Verification {
-    id         String    @id
-    identifier String    @db.Text
-    value      String    @db.Text
-    expiresAt  DateTime
-    createdAt  DateTime?
-    updatedAt  DateTime?
+  id         String    @id
+  identifier String    @db.Text
+  value      String    @db.Text
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
 
-    @@index([identifier(length: 191)])
-    @@map("verification")
+  @@index([identifier(length: 191)])
+  @@map("verification")
 }

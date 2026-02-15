@@ -31,6 +31,7 @@ const mockCreateMoreGameDays: CreateMoreGameDaysProxy = async () => Promise.reso
 
 export const Primary: Story = {
     args: {
+        cost: defaultMoreGamesFormData.cost,
         rows: defaultMoreGamesFormData.rows,
         onCreateMoreGameDays: mockCreateMoreGameDays,
     },

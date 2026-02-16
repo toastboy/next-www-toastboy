@@ -1,10 +1,10 @@
-import { GameCalendar } from '@/components/GameCalendar/GameCalendar';
+import { NYI } from '@/components/NYI/NYI';
 
 type PageProps = object
 
 const Page: React.FC<PageProps> = () => {
     return (
-        <GameCalendar date={new Date()} />
+        <NYI />
     );
 };
 

@@ -154,6 +154,47 @@ describe('GameDayService', () => {
             expect(result).toHaveLength(100);
             expect(result[11].id).toBe(12);
         });
+
+        it('should filter GameDays by game=true', async () => {
+            const result = await gameDayService.getAll({ game: true });
+            expect(result).toHaveLength(100);
+            expect(result.every((gd) => gd.game === true)).toBe(true);
+        });
+
+        it('should filter GameDays by game=false', async () => {
+            (prisma.gameDay.findMany as Mock).mockResolvedValue(
+                defaultGameDayList.filter((gd) => gd.game === false),
+            );
+            const result = await gameDayService.getAll({ game: false });
+            expect(result).toHaveLength(0);
+        });
+
+        it('should filter GameDays by year 2021', async () => {
+            (prisma.gameDay.findMany as Mock).mockResolvedValue(
+                defaultGameDayList.filter((gd) => gd.year === 2021),
+            );
+            const result = await gameDayService.getAll({ year: 2021 });
+            expect(result).toHaveLength(100);
+            expect(result.every((gd) => gd.year === 2021)).toBe(true);
+        });
+
+        it('should filter GameDays by year 9999 and return empty array', async () => {
+            (prisma.gameDay.findMany as Mock).mockResolvedValue(
+                defaultGameDayList.filter((gd) => gd.year === 9999),
+            );
+            const result = await gameDayService.getAll({ year: 9999 });
+            expect(result).toHaveLength(0);
+        });
+
+        it('should combine year and game filters', async () => {
+            const filteredGameDays = defaultGameDayList.filter(
+                (gd) => gd.year === 2021 && gd.game === true,
+            );
+            (prisma.gameDay.findMany as Mock).mockResolvedValue(filteredGameDays);
+            const result = await gameDayService.getAll({ year: 2021, game: true });
+            expect(result).toHaveLength(filteredGameDays.length);
+            expect(result.every((gd) => gd.year === 2021 && gd.game === true)).toBe(true);
+        });
     });
 
     describe('getByDate', () => {

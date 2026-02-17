@@ -1,4 +1,6 @@
 -- CreateTable
+DROP TABLE IF EXISTS `Transaction`;
+
 CREATE TABLE `Transaction` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -18,6 +20,8 @@ CREATE TABLE `Transaction` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
+DROP TABLE IF EXISTS `TransactionAllocation`;
+
 CREATE TABLE `TransactionAllocation` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `fromTransactionId` INTEGER NOT NULL,

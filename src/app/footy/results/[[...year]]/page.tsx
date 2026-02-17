@@ -1,4 +1,4 @@
-import { Stack, Title } from '@mantine/core';
+import { Stack } from '@mantine/core';
 
 import { GameDayList } from '@/components/GameDayList/GameDayList';
 import { YearSelector } from '@/components/YearSelector/YearSelector';
@@ -26,8 +26,7 @@ const Page: React.FC<PageProps> = async props => {
     return (
         <Stack align="stretch" justify="center" gap="md">
             <YearSelector activeYear={selectedYear} validYears={allYears} />
-            <Title w="100%" ta="center" order={1}>Results</Title>
-            <GameDayList gameDays={gameDays} />
+            <GameDayList title="results" gameDays={gameDays} />
         </Stack>
     );
 };

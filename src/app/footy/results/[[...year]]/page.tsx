@@ -13,11 +13,14 @@ interface PageProps {
 const Page: React.FC<PageProps> = async props => {
     const { year } = await props.params;
     const selectedYear = year ? parseInt(year[0]) : 0; // Zero or undefined means all-time
-    const allYears = await gameDayService.getAllYears();
+    const [allYears, currentGameDay] = await Promise.all([
+        gameDayService.getAllYears(),
+        gameDayService.getCurrent(),
+    ]);
     const gameDays = await gameDayService.getAll({
         year: selectedYear,
-        game: true,
         mailSent: true,
+        before: currentGameDay?.id ?? undefined,
     });
 
     return (

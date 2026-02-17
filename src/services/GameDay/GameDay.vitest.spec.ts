@@ -195,6 +195,40 @@ describe('GameDayService', () => {
             expect(result).toHaveLength(filteredGameDays.length);
             expect(result.every((gd) => gd.year === 2021 && gd.game === true)).toBe(true);
         });
+
+        it('should filter GameDays by before parameter', async () => {
+            const filteredGameDays = defaultGameDayList.filter((gd) => gd.id < 50);
+            (prisma.gameDay.findMany as Mock).mockResolvedValue(filteredGameDays);
+            const result = await gameDayService.getAll({ before: 50 });
+            expect(result).toHaveLength(49);
+            expect(result.every((gd) => gd.id < 50)).toBe(true);
+        });
+
+        it('should filter GameDays by onOrAfter parameter', async () => {
+            const filteredGameDays = defaultGameDayList.filter((gd) => gd.id >= 75);
+            (prisma.gameDay.findMany as Mock).mockResolvedValue(filteredGameDays);
+            const result = await gameDayService.getAll({ onOrAfter: 75 });
+            expect(result).toHaveLength(26);
+            expect(result.every((gd) => gd.id >= 75)).toBe(true);
+        });
+
+        it('should combine before and game filters', async () => {
+            const filteredGameDays = defaultGameDayList.filter(
+                (gd) => gd.id < 50 && gd.game === true,
+            );
+            (prisma.gameDay.findMany as Mock).mockResolvedValue(filteredGameDays);
+            const result = await gameDayService.getAll({ before: 50, game: true });
+            expect(result.every((gd) => gd.id < 50 && gd.game === true)).toBe(true);
+        });
+
+        it('should combine onOrAfter and year filters', async () => {
+            const filteredGameDays = defaultGameDayList.filter(
+                (gd) => gd.id >= 75 && gd.year === 2021,
+            );
+            (prisma.gameDay.findMany as Mock).mockResolvedValue(filteredGameDays);
+            const result = await gameDayService.getAll({ onOrAfter: 75, year: 2021 });
+            expect(result.every((gd) => gd.id >= 75 && gd.year === 2021)).toBe(true);
+        });
     });
 
     describe('getByDate', () => {

@@ -53,41 +53,30 @@ export class GameDayService {
      * @returns {Promise<GameDayType[]>} A promise that resolves to an array of GameDayType objects.
      * @throws Will throw an error if there is an issue fetching the game days.
      */
-    async getAll({ bibs, game, mailSent, year }: {
+    async getAll({ bibs, game, mailSent, year, before, onOrAfter }: {
         bibs?: TeamName,
         game?: boolean,
         mailSent?: boolean,
         year?: number,
+        before?: number,
+        onOrAfter?: number,
     } = {}): Promise<GameDayType[]> {
         try {
-            // TODO: This dynamic construction of the where clause differs from
-            // the strict schema validation used in create/update/upsert methods
-            // and may allow invalid queries to be sent to Prisma. The thing is
-            // that the strict schema validation is designed for validating
-            // complete payloads for create/update/upsert operations, where we
-            // have a well-defined set of fields and validation rules. In
-            // contrast, the getAll method is designed to accept a flexible set
-            // of optional filters, which can be combined in various ways. This
-            // makes it challenging to define a strict schema that can
-            // accurately validate all possible combinations of filters without
-            // being overly permissive or restrictive. To address this, we would
-            // need to implement a more complex validation logic that can handle
-            // the dynamic nature of the filters while still ensuring that the
-            // inputs are valid and do not lead to invalid queries being sent to
-            // Prisma. For now, we are relying on the assumption that the inputs
-            // to getAll will be well-formed and that any issues will be caught
-            // by Prisma's own validation and error handling. However, this is
-            // an area that could benefit from further attention and improvement
-            // in the future. Message ends.
-            const where = {
-                ...(bibs !== undefined ? { bibs } : {}),
-                ...(game !== undefined ? { game } : {}),
-                ...(mailSent !== undefined ? { mailSent: mailSent ? { not: null } : null } : {}),
-                ...(year !== undefined && year !== 0 ? { year } : {}),
-            };
+            const where = GameDayWhereInputObjectSchema.parse({
+                bibs, game, year: year === 0 ? undefined : year,
+            });
+            if (mailSent !== undefined) {
+                where.mailSent = mailSent ? { not: null } : null;
+            }
+            if (before !== undefined) {
+                where.id = { lt: before };
+            }
+            if (onOrAfter !== undefined) {
+                where.id = { gte: onOrAfter };
+            }
             return prisma.gameDay.findMany({ where });
         } catch (error) {
-            log(`Error fetching GameDayType: ${String(error)}`);
+            log(`Error fetching GameDays: ${String(error)}`);
             throw error;
         }
     }

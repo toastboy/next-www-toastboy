@@ -7,14 +7,16 @@ import moneyService from '@/services/Money';
 type PageProps = object;
 
 const Page: React.FC<PageProps> = async () => {
-    const debts = await moneyService.getDebts();
+    const balances = await moneyService.getBalances();
 
     return (
         <Container size="lg" py="lg">
             <MoneyForm
-                currentDebts={debts.current}
-                historicDebts={debts.historic}
-                total={debts.total}
+                playerBalances={balances.players}
+                clubBalance={balances.club}
+                total={balances.total}
+                positiveTotal={balances.positiveTotal}
+                negativeTotal={balances.negativeTotal}
                 payDebt={payDebt}
             />
         </Container>

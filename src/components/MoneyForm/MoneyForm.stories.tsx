@@ -1,7 +1,7 @@
 import { Notifications } from '@mantine/notifications';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import { defaultDebtSummary } from '@/tests/mocks/data/money';
+import { defaultBalanceSummary } from '@/tests/mocks/data/money';
 import type { PayDebtProxy, PayDebtResult } from '@/types/actions/PayDebt';
 
 import { MoneyForm } from './MoneyForm';
@@ -29,26 +29,33 @@ type Story = StoryObj<typeof meta>;
 const payDebt: PayDebtProxy = async ({ playerId, amount }) =>
     Promise.resolve({
         playerId,
-        gamesMarkedPaid: 1,
-        requestedAmount: amount,
-        appliedAmount: amount,
-        remainingAmount: 0,
+        transactionId: 101,
+        amount,
+        resultingBalance: 0,
     } satisfies PayDebtResult);
 
-export const WithDebts: Story = {
+export const WithBalances: Story = {
     args: {
-        currentDebts: defaultDebtSummary.current,
-        historicDebts: defaultDebtSummary.historic,
-        total: defaultDebtSummary.total,
+        playerBalances: defaultBalanceSummary.players,
+        clubBalance: defaultBalanceSummary.club,
+        total: defaultBalanceSummary.total,
+        positiveTotal: defaultBalanceSummary.positiveTotal,
+        negativeTotal: defaultBalanceSummary.negativeTotal,
         payDebt,
     },
 };
 
-export const AllPaid: Story = {
+export const EmptyLedger: Story = {
     args: {
-        currentDebts: [],
-        historicDebts: [],
+        playerBalances: [],
+        clubBalance: {
+            playerId: null,
+            playerName: 'Club',
+            amount: 0,
+        },
         total: 0,
+        positiveTotal: 0,
+        negativeTotal: 0,
         payDebt,
     },
 };

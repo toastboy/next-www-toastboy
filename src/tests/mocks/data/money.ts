@@ -1,6 +1,6 @@
-import type { DebtSummaryType, DebtType } from '@/types/DebtType';
+import type { BalanceSummaryType, ClubBalanceType, PlayerBalanceType } from '@/types/DebtType';
 
-export const defaultCurrentDebtList: DebtType[] = [
+export const defaultPlayerBalanceList: PlayerBalanceType[] = [
     {
         playerId: 11,
         playerName: 'Alex Current',
@@ -9,11 +9,8 @@ export const defaultCurrentDebtList: DebtType[] = [
     {
         playerId: 12,
         playerName: 'Sam Current',
-        amount: 5,
+        amount: -2,
     },
-];
-
-export const defaultHistoricDebtList: DebtType[] = [
     {
         playerId: 21,
         playerName: 'Jamie Historic',
@@ -21,15 +18,23 @@ export const defaultHistoricDebtList: DebtType[] = [
     },
 ];
 
-export const defaultDebtSummary: DebtSummaryType = {
-    current: defaultCurrentDebtList,
-    historic: defaultHistoricDebtList,
-    total: 24.75,
+export const defaultClubBalance: ClubBalanceType = {
+    playerId: null,
+    playerName: 'Club',
+    amount: -5,
 };
 
-export const createMockDebtSummary = (
-    overrides: Partial<DebtSummaryType> = {},
-): DebtSummaryType => ({
-    ...defaultDebtSummary,
+export const defaultBalanceSummary: BalanceSummaryType = {
+    players: defaultPlayerBalanceList,
+    club: defaultClubBalance,
+    total: 12.75,
+    positiveTotal: 19.75,
+    negativeTotal: -7,
+};
+
+export const createMockBalanceSummary = (
+    overrides: Partial<BalanceSummaryType> = {},
+): BalanceSummaryType => ({
+    ...defaultBalanceSummary,
     ...overrides,
 });

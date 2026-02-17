@@ -9,10 +9,9 @@ export type PayDebtInput = z.infer<typeof PayDebtInputSchema>;
 
 export const PayDebtResultSchema = z.object({
     playerId: z.number().int().min(1),
-    gamesMarkedPaid: z.number().int().nonnegative(),
-    requestedAmount: z.number().nonnegative(),
-    appliedAmount: z.number().nonnegative(),
-    remainingAmount: z.number().nonnegative(),
+    transactionId: z.number().int().min(1),
+    amount: z.number().positive(),
+    resultingBalance: z.number(),
 });
 
 export type PayDebtResult = z.infer<typeof PayDebtResultSchema>;

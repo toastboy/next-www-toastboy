@@ -6,10 +6,9 @@ describe('payDebtCore', () => {
     it('delegates payment to moneyService', async () => {
         const pay = vi.fn().mockResolvedValue({
             playerId: 42,
-            gamesMarkedPaid: 2,
-            requestedAmount: 10,
-            appliedAmount: 9,
-            remainingAmount: 1,
+            transactionId: 15,
+            amount: 10,
+            resultingBalance: 2.5,
         });
 
         const result = await payDebtCore(
@@ -27,10 +26,9 @@ describe('payDebtCore', () => {
         expect(pay).toHaveBeenCalledWith(42, 10);
         expect(result).toEqual({
             playerId: 42,
-            gamesMarkedPaid: 2,
-            requestedAmount: 10,
-            appliedAmount: 9,
-            remainingAmount: 1,
+            transactionId: 15,
+            amount: 10,
+            resultingBalance: 2.5,
         });
     });
 });

@@ -6,7 +6,7 @@ import { vi } from 'vitest';
 
 import { MoneyForm } from '@/components/MoneyForm/MoneyForm';
 import { Wrapper } from '@/tests/components/lib/common';
-import { defaultDebtSummary } from '@/tests/mocks/data/money';
+import { defaultBalanceSummary } from '@/tests/mocks/data/money';
 import type { PayDebtProxy } from '@/types/actions/PayDebt';
 
 const { refreshMock, notificationsShowMock, notificationsUpdateMock } = vi.hoisted(() => ({
@@ -26,9 +26,11 @@ const renderForm = (payDebt: PayDebtProxy) => {
     render(
         <Wrapper>
             <MoneyForm
-                currentDebts={defaultDebtSummary.current}
-                historicDebts={defaultDebtSummary.historic}
-                total={defaultDebtSummary.total}
+                playerBalances={defaultBalanceSummary.players}
+                clubBalance={defaultBalanceSummary.club}
+                total={defaultBalanceSummary.total}
+                positiveTotal={defaultBalanceSummary.positiveTotal}
+                negativeTotal={defaultBalanceSummary.negativeTotal}
                 payDebt={payDebt}
             />
         </Wrapper>,
@@ -48,30 +50,36 @@ describe('MoneyForm', () => {
         } as AppRouterInstance);
     });
 
-    it('renders current and historic debt rows with total', () => {
+    it('renders player balances and summary totals', () => {
         renderForm(vi.fn<PayDebtProxy>());
 
-        expect(screen.getByRole('heading', { name: 'Subs Not Paid' })).toBeInTheDocument();
-        expect(screen.getByRole('heading', { name: 'Current Debts' })).toBeInTheDocument();
-        expect(screen.getByRole('heading', { name: 'Historic Debts' })).toBeInTheDocument();
-        expect(screen.getByText('Total: £24.75')).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Money Balances' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Player Balances' })).toBeInTheDocument();
+        expect(screen.getByText('Net total: £12.75')).toBeInTheDocument();
         expect(screen.getByText('Alex Current')).toBeInTheDocument();
         expect(screen.getByText('Jamie Historic')).toBeInTheDocument();
+        expect(screen.getByText('Club Balance')).toBeInTheDocument();
     });
 
-    it('renders empty state when nobody owes money', () => {
+    it('renders empty state when there are no balances', () => {
         render(
             <Wrapper>
                 <MoneyForm
-                    currentDebts={[]}
-                    historicDebts={[]}
+                    playerBalances={[]}
+                    clubBalance={{
+                        playerId: null,
+                        playerName: 'Club',
+                        amount: 0,
+                    }}
                     total={0}
+                    positiveTotal={0}
+                    negativeTotal={0}
                     payDebt={vi.fn<PayDebtProxy>()}
                 />
             </Wrapper>,
         );
 
-        expect(screen.getByText('Stone me! Nobody owes money')).toBeInTheDocument();
+        expect(screen.getByText('No balances recorded yet')).toBeInTheDocument();
         expect(screen.queryByRole('button', { name: 'Paid' })).not.toBeInTheDocument();
     });
 
@@ -79,10 +87,9 @@ describe('MoneyForm', () => {
         const user = userEvent.setup();
         const payDebt = vi.fn<PayDebtProxy>().mockResolvedValue({
             playerId: 11,
-            gamesMarkedPaid: 1,
-            requestedAmount: 7.5,
-            appliedAmount: 7.5,
-            remainingAmount: 0,
+            transactionId: 777,
+            amount: 7.5,
+            resultingBalance: 0,
         });
 
         renderForm(payDebt);
@@ -103,31 +110,8 @@ describe('MoneyForm', () => {
         expect(notificationsUpdateMock).toHaveBeenCalledWith(expect.objectContaining({
             id: 'money-paid-11',
             color: 'teal',
+            title: 'Payment recorded',
         }));
-        expect(refreshMock).toHaveBeenCalledTimes(1);
-    });
-
-    it('shows warning notification when no games are marked paid', async () => {
-        const user = userEvent.setup();
-        const payDebt = vi.fn<PayDebtProxy>().mockResolvedValue({
-            playerId: 11,
-            gamesMarkedPaid: 0,
-            requestedAmount: 7.5,
-            appliedAmount: 0,
-            remainingAmount: 7.5,
-        });
-
-        renderForm(payDebt);
-
-        await user.click(screen.getAllByRole('button', { name: 'Paid' })[0]);
-
-        await waitFor(() => {
-            expect(notificationsUpdateMock).toHaveBeenCalledWith(expect.objectContaining({
-                id: 'money-paid-11',
-                color: 'yellow',
-            }));
-        });
-
         expect(refreshMock).toHaveBeenCalledTimes(1);
     });
 

@@ -37,6 +37,7 @@ const prisma = {
     playerExtraEmail: makeModelMock(),
     playerLogin: makeModelMock(),
     playerRecord: makeModelMock(),
+    transaction: makeModelMock(),
     user: makeModelMock(),
 };
 

@@ -272,27 +272,9 @@ model Transaction {
   gameDay GameDay? @relation(fields: [gameDayId], references: [id])
   outcome Outcome? @relation(fields: [outcomeId], references: [id])
 
-  allocationsFrom TransactionAllocation[] @relation("TransactionAllocationFrom")
-  allocationsTo   TransactionAllocation[] @relation("TransactionAllocationTo")
-
   @@index([playerId, createdAt])
   @@index([gameDayId, createdAt])
   @@index([type, createdAt])
-}
-
-model TransactionAllocation {
-  id                Int      @id @default(autoincrement())
-  fromTransactionId Int
-  toTransactionId   Int
-  amountPence       Int      @db.UnsignedInt
-  createdAt         DateTime @default(now())
-
-  fromTransaction Transaction @relation("TransactionAllocationFrom", fields: [fromTransactionId], references: [id])
-  toTransaction   Transaction @relation("TransactionAllocationTo", fields: [toTransactionId], references: [id])
-
-  @@unique([fromTransactionId, toTransactionId])
-  @@index([fromTransactionId])
-  @@index([toTransactionId])
 }
 
 enum TeamName {

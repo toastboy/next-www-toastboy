@@ -23,26 +23,35 @@ import { useState } from 'react';
 import { config } from '@/lib/config';
 import type { PayDebtInput, PayDebtProxy } from '@/types/actions/PayDebt';
 import { PayDebtInputSchema } from '@/types/actions/PayDebt';
-import type { DebtType } from '@/types/DebtType';
+import type { ClubBalanceType, PlayerBalanceType } from '@/types/DebtType';
 
 export interface MoneyFormProps {
-    currentDebts: DebtType[];
-    historicDebts: DebtType[];
+    playerBalances: PlayerBalanceType[];
+    clubBalance: ClubBalanceType;
     total: number;
+    positiveTotal: number;
+    negativeTotal: number;
     payDebt: PayDebtProxy;
 }
 
 const formatAmount = (amount: number) => amount.toFixed(2);
 const formatCurrency = (amount: number) => `£${formatAmount(amount)}`;
+const formatCurrencySigned = (amount: number) => `${amount < 0 ? '-' : ''}${formatCurrency(Math.abs(amount))}`;
 
-interface DebtRowProps {
-    row: DebtType;
+const getBalanceColor = (amount: number) => {
+    if (amount > 0) return 'red';
+    if (amount < 0) return 'teal';
+    return 'dimmed';
+};
+
+interface BalanceRowProps {
+    row: PlayerBalanceType;
     payDebt: PayDebtProxy;
     submittingPlayerId: number | null;
     setSubmittingPlayerId: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
-const DebtRow: React.FC<DebtRowProps> = ({
+const BalanceRow: React.FC<BalanceRowProps> = ({
     row,
     payDebt,
     submittingPlayerId,
@@ -52,7 +61,7 @@ const DebtRow: React.FC<DebtRowProps> = ({
     const form = useForm<PayDebtInput>({
         initialValues: {
             playerId: row.playerId,
-            amount: row.amount,
+            amount: row.amount > 0 ? row.amount : 0.01,
         },
         validate: zod4Resolver(PayDebtInputSchema),
         validateInputOnBlur: true,
@@ -63,8 +72,8 @@ const DebtRow: React.FC<DebtRowProps> = ({
         notifications.show({
             id: notificationId,
             loading: true,
-            title: 'Applying payment',
-            message: `Applying ${formatCurrency(values.amount)} for ${row.playerName}...`,
+            title: 'Recording payment',
+            message: `Recording ${formatCurrency(values.amount)} for ${row.playerName}...`,
             autoClose: false,
             withCloseButton: false,
         });
@@ -73,34 +82,19 @@ const DebtRow: React.FC<DebtRowProps> = ({
         try {
             const result = await payDebt(values);
 
-            if (result.gamesMarkedPaid === 0) {
-                notifications.update({
-                    id: notificationId,
-                    color: 'yellow',
-                    title: 'No games paid',
-                    message: `${row.playerName} has no eligible unpaid games for that amount.`,
-                    loading: false,
-                    autoClose: config.notificationAutoClose,
-                });
-            } else {
-                const gameWord = result.gamesMarkedPaid === 1 ? 'game' : 'games';
-                const remaining = result.remainingAmount > 0 ?
-                    ` ${formatCurrency(result.remainingAmount)} remains unapplied.` :
-                    '';
-                notifications.update({
-                    id: notificationId,
-                    color: 'teal',
-                    title: 'Payment recorded',
-                    message: `${result.gamesMarkedPaid} ${gameWord} marked paid.${remaining}`,
-                    icon: <IconCheck size={config.notificationIconSize} />,
-                    loading: false,
-                    autoClose: config.notificationAutoClose,
-                });
-            }
+            notifications.update({
+                id: notificationId,
+                color: 'teal',
+                title: 'Payment recorded',
+                message: `Transaction #${result.transactionId} saved. New balance: ${formatCurrencySigned(result.resultingBalance)}.`,
+                icon: <IconCheck size={config.notificationIconSize} />,
+                loading: false,
+                autoClose: config.notificationAutoClose,
+            });
 
             router.refresh();
         } catch (error) {
-            const message = error instanceof Error ? error.message : 'Failed to apply payment';
+            const message = error instanceof Error ? error.message : 'Failed to record payment';
             notifications.update({
                 id: notificationId,
                 color: 'red',
@@ -133,8 +127,8 @@ const DebtRow: React.FC<DebtRowProps> = ({
                         <Anchor href={`/footy/player/${row.playerId}`}>
                             {row.playerName}
                         </Anchor>
-                        <Text size="sm" c="dimmed">
-                            Owes {formatCurrency(row.amount)}
+                        <Text size="sm" c={getBalanceColor(row.amount)}>
+                            Balance: {formatCurrencySigned(row.amount)}
                         </Text>
                     </Stack>
                     <NumberInput
@@ -159,45 +153,54 @@ const DebtRow: React.FC<DebtRowProps> = ({
 };
 
 export const MoneyForm: React.FC<MoneyFormProps> = ({
-    currentDebts,
-    historicDebts,
+    playerBalances,
+    clubBalance,
     total,
+    positiveTotal,
+    negativeTotal,
     payDebt,
 }) => {
     const [submittingPlayerId, setSubmittingPlayerId] = useState<number | null>(null);
 
-    const renderRows = (title: string, rows: DebtType[]) => {
-        if (rows.length === 0) return null;
-
-        return (
-            <Stack gap="xs">
-                <Title order={3}>{title}</Title>
-                {rows.map((row) => (
-                    <DebtRow
-                        key={`${row.playerId}-${row.amount}`}
-                        row={row}
-                        payDebt={payDebt}
-                        submittingPlayerId={submittingPlayerId}
-                        setSubmittingPlayerId={setSubmittingPlayerId}
-                    />
-                ))}
-            </Stack>
-        );
-    };
+    const hasAnyBalance = playerBalances.length > 0 || clubBalance.amount !== 0;
 
     return (
         <Stack gap="md">
-            <Title order={2}>Subs Not Paid</Title>
-            {total > 0 ? (
+            <Title order={2}>Money Balances</Title>
+            {hasAnyBalance ? (
                 <>
-                    {renderRows('Current Debts', currentDebts)}
-                    {currentDebts.length > 0 && historicDebts.length > 0 ? <Divider /> : null}
-                    {renderRows('Historic Debts', historicDebts)}
+                    {playerBalances.length > 0 ? (
+                        <>
+                            <Stack gap="xs">
+                                <Title order={3}>Player Balances</Title>
+                                {playerBalances.map((row) => (
+                                    <BalanceRow
+                                        key={`${row.playerId}-${row.amount}`}
+                                        row={row}
+                                        payDebt={payDebt}
+                                        submittingPlayerId={submittingPlayerId}
+                                        setSubmittingPlayerId={setSubmittingPlayerId}
+                                    />
+                                ))}
+                            </Stack>
+                            <Divider />
+                        </>
+                    ) : null}
+                    <Paper withBorder p="sm">
+                        <Group justify="space-between">
+                            <Text fw={700}>{clubBalance.playerName} Balance</Text>
+                            <Text fw={700} c={getBalanceColor(clubBalance.amount)}>
+                                {formatCurrencySigned(clubBalance.amount)}
+                            </Text>
+                        </Group>
+                    </Paper>
                     <Divider />
-                    <Text fw={700}>Total: {formatCurrency(total)}</Text>
+                    <Text fw={700}>Positive total: {formatCurrency(positiveTotal)}</Text>
+                    <Text fw={700}>Negative total: {formatCurrencySigned(negativeTotal)}</Text>
+                    <Text fw={700}>Net total: {formatCurrencySigned(total)}</Text>
                 </>
             ) : (
-                <Text fw={700}>Stone me! Nobody owes money</Text>
+                <Text fw={700}>No balances recorded yet</Text>
             )}
         </Stack>
     );

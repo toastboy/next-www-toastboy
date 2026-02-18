@@ -59,7 +59,7 @@ class MoneyService {
 
     /**
      * Returns signed balances grouped by player, with `playerId: null`
-     * representing the club's own ledger balance.
+     * representing the club's own ledger balance. Negative balances are debts.
      */
     async getBalances() {
         try {
@@ -95,7 +95,7 @@ class MoneyService {
             const playerBalances: PlayerBalanceType[] = [];
 
             for (const row of groupedBalances) {
-                const amountPence = row._sum.amountPence ?? 0;
+                const amountPence = -(row._sum.amountPence ?? 0);
 
                 if (row.playerId === null) {
                     clubBalancePence += amountPence;
@@ -117,13 +117,13 @@ class MoneyService {
 
             playerBalances.sort(comparePlayerName);
 
-            const totalPence = groupedBalances.reduce((acc, row) => acc + (row._sum.amountPence ?? 0), 0);
+            const totalPence = groupedBalances.reduce((acc, row) => acc - (row._sum.amountPence ?? 0), 0);
             const positiveTotalPence = groupedBalances.reduce((acc, row) => {
-                const amountPence = row._sum.amountPence ?? 0;
+                const amountPence = -(row._sum.amountPence ?? 0);
                 return amountPence > 0 ? acc + amountPence : acc;
             }, 0);
             const negativeTotalPence = groupedBalances.reduce((acc, row) => {
-                const amountPence = row._sum.amountPence ?? 0;
+                const amountPence = -(row._sum.amountPence ?? 0);
                 return amountPence < 0 ? acc + amountPence : acc;
             }, 0);
 
@@ -184,11 +184,13 @@ class MoneyService {
                 };
             });
 
+            const resultingBalancePence = -paymentResult.resultingBalancePence;
+
             return PayDebtResultSchema.parse({
                 playerId: parsed.playerId,
                 transactionId: paymentResult.transactionId,
                 amount: fromPence(requestedAmountPence),
-                resultingBalance: fromPence(paymentResult.resultingBalancePence),
+                resultingBalance: fromPence(resultingBalancePence),
             });
         } catch (error) {
             log(`Error paying debt: ${String(error)}`);

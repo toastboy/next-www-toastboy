@@ -10,6 +10,7 @@ import {
     NumberInput,
     Paper,
     Stack,
+    Switch,
     Text,
     Title,
 } from '@mantine/core';
@@ -39,8 +40,8 @@ const formatCurrency = (amount: number) => `£${formatAmount(amount)}`;
 const formatCurrencySigned = (amount: number) => `${amount < 0 ? '-' : ''}${formatCurrency(Math.abs(amount))}`;
 
 const getBalanceColor = (amount: number) => {
-    if (amount > 0) return 'red';
-    if (amount < 0) return 'teal';
+    if (amount < 0) return 'red';
+    if (amount > 0) return 'teal';
     return 'dimmed';
 };
 
@@ -61,7 +62,7 @@ const BalanceRow: React.FC<BalanceRowProps> = ({
     const form = useForm<PayDebtInput>({
         initialValues: {
             playerId: row.playerId,
-            amount: row.amount > 0 ? row.amount : 0.01,
+            amount: row.amount < 0 ? Math.abs(row.amount) : 0,
         },
         validate: zod4Resolver(PayDebtInputSchema),
         validateInputOnBlur: true,
@@ -132,8 +133,8 @@ const BalanceRow: React.FC<BalanceRowProps> = ({
                         </Text>
                     </Stack>
                     <NumberInput
-                        min={0.01}
                         decimalScale={2}
+                        fixedDecimalScale
                         allowNegative={false}
                         hideControls
                         aria-label={`Amount paid by ${row.playerName}`}
@@ -161,21 +162,33 @@ export const MoneyForm: React.FC<MoneyFormProps> = ({
     payDebt,
 }) => {
     const [submittingPlayerId, setSubmittingPlayerId] = useState<number | null>(null);
+    const [showZeroBalances, setShowZeroBalances] = useState(false);
 
-    const hasAnyBalance = playerBalances.length > 0 || clubBalance.amount !== 0;
+    const visiblePlayerBalances = showZeroBalances ?
+        playerBalances :
+        playerBalances.filter((row) => row.amount !== 0);
+
+    const hasAnyBalance = visiblePlayerBalances.length > 0 || clubBalance.amount !== 0;
 
     return (
         <Stack gap="md">
             <Title order={2}>Money Balances</Title>
+            {playerBalances.length > 0 ? (
+                <Switch
+                    checked={showZeroBalances}
+                    onChange={(event) => setShowZeroBalances(event.currentTarget.checked)}
+                    label="Show players with zero balance"
+                />
+            ) : null}
             {hasAnyBalance ? (
                 <>
-                    {playerBalances.length > 0 ? (
+                    {visiblePlayerBalances.length > 0 ? (
                         <>
                             <Stack gap="xs">
                                 <Title order={3}>Player Balances</Title>
-                                {playerBalances.map((row) => (
+                                {visiblePlayerBalances.map((row) => (
                                     <BalanceRow
-                                        key={`${row.playerId}-${row.amount}`}
+                                        key={row.playerId}
                                         row={row}
                                         payDebt={payDebt}
                                         submittingPlayerId={submittingPlayerId}

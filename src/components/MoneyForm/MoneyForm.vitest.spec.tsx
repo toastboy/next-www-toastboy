@@ -55,10 +55,47 @@ describe('MoneyForm', () => {
 
         expect(screen.getByRole('heading', { name: 'Money Balances' })).toBeInTheDocument();
         expect(screen.getByRole('heading', { name: 'Player Balances' })).toBeInTheDocument();
-        expect(screen.getByText('Net total: £12.75')).toBeInTheDocument();
+        expect(screen.getByText('Net total: -£12.75')).toBeInTheDocument();
         expect(screen.getByText('Alex Current')).toBeInTheDocument();
         expect(screen.getByText('Jamie Historic')).toBeInTheDocument();
         expect(screen.getByText('Club Balance')).toBeInTheDocument();
+    });
+
+    it('hides zero-balance players by default and shows them when toggled on', async () => {
+        const user = userEvent.setup();
+        render(
+            <Wrapper>
+                <MoneyForm
+                    playerBalances={[
+                        {
+                            playerId: 11,
+                            playerName: 'Alex Current',
+                            amount: 7.5,
+                        },
+                        {
+                            playerId: 13,
+                            playerName: 'Casey Zero',
+                            amount: 0,
+                        },
+                    ]}
+                    clubBalance={{
+                        playerId: null,
+                        playerName: 'Club',
+                        amount: -5,
+                    }}
+                    total={2.5}
+                    positiveTotal={7.5}
+                    negativeTotal={-5}
+                    payDebt={vi.fn<PayDebtProxy>()}
+                />
+            </Wrapper>,
+        );
+
+        expect(screen.queryByText('Casey Zero')).not.toBeInTheDocument();
+
+        await user.click(screen.getByRole('switch', { name: 'Show players with zero balance' }));
+
+        expect(screen.getByText('Casey Zero')).toBeInTheDocument();
     });
 
     it('renders empty state when there are no balances', () => {

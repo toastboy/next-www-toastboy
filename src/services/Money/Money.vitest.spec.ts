@@ -70,22 +70,22 @@ describe('MoneyService', () => {
                     {
                         playerId: 11,
                         playerName: 'Alex Current',
-                        amount: 7.5,
+                        amount: -7.5,
                     },
                     {
                         playerId: 12,
                         playerName: 'Player 12',
-                        amount: -1.25,
+                        amount: 1.25,
                     },
                 ],
                 club: {
                     playerId: null,
                     playerName: 'Club',
-                    amount: -5,
+                    amount: 5,
                 },
-                total: 1.25,
-                positiveTotal: 7.5,
-                negativeTotal: -6.25,
+                total: -1.25,
+                positiveTotal: 6.25,
+                negativeTotal: -7.5,
             });
         });
 
@@ -110,7 +110,7 @@ describe('MoneyService', () => {
     });
 
     describe('pay', () => {
-        it('records a payment as a negative signed transaction and returns the new balance', async () => {
+        it('records a payment as a negative signed transaction and returns the new displayed balance', async () => {
             const create = vi.fn().mockResolvedValue({ id: 77 });
             const aggregate = vi.fn().mockResolvedValue({
                 _sum: {
@@ -155,7 +155,7 @@ describe('MoneyService', () => {
                 playerId: 42,
                 transactionId: 77,
                 amount: 10,
-                resultingBalance: -2.5,
+                resultingBalance: 2.5,
             });
         });
     });

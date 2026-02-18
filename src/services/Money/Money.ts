@@ -10,10 +10,22 @@ import { BalanceSummarySchema } from '@/types/DebtType';
 
 const log = debug('footy:api');
 
-// Keep money math in integer pence to avoid floating-point precision issues.
+// Keep money calculations in integer pence to avoid floating-point precision
+// issues.
 const toPence = (amount: number) => Math.round(amount * 100);
 const fromPence = (amount: number) => Number((amount / 100).toFixed(2));
 
+/**
+ * Compares two player balance objects by player name and then by player ID.
+ *
+ * @param a - The first player balance object to compare
+ * @param b - The second player balance object to compare
+ * @returns A negative number if `a` should come before `b`, a positive number
+ *          if `a` should come after `b`, or 0 if they are equal. The comparison
+ *          is first done by player name (alphabetically), then by player ID
+ *          (numerically). Players with null IDs are sorted after players with
+ *          valid IDs.
+ */
 const comparePlayerName = (a: PlayerBalanceType, b: PlayerBalanceType) => {
     const nameComparison = a.playerName.localeCompare(b.playerName);
     if (nameComparison !== 0) return nameComparison;
@@ -25,7 +37,22 @@ const comparePlayerName = (a: PlayerBalanceType, b: PlayerBalanceType) => {
     return a.playerId - b.playerId;
 };
 
+/**
+ * Gets the display name for a player.
+ *
+ * Returns "Player {id}" if the player is anonymous or has no name. Otherwise
+ * returns the trimmed player name.
+ *
+ * @param player - The player object containing id, name, and anonymous flag
+ * @param player.id - The unique identifier of the player
+ * @param player.name - The player's name (nullable)
+ * @param player.anonymous - Whether the player should be displayed anonymously
+ * (nullable)
+ * @returns The display name for the player
+ */
 const getPlayerName = (player: { id: number; name: string | null; anonymous: boolean | null }) => {
+    // TODO: This logic is duplicated from the one in the PlayerName component.
+    // Consider centralizing it.
     if (player.anonymous) {
         return `Player ${player.id}`;
     }

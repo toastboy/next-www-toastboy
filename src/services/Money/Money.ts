@@ -40,24 +40,6 @@ const getPlayerName = (player: { id: number; name: string | null; anonymous: boo
 
 class MoneyService {
     /**
-     * Retrieves the cost of a game based on its game day ID.
-     *
-     * @deprecated Legacy helper retained for backfill/consistency checks. New
-     * money flows are ledger-driven from `Transaction.amountPence`.
-     */
-    getGameCost(gameDayId: number): number {
-        const id = z.number().int().min(1).parse(gameDayId);
-
-        if (id < 179) return 2.5;
-        if (id < 336) return 3.0;
-        if (id < 701) return 3.5;
-        if (id < 910) return 4.0;
-        if (id < 1088) return 4.5;
-
-        return 5.0;
-    }
-
-    /**
      * Returns signed balances grouped by player, with `playerId: null`
      * representing the club's own ledger balance. Negative balances are debts.
      */

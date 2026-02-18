@@ -9,6 +9,12 @@ WHERE
     `type` = 'PlayerPayment'
     AND `note` = 'Backfilled paid outcome';
 
+-- Player 12 pays for hall hire up front and should not carry game charges/payments.
+DELETE FROM `Transaction`
+WHERE
+    `playerId` = 12
+    AND `type` IN ('PlayerGameCharge', 'PlayerPayment');
+
 -- Backfill one charge transaction per outcome with an assigned team.
 INSERT INTO `Transaction` (
     `createdAt`,
@@ -35,8 +41,8 @@ LEFT JOIN `Transaction` AS `ExistingCharge` ON
     `ExistingCharge`.`outcomeId` = `Outcome`.`id`
 WHERE
     `Outcome`.`gameDayId` > 149
-    AND
-    `Outcome`.`team` IS NOT NULL
+    AND `Outcome`.`team` IS NOT NULL
+    AND `Outcome`.`playerId` <> 12
     AND `ExistingCharge`.`id` IS NULL;
 
 -- Backfill one payment transaction per paid, billable outcome.
@@ -68,5 +74,6 @@ WHERE
     `Outcome`.`gameDayId` > 149
     AND `Outcome`.`paid` = TRUE
     AND `Outcome`.`team` IS NOT NULL
+    AND `Outcome`.`playerId` <> 12
     AND `Outcome`.`points` IS NOT NULL
     AND `ExistingPayment`.`id` IS NULL;

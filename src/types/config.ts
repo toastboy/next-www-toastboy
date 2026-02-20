@@ -20,6 +20,8 @@ export interface ConfigType {
     organiserPhoneNumber: string;
     /** Default game cost in pence. */
     defaultGameCostPence: number;
+    /** Organiser's player ID for game prepayments. */
+    organiserPlayerId: number;
 }
 
 export const ConfigSchema: z.ZodType<ConfigType> = z.object({
@@ -31,4 +33,5 @@ export const ConfigSchema: z.ZodType<ConfigType> = z.object({
     notificationIconSize: z.number().int().nonnegative(),
     organiserPhoneNumber: z.string().min(1),
     defaultGameCostPence: z.number().int().min(1),
+    organiserPlayerId: z.number().int().min(1),
 });

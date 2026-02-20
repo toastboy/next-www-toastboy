@@ -159,4 +159,32 @@ describe('MoneyService', () => {
             });
         });
     });
+
+    describe('charge', () => {
+        it('upserts a player game charge with amount stored in pence', async () => {
+            (prisma.transaction.upsert as Mock).mockResolvedValue({});
+
+            await moneyService.charge(14, 3, 9, 12.5, 'Late arrival fee');
+
+            expect(prisma.transaction.upsert).toHaveBeenCalledWith({
+                where: {
+                    playerId: 14,
+                    gameDayId: 3,
+                    outcomeId: 9,
+                },
+                update: {
+                    amountPence: 1250,
+                    note: 'Late arrival fee',
+                },
+                create: {
+                    type: 'PlayerGameCharge',
+                    amountPence: 1250,
+                    playerId: 14,
+                    gameDayId: 3,
+                    outcomeId: 9,
+                    note: 'Late arrival fee',
+                },
+            });
+        });
+    });
 });

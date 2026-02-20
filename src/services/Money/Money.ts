@@ -154,6 +154,59 @@ class MoneyService {
     }
 
     /**
+     * Charges a player for a game by creating a transaction record.
+     *
+     * Validates inputs, converts the amount to pence, and persists the charge
+     * with the provided note.
+     *
+     * @param playerId - The unique identifier of the player to charge.
+     * @param outcomeId - The unique identifier of the related game outcome.
+     * @param amount - The amount to charge in currency units.
+     * @param note - A short description for the charge (max 255 characters).
+     * @throws Will rethrow any validation or persistence errors encountered.
+     */
+    async charge(
+        playerId: number,
+        gameDayId: number,
+        outcomeId: number,
+        amount: number,
+        note?: string,
+    ): Promise<void> {
+        try {
+            const parsed = z.object({
+                playerId: z.number().int().min(1),
+                gameDayId: z.number().int().min(1),
+                outcomeId: z.number().int().min(1),
+                amount: z.number().positive(),
+                note: z.string().max(255).optional(),
+            }).parse({ playerId, gameDayId, outcomeId, amount, note });
+
+            await prisma.transaction.upsert({
+                where: {
+                    playerId: parsed.playerId,
+                    gameDayId: parsed.gameDayId,
+                    outcomeId: parsed.outcomeId,
+                },
+                update: {
+                    amountPence: parsed.amount,
+                    note: parsed.note,
+                },
+                create: {
+                    type: 'PlayerGameCharge',
+                    amountPence: parsed.amount,
+                    playerId: parsed.playerId,
+                    gameDayId: parsed.gameDayId,
+                    outcomeId: parsed.outcomeId,
+                    note: parsed.note,
+                },
+            });
+        } catch (error) {
+            log(`Error charging player: ${String(error)}`);
+            throw error;
+        }
+    }
+
+    /**
      * Records a player payment as a signed transaction in the ledger.
      */
     async pay(playerId: number, amount: number): Promise<PayDebtResult> {

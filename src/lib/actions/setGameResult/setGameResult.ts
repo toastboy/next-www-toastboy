@@ -3,18 +3,22 @@ import 'server-only';
 import type { TeamName } from 'prisma/zod/schemas';
 import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 
+import { config } from '@/lib/config';
 import gameDayService from '@/services/GameDay';
+import transactionService from '@/services/Money';
 import outcomeService from '@/services/Outcome';
 import type { SetGameResultInput } from '@/types/actions/SetGameResult';
 
 interface SetGameResultDeps {
     gameDayService: Pick<typeof gameDayService, 'get' | 'update'>;
     outcomeService: Pick<typeof outcomeService, 'getByGameDay' | 'upsert'>;
+    transactionService: Pick<typeof transactionService, 'charge'>;
 }
 
 const defaultDeps: SetGameResultDeps = {
     gameDayService,
     outcomeService,
+    transactionService,
 };
 
 /**
@@ -49,34 +53,45 @@ const mapWinnerToPoints = (
     }
 };
 
+
 /**
- * Updates the points for all players in a team for a specific game day.
+ * Updates all outcomes for a given team on a game day, setting their points and
+ * charging each player.
  *
- * Retrieves all outcomes for the specified team on the given game day and
- * updates each player's points to the provided value.
- *
- * @param gameDayId - The unique identifier of the game day
- * @param team - The team name to update points for
- * @param points - The points to assign (0, 1, 3, or null to clear points)
- * @param deps - Dependencies object containing the outcomeService for data
- * operations
- * @returns A promise that resolves when all player points have been updated
+ * @param gameDay - The game day whose outcomes should be updated.
+ * @param team - The team whose outcomes should be updated.
+ * @param points - The points to assign to each outcome (0, 1, 3, or null).
+ * @param deps - Services used to load outcomes, persist updates, and charge
+ * transactions.
+ * @throws Propagates any errors from outcome or transaction services.
  */
-const updateTeamPoints = async (
-    gameDayId: number,
+const updateTeamOutcomes = async (
+    gameDay: GameDayType,
     team: TeamName,
     points: 0 | 1 | 3 | null,
     deps: SetGameResultDeps,
 ) => {
-    const outcomes = await deps.outcomeService.getByGameDay(gameDayId, team);
+    const outcomes = await deps.outcomeService.getByGameDay(gameDay.id, team);
 
     await Promise.all(outcomes.map((outcome) => (
         deps.outcomeService.upsert({
-            gameDayId,
+            gameDayId: gameDay.id,
             playerId: outcome.playerId,
             points,
         })
     )));
+
+    await Promise.all(outcomes.map((outcome) => {
+        // Everone pays the game cost except the organiser, who pays the hall
+        // hire in the first place
+        return (outcome.playerId != config.organiserPlayerId) ?
+            deps.transactionService.charge(
+                outcome.playerId,
+                gameDay.id,
+                outcome.id,
+                gameDay.cost,
+            ) : Promise.resolve();
+    }));
 };
 
 /**
@@ -113,8 +128,8 @@ export async function setGameResultCore(
     const pointsByTeam = mapWinnerToPoints(data.winner);
 
     await Promise.all([
-        updateTeamPoints(data.gameDayId, 'A', pointsByTeam.A, deps),
-        updateTeamPoints(data.gameDayId, 'B', pointsByTeam.B, deps),
+        updateTeamOutcomes(gameDay, 'A', pointsByTeam.A, deps),
+        updateTeamOutcomes(gameDay, 'B', pointsByTeam.B, deps),
     ]);
 
     return updatedGameDay;

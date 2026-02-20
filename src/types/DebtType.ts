@@ -2,6 +2,7 @@ import z from 'zod';
 
 export const BalanceSchema = z.object({
     playerId: z.number().int().min(1).nullable(),
+    maxGameDayId: z.number().int().min(1).optional(),
     playerName: z.string().min(1),
     amount: z.number(),
 });

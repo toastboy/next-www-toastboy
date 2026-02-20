@@ -77,6 +77,9 @@ class MoneyService {
                 _sum: {
                     amountPence: true,
                 },
+                _max: {
+                    gameDayId: true,
+                },
             });
 
             const playerIds = groupedBalances
@@ -119,6 +122,7 @@ class MoneyService {
 
                 playerBalances.push({
                     playerId: row.playerId,
+                    maxGameDayId: row._max.gameDayId ?? undefined,
                     playerName: getPlayerName(player),
                     amount: fromPence(amountPence),
                 });

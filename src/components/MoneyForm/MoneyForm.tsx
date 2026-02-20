@@ -164,9 +164,16 @@ export const MoneyForm: React.FC<MoneyFormProps> = ({
     const [submittingPlayerId, setSubmittingPlayerId] = useState<number | null>(null);
     const [showZeroBalances, setShowZeroBalances] = useState(false);
 
+    const sortPlayerBalances = (balances: PlayerBalanceType[]) =>
+        balances.sort((a, b) => {
+            const gameDayComparison = (b.maxGameDayId ?? 0) - (a.maxGameDayId ?? 0);
+            if (gameDayComparison !== 0) return gameDayComparison;
+            return a.playerName.localeCompare(b.playerName);
+        });
+
     const visiblePlayerBalances = showZeroBalances ?
-        playerBalances :
-        playerBalances.filter((row) => row.amount !== 0);
+        sortPlayerBalances(playerBalances) :
+        sortPlayerBalances(playerBalances).filter((row) => row.amount !== 0);
 
     const hasAnyBalance = visiblePlayerBalances.length > 0 || clubBalance.amount !== 0;
 

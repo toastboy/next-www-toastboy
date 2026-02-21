@@ -19,8 +19,9 @@ test.describe('drinkers admin page', () => {
         await asAdmin(page, '/footy/drinkers');
 
         await expect(page.locator('[data-testid="must-be-admin"]')).not.toBeVisible();
-
-        // TODO: Add checks for the drinkers admin interface elements
-        await expect(page.locator('[data-testid="not-implemented"]')).toBeVisible();
+        await expect(page).toHaveURL(/\/footy\/admin\/drinkers\/\d+$/);
+        await expect(page.locator('[data-testid="drinkers-form"]')).toBeVisible();
+        await expect(page.getByRole('heading', { name: /Game \d+ Drinkers/i })).toBeVisible();
+        await expect(page.getByRole('button', { name: 'Save drinkers' })).toBeVisible();
     });
 });

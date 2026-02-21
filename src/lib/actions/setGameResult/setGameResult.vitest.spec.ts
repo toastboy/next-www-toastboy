@@ -8,6 +8,7 @@ describe('setGameResultCore', () => {
         id: 1249,
         year: 2026,
         date: new Date('2026-02-03T00:00:00Z'),
+        cost: 450,
         game: true,
         mailSent: new Date('2026-02-01T09:00:00Z'),
         comment: null,
@@ -24,6 +25,9 @@ describe('setGameResultCore', () => {
         getByGameDay: vi.fn(),
         upsert: vi.fn(),
     };
+    const transactionService = {
+        charge: vi.fn(),
+    };
 
     beforeEach(() => {
         vi.clearAllMocks();
@@ -35,6 +39,7 @@ describe('setGameResultCore', () => {
                 [{ playerId: 3 }, { playerId: 4 }],
             )));
         outcomeService.upsert.mockResolvedValue(undefined);
+        transactionService.charge.mockResolvedValue(undefined);
     });
 
     it('updates bibs and applies win/loss points', async () => {
@@ -44,7 +49,7 @@ describe('setGameResultCore', () => {
             winner: 'A',
         });
 
-        await setGameResultCore(data, { gameDayService, outcomeService });
+        await setGameResultCore(data, { gameDayService, outcomeService, transactionService });
 
         expect(gameDayService.update).toHaveBeenCalledWith({
             id: 1249,
@@ -70,7 +75,7 @@ describe('setGameResultCore', () => {
             winner: 'draw',
         });
 
-        await setGameResultCore(data, { gameDayService, outcomeService });
+        await setGameResultCore(data, { gameDayService, outcomeService, transactionService });
 
         expect(outcomeService.upsert).toHaveBeenCalledWith({
             gameDayId: 1249,
@@ -91,7 +96,7 @@ describe('setGameResultCore', () => {
             winner: null,
         });
 
-        await setGameResultCore(data, { gameDayService, outcomeService });
+        await setGameResultCore(data, { gameDayService, outcomeService, transactionService });
 
         expect(outcomeService.upsert).toHaveBeenCalledWith({
             gameDayId: 1249,
@@ -114,7 +119,7 @@ describe('setGameResultCore', () => {
                 bibs: null,
                 winner: null,
             },
-            { gameDayService, outcomeService },
+            { gameDayService, outcomeService, transactionService },
         )).rejects.toThrow('Game day not found (id: 9999).');
 
         expect(gameDayService.update).not.toHaveBeenCalled();

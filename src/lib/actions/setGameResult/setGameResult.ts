@@ -88,7 +88,6 @@ const updateTeamOutcomes = async (
             deps.transactionService.charge(
                 outcome.playerId,
                 gameDay.id,
-                outcome.id,
                 gameDay.cost,
             ) : Promise.resolve();
     }));

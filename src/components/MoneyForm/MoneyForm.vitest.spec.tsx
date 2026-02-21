@@ -70,7 +70,7 @@ describe('MoneyForm', () => {
                         {
                             playerId: 11,
                             playerName: 'Alex Current',
-                            amount: 7.5,
+                            amount: 750,
                         },
                         {
                             playerId: 13,
@@ -81,11 +81,11 @@ describe('MoneyForm', () => {
                     clubBalance={{
                         playerId: null,
                         playerName: 'Club',
-                        amount: -5,
+                        amount: -500,
                     }}
-                    total={2.5}
-                    positiveTotal={7.5}
-                    negativeTotal={-5}
+                    total={250}
+                    positiveTotal={750}
+                    negativeTotal={-500}
                     payDebt={vi.fn<PayDebtProxy>()}
                 />
             </Wrapper>,
@@ -125,7 +125,7 @@ describe('MoneyForm', () => {
         const payDebt = vi.fn<PayDebtProxy>().mockResolvedValue({
             playerId: 11,
             transactionId: 777,
-            amount: 7.5,
+            amount: 750,
             resultingBalance: 0,
         });
 
@@ -136,7 +136,7 @@ describe('MoneyForm', () => {
         await waitFor(() => {
             expect(payDebt).toHaveBeenCalledWith({
                 playerId: 11,
-                amount: 7.5,
+                amount: 750,
             });
         });
 

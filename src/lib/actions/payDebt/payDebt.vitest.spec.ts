@@ -7,14 +7,14 @@ describe('payDebtCore', () => {
         const pay = vi.fn().mockResolvedValue({
             playerId: 42,
             transactionId: 15,
-            amount: 10,
-            resultingBalance: 2.5,
+            amount: 1000,
+            resultingBalance: 250,
         });
 
         const result = await payDebtCore(
             {
                 playerId: 42,
-                amount: 10,
+                amount: 1000,
             },
             {
                 moneyService: {
@@ -23,12 +23,12 @@ describe('payDebtCore', () => {
             },
         );
 
-        expect(pay).toHaveBeenCalledWith(42, 10);
+        expect(pay).toHaveBeenCalledWith(42, 1000);
         expect(result).toEqual({
             playerId: 42,
             transactionId: 15,
-            amount: 10,
-            resultingBalance: 2.5,
+            amount: 1000,
+            resultingBalance: 250,
         });
     });
 });

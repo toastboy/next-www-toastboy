@@ -20,10 +20,10 @@ import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import z from 'zod';
 
 import { config } from '@/lib/config';
 import type { PayDebtInput, PayDebtProxy } from '@/types/actions/PayDebt';
-import { PayDebtInputSchema } from '@/types/actions/PayDebt';
 import type { ClubBalanceType, PlayerBalanceType } from '@/types/DebtType';
 
 export interface MoneyFormProps {
@@ -35,15 +35,24 @@ export interface MoneyFormProps {
     payDebt: PayDebtProxy;
 }
 
-const formatAmount = (amount: number) => amount.toFixed(2);
+const toPounds = (amount: number) => amount / 100;
+const fromPounds = (amount: number) => Math.round(amount * 100);
+const formatAmount = (amount: number) => toPounds(amount).toFixed(2);
 const formatCurrency = (amount: number) => `£${formatAmount(amount)}`;
-const formatCurrencySigned = (amount: number) => `${amount < 0 ? '-' : ''}${formatCurrency(Math.abs(amount))}`;
+const formatCurrencySigned = (amount: number) =>
+    `${amount < 0 ? '-' : ''}${formatCurrency(Math.abs(amount))}`;
 
 const getBalanceColor = (amount: number) => {
     if (amount < 0) return 'red';
     if (amount > 0) return 'teal';
     return 'dimmed';
 };
+
+const PayDebtFormSchema = z.object({
+    amountPounds: z.number().positive(),
+});
+
+type PayDebtFormValues = z.infer<typeof PayDebtFormSchema>;
 
 interface BalanceRowProps {
     row: PlayerBalanceType;
@@ -59,29 +68,34 @@ const BalanceRow: React.FC<BalanceRowProps> = ({
     setSubmittingPlayerId,
 }) => {
     const router = useRouter();
-    const form = useForm<PayDebtInput>({
+    const form = useForm<PayDebtFormValues>({
         initialValues: {
-            playerId: row.playerId,
-            amount: row.amount < 0 ? Math.abs(row.amount) : 0,
+            amountPounds: row.amount < 0 ? toPounds(Math.abs(row.amount)) : 0,
         },
-        validate: zod4Resolver(PayDebtInputSchema),
+        validate: zod4Resolver(PayDebtFormSchema),
         validateInputOnBlur: true,
     });
 
-    const handlePay = async (values: PayDebtInput) => {
+    const handlePay = async (values: PayDebtFormValues) => {
         const notificationId = `money-paid-${row.playerId}`;
+        const amount = fromPounds(values.amountPounds);
+        const payload: PayDebtInput = {
+            playerId: row.playerId,
+            amount,
+        };
+
         notifications.show({
             id: notificationId,
             loading: true,
             title: 'Recording payment',
-            message: `Recording ${formatCurrency(values.amount)} for ${row.playerName}...`,
+            message: `Recording ${formatCurrency(amount)} for ${row.playerName}...`,
             autoClose: false,
             withCloseButton: false,
         });
 
         setSubmittingPlayerId(row.playerId);
         try {
-            const result = await payDebt(values);
+            const result = await payDebt(payload);
 
             notifications.update({
                 id: notificationId,
@@ -139,7 +153,7 @@ const BalanceRow: React.FC<BalanceRowProps> = ({
                         hideControls
                         aria-label={`Amount paid by ${row.playerName}`}
                         w={120}
-                        {...form.getInputProps('amount')}
+                        {...form.getInputProps('amountPounds')}
                     />
                     <Button
                         type="submit"

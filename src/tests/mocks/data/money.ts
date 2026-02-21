@@ -4,32 +4,32 @@ export const defaultPlayerBalanceList: PlayerBalanceType[] = [
     {
         playerId: 11,
         playerName: 'Alex Current',
-        amount: -7.5,
+        amount: -750,
     },
     {
         playerId: 12,
         playerName: 'Sam Current',
-        amount: 2,
+        amount: 200,
     },
     {
         playerId: 21,
         playerName: 'Jamie Historic',
-        amount: -12.25,
+        amount: -1225,
     },
 ];
 
 export const defaultClubBalance: ClubBalanceType = {
     playerId: null,
     playerName: 'Club',
-    amount: 5,
+    amount: 500,
 };
 
 export const defaultBalanceSummary: BalanceSummaryType = {
     players: defaultPlayerBalanceList,
     club: defaultClubBalance,
-    total: -12.75,
-    positiveTotal: 7,
-    negativeTotal: -19.75,
+    total: -1275,
+    positiveTotal: 700,
+    negativeTotal: -1975,
 };
 
 export const createMockBalanceSummary = (

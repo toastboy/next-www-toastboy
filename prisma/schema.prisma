@@ -133,7 +133,6 @@ model Outcome {
 
   gameDay     GameDay      @relation(fields: [gameDayId], references: [id])
   player      Player       @relation(fields: [playerId], references: [id])
-  transaction Transaction?
 
   @@unique([gameDayId, playerId])
   @@index([gameDayId])
@@ -259,22 +258,20 @@ model PlayerRecord {
 model Transaction {
   id          Int             @id @default(autoincrement())
   createdAt   DateTime        @default(now())
-  effectiveAt DateTime        @default(now())
   type        TransactionType
   amountPence Int
   note        String?         @db.VarChar(255)
 
   playerId  Int?
   gameDayId Int?
-  outcomeId Int? @unique
 
   player  Player?  @relation(fields: [playerId], references: [id])
   gameDay GameDay? @relation(fields: [gameDayId], references: [id])
-  outcome Outcome? @relation(fields: [outcomeId], references: [id])
 
   @@index([playerId, createdAt])
   @@index([gameDayId, createdAt])
   @@index([type, createdAt])
+  @@unique([type, playerId, gameDayId])
 }
 
 enum TeamName {

@@ -10,11 +10,6 @@ import { BalanceSummarySchema } from '@/types/DebtType';
 
 const log = debug('footy:api');
 
-// Keep money calculations in integer pence to avoid floating-point precision
-// issues.
-const toPence = (amount: number) => Math.round(amount * 100);
-const fromPence = (amount: number) => Number((amount / 100).toFixed(2));
-
 /**
  * Compares two player balance objects by player name and then by player ID.
  *
@@ -103,14 +98,14 @@ class MoneyService {
 
             const playersById = new Map(players.map((player) => [player.id, player]));
 
-            let clubBalancePence = 0;
+            let clubBalance = 0;
             const playerBalances: PlayerBalanceType[] = [];
 
             for (const row of groupedBalances) {
-                const amountPence = -(row._sum.amountPence ?? 0);
+                const amount = -(row._sum.amountPence ?? 0);
 
                 if (row.playerId === null) {
-                    clubBalancePence += amountPence;
+                    clubBalance += amount;
                     continue;
                 }
 
@@ -124,20 +119,20 @@ class MoneyService {
                     playerId: row.playerId,
                     maxGameDayId: row._max.gameDayId ?? undefined,
                     playerName: getPlayerName(player),
-                    amount: fromPence(amountPence),
+                    amount,
                 });
             }
 
             playerBalances.sort(comparePlayerName);
 
-            const totalPence = groupedBalances.reduce((acc, row) => acc - (row._sum.amountPence ?? 0), 0);
-            const positiveTotalPence = groupedBalances.reduce((acc, row) => {
-                const amountPence = -(row._sum.amountPence ?? 0);
-                return amountPence > 0 ? acc + amountPence : acc;
+            const total = groupedBalances.reduce((acc, row) => acc - (row._sum.amountPence ?? 0), 0);
+            const positiveTotal = groupedBalances.reduce((acc, row) => {
+                const amount = -(row._sum.amountPence ?? 0);
+                return amount > 0 ? acc + amount : acc;
             }, 0);
-            const negativeTotalPence = groupedBalances.reduce((acc, row) => {
-                const amountPence = -(row._sum.amountPence ?? 0);
-                return amountPence < 0 ? acc + amountPence : acc;
+            const negativeTotal = groupedBalances.reduce((acc, row) => {
+                const amount = -(row._sum.amountPence ?? 0);
+                return amount < 0 ? acc + amount : acc;
             }, 0);
 
             return BalanceSummarySchema.parse({
@@ -145,11 +140,11 @@ class MoneyService {
                 club: {
                     playerId: null,
                     playerName: 'Club',
-                    amount: fromPence(clubBalancePence),
+                    amount: clubBalance,
                 },
-                total: fromPence(totalPence),
-                positiveTotal: fromPence(positiveTotalPence),
-                negativeTotal: fromPence(negativeTotalPence),
+                total,
+                positiveTotal,
+                negativeTotal,
             });
         } catch (error) {
             log(`Error fetching money balances: ${String(error)}`);
@@ -160,19 +155,16 @@ class MoneyService {
     /**
      * Charges a player for a game by creating a transaction record.
      *
-     * Validates inputs, converts the amount to pence, and persists the charge
-     * with the provided note.
+     * Validates inputs and persists the amount with the provided note.
      *
      * @param playerId - The unique identifier of the player to charge.
-     * @param outcomeId - The unique identifier of the related game outcome.
-     * @param amount - The amount to charge in currency units.
+     * @param amount - The amount to charge.
      * @param note - A short description for the charge (max 255 characters).
      * @throws Will rethrow any validation or persistence errors encountered.
      */
     async charge(
         playerId: number,
         gameDayId: number,
-        outcomeId: number,
         amount: number,
         note?: string,
     ): Promise<void> {
@@ -180,16 +172,17 @@ class MoneyService {
             const parsed = z.object({
                 playerId: z.number().int().min(1),
                 gameDayId: z.number().int().min(1),
-                outcomeId: z.number().int().min(1),
-                amount: z.number().positive(),
+                amount: z.number().int().positive(),
                 note: z.string().max(255).optional(),
-            }).parse({ playerId, gameDayId, outcomeId, amount, note });
+            }).parse({ playerId, gameDayId, amount, note });
 
             await prisma.transaction.upsert({
                 where: {
-                    playerId: parsed.playerId,
-                    gameDayId: parsed.gameDayId,
-                    outcomeId: parsed.outcomeId,
+                    type_playerId_gameDayId: {
+                        type: 'PlayerGameCharge',
+                        playerId: parsed.playerId,
+                        gameDayId: parsed.gameDayId,
+                    },
                 },
                 update: {
                     amountPence: parsed.amount,
@@ -200,7 +193,6 @@ class MoneyService {
                     amountPence: parsed.amount,
                     playerId: parsed.playerId,
                     gameDayId: parsed.gameDayId,
-                    outcomeId: parsed.outcomeId,
                     note: parsed.note,
                 },
             });
@@ -217,16 +209,14 @@ class MoneyService {
         try {
             const parsed = z.object({
                 playerId: z.number().int().min(1),
-                amount: z.number().positive(),
+                amount: z.number().int().positive(),
             }).parse({ playerId, amount });
-
-            const requestedAmountPence = toPence(parsed.amount);
 
             const paymentResult = await prisma.$transaction(async (tx) => {
                 const created = await tx.transaction.create({
                     data: {
                         type: 'PlayerPayment',
-                        amountPence: -requestedAmountPence,
+                        amountPence: -parsed.amount,
                         playerId: parsed.playerId,
                         note: 'Manual payment',
                     },
@@ -246,17 +236,17 @@ class MoneyService {
 
                 return {
                     transactionId: created.id,
-                    resultingBalancePence: aggregate._sum.amountPence ?? 0,
+                    resultingBalance: aggregate._sum.amountPence ?? 0,
                 };
             });
 
-            const resultingBalancePence = -paymentResult.resultingBalancePence;
+            const resultingBalance = -paymentResult.resultingBalance;
 
             return PayDebtResultSchema.parse({
                 playerId: parsed.playerId,
                 transactionId: paymentResult.transactionId,
-                amount: fromPence(requestedAmountPence),
-                resultingBalance: fromPence(resultingBalancePence),
+                amount: parsed.amount,
+                resultingBalance,
             });
         } catch (error) {
             log(`Error paying debt: ${String(error)}`);

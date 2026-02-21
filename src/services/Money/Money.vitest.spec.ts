@@ -17,17 +17,26 @@ describe('MoneyService', () => {
                     _sum: {
                         amountPence: -125,
                     },
+                    _max: {
+                        gameDayId: 22,
+                    },
                 },
                 {
                     playerId: 11,
                     _sum: {
                         amountPence: 750,
                     },
+                    _max: {
+                        gameDayId: 23,
+                    },
                 },
                 {
                     playerId: null,
                     _sum: {
                         amountPence: -500,
+                    },
+                    _max: {
+                        gameDayId: 23,
                     },
                 },
             ]);
@@ -52,6 +61,9 @@ describe('MoneyService', () => {
                 _sum: {
                     amountPence: true,
                 },
+                _max: {
+                    gameDayId: true,
+                },
             });
             expect(prisma.player.findMany).toHaveBeenCalledWith({
                 where: {
@@ -70,22 +82,24 @@ describe('MoneyService', () => {
                     {
                         playerId: 11,
                         playerName: 'Alex Current',
-                        amount: -7.5,
+                        maxGameDayId: 23,
+                        amount: -750,
                     },
                     {
                         playerId: 12,
                         playerName: 'Player 12',
-                        amount: 1.25,
+                        maxGameDayId: 22,
+                        amount: 125,
                     },
                 ],
                 club: {
                     playerId: null,
                     playerName: 'Club',
-                    amount: 5,
+                    amount: 500,
                 },
-                total: -1.25,
-                positiveTotal: 6.25,
-                negativeTotal: -7.5,
+                total: -125,
+                positiveTotal: 625,
+                negativeTotal: -750,
             });
         });
 
@@ -130,7 +144,7 @@ describe('MoneyService', () => {
                 },
             }));
 
-            const result = await moneyService.pay(42, 10);
+            const result = await moneyService.pay(42, 1000);
 
             expect(create).toHaveBeenCalledWith({
                 data: {
@@ -154,23 +168,25 @@ describe('MoneyService', () => {
             expect(result).toEqual({
                 playerId: 42,
                 transactionId: 77,
-                amount: 10,
-                resultingBalance: 2.5,
+                amount: 1000,
+                resultingBalance: 250,
             });
         });
     });
 
     describe('charge', () => {
-        it('upserts a player game charge with amount stored in pence', async () => {
+        it('upserts a player game charge with integer amount storage', async () => {
             (prisma.transaction.upsert as Mock).mockResolvedValue({});
 
-            await moneyService.charge(14, 3, 9, 12.5, 'Late arrival fee');
+            await moneyService.charge(14, 3, 1250, 'Late arrival fee');
 
             expect(prisma.transaction.upsert).toHaveBeenCalledWith({
                 where: {
-                    playerId: 14,
-                    gameDayId: 3,
-                    outcomeId: 9,
+                    type_playerId_gameDayId: {
+                        type: 'PlayerGameCharge',
+                        playerId: 14,
+                        gameDayId: 3,
+                    },
                 },
                 update: {
                     amountPence: 1250,
@@ -181,7 +197,6 @@ describe('MoneyService', () => {
                     amountPence: 1250,
                     playerId: 14,
                     gameDayId: 3,
-                    outcomeId: 9,
                     note: 'Late arrival fee',
                 },
             });

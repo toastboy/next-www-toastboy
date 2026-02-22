@@ -53,7 +53,7 @@ Purpose: Enable fast, safe contributions. Keep changes aligned with existing ser
 - For all form components, use Mantine `useForm` for state handling and submission flow instead of bespoke form state management.
 - Prefer Mantine components and types over native HTML/React elements when Mantine equivalents exist (e.g., use `<Select>` instead of `<select>`).
 - Zod deprecated `z.string().email()`; use `z.email()` instead.
-- Always add comments to new functions/methods explaining purpose, parameters, return values, and thrown errors in the same manner as existing code and using the typical output of issuing the '/doc' command to the inline coding agent.
+- Documentation is mandatory for new or modified code: add comprehensive comments to every substantive declaration in touched files (constants, types/interfaces, classes, fields, functions/methods, and exported helpers). Explain purpose, key inputs/outputs, invariants, and error behaviour, using clear JSDoc-style comments.
 - Always use `data-testid` selectors in tests and Storybook play functions.
 - TODO: Re-add `eslint-plugin-vitest` once it supports ESLint 9; currently removed to avoid peer dependency warnings.
 
@@ -79,6 +79,6 @@ export class SomeModelService { async get(id: number) { const where = SomeModelW
 4. Run with `op run ... npm run build` before shipping (ensures prisma + Sentry ok).
 5. Preserve existing Sentry/middleware settings unless intentionally changing observability.
 6. When checking spelling and grammar, use British English.
-7. All substantive functions should have comprehensive doc comments.
+7. All substantive declarations in touched files should have comprehensive doc comments (not only functions).
 
 Feedback: Tell us if any section lacks clarity (e.g., data flow, testing boundaries, auth patterns) so we can refine.

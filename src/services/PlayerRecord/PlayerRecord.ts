@@ -106,6 +106,10 @@ export class PlayerRecordService {
      */
     async getAllYears(completed = false): Promise<number[]> {
         try {
+            // TODO: This needs optimising: can probably do a lot more with the
+            // database query and less in-memory. For example, if we can get the
+            // database to filter to season enders then we won't need to fetch
+            // all records or do any in-memory filtering/sorting.
             const now = new Date();
             const seasonEndersToNow = await gameDayService.getSeasonEnders(now);
             const seasonEnders = completed ?

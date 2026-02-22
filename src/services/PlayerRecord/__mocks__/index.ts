@@ -8,6 +8,7 @@ const playerRecordService = {
     getWinners: vi.fn(),
     deleteAll: vi.fn(),
     upsertForGameDay: vi.fn(),
+    upsertFromGameDay: vi.fn(),
 };
 
 export default playerRecordService;

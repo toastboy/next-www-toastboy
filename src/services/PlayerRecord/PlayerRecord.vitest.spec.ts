@@ -5,6 +5,7 @@ import { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema'
 import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
+import gameDayService from '@/services/GameDay';
 import playerRecordService from '@/services/PlayerRecord';
 import {
     createMockPlayerRecord,
@@ -756,6 +757,77 @@ describe('PlayerRecordService', () => {
             (prisma.outcome.findMany as Mock).mockResolvedValue([]);
             const result = await playerRecordService.upsertForGameDay(15);
             expect(result).toEqual([]);
+        });
+    });
+
+    describe('upsertFromGameDay', () => {
+        it('rebuilds player records by iterating game days from the changed game onward', async () => {
+            const getAllSpy = vi.spyOn(gameDayService, 'getAll').mockResolvedValue([
+                {
+                    id: 2,
+                    year: 2024,
+                    date: new Date('2024-01-10T00:00:00Z'),
+                    game: true,
+                    mailSent: new Date('2024-01-08T09:00:00Z'),
+                    comment: null,
+                    bibs: 'A',
+                    pickerGamesHistory: 10,
+                    cost: 450,
+                },
+                {
+                    id: 3,
+                    year: 2024,
+                    date: new Date('2024-01-17T00:00:00Z'),
+                    game: true,
+                    mailSent: new Date('2024-01-15T09:00:00Z'),
+                    comment: null,
+                    bibs: 'B',
+                    pickerGamesHistory: 10,
+                    cost: 450,
+                },
+            ]);
+            const upsertForGameDaySpy = vi
+                .spyOn(playerRecordService, 'upsertForGameDay')
+                .mockImplementation((gameDayId?: number) => {
+                    if (!gameDayId) return Promise.resolve([]);
+                    return Promise.resolve([
+                        createMockPlayerRecord({
+                            id: gameDayId,
+                            playerId: 1,
+                            year: gameDayId === 2 ? 2024 : 0,
+                            gameDayId,
+                        }),
+                    ]);
+                });
+
+            const result = await playerRecordService.upsertFromGameDay(2);
+
+            expect(getAllSpy).toHaveBeenCalledWith({
+                onOrAfter: 2,
+            });
+            expect(upsertForGameDaySpy).toHaveBeenCalledTimes(2);
+            expect(upsertForGameDaySpy).toHaveBeenNthCalledWith(1, 2);
+            expect(upsertForGameDaySpy).toHaveBeenNthCalledWith(2, 3);
+            expect(result).toHaveLength(2);
+            expect(prisma.playerRecord.deleteMany).not.toHaveBeenCalled();
+
+            getAllSpy.mockRestore();
+            upsertForGameDaySpy.mockRestore();
+        });
+
+        it('returns no records when no later game days exist', async () => {
+            const getAllSpy = vi.spyOn(gameDayService, 'getAll').mockResolvedValueOnce([]);
+            const upsertForGameDaySpy = vi.spyOn(playerRecordService, 'upsertForGameDay');
+
+            const result = await playerRecordService.upsertFromGameDay(9999);
+
+            expect(result).toEqual([]);
+            expect(getAllSpy).toHaveBeenCalledWith({
+                onOrAfter: 9999,
+            });
+            expect(upsertForGameDaySpy).not.toHaveBeenCalled();
+            getAllSpy.mockRestore();
+            upsertForGameDaySpy.mockRestore();
         });
     });
 

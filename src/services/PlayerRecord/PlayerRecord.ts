@@ -89,7 +89,8 @@ export class PlayerRecordService {
     }
 
     /**
-     * Retrieves all the years where there is at least one PlayerRecord, with zero (for all-time) at the end.
+     * Retrieves all the years where there is at least one PlayerRecord, with
+     * zero (for all-time) at the end.
      * @returns A promise that resolves to an array of distinct years.
      * @throws An error if there is a failure.
      */
@@ -444,6 +445,46 @@ export class PlayerRecordService {
             return Promise.resolve(playerRecords);
         } catch (error) {
             log(`Error upserting PlayerRecord: ${String(error)}`);
+            throw error;
+        }
+    }
+
+    /**
+     * Rebuilds PlayerRecords from the provided game day onward.
+     *
+     * This is intentionally simple: find all game days on/after `gameDayId` and
+     * call `upsertForGameDay` for each in ascending order.
+     *
+     * Future game days are excluded because records/standings should only
+     * reflect completed time periods. Fixtures in the future may already have
+     * response data, but those should not affect rankings yet.
+     *
+     * @param gameDayId - The game day from which records should be rebuilt.
+     * @returns A promise that resolves to the upserted PlayerRecords.
+     * @throws Any error thrown by underlying services or database operations if
+     * rebuilding PlayerRecords fails.
+     */
+    async upsertFromGameDay(gameDayId: number): Promise<PlayerRecordType[]> {
+        try {
+            const today = new Date();
+            const gameDays = (await gameDayService.getAll({ onOrAfter: gameDayId }))
+                // Keep future fixtures out of PlayerRecord calculations until
+                // their date has passed.
+                .filter((gameDay) => gameDay.date <= today);
+
+            if (gameDays.length === 0) {
+                return [];
+            }
+
+            const playerRecords: PlayerRecordType[] = [];
+            for (const gameDay of gameDays) {
+                const upserted = await this.upsertForGameDay(gameDay.id);
+                playerRecords.push(...upserted);
+            }
+
+            return playerRecords;
+        } catch (error) {
+            log(`Error upserting PlayerRecord from game day: ${String(error)}`);
             throw error;
         }
     }

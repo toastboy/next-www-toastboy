@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 
 import { setGameResultCore } from '@/lib/actions/setGameResult';
+import playerRecordService from '@/services/PlayerRecord';
 import { SetGameResultInputSchema } from '@/types/actions/SetGameResult';
 
 /**
@@ -22,7 +23,18 @@ export async function setGameResult(rawData: unknown) {
     const data = SetGameResultInputSchema.parse(rawData);
     const gameDay = await setGameResultCore(data);
 
+    try {
+        await playerRecordService.upsertFromGameDay(data.gameDayId);
+    } catch (error) {
+        const message = error instanceof Error ? error.message : 'Unknown error';
+        throw new Error(
+            `Failed to update player records for game day ${data.gameDayId}: ${message}`,
+        );
+    }
     revalidatePath(`/footy/game/${data.gameDayId}`);
+    revalidatePath('/footy/table');
+    revalidatePath('/footy/pub');
+    revalidatePath('/footy/points');
 
     return gameDay;
 }

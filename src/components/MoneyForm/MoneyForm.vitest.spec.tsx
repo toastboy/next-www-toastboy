@@ -9,10 +9,11 @@ import { Wrapper } from '@/tests/components/lib/common';
 import { defaultBalanceSummary } from '@/tests/mocks/data/money';
 import type { PayDebtProxy } from '@/types/actions/PayDebt';
 
-const { refreshMock, notificationsShowMock, notificationsUpdateMock } = vi.hoisted(() => ({
+const { refreshMock, notificationsShowMock, notificationsUpdateMock, captureUnexpectedErrorMock } = vi.hoisted(() => ({
     refreshMock: vi.fn(),
     notificationsShowMock: vi.fn(),
     notificationsUpdateMock: vi.fn(),
+    captureUnexpectedErrorMock: vi.fn(),
 }));
 
 vi.mock('@mantine/notifications', () => ({
@@ -20,6 +21,10 @@ vi.mock('@mantine/notifications', () => ({
         show: notificationsShowMock,
         update: notificationsUpdateMock,
     },
+}));
+
+vi.mock('@/lib/observability/sentry', () => ({
+    captureUnexpectedError: captureUnexpectedErrorMock,
 }));
 
 const renderForm = (payDebt: PayDebtProxy) => {
@@ -167,6 +172,20 @@ describe('MoneyForm', () => {
                 message: 'Boom',
             }));
         });
+        expect(captureUnexpectedErrorMock).toHaveBeenCalledWith(
+            expect.any(Error),
+            expect.objectContaining({
+                layer: 'client',
+                component: 'MoneyForm',
+                action: 'payDebt',
+                route: '/footy/admin/money',
+                extra: {
+                    playerId: 11,
+                    amount: 750,
+                },
+            }),
+        );
+        expect(captureUnexpectedErrorMock).toHaveBeenCalledTimes(1);
 
         expect(refreshMock).not.toHaveBeenCalled();
     });

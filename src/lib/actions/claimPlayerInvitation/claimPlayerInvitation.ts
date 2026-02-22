@@ -1,6 +1,12 @@
 import 'server-only';
 
 import { sendEmailVerificationCore } from '@/lib/actions/verifyEmail';
+import {
+    AuthError,
+    ConflictError,
+    NotFoundError,
+    ValidationError,
+} from '@/lib/errors';
 import authService from '@/services/Auth';
 import emailVerificationService from '@/services/EmailVerification';
 import playerService from '@/services/Player';
@@ -35,29 +41,29 @@ const defaultDeps: ClaimPlayerInvitationDeps = {
  */
 async function getValidInvitation(token: string, deps: ClaimPlayerInvitationDeps) {
     if (!token) {
-        throw new Error('Missing invitation token.');
+        throw new ValidationError('Missing invitation token.');
     }
 
     const invitation = await deps.emailVerificationService.getByToken(token);
 
     if (!invitation) {
-        throw new Error('Invitation not found or expired.');
+        throw new NotFoundError('Invitation not found or expired.');
     }
 
     if (invitation.usedAt) {
-        throw new Error('Invitation has already been used.');
+        throw new ConflictError('Invitation has already been used.');
     }
     if (invitation.expiresAt <= new Date()) {
-        throw new Error('Invitation has expired.');
+        throw new ConflictError('Invitation has expired.');
     }
 
     if (!invitation.playerId) {
-        throw new Error('Invitation is missing a player reference.');
+        throw new ValidationError('Invitation is missing a player reference.');
     }
 
     const existingExtraEmail = await deps.playerExtraEmailService.getByEmail(invitation.email);
     if (existingExtraEmail && existingExtraEmail.playerId !== invitation.playerId) {
-        throw new Error('Email address already belongs to another player.');
+        throw new ConflictError('Email address already belongs to another player.');
     }
 
     return invitation;
@@ -91,13 +97,13 @@ export async function claimPlayerInvitationCore(
     const invitation = await getValidInvitation(token, deps);
 
     if (!invitation.playerId) {
-        throw new Error('Player ID is missing from invitation.');
+        throw new ValidationError('Player ID is missing from invitation.');
     }
 
     const player = await deps.playerService.getById(invitation.playerId);
 
     if (!player) {
-        throw new Error('Player not found.');
+        throw new NotFoundError('Player not found.');
     }
 
     return {
@@ -143,21 +149,21 @@ export async function finalizePlayerInvitationClaimCore(
     const invitation = await getValidInvitation(token, deps);
 
     if (!invitation.playerId) {
-        throw new Error('Player ID is missing from invitation.');
+        throw new ValidationError('Player ID is missing from invitation.');
     }
 
     const sessionUser = await deps.authService.getSessionUser();
 
     if (!sessionUser?.id || !sessionUser.email) {
-        throw new Error('Login account not found for invitation.');
+        throw new AuthError('Login account not found for invitation.');
     }
 
     if (sessionUser.email.toLowerCase() !== invitation.email.toLowerCase()) {
-        throw new Error('Login account email does not match invitation.');
+        throw new AuthError('Login account email does not match invitation.');
     }
 
     if (sessionUser.playerId && sessionUser.playerId !== invitation.playerId) {
-        throw new Error('Login account is already linked to another player.');
+        throw new ConflictError('Login account is already linked to another player.');
     }
 
     await deps.authService.updateCurrentUser({ playerId: invitation.playerId });

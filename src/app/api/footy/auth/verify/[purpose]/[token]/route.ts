@@ -4,6 +4,7 @@ import { claimPlayerInvitation } from '@/actions/claimPlayerInvitation';
 import { deliverContactEnquiry } from '@/actions/sendEnquiry';
 import { verifyEmail } from '@/actions/verifyEmail';
 import { buildURLWithParams } from '@/lib/api';
+import { captureUnexpectedError } from '@/lib/observability/sentry';
 
 export const dynamic = 'force-dynamic';
 
@@ -32,6 +33,17 @@ export const GET = async (request: NextRequest, props: { params: Promise<Record<
 
         redirect = buildURLWithParams(redirectParam, data);
     } catch (error) {
+        captureUnexpectedError(error, {
+            layer: 'route',
+            action: 'verifyAuthToken',
+            route: '/api/footy/auth/verify/[purpose]/[token]',
+            tags: {
+                purpose,
+            },
+            extra: {
+                redirectParam,
+            },
+        });
         const errorMessage = error instanceof Error ? error.message : 'Unable to verify email.';
 
         redirect = buildURLWithParams(redirectParam, { error: errorMessage });

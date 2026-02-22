@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { finalizePlayerInvitationClaim } from '@/actions/claimPlayerInvitation';
 import { buildURLWithParams } from '@/lib/api';
+import { captureUnexpectedError } from '@/lib/observability/sentry';
 
 export const dynamic = 'force-dynamic';
 
@@ -36,6 +37,14 @@ export const GET = async (request: NextRequest, props: { params: Promise<Record<
 
         redirect = buildURLWithParams(redirectParam, {});
     } catch (error) {
+        captureUnexpectedError(error, {
+            layer: 'route',
+            action: 'finalizePlayerInvitationClaim',
+            route: '/api/footy/auth/claim/[token]',
+            extra: {
+                redirectParam,
+            },
+        });
         const errorMessage = error instanceof Error ? error.message : 'Unable to finalize invitation.';
 
         redirect = buildURLWithParams(redirectParam, { error: errorMessage });

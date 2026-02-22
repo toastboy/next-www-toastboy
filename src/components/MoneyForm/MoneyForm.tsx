@@ -23,6 +23,7 @@ import { useState } from 'react';
 import z from 'zod';
 
 import { config } from '@/lib/config';
+import { captureUnexpectedError } from '@/lib/observability/sentry';
 import type { PayDebtInput, PayDebtProxy } from '@/types/actions/PayDebt';
 import type { ClubBalanceType, PlayerBalanceType } from '@/types/DebtType';
 
@@ -109,6 +110,16 @@ const BalanceRow: React.FC<BalanceRowProps> = ({
 
             router.refresh();
         } catch (error) {
+            captureUnexpectedError(error, {
+                layer: 'client',
+                component: 'MoneyForm',
+                action: 'payDebt',
+                route: '/footy/admin/money',
+                extra: {
+                    playerId: row.playerId,
+                    amount,
+                },
+            });
             const message = error instanceof Error ? error.message : 'Failed to record payment';
             notifications.update({
                 id: notificationId,

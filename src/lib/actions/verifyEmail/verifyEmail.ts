@@ -3,6 +3,11 @@ import 'server-only';
 import type { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 
 import { sendEmailCore } from '@/lib/actions/sendEmail';
+import {
+    ConflictError,
+    NotFoundError,
+    ValidationError,
+} from '@/lib/errors';
 import { getPublicBaseUrl } from '@/lib/urls';
 import { createVerificationToken } from '@/lib/verificationToken';
 import emailVerificationService from '@/services/EmailVerification';
@@ -37,20 +42,20 @@ const defaultDeps: VerifyEmailDeps = {
  */
 async function getValidVerification(token: string, deps: VerifyEmailDeps) {
     if (!token) {
-        throw new Error('Missing verification token.');
+        throw new ValidationError('Missing verification token.');
     }
 
     const verification = await deps.emailVerificationService.getByToken(token);
 
     if (!verification) {
-        throw new Error('Verification not found or expired.');
+        throw new NotFoundError('Verification not found or expired.');
     }
 
     if (verification.usedAt) {
-        throw new Error('Verification has already been used.');
+        throw new ConflictError('Verification has already been used.');
     }
     if (verification.expiresAt <= new Date()) {
-        throw new Error('Verification has expired.');
+        throw new ConflictError('Verification has expired.');
     }
 
     return verification;
@@ -82,17 +87,17 @@ async function requestPlayerEmailVerification(
     const normalizedEmail = email.trim();
 
     if (!normalizedEmail) {
-        throw new Error('Email address is required.');
+        throw new ValidationError('Email address is required.');
     }
 
     if (playerId !== undefined) {
         const existingEmail = await deps.playerExtraEmailService.getByEmail(normalizedEmail);
         if (existingEmail?.playerId !== playerId) {
-            throw new Error('Email address does not belong to this player.');
+            throw new ValidationError('Email address does not belong to this player.');
         }
 
         if (existingEmail.verifiedAt) {
-            throw new Error('Email address is already verified.');
+            throw new ConflictError('Email address is already verified.');
         }
     }
 
@@ -135,12 +140,12 @@ export async function verifyEmailCore(
     const verification = await getValidVerification(token, deps);
 
     if (!verification.playerId) {
-        throw new Error('Verification is missing a player reference.');
+        throw new ValidationError('Verification is missing a player reference.');
     }
 
     const existingEmail = await deps.playerExtraEmailService.getByEmail(verification.email);
     if (existingEmail && existingEmail.playerId !== verification.playerId) {
-        throw new Error('Email address already belongs to another player.');
+        throw new ConflictError('Email address already belongs to another player.');
     }
 
     await deps.playerExtraEmailService.upsert(verification.playerId, verification.email, true);

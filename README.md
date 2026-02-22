@@ -29,3 +29,30 @@ Run the app with the following command:
 ```shell
 op run --env-file ./.env -- npm run dev
 ```
+
+## Sentry Sampling and Quota Controls
+
+The Sentry setup in this project now uses conservative defaults designed to fit
+the free tier and avoid noisy events. You can override sampling behaviour with
+environment variables when needed.
+
+### Default behaviour
+
+- `SENTRY_TRACES_SAMPLE_RATE`: `0.05` in production, `0.0` outside production.
+- `SENTRY_REPLAYS_SESSION_SAMPLE_RATE`: `0.02` in production, `0.0` outside production.
+- `SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE`: `0.2` in production, `0.0` outside production.
+- Known noisy browser errors are ignored by default (for example
+  `ResizeObserver loop limit exceeded`).
+- Sensitive fields and query parameters (for example `token`, `password`,
+  `authorization`, `cookie`, `secret`) are redacted before events are sent.
+
+### Environment overrides
+
+Set any of these in your environment (via `.env` + 1Password references) to
+override defaults:
+
+- `SENTRY_TRACES_SAMPLE_RATE`
+- `SENTRY_REPLAYS_SESSION_SAMPLE_RATE`
+- `SENTRY_REPLAYS_ON_ERROR_SAMPLE_RATE`
+
+All values are clamped to the valid Sentry range `0..1`.

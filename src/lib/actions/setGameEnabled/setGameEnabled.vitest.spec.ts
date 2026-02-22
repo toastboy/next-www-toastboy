@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { setGameEnabledCore } from '@/lib/actions/setGameEnabled';
+import { NotFoundError } from '@/lib/errors';
 import { SetGameEnabledInputSchema } from '@/types/actions/SetGameEnabled';
 
 describe('setGameEnabledCore', () => {
@@ -112,7 +113,7 @@ describe('setGameEnabledCore', () => {
             },
             mockSendEmailToAllActivePlayers,
             { gameDayService },
-        )).rejects.toThrow('Game day not found (id: 9999).');
+        )).rejects.toBeInstanceOf(NotFoundError);
 
         expect(gameDayService.update).not.toHaveBeenCalled();
         expect(mockSendEmailToAllActivePlayers).not.toHaveBeenCalled();

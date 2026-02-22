@@ -2,6 +2,7 @@ import 'server-only';
 
 import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 
+import { NotFoundError } from '@/lib/errors';
 import gameDayService from '@/services/GameDay';
 import type { SendEmailToAllActivePlayersProxy } from '@/types/actions/SendEmailToAllActivePlayers';
 import type { SetGameEnabledInput } from '@/types/actions/SetGameEnabled';
@@ -27,9 +28,8 @@ const defaultDeps: SetGameEnabledDeps = {
  *
  * @returns A promise that resolves to the updated GameDayType object
  *
- * @throws {Error} If the game day with the specified ID is not found
- * @throws {Error} If an unexpected error occurs during the game status update
- * or email notification
+ * @throws {NotFoundError} If the game day with the specified ID is not found.
+ * @throws {Error} Propagates unexpected persistence or email-delivery errors.
  *
  * @remarks
  * This function performs the following operations:
@@ -46,33 +46,23 @@ export async function setGameEnabledCore(
     sendEmailToAllActivePlayers: SendEmailToAllActivePlayersProxy,
     deps: SetGameEnabledDeps = defaultDeps,
 ): Promise<GameDayType> {
-    try {
-        const gameDay = await deps.gameDayService.get(data.gameDayId);
+    const gameDay = await deps.gameDayService.get(data.gameDayId);
 
-        if (!gameDay) {
-            throw new Error(`Game day not found (id: ${data.gameDayId}).`);
-        }
-
-        const updatedGameDay = await deps.gameDayService.update({
-            id: gameDay.id,
-            game: data.game,
-            comment: data.reason,
-        });
-
-        await sendEmailToAllActivePlayers({
-            subject: `Game ${data.game ? 'Reinstated' : 'Cancelled'}: ${updatedGameDay.date.toDateString()}`,
-            html: `<p>The game scheduled for ${updatedGameDay.date.toDateString()} has been ${data.game ? 'reinstated' : 'cancelled'}.</p>` +
-                (data.reason ? `<p>Reason: ${data.reason}</p>` : ''),
-        });
-
-        return updatedGameDay;
-    } catch (error) {
-        // Type-safe error handling
-        if (error instanceof Error) {
-            throw error;
-        }
-        throw new Error('An unexpected error occurred while setting the game status.', {
-            cause: error,
-        });
+    if (!gameDay) {
+        throw new NotFoundError(`Game day not found (id: ${data.gameDayId}).`);
     }
+
+    const updatedGameDay = await deps.gameDayService.update({
+        id: gameDay.id,
+        game: data.game,
+        comment: data.reason,
+    });
+
+    await sendEmailToAllActivePlayers({
+        subject: `Game ${data.game ? 'Reinstated' : 'Cancelled'}: ${updatedGameDay.date.toDateString()}`,
+        html: `<p>The game scheduled for ${updatedGameDay.date.toDateString()} has been ${data.game ? 'reinstated' : 'cancelled'}.</p>` +
+            (data.reason ? `<p>Reason: ${data.reason}</p>` : ''),
+    });
+
+    return updatedGameDay;
 }

@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { SubmitResponseCore } from '@/lib/actions/submitResponse';
+import { NotFoundError } from '@/lib/errors';
 import gameDayService from '@/services/GameDay';
 import gameInvitationService from '@/services/GameInvitation';
 import outcomeService from '@/services/Outcome';
@@ -26,7 +27,7 @@ const defaultDeps: SubmitGameInvitationResponseDeps = {
  * @param deps - Service dependencies for accessing game invitations, game days,
  * and outcomes (uses defaults if not provided)
  * @returns A promise that resolves to the upserted outcome record
- * @throws {Error} If the invitation cannot be found
+ * @throws {NotFoundError} If the invitation cannot be found.
  *
  * @example
  * const outcome = await submitGameInvitationResponseCore(
@@ -39,7 +40,7 @@ export async function submitGameInvitationResponseCore(
 ) {
     const invitation = await deps.gameInvitationService.get(data.token);
     if (!invitation) {
-        throw new Error('Invitation not found.');
+        throw new NotFoundError('Invitation not found.');
     }
 
     return await SubmitResponseCore(

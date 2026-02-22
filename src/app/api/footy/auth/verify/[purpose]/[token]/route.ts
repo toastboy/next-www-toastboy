@@ -4,6 +4,7 @@ import { claimPlayerInvitation } from '@/actions/claimPlayerInvitation';
 import { deliverContactEnquiry } from '@/actions/sendEnquiry';
 import { verifyEmail } from '@/actions/verifyEmail';
 import { buildURLWithParams } from '@/lib/api';
+import { ValidationError } from '@/lib/errors';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 
 export const dynamic = 'force-dynamic';
@@ -28,7 +29,9 @@ export const GET = async (request: NextRequest, props: { params: Promise<Record<
                 data = await deliverContactEnquiry(token);
                 break;
             default:
-                throw new Error('Invalid verification purpose. Expected: player-invite, extra-email, or enquiry.');
+                throw new ValidationError(
+                    `Invalid verification purpose "${purpose}". Must be one of: player-invite, extra-email, enquiry.`,
+                );
         }
 
         redirect = buildURLWithParams(redirectParam, data);

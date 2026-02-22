@@ -115,4 +115,22 @@ describe('GET /api/footy/auth/verify/[purpose]/[token]', () => {
         }));
         expect(options.extra).not.toHaveProperty('token');
     });
+
+    it('treats invalid purpose as expected and skips Sentry capture', async () => {
+        const request = new NextRequest(
+            `http://localhost${routePath}?redirect=${encodeURIComponent(redirectPath)}`,
+        );
+        const response = await GET(request, {
+            params: Promise.resolve({ purpose: 'bogus-purpose', token: 'test-token' }),
+        });
+        const locationHeader = response.headers.get('location');
+
+        expect(response.status).toBe(307);
+        const location = new URL(locationHeader!, 'http://localhost');
+        expect(location.pathname).toBe(redirectPath);
+        expect(location.searchParams.get('error')).toBe(
+            'Invalid verification purpose. Expected: player-invite, extra-email, or enquiry.',
+        );
+        expect(Sentry.captureException).not.toHaveBeenCalled();
+    });
 });

@@ -2,6 +2,7 @@ import 'server-only';
 
 import { sendEmailCore } from '@/lib/actions/sendEmail';
 import { config } from '@/lib/config';
+import { NotFoundError } from '@/lib/errors';
 import { getPublicBaseUrl } from '@/lib/urls';
 import { createVerificationToken } from '@/lib/verificationToken';
 import contactEnquiryService from '@/services/ContactEnquiry';
@@ -97,7 +98,7 @@ export async function sendEnquiryCore(
  *     delivered.
  *   - `{ enquiry: 'verified' }` if the enquiry was successfully delivered and
  *     verified.
- * @throws If the enquiry cannot be found for the provided token.
+ * @throws {NotFoundError} If the enquiry cannot be found for the provided token.
  */
 export async function deliverContactEnquiryCore(
     token: string,
@@ -106,7 +107,7 @@ export async function deliverContactEnquiryCore(
     const enquiry = await deps.contactEnquiryService.getByToken(token);
 
     if (!enquiry) {
-        throw new Error('Enquiry not found for this verification.');
+        throw new NotFoundError('Enquiry not found for this verification.');
     }
 
     if (enquiry.deliveredAt) {

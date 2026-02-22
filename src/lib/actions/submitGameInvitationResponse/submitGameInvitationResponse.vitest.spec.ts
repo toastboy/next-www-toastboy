@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import { submitGameInvitationResponseCore } from '@/lib/actions/submitGameInvitationResponse';
+import { NotFoundError } from '@/lib/errors';
 
 describe('submitGameInvitationResponseCore', () => {
     it('upserts the response and preserves a trimmed comment', async () => {
@@ -101,5 +102,34 @@ describe('submitGameInvitationResponseCore', () => {
                 responseInterval: 123,
             }),
         );
+    });
+
+    it('throws NotFoundError when invitation does not exist', async () => {
+        const gameInvitationService = {
+            get: vi.fn().mockResolvedValue(null),
+        };
+        const gameDayService = {
+            get: vi.fn(),
+        };
+        const outcomeService = {
+            get: vi.fn(),
+            upsert: vi.fn(),
+        };
+
+        await expect(
+            submitGameInvitationResponseCore(
+                {
+                    token: 'missing-token',
+                    response: 'No',
+                    goalie: false,
+                    comment: null,
+                },
+                { gameInvitationService, gameDayService, outcomeService },
+            ),
+        ).rejects.toBeInstanceOf(NotFoundError);
+
+        expect(gameDayService.get).not.toHaveBeenCalled();
+        expect(outcomeService.get).not.toHaveBeenCalled();
+        expect(outcomeService.upsert).not.toHaveBeenCalled();
     });
 });

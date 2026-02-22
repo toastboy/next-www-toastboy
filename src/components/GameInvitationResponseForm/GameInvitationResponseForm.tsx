@@ -3,13 +3,13 @@
 import { Anchor, Avatar, Box, Button, Checkbox, Flex, NativeSelect, Stack, Text, TextInput, Title } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
-import * as Sentry from '@sentry/nextjs';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useState } from 'react';
 import { z } from 'zod';
 
 import { config } from '@/lib/config';
+import { captureUnexpectedError } from '@/lib/observability/sentry';
 import {
     InvitationResponseInputSchema,
     SubmitGameInvitationResponseProxy,
@@ -76,22 +76,23 @@ export const GameInvitationResponseForm: React.FC<Props> = ({ details, onSubmitG
                 autoClose: config.notificationAutoClose,
             });
         } catch (error) {
-            Sentry.captureException(error, {
-                tags: {
-                    component: 'GameInvitationResponseForm',
-                    action: 'submitResponse',
-                },
+            captureUnexpectedError(error, {
+                layer: 'client',
+                component: 'GameInvitationResponseForm',
+                action: 'submitResponse',
+                route: '/footy/game/[id]',
                 extra: {
                     playerId: details.playerId,
                     gameDayId: details.gameDayId,
                     response: values.response,
                 },
             });
+            const message = error instanceof Error ? error.message : 'Failed to save response';
             notifications.update({
                 id,
                 color: 'red',
                 title: 'Error',
-                message: `${String(error)}`,
+                message,
                 icon: <IconAlertTriangle size={config.notificationIconSize} />,
                 loading: false,
                 autoClose: false,

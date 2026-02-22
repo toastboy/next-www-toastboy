@@ -48,9 +48,10 @@ export class PlayerRecordService {
     }
 
     /**
-     * Retrieves all playerRecords.
-     * @returns A promise that resolves to an array of playerRecords or null if an error occurs.
-     * @throws An error if there is a failure.
+     * Retrieves all player records from the database.
+     * @returns {Promise<PlayerRecordType[]>} A promise that resolves to an
+     * array of all player records.
+     * @throws {Error} Throws an error if the database query fails.
      */
     async getAll(): Promise<PlayerRecordType[]> {
         try {
@@ -62,11 +63,13 @@ export class PlayerRecordService {
     }
 
     /**
-     * Retrieves the progress of creating PlayerRecords for each GameDay where a
-     * game was played.
-     * @returns A promise that resolves to an array containing the last recorded
-     * game day ID and the last game day ID where there was a game, or null if
-     * the records or last game are not available.
+     * Retrieves the progress of the player by comparing the last recorded game
+     * day with the most recently played game day.
+     * @returns A promise that resolves to a tuple containing the last recorded
+     * game day ID and the total/most recent game day ID, or null if no recently
+     * played game data is available.
+     * @throws Logs and rethrows any errors that occur during the database query
+     * or service call.
      */
     async getProgress(): Promise<[number, number] | null> {
         try {
@@ -89,15 +92,27 @@ export class PlayerRecordService {
     }
 
     /**
-     * Retrieves all the years where there is at least one PlayerRecord, with
-     * zero (for all-time) at the end.
-     * @returns A promise that resolves to an array of distinct years.
-     * @throws An error if there is a failure.
+     * Retrieves all distinct years from player records, optionally filtered to
+     * completed seasons.
+     *
+     * @param {boolean} [completed=false] - If true, only returns years from
+     * completed seasons. If false, returns years from seasons up to the current
+     * date.
+     * @returns {Promise<number[]>} A promise that resolves to an array of
+     * distinct years in ascending order, with year 0 (if present) moved to the
+     * end of the array.
+     * @throws {Error} Throws an error if the database query or season ender
+     * retrieval fails.
      */
     async getAllYears(completed = false): Promise<number[]> {
         try {
-            const seasonEnders = await gameDayService.getSeasonEnders(
-                completed ? new Date() : undefined,
+            const now = new Date();
+            const seasonEndersToNow = await gameDayService.getSeasonEnders(now);
+            const seasonEnders = completed ?
+                (await gameDayService.getSeasonEnders()).filter((ender) => seasonEndersToNow.includes(ender)) :
+                seasonEndersToNow;
+            const seasonEnderSet = new Set(
+                seasonEnders.filter((ender): ender is number => ender !== null),
             );
             const records = await prisma.playerRecord.findMany({
                 select: {
@@ -109,7 +124,7 @@ export class PlayerRecordService {
                 },
             });
             const filteredRecords = records.filter(
-                (record) => seasonEnders.includes(record.gameDayId) || record.year === 0,
+                (record) => seasonEnderSet.has(record.gameDayId) || record.year === 0,
             );
             // Move zero values to the end
             const years = filteredRecords.map(r => r.year).sort((a, b) => {

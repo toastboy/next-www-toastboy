@@ -22,7 +22,7 @@ export async function generateMetadata(page: PageProps) {
 const Page: React.FC<PageProps> = async props => {
     const { year } = await props.params;
     const yearnum = year ? parseInt(year[0]) : 0; // Zero or undefined means all-time
-    const allYears = await playerRecordService.getAllYears();
+    const allYears = await playerRecordService.getAllYears(true);
     const winners = new Map<TableName, PlayerRecordDataType[]>();
 
     await Promise.all(TableNameSchema.options.map(async (table) => {

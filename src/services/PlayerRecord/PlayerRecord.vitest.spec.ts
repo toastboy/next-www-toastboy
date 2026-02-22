@@ -219,6 +219,74 @@ describe('PlayerRecordService', () => {
             expect(result).toEqual([2021, 0]);
         });
 
+        it('should include an in-progress current year by default', async () => {
+            (prisma.gameDay.groupBy as Mock).mockImplementation((args: {
+                where?: {
+                    date?: {
+                        lte?: Date,
+                    },
+                },
+            }) => {
+                const seasonEnderId = args.where?.date?.lte ? 1249 : 1300;
+                return Promise.resolve([
+                    {
+                        _max: {
+                            id: seasonEnderId,
+                        },
+                        year: 2026,
+                    },
+                ]);
+            });
+
+            (prisma.playerRecord.findMany as Mock).mockResolvedValue([
+                {
+                    gameDayId: 1249,
+                    year: 2026,
+                },
+                {
+                    gameDayId: 1249,
+                    year: 0,
+                },
+            ]);
+
+            const result = await playerRecordService.getAllYears();
+            expect(result).toEqual([2026, 0]);
+        });
+
+        it('should exclude an in-progress current year when requesting completed seasons only', async () => {
+            (prisma.gameDay.groupBy as Mock).mockImplementation((args: {
+                where?: {
+                    date?: {
+                        lte?: Date,
+                    },
+                },
+            }) => {
+                const seasonEnderId = args.where?.date?.lte ? 1249 : 1300;
+                return Promise.resolve([
+                    {
+                        _max: {
+                            id: seasonEnderId,
+                        },
+                        year: 2026,
+                    },
+                ]);
+            });
+
+            (prisma.playerRecord.findMany as Mock).mockResolvedValue([
+                {
+                    gameDayId: 1249,
+                    year: 2026,
+                },
+                {
+                    gameDayId: 1249,
+                    year: 0,
+                },
+            ]);
+
+            const result = await playerRecordService.getAllYears(true);
+            expect(result).toEqual([0]);
+        });
+
         it('should retrieve the correct years even if the query returns them in a weird order', async () => {
             (prisma.gameDay.groupBy as Mock).mockResolvedValue([
                 {

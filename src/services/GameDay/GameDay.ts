@@ -270,9 +270,22 @@ export class GameDayService {
     }
 
     /**
-     * Retrieves the maximum gameDay ID for each year where there is a game.
-     * @returns An array of maximum gameDay IDs for each year, or null if there
-     * are no games.
+     * Retrieves the IDs of the last game day for each season.
+     *
+     * @param until - Optional date to filter game days up to and including this
+     * date
+     * @returns A promise that resolves to an array of game day IDs representing
+     * season enders, or null for seasons where no game day exists
+     * @throws Will throw an error if the database query fails
+     *
+     * @example
+     * ```typescript
+     * // Get all season enders
+     * const seasonEnders = await getSeasonEnders();
+     *
+     * // Get season enders up to a specific date
+     * const seasonEnders = await getSeasonEnders(new Date('2023-12-31'));
+     * ```
      */
     async getSeasonEnders(until?: Date): Promise<(number | null)[]> {
         try {

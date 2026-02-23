@@ -137,7 +137,7 @@ const config = [
                 ignoreRegExpLiterals: true,
             }],
             "max-lines": ["warn", {
-                max: 500,
+                max: 1000,
                 skipBlankLines: true,
                 skipComments: true,
             }],

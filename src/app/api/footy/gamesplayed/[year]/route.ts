@@ -19,14 +19,20 @@ import gameDayService from '@/services/GameDay';
  *   games up to a specific game day.
  * - The `gameDayService.getGamesPlayed` function is used to fetch the data.
  */
-export const GET = async (request: NextRequest, props: { params: Promise<Record<string, string>> }) => {
+export const GET = async (
+    request: NextRequest,
+    props: { params: Promise<Record<string, string>> },
+) => {
     const params = await props.params;
     const searchParams = request.nextUrl.searchParams;
     const untilGameDayId = searchParams.get('untilGameDayId');
 
     return handleGET(
         () => {
-            return gameDayService.getGamesPlayed(parseInt(params.year), untilGameDayId ? parseInt(untilGameDayId) : undefined);
+            return gameDayService.getGamesPlayed(
+                parseInt(params.year),
+                untilGameDayId ? parseInt(untilGameDayId) : undefined,
+            );
         },
         { params },
     );

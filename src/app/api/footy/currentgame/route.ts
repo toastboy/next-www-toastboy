@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { buildJsonResponse } from '@/lib/api';
+import { buildJsonErrorResponse, buildJsonResponse } from '@/lib/api';
 import gameDayService from '@/services/GameDay';
 
 /**
@@ -13,11 +13,15 @@ import gameDayService from '@/services/GameDay';
  *          or `null` when no current game is available.
  */
 export const GET = async (_request: NextRequest, _props: { params: Promise<Record<string, string>> }) => {
-    const currentGame = await gameDayService.getCurrent();
+    try {
+        const currentGame = await gameDayService.getCurrent();
 
-    if (!currentGame) {
-        return NextResponse.json(null, { status: 200 });
+        if (!currentGame) {
+            return NextResponse.json(null, { status: 200 });
+        }
+
+        return buildJsonResponse(currentGame);
+    } catch (error) {
+        return buildJsonErrorResponse(error, 'Failed to load current game.');
     }
-
-    return buildJsonResponse(currentGame);
 };

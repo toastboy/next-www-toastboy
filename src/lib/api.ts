@@ -4,6 +4,7 @@ import { PlayerSchema, type PlayerType } from 'prisma/zod/schemas/models/Player.
 import { z } from 'zod';
 
 import { getUserRole } from '@/lib/auth.server';
+import { toHttpErrorResponse } from '@/lib/errors';
 
 import { getPublicBaseUrl } from './urls';
 
@@ -75,6 +76,31 @@ export async function handleGET<T, S = T>(
 export async function buildJsonResponse<T>(data: T): Promise<NextResponse> {
     return Promise.resolve(NextResponse.json(data, {
         status: 200,
+        headers: { 'Content-Type': 'application/json' },
+    }));
+}
+
+
+/**
+ * Builds a JSON error response for HTTP requests.
+ *
+ * Converts an error object into a standardized HTTP error response with
+ * appropriate status code and JSON body containing the error message.
+ *
+ * @param error - The error object to convert. Can be any type.
+ * @param fallbackMessage - The message to use if the error cannot be converted
+ * to an HTTP response. Defaults to 'Internal Server Error'.
+ * @returns A promise that resolves to a NextResponse with JSON-formatted error
+ * details.
+ */
+export async function buildJsonErrorResponse(
+    error: unknown,
+    fallbackMessage = 'Internal Server Error',
+): Promise<NextResponse> {
+    const { status, message } = toHttpErrorResponse(error, fallbackMessage);
+
+    return Promise.resolve(NextResponse.json({ message }, {
+        status,
         headers: { 'Content-Type': 'application/json' },
     }));
 }
@@ -245,4 +271,3 @@ export function buildURLWithParams(baseUri: string, params: Record<string, strin
 
     return url;
 }
-

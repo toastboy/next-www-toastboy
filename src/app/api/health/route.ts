@@ -3,6 +3,8 @@ import 'server-only';
 import { NextResponse } from 'next/server';
 import prisma from 'prisma/prisma';
 
+import { toHttpErrorResponse } from '@/lib/errors';
+
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 
@@ -33,16 +35,30 @@ export async function GET() {
         );
     } catch (error) {
         console.error('Health check failed:', error);
+        /**
+         * Normalise generic upstream/internal failures (surfaced as HTTP 500 by
+         * `toHttpErrorResponse`, such as Prisma/database connectivity issues or
+         * transient infrastructure errors) to HTTP 503 so that orchestrators and
+         * external monitors treat the service as temporarily unavailable rather
+         * than permanently broken.
+         *
+         * Non-500 statuses are passed through unchanged so that deliberate
+         * application-level responses (e.g. validation 4xx or explicit 503s)
+         * remain visible to callers and are not masked by this health-specific
+         * normalisation.
+         */
+
+        const { status, message } = toHttpErrorResponse(error, 'Health check failed');
 
         return NextResponse.json(
             {
                 status: 'unhealthy',
                 database: 'disconnected',
-                error: error instanceof Error ? error.message : 'Unknown error',
+                error: message,
                 timestamp: new Date().toISOString(),
             },
             {
-                status: 503,
+                status: status === 500 ? 503 : status,
                 headers: {
                     'Connection': 'close',
                     'Cache-Control': 'no-store, no-cache, must-revalidate',

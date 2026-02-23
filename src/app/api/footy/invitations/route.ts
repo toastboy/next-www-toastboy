@@ -2,6 +2,7 @@ import { timingSafeEqual } from 'crypto';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { triggerInvitations } from '@/actions/triggerInvitations';
+import { buildJsonErrorResponse } from '@/lib/api';
 import { getSecrets } from '@/lib/secrets';
 import { NewGameInputSchema } from '@/types/actions/TriggerInvitations';
 
@@ -62,22 +63,26 @@ export const POST = async (request: NextRequest) => {
         return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
-    let overrideTimeCheck = false;
-    let customMessage: string | undefined;
+    try {
+        let overrideTimeCheck = false;
+        let customMessage: string | undefined;
 
-    const body: unknown = await request.json().catch(() => null);
-    if (body) {
-        const parsed = NewGameInputSchema.partial().safeParse(body);
-        if (parsed.success) {
-            overrideTimeCheck = parsed.data.overrideTimeCheck ?? false;
-            customMessage = parsed.data.customMessage?.trim();
+        const body: unknown = await request.json().catch(() => null);
+        if (body) {
+            const parsed = NewGameInputSchema.partial().safeParse(body);
+            if (parsed.success) {
+                overrideTimeCheck = parsed.data.overrideTimeCheck ?? false;
+                customMessage = parsed.data.customMessage?.trim();
+            }
         }
+
+        const decision = await triggerInvitations({
+            overrideTimeCheck,
+            customMessage: customMessage ?? '',
+        });
+
+        return NextResponse.json(decision, { status: 200 });
+    } catch (error) {
+        return buildJsonErrorResponse(error, 'Failed to trigger invitations.');
     }
-
-    const decision = await triggerInvitations({
-        overrideTimeCheck,
-        customMessage: customMessage && customMessage.length > 0 ? customMessage : '',
-    });
-
-    return NextResponse.json(decision, { status: 200 });
 };

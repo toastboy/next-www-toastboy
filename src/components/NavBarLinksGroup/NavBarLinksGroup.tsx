@@ -19,7 +19,7 @@ export const NavBarLinksGroup: React.FC<NavBarLinksGroupProps> = ({ label, initi
             {link.label}
         </Link>
     ));
-    const icon = hasLinks ?
+    const icon = hasLinks ? (
         <IconChevronRight
             className={classes.chevron}
             stroke={1.5}
@@ -28,7 +28,8 @@ export const NavBarLinksGroup: React.FC<NavBarLinksGroupProps> = ({ label, initi
                 height: rem(16),
                 transform: opened ? 'rotate(-90deg)' : 'none',
             }}
-        /> : null;
+        />
+    ) : null;
 
     return (
         <>

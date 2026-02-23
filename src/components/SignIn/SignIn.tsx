@@ -88,18 +88,24 @@ export const SignIn: React.FC<Props> = ({ admin, redirect }) => {
         );
     }
 
-    let title = <Text data-testid="sign-in">
+    let title = (
+        <Text data-testid="sign-in">
         Sign in to your account
-    </Text>;
+        </Text>
+    );
 
     if (admin === true) {
-        title = <Text data-testid="must-be-admin">
+        title = (
+            <Text data-testid="must-be-admin">
             You must be logged in as an administrator to use this page.
-        </Text>;
+            </Text>
+        );
     } else if (admin === false) {
-        title = <Text data-testid="must-be-logged-in">
+        title = (
+            <Text data-testid="must-be-logged-in">
             You must be logged in to use this page.
-        </Text>;
+            </Text>
+        );
     }
 
     const errorNotification = loginError ? (

@@ -43,10 +43,11 @@ export const PlayerTrophyTally: React.FC<Props> = ({ table, trophies }) => {
 
     return (
         <Flex display="block" direction="row" gap="sm">
-            {trophies.map((winner, index) =>
+            {trophies.map((winner, index) => (
                 <Tooltip key={index} label={`${table} ${winner.year}`}>
                     {icon}
-                </Tooltip>)}
+                </Tooltip>
+            ))}
         </Flex>
     );
 };

@@ -23,7 +23,10 @@ describe('GameInvitationResponseForm', () => {
     it('renders the response form', () => {
         render(
             <Wrapper>
-                <GameInvitationResponseForm details={defaultGameInvitationResponseDetails} onSubmitGameInvitationResponse={mockSubmitGameInvitationResponse} />
+                <GameInvitationResponseForm
+                    details={defaultGameInvitationResponseDetails}
+                    onSubmitGameInvitationResponse={mockSubmitGameInvitationResponse}
+                />
             </Wrapper>,
         );
 

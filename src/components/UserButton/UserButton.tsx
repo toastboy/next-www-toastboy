@@ -112,7 +112,7 @@ export const UserButton: React.FC<Props> = ({ user }) => {
         playerId = user.playerId;
     }
 
-    const userMenu = user ?
+    const userMenu = user ? (
         <Menu.Dropdown>
             <Menu.Label>Account</Menu.Label>
             <Menu.Item leftSection={<IconUserScan size={14} />}>
@@ -152,7 +152,8 @@ export const UserButton: React.FC<Props> = ({ user }) => {
                     Delete account
                 </Link>
             </Menu.Item>
-        </Menu.Dropdown> : null;
+        </Menu.Dropdown>
+    ) : null;
 
     return (
         <Menu shadow="md" width={200} position="right-end">

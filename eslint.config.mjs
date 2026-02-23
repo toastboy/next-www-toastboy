@@ -122,28 +122,20 @@ const config = [
             }],
 
             "react/prop-types": "off",
+            "react/jsx-wrap-multilines": ["error", {
+                declaration: "parens-new-line",
+                assignment: "parens-new-line",
+                return: "parens-new-line",
+                arrow: "parens-new-line",
+                condition: "ignore",
+                logical: "ignore",
+                prop: "ignore",
+            }],
             "react/jsx-no-leaked-render": ["warn", { validStrategies: ["coerce", "ternary"] }],
             "react/hook-use-state": "warn",
             "react/no-unstable-nested-components": ["warn", { allowAsProps: true }],
             "eol-last": ["error", "always"],
             "operator-linebreak": ["error", "after"],
-            // Max line length and wrapping
-            "max-len": ["warn", {
-                code: 120,
-                ignorePattern: "^import |^export |//|^\\s*\\*",
-                ignoreUrls: true,
-                ignoreStrings: true,
-                ignoreTemplateLiterals: true,
-                ignoreRegExpLiterals: true,
-            }],
-            "max-lines": ["warn", {
-                max: 1000,
-                skipBlankLines: true,
-                skipComments: true,
-            }],
-            "indent": ["error", 4, {
-                SwitchCase: 1,
-            }],
             // Import hygiene
             "import-x/no-unresolved": "error",
             "import-x/no-duplicates": "error",

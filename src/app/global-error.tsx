@@ -6,23 +6,23 @@ import { useEffect } from 'react';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 
 export default function GlobalError({ error }: { error: Error & { digest?: string } }) {
-  useEffect(() => {
-    captureUnexpectedError(error, {
-      layer: 'client',
-      component: 'GlobalError',
-      route: '/app/global-error',
-    });
-  }, [error]);
+    useEffect(() => {
+        captureUnexpectedError(error, {
+            layer: 'client',
+            component: 'GlobalError',
+            route: '/app/global-error',
+        });
+    }, [error]);
 
-  return (
-    <html>
-      <body>
-        {/* `NextError` is the default Next.js error page component. Its type
+    return (
+        <html>
+            <body>
+                {/* `NextError` is the default Next.js error page component. Its type
         definition requires a `statusCode` prop. However, since the App Router
         does not expose status codes for errors, we simply pass 0 to render a
         generic error message. */}
-        <NextError statusCode={0} />
-      </body>
-    </html>
-  );
+                <NextError statusCode={0} />
+            </body>
+        </html>
+    );
 }

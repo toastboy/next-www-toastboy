@@ -127,6 +127,23 @@ const config = [
             "react/no-unstable-nested-components": ["warn", { allowAsProps: true }],
             "eol-last": ["error", "always"],
             "operator-linebreak": ["error", "after"],
+            // Max line length and wrapping
+            "max-len": ["warn", {
+                code: 120,
+                ignorePattern: "^import |^export |//|^\\s*\\*",
+                ignoreUrls: true,
+                ignoreStrings: true,
+                ignoreTemplateLiterals: true,
+                ignoreRegExpLiterals: true,
+            }],
+            "max-lines": ["warn", {
+                max: 500,
+                skipBlankLines: true,
+                skipComments: true,
+            }],
+            "indent": ["error", 4, {
+                SwitchCase: 1,
+            }],
             // Import hygiene
             "import-x/no-unresolved": "error",
             "import-x/no-duplicates": "error",

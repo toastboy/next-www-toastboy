@@ -12,13 +12,13 @@ export const TableScore = ({ table, playerRecord }: Props) => {
         case TableNameSchema.enum.averages:
             return playerRecord.averages?.toFixed(3) ?? '';
         case TableNameSchema.enum.speedy:
-            {
-                const date = new Date(0);
-                if (playerRecord.speedy) {
-                    date.setSeconds(playerRecord.speedy);
-                }
-                return date.toISOString().substring(11, 19);
+        {
+            const date = new Date(0);
+            if (playerRecord.speedy) {
+                date.setSeconds(playerRecord.speedy);
             }
+            return date.toISOString().substring(11, 19);
+        }
         default:
             return playerRecord[table];
     }

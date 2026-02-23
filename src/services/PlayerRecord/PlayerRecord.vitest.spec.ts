@@ -50,7 +50,7 @@ describe('PlayerRecordService', () => {
                 playerRecord.playerId === args.where.playerId &&
                 playerRecord.year === args.where.year &&
                 playerRecord.gameDayId < args.where.gameDayId).slice(0, args.take,
-                ));
+            ));
         });
 
         (prisma.playerRecord.create as Mock).mockImplementation((args: {

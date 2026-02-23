@@ -17,13 +17,13 @@ import {
     Title,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import * as Sentry from '@sentry/react';
 import { IconAt, IconLock, IconX } from '@tabler/icons-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 import { authClient, signInWithGoogle, signInWithMicrosoft } from '@/lib/auth.client';
 import { config } from '@/lib/config';
+import { captureUnexpectedError } from '@/lib/observability/sentry';
 import { getPublicBaseUrl } from '@/lib/urls';
 
 export interface Props {
@@ -64,7 +64,15 @@ export const SignIn: React.FC<Props> = ({ admin, redirect }) => {
             router.push(redirectPath);
         }
         catch (error) {
-            Sentry.captureMessage(`Sign in error: ${JSON.stringify(error, null, 2)}`, 'error');
+            captureUnexpectedError(error, {
+                layer: 'client',
+                action: 'signInWithEmail',
+                component: 'SignIn',
+                route: pathname,
+                extra: {
+                    redirectPath,
+                },
+            });
             setLoginError(true);
         }
         finally {

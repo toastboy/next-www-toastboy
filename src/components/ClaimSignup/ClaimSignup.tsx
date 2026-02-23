@@ -11,7 +11,6 @@ import {
     Title,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import * as Sentry from '@sentry/react';
 import { IconX } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useRouter } from 'next/navigation';
@@ -21,6 +20,7 @@ import { z } from 'zod';
 import { PasswordFields } from '@/components/PasswordFields/PasswordFields';
 import { authClient, signInWithGoogle, signInWithMicrosoft } from '@/lib/auth.client';
 import { config } from '@/lib/config';
+import { captureUnexpectedError } from '@/lib/observability/sentry';
 import { getPublicBaseUrl } from '@/lib/urls';
 
 export interface Props {
@@ -70,7 +70,15 @@ export const ClaimSignup = ({ name, email, token }: Props) => {
 
             router.push(redirectPath);
         } catch (error) {
-            Sentry.captureMessage(`Sign up error: ${String(error)}`, 'error');
+            captureUnexpectedError(error, {
+                layer: 'client',
+                action: 'signUpWithEmail',
+                component: 'ClaimSignup',
+                route: '/claim-signup',
+                extra: {
+                    redirectPath,
+                },
+            });
             setSignupError(true);
         } finally {
             setLoading(false);

@@ -1,13 +1,13 @@
 'use client';
 
 import { Anchor, Container, Flex, Switch, Table, Text, TextInput } from '@mantine/core';
-import * as Sentry from '@sentry/react';
 import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
 import { UserWithRole } from 'better-auth/plugins/admin';
 import { useEffect, useState } from 'react';
 
 import { listUsersAction, setAdminRoleAction } from '@/actions/auth';
 import { RelativeTime } from '@/components/RelativeTime/RelativeTime';
+import { captureUnexpectedError } from '@/lib/observability/sentry';
 
 export default function Page() {
     const [users, setUsers] = useState<UserWithRole[] | null>(null);
@@ -27,7 +27,12 @@ export default function Page() {
                     banExpires: user.banExpires ? new Date(user.banExpires) : null,
                 })));
             } catch (error) {
-                Sentry.captureMessage(`Error fetching users: ${String(error)}`, 'error');
+                captureUnexpectedError(error, {
+                    layer: 'client',
+                    action: 'listUsersAction',
+                    component: 'AdminUsersPage',
+                    route: '/footy/admin/users',
+                });
                 setErrorMessage('An error occurred while fetching users');
             }
         };
@@ -57,7 +62,16 @@ export default function Page() {
             // Call API to update user role
             await setAdminRoleAction(userId, isAdmin);
         } catch (error) {
-            Sentry.captureMessage(`Error updating user role: ${String(error)}`, 'error');
+            captureUnexpectedError(error, {
+                layer: 'client',
+                action: 'setAdminRoleAction',
+                component: 'AdminUsersPage',
+                route: '/footy/admin/users',
+                extra: {
+                    userId,
+                    isAdmin,
+                },
+            });
             setErrorMessage('Failed to update admin status');
         }
     };

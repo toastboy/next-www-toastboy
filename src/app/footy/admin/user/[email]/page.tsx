@@ -2,11 +2,11 @@
 
 import { CodeHighlight } from '@mantine/code-highlight';
 import { Center, Container, Text, Title } from '@mantine/core';
-import * as Sentry from '@sentry/react';
 import { UserWithRole } from 'better-auth/plugins/admin';
 import { use, useEffect, useState } from 'react';
 
 import { listUsersAction } from '@/actions/auth';
+import { captureUnexpectedError } from '@/lib/observability/sentry';
 
 interface PageProps {
     params: Promise<{ email: string }>,
@@ -30,7 +30,15 @@ const Page: React.FC<PageProps> = (props) => {
                 })));
             }
             catch (error) {
-                Sentry.captureMessage(`Error fetching users: ${String(error)}`, 'error');
+                captureUnexpectedError(error, {
+                    layer: 'client',
+                    action: 'listUsersAction',
+                    component: 'AdminUserPage',
+                    route: '/footy/admin/user/[email]',
+                    extra: {
+                        email,
+                    },
+                });
                 setErrorMessage('An error occurred while fetching users');
             }
         };

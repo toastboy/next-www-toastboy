@@ -64,7 +64,7 @@ describe('GET /api/footy/auth/claim/[token]', () => {
         expect(response.status).toBe(307);
         const location = new URL(locationHeader!, 'http://localhost');
         expect(location.pathname).toBe(redirectPath);
-        expect(location.searchParams.get('error')).toBe('Invitation has expired.');
+        expect(location.searchParams.get('error')).toBe('Invalid request.');
         expect(Sentry.captureException).not.toHaveBeenCalled();
     });
 
@@ -81,7 +81,7 @@ describe('GET /api/footy/auth/claim/[token]', () => {
         expect(response.status).toBe(307);
         const location = new URL(locationHeader!, 'http://localhost');
         expect(location.pathname).toBe(redirectPath);
-        expect(location.searchParams.get('error')).toBe('Upstream auth timeout');
+        expect(location.searchParams.get('error')).toBe('Unable to finalize invitation.');
         expect(Sentry.captureException).toHaveBeenCalledTimes(1);
         const [, options] = vi.mocked(Sentry.captureException).mock.calls[0] as [Error, {
             tags?: Record<string, string>;

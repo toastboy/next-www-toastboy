@@ -1,5 +1,6 @@
 import 'server-only';
 
+import { ValidationError } from '@/lib/errors';
 import { getPublicBaseUrl } from '@/lib/urls';
 import { createVerificationToken } from '@/lib/verificationToken';
 import emailVerificationService from '@/services/EmailVerification';
@@ -60,7 +61,8 @@ export async function addPlayerInviteCore(
  * @param deps - Optional dependencies for player creation. Defaults to
  * `defaultDeps`.
  * @returns An object containing the created player and an invite link.
- * @throws Error if the introducer is provided but is not a valid number.
+ * @throws {ValidationError} If the introducer is provided but is not a valid
+ * number.
  */
 export async function createPlayerCore(
     data: CreatePlayerInput,
@@ -72,7 +74,7 @@ export async function createPlayerCore(
     const accountEmail = data.email?.trim() ? data.email.trim().toLowerCase() : null;
 
     if (introducedBy && Number.isNaN(introducedById)) {
-        throw new Error('Introducer must be a number.');
+        throw new ValidationError('Introducer must be a number.');
     }
 
     const player = await deps.playerService.create({

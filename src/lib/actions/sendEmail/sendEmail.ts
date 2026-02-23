@@ -3,6 +3,7 @@ import 'server-only';
 import nodemailer, { type SendMailOptions } from 'nodemailer';
 import sanitizeHtml from 'sanitize-html';
 
+import { ExternalServiceError } from '@/lib/errors';
 import { getSecrets } from '@/lib/secrets';
 
 /**
@@ -12,7 +13,7 @@ import { getSecrets } from '@/lib/secrets';
  * local SMTP server. The HTML content of the email is sanitized before sending.
  *
  * @param mailOptions - Nodemailer mail options payload.
- * @throws Throws an error if the email fails to send.
+ * @throws {ExternalServiceError} If SMTP delivery fails.
  */
 export async function sendEmailCore(mailOptions: SendMailOptions) {
     const secrets = getSecrets();
@@ -45,6 +46,9 @@ export async function sendEmailCore(mailOptions: SendMailOptions) {
             subject: mailOptions.subject,
             error,
         });
-        throw new Error(`Failed to send email: ${error instanceof Error ? error.message : String(error)}`);
+        throw new ExternalServiceError(
+            `Failed to send email: ${error instanceof Error ? error.message : String(error)}`,
+            { cause: error },
+        );
     }
 }

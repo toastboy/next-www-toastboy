@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { finalizePlayerInvitationClaim } from '@/actions/claimPlayerInvitation';
 import { buildURLWithParams } from '@/lib/api';
+import { toPublicMessage } from '@/lib/errors';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 
 export const dynamic = 'force-dynamic';
@@ -45,7 +46,7 @@ export const GET = async (request: NextRequest, props: { params: Promise<Record<
                 redirectParam,
             },
         });
-        const errorMessage = error instanceof Error ? error.message : 'Unable to finalize invitation.';
+        const errorMessage = toPublicMessage(error, 'Unable to finalize invitation.');
 
         redirect = buildURLWithParams(redirectParam, { error: errorMessage });
     }

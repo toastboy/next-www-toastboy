@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { setGameResultCore } from '@/lib/actions/setGameResult';
+import { NotFoundError } from '@/lib/errors';
 import { SetGameResultInputSchema } from '@/types/actions/SetGameResult';
 
 describe('setGameResultCore', () => {
@@ -120,7 +121,7 @@ describe('setGameResultCore', () => {
                 winner: null,
             },
             { gameDayService, outcomeService, transactionService },
-        )).rejects.toThrow('Game day not found (id: 9999).');
+        )).rejects.toBeInstanceOf(NotFoundError);
 
         expect(gameDayService.update).not.toHaveBeenCalled();
         expect(outcomeService.upsert).not.toHaveBeenCalled();

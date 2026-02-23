@@ -81,7 +81,7 @@ describe('GET /api/footy/auth/verify/[purpose]/[token]', () => {
         expect(response.status).toBe(307);
         const location = new URL(locationHeader!, 'http://localhost');
         expect(location.pathname).toBe(redirectPath);
-        expect(location.searchParams.get('error')).toBe('Invitation has expired.');
+        expect(location.searchParams.get('error')).toBe('Invalid request.');
         expect(Sentry.captureException).not.toHaveBeenCalled();
     });
 
@@ -98,7 +98,7 @@ describe('GET /api/footy/auth/verify/[purpose]/[token]', () => {
         expect(response.status).toBe(307);
         const location = new URL(locationHeader!, 'http://localhost');
         expect(location.pathname).toBe(redirectPath);
-        expect(location.searchParams.get('error')).toBe('Database timeout');
+        expect(location.searchParams.get('error')).toBe('Unable to verify email.');
         expect(Sentry.captureException).toHaveBeenCalledTimes(1);
         const [, options] = vi.mocked(Sentry.captureException).mock.calls[0] as [Error, {
             tags?: Record<string, string>;
@@ -128,9 +128,7 @@ describe('GET /api/footy/auth/verify/[purpose]/[token]', () => {
         expect(response.status).toBe(307);
         const location = new URL(locationHeader!, 'http://localhost');
         expect(location.pathname).toBe(redirectPath);
-        expect(location.searchParams.get('error')).toBe(
-            'Invalid verification purpose. Expected: player-invite, extra-email, or enquiry.',
-        );
+        expect(location.searchParams.get('error')).toBe('Invalid request.');
         expect(Sentry.captureException).not.toHaveBeenCalled();
     });
 });

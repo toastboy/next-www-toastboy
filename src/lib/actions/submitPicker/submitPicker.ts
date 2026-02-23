@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { sendEmailToAllActivePlayersCore } from '@/lib/actions/sendEmailToAllActivePlayers';
+import { InternalError, NotFoundError, ValidationError } from '@/lib/errors';
 import { getPublicBaseUrl } from '@/lib/urls';
 import gameDayService from '@/services/GameDay';
 import outcomeService from '@/services/Outcome';
@@ -226,8 +227,8 @@ const compareDiffs = (left: TeamDiffs, right: TeamDiffs) => {
  *                  number of at least 2 players.
  * @returns A {@link TeamSplit} object containing the two balanced teams (teamA and teamB) and
  *          their calculated differences.
- * @throws {Error} If the number of players is less than 2 or not an even number.
- * @throws {Error} If unable to determine balanced teams (should not occur with valid input).
+ * @throws {ValidationError} If the number of players is less than 2 or not an even number.
+ * @throws {InternalError} If unable to determine balanced teams (should not occur with valid input).
  *
  * @remarks
  * - The function calculates an average age from players with known ages to handle cases where
@@ -239,7 +240,7 @@ const compareDiffs = (left: TeamDiffs, right: TeamDiffs) => {
  */
 const findBestSplit = (players: PickerCandidate[]): TeamSplit => {
     if (players.length < 2 || players.length % 2 !== 0) {
-        throw new Error('Cannot split teams: expected an even number of at least two players.');
+        throw new ValidationError('Cannot split teams: expected an even number of at least two players.');
     }
 
     const teamSize = players.length / 2;
@@ -269,7 +270,7 @@ const findBestSplit = (players: PickerCandidate[]): TeamSplit => {
     });
 
     if (!bestSplit) {
-        throw new Error('Unable to determine balanced teams.');
+        throw new InternalError('Unable to determine balanced teams.');
     }
 
     return bestSplit;
@@ -287,7 +288,8 @@ const findBestSplit = (players: PickerCandidate[]): TeamSplit => {
  * @returns An object containing:
  *   - playersForSplit: Array of players excluding the middle player
  *   - middlePlayer: The selected middle player, or null for even-sized lists
- * @throws Error if unable to select a middle player for odd-sized lists
+ * @throws {InternalError} If unable to select a middle player for odd-sized
+ * lists.
  */
 const selectMiddleOutfieldPlayer = (players: PickerCandidate[]) => {
     if (players.length % 2 === 0) {
@@ -315,7 +317,7 @@ const selectMiddleOutfieldPlayer = (players: PickerCandidate[]) => {
     }
 
     if (!middlePlayer) {
-        throw new Error('Unable to select middle player for odd-sized picker list.');
+        throw new InternalError('Unable to select middle player for odd-sized picker list.');
     }
 
     return { playersForSplit, middlePlayer };
@@ -388,10 +390,10 @@ const buildTeamEmail = ({
  * @param data - Array of picker inputs containing player selections and metadata
  * @param deps - Service dependencies for game day, outcomes, email, and configuration (defaults provided)
  * @returns Promise that resolves when team assignments are complete and notifications sent
- * @throws Error if fewer than two players are selected
- * @throws Error if no current game day is available
- * @throws Error if a selected player is not available for the game day
- * @throws Error if a selected player has not confirmed participation with 'Yes' response
+ * @throws {ValidationError} If fewer than two players are selected.
+ * @throws {NotFoundError} If no current game day is available.
+ * @throws {ValidationError} If a selected player is not available for the game day.
+ * @throws {ValidationError} If a selected player has not confirmed participation with 'Yes'.
  */
 export async function SubmitPickerCore(
     data: SubmitPickerInput,
@@ -399,12 +401,12 @@ export async function SubmitPickerCore(
 ): Promise<void> {
     const selectedPlayerIds = Array.from(new Set(data.map((item) => item.playerId)));
     if (selectedPlayerIds.length < 2) {
-        throw new Error('At least two players are required to pick teams.');
+        throw new ValidationError('At least two players are required to pick teams.');
     }
 
     const gameDay = await deps.gameDayService.getCurrent();
     if (!gameDay) {
-        throw new Error('No current game day available for picking teams.');
+        throw new NotFoundError('No current game day available for picking teams.');
     }
 
     const history = gameDay.pickerGamesHistory ?? 10;
@@ -423,10 +425,10 @@ export async function SubmitPickerCore(
     const selectedOutcomes = selectedPlayerIds.map((playerId) => {
         const row = outcomes.find((outcome) => outcome.playerId === playerId);
         if (!row) {
-            throw new Error(`Selected player ${playerId} is not available for this game day.`);
+            throw new ValidationError(`Selected player ${playerId} is not available for this game day.`);
         }
         if (row.response !== 'Yes') {
-            throw new Error(`Selected player ${playerId} does not have a 'Yes' response.`);
+            throw new ValidationError(`Selected player ${playerId} does not have a 'Yes' response.`);
         }
         return row;
     });

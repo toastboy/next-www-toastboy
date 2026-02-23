@@ -1,5 +1,6 @@
 import 'server-only';
 
+import { ValidationError } from '@/lib/errors';
 import gameDayService from '@/services/GameDay';
 import type { CreateMoreGameDaysInput } from '@/types/actions/CreateMoreGameDays';
 
@@ -17,19 +18,19 @@ const defaultDeps: CreateMoreGameDaysDeps = {
  *
  * @param value - The date string to parse, expected in "YYYY-MM-DD" format.
  * @returns A Date object representing the parsed date at 18:00:00.
- * @throws If the input string is not in the correct format or cannot be parsed
- * as a valid date.
+ * @throws {ValidationError} If the input string is not in the correct format
+ * or cannot be parsed as a valid date.
  */
 const parseDateString = (value: string) => {
     const parts = value.split('-').map((part) => Number(part));
     if (parts.length !== 3) {
-        throw new Error(`Invalid date string: ${value}`);
+        throw new ValidationError(`Invalid date string: ${value}`);
     }
 
     const [year, month, day] = parts;
     const date = new Date(year, month - 1, day, 18, 0, 0, 0);
     if (Number.isNaN(date.getTime())) {
-        throw new Error(`Invalid date string: ${value}`);
+        throw new ValidationError(`Invalid date string: ${value}`);
     }
 
     return date;

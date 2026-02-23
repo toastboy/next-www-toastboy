@@ -4,6 +4,7 @@ import type { TeamName } from 'prisma/zod/schemas';
 import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 
 import { config } from '@/lib/config';
+import { NotFoundError } from '@/lib/errors';
 import gameDayService from '@/services/GameDay';
 import transactionService from '@/services/Money';
 import outcomeService from '@/services/Outcome';
@@ -101,7 +102,7 @@ const updateTeamOutcomes = async (
  * information
  * @param deps - Optional dependencies for services (defaults to defaultDeps)
  * @returns A promise that resolves to the updated GameDay object
- * @throws {Error} If the game day with the specified ID is not found
+ * @throws {NotFoundError} If the game day with the specified ID is not found.
  *
  * @remarks
  * This function performs the following operations:
@@ -116,7 +117,7 @@ export async function setGameResultCore(
 ): Promise<GameDayType> {
     const gameDay = await deps.gameDayService.get(data.gameDayId);
     if (!gameDay) {
-        throw new Error(`Game day not found (id: ${data.gameDayId}).`);
+        throw new NotFoundError(`Game day not found (id: ${data.gameDayId}).`);
     }
 
     const updatedGameDay = await deps.gameDayService.update({

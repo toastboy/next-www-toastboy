@@ -5,6 +5,7 @@ import { headers } from 'next/headers';
 
 import { auth } from '@/lib/auth';
 import { getMockAuthState, getMockUsersList } from '@/lib/auth.server';
+import { AuthError } from '@/lib/errors';
 
 export type UserWithRolePayload = Omit<UserWithRole, 'createdAt' | 'updatedAt' | 'banExpires'> & {
     createdAt: string;
@@ -102,8 +103,7 @@ export async function listUsersActionCore(
  * @param deps - Dependencies object containing auth API and utility functions
  * (defaults to defaultDeps)
  *
- * @throws {Error} Throws 'Forbidden' error if mock auth state is not 'none' or
- * 'admin'
+ * @throws {AuthError} If mock auth state is not `none` or `admin`.
  *
  * @returns A promise that resolves when the role has been successfully set
  *
@@ -123,7 +123,7 @@ export async function setAdminRoleActionCore(
         return;
     }
     if (mockState !== 'none') {
-        throw new Error('Forbidden');
+        throw new AuthError('Forbidden');
     }
 
     await deps.auth.api.setRole({

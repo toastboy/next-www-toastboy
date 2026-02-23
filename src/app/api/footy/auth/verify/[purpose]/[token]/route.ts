@@ -4,7 +4,7 @@ import { claimPlayerInvitation } from '@/actions/claimPlayerInvitation';
 import { deliverContactEnquiry } from '@/actions/sendEnquiry';
 import { verifyEmail } from '@/actions/verifyEmail';
 import { buildURLWithParams } from '@/lib/api';
-import { ValidationError } from '@/lib/errors';
+import { toPublicMessage, ValidationError } from '@/lib/errors';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 
 export const dynamic = 'force-dynamic';
@@ -47,7 +47,7 @@ export const GET = async (request: NextRequest, props: { params: Promise<Record<
                 redirectParam,
             },
         });
-        const errorMessage = error instanceof Error ? error.message : 'Unable to verify email.';
+        const errorMessage = toPublicMessage(error, 'Unable to verify email.');
 
         redirect = buildURLWithParams(redirectParam, { error: errorMessage });
     }

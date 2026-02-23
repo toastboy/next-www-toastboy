@@ -2,6 +2,7 @@ import 'server-only';
 
 import { headers } from 'next/headers';
 
+import { AuthError } from '@/lib/errors';
 import clubSupporterService from '@/services/ClubSupporter';
 import countrySupporterService from '@/services/CountrySupporter';
 import emailVerificationService from '@/services/EmailVerification';
@@ -84,7 +85,7 @@ export async function beforeDeletePlayerCore(
  *
  * @param deps - Dependencies required for deleting the user. If not provided,
  * defaults are used.
- * @throws {Error} If there is no authenticated user to delete.
+ * @throws {AuthError} If there is no authenticated user to delete.
  * @returns {Promise<void>} Resolves when the user has been deleted.
  */
 export async function deletePlayerCore(deps?: DeletePlayerDeps) {
@@ -92,7 +93,7 @@ export async function deletePlayerCore(deps?: DeletePlayerDeps) {
     const user = await resolvedDeps.getCurrentUser();
 
     if (!user) {
-        throw new Error('No authenticated user to delete');
+        throw new AuthError('No authenticated user to delete');
     }
 
     await resolvedDeps.auth.api.deleteUser({

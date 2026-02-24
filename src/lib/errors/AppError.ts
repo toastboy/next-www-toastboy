@@ -66,6 +66,30 @@ interface ErrorOptionsWithDetails<TDetails = unknown> {
 }
 
 /**
+ * Options that control how {@link normalizeUnknownError} maps unknown throwables
+ * into typed {@link AppError} instances.
+ *
+ * @template TDetails Optional typed payload attached to mapped errors.
+ */
+export interface NormalizeUnknownErrorOptions<TDetails = unknown> {
+    /**
+     * Optional internal message override applied to synthesized AppError
+     * instances.
+     */
+    message?: string;
+    /**
+     * Optional safe user-facing message override applied to synthesized AppError
+     * instances.
+     */
+    publicMessage?: string;
+    /**
+     * Optional structured details payload attached to synthesized AppError
+     * instances.
+     */
+    details?: TDetails;
+}
+
+/**
  * Base class for typed domain/application errors.
  *
  * This class standardises:
@@ -256,6 +280,63 @@ export class InternalError<TDetails = unknown> extends AppError<typeof APP_ERROR
         });
     }
 }
+
+/**
+ * Normalizes an unknown error into a standardized AppError instance.
+ *
+ * Handles various error types and converts them to appropriate AppError subclasses:
+ * - AppError instances are returned as-is
+ * - ZodError instances are converted to ValidationError
+ * - Standard Error instances are converted to InternalError
+ * - Non-Error values are wrapped in InternalError
+ *
+ * @template TDetails - The type of additional error details
+ * @param error - The unknown error value to normalize
+ * @param options - Configuration options for error normalization
+ * @param options.message - Custom error message to use instead of the original
+ * @param options.details - Additional details to attach to the normalized error
+ * @param options.publicMessage - Public-facing message safe to display to users
+ * @returns A normalized AppError instance with consistent structure and properties
+ */
+export const normalizeUnknownError = <TDetails = unknown>(
+    error: unknown,
+    options: NormalizeUnknownErrorOptions<TDetails> = {},
+): AppError => {
+    if (error instanceof AppError) {
+        return error as AppError<AppErrorCode, unknown>;
+    }
+
+    if (error instanceof ZodError) {
+        return new ValidationError(
+            options.message ?? 'Validation failed.',
+            {
+                cause: error,
+                details: options.details,
+                publicMessage: options.publicMessage,
+            },
+        );
+    }
+
+    if (error instanceof Error) {
+        return new InternalError(
+            options.message ?? error.message,
+            {
+                cause: error,
+                details: options.details,
+                publicMessage: options.publicMessage,
+            },
+        );
+    }
+
+    return new InternalError(
+        options.message ?? 'Non-Error value thrown.',
+        {
+            cause: error,
+            details: options.details,
+            publicMessage: options.publicMessage,
+        },
+    );
+};
 
 /**
  * Type guard that narrows unknown values to {@link AppError}.

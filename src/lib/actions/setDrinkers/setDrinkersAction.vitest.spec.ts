@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { ValidationError } from '@/lib/errors';
+import { APP_ERROR_CODE, InternalError, ValidationError } from '@/lib/errors';
 
 const { revalidatePathMock, setDrinkersCoreMock, upsertFromGameDayMock } = vi.hoisted(() => ({
     revalidatePathMock: vi.fn(),
@@ -63,7 +63,7 @@ describe('setDrinkers action wrapper', () => {
         expect(result).toEqual(coreResult);
     });
 
-    it('throws a safe message when player record update fails with expected error', async () => {
+    it('throws typed InternalError with validation upstreamCode when player-record update fails', async () => {
         setDrinkersCoreMock.mockResolvedValue({
             gameDayId: 1249,
             updated: 4,
@@ -71,34 +71,73 @@ describe('setDrinkers action wrapper', () => {
         });
         upsertFromGameDayMock.mockRejectedValue(new ValidationError('Nope'));
 
-        await expect(setDrinkers({
+        let thrown: unknown;
+        try {
+            await setDrinkers({
+                gameDayId: 1249,
+                players: [
+                    { playerId: 1, drinker: true },
+                ],
+            });
+        } catch (error) {
+            thrown = error;
+        }
+
+        expect(thrown).toBeInstanceOf(InternalError);
+        const appError = thrown as InternalError<{
+            gameDayId: number;
+            operation: string;
+            upstreamCode: string;
+        }>;
+        expect(appError.code).toBe(APP_ERROR_CODE.Internal);
+        expect(appError.publicMessage).toBe('Failed to update player records.');
+        expect(appError.details).toEqual({
             gameDayId: 1249,
-            players: [
-                { playerId: 1, drinker: true },
-            ],
-        })).rejects.toThrow(
-            'Failed to update player records for game day 1249: Invalid request.',
-        );
+            operation: 'upsertFromGameDay',
+            upstreamCode: APP_ERROR_CODE.Validation,
+        });
+        expect(appError.cause).toBeInstanceOf(ValidationError);
 
         expect(revalidatePathMock).not.toHaveBeenCalled();
     });
 
-    it('throws fallback message when player record update fails unexpectedly', async () => {
+    it('throws typed InternalError with internal upstreamCode when player-record update fails unexpectedly', async () => {
         setDrinkersCoreMock.mockResolvedValue({
             gameDayId: 1249,
             updated: 4,
             drinkers: 2,
         });
-        upsertFromGameDayMock.mockRejectedValue(new Error('Database timeout'));
+        const sourceError = new Error('Database timeout');
+        upsertFromGameDayMock.mockRejectedValue(sourceError);
 
-        await expect(setDrinkers({
+        let thrown: unknown;
+        try {
+            await setDrinkers({
+                gameDayId: 1249,
+                players: [
+                    { playerId: 1, drinker: true },
+                ],
+            });
+        } catch (error) {
+            thrown = error;
+        }
+
+        expect(thrown).toBeInstanceOf(InternalError);
+        const appError = thrown as InternalError<{
+            gameDayId: number;
+            operation: string;
+            upstreamCode: string;
+        }>;
+        expect(appError.code).toBe(APP_ERROR_CODE.Internal);
+        expect(appError.publicMessage).toBe('Failed to update player records.');
+        expect(appError.details).toEqual({
             gameDayId: 1249,
-            players: [
-                { playerId: 1, drinker: true },
-            ],
-        })).rejects.toThrow(
-            'Failed to update player records for game day 1249: Unknown error',
-        );
+            operation: 'upsertFromGameDay',
+            upstreamCode: APP_ERROR_CODE.Internal,
+        });
+        expect(appError.cause).toBeInstanceOf(InternalError);
+        const normalizedCause = appError.cause as InternalError;
+        expect(normalizedCause.cause).toBe(sourceError);
 
         expect(revalidatePathMock).not.toHaveBeenCalled();
     });

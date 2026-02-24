@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 
 import { setGameResultCore } from '@/lib/actions/setGameResult';
-import { toPublicMessage } from '@/lib/errors';
+import { InternalError, normalizeUnknownError } from '@/lib/errors';
 import playerRecordService from '@/services/PlayerRecord';
 import { SetGameResultInputSchema } from '@/types/actions/SetGameResult';
 
@@ -27,9 +27,18 @@ export async function setGameResult(rawData: unknown) {
     try {
         await playerRecordService.upsertFromGameDay(data.gameDayId);
     } catch (error) {
-        const message = toPublicMessage(error, 'Unknown error');
-        throw new Error(
-            `Failed to update player records for game day ${data.gameDayId}: ${message}`,
+        const normalizedError = normalizeUnknownError(error);
+        throw new InternalError(
+            `Failed to update player records for game day ${data.gameDayId}.`,
+            {
+                cause: normalizedError,
+                details: {
+                    gameDayId: data.gameDayId,
+                    operation: 'upsertFromGameDay',
+                    upstreamCode: normalizedError.code,
+                },
+                publicMessage: 'Failed to update player records.',
+            },
         );
     }
     revalidatePath(`/footy/game/${data.gameDayId}`);

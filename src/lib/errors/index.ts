@@ -7,6 +7,8 @@ export {
     InternalError,
     isAppError,
     isExpectedError,
+    normalizeUnknownError,
+    type NormalizeUnknownErrorOptions,
     NotFoundError,
     toPublicMessage,
     ValidationError,

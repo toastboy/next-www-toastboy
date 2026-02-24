@@ -1,10 +1,8 @@
-import 'server-only';
-
-import debug from 'debug';
 import prisma from 'prisma/prisma';
 import { ClubWhereUniqueInputObjectSchema } from 'prisma/zod/schemas';
 import { ClubType } from 'prisma/zod/schemas/models/Club.schema';
 
+import { normalizeUnknownError } from '@/lib/errors';
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import {
     ClubCreateOneStrictSchema,
@@ -15,7 +13,6 @@ import {
     ClubUpsertOneStrictSchema,
 } from '@/types/ClubStrictSchema';
 
-const log = debug('footy:api');
 
 export class ClubService {
     /**
@@ -29,8 +26,7 @@ export class ClubService {
             const where = ClubWhereUniqueInputObjectSchema.parse({ id });
             return prisma.club.findUnique({ where });
         } catch (error) {
-            log(`Error fetching club: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -43,8 +39,7 @@ export class ClubService {
         try {
             return prisma.club.findMany({});
         } catch (error) {
-            log(`Error fetching clubs: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -60,8 +55,7 @@ export class ClubService {
             const args = ClubCreateOneStrictSchema.parse({ data: writeData });
             return await prisma.club.create(args);
         } catch (error) {
-            log(`Error creating club: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -91,8 +85,7 @@ export class ClubService {
             });
             return await prisma.club.upsert(args);
         } catch (error) {
-            log(`Error upserting club: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -113,8 +106,7 @@ export class ClubService {
             if (isPrismaNotFoundError(error)) {
                 return;
             }
-            log(`Error deleting club: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -127,8 +119,7 @@ export class ClubService {
         try {
             await prisma.club.deleteMany();
         } catch (error) {
-            log(`Error deleting clubs: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 }

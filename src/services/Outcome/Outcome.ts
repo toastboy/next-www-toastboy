@@ -1,6 +1,3 @@
-import 'server-only';
-
-import debug from 'debug';
 import prisma from 'prisma/prisma';
 import {
     OutcomeWhereUniqueInputObjectSchema,
@@ -20,6 +17,7 @@ import {
 } from 'types';
 import z from 'zod';
 
+import { normalizeUnknownError } from '@/lib/errors';
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import gameDayService from '@/services/GameDay';
 import { OutcomePlayerType } from '@/types/OutcomePlayerType';
@@ -30,7 +28,6 @@ import {
     OutcomeWriteInputSchema,
 } from '@/types/OutcomeStrictSchema';
 
-const log = debug('footy:api');
 
 export class OutcomeService {
     /**
@@ -51,8 +48,7 @@ export class OutcomeService {
 
             return prisma.outcome.findUnique({ where });
         } catch (error) {
-            log(`Error fetching outcomes: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -65,8 +61,7 @@ export class OutcomeService {
         try {
             return prisma.outcome.findMany({});
         } catch (error) {
-            log(`Error fetching outcomes: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -89,8 +84,7 @@ export class OutcomeService {
             });
         }
         catch (error) {
-            log(`Error fetching outcome: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -123,8 +117,7 @@ export class OutcomeService {
                 },
             });
         } catch (error) {
-            log(`Error fetching outcomes: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -155,8 +148,7 @@ export class OutcomeService {
             });
         }
         catch (error) {
-            log(`Error fetching outcomes: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -221,8 +213,7 @@ export class OutcomeService {
             return result as Turnout[];
         }
         catch (error) {
-            log(`Error fetching outcomes: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -265,8 +256,7 @@ export class OutcomeService {
             }));
         }
         catch (error) {
-            log(`Error fetching outcomes: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -289,8 +279,7 @@ export class OutcomeService {
                 },
             });
         } catch (error) {
-            log(`Error fetching outcomes by GameDay: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -348,8 +337,7 @@ export class OutcomeService {
                 });
             });
         } catch (error) {
-            log(`Error fetching admin responses by GameDay: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -416,8 +404,7 @@ export class OutcomeService {
                 });
             });
         } catch (error) {
-            log(`Error fetching team players: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -435,8 +422,7 @@ export class OutcomeService {
                 },
             });
         } catch (error) {
-            log(`Error fetching outcomes by player: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -485,8 +471,7 @@ export class OutcomeService {
 
             return outcomes.map((outcome) => outcome.points);
         } catch (error) {
-            log(`Error fetching recent game points by player: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -531,8 +516,7 @@ export class OutcomeService {
             total += 1.45 * (parsed.history - count);
             return total / parsed.history;
         } catch (error) {
-            log(`Error fetching recent average by player: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -559,8 +543,7 @@ export class OutcomeService {
                 },
             });
         } catch (error) {
-            log(`Error fetching games played by player: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -598,8 +581,7 @@ export class OutcomeService {
                 },
             });
         } catch (error) {
-            log(`Error fetching games played before game day by player: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -637,8 +619,7 @@ export class OutcomeService {
                 },
             });
         } catch (error) {
-            log(`Error fetching outcomes by player: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -675,8 +656,7 @@ export class OutcomeService {
             }
             return outcomes[0].gameDayId;
         } catch (error) {
-            log(`Error fetching latest game played by year: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -725,8 +705,7 @@ export class OutcomeService {
 
             return wdl;
         } catch (error) {
-            log(`Error fetching bibs WDL counts: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -743,8 +722,7 @@ export class OutcomeService {
             const args = OutcomeCreateOneStrictSchema.parse({ data: writeData });
             return await prisma.outcome.create(args);
         } catch (error) {
-            log(`Error creating outcome: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -770,8 +748,7 @@ export class OutcomeService {
             });
             return await prisma.outcome.upsert(args);
         } catch (error) {
-            log(`Error upserting Outcome: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -800,8 +777,7 @@ export class OutcomeService {
             if (isPrismaNotFoundError(error)) {
                 return;
             }
-            log(`Error deleting outcome: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -814,8 +790,7 @@ export class OutcomeService {
         try {
             await prisma.outcome.deleteMany();
         } catch (error) {
-            log(`Error deleting outcomes: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 }

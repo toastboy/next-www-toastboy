@@ -1,14 +1,11 @@
-import 'server-only';
-
-import debug from 'debug';
 import prisma from 'prisma/prisma';
 import z from 'zod';
 
+import { normalizeUnknownError } from '@/lib/errors';
 import { type PayDebtResult, PayDebtResultSchema } from '@/types/actions/PayDebt';
 import type { PlayerBalanceType } from '@/types/DebtType';
 import { BalanceSummarySchema } from '@/types/DebtType';
 
-const log = debug('footy:api');
 
 /**
  * Compares two player balance objects by player name and then by player ID.
@@ -147,8 +144,7 @@ class MoneyService {
                 negativeTotal,
             });
         } catch (error) {
-            log(`Error fetching money balances: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -197,8 +193,7 @@ class MoneyService {
                 },
             });
         } catch (error) {
-            log(`Error charging player: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -249,8 +244,7 @@ class MoneyService {
                 resultingBalance,
             });
         } catch (error) {
-            log(`Error paying debt: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 }

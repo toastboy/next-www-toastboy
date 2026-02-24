@@ -1,6 +1,3 @@
-import 'server-only';
-
-import debug from 'debug';
 import prisma from 'prisma/prisma';
 import {
     ArseWhereInputObjectSchema,
@@ -8,6 +5,7 @@ import {
 } from 'prisma/zod/schemas';
 import { ArseType } from 'prisma/zod/schemas/models/Arse.schema';
 
+import { normalizeUnknownError } from '@/lib/errors';
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import {
     ArseCreateOneStrictSchema,
@@ -16,7 +14,6 @@ import {
     ArseWriteInputSchema,
 } from '@/types/ArseStrictSchema';
 
-const log = debug('footy:api');
 
 interface ArseAverageRatings {
     inGoal: number | null,
@@ -44,8 +41,7 @@ export class ArseService {
 
             return prisma.arse.findUnique({ where });
         } catch (error) {
-            log(`Error fetching arses: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -58,8 +54,7 @@ export class ArseService {
         try {
             return prisma.arse.findMany({});
         } catch (error) {
-            log(`Error fetching arses: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -87,8 +82,7 @@ export class ArseService {
 
             return arsegregate._avg;
         } catch (error) {
-            log(`Error fetching arses by player: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -104,8 +98,7 @@ export class ArseService {
 
             return prisma.arse.findMany({ where });
         } catch (error) {
-            log(`Error fetching arses by rater: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -121,8 +114,7 @@ export class ArseService {
             const args = ArseCreateOneStrictSchema.parse({ data: writeData });
             return await prisma.arse.create(args);
         } catch (error) {
-            log(`Error creating arse: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -147,8 +139,7 @@ export class ArseService {
             });
             return await prisma.arse.upsert(args);
         } catch (error) {
-            log(`Error upserting arse: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -172,8 +163,7 @@ export class ArseService {
             if (isPrismaNotFoundError(error)) {
                 return;
             }
-            log(`Error deleting arse: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -186,8 +176,7 @@ export class ArseService {
         try {
             await prisma.arse.deleteMany();
         } catch (error) {
-            log(`Error deleting arses: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 }

@@ -1,6 +1,3 @@
-import 'server-only';
-
-import debug from 'debug';
 import prisma from 'prisma/prisma';
 import {
     ClubSupporterWhereInputObjectSchema,
@@ -8,6 +5,7 @@ import {
 } from 'prisma/zod/schemas';
 import { ClubSupporterType } from 'prisma/zod/schemas/models/ClubSupporter.schema';
 
+import { normalizeUnknownError } from '@/lib/errors';
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import { ClubSupporterDataType } from '@/types';
 import {
@@ -17,7 +15,6 @@ import {
     ClubSupporterWriteInputSchema,
 } from '@/types/ClubSupporterStrictSchema';
 
-const log = debug('footy:api');
 
 export class ClubSupporterService {
     /**
@@ -36,8 +33,7 @@ export class ClubSupporterService {
             });
             return prisma.clubSupporter.findUnique({ where });
         } catch (error) {
-            log(`Error fetching ClubSupporter: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -51,8 +47,7 @@ export class ClubSupporterService {
         try {
             return prisma.clubSupporter.findMany({});
         } catch (error) {
-            log(`Error fetching ClubSupporters: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -69,8 +64,7 @@ export class ClubSupporterService {
             const where = ClubSupporterWhereInputObjectSchema.parse({ playerId });
             return prisma.clubSupporter.findMany({ where, include: { club: true } });
         } catch (error) {
-            log(`Error fetching ClubSupporters by player: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -87,8 +81,7 @@ export class ClubSupporterService {
             const where = ClubSupporterWhereInputObjectSchema.parse({ clubId });
             return prisma.clubSupporter.findMany({ where });
         } catch (error) {
-            log(`Error fetching ClubSupporters by club: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -109,8 +102,7 @@ export class ClubSupporterService {
             const args = ClubSupporterCreateOneStrictSchema.parse({ data: writeData });
             return prisma.clubSupporter.create(args);
         } catch (error) {
-            log(`Error creating ClubSupporter: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -140,8 +132,7 @@ export class ClubSupporterService {
             });
             return await prisma.clubSupporter.upsert(args);
         } catch (error) {
-            log(`Error upserting ClubSupporter: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -159,8 +150,7 @@ export class ClubSupporterService {
                 (clubId) => this.upsert({ playerId, clubId }),
             ));
         } catch (error) {
-            log(`Error upserting multiple ClubSupporters: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -186,8 +176,7 @@ export class ClubSupporterService {
             if (isPrismaNotFoundError(error)) {
                 return;
             }
-            log(`Error deleting ClubSupporter: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -210,8 +199,7 @@ export class ClubSupporterService {
                 (cs) => this.delete(cs.playerId, cs.clubId)),
             );
         } catch (error) {
-            log(`Error deleting PlayerClubSupporters: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -228,8 +216,7 @@ export class ClubSupporterService {
                 where: playerId ? { playerId } : undefined,
             });
         } catch (error) {
-            log(`Error deleting ClubSupporter: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 }

@@ -1,6 +1,3 @@
-import 'server-only';
-
-import debug from 'debug';
 import prisma from 'prisma/prisma';
 import {
     PlayerRecordWhereUniqueInputObjectSchema,
@@ -11,6 +8,7 @@ import { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
 import { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 
 import { config } from '@/lib/config';
+import { normalizeUnknownError } from '@/lib/errors';
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import { rankMap } from '@/lib/utils';
 import gameDayService from '@/services/GameDay';
@@ -23,7 +21,6 @@ import {
     PlayerRecordWriteInputSchema,
 } from '@/types/PlayerRecordStrictSchema';
 
-const log = debug('footy:api');
 
 export class PlayerRecordService {
     /**
@@ -42,8 +39,7 @@ export class PlayerRecordService {
 
             return prisma.playerRecord.findUnique({ where });
         } catch (error) {
-            log(`Error fetching playerRecords: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -57,8 +53,7 @@ export class PlayerRecordService {
         try {
             return prisma.playerRecord.findMany({});
         } catch (error) {
-            log(`Error fetching playerRecords: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -86,8 +81,7 @@ export class PlayerRecordService {
             return [lastGameDay, total.gameDayId];
         }
         catch (error) {
-            log(`Error fetching playerRecords: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -140,8 +134,7 @@ export class PlayerRecordService {
 
             return Promise.resolve(distinctYears);
         } catch (error) {
-            log(`Error fetching playerRecords: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -161,8 +154,7 @@ export class PlayerRecordService {
                 },
             });
         } catch (error) {
-            log(`Error fetching playerRecords by GameDay: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -180,8 +172,7 @@ export class PlayerRecordService {
                 },
             });
         } catch (error) {
-            log(`Error fetching playerRecords by player: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -245,8 +236,7 @@ export class PlayerRecordService {
                 return result;
             }
         } catch (error) {
-            log(`Error fetching playerRecord for player: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -287,8 +277,7 @@ export class PlayerRecordService {
 
             return firstPlaceRecords.filter((record) => seasonEnders.includes(record.gameDayId));
         } catch (error) {
-            log(`Error fetching playerRecords for winners: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -353,8 +342,7 @@ export class PlayerRecordService {
                 },
             });
         } catch (error) {
-            log(`Error fetching playerRecords for table: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -371,8 +359,7 @@ export class PlayerRecordService {
             const args = PlayerRecordCreateOneStrictSchema.parse({ data: writeData });
             return await prisma.playerRecord.create(args);
         } catch (error) {
-            log(`Error creating playerRecord: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -399,8 +386,7 @@ export class PlayerRecordService {
             });
             return await prisma.playerRecord.upsert(args);
         } catch (error) {
-            log(`Error upserting PlayerRecord: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -431,14 +417,12 @@ export class PlayerRecordService {
                 const yearPlayerRecords: Record<number, Partial<PlayerRecordType>> = {};
                 const yearOutcomes = await outcomeService.getAllForYear(year);
 
-                console.log(`Processing year ${year}...`);
 
                 for (const gameDay of gameDays) {
                     if (gameDay.date.getFullYear() !== year || gameDay.date > today) {
                         continue;
                     }
 
-                    console.log(`  Processing game day ${gameDay.id} (${gameDay.date.toDateString()})...`);
 
                     const gameDayOutcomes = await outcomeService.getByGameDay(gameDay.id);
 
@@ -463,8 +447,7 @@ export class PlayerRecordService {
 
             return Promise.resolve(playerRecords);
         } catch (error) {
-            log(`Error upserting PlayerRecord: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -503,8 +486,7 @@ export class PlayerRecordService {
 
             return playerRecords;
         } catch (error) {
-            log(`Error upserting PlayerRecord from game day: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -528,8 +510,7 @@ export class PlayerRecordService {
             if (isPrismaNotFoundError(error)) {
                 return;
             }
-            log(`Error deleting playerRecord: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -542,8 +523,7 @@ export class PlayerRecordService {
         try {
             await prisma.playerRecord.deleteMany();
         } catch (error) {
-            log(`Error deleting playerRecords: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 }

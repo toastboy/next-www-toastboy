@@ -1,6 +1,3 @@
-import 'server-only';
-
-import debug from 'debug';
 import prisma from 'prisma/prisma';
 import {
     GameDayWhereInputObjectSchema,
@@ -9,6 +6,7 @@ import {
 } from 'prisma/zod/schemas';
 import { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 
+import { normalizeUnknownError } from '@/lib/errors';
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import {
     GameDayCreateOneStrictSchema,
@@ -21,7 +19,6 @@ import {
     type GameDayWriteInput,
     GameDayWriteInputSchema,
 } from '@/types/GameDayStrictSchema';
-const log = debug('footy:api');
 
 export class GameDayService {
     /**
@@ -37,8 +34,7 @@ export class GameDayService {
 
             return prisma.gameDay.findUnique({ where });
         } catch (error) {
-            log(`Error fetching GameDayType: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -76,8 +72,7 @@ export class GameDayService {
             }
             return prisma.gameDay.findMany({ where });
         } catch (error) {
-            log(`Error fetching GameDays: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -92,8 +87,7 @@ export class GameDayService {
         try {
             return prisma.gameDay.findFirst({ where: { date } });
         } catch (error) {
-            log(`Error fetching GameDayType: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -109,8 +103,7 @@ export class GameDayService {
 
             return prisma.gameDay.findFirst({ where, orderBy: { date: 'desc' } });
         } catch (error) {
-            log(`Error fetching current GameDayType: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -127,8 +120,7 @@ export class GameDayService {
 
             return prisma.gameDay.findFirst({ where, orderBy: { date: 'asc' } });
         } catch (error) {
-            log(`Error fetching upcoming GameDayType: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -153,8 +145,7 @@ export class GameDayService {
 
             return prisma.gameDay.findFirst({ where, orderBy: { date: 'desc' } });
         } catch (error) {
-            log(`Error fetching previous GameDayType: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -174,8 +165,7 @@ export class GameDayService {
         try {
             return prisma.gameDay.findFirst({ orderBy: { id: 'desc' } });
         } catch (error) {
-            log(`Error fetching latest GameDayType: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -197,8 +187,7 @@ export class GameDayService {
 
             return prisma.gameDay.findFirst({ where, orderBy: { date: 'asc' } });
         } catch (error) {
-            log(`Error fetching next GameDayType: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -230,8 +219,7 @@ export class GameDayService {
                 },
             });
         } catch (error) {
-            log(`Error counting gameDays: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -264,8 +252,7 @@ export class GameDayService {
                 },
             });
         } catch (error) {
-            log(`Error counting gameDays: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -306,8 +293,7 @@ export class GameDayService {
 
             return result?.map((r) => r._max.id) ?? [];
         } catch (error) {
-            log(`Error counting gameDays: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -332,8 +318,7 @@ export class GameDayService {
 
             return Promise.resolve(distinctYears);
         } catch (error) {
-            log(`Error fetching GameDays: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -358,8 +343,7 @@ export class GameDayService {
             return gameDay ? Promise.resolve(gameDay.year) : null;
         }
         catch (error) {
-            log(`Error fetching GameDayType: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -376,8 +360,7 @@ export class GameDayService {
             const args = GameDayCreateOneStrictSchema.parse({ data: writeData });
             return await prisma.gameDay.create(args);
         } catch (error) {
-            log(`Error creating GameDayType: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -402,8 +385,7 @@ export class GameDayService {
             });
             return await prisma.gameDay.upsert(args);
         } catch (error) {
-            log(`Error upserting GameDayType: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -427,8 +409,7 @@ export class GameDayService {
             });
             return await prisma.gameDay.update(args);
         } catch (error) {
-            log(`Error updating GameDayType: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -451,8 +432,7 @@ export class GameDayService {
                 },
             });
         } catch (error) {
-            log(`Error marking GameDay mail sent: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -475,8 +455,7 @@ export class GameDayService {
             if (isPrismaNotFoundError(error)) {
                 return;
             }
-            log(`Error deleting GameDayType: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -489,8 +468,7 @@ export class GameDayService {
         try {
             await prisma.gameDay.deleteMany();
         } catch (error) {
-            log(`Error deleting GameDays: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 }

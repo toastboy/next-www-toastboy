@@ -1,9 +1,8 @@
-import debug from 'debug';
 import { headers } from 'next/headers';
 
 import { auth } from '@/lib/auth';
+import { normalizeUnknownError } from '@/lib/errors';
 
-const log = debug('footy:auth');
 
 export interface AuthSessionUser {
     id?: string | null;
@@ -24,8 +23,7 @@ class AuthService {
 
             return session?.user ?? null;
         } catch (error) {
-            log(`Error fetching auth session: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -41,8 +39,7 @@ class AuthService {
                 body: data,
             });
         } catch (error) {
-            log(`Error updating auth user: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 }

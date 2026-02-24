@@ -1,10 +1,8 @@
-import 'server-only';
-
-import debug from 'debug';
 import prisma from 'prisma/prisma';
 import { GameInvitationWhereUniqueInputObjectSchema } from 'prisma/zod/schemas';
 import { GameInvitationType } from 'prisma/zod/schemas/models/GameInvitation.schema';
 
+import { normalizeUnknownError } from '@/lib/errors';
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import {
     GameInvitationCreateManyStrictSchema,
@@ -16,7 +14,6 @@ import {
     GameInvitationWriteInputSchema,
 } from '@/types/GameInvitationStrictSchema';
 
-const log = debug('footy:api');
 
 export class GameInvitationService {
     /**
@@ -31,8 +28,7 @@ export class GameInvitationService {
             const where = GameInvitationWhereUniqueInputObjectSchema.parse({ uuid });
             return prisma.gameInvitation.findUnique({ where });
         } catch (error) {
-            log(`Error fetching GameInvitation: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -45,8 +41,7 @@ export class GameInvitationService {
         try {
             return prisma.gameInvitation.findMany({});
         } catch (error) {
-            log(`Error fetching GameInvitation: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -63,8 +58,7 @@ export class GameInvitationService {
             const args = GameInvitationCreateOneStrictSchema.parse({ data: writeData });
             return await prisma.gameInvitation.create(args);
         } catch (error) {
-            log(`Error creating GameInvitation: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -82,8 +76,7 @@ export class GameInvitationService {
             const result = await prisma.gameInvitation.createMany(args);
             return result.count;
         } catch (error) {
-            log(`Error creating GameInvitations: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -104,8 +97,7 @@ export class GameInvitationService {
             });
             return await prisma.gameInvitation.upsert(args);
         } catch (error) {
-            log(`Error upserting GameInvitation: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -127,8 +119,7 @@ export class GameInvitationService {
             if (isPrismaNotFoundError(error)) {
                 return;
             }
-            log(`Error deleting GameInvitation: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -141,8 +132,7 @@ export class GameInvitationService {
         try {
             await prisma.gameInvitation.deleteMany();
         } catch (error) {
-            log(`Error deleting GameInvitations: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 }

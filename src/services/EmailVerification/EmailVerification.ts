@@ -1,10 +1,8 @@
-import 'server-only';
-
-import debug from 'debug';
 import prisma from 'prisma/prisma';
 import { EmailVerificationWhereUniqueInputObjectSchema } from 'prisma/zod/schemas';
 import { EmailVerificationType } from 'prisma/zod/schemas/models/EmailVerification.schema';
 
+import { normalizeUnknownError } from '@/lib/errors';
 import { hashVerificationToken } from '@/lib/verificationToken';
 import {
     EmailVerificationCreateOneStrictSchema,
@@ -14,7 +12,6 @@ import {
     EmailVerificationWriteInputSchema,
 } from '@/types/EmailVerificationStrictSchema';
 
-const log = debug('footy:api');
 
 export class EmailVerificationService {
     /**
@@ -52,8 +49,7 @@ export class EmailVerificationService {
             });
             return await prisma.emailVerification.create(args);
         } catch (error) {
-            log(`Error creating EmailVerification: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -70,8 +66,7 @@ export class EmailVerificationService {
             const where = EmailVerificationWhereUniqueInputObjectSchema.parse({ tokenHash });
             return await prisma.emailVerification.findUnique({ where });
         } catch (error) {
-            log(`Error fetching EmailVerification: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -98,8 +93,7 @@ export class EmailVerificationService {
             });
             return await prisma.emailVerification.update(args);
         } catch (error) {
-            log(`Error updating EmailVerification: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -116,8 +110,7 @@ export class EmailVerificationService {
                 where: playerId ? { playerId } : undefined,
             });
         } catch (error) {
-            log(`Error deleting all EmailVerifications: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 }

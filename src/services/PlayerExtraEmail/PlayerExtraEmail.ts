@@ -1,10 +1,8 @@
-import 'server-only';
-
-import debug from 'debug';
 import prisma from 'prisma/prisma';
 import { PlayerExtraEmailWhereUniqueInputObjectSchema } from 'prisma/zod/schemas';
 import { PlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
 
+import { normalizeUnknownError } from '@/lib/errors';
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import {
     PlayerExtraEmailCreateOneStrictSchema,
@@ -13,7 +11,6 @@ import {
     PlayerExtraEmailWriteInputSchema,
 } from '@/types/PlayerExtraEmailStrictSchema';
 
-const log = debug('footy:api');
 
 /**
  * Service class for managing player email records in the database.
@@ -52,8 +49,7 @@ export class PlayerExtraEmailService {
                 },
             });
         } catch (error) {
-            log(`Error getting PlayerExtraEmail: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -70,8 +66,7 @@ export class PlayerExtraEmailService {
             const args = PlayerExtraEmailCreateOneStrictSchema.parse({ data: writeData });
             return await prisma.playerExtraEmail.create(args);
         } catch (error) {
-            log(`Error creating PlayerExtraEmail: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -108,8 +103,7 @@ export class PlayerExtraEmailService {
             });
             return await prisma.playerExtraEmail.upsert(args);
         } catch (error) {
-            log(`Error upserting PlayerExtraEmail: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -130,8 +124,7 @@ export class PlayerExtraEmailService {
                 (email) => this.upsert(playerId, email),
             ));
         } catch (error) {
-            log(`Error upserting multiple PlayerExtraEmails: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -147,8 +140,7 @@ export class PlayerExtraEmailService {
                 where: playerId ? { playerId } : undefined,
             });
         } catch (error) {
-            log(`Error fetching Player extra emails: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -168,8 +160,7 @@ export class PlayerExtraEmailService {
             if (isPrismaNotFoundError(error)) {
                 return;
             }
-            log(`Error deleting PlayerExtraEmail: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -190,8 +181,7 @@ export class PlayerExtraEmailService {
                 where: playerId ? { playerId } : undefined,
             });
         } catch (error) {
-            log(`Error deleting all PlayerExtraEmails: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -217,8 +207,7 @@ export class PlayerExtraEmailService {
                 ));
             await Promise.all(emailsToDelete.map((email) => this.delete(email.email)));
         } catch (error) {
-            log(`Error deleting PlayerExtraEmails: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 }

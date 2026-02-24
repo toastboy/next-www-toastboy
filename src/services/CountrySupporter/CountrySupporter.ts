@@ -1,6 +1,3 @@
-import 'server-only';
-
-import debug from 'debug';
 import prisma from 'prisma/prisma';
 import {
     CountrySupporterWhereInputObjectSchema,
@@ -8,6 +5,7 @@ import {
 } from 'prisma/zod/schemas';
 import { CountrySupporterType } from 'prisma/zod/schemas/models/CountrySupporter.schema';
 
+import { normalizeUnknownError } from '@/lib/errors';
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import { CountrySupporterDataType } from '@/types/CountrySupporterDataType';
 import {
@@ -17,7 +15,6 @@ import {
     CountrySupporterWriteInputSchema,
 } from '@/types/CountrySupporterStrictSchema';
 
-const log = debug('footy:api');
 
 export class CountrySupporterService {
     /**
@@ -36,8 +33,7 @@ export class CountrySupporterService {
 
             return prisma.countrySupporter.findUnique({ where });
         } catch (error) {
-            log(`Error fetching CountrySupporter: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -50,8 +46,7 @@ export class CountrySupporterService {
         try {
             return prisma.countrySupporter.findMany({});
         } catch (error) {
-            log(`Error fetching CountrySupporters: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -67,8 +62,7 @@ export class CountrySupporterService {
             const where = CountrySupporterWhereInputObjectSchema.parse({ playerId });
             return prisma.countrySupporter.findMany({ where, include: { country: true } });
         } catch (error) {
-            log(`Error fetching CountrySupporters by player: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -84,8 +78,7 @@ export class CountrySupporterService {
             const where = CountrySupporterWhereInputObjectSchema.parse({ countryISOCode });
             return prisma.countrySupporter.findMany({ where });
         } catch (error) {
-            log(`Error fetching CountrySupporters by ISO code: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -102,8 +95,7 @@ export class CountrySupporterService {
             const args = CountrySupporterCreateOneStrictSchema.parse({ data: writeData });
             return await prisma.countrySupporter.create(args);
         } catch (error) {
-            log(`Error creating CountrySupporter: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -129,8 +121,7 @@ export class CountrySupporterService {
             });
             return await prisma.countrySupporter.upsert(args);
         } catch (error) {
-            log(`Error upserting CountrySupporter: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -147,8 +138,7 @@ export class CountrySupporterService {
                 (countryISOCode) => this.upsert({ playerId, countryISOCode }),
             ));
         } catch (error) {
-            log(`Error upserting multiple CountrySupporters: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -170,8 +160,7 @@ export class CountrySupporterService {
                 (cs) => this.delete(cs.playerId, cs.countryISOCode)),
             );
         } catch (error) {
-            log(`Error deleting PlayerClubSupporters: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -197,8 +186,7 @@ export class CountrySupporterService {
             if (isPrismaNotFoundError(error)) {
                 return;
             }
-            log(`Error deleting CountrySupporter: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -214,8 +202,7 @@ export class CountrySupporterService {
                 where: playerId ? { playerId } : undefined,
             });
         } catch (error) {
-            log(`Error deleting CountrySupporter: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 }

@@ -1,10 +1,8 @@
-import 'server-only';
-
-import debug from 'debug';
 import prisma from 'prisma/prisma';
 import { CountryWhereUniqueInputObjectSchema } from 'prisma/zod/schemas';
 import { CountryType } from 'prisma/zod/schemas/models/Country.schema';
 
+import { normalizeUnknownError } from '@/lib/errors';
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import {
     CountryCreateOneStrictSchema,
@@ -13,7 +11,6 @@ import {
     CountryWriteInputSchema,
 } from '@/types/CountryStrictSchema';
 
-const log = debug('footy:api');
 
 export class CountryService {
     /**
@@ -28,8 +25,7 @@ export class CountryService {
             const where = CountryWhereUniqueInputObjectSchema.parse({ isoCode });
             return prisma.country.findUnique({ where });
         } catch (error) {
-            log(`Error fetching country: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -42,8 +38,7 @@ export class CountryService {
         try {
             return prisma.country.findMany({});
         } catch (error) {
-            log(`Error fetching countries: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -60,8 +55,7 @@ export class CountryService {
             const args = CountryCreateOneStrictSchema.parse({ data: writeData });
             return await prisma.country.create(args);
         } catch (error) {
-            log(`Error creating country: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -82,8 +76,7 @@ export class CountryService {
             });
             return await prisma.country.upsert(args);
         } catch (error) {
-            log(`Error upserting country: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -106,8 +99,7 @@ export class CountryService {
             if (isPrismaNotFoundError(error)) {
                 return;
             }
-            log(`Error deleting country: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -120,8 +112,7 @@ export class CountryService {
         try {
             await prisma.country.deleteMany();
         } catch (error) {
-            log(`Error deleting countries: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 }

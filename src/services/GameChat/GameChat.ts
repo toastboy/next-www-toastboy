@@ -1,10 +1,8 @@
-import 'server-only';
-
-import debug from 'debug';
 import prisma from 'prisma/prisma';
 import { GameChatWhereUniqueInputObjectSchema } from 'prisma/zod/schemas';
 import { GameChatType } from 'prisma/zod/schemas/models/GameChat.schema';
 
+import { normalizeUnknownError } from '@/lib/errors';
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import {
     GameChatCreateOneStrictSchema,
@@ -15,7 +13,6 @@ import {
     GameChatWriteInputSchema,
 } from '@/types/GameChatStrictSchema';
 
-const log = debug('footy:api');
 
 export class GameChatService {
     /**
@@ -31,8 +28,7 @@ export class GameChatService {
 
             return prisma.gameChat.findUnique({ where });
         } catch (error) {
-            log(`Error fetching gameChat: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -45,8 +41,7 @@ export class GameChatService {
         try {
             return prisma.gameChat.findMany({});
         } catch (error) {
-            log(`Error fetching gameChats: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -63,8 +58,7 @@ export class GameChatService {
             const args = GameChatCreateOneStrictSchema.parse({ data: writeData });
             return await prisma.gameChat.create(args);
         } catch (error) {
-            log(`Error creating gameChat: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -89,8 +83,7 @@ export class GameChatService {
             });
             return await prisma.gameChat.upsert(args);
         } catch (error) {
-            log(`Error upserting gameChat: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -113,8 +106,7 @@ export class GameChatService {
             if (isPrismaNotFoundError(error)) {
                 return;
             }
-            log(`Error deleting gameChat: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -127,8 +119,7 @@ export class GameChatService {
         try {
             await prisma.gameChat.deleteMany();
         } catch (error) {
-            log(`Error deleting gameChats: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 }

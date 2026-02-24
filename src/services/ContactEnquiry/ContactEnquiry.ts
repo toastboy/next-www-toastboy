@@ -1,10 +1,8 @@
-import 'server-only';
-
-import debug from 'debug';
 import prisma from 'prisma/prisma';
 import { ContactEnquiryWhereUniqueInputObjectSchema } from 'prisma/zod/schemas';
 import { ContactEnquiryType } from 'prisma/zod/schemas/models/ContactEnquiry.schema';
 
+import { normalizeUnknownError } from '@/lib/errors';
 import { hashVerificationToken } from '@/lib/verificationToken';
 import {
     ContactEnquiryCreateOneStrictSchema,
@@ -14,7 +12,6 @@ import {
     ContactEnquiryWriteInputSchema,
 } from '@/types/ContactEnquiryStrictSchema';
 
-const log = debug('footy:api');
 
 export class ContactEnquiryService {
     /**
@@ -51,8 +48,7 @@ export class ContactEnquiryService {
             });
             return await prisma.contactEnquiry.create(args);
         } catch (error) {
-            log(`Error creating ContactEnquiry: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -70,8 +66,7 @@ export class ContactEnquiryService {
             const where = ContactEnquiryWhereUniqueInputObjectSchema.parse({ tokenHash });
             return await prisma.contactEnquiry.findUnique({ where });
         } catch (error) {
-            log(`Error fetching ContactEnquiry: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -98,8 +93,7 @@ export class ContactEnquiryService {
             });
             return await prisma.contactEnquiry.update(args);
         } catch (error) {
-            log(`Error updating ContactEnquiry: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 }

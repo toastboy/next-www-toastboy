@@ -1,6 +1,3 @@
-import 'server-only';
-
-import debug from 'debug';
 import prisma from 'prisma/prisma';
 import {
     PlayerLoginWhereUniqueInputObjectSchema,
@@ -9,6 +6,7 @@ import {
 import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import { PlayerDataType, PlayerFormType } from 'types';
 
+import { normalizeUnknownError } from '@/lib/errors';
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import {
     PlayerCreateOneStrictSchema,
@@ -19,7 +17,6 @@ import {
     PlayerUpdateWriteInputSchema,
 } from '@/types/PlayerStrictSchema';
 
-const log = debug('footy:api');
 
 class PlayerService {
     /**
@@ -33,8 +30,7 @@ class PlayerService {
             const where = PlayerWhereUniqueInputObjectSchema.parse({ id });
             return prisma.player.findUnique({ where });
         } catch (error) {
-            log(`Error fetching Player: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -56,8 +52,7 @@ class PlayerService {
 
             return playerLogin?.player ?? null;
         } catch (error) {
-            log(`Error fetching Player: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -77,8 +72,7 @@ class PlayerService {
                 return await this.getByLogin(idOrLogin);
             }
         } catch (error) {
-            log(`Error getting Player login: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -108,8 +102,7 @@ class PlayerService {
             const playerLogin = await prisma.playerLogin.findUnique({ where });
             return playerLogin ? playerLogin.login : null;
         } catch (error) {
-            log(`Error getting Player login: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -133,8 +126,7 @@ class PlayerService {
                 return playerLogin ? playerLogin.playerId : null;
             }
         } catch (error) {
-            log(`Error getting Player id: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -200,8 +192,7 @@ class PlayerService {
                 } satisfies PlayerDataType;
             });
         } catch (error) {
-            log(`Error fetching Players: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -237,8 +228,7 @@ class PlayerService {
 
             return idsAndLogins;
         } catch (error) {
-            log(`Error fetching Player ids and logins: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -286,8 +276,7 @@ class PlayerService {
                 },
             });
         } catch (error) {
-            log(`Error fetching outcomes: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -323,8 +312,7 @@ class PlayerService {
                 take: 1,
             });
         } catch (error) {
-            log(`Error fetching outcomes: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -354,8 +342,7 @@ class PlayerService {
 
             return Promise.resolve(distinctYears);
         } catch (error) {
-            log(`Error fetching player active years: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -372,8 +359,7 @@ class PlayerService {
             const args = PlayerCreateOneStrictSchema.parse({ data: writeData });
             return await prisma.player.create(args);
         } catch (error) {
-            log(`Error creating Player: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -393,8 +379,7 @@ class PlayerService {
             });
             return await prisma.player.update(args);
         } catch (error) {
-            log(`Error updating Player: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -424,8 +409,7 @@ class PlayerService {
 
             return await prisma.player.update({ where, data });
         } catch (error) {
-            log(`Error anonymising Player: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -448,8 +432,7 @@ class PlayerService {
 
             return await prisma.player.update({ where, data });
         } catch (error) {
-            log(`Error setting finished for Player: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -471,8 +454,7 @@ class PlayerService {
             if (isPrismaNotFoundError(error)) {
                 return;
             }
-            log(`Error deleting Player: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 
@@ -485,8 +467,7 @@ class PlayerService {
         try {
             await prisma.player.deleteMany();
         } catch (error) {
-            log(`Error deleting Players: ${String(error)}`);
-            throw error;
+            throw normalizeUnknownError(error);
         }
     }
 }

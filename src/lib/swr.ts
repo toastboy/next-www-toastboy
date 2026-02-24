@@ -18,11 +18,47 @@ import {
     WDLType,
 } from 'types';
 
-const fetcher = (input: URL | RequestInfo, init?: RequestInit) =>
-    fetch(input, init).then((res) => {
-        if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
-        return res.json();
-    });
+import { assertOkResponse, normalizeUnknownError } from '@/lib/errors';
+
+/**
+ * Fetches data from a given URL and returns it as a typed response.
+ *
+ * This function is designed to be used as a fetcher for SWR hooks. It performs
+ * a GET request to the specified URL, checks if the response is ok, and then
+ * attempts to parse the response as JSON. If the response is not ok or if JSON
+ * parsing fails, it throws a normalized error with a public message.
+ *
+ * Note that the caller must validate the resulting data against the expected
+ * type T, as this function will not perform any runtime type checking.
+ *
+ * @template T - The expected type of the response data.
+ * @param url - The URL to fetch from.
+ * @returns A promise that resolves to the fetched data typed as T.
+ * @throws Will throw a normalized error if the response is not ok or if JSON
+ * parsing fails.
+ *
+ * @example
+ * ```typescript
+ * const data = await fetcher<{ name: string }>('/api/user');
+ * ```
+ */
+const fetcher = async <T>(url: string): Promise<T> => {
+    try {
+        const response = await fetch(url);
+        await assertOkResponse(response, {
+            method: 'GET',
+            fallbackMessage: 'Failed to load data.',
+        });
+
+        const data: unknown = await response.json();
+        return data as T;
+    } catch (error) {
+        throw normalizeUnknownError(error, {
+            message: 'SWR request failed.',
+            publicMessage: 'Failed to load data.',
+        });
+    }
+};
 
 export function useClub(id: number) {
     const { data, error } = useSWR<ClubType, Error>(`/api/footy/club/${id}`, fetcher);

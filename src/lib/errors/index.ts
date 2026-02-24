@@ -21,3 +21,8 @@ export {
     type HttpErrorResponse,
     toHttpErrorResponse,
 } from './http';
+export {
+    assertOkResponse,
+    type RequestErrorDetails,
+    toRequestError,
+} from './request';

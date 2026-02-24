@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 import { AuthUserSummary } from 'types/AuthUser';
 
 import { config } from '@/lib/config';
+import { assertOkResponse, toPublicMessage } from '@/lib/errors';
 
 import classes from './UserButton.module.css';
 
@@ -33,10 +34,10 @@ export const UserButton: React.FC<Props> = ({ user }) => {
                 headers: { 'Content-Type': 'application/json' },
                 body: '{}',
             });
-            if (!response.ok) {
-                console.error('Sign out failed', await response.text());
-                throw new Error('Sign out failed');
-            }
+            await assertOkResponse(response, {
+                method: 'POST',
+                fallbackMessage: 'Sign out failed',
+            });
             router.refresh();
             notifications.update({
                 id,
@@ -48,11 +49,12 @@ export const UserButton: React.FC<Props> = ({ user }) => {
                 autoClose: config.notificationAutoClose,
             });
         } catch (error) {
+            const message = toPublicMessage(error, 'Sign out failed');
             notifications.update({
                 id,
                 color: 'red',
                 title: 'Error',
-                message: `${String(error)}`,
+                message,
                 icon: <IconAlertTriangle size={config.notificationIconSize} />,
                 loading: false,
                 autoClose: config.notificationAutoClose,
@@ -75,10 +77,10 @@ export const UserButton: React.FC<Props> = ({ user }) => {
                 headers: { 'Content-Type': 'application/json' },
                 body: '{}',
             });
-            if (!response.ok) {
-                console.error('Stop impersonation failed', await response.text());
-                throw new Error('Stop impersonation failed');
-            }
+            await assertOkResponse(response, {
+                method: 'POST',
+                fallbackMessage: 'Stop impersonation failed',
+            });
             router.refresh();
             notifications.update({
                 id,
@@ -90,11 +92,12 @@ export const UserButton: React.FC<Props> = ({ user }) => {
                 autoClose: config.notificationAutoClose,
             });
         } catch (error) {
+            const message = toPublicMessage(error, 'Stop impersonation failed');
             notifications.update({
                 id,
                 color: 'red',
                 title: 'Error',
-                message: `${String(error)}`,
+                message,
                 icon: <IconAlertTriangle size={config.notificationIconSize} />,
                 loading: false,
                 autoClose: config.notificationAutoClose,

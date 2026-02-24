@@ -19,6 +19,7 @@ import { z } from 'zod';
 import { PasswordFields } from '@/components/PasswordFields/PasswordFields';
 import { authClient } from '@/lib/auth.client';
 import { config } from '@/lib/config';
+import { toPublicMessage, ValidationError } from '@/lib/errors';
 
 export interface Props {
     token: string;
@@ -68,7 +69,12 @@ export const PasswordResetForm: React.FC<Props> = ({ token }) => {
             });
 
             if (!status) {
-                throw new Error('Unable to reset password.');
+                throw new ValidationError('Reset password returned an unsuccessful status.', {
+                    publicMessage: 'Unable to reset password.',
+                    details: {
+                        tokenPresent: Boolean(token),
+                    },
+                });
             }
 
             notifications.update({
@@ -83,8 +89,7 @@ export const PasswordResetForm: React.FC<Props> = ({ token }) => {
 
             router.push('/footy/auth/signin');
         } catch (error) {
-            const message = error instanceof Error ? error.message : 'Unable to reset password.';
-            console.error('Failed to reset password:', error);
+            const message = toPublicMessage(error, 'Unable to reset password.');
             notifications.update({
                 id,
                 color: 'red',

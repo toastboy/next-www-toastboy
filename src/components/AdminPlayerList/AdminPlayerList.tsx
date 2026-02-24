@@ -27,6 +27,7 @@ import { useMemo, useState } from 'react';
 import ReactDOMServer from 'react-dom/server';
 
 import { config } from '@/lib/config';
+import { assertOkResponse, toPublicMessage } from '@/lib/errors';
 import { PlayerDataType } from '@/types';
 import { AddPlayerInviteProxy } from '@/types/actions/CreatePlayer';
 import { SendEmailProxy } from '@/types/actions/SendEmail';
@@ -447,10 +448,10 @@ export const AdminPlayerList: React.FC<Props> = ({
                 body: JSON.stringify({ userId }),
             });
 
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(errorText || 'Failed to impersonate user.');
-            }
+            await assertOkResponse(response, {
+                method: 'POST',
+                fallbackMessage: 'Failed to impersonate user.',
+            });
 
             router.refresh();
             notifications.update({
@@ -462,11 +463,12 @@ export const AdminPlayerList: React.FC<Props> = ({
                 autoClose: config.notificationAutoClose,
             });
         } catch (err) {
+            const message = toPublicMessage(err, 'Failed to impersonate user.');
             notifications.update({
                 id,
                 color: 'red',
                 title: 'Error',
-                message: `${String(err)}`,
+                message,
                 loading: false,
                 autoClose: false,
                 withCloseButton: true,

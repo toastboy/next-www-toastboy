@@ -3,6 +3,8 @@ import 'server-only';
 import * as fs from 'fs';
 import * as path from 'path';
 
+import { InternalError, normalizeUnknownError } from '@/lib/errors';
+
 const secrets = {
     AZURE_CLIENT_ID: process.env.AZURE_CLIENT_ID,
     AZURE_CLIENT_SECRET: process.env.AZURE_CLIENT_SECRET,
@@ -43,8 +45,12 @@ function readFileIfExists(filePath: string): string | undefined {
             return undefined;
         }
 
-        const message = error instanceof Error ? error.message : "Unknown filesystem error";
-        throw new Error(`Failed to read secret file at ${filePath}: ${message}`);
+        throw normalizeUnknownError(error, {
+            message: `Failed to read secret file at ${filePath}.`,
+            details: {
+                filePath,
+            },
+        });
     }
 }
 
@@ -74,7 +80,11 @@ export function getSecrets(): typeof secrets {
         .map(([key]) => key);
 
     if (missingSecrets.length > 0 && process.env.NODE_ENV !== 'test') {
-        throw new Error(`Missing required secrets: ${missingSecrets.join(', ')}`);
+        throw new InternalError('Missing required secrets.', {
+            details: {
+                missingSecrets,
+            },
+        });
     }
 
     cachedSecrets = result;

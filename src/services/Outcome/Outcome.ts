@@ -17,7 +17,7 @@ import {
 } from 'types';
 import z from 'zod';
 
-import { normalizeUnknownError } from '@/lib/errors';
+import { InternalError, normalizeUnknownError } from '@/lib/errors';
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import gameDayService from '@/services/GameDay';
 import { OutcomePlayerType } from '@/types/OutcomePlayerType';
@@ -393,7 +393,14 @@ export class OutcomeService {
 
             return outcomes.map(({ player, ...outcome }) => {
                 if (!player) {
-                    throw new Error(`Outcome ${outcome.id} is missing its player relation`);
+                    throw new InternalError(`Outcome ${outcome.id} is missing its player relation.`, {
+                        details: {
+                            outcomeId: outcome.id,
+                            gameDayId: outcome.gameDayId,
+                            playerId: outcome.playerId,
+                            team: outcome.team,
+                        },
+                    });
                 }
                 const { outcomes: form = [], ...playerData } = player;
 

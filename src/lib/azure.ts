@@ -3,6 +3,7 @@ import 'server-only';
 import { ClientSecretCredential } from '@azure/identity';
 import { BlobServiceClient, ContainerClient } from '@azure/storage-blob';
 
+import { InternalError, normalizeUnknownError } from '@/lib/errors';
 import { getSecrets } from '@/lib/secrets';
 
 type ContainerClientCache = Record<string, ContainerClient>;
@@ -18,22 +19,30 @@ class AzureCache {
     // This is a singleton class, so the constructor is private to prevent external instantiation.
     private constructor() { /* empty */ }
 
+    private static requireSecret(secretName: string, value: string | undefined): string {
+        if (!value) {
+            throw new InternalError(`Missing required Azure secret: ${secretName}.`, {
+                details: {
+                    secretName,
+                },
+            });
+        }
+
+        return value;
+    }
+
     public static getInstance(): AzureCache {
         if (!AzureCache.instance) {
             AzureCache.instance = new AzureCache();
             const secrets = getSecrets();
 
-            if (!secrets.AZURE_TENANT_ID) throw new Error('AZURE_TENANT_ID undefined');
-            AzureCache.tenantId = secrets.AZURE_TENANT_ID;
-
-            if (!secrets.AZURE_CLIENT_ID) throw new Error('AZURE_CLIENT_ID undefined');
-            AzureCache.clientId = secrets.AZURE_CLIENT_ID;
-
-            if (!secrets.AZURE_CLIENT_SECRET) throw new Error('AZURE_CLIENT_SECRET undefined');
-            AzureCache.clientSecret = secrets.AZURE_CLIENT_SECRET;
-
-            if (!secrets.AZURE_STORAGE_ACCOUNT_NAME) throw new Error('AZURE_STORAGE_ACCOUNT_NAME undefined');
-            AzureCache.storageAccountName = secrets.AZURE_STORAGE_ACCOUNT_NAME;
+            AzureCache.tenantId = AzureCache.requireSecret('AZURE_TENANT_ID', secrets.AZURE_TENANT_ID);
+            AzureCache.clientId = AzureCache.requireSecret('AZURE_CLIENT_ID', secrets.AZURE_CLIENT_ID);
+            AzureCache.clientSecret = AzureCache.requireSecret('AZURE_CLIENT_SECRET', secrets.AZURE_CLIENT_SECRET);
+            AzureCache.storageAccountName = AzureCache.requireSecret(
+                'AZURE_STORAGE_ACCOUNT_NAME',
+                secrets.AZURE_STORAGE_ACCOUNT_NAME,
+            );
         }
         return AzureCache.instance;
     }
@@ -53,8 +62,12 @@ class AzureCache {
                 const containerClient = blobServiceClient.getContainerClient(containerName);
                 this.containerClients[containerName] = containerClient;
             } catch (error) {
-                console.error(`Error while getting container client for ${containerName}:`, error);
-                throw error;
+                throw normalizeUnknownError(error, {
+                    message: `Failed to create Azure container client "${containerName}".`,
+                    details: {
+                        containerName,
+                    },
+                });
             }
         }
 

@@ -5,6 +5,7 @@ import { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema'
 
 import { PlayerProfile } from '@/components/PlayerProfile/PlayerProfile';
 import { getUserRole } from '@/lib/auth.server';
+import { normalizeUnknownError } from '@/lib/errors';
 import arseService from '@/services/Arse';
 import clubSupporterService from '@/services/ClubSupporter';
 import countrySupporterService from '@/services/CountrySupporter';
@@ -19,8 +20,9 @@ interface PageProps {
 }
 
 export async function generateMetadata(props: PageProps) {
+    const { id } = await props.params;
+
     try {
-        const { id } = await props.params;
         const playerId = Number(id);
         const player = Number.isNaN(playerId) ?
             await playerService.getByLogin(id) :
@@ -30,7 +32,13 @@ export async function generateMetadata(props: PageProps) {
         return name ? { title: `${name}` } : {};
     }
     catch (error) {
-        throw new Error(`Getting player metadata: ${String(error)}`);
+        throw normalizeUnknownError(error, {
+            message: 'Failed to generate player metadata.',
+            details: {
+                route: '/footy/player/[id]/[[...year]]',
+                id,
+            },
+        });
     }
 }
 

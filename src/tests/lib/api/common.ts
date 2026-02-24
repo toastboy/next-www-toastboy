@@ -124,9 +124,18 @@ export async function pngResponseHandler(response: NextResponse, res: ServerResp
     });
 
     if (response.body) {
-        const buffer = await readableStreamToBuffer(response.body as ReadableStream<Uint8Array>);
-        res.setHeader('Content-Type', 'image/png');
-        res.end(buffer);
+        const contentType = response.headers.get('content-type') ?? '';
+        const isPngResponse = response.status === 200 && contentType.includes('image/png');
+
+        if (isPngResponse) {
+            const buffer = await readableStreamToBuffer(response.body as ReadableStream<Uint8Array>);
+            res.setHeader('Content-Type', 'image/png');
+            res.end(buffer);
+            return;
+        }
+
+        const body = await response.text();
+        res.end(body);
     } else {
         res.end();
     }

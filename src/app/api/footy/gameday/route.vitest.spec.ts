@@ -34,12 +34,11 @@ describe('API tests using HTTP', () => {
     });
 
     it('should return 500 if there is an error', async () => {
-        const errorMessage = 'Test Error';
         (gamedayService.getAll as Mock).mockRejectedValue(new Error('Test Error'));
 
         const response = await request(mockApp).get(testURI);
 
         expect(response.status).toBe(500);
-        expect(response.text).toBe(`Error: ${errorMessage}`);
+        expect(response.text).toBe('Error: Something went wrong.');
     });
 });

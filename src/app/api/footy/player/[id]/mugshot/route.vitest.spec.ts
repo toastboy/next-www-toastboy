@@ -71,7 +71,7 @@ describe('API tests using HTTP', () => {
         const response = await request(mockApp).get(testRoute);
 
         expect(response.status).toBe(500);
-        expect(response.text).toBe('Error: Image body download failed.');
+        expect(response.text).toBe('Error: Something went wrong.');
     });
 
     it('should return 500 if the mugshot download fails', async () => {
@@ -82,6 +82,6 @@ describe('API tests using HTTP', () => {
         const response = await request(mockApp).get(testRoute);
 
         expect(response.status).toBe(500);
-        expect(response.text).toBe(`Error: ${errorMessage}`);
+        expect(response.text).toBe('Error: Something went wrong.');
     });
 });

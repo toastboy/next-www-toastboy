@@ -4,7 +4,8 @@ import { PlayerSchema, type PlayerType } from 'prisma/zod/schemas/models/Player.
 import { z } from 'zod';
 
 import { getUserRole } from '@/lib/auth.server';
-import { toHttpErrorResponse } from '@/lib/errors';
+import { normalizeUnknownError, toHttpErrorResponse } from '@/lib/errors';
+import { captureUnexpectedError } from '@/lib/observability/sentry';
 
 import { getPublicBaseUrl } from './urls';
 
@@ -50,19 +51,38 @@ export async function handleGET<T, S = T>(
         buildResponse?: (data: S) => Promise<NextResponse>;
     },
 ): Promise<NextResponse> {
-    // If no sanitize hook provided, pass data through (cast via unknown to satisfy TS when S != T)
-    const sanitize: (data: T) => Promise<S> = hooks?.sanitize ?? (async (data: T) => await data as unknown as S);
-    const buildResponse: (data: S) => Promise<NextResponse> = hooks?.buildResponse ?? buildJsonResponse;
+    try {
+        // If no sanitize hook provided, pass data through (cast via unknown to satisfy TS when S != T)
+        const sanitize: (data: T) => Promise<S> = hooks?.sanitize ?? (async (data: T) => await data as unknown as S);
+        const buildResponse: (data: S) => Promise<NextResponse> = hooks?.buildResponse ?? buildJsonResponse;
 
-    const data = await serviceFunction({ params });
+        const data = await serviceFunction({ params });
 
-    if (data == null) return new NextResponse('Not Found', { status: 404 });
+        if (data == null) return new NextResponse('Not Found', { status: 404 });
 
-    const sanitizedData: S = await sanitize(data);
+        const sanitizedData: S = await sanitize(data);
 
-    if (sanitizedData == null) return new NextResponse('Not Found', { status: 404 });
+        if (sanitizedData == null) return new NextResponse('Not Found', { status: 404 });
 
-    return buildResponse(sanitizedData);
+        return buildResponse(sanitizedData);
+    } catch (error) {
+        const normalizedError = normalizeUnknownError(error);
+        captureUnexpectedError(normalizedError, {
+            layer: 'route',
+            action: 'handleGET',
+            extra: {
+                params,
+            },
+        });
+        const { status, message } = toHttpErrorResponse(normalizedError);
+
+        return new NextResponse(`Error: ${message}`, {
+            status,
+            headers: {
+                'Content-Type': 'text/plain',
+            },
+        });
+    }
 }
 
 /**

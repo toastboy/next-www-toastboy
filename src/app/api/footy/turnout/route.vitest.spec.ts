@@ -39,6 +39,6 @@ describe('API tests using HTTP', () => {
         const response = await request(mockApp).get(testURI);
 
         expect(response.status).toBe(500);
-        expect(response.text).toBe('Error: Test Error');
+        expect(response.text).toBe('Error: Something went wrong.');
     });
 });

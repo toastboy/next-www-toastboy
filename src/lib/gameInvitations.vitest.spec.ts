@@ -6,6 +6,7 @@ import type { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { sendEmail } from '@/actions/sendEmail';
+import { NotFoundError } from '@/lib/errors';
 import { buildInvitationEmail, getGameInvitationResponseDetails, sendGameInvitations } from '@/lib/gameInvitations';
 import { getPublicBaseUrl } from '@/lib/urls';
 import gameDayService from '@/services/GameDay';
@@ -202,7 +203,9 @@ describe('sendGameInvitations', () => {
     it('throws when the game day cannot be found', async () => {
         mockGameDayService.get.mockResolvedValueOnce(null);
 
-        await expect(sendGameInvitations(123)).rejects.toThrow('Game day not found.');
+        const operation = sendGameInvitations(123);
+        await expect(operation).rejects.toBeInstanceOf(NotFoundError);
+        await expect(operation).rejects.toThrow('Game day not found.');
         expect(mockInvitationService.deleteAll).not.toHaveBeenCalled();
         expect(mockSendEmail).not.toHaveBeenCalled();
     });

@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 
 import { buildPngResponse, handleGET } from '@/lib/api';
 import azureCache from '@/lib/azure';
+import { InternalError, normalizeUnknownError } from '@/lib/errors';
 import { streamToBuffer } from '@/lib/utils';
 
 
@@ -15,18 +16,32 @@ import { streamToBuffer } from '@/lib/utils';
 async function getCountryFlag(
     { params }: { params: Record<string, string> },
 ): Promise<Buffer | null> {
-    const containerClient = azureCache.getContainerClient("countries");
-    const blobClient = containerClient.getBlobClient(`${params.isoCode}.png`);
+    try {
+        const containerClient = azureCache.getContainerClient('countries');
+        const blobClient = containerClient.getBlobClient(`${params.isoCode}.png`);
 
-    if (!(await blobClient.exists())) {
-        return null;
-    }
+        if (!(await blobClient.exists())) {
+            return null;
+        }
 
-    const downloadBlockBlobResponse = await blobClient.download(0);
-    if (!downloadBlockBlobResponse.readableStreamBody) {
-        throw new Error('Image body download failed.');
+        const downloadBlockBlobResponse = await blobClient.download(0);
+        if (!downloadBlockBlobResponse.readableStreamBody) {
+            throw new InternalError('Image body download failed.', {
+                details: {
+                    resource: 'country-flag',
+                    isoCode: params.isoCode,
+                },
+            });
+        }
+        return await streamToBuffer(downloadBlockBlobResponse.readableStreamBody);
+    } catch (error) {
+        throw normalizeUnknownError(error, {
+            details: {
+                resource: 'country-flag',
+                isoCode: params.isoCode,
+            },
+        });
     }
-    return await streamToBuffer(downloadBlockBlobResponse.readableStreamBody);
 }
 
 /**

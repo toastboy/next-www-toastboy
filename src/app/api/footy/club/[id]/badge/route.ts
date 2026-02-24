@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 
 import { buildPngResponse, handleGET } from '@/lib/api';
 import azureCache from '@/lib/azure';
+import { InternalError, normalizeUnknownError } from '@/lib/errors';
 import { streamToBuffer } from '@/lib/utils';
 
 /**
@@ -26,14 +27,24 @@ async function getClubBadge(
 
         const downloadBlockBlobResponse = await blobClient.download(0);
         if (!downloadBlockBlobResponse.readableStreamBody) {
-            throw new Error('Image body download failed.');
+            throw new InternalError('Image body download failed.', {
+                details: {
+                    resource: 'club-badge',
+                    clubId: params.id,
+                },
+            });
         }
 
         return await streamToBuffer(downloadBlockBlobResponse.readableStreamBody);
     }
     catch (error) {
         console.error(`Error in getClubBadge: ${String(error)}`);
-        throw error;
+        throw normalizeUnknownError(error, {
+            details: {
+                resource: 'club-badge',
+                clubId: params.id,
+            },
+        });
     }
 }
 

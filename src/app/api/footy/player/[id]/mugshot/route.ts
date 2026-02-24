@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 
 import { buildPngResponse, handleGET } from '@/lib/api';
 import azureCache from '@/lib/azure';
+import { InternalError, normalizeUnknownError } from '@/lib/errors';
 import { streamToBuffer } from '@/lib/utils';
 import playerService from '@/services/Player';
 
@@ -35,13 +36,23 @@ async function getPlayerMugshot(
 
         const downloadBlockBlobResponse = await blobClient.download(0);
         if (!downloadBlockBlobResponse.readableStreamBody) {
-            throw new Error('Image body download failed.');
+            throw new InternalError('Image body download failed.', {
+                details: {
+                    resource: 'player-mugshot',
+                    playerId,
+                },
+            });
         }
         return await streamToBuffer(downloadBlockBlobResponse.readableStreamBody);
     }
     catch (error) {
         console.error('Error fetching player mugshot:', error);
-        throw error;
+        throw normalizeUnknownError(error, {
+            details: {
+                resource: 'player-mugshot',
+                playerId: params.id,
+            },
+        });
     }
 }
 

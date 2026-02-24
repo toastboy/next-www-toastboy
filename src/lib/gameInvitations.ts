@@ -4,6 +4,7 @@ import crypto from 'crypto';
 import escapeHtml from 'escape-html';
 
 import { sendEmail } from '@/actions/sendEmail';
+import { NotFoundError } from '@/lib/errors';
 import { getPublicBaseUrl } from '@/lib/urls';
 import gameDayService from '@/services/GameDay';
 import gameInvitationService from '@/services/GameInvitation';
@@ -87,7 +88,10 @@ export async function sendGameInvitations(
 ) {
     const gameDay = await gameDayService.get(gameDayId);
     if (!gameDay) {
-        throw new Error('Game day not found.');
+        throw new NotFoundError('Game day not found.', {
+            details: { gameDayId },
+            publicMessage: 'Game day not found.',
+        });
     }
 
     const players = await playerService.getAll();

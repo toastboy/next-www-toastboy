@@ -1,9 +1,12 @@
 'use client';
 
 import { ActionIcon, Button, Center, Container, RingProgress, Text } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
 import { IconCheck } from '@tabler/icons-react';
 import { useEffect } from 'react';
 
+import { toPublicMessage } from '@/lib/errors';
+import { captureUnexpectedError } from '@/lib/observability/sentry';
 import { useRecordsProgress } from '@/lib/swr';
 import { UpdatePlayerRecordsProxy } from '@/types/actions/UpdatePlayerRecords';
 
@@ -17,8 +20,12 @@ export const AdminUpdatePlayerRecords: React.FC<Props> = ({ onUpdatePlayerRecord
     useEffect(() => {
         const intervalId = setInterval(() => {
             mutate().catch((err) => {
-                console.error('Failed to mutate player records progress');
-                throw err;
+                captureUnexpectedError(err, {
+                    layer: 'client',
+                    component: 'AdminUpdatePlayerRecords',
+                    action: 'mutateProgress',
+                    route: '/footy/admin/players',
+                });
             });
         }, 1000);
 
@@ -66,8 +73,17 @@ export const AdminUpdatePlayerRecords: React.FC<Props> = ({ onUpdatePlayerRecord
                     data-testid="update-player-records-button"
                     onClick={() => {
                         onUpdatePlayerRecords().catch((err) => {
-                            console.error('Failed to update player records');
-                            throw err;
+                            captureUnexpectedError(err, {
+                                layer: 'client',
+                                component: 'AdminUpdatePlayerRecords',
+                                action: 'updatePlayerRecords',
+                                route: '/footy/admin/players',
+                            });
+                            notifications.show({
+                                color: 'red',
+                                title: 'Error',
+                                message: toPublicMessage(err, 'Failed to update player records.'),
+                            });
                         });
                     }}
                 >

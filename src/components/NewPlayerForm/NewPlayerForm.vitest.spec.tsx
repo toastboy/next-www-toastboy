@@ -153,7 +153,6 @@ describe('NewPlayerForm', () => {
 
     it('shows error notification on creation failure', async () => {
         const notificationUpdateSpy = vi.spyOn(notifications, 'update');
-        const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
         mockCreatePlayer.mockRejectedValueOnce(new Error('Network error'));
 
         const user = userEvent.setup();
@@ -187,13 +186,6 @@ describe('NewPlayerForm', () => {
 
         const [notification] = (notificationUpdateSpy.mock.calls[0] ?? []) as [{ message?: string }];
         expect(notification?.message ?? '').toContain('Error');
-
-        expect(await waitFor(() => consoleErrorSpy)).toHaveBeenCalledWith(
-            'Failed to create player:',
-            expect.any(Error),
-        );
-
-        consoleErrorSpy.mockRestore();
     });
 
     it('does not call sendEmail when form is submitted empty', async () => {

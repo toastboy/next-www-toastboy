@@ -1,6 +1,7 @@
 import 'server-only';
 
 import { sendEmailVerificationCore } from '@/lib/actions/verifyEmail';
+import { captureUnexpectedError } from '@/lib/observability/sentry';
 import clubSupporterService from '@/services/ClubSupporter';
 import countrySupporterService from '@/services/CountrySupporter';
 import playerService from '@/services/Player';
@@ -68,7 +69,14 @@ export async function updatePlayerCore(
     for (const [index, result] of addedEmailResults.entries()) {
         if (result.status === 'rejected') {
             const failedEmail = addedExtraEmails[index];
-            console.error('Error sending verification email to:', failedEmail, result.reason);
+            captureUnexpectedError(result.reason, {
+                layer: 'server-action',
+                action: 'updatePlayerCore.sendVerificationEmail',
+                extra: {
+                    playerId,
+                    email: failedEmail,
+                },
+            });
         }
     }
 
@@ -80,7 +88,14 @@ export async function updatePlayerCore(
     for (const [index, result] of removedEmailResults.entries()) {
         if (result.status === 'rejected') {
             const failedEmail = removedExtraEmails[index];
-            console.error('Error removing player extra email:', failedEmail, result.reason);
+            captureUnexpectedError(result.reason, {
+                layer: 'server-action',
+                action: 'updatePlayerCore.removeExtraEmail',
+                extra: {
+                    playerId,
+                    email: failedEmail,
+                },
+            });
         }
     }
 

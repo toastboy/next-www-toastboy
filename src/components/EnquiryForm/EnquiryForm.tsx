@@ -18,6 +18,8 @@ import { useEffect } from 'react';
 
 import { EmailInput } from '@/components/EmailInput/EmailInput';
 import { config } from '@/lib/config';
+import { toPublicMessage } from '@/lib/errors';
+import { captureUnexpectedError } from '@/lib/observability/sentry';
 import {
     EnquiryInput,
     EnquirySchema,
@@ -100,8 +102,16 @@ export const EnquiryForm: React.FC<Props> = ({ redirectUrl, onSendEnquiry }) => 
                 autoClose: config.notificationAutoClose,
             });
         } catch (error) {
-            console.error('Failed to send enquiry:', error);
-            const message = error instanceof Error ? error.message : 'Unable to send your message.';
+            captureUnexpectedError(error, {
+                layer: 'client',
+                component: 'EnquiryForm',
+                action: 'sendEnquiry',
+                route: '/footy/contact',
+                extra: {
+                    redirectUrl,
+                },
+            });
+            const message = toPublicMessage(error, 'Unable to send your message.');
             notifications.update({
                 id,
                 color: 'red',

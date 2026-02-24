@@ -1,5 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+const { captureUnexpectedErrorMock } = vi.hoisted(() => ({
+  captureUnexpectedErrorMock: vi.fn(),
+}));
+
+vi.mock('@/lib/observability/sentry', () => ({
+  captureUnexpectedError: captureUnexpectedErrorMock,
+}));
+
 import { updatePlayerCore } from '@/lib/actions/updatePlayer';
 
 describe('updatePlayerCore', () => {
@@ -72,7 +80,7 @@ describe('updatePlayerCore', () => {
     expect(result).toEqual(updatedPlayer);
   });
 
-  it('continues when add/remove extra-email side effects fail and logs errors', async () => {
+  it('continues when add/remove extra-email side effects fail and captures errors', async () => {
     const updatedPlayer = {
       id: 7,
       name: 'Alex Updated',
@@ -103,8 +111,6 @@ describe('updatePlayerCore', () => {
       },
       sendEmailVerificationCore: vi.fn().mockResolvedValue(undefined),
     };
-    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
-
     const result = await updatePlayerCore(
       7,
       {
@@ -129,20 +135,25 @@ describe('updatePlayerCore', () => {
       updatedPlayer,
     );
     expect(deps.playerExtraEmailService.delete).toHaveBeenCalledTimes(2);
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      'Error sending verification email to:',
-      'bad-add@example.com',
+    expect(captureUnexpectedErrorMock).toHaveBeenCalledTimes(2);
+    expect(captureUnexpectedErrorMock).toHaveBeenNthCalledWith(
+      1,
       expect.any(Error),
+      expect.objectContaining({
+        action: 'updatePlayerCore.sendVerificationEmail',
+        layer: 'server-action',
+      }),
     );
-    expect(consoleErrorSpy).toHaveBeenCalledWith(
-      'Error removing player extra email:',
-      'bad-remove@example.com',
+    expect(captureUnexpectedErrorMock).toHaveBeenNthCalledWith(
+      2,
       expect.any(Error),
+      expect.objectContaining({
+        action: 'updatePlayerCore.removeExtraEmail',
+        layer: 'server-action',
+      }),
     );
     expect(deps.clubSupporterService.upsertAll).toHaveBeenCalledWith(7, [10]);
     expect(deps.countrySupporterService.upsertAll).toHaveBeenCalledWith(7, ['GB-ENG']);
     expect(result).toEqual(updatedPlayer);
-
-    consoleErrorSpy.mockRestore();
   });
 });

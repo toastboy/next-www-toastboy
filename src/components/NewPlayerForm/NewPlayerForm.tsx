@@ -20,6 +20,8 @@ import { PlayerDataType } from 'types';
 
 import { EmailInput } from '@/components/EmailInput/EmailInput';
 import { config } from '@/lib/config';
+import { toPublicMessage } from '@/lib/errors';
+import { captureUnexpectedError } from '@/lib/observability/sentry';
 import type { CreatePlayerProxy } from '@/types/actions/CreatePlayer';
 import { CreatePlayerInput, CreatePlayerSchema } from '@/types/actions/CreatePlayer';
 import type { SendEmailProxy } from '@/types/actions/SendEmail';
@@ -133,12 +135,24 @@ export const NewPlayerForm: React.FC<Props> = ({
 
             router.push(`/footy/player/${newPlayer.id}`);
         } catch (err) {
-            console.error('Failed to create player:', err);
+            captureUnexpectedError(err, {
+                layer: 'client',
+                component: 'NewPlayerForm',
+                action: 'createPlayer',
+                route: '/footy/admin/players',
+                extra: {
+                    email: values.email,
+                    introducedBy: values.introducedBy,
+                },
+            });
             notifications.update({
                 id,
                 color: 'red',
                 title: 'Error',
-                message: `${String(err)}`,
+                message: toPublicMessage(
+                    err,
+                    err instanceof Error ? String(err) : 'Failed to create player.',
+                ),
                 icon: <IconAlertTriangle size={config.notificationIconSize} />,
                 loading: false,
                 autoClose: false,

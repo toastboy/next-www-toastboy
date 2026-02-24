@@ -28,6 +28,7 @@ import ReactDOMServer from 'react-dom/server';
 
 import { config } from '@/lib/config';
 import { assertOkResponse, toPublicMessage } from '@/lib/errors';
+import { captureUnexpectedError } from '@/lib/observability/sentry';
 import { PlayerDataType } from '@/types';
 import { AddPlayerInviteProxy } from '@/types/actions/CreatePlayer';
 import { SendEmailProxy } from '@/types/actions/SendEmail';
@@ -403,12 +404,20 @@ export const AdminPlayerList: React.FC<Props> = ({
                 autoClose: config.notificationAutoClose,
             });
         } catch (err) {
-            console.error('Failed to onboard players:', err);
+            captureUnexpectedError(err, {
+                layer: 'client',
+                component: 'AdminPlayerList',
+                action: 'sendOnboarding',
+                route: '/footy/admin/players',
+                extra: {
+                    selectedCount: selectedIds.length,
+                },
+            });
             notifications.update({
                 id,
                 color: 'red',
                 title: 'Error',
-                message: `${String(err)}`,
+                message: toPublicMessage(err, 'Failed to onboard players.'),
                 loading: false,
                 autoClose: false,
                 withCloseButton: true,

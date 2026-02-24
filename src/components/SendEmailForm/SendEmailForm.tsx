@@ -14,6 +14,8 @@ import { useState } from 'react';
 import { PlayerDataType } from 'types';
 
 import { config } from '@/lib/config';
+import { toPublicMessage } from '@/lib/errors';
+import { captureUnexpectedError } from '@/lib/observability/sentry';
 import { SendEmailProxy } from '@/types/actions/SendEmail';
 
 import classes from './SendEmailForm.module.css';
@@ -85,12 +87,20 @@ export const SendEmailForm: React.FC<Props> = ({
                 autoClose: config.notificationAutoClose,
             });
         } catch (err) {
-            console.error('Failed to send:', err);
+            captureUnexpectedError(err, {
+                layer: 'client',
+                component: 'SendEmailForm',
+                action: 'sendEmail',
+                route: '/footy/admin/players',
+                extra: {
+                    recipientCount: players.length,
+                },
+            });
             notifications.update({
                 id,
                 color: 'red',
                 title: 'Error',
-                message: `${String(err)}`,
+                message: toPublicMessage(err, 'Failed to send email.'),
                 icon: <IconAlertTriangle size={config.notificationIconSize} />,
                 loading: false,
                 autoClose: config.notificationAutoClose,

@@ -7,6 +7,8 @@ import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 
 import { config } from '@/lib/config';
+import { toPublicMessage } from '@/lib/errors';
+import { captureUnexpectedError } from '@/lib/observability/sentry';
 import type { TriggerInvitationsProxy } from '@/types/actions/TriggerInvitations';
 import { NewGameInput, NewGameInputSchema } from '@/types/actions/TriggerInvitations';
 
@@ -48,12 +50,23 @@ export const NewGameForm: React.FC<Props> = ({ onTriggerInvitations }) => {
                 autoClose: config.notificationAutoClose,
             });
         } catch (error) {
-            console.error('Failed to check invitations:', error);
+            captureUnexpectedError(error, {
+                layer: 'client',
+                component: 'NewGameForm',
+                action: 'triggerInvitations',
+                route: '/footy/admin/newgame',
+                extra: {
+                    overrideTimeCheck: values.overrideTimeCheck,
+                },
+            });
             notifications.update({
                 id,
                 color: 'red',
                 title: 'Error',
-                message: `${String(error)}`,
+                message: toPublicMessage(
+                    error,
+                    error instanceof Error ? String(error) : 'Failed to check invitations.',
+                ),
                 icon: <IconAlertTriangle size={config.notificationIconSize} />,
                 loading: false,
                 autoClose: false,

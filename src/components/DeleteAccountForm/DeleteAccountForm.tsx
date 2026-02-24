@@ -18,6 +18,8 @@ import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useState } from 'react';
 
 import { config } from '@/lib/config';
+import { toPublicMessage } from '@/lib/errors';
+import { captureUnexpectedError } from '@/lib/observability/sentry';
 import {
     DeleteAccountInput,
     DeleteAccountSchema,
@@ -50,8 +52,16 @@ export const DeleteAccountForm: React.FC<Props> = ({ onDeletePlayer }) => {
             form.reset();
             setSuccess(true);
         } catch (error) {
-            const message = error instanceof Error ? error.message : 'Unexpected error';
-            console.error('Failed to delete account data:', error);
+            captureUnexpectedError(error, {
+                layer: 'client',
+                component: 'DeleteAccountForm',
+                action: 'deleteAccountData',
+                route: '/footy/deleteaccount',
+            });
+            const message = toPublicMessage(
+                error,
+                error instanceof Error ? String(error) : 'Unable to delete your account data.',
+            );
             setErrorText(message);
         }
     };

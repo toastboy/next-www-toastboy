@@ -29,6 +29,8 @@ import { Activity, useEffect, useRef } from 'react';
 
 import { EmailInput } from '@/components/EmailInput/EmailInput';
 import { config } from '@/lib/config';
+import { toPublicMessage } from '@/lib/errors';
+import { captureUnexpectedError } from '@/lib/observability/sentry';
 import { ClubSupporterDataType } from '@/types';
 import type { UpdatePlayerProxy } from '@/types/actions/UpdatePlayer';
 import { UpdatePlayerInput, UpdatePlayerSchema } from '@/types/actions/UpdatePlayer';
@@ -141,12 +143,20 @@ export const PlayerProfileForm: React.FC<Props> = ({
                 autoClose: config.notificationAutoClose,
             });
         } catch (err) {
-            console.error('Failed to update profile:', err);
+            captureUnexpectedError(err, {
+                layer: 'client',
+                component: 'PlayerProfileForm',
+                action: 'updateProfile',
+                route: '/footy/profile',
+                extra: {
+                    playerId: player.id,
+                },
+            });
             notifications.update({
                 id,
                 color: 'red',
                 title: 'Error',
-                message: `${String(err)}`,
+                message: toPublicMessage(err, 'Failed to update profile.'),
                 icon: <IconAlertTriangle size={config.notificationIconSize} />,
                 loading: false,
                 autoClose: false,

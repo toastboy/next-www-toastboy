@@ -22,6 +22,8 @@ import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { Fragment } from 'react';
 
 import { config } from '@/lib/config';
+import { toPublicMessage } from '@/lib/errors';
+import { captureUnexpectedError } from '@/lib/observability/sentry';
 import type {
     CreateMoreGameDaysInput,
     CreateMoreGameDaysProxy,
@@ -68,12 +70,20 @@ export const MoreGamesForm: React.FC<Props> = ({ cost, rows, onCreateMoreGameDay
                 autoClose: config.notificationAutoClose,
             });
         } catch (err) {
-            console.error('Failed to create game days:', err);
+            captureUnexpectedError(err, {
+                layer: 'client',
+                component: 'MoreGamesForm',
+                action: 'createMoreGameDays',
+                route: '/footy/admin/moregames',
+                extra: {
+                    rowCount: values.rows.length,
+                },
+            });
             notifications.update({
                 id,
                 color: 'red',
                 title: 'Error',
-                message: `${String(err)}`,
+                message: toPublicMessage(err, 'Failed to create game days.'),
                 icon: <IconAlertTriangle size={config.notificationIconSize} />,
                 loading: false,
                 autoClose: false,

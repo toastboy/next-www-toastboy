@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache';
 
 import { setDrinkersCore } from '@/lib/actions/setDrinkers';
+import { toPublicMessage } from '@/lib/errors';
 import playerRecordService from '@/services/PlayerRecord';
 import { SetDrinkersInputSchema } from '@/types/actions/SetDrinkers';
 
@@ -20,7 +21,7 @@ export async function setDrinkers(rawData: unknown) {
     try {
         await playerRecordService.upsertFromGameDay(data.gameDayId);
     } catch (error) {
-        const message = error instanceof Error ? error.message : 'Unknown error';
+        const message = toPublicMessage(error, 'Unknown error');
         throw new Error(
             `Failed to update player records for game day ${data.gameDayId}: ${message}`,
         );

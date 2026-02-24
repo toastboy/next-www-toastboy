@@ -33,7 +33,7 @@ describe('/api/health', () => {
         expect(response.status).toBe(503);
         expect(json.status).toBe('unhealthy');
         expect(json.database).toBe('disconnected');
-        expect(json.error).toBe('Connection refused');
+        expect(json.error).toBe('Health check failed');
         expect(json.timestamp).toBeDefined();
         expect(prisma.$queryRaw).toHaveBeenCalledTimes(1);
     });
@@ -46,6 +46,6 @@ describe('/api/health', () => {
 
         expect(response.status).toBe(503);
         expect(json.status).toBe('unhealthy');
-        expect(json.error).toBe('Unknown error');
+        expect(json.error).toBe('Health check failed');
     });
 });

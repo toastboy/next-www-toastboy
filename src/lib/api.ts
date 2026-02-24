@@ -227,8 +227,12 @@ export async function sanitizePlayerData(data: PlayerType) {
                 return data;
         }
     } catch (error) {
-        console.error('Error sanitizing player data:', error);
-        throw error;
+        throw normalizeUnknownError(error, {
+            message: 'Failed to sanitize player data.',
+            details: {
+                playerId: data.id,
+            },
+        });
     }
 }
 
@@ -256,8 +260,13 @@ export async function sanitizeOutcomeData(data: OutcomeType) {
                 return data;
         }
     } catch (error) {
-        console.error('Error sanitizing outcome data:', error);
-        throw error;
+        throw normalizeUnknownError(error, {
+            message: 'Failed to sanitize outcome data.',
+            details: {
+                outcomeId: data.id,
+                gameDayId: data.gameDayId,
+            },
+        });
     }
 }
 

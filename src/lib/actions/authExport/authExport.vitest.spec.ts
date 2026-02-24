@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const {
+  captureUnexpectedErrorMock,
   blobServiceClientCtorMock,
   clientSecretCredentialCtorMock,
   getBlockBlobClientMock,
@@ -8,6 +9,7 @@ const {
   getSecretsMock,
   uploadMock,
 } = vi.hoisted(() => ({
+  captureUnexpectedErrorMock: vi.fn(),
   blobServiceClientCtorMock: vi.fn(),
   clientSecretCredentialCtorMock: vi.fn(),
   getContainerClientMock: vi.fn(),
@@ -34,6 +36,10 @@ vi.mock('@azure/storage-blob', () => ({
 
 vi.mock('@/lib/secrets', () => ({
   getSecrets: getSecretsMock,
+}));
+
+vi.mock('@/lib/observability/sentry', () => ({
+  captureUnexpectedError: captureUnexpectedErrorMock,
 }));
 
 import { authExportCore } from '@/lib/actions/authExport';
@@ -132,7 +138,6 @@ describe('authExportCore', () => {
       },
     };
     const deps = depsCandidate as unknown as Parameters<typeof authExportCore>[0];
-    const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
     await expect(authExportCore(deps)).rejects.toThrow('db unavailable');
     expect(accountFindMany).toHaveBeenCalledTimes(1);
@@ -140,7 +145,13 @@ describe('authExportCore', () => {
     expect(verificationFindMany).not.toHaveBeenCalled();
     expect(getBlockBlobClientMock).not.toHaveBeenCalled();
     expect(uploadMock).not.toHaveBeenCalled();
-
-    consoleErrorSpy.mockRestore();
+    expect(captureUnexpectedErrorMock).toHaveBeenCalledTimes(1);
+    expect(captureUnexpectedErrorMock).toHaveBeenCalledWith(
+      expect.any(Error),
+      expect.objectContaining({
+        action: 'authExportCore',
+        layer: 'server-action',
+      }),
+    );
   });
 });

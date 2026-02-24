@@ -2,6 +2,14 @@ import prisma from 'prisma/prisma';
 import type { Mock } from 'vitest';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+const { captureUnexpectedErrorMock } = vi.hoisted(() => ({
+    captureUnexpectedErrorMock: vi.fn(),
+}));
+
+vi.mock('@/lib/observability/sentry', () => ({
+    captureUnexpectedError: captureUnexpectedErrorMock,
+}));
+
 import { GET } from '@/app/api/health/route';
 import { HealthResponseSchema } from '@/lib/health';
 
@@ -21,6 +29,7 @@ describe('/api/health', () => {
         expect(json.database).toBe('connected');
         expect(json.timestamp).toBeDefined();
         expect(prisma.$queryRaw).toHaveBeenCalledTimes(1);
+        expect(captureUnexpectedErrorMock).not.toHaveBeenCalled();
     });
 
     it('should return 503 and unhealthy status when database is disconnected', async () => {
@@ -36,6 +45,15 @@ describe('/api/health', () => {
         expect(json.error).toBe('Health check failed');
         expect(json.timestamp).toBeDefined();
         expect(prisma.$queryRaw).toHaveBeenCalledTimes(1);
+        expect(captureUnexpectedErrorMock).toHaveBeenCalledTimes(1);
+        expect(captureUnexpectedErrorMock).toHaveBeenCalledWith(
+            expect.any(Error),
+            expect.objectContaining({
+                action: 'healthCheck',
+                route: '/api/health',
+                layer: 'route',
+            }),
+        );
     });
 
     it('should handle non-Error exceptions', async () => {
@@ -47,5 +65,6 @@ describe('/api/health', () => {
         expect(response.status).toBe(503);
         expect(json.status).toBe('unhealthy');
         expect(json.error).toBe('Health check failed');
+        expect(captureUnexpectedErrorMock).toHaveBeenCalledTimes(1);
     });
 });

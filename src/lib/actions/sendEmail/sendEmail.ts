@@ -3,7 +3,8 @@ import 'server-only';
 import nodemailer, { type SendMailOptions } from 'nodemailer';
 import sanitizeHtml from 'sanitize-html';
 
-import { ExternalServiceError } from '@/lib/errors';
+import { ExternalServiceError, normalizeUnknownError } from '@/lib/errors';
+import { captureUnexpectedError } from '@/lib/observability/sentry';
 import { getSecrets } from '@/lib/secrets';
 
 /**
@@ -41,14 +42,29 @@ export async function sendEmailCore(mailOptions: SendMailOptions) {
             ...(sanitizedHtml !== undefined ? { html: sanitizedHtml } : {}),
         });
     } catch (error) {
-        console.error('Failed to send email', {
-            to: mailOptions.to,
-            subject: mailOptions.subject,
-            error,
+        const normalizedError = normalizeUnknownError(error, {
+            details: {
+                to: mailOptions.to,
+                subject: mailOptions.subject,
+            },
+        });
+        captureUnexpectedError(normalizedError, {
+            layer: 'server-action',
+            action: 'sendEmailCore',
+            extra: {
+                to: mailOptions.to,
+                subject: mailOptions.subject,
+            },
         });
         throw new ExternalServiceError(
-            `Failed to send email: ${error instanceof Error ? error.message : String(error)}`,
-            { cause: error },
+            `Failed to send email: ${normalizedError.message}`,
+            {
+                cause: normalizedError,
+                details: {
+                    to: mailOptions.to,
+                    subject: mailOptions.subject,
+                },
+            },
         );
     }
 }

@@ -46,7 +46,6 @@ async function getPlayerMugshot(
         return await streamToBuffer(downloadBlockBlobResponse.readableStreamBody);
     }
     catch (error) {
-        console.error('Error fetching player mugshot:', error);
         throw normalizeUnknownError(error, {
             details: {
                 resource: 'player-mugshot',

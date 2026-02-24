@@ -2,7 +2,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { ExternalServiceError } from '@/lib/errors';
 
-const { createTransportMock, getSecretsMock, sanitizeHtmlMock, sendMailMock } = vi.hoisted(() => ({
+const { captureUnexpectedErrorMock, createTransportMock, getSecretsMock, sanitizeHtmlMock, sendMailMock } = vi.hoisted(() => ({
+    captureUnexpectedErrorMock: vi.fn(),
     createTransportMock: vi.fn(),
     getSecretsMock: vi.fn(),
     sanitizeHtmlMock: vi.fn(),
@@ -21,6 +22,10 @@ vi.mock('sanitize-html', () => ({
 
 vi.mock('@/lib/secrets', () => ({
     getSecrets: getSecretsMock,
+}));
+
+vi.mock('@/lib/observability/sentry', () => ({
+    captureUnexpectedError: captureUnexpectedErrorMock,
 }));
 
 import { sendEmailCore } from '@/lib/actions/sendEmail';
@@ -81,7 +86,6 @@ describe('sendEmailCore', () => {
     });
 
     it('throws ExternalServiceError when transport send fails', async () => {
-        const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
         sendMailMock.mockRejectedValue(new Error('SMTP down'));
 
         await expect(
@@ -99,7 +103,14 @@ describe('sendEmailCore', () => {
                 html: '<p>Hello</p>',
             }),
         ).rejects.toThrow('Failed to send email: SMTP down');
-
-        consoleErrorSpy.mockRestore();
+        expect(captureUnexpectedErrorMock).toHaveBeenCalledTimes(2);
+        expect(captureUnexpectedErrorMock).toHaveBeenNthCalledWith(
+            1,
+            expect.any(Error),
+            expect.objectContaining({
+                action: 'sendEmailCore',
+                layer: 'server-action',
+            }),
+        );
     });
 });

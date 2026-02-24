@@ -3,7 +3,8 @@ import 'server-only';
 import { NextResponse } from 'next/server';
 import prisma from 'prisma/prisma';
 
-import { toHttpErrorResponse } from '@/lib/errors';
+import { normalizeUnknownError, toHttpErrorResponse } from '@/lib/errors';
+import { captureUnexpectedError } from '@/lib/observability/sentry';
 
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
@@ -34,7 +35,18 @@ export async function GET() {
             },
         );
     } catch (error) {
-        console.error('Health check failed:', error);
+        const normalizedError = normalizeUnknownError(error, {
+            publicMessage: 'Health check failed',
+            details: {
+                route: '/api/health',
+            },
+        });
+        captureUnexpectedError(normalizedError, {
+            layer: 'route',
+            action: 'healthCheck',
+            route: '/api/health',
+        });
+
         /**
          * Normalise generic upstream/internal failures (surfaced as HTTP 500 by
          * `toHttpErrorResponse`, such as Prisma/database connectivity issues or
@@ -48,7 +60,7 @@ export async function GET() {
          * normalisation.
          */
 
-        const { status, message } = toHttpErrorResponse(error, 'Health check failed');
+        const { status, message } = toHttpErrorResponse(normalizedError, 'Health check failed');
 
         return NextResponse.json(
             {

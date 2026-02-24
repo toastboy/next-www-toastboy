@@ -5,6 +5,8 @@ import { BlobServiceClient, type ContainerClient } from '@azure/storage-blob';
 import { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
 
+import { normalizeUnknownError } from '@/lib/errors';
+import { captureUnexpectedError } from '@/lib/observability/sentry';
 import { getSecrets } from '@/lib/secrets';
 
 interface AuthExportDeps {
@@ -35,15 +37,10 @@ async function writeTableToJSONBlob<T>(
         findMany: () => Prisma.PrismaPromise<T[]>;
     },
 ) {
-    try {
-        const data = await prismaModel.findMany();
-        const json = JSON.stringify(data, null, 2);
-        const blockBlobClient = containerClient.getBlockBlobClient(fileName);
-        await blockBlobClient.upload(json, Buffer.byteLength(json));
-    } catch (error) {
-        console.error(`Error writing ${fileName} to blob storage:`, error);
-        throw error;
-    }
+    const data = await prismaModel.findMany();
+    const json = JSON.stringify(data, null, 2);
+    const blockBlobClient = containerClient.getBlockBlobClient(fileName);
+    await blockBlobClient.upload(json, Buffer.byteLength(json));
 }
 
 /**
@@ -76,14 +73,14 @@ async function writeTableToJSONBlob<T>(
  * ```
  */
 export async function authExportCore(deps: AuthExportDeps = defaultDeps): Promise<void> {
-    try {
-        const secrets = getSecrets();
-        const tenantId = secrets.AZURE_TENANT_ID ?? '';
-        const clientId = secrets.AZURE_CLIENT_ID ?? '';
-        const clientSecret = secrets.AZURE_CLIENT_SECRET ?? '';
-        const storageAccountName = secrets.AZURE_STORAGE_ACCOUNT_NAME ?? '';
-        const containerName = secrets.AZURE_CONTAINER_NAME ?? '';
+    const secrets = getSecrets();
+    const tenantId = secrets.AZURE_TENANT_ID ?? '';
+    const clientId = secrets.AZURE_CLIENT_ID ?? '';
+    const clientSecret = secrets.AZURE_CLIENT_SECRET ?? '';
+    const storageAccountName = secrets.AZURE_STORAGE_ACCOUNT_NAME ?? '';
+    const containerName = secrets.AZURE_CONTAINER_NAME ?? '';
 
+    try {
         const credentials = new ClientSecretCredential(tenantId, clientId, clientSecret);
         const blobServiceClient = new BlobServiceClient(
             `https://${storageAccountName}.blob.core.windows.net`,
@@ -96,7 +93,20 @@ export async function authExportCore(deps: AuthExportDeps = defaultDeps): Promis
         await writeTableToJSONBlob(containerClient, 'user.json', deps.prisma.user);
         await writeTableToJSONBlob(containerClient, 'verification.json', deps.prisma.verification);
     } catch (error) {
-        console.error('Error exporting auth data:', error);
-        throw error;
+        const normalizedError = normalizeUnknownError(error, {
+            details: {
+                storageAccountName,
+                containerName,
+            },
+        });
+        captureUnexpectedError(normalizedError, {
+            layer: 'server-action',
+            action: 'authExportCore',
+            extra: {
+                storageAccountName,
+                containerName,
+            },
+        });
+        throw normalizedError;
     }
 }

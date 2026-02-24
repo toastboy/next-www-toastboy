@@ -38,7 +38,6 @@ async function getClubBadge(
         return await streamToBuffer(downloadBlockBlobResponse.readableStreamBody);
     }
     catch (error) {
-        console.error(`Error in getClubBadge: ${String(error)}`);
         throw normalizeUnknownError(error, {
             details: {
                 resource: 'club-badge',

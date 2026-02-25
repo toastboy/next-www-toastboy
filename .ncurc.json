@@ -1,5 +1,7 @@
 {
     "reject": [
-        "@types/node"
+        "@types/node",
+        "eslint",
+        "@eslint/js"
     ]
 }

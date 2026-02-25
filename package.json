@@ -128,7 +128,7 @@
         "eslint-plugin-regexp": "^3.0.0",
         "eslint-plugin-simple-import-sort": "^12.1.1",
         "eslint-plugin-sonarjs": "^3.0.7",
-        "eslint-plugin-storybook": "^10.2.9",
+        "eslint-plugin-storybook": "^10.2.12",
         "eslint-plugin-testing-library": "^7.16.0",
         "eslint-plugin-unused-imports": "^4.4.1",
         "glob": "^13.0.5",
@@ -152,11 +152,11 @@
         "wait-on": "^9.0.4",
         "whatwg-fetch": "^3.6.20",
         "storybook": "^10.2.9",
-        "@storybook/nextjs-vite": "^10.2.9",
+        "@storybook/nextjs-vite": "^10.2.12",
         "@chromatic-com/storybook": "^5.0.1",
-        "@storybook/addon-vitest": "^10.2.9",
-        "@storybook/addon-a11y": "^10.2.9",
-        "@storybook/addon-docs": "^10.2.9"
+        "@storybook/addon-vitest": "^10.2.12",
+        "@storybook/addon-a11y": "^10.2.12",
+        "@storybook/addon-docs": "^10.2.12"
     },
     "msw": {
         "workerDirectory": [

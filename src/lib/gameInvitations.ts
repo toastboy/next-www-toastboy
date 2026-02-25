@@ -125,7 +125,7 @@ export async function sendGameInvitations(
 
         const inviteLink = `${baseUrl}/api/footy/response/${encodeURIComponent(token)}`;
         const html = buildInvitationEmail({
-            playerName: playerService.getName(player),
+            playerName: player.name,
             inviteLink,
             gameDate: gameDay.date,
             customMessage,
@@ -161,7 +161,7 @@ export async function getGameInvitationResponseDetails(token: string): Promise<G
     return {
         token,
         playerId: player.id,
-        playerName: playerService.getName(player),
+        playerName: player.name,
         playerLogin,
         gameDayId: invitation.gameDayId,
         response: outcome?.response ?? null,

@@ -6,7 +6,7 @@ import playerService from '@/services/Player';
 /**
  * Handles a GET request to retrieve the name of a player based on their ID.
  * There's no need to take account of the logged in user role because
- * `playerService.getName()` already anonymises as necessary.
+ * `playerService.getById()` already returns an anonymised display name.
  *
  * @param request - The incoming Next.js request object.
  * @param props - An object containing route parameters.
@@ -24,7 +24,7 @@ export const GET = async (request: NextRequest, props: { params: Promise<Record<
             if (Number.isNaN(playerId)) return null;
             const player = await playerService.getById(playerId);
             if (!player) { return null; }
-            return playerService.getName(player);
+            return player.name;
         },
         { params },
     );

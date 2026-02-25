@@ -2,7 +2,6 @@ import crypto from 'crypto';
 import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 import type { GameInvitationType } from 'prisma/zod/schemas/models/GameInvitation.schema';
 import type { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
-import type { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { sendEmail } from '@/actions/sendEmail';
@@ -13,25 +12,11 @@ import gameDayService from '@/services/GameDay';
 import gameInvitationService from '@/services/GameInvitation';
 import outcomeService from '@/services/Outcome';
 import playerService from '@/services/Player';
+import type { PlayerDataDisplayType, PlayerDisplayType } from '@/services/Player';
 import { createMockGameDay } from '@/tests/mocks/data/gameDay';
 import { createMockGameInvitation } from '@/tests/mocks/data/gameInvitation';
 import { createMockOutcome } from '@/tests/mocks/data/outcome';
 import { createMockPlayerData } from '@/tests/mocks/data/playerData';
-import type { PlayerDataType } from '@/types';
-
-type ConcretePlayer = Omit<
-    PlayerType,
-    'comment' | 'name' | 'accountEmail' | 'anonymous' | 'joined' | 'finished' | 'born' | 'introducedBy'
-> & {
-    comment: string | null;
-    name: string | null;
-    accountEmail: string | null;
-    anonymous: boolean | null;
-    joined: Date | null;
-    finished: Date | null;
-    born: number | null;
-    introducedBy: number | null;
-};
 
 vi.mock('@/actions/sendEmail', () => ({
     sendEmail: vi.fn(),
@@ -65,7 +50,6 @@ vi.mock('@/services/Outcome', () => ({
 vi.mock('@/services/Player', () => ({
     default: {
         getAll: vi.fn(),
-        getName: vi.fn(),
         getById: vi.fn(),
         getLogin: vi.fn(),
     },
@@ -108,7 +92,7 @@ describe('buildInvitationEmail', () => {
 
 describe('sendGameInvitations', () => {
     let gameDay: GameDayType;
-    let players: PlayerDataType[];
+    let players: PlayerDataDisplayType[];
 
     beforeEach(() => {
         vi.resetAllMocks();
@@ -160,9 +144,11 @@ describe('sendGameInvitations', () => {
                 accountEmail: 'charlie@example.com',
                 extraEmails: [],
             }),
-        ];
+        ].map((player) => ({
+            ...player,
+            name: player.name ?? `Player ${player.id}`,
+        }));
         mockPlayerService.getAll.mockResolvedValue(players);
-        mockPlayerService.getName.mockImplementation((player: PlayerType | PlayerDataType) => player.name ?? `Player ${player.id}`);
         mockInvitationService.createMany.mockResolvedValue(1);
     });
 
@@ -213,13 +199,11 @@ describe('sendGameInvitations', () => {
 
 describe('getGameInvitationResponseDetails', () => {
     let invitation: GameInvitationType;
-    let player: ConcretePlayer;
+    let player: PlayerDisplayType;
     let outcome: OutcomeType;
 
     beforeEach(() => {
         vi.resetAllMocks();
-
-        mockPlayerService.getName.mockImplementation((playerObj: PlayerType) => playerObj.name ?? `Player ${playerObj.id}`);
 
         invitation = createMockGameInvitation({
             uuid: 'token-abc',

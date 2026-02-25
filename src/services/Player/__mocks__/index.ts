@@ -19,7 +19,6 @@ const playerService = {
     setFinished: vi.fn(),
     delete: vi.fn(),
     deleteAll: vi.fn(),
-    getName: vi.fn(),
 };
 
 beforeEach(() => {

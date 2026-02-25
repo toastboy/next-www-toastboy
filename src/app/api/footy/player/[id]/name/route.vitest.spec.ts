@@ -13,7 +13,7 @@ const mockApp = createMockApp(GET, { path: testURI, params: Promise.resolve({ id
 
 describe('API tests using HTTP', () => {
     it('should return JSON response for a valid player', async () => {
-        (playerService.getName as Mock).mockResolvedValue(defaultPlayer.name);
+        (playerService.getById as Mock).mockResolvedValue(defaultPlayer);
 
         const response = await request(mockApp).get(testURI);
 
@@ -32,18 +32,22 @@ describe('API tests using HTTP', () => {
         expect(response.text).toBe('Not Found');
     });
 
-    it('should return 404 if the arse record does not exist', async () => {
-        (playerService.getName as Mock).mockResolvedValue(null);
+    it('should return anonymised name for anonymous player', async () => {
+        (playerService.getById as Mock).mockResolvedValue({
+            ...defaultPlayer,
+            name: 'Player 1',
+            anonymous: true,
+        });
 
         const response = await request(mockApp).get(testURI);
 
-        expect(response.status).toBe(404);
-        expect(response.text).toBe('Not Found');
+        expect(response.status).toBe(200);
+        expect(response.body).toBe('Player 1');
     });
 
     it('should return 500 if there is an error', async () => {
         const errorMessage = 'Test Error';
-        (playerService.getName as Mock).mockRejectedValue(new Error(errorMessage));
+        (playerService.getById as Mock).mockRejectedValue(new Error(errorMessage));
 
         const response = await request(mockApp).get(testURI);
 

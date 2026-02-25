@@ -97,6 +97,30 @@ describe('PlayerService', () => {
             const result = await playerService.getById(107);
             expect(result).toBeNull();
         });
+
+        it('should anonymise the returned name when player is anonymous', async () => {
+            (prisma.player.findUnique as Mock).mockResolvedValueOnce({
+                ...defaultPlayer,
+                id: 6,
+                name: 'Hidden Name',
+                anonymous: true,
+            });
+
+            const result = await playerService.getById(6);
+            expect(result?.name).toBe('Player 6');
+        });
+
+        it('should return fallback name when player has no name', async () => {
+            (prisma.player.findUnique as Mock).mockResolvedValueOnce({
+                ...defaultPlayer,
+                id: 6,
+                name: null,
+                anonymous: false,
+            });
+
+            const result = await playerService.getById(6);
+            expect(result?.name).toBe('Player 6');
+        });
     });
 
     describe('getByLogin', () => {
@@ -269,6 +293,22 @@ describe('PlayerService', () => {
             expect(result[0].lastPlayed).toBeNull();
             expect(result[0].gamesPlayed).toBe(0);
         });
+
+        it('should anonymise names in list responses when players are anonymous', async () => {
+            const anonymousPlayer: PlayerType & { outcomes: OutcomeType[]; extraEmails: PlayerExtraEmailType[] } = {
+                ...defaultPlayer,
+                id: 1,
+                name: 'Should Not Leak',
+                anonymous: true,
+                extraEmails: [],
+                outcomes: [],
+            };
+
+            (prisma.player.findMany as Mock).mockResolvedValueOnce([anonymousPlayer]);
+
+            const result = await playerService.getAll();
+            expect(result[0].name).toBe('Player 1');
+        });
     });
 
     describe('getAllIdsAndLogins', () => {
@@ -288,21 +328,6 @@ describe('PlayerService', () => {
             expect(result).toHaveLength(200);
             expect(result[0]).toBe("1");
             expect(result[1]).toBe("garyp");
-        });
-    });
-
-    describe('getName', () => {
-        it('should return the correct name for a named player', () => {
-            const result = playerService.getName(defaultPlayer);
-            expect(result).toBe("Gary Player");
-        });
-
-        it('should return the correct name for an anonymous player', () => {
-            const result = playerService.getName({
-                ...defaultPlayer,
-                anonymous: true,
-            });
-            expect(result).toBe("Player 1");
         });
     });
 

@@ -17,18 +17,65 @@ import {
     PlayerUpdateWriteInputSchema,
 } from '@/types/PlayerStrictSchema';
 
+export type PlayerDisplayType = Omit<PlayerType, 'name'> & { name: string };
+export type PlayerDataDisplayType = Omit<PlayerDataType, 'name'> & { name: string };
 
 class PlayerService {
+    /**
+     * Gets the display name for a player.
+     *
+     * If the player is anonymous (i.e., the `anonymous` flag is `true`),
+     * returns a generic name with the player ID. Otherwise, returns the
+     * player's trimmed name, falling back to a generic name if the name is
+     * empty or null. A `null` value for `anonymous` is treated as not anonymous
+     * (equivalent to `false`).
+     *
+     * @param player - The player object containing id, name, and anonymous flag
+     * @param player.id - The unique identifier for the player
+     * @param player.name - The player's name, can be null
+     * @param player.anonymous - Whether the player is anonymous; `true` marks
+     * the player as anonymous, while `false` or a `null` value are treated as
+     * not anonymous
+     * @returns The display name for the player
+     */
+    private getDisplayName(player: { id: number; name: string | null; anonymous: boolean | null }) {
+        if (player.anonymous) {
+            return `Player ${player.id}`;
+        }
+
+        return player.name?.trim() ?? `Player ${player.id}`;
+    }
+
+    /**
+    * Sanitizes a player object by replacing its name with a display name.
+    *
+    * @template T - The player object type extending an object with `id`,
+    * `name`, and `anonymous` properties.
+    * @param player - The player object to sanitize.
+    * @returns A new object with the same properties as the input player, but
+    * with the `name` property replaced by the display name (guaranteed to be a
+    * string, not null).
+    */
+    private sanitizePlayerName<T extends { id: number; name: string | null; anonymous: boolean | null }>(
+        player: T,
+    ): Omit<T, 'name'> & { name: string } {
+        return {
+            ...player,
+            name: this.getDisplayName(player),
+        };
+    }
+
     /**
      * Get a single player by id
      * @param id The numeric ID for the player
      * @returns A promise that resolves to the player or undefined if none was
      * found
      */
-    async getById(id: number) {
+    async getById(id: number): Promise<PlayerDisplayType | null> {
         try {
             const where = PlayerWhereUniqueInputObjectSchema.parse({ id });
-            return prisma.player.findUnique({ where });
+            const player = await prisma.player.findUnique({ where });
+            return player ? this.sanitizePlayerName(player) : null;
         } catch (error) {
             throw normalizeUnknownError(error);
         }
@@ -40,7 +87,7 @@ class PlayerService {
      * @returns A promise that resolves to the player or undefined if none was
      * found
      */
-    async getByLogin(login: string) {
+    async getByLogin(login: string): Promise<PlayerDisplayType | null> {
         try {
             const where = PlayerLoginWhereUniqueInputObjectSchema.parse({ login });
             const playerLogin = await prisma.playerLogin.findUnique({
@@ -50,7 +97,7 @@ class PlayerService {
                 },
             });
 
-            return playerLogin?.player ?? null;
+            return playerLogin?.player ? this.sanitizePlayerName(playerLogin.player) : null;
         } catch (error) {
             throw normalizeUnknownError(error);
         }
@@ -64,7 +111,7 @@ class PlayerService {
      * @returns A promise resolving to the player identified by idOrLogin if
      * such a player exists, or undefined otherwise.
      */
-    async getByIdOrLogin(idOrLogin: string) {
+    async getByIdOrLogin(idOrLogin: string): Promise<PlayerDisplayType | null> {
         try {
             if (!isNaN(Number(idOrLogin))) {
                 return await this.getById(Number(idOrLogin));
@@ -150,7 +197,7 @@ class PlayerService {
      * @throws Logs and re-throws any errors that occur during the database
      * query
      */
-    async getAll(options?: { activeOnly?: boolean }): Promise<PlayerDataType[]> {
+    async getAll(options?: { activeOnly?: boolean }): Promise<PlayerDataDisplayType[]> {
         try {
             const players = await prisma.player.findMany({
                 where: options?.activeOnly ? { finished: null } : undefined,
@@ -178,7 +225,7 @@ class PlayerService {
 
                 const accountEmail = (player as { accountEmail?: string | null }).accountEmail ?? null;
 
-                return {
+                const playerWithComputedFields = {
                     ...player,
                     accountEmail,
                     firstResponded: respondedGameDays.length > 0 ? Math.min(...respondedGameDays) : null,
@@ -190,6 +237,8 @@ class PlayerService {
                     gamesDrawn: gamesPlayed.filter(outcome => outcome.points === 1).length,
                     gamesLost: gamesPlayed.filter(outcome => outcome.points === 0).length,
                 } satisfies PlayerDataType;
+
+                return this.sanitizePlayerName(playerWithComputedFields);
             });
         } catch (error) {
             throw normalizeUnknownError(error);
@@ -230,20 +279,6 @@ class PlayerService {
         } catch (error) {
             throw normalizeUnknownError(error);
         }
-    }
-
-    /**
-     * Player name: allows for returning an anonymised name if desired,
-     * otherwise concatenates the first name and the last name.
-     * @param player The player object in question
-     * @returns The player name string or null if there was an error
-     */
-    getName(player: PlayerType) {
-        if (player.anonymous) {
-            return `Player ${player.id}`;
-        }
-
-        return player.name ?? `Player ${player.id}`;
     }
 
     /**
@@ -353,11 +388,12 @@ class PlayerService {
      * @throws {z.ZodError} If input or Prisma-args validation fails.
      * @throws {Error} If Prisma create fails.
      */
-    async create(data: PlayerCreateWriteInput): Promise<PlayerType> {
+    async create(data: PlayerCreateWriteInput): Promise<PlayerDisplayType> {
         try {
             const writeData = PlayerCreateWriteInputSchema.parse(data);
             const args = PlayerCreateOneStrictSchema.parse({ data: writeData });
-            return await prisma.player.create(args);
+            const player = await prisma.player.create(args);
+            return this.sanitizePlayerName(player);
         } catch (error) {
             throw normalizeUnknownError(error);
         }
@@ -370,14 +406,15 @@ class PlayerService {
      * @throws {z.ZodError} If input or Prisma-args validation fails.
      * @throws {Error} If Prisma update fails.
      */
-    async update(data: PlayerUpdateWriteInput): Promise<PlayerType> {
+    async update(data: PlayerUpdateWriteInput): Promise<PlayerDisplayType> {
         try {
             const { id, ...updateData } = PlayerUpdateWriteInputSchema.parse(data);
             const args = PlayerUpdateOneStrictSchema.parse({
                 where: { id },
                 data: updateData,
             });
-            return await prisma.player.update(args);
+            const player = await prisma.player.update(args);
+            return this.sanitizePlayerName(player);
         } catch (error) {
             throw normalizeUnknownError(error);
         }
@@ -397,7 +434,7 @@ class PlayerService {
      * @throws {Error} If the database update operation fails (e.g. Prisma
      * errors).
      */
-    async anonymise(id: number): Promise<PlayerType> {
+    async anonymise(id: number): Promise<PlayerDisplayType> {
         try {
             const where = PlayerWhereUniqueInputObjectSchema.parse({ id });
             const data = {
@@ -407,7 +444,8 @@ class PlayerService {
                 finished: new Date(),
             };
 
-            return await prisma.player.update({ where, data });
+            const player = await prisma.player.update({ where, data });
+            return this.sanitizePlayerName(player);
         } catch (error) {
             throw normalizeUnknownError(error);
         }
@@ -423,14 +461,15 @@ class PlayerService {
      * @returns A Promise that resolves to the updated PlayerType.
      * @throws Will throw if input validation or the database update fails.
      */
-    async setFinished(playerId: number, finished = true): Promise<PlayerType> {
+    async setFinished(playerId: number, finished = true): Promise<PlayerDisplayType> {
         try {
             const where = PlayerWhereUniqueInputObjectSchema.parse({ id: playerId });
             const data = {
                 finished: finished ? new Date() : null,
             };
 
-            return await prisma.player.update({ where, data });
+            const player = await prisma.player.update({ where, data });
+            return this.sanitizePlayerName(player);
         } catch (error) {
             throw normalizeUnknownError(error);
         }

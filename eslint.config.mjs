@@ -257,6 +257,32 @@ const config = [
             "@typescript-eslint/no-unsafe-assignment": "off",
         },
     },
+    // Runtime app code guardrails:
+    // - ban direct console logging
+    // - enforce typed app errors instead of `throw new Error(...)`
+    {
+        files: ["src/app/**/*.{ts,tsx}", "src/components/**/*.{ts,tsx}", "src/lib/**/*.{ts,tsx}", "src/services/**/*.{ts,tsx}"],
+        ignores: [
+            "**/*.vitest.spec.*",
+            "**/*.test.*",
+            "**/*.stories.*",
+            "**/__mocks__/**",
+            "src/tests/**",
+            "src/lib/importlivedb/**",
+            "src/lib/crawllivesite/**",
+            "src/lib/observability/sentry.ts",
+        ],
+        rules: {
+            "no-console": "error",
+            "no-restricted-syntax": [
+                "error",
+                {
+                    selector: "ThrowStatement > NewExpression[callee.name='Error']",
+                    message: "Use a typed AppError (or normalizeUnknownError) instead of `throw new Error(...)` in runtime code.",
+                },
+            ],
+        },
+    },
     ...storybook.configs["flat/recommended"],
 ];
 

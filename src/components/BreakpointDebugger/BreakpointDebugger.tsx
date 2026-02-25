@@ -29,6 +29,7 @@ export const BreakpointDebugger: React.FC<Props> = () => {
 
     useEffect(() => {
         // Pure side-effect (no setState) -> avoids cascading renders
+        // eslint-disable-next-line no-console
         console.log(`Active Breakpoint: ${currentBreakpoint}`);
     }, [currentBreakpoint]);
 

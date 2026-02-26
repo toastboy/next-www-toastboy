@@ -3,8 +3,13 @@
 import * as d3 from 'd3';
 import { useEffect, useRef } from 'react';
 
+export interface PieChartDatum {
+    label: string;
+    value: number;
+}
+
 export interface Props {
-    data: { label: string; value: number }[];
+    data: PieChartDatum[];
     width?: number;
     height?: number;
 }
@@ -22,8 +27,8 @@ export const PieChart = ({ data, width = 300, height = 300 }: Props) => {
         const radius = Math.min(width, height) / 2;
         const color = d3.scaleOrdinal(d3.schemeCategory10);
 
-        const pie = d3.pie<{ label: string; value: number }>().value((d) => d.value);
-        const arc = d3.arc<d3.PieArcDatum<{ label: string; value: number }>>()
+        const pie = d3.pie<PieChartDatum>().value((d) => d.value);
+        const arc = d3.arc<d3.PieArcDatum<PieChartDatum>>()
             .innerRadius(0)
             .outerRadius(radius);
 

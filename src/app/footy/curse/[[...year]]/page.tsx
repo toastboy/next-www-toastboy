@@ -1,11 +1,12 @@
-'use client';
+'use server';
 
 import { Flex } from '@mantine/core';
-import { use } from 'react';
+import { notFound } from 'next/navigation';
 
-import { PieChart } from '@/components/PieChart/PieChart';
+import { CurseOfTheBibs } from '@/components/CurseOfTheBibs/CurseOfTheBibs';
 import { YearSelector } from '@/components/YearSelector/YearSelector';
-import { useBibs, useTableYears } from '@/lib/swr';
+import outcomeService from '@/services/Outcome';
+import playerRecordService from '@/services/PlayerRecord';
 
 interface PageProps {
     params: Promise<{
@@ -13,23 +14,19 @@ interface PageProps {
     }>,
 }
 
-const Page: React.FC<PageProps> = (props) => {
-    const { year } = use(props.params);
-    const yearnum = parseInt(year) || 0;
-    const bibsData = useBibs(parseInt(year));
-    const allYears = useTableYears();
+const Page: React.FC<PageProps> = async (props) => {
+    const { year } = await props.params;
+    const activeYear = year ? parseInt(year[0]) : 0;
+    const allYears = await playerRecordService.getAllYears();
 
-    if (!bibsData || !allYears) return null;
+    if (!allYears.includes(activeYear)) return notFound();
 
-    const pieData: { label: string; value: number; }[] = Object.keys(bibsData).map((key) => ({
-        label: key,
-        value: bibsData[key as keyof typeof bibsData],
-    }));
+    const bibsData = await outcomeService.getByBibs({ year: activeYear });
 
     return (
         <Flex direction="column" w="100%" align="center">
-            <YearSelector activeYear={yearnum} validYears={allYears} />
-            <PieChart data={pieData} />
+            <YearSelector activeYear={activeYear} validYears={allYears} />
+            <CurseOfTheBibs bibsData={bibsData} />
         </Flex>
     );
 };

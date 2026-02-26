@@ -22,7 +22,7 @@
     "[yaml]": {
         "editor.defaultFormatter": "redhat.vscode-yaml",
         "editor.insertSpaces": true,
-        "editor.tabSize": 2,
+        "editor.tabSize": 4,
         "editor.autoIndent": "advanced"
     },
     "[javascript]": {

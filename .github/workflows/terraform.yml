@@ -1,67 +1,67 @@
 name: Terraform
 
 on:
-  pull_request:
-  push:
-    branches: [main]
+    pull_request:
+    push:
+        branches: [main]
 
 permissions:
-  contents: read
+    contents: read
 
 env:
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
-  TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
-  TF_PLUGIN_CACHE_DIR: .terraform.d/plugin-cache
+    TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
+    TF_TOKEN_app_terraform_io: ${{ secrets.TF_API_TOKEN }}
+    TF_PLUGIN_CACHE_DIR: .terraform.d/plugin-cache
 
-  TF_VAR_github_repository: '"${{ github.repository }}"'
-  TF_VAR_github_run_id: '"${{ github.run_id }}"'
-  TF_VAR_github_server_url: '"${{ github.server_url }}"'
-  TF_VAR_github_sha: '"${{ github.sha }}"'
+    TF_VAR_github_repository: '"${{ github.repository }}"'
+    TF_VAR_github_run_id: '"${{ github.run_id }}"'
+    TF_VAR_github_server_url: '"${{ github.server_url }}"'
+    TF_VAR_github_sha: '"${{ github.sha }}"'
 
 jobs:
-  terraform:
-    runs-on: ubuntu-latest
+    terraform:
+        runs-on: ubuntu-latest
 
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v6
 
-      - name: Ensure TF plugin cache dir exists
-        run: mkdir -p .terraform.d/plugin-cache
+            - name: Ensure TF plugin cache dir exists
+              run: mkdir -p .terraform.d/plugin-cache
 
-      - name: Cache Terraform plugin dir
-        uses: actions/cache@v5
-        with:
-          path: .terraform.d/plugin-cache
-          key: tf-plugins-${{ runner.os }}-${{ hashFiles('**/.terraform.lock.hcl') }}
-          restore-keys: |
-            tf-plugins-${{ runner.os }}-
+            - name: Cache Terraform plugin dir
+              uses: actions/cache@v5
+              with:
+                  path: .terraform.d/plugin-cache
+                  key: tf-plugins-${{ runner.os }}-${{ hashFiles('**/.terraform.lock.hcl') }}
+                  restore-keys: |
+                      tf-plugins-${{ runner.os }}-
 
-      - name: Load secrets from 1Password and export to environment
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-        uses: 1password/load-secrets-action@v3
-        with:
-          export-env: true
-        env:
-          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-          TF_VAR_azure_tenant_id: op://next-www-toastboy/TF_AZURE_TENANT_ID/Section_elpyzkswpwjdt45ytdpuj4zpri/uuid
-          TF_VAR_azure_subscription_id: op://next-www-toastboy/AZURE_SUBSCRIPTION_ID/Section_u2slseexl7iz6qq3ab3kwfut5u/uuid
-          TF_VAR_azure_client_id: op://next-www-toastboy/TF_AZURE_CLIENT_ID/Section_sbgupoixcvisaemyfdnssgod3u/uuid
-          TF_VAR_azure_client_secret: op://next-www-toastboy/TF_AZURE_CLIENT_SECRET/Section_al3t4lplsritwudt5bbhjxh4e4/uuid
+            - name: Load secrets from 1Password and export to environment
+              if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
+              uses: 1password/load-secrets-action@v3
+              with:
+                  export-env: true
+              env:
+                  OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+                  TF_VAR_azure_tenant_id: op://next-www-toastboy/TF_AZURE_TENANT_ID/Section_elpyzkswpwjdt45ytdpuj4zpri/uuid
+                  TF_VAR_azure_subscription_id: op://next-www-toastboy/AZURE_SUBSCRIPTION_ID/Section_u2slseexl7iz6qq3ab3kwfut5u/uuid
+                  TF_VAR_azure_client_id: op://next-www-toastboy/TF_AZURE_CLIENT_ID/Section_sbgupoixcvisaemyfdnssgod3u/uuid
+                  TF_VAR_azure_client_secret: op://next-www-toastboy/TF_AZURE_CLIENT_SECRET/Section_al3t4lplsritwudt5bbhjxh4e4/uuid
 
-      - name: Terraform Plan (Internal PRs)
-        if: ${{ github.event_name == 'pull_request' && !github.event.pull_request.head.repo.fork }}
-        uses: dflook/terraform-plan@v2
-        with:
-          path: terraform
-          workspace: next-www-toastboy
+            - name: Terraform Plan (Internal PRs)
+              if: ${{ github.event_name == 'pull_request' && !github.event.pull_request.head.repo.fork }}
+              uses: dflook/terraform-plan@v2
+              with:
+                  path: terraform
+                  workspace: next-www-toastboy
 
-      - name: Terraform Apply (main)
-        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-        uses: dflook/terraform-apply@v2
-        with:
-          path: terraform
-          workspace: next-www-toastboy
-          auto_approve: true
+            - name: Terraform Apply (main)
+              if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+              uses: dflook/terraform-apply@v2
+              with:
+                  path: terraform
+                  workspace: next-www-toastboy
+                  auto_approve: true

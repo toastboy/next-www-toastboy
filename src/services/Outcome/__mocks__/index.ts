@@ -6,6 +6,7 @@ const outcomeService = {
     getTurnoutByYear: vi.fn(),
     getRecentGamePoints: vi.fn(),
     getRecentAverage: vi.fn(),
+    getByBibs: vi.fn(),
     getPlayerGamesPlayed: vi.fn(),
     getPlayerGamesPlayedBeforeGameDay: vi.fn(),
     upsert: vi.fn(),

@@ -109,8 +109,6 @@ describe('listUsersActionCore', () => {
                 },
             ],
             total: 1,
-            limit: undefined,
-            offset: undefined,
         });
 
         const users = await listUsersActionCore(

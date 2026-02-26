@@ -1,75 +1,39 @@
-'use client';
+'use server';
 
-import { CodeHighlight } from '@mantine/code-highlight';
-import { Center, Container, Text, Title } from '@mantine/core';
-import { UserWithRole } from 'better-auth/plugins/admin';
-import { use, useEffect, useState } from 'react';
+import { notFound } from 'next/navigation';
 
 import { listUsersAction } from '@/actions/auth';
+import { AdminUserData } from '@/components/AdminUserData/AdminUserData';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 
 interface PageProps {
     params: Promise<{ email: string }>,
 }
 
-const Page: React.FC<PageProps> = (props) => {
-    const { email } = use(props.params);
+const Page: React.FC<PageProps> = async (props) => {
+    const { email } = await props.params;
+    let user;
 
-    const [users, setUsers] = useState<UserWithRole[] | null>(null);
-    const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-    useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                const response = await listUsersAction(decodeURIComponent(email));
-                setUsers(response.map((user) => ({
-                    ...user,
-                    createdAt: new Date(user.createdAt),
-                    updatedAt: new Date(user.updatedAt),
-                    banExpires: user.banExpires ? new Date(user.banExpires) : null,
-                })));
-            }
-            catch (error) {
-                captureUnexpectedError(error, {
-                    layer: 'client',
-                    action: 'listUsersAction',
-                    component: 'AdminUserPage',
-                    route: '/footy/admin/user/[email]',
-                    extra: {
-                        email,
-                    },
-                });
-                setErrorMessage('An error occurred while fetching users');
-            }
-        };
-
-        // Errors are handled inside fetchUsers
-        void fetchUsers();
-    }, [email]);
-
-    const user = users?.[0];
-
-    if (errorMessage || !user) {
-        return (
-            <Container>
-                <Text c="red">{errorMessage}</Text>
-            </Container>
-        );
+    try {
+        const response = await listUsersAction(decodeURIComponent(email));
+        user = response?.[0];
+    }
+    catch (error) {
+        captureUnexpectedError(error, {
+            layer: 'server',
+            action: 'listUsersAction',
+            component: 'AdminUserPage',
+            route: '/footy/admin/user/[email]',
+            extra: {
+                email,
+            },
+        });
     }
 
-    return (
-        <Container size="xs" mt="xl">
-            <Center>
-                <Title order={2} mb="md">
-                    {user.name}
-                </Title>
-            </Center>
+    if (!user) return notFound();
 
-            <CodeHighlight
-                code={JSON.stringify(user, null, 2)}
-                language="json"
-            />
-        </Container>
+    return (
+        <AdminUserData user={user} />
     );
 };
 

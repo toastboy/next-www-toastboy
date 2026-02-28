@@ -1,8 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import { defaultAdminUserDataPayload } from '@/tests/mocks/data/adminUserData';
+import type { SetAdminRoleProxy } from '@/types/actions/SetAdminRole';
 
 import { AdminUserList } from './AdminUserList';
+
+const setAdminRole: SetAdminRoleProxy = async () => Promise.resolve();
 
 const sampleUsers = [
     defaultAdminUserDataPayload,
@@ -32,11 +35,13 @@ type Story = StoryObj<typeof meta>;
 export const Primary: Story = {
     args: {
         users: sampleUsers,
+        setAdminRole,
     },
 };
 
 export const Empty: Story = {
     args: {
         users: [],
+        setAdminRole,
     },
 };

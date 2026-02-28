@@ -6,19 +6,17 @@ import { AdminUserList } from '@/components/AdminUserList/AdminUserList';
 import type { UserWithRolePayload } from '@/lib/actions/auth';
 import { Wrapper } from '@/tests/components/lib/common';
 import { defaultAdminUserDataPayload } from '@/tests/mocks/data/adminUserData';
+import type { SetAdminRoleProxy } from '@/types/actions/SetAdminRole';
 
-const { setAdminRoleActionMock, captureUnexpectedErrorMock } = vi.hoisted(() => ({
-    setAdminRoleActionMock: vi.fn(),
+const { captureUnexpectedErrorMock } = vi.hoisted(() => ({
     captureUnexpectedErrorMock: vi.fn(),
-}));
-
-vi.mock('@/actions/auth', () => ({
-    setAdminRoleAction: setAdminRoleActionMock,
 }));
 
 vi.mock('@/lib/observability/sentry', () => ({
     captureUnexpectedError: captureUnexpectedErrorMock,
 }));
+
+const setAdminRoleMock = vi.fn<SetAdminRoleProxy>();
 
 const users: UserWithRolePayload[] = [
     {
@@ -44,13 +42,13 @@ const users: UserWithRolePayload[] = [
 describe('AdminUserList', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        setAdminRoleActionMock.mockResolvedValue(undefined);
+        setAdminRoleMock.mockResolvedValue(undefined);
     });
 
     it('renders users in the table with search input', () => {
         render(
             <Wrapper>
-                <AdminUserList users={users} />
+                <AdminUserList users={users} setAdminRole={setAdminRoleMock} />
             </Wrapper>,
         );
 
@@ -63,7 +61,7 @@ describe('AdminUserList', () => {
         const user = userEvent.setup();
         render(
             <Wrapper>
-                <AdminUserList users={users} />
+                <AdminUserList users={users} setAdminRole={setAdminRoleMock} />
             </Wrapper>,
         );
 
@@ -77,7 +75,7 @@ describe('AdminUserList', () => {
         const user = userEvent.setup();
         render(
             <Wrapper>
-                <AdminUserList users={users} />
+                <AdminUserList users={users} setAdminRole={setAdminRoleMock} />
             </Wrapper>,
         );
 
@@ -90,11 +88,11 @@ describe('AdminUserList', () => {
         expect(within(getFirstDataRow()).getByRole('link', { name: 'Victoria User' })).toBeInTheDocument();
     });
 
-    it('calls setAdminRoleAction when toggling admin status', async () => {
+    it('calls setAdminRole when toggling admin status', async () => {
         const user = userEvent.setup();
         render(
             <Wrapper>
-                <AdminUserList users={users} />
+                <AdminUserList users={users} setAdminRole={setAdminRoleMock} />
             </Wrapper>,
         );
 
@@ -103,18 +101,18 @@ describe('AdminUserList', () => {
         await user.click(within(row as HTMLElement).getByRole('switch'));
 
         await waitFor(() => {
-            expect(setAdminRoleActionMock).toHaveBeenCalledWith('victoria-user-id', true);
+            expect(setAdminRoleMock).toHaveBeenCalledWith('victoria-user-id', true);
         });
     });
 
     it('shows an error and captures unexpected errors when role update fails', async () => {
         const user = userEvent.setup();
         const error = new Error('set role failed');
-        setAdminRoleActionMock.mockRejectedValueOnce(error);
+        setAdminRoleMock.mockRejectedValueOnce(error);
 
         render(
             <Wrapper>
-                <AdminUserList users={users} />
+                <AdminUserList users={users} setAdminRole={setAdminRoleMock} />
             </Wrapper>,
         );
 

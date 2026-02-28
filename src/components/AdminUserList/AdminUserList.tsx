@@ -5,16 +5,17 @@ import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
 import { UserWithRole } from 'better-auth/plugins/admin';
 import { useState } from 'react';
 
-import { setAdminRoleAction } from '@/actions/auth';
 import { RelativeTime } from '@/components/RelativeTime/RelativeTime';
 import { UserWithRolePayload } from '@/lib/actions/auth/auth';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
+import { SetAdminRoleProxy } from '@/types/actions/SetAdminRole';
 
 export interface Props {
     users: UserWithRolePayload[];
+    setAdminRole: SetAdminRoleProxy;
 }
 
-export const AdminUserList: React.FC<Props> = ({ users }) => {
+export const AdminUserList: React.FC<Props> = ({ users, setAdminRole }) => {
     const [sortBy, setSortBy] = useState<keyof UserWithRole | null>('name');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     const [filter, setFilter] = useState('');
@@ -31,7 +32,7 @@ export const AdminUserList: React.FC<Props> = ({ users }) => {
 
     const toggleAdmin = async (userId: string, isAdmin: boolean) => {
         try {
-            await setAdminRoleAction(userId, isAdmin);
+            await setAdminRole(userId, isAdmin);
         } catch (error) {
             captureUnexpectedError(error, {
                 layer: 'client',

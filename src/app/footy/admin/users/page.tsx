@@ -2,7 +2,7 @@
 
 import { Container, Text } from '@mantine/core';
 
-import { listUsersAction } from '@/actions/auth';
+import { listUsersAction, setAdminRoleAction } from '@/actions/auth';
 import { AdminUserList } from '@/components/AdminUserList/AdminUserList';
 import { UserWithRolePayload } from '@/lib/actions/auth';
 import { toPublicMessage } from '@/lib/errors/AppError';
@@ -28,6 +28,6 @@ export default async function Page() {
     }
 
     return (
-        <AdminUserList users={users} />
+        <AdminUserList users={users} setAdminRole={setAdminRoleAction} />
     );
 }

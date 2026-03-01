@@ -1,5 +1,3 @@
-'use server';
-
 import { notFound } from 'next/navigation';
 
 import { sendEmail } from '@/actions/sendEmail';

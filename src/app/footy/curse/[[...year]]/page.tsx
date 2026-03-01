@@ -1,5 +1,3 @@
-'use server';
-
 import { Flex } from '@mantine/core';
 import { notFound } from 'next/navigation';
 
@@ -13,6 +11,8 @@ interface PageProps {
         year: string,
     }>,
 }
+
+export const metadata = { title: 'Curse of the Bibs' };
 
 const Page: React.FC<PageProps> = async (props) => {
     const { year } = await props.params;

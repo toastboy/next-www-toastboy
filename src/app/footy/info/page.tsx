@@ -9,6 +9,8 @@ import {
 import { sendEnquiry } from '@/actions/sendEnquiry';
 import { EnquiryForm } from '@/components/EnquiryForm/EnquiryForm';
 
+export const metadata = { title: 'Info' };
+
 const Page = () => {
     return (
         <>

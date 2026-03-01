@@ -22,7 +22,10 @@ export const dynamic = "force-dynamic";
 export const revalidate = 0; // belt-and-braces; disables ISR on this segment
 
 export const metadata: Metadata = {
-    title: "Toastboy FC",
+    title: {
+        default: 'Toastboy FC',
+        template: '%s | Toastboy FC',
+    },
     description: "Toastboy FC: five-a-side footy on Tuesdays at Kelsey Kerridge, Cambridge",
     icons: {
         icon: "/favicon.ico",

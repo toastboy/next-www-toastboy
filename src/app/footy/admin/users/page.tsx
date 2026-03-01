@@ -1,5 +1,3 @@
-'use server';
-
 import { Container, Text } from '@mantine/core';
 
 import { listUsersAction, setAdminRoleAction } from '@/actions/auth';

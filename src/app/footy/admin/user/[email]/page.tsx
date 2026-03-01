@@ -1,5 +1,3 @@
-'use server';
-
 import { notFound } from 'next/navigation';
 
 import { listUsersAction } from '@/actions/auth';

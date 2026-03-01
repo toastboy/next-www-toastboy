@@ -280,12 +280,24 @@ const config = [
                     selector: "ThrowStatement > NewExpression[callee.name='Error']",
                     message: "Use a typed AppError (or normalizeUnknownError) instead of `throw new Error(...)` in runtime code.",
                 },
-                // TODO: Enable once all pages are converted to server-only.
-                // "error",
-                // {
-                //     selector: "Program > ExpressionStatement[directive='use client']",
-                //     message: "App Router pages must be server pages. Move client logic into child components.",
-                // },
+            ],
+        },
+    },
+    // Next.js App Router pages must be server pages
+    {
+        files: ["src/app/**/page.{ts,tsx}"],
+        ignores: [
+            "**/*.vitest.spec.*",
+            "**/*.test.*",
+            "**/*.stories.*",
+        ],
+        rules: {
+            "no-restricted-syntax": [
+                "error",
+                {
+                    selector: "Program > ExpressionStatement[directive='use client']",
+                    message: "App Router pages must be server pages. Move client logic into child components.",
+                },
             ],
         },
     },

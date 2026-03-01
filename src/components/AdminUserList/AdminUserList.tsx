@@ -6,9 +6,9 @@ import { UserWithRole } from 'better-auth/plugins/admin';
 import { useState } from 'react';
 
 import { RelativeTime } from '@/components/RelativeTime/RelativeTime';
-import { UserWithRolePayload } from '@/lib/actions/auth/auth';
+import type { UserWithRolePayload } from '@/lib/actions/auth';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
-import { SetAdminRoleProxy } from '@/types/actions/SetAdminRole';
+import type { SetAdminRoleProxy } from '@/types/actions/SetAdminRole';
 
 export interface Props {
     users: UserWithRolePayload[];

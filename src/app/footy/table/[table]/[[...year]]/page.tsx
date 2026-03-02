@@ -12,6 +12,9 @@ interface PageProps {
     }>,
 }
 
+// TODO: Refactor to have a common function to extract the params and generate
+// the title, since this is repeated in multiple places
+
 export async function generateMetadata(page: PageProps) {
     const { table, year } = await page.params;
     const yearnum = year ? parseInt(year[0]) : 0; // Zero or undefined means all-time

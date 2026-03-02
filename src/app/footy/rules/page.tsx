@@ -2,9 +2,7 @@ import { Flex, Text, Title } from '@mantine/core';
 
 type PageProps = object
 
-export function generateMetadata() {
-    return { title: "Toastboy FC Rules" };
-}
+export const metadata = { title: 'Rules' };
 
 const Page: React.FC<PageProps> = () => {
     return (

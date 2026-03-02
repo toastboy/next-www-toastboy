@@ -7,9 +7,7 @@ import outcomeService from '@/services/Outcome';
 
 type PageProps = object
 
-export function generateMetadata() {
-    return { title: "Turnout" };
-}
+export const metadata = { title: 'Turnout' };
 
 const Page: React.FC<PageProps> = async () => {
     const turnout = await outcomeService.getTurnoutByYear();

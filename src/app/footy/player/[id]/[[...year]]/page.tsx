@@ -19,6 +19,13 @@ interface PageProps {
     }>,
 }
 
+// TODO: Refactor along the same lines as game/[id]/page.tsx, with a separate
+// metadata function and better error handling. Also consider whether we want to
+// support login-based URLs for players, or just redirect them to the ID-based
+// URL as we do now. The former would be more user-friendly, but the latter is
+// simpler and less error-prone. Also fix the YearSelector redirecting to the
+// wrong URL.
+
 export async function generateMetadata(props: PageProps) {
     const { id } = await props.params;
 

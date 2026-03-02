@@ -21,6 +21,8 @@ interface PageProps {
     }>;
 }
 
+export const metadata = { title: 'Response' };
+
 const Page = async ({ searchParams: sp }: PageProps) => {
     const searchParams = await sp;
     const { token, playerId, playerName, playerLogin, gameDayId, response, goalie, comment } = searchParams ?? {};

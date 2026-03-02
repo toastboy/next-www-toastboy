@@ -5,6 +5,8 @@ import { NewGameForm } from '@/components/NewGameForm/NewGameForm';
 
 type PageProps = object;
 
+export const metadata = { title: 'New Game' };
+
 const Page: React.FC<PageProps> = () => {
     return (
         <Container size="sm">

@@ -7,6 +7,8 @@ import { AdminPlayerList } from '@/components/AdminPlayerList/AdminPlayerList';
 import { auth } from '@/lib/auth';
 import playerService from '@/services/Player';
 
+export const metadata = { title: 'Players Admin' };
+
 const Page: React.FC = async () => {
     const players = await playerService.getAll();
     const users = (await auth.api.listUsers({

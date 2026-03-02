@@ -9,6 +9,8 @@ import outcomeService from '@/services/Outcome';
 
 type PageProps = object;
 
+export const metadata = { title: 'Picker' };
+
 const Page: React.FC<PageProps> = async () => {
     const currentGame = await gameDayService.getCurrent();
     if (!currentGame) return notFound();

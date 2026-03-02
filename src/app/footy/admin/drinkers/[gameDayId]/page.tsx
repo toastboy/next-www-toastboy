@@ -12,6 +12,8 @@ interface PageProps {
     }>,
 }
 
+export const metadata = { title: 'Drinkers' };
+
 const Page: React.FC<PageProps> = async (props) => {
     const { gameDayId } = await props.params;
     const gameId = Number.parseInt(gameDayId, 10);

@@ -3,6 +3,8 @@ import { DeleteAccountForm } from '@/components/DeleteAccountForm/DeleteAccountF
 
 type PageProps = object
 
+export const metadata = { title: 'Delete Account' };
+
 const Page: React.FC<PageProps> = () => {
     return (
         <DeleteAccountForm onDeletePlayer={deletePlayer} />

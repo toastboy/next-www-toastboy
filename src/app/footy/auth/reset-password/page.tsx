@@ -10,6 +10,8 @@ interface PageProps {
     }>;
 }
 
+export const metadata = { title: 'Reset Password' };
+
 const Page = async ({ searchParams: sp }: PageProps) => {
     const searchParams = await sp;
     const token = searchParams?.token ?? '';

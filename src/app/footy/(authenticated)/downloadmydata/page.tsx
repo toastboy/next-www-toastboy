@@ -11,6 +11,8 @@ import outcomeService from '@/services/Outcome';
 import playerService from '@/services/Player';
 import playerExtraEmailService from '@/services/PlayerExtraEmail';
 
+export const metadata = { title: 'Download My Data' };
+
 const Page = async () => {
     const user = await getCurrentUser();
     const playerId = user?.playerId ?? 0;

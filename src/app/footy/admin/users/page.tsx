@@ -6,6 +6,8 @@ import { UserWithRolePayload } from '@/lib/actions/auth';
 import { toPublicMessage } from '@/lib/errors/AppError';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 
+export const metadata = { title: 'Users' };
+
 export default async function Page() {
     let users: UserWithRolePayload[] = [];
 

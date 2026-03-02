@@ -6,6 +6,8 @@ import moneyService from '@/services/Money';
 
 type PageProps = object;
 
+export const metadata = { title: 'Money' };
+
 const Page: React.FC<PageProps> = async () => {
     const balances = await moneyService.getBalances();
 

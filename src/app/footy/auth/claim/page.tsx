@@ -11,6 +11,8 @@ interface PageProps {
     }>;
 }
 
+export const metadata = { title: 'Sign Up' };
+
 const Page = async ({ searchParams: sp }: PageProps) => {
     const searchParams = await sp;
     const { name, email, token, error } = searchParams ?? {};

@@ -2,6 +2,8 @@ import { PasswordChangeForm } from '@/components/PasswordChangeForm/PasswordChan
 
 type PageProps = object
 
+export const metadata = { title: 'Change Password' };
+
 const Page: React.FC<PageProps> = () => {
     return (
         <PasswordChangeForm />

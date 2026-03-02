@@ -8,6 +8,8 @@ interface PageProps {
     params: Promise<{ email: string }>,
 }
 
+export const metadata = { title: 'User' };
+
 const Page: React.FC<PageProps> = async (props) => {
     const { email } = await props.params;
     let user;

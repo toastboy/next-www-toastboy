@@ -5,6 +5,8 @@ import { config } from '@/lib/config';
 
 type PageProps = object
 
+export const metadata = { title: 'Account Deleted' };
+
 const Page: React.FC<PageProps> = () => {
     return (
         <Notification

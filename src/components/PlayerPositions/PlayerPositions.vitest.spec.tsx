@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 
 import { PlayerPositions } from '@/components/PlayerPositions/PlayerPositions';
 import { Wrapper } from '@/tests/components/lib/common';
+import { defaultPlayer } from '@/tests/mocks/data/player';
 import { defaultPlayerRecord } from '@/tests/mocks/data/playerRecord';
 
 describe('PlayerPositions', () => {
@@ -9,7 +10,7 @@ describe('PlayerPositions', () => {
         render(
             <Wrapper>
                 <PlayerPositions
-                    playerName="Test Player"
+                    player={defaultPlayer}
                     year={2024}
                     record={defaultPlayerRecord}
                 />
@@ -22,7 +23,7 @@ describe('PlayerPositions', () => {
     it('renders dashes when record is null', () => {
         render(
             <Wrapper>
-                <PlayerPositions playerName="Test Player" year={2024} record={null} />
+                <PlayerPositions player={defaultPlayer} year={2024} record={null} />
             </Wrapper>,
         );
 

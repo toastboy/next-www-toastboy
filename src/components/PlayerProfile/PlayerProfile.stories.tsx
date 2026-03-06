@@ -23,7 +23,6 @@ type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {
     args: {
-        playerName: 'Lionel Scruffy',
         player: defaultPlayer,
         year: 2023,
         form: defaultPlayerFormList,

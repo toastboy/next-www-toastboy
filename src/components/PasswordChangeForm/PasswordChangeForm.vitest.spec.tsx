@@ -23,6 +23,7 @@ describe('PasswordChangeForm', () => {
                 emailVerified: true,
                 createdAt: new Date(),
                 updatedAt: new Date(),
+                banned: undefined,
             },
         });
     });

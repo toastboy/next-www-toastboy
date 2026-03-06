@@ -2,6 +2,7 @@ import { render, screen, within } from '@testing-library/react';
 
 import { PlayerHistory } from '@/components/PlayerHistory/PlayerHistory';
 import { Wrapper } from '@/tests/components/lib/common';
+import { defaultPlayer } from '@/tests/mocks/data/player';
 import { defaultPlayerRecord } from '@/tests/mocks/data/playerRecord';
 
 describe('PlayerHistory', () => {
@@ -9,7 +10,7 @@ describe('PlayerHistory', () => {
         render(
             <Wrapper>
                 <PlayerHistory
-                    playerName={'Lionel Scruffy'}
+                    player={defaultPlayer}
                     activeYears={[2020, 2021, 2022, 2023]}
                     year={2023}
                     record={defaultPlayerRecord}
@@ -33,7 +34,7 @@ describe('PlayerHistory', () => {
         render(
             <Wrapper>
                 <PlayerHistory
-                    playerName={'Lionel Scruffy'}
+                    player={defaultPlayer}
                     activeYears={[]}
                     year={2023}
                     record={defaultPlayerRecord}

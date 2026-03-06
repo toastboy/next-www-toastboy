@@ -1,7 +1,6 @@
 import { Box, Container, Title } from '@mantine/core';
 import type { TableName } from 'prisma/generated//browser';
 import type { ArseType } from 'prisma/zod/schemas/models/Arse.schema';
-import type { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 import { Activity } from 'react';
 
@@ -14,13 +13,13 @@ import { PlayerHistory } from '@/components/PlayerHistory/PlayerHistory';
 import { PlayerLastPlayed } from '@/components/PlayerLastPlayed/PlayerLastPlayed';
 import { PlayerMugshot } from '@/components/PlayerMugshot/PlayerMugshot';
 import { PlayerTrophies } from '@/components/PlayerTrophies/PlayerTrophies';
+import { PlayerDisplayType } from '@/services/Player';
 import { ClubSupporterDataType, CountrySupporterDataType, PlayerFormType } from '@/types';
 
 import classes from './PlayerProfile.module.css';
 
 export interface Props {
-    playerName: string;
-    player: PlayerType;
+    player: PlayerDisplayType;
     year: number;
     form: PlayerFormType[];
     lastPlayed: PlayerFormType | null;
@@ -33,7 +32,6 @@ export interface Props {
 }
 
 export const PlayerProfile: React.FC<Props> = ({
-    playerName,
     player,
     year,
     form,
@@ -63,7 +61,7 @@ export const PlayerProfile: React.FC<Props> = ({
             </Activity>
             <PlayerForm form={form} />
             <PlayerHistory
-                playerName={playerName}
+                player={player}
                 activeYears={activeYears}
                 year={year}
                 record={record}

@@ -12,7 +12,7 @@ describe('PlayerLink', () => {
             </Wrapper>,
         );
 
-        const link = screen.getByRole('link', { name: defaultPlayer.name! });
+        const link = screen.getByRole('link', { name: defaultPlayer.name });
         expect(link).toHaveAttribute('href', `/footy/player/${defaultPlayer.id}/2024`);
     });
 
@@ -23,7 +23,7 @@ describe('PlayerLink', () => {
             </Wrapper>,
         );
 
-        const link = screen.getByRole('link', { name: defaultPlayer.name! });
+        const link = screen.getByRole('link', { name: defaultPlayer.name });
         expect(link).toHaveAttribute('href', `/footy/player/${defaultPlayer.id}`);
     });
 });

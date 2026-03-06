@@ -1,7 +1,8 @@
-import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import { PlayerLoginType } from 'prisma/zod/schemas/models/PlayerLogin.schema';
 
-export const defaultPlayer: PlayerType = {
+import type { PlayerDisplayType } from '@/services/Player';
+
+export const defaultPlayer: PlayerDisplayType = {
     id: 1,
     name: "Gary Player",
     joined: new Date("2021-01-01"),
@@ -12,17 +13,17 @@ export const defaultPlayer: PlayerType = {
     anonymous: false,
 };
 
-export const invalidPlayer: PlayerType = {
+export const invalidPlayer: PlayerDisplayType = {
     ...defaultPlayer,
     id: -1,
 };
 
-export const createMockPlayer = (overrides: Partial<PlayerType> = {}): PlayerType => ({
+export const createMockPlayer = (overrides: Partial<PlayerDisplayType> = {}): PlayerDisplayType => ({
     ...defaultPlayer,
     ...overrides,
 });
 
-export const defaultPlayerList: PlayerType[] = Array.from({ length: 100 }, (_, index) =>
+export const defaultPlayerList: PlayerDisplayType[] = Array.from({ length: 100 }, (_, index) =>
     createMockPlayer({
         id: index + 1,
         finished: index % 2 === 0 ? new Date("2020-01-01") : null,

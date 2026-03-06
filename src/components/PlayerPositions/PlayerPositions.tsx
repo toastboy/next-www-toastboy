@@ -3,16 +3,17 @@ import { TableNameSchema } from 'prisma/zod/schemas';
 import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 
 import { getYearName, rankMap } from '@/lib/utils';
+import { PlayerDisplayType } from '@/services/Player';
 
 export interface Props {
-    playerName: string;
+    player: PlayerDisplayType;
     year: number;
     record: PlayerRecordType | null;
 }
 
-export const PlayerPositions: React.FC<Props> = ({ playerName, year, record }) => {
+export const PlayerPositions: React.FC<Props> = ({ player, year, record }) => {
     return (
-        <Table summary={`${playerName}'s ${getYearName(year)} table positions`}>
+        <Table summary={`${player.name}'s ${getYearName(year)} table positions`}>
             <TableCaption>{getYearName(year)} Positions</TableCaption>
             <TableTbody>
                 {TableNameSchema.options.map((table) => {

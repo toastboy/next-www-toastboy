@@ -1,91 +1,127 @@
-import { notFound, redirect } from 'next/navigation';
+import { Metadata } from 'next';
+import { notFound, permanentRedirect } from 'next/navigation';
 import { TableName } from 'prisma/generated/browser';
 import { TableNameSchema } from 'prisma/zod/schemas';
 import { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
+import z from 'zod';
 
 import { PlayerProfile } from '@/components/PlayerProfile/PlayerProfile';
 import { getUserRole } from '@/lib/auth.server';
-import { normalizeUnknownError } from '@/lib/errors';
 import arseService from '@/services/Arse';
 import clubSupporterService from '@/services/ClubSupporter';
 import countrySupporterService from '@/services/CountrySupporter';
 import playerService from '@/services/Player';
 import playerRecordService from '@/services/PlayerRecord';
 
+/**
+ * Props for the player page component.
+ *
+ * @property {Promise<{id: string, year?: [string]}>} params - Route parameters
+ * containing:
+ *   - `id`: The unique identifier of the player
+ *   - `year`: Array containing optional segments from the catch-all route.
+ *     There's only one defined: this is the legacy way to refer to a specific
+ *     year: requests containing this will be redirected.
+ * @property {Promise<{year?: string}>} [searchParams] - Optional query string
+ * parameters containing:
+ *   - `year`: Optional year filter from query string
+ */
 interface PageProps {
     params: Promise<{
         id: string,
-        year: [string],
+        year?: [string],
     }>,
+    searchParams?: Promise<{
+        year?: string;
+    }>;
 }
 
-// TODO: Refactor along the same lines as game/[id]/page.tsx, with a separate
-// metadata function and better error handling. Also consider whether we want to
-// support login-based URLs for players, or just redirect them to the ID-based
-// URL as we do now. The former would be more user-friendly, but the latter is
-// simpler and less error-prone. Also fix the YearSelector redirecting to the
-// wrong URL.
+/**
+ * Unpacks and validates URL parameters and search parameters for the player
+ * page.
+ *
+ * @param props - The page props containing route parameters and search
+ * parameters
+ * @param props.params - Promise resolving to route parameters with `id` and
+ * optional `year` array
+ * @param props.searchParams - Promise resolving to search parameters
+ *
+ * @returns A promise resolving to an object containing:
+ *   - `player` - The player object retrieved by ID or login
+ *   - `year` - The validated year as a number, or undefined if not provided
+ *   - `activeYears` - Array of years the player was active
+ *
+ * @throws Redirects permanently to query parameter format if year is provided
+ * in URL path
+ * @throws Calls `notFound()` if player cannot be found or year is invalid/not
+ * in active years
+ */
+async function unpackParams(props: PageProps) {
+    const { id, year: yearParam } = await props.params;
 
-export async function generateMetadata(props: PageProps) {
-    const { id } = await props.params;
+    if (yearParam?.[0]) {
+        permanentRedirect(`/footy/player/${id}?year=${yearParam[0]}`);
+    }
 
-    try {
-        const playerId = Number(id);
-        const player = Number.isNaN(playerId) ?
-            await playerService.getByLogin(id) :
-            await playerService.getById(playerId);
-        if (!player) return {};
-        const name = player.name;
-        return name ? { title: `${name}` } : {};
-    }
-    catch (error) {
-        throw normalizeUnknownError(error, {
-            message: 'Failed to generate player metadata.',
-            details: {
-                route: '/footy/player/[id]/[[...year]]',
-                id,
-            },
-        });
-    }
+    const searchParams = await props.searchParams;
+    const playerId = z.coerce.number().int().min(1).safeParse(id);
+    const player = await (playerId.success ?
+        playerService.getById(playerId.data) :
+        playerService.getByLogin(id));
+    if (!player) notFound();
+
+    const activeYears = await playerService.getYearsActive(player.id);
+    const yearResult = z.coerce.number().int().min(0).safeParse(searchParams?.year ?? 0);
+    const year = yearResult.success ? yearResult.data : undefined;
+    if (year === undefined || !activeYears.includes(year)) notFound();
+
+    const canonicalSearch = year ? `?year=${year}` : '';
+    const canonicalUrl = `/footy/player/${player.id}${canonicalSearch}`;
+    const currentSearch = searchParams?.year ? `?year=${searchParams.year}` : '';
+    const currentUrl = `/footy/player/${id}${currentSearch}`;
+    if (currentUrl !== canonicalUrl) permanentRedirect(canonicalUrl);
+
+    return { player, year, activeYears };
+}
+
+/**
+ * Generates metadata for the player page.
+ * @param props - The page props containing player ID and optional year
+ * parameters
+ * @returns A promise that resolves to metadata object with the player name and
+ * year in the title
+ */
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+    const { player, year } = await unpackParams(props);
+
+    return {
+        title: `${player.name}: ${year || 'All-time'}`,
+    };
 }
 
 const Page: React.FC<PageProps> = async props => {
-    const { id, year } = await props.params;
-    const yearNum = year ? parseInt(year[0]) : 0;
-    const playerId = Number(id);
-    const player = Number.isNaN(playerId) ?
-        await playerService.getByLogin(id) :
-        await playerService.getById(playerId);
+    const { player, year, activeYears } = await unpackParams(props);
 
-    if (!player) return notFound();
-
-    if (player.id.toString() != id) {
-        redirect(`/footy/player/${player.id}`);
-    }
-
-    const playerName = player.name;
-    const lastPlayed = await playerService.getLastPlayed(player.id, yearNum);
+    const lastPlayed = await playerService.getLastPlayed(player.id, year);
     const gameDayId = lastPlayed ? lastPlayed.gameDayId : 0;
-    const form = await playerService.getForm(player.id, gameDayId, yearNum);
+    const form = await playerService.getForm(player.id, gameDayId, year);
     const clubs = await clubSupporterService.getByPlayer(player.id);
     const countries = await countrySupporterService.getByPlayer(player.id);
     const arse = (await getUserRole() === 'admin') ?
         await arseService.getByPlayer(player.id) :
         null;
-    const activeYears = await playerService.getYearsActive(player.id);
-    const record = await playerRecordService.getForYearByPlayer(yearNum, player.id);
+    const record = await playerRecordService.getForYearByPlayer(year, player.id);
     const trophies = new Map<TableName, PlayerRecordType[]>();
     await Promise.all(TableNameSchema.options.map(async (table) => {
-        const winners = await playerRecordService.getWinners(table, yearNum, player.id);
+        const winners = await playerRecordService.getWinners(table, year, player.id);
         trophies.set(table, winners);
     }));
 
     return (
         <PlayerProfile
-            playerName={playerName}
             key={player.id}
             player={player}
-            year={yearNum}
+            year={year}
             form={form}
             lastPlayed={lastPlayed}
             clubs={clubs}

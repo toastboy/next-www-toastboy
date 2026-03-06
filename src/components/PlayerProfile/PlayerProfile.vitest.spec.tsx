@@ -26,7 +26,6 @@ describe('PlayerProfile', () => {
         render(
             <Wrapper>
                 <PlayerProfile
-                    playerName="Test Player"
                     player={defaultPlayer}
                     year={2024}
                     form={defaultPlayerFormList}
@@ -41,6 +40,6 @@ describe('PlayerProfile', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByText(defaultPlayer.name!)).toBeInTheDocument();
+        expect(screen.getByText(defaultPlayer.name)).toBeInTheDocument();
     });
 });

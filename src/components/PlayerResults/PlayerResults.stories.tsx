@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
+import { defaultPlayer } from '@/tests/mocks/data/player';
 import { defaultPlayerRecord } from '@/tests/mocks/data/playerRecord';
 
 import { PlayerResults } from './PlayerResults';
@@ -18,7 +19,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {
     args: {
-        playerName: 'Lionel Scruffy',
+        player: defaultPlayer,
         year: 2023,
         record: defaultPlayerRecord,
     },

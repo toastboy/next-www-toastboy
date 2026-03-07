@@ -8,6 +8,7 @@ export default defineConfig({
             'vitest.actions.config.ts',
             'vitest.api.config.ts',
             'vitest.components.config.ts',
+            'vitest.pages.config.ts',
             'vitest.services.config.ts',
             'vitest.lib.config.ts',
         ],

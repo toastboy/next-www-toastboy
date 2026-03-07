@@ -26,10 +26,17 @@ export default defineConfig({
         name: 'pages-vitest',
         environment: 'node',
         globals: true,
-        include: ['src/app/footy/**/*.vitest.spec.ts', 'src/app/footy/**/*.vitest.spec.tsx'],
+        include: [
+            'src/app/*.vitest.spec.ts',
+            'src/app/footy/**/*.vitest.spec.ts',
+            'src/app/footy/**/*.vitest.spec.tsx',
+        ],
         setupFiles: ['vitest.setup.backend.ts'],
         coverage: {
-            include: ['src/app/footy/**/*.{ts,tsx}'],
+            include: [
+                'src/app/*.{ts,tsx}',
+                'src/app/footy/**/*.{ts,tsx}',
+            ],
         },
     },
 });

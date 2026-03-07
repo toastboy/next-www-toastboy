@@ -2,6 +2,7 @@
 
 import { AppShell, Burger, Container, Group, Image, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { Suspense } from 'react';
 import { AuthUserSummary } from 'types/AuthUser';
 
 import { NavBarNested } from '../NavBarNested/NavBarNested';
@@ -52,7 +53,9 @@ export const CustomAppShell: React.FC<Props> = ({ children, user }) => {
 
             <AppShell.Main>
                 <Container fluid p="xl">
-                    {children}
+                    <Suspense>
+                        {children}
+                    </Suspense>
                 </Container>
             </AppShell.Main>
 

@@ -3,6 +3,7 @@ import { notFound, permanentRedirect } from 'next/navigation';
 import { TableName } from 'prisma/generated/browser';
 import { TableNameSchema } from 'prisma/zod/schemas';
 import { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
+import { cache } from 'react';
 import z from 'zod';
 
 import { PlayerProfile } from '@/components/PlayerProfile/PlayerProfile';
@@ -56,14 +57,17 @@ interface PageProps {
  * @throws Calls `notFound()` if player cannot be found or year is invalid/not
  * in active years
  */
-async function unpackParams(props: PageProps) {
-    const { id, year: yearParam } = await props.params;
+const unpackParams = cache(async (
+    params: PageProps['params'],
+    searchParams: PageProps['searchParams'],
+) => {
+    const { id, year: yearParam } = await params;
 
     if (yearParam?.[0]) {
         permanentRedirect(`/footy/player/${id}?year=${yearParam[0]}`);
     }
 
-    const searchParams = await props.searchParams;
+    const resolvedSearchParams = await searchParams;
     const playerId = z.coerce.number().int().min(1).safeParse(id);
     const player = await (playerId.success ?
         playerService.getById(playerId.data) :
@@ -71,18 +75,18 @@ async function unpackParams(props: PageProps) {
     if (!player) notFound();
 
     const activeYears = await playerService.getYearsActive(player.id);
-    const yearResult = z.coerce.number().int().min(0).safeParse(searchParams?.year ?? 0);
+    const yearResult = z.coerce.number().int().min(0).safeParse(resolvedSearchParams?.year ?? 0);
     const year = yearResult.success ? yearResult.data : undefined;
     if (year === undefined || !activeYears.includes(year)) notFound();
 
     const canonicalSearch = year ? `?year=${year}` : '';
     const canonicalUrl = `/footy/player/${player.id}${canonicalSearch}`;
-    const currentSearch = searchParams?.year ? `?year=${searchParams.year}` : '';
+    const currentSearch = resolvedSearchParams?.year ? `?year=${resolvedSearchParams.year}` : '';
     const currentUrl = `/footy/player/${id}${currentSearch}`;
     if (currentUrl !== canonicalUrl) permanentRedirect(canonicalUrl);
 
     return { player, year, activeYears };
-}
+});
 
 /**
  * Generates metadata for the player page.
@@ -92,7 +96,7 @@ async function unpackParams(props: PageProps) {
  * year in the title
  */
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
-    const { player, year } = await unpackParams(props);
+    const { player, year } = await unpackParams(props.params, props.searchParams);
 
     return {
         title: `${player.name}: ${year || 'All-time'}`,
@@ -100,7 +104,7 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
 }
 
 const Page: React.FC<PageProps> = async props => {
-    const { player, year, activeYears } = await unpackParams(props);
+    const { player, year, activeYears } = await unpackParams(props.params, props.searchParams);
 
     const lastPlayed = await playerService.getLastPlayed(player.id, year);
     const gameDayId = lastPlayed ? lastPlayed.gameDayId : 0;

@@ -14,23 +14,9 @@ import countrySupporterService from '@/services/CountrySupporter';
 import playerService from '@/services/Player';
 import playerRecordService from '@/services/PlayerRecord';
 
-/**
- * Props for the player page component.
- *
- * @property {Promise<{id: string, year?: [string]}>} params - Route parameters
- * containing:
- *   - `id`: The unique identifier of the player
- *   - `year`: Array containing optional segments from the catch-all route.
- *     There's only one defined: this is the legacy way to refer to a specific
- *     year: requests containing this will be redirected.
- * @property {Promise<{year?: string}>} [searchParams] - Optional query string
- * parameters containing:
- *   - `year`: Optional year filter from query string
- */
 interface PageProps {
     params: Promise<{
         id: string,
-        year?: [string],
     }>,
     searchParams?: Promise<{
         year?: string;
@@ -38,34 +24,31 @@ interface PageProps {
 }
 
 /**
- * Unpacks and validates URL parameters and search parameters for the player
+ * Unpacks and validates page parameters and search parameters for a player
  * page.
  *
- * @param props - The page props containing route parameters and search
- * parameters
- * @param props.params - Promise resolving to route parameters with `id` and
- * optional `year` array
- * @param props.searchParams - Promise resolving to search parameters
+ * This function performs the following operations:
+ * - Extracts and validates the player ID (either numeric or login string)
+ * - Retrieves the player from the database
+ * - Validates the requested year against the player's active years
+ * - Constructs canonical URLs and redirects if the current URL doesn't match
+ * - Returns the player data, selected year, and all active years
  *
- * @returns A promise resolving to an object containing:
- *   - `player` - The player object retrieved by ID or login
- *   - `year` - The validated year as a number, or undefined if not provided
- *   - `activeYears` - Array of years the player was active
- *
- * @throws Redirects permanently to query parameter format if year is provided
- * in URL path
- * @throws Calls `notFound()` if player cannot be found or year is invalid/not
- * in active years
+ * @param params - The page route parameters containing the player ID
+ * @param searchParams - The URL search parameters, optionally containing a year
+ * filter
+ * @returns A promise resolving to an object containing the player record,
+ * selected year, and array of active years
+ * @throws {notFound} When the player is not found or the requested year is
+ * invalid
+ * @throws {permanentRedirect} When the current URL doesn't match the canonical
+ * URL format
  */
 const unpackParams = cache(async (
     params: PageProps['params'],
     searchParams: PageProps['searchParams'],
 ) => {
-    const { id, year: yearParam } = await params;
-
-    if (yearParam?.[0]) {
-        permanentRedirect(`/footy/player/${id}?year=${yearParam[0]}`);
-    }
+    const { id } = await params;
 
     const resolvedSearchParams = await searchParams;
     const playerId = z.coerce.number().int().min(1).safeParse(id);

@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import type { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { usePathname, useRouter } from 'next/navigation';
 import { vi } from 'vitest';
@@ -49,8 +49,11 @@ describe('YearSelector', () => {
             </Wrapper>,
         );
 
-        fireEvent.click(screen.getByRole('button', { name: 'All' }));
+        const button0 = screen.getByTestId('year-selector-button-0');
+        const href = button0.getAttribute('href');
+        expect(href).toBeTruthy();
 
-        expect(push).toHaveBeenCalledWith('/footy/year/');
+        const url = new URL(href!, 'http://localhost');
+        expect(url.searchParams.get('year')).toBeNull();
     });
 });

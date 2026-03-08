@@ -22,10 +22,11 @@ describe('PlayerHistory', () => {
         const results = screen.getByTestId('player-history-results');
         const positions = screen.getByTestId('player-history-positions');
 
-        expect(within(yearSelector).getByRole('button', { name: '2023' })).toBeInTheDocument();
-        expect(within(yearSelector).getByRole('button', { name: '2020' })).toBeInTheDocument();
-        expect(within(yearSelector).getByRole('button', { name: '2021' })).toBeInTheDocument();
-        expect(within(yearSelector).getByRole('button', { name: '2022' })).toBeInTheDocument();
+        expect(within(yearSelector).getByTestId('year-selector-button-2023')).toBeInTheDocument();
+        expect(within(yearSelector).getByTestId('year-selector-button-2020')).toBeInTheDocument();
+        expect(within(yearSelector).getByTestId('year-selector-button-2021')).toBeInTheDocument();
+        expect(within(yearSelector).getByTestId('year-selector-button-2022')).toBeInTheDocument();
+
         expect(results).toBeInTheDocument();
         expect(positions).toBeInTheDocument();
     });

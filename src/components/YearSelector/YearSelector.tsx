@@ -94,6 +94,7 @@ export const YearSelector = ({ activeYear, validYears }: Props) => {
                 {validYears.map((year, index) => (
                     <UnstyledButton
                         key={year}
+                        data-testid={`year-selector-button-${year}`}
                         className={classes.control}
                         ref={(node) => setControlRef(node, index)}
                         component="a"

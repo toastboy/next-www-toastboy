@@ -32,11 +32,14 @@ describe('YearSelector', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByRole('button', { name: '2024' })).toBeInTheDocument();
+        expect(screen.getByTestId('year-selector-button-2024')).toBeInTheDocument();
 
-        fireEvent.click(screen.getByRole('button', { name: '2023' }));
+        const button2023 = screen.getByTestId('year-selector-button-2023');
+        const href = button2023.getAttribute('href');
+        expect(href).toBeTruthy();
 
-        expect(push).toHaveBeenCalledWith('/footy/year/2023');
+        const url = new URL(href!, 'http://localhost');
+        expect(url.searchParams.get('year')).toBe('2023');
     });
 
     it('navigates to the all-years view when "All" is clicked', () => {

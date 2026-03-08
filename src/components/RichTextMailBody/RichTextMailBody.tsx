@@ -4,9 +4,7 @@ import { Link, RichTextEditor } from '@mantine/tiptap';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 
-export type Props = unknown;
-
-export const RichTextMailBody: React.FC<Props> = () => {
+export const RichTextMailBody = () => {
     const editor = useEditor({
         extensions: [StarterKit, Link],
         content: '<p>Hello, this is a test!</p>',

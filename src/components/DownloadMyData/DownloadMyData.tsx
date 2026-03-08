@@ -35,7 +35,7 @@ export interface Props {
     data: DownloadMyDataPayload;
 }
 
-const DownloadMyData: React.FC<Props> = ({ data }) => {
+export const DownloadMyData = ({ data }: Props) => {
     const [sections, setSections] = useState(sectionDefaults);
 
     const allSelected = useMemo(() => Object.values(sections).every(Boolean), [sections]);
@@ -157,4 +157,3 @@ const DownloadMyData: React.FC<Props> = ({ data }) => {
     );
 };
 
-export default DownloadMyData;

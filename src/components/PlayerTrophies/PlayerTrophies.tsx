@@ -9,7 +9,7 @@ export interface Props {
     trophies: Map<TableName, PlayerRecordType[]>;
 }
 
-export const PlayerTrophies: React.FC<Props> = ({ trophies }) => {
+export const PlayerTrophies = ({ trophies }: Props) => {
     return (
         <Stack gap="xs">
             {TableNameSchema.options.map((table) => (

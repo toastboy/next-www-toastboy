@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { Container, Text, useMantineTheme } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
@@ -6,9 +6,7 @@ import { useEffect, useMemo } from 'react';
 
 import classes from './BreakpointDebugger.module.css';
 
-export type Props = unknown;
-
-export const BreakpointDebugger: React.FC<Props> = () => {
+export const BreakpointDebugger = () => {
     const theme = useMantineTheme();
 
     // Define media queries for each breakpoint

@@ -52,7 +52,7 @@ type PlayerProfileFormValues = Omit<UpdatePlayerInput, 'clubs' | 'finished'> & {
     retired: boolean;
 };
 
-export const PlayerProfileForm: React.FC<Props> = ({
+export const PlayerProfileForm = ({
     player,
     extraEmails,
     countries,
@@ -61,7 +61,7 @@ export const PlayerProfileForm: React.FC<Props> = ({
     allClubs,
     verifiedEmail,
     onUpdatePlayer,
-}) => {
+}: Props) => {
     const initialExtraEmails = extraEmails.map((playerEmail) => playerEmail.email);
     const bornYear = player.born ?? undefined;
     const hasShownVerifiedNotification = useRef(false);

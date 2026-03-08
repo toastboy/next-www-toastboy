@@ -15,7 +15,7 @@ export interface Props {
     setAdminRole: SetAdminRoleProxy;
 }
 
-export const AdminUserList: React.FC<Props> = ({ users, setAdminRole }) => {
+export const AdminUserList = ({ users, setAdminRole }: Props) => {
     const [sortBy, setSortBy] = useState<keyof UserWithRole | null>('name');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     const [filter, setFilter] = useState('');

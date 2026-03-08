@@ -31,7 +31,7 @@ export interface Props {
     redirect?: string;
 };
 
-export const SignIn: React.FC<Props> = ({ admin, redirect }) => {
+export const SignIn = ({ admin, redirect }: Props) => {
     const [loading, setLoading] = useState(false);
     const [loginError, setLoginError] = useState<boolean>(false);
     const router = useRouter();
@@ -90,20 +90,20 @@ export const SignIn: React.FC<Props> = ({ admin, redirect }) => {
 
     let title = (
         <Text data-testid="sign-in">
-        Sign in to your account
+            Sign in to your account
         </Text>
     );
 
     if (admin === true) {
         title = (
             <Text data-testid="must-be-admin">
-            You must be logged in as an administrator to use this page.
+                You must be logged in as an administrator to use this page.
             </Text>
         );
     } else if (admin === false) {
         title = (
             <Text data-testid="must-be-logged-in">
-            You must be logged in to use this page.
+                You must be logged in to use this page.
             </Text>
         );
     }

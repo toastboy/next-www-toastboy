@@ -8,7 +8,7 @@ export interface Props {
     clubs: ClubSupporterDataType[];
 }
 
-export const PlayerClubs: React.FC<Props> = ({ clubs }) => {
+export const PlayerClubs = ({ clubs }: Props) => {
     return (
         <Activity mode={clubs.length > 0 ? 'visible' : 'hidden'}>
             <Flex gap="xs" p="xs" direction="column">

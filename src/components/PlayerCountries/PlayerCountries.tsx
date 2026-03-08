@@ -8,7 +8,7 @@ export interface Props {
     countries: CountrySupporterDataType[];
 }
 
-export const PlayerCountries: React.FC<Props> = ({ countries }) => {
+export const PlayerCountries = ({ countries }: Props) => {
     return (
         <Activity mode={countries.length > 0 ? 'visible' : 'hidden'}>
             <Flex gap="xs" p="xs" direction="column">

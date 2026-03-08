@@ -38,7 +38,11 @@ export interface Props {
     onCreateMoreGameDays: CreateMoreGameDaysProxy;
 }
 
-export const MoreGamesForm: React.FC<Props> = ({ cost, rows, onCreateMoreGameDays }) => {
+export const MoreGamesForm = ({
+    cost,
+    rows,
+    onCreateMoreGameDays,
+}: Props) => {
     const form = useForm<CreateMoreGameDaysInput>({
         initialValues: {
             cost,

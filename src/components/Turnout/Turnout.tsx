@@ -5,7 +5,7 @@ export interface Props {
     turnout: TurnoutByYearType[],
 }
 
-export const Turnout: React.FC<Props> = ({ turnout }) => {
+export const Turnout = ({ turnout }: Props) => {
     const rows = turnout.sort((a, b) => b.year - a.year).map((t) => (
         <TableTr key={t.year}>
             <TableTd>{t.year}</TableTd>

@@ -1,6 +1,4 @@
-import { Props } from '../BreakpointDebugger';
-
-export const BreakpointDebugger = (props: Props) => (
-    <div>BreakpointDebugger: {JSON.stringify(props)}</div>
+export const BreakpointDebugger = () => (
+    <div>BreakpointDebugger</div>
 );
 BreakpointDebugger.displayName = 'BreakpointDebugger';

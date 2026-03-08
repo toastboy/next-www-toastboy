@@ -52,12 +52,12 @@ const isSameSelection = (left: number[], right: number[]) => {
     return left.every((id) => rightSet.has(id));
 };
 
-export const DrinkersForm: React.FC<DrinkersFormProps> = ({
+export const DrinkersForm = ({
     gameId,
     gameDate,
     players,
     setDrinkers,
-}) => {
+}: DrinkersFormProps) => {
     const router = useRouter();
     const [rows, setRows] = useState<OutcomePlayerType[]>(() => sortRows(players));
     const [selectedIds, setSelectedIds] = useState<number[]>(() => toSelectedIds(players));

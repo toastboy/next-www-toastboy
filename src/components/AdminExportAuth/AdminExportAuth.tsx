@@ -10,7 +10,7 @@ export interface Props {
     onExportAuth: () => Promise<void>,
 }
 
-export const AdminExportAuth: React.FC<Props> = ({ onExportAuth }) => {
+export const AdminExportAuth = ({ onExportAuth }: Props) => {
     return (
         <>
             <Container>
@@ -57,5 +57,3 @@ export const AdminExportAuth: React.FC<Props> = ({ onExportAuth }) => {
         </>
     );
 };
-
-export default AdminExportAuth;

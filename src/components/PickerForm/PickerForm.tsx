@@ -93,12 +93,12 @@ const buildDefaultSelection = (rows: PickerPlayerType[], maxSelected = 12) => {
     return sorted.slice(0, maxSelected).map((row) => row.playerId);
 };
 
-export const PickerForm: React.FC<PickerFormProps> = ({
+export const PickerForm = ({
     gameDay,
     players,
     submitPicker,
     setGameEnabled,
-}) => {
+}: PickerFormProps) => {
     const router = useRouter();
     const eligiblePlayers = useMemo(
         () => players.filter((player) => player.response === 'Yes'),

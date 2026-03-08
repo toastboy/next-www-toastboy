@@ -5,7 +5,7 @@ export interface Props {
     player: PlayerType,
 }
 
-export const PlayerMugshot: React.FC<Props> = ({ player }) => {
+export const PlayerMugshot = ({ player }: Props) => {
     return (
         <Anchor href={`/footy/player/${player.id}`}>
             <Image

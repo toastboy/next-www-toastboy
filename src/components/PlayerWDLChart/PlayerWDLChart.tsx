@@ -5,7 +5,7 @@ export interface Props {
     player: PlayerDataType;
 }
 
-export const PlayerWDLChart: React.FC<Props> = ({ player }) => {
+export const PlayerWDLChart = ({ player }: Props) => {
     return (
         <Progress.Root size="xl">
             <Tooltip

@@ -29,14 +29,14 @@ export interface Props {
     withOverlay?: boolean;
 }
 
-export const SendEmailForm: React.FC<Props> = ({
+export const SendEmailForm = ({
     opened,
     onClose,
     players,
     onSendEmail,
     withinPortal,
     withOverlay,
-}) => {
+}: Props) => {
     const [subject, setSubject] = useState('');
     const names = players.map((player) => player.name).join(', ');
     const emails = Array.from(new Set(players.flatMap((player) => {

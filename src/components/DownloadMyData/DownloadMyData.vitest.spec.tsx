@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import DownloadMyData from '@/components/DownloadMyData/DownloadMyData';
+import { DownloadMyData } from '@/components/DownloadMyData/DownloadMyData';
 import { Wrapper } from '@/tests/components/lib/common';
 import { defaultDownloadMyDataPayload } from '@/tests/mocks/data/downloadMyData';
 

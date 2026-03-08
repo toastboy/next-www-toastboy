@@ -11,7 +11,11 @@ interface NavBarLinksGroupProps {
     links?: { label: string; link: string }[];
 }
 
-export const NavBarLinksGroup: React.FC<NavBarLinksGroupProps> = ({ label, initiallyOpened, links }) => {
+export const NavBarLinksGroup = ({
+    label,
+    initiallyOpened,
+    links,
+}: NavBarLinksGroupProps) => {
     const hasLinks = Array.isArray(links);
     const [opened, setOpened] = useState(initiallyOpened ?? false);
     const items = (hasLinks ? links : []).map((link) => (

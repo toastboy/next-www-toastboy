@@ -14,7 +14,7 @@ export interface Props {
     unqualified: PlayerRecordDataType[];
 }
 
-export const YearTable: React.FC<Props> = ({ table, year, qualified, unqualified }) => {
+export const YearTable = ({ table, year, qualified, unqualified }: Props) => {
     const utn = UnqualifiedTableName(table) ?? null;
 
     return (
@@ -78,4 +78,3 @@ export function UnqualifiedTableName(table: TableName): string | undefined {
     }
 }
 
-export default YearTable;

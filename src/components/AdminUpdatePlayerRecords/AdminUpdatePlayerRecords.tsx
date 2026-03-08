@@ -14,7 +14,7 @@ export interface Props {
     onUpdatePlayerRecords: UpdatePlayerRecordsProxy;
 };
 
-export const AdminUpdatePlayerRecords: React.FC<Props> = ({ onUpdatePlayerRecords }) => {
+export const AdminUpdatePlayerRecords = ({ onUpdatePlayerRecords }: Props) => {
     const { data, mutate } = useRecordsProgress();
 
     useEffect(() => {
@@ -53,7 +53,7 @@ export const AdminUpdatePlayerRecords: React.FC<Props> = ({ onUpdatePlayerRecord
                                         data-testid="update-player-records-compete-icon"
                                     />
                                 </ActionIcon>
-                            </Center>                            :
+                            </Center> :
                             <Text
                                 data-testid="update-player-records-progress"
                                 c="blue"

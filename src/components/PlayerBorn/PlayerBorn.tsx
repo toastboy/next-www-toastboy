@@ -5,7 +5,7 @@ export interface Props {
     player: PlayerType;
 }
 
-export const PlayerBorn: React.FC<Props> = ({ player }) => {
+export const PlayerBorn = ({ player }: Props) => {
     return (
         <Text>
             {player.born ?? 'Unknown'}

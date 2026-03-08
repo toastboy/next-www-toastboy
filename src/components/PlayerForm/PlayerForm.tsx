@@ -8,7 +8,7 @@ export interface Props {
     form: PlayerFormType[],
 }
 
-export const PlayerForm: React.FC<Props> = ({ form }) => {
+export const PlayerForm = ({ form }: Props) => {
     const colors = new Map<number | null | undefined, string>([
         [null, 'gray'],
         [undefined, 'gray'],

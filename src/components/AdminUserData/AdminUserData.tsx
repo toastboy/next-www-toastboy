@@ -9,7 +9,7 @@ export interface Props {
     user: UserWithRolePayload;
 }
 
-export const AdminUserData: React.FC<Props> = ({ user }) => {
+export const AdminUserData = ({ user }: Props) => {
     return (
         <Container size="xs" mt="xl">
             <Center>

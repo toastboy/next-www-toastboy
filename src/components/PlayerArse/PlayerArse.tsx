@@ -5,7 +5,7 @@ export interface Props {
     arse: Partial<ArseType> | null;
 }
 
-export const PlayerArse: React.FC<Props> = ({ arse }) => {
+export const PlayerArse = ({ arse }: Props) => {
     return (
         <Table>
             <TableTbody>

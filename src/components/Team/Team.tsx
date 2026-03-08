@@ -18,7 +18,12 @@ const resultStyles: Record<TeamResultState, { label: string; color: string; }> =
     unset: { label: 'Result unset', color: 'gray' },
 };
 
-export const Team: React.FC<Props> = ({ team, teamName = 'A', result = 'unset', hasBibs = false }) => {
+export const Team = ({
+    team,
+    teamName = 'A',
+    result = 'unset',
+    hasBibs = false,
+}: Props) => {
     return (
         <Paper p="md" shadow="xl" withBorder>
             <Group justify="space-between" mb="md">

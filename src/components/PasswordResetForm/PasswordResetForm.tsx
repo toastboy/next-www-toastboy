@@ -39,7 +39,7 @@ const resetPasswordSchema = z.object({
 /**
  * Render the password reset flow for a user who has a reset token.
  */
-export const PasswordResetForm: React.FC<Props> = ({ token }) => {
+export const PasswordResetForm = ({ token }: Props) => {
     const router = useRouter();
     const form = useForm<z.infer<typeof resetPasswordSchema>>({
         initialValues: {

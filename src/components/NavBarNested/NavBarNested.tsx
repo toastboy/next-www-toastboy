@@ -12,7 +12,7 @@ export interface Props {
     user?: AuthUserSummary | null;
 }
 
-export const NavBarNested: React.FC<Props> = ({ user }) => {
+export const NavBarNested = ({ user }: Props) => {
     const links = [
         {
             "label": "Games",

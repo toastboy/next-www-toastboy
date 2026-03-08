@@ -5,5 +5,3 @@ export const AdminUserList = (props: Props) => (
 );
 
 AdminUserList.displayName = 'AdminUserList';
-
-export default AdminUserList;

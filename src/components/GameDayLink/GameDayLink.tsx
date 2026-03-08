@@ -5,7 +5,7 @@ export interface Props {
     gameDay: GameDayType,
 }
 
-export const GameDayLink: React.FC<Props> = ({ gameDay }) => {
+export const GameDayLink = ({ gameDay }: Props) => {
     return (
         <Anchor href={`/footy/game/${gameDay.id}`} >
             {new Date(gameDay.date).toLocaleDateString('sv')}

@@ -1,6 +1,4 @@
-import { Props } from '../NYI';
-
-export const NYI = (props: Props) => (
-    <div>NYI: {JSON.stringify(props)}</div>
+export const NYI = () => (
+    <div>NYI</div>
 );
 NYI.displayName = 'NYI';

@@ -11,7 +11,7 @@ export interface Props {
     record: PlayerRecordType | null;
 }
 
-export const PlayerPositions: React.FC<Props> = ({ player, year, record }) => {
+export const PlayerPositions = ({ player, year, record }: Props) => {
     return (
         <Table summary={`${player.name}'s ${getYearName(year)} table positions`}>
             <TableCaption>{getYearName(year)} Positions</TableCaption>

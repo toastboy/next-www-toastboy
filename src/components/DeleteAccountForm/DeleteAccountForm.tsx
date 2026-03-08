@@ -30,7 +30,7 @@ export interface Props {
     onDeletePlayer: DeletePlayerProxy;
 }
 
-export const DeleteAccountForm: React.FC<Props> = ({ onDeletePlayer }) => {
+export const DeleteAccountForm = ({ onDeletePlayer }: Props) => {
     const [errorText, setErrorText] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
     const form = useForm<DeleteAccountInput>({

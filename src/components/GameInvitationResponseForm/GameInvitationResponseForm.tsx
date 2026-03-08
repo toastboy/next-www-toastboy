@@ -32,7 +32,10 @@ interface Props {
     onSubmitGameInvitationResponse: SubmitGameInvitationResponseProxy;
 }
 
-export const GameInvitationResponseForm: React.FC<Props> = ({ details, onSubmitGameInvitationResponse }) => {
+export const GameInvitationResponseForm = ({
+    details,
+    onSubmitGameInvitationResponse,
+}: Props) => {
     const [currentResponse, setCurrentResponse] = useState(details.response);
     const [currentComment, setCurrentComment] = useState(details.comment);
 

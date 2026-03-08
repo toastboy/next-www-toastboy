@@ -1,6 +1,4 @@
-import { Props } from '../RichTextMailBody';
-
-export const RichTextMailBody = (props: Props) => (
-    <div>RichTextMailBody: {JSON.stringify(props)}</div>
+export const RichTextMailBody = () => (
+    <div>RichTextMailBody</div>
 );
 RichTextMailBody.displayName = 'RichTextMailBody';

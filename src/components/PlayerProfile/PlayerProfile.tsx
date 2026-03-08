@@ -31,7 +31,7 @@ export interface Props {
     trophies: Map<TableName, PlayerRecordType[]>;
 }
 
-export const PlayerProfile: React.FC<Props> = ({
+export const PlayerProfile = ({
     player,
     year,
     form,
@@ -42,7 +42,7 @@ export const PlayerProfile: React.FC<Props> = ({
     activeYears,
     record,
     trophies,
-}) => {
+}: Props) => {
     return (
         <Container>
             <Title order={1}>{player.name}</Title>

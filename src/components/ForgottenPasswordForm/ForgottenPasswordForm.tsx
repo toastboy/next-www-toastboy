@@ -17,8 +17,6 @@ import { toPublicMessage } from '@/lib/errors';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 import { getPublicBaseUrl } from '@/lib/urls';
 
-export type Props = unknown;
-
 /**
  * Validate a normalized email value for password reset and emit clear messages.
  */
@@ -50,7 +48,7 @@ const ForgottenPasswordSchema = z.object({
 
 export type ForgottenPasswordInput = z.infer<typeof ForgottenPasswordSchema>;
 
-export const ForgottenPasswordForm: React.FC<Props> = () => {
+export const ForgottenPasswordForm = () => {
     const form = useForm<ForgottenPasswordInput>({
         initialValues: {
             email: '',

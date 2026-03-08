@@ -7,7 +7,7 @@ export interface Props {
     lastPlayed: PlayerFormType | null;
 }
 
-export const PlayerLastPlayed: React.FC<Props> = ({ lastPlayed }) => {
+export const PlayerLastPlayed = ({ lastPlayed }: Props) => {
     if (!lastPlayed) return <Text component="span">Last played: never</Text>;
 
     return (

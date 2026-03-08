@@ -4,7 +4,7 @@ import type { ClubType } from 'prisma/zod/schemas/models/Club.schema';
 export interface Props {
     club: ClubType;
 }
-export const ClubBadge: React.FC<Props> = ({ club }) => {
+export const ClubBadge = ({ club }: Props) => {
     return (
         <Image
             w="100%"

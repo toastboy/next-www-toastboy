@@ -11,7 +11,7 @@ export interface Props {
     teamPlayer: TeamPlayerType;
 }
 
-export const TeamPlayer: React.FC<Props> = ({ teamPlayer }) => (
+export const TeamPlayer = ({ teamPlayer }: Props) => (
     <Flex direction="column" gap="md">
         <Group justify="space-between" align="center" wrap="wrap">
             <PlayerLink player={teamPlayer} year={0} />

@@ -62,12 +62,12 @@ interface BalanceRowProps {
     setSubmittingPlayerId: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
-const BalanceRow: React.FC<BalanceRowProps> = ({
+const BalanceRow = ({
     row,
     payDebt,
     submittingPlayerId,
     setSubmittingPlayerId,
-}) => {
+}: BalanceRowProps) => {
     const router = useRouter();
     const form = useForm<PayDebtFormValues>({
         initialValues: {
@@ -178,14 +178,14 @@ const BalanceRow: React.FC<BalanceRowProps> = ({
     );
 };
 
-export const MoneyForm: React.FC<MoneyFormProps> = ({
+export const MoneyForm = ({
     playerBalances,
     clubBalance,
     total,
     positiveTotal,
     negativeTotal,
     payDebt,
-}) => {
+}: MoneyFormProps) => {
     const [submittingPlayerId, setSubmittingPlayerId] = useState<number | null>(null);
     const [showZeroBalances, setShowZeroBalances] = useState(false);
 

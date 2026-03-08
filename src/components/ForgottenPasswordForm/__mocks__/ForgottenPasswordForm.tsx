@@ -1,6 +1,4 @@
-import { Props } from '../ForgottenPasswordForm';
-
-export const ForgottenPasswordForm = (props: Props) => (
-    <div>ForgottenPasswordForm: {JSON.stringify(props)}</div>
+export const ForgottenPasswordForm = () => (
+    <div>ForgottenPasswordForm</div>
 );
 ForgottenPasswordForm.displayName = 'ForgottenPasswordForm';

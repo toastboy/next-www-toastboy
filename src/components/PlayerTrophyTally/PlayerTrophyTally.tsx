@@ -9,7 +9,7 @@ export interface Props {
     trophies: PlayerRecordType[];
 }
 
-export const PlayerTrophyTally: React.FC<Props> = ({ table, trophies }) => {
+export const PlayerTrophyTally = ({ table, trophies }: Props) => {
     const icon = (() => {
         switch (table) {
             case TableNameSchema.enum.points:

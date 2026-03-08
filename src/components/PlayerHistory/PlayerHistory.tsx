@@ -13,7 +13,12 @@ export interface Props {
     record: PlayerRecordType | null;
 }
 
-export const PlayerHistory: React.FC<Props> = ({ player, activeYears, year, record }) => {
+export const PlayerHistory = ({
+    player,
+    activeYears,
+    year,
+    record,
+}: Props) => {
     return (
         <Container data-testid="player-history">
             <div data-testid="player-history-year-selector">

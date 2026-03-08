@@ -12,7 +12,7 @@ export interface Props {
     user?: AuthUserSummary | null;
 }
 
-export const CustomAppShell: React.FC<Props> = ({ children, user }) => {
+export const CustomAppShell = ({ children, user }: Props) => {
     const [opened, { toggle }] = useDisclosure();
 
     return (

@@ -15,14 +15,14 @@ export interface PasswordFieldsProps {
 /**
  * Render a pair of password and confirm-password inputs with shared styling.
  */
-export const PasswordFields: React.FC<PasswordFieldsProps> = ({
+export const PasswordFields = ({
     passwordProps,
     confirmPasswordProps,
     passwordLabel = 'Password',
     confirmPasswordLabel = 'Confirm password',
     passwordPlaceholder = 'Enter your password',
     confirmPasswordPlaceholder = 'Re-enter your password',
-}) => {
+}: PasswordFieldsProps) => {
     return (
         <>
             <PasswordInput

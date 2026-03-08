@@ -14,7 +14,7 @@ interface WrapperProps {
  * @param props.children - React nodes to be wrapped with Mantine provider
  * @returns A React component with Mantine provider context
  */
-export const Wrapper: React.FC<WrapperProps> = ({ children }) => {
+export const Wrapper = ({ children }: WrapperProps) => {
     return (
         <MantineProvider defaultColorScheme="light">
             {children}

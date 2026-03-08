@@ -40,7 +40,7 @@ const changePasswordSchema = z.object({
 /**
  * Render the password change flow for a logged-in user.
  */
-export const PasswordChangeForm: React.FC<Props> = ({ revokeOtherSessions }) => {
+export const PasswordChangeForm = ({ revokeOtherSessions }: Props) => {
     const [errorText, setErrorText] = useState<string | null>(null);
     const [success, setSuccess] = useState<boolean>(false);
     const form = useForm<z.infer<typeof changePasswordSchema>>({

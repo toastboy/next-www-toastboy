@@ -220,13 +220,13 @@ const buildInviteEmail = (inviteLink: string) => ReactDOMServer.renderToStaticMa
  * @param props.userEmails - Better Auth user emails to determine onboarding status.
  * @returns The rendered admin player list table.
  */
-export const AdminPlayerList: React.FC<Props> = ({
+export const AdminPlayerList = ({
     players,
     userEmails,
     userIdByEmail,
     onAddPlayerInvite,
     onSendEmail,
-}) => {
+}: Props) => {
     const router = useRouter();
     const userEmailSet = useMemo(
         () => new Set((userEmails ?? []).map((email) => normalizeEmail(email)).filter((email) => email.length > 0)),

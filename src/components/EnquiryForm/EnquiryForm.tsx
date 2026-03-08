@@ -31,7 +31,7 @@ export interface Props {
     onSendEnquiry: SendEnquiryProxy;
 }
 
-export const EnquiryForm: React.FC<Props> = ({ redirectUrl, onSendEnquiry }) => {
+export const EnquiryForm = ({ redirectUrl, onSendEnquiry }: Props) => {
     const router = useRouter();
     const pathname = usePathname();
     const searchParams = useSearchParams();

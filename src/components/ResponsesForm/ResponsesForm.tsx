@@ -57,12 +57,12 @@ const responseGroupBarColor: Record<ResponseOption, MantineColor> = {
     [ResponseOption.None]: 'gray.6',
 };
 
-export const ResponsesForm: React.FC<ResponsesFormProps> = ({
+export const ResponsesForm = ({
     gameId,
     gameDate,
     responses,
     submitResponse,
-}) => {
+}: ResponsesFormProps) => {
     const [rows, setRows] = useState<OutcomePlayerType[]>(responses);
     const form = useForm<ResponsesFormValues>({
         initialValues: {
@@ -218,7 +218,7 @@ export const ResponsesForm: React.FC<ResponsesFormProps> = ({
                                     loading={savingId === row.playerId}
                                     onClick={() => handleSubmit(row)}
                                 >
-                                Update
+                                    Update
                                 </Button>
                             </Flex>
                         );

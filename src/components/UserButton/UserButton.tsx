@@ -16,7 +16,7 @@ export interface Props {
     user?: AuthUserSummary | null;
 }
 
-export const UserButton: React.FC<Props> = ({ user }) => {
+export const UserButton = ({ user }: Props) => {
     const router = useRouter();
 
     async function signOut() {

@@ -11,7 +11,7 @@ export interface Props {
     validYears: number[];
 }
 
-export const YearSelector: React.FC<Props> = ({ activeYear, validYears }) => {
+export const YearSelector = ({ activeYear, validYears }: Props) => {
     const controlsRefs = useRef<HTMLAnchorElement[]>([]);
     const activeIndex = validYears.indexOf(activeYear);
     const [indicatorParent, setIndicatorParent] = useState<HTMLElement | null>(null);

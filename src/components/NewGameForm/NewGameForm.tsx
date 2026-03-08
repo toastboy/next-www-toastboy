@@ -16,7 +16,7 @@ export interface Props {
     onTriggerInvitations: TriggerInvitationsProxy;
 }
 
-export const NewGameForm: React.FC<Props> = ({ onTriggerInvitations }) => {
+export const NewGameForm = ({ onTriggerInvitations }: Props) => {
     const form = useForm<NewGameInput>({
         initialValues: {
             overrideTimeCheck: false,

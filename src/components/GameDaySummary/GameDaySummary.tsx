@@ -17,7 +17,7 @@ const winnerLabels: Record<Exclude<GameWinner, null>, string> = {
     draw: 'Draw',
 };
 
-export const GameDaySummary: React.FC<Props> = ({ gameDay, teamA, teamB }) => {
+export const GameDaySummary = ({ gameDay, teamA, teamB }: Props) => {
     const winner = getGameWinnersFromTeams(teamA, teamB);
 
     if (!gameDay.game) {

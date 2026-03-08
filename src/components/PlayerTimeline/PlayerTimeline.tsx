@@ -6,7 +6,7 @@ export interface Props {
     currentGameId: number;
 }
 
-export const PlayerTimeline: React.FC<Props> = ({ player, currentGameId }) => {
+export const PlayerTimeline = ({ player, currentGameId }: Props) => {
     const firstGame = 1;
     const lastGame = currentGameId;
 

@@ -5,5 +5,3 @@ export const DownloadMyData = (props: Props) => (
 );
 
 DownloadMyData.displayName = 'DownloadMyData';
-
-export default DownloadMyData;

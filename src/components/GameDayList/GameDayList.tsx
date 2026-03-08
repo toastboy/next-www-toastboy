@@ -9,7 +9,7 @@ export interface Props {
     gameDays: GameDayType[];
 }
 
-export const GameDayList: React.FC<Props> = ({ title, gameDays }) => {
+export const GameDayList = ({ title, gameDays }: Props) => {
     if (gameDays.length === 0) {
         return <Text c="dimmed">{`No ${title} yet.`}</Text>;
     }

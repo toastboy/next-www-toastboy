@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import { defaultDownloadMyDataPayload } from '@/tests/mocks/data/downloadMyData';
 
-import DownloadMyData from './DownloadMyData';
+import { DownloadMyData } from './DownloadMyData';
 
 const meta = {
     title: 'Account/DownloadMyData',

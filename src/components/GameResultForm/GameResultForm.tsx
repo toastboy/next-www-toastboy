@@ -17,12 +17,12 @@ export interface GameResultFormProps {
     setGameResult: SetGameResultProxy;
 }
 
-export const GameResultForm: React.FC<GameResultFormProps> = ({
+export const GameResultForm = ({
     gameDayId,
     bibs,
     winners,
     setGameResult,
-}) => {
+}: GameResultFormProps) => {
     const router = useRouter();
     const [isSaving, { open: setSaving, close: setSaved }] = useDisclosure(false);
     const form = useForm<{

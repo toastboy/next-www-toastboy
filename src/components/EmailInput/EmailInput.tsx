@@ -4,7 +4,7 @@ import { TextInput, type TextInputProps } from '@mantine/core';
 
 export type Props = Omit<TextInputProps, 'type'>;
 
-export const EmailInput: React.FC<Props> = (props) => {
+export const EmailInput = (props: Props) => {
     return (
         <TextInput
             type="email"

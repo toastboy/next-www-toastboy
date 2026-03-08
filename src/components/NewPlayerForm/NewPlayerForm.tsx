@@ -46,11 +46,11 @@ export interface Props {
  * <NewPlayerForm players={existingPlayers} />
  * ```
  */
-export const NewPlayerForm: React.FC<Props> = ({
+export const NewPlayerForm = ({
     players,
     onCreatePlayer,
     onSendEmail,
-}) => {
+}: Props) => {
     const router = useRouter();
     const getPreferredEmail = (player?: PlayerDataType) => {
         if (player?.accountEmail) {

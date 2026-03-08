@@ -30,7 +30,7 @@ export interface Props {
     sendEmail: SendEmailProxy;
 }
 
-export const PlayerList: React.FC<Props> = ({ players, gameDay, sendEmail }) => {
+export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
     const [sortBy, setSortBy] = useState<keyof PlayerDataType | null>('name');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     const [filter, setFilter] = useState('');

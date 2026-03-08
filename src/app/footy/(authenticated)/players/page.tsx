@@ -5,11 +5,9 @@ import { PlayerList } from '@/components/PlayerList/PlayerList';
 import gameDayService from '@/services/GameDay';
 import playerService from '@/services/Player';
 
-type PageProps = object;
-
 export const metadata = { title: 'Players' };
 
-const Page: React.FC<PageProps> = async () => {
+const PlayersPage = async () => {
     const [gameDay, players] = await Promise.all([
         gameDayService.getCurrent(),
         playerService.getAll(),
@@ -26,4 +24,4 @@ const Page: React.FC<PageProps> = async () => {
     );
 };
 
-export default Page;
+export default PlayersPage;

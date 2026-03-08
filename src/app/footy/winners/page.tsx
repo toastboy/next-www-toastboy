@@ -51,7 +51,7 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
     };
 }
 
-const Page: React.FC<PageProps> = async props => {
+const WinnersPage = async (props: PageProps) => {
     const { year, allYears } = await unpackParams(props.searchParams);
     const winners = new Map<TableName, PlayerRecordDataType[]>();
 
@@ -79,4 +79,4 @@ const Page: React.FC<PageProps> = async props => {
     );
 };
 
-export default Page;
+export default WinnersPage;

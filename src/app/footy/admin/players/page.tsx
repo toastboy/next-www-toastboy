@@ -9,7 +9,7 @@ import playerService from '@/services/Player';
 
 export const metadata = { title: 'Players Admin' };
 
-const Page: React.FC = async () => {
+const AdminPlayersPage = async () => {
     const players = await playerService.getAll();
     const users = (await auth.api.listUsers({
         headers: await headers(),
@@ -48,4 +48,4 @@ const Page: React.FC = async () => {
     );
 };
 
-export default Page;
+export default AdminPlayersPage;

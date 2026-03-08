@@ -3,11 +3,9 @@ import { IconX } from '@tabler/icons-react';
 
 import { config } from '@/lib/config';
 
-type PageProps = object
-
 export const metadata = { title: 'Account Deleted' };
 
-const Page: React.FC<PageProps> = () => {
+const AccountDeletedPage = () => {
     return (
         <Notification
             icon={<IconX size={config.notificationIconSize} />}
@@ -18,4 +16,4 @@ const Page: React.FC<PageProps> = () => {
     );
 };
 
-export default Page;
+export default AccountDeletedPage;

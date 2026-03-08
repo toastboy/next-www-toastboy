@@ -10,7 +10,7 @@ interface PageProps {
 
 export const metadata = { title: 'User' };
 
-const Page: React.FC<PageProps> = async (props) => {
+const AdminUserPage = async (props: PageProps) => {
     const { email } = await props.params;
     let user;
 
@@ -37,4 +37,4 @@ const Page: React.FC<PageProps> = async (props) => {
     );
 };
 
-export default Page;
+export default AdminUserPage;

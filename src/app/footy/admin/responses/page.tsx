@@ -6,11 +6,9 @@ import { ResponsesForm } from '@/components/ResponsesForm/ResponsesForm';
 import gameDayService from '@/services/GameDay';
 import outcomeService from '@/services/Outcome';
 
-type PageProps = object;
-
 export const metadata = { title: 'Responses' };
 
-const Page: React.FC<PageProps> = async () => {
+const ResponsesPage = async () => {
     const currentGame = await gameDayService.getCurrent();
     if (!currentGame) return notFound();
     const responses = await outcomeService.getAdminByGameDay(currentGame.id);
@@ -27,4 +25,4 @@ const Page: React.FC<PageProps> = async () => {
     );
 };
 
-export default Page;
+export default ResponsesPage;

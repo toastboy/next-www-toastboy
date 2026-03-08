@@ -7,11 +7,9 @@ import { PickerForm } from '@/components/PickerForm/PickerForm';
 import gameDayService from '@/services/GameDay';
 import outcomeService from '@/services/Outcome';
 
-type PageProps = object;
-
 export const metadata = { title: 'Picker' };
 
-const Page: React.FC<PageProps> = async () => {
+const PickerPage = async () => {
     const currentGame = await gameDayService.getCurrent();
     if (!currentGame) return notFound();
     const players = await outcomeService.getAdminByGameDay(currentGame.id);
@@ -34,4 +32,4 @@ const Page: React.FC<PageProps> = async () => {
     );
 };
 
-export default Page;
+export default PickerPage;

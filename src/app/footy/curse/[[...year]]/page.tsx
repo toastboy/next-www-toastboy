@@ -14,7 +14,7 @@ interface PageProps {
 
 export const metadata = { title: 'Curse of the Bibs' };
 
-const Page: React.FC<PageProps> = async (props) => {
+const CurseOfTheBibsPage = async (props: PageProps) => {
     const { year } = await props.params;
     const activeYear = year ? parseInt(year[0]) : 0;
     const allYears = await playerRecordService.getAllYears();
@@ -31,4 +31,4 @@ const Page: React.FC<PageProps> = async (props) => {
     );
 };
 
-export default Page;
+export default CurseOfTheBibsPage;

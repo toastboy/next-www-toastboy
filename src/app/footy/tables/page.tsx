@@ -1,10 +1,8 @@
 import Link from 'next/link';
 
-type PageProps = object
-
 export const metadata = { title: 'Tables' };
 
-const Page: React.FC<PageProps> = () => {
+const TablesPage = () => {
     return (
         <>
             <h3>The league tables</h3>
@@ -19,4 +17,4 @@ const Page: React.FC<PageProps> = () => {
     );
 };
 
-export default Page;
+export default TablesPage;

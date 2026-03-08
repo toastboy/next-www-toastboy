@@ -12,7 +12,7 @@ interface PageProps {
 
 export const metadata = { title: 'Fixtures' };
 
-const Page: React.FC<PageProps> = async props => {
+const FixturesPage = async (props: PageProps) => {
     const { year } = await props.params;
     const selectedYear = year ? parseInt(year[0]) : 0; // Zero or undefined means all-time
     const [allYears, currentGameDay] = await Promise.all([
@@ -33,4 +33,4 @@ const Page: React.FC<PageProps> = async props => {
     );
 };
 
-export default Page;
+export default FixturesPage;

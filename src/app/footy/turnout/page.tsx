@@ -5,11 +5,9 @@ import { Paper } from '@mantine/core';
 import { Turnout } from '@/components/Turnout/Turnout';
 import outcomeService from '@/services/Outcome';
 
-type PageProps = object
-
 export const metadata = { title: 'Turnout' };
 
-const Page: React.FC<PageProps> = async () => {
+const TurnoutPage = async () => {
     const turnout = await outcomeService.getTurnoutByYear();
 
     return (
@@ -19,4 +17,4 @@ const Page: React.FC<PageProps> = async () => {
     );
 };
 
-export default Page;
+export default TurnoutPage;

@@ -1,10 +1,8 @@
 import { Flex, Text, Title } from '@mantine/core';
 
-type PageProps = object
-
 export const metadata = { title: 'Rules' };
 
-const Page: React.FC<PageProps> = () => {
+const RulesPage = () => {
     return (
         <>
             <Flex gap="md" align="flex-start" direction="column" p="xl">
@@ -50,4 +48,4 @@ const Page: React.FC<PageProps> = () => {
     );
 };
 
-export default Page;
+export default RulesPage;

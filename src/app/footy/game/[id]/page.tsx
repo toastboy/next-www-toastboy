@@ -91,7 +91,7 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
  * @requires outcomeService.getTeamPlayersByGameDay - To fetch team rosters
  * @requires getGameWinnersFromTeams - To calculate match winners
  */
-const Page: React.FC<PageProps> = async (props: PageProps) => {
+const GamePage = async (props: PageProps) => {
     const { gameDay } = await unpackParams(props.params);
     const [role, prevGameDay, nextGameDay, teamA, teamB] = await Promise.all([
         getUserRole(),
@@ -137,4 +137,4 @@ const Page: React.FC<PageProps> = async (props: PageProps) => {
     );
 };
 
-export default Page;
+export default GamePage;

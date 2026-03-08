@@ -14,7 +14,7 @@ interface PageProps {
 
 export const metadata = { title: 'Drinkers' };
 
-const Page: React.FC<PageProps> = async (props) => {
+const DrinkersPage = async (props: PageProps) => {
     const { gameDayId } = await props.params;
     const gameId = Number.parseInt(gameDayId, 10);
 
@@ -53,4 +53,4 @@ const Page: React.FC<PageProps> = async (props) => {
     );
 };
 
-export default Page;
+export default DrinkersPage;

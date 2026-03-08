@@ -100,11 +100,9 @@ const buildRows = (startDate: Date) => {
     return rows;
 };
 
-type PageProps = object;
-
 export const metadata = { title: 'More Games' };
 
-const Page: React.FC<PageProps> = async () => {
+const MoreGamesPage = async () => {
     const lastGameDay = await gameDayService.getLatest();
 
     const startDate = lastGameDay ?
@@ -122,4 +120,4 @@ const Page: React.FC<PageProps> = async () => {
     );
 };
 
-export default Page;
+export default MoreGamesPage;

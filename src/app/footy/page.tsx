@@ -1,8 +1,6 @@
 import { Center, Image } from '@mantine/core';
 
-type PageProps = object
-
-const Page: React.FC<PageProps> = () => {
+const HomePage = () => {
     return (
         <Center w="100%" p="xl">
             <Image
@@ -16,4 +14,4 @@ const Page: React.FC<PageProps> = () => {
     );
 };
 
-export default Page;
+export default HomePage;

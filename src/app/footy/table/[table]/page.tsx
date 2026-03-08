@@ -95,7 +95,7 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
  * params.
  * @returns A React element with year selection controls and table results.
  */
-const Page: React.FC<PageProps> = async (props) => {
+const TablePage = async (props: PageProps) => {
     const { table, year, allYears } = await unpackParams(props.params, props.searchParams);
 
     const tableQualified = await playerRecordService.getTable(table, year, true);
@@ -114,4 +114,4 @@ const Page: React.FC<PageProps> = async (props) => {
     );
 };
 
-export default Page;
+export default TablePage;

@@ -3,11 +3,9 @@ import { Container, Title } from '@mantine/core';
 import { triggerInvitations } from '@/actions/triggerInvitations';
 import { NewGameForm } from '@/components/NewGameForm/NewGameForm';
 
-type PageProps = object;
-
 export const metadata = { title: 'New Game' };
 
-const Page: React.FC<PageProps> = () => {
+const NewGamePage = () => {
     return (
         <Container size="sm">
             <Title order={2} mb="md">
@@ -18,4 +16,4 @@ const Page: React.FC<PageProps> = () => {
     );
 };
 
-export default Page;
+export default NewGamePage;

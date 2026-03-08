@@ -5,7 +5,7 @@ import { updatePlayerRecords } from '@/actions/updatePlayerRecords';
 import { AdminExportAuth } from '@/components/AdminExportAuth/AdminExportAuth';
 import { AdminUpdatePlayerRecords } from '@/components/AdminUpdatePlayerRecords/AdminUpdatePlayerRecords';
 
-const Page: React.FC = () => {
+const AdminPage = () => {
     return (
         <Container size="xs" mt="xl" >
             <Center>
@@ -22,4 +22,4 @@ const Page: React.FC = () => {
     );
 };
 
-export default Page;
+export default AdminPage;

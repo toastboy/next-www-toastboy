@@ -86,7 +86,7 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
     };
 }
 
-const Page: React.FC<PageProps> = async props => {
+const PlayerPage = async (props: PageProps) => {
     const { player, year, activeYears } = await unpackParams(props.params, props.searchParams);
 
     const lastPlayed = await playerService.getLastPlayed(player.id, year);
@@ -121,4 +121,4 @@ const Page: React.FC<PageProps> = async props => {
     );
 };
 
-export default Page;
+export default PlayerPage;

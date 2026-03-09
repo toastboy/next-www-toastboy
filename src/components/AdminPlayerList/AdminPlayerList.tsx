@@ -45,14 +45,23 @@ type SortKey = 'id' | 'name' | 'joined' | 'finished' | 'auth' | 'extraEmails';
 type SortDirection = 'asc' | 'desc';
 
 /**
- * Formats a date-like value for display in the table.
+ * Formats a date value into an ISO date string (YYYY-MM-DD format).
  *
- * @param value - The date value to format; accepts Date, ISO string, null, or undefined.
- * @returns A localized date string (`sv` locale), or `-` when missing.
+ * @param value - The date value to format. Can be a Date object, ISO string,
+ * null, or undefined.
+ * @returns A string in YYYY-MM-DD format, or '-' if the value is null or
+ * undefined.
+ *
+ * @example
+ * ```ts
+ * formatDate(new Date('2023-12-25')) // Returns '2023-12-25'
+ * formatDate('2023-12-25T10:30:00Z') // Returns '2023-12-25'
+ * formatDate(null) // Returns '-'
+ * ```
  */
 const formatDate = (value: Date | string | null | undefined) => {
     if (value == null) return '-';
-    return new Date(value).toLocaleDateString('sv');
+    return new Date(value).toISOString().split('T')[0];
 };
 
 /**

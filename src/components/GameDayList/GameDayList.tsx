@@ -38,7 +38,7 @@ export const GameDayList = ({ title, gameDays }: Props) => {
                         <List>
                             {gameDays.map((gameDay) => (
                                 <ListItem key={gameDay.id}>
-                                    <GameDayLink gameDay={gameDay} />
+                                    <GameDayLink gameDay={gameDay} format='ordinal' />
                                 </ListItem>
                             ))}
                         </List>

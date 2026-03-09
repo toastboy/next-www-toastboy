@@ -9,9 +9,22 @@ describe('GameDayLink', () => {
         render(<Wrapper><GameDayLink gameDay={defaultGameDay} /></Wrapper>);
 
         const link = screen.getByRole('link', {
-            name: defaultGameDay.date.toLocaleDateString('sv'),
+            name: defaultGameDay.date.toISOString().split('T')[0],
         });
         expect(link).toBeInTheDocument();
         expect(link).toHaveAttribute('href', `/footy/game/${defaultGameDay.id}`);
+    });
+
+    it('renders link with ordinal-formatted label', () => {
+        render(
+            <Wrapper>
+                <GameDayLink gameDay={defaultGameDay} format="ordinal" />
+            </Wrapper>,
+        );
+
+        const link = screen.getByRole('link');
+        expect(link).toBeInTheDocument();
+        expect(link).toHaveAttribute('href', `/footy/game/${defaultGameDay.id}`);
+        expect(link).toHaveTextContent(/\d+(st|nd|rd|th|:a|:e)/i);
     });
 });

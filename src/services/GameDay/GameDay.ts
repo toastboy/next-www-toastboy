@@ -224,6 +224,44 @@ export class GameDayService {
     }
 
     /**
+     * Counts cancelled game days.
+     *
+     * A game day is considered cancelled when `game` is `false` and `mailSent`
+     * is not `null`. Results can be filtered by calendar year and optionally
+     * limited to game days up to a specific ID.
+     *
+     * @param year - The calendar year to filter by. If `0`, no year-based date
+     * filter is applied.
+     * @param untilGameDayId - Optional upper bound for game day IDs
+     * (inclusive).
+     * @returns The number of matching cancelled game days.
+     * @throws Error If the underlying database query fails.
+     */
+    async getGamesCancelled(year: number, untilGameDayId?: number): Promise<number> {
+        try {
+            return prisma.gameDay.count({
+                where: {
+                    game: false,
+                    mailSent: { not: null },
+                    ...(year !== 0 ? {
+                        date: {
+                            gte: new Date(year, 0, 1),
+                            lt: new Date(year + 1, 0, 1),
+                        },
+                    } : {}),
+                    ...(untilGameDayId ? {
+                        id: {
+                            lte: untilGameDayId,
+                        },
+                    } : {}),
+                },
+            });
+        } catch (error) {
+            throw normalizeUnknownError(error);
+        }
+    }
+
+    /**
      * Retrieves the number of games yet to be played in the given year.
      * @param year - The year to filter by, or zero for all years.
      * @returns A promise that resolves to the number of games or null.
@@ -298,12 +336,19 @@ export class GameDayService {
     }
 
     /**
-     * Retrieves all the years from the game days where a game has taken or will
-     * take place.
-     * @returns A promise that resolves to an array of distinct years.
-     * @throws An error if there is a failure.
+     * Retrieves the list of distinct years that have at least one game day
+     * marked as a game.
+     *
+     * Optionally includes `0` as a synthetic "All Time" year when
+     * `includeAllTime` is `true`.
+     *
+     * @param includeAllTime - Whether to include `0` in the returned list to
+     * represent "All Time". Defaults to `false`.
+     * @returns A promise that resolves to an array of unique year values.
+     * @throws An error normalized via `normalizeUnknownError` if the database
+     * query fails.
      */
-    async getAllYears(): Promise<number[]> {
+    async getAllYears(includeAllTime = false): Promise<number[]> {
         try {
             const gameDays = await prisma.gameDay.findMany({
                 where: {
@@ -314,6 +359,7 @@ export class GameDayService {
                 },
             });
             const years = gameDays.map(gd => gd.year);
+            if (includeAllTime) years.push(0);
             const distinctYears = Array.from(new Set(years));
 
             return Promise.resolve(distinctYears);

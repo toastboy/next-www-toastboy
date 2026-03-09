@@ -18,14 +18,12 @@ type Story = StoryObj<typeof meta>;
 
 export const Primary: Story = {
     args: {
-        title: 'fixtures',
         gameDays: defaultGameDayList.slice(0, 12),
     },
 };
 
 export const Empty: Story = {
     args: {
-        title: 'results',
         gameDays: [],
     },
 };

@@ -503,6 +503,19 @@ describe('GameDayService', () => {
             expect(result).toHaveLength(1);
             expect(result[0]).toBe(2021);
         });
+
+        it('should return the correct list of two values when includeAllTime is true', async () => {
+            const result = await gameDayService.getAllYears(true);
+            expect(result).toHaveLength(2);
+            expect(result).toContain(2021);
+            expect(result).toContain(0);
+        });
+
+        it('should return an empty array when no GameDays exist', async () => {
+            (prisma.gameDay.findMany as Mock).mockResolvedValue([]);
+            const result = await gameDayService.getAllYears();
+            expect(result).toHaveLength(0);
+        });
     });
 
     describe('getYear', () => {

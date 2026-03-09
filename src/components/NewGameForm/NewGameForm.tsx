@@ -89,7 +89,7 @@ export const NewGameForm = ({ onTriggerInvitations }: Props) => {
                     {...form.getInputProps('customMessage')}
                 />
                 <Button type="submit" w="fit-content">
-                    Submit
+                    Send invitations
                 </Button>
             </Stack>
         </Box>

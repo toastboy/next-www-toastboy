@@ -27,7 +27,7 @@ describe('NewGameForm', () => {
 
         expect(screen.getByLabelText(/Override time check/i)).toBeInTheDocument();
         expect(screen.getByLabelText(/Custom message/i)).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /Submit/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /Send invitations/i })).toBeInTheDocument();
     });
 
     it('submits the form and shows a ready notification', async () => {
@@ -44,7 +44,7 @@ describe('NewGameForm', () => {
 
         await user.click(screen.getByLabelText(/Override time check/i));
         await user.type(screen.getByLabelText(/Custom message/i), 'Let us know early.');
-        await user.click(screen.getByRole('button', { name: /Submit/i }));
+        await user.click(screen.getByRole('button', { name: /Send invitations/i }));
 
         await waitFor(() => {
             expect(mockTriggerInvitations).toHaveBeenCalledWith({
@@ -77,7 +77,7 @@ describe('NewGameForm', () => {
             </Wrapper>,
         );
 
-        await user.click(screen.getByRole('button', { name: /Submit/i }));
+        await user.click(screen.getByRole('button', { name: /Send invitations/i }));
 
         await waitFor(() => {
             expect(notificationUpdateSpy).toHaveBeenCalledWith(

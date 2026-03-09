@@ -28,7 +28,7 @@ describe('ForgottenPasswordForm', () => {
         );
 
         expect(screen.getByLabelText(/Email/i)).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /Submit/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /Send reset link/i })).toBeInTheDocument();
     });
 
     it('shows required validation when submitted empty', async () => {
@@ -40,7 +40,7 @@ describe('ForgottenPasswordForm', () => {
             </Wrapper>,
         );
 
-        await user.click(screen.getByRole('button', { name: /Submit/i }));
+        await user.click(screen.getByRole('button', { name: /Send reset link/i }));
 
         expect(await screen.findByText('Email is required')).toBeInTheDocument();
     });
@@ -56,7 +56,7 @@ describe('ForgottenPasswordForm', () => {
         );
 
         await user.type(screen.getByLabelText(/Email/i), 'test@example.com');
-        await user.click(screen.getByRole('button', { name: /Submit/i }));
+        await user.click(screen.getByRole('button', { name: /Send reset link/i }));
 
         await waitFor(() => {
             expect(mockRequestPasswordReset).toHaveBeenCalledWith({

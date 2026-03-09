@@ -192,7 +192,7 @@ export const NewPlayerForm = ({
             />
 
             <Button type="submit" mt="md">
-                Submit
+                Add player
             </Button>
         </Box>
     );

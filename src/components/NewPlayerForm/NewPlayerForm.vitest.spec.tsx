@@ -38,7 +38,7 @@ describe('NewPlayerForm', () => {
         expect(screen.getByLabelText(/Name/i)).toBeInTheDocument();
         expect(screen.getByLabelText(/Email address/i)).toBeInTheDocument();
         expect(screen.getByLabelText(/Introduced by/i)).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /Submit/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /Add player/i })).toBeInTheDocument();
     });
 
     it('submits form with valid email', async () => {
@@ -57,7 +57,7 @@ describe('NewPlayerForm', () => {
 
         const nameInput = screen.getByLabelText(/Name/i);
         const emailInput = screen.getByLabelText(/Email address/i);
-        const submitButton = screen.getByRole('button', { name: /Submit/i });
+        const submitButton = screen.getByRole('button', { name: /Add player/i });
 
         await user.type(nameInput, 'Pat Smith');
         await user.type(emailInput, 'test@example.com');
@@ -99,7 +99,7 @@ describe('NewPlayerForm', () => {
 
         const nameInput = screen.getByLabelText(/Name/i);
         const emailInput = screen.getByLabelText(/Email address/i);
-        const submitButton = screen.getByRole('button', { name: /Submit/i });
+        const submitButton = screen.getByRole('button', { name: /Add player/i });
 
         await user.type(nameInput, 'Pat Smith');
         await user.type(emailInput, 'test@example.com');
@@ -133,7 +133,7 @@ describe('NewPlayerForm', () => {
 
         const nameInput = screen.getByLabelText(/Name/i);
         const emailInput = screen.getByLabelText(/Email address/i);
-        const submitButton = screen.getByRole('button', { name: /Submit/i });
+        const submitButton = screen.getByRole('button', { name: /Add player/i });
 
         await user.type(nameInput, 'Pat Smith');
         await user.type(emailInput, 'test@example.com');
@@ -168,7 +168,7 @@ describe('NewPlayerForm', () => {
 
         const nameInput = screen.getByLabelText(/Name/i);
         const emailInput = screen.getByLabelText(/Email address/i);
-        const submitButton = screen.getByRole('button', { name: /Submit/i });
+        const submitButton = screen.getByRole('button', { name: /Add player/i });
 
         await user.type(nameInput, 'Pat Smith');
         await user.type(emailInput, 'test@example.com');
@@ -200,7 +200,7 @@ describe('NewPlayerForm', () => {
             </Wrapper>,
         );
 
-        const submitButton = screen.getByRole('button', { name: /Submit/i });
+        const submitButton = screen.getByRole('button', { name: /Add player/i });
         await user.click(submitButton);
 
         // Wait a bit to ensure no async calls happen

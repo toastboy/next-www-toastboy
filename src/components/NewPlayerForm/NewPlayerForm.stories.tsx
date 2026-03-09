@@ -53,7 +53,7 @@ export const Render: Story = {
         const nameInput = await canvas.findByLabelText(/Name/i);
         const emailInput = await canvas.findByLabelText(/Email address/i);
         const introducedBySelect = await canvas.findByLabelText(/Introduced by/i);
-        const submitButton = await canvas.findByRole('button', { name: /Submit/i });
+        const submitButton = await canvas.findByRole('button', { name: /Add player/i });
 
         await userEvent.type(nameInput, 'Pat Example');
         await userEvent.type(emailInput, 'pat@example.com');

@@ -51,7 +51,7 @@ export const ReadySubmit: Story = {
         const canvas = within(canvasElement);
         await userEvent.click(await canvas.findByLabelText(/Override time check/i));
         await userEvent.type(await canvas.findByLabelText(/Custom message/i), 'See you soon.');
-        await userEvent.click(await canvas.findByRole('button', { name: /Submit/i }));
+        await userEvent.click(await canvas.findByRole('button', { name: /Send invitations/i }));
 
         const body = canvasElement.ownerDocument.body;
         await within(body).findByText('Invitations ready', {}, { timeout: 6000 });
@@ -70,7 +70,7 @@ export const SkippedSubmit: Story = {
         );
 
         const canvas = within(canvasElement);
-        await userEvent.click(await canvas.findByRole('button', { name: /Submit/i }));
+        await userEvent.click(await canvas.findByRole('button', { name: /Send invitations/i }));
 
         const body = canvasElement.ownerDocument.body;
         await within(body).findByText('Invitations skipped', {}, { timeout: 6000 });

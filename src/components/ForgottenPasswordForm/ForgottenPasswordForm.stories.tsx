@@ -54,7 +54,7 @@ export const ValidFill: Story = {
 
         const canvas = within(canvasElement);
         const emailInput = await canvas.findByLabelText(/Email/i);
-        const submitButton = await canvas.findByRole('button', { name: /Submit/i });
+        const submitButton = await canvas.findByRole('button', { name: /Send reset link/i });
 
         await userEvent.clear(emailInput);
         await userEvent.type(emailInput, 'g.player@sacked.com');
@@ -80,7 +80,7 @@ export const BlankFill: Story = {
 
         const canvas = within(canvasElement);
         const emailInput = await canvas.findByLabelText(/Email/i);
-        const submitButton = await canvas.findByRole('button', { name: /Submit/i });
+        const submitButton = await canvas.findByRole('button', { name: /Send reset link/i });
 
         await userEvent.clear(emailInput);
         await userEvent.click(submitButton);
@@ -97,7 +97,7 @@ export const InvalidFill: Story = {
 
         const canvas = within(canvasElement);
         const emailInput = await canvas.findByLabelText(/Email/i);
-        const submitButton = await canvas.findByRole('button', { name: /Submit/i });
+        const submitButton = await canvas.findByRole('button', { name: /Send reset link/i });
 
         await userEvent.type(emailInput, 'invalid-email');
         await userEvent.click(submitButton);

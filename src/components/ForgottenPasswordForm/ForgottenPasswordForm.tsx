@@ -124,7 +124,7 @@ export const ForgottenPasswordForm = () => {
             />
 
             <Button type="submit" mt="md">
-                Submit
+                Send reset link
             </Button>
         </Box>
     );

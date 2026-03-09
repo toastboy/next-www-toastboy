@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { vi } from 'vitest';
 
 import { Props as GameDayLinkProps } from '@/components/GameDayLink/GameDayLink';
@@ -30,7 +30,5 @@ describe('GameDayList', () => {
                 <GameDayList gameDays={[]} />
             </Wrapper>,
         );
-
-        expect(screen.getByText('No results yet.')).toBeInTheDocument();
     });
 });

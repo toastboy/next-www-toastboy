@@ -1,23 +1,21 @@
-import { List, ListItem, Paper, SimpleGrid, Stack, Text } from '@mantine/core';
+import { Paper, SimpleGrid, Stack, Text } from '@mantine/core';
 import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
-
-import { GameDayLink } from '@/components/GameDayLink/GameDayLink';
 
 import { GameDayIndicator } from '../GameDayIndicator/GameDayIndicator';
 
-
 export interface Props {
     gameDays: GameDayType[];
+    year: number;
 }
 
-export const GameDayList = ({ gameDays }: Props) => {
+export const GameDayList = ({ gameDays, year }: Props) => {
     if (gameDays.length === 0) {
         return <Text c="dimmed">{`No games yet.`}</Text>;
     }
 
     const gameDaysByMonth = gameDays.reduce<Record<string, GameDayType[]>>((acc, gameDay) => {
         const monthKey = new Date(gameDay.date).toLocaleDateString('en-GB', {
-            year: 'numeric',
+            year: year === 0 ? 'numeric' : undefined,
             month: 'long',
         });
         if (!acc[monthKey]) {
@@ -35,14 +33,11 @@ export const GameDayList = ({ gameDays }: Props) => {
                         <Text size="lg" mb="sm">
                             {month}
                         </Text>
-                        <List>
+                        <SimpleGrid cols={2} spacing="md">
                             {gameDays.map((gameDay) => (
-                                <ListItem key={gameDay.id}>
-                                    <GameDayLink gameDay={gameDay} format='ordinal' />
-                                    <GameDayIndicator gameDay={gameDay} />
-                                </ListItem>
+                                <GameDayIndicator key={gameDay.id} gameDay={gameDay} />
                             ))}
-                        </List>
+                        </SimpleGrid>
                     </Paper>
                 ))}
             </SimpleGrid>

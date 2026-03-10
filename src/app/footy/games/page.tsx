@@ -69,7 +69,7 @@ const GamesPage = async (props: PageProps) => {
             <YearSelector activeYear={year} validYears={allYears} />
             <Title order={1}>{title}</Title>
             <Title order={2}>{subhead}</Title>
-            <GameDayList gameDays={gameDays} />
+            <GameDayList gameDays={gameDays} year={year} />
         </Flex>
     );
 };

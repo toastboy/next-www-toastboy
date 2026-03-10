@@ -1,9 +1,9 @@
-import { Anchor } from '@mantine/core';
+import { Anchor, Tooltip } from '@mantine/core';
 import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 
 export interface Props {
     gameDay: GameDayType,
-    format?: 'iso' | 'ordinal';
+    format?: 'iso' | 'ordinal' | 'numeric';
 }
 
 /**
@@ -51,13 +51,28 @@ function getOrdinal(n: number): string {
 }
 
 export const GameDayLink = ({ gameDay, format = 'iso' }: Props) => {
-    return (
-        <Anchor href={`/footy/game/${gameDay.id}`}>
-            {
-                format === 'iso' ?
-                    gameDay.date.toISOString().split('T')[0] :
-                    getOrdinal(gameDay.date.getDate())
-            }
+    const link = (
+        <Anchor href={`/footy/game/${gameDay.id}`} ta='center'>
+            {(() => {
+                switch (format) {
+                    case 'iso':
+                        return gameDay.date.toISOString().split('T')[0];
+                    case 'ordinal':
+                        return getOrdinal(gameDay.date.getDate());
+                    case 'numeric':
+                        return gameDay.date.getDate();
+                }
+            })()}
         </Anchor>
     );
+
+    if (gameDay.comment) {
+        return (
+            <Tooltip label={gameDay.comment}>
+                {link}
+            </Tooltip>
+        );
+    }
+
+    return link;
 };

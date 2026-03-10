@@ -19,11 +19,13 @@ type Story = StoryObj<typeof meta>;
 export const Primary: Story = {
     args: {
         gameDays: defaultGameDayList.slice(0, 12),
+        year: 2021,
     },
 };
 
 export const Empty: Story = {
     args: {
         gameDays: [],
+        year: 0,
     },
 };

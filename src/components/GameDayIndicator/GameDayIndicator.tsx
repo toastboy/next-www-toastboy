@@ -1,4 +1,4 @@
-import { Box } from '@mantine/core';
+import { Box, Flex } from '@mantine/core';
 import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 
 import { GameDayLink } from '../GameDayLink/GameDayLink';
@@ -20,34 +20,34 @@ export const GameDayIndicator = ({ gameDay }: Props) => {
     }
 
     return (
-        <Box
+        <Flex
+            direction='column'
+            display='inline-flex'
+            bd='2px solid var(--mantine-color-dark-6)'
+            bdrs='var(--mantine-radius-md)'
+            p={0}
+            m={0}
+            w='3em'
             style={{
-                display: 'inline-flex',
-                flexDirection: 'column',
-                border: `2px solid var(--mantine-color-dark-6)`,
-                borderRadius: 'var(--mantine-radius-md)',
-                padding: 0,
                 overflow: 'hidden',
-                margin: 0,
                 verticalAlign: 'top',
-                width: '3em',
             }}
         >
             <Box
                 component='span'
+                display='block'
+                w='100%'
+                h={12}
+                bg={isPast ? color : 'transparent'}
+                p={0}
+                m={0}
                 style={{
-                    display: 'block',
-                    width: '100%',
-                    height: '12px',
-                    backgroundColor: isPast ? color : 'transparent',
                     borderBottom: isPast ? 'none' : `2px solid ${color}`,
-                    padding: 0,
-                    margin: 0,
                     alignSelf: 'flex-start',
                 }}
                 data-testid={`gameday-indicator-${gameDay.id}`}
             />
             <GameDayLink gameDay={gameDay} format='numeric' />
-        </Box>
+        </Flex>
     );
 };

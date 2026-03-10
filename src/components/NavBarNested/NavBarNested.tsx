@@ -84,6 +84,8 @@ export const NavBarNested = ({ user }: Props) => {
                 },
             ],
         },
+    ];
+    const adminLinks = [
         {
             "label": "Admin",
             "initiallyOpened": true,
@@ -141,6 +143,11 @@ export const NavBarNested = ({ user }: Props) => {
                 <Box className={classes.linksInner}>
                     {links.map((item) => <NavBarLinksGroup {...item} key={item.label} />)}
                 </Box>
+                {user?.role === 'admin' && (
+                    <Box className={classes.linksInner}>
+                        {adminLinks.map((item) => <NavBarLinksGroup {...item} key={item.label} />)}
+                    </Box>
+                )}
             </ScrollArea>
 
             <Box className={classes.footer} data-testid="navbar-footer">

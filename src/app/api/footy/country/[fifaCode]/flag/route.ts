@@ -17,8 +17,9 @@ async function getCountryFlag(
     { params }: { params: Record<string, string> },
 ): Promise<Buffer | null> {
     try {
+        const fifaCode = params.fifaCode.toUpperCase();
         const containerClient = azureCache.getContainerClient('countries');
-        const blobClient = containerClient.getBlobClient(`${params.fifaCode}.png`);
+        const blobClient = containerClient.getBlobClient(`${fifaCode}.png`);
 
         if (!(await blobClient.exists())) {
             return null;

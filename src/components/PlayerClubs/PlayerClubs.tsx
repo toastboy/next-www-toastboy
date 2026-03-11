@@ -1,5 +1,4 @@
 import { Flex } from '@mantine/core';
-import { Activity } from 'react';
 
 import { ClubBadge } from '@/components/ClubBadge/ClubBadge';
 import { ClubSupporterDataType } from '@/types';
@@ -9,16 +8,14 @@ export interface Props {
 }
 
 export const PlayerClubs = ({ clubs }: Props) => {
-    return (
-        <Activity mode={clubs.length > 0 ? 'visible' : 'hidden'}>
-            <Flex gap="xs" p="xs" direction="column">
-                {clubs.map((item) => (
-                    <ClubBadge
-                        key={item.clubId}
-                        club={item.club}
-                    />
-                ))}
-            </Flex>
-        </Activity>
-    );
+    return clubs.length > 0 ? (
+        <Flex gap="xs" p="xs" direction="column">
+            {clubs.map((item) => (
+                <ClubBadge
+                    key={item.clubId}
+                    club={item.club}
+                />
+            ))}
+        </Flex>
+    ) : null;
 };

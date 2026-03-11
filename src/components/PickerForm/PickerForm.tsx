@@ -21,7 +21,7 @@ import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck, IconChevronDown, IconChevronUp, IconSelector } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
-import { Activity, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { config } from '@/lib/config';
 import type { SetGameEnabledProxy } from '@/types/actions/SetGameEnabled';
@@ -315,6 +315,59 @@ export const PickerForm = ({
         );
     });
 
+    const picker = (
+        <>
+            <Group justify="space-between" align="center" wrap="wrap">
+                <Text fw={700}>Players selected ({selectedIds.length})</Text>
+                <Button
+                    type="button"
+                    data-testid="submit-picker-button"
+                    onClick={handleSubmit}
+                    disabled={!hasSelection || isSettingEnabled}
+                    loading={isSubmitting}
+                    w={150}
+                >
+                    Pick sides
+                </Button>
+            </Group>
+            <Table
+                striped
+                highlightOnHover
+                withTableBorder
+                withColumnBorders
+                w="100%"
+                style={{ tableLayout: 'fixed' }}
+            >
+                <TableThead>
+                    <TableTr>
+                        <TableTh w="2.5rem">
+                            <Checkbox
+                                checked={allSelected}
+                                indeterminate={someSelected}
+                                onChange={(event) => toggleSelectAll(event.currentTarget.checked)}
+                                aria-label="Select all players"
+                            />
+                        </TableTh>
+                        <TableTh aria-sort={sortKey === 'name' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                            {renderSortHeader('Player', 'name')}
+                        </TableTh>
+                        <TableTh aria-sort={sortKey === 'responseTime' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                            {renderSortHeader('Response time', 'responseTime')}
+                        </TableTh>
+                        <TableTh aria-sort={sortKey === 'gamesPlayed' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                            {renderSortHeader('Total games played', 'gamesPlayed')}
+                        </TableTh>
+                    </TableTr>
+                </TableThead>
+                <TableTbody>{rows}</TableTbody>
+            </Table>
+            <Divider
+                label="or"
+                labelPosition="center"
+            />
+        </>
+    );
+
     // TODO: New game date component?
     return (
         <Stack gap="md">
@@ -322,56 +375,7 @@ export const PickerForm = ({
                 <Title order={2}>Picker</Title>
                 <Text c="dimmed">Game {gameDay.id}: {gameDay.date.toISOString().split('T')[0]}</Text>
             </Stack>
-            <Activity mode={gameDay.game ? 'visible' : 'hidden'}>
-                <Group justify="space-between" align="center" wrap="wrap">
-                    <Text fw={700}>Players selected ({selectedIds.length})</Text>
-                    <Button
-                        type="button"
-                        data-testid="submit-picker-button"
-                        onClick={handleSubmit}
-                        disabled={!hasSelection || isSettingEnabled}
-                        loading={isSubmitting}
-                        w={150}
-                    >
-                        Pick sides
-                    </Button>
-                </Group>
-                <Table
-                    striped
-                    highlightOnHover
-                    withTableBorder
-                    withColumnBorders
-                    w="100%"
-                    style={{ tableLayout: 'fixed' }}
-                >
-                    <TableThead>
-                        <TableTr>
-                            <TableTh w="2.5rem">
-                                <Checkbox
-                                    checked={allSelected}
-                                    indeterminate={someSelected}
-                                    onChange={(event) => toggleSelectAll(event.currentTarget.checked)}
-                                    aria-label="Select all players"
-                                />
-                            </TableTh>
-                            <TableTh aria-sort={sortKey === 'name' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
-                                {renderSortHeader('Player', 'name')}
-                            </TableTh>
-                            <TableTh aria-sort={sortKey === 'responseTime' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
-                                {renderSortHeader('Response time', 'responseTime')}
-                            </TableTh>
-                            <TableTh aria-sort={sortKey === 'gamesPlayed' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
-                                {renderSortHeader('Total games played', 'gamesPlayed')}
-                            </TableTh>
-                        </TableTr>
-                    </TableThead>
-                    <TableTbody>{rows}</TableTbody>
-                </Table>
-                <Divider
-                    label="or"
-                    labelPosition="center"
-                />
-            </Activity>
+            {gameDay.game ? picker : null}
             <Group justify="space-between" align="center" wrap="wrap">
                 <TextInput
                     data-testid={gameDay.game ? "cancellation-reason" : "reinstatement-reason"}

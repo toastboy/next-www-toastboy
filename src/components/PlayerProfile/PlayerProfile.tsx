@@ -2,7 +2,6 @@ import { Box, Container, Title } from '@mantine/core';
 import type { TableName } from 'prisma/generated//browser';
 import type { ArseType } from 'prisma/zod/schemas/models/Arse.schema';
 import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
-import { Activity } from 'react';
 
 import { PlayerArse } from '@/components/PlayerArse/PlayerArse';
 import { PlayerBorn } from '@/components/PlayerBorn/PlayerBorn';
@@ -56,9 +55,9 @@ export const PlayerProfile = ({
                 </Box>
             </Box>
             <PlayerLastPlayed lastPlayed={lastPlayed} />
-            <Activity mode={arse ? 'visible' : 'hidden'}>
+            {arse ? (
                 <PlayerArse arse={arse} />
-            </Activity>
+            ) : null}
             <PlayerForm form={form} />
             <PlayerHistory
                 player={player}

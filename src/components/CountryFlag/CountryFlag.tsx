@@ -10,7 +10,7 @@ export const CountryFlag = ({ country }: Props) => {
         <Image
             w="100%"
             h="100%"
-            src={`/api/footy/country/${country.isoCode.toLowerCase()}/flag`}
+            src={`/api/footy/country/${country.fifaCode.toLowerCase()}/flag`}
             alt={country.name}
             title={country.name}
         />

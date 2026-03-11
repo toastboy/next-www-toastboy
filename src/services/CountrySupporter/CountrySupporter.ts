@@ -20,15 +20,15 @@ export class CountrySupporterService {
     /**
      * Fetches a country-supporter relationship by its composite key.
      * @param playerId - Player identifier in the composite key.
-     * @param countryISOCode - Country ISO code in the composite key.
+     * @param countryFIFACode - Country FIFA code in the composite key.
      * @returns The matching row, or `null` when it does not exist.
      * @throws {z.ZodError} If unique-filter validation fails.
      * @throws {Error} If Prisma query execution fails.
      */
-    async get(playerId: number, countryISOCode: string): Promise<CountrySupporterType | null> {
+    async get(playerId: number, countryFIFACode: string): Promise<CountrySupporterType | null> {
         try {
             const where = CountrySupporterWhereUniqueInputObjectSchema.parse({
-                playerId_countryISOCode: { playerId, countryISOCode },
+                playerId_countryFIFACode: { playerId, countryFIFACode },
             });
 
             return prisma.countrySupporter.findUnique({ where });
@@ -67,15 +67,15 @@ export class CountrySupporterService {
     }
 
     /**
-     * Fetches country-supporter relationships for a country ISO code.
-     * @param countryISOCode - Country ISO code to filter by.
+     * Fetches country-supporter relationships for a country FIFA code.
+     * @param countryFIFACode - Country FIFA code to filter by.
      * @returns Matching country-supporter rows.
      * @throws {z.ZodError} If filter validation fails.
      * @throws {Error} If Prisma query execution fails.
      */
-    async getByCountry(countryISOCode: string): Promise<CountrySupporterType[]> {
+    async getByCountry(countryFIFACode: string): Promise<CountrySupporterType[]> {
         try {
-            const where = CountrySupporterWhereInputObjectSchema.parse({ countryISOCode });
+            const where = CountrySupporterWhereInputObjectSchema.parse({ countryFIFACode });
             return prisma.countrySupporter.findMany({ where });
         } catch (error) {
             throw normalizeUnknownError(error);
@@ -84,7 +84,7 @@ export class CountrySupporterService {
 
     /**
      * Creates a country-supporter relationship from validated write input.
-     * @param data - Write payload containing `playerId` and `countryISOCode`.
+     * @param data - Write payload containing `playerId` and `countryFIFACode`.
      * @returns The created row.
      * @throws {z.ZodError} If input or Prisma-args validation fails.
      * @throws {Error} If Prisma create fails.
@@ -101,7 +101,7 @@ export class CountrySupporterService {
 
     /**
      * Upserts a country-supporter relationship by composite key.
-     * @param data - Write payload containing `playerId` and `countryISOCode`.
+     * @param data - Write payload containing `playerId` and `countryFIFACode`.
      * @returns The created or updated row.
      * @throws {z.ZodError} If input or Prisma-args validation fails.
      * @throws {Error} If Prisma upsert fails.
@@ -111,9 +111,9 @@ export class CountrySupporterService {
             const writeData = CountrySupporterWriteInputSchema.parse(data);
             const args = CountrySupporterUpsertOneStrictSchema.parse({
                 where: {
-                    playerId_countryISOCode: {
+                    playerId_countryFIFACode: {
                         playerId: writeData.playerId,
-                        countryISOCode: writeData.countryISOCode,
+                        countryFIFACode: writeData.countryFIFACode,
                     },
                 },
                 create: writeData,
@@ -128,14 +128,14 @@ export class CountrySupporterService {
     /**
      * Upserts multiple country-supporter relationships for a player in parallel.
      * @param playerId - Player identifier for all upserts.
-     * @param countryISOCodes - Country ISO codes to upsert for the player.
+     * @param countryFIFACodes - Country FIFA codes to upsert for the player.
      * @returns Resolves when all upserts complete.
      * @throws {Error} Propagates the first upsert error encountered.
      */
-    async upsertAll(playerId: number, countryISOCodes: string[]) {
+    async upsertAll(playerId: number, countryFIFACodes: string[]) {
         try {
-            await Promise.all(countryISOCodes.map(
-                (countryISOCode) => this.upsert({ playerId, countryISOCode }),
+            await Promise.all(countryFIFACodes.map(
+                (countryFIFACode) => this.upsert({ playerId, countryFIFACode }),
             ));
         } catch (error) {
             throw normalizeUnknownError(error);
@@ -143,9 +143,9 @@ export class CountrySupporterService {
     }
 
     /**
-     * Deletes all of a player's country-supporter relationships except retained ISO codes.
+     * Deletes all of a player's country-supporter relationships except retained FIFA codes.
      * @param playerId - Player identifier whose relationships are being pruned.
-     * @param keep - Country ISO codes that should remain associated with the player.
+     * @param keep - Country FIFA codes that should remain associated with the player.
      * @returns Resolves when all non-retained relationships are deleted.
      * @throws {Error} If fetch or delete operations fail.
      */
@@ -154,10 +154,10 @@ export class CountrySupporterService {
             const currentCountrySupporters = await this.getByPlayer(playerId);
             const countrySupportersToDelete = currentCountrySupporters
                 .filter((current) => !keep.some(
-                    (cs) => cs === current.countryISOCode,
+                    (cs) => cs === current.countryFIFACode,
                 ));
             await Promise.all(countrySupportersToDelete.map(
-                (cs) => this.delete(cs.playerId, cs.countryISOCode)),
+                (cs) => this.delete(cs.playerId, cs.countryFIFACode)),
             );
         } catch (error) {
             throw normalizeUnknownError(error);
@@ -170,15 +170,15 @@ export class CountrySupporterService {
      * Not-found deletes (`P2025`) are treated as no-ops.
      *
      * @param playerId - Player identifier in the composite key.
-     * @param countryISOCode - Country ISO code in the composite key.
+     * @param countryFIFACode - Country FIFA code in the composite key.
      * @returns Resolves when deletion handling completes.
      * @throws {z.ZodError} If key validation fails.
      * @throws {Error} If Prisma delete fails for reasons other than not-found.
      */
-    async delete(playerId: number, countryISOCode: string): Promise<void> {
+    async delete(playerId: number, countryFIFACode: string): Promise<void> {
         try {
             const where = CountrySupporterWhereUniqueInputObjectSchema.parse({
-                playerId_countryISOCode: { playerId, countryISOCode },
+                playerId_countryFIFACode: { playerId, countryFIFACode },
             });
 
             await prisma.countrySupporter.delete({ where });

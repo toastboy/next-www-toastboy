@@ -14,7 +14,7 @@ describe('GameDayList', () => {
 
         render(
             <Wrapper>
-                <GameDayList gameDays={gameDays} />
+                <GameDayList gameDays={gameDays} year={2021} />
             </Wrapper>,
         );
 
@@ -27,7 +27,7 @@ describe('GameDayList', () => {
     it('renders an empty state when no game days exist', () => {
         render(
             <Wrapper>
-                <GameDayList gameDays={[]} />
+                <GameDayList gameDays={[]} year={2021} />
             </Wrapper>,
         );
     });

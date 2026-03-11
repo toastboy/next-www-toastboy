@@ -25,7 +25,7 @@ import type { CountryType } from 'prisma/zod/schemas/models/Country.schema';
 import type { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import type { PlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
 import type React from 'react';
-import { Activity, useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 
 import { EmailInput } from '@/components/EmailInput/EmailInput';
 import { config } from '@/lib/config';
@@ -91,7 +91,7 @@ export const PlayerProfileForm = ({
             addedExtraEmails: [],
             removedExtraEmails: [],
             born: bornYear,
-            countries: countries.map((country) => country.country.isoCode),
+            countries: countries.map((country) => country.country.fifaCode),
             clubs: clubs.map((club) => club.clubId.toString()),
             comment: player.comment ?? '',
         } satisfies PlayerProfileFormValues,
@@ -167,7 +167,7 @@ export const PlayerProfileForm = ({
 
     const countryData = allCountries.map((country) => ({
         label: country.name,
-        value: country.isoCode,
+        value: country.fifaCode,
     }));
 
     const clubData: ComboboxData = Object.values(
@@ -290,9 +290,7 @@ export const PlayerProfileForm = ({
                                     data-testid={`extra-email-input-${index}`}
                                     flex={1}
                                     rightSection={
-                                        <Activity
-                                            mode={email?.trim().length ? 'visible' : 'hidden'}
-                                        >
+                                        email?.trim().length ? (
                                             <Tooltip
                                                 label={verificationMessage}
                                                 withArrow
@@ -308,7 +306,7 @@ export const PlayerProfileForm = ({
                                                     />
                                                 }
                                             </Tooltip>
-                                        </Activity>
+                                        ) : null
                                     }
                                     {...form.getInputProps(`extraEmails.${index}`)}
                                 />

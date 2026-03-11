@@ -14,7 +14,7 @@ export const PlayerCountries = ({ countries }: Props) => {
             <Flex gap="xs" p="xs" direction="column">
                 {countries.map((item) => (
                     <CountryFlag
-                        key={item.countryISOCode}
+                        key={item.countryFIFACode}
                         country={item.country}
                     />
                 ))}

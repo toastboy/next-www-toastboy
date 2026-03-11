@@ -10,11 +10,11 @@ import {
 } from 'prisma/zod/schemas';
 import z from 'zod';
 
-const COUNTRY_ISO_CODE_REGEX = /^([A-Z]{2}|[A-Z]{2}-[A-Z]{3})$/;
+const COUNTRY_FIFA_CODE_REGEX = /^[A-Z]{3}$/;
 
 const CountrySupporterStrictFields = {
     playerId: z.number().int().min(1),
-    countryISOCode: z.string().regex(COUNTRY_ISO_CODE_REGEX, 'Invalid ISO code format'),
+    countryFIFACode: z.string().regex(COUNTRY_FIFA_CODE_REGEX, 'Invalid FIFA code format'),
 };
 
 export const CountrySupporterWriteInputSchema = z.object({

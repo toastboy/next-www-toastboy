@@ -14,15 +14,15 @@ import {
 
 export class CountryService {
     /**
-     * Fetches a country by ISO code.
-     * @param isoCode - Country ISO code.
+     * Fetches a country by FIFA code.
+     * @param fifaCode - Country FIFA code.
      * @returns The matching country, or `null` when it does not exist.
      * @throws {z.ZodError} If unique-filter validation fails.
      * @throws {Error} If Prisma query execution fails.
      */
-    async get(isoCode: string): Promise<CountryType | null> {
+    async get(fifaCode: string): Promise<CountryType | null> {
         try {
-            const where = CountryWhereUniqueInputObjectSchema.parse({ isoCode });
+            const where = CountryWhereUniqueInputObjectSchema.parse({ fifaCode });
             return prisma.country.findUnique({ where });
         } catch (error) {
             throw normalizeUnknownError(error);
@@ -44,7 +44,7 @@ export class CountryService {
 
     /**
      * Creates a country from validated write input.
-     * @param data - Write payload containing `isoCode` and `name`.
+     * @param data - Write payload containing `fifaCode` and `name`.
      * @returns The created country row.
      * @throws {z.ZodError} If input or Prisma-args validation fails.
      * @throws {Error} If Prisma create fails.
@@ -60,8 +60,8 @@ export class CountryService {
     }
 
     /**
-     * Upserts a country by ISO code.
-     * @param data - Write payload containing `isoCode` and `name`.
+     * Upserts a country by FIFA code.
+     * @param data - Write payload containing `fifaCode` and `name`.
      * @returns The created or updated country row.
      * @throws {z.ZodError} If input or Prisma-args validation fails.
      * @throws {Error} If Prisma upsert fails.
@@ -70,7 +70,7 @@ export class CountryService {
         try {
             const writeData = CountryWriteInputSchema.parse(data);
             const args = CountryUpsertOneStrictSchema.parse({
-                where: { isoCode: writeData.isoCode },
+                where: { fifaCode: writeData.fifaCode },
                 create: writeData,
                 update: writeData,
             });
@@ -81,18 +81,18 @@ export class CountryService {
     }
 
     /**
-     * Deletes a country by ISO code.
+     * Deletes a country by FIFA code.
      *
      * Not-found deletes (`P2025`) are treated as no-ops.
      *
-     * @param isoCode - Country ISO code.
+     * @param fifaCode - Country FIFA code.
      * @returns Resolves when deletion handling completes.
      * @throws {z.ZodError} If unique-filter validation fails.
      * @throws {Error} If Prisma delete fails for reasons other than not-found.
      */
-    async delete(isoCode: string): Promise<void> {
+    async delete(fifaCode: string): Promise<void> {
         try {
-            const where = CountryWhereUniqueInputObjectSchema.parse({ isoCode });
+            const where = CountryWhereUniqueInputObjectSchema.parse({ fifaCode });
 
             await prisma.country.delete({ where });
         } catch (error) {

@@ -1,12 +1,12 @@
 import { CountryType } from 'prisma/zod/schemas/models/Country.schema';
 
 export const defaultCountry: CountryType = {
-    isoCode: "GB-ENG",
+    fifaCode: "ENG",
     name: "England",
 };
 
 export const invalidCountry: CountryType = {
-    isoCode: "ZZZ",
+    fifaCode: "ZZZ",
     name: "Narnia",
 };
 
@@ -17,7 +17,7 @@ export const createMockCountry = (overrides: Partial<CountryType> = {}): Country
 
 export const defaultCountryList: CountryType[] = Array.from({ length: 4 }, (_, index) =>
     createMockCountry({
-        isoCode: ["GB-ENG", "GB-NIR", "GB-SCT", "GB-WLS"][index % 4],
+        fifaCode: ["ENG", "NIR", "SCO", "WAL"][index % 4],
         name: ["England", "Northern Ireland", "Scotland", "Wales"][index % 4],
     }),
 );

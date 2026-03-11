@@ -17,15 +17,15 @@ describe('CountryService', () => {
     });
 
     describe('get', () => {
-        it('should retrieve the correct country with isoCode "GB-SCO"', async () => {
+        it('should retrieve the correct country with fifaCode "SCO"', async () => {
             (prisma.country.findUnique as Mock).mockResolvedValueOnce(defaultCountryList[2]);
-            const result = await countryService.get("GB-SCT");
+            const result = await countryService.get("SCO");
             expect(result).toEqual(defaultCountryList[2]);
         });
 
-        it('should return null for isoCode "ZZZ"', async () => {
+        it('should return null for an unknown fifaCode', async () => {
             (prisma.country.findUnique as Mock).mockResolvedValueOnce(null);
-            const result = await countryService.get("ZZZ");
+            const result = await countryService.get("XXX");
             expect(result).toBeNull();
         });
     });
@@ -38,7 +38,7 @@ describe('CountryService', () => {
         it('should return the correct, complete list of 4 countries', async () => {
             const result = await countryService.getAll();
             expect(result).toHaveLength(4);
-            expect(result[0].isoCode).toBe("GB-ENG");
+            expect(result[0].fifaCode).toBe("ENG");
         });
     });
 
@@ -46,7 +46,7 @@ describe('CountryService', () => {
         it('should create a country', async () => {
             const newCountry: CountryType = {
                 ...defaultCountry,
-                isoCode: "IT",
+                fifaCode: "ITA",
                 name: "Italia",
             };
             (prisma.country.create as Mock).mockResolvedValueOnce(newCountry);
@@ -62,7 +62,7 @@ describe('CountryService', () => {
             (prisma.country.create as Mock).mockRejectedValueOnce(new Error('country already exists'));
             await expect(countryService.create({
                 ...defaultCountry,
-                isoCode: "GB-ENG",
+                fifaCode: "ENG",
                 name: "Engerland",
             })).rejects.toThrow();
         });
@@ -78,7 +78,7 @@ describe('CountryService', () => {
         it('should update an existing country where one with the id already existed', async () => {
             const updatedCountry: CountryType = {
                 ...defaultCountry,
-                isoCode: "GB-ENG",
+                fifaCode: "ENG",
                 name: "England",
             };
             (prisma.country.upsert as Mock).mockResolvedValueOnce(updatedCountry);
@@ -98,7 +98,7 @@ describe('CountryService', () => {
     describe('delete', () => {
         it('should delete an existing country', async () => {
             (prisma.country.delete as Mock).mockResolvedValueOnce(defaultCountry);
-            await countryService.delete("GB-NIR");
+            await countryService.delete("NIR");
             expect(prisma.country.delete).toHaveBeenCalledTimes(1);
         });
 

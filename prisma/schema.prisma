@@ -59,22 +59,22 @@ model ClubSupporter {
 }
 
 model Country {
-  isoCode String @id @db.VarChar(6)
-  name    String @unique @db.VarChar(255)
+  fifaCode String @id @db.VarChar(3)
+  name     String @unique @db.VarChar(255)
 
   supporters CountrySupporter[]
 }
 
 model CountrySupporter {
-  playerId       Int
-  countryISOCode String @db.VarChar(6)
+  playerId        Int
+  countryFIFACode String @db.VarChar(3)
 
-  country Country @relation(fields: [countryISOCode], references: [isoCode])
+  country Country @relation(fields: [countryFIFACode], references: [fifaCode])
   player  Player  @relation(fields: [playerId], references: [id])
 
-  @@unique([playerId, countryISOCode])
+  @@unique([playerId, countryFIFACode])
   @@index([playerId])
-  @@index([countryISOCode])
+  @@index([countryFIFACode])
 }
 
 model GameChat {

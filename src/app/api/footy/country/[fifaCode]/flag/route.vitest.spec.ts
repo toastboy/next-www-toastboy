@@ -6,15 +6,15 @@ import { vi } from 'vitest';
 vi.mock('@/lib/azure');
 vi.mock('services/Country');
 
-import { GET } from '@/app/api/footy/country/[isoCode]/flag/route';
+import { GET } from '@/app/api/footy/country/[fifaCode]/flag/route';
 import azureCache from '@/lib/azure';
 import { createMockApp, pngResponseHandler } from '@/tests/lib/api/common';
 import { loadBinaryFixture } from '@/tests/shared/fixtures';
 
-const testRoute = '/api/footy/country/NO/flag';
-const mockApp = createMockApp(GET, { path: testRoute, params: Promise.resolve({ isoCode: 'NO' }) }, pngResponseHandler);
+const testRoute = '/api/footy/country/NOR/flag';
+const mockApp = createMockApp(GET, { path: testRoute, params: Promise.resolve({ fifaCode: 'NOR' }) }, pngResponseHandler);
 const containerClient = azureCache.getContainerClient('countries');
-const blobClient = containerClient.getBlobClient('NO.png') as unknown as {
+const blobClient = containerClient.getBlobClient('NOR.png') as unknown as {
     exists: Mock;
     download: Mock;
 };

@@ -10,7 +10,7 @@ describe('CountryFlag', () => {
 
         const img = screen.getByRole('img', { name: defaultCountry.name });
         expect(img).toBeInTheDocument();
-        expect(img).toHaveAttribute('src', `/api/footy/country/${defaultCountry.isoCode.toLowerCase()}/flag`);
+        expect(img).toHaveAttribute('src', `/api/footy/country/${defaultCountry.fifaCode.toLowerCase()}/flag`);
         expect(img).toHaveAttribute('alt', defaultCountry.name);
         expect(img).toHaveAttribute('title', defaultCountry.name);
     });

@@ -66,8 +66,8 @@ export function useClub(id: number) {
     return data ?? null;
 }
 
-export function useCountry(isoCode: string) {
-    const { data, error } = useSWR<CountryType, Error>(`/api/footy/country/${isoCode}`, fetcher);
+export function useCountry(fifaCode: string) {
+    const { data, error } = useSWR<CountryType, Error>(`/api/footy/country/${fifaCode}`, fetcher);
     if (error) throw error;
     return data ?? null;
 }

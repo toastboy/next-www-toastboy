@@ -90,7 +90,7 @@ describe('PlayerProfileForm', () => {
                     born: defaultPlayer.born,
                     clubs: defaultClubSupporterDataList.map((entry) => entry.clubId),
                     comment: "",
-                    countries: defaultCountrySupporterDataList.map((entry) => entry.country.isoCode),
+                    countries: defaultCountrySupporterDataList.map((entry) => entry.country.fifaCode),
                     extraEmails: defaultPlayerExtraEmails.map((entry) => entry.email),
                     finished: defaultPlayer.finished,
                     name: `${defaultPlayer.name ?? ''} Jr`,

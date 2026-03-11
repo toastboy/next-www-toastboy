@@ -7,9 +7,9 @@ import { streamToBuffer } from '@/lib/utils';
 
 
 /**
- * Retrieves the flag image of a country as a Buffer based on the provided ISO code.
+ * Retrieves the flag image of a country as a Buffer based on the provided FIFA code.
  *
- * @param params - An object containing the route parameters, including the `isoCode` of the country.
+ * @param params - An object containing the route parameters, including the `fifaCode` of the country.
  * @returns A promise that resolves to a Buffer containing the flag image if it exists, or `null` if the flag is not found.
  * @throws An error if the image body download fails.
  */
@@ -18,7 +18,7 @@ async function getCountryFlag(
 ): Promise<Buffer | null> {
     try {
         const containerClient = azureCache.getContainerClient('countries');
-        const blobClient = containerClient.getBlobClient(`${params.isoCode}.png`);
+        const blobClient = containerClient.getBlobClient(`${params.fifaCode}.png`);
 
         if (!(await blobClient.exists())) {
             return null;
@@ -29,7 +29,7 @@ async function getCountryFlag(
             throw new InternalError('Image body download failed.', {
                 details: {
                     resource: 'country-flag',
-                    isoCode: params.isoCode,
+                    fifaCode: params.fifaCode,
                 },
             });
         }
@@ -38,18 +38,18 @@ async function getCountryFlag(
         throw normalizeUnknownError(error, {
             details: {
                 resource: 'country-flag',
-                isoCode: params.isoCode,
+                fifaCode: params.fifaCode,
             },
         });
     }
 }
 
 /**
- * Handles the GET request for retrieving the flag of a country based on its ISO code.
+ * Handles the GET request for retrieving the flag of a country based on its FIFA code.
  *
  * @param request - The incoming Next.js request object.
  * @param props - An object containing route parameters.
- * @param props.params - A promise resolving to a record of route parameters, including the `isoCode` of the country.
+ * @param props.params - A promise resolving to a record of route parameters, including the `fifaCode` of the country.
  * @returns A response containing the country's flag in PNG format.
  */
 export const GET = async (request: NextRequest, props: { params: Promise<Record<string, string>> }) => {

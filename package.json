@@ -40,7 +40,7 @@
     "dependencies": {
         "@azure/identity": "^4.13.0",
         "@azure/storage-blob": "^12.31.0",
-        "@better-auth/prisma-adapter": "^1.5.4",
+        "@better-auth/prisma-adapter": "^1.5.5",
         "@eslint/eslintrc": "^3.3.5",
         "@mantine/code-highlight": "^8.3.16",
         "@mantine/core": "^8.3.16",

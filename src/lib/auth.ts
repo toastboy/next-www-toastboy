@@ -3,6 +3,7 @@ import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { nextCookies } from 'better-auth/next-js';
 import { admin } from 'better-auth/plugins';
+import escapeHtml from 'escape-html';
 import prisma from 'prisma/prisma';
 
 import { beforeDeletePlayer } from '@/actions/deletePlayer';
@@ -23,6 +24,29 @@ interface DeleteAccountVerificationContext {
     token: string;
 }
 
+/**
+ * Context supplied by Better Auth when confirming an email-change request.
+ */
+interface ChangeEmailConfirmationContext {
+    user: {
+        email?: string;
+    };
+    newEmail: string;
+    url: string;
+    token: string;
+}
+
+/**
+ * Context supplied by Better Auth when sending a verification email.
+ */
+interface EmailVerificationContext {
+    user: {
+        email?: string;
+    };
+    url: string;
+    token: string;
+}
+
 export const auth = betterAuth({
     baseURL: getPublicBaseUrl(),
     secret: secrets.BETTER_AUTH_SECRET,
@@ -36,15 +60,36 @@ export const auth = betterAuth({
                 required: false,
             },
         },
+        changeEmail: {
+            enabled: true,
+            sendChangeEmailConfirmation: async ({ user, newEmail, url }: ChangeEmailConfirmationContext) => {
+                if (user.email) {
+                    const safeNewEmail = escapeHtml(newEmail);
+                    const safeUrl = escapeHtml(url);
+
+                    await sendEmail({
+                        to: user.email,
+                        subject: 'Confirm your Toastboy FC email change',
+                        html: [
+                            `<p>We received a request to change your login email to ${safeNewEmail}.</p>`,
+                            `<p>If this was you, confirm the change:</p>`,
+                            `<a href="${safeUrl}">Confirm email change</a>`,
+                        ].join(''),
+                    });
+                }
+            },
+        },
         deleteUser: {
             enabled: true,
             sendDeleteAccountVerification: async ({ user, url }, _request) => {
+                const safeUrl = escapeHtml(url);
+
                 await sendEmail({
                     to: user.email,
                     subject: 'Delete your Toastboy FC account',
                     html: [
                         `<p>Click the link to confirm your account deletion:</p>`,
-                        `<a href="${url}">Delete account</a>`,
+                        `<a href="${safeUrl}">Delete account</a>`,
                     ].join(''),
                 });
             },
@@ -59,17 +104,35 @@ export const auth = betterAuth({
         // avoid timing attacks: https://www.better-auth.com/docs/concepts/email
         // eslint-disable-next-line @typescript-eslint/require-await
         sendResetPassword: async ({ user, url }, _request) => {
+            const safeUrl = escapeHtml(url);
+
             void sendEmail({
                 to: user.email,
                 subject: 'Reset your Toastboy FC password',
                 html: [
                     `<p>Click the link to reset your password:</p>`,
-                    `<a href="${url}">Reset password</a>`,
+                    `<a href="${safeUrl}">Reset password</a>`,
                 ].join(''),
             });
         },
         onPasswordReset: async () => {
             // Intentionally left blank.
+        },
+    },
+    emailVerification: {
+        sendVerificationEmail: async ({ user, url }: EmailVerificationContext) => {
+            if (user.email) {
+                const safeUrl = escapeHtml(url);
+
+                await sendEmail({
+                    to: user.email,
+                    subject: 'Verify your Toastboy FC email address',
+                    html: [
+                        `<p>Click the link to verify your email address:</p>`,
+                        `<a href="${safeUrl}">Verify email</a>`,
+                    ].join(''),
+                });
+            }
         },
     },
     deleteUser: {
@@ -82,12 +145,14 @@ export const auth = betterAuth({
             _request: Request | undefined,
         ) => {
             if (user.email) {
+                const safeUrl = escapeHtml(url);
+
                 void sendEmail({
                     to: user.email,
                     subject: 'Reset your Toastboy FC password',
                     html: [
                         `<p>Click the link to reset your password:</p>`,
-                        `<a href="${url}">Reset password</a>`,
+                        `<a href="${safeUrl}">Reset password</a>`,
                     ].join(''),
                 });
             }

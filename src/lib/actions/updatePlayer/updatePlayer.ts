@@ -1,7 +1,11 @@
 import 'server-only';
 
+import { z } from 'zod';
+
 import { sendEmailVerificationCore } from '@/lib/actions/verifyEmail';
+import { AuthError } from '@/lib/errors';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
+import authService from '@/services/Auth';
 import clubSupporterService from '@/services/ClubSupporter';
 import countrySupporterService from '@/services/CountrySupporter';
 import playerService from '@/services/Player';
@@ -9,6 +13,7 @@ import playerExtraEmailService from '@/services/PlayerExtraEmail';
 import type { UpdatePlayerInput } from '@/types/actions/UpdatePlayer';
 
 interface UpdatePlayerDeps {
+    authService: Pick<typeof authService, 'getSessionUser' | 'changeCurrentUserEmail'>;
     playerService: Pick<typeof playerService, 'update'>;
     playerExtraEmailService: Pick<typeof playerExtraEmailService, 'create' | 'delete'>;
     clubSupporterService: Pick<typeof clubSupporterService, 'deleteExcept' | 'upsertAll'>;
@@ -17,6 +22,7 @@ interface UpdatePlayerDeps {
 }
 
 const defaultDeps: UpdatePlayerDeps = {
+    authService,
     playerService,
     playerExtraEmailService,
     clubSupporterService,
@@ -24,11 +30,15 @@ const defaultDeps: UpdatePlayerDeps = {
     sendEmailVerificationCore,
 };
 
+const accountEmailSchema = z.email().trim().toLowerCase();
+
 /**
  * Updates a player's core information and related entities such as extra
  * emails, clubs, and countries.
  *
  * This function performs the following operations:
+ * - Validates that the authenticated user is linked to the target player.
+ * - Requests a Better Auth main-account email change if needed.
  * - Updates the player's basic information.
  * - Adds new extra emails and sends verification emails.
  * - Removes specified extra emails.
@@ -48,8 +58,34 @@ export async function updatePlayerCore(
     deps: UpdatePlayerDeps = defaultDeps,
 ) {
     const { addedExtraEmails, removedExtraEmails, clubs, countries } = data;
+    const sessionUser = await deps.authService.getSessionUser();
+
+    if (!sessionUser?.id || !sessionUser.email) {
+        throw new AuthError('Login account not found for profile update.');
+    }
+
+    if (!sessionUser.playerId || sessionUser.playerId !== playerId) {
+        throw new AuthError('You are not authorized to edit this player profile.');
+    }
+
+    const sessionEmail = sessionUser.email.trim().toLowerCase();
+    const requestedAccountEmail = accountEmailSchema.parse(data.accountEmail);
+
+    if (requestedAccountEmail !== sessionEmail) {
+        await deps.authService.changeCurrentUserEmail({
+            newEmail: requestedAccountEmail,
+            callbackURL: '/footy/profile',
+        });
+    }
+
+    const refreshedSessionUser = requestedAccountEmail !== sessionEmail ?
+        await deps.authService.getSessionUser() :
+        sessionUser;
+    const accountEmail = refreshedSessionUser?.email?.trim().toLowerCase() ?? sessionEmail;
+
     const player = await deps.playerService.update({
         id: playerId,
+        accountEmail,
         anonymous: data.anonymous,
         name: data.name,
         born: data.born,

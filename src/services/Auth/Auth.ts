@@ -10,6 +10,14 @@ export interface AuthSessionUser {
     playerId?: number | null;
 }
 
+/**
+ * Payload for changing the authenticated user's email address.
+ */
+export interface ChangeCurrentUserEmailInput {
+    newEmail: string;
+    callbackURL?: string;
+}
+
 class AuthService {
     /**
      * Retrieves the current session user.
@@ -37,6 +45,29 @@ class AuthService {
             return await auth.api.updateUser({
                 headers: await headers(),
                 body: data,
+            });
+        } catch (error) {
+            throw normalizeUnknownError(error);
+        }
+    }
+
+    /**
+     * Initiates an email change for the current authenticated user.
+     *
+     * Better Auth may complete the change immediately or require a
+     * verification/confirmation step depending on the configured policy.
+     *
+     * @param input - The target email and optional callback URL.
+     * @returns The change-email response from Better Auth.
+     */
+    async changeCurrentUserEmail(input: ChangeCurrentUserEmailInput) {
+        try {
+            return await auth.api.changeEmail({
+                headers: await headers(),
+                body: {
+                    newEmail: input.newEmail,
+                    callbackURL: input.callbackURL,
+                },
             });
         } catch (error) {
             throw normalizeUnknownError(error);

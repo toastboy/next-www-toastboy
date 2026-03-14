@@ -14,6 +14,12 @@ const emailListSchema = z.array(z.preprocess(
 export const UpdatePlayerSchema = z.object({
     name: z.string()
         .min(1, { message: 'Name is required' }),
+    accountEmail: z.preprocess(
+        (value: unknown) => {
+            return typeof value === 'string' ? value.trim().toLowerCase() : value;
+        },
+        z.email({ message: 'Invalid account email' }).min(1, { message: 'Account email is required' }),
+    ),
     anonymous: z.boolean().optional(),
     finished: z.preprocess(
         (value: unknown) => {

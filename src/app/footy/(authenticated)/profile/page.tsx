@@ -58,6 +58,7 @@ const Page = async ({ searchParams: sp }: PageProps) => {
     return (
         <PlayerProfileForm
             player={player}
+            accountEmail={user.email}
             extraEmails={extraEmails}
             countries={countries}
             clubs={clubs}

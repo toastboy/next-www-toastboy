@@ -38,6 +38,7 @@ import { CountrySupporterDataType } from '@/types/CountrySupporterDataType';
 
 export interface Props {
     player: PlayerType & { accountEmail?: string | null };
+    accountEmail?: string | null;
     extraEmails: PlayerExtraEmailType[];
     countries: CountrySupporterDataType[];
     clubs: ClubSupporterDataType[];
@@ -54,6 +55,7 @@ type PlayerProfileFormValues = Omit<UpdatePlayerInput, 'clubs' | 'finished'> & {
 
 export const PlayerProfileForm = ({
     player,
+    accountEmail,
     extraEmails,
     countries,
     clubs,
@@ -85,6 +87,7 @@ export const PlayerProfileForm = ({
     const form = useForm<PlayerProfileFormValues>({
         initialValues: {
             name: player.name ?? '',
+            accountEmail: accountEmail ?? player.accountEmail ?? '',
             anonymous: player.anonymous ?? false,
             retired: Boolean(player.finished),
             extraEmails: initialExtraEmails.length ? initialExtraEmails : [''],
@@ -252,9 +255,8 @@ export const PlayerProfileForm = ({
                     label="Account email"
                     data-testid="account-email-input"
                     description="This is the email address you use to log in."
-                    value={player.accountEmail ?? ''}
-                    readOnly
-                    disabled
+                    required
+                    {...form.getInputProps('accountEmail')}
                 />
                 <Box
                     mt="md"

@@ -15,6 +15,11 @@ import { defaultPlayer } from '@/tests/mocks/data/player';
 import { defaultPlayerExtraEmails } from '@/tests/mocks/data/playerExtraEmail';
 
 describe('PlayerProfileForm', () => {
+    const playerWithAccountEmail = {
+        ...defaultPlayer,
+        accountEmail: 'player@example.com',
+    };
+
     const mockUpdatePlayer = vi.fn(
         async () => Promise.resolve(defaultPlayer),
     );
@@ -27,7 +32,8 @@ describe('PlayerProfileForm', () => {
         render(
             <Wrapper>
                 <PlayerProfileForm
-                    player={defaultPlayer}
+                    player={playerWithAccountEmail}
+                    accountEmail={playerWithAccountEmail.accountEmail}
                     extraEmails={defaultPlayerExtraEmails}
                     countries={defaultCountrySupporterDataList}
                     clubs={defaultClubSupporterDataList}
@@ -60,7 +66,8 @@ describe('PlayerProfileForm', () => {
         render(
             <Wrapper>
                 <PlayerProfileForm
-                    player={defaultPlayer}
+                    player={playerWithAccountEmail}
+                    accountEmail={playerWithAccountEmail.accountEmail}
                     extraEmails={defaultPlayerExtraEmails}
                     countries={defaultCountrySupporterDataList}
                     clubs={defaultClubSupporterDataList}
@@ -83,17 +90,18 @@ describe('PlayerProfileForm', () => {
 
         await waitFor(() => {
             expect(mockUpdatePlayer).toHaveBeenCalledWith(
-                defaultPlayer.id,
+                playerWithAccountEmail.id,
                 expect.objectContaining({
+                    accountEmail: playerWithAccountEmail.accountEmail,
                     addedExtraEmails: [],
-                    anonymous: defaultPlayer.anonymous,
-                    born: defaultPlayer.born,
+                    anonymous: playerWithAccountEmail.anonymous,
+                    born: playerWithAccountEmail.born,
                     clubs: defaultClubSupporterDataList.map((entry) => entry.clubId),
                     comment: "",
                     countries: defaultCountrySupporterDataList.map((entry) => entry.country.fifaCode),
                     extraEmails: defaultPlayerExtraEmails.map((entry) => entry.email),
-                    finished: defaultPlayer.finished,
-                    name: `${defaultPlayer.name ?? ''} Jr`,
+                    finished: playerWithAccountEmail.finished,
+                    name: `${playerWithAccountEmail.name ?? ''} Jr`,
                     removedExtraEmails: [],
                 }),
             );

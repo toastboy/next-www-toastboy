@@ -1,6 +1,7 @@
 import { Center, Container, Stack, Title } from '@mantine/core';
 
 import { authExport } from '@/actions/auth-export';
+import { getProgress } from '@/actions/getProgress';
 import { updatePlayerRecords } from '@/actions/updatePlayerRecords';
 import { AdminExportAuth } from '@/components/AdminExportAuth/AdminExportAuth';
 import { AdminUpdatePlayerRecords } from '@/components/AdminUpdatePlayerRecords/AdminUpdatePlayerRecords';
@@ -15,7 +16,7 @@ const AdminPage = () => {
             </Center>
 
             <Stack mb="lg">
-                <AdminUpdatePlayerRecords onUpdatePlayerRecords={updatePlayerRecords} />
+                <AdminUpdatePlayerRecords onUpdatePlayerRecords={updatePlayerRecords} getProgress={getProgress} />
                 <AdminExportAuth onExportAuth={authExport} />
             </Stack>
         </Container >

@@ -5,6 +5,11 @@ export const defaultCountrySupporter: CountrySupporterType = {
     countryFIFACode: "ENG",
 };
 
+export const invalidCountrySupporter: CountrySupporterType = {
+    playerId: -1,
+    countryFIFACode: null as unknown as string,
+};
+
 export const createMockCountrySupporter = (overrides: Partial<CountrySupporterType> = {}): CountrySupporterType => ({
     ...defaultCountrySupporter,
     ...overrides,

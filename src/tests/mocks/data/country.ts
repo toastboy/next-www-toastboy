@@ -6,7 +6,7 @@ export const defaultCountry: CountryType = {
 };
 
 export const invalidCountry: CountryType = {
-    fifaCode: "ZZZ",
+    fifaCode: null as unknown as string,
     name: "Narnia",
 };
 

@@ -3,45 +3,55 @@
 import { ActionIcon, Button, Center, Container, RingProgress, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { IconCheck } from '@tabler/icons-react';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
+import { SkeletonRecordsProgress } from '@/components/Skeletons/Skeletons';
 import { toPublicMessage } from '@/lib/errors';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
-import { useRecordsProgress } from '@/lib/swr';
+import { GetProgressProxy } from '@/types/actions/GetProgress';
 import { UpdatePlayerRecordsProxy } from '@/types/actions/UpdatePlayerRecords';
 
 export interface Props {
     onUpdatePlayerRecords: UpdatePlayerRecordsProxy;
+    getProgress: GetProgressProxy;
 };
 
-export const AdminUpdatePlayerRecords = ({ onUpdatePlayerRecords }: Props) => {
-    const { data, mutate } = useRecordsProgress();
+export const AdminUpdatePlayerRecords = ({ onUpdatePlayerRecords, getProgress }: Props) => {
+    const [progress, setProgress] = useState<[number, number] | null | undefined>(undefined);
+    const getProgressRef = useRef(getProgress);
 
     useEffect(() => {
-        const intervalId = setInterval(() => {
-            mutate().catch((err) => {
+        getProgressRef.current = getProgress;
+    }, [getProgress]);
+
+    useEffect(() => {
+        const poll = () => {
+            getProgressRef.current().then(setProgress).catch((err) => {
                 captureUnexpectedError(err, {
                     layer: 'client',
                     component: 'AdminUpdatePlayerRecords',
-                    action: 'mutateProgress',
-                    route: '/footy/admin/players',
+                    action: 'getProgress',
+                    route: '/footy/admin',
                 });
             });
-        }, 1000);
+        };
 
+        poll();
+        const intervalId = setInterval(poll, 1000);
         return () => clearInterval(intervalId);
-    }, [mutate]);
+    }, []);
 
-    if (data?.length !== 2) return null;
+    if (progress === undefined) return <SkeletonRecordsProgress />;
+    if (progress?.length !== 2) return null;
 
-    const progress = Math.floor(100 * data[0] / data[1]);
+    const pct = Math.floor(100 * progress[0] / progress[1]);
 
     return (
         <>
             <Container>
                 <RingProgress
                     label={
-                        progress === 100 ?
+                        pct === 100 ?
                             <Center>
                                 <ActionIcon
                                     color="teal"
@@ -61,11 +71,11 @@ export const AdminUpdatePlayerRecords = ({ onUpdatePlayerRecords }: Props) => {
                                 ta="center"
                                 size="xl"
                             >
-                                {progress}%
+                                {pct}%
                             </Text>
                     }
                     sections={[
-                        { value: progress, color: progress === 100 ? 'teal' : 'blue' },
+                        { value: pct, color: pct === 100 ? 'teal' : 'blue' },
                     ]}
                 />
                 <Button
@@ -77,7 +87,7 @@ export const AdminUpdatePlayerRecords = ({ onUpdatePlayerRecords }: Props) => {
                                 layer: 'client',
                                 component: 'AdminUpdatePlayerRecords',
                                 action: 'updatePlayerRecords',
-                                route: '/footy/admin/players',
+                                route: '/footy/admin',
                             });
                             notifications.show({
                                 color: 'red',

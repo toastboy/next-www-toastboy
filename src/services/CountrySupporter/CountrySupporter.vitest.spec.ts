@@ -6,7 +6,7 @@ import { vi } from 'vitest';
 
 import countrySupporterService from '@/services/CountrySupporter';
 import { defaultCountry } from '@/tests/mocks/data/country';
-import { defaultCountrySupporter, defaultCountrySupporterList } from '@/tests/mocks/data/countrySupporter';
+import { defaultCountrySupporter, defaultCountrySupporterList, invalidCountrySupporter } from '@/tests/mocks/data/countrySupporter';
 
 describe('countrySupporterService', () => {
     beforeEach(() => {
@@ -157,10 +157,7 @@ describe('countrySupporterService', () => {
                 ...defaultCountrySupporter,
                 playerId: -1,
             })).rejects.toThrow();
-            await expect(countrySupporterService.create({
-                ...defaultCountrySupporter,
-                countryFIFACode: "XYZ",
-            })).rejects.toThrow();
+            await expect(countrySupporterService.create(invalidCountrySupporter)).rejects.toThrow();
         });
 
         it('should refuse to create a CountrySupporter that has the same player ID and country FIFA code as an existing one', async () => {

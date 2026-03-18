@@ -1,13 +1,11 @@
 import { Prisma } from 'prisma/generated/client';
-import {
-    PlayerExtraEmailCreateInputObjectZodSchema,
-    PlayerExtraEmailCreateOneZodSchema,
-    PlayerExtraEmailUncheckedCreateInputObjectZodSchema,
-    PlayerExtraEmailUncheckedUpdateInputObjectZodSchema,
-    PlayerExtraEmailUpdateInputObjectZodSchema,
-    PlayerExtraEmailUpdateOneZodSchema,
-    PlayerExtraEmailUpsertOneZodSchema,
-} from 'prisma/zod/schemas';
+import { PlayerExtraEmailCreateOneZodSchema } from 'prisma/zod/schemas/createOnePlayerExtraEmail.schema';
+import { PlayerExtraEmailCreateInputObjectZodSchema } from 'prisma/zod/schemas/objects/PlayerExtraEmailCreateInput.schema';
+import { PlayerExtraEmailUncheckedCreateInputObjectZodSchema } from 'prisma/zod/schemas/objects/PlayerExtraEmailUncheckedCreateInput.schema';
+import { PlayerExtraEmailUncheckedUpdateInputObjectZodSchema } from 'prisma/zod/schemas/objects/PlayerExtraEmailUncheckedUpdateInput.schema';
+import { PlayerExtraEmailUpdateInputObjectZodSchema } from 'prisma/zod/schemas/objects/PlayerExtraEmailUpdateInput.schema';
+import { PlayerExtraEmailUpdateOneZodSchema } from 'prisma/zod/schemas/updateOnePlayerExtraEmail.schema';
+import { PlayerExtraEmailUpsertOneZodSchema } from 'prisma/zod/schemas/upsertOnePlayerExtraEmail.schema';
 import z from 'zod';
 
 const PLAYER_EXTRA_EMAIL_MAX_LENGTH = 255;

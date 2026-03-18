@@ -198,6 +198,36 @@ class MoneyService {
     }
 
     /**
+     * Records a hall hire (invoice) payment as a club-level transaction.
+     *
+     * A HallHire transaction has no playerId and no gameDayId. The amount is
+     * stored as a positive value so that the club balance (which is the
+     * negation of the sum) becomes negative, representing money paid out.
+     *
+     * @param amount - The invoice amount in pence (must be positive).
+     * @param note - An optional description for the transaction (max 255 chars).
+     * @throws Will rethrow any validation or persistence errors encountered.
+     */
+    async recordHallHire(amount: number, note?: string): Promise<void> {
+        try {
+            const parsed = z.object({
+                amount: z.number().int().positive(),
+                note: z.string().max(255).optional(),
+            }).parse({ amount, note });
+
+            await prisma.transaction.create({
+                data: {
+                    type: 'HallHire',
+                    amountPence: parsed.amount,
+                    note: parsed.note,
+                },
+            });
+        } catch (error) {
+            throw normalizeUnknownError(error);
+        }
+    }
+
+    /**
      * Records a player payment as a signed transaction in the ledger.
      */
     async pay(playerId: number, amount: number): Promise<PayDebtResult> {

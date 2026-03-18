@@ -1,13 +1,11 @@
 import { Prisma } from 'prisma/generated/client';
-import {
-    ContactEnquiryCreateInputObjectZodSchema,
-    ContactEnquiryCreateOneZodSchema,
-    ContactEnquiryUncheckedCreateInputObjectZodSchema,
-    ContactEnquiryUncheckedUpdateInputObjectZodSchema,
-    ContactEnquiryUpdateInputObjectZodSchema,
-    ContactEnquiryUpdateOneZodSchema,
-    ContactEnquiryUpsertOneZodSchema,
-} from 'prisma/zod/schemas';
+import { ContactEnquiryCreateOneZodSchema } from 'prisma/zod/schemas/createOneContactEnquiry.schema';
+import { ContactEnquiryCreateInputObjectZodSchema } from 'prisma/zod/schemas/objects/ContactEnquiryCreateInput.schema';
+import { ContactEnquiryUncheckedCreateInputObjectZodSchema } from 'prisma/zod/schemas/objects/ContactEnquiryUncheckedCreateInput.schema';
+import { ContactEnquiryUncheckedUpdateInputObjectZodSchema } from 'prisma/zod/schemas/objects/ContactEnquiryUncheckedUpdateInput.schema';
+import { ContactEnquiryUpdateInputObjectZodSchema } from 'prisma/zod/schemas/objects/ContactEnquiryUpdateInput.schema';
+import { ContactEnquiryUpdateOneZodSchema } from 'prisma/zod/schemas/updateOneContactEnquiry.schema';
+import { ContactEnquiryUpsertOneZodSchema } from 'prisma/zod/schemas/upsertOneContactEnquiry.schema';
 import z from 'zod';
 
 const CONTACT_ENQUIRY_TOKEN_HASH_LENGTH = 64;

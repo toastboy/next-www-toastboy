@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /Volumes/Development/next-www-toastboy -type f -name *.prisma)",
+      "Bash(find /Volumes/Development/next-www-toastboy/src -type f -name *[Mm]oney* -o -name *[Pp]ay*)",
+      "Bash(find /Volumes/Development/next-www-toastboy/src/actions -type f -name *.ts)",
+      "Bash(find /Volumes/Development/next-www-toastboy/src/components -type d -name *Result* -o -name *Game*)",
+      "Bash(npx tsc:*)",
+      "Bash(npx next:*)",
+      "Bash(git stash:*)"
+    ]
+  }
+}

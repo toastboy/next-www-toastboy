@@ -97,6 +97,7 @@ model GameDay {
   bibs               TeamName?
   pickerGamesHistory Int?
   cost               Int       @db.UnsignedInt
+  hallCost           Int       @db.UnsignedInt
 
   gameInvitations GameInvitation[]
   outcomes        Outcome[]

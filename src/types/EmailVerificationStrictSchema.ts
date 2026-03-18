@@ -1,13 +1,11 @@
 import { Prisma } from 'prisma/generated/client';
-import {
-    EmailVerificationCreateInputObjectZodSchema,
-    EmailVerificationCreateOneZodSchema,
-    EmailVerificationUncheckedCreateInputObjectZodSchema,
-    EmailVerificationUncheckedUpdateInputObjectZodSchema,
-    EmailVerificationUpdateInputObjectZodSchema,
-    EmailVerificationUpdateOneZodSchema,
-    EmailVerificationUpsertOneZodSchema,
-} from 'prisma/zod/schemas';
+import { EmailVerificationCreateOneZodSchema } from 'prisma/zod/schemas/createOneEmailVerification.schema';
+import { EmailVerificationCreateInputObjectZodSchema } from 'prisma/zod/schemas/objects/EmailVerificationCreateInput.schema';
+import { EmailVerificationUncheckedCreateInputObjectZodSchema } from 'prisma/zod/schemas/objects/EmailVerificationUncheckedCreateInput.schema';
+import { EmailVerificationUncheckedUpdateInputObjectZodSchema } from 'prisma/zod/schemas/objects/EmailVerificationUncheckedUpdateInput.schema';
+import { EmailVerificationUpdateInputObjectZodSchema } from 'prisma/zod/schemas/objects/EmailVerificationUpdateInput.schema';
+import { EmailVerificationUpdateOneZodSchema } from 'prisma/zod/schemas/updateOneEmailVerification.schema';
+import { EmailVerificationUpsertOneZodSchema } from 'prisma/zod/schemas/upsertOneEmailVerification.schema';
 import z from 'zod';
 
 const EMAIL_VERIFICATION_TOKEN_HASH_LENGTH = 64;

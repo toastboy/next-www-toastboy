@@ -1,6 +1,6 @@
 import prisma from 'prisma/prisma';
-import { EmailVerificationWhereUniqueInputObjectSchema } from 'prisma/zod/schemas';
 import { EmailVerificationType } from 'prisma/zod/schemas/models/EmailVerification.schema';
+import { EmailVerificationWhereUniqueInputObjectSchema } from 'prisma/zod/schemas/objects/EmailVerificationWhereUniqueInput.schema';
 
 import { normalizeUnknownError } from '@/lib/errors';
 import { hashVerificationToken } from '@/lib/verificationToken';

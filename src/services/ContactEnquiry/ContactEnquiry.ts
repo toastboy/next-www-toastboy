@@ -1,6 +1,6 @@
 import prisma from 'prisma/prisma';
-import { ContactEnquiryWhereUniqueInputObjectSchema } from 'prisma/zod/schemas';
 import { ContactEnquiryType } from 'prisma/zod/schemas/models/ContactEnquiry.schema';
+import { ContactEnquiryWhereUniqueInputObjectSchema } from 'prisma/zod/schemas/objects/ContactEnquiryWhereUniqueInput.schema';
 
 import { normalizeUnknownError } from '@/lib/errors';
 import { hashVerificationToken } from '@/lib/verificationToken';

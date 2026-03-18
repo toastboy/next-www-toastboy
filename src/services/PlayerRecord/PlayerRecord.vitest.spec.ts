@@ -50,7 +50,7 @@ describe('PlayerRecordService', () => {
                 playerRecord.playerId === args.where.playerId &&
                 playerRecord.year === args.where.year &&
                 playerRecord.gameDayId < args.where.gameDayId).slice(0, args.take,
-            ));
+                ));
         });
 
         (prisma.playerRecord.create as Mock).mockImplementation((args: {
@@ -324,11 +324,11 @@ describe('PlayerRecordService', () => {
 
     describe('getByGameDay', () => {
         beforeEach(() => {
-            (prisma.playerRecord.findMany as Mock).mockImplementation((args: { 
-                where: { 
+            (prisma.playerRecord.findMany as Mock).mockImplementation((args: {
+                where: {
                     gameDayId: number;
                     year?: number;
-                } 
+                }
             }) => {
                 return Promise.resolve(defaultPlayerRecordList.filter((playerRecord) => {
                     const matchesGameDay = playerRecord.gameDayId === args.where.gameDayId;
@@ -841,6 +841,7 @@ describe('PlayerRecordService', () => {
                     bibs: 'A',
                     pickerGamesHistory: 10,
                     cost: 450,
+                    hallCost: 5000,
                 },
                 {
                     id: 3,
@@ -852,6 +853,7 @@ describe('PlayerRecordService', () => {
                     bibs: 'B',
                     pickerGamesHistory: 10,
                     cost: 450,
+                    hallCost: 5000,
                 },
             ]);
             const upsertForGameDaySpy = vi

@@ -1,13 +1,11 @@
 import { Prisma } from 'prisma/generated/client';
-import {
-    PlayerCreateInputObjectZodSchema,
-    PlayerCreateOneZodSchema,
-    PlayerUncheckedCreateInputObjectZodSchema,
-    PlayerUncheckedUpdateInputObjectZodSchema,
-    PlayerUpdateInputObjectZodSchema,
-    PlayerUpdateOneZodSchema,
-    PlayerUpsertOneZodSchema,
-} from 'prisma/zod/schemas';
+import { PlayerCreateOneZodSchema } from 'prisma/zod/schemas/createOnePlayer.schema';
+import { PlayerCreateInputObjectZodSchema } from 'prisma/zod/schemas/objects/PlayerCreateInput.schema';
+import { PlayerUncheckedCreateInputObjectZodSchema } from 'prisma/zod/schemas/objects/PlayerUncheckedCreateInput.schema';
+import { PlayerUncheckedUpdateInputObjectZodSchema } from 'prisma/zod/schemas/objects/PlayerUncheckedUpdateInput.schema';
+import { PlayerUpdateInputObjectZodSchema } from 'prisma/zod/schemas/objects/PlayerUpdateInput.schema';
+import { PlayerUpdateOneZodSchema } from 'prisma/zod/schemas/updateOnePlayer.schema';
+import { PlayerUpsertOneZodSchema } from 'prisma/zod/schemas/upsertOnePlayer.schema';
 import z from 'zod';
 
 const accountEmailStrict = z.email().max(255).nullish();

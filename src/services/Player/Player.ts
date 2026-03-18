@@ -1,9 +1,7 @@
 import prisma from 'prisma/prisma';
-import {
-    PlayerLoginWhereUniqueInputObjectSchema,
-    PlayerWhereUniqueInputObjectSchema,
-} from 'prisma/zod/schemas';
 import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
+import { PlayerLoginWhereUniqueInputObjectSchema } from 'prisma/zod/schemas/objects/PlayerLoginWhereUniqueInput.schema';
+import { PlayerWhereUniqueInputObjectSchema } from 'prisma/zod/schemas/objects/PlayerWhereUniqueInput.schema';
 import { PlayerDataType, PlayerFormType } from 'types';
 
 import { normalizeUnknownError } from '@/lib/errors';

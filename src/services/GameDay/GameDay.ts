@@ -483,6 +483,31 @@ export class GameDayService {
     }
 
     /**
+     * Retrieves all game days in a given calendar month, ordered by date.
+     *
+     * @param year - The calendar year (e.g. 2026)
+     * @param month - The calendar month, 1-based (1=January, 12=December)
+     * @returns A promise that resolves to an array of GameDayType objects for
+     * that month, ascending by date.
+     * @throws An error if the database query fails.
+     */
+    async getForMonth(year: number, month: number): Promise<GameDayType[]> {
+        try {
+            const from = new Date(year, month - 1, 1);
+            const to = new Date(year, month, 1);
+
+            return prisma.gameDay.findMany({
+                where: {
+                    date: { gte: from, lt: to },
+                },
+                orderBy: { date: 'asc' },
+            });
+        } catch (error) {
+            throw normalizeUnknownError(error);
+        }
+    }
+
+    /**
      * Deletes a game day by ID.
      *
      * Not-found deletes (`P2025`) are treated as no-ops.

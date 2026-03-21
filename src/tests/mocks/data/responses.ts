@@ -27,7 +27,6 @@ const createMockOutcomePlayer = (
     team: null,
     comment: null,
     pub: 1,
-    paid: false,
     goalie: false,
     player: createResponsePlayer(1, 'Alex Keeper'),
     ...overrides,

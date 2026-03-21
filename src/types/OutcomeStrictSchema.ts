@@ -24,7 +24,6 @@ const OutcomeStrictFields = {
     team: TeamNameSchema.nullish(),
     comment: z.string().max(127).nullish(),
     pub: z.number().int().nullish(),
-    paid: z.boolean().nullish(),
     goalie: z.boolean().nullish(),
 };
 

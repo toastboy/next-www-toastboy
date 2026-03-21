@@ -10,7 +10,6 @@ export const defaultOutcome: OutcomeType = {
     team: 'A',
     comment: 'Test comment',
     pub: 1,
-    paid: false,
     goalie: false,
 };
 

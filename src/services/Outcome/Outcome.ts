@@ -331,7 +331,6 @@ export class OutcomeService {
                     team: null,
                     comment: null,
                     pub: null,
-                    paid: null,
                     goalie: null,
                     player,
                 });

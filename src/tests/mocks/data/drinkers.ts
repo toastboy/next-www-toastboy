@@ -22,7 +22,6 @@ const createOutcome = (overrides: Partial<OutcomePlayerType>): OutcomePlayerType
     team: null,
     comment: null,
     pub: null,
-    paid: null,
     goalie: false,
     player: createPlayer(1, 'Alex Keeper'),
     ...overrides,

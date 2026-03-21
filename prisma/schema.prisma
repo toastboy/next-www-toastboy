@@ -126,7 +126,6 @@ model Outcome {
   team             TeamName?
   comment          String?         @db.VarChar(127)
   pub              Int?
-  paid             Boolean?
   goalie           Boolean?
 
   gameDayId Int

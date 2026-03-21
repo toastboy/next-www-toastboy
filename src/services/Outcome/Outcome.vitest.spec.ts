@@ -28,7 +28,6 @@ const defaultOutcomeInput: OutcomeWriteInput = {
     team: defaultOutcome.team,
     comment: defaultOutcome.comment,
     pub: defaultOutcome.pub,
-    paid: defaultOutcome.paid,
     goalie: defaultOutcome.goalie,
 };
 

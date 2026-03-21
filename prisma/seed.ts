@@ -16,6 +16,7 @@ import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import { PlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
 import { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 import { PlayerLoginType } from './zod/schemas/models/PlayerLogin.schema';
+import playerRecordService from '@/services/PlayerRecord';
 
 const adapter = new PrismaMariaDb(process.env.DATABASE_URL!);
 const prisma = new PrismaClient({ adapter });
@@ -114,7 +115,6 @@ async function main() {
     await processJsonData<PlayerLoginType>(containerClient, "PlayerLogin.json", prisma.playerLogin);
     await processJsonData<PlayerExtraEmailType>(containerClient, "PlayerEmail.json", prisma.playerExtraEmail);
     await processJsonData<GameDayType>(containerClient, "GameDay.json", prisma.gameDay);
-    await processJsonData<PlayerRecordType>(containerClient, "PlayerRecord.json", prisma.playerRecord);
     await processJsonData<OutcomeType>(containerClient, "Outcome.json", prisma.outcome);
     await processJsonData<GameChatType>(containerClient, "GameChat.json", prisma.gameChat);
     await processJsonData<CountryType>(containerClient, "Country.json", prisma.country);
@@ -131,6 +131,12 @@ async function main() {
     await processJsonData<User>(containerClient, "user.json", prisma.user);
     await processJsonData<Account>(containerClient, "account.json", prisma.account);
     await processJsonData<Verification>(containerClient, "verification.json", prisma.verification);
+
+    // Now calculate all the player records to ensure they are up to date:
+    // they're derived from the outcomes and are effectively a cache.
+    console.log('Calculating player records...');
+    await playerRecordService.deleteAll();
+    await playerRecordService.upsertForGameDay();
 
     console.log('🌱 Database seeding complete.');
 }

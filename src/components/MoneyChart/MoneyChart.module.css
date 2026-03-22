@@ -1,0 +1,18 @@
+.wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.tooltip {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0;
+    background: rgba(0, 0, 0, 0.75);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    line-height: 1.5;
+    white-space: nowrap;
+    transition: opacity 0.1s;
+}

@@ -1,4 +1,13 @@
-import type { BalanceSummaryType, ClubBalanceType, PlayerBalanceType } from '@/types/DebtType';
+import type { BalanceSummaryType, ClubBalanceType, MoneyChartDatum, PlayerBalanceType } from '@/types/DebtType';
+
+export const defaultMoneyChartData: MoneyChartDatum[] = [
+    { interval: 'Jan', credits: 120, debits: 80 },
+    { interval: 'Feb', credits: 150, debits: 100 },
+    { interval: 'Mar', credits: 90, debits: 120 },
+    { interval: 'Apr', credits: 200, debits: 80 },
+    { interval: 'May', credits: 60, debits: 150 },
+    { interval: 'Jun', credits: 180, debits: 90 },
+];
 
 export const defaultPlayerBalanceList: PlayerBalanceType[] = [
     {

@@ -1,5 +1,11 @@
 import z from 'zod';
 
+export interface MoneyChartDatum {
+    interval: string;
+    credits: number;
+    debits: number;
+}
+
 export const BalanceSchema = z.object({
     playerId: z.number().int().min(1).nullable(),
     maxGameDayId: z.number().int().min(1).optional(),

@@ -26,7 +26,6 @@ const createPickerPlayer = (
     team: null,
     comment: null,
     pub: 1,
-    paid: false,
     goalie: false,
     gamesPlayed,
     player: {

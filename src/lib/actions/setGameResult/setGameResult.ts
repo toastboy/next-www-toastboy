@@ -3,7 +3,6 @@ import 'server-only';
 import type { TeamName } from 'prisma/zod/schemas';
 import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 
-import { config } from '@/lib/config';
 import { NotFoundError } from '@/lib/errors';
 import gameDayService from '@/services/GameDay';
 import transactionService from '@/services/Money';
@@ -83,14 +82,11 @@ const updateTeamOutcomes = async (
     )));
 
     await Promise.all(outcomes.map((outcome) => {
-        // Everone pays the game cost except the organiser, who pays the hall
-        // hire in the first place
-        return (outcome.playerId != config.organiserPlayerId) ?
-            deps.transactionService.charge(
-                outcome.playerId,
-                gameDay.id,
-                gameDay.cost,
-            ) : Promise.resolve();
+        return (deps.transactionService.charge(
+            outcome.playerId,
+            gameDay.id,
+            gameDay.cost,
+        ));
     }));
 };
 

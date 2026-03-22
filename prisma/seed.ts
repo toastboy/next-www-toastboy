@@ -14,9 +14,9 @@ import { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 import { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
 import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import { PlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
-import { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
-import { PlayerLoginType } from './zod/schemas/models/PlayerLogin.schema';
+import { PlayerLoginType } from 'prisma/zod/schemas/models/PlayerLogin.schema';
 import playerRecordService from '@/services/PlayerRecord';
+import { TransactionType } from 'prisma/zod/schemas/models/Transaction.schema';
 
 const adapter = new PrismaMariaDb(process.env.DATABASE_URL!);
 const prisma = new PrismaClient({ adapter });
@@ -101,6 +101,7 @@ async function main() {
     await prisma.country.deleteMany();
     await prisma.gameChat.deleteMany();
     await prisma.gameInvitation.deleteMany();
+    await prisma.transaction.deleteMany();
     await prisma.outcome.deleteMany();
     await prisma.playerRecord.deleteMany();
     await prisma.gameDay.deleteMany();
@@ -116,6 +117,7 @@ async function main() {
     await processJsonData<PlayerExtraEmailType>(containerClient, "PlayerEmail.json", prisma.playerExtraEmail);
     await processJsonData<GameDayType>(containerClient, "GameDay.json", prisma.gameDay);
     await processJsonData<OutcomeType>(containerClient, "Outcome.json", prisma.outcome);
+    await processJsonData<TransactionType>(containerClient, "Transaction.json", prisma.transaction);
     await processJsonData<GameChatType>(containerClient, "GameChat.json", prisma.gameChat);
     await processJsonData<CountryType>(containerClient, "Country.json", prisma.country);
     await processJsonData<CountrySupporterType>(containerClient, "CountrySupporter.json", prisma.countrySupporter);

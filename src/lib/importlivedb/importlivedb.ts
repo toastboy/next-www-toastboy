@@ -253,6 +253,7 @@ async function importBackup(): Promise<void> {
         await writeTableToJSONFile('Outcome.json', prisma.outcome);
         await writeTableToJSONFile('Player.json', prisma.player);
         await writeTableToJSONFile('PlayerLogin.json', prisma.playerLogin);
+        await writeTableToJSONFile('Transaction.json', prisma.transaction);
 
         writeDataToJSONFile('PlayerEmail.json', extraEmailRows);
 

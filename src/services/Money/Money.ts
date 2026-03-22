@@ -132,6 +132,9 @@ class MoneyService {
                 return amount < 0 ? acc + amount : acc;
             }, 0);
 
+            // Note: The Money page currently reads only a subset of this summary,
+            // but this service intentionally returns the full BalanceSummarySchema
+            // shape so that callers can evolve without changing this contract.
             return BalanceSummarySchema.parse({
                 players: playerBalances,
                 club: {

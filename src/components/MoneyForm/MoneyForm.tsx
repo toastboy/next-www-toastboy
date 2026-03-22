@@ -4,7 +4,6 @@ import {
     Anchor,
     Box,
     Button,
-    Divider,
     Group,
     Image,
     NumberInput,
@@ -181,9 +180,6 @@ const BalanceRow = ({
 export const MoneyForm = ({
     playerBalances,
     clubBalance,
-    total,
-    positiveTotal,
-    negativeTotal,
     payDebt,
 }: MoneyFormProps) => {
     const [submittingPlayerId, setSubmittingPlayerId] = useState<number | null>(null);
@@ -204,20 +200,12 @@ export const MoneyForm = ({
 
     return (
         <Stack gap="md">
-            <Title order={2}>Money Balances</Title>
-            {playerBalances.length > 0 ? (
-                <Switch
-                    checked={showZeroBalances}
-                    onChange={(event) => setShowZeroBalances(event.currentTarget.checked)}
-                    label="Show players with zero balance"
-                />
-            ) : null}
             {hasAnyBalance ? (
                 <>
                     {visiblePlayerBalances.length > 0 ? (
                         <>
                             <Stack gap="xs">
-                                <Title order={3}>Player Balances</Title>
+                                <Title order={1}>Player Balances</Title>
                                 {visiblePlayerBalances.map((row) => (
                                     <BalanceRow
                                         key={row.playerId}
@@ -228,25 +216,19 @@ export const MoneyForm = ({
                                     />
                                 ))}
                             </Stack>
-                            <Divider />
                         </>
                     ) : null}
-                    <Paper withBorder p="sm">
-                        <Group justify="space-between">
-                            <Text fw={700}>{clubBalance.playerName} Balance</Text>
-                            <Text fw={700} c={getBalanceColor(clubBalance.amount)}>
-                                {formatCurrencySigned(clubBalance.amount)}
-                            </Text>
-                        </Group>
-                    </Paper>
-                    <Divider />
-                    <Text fw={700}>Positive total: {formatCurrency(positiveTotal)}</Text>
-                    <Text fw={700}>Negative total: {formatCurrencySigned(negativeTotal)}</Text>
-                    <Text fw={700}>Net total: {formatCurrencySigned(total)}</Text>
                 </>
             ) : (
                 <Text fw={700}>No balances recorded yet</Text>
             )}
+            {playerBalances.length > 0 ? (
+                <Switch
+                    checked={showZeroBalances}
+                    onChange={(event) => setShowZeroBalances(event.currentTarget.checked)}
+                    label="Show players with zero balance"
+                />
+            ) : null}
         </Stack>
     );
 };

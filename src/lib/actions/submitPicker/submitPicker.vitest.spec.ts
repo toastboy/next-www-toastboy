@@ -40,7 +40,6 @@ describe('SubmitPickerCore', () => {
         team,
         comment: null,
         pub: null,
-        paid: null,
         goalie,
         player: {
             id: playerId,

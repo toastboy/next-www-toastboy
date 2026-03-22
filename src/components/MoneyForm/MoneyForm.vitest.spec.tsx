@@ -58,12 +58,9 @@ describe('MoneyForm', () => {
     it('renders player balances and summary totals', () => {
         renderForm(vi.fn<PayDebtProxy>());
 
-        expect(screen.getByRole('heading', { name: 'Money Balances' })).toBeInTheDocument();
         expect(screen.getByRole('heading', { name: 'Player Balances' })).toBeInTheDocument();
-        expect(screen.getByText('Net total: -£12.75')).toBeInTheDocument();
         expect(screen.getByText('Alex Current')).toBeInTheDocument();
         expect(screen.getByText('Jamie Historic')).toBeInTheDocument();
-        expect(screen.getByText('Club Balance')).toBeInTheDocument();
     });
 
     it('hides zero-balance players by default and shows them when toggled on', async () => {

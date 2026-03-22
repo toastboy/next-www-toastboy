@@ -535,17 +535,16 @@ describe('GameDayService', () => {
     describe('create', () => {
         it('should create a GameDay', async () => {
             const newGameDay: GameDayWriteInput = {
-                year: defaultGameDay.year,
-                date: defaultGameDay.date,
-                game: defaultGameDay.game,
-                cost: defaultGameDay.cost,
-                mailSent: defaultGameDay.mailSent,
-                comment: defaultGameDay.comment,
-                bibs: defaultGameDay.bibs,
+                ...defaultGameDay,
                 pickerGamesHistory: 10,
             };
             const result = await gameDayService.create(newGameDay);
-            expect(prisma.gameDay.create).toHaveBeenCalledWith({ data: newGameDay });
+            expect(prisma.gameDay.create).toHaveBeenCalledWith({
+                data: {
+                    ...newGameDay,
+                    id: undefined,
+                },
+            });
             expect(result).toEqual({
                 ...newGameDay,
                 id: 101,
@@ -563,14 +562,8 @@ describe('GameDayService', () => {
     describe('upsert', () => {
         it('should create a GameDay with a database-generated id when where.id is missing', async () => {
             const gameDay: GameDayUpsertInput = {
+                ...defaultGameDay,
                 id: 1001,
-                year: defaultGameDay.year,
-                date: defaultGameDay.date,
-                game: defaultGameDay.game,
-                cost: defaultGameDay.cost,
-                mailSent: defaultGameDay.mailSent,
-                comment: defaultGameDay.comment,
-                bibs: defaultGameDay.bibs,
                 pickerGamesHistory: 10,
             };
             const result = await gameDayService.upsert(gameDay);
@@ -582,14 +575,8 @@ describe('GameDayService', () => {
 
         it('should update an existing GameDay where one with the id already existed', async () => {
             const updatedGameDay: GameDayUpsertInput = {
+                ...defaultGameDay,
                 id: 6,
-                year: defaultGameDay.year,
-                date: defaultGameDay.date,
-                game: defaultGameDay.game,
-                cost: defaultGameDay.cost,
-                mailSent: defaultGameDay.mailSent,
-                comment: defaultGameDay.comment,
-                bibs: defaultGameDay.bibs,
                 pickerGamesHistory: 10,
             };
             const result = await gameDayService.upsert(updatedGameDay);

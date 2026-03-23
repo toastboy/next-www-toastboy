@@ -53,18 +53,20 @@ export async function createMoreGameDaysCore(
     data: CreateMoreGameDaysInput,
     deps: CreateMoreGameDaysDeps = defaultDeps,
 ) {
-    const { cost } = data;
+    const { cost, hallCost } = data;
     return await Promise.all(
         data.rows.map((row) => {
             const date = parseDateString(row.date);
-            const comment = row.comment?.trim();
+            const trimmedComment = row.comment?.trim();
+            const comment = trimmedComment && trimmedComment.length > 0 ? trimmedComment : null;
 
             return deps.gameDayService.create({
                 year: date.getFullYear(),
                 date,
                 game: row.game,
                 cost,
-                comment: comment && comment.length > 0 ? comment : null,
+                hallCost,
+                comment,
             });
         }),
     );

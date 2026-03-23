@@ -3,7 +3,7 @@ import z from 'zod';
 
 import { normalizeUnknownError } from '@/lib/errors';
 import { type PayDebtResult, PayDebtResultSchema } from '@/types/actions/PayDebt';
-import type { PlayerBalanceType } from '@/types/DebtType';
+import type { MoneyChartDatum, PlayerBalanceType } from '@/types/DebtType';
 import { BalanceSummarySchema } from '@/types/DebtType';
 
 
@@ -146,6 +146,59 @@ class MoneyService {
                 positiveTotal,
                 negativeTotal,
             });
+        } catch (error) {
+            throw normalizeUnknownError(error);
+        }
+    }
+
+    /**
+     * Returns chart data grouped by month (when year > 0) or by year (when year
+     * === 0 for all-time). Credits are transactions with negative amountPence
+     * (money flowing in); debits are those with positive amountPence (money
+     * flowing out).
+     *
+     * @param year - The year to filter transactions by (0 for all-time data)
+     * @returns An array of chart data points with credits and debits grouped by
+     * interval
+     */
+    async getChartData(year: number): Promise<MoneyChartDatum[]> {
+        try {
+            const where = year > 0 ? {
+                createdAt: {
+                    gte: new Date(`${year}-01-01`),
+                    lt: new Date(`${year + 1}-01-01`),
+                },
+            } : {};
+
+            const transactions = await prisma.transaction.findMany({
+                where,
+                select: { createdAt: true, amountPence: true },
+                orderBy: { createdAt: 'asc' },
+            });
+
+            if (year > 0) {
+                const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+                    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+                const byMonth = Array.from({ length: 12 }, () => ({ credits: 0, debits: 0 }));
+                for (const t of transactions) {
+                    const m = t.createdAt.getMonth();
+                    if (t.amountPence < 0) byMonth[m].credits += -t.amountPence;
+                    else byMonth[m].debits += t.amountPence;
+                }
+                return MONTHS.map((interval, i) => ({ interval, ...byMonth[i] }));
+            } else {
+                const byYear = new Map<number, { credits: number; debits: number }>();
+                for (const t of transactions) {
+                    const y = t.createdAt.getFullYear();
+                    if (!byYear.has(y)) byYear.set(y, { credits: 0, debits: 0 });
+                    const entry = byYear.get(y)!;
+                    if (t.amountPence < 0) entry.credits += -t.amountPence;
+                    else entry.debits += t.amountPence;
+                }
+                return [...byYear.entries()]
+                    .sort(([a], [b]) => a - b)
+                    .map(([y, { credits, debits }]) => ({ interval: String(y), credits, debits }));
+            }
         } catch (error) {
             throw normalizeUnknownError(error);
         }

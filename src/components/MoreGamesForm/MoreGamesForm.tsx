@@ -4,6 +4,7 @@ import {
     Box,
     Button,
     Checkbox,
+    Group,
     NumberInput,
     Paper,
     Table,
@@ -23,6 +24,10 @@ import { Fragment } from 'react';
 
 import { config } from '@/lib/config';
 import { toPublicMessage } from '@/lib/errors';
+import {
+    fromPounds,
+    toPounds,
+} from '@/lib/money';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 import type {
     CreateMoreGameDaysInput,
@@ -34,18 +39,21 @@ import {
 
 export interface Props {
     cost: CreateMoreGameDaysInput['cost'];
+    hallCost: CreateMoreGameDaysInput['hallCost'];
     rows: CreateMoreGameDaysInput['rows'];
     onCreateMoreGameDays: CreateMoreGameDaysProxy;
 }
 
 export const MoreGamesForm = ({
     cost,
+    hallCost,
     rows,
     onCreateMoreGameDays,
 }: Props) => {
     const form = useForm<CreateMoreGameDaysInput>({
         initialValues: {
-            cost,
+            cost: toPounds(cost),
+            hallCost: toPounds(hallCost),
             rows,
         },
         validate: zod4Resolver(CreateMoreGameDaysSchema),
@@ -62,7 +70,13 @@ export const MoreGamesForm = ({
         });
 
         try {
-            await onCreateMoreGameDays(values);
+            const transformedValues = {
+                ...values,
+                cost: fromPounds(values.cost),
+                hallCost: fromPounds(values.hallCost),
+            };
+
+            await onCreateMoreGameDays(transformedValues);
 
             notifications.update({
                 id,
@@ -127,17 +141,34 @@ export const MoreGamesForm = ({
             data-testid="moregames-form"
         >
             <Paper withBorder p="sm" mb="md">
-                <NumberInput
-                    label="Cost per game (pence)"
-                    description="This cost will be applied to each created game day."
-                    aria-label="Cost per game in pence"
-                    data-testid="moregames-cost"
-                    min={1}
-                    allowDecimal={false}
-                    thousandSeparator=","
-                    hideControls
-                    {...form.getInputProps('cost')}
-                />
+                <Group justify="space-between">
+                    <NumberInput
+                        label="Player charge per game"
+                        aria-label="Player charge per game"
+                        data-testid="moregames-cost"
+                        decimalScale={2}
+                        fixedDecimalScale
+                        allowNegative={false}
+                        hideControls
+                        min={1}
+                        thousandSeparator=","
+                        w="10em"
+                        {...form.getInputProps('cost')}
+                    />
+                    <NumberInput
+                        label="Hall cost per game"
+                        aria-label="Hall cost per game"
+                        decimalScale={2}
+                        fixedDecimalScale
+                        allowNegative={false}
+                        hideControls
+                        data-testid="moregames-hall-cost"
+                        min={1}
+                        thousandSeparator=","
+                        w="10em"
+                        {...form.getInputProps('hallCost')}
+                    />
+                </Group>
             </Paper>
             <Table
                 highlightOnHover

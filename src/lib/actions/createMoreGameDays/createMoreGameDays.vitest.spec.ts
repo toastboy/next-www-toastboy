@@ -14,6 +14,7 @@ describe('createMoreGameDaysCore', () => {
         const result = await createMoreGameDaysCore(
             {
                 cost: 450,
+                hallCost: 4500,
                 rows: [
                     {
                         date: '2026-03-01',
@@ -57,6 +58,7 @@ describe('createMoreGameDaysCore', () => {
             createMoreGameDaysCore(
                 {
                     cost: 450,
+                    hallCost: 4500,
                     rows: [
                         {
                             date: 'bad-date',

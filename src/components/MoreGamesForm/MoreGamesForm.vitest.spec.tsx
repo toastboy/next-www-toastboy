@@ -23,6 +23,7 @@ describe('MoreGamesForm', () => {
             <Wrapper>
                 <MoreGamesForm
                     cost={defaultMoreGamesFormData.cost}
+                    hallCost={defaultMoreGamesFormData.hallCost}
                     rows={defaultMoreGamesFormData.rows}
                     onCreateMoreGameDays={mockCreateMoreGameDays}
                 />
@@ -40,6 +41,7 @@ describe('MoreGamesForm', () => {
             <Wrapper>
                 <MoreGamesForm
                     cost={defaultMoreGamesFormData.cost}
+                    hallCost={defaultMoreGamesFormData.hallCost}
                     rows={defaultMoreGamesFormData.rows}
                     onCreateMoreGameDays={mockCreateMoreGameDays}
                 />

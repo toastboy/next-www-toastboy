@@ -110,10 +110,12 @@ const MoreGamesPage = async () => {
         normalizeGameDayTime(getNextTuesday(new Date()));
     const rows = buildRows(startDate);
     const cost = lastGameDay?.cost ?? config.defaultGameCostPence;
+    const hallCost = lastGameDay?.hallCost ?? config.defaultHallCostPence;
 
     return (
         <MoreGamesForm
             cost={cost}
+            hallCost={hallCost}
             rows={rows}
             onCreateMoreGameDays={createMoreGameDays}
         />

@@ -9,6 +9,7 @@ const rawConfig: ConfigType = {
     notificationIconSize: 18,
     organiserPhoneNumber: '07802 346128',
     defaultGameCostPence: 500,
+    defaultHallCostPence: 4700,
 };
 
 // App-wide configuration object which is runtime-validated using zod. If this

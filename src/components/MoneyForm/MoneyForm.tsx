@@ -34,19 +34,13 @@ export interface MoneyFormProps {
     negativeTotal: number;
     payDebt: PayDebtProxy;
 }
-
-const toPounds = (amount: number) => amount / 100;
-const fromPounds = (amount: number) => Math.round(amount * 100);
-const formatAmount = (amount: number) => toPounds(amount).toFixed(2);
-const formatCurrency = (amount: number) => `£${formatAmount(amount)}`;
-const formatCurrencySigned = (amount: number) =>
-    `${amount < 0 ? '-' : ''}${formatCurrency(Math.abs(amount))}`;
-
-const getBalanceColor = (amount: number) => {
-    if (amount < 0) return 'red';
-    if (amount > 0) return 'teal';
-    return 'dimmed';
-};
+import {
+    formatCurrency,
+    formatCurrencySigned,
+    fromPounds,
+    getBalanceColor,
+    toPounds,
+} from '@/lib/money';
 
 const PayDebtFormSchema = z.object({
     amountPounds: z.number().positive(),

@@ -22,8 +22,17 @@
             "command": "op run --env-file ./.env -- sh -c 'npm run dev'",
             "serverReadyAction": {
                 "pattern": "- Local:.+(https?://.+)",
-                "uriFormat": "%s",
-                "action": "debugWithEdge"
+                "action": "startDebugging",
+                "name": "Next.js: debug client-side (editor-browser)"
+            }
+        },
+        {
+            "name": "Next.js: debug client-side (editor-browser)",
+            "type": "editor-browser",
+            "request": "launch",
+            "url": "http://localhost:3000",
+            "presentation": {
+                "hidden": true
             }
         },
         {

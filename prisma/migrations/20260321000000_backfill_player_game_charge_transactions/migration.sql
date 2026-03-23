@@ -8,7 +8,6 @@ WHERE
 -- actually played (team IS NOT NULL), from game day 150 onwards.
 INSERT INTO `Transaction` (
     `createdAt`,
-    `createdAt`,
     `type`,
     `amountPence`,
     `note`,

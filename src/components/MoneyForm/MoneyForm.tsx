@@ -73,6 +73,10 @@ const BalanceRow = ({
     const handlePay = async (values: PayDebtFormValues) => {
         const notificationId = `money-paid-${row.playerId}`;
         const amount = fromPounds(values.amountPounds);
+        // TODO: Add gameDayId to the form and payload when recording payments
+        // for specific game days is supported - given the outstanding balance
+        // comes from unpaid games, it should probably come from that
+        // calculation in the first place.
         const payload: PayDebtInput = {
             playerId: row.playerId,
             amount,

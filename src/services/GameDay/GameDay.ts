@@ -77,6 +77,39 @@ export class GameDayService {
     }
 
     /**
+     * Retrieves the minimum and maximum GameDay IDs for a given year.
+     *
+     * @param year - The year to filter GameDays by. If `0` or negative, no date
+     * filtering is applied and the range is calculated across all GameDays.
+     * @returns A promise that resolves to an object containing `minId` and
+     * `maxId` for the given year, or `null` if no matching GameDays are found.
+     * @throws {Error} If the database query fails.
+     */
+    async getIdRangeForYear(year: number): Promise<{
+        minId: number | null;
+        maxId: number | null;
+    }> {
+        try {
+            const result = await prisma.gameDay.aggregate({
+                where: {
+                    ...(year > 0 ? {
+                        date: {
+                            gte: new Date(year, 0, 1),
+                            lt: new Date(year + 1, 0, 1),
+                        },
+                    } : undefined),
+                },
+                _min: { id: true },
+                _max: { id: true },
+            });
+
+            return { minId: result._min.id, maxId: result._max.id };
+        } catch (error) {
+            throw normalizeUnknownError(error);
+        }
+    }
+
+    /**
      * Retrieves a GameDayType object by the specified date.
      * @param date - The date to search for.
      * @returns A Promise that resolves to the GameDayType object if found, or null

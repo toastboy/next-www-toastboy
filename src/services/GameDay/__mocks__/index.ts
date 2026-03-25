@@ -4,6 +4,7 @@ const gameDayService = {
     get: vi.fn(),
     getAll: vi.fn(),
     getAllYears: vi.fn(),
+    getIdRangeForYear: vi.fn(),
     getYear: vi.fn(),
 };
 

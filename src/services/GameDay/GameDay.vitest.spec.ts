@@ -231,6 +231,75 @@ describe('GameDayService', () => {
         });
     });
 
+    describe('getIdRangeForYear', () => {
+        it('should return minId and maxId for a specific year', async () => {
+            (prisma.gameDay.aggregate as Mock).mockResolvedValue({
+                _min: { id: 12 },
+                _max: { id: 44 },
+            });
+
+            const result = await gameDayService.getIdRangeForYear(2025);
+
+            expect(prisma.gameDay.aggregate).toHaveBeenCalledWith({
+                where: {
+                    date: {
+                        gte: new Date(2025, 0, 1),
+                        lt: new Date(2026, 0, 1),
+                    },
+                },
+                _min: { id: true },
+                _max: { id: true },
+            });
+            expect(result).toEqual({ minId: 12, maxId: 44 });
+        });
+
+        it('should return nulls when no game days exist for the requested year', async () => {
+            (prisma.gameDay.aggregate as Mock).mockResolvedValue({
+                _min: { id: null },
+                _max: { id: null },
+            });
+
+            const result = await gameDayService.getIdRangeForYear(2035);
+
+            expect(prisma.gameDay.aggregate).toHaveBeenCalledWith({
+                where: {
+                    date: {
+                        gte: new Date(2035, 0, 1),
+                        lt: new Date(2036, 0, 1),
+                    },
+                },
+                _min: { id: true },
+                _max: { id: true },
+            });
+            expect(result).toEqual({
+                minId: null,
+                maxId: null,
+            });
+        });
+
+        it('should query across all years when year is zero', async () => {
+            (prisma.gameDay.aggregate as Mock).mockResolvedValue({
+                _min: { id: 1 },
+                _max: { id: 200 },
+            });
+
+            const result = await gameDayService.getIdRangeForYear(0);
+
+            expect(prisma.gameDay.aggregate).toHaveBeenCalledWith({
+                where: {},
+                _min: { id: true },
+                _max: { id: true },
+            });
+            expect(result).toEqual({ minId: 1, maxId: 200 });
+        });
+
+        it('should throw when aggregate fails', async () => {
+            (prisma.gameDay.aggregate as Mock).mockRejectedValue(new Error('Database failure'));
+
+            await expect(gameDayService.getIdRangeForYear(2024)).rejects.toThrow('Database failure');
+        });
+    });
+
     describe('getByDate', () => {
         it('should retrieve the correct GameDay with date 2021-01-03', async () => {
             (prisma.gameDay.findFirst as Mock).mockResolvedValue(defaultGameDay);

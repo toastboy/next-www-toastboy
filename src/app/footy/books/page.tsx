@@ -20,7 +20,7 @@ const unpackParams = cache(async (
     searchParams: PageProps['searchParams'],
 ) => {
     const resolvedSearchParams = await searchParams;
-    const allYears = await gameDayService.getAllYears();
+    const allYears = await gameDayService.getAllYears(true);
     const yearResult = z.coerce.number().int().min(0).safeParse(resolvedSearchParams?.year ?? 0);
     const year = yearResult.success ? yearResult.data : undefined;
     if (year === undefined || !allYears.includes(year)) notFound();

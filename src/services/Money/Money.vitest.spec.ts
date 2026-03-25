@@ -2,7 +2,10 @@ import prisma from 'prisma/prisma';
 import type { Mock } from 'vitest';
 import { describe, expect, it, vi } from 'vitest';
 
+import gameDayService from '@/services/GameDay';
 import moneyService from '@/services/Money';
+
+vi.mock('@/services/GameDay');
 
 describe('MoneyService', () => {
     beforeEach(() => {
@@ -171,6 +174,95 @@ describe('MoneyService', () => {
                 amount: 1000,
                 resultingBalance: 250,
             });
+        });
+    });
+
+    describe('getChartData', () => {
+        it('returns data grouped by month when year > 0 and transactions exist', async () => {
+            (gameDayService.getIdRangeForYear as Mock).mockResolvedValue({ minId: 10, maxId: 12 });
+
+            // PlayerPayment: -500 pence (credit), gameDayId 10
+            // HallHire: 1000 pence (debit), gameDayId 11
+            (prisma.transaction.groupBy as Mock)
+                .mockResolvedValueOnce([
+                    { gameDayId: 10, _sum: { amountPence: -500 } },
+                ])
+                .mockResolvedValueOnce([
+                    { gameDayId: 11, _sum: { amountPence: 1000 } },
+                ]);
+
+            (prisma.gameDay.findMany as Mock).mockResolvedValue([
+                { id: 10, date: new Date('2024-03-15T00:00:00Z') },
+                { id: 11, date: new Date('2024-04-10T00:00:00Z') },
+                { id: 12, date: new Date('2024-04-20T00:00:00Z') },
+            ]);
+
+            const result = await moneyService.getChartData(2024);
+
+            expect(gameDayService.getIdRangeForYear).toHaveBeenCalledWith(2024);
+            expect(prisma.transaction.groupBy).toHaveBeenCalledWith(
+                expect.objectContaining({ where: expect.objectContaining({ type: 'PlayerPayment' }) }),
+            );
+            expect(prisma.transaction.groupBy).toHaveBeenCalledWith(
+                expect.objectContaining({ where: expect.objectContaining({ type: 'HallHire' }) }),
+            );
+            expect(result).toEqual([
+                { interval: '2', credits: 5, debits: 0 },
+                { interval: '3', credits: 0, debits: 10 },
+            ]);
+        });
+
+        it('returns empty array when year > 0 and getIdRangeForYear returns nulls', async () => {
+            (gameDayService.getIdRangeForYear as Mock).mockResolvedValue({ minId: null, maxId: null });
+
+            const result = await moneyService.getChartData(2024);
+
+            expect(result).toEqual([]);
+            expect(prisma.transaction.groupBy).not.toHaveBeenCalled();
+            expect(prisma.gameDay.findMany).not.toHaveBeenCalled();
+        });
+
+        it('returns data grouped by year when year === 0 and transactions exist', async () => {
+            (gameDayService.getIdRangeForYear as Mock).mockResolvedValue({ minId: 1, maxId: 20 });
+
+            (prisma.transaction.groupBy as Mock)
+                .mockResolvedValueOnce([
+                    { gameDayId: 1, _sum: { amountPence: -200 } },
+                    { gameDayId: 10, _sum: { amountPence: -300 } },
+                ])
+                .mockResolvedValueOnce([
+                    { gameDayId: 10, _sum: { amountPence: 400 } },
+                ]);
+
+            (prisma.gameDay.findMany as Mock).mockResolvedValue([
+                { id: 1, date: new Date('2023-06-01T00:00:00Z') },
+                { id: 10, date: new Date('2024-02-14T00:00:00Z') },
+            ]);
+
+            const result = await moneyService.getChartData(0);
+
+            expect(gameDayService.getIdRangeForYear).toHaveBeenCalledWith(0);
+            expect(result).toEqual([
+                { interval: '2023', credits: 2, debits: 0 },
+                { interval: '2024', credits: 3, debits: 4 },
+            ]);
+        });
+
+        it('returns empty array when year === 0 and getIdRangeForYear returns nulls', async () => {
+            (gameDayService.getIdRangeForYear as Mock).mockResolvedValue({ minId: null, maxId: null });
+
+            const result = await moneyService.getChartData(0);
+
+            expect(result).toEqual([]);
+            expect(prisma.transaction.groupBy).not.toHaveBeenCalled();
+        });
+
+        it('throws when getIdRangeForYear rejects', async () => {
+            const dbError = new Error('DB connection failed');
+            (gameDayService.getIdRangeForYear as Mock).mockRejectedValue(dbError);
+
+            await expect(moneyService.getChartData(2024)).rejects.toThrow('DB connection failed');
+            expect(prisma.transaction.groupBy).not.toHaveBeenCalled();
         });
     });
 

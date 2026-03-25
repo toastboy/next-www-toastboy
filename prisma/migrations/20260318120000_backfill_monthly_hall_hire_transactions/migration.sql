@@ -28,6 +28,7 @@ LEFT JOIN `Transaction` AS `ExistingHallHire` ON
     AND `ExistingHallHire`.`gameDayId` = `GameDay`.`id`
 WHERE
     `GameDay`.`id` >= 150
+    AND DATE_FORMAT(`GameDay`.`date`, '%Y-%m') <= DATE_FORMAT(NOW(), '%Y-%m')
     AND `GameDay`.`hallCost` > 0
     AND (
         `GameDay`.`game` = TRUE

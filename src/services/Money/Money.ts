@@ -2,9 +2,12 @@ import prisma from 'prisma/prisma';
 import z from 'zod';
 
 import { normalizeUnknownError } from '@/lib/errors';
+import { toPounds } from '@/lib/money';
 import { type PayDebtResult, PayDebtResultSchema } from '@/types/actions/PayDebt';
 import type { MoneyChartDatum, PlayerBalanceType } from '@/types/DebtType';
 import { BalanceSummarySchema } from '@/types/DebtType';
+
+import gameDayService from '../GameDay';
 
 
 /**
@@ -163,41 +166,136 @@ class MoneyService {
      */
     async getChartData(year: number): Promise<MoneyChartDatum[]> {
         try {
-            const where = year > 0 ? {
-                createdAt: {
-                    gte: new Date(`${year}-01-01`),
-                    lt: new Date(`${year + 1}-01-01`),
-                },
-            } : {};
+            const { minId, maxId } = await gameDayService.getIdRangeForYear(year);
+            if (minId === null || maxId === null) {
+                return [];
+            }
 
-            const transactions = await prisma.transaction.findMany({
-                where,
-                select: { createdAt: true, amountPence: true },
-                orderBy: { createdAt: 'asc' },
+            const playerPayments = await prisma.transaction.groupBy({
+                by: ['gameDayId'],
+                where: {
+                    type: 'PlayerPayment',
+                    gameDayId: {
+                        gte: minId,
+                        lte: maxId,
+                    },
+                },
+                _sum: {
+                    amountPence: true,
+                },
+            });
+            const hallHire = await prisma.transaction.groupBy({
+                by: ['gameDayId'],
+                where: {
+                    type: 'HallHire',
+                    gameDayId: {
+                        gte: minId,
+                        lte: maxId,
+                    },
+                },
+                _sum: {
+                    amountPence: true,
+                },
             });
 
+            const gameDays = await prisma.gameDay.findMany({
+                where: {
+                    id: {
+                        gte: minId,
+                        lte: maxId,
+                    },
+                },
+                select: {
+                    id: true,
+                    date: true,
+                },
+            });
+
+            /**
+             * Aggregates transaction sums into interval totals by incrementing
+             * the `credits` and `debits` value for each matching interval.
+             *
+             * For each transaction:
+             * - skips rows with a `null` `gameDayId`
+             * - skips rows whose `gameDayId` has no mapped interval
+             * - converts `_sum.amountPence` to pounds (treating `null` as `0`)
+             *   and adds it to the interval's `debits`
+             *
+             * This function mutates `totalsByInterval` in place, creating a
+             * default `{ credits: 0, debits: 0 }` entry for an interval when
+             * one does not already exist.
+             *
+             * @param transactions - Aggregated transaction rows keyed by
+             * `gameDayId` with summed amounts in pence.
+             * @param intervalByGameDayId - Lookup map from `gameDayId` to
+             * interval key.
+             * @param totalsByInterval - Mutable map of interval totals to
+             * update.
+             */
+            const accumulateTotals = (
+                transactions: { gameDayId: number | null; _sum: { amountPence: number | null } }[],
+                intervalByGameDayId: Map<number, number>,
+                totalsByInterval: Map<number, { credits: number; debits: number }>,
+            ) => {
+                for (const row of transactions) {
+                    if (row.gameDayId == null) {
+                        continue;
+                    }
+
+                    const interval = intervalByGameDayId.get(row.gameDayId);
+                    if (interval == null) {
+                        continue;
+                    }
+
+                    const entry = totalsByInterval.get(interval) ?? { credits: 0, debits: 0 };
+                    const amountPence = row._sum.amountPence ?? 0;
+                    if (amountPence > 0) {
+                        entry.debits += toPounds(amountPence);
+                    } else {
+                        entry.credits += toPounds(Math.abs(amountPence));
+                    }
+                    totalsByInterval.set(interval, entry);
+                }
+            };
+
             if (year > 0) {
-                const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-                    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-                const byMonth = Array.from({ length: 12 }, () => ({ credits: 0, debits: 0 }));
-                for (const t of transactions) {
-                    const m = t.createdAt.getMonth();
-                    if (t.amountPence < 0) byMonth[m].credits += -t.amountPence;
-                    else byMonth[m].debits += t.amountPence;
-                }
-                return MONTHS.map((interval, i) => ({ interval, ...byMonth[i] }));
-            } else {
-                const byYear = new Map<number, { credits: number; debits: number }>();
-                for (const t of transactions) {
-                    const y = t.createdAt.getFullYear();
-                    if (!byYear.has(y)) byYear.set(y, { credits: 0, debits: 0 });
-                    const entry = byYear.get(y)!;
-                    if (t.amountPence < 0) entry.credits += -t.amountPence;
-                    else entry.debits += t.amountPence;
-                }
-                return [...byYear.entries()]
+                const monthByGameDayId = new Map<number, number>(
+                    gameDays.map((gameDay): [number, number] => [
+                        gameDay.id,
+                        gameDay.date.getUTCMonth(),
+                    ]),
+                );
+                const totalsByMonth = new Map<number, { credits: number; debits: number }>();
+
+                accumulateTotals(playerPayments, monthByGameDayId, totalsByMonth);
+                accumulateTotals(hallHire, monthByGameDayId, totalsByMonth);
+
+                return [...totalsByMonth.entries()]
                     .sort(([a], [b]) => a - b)
-                    .map(([y, { credits, debits }]) => ({ interval: String(y), credits, debits }));
+                    .map(([month, totals]) => ({
+                        interval: String(month),
+                        credits: totals.credits,
+                        debits: totals.debits,
+                    }));
+            } else {
+                const yearByGameDayId = new Map<number, number>(
+                    gameDays.map((gameDay): [number, number] => [
+                        gameDay.id,
+                        gameDay.date.getUTCFullYear(),
+                    ]),
+                );
+                const totalsByYear = new Map<number, { credits: number; debits: number }>();
+
+                accumulateTotals(playerPayments, yearByGameDayId, totalsByYear);
+                accumulateTotals(hallHire, yearByGameDayId, totalsByYear);
+
+                return [...totalsByYear.entries()]
+                    .sort(([a], [b]) => a - b)
+                    .map(([year, totals]) => ({
+                        interval: String(year),
+                        credits: totals.credits,
+                        debits: totals.debits,
+                    }));
             }
         } catch (error) {
             throw normalizeUnknownError(error);

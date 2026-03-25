@@ -3,6 +3,7 @@
 import * as d3 from 'd3';
 import { useEffect, useRef } from 'react';
 
+import { formatAmount, fromPounds } from '@/lib/money';
 import { MoneyChartDatum } from '@/types/DebtType';
 
 import styles from './MoneyChart.module.css';
@@ -127,7 +128,7 @@ export const MoneyChart = ({ data: raw }: Props) => {
             .attr('height', d => y(d.balance - d.debits) - y(d.balance))
             .attr('fill', '#fa5252').attr('rx', 2)
             .style('cursor', 'pointer')
-            .on('mousemove', (event: globalThis.MouseEvent, d) => showTooltip(event, `<b>${d.interval}</b><br/>Hall charges: <b>£${d.debits}</b>`))
+            .on('mousemove', (event: globalThis.MouseEvent, d) => showTooltip(event, `<b>${d.interval}</b><br/>Hall charges: <b>£${formatAmount(fromPounds(d.debits))}</b>`))
             .on('mouseleave', hideTooltip);
 
         // Credits: upward from balance
@@ -138,7 +139,7 @@ export const MoneyChart = ({ data: raw }: Props) => {
             .attr('height', d => y(d.balance) - y(d.balance + d.credits))
             .attr('fill', '#40c057').attr('rx', 2)
             .style('cursor', 'pointer')
-            .on('mousemove', (event: globalThis.MouseEvent, d) => showTooltip(event, `<b>${d.interval}</b><br/>Player payments: <b>£${d.credits}</b>`))
+            .on('mousemove', (event: globalThis.MouseEvent, d) => showTooltip(event, `<b>${d.interval}</b><br/>Player payments: <b>£${formatAmount(fromPounds(d.credits))}</b>`))
             .on('mouseleave', hideTooltip);
 
         balanceLine(g, data, x, y);
@@ -150,7 +151,7 @@ export const MoneyChart = ({ data: raw }: Props) => {
             .attr('r', 10)
             .attr('fill', 'transparent')
             .style('cursor', 'pointer')
-            .on('mousemove', (event: globalThis.MouseEvent, d) => showTooltip(event, `<b>${d.interval}</b><br/>Balance: <b>£${d.balance}</b>`))
+            .on('mousemove', (event: globalThis.MouseEvent, d) => showTooltip(event, `<b>${d.interval}</b><br/>Balance: <b>£${formatAmount(fromPounds(d.balance))}</b>`))
             .on('mouseleave', hideTooltip);
 
         legend(svg, [

@@ -277,7 +277,7 @@ export const InvoiceForm = ({
                     >
                         <Stack gap="sm">
                             <NumberInput
-                                label="Invoice amount (£)"
+                                label="Invoice amount"
                                 prefix="£"
                                 decimalScale={2}
                                 fixedDecimalScale

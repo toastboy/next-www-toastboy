@@ -14,10 +14,7 @@ export interface Props {
     data: MoneyChartDatum[];
 }
 
-const W = 520, H = 300;
 const M = { top: 20, right: 20, bottom: 30, left: 55 };
-const IW = W - M.left - M.right;
-const IH = H - M.top - M.bottom;
 
 type Datum = MoneyChartDatum & { balance: number };
 
@@ -25,14 +22,16 @@ function axes(
     g: d3.Selection<SVGGElement, unknown, null, undefined>,
     x: d3.ScaleBand<string>,
     y: d3.ScaleLinear<number, number>,
+    iw: number,
+    ih: number,
 ) {
     g.append('g')
-        .attr('transform', `translate(0,${IH})`)
+        .attr('transform', `translate(0,${ih})`)
         .call(d3.axisBottom(x));
     g.append('g')
         .call(d3.axisLeft(y).tickFormat(v => `£${String(v)}`).ticks(6));
     g.append('line')
-        .attr('x1', 0).attr('x2', IW)
+        .attr('x1', 0).attr('x2', iw)
         .attr('y1', y(0)).attr('y2', y(0))
         .attr('stroke', '#888').attr('stroke-dasharray', '4,2');
 }
@@ -83,18 +82,11 @@ function legend(
 
 export const MoneyChart = ({ data: raw }: Props) => {
     const svgRef = useRef<SVGSVGElement>(null);
+    const wrapperRef = useRef<HTMLDivElement>(null);
     const tooltipRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        if (!svgRef.current || !tooltipRef.current) return;
-        const svg = d3.select(svgRef.current);
-        svg.selectAll('*').remove();
-
-        let running = 0;
-        const data: Datum[] = raw.map(d => {
-            running += d.credits - d.debits;
-            return { ...d, balance: running };
-        });
+        if (!svgRef.current || !tooltipRef.current || !wrapperRef.current) return;
 
         const tooltip = d3.select(tooltipRef.current);
 
@@ -108,63 +100,88 @@ export const MoneyChart = ({ data: raw }: Props) => {
         };
         const hideTooltip = () => tooltip.style('opacity', '0');
 
-        const x = d3.scaleBand()
-            .domain(data.map(d => d.interval))
-            .range([0, IW]).padding(0.3);
+        let running = 0;
+        const data: Datum[] = raw.map(d => {
+            running += d.credits - d.debits;
+            return { ...d, balance: running };
+        });
 
-        const yMin = d3.min(data, d => d.balance - d.debits) ?? 0;
-        const yMax = d3.max(data, d => d.balance + d.credits) ?? 0;
-        const pad = (yMax - yMin) * 0.12;
-        const y = d3.scaleLinear().domain([yMin - pad, yMax + pad]).range([IH, 0]);
+        const draw = (w: number, h: number) => {
+            if (!svgRef.current) return;
+            const iw = w - M.left - M.right;
+            const ih = h - M.top - M.bottom;
 
-        const g = svg.append('g').attr('transform', `translate(${M.left},${M.top})`);
-        axes(g, x, y);
+            const svg = d3.select(svgRef.current);
+            svg.attr('width', w).attr('height', h);
+            svg.selectAll('*').remove();
 
-        // Debits: downward from balance
-        g.selectAll('.db').data(data).enter().append('rect')
-            .attr('x', d => x(d.interval) ?? 0)
-            .attr('width', x.bandwidth())
-            .attr('y', d => y(d.balance))
-            .attr('height', d => y(d.balance - d.debits) - y(d.balance))
-            .attr('fill', '#fa5252').attr('rx', 2)
-            .style('cursor', 'pointer')
-            .on('mousemove', (event: globalThis.MouseEvent, d) => showTooltip(event, `<b>${d.interval}</b><br/>Hall charges: <b>£${formatAmount(fromPounds(d.debits))}</b>`))
-            .on('mouseleave', hideTooltip);
+            const x = d3.scaleBand()
+                .domain(data.map(d => d.interval))
+                .range([0, iw]).padding(0.3);
 
-        // Credits: upward from balance
-        g.selectAll('.cr').data(data).enter().append('rect')
-            .attr('x', d => x(d.interval) ?? 0)
-            .attr('width', x.bandwidth())
-            .attr('y', d => y(d.balance + d.credits))
-            .attr('height', d => y(d.balance) - y(d.balance + d.credits))
-            .attr('fill', '#40c057').attr('rx', 2)
-            .style('cursor', 'pointer')
-            .on('mousemove', (event: globalThis.MouseEvent, d) => showTooltip(event, `<b>${d.interval}</b><br/>Player payments: <b>£${formatAmount(fromPounds(d.credits))}</b>`))
-            .on('mouseleave', hideTooltip);
+            const yMin = d3.min(data, d => d.balance - d.debits) ?? 0;
+            const yMax = d3.max(data, d => d.balance + d.credits) ?? 0;
+            const pad = (yMax - yMin) * 0.12;
+            const y = d3.scaleLinear().domain([yMin - pad, yMax + pad]).range([ih, 0]);
 
-        balanceLine(g, data, x, y);
+            const g = svg.append('g').attr('transform', `translate(${M.left},${M.top})`);
+            axes(g, x, y, iw, ih);
 
-        // Larger invisible hit targets on balance dots
-        g.selectAll('.dot-hit').data(data).enter().append('circle')
-            .attr('cx', d => (x(d.interval) ?? 0) + x.bandwidth() / 2)
-            .attr('cy', d => y(d.balance))
-            .attr('r', 10)
-            .attr('fill', 'transparent')
-            .style('cursor', 'pointer')
-            .on('mousemove', (event: globalThis.MouseEvent, d) => showTooltip(event, `<b>${d.interval}</b><br/>Balance: <b>£${formatAmount(fromPounds(d.balance))}</b>`))
-            .on('mouseleave', hideTooltip);
+            // Debits: downward from balance
+            g.selectAll('.db').data(data).enter().append('rect')
+                .attr('x', d => x(d.interval) ?? 0)
+                .attr('width', x.bandwidth())
+                .attr('y', d => y(d.balance))
+                .attr('height', d => y(d.balance - d.debits) - y(d.balance))
+                .attr('fill', '#fa5252').attr('rx', 2)
+                .style('cursor', 'pointer')
+                .on('mousemove', (event: globalThis.MouseEvent, d) => showTooltip(event, `<b>${d.interval}</b><br/>Hall charges: <b>£${formatAmount(fromPounds(d.debits))}</b>`))
+                .on('mouseleave', hideTooltip);
 
-        legend(svg, [
-            { label: 'Player payments (credits)', color: '#40c057' },
-            { label: 'Hall charges (debits)', color: '#fa5252' },
-            { label: 'Running balance', color: '#228be6', dash: true },
-        ]);
+            // Credits: upward from balance
+            g.selectAll('.cr').data(data).enter().append('rect')
+                .attr('x', d => x(d.interval) ?? 0)
+                .attr('width', x.bandwidth())
+                .attr('y', d => y(d.balance + d.credits))
+                .attr('height', d => y(d.balance) - y(d.balance + d.credits))
+                .attr('fill', '#40c057').attr('rx', 2)
+                .style('cursor', 'pointer')
+                .on('mousemove', (event: globalThis.MouseEvent, d) => showTooltip(event, `<b>${d.interval}</b><br/>Player payments: <b>£${formatAmount(fromPounds(d.credits))}</b>`))
+                .on('mouseleave', hideTooltip);
+
+            balanceLine(g, data, x, y);
+
+            // Larger invisible hit targets on balance dots
+            g.selectAll('.dot-hit').data(data).enter().append('circle')
+                .attr('cx', d => (x(d.interval) ?? 0) + x.bandwidth() / 2)
+                .attr('cy', d => y(d.balance))
+                .attr('r', 10)
+                .attr('fill', 'transparent')
+                .style('cursor', 'pointer')
+                .on('mousemove', (event: globalThis.MouseEvent, d) => showTooltip(event, `<b>${d.interval}</b><br/>Balance: <b>£${formatAmount(fromPounds(d.balance))}</b>`))
+                .on('mouseleave', hideTooltip);
+
+            legend(svg, [
+                { label: 'Player payments (credits)', color: '#40c057' },
+                { label: 'Hall charges (debits)', color: '#fa5252' },
+                { label: 'Running balance', color: '#228be6', dash: true },
+            ]);
+        };
+
+        const observer = new ResizeObserver(entries => {
+            const { width, height } = entries[0].contentRect;
+            draw(width, height);
+        });
+
+        observer.observe(wrapperRef.current);
+        return () => observer.disconnect();
     }, [raw]);
 
     return (
-        <div className={styles.wrapper}>
-            <svg ref={svgRef} width={W} height={H} />
+        <div ref={wrapperRef} className={styles.wrapper}>
+            <svg ref={svgRef} />
             <div ref={tooltipRef} className={styles.tooltip} />
         </div>
     );
 };
+

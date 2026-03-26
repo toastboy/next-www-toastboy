@@ -201,14 +201,18 @@ describe('MoneyService', () => {
 
             expect(gameDayService.getIdRangeForYear).toHaveBeenCalledWith(2024);
             expect(prisma.transaction.groupBy).toHaveBeenCalledWith(
-                expect.objectContaining({ where: expect.objectContaining({ type: 'PlayerPayment' }) }),
+                expect.objectContaining({
+                    where: expect.objectContaining({ type: 'PlayerPayment' }) as unknown,
+                }),
             );
             expect(prisma.transaction.groupBy).toHaveBeenCalledWith(
-                expect.objectContaining({ where: expect.objectContaining({ type: 'HallHire' }) }),
+                expect.objectContaining({
+                    where: expect.objectContaining({ type: 'HallHire' }) as unknown,
+                }),
             );
             expect(result).toEqual([
-                { interval: '2', credits: 5, debits: 0 },
-                { interval: '3', credits: 0, debits: 10 },
+                { interval: 'Mar', credits: 5, debits: 0 },
+                { interval: 'Apr', credits: 0, debits: 10 },
             ]);
         });
 

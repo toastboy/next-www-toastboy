@@ -60,6 +60,17 @@ const getPlayerName = (player: { id: number; name: string | null; anonymous: boo
     return `Player ${player.id}`;
 };
 
+/**
+ * Formats dates to their abbreviated month name using British English locale
+ * rules.
+ *
+ * Produces 3-letter month labels such as `Jan`, `Feb`, and `Mar` when used via
+ * `formatMonth.format(date)`.
+ */
+const formatMonth = new Intl.DateTimeFormat('en-GB', {
+    month: 'short',
+});
+
 class MoneyService {
     /**
      * Returns signed balances grouped by player, with `playerId: null`
@@ -273,7 +284,7 @@ class MoneyService {
                 return [...totalsByMonth.entries()]
                     .sort(([a], [b]) => a - b)
                     .map(([month, totals]) => ({
-                        interval: String(month),
+                        interval: formatMonth.format(new Date(0, month)),
                         credits: totals.credits,
                         debits: totals.debits,
                     }));

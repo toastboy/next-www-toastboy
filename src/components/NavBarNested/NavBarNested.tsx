@@ -30,6 +30,10 @@ export const NavBarNested = ({ user }: Props) => {
                     "label": "Fixtures",
                     "link": "/footy/fixtures",
                 },
+                {
+                    "label": "Books",
+                    "link": "/footy/books",
+                },
             ],
         },
         {
@@ -97,6 +101,10 @@ export const NavBarNested = ({ user }: Props) => {
                 {
                     "label": "Drinkers",
                     "link": "/footy/admin/drinkers",
+                },
+                {
+                    "label": "Invoice",
+                    "link": "/footy/admin/invoice",
                 },
                 {
                     "label": "Money",

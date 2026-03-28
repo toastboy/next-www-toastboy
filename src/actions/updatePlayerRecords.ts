@@ -2,8 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 
-import { requireAdmin } from '@/lib/auth.server';
 import { updatePlayerRecordsCore } from '@/lib/actions/updatePlayerRecords';
+import { requireAdmin } from '@/lib/auth.server';
 
 /**
  * Recomputes aggregated player records and revalidates admin pages.

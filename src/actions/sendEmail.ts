@@ -2,8 +2,8 @@
 
 import type { SendMailOptions } from 'nodemailer';
 
-import { requireAdmin } from '@/lib/auth.server';
 import { sendEmailCore } from '@/lib/actions/sendEmail';
+import { requireAdmin } from '@/lib/auth.server';
 
 /**
  * Sends an email using the appropriate SMTP server configuration based on the environment.

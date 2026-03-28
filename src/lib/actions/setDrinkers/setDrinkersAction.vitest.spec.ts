@@ -2,14 +2,19 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { APP_ERROR_CODE, InternalError, ValidationError } from '@/lib/errors';
 
-const { revalidatePathMock, setDrinkersCoreMock, upsertFromGameDayMock } = vi.hoisted(() => ({
+const { revalidatePathMock, setDrinkersCoreMock, upsertFromGameDayMock, requireAdminMock } = vi.hoisted(() => ({
     revalidatePathMock: vi.fn(),
     setDrinkersCoreMock: vi.fn(),
     upsertFromGameDayMock: vi.fn(),
+    requireAdminMock: vi.fn().mockResolvedValue(undefined),
 }));
 
 vi.mock('next/cache', () => ({
     revalidatePath: revalidatePathMock,
+}));
+
+vi.mock('@/lib/auth.server', () => ({
+    requireAdmin: requireAdminMock,
 }));
 
 vi.mock('@/lib/actions/setDrinkers', () => ({

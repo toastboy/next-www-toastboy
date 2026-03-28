@@ -2,8 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 
-import { requireAdmin } from '@/lib/auth.server';
 import { recordHallHireCore } from '@/lib/actions/recordHallHire';
+import { requireAdmin } from '@/lib/auth.server';
 import { RecordHallHireInputSchema } from '@/types/actions/RecordHallHire';
 
 /**

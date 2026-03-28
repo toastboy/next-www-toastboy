@@ -2,8 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 
-import { requireAdmin } from '@/lib/auth.server';
 import { setDrinkersCore } from '@/lib/actions/setDrinkers';
+import { requireAdmin } from '@/lib/auth.server';
 import { InternalError, normalizeUnknownError } from '@/lib/errors';
 import playerRecordService from '@/services/PlayerRecord';
 import { SetDrinkersInputSchema } from '@/types/actions/SetDrinkers';

@@ -7,7 +7,7 @@ import escapeHtml from 'escape-html';
 import prisma from 'prisma/prisma';
 
 import { beforeDeletePlayer } from '@/actions/deletePlayer';
-import { sendEmail } from '@/actions/sendEmail';
+import { sendEmailCore } from '@/lib/actions/sendEmail';
 import { getSecrets } from '@/lib/secrets';
 import { getPublicBaseUrl } from '@/lib/urls';
 import { AuthUserSummary } from '@/types/AuthUser';
@@ -67,7 +67,7 @@ export const auth = betterAuth({
                     const safeNewEmail = escapeHtml(newEmail);
                     const safeUrl = escapeHtml(url);
 
-                    await sendEmail({
+                    await sendEmailCore({
                         to: user.email,
                         subject: 'Confirm your Toastboy FC email change',
                         html: [
@@ -84,7 +84,7 @@ export const auth = betterAuth({
             sendDeleteAccountVerification: async ({ user, url }, _request) => {
                 const safeUrl = escapeHtml(url);
 
-                await sendEmail({
+                await sendEmailCore({
                     to: user.email,
                     subject: 'Delete your Toastboy FC account',
                     html: [
@@ -106,7 +106,7 @@ export const auth = betterAuth({
         sendResetPassword: async ({ user, url }, _request) => {
             const safeUrl = escapeHtml(url);
 
-            void sendEmail({
+            void sendEmailCore({
                 to: user.email,
                 subject: 'Reset your Toastboy FC password',
                 html: [
@@ -124,7 +124,7 @@ export const auth = betterAuth({
             if (user.email) {
                 const safeUrl = escapeHtml(url);
 
-                await sendEmail({
+                await sendEmailCore({
                     to: user.email,
                     subject: 'Verify your Toastboy FC email address',
                     html: [
@@ -147,7 +147,7 @@ export const auth = betterAuth({
             if (user.email) {
                 const safeUrl = escapeHtml(url);
 
-                void sendEmail({
+                void sendEmailCore({
                     to: user.email,
                     subject: 'Reset your Toastboy FC password',
                     html: [

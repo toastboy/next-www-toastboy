@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 
+import { requireAdmin } from '@/lib/auth.server';
 import { setDrinkersCore } from '@/lib/actions/setDrinkers';
 import { InternalError, normalizeUnknownError } from '@/lib/errors';
 import playerRecordService from '@/services/PlayerRecord';
@@ -12,9 +13,12 @@ import { SetDrinkersInputSchema } from '@/types/actions/SetDrinkers';
  *
  * @param rawData - Unvalidated input data for the set drinkers operation.
  * @returns The result of the core setDrinkers operation.
+ * @throws {AuthError} When the user is not an admin.
  * @throws Error if updating player records from the game day fails.
  */
 export async function setDrinkers(rawData: unknown) {
+    await requireAdmin();
+
     const data = SetDrinkersInputSchema.parse(rawData);
     const result = await setDrinkersCore(data);
 

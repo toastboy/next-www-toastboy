@@ -2,6 +2,7 @@ import { headers } from 'next/headers';
 import { AuthRole, AuthUserSummary } from 'types/AuthUser';
 
 import { auth } from '@/lib/auth';
+import { AuthError } from '@/lib/errors';
 
 export const MOCK_AUTH_COOKIE = 'mock-auth-state';
 export const MOCK_AUTH_USER_COOKIE = 'mock-auth-user';
@@ -48,11 +49,31 @@ const getMockAuthUserFromCookie = (cookieHeader: string | null): Partial<AuthUse
 };
 
 /**
+ * Returns `true` when mock authentication is permitted.
+ *
+ * Mock auth is disabled in production to prevent cookie-based privilege
+ * escalation. It is only available when `NODE_ENV` is explicitly set to
+ * `'development'` or `'test'`.
+ */
+export function isMockAuthEnabled(): boolean {
+    return process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test';
+}
+
+/**
  * Reads the mock auth role from the request cookies.
  *
- * @returns The mock role stored in `MOCK_AUTH_COOKIE`, or `'none'` when absent/invalid.
+ * Always returns `'none'` in production to prevent cookie-based privilege
+ * escalation. In development and test environments, reads the role from
+ * `MOCK_AUTH_COOKIE`.
+ *
+ * @returns The mock role stored in `MOCK_AUTH_COOKIE`, or `'none'` when
+ * absent, invalid, or in production.
  */
 export async function getMockAuthState(): Promise<AuthRole> {
+    if (!isMockAuthEnabled()) {
+        return 'none';
+    }
+
     const cookieHeader = (await headers()).get('cookie');
     const cookies = parseCookieHeader(cookieHeader);
     const value = cookies[MOCK_AUTH_COOKIE];
@@ -62,9 +83,17 @@ export async function getMockAuthState(): Promise<AuthRole> {
 /**
  * Returns a mock user summary when a mock auth role is active.
  *
- * @returns The mock user for the active role, or `null` when no mock auth is set.
+ * Always returns `null` in production to prevent cookie-based privilege
+ * escalation.
+ *
+ * @returns The mock user for the active role, or `null` when no mock auth is
+ * set or in production.
  */
 export async function getMockUser(): Promise<AuthUserSummary | null> {
+    if (!isMockAuthEnabled()) {
+        return null;
+    }
+
     const state = await getMockAuthState();
     if (state !== 'user' && state !== 'admin') {
         return null;
@@ -200,4 +229,41 @@ export async function getUserRole(): Promise<AuthRole> {
         return 'user';
     }
     return 'none';
+}
+
+/**
+ * Asserts that the current user holds the `admin` role.
+ *
+ * Throws an {@link AuthError} with an appropriate message when the caller is
+ * unauthenticated (`'none'`) or lacks admin privileges (`'user'`).
+ *
+ * @throws {AuthError} When the user is not an admin.
+ */
+export async function requireAdmin(): Promise<void> {
+    const role = await getUserRole();
+
+    switch (role) {
+        case 'admin':
+            return;
+        case 'user':
+            throw new AuthError('Forbidden: admin access required.');
+        case 'none':
+        default:
+            throw new AuthError('Unauthorised: you must be logged in.');
+    }
+}
+
+/**
+ * Asserts that the current user is authenticated (any role).
+ *
+ * Throws an {@link AuthError} when the caller is unauthenticated.
+ *
+ * @throws {AuthError} When no user session exists.
+ */
+export async function requireUser(): Promise<void> {
+    const role = await getUserRole();
+
+    if (role === 'none') {
+        throw new AuthError('Unauthorised: you must be logged in.');
+    }
 }

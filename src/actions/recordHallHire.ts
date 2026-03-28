@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 
+import { requireAdmin } from '@/lib/auth.server';
 import { recordHallHireCore } from '@/lib/actions/recordHallHire';
 import { RecordHallHireInputSchema } from '@/types/actions/RecordHallHire';
 
@@ -10,8 +11,11 @@ import { RecordHallHireInputSchema } from '@/types/actions/RecordHallHire';
  *
  * @param rawData - The raw invoice data to be validated against
  * RecordHallHireInputSchema
+ * @throws {AuthError} When the user is not an admin.
  */
 export async function recordHallHire(rawData: unknown) {
+    await requireAdmin();
+
     const data = RecordHallHireInputSchema.parse(rawData);
     await recordHallHireCore(data);
 

@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 
+import { requireAdmin } from '@/lib/auth.server';
 import { setGameResultCore } from '@/lib/actions/setGameResult';
 import { InternalError, normalizeUnknownError } from '@/lib/errors';
 import playerRecordService from '@/services/PlayerRecord';
@@ -14,10 +15,13 @@ import { SetGameResultInputSchema } from '@/types/actions/SetGameResult';
  * `SetGameResultInputSchema`.
  * @returns A promise that resolves to the updated game day after the result has
  * been set.
+ * @throws {AuthError} When the user is not an admin.
  * @throws Will throw a validation error if `rawData` does not conform to
  * `SetGameResultInputSchema`.
  */
 export async function setGameResult(rawData: unknown) {
+    await requireAdmin();
+
     // TODO: Isn't this always going to be fed by a form, and thus always be a
     // FormData object? If so, we should probably be parsing it as such, and
     // validating the form data instead of the raw data.

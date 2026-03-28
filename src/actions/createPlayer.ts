@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 
+import { requireAdmin } from '@/lib/auth.server';
 import { addPlayerInviteCore, createPlayerCore } from '@/lib/actions/createPlayer';
 import { CreatePlayerSchema } from '@/types/actions/CreatePlayer';
 
@@ -10,6 +11,7 @@ import { CreatePlayerSchema } from '@/types/actions/CreatePlayer';
  *
  * @param rawData - The raw player data to be validated and processed. Must conform to CreatePlayerSchema.
  * @returns A promise that resolves to the created player object.
+ * @throws {AuthError} When the user is not an admin.
  * @throws {Error} When the introducedBy value is provided but not a valid number.
  * @throws {ZodError} When the rawData does not match the CreatePlayerSchema validation.
  *
@@ -22,6 +24,8 @@ import { CreatePlayerSchema } from '@/types/actions/CreatePlayer';
  * - Revalidates the newplayer and players pages
  */
 export async function createPlayer(rawData: unknown) {
+    await requireAdmin();
+
     const data = CreatePlayerSchema.parse(rawData);
     const result = await createPlayerCore(data);
 
@@ -40,11 +44,14 @@ export async function createPlayer(rawData: unknown) {
  * player profile has no login email.
  * @returns A URL string that the player can use to claim their account via the
  * tokenized verification link.
+ * @throws {AuthError} When the user is not an admin.
  */
 export async function addPlayerInvite(
     playerId: number,
     email?: string,
 ) {
+    await requireAdmin();
+
     const inviteLink = await addPlayerInviteCore(playerId, email);
 
     revalidatePath('/footy/admin/newplayer');

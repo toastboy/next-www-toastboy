@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 
+import { requireAdmin } from '@/lib/auth.server';
 import { payDebtCore } from '@/lib/actions/payDebt';
 import { PayDebtInputSchema } from '@/types/actions/PayDebt';
 
@@ -11,6 +12,7 @@ import { PayDebtInputSchema } from '@/types/actions/PayDebt';
  * @param rawData - The raw payment data to be validated against
  * PayDebtInputSchema
  * @returns A promise that resolves to the result of the payment operation
+ * @throws {AuthError} When the user is not an admin.
  * @throws {ZodError} If the input data fails validation against
  * PayDebtInputSchema
  *
@@ -20,6 +22,8 @@ import { PayDebtInputSchema } from '@/types/actions/PayDebt';
  * to reflect the updated state.
  */
 export async function payDebt(rawData: unknown) {
+    await requireAdmin();
+
     const data = PayDebtInputSchema.parse(rawData);
     const result = await payDebtCore(data);
 

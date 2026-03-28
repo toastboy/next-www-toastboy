@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 
+import { requireAdmin } from '@/lib/auth.server';
 import gameDayService from '@/services/GameDay';
 import { UpdateInvoiceGameDaysInputSchema } from '@/types/actions/UpdateInvoiceGameDays';
 
@@ -12,8 +13,11 @@ import { UpdateInvoiceGameDaysInputSchema } from '@/types/actions/UpdateInvoiceG
  *
  * @param rawData - The raw input to be validated against
  * UpdateInvoiceGameDaysInputSchema
+ * @throws {AuthError} When the user is not an admin.
  */
 export async function updateInvoiceGameDays(rawData: unknown) {
+    await requireAdmin();
+
     const data = UpdateInvoiceGameDaysInputSchema.parse(rawData);
 
     await Promise.all(

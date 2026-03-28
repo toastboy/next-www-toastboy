@@ -284,15 +284,28 @@ export async function sanitizeOutcomeArrayData(data: OutcomeType[]) {
  * Build a URL by resolving a base URI against the application's public base URL
  * and appending query parameters.
  *
- * @param baseUri - The base path or URL to resolve. Can be absolute or
- * relative.
+ * To prevent open-redirect attacks, the resulting URL's origin must match the
+ * application's public base URL. If the caller supplies an absolute URL whose
+ * origin differs (e.g. `https://evil.com`), the path is discarded and the
+ * application root (`/`) is used instead.
+ *
+ * @param baseUri - The base path or URL to resolve. Should be a relative path
+ * (e.g. `/footy/response`). Absolute URLs pointing to a different origin are
+ * treated as the root path.
  * @param params - An object whose keys and values will be appended as query
  * parameters. Multiple values for the same key will be appended (not replaced).
  * @returns A URL instance representing the resolved URL with the appended query
  * parameters.
  */
 export function buildURLWithParams(baseUri: string, params: Record<string, string>) {
-    const url = new URL(baseUri, getPublicBaseUrl().toString());
+    const base = getPublicBaseUrl().toString();
+    const url = new URL(baseUri, base);
+
+    // Prevent open redirects: if the resolved origin differs from our own,
+    // fall back to the application root.
+    if (url.origin !== new URL(base).origin) {
+        return buildURLWithParams('/', params);
+    }
 
     Object.entries(params).forEach(([key, value]) => {
         url.searchParams.append(key, value);

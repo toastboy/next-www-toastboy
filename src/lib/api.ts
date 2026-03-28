@@ -300,10 +300,11 @@ export async function sanitizeOutcomeArrayData(data: OutcomeType[]) {
 export function buildURLWithParams(baseUri: string, params: Record<string, string>) {
     const base = getPublicBaseUrl().toString();
     const url = new URL(baseUri, base);
+    const expectedOrigin = new URL(base).origin;
 
     // Prevent open redirects: if the resolved origin differs from our own,
     // fall back to the application root.
-    if (url.origin !== new URL(base).origin) {
+    if (url.origin !== expectedOrigin) {
         return buildURLWithParams('/', params);
     }
 

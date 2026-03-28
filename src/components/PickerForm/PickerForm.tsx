@@ -24,6 +24,7 @@ import { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 import { useEffect, useMemo, useState } from 'react';
 
 import { config } from '@/lib/config';
+import { formatDate } from '@/lib/dates';
 import type { SetGameEnabledProxy } from '@/types/actions/SetGameEnabled';
 import type { SubmitPickerProxy } from '@/types/actions/SubmitPicker';
 import type { PickerPlayerType } from '@/types/PickerPlayerType';
@@ -373,7 +374,7 @@ export const PickerForm = ({
         <Stack gap="md">
             <Stack align="left" gap="xs">
                 <Title order={2}>Picker</Title>
-                <Text c="dimmed">Game {gameDay.id}: {gameDay.date.toISOString().split('T')[0]}</Text>
+                <Text c="dimmed">Game {gameDay.id}: {formatDate(gameDay.date)}</Text>
             </Stack>
             {gameDay.game ? picker : null}
             <Group justify="space-between" align="center" wrap="wrap">

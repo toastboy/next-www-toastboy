@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 
 import { GameDayLink } from '@/components/GameDayLink/GameDayLink';
+import { formatDate } from '@/lib/dates';
 import { Wrapper } from '@/tests/components/lib/common';
 import { defaultGameDay } from '@/tests/mocks/data/gameDay';
 
@@ -9,7 +10,7 @@ describe('GameDayLink', () => {
         render(<Wrapper><GameDayLink gameDay={defaultGameDay} /></Wrapper>);
 
         const link = screen.getByRole('link', {
-            name: defaultGameDay.date.toISOString().split('T')[0],
+            name: formatDate(defaultGameDay.date),
         });
         expect(link).toBeInTheDocument();
         expect(link).toHaveAttribute('href', `/footy/game/${defaultGameDay.id}`);

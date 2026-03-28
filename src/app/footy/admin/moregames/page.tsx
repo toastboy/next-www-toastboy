@@ -1,9 +1,8 @@
 import { createMoreGameDays } from '@/actions/createMoreGameDays';
 import { MoreGamesForm } from '@/components/MoreGamesForm/MoreGamesForm';
 import { config } from '@/lib/config';
+import { formatDate } from '@/lib/dates';
 import gameDayService from '@/services/GameDay';
-
-const toIsoDate = (date: Date) => date.toISOString().split('T')[0];
 
 /**
  * Adds a specified number of days to a given date.
@@ -91,7 +90,7 @@ const buildRows = (startDate: Date) => {
 
     for (let date = new Date(startDate); date <= endDate; date = addDays(date, 7)) {
         rows.push({
-            date: toIsoDate(date),
+            date: formatDate(date),
             game: true,
             comment: '',
         });

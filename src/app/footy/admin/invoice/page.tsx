@@ -3,6 +3,7 @@ import { Container } from '@mantine/core';
 import { recordHallHire } from '@/actions/recordHallHire';
 import { updateInvoiceGameDays } from '@/actions/updateInvoiceGameDays';
 import { InvoiceForm } from '@/components/InvoiceForm/InvoiceForm';
+import { formatDate } from '@/lib/dates';
 import gameDayService from '@/services/GameDay';
 
 export const metadata = { title: 'Invoice Check' };
@@ -27,7 +28,7 @@ const InvoicePage = async ({ searchParams }: InvoicePageProps) => {
     // flag is true or if the invitations were sent (mailSent is not null).
     const gameDays = gameDaysRaw.map((gd) => ({
         id: gd.id,
-        date: gd.date.toISOString().split('T')[0],
+        date: formatDate(gd.date),
         gameScheduled: gd.game || (gd.mailSent !== null),
         hallCost: gd.hallCost,
     }));

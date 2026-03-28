@@ -11,6 +11,7 @@
     "search.exclude": {
         "**/.git": true,
         "**/.next": true,
+        "**/.vscode": true,
         "**/build": true,
         "**/coverage": true,
         "**/dist": true,
@@ -18,6 +19,9 @@
         "**/playwright-report": true,
         "**/storybook-static": true,
         "**/test-results": true
+    },
+    "files.watcherExclude": {
+        "**/.vscode/**": true
     },
     "[yaml]": {
         "editor.defaultFormatter": "redhat.vscode-yaml",

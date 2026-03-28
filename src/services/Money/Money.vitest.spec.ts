@@ -298,4 +298,57 @@ describe('MoneyService', () => {
             });
         });
     });
+
+    describe('recordHallHire', () => {
+        it('updates an existing hall-hire transaction for the game day when present', async () => {
+            (prisma.transaction.updateMany as Mock).mockResolvedValue({ count: 1 });
+
+            await moneyService.recordHallHire(
+                4700,
+                1261,
+                'Kelsey Kerridge invoice April 2026, game day 1261 on 2026-04-28',
+            );
+
+            expect(prisma.transaction.updateMany).toHaveBeenCalledWith({
+                where: {
+                    type: 'HallHire',
+                    playerId: null,
+                    gameDayId: 1261,
+                },
+                data: {
+                    amountPence: 4700,
+                    note: 'Kelsey Kerridge invoice April 2026, game day 1261 on 2026-04-28',
+                },
+            });
+            expect(prisma.transaction.create).not.toHaveBeenCalled();
+        });
+
+        it('creates a hall-hire transaction when no existing row matches', async () => {
+            (prisma.transaction.updateMany as Mock).mockResolvedValue({ count: 0 });
+            (prisma.transaction.create as Mock).mockResolvedValue({});
+
+            await moneyService.recordHallHire(4700, 1261, 'April invoice');
+
+            expect(prisma.transaction.updateMany).toHaveBeenCalledWith({
+                where: {
+                    type: 'HallHire',
+                    playerId: null,
+                    gameDayId: 1261,
+                },
+                data: {
+                    amountPence: 4700,
+                    note: 'April invoice',
+                },
+            });
+            expect(prisma.transaction.create).toHaveBeenCalledWith({
+                data: {
+                    type: 'HallHire',
+                    amountPence: 4700,
+                    playerId: null,
+                    gameDayId: 1261,
+                    note: 'April invoice',
+                },
+            });
+        });
+    });
 });

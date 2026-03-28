@@ -37,6 +37,7 @@ describe('createMoreGameDaysCore', () => {
             date: new Date(2026, 2, 1, 18, 0, 0, 0),
             game: true,
             cost: 450,
+            hallCost: 4500,
             comment: 'Bring bibs',
         });
         expect(gameDayService.create).toHaveBeenNthCalledWith(2, {
@@ -44,6 +45,7 @@ describe('createMoreGameDaysCore', () => {
             date: new Date(2026, 2, 8, 18, 0, 0, 0),
             game: false,
             cost: 450,
+            hallCost: 4500,
             comment: null,
         });
         expect(result).toEqual([{ id: 1 }, { id: 2 }]);

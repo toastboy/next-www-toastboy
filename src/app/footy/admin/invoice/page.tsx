@@ -29,6 +29,7 @@ const InvoicePage = async ({ searchParams }: InvoicePageProps) => {
         id: gd.id,
         date: gd.date.toISOString().split('T')[0],
         gameScheduled: gd.game || (gd.mailSent !== null),
+        hallCost: gd.hallCost,
     }));
 
     return (

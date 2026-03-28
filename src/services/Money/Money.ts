@@ -4,6 +4,7 @@ import z from 'zod';
 import { normalizeUnknownError } from '@/lib/errors';
 import { toPounds } from '@/lib/money';
 import { type PayDebtResult, PayDebtResultSchema } from '@/types/actions/PayDebt';
+import { RecordHallHireInputSchema } from '@/types/actions/RecordHallHire';
 import type { MoneyChartDatum, PlayerBalanceType } from '@/types/DebtType';
 import { BalanceSummarySchema } from '@/types/DebtType';
 
@@ -365,28 +366,46 @@ class MoneyService {
     /**
      * Records a hall hire (invoice) payment as a club-level transaction.
      *
-     * A HallHire transaction has no playerId and no gameDayId. The amount is
+      * A HallHire transaction has no playerId. The amount is
      * stored as a positive value so that the club balance (which is the
      * negation of the sum) becomes negative, representing money paid out.
      *
-     * @param amount - The invoice amount in pence (must be positive).
+     * @param amountPence - The invoice amount in pence (must be positive).
+     * @param gameDayId - The unique identifier of the game day associated with the hall hire.
      * @param note - An optional description for the transaction (max 255 chars).
      * @throws Will rethrow any validation or persistence errors encountered.
      */
-    async recordHallHire(amount: number, note?: string): Promise<void> {
+    async recordHallHire(
+        amountPence: number,
+        gameDayId: number,
+        note?: string,
+    ): Promise<void> {
         try {
-            const parsed = z.object({
-                amount: z.number().int().positive(),
-                note: z.string().max(255).optional(),
-            }).parse({ amount, note });
+            const parsed = RecordHallHireInputSchema.parse({ amountPence, gameDayId, note });
 
-            await prisma.transaction.create({
-                data: {
+            const updateResult = await prisma.transaction.updateMany({
+                where: {
                     type: 'HallHire',
-                    amountPence: parsed.amount,
+                    playerId: null,
+                    gameDayId: parsed.gameDayId,
+                },
+                data: {
+                    amountPence: parsed.amountPence,
                     note: parsed.note,
                 },
             });
+
+            if (updateResult.count === 0) {
+                await prisma.transaction.create({
+                    data: {
+                        type: 'HallHire',
+                        amountPence: parsed.amountPence,
+                        playerId: null,
+                        gameDayId: parsed.gameDayId,
+                        note: parsed.note,
+                    },
+                });
+            }
         } catch (error) {
             throw normalizeUnknownError(error);
         }

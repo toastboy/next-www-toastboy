@@ -17,7 +17,6 @@ import {
     TableThead,
     TableTr,
     Text,
-    TextInput,
     Title,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
@@ -28,6 +27,7 @@ import { useRouter } from 'next/navigation';
 import z from 'zod';
 
 import { config } from '@/lib/config';
+import { toPounds } from '@/lib/money';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 import type { RecordHallHireProxy } from '@/types/actions/RecordHallHire';
 import type { UpdateInvoiceGameDaysProxy } from '@/types/actions/UpdateInvoiceGameDays';
@@ -37,11 +37,8 @@ const monthNameFormatter = new Intl.DateTimeFormat('en-GB', { month: 'long' });
 const getMonthName = (year: number, month: number) =>
     monthNameFormatter.format(new Date(year, month - 1, 1));
 
-const fromPounds = (pounds: number) => Math.round(pounds * 100);
-
 const RecordHallHireFormSchema = z.object({
     amountPounds: z.number().positive(),
-    note: z.string().max(255).optional(),
 });
 
 type RecordHallHireFormValues = z.infer<typeof RecordHallHireFormSchema>;
@@ -50,6 +47,7 @@ interface GameDayRow {
     id: number;
     date: string;
     gameScheduled: boolean;
+    hallCost: number;
 }
 
 type UpdateGameDaysFormValues = z.infer<typeof UpdateInvoiceGameDaysInputSchema>;
@@ -87,8 +85,10 @@ export const InvoiceForm = ({
 
     const hallHireForm = useForm<RecordHallHireFormValues>({
         initialValues: {
-            amountPounds: 0,
-            note: `Kelsey Kerridge invoice ${getMonthName(year, month)} ${year}`,
+            amountPounds: gameDays.reduce(
+                (sum, gd) => (gd.gameScheduled ? sum + toPounds(gd.hallCost ?? 0) : sum),
+                0,
+            ),
         },
         validate: zod4Resolver(RecordHallHireFormSchema),
         validateInputOnBlur: true,
@@ -149,8 +149,11 @@ export const InvoiceForm = ({
         }
     };
 
-    const handleRecordHallHire = async (values: RecordHallHireFormValues) => {
-        const amount = fromPounds(values.amountPounds);
+    const handleRecordHallHire = async (
+        values: RecordHallHireFormValues,
+        gameDays: GameDayRow[],
+    ) => {
+
         const notificationId = 'hall-hire';
 
         notifications.show({
@@ -163,10 +166,17 @@ export const InvoiceForm = ({
         });
 
         try {
-            await onRecordHallHire({
-                amount,
-                note: values.note ?? undefined,
-            });
+            await Promise.all(
+                gameDays
+                    .filter((gd) => gd.gameScheduled && gd.hallCost > 0)
+                    .map((gd) =>
+                        onRecordHallHire({
+                            amountPence: gd.hallCost,
+                            gameDayId: gd.id,
+                            note: `Kelsey Kerridge invoice ${getMonthName(year, month)} ${year}`,
+                        }),
+                    ),
+            );
 
             notifications.update({
                 id: notificationId,
@@ -185,7 +195,6 @@ export const InvoiceForm = ({
                 component: 'InvoiceForm',
                 action: 'recordHallHire',
                 route: '/footy/admin/invoice',
-                extra: { amount },
             });
             notifications.update({
                 id: notificationId,
@@ -273,24 +282,19 @@ export const InvoiceForm = ({
                 <Paper withBorder p="md">
                     <Box
                         component="form"
-                        onSubmit={hallHireForm.onSubmit(handleRecordHallHire)}
+                        onSubmit={hallHireForm.onSubmit((values) => handleRecordHallHire(values, gameDays))}
                     >
                         <Stack gap="sm">
                             <NumberInput
                                 label="Invoice amount"
                                 prefix="£"
+                                disabled
                                 decimalScale={2}
                                 fixedDecimalScale
                                 allowNegative={false}
                                 hideControls
                                 min={0.01}
                                 {...hallHireForm.getInputProps('amountPounds')}
-                            />
-                            <TextInput
-                                label="Note"
-                                description="Appears on the transaction record"
-                                maxLength={255}
-                                {...hallHireForm.getInputProps('note')}
                             />
                             <Group>
                                 <Button type="submit">
@@ -302,7 +306,7 @@ export const InvoiceForm = ({
                 </Paper>
                 <Text size="xs" c="dimmed">
                     Current club balance can be viewed on the{' '}
-                    <Anchor href="/footy/admin/money">Money</Anchor> page.
+                    <Anchor href="/footy/books">Books</Anchor> page.
                 </Text>
             </Stack>
         </Stack>

@@ -27,15 +27,12 @@ import { useRouter } from 'next/navigation';
 import z from 'zod';
 
 import { config } from '@/lib/config';
+import { formatDate, getFullMonthName } from '@/lib/dates';
 import { toPounds } from '@/lib/money';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 import type { RecordHallHireProxy } from '@/types/actions/RecordHallHire';
 import type { UpdateInvoiceGameDaysProxy } from '@/types/actions/UpdateInvoiceGameDays';
 import { UpdateInvoiceGameDaysInputSchema } from '@/types/actions/UpdateInvoiceGameDays';
-
-const monthNameFormatter = new Intl.DateTimeFormat('en-GB', { month: 'long' });
-const getMonthName = (year: number, month: number) =>
-    monthNameFormatter.format(new Date(year, month - 1, 1));
 
 const RecordHallHireFormSchema = z.object({
     amountPounds: z.number().positive(),
@@ -59,13 +56,6 @@ interface InvoiceFormProps {
     onUpdateGameDays: UpdateInvoiceGameDaysProxy;
     onRecordHallHire: RecordHallHireProxy;
 }
-
-const dateFormatter = new Intl.DateTimeFormat('en-GB', {
-    weekday: 'short',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric',
-});
 
 export const InvoiceForm = ({
     year,
@@ -173,7 +163,7 @@ export const InvoiceForm = ({
                         onRecordHallHire({
                             amountPence: gd.hallCost,
                             gameDayId: gd.id,
-                            note: `Kelsey Kerridge invoice ${getMonthName(year, month)} ${year}`,
+                            note: `Kelsey Kerridge invoice ${getFullMonthName(year, month)} ${year}`,
                         }),
                     ),
             );
@@ -219,17 +209,17 @@ export const InvoiceForm = ({
                     leftSection={<IconChevronLeft size={16} />}
                     onClick={() => navigateMonth(-1)}
                 >
-                    {getMonthName(year, month - 1)}
+                    {getFullMonthName(year, month - 1)}
                 </Button>
                 <Title order={3} style={{ flex: 1, textAlign: 'center' }}>
-                    {getMonthName(year, month)} {year}
+                    {getFullMonthName(year, month)} {year}
                 </Title>
                 <Button
                     variant="subtle"
                     rightSection={<IconChevronRight size={16} />}
                     onClick={() => navigateMonth(1)}
                 >
-                    {getMonthName(year, month + 1)}
+                    {getFullMonthName(year, month + 1)}
                 </Button>
             </Group>
 
@@ -253,11 +243,11 @@ export const InvoiceForm = ({
                                 {gameDays.map((gd, index) => (
                                     <TableTr key={gd.id}>
                                         <TableTd>
-                                            <Text>{dateFormatter.format(new Date(`${gd.date}T18:00:00`))}</Text>
+                                            <Text>{formatDate(gd.date)}</Text>
                                         </TableTd>
                                         <TableTd>
                                             <Checkbox
-                                                aria-label={`Game scheduled for ${gd.date}`}
+                                                aria-label={`Game scheduled for ${formatDate(gd.date)}`}
                                                 {...gameDaysForm.getInputProps(`gameDays.${index}.gameScheduled`, { type: 'checkbox' })}
                                             />
                                         </TableTd>

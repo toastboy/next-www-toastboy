@@ -61,3 +61,24 @@ export const formatDate = (value: Date | string | null | undefined) => {
     if (value == null) return '-';
     return new Date(value).toISOString().split('T')[0];
 };
+
+/**
+ * An `Intl.DateTimeFormat` instance configured to format dates as full month
+ * names in British English (e.g., "January", "February", "March").
+ *
+ * @example
+ * fullMonthNameFormatter.format(new Date(2024, 0, 1)); // Returns "January"
+ */
+const fullMonthNameFormatter = new Intl.DateTimeFormat('en-GB', { month: 'long' });
+
+/**
+ * Returns the localized full month name for a given year and 1-based month
+ * number.
+ *
+ * @param year - The full year (for example, `2026`).
+ * @param month - The month number from `1` (January) to `12` (December).
+ * @returns The formatted month name (for example, `"January"`), based on the
+ * configured formatter locale.
+ */
+export const getFullMonthName = (year: number, month: number) =>
+    fullMonthNameFormatter.format(new Date(year, month - 1, 1));

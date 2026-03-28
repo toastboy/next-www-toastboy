@@ -1,7 +1,7 @@
 'use server';
 
-import { requireAdmin } from '@/lib/auth.server';
 import { listUsersActionCore, setAdminRoleActionCore } from '@/lib/actions/auth';
+import { requireAdmin } from '@/lib/auth.server';
 
 /**
  * Lists auth users, optionally filtered by email.

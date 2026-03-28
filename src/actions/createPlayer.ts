@@ -2,8 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 
-import { requireAdmin } from '@/lib/auth.server';
 import { addPlayerInviteCore, createPlayerCore } from '@/lib/actions/createPlayer';
+import { requireAdmin } from '@/lib/auth.server';
 import { CreatePlayerSchema } from '@/types/actions/CreatePlayer';
 
 /**

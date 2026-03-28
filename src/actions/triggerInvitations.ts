@@ -1,7 +1,7 @@
 'use server';
 
-import { requireAdmin } from '@/lib/auth.server';
 import { triggerInvitationsCore } from '@/lib/actions/triggerInvitations';
+import { requireAdmin } from '@/lib/auth.server';
 import { NewGameInputSchema } from '@/types/actions/TriggerInvitations';
 
 /**

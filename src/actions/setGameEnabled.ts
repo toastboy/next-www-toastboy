@@ -2,9 +2,9 @@
 
 import { revalidatePath } from 'next/cache';
 
-import { requireAdmin } from '@/lib/auth.server';
-import { setGameEnabledCore } from '@/lib/actions/setGameEnabled';
 import { sendEmailToAllActivePlayersCore } from '@/lib/actions/sendEmailToAllActivePlayers';
+import { setGameEnabledCore } from '@/lib/actions/setGameEnabled';
+import { requireAdmin } from '@/lib/auth.server';
 import { SetGameEnabledInputSchema } from '@/types/actions/SetGameEnabled';
 
 /**

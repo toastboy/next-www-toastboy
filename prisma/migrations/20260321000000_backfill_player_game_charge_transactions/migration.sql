@@ -28,6 +28,7 @@ LEFT JOIN `Transaction` AS `ExistingCharge` ON
     AND `ExistingCharge`.`playerId` = `Outcome`.`playerId`
     AND `ExistingCharge`.`gameDayId` = `Outcome`.`gameDayId`
 WHERE
+    -- Only backfill from game day 150 onwards: earlier game days predate the charging system / have unreliable charge data.
     `Outcome`.`gameDayId` >= 150
     AND `Outcome`.`team` IS NOT NULL
     AND `ExistingCharge`.`id` IS NULL;

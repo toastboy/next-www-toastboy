@@ -15,7 +15,7 @@ INSERT INTO `Transaction` (
     `gameDayId`
 )
 SELECT
-    NOW(3),
+    `GameDay`.`date`,
     'PlayerGameCharge',
     `GameDay`.`cost`,
     'Backfilled game charge',

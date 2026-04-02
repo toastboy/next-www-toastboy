@@ -59,6 +59,13 @@ export function getOrdinal(n: number): string {
  */
 export const formatDate = (value: Date | string | null | undefined) => {
     if (value == null) return '-';
+
+    // If the input is a plain ISO date string (YYYY-MM-DD), return it as-is to
+    // avoid timezone-dependent off-by-one errors when converting via Date/UTC.
+    if (typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+        return value;
+    }
+
     return new Date(value).toISOString().split('T')[0];
 };
 

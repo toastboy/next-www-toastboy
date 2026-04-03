@@ -161,7 +161,7 @@ export const InvoiceForm = ({
         .reduce((sum, gd) => sum + (gd.hallCostPounds || 0), 0);
 
     return (
-        <Stack gap="xl">
+        <Stack gap="xl" w="60%" mx="auto" my="xl">
             <Title order={2}>Invoice Check</Title>
 
             <Group>
@@ -214,11 +214,12 @@ export const InvoiceForm = ({
                                                 aria-label={`Hall cost for ${formatDate(gd.date)}`}
                                                 prefix="£"
                                                 decimalScale={2}
+                                                disabled
                                                 fixedDecimalScale
                                                 allowNegative={false}
                                                 hideControls
                                                 min={0}
-                                                disabled={!form.values.gameDays[index]?.gameScheduled}
+                                                w={"8em"}
                                                 {...form.getInputProps(`gameDays.${index}.hallCostPounds`)}
                                             />
                                         </TableTd>

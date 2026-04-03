@@ -1,6 +1,5 @@
-import { TeamPlayerType } from 'types';
-
 import { createMockOutcome } from '@/tests/mocks/data/outcome';
+import { TeamPlayerType } from '@/types';
 
 import { defaultPlayer } from './player';
 import { defaultPlayerFormList } from './playerForm';

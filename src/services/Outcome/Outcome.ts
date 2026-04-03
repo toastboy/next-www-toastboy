@@ -8,18 +8,18 @@ import {
 import {
     OutcomeType,
 } from 'prisma/zod/schemas/models/Outcome.schema';
+import z from 'zod';
+
+import { InternalError, normalizeUnknownError } from '@/lib/errors';
+import { isPrismaNotFoundError } from '@/lib/prismaErrors';
+import gameDayService from '@/services/GameDay';
 import {
     TeamPlayerSchema,
     TeamPlayerType,
     Turnout,
     TurnoutByYearType,
     WDLType,
-} from 'types';
-import z from 'zod';
-
-import { InternalError, normalizeUnknownError } from '@/lib/errors';
-import { isPrismaNotFoundError } from '@/lib/prismaErrors';
-import gameDayService from '@/services/GameDay';
+} from '@/types';
 import { OutcomePlayerType } from '@/types/OutcomePlayerType';
 import {
     OutcomeCreateOneStrictSchema,

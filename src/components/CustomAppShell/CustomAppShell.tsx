@@ -3,7 +3,8 @@
 import { AppShell, Burger, Container, Group, Image, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { Suspense } from 'react';
-import { AuthUserSummary } from 'types/AuthUser';
+
+import { AuthUserSummary } from '@/types/AuthUser';
 
 import { NavBarNested } from '../NavBarNested/NavBarNested';
 

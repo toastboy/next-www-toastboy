@@ -3,7 +3,6 @@ import prisma from 'prisma/prisma';
 import { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
 import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import { PlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
-import { PlayerFormType } from 'types';
 import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
@@ -16,6 +15,7 @@ import {
     defaultPlayerLoginList,
     invalidPlayer,
 } from '@/tests/mocks/data/player';
+import { PlayerFormType } from '@/types';
 import type { PlayerCreateWriteInput } from '@/types/PlayerStrictSchema';
 
 describe('PlayerService', () => {

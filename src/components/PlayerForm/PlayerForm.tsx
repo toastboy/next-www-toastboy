@@ -1,8 +1,8 @@
 import { ProgressRoot, ProgressSection } from '@mantine/core';
 import { Key } from 'react';
-import { PlayerFormType } from 'types';
 
 import { GameDayLink } from '@/components/GameDayLink/GameDayLink';
+import { PlayerFormType } from '@/types';
 
 export interface Props {
     form: PlayerFormType[],

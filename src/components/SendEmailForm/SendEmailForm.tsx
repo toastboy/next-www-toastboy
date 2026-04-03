@@ -11,11 +11,11 @@ import Underline from '@tiptap/extension-underline';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import { useState } from 'react';
-import { PlayerDataType } from 'types';
 
 import { config } from '@/lib/config';
 import { toPublicMessage } from '@/lib/errors';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
+import { PlayerDataType } from '@/types';
 import { SendEmailProxy } from '@/types/actions/SendEmail';
 
 import classes from './SendEmailForm.module.css';

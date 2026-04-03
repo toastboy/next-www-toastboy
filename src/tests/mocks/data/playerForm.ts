@@ -1,7 +1,6 @@
-import { PlayerFormType } from 'types';
-
 import { createMockGameDay, defaultGameDay } from '@/tests/mocks/data/gameDay';
 import { createMockOutcome } from '@/tests/mocks/data/outcome';
+import { PlayerFormType } from '@/types';
 
 export const defaultPlayerFormList: PlayerFormType[] =
     Array.from({ length: 10 }, (_, index) => {

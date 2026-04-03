@@ -5,10 +5,10 @@ import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconArrowsLeftRight, IconCheck, IconChevronRight, IconLogout, IconPassword, IconTrash, IconUserOff, IconUserScan } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { AuthUserSummary } from 'types/AuthUser';
 
 import { config } from '@/lib/config';
 import { assertOkResponse, toPublicMessage } from '@/lib/errors';
+import { AuthUserSummary } from '@/types/AuthUser';
 
 import classes from './UserButton.module.css';
 

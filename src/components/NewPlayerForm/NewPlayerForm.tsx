@@ -16,12 +16,12 @@ import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useRouter } from 'next/navigation';
 import ReactDOMServer from 'react-dom/server';
-import { PlayerDataType } from 'types';
 
 import { EmailInput } from '@/components/EmailInput/EmailInput';
 import { config } from '@/lib/config';
 import { toPublicMessage } from '@/lib/errors';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
+import { PlayerDataType } from '@/types';
 import type { CreatePlayerProxy } from '@/types/actions/CreatePlayer';
 import { CreatePlayerInput, CreatePlayerSchema } from '@/types/actions/CreatePlayer';
 import type { SendEmailProxy } from '@/types/actions/SendEmail';

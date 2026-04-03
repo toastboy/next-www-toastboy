@@ -1,13 +1,13 @@
 import { Grid, GridCol, Stack, Title } from '@mantine/core';
-import { WinnersTable } from 'components/WinnersTable/WinnersTable';
-import { YearSelector } from 'components/YearSelector/YearSelector';
-import { getYearName } from 'lib/utils';
 import { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { TableName, TableNameSchema } from 'prisma/zod/schemas';
 import { cache } from 'react';
 import z from 'zod';
 
+import { WinnersTable } from '@/components/WinnersTable/WinnersTable';
+import { YearSelector } from '@/components/YearSelector/YearSelector';
+import { getYearName } from '@/lib/utils';
 import playerRecordService from '@/services/PlayerRecord';
 import { PlayerRecordDataType } from '@/types';
 

@@ -1,5 +1,6 @@
 import { Table, TableTbody, TableTd, TableTh, TableThead, TableTr } from '@mantine/core';
-import { TurnoutByYearType } from 'types';
+
+import { TurnoutByYearType } from '@/types';
 
 export interface Props {
     turnout: TurnoutByYearType[],

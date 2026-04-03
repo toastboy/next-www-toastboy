@@ -8,7 +8,6 @@ import {
     Divider,
     Group,
     NumberInput,
-    Paper,
     Stack,
     Table,
     TableTbody,
@@ -32,13 +31,16 @@ import { toPounds } from '@/lib/money';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 import type { RecordHallHireProxy } from '@/types/actions/RecordHallHire';
 import type { UpdateInvoiceGameDaysProxy } from '@/types/actions/UpdateInvoiceGameDays';
-import { UpdateInvoiceGameDaysInputSchema } from '@/types/actions/UpdateInvoiceGameDays';
 
-const RecordHallHireFormSchema = z.object({
-    amountPounds: z.number().positive(),
+const InvoiceFormSchema = z.object({
+    gameDays: z.array(z.object({
+        id: z.number().int().positive(),
+        gameScheduled: z.boolean(),
+        hallCostPounds: z.number().min(0),
+    })),
 });
 
-type RecordHallHireFormValues = z.infer<typeof RecordHallHireFormSchema>;
+type InvoiceFormValues = z.infer<typeof InvoiceFormSchema>;
 
 interface GameDayRow {
     id: number;
@@ -46,8 +48,6 @@ interface GameDayRow {
     gameScheduled: boolean;
     hallCost: number;
 }
-
-type UpdateGameDaysFormValues = z.infer<typeof UpdateInvoiceGameDaysInputSchema>;
 
 interface InvoiceFormProps {
     year: number;
@@ -66,22 +66,15 @@ export const InvoiceForm = ({
 }: InvoiceFormProps) => {
     const router = useRouter();
 
-    const gameDaysForm = useForm<UpdateGameDaysFormValues>({
+    const form = useForm<InvoiceFormValues>({
         initialValues: {
-            gameDays: gameDays.map((gd) => ({ id: gd.id, gameScheduled: gd.gameScheduled })),
+            gameDays: gameDays.map((gd) => ({
+                id: gd.id,
+                gameScheduled: gd.gameScheduled,
+                hallCostPounds: toPounds(gd.hallCost ?? 0),
+            })),
         },
-        validate: zod4Resolver(UpdateInvoiceGameDaysInputSchema),
-    });
-
-    const hallHireForm = useForm<RecordHallHireFormValues>({
-        initialValues: {
-            amountPounds: gameDays.reduce(
-                (sum, gd) => (gd.gameScheduled ? sum + toPounds(gd.hallCost ?? 0) : sum),
-                0,
-            ),
-        },
-        validate: zod4Resolver(RecordHallHireFormSchema),
-        validateInputOnBlur: true,
+        validate: zod4Resolver(InvoiceFormSchema),
     });
 
     const navigateMonth = (delta: number) => {
@@ -98,99 +91,63 @@ export const InvoiceForm = ({
         router.push(`/footy/admin/invoice?year=${newYear}&month=${newMonth}`);
     };
 
-    const handleUpdateGameDays = async (values: UpdateGameDaysFormValues) => {
-        const id = notifications.show({
-            loading: true,
-            title: 'Saving game days',
-            message: 'Updating game day statuses...',
-            autoClose: false,
-            withCloseButton: false,
-        });
-
-        try {
-            await onUpdateGameDays(values);
-
-            notifications.update({
-                id,
-                color: 'teal',
-                title: 'Saved',
-                message: 'Game days updated successfully.',
-                icon: <IconCheck size={config.notificationIconSize} />,
-                loading: false,
-                autoClose: config.notificationAutoClose,
-            });
-        } catch (err) {
-            captureUnexpectedError(err, {
-                layer: 'client',
-                component: 'InvoiceForm',
-                action: 'updateGameDays',
-                route: '/footy/admin/invoice',
-            });
-            notifications.update({
-                id,
-                color: 'red',
-                title: 'Error',
-                message: err instanceof Error ? err.message : 'Failed to update game days.',
-                icon: <IconAlertTriangle size={config.notificationIconSize} />,
-                loading: false,
-                autoClose: false,
-                withCloseButton: true,
-            });
-        }
-    };
-
-    const handleRecordHallHire = async (
-        values: RecordHallHireFormValues,
-        gameDays: GameDayRow[],
-    ) => {
-
-        const notificationId = 'hall-hire';
+    const handleSubmit = async (values: InvoiceFormValues) => {
+        const notificationId = 'invoice-form';
 
         notifications.show({
             id: notificationId,
             loading: true,
-            title: 'Recording invoice',
-            message: `Recording £${values.amountPounds.toFixed(2)} hall hire...`,
+            title: 'Saving invoice',
+            message: 'Saving game days and recording hall hire...',
             autoClose: false,
             withCloseButton: false,
         });
 
         try {
+            await onUpdateGameDays({
+                gameDays: values.gameDays.map((gd) => ({
+                    id: gd.id,
+                    gameScheduled: gd.gameScheduled,
+                })),
+            });
+
             await Promise.all(
-                gameDays
-                    .filter((gd) => gd.gameScheduled && gd.hallCost > 0)
+                values.gameDays
+                    .filter((gd) => gd.gameScheduled && gd.hallCostPounds > 0)
                     .map((gd) =>
                         onRecordHallHire({
-                            amountPence: gd.hallCost,
+                            amountPence: Math.round(gd.hallCostPounds * 100),
                             gameDayId: gd.id,
                             note: `Kelsey Kerridge invoice ${getFullMonthName(year, month)} ${year}`,
                         }),
                     ),
             );
 
+            const total = values.gameDays
+                .filter((gd) => gd.gameScheduled)
+                .reduce((sum, gd) => sum + gd.hallCostPounds, 0);
+
             notifications.update({
                 id: notificationId,
                 color: 'teal',
                 title: 'Invoice recorded',
-                message: `Hall hire of £${values.amountPounds.toFixed(2)} recorded.`,
+                message: `Hall hire of £${total.toFixed(2)} recorded.`,
                 icon: <IconCheck size={config.notificationIconSize} />,
                 loading: false,
                 autoClose: config.notificationAutoClose,
             });
-
-            hallHireForm.setFieldValue('amountPounds', 0);
         } catch (err) {
             captureUnexpectedError(err, {
                 layer: 'client',
                 component: 'InvoiceForm',
-                action: 'recordHallHire',
+                action: 'submit',
                 route: '/footy/admin/invoice',
             });
             notifications.update({
                 id: notificationId,
                 color: 'red',
                 title: 'Error',
-                message: err instanceof Error ? err.message : 'Failed to record invoice.',
+                message: err instanceof Error ? err.message : 'Failed to save invoice.',
                 icon: <IconAlertTriangle size={config.notificationIconSize} />,
                 loading: false,
                 autoClose: false,
@@ -198,6 +155,10 @@ export const InvoiceForm = ({
             });
         }
     };
+
+    const total = form.values.gameDays
+        .filter((gd) => gd.gameScheduled)
+        .reduce((sum, gd) => sum + (gd.hallCostPounds || 0), 0);
 
     return (
         <Stack gap="xl">
@@ -223,20 +184,17 @@ export const InvoiceForm = ({
                 </Button>
             </Group>
 
-            <Stack gap="sm">
-                <Title order={4}>Game Days</Title>
-                {gameDays.length === 0 ? (
-                    <Text c="dimmed">No game days found for this month.</Text>
-                ) : (
-                    <Box
-                        component="form"
-                        onSubmit={gameDaysForm.onSubmit(handleUpdateGameDays)}
-                    >
+            {gameDays.length === 0 ? (
+                <Text c="dimmed">No game days found for this month.</Text>
+            ) : (
+                <Box component="form" onSubmit={form.onSubmit(handleSubmit)}>
+                    <Stack gap="sm">
                         <Table withTableBorder highlightOnHover>
                             <TableThead>
                                 <TableTr>
                                     <TableTh>Date</TableTh>
-                                    <TableTh>Game Scheduled</TableTh>
+                                    <TableTh>Game</TableTh>
+                                    <TableTh>Hall Cost</TableTh>
                                 </TableTr>
                             </TableThead>
                             <TableTbody>
@@ -248,57 +206,41 @@ export const InvoiceForm = ({
                                         <TableTd>
                                             <Checkbox
                                                 aria-label={`Game scheduled for ${formatDate(gd.date)}`}
-                                                {...gameDaysForm.getInputProps(`gameDays.${index}.gameScheduled`, { type: 'checkbox' })}
+                                                {...form.getInputProps(`gameDays.${index}.gameScheduled`, { type: 'checkbox' })}
+                                            />
+                                        </TableTd>
+                                        <TableTd>
+                                            <NumberInput
+                                                aria-label={`Hall cost for ${formatDate(gd.date)}`}
+                                                prefix="£"
+                                                decimalScale={2}
+                                                fixedDecimalScale
+                                                allowNegative={false}
+                                                hideControls
+                                                min={0}
+                                                disabled={!form.values.gameDays[index]?.gameScheduled}
+                                                {...form.getInputProps(`gameDays.${index}.hallCostPounds`)}
                                             />
                                         </TableTd>
                                     </TableTr>
                                 ))}
                             </TableTbody>
                         </Table>
-                        <Button type="submit" mt="sm">
-                            Save game days
-                        </Button>
-                    </Box>
-                )}
-            </Stack>
 
-            <Divider />
+                        <Divider />
 
-            <Stack gap="sm">
-                <Title order={4}>Record Invoice</Title>
-                <Text size="sm" c="dimmed">
-                    Enter the amount from the Kelsey Kerridge direct debit to record it as a club expense.
-                </Text>
-                <Paper withBorder p="md">
-                    <Box
-                        component="form"
-                        onSubmit={hallHireForm.onSubmit((values) => handleRecordHallHire(values, gameDays))}
-                    >
-                        <Stack gap="sm">
-                            <NumberInput
-                                label="Invoice amount"
-                                prefix="£"
-                                disabled
-                                decimalScale={2}
-                                fixedDecimalScale
-                                allowNegative={false}
-                                hideControls
-                                min={0.01}
-                                {...hallHireForm.getInputProps('amountPounds')}
-                            />
-                            <Group>
-                                <Button type="submit">
-                                    Record invoice
-                                </Button>
-                            </Group>
-                        </Stack>
-                    </Box>
-                </Paper>
-                <Text size="xs" c="dimmed">
-                    Current club balance can be viewed on the{' '}
-                    <Anchor href="/footy/books">Books</Anchor> page.
-                </Text>
-            </Stack>
+                        <Group justify="space-between" align="center">
+                            <Text fw={600}>Total: £{total.toFixed(2)}</Text>
+                            <Button type="submit">Record invoice</Button>
+                        </Group>
+
+                        <Text size="xs" c="dimmed">
+                            Current club balance can be viewed on the{' '}
+                            <Anchor href="/footy/books">Books</Anchor> page.
+                        </Text>
+                    </Stack>
+                </Box>
+            )}
         </Stack>
     );
 };

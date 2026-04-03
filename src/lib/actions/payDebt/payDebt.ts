@@ -27,5 +27,5 @@ export async function payDebtCore(
     data: PayDebtInput,
     deps: PayDebtDeps = defaultDeps,
 ) {
-    return await deps.moneyService.pay(data.playerId, data.amount);
+    return await deps.moneyService.pay(data.playerId, data.amount, data.gameDayId);
 }

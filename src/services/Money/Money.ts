@@ -110,14 +110,12 @@ class MoneyService {
 
             const playersById = new Map(players.map((player) => [player.id, player]));
 
-            let clubBalance = 0;
             const playerBalances: PlayerBalanceType[] = [];
 
             for (const row of groupedBalances) {
                 const amount = -(row._sum.amountPence ?? 0);
 
-                if (row.playerId === null) {
-                    clubBalance += amount;
+                if (row.playerId === null || row._max.gameDayId === null) {
                     continue;
                 }
 
@@ -129,7 +127,7 @@ class MoneyService {
 
                 playerBalances.push({
                     playerId: row.playerId,
-                    maxGameDayId: row._max.gameDayId ?? undefined,
+                    maxGameDayId: row._max.gameDayId,
                     playerName: getPlayerName(player),
                     amount,
                 });
@@ -152,11 +150,6 @@ class MoneyService {
             // shape so that callers can evolve without changing this contract.
             return BalanceSummarySchema.parse({
                 players: playerBalances,
-                club: {
-                    playerId: null,
-                    playerName: 'Club',
-                    amount: clubBalance,
-                },
                 total,
                 positiveTotal,
                 negativeTotal,
@@ -412,14 +405,34 @@ class MoneyService {
     }
 
     /**
-     * Records a player payment as a signed transaction in the ledger.
+     * Records a manual payment from a player, reducing their debt balance.
+     *
+     * @param playerId - The unique identifier of the player making the payment
+     * (must be >= 1)
+     * @param amount - The payment amount in pence (must be positive)
+     * @param gameDayId - Optional game day identifier to associate with the
+     * payment
+     *
+     * @returns A promise that resolves to a PayDebtResult containing:
+     *   - transactionId: The ID of the created transaction record
+     *   - amount: The payment amount that was processed
+     *   - resultingBalance: The player's balance after the payment
+     *   - playerId: The player's ID
+     *
+     * @throws {Error} If validation fails or the database transaction
+     * encounters an error
+     *
+     * @example
+     * const result = await moneyService.pay(123, 5000, 1);
+     * // result.resultingBalance contains the updated balance in pence
      */
-    async pay(playerId: number, amount: number): Promise<PayDebtResult> {
+    async pay(playerId: number, amount: number, gameDayId: number): Promise<PayDebtResult> {
         try {
             const parsed = z.object({
                 playerId: z.number().int().min(1),
                 amount: z.number().int().positive(),
-            }).parse({ playerId, amount });
+                gameDayId: z.number().int().min(1).optional(),
+            }).parse({ playerId, amount, gameDayId });
 
             const paymentResult = await prisma.$transaction(async (tx) => {
                 const created = await tx.transaction.create({
@@ -427,6 +440,7 @@ class MoneyService {
                         type: 'PlayerPayment',
                         amountPence: -parsed.amount,
                         playerId: parsed.playerId,
+                        gameDayId: parsed.gameDayId,
                         note: 'Manual payment',
                     },
                     select: {

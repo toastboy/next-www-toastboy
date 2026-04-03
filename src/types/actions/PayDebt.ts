@@ -3,6 +3,7 @@ import z from 'zod';
 export const PayDebtInputSchema = z.object({
     playerId: z.number().int().min(1),
     amount: z.number().int().positive(),
+    gameDayId: z.number().int().min(1),
 });
 
 export type PayDebtInput = z.infer<typeof PayDebtInputSchema>;

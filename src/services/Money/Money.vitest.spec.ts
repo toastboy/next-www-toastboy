@@ -95,11 +95,6 @@ describe('MoneyService', () => {
                         amount: 125,
                     },
                 ],
-                club: {
-                    playerId: null,
-                    playerName: 'Club',
-                    amount: 500,
-                },
                 total: -125,
                 positiveTotal: 625,
                 negativeTotal: -750,
@@ -114,11 +109,6 @@ describe('MoneyService', () => {
             expect(prisma.player.findMany).not.toHaveBeenCalled();
             expect(result).toEqual({
                 players: [],
-                club: {
-                    playerId: null,
-                    playerName: 'Club',
-                    amount: 0,
-                },
                 total: 0,
                 positiveTotal: 0,
                 negativeTotal: 0,
@@ -147,13 +137,14 @@ describe('MoneyService', () => {
                 },
             }));
 
-            const result = await moneyService.pay(42, 1000);
+            const result = await moneyService.pay(42, 1000, 15);
 
             expect(create).toHaveBeenCalledWith({
                 data: {
                     type: 'PlayerPayment',
                     amountPence: -1000,
                     playerId: 42,
+                    gameDayId: 15,
                     note: 'Manual payment',
                 },
                 select: {

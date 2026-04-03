@@ -24,11 +24,10 @@ import z from 'zod';
 import { config } from '@/lib/config';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 import type { PayDebtInput, PayDebtProxy } from '@/types/actions/PayDebt';
-import type { ClubBalanceType, PlayerBalanceType } from '@/types/DebtType';
+import type { PlayerBalanceType } from '@/types/DebtType';
 
 export interface MoneyFormProps {
     playerBalances: PlayerBalanceType[];
-    clubBalance: ClubBalanceType;
     total: number;
     positiveTotal: number;
     negativeTotal: number;
@@ -73,13 +72,10 @@ const BalanceRow = ({
     const handlePay = async (values: PayDebtFormValues) => {
         const notificationId = `money-paid-${row.playerId}`;
         const amount = fromPounds(values.amountPounds);
-        // TODO: Add gameDayId to the form and payload when recording payments
-        // for specific game days is supported - given the outstanding balance
-        // comes from unpaid games, it should probably come from that
-        // calculation in the first place.
         const payload: PayDebtInput = {
             playerId: row.playerId,
             amount,
+            gameDayId: row.maxGameDayId,
         };
 
         notifications.show({
@@ -177,7 +173,6 @@ const BalanceRow = ({
 
 export const MoneyForm = ({
     playerBalances,
-    clubBalance,
     payDebt,
 }: MoneyFormProps) => {
     const [submittingPlayerId, setSubmittingPlayerId] = useState<number | null>(null);
@@ -194,32 +189,24 @@ export const MoneyForm = ({
         sortPlayerBalances(playerBalances) :
         sortPlayerBalances(playerBalances).filter((row) => row.amount !== 0);
 
-    const hasAnyBalance = visiblePlayerBalances.length > 0 || clubBalance.amount !== 0;
-
     return (
         <Stack gap="md">
-            {hasAnyBalance ? (
+            {visiblePlayerBalances.length > 0 ? (
                 <>
-                    {visiblePlayerBalances.length > 0 ? (
-                        <>
-                            <Stack gap="xs">
-                                <Title order={1}>Player Balances</Title>
-                                {visiblePlayerBalances.map((row) => (
-                                    <BalanceRow
-                                        key={row.playerId}
-                                        row={row}
-                                        payDebt={payDebt}
-                                        submittingPlayerId={submittingPlayerId}
-                                        setSubmittingPlayerId={setSubmittingPlayerId}
-                                    />
-                                ))}
-                            </Stack>
-                        </>
-                    ) : null}
+                    <Stack gap="xs">
+                        <Title order={1}>Player Balances</Title>
+                        {visiblePlayerBalances.map((row) => (
+                            <BalanceRow
+                                key={row.playerId}
+                                row={row}
+                                payDebt={payDebt}
+                                submittingPlayerId={submittingPlayerId}
+                                setSubmittingPlayerId={setSubmittingPlayerId}
+                            />
+                        ))}
+                    </Stack>
                 </>
-            ) : (
-                <Text fw={700}>No balances recorded yet</Text>
-            )}
+            ) : null}
             {playerBalances.length > 0 ? (
                 <Switch
                     checked={showZeroBalances}

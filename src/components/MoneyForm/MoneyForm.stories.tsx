@@ -37,7 +37,6 @@ const payDebt: PayDebtProxy = async ({ playerId, amount }) =>
 export const WithBalances: Story = {
     args: {
         playerBalances: defaultBalanceSummary.players,
-        clubBalance: defaultBalanceSummary.club,
         total: defaultBalanceSummary.total,
         positiveTotal: defaultBalanceSummary.positiveTotal,
         negativeTotal: defaultBalanceSummary.negativeTotal,
@@ -48,11 +47,6 @@ export const WithBalances: Story = {
 export const EmptyLedger: Story = {
     args: {
         playerBalances: [],
-        clubBalance: {
-            playerId: null,
-            playerName: 'Club',
-            amount: 0,
-        },
         total: 0,
         positiveTotal: 0,
         negativeTotal: 0,

@@ -8,7 +8,7 @@ export interface MoneyChartDatum {
 
 export const BalanceSchema = z.object({
     playerId: z.number().int().min(1).nullable(),
-    maxGameDayId: z.number().int().min(1).optional(),
+    maxGameDayId: z.number().int().min(1),
     playerName: z.string().min(1),
     amount: z.number().int(),
 });
@@ -21,15 +21,8 @@ export const PlayerBalanceSchema = BalanceSchema.extend({
 
 export type PlayerBalanceType = z.infer<typeof PlayerBalanceSchema>;
 
-export const ClubBalanceSchema = BalanceSchema.extend({
-    playerId: z.null(),
-});
-
-export type ClubBalanceType = z.infer<typeof ClubBalanceSchema>;
-
 export const BalanceSummarySchema = z.object({
     players: z.array(PlayerBalanceSchema),
-    club: ClubBalanceSchema,
     total: z.number().int(),
     positiveTotal: z.number().int().nonnegative(),
     negativeTotal: z.number().int().nonpositive(),

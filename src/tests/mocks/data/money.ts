@@ -1,4 +1,4 @@
-import type { BalanceSummaryType, ClubBalanceType, MoneyChartDatum, PlayerBalanceType } from '@/types/DebtType';
+import type { BalanceSummaryType, MoneyChartDatum, PlayerBalanceType } from '@/types/DebtType';
 
 export const defaultMoneyChartData: MoneyChartDatum[] = [
     { interval: 'Jan', credits: 120, debits: 80 },
@@ -11,31 +11,27 @@ export const defaultMoneyChartData: MoneyChartDatum[] = [
 
 export const defaultPlayerBalanceList: PlayerBalanceType[] = [
     {
+        maxGameDayId: 10,
         playerId: 11,
         playerName: 'Alex Current',
         amount: -750,
     },
     {
+        maxGameDayId: 12,
         playerId: 12,
         playerName: 'Sam Current',
         amount: 200,
     },
     {
+        maxGameDayId: 21,
         playerId: 21,
         playerName: 'Jamie Historic',
         amount: -1225,
     },
 ];
 
-export const defaultClubBalance: ClubBalanceType = {
-    playerId: null,
-    playerName: 'Club',
-    amount: 500,
-};
-
 export const defaultBalanceSummary: BalanceSummaryType = {
     players: defaultPlayerBalanceList,
-    club: defaultClubBalance,
     total: -1275,
     positiveTotal: 700,
     negativeTotal: -1975,

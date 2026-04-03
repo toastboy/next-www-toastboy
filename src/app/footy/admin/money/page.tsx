@@ -13,7 +13,6 @@ const MoneyPage = async () => {
         <Container size="lg" py="lg">
             <MoneyForm
                 playerBalances={balances.players}
-                clubBalance={balances.club}
                 total={balances.total}
                 positiveTotal={balances.positiveTotal}
                 negativeTotal={balances.negativeTotal}

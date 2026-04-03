@@ -32,7 +32,6 @@ const renderForm = (payDebt: PayDebtProxy) => {
         <Wrapper>
             <MoneyForm
                 playerBalances={defaultBalanceSummary.players}
-                clubBalance={defaultBalanceSummary.club}
                 total={defaultBalanceSummary.total}
                 positiveTotal={defaultBalanceSummary.positiveTotal}
                 negativeTotal={defaultBalanceSummary.negativeTotal}
@@ -70,21 +69,18 @@ describe('MoneyForm', () => {
                 <MoneyForm
                     playerBalances={[
                         {
+                            maxGameDayId: 12,
                             playerId: 11,
                             playerName: 'Alex Current',
                             amount: 750,
                         },
                         {
+                            maxGameDayId: 21,
                             playerId: 13,
                             playerName: 'Casey Zero',
                             amount: 0,
                         },
                     ]}
-                    clubBalance={{
-                        playerId: null,
-                        playerName: 'Club',
-                        amount: -500,
-                    }}
                     total={250}
                     positiveTotal={750}
                     negativeTotal={-500}
@@ -105,11 +101,6 @@ describe('MoneyForm', () => {
             <Wrapper>
                 <MoneyForm
                     playerBalances={[]}
-                    clubBalance={{
-                        playerId: null,
-                        playerName: 'Club',
-                        amount: 0,
-                    }}
                     total={0}
                     positiveTotal={0}
                     negativeTotal={0}
@@ -118,7 +109,6 @@ describe('MoneyForm', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByText('No balances recorded yet')).toBeInTheDocument();
         expect(screen.queryByRole('button', { name: 'Paid' })).not.toBeInTheDocument();
     });
 
@@ -137,17 +127,18 @@ describe('MoneyForm', () => {
 
         await waitFor(() => {
             expect(payDebt).toHaveBeenCalledWith({
-                playerId: 11,
-                amount: 750,
+                playerId: 21,
+                gameDayId: 21,
+                amount: 1225,
             });
         });
 
         expect(notificationsShowMock).toHaveBeenCalledWith(expect.objectContaining({
-            id: 'money-paid-11',
+            id: 'money-paid-21',
             loading: true,
         }));
         expect(notificationsUpdateMock).toHaveBeenCalledWith(expect.objectContaining({
-            id: 'money-paid-11',
+            id: 'money-paid-21',
             color: 'teal',
             title: 'Payment recorded',
         }));
@@ -164,7 +155,7 @@ describe('MoneyForm', () => {
 
         await waitFor(() => {
             expect(notificationsUpdateMock).toHaveBeenCalledWith(expect.objectContaining({
-                id: 'money-paid-11',
+                id: 'money-paid-21',
                 color: 'red',
                 message: 'Boom',
             }));
@@ -177,8 +168,8 @@ describe('MoneyForm', () => {
                 action: 'payDebt',
                 route: '/footy/admin/money',
                 extra: {
-                    playerId: 11,
-                    amount: 750,
+                    playerId: 21,
+                    amount: 1225,
                 },
             }),
         );

@@ -13,6 +13,7 @@ describe('payDebtCore', () => {
 
         const result = await payDebtCore(
             {
+                gameDayId: 5,
                 playerId: 42,
                 amount: 1000,
             },
@@ -23,7 +24,7 @@ describe('payDebtCore', () => {
             },
         );
 
-        expect(pay).toHaveBeenCalledWith(42, 1000);
+        expect(pay).toHaveBeenCalledWith(42, 1000, 5);
         expect(result).toEqual({
             playerId: 42,
             transactionId: 15,

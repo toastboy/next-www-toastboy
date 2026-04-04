@@ -5,8 +5,8 @@ import { normalizeUnknownError } from '@/lib/errors';
 import { toPounds } from '@/lib/money';
 import { type PayDebtResult, PayDebtResultSchema } from '@/types/actions/PayDebt';
 import { RecordHallHireInputSchema } from '@/types/actions/RecordHallHire';
-import type { MoneyChartDatum, PlayerBalanceType } from '@/types/DebtType';
-import { BalanceSummarySchema } from '@/types/DebtType';
+import type { MoneyChartDatum, PlayerBalanceType, PlayerDebtsType } from '@/types/DebtType';
+import { BalanceSummarySchema, DebtsSummarySchema } from '@/types/DebtType';
 
 import gameDayService from '../GameDay';
 
@@ -150,6 +150,151 @@ class MoneyService {
             // shape so that callers can evolve without changing this contract.
             return BalanceSummarySchema.parse({
                 players: playerBalances,
+                total,
+                positiveTotal,
+                negativeTotal,
+            });
+        } catch (error) {
+            throw normalizeUnknownError(error);
+        }
+    }
+
+    /**
+     * Returns all unpaid player game charges grouped by player.
+     *
+     * Each player is represented with their ID, name, and a list of unpaid
+     * PlayerGameCharge transactions. Each unpaid charge includes the gameDayId
+     * and the amount owed for that specific game.
+     *
+     * @returns A promise that resolves to a DebtsSummaryType containing players
+     * with their respective unpaid game charges and aggregate balance information
+     */
+    async getDebts() {
+        try {
+            // Fetch all player game charges first, then remove ones that have
+            // already been paid with a matching PlayerPayment.
+            const playerGameCharges = await prisma.transaction.findMany({
+                where: {
+                    type: 'PlayerGameCharge',
+                    playerId: {
+                        not: null,
+                    },
+                    gameDayId: {
+                        not: null,
+                    },
+                },
+                select: {
+                    playerId: true,
+                    gameDayId: true,
+                    amountPence: true,
+                    player: {
+                        select: {
+                            id: true,
+                            name: true,
+                            anonymous: true,
+                        },
+                    },
+                },
+            });
+
+            const playerPayments = await prisma.transaction.findMany({
+                where: {
+                    type: 'PlayerPayment',
+                    playerId: {
+                        not: null,
+                    },
+                    gameDayId: {
+                        not: null,
+                    },
+                },
+                select: {
+                    playerId: true,
+                    gameDayId: true,
+                },
+            });
+
+            const paidChargeKeys = new Set(
+                playerPayments
+                    .filter((payment) => payment.playerId != null && payment.gameDayId != null)
+                    .map((payment) => `${payment.playerId ?? ''}:${payment.gameDayId ?? ''}`),
+            );
+
+            const unpaidCharges = playerGameCharges.filter((charge) => {
+                if (charge.playerId == null || charge.gameDayId == null) {
+                    return false;
+                }
+
+                return !paidChargeKeys.has(`${charge.playerId}:${charge.gameDayId}`);
+            });
+
+            // Group debts (unpaid charges) by playerId
+            const debtsByPlayer = new Map<number, { charges: { gameDayId: number | null; amount: number }[]; player: { id: number; name: string | null; anonymous: boolean | null } }>();
+
+            for (const charge of unpaidCharges) {
+                if (charge.playerId == null || charge.gameDayId == null) {
+                    continue;
+                }
+
+                const key = charge.playerId;
+                if (!debtsByPlayer.has(key)) {
+                    debtsByPlayer.set(key, {
+                        charges: [],
+                        player: charge.player!,
+                    });
+                }
+
+                const entry = debtsByPlayer.get(key)!;
+                entry.charges.push({
+                    gameDayId: charge.gameDayId,
+                    amount: charge.amountPence,
+                });
+            }
+
+            // Build the players array with debts
+            const players: PlayerDebtsType[] = [];
+            for (const [, { charges, player }] of debtsByPlayer) {
+                const playerName = getPlayerName(player);
+                players.push({
+                    playerId: player.id,
+                    playerName,
+                    debts: charges.map((charge) => ({
+                        gameDayId: charge.gameDayId!,
+                        amount: charge.amount,
+                    })),
+                });
+            }
+
+            // Sort by player name
+            players.sort((a, b) => a.playerName.localeCompare(b.playerName));
+
+            // Calculate aggregate balances:
+            // - total: sum of all transactions (club balance including hall hire)
+            // - positiveTotal/negativeTotal: sum of all transactions for players with debts
+            const allTransactions = await prisma.transaction.aggregate({
+                _sum: {
+                    amountPence: true,
+                },
+            });
+            const total = -(allTransactions._sum.amountPence ?? 0) || 0;
+
+            // Calculate totals for players with debts
+            const playerTransactions = await prisma.transaction.aggregate({
+                where: {
+                    playerId: {
+                        in: [...debtsByPlayer.keys()],
+                    },
+                },
+                _sum: {
+                    amountPence: true,
+                },
+            });
+
+            const playerAmount = -(playerTransactions._sum.amountPence ?? 0);
+            const positiveTotal = Math.max(playerAmount, 0);
+            const negativeTotal = Math.min(playerAmount, 0) || 0;
+
+            return DebtsSummarySchema.parse({
+                players,
                 total,
                 positiveTotal,
                 negativeTotal,
@@ -407,14 +552,16 @@ class MoneyService {
     /**
      * Records a manual payment from a player, reducing their debt balance.
      *
+     * Creates a single payment transaction for the given gameDayId.
+     * This is a legacy method; new code should use payMultiple() instead.
+     *
      * @param playerId - The unique identifier of the player making the payment
      * (must be >= 1)
      * @param amount - The payment amount in pence (must be positive)
-     * @param gameDayId - Optional game day identifier to associate with the
-     * payment
+     * @param gameDayId - Game day identifier to associate with the payment
      *
      * @returns A promise that resolves to a PayDebtResult containing:
-     *   - transactionId: The ID of the created transaction record
+     *   - transactionIds: Array containing the ID of the created transaction
      *   - amount: The payment amount that was processed
      *   - resultingBalance: The player's balance after the payment
      *   - playerId: The player's ID
@@ -422,9 +569,7 @@ class MoneyService {
      * @throws {Error} If validation fails or the database transaction
      * encounters an error
      *
-     * @example
-     * const result = await moneyService.pay(123, 5000, 1);
-     * // result.resultingBalance contains the updated balance in pence
+     * @deprecated Use payMultiple() instead for new code
      */
     async pay(playerId: number, amount: number, gameDayId: number): Promise<PayDebtResult> {
         try {
@@ -458,7 +603,7 @@ class MoneyService {
                 });
 
                 return {
-                    transactionId: created.id,
+                    transactionIds: [created.id],
                     resultingBalance: aggregate._sum.amountPence ?? 0,
                 };
             });
@@ -467,7 +612,100 @@ class MoneyService {
 
             return PayDebtResultSchema.parse({
                 playerId: parsed.playerId,
-                transactionId: paymentResult.transactionId,
+                transactionIds: paymentResult.transactionIds,
+                amount: parsed.amount,
+                resultingBalance,
+            });
+        } catch (error) {
+            throw normalizeUnknownError(error);
+        }
+    }
+
+    /**
+     * Records manual payments from a player across multiple game days.
+     *
+     * Creates one payment transaction for each gameDayId, each with an equal
+     * share of the total amount. This method distributes a single payment across
+     * multiple unpaid charges.
+     *
+     * @param playerId - The unique identifier of the player making the payment
+     * (must be >= 1)
+     * @param amount - The total payment amount in pence (must be positive)
+     * @param gameDayIds - Array of game day identifiers to associate payments with
+     * (must have at least one entry)
+     *
+     * @returns A promise that resolves to a PayDebtResult containing:
+     *   - transactionIds: Array of IDs of the created transaction records
+     *   - amount: The total payment amount that was processed
+     *   - resultingBalance: The player's balance after all payments
+     *   - playerId: The player's ID
+     *
+     * @throws {Error} If validation fails or the database transaction
+     * encounters an error
+     *
+     * @example
+     * const result = await moneyService.payMultiple(123, 5000, [1, 2, 3]);
+     * // Creates 3 payment transactions, each for ~1667 pence
+     * // result.resultingBalance contains the updated balance in pence
+     */
+    async payMultiple(
+        playerId: number,
+        amount: number,
+        gameDayIds: number[],
+    ): Promise<PayDebtResult> {
+        try {
+            const parsed = z.object({
+                playerId: z.number().int().min(1),
+                amount: z.number().int().positive(),
+                gameDayIds: z.array(z.number().int().min(1)).min(1),
+            }).parse({ playerId, amount, gameDayIds });
+
+            const paymentResult = await prisma.$transaction(async (tx) => {
+                const transactionIds: number[] = [];
+
+                // Distribute payment evenly across all gameDayIds
+                const amountPerDay = Math.floor(parsed.amount / parsed.gameDayIds.length);
+                const remainder = parsed.amount % parsed.gameDayIds.length;
+
+                for (let i = 0; i < parsed.gameDayIds.length; i++) {
+                    const paymentAmount = amountPerDay + (i === 0 ? remainder : 0);
+
+                    const created = await tx.transaction.create({
+                        data: {
+                            type: 'PlayerPayment',
+                            amountPence: -paymentAmount,
+                            playerId: parsed.playerId,
+                            gameDayId: parsed.gameDayIds[i],
+                            note: 'Manual payment',
+                        },
+                        select: {
+                            id: true,
+                        },
+                    });
+
+                    transactionIds.push(created.id);
+                }
+
+                const aggregate = await tx.transaction.aggregate({
+                    where: {
+                        playerId: parsed.playerId,
+                    },
+                    _sum: {
+                        amountPence: true,
+                    },
+                });
+
+                return {
+                    transactionIds,
+                    resultingBalance: aggregate._sum.amountPence ?? 0,
+                };
+            });
+
+            const resultingBalance = -paymentResult.resultingBalance;
+
+            return PayDebtResultSchema.parse({
+                playerId: parsed.playerId,
+                transactionIds: paymentResult.transactionIds,
                 amount: parsed.amount,
                 resultingBalance,
             });

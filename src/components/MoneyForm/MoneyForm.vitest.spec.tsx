@@ -6,7 +6,7 @@ import { vi } from 'vitest';
 
 import { MoneyForm } from '@/components/MoneyForm/MoneyForm';
 import { Wrapper } from '@/tests/components/lib/common';
-import { defaultBalanceSummary } from '@/tests/mocks/data/money';
+import { defaultDebtsSummary } from '@/tests/mocks/data/money';
 import type { PayDebtProxy } from '@/types/actions/PayDebt';
 
 const { refreshMock, notificationsShowMock, notificationsUpdateMock, captureUnexpectedErrorMock } = vi.hoisted(() => ({
@@ -31,10 +31,10 @@ const renderForm = (payDebt: PayDebtProxy) => {
     render(
         <Wrapper>
             <MoneyForm
-                playerBalances={defaultBalanceSummary.players}
-                total={defaultBalanceSummary.total}
-                positiveTotal={defaultBalanceSummary.positiveTotal}
-                negativeTotal={defaultBalanceSummary.negativeTotal}
+                playerDebts={defaultDebtsSummary.players}
+                total={defaultDebtsSummary.total}
+                positiveTotal={defaultDebtsSummary.positiveTotal}
+                negativeTotal={defaultDebtsSummary.negativeTotal}
                 payDebt={payDebt}
             />
         </Wrapper>,
@@ -54,53 +54,19 @@ describe('MoneyForm', () => {
         } as AppRouterInstance);
     });
 
-    it('renders player balances and summary totals', () => {
+    it('renders unpaid player charges', () => {
         renderForm(vi.fn<PayDebtProxy>());
 
-        expect(screen.getByRole('heading', { name: 'Player Balances' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Unpaid Player Charges' })).toBeInTheDocument();
         expect(screen.getByText('Alex Current')).toBeInTheDocument();
         expect(screen.getByText('Jamie Historic')).toBeInTheDocument();
     });
 
-    it('hides zero-balance players by default and shows them when toggled on', async () => {
-        const user = userEvent.setup();
+    it('renders empty state when there are no debts', () => {
         render(
             <Wrapper>
                 <MoneyForm
-                    playerBalances={[
-                        {
-                            maxGameDayId: 12,
-                            playerId: 11,
-                            playerName: 'Alex Current',
-                            amount: 750,
-                        },
-                        {
-                            maxGameDayId: 21,
-                            playerId: 13,
-                            playerName: 'Casey Zero',
-                            amount: 0,
-                        },
-                    ]}
-                    total={250}
-                    positiveTotal={750}
-                    negativeTotal={-500}
-                    payDebt={vi.fn<PayDebtProxy>()}
-                />
-            </Wrapper>,
-        );
-
-        expect(screen.queryByText('Casey Zero')).not.toBeInTheDocument();
-
-        await user.click(screen.getByRole('switch', { name: 'Show players with zero balance' }));
-
-        expect(screen.getByText('Casey Zero')).toBeInTheDocument();
-    });
-
-    it('renders empty state when there are no balances', () => {
-        render(
-            <Wrapper>
-                <MoneyForm
-                    playerBalances={[]}
+                    playerDebts={[]}
                     total={0}
                     positiveTotal={0}
                     negativeTotal={0}
@@ -112,12 +78,12 @@ describe('MoneyForm', () => {
         expect(screen.queryByRole('button', { name: 'Paid' })).not.toBeInTheDocument();
     });
 
-    it('submits a payment, updates notifications, and refreshes', async () => {
+    it('submits payment with multiple gameDayIds, updates notifications, and refreshes', async () => {
         const user = userEvent.setup();
         const payDebt = vi.fn<PayDebtProxy>().mockResolvedValue({
-            playerId: 11,
-            transactionId: 777,
-            amount: 750,
+            playerId: 21,
+            transactionIds: [777, 778],
+            amount: 1225,
             resultingBalance: 0,
         });
 
@@ -127,18 +93,18 @@ describe('MoneyForm', () => {
 
         await waitFor(() => {
             expect(payDebt).toHaveBeenCalledWith({
-                playerId: 21,
-                gameDayId: 21,
-                amount: 1225,
+                playerId: 11,
+                gameDayIds: [8, 10],
+                amount: 750,
             });
         });
 
         expect(notificationsShowMock).toHaveBeenCalledWith(expect.objectContaining({
-            id: 'money-paid-21',
+            id: 'money-paid-11',
             loading: true,
         }));
         expect(notificationsUpdateMock).toHaveBeenCalledWith(expect.objectContaining({
-            id: 'money-paid-21',
+            id: 'money-paid-11',
             color: 'teal',
             title: 'Payment recorded',
         }));
@@ -155,7 +121,7 @@ describe('MoneyForm', () => {
 
         await waitFor(() => {
             expect(notificationsUpdateMock).toHaveBeenCalledWith(expect.objectContaining({
-                id: 'money-paid-21',
+                id: 'money-paid-11',
                 color: 'red',
                 message: 'Boom',
             }));
@@ -168,8 +134,9 @@ describe('MoneyForm', () => {
                 action: 'payDebt',
                 route: '/footy/admin/money',
                 extra: {
-                    playerId: 21,
-                    amount: 1225,
+                    playerId: 11,
+                    amount: 750,
+                    gameDayCount: 2,
                 },
             }),
         );

@@ -4,7 +4,7 @@ import moneyService from '@/services/Money';
 import type { PayDebtInput } from '@/types/actions/PayDebt';
 
 interface PayDebtDeps {
-    moneyService: Pick<typeof moneyService, 'pay'>;
+    moneyService: Pick<typeof moneyService, 'payMultiple'>;
 }
 
 const defaultDeps: PayDebtDeps = {
@@ -12,9 +12,13 @@ const defaultDeps: PayDebtDeps = {
 };
 
 /**
- * Processes a debt payment for a player.
+ * Processes debt payments for a player across multiple game days.
  *
- * @param data - The payment details including player ID and amount
+ * Creates one payment transaction for each gameDayId in the input, distributing
+ * the total amount across the unpaid charges.
+ *
+ * @param data - The payment details including player ID, total amount, and list
+ * of gameDayIds to clear
  * @param deps - Optional dependencies for testing/injection, defaults to
  * defaultDeps
  * @returns A promise that resolves with the result of the payment operation
@@ -27,5 +31,5 @@ export async function payDebtCore(
     data: PayDebtInput,
     deps: PayDebtDeps = defaultDeps,
 ) {
-    return await deps.moneyService.pay(data.playerId, data.amount, data.gameDayId);
+    return await deps.moneyService.payMultiple(data.playerId, data.amount, data.gameDayIds);
 }

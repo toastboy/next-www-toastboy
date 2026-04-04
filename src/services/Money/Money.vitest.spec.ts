@@ -161,7 +161,7 @@ describe('MoneyService', () => {
             });
             expect(result).toEqual({
                 playerId: 42,
-                transactionId: 77,
+                transactionIds: [77],
                 amount: 1000,
                 resultingBalance: 250,
             });
@@ -290,55 +290,313 @@ describe('MoneyService', () => {
         });
     });
 
-    describe('recordHallHire', () => {
-        it('updates an existing hall-hire transaction for the game day when present', async () => {
-            (prisma.transaction.updateMany as Mock).mockResolvedValue({ count: 1 });
+    describe('getDebts', () => {
+        it('returns unpaid game charges grouped by player and aggregated totals', async () => {
+            (prisma.transaction.findMany as Mock)
+                .mockResolvedValueOnce([
+                    {
+                        playerId: 11,
+                        gameDayId: 8,
+                        amountPence: 350,
+                        player: {
+                            id: 11,
+                            name: 'Alex Current',
+                            anonymous: false,
+                        },
+                    },
+                    {
+                        playerId: 11,
+                        gameDayId: 10,
+                        amountPence: 400,
+                        player: {
+                            id: 11,
+                            name: 'Alex Current',
+                            anonymous: false,
+                        },
+                    },
+                    {
+                        playerId: 21,
+                        gameDayId: 15,
+                        amountPence: 600,
+                        player: {
+                            id: 21,
+                            name: 'Jamie Historic',
+                            anonymous: false,
+                        },
+                    },
+                ])
+                .mockResolvedValueOnce([
+                    {
+                        playerId: 11,
+                        gameDayId: 10,
+                    },
+                ]);
 
-            await moneyService.recordHallHire(
-                4700,
-                1261,
-                'Kelsey Kerridge invoice April 2026, game day 1261 on 2026-04-28',
-            );
+            (prisma.transaction.aggregate as Mock)
+                .mockResolvedValueOnce({
+                    _sum: {
+                        amountPence: -1200,
+                    },
+                })
+                .mockResolvedValueOnce({
+                    _sum: {
+                        amountPence: -2600,
+                    },
+                });
 
-            expect(prisma.transaction.updateMany).toHaveBeenCalledWith({
+            const result = await moneyService.getDebts();
+
+            expect(prisma.transaction.findMany).toHaveBeenNthCalledWith(1, {
                 where: {
-                    type: 'HallHire',
-                    playerId: null,
-                    gameDayId: 1261,
+                    type: 'PlayerGameCharge',
+                    playerId: {
+                        not: null,
+                    },
+                    gameDayId: {
+                        not: null,
+                    },
                 },
-                data: {
-                    amountPence: 4700,
-                    note: 'Kelsey Kerridge invoice April 2026, game day 1261 on 2026-04-28',
+                select: {
+                    playerId: true,
+                    gameDayId: true,
+                    amountPence: true,
+                    player: {
+                        select: {
+                            id: true,
+                            name: true,
+                            anonymous: true,
+                        },
+                    },
                 },
             });
-            expect(prisma.transaction.create).not.toHaveBeenCalled();
+
+            expect(prisma.transaction.findMany).toHaveBeenNthCalledWith(2, {
+                where: {
+                    type: 'PlayerPayment',
+                    playerId: {
+                        not: null,
+                    },
+                    gameDayId: {
+                        not: null,
+                    },
+                },
+                select: {
+                    playerId: true,
+                    gameDayId: true,
+                },
+            });
+
+            expect(result).toEqual({
+                players: [
+                    {
+                        playerId: 11,
+                        playerName: 'Alex Current',
+                        debts: [
+                            { gameDayId: 8, amount: 350 },
+                        ],
+                    },
+                    {
+                        playerId: 21,
+                        playerName: 'Jamie Historic',
+                        debts: [
+                            { gameDayId: 15, amount: 600 },
+                        ],
+                    },
+                ],
+                total: 1200,
+                positiveTotal: 2600,
+                negativeTotal: 0,
+            });
         });
 
-        it('creates a hall-hire transaction when no existing row matches', async () => {
-            (prisma.transaction.updateMany as Mock).mockResolvedValue({ count: 0 });
-            (prisma.transaction.create as Mock).mockResolvedValue({});
+        it('returns empty players array when there are no unpaid charges', async () => {
+            (prisma.transaction.findMany as Mock)
+                .mockResolvedValueOnce([])
+                .mockResolvedValueOnce([]);
+            (prisma.transaction.aggregate as Mock)
+                .mockResolvedValueOnce({
+                    _sum: {
+                        amountPence: 0,
+                    },
+                })
+                .mockResolvedValueOnce({
+                    _sum: {
+                        amountPence: 0,
+                    },
+                });
 
-            await moneyService.recordHallHire(4700, 1261, 'April invoice');
+            const result = await moneyService.getDebts();
 
-            expect(prisma.transaction.updateMany).toHaveBeenCalledWith({
-                where: {
-                    type: 'HallHire',
-                    playerId: null,
-                    gameDayId: 1261,
-                },
-                data: {
-                    amountPence: 4700,
-                    note: 'April invoice',
+            expect(result).toEqual({
+                players: [],
+                total: 0,
+                positiveTotal: 0,
+                negativeTotal: 0,
+            });
+        });
+    });
+
+    describe('payMultiple', () => {
+        it('records payments as negative transactions for each gameDayId and distributes amount evenly', async () => {
+            const create = vi.fn()
+                .mockResolvedValueOnce({ id: 101 })
+                .mockResolvedValueOnce({ id: 102 })
+                .mockResolvedValueOnce({ id: 103 });
+            const aggregate = vi.fn().mockResolvedValue({
+                _sum: {
+                    amountPence: -500,
                 },
             });
-            expect(prisma.transaction.create).toHaveBeenCalledWith({
-                data: {
-                    type: 'HallHire',
-                    amountPence: 4700,
-                    playerId: null,
-                    gameDayId: 1261,
-                    note: 'April invoice',
+
+            (prisma.$transaction as Mock).mockImplementation(async (callback: (tx: {
+                transaction: {
+                    create: typeof create,
+                    aggregate: typeof aggregate,
+                }
+            }) => Promise<unknown>) => callback({
+                transaction: {
+                    create,
+                    aggregate,
                 },
+            }));
+
+            const result = await moneyService.payMultiple(42, 1200, [8, 10, 15]);
+
+            expect(create).toHaveBeenCalledTimes(3);
+            // 1200 / 3 = 400 each, remainder 0, so first gets 400 + 0 = 400
+            expect(create).toHaveBeenNthCalledWith(1, {
+                data: {
+                    type: 'PlayerPayment',
+                    amountPence: -400,
+                    playerId: 42,
+                    gameDayId: 8,
+                    note: 'Manual payment',
+                },
+                select: {
+                    id: true,
+                },
+            });
+            expect(create).toHaveBeenNthCalledWith(2, {
+                data: {
+                    type: 'PlayerPayment',
+                    amountPence: -400,
+                    playerId: 42,
+                    gameDayId: 10,
+                    note: 'Manual payment',
+                },
+                select: {
+                    id: true,
+                },
+            });
+            expect(create).toHaveBeenNthCalledWith(3, {
+                data: {
+                    type: 'PlayerPayment',
+                    amountPence: -400,
+                    playerId: 42,
+                    gameDayId: 15,
+                    note: 'Manual payment',
+                },
+                select: {
+                    id: true,
+                },
+            });
+            expect(aggregate).toHaveBeenCalledWith({
+                where: {
+                    playerId: 42,
+                },
+                _sum: {
+                    amountPence: true,
+                },
+            });
+            expect(result).toEqual({
+                playerId: 42,
+                transactionIds: [101, 102, 103],
+                amount: 1200,
+                resultingBalance: 500,
+            });
+        });
+
+        it('distributes remainder amount to first transaction when amount does not divide evenly', async () => {
+            const create = vi.fn()
+                .mockResolvedValueOnce({ id: 201 })
+                .mockResolvedValueOnce({ id: 202 })
+                .mockResolvedValueOnce({ id: 203 })
+                .mockResolvedValueOnce({ id: 204 });
+            const aggregate = vi.fn().mockResolvedValue({
+                _sum: {
+                    amountPence: -100,
+                },
+            });
+
+            (prisma.$transaction as Mock).mockImplementation(async (callback: (tx: {
+                transaction: {
+                    create: typeof create,
+                    aggregate: typeof aggregate,
+                }
+            }) => Promise<unknown>) => callback({
+                transaction: {
+                    create,
+                    aggregate,
+                },
+            }));
+
+            // 1003 / 4 = 250 each, remainder 3, so first gets 250 + 3 = 253
+            const result = await moneyService.payMultiple(42, 1003, [1, 2, 3, 4]);
+
+            expect(create).toHaveBeenCalledTimes(4);
+            expect(create).toHaveBeenNthCalledWith(1, {
+                data: {
+                    type: 'PlayerPayment',
+                    amountPence: -253,
+                    playerId: 42,
+                    gameDayId: 1,
+                    note: 'Manual payment',
+                },
+                select: {
+                    id: true,
+                },
+            });
+            expect(create).toHaveBeenNthCalledWith(2, {
+                data: {
+                    type: 'PlayerPayment',
+                    amountPence: -250,
+                    playerId: 42,
+                    gameDayId: 2,
+                    note: 'Manual payment',
+                },
+                select: {
+                    id: true,
+                },
+            });
+            expect(create).toHaveBeenNthCalledWith(3, {
+                data: {
+                    type: 'PlayerPayment',
+                    amountPence: -250,
+                    playerId: 42,
+                    gameDayId: 3,
+                    note: 'Manual payment',
+                },
+                select: {
+                    id: true,
+                },
+            });
+            expect(create).toHaveBeenNthCalledWith(4, {
+                data: {
+                    type: 'PlayerPayment',
+                    amountPence: -250,
+                    playerId: 42,
+                    gameDayId: 4,
+                    note: 'Manual payment',
+                },
+                select: {
+                    id: true,
+                },
+            });
+            expect(result).toEqual({
+                playerId: 42,
+                transactionIds: [201, 202, 203, 204],
+                amount: 1003,
+                resultingBalance: 100,
             });
         });
     });

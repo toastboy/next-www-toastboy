@@ -6,16 +6,23 @@ import moneyService from '@/services/Money';
 
 export const metadata = { title: 'Money' };
 
+/**
+ * Money administration page.
+ *
+ * Displays all players with unpaid game charges and allows admins to record
+ * manual payments for each charge, creating transaction records for each
+ * associated game day.
+ */
 const MoneyPage = async () => {
-    const balances = await moneyService.getBalances();
+    const debts = await moneyService.getDebts();
 
     return (
         <Container size="lg" py="lg">
             <MoneyForm
-                playerBalances={balances.players}
-                total={balances.total}
-                positiveTotal={balances.positiveTotal}
-                negativeTotal={balances.negativeTotal}
+                playerDebts={debts.players}
+                total={debts.total}
+                positiveTotal={debts.positiveTotal}
+                negativeTotal={debts.negativeTotal}
                 payDebt={payDebt}
             />
         </Container>

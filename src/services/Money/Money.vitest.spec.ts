@@ -12,110 +12,6 @@ describe('MoneyService', () => {
         vi.clearAllMocks();
     });
 
-    describe('getBalances', () => {
-        it('returns signed balances grouped by playerId including club totals', async () => {
-            (prisma.transaction.groupBy as Mock).mockResolvedValue([
-                {
-                    playerId: 12,
-                    _sum: {
-                        amountPence: -125,
-                    },
-                    _max: {
-                        gameDayId: 22,
-                    },
-                },
-                {
-                    playerId: 11,
-                    _sum: {
-                        amountPence: 750,
-                    },
-                    _max: {
-                        gameDayId: 23,
-                    },
-                },
-                {
-                    playerId: null,
-                    _sum: {
-                        amountPence: -500,
-                    },
-                    _max: {
-                        gameDayId: 23,
-                    },
-                },
-            ]);
-
-            (prisma.player.findMany as Mock).mockResolvedValue([
-                {
-                    id: 11,
-                    name: 'Alex Current',
-                    anonymous: false,
-                },
-                {
-                    id: 12,
-                    name: null,
-                    anonymous: true,
-                },
-            ]);
-
-            const result = await moneyService.getBalances();
-
-            expect(prisma.transaction.groupBy).toHaveBeenCalledWith({
-                by: ['playerId'],
-                _sum: {
-                    amountPence: true,
-                },
-                _max: {
-                    gameDayId: true,
-                },
-            });
-            expect(prisma.player.findMany).toHaveBeenCalledWith({
-                where: {
-                    id: {
-                        in: [12, 11],
-                    },
-                },
-                select: {
-                    id: true,
-                    name: true,
-                    anonymous: true,
-                },
-            });
-            expect(result).toEqual({
-                players: [
-                    {
-                        playerId: 11,
-                        playerName: 'Alex Current',
-                        maxGameDayId: 23,
-                        amount: -750,
-                    },
-                    {
-                        playerId: 12,
-                        playerName: 'Player 12',
-                        maxGameDayId: 22,
-                        amount: 125,
-                    },
-                ],
-                total: -125,
-                positiveTotal: 625,
-                negativeTotal: -750,
-            });
-        });
-
-        it('returns zeroed summary when there are no transactions', async () => {
-            (prisma.transaction.groupBy as Mock).mockResolvedValue([]);
-
-            const result = await moneyService.getBalances();
-
-            expect(prisma.player.findMany).not.toHaveBeenCalled();
-            expect(result).toEqual({
-                players: [],
-                total: 0,
-                positiveTotal: 0,
-                negativeTotal: 0,
-            });
-        });
-    });
-
     describe('pay', () => {
         it('records a payment as a negative signed transaction and returns the new displayed balance', async () => {
             const create = vi.fn().mockResolvedValue({ id: 77 });
@@ -360,13 +256,6 @@ describe('MoneyService', () => {
                     playerId: true,
                     gameDayId: true,
                     amountPence: true,
-                    player: {
-                        select: {
-                            id: true,
-                            name: true,
-                            anonymous: true,
-                        },
-                    },
                 },
             });
 
@@ -390,22 +279,19 @@ describe('MoneyService', () => {
                 players: [
                     {
                         playerId: 11,
-                        playerName: 'Alex Current',
+                        playerName: 'Player 11',
                         debts: [
                             { gameDayId: 8, amount: 350 },
                         ],
                     },
                     {
                         playerId: 21,
-                        playerName: 'Jamie Historic',
+                        playerName: 'Player 21',
                         debts: [
                             { gameDayId: 15, amount: 600 },
                         ],
                     },
                 ],
-                total: 1200,
-                positiveTotal: 2600,
-                negativeTotal: 0,
             });
         });
 
@@ -429,9 +315,6 @@ describe('MoneyService', () => {
 
             expect(result).toEqual({
                 players: [],
-                total: 0,
-                positiveTotal: 0,
-                negativeTotal: 0,
             });
         });
     });

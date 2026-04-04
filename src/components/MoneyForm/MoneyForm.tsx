@@ -35,9 +35,6 @@ import type { PlayerDebtsType } from '@/types/DebtType';
 
 export interface MoneyFormProps {
     playerDebts: PlayerDebtsType[];
-    total: number;
-    positiveTotal: number;
-    negativeTotal: number;
     payDebt: PayDebtProxy;
 }
 

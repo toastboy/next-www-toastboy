@@ -3,63 +3,11 @@ import z from 'zod';
 
 import { normalizeUnknownError } from '@/lib/errors';
 import { toPounds } from '@/lib/money';
+import gameDayService from '@/services/GameDay';
 import { type PayDebtResult, PayDebtResultSchema } from '@/types/actions/PayDebt';
 import { RecordHallHireInputSchema } from '@/types/actions/RecordHallHire';
-import type { MoneyChartDatum, PlayerBalanceType, PlayerDebtsType } from '@/types/DebtType';
-import { BalanceSummarySchema, DebtsSummarySchema } from '@/types/DebtType';
-
-import gameDayService from '../GameDay';
-
-
-/**
- * Compares two player balance objects by player name and then by player ID.
- *
- * @param a - The first player balance object to compare
- * @param b - The second player balance object to compare
- * @returns A negative number if `a` should come before `b`, a positive number
- *          if `a` should come after `b`, or 0 if they are equal. The comparison
- *          is first done by player name (alphabetically), then by player ID
- *          (numerically). Players with null IDs are sorted after players with
- *          valid IDs.
- */
-const comparePlayerName = (a: PlayerBalanceType, b: PlayerBalanceType) => {
-    const nameComparison = a.playerName.localeCompare(b.playerName);
-    if (nameComparison !== 0) return nameComparison;
-
-    // Ensure stable ordering when playerId can be null (e.g. club balance).
-    if (a.playerId == null && b.playerId == null) return 0;
-    if (a.playerId == null) return 1;
-    if (b.playerId == null) return -1;
-    return a.playerId - b.playerId;
-};
-
-/**
- * Gets the display name for a player.
- *
- * Returns "Player {id}" if the player is anonymous or has no name. Otherwise
- * returns the trimmed player name.
- *
- * @param player - The player object containing id, name, and anonymous flag
- * @param player.id - The unique identifier of the player
- * @param player.name - The player's name (nullable)
- * @param player.anonymous - Whether the player should be displayed anonymously
- * (nullable)
- * @returns The display name for the player
- */
-const getPlayerName = (player: { id: number; name: string | null; anonymous: boolean | null }) => {
-    // TODO: This logic is duplicated from the one in the PlayerName component.
-    // Consider centralizing it.
-    if (player.anonymous) {
-        return `Player ${player.id}`;
-    }
-
-    const trimmedName = player.name?.trim();
-    if (trimmedName) {
-        return trimmedName;
-    }
-
-    return `Player ${player.id}`;
-};
+import type { MoneyChartDatum, PlayerDebtsType } from '@/types/DebtType';
+import { DebtsSummarySchema } from '@/types/DebtType';
 
 /**
  * Formats dates to their abbreviated month name using British English locale
@@ -69,102 +17,19 @@ const getPlayerName = (player: { id: number; name: string | null; anonymous: boo
  * `formatMonth.format(date)`.
  */
 const formatMonth = new Intl.DateTimeFormat('en-GB', {
+    // TODO: This should live in a shared utils file if we need to format months
+    // in multiple places, but really this logic belongs in the presentation
+    // layer and the service should just return raw data.
     month: 'short',
 });
 
 class MoneyService {
     /**
-     * Returns signed balances grouped by player, with `playerId: null`
-     * representing the club's own ledger balance. Negative balances are debts.
-     */
-    async getBalances() {
-        try {
-            const groupedBalances = await prisma.transaction.groupBy({
-                by: ['playerId'],
-                _sum: {
-                    amountPence: true,
-                },
-                _max: {
-                    gameDayId: true,
-                },
-            });
-
-            const playerIds = groupedBalances
-                .map((row) => row.playerId)
-                .filter((playerId): playerId is number => playerId !== null);
-
-            const players = playerIds.length > 0 ?
-                await prisma.player.findMany({
-                    where: {
-                        id: {
-                            in: playerIds,
-                        },
-                    },
-                    select: {
-                        id: true,
-                        name: true,
-                        anonymous: true,
-                    },
-                }) :
-                [];
-
-            const playersById = new Map(players.map((player) => [player.id, player]));
-
-            const playerBalances: PlayerBalanceType[] = [];
-
-            for (const row of groupedBalances) {
-                const amount = -(row._sum.amountPence ?? 0);
-
-                if (row.playerId === null || row._max.gameDayId === null) {
-                    continue;
-                }
-
-                const player = playersById.get(row.playerId) ?? {
-                    id: row.playerId,
-                    name: null,
-                    anonymous: false,
-                };
-
-                playerBalances.push({
-                    playerId: row.playerId,
-                    maxGameDayId: row._max.gameDayId,
-                    playerName: getPlayerName(player),
-                    amount,
-                });
-            }
-
-            playerBalances.sort(comparePlayerName);
-
-            const total = groupedBalances.reduce((acc, row) => acc - (row._sum.amountPence ?? 0), 0);
-            const positiveTotal = groupedBalances.reduce((acc, row) => {
-                const amount = -(row._sum.amountPence ?? 0);
-                return amount > 0 ? acc + amount : acc;
-            }, 0);
-            const negativeTotal = groupedBalances.reduce((acc, row) => {
-                const amount = -(row._sum.amountPence ?? 0);
-                return amount < 0 ? acc + amount : acc;
-            }, 0);
-
-            // Note: The Money page currently reads only a subset of this summary,
-            // but this service intentionally returns the full BalanceSummarySchema
-            // shape so that callers can evolve without changing this contract.
-            return BalanceSummarySchema.parse({
-                players: playerBalances,
-                total,
-                positiveTotal,
-                negativeTotal,
-            });
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
-    }
-
-    /**
      * Returns all unpaid player game charges grouped by player.
      *
      * Each player is represented with their ID, name, and a list of unpaid
      * PlayerGameCharge transactions. Each unpaid charge includes the gameDayId
-     * and the amount owed for that specific game.
+     * and amount owed for that specific game.
      *
      * @returns A promise that resolves to a DebtsSummaryType containing players
      * with their respective unpaid game charges and aggregate balance information
@@ -187,13 +52,6 @@ class MoneyService {
                     playerId: true,
                     gameDayId: true,
                     amountPence: true,
-                    player: {
-                        select: {
-                            id: true,
-                            name: true,
-                            anonymous: true,
-                        },
-                    },
                 },
             });
 
@@ -228,7 +86,7 @@ class MoneyService {
             });
 
             // Group debts (unpaid charges) by playerId
-            const debtsByPlayer = new Map<number, { charges: { gameDayId: number | null; amount: number }[]; player: { id: number; name: string | null; anonymous: boolean | null } }>();
+            const debtsByPlayer = new Map<number, { charges: { gameDayId: number | null; amount: number }[]; playerId: number }>();
 
             for (const charge of unpaidCharges) {
                 if (charge.playerId == null || charge.gameDayId == null) {
@@ -239,7 +97,7 @@ class MoneyService {
                 if (!debtsByPlayer.has(key)) {
                     debtsByPlayer.set(key, {
                         charges: [],
-                        player: charge.player!,
+                        playerId: charge.playerId,
                     });
                 }
 
@@ -252,11 +110,10 @@ class MoneyService {
 
             // Build the players array with debts
             const players: PlayerDebtsType[] = [];
-            for (const [, { charges, player }] of debtsByPlayer) {
-                const playerName = getPlayerName(player);
+            for (const [, { charges, playerId }] of debtsByPlayer) {
                 players.push({
-                    playerId: player.id,
-                    playerName,
+                    playerId,
+                    playerName: `Player ${playerId}`,
                     debts: charges.map((charge) => ({
                         gameDayId: charge.gameDayId!,
                         amount: charge.amount,
@@ -264,40 +121,8 @@ class MoneyService {
                 });
             }
 
-            // Sort by player name
-            players.sort((a, b) => a.playerName.localeCompare(b.playerName));
-
-            // Calculate aggregate balances:
-            // - total: sum of all transactions (club balance including hall hire)
-            // - positiveTotal/negativeTotal: sum of all transactions for players with debts
-            const allTransactions = await prisma.transaction.aggregate({
-                _sum: {
-                    amountPence: true,
-                },
-            });
-            const total = -(allTransactions._sum.amountPence ?? 0) || 0;
-
-            // Calculate totals for players with debts
-            const playerTransactions = await prisma.transaction.aggregate({
-                where: {
-                    playerId: {
-                        in: [...debtsByPlayer.keys()],
-                    },
-                },
-                _sum: {
-                    amountPence: true,
-                },
-            });
-
-            const playerAmount = -(playerTransactions._sum.amountPence ?? 0);
-            const positiveTotal = Math.max(playerAmount, 0);
-            const negativeTotal = Math.min(playerAmount, 0) || 0;
-
             return DebtsSummarySchema.parse({
                 players,
-                total,
-                positiveTotal,
-                negativeTotal,
             });
         } catch (error) {
             throw normalizeUnknownError(error);

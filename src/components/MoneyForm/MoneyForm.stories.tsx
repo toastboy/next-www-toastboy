@@ -37,9 +37,6 @@ const payDebt: PayDebtProxy = async ({ playerId, amount, gameDayIds }) =>
 export const WithDebts: Story = {
     args: {
         playerDebts: defaultDebtsSummary.players,
-        total: defaultDebtsSummary.total,
-        positiveTotal: defaultDebtsSummary.positiveTotal,
-        negativeTotal: defaultDebtsSummary.negativeTotal,
         payDebt,
     },
 };
@@ -47,9 +44,6 @@ export const WithDebts: Story = {
 export const EmptyLedger: Story = {
     args: {
         playerDebts: [],
-        total: 0,
-        positiveTotal: 0,
-        negativeTotal: 0,
         payDebt,
     },
 };

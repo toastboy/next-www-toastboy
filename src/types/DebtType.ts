@@ -36,42 +36,10 @@ export type PlayerDebtsType = z.infer<typeof PlayerDebtsSchema>;
 /**
  * Summary of all player debts and club balance totals.
  *
- * Contains a list of players with their unpaid charges and aggregate balance
- * information.
+ * Contains a list of players with their unpaid charges.
  */
 export const DebtsSummarySchema = z.object({
     players: z.array(PlayerDebtsSchema),
-    total: z.number().int(),
-    positiveTotal: z.number().int().nonnegative(),
-    negativeTotal: z.number().int().nonpositive(),
 });
 
 export type DebtsSummaryType = z.infer<typeof DebtsSummarySchema>;
-
-/**
- * Legacy balance schemas kept for backward compatibility.
- * DO NOT USE in new code; migrate to PlayerDebtsType instead.
- */
-export const BalanceSchema = z.object({
-    playerId: z.number().int().min(1).nullable(),
-    maxGameDayId: z.number().int().min(1),
-    playerName: z.string().min(1),
-    amount: z.number().int(),
-});
-
-export type BalanceType = z.infer<typeof BalanceSchema>;
-
-export const PlayerBalanceSchema = BalanceSchema.extend({
-    playerId: z.number().int().min(1),
-});
-
-export type PlayerBalanceType = z.infer<typeof PlayerBalanceSchema>;
-
-export const BalanceSummarySchema = z.object({
-    players: z.array(PlayerBalanceSchema),
-    total: z.number().int(),
-    positiveTotal: z.number().int().nonnegative(),
-    negativeTotal: z.number().int().nonpositive(),
-});
-
-export type BalanceSummaryType = z.infer<typeof BalanceSummarySchema>;

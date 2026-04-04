@@ -32,9 +32,6 @@ const renderForm = (payDebt: PayDebtProxy) => {
         <Wrapper>
             <MoneyForm
                 playerDebts={defaultDebtsSummary.players}
-                total={defaultDebtsSummary.total}
-                positiveTotal={defaultDebtsSummary.positiveTotal}
-                negativeTotal={defaultDebtsSummary.negativeTotal}
                 payDebt={payDebt}
             />
         </Wrapper>,
@@ -67,9 +64,6 @@ describe('MoneyForm', () => {
             <Wrapper>
                 <MoneyForm
                     playerDebts={[]}
-                    total={0}
-                    positiveTotal={0}
-                    negativeTotal={0}
                     payDebt={vi.fn<PayDebtProxy>()}
                 />
             </Wrapper>,

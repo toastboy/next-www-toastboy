@@ -2,19 +2,34 @@
 
 import { AppShell, Burger, Container, Group, Image, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { Suspense } from 'react';
+import { usePathname } from 'next/navigation';
+import { Suspense, useEffect } from 'react';
 
 import { AuthUserSummary } from '@/types/AuthUser';
 
 import { NavBarNested } from '../NavBarNested/NavBarNested';
 
+/** Props for the application shell wrapper. */
 export interface Props {
+    /** Page content rendered inside the shell main area. */
     children: React.ReactNode;
+    /** Current signed-in user used to populate navigation affordances. */
     user?: AuthUserSummary | null;
 }
 
+/**
+ * Renders the persistent site shell with responsive navigation.
+ *
+ * On small screens the navbar is automatically closed whenever the pathname
+ * changes so a newly navigated page starts with the content unobscured.
+ */
 export const CustomAppShell = ({ children, user }: Props) => {
-    const [opened, { toggle }] = useDisclosure();
+    const [opened, { toggle, close }] = useDisclosure();
+    const pathname = usePathname();
+
+    useEffect(() => {
+        close();
+    }, [pathname, close]);
 
     return (
         <AppShell

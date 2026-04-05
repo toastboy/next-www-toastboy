@@ -9,6 +9,7 @@ import { NavBarLinksGroup } from '../NavBarLinksGroup/NavBarLinksGroup';
 import classes from './NavBarNested.module.css';
 
 export interface Props {
+    /** Current signed-in user used to tailor navigation options. */
     user?: AuthUserSummary | null;
 }
 

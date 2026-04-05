@@ -9,7 +9,7 @@
                 "../prisma/*"
             ],
             "server-only": [
-                "./tests/__mocks__/server-only.ts"
+                "./src/tests/__mocks__/server-only.ts"
             ]
         }
     }

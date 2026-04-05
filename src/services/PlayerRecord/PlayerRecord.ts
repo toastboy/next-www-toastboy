@@ -212,6 +212,7 @@ export class PlayerRecordService {
                     id: 0,
                     playerId: playerId,
                     year: year,
+                    gamesPlayed: 0,
                     gameDayId: 0,
                     responses: 0,
                     played: 0,
@@ -567,6 +568,7 @@ async function calculateYearPlayerRecords(
 
     for (const recordData of Object.values(yearPlayerRecords)) {
         recordData.gameDayId = gameDay.id;
+        recordData.gamesPlayed = gamesPlayed;
         if (recordData.played && gamesPlayed > 0) {
             recordData.stalwart = Math.round(100.0 * recordData.played / gamesPlayed);
         }

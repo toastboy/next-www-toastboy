@@ -40,6 +40,7 @@ const PlayerRecordStrictFields = {
 
 const PlayerRecordCreateStrictFields = {
     ...PlayerRecordStrictIds,
+    gamesPlayed: nonNegativeInt,
     ...PlayerRecordStrictFields,
 };
 
@@ -51,11 +52,13 @@ const PlayerRecordUpdateStrictIds = {
 
 const PlayerRecordUpdateStrictFields = {
     ...PlayerRecordUpdateStrictIds,
+    gamesPlayed: nonNegativeInt.optional(),
     ...PlayerRecordStrictFields,
 };
 
 const PlayerRecordCheckedUpdateStrictFields = {
     year: PlayerRecordUpdateStrictIds.year,
+    gamesPlayed: nonNegativeInt.optional(),
     ...PlayerRecordStrictFields,
 };
 

@@ -1,5 +1,14 @@
+:global(:root) {
+    --profile-overlay-opacity: 0.4;
+}
+
+.trophies {
+    position: absolute;
+    background: rgba(0, 0, 0, var(--profile-overlay-opacity));
+}
+
 .badges {
     position: absolute;
     max-width: 5rem;
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(0, 0, 0, var(--profile-overlay-opacity));
 }

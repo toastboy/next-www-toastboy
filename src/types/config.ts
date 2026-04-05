@@ -22,6 +22,9 @@ export interface ConfigType {
     defaultGameCostPence: number;
     /** Default hall cost in pence. */
     defaultHallCostPence: number;
+    /** Maximum number of trophies to display individually in a player's trophy
+     * section before resorting to a count. */
+    trophyDisplayThreshold: number;
 }
 
 export const ConfigSchema: z.ZodType<ConfigType> = z.object({
@@ -34,4 +37,5 @@ export const ConfigSchema: z.ZodType<ConfigType> = z.object({
     organiserPhoneNumber: z.string().min(1),
     defaultGameCostPence: z.number().int().min(1),
     defaultHallCostPence: z.number().int().min(1),
+    trophyDisplayThreshold: z.number().int().min(1),
 });

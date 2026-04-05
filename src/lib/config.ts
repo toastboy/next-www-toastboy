@@ -10,6 +10,7 @@ const rawConfig: ConfigType = {
     organiserPhoneNumber: '07802 346128',
     defaultGameCostPence: 500,
     defaultHallCostPence: 4700,
+    trophyDisplayThreshold: 5,
 };
 
 // App-wide configuration object which is runtime-validated using zod. If this

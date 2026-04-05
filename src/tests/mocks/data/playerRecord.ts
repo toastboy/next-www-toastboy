@@ -6,6 +6,7 @@ import { rankMap } from '@/lib/utils';
 export const defaultPlayerRecord: PlayerRecordType = {
     id: 1,
     year: 2021,
+    gamesPlayed: 10,
     responses: 10,
     played: 10,
     won: 5,
@@ -41,7 +42,7 @@ export const createMockPlayerRecord = (overrides: Partial<PlayerRecordType> = {}
  * - Varied game days
  * - Varied ranking positions (cycles through ranks 1-5)
  * - Varied statistics (points, averages, stalwart, speedy, pub)
- * 
+ *
  * Note: The first record matches defaultPlayerRecord to maintain backward compatibility.
  */
 export const defaultPlayerRecordList: PlayerRecordType[] = [
@@ -53,41 +54,41 @@ export const defaultPlayerRecordList: PlayerRecordType[] = [
         const playerId = (index % 20) + 1;
         const year = 2020 + Math.floor(index / 20);
         const gameDayId = 10 + Math.floor(index / 10) + 1;
-        
+
         // Create varied rankings - cycles through ranks 1-5
         const rankPosition = (index % 5) + 1;
-        
+
         // Vary stats based on ranking
         const basePlayed = 10 + (index % 5);
         const baseWon = Math.max(0, basePlayed - rankPosition);
         const baseDrawn = Math.min(3, Math.min(index % 4, basePlayed - baseWon));
         const baseLost = Math.max(0, basePlayed - baseWon - baseDrawn);
-        
+
         // Points table stats (3 points for win, 1 for draw)
         const points = baseWon * 3 + baseDrawn;
-        
+
         return createMockPlayerRecord({
             id: index + 1,
             playerId,
             year,
             gameDayId,
-            
+
             // Varied game statistics
             responses: basePlayed,
             played: basePlayed,
             won: baseWon,
             drawn: baseDrawn,
             lost: baseLost,
-            
+
             // Points table stats
             points,
             averages: parseFloat((points / basePlayed).toFixed(2)),
-            
+
             // Other table stats
             stalwart: basePlayed - (rankPosition - 1),
             speedy: Math.max(1, 6 - rankPosition),
             pub: Math.max(1, 6 - rankPosition),
-            
+
             // Rankings - vary across different tables
             rankPoints: rankPosition,
             rankAverages: ((rankPosition + 1) % 5) + 1,

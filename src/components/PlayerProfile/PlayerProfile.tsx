@@ -47,6 +47,9 @@ export const PlayerProfile = ({
             <Title order={1}>{player.name}</Title>
             <Box pos="relative" maw={"40em"} mah={"40em"}>
                 <PlayerMugshot player={player} />
+                <Box className={classes.trophies} left={"0.5em"} top={"0.5em"}>
+                    <PlayerTrophies trophies={trophies} />
+                </Box>
                 <Box className={classes.badges} right={"0.5em"} bottom={"0.5em"}>
                     <PlayerClubs clubs={clubs} />
                 </Box>
@@ -66,7 +69,6 @@ export const PlayerProfile = ({
                 record={record}
             />
             <PlayerBorn player={player} />
-            <PlayerTrophies trophies={trophies} />
         </Container>
     );
 };

@@ -10,8 +10,13 @@ export interface Props {
 }
 
 export const PlayerTrophies = ({ trophies }: Props) => {
+    // If the player has no trophies, render nothing
+    const totalTrophies = Array.from(trophies.values())
+        .reduce((sum, trophyList) => sum + trophyList.length, 0);
+    if (totalTrophies === 0) return null;
+
     return (
-        <Stack gap="xs">
+        <Stack gap="0.3em" m="xs">
             {TableNameSchema.options.map((table) => (
                 <PlayerTrophyTally
                     key={table}

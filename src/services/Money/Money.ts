@@ -342,6 +342,9 @@ class MoneyService {
         try {
             const parsed = RecordHallHireInputSchema.parse({ amountPence, gameDayId, note });
 
+            // Prisma upsert cannot be used here because playerId is null and
+            // Prisma does not support null fields in compound unique key
+            // lookups. updateMany + conditional create is the correct pattern.
             const updateResult = await prisma.transaction.updateMany({
                 where: {
                     type: 'HallHire',
@@ -365,78 +368,6 @@ class MoneyService {
                     },
                 });
             }
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
-    }
-
-    /**
-     * Records a manual payment from a player, reducing their debt balance.
-     *
-     * Creates a single payment transaction for the given gameDayId.
-     * This is a legacy method; new code should use payMultiple() instead.
-     *
-     * @param playerId - The unique identifier of the player making the payment
-     * (must be >= 1)
-     * @param amount - The payment amount in pence (must be positive)
-     * @param gameDayId - Game day identifier to associate with the payment
-     *
-     * @returns A promise that resolves to a PayDebtResult containing:
-     *   - transactionIds: Array containing the ID of the created transaction
-     *   - amount: The payment amount that was processed
-     *   - resultingBalance: The player's balance after the payment
-     *   - playerId: The player's ID
-     *
-     * @throws {Error} If validation fails or the database transaction
-     * encounters an error
-     *
-     * @deprecated Use payMultiple() instead for new code
-     */
-    async pay(playerId: number, amount: number, gameDayId: number): Promise<PayDebtResult> {
-        try {
-            const parsed = z.object({
-                playerId: z.number().int().min(1),
-                amount: z.number().int().positive().max(49900),
-                gameDayId: z.number().int().min(1).optional(),
-            }).parse({ playerId, amount, gameDayId });
-
-            const paymentResult = await prisma.$transaction(async (tx) => {
-                const created = await tx.transaction.create({
-                    data: {
-                        type: 'PlayerPayment',
-                        amountPence: -parsed.amount,
-                        playerId: parsed.playerId,
-                        gameDayId: parsed.gameDayId,
-                        note: 'Manual payment',
-                    },
-                    select: {
-                        id: true,
-                    },
-                });
-
-                const aggregate = await tx.transaction.aggregate({
-                    where: {
-                        playerId: parsed.playerId,
-                    },
-                    _sum: {
-                        amountPence: true,
-                    },
-                });
-
-                return {
-                    transactionIds: [created.id],
-                    resultingBalance: aggregate._sum.amountPence ?? 0,
-                };
-            });
-
-            const resultingBalance = -paymentResult.resultingBalance;
-
-            return PayDebtResultSchema.parse({
-                playerId: parsed.playerId,
-                transactionIds: paymentResult.transactionIds,
-                amount: parsed.amount,
-                resultingBalance,
-            });
         } catch (error) {
             throw normalizeUnknownError(error);
         }

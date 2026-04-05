@@ -16,58 +16,6 @@ describe('MoneyService', () => {
         vi.clearAllMocks();
     });
 
-    describe('pay', () => {
-        it('records a payment as a negative signed transaction and returns the new displayed balance', async () => {
-            const create = vi.fn().mockResolvedValue({ id: 77 });
-            const aggregate = vi.fn().mockResolvedValue({
-                _sum: {
-                    amountPence: -250,
-                },
-            });
-
-            (prisma.$transaction as Mock).mockImplementation(async (callback: (tx: {
-                transaction: {
-                    create: typeof create,
-                    aggregate: typeof aggregate,
-                }
-            }) => Promise<unknown>) => callback({
-                transaction: {
-                    create,
-                    aggregate,
-                },
-            }));
-
-            const result = await moneyService.pay(42, 1000, 15);
-
-            expect(create).toHaveBeenCalledWith({
-                data: {
-                    type: 'PlayerPayment',
-                    amountPence: -1000,
-                    playerId: 42,
-                    gameDayId: 15,
-                    note: 'Manual payment',
-                },
-                select: {
-                    id: true,
-                },
-            });
-            expect(aggregate).toHaveBeenCalledWith({
-                where: {
-                    playerId: 42,
-                },
-                _sum: {
-                    amountPence: true,
-                },
-            });
-            expect(result).toEqual({
-                playerId: 42,
-                transactionIds: [77],
-                amount: 1000,
-                resultingBalance: 250,
-            });
-        });
-    });
-
     describe('getChartData', () => {
         it('returns data grouped by month when year > 0 and transactions exist', async () => {
             (gameDayService.getIdRangeForYear as Mock).mockResolvedValue({ minId: 10, maxId: 12 });

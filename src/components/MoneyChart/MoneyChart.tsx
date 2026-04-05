@@ -1,5 +1,6 @@
 'use client';
 
+import { Text } from '@mantine/core';
 import * as d3 from 'd3';
 import { useEffect, useRef } from 'react';
 
@@ -175,6 +176,12 @@ export const MoneyChart = ({ data: raw }: Props) => {
         observer.observe(wrapperRef.current);
         return () => observer.disconnect();
     }, [raw]);
+
+    if (raw.length === 0) {
+        return (
+            <Text c="dimmed" ta="center" py="xl">No transaction data available.</Text>
+        );
+    }
 
     return (
         <div ref={wrapperRef} className={styles.wrapper}>

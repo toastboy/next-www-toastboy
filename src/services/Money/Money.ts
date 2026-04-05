@@ -2,6 +2,7 @@ import prisma from 'prisma/prisma';
 import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 import z from 'zod';
 
+import { getShortMonthName } from '@/lib/dates';
 import { normalizeUnknownError } from '@/lib/errors';
 import { toPounds } from '@/lib/money';
 import gameDayService from '@/services/GameDay';
@@ -10,20 +11,6 @@ import { type PayDebtResult, PayDebtResultSchema } from '@/types/actions/PayDebt
 import { RecordHallHireInputSchema } from '@/types/actions/RecordHallHire';
 import type { MoneyChartDatum, PlayerDebtsType } from '@/types/DebtType';
 import { DebtsSummarySchema } from '@/types/DebtType';
-
-/**
- * Formats dates to their abbreviated month name using British English locale
- * rules.
- *
- * Produces 3-letter month labels such as `Jan`, `Feb`, and `Mar` when used via
- * `formatMonth.format(date)`.
- */
-const formatMonth = new Intl.DateTimeFormat('en-GB', {
-    // TODO: This should live in a shared utils file if we need to format months
-    // in multiple places, but really this logic belongs in the presentation
-    // layer and the service should just return raw data.
-    month: 'short',
-});
 
 class MoneyService {
     /**
@@ -257,7 +244,7 @@ class MoneyService {
                 return [...totalsByMonth.entries()]
                     .sort(([a], [b]) => a - b)
                     .map(([month, totals]) => ({
-                        interval: formatMonth.format(new Date(0, month)),
+                        interval: getShortMonthName(year, month + 1),
                         credits: totals.credits,
                         debits: totals.debits,
                     }));
@@ -275,8 +262,8 @@ class MoneyService {
 
                 return [...totalsByYear.entries()]
                     .sort(([a], [b]) => a - b)
-                    .map(([year, totals]) => ({
-                        interval: String(year),
+                    .map(([yearKey, totals]) => ({
+                        interval: String(yearKey),
                         credits: totals.credits,
                         debits: totals.debits,
                     }));

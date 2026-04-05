@@ -190,6 +190,59 @@ describe('MoneyService', () => {
         });
     });
 
+    describe('recordHallHire', () => {
+        it('creates a new HallHire transaction when none exists for the gameDay', async () => {
+            (prisma.transaction.updateMany as Mock).mockResolvedValue({ count: 0 });
+            (prisma.transaction.create as Mock).mockResolvedValue({});
+
+            await moneyService.recordHallHire(5000, 42, 'Weekly hall hire');
+
+            expect(prisma.transaction.updateMany).toHaveBeenCalledWith({
+                where: {
+                    type: 'HallHire',
+                    playerId: null,
+                    gameDayId: 42,
+                },
+                data: {
+                    amountPence: 5000,
+                    note: 'Weekly hall hire',
+                },
+            });
+            expect(prisma.transaction.create).toHaveBeenCalledWith({
+                data: {
+                    type: 'HallHire',
+                    amountPence: 5000,
+                    playerId: null,
+                    gameDayId: 42,
+                    note: 'Weekly hall hire',
+                },
+            });
+        });
+
+        it('updates an existing HallHire transaction when one already exists for the gameDay', async () => {
+            (prisma.transaction.updateMany as Mock).mockResolvedValue({ count: 1 });
+
+            await moneyService.recordHallHire(7500, 10);
+
+            expect(prisma.transaction.updateMany).toHaveBeenCalledWith({
+                where: {
+                    type: 'HallHire',
+                    playerId: null,
+                    gameDayId: 10,
+                },
+                data: {
+                    amountPence: 7500,
+                    note: undefined,
+                },
+            });
+            expect(prisma.transaction.create).not.toHaveBeenCalled();
+        });
+
+        it('throws when amountPence exceeds the maximum allowed value', async () => {
+            await expect(moneyService.recordHallHire(1000000, 42)).rejects.toThrow();
+        });
+    });
+
     describe('getDebts', () => {
         it('returns unpaid game charges grouped by player and aggregated totals', async () => {
             const player11 = createMockPlayer({

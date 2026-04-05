@@ -1,3 +1,4 @@
+import { PlayerSchema } from 'prisma/zod/schemas';
 import z from 'zod';
 
 export interface MoneyChartDatum {
@@ -26,8 +27,7 @@ export type PlayerDebtType = z.infer<typeof PlayerDebtSchema>;
  * game charges (debts) each with its own gameDayId and amount.
  */
 export const PlayerDebtsSchema = z.object({
-    playerId: z.number().int().min(1),
-    playerName: z.string().min(1),
+    player: PlayerSchema,
     debts: z.array(PlayerDebtSchema),
 });
 

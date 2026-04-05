@@ -1,3 +1,4 @@
+import { createMockPlayer } from '@/tests/mocks/data/player';
 import type { DebtsSummaryType, MoneyChartDatum, PlayerDebtsType } from '@/types/DebtType';
 
 export const defaultMoneyChartData: MoneyChartDatum[] = [
@@ -14,21 +15,27 @@ export const defaultMoneyChartData: MoneyChartDatum[] = [
  */
 export const defaultPlayerDebtsList: PlayerDebtsType[] = [
     {
-        playerId: 11,
-        playerName: 'Alex Current',
+        player: createMockPlayer({
+            id: 11,
+            name: 'Alex Current',
+        }),
         debts: [
             { gameDayId: 8, amount: 350 },
             { gameDayId: 10, amount: 400 },
         ],
     },
     {
-        playerId: 12,
-        playerName: 'Sam Current',
+        player: createMockPlayer({
+            id: 12,
+            name: 'Sam Current',
+        }),
         debts: [],
     },
     {
-        playerId: 21,
-        playerName: 'Jamie Historic',
+        player: createMockPlayer({
+            id: 21,
+            name: 'Jamie Historic',
+        }),
         debts: [
             { gameDayId: 15, amount: 600 },
             { gameDayId: 18, amount: 625 },

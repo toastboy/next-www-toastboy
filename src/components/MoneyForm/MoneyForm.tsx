@@ -78,12 +78,12 @@ const DebtRow = ({
     });
 
     const handlePay = async (values: PayDebtFormValues) => {
-        const notificationId = `money-paid-${row.playerId}`;
+        const notificationId = `money-paid-${row.player.id}`;
         const amount = fromPounds(values.amountPounds);
         const gameDayIds = row.debts.map((debt) => debt.gameDayId);
 
         const payload: PayDebtInput = {
-            playerId: row.playerId,
+            playerId: row.player.id,
             amount,
             gameDayIds,
         };
@@ -92,12 +92,12 @@ const DebtRow = ({
             id: notificationId,
             loading: true,
             title: 'Recording payment',
-            message: `Recording ${formatCurrency(amount)} for ${row.playerName} across ${gameDayIds.length} game(s)...`,
+            message: `Recording ${formatCurrency(amount)} for ${row.player.name ?? 'player'} across ${gameDayIds.length} game(s)...`,
             autoClose: false,
             withCloseButton: false,
         });
 
-        setSubmittingPlayerId(row.playerId);
+        setSubmittingPlayerId(row.player.id);
         try {
             const result = await payDebt(payload);
 
@@ -119,7 +119,7 @@ const DebtRow = ({
                 action: 'payDebt',
                 route: '/footy/admin/money',
                 extra: {
-                    playerId: row.playerId,
+                    playerId: row.player.id,
                     amount,
                     gameDayCount: gameDayIds.length,
                 },
@@ -145,18 +145,18 @@ const DebtRow = ({
             <Box component="form" onSubmit={form.onSubmit(handlePay)}>
                 <Stack gap="sm">
                     <Group wrap="nowrap">
-                        <Anchor href={`/footy/player/${row.playerId}`}>
+                        <Anchor href={`/footy/player/${row.player.id}`}>
                             <Image
                                 w={48}
                                 h={48}
                                 radius="xl"
-                                src={`/api/footy/player/${row.playerId}/mugshot`}
-                                alt={row.playerName}
+                                src={`/api/footy/player/${row.player.id}/mugshot`}
+                                alt={row.player.name ?? `Player ${row.player.id}`}
                             />
                         </Anchor>
                         <Stack gap={0} style={{ flex: 1, minWidth: 0 }}>
-                            <Anchor href={`/footy/player/${row.playerId}`}>
-                                {row.playerName}
+                            <Anchor href={`/footy/player/${row.player.id}`}>
+                                {row.player.name ?? `Player ${row.player.id}`}
                             </Anchor>
                             <Text size="sm" c={getBalanceColor(-totalDebt)}>
                                 Total debt: {formatCurrencySigned(-totalDebt)} ({row.debts.length} game{row.debts.length === 1 ? '' : 's'})
@@ -182,13 +182,13 @@ const DebtRow = ({
                             fixedDecimalScale
                             allowNegative={false}
                             hideControls
-                            aria-label={`Amount paid by ${row.playerName}`}
+                            aria-label={`Amount paid by ${row.player.name ?? `player ${row.player.id}`}`}
                             w={120}
                             {...form.getInputProps('amountPounds')}
                         />
                         <Button
                             type="submit"
-                            loading={submittingPlayerId === row.playerId}
+                            loading={submittingPlayerId === row.player.id}
                         >
                             Paid
                         </Button>
@@ -211,7 +211,7 @@ export const MoneyForm = ({
                 <Title order={1}>Unpaid Player Charges</Title>
                 {playerDebts.map((row) => (
                     <DebtRow
-                        key={row.playerId}
+                        key={row.player.id}
                         row={row}
                         payDebt={payDebt}
                         submittingPlayerId={submittingPlayerId}

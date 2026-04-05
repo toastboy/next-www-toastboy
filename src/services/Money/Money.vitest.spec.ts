@@ -4,8 +4,11 @@ import { describe, expect, it, vi } from 'vitest';
 
 import gameDayService from '@/services/GameDay';
 import moneyService from '@/services/Money';
+import playerService from '@/services/Player';
+import { createMockPlayer } from '@/tests/mocks/data/player';
 
 vi.mock('@/services/GameDay');
+vi.mock('@/services/Player');
 
 describe('MoneyService', () => {
     beforeEach(() => {
@@ -188,37 +191,43 @@ describe('MoneyService', () => {
 
     describe('getDebts', () => {
         it('returns unpaid game charges grouped by player and aggregated totals', async () => {
+            const player11 = createMockPlayer({
+                id: 11,
+                name: 'Player 11',
+            });
+            const player21 = createMockPlayer({
+                id: 21,
+                name: 'Player 21',
+            });
+
+            (playerService.getById as Mock).mockImplementation((id: number) => {
+                if (id === 11) {
+                    return player11;
+                }
+
+                if (id === 21) {
+                    return player21;
+                }
+
+                return null;
+            });
+
             (prisma.transaction.findMany as Mock)
                 .mockResolvedValueOnce([
                     {
                         playerId: 11,
                         gameDayId: 8,
                         amountPence: 350,
-                        player: {
-                            id: 11,
-                            name: 'Alex Current',
-                            anonymous: false,
-                        },
                     },
                     {
                         playerId: 11,
                         gameDayId: 10,
                         amountPence: 400,
-                        player: {
-                            id: 11,
-                            name: 'Alex Current',
-                            anonymous: false,
-                        },
                     },
                     {
                         playerId: 21,
                         gameDayId: 15,
                         amountPence: 600,
-                        player: {
-                            id: 21,
-                            name: 'Jamie Historic',
-                            anonymous: false,
-                        },
                     },
                 ])
                 .mockResolvedValueOnce([
@@ -278,15 +287,13 @@ describe('MoneyService', () => {
             expect(result).toEqual({
                 players: [
                     {
-                        playerId: 11,
-                        playerName: 'Player 11',
+                        player: player11,
                         debts: [
                             { gameDayId: 8, amount: 350 },
                         ],
                     },
                     {
-                        playerId: 21,
-                        playerName: 'Player 21',
+                        player: player21,
                         debts: [
                             { gameDayId: 15, amount: 600 },
                         ],

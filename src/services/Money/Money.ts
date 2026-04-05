@@ -4,6 +4,7 @@ import z from 'zod';
 import { normalizeUnknownError } from '@/lib/errors';
 import { toPounds } from '@/lib/money';
 import gameDayService from '@/services/GameDay';
+import playerService, { PlayerDisplayType } from '@/services/Player';
 import { type PayDebtResult, PayDebtResultSchema } from '@/types/actions/PayDebt';
 import { RecordHallHireInputSchema } from '@/types/actions/RecordHallHire';
 import type { MoneyChartDatum, PlayerDebtsType } from '@/types/DebtType';
@@ -86,7 +87,10 @@ class MoneyService {
             });
 
             // Group debts (unpaid charges) by playerId
-            const debtsByPlayer = new Map<number, { charges: { gameDayId: number | null; amount: number }[]; playerId: number }>();
+            const debtsByPlayer = new Map<number, {
+                player: PlayerDisplayType,
+                charges: { gameDayId: number; amount: number }[],
+            }>();
 
             for (const charge of unpaidCharges) {
                 if (charge.playerId == null || charge.gameDayId == null) {
@@ -95,9 +99,11 @@ class MoneyService {
 
                 const key = charge.playerId;
                 if (!debtsByPlayer.has(key)) {
+                    const player = await playerService.getById(charge.playerId);
+                    if (player == null) continue;
                     debtsByPlayer.set(key, {
+                        player,
                         charges: [],
-                        playerId: charge.playerId,
                     });
                 }
 
@@ -110,12 +116,11 @@ class MoneyService {
 
             // Build the players array with debts
             const players: PlayerDebtsType[] = [];
-            for (const [, { charges, playerId }] of debtsByPlayer) {
+            for (const [, { charges, player }] of debtsByPlayer) {
                 players.push({
-                    playerId,
-                    playerName: `Player ${playerId}`,
+                    player,
                     debts: charges.map((charge) => ({
-                        gameDayId: charge.gameDayId!,
+                        gameDayId: charge.gameDayId,
                         amount: charge.amount,
                     })),
                 });

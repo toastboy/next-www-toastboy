@@ -191,7 +191,7 @@ const DebtRow = ({
                         </Text>
                         <Button
                             type="submit"
-                            disabled={form.values.checkedIds.length === 0}
+                            disabled={form.values.checkedIds.length === 0 || submittingPlayerId === row.player.id}
                             loading={submittingPlayerId === row.player.id}
                         >
                             Paid

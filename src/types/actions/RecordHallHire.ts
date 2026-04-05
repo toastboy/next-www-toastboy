@@ -1,7 +1,7 @@
 import z from 'zod';
 
 export const RecordHallHireInputSchema = z.object({
-    amountPence: z.number().int().positive(),
+    amountPence: z.number().int().positive().max(49900),
     gameDayId: z.number().int().positive(),
     note: z.string().max(255).optional(),
 });

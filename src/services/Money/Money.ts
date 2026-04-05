@@ -293,7 +293,7 @@ class MoneyService {
             const parsed = z.object({
                 playerId: z.number().int().min(1),
                 gameDayId: z.number().int().min(1),
-                amount: z.number().int().positive(),
+                amount: z.number().int().positive().max(49900),
                 note: z.string().max(255).optional(),
             }).parse({ playerId, gameDayId, amount, note });
 
@@ -396,7 +396,7 @@ class MoneyService {
         try {
             const parsed = z.object({
                 playerId: z.number().int().min(1),
-                amount: z.number().int().positive(),
+                amount: z.number().int().positive().max(49900),
                 gameDayId: z.number().int().min(1).optional(),
             }).parse({ playerId, amount, gameDayId });
 
@@ -477,7 +477,7 @@ class MoneyService {
         try {
             const parsed = z.object({
                 playerId: z.number().int().min(1),
-                amount: z.number().int().positive(),
+                amount: z.number().int().positive().max(49900),
                 gameDayIds: z.array(z.number().int().min(1)).min(1),
             }).parse({ playerId, amount, gameDayIds });
 

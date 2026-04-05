@@ -94,8 +94,8 @@ export const MoneyChart = ({ data: raw }: Props) => {
             const svgRect = svgRef.current!.getBoundingClientRect();
             tooltip
                 .style('opacity', '1')
-                .style('left', `${event.clientX - svgRect.left + 12}px`)
-                .style('top', `${event.clientY - svgRect.top - 28}px`)
+                .style('left', `${event.clientX - svgRect.left - 120}px`)
+                .style('top', `${event.clientY - svgRect.top + 28}px`)
                 .html(html);
         };
         const hideTooltip = () => tooltip.style('opacity', '0');

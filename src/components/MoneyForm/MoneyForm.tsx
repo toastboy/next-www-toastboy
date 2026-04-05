@@ -4,10 +4,9 @@ import {
     Anchor,
     Box,
     Button,
+    Checkbox,
     Group,
     Image,
-    List,
-    NumberInput,
     Paper,
     Stack,
     Text,
@@ -21,13 +20,12 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import z from 'zod';
 
+import { GameDayLink } from '@/components/GameDayLink/GameDayLink';
 import { config } from '@/lib/config';
 import {
     formatCurrency,
     formatCurrencySigned,
-    fromPounds,
     getBalanceColor,
-    toPounds,
 } from '@/lib/money';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 import type { PayDebtInput, PayDebtProxy } from '@/types/actions/PayDebt';
@@ -39,7 +37,7 @@ export interface MoneyFormProps {
 }
 
 const PayDebtFormSchema = z.object({
-    amountPounds: z.number().positive(),
+    checkedIds: z.array(z.number().int()).min(1),
 });
 
 type PayDebtFormValues = z.infer<typeof PayDebtFormSchema>;
@@ -51,15 +49,6 @@ interface DebtRowProps {
     setSubmittingPlayerId: React.Dispatch<React.SetStateAction<number | null>>;
 }
 
-/**
- * Calculates the total debt amount for a player.
- *
- * @param debts - Array of unpaid charges
- * @returns The sum of all debt amounts in pence
- */
-const calculateTotalDebt = (debts: { amount: number }[]): number =>
-    debts.reduce((sum, debt) => sum + debt.amount, 0);
-
 const DebtRow = ({
     row,
     payDebt,
@@ -67,20 +56,34 @@ const DebtRow = ({
     setSubmittingPlayerId,
 }: DebtRowProps) => {
     const router = useRouter();
-    const totalDebt = calculateTotalDebt(row.debts);
+    const totalDebt = row.debts.reduce((sum, d) => sum + d.amount, 0);
 
     const form = useForm<PayDebtFormValues>({
         initialValues: {
-            amountPounds: toPounds(totalDebt),
+            checkedIds: row.debts.map((d) => d.gameDay.id),
         },
         validate: zod4Resolver(PayDebtFormSchema),
-        validateInputOnBlur: true,
     });
+
+    const checkedDebts = row.debts.filter((d) => form.values.checkedIds.includes(d.gameDay.id));
+    const totalAmount = checkedDebts.reduce((sum, d) => sum + d.amount, 0);
+
+    const toggleDebt = (gameDayId: number) => {
+        const current = form.values.checkedIds;
+        form.setFieldValue(
+            'checkedIds',
+            current.includes(gameDayId) ?
+                current.filter((id) => id !== gameDayId) :
+                [...current, gameDayId],
+        );
+    };
 
     const handlePay = async (values: PayDebtFormValues) => {
         const notificationId = `money-paid-${row.player.id}`;
-        const amount = fromPounds(values.amountPounds);
-        const gameDayIds = row.debts.map((debt) => debt.gameDayId);
+        const gameDayIds = values.checkedIds;
+        const amount = row.debts
+            .filter((d) => gameDayIds.includes(d.gameDay.id))
+            .reduce((sum, d) => sum + d.amount, 0);
 
         const payload: PayDebtInput = {
             playerId: row.player.id,
@@ -164,30 +167,31 @@ const DebtRow = ({
                         </Stack>
                     </Group>
 
-                    {/* Display list of unpaid charges */}
                     {row.debts.length > 0 && (
-                        <List size="sm" withPadding>
+                        <Stack gap="xs">
                             {row.debts.map((debt) => (
-                                <List.Item key={debt.gameDayId}>
-                                    Game {debt.gameDayId}: {formatCurrency(debt.amount)}
-                                </List.Item>
+                                <Checkbox
+                                    key={debt.gameDay.id}
+                                    checked={form.values.checkedIds.includes(debt.gameDay.id)}
+                                    onChange={() => toggleDebt(debt.gameDay.id)}
+                                    label={
+                                        <Group gap="xs">
+                                            <GameDayLink gameDay={debt.gameDay} />
+                                            <Text size="sm">{formatCurrency(debt.amount)}</Text>
+                                        </Group>
+                                    }
+                                />
                             ))}
-                        </List>
+                        </Stack>
                     )}
 
-                    {/* Payment input and button */}
                     <Group wrap="nowrap" justify="flex-end">
-                        <NumberInput
-                            decimalScale={2}
-                            fixedDecimalScale
-                            allowNegative={false}
-                            hideControls
-                            aria-label={`Amount paid by ${row.player.name ?? `player ${row.player.id}`}`}
-                            w={120}
-                            {...form.getInputProps('amountPounds')}
-                        />
+                        <Text size="sm" fw={500}>
+                            {formatCurrency(totalAmount)}
+                        </Text>
                         <Button
                             type="submit"
+                            disabled={form.values.checkedIds.length === 0}
                             loading={submittingPlayerId === row.player.id}
                         >
                             Paid

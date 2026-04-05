@@ -1,4 +1,5 @@
 import prisma from 'prisma/prisma';
+import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 import z from 'zod';
 
 import { normalizeUnknownError } from '@/lib/errors';
@@ -89,7 +90,7 @@ class MoneyService {
             // Group debts (unpaid charges) by playerId
             const debtsByPlayer = new Map<number, {
                 player: PlayerDisplayType,
-                charges: { gameDayId: number; amount: number }[],
+                charges: { gameDay: GameDayType; amount: number; }[],
             }>();
 
             for (const charge of unpaidCharges) {
@@ -107,9 +108,12 @@ class MoneyService {
                     });
                 }
 
+                const gameDay = await gameDayService.get(charge.gameDayId);
+                if (gameDay == null) continue;
+
                 const entry = debtsByPlayer.get(key)!;
                 entry.charges.push({
-                    gameDayId: charge.gameDayId,
+                    gameDay,
                     amount: charge.amountPence,
                 });
             }
@@ -120,7 +124,7 @@ class MoneyService {
                 players.push({
                     player,
                     debts: charges.map((charge) => ({
-                        gameDayId: charge.gameDayId,
+                        gameDay: charge.gameDay,
                         amount: charge.amount,
                     })),
                 });

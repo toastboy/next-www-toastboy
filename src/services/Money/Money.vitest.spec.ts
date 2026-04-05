@@ -5,6 +5,7 @@ import { describe, expect, it, vi } from 'vitest';
 import gameDayService from '@/services/GameDay';
 import moneyService from '@/services/Money';
 import playerService from '@/services/Player';
+import { createMockGameDay } from '@/tests/mocks/data/gameDay';
 import { createMockPlayer } from '@/tests/mocks/data/player';
 
 vi.mock('@/services/GameDay');
@@ -200,15 +201,20 @@ describe('MoneyService', () => {
                 name: 'Player 21',
             });
 
+            const gameDay8 = createMockGameDay({ id: 8 });
+            const gameDay10 = createMockGameDay({ id: 10 });
+            const gameDay15 = createMockGameDay({ id: 15 });
+
             (playerService.getById as Mock).mockImplementation((id: number) => {
-                if (id === 11) {
-                    return player11;
-                }
+                if (id === 11) return player11;
+                if (id === 21) return player21;
+                return null;
+            });
 
-                if (id === 21) {
-                    return player21;
-                }
-
+            (gameDayService.get as Mock).mockImplementation((id: number) => {
+                if (id === 8) return gameDay8;
+                if (id === 10) return gameDay10;
+                if (id === 15) return gameDay15;
                 return null;
             });
 
@@ -289,13 +295,13 @@ describe('MoneyService', () => {
                     {
                         player: player11,
                         debts: [
-                            { gameDayId: 8, amount: 350 },
+                            { gameDay: gameDay8, amount: 350 },
                         ],
                     },
                     {
                         player: player21,
                         debts: [
-                            { gameDayId: 15, amount: 600 },
+                            { gameDay: gameDay15, amount: 600 },
                         ],
                     },
                 ],

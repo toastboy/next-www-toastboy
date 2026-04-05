@@ -1,4 +1,5 @@
 import { PlayerSchema } from 'prisma/zod/schemas';
+import { GameDaySchema } from 'prisma/zod/schemas/models/GameDay.schema';
 import z from 'zod';
 
 export interface MoneyChartDatum {
@@ -14,7 +15,7 @@ export interface MoneyChartDatum {
  * gameDayId and amount.
  */
 export const PlayerDebtSchema = z.object({
-    gameDayId: z.number().int().min(1),
+    gameDay: GameDaySchema,
     amount: z.number().int().positive(),
 });
 

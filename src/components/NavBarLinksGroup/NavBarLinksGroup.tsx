@@ -45,7 +45,7 @@ export const NavBarLinksGroup = ({
                     {icon}
                 </Group>
             </UnstyledButton>
-            {hasLinks ? <Collapse data-testid="collapse" in={opened}>{items}</Collapse> : null}
+            {hasLinks ? <Collapse data-testid="collapse" expanded={opened}>{items}</Collapse> : null}
         </>
     );
 };

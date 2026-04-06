@@ -183,3 +183,14 @@ const HTMLElementRef = (globalThis as { HTMLElement?: HTMLElementLike }).HTMLEle
 if (HTMLElementRef && !('scrollIntoView' in HTMLElementRef.prototype)) {
     HTMLElementRef.prototype.scrollIntoView = () => undefined;
 }
+
+// Stub document.fonts for happy-dom (Mantine Textarea Autosize uses document.fonts.addEventListener)
+if (typeof document !== 'undefined' && !document.fonts) {
+    Object.defineProperty(document, 'fonts', {
+        value: {
+            addEventListener: () => { /* empty */ },
+            removeEventListener: () => { /* empty */ },
+        },
+        writable: true,
+    });
+}

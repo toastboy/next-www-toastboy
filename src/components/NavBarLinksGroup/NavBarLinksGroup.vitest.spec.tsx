@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 
 import { NavBarLinksGroup } from '@/components/NavBarLinksGroup/NavBarLinksGroup';
 import { Wrapper } from '@/tests/components/lib/common';
@@ -23,11 +23,15 @@ describe('NavBarLinksGroup', () => {
         });
     });
 
-    it('hides when closed', () => {
+    it('hides when closed', async () => {
         render(<Wrapper><NavBarLinksGroup label="Group Label" initiallyOpened links={links} /></Wrapper>);
         const collapseElement = screen.getByTestId('collapse');
-        expect(collapseElement).toHaveAttribute('aria-hidden', 'false');
+        await waitFor(() => {
+            expect(collapseElement).toHaveAttribute('aria-hidden', 'false');
+        });
         fireEvent.click(screen.getByText('Group Label'));
-        expect(collapseElement).toHaveAttribute('aria-hidden', 'true');
+        await waitFor(() => {
+            expect(collapseElement).toHaveAttribute('aria-hidden', 'true');
+        });
     });
 });

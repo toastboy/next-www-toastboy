@@ -1,46 +1,46 @@
 name: Dependabot Auto Merge
 
 permissions:
-  contents: read
-  pull-requests: write
+    contents: read
+    pull-requests: write
 
 on:
-  pull_request:
-    types:
-      - opened
-      - synchronize
-      - reopened
+    pull_request:
+        types:
+            - opened
+            - synchronize
+            - reopened
 
 jobs:
-  test-and-merge:
-    if: github.actor == 'dependabot[bot]'
-    runs-on: ubuntu-latest
-    steps:
-      # Step 1: Check out the code
-      - name: Checkout code
-        uses: actions/checkout@v6
+    test-and-merge:
+        if: github.actor == 'dependabot[bot]'
+        runs-on: ubuntu-latest
+        steps:
+            # Step 1: Check out the code
+            - name: Checkout code
+              uses: actions/checkout@v6
 
-      # Step 2: Set up Node.js environment (if needed for testing)
-      - name: Set up Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: 20
+            # Step 2: Set up Node.js environment (if needed for testing)
+            - name: Set up Node.js
+              uses: actions/setup-node@v6
+              with:
+                  node-version: 24
 
-      # Step 3: Install dependencies
-      - name: Install dependencies
-        run: npm install
+            # Step 3: Install dependencies
+            - name: Install dependencies
+              run: npm install
 
-      # Step 4: Run tests
-      - name: Run tests
-        run: npm test
+            # Step 4: Run tests
+            - name: Run tests
+              run: npm test
 
-      # Step 5: Check for PR status and merge
-      - name: Merge Dependabot PR if tests pass
-        if: success()
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          # Get the PR number
-          PR_NUMBER=$(echo ${{ github.event.number }})
-          # Merge the PR using fast-forward
-          gh pr merge $PR_NUMBER --merge --admin
+            # Step 5: Check for PR status and merge
+            - name: Merge Dependabot PR if tests pass
+              if: success()
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: |
+                  # Get the PR number
+                  PR_NUMBER=$(echo ${{ github.event.number }})
+                  # Merge the PR using fast-forward
+                  gh pr merge $PR_NUMBER --merge --admin

@@ -1,4 +1,4 @@
-import z from 'zod';
+import { z } from 'zod';
 
 /**
  * Zod schema and typed configuration for application settings.

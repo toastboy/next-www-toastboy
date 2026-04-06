@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { getInvitationDecision, resetBankHolidaysCache } from '@/lib/invitations';
+import { resetBankHolidaysCache } from '@/lib/dates';
+import { getInvitationDecision } from '@/lib/invitations';
 import gameDayService from '@/services/GameDay';
 import { createMockGameDay } from '@/tests/mocks/data/gameDay';
 

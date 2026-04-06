@@ -30,6 +30,8 @@
         "test:coverage": "vitest run --config vitest.unit.config.ts --coverage",
         "test:lib:coverage": "vitest run --config vitest.lib.config.ts --coverage",
         "test:lib": "vitest run --config vitest.lib.config.ts",
+        "test:pages:coverage": "vitest run --config vitest.pages.config.ts --coverage",
+        "test:pages": "vitest run --config vitest.pages.config.ts",
         "test:services:coverage": "vitest run --config vitest.services.config.ts --coverage",
         "test:services": "vitest run --config vitest.services.config.ts",
         "test:storybook": "vitest run",

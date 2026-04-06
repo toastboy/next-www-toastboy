@@ -1,10 +1,13 @@
-import { Flex, Skeleton } from '@mantine/core';
+import { Flex } from '@mantine/core';
+
+import { CurseOfTheBibsSkeleton } from '@/components/CurseOfTheBibs/CurseOfTheBibsSkeleton';
+import { YearSelectorSkeleton } from '@/components/YearSelector/YearSelectorSkeleton';
 
 /** Skeleton placeholder matching the CurseOfTheBibsPage layout (YearSelector + pie chart). */
 const Loading = () => (
     <Flex direction="column" w="100%" align="center">
-        <Skeleton height={86} width="100%" />
-        <Skeleton height={300} width={300} circle mt="md" />
+        <YearSelectorSkeleton />
+        <CurseOfTheBibsSkeleton />
     </Flex>
 );
 

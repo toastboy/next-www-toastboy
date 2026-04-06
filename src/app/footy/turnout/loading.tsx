@@ -1,29 +1,10 @@
-import { Paper, Skeleton, Table, TableTbody, TableTd, TableTh, TableThead, TableTr } from '@mantine/core';
+import { Paper } from '@mantine/core';
+
+import { TurnoutSkeleton } from '@/components/Turnout/TurnoutSkeleton';
 
 const Loading = () => (
     <Paper shadow="xl" p="xl">
-        <Table>
-            <TableThead>
-                <TableTr>
-                    {Array.from({ length: 6 }).map((_, i) => (
-                        <TableTh key={i}>
-                            <Skeleton height={14} width={60} />
-                        </TableTh>
-                    ))}
-                </TableTr>
-            </TableThead>
-            <TableTbody>
-                {Array.from({ length: 20 }).map((_, i) => (
-                    <TableTr key={i}>
-                        {Array.from({ length: 6 }).map((_, j) => (
-                            <TableTd key={j}>
-                                <Skeleton height={14} />
-                            </TableTd>
-                        ))}
-                    </TableTr>
-                ))}
-            </TableTbody>
-        </Table>
+        <TurnoutSkeleton />
     </Paper>
 );
 

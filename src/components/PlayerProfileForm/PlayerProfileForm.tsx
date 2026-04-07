@@ -174,14 +174,15 @@ export const PlayerProfileForm = ({
     }));
 
     const clubData: ComboboxData = Object.values(
-        allClubs.reduce<Record<string, ComboboxItemGroup>>((acc, club) => {
+        allClubs.reduce<Record<string, ComboboxItemGroup<ComboboxItem>>>((acc, club) => {
             const country = club.country ?? '';
             const group =
                 country.length > 0 ?
                     `${country.charAt(0).toUpperCase()}${country.slice(1)}` :
                     'Unknown';
 
-            const entry: ComboboxItemGroup = acc[group] ?? { group, items: [] as ComboboxItem[] };
+            const entry: ComboboxItemGroup<ComboboxItem> =
+                acc[group] ?? { group, items: [] as ComboboxItem[] };
             entry.items.push({
                 label: club.clubName,
                 value: club.id.toString(),

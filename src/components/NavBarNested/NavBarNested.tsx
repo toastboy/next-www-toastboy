@@ -35,6 +35,10 @@ export const NavBarNested = ({ user }: Props) => {
                     "label": "Books",
                     "link": "/footy/books",
                 },
+                {
+                    "label": "Curse of the Bibs",
+                    "link": "/footy/curse",
+                },
             ],
         },
         {
@@ -86,6 +90,10 @@ export const NavBarNested = ({ user }: Props) => {
                 {
                     "label": "Rules",
                     "link": "/footy/rules",
+                },
+                {
+                    "label": "World Map",
+                    "link": "/footy/countrymap",
                 },
             ],
         },

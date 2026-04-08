@@ -14,6 +14,7 @@ import {
     type CountrySupporterWriteInput,
     CountrySupporterWriteInputSchema,
 } from '@/types/CountrySupporterStrictSchema';
+import { CountrySupporterWithPlayerDataType } from '@/types/CountrySupporterWithPlayerDataType';
 
 
 export class CountrySupporterService {
@@ -45,6 +46,33 @@ export class CountrySupporterService {
     async getAll(): Promise<CountrySupporterType[]> {
         try {
             return prisma.countrySupporter.findMany({});
+        } catch (error) {
+            throw normalizeUnknownError(error);
+        }
+    }
+
+    /**
+     * Fetches all country-supporter relationships with country data included.
+     * @returns All country-supporter rows with nested `country` relation.
+     * @throws {Error} If Prisma query execution fails.
+     */
+    async getAllWithCountry(): Promise<CountrySupporterDataType[]> {
+        try {
+            return prisma.countrySupporter.findMany({ include: { country: true } });
+        } catch (error) {
+            throw normalizeUnknownError(error);
+        }
+    }
+
+    /**
+     * Fetches all country-supporter relationships with both country and player
+     * data included.
+     * @returns All country-supporter rows with nested `country` and `player` relations.
+     * @throws {Error} If Prisma query execution fails.
+     */
+    async getAllWithCountryAndPlayer(): Promise<CountrySupporterWithPlayerDataType[]> {
+        try {
+            return prisma.countrySupporter.findMany({ include: { country: true, player: true } });
         } catch (error) {
             throw normalizeUnknownError(error);
         }

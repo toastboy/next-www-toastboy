@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 
 import { SubmitResponse } from '@/actions/submitResponse';
 import { ResponsesForm } from '@/components/ResponsesForm/ResponsesForm';
-import { formatDate } from '@/lib/dates';
+import { formatDate } from '@/lib/bankHolidays';
 import gameDayService from '@/services/GameDay';
 import outcomeService from '@/services/Outcome';
 

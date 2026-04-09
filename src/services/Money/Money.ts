@@ -2,7 +2,7 @@ import prisma from 'prisma/prisma';
 import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 import z from 'zod';
 
-import { getShortMonthName } from '@/lib/dates';
+import { getShortMonthName } from '@/lib/bankHolidays';
 import { normalizeUnknownError } from '@/lib/errors';
 import { toPounds } from '@/lib/money';
 import gameDayService from '@/services/GameDay';

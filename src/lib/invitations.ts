@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { getBankHolidays, isWorkingDay } from '@/lib/dates';
+import { getBankHolidays, isWorkingDay } from '@/lib/bankHolidays';
 import gameDayService from '@/services/GameDay';
 
 /**

@@ -3,7 +3,7 @@ import { notFound } from 'next/navigation';
 
 import { setDrinkers } from '@/actions/setDrinkers';
 import { DrinkersForm } from '@/components/DrinkersForm/DrinkersForm';
-import { formatDate } from '@/lib/dates';
+import { formatDate } from '@/lib/bankHolidays';
 import gameDayService from '@/services/GameDay';
 import outcomeService from '@/services/Outcome';
 

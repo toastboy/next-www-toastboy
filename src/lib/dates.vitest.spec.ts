@@ -6,7 +6,7 @@ import {
     isWorkingDay,
     primeBankHolidaysCacheForTesting,
     resetBankHolidaysCache,
-} from '@/lib/dates';
+} from '@/lib/bankHolidays';
 
 /**
  * Helper to create a mock bank holidays API response for England and Wales.

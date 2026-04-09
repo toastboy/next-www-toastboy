@@ -95,6 +95,10 @@ export const NavBarNested = ({ user }: Props) => {
                     "label": "World Map",
                     "link": "/footy/countrymap",
                 },
+                {
+                    "label": "Family Tree",
+                    "link": "/footy/familytree",
+                },
             ],
         },
     ];

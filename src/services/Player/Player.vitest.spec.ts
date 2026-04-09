@@ -532,4 +532,177 @@ describe('PlayerService', () => {
             expect(prisma.player.deleteMany).toHaveBeenCalledTimes(1);
         });
     });
+
+    describe('getFamilyTree', () => {
+        it('should return a tree with the founder as root', async () => {
+            (prisma.player.findMany as Mock).mockResolvedValueOnce([
+                { id: 1, name: 'Alice', anonymous: false, introducedBy: null },
+                { id: 2, name: 'Bob', anonymous: false, introducedBy: 1 },
+                { id: 3, name: 'Charlie', anonymous: false, introducedBy: 1 },
+            ]);
+            (prisma.outcome.findMany as Mock).mockResolvedValueOnce([
+                { playerId: 1 },
+                { playerId: 2 },
+                { playerId: 3 },
+            ]);
+
+            const tree = await playerService.getFamilyTree();
+
+            expect(tree.id).toBe(1);
+            expect(tree.name).toBe('Alice');
+            expect(tree.children).toHaveLength(2);
+            expect(tree.children.map((c) => c.name).sort()).toEqual(['Bob', 'Charlie']);
+        });
+
+        it('should nest players whose introducer is also introduced', async () => {
+            (prisma.player.findMany as Mock).mockResolvedValueOnce([
+                { id: 1, name: 'Alice', anonymous: false, introducedBy: null },
+                { id: 2, name: 'Bob', anonymous: false, introducedBy: 1 },
+                { id: 3, name: 'Charlie', anonymous: false, introducedBy: 2 },
+            ]);
+            (prisma.outcome.findMany as Mock).mockResolvedValueOnce([
+                { playerId: 1 },
+                { playerId: 2 },
+                { playerId: 3 },
+            ]);
+
+            const tree = await playerService.getFamilyTree();
+
+            expect(tree.name).toBe('Alice');
+            expect(tree.children).toHaveLength(1);
+            expect(tree.children[0].name).toBe('Bob');
+            expect(tree.children[0].children).toHaveLength(1);
+            expect(tree.children[0].children[0].name).toBe('Charlie');
+        });
+
+        it('should attach orphan introducers under the founder', async () => {
+            (prisma.player.findMany as Mock).mockResolvedValueOnce([
+                { id: 2, name: 'Bob', anonymous: false, introducedBy: 1 },
+                { id: 3, name: 'Charlie', anonymous: false, introducedBy: 999 },
+                { id: 4, name: 'Dave', anonymous: false, introducedBy: 2 },
+                { id: 5, name: 'Eve', anonymous: false, introducedBy: 3 },
+            ]);
+            (prisma.outcome.findMany as Mock).mockResolvedValueOnce([
+                { playerId: 2 },
+                { playerId: 3 },
+                { playerId: 4 },
+                { playerId: 5 },
+            ]);
+
+            const tree = await playerService.getFamilyTree();
+
+            /* Bob becomes the founder (first orphan who is an introducer).
+               Charlie (also an orphan introducer) is attached under Bob. */
+            expect(tree.name).toBe('Bob');
+            expect(tree.children).toHaveLength(2);
+            expect(tree.children.map((c) => c.name).sort()).toEqual(['Charlie', 'Dave']);
+        });
+
+        it('should exclude orphan players with null introducedBy who introduced nobody', async () => {
+            (prisma.player.findMany as Mock).mockResolvedValueOnce([
+                { id: 1, name: 'Alice', anonymous: false, introducedBy: null },
+                { id: 2, name: 'Bob', anonymous: false, introducedBy: null },
+                { id: 3, name: 'Recruit', anonymous: false, introducedBy: 1 },
+            ]);
+            (prisma.outcome.findMany as Mock).mockResolvedValueOnce([
+                { playerId: 1 },
+                { playerId: 2 },
+                { playerId: 3 },
+            ]);
+
+            const tree = await playerService.getFamilyTree();
+
+            /* Alice is the founder (introduced Recruit). Bob is excluded
+               (null introducedBy and introduced nobody). */
+            expect(tree.name).toBe('Alice');
+            expect(tree.children).toHaveLength(1);
+            expect(tree.children[0].name).toBe('Recruit');
+        });
+
+        it('should include players with null introducedBy who introduced someone', async () => {
+            (prisma.player.findMany as Mock).mockResolvedValueOnce([
+                { id: 10, name: 'Founder', anonymous: false, introducedBy: null },
+                { id: 20, name: 'Orphan', anonymous: false, introducedBy: null },
+                { id: 30, name: 'Child', anonymous: false, introducedBy: 10 },
+            ]);
+            (prisma.outcome.findMany as Mock).mockResolvedValueOnce([
+                { playerId: 10 },
+                { playerId: 20 },
+                { playerId: 30 },
+            ]);
+
+            const tree = await playerService.getFamilyTree();
+
+            /* Founder is the root (introduced Child). Orphan is excluded. */
+            expect(tree.name).toBe('Founder');
+            expect(tree.children).toHaveLength(1);
+            expect(tree.children[0].name).toBe('Child');
+        });
+
+        it('should exclude players who have never played a game', async () => {
+            (prisma.player.findMany as Mock).mockResolvedValueOnce([
+                { id: 1, name: 'Alice', anonymous: false, introducedBy: null },
+                { id: 2, name: 'Bob', anonymous: false, introducedBy: 1 },
+                { id: 3, name: 'Charlie', anonymous: false, introducedBy: 1 },
+            ]);
+            /* Only Alice and Bob have played; Charlie has not. */
+            (prisma.outcome.findMany as Mock).mockResolvedValueOnce([
+                { playerId: 1 },
+                { playerId: 2 },
+            ]);
+
+            const tree = await playerService.getFamilyTree();
+
+            expect(tree.name).toBe('Alice');
+            expect(tree.children).toHaveLength(1);
+            expect(tree.children[0].name).toBe('Bob');
+        });
+
+        it('should re-parent children when their introducer has not played', async () => {
+            (prisma.player.findMany as Mock).mockResolvedValueOnce([
+                { id: 1, name: 'Alice', anonymous: false, introducedBy: null },
+                { id: 2, name: 'Bob', anonymous: false, introducedBy: 1 },
+                { id: 3, name: 'Charlie', anonymous: false, introducedBy: 2 },
+            ]);
+            /* Bob (the middle link) has never played. */
+            (prisma.outcome.findMany as Mock).mockResolvedValueOnce([
+                { playerId: 1 },
+                { playerId: 3 },
+            ]);
+
+            const tree = await playerService.getFamilyTree();
+
+            /* Charlie should be re-parented to Alice (Bob's introducer). */
+            expect(tree.name).toBe('Alice');
+            expect(tree.children).toHaveLength(1);
+            expect(tree.children[0].name).toBe('Charlie');
+        });
+
+        it('should respect anonymous flag in display names', async () => {
+            (prisma.player.findMany as Mock).mockResolvedValueOnce([
+                { id: 1, name: 'Secret', anonymous: true, introducedBy: 5 },
+                { id: 2, name: 'Child', anonymous: false, introducedBy: 1 },
+            ]);
+            (prisma.outcome.findMany as Mock).mockResolvedValueOnce([
+                { playerId: 1 },
+                { playerId: 2 },
+            ]);
+
+            const tree = await playerService.getFamilyTree();
+
+            expect(tree.name).toBe('Player 1');
+            expect(tree.children[0].name).toBe('Child');
+        });
+
+        it('should return virtual root with empty children when no players exist', async () => {
+            (prisma.player.findMany as Mock).mockResolvedValueOnce([]);
+            (prisma.outcome.findMany as Mock).mockResolvedValueOnce([]);
+
+            const tree = await playerService.getFamilyTree();
+
+            expect(tree.id).toBe(0);
+            expect(tree.name).toBe('Toastboy FC');
+            expect(tree.children).toHaveLength(0);
+        });
+    });
 });

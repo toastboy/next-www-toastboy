@@ -1,7 +1,7 @@
 import { createMoreGameDays } from '@/actions/createMoreGameDays';
 import { MoreGamesForm } from '@/components/MoreGamesForm/MoreGamesForm';
+import { formatDate } from '@/lib/bankHolidays';
 import { config } from '@/lib/config';
-import { formatDate } from '@/lib/dates';
 import gameDayService from '@/services/GameDay';
 
 /**

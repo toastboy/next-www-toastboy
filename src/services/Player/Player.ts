@@ -5,7 +5,7 @@ import { PlayerWhereUniqueInputObjectSchema } from 'prisma/zod/schemas/objects/P
 
 import { normalizeUnknownError } from '@/lib/errors';
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
-import { PlayerDataType, PlayerFormType } from '@/types';
+import { FamilyTreeNodeType, PlayerDataType, PlayerFormType } from '@/types';
 import {
     PlayerCreateOneStrictSchema,
     type PlayerCreateWriteInput,
@@ -503,6 +503,171 @@ class PlayerService {
     async deleteAll(): Promise<void> {
         try {
             await prisma.player.deleteMany();
+        } catch (error) {
+            throw normalizeUnknownError(error);
+        }
+    }
+
+    /**
+     * Builds a hierarchical family tree of players based on the `introducedBy`
+     * relationship.
+     *
+     * Only players who have played at least one game (an outcome with a
+     * non-null team) are included. Players who have never played are skipped,
+     * but their place in the introducer chain is preserved: each played
+     * player's effective parent is the nearest ancestor in the `introducedBy`
+     * chain who has also played.
+     *
+     * After computing effective parents, the tree is further pruned to players
+     * who either have an effective parent or are themselves the effective
+     * introducer of at least one other played player. Played players with no
+     * connection to anyone else are excluded.
+     *
+     * A single founder is identified as the first played player with no
+     * effective parent who is also an effective introducer. Any remaining
+     * parentless players (orphans) are attached as children of the founder.
+     *
+     * If no founder can be identified, a virtual root node named
+     * "Toastboy FC" is used as a fallback, with all parentless players
+     * attached directly beneath it.
+     *
+     * @returns A promise resolving to a single {@link FamilyTreeNodeType} root
+     * node whose children form the complete introduction tree.
+     * @throws {Error} If the database query fails.
+     */
+    async getFamilyTree(): Promise<FamilyTreeNodeType> {
+        try {
+            const [allPlayers, playedRows] = await Promise.all([
+                prisma.player.findMany({
+                    select: {
+                        id: true,
+                        name: true,
+                        anonymous: true,
+                        introducedBy: true,
+                    },
+                }),
+                prisma.outcome.findMany({
+                    where: { team: { not: null } },
+                    select: { playerId: true },
+                    distinct: ['playerId'],
+                }),
+            ]);
+
+            /** Set of player IDs who have actually played at least one game. */
+            const playedIds = new Set(playedRows.map((r) => r.playerId));
+
+            /**
+             * Lookup from any player ID to their introducedBy value, used to
+             * walk up the chain past removed (non-played) players.
+             */
+            const introducedByMap = new Map(
+                allPlayers.map((p) => [p.id, p.introducedBy]),
+            );
+
+            /** Only keep players who have played at least one game. */
+            const playedPlayers = allPlayers.filter((p) => playedIds.has(p.id));
+
+            /**
+             * For each played player, compute the effective parent: the
+             * nearest ancestor in the introducer chain who has also played.
+             */
+            const effectiveParent = new Map<number, number | null>();
+            for (const p of playedPlayers) {
+                let parentId = p.introducedBy;
+                while (parentId !== null && !playedIds.has(parentId)) {
+                    parentId = introducedByMap.get(parentId) ?? null;
+                }
+                effectiveParent.set(p.id, parentId);
+            }
+
+            /**
+             * Set of played player IDs that are the effective introducer of
+             * at least one other played player.
+             */
+            const introducerIds = new Set(
+                [...effectiveParent.values()].filter(
+                    (id): id is number => id !== null,
+                ),
+            );
+
+            /**
+             * Keep played players who have an effective parent, or who are
+             * themselves an effective introducer. Excludes played players
+             * with no connection to anyone else in the tree.
+             */
+            const players = playedPlayers.filter(
+                (p) =>
+                    effectiveParent.get(p.id) !== null ||
+                    introducerIds.has(p.id),
+            );
+
+            /** Map from player id to their tree node. */
+            const nodeMap = new Map<number, FamilyTreeNodeType>();
+            for (const p of players) {
+                nodeMap.set(p.id, {
+                    id: p.id,
+                    name: this.getDisplayName(p),
+                    children: [],
+                });
+            }
+
+            /**
+             * Identify the founder: the played player with no effective
+             * parent who is also an introducer. Any other orphan players
+             * are attached under the founder.
+             */
+            const orphanIds: number[] = [];
+            let founderId: number | null = null;
+            for (const p of players) {
+                if (effectiveParent.get(p.id) === null) {
+                    if (introducerIds.has(p.id) && founderId === null) {
+                        founderId = p.id;
+                    } else {
+                        orphanIds.push(p.id);
+                    }
+                }
+            }
+
+            /** Build the tree by attaching children to parents. */
+            for (const p of players) {
+                const node = nodeMap.get(p.id)!;
+                const parentId = effectiveParent.get(p.id) ?? null;
+
+                if (parentId !== null && nodeMap.has(parentId)) {
+                    nodeMap.get(parentId)!.children.push(node);
+                }
+            }
+
+            /**
+             * If a founder was found, attach remaining orphans under them
+             * and return the founder's node as the tree root.
+             */
+            if (founderId !== null) {
+                const founderNode = nodeMap.get(founderId)!;
+                for (const id of orphanIds) {
+                    const orphanNode = nodeMap.get(id);
+                    if (orphanNode) {
+                        founderNode.children.push(orphanNode);
+                    }
+                }
+                return founderNode;
+            }
+
+            /**
+             * Fallback: no single founder identified. Use a virtual root
+             * so the tree can still render.
+             */
+            const root: FamilyTreeNodeType = {
+                id: 0,
+                name: 'Toastboy FC',
+                children: [],
+            };
+            for (const p of players) {
+                if (effectiveParent.get(p.id) === null) {
+                    root.children.push(nodeMap.get(p.id)!);
+                }
+            }
+            return root;
         } catch (error) {
             throw normalizeUnknownError(error);
         }

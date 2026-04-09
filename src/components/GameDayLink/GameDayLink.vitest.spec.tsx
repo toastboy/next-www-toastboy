@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 
 import { GameDayLink } from '@/components/GameDayLink/GameDayLink';
-import { formatDate } from '@/lib/dates';
+import { formatDate } from '@/lib/bankHolidays';
 import { Wrapper } from '@/tests/components/lib/common';
 import { defaultGameDay } from '@/tests/mocks/data/gameDay';
 

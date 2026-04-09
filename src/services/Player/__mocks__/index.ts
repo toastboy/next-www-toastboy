@@ -1,5 +1,6 @@
 import { beforeEach, vi } from 'vitest';
 
+import { defaultFamilyTree } from '@/tests/mocks/data/familyTree';
 import { defaultPlayer, defaultPlayerLogin } from '@/tests/mocks/data/player';
 
 const playerService = {
@@ -19,6 +20,7 @@ const playerService = {
     setFinished: vi.fn(),
     delete: vi.fn(),
     deleteAll: vi.fn(),
+    getFamilyTree: vi.fn(),
 };
 
 beforeEach(() => {
@@ -27,6 +29,7 @@ beforeEach(() => {
     playerService.getByIdOrLogin.mockResolvedValue(defaultPlayer);
     playerService.getLogin.mockResolvedValue(defaultPlayerLogin.login);
     playerService.getId.mockResolvedValue(defaultPlayer.id);
+    playerService.getFamilyTree.mockResolvedValue(defaultFamilyTree);
 });
 
 export default playerService;

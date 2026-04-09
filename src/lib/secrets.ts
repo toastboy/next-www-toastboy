@@ -28,8 +28,18 @@ const secrets = {
 
     MAIL_FROM_ADDRESS: process.env.MAIL_FROM_ADDRESS ?? 'footy@toastboy.co.uk',
     MAIL_FROM_NAME: process.env.MAIL_FROM_NAME ?? 'Toastboy FC Mailer',
-    SMTP_HOST: process.env.SMTP_HOST ?? 'toastboy-co-uk.mail.protection.outlook.com',
+    MAIL_GRAPH_CLIENT_ID: process.env.MAIL_GRAPH_CLIENT_ID,
+    MAIL_GRAPH_CLIENT_SECRET: process.env.MAIL_GRAPH_CLIENT_SECRET,
 };
+
+/**
+ * Secrets that are only required in production (e.g. Graph API email credentials).
+ * These are allowed to be missing in development and CI environments.
+ */
+const productionOnlySecrets: ReadonlySet<keyof typeof secrets> = new Set([
+    'MAIL_GRAPH_CLIENT_ID',
+    'MAIL_GRAPH_CLIENT_SECRET',
+]);
 
 let cachedSecrets: typeof secrets | null = null;
 
@@ -75,8 +85,20 @@ export function getSecrets(): typeof secrets {
         }
     }
 
+    const isProduction = process.env.NODE_ENV === 'production';
     const missingSecrets = Object.entries(result)
-        .filter(([, value]) => value === undefined || value === null || value === '')
+        .filter(([key, value]) => {
+            const isMissing = value === undefined || value === null || value === '';
+            if (!isMissing) return false;
+
+            // Production-only secrets (e.g. Graph API email) are allowed to be
+            // absent outside production; all other secrets are always required.
+            if (!isProduction && productionOnlySecrets.has(key as keyof typeof secrets)) {
+                return false;
+            }
+
+            return true;
+        })
         .map(([key]) => key);
 
     if (missingSecrets.length > 0 && process.env.NODE_ENV !== 'test') {

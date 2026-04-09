@@ -70,7 +70,8 @@ services:
       - SENTRY_AUTH_TOKEN
       - MAIL_FROM_ADDRESS
       - MAIL_FROM_NAME
-      - SMTP_HOST
+      - MAIL_GRAPH_CLIENT_ID
+      - MAIL_GRAPH_CLIENT_SECRET
 
 secrets:
   AZURE_CLIENT_ID:
@@ -101,8 +102,10 @@ secrets:
     environment: MAIL_FROM_ADDRESS
   MAIL_FROM_NAME:
     environment: MAIL_FROM_NAME
-  SMTP_HOST:
-    environment: SMTP_HOST
+  MAIL_GRAPH_CLIENT_ID:
+    environment: MAIL_GRAPH_CLIENT_ID
+  MAIL_GRAPH_CLIENT_SECRET:
+    environment: MAIL_GRAPH_CLIENT_SECRET
 
 volumes:
   db_data:

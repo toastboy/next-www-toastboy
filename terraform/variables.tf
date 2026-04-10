@@ -14,6 +14,14 @@ variable "azure_client_secret" {
   type = string
 }
 
+variable "auth_redirect_uris" {
+  type        = list(string)
+  description = "OAuth2 redirect URIs for Better Auth Microsoft social login (e.g. production + localhost)"
+  default = [
+    "http://localhost:3000/api/auth/callback/microsoft",
+  ]
+}
+
 variable "location" {
   type    = string
   default = "uksouth"

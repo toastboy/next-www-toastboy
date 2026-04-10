@@ -65,3 +65,47 @@ jobs:
                   path: terraform
                   workspace: next-www-toastboy
                   auto_approve: true
+
+            - name: Get Terraform Outputs
+              if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+              id: tf_output
+              uses: dflook/terraform-output@v2
+              with:
+                  path: terraform
+                  workspace: next-www-toastboy
+
+            - name: Install 1Password CLI
+              if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+              uses: 1password/install-cli-action@v1
+
+            - name: Sync Terraform outputs to 1Password
+              if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+              env:
+                  OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+                  AUTH_CLIENT_ID: ${{ steps.tf_output.outputs.auth_client_id }}
+                  AUTH_CLIENT_SECRET: ${{ steps.tf_output.outputs.auth_client_secret }}
+                  STORAGE_CLIENT_ID: ${{ steps.tf_output.outputs.storage_client_id }}
+                  STORAGE_CLIENT_SECRET: ${{ steps.tf_output.outputs.storage_client_secret }}
+                  MAIL_CLIENT_ID: ${{ steps.tf_output.outputs.mail_client_id }}
+                  MAIL_CLIENT_SECRET: ${{ steps.tf_output.outputs.mail_client_secret }}
+              run: |
+                  VAULT="next-www-toastboy"
+
+                  upsert_item() {
+                    local title="$1" client_id="$2" client_secret="$3"
+                    if op item get "$title" --vault "$VAULT" > /dev/null 2>&1; then
+                      op item edit "$title" --vault "$VAULT" \
+                        "client-id=$client_id" \
+                        "client-secret=$client_secret"
+                    else
+                      op item create --vault "$VAULT" \
+                        --category login \
+                        --title "$title" \
+                        "client-id=$client_id" \
+                        "client-secret[password]=$client_secret"
+                    fi
+                  }
+
+                  upsert_item "App - Auth"    "$AUTH_CLIENT_ID"    "$AUTH_CLIENT_SECRET"
+                  upsert_item "App - Storage" "$STORAGE_CLIENT_ID" "$STORAGE_CLIENT_SECRET"
+                  upsert_item "App - Mail"    "$MAIL_CLIENT_ID"    "$MAIL_CLIENT_SECRET"

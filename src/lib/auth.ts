@@ -158,6 +158,12 @@ export const auth = betterAuth({
             }
         },
     },
+    account: {
+        accountLinking: {
+            enabled: true,
+            trustedProviders: ["google", "microsoft"],
+        },
+    },
     plugins: [
         admin(),
         // Must be last: see https://better-auth.vercel.app/docs/integrations/next#server-action-cookies
@@ -174,6 +180,7 @@ export const auth = betterAuth({
             microsoft: secrets.MICROSOFT_CLIENT_ID && secrets.MICROSOFT_CLIENT_SECRET ? {
                 clientId: secrets.MICROSOFT_CLIENT_ID,
                 clientSecret: secrets.MICROSOFT_CLIENT_SECRET,
+                tenantId: secrets.AZURE_TENANT_ID,
             } : undefined,
         },
     },

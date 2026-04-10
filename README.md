@@ -8,6 +8,24 @@ This project is based on [Azure + MySQL example code](https://github.com/Azure-S
 [![Reviewdog](https://github.com/toastboy/next-www-toastboy/actions/workflows/lint.yml/badge.svg)](https://github.com/toastboy/next-www-toastboy/actions/workflows/lint.yml)
 [![Terraform](https://github.com/toastboy/next-www-toastboy/actions/workflows/terraform.yml/badge.svg)](https://github.com/toastboy/next-www-toastboy/actions/workflows/terraform.yml)
 
+## Azure App Registrations
+
+Three Azure AD app registrations are managed by Terraform in [`terraform/main.tf`](terraform/main.tf), each scoped to the minimum permissions needed:
+
+| App | Display Name | Purpose | Permissions |
+| --- | --- | --- | --- |
+| **Auth** | Next www toastboy – Auth | Microsoft social login via Better Auth | Delegated: `openid`, `profile`, `email`, `User.Read` |
+| **Storage** | Next www toastboy – Storage | Azure Blob Storage access via RBAC | None (RBAC role assignment only) |
+| **Mail** | Next www toastboy – Mail | Transactional email via Microsoft Graph | Application: `Mail.Send` (admin-consented) |
+
+Terraform outputs the client IDs and secrets for each registration, which are synced to 1Password (vault `next-www-toastboy`) by the [Terraform workflow](.github/workflows/terraform.yml) after each apply. The env var mapping is:
+
+| App | Client ID env var | Client secret env var |
+| --- | --- | --- |
+| Auth | `MICROSOFT_CLIENT_ID` | `MICROSOFT_CLIENT_SECRET` |
+| Storage | `AZURE_CLIENT_ID` | `AZURE_CLIENT_SECRET` |
+| Mail | `MAIL_GRAPH_CLIENT_ID` | `MAIL_GRAPH_CLIENT_SECRET` |
+
 ## Secrets
 
 All secrets should be managed by 1Password, in the exclusive vault "next-www-toastboy" and referenced from the `.env` file. This file is safe to commit to source control since it only contains references, not values. Preface all commands which might need secret values in the environment with the op cli, like this:

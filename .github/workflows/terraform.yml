@@ -93,16 +93,16 @@ jobs:
 
                   upsert_item() {
                     local title="$1" client_id="$2" client_secret="$3"
-                    if op item get "$title" --vault "$VAULT" > /dev/null 2>&1; then
+                    if op item get "$title" --vault "$VAULT" --format json > /dev/null 2>&1; then
                       op item edit "$title" --vault "$VAULT" \
-                        "client-id=$client_id" \
-                        "client-secret=$client_secret"
+                        --field "client-id=$client_id" \
+                        --field "client-secret=$client_secret"
                     else
                       op item create --vault "$VAULT" \
                         --category login \
                         --title "$title" \
-                        "client-id=$client_id" \
-                        "client-secret[password]=$client_secret"
+                        --field "client-id=$client_id" \
+                        --field "client-secret[password]=$client_secret"
                     fi
                   }
 

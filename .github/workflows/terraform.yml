@@ -99,8 +99,9 @@ jobs:
                         "password=$client_secret" \
                         < /dev/null
                     else
-                      printf '{"title":"%s","category":"LOGIN","fields":[{"id":"username","type":"STRING","label":"username","value":"%s"},{"id":"password","type":"CONCEALED","label":"password","value":"%s"}]}' \
-                        "$title" "$client_id" "$client_secret" \
+                      op item template get login \
+                        | jq --arg t "$title" --arg u "$client_id" --arg p "$client_secret" \
+                          '.title = $t | .fields[] |= if .id == "username" then .value = $u elif .id == "password" then .value = $p else . end' \
                         | op item create --vault "$VAULT"
                     fi
                   }

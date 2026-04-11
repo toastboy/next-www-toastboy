@@ -165,7 +165,7 @@ export async function getGameInvitationResponseDetails(token: string): Promise<G
         playerLogin,
         gameDayId: invitation.gameDayId,
         response: outcome?.response ?? null,
-        goalie: outcome?.goalie ?? false,
+        goalie: outcome?.goalie ?? player.goalie ?? false,
         comment: outcome?.comment ?? null,
     };
 }

@@ -145,6 +145,7 @@ model Player {
     name         String?
     accountEmail String?  @db.VarChar(255)
     anonymous    Boolean?
+    goalie       Boolean?
 
     joined   DateTime?
     finished DateTime?

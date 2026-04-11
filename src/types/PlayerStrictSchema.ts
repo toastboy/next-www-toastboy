@@ -14,6 +14,7 @@ const PlayerStrictFields = {
     name: z.string().nullish(),
     accountEmail: accountEmailStrict,
     anonymous: z.boolean().nullish(),
+    goalie: z.boolean().nullish(),
     joined: z.date().nullish(),
     finished: z.date().nullish(),
     born: z.number().int().nullish(),

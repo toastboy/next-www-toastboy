@@ -87,6 +87,7 @@ export async function updatePlayerCore(
         id: playerId,
         accountEmail,
         anonymous: data.anonymous,
+        goalie: data.goalie,
         name: data.name,
         born: data.born,
         comment: data.comment,

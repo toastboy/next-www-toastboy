@@ -21,6 +21,7 @@ export const UpdatePlayerSchema = z.object({
         z.email({ message: 'Invalid account email' }).min(1, { message: 'Account email is required' }),
     ),
     anonymous: z.boolean().optional(),
+    goalie: z.boolean().optional(),
     finished: z.preprocess(
         (value: unknown) => {
             if (value === '' || value === null || value === undefined) {

@@ -89,6 +89,7 @@ export const PlayerProfileForm = ({
             name: player.name ?? '',
             accountEmail: accountEmail ?? player.accountEmail ?? '',
             anonymous: player.anonymous ?? false,
+            goalie: player.goalie ?? false,
             retired: Boolean(player.finished),
             extraEmails: initialExtraEmails.length ? initialExtraEmails : [''],
             addedExtraEmails: [],
@@ -215,6 +216,23 @@ export const PlayerProfileForm = ({
                     wrap="wrap"
                     w="100%"
                 >
+                    <Tooltip
+                        label={[
+                            `If selected, the goalie flag will be set by default in game responses. `,
+                            `You can always change the goalie flag for individual games.`,
+                        ].join('')}
+                        withArrow
+                        multiline
+                        w={220}
+                    >
+                        <Box>
+                            <Switch
+                                label="Goalie"
+                                data-testid="goalie-switch"
+                                {...form.getInputProps('goalie', { type: 'checkbox' })}
+                            />
+                        </Box>
+                    </Tooltip>
                     <Tooltip
                         label={[
                             `If selected, you will appear as 'Player ${player.id.toString()}' `,

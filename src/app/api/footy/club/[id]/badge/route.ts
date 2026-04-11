@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 
 import { buildPngResponse, handleGET } from '@/lib/api';
 import azureCache from '@/lib/azure';
+import { CONTAINER_CLUBS } from '@/lib/azureConfig';
 import { InternalError, normalizeUnknownError } from '@/lib/errors';
 import { streamToBuffer } from '@/lib/utils';
 
@@ -18,7 +19,7 @@ async function getClubBadge(
     { params }: { params: Record<string, string> },
 ): Promise<Buffer | null> {
     try {
-        const containerClient = azureCache.getContainerClient("clubs");
+        const containerClient = azureCache.getContainerClient(CONTAINER_CLUBS);
         const blobClient = containerClient.getBlobClient(`${params.id.toString()}.png`);
 
         if (!(await blobClient.exists())) {

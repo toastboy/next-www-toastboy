@@ -3,6 +3,7 @@ import 'server-only';
 import { ClientSecretCredential } from '@azure/identity';
 import { BlobServiceClient, ContainerClient } from '@azure/storage-blob';
 
+import { STORAGE_ACCOUNT_NAME } from '@/lib/azureConfig';
 import { InternalError, normalizeUnknownError } from '@/lib/errors';
 import { getSecrets } from '@/lib/secrets';
 
@@ -39,10 +40,7 @@ class AzureCache {
             AzureCache.tenantId = AzureCache.requireSecret('AZURE_TENANT_ID', secrets.AZURE_TENANT_ID);
             AzureCache.clientId = AzureCache.requireSecret('AZURE_CLIENT_ID', secrets.AZURE_CLIENT_ID);
             AzureCache.clientSecret = AzureCache.requireSecret('AZURE_CLIENT_SECRET', secrets.AZURE_CLIENT_SECRET);
-            AzureCache.storageAccountName = AzureCache.requireSecret(
-                'AZURE_STORAGE_ACCOUNT_NAME',
-                secrets.AZURE_STORAGE_ACCOUNT_NAME,
-            );
+            AzureCache.storageAccountName = STORAGE_ACCOUNT_NAME;
         }
         return AzureCache.instance;
     }

@@ -52,8 +52,6 @@ describe('authExportCore', () => {
       AZURE_TENANT_ID: 'tenant-id',
       AZURE_CLIENT_ID: 'client-id',
       AZURE_CLIENT_SECRET: 'client-secret',
-      AZURE_STORAGE_ACCOUNT_NAME: 'storage-account',
-      AZURE_CONTAINER_NAME: 'auth-exports',
     });
 
     uploadMock.mockResolvedValue(undefined);
@@ -95,10 +93,10 @@ describe('authExportCore', () => {
       'client-secret',
     );
     expect(blobServiceClientCtorMock).toHaveBeenCalledWith(
-      'https://storage-account.blob.core.windows.net',
+      'https://nextwwwtoastboy.blob.core.windows.net',
       expect.objectContaining({ type: 'mock-credential' }),
     );
-    expect(getContainerClientMock).toHaveBeenCalledWith('auth-exports');
+    expect(getContainerClientMock).toHaveBeenCalledWith('dbseeddata');
     expect(getBlockBlobClientMock).toHaveBeenCalledWith('account.json');
     expect(getBlockBlobClientMock).toHaveBeenCalledWith('user.json');
     expect(getBlockBlobClientMock).toHaveBeenCalledWith('verification.json');

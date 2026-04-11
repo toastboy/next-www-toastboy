@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 
 import { buildPngResponse, handleGET } from '@/lib/api';
 import azureCache from '@/lib/azure';
+import { CONTAINER_MUGSHOTS } from '@/lib/azureConfig';
 import { InternalError, normalizeUnknownError } from '@/lib/errors';
 import { streamToBuffer } from '@/lib/utils';
 import playerService from '@/services/Player';
@@ -25,7 +26,7 @@ async function getPlayerMugshot(
 
         const player = await playerService.getById(playerId);
         if (!player) return null;
-        const containerClient = azureCache.getContainerClient("mugshots");
+        const containerClient = azureCache.getContainerClient(CONTAINER_MUGSHOTS);
         const playerLogin = await playerService.getLogin(params.id);
         let blobClient = containerClient.getBlobClient(playerLogin ? `${playerLogin}.jpg` : 'manofmystery.jpg');
 

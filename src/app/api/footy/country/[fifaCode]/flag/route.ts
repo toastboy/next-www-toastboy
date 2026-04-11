@@ -2,6 +2,7 @@ import { NextRequest } from 'next/server';
 
 import { buildPngResponse, handleGET } from '@/lib/api';
 import azureCache from '@/lib/azure';
+import { CONTAINER_COUNTRIES } from '@/lib/azureConfig';
 import { InternalError, normalizeUnknownError } from '@/lib/errors';
 import { streamToBuffer } from '@/lib/utils';
 
@@ -18,7 +19,7 @@ async function getCountryFlag(
 ): Promise<Buffer | null> {
     try {
         const fifaCode = params.fifaCode.toUpperCase();
-        const containerClient = azureCache.getContainerClient('countries');
+        const containerClient = azureCache.getContainerClient(CONTAINER_COUNTRIES);
         const blobClient = containerClient.getBlobClient(`${fifaCode}.png`);
 
         if (!(await blobClient.exists())) {

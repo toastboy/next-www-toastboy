@@ -5,6 +5,7 @@ import { BlobServiceClient, type ContainerClient } from '@azure/storage-blob';
 import { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
 
+import { CONTAINER_DB_SEED, STORAGE_ACCOUNT_NAME } from '@/lib/azureConfig';
 import { normalizeUnknownError } from '@/lib/errors';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 import { getSecrets } from '@/lib/secrets';
@@ -77,17 +78,15 @@ export async function authExportCore(deps: AuthExportDeps = defaultDeps): Promis
     const tenantId = secrets.AZURE_TENANT_ID ?? '';
     const clientId = secrets.AZURE_CLIENT_ID ?? '';
     const clientSecret = secrets.AZURE_CLIENT_SECRET ?? '';
-    const storageAccountName = secrets.AZURE_STORAGE_ACCOUNT_NAME ?? '';
-    const containerName = secrets.AZURE_CONTAINER_NAME ?? '';
 
     try {
         const credentials = new ClientSecretCredential(tenantId, clientId, clientSecret);
         const blobServiceClient = new BlobServiceClient(
-            `https://${storageAccountName}.blob.core.windows.net`,
+            `https://${STORAGE_ACCOUNT_NAME}.blob.core.windows.net`,
             credentials,
         );
 
-        const containerClient = blobServiceClient.getContainerClient(containerName);
+        const containerClient = blobServiceClient.getContainerClient(CONTAINER_DB_SEED);
 
         await writeTableToJSONBlob(containerClient, 'account.json', deps.prisma.account);
         await writeTableToJSONBlob(containerClient, 'user.json', deps.prisma.user);
@@ -95,16 +94,16 @@ export async function authExportCore(deps: AuthExportDeps = defaultDeps): Promis
     } catch (error) {
         const normalizedError = normalizeUnknownError(error, {
             details: {
-                storageAccountName,
-                containerName,
+                storageAccountName: STORAGE_ACCOUNT_NAME,
+                containerName: CONTAINER_DB_SEED,
             },
         });
         captureUnexpectedError(normalizedError, {
             layer: 'server-action',
             action: 'authExportCore',
             extra: {
-                storageAccountName,
-                containerName,
+                storageAccountName: STORAGE_ACCOUNT_NAME,
+                containerName: CONTAINER_DB_SEED,
             },
         });
         throw normalizedError;

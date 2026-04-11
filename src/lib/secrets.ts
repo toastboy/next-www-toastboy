@@ -8,8 +8,6 @@ import { InternalError, normalizeUnknownError } from '@/lib/errors';
 const secrets = {
     AZURE_CLIENT_ID: process.env.AZURE_CLIENT_ID,
     AZURE_CLIENT_SECRET: process.env.AZURE_CLIENT_SECRET,
-    AZURE_CONTAINER_NAME: process.env.AZURE_CONTAINER_NAME,
-    AZURE_STORAGE_ACCOUNT_NAME: process.env.AZURE_STORAGE_ACCOUNT_NAME,
     AZURE_TENANT_ID: process.env.AZURE_TENANT_ID,
 
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,

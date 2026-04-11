@@ -46,10 +46,10 @@ jobs:
                   export-env: true
               env:
                   OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-                  TF_VAR_azure_tenant_id: op://next-www-toastboy/TF_AZURE_TENANT_ID/Section_elpyzkswpwjdt45ytdpuj4zpri/uuid
-                  TF_VAR_azure_subscription_id: op://next-www-toastboy/AZURE_SUBSCRIPTION_ID/Section_u2slseexl7iz6qq3ab3kwfut5u/uuid
-                  TF_VAR_azure_client_id: op://next-www-toastboy/TF_AZURE_CLIENT_ID/Section_sbgupoixcvisaemyfdnssgod3u/uuid
-                  TF_VAR_azure_client_secret: op://next-www-toastboy/TF_AZURE_CLIENT_SECRET/Section_al3t4lplsritwudt5bbhjxh4e4/uuid
+                  TF_VAR_azure_tenant_id: "op://next-www-toastboy/Terraform/tenant id"
+                  TF_VAR_azure_subscription_id: "op://next-www-toastboy/Terraform/subscription id"
+                  TF_VAR_azure_client_id: "op://next-www-toastboy/Terraform/username"
+                  TF_VAR_azure_client_secret: "op://next-www-toastboy/Terraform/credential"
 
             - name: Terraform Plan (Internal PRs)
               if: ${{ github.event_name == 'pull_request' && !github.event.pull_request.head.repo.fork }}

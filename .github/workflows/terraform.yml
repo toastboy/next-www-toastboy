@@ -96,12 +96,12 @@ jobs:
                     if op item get "$title" --vault "$VAULT" --format json > /dev/null 2>&1 < /dev/null; then
                       op item edit "$title" --vault "$VAULT" \
                         "username=$client_id" \
-                        "password=$client_secret" \
+                        "credential=$client_secret" \
                         < /dev/null
                     else
-                      op item template get login \
+                      op item template get "API Credential" \
                         | jq --arg t "$title" --arg u "$client_id" --arg p "$client_secret" \
-                          '.title = $t | .fields[] |= if .id == "username" then .value = $u elif .id == "password" then .value = $p else . end' \
+                          '.title = $t | .fields[] |= if .id == "username" then .value = $u elif .id == "credential" then .value = $p else . end' \
                         | op item create --vault "$VAULT"
                     fi
                   }

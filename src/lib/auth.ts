@@ -171,15 +171,15 @@ export const auth = betterAuth({
     ],
     socialProviders: {
         ...{
-            google: secrets.GOOGLE_CLIENT_ID && secrets.GOOGLE_CLIENT_SECRET ? {
-                clientId: secrets.GOOGLE_CLIENT_ID,
-                clientSecret: secrets.GOOGLE_CLIENT_SECRET,
+            google: secrets.AUTH_GOOGLE_CLIENT_ID && secrets.AUTH_GOOGLE_CLIENT_SECRET ? {
+                clientId: secrets.AUTH_GOOGLE_CLIENT_ID,
+                clientSecret: secrets.AUTH_GOOGLE_CLIENT_SECRET,
             } : undefined,
         },
         ...{
-            microsoft: secrets.MICROSOFT_CLIENT_ID && secrets.MICROSOFT_CLIENT_SECRET ? {
-                clientId: secrets.MICROSOFT_CLIENT_ID,
-                clientSecret: secrets.MICROSOFT_CLIENT_SECRET,
+            microsoft: secrets.AUTH_MICROSOFT_CLIENT_ID && secrets.AUTH_MICROSOFT_CLIENT_SECRET ? {
+                clientId: secrets.AUTH_MICROSOFT_CLIENT_ID,
+                clientSecret: secrets.AUTH_MICROSOFT_CLIENT_SECRET,
                 tenantId: secrets.AZURE_TENANT_ID,
             } : undefined,
         },

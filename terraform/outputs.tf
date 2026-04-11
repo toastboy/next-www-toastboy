@@ -1,10 +1,10 @@
 output "auth_client_id" {
-  description = "Auth app registration client ID (use for MICROSOFT_CLIENT_ID)"
+  description = "Auth app registration client ID (use for AUTH_MICROSOFT_CLIENT_ID)"
   value       = azuread_application.auth.client_id
 }
 
 output "auth_client_secret" {
-  description = "Auth app registration client secret (use for MICROSOFT_CLIENT_SECRET)"
+  description = "Auth app registration client secret (use for AUTH_MICROSOFT_CLIENT_SECRET)"
   value       = azuread_service_principal_password.auth.value
   sensitive   = true
 }

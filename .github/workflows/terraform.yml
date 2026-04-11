@@ -91,21 +91,38 @@ jobs:
               run: |
                   VAULT="next-www-toastboy"
 
+                  VALID_FROM=$(date -u +%Y-%m-%d)
+                  EXPIRES=$(date -u -d "+5 years" +%Y-%m-%d)
+
                   upsert_item() {
-                    local title="$1" client_id="$2" client_secret="$3"
+                    local title="$1" client_id="$2" client_secret="$3" notes="$4"
                     if op item get "$title" --vault "$VAULT" --format json > /dev/null 2>&1 < /dev/null; then
                       op item edit "$title" --vault "$VAULT" \
                         "username=$client_id" \
                         "credential=$client_secret" \
+                        "validFrom[date]=$VALID_FROM" \
+                        "expires[date]=$EXPIRES" \
+                        "notesPlain=$notes" \
                         < /dev/null
                     else
                       op item template get "API Credential" \
                         | jq --arg t "$title" --arg u "$client_id" --arg p "$client_secret" \
-                          '.title = $t | .fields[] |= if .id == "username" then .value = $u elif .id == "credential" then .value = $p else . end' \
+                             --arg vf "$VALID_FROM" --arg ex "$EXPIRES" --arg n "$notes" \
+                          '.title = $t | .fields[] |= if .id == "username" then .value = $u
+                            elif .id == "credential" then .value = $p
+                            elif .id == "validFrom" then .value = $vf
+                            elif .id == "expires" then .value = $ex
+                            elif .id == "notesPlain" then .value = $n
+                            else . end' \
                         | op item create --vault "$VAULT"
                     fi
                   }
 
-                  upsert_item "App - Auth"    "$AUTH_CLIENT_ID"    "$AUTH_CLIENT_SECRET"
-                  upsert_item "App - Storage" "$STORAGE_CLIENT_ID" "$STORAGE_CLIENT_SECRET"
-                  upsert_item "App - Mail"    "$MAIL_CLIENT_ID"    "$MAIL_CLIENT_SECRET"
+                  upsert_item "App - Auth" "$AUTH_CLIENT_ID" "$AUTH_CLIENT_SECRET" \
+                    "Microsoft Entra app registration for Better Auth Microsoft social login (AUTH_MICROSOFT_CLIENT_ID / AUTH_MICROSOFT_CLIENT_SECRET). Delegated OIDC scopes only (openid, profile, email, User.Read). Managed automatically by the Terraform workflow in .github/workflows/terraform.yml — do not edit the client ID or secret manually."
+
+                  upsert_item "App - Storage" "$STORAGE_CLIENT_ID" "$STORAGE_CLIENT_SECRET" \
+                    "Microsoft Entra app registration for Azure Blob Storage access via RBAC (AZURE_CLIENT_ID / AZURE_CLIENT_SECRET). Used by the Next.js app to read/write blobs in the db-seed, mugshots, clubs and countries containers. No Graph permissions. Managed automatically by the Terraform workflow in .github/workflows/terraform.yml — do not edit the client ID or secret manually."
+
+                  upsert_item "App - Mail" "$MAIL_CLIENT_ID" "$MAIL_CLIENT_SECRET" \
+                    "Microsoft Entra app registration for sending transactional email via Microsoft Graph API (MAIL_GRAPH_CLIENT_ID / MAIL_GRAPH_CLIENT_SECRET). Holds the Mail.Send application permission with admin consent, allowing it to send as any mailbox — keep this credential isolated and rotate promptly if compromised. Managed automatically by the Terraform workflow in .github/workflows/terraform.yml — do not edit the client ID or secret manually."

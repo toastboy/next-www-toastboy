@@ -147,4 +147,8 @@ main()
     })
     .finally(async () => {
         await prisma.$disconnect();
+        // Force exit: playerRecordService uses a shared Prisma singleton
+        // (prisma/prisma) whose connection pool is not disconnected here,
+        // which would otherwise keep the process alive indefinitely.
+        process.exit(0);
     });

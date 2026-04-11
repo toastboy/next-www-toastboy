@@ -72,11 +72,11 @@ async function main() {
     const tenantId = process.env.AZURE_TENANT_ID;
     if (!tenantId) throw new Error('AZURE_TENANT_ID undefined');
 
-    const clientId = process.env.AZURE_CLIENT_ID;
-    if (!clientId) throw new Error('AZURE_CLIENT_ID undefined');
+    const clientId = process.env.STORAGE_CLIENT_ID;
+    if (!clientId) throw new Error('STORAGE_CLIENT_ID undefined');
 
-    const clientSecret = process.env.AZURE_CLIENT_SECRET;
-    if (!clientSecret) throw new Error('AZURE_CLIENT_SECRET undefined');
+    const clientSecret = process.env.STORAGE_CLIENT_SECRET;
+    if (!clientSecret) throw new Error('STORAGE_CLIENT_SECRET undefined');
 
     const storageAccountName = process.env.AZURE_STORAGE_ACCOUNT_NAME;
     if (!storageAccountName) throw new Error('AZURE_STORAGE_ACCOUNT_NAME undefined');

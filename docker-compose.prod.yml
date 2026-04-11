@@ -27,8 +27,8 @@ services:
     environment:
       DATABASE_URL: "mysql://root:${DATABASE_PASSWORD}@db:3306/footy?connection_limit=5&pool_timeout=20"
       AZURE_TENANT_ID: ${AZURE_TENANT_ID}
-      AZURE_CLIENT_ID: ${AZURE_CLIENT_ID}
-      AZURE_CLIENT_SECRET: ${AZURE_CLIENT_SECRET}
+      STORAGE_CLIENT_ID: ${STORAGE_CLIENT_ID}
+      STORAGE_CLIENT_SECRET: ${STORAGE_CLIENT_SECRET}
       AZURE_STORAGE_ACCOUNT_NAME: ${AZURE_STORAGE_ACCOUNT_NAME}
       AZURE_CONTAINER_NAME: ${AZURE_CONTAINER_NAME}
     profiles:
@@ -56,9 +56,9 @@ services:
       DATABASE_URL: "mysql://root:${DATABASE_PASSWORD}@db:3306/footy?connection_limit=10&pool_timeout=20&connect_timeout=10"
       SECRETS_DIR: /run/secrets
     secrets:
-      - AZURE_CLIENT_ID
+      - STORAGE_CLIENT_ID
       - AZURE_TENANT_ID
-      - AZURE_CLIENT_SECRET
+      - STORAGE_CLIENT_SECRET
       - AZURE_STORAGE_ACCOUNT_NAME
       - AZURE_CONTAINER_NAME
       - BETTER_AUTH_SECRET
@@ -74,12 +74,12 @@ services:
       - MAIL_GRAPH_CLIENT_SECRET
 
 secrets:
-  AZURE_CLIENT_ID:
-    environment: AZURE_CLIENT_ID
+  STORAGE_CLIENT_ID:
+    environment: STORAGE_CLIENT_ID
   AZURE_TENANT_ID:
     environment: AZURE_TENANT_ID
-  AZURE_CLIENT_SECRET:
-    environment: AZURE_CLIENT_SECRET
+  STORAGE_CLIENT_SECRET:
+    environment: STORAGE_CLIENT_SECRET
   AZURE_STORAGE_ACCOUNT_NAME:
     environment: AZURE_STORAGE_ACCOUNT_NAME
   AZURE_CONTAINER_NAME:

@@ -38,8 +38,8 @@ class AzureCache {
             const secrets = getSecrets();
 
             AzureCache.tenantId = AzureCache.requireSecret('AZURE_TENANT_ID', secrets.AZURE_TENANT_ID);
-            AzureCache.clientId = AzureCache.requireSecret('AZURE_CLIENT_ID', secrets.AZURE_CLIENT_ID);
-            AzureCache.clientSecret = AzureCache.requireSecret('AZURE_CLIENT_SECRET', secrets.AZURE_CLIENT_SECRET);
+            AzureCache.clientId = AzureCache.requireSecret('STORAGE_CLIENT_ID', secrets.STORAGE_CLIENT_ID);
+            AzureCache.clientSecret = AzureCache.requireSecret('STORAGE_CLIENT_SECRET', secrets.STORAGE_CLIENT_SECRET);
             AzureCache.storageAccountName = STORAGE_ACCOUNT_NAME;
         }
         return AzureCache.instance;

@@ -23,7 +23,7 @@ Terraform outputs the client IDs and secrets for each registration, which are sy
 | App | Client ID env var | Client secret env var |
 | --- | --- | --- |
 | Auth | `AUTH_MICROSOFT_CLIENT_ID` | `AUTH_MICROSOFT_CLIENT_SECRET` |
-| Storage | `AZURE_CLIENT_ID` | `AZURE_CLIENT_SECRET` |
+| Storage | `STORAGE_CLIENT_ID` | `STORAGE_CLIENT_SECRET` |
 | Mail | `MAIL_GRAPH_CLIENT_ID` | `MAIL_GRAPH_CLIENT_SECRET` |
 
 ## Secrets

@@ -10,12 +10,12 @@ output "auth_client_secret" {
 }
 
 output "storage_client_id" {
-  description = "Storage app registration client ID (use for AZURE_CLIENT_ID)"
+  description = "Storage app registration client ID (use for STORAGE_CLIENT_ID)"
   value       = azuread_application.storage.client_id
 }
 
 output "storage_client_secret" {
-  description = "Storage app registration client secret (use for AZURE_CLIENT_SECRET)"
+  description = "Storage app registration client secret (use for STORAGE_CLIENT_SECRET)"
   value       = azuread_service_principal_password.storage.value
   sensitive   = true
 }

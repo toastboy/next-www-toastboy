@@ -28,8 +28,8 @@ jobs:
                   DATABASE_PASSWORD: op://next-www-toastboy/DATABASE_PASSWORD/password
                   DATABASE_URL: op://next-www-toastboy/DATABASE_URL/Section_4wa3sl6ppxfmyj6xihxrpgbctq/connection string
                   AZURE_TENANT_ID: op://next-www-toastboy/AZURE_TENANT_ID/Section_ylvm7oce47qvgs6ntrhrja2mbm/uuid
-                  AZURE_CLIENT_ID: op://next-www-toastboy/App - Storage/client-id
-                  AZURE_CLIENT_SECRET: op://next-www-toastboy/App - Storage/client-secret
+                  STORAGE_CLIENT_ID: op://next-www-toastboy/App - Storage/client-id
+                  STORAGE_CLIENT_SECRET: op://next-www-toastboy/App - Storage/client-secret
                   AZURE_STORAGE_ACCOUNT_NAME: op://next-www-toastboy/AZURE_STORAGE_ACCOUNT_NAME/Section_nomnpnz4pz2cjajwak6cvqqwye/account
                   AZURE_CONTAINER_NAME: op://next-www-toastboy/AZURE_CONTAINER_NAME/add more/container
                   BETTER_AUTH_SECRET: op://next-www-toastboy/BETTER_AUTH_SECRET/Section_d2yvz3djw6em7hapssycamzp6m/auth secret
@@ -79,8 +79,8 @@ jobs:
                   DATABASE_URL: ${{ env.DATABASE_URL }}
                   DATABASE_PASSWORD: ${{ env.DATABASE_PASSWORD }}
                   AZURE_TENANT_ID: ${{ env.AZURE_TENANT_ID }}
-                  AZURE_CLIENT_ID: ${{ env.AZURE_CLIENT_ID }}
-                  AZURE_CLIENT_SECRET: ${{ env.AZURE_CLIENT_SECRET }}
+                  STORAGE_CLIENT_ID: ${{ env.STORAGE_CLIENT_ID }}
+                  STORAGE_CLIENT_SECRET: ${{ env.STORAGE_CLIENT_SECRET }}
                   AZURE_STORAGE_ACCOUNT_NAME: ${{ env.AZURE_STORAGE_ACCOUNT_NAME }}
                   AZURE_CONTAINER_NAME: ${{ env.AZURE_CONTAINER_NAME }}
                   BETTER_AUTH_SECRET: ${{ env.BETTER_AUTH_SECRET }}

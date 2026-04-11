@@ -76,8 +76,8 @@ async function writeTableToJSONBlob<T>(
 export async function authExportCore(deps: AuthExportDeps = defaultDeps): Promise<void> {
     const secrets = getSecrets();
     const tenantId = secrets.AZURE_TENANT_ID ?? '';
-    const clientId = secrets.AZURE_CLIENT_ID ?? '';
-    const clientSecret = secrets.AZURE_CLIENT_SECRET ?? '';
+    const clientId = secrets.STORAGE_CLIENT_ID ?? '';
+    const clientSecret = secrets.STORAGE_CLIENT_SECRET ?? '';
 
     try {
         const credentials = new ClientSecretCredential(tenantId, clientId, clientSecret);

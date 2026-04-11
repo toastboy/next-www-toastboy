@@ -10,8 +10,8 @@ ACCOUNT="$AZURE_STORAGE_ACCOUNT_NAME"
 
 # Authenticate using service principal
 az login --service-principal \
-  -u "$AZURE_CLIENT_ID" \
-  -p "$AZURE_CLIENT_SECRET" \
+  -u "$STORAGE_CLIENT_ID" \
+  -p "$STORAGE_CLIENT_SECRET" \
   --tenant "$AZURE_TENANT_ID" \
   --output none
 

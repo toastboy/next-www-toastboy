@@ -52,11 +52,17 @@ const getMockAuthUserFromCookie = (cookieHeader: string | null): Partial<AuthUse
  * Returns `true` when mock authentication is permitted.
  *
  * Mock auth is disabled in production to prevent cookie-based privilege
- * escalation. It is only available when `NODE_ENV` is explicitly set to
- * `'development'` or `'test'`.
+ * escalation. It is available when:
+ *  - `NODE_ENV` is `'development'` or `'test'`, OR
+ *  - `PLAYWRIGHT_TEST=true` is set (allows `next start` in production-build
+ *    mode to honour mock-auth cookies during CI Playwright runs).
  */
 export function isMockAuthEnabled(): boolean {
-    return process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test';
+    return (
+        process.env.NODE_ENV === 'development' ||
+        process.env.NODE_ENV === 'test' ||
+        process.env.PLAYWRIGHT_TEST === 'true'
+    );
 }
 
 /**

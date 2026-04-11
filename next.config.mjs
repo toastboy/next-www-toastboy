@@ -186,6 +186,9 @@ const sentryConfig = {
         automaticVercelMonitors: true,
     },
 
+    // Skip source-map upload when no auth token is present (e.g. CI PR builds)
+    disableSourceMapUpload: !process.env.SENTRY_AUTH_TOKEN,
+
     // This option and beyond added after running the wizard
     sourcemaps: {
         deleteSourcemapsAfterUpload: true,

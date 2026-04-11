@@ -12,6 +12,27 @@ jobs:
         runs-on: ubuntu-latest
         permissions:
             contents: read
+
+        env:
+            # Hardcoded CI-only values — none of these are production secrets.
+            DATABASE_PASSWORD: ci_test_password
+            DATABASE_URL: mysql://root:ci_test_password@127.0.0.1:33306/footy
+
+            # Any non-empty string works for Better Auth in tests (used for
+            # signing tokens; tests bypass auth via mock cookies).
+            BETTER_AUTH_SECRET: ci-better-auth-secret-for-playwright-tests-only
+
+            # Dummy OAuth credentials — tests use cookie-based mock auth and
+            # never trigger a real OAuth flow.
+            AUTH_GOOGLE_CLIENT_ID: dummy-google-client-id
+            AUTH_GOOGLE_CLIENT_SECRET: dummy-google-client-secret
+            AUTH_MICROSOFT_CLIENT_ID: dummy-microsoft-client-id
+            AUTH_MICROSOFT_CLIENT_SECRET: dummy-microsoft-client-secret
+
+            # Sentry source-map upload is disabled when SENTRY_AUTH_TOKEN is
+            # absent (see next.config.mjs disableSourceMapUpload). No token
+            # needed here.
+
         steps:
             - uses: actions/checkout@v6
             - uses: actions/setup-node@v6
@@ -19,37 +40,7 @@ jobs:
                   node-version: 24
             - name: Install dependencies
               run: npm ci
-            - name: Load secrets from 1Password and export to environment
-              uses: 1password/load-secrets-action@v4
-              with:
-                  export-env: true
-              env:
-                  OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-                  DATABASE_PASSWORD: "op://next-www-toastboy/Database - next-www-toastboy/password"
-                  DATABASE_URL: "op://next-www-toastboy/Database - next-www-toastboy/prisma url"
-                  AZURE_TENANT_ID: "op://next-www-toastboy/Terraform/tenant id"
-                  STORAGE_CLIENT_ID: "op://next-www-toastboy/App - Storage/username"
-                  STORAGE_CLIENT_SECRET: "op://next-www-toastboy/App - Storage/credential"
-                  BETTER_AUTH_SECRET: "op://next-www-toastboy/Better Auth/credential"
-                  AUTH_GOOGLE_CLIENT_ID: "op://next-www-toastboy/Auth - Google/username"
-                  AUTH_GOOGLE_CLIENT_SECRET: "op://next-www-toastboy/Auth - Google/credential"
-                  AUTH_MICROSOFT_CLIENT_ID: "op://next-www-toastboy/App - Auth/username"
-                  AUTH_MICROSOFT_CLIENT_SECRET: "op://next-www-toastboy/App - Auth/credential"
-                  SENTRY_AUTH_TOKEN: "op://next-www-toastboy/Sentry/credential"
-            - name: Configure local DATABASE_URL for CI
-              env:
-                  DATABASE_PASSWORD: ${{ env.DATABASE_PASSWORD }}
-              run: |
-                  python3 - <<'PY' "$GITHUB_ENV"
-                  import os, sys
-                  env_path = sys.argv[1]
-                  password = os.environ["DATABASE_PASSWORD"]
-                  with open(env_path, "a", encoding="utf-8") as fh:
-                      fh.write(f"DATABASE_URL=mysql://root:{password}@127.0.0.1:33306/footy\n")
-                  PY
             - name: Start docker stack (database, mailpit, etc.)
-              env:
-                  DATABASE_PASSWORD: ${{ env.DATABASE_PASSWORD }}
               run: docker compose up -d
             - name: Wait for database
               run: |
@@ -63,28 +54,20 @@ jobs:
                   exit 1
             - name: Push Prisma schema
               run: npx prisma db push
-            - name: Seed database (verbose, fail-fast)
+            - name: Seed database with faker data
               run: |
                   set -euo pipefail
                   npx prisma generate
-                  stdbuf -oL -eL npx tsx --tsconfig tsconfig.scripts.json -r tsconfig-paths/register prisma/seed.ts
+                  stdbuf -oL -eL npx tsx --tsconfig tsconfig.scripts.json -r tsconfig-paths/register prisma/seed.ci.ts
             - name: Build Next.js app
               run: npm run build
             - name: Install Playwright Browsers
               run: npx playwright install --with-deps
             - name: Run Playwright tests
               env:
-                  DATABASE_URL: ${{ env.DATABASE_URL }}
-                  DATABASE_PASSWORD: ${{ env.DATABASE_PASSWORD }}
-                  AZURE_TENANT_ID: ${{ env.AZURE_TENANT_ID }}
-                  STORAGE_CLIENT_ID: ${{ env.STORAGE_CLIENT_ID }}
-                  STORAGE_CLIENT_SECRET: ${{ env.STORAGE_CLIENT_SECRET }}
-                  BETTER_AUTH_SECRET: ${{ env.BETTER_AUTH_SECRET }}
-                  AUTH_GOOGLE_CLIENT_ID: ${{ env.AUTH_GOOGLE_CLIENT_ID }}
-                  AUTH_GOOGLE_CLIENT_SECRET: ${{ env.AUTH_GOOGLE_CLIENT_SECRET }}
-                  AUTH_MICROSOFT_CLIENT_ID: ${{ env.AUTH_MICROSOFT_CLIENT_ID }}
-                  AUTH_MICROSOFT_CLIENT_SECRET: ${{ env.AUTH_MICROSOFT_CLIENT_SECRET }}
-                  SENTRY_AUTH_TOKEN: ${{ env.SENTRY_AUTH_TOKEN }}
+                  # Enables cookie-based mock auth in the production-built server
+                  # (see src/lib/auth.server.ts isMockAuthEnabled).
+                  PLAYWRIGHT_TEST: 'true'
               run: npx playwright test
             - uses: actions/upload-artifact@v7
               if: always()

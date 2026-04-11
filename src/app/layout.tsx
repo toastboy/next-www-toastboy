@@ -38,6 +38,7 @@ export default async function RootLayout({
     children: React.ReactNode;
 }) {
     const user = await getCurrentUser();
+    const devMode = !(process.env.NODE_ENV === 'production' && !process.env.CI);
 
     return (
         <html lang="en" {...mantineHtmlProps}>
@@ -48,7 +49,7 @@ export default async function RootLayout({
                 <MantineProvider defaultColorScheme="light">
                     <Notifications />
                     {/* <BreakpointDebugger /> */}
-                    <CustomAppShell user={user}>
+                    <CustomAppShell user={user} devMode={devMode}>
                         {children}
                     </CustomAppShell>
                 </MantineProvider>

@@ -1,6 +1,6 @@
 'use client';
 
-import { AppShell, Burger, Container, Group, Image, Text } from '@mantine/core';
+import { AppShell, Badge, Burger, Container, Group, Image, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { usePathname } from 'next/navigation';
 import { Suspense, useEffect } from 'react';
@@ -15,6 +15,9 @@ export interface Props {
     children: React.ReactNode;
     /** Current signed-in user used to populate navigation affordances. */
     user?: AuthUserSummary | null;
+    /** Development mode: e.g. whether outbound email is routed to Mailpit
+     * rather than real inboxes. */
+    devMode?: boolean;
 }
 
 /**
@@ -23,7 +26,7 @@ export interface Props {
  * On small screens the navbar is automatically closed whenever the pathname
  * changes so a newly navigated page starts with the content unobscured.
  */
-export const CustomAppShell = ({ children, user }: Props) => {
+export const CustomAppShell = ({ children, user, devMode }: Props) => {
     const [opened, { toggle, close }] = useDisclosure();
     const pathname = usePathname();
 
@@ -58,7 +61,14 @@ export const CustomAppShell = ({ children, user }: Props) => {
                             fit="contain"
                             alt="Toastboy FC Crest"
                         />
-                        <Text>Toastboy FC</Text>
+                        <Group gap="xs">
+                            <Text>Toastboy FC</Text>
+                            {devMode ? (
+                                <Badge color="orange" variant="filled" size="sm">
+                                    dev mode
+                                </Badge>
+                            ) : null}
+                        </Group>
                     </Group>
                 </Container>
             </AppShell.Header>

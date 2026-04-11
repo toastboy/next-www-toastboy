@@ -6,7 +6,7 @@
 set -euo pipefail
 
 CONTAINER="countries"
-ACCOUNT="$AZURE_STORAGE_ACCOUNT_NAME"
+ACCOUNT="nextwwwtoastboy"
 
 # Authenticate using service principal
 az login --service-principal \

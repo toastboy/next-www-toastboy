@@ -125,6 +125,9 @@ async function importBackup(): Promise<void> {
         if (!process.env.IMP_PROD_MYSQL_HOST) {
             throw new Error('IMP_PROD_MYSQL_HOST undefined');
         }
+        if (!process.env.IMP_PROD_MYSQL_PORT) {
+            throw new Error('IMP_PROD_MYSQL_PORT undefined');
+        }
         if (!process.env.IMP_PROD_MYSQL_PASSWORD) {
             throw new Error('IMP_PROD_MYSQL_PASSWORD undefined');
         }
@@ -142,10 +145,6 @@ async function importBackup(): Promise<void> {
             throw new Error('IMP_DEV_MYSQL_PASSWORD undefined');
         }
 
-        if (!process.env.IMP_MYSQL_DATABASE) {
-            throw new Error('IMP_MYSQL_DATABASE undefined');
-        }
-
         if (!process.env.IMP_AZURE_TENANT_ID) {
             throw new Error('IMP_AZURE_TENANT_ID undefined');
         }
@@ -155,15 +154,10 @@ async function importBackup(): Promise<void> {
         if (!process.env.IMP_AZURE_CLIENT_SECRET) {
             throw new Error('IMP_AZURE_CLIENT_SECRET undefined');
         }
-        if (!process.env.IMP_AZURE_STORAGE_ACCOUNT_NAME) {
-            throw new Error('IMP_AZURE_STORAGE_ACCOUNT_NAME undefined');
-        }
-        if (!process.env.IMP_AZURE_CONTAINER_NAME) {
-            throw new Error('IMP_AZURE_CONTAINER_NAME undefined');
-        }
 
         const prodMysqlUser = process.env.IMP_PROD_MYSQL_USER;
         const prodMysqlHost = process.env.IMP_PROD_MYSQL_HOST;
+        const prodMysqlPort = process.env.IMP_PROD_MYSQL_PORT;
         const prodMysqlPassword = process.env.IMP_PROD_MYSQL_PASSWORD;
 
         const devMysqlUser = process.env.IMP_DEV_MYSQL_USER;
@@ -171,13 +165,15 @@ async function importBackup(): Promise<void> {
         const devMysqlPort = process.env.IMP_DEV_MYSQL_PORT;
         const devMysqlPassword = process.env.IMP_DEV_MYSQL_PASSWORD;
 
-        const mysqlDatabase = process.env.IMP_MYSQL_DATABASE;
+        const mysqlDatabase = 'footy';
+
         const tenantId = process.env.IMP_AZURE_TENANT_ID;
 
         const clientId = process.env.IMP_AZURE_CLIENT_ID;
         const clientSecret = process.env.IMP_AZURE_CLIENT_SECRET;
-        const storageAccountName = process.env.IMP_AZURE_STORAGE_ACCOUNT_NAME;
-        const containerName = process.env.IMP_AZURE_CONTAINER_NAME;
+
+        const storageAccountName = 'nextwwwtoastboy';
+        const containerName = 'dbseeddata';
 
         const credentials = new ClientSecretCredential(tenantId, clientId, clientSecret);
         const blobServiceClient = new BlobServiceClient(
@@ -193,7 +189,7 @@ async function importBackup(): Promise<void> {
 
         // Take a backup of the current live database
         console.log('Taking production mysql backup...');
-        shellExec(`mysqldump --skip-ssl -h ${prodMysqlHost} -u ${prodMysqlUser} -p${prodMysqlPassword} ${mysqlDatabase} arse club club_supporter country diffs game_chat game_day invitation misc nationality outcome picker picker_teams player > /tmp/${mysqlDatabase}.sql`);
+        shellExec(`mysqldump --skip-ssl -h ${prodMysqlHost} -P ${prodMysqlPort} -u ${prodMysqlUser} -p${prodMysqlPassword} ${mysqlDatabase} arse club club_supporter country diffs game_chat game_day invitation misc nationality outcome picker picker_teams player > /tmp/${mysqlDatabase}.sql`);
 
         // Get the list of directories in the migrations directory
         const migrationsDir = path.join(currentDir, '..', '..', '..', 'prisma', 'migrations');

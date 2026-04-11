@@ -78,11 +78,8 @@ async function main() {
     const clientSecret = process.env.STORAGE_CLIENT_SECRET;
     if (!clientSecret) throw new Error('STORAGE_CLIENT_SECRET undefined');
 
-    const storageAccountName = process.env.AZURE_STORAGE_ACCOUNT_NAME;
-    if (!storageAccountName) throw new Error('AZURE_STORAGE_ACCOUNT_NAME undefined');
-
-    const containerName = process.env.AZURE_CONTAINER_NAME;
-    if (!containerName) throw new Error('AZURE_CONTAINER_NAME undefined');
+    const storageAccountName = 'nextwwwtoastboy';
+    const containerName = 'dbseeddata';
 
     const credentials = new ClientSecretCredential(tenantId, clientId, clientSecret);
     const blobServiceClient = new BlobServiceClient(

@@ -35,7 +35,7 @@ export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     const [filter, setFilter] = useState('');
     const [active, setActive] = useState(true);
-    const [replyRange, setReplyRange] = useState<[number, number]>([0, 0]);
+    const [replyRange, setReplyRange] = useState<[number, number]>([0, gameDay.id]);
     const [selectedPlayers, setSelectedPlayers] = useState<PlayerDataType[]>([]);
     const [modalOpened, setModalOpened] = useState(false);
 

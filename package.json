@@ -16,7 +16,7 @@
         "lint:fix": "eslint . --fix",
         "lint": "eslint .",
         "migrate": "prisma migrate dev",
-        "start:ci": "next start --hostname 127.0.0.1 --port 3000",
+        "start:ci": "PLAYWRIGHT_TEST=true next start --hostname 127.0.0.1 --port 3000",
         "start": "docker compose up -d && next start",
         "stop": "docker compose down",
         "storybook": "storybook dev -p 6006",

@@ -5,5 +5,5 @@ test('rules page', async ({ page }) => {
     await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
     expect(response?.ok()).toBeTruthy();
     await expect(page).toHaveURL(/.*rules/);
-    await expect(page).toHaveTitle(/Toastboy FC Rules/);
+    await expect(page).toHaveTitle(/Rules \| Toastboy FC/);
 });

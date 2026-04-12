@@ -5,7 +5,7 @@ test('tables page', async ({ page }) => {
     await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
     expect(response?.ok()).toBeTruthy();
     await expect(page).toHaveURL(/.*tables/);
-    await expect(page).toHaveTitle(/Toastboy FC Tables/);
+    await expect(page).toHaveTitle(/Tables \| Toastboy FC/);
 
     const linkmap = new Map<string, string>([
         ['Points', '/footy/points'],

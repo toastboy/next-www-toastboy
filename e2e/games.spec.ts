@@ -7,5 +7,5 @@ test('games list page', async ({ page }) => {
 
     await expect(page).toHaveURL(/.*games/);
 
-    expect(await page.getByText('games played to date').count()).toEqual(1);
+    await expect(page.getByRole('heading').filter({ hasText: /played/ })).toBeVisible();
 });

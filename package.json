@@ -95,7 +95,7 @@
     "devDependencies": {
         "@chromatic-com/storybook": "^5.1.1",
         "@eslint/config-array": "^0.23.5",
-        "@eslint/js": "^9.39.2",
+        "@eslint/js": "^10.0.1",
         "@eslint/object-schema": "^3.0.5",
         "@faker-js/faker": "^10.4.0",
         "@next/eslint-plugin-next": "^16.2.3",
@@ -136,7 +136,7 @@
         "concurrently": "^9.2.1",
         "debug": "^4.4.3",
         "dotenv": "^17.4.1",
-        "eslint": "^9.39.2",
+        "eslint": "^10.2.0",
         "eslint-config-next": "^16.2.3",
         "eslint-plugin-eslint-comments": "^3.2.0",
         "eslint-plugin-import-x": "^4.16.2",

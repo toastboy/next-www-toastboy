@@ -54,11 +54,6 @@ jobs:
                   exit 1
             - name: Push Prisma schema
               run: npx prisma db push
-            - name: Seed database with faker data
-              run: |
-                  set -euo pipefail
-                  npx prisma generate
-                  stdbuf -oL -eL npx tsx --tsconfig tsconfig.scripts.json -r tsconfig-paths/register prisma/seed.ci.ts
             - name: Build Next.js app
               run: npm run build
             - name: Install Playwright Browsers

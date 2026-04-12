@@ -18,6 +18,25 @@ services:
       timeout: 5s
       retries: 5
 
+  db-test:
+    image: mariadb:lts
+    restart: always
+    environment:
+      MARIADB_ROOT_PASSWORD: playwright_test_password
+    ports:
+      - "33307:3306"
+    volumes:
+      - db_test_data:/var/lib/mysql
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mariadb-admin ping -h localhost -u root -pplaywright_test_password || exit 1",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
   mailpit:
     image: axllent/mailpit
     restart: always
@@ -27,3 +46,4 @@ services:
 
 volumes:
   db_data:
+  db_test_data:

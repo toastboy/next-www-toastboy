@@ -1,12 +1,17 @@
 import * as path from 'node:path';
 
 import { defineConfig, devices } from '@playwright/test';
+import * as dotenv from 'dotenv';
 
-// Extract base URL to a constant to avoid duplication.
-const BASE_URL = 'http://127.0.0.1:3000';
+// CI uses port 3000 (no dev server conflict); local uses 3001 so playwright
+// and the regular dev server can run simultaneously without clashing.
+const BASE_URL = process.env.CI ? 'http://127.0.0.1:3000' : 'http://127.0.0.1:3001';
 
-// Extract env file path using robust path resolution.
-const ENV_PATH = path.join(__dirname, '.env');
+// Load playwright-specific env vars for local runs (no 1Password needed).
+// CI sets its own env vars directly; we don't want to override them.
+if (!process.env.CI) {
+    dotenv.config({ path: path.join(__dirname, '.env.playwright'), override: true });
+}
 
 /**
  * Read environment variables from file.
@@ -18,6 +23,7 @@ const ENV_PATH = path.join(__dirname, '.env');
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
+    globalSetup: './e2e/global-setup.ts',
     testDir: './e2e',
     timeout: 120000, // 2 minutes for tests with many stories
     expect: {
@@ -94,13 +100,10 @@ export default defineConfig({
 
     /* Run your local dev server before starting the tests */
     webServer: {
-        command: process.env.CI ?
-            'npm run start:ci' :
-            `op run --env-file "${ENV_PATH}" -- npm run dev`,
+        command: process.env.CI ? 'npm run start:ci' : 'npm run start:playwright',
         url: BASE_URL,
         stdout: 'pipe',
         stderr: 'pipe',
-        // See https://playwright.dev/docs/test-advanced
         reuseExistingServer: !process.env.CI,
     },
 });

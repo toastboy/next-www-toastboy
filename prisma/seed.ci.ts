@@ -91,6 +91,7 @@ async function main() {
         game: boolean;
         cost: number;
         hallCost: number;
+        mailSent: Date | null;
     }[] = [];
 
     let gameDayId = 1;
@@ -98,6 +99,11 @@ async function main() {
     let current = nextFriday(new Date(now.getFullYear() - 2, now.getMonth(), now.getDate()));
 
     while (current < now) {
+        // mailSent is set on historical games (Tuesday before the game) so that
+        // getCurrent() (which requires mailSent IS NOT NULL) returns the most
+        // recent past game — needed by the drinkers and responses admin pages.
+        const mailSent = new Date(current);
+        mailSent.setDate(mailSent.getDate() - 3); // Tuesday before the Friday game
         gameDays.push({
             id: gameDayId++,
             year: current.getFullYear(),
@@ -105,6 +111,7 @@ async function main() {
             game: true,
             cost: COST_PENCE,
             hallCost: HALL_COST_PENCE,
+            mailSent,
         });
         current.setDate(current.getDate() + 7);
     }
@@ -116,6 +123,7 @@ async function main() {
         game: true,
         cost: COST_PENCE,
         hallCost: HALL_COST_PENCE,
+        mailSent: null,
     };
     gameDays.push(upcomingGame);
 

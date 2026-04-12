@@ -14,19 +14,19 @@ const groupCount = async (group: Locator) => {
 
 test.describe('Responses admin page', () => {
     test('denies access to guest users', async ({ page }) => {
-        await asGuest(page, '/footy/responses');
+        await asGuest(page, '/footy/admin/responses');
 
         await expect(page.locator('[data-testid="must-be-admin"]')).toBeVisible();
     });
 
     test('denies access to regular users', async ({ page }) => {
-        await asUser(page, '/footy/responses');
+        await asUser(page, '/footy/admin/responses');
 
         await expect(page.locator('[data-testid="must-be-admin"]')).toBeVisible();
     });
 
     test('admin can update responses form through realistic response changes', async ({ page }) => {
-        await asAdmin(page, '/footy/responses');
+        await asAdmin(page, '/footy/admin/responses');
 
         await expect(page.locator('[data-testid="must-be-admin"]')).not.toBeVisible();
         await expect(page.getByRole('heading', { name: /Responses/i })).toBeVisible();

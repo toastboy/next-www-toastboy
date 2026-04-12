@@ -67,7 +67,7 @@ export async function setAuthState(
 export async function asGuest(page: Page, uri?: string): Promise<void> {
     await setAuthState(page, 'none');
     if (uri) {
-        await page.goto(uri, { waitUntil: 'domcontentloaded' });
+        await page.goto(uri, { waitUntil: 'networkidle' });
     }
 }
 
@@ -84,7 +84,7 @@ export async function asGuest(page: Page, uri?: string): Promise<void> {
 export async function asUser(page: Page, uri?: string, user?: MockAuthUser): Promise<void> {
     await setAuthState(page, 'user', user);
     if (uri) {
-        await page.goto(uri, { waitUntil: 'domcontentloaded' });
+        await page.goto(uri, { waitUntil: 'networkidle' });
     }
 }
 
@@ -101,7 +101,7 @@ export async function asUser(page: Page, uri?: string, user?: MockAuthUser): Pro
 export async function asAdmin(page: Page, uri?: string, user?: MockAuthUser): Promise<void> {
     await setAuthState(page, 'admin', user);
     if (uri) {
-        await page.goto(uri, { waitUntil: 'domcontentloaded' });
+        await page.goto(uri, { waitUntil: 'networkidle' });
     }
 }
 

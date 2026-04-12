@@ -186,13 +186,19 @@ const sentryConfig = {
         automaticVercelMonitors: true,
     },
 
-    // Skip source-map upload when no auth token is present (e.g. CI PR builds)
-    disableSourceMapUpload: !process.env.SENTRY_AUTH_TOKEN,
-
     // This option and beyond added after running the wizard
     sourcemaps: {
         deleteSourcemapsAfterUpload: true,
     },
 };
 
-export default withSentryConfig(nextConfig, sentryConfig);
+// Skip the Sentry webpack plugin entirely when no auth token is present
+// (e.g. CI PR builds). The plugin runs sentry-cli for release creation AND
+// source-map upload — both operations need a valid token. Without a token,
+// `disableSourceMapUpload` alone isn't enough: release creation still fires
+// and fails with 401. Bypassing withSentryConfig avoids all CLI operations
+// while keeping runtime error tracking intact (sentry.server.config.ts etc.
+// are still loaded at runtime regardless).
+export default process.env.SENTRY_AUTH_TOKEN ?
+    withSentryConfig(nextConfig, sentryConfig) :
+    nextConfig;

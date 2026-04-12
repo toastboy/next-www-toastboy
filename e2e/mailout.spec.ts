@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 
 import { asGuest, asUser } from './utils/auth';
+import { deleteAllMessages, getMessageDetail, waitForMessage } from './utils/mailpit';
 
 test.describe('Mail active players', () => {
     test('denies access to guest users', async ({ page }) => {
@@ -9,16 +10,14 @@ test.describe('Mail active players', () => {
         await expect(page.locator('[data-testid="must-be-logged-in"]')).toBeVisible();
     });
 
-    test('mail active players', async ({ page }) => {
+    test('mail active players', async ({ page, request }) => {
         const subject = 'Test missive';
         const body = 'This is a test of the emergency broadcast system.';
 
         await asUser(page, '/footy/mailout');
 
         await expect(page.locator('[data-testid="must-be-logged-in"]')).not.toBeVisible();
-
         await expect(page).toHaveURL(/\/footy\/players/);
-
         await expect(page.getByTestId('players-table')).toHaveAttribute('data-row-count', /[1-9]/);
 
         await page.getByTestId('players-select-all').click();
@@ -32,17 +31,12 @@ test.describe('Mail active players', () => {
         await page.getByTestId('send-email-submit').click();
         await expect(page.getByText('Email sent successfully')).toBeVisible();
 
-        // Check Mailpit for the email, then delete it
+        const message = await waitForMessage(request, subject);
+        expect(message, `Expected email with subject "${subject}" in Mailpit`).toBeTruthy();
 
-        const response = await page.goto('http://localhost:8025/');
-        await page.waitForLoadState('networkidle');
-        expect(response?.ok()).toBeTruthy();
+        const detail = await getMessageDetail(request, message!.ID);
+        expect(detail.Text).toContain(body);
 
-        await expect(page.getByText(subject).first()).toBeVisible({ timeout: 30000 });
-        await expect(page.getByText(body).first()).toBeVisible({ timeout: 30000 });
-
-        await page.getByRole('button', { name: 'Delete all' }).click();
-        await page.locator('button.btn.btn-danger[data-bs-dismiss="modal"]', { hasText: 'Delete' }).waitFor({ state: 'visible' });
-        await page.locator('button.btn.btn-danger[data-bs-dismiss="modal"]', { hasText: 'Delete' }).click();
+        await deleteAllMessages(request);
     });
 });

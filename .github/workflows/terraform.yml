@@ -76,7 +76,7 @@ jobs:
 
             - name: Install 1Password CLI
               if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-              uses: 1password/install-cli-action@v1
+              uses: 1password/install-cli-action@v3
 
             - name: Sync Terraform outputs to 1Password
               if: github.event_name == 'push' && github.ref == 'refs/heads/main'

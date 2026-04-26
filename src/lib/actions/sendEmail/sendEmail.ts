@@ -67,7 +67,7 @@ export async function sendEmailCore(mailOptions: SendMailOptions) {
             mailOptions.html ?? undefined;
 
     try {
-        if (process.env.NODE_ENV === 'production' && !process.env.CI) {
+        if (process.env.NODE_ENV === 'production' && !process.env.CI && process.env.PLAYWRIGHT_TEST !== 'true') {
             await sendViaGraphApi(
                 {
                     to: recipientToString(mailOptions.to),

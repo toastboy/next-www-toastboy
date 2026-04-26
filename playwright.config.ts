@@ -5,7 +5,7 @@ import * as dotenv from 'dotenv';
 
 // CI uses port 3000 (no dev server conflict); local uses 3001 so playwright
 // and the regular dev server can run simultaneously without clashing.
-const BASE_URL = process.env.CI ? 'http://127.0.0.1:3000' : 'http://127.0.0.1:3001';
+const BASE_URL = process.env.CI ? 'http://127.0.0.1:3000' : 'http://127.0.0.1:3002';
 
 // Load playwright-specific env vars for local runs (no 1Password needed).
 // CI sets its own env vars directly; we don't want to override them.

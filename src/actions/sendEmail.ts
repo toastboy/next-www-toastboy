@@ -3,7 +3,7 @@
 import type { SendMailOptions } from 'nodemailer';
 
 import { sendEmailCore } from '@/lib/actions/sendEmail';
-import { requireAdmin } from '@/lib/auth.server';
+import { requireUser } from '@/lib/auth.server';
 
 /**
  * Sends an email using the appropriate SMTP server configuration based on the environment.
@@ -16,7 +16,7 @@ import { requireAdmin } from '@/lib/auth.server';
  * @throws Will throw an error if the email fails to send.
  */
 export async function sendEmail(mailOptions: SendMailOptions) {
-    await requireAdmin();
+    await requireUser();
 
     await sendEmailCore(mailOptions);
 }

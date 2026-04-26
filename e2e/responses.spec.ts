@@ -61,16 +61,9 @@ test.describe('Responses admin page', () => {
                 responseSelect;
             await target.click();
 
-            const controlsId = await target.getAttribute('aria-controls');
-            if (controlsId) {
-                await page.locator(`#${controlsId}`).getByRole('option', { name: response, exact: true }).click();
-                return;
-            }
-
-            await page
-                .locator('[data-combobox-dropdown]:visible')
-                .getByRole('option', { name: response, exact: true })
-                .click();
+            // React 19 Activity hides inactive dropdown options with display:none,
+            // so getByRole only finds the currently open dropdown's options.
+            await page.getByRole('option', { name: response, exact: true }).click();
         };
 
         const expectResponseValue = async (row: Locator, response: ResponseOption) => {

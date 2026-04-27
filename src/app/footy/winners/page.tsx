@@ -5,6 +5,7 @@ import { TableName, TableNameSchema } from 'prisma/zod/schemas';
 import { cache } from 'react';
 import z from 'zod';
 
+import { TitleWithYearDropdown } from '@/components/TitleWithYearDropdown/TitleWithYearDropdown';
 import { WinnersTable } from '@/components/WinnersTable/WinnersTable';
 import { YearSelector } from '@/components/YearSelector/YearSelector';
 import { getYearName } from '@/lib/utils';
@@ -62,6 +63,7 @@ const WinnersPage = async (props: PageProps) => {
 
     return (
         <Stack align="stretch" justify="center" gap="md">
+            <TitleWithYearDropdown title="Winners" activeYear={year} validYears={allYears} />
             <YearSelector activeYear={year} validYears={allYears} />
             <Title w="100%" ta="center" order={1}>Winners</Title>
             <Grid>

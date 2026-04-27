@@ -56,7 +56,7 @@ describe('PlayerList', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByRole('heading', { level: 1, name: '1 Active Players' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { level: 1, name: '2 Active Players' })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Alice Active' })).toBeInTheDocument();
         expect(screen.queryByRole('link', { name: 'Bob Former' })).not.toBeInTheDocument();
 
@@ -77,7 +77,7 @@ describe('PlayerList', () => {
 
         await user.click(screen.getByRole('switch', { name: 'Active' }));
 
-        expect(screen.getByRole('heading', { level: 1, name: '2 Active and Former Players' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { level: 1, name: '3 Active and Former Players' })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Bob Former' })).toBeInTheDocument();
 
         const getFirstRow = () => screen.getAllByTestId('players-table-row')[0];
@@ -85,7 +85,7 @@ describe('PlayerList', () => {
 
         await user.click(screen.getByRole('columnheader', { name: /Name/ }));
 
-        expect(within(getFirstRow()).getByRole('link', { name: 'Bob Former' })).toBeInTheDocument();
+        expect(within(getFirstRow()).getByRole('link', { name: 'Charlie Active' })).toBeInTheDocument();
     });
 
     it('selects visible players and opens SendEmailForm', async () => {
@@ -101,14 +101,15 @@ describe('PlayerList', () => {
 
         await user.click(screen.getByTestId('players-select-all'));
 
-        expect(screen.getByText('Selected: 1')).toBeInTheDocument();
+        expect(screen.getByText('Selected: 2')).toBeInTheDocument();
         expect(sendEmailButton).toBeEnabled();
 
         await user.click(sendEmailButton);
 
         const [sendEmailFormProps] = extractMockProps<SendEmailFormProps>('SendEmailForm');
         expect(sendEmailFormProps.opened).toBe(true);
-        expect(sendEmailFormProps.players).toHaveLength(1);
+        expect(sendEmailFormProps.players).toHaveLength(2);
         expect(sendEmailFormProps.players[0]?.id).toBe(1);
+        expect(sendEmailFormProps.players[1]?.id).toBe(3);
     });
 });

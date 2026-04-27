@@ -32,14 +32,14 @@ export function TitleWithYearDropdown({ title, activeYear, validYears }: Props) 
         <Group gap={"xs"} align={"center"}>
             <Title order={2}>{title}</Title>
 
-            <Menu shadow={"md"} width={180}>
+            <Menu shadow={"md"} width={180} styles={{ dropdown: { maxHeight: '60vh', overflowY: 'auto' } }}>
                 <Menu.Target>
                     <UnstyledButton
                         style={{ /* match Title h2 size */
                             fontSize: 'var(--mantine-h2-font-size)',
                             fontWeight: 'var(--mantine-h2-font-weight)',
-                            color: 'var(--mantine-color-blue-7)',
-                            border: '1px solid var(--mantine-color-blue-3)',
+                            color: 'var(--mantine-color-anchor)',
+                            border: '1px solid var(--mantine-primary-color-3)',
                             borderRadius: 'var(--mantine-radius-sm)',
                             padding: '0 8px',
                         }}

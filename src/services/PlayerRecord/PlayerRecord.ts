@@ -124,11 +124,11 @@ export class PlayerRecordService {
             const filteredRecords = records.filter(
                 (record) => seasonEnderSet.has(record.gameDayId) || record.year === 0,
             );
-            // Move zero values to the end
+            // Move zero values to the start of the list, otherwise sort by descending year
             const years = filteredRecords.map(r => r.year).sort((a, b) => {
-                if (a === 0) return 1;
-                if (b === 0) return -1;
-                return a - b;
+                if (a === 0) return -1;
+                if (b === 0) return 1;
+                return b - a;
             });
             const distinctYears = Array.from(new Set(years));
 

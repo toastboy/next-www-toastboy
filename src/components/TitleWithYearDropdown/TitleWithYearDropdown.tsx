@@ -1,5 +1,6 @@
 'use client';
 
+import type { TitleOrder } from '@mantine/core';
 import { Group, Menu, Title, UnstyledButton } from '@mantine/core';
 import { IconCheck, IconChevronDown } from '@tabler/icons-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -8,11 +9,12 @@ import { useCallback } from 'react';
 
 export interface Props {
     title: string;
+    order: TitleOrder;
     activeYear: number;
     validYears: number[];
 }
 
-export function TitleWithYearDropdown({ title, activeYear, validYears }: Props) {
+export function TitleWithYearDropdown({ title, order, activeYear, validYears }: Props) {
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -30,14 +32,14 @@ export function TitleWithYearDropdown({ title, activeYear, validYears }: Props) 
 
     return (
         <Group gap={"xs"} align={"center"}>
-            <Title order={2}>{title}</Title>
+            <Title order={order}>{title}</Title>
 
             <Menu shadow={"md"} width={180} styles={{ dropdown: { maxHeight: '60vh', overflowY: 'auto' } }}>
                 <Menu.Target>
                     <UnstyledButton
-                        style={{ /* match Title h2 size */
-                            fontSize: 'var(--mantine-h2-font-size)',
-                            fontWeight: 'var(--mantine-h2-font-weight)',
+                        style={{
+                            fontSize: `var(--mantine-h${order}-font-size)`,
+                            fontWeight: `var(--mantine-h${order}-font-weight)`,
                             color: 'var(--mantine-color-anchor)',
                             border: '1px solid var(--mantine-primary-color-3)',
                             borderRadius: 'var(--mantine-radius-sm)',

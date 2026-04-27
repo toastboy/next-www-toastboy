@@ -1,4 +1,4 @@
-import { Grid, GridCol, Stack, Title } from '@mantine/core';
+import { Grid, GridCol, Stack } from '@mantine/core';
 import { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { TableName, TableNameSchema } from 'prisma/zod/schemas';
@@ -62,8 +62,8 @@ const WinnersPage = async (props: PageProps) => {
 
     return (
         <Stack align="stretch" justify="center" gap="md">
-            <TitleWithYearDropdown title="Winners" activeYear={year} validYears={allYears} />
-            <Title w="100%" ta="center" order={1}>Winners</Title>
+            <TitleWithYearDropdown order={1} title="Winners" activeYear={year} validYears={allYears} />
+            {/* <Title order={1} w="100%" ta="center">Winners</Title> */}
             <Grid>
                 {
                     Array.from(winners.entries()).map(([table, records]) => {

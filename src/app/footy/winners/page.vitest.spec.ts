@@ -22,8 +22,8 @@ vi.mock('components/WinnersTable/WinnersTable', () => ({
     WinnersTable: () => null,
 }));
 
-vi.mock('components/YearSelector/YearSelector', () => ({
-    YearSelector: () => null,
+vi.mock('components/TitleWithYearDropdown/TitleWithYearDropdown', () => ({
+    TitleWithYearDropdown: () => null,
 }));
 
 import Page from '@/app/footy/winners/page';

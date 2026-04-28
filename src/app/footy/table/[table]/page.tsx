@@ -91,8 +91,8 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
  * - Resolves route and query parameters via `unpackParams`.
  * - Fetches both qualified and unqualified player records for the selected
  *   table/year.
- * - Displays a `YearSelector` and a `YearTable` populated with the retrieved
- *   data.
+ * - Displays a `TitleWithYearDropdown` and a `YearTable` populated with the
+ *   retrieved data.
  *
  * @param props - Next.js page props containing dynamic route params and search
  * params.

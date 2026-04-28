@@ -85,7 +85,6 @@ src/components/ResponsesForm/ResponsesFormSkeleton.tsx
 src/components/Skeletons/Skeletons.tsx
 src/components/Turnout/TurnoutSkeleton.tsx
 src/components/WinnersTable/WinnersTableSkeleton.tsx
-src/components/YearSelector/YearSelectorSkeleton.tsx
 src/components/YearTable/YearTableSkeleton.tsx
 src/instrumentation-client.ts
 src/instrumentation.ts

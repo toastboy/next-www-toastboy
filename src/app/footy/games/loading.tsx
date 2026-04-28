@@ -3,7 +3,7 @@ import { Flex, Skeleton } from '@mantine/core';
 import { GameDayListSkeleton } from '@/components/GameDayList/GameDayListSkeleton';
 import { TitleWithYearDropdownSkeleton } from '@/components/TitleWithYearDropdown/TitleWithYearDropdownSkeleton';
 
-/** Skeleton placeholder matching the GamesPage layout (YearSelector + title + GameDayList grid). */
+/** Skeleton placeholder matching the GamesPage layout (TitleWithYearDropdown + title + GameDayList grid). */
 const Loading = () => (
     <Flex direction="column" align="center" gap="lg">
         <TitleWithYearDropdownSkeleton />

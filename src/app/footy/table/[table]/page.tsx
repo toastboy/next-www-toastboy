@@ -53,6 +53,7 @@ const unpackParams = cache(async (
 
     const resolvedSearchParams = await searchParams;
     const allYears = await playerRecordService.getAllYears({
+        completed: false,
         mostRecentFirst: true,
     });
     const yearResult = z.coerce.number().int().min(0).safeParse(resolvedSearchParams?.year ?? 0);

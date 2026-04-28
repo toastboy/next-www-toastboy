@@ -109,46 +109,34 @@ export class PlayerRecordService {
         mostRecentFirst = false,
     }): Promise<number[]> {
         try {
-            // TODO: This needs optimising: can probably do a lot more with the
-            // database query and less in-memory. For example, if we can get the
-            // database to filter to season enders then we won't need to fetch
-            // all records or do any in-memory filtering/sorting.
-            const now = new Date();
-            const seasonEndersToNow = await gameDayService.getSeasonEnders(now);
-            const seasonEnders = completed ?
-                (await gameDayService.getSeasonEnders()).filter((ender) => seasonEndersToNow.includes(ender)) :
-                seasonEndersToNow;
-            const seasonEnderSet = new Set(
-                seasonEnders.filter((ender): ender is number => ender !== null),
-            );
-            const records = await prisma.playerRecord.findMany({
-                select: {
-                    gameDayId: true,
-                    year: true,
+            let lastGamesEachYear = await prisma.gameDay.groupBy({
+                by: ['year'],
+                where: {
+                    game: true,
                 },
-                orderBy: {
-                    year: 'asc',
+                _max: {
+                    id: true,
                 },
             });
-            const filteredRecords = records.filter(
-                (record) => seasonEnderSet.has(record.gameDayId) || record.year === 0,
-            );
-            const years = mostRecentFirst ?
-                // Move zero values to the start of the list, otherwise sort by descending year
-                filteredRecords.map(r => r.year).sort((a, b) => {
-                    if (a === 0) return -1;
-                    if (b === 0) return 1;
-                    return b - a;
-                }) :
-                // Move zero values to the end and sort by ascending year
-                filteredRecords.map(r => r.year).sort((a, b) => {
-                    if (a === 0) return 1;
-                    if (b === 0) return -1;
-                    return a - b;
-                });
-            const distinctYears = Array.from(new Set(years));
 
-            return Promise.resolve(distinctYears);
+            if (completed) {
+                const yearsWithUnplayedGames = await prisma.gameDay.groupBy({
+                    by: ['year'],
+                    where: {
+                        game: true,
+                        date: { gt: new Date() },
+                    },
+                });
+
+                const yearsToRemove = new Set(yearsWithUnplayedGames.map(y => y.year));
+                lastGamesEachYear = lastGamesEachYear.filter(r => !yearsToRemove.has(r.year));
+            }
+
+            const years = lastGamesEachYear?.map((r) => r.year) ?? [];
+
+            return mostRecentFirst ?
+                [0, ...years.sort((a, b) => b - a)] :
+                [...years.sort((a, b) => a - b), 0];
         } catch (error) {
             throw normalizeUnknownError(error);
         }

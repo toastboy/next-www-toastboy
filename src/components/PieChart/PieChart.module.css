@@ -1,0 +1,27 @@
+.svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.wrapper {
+    /*
+     * Constrains the chart wrapper relative to the viewport so the pie chart
+     * remains visible without dominating the page on taller screens.
+     */
+    --pie-chart-wrapper-height: 75vh;
+    /*
+     * Reserves space above the chart content for the surrounding page layout.
+     * This preserves the existing visual offset without relying on an
+     * unexplained literal value in the property itself.
+     */
+    --pie-chart-wrapper-padding-top: 4rem;
+
+    display: block;
+    align-self: center;
+    width: 100%;
+    height: var(--pie-chart-wrapper-height);
+    aspect-ratio: 1;
+    overflow: hidden;
+    padding-top: var(--pie-chart-wrapper-padding-top);
+}

@@ -21,7 +21,5 @@ export const Primary: Story = {
             { label: 'Draws', value: 4 },
             { label: 'Losses', value: 6 },
         ],
-        width: 320,
-        height: 320,
     },
 };

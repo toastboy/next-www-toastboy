@@ -14,6 +14,7 @@ vi.mock('react', async () => {
 vi.mock('@mantine/core', () => ({
     Grid: () => null,
     GridCol: () => null,
+    Group: () => null,
     Stack: () => null,
     Title: () => null,
 }));
@@ -25,6 +26,7 @@ vi.mock('components/WinnersTable/WinnersTable', () => ({
 vi.mock('components/TitleWithYearDropdown/TitleWithYearDropdown', () => ({
     TitleWithYearDropdown: () => null,
 }));
+
 
 import Page from '@/app/footy/winners/page';
 import playerRecordService from '@/services/PlayerRecord';

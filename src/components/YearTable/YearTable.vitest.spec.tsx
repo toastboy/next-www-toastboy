@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import { TableNameSchema } from 'prisma/zod/schemas';
 import { vi } from 'vitest';
 
-import { Props as TableQualifiedProps } from '@/components/RecordsTable/RecordsTable';
+import { Props as RecordsTableProps } from '@/components/RecordsTable/RecordsTable';
 import { YearTable } from '@/components/YearTable/YearTable';
 import { extractMockProps, Wrapper } from '@/tests/components/lib/common';
 import { defaultPlayerRecordDataList } from '@/tests/mocks/data/playerRecordData';
@@ -23,9 +23,8 @@ describe('YearTable', () => {
             </Wrapper>,
         );
 
-        const props = extractMockProps<TableQualifiedProps>("RecordsTable");
+        const props = extractMockProps<RecordsTableProps>("RecordsTable");
         expect(props.length).toBe(1);
-        expect(props[0].title).toBe('2024 Points Table');
         expect(props[0].year).toBe(2024);
     });
 
@@ -41,11 +40,9 @@ describe('YearTable', () => {
             </Wrapper>,
         );
 
-        const props = extractMockProps<TableQualifiedProps>("RecordsTable");
+        const props = extractMockProps<RecordsTableProps>("RecordsTable");
         expect(props.length).toBe(2);
         expect(props[0].year).toBe(2024);
-        expect(props[0].title).toBe('2024 Averages Table');
         expect(props[1].year).toBe(2024);
-        expect(props[1].title).toBe('Played Fewer than 10 Games');
     });
 });

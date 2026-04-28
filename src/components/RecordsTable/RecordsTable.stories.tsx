@@ -19,7 +19,6 @@ type Story = StoryObj<typeof meta>;
 export const Primary: Story = {
     args: {
         table: 'points',
-        title: 'Football Peace Prize Standings',
         year: 2025,
         records: defaultPlayerRecordDataList,
     },

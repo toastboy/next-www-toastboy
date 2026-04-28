@@ -18,7 +18,6 @@ describe('RecordsTable', () => {
             <Wrapper>
                 <RecordsTable
                     table={TableNameSchema.enum.points}
-                    title="2024 Points Table"
                     year={2024}
                     records={defaultPlayerRecordDataList}
                 />

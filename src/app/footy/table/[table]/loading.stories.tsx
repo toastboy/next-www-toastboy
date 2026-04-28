@@ -31,7 +31,6 @@ export const Comparison: Story = {
                 <Text fw={700} c="dimmed" ta="center">Loaded</Text>
                 <RecordsTable
                     table="points"
-                    title="Football Peace Prize Standings"
                     year={2025}
                     records={defaultPlayerRecordDataList}
                 />

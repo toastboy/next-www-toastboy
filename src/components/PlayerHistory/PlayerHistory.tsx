@@ -3,8 +3,9 @@ import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.sc
 
 import { PlayerPositions } from '@/components/PlayerPositions/PlayerPositions';
 import { PlayerResults } from '@/components/PlayerResults/PlayerResults';
-import { YearSelector } from '@/components/YearSelector/YearSelector';
 import { PlayerDisplayType } from '@/services/Player';
+
+import { TitleWithYearDropdown } from '../TitleWithYearDropdown/TitleWithYearDropdown';
 
 export interface Props {
     player: PlayerDisplayType;
@@ -19,17 +20,12 @@ export const PlayerHistory = ({
     year,
     record,
 }: Props) => {
+    // TODO: the name 'activeYear' is clumsy. Just use 'year'
     return (
         <Container data-testid="player-history">
-            <div data-testid="player-history-year-selector">
-                <YearSelector activeYear={year} validYears={activeYears} />
-            </div>
-            <div data-testid="player-history-results">
-                <PlayerResults player={player} year={year} record={record} />
-            </div>
-            <div data-testid="player-history-positions">
-                <PlayerPositions player={player} year={year} record={record} />
-            </div>
+            <TitleWithYearDropdown order={2} title={`History: `} activeYear={year} validYears={activeYears} />
+            <PlayerResults player={player} year={year} record={record} />
+            <PlayerPositions player={player} year={year} record={record} />
         </Container>
     );
 };

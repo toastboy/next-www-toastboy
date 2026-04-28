@@ -1,11 +1,12 @@
+import { Group } from '@mantine/core';
 import { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { TableNameSchema } from 'prisma/zod/schemas';
 import { cache } from 'react';
 import z from 'zod';
 
-import { YearSelector } from '@/components/YearSelector/YearSelector';
-import { QualifiedTableName, YearTable } from '@/components/YearTable/YearTable';
+import { TitleWithYearDropdown } from '@/components/TitleWithYearDropdown/TitleWithYearDropdown';
+import { QualifiedTableName, TableTitle, YearTable } from '@/components/YearTable/YearTable';
 import playerRecordService from '@/services/PlayerRecord';
 
 interface PageProps {
@@ -51,7 +52,9 @@ const unpackParams = cache(async (
     const table = tableResult.data;
 
     const resolvedSearchParams = await searchParams;
-    const allYears = await playerRecordService.getAllYears();
+    const allYears = await playerRecordService.getAllYears({
+        mostRecentFirst: true,
+    });
     const yearResult = z.coerce.number().int().min(0).safeParse(resolvedSearchParams?.year ?? 0);
     const year = yearResult.success ? yearResult.data : undefined;
     if (year === undefined || !allYears.includes(year)) notFound();
@@ -103,7 +106,9 @@ const TablePage = async (props: PageProps) => {
 
     return (
         <>
-            <YearSelector activeYear={year} validYears={allYears} />
+            <Group justify="center" w="100%">
+                <TitleWithYearDropdown order={1} title={`${TableTitle(table)}: `} activeYear={year} validYears={allYears} />
+            </Group>
             <YearTable
                 table={table}
                 year={year}

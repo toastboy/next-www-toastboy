@@ -1,15 +1,14 @@
-import { Grid, GridCol, Group, Stack } from '@mantine/core';
+import { Flex, Group } from '@mantine/core';
 import { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
-import { TableName, TableNameSchema } from 'prisma/zod/schemas';
 import { cache } from 'react';
 import z from 'zod';
 
+import { CurseOfTheBibs } from '@/components/CurseOfTheBibs/CurseOfTheBibs';
 import { TitleWithYearDropdown } from '@/components/TitleWithYearDropdown/TitleWithYearDropdown';
-import { WinnersTable } from '@/components/WinnersTable/WinnersTable';
 import { getYearName } from '@/lib/utils';
+import outcomeService from '@/services/Outcome';
 import playerRecordService from '@/services/PlayerRecord';
-import { PlayerRecordDataType } from '@/types';
 
 interface PageProps {
     searchParams?: Promise<{
@@ -44,9 +43,9 @@ const unpackParams = cache(async (
     if (year === undefined || !allYears.includes(year)) notFound();
 
     const canonicalSearch = year ? `?year=${year}` : '';
-    const canonicalUrl = `/footy/winners${canonicalSearch}`;
+    const canonicalUrl = `/footy/curse${canonicalSearch}`;
     const currentSearch = resolvedSearchParams?.year ? `?year=${resolvedSearchParams.year}` : '';
-    const currentUrl = `/footy/winners${currentSearch}`;
+    const currentUrl = `/footy/curse${currentSearch}`;
     if (currentUrl !== canonicalUrl) permanentRedirect(canonicalUrl);
 
     return { year, allYears };
@@ -57,49 +56,37 @@ const unpackParams = cache(async (
  * @param props - The page properties containing params and searchParams
  * @param props.params - The route parameters
  * @param props.searchParams - The search query parameters
- * @returns A promise that resolves to the page metadata with the qualified
- * table name as title
+ * @returns A promise that resolves to the page metadata with the chart name as
+ * title
  */
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
     const { year } = await unpackParams(props.searchParams);
 
     return {
-        title: `${getYearName(year)} Winners`,
+        title: `${getYearName(year)} Curse of the Bibs`,
     };
 }
 
-const WinnersPage = async (props: PageProps) => {
+const CurseOfTheBibsPage = async (props: PageProps) => {
     const { year, allYears } = await unpackParams(props.searchParams);
-    const winners = new Map<TableName, PlayerRecordDataType[]>();
 
-    await Promise.all(TableNameSchema.options.map(async (table) => {
-        const record = await playerRecordService.getWinners(table, year);
-        winners.set(table, record);
-    }));
+    if (!allYears.includes(year)) return notFound();
+
+    const bibsData = await outcomeService.getByBibs({ year });
 
     return (
-        <Stack align="stretch" justify="center" gap="md">
+        <Flex direction="column" w="100%" align="center">
             <Group justify="center" w="100%">
                 <TitleWithYearDropdown
                     order={1}
-                    title="Winners: "
+                    title="Curse of the Bibs: "
                     activeYear={year}
                     validYears={allYears}
                 />
             </Group>
-            <Grid>
-                {
-                    Array.from(winners.entries()).map(([table, records]) => {
-                        return (
-                            <GridCol span={{ base: 12, sm: 8, md: 6, lg: 4, xl: 3 }} key={table}>
-                                <WinnersTable table={table} records={records} />
-                            </GridCol>
-                        );
-                    })
-                }
-            </Grid>
-        </Stack>
+            <CurseOfTheBibs bibsData={bibsData} />
+        </Flex>
     );
 };
 
-export default WinnersPage;
+export default CurseOfTheBibsPage;

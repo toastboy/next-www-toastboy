@@ -18,6 +18,7 @@ type Story = StoryObj<typeof meta>;
 export const Primary: Story = {
     args: {
         title: 'Testing Title',
+        order: 2,
         activeYear: 2019,
         validYears: [2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025],
     },

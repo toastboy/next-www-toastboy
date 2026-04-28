@@ -225,7 +225,7 @@ export class OutcomeService {
     async getTurnoutByYear(): Promise<TurnoutByYearType[]> {
         try {
             const turnout = await this.getTurnout();
-            const gameYears = await gameDayService.getAllYears();
+            const gameYears = await gameDayService.getAllYears({});
 
             return Promise.resolve(gameYears.map((gameYear) => {
                 const yearTurnout = turnout.filter((t) => gameYear === t.year);

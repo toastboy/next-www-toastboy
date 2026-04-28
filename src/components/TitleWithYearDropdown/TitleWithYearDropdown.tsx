@@ -6,6 +6,8 @@ import { IconCheck, IconChevronDown } from '@tabler/icons-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback } from 'react';
 
+import { getYearName } from '@/lib/utils';
+
 
 export interface Props {
     title: string;
@@ -31,15 +33,15 @@ export function TitleWithYearDropdown({ title, order, activeYear, validYears }: 
     }, [pathname, searchParams]);
 
     return (
-        <Group gap={"xs"} align={"center"}>
+        <Group gap="xs" align="center">
             <Title order={order}>{title}</Title>
 
-            <Menu shadow={"md"} width={180} styles={{ dropdown: { maxHeight: '60vh', overflowY: 'auto' } }}>
+            <Menu shadow="md" width={180} styles={{ dropdown: { maxHeight: '60vh', overflowY: 'auto' } }}>
                 <Menu.Target>
                     <UnstyledButton
                         style={{
-                            fontSize: `var(--mantine-h${order}-font-size)`,
-                            fontWeight: `var(--mantine-h${order}-font-weight)`,
+                            fontSize: `var(--mantine-h${order as number}-font-size)`,
+                            fontWeight: `var(--mantine-h${order as number}-font-weight)`,
                             color: 'var(--mantine-color-anchor)',
                             border: '1px solid var(--mantine-primary-color-3)',
                             borderRadius: 'var(--mantine-radius-sm)',
@@ -47,7 +49,7 @@ export function TitleWithYearDropdown({ title, order, activeYear, validYears }: 
                         }}
                     >
                         <Group gap={4}>
-                            {activeYear ? activeYear : 'All Time'}
+                            {getYearName(activeYear)}
                             <IconChevronDown size={14} />
                         </Group>
                     </UnstyledButton>
@@ -60,7 +62,7 @@ export function TitleWithYearDropdown({ title, order, activeYear, validYears }: 
                             leftSection={r === activeYear ? <IconCheck size={14} /> : null}
                             onClick={() => router.push(createYearHref(r))}
                         >
-                            {r > 0 ? r : 'All Time'}
+                            {getYearName(r)}
                         </Menu.Item>
                     ))}
                 </Menu.Dropdown>

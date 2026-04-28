@@ -4,6 +4,7 @@ import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.sc
 import { getYearName } from '@/lib/utils';
 import { PlayerDisplayType } from '@/services/Player';
 
+
 export interface Props {
     player: PlayerDisplayType;
     year: number;
@@ -13,7 +14,6 @@ export interface Props {
 export const PlayerResults = ({ player, year, record }: Props) => {
     return (
         <Table summary={`${player.name}'s ${getYearName(year)} results record`}>
-            <caption>{getYearName(year)} Results</caption>
             <TableTbody>
                 <TableTr><TableTh>Played</TableTh><TableTd>{record?.played ?? '-'}</TableTd></TableTr>
                 <TableTr><TableTh>Won</TableTh><TableTd>{record?.won ?? '-'}</TableTd></TableTr>

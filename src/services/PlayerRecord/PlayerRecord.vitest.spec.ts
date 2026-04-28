@@ -215,7 +215,7 @@ describe('PlayerRecordService', () => {
                 },
             ]);
 
-            const result = await playerRecordService.getAllYears();
+            const result = await playerRecordService.getAllYears({});
             expect(result).toEqual([2021, 0]);
         });
 
@@ -249,7 +249,7 @@ describe('PlayerRecordService', () => {
                 },
             ]);
 
-            const result = await playerRecordService.getAllYears();
+            const result = await playerRecordService.getAllYears({});
             expect(result).toEqual([2026, 0]);
         });
 
@@ -283,7 +283,7 @@ describe('PlayerRecordService', () => {
                 },
             ]);
 
-            const result = await playerRecordService.getAllYears(true);
+            const result = await playerRecordService.getAllYears({ completed: true });
             expect(result).toEqual([0]);
         });
 
@@ -317,7 +317,7 @@ describe('PlayerRecordService', () => {
                 },
             ]);
 
-            const result = await playerRecordService.getAllYears();
+            const result = await playerRecordService.getAllYears({});
             expect(result).toEqual([2021, 2022, 0]);
         });
     });

@@ -1,9 +1,9 @@
-import { YearSelectorSkeleton } from '@/components/YearSelector/YearSelectorSkeleton';
+import { TitleWithYearDropdownSkeleton } from '@/components/TitleWithYearDropdown/TitleWithYearDropdownSkeleton';
 import { YearTableSkeleton } from '@/components/YearTable/YearTableSkeleton';
 
 const Loading = () => (
     <>
-        <YearSelectorSkeleton />
+        <TitleWithYearDropdownSkeleton />
         <YearTableSkeleton />
     </>
 );

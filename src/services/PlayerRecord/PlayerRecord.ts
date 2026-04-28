@@ -86,19 +86,28 @@ export class PlayerRecordService {
     }
 
     /**
-     * Retrieves all distinct years from player records, optionally filtered to
-     * completed seasons.
+     * Retrieves a list of distinct years from player records, filtered and
+     * sorted according to the provided options.
      *
-     * @param {boolean} [completed=false] - If true, only returns years from
-     * completed seasons. If false, returns years from seasons up to the current
-     * date.
-     * @returns {Promise<number[]>} A promise that resolves to an array of
-     * distinct years in ascending order, with year 0 (if present) moved to the
-     * end of the array.
-     * @throws {Error} Throws an error if the database query or season ender
-     * retrieval fails.
+     * This method optimizes the retrieval of years by leveraging season enders
+     * and filtering records accordingly. It can return only completed seasons
+     * or all seasons up to the current date, and allows sorting by most recent
+     * first.
+     *
+     * @param options - The options for filtering and sorting the years.
+     * @param options.completed - If `true`, only includes years for completed
+     * seasons (default: `false`).
+     * @param options.mostRecentFirst - If `true`, sorts years in descending
+     * order with zero values at the start; otherwise, sorts in ascending order
+     * with zero values at the end (default: `false`).
+     * @returns A promise that resolves to an array of distinct years, filtered
+     * and sorted as specified.
+     * @throws Will throw an error if the retrieval or processing fails.
      */
-    async getAllYears(completed = false): Promise<number[]> {
+    async getAllYears({
+        completed = false,
+        mostRecentFirst = false,
+    }): Promise<number[]> {
         try {
             // TODO: This needs optimising: can probably do a lot more with the
             // database query and less in-memory. For example, if we can get the
@@ -124,12 +133,19 @@ export class PlayerRecordService {
             const filteredRecords = records.filter(
                 (record) => seasonEnderSet.has(record.gameDayId) || record.year === 0,
             );
-            // Move zero values to the start of the list, otherwise sort by descending year
-            const years = filteredRecords.map(r => r.year).sort((a, b) => {
-                if (a === 0) return -1;
-                if (b === 0) return 1;
-                return b - a;
-            });
+            const years = mostRecentFirst ?
+                // Move zero values to the start of the list, otherwise sort by descending year
+                filteredRecords.map(r => r.year).sort((a, b) => {
+                    if (a === 0) return -1;
+                    if (b === 0) return 1;
+                    return b - a;
+                }) :
+                // Move zero values to the end and sort by ascending year
+                filteredRecords.map(r => r.year).sort((a, b) => {
+                    if (a === 0) return 1;
+                    if (b === 0) return -1;
+                    return a - b;
+                });
             const distinctYears = Array.from(new Set(years));
 
             return Promise.resolve(distinctYears);

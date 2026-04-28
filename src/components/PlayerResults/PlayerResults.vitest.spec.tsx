@@ -26,7 +26,11 @@ describe('PlayerResults', () => {
     it('renders dashes when record is null', () => {
         render(
             <Wrapper>
-                <PlayerResults player={defaultPlayer} year={2024} record={null} />
+                <PlayerResults
+                    player={defaultPlayer}
+                    year={2024}
+                    record={null}
+                />
             </Wrapper>,
         );
 

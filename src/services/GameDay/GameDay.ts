@@ -381,7 +381,10 @@ export class GameDayService {
      * @throws An error normalized via `normalizeUnknownError` if the database
      * query fails.
      */
-    async getAllYears(includeAllTime = false): Promise<number[]> {
+    async getAllYears({
+        includeAllTime = false,
+        mostRecentFirst = false,
+    }): Promise<number[]> {
         try {
             const gameDays = await prisma.gameDay.findMany({
                 where: {
@@ -392,9 +395,12 @@ export class GameDayService {
                 },
             });
             const years = gameDays.map(gd => gd.year);
-            if (includeAllTime) years.push(0);
             const distinctYears = Array.from(new Set(years));
-
+            if (mostRecentFirst) distinctYears.sort((a, b) => b - a);
+            if (includeAllTime) {
+                if (mostRecentFirst) distinctYears.unshift(0);
+                else distinctYears.push(0);
+            }
             return Promise.resolve(distinctYears);
         } catch (error) {
             throw normalizeUnknownError(error);

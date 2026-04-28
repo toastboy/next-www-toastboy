@@ -13,6 +13,7 @@ export interface Props {
 }
 
 export const TableQualified = ({ table, title, year, records }: Props) => {
+    // TODO: Move title from here to the parent. It clashes with the TitleWithYearDropdown
     return (
         <Flex direction="column" gap="md">
             <Title order={1}>{title}</Title>

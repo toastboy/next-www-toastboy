@@ -1,11 +1,11 @@
 import { Grid, GridCol, Skeleton, Stack } from '@mantine/core';
 
+import { TitleWithYearDropdownSkeleton } from '@/components/TitleWithYearDropdown/TitleWithYearDropdownSkeleton';
 import { WinnersTableSkeleton } from '@/components/WinnersTable/WinnersTableSkeleton';
-import { YearSelectorSkeleton } from '@/components/YearSelector/YearSelectorSkeleton';
 
 const Loading = () => (
     <Stack align="stretch" justify="center" gap="md">
-        <YearSelectorSkeleton />
+        <TitleWithYearDropdownSkeleton />
         <Skeleton height={36} width={200} mx="auto" />
         <Skeleton height={32} width="30%" mx="auto" />
         <Grid>

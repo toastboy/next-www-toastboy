@@ -1,11 +1,11 @@
-import { Stack, Title } from '@mantine/core';
+import { Group, Stack } from '@mantine/core';
 import { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { cache } from 'react';
 import z from 'zod';
 
 import { MoneyChart } from '@/components/MoneyChart/MoneyChart';
-import { YearSelector } from '@/components/YearSelector/YearSelector';
+import { TitleWithYearDropdown } from '@/components/TitleWithYearDropdown/TitleWithYearDropdown';
 import { getYearName } from '@/lib/utils';
 import gameDayService from '@/services/GameDay';
 import moneyService from '@/services/Money';
@@ -20,7 +20,10 @@ const unpackParams = cache(async (
     searchParams: PageProps['searchParams'],
 ) => {
     const resolvedSearchParams = await searchParams;
-    const allYears = await gameDayService.getAllYears(true);
+    const allYears = await gameDayService.getAllYears({
+        includeAllTime: true,
+        mostRecentFirst: true,
+    });
     const yearResult = z.coerce.number().int().min(0).safeParse(resolvedSearchParams?.year ?? 0);
     const year = yearResult.success ? yearResult.data : undefined;
     if (year === undefined || !allYears.includes(year)) notFound();
@@ -45,8 +48,9 @@ const BooksPage = async (props: PageProps) => {
 
     return (
         <Stack align="stretch" justify="center" gap="md">
-            <YearSelector activeYear={year} validYears={allYears} />
-            <Title w="100%" ta="center" order={1}>{getYearName(year)} Books</Title>
+            <Group justify="center" w="100%">
+                <TitleWithYearDropdown order={1} title="Books: " activeYear={year} validYears={allYears} />
+            </Group>
             <MoneyChart data={chartData} />
         </Stack>
     );

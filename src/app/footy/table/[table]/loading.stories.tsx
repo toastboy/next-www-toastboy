@@ -1,7 +1,7 @@
 import { Group, Stack, Text } from '@mantine/core';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import { TableQualified } from '@/components/TableQualified/TableQualified';
+import { RecordsTable } from '@/components/RecordsTable/RecordsTable';
 import { defaultPlayerRecordDataList } from '@/tests/mocks/data/playerRecordData';
 
 import Loading from './loading';
@@ -29,7 +29,7 @@ export const Comparison: Story = {
             </Stack>
             <Stack flex={1}>
                 <Text fw={700} c="dimmed" ta="center">Loaded</Text>
-                <TableQualified
+                <RecordsTable
                     table="points"
                     title="Football Peace Prize Standings"
                     year={2025}

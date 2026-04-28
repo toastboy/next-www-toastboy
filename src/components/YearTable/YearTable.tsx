@@ -1,8 +1,8 @@
-import { Flex } from '@mantine/core';
+import { Flex, Group, Title } from '@mantine/core';
 import type { TableName } from 'prisma/zod/schemas';
 import { TableNameSchema } from 'prisma/zod/schemas';
 
-import { TableQualified } from '@/components/TableQualified/TableQualified';
+import { RecordsTable } from '@/components/RecordsTable/RecordsTable';
 import { config } from '@/lib/config';
 import { getYearName } from '@/lib/utils';
 import { PlayerRecordDataType } from '@/types';
@@ -19,19 +19,20 @@ export const YearTable = ({ table, year, qualified, unqualified }: Props) => {
 
     return (
         <Flex direction="column" gap="md">
-            <TableQualified
+            <RecordsTable
                 table={table}
-                title={QualifiedTableName(table, year)}
                 year={year}
                 records={qualified}
             />
             {utn ?
-                <TableQualified
-                    table={table}
-                    title={utn}
-                    year={year}
-                    records={unqualified}
-                /> :
+                <Group>
+                    <Title order={1}>{utn}</Title>
+                    <RecordsTable
+                        table={table}
+                        year={year}
+                        records={unqualified}
+                    />
+                </Group> :
                 null
             }
         </Flex>

@@ -1,4 +1,4 @@
-import { Flex, Table, TableTbody, TableTd, TableTr, Title } from '@mantine/core';
+import { Flex, Table, TableTbody, TableTd, TableTr } from '@mantine/core';
 import type { TableName } from 'prisma/zod/schemas';
 
 import { PlayerLink } from '@/components/PlayerLink/PlayerLink';
@@ -7,16 +7,13 @@ import { PlayerRecordDataType } from '@/types';
 
 export interface Props {
     table: TableName;
-    title?: string;
     year: number;
     records: PlayerRecordDataType[];
 }
 
-export const TableQualified = ({ table, title, year, records }: Props) => {
-    // TODO: Move title from here to the parent. It clashes with the TitleWithYearDropdown
+export const RecordsTable = ({ table, year, records }: Props) => {
     return (
         <Flex direction="column" gap="md">
-            <Title order={1}>{title}</Title>
             <Table>
                 <TableTbody>
                     {records.map((record, index) => (

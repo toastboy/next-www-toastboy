@@ -4,7 +4,7 @@ import { TableNameSchema } from 'prisma/zod/schemas';
 import { vi } from 'vitest';
 
 import { Props as PlayerLinkProps } from '@/components/PlayerLink/PlayerLink';
-import { TableQualified } from '@/components/TableQualified/TableQualified';
+import { RecordsTable } from '@/components/RecordsTable/RecordsTable';
 import { Props as TableScoreProps } from '@/components/TableScore/TableScore';
 import { extractMockProps, Wrapper } from '@/tests/components/lib/common';
 import { defaultPlayerRecordDataList } from '@/tests/mocks/data/playerRecordData';
@@ -12,11 +12,11 @@ import { defaultPlayerRecordDataList } from '@/tests/mocks/data/playerRecordData
 vi.mock('@/components/PlayerLink/PlayerLink');
 vi.mock('@/components/TableScore/TableScore');
 
-describe('TableQualified', () => {
+describe('RecordsTable', () => {
     it('renders qualified table with player records', () => {
         render(
             <Wrapper>
-                <TableQualified
+                <RecordsTable
                     table={TableNameSchema.enum.points}
                     title="2024 Points Table"
                     year={2024}

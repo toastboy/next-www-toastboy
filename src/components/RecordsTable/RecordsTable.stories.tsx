@@ -2,16 +2,16 @@ import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import { defaultPlayerRecordDataList } from '@/tests/mocks/data/playerRecordData';
 
-import { TableQualified } from './TableQualified';
+import { RecordsTable } from './RecordsTable';
 
 const meta = {
-    title: 'Tables/TableQualified',
-    component: TableQualified,
+    title: 'Tables/RecordsTable',
+    component: RecordsTable,
     parameters: {
         layout: 'centered',
     },
     tags: ['autodocs'],
-} satisfies Meta<typeof TableQualified>;
+} satisfies Meta<typeof RecordsTable>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

@@ -12,11 +12,11 @@ import { getYearName } from '@/lib/utils';
 export interface Props {
     title: string;
     order: TitleOrder;
-    activeYear: number;
+    year: number;
     validYears: number[];
 }
 
-export function TitleWithYearDropdown({ title, order, activeYear, validYears }: Props) {
+export function TitleWithYearDropdown({ title, order, year, validYears }: Props) {
     const pathname = usePathname();
     const searchParams = useSearchParams();
     const router = useRouter();
@@ -49,7 +49,7 @@ export function TitleWithYearDropdown({ title, order, activeYear, validYears }: 
                         }}
                     >
                         <Group gap={4}>
-                            {getYearName(activeYear)}
+                            {getYearName(year)}
                             <IconChevronDown size={14} />
                         </Group>
                     </UnstyledButton>
@@ -59,7 +59,7 @@ export function TitleWithYearDropdown({ title, order, activeYear, validYears }: 
                     {validYears.map(r => (
                         <Menu.Item
                             key={r}
-                            leftSection={r === activeYear ? <IconCheck size={14} /> : null}
+                            leftSection={r === year ? <IconCheck size={14} /> : null}
                             onClick={() => router.push(createYearHref(r))}
                         >
                             {getYearName(r)}

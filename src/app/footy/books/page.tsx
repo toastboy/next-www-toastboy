@@ -49,7 +49,7 @@ const BooksPage = async (props: PageProps) => {
     return (
         <Stack align="stretch" justify="center" gap="md">
             <Group justify="center" w="100%">
-                <TitleWithYearDropdown order={1} title="Books: " activeYear={year} validYears={allYears} />
+                <TitleWithYearDropdown order={1} title="Books: " year={year} validYears={allYears} />
             </Group>
             <MoneyChart data={chartData} />
         </Stack>

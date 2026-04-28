@@ -90,7 +90,7 @@ const GamesPage = async (props: PageProps) => {
     return (
         <Flex direction="column" align="center" gap="lg">
             <Group justify="center" w="100%">
-                <TitleWithYearDropdown order={1} title="Games: " activeYear={year} validYears={allYears} />
+                <TitleWithYearDropdown order={1} title="Games: " year={year} validYears={allYears} />
             </Group>
             <Title order={2}>{subhead}</Title>
             <GameDayList gameDays={gameDays} year={year} />

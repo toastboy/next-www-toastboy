@@ -80,7 +80,7 @@ const CurseOfTheBibsPage = async (props: PageProps) => {
                 <TitleWithYearDropdown
                     order={1}
                     title="Curse of the Bibs: "
-                    activeYear={year}
+                    year={year}
                     validYears={allYears}
                 />
             </Group>

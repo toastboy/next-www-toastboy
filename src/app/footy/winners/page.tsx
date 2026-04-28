@@ -83,7 +83,7 @@ const WinnersPage = async (props: PageProps) => {
                 <TitleWithYearDropdown
                     order={1}
                     title="Winners: "
-                    activeYear={year}
+                    year={year}
                     validYears={allYears}
                 />
             </Group>

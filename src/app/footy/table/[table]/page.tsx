@@ -107,7 +107,7 @@ const TablePage = async (props: PageProps) => {
     return (
         <>
             <Group justify="center" w="100%">
-                <TitleWithYearDropdown order={1} title={`${TableTitle(table)}: `} activeYear={year} validYears={allYears} />
+                <TitleWithYearDropdown order={1} title={`${TableTitle(table)}: `} year={year} validYears={allYears} />
             </Group>
             <YearTable
                 table={table}

@@ -20,10 +20,9 @@ export const PlayerHistory = ({
     year,
     record,
 }: Props) => {
-    // TODO: the name 'activeYear' is clumsy. Just use 'year'
     return (
         <Container data-testid="player-history">
-            <TitleWithYearDropdown order={2} title={`History: `} activeYear={year} validYears={activeYears} />
+            <TitleWithYearDropdown order={2} title={`History: `} year={year} validYears={activeYears} />
             <PlayerResults player={player} year={year} record={record} />
             <PlayerPositions player={player} year={year} record={record} />
         </Container>

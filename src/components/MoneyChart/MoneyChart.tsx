@@ -14,72 +14,6 @@ export interface Props {
     data: MoneyChartDatum[];
 }
 
-const M = { top: 20, right: 20, bottom: 30, left: 55 };
-
-type Datum = MoneyChartDatum & { balance: number };
-
-function axes(
-    g: d3.Selection<SVGGElement, unknown, null, undefined>,
-    x: d3.ScaleBand<string>,
-    y: d3.ScaleLinear<number, number>,
-    iw: number,
-    ih: number,
-) {
-    g.append('g')
-        .attr('transform', `translate(0,${ih})`)
-        .call(d3.axisBottom(x));
-    g.append('g')
-        .call(d3.axisLeft(y).tickFormat(v => `£${String(v)}`).ticks(6));
-    g.append('line')
-        .attr('x1', 0).attr('x2', iw)
-        .attr('y1', y(0)).attr('y2', y(0))
-        .attr('stroke', '#888').attr('stroke-dasharray', '4,2');
-}
-
-function balanceLine(
-    g: d3.Selection<SVGGElement, unknown, null, undefined>,
-    data: Datum[],
-    x: d3.ScaleBand<string>,
-    y: d3.ScaleLinear<number, number>,
-) {
-    const line = d3.line<Datum>()
-        .x(d => (x(d.interval) ?? 0) + x.bandwidth() / 2)
-        .y(d => y(d.balance));
-    g.append('path')
-        .datum(data)
-        .attr('fill', 'none')
-        .attr('stroke', '#228be6')
-        .attr('stroke-width', 2.5)
-        .attr('d', line);
-    g.selectAll('.dot')
-        .data(data)
-        .enter().append('circle')
-        .attr('cx', d => (x(d.interval) ?? 0) + x.bandwidth() / 2)
-        .attr('cy', d => y(d.balance))
-        .attr('r', 4)
-        .attr('fill', '#228be6');
-}
-
-function legend(
-    svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
-    items: { label: string; color: string; dash?: boolean }[],
-) {
-    const lg = svg.append('g').attr('transform', `translate(${M.left + 4},${M.top + 4})`);
-    items.forEach(({ label, color, dash }, i) => {
-        const row = lg.append('g').attr('transform', `translate(0,${i * 18})`);
-        if (dash) {
-            row.append('line').attr('x1', 0).attr('x2', 18).attr('y1', 7).attr('y2', 7)
-                .attr('stroke', color).attr('stroke-width', 2.5);
-            row.append('circle').attr('cx', 9).attr('cy', 7).attr('r', 3).attr('fill', color);
-        } else {
-            row.append('rect').attr('width', 18).attr('height', 12).attr('fill', color).attr('rx', 2);
-        }
-        row.append('text').attr('x', 24).attr('y', 10)
-            .style('font-size', '11px').style('fill', '#333')
-            .text(label);
-    });
-}
-
 export const MoneyChart = ({ data: raw }: Props) => {
     const svgRef = useRef<SVGSVGElement>(null);
     const wrapperRef = useRef<HTMLDivElement>(null);
@@ -190,3 +124,69 @@ export const MoneyChart = ({ data: raw }: Props) => {
         </div>
     );
 };
+
+const M = { top: 20, right: 20, bottom: 30, left: 55 };
+
+type Datum = MoneyChartDatum & { balance: number };
+
+function axes(
+    g: d3.Selection<SVGGElement, unknown, null, undefined>,
+    x: d3.ScaleBand<string>,
+    y: d3.ScaleLinear<number, number>,
+    iw: number,
+    ih: number,
+) {
+    g.append('g')
+        .attr('transform', `translate(0,${ih})`)
+        .call(d3.axisBottom(x));
+    g.append('g')
+        .call(d3.axisLeft(y).tickFormat(v => `£${String(v)}`).ticks(6));
+    g.append('line')
+        .attr('x1', 0).attr('x2', iw)
+        .attr('y1', y(0)).attr('y2', y(0))
+        .attr('stroke', '#888').attr('stroke-dasharray', '4,2');
+}
+
+function balanceLine(
+    g: d3.Selection<SVGGElement, unknown, null, undefined>,
+    data: Datum[],
+    x: d3.ScaleBand<string>,
+    y: d3.ScaleLinear<number, number>,
+) {
+    const line = d3.line<Datum>()
+        .x(d => (x(d.interval) ?? 0) + x.bandwidth() / 2)
+        .y(d => y(d.balance));
+    g.append('path')
+        .datum(data)
+        .attr('fill', 'none')
+        .attr('stroke', '#228be6')
+        .attr('stroke-width', 2.5)
+        .attr('d', line);
+    g.selectAll('.dot')
+        .data(data)
+        .enter().append('circle')
+        .attr('cx', d => (x(d.interval) ?? 0) + x.bandwidth() / 2)
+        .attr('cy', d => y(d.balance))
+        .attr('r', 4)
+        .attr('fill', '#228be6');
+}
+
+function legend(
+    svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
+    items: { label: string; color: string; dash?: boolean }[],
+) {
+    const lg = svg.append('g').attr('transform', `translate(${M.left + 4},${M.top + 4})`);
+    items.forEach(({ label, color, dash }, i) => {
+        const row = lg.append('g').attr('transform', `translate(0,${i * 18})`);
+        if (dash) {
+            row.append('line').attr('x1', 0).attr('x2', 18).attr('y1', 7).attr('y2', 7)
+                .attr('stroke', color).attr('stroke-width', 2.5);
+            row.append('circle').attr('cx', 9).attr('cy', 7).attr('r', 3).attr('fill', color);
+        } else {
+            row.append('rect').attr('width', 18).attr('height', 12).attr('fill', color).attr('rx', 2);
+        }
+        row.append('text').attr('x', 24).attr('y', 10)
+            .style('font-size', '11px').style('fill', '#333')
+            .text(label);
+    });
+}

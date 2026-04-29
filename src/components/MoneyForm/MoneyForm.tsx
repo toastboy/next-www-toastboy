@@ -36,6 +36,30 @@ export interface MoneyFormProps {
     payDebt: PayDebtProxy;
 }
 
+export const MoneyForm = ({
+    playerDebts,
+    payDebt,
+}: MoneyFormProps) => {
+    const [submittingPlayerId, setSubmittingPlayerId] = useState<number | null>(null);
+
+    return (
+        <Stack gap="md">
+            <Stack gap="xs">
+                <Title order={1}>Unpaid Player Charges</Title>
+                {playerDebts.map((row) => (
+                    <DebtRow
+                        key={row.player.id}
+                        row={row}
+                        payDebt={payDebt}
+                        submittingPlayerId={submittingPlayerId}
+                        setSubmittingPlayerId={setSubmittingPlayerId}
+                    />
+                ))}
+            </Stack>
+        </Stack>
+    );
+};
+
 const PayDebtFormSchema = z.object({
     checkedIds: z.array(z.number().int()).min(1),
 });
@@ -200,29 +224,5 @@ const DebtRow = ({
                 </Stack>
             </Box>
         </Paper>
-    );
-};
-
-export const MoneyForm = ({
-    playerDebts,
-    payDebt,
-}: MoneyFormProps) => {
-    const [submittingPlayerId, setSubmittingPlayerId] = useState<number | null>(null);
-
-    return (
-        <Stack gap="md">
-            <Stack gap="xs">
-                <Title order={1}>Unpaid Player Charges</Title>
-                {playerDebts.map((row) => (
-                    <DebtRow
-                        key={row.player.id}
-                        row={row}
-                        payDebt={payDebt}
-                        submittingPlayerId={submittingPlayerId}
-                        setSubmittingPlayerId={setSubmittingPlayerId}
-                    />
-                ))}
-            </Stack>
-        </Stack>
     );
 };

@@ -36,64 +36,6 @@ export interface PickerFormProps {
     setGameEnabled: SetGameEnabledProxy;
 }
 
-type SortKey = 'name' | 'responseTime' | 'gamesPlayed';
-type SortDirection = 'asc' | 'desc';
-
-const compareNullableNumber = (
-    a: number | null | undefined,
-    b: number | null | undefined,
-    direction: SortDirection,
-) => {
-    if (a == null && b == null) return 0;
-    if (a == null) return 1;
-    if (b == null) return -1;
-    return direction === 'asc' ? a - b : b - a;
-};
-
-const compareNullableString = (
-    a: string | null | undefined,
-    b: string | null | undefined,
-    direction: SortDirection,
-) => {
-    if (a == null && b == null) return 0;
-    if (a == null) return 1;
-    if (b == null) return -1;
-    const result = a.localeCompare(b);
-    return direction === 'asc' ? result : -result;
-};
-
-const formatResponseInterval = (seconds: number | null | undefined) => {
-    if (seconds == null) return '-';
-    if (seconds < 60) return `${seconds}s`;
-
-    const minutes = Math.floor(seconds / 60);
-    if (minutes < 60) return `${minutes}m`;
-
-    const hours = Math.floor(minutes / 60);
-    const remainingMinutes = minutes % 60;
-    if (hours < 24) {
-        return remainingMinutes ? `${hours}h ${remainingMinutes}m` : `${hours}h`;
-    }
-
-    const days = Math.floor(hours / 24);
-    const remainingHours = hours % 24;
-    return remainingHours ? `${days}d ${remainingHours}h` : `${days}d`;
-};
-
-const getPlayerName = (row: PickerPlayerType) => row.player.name ?? `Player ${row.playerId}`;
-
-const buildDefaultSelection = (rows: PickerPlayerType[], maxSelected = 12) => {
-    if (!rows.length) return [];
-    const sorted = [...rows].sort((a, b) => {
-        const responseCompare = compareNullableNumber(a.responseInterval, b.responseInterval, 'asc');
-        if (responseCompare !== 0) return responseCompare;
-        const nameCompare = compareNullableString(a.player.name, b.player.name, 'asc');
-        if (nameCompare !== 0) return nameCompare;
-        return a.playerId - b.playerId;
-    });
-    return sorted.slice(0, maxSelected).map((row) => row.playerId);
-};
-
 export const PickerForm = ({
     gameDay,
     players,
@@ -401,4 +343,62 @@ export const PickerForm = ({
             </Group>
         </Stack>
     );
+};
+
+type SortKey = 'name' | 'responseTime' | 'gamesPlayed';
+type SortDirection = 'asc' | 'desc';
+
+const compareNullableNumber = (
+    a: number | null | undefined,
+    b: number | null | undefined,
+    direction: SortDirection,
+) => {
+    if (a == null && b == null) return 0;
+    if (a == null) return 1;
+    if (b == null) return -1;
+    return direction === 'asc' ? a - b : b - a;
+};
+
+const compareNullableString = (
+    a: string | null | undefined,
+    b: string | null | undefined,
+    direction: SortDirection,
+) => {
+    if (a == null && b == null) return 0;
+    if (a == null) return 1;
+    if (b == null) return -1;
+    const result = a.localeCompare(b);
+    return direction === 'asc' ? result : -result;
+};
+
+const formatResponseInterval = (seconds: number | null | undefined) => {
+    if (seconds == null) return '-';
+    if (seconds < 60) return `${seconds}s`;
+
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes}m`;
+
+    const hours = Math.floor(minutes / 60);
+    const remainingMinutes = minutes % 60;
+    if (hours < 24) {
+        return remainingMinutes ? `${hours}h ${remainingMinutes}m` : `${hours}h`;
+    }
+
+    const days = Math.floor(hours / 24);
+    const remainingHours = hours % 24;
+    return remainingHours ? `${days}d ${remainingHours}h` : `${days}d`;
+};
+
+const getPlayerName = (row: PickerPlayerType) => row.player.name ?? `Player ${row.playerId}`;
+
+const buildDefaultSelection = (rows: PickerPlayerType[], maxSelected = 12) => {
+    if (!rows.length) return [];
+    const sorted = [...rows].sort((a, b) => {
+        const responseCompare = compareNullableNumber(a.responseInterval, b.responseInterval, 'asc');
+        if (responseCompare !== 0) return responseCompare;
+        const nameCompare = compareNullableString(a.player.name, b.player.name, 'asc');
+        if (nameCompare !== 0) return nameCompare;
+        return a.playerId - b.playerId;
+    });
+    return sorted.slice(0, maxSelected).map((row) => row.playerId);
 };

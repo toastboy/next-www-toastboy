@@ -17,37 +17,6 @@ import { toPublicMessage } from '@/lib/errors';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 import { getPublicBaseUrl } from '@/lib/urls';
 
-/**
- * Validate a normalized email value for password reset and emit clear messages.
- */
-const validateForgottenPasswordEmail = (value: string, ctx: z.RefinementCtx) => {
-    if (!value) {
-        ctx.addIssue({
-            code: 'custom',
-            message: 'Email is required',
-        });
-        return;
-    }
-
-    if (!z.email().safeParse(value).success) {
-        ctx.addIssue({
-            code: 'custom',
-            message: 'Invalid email',
-        });
-    }
-};
-
-const ForgottenPasswordSchema = z.object({
-    email: z.preprocess(
-        (value) => {
-            return typeof value === 'string' ? value.trim().toLowerCase() : value;
-        },
-        z.string().superRefine(validateForgottenPasswordEmail),
-    ),
-});
-
-export type ForgottenPasswordInput = z.infer<typeof ForgottenPasswordSchema>;
-
 export const ForgottenPasswordForm = () => {
     const form = useForm<ForgottenPasswordInput>({
         initialValues: {
@@ -129,3 +98,31 @@ export const ForgottenPasswordForm = () => {
         </Box>
     );
 };
+
+const validateForgottenPasswordEmail = (value: string, ctx: z.RefinementCtx) => {
+    if (!value) {
+        ctx.addIssue({
+            code: 'custom',
+            message: 'Email is required',
+        });
+        return;
+    }
+
+    if (!z.email().safeParse(value).success) {
+        ctx.addIssue({
+            code: 'custom',
+            message: 'Invalid email',
+        });
+    }
+};
+
+const ForgottenPasswordSchema = z.object({
+    email: z.preprocess(
+        (value) => {
+            return typeof value === 'string' ? value.trim().toLowerCase() : value;
+        },
+        z.string().superRefine(validateForgottenPasswordEmail),
+    ),
+});
+
+export type ForgottenPasswordInput = z.infer<typeof ForgottenPasswordSchema>;

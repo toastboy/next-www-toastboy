@@ -34,24 +34,6 @@ export interface DrinkersFormProps {
     setDrinkers: SetDrinkersProxy;
 }
 
-const normaliseName = (row: OutcomePlayerType) => row.player.name ?? `Player ${row.playerId}`;
-
-const sortRows = (rows: OutcomePlayerType[]) => [...rows].sort((a, b) => {
-    const teamBucketDiff = (a.team ? 0 : 1) - (b.team ? 0 : 1);
-    if (teamBucketDiff !== 0) return teamBucketDiff;
-    return normaliseName(a).localeCompare(normaliseName(b));
-});
-
-const toSelectedIds = (rows: OutcomePlayerType[]) => rows
-    .filter((row) => (row.pub ?? 0) > 0)
-    .map((row) => row.playerId);
-
-const isSameSelection = (left: number[], right: number[]) => {
-    if (left.length !== right.length) return false;
-    const rightSet = new Set(right);
-    return left.every((id) => rightSet.has(id));
-};
-
 export const DrinkersForm = ({
     gameId,
     gameDate,
@@ -261,4 +243,22 @@ export const DrinkersForm = ({
             )}
         </Stack>
     );
+};
+
+const normaliseName = (row: OutcomePlayerType) => row.player.name ?? `Player ${row.playerId}`;
+
+const sortRows = (rows: OutcomePlayerType[]) => [...rows].sort((a, b) => {
+    const teamBucketDiff = (a.team ? 0 : 1) - (b.team ? 0 : 1);
+    if (teamBucketDiff !== 0) return teamBucketDiff;
+    return normaliseName(a).localeCompare(normaliseName(b));
+});
+
+const toSelectedIds = (rows: OutcomePlayerType[]) => rows
+    .filter((row) => (row.pub ?? 0) > 0)
+    .map((row) => row.playerId);
+
+const isSameSelection = (left: number[], right: number[]) => {
+    if (left.length !== right.length) return false;
+    const rightSet = new Set(right);
+    return left.every((id) => rightSet.has(id));
 };

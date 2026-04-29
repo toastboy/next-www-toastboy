@@ -26,6 +26,15 @@ export default defineConfig({
         setupFiles: ['vitest.setup.frontend.ts'],
         coverage: {
             include: ['src/components/**/*.{ts,tsx}'],
+            exclude: [
+                '**/__mocks__/**',
+                '**/*.stories.*',
+                '**/*.vitest.spec.ts',
+                '**/*.vitest.spec.tsx',
+                '**/*.test.ts',
+                '**/*.test.tsx',
+                '**/*Skeleton*',
+            ],
         },
     },
 });

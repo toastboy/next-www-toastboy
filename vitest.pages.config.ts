@@ -36,6 +36,14 @@ export default defineConfig({
                 'src/app/*.{ts,tsx}',
                 'src/app/footy/**/*.{ts,tsx}',
             ],
+            exclude: [
+                '**/__mocks__/**',
+                '**/*.stories.*',
+                '**/*.vitest.spec.ts',
+                '**/*.vitest.spec.tsx',
+                '**/*.test.ts',
+                '**/*.test.tsx',
+            ],
         },
     },
 });

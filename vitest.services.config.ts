@@ -24,6 +24,14 @@ export default defineConfig({
         setupFiles: ['vitest.setup.backend.ts'],
         coverage: {
             include: ['src/services/**/*.{ts,tsx}'],
+            exclude: [
+                '**/__mocks__/**',
+                '**/*.stories.*',
+                '**/*.vitest.spec.ts',
+                '**/*.vitest.spec.tsx',
+                '**/*.test.ts',
+                '**/*.test.tsx',
+            ],
         },
     },
 });

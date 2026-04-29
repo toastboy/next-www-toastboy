@@ -8,7 +8,7 @@ import z from 'zod';
 
 import { GameDayList } from '@/components/GameDayList/GameDayList';
 import { TitleWithYearDropdown } from '@/components/TitleWithYearDropdown/TitleWithYearDropdown';
-import { getYearName } from '@/lib/utils';
+import { getYearName } from '@/lib/tables';
 import gameDayService from '@/services/GameDay';
 
 interface PageProps {

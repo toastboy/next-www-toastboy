@@ -10,7 +10,7 @@ import { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema'
 import { config } from '@/lib/config';
 import { normalizeUnknownError } from '@/lib/errors';
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
-import { rankMap } from '@/lib/utils';
+import { rankMap } from '@/lib/tables';
 import gameDayService from '@/services/GameDay';
 import outcomeService from '@/services/Outcome';
 import { PlayerRecordDataType } from '@/types';

@@ -4,7 +4,7 @@ import { buildPngResponse, handleGET } from '@/lib/api';
 import azureCache from '@/lib/azure';
 import { CONTAINER_CLUBS } from '@/lib/azureConfig';
 import { InternalError, normalizeUnknownError } from '@/lib/errors';
-import { streamToBuffer } from '@/lib/utils';
+import { streamToBuffer } from '@/lib/stream';
 
 /**
  * Retrieves the badge image for a specific club from Azure Blob Storage.

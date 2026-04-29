@@ -6,7 +6,7 @@ import { IconCheck, IconChevronDown } from '@tabler/icons-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback } from 'react';
 
-import { getYearName } from '@/lib/utils';
+import { getYearName } from '@/lib/tables';
 
 
 export interface Props {

@@ -4,7 +4,7 @@ import { buildPngResponse, handleGET } from '@/lib/api';
 import azureCache from '@/lib/azure';
 import { CONTAINER_COUNTRIES } from '@/lib/azureConfig';
 import { InternalError, normalizeUnknownError } from '@/lib/errors';
-import { streamToBuffer } from '@/lib/utils';
+import { streamToBuffer } from '@/lib/stream';
 
 
 /**

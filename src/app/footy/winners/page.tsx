@@ -7,7 +7,7 @@ import z from 'zod';
 
 import { TitleWithYearDropdown } from '@/components/TitleWithYearDropdown/TitleWithYearDropdown';
 import { WinnersTable } from '@/components/WinnersTable/WinnersTable';
-import { getYearName } from '@/lib/utils';
+import { getYearName } from '@/lib/tables';
 import playerRecordService from '@/services/PlayerRecord';
 import { PlayerRecordDataType } from '@/types';
 

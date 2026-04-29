@@ -6,7 +6,8 @@ import { cache } from 'react';
 import z from 'zod';
 
 import { TitleWithYearDropdown } from '@/components/TitleWithYearDropdown/TitleWithYearDropdown';
-import { QualifiedTableName, TableTitle, YearTable } from '@/components/YearTable/YearTable';
+import { YearTable } from '@/components/YearTable/YearTable';
+import { QualifiedTableName, TableTitle } from '@/lib/tables';
 import playerRecordService from '@/services/PlayerRecord';
 
 interface PageProps {

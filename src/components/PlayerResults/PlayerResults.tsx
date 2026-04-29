@@ -1,7 +1,7 @@
 import { Table, TableTbody, TableTd, TableTh, TableTr } from '@mantine/core';
 import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 
-import { getYearName } from '@/lib/utils';
+import { getYearName } from '@/lib/tables';
 import { PlayerDisplayType } from '@/services/Player';
 
 

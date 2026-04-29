@@ -6,7 +6,7 @@ import z from 'zod';
 
 import { MoneyChart } from '@/components/MoneyChart/MoneyChart';
 import { TitleWithYearDropdown } from '@/components/TitleWithYearDropdown/TitleWithYearDropdown';
-import { getYearName } from '@/lib/utils';
+import { getYearName } from '@/lib/tables';
 import gameDayService from '@/services/GameDay';
 import moneyService from '@/services/Money';
 

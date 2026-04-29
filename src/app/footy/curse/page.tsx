@@ -6,7 +6,7 @@ import z from 'zod';
 
 import { CurseOfTheBibs } from '@/components/CurseOfTheBibs/CurseOfTheBibs';
 import { TitleWithYearDropdown } from '@/components/TitleWithYearDropdown/TitleWithYearDropdown';
-import { getYearName } from '@/lib/utils';
+import { getYearName } from '@/lib/tables';
 import outcomeService from '@/services/Outcome';
 import playerRecordService from '@/services/PlayerRecord';
 

@@ -2,7 +2,7 @@ import { Table, TableCaption, TableTbody, TableTd, TableTh, TableTr } from '@man
 import { TableNameSchema } from 'prisma/zod/schemas';
 import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 
-import { getYearName, rankMap } from '@/lib/utils';
+import { getYearName, rankMap } from '@/lib/tables';
 import { PlayerDisplayType } from '@/services/Player';
 
 export interface Props {

@@ -59,7 +59,8 @@ export const AdminPlayerList = ({
 }: Props) => {
     const router = useRouter();
     const userEmailSet = useMemo(
-        () => new Set((userEmails ?? []).map((email) => normalizeEmail(email)).filter((email) => email.length > 0)),
+        () => new Set((userEmails ?? [])
+            .map((email) => normalizeEmail(email)).filter((email) => email.length > 0)),
         [userEmails],
     );
     const [sortKey, setSortKey] = useState<SortKey>('id');

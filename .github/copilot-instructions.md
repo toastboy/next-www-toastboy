@@ -54,7 +54,7 @@ Purpose: Enable fast, safe contributions. Keep changes aligned with existing ser
 - Prefer Mantine components and types over native HTML/React elements when Mantine equivalents exist (e.g., use `<Select>` instead of `<select>`).
 - Zod deprecated `z.string().email()`; use `z.email()` instead.
 - Documentation is mandatory for new or modified code: add comprehensive comments to every substantive declaration in touched files (constants, types/interfaces, classes, fields, functions/methods, and exported helpers). Explain purpose, key inputs/outputs, invariants, and error behaviour, using clear JSDoc-style comments.
-- Always use `data-testid` selectors in tests and Storybook play functions.
+- Prefer element selectors that mirror real user interaction — query by role, label, placeholder, or visible text (e.g. `getByRole`, `getByLabelText`, `getByPlaceholderText`, `getByText`). Only fall back to `data-testid` when no accessible selector is available.
 - TODO: Re-add `eslint-plugin-vitest` once it supports ESLint 9; currently removed to avoid peer dependency warnings.
 
 ### Adding a New Service (Example Skeleton)

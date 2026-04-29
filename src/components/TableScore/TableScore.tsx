@@ -10,25 +10,35 @@ export interface Props {
 
 export const TableScore = ({ table, playerRecord }: Props) => {
     switch (table) {
-        // ['points', 'averages', 'stalwart', 'speedy', 'pub']
-
         case TableNameSchema.enum.points:
             return (
-                <Tooltip label={`P${playerRecord.played ?? 0} W${playerRecord.won ?? 0} D${playerRecord.drawn ?? 0} L${playerRecord.lost ?? 0}`}>
+                <Tooltip label={`
+                    P${playerRecord.played ?? 0}
+                    W${playerRecord.won ?? 0}
+                    D${playerRecord.drawn ?? 0}
+                    L${playerRecord.lost ?? 0}
+                `}>
                     <Text>{playerRecord[table]}</Text>
                 </Tooltip>
             );
 
         case TableNameSchema.enum.averages:
             return (
-                <Tooltip label={`P${playerRecord.played ?? 0} W${playerRecord.won ?? 0} D${playerRecord.drawn ?? 0} L${playerRecord.lost ?? 0}`}>
+                <Tooltip label={`
+                    P${playerRecord.played ?? 0}
+                    W${playerRecord.won ?? 0}
+                    D${playerRecord.drawn ?? 0}
+                    L${playerRecord.lost ?? 0}
+                `}>
                     <Text>{playerRecord.averages?.toFixed(3) ?? ''}</Text>
                 </Tooltip>
             );
 
         case TableNameSchema.enum.stalwart:
             return (
-                <Tooltip label={`Played ${playerRecord.played ?? 0} of ${playerRecord.gamesPlayed ?? 0}`}>
+                <Tooltip label={`
+                    Played ${playerRecord.played ?? 0} of ${playerRecord.gamesPlayed ?? 0}
+                `}>
                     <Text>{playerRecord[table]}%</Text>
                 </Tooltip>
             );

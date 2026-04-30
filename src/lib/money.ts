@@ -27,7 +27,7 @@ export const fromPounds = (amount: number) => Math.round(amount * 100);
  * @param amount - The amount in pence.
  * @returns The formatted amount as a string.
  */
-export const formatAmount = (amount: number) => toPounds(amount).toFixed(2);
+const formatAmount = (amount: number) => toPounds(amount).toFixed(2);
 
 /**
  * Formats an amount in pence as a GBP currency string.

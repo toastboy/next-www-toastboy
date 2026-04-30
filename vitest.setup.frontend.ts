@@ -85,10 +85,6 @@ vi.mock('@mantine/tiptap', () => ({
     RichTextEditor,
 }));
 
-vi.mock('swr', () => ({
-    default: vi.fn(),
-}));
-
 vi.mock('next/cache', () => ({
     revalidatePath: vi.fn(),
     revalidateTag: vi.fn(),

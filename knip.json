@@ -1,7 +1,9 @@
 {
     "$schema": "./node_modules/knip/schema.json",
     "entry": [
-        "prisma/seed.ci.ts"
+        "prisma/seed.ci.ts",
+        "vitest.*.config.ts",
+        "vitest.setup.*.ts"
     ],
     "ignoreDependencies": [
         "mariadb",

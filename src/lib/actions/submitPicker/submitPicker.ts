@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { sendEmailToAllActivePlayersCore } from '@/lib/actions/sendEmailToAllActivePlayers';
+import { sendEmailToAllActivePlayers } from '@/actions/sendEmailToAllActivePlayers';
 import { InternalError, NotFoundError, ValidationError } from '@/lib/errors';
 import { getPublicBaseUrl } from '@/lib/urls';
 import gameDayService from '@/services/GameDay';
@@ -18,7 +18,7 @@ interface SubmitPickerDeps {
 const defaultDeps: SubmitPickerDeps = {
     gameDayService,
     outcomeService,
-    sendEmailToAllActivePlayers: sendEmailToAllActivePlayersCore,
+    sendEmailToAllActivePlayers,
     getPublicBaseUrl,
 };
 

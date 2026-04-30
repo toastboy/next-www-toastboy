@@ -65,5 +65,6 @@
         "source.organizeImports": "never"
     },
     "playwright.reuseBrowser": false,
-    "playwright.showTrace": false
+    "playwright.showTrace": false,
+    "js/ts.tsdk.path": "./node_modules/typescript/lib"
 }

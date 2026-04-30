@@ -159,7 +159,9 @@
     },
     "overrides": {
         "fast-xml-parser": "^5.7.2",
-        "hono": "^4.12.15"
+        "hono": "^4.12.15",
+        "@hono/node-server": "^1.19.13",
+        "postcss": "^8.5.10"
     },
     "msw": {
         "workerDirectory": [

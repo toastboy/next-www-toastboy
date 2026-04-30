@@ -96,7 +96,7 @@ const PlayerRecordUpdateOneStrictZodSchema = PlayerRecordUpdateOneZodSchema.exte
 });
 
 export const PlayerRecordUpdateOneStrictSchema: z.ZodType<Prisma.PlayerRecordUpdateArgs> =
-    PlayerRecordUpdateOneStrictZodSchema as unknown as z.ZodType<Prisma.PlayerRecordUpdateArgs>;
+    PlayerRecordUpdateOneStrictZodSchema;
 
 const PlayerRecordUpsertOneStrictZodSchema = PlayerRecordUpsertOneZodSchema.extend({
     create: PlayerRecordCreateDataStrictSchema,

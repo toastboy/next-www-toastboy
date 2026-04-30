@@ -55,7 +55,7 @@ const PlayerCreateOneStrictZodSchema = PlayerCreateOneZodSchema.extend({
 });
 
 export const PlayerCreateOneStrictSchema: z.ZodType<Prisma.PlayerCreateArgs> =
-    PlayerCreateOneStrictZodSchema as unknown as z.ZodType<Prisma.PlayerCreateArgs>;
+    PlayerCreateOneStrictZodSchema;
 
 const PlayerUpdateDataStrictSchema = z.union([
     PlayerUpdateInputObjectZodSchema.extend(PlayerStrictFields),
@@ -67,7 +67,7 @@ const PlayerUpdateOneStrictZodSchema = PlayerUpdateOneZodSchema.extend({
 });
 
 export const PlayerUpdateOneStrictSchema: z.ZodType<Prisma.PlayerUpdateArgs> =
-    PlayerUpdateOneStrictZodSchema as unknown as z.ZodType<Prisma.PlayerUpdateArgs>;
+    PlayerUpdateOneStrictZodSchema;
 
 const PlayerUpsertOneStrictZodSchema = PlayerUpsertOneZodSchema.extend({
     create: PlayerCreateDataStrictSchema,
@@ -75,4 +75,4 @@ const PlayerUpsertOneStrictZodSchema = PlayerUpsertOneZodSchema.extend({
 });
 
 export const PlayerUpsertOneStrictSchema: z.ZodType<Prisma.PlayerUpsertArgs> =
-    PlayerUpsertOneStrictZodSchema as unknown as z.ZodType<Prisma.PlayerUpsertArgs>;
+    PlayerUpsertOneStrictZodSchema;

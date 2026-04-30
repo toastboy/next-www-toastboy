@@ -128,7 +128,7 @@ describe('PlayerRecordService', () => {
                 ...defaultPlayerRecord,
                 gameDayId: 15,
                 playerId: 12,
-            } as PlayerRecordType);
+            });
             expect(typeof result?.points).toBe('number');
         });
 
@@ -357,7 +357,7 @@ describe('PlayerRecordService', () => {
                 ...defaultPlayerRecord,
                 gameDayId: 15,
                 year: 2021,
-            } as PlayerRecordType);
+            });
         });
 
         it('should return an empty list when retrieving playerRecords for GameDay id 101', async () => {

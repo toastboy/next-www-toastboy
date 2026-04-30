@@ -56,7 +56,7 @@ const ArseCreateOneStrictZodSchema = ArseCreateOneZodSchema.extend({
 });
 
 export const ArseCreateOneStrictSchema: z.ZodType<Prisma.ArseCreateArgs> =
-    ArseCreateOneStrictZodSchema as unknown as z.ZodType<Prisma.ArseCreateArgs>;
+    ArseCreateOneStrictZodSchema;
 
 // Strict schemas for update operations
 
@@ -73,7 +73,7 @@ const ArseUpdateOneStrictZodSchema = ArseUpdateOneZodSchema.extend({
 });
 
 export const ArseUpdateOneStrictSchema: z.ZodType<Prisma.ArseUpdateArgs> =
-    ArseUpdateOneStrictZodSchema as unknown as z.ZodType<Prisma.ArseUpdateArgs>;
+    ArseUpdateOneStrictZodSchema;
 
 // Strict schemas for upsert operations
 
@@ -83,4 +83,4 @@ const ArseUpsertOneStrictZodSchema = ArseUpsertOneZodSchema.extend({
 });
 
 export const ArseUpsertOneStrictSchema: z.ZodType<Prisma.ArseUpsertArgs> =
-    ArseUpsertOneStrictZodSchema as unknown as z.ZodType<Prisma.ArseUpsertArgs>;
+    ArseUpsertOneStrictZodSchema;

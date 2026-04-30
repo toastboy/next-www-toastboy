@@ -1,5 +1,4 @@
 import { render, screen } from '@testing-library/react';
-import type { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { usePathname, useRouter } from 'next/navigation';
 import { vi } from 'vitest';
 
@@ -17,7 +16,7 @@ describe('TitleWithYearDropdown', () => {
             refresh: vi.fn(),
             replace: vi.fn(),
             prefetch: vi.fn(),
-        } as AppRouterInstance);
+        });
         vi.mocked(usePathname).mockReturnValue('/footy/year/2024');
     });
 

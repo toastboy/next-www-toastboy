@@ -49,7 +49,7 @@ const ClubCreateOneStrictZodSchema = ClubCreateOneZodSchema.extend({
 });
 
 export const ClubCreateOneStrictSchema: z.ZodType<Prisma.ClubCreateArgs> =
-    ClubCreateOneStrictZodSchema as unknown as z.ZodType<Prisma.ClubCreateArgs>;
+    ClubCreateOneStrictZodSchema;
 
 // Strict schemas for update operations
 
@@ -63,7 +63,7 @@ const ClubUpdateOneStrictZodSchema = ClubUpdateOneZodSchema.extend({
 });
 
 export const ClubUpdateOneStrictSchema: z.ZodType<Prisma.ClubUpdateArgs> =
-    ClubUpdateOneStrictZodSchema as unknown as z.ZodType<Prisma.ClubUpdateArgs>;
+    ClubUpdateOneStrictZodSchema;
 
 // Strict schemas for upsert operations
 
@@ -73,4 +73,4 @@ const ClubUpsertOneStrictZodSchema = ClubUpsertOneZodSchema.extend({
 });
 
 export const ClubUpsertOneStrictSchema: z.ZodType<Prisma.ClubUpsertArgs> =
-    ClubUpsertOneStrictZodSchema as unknown as z.ZodType<Prisma.ClubUpsertArgs>;
+    ClubUpsertOneStrictZodSchema;

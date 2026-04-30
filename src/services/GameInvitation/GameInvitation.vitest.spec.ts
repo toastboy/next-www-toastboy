@@ -30,7 +30,7 @@ describe('GameInvitationService', () => {
             expect(result).toEqual({
                 ...defaultGameInvitation,
                 uuid: defaultGameInvitationList[5].uuid,
-            } as GameInvitationType);
+            });
         });
 
         it('should return null for uuid "6789"', async () => {

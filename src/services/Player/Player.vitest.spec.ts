@@ -90,7 +90,7 @@ describe('PlayerService', () => {
             expect(result).toEqual({
                 ...defaultPlayer,
                 id: 6,
-            } as PlayerType);
+            });
         });
 
         it('should return null for id 107', async () => {
@@ -482,7 +482,7 @@ describe('PlayerService', () => {
             await expect(playerService.create({
                 ...defaultPlayer,
                 accountEmail: 'not-an-email',
-            } as unknown as PlayerCreateWriteInput)).rejects.toThrow();
+            })).rejects.toThrow();
         });
     });
 

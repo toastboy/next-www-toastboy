@@ -45,7 +45,7 @@ const GameChatCreateOneStrictZodSchema = GameChatCreateOneZodSchema.extend({
 });
 
 export const GameChatCreateOneStrictSchema: z.ZodType<Prisma.GameChatCreateArgs> =
-    GameChatCreateOneStrictZodSchema as unknown as z.ZodType<Prisma.GameChatCreateArgs>;
+    GameChatCreateOneStrictZodSchema;
 
 const GameChatUpdateDataStrictSchema = z.union([
     GameChatUpdateInputObjectZodSchema.extend(GameChatWriteFields),
@@ -57,7 +57,7 @@ const GameChatUpdateOneStrictZodSchema = GameChatUpdateOneZodSchema.extend({
 });
 
 export const GameChatUpdateOneStrictSchema: z.ZodType<Prisma.GameChatUpdateArgs> =
-    GameChatUpdateOneStrictZodSchema as unknown as z.ZodType<Prisma.GameChatUpdateArgs>;
+    GameChatUpdateOneStrictZodSchema;
 
 const GameChatUpsertOneStrictZodSchema = GameChatUpsertOneZodSchema.extend({
     create: GameChatCreateDataStrictSchema,
@@ -65,4 +65,4 @@ const GameChatUpsertOneStrictZodSchema = GameChatUpsertOneZodSchema.extend({
 });
 
 export const GameChatUpsertOneStrictSchema: z.ZodType<Prisma.GameChatUpsertArgs> =
-    GameChatUpsertOneStrictZodSchema as unknown as z.ZodType<Prisma.GameChatUpsertArgs>;
+    GameChatUpsertOneStrictZodSchema;

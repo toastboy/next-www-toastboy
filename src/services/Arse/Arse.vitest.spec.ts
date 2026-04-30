@@ -48,7 +48,7 @@ describe('ArseService', () => {
                 ...defaultArse,
                 playerId: 6,
                 raterId: 16,
-            } as ArseType);
+            });
             expect(result?.stamp).toBeInstanceOf(Date);
         });
 
@@ -244,7 +244,7 @@ describe('ArseService', () => {
                     ...defaultArse,
                     playerId: 6,
                     raterId: 16,
-                } as ArseType),
+                }),
             });
         });
     });

@@ -29,7 +29,7 @@ const getSpyFactory = (): SpyFactory => {
             return undefined as R;
         }) as ((...args: A) => R) & { mock?: unknown };
         return fn;
-    }) as SpyFactory;
+    });
 };
 
 const spy = getSpyFactory();

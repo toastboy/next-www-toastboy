@@ -47,7 +47,7 @@ export const Render: Story = {
         createPlayer.mockResolvedValue({
             player: { id: 123 },
             inviteLink: 'http://example.com/footy/auth/claim?token=storybook',
-        } as Awaited<ReturnType<typeof createPlayer>>);
+        });
 
         const canvas = within(canvasElement);
         const nameInput = await canvas.findByLabelText(/Name/i);

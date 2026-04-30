@@ -18,4 +18,4 @@ export const defaultTeamPlayerList: TeamPlayerType[] = defaultPlayerFormList.map
         outcome: createMockOutcome(),
         form: [playerForm],
     }),
-) as TeamPlayerType[];
+);

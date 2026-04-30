@@ -39,7 +39,7 @@ const CountryCreateOneStrictZodSchema = CountryCreateOneZodSchema.extend({
 });
 
 export const CountryCreateOneStrictSchema: z.ZodType<Prisma.CountryCreateArgs> =
-    CountryCreateOneStrictZodSchema as unknown as z.ZodType<Prisma.CountryCreateArgs>;
+    CountryCreateOneStrictZodSchema;
 
 const CountryUpdateDataStrictSchema = z.union([
     CountryUpdateInputObjectZodSchema.extend(CountryUpdateStrictFields),
@@ -51,7 +51,7 @@ const CountryUpdateOneStrictZodSchema = CountryUpdateOneZodSchema.extend({
 });
 
 export const CountryUpdateOneStrictSchema: z.ZodType<Prisma.CountryUpdateArgs> =
-    CountryUpdateOneStrictZodSchema as unknown as z.ZodType<Prisma.CountryUpdateArgs>;
+    CountryUpdateOneStrictZodSchema;
 
 const CountryUpsertOneStrictZodSchema = CountryUpsertOneZodSchema.extend({
     create: CountryCreateDataStrictSchema,
@@ -59,4 +59,4 @@ const CountryUpsertOneStrictZodSchema = CountryUpsertOneZodSchema.extend({
 });
 
 export const CountryUpsertOneStrictSchema: z.ZodType<Prisma.CountryUpsertArgs> =
-    CountryUpsertOneStrictZodSchema as unknown as z.ZodType<Prisma.CountryUpsertArgs>;
+    CountryUpsertOneStrictZodSchema;

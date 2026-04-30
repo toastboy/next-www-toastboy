@@ -152,7 +152,7 @@ describe('OutcomeService', () => {
                 ...defaultOutcome,
                 gameDayId: 1,
                 playerId: 1,
-            } as OutcomeType);
+            });
         });
 
         it('should return null for GameDay 7, Player 16', async () => {

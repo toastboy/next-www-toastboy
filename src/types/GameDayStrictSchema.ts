@@ -70,7 +70,7 @@ const GameDayCreateOneStrictZodSchema = GameDayCreateOneZodSchema.extend({
 });
 
 export const GameDayCreateOneStrictSchema: z.ZodType<Prisma.GameDayCreateArgs> =
-    GameDayCreateOneStrictZodSchema as unknown as z.ZodType<Prisma.GameDayCreateArgs>;
+    GameDayCreateOneStrictZodSchema;
 
 const GameDayUpdateDataStrictSchema = z.union([
     GameDayUpdateInputObjectZodSchema.extend(GameDayUpdateStrictFields),
@@ -82,7 +82,7 @@ const GameDayUpdateOneStrictZodSchema = GameDayUpdateOneZodSchema.extend({
 });
 
 export const GameDayUpdateOneStrictSchema: z.ZodType<Prisma.GameDayUpdateArgs> =
-    GameDayUpdateOneStrictZodSchema as unknown as z.ZodType<Prisma.GameDayUpdateArgs>;
+    GameDayUpdateOneStrictZodSchema;
 
 const GameDayUpsertOneStrictZodSchema = GameDayUpsertOneZodSchema.extend({
     create: GameDayCreateDataStrictSchema,
@@ -90,4 +90,4 @@ const GameDayUpsertOneStrictZodSchema = GameDayUpsertOneZodSchema.extend({
 });
 
 export const GameDayUpsertOneStrictSchema: z.ZodType<Prisma.GameDayUpsertArgs> =
-    GameDayUpsertOneStrictZodSchema as unknown as z.ZodType<Prisma.GameDayUpsertArgs>;
+    GameDayUpsertOneStrictZodSchema;

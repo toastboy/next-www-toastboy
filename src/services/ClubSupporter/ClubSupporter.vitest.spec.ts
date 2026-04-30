@@ -1,6 +1,5 @@
 import { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
-import { ClubSupporterType } from 'prisma/zod/schemas/models/ClubSupporter.schema';
 import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
@@ -25,7 +24,7 @@ describe('clubSupporterService', () => {
                 ...defaultClubSupporter,
                 playerId: 6,
                 clubId: 16,
-            } as ClubSupporterType);
+            });
         });
 
         it('should return null for player 7, club 16', async () => {

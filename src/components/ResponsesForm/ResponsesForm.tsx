@@ -185,7 +185,7 @@ export const ResponsesForm = ({
                                     }))}
                                     value={responseValues.response ?? ResponseOption.None}
                                     onChange={(value) => {
-                                        const nextValue = value as ResponseOption | null;
+                                        const nextValue = value;
                                         form.setFieldValue(
                                             `byPlayerId.${row.playerId}.response`,
                                             nextValue === ResponseOption.None ? null : nextValue,

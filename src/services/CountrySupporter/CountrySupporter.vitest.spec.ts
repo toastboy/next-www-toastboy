@@ -75,7 +75,7 @@ describe('countrySupporterService', () => {
                 ...defaultCountrySupporter,
                 playerId: 6,
                 countryFIFACode: "ENG",
-            } as CountrySupporterType);
+            });
         });
 
         it('should return null for player 7, country "ZZZ"', async () => {
@@ -98,7 +98,7 @@ describe('countrySupporterService', () => {
                 expect(ClubSupporterResult).toMatchObject({
                     ...defaultCountrySupporter,
                     playerId: 1,
-                } as CountrySupporterType);
+                });
                 expect(typeof ClubSupporterResult.countryFIFACode).toBe('string');
             }
         });

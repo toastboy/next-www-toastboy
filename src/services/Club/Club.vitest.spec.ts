@@ -1,6 +1,5 @@
 import { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
-import { ClubType } from 'prisma/zod/schemas/models/Club.schema';
 import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
@@ -27,7 +26,7 @@ describe('ClubService', () => {
                 ...defaultClub,
                 id: 6,
                 soccerwayId: 1005,
-            } as ClubType);
+            });
         });
 
         it('should return null for id 107', async () => {
@@ -73,7 +72,7 @@ describe('ClubService', () => {
             await expect(clubService.create({
                 ...invalidClub,
                 clubName: 'x'.repeat(256),
-            } as unknown as ClubCreateWriteInput)).rejects.toThrow();
+            })).rejects.toThrow();
         });
     });
 
@@ -123,7 +122,7 @@ describe('ClubService', () => {
                 clubName: defaultClub.clubName,
                 uri: defaultClub.uri,
                 country: defaultClub.country,
-            } as unknown as ClubUpsertInput)).rejects.toThrow();
+            })).rejects.toThrow();
         });
 
         it('should refuse to update a club with invalid data where one with the id already existed', async () => {
@@ -133,7 +132,7 @@ describe('ClubService', () => {
                 clubName: 'x'.repeat(256),
                 uri: defaultClub.uri,
                 country: defaultClub.country,
-            } as unknown as ClubUpsertInput)).rejects.toThrow();
+            })).rejects.toThrow();
         });
     });
 

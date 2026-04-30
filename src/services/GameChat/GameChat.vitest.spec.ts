@@ -67,7 +67,7 @@ describe('GameChatService', () => {
                 id: 6,
                 gameDay: 6,
                 player: 6,
-            } as GameChatType);
+            });
         });
 
         it('should return null for id 107', async () => {

@@ -128,7 +128,7 @@ export async function pngResponseHandler(response: NextResponse, res: ServerResp
         const isPngResponse = response.status === 200 && contentType.includes('image/png');
 
         if (isPngResponse) {
-            const buffer = await readableStreamToBuffer(response.body as ReadableStream<Uint8Array>);
+            const buffer = await readableStreamToBuffer(response.body);
             res.setHeader('Content-Type', 'image/png');
             res.end(buffer);
             return;

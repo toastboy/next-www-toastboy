@@ -113,7 +113,7 @@ describe('sendEmailVerificationCore', () => {
 
         await sendEmailVerificationCore(
             'player@example.com',
-            { id: 7, name: 'Alex' } as never,
+            { id: 7, name: 'Alex' },
             deps,
         );
 
@@ -155,7 +155,7 @@ describe('sendEmailVerificationCore', () => {
 
         await expect(sendEmailVerificationCore(
             'player@example.com',
-            { id: 7, name: 'Alex' } as never,
+            { id: 7, name: 'Alex' },
             deps,
         )).rejects.toBeInstanceOf(ValidationError);
         expect(deps.emailVerificationService.create).not.toHaveBeenCalled();

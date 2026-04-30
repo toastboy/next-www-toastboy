@@ -1,6 +1,5 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import type { AppRouterInstance } from 'next/dist/shared/lib/app-router-context.shared-runtime';
 import { useRouter } from 'next/navigation';
 import { vi } from 'vitest';
 
@@ -45,7 +44,7 @@ describe('DrinkersForm', () => {
             refresh: refreshMock,
             replace: vi.fn(),
             prefetch: vi.fn(),
-        } as AppRouterInstance);
+        });
     });
 
     it('renders drinkers for a game with existing pub selections', () => {

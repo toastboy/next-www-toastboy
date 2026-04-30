@@ -63,7 +63,7 @@ const GameInvitationCreateManyStrictZodSchema = z.object({
 }).strict();
 
 export const GameInvitationCreateManyStrictSchema: z.ZodType<Prisma.GameInvitationCreateManyArgs> =
-    GameInvitationCreateManyStrictZodSchema as unknown as z.ZodType<Prisma.GameInvitationCreateManyArgs>;
+    GameInvitationCreateManyStrictZodSchema;
 
 const GameInvitationUpdateDataStrictSchema = z.union([
     GameInvitationUpdateInputObjectZodSchema.extend(GameInvitationUpdateStrictFields),

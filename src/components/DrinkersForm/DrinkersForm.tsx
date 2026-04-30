@@ -21,7 +21,7 @@ import {
 import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { config } from '@/lib/config';
 import type { SetDrinkersInput, SetDrinkersProxy } from '@/types/actions/SetDrinkers';
@@ -46,13 +46,15 @@ export const DrinkersForm = ({
     const [savedSelectedIds, setSavedSelectedIds] = useState<number[]>(() => toSelectedIds(players));
     const [filter, setFilter] = useState('');
     const [isSaving, setIsSaving] = useState(false);
+    const [prevPlayers, setPrevPlayers] = useState(players);
 
-    useEffect(() => {
+    if (prevPlayers !== players) {
+        setPrevPlayers(players);
         setRows(sortRows(players));
         const selected = toSelectedIds(players);
         setSelectedIds(selected);
         setSavedSelectedIds(selected);
-    }, [players]);
+    }
 
     const selectedIdSet = useMemo(() => new Set(selectedIds), [selectedIds]);
 

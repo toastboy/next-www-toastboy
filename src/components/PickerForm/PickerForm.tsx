@@ -21,7 +21,7 @@ import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck, IconChevronDown, IconChevronUp, IconSelector } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { config } from '@/lib/config';
 import { formatDate } from '@/lib/dates';
@@ -54,11 +54,6 @@ export const PickerForm = ({
     const [reason, setReason] = useState('');
     const [isSettingEnabled, setIsSettingEnabled] = useState(false);
 
-    useEffect(() => {
-        const eligibleIdSet = new Set(eligiblePlayers.map((player) => player.playerId));
-        setSelectedIds((prev) => prev.filter((id) => eligibleIdSet.has(id)));
-    }, [eligiblePlayers]);
-
     const sortedPlayers = useMemo(() => {
         const data = [...eligiblePlayers];
         data.sort((a, b) => {
@@ -83,7 +78,7 @@ export const PickerForm = ({
 
     const allSelected = eligiblePlayers.length > 0 && filteredSelectedCount === eligiblePlayers.length;
     const someSelected = filteredSelectedCount > 0 && !allSelected;
-    const hasSelection = selectedIds.length > 0;
+    const hasSelection = filteredSelectedCount > 0;
 
     const selectedPlayers = useMemo(() => (
         eligiblePlayers.filter((player) => selectedIdSet.has(player.playerId))
@@ -261,7 +256,7 @@ export const PickerForm = ({
     const picker = (
         <>
             <Group justify="space-between" align="center" wrap="wrap">
-                <Text fw={700}>Players selected ({selectedIds.length})</Text>
+                <Text fw={700}>Players selected ({filteredSelectedCount})</Text>
                 <Button
                     type="button"
                     data-testid="submit-picker-button"

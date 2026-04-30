@@ -1,0 +1,19 @@
+{
+    "$schema": "./node_modules/knip/schema.json",
+    "entry": [
+        "prisma/seed.ci.ts"
+    ],
+    "ignoreDependencies": [
+        "mariadb",
+        "@eslint/config-array",
+        "@eslint/object-schema",
+        "@next/eslint-plugin-next",
+        "@playwright/browser-chromium",
+        "@playwright/browser-firefox",
+        "@playwright/browser-webkit"
+    ],
+    "ignoreBinaries": [
+        "stdbuf",
+        "chromatic"
+    ]
+}

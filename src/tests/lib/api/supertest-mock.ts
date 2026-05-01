@@ -6,7 +6,7 @@ interface MockResponse {
 }
 
 interface MockApp {
-    __handle?: (url: string, method?: string) => Promise<MockResponse>;
+    __handle?: (url: string, method: string) => Promise<MockResponse>;
 }
 
 const request = (app: MockApp) => {
@@ -17,6 +17,10 @@ const request = (app: MockApp) => {
 
     return {
         get: async (url: string): Promise<MockResponse> => handler(url, 'GET'),
+        post: async (url: string): Promise<MockResponse> => handler(url, 'POST'),
+        put: async (url: string): Promise<MockResponse> => handler(url, 'PUT'),
+        delete: async (url: string): Promise<MockResponse> => handler(url, 'DELETE'),
+        patch: async (url: string): Promise<MockResponse> => handler(url, 'PATCH'),
     };
 };
 

@@ -2,17 +2,6 @@ import 'server-only';
 
 import debug from 'debug';
 
-/**
- * Re-export pure date utilities so server-side consumers can continue to
- * import everything from `@/lib/dates`.
- */
-export {
-    formatDate,
-    getFullMonthName,
-    getOrdinal,
-    getShortMonthName,
-} from './dates';
-
 const log = debug('footy:dates');
 
 /** URL for the UK Government Bank Holidays API. */

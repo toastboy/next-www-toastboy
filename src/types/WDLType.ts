@@ -1,9 +1,8 @@
-import { z } from 'zod';
-
-export const WDLSchema = z.object({
-    won: z.number(),
-    drawn: z.number(),
-    lost: z.number(),
-});
-
-export type WDLType = z.infer<typeof WDLSchema>;
+/**
+ * Aggregate won/drawn/lost counts used by bibs statistics views and services.
+ */
+export interface WDLType {
+    won: number;
+    drawn: number;
+    lost: number;
+}

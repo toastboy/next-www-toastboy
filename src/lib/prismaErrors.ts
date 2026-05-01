@@ -1,8 +1,8 @@
 import { Prisma } from 'prisma/generated/client';
 
-export const PRISMA_NOT_FOUND_CODE = 'P2025';
+const PRISMA_NOT_FOUND_CODE = 'P2025';
 
-export const isPrismaKnownRequestError = (
+const isPrismaKnownRequestError = (
     error: unknown,
 ): error is Prisma.PrismaClientKnownRequestError =>
     error instanceof Prisma.PrismaClientKnownRequestError;

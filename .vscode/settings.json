@@ -9,6 +9,7 @@
         "**/.git": true
     },
     "search.exclude": {
+        "**/.claude": true,
         "**/.git": true,
         "**/.next": true,
         "**/.vscode": true,

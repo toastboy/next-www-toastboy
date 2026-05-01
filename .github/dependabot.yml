@@ -1,69 +1,72 @@
 version: 2
 updates:
-  - package-ecosystem: "npm"
-    directory: "/"
-    schedule:
-      interval: "daily"
-    ignore:
-      - dependency-name: "@types/node"
-        versions:
-          - ">=21"
-    groups:
-      eslint-core:
-        patterns:
-          - "eslint"
-          - "@eslint/js"
-      eslint-plugins:
-        patterns:
-          - "eslint-plugin-*"
-      mantine:
-        patterns:
-          - "@mantine/*"
-      next:
-        patterns:
-          - "next"
-          - "@next/eslint-plugin-next"
-          - "eslint-config-next"
-      playwright:
-        patterns:
-          - "@playwright/*"
-      prisma:
-        patterns:
-          - "prisma"
-          - "@prisma/adapter-mariadb"
-          - "@prisma/client"
-      react-core:
-        patterns:
-          - "react"
-          - "react-dom"
-          - "react-test-renderer"
-      react-types:
-        patterns:
-          - "@types/react"
-          - "@types/react-dom"
-      sentry:
-        patterns:
-          - "@sentry/*"
-      storybook:
-        patterns:
-          - "storybook"
-          - "@storybook/*"
-          - "eslint-plugin-storybook"
-      tiptap:
-        patterns:
-          - "@tiptap/*"
-      typescript-eslint:
-        patterns:
-          - "@typescript-eslint/*"
-      vitest:
-        patterns:
-          - "vitest"
-          - "@vitest/*"
-  - package-ecosystem: "github-actions"
-    directory: "/"
-    schedule:
-      interval: "daily"
-  - package-ecosystem: "terraform"
-    directory: "/terraform"
-    schedule:
-      interval: "weekly"
+    - package-ecosystem: "npm"
+      directory: "/"
+      schedule:
+          interval: "daily"
+      ignore:
+          - dependency-name: "eslint"
+            versions:
+                - ">=10"
+          - dependency-name: "@eslint/js"
+            versions:
+                - ">=10"
+      groups:
+          eslint-core:
+              patterns:
+                  - "eslint"
+                  - "@eslint/js"
+          eslint-plugins:
+              patterns:
+                  - "eslint-plugin-*"
+          mantine:
+              patterns:
+                  - "@mantine/*"
+          next:
+              patterns:
+                  - "next"
+                  - "@next/eslint-plugin-next"
+                  - "eslint-config-next"
+          playwright:
+              patterns:
+                  - "@playwright/*"
+          prisma:
+              patterns:
+                  - "prisma"
+                  - "@prisma/adapter-mariadb"
+                  - "@prisma/client"
+          react-core:
+              patterns:
+                  - "react"
+                  - "react-dom"
+                  - "react-test-renderer"
+          react-types:
+              patterns:
+                  - "@types/react"
+                  - "@types/react-dom"
+          sentry:
+              patterns:
+                  - "@sentry/*"
+          storybook:
+              patterns:
+                  - "storybook"
+                  - "@storybook/*"
+                  - "eslint-plugin-storybook"
+          tiptap:
+              patterns:
+                  - "@tiptap/*"
+          typescript-eslint:
+              patterns:
+                  - "@typescript-eslint/*"
+          vitest:
+              patterns:
+                  - "vitest"
+                  - "@vitest/*"
+    - package-ecosystem: "github-actions"
+      directory: "/"
+      schedule:
+          interval: "daily"
+    - package-ecosystem: "terraform"
+      directory: "/terraform"
+      schedule:
+          interval: "weekly"

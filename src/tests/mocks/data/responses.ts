@@ -32,7 +32,7 @@ const createMockOutcomePlayer = (
     ...overrides,
 });
 
-export const defaultResponsesAdminData: OutcomePlayerType[] = [
+export const defaultResponsesAdminData = [
     createMockOutcomePlayer({
         id: 1,
         playerId: 1,
@@ -60,4 +60,4 @@ export const defaultResponsesAdminData: OutcomePlayerType[] = [
         comment: '',
         player: createResponsePlayer(4, 'Dev Striker'),
     }),
-];
+] satisfies OutcomePlayerType[];

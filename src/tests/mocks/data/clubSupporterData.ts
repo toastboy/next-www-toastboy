@@ -2,11 +2,11 @@ import { ClubSupporterDataType } from '@/types';
 
 import { defaultClub } from './club';
 
-export const defaultClubSupporterData: ClubSupporterDataType = {
+export const defaultClubSupporterData = {
     playerId: 12,
     clubId: 2270,
     club: defaultClub,
-};
+} satisfies ClubSupporterDataType;
 
 export const createMockClubSupporterData = (overrides: Partial<ClubSupporterDataType> = {}): ClubSupporterDataType => ({
     ...defaultClubSupporterData,

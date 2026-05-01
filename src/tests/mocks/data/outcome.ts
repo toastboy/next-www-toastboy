@@ -1,6 +1,6 @@
 import { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
 
-export const defaultOutcome: OutcomeType = {
+export const defaultOutcome = {
     id: 1,
     gameDayId: 1,
     playerId: 12,
@@ -11,7 +11,7 @@ export const defaultOutcome: OutcomeType = {
     comment: 'Test comment',
     pub: 1,
     goalie: false,
-};
+} satisfies OutcomeType;
 
 export const createMockOutcome = (overrides: Partial<OutcomeType> = {}): OutcomeType => ({
     ...defaultOutcome,

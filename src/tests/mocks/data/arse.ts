@@ -1,6 +1,6 @@
-import { ArseSchema, ArseType } from 'prisma/zod/schemas/models/Arse.schema';
+import { ArseType } from 'prisma/zod/schemas/models/Arse.schema';
 
-export const defaultArse = ArseSchema.parse({
+export const defaultArse = {
     id: 1,
     stamp: new Date("2024-01-01T00:00:00.000Z"),
     playerId: 12,
@@ -12,7 +12,7 @@ export const defaultArse = ArseSchema.parse({
     ballSkill: 10,
     attacking: 10,
     defending: 10,
-});
+} satisfies ArseType;
 
 export const createMockArse = (overrides: Partial<ArseType> = {}): ArseType => ({
     ...defaultArse,

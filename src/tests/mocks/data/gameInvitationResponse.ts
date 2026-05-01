@@ -2,7 +2,7 @@ import { PlayerResponse } from 'prisma/generated/browser';
 
 import { GameInvitationResponseDetails } from '@/types/GameInvitationResponseDetails';
 
-export const defaultGameInvitationResponseDetails: GameInvitationResponseDetails = {
+export const defaultGameInvitationResponseDetails = {
     token: '123e4567-e89b-12d3-a456-426614174000',
     playerId: 1,
     playerName: 'Pat Example',
@@ -11,7 +11,7 @@ export const defaultGameInvitationResponseDetails: GameInvitationResponseDetails
     response: PlayerResponse.Dunno,
     goalie: false,
     comment: null,
-};
+} satisfies GameInvitationResponseDetails;
 
 export const createMockGameInvitationResponseDetails = (
     overrides: Partial<GameInvitationResponseDetails> = {},

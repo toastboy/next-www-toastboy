@@ -1,12 +1,12 @@
 import { PlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
 
-export const defaultPlayerExtraEmail: PlayerExtraEmailType = {
+export const defaultPlayerExtraEmail = {
     id: 1,
     playerId: 1,
     email: 'gary.player@example.com',
     verifiedAt: new Date('2021-01-01'),
     createdAt: new Date('2021-01-01'),
-};
+} satisfies PlayerExtraEmailType;
 
 export const createMockPlayerExtraEmail = (overrides: Partial<PlayerExtraEmailType> = {}): PlayerExtraEmailType => ({
     ...defaultPlayerExtraEmail,

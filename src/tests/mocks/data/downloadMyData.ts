@@ -6,7 +6,7 @@ import { defaultOutcome } from './outcome';
 import { defaultPlayer } from './player';
 import { defaultPlayerExtraEmails } from './playerExtraEmail';
 
-export const defaultDownloadMyDataPayload: DownloadMyDataPayload = {
+export const defaultDownloadMyDataPayload = {
     meta: {
         exportedAt: '2024-01-01T12:00:00.000Z',
         playerId: defaultPlayer.id,
@@ -28,7 +28,7 @@ export const defaultDownloadMyDataPayload: DownloadMyDataPayload = {
         gamesLost: 2,
     },
     outcomes: [defaultOutcome],
-};
+} satisfies DownloadMyDataPayload;
 
 export const createMockDownloadMyDataPayload = (
     overrides: Partial<DownloadMyDataPayload> = {},

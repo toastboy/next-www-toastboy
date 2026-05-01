@@ -33,7 +33,7 @@ const createMockOutcomePlayer = (
     ...overrides,
 });
 
-export const defaultPickerAdminData: PickerPlayerType[] = [
+export const defaultPickerAdminData = [
     createMockOutcomePlayer({
         id: 1,
         playerId: 1,
@@ -64,4 +64,4 @@ export const defaultPickerAdminData: PickerPlayerType[] = [
         gamesPlayed: 3,
         player: createPickerPlayer(4, 'Dev Striker'),
     }),
-];
+] satisfies PickerPlayerType[];

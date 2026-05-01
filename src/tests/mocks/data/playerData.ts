@@ -2,7 +2,7 @@ import { PlayerDataType } from '@/types';
 
 import { defaultPlayer } from './player';
 
-export const defaultPlayerData: PlayerDataType = {
+export const defaultPlayerData = {
     ...defaultPlayer,
     accountEmail: 'gary.login@example.com',
     extraEmails: [
@@ -22,7 +22,7 @@ export const defaultPlayerData: PlayerDataType = {
     gamesWon: 50,
     gamesDrawn: 20,
     gamesLost: 20,
-};
+} satisfies PlayerDataType;
 
 export const createMockPlayerData = (overrides: Partial<PlayerDataType> = {}): PlayerDataType => {
     const playerData: PlayerDataType = {

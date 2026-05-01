@@ -2,19 +2,19 @@ import { createMockGameDay } from '@/tests/mocks/data/gameDay';
 import { createMockPlayer } from '@/tests/mocks/data/player';
 import type { DebtsSummaryType, MoneyChartDatum, PlayerDebtsType } from '@/types/DebtType';
 
-export const defaultMoneyChartData: MoneyChartDatum[] = [
+export const defaultMoneyChartData = [
     { interval: 'Jan', credits: 120, debits: 80 },
     { interval: 'Feb', credits: 150, debits: 100 },
     { interval: 'Mar', credits: 90, debits: 120 },
     { interval: 'Apr', credits: 200, debits: 80 },
     { interval: 'May', credits: 60, debits: 150 },
     { interval: 'Jun', credits: 180, debits: 90 },
-];
+] satisfies MoneyChartDatum[];
 
 /**
  * Default mock data for player debts (unpaid game charges).
  */
-export const defaultPlayerDebtsList: PlayerDebtsType[] = [
+export const defaultPlayerDebtsList = [
     {
         player: createMockPlayer({
             id: 11,
@@ -42,14 +42,14 @@ export const defaultPlayerDebtsList: PlayerDebtsType[] = [
             { gameDay: createMockGameDay({ id: 18 }), amount: 625 },
         ],
     },
-];
+] satisfies PlayerDebtsType[];
 
 /**
  * Default mock data for the complete debts summary.
  */
-export const defaultDebtsSummary: DebtsSummaryType = {
+export const defaultDebtsSummary = {
     players: defaultPlayerDebtsList,
-};
+} satisfies DebtsSummaryType;
 
 /**
  * Creates a mock debts summary with optional overrides.

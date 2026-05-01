@@ -1,6 +1,6 @@
 import type { UserWithRolePayload } from '@/lib/actions/auth';
 
-export const defaultAdminUserDataPayload: UserWithRolePayload = {
+export const defaultAdminUserDataPayload = {
     id: 'user_1',
     createdAt: '2024-01-10T09:00:00.000Z',
     updatedAt: '2024-06-20T12:00:00.000Z',
@@ -12,4 +12,4 @@ export const defaultAdminUserDataPayload: UserWithRolePayload = {
     banned: false,
     banReason: null,
     banExpires: null,
-};
+} satisfies UserWithRolePayload;

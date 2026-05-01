@@ -1,10 +1,10 @@
 import { GameInvitationType } from 'prisma/zod/schemas/models/GameInvitation.schema';
 
-export const defaultGameInvitation: GameInvitationType = {
+export const defaultGameInvitation = {
     uuid: '123e4567-e89b-12d3-a456-426614174000',
     playerId: 1,
     gameDayId: 1,
-};
+} satisfies GameInvitationType;
 
 export const createMockGameInvitation = (overrides: Partial<GameInvitationType> = {}): GameInvitationType => ({
     ...defaultGameInvitation,

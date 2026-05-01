@@ -4,11 +4,11 @@ import { TeamPlayerType } from '@/types';
 import { defaultPlayer } from './player';
 import { defaultPlayerFormList } from './playerForm';
 
-export const defaultTeamPlayer: TeamPlayerType = {
+export const defaultTeamPlayer = {
     ...defaultPlayer,
     outcome: createMockOutcome(),
     form: [defaultPlayerFormList[0]],
-};
+} satisfies TeamPlayerType;
 
 export const defaultTeamPlayerList: TeamPlayerType[] = defaultPlayerFormList.map(
     (playerForm, index) => ({

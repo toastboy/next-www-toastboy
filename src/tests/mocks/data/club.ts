@@ -1,12 +1,12 @@
 import { ClubType } from 'prisma/zod/schemas/models/Club.schema';
 
-export const defaultClub: ClubType = {
+export const defaultClub = {
     id: 1,
     soccerwayId: 1000,
     clubName: "Wittering United",
     uri: "wittering-united",
     country: "england",
-};
+} satisfies ClubType;
 
 export const invalidClub: ClubType = {
     ...defaultClub,

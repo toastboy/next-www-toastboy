@@ -3,10 +3,10 @@ import { PlayerRecordDataType } from '@/types';
 import { defaultPlayer } from './player';
 import { defaultPlayerRecord } from './playerRecord';
 
-export const defaultPlayerRecordData: PlayerRecordDataType = {
+export const defaultPlayerRecordData = {
     ...defaultPlayerRecord,
     player: defaultPlayer,
-};
+} satisfies PlayerRecordDataType;
 
 export const createMockPlayerRecordData = (overrides: Partial<PlayerRecordDataType> = {}): PlayerRecordDataType => ({
     ...defaultPlayerRecordData,

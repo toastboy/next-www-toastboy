@@ -1,6 +1,6 @@
 import type { CreateMoreGameDaysInput } from '@/types/actions/CreateMoreGameDays';
 
-export const defaultMoreGamesFormData: CreateMoreGameDaysInput = {
+export const defaultMoreGamesFormData = {
     cost: 500,
     hallCost: 4700,
     rows: [
@@ -20,7 +20,7 @@ export const defaultMoreGamesFormData: CreateMoreGameDaysInput = {
             comment: 'Hall unavailable',
         },
     ],
-};
+} satisfies CreateMoreGameDaysInput;
 
 export const createMockMoreGamesFormData = (
     overrides: Partial<CreateMoreGameDaysInput> = {},

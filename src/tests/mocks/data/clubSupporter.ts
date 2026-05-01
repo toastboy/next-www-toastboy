@@ -1,9 +1,9 @@
 import { ClubSupporterType } from 'prisma/zod/schemas/models/ClubSupporter.schema';
 
-export const defaultClubSupporter: ClubSupporterType = {
+export const defaultClubSupporter = {
     playerId: 12,
     clubId: 2270,
-};
+} satisfies ClubSupporterType;
 
 export const createMockClubSupporter = (overrides: Partial<ClubSupporterType> = {}): ClubSupporterType => ({
     ...defaultClubSupporter,

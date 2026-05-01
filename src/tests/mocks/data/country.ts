@@ -1,9 +1,9 @@
 import { CountryType } from 'prisma/zod/schemas/models/Country.schema';
 
-export const defaultCountry: CountryType = {
+export const defaultCountry = {
     fifaCode: "ENG",
     name: "England",
-};
+} satisfies CountryType;
 
 export const invalidCountry: CountryType = {
     fifaCode: null as unknown as string,

@@ -4,12 +4,12 @@ import { defaultCountryList } from './country';
 import { createMockPlayer, defaultPlayer } from './player';
 
 /** Default mock country-supporter entry enriched with player data. */
-export const defaultCountrySupporterWithPlayerData: CountrySupporterWithPlayerDataType = {
+export const defaultCountrySupporterWithPlayerData = {
     playerId: defaultPlayer.id,
     countryFIFACode: defaultCountryList[0].fifaCode,
     country: defaultCountryList[0],
     player: defaultPlayer,
-};
+} satisfies CountrySupporterWithPlayerDataType;
 
 /** Factory for creating mock country-supporter-with-player entries. */
 export const createMockCountrySupporterWithPlayerData = (

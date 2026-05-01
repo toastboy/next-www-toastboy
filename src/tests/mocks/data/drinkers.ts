@@ -27,7 +27,7 @@ const createOutcome = (overrides: Partial<OutcomePlayerType>): OutcomePlayerType
     ...overrides,
 });
 
-export const defaultDrinkersData: OutcomePlayerType[] = [
+export const defaultDrinkersData = [
     createOutcome({
         id: 1,
         playerId: 1,
@@ -56,4 +56,4 @@ export const defaultDrinkersData: OutcomePlayerType[] = [
         pub: null,
         player: createPlayer(4, 'Dev Striker'),
     }),
-];
+] satisfies OutcomePlayerType[];

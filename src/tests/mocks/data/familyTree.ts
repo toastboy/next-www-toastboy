@@ -6,7 +6,7 @@ import { FamilyTreeNodeType } from '@/types';
  * player 2 introduced player 4. Only players who are part of an introduction
  * chain are included.
  */
-export const defaultFamilyTree: FamilyTreeNodeType = {
+export const defaultFamilyTree = {
     id: 1,
     name: 'Gary Player',
     children: [
@@ -27,7 +27,7 @@ export const defaultFamilyTree: FamilyTreeNodeType = {
             children: [],
         },
     ],
-};
+} satisfies FamilyTreeNodeType;
 
 /**
  * Creates a mock family tree node with optional overrides.

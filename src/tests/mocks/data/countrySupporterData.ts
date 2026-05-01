@@ -2,11 +2,11 @@ import { CountrySupporterDataType } from '@/types';
 
 import { defaultCountry, defaultCountryList } from './country';
 
-export const defaultCountrySupporterData: CountrySupporterDataType = {
+export const defaultCountrySupporterData = {
     playerId: 12,
     countryFIFACode: defaultCountry.fifaCode,
     country: defaultCountry,
-};
+} satisfies CountrySupporterDataType;
 
 export const createMockCountrySupporterData = (overrides: Partial<CountrySupporterDataType> = {}): CountrySupporterDataType => ({
     ...defaultCountrySupporterData,

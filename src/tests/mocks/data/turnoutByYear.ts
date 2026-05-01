@@ -1,3 +1,5 @@
+import { TurnoutByYearType } from "@/types/TurnoutByYearType";
+
 export const defaultTurnoutByYearList = [
     {
         "year": 2002,
@@ -41,4 +43,4 @@ export const defaultTurnoutByYearList = [
         "yessesPerGameInitiated": 10.9,
         "playersPerGamePlayed": 10.8,
     },
-];
+] satisfies TurnoutByYearType[];

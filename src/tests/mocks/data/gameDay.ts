@@ -1,6 +1,6 @@
 import { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 
-export const defaultGameDay: GameDayType = {
+export const defaultGameDay = {
     id: 1,
     year: 2021,
     date: new Date('2021-01-03'),
@@ -11,7 +11,7 @@ export const defaultGameDay: GameDayType = {
     comment: 'I heart footy',
     bibs: 'A',
     pickerGamesHistory: 10,
-};
+} satisfies GameDayType;
 
 export const createMockGameDay = (overrides: Partial<GameDayType> = {}): GameDayType => ({
     ...defaultGameDay,

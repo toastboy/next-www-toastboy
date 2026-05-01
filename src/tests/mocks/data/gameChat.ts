@@ -1,12 +1,12 @@
 import { GameChatType } from 'prisma/zod/schemas/models/GameChat.schema';
 
-export const defaultGameChat: GameChatType = {
+export const defaultGameChat = {
     id: 1,
     gameDay: 1,
     stamp: new Date(),
     player: 1,
     body: "Hello, world!",
-};
+} satisfies GameChatType;
 
 export const createMockGameChat = (overrides: Partial<GameChatType> = {}): GameChatType => ({
     ...defaultGameChat,

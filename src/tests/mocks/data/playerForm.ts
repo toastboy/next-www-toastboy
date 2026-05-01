@@ -2,7 +2,7 @@ import { createMockGameDay, defaultGameDay } from '@/tests/mocks/data/gameDay';
 import { createMockOutcome } from '@/tests/mocks/data/outcome';
 import { PlayerFormType } from '@/types';
 
-export const defaultPlayerFormList: PlayerFormType[] =
+export const defaultPlayerFormList =
     Array.from({ length: 10 }, (_, index) => {
         const gameDayId = Math.floor(index / 10 + 1);
         const lookup = [0, 1, 3];
@@ -18,4 +18,4 @@ export const defaultPlayerFormList: PlayerFormType[] =
                 date: new Date(defaultGameDay.date.getTime() + index * 7 * 24 * 60 * 60 * 1000),
             }),
         };
-    });
+    }) satisfies PlayerFormType[];

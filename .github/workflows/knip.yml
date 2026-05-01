@@ -1,0 +1,27 @@
+name: Knip
+
+on:
+    push:
+    pull_request:
+    workflow_dispatch:
+
+jobs:
+    knip:
+        name: Dead code check
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+
+        steps:
+            - uses: actions/checkout@v6
+
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: 24
+                  cache: "npm"
+
+            - run: npm ci
+
+            - run: npm run generate
+
+            - run: npx knip

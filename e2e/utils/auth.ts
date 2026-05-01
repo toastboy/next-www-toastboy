@@ -20,7 +20,7 @@ export interface MockAuthUser {
  * @param page The Playwright page object
  * @param authState The desired authentication state
  */
-export async function setAuthState(
+async function setAuthState(
     page: Page,
     authState: MockAuthState,
     user?: MockAuthUser,
@@ -103,28 +103,4 @@ export async function asAdmin(page: Page, uri?: string, user?: MockAuthUser): Pr
     if (uri) {
         await page.goto(uri, { waitUntil: 'networkidle' });
     }
-}
-
-/**
- * Clear auth state (same as asGuest)
- */
-export async function clearAuthState(page: Page): Promise<void> {
-    await setAuthState(page, 'none');
-}
-
-/**
- * Get current auth state from the page
- */
-export async function getAuthState(page: Page): Promise<MockAuthState> {
-    const authState = await page.evaluate(() => {
-        const cookieValue = document.cookie
-            .split(';')
-            .map((cookie) => cookie.trim())
-            .find((cookie) => cookie.startsWith(`${MOCK_AUTH_COOKIE}=`));
-        if (!cookieValue) return 'none';
-        const value = decodeURIComponent(cookieValue.split('=').slice(1).join('='));
-        return value === 'admin' || value === 'user' ? value : 'none';
-    });
-
-    return authState || 'none';
 }

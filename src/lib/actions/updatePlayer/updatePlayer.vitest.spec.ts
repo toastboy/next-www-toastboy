@@ -44,7 +44,7 @@ describe('updatePlayerCore', () => {
                 deleteExcept: vi.fn().mockResolvedValue(undefined),
                 upsertAll: vi.fn().mockResolvedValue(undefined),
             },
-            sendEmailVerificationCore: vi.fn().mockResolvedValue(undefined),
+            sendEmailVerification: vi.fn().mockResolvedValue(undefined),
         };
 
         const result = await updatePlayerCore(
@@ -79,7 +79,7 @@ describe('updatePlayerCore', () => {
             playerId: 7,
             email: 'new@example.com',
         });
-        expect(deps.sendEmailVerificationCore).toHaveBeenCalledWith(
+        expect(deps.sendEmailVerification).toHaveBeenCalledWith(
             'new@example.com',
             updatedPlayer,
         );
@@ -135,7 +135,7 @@ describe('updatePlayerCore', () => {
                 deleteExcept: vi.fn().mockResolvedValue(undefined),
                 upsertAll: vi.fn().mockResolvedValue(undefined),
             },
-            sendEmailVerificationCore: vi.fn().mockResolvedValue(undefined),
+            sendEmailVerification: vi.fn().mockResolvedValue(undefined),
         };
         const result = await updatePlayerCore(
             7,
@@ -166,8 +166,8 @@ describe('updatePlayerCore', () => {
             }),
         );
         expect(deps.playerExtraEmailService.create).toHaveBeenCalledTimes(2);
-        expect(deps.sendEmailVerificationCore).toHaveBeenCalledTimes(1);
-        expect(deps.sendEmailVerificationCore).toHaveBeenCalledWith(
+        expect(deps.sendEmailVerification).toHaveBeenCalledTimes(1);
+        expect(deps.sendEmailVerification).toHaveBeenCalledWith(
             'good-add@example.com',
             updatedPlayer,
         );
@@ -219,7 +219,7 @@ describe('updatePlayerCore', () => {
                 deleteExcept: vi.fn(),
                 upsertAll: vi.fn(),
             },
-            sendEmailVerificationCore: vi.fn(),
+            sendEmailVerification: vi.fn(),
         };
 
         await expect(updatePlayerCore(

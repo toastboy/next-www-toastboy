@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { sendEmailVerificationCore } from '@/lib/actions/verifyEmail';
+import { sendEmailVerification } from '@/actions/verifyEmail';
 import {
     AuthError,
     ConflictError,
@@ -17,7 +17,7 @@ interface ClaimPlayerInvitationDeps {
     emailVerificationService: Pick<typeof emailVerificationService, 'getByToken' | 'markUsed'>;
     playerService: Pick<typeof playerService, 'getById' | 'update'>;
     playerExtraEmailService: Pick<typeof playerExtraEmailService, 'getAll' | 'getByEmail'>;
-    sendEmailVerificationCore: typeof sendEmailVerificationCore;
+    sendEmailVerification: typeof sendEmailVerification;
 }
 
 const defaultDeps: ClaimPlayerInvitationDeps = {
@@ -25,7 +25,7 @@ const defaultDeps: ClaimPlayerInvitationDeps = {
     emailVerificationService,
     playerService,
     playerExtraEmailService,
-    sendEmailVerificationCore,
+    sendEmailVerification,
 };
 
 /**
@@ -179,7 +179,7 @@ export async function finalizePlayerInvitationClaimCore(
 
     await Promise.all(
         unverifiedExtraEmails.map((extraEmail) =>
-            deps.sendEmailVerificationCore(extraEmail.email, player ?? undefined),
+            deps.sendEmailVerification(extraEmail.email, player ?? undefined),
         ),
     );
 }

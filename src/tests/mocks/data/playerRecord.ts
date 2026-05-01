@@ -3,10 +3,16 @@ import { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema'
 
 import { rankMap } from '@/lib/tables';
 
-export const defaultPlayerRecord: PlayerRecordType = {
+export const minimalPlayerRecord = {
     id: 1,
     year: 2021,
     gamesPlayed: 10,
+    gameDayId: 15,
+    playerId: 12,
+} satisfies PlayerRecordType;
+
+export const defaultPlayerRecord = {
+    ...minimalPlayerRecord,
     responses: 10,
     played: 10,
     won: 5,
@@ -24,10 +30,7 @@ export const defaultPlayerRecord: PlayerRecordType = {
     rankSpeedyUnqualified: 4,
     rankPub: 5,
     speedy: 4,
-
-    gameDayId: 15,
-    playerId: 12,
-};
+} satisfies PlayerRecordType;
 
 export const createMockPlayerRecord = (overrides: Partial<PlayerRecordType> = {}): PlayerRecordType => ({
     ...defaultPlayerRecord,

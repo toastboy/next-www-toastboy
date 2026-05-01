@@ -2,7 +2,7 @@ import 'server-only';
 
 import { z } from 'zod';
 
-import { sendEmailVerificationCore } from '@/lib/actions/verifyEmail';
+import { sendEmailVerification } from '@/actions/verifyEmail';
 import { AuthError } from '@/lib/errors';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 import authService from '@/services/Auth';
@@ -18,7 +18,7 @@ interface UpdatePlayerDeps {
     playerExtraEmailService: Pick<typeof playerExtraEmailService, 'create' | 'delete'>;
     clubSupporterService: Pick<typeof clubSupporterService, 'deleteExcept' | 'upsertAll'>;
     countrySupporterService: Pick<typeof countrySupporterService, 'deleteExcept' | 'upsertAll'>;
-    sendEmailVerificationCore: typeof sendEmailVerificationCore;
+    sendEmailVerification: typeof sendEmailVerification;
 }
 
 const defaultDeps: UpdatePlayerDeps = {
@@ -27,7 +27,7 @@ const defaultDeps: UpdatePlayerDeps = {
     playerExtraEmailService,
     clubSupporterService,
     countrySupporterService,
-    sendEmailVerificationCore,
+    sendEmailVerification,
 };
 
 const accountEmailSchema = z.email().trim().toLowerCase();
@@ -100,7 +100,7 @@ export async function updatePlayerCore(
                 playerId,
                 email: addedEmail,
             });
-            await deps.sendEmailVerificationCore(addedEmail, player);
+            await deps.sendEmailVerification(addedEmail, player);
         }),
     );
     for (const [index, result] of addedEmailResults.entries()) {

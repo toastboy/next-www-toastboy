@@ -37,7 +37,7 @@ export const TableScore = ({ table, playerRecord }: Props) => {
         case TableNameSchema.enum.stalwart:
             return (
                 <Tooltip label={`
-                    Played ${playerRecord.played ?? 0} of ${playerRecord.gamesPlayed ?? 0}
+                    Played ${playerRecord.played ?? 0} of ${playerRecord.gamesPlayed}
                 `}>
                     <Text>{playerRecord[table]}%</Text>
                 </Tooltip>

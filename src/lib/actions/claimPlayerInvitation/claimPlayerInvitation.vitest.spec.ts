@@ -31,7 +31,7 @@ describe('claimPlayerInvitationCore', () => {
                 getAll: vi.fn(),
                 getByEmail: vi.fn().mockResolvedValue(null),
             },
-            sendEmailVerificationCore: vi.fn(),
+            sendEmailVerification: vi.fn(),
         };
 
         const result = await claimPlayerInvitationCore('invite-token', deps);
@@ -81,7 +81,7 @@ describe('finalizePlayerInvitationClaimCore', () => {
                     { email: 'second@example.com', verifiedAt: new Date('2029-01-01T00:00:00.000Z') },
                 ]),
             },
-            sendEmailVerificationCore: vi.fn().mockResolvedValue(undefined),
+            sendEmailVerification: vi.fn().mockResolvedValue(undefined),
         };
 
         await finalizePlayerInvitationClaimCore('invite-token', deps);
@@ -92,8 +92,8 @@ describe('finalizePlayerInvitationClaimCore', () => {
             accountEmail: 'player@example.com',
         });
         expect(deps.emailVerificationService.markUsed).toHaveBeenCalledWith('invite-token');
-        expect(deps.sendEmailVerificationCore).toHaveBeenCalledTimes(1);
-        expect(deps.sendEmailVerificationCore).toHaveBeenCalledWith(
+        expect(deps.sendEmailVerification).toHaveBeenCalledTimes(1);
+        expect(deps.sendEmailVerification).toHaveBeenCalledWith(
             'first@example.com',
             expect.objectContaining({
                 id: 7,
@@ -126,7 +126,7 @@ describe('finalizePlayerInvitationClaimCore', () => {
                 getByEmail: vi.fn().mockResolvedValue(null),
                 getAll: vi.fn(),
             },
-            sendEmailVerificationCore: vi.fn(),
+            sendEmailVerification: vi.fn(),
         };
 
         await expect(finalizePlayerInvitationClaimCore('invite-token', deps))

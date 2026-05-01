@@ -33,7 +33,7 @@ export const UpdatePlayerSchema = z.object({
             return value;
         },
         z.date().nullish(),
-    ),
+    ).optional(),
     born: z.preprocess(
         (value: unknown) => {
             if (value === '' || value === null || value === undefined) {

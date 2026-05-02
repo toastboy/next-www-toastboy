@@ -1,8 +1,6 @@
-import { ClubSchema, ClubSupporterSchema } from 'prisma/zod/schemas';
-import { z } from 'zod';
+import type { ClubSchema, ClubSupporterSchema } from 'prisma/zod/schemas';
+import type { z } from 'zod';
 
-export const ClubSupporterDataSchema = ClubSupporterSchema.extend({
-    club: ClubSchema,
-});
-
-export type ClubSupporterDataType = z.infer<typeof ClubSupporterDataSchema>;
+export type ClubSupporterDataType = z.infer<typeof ClubSupporterSchema> & {
+    club: z.infer<typeof ClubSchema>;
+};

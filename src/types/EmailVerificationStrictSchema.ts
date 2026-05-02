@@ -5,7 +5,6 @@ import { EmailVerificationUncheckedCreateInputObjectZodSchema } from 'prisma/zod
 import { EmailVerificationUncheckedUpdateInputObjectZodSchema } from 'prisma/zod/schemas/objects/EmailVerificationUncheckedUpdateInput.schema';
 import { EmailVerificationUpdateInputObjectZodSchema } from 'prisma/zod/schemas/objects/EmailVerificationUpdateInput.schema';
 import { EmailVerificationUpdateOneZodSchema } from 'prisma/zod/schemas/updateOneEmailVerification.schema';
-import { EmailVerificationUpsertOneZodSchema } from 'prisma/zod/schemas/upsertOneEmailVerification.schema';
 import z from 'zod';
 
 const EMAIL_VERIFICATION_TOKEN_HASH_LENGTH = 64;
@@ -72,10 +71,3 @@ const EmailVerificationUpdateOneStrictZodSchema = EmailVerificationUpdateOneZodS
 export const EmailVerificationUpdateOneStrictSchema: z.ZodType<Prisma.EmailVerificationUpdateArgs> =
     EmailVerificationUpdateOneStrictZodSchema as unknown as z.ZodType<Prisma.EmailVerificationUpdateArgs>;
 
-const EmailVerificationUpsertOneStrictZodSchema = EmailVerificationUpsertOneZodSchema.extend({
-    create: EmailVerificationCreateDataStrictSchema,
-    update: EmailVerificationUpdateDataStrictSchema,
-});
-
-export const EmailVerificationUpsertOneStrictSchema: z.ZodType<Prisma.EmailVerificationUpsertArgs> =
-    EmailVerificationUpsertOneStrictZodSchema as unknown as z.ZodType<Prisma.EmailVerificationUpsertArgs>;

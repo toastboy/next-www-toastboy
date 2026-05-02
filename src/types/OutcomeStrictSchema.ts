@@ -5,7 +5,6 @@ import {
     OutcomeUncheckedCreateInputObjectZodSchema,
     OutcomeUncheckedUpdateInputObjectZodSchema,
     OutcomeUpdateInputObjectZodSchema,
-    OutcomeUpdateOneZodSchema,
     OutcomeUpsertOneZodSchema,
     PlayerResponseSchema,
     TeamNameSchema,
@@ -66,13 +65,6 @@ const OutcomeUpdateDataStrictSchema = z.union([
     OutcomeUpdateInputObjectZodSchema.extend(OutcomeUpdateStrictFields),
     OutcomeUncheckedUpdateInputWithoutIdSchema.extend(OutcomeUpdateStrictFields),
 ]);
-
-const OutcomeUpdateOneStrictZodSchema = OutcomeUpdateOneZodSchema.extend({
-    data: OutcomeUpdateDataStrictSchema,
-});
-
-export const OutcomeUpdateOneStrictSchema: z.ZodType<Prisma.OutcomeUpdateArgs> =
-    OutcomeUpdateOneStrictZodSchema as unknown as z.ZodType<Prisma.OutcomeUpdateArgs>;
 
 const OutcomeUpsertOneStrictZodSchema = OutcomeUpsertOneZodSchema.extend({
     create: OutcomeCreateDataStrictUnionSchema,

@@ -71,7 +71,7 @@ interface ErrorOptionsWithDetails<TDetails = unknown> {
  *
  * @template TDetails Optional typed payload attached to mapped errors.
  */
-export interface NormalizeUnknownErrorOptions<TDetails = unknown> {
+interface NormalizeUnknownErrorOptions<TDetails = unknown> {
     /**
      * Optional internal message override applied to synthesized AppError
      * instances.

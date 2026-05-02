@@ -16,7 +16,7 @@ import {
 } from '@/types/ClubSupporterStrictSchema';
 
 
-export class ClubSupporterService {
+class ClubSupporterService {
     /**
      * Fetches a single club-supporter relationship by its composite key.
      *

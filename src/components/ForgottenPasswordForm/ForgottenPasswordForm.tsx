@@ -125,4 +125,4 @@ const ForgottenPasswordSchema = z.object({
     ),
 });
 
-export type ForgottenPasswordInput = z.infer<typeof ForgottenPasswordSchema>;
+type ForgottenPasswordInput = z.infer<typeof ForgottenPasswordSchema>;

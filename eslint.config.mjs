@@ -236,6 +236,7 @@ const config = [
             ".next/**",
             "out/**",
             "build/**",
+            ".claude/**",
             "next-env.d.ts",
             "prisma/**",
             ".storybook/**",

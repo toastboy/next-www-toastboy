@@ -13,7 +13,7 @@ import {
 } from '@/types/ContactEnquiryStrictSchema';
 
 
-export class ContactEnquiryService {
+class ContactEnquiryService {
     /**
      * Hashes a verification token for lookup and persistence.
      * @param token - Plaintext token to hash.

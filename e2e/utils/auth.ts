@@ -1,6 +1,6 @@
 import { Page } from '@playwright/test';
 
-export type MockAuthState = 'none' | 'user' | 'admin';
+type MockAuthState = 'none' | 'user' | 'admin';
 const MOCK_AUTH_COOKIE = 'mock-auth-state';
 const MOCK_AUTH_USER_COOKIE = 'mock-auth-user';
 
@@ -9,7 +9,7 @@ const MOCK_AUTH_USER_COOKIE = 'mock-auth-user';
 // cookies available regardless of which host the request targets in CI.
 const COOKIE_HOSTS = ['127.0.0.1', 'localhost'];
 
-export interface MockAuthUser {
+interface MockAuthUser {
     name?: string | null;
     email?: string | null;
     playerId?: number | null;

@@ -14,7 +14,7 @@ export interface MoneyChartDatum {
  * Each debt corresponds to a PlayerGameCharge transaction with a specific
  * gameDayId and amount.
  */
-export const PlayerDebtSchema = z.object({
+const PlayerDebtSchema = z.object({
     gameDay: GameDaySchema,
     amount: z.number().int().positive(),
 });
@@ -25,7 +25,7 @@ export const PlayerDebtSchema = z.object({
  * Contains the player's ID and name, along with a list of individual unpaid
  * game charges (debts) each with its own gameDayId and amount.
  */
-export const PlayerDebtsSchema = z.object({
+const PlayerDebtsSchema = z.object({
     player: PlayerSchema,
     debts: z.array(PlayerDebtSchema),
 });

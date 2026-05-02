@@ -5,7 +5,6 @@ import {
     ClubUncheckedCreateInputObjectZodSchema,
     ClubUncheckedUpdateInputObjectZodSchema,
     ClubUpdateInputObjectZodSchema,
-    ClubUpdateOneZodSchema,
     ClubUpsertOneZodSchema,
 } from 'prisma/zod/schemas';
 import z from 'zod';
@@ -57,13 +56,6 @@ const ClubUpdateDataStrictSchema = z.union([
     ClubUpdateInputObjectZodSchema.extend(ClubStrictFields),
     ClubUncheckedUpdateInputWithoutIdSchema.extend(ClubStrictFields),
 ]);
-
-const ClubUpdateOneStrictZodSchema = ClubUpdateOneZodSchema.extend({
-    data: ClubUpdateDataStrictSchema,
-});
-
-export const ClubUpdateOneStrictSchema: z.ZodType<Prisma.ClubUpdateArgs> =
-    ClubUpdateOneStrictZodSchema;
 
 // Strict schemas for upsert operations
 

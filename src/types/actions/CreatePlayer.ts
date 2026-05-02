@@ -19,14 +19,6 @@ export const CreatePlayerSchema = z.object({
 export type CreatePlayerInput = z.infer<typeof CreatePlayerSchema>;
 
 /**
- * Schema for adding a player invite.
- * Validates the email address to ensure correctness before invoking the action.
- */
-export const AddPlayerInviteSchema = z.object({
-    email: z.email({ message: 'Invalid email' }),
-});
-
-/**
  * Server action proxy type for the addPlayerInvite action.
  * Allows components to accept a custom implementation without directly importing the real action,
  * making them testable and Storybook-friendly.

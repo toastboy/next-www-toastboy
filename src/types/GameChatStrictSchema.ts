@@ -5,7 +5,6 @@ import {
     GameChatUncheckedCreateInputObjectZodSchema,
     GameChatUncheckedUpdateInputObjectZodSchema,
     GameChatUpdateInputObjectZodSchema,
-    GameChatUpdateOneZodSchema,
     GameChatUpsertOneZodSchema,
 } from 'prisma/zod/schemas';
 import z from 'zod';
@@ -51,13 +50,6 @@ const GameChatUpdateDataStrictSchema = z.union([
     GameChatUpdateInputObjectZodSchema.extend(GameChatWriteFields),
     GameChatUncheckedUpdateInputWithoutIdSchema.extend(GameChatWriteFields),
 ]);
-
-const GameChatUpdateOneStrictZodSchema = GameChatUpdateOneZodSchema.extend({
-    data: GameChatUpdateDataStrictSchema,
-});
-
-export const GameChatUpdateOneStrictSchema: z.ZodType<Prisma.GameChatUpdateArgs> =
-    GameChatUpdateOneStrictZodSchema;
 
 const GameChatUpsertOneStrictZodSchema = GameChatUpsertOneZodSchema.extend({
     create: GameChatCreateDataStrictSchema,

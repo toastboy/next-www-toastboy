@@ -14,7 +14,7 @@ import {
 } from '@/types/GameChatStrictSchema';
 
 
-export class GameChatService {
+class GameChatService {
     /**
      * Fetches a game-chat record by ID.
      * @param id - Game-chat row identifier.

@@ -29,7 +29,7 @@ import type { SetGameEnabledProxy } from '@/types/actions/SetGameEnabled';
 import type { SubmitPickerProxy } from '@/types/actions/SubmitPicker';
 import type { PickerPlayerType } from '@/types/PickerPlayerType';
 
-export interface PickerFormProps {
+interface PickerFormProps {
     gameDay: GameDayType;
     players: PickerPlayerType[];
     submitPicker: SubmitPickerProxy;

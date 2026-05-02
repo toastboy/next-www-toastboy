@@ -4,7 +4,6 @@ import { PlayerExtraEmailCreateInputObjectZodSchema } from 'prisma/zod/schemas/o
 import { PlayerExtraEmailUncheckedCreateInputObjectZodSchema } from 'prisma/zod/schemas/objects/PlayerExtraEmailUncheckedCreateInput.schema';
 import { PlayerExtraEmailUncheckedUpdateInputObjectZodSchema } from 'prisma/zod/schemas/objects/PlayerExtraEmailUncheckedUpdateInput.schema';
 import { PlayerExtraEmailUpdateInputObjectZodSchema } from 'prisma/zod/schemas/objects/PlayerExtraEmailUpdateInput.schema';
-import { PlayerExtraEmailUpdateOneZodSchema } from 'prisma/zod/schemas/updateOnePlayerExtraEmail.schema';
 import { PlayerExtraEmailUpsertOneZodSchema } from 'prisma/zod/schemas/upsertOnePlayerExtraEmail.schema';
 import z from 'zod';
 
@@ -58,13 +57,6 @@ const PlayerExtraEmailUpdateDataStrictSchema = z.union([
     PlayerExtraEmailUpdateInputObjectZodSchema.extend(PlayerExtraEmailUpdateStrictFields),
     PlayerExtraEmailUncheckedUpdateInputWithoutIdSchema.extend(PlayerExtraEmailUpdateStrictFields),
 ]);
-
-const PlayerExtraEmailUpdateOneStrictZodSchema = PlayerExtraEmailUpdateOneZodSchema.extend({
-    data: PlayerExtraEmailUpdateDataStrictSchema,
-});
-
-export const PlayerExtraEmailUpdateOneStrictSchema: z.ZodType<Prisma.PlayerExtraEmailUpdateArgs> =
-    PlayerExtraEmailUpdateOneStrictZodSchema as unknown as z.ZodType<Prisma.PlayerExtraEmailUpdateArgs>;
 
 const PlayerExtraEmailUpsertOneStrictZodSchema = PlayerExtraEmailUpsertOneZodSchema.extend({
     create: PlayerExtraEmailCreateDataStrictSchema,

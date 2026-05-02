@@ -17,7 +17,7 @@ import {
 import { CountrySupporterWithPlayerDataType } from '@/types/CountrySupporterWithPlayerDataType';
 
 
-export class CountrySupporterService {
+class CountrySupporterService {
     /**
      * Fetches a country-supporter relationship by its composite key.
      * @param playerId - Player identifier in the composite key.

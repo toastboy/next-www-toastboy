@@ -15,7 +15,7 @@ import {
 } from '@/types/GameInvitationStrictSchema';
 
 
-export class GameInvitationService {
+class GameInvitationService {
     /**
      * Fetches a game invitation by UUID.
      * @param uuid - Invitation UUID.

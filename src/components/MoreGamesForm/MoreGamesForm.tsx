@@ -37,7 +37,7 @@ import {
     CreateMoreGameDaysSchema,
 } from '@/types/actions/CreateMoreGameDays';
 
-export interface Props {
+interface Props {
     cost: CreateMoreGameDaysInput['cost'];
     hallCost: CreateMoreGameDaysInput['hallCost'];
     rows: CreateMoreGameDaysInput['rows'];

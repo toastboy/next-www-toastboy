@@ -2,12 +2,12 @@ import { APIRequestContext } from '@playwright/test';
 
 const MAILPIT_URL = 'http://localhost:8025';
 
-export interface MailpitMessage {
+interface MailpitMessage {
     ID: string;
     Subject: string;
 }
 
-export interface MailpitMessageDetail {
+interface MailpitMessageDetail {
     HTML?: string;
     Text?: string;
 }

@@ -1,24 +1,21 @@
-import { TeamNameSchema } from 'prisma/zod/schemas';
-import { z } from 'zod';
+import type { TeamName } from 'prisma/zod/schemas';
 
-export const TurnoutSchema = z.object({
-    responses: z.number(),
-    players: z.number(),
-    cancelled: z.boolean(),
-    id: z.number(),
-    year: z.number(),
-    date: z.date(),
-    game: z.boolean(),
-    mailSent: z.date().nullable(),
-    comment: z.string().nullable(),
-    bibs: TeamNameSchema.nullable(),
-    pickerGamesHistory: z.number().nullable(),
-    yes: z.number(),
-    no: z.number(),
-    dunno: z.number(),
-    excused: z.number(),
-    flaked: z.number(),
-    injured: z.number(),
-});
-
-export type Turnout = z.infer<typeof TurnoutSchema>;
+export interface Turnout {
+    responses: number;
+    players: number;
+    cancelled: boolean;
+    id: number;
+    year: number;
+    date: Date;
+    game: boolean;
+    mailSent: Date | null;
+    comment: string | null;
+    bibs: TeamName | null;
+    pickerGamesHistory: number | null;
+    yes: number;
+    no: number;
+    dunno: number;
+    excused: number;
+    flaked: number;
+    injured: number;
+};

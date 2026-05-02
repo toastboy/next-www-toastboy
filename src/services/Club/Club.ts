@@ -14,7 +14,7 @@ import {
 } from '@/types/ClubStrictSchema';
 
 
-export class ClubService {
+class ClubService {
     /**
      * Retrieves a single club by ID.
      * @param id - Club identifier.

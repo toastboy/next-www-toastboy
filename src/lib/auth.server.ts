@@ -4,8 +4,8 @@ import { auth } from '@/lib/auth';
 import { AuthError } from '@/lib/errors';
 import { AuthRole, AuthUserSummary } from '@/types/AuthUser';
 
-export const MOCK_AUTH_COOKIE = 'mock-auth-state';
-export const MOCK_AUTH_USER_COOKIE = 'mock-auth-user';
+const MOCK_AUTH_COOKIE = 'mock-auth-state';
+const MOCK_AUTH_USER_COOKIE = 'mock-auth-user';
 
 const mockUserDefaults = {
     user: {
@@ -95,7 +95,7 @@ export async function getMockAuthState(): Promise<AuthRole> {
  * @returns The mock user for the active role, or `null` when no mock auth is
  * set or in production.
  */
-export async function getMockUser(): Promise<AuthUserSummary | null> {
+async function getMockUser(): Promise<AuthUserSummary | null> {
     if (!isMockAuthEnabled()) {
         return null;
     }
@@ -153,21 +153,6 @@ export function getMockUsersList() {
     ];
 }
 
-/**
- * Fetches the current session, preferring mock user context when present.
- *
- * @returns A session object from the auth API or a mock session wrapper.
- */
-export async function getSession() {
-    const mockUser = await getMockUser();
-    if (mockUser) {
-        return { session: null, user: mockUser };
-    }
-
-    return auth.api.getSession({
-        headers: await headers(),
-    });
-}
 
 /**
  * Resolves the current user summary from mock state or the auth session.

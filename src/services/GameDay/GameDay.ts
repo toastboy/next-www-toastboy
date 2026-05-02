@@ -20,7 +20,7 @@ import {
     GameDayWriteInputSchema,
 } from '@/types/GameDayStrictSchema';
 
-export class GameDayService {
+class GameDayService {
     /**
      * Retrieves a GameDayWithOutcomesWithPlayers by its ID.
      * @param id - The ID of the GameDay to retrieve.

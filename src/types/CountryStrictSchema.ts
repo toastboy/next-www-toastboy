@@ -5,7 +5,6 @@ import {
     CountryUncheckedCreateInputObjectZodSchema,
     CountryUncheckedUpdateInputObjectZodSchema,
     CountryUpdateInputObjectZodSchema,
-    CountryUpdateOneZodSchema,
     CountryUpsertOneZodSchema,
 } from 'prisma/zod/schemas';
 import z from 'zod';
@@ -45,13 +44,6 @@ const CountryUpdateDataStrictSchema = z.union([
     CountryUpdateInputObjectZodSchema.extend(CountryUpdateStrictFields),
     CountryUncheckedUpdateInputObjectZodSchema.extend(CountryUpdateStrictFields),
 ]);
-
-const CountryUpdateOneStrictZodSchema = CountryUpdateOneZodSchema.extend({
-    data: CountryUpdateDataStrictSchema,
-});
-
-export const CountryUpdateOneStrictSchema: z.ZodType<Prisma.CountryUpdateArgs> =
-    CountryUpdateOneStrictZodSchema;
 
 const CountryUpsertOneStrictZodSchema = CountryUpsertOneZodSchema.extend({
     create: CountryCreateDataStrictSchema,

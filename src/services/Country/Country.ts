@@ -12,7 +12,7 @@ import {
 } from '@/types/CountryStrictSchema';
 
 
-export class CountryService {
+class CountryService {
     /**
      * Fetches a country by FIFA code.
      * @param fifaCode - Country FIFA code.

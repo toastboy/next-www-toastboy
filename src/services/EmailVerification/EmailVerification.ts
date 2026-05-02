@@ -13,7 +13,7 @@ import {
 } from '@/types/EmailVerificationStrictSchema';
 
 
-export class EmailVerificationService {
+class EmailVerificationService {
     /**
      * Hashes a verification token for lookup and persistence.
      * @param token - Plaintext verification token.

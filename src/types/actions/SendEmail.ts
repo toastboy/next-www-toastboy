@@ -1,16 +1,4 @@
 import type { SendMailOptions } from 'nodemailer';
-import { z } from 'zod';
-
-/**
- * Schema describing the payload for the sendEmail action.
- * Guarantees required fields are present before invoking the server action.
- */
-export const SendEmailSchema = z.object({
-    to: z.email({ message: 'Invalid recipient email' }),
-    cc: z.string().optional().default(''),
-    subject: z.string().min(1, { message: 'Subject is required' }),
-    html: z.string().min(1, { message: 'Body is required' }),
-});
 
 /**
  * Server action proxy type for the sendEmail action.

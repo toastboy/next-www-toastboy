@@ -23,7 +23,7 @@ import { config } from '@/lib/config';
 import { SubmitResponseProxy } from '@/types/actions/SubmitResponse';
 import { OutcomePlayerType } from '@/types/OutcomePlayerType';
 
-export interface ResponsesFormProps {
+interface ResponsesFormProps {
     gameId: number;
     gameDate: string;
     responses: OutcomePlayerType[];

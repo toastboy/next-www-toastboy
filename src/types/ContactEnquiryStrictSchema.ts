@@ -5,7 +5,6 @@ import { ContactEnquiryUncheckedCreateInputObjectZodSchema } from 'prisma/zod/sc
 import { ContactEnquiryUncheckedUpdateInputObjectZodSchema } from 'prisma/zod/schemas/objects/ContactEnquiryUncheckedUpdateInput.schema';
 import { ContactEnquiryUpdateInputObjectZodSchema } from 'prisma/zod/schemas/objects/ContactEnquiryUpdateInput.schema';
 import { ContactEnquiryUpdateOneZodSchema } from 'prisma/zod/schemas/updateOneContactEnquiry.schema';
-import { ContactEnquiryUpsertOneZodSchema } from 'prisma/zod/schemas/upsertOneContactEnquiry.schema';
 import z from 'zod';
 
 const CONTACT_ENQUIRY_TOKEN_HASH_LENGTH = 64;
@@ -73,10 +72,3 @@ const ContactEnquiryUpdateOneStrictZodSchema = ContactEnquiryUpdateOneZodSchema.
 export const ContactEnquiryUpdateOneStrictSchema: z.ZodType<Prisma.ContactEnquiryUpdateArgs> =
     ContactEnquiryUpdateOneStrictZodSchema as unknown as z.ZodType<Prisma.ContactEnquiryUpdateArgs>;
 
-const ContactEnquiryUpsertOneStrictZodSchema = ContactEnquiryUpsertOneZodSchema.extend({
-    create: ContactEnquiryCreateDataStrictSchema,
-    update: ContactEnquiryUpdateDataStrictSchema,
-});
-
-export const ContactEnquiryUpsertOneStrictSchema: z.ZodType<Prisma.ContactEnquiryUpsertArgs> =
-    ContactEnquiryUpsertOneStrictZodSchema as unknown as z.ZodType<Prisma.ContactEnquiryUpsertArgs>;

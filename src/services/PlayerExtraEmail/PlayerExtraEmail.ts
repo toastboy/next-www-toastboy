@@ -29,7 +29,7 @@ import {
  * const playerExtraEmail = await emailService.getByEmail('player@example.com', true);
  * ```
  */
-export class PlayerExtraEmailService {
+class PlayerExtraEmailService {
     /**
      * Retrieves the player associated with the given email address. It's not
      * enough to just have a record with that email; the email must also be

@@ -1,8 +1,6 @@
-import { PlayerRecordSchema, PlayerSchema } from 'prisma/zod/schemas';
-import { z } from 'zod';
+import type { PlayerRecordSchema, PlayerSchema } from 'prisma/zod/schemas';
+import type { z } from 'zod';
 
-export const PlayerRecordDataSchema = PlayerRecordSchema.extend({
-    player: PlayerSchema,
-});
-
-export type PlayerRecordDataType = z.infer<typeof PlayerRecordDataSchema>;
+export type PlayerRecordDataType = z.infer<typeof PlayerRecordSchema> & {
+    player: z.infer<typeof PlayerSchema>;
+};

@@ -29,7 +29,7 @@ import {
 } from '@/types/OutcomeStrictSchema';
 
 
-export class OutcomeService {
+class OutcomeService {
     /**
      * Retrieves an Outcome for the given Player ID for the given GameDay ID.
      * @param gameDayId - The ID of the GameDay.

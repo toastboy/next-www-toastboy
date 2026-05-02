@@ -27,7 +27,7 @@ import { config } from '@/lib/config';
 import type { SetDrinkersInput, SetDrinkersProxy } from '@/types/actions/SetDrinkers';
 import type { OutcomePlayerType } from '@/types/OutcomePlayerType';
 
-export interface DrinkersFormProps {
+interface DrinkersFormProps {
     gameId: number;
     gameDate: string;
     players: OutcomePlayerType[];

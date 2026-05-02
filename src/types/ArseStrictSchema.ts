@@ -5,7 +5,6 @@ import {
     ArseUncheckedCreateInputObjectZodSchema,
     ArseUncheckedUpdateInputObjectZodSchema,
     ArseUpdateInputObjectZodSchema,
-    ArseUpdateOneZodSchema,
     ArseUpsertOneZodSchema,
 } from 'prisma/zod/schemas';
 import z from 'zod';
@@ -67,13 +66,6 @@ const ArseUpdateDataStrictSchema = z.union([
         ...ArseStrictIds,
     }),
 ]);
-
-const ArseUpdateOneStrictZodSchema = ArseUpdateOneZodSchema.extend({
-    data: ArseUpdateDataStrictSchema,
-});
-
-export const ArseUpdateOneStrictSchema: z.ZodType<Prisma.ArseUpdateArgs> =
-    ArseUpdateOneStrictZodSchema;
 
 // Strict schemas for upsert operations
 

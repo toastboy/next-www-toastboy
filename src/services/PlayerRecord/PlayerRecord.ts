@@ -22,7 +22,7 @@ import {
 } from '@/types/PlayerRecordStrictSchema';
 
 
-export class PlayerRecordService {
+class PlayerRecordService {
     /**
      * Retrieves a PlayerRecord for the given Player ID, year and PlayerRecord ID.
      * @param playerId - The ID of the Player.

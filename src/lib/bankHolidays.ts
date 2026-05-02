@@ -92,7 +92,7 @@ export async function getBankHolidays(): Promise<Set<string>> {
  * updated both the cached date set and its associated timestamp, without
  * mutating the internal cache by reference.
  */
-export interface BankHolidaysCacheState {
+interface BankHolidaysCacheState {
     /**
      * Cached bank holiday date keys, or `null` when no cache has been populated.
      */

@@ -11,7 +11,7 @@ import {
 /**
  * Structured context attached to errors created from failed HTTP responses.
  */
-export interface RequestErrorDetails {
+interface RequestErrorDetails {
     status: number;
     statusText: string;
     url?: string;

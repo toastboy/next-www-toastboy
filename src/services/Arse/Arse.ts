@@ -25,7 +25,7 @@ interface ArseAverageRatings {
     defending: number | null,
 }
 
-export class ArseService {
+class ArseService {
     /**
      * Retrieves a single arse record identified by the composite key.
      * @param playerId - Player identifier from the composite key.

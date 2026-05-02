@@ -5,7 +5,6 @@ import {
     PlayerRecordUncheckedCreateInputObjectZodSchema,
     PlayerRecordUncheckedUpdateInputObjectZodSchema,
     PlayerRecordUpdateInputObjectZodSchema,
-    PlayerRecordUpdateOneZodSchema,
     PlayerRecordUpsertOneZodSchema,
 } from 'prisma/zod/schemas';
 import z from 'zod';
@@ -90,13 +89,6 @@ const PlayerRecordUpdateDataStrictSchema = z.union([
     PlayerRecordUpdateInputObjectZodSchema.extend(PlayerRecordCheckedUpdateStrictFields),
     PlayerRecordUncheckedUpdateInputWithoutIdSchema.extend(PlayerRecordUpdateStrictFields),
 ]);
-
-const PlayerRecordUpdateOneStrictZodSchema = PlayerRecordUpdateOneZodSchema.extend({
-    data: PlayerRecordUpdateDataStrictSchema,
-});
-
-export const PlayerRecordUpdateOneStrictSchema: z.ZodType<Prisma.PlayerRecordUpdateArgs> =
-    PlayerRecordUpdateOneStrictZodSchema;
 
 const PlayerRecordUpsertOneStrictZodSchema = PlayerRecordUpsertOneZodSchema.extend({
     create: PlayerRecordCreateDataStrictSchema,

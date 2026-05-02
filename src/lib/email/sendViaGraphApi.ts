@@ -27,7 +27,7 @@ export interface GraphMailConfig {
  *
  * Recipients are specified as a single email string or a comma-separated list.
  */
-export interface GraphMailOptions {
+interface GraphMailOptions {
     /** Primary recipient(s) — single email or comma-separated list. */
     to?: string;
     /** CC recipient(s) — single email or comma-separated list. */

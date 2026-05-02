@@ -1,18 +1,15 @@
-import { PlayerSchema } from 'prisma/zod/schemas';
-import { PlayerExtraEmailSchema } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
-import { z } from 'zod';
+import type { PlayerExtraEmailSchema, PlayerSchema } from 'prisma/zod/schemas';
+import type { z } from 'zod';
 
-export const PlayerDataSchema = PlayerSchema.extend({
-    accountEmail: z.email().nullable(),
-    extraEmails: z.array(PlayerExtraEmailSchema),
-    firstResponded: z.number().nullable(),
-    lastResponded: z.number().nullable(),
-    firstPlayed: z.number().nullable(),
-    lastPlayed: z.number().nullable(),
-    gamesPlayed: z.number(),
-    gamesWon: z.number(),
-    gamesDrawn: z.number(),
-    gamesLost: z.number(),
-});
-
-export type PlayerDataType = z.infer<typeof PlayerDataSchema>;
+export type PlayerDataType = z.infer<typeof PlayerSchema> & {
+    accountEmail: string | null;
+    extraEmails: z.infer<typeof PlayerExtraEmailSchema>[];
+    firstResponded: number | null;
+    lastResponded: number | null;
+    firstPlayed: number | null;
+    lastPlayed: number | null;
+    gamesPlayed: number;
+    gamesWon: number;
+    gamesDrawn: number;
+    gamesLost: number;
+};

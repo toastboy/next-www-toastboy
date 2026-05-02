@@ -5,7 +5,6 @@ import { PlayerUncheckedCreateInputObjectZodSchema } from 'prisma/zod/schemas/ob
 import { PlayerUncheckedUpdateInputObjectZodSchema } from 'prisma/zod/schemas/objects/PlayerUncheckedUpdateInput.schema';
 import { PlayerUpdateInputObjectZodSchema } from 'prisma/zod/schemas/objects/PlayerUpdateInput.schema';
 import { PlayerUpdateOneZodSchema } from 'prisma/zod/schemas/updateOnePlayer.schema';
-import { PlayerUpsertOneZodSchema } from 'prisma/zod/schemas/upsertOnePlayer.schema';
 import z from 'zod';
 
 const accountEmailStrict = z.email().max(255).nullish();
@@ -69,10 +68,3 @@ const PlayerUpdateOneStrictZodSchema = PlayerUpdateOneZodSchema.extend({
 export const PlayerUpdateOneStrictSchema: z.ZodType<Prisma.PlayerUpdateArgs> =
     PlayerUpdateOneStrictZodSchema;
 
-const PlayerUpsertOneStrictZodSchema = PlayerUpsertOneZodSchema.extend({
-    create: PlayerCreateDataStrictSchema,
-    update: PlayerUpdateDataStrictSchema,
-});
-
-export const PlayerUpsertOneStrictSchema: z.ZodType<Prisma.PlayerUpsertArgs> =
-    PlayerUpsertOneStrictZodSchema;

@@ -6,7 +6,6 @@ import {
     GameInvitationUncheckedCreateInputObjectZodSchema,
     GameInvitationUncheckedUpdateInputObjectZodSchema,
     GameInvitationUpdateInputObjectZodSchema,
-    GameInvitationUpdateOneZodSchema,
     GameInvitationUpsertOneZodSchema,
 } from 'prisma/zod/schemas';
 import z from 'zod';
@@ -69,13 +68,6 @@ const GameInvitationUpdateDataStrictSchema = z.union([
     GameInvitationUpdateInputObjectZodSchema.extend(GameInvitationUpdateStrictFields),
     GameInvitationUncheckedUpdateInputObjectZodSchema.extend(GameInvitationUpdateStrictFields),
 ]);
-
-const GameInvitationUpdateOneStrictZodSchema = GameInvitationUpdateOneZodSchema.extend({
-    data: GameInvitationUpdateDataStrictSchema,
-});
-
-export const GameInvitationUpdateOneStrictSchema: z.ZodType<Prisma.GameInvitationUpdateArgs> =
-    GameInvitationUpdateOneStrictZodSchema as unknown as z.ZodType<Prisma.GameInvitationUpdateArgs>;
 
 const GameInvitationUpsertOneStrictZodSchema = GameInvitationUpsertOneZodSchema.extend({
     create: GameInvitationCreateDataStrictSchema,

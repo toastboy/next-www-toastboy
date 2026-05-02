@@ -12,7 +12,7 @@ import { captureUnexpectedError } from '@/lib/observability/sentry';
 import type { TriggerInvitationsProxy } from '@/types/actions/TriggerInvitations';
 import { NewGameInput, NewGameInputSchema } from '@/types/actions/TriggerInvitations';
 
-export interface Props {
+interface Props {
     onTriggerInvitations: TriggerInvitationsProxy;
 }
 

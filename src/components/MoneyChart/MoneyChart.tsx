@@ -8,7 +8,6 @@ import { MoneyChartDatum } from '@/types/DebtType';
 
 import styles from './MoneyChart.module.css';
 
-export type { MoneyChartDatum };
 
 export interface Props {
     data: MoneyChartDatum[];

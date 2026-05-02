@@ -6,7 +6,7 @@ import type { AppErrorCode } from '@/lib/errors/ErrorCode';
 /**
  * HTTP response shape derived from an unknown error.
  */
-export interface HttpErrorResponse {
+interface HttpErrorResponse {
     status: number;
     message: string;
 }

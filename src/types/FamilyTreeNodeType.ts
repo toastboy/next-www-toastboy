@@ -5,7 +5,7 @@ import { z } from 'zod';
  * a player (or the virtual root) and contains the player's id, display name,
  * and any children they introduced to the club.
  */
-export const FamilyTreeNodeSchema: z.ZodType<FamilyTreeNodeType> = z.lazy(() =>
+const FamilyTreeNodeSchema: z.ZodType<FamilyTreeNodeType> = z.lazy(() =>
     z.object({
         /** Player id, or 0 for the virtual root node. */
         id: z.number(),

@@ -6,6 +6,9 @@ import { vi } from 'vitest';
 import { Wrapper } from '../../tests/components/lib/common';
 import { TitleWithYearDropdown } from './TitleWithYearDropdown';
 
+const mockParams = (init = '') =>
+    new URLSearchParams(init) as unknown as ReturnType<typeof useSearchParams>;
+
 describe('TitleWithYearDropdown', () => {
     const push = vi.fn();
 
@@ -19,7 +22,7 @@ describe('TitleWithYearDropdown', () => {
             prefetch: vi.fn(),
         });
         vi.mocked(usePathname).mockReturnValue('/footy/year/2024');
-        vi.mocked(useSearchParams).mockReturnValue(new URLSearchParams());
+        vi.mocked(useSearchParams).mockReturnValue(mockParams());
     });
 
     afterEach(() => {
@@ -80,7 +83,7 @@ describe('TitleWithYearDropdown', () => {
 
     it('navigates to URL without year param when All-time is selected', async () => {
         const user = userEvent.setup();
-        vi.mocked(useSearchParams).mockReturnValue(new URLSearchParams('year=2024'));
+        vi.mocked(useSearchParams).mockReturnValue(mockParams('year=2024'));
         render(
             <Wrapper>
                 <TitleWithYearDropdown title="Testing Title" order={2} year={2024} validYears={[0, 2023, 2024]} />
@@ -95,7 +98,7 @@ describe('TitleWithYearDropdown', () => {
 
     it('preserves existing search params when changing year', async () => {
         const user = userEvent.setup();
-        vi.mocked(useSearchParams).mockReturnValue(new URLSearchParams('tab=history'));
+        vi.mocked(useSearchParams).mockReturnValue(mockParams('tab=history'));
         render(
             <Wrapper>
                 <TitleWithYearDropdown title="Testing Title" order={2} year={2024} validYears={[0, 2023, 2024]} />

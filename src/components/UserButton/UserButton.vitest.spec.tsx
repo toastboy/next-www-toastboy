@@ -153,7 +153,7 @@ describe('UserButton', () => {
     it('calls sign-out API and refreshes the router on success', async () => {
         const user = userEvent.setup();
         const refresh = vi.fn();
-        (useRouter as Mock).mockReturnValue({ push, replace: vi.fn(), back: vi.fn(), refresh, refresh, prefetch: vi.fn() });
+        (useRouter as Mock).mockReturnValue({ push, replace: vi.fn(), back: vi.fn(), refresh, prefetch: vi.fn() });
         const notificationUpdateSpy = vi.spyOn(notifications, 'update');
         vi.spyOn(global, 'fetch').mockResolvedValue(new Response(null, { status: 200 }));
 

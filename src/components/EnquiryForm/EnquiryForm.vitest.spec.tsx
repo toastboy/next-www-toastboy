@@ -13,12 +13,15 @@ vi.mock('@/lib/observability/sentry', () => ({
     captureUnexpectedError: vi.fn(),
 }));
 
+const mockParams = (init = '') =>
+    new URLSearchParams(init) as unknown as ReturnType<typeof useSearchParams>;
+
 describe('EnquiryForm', () => {
     const mockSendEnquiry: SendEnquiryProxy = vi.fn().mockResolvedValue(undefined);
 
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(useSearchParams).mockReturnValue(new URLSearchParams());
+        vi.mocked(useSearchParams).mockReturnValue(mockParams());
         vi.mocked(usePathname).mockReturnValue('/footy/contact');
         vi.mocked(useRouter).mockReturnValue({
             push: vi.fn(),
@@ -72,7 +75,7 @@ describe('EnquiryForm', () => {
     it('shows success notification and cleans URL when enquiry=verified in params', async () => {
         const replace = vi.fn();
         vi.mocked(useRouter).mockReturnValue({ replace, push: vi.fn(), back: vi.fn(), forward: vi.fn(), refresh: vi.fn(), prefetch: vi.fn() });
-        vi.mocked(useSearchParams).mockReturnValue(new URLSearchParams('enquiry=verified'));
+        vi.mocked(useSearchParams).mockReturnValue(mockParams('enquiry=verified'));
         const showSpy = vi.spyOn(notifications, 'show');
 
         render(<Wrapper><EnquiryForm redirectUrl="redirect-url" onSendEnquiry={mockSendEnquiry} /></Wrapper>);
@@ -89,7 +92,7 @@ describe('EnquiryForm', () => {
     it('shows error notification and cleans URL when enquiry=error in params', async () => {
         const replace = vi.fn();
         vi.mocked(useRouter).mockReturnValue({ replace, push: vi.fn(), back: vi.fn(), forward: vi.fn(), refresh: vi.fn(), prefetch: vi.fn() });
-        vi.mocked(useSearchParams).mockReturnValue(new URLSearchParams('enquiry=error&error=Could+not+verify'));
+        vi.mocked(useSearchParams).mockReturnValue(mockParams('enquiry=error&error=Could+not+verify'));
         const showSpy = vi.spyOn(notifications, 'show');
 
         render(<Wrapper><EnquiryForm redirectUrl="redirect-url" onSendEnquiry={mockSendEnquiry} /></Wrapper>);

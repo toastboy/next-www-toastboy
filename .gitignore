@@ -66,3 +66,6 @@ prisma/zod/
 *storybook.log
 storybook-static
 www-toastboy
+
+# Claude Code local files (worktrees are nested git repos, not submodules)
+.claude/worktrees/

@@ -1,14 +1,33 @@
 {
-  "permissions": {
-    "allow": [
-      "Bash(find /Volumes/Development/next-www-toastboy -type f -name *.prisma)",
-      "Bash(find /Volumes/Development/next-www-toastboy/src -type f -name *[Mm]oney* -o -name *[Pp]ay*)",
-      "Bash(find /Volumes/Development/next-www-toastboy/src/actions -type f -name *.ts)",
-      "Bash(find /Volumes/Development/next-www-toastboy/src/components -type d -name *Result* -o -name *Game*)",
-      "Bash(npx tsc:*)",
-      "Bash(npx next:*)",
-      "Bash(git stash:*)",
-      "Bash(npx eslint:*)"
-    ]
-  }
+    "permissions": {
+        "allow": [
+            "Bash(cat *)",
+            "Bash(echo *)",
+            "Bash(find *)",
+            "Bash(gh issue list *)",
+            "Bash(gh issue view *)",
+            "Bash(gh pr list *)",
+            "Bash(gh pr view *)",
+            "Bash(git blame *)",
+            "Bash(git diff *)",
+            "Bash(git log *)",
+            "Bash(git show *)",
+            "Bash(git stash *)",
+            "Bash(git status *)",
+            "Bash(grep *)",
+            "Bash(jq *)",
+            "Bash(ls *)",
+            "Bash(npm run *)",
+            "Bash(npm view *)",
+            "Bash(npm why *)",
+            "Bash(npx depcheck *)",
+            "Bash(npx eslint *)",
+            "Bash(npx knip *)",
+            "Bash(npx next *)",
+            "Bash(npx playwright *)",
+            "Bash(npx prisma *)",
+            "Bash(npx tsc *)",
+            "Bash(npx vitest *)"
+        ]
+    }
 }

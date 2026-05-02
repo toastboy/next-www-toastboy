@@ -1,4 +1,6 @@
+import { notifications } from '@mantine/notifications';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/navigation';
 import type { Mock } from 'vitest';
 import { vi } from 'vitest';
@@ -104,6 +106,116 @@ describe('UserButton', () => {
         const chevronIcon = screen.getByTestId('chevron-icon');
         await waitFor(() => {
             expect(chevronIcon).toBeInTheDocument();
+        });
+    });
+
+    it('opens menu showing account links on click', async () => {
+        const user = userEvent.setup();
+        render(
+            <Wrapper>
+                <UserButton user={{ name: 'Harriette Spoonlicker', email: 'h@example.com', playerId: 12, role: 'user' }} />
+            </Wrapper>,
+        );
+
+        await user.click(screen.getByTestId('user-button'));
+
+        expect(await screen.findByText('My Profile')).toBeInTheDocument();
+        expect(screen.getByText('Sign Out')).toBeInTheDocument();
+    });
+
+    it('shows End impersonation item when user is being impersonated', async () => {
+        const user = userEvent.setup();
+        render(
+            <Wrapper>
+                <UserButton user={{ name: 'Harriette Spoonlicker', email: 'h@example.com', playerId: 12, role: 'user', impersonatedBy: 'admin@example.com' }} />
+            </Wrapper>,
+        );
+
+        await user.click(screen.getByTestId('user-button'));
+
+        expect(await screen.findByText('End impersonation')).toBeInTheDocument();
+    });
+
+    it('does not show End impersonation when not impersonating', async () => {
+        const user = userEvent.setup();
+        render(
+            <Wrapper>
+                <UserButton user={{ name: 'Harriette Spoonlicker', email: 'h@example.com', playerId: 12, role: 'user' }} />
+            </Wrapper>,
+        );
+
+        await user.click(screen.getByTestId('user-button'));
+        await screen.findByText('Sign Out');
+
+        expect(screen.queryByText('End impersonation')).not.toBeInTheDocument();
+    });
+
+    it('calls sign-out API and refreshes the router on success', async () => {
+        const user = userEvent.setup();
+        const refresh = vi.fn();
+        (useRouter as Mock).mockReturnValue({ push, replace: vi.fn(), back: vi.fn(), refresh, refresh, prefetch: vi.fn() });
+        const notificationUpdateSpy = vi.spyOn(notifications, 'update');
+        vi.spyOn(global, 'fetch').mockResolvedValue(new Response(null, { status: 200 }));
+
+        render(
+            <Wrapper>
+                <UserButton user={{ name: 'Harriette Spoonlicker', email: 'h@example.com', playerId: 12, role: 'user' }} />
+            </Wrapper>,
+        );
+
+        await user.click(screen.getByTestId('user-button'));
+        await user.click(await screen.findByText('Sign Out'));
+
+        await waitFor(() => {
+            expect(global.fetch).toHaveBeenCalledWith('/api/auth/sign-out', expect.objectContaining({ method: 'POST' }));
+            expect(refresh).toHaveBeenCalled();
+        });
+        expect(notificationUpdateSpy).toHaveBeenCalledWith(expect.objectContaining({
+            color: 'teal',
+            title: 'Signed out',
+        }));
+    });
+
+    it('shows error notification when sign-out API fails', async () => {
+        const user = userEvent.setup();
+        const notificationUpdateSpy = vi.spyOn(notifications, 'update');
+        vi.spyOn(global, 'fetch').mockResolvedValue(new Response('Unauthorized', { status: 401 }));
+
+        render(
+            <Wrapper>
+                <UserButton user={{ name: 'Harriette Spoonlicker', email: 'h@example.com', playerId: 12, role: 'user' }} />
+            </Wrapper>,
+        );
+
+        await user.click(screen.getByTestId('user-button'));
+        await user.click(await screen.findByText('Sign Out'));
+
+        await waitFor(() => {
+            expect(notificationUpdateSpy).toHaveBeenCalledWith(expect.objectContaining({
+                color: 'red',
+                title: 'Error',
+            }));
+        });
+    });
+
+    it('calls stop-impersonating API and refreshes router on success', async () => {
+        const user = userEvent.setup();
+        const refresh = vi.fn();
+        (useRouter as Mock).mockReturnValue({ push, replace: vi.fn(), back: vi.fn(), refresh, prefetch: vi.fn() });
+        vi.spyOn(global, 'fetch').mockResolvedValue(new Response(null, { status: 200 }));
+
+        render(
+            <Wrapper>
+                <UserButton user={{ name: 'Harriette Spoonlicker', email: 'h@example.com', playerId: 12, role: 'user', impersonatedBy: 'admin@example.com' }} />
+            </Wrapper>,
+        );
+
+        await user.click(screen.getByTestId('user-button'));
+        await user.click(await screen.findByText('End impersonation'));
+
+        await waitFor(() => {
+            expect(global.fetch).toHaveBeenCalledWith('/api/auth/admin/stop-impersonating', expect.objectContaining({ method: 'POST' }));
+            expect(refresh).toHaveBeenCalled();
         });
     });
 });

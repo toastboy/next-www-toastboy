@@ -22,7 +22,6 @@ export const CreateMoreGameDaysSchema = z.object({
 });
 
 export type CreateMoreGameDaysInput = z.infer<typeof CreateMoreGameDaysSchema>;
-export type GameDayRowInput = z.infer<typeof GameDayRowSchema>;
 
 /**
  * Server action proxy type for the createMoreGameDays action.

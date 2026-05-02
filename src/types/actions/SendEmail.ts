@@ -13,11 +13,6 @@ export const SendEmailSchema = z.object({
 });
 
 /**
- * Input type inferred from the send email schema.
- */
-export type SendEmailInput = z.infer<typeof SendEmailSchema>;
-
-/**
  * Server action proxy type for the sendEmail action.
  * Enables dependency injection for components and stories without importing
  * the server-only action directly.

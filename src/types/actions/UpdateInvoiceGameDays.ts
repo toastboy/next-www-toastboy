@@ -7,6 +7,6 @@ export const UpdateInvoiceGameDaysInputSchema = z.object({
     })),
 });
 
-export type UpdateInvoiceGameDaysInput = z.infer<typeof UpdateInvoiceGameDaysInputSchema>;
+type UpdateInvoiceGameDaysInput = z.infer<typeof UpdateInvoiceGameDaysInputSchema>;
 
 export type UpdateInvoiceGameDaysProxy = (data: UpdateInvoiceGameDaysInput) => Promise<void>;

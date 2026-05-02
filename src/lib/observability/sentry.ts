@@ -39,7 +39,7 @@ type TagValue = string | number | boolean | null | undefined;
 /**
  * Context accepted by {@link captureUnexpectedError}.
  */
-export interface CaptureUnexpectedErrorContext {
+interface CaptureUnexpectedErrorContext {
     /**
      * Logical layer where the error occurred (for example: `client`, `route`,
      * `server-action`, `service`).

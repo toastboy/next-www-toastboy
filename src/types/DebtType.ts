@@ -19,8 +19,6 @@ export const PlayerDebtSchema = z.object({
     amount: z.number().int().positive(),
 });
 
-export type PlayerDebtType = z.infer<typeof PlayerDebtSchema>;
-
 /**
  * Represents all unpaid charges for a single player.
  *

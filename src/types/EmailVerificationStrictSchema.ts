@@ -42,8 +42,6 @@ export const EmailVerificationMarkUsedInputSchema = z.object({
     token: z.string().trim().min(1),
 }).strict();
 
-export type EmailVerificationMarkUsedInput = z.infer<typeof EmailVerificationMarkUsedInputSchema>;
-
 const EmailVerificationUncheckedCreateInputWithoutIdSchema =
     EmailVerificationUncheckedCreateInputObjectZodSchema.omit({ id: true });
 

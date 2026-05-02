@@ -27,12 +27,6 @@ export const AddPlayerInviteSchema = z.object({
 });
 
 /**
- * Input type for the add player invite action.
- * Wraps the required data for validation and typing.
- */
-export type AddPlayerInviteInput = z.infer<typeof AddPlayerInviteSchema>;
-
-/**
  * Server action proxy type for the addPlayerInvite action.
  * Allows components to accept a custom implementation without directly importing the real action,
  * making them testable and Storybook-friendly.

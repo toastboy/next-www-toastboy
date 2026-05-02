@@ -43,8 +43,6 @@ export const ContactEnquiryMarkDeliveredInputSchema = z.object({
     id: z.number().int().min(1),
 }).strict();
 
-export type ContactEnquiryMarkDeliveredInput = z.infer<typeof ContactEnquiryMarkDeliveredInputSchema>;
-
 const ContactEnquiryUncheckedCreateInputWithoutIdSchema =
     ContactEnquiryUncheckedCreateInputObjectZodSchema.omit({ id: true });
 

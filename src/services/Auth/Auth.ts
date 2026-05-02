@@ -4,7 +4,7 @@ import { auth } from '@/lib/auth';
 import { normalizeUnknownError } from '@/lib/errors';
 
 
-export interface AuthSessionUser {
+interface AuthSessionUser {
     id?: string | null;
     email?: string | null;
     playerId?: number | null;
@@ -13,7 +13,7 @@ export interface AuthSessionUser {
 /**
  * Payload for changing the authenticated user's email address.
  */
-export interface ChangeCurrentUserEmailInput {
+interface ChangeCurrentUserEmailInput {
     newEmail: string;
     callbackURL?: string;
 }

@@ -27,7 +27,7 @@ export const DEFAULT_SENTRY_IGNORE_ERRORS = [
 /**
  * Options for resolving runtime-configurable Sentry sample rates.
  */
-export interface SampleRateOptions {
+interface SampleRateOptions {
     /**
      * Environment variable to read, for example `SENTRY_TRACES_SAMPLE_RATE`.
      */

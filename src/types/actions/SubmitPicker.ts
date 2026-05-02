@@ -7,7 +7,6 @@ export const SubmitPickerPlayerSchema = z.object({
 export const SubmitPickerInputSchema = z.array(SubmitPickerPlayerSchema);
 
 export type SubmitPickerInput = z.infer<typeof SubmitPickerInputSchema>;
-export type SubmitPickerPlayerInput = z.infer<typeof SubmitPickerPlayerSchema>;
 
 /**
  * Server action proxy type for the SubmitPicker action. Enables

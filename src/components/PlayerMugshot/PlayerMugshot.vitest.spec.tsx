@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import type { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 
 import { PlayerMugshot } from '@/components/PlayerMugshot/PlayerMugshot';
 import { Wrapper } from '@/tests/components/lib/common';
@@ -17,5 +18,20 @@ describe('PlayerMugshot', () => {
 
         const img = screen.getByRole('img');
         expect(img).toHaveAttribute('src', `/api/footy/player/${defaultPlayer.id}/mugshot`);
+        expect(img).toHaveAttribute('alt', defaultPlayer.name);
+        expect(img).toHaveAttribute('title', defaultPlayer.name);
+    });
+
+    it('uses "Player {id}" as alt and title when name is null', () => {
+        const player: PlayerType = { ...defaultPlayer, name: null };
+        render(
+            <Wrapper>
+                <PlayerMugshot player={player} />
+            </Wrapper>,
+        );
+
+        const img = screen.getByRole('img');
+        expect(img).toHaveAttribute('alt', `Player ${player.id}`);
+        expect(img).toHaveAttribute('title', `Player ${player.id}`);
     });
 });

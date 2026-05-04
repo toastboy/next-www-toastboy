@@ -145,7 +145,7 @@
         "knip": "^6.9.0",
         "msw": "^2.14.2",
         "msw-storybook-addon": "^2.0.7",
-        "npm-check-updates": "^22.0.1",
+        "npm-check-updates": "^22.1.0",
         "playwright": "^1.59.1",
         "storybook": "^10.3.6",
         "supertest": "^7.2.2",

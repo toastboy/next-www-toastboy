@@ -11,6 +11,7 @@ vi.mock('@/lib/observability/sentry', () => ({
 }));
 
 import { GET } from '@/app/api/health/route';
+import { ValidationError } from '@/lib/errors';
 import { HealthResponseSchema } from '@/lib/health';
 
 describe('/api/health', () => {
@@ -66,5 +67,23 @@ describe('/api/health', () => {
         expect(json.status).toBe('unhealthy');
         expect(json.error).toBe('Health check failed');
         expect(captureUnexpectedErrorMock).toHaveBeenCalledTimes(1);
+    });
+
+    it('should normalise 500 errors to 503', async () => {
+        const customError = new Error('Custom error');
+        (prisma.$queryRaw as Mock).mockRejectedValue(customError);
+
+        const response = await GET();
+        expect(response.status).toBe(503);
+    });
+
+    it('should  pass through non-500 errors', async () => {
+        // ValidationError is an expected AppError with code VALIDATION_ERROR,
+        // which toHttpErrorResponse maps to 400. normalizeUnknownError returns
+        // AppError instances unchanged, so 400 is preserved (not mapped to 503).
+        (prisma.$queryRaw as Mock).mockRejectedValue(new ValidationError('Bad input'));
+
+        const response = await GET();
+        expect(response.status).toBe(400);
     });
 });

@@ -139,7 +139,7 @@
         "eslint-plugin-storybook": "^10.3.6",
         "eslint-plugin-testing-library": "^7.16.2",
         "eslint-plugin-unused-imports": "^4.4.1",
-        "globals": "^17.5.0",
+        "globals": "^17.6.0",
         "happy-dom": "^20.9.0",
         "jsdom": "^29.1.0",
         "knip": "^6.9.0",

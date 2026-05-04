@@ -32,6 +32,7 @@ export default defineConfig({
                 '.storybook/**',
                 'public/**',
                 'src/actions/**',
+                'src/app/api/auth/**', // Better Auth handler — nothing to unit test here
                 'src/stories/**',
                 'src/tests/**',
                 'src/types/**',

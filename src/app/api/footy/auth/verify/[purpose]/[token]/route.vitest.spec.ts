@@ -27,14 +27,19 @@ import { verifyEmail } from '@/actions/verifyEmail';
 import { GET } from '@/app/api/footy/auth/verify/[purpose]/[token]/route';
 
 /**
- * Route path used for verifying auth-linked tokens.
- */
-const routePath = '/api/footy/auth/verify/player-invite/test-token';
-
-/**
  * Redirect destination injected into requests for response-location assertions.
  */
 const redirectPath = '/footy/profile';
+
+/**
+ * Maps each supported verification purpose to its corresponding action mock,
+ * so the parameterised tests can select the right mock to configure.
+ */
+const purposeCases = [
+    { purpose: 'player-invite', getMock: () => claimPlayerInvitation as Mock },
+    { purpose: 'extra-email', getMock: () => verifyEmail as Mock },
+    { purpose: 'enquiry', getMock: () => deliverContactEnquiry as Mock },
+] as const;
 
 describe('GET /api/footy/auth/verify/[purpose]/[token]', () => {
     beforeEach(() => {
@@ -44,79 +49,100 @@ describe('GET /api/footy/auth/verify/[purpose]/[token]', () => {
         (deliverContactEnquiry as Mock).mockResolvedValue({});
     });
 
-    it('redirects with merged payload params on success', async () => {
-        (claimPlayerInvitation as Mock).mockResolvedValue({
-            playerId: '99',
-            verified: 'true',
+    describe.each(purposeCases)('purpose: $purpose', ({ purpose, getMock }) => {
+        /** Route path for the current purpose under test. */
+        const routePath = `/api/footy/auth/verify/${purpose}/test-token`;
+
+        it('redirects with merged payload params on success', async () => {
+            getMock().mockResolvedValue({
+                playerId: '99',
+                verified: 'true',
+            });
+            const request = new NextRequest(
+                `http://localhost${routePath}?redirect=${encodeURIComponent(redirectPath)}`,
+            );
+            const response = await GET(request, {
+                params: Promise.resolve({ purpose, token: 'test-token' }),
+            });
+            const locationHeader = response.headers.get('location');
+
+            expect(response.status).toBe(307);
+            expect(locationHeader).toBeTruthy();
+            const location = new URL(locationHeader!, 'http://localhost');
+            expect(location.pathname).toBe(redirectPath);
+            expect(location.searchParams.get('playerId')).toBe('99');
+            expect(location.searchParams.get('verified')).toBe('true');
+            expect(Sentry.captureException).not.toHaveBeenCalled();
         });
-        const request = new NextRequest(
-            `http://localhost${routePath}?redirect=${encodeURIComponent(redirectPath)}`,
-        );
-        const response = await GET(request, {
-            params: Promise.resolve({ purpose: 'player-invite', token: 'test-token' }),
+
+        it('redirects to the site root if no redirect param is provided', async () => {
+            const request = new NextRequest(`http://localhost${routePath}`);
+            const response = await GET(request, {
+                params: Promise.resolve({ purpose, token: 'test-token' }),
+            });
+            const locationHeader = response.headers.get('location');
+
+            expect(response.status).toBe(307);
+            expect(locationHeader).toBeTruthy();
+            const location = new URL(locationHeader!, 'http://localhost');
+            expect(location.pathname).toBe('/');
+            expect(location.search).toBe('');
+            expect(Sentry.captureException).not.toHaveBeenCalled();
         });
-        const locationHeader = response.headers.get('location');
 
-        expect(response.status).toBe(307);
-        expect(locationHeader).toBeTruthy();
-        const location = new URL(locationHeader!, 'http://localhost');
-        expect(location.pathname).toBe(redirectPath);
-        expect(location.searchParams.get('playerId')).toBe('99');
-        expect(location.searchParams.get('verified')).toBe('true');
-        expect(Sentry.captureException).not.toHaveBeenCalled();
-    });
+        it('does not capture expected domain errors', async () => {
+            getMock().mockRejectedValue(
+                new ValidationError('Token has expired.'),
+            );
+            const request = new NextRequest(
+                `http://localhost${routePath}?redirect=${encodeURIComponent(redirectPath)}`,
+            );
+            const response = await GET(request, {
+                params: Promise.resolve({ purpose, token: 'test-token' }),
+            });
+            const locationHeader = response.headers.get('location');
 
-    it('does not capture expected domain errors', async () => {
-        (claimPlayerInvitation as Mock).mockRejectedValue(
-            new ValidationError('Invitation has expired.'),
-        );
-        const request = new NextRequest(
-            `http://localhost${routePath}?redirect=${encodeURIComponent(redirectPath)}`,
-        );
-        const response = await GET(request, {
-            params: Promise.resolve({ purpose: 'player-invite', token: 'test-token' }),
+            expect(response.status).toBe(307);
+            const location = new URL(locationHeader!, 'http://localhost');
+            expect(location.pathname).toBe(redirectPath);
+            expect(location.searchParams.get('error')).toBe('Invalid request.');
+            expect(Sentry.captureException).not.toHaveBeenCalled();
         });
-        const locationHeader = response.headers.get('location');
 
-        expect(response.status).toBe(307);
-        const location = new URL(locationHeader!, 'http://localhost');
-        expect(location.pathname).toBe(redirectPath);
-        expect(location.searchParams.get('error')).toBe('Invalid request.');
-        expect(Sentry.captureException).not.toHaveBeenCalled();
-    });
+        it('captures unexpected failures in Sentry', async () => {
+            getMock().mockRejectedValue(new Error('Database timeout'));
+            const request = new NextRequest(
+                `http://localhost${routePath}?redirect=${encodeURIComponent(redirectPath)}`,
+            );
+            const response = await GET(request, {
+                params: Promise.resolve({ purpose, token: 'test-token' }),
+            });
+            const locationHeader = response.headers.get('location');
 
-    it('captures unexpected failures in Sentry', async () => {
-        (claimPlayerInvitation as Mock).mockRejectedValue(new Error('Database timeout'));
-        const request = new NextRequest(
-            `http://localhost${routePath}?redirect=${encodeURIComponent(redirectPath)}`,
-        );
-        const response = await GET(request, {
-            params: Promise.resolve({ purpose: 'player-invite', token: 'test-token' }),
+            expect(response.status).toBe(307);
+            const location = new URL(locationHeader!, 'http://localhost');
+            expect(location.pathname).toBe(redirectPath);
+            expect(location.searchParams.get('error')).toBe('Unable to verify email.');
+            expect(Sentry.captureException).toHaveBeenCalledTimes(1);
+            const [, options] = vi.mocked(Sentry.captureException).mock.calls[0] as [Error, {
+                tags?: Record<string, string>;
+                extra?: Record<string, unknown>;
+            }];
+            expect(options.tags).toEqual(expect.objectContaining({
+                layer: 'route',
+                action: 'verifyAuthToken',
+                route: '/api/footy/auth/verify/[purpose]/[token]',
+                purpose,
+            }));
+            expect(options.extra).toEqual(expect.objectContaining({
+                redirectParam: redirectPath,
+            }));
+            expect(options.extra).not.toHaveProperty('token');
         });
-        const locationHeader = response.headers.get('location');
-
-        expect(response.status).toBe(307);
-        const location = new URL(locationHeader!, 'http://localhost');
-        expect(location.pathname).toBe(redirectPath);
-        expect(location.searchParams.get('error')).toBe('Unable to verify email.');
-        expect(Sentry.captureException).toHaveBeenCalledTimes(1);
-        const [, options] = vi.mocked(Sentry.captureException).mock.calls[0] as [Error, {
-            tags?: Record<string, string>;
-            extra?: Record<string, unknown>;
-        }];
-        expect(options.tags).toEqual(expect.objectContaining({
-            layer: 'route',
-            action: 'verifyAuthToken',
-            route: '/api/footy/auth/verify/[purpose]/[token]',
-            purpose: 'player-invite',
-        }));
-        expect(options.extra).toEqual(expect.objectContaining({
-            redirectParam: redirectPath,
-        }));
-        expect(options.extra).not.toHaveProperty('token');
     });
 
     it('treats invalid purpose as expected and skips Sentry capture', async () => {
+        const routePath = '/api/footy/auth/verify/bogus-purpose/test-token';
         const request = new NextRequest(
             `http://localhost${routePath}?redirect=${encodeURIComponent(redirectPath)}`,
         );

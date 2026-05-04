@@ -49,6 +49,21 @@ describe('GET /api/footy/auth/claim/[token]', () => {
         expect(Sentry.captureException).not.toHaveBeenCalled();
     });
 
+    it('redirects to the site root if no redirect param is provided', async () => {
+        const request = new NextRequest(`http://localhost${routePath}`);
+        const response = await GET(request, {
+            params: Promise.resolve({ token: 'test-token' }),
+        });
+        const locationHeader = response.headers.get('location');
+
+        expect(response.status).toBe(307);
+        expect(locationHeader).toBeTruthy();
+        const location = new URL(locationHeader!, 'http://localhost');
+        expect(location.pathname).toBe('/');
+        expect(location.search).toBe('');
+        expect(Sentry.captureException).not.toHaveBeenCalled();
+    });
+
     it('does not capture expected domain errors', async () => {
         (finalizePlayerInvitationClaim as Mock).mockRejectedValue(
             new ValidationError('Invitation has expired.'),

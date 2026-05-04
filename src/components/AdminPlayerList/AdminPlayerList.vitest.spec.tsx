@@ -263,6 +263,118 @@ describe('AdminPlayerList', () => {
             expect(within(rows[0]).getByText('Zara')).toBeInTheDocument();
             expect(within(rows[1]).getByText('Alice')).toBeInTheDocument();
         });
+
+        it('sorts by Joined — null dates sort last', () => {
+            // Player A has a joined date, Player B does not → A appears first (asc)
+            const players = [
+                createMockPlayerData({ id: 2, name: 'Bob', joined: null }),
+                createMockPlayerData({ id: 1, name: 'Alice', joined: new Date('2020-01-01') }),
+            ];
+
+            render(
+                <Wrapper>
+                    <AdminPlayerList
+                        players={players}
+                        userEmails={[]}
+                        onAddPlayerInvite={defaultAddPlayerProxy}
+                        onSendEmail={stubSendEmail}
+                    />
+                </Wrapper>,
+            );
+
+            fireEvent.click(screen.getByRole('button', { name: 'Sort by Joined' }));
+
+            const rows = screen.getAllByRole('row').slice(1);
+            expect(within(rows[0]).getByText('Alice')).toBeInTheDocument();
+            expect(within(rows[1]).getByText('Bob')).toBeInTheDocument();
+        });
+
+        it('sorts by Auth — authenticated players first', () => {
+            const players = [
+                createMockPlayerData({ id: 1, name: 'Anonymous', accountEmail: null, extraEmails: [] }),
+                createMockPlayerData({ id: 2, name: 'Authed', accountEmail: 'authed@example.com', extraEmails: [] }),
+            ];
+
+            render(
+                <Wrapper>
+                    <AdminPlayerList
+                        players={players}
+                        userEmails={['authed@example.com']}
+                        onAddPlayerInvite={defaultAddPlayerProxy}
+                        onSendEmail={stubSendEmail}
+                    />
+                </Wrapper>,
+            );
+
+            // Default sort is ID; switch to Auth asc (unauthenticated = 0 comes first)
+            fireEvent.click(screen.getByRole('button', { name: 'Sort by Auth' }));
+            const rowsAsc = screen.getAllByRole('row').slice(1);
+            expect(within(rowsAsc[0]).getByText('Anonymous')).toBeInTheDocument();
+
+            // Reverse to desc (authenticated = 1 comes first)
+            fireEvent.click(screen.getByRole('button', { name: 'Sort by Auth' }));
+            const rowsDesc = screen.getAllByRole('row').slice(1);
+            expect(within(rowsDesc[0]).getByText('Authed')).toBeInTheDocument();
+        });
+
+        it('sorts by Finished — null dates sort last', () => {
+            const players = [
+                createMockPlayerData({ id: 2, name: 'Bob', finished: null }),
+                createMockPlayerData({ id: 1, name: 'Alice', finished: new Date('2020-01-01') }),
+            ];
+
+            render(
+                <Wrapper>
+                    <AdminPlayerList
+                        players={players}
+                        userEmails={[]}
+                        onAddPlayerInvite={defaultAddPlayerProxy}
+                        onSendEmail={stubSendEmail}
+                    />
+                </Wrapper>,
+            );
+
+            fireEvent.click(screen.getByRole('button', { name: 'Sort by Finished' }));
+
+            const rows = screen.getAllByRole('row').slice(1);
+            // Alice (has finished date) first; Bob (null) last
+            expect(within(rows[0]).getByText('Alice')).toBeInTheDocument();
+            expect(within(rows[1]).getByText('Bob')).toBeInTheDocument();
+        });
+
+        it('sorts by Emails Verified — null (no extra emails) sorts last', () => {
+            const players = [
+                createMockPlayerData({ id: 2, name: 'Bob', extraEmails: [] }),
+                createMockPlayerData({
+                    id: 1,
+                    name: 'Alice',
+                    extraEmails: [{
+                        id: 1, playerId: 1,
+                        email: 'alice@example.com',
+                        verifiedAt: new Date('2021-01-01'),
+                        createdAt: new Date('2021-01-01'),
+                    }],
+                }),
+            ];
+
+            render(
+                <Wrapper>
+                    <AdminPlayerList
+                        players={players}
+                        userEmails={[]}
+                        onAddPlayerInvite={defaultAddPlayerProxy}
+                        onSendEmail={stubSendEmail}
+                    />
+                </Wrapper>,
+            );
+
+            fireEvent.click(screen.getByRole('button', { name: 'Sort by Emails Verified' }));
+
+            const rows = screen.getAllByRole('row').slice(1);
+            // null (Bob, no emails) sorts last; Alice (verified) sorts first
+            expect(within(rows[0]).getByText('Alice')).toBeInTheDocument();
+            expect(within(rows[1]).getByText('Bob')).toBeInTheDocument();
+        });
     });
 
     describe('impersonate button', () => {
@@ -420,6 +532,102 @@ describe('AdminPlayerList', () => {
 
             const table = screen.getByRole('table');
             expect(within(table).getByText('Yes')).toBeInTheDocument();
+        });
+    });
+
+    describe('onboard button', () => {
+        it('is disabled before any player is selected', () => {
+            render(
+                <Wrapper>
+                    <AdminPlayerList
+                        players={[createMockPlayerData({ id: 1, name: 'Alex Admin' })]}
+                        userEmails={[]}
+                        onAddPlayerInvite={defaultAddPlayerProxy}
+                        onSendEmail={stubSendEmail}
+                    />
+                </Wrapper>,
+            );
+
+            expect(screen.getByRole('button', { name: 'Onboard player' })).toBeDisabled();
+        });
+
+        it('is enabled after a player is selected', () => {
+            render(
+                <Wrapper>
+                    <AdminPlayerList
+                        players={[createMockPlayerData({ id: 1, name: 'Alex Admin' })]}
+                        userEmails={[]}
+                        onAddPlayerInvite={defaultAddPlayerProxy}
+                        onSendEmail={stubSendEmail}
+                    />
+                </Wrapper>,
+            );
+
+            fireEvent.click(screen.getByRole('checkbox', { name: 'Select Alex Admin' }));
+
+            expect(screen.getByRole('button', { name: 'Onboard player' })).toBeEnabled();
+        });
+
+        it('uses extra email as fallback when accountEmail is null', async () => {
+            const onAddPlayerInvite = vi.fn().mockResolvedValue('https://example.com/invite');
+            const onSendEmail = vi.fn().mockResolvedValue(undefined);
+
+            const players = [
+                createMockPlayerData({
+                    id: 1,
+                    name: 'Pat Player',
+                    accountEmail: null,
+                    extraEmails: [{
+                        id: 1,
+                        playerId: 1,
+                        email: 'pat@example.com',
+                        verifiedAt: new Date('2021-01-01'),
+                        createdAt: new Date('2021-01-01'),
+                    }],
+                }),
+            ];
+
+            render(
+                <Wrapper>
+                    <AdminPlayerList
+                        players={players}
+                        userEmails={[]}
+                        onAddPlayerInvite={onAddPlayerInvite}
+                        onSendEmail={onSendEmail}
+                    />
+                </Wrapper>,
+            );
+
+            fireEvent.click(screen.getByRole('checkbox', { name: 'Select Pat Player' }));
+            fireEvent.click(screen.getByRole('button', { name: 'Onboard player' }));
+
+            await waitFor(() => {
+                expect(onAddPlayerInvite).toHaveBeenCalledWith(1, 'pat@example.com');
+            });
+        });
+    });
+
+    describe('player row links', () => {
+        it('name and id cells link to the player page', () => {
+            const players = [
+                createMockPlayerData({ id: 42, name: 'Sam Support', extraEmails: [] }),
+            ];
+
+            render(
+                <Wrapper>
+                    <AdminPlayerList
+                        players={players}
+                        userEmails={[]}
+                        onAddPlayerInvite={defaultAddPlayerProxy}
+                        onSendEmail={stubSendEmail}
+                    />
+                </Wrapper>,
+            );
+
+            const links = screen.getAllByRole('link', { name: /Sam Support|42/ });
+            for (const link of links) {
+                expect(link).toHaveAttribute('href', '/footy/player/42');
+            }
         });
     });
 });

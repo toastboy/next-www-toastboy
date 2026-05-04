@@ -1,5 +1,6 @@
 
 import { render } from '@testing-library/react';
+import { TableNameSchema } from 'prisma/zod/schemas';
 import { vi } from 'vitest';
 
 import { PlayerTrophies } from '@/components/PlayerTrophies/PlayerTrophies';
@@ -27,5 +28,15 @@ describe('PlayerTrophies', () => {
             // Pub table has 19 winners (defaultPlayerRecord has rankPub: 5, so only 19 generated records)
             expect(props[4].trophies.length).toBe(19);
         }
+    });
+
+    it('renders nothing when all trophy lists are empty', () => {
+        const emptyTrophies = new Map(
+            TableNameSchema.options.map((table) => [table, []]),
+        );
+        render(
+            <Wrapper><PlayerTrophies trophies={emptyTrophies} /></Wrapper>,
+        );
+        expect(document.querySelector('[class*="mantine-Stack"]')).toBeNull();
     });
 });

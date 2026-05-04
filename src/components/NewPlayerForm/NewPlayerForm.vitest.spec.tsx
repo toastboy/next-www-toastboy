@@ -260,6 +260,102 @@ describe('NewPlayerForm', () => {
         expect(emailInput).toHaveAttribute('autocomplete', 'email');
     });
 
+    it('creates player without sending email when no email is provided', async () => {
+        const user = userEvent.setup();
+        render(
+            <Wrapper>
+                <NewPlayerForm
+                    players={players}
+                    onCreatePlayer={mockCreatePlayer}
+                    onSendEmail={mockSendEmail}
+                />
+            </Wrapper>,
+        );
+
+        await user.type(screen.getByLabelText(/Name/i), 'Pat Smith');
+        await user.click(screen.getByRole('button', { name: /Add player/i }));
+
+        await waitFor(() => {
+            expect(mockCreatePlayer).toHaveBeenCalledWith({
+                name: 'Pat Smith',
+                email: '',
+                introducedBy: '',
+            });
+        });
+        expect(mockSendEmail).not.toHaveBeenCalled();
+    });
+
+    it('includes introducer email in cc when an introducer is selected', async () => {
+        const user = userEvent.setup();
+        const playersWithEmail = [
+            createMockPlayerData({ id: 1, name: 'Sam Smith', accountEmail: 'sam@example.com', extraEmails: [] }),
+        ];
+
+        render(
+            <Wrapper>
+                <NewPlayerForm
+                    players={playersWithEmail}
+                    onCreatePlayer={mockCreatePlayer}
+                    onSendEmail={mockSendEmail}
+                />
+            </Wrapper>,
+        );
+
+        await user.type(screen.getByLabelText(/Name/i), 'New Player');
+        await user.type(screen.getByLabelText(/Email address/i), 'new@example.com');
+        await user.selectOptions(screen.getByLabelText(/Introduced by/i), '1');
+        await user.click(screen.getByRole('button', { name: /Add player/i }));
+
+        await waitFor(() => {
+            expect(mockSendEmail).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    cc: expect.stringContaining('sam@example.com') as string,
+                }),
+            );
+        });
+    });
+
+    it('uses first unverified extra email as introducer cc when introducer has no accountEmail', async () => {
+        const user = userEvent.setup();
+        const introducerWithExtraEmail = [
+            createMockPlayerData({
+                id: 1,
+                name: 'Sam Smith',
+                accountEmail: null,
+                extraEmails: [{
+                    id: 1,
+                    playerId: 1,
+                    email: 'sam-extra@example.com',
+                    verifiedAt: null,
+                    createdAt: new Date('2021-01-01'),
+                }],
+            }),
+        ];
+
+        render(
+            <Wrapper>
+                <NewPlayerForm
+                    players={introducerWithExtraEmail}
+                    onCreatePlayer={mockCreatePlayer}
+                    onSendEmail={mockSendEmail}
+                />
+            </Wrapper>,
+        );
+
+        await user.type(screen.getByLabelText(/Name/i), 'New Player');
+        await user.type(screen.getByLabelText(/Email address/i), 'new@example.com');
+        await user.selectOptions(screen.getByLabelText(/Introduced by/i), '1');
+        await user.click(screen.getByRole('button', { name: /Add player/i }));
+
+        await waitFor(() => {
+            expect(mockSendEmail).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    cc: expect.stringContaining('sam-extra@example.com') as string,
+                }),
+            );
+        });
+    });
+
     it('requires name input', () => {
         render(
             <Wrapper>

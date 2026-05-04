@@ -64,6 +64,30 @@ describe('NewGameForm', () => {
         });
     });
 
+    it('shows a skipped notification when status is not ready', async () => {
+        const user = userEvent.setup();
+        const notificationUpdateSpy = vi.spyOn(notifications, 'update');
+        mockTriggerInvitations.mockResolvedValue({ status: 'skipped', reason: 'too-early' });
+
+        render(
+            <Wrapper>
+                <NewGameForm onTriggerInvitations={mockTriggerInvitations} />
+            </Wrapper>,
+        );
+
+        await user.click(screen.getByRole('button', { name: /Send invitations/i }));
+
+        await waitFor(() => {
+            expect(notificationUpdateSpy).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    color: 'yellow',
+                    title: 'Invitations skipped',
+                    message: 'Skipped: too early',
+                }),
+            );
+        });
+    });
+
     it('shows an error notification when the request fails', async () => {
         const user = userEvent.setup();
         const notificationUpdateSpy = vi.spyOn(notifications, 'update');

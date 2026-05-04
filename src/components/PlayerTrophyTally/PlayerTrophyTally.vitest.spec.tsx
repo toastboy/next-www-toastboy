@@ -47,4 +47,56 @@ describe('PlayerTrophyTally', () => {
         expect(iconCount).toHaveLength(1);
         expect(screen.getByText('x 6')).toBeInTheDocument();
     });
+
+    it('renders a star icon for the averages table', async () => {
+        render(
+            <Wrapper>
+                <PlayerTrophyTally
+                    table={TableNameSchema.enum.averages}
+                    trophies={defaultPlayerRecordList.slice(0, 1)}
+                />
+            </Wrapper>,
+        );
+
+        expect(await screen.findByRole('img', { name: 'star' })).toBeInTheDocument();
+    });
+
+    it('renders a medal icon for the stalwart table', async () => {
+        render(
+            <Wrapper>
+                <PlayerTrophyTally
+                    table={TableNameSchema.enum.stalwart}
+                    trophies={defaultPlayerRecordList.slice(0, 1)}
+                />
+            </Wrapper>,
+        );
+
+        expect(await screen.findByRole('img', { name: 'medal' })).toBeInTheDocument();
+    });
+
+    it('renders a clock icon for the speedy table', async () => {
+        render(
+            <Wrapper>
+                <PlayerTrophyTally
+                    table={TableNameSchema.enum.speedy}
+                    trophies={defaultPlayerRecordList.slice(0, 1)}
+                />
+            </Wrapper>,
+        );
+
+        expect(await screen.findByRole('img', { name: 'clock' })).toBeInTheDocument();
+    });
+
+    it('renders a beer icon for the pub table', async () => {
+        render(
+            <Wrapper>
+                <PlayerTrophyTally
+                    table={TableNameSchema.enum.pub}
+                    trophies={defaultPlayerRecordList.slice(0, 1)}
+                />
+            </Wrapper>,
+        );
+
+        expect(await screen.findByRole('img', { name: 'beer' })).toBeInTheDocument();
+    });
 });

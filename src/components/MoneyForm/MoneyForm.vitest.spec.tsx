@@ -104,6 +104,35 @@ describe('MoneyForm', () => {
         expect(refreshMock).toHaveBeenCalledTimes(1);
     });
 
+    it('shows singular "game" label for a player with one debt', () => {
+        const singleDebt = [{
+            player: { id: 99, name: 'Pat Single', accountEmail: null, anonymous: false, joined: null, finished: null, born: null, comment: null, introducedBy: null },
+            debts: [{ gameDay: { id: 5, year: 2024, date: new Date('2024-01-09'), game: true, cost: 400, mailSent: null, comment: null, bibs: null, pickerGamesHistory: 10 }, amount: 400 }],
+        }];
+
+        render(
+            <Wrapper>
+                <MoneyForm playerDebts={singleDebt} payDebt={vi.fn<PayDebtProxy>()} />
+            </Wrapper>,
+        );
+
+        expect(screen.getByText(/1 game\b/)).toBeInTheDocument();
+    });
+
+    it('disables Pay button when all debt checkboxes are unchecked', async () => {
+        const user = userEvent.setup();
+        renderForm(vi.fn<PayDebtProxy>());
+
+        // Uncheck the first debt checkbox for Alex Current (gameDay 8)
+        const checkboxes = screen.getAllByRole('checkbox');
+        // Alex Current has 2 debts; uncheck both
+        await user.click(checkboxes[0]);
+        await user.click(checkboxes[1]);
+
+        // The first Paid button should now be disabled (no items checked)
+        expect(screen.getAllByRole('button', { name: 'Paid' })[0]).toBeDisabled();
+    });
+
     it('shows error notification and does not refresh when payment fails', async () => {
         const user = userEvent.setup();
         const payDebt = vi.fn<PayDebtProxy>().mockRejectedValue(new Error('Boom'));

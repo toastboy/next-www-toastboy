@@ -105,6 +105,94 @@ describe('AdminUserList', () => {
         });
     });
 
+    it('renders no data rows for an empty users list', () => {
+        render(
+            <Wrapper>
+                <AdminUserList users={[]} setAdminRole={setAdminRoleMock} />
+            </Wrapper>,
+        );
+
+        // Header row only — no data rows
+        expect(screen.getAllByRole('row')).toHaveLength(1);
+    });
+
+    it('admin switch is checked for admin users and unchecked for non-admin users', () => {
+        render(
+            <Wrapper>
+                <AdminUserList users={users} setAdminRole={setAdminRoleMock} />
+            </Wrapper>,
+        );
+
+        const adminSwitch = screen.getByRole('switch', { name: 'Toggle admin status for Adam Admin' });
+        const userSwitch = screen.getByRole('switch', { name: 'Toggle admin status for Victoria User' });
+
+        expect(adminSwitch).toBeChecked();
+        expect(userSwitch).not.toBeChecked();
+    });
+
+    it('links point to the correct user admin page', () => {
+        render(
+            <Wrapper>
+                <AdminUserList users={users} setAdminRole={setAdminRoleMock} />
+            </Wrapper>,
+        );
+
+        const adamLinks = screen.getAllByRole('link', { name: 'Adam Admin' });
+        expect(adamLinks[0]).toHaveAttribute(
+            'href',
+            `/footy/admin/user/${encodeURIComponent('adam.admin@example.com')}`,
+        );
+    });
+
+    it('filters users by email address', async () => {
+        const user = userEvent.setup();
+        render(
+            <Wrapper>
+                <AdminUserList users={users} setAdminRole={setAdminRoleMock} />
+            </Wrapper>,
+        );
+
+        await user.type(screen.getByPlaceholderText('Search users'), 'adam.admin');
+
+        expect(screen.getByRole('link', { name: 'Adam Admin' })).toBeInTheDocument();
+        expect(screen.queryByRole('link', { name: 'Victoria User' })).not.toBeInTheDocument();
+    });
+
+    it('sorts by email when the Email header is clicked', async () => {
+        const user = userEvent.setup();
+        render(
+            <Wrapper>
+                <AdminUserList users={users} setAdminRole={setAdminRoleMock} />
+            </Wrapper>,
+        );
+
+        // Default sort is name asc → Adam first; switch to email sort
+        await user.click(screen.getByRole('columnheader', { name: /Email/ }));
+
+        // adam.admin@... < victoria.user@... alphabetically → Adam still first
+        expect(within(screen.getAllByRole('row')[1]).getByRole('link', { name: 'Adam Admin' })).toBeInTheDocument();
+
+        // Click again to reverse → Victoria first
+        await user.click(screen.getByRole('columnheader', { name: /Email/ }));
+        expect(within(screen.getAllByRole('row')[1]).getByRole('link', { name: 'Victoria User' })).toBeInTheDocument();
+    });
+
+    it('demotes an admin user when the admin switch is turned off', async () => {
+        const user = userEvent.setup();
+        render(
+            <Wrapper>
+                <AdminUserList users={users} setAdminRole={setAdminRoleMock} />
+            </Wrapper>,
+        );
+
+        const row = screen.getByRole('link', { name: 'Adam Admin' }).closest('tr');
+        await user.click(within(row as HTMLElement).getByRole('switch'));
+
+        await waitFor(() => {
+            expect(setAdminRoleMock).toHaveBeenCalledWith('admin-user-id', false);
+        });
+    });
+
     it('shows an error and captures unexpected errors when role update fails', async () => {
         const user = userEvent.setup();
         const error = new Error('set role failed');

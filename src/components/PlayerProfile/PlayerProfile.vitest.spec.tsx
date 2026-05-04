@@ -42,4 +42,25 @@ describe('PlayerProfile', () => {
 
         expect(screen.getByText(defaultPlayer.name)).toBeInTheDocument();
     });
+
+    it('does not render PlayerArse when arse is null', () => {
+        render(
+            <Wrapper>
+                <PlayerProfile
+                    player={defaultPlayer}
+                    year={2024}
+                    form={defaultPlayerFormList}
+                    lastPlayed={defaultPlayerFormList[0]}
+                    clubs={defaultClubSupporterDataList}
+                    countries={defaultCountrySupporterDataList}
+                    arse={null}
+                    activeYears={[2023, 2024]}
+                    record={defaultPlayerRecord}
+                    trophies={defaultTrophiesList}
+                />
+            </Wrapper>,
+        );
+
+        expect(screen.queryByText(/PlayerArse:/)).not.toBeInTheDocument();
+    });
 });

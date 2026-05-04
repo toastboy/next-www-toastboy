@@ -112,4 +112,51 @@ describe('PlayerList', () => {
         expect(sendEmailFormProps.players[0]?.id).toBe(1);
         expect(sendEmailFormProps.players[1]?.id).toBe(3);
     });
+
+    it('deselects all players when select-all is unchecked', async () => {
+        const user = userEvent.setup();
+        render(
+            <Wrapper>
+                <PlayerList players={players} gameDay={gameDay} sendEmail={sendEmailMock} />
+            </Wrapper>,
+        );
+
+        await user.click(screen.getByTestId('players-select-all'));
+        expect(screen.getByText('Selected: 2')).toBeInTheDocument();
+
+        await user.click(screen.getByTestId('players-select-all'));
+        expect(screen.getByText('Selected: 0')).toBeInTheDocument();
+    });
+
+    it('selects and deselects individual player rows via checkboxes', async () => {
+        const user = userEvent.setup();
+        render(
+            <Wrapper>
+                <PlayerList players={players} gameDay={gameDay} sendEmail={sendEmailMock} />
+            </Wrapper>,
+        );
+
+        const rows = screen.getAllByTestId('players-table-row');
+        const firstRowCheckbox = within(rows[0]).getByRole('checkbox');
+
+        await user.click(firstRowCheckbox);
+        expect(screen.getByText('Selected: 1')).toBeInTheDocument();
+
+        await user.click(firstRowCheckbox);
+        expect(screen.getByText('Selected: 0')).toBeInTheDocument();
+    });
+
+    it('filters by email address', async () => {
+        const user = userEvent.setup();
+        render(
+            <Wrapper>
+                <PlayerList players={players} gameDay={gameDay} sendEmail={sendEmailMock} />
+            </Wrapper>,
+        );
+
+        await user.type(screen.getByPlaceholderText('Search players'), 'charlie@example.com');
+
+        expect(screen.queryByRole('link', { name: 'Alice Active' })).not.toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Charlie Active' })).toBeInTheDocument();
+    });
 });

@@ -10,6 +10,7 @@ import { GET } from '@/app/api/footy/player/[id]/mugshot/route';
 import azureCache from '@/lib/azure';
 import playerService from '@/services/Player';
 import { createMockApp, pngResponseHandler } from '@/tests/lib/api/common';
+import { defaultPlayer } from '@/tests/mocks/data/player';
 import { loadBinaryFixture } from '@/tests/shared/fixtures';
 
 const testRoute = '/api/footy/player/1/mugshot';
@@ -62,6 +63,40 @@ describe('API tests using HTTP', () => {
         const response = await request(mockApp).get(testRoute);
 
         expect(response.status).toBe(404);
+    });
+
+    it('should return the manofmystery image for an anonymous player without checking blob existence', async () => {
+        const mockBuffer = loadBinaryFixture('mocks/data/football.png');
+        (playerService.getById as Mock).mockResolvedValue({ ...defaultPlayer, anonymous: true });
+        (blobClient.download).mockResolvedValue({
+            readableStreamBody: Readable.from([mockBuffer]),
+        });
+        blobClient.exists.mockClear();
+
+        const response = await request(mockApp).get(testRoute);
+
+        expect(response.status).toBe(200);
+        expect(response.headers['content-type']).toBe('image/png');
+        expect(response.body).toEqual(mockBuffer);
+        expect(blobClient.exists).not.toHaveBeenCalled();
+    });
+
+    it('should serve manofmystery directly when a player has no login', async () => {
+        const mockBuffer = loadBinaryFixture('mocks/data/football.png');
+        (playerService.getLogin as Mock).mockResolvedValue(null);
+        (blobClient.download).mockResolvedValue({
+            readableStreamBody: Readable.from([mockBuffer]),
+        });
+        blobClient.exists.mockClear();
+
+        const response = await request(mockApp).get(testRoute);
+
+        expect(response.status).toBe(200);
+        expect(response.headers['content-type']).toBe('image/png');
+        expect(response.body).toEqual(mockBuffer);
+        // No login means the ternary on line 31 picks 'manofmystery.jpg' directly;
+        // the exists() check is guarded by `playerLogin &&` so it must not be called.
+        expect(blobClient.exists).not.toHaveBeenCalled();
     });
 
     it('should return 500 if the mugshot download does not return anything', async () => {

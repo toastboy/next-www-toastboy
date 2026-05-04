@@ -142,7 +142,7 @@
         "globals": "^17.5.0",
         "happy-dom": "^20.9.0",
         "jsdom": "^29.1.0",
-        "knip": "^6.9.0",
+        "knip": "^6.11.0",
         "msw": "^2.14.2",
         "msw-storybook-addon": "^2.0.7",
         "npm-check-updates": "^22.0.1",

@@ -146,6 +146,49 @@ describe('PlayerList', () => {
         expect(screen.getByText('Selected: 0')).toBeInTheDocument();
     });
 
+    it('toggles sort direction when the same column header is clicked again', async () => {
+        const user = userEvent.setup();
+        render(
+            <Wrapper>
+                <PlayerList players={players} gameDay={gameDay} sendEmail={sendEmailMock} />
+            </Wrapper>,
+        );
+
+        const nameHeader = screen.getByRole('columnheader', { name: /Name/ });
+
+        // First click: sets sortBy to 'name' — Charlie sorts first in this direction
+        await user.click(nameHeader);
+        const rowsFirst = screen.getAllByTestId('players-table-row');
+        expect(within(rowsFirst[0]).getByRole('link', { name: 'Charlie Active' })).toBeInTheDocument();
+
+        // Second click: same column (sortBy === 'name') → toggles direction — Alice sorts first
+        await user.click(nameHeader);
+        const rowsSecond = screen.getAllByTestId('players-table-row');
+        expect(within(rowsSecond[0]).getByRole('link', { name: 'Alice Active' })).toBeInTheDocument();
+    });
+
+    it('includes players with null lastResponded within the full reply range', () => {
+        const playersWithNullResponse = [
+            ...players,
+            createMockPlayerData({
+                id: 4,
+                name: 'Drew NoResponse',
+                accountEmail: null,
+                finished: null,
+                lastResponded: null,
+            }),
+        ];
+
+        render(
+            <Wrapper>
+                <PlayerList players={playersWithNullResponse} gameDay={gameDay} sendEmail={sendEmailMock} />
+            </Wrapper>,
+        );
+
+        // Drew has null lastResponded; with full reply range they should appear in the list
+        expect(screen.getByRole('link', { name: 'Drew NoResponse' })).toBeInTheDocument();
+    });
+
     it('filters by email address', async () => {
         const user = userEvent.setup();
         render(

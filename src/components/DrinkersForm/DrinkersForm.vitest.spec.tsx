@@ -94,6 +94,17 @@ describe('DrinkersForm', () => {
         expect(refreshMock).toHaveBeenCalledTimes(1);
     });
 
+    it('unchecks a currently-selected player', async () => {
+        const user = userEvent.setup();
+        renderForm(vi.fn<SetDrinkersProxy>());
+
+        // Alex and Casey start checked; uncheck Alex
+        await user.click(screen.getByLabelText('Pub Alex Keeper'));
+
+        expect(screen.getByLabelText('Pub Alex Keeper')).not.toBeChecked();
+        expect(screen.getByText('Selected: 1')).toBeInTheDocument();
+    });
+
     it('filters visible players by name', async () => {
         const user = userEvent.setup();
         renderForm(vi.fn<SetDrinkersProxy>());

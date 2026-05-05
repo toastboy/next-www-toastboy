@@ -158,6 +158,40 @@ describe('AdminUserList', () => {
         expect(screen.queryByRole('link', { name: 'Victoria User' })).not.toBeInTheDocument();
     });
 
+    it('sorts by Admin column (role) and shows sort icon', async () => {
+        const user = userEvent.setup();
+        render(
+            <Wrapper>
+                <AdminUserList users={users} setAdminRole={setAdminRoleMock} />
+            </Wrapper>,
+        );
+
+        // Click once: ascending by role ('admin' < 'user' → Adam Admin first)
+        await user.click(screen.getByRole('columnheader', { name: /Admin/ }));
+        expect(within(screen.getAllByRole('row')[1]).getByRole('link', { name: 'Adam Admin' })).toBeInTheDocument();
+
+        // Click again: descending → Victoria (user) first
+        await user.click(screen.getByRole('columnheader', { name: /Admin/ }));
+        expect(within(screen.getAllByRole('row')[1]).getByRole('link', { name: 'Victoria User' })).toBeInTheDocument();
+    });
+
+    it('sorts by Created column and shows sort icon', async () => {
+        const user = userEvent.setup();
+        render(
+            <Wrapper>
+                <AdminUserList users={users} setAdminRole={setAdminRoleMock} />
+            </Wrapper>,
+        );
+
+        // Click once: ascending createdAt ('2024-01-10' < '2024-02-14' → Adam first)
+        await user.click(screen.getByRole('columnheader', { name: /Created/ }));
+        expect(within(screen.getAllByRole('row')[1]).getByRole('link', { name: 'Adam Admin' })).toBeInTheDocument();
+
+        // Click again: descending → Victoria first
+        await user.click(screen.getByRole('columnheader', { name: /Created/ }));
+        expect(within(screen.getAllByRole('row')[1]).getByRole('link', { name: 'Victoria User' })).toBeInTheDocument();
+    });
+
     it('sorts by email when the Email header is clicked', async () => {
         const user = userEvent.setup();
         render(

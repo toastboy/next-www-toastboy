@@ -8,6 +8,14 @@ import { Wrapper } from '@/tests/components/lib/common';
 import { GetProgressProxy } from '@/types/actions/GetProgress';
 import { UpdatePlayerRecordsProxy } from '@/types/actions/UpdatePlayerRecords';
 
+const { captureUnexpectedErrorMock } = vi.hoisted(() => ({
+    captureUnexpectedErrorMock: vi.fn(),
+}));
+
+vi.mock('@/lib/observability/sentry', () => ({
+    captureUnexpectedError: captureUnexpectedErrorMock,
+}));
+
 describe('AdminUpdatePlayerRecords', () => {
     const mockUpdatePlayerRecords: UpdatePlayerRecordsProxy = vi.fn().mockResolvedValue(undefined);
 
@@ -40,6 +48,46 @@ describe('AdminUpdatePlayerRecords', () => {
 
         expect(screen.queryByRole('img')).not.toBeInTheDocument();
         expect(screen.getByText('40%')).toBeInTheDocument();
+    });
+
+    it('captures unexpected error when getProgress rejects', async () => {
+        const error = new Error('Poll failed');
+        const getProgress: GetProgressProxy = vi.fn().mockRejectedValue(error);
+
+        render(<Wrapper><AdminUpdatePlayerRecords onUpdatePlayerRecords={mockUpdatePlayerRecords} getProgress={getProgress} /></Wrapper>);
+
+        await act(async () => { await Promise.resolve(); });
+
+        expect(captureUnexpectedErrorMock).toHaveBeenCalledWith(
+            error,
+            expect.objectContaining({
+                layer: 'client',
+                component: 'AdminUpdatePlayerRecords',
+                action: 'getProgress',
+            }),
+        );
+    });
+
+    it('shows error notification when onUpdatePlayerRecords rejects', async () => {
+        const getProgress: GetProgressProxy = vi.fn().mockResolvedValue([2000, 2000]);
+        const failingUpdate: UpdatePlayerRecordsProxy = vi.fn().mockRejectedValue(new Error('Update failed'));
+
+        render(<Wrapper><AdminUpdatePlayerRecords onUpdatePlayerRecords={failingUpdate} getProgress={getProgress} /></Wrapper>);
+
+        await act(async () => { await Promise.resolve(); });
+
+        fireEvent.click(screen.getByText('Update Player Records'));
+
+        await act(async () => { await Promise.resolve(); });
+
+        expect(captureUnexpectedErrorMock).toHaveBeenCalledWith(
+            expect.any(Error),
+            expect.objectContaining({
+                layer: 'client',
+                component: 'AdminUpdatePlayerRecords',
+                action: 'updatePlayerRecords',
+            }),
+        );
     });
 
     it('renders with data == 100% and polls on interval', async () => {

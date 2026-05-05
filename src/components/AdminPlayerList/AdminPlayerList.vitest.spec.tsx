@@ -190,6 +190,29 @@ describe('AdminPlayerList', () => {
             expect(screen.getByRole('checkbox', { name: 'Select Pat Player' })).not.toBeChecked();
         });
 
+        it('unchecks a row when its checkbox is clicked while checked', () => {
+            const players = [
+                createMockPlayerData({ id: 1, name: 'Alex Admin' }),
+            ];
+
+            render(
+                <Wrapper>
+                    <AdminPlayerList
+                        players={players}
+                        userEmails={[]}
+                        onAddPlayerInvite={defaultAddPlayerProxy}
+                        onSendEmail={stubSendEmail}
+                    />
+                </Wrapper>,
+            );
+
+            const checkbox = screen.getByRole('checkbox', { name: 'Select Alex Admin' });
+            fireEvent.click(checkbox); // check
+            expect(checkbox).toBeChecked();
+            fireEvent.click(checkbox); // uncheck
+            expect(checkbox).not.toBeChecked();
+        });
+
         it('select-all only covers the filtered subset', () => {
             const players = [
                 createMockPlayerData({ id: 1, name: 'Alex Admin' }),
@@ -233,6 +256,32 @@ describe('AdminPlayerList', () => {
             );
 
             fireEvent.click(screen.getByRole('button', { name: 'Sort by Name' }));
+
+            const rows = screen.getAllByRole('row').slice(1);
+            expect(within(rows[0]).getByText('Alice')).toBeInTheDocument();
+            expect(within(rows[1]).getByText('Zara')).toBeInTheDocument();
+        });
+
+        it('toggles back to ascending on a third click of the same column header', () => {
+            const players = [
+                createMockPlayerData({ id: 1, name: 'Zara' }),
+                createMockPlayerData({ id: 2, name: 'Alice' }),
+            ];
+
+            render(
+                <Wrapper>
+                    <AdminPlayerList
+                        players={players}
+                        userEmails={[]}
+                        onAddPlayerInvite={defaultAddPlayerProxy}
+                        onSendEmail={stubSendEmail}
+                    />
+                </Wrapper>,
+            );
+
+            fireEvent.click(screen.getByRole('button', { name: 'Sort by Name' })); // asc
+            fireEvent.click(screen.getByRole('button', { name: 'Sort by Name' })); // desc
+            fireEvent.click(screen.getByRole('button', { name: 'Sort by Name' })); // back to asc
 
             const rows = screen.getAllByRole('row').slice(1);
             expect(within(rows[0]).getByText('Alice')).toBeInTheDocument();
@@ -536,6 +585,32 @@ describe('AdminPlayerList', () => {
     });
 
     describe('onboard button', () => {
+        it('skips and reports when selected player has no email address', async () => {
+            const onAddPlayerInvite = vi.fn();
+            const onSendEmail = vi.fn().mockResolvedValue(undefined);
+            const players = [
+                createMockPlayerData({ id: 1, name: 'No Email Player', accountEmail: null, extraEmails: [] }),
+            ];
+
+            render(
+                <Wrapper>
+                    <AdminPlayerList
+                        players={players}
+                        userEmails={[]}
+                        onAddPlayerInvite={onAddPlayerInvite}
+                        onSendEmail={onSendEmail}
+                    />
+                </Wrapper>,
+            );
+
+            fireEvent.click(screen.getByRole('checkbox', { name: 'Select No Email Player' }));
+            fireEvent.click(screen.getByRole('button', { name: 'Onboard player' }));
+
+            await waitFor(() => {
+                expect(onAddPlayerInvite).not.toHaveBeenCalled();
+            });
+        });
+
         it('is disabled before any player is selected', () => {
             render(
                 <Wrapper>

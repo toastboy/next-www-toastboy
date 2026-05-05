@@ -1,5 +1,5 @@
 
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
 
@@ -91,6 +91,32 @@ describe('DeleteAccountForm', () => {
         const errorNotification = await screen.findByTestId('error-notification');
         expect(errorNotification).toBeInTheDocument();
         expect(errorNotification.textContent ?? '').toContain('Delete failed');
+
+        consoleErrorSpy.mockRestore();
+    });
+
+    it('dismisses the error notification when its close button is clicked', async () => {
+        const user = userEvent.setup();
+        const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+        const failingMock: DeletePlayerProxy = vi.fn().mockRejectedValueOnce(new Error('Delete failed'));
+
+        render(
+            <Wrapper>
+                <DeleteAccountForm onDeletePlayer={failingMock} />
+            </Wrapper>,
+        );
+
+        await user.type(screen.getByTestId('confirm-phrase-input'), 'DELETE');
+        await user.click(screen.getByTestId('confirm-pii-checkbox'));
+        await user.click(screen.getByTestId('submit-button'));
+
+        await screen.findByTestId('error-notification');
+
+        const notification = screen.getByTestId('error-notification');
+        const closeButton = within(notification).getByRole('button');
+        await user.click(closeButton);
+
+        expect(screen.queryByTestId('error-notification')).not.toBeInTheDocument();
 
         consoleErrorSpy.mockRestore();
     });

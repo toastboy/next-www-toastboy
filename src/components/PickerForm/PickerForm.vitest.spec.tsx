@@ -277,6 +277,34 @@ describe('PickerForm', () => {
         });
     });
 
+    it('reverses sort direction when the already-active column header is clicked again', async () => {
+        const user = userEvent.setup();
+        const players = [
+            createPickerPlayer(1, 'Alice', 100, 5),
+            createPickerPlayer(2, 'Bob', 50, 3),
+        ];
+
+        render(
+            <Wrapper>
+                <PickerForm
+                    gameDay={defaultGameDay}
+                    players={players}
+                    submitPicker={mockSave}
+                    setGameEnabled={mockSetGameEnabled}
+                />
+            </Wrapper>,
+        );
+
+        // Default sort is 'responseTime' ascending → Bob (50) first, Alice (100) second
+        const getFirstRow = () => screen.getAllByTestId('picker-row')[0];
+        expect(within(getFirstRow()).getByText('Bob')).toBeInTheDocument();
+
+        // Click the active 'Response time' header → toggles to descending → Alice (100) first
+        await user.click(screen.getByRole('button', { name: /sort by response time/i }));
+
+        expect(within(getFirstRow()).getByText('Alice')).toBeInTheDocument();
+    });
+
     it('reorders rows when sorted by Player name', async () => {
         const user = userEvent.setup();
         const players = [
@@ -349,6 +377,141 @@ describe('PickerForm', () => {
 
         expect(screen.getByText('Player 99')).toBeInTheDocument();
         expect(screen.getByLabelText('Select Player 99')).toBeInTheDocument();
+    });
+
+    it('selects all players when select-all is clicked while some are unselected', async () => {
+        const user = userEvent.setup();
+        const players14 = Array.from({ length: 14 }, (_, index) => {
+            const id = index + 1;
+            return createPickerPlayer(id, `Player ${id}`, id * 10, id);
+        });
+
+        render(
+            <Wrapper>
+                <PickerForm
+                    gameDay={defaultGameDay}
+                    players={players14}
+                    submitPicker={mockSave}
+                    setGameEnabled={mockSetGameEnabled}
+                />
+            </Wrapper>,
+        );
+
+        // Players 13 and 14 start unselected (>12 limit)
+        expect(screen.getByLabelText('Select Player 13')).not.toBeChecked();
+        expect(screen.getByLabelText('Select Player 14')).not.toBeChecked();
+
+        // Click select-all (checked=true) to select all 14
+        await user.click(screen.getByLabelText('Select all players'));
+
+        expect(screen.getByLabelText('Select Player 13')).toBeChecked();
+        expect(screen.getByLabelText('Select Player 14')).toBeChecked();
+    });
+
+    it('selects an individual unchecked player via its checkbox', async () => {
+        const user = userEvent.setup();
+        const players14 = Array.from({ length: 14 }, (_, index) => {
+            const id = index + 1;
+            return createPickerPlayer(id, `Player ${id}`, id * 10, id);
+        });
+
+        render(
+            <Wrapper>
+                <PickerForm
+                    gameDay={defaultGameDay}
+                    players={players14}
+                    submitPicker={mockSave}
+                    setGameEnabled={mockSetGameEnabled}
+                />
+            </Wrapper>,
+        );
+
+        const p13checkbox = screen.getByLabelText('Select Player 13');
+        expect(p13checkbox).not.toBeChecked();
+        await user.click(p13checkbox);
+        expect(p13checkbox).toBeChecked();
+    });
+
+    it('toggles sort direction back to ascending after a third click on the same column', async () => {
+        const user = userEvent.setup();
+        const players = [
+            createPickerPlayer(1, 'Alice', 100, 5),
+            createPickerPlayer(2, 'Bob', 50, 3),
+        ];
+
+        render(
+            <Wrapper>
+                <PickerForm
+                    gameDay={defaultGameDay}
+                    players={players}
+                    submitPicker={mockSave}
+                    setGameEnabled={mockSetGameEnabled}
+                />
+            </Wrapper>,
+        );
+
+        const responseTimeHeader = screen.getByRole('button', { name: /sort by response time/i });
+
+        // Default asc: Bob (50) first; click toggles to desc: Alice (100) first
+        await user.click(responseTimeHeader);
+        expect(within(screen.getAllByTestId('picker-row')[0]).getByText('Alice')).toBeInTheDocument();
+
+        // Click again: desc → asc: Bob (50) first again
+        await user.click(responseTimeHeader);
+        expect(within(screen.getAllByTestId('picker-row')[0]).getByText('Bob')).toBeInTheDocument();
+    });
+
+    it('shows "Game reinstated" notification when game is reinstated', async () => {
+        const user = userEvent.setup();
+        const cancelledGameDay = createMockGameDay({ game: false });
+
+        render(
+            <Wrapper>
+                <PickerForm
+                    gameDay={cancelledGameDay}
+                    players={defaultPickerAdminData}
+                    submitPicker={mockSave}
+                    setGameEnabled={mockSetGameEnabled}
+                />
+            </Wrapper>,
+        );
+
+        await user.click(screen.getByTestId('set-enabled-button'));
+
+        await waitFor(() => {
+            expect(notificationsUpdateMock).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    color: 'teal',
+                    title: 'Game reinstated',
+                }),
+            );
+        });
+    });
+
+    it('breaks ties in buildDefaultSelection by name then playerId when responseInterval is equal', () => {
+        const players = [
+            createPickerPlayer(3, 'Zeta', 100, 5),
+            createPickerPlayer(2, 'Alpha', 100, 5),
+            createPickerPlayer(1, 'Alpha', 100, 5),
+        ];
+
+        render(
+            <Wrapper>
+                <PickerForm
+                    gameDay={defaultGameDay}
+                    players={players}
+                    submitPicker={mockSave}
+                    setGameEnabled={mockSetGameEnabled}
+                />
+            </Wrapper>,
+        );
+
+        // All 3 under the 12-player limit → all selected by default
+        const rows = screen.getAllByTestId('picker-row');
+        expect(rows).toHaveLength(3);
+        rows.forEach((row) => {
+            expect(within(row).getByRole('checkbox')).toBeChecked();
+        });
     });
 
     it('deselects all players when select-all is unchecked', async () => {

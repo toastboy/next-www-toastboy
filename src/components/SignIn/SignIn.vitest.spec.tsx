@@ -1,12 +1,12 @@
 
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { usePathname, useRouter } from 'next/navigation';
 import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
 import { SignIn } from '@/components/SignIn/SignIn';
-import { authClient } from '@/lib/auth.client';
+import { authClient, signInWithGoogle, signInWithMicrosoft } from '@/lib/auth.client';
 import { Wrapper } from '@/tests/components/lib/common';
 
 describe('SignIn', () => {
@@ -112,6 +112,40 @@ describe('SignIn', () => {
         await user.click(submitButton);
 
         expect(await screen.findByText(/Login failed. Please check your details and try again./i)).toBeInTheDocument();
+    });
+
+    it('calls signInWithGoogle when the Google button is clicked', async () => {
+        const user = userEvent.setup();
+        render(<Wrapper><SignIn /></Wrapper>);
+
+        await user.click(screen.getByRole('button', { name: /Sign in with Google/i }));
+
+        expect(signInWithGoogle as Mock).toHaveBeenCalled();
+    });
+
+    it('calls signInWithMicrosoft when the Microsoft button is clicked', async () => {
+        const user = userEvent.setup();
+        render(<Wrapper><SignIn /></Wrapper>);
+
+        await user.click(screen.getByRole('button', { name: /Sign in with Microsoft/i }));
+
+        expect(signInWithMicrosoft as Mock).toHaveBeenCalled();
+    });
+
+    it('closes the error notification when its close button is clicked', async () => {
+        const user = userEvent.setup();
+        (authClient.signIn.email as Mock).mockRejectedValueOnce(new Error('fail'));
+
+        render(<Wrapper><SignIn /></Wrapper>);
+
+        await user.type(screen.getByLabelText(/Email/i), 'a@b.com');
+        await user.type(screen.getByLabelText(/Password/i), 'password123');
+        await user.click(screen.getByRole('button', { name: /Sign In$/i }));
+
+        const alert = await screen.findByRole('alert');
+        await user.click(within(alert).getByRole('button'));
+
+        expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     });
 
     it('succeeds when valid credentials are provided', async () => {

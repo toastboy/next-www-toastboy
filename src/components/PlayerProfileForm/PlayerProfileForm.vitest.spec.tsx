@@ -1,5 +1,3 @@
-
-
 import { notifications } from '@mantine/notifications';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -15,7 +13,7 @@ vi.mock('@/lib/observability/sentry', () => ({
 
 import { PlayerProfileForm } from '@/components/PlayerProfileForm/PlayerProfileForm';
 import { Wrapper } from '@/tests/components/lib/common';
-import { createMockClub,defaultClubList  } from '@/tests/mocks/data/club';
+import { createMockClub, defaultClubList } from '@/tests/mocks/data/club';
 import { defaultClubSupporterDataList } from '@/tests/mocks/data/clubSupporterData';
 import { defaultCountryList } from '@/tests/mocks/data/country';
 import { defaultCountrySupporterDataList } from '@/tests/mocks/data/countrySupporterData';
@@ -244,7 +242,7 @@ describe('PlayerProfileForm', () => {
         await waitFor(() => {
             expect(mockUpdatePlayer).toHaveBeenCalledWith(
                 playerWithAccountEmail.id,
-                expect.objectContaining({ finished: expect.any(Date) }),
+                expect.objectContaining({ finished: expect.any(Object) as Date }),
             );
         });
     });

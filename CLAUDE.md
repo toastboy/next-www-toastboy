@@ -38,7 +38,13 @@ npx playwright test                         # E2E tests (auto-starts dev server)
 npx vitest run --config vitest.services.config.ts path/to/test.ts
 ```
 
-**Policy:** Zero errors/warnings from `typecheck`, `lint`, and `build` before any deployment. Test coverage ≥ 90%. Run `typecheck` and `lint:fix` after every set of edits and fix all output before considering work done — do not assume errors are pre-existing without verifying with `git stash`.
+**Policy:** Zero errors/warnings from `typecheck`, `lint`, and `build` before any deployment. Test coverage ≥ 90%.
+
+**Required finalisation checklist — must complete before reporting any task done:**
+1. Run `npm run typecheck` and `npm run lint:fix`.
+2. If there are errors or warnings, fix them all — do not skip or dismiss any output.
+3. If you are unsure whether a problem is pre-existing, run `git stash` and repeat the checks on the clean tree to establish a baseline, then `git stash pop` and fix only the new ones.
+4. Never report work as done while typecheck or lint produce any output.
 
 ## Architecture & Layers
 

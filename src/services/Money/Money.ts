@@ -67,9 +67,9 @@ class MoneyService {
             );
 
             const unpaidCharges = playerGameCharges.filter((charge) => {
-                if (charge.playerId == null || charge.gameDayId == null) {
-                    return false;
-                }
+                // Prisma filters these out, but the generated type still includes null
+                /* v8 ignore next */
+                if (charge.playerId == null || charge.gameDayId == null) return false;
 
                 return !paidChargeKeys.has(`${charge.playerId}:${charge.gameDayId}`);
             });
@@ -81,13 +81,9 @@ class MoneyService {
             }>();
 
             for (const charge of unpaidCharges) {
-                if (charge.playerId == null || charge.gameDayId == null) {
-                    continue;
-                }
-
-                const key = charge.playerId;
+                const key = charge.playerId!;
                 if (!debtsByPlayer.has(key)) {
-                    const player = await playerService.getById(charge.playerId);
+                    const player = await playerService.getById(charge.playerId!);
                     if (player == null) continue;
                     debtsByPlayer.set(key, {
                         player,
@@ -95,7 +91,7 @@ class MoneyService {
                     });
                 }
 
-                const gameDay = await gameDayService.get(charge.gameDayId);
+                const gameDay = await gameDayService.get(charge.gameDayId!);
                 if (gameDay == null) continue;
 
                 const entry = debtsByPlayer.get(key)!;
@@ -182,27 +178,6 @@ class MoneyService {
                 },
             });
 
-            /**
-             * Aggregates transaction sums into interval totals by incrementing
-             * the `credits` and `debits` value for each matching interval.
-             *
-             * For each transaction:
-             * - skips rows with a `null` `gameDayId`
-             * - skips rows whose `gameDayId` has no mapped interval
-             * - converts `_sum.amountPence` to pounds (treating `null` as `0`)
-             *   and adds it to the interval's `debits`
-             *
-             * This function mutates `totalsByInterval` in place, creating a
-             * default `{ credits: 0, debits: 0 }` entry for an interval when
-             * one does not already exist.
-             *
-             * @param transactions - Aggregated transaction rows keyed by
-             * `gameDayId` with summed amounts in pence.
-             * @param intervalByGameDayId - Lookup map from `gameDayId` to
-             * interval key.
-             * @param totalsByInterval - Mutable map of interval totals to
-             * update.
-             */
             const accumulateTotals = (
                 transactions: { gameDayId: number | null; _sum: { amountPence: number | null } }[],
                 intervalByGameDayId: Map<number, number>,

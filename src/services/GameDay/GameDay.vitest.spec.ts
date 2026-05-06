@@ -436,7 +436,7 @@ describe('GameDayService', () => {
             expect(result).toHaveLength(100);
             expect(prisma.gameDay.findMany).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    where: expect.not.objectContaining({ year: expect.anything() }) as unknown,
+                    where: expect.not.objectContaining({ year: expect.anything() as unknown }) as unknown,
                 }),
             );
         });

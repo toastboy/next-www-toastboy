@@ -126,6 +126,25 @@ describe('MoneyService', () => {
             expect(result).toEqual([]);
         });
 
+        it('treats null amountPence from groupBy as zero', async () => {
+            (gameDayService.getIdRangeForYear as Mock).mockResolvedValue({ minId: 10, maxId: 10 });
+
+            (prisma.transaction.groupBy as Mock)
+                .mockResolvedValueOnce([
+                    { gameDayId: 10, _sum: { amountPence: null } },
+                ])
+                .mockResolvedValueOnce([]);
+
+            (prisma.gameDay.findMany as Mock).mockResolvedValue([
+                { id: 10, date: new Date('2024-03-15T00:00:00Z') },
+            ]);
+
+            const result = await moneyService.getChartData(2024);
+
+            // null amountPence is treated as 0: neither credit nor debit, but interval still emitted
+            expect(result).toEqual([{ interval: 'Mar', credits: 0, debits: 0 }]);
+        });
+
         it('skips transactions whose gameDayId is not in the interval map', async () => {
             (gameDayService.getIdRangeForYear as Mock).mockResolvedValue({ minId: 10, maxId: 10 });
 
@@ -373,6 +392,70 @@ describe('MoneyService', () => {
             });
         });
 
+        it('accumulates multiple unpaid charges for the same player', async () => {
+            const player11 = createMockPlayer({ id: 11, name: 'Player 11' });
+            const gameDay8 = createMockGameDay({ id: 8 });
+            const gameDay9 = createMockGameDay({ id: 9 });
+
+            (playerService.getById as Mock).mockResolvedValue(player11);
+            (gameDayService.get as Mock).mockImplementation((id: number) => {
+                if (id === 8) return gameDay8;
+                if (id === 9) return gameDay9;
+                return null;
+            });
+
+            (prisma.transaction.findMany as Mock)
+                .mockResolvedValueOnce([
+                    { playerId: 11, gameDayId: 8, amountPence: 300 },
+                    { playerId: 11, gameDayId: 9, amountPence: 400 },
+                ])
+                .mockResolvedValueOnce([]);
+
+            const result = await moneyService.getDebts();
+
+            expect(result).toEqual({
+                players: [{
+                    player: player11,
+                    debts: [
+                        { gameDay: gameDay8, amount: 300 },
+                        { gameDay: gameDay9, amount: 400 },
+                    ],
+                }],
+            });
+        });
+
+        it('skips a charge when playerService returns null for the player', async () => {
+            (prisma.transaction.findMany as Mock)
+                .mockResolvedValueOnce([
+                    { playerId: 99, gameDayId: 8, amountPence: 350 },
+                ])
+                .mockResolvedValueOnce([]);
+
+            (playerService.getById as Mock).mockResolvedValue(null);
+
+            const result = await moneyService.getDebts();
+
+            expect(result).toEqual({ players: [] });
+        });
+
+        it('skips a charge when gameDayService returns null for the game day', async () => {
+            const player99 = createMockPlayer({ id: 99, name: 'Player 99' });
+
+            (prisma.transaction.findMany as Mock)
+                .mockResolvedValueOnce([
+                    { playerId: 99, gameDayId: 8, amountPence: 350 },
+                ])
+                .mockResolvedValueOnce([]);
+
+            (playerService.getById as Mock).mockResolvedValue(player99);
+            (gameDayService.get as Mock).mockResolvedValue(null);
+
+            const result = await moneyService.getDebts();
+
+            // Player entry is created before the game day lookup, so they appear with no debts
+            expect(result).toEqual({ players: [{ player: player99, debts: [] }] });
+        });
+
         it('rethrows database errors', async () => {
             (prisma.transaction.findMany as Mock).mockRejectedValue(new Error('DB error'));
             await expect(moneyService.getDebts()).rejects.toThrow('DB error');
@@ -541,6 +624,30 @@ describe('MoneyService', () => {
                 amount: 1003,
                 resultingBalance: 100,
             });
+        });
+
+        it('treats null aggregate amountPence as zero balance', async () => {
+            const create = vi.fn().mockResolvedValueOnce({ id: 301 });
+            const aggregate = vi.fn().mockResolvedValue({
+                _sum: { amountPence: null },
+            });
+
+            (prisma.$transaction as Mock).mockImplementation(async (callback: (tx: {
+                transaction: {
+                    create: typeof create,
+                    aggregate: typeof aggregate,
+                }
+            }) => Promise<unknown>) => callback({
+                transaction: { create, aggregate },
+            }));
+
+            const result = await moneyService.payMultiple(42, 500, [8]);
+
+            expect(result.playerId).toBe(42);
+            expect(result.transactionIds).toEqual([301]);
+            expect(result.amount).toBe(500);
+            // -paymentResult.resultingBalance where resultingBalance is null ?? 0 = 0 → -0
+            expect(result.resultingBalance === 0).toBe(true);
         });
 
         it('rethrows errors from the database transaction', async () => {

@@ -63,7 +63,7 @@ class MoneyService {
             const paidChargeKeys = new Set(
                 playerPayments
                     .filter((payment) => payment.playerId != null && payment.gameDayId != null)
-                    .map((payment) => `${payment.playerId ?? ''}:${payment.gameDayId ?? ''}`),
+                    .map((payment) => `${payment.playerId!}:${payment.gameDayId!}`),
             );
 
             const unpaidCharges = playerGameCharges.filter((charge) => {

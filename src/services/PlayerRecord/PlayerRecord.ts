@@ -117,7 +117,7 @@ class PlayerRecordService {
             lastGamesEachYear = lastGamesEachYear.filter(r => !yearsToRemove.has(r.year));
         }
 
-        const years = lastGamesEachYear?.map((r) => r.year) ?? [];
+        const years = lastGamesEachYear.map((r) => r.year);
 
         return mostRecentFirst ?
             [0, ...years.sort((a, b) => b - a)] :
@@ -579,10 +579,7 @@ async function calculateYearPlayerRecords(
 
     for (const recordData of Object.values(yearPlayerRecords)) {
         const playerRecord = await playerRecordService.upsert(recordData as PlayerRecordWriteInput);
-
-        if (playerRecord) {
-            playerRecords.push(playerRecord);
-        }
+        playerRecords.push(playerRecord);
     }
 }
 
@@ -622,8 +619,9 @@ function calculatePlayerRecord(
     }
 
     if (data.played && data.played > 0) {
-        data.points = playerYearPlayedOutcomes.reduce((acc, o) => acc + (o.points ?? 0), 0);
-        data.averages = playerYearPlayedOutcomes.reduce((acc, o) => acc + (o.points ?? 0), 0) / data.played;
+        const totalPoints = playerYearPlayedOutcomes.reduce((acc, o) => acc + (o.points!), 0);
+        data.points = totalPoints;
+        data.averages = totalPoints / data.played;
     }
 
     const responseIntervals = playerYearOutcomes

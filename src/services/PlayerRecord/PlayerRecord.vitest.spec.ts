@@ -488,6 +488,15 @@ describe('PlayerRecordService', () => {
             const result = await playerRecordService.getWinners(TableNameSchema.enum.points);
             expect(result).toEqual([]);
         });
+
+        it('should filter by player when a player ID is provided', async () => {
+            await playerRecordService.getWinners(TableNameSchema.enum.points, undefined, 191);
+            expect(prisma.playerRecord.findMany).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    where: expect.objectContaining({ playerId: 191 }) as unknown,
+                }),
+            );
+        });
     });
 
     describe('getTable', () => {

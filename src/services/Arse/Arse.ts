@@ -5,7 +5,6 @@ import {
 } from 'prisma/zod/schemas';
 import { ArseType } from 'prisma/zod/schemas/models/Arse.schema';
 
-import { normalizeUnknownError } from '@/lib/errors';
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import {
     ArseCreateOneStrictSchema,
@@ -34,15 +33,11 @@ class ArseService {
      * @throws If input validation fails or the database query fails.
      */
     async get(playerId: number, raterId: number): Promise<ArseType | null> {
-        try {
-            const where = ArseWhereUniqueInputObjectSchema.parse({
-                playerId_raterId: { playerId, raterId },
-            });
+        const where = ArseWhereUniqueInputObjectSchema.parse({
+            playerId_raterId: { playerId, raterId },
+        });
 
-            return prisma.arse.findUnique({ where });
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
+        return prisma.arse.findUnique({ where });
     }
 
     /**
@@ -51,11 +46,7 @@ class ArseService {
      * @throws If the database query fails.
      */
     async getAll(): Promise<ArseType[]> {
-        try {
-            return prisma.arse.findMany({});
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
+        return prisma.arse.findMany({});
     }
 
     /**
@@ -65,25 +56,21 @@ class ArseService {
      * @throws If input validation fails or the aggregate query fails.
      */
     async getByPlayer(playerId: number): Promise<ArseAverageRatings> {
-        try {
-            const where = ArseWhereInputObjectSchema.parse({ playerId });
-            const arsegregate = await prisma.arse.aggregate({
-                where,
-                _avg: {
-                    inGoal: true,
-                    running: true,
-                    shooting: true,
-                    passing: true,
-                    ballSkill: true,
-                    attacking: true,
-                    defending: true,
-                },
-            });
+        const where = ArseWhereInputObjectSchema.parse({ playerId });
+        const arsegregate = await prisma.arse.aggregate({
+            where,
+            _avg: {
+                inGoal: true,
+                running: true,
+                shooting: true,
+                passing: true,
+                ballSkill: true,
+                attacking: true,
+                defending: true,
+            },
+        });
 
-            return arsegregate._avg;
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
+        return arsegregate._avg;
     }
 
     /**
@@ -93,13 +80,9 @@ class ArseService {
      * @throws If input validation fails or the database query fails.
      */
     async getByRater(raterId: number): Promise<ArseType[]> {
-        try {
-            const where = ArseWhereInputObjectSchema.parse({ raterId });
+        const where = ArseWhereInputObjectSchema.parse({ raterId });
 
-            return prisma.arse.findMany({ where });
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
+        return prisma.arse.findMany({ where });
     }
 
     /**
@@ -109,13 +92,9 @@ class ArseService {
      * @throws If write input validation fails or the create query fails.
      */
     async create(data: ArseWriteInput): Promise<ArseType> {
-        try {
-            const writeData = ArseWriteInputSchema.parse(data);
-            const args = ArseCreateOneStrictSchema.parse({ data: writeData });
-            return await prisma.arse.create(args);
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
+        const writeData = ArseWriteInputSchema.parse(data);
+        const args = ArseCreateOneStrictSchema.parse({ data: writeData });
+        return prisma.arse.create(args);
     }
 
     /**
@@ -125,22 +104,18 @@ class ArseService {
      * @throws If write input validation fails or the upsert query fails.
      */
     async upsert(data: ArseWriteInput): Promise<ArseType> {
-        try {
-            const writeData = ArseWriteInputSchema.parse(data);
-            const args = ArseUpsertOneStrictSchema.parse({
-                where: {
-                    playerId_raterId: {
-                        playerId: writeData.playerId,
-                        raterId: writeData.raterId,
-                    },
+        const writeData = ArseWriteInputSchema.parse(data);
+        const args = ArseUpsertOneStrictSchema.parse({
+            where: {
+                playerId_raterId: {
+                    playerId: writeData.playerId,
+                    raterId: writeData.raterId,
                 },
-                create: writeData,
-                update: writeData,
-            });
-            return await prisma.arse.upsert(args);
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
+            },
+            create: writeData,
+            update: writeData,
+        });
+        return prisma.arse.upsert(args);
     }
 
     /**
@@ -160,10 +135,8 @@ class ArseService {
             });
             await prisma.arse.delete({ where });
         } catch (error) {
-            if (isPrismaNotFoundError(error)) {
-                return;
-            }
-            throw normalizeUnknownError(error);
+            if (isPrismaNotFoundError(error)) return;
+            throw error;
         }
     }
 
@@ -173,11 +146,7 @@ class ArseService {
      * @throws If the delete query fails.
      */
     async deleteAll(): Promise<void> {
-        try {
-            await prisma.arse.deleteMany();
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
+        await prisma.arse.deleteMany();
     }
 }
 

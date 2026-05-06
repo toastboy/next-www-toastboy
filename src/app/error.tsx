@@ -4,6 +4,7 @@ import { Alert, Button, Flex } from '@mantine/core';
 import { IconAlertTriangle } from '@tabler/icons-react';
 import { useEffect } from 'react';
 
+import { toPublicMessage } from '@/lib/errors';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 
 /**
@@ -25,7 +26,7 @@ const ErrorPage = ({ error, reset }: { error: Error; reset: () => void }) => {
     return (
         <Alert title="Error" icon={<IconAlertTriangle />} color="red">
             <Flex direction="column">
-                {error.message || 'Something went wrong'}
+                {toPublicMessage(error)}
                 <Button w="10rem" onClick={() => reset()} mt="sm">
                     Try again
                 </Button>

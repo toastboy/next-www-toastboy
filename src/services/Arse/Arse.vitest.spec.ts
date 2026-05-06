@@ -359,6 +359,15 @@ describe('ArseService', () => {
             });
         });
 
+        it('should rethrow a non-not-found Prisma error', async () => {
+            const dbError = new Prisma.PrismaClientKnownRequestError('Connection lost', {
+                code: 'P1001',
+                clientVersion: '0.0.0',
+            });
+            (prisma.arse.delete as Mock).mockRejectedValue(dbError);
+            await expect(arseService.delete(6, 16)).rejects.toThrow(dbError);
+        });
+
         it('should silently return when asked to delete an arse that does not exist', async () => {
             const notFoundError = Object.assign(
                 new Error('Record to delete does not exist.'),

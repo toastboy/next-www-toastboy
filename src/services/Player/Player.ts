@@ -577,29 +577,13 @@ class PlayerService {
             if (founderId !== null) {
                 const founderNode = nodeMap.get(founderId)!;
                 for (const id of orphanIds) {
-                    const orphanNode = nodeMap.get(id);
-                    if (orphanNode) {
-                        founderNode.children.push(orphanNode);
-                    }
+                    founderNode.children.push(nodeMap.get(id)!);
                 }
                 return founderNode;
             }
 
-            /**
-             * Fallback: no single founder identified. Use a virtual root
-             * so the tree can still render.
-             */
-            const root: FamilyTreeNodeType = {
-                id: 0,
-                name: 'Toastboy FC',
-                children: [],
-            };
-            for (const p of players) {
-                if (effectiveParent.get(p.id) === null) {
-                    root.children.push(nodeMap.get(p.id)!);
-                }
-            }
-            return root;
+            /** Fallback: circular references or no connections — return virtual root. */
+            return { id: 0, name: 'Toastboy FC', children: [] };
     }
 }
 

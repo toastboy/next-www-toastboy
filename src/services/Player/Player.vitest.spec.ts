@@ -331,6 +331,14 @@ describe('PlayerService', () => {
             const result = await playerService.getAll();
             expect(result[0].name).toBe('Player 1');
         });
+
+        it('should pass a finished:null filter when activeOnly is true', async () => {
+            (prisma.player.findMany as Mock).mockResolvedValueOnce([]);
+            await playerService.getAll({ activeOnly: true });
+            expect(prisma.player.findMany).toHaveBeenCalledWith(
+                expect.objectContaining({ where: { finished: null } }),
+            );
+        });
     });
 
     describe('getAllIdsAndLogins', () => {
@@ -429,6 +437,24 @@ describe('PlayerService', () => {
             const result = await playerService.getLastPlayed(1);
             expect(result?.gameDayId).toBe(10);
         });
+
+        it('should pass year bounds when a year is provided', async () => {
+            await playerService.getLastPlayed(1, 2022);
+            expect(prisma.outcome.findFirst).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    where: {
+                        playerId: 1,
+                        points: { not: null },
+                        gameDay: {
+                            date: {
+                                gte: new Date(2022, 0, 1),
+                                lt: new Date(2023, 0, 1),
+                            },
+                        },
+                    },
+                }),
+            );
+        });
     });
 
     describe('getYearsActive', () => {
@@ -478,6 +504,12 @@ describe('PlayerService', () => {
                 },
             });
             expect(result).toEqual([2021, 2022, 2023, 0]);
+        });
+
+        it('should return an empty array when the player has no outcomes', async () => {
+            (prisma.outcome.findMany as Mock).mockResolvedValueOnce([]);
+            const result = await playerService.getYearsActive(1);
+            expect(result).toEqual([]);
         });
     });
 
@@ -769,6 +801,23 @@ describe('PlayerService', () => {
         it('should return virtual root with empty children when no players exist', async () => {
             (prisma.player.findMany as Mock).mockResolvedValueOnce([]);
             (prisma.outcome.findMany as Mock).mockResolvedValueOnce([]);
+
+            const tree = await playerService.getFamilyTree();
+
+            expect(tree.id).toBe(0);
+            expect(tree.name).toBe('Toastboy FC');
+            expect(tree.children).toHaveLength(0);
+        });
+
+        it('should return virtual root when players form a circular introducer reference', async () => {
+            (prisma.player.findMany as Mock).mockResolvedValueOnce([
+                { id: 1, name: 'Alice', anonymous: false, introducedBy: 2 },
+                { id: 2, name: 'Bob', anonymous: false, introducedBy: 1 },
+            ]);
+            (prisma.outcome.findMany as Mock).mockResolvedValueOnce([
+                { playerId: 1 },
+                { playerId: 2 },
+            ]);
 
             const tree = await playerService.getFamilyTree();
 

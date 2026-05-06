@@ -39,6 +39,28 @@ describe('PasswordResetForm', () => {
         expect(screen.getByText(/Password reset link is missing or invalid/i)).toBeInTheDocument();
     });
 
+    it('shows an error notification when resetPassword returns status false', async () => {
+        const user = userEvent.setup();
+        const notificationUpdateSpy = vi.spyOn(notifications, 'update');
+        mockResetPassword.mockResolvedValueOnce({ status: false });
+
+        render(
+            <Wrapper>
+                <PasswordResetForm token="token-123" />
+            </Wrapper>,
+        );
+
+        await user.type(screen.getByLabelText(/^New password/i), 'Password123');
+        await user.type(screen.getByLabelText(/Confirm new password/i), 'Password123');
+        await user.click(screen.getByRole('button', { name: /Reset password/i }));
+
+        await waitFor(() => {
+            expect(notificationUpdateSpy).toHaveBeenCalledWith(
+                expect.objectContaining({ color: 'red', title: 'Error' }),
+            );
+        });
+    });
+
     it('submits a new password and shows success notification', async () => {
         const user = userEvent.setup();
         const notificationUpdateSpy = vi.spyOn(notifications, 'update');

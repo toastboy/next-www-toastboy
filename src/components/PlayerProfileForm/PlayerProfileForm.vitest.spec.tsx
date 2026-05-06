@@ -20,7 +20,8 @@ import { defaultClubSupporterDataList } from '@/tests/mocks/data/clubSupporterDa
 import { defaultCountryList } from '@/tests/mocks/data/country';
 import { defaultCountrySupporterDataList } from '@/tests/mocks/data/countrySupporterData';
 import { defaultPlayer } from '@/tests/mocks/data/player';
-import { defaultPlayerExtraEmails } from '@/tests/mocks/data/playerExtraEmail';
+import { createMockPlayerExtraEmail, defaultPlayerExtraEmails } from '@/tests/mocks/data/playerExtraEmail';
+import { createMockClub } from '@/tests/mocks/data/club';
 
 describe('PlayerProfileForm', () => {
     const playerWithAccountEmail = {
@@ -215,5 +216,130 @@ describe('PlayerProfileForm', () => {
         await user.click(screen.getByTestId('add-extra-email-button'));
 
         expect(screen.getByTestId('extra-email-input-2')).toBeInTheDocument();
+    });
+
+    it('submits with retired toggled on, passing a non-null finished date', async () => {
+        const user = userEvent.setup();
+
+        render(
+            <Wrapper>
+                <PlayerProfileForm
+                    player={playerWithAccountEmail}
+                    accountEmail={playerWithAccountEmail.accountEmail}
+                    extraEmails={defaultPlayerExtraEmails}
+                    countries={defaultCountrySupporterDataList}
+                    clubs={defaultClubSupporterDataList}
+                    allCountries={defaultCountryList}
+                    allClubs={defaultClubList}
+                    onUpdatePlayer={mockUpdatePlayer}
+                />
+            </Wrapper>,
+        );
+
+        await user.click(screen.getByTestId('retired-switch'));
+        await waitFor(() => {
+            expect(screen.getByTestId('submit-button')).toBeEnabled();
+        });
+        await user.click(screen.getByTestId('submit-button'));
+
+        await waitFor(() => {
+            expect(mockUpdatePlayer).toHaveBeenCalledWith(
+                playerWithAccountEmail.id,
+                expect.objectContaining({ finished: expect.any(Date) }),
+            );
+        });
+    });
+
+    it('initialises with a single empty email slot when no extra emails are provided', () => {
+        render(
+            <Wrapper>
+                <PlayerProfileForm
+                    player={playerWithAccountEmail}
+                    accountEmail={playerWithAccountEmail.accountEmail}
+                    extraEmails={[]}
+                    countries={defaultCountrySupporterDataList}
+                    clubs={defaultClubSupporterDataList}
+                    allCountries={defaultCountryList}
+                    allClubs={defaultClubList}
+                    onUpdatePlayer={mockUpdatePlayer}
+                />
+            </Wrapper>,
+        );
+
+        expect(screen.getByTestId('extra-email-input-0')).toBeInTheDocument();
+        expect(screen.queryByTestId('extra-email-input-1')).not.toBeInTheDocument();
+    });
+
+    it('shows a question-mark icon for an unverified extra email (verificationPending)', () => {
+        const unverifiedEmail = createMockPlayerExtraEmail({
+            id: 10,
+            playerId: playerWithAccountEmail.id,
+            email: 'pending@example.com',
+            verifiedAt: null,
+        });
+
+        render(
+            <Wrapper>
+                <PlayerProfileForm
+                    player={playerWithAccountEmail}
+                    accountEmail={playerWithAccountEmail.accountEmail}
+                    extraEmails={[unverifiedEmail]}
+                    countries={defaultCountrySupporterDataList}
+                    clubs={defaultClubSupporterDataList}
+                    allCountries={defaultCountryList}
+                    allClubs={defaultClubList}
+                    onUpdatePlayer={mockUpdatePlayer}
+                />
+            </Wrapper>,
+        );
+
+        expect(screen.getByLabelText(/Verification email has been sent/i)).toBeInTheDocument();
+    });
+
+    it('groups clubs with null country under "Unknown"', () => {
+        const unknownClub = createMockClub({ id: 999, clubName: 'Mystery FC', country: null });
+
+        render(
+            <Wrapper>
+                <PlayerProfileForm
+                    player={playerWithAccountEmail}
+                    accountEmail={playerWithAccountEmail.accountEmail}
+                    extraEmails={defaultPlayerExtraEmails}
+                    countries={defaultCountrySupporterDataList}
+                    clubs={defaultClubSupporterDataList}
+                    allCountries={defaultCountryList}
+                    allClubs={[...defaultClubList, unknownClub]}
+                    onUpdatePlayer={mockUpdatePlayer}
+                />
+            </Wrapper>,
+        );
+
+        expect(screen.getByTestId('clubs-multiselect')).toBeInTheDocument();
+    });
+
+    it('shows verified-email notification when verifiedEmail prop is provided', async () => {
+        const notificationShowSpy = vi.spyOn(notifications, 'show');
+
+        render(
+            <Wrapper>
+                <PlayerProfileForm
+                    player={playerWithAccountEmail}
+                    accountEmail={playerWithAccountEmail.accountEmail}
+                    extraEmails={defaultPlayerExtraEmails}
+                    countries={defaultCountrySupporterDataList}
+                    clubs={defaultClubSupporterDataList}
+                    allCountries={defaultCountryList}
+                    allClubs={defaultClubList}
+                    verifiedEmail="player@example.com"
+                    onUpdatePlayer={mockUpdatePlayer}
+                />
+            </Wrapper>,
+        );
+
+        await waitFor(() => {
+            expect(notificationShowSpy).toHaveBeenCalledWith(
+                expect.objectContaining({ title: 'Email verified', color: 'teal' }),
+            );
+        });
     });
 });

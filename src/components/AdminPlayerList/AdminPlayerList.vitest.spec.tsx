@@ -391,6 +391,131 @@ describe('AdminPlayerList', () => {
             expect(within(rows[1]).getByText('Bob')).toBeInTheDocument();
         });
 
+        it('sorts by Joined descending with both players having non-null join dates', () => {
+            // Both non-null → covers the truthy branch of b.joined ternary (line 521)
+            // Players array order controls which is `a` vs `b` in the V8 2-element sort
+            const players = [
+                createMockPlayerData({ id: 1, name: 'Alice', joined: new Date('2020-01-01') }),
+                createMockPlayerData({ id: 2, name: 'Bob', joined: new Date('2023-06-01') }),
+            ];
+
+            render(
+                <Wrapper>
+                    <AdminPlayerList
+                        players={players}
+                        userEmails={[]}
+                        onAddPlayerInvite={defaultAddPlayerProxy}
+                        onSendEmail={stubSendEmail}
+                    />
+                </Wrapper>,
+            );
+
+            fireEvent.click(screen.getByRole('button', { name: 'Sort by Joined' }));
+            fireEvent.click(screen.getByRole('button', { name: 'Sort by Joined' }));
+
+            const rows = screen.getAllByRole('row').slice(1);
+            expect(within(rows[0]).getByText('Bob')).toBeInTheDocument();
+            expect(within(rows[1]).getByText('Alice')).toBeInTheDocument();
+        });
+
+        it('sorts by Finished descending with both players having non-null finish dates', () => {
+            // Both non-null → covers the truthy branch of b.finished ternary (line 527)
+            const players = [
+                createMockPlayerData({ id: 1, name: 'Alice', finished: new Date('2020-01-01') }),
+                createMockPlayerData({ id: 2, name: 'Bob', finished: new Date('2023-06-01') }),
+            ];
+
+            render(
+                <Wrapper>
+                    <AdminPlayerList
+                        players={players}
+                        userEmails={[]}
+                        onAddPlayerInvite={defaultAddPlayerProxy}
+                        onSendEmail={stubSendEmail}
+                    />
+                </Wrapper>,
+            );
+
+            fireEvent.click(screen.getByRole('button', { name: 'Sort by Finished' }));
+            fireEvent.click(screen.getByRole('button', { name: 'Sort by Finished' }));
+
+            const rows = screen.getAllByRole('row').slice(1);
+            expect(within(rows[0]).getByText('Bob')).toBeInTheDocument();
+            expect(within(rows[1]).getByText('Alice')).toBeInTheDocument();
+        });
+
+        it('sorts by Auth with onboarded player at array index 0', () => {
+            // Flipping order from the other auth test covers the opposite branches:
+            // isOnboarded(a) falsy (line 532) and isOnboarded(b) truthy (line 533)
+            const players = [
+                createMockPlayerData({ id: 1, name: 'Authed', accountEmail: 'authed@example.com', extraEmails: [] }),
+                createMockPlayerData({ id: 2, name: 'Anonymous', accountEmail: null, extraEmails: [] }),
+            ];
+
+            render(
+                <Wrapper>
+                    <AdminPlayerList
+                        players={players}
+                        userEmails={['authed@example.com']}
+                        onAddPlayerInvite={defaultAddPlayerProxy}
+                        onSendEmail={stubSendEmail}
+                    />
+                </Wrapper>,
+            );
+
+            fireEvent.click(screen.getByRole('button', { name: 'Sort by Auth' }));
+
+            const rows = screen.getAllByRole('row').slice(1);
+            expect(within(rows[0]).getByText('Anonymous')).toBeInTheDocument();
+            expect(within(rows[1]).getByText('Authed')).toBeInTheDocument();
+        });
+
+        it('sorts by Emails Verified with both players having extra emails (one verified, one not)', () => {
+            // Both players have extraEmails → covers b.extraEmails.length > 0 truthy (line 539)
+            // a has unverified → covers a.extraEmails.every falsy (line 538 inner)
+            // b has verified → covers b.extraEmails.every truthy (line 539 inner)
+            const players = [
+                createMockPlayerData({
+                    id: 1,
+                    name: 'Bob',
+                    extraEmails: [{
+                        id: 1, playerId: 1,
+                        email: 'bob@example.com',
+                        verifiedAt: new Date('2021-01-01'),
+                        createdAt: new Date('2021-01-01'),
+                    }],
+                }),
+                createMockPlayerData({
+                    id: 2,
+                    name: 'Alice',
+                    extraEmails: [{
+                        id: 2, playerId: 2,
+                        email: 'alice@example.com',
+                        verifiedAt: null,
+                        createdAt: new Date('2021-01-01'),
+                    }],
+                }),
+            ];
+
+            render(
+                <Wrapper>
+                    <AdminPlayerList
+                        players={players}
+                        userEmails={[]}
+                        onAddPlayerInvite={defaultAddPlayerProxy}
+                        onSendEmail={stubSendEmail}
+                    />
+                </Wrapper>,
+            );
+
+            fireEvent.click(screen.getByRole('button', { name: 'Sort by Emails Verified' }));
+
+            const rows = screen.getAllByRole('row').slice(1);
+            // Ascending: unverified (0) before verified (1) → Alice first
+            expect(within(rows[0]).getByText('Alice')).toBeInTheDocument();
+            expect(within(rows[1]).getByText('Bob')).toBeInTheDocument();
+        });
+
         it('sorts by Emails Verified — null (no extra emails) sorts last', () => {
             const players = [
                 createMockPlayerData({ id: 2, name: 'Bob', extraEmails: [] }),
@@ -641,6 +766,45 @@ describe('AdminPlayerList', () => {
             fireEvent.click(screen.getByRole('checkbox', { name: 'Select Alex Admin' }));
 
             expect(screen.getByRole('button', { name: 'Onboard player' })).toBeEnabled();
+        });
+
+        it('uses unverified extra email as fallback when no verified email exists', async () => {
+            // Covers the verifiedEmail ?? extraEmails[0] nullish-coalescing falsy branch (line 559)
+            const onAddPlayerInvite = vi.fn().mockResolvedValue('https://example.com/invite');
+            const onSendEmail = vi.fn().mockResolvedValue(undefined);
+
+            const players = [
+                createMockPlayerData({
+                    id: 1,
+                    name: 'Pat Player',
+                    accountEmail: null,
+                    extraEmails: [{
+                        id: 1,
+                        playerId: 1,
+                        email: 'pat-unverified@example.com',
+                        verifiedAt: null,
+                        createdAt: new Date('2021-01-01'),
+                    }],
+                }),
+            ];
+
+            render(
+                <Wrapper>
+                    <AdminPlayerList
+                        players={players}
+                        userEmails={[]}
+                        onAddPlayerInvite={onAddPlayerInvite}
+                        onSendEmail={onSendEmail}
+                    />
+                </Wrapper>,
+            );
+
+            fireEvent.click(screen.getByRole('checkbox', { name: 'Select Pat Player' }));
+            fireEvent.click(screen.getByRole('button', { name: 'Onboard player' }));
+
+            await waitFor(() => {
+                expect(onAddPlayerInvite).toHaveBeenCalledWith(1, 'pat-unverified@example.com');
+            });
         });
 
         it('uses extra email as fallback when accountEmail is null', async () => {

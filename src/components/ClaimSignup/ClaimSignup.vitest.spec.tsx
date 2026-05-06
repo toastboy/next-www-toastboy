@@ -1,8 +1,16 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useRouter } from 'next/navigation';
 import type { Mock } from 'vitest';
 import { vi } from 'vitest';
+
+const { captureUnexpectedErrorMock } = vi.hoisted(() => ({
+    captureUnexpectedErrorMock: vi.fn(),
+}));
+
+vi.mock('@/lib/observability/sentry', () => ({
+    captureUnexpectedError: captureUnexpectedErrorMock,
+}));
 
 import { ClaimSignup } from '@/components/ClaimSignup/ClaimSignup';
 import { authClient, signInWithGoogle, signInWithMicrosoft } from '@/lib/auth.client';
@@ -21,6 +29,7 @@ describe('ClaimSignup', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
+        captureUnexpectedErrorMock.mockResolvedValue(undefined);
         mockPush = vi.fn();
         (useRouter as Mock).mockReturnValue({
             push: mockPush,
@@ -55,6 +64,30 @@ describe('ClaimSignup', () => {
 
         expect(signInWithGoogle).toHaveBeenCalledWith(redirect);
         expect(signInWithMicrosoft).toHaveBeenCalledWith(redirect);
+    });
+
+    it('shows an error notification when sign up fails', async () => {
+        const user = userEvent.setup();
+        (authClient.signUp.email as Mock).mockRejectedValueOnce(new Error('sign up failed'));
+
+        render(
+            <Wrapper>
+                <ClaimSignup {...props} />
+            </Wrapper>,
+        );
+
+        await user.type(screen.getByPlaceholderText(/^Enter your password$/i), 'Password123');
+        await user.type(screen.getByLabelText(/Confirm password/i), 'Password123');
+        await user.click(screen.getByRole('button', { name: /Create login/i }));
+
+        await waitFor(() => {
+            expect(screen.getByText(/Something went wrong/i)).toBeInTheDocument();
+        });
+        expect(captureUnexpectedErrorMock).toHaveBeenCalled();
+
+        const alert = screen.getByRole('alert');
+        await user.click(within(alert).getByRole('button'));
+        expect(screen.queryByRole('alert')).not.toBeInTheDocument();
     });
 
     it('submits valid credentials and redirects on success', async () => {

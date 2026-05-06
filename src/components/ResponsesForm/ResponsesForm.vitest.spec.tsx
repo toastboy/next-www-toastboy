@@ -56,6 +56,70 @@ describe('Responses', () => {
         expect(screen.getByTestId('response-group-none')).toHaveAttribute('data-count', '1');
     });
 
+    it('returns early without calling submitResponse when response is still null', async () => {
+        const user = userEvent.setup();
+
+        render(
+            <Wrapper>
+                <ResponsesForm
+                    gameId={1249}
+                    gameDate="3rd February 2026"
+                    responses={defaultResponsesAdminData}
+                    submitResponse={mockSave}
+                />
+            </Wrapper>,
+        );
+
+        // Casey Mid is in the "none" group (null response). Change only the goalie
+        // checkbox — this makes the row dirty without setting a response.
+        const filterInput = screen.getByPlaceholderText('Search players');
+        await user.type(filterInput, 'Casey');
+        const noneGroup = screen.getByTestId('response-group-none');
+        const row = within(noneGroup).getByTestId('response-row');
+        const goalie = within(row).getByTestId('goalie-checkbox');
+        await user.click(goalie);
+
+        // Row is now dirty so submit button is enabled, but response is still null
+        const submit = within(row).getByTestId('response-submit');
+        await user.click(submit);
+
+        await waitFor(() => {
+            expect(mockSave).not.toHaveBeenCalled();
+        });
+    });
+
+    it('shows an error notification when submitResponse rejects', async () => {
+        const user = userEvent.setup();
+        mockSave.mockRejectedValueOnce(new Error('network error'));
+
+        render(
+            <Wrapper>
+                <ResponsesForm
+                    gameId={1249}
+                    gameDate="3rd February 2026"
+                    responses={defaultResponsesAdminData}
+                    submitResponse={mockSave}
+                />
+            </Wrapper>,
+        );
+
+        const filterInput = screen.getByPlaceholderText('Search players');
+        await user.type(filterInput, 'Casey');
+        const noneGroup = screen.getByTestId('response-group-none');
+        const row = within(noneGroup).getByTestId('response-row');
+
+        const select = within(row).getByTestId('response-select');
+        await user.click(select);
+        await user.click(await screen.findByRole('option', { name: 'Yes', hidden: true }));
+
+        const submit = within(row).getByTestId('response-submit');
+        await user.click(submit);
+
+        await waitFor(() => {
+            expect(mockSave).toHaveBeenCalled();
+        });
+    });
+
     it('updates a player response and calls onSave', async () => {
         const user = userEvent.setup();
 

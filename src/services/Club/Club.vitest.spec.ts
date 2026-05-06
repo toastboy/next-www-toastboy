@@ -156,6 +156,19 @@ describe('ClubService', () => {
             await clubService.delete(107);
             expect(prisma.club.delete).toHaveBeenCalledTimes(1);
         });
+
+        it('should rethrow a non-not-found Prisma error', async () => {
+            const constraintError = Object.assign(
+                new Error('Foreign key constraint failed.'),
+                { code: 'P2003' },
+            );
+            Object.setPrototypeOf(
+                constraintError,
+                Prisma.PrismaClientKnownRequestError.prototype,
+            );
+            (prisma.club.delete as Mock).mockRejectedValueOnce(constraintError);
+            await expect(clubService.delete(6)).rejects.toThrow('Foreign key constraint failed.');
+        });
     });
 
     describe('deleteAll', () => {

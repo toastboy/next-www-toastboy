@@ -15,13 +15,12 @@ vi.mock('@/lib/observability/sentry', () => ({
 
 import { PlayerProfileForm } from '@/components/PlayerProfileForm/PlayerProfileForm';
 import { Wrapper } from '@/tests/components/lib/common';
-import { defaultClubList } from '@/tests/mocks/data/club';
+import { createMockClub,defaultClubList  } from '@/tests/mocks/data/club';
 import { defaultClubSupporterDataList } from '@/tests/mocks/data/clubSupporterData';
 import { defaultCountryList } from '@/tests/mocks/data/country';
 import { defaultCountrySupporterDataList } from '@/tests/mocks/data/countrySupporterData';
 import { defaultPlayer } from '@/tests/mocks/data/player';
 import { createMockPlayerExtraEmail, defaultPlayerExtraEmails } from '@/tests/mocks/data/playerExtraEmail';
-import { createMockClub } from '@/tests/mocks/data/club';
 
 describe('PlayerProfileForm', () => {
     const playerWithAccountEmail = {

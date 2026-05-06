@@ -6,8 +6,8 @@ vi.mock('@/lib/gameInvitations', () => ({
     getGameInvitationResponseDetails: vi.fn(),
 }));
 
-import { getGameInvitationResponseDetails } from '@/lib/gameInvitations';
 import { GET } from '@/app/api/footy/response/[token]/route';
+import { getGameInvitationResponseDetails } from '@/lib/gameInvitations';
 
 /**
  * A sample invitation response details object returned by the mock.

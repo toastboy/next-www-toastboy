@@ -1,6 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import type { Editor } from '@tiptap/core';
-import { useEditor } from '@tiptap/react';
+import { type Editor, useEditor } from '@tiptap/react';
 import type { MockedFunction } from 'vitest';
 
 import { RichTextMailBody } from '@/components/RichTextMailBody/RichTextMailBody';

@@ -7,6 +7,7 @@ import { vi } from 'vitest';
 import countrySupporterService from '@/services/CountrySupporter';
 import { defaultCountry } from '@/tests/mocks/data/country';
 import { defaultCountrySupporter, defaultCountrySupporterList, invalidCountrySupporter } from '@/tests/mocks/data/countrySupporter';
+import { defaultPlayer } from '@/tests/mocks/data/player';
 
 describe('countrySupporterService', () => {
     beforeEach(() => {
@@ -128,6 +129,27 @@ describe('countrySupporterService', () => {
         it('should return an empty list when retrieving ClubSupporters for country "AZE"', async () => {
             const result = await countrySupporterService.getByCountry("AZE");
             expect(result).toEqual([]);
+        });
+    });
+
+    describe('getAllWithCountry', () => {
+        it('should return all country-supporter rows with country data', async () => {
+            const withCountry = [{ ...defaultCountrySupporter, country: defaultCountry }];
+            (prisma.countrySupporter.findMany as Mock).mockResolvedValueOnce(withCountry);
+            const result = await countrySupporterService.getAllWithCountry();
+            expect(result).toHaveLength(1);
+            expect(result[0].country).toEqual(defaultCountry);
+        });
+    });
+
+    describe('getAllWithCountryAndPlayer', () => {
+        it('should return all country-supporter rows with country and player data', async () => {
+            const withBoth = [{ ...defaultCountrySupporter, country: defaultCountry, player: defaultPlayer }];
+            (prisma.countrySupporter.findMany as Mock).mockResolvedValueOnce(withBoth);
+            const result = await countrySupporterService.getAllWithCountryAndPlayer();
+            expect(result).toHaveLength(1);
+            expect(result[0].country).toEqual(defaultCountry);
+            expect(result[0].player).toEqual(defaultPlayer);
         });
     });
 

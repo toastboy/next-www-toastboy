@@ -2,7 +2,6 @@ import prisma from 'prisma/prisma';
 import { ContactEnquiryType } from 'prisma/zod/schemas/models/ContactEnquiry.schema';
 import { ContactEnquiryWhereUniqueInputObjectSchema } from 'prisma/zod/schemas/objects/ContactEnquiryWhereUniqueInput.schema';
 
-import { normalizeUnknownError } from '@/lib/errors';
 import { hashVerificationToken } from '@/lib/verificationToken';
 import {
     ContactEnquiryCreateOneStrictSchema,
@@ -31,25 +30,19 @@ class ContactEnquiryService {
      *
      * @param data - Write payload containing `name`, `email`, `message`, and `token`.
      * @returns The created contact enquiry row.
-     * @throws {z.ZodError} If input or Prisma-args validation fails.
-     * @throws {Error} If Prisma create fails.
      */
     async create(data: ContactEnquiryWriteInput): Promise<ContactEnquiryType> {
-        try {
-            const writeData = ContactEnquiryWriteInputSchema.parse(data);
-            const tokenHash = this.getTokenHash(writeData.token);
-            const args = ContactEnquiryCreateOneStrictSchema.parse({
-                data: {
-                    name: writeData.name,
-                    email: writeData.email,
-                    message: writeData.message,
-                    tokenHash,
-                },
-            });
-            return await prisma.contactEnquiry.create(args);
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
+        const writeData = ContactEnquiryWriteInputSchema.parse(data);
+        const tokenHash = this.getTokenHash(writeData.token);
+        const args = ContactEnquiryCreateOneStrictSchema.parse({
+            data: {
+                name: writeData.name,
+                email: writeData.email,
+                message: writeData.message,
+                tokenHash,
+            },
+        });
+        return prisma.contactEnquiry.create(args);
     }
 
     /**
@@ -57,17 +50,11 @@ class ContactEnquiryService {
      *
      * @param token - Plaintext token that identifies the enquiry.
      * @returns The matching enquiry, or `null` when none exists.
-     * @throws {z.ZodError} If unique-filter validation fails.
-     * @throws {Error} If Prisma query fails.
      */
     async getByToken(token: string): Promise<ContactEnquiryType | null> {
-        try {
-            const tokenHash = this.getTokenHash(token);
-            const where = ContactEnquiryWhereUniqueInputObjectSchema.parse({ tokenHash });
-            return await prisma.contactEnquiry.findUnique({ where });
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
+        const tokenHash = this.getTokenHash(token);
+        const where = ContactEnquiryWhereUniqueInputObjectSchema.parse({ tokenHash });
+        return prisma.contactEnquiry.findUnique({ where });
     }
 
     /**
@@ -77,24 +64,18 @@ class ContactEnquiryService {
      *
      * @param id - Contact enquiry identifier.
      * @returns The updated contact enquiry row.
-     * @throws {z.ZodError} If ID or Prisma-args validation fails.
-     * @throws {Error} If Prisma update fails.
      */
     async markDelivered(id: number): Promise<ContactEnquiryType> {
-        try {
-            const validatedInput = ContactEnquiryMarkDeliveredInputSchema.parse({ id });
-            const now = new Date();
-            const args = ContactEnquiryUpdateOneStrictSchema.parse({
-                where: { id: validatedInput.id },
-                data: {
-                    verifiedAt: now,
-                    deliveredAt: now,
-                },
-            });
-            return await prisma.contactEnquiry.update(args);
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
+        const validatedInput = ContactEnquiryMarkDeliveredInputSchema.parse({ id });
+        const now = new Date();
+        const args = ContactEnquiryUpdateOneStrictSchema.parse({
+            where: { id: validatedInput.id },
+            data: {
+                verifiedAt: now,
+                deliveredAt: now,
+            },
+        });
+        return prisma.contactEnquiry.update(args);
     }
 }
 

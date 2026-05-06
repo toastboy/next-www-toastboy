@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import { vi } from 'vitest';
 
 import { CustomAppShell } from '@/components/CustomAppShell/CustomAppShell';
+import type { AuthUserSummary } from '@/types/AuthUser';
 
 type MockBurgerProps = {
     opened?: boolean;
@@ -37,6 +38,7 @@ vi.mock('@mantine/core', async (importOriginal) => {
     return {
         ...actual,
         AppShell,
+        Badge: ({ children }: { children?: React.ReactNode }) => <span>{children}</span>,
         Burger: ({ opened, onClick, hiddenFrom, ...props }: MockBurgerProps) => (
             <button {...props} data-hidden-from={hiddenFrom} data-opened={opened ? 'true' : undefined} onClick={onClick} type="button" />
         ),
@@ -92,5 +94,53 @@ describe('CustomAppShell', () => {
             expect(screen.getByTestId('app-shell')).toHaveAttribute('data-navbar-collapsed-mobile', 'true');
             expect(screen.getByRole('button', { name: 'Toggle navigation' })).not.toHaveAttribute('data-opened');
         });
+    });
+
+    it('shows the dev mode badge when devMode is true', () => {
+        render(
+            <CustomAppShell devMode={true}>
+                <Text>Content</Text>
+            </CustomAppShell>,
+        );
+
+        expect(screen.getByText('dev mode')).toBeInTheDocument();
+    });
+
+    it('does not show the dev mode badge when devMode is not set', () => {
+        render(
+            <CustomAppShell>
+                <Text>Content</Text>
+            </CustomAppShell>,
+        );
+
+        expect(screen.queryByText('dev mode')).not.toBeInTheDocument();
+    });
+
+    it('passes the user prop to NavBarNested', () => {
+        const user: AuthUserSummary = {
+            name: 'Test User',
+            email: 'test@example.com',
+            playerId: 42,
+            role: 'user',
+        };
+
+        render(
+            <CustomAppShell user={user}>
+                <Text>Content</Text>
+            </CustomAppShell>,
+        );
+
+        expect(screen.getByText(/NavBarNested:/)).toBeInTheDocument();
+        expect(screen.getByText(/test@example\.com/)).toBeInTheDocument();
+    });
+
+    it('renders the crest image', () => {
+        render(
+            <CustomAppShell>
+                <Text>Content</Text>
+            </CustomAppShell>,
+        );
+
+        expect(screen.getByRole('img', { name: 'Toastboy FC Crest' })).toBeInTheDocument();
     });
 });

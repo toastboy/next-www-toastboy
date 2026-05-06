@@ -34,7 +34,7 @@ describe('ErrorPage', () => {
         const error = new Error('Boundary exploded');
         renderErrorPage(error, reset);
 
-        expect(screen.getByText('Boundary exploded')).toBeInTheDocument();
+        expect(screen.getByText('Something went wrong.')).toBeInTheDocument();
         expect(captureUnexpectedError).toHaveBeenCalledTimes(1);
         expect(captureUnexpectedError).toHaveBeenCalledWith(
             error,

@@ -190,6 +190,18 @@ describe('PlayerRecordService', () => {
         });
     });
 
+    describe('getAllYears mostRecentFirst', () => {
+        it('should return years in descending order with 0 first when mostRecentFirst is true', async () => {
+            (prisma.gameDay.groupBy as Mock).mockResolvedValue([
+                { _max: { id: 1035 }, year: 2021 },
+                { _max: { id: 1085 }, year: 2022 },
+            ]);
+
+            const result = await playerRecordService.getAllYears({ mostRecentFirst: true });
+            expect(result).toEqual([0, 2022, 2021]);
+        });
+    });
+
     describe('getAllYears', () => {
         it('should retrieve the correct years', async () => {
             (prisma.gameDay.groupBy as Mock).mockResolvedValue([
@@ -392,6 +404,35 @@ describe('PlayerRecordService', () => {
             const result = await playerRecordService.getForYearByPlayer(12, 2021);
             expect(result).toEqual(defaultPlayerRecord);
             expect(prisma.playerRecord.findFirst).toHaveBeenCalledTimes(1);
+        });
+
+        it('should return a zero-record when the player exists but has no record for the year', async () => {
+            (prisma.playerRecord.findFirst as Mock).mockResolvedValue(null);
+            (prisma.player.findUnique as Mock).mockResolvedValue({ id: 12 });
+
+            const result = await playerRecordService.getForYearByPlayer(2021, 12);
+
+            expect(result).toMatchObject({
+                id: 0,
+                playerId: 12,
+                year: 2021,
+                gamesPlayed: 0,
+                gameDayId: 0,
+                played: 0,
+                won: 0,
+                drawn: 0,
+                lost: 0,
+                points: 0,
+            });
+        });
+
+        it('should return null when neither a record nor the player exists', async () => {
+            (prisma.playerRecord.findFirst as Mock).mockResolvedValue(null);
+            (prisma.player.findUnique as Mock).mockResolvedValue(null);
+
+            const result = await playerRecordService.getForYearByPlayer(2021, 99);
+
+            expect(result).toBeNull();
         });
     });
 
@@ -716,6 +757,87 @@ describe('PlayerRecordService', () => {
             };
             const result = await playerRecordService.upsert(updatedPlayerRecord);
             expect(result).toEqual(updatedPlayerRecord);
+        });
+    });
+
+    describe('upsertForGameDay with few-response players', () => {
+        it('should assign rankSpeedyUnqualified for players with fewer than 10 responses', async () => {
+            (prisma.gameDay.findMany as Mock).mockResolvedValue([
+                {
+                    id: 1,
+                    date: new Date('2022-01-03'),
+                    game: true,
+                    mailSent: new Date('2022-01-01'),
+                    comment: null,
+                    bibs: 'A',
+                    pickerGamesHistory: 10,
+                },
+            ]);
+            (prisma.gameDay.count as Mock).mockResolvedValue(1);
+
+            // 5 players with only 3 responses each (below minRepliesForSpeedyTable=10)
+            (prisma.outcome.findMany as Mock).mockResolvedValue(
+                Array.from({ length: 5 }, (_, i) => ({
+                    gameDayId: 1,
+                    playerId: i + 1,
+                    response: 'Yes',
+                    responseInterval: (i + 1) * 500,
+                    points: 3,
+                    team: i % 2 === 0 ? 'A' : 'B',
+                    pub: null,
+                    paid: false,
+                    goalie: false,
+                })),
+            );
+
+            const result = await playerRecordService.upsertForGameDay(1);
+            expect(result.length).toBeGreaterThan(0);
+            const yearRecord = result.find((r) => r.year === 2022);
+            expect(yearRecord).toBeDefined();
+            expect(yearRecord?.rankSpeedyUnqualified).not.toBeNull();
+            expect(yearRecord?.rankSpeedy).toBeNull();
+        });
+    });
+
+    describe('upsertForGameDay with no-points outcomes', () => {
+        it('should not set points or averages when a player has only null-points outcomes', async () => {
+            (prisma.gameDay.findMany as Mock).mockResolvedValue([
+                {
+                    id: 1,
+                    date: new Date('2022-01-03'),
+                    game: true,
+                    mailSent: new Date('2022-01-01'),
+                    comment: null,
+                    bibs: 'A',
+                    pickerGamesHistory: 10,
+                },
+            ]);
+            (prisma.gameDay.count as Mock).mockResolvedValue(1);
+
+            (prisma.outcome.findMany as Mock).mockResolvedValue([
+                {
+                    gameDayId: 1,
+                    playerId: 1,
+                    response: 'No',
+                    responseInterval: null,
+                    points: null,
+                    team: null,
+                    pub: null,
+                    paid: false,
+                    goalie: false,
+                },
+            ]);
+
+            await playerRecordService.upsertForGameDay(1);
+            const upsertCalls = (prisma.playerRecord.upsert as Mock).mock.calls;
+            const relevantCall = upsertCalls.find(call =>
+                (call[0] as { create: { playerId: number } }).create.playerId === 1,
+            );
+            expect(relevantCall).toBeDefined();
+            // When a player has only null-points outcomes, played/points/averages are not set
+            expect((relevantCall![0] as { create: { played?: number } }).create.played).toBeUndefined();
+            expect((relevantCall![0] as { create: { points?: number } }).create.points).toBeUndefined();
+            expect((relevantCall![0] as { create: { averages?: number } }).create.averages).toBeUndefined();
         });
     });
 

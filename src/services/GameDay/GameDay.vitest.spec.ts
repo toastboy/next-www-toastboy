@@ -383,6 +383,12 @@ describe('GameDayService', () => {
             const result = await gameDayService.getPrevious(1);
             expect(result).toBeNull();
         });
+
+        it('should return null when the gameDayId does not exist', async () => {
+            const result = await gameDayService.getPrevious(9999);
+            expect(result).toBeNull();
+            expect(prisma.gameDay.findFirst).not.toHaveBeenCalled();
+        });
     });
 
     describe('getLatest', () => {
@@ -415,6 +421,24 @@ describe('GameDayService', () => {
             (prisma.gameDay.findFirst as Mock).mockResolvedValue(null);
             const result = await gameDayService.getNext(100);
             expect(result).toBeNull();
+        });
+
+        it('should return null when the gameDayId does not exist', async () => {
+            const result = await gameDayService.getNext(9999);
+            expect(result).toBeNull();
+            expect(prisma.gameDay.findFirst).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('getAll year=0', () => {
+        it('should treat year 0 as no year filter', async () => {
+            const result = await gameDayService.getAll({ year: 0 });
+            expect(result).toHaveLength(100);
+            expect(prisma.gameDay.findMany).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    where: expect.not.objectContaining({ year: expect.anything() }) as unknown,
+                }),
+            );
         });
     });
 

@@ -107,6 +107,42 @@ describe('MoneyService', () => {
             await expect(moneyService.getChartData(2024)).rejects.toThrow('DB connection failed');
             expect(prisma.transaction.groupBy).not.toHaveBeenCalled();
         });
+
+        it('skips transactions with null gameDayId', async () => {
+            (gameDayService.getIdRangeForYear as Mock).mockResolvedValue({ minId: 10, maxId: 10 });
+
+            (prisma.transaction.groupBy as Mock)
+                .mockResolvedValueOnce([
+                    { gameDayId: null, _sum: { amountPence: -500 } },
+                ])
+                .mockResolvedValueOnce([]);
+
+            (prisma.gameDay.findMany as Mock).mockResolvedValue([
+                { id: 10, date: new Date('2024-03-15T00:00:00Z') },
+            ]);
+
+            const result = await moneyService.getChartData(2024);
+
+            expect(result).toEqual([]);
+        });
+
+        it('skips transactions whose gameDayId is not in the interval map', async () => {
+            (gameDayService.getIdRangeForYear as Mock).mockResolvedValue({ minId: 10, maxId: 10 });
+
+            (prisma.transaction.groupBy as Mock)
+                .mockResolvedValueOnce([
+                    { gameDayId: 99, _sum: { amountPence: -500 } },
+                ])
+                .mockResolvedValueOnce([]);
+
+            (prisma.gameDay.findMany as Mock).mockResolvedValue([
+                { id: 10, date: new Date('2024-03-15T00:00:00Z') },
+            ]);
+
+            const result = await moneyService.getChartData(2024);
+
+            expect(result).toEqual([]);
+        });
     });
 
     describe('charge', () => {
@@ -135,6 +171,11 @@ describe('MoneyService', () => {
                     note: 'Late arrival fee',
                 },
             });
+        });
+
+        it('rethrows errors from the database', async () => {
+            (prisma.transaction.upsert as Mock).mockRejectedValue(new Error('DB error'));
+            await expect(moneyService.charge(14, 3, 1250)).rejects.toThrow('DB error');
         });
     });
 
@@ -331,6 +372,11 @@ describe('MoneyService', () => {
                 players: [],
             });
         });
+
+        it('rethrows database errors', async () => {
+            (prisma.transaction.findMany as Mock).mockRejectedValue(new Error('DB error'));
+            await expect(moneyService.getDebts()).rejects.toThrow('DB error');
+        });
     });
 
     describe('payMultiple', () => {
@@ -495,6 +541,11 @@ describe('MoneyService', () => {
                 amount: 1003,
                 resultingBalance: 100,
             });
+        });
+
+        it('rethrows errors from the database transaction', async () => {
+            (prisma.$transaction as Mock).mockRejectedValue(new Error('DB error'));
+            await expect(moneyService.payMultiple(42, 1200, [8])).rejects.toThrow('DB error');
         });
     });
 });

@@ -289,6 +289,34 @@ describe('OutcomeService', () => {
                 playersPerGamePlayed: 0,
             }]);
         });
+
+        it('should return zero per-game averages when no games were initiated', async () => {
+            (prisma.outcome.groupBy as Mock).mockResolvedValue([]);
+            (prisma.gameDay.findMany as Mock).mockResolvedValue([{
+                id: 1,
+                year: 2021,
+                date: new Date('2021-01-03'),
+                game: false,
+                mailSent: null,
+                comment: null,
+                bibs: null,
+                pickerGamesHistory: 10,
+            }]);
+
+            const result = await outcomeService.getTurnoutByYear();
+            expect(result[0].responsesPerGameInitiated).toBe(0);
+            expect(result[0].yessesPerGameInitiated).toBe(0);
+            expect(result[0].playersPerGamePlayed).toBe(0);
+        });
+
+        it('should skip null game days returned by get()', async () => {
+            (prisma.gameDay.findUnique as Mock).mockResolvedValueOnce(null);
+            (prisma.outcome.groupBy as Mock).mockResolvedValue([]);
+
+            const result = await outcomeService.getTurnout(999);
+            expect(result).toHaveLength(1);
+            expect(result[0]).toBeUndefined();
+        });
     });
 
     describe('getByGameDay', () => {
@@ -372,6 +400,110 @@ describe('OutcomeService', () => {
         });
     });
 
+    describe('getByBibs', () => {
+        const mockGameDays = [
+            { id: 1, bibs: 'A', year: 2021, game: true, mailSent: new Date('2021-01-01'), date: new Date('2021-01-03'), comment: null, pickerGamesHistory: 10, cost: 500, hallCost: 5000 },
+            { id: 2, bibs: 'B', year: 2021, game: true, mailSent: new Date('2021-01-08'), date: new Date('2021-01-10'), comment: null, pickerGamesHistory: 10, cost: 500, hallCost: 5000 },
+            { id: 3, bibs: 'A', year: 2022, game: true, mailSent: new Date('2022-01-01'), date: new Date('2022-01-02'), comment: null, pickerGamesHistory: 10, cost: 500, hallCost: 5000 },
+        ];
+
+        beforeEach(() => {
+            (prisma.gameDay.findMany as Mock).mockResolvedValue(mockGameDays);
+        });
+
+        it('returns correct WDL counts when bibs team A wins', async () => {
+            (prisma.outcome.groupBy as Mock).mockResolvedValue([
+                { gameDayId: 1, team: 'A', points: 3 },
+            ]);
+
+            const result = await outcomeService.getByBibs({});
+
+            expect(result).toEqual({ won: 1, drawn: 0, lost: 0 });
+        });
+
+        it('returns a loss when bibs team A loses', async () => {
+            (prisma.outcome.groupBy as Mock).mockResolvedValue([
+                { gameDayId: 1, team: 'A', points: 0 },
+            ]);
+
+            const result = await outcomeService.getByBibs({});
+
+            expect(result).toEqual({ won: 0, drawn: 0, lost: 1 });
+        });
+
+        it('returns a draw when bibs team A has 1 point', async () => {
+            (prisma.outcome.groupBy as Mock).mockResolvedValue([
+                { gameDayId: 1, team: 'A', points: 1 },
+            ]);
+
+            const result = await outcomeService.getByBibs({});
+
+            expect(result).toEqual({ won: 0, drawn: 1, lost: 0 });
+        });
+
+        it('handles bibs=B correctly: bibs team B wins when team A loses', async () => {
+            (prisma.outcome.groupBy as Mock).mockResolvedValue([
+                { gameDayId: 2, team: 'A', points: 0 },
+            ]);
+
+            const result = await outcomeService.getByBibs({});
+
+            expect(result).toEqual({ won: 1, drawn: 0, lost: 0 });
+        });
+
+        it('handles bibs=B correctly: bibs team B loses when team A wins', async () => {
+            (prisma.outcome.groupBy as Mock).mockResolvedValue([
+                { gameDayId: 2, team: 'A', points: 3 },
+            ]);
+
+            const result = await outcomeService.getByBibs({});
+
+            expect(result).toEqual({ won: 0, drawn: 0, lost: 1 });
+        });
+
+        it('filters by year when year option is provided', async () => {
+            (prisma.outcome.groupBy as Mock).mockResolvedValue([
+                { gameDayId: 1, team: 'A', points: 3 },
+                { gameDayId: 3, team: 'A', points: 3 },
+            ]);
+
+            const result = await outcomeService.getByBibs({ year: 2021 });
+
+            expect(result).toEqual({ won: 1, drawn: 0, lost: 0 });
+        });
+
+        it('returns all zeros when bibs is null on game days', async () => {
+            (prisma.gameDay.findMany as Mock).mockResolvedValue([
+                { ...mockGameDays[0], bibs: null },
+            ]);
+            (prisma.outcome.groupBy as Mock).mockResolvedValue([
+                { gameDayId: 1, team: 'A', points: 3 },
+            ]);
+
+            const result = await outcomeService.getByBibs({});
+
+            expect(result).toEqual({ won: 0, drawn: 0, lost: 0 });
+        });
+
+        it('returns all zeros when outcomes have null points', async () => {
+            (prisma.outcome.groupBy as Mock).mockResolvedValue([
+                { gameDayId: 1, team: 'A', points: null },
+            ]);
+
+            const result = await outcomeService.getByBibs({});
+
+            expect(result).toEqual({ won: 0, drawn: 0, lost: 0 });
+        });
+
+        it('returns all zeros when there are no outcomes', async () => {
+            (prisma.outcome.groupBy as Mock).mockResolvedValue([]);
+
+            const result = await outcomeService.getByBibs({});
+
+            expect(result).toEqual({ won: 0, drawn: 0, lost: 0 });
+        });
+    });
+
     describe('getTeamPlayersByGameDay', () => {
         it('should return team players with outcomes and form history', async () => {
             const formHistory = 2;
@@ -440,6 +572,19 @@ describe('OutcomeService', () => {
             });
             expect(result[1].form).toEqual([]);
             expect(result[1].outcome.goalie).toBe(true);
+        });
+
+        it('throws InternalError when an outcome is missing its player relation', async () => {
+            (prisma.outcome.findMany as Mock).mockResolvedValueOnce([
+                {
+                    ...createMockOutcome({ id: 201, gameDayId: 10, playerId: 1, team: 'A' }),
+                    player: null,
+                },
+            ]);
+
+            await expect(outcomeService.getTeamPlayersByGameDay(10, 'A')).rejects.toThrow(
+                'Outcome 201 is missing its player relation.',
+            );
         });
     });
 

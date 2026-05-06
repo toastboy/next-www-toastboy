@@ -136,6 +136,28 @@ describe('PlayerService', () => {
         });
     });
 
+    describe('getByIdOrLogin', () => {
+        it('should retrieve a player by numeric id string', async () => {
+            const result = await playerService.getByIdOrLogin('6');
+            expect(result?.id).toBe(6);
+        });
+
+        it('should retrieve a player by login string', async () => {
+            const result = await playerService.getByIdOrLogin('garyp');
+            expect(result?.id).toBe(1);
+        });
+
+        it('should return null when the numeric id does not exist', async () => {
+            const result = await playerService.getByIdOrLogin('999');
+            expect(result).toBeNull();
+        });
+
+        it('should return null when the login does not exist', async () => {
+            const result = await playerService.getByIdOrLogin('doofus');
+            expect(result).toBeNull();
+        });
+    });
+
     describe('getLogin with id', () => {
         it('should retrieve the correct player login with id 1', async () => {
             const result = await playerService.getLogin("1");
@@ -502,6 +524,51 @@ describe('PlayerService', () => {
 
         it('should refuse to update a player with invalid data where one with the id already existed', async () => {
             await expect(playerService.update(invalidPlayer)).rejects.toThrow();
+        });
+    });
+
+    describe('anonymise', () => {
+        it('should set anonymous=true and clear name and accountEmail', async () => {
+            const result = await playerService.anonymise(6);
+            expect(prisma.player.update).toHaveBeenCalledWith({
+                where: { id: 6 },
+                data: {
+                    anonymous: true,
+                    name: null,
+                    accountEmail: null,
+                    finished: expect.any(Date) as unknown,
+                },
+            });
+            expect(result.name).toBe('Player 6');
+            expect(result.anonymous).toBe(true);
+        });
+    });
+
+    describe('setFinished', () => {
+        it('should set the finished field to now when finished=true', async () => {
+            const now = new Date('2025-01-15T12:00:00Z');
+            vi.useFakeTimers();
+            vi.setSystemTime(now);
+
+            try {
+                const result = await playerService.setFinished(6);
+                expect(prisma.player.update).toHaveBeenCalledWith({
+                    where: { id: 6 },
+                    data: { finished: now },
+                });
+                expect(result.finished).toEqual(now);
+            } finally {
+                vi.useRealTimers();
+            }
+        });
+
+        it('should clear the finished field when finished=false', async () => {
+            const result = await playerService.setFinished(6, false);
+            expect(prisma.player.update).toHaveBeenCalledWith({
+                where: { id: 6 },
+                data: { finished: null },
+            });
+            expect(result.finished).toBeNull();
         });
     });
 

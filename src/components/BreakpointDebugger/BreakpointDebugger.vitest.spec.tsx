@@ -1,5 +1,5 @@
-import { render, screen } from '@testing-library/react';
 import { useMediaQuery } from '@mantine/hooks';
+import { render, screen } from '@testing-library/react';
 import type { MockedFunction } from 'vitest';
 import { vi } from 'vitest';
 

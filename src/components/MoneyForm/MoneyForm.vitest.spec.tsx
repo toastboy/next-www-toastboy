@@ -5,6 +5,7 @@ import { vi } from 'vitest';
 
 import { MoneyForm } from '@/components/MoneyForm/MoneyForm';
 import { Wrapper } from '@/tests/components/lib/common';
+import { createMockGameDay } from '@/tests/mocks/data/gameDay';
 import { defaultDebtsSummary } from '@/tests/mocks/data/money';
 import type { PayDebtProxy } from '@/types/actions/PayDebt';
 
@@ -107,7 +108,7 @@ describe('MoneyForm', () => {
     it('shows singular "game" label for a player with one debt', () => {
         const singleDebt = [{
             player: { id: 99, name: 'Pat Single', accountEmail: null, anonymous: false, joined: null, finished: null, born: null, comment: null, introducedBy: null },
-            debts: [{ gameDay: { id: 5, year: 2024, date: new Date('2024-01-09'), game: true, cost: 400, mailSent: null, comment: null, bibs: null, pickerGamesHistory: 10 }, amount: 400 }],
+            debts: [{ gameDay: createMockGameDay({ id: 5, year: 2024, date: new Date('2024-01-09'), cost: 400 }), amount: 400 }],
         }];
 
         render(

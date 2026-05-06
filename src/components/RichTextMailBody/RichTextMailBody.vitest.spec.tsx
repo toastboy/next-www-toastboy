@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
+import type { Editor } from '@tiptap/core';
 import { useEditor } from '@tiptap/react';
 import type { MockedFunction } from 'vitest';
-import { vi } from 'vitest';
 
 import { RichTextMailBody } from '@/components/RichTextMailBody/RichTextMailBody';
 import { Wrapper } from '@/tests/components/lib/common';
@@ -34,7 +34,7 @@ describe('RichTextMailBody', () => {
     });
 
     it('renders nothing when the editor is not yet initialised', () => {
-        mockUseEditor.mockReturnValueOnce(null);
+        mockUseEditor.mockReturnValueOnce(null as unknown as Editor);
 
         render(
             <Wrapper>

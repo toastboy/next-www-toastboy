@@ -38,7 +38,7 @@ npx playwright test                         # E2E tests (auto-starts dev server)
 npx vitest run --config vitest.services.config.ts path/to/test.ts
 ```
 
-**Policy:** Zero errors/warnings from `typecheck`, `lint`, and `build` before any deployment. Test coverage ≥ 90%.
+**Policy:** Zero errors/warnings from `typecheck`, `lint`, and `build` before any deployment. Test coverage ≥ 90%. Run `typecheck` and `lint:fix` after every set of edits and fix all output before considering work done — do not assume errors are pre-existing without verifying with `git stash`.
 
 ## Architecture & Layers
 
@@ -109,6 +109,11 @@ export class SomeModelService {
 - Use accessible selectors (`getByRole`, `getByLabelText`, `getByText`) over `data-testid`
 - Don't test generated Zod schemas directly — test service method behaviour and validation
 - E2E tests: `e2e/*.spec.ts`, must be fully parallel-safe
+
+### Comments & JSDoc
+
+- Default to no comments; only add one when the WHY is non-obvious
+- When changing a function that has a JSDoc block, update the entire block in the same edit — description, `@param`, `@returns`, `@throws`, and any other tags must all accurately reflect the new implementation
 
 ### Observability
 

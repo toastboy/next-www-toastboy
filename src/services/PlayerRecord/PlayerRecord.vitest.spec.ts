@@ -920,6 +920,11 @@ describe('PlayerRecordService', () => {
             await playerRecordService.delete(16, 2022, 7);
             expect(prisma.playerRecord.delete).toHaveBeenCalledTimes(1);
         });
+
+        it('should rethrow delete errors that are not P2025', async () => {
+            (prisma.playerRecord.delete as Mock).mockRejectedValueOnce(new Error('db exploded'));
+            await expect(playerRecordService.delete(12, 2021, 15)).rejects.toThrow('db exploded');
+        });
     });
 
     describe('deleteAll', () => {

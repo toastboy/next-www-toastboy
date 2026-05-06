@@ -165,6 +165,11 @@ describe('GameChatService', () => {
             await gameChatService.delete(107);
             expect(prisma.gameChat.delete).toHaveBeenCalledTimes(1);
         });
+
+        it('should rethrow delete errors that are not P2025', async () => {
+            (prisma.gameChat.delete as Mock).mockRejectedValueOnce(new Error('db exploded'));
+            await expect(gameChatService.delete(6)).rejects.toThrow('db exploded');
+        });
     });
 
     describe('deleteAll', () => {

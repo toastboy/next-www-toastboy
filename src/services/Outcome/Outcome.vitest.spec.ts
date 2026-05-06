@@ -779,6 +779,11 @@ describe('OutcomeService', () => {
             await outcomeService.delete(7, 16);
             expect(prisma.outcome.delete).toHaveBeenCalledTimes(1);
         });
+
+        it('should rethrow delete errors that are not P2025', async () => {
+            (prisma.outcome.delete as Mock).mockRejectedValueOnce(new Error('db exploded'));
+            await expect(outcomeService.delete(1, 1)).rejects.toThrow('db exploded');
+        });
     });
 
     describe('deleteAll', () => {

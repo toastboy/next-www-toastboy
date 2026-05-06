@@ -8,7 +8,6 @@ import { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
 import { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 
 import { config } from '@/lib/config';
-import { normalizeUnknownError } from '@/lib/errors';
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import { rankMap } from '@/lib/tables';
 import gameDayService from '@/services/GameDay';
@@ -32,15 +31,11 @@ class PlayerRecordService {
      * @throws An error if there is a failure.
      */
     async get(playerId: number, year: number, gameDayId: number): Promise<PlayerRecordType | null> {
-        try {
-            const where = PlayerRecordWhereUniqueInputObjectSchema.parse({
-                playerId_year_gameDayId: { playerId, year, gameDayId },
-            });
+        const where = PlayerRecordWhereUniqueInputObjectSchema.parse({
+            playerId_year_gameDayId: { playerId, year, gameDayId },
+        });
 
-            return prisma.playerRecord.findUnique({ where });
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
+        return prisma.playerRecord.findUnique({ where });
     }
 
     /**
@@ -50,11 +45,7 @@ class PlayerRecordService {
      * @throws {Error} Throws an error if the database query fails.
      */
     async getAll(): Promise<PlayerRecordType[]> {
-        try {
-            return prisma.playerRecord.findMany({});
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
+        return prisma.playerRecord.findMany({});
     }
 
     /**
@@ -67,22 +58,17 @@ class PlayerRecordService {
      * or service call.
      */
     async getProgress(): Promise<[number, number] | null> {
-        try {
-            const lastRecord = await prisma.playerRecord.findFirst({
-                orderBy: {
-                    gameDayId: 'desc',
-                },
-            });
+        const lastRecord = await prisma.playerRecord.findFirst({
+            orderBy: {
+                gameDayId: 'desc',
+            },
+        });
 
-            const total = await outcomeService.getLastPlayed();
-            if (!total) return null;
-            const lastGameDay = lastRecord ? lastRecord.gameDayId : 0;
+        const total = await outcomeService.getLastPlayed();
+        if (!total) return null;
+        const lastGameDay = lastRecord ? lastRecord.gameDayId : 0;
 
-            return [lastGameDay, total.gameDayId];
-        }
-        catch (error) {
-            throw normalizeUnknownError(error);
-        }
+        return [lastGameDay, total.gameDayId];
     }
 
     /**
@@ -108,38 +94,34 @@ class PlayerRecordService {
         completed = false,
         mostRecentFirst = false,
     }): Promise<number[]> {
-        try {
-            let lastGamesEachYear = await prisma.gameDay.groupBy({
+        let lastGamesEachYear = await prisma.gameDay.groupBy({
+            by: ['year'],
+            where: {
+                game: true,
+            },
+            _max: {
+                id: true,
+            },
+        });
+
+        if (completed) {
+            const yearsWithUnplayedGames = await prisma.gameDay.groupBy({
                 by: ['year'],
                 where: {
                     game: true,
-                },
-                _max: {
-                    id: true,
+                    date: { gt: new Date() },
                 },
             });
 
-            if (completed) {
-                const yearsWithUnplayedGames = await prisma.gameDay.groupBy({
-                    by: ['year'],
-                    where: {
-                        game: true,
-                        date: { gt: new Date() },
-                    },
-                });
-
-                const yearsToRemove = new Set(yearsWithUnplayedGames.map(y => y.year));
-                lastGamesEachYear = lastGamesEachYear.filter(r => !yearsToRemove.has(r.year));
-            }
-
-            const years = lastGamesEachYear?.map((r) => r.year) ?? [];
-
-            return mostRecentFirst ?
-                [0, ...years.sort((a, b) => b - a)] :
-                [...years.sort((a, b) => a - b), 0];
-        } catch (error) {
-            throw normalizeUnknownError(error);
+            const yearsToRemove = new Set(yearsWithUnplayedGames.map(y => y.year));
+            lastGamesEachYear = lastGamesEachYear.filter(r => !yearsToRemove.has(r.year));
         }
+
+        const years = lastGamesEachYear?.map((r) => r.year) ?? [];
+
+        return mostRecentFirst ?
+            [0, ...years.sort((a, b) => b - a)] :
+            [...years.sort((a, b) => a - b), 0];
     }
 
     /**
@@ -150,16 +132,12 @@ class PlayerRecordService {
      * @throws An error if there is a failure.
      */
     async getByGameDay(gameDayId: number, year?: number): Promise<PlayerRecordType[]> {
-        try {
-            return prisma.playerRecord.findMany({
-                where: {
-                    gameDayId: gameDayId,
-                    ...(year != undefined ? { year: year } : {}),
-                },
-            });
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
+        return prisma.playerRecord.findMany({
+            where: {
+                gameDayId: gameDayId,
+                ...(year != undefined ? { year: year } : {}),
+            },
+        });
     }
 
     /**
@@ -169,15 +147,11 @@ class PlayerRecordService {
      * @throws An error if there is a failure.
      */
     async getByPlayer(playerId: number): Promise<PlayerRecordType[]> {
-        try {
-            return prisma.playerRecord.findMany({
-                where: {
-                    playerId: playerId,
-                },
-            });
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
+        return prisma.playerRecord.findMany({
+            where: {
+                playerId: playerId,
+            },
+        });
     }
 
     /**
@@ -192,56 +166,52 @@ class PlayerRecordService {
         year: number,
         playerId: number,
     ): Promise<PlayerRecordType | null> {
-        try {
-            const result = await prisma.playerRecord.findFirst({
+        const result = await prisma.playerRecord.findFirst({
+            where: {
+                year: year,
+                playerId: playerId,
+            },
+            orderBy: {
+                gameDayId: 'desc',
+            },
+        });
+
+        if (result === null) {
+            const player = await prisma.player.findUnique({
                 where: {
-                    year: year,
-                    playerId: playerId,
-                },
-                orderBy: {
-                    gameDayId: 'desc',
+                    id: playerId,
                 },
             });
 
-            if (result === null) {
-                const player = await prisma.player.findUnique({
-                    where: {
-                        id: playerId,
-                    },
-                });
+            if (player === null) return null;
 
-                if (player === null) return null;
-
-                return {
-                    id: 0,
-                    playerId: playerId,
-                    year: year,
-                    gamesPlayed: 0,
-                    gameDayId: 0,
-                    responses: 0,
-                    played: 0,
-                    won: 0,
-                    drawn: 0,
-                    lost: 0,
-                    points: 0,
-                    averages: 0,
-                    stalwart: 0,
-                    pub: 0,
-                    rankPoints: null,
-                    rankAverages: null,
-                    rankAveragesUnqualified: null,
-                    rankStalwart: null,
-                    rankSpeedy: null,
-                    rankSpeedyUnqualified: null,
-                    rankPub: null,
-                    speedy: 0,
-                };
-            }
-            else {
-                return result;
-            }
-        } catch (error) {
-            throw normalizeUnknownError(error);
+            return {
+                id: 0,
+                playerId: playerId,
+                year: year,
+                gamesPlayed: 0,
+                gameDayId: 0,
+                responses: 0,
+                played: 0,
+                won: 0,
+                drawn: 0,
+                lost: 0,
+                points: 0,
+                averages: 0,
+                stalwart: 0,
+                pub: 0,
+                rankPoints: null,
+                rankAverages: null,
+                rankAveragesUnqualified: null,
+                rankStalwart: null,
+                rankSpeedy: null,
+                rankSpeedyUnqualified: null,
+                rankPub: null,
+                speedy: 0,
+            };
+        }
+        else {
+            return result;
         }
     }
 
@@ -263,27 +233,23 @@ class PlayerRecordService {
         year?: number,
         player?: number,
     ): Promise<PlayerRecordDataType[]> {
-        try {
-            const rank = rankMap[table][0];
-            const seasonEnders = await gameDayService.getSeasonEnders();
-            const firstPlaceRecords = await prisma.playerRecord.findMany({
-                where: {
-                    ...(year ? { year } : { year: { gt: 0 } }),
-                    ...(player ? { playerId: player } : {}),
-                    [rank]: 1,
-                },
-                orderBy: {
-                    year: 'desc',
-                },
-                include: {
-                    player: true,
-                },
-            });
+        const rank = rankMap[table][0];
+        const seasonEnders = await gameDayService.getSeasonEnders();
+        const firstPlaceRecords = await prisma.playerRecord.findMany({
+            where: {
+                ...(year ? { year } : { year: { gt: 0 } }),
+                ...(player ? { playerId: player } : {}),
+                [rank]: 1,
+            },
+            orderBy: {
+                year: 'desc',
+            },
+            include: {
+                player: true,
+            },
+        });
 
-            return firstPlaceRecords.filter((record) => seasonEnders.includes(record.gameDayId));
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
+        return firstPlaceRecords.filter((record) => seasonEnders.includes(record.gameDayId));
     }
 
     /**
@@ -304,95 +270,73 @@ class PlayerRecordService {
         qualified?: boolean,
         take?: number,
     ): Promise<PlayerRecordDataType[]> {
-        try {
-            // Get the most recent game day for the year in question with a
-            // record for the specified table
+        const tableRecord = await prisma.playerRecord.findFirst({
+            where: {
+                year: year,
+                [table]: {
+                    not: null,
+                },
+            },
+            orderBy: {
+                gameDayId: 'desc',
+            },
+            select: {
+                gameDayId: true,
+            },
+        });
+        if (!tableRecord) return [];
 
-            const tableRecord = await prisma.playerRecord.findFirst({
-                where: {
-                    year: year,
-                    [table]: {
-                        not: null,
-                    },
-                },
-                orderBy: {
-                    gameDayId: 'desc',
-                },
-                select: {
-                    gameDayId: true,
-                },
-            });
-            if (!tableRecord) return [];
+        const rank = rankMap[table][qualified === false ? 1 : 0];
+        if (!rank) return [];
 
-            // Now generate the query to fetch the player records. If there's no
-            // rank defined in the map then the result will always be empty.
-
-            const rank = rankMap[table][qualified === false ? 1 : 0];
-            if (!rank) return [];
-
-            return prisma.playerRecord.findMany({
-                where: {
-                    gameDayId: tableRecord.gameDayId,
-                    year: year,
-                    [rank]: {
-                        not: null,
-                    },
+        return prisma.playerRecord.findMany({
+            where: {
+                gameDayId: tableRecord.gameDayId,
+                year: year,
+                [rank]: {
+                    not: null,
                 },
-                orderBy: {
-                    [rank]: 'asc',
-                },
-                take: take,
-                include: {
-                    player: true,
-                },
-            });
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
+            },
+            orderBy: {
+                [rank]: 'asc',
+            },
+            take: take,
+            include: {
+                player: true,
+            },
+        });
     }
 
     /**
      * Creates a player record from validated write input.
      * @param data - Player-record write payload.
      * @returns The created player-record row.
-     * @throws {z.ZodError} If input or Prisma-args validation fails.
-     * @throws {Error} If Prisma create fails.
      */
     async create(data: PlayerRecordWriteInput): Promise<PlayerRecordType> {
-        try {
-            const writeData = PlayerRecordWriteInputSchema.parse(data);
-            const args = PlayerRecordCreateOneStrictSchema.parse({ data: writeData });
-            return await prisma.playerRecord.create(args);
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
+        const writeData = PlayerRecordWriteInputSchema.parse(data);
+        const args = PlayerRecordCreateOneStrictSchema.parse({ data: writeData });
+        return prisma.playerRecord.create(args);
     }
 
     /**
      * Upserts a player record by `(playerId, year, gameDayId)`.
      * @param data - Player-record write payload.
      * @returns The created or updated player-record row.
-     * @throws {z.ZodError} If input or Prisma-args validation fails.
-     * @throws {Error} If Prisma upsert fails.
      */
     async upsert(data: PlayerRecordWriteInput): Promise<PlayerRecordType> {
-        try {
-            const writeData = PlayerRecordWriteInputSchema.parse(data);
-            const args = PlayerRecordUpsertOneStrictSchema.parse({
-                where: {
-                    playerId_year_gameDayId: {
-                        playerId: writeData.playerId,
-                        year: writeData.year,
-                        gameDayId: writeData.gameDayId,
-                    },
+        const writeData = PlayerRecordWriteInputSchema.parse(data);
+        const args = PlayerRecordUpsertOneStrictSchema.parse({
+            where: {
+                playerId_year_gameDayId: {
+                    playerId: writeData.playerId,
+                    year: writeData.year,
+                    gameDayId: writeData.gameDayId,
                 },
-                create: writeData,
-                update: writeData,
-            });
-            return await prisma.playerRecord.upsert(args);
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
+            },
+            create: writeData,
+            update: writeData,
+        });
+        return prisma.playerRecord.upsert(args);
     }
 
     /**
@@ -404,56 +348,52 @@ class PlayerRecordService {
      * @throws An error if there is a failure.
      */
     async upsertForGameDay(gameDayId?: number): Promise<PlayerRecordType[]> {
-        try {
-            const today = new Date();
-            const allTimeOutcomes = await outcomeService.getAllForYear(0);
+        const today = new Date();
+        const allTimeOutcomes = await outcomeService.getAllForYear(0);
 
-            let gameDays = await gameDayService.getAll();
-            if (gameDayId) {
-                gameDays = gameDays.filter(g => g.id === gameDayId);
-            }
-
-            const years = gameDays.map(gd => gd.date.getFullYear());
-            const distinctYears = Array.from(new Set(years));
-
-            const playerRecords: PlayerRecordType[] = [];
-            const allTimePlayerRecords: Record<number, Partial<PlayerRecordType>> = {};
-            for (const year of distinctYears) {
-                const yearPlayerRecords: Record<number, Partial<PlayerRecordType>> = {};
-                const yearOutcomes = await outcomeService.getAllForYear(year);
-
-
-                for (const gameDay of gameDays) {
-                    if (gameDay.date.getFullYear() !== year || gameDay.date > today) {
-                        continue;
-                    }
-
-
-                    const gameDayOutcomes = await outcomeService.getByGameDay(gameDay.id);
-
-                    await calculateYearPlayerRecords(
-                        year,
-                        yearOutcomes,
-                        yearPlayerRecords,
-                        gameDay,
-                        gameDayOutcomes,
-                        playerRecords,
-                    );
-                    await calculateYearPlayerRecords(
-                        0,
-                        allTimeOutcomes,
-                        allTimePlayerRecords,
-                        gameDay,
-                        gameDayOutcomes,
-                        playerRecords,
-                    );
-                }
-            }
-
-            return Promise.resolve(playerRecords);
-        } catch (error) {
-            throw normalizeUnknownError(error);
+        let gameDays = await gameDayService.getAll();
+        if (gameDayId) {
+            gameDays = gameDays.filter(g => g.id === gameDayId);
         }
+
+        const years = gameDays.map(gd => gd.date.getFullYear());
+        const distinctYears = Array.from(new Set(years));
+
+        const playerRecords: PlayerRecordType[] = [];
+        const allTimePlayerRecords: Record<number, Partial<PlayerRecordType>> = {};
+        for (const year of distinctYears) {
+            const yearPlayerRecords: Record<number, Partial<PlayerRecordType>> = {};
+            const yearOutcomes = await outcomeService.getAllForYear(year);
+
+
+            for (const gameDay of gameDays) {
+                if (gameDay.date.getFullYear() !== year || gameDay.date > today) {
+                    continue;
+                }
+
+
+                const gameDayOutcomes = await outcomeService.getByGameDay(gameDay.id);
+
+                await calculateYearPlayerRecords(
+                    year,
+                    yearOutcomes,
+                    yearPlayerRecords,
+                    gameDay,
+                    gameDayOutcomes,
+                    playerRecords,
+                );
+                await calculateYearPlayerRecords(
+                    0,
+                    allTimeOutcomes,
+                    allTimePlayerRecords,
+                    gameDay,
+                    gameDayOutcomes,
+                    playerRecords,
+                );
+            }
+        }
+
+        return playerRecords;
     }
 
     /**
@@ -472,27 +412,23 @@ class PlayerRecordService {
      * rebuilding PlayerRecords fails.
      */
     async upsertFromGameDay(gameDayId: number): Promise<PlayerRecordType[]> {
-        try {
-            const today = new Date();
-            const gameDays = (await gameDayService.getAll({ onOrAfter: gameDayId }))
-                // Keep future fixtures out of PlayerRecord calculations until
-                // their date has passed.
-                .filter((gameDay) => gameDay.date <= today);
+        const today = new Date();
+        const gameDays = (await gameDayService.getAll({ onOrAfter: gameDayId }))
+            // Keep future fixtures out of PlayerRecord calculations until
+            // their date has passed.
+            .filter((gameDay) => gameDay.date <= today);
 
-            if (gameDays.length === 0) {
-                return [];
-            }
-
-            const playerRecords: PlayerRecordType[] = [];
-            for (const gameDay of gameDays) {
-                const upserted = await this.upsertForGameDay(gameDay.id);
-                playerRecords.push(...upserted);
-            }
-
-            return playerRecords;
-        } catch (error) {
-            throw normalizeUnknownError(error);
+        if (gameDays.length === 0) {
+            return [];
         }
+
+        const playerRecords: PlayerRecordType[] = [];
+        for (const gameDay of gameDays) {
+            const upserted = await this.upsertForGameDay(gameDay.id);
+            playerRecords.push(...upserted);
+        }
+
+        return playerRecords;
     }
 
     /**
@@ -515,21 +451,16 @@ class PlayerRecordService {
             if (isPrismaNotFoundError(error)) {
                 return;
             }
-            throw normalizeUnknownError(error);
+            throw error;
         }
     }
 
     /**
      * Deletes all playerRecords.
      * @returns A promise that resolves when all playerRecords are deleted.
-     * @throws An error if there is a failure.
      */
     async deleteAll(): Promise<void> {
-        try {
-            await prisma.playerRecord.deleteMany();
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
+        await prisma.playerRecord.deleteMany();
     }
 }
 

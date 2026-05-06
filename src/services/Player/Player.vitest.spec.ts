@@ -524,6 +524,11 @@ describe('PlayerService', () => {
             await playerService.delete(107);
             expect(prisma.player.delete).toHaveBeenCalledTimes(1);
         });
+
+        it('should rethrow delete errors that are not P2025', async () => {
+            (prisma.player.delete as Mock).mockRejectedValueOnce(new Error('db exploded'));
+            await expect(playerService.delete(6)).rejects.toThrow('db exploded');
+        });
     });
 
     describe('deleteAll', () => {

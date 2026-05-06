@@ -3,7 +3,6 @@ import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import { PlayerLoginWhereUniqueInputObjectSchema } from 'prisma/zod/schemas/objects/PlayerLoginWhereUniqueInput.schema';
 import { PlayerWhereUniqueInputObjectSchema } from 'prisma/zod/schemas/objects/PlayerWhereUniqueInput.schema';
 
-import { normalizeUnknownError } from '@/lib/errors';
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import { FamilyTreeNodeType, PlayerDataType, PlayerFormType } from '@/types';
 import {
@@ -70,13 +69,9 @@ class PlayerService {
      * found
      */
     async getById(id: number): Promise<PlayerDisplayType | null> {
-        try {
-            const where = PlayerWhereUniqueInputObjectSchema.parse({ id });
-            const player = await prisma.player.findUnique({ where });
-            return player ? this.sanitizePlayerName(player) : null;
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
+        const where = PlayerWhereUniqueInputObjectSchema.parse({ id });
+        const player = await prisma.player.findUnique({ where });
+        return player ? this.sanitizePlayerName(player) : null;
     }
 
     /**
@@ -86,19 +81,15 @@ class PlayerService {
      * found
      */
     async getByLogin(login: string): Promise<PlayerDisplayType | null> {
-        try {
-            const where = PlayerLoginWhereUniqueInputObjectSchema.parse({ login });
-            const playerLogin = await prisma.playerLogin.findUnique({
-                where,
-                include: {
-                    player: true,
-                },
-            });
+        const where = PlayerLoginWhereUniqueInputObjectSchema.parse({ login });
+        const playerLogin = await prisma.playerLogin.findUnique({
+            where,
+            include: {
+                player: true,
+            },
+        });
 
-            return playerLogin?.player ? this.sanitizePlayerName(playerLogin.player) : null;
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
+        return playerLogin?.player ? this.sanitizePlayerName(playerLogin.player) : null;
     }
 
     /**
@@ -110,14 +101,10 @@ class PlayerService {
      * such a player exists, or undefined otherwise.
      */
     async getByIdOrLogin(idOrLogin: string): Promise<PlayerDisplayType | null> {
-        try {
-            if (!isNaN(Number(idOrLogin))) {
-                return await this.getById(Number(idOrLogin));
-            } else {
-                return await this.getByLogin(idOrLogin);
-            }
-        } catch (error) {
-            throw normalizeUnknownError(error);
+        if (!isNaN(Number(idOrLogin))) {
+            return this.getById(Number(idOrLogin));
+        } else {
+            return this.getByLogin(idOrLogin);
         }
     }
 
@@ -130,25 +117,21 @@ class PlayerService {
      * if such a player exists, or undefined otherwise.
      */
     async getLogin(idOrLogin: string) {
-        try {
-            if (!isNaN(Number(idOrLogin))) {
-                const playerLogin = await prisma.playerLogin.findFirst({
-                    where: {
-                        playerId: Number(idOrLogin),
-                    },
-                    orderBy: {
-                        login: 'asc',
-                    },
-                });
-                return playerLogin ? playerLogin.login : null;
-            }
-
-            const where = PlayerLoginWhereUniqueInputObjectSchema.parse({ login: idOrLogin });
-            const playerLogin = await prisma.playerLogin.findUnique({ where });
+        if (!isNaN(Number(idOrLogin))) {
+            const playerLogin = await prisma.playerLogin.findFirst({
+                where: {
+                    playerId: Number(idOrLogin),
+                },
+                orderBy: {
+                    login: 'asc',
+                },
+            });
             return playerLogin ? playerLogin.login : null;
-        } catch (error) {
-            throw normalizeUnknownError(error);
         }
+
+        const where = PlayerLoginWhereUniqueInputObjectSchema.parse({ login: idOrLogin });
+        const playerLogin = await prisma.playerLogin.findUnique({ where });
+        return playerLogin ? playerLogin.login : null;
     }
 
     /**
@@ -161,17 +144,13 @@ class PlayerService {
      * @throws If there is an error retrieving the player's ID.
      */
     async getId(idOrLogin: string) {
-        try {
-            if (!isNaN(Number(idOrLogin))) {
-                const player = await this.getById(Number(idOrLogin));
-                return player ? player.id : null;
-            } else {
-                const where = PlayerLoginWhereUniqueInputObjectSchema.parse({ login: idOrLogin });
-                const playerLogin = await prisma.playerLogin.findUnique({ where });
-                return playerLogin ? playerLogin.playerId : null;
-            }
-        } catch (error) {
-            throw normalizeUnknownError(error);
+        if (!isNaN(Number(idOrLogin))) {
+            const player = await this.getById(Number(idOrLogin));
+            return player ? player.id : null;
+        } else {
+            const where = PlayerLoginWhereUniqueInputObjectSchema.parse({ login: idOrLogin });
+            const playerLogin = await prisma.playerLogin.findUnique({ where });
+            return playerLogin ? playerLogin.playerId : null;
         }
     }
 
@@ -196,51 +175,47 @@ class PlayerService {
      * query
      */
     async getAll(options?: { activeOnly?: boolean }): Promise<PlayerDataDisplayType[]> {
-        try {
-            const players = await prisma.player.findMany({
-                where: options?.activeOnly ? { finished: null } : undefined,
-                include: {
-                    outcomes: {
-                        orderBy: {
-                            gameDayId: 'desc',
-                        },
-                    },
-                    extraEmails: {
-                        orderBy: [
-                            { verifiedAt: 'desc' },
-                            { createdAt: 'desc' },
-                        ],
+        const players = await prisma.player.findMany({
+            where: options?.activeOnly ? { finished: null } : undefined,
+            include: {
+                outcomes: {
+                    orderBy: {
+                        gameDayId: 'desc',
                     },
                 },
-            });
+                extraEmails: {
+                    orderBy: [
+                        { verifiedAt: 'desc' },
+                        { createdAt: 'desc' },
+                    ],
+                },
+            },
+        });
 
-            return players.map(({ outcomes, ...player }) => {
-                const gamesResponded = outcomes.filter(outcome => outcome.response !== null);
-                const gamesPlayed = outcomes.filter(outcome => outcome.points !== null);
+        return players.map(({ outcomes, ...player }) => {
+            const gamesResponded = outcomes.filter(outcome => outcome.response !== null);
+            const gamesPlayed = outcomes.filter(outcome => outcome.points !== null);
 
-                const respondedGameDays = gamesResponded.map(outcome => outcome.gameDayId);
-                const playedGameDays = gamesPlayed.map(outcome => outcome.gameDayId);
+            const respondedGameDays = gamesResponded.map(outcome => outcome.gameDayId);
+            const playedGameDays = gamesPlayed.map(outcome => outcome.gameDayId);
 
-                const accountEmail = (player as { accountEmail?: string | null }).accountEmail ?? null;
+            const accountEmail = (player as { accountEmail?: string | null }).accountEmail ?? null;
 
-                const playerWithComputedFields = {
-                    ...player,
-                    accountEmail,
-                    firstResponded: respondedGameDays.length > 0 ? Math.min(...respondedGameDays) : null,
-                    lastResponded: respondedGameDays.length > 0 ? Math.max(...respondedGameDays) : null,
-                    firstPlayed: playedGameDays.length > 0 ? Math.min(...playedGameDays) : null,
-                    lastPlayed: playedGameDays.length > 0 ? Math.max(...playedGameDays) : null,
-                    gamesPlayed: gamesPlayed.length,
-                    gamesWon: gamesPlayed.filter(outcome => outcome.points === 3).length,
-                    gamesDrawn: gamesPlayed.filter(outcome => outcome.points === 1).length,
-                    gamesLost: gamesPlayed.filter(outcome => outcome.points === 0).length,
-                } satisfies PlayerDataType;
+            const playerWithComputedFields = {
+                ...player,
+                accountEmail,
+                firstResponded: respondedGameDays.length > 0 ? Math.min(...respondedGameDays) : null,
+                lastResponded: respondedGameDays.length > 0 ? Math.max(...respondedGameDays) : null,
+                firstPlayed: playedGameDays.length > 0 ? Math.min(...playedGameDays) : null,
+                lastPlayed: playedGameDays.length > 0 ? Math.max(...playedGameDays) : null,
+                gamesPlayed: gamesPlayed.length,
+                gamesWon: gamesPlayed.filter(outcome => outcome.points === 3).length,
+                gamesDrawn: gamesPlayed.filter(outcome => outcome.points === 1).length,
+                gamesLost: gamesPlayed.filter(outcome => outcome.points === 0).length,
+            } satisfies PlayerDataType;
 
-                return this.sanitizePlayerName(playerWithComputedFields);
-            });
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
+            return this.sanitizePlayerName(playerWithComputedFields);
+        });
     }
 
     /**
@@ -250,33 +225,29 @@ class PlayerService {
      * @throws Will throw an error if there is an issue fetching the player data.
      */
     async getAllIdsAndLogins() {
-        try {
-            const players = await prisma.player.findMany({
-                select: {
-                    id: true,
-                    logins: {
-                        select: {
-                            login: true,
-                        },
-                        orderBy: {
-                            login: 'asc',
-                        },
+        const players = await prisma.player.findMany({
+            select: {
+                id: true,
+                logins: {
+                    select: {
+                        login: true,
+                    },
+                    orderBy: {
+                        login: 'asc',
                     },
                 },
-            });
-            const idsAndLogins: string[] = [];
+            },
+        });
+        const idsAndLogins: string[] = [];
 
-            players.forEach((player) => {
-                idsAndLogins.push(player.id.toString());
-                player.logins.forEach((login) => {
-                    idsAndLogins.push(login.login);
-                });
+        players.forEach((player) => {
+            idsAndLogins.push(player.id.toString());
+            player.logins.forEach((login) => {
+                idsAndLogins.push(login.login);
             });
+        });
 
-            return idsAndLogins;
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
+        return idsAndLogins;
     }
 
     /**
@@ -291,26 +262,22 @@ class PlayerService {
         gameDayId: number,
         history: number,
     ): Promise<PlayerFormType[]> {
-        try {
-            return prisma.outcome.findMany({
-                where: {
-                    gameDayId: gameDayId !== 0 ? { lt: gameDayId } : {},
-                    playerId: playerId,
-                    points: {
-                        not: null,
-                    },
+        return prisma.outcome.findMany({
+            where: {
+                gameDayId: gameDayId !== 0 ? { lt: gameDayId } : {},
+                playerId: playerId,
+                points: {
+                    not: null,
                 },
-                orderBy: {
-                    gameDayId: 'desc',
-                },
-                take: history,
-                include: {
-                    gameDay: true,
-                },
-            });
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
+            },
+            orderBy: {
+                gameDayId: 'desc',
+            },
+            take: history,
+            include: {
+                gameDay: true,
+            },
+        });
     }
 
     /**
@@ -322,31 +289,27 @@ class PlayerService {
      * @throws Will propagate any errors encountered during the retrieval process.
      */
     async getLastPlayed(playerId: number, year?: number): Promise<PlayerFormType | null> {
-        try {
-            return prisma.outcome.findFirst({
-                where: {
-                    playerId: playerId,
-                    points: {
-                        not: null,
-                    },
-                    gameDay: {
-                        date: {
-                            gte: year ? new Date(year, 0, 1) : undefined,
-                            lt: year ? new Date(year + 1, 0, 1) : undefined,
-                        },
+        return prisma.outcome.findFirst({
+            where: {
+                playerId: playerId,
+                points: {
+                    not: null,
+                },
+                gameDay: {
+                    date: {
+                        gte: year ? new Date(year, 0, 1) : undefined,
+                        lt: year ? new Date(year + 1, 0, 1) : undefined,
                     },
                 },
-                orderBy: {
-                    gameDayId: 'desc',
-                },
-                include: {
-                    gameDay: true,
-                },
-                take: 1,
-            });
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
+            },
+            orderBy: {
+                gameDayId: 'desc',
+            },
+            include: {
+                gameDay: true,
+            },
+            take: 1,
+        });
     }
 
     /**
@@ -358,64 +321,48 @@ class PlayerService {
      * @throws An error if there is a failure.
      */
     async getYearsActive(playerId: number): Promise<number[]> {
-        try {
-            const outcomes = await prisma.outcome.findMany({
-                where: {
-                    playerId: playerId,
-                },
-                include: {
-                    gameDay: true,
-                },
-            });
-            const years = outcomes.map(o => o.gameDay.date.getFullYear());
-            const distinctYears = Array.from(new Set(years));
-            if (distinctYears.length) {
-                distinctYears.push(0);
-            }
-
-            return Promise.resolve(distinctYears);
-        } catch (error) {
-            throw normalizeUnknownError(error);
+        const outcomes = await prisma.outcome.findMany({
+            where: {
+                playerId: playerId,
+            },
+            include: {
+                gameDay: true,
+            },
+        });
+        const years = outcomes.map(o => o.gameDay.date.getFullYear());
+        const distinctYears = Array.from(new Set(years));
+        if (distinctYears.length) {
+            distinctYears.push(0);
         }
+
+        return distinctYears;
     }
 
     /**
      * Creates a player from validated write input.
      * @param data - Player write payload.
      * @returns The created player row.
-     * @throws {z.ZodError} If input or Prisma-args validation fails.
-     * @throws {Error} If Prisma create fails.
      */
     async create(data: PlayerCreateWriteInput): Promise<PlayerDisplayType> {
-        try {
-            const writeData = PlayerCreateWriteInputSchema.parse(data);
-            const args = PlayerCreateOneStrictSchema.parse({ data: writeData });
-            const player = await prisma.player.create(args);
-            return this.sanitizePlayerName(player);
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
+        const writeData = PlayerCreateWriteInputSchema.parse(data);
+        const args = PlayerCreateOneStrictSchema.parse({ data: writeData });
+        const player = await prisma.player.create(args);
+        return this.sanitizePlayerName(player);
     }
 
     /**
      * Updates an existing player by id from validated write input.
      * @param data - Player write payload including `id` and update fields.
      * @returns The updated player row.
-     * @throws {z.ZodError} If input or Prisma-args validation fails.
-     * @throws {Error} If Prisma update fails.
      */
     async update(data: PlayerUpdateWriteInput): Promise<PlayerDisplayType> {
-        try {
-            const { id, ...updateData } = PlayerUpdateWriteInputSchema.parse(data);
-            const args = PlayerUpdateOneStrictSchema.parse({
-                where: { id },
-                data: updateData,
-            });
-            const player = await prisma.player.update(args);
-            return this.sanitizePlayerName(player);
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
+        const { id, ...updateData } = PlayerUpdateWriteInputSchema.parse(data);
+        const args = PlayerUpdateOneStrictSchema.parse({
+            where: { id },
+            data: updateData,
+        });
+        const player = await prisma.player.update(args);
+        return this.sanitizePlayerName(player);
     }
 
     /**
@@ -433,20 +380,16 @@ class PlayerService {
      * errors).
      */
     async anonymise(id: number): Promise<PlayerDisplayType> {
-        try {
-            const where = PlayerWhereUniqueInputObjectSchema.parse({ id });
-            const data = {
-                anonymous: true,
-                name: null,
-                accountEmail: null,
-                finished: new Date(),
-            };
+        const where = PlayerWhereUniqueInputObjectSchema.parse({ id });
+        const data = {
+            anonymous: true,
+            name: null,
+            accountEmail: null,
+            finished: new Date(),
+        };
 
-            const player = await prisma.player.update({ where, data });
-            return this.sanitizePlayerName(player);
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
+        const player = await prisma.player.update({ where, data });
+        return this.sanitizePlayerName(player);
     }
 
     /**
@@ -460,17 +403,13 @@ class PlayerService {
      * @throws Will throw if input validation or the database update fails.
      */
     async setFinished(playerId: number, finished = true): Promise<PlayerDisplayType> {
-        try {
-            const where = PlayerWhereUniqueInputObjectSchema.parse({ id: playerId });
-            const data = {
-                finished: finished ? new Date() : null,
-            };
+        const where = PlayerWhereUniqueInputObjectSchema.parse({ id: playerId });
+        const data = {
+            finished: finished ? new Date() : null,
+        };
 
-            const player = await prisma.player.update({ where, data });
-            return this.sanitizePlayerName(player);
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
+        const player = await prisma.player.update({ where, data });
+        return this.sanitizePlayerName(player);
     }
 
     /**
@@ -491,21 +430,16 @@ class PlayerService {
             if (isPrismaNotFoundError(error)) {
                 return;
             }
-            throw normalizeUnknownError(error);
+            throw error;
         }
     }
 
     /**
      * Deletes all players.
      * @returns Resolves when bulk deletion completes.
-     * @throws {Error} If Prisma deleteMany fails.
      */
     async deleteAll(): Promise<void> {
-        try {
-            await prisma.player.deleteMany();
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
+        await prisma.player.deleteMany();
     }
 
     /**
@@ -533,11 +467,9 @@ class PlayerService {
      *
      * @returns A promise resolving to a single {@link FamilyTreeNodeType} root
      * node whose children form the complete introduction tree.
-     * @throws {Error} If the database query fails.
      */
     async getFamilyTree(): Promise<FamilyTreeNodeType> {
-        try {
-            const [allPlayers, playedRows] = await Promise.all([
+        const [allPlayers, playedRows] = await Promise.all([
                 prisma.player.findMany({
                     select: {
                         id: true,
@@ -668,9 +600,6 @@ class PlayerService {
                 }
             }
             return root;
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
     }
 }
 

@@ -1,7 +1,6 @@
 import { headers } from 'next/headers';
 
 import { auth } from '@/lib/auth';
-import { normalizeUnknownError } from '@/lib/errors';
 
 
 interface AuthSessionUser {
@@ -24,15 +23,11 @@ class AuthService {
      * @returns A promise that resolves to the current session user or null.
      */
     async getSessionUser() {
-        try {
-            const session = await auth.api.getSession({
-                headers: await headers(),
-            }) as { user?: AuthSessionUser | null } | null;
+        const session = await auth.api.getSession({
+            headers: await headers(),
+        }) as { user?: AuthSessionUser | null } | null;
 
-            return session?.user ?? null;
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
+        return session?.user ?? null;
     }
 
     /**
@@ -41,14 +36,10 @@ class AuthService {
      * @returns The update response from Better Auth.
      */
     async updateCurrentUser(data: Record<string, unknown>) {
-        try {
-            return await auth.api.updateUser({
-                headers: await headers(),
-                body: data,
-            });
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
+        return auth.api.updateUser({
+            headers: await headers(),
+            body: data,
+        });
     }
 
     /**
@@ -61,17 +52,13 @@ class AuthService {
      * @returns The change-email response from Better Auth.
      */
     async changeCurrentUserEmail(input: ChangeCurrentUserEmailInput) {
-        try {
-            return await auth.api.changeEmail({
-                headers: await headers(),
-                body: {
-                    newEmail: input.newEmail,
-                    callbackURL: input.callbackURL,
-                },
-            });
-        } catch (error) {
-            throw normalizeUnknownError(error);
-        }
+        return auth.api.changeEmail({
+            headers: await headers(),
+            body: {
+                newEmail: input.newEmail,
+                callbackURL: input.callbackURL,
+            },
+        });
     }
 }
 

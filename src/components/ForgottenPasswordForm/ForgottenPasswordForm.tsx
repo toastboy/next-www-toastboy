@@ -29,6 +29,8 @@ export const ForgottenPasswordForm = () => {
     const handleSubmit = async (
         values: typeof form.values,
     ) => {
+        const normalizedEmail = values.email.trim().toLowerCase();
+
         const id = notifications.show({
             loading: true,
             title: 'Requesting password reset',
@@ -39,7 +41,7 @@ export const ForgottenPasswordForm = () => {
 
         try {
             await authClient.requestPasswordReset({
-                email: values.email,
+                email: normalizedEmail,
                 redirectTo: new URL('/footy/auth/reset-password', getPublicBaseUrl()).toString(),
             });
 
@@ -59,7 +61,7 @@ export const ForgottenPasswordForm = () => {
                 action: 'requestPasswordReset',
                 route: '/footy/forgottenpassword',
                 extra: {
-                    email: values.email,
+                    email: normalizedEmail,
                 },
             });
             notifications.update({
@@ -117,12 +119,7 @@ const validateForgottenPasswordEmail = (value: string, ctx: z.RefinementCtx) => 
 };
 
 const ForgottenPasswordSchema = z.object({
-    email: z.preprocess(
-        (value) => {
-            return typeof value === 'string' ? value.trim().toLowerCase() : value;
-        },
-        z.string().superRefine(validateForgottenPasswordEmail),
-    ),
+    email: z.string().trim().toLowerCase().superRefine(validateForgottenPasswordEmail),
 });
 
 type ForgottenPasswordInput = z.infer<typeof ForgottenPasswordSchema>;

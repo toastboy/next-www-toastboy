@@ -4,6 +4,28 @@ import { beforeDeletePlayerCore, deletePlayerCore } from '@/lib/actions/deletePl
 import { AuthError } from '@/lib/errors';
 import type { AuthUserSummary } from '@/types/AuthUser';
 
+const { deleteUserMock, getCurrentUserMock, headersMock } = vi.hoisted(() => ({
+    deleteUserMock: vi.fn().mockResolvedValue(undefined),
+    getCurrentUserMock: vi.fn(),
+    headersMock: vi.fn().mockResolvedValue(new Headers()),
+}));
+
+vi.mock('@/lib/auth', () => ({
+    auth: {
+        api: {
+            deleteUser: deleteUserMock,
+        },
+    },
+}));
+
+vi.mock('@/lib/auth.server', () => ({
+    getCurrentUser: getCurrentUserMock,
+}));
+
+vi.mock('next/headers', () => ({
+    headers: headersMock,
+}));
+
 describe('beforeDeletePlayerCore', () => {
     it('cleans up player data before deletion', async () => {
         const deps = {
@@ -82,6 +104,23 @@ describe('deletePlayerCore', () => {
 
         await expect(deletePlayerCore(deps)).rejects.toBeInstanceOf(AuthError);
         expect(deps.auth.api.deleteUser).not.toHaveBeenCalled();
+    });
+
+    it('uses default deps when no deps argument is provided', async () => {
+        getCurrentUserMock.mockResolvedValue({
+            name: 'Alex',
+            email: 'alex@example.com',
+            playerId: 42,
+            role: 'user',
+        });
+
+        await deletePlayerCore();
+
+        expect(getCurrentUserMock).toHaveBeenCalled();
+        expect(deleteUserMock).toHaveBeenCalledWith({
+            body: { callbackURL: '/footy/auth/accountdeleted' },
+            headers: expect.any(Headers) as unknown,
+        });
     });
 
     it('deletes the authenticated user', async () => {

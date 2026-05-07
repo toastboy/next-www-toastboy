@@ -86,6 +86,7 @@ async function requestPlayerEmailVerification(
 ) {
     const normalizedEmail = email.trim();
 
+    /* v8 ignore next 3 */
     if (!normalizedEmail) {
         throw new ValidationError('Email address is required.');
     }

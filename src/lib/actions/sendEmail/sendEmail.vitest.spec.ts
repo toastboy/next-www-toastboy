@@ -38,6 +38,7 @@ import { sendEmailCore } from '@/lib/actions/sendEmail';
 describe('sendEmailCore', () => {
     beforeEach(() => {
         vi.clearAllMocks();
+        vi.unstubAllEnvs();
         vi.stubEnv('NODE_ENV', 'test');
         vi.stubEnv('CI', '');
         getSecretsMock.mockReturnValue({
@@ -157,6 +158,101 @@ describe('sendEmailCore', () => {
                 html: '<p>Hello</p>',
             }),
         ).rejects.toThrow('Graph API sendMail failed (403): Forbidden');
+    });
+
+    it('uses local transport in production when CI is set', async () => {
+        vi.stubEnv('NODE_ENV', 'production');
+        vi.stubEnv('CI', 'true');
+
+        await sendEmailCore({
+            to: 'player@example.com',
+            subject: 'CI test',
+            html: '<p>Hello</p>',
+        });
+
+        expect(createTransportMock).toHaveBeenCalled();
+        expect(sendViaGraphApiMock).not.toHaveBeenCalled();
+    });
+
+    it('uses local transport in production when PLAYWRIGHT_TEST is true', async () => {
+        vi.stubEnv('NODE_ENV', 'production');
+        vi.stubEnv('CI', '');
+        vi.stubEnv('PLAYWRIGHT_TEST', 'true');
+
+        await sendEmailCore({
+            to: 'player@example.com',
+            subject: 'Playwright test',
+            html: '<p>Hello</p>',
+        });
+
+        expect(createTransportMock).toHaveBeenCalled();
+        expect(sendViaGraphApiMock).not.toHaveBeenCalled();
+    });
+
+    it('omits html from sendMail when html is not provided', async () => {
+        await sendEmailCore({
+            to: 'player@example.com',
+            subject: 'No HTML',
+        });
+
+        expect(sendMailMock).toHaveBeenCalledWith(
+            expect.not.objectContaining({ html: expect.anything() as unknown }),
+        );
+        expect(sanitizeHtmlMock).not.toHaveBeenCalled();
+    });
+
+    it('converts array recipients to comma-separated string for Graph API', async () => {
+        vi.stubEnv('NODE_ENV', 'production');
+        vi.stubEnv('CI', '');
+
+        await sendEmailCore({
+            to: ['a@example.com', 'b@example.com'],
+            cc: [{ address: 'c@example.com', name: 'C' }],
+            bcc: [{ address: 'd@example.com', name: 'D' }, 'e@example.com'],
+            subject: 'Multi-recipient',
+            html: '<p>Hi</p>',
+        });
+
+        expect(sendViaGraphApiMock).toHaveBeenCalledWith(
+            expect.objectContaining({
+                to: 'a@example.com,b@example.com',
+                cc: 'c@example.com',
+                bcc: 'd@example.com,e@example.com',
+            }),
+            expect.anything(),
+        );
+    });
+
+    it('converts Address object to string for Graph API', async () => {
+        vi.stubEnv('NODE_ENV', 'production');
+        vi.stubEnv('CI', '');
+
+        await sendEmailCore({
+            to: { address: 'player@example.com', name: 'Player' },
+            subject: 'Address object test',
+            html: '<p>Hi</p>',
+        });
+
+        expect(sendViaGraphApiMock).toHaveBeenCalledWith(
+            expect.objectContaining({ to: 'player@example.com' }),
+            expect.anything(),
+        );
+    });
+
+    it('passes undefined html to Graph API when html is not a string', async () => {
+        vi.stubEnv('NODE_ENV', 'production');
+        vi.stubEnv('CI', '');
+
+        await sendEmailCore({
+            to: 'player@example.com',
+            subject: 'No HTML in prod',
+        });
+
+        expect(sendViaGraphApiMock).toHaveBeenCalledWith(
+            expect.objectContaining({ html: undefined }),
+            expect.anything(),
+        );
+        expect(sanitizeHtmlMock).not.toHaveBeenCalled();
     });
 
     describe('requireSecret validation in production', () => {

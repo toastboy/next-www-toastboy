@@ -134,6 +134,86 @@ describe('listUsersActionCore', () => {
         expect(users).toHaveLength(1);
         expect(users[0]?.createdAt).toBe('2026-02-01T00:00:00.000Z');
     });
+
+    it('calls auth api listUsers in live mode with limit query when email is absent', async () => {
+        const deps = createDeps({
+            getMockAuthState: vi.fn().mockResolvedValue('none'),
+        });
+
+        await listUsersActionCore(undefined, deps);
+
+        const [listUsersPayload] = vi.mocked(deps.auth.api.listUsers).mock.calls[0] as [{ query: unknown }];
+        expect(listUsersPayload.query).toEqual({ limit: 10 });
+    });
+
+    it('returns an empty array when the API response has no users', async () => {
+        const deps = createDeps({
+            getMockAuthState: vi.fn().mockResolvedValue('none'),
+        });
+        vi.mocked(deps.auth.api.listUsers).mockResolvedValue(null as unknown as { users: []; total: number });
+
+        const users = await listUsersActionCore(undefined, deps);
+
+        expect(users).toEqual([]);
+    });
+
+    it('serializes string date fields via new Date() when not already Date instances', async () => {
+        const deps = createDeps({
+            getMockAuthState: vi.fn().mockResolvedValue('none'),
+        });
+        vi.mocked(deps.auth.api.listUsers).mockResolvedValue({
+            users: [
+                {
+                    id: 'u1',
+                    name: 'String Date User',
+                    email: 'str@example.com',
+                    role: 'user',
+                    createdAt: '2025-06-01T00:00:00.000Z' as unknown as Date,
+                    updatedAt: '2025-06-02T00:00:00.000Z' as unknown as Date,
+                    emailVerified: false,
+                    image: null,
+                    banned: false,
+                    banReason: null,
+                    banExpires: '2025-12-31T00:00:00.000Z' as unknown as Date,
+                },
+            ],
+            total: 1,
+        });
+
+        const users = await listUsersActionCore(undefined, deps);
+
+        expect(users[0]?.createdAt).toBe('2025-06-01T00:00:00.000Z');
+        expect(users[0]?.updatedAt).toBe('2025-06-02T00:00:00.000Z');
+        expect(users[0]?.banExpires).toBe('2025-12-31T00:00:00.000Z');
+    });
+
+    it('serializes banExpires as ISO string when it is a Date object', async () => {
+        const deps = createDeps({
+            getMockAuthState: vi.fn().mockResolvedValue('none'),
+        });
+        vi.mocked(deps.auth.api.listUsers).mockResolvedValue({
+            users: [
+                {
+                    id: 'u2',
+                    name: 'Banned User',
+                    email: 'banned@example.com',
+                    role: 'user',
+                    createdAt: new Date('2025-01-01T00:00:00.000Z'),
+                    updatedAt: new Date('2025-01-02T00:00:00.000Z'),
+                    emailVerified: false,
+                    image: null,
+                    banned: true,
+                    banReason: 'Spam',
+                    banExpires: new Date('2025-06-30T00:00:00.000Z'),
+                },
+            ],
+            total: 1,
+        });
+
+        const users = await listUsersActionCore(undefined, deps);
+
+        expect(users[0]?.banExpires).toBe('2025-06-30T00:00:00.000Z');
+    });
 });
 
 describe('setAdminRoleActionCore', () => {
@@ -157,7 +237,7 @@ describe('setAdminRoleActionCore', () => {
         expect(deps.auth.api.setRole).not.toHaveBeenCalled();
     });
 
-    it('calls auth api setRole in live mode', async () => {
+    it('calls auth api setRole in live mode with role user', async () => {
         const deps = createDeps({
             getMockAuthState: vi.fn().mockResolvedValue('none'),
         });
@@ -177,5 +257,18 @@ describe('setAdminRoleActionCore', () => {
             userId: 'abc',
             role: 'user',
         });
+    });
+
+    it('calls auth api setRole in live mode with role admin', async () => {
+        const deps = createDeps({
+            getMockAuthState: vi.fn().mockResolvedValue('none'),
+        });
+
+        await setAdminRoleActionCore('abc', true, deps);
+
+        const [setRolePayload] = vi.mocked(deps.auth.api.setRole).mock.calls[0] as unknown as [{
+            body: { role: string };
+        }];
+        expect(setRolePayload.body.role).toBe('admin');
     });
 });

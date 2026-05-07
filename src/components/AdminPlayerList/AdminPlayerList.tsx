@@ -179,21 +179,14 @@ export const AdminPlayerList = ({
     };
 
     /**
-     * Sends onboarding invites and extra email verifications for the selected players.
+     * Sends onboarding invites and extra email verifications for the selected
+     * players. Not expected to called with an empty list since the button is
+     * disabled, but will handle that case anyway.
      *
      * @param onboardPlayers - The players to onboard.
      * @returns A promise that resolves when onboarding emails are handled.
      */
     const handleOnboardPlayers = async (onboardPlayers: PlayerDataType[]) => {
-        if (onboardPlayers.length === 0) {
-            notifications.show({
-                color: 'yellow',
-                title: 'No players selected',
-                message: 'Select at least one player to onboard.',
-            });
-            return;
-        }
-
         const id = notifications.show({
             loading: true,
             title: 'Onboarding players',
@@ -264,14 +257,8 @@ export const AdminPlayerList = ({
 
     const handleImpersonatePlayer = async (player: PlayerDataType) => {
         const userId = getUserIdForPlayer(player);
-        if (!userId) {
-            notifications.show({
-                color: 'yellow',
-                title: 'No user account found',
-                message: 'This player does not have a Better Auth account to impersonate.',
-            });
-            return;
-        }
+
+        // The button should be disabled if there's no userId.
 
         const id = notifications.show({
             loading: true,

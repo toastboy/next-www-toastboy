@@ -298,7 +298,7 @@ export const AdminPlayerList = ({
                 id,
                 color: 'teal',
                 title: 'Impersonation active',
-                message: `Now impersonating ${player.name ?? player.accountEmail ?? 'player'}.`,
+                message: `Now impersonating ${getImpersonationLabel(player)}.`,
                 loading: false,
                 autoClose: config.notificationAutoClose,
             });
@@ -560,6 +560,16 @@ function getPreferredEmail(player: PlayerDataType) {
 };
 
 /**
+ * Chooses the display label for impersonation status notifications.
+ *
+ * @param player - The player being impersonated.
+ * @returns The player name, account email, or a generic fallback label.
+ */
+function getImpersonationLabel(player: PlayerDataType) {
+    return player.name ?? player.accountEmail ?? 'player';
+};
+
+/**
  * Builds the HTML for the onboarding invite email.
  *
  * @param inviteLink - The invite link for claim signup.
@@ -591,4 +601,20 @@ function buildInviteEmail(inviteLink: string) {
             </Flex>
         </MantineProvider>,
     );
+};
+
+/**
+ * Test-only access to AdminPlayerList pure helpers.
+ *
+ * @remarks
+ * These functions are exported so the spec can cover null-ordering and
+ * defensive fallback branches without overfitting UI-driven tests to sort
+ * implementation details.
+ */
+export const __testing__ = {
+    compareNullableNumber,
+    compareNullableString,
+    comparePlayers,
+    getImpersonationLabel,
+    getPreferredEmail,
 };

@@ -1,3 +1,4 @@
+import type { useForm as useFormType } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -6,8 +7,62 @@ import { vi } from 'vitest';
 import { GameInvitationResponseForm } from '@/components/GameInvitationResponseForm/GameInvitationResponseForm';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 import { Wrapper } from '@/tests/components/lib/common';
-import { defaultGameInvitationResponseDetails } from '@/tests/mocks/data/gameInvitationResponse';
+import {
+    createMockGameInvitationResponseDetails,
+    defaultGameInvitationResponseDetails,
+} from '@/tests/mocks/data/gameInvitationResponse';
 import { SubmitGameInvitationResponseProxy } from '@/types/actions/SubmitGameInvitationResponse';
+import { GameInvitationResponseDetails } from '@/types/GameInvitationResponseDetails';
+
+const formMockState = vi.hoisted(() => ({
+    submitUndefinedComment: false,
+}));
+
+vi.mock('@mantine/form', async (importOriginal) => {
+    const actual = await importOriginal<typeof import('@mantine/form')>();
+
+    return {
+        ...actual,
+        useForm: (options: Parameters<typeof useFormType>[0]) => {
+            if (!formMockState.submitUndefinedComment) {
+                return actual.useForm(options);
+            }
+
+            return {
+                getInputProps: (field: string, config?: { type?: string }) => {
+                    if (config?.type === 'checkbox') {
+                        return {
+                            checked: false,
+                            onChange: vi.fn(),
+                        };
+                    }
+
+                    if (field === 'response') {
+                        return {
+                            value: 'No',
+                            onChange: vi.fn(),
+                        };
+                    }
+
+                    return {
+                        value: '',
+                        onChange: vi.fn(),
+                    };
+                },
+                onSubmit:
+                    (handler: (values: { response: 'No'; goalie: false; comment: undefined }) => Promise<void>) =>
+                        async (event?: { preventDefault?: () => void }) => {
+                            event?.preventDefault?.();
+                            await handler({
+                                response: 'No',
+                                goalie: false,
+                                comment: undefined,
+                            });
+                        },
+            };
+        },
+    };
+});
 
 vi.mock('@/lib/observability/sentry', () => ({
     captureUnexpectedError: vi.fn(),
@@ -18,6 +73,7 @@ describe('GameInvitationResponseForm', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
+        formMockState.submitUndefinedComment = false;
     });
 
     it('renders the response form', () => {
@@ -35,6 +91,35 @@ describe('GameInvitationResponseForm', () => {
         expect(screen.getByLabelText(/Goalie/i)).toBeInTheDocument();
         expect(screen.getByLabelText(/Optional comment/i)).toBeInTheDocument();
         expect(screen.getByRole('button', { name: /Done/i })).toBeInTheDocument();
+    });
+
+    it('renders fallback values when invitation has no prior response or player login', () => {
+        const detailsWithNoResponse = {
+            ...createMockGameInvitationResponseDetails({
+                response: null,
+                playerLogin: null,
+                comment: null,
+            }),
+            goalie: undefined,
+        } as unknown as GameInvitationResponseDetails;
+
+        render(
+            <Wrapper>
+                <GameInvitationResponseForm
+                    details={detailsWithNoResponse}
+                    onSubmitGameInvitationResponse={mockSubmitGameInvitationResponse}
+                />
+            </Wrapper>,
+        );
+
+        expect(screen.getByText('Enter Your Response')).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: detailsWithNoResponse.playerName })).toHaveAttribute(
+            'href',
+            `/footy/player/${detailsWithNoResponse.playerId}`,
+        );
+        expect(screen.getByText((content) => content.includes('No response yet'))).toBeInTheDocument();
+        expect(screen.getByLabelText(/Response/i)).toHaveValue('Dunno');
+        expect(screen.getByLabelText(/Goalie/i)).not.toBeChecked();
     });
 
     it('submits an updated response', async () => {
@@ -116,4 +201,59 @@ describe('GameInvitationResponseForm', () => {
             }));
         });
     });
+
+    it('shows a default error message when submit fails with a non-Error value', async () => {
+        const user = userEvent.setup();
+        const notificationUpdateSpy = vi.spyOn(notifications, 'update');
+        const failingSubmit = vi.fn<SubmitGameInvitationResponseProxy>().mockRejectedValue('badness');
+
+        render(
+            <Wrapper>
+                <GameInvitationResponseForm
+                    details={defaultGameInvitationResponseDetails}
+                    onSubmitGameInvitationResponse={failingSubmit}
+                />
+            </Wrapper>,
+        );
+
+        await user.click(screen.getByRole('button', { name: /Done/i }));
+
+        await waitFor(() => {
+            expect(captureUnexpectedError).toHaveBeenCalledWith('badness', expect.any(Object));
+        });
+
+        await waitFor(() => {
+            expect(notificationUpdateSpy).toHaveBeenCalledWith(expect.objectContaining({
+                color: 'red',
+                title: 'Error',
+                message: 'Failed to save response',
+            }));
+        });
+    });
+
+    it('submits null when the form provides an undefined comment value', async () => {
+        const user = userEvent.setup();
+        formMockState.submitUndefinedComment = true;
+
+        render(
+            <Wrapper>
+                <GameInvitationResponseForm
+                    details={defaultGameInvitationResponseDetails}
+                    onSubmitGameInvitationResponse={mockSubmitGameInvitationResponse}
+                />
+            </Wrapper>,
+        );
+
+        await user.click(screen.getByRole('button', { name: /Done/i }));
+
+        await waitFor(() => {
+            expect(mockSubmitGameInvitationResponse).toHaveBeenCalledWith({
+                token: defaultGameInvitationResponseDetails.token,
+                response: 'No',
+                goalie: false,
+                comment: null,
+            });
+        });
+    });
+
 });

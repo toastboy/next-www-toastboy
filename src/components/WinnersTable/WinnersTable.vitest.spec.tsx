@@ -25,4 +25,19 @@ describe('WinnersTable', () => {
         expect(props.length).toBe(20);
         expect(props[0].player.name).toEqual('Gary Player');
     });
+
+    it('renders no winners table when there are no records', () => {
+        const { container } = render(
+            <Wrapper>
+                <WinnersTable
+                    table={TableNameSchema.enum.points}
+                    records={[]}
+                />
+            </Wrapper>,
+        );
+
+        expect(screen.queryByRole('table')).not.toBeInTheDocument();
+        expect(screen.queryByText('Points')).not.toBeInTheDocument();
+        expect(container.firstChild?.nodeName).toBe('STYLE');
+    });
 });

@@ -58,6 +58,24 @@ describe('UserButton', () => {
         });
     });
 
+    it('falls back to empty name and email when user values are null', async () => {
+        render(
+            <Wrapper>
+                <UserButton user={{
+                    name: null,
+                    email: null,
+                    playerId: 12,
+                    role: 'user',
+                }} />
+            </Wrapper>,
+        );
+
+        await waitFor(() => {
+            expect(screen.getByTestId('user-name')).toHaveTextContent('');
+            expect(screen.getByTestId('user-email')).toHaveTextContent('');
+        });
+    });
+
     it('renders user avatar', async () => {
         render(
             <Wrapper>
@@ -216,6 +234,28 @@ describe('UserButton', () => {
         await waitFor(() => {
             expect(global.fetch).toHaveBeenCalledWith('/api/auth/admin/stop-impersonating', expect.objectContaining({ method: 'POST' }));
             expect(refresh).toHaveBeenCalled();
+        });
+    });
+
+    it('shows error notification when stop-impersonating API fails', async () => {
+        const user = userEvent.setup();
+        const notificationUpdateSpy = vi.spyOn(notifications, 'update');
+        vi.spyOn(global, 'fetch').mockResolvedValue(new Response('Forbidden', { status: 403 }));
+
+        render(
+            <Wrapper>
+                <UserButton user={{ name: 'Harriette Spoonlicker', email: 'h@example.com', playerId: 12, role: 'user', impersonatedBy: 'admin@example.com' }} />
+            </Wrapper>,
+        );
+
+        await user.click(screen.getByTestId('user-button'));
+        await user.click(await screen.findByText('End impersonation'));
+
+        await waitFor(() => {
+            expect(notificationUpdateSpy).toHaveBeenCalledWith(expect.objectContaining({
+                color: 'red',
+                title: 'Error',
+            }));
         });
     });
 });

@@ -147,7 +147,7 @@ export const SignIn = ({ admin, redirect }: Props) => {
                         placeholder="Enter your email"
                         rightSection={<IconAt size={16} />}
                         {...form.getInputProps('email')}
-                        value={form.values.email ?? ''}
+                        value={form.values.email}
 
                     />
                     <PasswordInput
@@ -156,7 +156,7 @@ export const SignIn = ({ admin, redirect }: Props) => {
                         placeholder="Enter your password"
                         rightSection={<IconLock size={16} />}
                         {...form.getInputProps('password')}
-                        value={form.values.password ?? ''}
+                        value={form.values.password}
 
                     />
                     {errorNotification}

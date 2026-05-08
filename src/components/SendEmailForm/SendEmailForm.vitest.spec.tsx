@@ -1,6 +1,8 @@
 import { notifications } from '@mantine/notifications';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { type Editor, useEditor } from '@tiptap/react';
+import type { MockedFunction } from 'vitest';
 import { vi } from 'vitest';
 
 import { SendEmailForm } from '@/components/SendEmailForm/SendEmailForm';
@@ -11,6 +13,8 @@ import { createMockPlayerData, defaultPlayerData } from '@/tests/mocks/data/play
 vi.mock('@/lib/observability/sentry', () => ({
     captureUnexpectedError: vi.fn(),
 }));
+
+const mockUseEditor = useEditor as MockedFunction<typeof useEditor>;
 
 describe('SendEmailForm', () => {
     beforeEach(() => {
@@ -34,6 +38,25 @@ describe('SendEmailForm', () => {
             expect(screen.getByLabelText(/Subject/i)).toBeInTheDocument();
             expect(screen.getByRole('button', { name: /Send Mail/i })).toBeInTheDocument();
         });
+    });
+
+    it('renders nothing when editor is not yet initialised', () => {
+        mockUseEditor.mockReturnValueOnce(null as unknown as Editor);
+
+        render(
+            <Wrapper>
+                <SendEmailForm
+                    opened={true}
+                    players={[defaultPlayerData]}
+                    onClose={vi.fn()}
+                    onSendEmail={async () => Promise.resolve()}
+                />
+            </Wrapper>,
+        );
+
+        expect(screen.queryByLabelText(/Subject/i)).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: /Send Mail/i })).not.toBeInTheDocument();
+        expect(screen.queryByText(/Send Mail to Players/i)).not.toBeInTheDocument();
     });
 
     it('sends to verified extra emails when available, alongside account email', async () => {

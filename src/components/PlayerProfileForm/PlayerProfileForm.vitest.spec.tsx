@@ -339,4 +339,33 @@ describe('PlayerProfileForm', () => {
             );
         });
     });
+
+    it('falls back to defaults for nullish player fields when no account email prop is provided', () => {
+        const playerWithNullishFields = {
+            ...defaultPlayer,
+            name: null,
+            born: null,
+            anonymous: null,
+            accountEmail: null,
+        };
+
+        render(
+            <Wrapper>
+                <PlayerProfileForm
+                    player={playerWithNullishFields}
+                    extraEmails={defaultPlayerExtraEmails}
+                    countries={defaultCountrySupporterDataList}
+                    clubs={defaultClubSupporterDataList}
+                    allCountries={defaultCountryList}
+                    allClubs={defaultClubList}
+                    onUpdatePlayer={mockUpdatePlayer}
+                />
+            </Wrapper>,
+        );
+
+        expect(screen.getByTestId('name-input')).toHaveValue('');
+        expect(screen.getByTestId('account-email-input')).toHaveValue('');
+        expect(screen.getByTestId('anonymous-switch')).not.toBeChecked();
+        expect(screen.getByTestId('born-input')).toHaveValue('');
+    });
 });

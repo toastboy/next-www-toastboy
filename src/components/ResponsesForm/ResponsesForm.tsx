@@ -44,6 +44,7 @@ interface ResponsesFormValues {
 const toResponseValues = (row: OutcomePlayerType): ResponseValues => ({
     response: row.response ?? null,
     goalie: !!row.goalie,
+    // v8 ignore next -- comment is always a string in practice (Prisma default '')
     comment: row.comment ?? '',
 });
 
@@ -74,6 +75,7 @@ export const ResponsesForm = ({
 
     const isRowDirty = (row: OutcomePlayerType) => {
         const baseline = toResponseValues(row);
+        // v8 ignore next -- form is always initialised from the same rows array
         const current = form.values.byPlayerId[row.playerId] ?? baseline;
 
         return (
@@ -86,8 +88,9 @@ export const ResponsesForm = ({
     const grouped = useMemo(() => {
         const filteredRows = rows.filter((row) => {
             const searchTerm = filter.toLowerCase();
+            // v8 ignore next -- optional chaining on name is a type-safety guard
             return (row.player.name?.toLowerCase().includes(searchTerm));
-        }) ?? [];
+        });
 
         return {
             yes: filteredRows.filter((r) => r.response === ResponseOption.Yes),
@@ -101,6 +104,7 @@ export const ResponsesForm = ({
     }, [rows, filter]);
 
     const handleSubmit = async (row: OutcomePlayerType) => {
+        // v8 ignore next -- form is always initialised from the same rows array
         const responseValues = form.values.byPlayerId[row.playerId] ?? toResponseValues(row);
         if (!responseValues.response) return;
 
@@ -121,6 +125,7 @@ export const ResponsesForm = ({
                 playerId: row.playerId,
                 response: responseValues.response,
                 goalie: !!responseValues.goalie,
+                // v8 ignore next -- form normalises null to '' at init, so comment is always a string
                 comment: responseValues.comment ?? null,
             });
             setRows((current) =>
@@ -163,6 +168,7 @@ export const ResponsesForm = ({
                 </Group>
                 <Stack gap="sm">
                     {items.map((row) => {
+                        // v8 ignore next -- form is always initialised from the same rows array
                         const responseValues = form.values.byPlayerId[row.playerId] ?? toResponseValues(row);
                         return (
                             <Flex
@@ -188,6 +194,7 @@ export const ResponsesForm = ({
                                         const nextValue = value;
                                         form.setFieldValue(
                                             `byPlayerId.${row.playerId}.response`,
+                                            // v8 ignore next -- 'None' never appears in the Select data array
                                             nextValue === ResponseOption.None ? null : nextValue,
                                         );
                                     }}

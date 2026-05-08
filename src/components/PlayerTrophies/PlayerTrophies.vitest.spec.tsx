@@ -30,6 +30,23 @@ describe('PlayerTrophies', () => {
         }
     });
 
+    it('passes an empty list when a table key is missing from the trophies map', () => {
+        const partialTrophies = new Map(
+            Array.from(defaultTrophiesList.entries()).filter(([table]) => table !== 'pub'),
+        );
+
+        render(
+            <Wrapper>
+                <PlayerTrophies trophies={partialTrophies} />
+            </Wrapper>,
+        );
+
+        const props = extractMockProps<PlayerTrophyTallyProps>('PlayerTrophyTally');
+        expect(props).toHaveLength(5);
+        expect(props[4].table).toEqual('pub');
+        expect(props[4].trophies).toEqual([]);
+    });
+
     it('renders nothing when all trophy lists are empty', () => {
         const emptyTrophies = new Map(
             TableNameSchema.options.map((table) => [table, []]),

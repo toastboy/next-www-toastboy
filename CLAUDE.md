@@ -113,6 +113,7 @@ export class SomeModelService {
 - Test files: `*.vitest.spec.ts(x)` alongside code in `__tests__/` subdirectory
 - Mocks: `__mocks__/` as sibling to the target code
 - Use accessible selectors (`getByRole`, `getByLabelText`, `getByText`) over `data-testid`
+- Prefer the generic overload (`getByRole<HTMLInputElement>(…)`) over a type assertion (`as HTMLInputElement`) when narrowing query results — ESLint strips assertions but preserves generics
 - Don't test generated Zod schemas directly — test service method behaviour and validation
 - E2E tests: `e2e/*.spec.ts`, must be fully parallel-safe
 

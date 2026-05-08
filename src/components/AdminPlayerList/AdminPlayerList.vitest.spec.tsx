@@ -2,7 +2,15 @@ import { notifications } from '@mantine/notifications';
 import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { vi } from 'vitest';
 
-import { __testing__, AdminPlayerList } from '@/components/AdminPlayerList/AdminPlayerList';
+import { AdminPlayerList } from '@/components/AdminPlayerList/AdminPlayerList';
+import {
+    compareNullableNumber,
+    compareNullableString,
+    comparePlayers,
+    getImpersonationLabel,
+    getPreferredEmail,
+    type SortKey,
+} from '@/lib/adminPlayer';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 import { Wrapper } from '@/tests/components/lib/common';
 import { createMockPlayerData } from '@/tests/mocks/data/playerData';
@@ -1628,7 +1636,7 @@ describe('AdminPlayerList', () => {
             fireEvent.click(screen.getByRole('checkbox', { name: 'Select Alex Admin' }));
 
             // Select-all checkbox should have indeterminate state
-            const selectAllCheckbox = screen.getByRole('checkbox', { name: 'Select all players' });
+            const selectAllCheckbox = screen.getByRole<HTMLInputElement>('checkbox', { name: 'Select all players' });
             expect(selectAllCheckbox.indeterminate).toBe(true);
         });
 
@@ -1873,10 +1881,10 @@ describe('AdminPlayerList', () => {
 
     describe('helper coverage', () => {
         it('covers nullable comparator null branches directly', () => {
-            expect(__testing__.compareNullableNumber(null, null, 'asc')).toBe(0);
-            expect(__testing__.compareNullableString(null, null, 'asc')).toBe(0);
-            expect(__testing__.compareNullableString(null, 'Alice', 'asc')).toBe(1);
-            expect(__testing__.compareNullableString('Alice', null, 'asc')).toBe(-1);
+            expect(compareNullableNumber(null, null, 'asc')).toBe(0);
+            expect(compareNullableString(null, null, 'asc')).toBe(0);
+            expect(compareNullableString(null, 'Alice', 'asc')).toBe(1);
+            expect(compareNullableString('Alice', null, 'asc')).toBe(-1);
         });
 
         it('covers joined and finished comparisons when the left player has no date', () => {
@@ -1887,8 +1895,8 @@ describe('AdminPlayerList', () => {
                 finished: new Date('2024-02-01'),
             });
 
-            expect(__testing__.comparePlayers(undatedPlayer, datedPlayer, 'joined', 'asc', new Set())).toBe(1);
-            expect(__testing__.comparePlayers(undatedPlayer, datedPlayer, 'finished', 'asc', new Set())).toBe(1);
+            expect(comparePlayers(undatedPlayer, datedPlayer, 'joined', 'asc', new Set())).toBe(1);
+            expect(comparePlayers(undatedPlayer, datedPlayer, 'finished', 'asc', new Set())).toBe(1);
         });
 
         it('falls back to an empty preferred email for malformed extra-email data', () => {
@@ -1903,7 +1911,7 @@ describe('AdminPlayerList', () => {
                 }],
             });
 
-            expect(__testing__.getPreferredEmail(player)).toBe('');
+            expect(getPreferredEmail(player)).toBe('');
         });
 
         it('falls back to a generic impersonation label when both name and accountEmail are missing', () => {
@@ -1912,17 +1920,17 @@ describe('AdminPlayerList', () => {
                 accountEmail: null,
             });
 
-            expect(__testing__.getImpersonationLabel(player)).toBe('player');
+            expect(getImpersonationLabel(player)).toBe('player');
         });
 
         it('returns zero for an unknown sort key fallback', () => {
             const firstPlayer = createMockPlayerData({ id: 1, name: 'Alice' });
             const secondPlayer = createMockPlayerData({ id: 2, name: 'Bob' });
 
-            expect(__testing__.comparePlayers(
+            expect(comparePlayers(
                 firstPlayer,
                 secondPlayer,
-                'unknown' as never,
+                'unknown' as SortKey,
                 'asc',
                 new Set(),
             )).toBe(0);

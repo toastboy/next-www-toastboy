@@ -1,3 +1,4 @@
+import { NextRequest } from 'next/server';
 import { Readable } from 'stream';
 import request from 'supertest';
 import type { Mock } from 'vitest';
@@ -118,5 +119,14 @@ describe('API tests using HTTP', () => {
 
         expect(response.status).toBe(500);
         expect(response.text).toBe('Error: Something went wrong.');
+    });
+
+    it('should return 404 for a non-numeric player ID', async () => {
+        const response = await GET(
+            new NextRequest('http://localhost/api/footy/player/abc/mugshot'),
+            { params: Promise.resolve({ id: 'abc' }) },
+        );
+
+        expect(response.status).toBe(404);
     });
 });

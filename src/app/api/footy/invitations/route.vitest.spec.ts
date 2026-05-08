@@ -67,6 +67,13 @@ describe('POST /api/footy/invitations', () => {
             expect(response.status).toBe(401);
             expect(triggerInvitationsCore).not.toHaveBeenCalled();
         });
+
+        it('returns 401 when the stored secret is undefined', async () => {
+            (getSecrets as Mock).mockReturnValue({});
+            const response = await POST(makeRequest({ secret: VALID_SECRET }));
+            expect(response.status).toBe(401);
+            expect(triggerInvitationsCore).not.toHaveBeenCalled();
+        });
     });
 
     describe('authorized requests', () => {
@@ -122,6 +129,21 @@ describe('POST /api/footy/invitations', () => {
         it('silently ignores unrecognised body fields', async () => {
             const response = await POST(
                 makeRequest({ secret: VALID_SECRET, body: { unknownField: 'ignored' } }),
+            );
+
+            expect(response.status).toBe(200);
+            expect(triggerInvitationsCore).toHaveBeenCalledWith({
+                overrideTimeCheck: false,
+                customMessage: '',
+            });
+        });
+
+        it('uses defaults when body fields fail schema validation', async () => {
+            const response = await POST(
+                makeRequest({
+                    secret: VALID_SECRET,
+                    body: { overrideTimeCheck: 'yes', customMessage: 42 },
+                }),
             );
 
             expect(response.status).toBe(200);

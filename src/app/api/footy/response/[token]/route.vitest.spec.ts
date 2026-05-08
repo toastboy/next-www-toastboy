@@ -77,6 +77,20 @@ describe('GET /api/footy/response/[token]', () => {
         expect(location.searchParams.get('comment')).toBe('');
     });
 
+    it('uses "true" for goalie when the player is a goalie', async () => {
+        (getGameInvitationResponseDetails as Mock).mockResolvedValue({
+            ...sampleDetails,
+            goalie: true,
+        });
+        const request = new NextRequest('http://localhost/api/footy/response/test-token');
+        const response = await GET(request, {
+            params: Promise.resolve({ token: 'test-token' }),
+        });
+
+        const location = new URL(response.headers.get('location')!, 'http://localhost');
+        expect(location.searchParams.get('goalie')).toBe('true');
+    });
+
     it('redirects to /footy/response with an error when the invitation is not found', async () => {
         (getGameInvitationResponseDetails as Mock).mockResolvedValue(null);
         const request = new NextRequest('http://localhost/api/footy/response/unknown-token');

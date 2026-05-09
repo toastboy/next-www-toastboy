@@ -114,6 +114,7 @@ const combForeach = <T>(
     mirror = true,
 ) => {
     const n = items.length;
+    /* v8 ignore next -- defensive guard for direct helper use */
     if (k < 0 || k > n) return;
 
     const included: T[] = [];
@@ -156,7 +157,9 @@ const combForeach = <T>(
 
     // For mirrored team splits, only evaluate combinations where item[0] is
     // included. This yields exactly one representative per mirrored pair.
+    /* v8 ignore next -- current caller always uses mirrored evaluation */
     if (mirror) {
+        /* v8 ignore next -- cannot occur with validated team sizes */
         if (k === 0 || n === 0) return;
         included.push(items[0]);
         includedIndexes.push(0);
@@ -164,6 +167,7 @@ const combForeach = <T>(
         return;
     }
 
+    /* v8 ignore next -- current caller always uses mirrored evaluation */
     walk(0, k);
 };
 
@@ -239,6 +243,7 @@ const compareDiffs = (left: TeamDiffs, right: TeamDiffs) => {
  *   all possible team combinations.
  */
 const findBestSplit = (players: PickerCandidate[]): TeamSplit => {
+    /* v8 ignore next -- upstream selection always passes even-sized arrays >= 2 */
     if (players.length < 2 || players.length % 2 !== 0) {
         throw new ValidationError('Cannot split teams: expected an even number of at least two players.');
     }
@@ -269,6 +274,7 @@ const findBestSplit = (players: PickerCandidate[]): TeamSplit => {
         }
     });
 
+    /* v8 ignore next -- combForeach always emits at least one split for valid input */
     if (!bestSplit) {
         throw new InternalError('Unable to determine balanced teams.');
     }
@@ -316,6 +322,7 @@ const selectMiddleOutfieldPlayer = (players: PickerCandidate[]) => {
         }
     }
 
+    /* v8 ignore next -- odd-sized iteration always selects exactly one middle player */
     if (!middlePlayer) {
         throw new InternalError('Unable to select middle player for odd-sized picker list.');
     }

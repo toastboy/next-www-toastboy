@@ -99,6 +99,48 @@ describe('setGameEnabledCore', () => {
         expect(secondPayload.html).not.toContain('Reason:');
     });
 
+    it('marks a game day as reinstated and sends a reinstated email', async () => {
+        const gameDay = {
+            id: 1250,
+            year: 2026,
+            date: new Date('2026-02-10T00:00:00Z'),
+            game: false,
+            mailSent: new Date('2026-02-08T09:00:00Z'),
+            comment: 'Bad weather',
+            bibs: null,
+            pickerGamesHistory: 10 as const,
+        };
+        const gameDayService = {
+            get: vi.fn().mockResolvedValue(gameDay),
+            update: vi.fn().mockResolvedValue({
+                ...gameDay,
+                game: true,
+                comment: null,
+            }),
+        };
+
+        const data = SetGameEnabledInputSchema.parse({
+            gameDayId: 1250,
+            game: true,
+            reason: '',
+        });
+
+        const result = await setGameEnabledCore(data, mockSendEmailToAllActivePlayers, { gameDayService });
+
+        expect(gameDayService.update).toHaveBeenCalledWith({
+            id: 1250,
+            game: true,
+            comment: null,
+        });
+        const [payload] = mockSendEmailToAllActivePlayers.mock.calls[0] as [{
+            subject: string;
+            html: string;
+        }];
+        expect(payload.subject).toContain('Game Reinstated:');
+        expect(payload.html).toContain('has been reinstated');
+        expect(result.game).toBe(true);
+    });
+
     it('throws when the game day cannot be found', async () => {
         const gameDayService = {
             get: vi.fn().mockResolvedValue(null),

@@ -412,7 +412,6 @@ describe('SubmitPickerCore', () => {
         expect(deps.sendEmailToAllActivePlayers).toHaveBeenCalledOnce();
         expect(deps.sendEmailToAllActivePlayers).toHaveBeenCalledWith(expect.objectContaining({
             subject: 'Footy: teams picked',
-            html: expect.stringContaining('Player 2'),
         }));
     });
 

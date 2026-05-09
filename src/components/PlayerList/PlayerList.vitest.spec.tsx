@@ -9,6 +9,7 @@ import type { Props as SendEmailFormProps } from '@/components/SendEmailForm/Sen
 import { extractMockProps, Wrapper } from '@/tests/components/lib/common';
 import { createMockGameDay } from '@/tests/mocks/data/gameDay';
 import { createMockPlayerData } from '@/tests/mocks/data/playerData';
+import type { PlayerDataType } from '@/types';
 import type { SendEmailProxy } from '@/types/actions/SendEmail';
 
 vi.mock('@/components/PlayerTimeline/PlayerTimeline');
@@ -42,6 +43,36 @@ const players = [
 ];
 
 const sendEmailMock = vi.fn<SendEmailProxy>();
+
+const renderWithInitialState = async (
+    initialState: unknown[],
+    localPlayers: PlayerDataType[],
+) => {
+    vi.resetModules();
+    vi.doMock('react', async () => {
+        const actual = await vi.importActual<typeof import('react')>('react');
+        let stateIndex = 0;
+
+        return {
+            ...actual,
+            useState: ((initial: unknown) => {
+                const configured = stateIndex in initialState ? initialState[stateIndex] : initial;
+                stateIndex += 1;
+                return actual.useState(configured);
+            }) as typeof actual.useState,
+        };
+    });
+
+    const importedModule = await import('@/components/PlayerList/PlayerList');
+    const TestPlayerList = importedModule.PlayerList;
+    render(
+        <Wrapper>
+            <TestPlayerList players={localPlayers} gameDay={gameDay} sendEmail={sendEmailMock} />
+        </Wrapper>,
+    );
+
+    vi.doUnmock('react');
+};
 
 describe('PlayerList', () => {
     beforeEach(() => {
@@ -201,5 +232,112 @@ describe('PlayerList', () => {
 
         expect(screen.queryByRole('link', { name: 'Alice Active' })).not.toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Charlie Active' })).toBeInTheDocument();
+    });
+
+    it('starts unsorted when sortBy is null and then sets name sort on first header click', async () => {
+        const user = userEvent.setup();
+        const reversedPlayers = [players[2], players[0], players[1]];
+
+        await renderWithInitialState([null], reversedPlayers);
+
+        let rows = screen.getAllByTestId('players-table-row');
+        expect(within(rows[0]).getByRole('link', { name: 'Charlie Active' })).toBeInTheDocument();
+
+        await user.click(screen.getByRole('columnheader', { name: /Name/ }));
+
+        rows = screen.getAllByTestId('players-table-row');
+        expect(within(rows[0]).getByRole('link', { name: 'Alice Active' })).toBeInTheDocument();
+    });
+
+    it('sorts descending for numeric and date sort keys and falls back for unsupported types', async () => {
+        const mixedPlayers = [
+            createMockPlayerData({ id: 9, name: 'Nine', joined: new Date('2024-03-01T00:00:00.000Z'), comment: null, finished: null, lastResponded: 20 }),
+            createMockPlayerData({ id: 2, name: 'Two', joined: new Date('2022-01-01T00:00:00.000Z'), comment: null, finished: null, lastResponded: 20 }),
+            createMockPlayerData({ id: 5, name: 'Five', joined: new Date('2023-07-01T00:00:00.000Z'), comment: null, finished: null, lastResponded: 20 }),
+        ];
+
+        await renderWithInitialState(['id', 'desc'], mixedPlayers);
+        let rows = screen.getAllByTestId('players-table-row');
+        expect(within(rows[0]).getByRole('link', { name: 'Nine' })).toBeInTheDocument();
+
+        await renderWithInitialState(['joined', 'desc'], mixedPlayers);
+        rows = screen.getAllByTestId('players-table-row');
+        expect(within(rows[0]).getByRole('link', { name: 'Nine' })).toBeInTheDocument();
+
+        await renderWithInitialState(['comment', 'desc'], mixedPlayers);
+        rows = screen.getAllByTestId('players-table-row');
+        expect(within(rows[0]).getByRole('link', { name: 'Nine' })).toBeInTheDocument();
+    });
+
+    it('sorts ascending for date sort keys', async () => {
+        const mixedPlayers = [
+            createMockPlayerData({ id: 2, name: 'Two', joined: new Date('2022-01-01T00:00:00.000Z'), finished: null, lastResponded: 20 }),
+            createMockPlayerData({ id: 9, name: 'Nine', joined: new Date('2024-03-01T00:00:00.000Z'), finished: null, lastResponded: 20 }),
+            createMockPlayerData({ id: 5, name: 'Five', joined: new Date('2023-07-01T00:00:00.000Z'), finished: null, lastResponded: 20 }),
+        ];
+
+        await renderWithInitialState(['joined', 'asc'], mixedPlayers);
+        const rows = screen.getAllByTestId('players-table-row');
+        expect(within(rows[0]).getByRole('link', { name: 'Two' })).toBeInTheDocument();
+    });
+
+    it('handles players without names when matching by email', async () => {
+        const user = userEvent.setup();
+        const namelessPlayer = createMockPlayerData({
+            id: 44,
+            name: '',
+            accountEmail: 'nameless@example.com',
+            finished: null,
+            lastResponded: 20,
+        });
+
+        render(
+            <Wrapper>
+                <PlayerList players={[namelessPlayer]} gameDay={gameDay} sendEmail={sendEmailMock} />
+            </Wrapper>,
+        );
+
+        await user.type(screen.getByPlaceholderText('Search players'), 'nameless@example.com');
+
+        expect(screen.getByRole('heading', { level: 1, name: '1 Active Players' })).toBeInTheDocument();
+    });
+
+    it('renders with no players when the players array is empty', () => {
+        render(
+            <Wrapper>
+                <PlayerList players={[]} gameDay={gameDay} sendEmail={sendEmailMock} />
+            </Wrapper>,
+        );
+
+        expect(screen.getByRole('heading', { level: 1, name: '0 Active Players' })).toBeInTheDocument();
+    });
+
+    it('updates reply range via slider and hides null lastResponded entries when max range decreases', async () => {
+        const user = userEvent.setup();
+        const playersWithNullResponse = [
+            ...players,
+            createMockPlayerData({
+                id: 4,
+                name: 'Drew NoResponse',
+                accountEmail: null,
+                finished: null,
+                lastResponded: null,
+            }),
+        ];
+
+        render(
+            <Wrapper>
+                <PlayerList players={playersWithNullResponse} gameDay={gameDay} sendEmail={sendEmailMock} />
+            </Wrapper>,
+        );
+
+        expect(screen.getByRole('link', { name: 'Drew NoResponse' })).toBeInTheDocument();
+
+        const [lowerThumb, upperThumb] = screen.getAllByRole('slider');
+        upperThumb.focus();
+        await user.keyboard('{ArrowLeft}');
+
+        expect(lowerThumb).toBeInTheDocument();
+        expect(screen.queryByRole('link', { name: 'Drew NoResponse' })).not.toBeInTheDocument();
     });
 });

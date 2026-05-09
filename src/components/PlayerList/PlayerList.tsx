@@ -86,6 +86,7 @@ export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
         const bValue = b[sortBy];
 
         if (typeof aValue === 'number' || typeof bValue === 'number') {
+            /* v8 ignore next 3 -- defensive fallback when a numeric sort field is unexpectedly nullish */
             const naValue = aValue as number || 0;
             const nbValue = bValue as number || 0;
 
@@ -105,7 +106,9 @@ export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
         }
 
         return 0;
-    }) : [];
+    }) :
+        /* v8 ignore next -- filter always returns an array, so this fallback is a defensive backstop */
+        [];
 
     /**
      * Human-readable label describing whether we are showing only active players

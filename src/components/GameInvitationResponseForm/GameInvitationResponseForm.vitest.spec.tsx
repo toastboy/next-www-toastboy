@@ -50,6 +50,7 @@ vi.mock('@mantine/form', async (importOriginal) => {
                         onChange: vi.fn(),
                     };
                 },
+                isDirty: () => true,
                 onSubmit:
                     (handler: (values: { response: 'No'; goalie: false; comment: undefined }) => Promise<void>) =>
                         async (event?: { preventDefault?: () => void }) => {
@@ -91,7 +92,7 @@ describe('GameInvitationResponseForm', () => {
         expect(screen.getByLabelText(/Response/i)).toBeInTheDocument();
         expect(screen.getByLabelText(/Goalie/i)).toBeInTheDocument();
         expect(screen.getByLabelText(/Optional comment/i)).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /Done/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /Save Response/i })).toBeInTheDocument();
     });
 
     it('renders fallback values when invitation has no prior response or player login', () => {
@@ -121,6 +122,7 @@ describe('GameInvitationResponseForm', () => {
         expect(screen.getByText((content) => content.includes('No response yet'))).toBeInTheDocument();
         expect(screen.getByLabelText(/Response/i)).toHaveValue('Yes');
         expect(screen.getByLabelText(/Goalie/i)).not.toBeChecked();
+        expect(screen.getByRole('button', { name: /Save Response/i })).not.toBeDisabled();
     });
 
     it('defaults an empty incoming response value to Yes for submission', async () => {
@@ -140,8 +142,9 @@ describe('GameInvitationResponseForm', () => {
         );
 
         expect(screen.getByLabelText(/Response/i)).toHaveValue('Yes');
+        expect(screen.getByRole('button', { name: /Save Response/i })).not.toBeDisabled();
 
-        await user.click(screen.getByRole('button', { name: /Done/i }));
+        await user.click(screen.getByRole('button', { name: /Save Response/i }));
 
         await waitFor(() => {
             expect(mockSubmitGameInvitationResponse).toHaveBeenCalledWith({
@@ -169,6 +172,7 @@ describe('GameInvitationResponseForm', () => {
 
         expect(screen.getByText((content) => content.includes('Excused'))).toBeInTheDocument();
         expect(screen.getByLabelText(/Response/i)).toHaveValue('Yes');
+        expect(screen.getByRole('button', { name: /Save Response/i })).toBeDisabled();
     });
 
     it('submits an updated response', async () => {
@@ -187,7 +191,7 @@ describe('GameInvitationResponseForm', () => {
         await user.selectOptions(screen.getByLabelText(/Response/i), 'Yes');
         await user.click(screen.getByLabelText(/Goalie/i));
         await user.type(screen.getByLabelText(/Optional comment/i), 'Looking forward to it.');
-        await user.click(screen.getByRole('button', { name: /Done/i }));
+        await user.click(screen.getByRole('button', { name: /Save Response/i }));
 
         await waitFor(() => {
             expect(mockSubmitGameInvitationResponse).toHaveBeenCalledWith({
@@ -223,7 +227,8 @@ describe('GameInvitationResponseForm', () => {
             </Wrapper>,
         );
 
-        await user.click(screen.getByRole('button', { name: /Done/i }));
+        await user.selectOptions(screen.getByLabelText(/Response/i), 'Yes');
+        await user.click(screen.getByRole('button', { name: /Save Response/i }));
 
         await waitFor(() => {
             expect(captureUnexpectedError).toHaveBeenCalledWith(
@@ -236,7 +241,7 @@ describe('GameInvitationResponseForm', () => {
                     extra: {
                         playerId: defaultGameInvitationResponseDetails.playerId,
                         gameDayId: defaultGameInvitationResponseDetails.gameDayId,
-                        response: defaultGameInvitationResponseDetails.response,
+                        response: 'Yes',
                     },
                 }),
             );
@@ -265,7 +270,8 @@ describe('GameInvitationResponseForm', () => {
             </Wrapper>,
         );
 
-        await user.click(screen.getByRole('button', { name: /Done/i }));
+        await user.selectOptions(screen.getByLabelText(/Response/i), 'No');
+        await user.click(screen.getByRole('button', { name: /Save Response/i }));
 
         await waitFor(() => {
             expect(captureUnexpectedError).toHaveBeenCalledWith('badness', expect.any(Object));
@@ -293,7 +299,7 @@ describe('GameInvitationResponseForm', () => {
             </Wrapper>,
         );
 
-        await user.click(screen.getByRole('button', { name: /Done/i }));
+        await user.click(screen.getByRole('button', { name: /Save Response/i }));
 
         await waitFor(() => {
             expect(mockSubmitGameInvitationResponse).toHaveBeenCalledWith({

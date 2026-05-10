@@ -71,7 +71,9 @@ export const GameInvitationResponseForm = ({
     details,
     onSubmitGameInvitationResponse,
 }: Props) => {
-    const initialCurrentResponse = details.response && details.response.length > 0 ? details.response : null;
+    const hasValidResponse = details.response && details.response.length > 0;
+    const initialCurrentResponse = hasValidResponse ? details.response : null;
+    const coerceResponse = !hasValidResponse;
     const [currentResponse, setCurrentResponse] = useState(initialCurrentResponse);
     const [currentComment, setCurrentComment] = useState(details.comment);
 
@@ -84,6 +86,13 @@ export const GameInvitationResponseForm = ({
         validate: zod4Resolver(formSchema),
         validateInputOnBlur: true,
     });
+
+    /**
+     * Form is dirty if user has made changes OR if the response was coerced from empty/missing to 'Yes'.
+     * When a response is coerced, the form state differs from the actual incoming data, so submission
+     * should be allowed even without user interaction.
+     */
+    const isFormDirty = form.isDirty() || coerceResponse;
 
     const handleSubmit = async (values: FormValues) => {
         const id = notifications.show({
@@ -183,8 +192,8 @@ export const GameInvitationResponseForm = ({
                     maxLength={127}
                     {...form.getInputProps('comment')}
                 />
-                <Button type="submit" w="fit-content">
-                    Done
+                <Button type="submit" w="fit-content" disabled={!isFormDirty}>
+                    Save Response
                 </Button>
             </Stack>
         </Box>

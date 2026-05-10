@@ -2,6 +2,7 @@ import type { useForm as useFormType } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { PlayerResponse } from 'prisma/generated/enums';
 import { vi } from 'vitest';
 
 import { GameInvitationResponseForm } from '@/components/GameInvitationResponseForm/GameInvitationResponseForm';
@@ -118,8 +119,56 @@ describe('GameInvitationResponseForm', () => {
             `/footy/player/${detailsWithNoResponse.playerId}`,
         );
         expect(screen.getByText((content) => content.includes('No response yet'))).toBeInTheDocument();
-        expect(screen.getByLabelText(/Response/i)).toHaveValue('Dunno');
+        expect(screen.getByLabelText(/Response/i)).toHaveValue('Yes');
         expect(screen.getByLabelText(/Goalie/i)).not.toBeChecked();
+    });
+
+    it('defaults an empty incoming response value to Yes for submission', async () => {
+        const user = userEvent.setup();
+        const detailsWithEmptyResponse = {
+            ...createMockGameInvitationResponseDetails(),
+            response: '',
+        } as unknown as GameInvitationResponseDetails;
+
+        render(
+            <Wrapper>
+                <GameInvitationResponseForm
+                    details={detailsWithEmptyResponse}
+                    onSubmitGameInvitationResponse={mockSubmitGameInvitationResponse}
+                />
+            </Wrapper>,
+        );
+
+        expect(screen.getByLabelText(/Response/i)).toHaveValue('Yes');
+
+        await user.click(screen.getByRole('button', { name: /Done/i }));
+
+        await waitFor(() => {
+            expect(mockSubmitGameInvitationResponse).toHaveBeenCalledWith({
+                token: detailsWithEmptyResponse.token,
+                response: 'Yes',
+                goalie: detailsWithEmptyResponse.goalie,
+                comment: '',
+            });
+        });
+    });
+
+    it('shows admin-only responses in the summary but keeps the editable value player-safe', () => {
+        const detailsWithAdminResponse = createMockGameInvitationResponseDetails({
+            response: PlayerResponse.Excused,
+        });
+
+        render(
+            <Wrapper>
+                <GameInvitationResponseForm
+                    details={detailsWithAdminResponse}
+                    onSubmitGameInvitationResponse={mockSubmitGameInvitationResponse}
+                />
+            </Wrapper>,
+        );
+
+        expect(screen.getByText((content) => content.includes('Excused'))).toBeInTheDocument();
+        expect(screen.getByLabelText(/Response/i)).toHaveValue('Yes');
     });
 
     it('submits an updated response', async () => {

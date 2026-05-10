@@ -27,7 +27,7 @@ export const GET = async (request: NextRequest, props: { params: Promise<Record<
         playerId: details.playerId.toString(),
         playerName: details.playerName,
         gameDayId: details.gameDayId.toString(),
-        response: details.response?.toString() ?? '',
+        ...(details.response ? { response: details.response.toString() } : {}),
         goalie: details.goalie ? 'true' : 'false',
         comment: details.comment ?? '',
     });

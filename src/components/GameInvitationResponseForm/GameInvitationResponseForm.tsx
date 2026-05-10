@@ -40,6 +40,28 @@ const responseOptions = [
     { value: PlayerResponse.Dunno, label: 'Dunno' },
 ];
 
+/**
+ * Responses that players can select themselves in this form.
+ */
+const playerEditableResponses = new Set<PlayerResponse>([
+    PlayerResponse.Yes,
+    PlayerResponse.No,
+    PlayerResponse.Dunno,
+]);
+
+/**
+ * Returns the initial response value used by the editable select input.
+ *
+ * Player invitations can carry admin-only response values (for example
+ * `Excused`) that should still be displayed in the summary, but players can
+ * only submit Yes/No/Dunno from this form.
+ *
+ * @param response - Incoming invitation response from query details.
+ * @returns A player-editable response value; defaults to `Yes` when missing or non-editable.
+ */
+const getInitialPlayerResponse = (response: GameInvitationResponseDetails['response']) =>
+    response && playerEditableResponses.has(response) ? response : PlayerResponse.Yes;
+
 interface Props {
     details: GameInvitationResponseDetails;
     onSubmitGameInvitationResponse: SubmitGameInvitationResponseProxy;
@@ -49,12 +71,13 @@ export const GameInvitationResponseForm = ({
     details,
     onSubmitGameInvitationResponse,
 }: Props) => {
-    const [currentResponse, setCurrentResponse] = useState(details.response);
+    const initialCurrentResponse = details.response && details.response.length > 0 ? details.response : null;
+    const [currentResponse, setCurrentResponse] = useState(initialCurrentResponse);
     const [currentComment, setCurrentComment] = useState(details.comment);
 
     const form = useForm<FormValues>({
         initialValues: {
-            response: details.response ?? PlayerResponse.Dunno,
+            response: getInitialPlayerResponse(initialCurrentResponse),
             goalie: details.goalie ?? false,
             comment: details.comment ?? '',
         },

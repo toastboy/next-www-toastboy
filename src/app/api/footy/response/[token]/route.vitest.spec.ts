@@ -18,7 +18,7 @@ const sampleDetails = {
     playerName: 'Alice',
     playerLogin: 'alice@example.com',
     gameDayId: 42,
-    response: true,
+    response: 'Yes',
     goalie: false,
     comment: 'Looking forward to it',
 };
@@ -44,12 +44,12 @@ describe('GET /api/footy/response/[token]', () => {
         expect(location.searchParams.get('playerId')).toBe('7');
         expect(location.searchParams.get('playerName')).toBe('Alice');
         expect(location.searchParams.get('gameDayId')).toBe('42');
-        expect(location.searchParams.get('response')).toBe('true');
+        expect(location.searchParams.get('response')).toBe('Yes');
         expect(location.searchParams.get('goalie')).toBe('false');
         expect(location.searchParams.get('comment')).toBe('Looking forward to it');
     });
 
-    it('uses an empty string for response when outcome has no response yet', async () => {
+    it('omits response when outcome has no response yet', async () => {
         (getGameInvitationResponseDetails as Mock).mockResolvedValue({
             ...sampleDetails,
             response: null,
@@ -60,7 +60,7 @@ describe('GET /api/footy/response/[token]', () => {
         });
 
         const location = new URL(response.headers.get('location')!, 'http://localhost');
-        expect(location.searchParams.get('response')).toBe('');
+        expect(location.searchParams.get('response')).toBeNull();
     });
 
     it('uses an empty string for comment when no comment is present', async () => {

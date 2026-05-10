@@ -2,6 +2,7 @@ export const dynamic = 'force-dynamic';
 
 import { Anchor, Box, Text } from '@mantine/core';
 import { redirect } from 'next/navigation';
+import { PlayerResponseSchema } from 'prisma/zod/schemas';
 
 import { submitGameInvitationResponse } from '@/actions/submitGameInvitationResponse';
 import { GameInvitationResponseForm } from '@/components/GameInvitationResponseForm/GameInvitationResponseForm';
@@ -41,13 +42,17 @@ const Page = async ({ searchParams: sp }: PageProps) => {
         );
     }
 
+    const parsedResponse = response ?
+        PlayerResponseSchema.safeParse(response) :
+        { success: false as const };
+
     const details: GameInvitationResponseDetails = {
         token: token ?? '',
         playerId: Number(playerId),
         playerName: playerName ?? '',
         playerLogin: playerLogin ?? null,
         gameDayId: Number(gameDayId ?? 0),
-        response: (response as GameInvitationResponseDetails['response']) ?? null,
+        response: parsedResponse.success ? parsedResponse.data : null,
         goalie: goalie === 'true',
         comment: comment ?? null,
     };

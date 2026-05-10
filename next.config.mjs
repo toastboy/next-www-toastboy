@@ -189,6 +189,7 @@ const sentryConfig = {
     // This option and beyond added after running the wizard
     sourcemaps: {
         deleteSourcemapsAfterUpload: true,
+        ignore: ['**/*hmr-client*'],
     },
 };
 

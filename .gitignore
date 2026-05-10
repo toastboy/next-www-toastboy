@@ -69,3 +69,6 @@ www-toastboy
 
 # Claude Code local files (worktrees are nested git repos, not submodules)
 .claude/worktrees/
+
+# VS Code Edge Profile
+.vscode/.edge-profile/

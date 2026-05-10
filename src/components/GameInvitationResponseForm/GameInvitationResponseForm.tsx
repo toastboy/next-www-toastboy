@@ -1,10 +1,23 @@
 'use client';
 
-import { Anchor, Avatar, Box, Button, Checkbox, Flex, NativeSelect, Stack, Text, TextInput, Title } from '@mantine/core';
+import {
+    Anchor,
+    Avatar,
+    Box,
+    Button,
+    Checkbox,
+    Flex,
+    NativeSelect,
+    Stack,
+    Text,
+    TextInput,
+    Title,
+} from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
+import { PlayerResponse } from 'prisma/generated/enums';
 import { useState } from 'react';
 import { z } from 'zod';
 
@@ -22,9 +35,9 @@ const formSchema = InvitationResponseInputSchema.omit({ token: true }).extend({
 type FormValues = z.infer<typeof formSchema>;
 
 const responseOptions = [
-    { value: 'Yes', label: 'Yes' },
-    { value: 'No', label: 'No' },
-    { value: 'Dunno', label: 'Dunno' },
+    { value: PlayerResponse.Yes, label: 'Yes' },
+    { value: PlayerResponse.No, label: 'No' },
+    { value: PlayerResponse.Dunno, label: 'Dunno' },
 ];
 
 interface Props {
@@ -41,7 +54,7 @@ export const GameInvitationResponseForm = ({
 
     const form = useForm<FormValues>({
         initialValues: {
-            response: details.response ?? 'Dunno',
+            response: details.response ?? PlayerResponse.Dunno,
             goalie: details.goalie ?? false,
             comment: details.comment ?? '',
         },

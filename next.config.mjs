@@ -168,7 +168,7 @@ const sentryConfig = {
     tunnelRoute: "/monitoring",
 
     // Hides source maps from generated client bundles
-    hideSourceMaps: true,
+    // hideSourceMaps: true,
 
     webpack: {
         // Automatically annotate React components to show their full name in breadcrumbs and session replay

@@ -59,8 +59,15 @@ const playerEditableResponses = new Set<PlayerResponse>([
  * @param response - Incoming invitation response from query details.
  * @returns A player-editable response value; defaults to `Yes` when missing or non-editable.
  */
-const getInitialPlayerResponse = (response: GameInvitationResponseDetails['response']) =>
-    response && playerEditableResponses.has(response) ? response : PlayerResponse.Yes;
+function getInitialPlayerResponse(responseInput: GameInvitationResponseDetails['response']) {
+    const response = responseInput &&
+        playerEditableResponses.has(responseInput) ? responseInput : PlayerResponse.Yes;
+
+    return {
+        response,
+        coerced: response != responseInput,
+    };
+}
 
 interface Props {
     details: GameInvitationResponseDetails;
@@ -71,15 +78,13 @@ export const GameInvitationResponseForm = ({
     details,
     onSubmitGameInvitationResponse,
 }: Props) => {
-    const hasValidResponse = details.response && details.response.length > 0;
-    const initialCurrentResponse = hasValidResponse ? details.response : null;
-    const coerceResponse = !hasValidResponse;
-    const [currentResponse, setCurrentResponse] = useState(initialCurrentResponse);
+    const { response, coerced } = getInitialPlayerResponse(details.response);
+    const [currentResponse, setCurrentResponse] = useState(response);
     const [currentComment, setCurrentComment] = useState(details.comment);
 
     const form = useForm<FormValues>({
         initialValues: {
-            response: getInitialPlayerResponse(initialCurrentResponse),
+            response,
             goalie: details.goalie ?? false,
             comment: details.comment ?? '',
         },
@@ -88,11 +93,12 @@ export const GameInvitationResponseForm = ({
     });
 
     /**
-     * Form is dirty if user has made changes OR if the response was coerced from empty/missing to 'Yes'.
-     * When a response is coerced, the form state differs from the actual incoming data, so submission
-     * should be allowed even without user interaction.
+     * Form is dirty if user has made changes OR if the response was coerced
+     * from empty/missing to 'Yes'. When a response is coerced, the form state
+     * differs from the actual incoming data, so submission should be allowed
+     * even without user interaction.
      */
-    const isFormDirty = form.isDirty() || coerceResponse;
+    const isFormDirty = form.isDirty() || coerced;
 
     const handleSubmit = async (values: FormValues) => {
         const id = notifications.show({

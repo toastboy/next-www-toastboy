@@ -17,7 +17,7 @@ import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { PlayerResponse } from 'prisma/generated/enums';
-import React, { useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { config } from '@/lib/config';
 import { SubmitResponseProxy } from '@/types/actions/SubmitResponse';
@@ -161,7 +161,7 @@ export const ResponsesForm = ({
         if (items.length === 0) return null;
 
         return (
-            <Card withBorder shadow="xs" p="md" data-testid={testId} data-count={items.length}>
+            <Card key={title} withBorder shadow="xs" p="md" data-testid={testId} data-count={items.length}>
                 <Card.Section h={6} bg={responseGroupBarColor[title]} />
                 <Group justify="space-between" mb="lg" mt="md">
                     <Title order={2}>{title}: {items.length}</Title>
@@ -247,15 +247,11 @@ export const ResponsesForm = ({
                 />
             </Stack>
             {Object.values(ResponseOption).map((option) => (
-                <React.Fragment key={option}>
-                    {
-                        renderGroup(
-                            option,
-                            `response-group-${option.toLowerCase()}`,
-                            grouped[option.toLowerCase() as keyof typeof grouped],
-                        )
-                    }
-                </React.Fragment>
+                renderGroup(
+                    option,
+                    `response-group-${option.toLowerCase()}`,
+                    grouped[option.toLowerCase() as keyof typeof grouped],
+                )
             ))}
         </Stack>
     );

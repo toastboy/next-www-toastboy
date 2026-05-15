@@ -1,4 +1,4 @@
-import { Card, Skeleton, Stack } from '@mantine/core';
+import { Card, CardSection, Skeleton, Stack } from '@mantine/core';
 
 import { SkeletonTableRows } from '@/components/Skeletons/Skeletons';
 
@@ -12,7 +12,7 @@ export const ResponsesFormSkeleton = () => (
         </Stack>
         {Array.from({ length: 4 }).map((_, i) => (
             <Card key={i} withBorder shadow="sm">
-                <Card.Section h={6} />
+                <CardSection h={6} />
                 <Skeleton height={24} width="30%" mt="sm" mb="sm" />
                 <SkeletonTableRows rows={3} cols={4} />
             </Card>

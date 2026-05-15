@@ -4,6 +4,7 @@ import type { MantineColor } from '@mantine/core';
 import {
     Button,
     Card,
+    CardSection,
     Checkbox,
     Flex,
     Group,
@@ -162,7 +163,7 @@ export const ResponsesForm = ({
 
         return (
             <Card key={title} withBorder shadow="xs" p="md" data-testid={testId} data-count={items.length}>
-                <Card.Section h={6} bg={responseGroupBarColor[title]} />
+                <CardSection h={6} bg={responseGroupBarColor[title]} />
                 <Group justify="space-between" mb="lg" mt="md">
                     <Title order={2}>{title}: {items.length}</Title>
                 </Group>

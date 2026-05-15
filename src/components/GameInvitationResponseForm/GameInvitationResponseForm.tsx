@@ -57,7 +57,7 @@ const playerEditableResponses = new Set<PlayerResponse>([
  * only submit Yes/No/Dunno from this form.
  *
  * @param response - Incoming invitation response from query details.
- * @returns A player-editable response value; defaults to `Yes` when missing or non-editable.
+ * @returns A player-editable response value plus whether implicit submission should be enabled.
  */
 function getInitialPlayerResponse(responseInput: GameInvitationResponseDetails['response']) {
     const response = responseInput &&
@@ -65,7 +65,7 @@ function getInitialPlayerResponse(responseInput: GameInvitationResponseDetails['
 
     return {
         response,
-        coerced: response != responseInput,
+        canSubmitWithoutChanges: !responseInput,
     };
 }
 
@@ -78,8 +78,8 @@ export const GameInvitationResponseForm = ({
     details,
     onSubmitGameInvitationResponse,
 }: Props) => {
-    const { response, coerced } = getInitialPlayerResponse(details.response);
-    const [currentResponse, setCurrentResponse] = useState(response);
+    const { response, canSubmitWithoutChanges } = getInitialPlayerResponse(details.response);
+    const [currentResponse, setCurrentResponse] = useState(details.response);
     const [currentComment, setCurrentComment] = useState(details.comment);
 
     const form = useForm<FormValues>({
@@ -93,12 +93,11 @@ export const GameInvitationResponseForm = ({
     });
 
     /**
-     * Form is dirty if user has made changes OR if the response was coerced
-     * from empty/missing to 'Yes'. When a response is coerced, the form state
-     * differs from the actual incoming data, so submission should be allowed
-     * even without user interaction.
+        * Form is dirty if user has made changes OR if there is no incoming
+        * response yet. In that case, submission is allowed without interaction so
+        * users can quickly confirm the default Yes value.
      */
-    const isFormDirty = form.isDirty() || coerced;
+    const isFormDirty = form.isDirty() || canSubmitWithoutChanges;
 
     const handleSubmit = async (values: FormValues) => {
         const id = notifications.show({

@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache';
 
 import { payDebtCore } from '@/lib/actions/payDebt';
 import { requireAdmin } from '@/lib/auth.server';
+import { emit } from '@/lib/events';
 import { PayDebtInputSchema } from '@/types/actions/PayDebt';
 
 /**
@@ -29,6 +30,7 @@ export async function payDebt(rawData: unknown) {
 
     revalidatePath('/footy/admin/money');
     revalidatePath('/footy/game');
+    emit('money');
 
     return result;
 }

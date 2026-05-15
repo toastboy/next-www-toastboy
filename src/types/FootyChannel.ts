@@ -5,6 +5,7 @@
 export type FootyChannel =
     | 'games'
     | 'invitations'
+    | 'money'
     | 'players'
     | 'responses'
     | 'results';

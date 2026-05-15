@@ -1,6 +1,7 @@
 import { Container } from '@mantine/core';
 
 import { payDebt } from '@/actions/payDebt';
+import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
 import { MoneyForm } from '@/components/MoneyForm/MoneyForm';
 import moneyService from '@/services/Money';
 
@@ -18,6 +19,7 @@ const MoneyPage = async () => {
 
     return (
         <Container size="lg" py="lg">
+            <AutoRefresh channel="money" />
             <MoneyForm
                 playerDebts={debts.players}
                 payDebt={payDebt}

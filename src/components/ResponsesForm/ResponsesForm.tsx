@@ -18,7 +18,7 @@ import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { PlayerResponse } from 'prisma/generated/enums';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 
 import { config } from '@/lib/config';
 import { SubmitResponseProxy } from '@/types/actions/SubmitResponse';
@@ -65,7 +65,6 @@ export const ResponsesForm = ({
     responses,
     submitResponse,
 }: ResponsesFormProps) => {
-    const [rows, setRows] = useState<OutcomePlayerType[]>(responses);
     const form = useForm<ResponsesFormValues>({
         initialValues: {
             byPlayerId: Object.fromEntries(responses.map((row) => [row.playerId, toResponseValues(row)])),
@@ -73,6 +72,32 @@ export const ResponsesForm = ({
     });
     const [savingId, setSavingId] = useState<number | null>(null);
     const [filter, setFilter] = useState('');
+
+    // Re-sync form values when the responses prop changes (e.g. after
+    // revalidate / SSE refresh). Preserve any in-progress edits by only
+    // overwriting rows whose form values still match the previous baseline.
+    const prevResponsesRef = useRef(responses);
+    useEffect(() => {
+        const prevBaselineById = new Map(
+            prevResponsesRef.current.map((row) => [row.playerId, toResponseValues(row)]),
+        );
+        for (const row of responses) {
+            const newBaseline = toResponseValues(row);
+            const oldBaseline = prevBaselineById.get(row.playerId) ?? newBaseline;
+            const current = form.values.byPlayerId[row.playerId];
+            const userEdited =
+                !!current && (
+                    current.response !== oldBaseline.response ||
+                    current.goalie !== oldBaseline.goalie ||
+                    current.comment !== oldBaseline.comment
+                );
+            if (!userEdited) {
+                form.setFieldValue(`byPlayerId.${row.playerId}`, newBaseline);
+            }
+        }
+        prevResponsesRef.current = responses;
+        // eslint-disable-next-line react-hooks/exhaustive-deps -- form identity is stable; we only want to react to responses changes
+    }, [responses]);
 
     const isRowDirty = (row: OutcomePlayerType) => {
         const baseline = toResponseValues(row);
@@ -87,7 +112,7 @@ export const ResponsesForm = ({
     };
 
     const grouped = useMemo(() => {
-        const filteredRows = rows.filter((row) => {
+        const filteredRows = responses.filter((row) => {
             const searchTerm = filter.toLowerCase();
             // v8 ignore next -- optional chaining on name is a type-safety guard
             return (row.player.name?.toLowerCase().includes(searchTerm));
@@ -102,7 +127,7 @@ export const ResponsesForm = ({
             injured: filteredRows.filter((r) => r.response === ResponseOption.Injured),
             none: filteredRows.filter((r) => r.response == null),
         };
-    }, [rows, filter]);
+    }, [responses, filter]);
 
     const handleSubmit = async (row: OutcomePlayerType) => {
         // v8 ignore next -- form is always initialised from the same rows array
@@ -129,9 +154,6 @@ export const ResponsesForm = ({
                 // v8 ignore next -- form normalises null to '' at init, so comment is always a string
                 comment: responseValues.comment ?? null,
             });
-            setRows((current) =>
-                current.map((r) => (r.playerId === row.playerId ? { ...r, ...responseValues } : r)),
-            );
             notifications.update({
                 id: notificationId,
                 color: 'teal',

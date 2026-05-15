@@ -1,7 +1,10 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
+
 import { SubmitResponseCore } from '@/lib/actions/submitResponse';
 import { requireAdmin } from '@/lib/auth.server';
+import { emit } from '@/lib/events';
 import { SubmitResponseInputSchema } from '@/types/actions/SubmitResponse';
 
 /**
@@ -15,5 +18,12 @@ export async function SubmitResponse(rawData: unknown) {
     await requireAdmin();
 
     const data = SubmitResponseInputSchema.parse(rawData);
-    return await SubmitResponseCore(data);
+    const result = await SubmitResponseCore(data);
+
+    revalidatePath('/footy/admin/picker');
+    revalidatePath('/footy/admin/responses');
+    revalidatePath('/footy/response');
+    emit('responses');
+
+    return result;
 }

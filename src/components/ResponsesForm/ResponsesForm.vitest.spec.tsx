@@ -232,7 +232,7 @@ describe('Responses', () => {
     it('updates a player response and calls onSave', async () => {
         const user = userEvent.setup();
 
-        render(
+        const { rerender } = render(
             <Wrapper>
                 <ResponsesForm
                     gameId={1249}
@@ -270,6 +270,25 @@ describe('Responses', () => {
                 comment: 'See you there',
             });
         });
+
+        // Simulate revalidate / SSE: parent re-renders with the saved response now
+        // present in the server data. The row should move to the "yes" group.
+        const updatedResponses = defaultResponsesAdminData.map((r) =>
+            r.playerId === playerId ?
+                { ...r, response: 'Yes' as const, goalie: true, comment: 'See you there' } :
+                r,
+        );
+        rerender(
+            <Wrapper>
+                <ResponsesForm
+                    gameId={1249}
+                    gameDate="3rd February 2026"
+                    responses={updatedResponses}
+                    submitResponse={mockSave}
+                />
+            </Wrapper>,
+        );
+
         expect(screen.queryByTestId('response-group-none')).toBeNull();
         expect(screen.getByTestId('response-group-yes')).toHaveAttribute('data-count', '1');
     });

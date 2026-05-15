@@ -2,6 +2,7 @@ import { Container } from '@mantine/core';
 import { notFound } from 'next/navigation';
 
 import { SubmitResponse } from '@/actions/submitResponse';
+import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
 import { ResponsesForm } from '@/components/ResponsesForm/ResponsesForm';
 import { formatDate } from '@/lib/dates';
 import gameDayService from '@/services/GameDay';
@@ -16,6 +17,7 @@ const ResponsesPage = async () => {
 
     return (
         <Container size="lg" py="lg">
+            <AutoRefresh channel="responses" />
             <ResponsesForm
                 gameId={currentGame.id}
                 gameDate={formatDate(currentGame.date)}

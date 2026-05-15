@@ -90,6 +90,27 @@ describe('setGameResultCore', () => {
         });
     });
 
+    it('applies win/loss points when team B wins', async () => {
+        const data = SetGameResultInputSchema.parse({
+            gameDayId: 1249,
+            bibs: 'A',
+            winner: 'B',
+        });
+
+        await setGameResultCore(data, { gameDayService, outcomeService, transactionService });
+
+        expect(outcomeService.upsert).toHaveBeenCalledWith({
+            gameDayId: 1249,
+            playerId: 1,
+            points: 0,
+        });
+        expect(outcomeService.upsert).toHaveBeenCalledWith({
+            gameDayId: 1249,
+            playerId: 3,
+            points: 3,
+        });
+    });
+
     it('clears team points when winner is unset', async () => {
         const data = SetGameResultInputSchema.parse({
             gameDayId: 1249,

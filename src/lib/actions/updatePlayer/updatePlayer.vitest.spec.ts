@@ -194,6 +194,73 @@ describe('updatePlayerCore', () => {
         expect(result).toEqual(updatedPlayer);
     });
 
+    it('falls back to current session email when refreshed session user has no email', async () => {
+        const updatedPlayer = {
+            id: 7,
+            name: 'Alex Updated',
+        };
+        const deps = {
+            authService: {
+                getSessionUser: vi
+                    .fn()
+                    .mockResolvedValueOnce({
+                        id: 'user-1',
+                        email: 'old@example.com',
+                        playerId: 7,
+                    })
+                    .mockResolvedValueOnce({
+                        id: 'user-1',
+                        playerId: 7,
+                    }),
+                changeCurrentUserEmail: vi.fn().mockResolvedValue({ status: true }),
+            },
+            playerService: {
+                update: vi.fn().mockResolvedValue(updatedPlayer),
+            },
+            playerExtraEmailService: {
+                create: vi.fn().mockResolvedValue(undefined),
+                delete: vi.fn().mockResolvedValue(undefined),
+            },
+            clubSupporterService: {
+                deleteExcept: vi.fn().mockResolvedValue(undefined),
+                upsertAll: vi.fn().mockResolvedValue(undefined),
+            },
+            countrySupporterService: {
+                deleteExcept: vi.fn().mockResolvedValue(undefined),
+                upsertAll: vi.fn().mockResolvedValue(undefined),
+            },
+            sendEmailVerification: vi.fn().mockResolvedValue(undefined),
+        };
+
+        const result = await updatePlayerCore(
+            7,
+            {
+                name: 'Alex Updated',
+                accountEmail: 'new@example.com',
+                anonymous: false,
+                finished: null,
+                born: 1990,
+                extraEmails: [],
+                addedExtraEmails: [],
+                removedExtraEmails: [],
+                countries: ['GB-ENG'],
+                clubs: [10],
+                comment: 'Updated profile',
+            },
+            deps,
+        );
+
+        expect(deps.authService.changeCurrentUserEmail).toHaveBeenCalledWith({
+            newEmail: 'new@example.com',
+            callbackURL: '/footy/profile',
+        });
+        expect(deps.playerService.update).toHaveBeenCalledWith(expect.objectContaining({
+            id: 7,
+            accountEmail: 'old@example.com',
+        }));
+        expect(result).toEqual(updatedPlayer);
+    });
+
     it('throws when the authenticated user is not linked to the target player', async () => {
         const deps = {
             authService: {
@@ -239,6 +306,64 @@ describe('updatePlayerCore', () => {
             },
             deps,
         )).rejects.toThrow('You are not authorized to edit this player profile.');
+
+        expect(deps.playerService.update).not.toHaveBeenCalled();
+        expect(deps.authService.changeCurrentUserEmail).not.toHaveBeenCalled();
+    });
+
+    it.each([
+        {
+            description: 'there is no session user',
+            sessionUser: null,
+        },
+        {
+            description: 'the session user has no email',
+            sessionUser: {
+                id: 'user-1',
+                playerId: 7,
+            },
+        },
+    ])('throws when $description', async ({ sessionUser }) => {
+        const deps = {
+            authService: {
+                getSessionUser: vi.fn().mockResolvedValue(sessionUser),
+                changeCurrentUserEmail: vi.fn(),
+            },
+            playerService: {
+                update: vi.fn(),
+            },
+            playerExtraEmailService: {
+                create: vi.fn(),
+                delete: vi.fn(),
+            },
+            clubSupporterService: {
+                deleteExcept: vi.fn(),
+                upsertAll: vi.fn(),
+            },
+            countrySupporterService: {
+                deleteExcept: vi.fn(),
+                upsertAll: vi.fn(),
+            },
+            sendEmailVerification: vi.fn(),
+        };
+
+        await expect(updatePlayerCore(
+            7,
+            {
+                name: 'Alex Updated',
+                accountEmail: 'account@example.com',
+                anonymous: false,
+                finished: null,
+                born: 1990,
+                extraEmails: [],
+                addedExtraEmails: [],
+                removedExtraEmails: [],
+                countries: ['GB-ENG'],
+                clubs: [10],
+                comment: 'Updated profile',
+            },
+            deps,
+        )).rejects.toThrow('Login account not found for profile update.');
 
         expect(deps.playerService.update).not.toHaveBeenCalled();
         expect(deps.authService.changeCurrentUserEmail).not.toHaveBeenCalled();

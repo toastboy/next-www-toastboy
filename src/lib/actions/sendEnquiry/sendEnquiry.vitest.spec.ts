@@ -114,6 +114,38 @@ describe('deliverContactEnquiryCore', () => {
         expect(deps.contactEnquiryService.markDelivered).toHaveBeenCalledWith(3);
     });
 
+    it('falls back to a dash when formatted enquiry message is empty', async () => {
+        const deps = {
+            contactEnquiryService: {
+                create: vi.fn(),
+                getByToken: vi.fn().mockResolvedValue({
+                    id: 4,
+                    name: 'Alex',
+                    email: 'alex@example.com',
+                    message: '   \n\n   ',
+                    deliveredAt: null,
+                }),
+                markDelivered: vi.fn().mockResolvedValue(undefined),
+            },
+            emailVerificationService: {
+                create: vi.fn(),
+                markUsed: vi.fn().mockResolvedValue(undefined),
+            },
+            sendEmailCore: vi.fn().mockResolvedValue(undefined),
+        };
+
+        await deliverContactEnquiryCore('enquiry-token', deps);
+
+        const [deliveryEmailPayload] = vi.mocked(deps.sendEmailCore).mock.calls[0] as [{
+            to: string;
+            subject: string;
+            html: string;
+        }];
+        expect(deliveryEmailPayload.html).toContain('<p><strong>Message:</strong><br />-</p>');
+        expect(deps.emailVerificationService.markUsed).toHaveBeenCalledWith('enquiry-token');
+        expect(deps.contactEnquiryService.markDelivered).toHaveBeenCalledWith(4);
+    });
+
     it('returns already-delivered without sending when enquiry was already processed', async () => {
         const deps = {
             contactEnquiryService: {

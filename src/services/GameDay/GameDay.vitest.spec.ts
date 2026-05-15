@@ -675,6 +675,22 @@ describe('GameDayService', () => {
             expect(result[11]).toBe(616);
         });
 
+        it('should return an empty array when no season enders exist', async () => {
+            (prisma.gameDay.groupBy as Mock).mockResolvedValue([]);
+
+            const result = await gameDayService.getSeasonEnders();
+
+            expect(result).toEqual([]);
+        });
+
+        it('should return an empty array when groupBy returns undefined', async () => {
+            (prisma.gameDay.groupBy as Mock).mockResolvedValue(undefined);
+
+            const result = await gameDayService.getSeasonEnders();
+
+            expect(result).toEqual([]);
+        });
+
         it('should pass the until date filter when provided', async () => {
             const until = new Date('2021-12-31');
             (prisma.gameDay.groupBy as Mock).mockResolvedValue([

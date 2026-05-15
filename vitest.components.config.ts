@@ -21,11 +21,11 @@ export default defineConfig({
         name: 'components-vitest',
         environment: 'happy-dom',
         globals: true,
-        include: ['src/components/**/*.vitest.spec.tsx'],
+        include: ['src/components/**/*.vitest.spec.tsx', 'src/hooks/**/*.vitest.spec.ts'],
         exclude: ['**/src/services/**'],
         setupFiles: ['vitest.setup.frontend.ts'],
         coverage: {
-            include: ['src/components/**/*.{ts,tsx}'],
+            include: ['src/components/**/*.{ts,tsx}', 'src/hooks/**/*.{ts,tsx}'],
             exclude: [
                 '**/__mocks__/**',
                 '**/*.stories.*',

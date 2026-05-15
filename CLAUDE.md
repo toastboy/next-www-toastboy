@@ -110,7 +110,7 @@ export class SomeModelService {
 
 ### Testing
 
-- Test files: `*.vitest.spec.ts(x)` alongside code in `__tests__/` subdirectory
+- Test files: `*.vitest.spec.ts(x)` placed next to the file they test — never in a `__tests__/` subdirectory
 - Mocks: `__mocks__/` as sibling to the target code
 - Use accessible selectors (`getByRole`, `getByLabelText`, `getByText`) over `data-testid`
 - Prefer the generic overload (`getByRole<HTMLInputElement>(…)`) over a type assertion (`as HTMLInputElement`) when narrowing query results — ESLint strips assertions but preserves generics

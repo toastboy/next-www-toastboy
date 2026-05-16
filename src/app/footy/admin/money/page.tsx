@@ -4,6 +4,7 @@ import { payDebt } from '@/actions/payDebt';
 import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
 import { MoneyForm } from '@/components/MoneyForm/MoneyForm';
 import moneyService from '@/services/Money';
+import { FootyChannel } from '@/types/FootyChannel';
 
 export const metadata = { title: 'Money' };
 
@@ -19,7 +20,7 @@ const MoneyPage = async () => {
 
     return (
         <Container size="lg" py="lg">
-            <AutoRefresh channel="money" />
+            <AutoRefresh channel={FootyChannel.Money} />
             <MoneyForm
                 playerDebts={debts.players}
                 payDebt={payDebt}

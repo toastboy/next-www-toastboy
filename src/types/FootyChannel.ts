@@ -2,10 +2,13 @@
  * Named channels for the server-sent events pub/sub system.
  * Add new channel names here as features require live updates.
  */
-export type FootyChannel =
-    | 'games'
-    | 'invitations'
-    | 'money'
-    | 'players'
-    | 'responses'
-    | 'results';
+export const FootyChannel = {
+    Games: 'games',
+    Invitations: 'invitations',
+    Money: 'money',
+    Players: 'players',
+    Responses: 'responses',
+    Results: 'results',
+} as const;
+
+export type FootyChannel = typeof FootyChannel[keyof typeof FootyChannel];

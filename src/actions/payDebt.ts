@@ -6,6 +6,7 @@ import { payDebtCore } from '@/lib/actions/payDebt';
 import { requireAdmin } from '@/lib/auth.server';
 import { emit } from '@/lib/events';
 import { PayDebtInputSchema } from '@/types/actions/PayDebt';
+import { FootyChannel } from '@/types/FootyChannel';
 
 /**
  * Processes a debt payment and revalidates related pages.
@@ -30,7 +31,7 @@ export async function payDebt(rawData: unknown) {
 
     revalidatePath('/footy/admin/money');
     revalidatePath('/footy/game');
-    emit('money');
+    emit(FootyChannel.Money);
 
     return result;
 }

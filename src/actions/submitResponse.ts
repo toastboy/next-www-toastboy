@@ -6,6 +6,7 @@ import { SubmitResponseCore } from '@/lib/actions/submitResponse';
 import { requireAdmin } from '@/lib/auth.server';
 import { emit } from '@/lib/events';
 import { SubmitResponseInputSchema } from '@/types/actions/SubmitResponse';
+import { FootyChannel } from '@/types/FootyChannel';
 
 /**
  * Submits a player response for a game day (admin override).
@@ -23,7 +24,7 @@ export async function SubmitResponse(rawData: unknown) {
     revalidatePath('/footy/admin/picker');
     revalidatePath('/footy/admin/responses');
     revalidatePath('/footy/response');
-    emit('responses');
+    emit(FootyChannel.Responses);
 
     return result;
 }

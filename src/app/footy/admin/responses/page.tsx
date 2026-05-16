@@ -7,6 +7,7 @@ import { ResponsesForm } from '@/components/ResponsesForm/ResponsesForm';
 import { formatDate } from '@/lib/dates';
 import gameDayService from '@/services/GameDay';
 import outcomeService from '@/services/Outcome';
+import { FootyChannel } from '@/types/FootyChannel';
 
 export const metadata = { title: 'Responses' };
 
@@ -17,7 +18,7 @@ const ResponsesPage = async () => {
 
     return (
         <Container size="lg" py="lg">
-            <AutoRefresh channel="responses" />
+            <AutoRefresh channel={FootyChannel.Responses} />
             <ResponsesForm
                 gameId={currentGame.id}
                 gameDate={formatDate(currentGame.date)}

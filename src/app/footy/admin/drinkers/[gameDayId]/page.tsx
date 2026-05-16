@@ -2,10 +2,12 @@ import { Anchor, Container, Group } from '@mantine/core';
 import { notFound } from 'next/navigation';
 
 import { setDrinkers } from '@/actions/setDrinkers';
+import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
 import { DrinkersForm } from '@/components/DrinkersForm/DrinkersForm';
 import { formatDate } from '@/lib/dates';
 import gameDayService from '@/services/GameDay';
 import outcomeService from '@/services/Outcome';
+import { FootyChannel } from '@/types/FootyChannel';
 
 interface PageProps {
     params: Promise<{
@@ -32,6 +34,7 @@ const DrinkersPage = async (props: PageProps) => {
 
     return (
         <Container size="lg" py="lg">
+            <AutoRefresh channel={FootyChannel.Games} />
             <Group justify="space-between" mb="md">
                 {
                     previousGame ?

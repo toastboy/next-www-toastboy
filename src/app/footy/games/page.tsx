@@ -6,10 +6,12 @@ import { notFound, permanentRedirect } from 'next/navigation';
 import { cache } from 'react';
 import z from 'zod';
 
+import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
 import { GameDayList } from '@/components/GameDayList/GameDayList';
 import { TitleWithYearDropdown } from '@/components/TitleWithYearDropdown/TitleWithYearDropdown';
 import { getYearName } from '@/lib/tables';
 import gameDayService from '@/services/GameDay';
+import { FootyChannel } from '@/types/FootyChannel';
 
 interface PageProps {
     searchParams?: Promise<{
@@ -89,6 +91,8 @@ const GamesPage = async (props: PageProps) => {
 
     return (
         <Flex direction="column" align="center" gap="lg">
+            <AutoRefresh channel={FootyChannel.Games} />
+            <AutoRefresh channel={FootyChannel.Results} />
             <Group justify="center" w="100%">
                 <TitleWithYearDropdown order={1} title="Games: " year={year} validYears={allYears} />
             </Group>

@@ -1,8 +1,10 @@
 import { createMoreGameDays } from '@/actions/createMoreGameDays';
+import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
 import { MoreGamesForm } from '@/components/MoreGamesForm/MoreGamesForm';
 import { config } from '@/lib/config';
 import { formatDate } from '@/lib/dates';
 import gameDayService from '@/services/GameDay';
+import { FootyChannel } from '@/types/FootyChannel';
 
 /**
  * Adds a specified number of days to a given date.
@@ -112,12 +114,15 @@ const MoreGamesPage = async () => {
     const hallCost = lastGameDay?.hallCost ?? config.defaultHallCostPence;
 
     return (
-        <MoreGamesForm
-            cost={cost}
-            hallCost={hallCost}
-            rows={rows}
-            onCreateMoreGameDays={createMoreGameDays}
-        />
+        <>
+            <AutoRefresh channel={FootyChannel.Games} />
+            <MoreGamesForm
+                cost={cost}
+                hallCost={hallCost}
+                rows={rows}
+                onCreateMoreGameDays={createMoreGameDays}
+            />
+        </>
     );
 };
 

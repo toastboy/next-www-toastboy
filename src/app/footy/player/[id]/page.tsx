@@ -6,6 +6,7 @@ import { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema'
 import { cache } from 'react';
 import z from 'zod';
 
+import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
 import { PlayerProfile } from '@/components/PlayerProfile/PlayerProfile';
 import { getUserRole } from '@/lib/auth.server';
 import arseService from '@/services/Arse';
@@ -13,6 +14,7 @@ import clubSupporterService from '@/services/ClubSupporter';
 import countrySupporterService from '@/services/CountrySupporter';
 import playerService from '@/services/Player';
 import playerRecordService from '@/services/PlayerRecord';
+import { FootyChannel } from '@/types/FootyChannel';
 
 interface PageProps {
     params: Promise<{
@@ -105,19 +107,23 @@ const PlayerPage = async (props: PageProps) => {
     }));
 
     return (
-        <PlayerProfile
-            key={player.id}
-            player={player}
-            year={year}
-            form={form}
-            lastPlayed={lastPlayed}
-            clubs={clubs}
-            countries={countries}
-            arse={arse}
-            activeYears={activeYears}
-            record={record}
-            trophies={trophies}
-        />
+        <>
+            <AutoRefresh channel={FootyChannel.Players} />
+            <AutoRefresh channel={FootyChannel.Results} />
+            <PlayerProfile
+                key={player.id}
+                player={player}
+                year={year}
+                form={form}
+                lastPlayed={lastPlayed}
+                clubs={clubs}
+                countries={countries}
+                arse={arse}
+                activeYears={activeYears}
+                record={record}
+                trophies={trophies}
+            />
+        </>
     );
 };
 

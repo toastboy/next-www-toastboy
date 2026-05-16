@@ -2,9 +2,11 @@ import { Container } from '@mantine/core';
 
 import { recordHallHire } from '@/actions/recordHallHire';
 import { updateInvoiceGameDays } from '@/actions/updateInvoiceGameDays';
+import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
 import { InvoiceForm } from '@/components/InvoiceForm/InvoiceForm';
 import { formatDate } from '@/lib/dates';
 import gameDayService from '@/services/GameDay';
+import { FootyChannel } from '@/types/FootyChannel';
 
 export const metadata = { title: 'Invoice Check' };
 
@@ -35,6 +37,8 @@ const InvoicePage = async ({ searchParams }: InvoicePageProps) => {
 
     return (
         <Container size="lg" py="lg">
+            <AutoRefresh channel={FootyChannel.Games} />
+            <AutoRefresh channel={FootyChannel.Money} />
             <InvoiceForm
                 year={year}
                 month={month}

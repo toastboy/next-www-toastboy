@@ -4,6 +4,8 @@ import { revalidatePath } from 'next/cache';
 
 import { updatePlayerRecordsCore } from '@/lib/actions/updatePlayerRecords';
 import { requireAdmin } from '@/lib/auth.server';
+import { emit } from '@/lib/events';
+import { FootyChannel } from '@/types/FootyChannel';
 
 /**
  * Recomputes aggregated player records and revalidates admin pages.
@@ -16,4 +18,6 @@ export async function updatePlayerRecords() {
     await updatePlayerRecordsCore();
 
     revalidatePath('/footy/admin');
+    emit(FootyChannel.Players);
+    emit(FootyChannel.Results);
 }

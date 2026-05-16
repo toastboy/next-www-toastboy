@@ -3,6 +3,7 @@ import { Notification } from '@mantine/core';
 import { IconX } from '@tabler/icons-react';
 
 import { updatePlayer } from '@/actions/updatePlayer';
+import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
 import { PlayerProfileForm } from '@/components/PlayerProfileForm/PlayerProfileForm';
 import { getCurrentUser } from '@/lib/auth.server';
 import { config } from '@/lib/config';
@@ -12,6 +13,7 @@ import countryService from '@/services/Country';
 import countrySupporterService from '@/services/CountrySupporter';
 import playerService from '@/services/Player';
 import playerExtraEmailService from '@/services/PlayerExtraEmail';
+import { FootyChannel } from '@/types/FootyChannel';
 
 interface PageProps {
     searchParams?: Promise<{
@@ -56,17 +58,20 @@ const Page = async ({ searchParams: sp }: PageProps) => {
     }
 
     return (
-        <PlayerProfileForm
-            player={player}
-            accountEmail={user.email}
-            extraEmails={extraEmails}
-            countries={countries}
-            clubs={clubs}
-            allCountries={allCountries}
-            allClubs={allClubs}
-            verifiedEmail={verifiedEmail}
-            onUpdatePlayer={updatePlayer}
-        />
+        <>
+            <AutoRefresh channel={FootyChannel.Players} />
+            <PlayerProfileForm
+                player={player}
+                accountEmail={user.email}
+                extraEmails={extraEmails}
+                countries={countries}
+                clubs={clubs}
+                allCountries={allCountries}
+                allClubs={allClubs}
+                verifiedEmail={verifiedEmail}
+                onUpdatePlayer={updatePlayer}
+            />
+        </>
     );
 };
 

@@ -1,8 +1,12 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
+
 import { triggerInvitationsCore } from '@/lib/actions/triggerInvitations';
 import { requireAdmin } from '@/lib/auth.server';
+import { emit } from '@/lib/events';
 import { NewGameInputSchema } from '@/types/actions/TriggerInvitations';
+import { FootyChannel } from '@/types/FootyChannel';
 
 /**
  * Triggers game invitations for the next scheduled game day.
@@ -15,5 +19,13 @@ export async function triggerInvitations(rawData: unknown) {
     await requireAdmin();
 
     const data = NewGameInputSchema.parse(rawData);
-    return await triggerInvitationsCore(data);
+    const decision = await triggerInvitationsCore(data);
+
+    revalidatePath('/footy/admin/newgame');
+    revalidatePath('/footy/admin/responses');
+    revalidatePath('/footy/admin/picker');
+    revalidatePath('/footy/response');
+    emit(FootyChannel.Invitations);
+
+    return decision;
 }

@@ -27,7 +27,8 @@
             "Bash(npx playwright *)",
             "Bash(npx prisma *)",
             "Bash(npx tsc *)",
-            "Bash(npx vitest *)"
+            "Bash(npx vitest *)",
+            "mcp__filesystem__read_text_file"
         ]
     }
 }

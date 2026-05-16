@@ -3,9 +3,11 @@ import { notFound } from 'next/navigation';
 
 import { setGameEnabled } from '@/actions/setGameEnabled';
 import { SubmitPicker } from '@/actions/submitPicker';
+import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
 import { PickerForm } from '@/components/PickerForm/PickerForm';
 import gameDayService from '@/services/GameDay';
 import outcomeService from '@/services/Outcome';
+import { FootyChannel } from '@/types/FootyChannel';
 
 export const metadata = { title: 'Picker' };
 
@@ -22,6 +24,8 @@ const PickerPage = async () => {
 
     return (
         <Container size="lg" py="lg">
+            <AutoRefresh channel={FootyChannel.Games} />
+            <AutoRefresh channel={FootyChannel.Responses} />
             <PickerForm
                 gameDay={currentGame}
                 players={playersWithGames}

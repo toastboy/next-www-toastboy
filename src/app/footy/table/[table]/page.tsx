@@ -5,10 +5,12 @@ import { TableNameSchema } from 'prisma/zod/schemas';
 import { cache } from 'react';
 import z from 'zod';
 
+import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
 import { TitleWithYearDropdown } from '@/components/TitleWithYearDropdown/TitleWithYearDropdown';
 import { YearTable } from '@/components/YearTable/YearTable';
 import { QualifiedTableName, TableTitle } from '@/lib/tables';
 import playerRecordService from '@/services/PlayerRecord';
+import { FootyChannel } from '@/types/FootyChannel';
 
 interface PageProps {
     params: Promise<{
@@ -108,6 +110,8 @@ const TablePage = async (props: PageProps) => {
 
     return (
         <>
+            <AutoRefresh channel={FootyChannel.Results} />
+            <AutoRefresh channel={FootyChannel.Players} />
             <Group justify="center" w="100%">
                 <TitleWithYearDropdown order={1} title={`${TableTitle(table)}: `} year={year} validYears={allYears} />
             </Group>

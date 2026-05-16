@@ -5,8 +5,10 @@ import { revalidatePath } from 'next/cache';
 import { setGameResultCore } from '@/lib/actions/setGameResult';
 import { requireAdmin } from '@/lib/auth.server';
 import { InternalError, normalizeUnknownError } from '@/lib/errors';
+import { emit } from '@/lib/events';
 import playerRecordService from '@/services/PlayerRecord';
 import { SetGameResultInputSchema } from '@/types/actions/SetGameResult';
+import { FootyChannel } from '@/types/FootyChannel';
 
 /**
  * Sets the result of a game and revalidates the associated cache.
@@ -49,6 +51,8 @@ export async function setGameResult(rawData: unknown) {
     revalidatePath('/footy/table');
     revalidatePath('/footy/pub');
     revalidatePath('/footy/points');
+    emit(FootyChannel.Results);
+    emit(FootyChannel.Games);
 
     return gameDay;
 }

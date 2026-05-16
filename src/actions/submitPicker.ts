@@ -4,7 +4,9 @@ import { revalidatePath } from 'next/cache';
 
 import { SubmitPickerCore } from '@/lib/actions/submitPicker';
 import { requireAdmin } from '@/lib/auth.server';
+import { emit } from '@/lib/events';
 import { SubmitPickerInputSchema } from '@/types/actions/SubmitPicker';
+import { FootyChannel } from '@/types/FootyChannel';
 
 /**
  * Submits the team pick for a game day and revalidates the game page.
@@ -19,4 +21,5 @@ export async function SubmitPicker(rawData: unknown) {
     await SubmitPickerCore(data);
 
     revalidatePath('/footy/game');
+    emit(FootyChannel.Games);
 }

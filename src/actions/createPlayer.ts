@@ -4,7 +4,9 @@ import { revalidatePath } from 'next/cache';
 
 import { addPlayerInviteCore, createPlayerCore } from '@/lib/actions/createPlayer';
 import { requireAdmin } from '@/lib/auth.server';
+import { emit } from '@/lib/events';
 import { CreatePlayerSchema } from '@/types/actions/CreatePlayer';
+import { FootyChannel } from '@/types/FootyChannel';
 
 /**
  * Creates a new player in the system with the provided data.
@@ -31,6 +33,7 @@ export async function createPlayer(rawData: unknown) {
 
     revalidatePath('/footy/admin/newplayer');
     revalidatePath('/footy/players');
+    emit(FootyChannel.Players);
 
     return result;
 }
@@ -56,6 +59,7 @@ export async function addPlayerInvite(
 
     revalidatePath('/footy/admin/newplayer');
     revalidatePath('/footy/players');
+    emit(FootyChannel.Players);
 
     return inviteLink;
 }

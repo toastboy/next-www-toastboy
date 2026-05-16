@@ -1,9 +1,11 @@
 import { notFound } from 'next/navigation';
 
 import { sendEmail } from '@/actions/sendEmail';
+import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
 import { PlayerList } from '@/components/PlayerList/PlayerList';
 import gameDayService from '@/services/GameDay';
 import playerService from '@/services/Player';
+import { FootyChannel } from '@/types/FootyChannel';
 
 export const metadata = { title: 'Players' };
 
@@ -16,11 +18,14 @@ const PlayersPage = async () => {
     if (!gameDay) return notFound();
 
     return (
-        <PlayerList
-            players={players}
-            gameDay={gameDay}
-            sendEmail={sendEmail}
-        />
+        <>
+            <AutoRefresh channel={FootyChannel.Players} />
+            <PlayerList
+                players={players}
+                gameDay={gameDay}
+                sendEmail={sendEmail}
+            />
+        </>
     );
 };
 

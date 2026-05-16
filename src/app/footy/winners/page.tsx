@@ -5,11 +5,13 @@ import { TableName, TableNameSchema } from 'prisma/zod/schemas';
 import { cache } from 'react';
 import z from 'zod';
 
+import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
 import { TitleWithYearDropdown } from '@/components/TitleWithYearDropdown/TitleWithYearDropdown';
 import { WinnersTable } from '@/components/WinnersTable/WinnersTable';
 import { getYearName } from '@/lib/tables';
 import playerRecordService from '@/services/PlayerRecord';
 import { PlayerRecordDataType } from '@/types';
+import { FootyChannel } from '@/types/FootyChannel';
 
 interface PageProps {
     searchParams?: Promise<{
@@ -82,6 +84,7 @@ const WinnersPage = async (props: PageProps) => {
 
     return (
         <Stack align="stretch" justify="center" gap="md">
+            <AutoRefresh channel={FootyChannel.Results} />
             <Group justify="center" w="100%">
                 <TitleWithYearDropdown
                     order={1}

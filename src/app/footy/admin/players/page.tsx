@@ -4,8 +4,10 @@ import { headers } from 'next/headers';
 import { addPlayerInvite } from '@/actions/createPlayer';
 import { sendEmail } from '@/actions/sendEmail';
 import { AdminPlayerList } from '@/components/AdminPlayerList/AdminPlayerList';
+import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
 import { auth } from '@/lib/auth';
 import playerService from '@/services/Player';
+import { FootyChannel } from '@/types/FootyChannel';
 
 export const metadata = { title: 'Players Admin' };
 
@@ -29,6 +31,7 @@ const AdminPlayersPage = async () => {
 
     return (
         <Container fluid mt="xl">
+            <AutoRefresh channel={FootyChannel.Players} />
             <Center>
                 <Title order={2} mb="md" >
                     Admin: Players

@@ -7,12 +7,14 @@ import { cache } from 'react';
 import z from 'zod';
 
 import { setGameResult } from '@/actions/setGameResult';
+import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
 import { GameDaySummary } from '@/components/GameDaySummary/GameDaySummary';
 import { GameResultForm } from '@/components/GameResultForm/GameResultForm';
 import { getUserRole } from '@/lib/auth.server';
 import { getGameWinnersFromTeams } from '@/lib/gameResult';
 import gameDayService from '@/services/GameDay';
 import outcomeService from '@/services/Outcome';
+import { FootyChannel } from '@/types/FootyChannel';
 
 interface PageProps {
     params: Promise<{ id: string }>;
@@ -104,6 +106,8 @@ const GamePage = async (props: PageProps) => {
 
     return (
         <Flex w="100%" direction="column" gap="md">
+            <AutoRefresh channel={FootyChannel.Games} />
+            <AutoRefresh channel={FootyChannel.Results} />
             {!!prevGameDay && (
                 <Anchor
                     href={`/footy/game/${prevGameDay?.id ?? 0}`}

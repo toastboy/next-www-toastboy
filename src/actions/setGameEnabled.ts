@@ -5,7 +5,9 @@ import { revalidatePath } from 'next/cache';
 import { sendEmailToAllActivePlayers } from '@/actions/sendEmailToAllActivePlayers';
 import { setGameEnabledCore } from '@/lib/actions/setGameEnabled';
 import { requireAdmin } from '@/lib/auth.server';
+import { emit } from '@/lib/events';
 import { SetGameEnabledInputSchema } from '@/types/actions/SetGameEnabled';
+import { FootyChannel } from '@/types/FootyChannel';
 
 /**
  * Cancels a game and revalidates related pages.
@@ -27,6 +29,7 @@ export async function setGameEnabled(rawData: unknown) {
     revalidatePath('/footy/fixtures');
     revalidatePath(`/footy/admin/picker`);
     revalidatePath(`/footy/game`);
+    emit(FootyChannel.Games);
 
     return gameDay;
 }

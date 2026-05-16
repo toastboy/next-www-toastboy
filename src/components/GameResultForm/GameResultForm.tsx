@@ -64,6 +64,7 @@ export const GameResultForm = ({
                 autoClose: config.notificationAutoClose,
             });
 
+            form.resetDirty(values);
             router.refresh();
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : 'Failed to update game';

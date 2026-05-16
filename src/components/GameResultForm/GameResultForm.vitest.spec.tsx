@@ -116,6 +116,32 @@ describe('GameResultForm', () => {
         }));
     });
 
+    it('re-enables Save after a successful save when the value is changed back to the original', async () => {
+        const user = userEvent.setup();
+        const setGameResult = vi.fn<SetGameResultProxy>().mockResolvedValue({} as GameDayType);
+
+        renderForm(setGameResult);
+
+        // Change winner to A and save.
+        await user.selectOptions(screen.getByLabelText('Result'), 'A');
+        await user.click(screen.getByRole('button', { name: 'Save' }));
+
+        await waitFor(() => {
+            expect(setGameResult).toHaveBeenCalledTimes(1);
+        });
+
+        // Button should be disabled again — no unsaved changes.
+        expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled();
+
+        // Change winner back to 'none' (the original value before the first save).
+        await user.selectOptions(screen.getByLabelText('Result'), 'none');
+
+        // The form is now dirty relative to the saved state (A), so Save must
+        // be enabled. Before the fix this would remain disabled because
+        // isDirty() was still comparing against the original initialValues.
+        expect(screen.getByRole('button', { name: 'Save' })).not.toBeDisabled();
+    });
+
     it('shows an error notification when save fails', async () => {
         const user = userEvent.setup();
         const setGameResult = vi.fn<SetGameResultProxy>().mockRejectedValue(new Error('Boom'));

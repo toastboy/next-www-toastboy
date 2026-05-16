@@ -10,8 +10,19 @@ vi.mock('@/lib/secrets', () => ({
     getSecrets: vi.fn(),
 }));
 
+vi.mock('next/cache', () => ({
+    revalidatePath: vi.fn(),
+}));
+
+vi.mock('@/lib/events', () => ({
+    broadcast: vi.fn(),
+}));
+
+import { revalidatePath } from 'next/cache';
+
 import { POST } from '@/app/api/footy/invitations/route';
 import { triggerInvitationsCore } from '@/lib/actions/triggerInvitations';
+import { broadcast } from '@/lib/events';
 import { getSecrets } from '@/lib/secrets';
 
 /**
@@ -85,6 +96,11 @@ describe('POST /api/footy/invitations', () => {
                 overrideTimeCheck: false,
                 customMessage: '',
             });
+            expect(revalidatePath).toHaveBeenCalledWith('/footy/admin/newgame');
+            expect(revalidatePath).toHaveBeenCalledWith('/footy/admin/responses');
+            expect(revalidatePath).toHaveBeenCalledWith('/footy/admin/picker');
+            expect(revalidatePath).toHaveBeenCalledWith('/footy/response');
+            expect(broadcast).toHaveBeenCalledWith('invitations');
             const body = await response.json() as { sent: boolean; gameDayId: number };
             expect(body).toEqual({ sent: true, gameDayId: 42 });
         });

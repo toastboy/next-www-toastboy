@@ -56,7 +56,7 @@ export const SubmitResponse: Story = {
         await userEvent.selectOptions(await canvas.findByLabelText(/Response/i), 'Yes');
         await userEvent.click(await canvas.findByLabelText(/Goalie/i));
         await userEvent.type(await canvas.findByLabelText(/Optional comment/i), 'Count me in.');
-        await userEvent.click(await canvas.findByRole('button', { name: /Done/i }));
+        await userEvent.click(await canvas.findByRole('button', { name: /Save Response/i }));
 
         const body = canvasElement.ownerDocument.body;
         await within(body).findByText('Response saved', {}, { timeout: 6000 });

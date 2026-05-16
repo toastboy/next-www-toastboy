@@ -1,5 +1,6 @@
 import { Notifications } from '@mantine/notifications';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import { useState } from 'react';
 import { expect, userEvent, within } from 'storybook/test';
 
 import { ResponsesForm } from '@/components/ResponsesForm/ResponsesForm';
@@ -25,6 +26,36 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+/**
+ * Stateful wrapper used by interaction stories to mirror parent-driven refresh
+ * behaviour after submit by updating the `responses` prop in-memory.
+ */
+const StatefulResponsesForm = (args: Story['args']) => {
+    const [responses, setResponses] = useState(args.responses ?? []);
+
+    return (
+        <ResponsesForm
+            gameId={args.gameId ?? 0}
+            gameDate={args.gameDate ?? ''}
+            responses={responses}
+            submitResponse={async (payload) => {
+                const result = await (args.submitResponse?.(payload) ?? Promise.resolve(null));
+                setResponses((previous) => previous.map((row) => (
+                    row.playerId === payload.playerId ?
+                        {
+                            ...row,
+                            response: payload.response,
+                            goalie: payload.goalie,
+                            comment: payload.comment,
+                        } :
+                        row
+                )));
+                return result;
+            }}
+        />
+    );
+};
+
 export const Render: Story = {
     args: {
         gameId: 1249,
@@ -43,6 +74,7 @@ export const Render: Story = {
 
 export const SimpleUpdate: Story = {
     ...Render,
+    render: (args) => <StatefulResponsesForm {...args} />,
     parameters: {
         docs: {
             description: {

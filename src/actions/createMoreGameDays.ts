@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 
 import { createMoreGameDaysCore } from '@/lib/actions/createMoreGameDays';
 import { requireAdmin } from '@/lib/auth.server';
-import { emit } from '@/lib/events';
+import { broadcast } from '@/lib/events';
 import { CreateMoreGameDaysSchema } from '@/types/actions/CreateMoreGameDays';
 import { FootyChannel } from '@/types/FootyChannel';
 
@@ -23,7 +23,7 @@ export async function createMoreGameDays(rawData: unknown) {
 
     revalidatePath('/footy/admin/moregames');
     revalidatePath('/footy/fixtures');
-    emit(FootyChannel.Games);
+    broadcast(FootyChannel.Games);
 
     return created;
 }

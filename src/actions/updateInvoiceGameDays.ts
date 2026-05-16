@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 
 import { requireAdmin } from '@/lib/auth.server';
-import { emit } from '@/lib/events';
+import { broadcast } from '@/lib/events';
 import gameDayService from '@/services/GameDay';
 import { UpdateInvoiceGameDaysInputSchema } from '@/types/actions/UpdateInvoiceGameDays';
 import { FootyChannel } from '@/types/FootyChannel';
@@ -28,6 +28,6 @@ export async function updateInvoiceGameDays(rawData: unknown) {
 
     revalidatePath('/footy/admin/invoice');
     revalidatePath('/footy/fixtures');
-    emit(FootyChannel.Money);
-    emit(FootyChannel.Games);
+    broadcast(FootyChannel.Money);
+    broadcast(FootyChannel.Games);
 }

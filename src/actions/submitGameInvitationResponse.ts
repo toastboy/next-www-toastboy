@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 
 import { submitGameInvitationResponseCore } from '@/lib/actions/submitGameInvitationResponse';
-import { emit } from '@/lib/events';
+import { broadcast } from '@/lib/events';
 import { InvitationResponseInputSchema } from '@/types/actions/SubmitGameInvitationResponse';
 import { FootyChannel } from '@/types/FootyChannel';
 
@@ -14,7 +14,7 @@ export async function submitGameInvitationResponse(rawData: unknown) {
     revalidatePath('/footy/admin/picker');
     revalidatePath('/footy/admin/responses');
     revalidatePath('/footy/response');
-    emit(FootyChannel.Responses);
+    broadcast(FootyChannel.Responses);
 
     return result;
 }

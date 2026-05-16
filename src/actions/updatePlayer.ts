@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache';
 
 import { updatePlayerCore } from '@/lib/actions/updatePlayer';
-import { emit } from '@/lib/events';
+import { broadcast } from '@/lib/events';
 import { UpdatePlayerSchema } from '@/types/actions/UpdatePlayer';
 import { FootyChannel } from '@/types/FootyChannel';
 
@@ -14,7 +14,7 @@ export async function updatePlayer(playerId: number, rawData: unknown) {
     revalidatePath('/footy/players');
     revalidatePath('/footy/profile');
     revalidatePath(`/footy/player/${playerId}`);
-    emit(FootyChannel.Players);
+    broadcast(FootyChannel.Players);
 
     return player;
 }

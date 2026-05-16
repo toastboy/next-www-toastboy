@@ -5,7 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { setDrinkersCore } from '@/lib/actions/setDrinkers';
 import { requireAdmin } from '@/lib/auth.server';
 import { InternalError, normalizeUnknownError } from '@/lib/errors';
-import { emit } from '@/lib/events';
+import { broadcast } from '@/lib/events';
 import playerRecordService from '@/services/PlayerRecord';
 import { SetDrinkersInputSchema } from '@/types/actions/SetDrinkers';
 import { FootyChannel } from '@/types/FootyChannel';
@@ -46,7 +46,7 @@ export async function setDrinkers(rawData: unknown) {
     revalidatePath('/footy/pub');
     revalidatePath('/footy/table/pub');
     revalidatePath(`/footy/game/${data.gameDayId}`);
-    emit(FootyChannel.Games);
+    broadcast(FootyChannel.Games);
 
     return result;
 }

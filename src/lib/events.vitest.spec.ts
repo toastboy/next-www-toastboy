@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { emit, emitter } from '@/lib/events';
+import { broadcast, emitter } from '@/lib/events';
 
 describe('events', () => {
     beforeEach(() => {
@@ -11,14 +11,14 @@ describe('events', () => {
         it('fires listeners on the matching channel', () => {
             const listener = vi.fn();
             emitter.on('games', listener);
-            emit('games');
+            broadcast('games');
             expect(listener).toHaveBeenCalledTimes(1);
         });
 
         it('does not fire listeners registered on a different channel', () => {
             const listener = vi.fn();
             emitter.on('players', listener);
-            emit('games');
+            broadcast('games');
             expect(listener).not.toHaveBeenCalled();
         });
 
@@ -27,7 +27,7 @@ describe('events', () => {
             const b = vi.fn();
             emitter.on('games', a);
             emitter.on('games', b);
-            emit('games');
+            broadcast('games');
             expect(a).toHaveBeenCalledTimes(1);
             expect(b).toHaveBeenCalledTimes(1);
         });
@@ -37,7 +37,7 @@ describe('events', () => {
             const playersListener = vi.fn();
             emitter.on('games', gamesListener);
             emitter.on('players', playersListener);
-            emit('players');
+            broadcast('players');
             expect(gamesListener).not.toHaveBeenCalled();
             expect(playersListener).toHaveBeenCalledTimes(1);
         });

@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 import { beforeEach, describe, expect, it } from 'vitest';
 
 import { GET } from '@/app/api/events/route';
-import { emit, emitter } from '@/lib/events';
+import { broadcast, emitter } from '@/lib/events';
 
 describe('/api/events', () => {
     beforeEach(() => {
@@ -37,7 +37,7 @@ describe('/api/events', () => {
         });
         const response = GET(request);
 
-        emit('games');
+        broadcast('games');
 
         const reader = response.body!.getReader();
         const { value } = await reader.read();
@@ -67,8 +67,8 @@ describe('/api/events', () => {
         });
         const response = GET(request);
 
-        emit('players');
-        emit('games');
+        broadcast('players');
+        broadcast('games');
 
         const reader = response.body!.getReader();
         const { value } = await reader.read();

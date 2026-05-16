@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 
 import { SubmitResponseCore } from '@/lib/actions/submitResponse';
 import { requireAdmin } from '@/lib/auth.server';
-import { emit } from '@/lib/events';
+import { broadcast } from '@/lib/events';
 import { SubmitResponseInputSchema } from '@/types/actions/SubmitResponse';
 import { FootyChannel } from '@/types/FootyChannel';
 
@@ -24,7 +24,7 @@ export async function SubmitResponse(rawData: unknown) {
     revalidatePath('/footy/admin/picker');
     revalidatePath('/footy/admin/responses');
     revalidatePath('/footy/response');
-    emit(FootyChannel.Responses);
+    broadcast(FootyChannel.Responses);
 
     return result;
 }

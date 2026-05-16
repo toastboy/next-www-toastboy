@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { triggerInvitationsCore } from '@/lib/actions/triggerInvitations';
 import { buildJsonErrorResponse } from '@/lib/api';
-import { emit } from '@/lib/events';
+import { broadcast } from '@/lib/events';
 import { getSecrets } from '@/lib/secrets';
 import { NewGameInputSchema } from '@/types/actions/TriggerInvitations';
 import { FootyChannel } from '@/types/FootyChannel';
@@ -88,7 +88,7 @@ export const POST = async (request: NextRequest) => {
         revalidatePath('/footy/admin/responses');
         revalidatePath('/footy/admin/picker');
         revalidatePath('/footy/response');
-        emit(FootyChannel.Invitations);
+        broadcast(FootyChannel.Invitations);
 
         return NextResponse.json(decision, { status: 200 });
     } catch (error) {

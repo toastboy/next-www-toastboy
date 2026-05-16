@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 
 import { triggerInvitationsCore } from '@/lib/actions/triggerInvitations';
 import { requireAdmin } from '@/lib/auth.server';
-import { emit } from '@/lib/events';
+import { broadcast } from '@/lib/events';
 import { NewGameInputSchema } from '@/types/actions/TriggerInvitations';
 import { FootyChannel } from '@/types/FootyChannel';
 
@@ -25,7 +25,7 @@ export async function triggerInvitations(rawData: unknown) {
     revalidatePath('/footy/admin/responses');
     revalidatePath('/footy/admin/picker');
     revalidatePath('/footy/response');
-    emit(FootyChannel.Invitations);
+    broadcast(FootyChannel.Invitations);
 
     return decision;
 }

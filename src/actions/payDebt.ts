@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 
 import { payDebtCore } from '@/lib/actions/payDebt';
 import { requireAdmin } from '@/lib/auth.server';
-import { emit } from '@/lib/events';
+import { broadcast } from '@/lib/events';
 import { PayDebtInputSchema } from '@/types/actions/PayDebt';
 import { FootyChannel } from '@/types/FootyChannel';
 
@@ -31,7 +31,7 @@ export async function payDebt(rawData: unknown) {
 
     revalidatePath('/footy/admin/money');
     revalidatePath('/footy/game');
-    emit(FootyChannel.Money);
+    broadcast(FootyChannel.Money);
 
     return result;
 }

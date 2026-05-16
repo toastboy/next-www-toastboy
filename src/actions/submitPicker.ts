@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 
 import { SubmitPickerCore } from '@/lib/actions/submitPicker';
 import { requireAdmin } from '@/lib/auth.server';
-import { emit } from '@/lib/events';
+import { broadcast } from '@/lib/events';
 import { SubmitPickerInputSchema } from '@/types/actions/SubmitPicker';
 import { FootyChannel } from '@/types/FootyChannel';
 
@@ -21,5 +21,5 @@ export async function SubmitPicker(rawData: unknown) {
     await SubmitPickerCore(data);
 
     revalidatePath('/footy/game');
-    emit(FootyChannel.Games);
+    broadcast(FootyChannel.Games);
 }

@@ -14,7 +14,7 @@ g.footyEmitter = emitter;
  * services immediately after a database mutation to push live updates to all
  * connected clients subscribed to that channel.
  */
-export function emit(channel: FootyChannel): void {
+export function broadcast(channel: FootyChannel): void {
     emitter.emit(channel);
 }
 

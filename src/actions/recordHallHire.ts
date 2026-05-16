@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 
 import { recordHallHireCore } from '@/lib/actions/recordHallHire';
 import { requireAdmin } from '@/lib/auth.server';
-import { emit } from '@/lib/events';
+import { broadcast } from '@/lib/events';
 import { RecordHallHireInputSchema } from '@/types/actions/RecordHallHire';
 import { FootyChannel } from '@/types/FootyChannel';
 
@@ -23,5 +23,5 @@ export async function recordHallHire(rawData: unknown) {
 
     revalidatePath('/footy/admin/money');
     revalidatePath('/footy/admin/invoice');
-    emit(FootyChannel.Money);
+    broadcast(FootyChannel.Money);
 }

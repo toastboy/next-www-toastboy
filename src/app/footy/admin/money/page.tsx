@@ -20,7 +20,7 @@ const MoneyPage = async () => {
 
     return (
         <Container size="lg" py="lg">
-            <AutoRefresh channel={FootyChannel.Money} />
+            <AutoRefresh channels={FootyChannel.Money} />
             <MoneyForm
                 playerDebts={debts.players}
                 payDebt={payDebt}

@@ -18,7 +18,7 @@ const ResponsesPage = async () => {
 
     return (
         <Container size="lg" py="lg">
-            <AutoRefresh channel={FootyChannel.Responses} />
+            <AutoRefresh channels={FootyChannel.Responses} />
             <ResponsesForm
                 gameId={currentGame.id}
                 gameDate={formatDate(currentGame.date)}

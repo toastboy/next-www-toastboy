@@ -37,8 +37,7 @@ const InvoicePage = async ({ searchParams }: InvoicePageProps) => {
 
     return (
         <Container size="lg" py="lg">
-            <AutoRefresh channel={FootyChannel.Games} />
-            <AutoRefresh channel={FootyChannel.Money} />
+            <AutoRefresh channels={[FootyChannel.Games, FootyChannel.Money]} />
             <InvoiceForm
                 year={year}
                 month={month}

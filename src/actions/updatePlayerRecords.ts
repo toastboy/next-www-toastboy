@@ -18,6 +18,5 @@ export async function updatePlayerRecords() {
     await updatePlayerRecordsCore();
 
     revalidatePath('/footy/admin');
-    broadcast(FootyChannel.Players);
-    broadcast(FootyChannel.Results);
+    broadcast([FootyChannel.Players, FootyChannel.Results]);
 }

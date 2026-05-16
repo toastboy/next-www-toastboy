@@ -10,12 +10,13 @@ const emitter: EventEmitter = g.footyEmitter ?? new EventEmitter();
 g.footyEmitter = emitter;
 
 /**
- * Publish an event on the named channel. Call this from server actions or
- * services immediately after a database mutation to push live updates to all
- * connected clients subscribed to that channel.
+ * Publish an event on one or more named channels. Call this from server
+ * actions or services immediately after a database mutation to push live
+ * updates to all connected clients subscribed to those channels.
  */
-export function broadcast(channel: FootyChannel): void {
-    emitter.emit(channel);
+export function broadcast(channels: FootyChannel | FootyChannel[]): void {
+    const list = Array.isArray(channels) ? channels : [channels];
+    list.forEach(channel => emitter.emit(channel));
 }
 
 export { emitter };

@@ -59,7 +59,7 @@ const Page = async ({ searchParams: sp }: PageProps) => {
 
     return (
         <>
-            <AutoRefresh channel={FootyChannel.Players} />
+            <AutoRefresh channels={FootyChannel.Players} />
             <PlayerProfileForm
                 player={player}
                 accountEmail={user.email}

@@ -31,7 +31,7 @@ const AdminPlayersPage = async () => {
 
     return (
         <Container fluid mt="xl">
-            <AutoRefresh channel={FootyChannel.Players} />
+            <AutoRefresh channels={FootyChannel.Players} />
             <Center>
                 <Title order={2} mb="md" >
                     Admin: Players

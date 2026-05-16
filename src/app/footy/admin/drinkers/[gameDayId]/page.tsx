@@ -34,7 +34,7 @@ const DrinkersPage = async (props: PageProps) => {
 
     return (
         <Container size="lg" py="lg">
-            <AutoRefresh channel={FootyChannel.Games} />
+            <AutoRefresh channels={FootyChannel.Games} />
             <Group justify="space-between" mb="md">
                 {
                     previousGame ?

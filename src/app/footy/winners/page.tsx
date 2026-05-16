@@ -84,7 +84,7 @@ const WinnersPage = async (props: PageProps) => {
 
     return (
         <Stack align="stretch" justify="center" gap="md">
-            <AutoRefresh channel={FootyChannel.Results} />
+            <AutoRefresh channels={FootyChannel.Results} />
             <Group justify="center" w="100%">
                 <TitleWithYearDropdown
                     order={1}

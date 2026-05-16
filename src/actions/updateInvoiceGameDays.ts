@@ -28,6 +28,5 @@ export async function updateInvoiceGameDays(rawData: unknown) {
 
     revalidatePath('/footy/admin/invoice');
     revalidatePath('/footy/fixtures');
-    broadcast(FootyChannel.Money);
-    broadcast(FootyChannel.Games);
+    broadcast([FootyChannel.Money, FootyChannel.Games]);
 }

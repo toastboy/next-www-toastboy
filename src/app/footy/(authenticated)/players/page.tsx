@@ -19,7 +19,7 @@ const PlayersPage = async () => {
 
     return (
         <>
-            <AutoRefresh channel={FootyChannel.Players} />
+            <AutoRefresh channels={FootyChannel.Players} />
             <PlayerList
                 players={players}
                 gameDay={gameDay}

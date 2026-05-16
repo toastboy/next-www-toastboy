@@ -12,7 +12,7 @@ const NewPlayerPage = async () => {
 
     return (
         <>
-            <AutoRefresh channel={FootyChannel.Players} />
+            <AutoRefresh channels={FootyChannel.Players} />
             <NewPlayerForm
                 players={players}
                 onCreatePlayer={createPlayer}

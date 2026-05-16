@@ -108,8 +108,7 @@ const PlayerPage = async (props: PageProps) => {
 
     return (
         <>
-            <AutoRefresh channel={FootyChannel.Players} />
-            <AutoRefresh channel={FootyChannel.Results} />
+            <AutoRefresh channels={[FootyChannel.Players, FootyChannel.Results]} />
             <PlayerProfile
                 key={player.id}
                 player={player}

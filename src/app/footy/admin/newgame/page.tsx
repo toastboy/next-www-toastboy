@@ -10,7 +10,7 @@ export const metadata = { title: 'New Game' };
 const NewGamePage = () => {
     return (
         <Container size="sm">
-            <AutoRefresh channel={FootyChannel.Invitations} />
+            <AutoRefresh channels={FootyChannel.Invitations} />
             <Title order={2} mb="md">
                 New game
             </Title>

@@ -12,8 +12,7 @@ const TurnoutPage = async () => {
 
     return (
         <Paper shadow="xl" p="xl">
-            <AutoRefresh channel={FootyChannel.Games} />
-            <AutoRefresh channel={FootyChannel.Results} />
+            <AutoRefresh channels={[FootyChannel.Games, FootyChannel.Results]} />
             <Turnout turnout={turnout} />
         </Paper>
     );

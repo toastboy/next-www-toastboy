@@ -89,8 +89,7 @@ const GamesPage = async (props: PageProps) => {
 
     return (
         <Flex direction="column" align="center" gap="lg">
-            <AutoRefresh channel={FootyChannel.Games} />
-            <AutoRefresh channel={FootyChannel.Results} />
+            <AutoRefresh channels={[FootyChannel.Games, FootyChannel.Results]} />
             <Group justify="center" w="100%">
                 <TitleWithYearDropdown order={1} title="Games: " year={year} validYears={allYears} />
             </Group>

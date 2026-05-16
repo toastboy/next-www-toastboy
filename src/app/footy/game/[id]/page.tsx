@@ -104,8 +104,7 @@ const GamePage = async (props: PageProps) => {
 
     return (
         <Flex w="100%" direction="column" gap="md">
-            <AutoRefresh channel={FootyChannel.Games} />
-            <AutoRefresh channel={FootyChannel.Results} />
+            <AutoRefresh channels={[FootyChannel.Games, FootyChannel.Results]} />
             {!!prevGameDay && (
                 <Anchor
                     href={`/footy/game/${prevGameDay?.id ?? 0}`}

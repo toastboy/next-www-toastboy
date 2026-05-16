@@ -41,5 +41,15 @@ describe('events', () => {
             expect(gamesListener).not.toHaveBeenCalled();
             expect(playersListener).toHaveBeenCalledTimes(1);
         });
+
+        it('fires listeners on all channels when passed an array', () => {
+            const gamesListener = vi.fn();
+            const playersListener = vi.fn();
+            emitter.on('games', gamesListener);
+            emitter.on('players', playersListener);
+            broadcast(['games', 'players']);
+            expect(gamesListener).toHaveBeenCalledTimes(1);
+            expect(playersListener).toHaveBeenCalledTimes(1);
+        });
     });
 });

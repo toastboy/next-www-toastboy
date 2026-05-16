@@ -110,8 +110,7 @@ const TablePage = async (props: PageProps) => {
 
     return (
         <>
-            <AutoRefresh channel={FootyChannel.Results} />
-            <AutoRefresh channel={FootyChannel.Players} />
+            <AutoRefresh channels={[FootyChannel.Results, FootyChannel.Players]} />
             <Group justify="center" w="100%">
                 <TitleWithYearDropdown order={1} title={`${TableTitle(table)}: `} year={year} validYears={allYears} />
             </Group>

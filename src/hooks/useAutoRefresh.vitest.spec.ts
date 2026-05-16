@@ -12,6 +12,7 @@ const createdUrls: string[] = [];
 beforeEach(() => {
     createdUrls.length = 0;
     vi.clearAllMocks();
+    vi.useFakeTimers();
 
     // Regular function so it can be used as a constructor with `new`.
     vi.stubGlobal('EventSource', function (url: string) {
@@ -21,50 +22,82 @@ beforeEach(() => {
 });
 
 describe('useAutoRefresh', () => {
-    it('opens an EventSource for the given channel on mount', () => {
-        renderHook(() => useAutoRefresh(FootyChannel.Games));
-        expect(createdUrls).toEqual(['/api/events?channel=games']);
+    describe('single channel', () => {
+        it('opens an EventSource for the given channel on mount', () => {
+            renderHook(() => useAutoRefresh(FootyChannel.Games));
+            expect(createdUrls).toEqual(['/api/events?channel=games']);
+        });
+
+        it('registers an update event listener', () => {
+            renderHook(() => useAutoRefresh(FootyChannel.Games));
+            expect(mockAddEventListener).toHaveBeenCalledWith('update', expect.any(Function));
+        });
+
+        it('calls router.refresh() when the update event fires', () => {
+            const { refresh } = useRouter();
+            renderHook(() => useAutoRefresh(FootyChannel.Games));
+
+            const [, listener] = mockAddEventListener.mock.calls[0] as [string, () => void];
+            listener();
+            vi.runAllTimers();
+
+            expect(refresh).toHaveBeenCalledTimes(1);
+        });
+
+        it('closes the EventSource on unmount', () => {
+            const { unmount } = renderHook(() => useAutoRefresh(FootyChannel.Games));
+            unmount();
+            expect(mockClose).toHaveBeenCalledTimes(1);
+        });
+
+        it('opens a new EventSource when the channel changes', () => {
+            const { rerender } = renderHook<void, { channel: FootyChannel }>(
+                ({ channel }) => useAutoRefresh(channel),
+                { initialProps: { channel: FootyChannel.Games } },
+            );
+            rerender({ channel: FootyChannel.Players });
+            expect(createdUrls).toEqual([
+                '/api/events?channel=games',
+                '/api/events?channel=players',
+            ]);
+        });
+
+        it('closes the old EventSource when the channel changes', () => {
+            const { rerender } = renderHook<void, { channel: FootyChannel }>(
+                ({ channel }) => useAutoRefresh(channel),
+                { initialProps: { channel: FootyChannel.Games } },
+            );
+            rerender({ channel: FootyChannel.Players });
+            expect(mockClose).toHaveBeenCalledTimes(1);
+        });
     });
 
-    it('registers an update event listener', () => {
-        renderHook(() => useAutoRefresh(FootyChannel.Games));
-        expect(mockAddEventListener).toHaveBeenCalledWith('update', expect.any(Function));
-    });
+    describe('multiple channels', () => {
+        it('opens one EventSource per channel', () => {
+            renderHook(() => useAutoRefresh([FootyChannel.Games, FootyChannel.Results]));
+            expect(createdUrls).toEqual([
+                '/api/events?channel=games',
+                '/api/events?channel=results',
+            ]);
+        });
 
-    it('calls router.refresh() when the update event fires', () => {
-        const { refresh } = useRouter();
-        renderHook(() => useAutoRefresh(FootyChannel.Games));
+        it('closes all EventSources on unmount', () => {
+            const { unmount } = renderHook(() => useAutoRefresh([FootyChannel.Games, FootyChannel.Results]));
+            unmount();
+            expect(mockClose).toHaveBeenCalledTimes(2);
+        });
 
-        const [, listener] = mockAddEventListener.mock.calls[0] as [string, () => void];
-        listener();
+        it('coalesces rapid events from multiple channels into one refresh', () => {
+            const { refresh } = useRouter();
+            renderHook(() => useAutoRefresh([FootyChannel.Games, FootyChannel.Results]));
 
-        expect(refresh).toHaveBeenCalledTimes(1);
-    });
+            const listeners = mockAddEventListener.mock.calls.map(
+                (call) => call[1] as () => void,
+            );
+            listeners.forEach(fn => fn());
+            vi.runAllTimers();
 
-    it('closes the EventSource on unmount', () => {
-        const { unmount } = renderHook(() => useAutoRefresh(FootyChannel.Games));
-        unmount();
-        expect(mockClose).toHaveBeenCalledTimes(1);
-    });
-
-    it('opens a new EventSource when the channel changes', () => {
-        const { rerender } = renderHook<void, { channel: FootyChannel }>(
-            ({ channel }) => useAutoRefresh(channel),
-            { initialProps: { channel: FootyChannel.Games } },
-        );
-        rerender({ channel: FootyChannel.Players });
-        expect(createdUrls).toEqual([
-            '/api/events?channel=games',
-            '/api/events?channel=players',
-        ]);
-    });
-
-    it('closes the old EventSource when the channel changes', () => {
-        const { rerender } = renderHook<void, { channel: FootyChannel }>(
-            ({ channel }) => useAutoRefresh(channel),
-            { initialProps: { channel: FootyChannel.Games } },
-        );
-        rerender({ channel: FootyChannel.Players });
-        expect(mockClose).toHaveBeenCalledTimes(1);
+            expect(refresh).toHaveBeenCalledTimes(1);
+        });
     });
 });

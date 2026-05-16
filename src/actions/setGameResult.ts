@@ -51,8 +51,7 @@ export async function setGameResult(rawData: unknown) {
     revalidatePath('/footy/table');
     revalidatePath('/footy/pub');
     revalidatePath('/footy/points');
-    broadcast(FootyChannel.Results);
-    broadcast(FootyChannel.Games);
+    broadcast([FootyChannel.Results, FootyChannel.Games]);
 
     return gameDay;
 }

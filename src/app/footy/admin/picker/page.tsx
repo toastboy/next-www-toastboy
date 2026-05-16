@@ -24,8 +24,7 @@ const PickerPage = async () => {
 
     return (
         <Container size="lg" py="lg">
-            <AutoRefresh channel={FootyChannel.Games} />
-            <AutoRefresh channel={FootyChannel.Responses} />
+            <AutoRefresh channels={[FootyChannel.Games, FootyChannel.Responses]} />
             <PickerForm
                 gameDay={currentGame}
                 players={playersWithGames}

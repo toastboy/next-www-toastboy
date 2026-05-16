@@ -115,7 +115,7 @@ const MoreGamesPage = async () => {
 
     return (
         <>
-            <AutoRefresh channel={FootyChannel.Games} />
+            <AutoRefresh channels={FootyChannel.Games} />
             <MoreGamesForm
                 cost={cost}
                 hallCost={hallCost}

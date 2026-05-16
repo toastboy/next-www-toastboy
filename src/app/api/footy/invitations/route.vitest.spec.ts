@@ -62,6 +62,8 @@ describe('POST /api/footy/invitations', () => {
             const body = await response.json() as { message: string };
             expect(body.message).toBe('Unauthorized');
             expect(triggerInvitationsCore).not.toHaveBeenCalled();
+            expect(revalidatePath).not.toHaveBeenCalled();
+            expect(broadcast).not.toHaveBeenCalled();
         });
 
         it('returns 401 when the secret header does not match', async () => {
@@ -70,6 +72,8 @@ describe('POST /api/footy/invitations', () => {
             const body = await response.json() as { message: string };
             expect(body.message).toBe('Unauthorized');
             expect(triggerInvitationsCore).not.toHaveBeenCalled();
+            expect(revalidatePath).not.toHaveBeenCalled();
+            expect(broadcast).not.toHaveBeenCalled();
         });
 
         it('returns 401 when the stored secret is empty', async () => {
@@ -77,6 +81,8 @@ describe('POST /api/footy/invitations', () => {
             const response = await POST(makeRequest({ secret: '' }));
             expect(response.status).toBe(401);
             expect(triggerInvitationsCore).not.toHaveBeenCalled();
+            expect(revalidatePath).not.toHaveBeenCalled();
+            expect(broadcast).not.toHaveBeenCalled();
         });
 
         it('returns 401 when the stored secret is undefined', async () => {
@@ -84,6 +90,8 @@ describe('POST /api/footy/invitations', () => {
             const response = await POST(makeRequest({ secret: VALID_SECRET }));
             expect(response.status).toBe(401);
             expect(triggerInvitationsCore).not.toHaveBeenCalled();
+            expect(revalidatePath).not.toHaveBeenCalled();
+            expect(broadcast).not.toHaveBeenCalled();
         });
     });
 
@@ -100,7 +108,9 @@ describe('POST /api/footy/invitations', () => {
             expect(revalidatePath).toHaveBeenCalledWith('/footy/admin/responses');
             expect(revalidatePath).toHaveBeenCalledWith('/footy/admin/picker');
             expect(revalidatePath).toHaveBeenCalledWith('/footy/response');
+            expect(revalidatePath).toHaveBeenCalledTimes(4);
             expect(broadcast).toHaveBeenCalledWith('invitations');
+            expect(broadcast).toHaveBeenCalledTimes(1);
             const body = await response.json() as { sent: boolean; gameDayId: number };
             expect(body).toEqual({ sent: true, gameDayId: 42 });
         });
@@ -174,6 +184,8 @@ describe('POST /api/footy/invitations', () => {
             const response = await POST(makeRequest({ secret: VALID_SECRET }));
 
             expect(response.status).not.toBe(200);
+            expect(revalidatePath).not.toHaveBeenCalled();
+            expect(broadcast).not.toHaveBeenCalled();
         });
     });
 });

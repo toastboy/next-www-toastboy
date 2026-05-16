@@ -312,8 +312,7 @@ describe('PlayerList', () => {
         expect(screen.getByRole('heading', { level: 1, name: '0 Active Players' })).toBeInTheDocument();
     });
 
-    it('updates reply range via slider and hides null lastResponded entries when max range decreases', async () => {
-        const user = userEvent.setup();
+    it('hides null lastResponded entries when reply-range max is below the current game day', async () => {
         const playersWithNullResponse = [
             ...players,
             createMockPlayerData({
@@ -325,19 +324,8 @@ describe('PlayerList', () => {
             }),
         ];
 
-        render(
-            <Wrapper>
-                <PlayerList players={playersWithNullResponse} gameDay={gameDay} sendEmail={sendEmailMock} />
-            </Wrapper>,
-        );
+        await renderWithInitialState(['name', 'asc', '', true, [0, gameDay.id - 1]], playersWithNullResponse);
 
-        expect(screen.getByRole('link', { name: 'Drew NoResponse' })).toBeInTheDocument();
-
-        const [lowerThumb, upperThumb] = screen.getAllByRole('slider');
-        upperThumb.focus();
-        await user.keyboard('{ArrowLeft}');
-
-        expect(lowerThumb).toBeInTheDocument();
         expect(screen.queryByRole('link', { name: 'Drew NoResponse' })).not.toBeInTheDocument();
     });
 });

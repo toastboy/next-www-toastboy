@@ -1,7 +1,11 @@
 'use server';
 
+import { revalidatePath } from 'next/cache';
+
 import { listUsersActionCore, setAdminRoleActionCore } from '@/lib/actions/auth';
 import { requireAdmin } from '@/lib/auth.server';
+import { broadcast } from '@/lib/events';
+import { FootyChannel } from '@/types/FootyChannel';
 
 /**
  * Lists auth users, optionally filtered by email.
@@ -26,4 +30,8 @@ export async function setAdminRoleAction(userId: string, isAdmin: boolean) {
     await requireAdmin();
 
     await setAdminRoleActionCore(userId, isAdmin);
+
+    revalidatePath('/footy/admin/users');
+    revalidatePath('/footy/admin/user', 'layout');
+    broadcast(FootyChannel.Users);
 }

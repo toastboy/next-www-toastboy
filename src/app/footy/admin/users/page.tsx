@@ -2,9 +2,11 @@ import { Container, Text } from '@mantine/core';
 
 import { listUsersAction, setAdminRoleAction } from '@/actions/auth';
 import { AdminUserList } from '@/components/AdminUserList/AdminUserList';
+import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
 import { UserWithRolePayload } from '@/lib/actions/auth';
 import { toPublicMessage } from '@/lib/errors/AppError';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
+import { FootyChannel } from '@/types/FootyChannel';
 
 export const metadata = { title: 'Users' };
 
@@ -28,6 +30,9 @@ export default async function Page() {
     }
 
     return (
-        <AdminUserList users={users} setAdminRole={setAdminRoleAction} />
+        <>
+            <AutoRefresh channels={FootyChannel.Users} />
+            <AdminUserList users={users} setAdminRole={setAdminRoleAction} />
+        </>
     );
 }

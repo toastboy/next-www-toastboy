@@ -2,7 +2,9 @@ import { notFound } from 'next/navigation';
 
 import { listUsersAction } from '@/actions/auth';
 import { AdminUserData } from '@/components/AdminUserData/AdminUserData';
+import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
+import { FootyChannel } from '@/types/FootyChannel';
 
 interface PageProps {
     params: Promise<{ email: string }>,
@@ -33,7 +35,10 @@ const AdminUserPage = async (props: PageProps) => {
     if (!user) return notFound();
 
     return (
-        <AdminUserData user={user} />
+        <>
+            <AutoRefresh channels={FootyChannel.Users} />
+            <AdminUserData user={user} />
+        </>
     );
 };
 

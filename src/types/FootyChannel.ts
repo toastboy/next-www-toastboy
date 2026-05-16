@@ -9,6 +9,7 @@ export const FootyChannel = {
     Players: 'players',
     Responses: 'responses',
     Results: 'results',
+    Users: 'users',
 } as const;
 
 export type FootyChannel = typeof FootyChannel[keyof typeof FootyChannel];

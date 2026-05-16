@@ -122,6 +122,17 @@ export class SomeModelService {
 - Default to no comments; only add one when the WHY is non-obvious
 - When changing a function that has a JSDoc block, update the entire block in the same edit — description, `@param`, `@returns`, `@throws`, and any other tags must all accurately reflect the new implementation
 
+### Live updates (revalidation & SSE)
+
+Every server action that mutates data must, before returning:
+
+1. Call `revalidatePath(…)` for every Next.js route that renders the affected data.
+2. Call `broadcast(channel)` (or `broadcast([ch1, ch2])` for multiple) from `@/lib/events` with the relevant `FootyChannel` value(s) — so connected clients refresh without polling.
+
+Every page that displays data that can be mutated by a server action must render `<AutoRefresh channels={…} />` (from `@/components/AutoRefresh/AutoRefresh`) with the matching channel(s). Pass an array when the page depends on more than one channel — never render multiple `<AutoRefresh>` elements.
+
+`FootyChannel` values live in `src/types/FootyChannel.ts`; add a new entry there if the new feature needs its own channel.
+
 ### Observability
 
 - Sentry: configured via `instrumentation.ts` / `instrumentation-client.ts` and `next.config.mjs`

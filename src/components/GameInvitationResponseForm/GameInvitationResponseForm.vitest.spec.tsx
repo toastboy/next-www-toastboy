@@ -311,4 +311,38 @@ describe('GameInvitationResponseForm', () => {
         });
     });
 
+    it('disables the submit button again after saving a first-time response', async () => {
+        const user = userEvent.setup();
+        const detailsWithNoResponse = createMockGameInvitationResponseDetails({
+            response: null,
+            comment: null,
+        });
+
+        render(
+            <Wrapper>
+                <GameInvitationResponseForm
+                    details={detailsWithNoResponse}
+                    onSubmitGameInvitationResponse={mockSubmitGameInvitationResponse}
+                />
+            </Wrapper>,
+        );
+
+        expect(screen.getByRole('button', { name: /Save Response/i })).not.toBeDisabled();
+
+        await user.click(screen.getByRole('button', { name: /Save Response/i }));
+
+        await waitFor(() => {
+            expect(mockSubmitGameInvitationResponse).toHaveBeenCalledWith({
+                token: detailsWithNoResponse.token,
+                response: 'Yes',
+                goalie: false,
+                comment: '',
+            });
+        });
+
+        await waitFor(() => {
+            expect(screen.getByRole('button', { name: /Save Response/i })).toBeDisabled();
+        });
+    });
+
 });

@@ -1,10 +1,9 @@
 import { Anchor, Box, Text } from '@mantine/core';
 import { redirect } from 'next/navigation';
-import { PlayerResponseSchema } from 'prisma/zod/schemas';
 
 import { submitGameInvitationResponse } from '@/actions/submitGameInvitationResponse';
 import { GameInvitationResponseForm } from '@/components/GameInvitationResponseForm/GameInvitationResponseForm';
-import type { GameInvitationResponseDetails } from '@/types/GameInvitationResponseDetails';
+import { getGameInvitationResponseDetails } from '@/lib/gameInvitations';
 
 interface PageProps {
     searchParams?: Promise<{
@@ -24,7 +23,7 @@ export const metadata = { title: 'Response' };
 
 const Page = async ({ searchParams: sp }: PageProps) => {
     const searchParams = await sp;
-    const { token, playerId, playerName, playerLogin, gameDayId, response, goalie, comment } = searchParams ?? {};
+    const { token } = searchParams ?? {};
     const errorMessage = searchParams?.error ?? '';
 
     if (!token && !errorMessage) {
@@ -40,22 +39,9 @@ const Page = async ({ searchParams: sp }: PageProps) => {
         );
     }
 
-    const parsedResponse = response ?
-        PlayerResponseSchema.safeParse(response) :
-        { success: false as const };
+    const details = await getGameInvitationResponseDetails(token ?? '');
 
-    const details: GameInvitationResponseDetails = {
-        token: token ?? '',
-        playerId: Number(playerId),
-        playerName: playerName ?? '',
-        playerLogin: playerLogin ?? null,
-        gameDayId: Number(gameDayId ?? 0),
-        response: parsedResponse.success ? parsedResponse.data : null,
-        goalie: goalie === 'true',
-        comment: comment ?? null,
-    };
-
-    if (!details.playerId || !details.playerName || !details.gameDayId) {
+    if (!details) {
         return (
             <Box>
                 <Text>Invitation details are missing.</Text>

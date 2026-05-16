@@ -58,16 +58,13 @@ const playerEditableResponses = new Set<PlayerResponse>([
  * only submit Yes/No/Dunno from this form.
  *
  * @param response - Incoming invitation response from query details.
- * @returns A player-editable response value plus whether implicit submission should be enabled.
+ * @returns The player-editable response value for the form select.
  */
 function getInitialPlayerResponse(responseInput: GameInvitationResponseDetails['response']) {
     const response = responseInput &&
         playerEditableResponses.has(responseInput) ? responseInput : PlayerResponse.Yes;
 
-    return {
-        response,
-        canSubmitWithoutChanges: !responseInput,
-    };
+    return response;
 }
 
 interface Props {
@@ -79,9 +76,10 @@ export const GameInvitationResponseForm = ({
     details,
     onSubmitGameInvitationResponse,
 }: Props) => {
-    const { response, canSubmitWithoutChanges } = getInitialPlayerResponse(details.response);
+    const response = getInitialPlayerResponse(details.response);
     const [currentResponse, setCurrentResponse] = useState(details.response);
     const [currentComment, setCurrentComment] = useState(details.comment);
+    const [canSubmitWithoutChanges, setCanSubmitWithoutChanges] = useState(!details.response);
 
     const form = useForm<FormValues>({
         initialValues: {
@@ -94,9 +92,11 @@ export const GameInvitationResponseForm = ({
     });
 
     /**
-        * Form is dirty if user has made changes OR if there is no incoming
-        * response yet. In that case, submission is allowed without interaction so
-        * users can quickly confirm the default Yes value.
+     * The form is dirty if the user has changed a field, or if there is no
+     * saved response yet. In that case, submission is allowed without
+     * interaction so users can quickly confirm the default Yes value. Once a
+     * response has been saved, the button should disable again until the form
+     * changes.
      */
     const isFormDirty = form.isDirty() || canSubmitWithoutChanges;
 
@@ -119,6 +119,7 @@ export const GameInvitationResponseForm = ({
 
             setCurrentResponse(values.response);
             setCurrentComment(values.comment?.trim() ?? '');
+            setCanSubmitWithoutChanges(false);
 
             notifications.update({
                 id,

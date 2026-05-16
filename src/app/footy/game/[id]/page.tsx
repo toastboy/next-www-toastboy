@@ -1,5 +1,3 @@
-export const dynamic = 'force-dynamic';
-
 import { Anchor, Flex } from '@mantine/core';
 import type { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';

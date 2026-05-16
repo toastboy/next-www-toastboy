@@ -1,5 +1,3 @@
-export const dynamic = 'force-dynamic';
-
 import { Paper } from '@mantine/core';
 
 import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';

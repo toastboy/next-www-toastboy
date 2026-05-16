@@ -1,5 +1,3 @@
-export const dynamic = 'force-dynamic';
-
 import { Anchor, Box, Text } from '@mantine/core';
 import { redirect } from 'next/navigation';
 import { PlayerResponseSchema } from 'prisma/zod/schemas';

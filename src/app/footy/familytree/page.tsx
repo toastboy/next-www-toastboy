@@ -1,5 +1,3 @@
-export const dynamic = 'force-dynamic';
-
 import { Paper, Text, Title } from '@mantine/core';
 
 import { FamilyTree } from '@/components/FamilyTree/FamilyTree';

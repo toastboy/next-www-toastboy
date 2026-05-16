@@ -3,6 +3,7 @@
 import {
     Anchor,
     Avatar,
+    Badge,
     Box,
     Button,
     Checkbox,
@@ -154,7 +155,20 @@ export const GameInvitationResponseForm = ({
         }
     };
 
-    const displayResponse = currentResponse ?? 'No response yet';
+    const responseColor = {
+        [PlayerResponse.Yes.toString()]: 'green',
+        [PlayerResponse.No.toString()]: 'red',
+        [PlayerResponse.Dunno.toString()]: 'grey',
+    } as const;
+    const displayResponse = currentResponse ? (
+        <Badge color={responseColor[currentResponse.toString()]} variant="filled" size="sm">
+            {currentResponse}
+        </Badge>
+    ) : (
+        <Badge color="grey" variant="filled" size="sm">
+            No response yet
+        </Badge>
+    );
     const displayComment = currentComment ? `("${currentComment}")` : '';
     const playerLink = details.playerLogin ? `/footy/player/${details.playerLogin}` : `/footy/player/${details.playerId}`;
 
@@ -171,9 +185,7 @@ export const GameInvitationResponseForm = ({
                         size={48}
                         radius="xl"
                     />
-                    <Text>
-                        <Anchor href={playerLink}>{details.playerName}</Anchor>: {displayResponse} {displayComment}
-                    </Text>
+                    <Anchor href={playerLink}>{details.playerName}</Anchor>: {displayResponse} {displayComment}
                 </Flex>
                 <Text>
                     You can change it later if you need to, even if the teams have been picked - either by clicking

@@ -1,77 +1,29 @@
 import { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
-import { CountrySupporterType } from 'prisma/zod/schemas/models/CountrySupporter.schema';
 import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
 import countrySupporterService from '@/services/CountrySupporter';
 import { defaultCountry } from '@/tests/mocks/data/country';
-import { defaultCountrySupporter, defaultCountrySupporterList, invalidCountrySupporter } from '@/tests/mocks/data/countrySupporter';
+import { defaultCountrySupporter, invalidCountrySupporter } from '@/tests/mocks/data/countrySupporter';
 import { defaultPlayer } from '@/tests/mocks/data/player';
 
 describe('countrySupporterService', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-
-        (prisma.countrySupporter.findUnique as Mock).mockImplementation((args: {
-            where: {
-                playerId_countryFIFACode: {
-                    playerId: number,
-                    countryFIFACode: string
-                }
-            }
-        }) => {
-            const countrySupporter = defaultCountrySupporterList.find((countrySupporter) => countrySupporter.playerId === args.where.playerId_countryFIFACode.playerId && countrySupporter.countryFIFACode === args.where.playerId_countryFIFACode.countryFIFACode);
-            return Promise.resolve(countrySupporter ?? null);
-        });
-
-        (prisma.countrySupporter.create as Mock).mockImplementation((args: { data: CountrySupporterType }) => {
-            const CountrySupporter = defaultCountrySupporterList.find((CountrySupporter) => CountrySupporter.playerId === args.data.playerId && CountrySupporter.countryFIFACode === args.data.countryFIFACode);
-
-            if (CountrySupporter) {
-                return Promise.reject(new Error('CountrySupporter already exists'));
-            }
-            else {
-                return Promise.resolve(args.data);
-            }
-        });
-
-        (prisma.countrySupporter.upsert as Mock).mockImplementation((args: {
-            where: {
-                playerId_countryFIFACode: {
-                    playerId: number,
-                    countryFIFACode: string
-                }
-            },
-            update: CountrySupporterType,
-            create: CountrySupporterType,
-        }) => {
-            const CountrySupporter = defaultCountrySupporterList.find((CountrySupporter) => CountrySupporter.playerId === args.where.playerId_countryFIFACode.playerId && CountrySupporter.countryFIFACode === args.where.playerId_countryFIFACode.countryFIFACode);
-
-            if (CountrySupporter) {
-                return Promise.resolve(args.update);
-            }
-            else {
-                return Promise.resolve(args.create);
-            }
-        });
-
-        (prisma.countrySupporter.delete as Mock).mockImplementation((args: {
-            where: {
-                playerId_countryFIFACode: {
-                    playerId: number,
-                    countryFIFACode: string
-                }
-            }
-        }) => {
-            const CountrySupporter = defaultCountrySupporterList.find((CountrySupporter) => CountrySupporter.playerId === args.where.playerId_countryFIFACode.playerId && CountrySupporter.countryFIFACode === args.where.playerId_countryFIFACode.countryFIFACode);
-            return Promise.resolve(CountrySupporter ?? null);
-        });
     });
 
     describe('get', () => {
         it('should retrieve the correct CountrySupporter for player 6, country "ENG"', async () => {
+            (prisma.countrySupporter.findUnique as Mock).mockResolvedValueOnce({
+                ...defaultCountrySupporter,
+                playerId: 6,
+                countryFIFACode: "ENG",
+            });
             const result = await countrySupporterService.get(6, "ENG");
+            expect(prisma.countrySupporter.findUnique).toHaveBeenCalledWith({
+                where: { playerId_countryFIFACode: { playerId: 6, countryFIFACode: "ENG" } },
+            });
             expect(result).toEqual({
                 ...defaultCountrySupporter,
                 playerId: 6,
@@ -80,54 +32,61 @@ describe('countrySupporterService', () => {
         });
 
         it('should return null for player 7, country "ZZZ"', async () => {
+            (prisma.countrySupporter.findUnique as Mock).mockResolvedValueOnce(null);
             const result = await countrySupporterService.get(7, "ZZZ");
+            expect(prisma.countrySupporter.findUnique).toHaveBeenCalledWith({
+                where: { playerId_countryFIFACode: { playerId: 7, countryFIFACode: "ZZZ" } },
+            });
             expect(result).toBeNull();
         });
     });
 
     describe('getByPlayer', () => {
-        beforeEach(() => {
-            (prisma.countrySupporter.findMany as Mock).mockImplementation((args: { where: { playerId: number } }) => {
-                return Promise.resolve(defaultCountrySupporterList.filter((CountrySupporter) => CountrySupporter.playerId === args.where.playerId));
-            });
-        });
-
-        it('should retrieve the correct ClubSupporters for player id 1', async () => {
+        it('should retrieve CountrySupporters for player id 1', async () => {
+            const fixture = [
+                { playerId: 1, countryFIFACode: "ENG", country: defaultCountry },
+                { playerId: 1, countryFIFACode: "FRA", country: { ...defaultCountry, fifaCode: "FRA", name: "France" } },
+            ];
+            (prisma.countrySupporter.findMany as Mock).mockResolvedValueOnce(fixture);
             const result = await countrySupporterService.getByPlayer(1);
-            expect(result).toHaveLength(10);
-            for (const ClubSupporterResult of result) {
-                expect(ClubSupporterResult).toMatchObject({
-                    ...defaultCountrySupporter,
-                    playerId: 1,
-                });
-                expect(typeof ClubSupporterResult.countryFIFACode).toBe('string');
-            }
+            expect(prisma.countrySupporter.findMany).toHaveBeenCalledWith({
+                where: { playerId: 1 },
+                include: { country: true },
+            });
+            expect(result).toEqual(fixture);
         });
 
-        it('should return an empty list when retrieving ClubSupporters for player id 11', async () => {
+        it('should return an empty list when retrieving CountrySupporters for player id 11', async () => {
+            (prisma.countrySupporter.findMany as Mock).mockResolvedValueOnce([]);
             const result = await countrySupporterService.getByPlayer(11);
+            expect(prisma.countrySupporter.findMany).toHaveBeenCalledWith({
+                where: { playerId: 11 },
+                include: { country: true },
+            });
             expect(result).toEqual([]);
         });
     });
 
     describe('getByCountry', () => {
-        beforeEach(() => {
-            (prisma.countrySupporter.findMany as Mock).mockImplementation((args: { where: { countryFIFACode: string } }) => {
-                return Promise.resolve(defaultCountrySupporterList.filter((CountrySupporter) => CountrySupporter.countryFIFACode === args.where.countryFIFACode));
-            });
-        });
-
-        it('should retrieve the correct ClubSupporters for country "ENG"', async () => {
+        it('should retrieve CountrySupporters for country "ENG"', async () => {
+            const fixture = [
+                { playerId: 1, countryFIFACode: "ENG" },
+                { playerId: 2, countryFIFACode: "ENG" },
+            ];
+            (prisma.countrySupporter.findMany as Mock).mockResolvedValueOnce(fixture);
             const result = await countrySupporterService.getByCountry("ENG");
-            expect(result).toHaveLength(100);
-            for (const ClubSupporterResult of result) {
-                expect(ClubSupporterResult.countryFIFACode).toBe("ENG");
-                expect(typeof ClubSupporterResult.playerId).toBe('number');
-            }
+            expect(prisma.countrySupporter.findMany).toHaveBeenCalledWith({
+                where: { countryFIFACode: "ENG" },
+            });
+            expect(result).toEqual(fixture);
         });
 
-        it('should return an empty list when retrieving ClubSupporters for country "AZE"', async () => {
+        it('should return an empty list when retrieving CountrySupporters for country "AZE"', async () => {
+            (prisma.countrySupporter.findMany as Mock).mockResolvedValueOnce([]);
             const result = await countrySupporterService.getByCountry("AZE");
+            expect(prisma.countrySupporter.findMany).toHaveBeenCalledWith({
+                where: { countryFIFACode: "AZE" },
+            });
             expect(result).toEqual([]);
         });
     });
@@ -154,23 +113,22 @@ describe('countrySupporterService', () => {
     });
 
     describe('getAll', () => {
-        beforeEach(() => {
-            (prisma.countrySupporter.findMany as Mock).mockImplementation(() => {
-                return Promise.resolve(defaultCountrySupporterList);
-            });
-        });
-
-        it('should return the correct, complete list of 100 ClubSupporters', async () => {
+        it('should return all CountrySupporters', async () => {
+            const fixture = [defaultCountrySupporter, { ...defaultCountrySupporter, playerId: 2 }];
+            (prisma.countrySupporter.findMany as Mock).mockResolvedValueOnce(fixture);
             const result = await countrySupporterService.getAll();
-            expect(result).toHaveLength(100);
-            expect(result[11].playerId).toBe(2);
-            expect(result[11].countryFIFACode).toBe("ENG");
+            expect(prisma.countrySupporter.findMany).toHaveBeenCalledWith({});
+            expect(result).toEqual(fixture);
         });
     });
 
     describe('create', () => {
         it('should create a CountrySupporter', async () => {
+            (prisma.countrySupporter.create as Mock).mockResolvedValueOnce(defaultCountrySupporter);
             const result = await countrySupporterService.create(defaultCountrySupporter);
+            expect(prisma.countrySupporter.create).toHaveBeenCalledWith({
+                data: { playerId: defaultCountrySupporter.playerId, countryFIFACode: defaultCountrySupporter.countryFIFACode },
+            });
             expect(result).toEqual(defaultCountrySupporter);
         });
 
@@ -183,6 +141,7 @@ describe('countrySupporterService', () => {
         });
 
         it('should refuse to create a CountrySupporter that has the same player ID and country FIFA code as an existing one', async () => {
+            (prisma.countrySupporter.create as Mock).mockRejectedValueOnce(new Error('CountrySupporter already exists'));
             await expect(countrySupporterService.create({
                 ...defaultCountrySupporter,
                 playerId: 6,
@@ -193,28 +152,32 @@ describe('countrySupporterService', () => {
 
     describe('upsert', () => {
         it('should create a CountrySupporter where the combination of player ID and country FIFA code did not exist', async () => {
-            const result = await countrySupporterService.upsert(
-                {
-                    playerId: defaultCountrySupporter.playerId,
-                    countryFIFACode: defaultCountrySupporter.countryFIFACode,
-                },
-            );
+            (prisma.countrySupporter.upsert as Mock).mockResolvedValueOnce(defaultCountrySupporter);
+            const result = await countrySupporterService.upsert({
+                playerId: defaultCountrySupporter.playerId,
+                countryFIFACode: defaultCountrySupporter.countryFIFACode,
+            });
+            expect(prisma.countrySupporter.upsert).toHaveBeenCalledWith({
+                where: { playerId_countryFIFACode: { playerId: defaultCountrySupporter.playerId, countryFIFACode: defaultCountrySupporter.countryFIFACode } },
+                create: { playerId: defaultCountrySupporter.playerId, countryFIFACode: defaultCountrySupporter.countryFIFACode },
+                update: { playerId: defaultCountrySupporter.playerId, countryFIFACode: defaultCountrySupporter.countryFIFACode },
+            });
             expect(result).toEqual(defaultCountrySupporter);
         });
 
         it('should update an existing CountrySupporter where the combination of player ID and country FIFA code already existed', async () => {
-            const updatedClubSupporter = {
-                ...defaultCountrySupporter,
+            const updatedCountrySupporter = {
                 playerId: 6,
                 countryFIFACode: "ENG",
             };
-            const result = await countrySupporterService.upsert(
-                {
-                    playerId: updatedClubSupporter.playerId,
-                    countryFIFACode: updatedClubSupporter.countryFIFACode,
-                },
-            );
-            expect(result).toEqual(updatedClubSupporter);
+            (prisma.countrySupporter.upsert as Mock).mockResolvedValueOnce(updatedCountrySupporter);
+            const result = await countrySupporterService.upsert(updatedCountrySupporter);
+            expect(prisma.countrySupporter.upsert).toHaveBeenCalledWith({
+                where: { playerId_countryFIFACode: { playerId: 6, countryFIFACode: "ENG" } },
+                create: { playerId: 6, countryFIFACode: "ENG" },
+                update: { playerId: 6, countryFIFACode: "ENG" },
+            });
+            expect(result).toEqual(updatedCountrySupporter);
         });
     });
 
@@ -237,8 +200,15 @@ describe('countrySupporterService', () => {
 
     describe('delete', () => {
         it('should delete an existing CountrySupporter', async () => {
+            (prisma.countrySupporter.delete as Mock).mockResolvedValueOnce({
+                ...defaultCountrySupporter,
+                playerId: 6,
+                countryFIFACode: "ENG",
+            });
             await countrySupporterService.delete(6, "ENG");
-            expect(prisma.countrySupporter.delete).toHaveBeenCalledTimes(1);
+            expect(prisma.countrySupporter.delete).toHaveBeenCalledWith({
+                where: { playerId_countryFIFACode: { playerId: 6, countryFIFACode: "ENG" } },
+            });
         });
 
         it('should silently return when asked to delete a CountrySupporter that does not exist', async () => {
@@ -252,7 +222,9 @@ describe('countrySupporterService', () => {
             );
             (prisma.countrySupporter.delete as Mock).mockRejectedValueOnce(notFoundError);
             await countrySupporterService.delete(7, "ENG");
-            expect(prisma.countrySupporter.delete).toHaveBeenCalledTimes(1);
+            expect(prisma.countrySupporter.delete).toHaveBeenCalledWith({
+                where: { playerId_countryFIFACode: { playerId: 7, countryFIFACode: "ENG" } },
+            });
         });
 
         it('should rethrow delete errors that are not P2025', async () => {
@@ -287,12 +259,14 @@ describe('countrySupporterService', () => {
     });
 
     describe('deleteAll', () => {
-        it('should delete all ClubSupporters', async () => {
+        it('should delete all CountrySupporters', async () => {
+            (prisma.countrySupporter.deleteMany as Mock).mockResolvedValueOnce({ count: 100 });
             await countrySupporterService.deleteAll();
             expect(prisma.countrySupporter.deleteMany).toHaveBeenCalledTimes(1);
         });
 
-        it('should delete all ClubSupporters for a specific player', async () => {
+        it('should delete all CountrySupporters for a specific player', async () => {
+            (prisma.countrySupporter.deleteMany as Mock).mockResolvedValueOnce({ count: 10 });
             await countrySupporterService.deleteAll(7);
             expect(prisma.countrySupporter.deleteMany).toHaveBeenCalledWith({
                 where: {

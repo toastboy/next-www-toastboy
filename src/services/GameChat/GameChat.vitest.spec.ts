@@ -1,67 +1,27 @@
 import { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
-import { GameChatType } from 'prisma/zod/schemas/models/GameChat.schema';
 import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
 import gameChatService from '@/services/GameChat';
-import { defaultGameChat, defaultGameChatList } from '@/tests/mocks/data/gameChat';
+import { defaultGameChat } from '@/tests/mocks/data/gameChat';
 import type { GameChatUpsertInput, GameChatWriteInput } from '@/types/GameChatStrictSchema';
 
 describe('GameChatService', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-
-        (prisma.gameChat.findUnique as Mock).mockImplementation((args: {
-            where: { id: number }
-        }) => {
-            const gameChat = defaultGameChatList.find((gameChat) => gameChat.id === args.where.id);
-            return Promise.resolve(gameChat ?? null);
-        });
-
-        (prisma.gameChat.create as Mock).mockImplementation((args: { data: GameChatWriteInput }) => {
-            return Promise.resolve({
-                id: defaultGameChatList.length + 1,
-                ...args.data,
-            });
-        });
-
-        (prisma.gameChat.upsert as Mock).mockImplementation((args: {
-            where: { id: number },
-            update: Omit<GameChatType, 'id'>,
-            create: Omit<GameChatType, 'id'>,
-        }) => {
-            const gameChat = defaultGameChatList.find((gameChat) => gameChat.id === args.where.id);
-
-            if (gameChat) {
-                return Promise.resolve({
-                    ...args.update,
-                    id: args.where.id,
-                });
-            }
-            else {
-                return Promise.resolve({
-                    ...args.create,
-                    id: defaultGameChatList.length + 1,
-                });
-            }
-        });
-
-        (prisma.gameChat.delete as Mock).mockImplementation((args: {
-            where: { id: number }
-        }) => {
-            const gameChat = defaultGameChatList.find((gameChat) => gameChat.id === args.where.id);
-            return Promise.resolve(gameChat ?? null);
-        });
-    });
-
-    afterEach(() => {
-        vi.clearAllMocks();
     });
 
     describe('get', () => {
         it('should retrieve the correct GameChat with id 6', async () => {
+            (prisma.gameChat.findUnique as Mock).mockResolvedValueOnce({
+                ...defaultGameChat,
+                id: 6,
+                gameDay: 6,
+                player: 6,
+            });
             const result = await gameChatService.get(6);
+            expect(prisma.gameChat.findUnique).toHaveBeenCalledWith({ where: { id: 6 } });
             expect(result).toEqual({
                 ...defaultGameChat,
                 id: 6,
@@ -71,22 +31,20 @@ describe('GameChatService', () => {
         });
 
         it('should return null for id 107', async () => {
+            (prisma.gameChat.findUnique as Mock).mockResolvedValueOnce(null);
             const result = await gameChatService.get(107);
+            expect(prisma.gameChat.findUnique).toHaveBeenCalledWith({ where: { id: 107 } });
             expect(result).toBeNull();
         });
     });
 
     describe('getAll', () => {
-        beforeEach(() => {
-            (prisma.gameChat.findMany as Mock).mockImplementation(() => {
-                return Promise.resolve(defaultGameChatList);
-            });
-        });
-
-        it('should return the correct, complete list of 100 GameChat', async () => {
+        it('should return all GameChats', async () => {
+            const fixture = [defaultGameChat, { ...defaultGameChat, id: 2, gameDay: 2, player: 2 }];
+            (prisma.gameChat.findMany as Mock).mockResolvedValueOnce(fixture);
             const result = await gameChatService.getAll();
-            expect(result).toHaveLength(100);
-            expect(result[11].id).toBe(12);
+            expect(prisma.gameChat.findMany).toHaveBeenCalledWith({});
+            expect(result).toEqual(fixture);
         });
     });
 
@@ -98,11 +56,17 @@ describe('GameChatService', () => {
                 player: defaultGameChat.player,
                 body: defaultGameChat.body,
             };
+            (prisma.gameChat.create as Mock).mockResolvedValueOnce({ ...newGameChat, id: 1 });
             const result = await gameChatService.create(newGameChat);
-            expect(result).toEqual({
-                ...newGameChat,
-                id: 101,
+            expect(prisma.gameChat.create).toHaveBeenCalledWith({
+                data: {
+                    gameDay: newGameChat.gameDay,
+                    stamp: newGameChat.stamp,
+                    player: newGameChat.player,
+                    body: newGameChat.body,
+                },
             });
+            expect(result).toEqual({ ...newGameChat, id: 1 });
         });
 
         it('should refuse to create a GameChat with invalid data', async () => {
@@ -119,37 +83,47 @@ describe('GameChatService', () => {
 
     describe('upsert', () => {
         it('should create a GameChat with a database-generated id when where.id is missing', async () => {
-            const input: GameChatUpsertInput = {
-                id: 1001,
+            const writeData = {
                 gameDay: defaultGameChat.gameDay,
                 stamp: defaultGameChat.stamp,
                 player: defaultGameChat.player,
                 body: defaultGameChat.body,
             };
+            const input: GameChatUpsertInput = { id: 1001, ...writeData };
+            (prisma.gameChat.upsert as Mock).mockResolvedValueOnce({ ...writeData, id: 1 });
             const result = await gameChatService.upsert(input);
-            expect(result).toEqual({
-                ...input,
-                id: 101,
+            expect(prisma.gameChat.upsert).toHaveBeenCalledWith({
+                where: { id: 1001 },
+                create: writeData,
+                update: writeData,
             });
+            expect(result).toEqual({ ...writeData, id: 1 });
         });
 
         it('should update an existing GameChat where one with the id already existed', async () => {
-            const updatedGameChat: GameChatUpsertInput = {
-                id: 6,
+            const writeData = {
                 gameDay: defaultGameChat.gameDay,
                 stamp: defaultGameChat.stamp,
                 player: defaultGameChat.player,
                 body: defaultGameChat.body,
             };
+            const updatedGameChat: GameChatUpsertInput = { id: 6, ...writeData };
+            (prisma.gameChat.upsert as Mock).mockResolvedValueOnce({ ...writeData, id: 6 });
             const result = await gameChatService.upsert(updatedGameChat);
-            expect(result).toEqual(updatedGameChat);
+            expect(prisma.gameChat.upsert).toHaveBeenCalledWith({
+                where: { id: 6 },
+                create: writeData,
+                update: writeData,
+            });
+            expect(result).toEqual({ ...writeData, id: 6 });
         });
     });
 
     describe('delete', () => {
         it('should delete an existing GameChat', async () => {
+            (prisma.gameChat.delete as Mock).mockResolvedValueOnce({ ...defaultGameChat, id: 6 });
             await gameChatService.delete(6);
-            expect(prisma.gameChat.delete).toHaveBeenCalledTimes(1);
+            expect(prisma.gameChat.delete).toHaveBeenCalledWith({ where: { id: 6 } });
         });
 
         it('should silently return when asked to delete a GameChat that does not exist', async () => {
@@ -163,7 +137,7 @@ describe('GameChatService', () => {
             );
             (prisma.gameChat.delete as Mock).mockRejectedValueOnce(notFoundError);
             await gameChatService.delete(107);
-            expect(prisma.gameChat.delete).toHaveBeenCalledTimes(1);
+            expect(prisma.gameChat.delete).toHaveBeenCalledWith({ where: { id: 107 } });
         });
 
         it('should rethrow delete errors that are not P2025', async () => {
@@ -174,6 +148,7 @@ describe('GameChatService', () => {
 
     describe('deleteAll', () => {
         it('should delete all GameChats', async () => {
+            (prisma.gameChat.deleteMany as Mock).mockResolvedValueOnce({ count: 0 });
             await gameChatService.deleteAll();
             expect(prisma.gameChat.deleteMany).toHaveBeenCalled();
         });

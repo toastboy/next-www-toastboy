@@ -2,10 +2,10 @@ import { Prisma } from 'prisma/generated/client';
 import prisma from 'prisma/prisma';
 import { ArseType } from 'prisma/zod/schemas/models/Arse.schema';
 import type { Mock } from 'vitest';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import arseService from '@/services/Arse';
-import { defaultArse, defaultArseList } from '@/tests/mocks/data/arse';
+import { defaultArse } from '@/tests/mocks/data/arse';
 
 const toArseWriteData = (arse: ArseType) => ({
     playerId: arse.playerId,
@@ -24,13 +24,9 @@ describe('ArseService', () => {
         vi.clearAllMocks();
     });
 
-    afterEach(() => {
-        vi.clearAllMocks();
-    });
-
     describe('get', () => {
         it('should retrieve the correct arse for player 6, rater 16', async () => {
-            (prisma.arse.findUnique as Mock).mockResolvedValue({
+            (prisma.arse.findUnique as Mock).mockResolvedValueOnce({
                 ...defaultArse,
                 playerId: 6,
                 raterId: 16,
@@ -53,7 +49,7 @@ describe('ArseService', () => {
         });
 
         it('should return null for player 7, rater 16', async () => {
-            (prisma.arse.findUnique as Mock).mockResolvedValue(null);
+            (prisma.arse.findUnique as Mock).mockResolvedValueOnce(null);
             const result = await arseService.get(7, 16);
             expect(prisma.arse.findUnique).toHaveBeenCalledWith({
                 where: {
@@ -130,55 +126,29 @@ describe('ArseService', () => {
     });
 
     describe('getByRater', () => {
-        beforeEach(() => {
-            (prisma.arse.findMany as Mock).mockImplementation((args: { where: { raterId: number } }) => {
-                return Promise.resolve(defaultArseList.filter((arse) => arse.raterId === args.where.raterId));
-            });
-        });
-
-        it('should retrieve the correct arses for rater id 1', async () => {
-            (prisma.arse.findMany as Mock).mockResolvedValue(
-                defaultArseList.filter((arse) => arse.raterId === 1),
-            );
+        it('should retrieve arses for rater id 1', async () => {
+            const fixture = [{ ...defaultArse, playerId: 3, raterId: 1 }];
+            (prisma.arse.findMany as Mock).mockResolvedValueOnce(fixture);
             const result = await arseService.getByRater(1);
-            expect(prisma.arse.findMany).toHaveBeenCalledWith({
-                where: {
-                    raterId: 1,
-                },
-            });
-            expect(result).toHaveLength(1);
-            for (const arseResult of result) {
-                const expectedArse = defaultArseList.find((arse) => arse.raterId === 1);
-                expect(expectedArse).toBeDefined();
-                expect(arseResult).toMatchObject({
-                    ...expectedArse,
-                    raterId: 1,
-                });
-                expect(typeof arseResult.playerId).toBe('number');
-                expect(arseResult.stamp).toBeInstanceOf(Date);
-            }
+            expect(prisma.arse.findMany).toHaveBeenCalledWith({ where: { raterId: 1 } });
+            expect(result).toEqual(fixture);
         });
 
-        it('should return an empty list when retrieving arses for rater id 101', async () => {
-            (prisma.arse.findMany as Mock).mockResolvedValue([]);
+        it('should return an empty list for rater id 101', async () => {
+            (prisma.arse.findMany as Mock).mockResolvedValueOnce([]);
             const result = await arseService.getByRater(101);
-            expect(prisma.arse.findMany).toHaveBeenCalledWith({
-                where: {
-                    raterId: 101,
-                },
-            });
+            expect(prisma.arse.findMany).toHaveBeenCalledWith({ where: { raterId: 101 } });
             expect(result).toEqual([]);
         });
     });
 
     describe('getAll', () => {
-        it('should return the correct, complete list of 100 arses', async () => {
-            (prisma.arse.findMany as Mock).mockResolvedValue(defaultArseList);
+        it('should return all arses', async () => {
+            const fixture = [defaultArse, { ...defaultArse, playerId: 2, raterId: 2 }];
+            (prisma.arse.findMany as Mock).mockResolvedValueOnce(fixture);
             const result = await arseService.getAll();
             expect(prisma.arse.findMany).toHaveBeenCalledWith({});
-            expect(result).toHaveLength(100);
-            expect(result[11].playerId).toBe(2);
-            expect(result[41].stamp).toBeInstanceOf(Date);
+            expect(result).toEqual(fixture);
         });
     });
 
@@ -233,7 +203,7 @@ describe('ArseService', () => {
         });
 
         it('should refuse to create an arse that has the same player ID and rater ID as an existing one', async () => {
-            (prisma.arse.create as Mock).mockRejectedValue(new Error('Arse already exists'));
+            (prisma.arse.create as Mock).mockRejectedValueOnce(new Error('Arse already exists'));
             await expect(arseService.create({
                 ...defaultArse,
                 playerId: 6,
@@ -251,7 +221,7 @@ describe('ArseService', () => {
 
     describe('upsert', () => {
         it('should create an arse where the combination of player ID and rater ID did not exist', async () => {
-            (prisma.arse.upsert as Mock).mockResolvedValue(defaultArse);
+            (prisma.arse.upsert as Mock).mockResolvedValueOnce(defaultArse);
             const result = await arseService.upsert(defaultArse);
             expect(prisma.arse.upsert).toHaveBeenCalledWith({
                 where: {
@@ -273,7 +243,7 @@ describe('ArseService', () => {
                 raterId: 16,
                 inGoal: 7,
             };
-            (prisma.arse.upsert as Mock).mockResolvedValue(updatedArse);
+            (prisma.arse.upsert as Mock).mockResolvedValueOnce(updatedArse);
             const result = await arseService.upsert(updatedArse);
             expect(prisma.arse.upsert).toHaveBeenCalledWith({
                 where: {
@@ -294,7 +264,7 @@ describe('ArseService', () => {
                 raterId: 16,
                 inGoal: 9,
             };
-            (prisma.arse.upsert as Mock).mockResolvedValue({
+            (prisma.arse.upsert as Mock).mockResolvedValueOnce({
                 ...defaultArse,
                 ...partialUpdate,
             });
@@ -320,7 +290,7 @@ describe('ArseService', () => {
                 raterId: 16,
                 inGoal: null,
             };
-            (prisma.arse.upsert as Mock).mockResolvedValue({
+            (prisma.arse.upsert as Mock).mockResolvedValueOnce({
                 ...defaultArse,
                 ...clearRating,
             });
@@ -343,7 +313,7 @@ describe('ArseService', () => {
 
     describe('delete', () => {
         it('should delete an existing arse', async () => {
-            (prisma.arse.delete as Mock).mockResolvedValue({
+            (prisma.arse.delete as Mock).mockResolvedValueOnce({
                 ...defaultArse,
                 playerId: 6,
                 raterId: 16,
@@ -364,7 +334,7 @@ describe('ArseService', () => {
                 code: 'P1001',
                 clientVersion: '0.0.0',
             });
-            (prisma.arse.delete as Mock).mockRejectedValue(dbError);
+            (prisma.arse.delete as Mock).mockRejectedValueOnce(dbError);
             await expect(arseService.delete(6, 16)).rejects.toThrow(dbError);
         });
 
@@ -377,7 +347,7 @@ describe('ArseService', () => {
                 notFoundError,
                 Prisma.PrismaClientKnownRequestError.prototype,
             );
-            (prisma.arse.delete as Mock).mockRejectedValue(
+            (prisma.arse.delete as Mock).mockRejectedValueOnce(
                 notFoundError,
             );
             await arseService.delete(7, 16);
@@ -394,7 +364,7 @@ describe('ArseService', () => {
 
     describe('deleteAll', () => {
         it('should delete all arses', async () => {
-            (prisma.arse.deleteMany as Mock).mockResolvedValue({ count: defaultArseList.length });
+            (prisma.arse.deleteMany as Mock).mockResolvedValueOnce({ count: 1 });
             await arseService.deleteAll();
             expect(prisma.arse.deleteMany).toHaveBeenCalledWith();
         });

@@ -4,15 +4,11 @@ import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
 import clubService from '@/services/Club';
-import { createMockClub, defaultClub, defaultClubList, invalidClub } from '@/tests/mocks/data/club';
+import { createMockClub, defaultClub, invalidClub } from '@/tests/mocks/data/club';
 import type { ClubCreateWriteInput, ClubUpsertInput } from '@/types/ClubStrictSchema';
 
 describe('ClubService', () => {
     beforeEach(() => {
-        vi.clearAllMocks();
-    });
-
-    afterEach(() => {
         vi.clearAllMocks();
     });
 
@@ -37,15 +33,12 @@ describe('ClubService', () => {
     });
 
     describe('getAll', () => {
-        beforeEach(() => {
-            (prisma.club.findMany as Mock).mockResolvedValueOnce(defaultClubList);
-        });
-
-        it('should return the correct, complete list of 100 clubs', async () => {
+        it('should return all clubs', async () => {
+            const fixture = [defaultClub, createMockClub({ id: 2, soccerwayId: 1001 })];
+            (prisma.club.findMany as Mock).mockResolvedValueOnce(fixture);
             const result = await clubService.getAll();
-            expect(result).toHaveLength(100);
-            expect(result[11].id).toBe(12);
-            expect(result[11].soccerwayId).toBe(1011);
+            expect(prisma.club.findMany).toHaveBeenCalledWith({});
+            expect(result).toEqual(fixture);
         });
     });
 

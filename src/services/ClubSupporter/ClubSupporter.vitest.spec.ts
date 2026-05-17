@@ -5,7 +5,7 @@ import { vi } from 'vitest';
 
 import clubSupporterService from '@/services/ClubSupporter';
 import { defaultClub } from '@/tests/mocks/data/club';
-import { defaultClubSupporter, defaultClubSupporterList } from '@/tests/mocks/data/clubSupporter';
+import { defaultClubSupporter } from '@/tests/mocks/data/clubSupporter';
 
 describe('clubSupporterService', () => {
     beforeEach(() => {
@@ -35,53 +35,62 @@ describe('clubSupporterService', () => {
     });
 
     describe('getByPlayer', () => {
-        it('should retrieve the correct ClubSupporters for player id 1', async () => {
-            const playerSupporters = defaultClubSupporterList.filter((clubSupporter) => clubSupporter.playerId === 1);
-            (prisma.clubSupporter.findMany as Mock).mockResolvedValueOnce(playerSupporters);
+        it('should retrieve ClubSupporters for player id 1', async () => {
+            const fixture = [
+                { playerId: 1, clubId: 10, club: defaultClub },
+                { playerId: 1, clubId: 20, club: defaultClub },
+            ];
+            (prisma.clubSupporter.findMany as Mock).mockResolvedValueOnce(fixture);
             const result = await clubSupporterService.getByPlayer(1);
-            expect(result).toHaveLength(10);
-            for (const ClubSupporterResult of result) {
-                expect(ClubSupporterResult.playerId).toBe(1);
-                expect(typeof ClubSupporterResult.clubId).toBe('number');
-            }
+            expect(prisma.clubSupporter.findMany).toHaveBeenCalledWith({
+                where: { playerId: 1 },
+                include: { club: true },
+            });
+            expect(result).toEqual(fixture);
         });
 
-        it('should return an empty list when retrieving ClubSupporters for player id 11', async () => {
+        it('should return an empty list for player id 11', async () => {
             (prisma.clubSupporter.findMany as Mock).mockResolvedValueOnce([]);
             const result = await clubSupporterService.getByPlayer(11);
+            expect(prisma.clubSupporter.findMany).toHaveBeenCalledWith({
+                where: { playerId: 11 },
+                include: { club: true },
+            });
             expect(result).toEqual([]);
         });
     });
 
     describe('getByClub', () => {
-        it('should retrieve the correct ClubSupporters for club id 1', async () => {
-            const clubSupporters = defaultClubSupporterList.filter((clubSupporter) => clubSupporter.clubId === 1);
-            (prisma.clubSupporter.findMany as Mock).mockResolvedValueOnce(clubSupporters);
+        it('should retrieve ClubSupporters for club id 1', async () => {
+            const fixture = [{ playerId: 5, clubId: 1 }];
+            (prisma.clubSupporter.findMany as Mock).mockResolvedValueOnce(fixture);
             const result = await clubSupporterService.getByClub(1);
-            expect(result).toHaveLength(1);
-            for (const ClubSupporterResult of result) {
-                expect(ClubSupporterResult.clubId).toBe(1);
-                expect(typeof ClubSupporterResult.playerId).toBe('number');
-            }
+            expect(prisma.clubSupporter.findMany).toHaveBeenCalledWith({
+                where: { clubId: 1 },
+            });
+            expect(result).toEqual(fixture);
         });
 
-        it('should return an empty list when retrieving ClubSupporters for club id 101', async () => {
+        it('should return an empty list for club id 101', async () => {
             (prisma.clubSupporter.findMany as Mock).mockResolvedValueOnce([]);
             const result = await clubSupporterService.getByClub(101);
+            expect(prisma.clubSupporter.findMany).toHaveBeenCalledWith({
+                where: { clubId: 101 },
+            });
             expect(result).toEqual([]);
         });
     });
 
     describe('getAll', () => {
-        beforeEach(() => {
-            (prisma.clubSupporter.findMany as Mock).mockResolvedValueOnce(defaultClubSupporterList);
-        });
-
-        it('should return the correct, complete list of 100 ClubSupporters', async () => {
+        it('should return all ClubSupporters', async () => {
+            const fixture = [
+                defaultClubSupporter,
+                { ...defaultClubSupporter, playerId: 2, clubId: 3 },
+            ];
+            (prisma.clubSupporter.findMany as Mock).mockResolvedValueOnce(fixture);
             const result = await clubSupporterService.getAll();
-            expect(result).toHaveLength(100);
-            expect(result[11].playerId).toBe(2);
-            expect(result[11].clubId).toBe(12);
+            expect(prisma.clubSupporter.findMany).toHaveBeenCalledWith({});
+            expect(result).toEqual(fixture);
         });
     });
 

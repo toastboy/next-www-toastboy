@@ -3,9 +3,6 @@ import prisma from 'prisma/prisma';
 import {
     PlayerResponseSchema,
 } from 'prisma/zod/schemas';
-import {
-    OutcomeType,
-} from 'prisma/zod/schemas/models/Outcome.schema';
 import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
@@ -13,7 +10,6 @@ import outcomeService from '@/services/Outcome';
 import {
     createMockOutcome,
     defaultOutcome,
-    defaultOutcomeList,
 } from '@/tests/mocks/data/outcome';
 import { createMockPlayer } from '@/tests/mocks/data/player';
 import { defaultPlayerFormList } from '@/tests/mocks/data/playerForm';
@@ -34,120 +30,19 @@ const defaultOutcomeInput: OutcomeWriteInput = {
 describe('OutcomeService', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-
-        (prisma.outcome.findUnique as Mock).mockImplementation((args: {
-            where: {
-                gameDayId_playerId: {
-                    gameDayId: number,
-                    playerId: number,
-                }
-            }
-        }) => {
-            const outcome = defaultOutcomeList.find((outcome) =>
-                outcome.gameDayId === args.where.gameDayId_playerId.gameDayId &&
-                outcome.playerId === args.where.gameDayId_playerId.playerId,
-            );
-            return Promise.resolve(outcome ?? null);
-        });
-
-        (prisma.outcome.findMany as Mock).mockImplementation((args: {
-            where: {
-                playerId: number,
-                gameDayId: number
-            },
-            take: number,
-            orderBy: { responseInterval: 'desc' }
-        }) => {
-            return Promise.resolve(defaultOutcomeList.filter((outcome) =>
-                outcome.playerId === args.where.playerId &&
-                outcome.gameDayId < args.where.gameDayId).slice(0, args.take),
-            );
-        });
-
-        (prisma.outcome.count as Mock).mockImplementation((args: {
-            where: {
-                playerId: number,
-                gameDay: {
-                    date: {
-                        gte: Date,
-                        lt: Date
-                    },
-                    id?: {
-                        lte: number
-                    }
-                }
-            }
-        }) => {
-            return Promise.resolve(defaultOutcomeList.filter((outcome) =>
-                outcome.playerId === args.where.playerId &&
-                (args.where.gameDay.id ? outcome.gameDayId <= args.where.gameDay.id.lte : true)).length);
-        });
-
-        (prisma.outcome.create as Mock).mockImplementation((args: {
-            data: Partial<OutcomeType> & {
-                gameDayId: number,
-                playerId: number,
-            }
-        }) => {
-            const outcome = defaultOutcomeList.find((outcome) =>
-                outcome.gameDayId === args.data.gameDayId &&
-                outcome.playerId === args.data.playerId,
-            );
-
-            if (outcome) {
-                return Promise.reject(new Error('Outcome already exists'));
-            }
-            else {
-                return Promise.resolve(createMockOutcome(args.data));
-            }
-        });
-
-        (prisma.outcome.upsert as Mock).mockImplementation((args: {
-            where: {
-                gameDayId_playerId: {
-                    gameDayId: number,
-                    playerId: number,
-                }
-            },
-            update: Partial<OutcomeType>,
-            create: Partial<OutcomeType>,
-        }) => {
-            const outcome = defaultOutcomeList.find((outcome) =>
-                outcome.gameDayId === args.where.gameDayId_playerId.gameDayId &&
-                outcome.playerId === args.where.gameDayId_playerId.playerId,
-            );
-
-            if (outcome) {
-                return Promise.resolve(createMockOutcome(args.update));
-            }
-            else {
-                return Promise.resolve(createMockOutcome(args.create));
-            }
-        });
-
-        (prisma.outcome.delete as Mock).mockImplementation((args: {
-            where: {
-                gameDayId_playerId: {
-                    gameDayId: number,
-                    playerId: number,
-                }
-            }
-        }) => {
-            const outcome = defaultOutcomeList.find((outcome) =>
-                outcome.gameDayId === args.where.gameDayId_playerId.gameDayId &&
-                outcome.playerId === args.where.gameDayId_playerId.playerId,
-            );
-            return Promise.resolve(outcome ?? null);
-        });
-    });
-
-    afterEach(() => {
-        vi.clearAllMocks();
     });
 
     describe('get', () => {
         it('should retrieve the correct Outcome for GameDay 1, Player 1', async () => {
+            (prisma.outcome.findUnique as Mock).mockResolvedValueOnce({
+                ...defaultOutcome,
+                gameDayId: 1,
+                playerId: 1,
+            });
             const result = await outcomeService.get(1, 1);
+            expect(prisma.outcome.findUnique).toHaveBeenCalledWith({
+                where: { gameDayId_playerId: { gameDayId: 1, playerId: 1 } },
+            });
             expect(result).toEqual({
                 ...defaultOutcome,
                 gameDayId: 1,
@@ -156,22 +51,22 @@ describe('OutcomeService', () => {
         });
 
         it('should return null for GameDay 7, Player 16', async () => {
+            (prisma.outcome.findUnique as Mock).mockResolvedValueOnce(null);
             const result = await outcomeService.get(7, 16);
+            expect(prisma.outcome.findUnique).toHaveBeenCalledWith({
+                where: { gameDayId_playerId: { gameDayId: 7, playerId: 16 } },
+            });
             expect(result).toBeNull();
         });
     });
 
     describe('getAll', () => {
-        beforeEach(() => {
-            (prisma.outcome.findMany as Mock).mockImplementation(() => {
-                return Promise.resolve(defaultOutcomeList);
-            });
-        });
-
-        it('should return the correct, complete list of 100 Outcomes', async () => {
+        it('should return all Outcomes', async () => {
+            const fixture = [defaultOutcome, { ...defaultOutcome, gameDayId: 2, playerId: 2 }];
+            (prisma.outcome.findMany as Mock).mockResolvedValueOnce(fixture);
             const result = await outcomeService.getAll();
-            expect(result).toHaveLength(100);
-            expect(result[11].playerId).toBe(2);
+            expect(prisma.outcome.findMany).toHaveBeenCalledWith({});
+            expect(result).toEqual(fixture);
         });
     });
 
@@ -194,21 +89,52 @@ describe('OutcomeService', () => {
     });
 
     describe('getAllForYear', () => {
-        it('should return the correct, complete list of 100 Outcomes', async () => {
-            (prisma.outcome.findMany as Mock).mockResolvedValueOnce(defaultOutcomeList);
+        it('should return outcomes for a specific year', async () => {
+            const fixture = [defaultOutcome, { ...defaultOutcome, gameDayId: 2, playerId: 2 }];
+            (prisma.outcome.findMany as Mock).mockResolvedValueOnce(fixture);
+            const result = await outcomeService.getAllForYear(2021);
+            expect(prisma.outcome.findMany).toHaveBeenCalledWith({
+                where: {
+                    gameDay: {
+                        date: { gte: new Date(2021, 0, 1), lt: new Date(2022, 0, 1) },
+                        id: {},
+                    },
+                },
+                orderBy: { gameDayId: 'desc' },
+            });
+            expect(result).toEqual(fixture);
+        });
 
-            let result = await outcomeService.getAllForYear(2021);
-            expect(result).toHaveLength(100);
-            expect(result[11].playerId).toBe(2);
+        it('should return outcomes for a year up to a specific game day', async () => {
+            const fixture = [defaultOutcome];
+            (prisma.outcome.findMany as Mock).mockResolvedValueOnce(fixture);
+            const result = await outcomeService.getAllForYear(2021, 7);
+            expect(prisma.outcome.findMany).toHaveBeenCalledWith({
+                where: {
+                    gameDay: {
+                        date: { gte: new Date(2021, 0, 1), lt: new Date(2022, 0, 1) },
+                        id: { lte: 7 },
+                    },
+                },
+                orderBy: { gameDayId: 'desc' },
+            });
+            expect(result).toEqual(fixture);
+        });
 
-            (prisma.outcome.findMany as Mock).mockResolvedValueOnce(defaultOutcomeList.filter((outcome) => outcome.gameDayId <= 7));
-
-            result = await outcomeService.getAllForYear(2021, 7);
-            expect(result).toHaveLength(70);
-            expect(result[11].playerId).toBe(2);
-
-            result = await outcomeService.getAllForYear(0);
-            expect(result).toHaveLength(0);
+        it('should return all outcomes when year is 0', async () => {
+            const fixture = [defaultOutcome];
+            (prisma.outcome.findMany as Mock).mockResolvedValueOnce(fixture);
+            const result = await outcomeService.getAllForYear(0);
+            expect(prisma.outcome.findMany).toHaveBeenCalledWith({
+                where: {
+                    gameDay: {
+                        date: {},
+                        id: {},
+                    },
+                },
+                orderBy: { gameDayId: 'desc' },
+            });
+            expect(result).toEqual(fixture);
         });
     });
 
@@ -320,21 +246,27 @@ describe('OutcomeService', () => {
     });
 
     describe('getByGameDay', () => {
-        beforeEach(() => {
-            (prisma.outcome.findMany as Mock).mockImplementation((args: { where: { gameDayId: number } }) => {
-                return Promise.resolve(defaultOutcomeList.filter((outcome) => outcome.gameDayId === args.where.gameDayId));
-            });
-        });
-
-        it('should retrieve the correct Outcomes for GameDay id 1', async () => {
+        it('should retrieve Outcomes for GameDay id 1', async () => {
+            const fixture = [
+                { ...createMockOutcome({ gameDayId: 1, playerId: 1 }), player: createMockPlayer({ id: 1 }) },
+                { ...createMockOutcome({ gameDayId: 1, playerId: 2 }), player: createMockPlayer({ id: 2 }) },
+            ];
+            (prisma.outcome.findMany as Mock).mockResolvedValueOnce(fixture);
             const result = await outcomeService.getByGameDay(1);
-            const expected = defaultOutcomeList.filter((outcome) => outcome.gameDayId === 1);
-            expect(result).toHaveLength(expected.length);
-            expect(result).toEqual(expected);
+            expect(prisma.outcome.findMany).toHaveBeenCalledWith({
+                where: { gameDayId: 1, team: undefined },
+                include: { player: true },
+            });
+            expect(result).toEqual(fixture);
         });
 
         it('should return an empty list when retrieving outcomes for GameDay id 101', async () => {
+            (prisma.outcome.findMany as Mock).mockResolvedValueOnce([]);
             const result = await outcomeService.getByGameDay(101);
+            expect(prisma.outcome.findMany).toHaveBeenCalledWith({
+                where: { gameDayId: 101, team: undefined },
+                include: { player: true },
+            });
             expect(result).toEqual([]);
         });
     });
@@ -589,21 +521,21 @@ describe('OutcomeService', () => {
     });
 
     describe('getByPlayer', () => {
-        beforeEach(() => {
-            (prisma.outcome.findMany as Mock).mockImplementation((args: { where: { playerId: number } }) => {
-                return Promise.resolve(defaultOutcomeList.filter((outcome) => outcome.playerId === args.where.playerId));
-            });
-        });
-
-        it('should retrieve the correct Outcomes for Player ID 1', async () => {
+        it('should retrieve Outcomes for Player ID 1', async () => {
+            const fixture = [
+                { ...defaultOutcome, playerId: 1, gameDayId: 1 },
+                { ...defaultOutcome, playerId: 1, gameDayId: 2 },
+            ];
+            (prisma.outcome.findMany as Mock).mockResolvedValueOnce(fixture);
             const result = await outcomeService.getByPlayer(1);
-            const expected = defaultOutcomeList.filter((outcome) => outcome.playerId === 1);
-            expect(result).toHaveLength(expected.length);
-            expect(result).toEqual(expected);
+            expect(prisma.outcome.findMany).toHaveBeenCalledWith({ where: { playerId: 1 } });
+            expect(result).toEqual(fixture);
         });
 
         it('should return an empty list when retrieving Outcomes for Player id 11', async () => {
+            (prisma.outcome.findMany as Mock).mockResolvedValueOnce([]);
             const result = await outcomeService.getByPlayer(11);
+            expect(prisma.outcome.findMany).toHaveBeenCalledWith({ where: { playerId: 11 } });
             expect(result).toEqual([]);
         });
     });
@@ -741,20 +673,51 @@ describe('OutcomeService', () => {
     });
 
     describe('getGamesPlayedByPlayer', () => {
-        it('should retrieve the correct number of games played for Player ID 1, year 2021', async () => {
+        it('should count outcomes with points for a player in a specific year', async () => {
+            (prisma.outcome.count as Mock).mockResolvedValueOnce(10);
             const result = await outcomeService.getGamesPlayedByPlayer(1, 2021);
+            expect(prisma.outcome.count).toHaveBeenCalledWith({
+                where: {
+                    playerId: 1,
+                    points: { not: null },
+                    gameDay: {
+                        date: { gte: new Date(2021, 0, 1), lt: new Date(2022, 0, 1) },
+                    },
+                },
+            });
             expect(result).toBe(10);
         });
-        it('should retrieve the correct number of games played for Player ID 1, year 0', async () => {
+
+        it('should count outcomes with points for a player across all years when year is 0', async () => {
+            (prisma.outcome.count as Mock).mockResolvedValueOnce(25);
             const result = await outcomeService.getGamesPlayedByPlayer(1, 0);
-            expect(result).toBe(10);
+            expect(prisma.outcome.count).toHaveBeenCalledWith({
+                where: {
+                    playerId: 1,
+                    points: { not: null },
+                    gameDay: {},
+                },
+            });
+            expect(result).toBe(25);
         });
-        it('should retrieve the correct number of games played for Player ID 1, year 0, untilGameDayId 8', async () => {
+
+        it('should count outcomes with points for a player up to a specific game day', async () => {
+            (prisma.outcome.count as Mock).mockResolvedValueOnce(8);
             const result = await outcomeService.getGamesPlayedByPlayer(1, 0, 8);
+            expect(prisma.outcome.count).toHaveBeenCalledWith({
+                where: {
+                    playerId: 1,
+                    points: { not: null },
+                    gameDay: {
+                        id: { lte: 8 },
+                    },
+                },
+            });
             expect(result).toBe(8);
         });
 
-        it('should return 0 for Player ID 11', async () => {
+        it('should return 0 for a player with no matching outcomes', async () => {
+            (prisma.outcome.count as Mock).mockResolvedValueOnce(0);
             const result = await outcomeService.getGamesPlayedByPlayer(11, 2021);
             expect(result).toBe(0);
         });
@@ -837,7 +800,14 @@ describe('OutcomeService', () => {
 
     describe('create', () => {
         it('should create an Outcome', async () => {
+            (prisma.outcome.create as Mock).mockResolvedValueOnce({
+                ...defaultOutcome,
+                ...defaultOutcomeInput,
+            });
             const result = await outcomeService.create(defaultOutcomeInput);
+            expect(prisma.outcome.create).toHaveBeenCalledWith({
+                data: defaultOutcomeInput,
+            });
             expect(result).toEqual({
                 ...defaultOutcome,
                 ...defaultOutcomeInput,
@@ -872,6 +842,7 @@ describe('OutcomeService', () => {
         });
 
         it('should refuse to create an Outcome that has the same GameDay ID and Player ID as an existing one', async () => {
+            (prisma.outcome.create as Mock).mockRejectedValueOnce(new Error('Outcome already exists'));
             await expect(outcomeService.create({
                 ...defaultOutcomeInput,
                 playerId: 1,
@@ -882,7 +853,21 @@ describe('OutcomeService', () => {
 
     describe('upsert', () => {
         it('should create an outcome where the combination of GameDay ID and Player ID did not exist', async () => {
+            (prisma.outcome.upsert as Mock).mockResolvedValueOnce({
+                ...defaultOutcome,
+                ...defaultOutcomeInput,
+            });
             const result = await outcomeService.upsert(defaultOutcomeInput);
+            expect(prisma.outcome.upsert).toHaveBeenCalledWith({
+                where: {
+                    gameDayId_playerId: {
+                        gameDayId: defaultOutcomeInput.gameDayId,
+                        playerId: defaultOutcomeInput.playerId,
+                    },
+                },
+                create: defaultOutcomeInput,
+                update: defaultOutcomeInput,
+            });
             expect(result).toEqual({
                 ...defaultOutcome,
                 ...defaultOutcomeInput,
@@ -897,7 +882,16 @@ describe('OutcomeService', () => {
                 response: PlayerResponseSchema.parse('No'),
                 comment: 'Updated comment',
             };
+            (prisma.outcome.upsert as Mock).mockResolvedValueOnce({
+                ...updatedOutcome,
+                id: 1,
+            });
             const result = await outcomeService.upsert(updatedOutcome);
+            expect(prisma.outcome.upsert).toHaveBeenCalledWith({
+                where: { gameDayId_playerId: { gameDayId: 1, playerId: 1 } },
+                create: updatedOutcome,
+                update: updatedOutcome,
+            });
             expect(result).toEqual({
                 ...updatedOutcome,
                 id: 1,
@@ -907,8 +901,15 @@ describe('OutcomeService', () => {
 
     describe('delete', () => {
         it('should delete an existing Outcome', async () => {
+            (prisma.outcome.delete as Mock).mockResolvedValueOnce({
+                ...defaultOutcome,
+                gameDayId: 1,
+                playerId: 1,
+            });
             await outcomeService.delete(1, 1);
-            expect(prisma.outcome.delete).toHaveBeenCalledTimes(1);
+            expect(prisma.outcome.delete).toHaveBeenCalledWith({
+                where: { gameDayId_playerId: { gameDayId: 1, playerId: 1 } },
+            });
         });
 
         it('should silently return when asked to delete an Outcome that does not exist', async () => {
@@ -922,7 +923,9 @@ describe('OutcomeService', () => {
             );
             (prisma.outcome.delete as Mock).mockRejectedValueOnce(notFoundError);
             await outcomeService.delete(7, 16);
-            expect(prisma.outcome.delete).toHaveBeenCalledTimes(1);
+            expect(prisma.outcome.delete).toHaveBeenCalledWith({
+                where: { gameDayId_playerId: { gameDayId: 7, playerId: 16 } },
+            });
         });
 
         it('should rethrow delete errors that are not P2025', async () => {
@@ -933,6 +936,7 @@ describe('OutcomeService', () => {
 
     describe('deleteAll', () => {
         it('should delete all Outcomes', async () => {
+            (prisma.outcome.deleteMany as Mock).mockResolvedValueOnce({ count: 0 });
             await outcomeService.deleteAll();
             expect(prisma.outcome.deleteMany).toHaveBeenCalledTimes(1);
         });

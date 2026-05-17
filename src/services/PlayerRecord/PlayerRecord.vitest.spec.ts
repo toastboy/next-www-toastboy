@@ -10,7 +10,6 @@ import playerRecordService from '@/services/PlayerRecord';
 import {
     createMockPlayerRecord,
     defaultPlayerRecord,
-    defaultPlayerRecordList,
 } from '@/tests/mocks/data/playerRecord';
 import { loadJsonFixture } from '@/tests/shared/fixtures';
 
@@ -19,111 +18,19 @@ import { loadJsonFixture } from '@/tests/shared/fixtures';
 describe('PlayerRecordService', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-
-        (prisma.playerRecord.findUnique as Mock).mockImplementation((args: {
-            where: {
-                playerId_year_gameDayId: {
-                    playerId: number,
-                    year: number,
-                    gameDayId: number,
-                }
-            }
-        }) => {
-            const playerRecord = defaultPlayerRecordList.find((record) =>
-                record.playerId === args.where.playerId_year_gameDayId.playerId &&
-                record.year === args.where.playerId_year_gameDayId.year &&
-                record.gameDayId === args.where.playerId_year_gameDayId.gameDayId,
-            );
-            return Promise.resolve(playerRecord ?? null);
-        });
-
-        (prisma.playerRecord.findMany as Mock).mockImplementation((args: {
-            where: {
-                gameDayId: number,
-                year: number,
-                playerId: number,
-            },
-            take: number,
-            orderBy: { responseInterval: 'desc' }
-        }) => {
-            return Promise.resolve(defaultPlayerRecordList.filter((playerRecord) =>
-                playerRecord.playerId === args.where.playerId &&
-                playerRecord.year === args.where.year &&
-                playerRecord.gameDayId < args.where.gameDayId).slice(0, args.take,
-                ));
-        });
-
-        (prisma.playerRecord.create as Mock).mockImplementation((args: {
-            data: Partial<PlayerRecordType> & {
-                playerId: number,
-                year: number,
-                gameDayId: number,
-            }
-        }) => {
-            const playerRecord = defaultPlayerRecordList.find((record) =>
-                record.playerId === args.data.playerId &&
-                record.year === args.data.year &&
-                record.gameDayId === args.data.gameDayId,
-            );
-
-            if (playerRecord) {
-                return Promise.reject(new Error('PlayerRecord already exists'));
-            }
-            else {
-                return Promise.resolve(createMockPlayerRecord(args.data));
-            }
-        });
-
-        (prisma.playerRecord.upsert as Mock).mockImplementation((args: {
-            where: {
-                playerId_year_gameDayId: {
-                    playerId: number,
-                    year: number,
-                    gameDayId: number,
-                }
-            },
-            update: Partial<PlayerRecordType>,
-            create: Partial<PlayerRecordType>,
-        }) => {
-            const playerRecord = defaultPlayerRecordList.find((playerRecord) =>
-                playerRecord.playerId === args.where.playerId_year_gameDayId.playerId &&
-                playerRecord.year === args.where.playerId_year_gameDayId.year &&
-                playerRecord.gameDayId === args.where.playerId_year_gameDayId.gameDayId,
-            );
-
-            if (playerRecord) {
-                return Promise.resolve(createMockPlayerRecord(args.update));
-            }
-            else {
-                return Promise.resolve(createMockPlayerRecord(args.create));
-            }
-        });
-
-        (prisma.playerRecord.delete as Mock).mockImplementation((args: {
-            where: {
-                playerId_year_gameDayId: {
-                    playerId: number,
-                    year: number,
-                    gameDayId: number,
-                }
-            }
-        }) => {
-            const playerRecord = defaultPlayerRecordList.find((playerRecord) =>
-                playerRecord.playerId === args.where.playerId_year_gameDayId.playerId &&
-                playerRecord.year === args.where.playerId_year_gameDayId.year &&
-                playerRecord.gameDayId === args.where.playerId_year_gameDayId.gameDayId,
-            );
-            return Promise.resolve(playerRecord ?? null);
-        });
-    });
-
-    afterEach(() => {
-        vi.clearAllMocks();
     });
 
     describe('get', () => {
         it('should retrieve the correct PlayerRecord for Player 12, Year 2021 and GameDay 15', async () => {
+            (prisma.playerRecord.findUnique as Mock).mockResolvedValueOnce({
+                ...defaultPlayerRecord,
+                gameDayId: 15,
+                playerId: 12,
+            });
             const result = await playerRecordService.get(12, 2021, 15);
+            expect(prisma.playerRecord.findUnique).toHaveBeenCalledWith({
+                where: { playerId_year_gameDayId: { playerId: 12, year: 2021, gameDayId: 15 } },
+            });
             expect(result).toMatchObject({
                 ...defaultPlayerRecord,
                 gameDayId: 15,
@@ -133,23 +40,22 @@ describe('PlayerRecordService', () => {
         });
 
         it('should return null for Player 16, Year 2022, GameDay 7', async () => {
+            (prisma.playerRecord.findUnique as Mock).mockResolvedValueOnce(null);
             const result = await playerRecordService.get(16, 2022, 7);
+            expect(prisma.playerRecord.findUnique).toHaveBeenCalledWith({
+                where: { playerId_year_gameDayId: { playerId: 16, year: 2022, gameDayId: 7 } },
+            });
             expect(result).toBeNull();
         });
     });
 
     describe('getAll', () => {
-        beforeEach(() => {
-            (prisma.playerRecord.findMany as Mock).mockImplementation(() => {
-                return Promise.resolve(defaultPlayerRecordList);
-            });
-        });
-
         it('should retrieve all PlayerRecords', async () => {
+            const fixture = [defaultPlayerRecord, { ...defaultPlayerRecord, playerId: 2, gameDayId: 16 }];
+            (prisma.playerRecord.findMany as Mock).mockResolvedValueOnce(fixture);
             const result = await playerRecordService.getAll();
-            const expected = defaultPlayerRecordList;
-            expect(result).toHaveLength(expected.length);
-            expect(result).toEqual(expected);
+            expect(prisma.playerRecord.findMany).toHaveBeenCalledWith({});
+            expect(result).toEqual(fixture);
         });
     });
 
@@ -335,65 +241,49 @@ describe('PlayerRecordService', () => {
     });
 
     describe('getByGameDay', () => {
-        beforeEach(() => {
-            (prisma.playerRecord.findMany as Mock).mockImplementation((args: {
-                where: {
-                    gameDayId: number;
-                    year?: number;
-                }
-            }) => {
-                return Promise.resolve(defaultPlayerRecordList.filter((playerRecord) => {
-                    const matchesGameDay = playerRecord.gameDayId === args.where.gameDayId;
-                    const matchesYear = args.where.year === undefined || playerRecord.year === args.where.year;
-                    return matchesGameDay && matchesYear;
-                }));
-            });
-        });
-
-        it('should retrieve the correct PlayerRecords for GameDay id 15', async () => {
+        it('should retrieve PlayerRecords for GameDay id 15', async () => {
+            const fixture = [
+                { ...defaultPlayerRecord, gameDayId: 15, playerId: 1 },
+                { ...defaultPlayerRecord, gameDayId: 15, playerId: 2 },
+            ];
+            (prisma.playerRecord.findMany as Mock).mockResolvedValueOnce(fixture);
             const result = await playerRecordService.getByGameDay(15);
-            // With varied mock data, gameDayId 15 has 11 records (1 from defaultPlayerRecord + 10 generated)
-            expect(result).toHaveLength(11);
-            // Verify all have the correct gameDayId
-            for (const playerRecordResult of result) {
-                expect(playerRecordResult.gameDayId).toBe(15);
-                expect(typeof playerRecordResult.playerId).toBe('number');
-            }
+            expect(prisma.playerRecord.findMany).toHaveBeenCalledWith({ where: { gameDayId: 15 } });
+            expect(result).toEqual(fixture);
         });
 
-        it('should retrieve the correct PlayerRecords for GameDay id 15 and year 2021', async () => {
+        it('should retrieve PlayerRecords for GameDay id 15 and year 2021', async () => {
+            const fixture = [{ ...defaultPlayerRecord, gameDayId: 15, year: 2021 }];
+            (prisma.playerRecord.findMany as Mock).mockResolvedValueOnce(fixture);
             const result = await playerRecordService.getByGameDay(15, 2021);
-            // With varied mock data, only defaultPlayerRecord matches gameDayId=15 and year=2021
-            expect(result).toHaveLength(1);
-            expect(result[0]).toMatchObject({
-                ...defaultPlayerRecord,
-                gameDayId: 15,
-                year: 2021,
-            });
+            expect(prisma.playerRecord.findMany).toHaveBeenCalledWith({ where: { gameDayId: 15, year: 2021 } });
+            expect(result).toEqual(fixture);
         });
 
         it('should return an empty list when retrieving playerRecords for GameDay id 101', async () => {
+            (prisma.playerRecord.findMany as Mock).mockResolvedValueOnce([]);
             const result = await playerRecordService.getByGameDay(101);
+            expect(prisma.playerRecord.findMany).toHaveBeenCalledWith({ where: { gameDayId: 101 } });
             expect(result).toEqual([]);
         });
     });
 
     describe('getByPlayer', () => {
-        beforeEach(() => {
-            (prisma.playerRecord.findMany as Mock).mockImplementation((args: { where: { playerId: number } }) => {
-                return Promise.resolve(defaultPlayerRecordList.filter((playerRecord) => playerRecord.playerId === args.where.playerId));
-            });
-        });
-
-        it('should retrieve the correct PlayerRecords for Player ID 12', async () => {
+        it('should retrieve PlayerRecords for Player ID 12', async () => {
+            const fixture = [
+                { ...defaultPlayerRecord, playerId: 12, gameDayId: 15 },
+                { ...defaultPlayerRecord, playerId: 12, gameDayId: 20 },
+            ];
+            (prisma.playerRecord.findMany as Mock).mockResolvedValueOnce(fixture);
             const result = await playerRecordService.getByPlayer(12);
-            const expected = defaultPlayerRecordList.filter((playerRecord) => playerRecord.playerId === 12);
-            expect(result).toHaveLength(expected.length);
-            expect(result).toEqual(expected);
+            expect(prisma.playerRecord.findMany).toHaveBeenCalledWith({ where: { playerId: 12 } });
+            expect(result).toEqual(fixture);
         });
 
         it('should return an empty list when retrieving PlayerRecords for Player id 21', async () => {
+            (prisma.playerRecord.findMany as Mock).mockResolvedValueOnce([]);
             const result = await playerRecordService.getByPlayer(21);
+            expect(prisma.playerRecord.findMany).toHaveBeenCalledWith({ where: { playerId: 21 } });
             expect(result).toEqual([]);
         });
     });
@@ -661,7 +551,11 @@ describe('PlayerRecordService', () => {
                 gameDayId: 132,
                 points: 80,
             };
+            (prisma.playerRecord.create as Mock).mockResolvedValueOnce(record);
             const result = await playerRecordService.create(record);
+            expect(prisma.playerRecord.create).toHaveBeenCalledWith(
+                expect.objectContaining({ data: expect.objectContaining({ playerId: 12, gameDayId: 132, points: 80 }) as unknown }) as unknown,
+            );
             expect(result).toEqual(record);
         });
 
@@ -741,6 +635,7 @@ describe('PlayerRecordService', () => {
         });
 
         it('should refuse to create an PlayerRecord that has the same Player ID, year and GameDay ID as an existing one', async () => {
+            (prisma.playerRecord.create as Mock).mockRejectedValueOnce(new Error('PlayerRecord already exists'));
             await expect(playerRecordService.create({
                 ...defaultPlayerRecord,
                 playerId: 12,
@@ -751,8 +646,20 @@ describe('PlayerRecordService', () => {
     });
 
     describe('upsert', () => {
-        it('should create a playerRecord where the combination of GameDay ID and Player ID did not exist', async () => {
+        it('should create a playerRecord where the combination of Player ID, year and GameDay ID did not exist', async () => {
+            (prisma.playerRecord.upsert as Mock).mockResolvedValueOnce(defaultPlayerRecord);
             const result = await playerRecordService.upsert(defaultPlayerRecord);
+            expect(prisma.playerRecord.upsert).toHaveBeenCalledWith({
+                where: {
+                    playerId_year_gameDayId: {
+                        playerId: defaultPlayerRecord.playerId,
+                        year: defaultPlayerRecord.year,
+                        gameDayId: defaultPlayerRecord.gameDayId,
+                    },
+                },
+                create: expect.objectContaining({ playerId: defaultPlayerRecord.playerId, year: defaultPlayerRecord.year, gameDayId: defaultPlayerRecord.gameDayId }) as unknown,
+                update: expect.objectContaining({ playerId: defaultPlayerRecord.playerId, year: defaultPlayerRecord.year, gameDayId: defaultPlayerRecord.gameDayId }) as unknown,
+            });
             expect(result).toEqual(defaultPlayerRecord);
         });
 
@@ -764,13 +671,27 @@ describe('PlayerRecordService', () => {
                 gameDayId: 15,
                 points: 23,
             };
+            (prisma.playerRecord.upsert as Mock).mockResolvedValueOnce(updatedPlayerRecord);
             const result = await playerRecordService.upsert(updatedPlayerRecord);
+            expect(prisma.playerRecord.upsert).toHaveBeenCalledWith({
+                where: {
+                    playerId_year_gameDayId: {
+                        playerId: 12,
+                        year: 2021,
+                        gameDayId: 15,
+                    },
+                },
+                create: expect.objectContaining({ playerId: 12, year: 2021, gameDayId: 15, points: 23 }) as unknown,
+                update: expect.objectContaining({ playerId: 12, year: 2021, gameDayId: 15, points: 23 }) as unknown,
+            });
             expect(result).toEqual(updatedPlayerRecord);
         });
     });
 
     describe('upsertForGameDay with few-response players', () => {
         it('should assign rankSpeedyUnqualified for players with fewer than 10 responses', async () => {
+            (prisma.playerRecord.upsert as Mock).mockImplementation((args: { create: unknown }) =>
+                Promise.resolve(args.create));
             (prisma.gameDay.findMany as Mock).mockResolvedValue([
                 {
                     id: 1,
@@ -873,6 +794,8 @@ describe('PlayerRecordService', () => {
 
     describe('upsertForGameDay for known GameDay with outcomes', () => {
         beforeEach(() => {
+            (prisma.playerRecord.upsert as Mock).mockImplementation((args: { create: unknown }) =>
+                Promise.resolve(args.create));
             (prisma.gameDay.findUnique as Mock).mockResolvedValue({
                 id: 15,
                 date: new Date('2022-01-03'),
@@ -1034,8 +957,11 @@ describe('PlayerRecordService', () => {
 
     describe('delete', () => {
         it('should delete an existing PlayerRecord', async () => {
+            (prisma.playerRecord.delete as Mock).mockResolvedValueOnce(defaultPlayerRecord);
             await playerRecordService.delete(12, 2021, 15);
-            expect(prisma.playerRecord.delete).toHaveBeenCalledTimes(1);
+            expect(prisma.playerRecord.delete).toHaveBeenCalledWith({
+                where: { playerId_year_gameDayId: { playerId: 12, year: 2021, gameDayId: 15 } },
+            });
         });
 
         it('should silently return when asked to delete an PlayerRecord that does not exist', async () => {
@@ -1060,6 +986,7 @@ describe('PlayerRecordService', () => {
 
     describe('deleteAll', () => {
         it('should delete all PlayerRecords', async () => {
+            (prisma.playerRecord.deleteMany as Mock).mockResolvedValueOnce({ count: 0 });
             await playerRecordService.deleteAll();
             expect(prisma.playerRecord.deleteMany).toHaveBeenCalledTimes(1);
         });

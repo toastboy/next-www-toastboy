@@ -16,19 +16,19 @@ test.describe('Responses admin page', () => {
     test('denies access to guest users', async ({ page }) => {
         await asGuest(page, '/footy/admin/responses');
 
-        await expect(page.locator('[data-testid="must-be-admin"]')).toBeVisible();
+        await expect(page.getByText('You must be logged in as an administrator')).toBeVisible();
     });
 
     test('denies access to regular users', async ({ page }) => {
         await asUser(page, '/footy/admin/responses');
 
-        await expect(page.locator('[data-testid="must-be-admin"]')).toBeVisible();
+        await expect(page.getByText('You must be logged in as an administrator')).toBeVisible();
     });
 
     test('admin can update responses form through realistic response changes', async ({ page }) => {
         await asAdmin(page, '/footy/admin/responses');
 
-        await expect(page.locator('[data-testid="must-be-admin"]')).not.toBeVisible();
+        await expect(page.getByText('You must be logged in as an administrator')).not.toBeVisible();
         await expect(page.getByRole('heading', { name: /Responses/i })).toBeVisible();
 
         const yesGroup = page.getByTestId('response-group-yes');

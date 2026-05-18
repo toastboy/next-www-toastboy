@@ -7,13 +7,13 @@ test.describe('New game flow', () => {
     test('denies access to guest users', async ({ page }) => {
         await asGuest(page, '/footy/admin/newgame');
 
-        await expect(page.locator('[data-testid="must-be-admin"]')).toBeVisible();
+        await expect(page.getByText('You must be logged in as an administrator')).toBeVisible();
     });
 
     test('denies access to regular users', async ({ page }) => {
         await asUser(page, '/footy/admin/newgame');
 
-        await expect(page.locator('[data-testid="must-be-admin"]')).toBeVisible();
+        await expect(page.getByText('You must be logged in as an administrator')).toBeVisible();
     });
 
     test('allows admins to send invitations and players can respond', async ({ page, request }) => {
@@ -22,7 +22,7 @@ test.describe('New game flow', () => {
 
         await asAdmin(page, '/footy/admin/newgame');
 
-        await expect(page.locator('[data-testid="must-be-admin"]')).not.toBeVisible();
+        await expect(page.getByText('You must be logged in as an administrator')).not.toBeVisible();
         await expect(page.getByRole('heading', { name: /New game/i })).toBeVisible();
 
         await page.getByLabel(/Override time check/i).check();
@@ -50,7 +50,7 @@ test.describe('New game flow', () => {
         await page.getByLabel('Response').selectOption('Yes');
         await page.getByLabel('Goalie').check();
         await page.getByLabel('Optional comment/excuse').fill(responseComment);
-        await page.getByRole('button', { name: 'Done' }).click();
+        await page.getByRole('button', { name: 'Save Response' }).click();
 
         await expect(page.getByText('Response saved')).toBeVisible({ timeout: 15000 });
         await expect(page.getByText(responseComment)).toBeVisible({ timeout: 15000 });

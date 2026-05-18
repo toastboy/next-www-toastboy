@@ -17,19 +17,19 @@ test.describe('New Player admin page', () => {
     test('denies access to guest users', async ({ page }) => {
         await asGuest(page, '/footy/newplayer');
 
-        await expect(page.locator('[data-testid="must-be-admin"]')).toBeVisible();
+        await expect(page.getByText('You must be logged in as an administrator')).toBeVisible();
     });
 
     test('denies access to regular users', async ({ page }) => {
         await asUser(page, '/footy/newplayer');
 
-        await expect(page.locator('[data-testid="must-be-admin"]')).toBeVisible();
+        await expect(page.getByText('You must be logged in as an administrator')).toBeVisible();
     });
 
     test('allows access to admin users and shows newplayer admin interface', async ({ page }) => {
         await asAdmin(page, '/footy/newplayer');
 
-        await expect(page.locator('[data-testid="must-be-admin"]')).not.toBeVisible();
+        await expect(page.getByText('You must be logged in as an administrator')).not.toBeVisible();
 
         // TODO: Add checks for the newplayer admin interface elements
 

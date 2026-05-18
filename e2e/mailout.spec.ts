@@ -16,7 +16,7 @@ test.describe('Mail active players', () => {
 
         await asUser(page, '/footy/mailout');
 
-        await expect(page.locator('[data-testid="must-be-logged-in"]')).not.toBeVisible();
+        await expect(page.getByText('Sign in to your account')).not.toBeVisible();
         await expect(page).toHaveURL(/\/footy\/players/);
         await expect(page.getByTestId('players-table')).toHaveAttribute('data-row-count', /[1-9]/);
 

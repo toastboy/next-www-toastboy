@@ -60,14 +60,14 @@ async function setAuthState(
  *
  * @param page - The Playwright Page instance to modify.
  * @param uri - (Optional) The URI to navigate to after setting the auth state.
- * @returns A promise that resolves when the authentication state is set,
- *          navigation (if any) is complete, and the page has reached the
- *          'networkidle' load state.
+ * @returns A promise that resolves when the authentication state is set and,
+ *          if a URI is provided, navigation reaches the 'domcontentloaded'
+ *          load state.
  */
 export async function asGuest(page: Page, uri?: string): Promise<void> {
     await setAuthState(page, 'none');
     if (uri) {
-        await page.goto(uri, { waitUntil: 'networkidle' });
+        await page.goto(uri, { waitUntil: 'domcontentloaded' });
     }
 }
 
@@ -77,14 +77,14 @@ export async function asGuest(page: Page, uri?: string): Promise<void> {
  *
  * @param page - The Playwright Page instance to modify.
  * @param uri - (Optional) The URI to navigate to after setting the auth state.
- * @returns A promise that resolves when the authentication state is set,
- *          navigation (if any) is complete, and the page has reached the
- *          'networkidle' load state.
+ * @returns A promise that resolves when the authentication state is set and,
+ *          if a URI is provided, navigation reaches the 'domcontentloaded'
+ *          load state.
  */
 export async function asUser(page: Page, uri?: string, user?: MockAuthUser): Promise<void> {
     await setAuthState(page, 'user', user);
     if (uri) {
-        await page.goto(uri, { waitUntil: 'networkidle' });
+        await page.goto(uri, { waitUntil: 'domcontentloaded' });
     }
 }
 
@@ -94,13 +94,13 @@ export async function asUser(page: Page, uri?: string, user?: MockAuthUser): Pro
  *
  * @param page - The Playwright Page instance to modify.
  * @param uri - (Optional) The URI to navigate to after setting the auth state.
- * @returns A promise that resolves when the authentication state is set,
- *          navigation (if any) is complete, and the page has reached the
- *          'networkidle' load state.
+ * @returns A promise that resolves when the authentication state is set and,
+ *          if a URI is provided, navigation reaches the 'domcontentloaded'
+ *          load state.
  */
 export async function asAdmin(page: Page, uri?: string, user?: MockAuthUser): Promise<void> {
     await setAuthState(page, 'admin', user);
     if (uri) {
-        await page.goto(uri, { waitUntil: 'networkidle' });
+        await page.goto(uri, { waitUntil: 'domcontentloaded' });
     }
 }

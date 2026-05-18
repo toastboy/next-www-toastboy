@@ -3,9 +3,12 @@
 This project is based on [Azure + MySQL example code](https://github.com/Azure-Samples/vercel-nextjs-app-azure-db-mysql) from [Prisma](https://www.prisma.io/) using [Mantine Components](https://mantine.dev/), [Tabler Icons](https://tabler-icons-react.vercel.app/) and [Better Auth](https://better-auth.vercel.app/). It uses [Sentry](https://sentry.io/) for app monitoring, [Vitest](https://vitest.dev/) for unit testing and [Playwright](https://playwright.dev/) for end-to-end testing. Test coverage is uploaded to [Codecov](https://about.codecov.io/) and [ESLint](https://www.npmjs.com/package/eslint) results are monitored in GitHub Actions using [Reviewdog](https://github.com/reviewdog/reviewdog).
 
 [![CodeQL](https://github.com/toastboy/next-www-toastboy/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/toastboy/next-www-toastboy/actions/workflows/github-code-scanning/codeql)
-[![Vitest Tests](https://github.com/toastboy/next-www-toastboy/actions/workflows/vitest.yml/badge.svg)](https://github.com/toastboy/next-www-toastboy/actions/workflows/vitest.yml)
+[![Unit Tests with Coverage](https://github.com/toastboy/next-www-toastboy/actions/workflows/unit-tests.yml/badge.svg)](https://github.com/toastboy/next-www-toastboy/actions/workflows/unit-tests.yml)
 [![Playwright Tests](https://github.com/toastboy/next-www-toastboy/actions/workflows/playwright.yml/badge.svg)](https://github.com/toastboy/next-www-toastboy/actions/workflows/playwright.yml)
+[![Storybook Tests](https://github.com/toastboy/next-www-toastboy/actions/workflows/storybook.yml/badge.svg)](https://github.com/toastboy/next-www-toastboy/actions/workflows/storybook.yml)
+[![Chromatic](https://github.com/toastboy/next-www-toastboy/actions/workflows/chromatic.yml/badge.svg)](https://github.com/toastboy/next-www-toastboy/actions/workflows/chromatic.yml)
 [![Reviewdog](https://github.com/toastboy/next-www-toastboy/actions/workflows/lint.yml/badge.svg)](https://github.com/toastboy/next-www-toastboy/actions/workflows/lint.yml)
+[![Knip](https://github.com/toastboy/next-www-toastboy/actions/workflows/knip.yml/badge.svg)](https://github.com/toastboy/next-www-toastboy/actions/workflows/knip.yml)
 [![Terraform](https://github.com/toastboy/next-www-toastboy/actions/workflows/terraform.yml/badge.svg)](https://github.com/toastboy/next-www-toastboy/actions/workflows/terraform.yml)
 
 ## Azure App Registrations

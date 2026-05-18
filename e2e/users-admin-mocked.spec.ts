@@ -8,7 +8,7 @@ test.describe('Users Admin Page with Auth Mocking', () => {
         await page.goto('/footy/admin/users');
         await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
 
-        await expect(page.getByText('Sign in to your account')).toBeVisible();
+        await expect(page.getByText('You must be logged in as an administrator')).toBeVisible();
     });
 
     test('denies access to regular users', async ({ page }) => {
@@ -41,7 +41,7 @@ test.describe('Profile Page with Auth Mocking', () => {
         await page.goto('/footy/profile');
         await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
 
-        await expect(page.getByText('You must be logged in to use this page.')).toBeVisible();
+        await expect(page.getByText('Sign in to your account')).toBeVisible();
     });
 
     test('allows authenticated users to access profile', async ({ page }) => {

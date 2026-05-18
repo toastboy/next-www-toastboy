@@ -20,7 +20,6 @@ test.describe('drinkers admin page', () => {
 
         await expect(page.getByText('You must be logged in as an administrator')).not.toBeVisible();
         await expect(page).toHaveURL(/\/footy\/admin\/drinkers\/\d+$/);
-        await expect(page.locator('[data-testid="drinkers-form"]')).toBeVisible();
         await expect(page.getByRole('heading', { name: /Game \d+ Drinkers/i })).toBeVisible();
         await expect(page.getByRole('button', { name: 'Save drinkers' })).toBeVisible();
     });

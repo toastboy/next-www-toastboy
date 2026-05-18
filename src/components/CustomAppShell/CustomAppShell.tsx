@@ -3,7 +3,7 @@
 import { AppShell, Badge, Burger, Container, Group, Image, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { usePathname } from 'next/navigation';
-import { Suspense, useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { AuthUserSummary } from '@/types/AuthUser';
 
@@ -79,9 +79,7 @@ export const CustomAppShell = ({ children, user, devMode }: Props) => {
 
             <AppShell.Main>
                 <Container fluid p="xl">
-                    <Suspense>
-                        {children}
-                    </Suspense>
+                    {children}
                 </Container>
             </AppShell.Main>
 

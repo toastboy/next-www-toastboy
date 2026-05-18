@@ -7,6 +7,18 @@ interface WrapperProps {
 }
 
 /**
+ * In-memory colour scheme manager for tests to avoid touching runtime
+ * localStorage and triggering Node experimental warnings.
+ */
+const testColorSchemeManager = {
+    get: (defaultValue: 'auto' | 'dark' | 'light') => defaultValue,
+    set: () => undefined,
+    subscribe: () => undefined,
+    unsubscribe: () => undefined,
+    clear: () => undefined,
+};
+
+/**
  * Test wrapper component that provides Mantine theming context.
  * Wraps children with MantineProvider configured for light color scheme.
  *
@@ -16,7 +28,7 @@ interface WrapperProps {
  */
 export const Wrapper = ({ children }: WrapperProps) => {
     return (
-        <MantineProvider defaultColorScheme="light">
+        <MantineProvider colorSchemeManager={testColorSchemeManager} defaultColorScheme="light">
             {children}
         </MantineProvider>
     );

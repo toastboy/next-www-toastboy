@@ -10,7 +10,9 @@ test.describe('Auth Mocking System', () => {
         await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
 
         // Should be redirected or show login form
-        await expect(page.getByText('You must be logged in as an administrator')).toBeVisible();
+        await expect(page.getByRole('heading', {
+            name: /You must be logged in as an administrator/i,
+        })).toBeVisible();
 
         // Test as regular user
         await asUser(page);
@@ -18,7 +20,9 @@ test.describe('Auth Mocking System', () => {
         await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
 
         // Regular users should not access admin pages
-        await expect(page.getByText('You must be logged in as an administrator')).toBeVisible();
+        await expect(page.getByRole('heading', {
+            name: /You must be logged in as an administrator/i,
+        })).toBeVisible();
 
         // Test as admin
         await asAdmin(page);
@@ -49,6 +53,8 @@ test.describe('Auth Mocking System', () => {
         // Switch back to guest
         await asGuest(page);
         await page.reload();
-        await expect(page.getByText('You must be logged in as an administrator')).toBeVisible();
+        await expect(page.getByRole('heading', {
+            name: /You must be logged in as an administrator/i,
+        })).toBeVisible();
     });
 });

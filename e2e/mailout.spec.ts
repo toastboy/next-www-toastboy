@@ -7,7 +7,7 @@ test.describe('Mail active players', () => {
     test('denies access to guest users', async ({ page }) => {
         await asGuest(page, '/footy/mailout');
 
-        await expect(page.locator('[data-testid="must-be-logged-in"]')).toBeVisible();
+        await expect(page.getByText('Sign in to your account')).toBeVisible();
     });
 
     test('mail active players', async ({ page, request }) => {

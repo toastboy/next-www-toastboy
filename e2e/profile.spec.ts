@@ -6,7 +6,7 @@ test.describe('Player Profile page', () => {
     test('denies access to guest users', async ({ page }) => {
         await asGuest(page, '/footy/profile');
 
-        await expect(page.locator('[data-testid="must-be-logged-in"]')).toBeVisible();
+        await expect(page.getByText('Sign in to your account')).toBeVisible();
     });
 
     test('profile access for regular users', async ({ page }) => {

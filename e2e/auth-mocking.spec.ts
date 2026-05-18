@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-import { asAdmin, asGuest, asUser } from './utils/auth';
+import { asAdmin, asGuest, asUser, mustBeLoggedIn, mustBeLoggedInAsAdmin } from './utils/auth';
 
 test.describe('Auth Mocking System', () => {
     test('should show different content for different auth states', async ({ page }) => {
@@ -9,18 +9,14 @@ test.describe('Auth Mocking System', () => {
         await page.goto('/footy/admin/users');
 
         // Should be redirected or show login form
-        await expect(page.getByRole('heading', {
-            name: /You must be logged in as an administrator/i,
-        })).toBeVisible();
+        await mustBeLoggedInAsAdmin(page);
 
         // Test as regular user
         await asUser(page);
         await page.goto('/footy/admin/users');
 
         // Regular users should not access admin pages
-        await expect(page.getByRole('heading', {
-            name: /You must be logged in as an administrator/i,
-        })).toBeVisible();
+        await mustBeLoggedInAsAdmin(page);
 
         // Test as admin
         await asAdmin(page);
@@ -34,7 +30,7 @@ test.describe('Auth Mocking System', () => {
         // Start as guest
         await asGuest(page);
         await page.goto('/footy/profile');
-        await expect(page.getByText('Sign in to your account')).toBeVisible();
+        await mustBeLoggedIn(page);
 
         // Switch to user
         await asUser(page);
@@ -50,8 +46,6 @@ test.describe('Auth Mocking System', () => {
         // Switch back to guest
         await asGuest(page);
         await page.reload();
-        await expect(page.getByRole('heading', {
-            name: /You must be logged in as an administrator/i,
-        })).toBeVisible();
+        await mustBeLoggedInAsAdmin(page);
     });
 });

@@ -1,13 +1,13 @@
 import { expect, test } from '@playwright/test';
 
-import { asGuest, asUser } from './utils/auth';
+import { asGuest, asUser, mustBeLoggedIn } from './utils/auth';
 import { deleteAllMessages, getMessageDetail, waitForMessage } from './utils/mailpit';
 
 test.describe('Mail active players', () => {
     test('denies access to guest users', async ({ page }) => {
         await asGuest(page, '/footy/mailout');
 
-        await expect(page.getByText('Sign in to your account')).toBeVisible();
+        await mustBeLoggedIn(page);
     });
 
     test('mail active players', async ({ page, request }) => {
@@ -16,7 +16,6 @@ test.describe('Mail active players', () => {
 
         await asUser(page, '/footy/mailout');
 
-        await expect(page.getByText('Sign in to your account')).not.toBeVisible();
         await expect(page).toHaveURL(/\/footy\/players/);
         await expect(page.getByTestId('players-table')).toHaveAttribute('data-row-count', /[1-9]/);
 

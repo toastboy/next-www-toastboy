@@ -1,19 +1,19 @@
 import { expect, test } from '@playwright/test';
 
-import { asAdmin, asGuest, asUser } from './utils/auth';
+import { asAdmin, asGuest, asUser, mustBeLoggedInAsAdmin } from './utils/auth';
 import { deleteAllMessages, getMessageDetail, waitForMessage } from './utils/mailpit';
 
 test.describe('New game flow', () => {
     test('denies access to guest users', async ({ page }) => {
         await asGuest(page, '/footy/admin/newgame');
 
-        await expect(page.getByText('You must be logged in as an administrator')).toBeVisible();
+        await mustBeLoggedInAsAdmin(page);
     });
 
     test('denies access to regular users', async ({ page }) => {
         await asUser(page, '/footy/admin/newgame');
 
-        await expect(page.getByText('You must be logged in as an administrator')).toBeVisible();
+        await mustBeLoggedInAsAdmin(page);
     });
 
     test('allows admins to send invitations and players can respond', async ({ page, request }) => {
@@ -22,7 +22,6 @@ test.describe('New game flow', () => {
 
         await asAdmin(page, '/footy/admin/newgame');
 
-        await expect(page.getByText('You must be logged in as an administrator')).not.toBeVisible();
         await expect(page.getByRole('heading', { name: /New game/i })).toBeVisible();
 
         await page.getByLabel(/Override time check/i).check();

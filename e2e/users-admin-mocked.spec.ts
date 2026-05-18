@@ -1,20 +1,20 @@
 import { expect, test } from '@playwright/test';
 
-import { asAdmin, asGuest, asUser } from './utils/auth';
+import { asAdmin, asGuest, asUser, mustBeLoggedIn, mustBeLoggedInAsAdmin } from './utils/auth';
 
 test.describe('Users Admin Page with Auth Mocking', () => {
     test('denies access to guest users', async ({ page }) => {
         await asGuest(page);
         await page.goto('/footy/admin/users');
 
-        await expect(page.getByText('You must be logged in as an administrator')).toBeVisible();
+        await mustBeLoggedInAsAdmin(page);
     });
 
     test('denies access to regular users', async ({ page }) => {
         await asUser(page);
         await page.goto('/footy/admin/users');
 
-        await expect(page.getByText('You must be logged in as an administrator')).toBeVisible();
+        await mustBeLoggedInAsAdmin(page);
     });
 
     test('allows access to admin users and shows user list', async ({ page }) => {
@@ -37,7 +37,7 @@ test.describe('Profile Page with Auth Mocking', () => {
         await asGuest(page);
         await page.goto('/footy/profile');
 
-        await expect(page.getByText('Sign in to your account')).toBeVisible();
+        await mustBeLoggedIn(page);
     });
 
     test('allows authenticated users to access profile', async ({ page }) => {

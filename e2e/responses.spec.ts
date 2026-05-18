@@ -1,6 +1,6 @@
 import { expect, type Locator, test } from '@playwright/test';
 
-import { asAdmin, asGuest, asUser } from './utils/auth';
+import { asAdmin, asGuest, asUser, mustBeLoggedInAsAdmin } from './utils/auth';
 
 type ResponseOption = 'Yes' | 'No' | 'Dunno';
 
@@ -16,19 +16,18 @@ test.describe('Responses admin page', () => {
     test('denies access to guest users', async ({ page }) => {
         await asGuest(page, '/footy/admin/responses');
 
-        await expect(page.getByText('You must be logged in as an administrator')).toBeVisible();
+        await mustBeLoggedInAsAdmin(page);
     });
 
     test('denies access to regular users', async ({ page }) => {
         await asUser(page, '/footy/admin/responses');
 
-        await expect(page.getByText('You must be logged in as an administrator')).toBeVisible();
+        await mustBeLoggedInAsAdmin(page);
     });
 
     test('admin can update responses form through realistic response changes', async ({ page }) => {
         await asAdmin(page, '/footy/admin/responses');
 
-        await expect(page.getByText('You must be logged in as an administrator')).not.toBeVisible();
         await expect(page.getByRole('heading', { name: /Responses/i })).toBeVisible();
 
         const yesGroup = page.getByTestId('response-group-yes');

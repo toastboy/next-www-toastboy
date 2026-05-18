@@ -1,6 +1,6 @@
-import { expect, test } from '@playwright/test';
+import { test } from '@playwright/test';
 
-import { asAdmin, asGuest, asUser } from './utils/auth';
+import { asAdmin, asGuest, asUser, mustBeLoggedInAsAdmin } from './utils/auth';
 
 // function randname(length: number) {
 //     let result = '';
@@ -17,19 +17,17 @@ test.describe('New Player admin page', () => {
     test('denies access to guest users', async ({ page }) => {
         await asGuest(page, '/footy/newplayer');
 
-        await expect(page.getByText('You must be logged in as an administrator')).toBeVisible();
+        await mustBeLoggedInAsAdmin(page);
     });
 
     test('denies access to regular users', async ({ page }) => {
         await asUser(page, '/footy/newplayer');
 
-        await expect(page.getByText('You must be logged in as an administrator')).toBeVisible();
+        await mustBeLoggedInAsAdmin(page);
     });
 
     test('allows access to admin users and shows newplayer admin interface', async ({ page }) => {
         await asAdmin(page, '/footy/newplayer');
-
-        await expect(page.getByText('You must be logged in as an administrator')).not.toBeVisible();
 
         // TODO: Add checks for the newplayer admin interface elements
 

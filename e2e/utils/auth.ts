@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { expect, Page } from '@playwright/test';
 
 type MockAuthState = 'none' | 'user' | 'admin';
 const MOCK_AUTH_COOKIE = 'mock-auth-state';
@@ -103,4 +103,28 @@ export async function asAdmin(page: Page, uri?: string, user?: MockAuthUser): Pr
     if (uri) {
         await page.goto(uri, { waitUntil: 'domcontentloaded' });
     }
+}
+
+/**
+ * Asserts that the page displays the "must be logged in as admin" heading.
+ *
+ * @param page - The Playwright Page instance to check.
+ * @returns A promise that resolves when the heading is visible.
+ */
+export async function mustBeLoggedInAsAdmin(page: Page): Promise<void> {
+    await expect(page.getByRole('heading', {
+        name: /You must be logged in as an administrator/i,
+    })).toBeVisible();
+}
+
+/**
+ * Asserts that the page displays the "sign in to your account" heading.
+ *
+ * @param page - The Playwright Page instance to check.
+ * @returns A promise that resolves when the heading is visible.
+ */
+export async function mustBeLoggedIn(page: Page): Promise<void> {
+    await expect(page.getByRole('heading', {
+        name: /Sign in to your account/i,
+    })).toBeVisible();
 }

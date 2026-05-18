@@ -1,12 +1,12 @@
-import { expect, test } from '@playwright/test';
+import { test } from '@playwright/test';
 
-import { asGuest, asUser } from './utils/auth';
+import { asGuest, asUser, mustBeLoggedIn } from './utils/auth';
 
 test.describe('Player Profile page', () => {
     test('denies access to guest users', async ({ page }) => {
         await asGuest(page, '/footy/profile');
 
-        await expect(page.getByText('Sign in to your account')).toBeVisible();
+        await mustBeLoggedIn(page);
     });
 
     test('profile access for regular users', async ({ page }) => {

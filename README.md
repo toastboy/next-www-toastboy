@@ -48,6 +48,26 @@ Run the app with the following command:
 op run --env-file ./.env -- npm run dev
 ```
 
+## Running Playwright Tests Locally (macOS)
+
+The `stdbuf` command used in some Linux CI seed scripts is not available on macOS by default. The `seed:playwright` and `seed:ci` scripts in `package.json` do not use `stdbuf`, so they work on both platforms.
+
+Before running Playwright tests for the first time — or after any Prisma schema change — initialise the dedicated test database:
+
+```shell
+npm run setup:playwright
+```
+
+This creates the `footy` test database (via `prisma db push`) and regenerates the Prisma client. You only need to repeat it when the schema changes.
+
+Then run all E2E tests:
+
+```shell
+npx playwright test
+```
+
+The test runner starts a local Next.js server automatically, seeds the test database, and tears everything down when done.
+
 ## Sentry Sampling and Quota Controls
 
 The Sentry setup in this project now uses conservative defaults designed to fit

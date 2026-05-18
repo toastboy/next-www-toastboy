@@ -10,7 +10,7 @@ test.describe('Auth Mocking System', () => {
         await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
 
         // Should be redirected or show login form
-        await expect(page.getByText('You must be logged in')).toBeVisible();
+        await expect(page.getByText('You must be logged in as an administrator')).toBeVisible();
 
         // Test as regular user
         await asUser(page);
@@ -33,7 +33,7 @@ test.describe('Auth Mocking System', () => {
         // Start as guest
         await asGuest(page);
         await page.goto('/footy/profile');
-        await expect(page.getByText('You must be logged in')).toBeVisible();
+        await expect(page.getByText('Sign in to your account')).toBeVisible();
 
         // Switch to user
         await asUser(page);
@@ -49,6 +49,6 @@ test.describe('Auth Mocking System', () => {
         // Switch back to guest
         await asGuest(page);
         await page.reload();
-        await expect(page.getByText('You must be logged in')).toBeVisible();
+        await expect(page.getByText('You must be logged in as an administrator')).toBeVisible();
     });
 });

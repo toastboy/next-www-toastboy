@@ -32,7 +32,8 @@ npm run test:actions                        # Server action tests
 npm run test:pages                          # Page tests
 npm run test:lib                            # Library utility tests
 npm run test:storybook                      # Storybook play tests
-npx playwright test                         # E2E tests (auto-starts dev server)
+npm run setup:playwright                    # One-time (or after schema changes): create test DB + push schema
+npx playwright test                         # E2E tests (auto-starts dev server, seeds DB)
 
 # Run a single test file
 npx vitest run --config vitest.services.config.ts path/to/test.ts
@@ -41,6 +42,7 @@ npx vitest run --config vitest.services.config.ts path/to/test.ts
 **Policy:** Zero errors/warnings from `typecheck`, `lint`, and `build` before any deployment. Test coverage ≥ 90%.
 
 **Required finalisation checklist — must complete before reporting any task done:**
+
 1. Run `npm run typecheck` and `npm run lint:fix`.
 2. If there are errors or warnings, fix them all — do not skip or dismiss any output.
 3. If you are unsure whether a problem is pre-existing, run `git stash` and repeat the checks on the clean tree to establish a baseline, then `git stash pop` and fix only the new ones.

@@ -1,5 +1,5 @@
 {
-    "testing.automaticallyOpenTestResults": "neverOpen",
+    "testing.automaticallyOpenTestResults": "openOnTestFailure",
     "yaml.schemas": {
         "https://json.schemastore.org/github-action.json": "file:///Users/toastboy/next-www-toastboy/.github/workflows/terraform-plan.yml"
     },

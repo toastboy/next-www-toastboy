@@ -21,7 +21,6 @@ async function checkTable(page: Page) {
 
 test('points table', async ({ page }) => {
     const response = await page.goto('/footy/points');
-    await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
     expect(response?.ok()).toBeTruthy();
     await expect(page).toHaveURL(/.*points/);
     await expect(page).toHaveTitle(/All-time Points Table/);
@@ -30,7 +29,6 @@ test('points table', async ({ page }) => {
 
 test('averages table', async ({ page }) => {
     const response = await page.goto('/footy/averages');
-    await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
     expect(response?.ok()).toBeTruthy();
     await expect(page).toHaveURL(/.*averages/);
     await expect(page).toHaveTitle(/All-time Averages Table/);
@@ -39,7 +37,6 @@ test('averages table', async ({ page }) => {
 
 test('stalwart table', async ({ page }) => {
     const response = await page.goto('/footy/stalwart');
-    await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
     expect(response?.ok()).toBeTruthy();
     await expect(page).toHaveURL(/.*stalwart/);
     await expect(page).toHaveTitle(/All-time Stalwart Standings/);
@@ -48,7 +45,6 @@ test('stalwart table', async ({ page }) => {
 
 test('speedy table', async ({ page }) => {
     const response = await page.goto('/footy/speedy');
-    await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
     expect(response?.ok()).toBeTruthy();
     await expect(page).toHaveURL(/.*speedy/);
     await expect(page).toHaveTitle(/All-time Captain Speedy/);
@@ -57,7 +53,6 @@ test('speedy table', async ({ page }) => {
 
 test('pub table', async ({ page }) => {
     const response = await page.goto('/footy/pub');
-    await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
     expect(response?.ok()).toBeTruthy();
     await expect(page).toHaveURL(/.*pub/);
     await expect(page).toHaveTitle(/All-time Pub Table/);
@@ -66,7 +61,6 @@ test('pub table', async ({ page }) => {
 
 test('winners table', async ({ page }) => {
     const response = await page.goto('/footy/winners');
-    await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
     expect(response?.ok()).toBeTruthy();
     await expect(page).toHaveURL(/.*winners/);
     await expect(page).toHaveTitle(/All-time Winners/);

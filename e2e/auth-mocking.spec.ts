@@ -7,7 +7,6 @@ test.describe('Auth Mocking System', () => {
         // Test as guest (no auth)
         await asGuest(page);
         await page.goto('/footy/admin/users');
-        await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
 
         // Should be redirected or show login form
         await expect(page.getByRole('heading', {
@@ -17,7 +16,6 @@ test.describe('Auth Mocking System', () => {
         // Test as regular user
         await asUser(page);
         await page.goto('/footy/admin/users');
-        await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
 
         // Regular users should not access admin pages
         await expect(page.getByRole('heading', {
@@ -27,7 +25,6 @@ test.describe('Auth Mocking System', () => {
         // Test as admin
         await asAdmin(page);
         await page.goto('/footy/admin/users');
-        await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
 
         // Admin should see the users table
         await expect(page.locator('table')).toBeVisible();

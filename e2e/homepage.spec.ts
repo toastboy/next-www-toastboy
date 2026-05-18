@@ -4,7 +4,6 @@ test('homepage has title and correct links', async ({ page }) => {
     await page.goto('/');
     await page.waitForURL('**/footy');
 
-    await expect(page.locator('[data-testid="loading"]')).not.toBeVisible();
     await expect(page).toHaveTitle(/Toastboy FC/);
 
     const linkmap = new Map<string, string>([

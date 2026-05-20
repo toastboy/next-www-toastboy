@@ -210,13 +210,16 @@ const config = [
     },
     // Playwright E2E tests
     {
-        files: ["e2e/**/*.spec.ts"],
+        files: ["e2e/**/*.ts"],
         plugins: {
             playwright,
         },
         rules: {
             "playwright/no-page-pause": "warn",
             "playwright/no-force-option": "warn",
+            // Playwright fixture callbacks use a parameter named `use` which
+            // ESLint's react-hooks plugin misidentifies as a React Hook call.
+            "react-hooks/rules-of-hooks": "off",
         },
     },
     // Node / server-only code (API routes, services, scripts)

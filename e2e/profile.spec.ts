@@ -1,6 +1,5 @@
-import { test } from '@playwright/test';
-
 import { asGuest, asUser, mustBeLoggedIn } from './utils/auth';
+import { test } from './utils/test';
 
 test.describe('Player Profile page', () => {
     test('denies access to guest users', async ({ page }) => {

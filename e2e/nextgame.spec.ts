@@ -1,6 +1,5 @@
-import { expect, test } from '@playwright/test';
-
 import { asGuest } from './utils/auth';
+import { expect, test } from './utils/test';
 
 test.describe('Next Game page', () => {
     test('forwards to the next game for guest users', async ({ page }) => {

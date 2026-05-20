@@ -1,7 +1,6 @@
-import { expect, test } from '@playwright/test';
-
 import { asGuest, asUser, mustBeLoggedIn } from './utils/auth';
 import { deleteAllMessages, getMessageDetail, waitForMessage } from './utils/mailpit';
+import { expect, test } from './utils/test';
 
 test.describe('Mail active players', () => {
     test('denies access to guest users', async ({ page }) => {
@@ -19,9 +18,10 @@ test.describe('Mail active players', () => {
         await expect(page).toHaveURL(/\/footy\/players/);
         await expect(page.getByTestId('players-table')).toHaveAttribute('data-row-count', /[1-9]/);
 
-        await page.getByTestId('players-select-all').click();
-        await expect(page.getByTestId('players-send-email')).toBeEnabled();
-        await page.getByTestId('players-send-email').click();
+        await expect(page.getByRole('checkbox', { name: 'Select All' })).toBeVisible();
+        await page.getByRole('checkbox', { name: 'Select All' }).click();
+        await expect(page.getByRole('button', { name: 'Send email' })).toBeEnabled();
+        await page.getByRole('button', { name: 'Send email' }).click();
 
         await page.getByTestId('send-email-subject').fill(subject);
         const bodyEditor = page.getByTestId('send-email-body');

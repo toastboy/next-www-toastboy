@@ -1,6 +1,5 @@
-import { expect, Page, test } from '@playwright/test';
-
 import { asGuest } from './utils/auth';
+import { expect, Page, test } from './utils/test';
 
 // Mantine 'sm' breakpoint = 48 em = 768 px. Below this the shell collapses
 // the sidebar behind a burger button; at or above it the sidebar is always

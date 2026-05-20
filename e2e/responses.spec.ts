@@ -1,6 +1,5 @@
-import { expect, type Locator, test } from '@playwright/test';
-
 import { asAdmin, asGuest, asUser, mustBeLoggedInAsAdmin } from './utils/auth';
+import { expect, type Locator, test } from './utils/test';
 
 type ResponseOption = 'Yes' | 'No' | 'Dunno';
 

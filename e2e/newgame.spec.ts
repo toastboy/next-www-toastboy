@@ -1,7 +1,6 @@
-import { expect, test } from '@playwright/test';
-
 import { asAdmin, asGuest, asUser, mustBeLoggedInAsAdmin } from './utils/auth';
 import { deleteAllMessages, getMessageDetail, waitForMessage } from './utils/mailpit';
+import { expect, test } from './utils/test';
 
 test.describe('New game flow', () => {
     test('denies access to guest users', async ({ page }) => {

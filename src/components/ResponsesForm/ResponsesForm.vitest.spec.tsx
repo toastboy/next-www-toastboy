@@ -91,6 +91,9 @@ describe('Responses', () => {
         expect(screen.getByTestId('response-group-no')).toHaveAttribute('data-count', '1');
         expect(screen.queryByTestId('response-group-dunno')).toBeNull();
         expect(screen.getByTestId('response-group-none')).toHaveAttribute('data-count', '2');
+
+        const firstCommentInput = screen.getAllByTestId('comment-input')[0];
+        expect(firstCommentInput).toHaveAttribute('maxlength', '127');
     });
 
     it('filters players before grouping', async () => {

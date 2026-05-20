@@ -236,6 +236,7 @@ export const ResponsesForm = ({
                                 <TextInput
                                     data-testid="comment-input"
                                     placeholder="Comment"
+                                    maxLength={127}
                                     {...form.getInputProps(`byPlayerId.${row.playerId}.comment`)}
                                     size="sm"
                                     style={{ flex: 1, minWidth: 220 }}

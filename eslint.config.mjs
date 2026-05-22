@@ -134,6 +134,7 @@ const config = [
             "react/jsx-no-leaked-render": ["warn", { validStrategies: ["coerce", "ternary"] }],
             "react/hook-use-state": "warn",
             "react/no-unstable-nested-components": ["warn", { allowAsProps: true }],
+            "react/no-unescaped-entities": ["error", { forbid: [">", "}"] }],
             "eol-last": ["error", "always"],
             "operator-linebreak": ["error", "after"],
             // Import hygiene

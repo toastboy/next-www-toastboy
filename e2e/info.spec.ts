@@ -5,4 +5,5 @@ test('info page', async ({ page }) => {
     expect(response?.ok()).toBeTruthy();
     await expect(page).toHaveURL(/.*info/);
     await expect(page).toHaveTitle(/Toastboy FC/);
+    await expect(page).toHaveScreenshot('info.png');
 });

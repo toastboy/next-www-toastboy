@@ -72,16 +72,13 @@ export default defineConfig({
             use: { ...devices['Desktop Safari'] },
         },
 
-        /* Viewport projects — scoped to layout.spec.ts only to keep CI fast */
         {
             name: 'mobile',
             use: { viewport: { width: 375, height: 667 } },
-            testMatch: '**/layout.spec.ts',
         },
         {
             name: 'tablet',
             use: { viewport: { width: 768, height: 1024 } },
-            testMatch: '**/layout.spec.ts',
         },
 
         /* Test against branded browsers. */

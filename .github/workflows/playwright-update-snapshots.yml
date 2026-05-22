@@ -1,0 +1,55 @@
+name: Update Playwright Snapshots
+on:
+    workflow_dispatch:
+
+jobs:
+    update-snapshots:
+        timeout-minutes: 60
+        runs-on: ubuntu-latest
+        permissions:
+            contents: read
+
+        env:
+            DATABASE_PASSWORD: ci_test_password
+            DATABASE_URL: mysql://root:ci_test_password@127.0.0.1:33306/footy
+            BETTER_AUTH_SECRET: ci-better-auth-secret-for-playwright-tests-only
+            AUTH_GOOGLE_CLIENT_ID: dummy-google-client-id
+            AUTH_GOOGLE_CLIENT_SECRET: dummy-google-client-secret
+            AUTH_MICROSOFT_CLIENT_ID: dummy-microsoft-client-id
+            AUTH_MICROSOFT_CLIENT_SECRET: dummy-microsoft-client-secret
+
+        steps:
+            - uses: actions/checkout@v6
+            - uses: actions/setup-node@v6
+              with:
+                  node-version: 24
+            - name: Install dependencies
+              run: npm ci
+            - name: Start docker stack (database, mailpit, etc.)
+              run: docker compose up -d
+            - name: Wait for database
+              run: |
+                  for i in {1..30}; do
+                    if [ "$(docker inspect --format='{{.State.Health.Status}}' $(docker compose ps -q db))" = "healthy" ]; then
+                      exit 0
+                    fi
+                    sleep 2
+                  done
+                  docker compose logs db
+                  exit 1
+            - name: Push Prisma schema
+              run: npx prisma db push
+            - name: Build Next.js app
+              run: npm run build
+            - name: Install Playwright Browsers
+              run: npx playwright install --with-deps
+            - name: Update snapshots
+              env:
+                  PLAYWRIGHT_TEST: 'true'
+              run: npx playwright test --update-snapshots
+            - uses: actions/upload-artifact@v7
+              if: always()
+              with:
+                  name: playwright-snapshots
+                  path: e2e/**/*.png
+                  retention-days: 30

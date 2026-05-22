@@ -61,9 +61,12 @@ const getMailDate = async (gameDate: Date): Promise<Date> => {
  * already been sent, and whether the current time has reached the scheduled
  * mail date (unless overridden).
  *
+ * When `override` is true the function short-circuits before fetching the
+ * bank-holiday data, so it avoids any outbound network request.
+ *
  * @param options - Configuration options for the invitation decision
- * @param options.overrideTimeCheck - If true, bypasses the mail date check and
- * marks the invitation as ready to send
+ * @param options.overrideTimeCheck - If true, bypasses all timing checks and
+ * returns ready immediately (without computing the mail date).
  * @param options.customMessage - Optional custom message to include with the
  * invitation
  *
@@ -73,9 +76,7 @@ const getMailDate = async (gameDate: Date): Promise<Date> => {
  *   'too-early', or 'ready')
  * - `gameDayId`: The ID of the game day (if applicable)
  * - `gameDate`: The date of the game (if applicable)
- * - `mailDate`: The calculated mail send date (if applicable)
- * - `overrideTimeCheck`: Echo of the input parameter
- * - `customMessage`: Echo of the input parameter
+ * - `mailDate`: The calculated mail send date (only set when override is false)
  *
  * @example
  * ```typescript
@@ -104,8 +105,19 @@ export async function getInvitationDecision(override = false): Promise<Invitatio
         };
     }
 
+    // Skip the external bank-holidays fetch when the caller has already said
+    // "send regardless of timing" — the mail date is irrelevant in that case.
+    if (override) {
+        return {
+            status: 'ready',
+            reason: 'ready',
+            gameDayId: upcomingGame.id,
+            gameDate: upcomingGame.date,
+        };
+    }
+
     const mailDate = await getMailDate(upcomingGame.date);
-    const shouldSend = override || new Date() >= mailDate;
+    const shouldSend = new Date() >= mailDate;
 
     return {
         status: shouldSend ? 'ready' : 'skipped',

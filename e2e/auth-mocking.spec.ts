@@ -22,6 +22,7 @@ test.describe('Auth Mocking System', () => {
         await page.goto('/footy/admin/users');
 
         // Admin should see the users table
+        await expect(page.getByTestId('skeleton-admin-user-list')).not.toBeVisible();
         await expect(page.locator('table')).toBeVisible();
     });
 
@@ -40,6 +41,7 @@ test.describe('Auth Mocking System', () => {
         // Switch to admin
         await asAdmin(page);
         await page.goto('/footy/admin/users');
+        await expect(page.getByTestId('skeleton-admin-user-list')).not.toBeVisible();
         await expect(page.locator('table')).toBeVisible();
 
         // Switch back to guest

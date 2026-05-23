@@ -79,7 +79,6 @@ export const PasswordChangeForm = ({ revokeOtherSessions }: Props) => {
 
     const notification = success ? (
         <Notification
-            data-testid="success-notification"
             icon={<IconCheck size={config.notificationIconSize} />}
             color="green"
         >
@@ -87,7 +86,6 @@ export const PasswordChangeForm = ({ revokeOtherSessions }: Props) => {
         </Notification>
     ) : (errorText ? (
         <Notification
-            data-testid="error-notification"
             icon={<IconX size={config.notificationIconSize} />}
             color="red"
             onClose={() => setErrorText(null)}
@@ -116,7 +114,6 @@ export const PasswordChangeForm = ({ revokeOtherSessions }: Props) => {
                 <Stack>
                     <PasswordInput
                         withAsterisk
-                        data-testid="current-password-input"
                         label="Current password"
                         placeholder="Enter your current password"
                         rightSection={<IconLock size={16} />}
@@ -132,7 +129,6 @@ export const PasswordChangeForm = ({ revokeOtherSessions }: Props) => {
                     />
                     {notification}
                     <Button
-                        data-testid="submit-button"
                         type="submit"
                         fullWidth
                     >

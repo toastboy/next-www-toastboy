@@ -140,13 +140,11 @@ export const EnquiryForm = ({ redirectUrl, onSendEnquiry }: Props) => {
                 <TextInput
                     label="Name"
                     required
-                    data-testid="enquiry-name"
                     {...form.getInputProps('name')}
                 />
                 <EmailInput
                     label="Email"
                     required
-                    data-testid="enquiry-email"
                     {...form.getInputProps('email')}
                 />
                 <Textarea
@@ -154,10 +152,9 @@ export const EnquiryForm = ({ redirectUrl, onSendEnquiry }: Props) => {
                     required
                     autosize
                     minRows={4}
-                    data-testid="enquiry-message"
                     {...form.getInputProps('message')}
                 />
-                <Button type="submit" data-testid="enquiry-submit">
+                <Button type="submit">
                     Send message
                 </Button>
             </Stack>

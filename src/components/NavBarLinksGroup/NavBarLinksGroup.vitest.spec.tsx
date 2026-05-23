@@ -25,13 +25,15 @@ describe('NavBarLinksGroup', () => {
 
     it('hides when closed', async () => {
         render(<Wrapper><NavBarLinksGroup label="Group Label" initiallyOpened links={links} /></Wrapper>);
-        const collapseElement = screen.getByTestId('collapse');
+
         await waitFor(() => {
-            expect(collapseElement).toHaveAttribute('aria-hidden', 'false');
+            expect(screen.getByRole('link', { name: 'Link 1' })).toBeInTheDocument();
         });
+
         fireEvent.click(screen.getByText('Group Label'));
+
         await waitFor(() => {
-            expect(collapseElement).toHaveAttribute('aria-hidden', 'true');
+            expect(screen.queryByRole('link', { name: 'Link 1' })).not.toBeInTheDocument();
         });
     });
 });

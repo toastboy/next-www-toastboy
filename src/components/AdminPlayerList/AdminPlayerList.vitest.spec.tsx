@@ -94,7 +94,7 @@ describe('AdminPlayerList', () => {
         );
 
         const table = screen.getByRole('table');
-        expect(screen.getByTestId('admin-player-list-count')).toHaveTextContent('Players (2)');
+        expect(screen.getByText('Players (2)')).toBeInTheDocument();
         expect(within(table).getAllByRole('checkbox').length).toBeGreaterThan(0);
         expect(within(table).getByText('Alex Admin')).toBeInTheDocument();
         expect(within(table).getByText('Pat Player')).toBeInTheDocument();

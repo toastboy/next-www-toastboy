@@ -15,7 +15,6 @@ export const AdminExportAuth = ({ onExportAuth }: Props) => {
         <>
             <Container>
                 <Button
-                    data-testid="export-auth-button"
                     type="button"
                     onClick={async () => {
                         const id = notifications.show({

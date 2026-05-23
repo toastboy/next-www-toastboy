@@ -2,7 +2,7 @@ import { Box, Container, Flex, Skeleton, Stack } from '@mantine/core';
 
 /** Skeleton placeholder matching the PlayerProfileForm component layout (inputs + switches + selects + button). */
 export const PlayerProfileFormSkeleton = () => (
-    <Container data-testid="skeleton-player-profile-form" size="xs" mt="xl">
+    <Container size="xs" mt="xl">
         <Box maw={400}>
             <Skeleton height={36} width="100%" mb="md" />
             <Flex gap="md" align="center" mb="md">

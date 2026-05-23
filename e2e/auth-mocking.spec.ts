@@ -22,8 +22,8 @@ test.describe('Auth Mocking System', () => {
         await page.goto('/footy/admin/users');
 
         // Admin should see the users table
-        await expect(page.getByTestId('skeleton-admin-user-list')).not.toBeVisible();
-        await expect(page.locator('table')).toBeVisible();
+        await expect(page.getByRole('columnheader', { name: 'Name' })).toBeVisible();
+        await expect(page.getByRole('table')).toBeVisible();
     });
 
     test('should allow switching between auth states', async ({ page }) => {
@@ -41,8 +41,8 @@ test.describe('Auth Mocking System', () => {
         // Switch to admin
         await asAdmin(page);
         await page.goto('/footy/admin/users');
-        await expect(page.getByTestId('skeleton-admin-user-list')).not.toBeVisible();
-        await expect(page.locator('table')).toBeVisible();
+        await expect(page.getByRole('columnheader', { name: 'Name' })).toBeVisible();
+        await expect(page.getByRole('table')).toBeVisible();
 
         // Switch back to guest
         await asGuest(page);

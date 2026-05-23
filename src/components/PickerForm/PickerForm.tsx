@@ -238,7 +238,7 @@ export const PickerForm = ({
         const playerName = getPlayerName(player);
 
         return (
-            <TableTr key={player.playerId} data-testid="picker-row" data-player-id={player.playerId}>
+            <TableTr key={player.playerId}>
                 <TableTd w="2.5rem">
                     <Checkbox
                         checked={selectedIdSet.has(player.playerId)}
@@ -259,7 +259,6 @@ export const PickerForm = ({
                 <Text fw={700}>Players selected ({filteredSelectedCount})</Text>
                 <Button
                     type="button"
-                    data-testid="submit-picker-button"
                     onClick={handleSubmit}
                     disabled={!hasSelection || isSettingEnabled}
                     loading={isSubmitting}
@@ -316,7 +315,6 @@ export const PickerForm = ({
             {gameDay.game ? picker : null}
             <Group justify="space-between" align="center" wrap="wrap">
                 <TextInput
-                    data-testid={gameDay.game ? "cancellation-reason" : "reinstatement-reason"}
                     aria-label={gameDay.game ? "Cancellation reason" : "Reinstatement reason"}
                     placeholder={gameDay.game ? "not enough players" : ""}
                     value={reason}
@@ -325,7 +323,6 @@ export const PickerForm = ({
                     flex={1}
                 />
                 <Button
-                    data-testid="set-enabled-button"
                     type="button"
                     color={gameDay.game ? "red" : "green"}
                     onClick={handleSetGameEnabled}

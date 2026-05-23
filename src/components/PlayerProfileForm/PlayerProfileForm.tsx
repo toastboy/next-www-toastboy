@@ -203,7 +203,6 @@ export const PlayerProfileForm = ({
             >
                 <TextInput
                     label="Name"
-                    data-testid="name-input"
                     required
                     {...form.getInputProps('name')}
                 />
@@ -228,7 +227,6 @@ export const PlayerProfileForm = ({
                         <Box>
                             <Switch
                                 label="Goalie"
-                                data-testid="goalie-switch"
                                 {...form.getInputProps('goalie', { type: 'checkbox' })}
                             />
                         </Box>
@@ -245,7 +243,6 @@ export const PlayerProfileForm = ({
                         <Box>
                             <Switch
                                 label="Anonymous"
-                                data-testid="anonymous-switch"
                                 {...form.getInputProps('anonymous', { type: 'checkbox' })}
                             />
                         </Box>
@@ -264,7 +261,6 @@ export const PlayerProfileForm = ({
                         <Box>
                             <Switch
                                 label="Retired"
-                                data-testid="retired-switch"
                                 {...form.getInputProps('retired', { type: 'checkbox' })}
                             />
                         </Box>
@@ -272,7 +268,6 @@ export const PlayerProfileForm = ({
                 </Flex>
                 <TextInput
                     label="Account email"
-                    data-testid="account-email-input"
                     description="This is the email address you use to log in."
                     required
                     {...form.getInputProps('accountEmail')}
@@ -308,7 +303,6 @@ export const PlayerProfileForm = ({
                             >
                                 <EmailInput
                                     label={`Extra email ${address}`}
-                                    data-testid={`extra-email-input-${index}`}
                                     flex={1}
                                     rightSection={
                                         email?.trim().length ? (
@@ -336,7 +330,6 @@ export const PlayerProfileForm = ({
                                     withArrow
                                 >
                                     <Button
-                                        data-testid={`extra-email-delete-button-${index}`}
                                         variant="subtle"
                                         color="red"
                                         aria-label={`Delete extra email ${address}`}
@@ -352,7 +345,6 @@ export const PlayerProfileForm = ({
                     <Button
                         type="button"
                         variant="light"
-                        data-testid="add-extra-email-button"
                         onClick={() => form.insertListItem('extraEmails', '')}
                     >
                         Add another email
@@ -361,7 +353,6 @@ export const PlayerProfileForm = ({
 
                 <NumberInput
                     label="Year of Birth"
-                    data-testid="born-input"
                     description="Helps pick balanced sides"
                     placeholder="Not shown on the public site"
                     {...form.getInputProps('born')}
@@ -369,7 +360,6 @@ export const PlayerProfileForm = ({
 
                 <MultiSelect
                     label="National Team(s)"
-                    data-testid="countries-multiselect"
                     placeholder="What national team(s) do you support?"
                     data={countryData}
                     searchable
@@ -378,7 +368,6 @@ export const PlayerProfileForm = ({
 
                 <MultiSelect
                     label="Club(s)"
-                    data-testid="clubs-multiselect"
                     placeholder="What club(s) do you support?"
                     data={clubData}
                     searchable
@@ -387,7 +376,6 @@ export const PlayerProfileForm = ({
 
                 <Textarea
                     label="Comment"
-                    data-testid="comment-textarea"
                     placeholder="Add a comment"
                     {...form.getInputProps('comment')}
                 />
@@ -402,7 +390,6 @@ export const PlayerProfileForm = ({
                     w="100%"
                 >
                     <Button
-                        data-testid="submit-button"
                         disabled={!form.isDirty()}
                         mt="md"
                         type="submit"
@@ -412,7 +399,6 @@ export const PlayerProfileForm = ({
                     <Button
                         color="red"
                         component={Link}
-                        data-testid="delete-button"
                         href="/footy/deleteaccount"
                         mt="md"
                         type="button"

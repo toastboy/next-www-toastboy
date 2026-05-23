@@ -30,10 +30,10 @@ describe('DownloadMyData', () => {
             </Wrapper>,
         );
 
-        const preview = screen.getByTestId('downloadmydata-json-preview');
+        const preview = screen.getByRole('region', { name: 'JSON preview' });
         expect(preview).toHaveTextContent(/"outcomes"/i);
 
-        await user.click(screen.getByTestId('downloadmydata-outcomes-toggle'));
+        await user.click(screen.getByRole('checkbox', { name: 'Games played' }));
 
         expect(preview).not.toHaveTextContent(/"outcomes"/i);
     });
@@ -78,7 +78,7 @@ describe('DownloadMyData', () => {
             </Wrapper>,
         );
 
-        const preview = screen.getByTestId('downloadmydata-json-preview');
+        const preview = screen.getByRole('region', { name: 'JSON preview' });
         expect(preview).toHaveTextContent(/"meta"/i);
 
         await user.click(screen.getByLabelText('Select all'));
@@ -96,7 +96,7 @@ describe('DownloadMyData', () => {
             </Wrapper>,
         );
 
-        const preview = screen.getByTestId('downloadmydata-json-preview');
+        const preview = screen.getByRole('region', { name: 'JSON preview' });
 
         await user.click(screen.getByLabelText('Select all'));
         expect(preview).not.toHaveTextContent(/"meta"/i);
@@ -115,7 +115,7 @@ describe('DownloadMyData', () => {
             </Wrapper>,
         );
 
-        const preview = screen.getByTestId('downloadmydata-json-preview');
+        const preview = screen.getByRole('region', { name: 'JSON preview' });
 
         const sections: [string, string][] = [
             ['Meta', '"meta"'],

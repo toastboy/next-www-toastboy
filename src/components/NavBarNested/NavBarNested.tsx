@@ -157,10 +157,10 @@ export const NavBarNested = ({ user }: Props) => {
 
     return (
         <Box role="navigation" className={classes.navbar}>
-            <Box className={classes.header} data-testid="navbar-header">
+            <Box className={classes.header} role="region" aria-label="Navbar header">
             </Box>
 
-            <ScrollArea className={classes.links} data-testid="navbar-links">
+            <ScrollArea className={classes.links} role="region" aria-label="Navbar links">
                 <Box className={classes.linksInner}>
                     {links.map((item) => <NavBarLinksGroup {...item} key={item.label} />)}
                 </Box>
@@ -171,7 +171,7 @@ export const NavBarNested = ({ user }: Props) => {
                 )}
             </ScrollArea>
 
-            <Box className={classes.footer} data-testid="navbar-footer">
+            <Box className={classes.footer} role="region" aria-label="Navbar footer">
                 <UserButton user={user} />
             </Box>
         </Box>

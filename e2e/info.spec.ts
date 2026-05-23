@@ -14,7 +14,7 @@ test('info page', async ({ page }) => {
 test.describe('EnquiryForm', () => {
     test('shows validation errors on empty submit', async ({ page }) => {
         await page.goto('/footy/info');
-        await page.getByTestId('enquiry-submit').click();
+        await page.getByRole('button', { name: 'Send message' }).click();
         await expect(page.getByText('Name is required')).toBeVisible();
         await expect(page.getByText('Invalid email')).toBeVisible();
         await expect(page.getByText('Message is required')).toBeVisible();
@@ -22,9 +22,9 @@ test.describe('EnquiryForm', () => {
 
     test('shows invalid email error on blur', async ({ page }) => {
         await page.goto('/footy/info');
-        await page.getByTestId('enquiry-name').fill('Test User');
-        await page.getByTestId('enquiry-email').fill('not-an-email');
-        await page.getByTestId('enquiry-message').click();
+        await page.getByRole('textbox', { name: 'Name' }).fill('Test User');
+        await page.getByRole('textbox', { name: 'Email' }).fill('not-an-email');
+        await page.getByRole('textbox', { name: 'Message' }).click();
         await expect(page.getByText('Invalid email')).toBeVisible();
     });
 
@@ -53,15 +53,15 @@ test.describe('EnquiryForm', () => {
 
         test('submits form and shows confirmation notification', async ({ page, request }) => {
             await page.goto('/footy/info');
-            await page.getByTestId('enquiry-name').fill('Test User');
-            await page.getByTestId('enquiry-email').fill('playwright@example.com');
-            await page.getByTestId('enquiry-message').fill('This is a test enquiry from Playwright.');
-            await page.getByTestId('enquiry-submit').click();
+            await page.getByRole('textbox', { name: 'Name' }).fill('Test User');
+            await page.getByRole('textbox', { name: 'Email' }).fill('playwright@example.com');
+            await page.getByRole('textbox', { name: 'Message' }).fill('This is a test enquiry from Playwright.');
+            await page.getByRole('button', { name: 'Send message' }).click();
 
             await expect(page.getByText('Confirm your email')).toBeVisible();
-            await expect(page.getByTestId('enquiry-name')).toHaveValue('');
-            await expect(page.getByTestId('enquiry-email')).toHaveValue('');
-            await expect(page.getByTestId('enquiry-message')).toHaveValue('');
+            await expect(page.getByRole('textbox', { name: 'Name' })).toHaveValue('');
+            await expect(page.getByRole('textbox', { name: 'Email' })).toHaveValue('');
+            await expect(page.getByRole('textbox', { name: 'Message' })).toHaveValue('');
 
             const message = await waitForMessage(request, 'Confirm your enquiry');
             expect(message, 'Expected verification email in Mailpit').toBeTruthy();
@@ -69,10 +69,10 @@ test.describe('EnquiryForm', () => {
 
         test('completes full verification flow', async ({ page, request }) => {
             await page.goto('/footy/info');
-            await page.getByTestId('enquiry-name').fill('Verification Tester');
-            await page.getByTestId('enquiry-email').fill('verify@example.com');
-            await page.getByTestId('enquiry-message').fill('Please verify this enquiry.');
-            await page.getByTestId('enquiry-submit').click();
+            await page.getByRole('textbox', { name: 'Name' }).fill('Verification Tester');
+            await page.getByRole('textbox', { name: 'Email' }).fill('verify@example.com');
+            await page.getByRole('textbox', { name: 'Message' }).fill('Please verify this enquiry.');
+            await page.getByRole('button', { name: 'Send message' }).click();
 
             await expect(page.getByText('Confirm your email')).toBeVisible();
 

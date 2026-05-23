@@ -162,7 +162,7 @@ export const UserButton = ({ user }: Props) => {
         <Menu shadow="md" width={200} position="right-end">
             <Menu.Target>
                 <UnstyledButton
-                    data-testid="user-button"
+                    aria-label="User menu"
                     className={classes.user}
                     onClick={() => {
                         if (!user) router.push('/footy/auth/signin');
@@ -170,14 +170,12 @@ export const UserButton = ({ user }: Props) => {
                 >
                     <Group>
                         <Avatar
-                            data-testid="user-avatar"
                             src={playerId !== 0 ? `/api/footy/player/${playerId}/mugshot` : undefined}
                             radius="xl"
                         />
 
                         <Flex direction={'column'}>
                             <Text
-                                data-testid="user-name"
                                 size="sm"
                                 fw={500}
                             >
@@ -185,7 +183,6 @@ export const UserButton = ({ user }: Props) => {
                             </Text>
 
                             <Text
-                                data-testid="user-email"
                                 c="dimmed"
                                 size="xs"
                             >
@@ -194,7 +191,6 @@ export const UserButton = ({ user }: Props) => {
                         </Flex>
 
                         <IconChevronRight
-                            data-testid="chevron-icon"
                             style={{ width: rem(14), height: rem(14) }} stroke={1.5}
                         />
                     </Group>

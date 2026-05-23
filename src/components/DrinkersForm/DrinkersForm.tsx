@@ -158,7 +158,7 @@ export const DrinkersForm = ({
     };
 
     return (
-        <Stack gap="md" data-testid="drinkers-form">
+        <Stack gap="md">
             <Stack gap={4}>
                 <Title order={2}>Game {gameId} Drinkers</Title>
                 <Text c="dimmed">{gameDate}</Text>
@@ -193,7 +193,7 @@ export const DrinkersForm = ({
                             {visibleRows.map((row) => {
                                 const playerName = normaliseName(row);
                                 return (
-                                    <TableTr key={row.playerId} data-testid="drinker-row">
+                                    <TableTr key={row.playerId}>
                                         <TableTd>
                                             <Group wrap="nowrap" gap="sm">
                                                 <Anchor href={`/footy/player/${row.playerId}`}>
@@ -214,7 +214,6 @@ export const DrinkersForm = ({
                                         <TableTd>{row.response ?? '-'}</TableTd>
                                         <TableTd>
                                             <Checkbox
-                                                data-testid="drinker-checkbox"
                                                 aria-label={`Pub ${playerName}`}
                                                 checked={selectedIdSet.has(row.playerId)}
                                                 onChange={(event) => togglePlayer(

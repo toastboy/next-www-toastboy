@@ -104,7 +104,7 @@ export class SomeModelService {
 
 ### UI & Forms
 
-- Use Mantine components and hooks everywhere; avoid native HTML/CSS unless no Mantine equivalent exists
+- Use Mantine components and hooks everywhere; avoid native HTML/CSS unless no Mantine equivalent exists. Never fall back to raw `<div>`, `<section>`, `<article>` etc. just to attach ARIA attributes — use Mantine's polymorphic `component` prop (e.g. `<Card component="section">`) or `role`/`aria-*` props on the Mantine element instead
 - **Always** use Mantine `useForm` for form state — never write bespoke form handlers
 - Use `@tabler/icons-react` for icons
 - Notifications: use Mantine `notifications` with `autoClose` from `lib/config.ts`
@@ -115,6 +115,7 @@ export class SomeModelService {
 - Test files: `*.vitest.spec.ts(x)` placed next to the file they test — never in a `__tests__/` subdirectory
 - Mocks: `__mocks__/` as sibling to the target code
 - Use accessible selectors (`getByRole`, `getByLabelText`, `getByText`) over `data-testid`
+- Do not rely on Mantine internals in tests (for example generated class names, internal DOM wrappers, or implementation-specific structure). Prefer selectors and assertions that reflect real user interactions and visible behaviour.
 - Prefer the generic overload (`getByRole<HTMLInputElement>(…)`) over a type assertion (`as HTMLInputElement`) when narrowing query results — ESLint strips assertions but preserves generics
 - Don't test generated Zod schemas directly — test service method behaviour and validation
 - E2E tests: `e2e/*.spec.ts`, must be fully parallel-safe

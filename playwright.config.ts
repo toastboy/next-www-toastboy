@@ -19,10 +19,7 @@ if (!process.env.CI) {
 export default defineConfig({
     globalSetup: './e2e/global-setup.ts',
     testDir: './e2e',
-    timeout: 120000, // 2 minutes for tests with many stories
-    expect: {
-        timeout: 10000,
-    },
+
     /* Fail the build on CI if you accidentally left test.only in the source code. */
     forbidOnly: !!process.env.CI,
     /* Never retry: I don't want flaky tests to hide real issues */

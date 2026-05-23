@@ -5,7 +5,7 @@ export const AdminPlayerListSkeleton = () => (
     <>
         <Skeleton height={20} width={120} />
         <Skeleton height={36} width="100%" />
-        <Table data-testid="skeleton-admin-player-list" striped highlightOnHover withTableBorder withColumnBorders>
+        <Table striped highlightOnHover withTableBorder withColumnBorders>
             <TableThead>
                 <TableTr>
                     {Array.from({ length: 8 }).map((_, i) => (

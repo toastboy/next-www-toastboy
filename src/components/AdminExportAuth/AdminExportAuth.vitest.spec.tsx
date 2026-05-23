@@ -26,7 +26,6 @@ describe('AdminExportAuth', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByTestId('export-auth-button')).toBeInTheDocument();
         expect(screen.getByRole('button', { name: /export auth data/i })).toBeInTheDocument();
     });
 
@@ -45,7 +44,7 @@ describe('AdminExportAuth', () => {
             </Wrapper>,
         );
 
-        const button = screen.getByTestId('export-auth-button');
+        const button = screen.getByRole('button', { name: /export auth data/i });
         fireEvent.click(button);
 
         await waitFor(() => {
@@ -70,7 +69,7 @@ describe('AdminExportAuth', () => {
             </Wrapper>,
         );
 
-        const button = screen.getByTestId('export-auth-button');
+        const button = screen.getByRole('button', { name: /export auth data/i });
         fireEvent.click(button);
 
         await waitFor(() => {
@@ -101,7 +100,7 @@ describe('AdminExportAuth', () => {
             </Wrapper>,
         );
 
-        const button = screen.getByTestId('export-auth-button');
+        const button = screen.getByRole('button', { name: /export auth data/i });
         fireEvent.click(button);
 
         await waitFor(() => {

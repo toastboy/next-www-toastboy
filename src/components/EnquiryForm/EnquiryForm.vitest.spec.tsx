@@ -36,10 +36,10 @@ describe('EnquiryForm', () => {
     it('renders the form fields', async () => {
         render(<Wrapper><EnquiryForm redirectUrl="redirect-url" onSendEnquiry={mockSendEnquiry} /></Wrapper>);
         await waitFor(() => {
-            expect(screen.getByTestId('enquiry-name')).toBeInTheDocument();
-            expect(screen.getByTestId('enquiry-email')).toBeInTheDocument();
-            expect(screen.getByTestId('enquiry-message')).toBeInTheDocument();
-            expect(screen.getByTestId('enquiry-submit')).toBeInTheDocument();
+            expect(screen.getByRole('textbox', { name: /^Name/ })).toBeInTheDocument();
+            expect(screen.getByRole('textbox', { name: /^Email/ })).toBeInTheDocument();
+            expect(screen.getByRole('textbox', { name: /^Message/ })).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: 'Send message' })).toBeInTheDocument();
         });
     });
 
@@ -47,7 +47,7 @@ describe('EnquiryForm', () => {
         const user = userEvent.setup();
         render(<Wrapper><EnquiryForm redirectUrl="redirect-url" onSendEnquiry={mockSendEnquiry} /></Wrapper>);
 
-        await user.click(screen.getByTestId('enquiry-submit'));
+        await user.click(screen.getByRole('button', { name: 'Send message' }));
 
         expect(await screen.findByText('Name is required')).toBeInTheDocument();
         expect(await screen.findByText('Invalid email')).toBeInTheDocument();
@@ -58,10 +58,10 @@ describe('EnquiryForm', () => {
         const user = userEvent.setup();
         render(<Wrapper><EnquiryForm redirectUrl="redirect-url" onSendEnquiry={mockSendEnquiry} /></Wrapper>);
 
-        await user.type(screen.getByTestId('enquiry-name'), 'Test User');
-        await user.type(screen.getByTestId('enquiry-email'), 'test@example.com');
-        await user.type(screen.getByTestId('enquiry-message'), 'Hello there');
-        await user.click(screen.getByTestId('enquiry-submit'));
+        await user.type(screen.getByRole('textbox', { name: /^Name/ }), 'Test User');
+        await user.type(screen.getByRole('textbox', { name: /^Email/ }), 'test@example.com');
+        await user.type(screen.getByRole('textbox', { name: /^Message/ }), 'Hello there');
+        await user.click(screen.getByRole('button', { name: 'Send message' }));
 
         await waitFor(() => {
             expect(mockSendEnquiry).toHaveBeenCalledWith({
@@ -115,10 +115,10 @@ describe('EnquiryForm', () => {
 
         render(<Wrapper><EnquiryForm redirectUrl="redirect-url" onSendEnquiry={failingSubmit} /></Wrapper>);
 
-        await user.type(screen.getByTestId('enquiry-name'), 'Test User');
-        await user.type(screen.getByTestId('enquiry-email'), 'test@example.com');
-        await user.type(screen.getByTestId('enquiry-message'), 'Hello there');
-        await user.click(screen.getByTestId('enquiry-submit'));
+        await user.type(screen.getByRole('textbox', { name: /^Name/ }), 'Test User');
+        await user.type(screen.getByRole('textbox', { name: /^Email/ }), 'test@example.com');
+        await user.type(screen.getByRole('textbox', { name: /^Message/ }), 'Hello there');
+        await user.click(screen.getByRole('button', { name: 'Send message' }));
 
         await waitFor(() => {
             expect(captureUnexpectedError).toHaveBeenCalledWith(

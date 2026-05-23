@@ -50,19 +50,19 @@ describe('PlayerProfileForm', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByTestId('name-input')).toBeInTheDocument();
-        expect(screen.getByTestId('anonymous-switch')).toBeInTheDocument();
-        expect(screen.getByTestId('retired-switch')).toBeInTheDocument();
-        expect(screen.getByTestId('account-email-input')).toBeInTheDocument();
-        expect(screen.getByTestId('extra-email-input-0')).toBeInTheDocument();
-        expect(screen.getByTestId('extra-email-delete-button-0')).toBeInTheDocument();
-        expect(screen.getByTestId('add-extra-email-button')).toBeInTheDocument();
-        expect(screen.getByTestId('born-input')).toBeInTheDocument();
-        expect(screen.getByTestId('countries-multiselect')).toBeInTheDocument();
-        expect(screen.getByTestId('clubs-multiselect')).toBeInTheDocument();
-        expect(screen.getByTestId('comment-textarea')).toBeInTheDocument();
-        expect(screen.getByTestId('submit-button')).toBeInTheDocument();
-        expect(screen.getByTestId('delete-button')).toBeInTheDocument();
+        expect(screen.getByRole('textbox', { name: /^Name/ })).toBeInTheDocument();
+        expect(screen.getByRole('switch', { name: /anonymous/i })).toBeInTheDocument();
+        expect(screen.getByRole('switch', { name: /retired/i })).toBeInTheDocument();
+        expect(screen.getByRole('textbox', { name: /account email/i })).toBeInTheDocument();
+        expect(screen.getByRole('textbox', { name: /extra email address 1/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: /delete extra email address 1/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Add another email' })).toBeInTheDocument();
+        expect(screen.getByLabelText('Year of Birth')).toBeInTheDocument();
+        expect(screen.getByRole('combobox', { name: 'National Team(s)' })).toBeInTheDocument();
+        expect(screen.getByRole('combobox', { name: 'Club(s)' })).toBeInTheDocument();
+        expect(screen.getByRole('textbox', { name: /^Comment/ })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Save Changes' })).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Delete Account' })).toBeInTheDocument();
     });
 
     it('submits the form and shows a success notification', async () => {
@@ -84,8 +84,8 @@ describe('PlayerProfileForm', () => {
             </Wrapper>,
         );
 
-        const nameInput = screen.getByTestId('name-input');
-        const submitButton = screen.getByTestId('submit-button');
+        const nameInput = screen.getByRole('textbox', { name: /^Name/ });
+        const submitButton = screen.getByRole('button', { name: 'Save Changes' });
 
         await user.clear(nameInput);
         await user.type(nameInput, `${defaultPlayer.name ?? ''} Jr`);
@@ -144,9 +144,10 @@ describe('PlayerProfileForm', () => {
             </Wrapper>,
         );
 
-        await user.clear(screen.getByTestId('name-input'));
-        await user.type(screen.getByTestId('name-input'), `${defaultPlayer.name ?? ''} Jr`);
-        await user.click(screen.getByTestId('submit-button'));
+        const nameInput = screen.getByRole('textbox', { name: /^Name/ });
+        await user.clear(nameInput);
+        await user.type(nameInput, `${defaultPlayer.name ?? ''} Jr`);
+        await user.click(screen.getByRole('button', { name: 'Save Changes' }));
 
         await waitFor(() => {
             expect(notificationUpdateSpy).toHaveBeenCalledWith(
@@ -184,7 +185,7 @@ describe('PlayerProfileForm', () => {
             </Wrapper>,
         );
 
-        await user.click(screen.getByTestId('extra-email-delete-button-0'));
+        await user.click(screen.getByRole('button', { name: /delete extra email address 1/i }));
 
         expect(screen.queryByDisplayValue('gary.player@example.com')).not.toBeInTheDocument();
     });
@@ -207,12 +208,12 @@ describe('PlayerProfileForm', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByTestId('extra-email-input-1')).toBeInTheDocument();
-        expect(screen.queryByTestId('extra-email-input-2')).not.toBeInTheDocument();
+        expect(screen.getByRole('textbox', { name: /extra email address 2/i })).toBeInTheDocument();
+        expect(screen.queryByRole('textbox', { name: /extra email address 3/i })).not.toBeInTheDocument();
 
-        await user.click(screen.getByTestId('add-extra-email-button'));
+        await user.click(screen.getByRole('button', { name: 'Add another email' }));
 
-        expect(screen.getByTestId('extra-email-input-2')).toBeInTheDocument();
+        expect(screen.getByRole('textbox', { name: /extra email address 3/i })).toBeInTheDocument();
     });
 
     it('submits with retired toggled on, passing a non-null finished date', async () => {
@@ -233,11 +234,12 @@ describe('PlayerProfileForm', () => {
             </Wrapper>,
         );
 
-        await user.click(screen.getByTestId('retired-switch'));
+        const submitButton = screen.getByRole('button', { name: 'Save Changes' });
+        await user.click(screen.getByRole('switch', { name: /retired/i }));
         await waitFor(() => {
-            expect(screen.getByTestId('submit-button')).toBeEnabled();
+            expect(submitButton).toBeEnabled();
         });
-        await user.click(screen.getByTestId('submit-button'));
+        await user.click(submitButton);
 
         await waitFor(() => {
             expect(mockUpdatePlayer).toHaveBeenCalledWith(
@@ -263,8 +265,8 @@ describe('PlayerProfileForm', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByTestId('extra-email-input-0')).toBeInTheDocument();
-        expect(screen.queryByTestId('extra-email-input-1')).not.toBeInTheDocument();
+        expect(screen.getByRole('textbox', { name: /extra email address 1/i })).toBeInTheDocument();
+        expect(screen.queryByRole('textbox', { name: /extra email address 2/i })).not.toBeInTheDocument();
     });
 
     it('shows a question-mark icon for an unverified extra email (verificationPending)', () => {
@@ -311,7 +313,7 @@ describe('PlayerProfileForm', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByTestId('clubs-multiselect')).toBeInTheDocument();
+        expect(screen.getByRole('combobox', { name: 'Club(s)' })).toBeInTheDocument();
     });
 
     it('shows verified-email notification when verifiedEmail prop is provided', async () => {
@@ -363,9 +365,9 @@ describe('PlayerProfileForm', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByTestId('name-input')).toHaveValue('');
-        expect(screen.getByTestId('account-email-input')).toHaveValue('');
-        expect(screen.getByTestId('anonymous-switch')).not.toBeChecked();
-        expect(screen.getByTestId('born-input')).toHaveValue('');
+        expect(screen.getByRole('textbox', { name: /^Name/ })).toHaveValue('');
+        expect(screen.getByRole('textbox', { name: /account email/i })).toHaveValue('');
+        expect(screen.getByRole('switch', { name: /anonymous/i })).not.toBeChecked();
+        expect(screen.getByLabelText('Year of Birth')).toHaveValue('');
     });
 });

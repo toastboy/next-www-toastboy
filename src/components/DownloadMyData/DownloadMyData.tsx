@@ -140,17 +140,17 @@ export const DownloadMyData = ({ data }: Props) => {
                             label="Games played"
                             checked={sections.outcomes}
                             onChange={(event) => toggleSection('outcomes', event.currentTarget.checked)}
-                            data-testid="downloadmydata-outcomes-toggle"
                         />
                     </Group>
 
-                    <CodeHighlight
-                        // withExpandButton
-                        // defaultExpanded={false}
-                        code={json}
-                        language="json"
-                        data-testid="downloadmydata-json-preview"
-                    />
+                    <section aria-label="JSON preview">
+                        <CodeHighlight
+                            // withExpandButton
+                            // defaultExpanded={false}
+                            code={json}
+                            language="json"
+                        />
+                    </section>
                 </Stack>
             </Paper>
         </Stack>

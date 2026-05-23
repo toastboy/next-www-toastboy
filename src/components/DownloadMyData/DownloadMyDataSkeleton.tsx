@@ -2,7 +2,7 @@ import { Paper, Skeleton, Stack } from '@mantine/core';
 
 /** Skeleton placeholder matching the DownloadMyData component layout (title + button + code block). */
 export const DownloadMyDataSkeleton = () => (
-    <Stack data-testid="skeleton-download-my-data" gap="lg">
+    <Stack gap="lg">
         <Skeleton height={36} width={240} />
         <Skeleton height={18} width="60%" />
         <Skeleton height={36} width={160} />

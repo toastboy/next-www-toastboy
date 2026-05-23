@@ -108,13 +108,11 @@ export const ClaimSignup = ({ name, email, token }: Props) => {
 
             <Stack mb="lg">
                 <Button
-                    data-testid="google-signin-button"
                     variant="default" onClick={() => signInWithGoogle(socialRedirect)}
                 >
                     Continue with Google
                 </Button>
                 <Button
-                    data-testid="microsoft-signin-button"
                     variant="default" onClick={() => signInWithMicrosoft(socialRedirect)}
                 >
                     Continue with Microsoft
@@ -136,7 +134,6 @@ export const ClaimSignup = ({ name, email, token }: Props) => {
                     />
                     {errorNotification}
                     <Button
-                        data-testid="submit-button"
                         type="submit"
                         fullWidth
                         loading={loading}

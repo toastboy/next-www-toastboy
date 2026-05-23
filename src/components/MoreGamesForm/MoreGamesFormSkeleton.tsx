@@ -2,7 +2,7 @@ import { Paper, Skeleton, Stack, Table, TableTbody, TableTd, TableTh, TableThead
 
 /** Skeleton placeholder matching the MoreGamesForm component layout (cost input + game table). */
 export const MoreGamesFormSkeleton = () => (
-    <Stack data-testid="skeleton-more-games-form">
+    <Stack>
         <Paper withBorder p="sm" mb="md">
             <Skeleton height={36} width="100%" />
         </Paper>

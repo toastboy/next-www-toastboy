@@ -157,8 +157,8 @@ describe('PickerForm', () => {
             </Wrapper>,
         );
 
-        await user.type(screen.getByTestId('cancellation-reason'), 'Not enough players');
-        await user.click(screen.getByTestId('set-enabled-button'));
+        await user.type(screen.getByRole('textbox', { name: /cancellation reason/i }), 'Not enough players');
+        await user.click(screen.getByRole('button', { name: 'Cancel game' }));
 
         await waitFor(() => {
             expect(mockSetGameEnabled).toHaveBeenCalledWith(
@@ -185,10 +185,10 @@ describe('PickerForm', () => {
             </Wrapper>,
         );
 
-        expect(screen.queryByTestId('picker-row')).toBeNull();
+        expect(screen.queryByLabelText(/^Select /)).toBeNull();
         expect(screen.getByRole('button', { name: /reinstate game/i })).toBeInTheDocument();
-        expect(screen.getByTestId('reinstatement-reason')).toBeInTheDocument();
-        expect(screen.queryByTestId('cancellation-reason')).toBeNull();
+        expect(screen.getByRole('textbox', { name: /reinstatement reason/i })).toBeInTheDocument();
+        expect(screen.queryByRole('textbox', { name: /cancellation reason/i })).toBeNull();
     });
 
     it('formats responseInterval values correctly in the response-time column', () => {
@@ -213,20 +213,19 @@ describe('PickerForm', () => {
             </Wrapper>,
         );
 
-        const rows = screen.getAllByTestId('picker-row');
+        const getResponseCell = (playerName: string) => {
+            const nameCell = screen.getByText(playerName);
+            const row = nameCell.closest('tr')!;
+            return row.querySelectorAll('td')[2]?.textContent;
+        };
 
-        const getResponseCell = (row: HTMLElement) => row.querySelectorAll('td')[2].textContent;
-
-        const rowByPlayerId = (id: number) =>
-            rows.find((r) => r.getAttribute('data-player-id') === String(id))!;
-
-        expect(getResponseCell(rowByPlayerId(1))).toBe('-');
-        expect(getResponseCell(rowByPlayerId(2))).toBe('30s');
-        expect(getResponseCell(rowByPlayerId(3))).toBe('1m');
-        expect(getResponseCell(rowByPlayerId(4))).toBe('1h');
-        expect(getResponseCell(rowByPlayerId(5))).toBe('1h 1m');
-        expect(getResponseCell(rowByPlayerId(6))).toBe('1d');
-        expect(getResponseCell(rowByPlayerId(7))).toBe('1d 1h');
+        expect(getResponseCell('Player Null')).toBe('-');
+        expect(getResponseCell('Player 30s')).toBe('30s');
+        expect(getResponseCell('Player 1m')).toBe('1m');
+        expect(getResponseCell('Player 1h')).toBe('1h');
+        expect(getResponseCell('Player 1h1m')).toBe('1h 1m');
+        expect(getResponseCell('Player 1d')).toBe('1d');
+        expect(getResponseCell('Player 1d1h')).toBe('1d 1h');
     });
 
     it('shows an error notification when submitPicker rejects', async () => {
@@ -268,7 +267,7 @@ describe('PickerForm', () => {
             </Wrapper>,
         );
 
-        await user.click(screen.getByTestId('set-enabled-button'));
+        await user.click(screen.getByRole('button', { name: 'Cancel game' }));
 
         await waitFor(() => {
             expect(notificationsUpdateMock).toHaveBeenCalledWith(
@@ -296,7 +295,7 @@ describe('PickerForm', () => {
         );
 
         // Default sort is 'responseTime' ascending → Bob (50) first, Alice (100) second
-        const getFirstRow = () => screen.getAllByTestId('picker-row')[0];
+        const getFirstRow = () => screen.getAllByRole('row').slice(1)[0];
         expect(within(getFirstRow()).getByText('Bob')).toBeInTheDocument();
 
         // Click the active 'Response time' header → toggles to descending → Alice (100) first
@@ -326,8 +325,7 @@ describe('PickerForm', () => {
 
         await user.click(screen.getByRole('button', { name: /sort by player/i }));
 
-        const rows = screen.getAllByTestId('picker-row');
-        expect(within(rows[0]).getByText('Alice')).toBeInTheDocument();
+        expect(within(screen.getAllByRole('row').slice(1)[0]).getByText('Alice')).toBeInTheDocument();
     });
 
     it('reorders rows when sorted by Total games played', async () => {
@@ -351,8 +349,7 @@ describe('PickerForm', () => {
 
         await user.click(screen.getByRole('button', { name: /sort by total games played/i }));
 
-        const rows = screen.getAllByTestId('picker-row');
-        expect(within(rows[0]).getByText('Alice')).toBeInTheDocument();
+        expect(within(screen.getAllByRole('row').slice(1)[0]).getByText('Alice')).toBeInTheDocument();
     });
 
     it('shows fallback name "Player {id}" when player.name is null', () => {
@@ -454,11 +451,11 @@ describe('PickerForm', () => {
 
         // Default asc: Bob (50) first; click toggles to desc: Alice (100) first
         await user.click(responseTimeHeader);
-        expect(within(screen.getAllByTestId('picker-row')[0]).getByText('Alice')).toBeInTheDocument();
+        expect(within(screen.getAllByRole('row').slice(1)[0]).getByText('Alice')).toBeInTheDocument();
 
         // Click again: desc → asc: Bob (50) first again
         await user.click(responseTimeHeader);
-        expect(within(screen.getAllByTestId('picker-row')[0]).getByText('Bob')).toBeInTheDocument();
+        expect(within(screen.getAllByRole('row').slice(1)[0]).getByText('Bob')).toBeInTheDocument();
     });
 
     it('shows "Game reinstated" notification when game is reinstated', async () => {
@@ -476,7 +473,7 @@ describe('PickerForm', () => {
             </Wrapper>,
         );
 
-        await user.click(screen.getByTestId('set-enabled-button'));
+        await user.click(screen.getByRole('button', { name: 'Reinstate game' }));
 
         await waitFor(() => {
             expect(notificationsUpdateMock).toHaveBeenCalledWith(
@@ -507,7 +504,7 @@ describe('PickerForm', () => {
         );
 
         // All 3 under the 12-player limit → all selected by default
-        const rows = screen.getAllByTestId('picker-row');
+        const rows = screen.getAllByRole('row').slice(1);
         expect(rows).toHaveLength(3);
         rows.forEach((row) => {
             expect(within(row).getByRole('checkbox')).toBeChecked();

@@ -2,7 +2,7 @@ import { Container, Skeleton, Table, TableTbody, TableTd, TableTh, TableThead, T
 
 /** Skeleton placeholder matching the AdminUserList component layout (search input + user table). */
 export const AdminUserListSkeleton = () => (
-    <Container data-testid="skeleton-admin-user-list">
+    <Container>
         <Skeleton height={36} width="100%" mb="md" />
         <Table mt={20}>
             <TableThead>

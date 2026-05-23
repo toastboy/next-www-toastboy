@@ -107,7 +107,7 @@ describe('PasswordChangeForm', () => {
         await user.click(screen.getByRole('button', { name: /Update password/i }));
 
         await waitFor(() => {
-            expect(screen.getByTestId('error-notification')).toBeInTheDocument();
+            expect(screen.getByRole('alert')).toBeInTheDocument();
         });
 
         expect(screen.getByText(/Incorrect current password/)).toBeInTheDocument();
@@ -129,7 +129,7 @@ describe('PasswordChangeForm', () => {
         await user.click(screen.getByRole('button', { name: /Update password/i }));
 
         await waitFor(() => {
-            expect(screen.getByTestId('error-notification')).toBeInTheDocument();
+            expect(screen.getByRole('alert')).toBeInTheDocument();
         });
 
         expect(screen.getByText(/Network error/)).toBeInTheDocument();
@@ -151,7 +151,7 @@ describe('PasswordChangeForm', () => {
         await user.click(screen.getByRole('button', { name: /Update password/i }));
 
         await waitFor(() => {
-            expect(screen.getByTestId('error-notification')).toBeInTheDocument();
+            expect(screen.getByRole('alert')).toBeInTheDocument();
         });
 
         expect(screen.getByText(/An unexpected error occurred/)).toBeInTheDocument();
@@ -173,13 +173,13 @@ describe('PasswordChangeForm', () => {
         await user.click(screen.getByRole('button', { name: /Update password/i }));
 
         await waitFor(() => {
-            expect(screen.getByTestId('error-notification')).toBeInTheDocument();
+            expect(screen.getByRole('alert')).toBeInTheDocument();
         });
 
-        await user.click(within(screen.getByTestId('error-notification')).getByRole('button'));
+        await user.click(within(screen.getByRole('alert')).getByRole('button'));
 
         await waitFor(() => {
-            expect(screen.queryByTestId('error-notification')).not.toBeInTheDocument();
+            expect(screen.queryByRole('alert')).not.toBeInTheDocument();
         });
     });
 

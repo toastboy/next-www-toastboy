@@ -54,18 +54,16 @@ export const AdminUpdatePlayerRecords = ({ onUpdatePlayerRecords, getProgress }:
                         pct === 100 ?
                             <Center>
                                 <ActionIcon
+                                    aria-label="Progress complete"
                                     color="teal"
                                     variant="light"
                                     radius="xl"
                                     size="xl"
                                 >
-                                    <IconCheck
-                                        data-testid="update-player-records-compete-icon"
-                                    />
+                                    <IconCheck />
                                 </ActionIcon>
                             </Center> :
                             <Text
-                                data-testid="update-player-records-progress"
                                 c="blue"
                                 fw={700}
                                 ta="center"
@@ -80,7 +78,6 @@ export const AdminUpdatePlayerRecords = ({ onUpdatePlayerRecords, getProgress }:
                 />
                 <Button
                     type="button"
-                    data-testid="update-player-records-button"
                     onClick={() => {
                         onUpdatePlayerRecords().catch((err) => {
                             captureUnexpectedError(err, {

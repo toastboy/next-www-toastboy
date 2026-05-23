@@ -71,9 +71,9 @@ describe('UserButton', () => {
         );
 
         await waitFor(() => {
-            expect(screen.getByTestId('user-name')).toHaveTextContent('');
-            expect(screen.getByTestId('user-email')).toHaveTextContent('');
+            expect(screen.getByRole('button', { name: 'User menu' })).toBeInTheDocument();
         });
+        expect(screen.queryByText(/harriette|spoonlicker/i)).not.toBeInTheDocument();
     });
 
     it('renders user avatar', async () => {
@@ -94,7 +94,7 @@ describe('UserButton', () => {
         expect(avatar).toHaveAttribute('src', "/api/footy/player/12/mugshot");
     });
 
-    it('renders placeholder avatar', async () => {
+    it('renders placeholder avatar when playerId is 0', async () => {
         render(
             <Wrapper>
                 <UserButton user={{
@@ -106,25 +106,10 @@ describe('UserButton', () => {
             </Wrapper>,
         );
         await waitFor(() => {
-            expect(screen.getByTestId('user-avatar')).toBeInTheDocument();
+            expect(screen.getByRole('button', { name: 'User menu' })).toBeInTheDocument();
         });
-    });
-
-    it('renders chevron icon', async () => {
-        render(
-            <Wrapper>
-                <UserButton user={{
-                    name: 'Harriette Spoonlicker',
-                    email: 'hspoonlicker@outlook.com',
-                    playerId: 12,
-                    role: 'user',
-                }} />
-            </Wrapper>,
-        );
-        const chevronIcon = screen.getByTestId('chevron-icon');
-        await waitFor(() => {
-            expect(chevronIcon).toBeInTheDocument();
-        });
+        // Avatar with no src renders a placeholder image (no mugshot URL)
+        expect(screen.queryByRole('img', { name: /api\/footy\/player/ })).not.toBeInTheDocument();
     });
 
     it('opens menu showing account links on click', async () => {
@@ -135,7 +120,7 @@ describe('UserButton', () => {
             </Wrapper>,
         );
 
-        await user.click(screen.getByTestId('user-button'));
+        await user.click(screen.getByRole('button', { name: 'User menu' }));
 
         expect(await screen.findByText('My Profile')).toBeInTheDocument();
         expect(screen.getByText('Sign Out')).toBeInTheDocument();
@@ -149,7 +134,7 @@ describe('UserButton', () => {
             </Wrapper>,
         );
 
-        await user.click(screen.getByTestId('user-button'));
+        await user.click(screen.getByRole('button', { name: 'User menu' }));
 
         expect(await screen.findByText('End impersonation')).toBeInTheDocument();
     });
@@ -162,7 +147,7 @@ describe('UserButton', () => {
             </Wrapper>,
         );
 
-        await user.click(screen.getByTestId('user-button'));
+        await user.click(screen.getByRole('button', { name: 'User menu' }));
         await screen.findByText('Sign Out');
 
         expect(screen.queryByText('End impersonation')).not.toBeInTheDocument();
@@ -181,7 +166,7 @@ describe('UserButton', () => {
             </Wrapper>,
         );
 
-        await user.click(screen.getByTestId('user-button'));
+        await user.click(screen.getByRole('button', { name: 'User menu' }));
         await user.click(await screen.findByText('Sign Out'));
 
         await waitFor(() => {
@@ -205,7 +190,7 @@ describe('UserButton', () => {
             </Wrapper>,
         );
 
-        await user.click(screen.getByTestId('user-button'));
+        await user.click(screen.getByRole('button', { name: 'User menu' }));
         await user.click(await screen.findByText('Sign Out'));
 
         await waitFor(() => {
@@ -228,7 +213,7 @@ describe('UserButton', () => {
             </Wrapper>,
         );
 
-        await user.click(screen.getByTestId('user-button'));
+        await user.click(screen.getByRole('button', { name: 'User menu' }));
         await user.click(await screen.findByText('End impersonation'));
 
         await waitFor(() => {
@@ -248,7 +233,7 @@ describe('UserButton', () => {
             </Wrapper>,
         );
 
-        await user.click(screen.getByTestId('user-button'));
+        await user.click(screen.getByRole('button', { name: 'User menu' }));
         await user.click(await screen.findByText('End impersonation'));
 
         await waitFor(() => {

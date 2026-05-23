@@ -28,7 +28,7 @@ describe('SignIn', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByTestId('sign-in')).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: /sign in to your account/i })).toBeInTheDocument();
         expect(screen.getByLabelText(/Email/i)).toBeInTheDocument();
         expect(screen.getByLabelText(/Password/i)).toBeInTheDocument();
     });
@@ -40,7 +40,7 @@ describe('SignIn', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByTestId('must-be-logged-in')).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: /must be logged in to use this page/i })).toBeInTheDocument();
     });
 
     it('renders admin message when admin is true', () => {
@@ -50,7 +50,7 @@ describe('SignIn', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByTestId('must-be-admin')).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: /must be logged in as an administrator/i })).toBeInTheDocument();
     });
 
     it('complains when the email is invalid', async () => {

@@ -180,11 +180,11 @@ export const ResponsesForm = ({
         }
     };
 
-    const renderGroup = (title: ResponseOption, testId: string, items: OutcomePlayerType[]) => {
+    const renderGroup = (title: ResponseOption, items: OutcomePlayerType[]) => {
         if (items.length === 0) return null;
 
         return (
-            <Card key={title} withBorder shadow="xs" p="md" data-testid={testId} data-count={items.length}>
+            <Card key={title} withBorder shadow="xs" p="md" role="region" aria-label={title}>
                 <CardSection h={6} bg={responseGroupBarColor[title]} />
                 <Group justify="space-between" mb="lg" mt="md">
                     <Title order={2}>{title}: {items.length}</Title>
@@ -196,17 +196,17 @@ export const ResponsesForm = ({
                         return (
                             <Flex
                                 key={row.playerId}
-                                data-testid="response-row"
+                                role="group"
+                                aria-label={row.player.name ?? `Player ${row.playerId}`}
                                 data-player-id={row.playerId}
                                 align="center"
                                 gap="sm"
                                 wrap="nowrap"
                             >
-                                <Text data-testid="player-name" fw={600} w={180}>
+                                <Text fw={600} w={180}>
                                     {row.player.name}
                                 </Text>
                                 <Select
-                                    data-testid="response-select"
                                     aria-label="Response"
                                     data={Object.values(PlayerResponse).map((option) => ({
                                         value: option,
@@ -225,7 +225,6 @@ export const ResponsesForm = ({
                                     w={160}
                                 />
                                 <Checkbox
-                                    data-testid="goalie-checkbox"
                                     label="Goalie"
                                     size="sm"
                                     {...form.getInputProps(
@@ -234,7 +233,6 @@ export const ResponsesForm = ({
                                     )}
                                 />
                                 <TextInput
-                                    data-testid="comment-input"
                                     placeholder="Comment"
                                     maxLength={127}
                                     {...form.getInputProps(`byPlayerId.${row.playerId}.comment`)}
@@ -242,7 +240,6 @@ export const ResponsesForm = ({
                                     style={{ flex: 1, minWidth: 220 }}
                                 />
                                 <Button
-                                    data-testid="response-submit"
                                     variant="filled"
                                     size="sm"
                                     disabled={!isRowDirty(row)}
@@ -252,6 +249,7 @@ export const ResponsesForm = ({
                                     Update
                                 </Button>
                             </Flex>
+
                         );
                     })}
                 </Stack>
@@ -273,7 +271,6 @@ export const ResponsesForm = ({
             {Object.values(ResponseOption).map((option) => (
                 renderGroup(
                     option,
-                    `response-group-${option.toLowerCase()}`,
                     grouped[option.toLowerCase() as keyof typeof grouped],
                 )
             ))}

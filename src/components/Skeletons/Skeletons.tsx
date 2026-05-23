@@ -25,7 +25,7 @@ export const SkeletonTableRows = ({ rows = 10, cols = 2 }: { rows?: number; cols
  * circular progress ring placeholder → button placeholder.
  */
 export const SkeletonRecordsProgress = () => (
-    <Container data-testid="skeleton-records-progress">
+    <Container role="status" aria-label="Loading player records progress">
         <Skeleton height={120} width={120} circle mx="auto" mb="md" />
         <Skeleton height={36} width={200} mx="auto" />
     </Container>

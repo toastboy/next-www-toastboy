@@ -4,7 +4,7 @@ import { SkeletonTableRows } from '@/components/Skeletons/Skeletons';
 
 /** Skeleton placeholder matching the ResponsesForm component layout (title + search + response group cards). */
 export const ResponsesFormSkeleton = () => (
-    <Stack data-testid="skeleton-responses-form" gap="md">
+    <Stack gap="md">
         <Stack align="left" gap="xs">
             <Skeleton height={28} width={160} />
             <Skeleton height={18} width={200} />

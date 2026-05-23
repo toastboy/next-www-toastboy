@@ -111,7 +111,7 @@ describe('PlayerList', () => {
         expect(screen.getByRole('heading', { level: 1, name: '3 Active and Former Players' })).toBeInTheDocument();
         expect(screen.getByRole('link', { name: 'Bob Former' })).toBeInTheDocument();
 
-        const getFirstRow = () => screen.getAllByTestId('players-table-row')[0];
+        const getFirstRow = () => screen.getAllByRole('row').slice(1)[0];
         expect(within(getFirstRow()).getByRole('link', { name: 'Alice Active' })).toBeInTheDocument();
 
         await user.click(screen.getByRole('columnheader', { name: /Name/ }));
@@ -127,10 +127,10 @@ describe('PlayerList', () => {
             </Wrapper>,
         );
 
-        const sendEmailButton = screen.getByTestId('players-send-email');
+        const sendEmailButton = screen.getByRole('button', { name: /send email/i });
         expect(sendEmailButton).toBeDisabled();
 
-        await user.click(screen.getByTestId('players-select-all'));
+        await user.click(screen.getByRole('checkbox', { name: 'Select All' }));
 
         expect(screen.getByText('Selected: 2')).toBeInTheDocument();
         expect(sendEmailButton).toBeEnabled();
@@ -152,10 +152,10 @@ describe('PlayerList', () => {
             </Wrapper>,
         );
 
-        await user.click(screen.getByTestId('players-select-all'));
+        await user.click(screen.getByRole('checkbox', { name: 'Select All' }));
         expect(screen.getByText('Selected: 2')).toBeInTheDocument();
 
-        await user.click(screen.getByTestId('players-select-all'));
+        await user.click(screen.getByRole('checkbox', { name: 'Select All' }));
         expect(screen.getByText('Selected: 0')).toBeInTheDocument();
     });
 
@@ -167,7 +167,7 @@ describe('PlayerList', () => {
             </Wrapper>,
         );
 
-        const rows = screen.getAllByTestId('players-table-row');
+        const rows = screen.getAllByRole('row').slice(1);
         const firstRowCheckbox = within(rows[0]).getByRole('checkbox');
 
         await user.click(firstRowCheckbox);
@@ -189,12 +189,12 @@ describe('PlayerList', () => {
 
         // First click: sets sortBy to 'name' — Charlie sorts first in this direction
         await user.click(nameHeader);
-        const rowsFirst = screen.getAllByTestId('players-table-row');
+        const rowsFirst = screen.getAllByRole('row').slice(1);
         expect(within(rowsFirst[0]).getByRole('link', { name: 'Charlie Active' })).toBeInTheDocument();
 
         // Second click: same column (sortBy === 'name') → toggles direction — Alice sorts first
         await user.click(nameHeader);
-        const rowsSecond = screen.getAllByTestId('players-table-row');
+        const rowsSecond = screen.getAllByRole('row').slice(1);
         expect(within(rowsSecond[0]).getByRole('link', { name: 'Alice Active' })).toBeInTheDocument();
     });
 
@@ -240,12 +240,12 @@ describe('PlayerList', () => {
 
         await renderWithInitialState([null], reversedPlayers);
 
-        let rows = screen.getAllByTestId('players-table-row');
+        let rows = screen.getAllByRole('row').slice(1);
         expect(within(rows[0]).getByRole('link', { name: 'Charlie Active' })).toBeInTheDocument();
 
         await user.click(screen.getByRole('columnheader', { name: /Name/ }));
 
-        rows = screen.getAllByTestId('players-table-row');
+        rows = screen.getAllByRole('row').slice(1);
         expect(within(rows[0]).getByRole('link', { name: 'Alice Active' })).toBeInTheDocument();
     });
 
@@ -257,15 +257,15 @@ describe('PlayerList', () => {
         ];
 
         await renderWithInitialState(['id', 'desc'], mixedPlayers);
-        let rows = screen.getAllByTestId('players-table-row');
+        let rows = screen.getAllByRole('row').slice(1);
         expect(within(rows[0]).getByRole('link', { name: 'Nine' })).toBeInTheDocument();
 
         await renderWithInitialState(['joined', 'desc'], mixedPlayers);
-        rows = screen.getAllByTestId('players-table-row');
+        rows = screen.getAllByRole('row').slice(1);
         expect(within(rows[0]).getByRole('link', { name: 'Nine' })).toBeInTheDocument();
 
         await renderWithInitialState(['comment', 'desc'], mixedPlayers);
-        rows = screen.getAllByTestId('players-table-row');
+        rows = screen.getAllByRole('row').slice(1);
         expect(within(rows[0]).getByRole('link', { name: 'Nine' })).toBeInTheDocument();
     });
 
@@ -277,7 +277,7 @@ describe('PlayerList', () => {
         ];
 
         await renderWithInitialState(['joined', 'asc'], mixedPlayers);
-        const rows = screen.getAllByTestId('players-table-row');
+        const rows = screen.getAllByRole('row').slice(1);
         expect(within(rows[0]).getByRole('link', { name: 'Two' })).toBeInTheDocument();
     });
 

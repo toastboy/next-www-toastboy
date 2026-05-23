@@ -16,18 +16,18 @@ test.describe('Mail active players', () => {
         await asUser(page, '/footy/mailout');
 
         await expect(page).toHaveURL(/\/footy\/players/);
-        await expect(page.getByTestId('players-table')).toHaveAttribute('data-row-count', /[1-9]/);
+        await expect(page.getByRole('table').locator('tbody tr').first()).toBeVisible();
 
         await expect(page.getByRole('checkbox', { name: 'Select All' })).toBeVisible();
         await page.getByRole('checkbox', { name: 'Select All' }).click();
-        await expect(page.getByRole('button', { name: 'Send email' })).toBeEnabled();
-        await page.getByRole('button', { name: 'Send email' }).click();
+        await expect(page.getByRole('button', { name: /send email/i })).toBeEnabled();
+        await page.getByRole('button', { name: /send email/i }).click();
 
-        await page.getByTestId('send-email-subject').fill(subject);
-        const bodyEditor = page.getByTestId('send-email-body');
+        await page.getByRole('textbox', { name: 'Subject' }).fill(subject);
+        const bodyEditor = page.locator('.ProseMirror');
         await bodyEditor.click();
         await bodyEditor.pressSequentially(body);
-        await page.getByTestId('send-email-submit').click();
+        await page.getByRole('button', { name: 'Send Mail' }).click();
         await expect(page.getByText('Email sent successfully')).toBeVisible();
 
         const message = await waitForMessage(request, subject);

@@ -138,14 +138,12 @@ export const MoreGamesForm = ({
         <Box
             component="form"
             onSubmit={form.onSubmit(handleSubmit)}
-            data-testid="moregames-form"
         >
             <Paper withBorder p="sm" mb="md">
                 <Group justify="space-between">
                     <NumberInput
                         label="Player charge per game"
                         aria-label="Player charge per game"
-                        data-testid="moregames-cost"
                         decimalScale={2}
                         fixedDecimalScale
                         allowNegative={false}
@@ -162,7 +160,6 @@ export const MoreGamesForm = ({
                         fixedDecimalScale
                         allowNegative={false}
                         hideControls
-                        data-testid="moregames-hall-cost"
                         min={1}
                         thousandSeparator=","
                         w="10em"
@@ -173,7 +170,6 @@ export const MoreGamesForm = ({
             <Table
                 highlightOnHover
                 withTableBorder
-                data-testid="moregames-table"
             >
                 <TableThead>
                     <TableTr>
@@ -186,13 +182,13 @@ export const MoreGamesForm = ({
                     {groupedRows.map((group, groupIndex) => (
                         <Fragment key={`${group.label}-${groupIndex}`}>
                             <TableTr>
-                                <TableTh colSpan={3} data-testid="moregames-month">
+                                <TableTh colSpan={3}>
                                     <Text fw={600} c="gray">{group.label}</Text>
                                 </TableTh>
                             </TableTr>
                             {group.rows.map(({ row, index }) => {
                                 return (
-                                    <TableTr key={row.date} data-testid="moregames-row">
+                                    <TableTr key={row.date}>
                                         <TableTd>
                                             <Text fw={500}>{row.date}</Text>
                                         </TableTd>
@@ -217,7 +213,7 @@ export const MoreGamesForm = ({
                 </TableTbody>
             </Table>
 
-            <Button type="submit" mt="md" data-testid="moregames-submit">
+            <Button type="submit" mt="md">
                 Create game days
             </Button>
         </Box>

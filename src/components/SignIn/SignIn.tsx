@@ -89,20 +89,20 @@ export const SignIn = ({ admin, redirect }: Props) => {
     }
 
     let title = (
-        <Text data-testid="sign-in">
+        <Text>
             Sign in to your account
         </Text>
     );
 
     if (admin === true) {
         title = (
-            <Text data-testid="must-be-admin">
+            <Text>
                 You must be logged in as an administrator to use this page.
             </Text>
         );
     } else if (admin === false) {
         title = (
-            <Text data-testid="must-be-logged-in">
+            <Text>
                 You must be logged in to use this page.
             </Text>
         );

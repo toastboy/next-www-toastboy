@@ -126,14 +126,13 @@ export const SendEmailForm = ({
             <form onSubmit={(e) => { e.preventDefault(); void handleSubmit(); }}>
                 <TextInput
                     label="Subject"
-                    data-testid="send-email-subject"
                     value={subject}
                     onChange={(event) => setSubject(event.currentTarget.value)}
                     required
                     mt="md"
                 />
 
-                <RichTextEditor editor={editor} mt="md" data-testid="send-email-editor">
+                <RichTextEditor editor={editor} mt="md">
                     <RichTextEditor.Toolbar sticky stickyOffset={60}>
                         <RichTextEditor.ControlsGroup>
                             <RichTextEditor.Bold />
@@ -172,11 +171,11 @@ export const SendEmailForm = ({
                         </RichTextEditor.ControlsGroup>
                     </RichTextEditor.Toolbar>
 
-                    <RichTextEditor.Content data-testid="send-email-body" />
+                    <RichTextEditor.Content />
                 </RichTextEditor>
 
                 <Group justify="flex-end" mt="md">
-                    <Button type="submit" data-testid="send-email-submit">Send Mail</Button>
+                    <Button type="submit">Send Mail</Button>
                 </Group>
             </form>
         </Modal>

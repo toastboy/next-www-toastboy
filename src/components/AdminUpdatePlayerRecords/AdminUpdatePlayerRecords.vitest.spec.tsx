@@ -34,8 +34,8 @@ describe('AdminUpdatePlayerRecords', () => {
 
         render(<Wrapper><AdminUpdatePlayerRecords onUpdatePlayerRecords={mockUpdatePlayerRecords} getProgress={getProgress} /></Wrapper>);
 
-        expect(screen.getByTestId('skeleton-records-progress')).toBeInTheDocument();
-        expect(screen.queryByTestId('update-player-records-progress')).not.toBeInTheDocument();
+        expect(screen.getByRole('status', { name: 'Loading player records progress' })).toBeInTheDocument();
+        expect(screen.queryByText(/%/)).not.toBeInTheDocument();
         expect(screen.queryByText('Update Player Records')).not.toBeInTheDocument();
     });
 
@@ -98,7 +98,7 @@ describe('AdminUpdatePlayerRecords', () => {
         await act(async () => { await Promise.resolve(); });
 
         expect(screen.queryByRole('img')).not.toBeInTheDocument();
-        expect(screen.getByTestId('update-player-records-compete-icon')).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Progress complete' })).toBeInTheDocument();
 
         fireEvent.click(screen.getByText('Update Player Records'));
 

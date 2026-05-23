@@ -2,7 +2,7 @@ import { Skeleton, Stack, Table, TableTbody, TableTd, TableTh, TableThead, Table
 
 /** Skeleton placeholder matching the DrinkersForm component layout (title + search + drinkers table + save). */
 export const DrinkersFormSkeleton = () => (
-    <Stack data-testid="skeleton-drinkers-form" gap="md">
+    <Stack gap="md">
         <Stack gap={4}>
             <Skeleton height={28} width={160} />
             <Skeleton height={18} width={200} />

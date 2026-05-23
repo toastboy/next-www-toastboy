@@ -148,7 +148,6 @@ export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
                 mt={20}
                 mb={20}
                 label="Select All"
-                data-testid="players-select-all"
                 checked={selectedPlayers.length === sortedPlayers.length && sortedPlayers.length > 0}
                 onChange={(event) => {
                     if (event.currentTarget.checked) {
@@ -161,7 +160,6 @@ export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
             <Text size="sm">Selected: {selectedPlayers.length}</Text>
             <Tooltip label="Send an email to the selected players">
                 <Button
-                    data-testid="players-send-email"
                     disabled={selectedPlayers.length === 0}
                     onClick={() => setModalOpened(true)}
                 >
@@ -175,7 +173,7 @@ export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
                 onSendEmail={sendEmail}
             />
 
-            <Table mt={20} data-testid="players-table" data-row-count={sortedPlayers.length}>
+            <Table mt={20}>
                 <Table.Thead>
                     <Table.Tr>
                         <Table.Th>
@@ -197,7 +195,7 @@ export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
                 </Table.Thead>
                 <Table.Tbody>
                     {sortedPlayers.map((player) => (
-                        <Table.Tr key={player.id} data-testid="players-table-row">
+                        <Table.Tr key={player.id}>
                             <Table.Td>
                                 <Checkbox
                                     checked={selectedPlayers.includes(player)}

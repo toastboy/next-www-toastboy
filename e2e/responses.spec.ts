@@ -8,7 +8,10 @@ const groupCount = async (group: Locator) => {
         return 0;
     }
 
-    return Number((await group.getAttribute('data-count')) ?? '0');
+    const heading = group.getByRole('heading');
+    const text = await heading.innerText();
+    const match = /:\s*(\d+)$/.exec(text.trim());
+    return match ? Number(match[1]) : 0;
 };
 
 test.describe('Responses admin page', () => {
@@ -29,10 +32,10 @@ test.describe('Responses admin page', () => {
 
         await expect(page.getByRole('heading', { name: /Responses/i })).toBeVisible();
 
-        const yesGroup = page.getByTestId('response-group-yes');
-        const noGroup = page.getByTestId('response-group-no');
-        const dunnoGroup = page.getByTestId('response-group-dunno');
-        const noneGroup = page.getByTestId('response-group-none');
+        const yesGroup = page.getByRole('region', { name: 'Yes' });
+        const noGroup = page.getByRole('region', { name: 'No' });
+        const dunnoGroup = page.getByRole('region', { name: 'Dunno' });
+        const noneGroup = page.getByRole('region', { name: 'None' });
 
         const initialYes = await groupCount(yesGroup);
         const initialNo = await groupCount(noGroup);
@@ -44,34 +47,25 @@ test.describe('Responses admin page', () => {
         const yesAfterFirstUpdate = startsFromNone ? initialYes + 1 : initialYes;
         const noneAfterFirstUpdate = startsFromNone ? initialNone - 1 : initialNone;
 
-        const targetRow = starterGroup.getByTestId('response-row').first();
-        const playerName = (await targetRow.getByTestId('player-name').innerText()).trim();
-        const playerId = await targetRow.getAttribute('data-player-id');
+        const targetRow = starterGroup.getByRole('group').first();
+        const playerName = await targetRow.getAttribute('aria-label');
 
-        if (!playerId) {
-            throw new Error('Expected response row to include a data-player-id attribute.');
+        if (!playerName) {
+            throw new Error('Expected response row to have an aria-label attribute.');
         }
 
         const playerRowIn = (group: Locator) =>
-            group.locator(`[data-testid="response-row"][data-player-id="${playerId}"]`);
+            group.getByRole('group', { name: playerName });
 
         const setResponseValue = async (row: Locator, response: ResponseOption) => {
-            const responseSelect = row.getByTestId('response-select');
-            const responseTarget = responseSelect.locator('input, button');
-            const target = (await responseTarget.count()) ?
-                responseTarget.first() :
-                responseSelect;
-            await target.click();
-
-            // React 19 Activity hides inactive dropdown options with display:none,
-            // so getByRole only finds the currently open dropdown's options.
+            await row.getByRole('combobox', { name: /response/i }).click();
             await page.getByRole('option', { name: response, exact: true }).click();
         };
 
         const updateResponse = async (group: Locator, response: ResponseOption, goalie: boolean, comment: string) => {
             const row = playerRowIn(group);
-            const commentInput = row.getByTestId('comment-input');
-            const goalieCheckbox = row.getByTestId('goalie-checkbox');
+            const commentInput = row.getByPlaceholder('Comment');
+            const goalieCheckbox = row.getByRole('checkbox', { name: /goalie/i });
             await setResponseValue(row, response);
             if (goalie) {
                 await goalieCheckbox.check();
@@ -79,7 +73,7 @@ test.describe('Responses admin page', () => {
                 await goalieCheckbox.uncheck();
             }
             await commentInput.fill(comment);
-            await row.getByTestId('response-submit').click();
+            await row.getByRole('button', { name: 'Update' }).click();
         };
 
         await updateResponse(starterGroup, 'Yes', true, 'Can play and cover goal first half');
@@ -89,10 +83,10 @@ test.describe('Responses admin page', () => {
         await expect.poll(async () => groupCount(dunnoGroup)).toBe(initialDunno);
         await expect.poll(async () => groupCount(noneGroup)).toBe(noneAfterFirstUpdate);
 
-        const yesRow = yesGroup.getByTestId('response-row').filter({ hasText: playerName });
+        const yesRow = yesGroup.getByRole('group', { name: playerName });
         await expect(yesRow).toBeVisible({ timeout: 10000 });
-        await expect(yesRow.getByTestId('goalie-checkbox')).toBeChecked();
-        await expect(yesRow.getByTestId('comment-input')).toHaveValue('Can play and cover goal first half');
+        await expect(yesRow.getByRole('checkbox', { name: /goalie/i })).toBeChecked();
+        await expect(yesRow.getByPlaceholder('Comment')).toHaveValue('Can play and cover goal first half');
 
         await updateResponse(yesGroup, 'No', false, 'Out of town this week');
 
@@ -101,10 +95,10 @@ test.describe('Responses admin page', () => {
         await expect.poll(async () => groupCount(dunnoGroup)).toBe(initialDunno);
         await expect.poll(async () => groupCount(noneGroup)).toBe(noneAfterFirstUpdate);
 
-        const noRow = noGroup.getByTestId('response-row').filter({ hasText: playerName });
+        const noRow = noGroup.getByRole('group', { name: playerName });
         await expect(noRow).toBeVisible({ timeout: 10000 });
-        await expect(noRow.getByTestId('goalie-checkbox')).not.toBeChecked();
-        await expect(noRow.getByTestId('comment-input')).toHaveValue('Out of town this week');
+        await expect(noRow.getByRole('checkbox', { name: /goalie/i })).not.toBeChecked();
+        await expect(noRow.getByPlaceholder('Comment')).toHaveValue('Out of town this week');
 
         await updateResponse(noGroup, 'Dunno', false, 'Could make it if meeting ends early');
 
@@ -113,10 +107,10 @@ test.describe('Responses admin page', () => {
         await expect.poll(async () => groupCount(dunnoGroup)).toBe(initialDunno + 1);
         await expect.poll(async () => groupCount(noneGroup)).toBe(noneAfterFirstUpdate);
 
-        const dunnoRow = dunnoGroup.getByTestId('response-row').filter({ hasText: playerName });
+        const dunnoRow = dunnoGroup.getByRole('group', { name: playerName });
         await expect(dunnoRow).toBeVisible({ timeout: 10000 });
-        await expect(dunnoRow.getByTestId('goalie-checkbox')).not.toBeChecked();
-        await expect(dunnoRow.getByTestId('comment-input')).toHaveValue('Could make it if meeting ends early');
+        await expect(dunnoRow.getByRole('checkbox', { name: /goalie/i })).not.toBeChecked();
+        await expect(dunnoRow.getByPlaceholder('Comment')).toHaveValue('Could make it if meeting ends early');
 
         await updateResponse(dunnoGroup, 'Yes', true, 'Back in: definitely available');
 

@@ -21,9 +21,9 @@ describe('DeleteAccountForm', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByTestId('confirm-phrase-input')).toBeInTheDocument();
-        expect(screen.getByTestId('confirm-pii-checkbox')).toBeInTheDocument();
-        expect(screen.getByTestId('submit-button')).toBeInTheDocument();
+        expect(screen.getByRole('textbox', { name: /type delete to confirm/i })).toBeInTheDocument();
+        expect(screen.getByRole('checkbox', { name: /i understand.*personal data/i })).toBeInTheDocument();
+        expect(screen.getByRole('button', { name: 'Delete my data' })).toBeInTheDocument();
     });
 
     it('validates required confirmation inputs', async () => {
@@ -35,9 +35,9 @@ describe('DeleteAccountForm', () => {
             </Wrapper>,
         );
 
-        await user.click(screen.getByTestId('submit-button'));
+        await user.click(screen.getByRole('button', { name: 'Delete my data' }));
 
-        const confirmPhraseInput = screen.getByTestId('confirm-phrase-input');
+        const confirmPhraseInput = screen.getByRole('textbox', { name: /type delete to confirm/i });
         const confirmPhraseErrorId = confirmPhraseInput.getAttribute('aria-describedby');
         expect(confirmPhraseErrorId).toBeTruthy();
 
@@ -47,7 +47,7 @@ describe('DeleteAccountForm', () => {
         expect(confirmPhraseError).toBeTruthy();
         expect(confirmPhraseError?.textContent ?? '').toBe('Type DELETE to confirm');
 
-        const confirmPiiInput = screen.getByTestId('confirm-pii-checkbox');
+        const confirmPiiInput = screen.getByRole('checkbox', { name: /i understand.*personal data/i });
         const confirmPiiRoot = confirmPiiInput.closest('.mantine-Checkbox-root');
         expect(confirmPiiRoot).toBeTruthy();
         expect(confirmPiiRoot?.textContent ?? '').toContain('Please confirm deletion of your personal data');
@@ -62,15 +62,15 @@ describe('DeleteAccountForm', () => {
             </Wrapper>,
         );
 
-        await user.type(screen.getByTestId('confirm-phrase-input'), 'DELETE');
-        await user.click(screen.getByTestId('confirm-pii-checkbox'));
-        await user.click(screen.getByTestId('submit-button'));
+        await user.type(screen.getByRole('textbox', { name: /type delete to confirm/i }), 'DELETE');
+        await user.click(screen.getByRole('checkbox', { name: /i understand.*personal data/i }));
+        await user.click(screen.getByRole('button', { name: 'Delete my data' }));
 
         await waitFor(() => {
             expect(mockDeletePlayer).toHaveBeenCalledTimes(1);
         });
 
-        expect(await screen.findByTestId('success-notification')).toBeInTheDocument();
+        expect(await screen.findByRole('alert')).toBeInTheDocument();
     });
 
     it('shows an error message when deletion fails', async () => {
@@ -84,11 +84,11 @@ describe('DeleteAccountForm', () => {
             </Wrapper>,
         );
 
-        await user.type(screen.getByTestId('confirm-phrase-input'), 'DELETE');
-        await user.click(screen.getByTestId('confirm-pii-checkbox'));
-        await user.click(screen.getByTestId('submit-button'));
+        await user.type(screen.getByRole('textbox', { name: /type delete to confirm/i }), 'DELETE');
+        await user.click(screen.getByRole('checkbox', { name: /i understand.*personal data/i }));
+        await user.click(screen.getByRole('button', { name: 'Delete my data' }));
 
-        const errorNotification = await screen.findByTestId('error-notification');
+        const errorNotification = await screen.findByRole('alert');
         expect(errorNotification).toBeInTheDocument();
         expect(errorNotification.textContent ?? '').toContain('Delete failed');
 
@@ -106,17 +106,15 @@ describe('DeleteAccountForm', () => {
             </Wrapper>,
         );
 
-        await user.type(screen.getByTestId('confirm-phrase-input'), 'DELETE');
-        await user.click(screen.getByTestId('confirm-pii-checkbox'));
-        await user.click(screen.getByTestId('submit-button'));
+        await user.type(screen.getByRole('textbox', { name: /type delete to confirm/i }), 'DELETE');
+        await user.click(screen.getByRole('checkbox', { name: /i understand.*personal data/i }));
+        await user.click(screen.getByRole('button', { name: 'Delete my data' }));
 
-        await screen.findByTestId('error-notification');
-
-        const notification = screen.getByTestId('error-notification');
+        const notification = await screen.findByRole('alert');
         const closeButton = within(notification).getByRole('button');
         await user.click(closeButton);
 
-        expect(screen.queryByTestId('error-notification')).not.toBeInTheDocument();
+        expect(screen.queryByRole('alert')).not.toBeInTheDocument();
 
         consoleErrorSpy.mockRestore();
     });

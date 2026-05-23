@@ -353,7 +353,7 @@ export const AdminPlayerList = ({
     return (
         <Container fluid>
             <Stack gap="sm">
-                <Text fw={700} data-testid="admin-player-list-count">
+                <Text fw={700}>
                     Players ({players.length})
                 </Text>
                 <Group justify="space-between" align="center" wrap="wrap">

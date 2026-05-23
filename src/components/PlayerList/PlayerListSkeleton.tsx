@@ -2,7 +2,7 @@ import { Box, Skeleton, Table, TableTbody, TableTd, TableTh, TableThead, TableTr
 
 /** Skeleton placeholder matching the PlayerList component layout (title + filters + player table). */
 export const PlayerListSkeleton = () => (
-    <Box data-testid="skeleton-player-list">
+    <Box>
         <Skeleton height={36} width={160} mb="sm" />
         <Skeleton height={20} width={250} mb="sm" />
         <Skeleton height={36} width="100%" mb="sm" />

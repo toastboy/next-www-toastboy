@@ -50,7 +50,7 @@ describe('Responses', () => {
         const filterInput = screen.getByPlaceholderText('Search players');
         await user.type(filterInput, 'Dev');
 
-        expect(screen.queryByTestId('response-group-none')).toBeNull();
+        expect(screen.queryByRole('region', { name: 'None' })).toBeNull();
     });
 
     it('converts a null comment to an empty string on initialisation', () => {
@@ -87,12 +87,12 @@ describe('Responses', () => {
         );
 
         expect(screen.getByRole('heading', { name: /Responses/i })).toBeInTheDocument();
-        expect(screen.getByTestId('response-group-yes')).toHaveAttribute('data-count', '1');
-        expect(screen.getByTestId('response-group-no')).toHaveAttribute('data-count', '1');
-        expect(screen.queryByTestId('response-group-dunno')).toBeNull();
-        expect(screen.getByTestId('response-group-none')).toHaveAttribute('data-count', '2');
+        expect(within(screen.getByRole('region', { name: 'Yes' })).getByRole('heading', { name: 'Yes: 1' })).toBeInTheDocument();
+        expect(within(screen.getByRole('region', { name: 'No' })).getByRole('heading', { name: 'No: 1' })).toBeInTheDocument();
+        expect(screen.queryByRole('region', { name: 'Dunno' })).toBeNull();
+        expect(within(screen.getByRole('region', { name: 'None' })).getByRole('heading', { name: 'None: 2' })).toBeInTheDocument();
 
-        const firstCommentInput = screen.getAllByTestId('comment-input')[0];
+        const firstCommentInput = screen.getAllByPlaceholderText('Comment')[0];
         expect(firstCommentInput).toHaveAttribute('maxlength', '127');
     });
 
@@ -113,10 +113,10 @@ describe('Responses', () => {
         const filterInput = screen.getByPlaceholderText('Search players');
         await user.type(filterInput, 'Casey');
 
-        expect(screen.queryByTestId('response-group-yes')).toBeNull();
-        expect(screen.queryByTestId('response-group-no')).toBeNull();
-        expect(screen.queryByTestId('response-group-dunno')).toBeNull();
-        expect(screen.getByTestId('response-group-none')).toHaveAttribute('data-count', '1');
+        expect(screen.queryByRole('region', { name: 'Yes' })).toBeNull();
+        expect(screen.queryByRole('region', { name: 'No' })).toBeNull();
+        expect(screen.queryByRole('region', { name: 'Dunno' })).toBeNull();
+        expect(within(screen.getByRole('region', { name: 'None' })).getByRole('heading', { name: 'None: 1' })).toBeInTheDocument();
     });
 
     it('returns early without calling submitResponse when response is still null', async () => {
@@ -137,13 +137,13 @@ describe('Responses', () => {
         // checkbox — this makes the row dirty without setting a response.
         const filterInput = screen.getByPlaceholderText('Search players');
         await user.type(filterInput, 'Casey');
-        const noneGroup = screen.getByTestId('response-group-none');
-        const row = within(noneGroup).getByTestId('response-row');
-        const goalie = within(row).getByTestId('goalie-checkbox');
+        const noneGroup = screen.getByRole('region', { name: 'None' });
+        const row = within(noneGroup).getByRole('group', { name: 'Casey Mid' });
+        const goalie = within(row).getByRole('checkbox', { name: /goalie/i });
         await user.click(goalie);
 
         // Row is now dirty so submit button is enabled, but response is still null
-        const submit = within(row).getByTestId('response-submit');
+        const submit = within(row).getByRole('button', { name: 'Update' });
         await user.click(submit);
 
         await waitFor(() => {
@@ -168,14 +168,14 @@ describe('Responses', () => {
 
         const filterInput = screen.getByPlaceholderText('Search players');
         await user.type(filterInput, 'Casey');
-        const noneGroup = screen.getByTestId('response-group-none');
-        const row = within(noneGroup).getByTestId('response-row');
+        const noneGroup = screen.getByRole('region', { name: 'None' });
+        const row = within(noneGroup).getByRole('group', { name: 'Casey Mid' });
 
-        const select = within(row).getByTestId('response-select');
+        const select = within(row).getByRole('combobox', { name: /response/i });
         await user.click(select);
         await user.click(await screen.findByRole('option', { name: 'Yes', hidden: true }));
 
-        const submit = within(row).getByTestId('response-submit');
+        const submit = within(row).getByRole('button', { name: 'Update' });
         await user.click(submit);
 
         await waitFor(() => {
@@ -218,11 +218,11 @@ describe('Responses', () => {
 
         const filterInput = screen.getByPlaceholderText('Search players');
         await user.type(filterInput, 'Casey');
-        const row = within(screen.getByTestId('response-group-none')).getByTestId('response-row');
+        const row = within(screen.getByRole('region', { name: 'None' })).getByRole('group', { name: 'Casey Mid' });
 
-        await user.click(within(row).getByTestId('response-select'));
+        await user.click(within(row).getByRole('combobox', { name: /response/i }));
         await user.click(await screen.findByRole('option', { name: 'Yes', hidden: true }));
-        await user.click(within(row).getByTestId('response-submit'));
+        await user.click(within(row).getByRole('button', { name: 'Update' }));
 
         await waitFor(() => {
             expect(notifications.update).toHaveBeenCalledWith(expect.objectContaining({
@@ -248,20 +248,20 @@ describe('Responses', () => {
 
         const filterInput = screen.getByPlaceholderText('Search players');
         await user.type(filterInput, 'Casey');
-        const noneGroup = screen.getByTestId('response-group-none');
-        const row = within(noneGroup).getByTestId('response-row');
+        const noneGroup = screen.getByRole('region', { name: 'None' });
+        const row = within(noneGroup).getByRole('group', { name: 'Casey Mid' });
         const playerId = Number(row.getAttribute('data-player-id'));
 
-        const select = within(row).getByTestId('response-select');
-        const goalie = within(row).getByTestId('goalie-checkbox');
-        const comment = within(row).getByTestId('comment-input');
+        const select = within(row).getByRole('combobox', { name: /response/i });
+        const goalie = within(row).getByRole('checkbox', { name: /goalie/i });
+        const comment = within(row).getByPlaceholderText('Comment');
         await user.click(goalie);
         await user.type(comment, 'See you there');
         await user.click(select);
         await user.click(await screen.findByRole('option', { name: 'Yes', hidden: true }));
-        expect(screen.getByTestId('response-group-none')).toHaveAttribute('data-count', '1');
-        expect(screen.queryByTestId('response-group-yes')).toBeNull();
-        const submit = within(row).getByTestId('response-submit');
+        expect(within(screen.getByRole('region', { name: 'None' })).getByRole('heading', { name: 'None: 1' })).toBeInTheDocument();
+        expect(screen.queryByRole('region', { name: 'Yes' })).toBeNull();
+        const submit = within(row).getByRole('button', { name: 'Update' });
         await user.click(submit);
 
         await waitFor(() => {
@@ -292,8 +292,8 @@ describe('Responses', () => {
             </Wrapper>,
         );
 
-        expect(screen.queryByTestId('response-group-none')).toBeNull();
-        expect(screen.getByTestId('response-group-yes')).toHaveAttribute('data-count', '1');
+        expect(screen.queryByRole('region', { name: 'None' })).toBeNull();
+        expect(within(screen.getByRole('region', { name: 'Yes' })).getByRole('heading', { name: 'Yes: 1' })).toBeInTheDocument();
     });
 
 });

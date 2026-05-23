@@ -7,19 +7,20 @@ import { Wrapper } from '@/tests/components/lib/common';
 vi.mock('@/components/UserButton/UserButton');
 
 describe('NavBarNested', () => {
-    it('renders navbar header', () => {
+    it('renders navbar header region', () => {
         render(<Wrapper><NavBarNested /></Wrapper>);
-        expect(screen.getByTestId('navbar-header')).toBeInTheDocument();
+        expect(screen.getByRole('region', { name: 'Navbar header' })).toBeInTheDocument();
     });
 
-    it('renders navbar links', () => {
+    it('renders navbar links region with navigation links', () => {
         render(<Wrapper><NavBarNested /></Wrapper>);
-        expect(screen.getByTestId('navbar-links')).toBeInTheDocument();
+        expect(screen.getByRole('region', { name: 'Navbar links' })).toBeInTheDocument();
+        expect(screen.getByRole('link', { name: 'Results' })).toBeInTheDocument();
     });
 
-    it('renders navbar footer', () => {
+    it('renders navbar footer region', () => {
         render(<Wrapper><NavBarNested /></Wrapper>);
-        expect(screen.getByTestId('navbar-footer')).toBeInTheDocument();
+        expect(screen.getByRole('region', { name: 'Navbar footer' })).toBeInTheDocument();
     });
 
     it('hides admin links when user is not an admin', () => {

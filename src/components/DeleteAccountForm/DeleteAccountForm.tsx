@@ -68,7 +68,6 @@ export const DeleteAccountForm = ({ onDeletePlayer }: Props) => {
 
     const notification = success ? (
         <Notification
-            data-testid="success-notification"
             icon={<IconCheck size={config.notificationIconSize} />}
             color="green"
         >
@@ -76,7 +75,6 @@ export const DeleteAccountForm = ({ onDeletePlayer }: Props) => {
         </Notification>
     ) : (errorText ? (
         <Notification
-            data-testid="error-notification"
             icon={<IconX size={config.notificationIconSize} />}
             color="red"
             onClose={() => setErrorText(null)}
@@ -123,13 +121,11 @@ export const DeleteAccountForm = ({ onDeletePlayer }: Props) => {
                 <Stack>
                     <TextInput
                         withAsterisk
-                        data-testid="confirm-phrase-input"
                         label="Type DELETE to confirm"
                         placeholder="DELETE"
                         {...form.getInputProps('confirmPhrase')}
                     />
                     <Checkbox
-                        data-testid="confirm-pii-checkbox"
                         label="I understand that all of my personal data will be deleted."
                         {...form.getInputProps('confirmPii', { type: 'checkbox' })}
                     />
@@ -140,7 +136,6 @@ export const DeleteAccountForm = ({ onDeletePlayer }: Props) => {
                     </Text>
                     {notification}
                     <Button
-                        data-testid="submit-button"
                         type="submit"
                         color="red"
                         fullWidth

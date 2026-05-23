@@ -29,7 +29,9 @@ const defaultDeps: SendEmailToAllActivePlayersDeps = {
  * @param email - The email address to normalise.
  * @returns The normalised email address, or an empty string when not provided.
  */
-const normalizeEmail = (email?: string | null) => (email ?? '').trim().toLowerCase();
+function normalizeEmail(email: string) {
+    return email.trim().toLowerCase();
+}
 
 /**
  * Sends one email to all active players with de-duplicated recipients.
@@ -51,17 +53,13 @@ export async function sendEmailToAllActivePlayersCore(
     for (const player of players) {
         if (player.accountEmail) {
             const normalizedEmail = normalizeEmail(player.accountEmail);
-            if (normalizedEmail.length > 0) {
-                recipients.add(normalizedEmail);
-            }
+            recipients.add(normalizedEmail);
         }
 
         for (const extraEmail of player.extraEmails) {
             if (extraEmail.verifiedAt) {
                 const normalizedEmail = normalizeEmail(extraEmail.email);
-                if (normalizedEmail.length > 0) {
-                    recipients.add(normalizedEmail);
-                }
+                recipients.add(normalizedEmail);
             }
         }
     }

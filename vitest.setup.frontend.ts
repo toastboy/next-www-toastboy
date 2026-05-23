@@ -169,6 +169,26 @@ if (!('ResizeObserver' in globalThis)) {
     });
 }
 
+if (!('EventSource' in globalThis)) {
+    class MockEventSource {
+        url: string;
+
+        constructor(url: string | URL) {
+            this.url = String(url);
+        }
+
+        addEventListener() { /* empty */ }
+        removeEventListener() { /* empty */ }
+        close() { /* empty */ }
+    }
+
+    Object.defineProperty(globalThis, 'EventSource', {
+        value: MockEventSource,
+        writable: true,
+        configurable: true,
+    });
+}
+
 interface HTMLElementLike {
     prototype: {
         scrollIntoView?: () => void;

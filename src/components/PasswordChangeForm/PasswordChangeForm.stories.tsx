@@ -63,10 +63,10 @@ export const ValidFill: Story = {
         changePasswordSpy.mockClear();
 
         const canvas = within(canvasElement);
-        const currentPassword = await canvas.findByTestId('current-password-input');
-        const newPassword = await canvas.findByTestId('password-input');
-        const confirmPassword = await canvas.findByTestId('confirm-password-input');
-        const submitButton = await canvas.findByTestId('submit-button');
+        const currentPassword = await canvas.findByLabelText(/Current password/i);
+        const newPassword = await canvas.findByLabelText(/^New password/i);
+        const confirmPassword = await canvas.findByLabelText(/Confirm new password/i);
+        const submitButton = await canvas.findByRole('button', { name: /Update password/i });
 
         await userEvent.clear(currentPassword);
         await userEvent.type(currentPassword, 'current-password');
@@ -105,10 +105,10 @@ export const InvalidFill: Story = {
         changePasswordSpy.mockClear();
 
         const canvas = within(canvasElement);
-        const currentPassword = await canvas.findByTestId('current-password-input');
-        const newPassword = await canvas.findByTestId('password-input');
-        const confirmPassword = await canvas.findByTestId('confirm-password-input');
-        const submitButton = await canvas.findByTestId('submit-button');
+        const currentPassword = await canvas.findByLabelText(/Current password/i);
+        const newPassword = await canvas.findByLabelText(/^New password/i);
+        const confirmPassword = await canvas.findByLabelText(/Confirm new password/i);
+        const submitButton = await canvas.findByRole('button', { name: /Update password/i });
 
         await userEvent.clear(currentPassword);
         await userEvent.type(currentPassword, 'bad-password');

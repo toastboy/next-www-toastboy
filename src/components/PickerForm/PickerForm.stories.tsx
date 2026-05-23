@@ -79,7 +79,7 @@ export const SimpleUpdate: Story = {
         const devCheckbox = await canvas.findByLabelText('Select Dev Striker');
         await userEvent.click(devCheckbox);
 
-        const submitButton = await canvas.findByTestId('submit-picker-button');
+        const submitButton = await canvas.findByRole('button', { name: 'Pick sides' });
         await userEvent.click(submitButton);
 
         await within(canvasElement.ownerDocument.body).findByText('Selection submitted', {}, { timeout: 6000 });
@@ -104,7 +104,7 @@ export const InvalidInput: Story = {
         if (viewMode === 'docs') return;
 
         const canvas = within(canvasElement);
-        const submitButton = await canvas.findByTestId('submit-picker-button');
+        const submitButton = await canvas.findByRole('button', { name: 'Pick sides' });
         await userEvent.click(submitButton);
 
         await within(canvasElement.ownerDocument.body).findByRole('alert');

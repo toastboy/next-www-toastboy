@@ -56,9 +56,9 @@ export const ValidFill: Story = {
         if (viewMode === 'docs') return;
 
         const canvas = within(canvasElement);
-        const nameInput = await canvas.findByTestId('name-input');
-        const emailInput = await canvas.findByTestId('extra-email-input-1');
-        const submitButton = await canvas.findByTestId('submit-button');
+        const nameInput = await canvas.findByRole('textbox', { name: /^Name/ });
+        const emailInput = await canvas.findByRole('textbox', { name: /extra email address 1/i });
+        const submitButton = await canvas.findByRole('button', { name: 'Save Changes' });
 
         await userEvent.clear(nameInput);
         await userEvent.type(nameInput, 'Gazza Playa');
@@ -77,9 +77,9 @@ export const BlankName: Story = {
         if (viewMode === 'docs') return;
 
         const canvas = within(canvasElement);
-        const nameInput = await canvas.findByTestId('name-input');
-        const emailInput = await canvas.findByTestId('extra-email-input-1');
-        const submitButton = await canvas.findByTestId('submit-button');
+        const nameInput = await canvas.findByRole('textbox', { name: /^Name/ });
+        const emailInput = await canvas.findByRole('textbox', { name: /extra email address 1/i });
+        const submitButton = await canvas.findByRole('button', { name: 'Save Changes' });
 
         await userEvent.clear(nameInput);
         await userEvent.clear(emailInput);

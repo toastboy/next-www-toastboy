@@ -88,16 +88,14 @@ export const SimpleUpdate: Story = {
         const canvas = within(canvasElement);
         const filterInput = await canvas.findByPlaceholderText('Search players');
         await userEvent.clear(filterInput);
-        const noneGroup = await canvas.findByTestId('response-group-none');
-        const row = (await canvas.findAllByTestId('response-row')).find((candidate) =>
-            noneGroup.contains(candidate),
-        );
+        const noneGroup = await canvas.findByRole('region', { name: 'None' });
+        const row = (await within(noneGroup).findAllByRole('group'))[0];
         if (!row) throw new Error('Missing none-group row');
         const playerId = Number(row.getAttribute('data-player-id'));
 
-        const select = within(row).getByTestId('response-select');
-        const goalie = within(row).getByTestId('goalie-checkbox');
-        const comment = within(row).getByTestId('comment-input');
+        const select = within(row).getByRole('combobox', { name: 'Response' });
+        const goalie = within(row).getByRole('checkbox', { name: 'Goalie' });
+        const comment = within(row).getByPlaceholderText('Comment');
         await userEvent.click(goalie);
         await userEvent.type(comment, 'Storybook play');
         await userEvent.click(select);
@@ -109,14 +107,14 @@ export const SimpleUpdate: Story = {
                 { name: 'Yes', hidden: true },
             ),
         );
-        const submit = within(row).getByTestId('response-submit');
+        const submit = within(row).getByRole('button', { name: 'Update' });
         await userEvent.click(submit);
 
         await within(canvasElement.ownerDocument.body).findByText('Response updated', {}, { timeout: 6000 });
 
-        const yesGroup = await canvas.findByTestId('response-group-yes');
-        const movedRow = (await within(yesGroup).findAllByTestId('response-row'))
-            .find((row) => Number(row.getAttribute('data-player-id')) === playerId);
+        const yesGroup = await canvas.findByRole('region', { name: 'Yes' });
+        const movedRow = (await within(yesGroup).findAllByRole('group'))
+            .find((r) => Number(r.getAttribute('data-player-id')) === playerId);
         if (!movedRow) throw new Error('Missing moved row in yes-group after update');
     },
 };
@@ -138,13 +136,13 @@ export const Filtering: Story = {
         await userEvent.clear(filterInput);
         await userEvent.type(filterInput, 'Casey');
 
-        const noneGroup = await canvas.findByTestId('response-group-none');
+        const noneGroup = await canvas.findByRole('region', { name: 'None' });
 
         await Promise.all([
-            expect(noneGroup).toHaveAttribute('data-count', '1'),
-            expect(canvas.queryByTestId('response-group-yes')).toBeNull(),
-            expect(canvas.queryByTestId('response-group-no')).toBeNull(),
-            expect(canvas.queryByTestId('response-group-dunno')).toBeNull(),
+            expect(within(noneGroup).getByText('None: 1')).toBeInTheDocument(),
+            expect(canvas.queryByRole('region', { name: 'Yes' })).toBeNull(),
+            expect(canvas.queryByRole('region', { name: 'No' })).toBeNull(),
+            expect(canvas.queryByRole('region', { name: 'Dunno' })).toBeNull(),
         ]);
         await within(noneGroup).findByText('Casey Mid');
     },
@@ -170,14 +168,12 @@ export const InvalidInput: Story = {
         const canvas = within(canvasElement);
         const filterInput = await canvas.findByPlaceholderText('Search players');
         await userEvent.clear(filterInput);
-        const noneGroup = await canvas.findByTestId('response-group-none');
-        const row = (await canvas.findAllByTestId('response-row')).find((candidate) =>
-            noneGroup.contains(candidate),
-        );
+        const noneGroup = await canvas.findByRole('region', { name: 'None' });
+        const row = (await within(noneGroup).findAllByRole('group'))[0];
         if (!row) throw new Error('Missing none-group row');
 
-        const select = within(row).getByTestId('response-select');
-        const submit = within(row).getByTestId('response-submit');
+        const select = within(row).getByRole('combobox', { name: 'Response' });
+        const submit = within(row).getByRole('button', { name: 'Update' });
         await userEvent.click(select);
         const dropdowns = await within(canvasElement.ownerDocument.body).findAllByRole('listbox');
         const dropdown = dropdowns[dropdowns.length - 1];

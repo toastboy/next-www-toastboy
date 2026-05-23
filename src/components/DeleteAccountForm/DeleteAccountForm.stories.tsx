@@ -32,9 +32,9 @@ export const ValidSubmit: Story = {
         if (viewMode === 'docs') return;
 
         const canvas = within(canvasElement);
-        const confirmPhrase = await canvas.findByTestId('confirm-phrase-input');
-        const confirmPii = await canvas.findByTestId('confirm-pii-checkbox');
-        const submitButton = await canvas.findByTestId('submit-button');
+        const confirmPhrase = await canvas.findByRole('textbox', { name: /type delete to confirm/i });
+        const confirmPii = await canvas.findByRole('checkbox', { name: /i understand.*personal data/i });
+        const submitButton = await canvas.findByRole('button', { name: 'Delete my data' });
 
         await userEvent.clear(confirmPhrase);
         await userEvent.type(confirmPhrase, 'DELETE');
@@ -56,8 +56,8 @@ export const InvalidSubmit: Story = {
         if (viewMode === 'docs') return;
 
         const canvas = within(canvasElement);
-        const confirmPhrase = await canvas.findByTestId('confirm-phrase-input');
-        const submitButton = await canvas.findByTestId('submit-button');
+        const confirmPhrase = await canvas.findByRole('textbox', { name: /type delete to confirm/i });
+        const submitButton = await canvas.findByRole('button', { name: 'Delete my data' });
 
         await userEvent.click(submitButton);
 

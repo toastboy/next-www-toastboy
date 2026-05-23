@@ -43,10 +43,10 @@ export const ValidSubmit: Story = {
         if (viewMode === 'docs') return;
 
         const canvas = within(canvasElement);
-        await userEvent.type(await canvas.findByTestId('enquiry-name'), 'Test User');
-        await userEvent.type(await canvas.findByTestId('enquiry-email'), 'test@example.com');
-        await userEvent.type(await canvas.findByTestId('enquiry-message'), 'Hello there');
-        await userEvent.click(await canvas.findByTestId('enquiry-submit'));
+        await userEvent.type(await canvas.findByRole('textbox', { name: /^Name/ }), 'Test User');
+        await userEvent.type(await canvas.findByRole('textbox', { name: /^Email/ }), 'test@example.com');
+        await userEvent.type(await canvas.findByRole('textbox', { name: /^Message/ }), 'Hello there');
+        await userEvent.click(await canvas.findByRole('button', { name: 'Send message' }));
 
         const body = canvasElement.ownerDocument.body;
         await within(body).findByText(/Check your inbox and verify your email to deliver the message./i, {}, { timeout: 6000 });
@@ -59,10 +59,10 @@ export const InvalidSubmit: Story = {
         if (viewMode === 'docs') return;
 
         const canvas = within(canvasElement);
-        await userEvent.click(await canvas.findByTestId('enquiry-submit'));
+        await userEvent.click(await canvas.findByRole('button', { name: 'Send message' }));
 
-        await expect(await canvas.findByTestId('enquiry-name')).toHaveAttribute('aria-invalid', 'true');
-        await expect(await canvas.findByTestId('enquiry-email')).toHaveAttribute('aria-invalid', 'true');
-        await expect(await canvas.findByTestId('enquiry-message')).toHaveAttribute('aria-invalid', 'true');
+        await expect(await canvas.findByRole('textbox', { name: /^Name/ })).toHaveAttribute('aria-invalid', 'true');
+        await expect(await canvas.findByRole('textbox', { name: /^Email/ })).toHaveAttribute('aria-invalid', 'true');
+        await expect(await canvas.findByRole('textbox', { name: /^Message/ })).toHaveAttribute('aria-invalid', 'true');
     },
 };

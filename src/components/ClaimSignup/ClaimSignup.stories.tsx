@@ -56,9 +56,9 @@ export const ValidSubmit: Story = {
         signUpEmailSpy.mockClear();
 
         const canvas = within(canvasElement);
-        const password = await canvas.findByTestId('password-input');
-        const confirmPassword = await canvas.findByTestId('confirm-password-input');
-        const submitButton = await canvas.findByTestId('submit-button');
+        const password = await canvas.findByLabelText(/^Password/i);
+        const confirmPassword = await canvas.findByLabelText(/Confirm password/i);
+        const submitButton = await canvas.findByRole('button', { name: /Create login/i });
 
         await userEvent.clear(password);
         await userEvent.type(password, 'validPassword123');
@@ -87,9 +87,9 @@ export const InvalidSubmit: Story = {
         if (viewMode === 'docs') return;
 
         const canvas = within(canvasElement);
-        const password = await canvas.findByTestId('password-input');
-        const confirmPassword = await canvas.findByTestId('confirm-password-input');
-        const submitButton = await canvas.findByTestId('submit-button');
+        const password = await canvas.findByLabelText(/^Password/i);
+        const confirmPassword = await canvas.findByLabelText(/Confirm password/i);
+        const submitButton = await canvas.findByRole('button', { name: /Create login/i });
 
         await userEvent.clear(password);
         await userEvent.type(password, 'validPassword123');

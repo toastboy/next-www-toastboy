@@ -3,7 +3,7 @@
  */
 import { HealthResponseSchema } from '@/lib/health';
 
-import { expect, test } from './utils/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('/api/health endpoint', () => {
     test('should return healthy status with 200 when application and database are running', async ({

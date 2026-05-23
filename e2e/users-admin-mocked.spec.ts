@@ -1,5 +1,5 @@
 import { asAdmin, asGuest, asUser, mustBeLoggedIn, mustBeLoggedInAsAdmin } from './utils/auth';
-import { expect, test } from './utils/test';
+import { expect, test } from '@playwright/test';
 
 test.describe('Users Admin Page with Auth Mocking', () => {
     test('denies access to guest users', async ({ page }) => {

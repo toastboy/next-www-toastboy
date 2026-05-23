@@ -1,7 +1,6 @@
 {
     "$schema": "./node_modules/knip/schema.json",
     "entry": [
-        "prisma/seed.ci.ts",
         "src/tests/**/*.ts",
         "src/tests/**/*.tsx",
         "src/app/**/page.tsx",
@@ -32,7 +31,6 @@
         "@playwright/browser-webkit"
     ],
     "ignoreBinaries": [
-        "stdbuf",
         "chromatic"
     ]
 }

@@ -1,5 +1,6 @@
+import { test } from '@playwright/test';
+
 import { asAdmin, asGuest, asUser, mustBeLoggedInAsAdmin } from './utils/auth';
-import { test } from './utils/test';
 
 // function randname(length: number) {
 //     let result = '';

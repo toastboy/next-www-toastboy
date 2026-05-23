@@ -1,5 +1,5 @@
 import { asAdmin, asGuest, asUser, mustBeLoggedInAsAdmin } from './utils/auth';
-import { expect, test } from './utils/test';
+import { expect, test } from '@playwright/test';
 
 type ResponseOption = 'Yes' | 'No' | 'Dunno';
 

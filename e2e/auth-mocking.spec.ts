@@ -1,5 +1,6 @@
+import { expect, test } from '@playwright/test';
+
 import { asAdmin, asGuest, asUser, mustBeLoggedIn, mustBeLoggedInAsAdmin } from './utils/auth';
-import { expect, test } from './utils/test';
 
 test.describe('Auth Mocking System', () => {
     test('should show different content for different auth states', async ({ page }) => {

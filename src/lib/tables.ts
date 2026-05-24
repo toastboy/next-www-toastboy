@@ -14,6 +14,10 @@ export const rankMap: Record<TableName, [string, string | undefined]> = {
     pub: ["rankPub", undefined],
 };
 
+export function ShortTableTitle(table: TableName): string {
+    return table.charAt(0).toUpperCase() + table.slice(1);
+}
+
 export function TableTitle(table: TableName): string {
     switch (table) {
         case TableNameSchema.enum.speedy:

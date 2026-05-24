@@ -106,11 +106,20 @@ class GameDayService {
     /**
      * Retrieves the current GameDayType: the most recent GameDayType where the mail has
      * been sent.
-     * @returns A promise that resolves to an array of GameDays.
+     * @returns A promise that resolves to the current GameDayType, or null if not found.
      */
     async getCurrent(): Promise<GameDayType | null> {
         const where = GameDayWhereInputObjectSchema.parse({ mailSent: { not: null } });
         return prisma.gameDay.findFirst({ where, orderBy: { date: 'desc' } });
+    }
+
+    /**
+     * Retrieves the year of the current GameDayType (most recent with mail sent).
+     * @returns A Promise that resolves to the year as a number, or null if no current game day exists.
+     */
+    async getCurrentYear(): Promise<number | null> {
+        const currentGame = await this.getCurrent();
+        return currentGame ? new Date(currentGame.date).getUTCFullYear() : null;
     }
 
     /**

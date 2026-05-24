@@ -2,12 +2,12 @@
 
 import { AppShell, Badge, Burger, Container, Group, Image, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 
+import { NavBarNested } from '@/components/NavBarNested/NavBarNested';
 import { AuthUserSummary } from '@/types/AuthUser';
-
-import { NavBarNested } from '../NavBarNested/NavBarNested';
 
 /** Props for the application shell wrapper. */
 export interface Props {
@@ -54,13 +54,15 @@ export const CustomAppShell = ({ children, user, devMode }: Props) => {
                             hiddenFrom="sm"
                             size="sm"
                         />
-                        <Image
-                            src="/crest.jpg"
-                            w={56}
-                            h={56}
-                            fit="contain"
-                            alt="Toastboy FC Crest"
-                        />
+                        <Link href="/footy">
+                            <Image
+                                src="/crest.jpg"
+                                w={56}
+                                h={56}
+                                fit="contain"
+                                alt="Toastboy FC Crest"
+                            />
+                        </Link>
                         <Group gap="xs">
                             <Text>Toastboy FC</Text>
                             {devMode ? (

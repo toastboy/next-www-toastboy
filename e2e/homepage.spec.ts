@@ -32,3 +32,13 @@ test('homepage has title and correct links', async ({ page }) => {
 
     console.log(hrefs);
 });
+
+test('homepage shows table leaders', async ({ page }) => {
+    await page.goto('/');
+    await page.waitForURL('**/footy');
+
+    await expect(page.getByRole('heading', { name: 'Table Leaders' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Points' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Averages' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Stalwart' })).toBeVisible();
+});

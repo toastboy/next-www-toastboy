@@ -143,4 +143,15 @@ describe('CustomAppShell', () => {
 
         expect(screen.getByRole('img', { name: 'Toastboy FC Crest' })).toBeInTheDocument();
     });
+
+    it('wraps the crest image in a link to /footy', () => {
+        render(
+            <CustomAppShell>
+                <Text>Content</Text>
+            </CustomAppShell>,
+        );
+
+        const crest = screen.getByRole('img', { name: 'Toastboy FC Crest' });
+        expect(crest.closest('a')).toHaveAttribute('href', '/footy');
+    });
 });

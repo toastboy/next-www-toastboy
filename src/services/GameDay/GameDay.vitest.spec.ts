@@ -234,6 +234,20 @@ describe('GameDayService', () => {
         });
     });
 
+    describe('getCurrentYear', () => {
+        it('returns the year of the current game day', async () => {
+            (prisma.gameDay.findFirst as Mock).mockResolvedValue(defaultGameDay); // date: 2021-01-03
+            const result = await gameDayService.getCurrentYear();
+            expect(result).toBe(2021);
+        });
+
+        it('returns null when no current game day exists', async () => {
+            (prisma.gameDay.findFirst as Mock).mockResolvedValue(null);
+            const result = await gameDayService.getCurrentYear();
+            expect(result).toBeNull();
+        });
+    });
+
     describe('getUpcoming', () => {
         it('should return the next upcoming GameDay with a game scheduled', async () => {
             (prisma.gameDay.findFirst as Mock).mockResolvedValue(defaultGameDayList[0]);

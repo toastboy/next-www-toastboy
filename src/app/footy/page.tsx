@@ -1,4 +1,4 @@
-import { Anchor, Divider, Group, Image, Stack, Text, Title } from '@mantine/core';
+import { Anchor, Divider, Flex, Group, Image, Stack, Text, Title } from '@mantine/core';
 import { notFound } from 'next/navigation';
 import { TableNameSchema } from 'prisma/zod/schemas';
 
@@ -35,9 +35,9 @@ const HomePage = async () => {
             <Group justify="center" w="100%">
                 <Title order={2}>Table Leaders</Title>
             </Group>
-            <Group justify="center" w="100%">
+            <Flex direction={{ base: 'column', md: 'row' }} gap="md" justify="center">
                 {tables.map((table, i) => (
-                    <Stack key={table} align="center" w="25%">
+                    <Stack key={table} align="center" w="12rem">
                         <Title order={3}>{ShortTableTitle(table)}</Title>
                         <RecordsTable
                             table={table}
@@ -46,7 +46,7 @@ const HomePage = async () => {
                         />
                     </Stack>
                 ))}
-            </Group>
+            </Flex>
             <Divider my="md" w="100%" />
             <Text mt="md">
                 Who are we?{' '}

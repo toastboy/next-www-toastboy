@@ -1,5 +1,6 @@
-import { asAdmin, asGuest, asUser } from './utils/auth';
 import { expect, test } from '@playwright/test';
+
+import { asAdmin, asGuest, asUser } from './utils/auth';
 
 test.describe('More Games admin page', () => {
     test('denies access to guest users', async ({ page }) => {

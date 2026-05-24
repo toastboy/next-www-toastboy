@@ -1,5 +1,6 @@
-import { deleteAllMessages, getMessageDetail, waitForMessage } from './utils/mailpit';
 import { expect, test } from '@playwright/test';
+
+import { deleteAllMessages, getMessageDetail, waitForMessage } from './utils/mailpit';
 
 test('info page', async ({ page }) => {
     const response = await page.goto('/footy/info');

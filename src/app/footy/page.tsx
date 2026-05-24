@@ -9,7 +9,7 @@ const HomePage = () => {
                 height={342}
                 alt="Toastboy FC Crest"
                 fit="contain" />
-            <Divider my="md" />
+            <Divider my="md" w="100%" />
             <Text mt="md">
                 Who are we?{' '}
                 <Anchor href="/footy/info">Information about Toastboy FC</Anchor>

@@ -1,6 +1,7 @@
+import { expect, test } from '@playwright/test';
+
 import { asGuest, asUser, mustBeLoggedIn } from './utils/auth';
 import { deleteAllMessages, getMessageDetail, waitForMessage } from './utils/mailpit';
-import { expect, test } from '@playwright/test';
 
 test.describe('Mail active players', () => {
     test('denies access to guest users', async ({ page }) => {

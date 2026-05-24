@@ -1,6 +1,10 @@
 // @type {import('next').NextConfig}
 const nextConfig = {
     reactStrictMode: true,
+    generateBuildId: async () => {
+        const { execSync } = await import('node:child_process');
+        return execSync('git rev-parse HEAD').toString().trim();
+    },
     images: {
         remotePatterns: [
             {

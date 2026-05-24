@@ -89,12 +89,12 @@ export default defineConfig({
         // },
     ],
 
-    /* Run your local dev server before starting the tests */
+    /* Start a fresh production server before each test run. */
     webServer: {
         command: process.env.CI ? 'npm run start:ci' : 'npm run start:playwright',
         url: BASE_URL,
         stdout: 'pipe',
         stderr: 'pipe',
-        reuseExistingServer: !process.env.CI,
+        reuseExistingServer: false,
     },
 });

@@ -16,10 +16,11 @@ import type { Metadata } from 'next';
 import { CustomAppShell } from '@/components/CustomAppShell/CustomAppShell';
 import { getCurrentUser } from '@/lib/auth.server';
 
-// Default to dynamic rendering for all pages
+// We used to force dynamic rendering for all pages here:
 // https://nextjs.org/docs/app/building-your-application/rendering/static-and-dynamic-rendering
-export const dynamic = "force-dynamic";
-export const revalidate = 0; // belt-and-braces; disables ISR on this segment
+// but this isn't necessary because calling getCurrentUser() already forces
+// dynamic rendering for pages that use this layout. For a site of this size and
+// complexity, dynamic rendering is probably the right default anyway.
 
 export const metadata: Metadata = {
     title: {

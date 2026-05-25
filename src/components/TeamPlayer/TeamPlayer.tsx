@@ -12,18 +12,18 @@ export interface Props {
 
 export const TeamPlayer = ({ teamPlayer }: Props) => (
     <Flex direction="column" gap="md">
-        <Group justify="space-between" align="center" wrap="wrap">
-            <PlayerLink player={teamPlayer} year={0} />
-            {teamPlayer.outcome.goalie ? (
-                <>
-                    <IconHandStop size={24} stroke={1.25} />
-                    <IconHandStop size={24} stroke={1.25} style={{ transform: 'scaleX(-1)' }} />
-                </>
-            ) : null}
-        </Group>
         <Flex direction="column" align="center" gap="xs">
         </Flex>
-        <PlayerMugshot player={teamPlayer} />
+        <PlayerMugshot player={teamPlayer} radius="100%" />
         <PlayerForm form={teamPlayer.form} />
+        <Group w="100%" align="center" wrap="wrap">
+            <PlayerLink player={teamPlayer} year={0} />
+            {teamPlayer.outcome.goalie ? (
+                <Flex gap="0">
+                    <IconHandStop size={24} stroke={1.25} style={{ transform: 'scaleX(-1)' }} />
+                    <IconHandStop size={24} stroke={1.25} />
+                </Flex>
+            ) : null}
+        </Group>
     </Flex>
 );

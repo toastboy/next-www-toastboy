@@ -2,21 +2,23 @@
 
 import { Text } from '@mantine/core';
 import * as d3 from 'd3';
+import { useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 
 import { MoneyChartDatum } from '@/types/DebtType';
 
 import styles from './MoneyChart.module.css';
 
-
 export interface Props {
     data: MoneyChartDatum[];
+    linkBase?: string;
 }
 
-export const MoneyChart = ({ data: raw }: Props) => {
+export const MoneyChart = ({ data: raw, linkBase }: Props) => {
     const svgRef = useRef<SVGSVGElement>(null);
     const wrapperRef = useRef<HTMLDivElement>(null);
     const tooltipRef = useRef<HTMLDivElement>(null);
+    const router = useRouter();
 
     useEffect(() => {
         if (!svgRef.current || !tooltipRef.current || !wrapperRef.current) return;
@@ -58,7 +60,15 @@ export const MoneyChart = ({ data: raw }: Props) => {
             const y = d3.scaleLinear().domain([yMin - pad, yMax + pad]).range([ih, 0]);
 
             const g = svg.append('g').attr('transform', `translate(${M.left},${M.top})`);
-            axes(g, x, y, iw, ih);
+            const minLabelSpacing = 40;
+            const maxTicks = Math.max(1, Math.floor(iw / minLabelSpacing));
+            const step = Math.ceil(data.length / maxTicks);
+            const tickValues = data.filter((_, i) => i % step === 0).map(d => d.interval);
+            axes(g, x, y, iw, ih, tickValues);
+
+            const navigate = (_: globalThis.MouseEvent, d: Datum) => {
+                if (linkBase) router.push(`${linkBase}${d.interval}`);
+            };
 
             // Debits: downward from balance
             g.selectAll('.db').data(data).enter().append('rect')
@@ -69,7 +79,8 @@ export const MoneyChart = ({ data: raw }: Props) => {
                 .attr('fill', '#fa5252').attr('rx', 2)
                 .style('cursor', 'pointer')
                 .on('mousemove', (event: globalThis.MouseEvent, d) => showTooltip(event, `<b>${d.interval}</b><br/>Hall charges: <b>£${d.debits.toFixed(2)}</b>`))
-                .on('mouseleave', hideTooltip);
+                .on('mouseleave', hideTooltip)
+                .on('click', navigate);
 
             // Credits: upward from balance
             g.selectAll('.cr').data(data).enter().append('rect')
@@ -80,7 +91,8 @@ export const MoneyChart = ({ data: raw }: Props) => {
                 .attr('fill', '#40c057').attr('rx', 2)
                 .style('cursor', 'pointer')
                 .on('mousemove', (event: globalThis.MouseEvent, d) => showTooltip(event, `<b>${d.interval}</b><br/>Player payments: <b>£${d.credits.toFixed(2)}</b>`))
-                .on('mouseleave', hideTooltip);
+                .on('mouseleave', hideTooltip)
+                .on('click', navigate);
 
             balanceLine(g, data, x, y);
 
@@ -92,12 +104,13 @@ export const MoneyChart = ({ data: raw }: Props) => {
                 .attr('fill', 'transparent')
                 .style('cursor', 'pointer')
                 .on('mousemove', (event: globalThis.MouseEvent, d) => showTooltip(event, `<b>${d.interval}</b><br/>Balance: <b>£${d.balance.toFixed(2)}</b>`))
-                .on('mouseleave', hideTooltip);
+                .on('mouseleave', hideTooltip)
+                .on('click', navigate);
 
             legend(svg, [
-                { label: 'Player payments (credits)', color: '#40c057' },
-                { label: 'Hall charges (debits)', color: '#fa5252' },
-                { label: 'Running balance', color: '#228be6', dash: true },
+                { label: 'Credits', color: '#40c057' },
+                { label: 'Debits', color: '#fa5252' },
+                { label: 'Balance', color: '#228be6', dash: true },
             ]);
         };
 
@@ -108,7 +121,7 @@ export const MoneyChart = ({ data: raw }: Props) => {
 
         observer.observe(wrapperRef.current);
         return () => observer.disconnect();
-    }, [raw]);
+    }, [raw, linkBase, router]);
 
     if (raw.length === 0) {
         return (
@@ -134,10 +147,11 @@ function axes(
     y: d3.ScaleLinear<number, number>,
     iw: number,
     ih: number,
+    tickValues: string[],
 ) {
     g.append('g')
         .attr('transform', `translate(0,${ih})`)
-        .call(d3.axisBottom(x));
+        .call(d3.axisBottom(x).tickValues(tickValues));
     g.append('g')
         .call(d3.axisLeft(y).tickFormat(v => `£${String(v)}`).ticks(6));
     g.append('line')
@@ -174,9 +188,9 @@ function legend(
     svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
     items: { label: string; color: string; dash?: boolean }[],
 ) {
-    const lg = svg.append('g').attr('transform', `translate(${M.left + 4},${M.top + 4})`);
+    const lg = svg.append('g').attr('transform', `translate(${M.left + 4},${M.bottom - 30})`);
     items.forEach(({ label, color, dash }, i) => {
-        const row = lg.append('g').attr('transform', `translate(0,${i * 18})`);
+        const row = lg.append('g').attr('transform', `translate(${i * 80},0)`);
         if (dash) {
             row.append('line').attr('x1', 0).attr('x2', 18).attr('y1', 7).attr('y2', 7)
                 .attr('stroke', color).attr('stroke-width', 2.5);

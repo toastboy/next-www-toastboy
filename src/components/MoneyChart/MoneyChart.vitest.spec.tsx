@@ -68,9 +68,9 @@ describe('MoneyChart', () => {
         );
 
         const svgTexts = Array.from(container.querySelectorAll('svg text')).map(el => el.textContent);
-        expect(svgTexts).toContain('Player payments (credits)');
-        expect(svgTexts).toContain('Hall charges (debits)');
-        expect(svgTexts).toContain('Running balance');
+        expect(svgTexts).toContain('Credits');
+        expect(svgTexts).toContain('Debits');
+        expect(svgTexts).toContain('Balance');
     });
 
     it('renders an axis label for each interval', () => {

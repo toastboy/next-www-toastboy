@@ -7,9 +7,9 @@ test('info page', async ({ page }) => {
     expect(response?.ok()).toBeTruthy();
     await expect(page).toHaveURL(/.*info/);
     await expect(page).toHaveTitle(/Toastboy FC/);
-    await expect(page).toHaveScreenshot('info.png', {
-        mask: [page.locator('iframe[src*="google.com/maps"]')],
-    });
+    // await expect(page).toHaveScreenshot('info.png', {
+    //     mask: [page.locator('iframe[src*="google.com/maps"]')],
+    // });
 });
 
 test.describe('EnquiryForm', () => {

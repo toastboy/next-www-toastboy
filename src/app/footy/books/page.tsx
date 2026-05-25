@@ -51,7 +51,7 @@ const BooksPage = async (props: PageProps) => {
             <Group justify="center" w="100%">
                 <TitleWithYearDropdown order={1} title="Books: " year={year} validYears={allYears} />
             </Group>
-            <MoneyChart data={chartData} />
+            <MoneyChart data={chartData} linkBase={year === 0 ? '/footy/books?year=' : undefined} />
         </Stack>
     );
 };

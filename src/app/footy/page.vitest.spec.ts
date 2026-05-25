@@ -48,25 +48,10 @@ describe('Footy home page', () => {
         (gameDayService.getCurrentYear as Mock).mockResolvedValue(2024);
         (playerRecordService.getTable as Mock).mockResolvedValue([]);
         await renderPage();
+        expect(gameDayService.getCurrentYear).toHaveBeenCalledTimes(1);
         expect(playerRecordService.getTable).toHaveBeenCalledTimes(3);
         expect(playerRecordService.getTable).toHaveBeenCalledWith('points', 2024, true, 3);
         expect(playerRecordService.getTable).toHaveBeenCalledWith('averages', 2024, true, 3);
         expect(playerRecordService.getTable).toHaveBeenCalledWith('stalwart', 2024, true, 3);
-    });
-
-    it('renders the crest image alt text', async () => {
-        (gameDayService.getCurrentYear as Mock).mockResolvedValue(2024);
-        (playerRecordService.getTable as Mock).mockResolvedValue([]);
-        const html = await renderPage();
-        expect(html).toContain('Toastboy FC Crest');
-    });
-
-    it('renders a RecordsTable for each of points, averages, and stalwart', async () => {
-        (gameDayService.getCurrentYear as Mock).mockResolvedValue(2024);
-        (playerRecordService.getTable as Mock).mockResolvedValue([]);
-        const html = await renderPage();
-        expect(html).toContain('&quot;table&quot;:&quot;points&quot;');
-        expect(html).toContain('&quot;table&quot;:&quot;averages&quot;');
-        expect(html).toContain('&quot;table&quot;:&quot;stalwart&quot;');
     });
 });

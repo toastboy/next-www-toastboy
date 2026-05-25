@@ -15,7 +15,12 @@ test('info page', async ({ page }) => {
 test.describe('EnquiryForm', () => {
     test('shows validation errors on empty submit', async ({ page }) => {
         await page.goto('/footy/info');
-        await page.getByRole('button', { name: 'Send message' }).click();
+        const submitButton = page.getByRole('button', { name: 'Send message' });
+
+        await submitButton.scrollIntoViewIfNeeded();
+
+        await submitButton.click();
+        await submitButton.scrollIntoViewIfNeeded();
         await expect(page.getByText('Name is required')).toBeVisible();
         await expect(page.getByText('Invalid email')).toBeVisible();
         await expect(page.getByText('Message is required')).toBeVisible();
@@ -24,9 +29,12 @@ test.describe('EnquiryForm', () => {
     test('shows invalid email error on blur', async ({ page }) => {
         await page.goto('/footy/info');
         await page.getByRole('textbox', { name: 'Name' }).fill('Test User');
-        await page.getByRole('textbox', { name: 'Email' }).fill('not-an-email');
+        const emailInput = page.getByRole('textbox', { name: 'Email' });
+        await emailInput.fill('not-an-email');
         await page.getByRole('textbox', { name: 'Message' }).click();
-        await expect(page.getByText('Invalid email')).toBeVisible();
+        const invalidEmailError = page.getByText('Invalid email');
+        await emailInput.scrollIntoViewIfNeeded();
+        await expect(invalidEmailError).toBeVisible();
     });
 
     test('shows verified notification and cleans up URL', async ({ page }) => {

@@ -18,6 +18,7 @@ vi.mock('@/components/RecordsTable/RecordsTable');
 vi.mock('@mantine/core', () => ({
     Anchor: ({ children }: { children?: unknown }) => children,
     Divider: () => null,
+    Flex: ({ children }: { children?: unknown }) => children,
     Group: ({ children }: { children?: unknown }) => children,
     Image: ({ alt }: { alt?: string }) => alt ?? '',
     Stack: ({ children }: { children?: unknown }) => children,
@@ -48,7 +49,7 @@ describe('Footy home page', () => {
         (playerRecordService.getTable as Mock).mockResolvedValue([]);
         await renderPage();
         expect(playerRecordService.getTable).toHaveBeenCalledTimes(3);
-        expect(playerRecordService.getTable).toHaveBeenCalledWith('points',   2024, true, 3);
+        expect(playerRecordService.getTable).toHaveBeenCalledWith('points', 2024, true, 3);
         expect(playerRecordService.getTable).toHaveBeenCalledWith('averages', 2024, true, 3);
         expect(playerRecordService.getTable).toHaveBeenCalledWith('stalwart', 2024, true, 3);
     });

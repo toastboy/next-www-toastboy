@@ -2,6 +2,19 @@ import { createMockGameDay, defaultGameDay } from '@/tests/mocks/data/gameDay';
 import { createMockOutcome } from '@/tests/mocks/data/outcome';
 import { PlayerFormType } from '@/types';
 
+export const createMockPaddingFormEntry = (playerId = 1): PlayerFormType => ({
+    id: 0,
+    gameDayId: 0,
+    playerId,
+    response: null,
+    responseInterval: null,
+    points: null,
+    team: null,
+    comment: null,
+    pub: null,
+    goalie: null,
+});
+
 export const defaultPlayerFormList =
     Array.from({ length: 10 }, (_, index) => {
         const gameDayId = Math.floor(index / 10 + 1);

@@ -304,7 +304,9 @@ class OutcomeService {
      * @param gameDayId - The game day identifier.
      * @param team - Team to fetch ('A' or 'B').
      * @param formHistory - Number of previous games to include in each
-     * player's form graph (default 5).
+     * player's form graph (default 5). Players with fewer than formHistory
+     * games played are left-padded with unplayed (null points, no gameDay)
+     * entries so the result is always formHistory entries long.
      * @returns A promise resolving to the enriched player records.
      * @throws If there is an error fetching the data.
      */
@@ -327,20 +329,12 @@ class OutcomeService {
                     include: {
                         outcomes: {
                             where: {
-                                gameDayId: {
-                                    lt: validatedGameDayId,
-                                },
-                                points: {
-                                    not: null,
-                                },
+                                gameDayId: { lt: validatedGameDayId },
+                                points: { not: null },
                             },
-                            orderBy: {
-                                gameDayId: 'desc',
-                            },
+                            orderBy: { gameDayId: 'desc' },
                             take: validatedHistory,
-                            include: {
-                                gameDay: true,
-                            },
+                            include: { gameDay: true },
                         },
                     },
                 },
@@ -358,12 +352,30 @@ class OutcomeService {
                     },
                 });
             }
-            const { outcomes: form = [], ...playerData } = player;
+            const { outcomes: playerOutcomes = [], ...playerData } = player;
+
+            // Outcomes arrive newest-first; reverse so the arc reads oldest→newest.
+            const actualForm = [...playerOutcomes].reverse();
+
+            // Left-pad with unplayed sentinels for players newer than formHistory games.
+            const paddingCount = Math.max(0, validatedHistory - actualForm.length);
+            const padding = Array.from({ length: paddingCount }, () => ({
+                id: 0,
+                gameDayId: 0,
+                playerId: playerData.id,
+                response: null,
+                responseInterval: null,
+                points: null,
+                team: null,
+                comment: null,
+                pub: null,
+                goalie: null,
+            }));
 
             return TeamPlayerSchema.parse({
                 ...playerData,
                 outcome,
-                form,
+                form: [...padding, ...actualForm],
             });
         });
     }

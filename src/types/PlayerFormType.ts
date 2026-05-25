@@ -2,7 +2,7 @@ import { GameDaySchema, OutcomeSchema } from 'prisma/zod/schemas';
 import { z } from 'zod';
 
 export const PlayerFormSchema = OutcomeSchema.extend({
-    gameDay: GameDaySchema,
+    gameDay: GameDaySchema.optional(),
 });
 
 export type PlayerFormType = z.infer<typeof PlayerFormSchema>;

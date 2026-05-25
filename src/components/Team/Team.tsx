@@ -38,7 +38,7 @@ export const Team = ({
             {
                 team.length > 0 ?
                     (
-                        <SimpleGrid cols={{ base: 1, sm: 2, md: 3, lg: 5 }} spacing="md">
+                        <SimpleGrid cols={{ base: 1, sm: 2, md: 3, lg: 5 }} spacing="4rem">
                             {team.map((p) => (
                                 <TeamPlayer
                                     key={p.id}

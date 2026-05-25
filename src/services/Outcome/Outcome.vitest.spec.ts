@@ -7,12 +7,12 @@ import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
 import outcomeService from '@/services/Outcome';
+import { createMockGameDay } from '@/tests/mocks/data/gameDay';
 import {
     createMockOutcome,
     defaultOutcome,
 } from '@/tests/mocks/data/outcome';
 import { createMockPlayer } from '@/tests/mocks/data/player';
-import { defaultPlayerFormList } from '@/tests/mocks/data/playerForm';
 import type { OutcomeWriteInput } from '@/types/OutcomeStrictSchema';
 
 const defaultOutcomeInput: OutcomeWriteInput = {
@@ -439,15 +439,20 @@ describe('OutcomeService', () => {
     describe('getTeamPlayersByGameDay', () => {
         it('should return team players with outcomes and form history', async () => {
             const formHistory = 2;
-            const playerOneForm = defaultPlayerFormList
-                .filter((form) => form.playerId === 1 && form.gameDayId < 10)
-                .slice(0, formHistory);
-            const mockOutcomesWithPlayers = [
+            const gameDay8 = createMockGameDay({ id: 8 });
+            const gameDay9 = createMockGameDay({ id: 9 });
+            // Outcomes arrive newest-first from Prisma; service reverses to oldest-first.
+            const playerOneOutcomes = [
+                { ...createMockOutcome({ playerId: 1, gameDayId: 9, points: 3 }), gameDay: gameDay9 },
+                { ...createMockOutcome({ playerId: 1, gameDayId: 8, points: 0 }), gameDay: gameDay8 },
+            ];
+
+            (prisma.outcome.findMany as Mock).mockResolvedValueOnce([
                 {
                     ...createMockOutcome({ id: 201, gameDayId: 10, playerId: 1, team: 'A' }),
                     player: {
                         ...createMockPlayer({ id: 1, name: 'Player One' }),
-                        outcomes: playerOneForm,
+                        outcomes: playerOneOutcomes,
                     },
                 },
                 {
@@ -457,53 +462,74 @@ describe('OutcomeService', () => {
                         outcomes: [],
                     },
                 },
-            ];
-
-            (prisma.outcome.findMany as Mock).mockResolvedValueOnce(mockOutcomesWithPlayers);
+            ]);
 
             const result = await outcomeService.getTeamPlayersByGameDay(10, 'A', formHistory);
 
             expect(prisma.outcome.findMany).toHaveBeenCalledWith({
-                where: {
-                    gameDayId: 10,
-                    team: 'A',
-                },
+                where: { gameDayId: 10, team: 'A' },
                 include: {
                     player: {
                         include: {
                             outcomes: {
                                 where: {
-                                    gameDayId: {
-                                        lt: 10,
-                                    },
-                                    points: {
-                                        not: null,
-                                    },
+                                    gameDayId: { lt: 10 },
+                                    points: { not: null },
                                 },
-                                orderBy: {
-                                    gameDayId: 'desc',
-                                },
+                                orderBy: { gameDayId: 'desc' },
                                 take: formHistory,
-                                include: {
-                                    gameDay: true,
-                                },
+                                include: { gameDay: true },
                             },
                         },
                     },
                 },
             });
             expect(result).toHaveLength(2);
+            // Player One: outcomes reversed to oldest-first, no padding needed.
             expect(result[0]).toMatchObject({
                 id: 1,
-                outcome: {
-                    playerId: 1,
-                    gameDayId: 10,
-                    team: 'A',
-                },
-                form: playerOneForm,
+                outcome: { playerId: 1, gameDayId: 10, team: 'A' },
+                form: [
+                    expect.objectContaining({ gameDayId: 8, points: 0 }),
+                    expect.objectContaining({ gameDayId: 9, points: 3 }),
+                ],
             });
-            expect(result[1].form).toEqual([]);
+            // Player Two: no games played, fully padded with unplayed sentinels.
+            expect(result[1].form).toMatchObject([
+                { id: 0, gameDayId: 0, playerId: 2, points: null },
+                { id: 0, gameDayId: 0, playerId: 2, points: null },
+            ]);
             expect(result[1].outcome.goalie).toBe(true);
+        });
+
+        it('left-pads with unplayed sentinels when player has fewer games than formHistory', async () => {
+            const formHistory = 4;
+            const gameDay8 = createMockGameDay({ id: 8 });
+            const gameDay9 = createMockGameDay({ id: 9 });
+            // Player has only 2 games; should get 2 padding entries at the start.
+            const playerOutcomes = [
+                { ...createMockOutcome({ playerId: 1, gameDayId: 9, points: 3 }), gameDay: gameDay9 },
+                { ...createMockOutcome({ playerId: 1, gameDayId: 8, points: 1 }), gameDay: gameDay8 },
+            ];
+
+            (prisma.outcome.findMany as Mock).mockResolvedValueOnce([
+                {
+                    ...createMockOutcome({ id: 201, gameDayId: 10, playerId: 1, team: 'A' }),
+                    player: {
+                        ...createMockPlayer({ id: 1 }),
+                        outcomes: playerOutcomes,
+                    },
+                },
+            ]);
+
+            const result = await outcomeService.getTeamPlayersByGameDay(10, 'A', formHistory);
+
+            expect(result[0].form).toMatchObject([
+                { id: 0, gameDayId: 0, points: null },   // padding
+                { id: 0, gameDayId: 0, points: null },   // padding
+                { gameDayId: 8, points: 1 },             // oldest actual game
+                { gameDayId: 9, points: 3 },             // newest actual game
+            ]);
         });
 
         it('throws InternalError when an outcome is missing its player relation', async () => {

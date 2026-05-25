@@ -8,7 +8,7 @@ export interface Props {
 }
 
 export const PlayerLastPlayed = ({ lastPlayed }: Props) => {
-    if (!lastPlayed) return <Text component="span">Last played: never</Text>;
+    if (!lastPlayed?.gameDay) return <Text component="span">Last played: never</Text>;
 
     return (
         <Text component="span">

@@ -1,4 +1,4 @@
-import { Flex, Group } from '@mantine/core';
+import { Box, Flex, Group } from '@mantine/core';
 import { IconHandStop } from '@tabler/icons-react';
 
 import { PlayerForm } from '@/components/PlayerForm/PlayerForm';
@@ -12,10 +12,10 @@ export interface Props {
 
 export const TeamPlayer = ({ teamPlayer }: Props) => (
     <Flex direction="column" gap="md">
-        <Flex direction="column" align="center" gap="xs">
-        </Flex>
-        <PlayerMugshot player={teamPlayer} radius="100%" />
-        <PlayerForm form={teamPlayer.form} />
+        <Box pos="relative" style={{ aspectRatio: '1 / 1' }}>
+            <PlayerMugshot player={teamPlayer} radius="100%" />
+            <PlayerForm form={teamPlayer.form} />
+        </Box>
         <Group w="100%" align="center" wrap="wrap">
             <PlayerLink player={teamPlayer} year={0} />
             {teamPlayer.outcome.goalie ? (

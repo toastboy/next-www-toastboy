@@ -16,7 +16,7 @@ export const TeamPlayer = ({ teamPlayer }: Props) => (
             <PlayerMugshot player={teamPlayer} radius="100%" />
             <PlayerForm form={teamPlayer.form} />
         </Box>
-        <Group w="100%" align="center" wrap="wrap">
+        <Group w="100%" align="center" justify="center" wrap="wrap">
             <PlayerLink player={teamPlayer} year={0} />
             {teamPlayer.outcome.goalie ? (
                 <Flex gap="0">

@@ -1,4 +1,4 @@
-import { Badge, Flex, Group, Text, Title } from '@mantine/core';
+import { Badge, Flex, Group, SimpleGrid, Text, Title } from '@mantine/core';
 import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 
 import { Team } from '@/components/Team/Team';
@@ -42,19 +42,20 @@ export const GameDaySummary = ({ gameDay, teamA, teamB }: Props) => {
             </Group>
             <Text>{gameDay.comment ? `(${gameDay.comment})` : ''}</Text>
             <Text c="dimmed">Bibs: {gameDay.bibs ? `Team ${gameDay.bibs}` : 'Not set'}</Text>
-            <Team
-                team={teamA}
-                teamName="A"
-                result={getTeamResultState('A', winner)}
-                hasBibs={gameDay.bibs === 'A'}
-            />
-            <Text fw={700} ta="center">vs.</Text>
-            <Team
-                team={teamB}
-                teamName="B"
-                result={getTeamResultState('B', winner)}
-                hasBibs={gameDay.bibs === 'B'}
-            />
+            <SimpleGrid cols={2} spacing="md">
+                <Team
+                    team={teamA}
+                    teamName="A"
+                    result={getTeamResultState('A', winner)}
+                    hasBibs={gameDay.bibs === 'A'}
+                />
+                <Team
+                    team={teamB}
+                    teamName="B"
+                    result={getTeamResultState('B', winner)}
+                    hasBibs={gameDay.bibs === 'B'}
+                />
+            </SimpleGrid>
         </Flex>
     );
 };

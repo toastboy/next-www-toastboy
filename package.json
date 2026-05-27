@@ -122,7 +122,7 @@
         "@vitest/browser-playwright": "^4.1.7",
         "@vitest/coverage-v8": "^4.1.7",
         "@vitest/ui": "^4.1.7",
-        "chromatic": "^17.0.0",
+        "chromatic": "^17.0.1",
         "debug": "^4.4.3",
         "dotenv": "^17.4.2",
         "eslint": "^9.39.4",

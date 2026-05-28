@@ -304,9 +304,18 @@ class OutcomeService {
      * @param gameDayId - The game day identifier.
      * @param team - Team to fetch ('A' or 'B').
      * @param formHistory - Number of previous games to include in each
-     * player's form graph (default 5). Players with fewer than formHistory
-     * games played are left-padded with unplayed (null points, no gameDay)
-     * entries so the result is always formHistory entries long.
+     * player's form graph (default 5, minimum 0).
+     *
+     * Form behavior:
+     * - Uses only prior outcomes with non-null points.
+     * - Prior outcomes are returned oldest → newest.
+     * - If fewer than formHistory outcomes exist, form is left-padded with
+     *   unplayed sentinel entries (gameDayId: 0, points: null) so the result
+     *   is always formHistory entries long.
+     *
+     * Sorting behavior:
+     * - Players are ordered with goalies first.
+     * - Within each group, players are ordered alphabetically by name.
      * @returns A promise resolving to the enriched player records.
      * @throws If there is an error fetching the data.
      */
@@ -339,6 +348,10 @@ class OutcomeService {
                     },
                 },
             },
+            orderBy: [
+                { goalie: 'desc' },
+                { player: { name: 'asc' } },
+            ],
         });
 
         return outcomes.map(({ player, ...outcome }) => {

@@ -437,7 +437,7 @@ describe('OutcomeService', () => {
     });
 
     describe('getTeamPlayersByGameDay', () => {
-        it('should return team players with outcomes and form history', async () => {
+        it('should pass ordering to Prisma and return team players with outcomes and form history', async () => {
             const formHistory = 2;
             const gameDay8 = createMockGameDay({ id: 8 });
             const gameDay9 = createMockGameDay({ id: 9 });
@@ -449,25 +449,28 @@ describe('OutcomeService', () => {
 
             (prisma.outcome.findMany as Mock).mockResolvedValueOnce([
                 {
-                    ...createMockOutcome({ id: 201, gameDayId: 10, playerId: 1, team: 'A' }),
-                    player: {
-                        ...createMockPlayer({ id: 1, name: 'Player One' }),
-                        outcomes: playerOneOutcomes,
-                    },
-                },
-                {
                     ...createMockOutcome({ id: 202, gameDayId: 10, playerId: 2, team: 'A', goalie: true }),
                     player: {
                         ...createMockPlayer({ id: 2, name: 'Player Two' }),
                         outcomes: [],
                     },
                 },
+                {
+                    ...createMockOutcome({ id: 201, gameDayId: 10, playerId: 1, team: 'A' }),
+                    player: {
+                        ...createMockPlayer({ id: 1, name: 'Player One' }),
+                        outcomes: playerOneOutcomes,
+                    },
+                },
             ]);
 
             const result = await outcomeService.getTeamPlayersByGameDay(10, 'A', formHistory);
-
-            expect(prisma.outcome.findMany).toHaveBeenCalledWith({
+            const expectedFindManyArgs: Partial<Prisma.OutcomeFindManyArgs> = {
                 where: { gameDayId: 10, team: 'A' },
+                orderBy: [
+                    { goalie: 'desc' },
+                    { player: { name: 'asc' } },
+                ],
                 include: {
                     player: {
                         include: {
@@ -483,10 +486,27 @@ describe('OutcomeService', () => {
                         },
                     },
                 },
-            });
+            };
+
+            expect(prisma.outcome.findMany).toHaveBeenCalledWith(expect.objectContaining(expectedFindManyArgs));
             expect(result).toHaveLength(2);
+
+            // When Prisma is mocked, returned row order comes from the fixture.
+            // Assert enrichment by player identity, while query ordering is
+            // validated via the orderBy expectation above.
+            const playerTwo = result.find((player) => player.id === 2);
+            expect(playerTwo).toMatchObject({
+                id: 2,
+                outcome: { playerId: 2, gameDayId: 10, team: 'A', goalie: true },
+            });
+            expect(playerTwo?.form).toMatchObject([
+                { id: 0, gameDayId: 0, playerId: 2, points: null },
+                { id: 0, gameDayId: 0, playerId: 2, points: null },
+            ]);
+
             // Player One: outcomes reversed to oldest-first, no padding needed.
-            expect(result[0]).toMatchObject({
+            const playerOne = result.find((player) => player.id === 1);
+            expect(playerOne).toMatchObject({
                 id: 1,
                 outcome: { playerId: 1, gameDayId: 10, team: 'A' },
                 form: [
@@ -494,12 +514,6 @@ describe('OutcomeService', () => {
                     expect.objectContaining({ gameDayId: 9, points: 3 }),
                 ],
             });
-            // Player Two: no games played, fully padded with unplayed sentinels.
-            expect(result[1].form).toMatchObject([
-                { id: 0, gameDayId: 0, playerId: 2, points: null },
-                { id: 0, gameDayId: 0, playerId: 2, points: null },
-            ]);
-            expect(result[1].outcome.goalie).toBe(true);
         });
 
         it('left-pads with unplayed sentinels when player has fewer games than formHistory', async () => {

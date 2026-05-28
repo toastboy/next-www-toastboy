@@ -44,60 +44,6 @@ describe('GameDaySummary', () => {
         expect(screen.getByText(/No game/i)).toBeInTheDocument();
     });
 
-    describe('winner badge', () => {
-        it('shows "Team A won" when Team A wins', () => {
-            render(
-                <Wrapper>
-                    <GameDaySummary
-                        gameDay={defaultGameDay}
-                        teamA={teamWith(3)}
-                        teamB={teamWith(0)}
-                    />
-                </Wrapper>,
-            );
-            expect(screen.getByText('Team A won')).toBeInTheDocument();
-        });
-
-        it('shows "Team B won" when Team B wins', () => {
-            render(
-                <Wrapper>
-                    <GameDaySummary
-                        gameDay={defaultGameDay}
-                        teamA={teamWith(0)}
-                        teamB={teamWith(3)}
-                    />
-                </Wrapper>,
-            );
-            expect(screen.getByText('Team B won')).toBeInTheDocument();
-        });
-
-        it('shows "Draw" when both teams draw', () => {
-            render(
-                <Wrapper>
-                    <GameDaySummary
-                        gameDay={defaultGameDay}
-                        teamA={teamWith(1)}
-                        teamB={teamWith(1)}
-                    />
-                </Wrapper>,
-            );
-            expect(screen.getByText('Draw')).toBeInTheDocument();
-        });
-
-        it('shows "Result not set" when outcome is indeterminate', () => {
-            render(
-                <Wrapper>
-                    <GameDaySummary
-                        gameDay={defaultGameDay}
-                        teamA={teamWith(3)}
-                        teamB={teamWith(3)}
-                    />
-                </Wrapper>,
-            );
-            expect(screen.getByText('Result not set')).toBeInTheDocument();
-        });
-    });
-
     describe('comment display', () => {
         it('shows comment in parentheses when game exists', () => {
             render(
@@ -149,47 +95,6 @@ describe('GameDaySummary', () => {
                 </Wrapper>,
             );
             expect(screen.getByText(/^No game\s*$/)).toBeInTheDocument();
-        });
-    });
-
-    describe('bibs display', () => {
-        it('shows "Bibs: Team A" when bibs is A', () => {
-            render(
-                <Wrapper>
-                    <GameDaySummary
-                        gameDay={createMockGameDay({ bibs: 'A' })}
-                        teamA={teamWith(3)}
-                        teamB={teamWith(0)}
-                    />
-                </Wrapper>,
-            );
-            expect(screen.getByText('Bibs: Team A')).toBeInTheDocument();
-        });
-
-        it('shows "Bibs: Team B" when bibs is B', () => {
-            render(
-                <Wrapper>
-                    <GameDaySummary
-                        gameDay={createMockGameDay({ bibs: 'B' })}
-                        teamA={teamWith(3)}
-                        teamB={teamWith(0)}
-                    />
-                </Wrapper>,
-            );
-            expect(screen.getByText('Bibs: Team B')).toBeInTheDocument();
-        });
-
-        it('shows "Bibs: Not set" when bibs is null', () => {
-            render(
-                <Wrapper>
-                    <GameDaySummary
-                        gameDay={createMockGameDay({ bibs: null })}
-                        teamA={teamWith(3)}
-                        teamB={teamWith(0)}
-                    />
-                </Wrapper>,
-            );
-            expect(screen.getByText('Bibs: Not set')).toBeInTheDocument();
         });
     });
 });

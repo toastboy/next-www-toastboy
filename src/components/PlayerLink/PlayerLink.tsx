@@ -8,7 +8,10 @@ export interface Props {
 
 export const PlayerLink = ({ player, year }: Props) => {
     return (
-        <Anchor href={`/footy/player/${player.id}${year ? `/${year}` : ''}`} >
+        <Anchor
+            href={`/footy/player/${player.id}${year ? `/${year}` : ''}`}
+            ta="center"
+        >
             {player.name}
         </Anchor>
     );

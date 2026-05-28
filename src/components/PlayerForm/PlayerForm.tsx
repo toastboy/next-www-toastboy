@@ -8,14 +8,17 @@ export interface Props {
 }
 
 const TOTAL_ARC = 280;
-const RING_RADIUS = 57;
-const STROKE_WIDTH = 6;
-// Fixed gap in arc-degrees per segment boundary. Rounded linecaps extend the
-// visual stroke by ~3° per end at this radius/strokeWidth, so 10° leaves ~4°
-// of visible gap between dashes regardless of item count.
+// The Box wrapping the mugshot has 12% padding on each side, so the image
+// circle has radius 38 in the 0–100 viewBox space (half of 100 − 24).
+// The ring sits 4.5 units outside the image edge; outer stroke edge reaches
+// 47.5, which fits within the viewBox without overflow.
+export const RING_RADIUS = 45;
+const STROKE_WIDTH = 5;
+// Rounded linecaps extend the visual stroke by ~3° per end at this
+// radius/strokeWidth, so 10° of arc gap leaves ~4° visible between dashes.
 const GAP_DEG = 10;
-const CX = 50;
-const CY = 50;
+export const CX = 50;
+export const CY = 50;
 
 const colorMap = new Map<number | null | undefined, string>([
     [null, 'var(--mantine-color-gray-5)'],
@@ -61,7 +64,6 @@ export const PlayerForm = ({ form }: Props) => {
                 inset: 0,
                 width: '100%',
                 height: '100%',
-                overflow: 'visible',
                 pointerEvents: 'none',
             }}
         >

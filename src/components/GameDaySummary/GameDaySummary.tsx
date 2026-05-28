@@ -1,8 +1,8 @@
-import { Badge, Flex, Group, SimpleGrid, Text, Title } from '@mantine/core';
+import { Flex, Group, SimpleGrid, Text, Title } from '@mantine/core';
 import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 
 import { Team } from '@/components/Team/Team';
-import { type GameWinner, getGameWinnersFromTeams, getTeamResultState } from '@/lib/gameResult';
+import { getGameWinnersFromTeams, getTeamResultState } from '@/lib/gameResult';
 import { TeamPlayerType } from '@/types';
 
 export interface Props {
@@ -10,12 +10,6 @@ export interface Props {
     teamA: TeamPlayerType[];
     teamB: TeamPlayerType[];
 }
-
-const winnerLabels: Record<Exclude<GameWinner, null>, string> = {
-    A: 'Team A won',
-    B: 'Team B won',
-    draw: 'Draw',
-};
 
 export const GameDaySummary = ({ gameDay, teamA, teamB }: Props) => {
     const winner = getGameWinnersFromTeams(teamA, teamB);
@@ -33,16 +27,9 @@ export const GameDaySummary = ({ gameDay, teamA, teamB }: Props) => {
         <Flex direction="column" gap="sm">
             <Group justify="space-between">
                 <Title order={1}>Game {gameDay.id}: {gameDay.date.toDateString()}</Title>
-                <Badge
-                    size="lg"
-                    color={winner === null ? 'gray' : winner === 'draw' ? 'yellow' : 'teal'}
-                >
-                    {winner === null ? 'Result not set' : winnerLabels[winner]}
-                </Badge>
             </Group>
             <Text>{gameDay.comment ? `(${gameDay.comment})` : ''}</Text>
-            <Text c="dimmed">Bibs: {gameDay.bibs ? `Team ${gameDay.bibs}` : 'Not set'}</Text>
-            <SimpleGrid cols={2} spacing="md">
+            <SimpleGrid cols={{ base: 2, lg: 1 }} spacing="md">
                 <Team
                     team={teamA}
                     teamName="A"

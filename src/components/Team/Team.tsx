@@ -1,4 +1,4 @@
-import { Badge, Group, Paper, SimpleGrid, Text, Title } from '@mantine/core';
+import { Badge, Flex, Group, Paper, SimpleGrid, Text, Title } from '@mantine/core';
 
 import { TeamPlayer } from '@/components/TeamPlayer/TeamPlayer';
 import type { TeamResultState } from '@/lib/gameResult';
@@ -26,7 +26,14 @@ export const Team = ({
 }: Props) => {
     return (
         <Paper p="md" shadow="xl" withBorder>
-            <Group justify="space-between" mb="md">
+            <Flex
+                direction={{ base: 'column', md: 'row' }}
+                justify="space-between"
+                gap="xs"
+                p={0}
+                mb="md"
+                mt={0}
+            >
                 <Title order={3} fw={700}>Team {teamName}</Title>
                 <Group gap="xs">
                     {hasBibs ? <Badge color="orange">Bibs</Badge> : null}
@@ -34,7 +41,7 @@ export const Team = ({
                         {resultStyles[result].label}
                     </Badge>
                 </Group>
-            </Group>
+            </Flex>
             {
                 team.length > 0 ?
                     (

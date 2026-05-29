@@ -11,6 +11,7 @@ export const PlayerLink = ({ player, year }: Props) => {
         <Anchor
             href={`/footy/player/${player.id}${year ? `/${year}` : ''}`}
             ta="center"
+            fz={{ base: 'xl', lg: 'lg', md: 'sm', sm: 'xs' }}
         >
             {player.name}
         </Anchor>

@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { GameDayLink } from '@/components/GameDayLink/GameDayLink';
 import { formatDate } from '@/lib/dates';
 import { Wrapper } from '@/tests/components/lib/common';
-import { defaultGameDay } from '@/tests/mocks/data/gameDay';
+import { createMockGameDay, defaultGameDay } from '@/tests/mocks/data/gameDay';
 
 describe('GameDayLink', () => {
     it('renders link with ISO 8601 date', () => {
@@ -43,11 +43,66 @@ describe('GameDayLink', () => {
         expect(link).toHaveTextContent(defaultGameDay.date.getDate().toString());
     });
 
-    it('renders tooltip when comment is present', async () => {
-        const gameDayWithComment = {
-            ...defaultGameDay,
-            comment: 'This is a comment',
-        };
+    it('renders left-arrow format as an icon inside a link', () => {
+        render(
+            <Wrapper>
+                <GameDayLink gameDay={defaultGameDay} format="left-arrow" />
+            </Wrapper>,
+        );
+
+        const link = screen.getByRole('link');
+        expect(link).toBeInTheDocument();
+        expect(link).toHaveAttribute('href', `/footy/game/${defaultGameDay.id}`);
+        // The link content is an SVG icon, not visible text.
+        expect(link.querySelector('svg')).toBeInTheDocument();
+    });
+
+    it('renders right-arrow format as an icon inside a link', () => {
+        render(
+            <Wrapper>
+                <GameDayLink gameDay={defaultGameDay} format="right-arrow" />
+            </Wrapper>,
+        );
+
+        const link = screen.getByRole('link');
+        expect(link).toBeInTheDocument();
+        expect(link).toHaveAttribute('href', `/footy/game/${defaultGameDay.id}`);
+        // The link content is an SVG icon, not visible text.
+        expect(link.querySelector('svg')).toBeInTheDocument();
+    });
+
+    it('exposes icon-only left-arrow link description via tooltip on hover', async () => {
+        render(
+            <Wrapper>
+                <GameDayLink gameDay={defaultGameDay} format="left-arrow" />
+            </Wrapper>,
+        );
+
+        const user = userEvent.setup();
+        await user.hover(screen.getByRole('link'));
+
+        // The tooltip provides the accessible description for the otherwise icon-only link.
+        const tooltip = await screen.findByRole('tooltip');
+        expect(tooltip).toHaveTextContent(formatDate(defaultGameDay.date));
+    });
+
+    it('exposes icon-only right-arrow link description via tooltip on hover', async () => {
+        render(
+            <Wrapper>
+                <GameDayLink gameDay={defaultGameDay} format="right-arrow" />
+            </Wrapper>,
+        );
+
+        const user = userEvent.setup();
+        await user.hover(screen.getByRole('link'));
+
+        // The tooltip provides the accessible description for the otherwise icon-only link.
+        const tooltip = await screen.findByRole('tooltip');
+        expect(tooltip).toHaveTextContent(formatDate(defaultGameDay.date));
+    });
+
+    it('tooltip includes both date and comment when comment is present', async () => {
+        const gameDayWithComment = createMockGameDay({ comment: 'This is a comment' });
 
         render(<Wrapper><GameDayLink gameDay={gameDayWithComment} /></Wrapper>);
 
@@ -55,19 +110,21 @@ describe('GameDayLink', () => {
         await user.hover(screen.getByRole('link'));
 
         const tooltip = await screen.findByRole('tooltip');
+        expect(tooltip).toHaveTextContent(formatDate(gameDayWithComment.date));
         expect(tooltip).toHaveTextContent('This is a comment');
     });
 
-    it('does not render tooltip when comment is absent', () => {
-        const gameDayWithoutComment = {
-            ...defaultGameDay,
-            comment: null,
-        };
+    it('tooltip shows only the date when comment is null', async () => {
+        const gameDayNoComment = createMockGameDay({ comment: null });
 
-        render(<Wrapper><GameDayLink gameDay={gameDayWithoutComment} /></Wrapper>);
+        render(<Wrapper><GameDayLink gameDay={gameDayNoComment} /></Wrapper>);
 
-        const link = screen.getByRole('link');
-        expect(link).toBeInTheDocument();
-        expect(link).not.toHaveAttribute('title');
+        const user = userEvent.setup();
+        await user.hover(screen.getByRole('link'));
+
+        const tooltip = await screen.findByRole('tooltip');
+        expect(tooltip).toHaveTextContent(formatDate(gameDayNoComment.date));
+        // No stray comment text beyond the date.
+        expect(tooltip.textContent?.trim()).toBe(formatDate(gameDayNoComment.date));
     });
 });

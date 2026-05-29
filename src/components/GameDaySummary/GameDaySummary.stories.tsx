@@ -20,6 +20,8 @@ type Story = StoryObj<typeof meta>;
 export const Primary: Story = {
     args: {
         gameDay: defaultGameDay,
+        prevGameDay: null,
+        nextGameDay: null,
         teamA: defaultTeamPlayerList,
         teamB: defaultTeamPlayerList,
     },

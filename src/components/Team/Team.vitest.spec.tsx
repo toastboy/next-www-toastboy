@@ -13,19 +13,19 @@ describe('Team', () => {
     it('renders team players', () => {
         render(
             <Wrapper>
-                <Team team={defaultTeamPlayerList} teamName="A" />
+                <Team team={defaultTeamPlayerList} teamName="A" maxTeamSize={defaultTeamPlayerList.length} />
             </Wrapper>,
         );
 
         const props = extractMockProps<TeamPlayerProps>('TeamPlayer');
         expect(props.length).toBe(10);
-        expect(props[0].teamPlayer.name).toEqual("Gary Player");
+        expect(props[0].teamPlayer.name).toEqual('Gary Player');
     });
 
     it('renders a heading with accessible team name when teamName is provided', () => {
         render(
             <Wrapper>
-                <Team team={defaultTeamPlayerList} teamName="A" />
+                <Team team={defaultTeamPlayerList} teamName="A" maxTeamSize={defaultTeamPlayerList.length} />
             </Wrapper>,
         );
 
@@ -36,7 +36,12 @@ describe('Team', () => {
     it('shows "Bibs" badge when hasBibs is true', () => {
         render(
             <Wrapper>
-                <Team team={defaultTeamPlayerList} teamName="A" hasBibs={true} />
+                <Team
+                    team={defaultTeamPlayerList}
+                    teamName="A"
+                    maxTeamSize={defaultTeamPlayerList.length}
+                    hasBibs={true}
+                />
             </Wrapper>,
         );
 
@@ -46,7 +51,12 @@ describe('Team', () => {
     it('shows "Won" badge for result="win"', () => {
         render(
             <Wrapper>
-                <Team team={defaultTeamPlayerList} teamName="A" result="win" />
+                <Team
+                    team={defaultTeamPlayerList}
+                    teamName="A"
+                    maxTeamSize={defaultTeamPlayerList.length}
+                    result="win"
+                />
             </Wrapper>,
         );
 
@@ -56,7 +66,12 @@ describe('Team', () => {
     it('shows "Lost" badge for result="loss"', () => {
         render(
             <Wrapper>
-                <Team team={defaultTeamPlayerList} teamName="A" result="loss" />
+                <Team
+                    team={defaultTeamPlayerList}
+                    teamName="A"
+                    maxTeamSize={defaultTeamPlayerList.length}
+                    result="loss"
+                />
             </Wrapper>,
         );
 
@@ -66,7 +81,12 @@ describe('Team', () => {
     it('shows "Draw" badge for result="draw"', () => {
         render(
             <Wrapper>
-                <Team team={defaultTeamPlayerList} teamName="A" result="draw" />
+                <Team
+                    team={defaultTeamPlayerList}
+                    teamName="A"
+                    maxTeamSize={defaultTeamPlayerList.length}
+                    result="draw"
+                />
             </Wrapper>,
         );
 
@@ -76,7 +96,7 @@ describe('Team', () => {
     it('shows "No players selected." when team is empty', () => {
         render(
             <Wrapper>
-                <Team team={[]} teamName="A" />
+                <Team team={[]} teamName="A" maxTeamSize={0} />
             </Wrapper>,
         );
 

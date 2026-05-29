@@ -7,6 +7,7 @@ import { TeamPlayerType } from '@/types';
 export interface Props {
     team: TeamPlayerType[];
     teamName: 'A' | 'B';
+    maxTeamSize: number;
     result?: TeamResultState;
     hasBibs?: boolean;
 }
@@ -23,6 +24,7 @@ export const Team = ({
     teamName,
     result = 'unset',
     hasBibs = false,
+    maxTeamSize,
 }: Props) => {
     return (
         <Paper p="md" shadow="xl" withBorder>
@@ -46,7 +48,7 @@ export const Team = ({
                 team.length > 0 ?
                     (
                         <SimpleGrid
-                            cols={{ base: 2, sm: 3, md: 4, lg: 5 }}
+                            cols={{ base: 2, sm: 3, md: 4, xl: Math.max(4, maxTeamSize) }}
                             spacing={{ base: 'xs', lg: 'sm' }}
                         >
                             {team.map((p) => (

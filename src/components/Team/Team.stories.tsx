@@ -20,5 +20,6 @@ export const Primary: Story = {
     args: {
         teamName: 'B',
         team: defaultTeamPlayerList,
+        maxTeamSize: defaultTeamPlayerList.length,
     },
 };

@@ -1,4 +1,4 @@
-import { Anchor, Flex } from '@mantine/core';
+import { Flex } from '@mantine/core';
 import type { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { cache } from 'react';
@@ -9,6 +9,7 @@ import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
 import { GameDaySummary } from '@/components/GameDaySummary/GameDaySummary';
 import { GameResultForm } from '@/components/GameResultForm/GameResultForm';
 import { getUserRole } from '@/lib/auth.server';
+import { formatDate } from '@/lib/dates';
 import { getGameWinnersFromTeams } from '@/lib/gameResult';
 import gameDayService from '@/services/GameDay';
 import outcomeService from '@/services/Outcome';
@@ -58,7 +59,7 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
     const { gameDay } = await unpackParams(props.params);
 
     return {
-        title: `Game ${gameDay.id}: ${gameDay.date.toDateString()}`,
+        title: formatDate(gameDay.date),
     };
 }
 
@@ -105,23 +106,14 @@ const GamePage = async (props: PageProps) => {
     return (
         <Flex w="100%" direction="column" gap="md">
             <AutoRefresh channels={[FootyChannel.Games, FootyChannel.Results]} />
-            {!!prevGameDay && (
-                <Anchor
-                    href={`/footy/game/${prevGameDay?.id ?? 0}`}
-                    ta="left"
-                >
-                    Previous
-                </Anchor>
-            )}
-            {!!nextGameDay && (
-                <Anchor
-                    href={`/footy/game/${nextGameDay?.id ?? 0}`}
-                    ta="right"
-                >
-                    Next
-                </Anchor>
-            )}
-            {role === 'admin' && (
+            <GameDaySummary
+                gameDay={gameDay}
+                prevGameDay={prevGameDay}
+                nextGameDay={nextGameDay}
+                teamA={teamA}
+                teamB={teamB}
+            />
+            {role === 'admin' && !!gameDay.game && (
                 <GameResultForm
                     gameDayId={gameDay.id}
                     bibs={gameDay.bibs ?? null}
@@ -129,11 +121,6 @@ const GamePage = async (props: PageProps) => {
                     setGameResult={setGameResult}
                 />
             )}
-            <GameDaySummary
-                gameDay={gameDay}
-                teamA={teamA}
-                teamB={teamB}
-            />
         </Flex>
     );
 };

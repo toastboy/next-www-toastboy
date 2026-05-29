@@ -33,6 +33,8 @@ export const Comparison: Story = {
                 <Flex w="100%" direction="column" gap="md">
                     <GameDaySummary
                         gameDay={defaultGameDay}
+                        prevGameDay={null}
+                        nextGameDay={null}
                         teamA={defaultTeamPlayerList}
                         teamB={defaultTeamPlayerList}
                     />

@@ -6,6 +6,8 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { FamilyTreeNodeType } from '@/types';
 
+import { computeTreeRadius } from './familyTreeRadius';
+
 /**
  * Properties for the {@link FamilyTree} component.
  */
@@ -22,16 +24,44 @@ const LINK_STROKE_OPACITY = 0.4;
 const LINK_STROKE_WIDTH = 1.5;
 /** Diameter of mugshot images in pixels. */
 const MUGSHOT_SIZE = 20;
+/** Minimum gap between adjacent mugshot edges, in tree coordinate pixels. */
+const MUGSHOT_GAP = 4;
+/** Minimum SVG height in pixels. */
+const MIN_HEIGHT = 300;
+/** Bottom margin left below the tree when fitting to the viewport. */
+const VIEWPORT_MARGIN = 20;
+/**
+ * The floor radius passed to computeTreeRadius is (width − padding) / 2 so
+ * sparse trees still fill most of the viewport. The padding reserves space for
+ * two mugshot radii on each side of the centred tree.
+ */
+const RADIUS_FLOOR_PADDING = MUGSHOT_SIZE * 4;
+/**
+ * Hard cap on the computed radius, expressed as a multiple of the container
+ * width. computeTreeRadius returns Infinity when two nodes share an angle
+ * (zero angular gap — unsatisfiable constraint). Without this cap the
+ * subsequent `d.y *= radius` would compute 0 × Infinity = NaN for the root
+ * node and propagate NaN into every transform attribute.
+ */
+const RADIUS_MAX_MULTIPLIER = 4;
 
 /**
- * A D3-powered radial tree layout visualising how players were introduced to
- * the club. Based on the Observable "Radial Tidy Tree" example.
+ * A D3 radial tidy-tree visualising how players were introduced to the club.
+ * The founding player sits at the centre and each generation fans out in
+ * concentric rings. Because a tree is always planar, the radial layout
+ * algorithm guarantees that no two links cross.
  *
- * The founding player sits at the centre, and each subsequent generation of
- * introductions fans out from there.
+ * The outer radius is computed in two passes: first the tree is laid out with
+ * a unit radius to obtain the actual angular positions, then the minimum radius
+ * that prevents any two adjacent mugshots from overlapping is derived from
+ * those real positions and the y-coordinates are scaled accordingly. This is
+ * exact — the naïve approach of dividing the node count at each depth by 2π
+ * underestimates the required radius because the tidy-tree algorithm packs
+ * nodes within subtree wedges, not uniformly around the full circle.
  *
- * Player nodes display small circular mugshots; hovering shows the player's
- * name in a tooltip. The chart fills all available horizontal space.
+ * The initial zoom scales the result to fill the available viewport height.
+ * Hovering shows the player name in a tooltip; click to open their profile.
+ * The chart is zoomable and pannable.
  *
  * @see https://observablehq.com/@d3/radial-tree/2
  */
@@ -62,22 +92,60 @@ export const FamilyTree = ({ data }: Props) => {
     }, [updateWidth]);
 
     useEffect(() => {
-        if (!svgRef.current) return;
+        if (!svgRef.current || !containerRef.current) return;
 
-        const height = width;
-        const cx = width * 0.5;
-        const cy = height * 0.5;
-        const radius = Math.min(width, height) / 2 - MUGSHOT_SIZE - 10;
+        const hierarchy = d3
+            .hierarchy(data)
+            .sort((a, b) => d3.ascending(a.data.name, b.data.name));
 
-        const tree = d3
+        const maxDepth = hierarchy.height;
+
+        /*
+         * Pass 1 — lay out with outerRadius = 1 so every node's x is its
+         * final angle in [0, 2π] and y is its normalised depth (depth/maxDepth).
+         * The x-coordinates are independent of the radius and will not change
+         * when we re-scale y in Pass 2.
+         */
+        const treeLayout = d3
             .tree<FamilyTreeNodeType>()
-            .size([2 * Math.PI, radius])
-            .separation((a, b) => (a.parent === b.parent ? 1 : 2) / a.depth);
+            .size([2 * Math.PI, 1])
+            .separation((a, b) => (a.parent === b.parent ? 1 : 2) / Math.max(1, a.depth));
 
-        const root = tree(
-            d3
-                .hierarchy(data)
-                .sort((a, b) => d3.ascending(a.data.name, b.data.name)),
+        const root = treeLayout(hierarchy);
+
+        /*
+         * Pass 2 — derive the smallest outer radius that prevents mugshot
+         * overlap at every depth, floored at half the SVG width so sparse
+         * trees still fill the space. See familyTreeRadius.ts for the maths.
+         *
+         * computeTreeRadius returns Infinity when two nodes share an angle
+         * (unsatisfiable constraint). Cap at 4× the container width so that
+         * the subsequent y-scaling never produces NaN (Infinity × 0).
+         */
+        const radius = Math.min(
+            computeTreeRadius(
+                d3.groups(root.descendants(), (d) => d.depth),
+                maxDepth,
+                Math.max(0, (width - RADIUS_FLOOR_PADDING) / 2),
+                MUGSHOT_SIZE,
+                MUGSHOT_GAP,
+            ),
+            width * RADIUS_MAX_MULTIPLIER,
+        );
+
+        /* Scale y-coordinates from [0, 1] to [0, radius]. */
+        root.each((d) => {
+            d.y *= radius;
+        });
+
+        const containerTop =
+            containerRef.current.getBoundingClientRect().top;
+        const availableHeight = Math.max(
+            MIN_HEIGHT,
+            Math.min(
+                width,
+                window.innerHeight - containerTop - VIEWPORT_MARGIN,
+            ),
         );
 
         const svg = d3.select(svgRef.current);
@@ -85,9 +153,20 @@ export const FamilyTree = ({ data }: Props) => {
 
         svg
             .attr('width', width)
-            .attr('height', height)
-            .attr('viewBox', [-cx, -cy, width, height].join(' '))
+            .attr('height', availableHeight)
             .style('user-select', 'none');
+
+        /* All content lives in this group; zoom transforms it as a unit. */
+        const g = svg.append('g');
+
+        const zoom = d3
+            .zoom<SVGSVGElement, unknown>()
+            .scaleExtent([0.1, 4])
+            .on('zoom', (event: d3.D3ZoomEvent<SVGSVGElement, unknown>) => {
+                g.attr('transform', event.transform.toString());
+            });
+
+        svg.call(zoom);
 
         /* Defs: circular clip path for mugshots */
         const defs = svg.append('defs');
@@ -100,8 +179,7 @@ export const FamilyTree = ({ data }: Props) => {
             .attr('cy', 0);
 
         /* Links */
-        svg
-            .append('g')
+        g.append('g')
             .attr('fill', 'none')
             .attr('stroke', LINK_STROKE)
             .attr('stroke-opacity', LINK_STROKE_OPACITY)
@@ -121,20 +199,27 @@ export const FamilyTree = ({ data }: Props) => {
             );
 
         /* Nodes */
-        const node = svg
+        const node = g
             .append('g')
-            .selectAll('g')
+            .selectAll<SVGGElement, d3.HierarchyPointNode<FamilyTreeNodeType>>(
+                'g',
+            )
             .data(root.descendants())
             .join('g')
             .attr(
                 'transform',
-                (d) => `rotate(${(d.x * 180) / Math.PI - 90}) translate(${d.y},0)`,
-            );
+                (d) =>
+                    `rotate(${(d.x * 180) / Math.PI - 90}) translate(${d.y},0)`,
+            )
+            .style('cursor', 'pointer');
 
-        /* Player nodes: mugshot images, counter-rotated to stay upright */
+        /* Counter-rotated group so mugshots stay upright regardless of angle. */
         const playerG = node
             .append('g')
-            .attr('transform', (d) => `rotate(${90 - (d.x * 180) / Math.PI})`);
+            .attr(
+                'transform',
+                (d) => `rotate(${90 - (d.x * 180) / Math.PI})`,
+            );
 
         playerG
             .append('image')
@@ -155,32 +240,45 @@ export const FamilyTree = ({ data }: Props) => {
             .attr('stroke-width', 1);
 
         /*
-         * Overlay group rendered last so cloned nodes paint on top of
-         * everything. Pointer events are disabled so the original nodes
-         * continue to receive hover/click events uninterrupted.
+         * Fit the zoom to the actual rendered content rather than an assumed
+         * circle diameter. Trees are rarely perfectly circular — branches
+         * cluster in sectors — so getBBox() on the content group gives the
+         * true bounds and produces a tighter, fuller fit.
          */
-        const overlay = svg
-            .append('g')
-            .attr('class', 'overlay')
-            .style('pointer-events', 'none');
+        const gNode = g.node();
+        if (gNode) {
+            const b = gNode.getBBox();
+            if (b.width > 0 && b.height > 0) {
+                const pad = MUGSHOT_SIZE;
+                const scale = Math.max(
+                    0.1,
+                    Math.min(
+                        4,
+                        (width - 2 * pad) / b.width,
+                        (availableHeight - 2 * pad) / b.height,
+                    ),
+                );
+                const tx = (width - b.width * scale) / 2 - b.x * scale;
+                const ty =
+                    (availableHeight - b.height * scale) / 2 - b.y * scale;
+                svg.call(
+                    zoom.transform,
+                    d3.zoomIdentity.translate(tx, ty).scale(scale),
+                );
+            }
+        }
 
-        /* Hover + click behaviour on all nodes */
+        /* Hover + click behaviour */
         node
-            .style('cursor', 'pointer')
-            .on('mouseenter', (_event: MouseEvent, d) => {
-                /* Clone this node into the overlay so it paints on top. */
-                const el = _event.currentTarget as Element;
-                overlay.node()?.appendChild(el.cloneNode(true));
-                /* Convert radial position to Cartesian relative to SVG. */
-                const angle = d.x - Math.PI / 2;
-                const x = Math.cos(angle) * d.y + cx;
-                const y = Math.sin(angle) * d.y + cy;
-                setTooltip({ x, y, name: d.data.name });
+            .on('mouseenter', (event: MouseEvent, d) => {
+                const rect = svgRef.current!.getBoundingClientRect();
+                setTooltip({
+                    x: event.clientX - rect.left,
+                    y: event.clientY - rect.top,
+                    name: d.data.name,
+                });
             })
-            .on('mouseleave', () => {
-                overlay.selectAll('*').remove();
-                setTooltip(null);
-            })
+            .on('mouseleave', () => setTooltip(null))
             .on('click', (_event, d) => {
                 window.location.href = `/footy/player/${d.data.id}`;
             });

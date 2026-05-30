@@ -1,6 +1,9 @@
 // @type {import('next').NextConfig}
 const nextConfig = {
     reactStrictMode: true,
+    ...(process.env.ALLOWED_DEV_ORIGINS && {
+        allowedDevOrigins: process.env.ALLOWED_DEV_ORIGINS.split(',').map(s => s.trim()),
+    }),
     generateBuildId: async () => {
         const { execSync } = await import('node:child_process');
         return execSync('git rev-parse HEAD').toString().trim();

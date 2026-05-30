@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Tooltip } from '@mantine/core';
+import { Box, Paper, Tooltip } from '@mantine/core';
 import * as d3 from 'd3';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
@@ -285,7 +285,15 @@ export const FamilyTree = ({ data }: Props) => {
     }, [data, width]);
 
     return (
-        <Box ref={containerRef} pos="relative" data-testid="family-tree">
+        <Paper
+            shadow="xl"
+            ref={containerRef}
+            pos="relative"
+            data-testid="family-tree"
+            w="100%"
+            h="70vh"
+            style={{ overflow: 'hidden' }}
+        >
             <svg ref={svgRef} />
             {tooltip ? (
                 <Tooltip label={tooltip.name} opened withArrow>
@@ -299,6 +307,6 @@ export const FamilyTree = ({ data }: Props) => {
                     />
                 </Tooltip>
             ) : null}
-        </Box>
+        </Paper>
     );
 };

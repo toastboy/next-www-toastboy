@@ -28,8 +28,6 @@ const MUGSHOT_SIZE = 20;
 const MUGSHOT_GAP = 4;
 /** Minimum SVG height in pixels. */
 const MIN_HEIGHT = 300;
-/** Bottom margin left below the tree when fitting to the viewport. */
-const VIEWPORT_MARGIN = 20;
 /**
  * The floor radius passed to computeTreeRadius is (width − padding) / 2 so
  * sparse trees still fill most of the viewport. The padding reserves space for
@@ -76,20 +74,23 @@ export const FamilyTree = ({ data }: Props) => {
     } | null>(null);
     /** Measured container width; drives SVG sizing. */
     const [width, setWidth] = useState(928);
+    /** Measured container height; drives SVG sizing. */
+    const [height, setHeight] = useState(600);
 
-    /** Update the measured width whenever the container resizes. */
-    const updateWidth = useCallback(() => {
+    /** Update the measured dimensions whenever the container resizes. */
+    const updateSize = useCallback(() => {
         if (containerRef.current) {
             setWidth(containerRef.current.clientWidth);
+            setHeight(containerRef.current.clientHeight);
         }
     }, []);
 
     useEffect(() => {
-        updateWidth();
-        const ro = new ResizeObserver(updateWidth);
+        updateSize();
+        const ro = new ResizeObserver(updateSize);
         if (containerRef.current) ro.observe(containerRef.current);
         return () => ro.disconnect();
-    }, [updateWidth]);
+    }, [updateSize]);
 
     useEffect(() => {
         if (!svgRef.current || !containerRef.current) return;
@@ -138,15 +139,7 @@ export const FamilyTree = ({ data }: Props) => {
             d.y *= radius;
         });
 
-        const containerTop =
-            containerRef.current.getBoundingClientRect().top;
-        const availableHeight = Math.max(
-            MIN_HEIGHT,
-            Math.min(
-                width,
-                window.innerHeight - containerTop - VIEWPORT_MARGIN,
-            ),
-        );
+        const availableHeight = Math.max(MIN_HEIGHT, height);
 
         const svg = d3.select(svgRef.current);
         svg.selectAll('*').remove();
@@ -282,7 +275,7 @@ export const FamilyTree = ({ data }: Props) => {
             .on('click', (_event, d) => {
                 window.location.href = `/footy/player/${d.data.id}`;
             });
-    }, [data, width]);
+    }, [data, width, height]);
 
     return (
         <Paper

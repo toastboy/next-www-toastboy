@@ -78,11 +78,37 @@ const unpackParams = cache(async (
     return { year, allYears, currentGameDay, title, subhead };
 });
 
+/**
+ * Generates metadata for the footy games page based on the provided search
+ * parameters. Fetches the year from the search parameters and constructs a
+ * title for the page using the year name. If the year is not provided or
+ * invalid, it defaults to a generic title.
+ * @param props - The page properties containing search parameters.
+ * @returns A promise that resolves to a Metadata object with the generated
+ * title.
+ * @throws Redirects to the canonical URL if the current URL is not canonical.
+ * @throws Triggers a 404 not found response if the year is invalid or not
+ * present in the available years.
+ */
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
     const { year } = await unpackParams(props.searchParams);
     return { title: `${getYearName(year)} Games` };
 }
 
+/**
+ * Server page component for displaying footy games. Fetches and validates the year from the search parameters, retrieves the list of game days for that year,
+ * and renders a page with a title, subhead, and a list of game days. Also
+ * includes an auto-refresh component that listens to relevant channels for
+ * updates.
+ * @param props - The page properties containing search parameters.
+ * @returns A React element representing the games page.
+ * @throws Redirects to the canonical URL if the current URL is not canonical.
+ * @throws Triggers a 404 not found response if the year is invalid or not
+ * present in the available years.
+ * @remarks The page includes an auto-refresh mechanism that listens to the
+ * "Games" and "Results" channels for real-time updates, ensuring that the
+ * displayed data remains current without requiring manual refreshes.
+ */
 const GamesPage = async (props: PageProps) => {
     const { year, allYears, subhead } = await unpackParams(props.searchParams);
     const gameDays = await gameDayService.getAll({ year });

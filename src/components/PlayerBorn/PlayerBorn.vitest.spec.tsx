@@ -12,7 +12,7 @@ describe('PlayerBorn', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByText(String(defaultPlayer.born))).toBeInTheDocument();
+        expect(screen.getByText(`Born: ${String(defaultPlayer.born)}`)).toBeInTheDocument();
     });
 
     it('renders "Unknown" when birth date is null', () => {
@@ -22,6 +22,6 @@ describe('PlayerBorn', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByText('Unknown')).toBeInTheDocument();
+        expect(screen.getByText(`Born: Unknown`)).toBeInTheDocument();
     });
 });

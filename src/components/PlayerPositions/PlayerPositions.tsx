@@ -1,4 +1,4 @@
-import { Table, TableCaption, TableTbody, TableTd, TableTh, TableTr } from '@mantine/core';
+import { Divider, Paper, Table, TableTbody, TableTd, TableTh, TableTr, Title } from '@mantine/core';
 import { TableNameSchema } from 'prisma/zod/schemas';
 import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 
@@ -13,22 +13,28 @@ export interface Props {
 
 export const PlayerPositions = ({ player, year, record }: Props) => {
     return (
-        <Table summary={`${player.name}'s ${getYearName(year)} table positions`}>
-            <TableCaption>{getYearName(year)} Positions</TableCaption>
-            <TableTbody>
-                {TableNameSchema.options.map((table) => {
-                    const position = record ?
-                        record[rankMap[table][0] as keyof typeof record] ?? null :
-                        null;
+        <Paper shadow="xs" p="sm" w="14rem" withBorder>
+            <Title order={3} mb="xs" w="100%" ta="center">Positions</Title>
+            <Divider mb="xs" />
+            <Table
+                summary={`${player.name}'s ${getYearName(year)} table positions`}
+                layout="fixed"
+            >
+                <TableTbody>
+                    {TableNameSchema.options.map((table) => {
+                        const position = record ?
+                            record[rankMap[table][0] as keyof typeof record] ?? null :
+                            null;
 
-                    return (
-                        <TableTr key={table}>
-                            <TableTh>{table.charAt(0).toUpperCase() + table.slice(1)}</TableTh>
-                            <TableTd>{position ?? '-'}</TableTd>
-                        </TableTr>
-                    );
-                })}
-            </TableTbody>
-        </Table>
+                        return (
+                            <TableTr key={table}>
+                                <TableTh>{table.charAt(0).toUpperCase() + table.slice(1)}</TableTh>
+                                <TableTd w="3rem">{position ?? '-'}</TableTd>
+                            </TableTr>
+                        );
+                    })}
+                </TableTbody>
+            </Table>
+        </Paper>
     );
 };

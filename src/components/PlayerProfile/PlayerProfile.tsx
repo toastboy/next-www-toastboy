@@ -1,21 +1,17 @@
-import { Box, Container, Title } from '@mantine/core';
+import { Flex, Group, SimpleGrid, Stack } from '@mantine/core';
 import type { TableName } from 'prisma/generated//browser';
 import type { ArseType } from 'prisma/zod/schemas/models/Arse.schema';
 import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 
 import { PlayerArse } from '@/components/PlayerArse/PlayerArse';
 import { PlayerBorn } from '@/components/PlayerBorn/PlayerBorn';
-import { PlayerClubs } from '@/components/PlayerClubs/PlayerClubs';
-import { PlayerCountries } from '@/components/PlayerCountries/PlayerCountries';
-import { PlayerForm } from '@/components/PlayerForm/PlayerForm';
-import { PlayerHistory } from '@/components/PlayerHistory/PlayerHistory';
+import { PlayerCard } from '@/components/PlayerCard/PlayerCard';
 import { PlayerLastPlayed } from '@/components/PlayerLastPlayed/PlayerLastPlayed';
-import { PlayerMugshot } from '@/components/PlayerMugshot/PlayerMugshot';
-import { PlayerTrophies } from '@/components/PlayerTrophies/PlayerTrophies';
+import { PlayerPositions } from '@/components/PlayerPositions/PlayerPositions';
+import { PlayerResults } from '@/components/PlayerResults/PlayerResults';
+import { TitleWithYearDropdown } from '@/components/TitleWithYearDropdown/TitleWithYearDropdown';
 import { PlayerDisplayType } from '@/services/Player';
 import { ClubSupporterDataType, CountrySupporterDataType, PlayerFormType } from '@/types';
-
-import classes from './PlayerProfile.module.css';
 
 export interface Props {
     player: PlayerDisplayType;
@@ -33,7 +29,7 @@ export interface Props {
 export const PlayerProfile = ({
     player,
     year,
-    form,
+    form: _form,
     lastPlayed,
     clubs,
     countries,
@@ -43,32 +39,31 @@ export const PlayerProfile = ({
     trophies,
 }: Props) => {
     return (
-        <Container>
-            <Title order={1}>{player.name}</Title>
-            <Box pos="relative" maw={"40em"} mah={"40em"}>
-                <PlayerMugshot player={player} />
-                <Box className={classes.trophies} left={"0.5em"} top={"0.5em"}>
-                    <PlayerTrophies trophies={trophies} />
-                </Box>
-                <Box className={classes.badges} right={"0.5em"} bottom={"0.5em"}>
-                    <PlayerClubs clubs={clubs} />
-                </Box>
-                <Box className={classes.badges} left={"0.5em"} bottom={"0.5em"}>
-                    <PlayerCountries countries={countries} />
-                </Box>
-            </Box>
-            <PlayerLastPlayed lastPlayed={lastPlayed} />
-            {arse ? (
-                <PlayerArse arse={arse} />
-            ) : null}
-            <PlayerForm form={form} />
-            <PlayerHistory
-                player={player}
-                activeYears={activeYears}
-                year={year}
-                record={record}
-            />
-            <PlayerBorn player={player} />
-        </Container>
+        <Flex direction="column" gap="sm">
+            <Group justify="center" gap="xs">
+                <TitleWithYearDropdown order={1} title={player.name} year={year} validYears={activeYears} />
+            </Group>
+            <SimpleGrid cols={{ base: 1, lg: 2, xl: 3 }} spacing="md">
+                <Stack gap="sm">
+                    <PlayerCard
+                        player={player}
+                        clubs={clubs}
+                        countries={countries}
+                        trophies={trophies}
+                    />
+                    <PlayerLastPlayed lastPlayed={lastPlayed} />
+                    <PlayerBorn player={player} />
+                </Stack>
+                <Stack gap="sm">
+                    <SimpleGrid spacing="xs">
+                        <PlayerResults player={player} year={year} record={record} />
+                        <PlayerPositions player={player} year={year} record={record} />
+                    </SimpleGrid>
+                </Stack>
+                <Stack gap="sm">
+                    <PlayerArse arse={arse} />
+                </Stack>
+            </SimpleGrid>
+        </Flex>
     );
 };

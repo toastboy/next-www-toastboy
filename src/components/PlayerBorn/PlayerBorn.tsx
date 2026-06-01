@@ -8,7 +8,7 @@ export interface Props {
 export const PlayerBorn = ({ player }: Props) => {
     return (
         <Text>
-            {player.born ?? 'Unknown'}
+            Born: {player.born ?? 'Unknown'}
         </Text>
     );
 };

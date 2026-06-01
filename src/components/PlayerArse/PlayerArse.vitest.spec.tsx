@@ -16,14 +16,14 @@ describe('PlayerArse', () => {
         expect(screen.getByText('Running')).toBeInTheDocument();
     });
 
-    it('renders dashes when arse is null', () => {
+    it('renders nothing when arse is null', () => {
         render(
             <Wrapper>
                 <PlayerArse arse={null} />
             </Wrapper>,
         );
 
-        const cells = screen.getAllByText('-');
-        expect(cells.length).toBeGreaterThan(0);
+        const cells = screen.queryAllByText('-');
+        expect(cells.length).toBe(0);
     });
 });

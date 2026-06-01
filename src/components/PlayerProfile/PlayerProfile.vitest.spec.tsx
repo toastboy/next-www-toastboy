@@ -13,13 +13,11 @@ import { defaultPlayerRecord, defaultTrophiesList } from '@/tests/mocks/data/pla
 
 vi.mock('@/components/PlayerArse/PlayerArse');
 vi.mock('@/components/PlayerBorn/PlayerBorn');
-vi.mock('@/components/PlayerClubs/PlayerClubs');
-vi.mock('@/components/PlayerCountries/PlayerCountries');
+vi.mock('@/components/PlayerCard/PlayerCard');
 vi.mock('@/components/PlayerForm/PlayerForm');
-vi.mock('@/components/PlayerHistory/PlayerHistory');
 vi.mock('@/components/PlayerLastPlayed/PlayerLastPlayed');
-vi.mock('@/components/PlayerMugshot/PlayerMugshot');
-vi.mock('@/components/PlayerTrophies/PlayerTrophies');
+vi.mock('@/components/PlayerPositions/PlayerPositions');
+vi.mock('@/components/PlayerResults/PlayerResults');
 
 describe('PlayerProfile', () => {
     it('renders player name and profile sections', () => {
@@ -43,7 +41,7 @@ describe('PlayerProfile', () => {
         expect(screen.getByText(defaultPlayer.name)).toBeInTheDocument();
     });
 
-    it('does not render PlayerArse when arse is null', () => {
+    it('renders PlayerCard', () => {
         render(
             <Wrapper>
                 <PlayerProfile
@@ -53,7 +51,7 @@ describe('PlayerProfile', () => {
                     lastPlayed={defaultPlayerFormList[0]}
                     clubs={defaultClubSupporterDataList}
                     countries={defaultCountrySupporterDataList}
-                    arse={null}
+                    arse={defaultArse}
                     activeYears={[2023, 2024]}
                     record={defaultPlayerRecord}
                     trophies={defaultTrophiesList}
@@ -61,6 +59,6 @@ describe('PlayerProfile', () => {
             </Wrapper>,
         );
 
-        expect(screen.queryByText(/PlayerArse:/)).not.toBeInTheDocument();
+        expect(screen.getByText(/PlayerCard:/)).toBeInTheDocument();
     });
 });

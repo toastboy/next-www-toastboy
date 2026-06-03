@@ -884,30 +884,22 @@ describe('PlayerRecordService', () => {
 
     describe('upsertFromGameDay', () => {
         it('rebuilds player records by iterating game days from the changed game onward', async () => {
+            const fromDate = new Date('2024-01-10T00:00:00Z');
+            const getSpy = vi.spyOn(gameDayService, 'get').mockResolvedValueOnce({
+                id: 2, year: 2024, date: fromDate, game: true,
+                mailSent: new Date('2024-01-08T09:00:00Z'),
+                comment: null, bibs: 'A', pickerGamesHistory: 10, cost: 450, hallCost: 5000,
+            });
             const getAllSpy = vi.spyOn(gameDayService, 'getAll').mockResolvedValue([
                 {
-                    id: 2,
-                    year: 2024,
-                    date: new Date('2024-01-10T00:00:00Z'),
-                    game: true,
+                    id: 2, year: 2024, date: fromDate, game: true,
                     mailSent: new Date('2024-01-08T09:00:00Z'),
-                    comment: null,
-                    bibs: 'A',
-                    pickerGamesHistory: 10,
-                    cost: 450,
-                    hallCost: 5000,
+                    comment: null, bibs: 'A', pickerGamesHistory: 10, cost: 450, hallCost: 5000,
                 },
                 {
-                    id: 3,
-                    year: 2024,
-                    date: new Date('2024-01-17T00:00:00Z'),
-                    game: true,
+                    id: 3, year: 2024, date: new Date('2024-01-17T00:00:00Z'), game: true,
                     mailSent: new Date('2024-01-15T09:00:00Z'),
-                    comment: null,
-                    bibs: 'B',
-                    pickerGamesHistory: 10,
-                    cost: 450,
-                    hallCost: 5000,
+                    comment: null, bibs: 'B', pickerGamesHistory: 10, cost: 450, hallCost: 5000,
                 },
             ]);
             const upsertForGameDaySpy = vi
@@ -926,30 +918,52 @@ describe('PlayerRecordService', () => {
 
             const result = await playerRecordService.upsertFromGameDay(2);
 
-            expect(getAllSpy).toHaveBeenCalledWith({
-                onOrAfter: 2,
-            });
+            expect(getSpy).toHaveBeenCalledWith(2);
+            expect(getAllSpy).toHaveBeenCalledWith({ fromDate });
             expect(upsertForGameDaySpy).toHaveBeenCalledTimes(2);
             expect(upsertForGameDaySpy).toHaveBeenNthCalledWith(1, 2);
             expect(upsertForGameDaySpy).toHaveBeenNthCalledWith(2, 3);
             expect(result).toHaveLength(2);
             expect(prisma.playerRecord.deleteMany).not.toHaveBeenCalled();
 
+            getSpy.mockRestore();
             getAllSpy.mockRestore();
             upsertForGameDaySpy.mockRestore();
         });
 
-        it('returns no records when no later game days exist', async () => {
-            const getAllSpy = vi.spyOn(gameDayService, 'getAll').mockResolvedValueOnce([]);
+        it('returns no records when the game day does not exist', async () => {
+            const getSpy = vi.spyOn(gameDayService, 'get').mockResolvedValueOnce(null);
+            const getAllSpy = vi.spyOn(gameDayService, 'getAll');
             const upsertForGameDaySpy = vi.spyOn(playerRecordService, 'upsertForGameDay');
 
             const result = await playerRecordService.upsertFromGameDay(9999);
 
             expect(result).toEqual([]);
-            expect(getAllSpy).toHaveBeenCalledWith({
-                onOrAfter: 9999,
-            });
+            expect(getSpy).toHaveBeenCalledWith(9999);
+            expect(getAllSpy).not.toHaveBeenCalled();
             expect(upsertForGameDaySpy).not.toHaveBeenCalled();
+            getSpy.mockRestore();
+            getAllSpy.mockRestore();
+            upsertForGameDaySpy.mockRestore();
+        });
+
+        it('returns no records when getAll returns no game days', async () => {
+            const fromDate = new Date('2024-01-10T00:00:00Z');
+            const getSpy = vi.spyOn(gameDayService, 'get').mockResolvedValueOnce({
+                id: 2, year: 2024, date: fromDate, game: true,
+                mailSent: new Date('2024-01-08T09:00:00Z'),
+                comment: null, bibs: 'A', pickerGamesHistory: 10, cost: 450, hallCost: 5000,
+            });
+            const getAllSpy = vi.spyOn(gameDayService, 'getAll').mockResolvedValueOnce([]);
+            const upsertForGameDaySpy = vi.spyOn(playerRecordService, 'upsertForGameDay');
+
+            const result = await playerRecordService.upsertFromGameDay(2);
+
+            expect(result).toEqual([]);
+            expect(getSpy).toHaveBeenCalledWith(2);
+            expect(getAllSpy).toHaveBeenCalledWith({ fromDate });
+            expect(upsertForGameDaySpy).not.toHaveBeenCalled();
+            getSpy.mockRestore();
             getAllSpy.mockRestore();
             upsertForGameDaySpy.mockRestore();
         });

@@ -32,22 +32,25 @@ class GameDayService {
     }
 
     /**
-     * Retrieves all game days based on the provided filters.
+     * Retrieves all game days based on the provided filters, sorted by date
+     * ascending then ID ascending.
      *
      * @param {Object} filters - The filters to apply when retrieving game days.
      * @param {TeamNameType} [filters.bibs] - The team name or bibs to filter by. If "null", it will be treated as null.
      * @param {boolean} [filters.game] - Whether to filter by game status.
      * @param {boolean} [filters.mailSent] - Whether to filter by mail sent status. If true, it will filter for non-null mailSent values.
      * @param {number} [filters.year] - The year to filter by.
+     * @param {Date} [filters.fromDate] - Only return game days on or after this date (inclusive).
+     * @param {Date} [filters.beforeDate] - Only return game days before this date (exclusive).
      * @returns {Promise<GameDayType[]>} A promise that resolves to an array of GameDayType objects.
      */
-    async getAll({ bibs, game, mailSent, year, before, onOrAfter }: {
+    async getAll({ bibs, game, mailSent, year, fromDate, beforeDate }: {
         bibs?: TeamName,
         game?: boolean,
         mailSent?: boolean,
         year?: number,
-        before?: number,
-        onOrAfter?: number,
+        fromDate?: Date,
+        beforeDate?: Date,
     } = {}): Promise<GameDayType[]> {
         const where = GameDayWhereInputObjectSchema.parse({
             bibs, game, year: year === 0 ? undefined : year,
@@ -55,13 +58,13 @@ class GameDayService {
         if (mailSent !== undefined) {
             where.mailSent = mailSent ? { not: null } : null;
         }
-        if (before !== undefined) {
-            where.id = { lt: before };
+        if (fromDate !== undefined || beforeDate !== undefined) {
+            where.date = {
+                ...(fromDate !== undefined ? { gte: fromDate } : {}),
+                ...(beforeDate !== undefined ? { lt: beforeDate } : {}),
+            };
         }
-        if (onOrAfter !== undefined) {
-            where.id = { gte: onOrAfter };
-        }
-        return prisma.gameDay.findMany({ where });
+        return prisma.gameDay.findMany({ where, orderBy: [{ date: 'asc' }, { id: 'asc' }] });
     }
 
     /**

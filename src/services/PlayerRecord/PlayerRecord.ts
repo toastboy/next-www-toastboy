@@ -399,8 +399,9 @@ class PlayerRecordService {
     /**
      * Rebuilds PlayerRecords from the provided game day onward.
      *
-     * This is intentionally simple: find all game days on/after `gameDayId` and
-     * call `upsertForGameDay` for each in ascending order.
+     * This is intentionally simple: look up the game day's date, find all game
+     * days on or after that date, and call `upsertForGameDay` for each in
+     * ascending order. Returns an empty array if the game day does not exist.
      *
      * Future game days are excluded because records/standings should only
      * reflect completed time periods. Fixtures in the future may already have
@@ -412,8 +413,11 @@ class PlayerRecordService {
      * rebuilding PlayerRecords fails.
      */
     async upsertFromGameDay(gameDayId: number): Promise<PlayerRecordType[]> {
+        const fromGameDay = await gameDayService.get(gameDayId);
+        if (!fromGameDay) return [];
+
         const today = new Date();
-        const gameDays = (await gameDayService.getAll({ onOrAfter: gameDayId }))
+        const gameDays = (await gameDayService.getAll({ fromDate: fromGameDay.date }))
             // Keep future fixtures out of PlayerRecord calculations until
             // their date has passed.
             .filter((gameDay) => gameDay.date <= today);

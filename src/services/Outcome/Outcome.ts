@@ -448,16 +448,14 @@ class OutcomeService {
 
         const yearStart = yr > 0 ? new Date(yr, 0, 1) : undefined;
         // When both bounds are present, take the later start so neither is silently ignored.
-        const gteDate = yearStart && from ?
+        const startDate = yearStart && from ?
             new Date(Math.max(yearStart.getTime(), from.getTime())) :
             yearStart ?? from;
-        const ltDate = yr > 0 ? new Date(yr + 1, 0, 1) : undefined;
-        const dateFilter = (gteDate ?? ltDate) ? {
-            date: {
-                ...(gteDate ? { gte: gteDate } : {}),
-                ...(ltDate ? { lt: ltDate } : {}),
-            },
-        } : {};
+        const endDate = yr > 0 ? new Date(yr + 1, 0, 1) : undefined;
+        const dateRange: { gte?: Date; lt?: Date } = {};
+        if (startDate) dateRange.gte = startDate;
+        if (endDate) dateRange.lt = endDate;
+        const dateFilter = startDate ?? endDate ? { date: dateRange } : {};
 
         const [outcomes, noGameDays] = await Promise.all([
             prisma.outcome.findMany({
@@ -468,10 +466,7 @@ class OutcomeService {
                 orderBy: [{ gameDay: { date: 'asc' } }, { gameDayId: 'asc' }],
                 include: { gameDay: true },
             }),
-            prisma.gameDay.findMany({
-                where: { game: false, ...dateFilter },
-                orderBy: [{ date: 'asc' }, { id: 'asc' }],
-            }),
+            gameDayService.getAll({ game: false, fromDate: startDate, beforeDate: endDate }),
         ]);
 
         const synthetic: PlayerFormType[] = noGameDays.map(gameDay => ({

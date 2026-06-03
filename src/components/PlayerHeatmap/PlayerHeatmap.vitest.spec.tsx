@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+import { useRouter } from 'next/navigation';
 import { vi } from 'vitest';
 
 import { Wrapper } from '@/tests/components/lib/common';
@@ -217,7 +218,7 @@ describe('PlayerHeatmap', () => {
         expect(tooltipDiv.style.opacity).toBe('0');
     });
 
-    it('shows "No game" in tooltip for a no-game day cell', () => {
+    it('shows "No game" and the game day comment in tooltip for a no-game day cell', () => {
         const { container } = render(
             <Wrapper>
                 <PlayerHeatmap data={buildWithNoGameData()} year={2024} />
@@ -228,5 +229,22 @@ describe('PlayerHeatmap', () => {
         const tooltipDiv = container.querySelector('svg')!.nextElementSibling as HTMLElement;
         fireEvent.mouseMove(cells[1]);
         expect(tooltipDiv.innerHTML).toContain('No game');
+        // createMockGameDay defaults comment to 'I heart footy'
+        expect(tooltipDiv.innerHTML).toContain('I heart footy');
+    });
+
+    it('navigates to the game day page when a no-game cell is clicked', () => {
+        const push = useRouter().push as ReturnType<typeof vi.fn>;
+        push.mockClear();
+
+        const { container } = render(
+            <Wrapper>
+                <PlayerHeatmap data={buildWithNoGameData()} year={2024} />
+            </Wrapper>,
+        );
+        const cells = container.querySelectorAll('rect.cell');
+        // Second cell is the no-game day with gameDayId = 2
+        fireEvent.click(cells[1]);
+        expect(push).toHaveBeenCalledWith('/footy/game/2');
     });
 });

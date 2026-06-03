@@ -22,9 +22,10 @@ export interface Props {
      * (including a native `Date` object for `gameDay.date` — Prisma returns
      * `Date`, but JSON-serialised props will have a string and will not render
      * correctly). Entries whose `gameDay.game` is `false` represent scheduled
-     * days on which no game took place; they are shown in light grey and are
-     * not clickable. Entries with `points === null` and `game === true`
-     * represent days the player was invited but did not play.
+     * days on which no game took place; they are shown in light grey and
+     * navigate to the game day details page on click. Entries with
+     * `points === null` and `game === true` represent days the player was
+     * invited but did not play.
      */
     data: PlayerFormType[];
     /**
@@ -45,6 +46,7 @@ interface Cell {
     noGame: boolean;
     date: Date;
     gameId: number;
+    comment: string | null | undefined;
 }
 
 const colorMap = new Map<number | null | undefined, string>([
@@ -96,6 +98,7 @@ export function buildGrid(data: PlayerFormType[]): { cells: Cell[]; maxRow: numb
                 noGame: entry.gameDay!.game === false,
                 date: new Date(entry.gameDay!.date),
                 gameId: entry.gameDay!.id,
+                comment: entry.gameDay?.comment,
             });
         });
         maxRow = Math.max(maxRow, entries.length);
@@ -131,6 +134,7 @@ const VISIBLE_PANELS = 3.5;
 interface TooltipContent {
     date: string;
     label: string;
+    comment?: string | null;
 }
 
 type ShowTooltip = (event: globalThis.MouseEvent, content: TooltipContent) => void;
@@ -189,24 +193,28 @@ function drawPanel(
         .attr('width', xScale.bandwidth())
         .attr('height', cellSize)
         .attr('rx', 2)
-        .attr('role', d => d.noGame ? 'img' : 'button')
-        .attr('tabindex', d => d.noGame ? null : '0')
+        .attr('role', 'button')
+        .attr('tabindex', '0')
         .attr('aria-label', d => {
-            const status = d.noGame ? 'No game' : (resultLabel.get(d.points) ?? '');
-            return `${formatDate(d.date)} – ${status}`;
+            if (d.noGame) {
+                const status = d.comment ? `No game — ${d.comment}` : 'No game';
+                return `${formatDate(d.date)} – ${status}`;
+            }
+            return `${formatDate(d.date)} – ${resultLabel.get(d.points) ?? ''}`;
         })
         .style('fill', d => d.noGame ? NO_GAME_COLOR : (colorMap.get(d.points) ?? 'var(--mantine-color-gray-5)'))
-        .style('cursor', d => d.noGame ? 'default' : 'pointer')
+        .style('cursor', 'pointer')
         .on('mousemove', (event: globalThis.MouseEvent, d) => {
             showTooltip(event, {
                 date: formatDate(d.date),
                 label: d.noGame ? 'No game' : (resultLabel.get(d.points) ?? ''),
+                comment: d.noGame ? d.comment : undefined,
             });
         })
         .on('mouseleave', hideTooltip)
-        .on('click', (_, d) => { if (!d.noGame) onCellClick(d.gameId); })
+        .on('click', (_, d) => { onCellClick(d.gameId); })
         .on('keydown', (event: globalThis.KeyboardEvent, d) => {
-            if (!d.noGame && (event.key === 'Enter' || event.key === ' ')) {
+            if (event.key === 'Enter' || event.key === ' ') {
                 event.preventDefault();
                 onCellClick(d.gameId);
             }
@@ -221,11 +229,11 @@ function drawPanel(
  * - Yellow — draw (points = 1)
  * - Grey   — invited but did not play (points = null, game = true)
  * - Red    — lost (points = 0)
- * - Light grey — no game took place (gameDay.game = false); not interactive
+ * - Light grey — no game took place (gameDay.game = false)
  *
- * Clicking or pressing Enter/Space on an interactive cell navigates to the
- * corresponding game page (`/footy/game/[id]`). No-game cells have no
- * click action and are excluded from the tab order.
+ * Clicking or pressing Enter/Space on any cell navigates to the corresponding
+ * game page (`/footy/game/[id]`). No-game cells show the game day comment in
+ * the tooltip when one is available.
  *
  * The chart is responsive: it redraws whenever the wrapper is resized and
  * sets its own height based on the data. In the all-time view (`year === 0`)
@@ -242,7 +250,7 @@ export const PlayerHeatmap = ({ data, year }: Props) => {
     useEffect(() => {
         if (!svgRef.current || !wrapperRef.current || !tooltipRef.current) return;
 
-        const showTooltip: ShowTooltip = (event, { date, label }) => {
+        const showTooltip: ShowTooltip = (event, { date, label, comment }) => {
             const el = tooltipRef.current!;
             const wrapper = wrapperRef.current!;
             const wrapperRect = wrapper.getBoundingClientRect();
@@ -254,6 +262,10 @@ export const PlayerHeatmap = ({ data, year }: Props) => {
             el.appendChild(b);
             el.appendChild(document.createElement('br'));
             el.appendChild(document.createTextNode(label));
+            if (comment) {
+                el.appendChild(document.createElement('br'));
+                el.appendChild(document.createTextNode(comment));
+            }
 
             el.style.left = `${event.clientX - wrapperRect.left + wrapper.scrollLeft}px`;
             el.style.top = `${event.clientY - wrapperRect.top + wrapper.scrollTop + 16}px`;

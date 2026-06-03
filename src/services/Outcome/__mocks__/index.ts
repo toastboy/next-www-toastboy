@@ -2,6 +2,7 @@ import { vi } from 'vitest';
 const outcomeService = {
     getAdminByGameDay: vi.fn(),
     getByGameDay: vi.fn(),
+    getHistoryByPlayer: vi.fn(),
     getTurnout: vi.fn(),
     getTurnoutByYear: vi.fn(),
     getRecentGamePoints: vi.fn(),

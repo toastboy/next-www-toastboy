@@ -15,6 +15,7 @@ vi.mock('@/components/PlayerArse/PlayerArse');
 vi.mock('@/components/PlayerBorn/PlayerBorn');
 vi.mock('@/components/PlayerCard/PlayerCard');
 vi.mock('@/components/PlayerForm/PlayerForm');
+vi.mock('@/components/PlayerHeatmap/PlayerHeatmap');
 vi.mock('@/components/PlayerLastPlayed/PlayerLastPlayed');
 vi.mock('@/components/PlayerPositions/PlayerPositions');
 vi.mock('@/components/PlayerResults/PlayerResults');
@@ -26,7 +27,7 @@ describe('PlayerProfile', () => {
                 <PlayerProfile
                     player={defaultPlayer}
                     year={2024}
-                    form={defaultPlayerFormList}
+                    history={defaultPlayerFormList}
                     lastPlayed={defaultPlayerFormList[0]}
                     clubs={defaultClubSupporterDataList}
                     countries={defaultCountrySupporterDataList}
@@ -47,7 +48,7 @@ describe('PlayerProfile', () => {
                 <PlayerProfile
                     player={defaultPlayer}
                     year={2024}
-                    form={defaultPlayerFormList}
+                    history={defaultPlayerFormList}
                     lastPlayed={defaultPlayerFormList[0]}
                     clubs={defaultClubSupporterDataList}
                     countries={defaultCountrySupporterDataList}

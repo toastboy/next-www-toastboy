@@ -25,7 +25,7 @@ export const Primary: Story = {
     args: {
         player: defaultPlayer,
         year: 2023,
-        form: defaultPlayerFormList,
+        history: defaultPlayerFormList,
         lastPlayed: defaultPlayerFormList[9],
         clubs: defaultClubSupporterDataList,
         countries: defaultCountrySupporterDataList,

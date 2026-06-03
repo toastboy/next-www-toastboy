@@ -14,8 +14,9 @@ import { InternalError } from '@/lib/errors';
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import gameDayService from '@/services/GameDay';
 import {
+    PlayerFormType,
     TeamPlayerSchema,
-    TeamPlayerType,
+    type TeamPlayerType,
     Turnout,
     TurnoutByYearType,
     WDLType,
@@ -28,6 +29,23 @@ import {
     OutcomeWriteInputSchema,
 } from '@/types/OutcomeStrictSchema';
 
+/** Linear merge of two PlayerFormType arrays already sorted by date then id. */
+function mergeByDate(a: PlayerFormType[], b: PlayerFormType[]): PlayerFormType[] {
+    const result: PlayerFormType[] = [];
+    let i = 0;
+    let j = 0;
+    while (i < a.length && j < b.length) {
+        const dateDiff = a[i].gameDay!.date.getTime() - b[j].gameDay!.date.getTime();
+        if (dateDiff < 0 || (dateDiff === 0 && a[i].gameDay!.id <= b[j].gameDay!.id)) {
+            result.push(a[i++]);
+        } else {
+            result.push(b[j++]);
+        }
+    }
+    while (i < a.length) result.push(a[i++]);
+    while (j < b.length) result.push(b[j++]);
+    return result;
+}
 
 class OutcomeService {
     /**
@@ -405,6 +423,72 @@ class OutcomeService {
                 playerId: playerId,
             },
         });
+    }
+
+    /**
+     * Retrieves all outcomes for a player across a given year, or all time when
+     * year is 0. Also includes scheduled days where no game took place
+     * (game = false) as synthetic entries with null points, so the result is
+     * suitable for building a full activity heatmap.
+     *
+     * @param playerId - The ID of the player.
+     * @param year - The year to filter by, or 0 for all time.
+     * @param fromDate - Optional earliest date (inclusive). Game days before
+     * this date are excluded. Useful for filtering to a player's joined date.
+     * @returns A promise that resolves to outcomes with game days, ordered by
+     * game day date ascending, with game day ID as a tiebreaker. No-game days
+     * are represented as synthetic entries with gameDay.game = false.
+     */
+    async getHistoryByPlayer(playerId: number, year: number, fromDate?: Date): Promise<PlayerFormType[]> {
+        const { playerId: pid, year: yr, fromDate: from } = z.object({
+            playerId: z.number().int().min(1),
+            year: z.union([z.literal(0), z.number().int().min(1900).max(2100)]),
+            fromDate: z.date().optional(),
+        }).parse({ playerId, year, fromDate });
+
+        const yearStart = yr > 0 ? new Date(yr, 0, 1) : undefined;
+        // When both bounds are present, take the later start so neither is silently ignored.
+        const gteDate = yearStart && from ?
+            new Date(Math.max(yearStart.getTime(), from.getTime())) :
+            yearStart ?? from;
+        const ltDate = yr > 0 ? new Date(yr + 1, 0, 1) : undefined;
+        const dateFilter = (gteDate ?? ltDate) ? {
+            date: {
+                ...(gteDate ? { gte: gteDate } : {}),
+                ...(ltDate ? { lt: ltDate } : {}),
+            },
+        } : {};
+
+        const [outcomes, noGameDays] = await Promise.all([
+            prisma.outcome.findMany({
+                where: {
+                    playerId: pid,
+                    gameDay: { game: true, ...dateFilter },
+                },
+                orderBy: [{ gameDay: { date: 'asc' } }, { gameDayId: 'asc' }],
+                include: { gameDay: true },
+            }),
+            prisma.gameDay.findMany({
+                where: { game: false, ...dateFilter },
+                orderBy: [{ date: 'asc' }, { id: 'asc' }],
+            }),
+        ]);
+
+        const synthetic: PlayerFormType[] = noGameDays.map(gameDay => ({
+            id: -gameDay.id,
+            gameDayId: gameDay.id,
+            playerId: pid,
+            response: null,
+            responseInterval: null,
+            points: null,
+            team: null,
+            comment: null,
+            pub: null,
+            goalie: null,
+            gameDay,
+        }));
+
+        return mergeByDate(outcomes, synthetic);
     }
 
     /**

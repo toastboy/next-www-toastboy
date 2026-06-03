@@ -12,6 +12,7 @@ import { getUserRole } from '@/lib/auth.server';
 import arseService from '@/services/Arse';
 import clubSupporterService from '@/services/ClubSupporter';
 import countrySupporterService from '@/services/CountrySupporter';
+import outcomeService from '@/services/Outcome';
 import playerService from '@/services/Player';
 import playerRecordService from '@/services/PlayerRecord';
 import { FootyChannel } from '@/types/FootyChannel';
@@ -92,8 +93,7 @@ const PlayerPage = async (props: PageProps) => {
     const { player, year, activeYears } = await unpackParams(props.params, props.searchParams);
 
     const lastPlayed = await playerService.getLastPlayed(player.id, year);
-    const gameDayId = lastPlayed ? lastPlayed.gameDayId : 0;
-    const form = await playerService.getForm(player.id, gameDayId, year);
+    const history = await outcomeService.getHistoryByPlayer(player.id, year, player.joined ?? undefined);
     const clubs = await clubSupporterService.getByPlayer(player.id);
     const countries = await countrySupporterService.getByPlayer(player.id);
     const arse = (await getUserRole() === 'admin') ?
@@ -113,7 +113,7 @@ const PlayerPage = async (props: PageProps) => {
                 key={player.id}
                 player={player}
                 year={year}
-                form={form}
+                history={history}
                 lastPlayed={lastPlayed}
                 clubs={clubs}
                 countries={countries}

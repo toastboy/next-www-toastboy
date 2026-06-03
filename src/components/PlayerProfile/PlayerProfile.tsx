@@ -6,6 +6,7 @@ import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.sc
 import { PlayerArse } from '@/components/PlayerArse/PlayerArse';
 import { PlayerBorn } from '@/components/PlayerBorn/PlayerBorn';
 import { PlayerCard } from '@/components/PlayerCard/PlayerCard';
+import { PlayerHeatmap } from '@/components/PlayerHeatmap/PlayerHeatmap';
 import { PlayerLastPlayed } from '@/components/PlayerLastPlayed/PlayerLastPlayed';
 import { PlayerPositions } from '@/components/PlayerPositions/PlayerPositions';
 import { PlayerResults } from '@/components/PlayerResults/PlayerResults';
@@ -16,7 +17,7 @@ import { ClubSupporterDataType, CountrySupporterDataType, PlayerFormType } from 
 export interface Props {
     player: PlayerDisplayType;
     year: number;
-    form: PlayerFormType[];
+    history: PlayerFormType[];
     lastPlayed: PlayerFormType | null;
     clubs: ClubSupporterDataType[];
     countries: CountrySupporterDataType[];
@@ -29,7 +30,7 @@ export interface Props {
 export const PlayerProfile = ({
     player,
     year,
-    form: _form,
+    history,
     lastPlayed,
     clubs,
     countries,
@@ -62,6 +63,7 @@ export const PlayerProfile = ({
                 </Stack>
                 <Stack gap="sm">
                     <PlayerArse arse={arse} />
+                    <PlayerHeatmap data={history} year={year} />
                 </Stack>
             </SimpleGrid>
         </Flex>

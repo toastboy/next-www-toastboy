@@ -560,6 +560,181 @@ describe('OutcomeService', () => {
         });
     });
 
+    describe('getHistoryByPlayer', () => {
+        /** Shorthand: queue one response for each of the two parallel queries. */
+        const mockQueries = (outcomes: unknown[], noGameDays: unknown[]) => {
+            (prisma.outcome.findMany as Mock).mockResolvedValueOnce(outcomes);
+            (prisma.gameDay.findMany as Mock).mockResolvedValueOnce(noGameDays);
+        };
+
+        const makeOutcome = (gameDayId: number, date: Date, points: number | null = 3) => ({
+            ...createMockOutcome({ id: gameDayId * 100, gameDayId, playerId: 1, points }),
+            gameDay: createMockGameDay({ id: gameDayId, date, game: true }),
+        });
+
+        const makeNoGameDay = (id: number, date: Date) =>
+            createMockGameDay({ id, date, game: false });
+
+        describe('input validation', () => {
+            it('rejects playerId < 1', async () => {
+                await expect(outcomeService.getHistoryByPlayer(0, 2024)).rejects.toThrow();
+                expect(prisma.outcome.findMany).not.toHaveBeenCalled();
+            });
+
+            it('rejects year below 1900 (and not 0)', async () => {
+                await expect(outcomeService.getHistoryByPlayer(1, 1899)).rejects.toThrow();
+                expect(prisma.outcome.findMany).not.toHaveBeenCalled();
+            });
+
+            it('rejects year above 2100', async () => {
+                await expect(outcomeService.getHistoryByPlayer(1, 2101)).rejects.toThrow();
+                expect(prisma.outcome.findMany).not.toHaveBeenCalled();
+            });
+
+            it('accepts year = 0 (all-time sentinel)', async () => {
+                mockQueries([], []);
+                await expect(outcomeService.getHistoryByPlayer(1, 0)).resolves.toEqual([]);
+            });
+
+            it('rejects an invalid fromDate', async () => {
+                await expect(
+                    outcomeService.getHistoryByPlayer(1, 0, new Date('not-a-date')),
+                ).rejects.toThrow();
+                expect(prisma.outcome.findMany).not.toHaveBeenCalled();
+            });
+        });
+
+        describe('year filtering', () => {
+            it('applies year bounds to both queries when year > 0', async () => {
+                mockQueries([], []);
+                await outcomeService.getHistoryByPlayer(1, 2024);
+                expect(prisma.outcome.findMany).toHaveBeenCalledWith(expect.objectContaining({
+                    where: {
+                        playerId: 1,
+                        gameDay: { game: true, date: { gte: new Date(2024, 0, 1), lt: new Date(2025, 0, 1) } },
+                    },
+                }));
+                expect(prisma.gameDay.findMany).toHaveBeenCalledWith(expect.objectContaining({
+                    where: { game: false, date: { gte: new Date(2024, 0, 1), lt: new Date(2025, 0, 1) } },
+                }));
+            });
+
+            it('applies no date bounds when year = 0 and fromDate is absent', async () => {
+                mockQueries([], []);
+                await outcomeService.getHistoryByPlayer(1, 0);
+                expect(prisma.outcome.findMany).toHaveBeenCalledWith(expect.objectContaining({
+                    where: { playerId: 1, gameDay: { game: true } },
+                }));
+                expect(prisma.gameDay.findMany).toHaveBeenCalledWith(expect.objectContaining({
+                    where: { game: false },
+                }));
+            });
+        });
+
+        describe('fromDate handling', () => {
+            it('uses fromDate as gte when year = 0', async () => {
+                mockQueries([], []);
+                const from = new Date(2020, 5, 1);
+                await outcomeService.getHistoryByPlayer(1, 0, from);
+                expect(prisma.outcome.findMany).toHaveBeenCalledWith(expect.objectContaining({
+                    where: { playerId: 1, gameDay: { game: true, date: { gte: from } } },
+                }));
+                expect(prisma.gameDay.findMany).toHaveBeenCalledWith(expect.objectContaining({
+                    where: { game: false, date: { gte: from } },
+                }));
+            });
+
+            it('uses the year start as gte when fromDate predates it', async () => {
+                mockQueries([], []);
+                // fromDate is before Jan 2024, so year start wins
+                await outcomeService.getHistoryByPlayer(1, 2024, new Date(2022, 0, 1));
+                expect(prisma.outcome.findMany).toHaveBeenCalledWith(expect.objectContaining({
+                    where: {
+                        playerId: 1,
+                        gameDay: { game: true, date: { gte: new Date(2024, 0, 1), lt: new Date(2025, 0, 1) } },
+                    },
+                }));
+            });
+
+            it('uses fromDate as gte when it postdates the year start', async () => {
+                mockQueries([], []);
+                // fromDate is June 2024, later than Jan 2024
+                const from = new Date(2024, 5, 1);
+                await outcomeService.getHistoryByPlayer(1, 2024, from);
+                expect(prisma.outcome.findMany).toHaveBeenCalledWith(expect.objectContaining({
+                    where: {
+                        playerId: 1,
+                        gameDay: { game: true, date: { gte: from, lt: new Date(2025, 0, 1) } },
+                    },
+                }));
+            });
+        });
+
+        describe('no-game day synthetic entries', () => {
+            it('creates a synthetic entry with id = -gameDay.id and game = false', async () => {
+                const noGame = makeNoGameDay(7, new Date(2024, 2, 1));
+                mockQueries([], [noGame]);
+                const result = await outcomeService.getHistoryByPlayer(1, 2024);
+                expect(result).toHaveLength(1);
+                expect(result[0].id).toBe(-7);
+                expect(result[0].gameDayId).toBe(7);
+                expect(result[0].playerId).toBe(1);
+                expect(result[0].points).toBeNull();
+                expect(result[0].gameDay?.id).toBe(7);
+                expect(result[0].gameDay?.game).toBe(false);
+            });
+
+            it('returns an empty array when both queries return nothing', async () => {
+                mockQueries([], []);
+                await expect(outcomeService.getHistoryByPlayer(1, 2024)).resolves.toEqual([]);
+            });
+        });
+
+        describe('merge ordering', () => {
+            it('interleaves outcomes and no-game days in date order', async () => {
+                const d1 = new Date(2024, 0, 7);
+                const d2 = new Date(2024, 0, 14);
+                const d3 = new Date(2024, 0, 21);
+                (prisma.outcome.findMany as Mock).mockResolvedValueOnce([
+                    makeOutcome(1, d1, 3),
+                    makeOutcome(3, d3, 0),
+                ]);
+                (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([makeNoGameDay(2, d2)]);
+
+                const result = await outcomeService.getHistoryByPlayer(1, 2024);
+
+                expect(result).toHaveLength(3);
+                expect(result[0]).toMatchObject({ gameDayId: 1, points: 3 });
+                expect(result[1]).toMatchObject({ id: -2, gameDayId: 2 });
+                expect(result[2]).toMatchObject({ gameDayId: 3, points: 0 });
+            });
+
+            it('breaks ties on equal dates by gameDay.id ascending', async () => {
+                const date = new Date(2024, 0, 7);
+                // outcome has id=1, no-game day has id=2 — same date
+                (prisma.outcome.findMany as Mock).mockResolvedValueOnce([makeOutcome(1, date, 3)]);
+                (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([makeNoGameDay(2, date)]);
+
+                const result = await outcomeService.getHistoryByPlayer(1, 2024);
+
+                expect(result[0].gameDay!.id).toBe(1);
+                expect(result[1].gameDay!.id).toBe(2);
+            });
+
+            it('handles all no-game days appearing before all outcomes', async () => {
+                const d1 = new Date(2024, 0, 7);
+                const d2 = new Date(2024, 0, 14);
+                (prisma.outcome.findMany as Mock).mockResolvedValueOnce([makeOutcome(2, d2, 3)]);
+                (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([makeNoGameDay(1, d1)]);
+
+                const result = await outcomeService.getHistoryByPlayer(1, 2024);
+
+                expect(result[0]).toMatchObject({ id: -1, gameDayId: 1 });
+                expect(result[1]).toMatchObject({ gameDayId: 2, points: 3 });
+            });
+        });
+    });
+
     describe('getByPlayer', () => {
         it('should retrieve Outcomes for Player ID 1', async () => {
             const fixture = [

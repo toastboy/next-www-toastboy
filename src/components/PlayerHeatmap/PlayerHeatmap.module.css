@@ -1,0 +1,25 @@
+.wrapper {
+    position: relative;
+    display: block;
+    width: 100%;
+    overflow-y: auto;
+}
+
+.wrapper svg rect:focus-visible {
+    outline: 2px solid var(--mantine-color-blue-6);
+    outline-offset: 1px;
+}
+
+.tooltip {
+    position: absolute;
+    pointer-events: none;
+    opacity: 0;
+    background: rgba(0, 0, 0, 0.75);
+    color: #fff;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    line-height: 1.5;
+    white-space: nowrap;
+    transition: opacity 0.1s;
+}

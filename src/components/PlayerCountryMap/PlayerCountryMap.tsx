@@ -272,6 +272,7 @@ export const PlayerCountryMap = ({
                     />
                 </Popover.Target>
                 <Popover.Dropdown
+                    data-testid="country-popover-dropdown"
                     onMouseEnter={() => {
                         dropdownHoveredRef.current = true;
                         cancelClose();

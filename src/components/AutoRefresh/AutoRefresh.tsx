@@ -13,7 +13,6 @@ interface AutoRefreshProps {
  * Renders nothing — purely a side-effect component.
  */
 export function AutoRefresh({ channels }: AutoRefreshProps) {
-    /* v8 ignore next 2 -- there's no logic to test here */
     useAutoRefresh(channels);
     return null;
 }

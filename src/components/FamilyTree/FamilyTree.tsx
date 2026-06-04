@@ -239,6 +239,7 @@ export const FamilyTree = ({ data }: Props) => {
          * true bounds and produces a tighter, fuller fit.
          */
         const gNode = g.node();
+        /* c8 ignore next — svg.append('g') always returns a non-null element; unreachable via D3's API */
         if (gNode) {
             const b = gNode.getBBox();
             if (b.width > 0 && b.height > 0) {

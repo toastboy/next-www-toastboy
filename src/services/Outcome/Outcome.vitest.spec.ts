@@ -784,8 +784,8 @@ describe('OutcomeService', () => {
                     // date key must be present — empty {} would omit it entirely
                     expect(prisma.outcome.findMany).toHaveBeenCalledWith(expect.objectContaining({
                         where: expect.objectContaining({
-                            gameDay: expect.objectContaining({ date: { lt: tomorrow } }),
-                        }),
+                            gameDay: expect.objectContaining({ date: { lt: tomorrow } }) as unknown,
+                        }) as unknown,
                     }));
                 } finally {
                     vi.useRealTimers();

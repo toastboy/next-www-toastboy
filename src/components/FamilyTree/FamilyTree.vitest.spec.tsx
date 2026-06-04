@@ -132,6 +132,60 @@ describe('FamilyTree', () => {
     });
 
     // -------------------------------------------------------------------------
+    // ResizeObserver behaviour
+    // -------------------------------------------------------------------------
+
+    describe('ResizeObserver', () => {
+        it('observes the container element on mount', () => {
+            const observeMock = vi.fn<(el: Element) => void>();
+
+            class TrackingResizeObserver {
+                constructor(cb: () => void) { void cb; }
+                observe(el: Element) { observeMock(el); }
+                unobserve() { /* empty */ }
+                disconnect() { /* empty */ }
+            }
+            vi.stubGlobal('ResizeObserver', TrackingResizeObserver);
+
+            const { getByTestId } = render(
+                <Wrapper>
+                    <FamilyTree data={defaultFamilyTree} />
+                </Wrapper>,
+            );
+
+            expect(observeMock).toHaveBeenCalledWith(getByTestId('family-tree'));
+        });
+
+        it('updateSize is a no-op when containerRef is null (fires after unmount)', () => {
+            let capturedCallback: (() => void) | undefined;
+
+            class ControlledResizeObserver {
+                constructor(cb: () => void) {
+                    capturedCallback = cb;
+                }
+                observe() { /* empty */ }
+                unobserve() { /* empty */ }
+                disconnect() { /* empty */ }
+            }
+            vi.stubGlobal('ResizeObserver', ControlledResizeObserver);
+
+            const { unmount } = render(
+                <Wrapper>
+                    <FamilyTree data={defaultFamilyTree} />
+                </Wrapper>,
+            );
+
+            expect(capturedCallback).toBeDefined();
+
+            // After unmount React sets containerRef.current = null.
+            unmount();
+
+            // Simulates a stale ResizeObserver callback firing after unmount.
+            expect(() => capturedCallback!()).not.toThrow();
+        });
+    });
+
+    // -------------------------------------------------------------------------
     // Initial zoom fitting (getBBox → zoom.transform)
     // -------------------------------------------------------------------------
 

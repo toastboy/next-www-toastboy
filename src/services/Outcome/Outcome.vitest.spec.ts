@@ -747,6 +747,50 @@ describe('OutcomeService', () => {
                     },
                 }));
             });
+
+            it('sets dateRange.lt from endDate but no gte when startDate is absent', async () => {
+                // year=0, no fromDate → startDate is undefined; endDate is still computed
+                // (at minimum tomorrow). Only the lt branch of dateRange should fire,
+                // and dateFilter must be { date: dateRange } not {}.
+                vi.useFakeTimers();
+                vi.setSystemTime(new Date('2024-09-15T10:00:00Z'));
+                try {
+                    mockQueries([], []);
+                    const to = new Date('2024-09-10T00:00:00Z');
+                    await outcomeService.getHistoryByPlayer(1, 0, undefined, to);
+                    // endDate = min(tomorrow=2024-09-16, nextDayOfTo=2024-09-11) = 2024-09-11
+                    // startDate is undefined → no gte; dateFilter uses { date: { lt } } not {}
+                    expect(prisma.outcome.findMany).toHaveBeenCalledWith(expect.objectContaining({
+                        where: {
+                            playerId: 1,
+                            gameDay: { game: true, date: { lt: utcDay(2024, 8, 11) } },
+                        },
+                    }));
+                } finally {
+                    vi.useRealTimers();
+                }
+            });
+
+            it('dateFilter always uses { date: dateRange } rather than {} because endDate always resolves to at least tomorrow', async () => {
+                // Even with year=0 and no fromDate/toDate, endDate = tomorrow is always
+                // present, so (startDate ?? endDate) is always truthy and dateFilter is
+                // never the empty object fallback.
+                vi.useFakeTimers();
+                vi.setSystemTime(new Date('2024-09-15T10:00:00Z'));
+                try {
+                    mockQueries([], []);
+                    await outcomeService.getHistoryByPlayer(1, 0);
+                    const tomorrow = utcDay(2024, 8, 16);
+                    // date key must be present — empty {} would omit it entirely
+                    expect(prisma.outcome.findMany).toHaveBeenCalledWith(expect.objectContaining({
+                        where: expect.objectContaining({
+                            gameDay: expect.objectContaining({ date: { lt: tomorrow } }),
+                        }),
+                    }));
+                } finally {
+                    vi.useRealTimers();
+                }
+            });
         });
 
         describe('future-day exclusion', () => {

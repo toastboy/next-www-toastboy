@@ -469,10 +469,10 @@ class OutcomeService {
         const tomorrow = utcNextDayOf(new Date());
         const candidates = [yearEnd, finishedEnd, tomorrow].filter((d): d is Date => d !== undefined);
         const endDate = new Date(Math.min(...candidates.map(d => d.getTime())));
-        const dateRange: { gte?: Date; lt?: Date } = {};
+        // endDate is always defined: candidates always contains tomorrow.
+        const dateRange: { gte?: Date; lt: Date } = { lt: endDate };
         if (startDate) dateRange.gte = startDate;
-        if (endDate) dateRange.lt = endDate;
-        const dateFilter = (startDate ?? endDate) ? { date: dateRange } : {};
+        const dateFilter = { date: dateRange };
 
         const [outcomes, noGameDays, allGameDays] = await Promise.all([
             prisma.outcome.findMany({

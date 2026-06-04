@@ -51,24 +51,25 @@ describe('createMoreGameDaysCore', () => {
         expect(result).toEqual([{ id: 1 }, { id: 2 }]);
     });
 
-    it('throws ValidationError for invalid date strings', async () => {
-        const gameDayService = {
-            create: vi.fn(),
-        };
+    it('throws ValidationError for a date string with the wrong number of parts', async () => {
+        const gameDayService = { create: vi.fn() };
 
         await expect(
             createMoreGameDaysCore(
-                {
-                    cost: 450,
-                    hallCost: 4500,
-                    rows: [
-                        {
-                            date: 'bad-date',
-                            game: true,
-                            comment: 'hello',
-                        },
-                    ],
-                },
+                { cost: 450, hallCost: 4500, rows: [{ date: 'bad-date', game: true, comment: 'hello' }] },
+                { gameDayService },
+            ),
+        ).rejects.toBeInstanceOf(ValidationError);
+
+        expect(gameDayService.create).not.toHaveBeenCalled();
+    });
+
+    it('throws ValidationError for a three-part date string that produces an invalid date', async () => {
+        const gameDayService = { create: vi.fn() };
+
+        await expect(
+            createMoreGameDaysCore(
+                { cost: 450, hallCost: 4500, rows: [{ date: '2026-XX-01', game: true, comment: undefined }] },
                 { gameDayService },
             ),
         ).rejects.toBeInstanceOf(ValidationError);

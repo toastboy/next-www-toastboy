@@ -68,6 +68,27 @@ describe('createPlayerCore', () => {
         });
     });
 
+    it('creates a player with null introducedBy and null accountEmail when both fields are empty', async () => {
+        const playerService = {
+            create: vi.fn().mockResolvedValue({ id: 56, name: 'New Player' }),
+        };
+        const emailVerificationService = {
+            create: vi.fn(),
+        };
+
+        const result = await createPlayerCore(
+            { name: 'New Player', email: '', introducedBy: '' },
+            { playerService, emailVerificationService },
+        );
+
+        expect(playerService.create).toHaveBeenCalledWith(expect.objectContaining({
+            introducedBy: null,
+            accountEmail: null,
+        }));
+        expect(emailVerificationService.create).not.toHaveBeenCalled();
+        expect(result.player).toEqual({ id: 56, name: 'New Player' });
+    });
+
     it('throws ValidationError when introducer is not numeric', async () => {
         const playerService = {
             create: vi.fn(),

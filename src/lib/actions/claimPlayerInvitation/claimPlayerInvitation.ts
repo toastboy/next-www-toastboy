@@ -85,7 +85,6 @@ async function getValidInvitation(token: string, deps: ClaimPlayerInvitationDeps
  * - `email`: The email address associated with the invitation.
  * - `token`: The original invitation token passed in.
  *
- * @throws {Error} If the invitation is missing a `playerId`.
  * @throws {Error} If no player exists for the given `playerId`.
  * @throws {Error} Propagates errors from invitation validation (e.g., invalid
  * or expired token).
@@ -96,11 +95,7 @@ export async function claimPlayerInvitationCore(
 ) {
     const invitation = await getValidInvitation(token, deps);
 
-    if (!invitation.playerId) {
-        throw new ValidationError('Player ID is missing from invitation.');
-    }
-
-    const player = await deps.playerService.getById(invitation.playerId);
+    const player = await deps.playerService.getById(invitation.playerId!);
 
     if (!player) {
         throw new NotFoundError('Player not found.');
@@ -132,7 +127,7 @@ export async function claimPlayerInvitationCore(
  * player management, email verification, and email sending. Uses default
  * dependencies if not provided.
  *
- * @throws {Error} If the invitation is invalid or the player ID is missing
+ * @throws {Error} If the invitation is invalid
  * @throws {Error} If no session user is found or the user email/ID is missing
  * @throws {Error} If the session user's email does not match the invitation
  * email
@@ -148,10 +143,6 @@ export async function finalizePlayerInvitationClaimCore(
 ) {
     const invitation = await getValidInvitation(token, deps);
 
-    if (!invitation.playerId) {
-        throw new ValidationError('Player ID is missing from invitation.');
-    }
-
     const sessionUser = await deps.authService.getSessionUser();
 
     if (!sessionUser?.id || !sessionUser.email) {
@@ -166,16 +157,16 @@ export async function finalizePlayerInvitationClaimCore(
         throw new ConflictError('Login account is already linked to another player.');
     }
 
-    await deps.authService.updateCurrentUser({ playerId: invitation.playerId });
+    await deps.authService.updateCurrentUser({ playerId: invitation.playerId! });
     await deps.playerService.update({
-        id: invitation.playerId,
+        id: invitation.playerId!,
         accountEmail: invitation.email,
     });
     await deps.emailVerificationService.markUsed(token);
 
-    const extraEmails = await deps.playerExtraEmailService.getAll(invitation.playerId);
+    const extraEmails = await deps.playerExtraEmailService.getAll(invitation.playerId!);
     const unverifiedExtraEmails = extraEmails.filter((extraEmail) => !extraEmail.verifiedAt);
-    const player = await deps.playerService.getById(invitation.playerId);
+    const player = await deps.playerService.getById(invitation.playerId!);
 
     await Promise.all(
         unverifiedExtraEmails.map((extraEmail) =>

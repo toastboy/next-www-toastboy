@@ -118,6 +118,36 @@ describe('authExportCore', () => {
         );
     });
 
+    it.each([
+        ['AZURE_TENANT_ID', { AZURE_TENANT_ID: undefined, STORAGE_CLIENT_ID: 'client-id', STORAGE_CLIENT_SECRET: 'client-secret' }],
+        ['STORAGE_CLIENT_ID', { AZURE_TENANT_ID: 'tenant-id', STORAGE_CLIENT_ID: undefined, STORAGE_CLIENT_SECRET: 'client-secret' }],
+        ['STORAGE_CLIENT_SECRET', { AZURE_TENANT_ID: 'tenant-id', STORAGE_CLIENT_ID: 'client-id', STORAGE_CLIENT_SECRET: undefined }],
+    ])('throws and captures error when %s is missing', async (_missingKey, secrets) => {
+        getSecretsMock.mockReturnValue(secrets);
+
+        const depsCandidate = {
+            prisma: {
+                account: { findMany: vi.fn() },
+                user: { findMany: vi.fn() },
+                verification: { findMany: vi.fn() },
+            },
+        };
+        const deps = depsCandidate as unknown as Parameters<typeof authExportCore>[0];
+
+        await expect(authExportCore(deps)).rejects.toThrow('Missing Azure credentials in secrets');
+        expect(clientSecretCredentialCtorMock).not.toHaveBeenCalled();
+        expect(blobServiceClientCtorMock).not.toHaveBeenCalled();
+        expect(uploadMock).not.toHaveBeenCalled();
+        expect(captureUnexpectedErrorMock).toHaveBeenCalledTimes(1);
+        expect(captureUnexpectedErrorMock).toHaveBeenCalledWith(
+            expect.any(Error),
+            expect.objectContaining({
+                action: 'authExportCore',
+                layer: 'server-action',
+            }),
+        );
+    });
+
     it('rethrows when a table export fails', async () => {
         const accountFindMany = vi.fn().mockRejectedValue(new Error('db unavailable'));
         const userFindMany = vi.fn();

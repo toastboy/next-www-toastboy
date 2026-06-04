@@ -1,4 +1,4 @@
-import { Divider, Paper, Table, TableTbody, TableTd, TableTr, Title } from '@mantine/core';
+import { Divider, Paper, Table, TableTbody, TableTd, TableTr, Title, Tooltip } from '@mantine/core';
 import type { ArseType } from 'prisma/zod/schemas/models/Arse.schema';
 
 export interface Props {
@@ -10,7 +10,9 @@ export const PlayerArse = ({ arse }: Props) => {
 
     return (
         <Paper shadow="xs" p="sm" w="14rem" withBorder>
-            <Title order={3} mb="xs" w="100%" ta="center">Arse</Title>
+            <Tooltip label="Anonymous Ratings System Exponent: how other players rate this player's performance.">
+                <Title order={3} mb="xs" w="100%" ta="center">ARSE</Title>
+            </Tooltip>
             <Divider mb="xs" />
             <Table
                 summary={`Anonymous Ratings System Exponent`}

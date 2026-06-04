@@ -75,11 +75,20 @@ async function writeTableToJSONBlob<T>(
  */
 export async function authExportCore(deps: AuthExportDeps = defaultDeps): Promise<void> {
     const secrets = getSecrets();
-    const tenantId = secrets.AZURE_TENANT_ID ?? '';
-    const clientId = secrets.STORAGE_CLIENT_ID ?? '';
-    const clientSecret = secrets.STORAGE_CLIENT_SECRET ?? '';
+    const tenantId = secrets.AZURE_TENANT_ID;
+    const clientId = secrets.STORAGE_CLIENT_ID;
+    const clientSecret = secrets.STORAGE_CLIENT_SECRET;
 
     try {
+        if (!tenantId || !clientId || !clientSecret) {
+            throw normalizeUnknownError(new Error('Missing Azure credentials in secrets'), {
+                details: {
+                    storageAccountName: STORAGE_ACCOUNT_NAME,
+                    containerName: CONTAINER_DB_SEED,
+                },
+            });
+        }
+
         const credentials = new ClientSecretCredential(tenantId, clientId, clientSecret);
         const blobServiceClient = new BlobServiceClient(
             `https://${STORAGE_ACCOUNT_NAME}.blob.core.windows.net`,

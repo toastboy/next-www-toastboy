@@ -93,7 +93,7 @@ const PlayerPage = async (props: PageProps) => {
     const { player, year, activeYears } = await unpackParams(props.params, props.searchParams);
 
     const lastPlayed = await playerService.getLastPlayed(player.id, year);
-    const history = await outcomeService.getHistoryByPlayer(player.id, year, player.joined ?? undefined);
+    const history = await outcomeService.getHistoryByPlayer(player.id, year, player.joined ?? undefined, player.finished ?? undefined);
     const clubs = await clubSupporterService.getByPlayer(player.id);
     const countries = await countrySupporterService.getByPlayer(player.id);
     const arse = (await getUserRole() === 'admin') ?

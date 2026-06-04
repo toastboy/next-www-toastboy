@@ -1,8 +1,13 @@
 .wrapper {
     position: relative;
-    display: block;
-    width: 100%;
-    overflow-y: auto;
+}
+
+.allTimeWrapper {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 16px;
 }
 
 .wrapper svg rect:focus-visible {

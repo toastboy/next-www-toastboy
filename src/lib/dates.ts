@@ -113,3 +113,21 @@ const shortMonthNameFormatter = new Intl.DateTimeFormat('en-GB', { month: 'short
  */
 export const getShortMonthName = (year: number, month: number) =>
     shortMonthNameFormatter.format(new Date(year, month - 1, 1));
+
+/**
+ * Formats a `Date` into its narrow month name using the `en-GB` locale (for
+ * example, `"J"`, `"F"`, `"M"`).
+ */
+const narrowMonthNameFormatter = new Intl.DateTimeFormat('en-GB', { month: 'narrow' });
+
+/**
+ * Returns the localized narrow month name for a given year and month.
+ *
+ * @param year - The full year (for example, `2026`).
+ * @param month - The month number in the range `1`–`12` (`1` = January, `12` =
+ * December).
+ * @returns A narrow month label (for example, `"J"`), formatted using the
+ * configured month formatter.
+ */
+export const getNarrowMonthName = (year: number, month: number) =>
+    narrowMonthNameFormatter.format(new Date(year, month - 1, 1));

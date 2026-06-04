@@ -561,10 +561,23 @@ describe('OutcomeService', () => {
     });
 
     describe('getHistoryByPlayer', () => {
-        /** Shorthand: queue one response for each of the two parallel queries. */
-        const mockQueries = (outcomes: unknown[], noGameDays: unknown[]) => {
+        // UTC midnight helper — mirrors the production implementation so date
+        // comparisons in assertions are timezone-stable.
+        const utcDay = (y: number, m: number, d: number) => new Date(Date.UTC(y, m, d));
+
+        /**
+         * Queue responses for the three parallel queries that getHistoryByPlayer
+         * issues: (1) prisma.outcome.findMany, (2) prisma.gameDay.findMany for
+         * game=false days, (3) prisma.gameDay.findMany for game=true days.
+         */
+        const mockQueries = (
+            outcomes: unknown[],
+            noGameDays: unknown[],
+            allGameDays: unknown[] = [],
+        ) => {
             (prisma.outcome.findMany as Mock).mockResolvedValueOnce(outcomes);
             (prisma.gameDay.findMany as Mock).mockResolvedValueOnce(noGameDays);
+            (prisma.gameDay.findMany as Mock).mockResolvedValueOnce(allGameDays);
         };
 
         const makeOutcome = (gameDayId: number, date: Date, points: number | null = 3) => ({
@@ -572,8 +585,8 @@ describe('OutcomeService', () => {
             gameDay: createMockGameDay({ id: gameDayId, date, game: true }),
         });
 
-        const makeNoGameDay = (id: number, date: Date) =>
-            createMockGameDay({ id, date, game: false });
+        const makeGameDay = (id: number, date: Date, game: boolean) =>
+            createMockGameDay({ id, date, game });
 
         describe('input validation', () => {
             it('rejects playerId < 1', async () => {
@@ -605,74 +618,232 @@ describe('OutcomeService', () => {
         });
 
         describe('year filtering', () => {
-            it('applies year bounds to both queries when year > 0', async () => {
+            it('applies UTC year bounds when year > 0', async () => {
                 mockQueries([], []);
                 await outcomeService.getHistoryByPlayer(1, 2024);
+                const yearStart = utcDay(2024, 0, 1);
+                const yearEnd = utcDay(2025, 0, 1);
                 expect(prisma.outcome.findMany).toHaveBeenCalledWith(expect.objectContaining({
                     where: {
                         playerId: 1,
-                        gameDay: { game: true, date: { gte: new Date(2024, 0, 1), lt: new Date(2025, 0, 1) } },
+                        gameDay: { game: true, date: { gte: yearStart, lt: yearEnd } },
                     },
                 }));
-                expect(prisma.gameDay.findMany).toHaveBeenCalledWith(expect.objectContaining({
-                    where: { game: false, date: { gte: new Date(2024, 0, 1), lt: new Date(2025, 0, 1) } },
+                // First gameDay.findMany call is for game=false days
+                expect(prisma.gameDay.findMany).toHaveBeenNthCalledWith(1, expect.objectContaining({
+                    where: { game: false, date: { gte: yearStart, lt: yearEnd } },
+                }));
+                // Second is for game=true days (uninvited detection)
+                expect(prisma.gameDay.findMany).toHaveBeenNthCalledWith(2, expect.objectContaining({
+                    where: { game: true, date: { gte: yearStart, lt: yearEnd } },
                 }));
             });
 
-            it('applies no date bounds when year = 0 and fromDate is absent', async () => {
-                mockQueries([], []);
-                await outcomeService.getHistoryByPlayer(1, 0);
-                expect(prisma.outcome.findMany).toHaveBeenCalledWith(expect.objectContaining({
-                    where: { playerId: 1, gameDay: { game: true } },
-                }));
-                expect(prisma.gameDay.findMany).toHaveBeenCalledWith(expect.objectContaining({
-                    where: { game: false },
-                }));
+            it('applies only tomorrow as lt when year = 0 and fromDate is absent', async () => {
+                // Pin time so "tomorrow" is deterministic inside the service call.
+                vi.useFakeTimers();
+                vi.setSystemTime(new Date('2024-09-15T10:00:00Z'));
+                try {
+                    mockQueries([], []);
+                    await outcomeService.getHistoryByPlayer(1, 0);
+                    const tomorrow = utcDay(2024, 8, 16); // 2024-09-16 UTC
+                    expect(prisma.outcome.findMany).toHaveBeenCalledWith(expect.objectContaining({
+                        where: {
+                            playerId: 1,
+                            gameDay: { game: true, date: { lt: tomorrow } },
+                        },
+                    }));
+                } finally {
+                    vi.useRealTimers();
+                }
             });
         });
 
         describe('fromDate handling', () => {
-            it('uses fromDate as gte when year = 0', async () => {
-                mockQueries([], []);
-                const from = new Date(2020, 5, 1);
-                await outcomeService.getHistoryByPlayer(1, 0, from);
-                expect(prisma.outcome.findMany).toHaveBeenCalledWith(expect.objectContaining({
-                    where: { playerId: 1, gameDay: { game: true, date: { gte: from } } },
-                }));
-                expect(prisma.gameDay.findMany).toHaveBeenCalledWith(expect.objectContaining({
-                    where: { game: false, date: { gte: from } },
-                }));
+            it('normalises fromDate to UTC midnight as gte when year = 0', async () => {
+                vi.useFakeTimers();
+                vi.setSystemTime(new Date('2024-09-15T10:00:00Z'));
+                try {
+                    mockQueries([], []);
+                    // Use noon UTC so the UTC date is unambiguous regardless of local tz
+                    const from = new Date('2020-06-15T12:00:00Z');
+                    await outcomeService.getHistoryByPlayer(1, 0, from);
+                    // UTC midnight of the same day; lt is clamped to tomorrow
+                    expect(prisma.outcome.findMany).toHaveBeenCalledWith(expect.objectContaining({
+                        where: {
+                            playerId: 1,
+                            gameDay: { game: true, date: { gte: utcDay(2020, 5, 15), lt: utcDay(2024, 8, 16) } },
+                        },
+                    }));
+                } finally {
+                    vi.useRealTimers();
+                }
             });
 
-            it('uses the year start as gte when fromDate predates it', async () => {
+            it('uses year start as gte when fromDate predates it', async () => {
                 mockQueries([], []);
-                // fromDate is before Jan 2024, so year start wins
-                await outcomeService.getHistoryByPlayer(1, 2024, new Date(2022, 0, 1));
+                await outcomeService.getHistoryByPlayer(1, 2024, new Date('2022-01-01T00:00:00Z'));
+                const yearStart = utcDay(2024, 0, 1);
+                const yearEnd = utcDay(2025, 0, 1);
                 expect(prisma.outcome.findMany).toHaveBeenCalledWith(expect.objectContaining({
                     where: {
                         playerId: 1,
-                        gameDay: { game: true, date: { gte: new Date(2024, 0, 1), lt: new Date(2025, 0, 1) } },
+                        gameDay: { game: true, date: { gte: yearStart, lt: yearEnd } },
                     },
                 }));
             });
 
             it('uses fromDate as gte when it postdates the year start', async () => {
                 mockQueries([], []);
-                // fromDate is June 2024, later than Jan 2024
-                const from = new Date(2024, 5, 1);
+                const from = new Date('2024-06-01T00:00:00Z');
                 await outcomeService.getHistoryByPlayer(1, 2024, from);
+                const yearEnd = utcDay(2025, 0, 1);
                 expect(prisma.outcome.findMany).toHaveBeenCalledWith(expect.objectContaining({
                     where: {
                         playerId: 1,
-                        gameDay: { game: true, date: { gte: from, lt: new Date(2025, 0, 1) } },
+                        gameDay: { game: true, date: { gte: utcDay(2024, 5, 1), lt: yearEnd } },
                     },
                 }));
             });
         });
 
+        describe('toDate handling', () => {
+            it('caps the upper bound to UTC next-day of toDate when within the year', async () => {
+                mockQueries([], []);
+                // finished 2024-06-14; exclusive upper bound should be 2024-06-15 UTC,
+                // which is earlier than both yearEnd and tomorrow (today is 2026).
+                const to = new Date('2024-06-14T00:00:00Z');
+                await outcomeService.getHistoryByPlayer(1, 2024, undefined, to);
+                expect(prisma.outcome.findMany).toHaveBeenCalledWith(expect.objectContaining({
+                    where: {
+                        playerId: 1,
+                        gameDay: { game: true, date: { gte: utcDay(2024, 0, 1), lt: utcDay(2024, 5, 15) } },
+                    },
+                }));
+            });
+
+            it('uses year end as lt when toDate extends beyond the year', async () => {
+                mockQueries([], []);
+                // toDate is 2025-06-01, but year=2024 so yearEnd (2025-01-01) is earlier
+                const to = new Date('2025-06-01T00:00:00Z');
+                await outcomeService.getHistoryByPlayer(1, 2024, undefined, to);
+                expect(prisma.outcome.findMany).toHaveBeenCalledWith(expect.objectContaining({
+                    where: {
+                        playerId: 1,
+                        gameDay: { game: true, date: { gte: utcDay(2024, 0, 1), lt: utcDay(2025, 0, 1) } },
+                    },
+                }));
+            });
+
+            it('uses year=0 with toDate to clamp all-time history at the finished date', async () => {
+                mockQueries([], []);
+                // to = 2023-12-31; next day = 2024-01-01, which is earlier than tomorrow (2026)
+                const to = new Date('2023-12-31T00:00:00Z');
+                await outcomeService.getHistoryByPlayer(1, 0, undefined, to);
+                expect(prisma.outcome.findMany).toHaveBeenCalledWith(expect.objectContaining({
+                    where: {
+                        playerId: 1,
+                        gameDay: { game: true, date: { lt: utcDay(2024, 0, 1) } },
+                    },
+                }));
+            });
+        });
+
+        describe('future-day exclusion', () => {
+            it('excludes game days scheduled after today even when year = 0 and no toDate', async () => {
+                vi.useFakeTimers();
+                vi.setSystemTime(new Date('2024-09-15T10:00:00Z'));
+                try {
+                    mockQueries([], []);
+                    await outcomeService.getHistoryByPlayer(1, 0);
+                    const tomorrow = utcDay(2024, 8, 16); // 2024-09-16 UTC
+                    expect(prisma.outcome.findMany).toHaveBeenCalledWith(expect.objectContaining({
+                        where: {
+                            playerId: 1,
+                            gameDay: { game: true, date: { lt: tomorrow } },
+                        },
+                    }));
+                } finally {
+                    vi.useRealTimers();
+                }
+            });
+
+            it('does not show game days in the future even within a current year', async () => {
+                vi.useFakeTimers();
+                vi.setSystemTime(new Date('2024-09-15T10:00:00Z'));
+                try {
+                    mockQueries([], []);
+                    await outcomeService.getHistoryByPlayer(1, 2024);
+                    const tomorrow = utcDay(2024, 8, 16); // 2024-09-16 UTC — earlier than yearEnd 2025-01-01
+                    expect(prisma.outcome.findMany).toHaveBeenCalledWith(expect.objectContaining({
+                        where: {
+                            playerId: 1,
+                            gameDay: { game: true, date: { gte: utcDay(2024, 0, 1), lt: tomorrow } },
+                        },
+                    }));
+                } finally {
+                    vi.useRealTimers();
+                }
+            });
+        });
+
+        describe('uninvited game-day synthetic entries', () => {
+            it('adds a synthetic null-points entry for a game=true day with no outcome', async () => {
+                const d1 = new Date('2024-03-07T18:00:00Z');
+                // outcomes: empty — player was not invited
+                // noGameDays: empty
+                // allGameDays: one game=true day
+                (prisma.outcome.findMany as Mock).mockResolvedValueOnce([]);
+                (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([]); // no-game
+                (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([makeGameDay(42, d1, true)]);
+
+                const result = await outcomeService.getHistoryByPlayer(1, 2024);
+
+                expect(result).toHaveLength(1);
+                expect(result[0]).toMatchObject({
+                    id: -42,
+                    gameDayId: 42,
+                    playerId: 1,
+                    points: null,
+                });
+                expect(result[0].gameDay?.game).toBe(true);
+            });
+
+            it('does not duplicate a game day that already has an outcome', async () => {
+                const d1 = new Date('2024-03-07T18:00:00Z');
+                const outcome = makeOutcome(42, d1, 3);
+                (prisma.outcome.findMany as Mock).mockResolvedValueOnce([outcome]);
+                (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([]); // no-game
+                // allGameDays includes the same game day — must not produce a duplicate
+                (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([makeGameDay(42, d1, true)]);
+
+                const result = await outcomeService.getHistoryByPlayer(1, 2024);
+
+                expect(result).toHaveLength(1);
+                expect(result[0].points).toBe(3); // real outcome preserved
+            });
+
+            it('returns both the outcome and a separate uninvited entry when distinct game days', async () => {
+                const d1 = new Date('2024-03-07T18:00:00Z');
+                const d2 = new Date('2024-03-14T18:00:00Z');
+                (prisma.outcome.findMany as Mock).mockResolvedValueOnce([makeOutcome(1, d1, 3)]);
+                (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([]); // no-game
+                (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([
+                    makeGameDay(1, d1, true),  // already has outcome — must not duplicate
+                    makeGameDay(2, d2, true),  // no outcome — should be synthetic
+                ]);
+
+                const result = await outcomeService.getHistoryByPlayer(1, 2024);
+
+                expect(result).toHaveLength(2);
+                expect(result[0]).toMatchObject({ gameDayId: 1, points: 3 });
+                expect(result[1]).toMatchObject({ id: -2, gameDayId: 2, points: null });
+            });
+        });
+
         describe('no-game day synthetic entries', () => {
             it('creates a synthetic entry with id = -gameDay.id and game = false', async () => {
-                const noGame = makeNoGameDay(7, new Date(2024, 2, 1));
+                const noGame = makeGameDay(7, new Date('2024-03-01T00:00:00Z'), false);
                 mockQueries([], [noGame]);
                 const result = await outcomeService.getHistoryByPlayer(1, 2024);
                 expect(result).toHaveLength(1);
@@ -684,7 +855,7 @@ describe('OutcomeService', () => {
                 expect(result[0].gameDay?.game).toBe(false);
             });
 
-            it('returns an empty array when both queries return nothing', async () => {
+            it('returns an empty array when all three queries return nothing', async () => {
                 mockQueries([], []);
                 await expect(outcomeService.getHistoryByPlayer(1, 2024)).resolves.toEqual([]);
             });
@@ -692,14 +863,18 @@ describe('OutcomeService', () => {
 
         describe('merge ordering', () => {
             it('interleaves outcomes and no-game days in date order', async () => {
-                const d1 = new Date(2024, 0, 7);
-                const d2 = new Date(2024, 0, 14);
-                const d3 = new Date(2024, 0, 21);
+                const d1 = new Date('2024-01-07T18:00:00Z');
+                const d2 = new Date('2024-01-14T18:00:00Z');
+                const d3 = new Date('2024-01-21T18:00:00Z');
                 (prisma.outcome.findMany as Mock).mockResolvedValueOnce([
                     makeOutcome(1, d1, 3),
                     makeOutcome(3, d3, 0),
                 ]);
-                (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([makeNoGameDay(2, d2)]);
+                (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([makeGameDay(2, d2, false)]);
+                (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([
+                    makeGameDay(1, d1, true),
+                    makeGameDay(3, d3, true),
+                ]);
 
                 const result = await outcomeService.getHistoryByPlayer(1, 2024);
 
@@ -710,10 +885,10 @@ describe('OutcomeService', () => {
             });
 
             it('breaks ties on equal dates by gameDay.id ascending', async () => {
-                const date = new Date(2024, 0, 7);
-                // outcome has id=1, no-game day has id=2 — same date
+                const date = new Date('2024-01-07T18:00:00Z');
                 (prisma.outcome.findMany as Mock).mockResolvedValueOnce([makeOutcome(1, date, 3)]);
-                (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([makeNoGameDay(2, date)]);
+                (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([makeGameDay(2, date, false)]);
+                (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([makeGameDay(1, date, true)]);
 
                 const result = await outcomeService.getHistoryByPlayer(1, 2024);
 
@@ -722,10 +897,11 @@ describe('OutcomeService', () => {
             });
 
             it('handles all no-game days appearing before all outcomes', async () => {
-                const d1 = new Date(2024, 0, 7);
-                const d2 = new Date(2024, 0, 14);
+                const d1 = new Date('2024-01-07T18:00:00Z');
+                const d2 = new Date('2024-01-14T18:00:00Z');
                 (prisma.outcome.findMany as Mock).mockResolvedValueOnce([makeOutcome(2, d2, 3)]);
-                (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([makeNoGameDay(1, d1)]);
+                (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([makeGameDay(1, d1, false)]);
+                (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([makeGameDay(2, d2, true)]);
 
                 const result = await outcomeService.getHistoryByPlayer(1, 2024);
 

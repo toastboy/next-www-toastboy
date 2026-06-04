@@ -427,37 +427,54 @@ class OutcomeService {
 
     /**
      * Retrieves all outcomes for a player across a given year, or all time when
-     * year is 0. Also includes scheduled days where no game took place
-     * (game = false) as synthetic entries with null points, so the result is
-     * suitable for building a full activity heatmap.
+     * year is 0. Also includes game days where the player had no outcome
+     * (not invited) and scheduled days where no game took place (game = false)
+     * as synthetic entries with null points, so the result is suitable for
+     * building a full activity heatmap with no gaps.
      *
      * @param playerId - The ID of the player.
      * @param year - The year to filter by, or 0 for all time.
      * @param fromDate - Optional earliest date (inclusive). Game days before
      * this date are excluded. Useful for filtering to a player's joined date.
+     * @param toDate - Optional latest date (inclusive). Game days after this
+     * date are excluded. Useful for filtering to a player's finished date.
      * @returns A promise that resolves to outcomes with game days, ordered by
      * game day date ascending, with game day ID as a tiebreaker. No-game days
-     * are represented as synthetic entries with gameDay.game = false.
+     * and uninvited game days are represented as synthetic entries with
+     * points = null; no-game days have gameDay.game = false.
      */
-    async getHistoryByPlayer(playerId: number, year: number, fromDate?: Date): Promise<PlayerFormType[]> {
-        const { playerId: pid, year: yr, fromDate: from } = z.object({
+    async getHistoryByPlayer(playerId: number, year: number, fromDate?: Date, toDate?: Date): Promise<PlayerFormType[]> {
+        const { playerId: pid, year: yr, fromDate: from, toDate: to } = z.object({
             playerId: z.number().int().min(1),
             year: z.union([z.literal(0), z.number().int().min(1900).max(2100)]),
             fromDate: z.date().optional(),
-        }).parse({ playerId, year, fromDate });
+            toDate: z.date().optional(),
+        }).parse({ playerId, year, fromDate, toDate });
 
-        const yearStart = yr > 0 ? new Date(yr, 0, 1) : undefined;
+        // All day-boundary arithmetic uses UTC midnight so results are stable
+        // across timezones and DST transitions.
+        const utcDay = (y: number, m: number, d: number) => new Date(Date.UTC(y, m, d));
+        const utcDayOf = (date: Date) => utcDay(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+        const utcNextDayOf = (date: Date) => utcDay(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + 1);
+
+        const yearStart = yr > 0 ? utcDay(yr, 0, 1) : undefined;
         // When both bounds are present, take the later start so neither is silently ignored.
         const startDate = yearStart && from ?
-            new Date(Math.max(yearStart.getTime(), from.getTime())) :
-            yearStart ?? from;
-        const endDate = yr > 0 ? new Date(yr + 1, 0, 1) : undefined;
+            new Date(Math.max(yearStart.getTime(), utcDayOf(from).getTime())) :
+            yearStart ?? (from ? utcDayOf(from) : undefined);
+        const yearEnd = yr > 0 ? utcDay(yr + 1, 0, 1) : undefined;
+        // For toDate, convert the inclusive finished date to an exclusive upper bound (next UTC day),
+        // then take the earliest of the year end, player finish, and tomorrow (no future game days).
+        const finishedEnd = to ? utcNextDayOf(to) : undefined;
+        const tomorrow = utcNextDayOf(new Date());
+        const candidates = [yearEnd, finishedEnd, tomorrow].filter((d): d is Date => d !== undefined);
+        const endDate = new Date(Math.min(...candidates.map(d => d.getTime())));
         const dateRange: { gte?: Date; lt?: Date } = {};
         if (startDate) dateRange.gte = startDate;
         if (endDate) dateRange.lt = endDate;
-        const dateFilter = startDate ?? endDate ? { date: dateRange } : {};
+        const dateFilter = (startDate ?? endDate) ? { date: dateRange } : {};
 
-        const [outcomes, noGameDays] = await Promise.all([
+        const [outcomes, noGameDays, allGameDays] = await Promise.all([
             prisma.outcome.findMany({
                 where: {
                     playerId: pid,
@@ -467,9 +484,11 @@ class OutcomeService {
                 include: { gameDay: true },
             }),
             gameDayService.getAll({ game: false, fromDate: startDate, beforeDate: endDate }),
+            gameDayService.getAll({ game: true, fromDate: startDate, beforeDate: endDate }),
         ]);
 
-        const synthetic: PlayerFormType[] = noGameDays.map(gameDay => ({
+        const playedIds = new Set(outcomes.map(o => o.gameDayId));
+        const makeSynthetic = (gameDay: (typeof noGameDays)[number]): PlayerFormType => ({
             id: -gameDay.id,
             gameDayId: gameDay.id,
             playerId: pid,
@@ -481,7 +500,12 @@ class OutcomeService {
             pub: null,
             goalie: null,
             gameDay,
-        }));
+        });
+
+        const synthetic: PlayerFormType[] = [
+            ...noGameDays.map(makeSynthetic),
+            ...allGameDays.filter(gd => !playedIds.has(gd.id)).map(makeSynthetic),
+        ];
 
         return mergeByDate(outcomes, synthetic);
     }

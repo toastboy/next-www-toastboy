@@ -1,17 +1,15 @@
 'use client';
 
 import { Text } from '@mantine/core';
-import { range } from 'd3-array';
-import { axisBottom, axisLeft } from 'd3-axis';
-import { format } from 'd3-format';
-import type { ScaleBand, ScaleLinear } from 'd3-scale';
-import { scaleBand, scaleLinear } from 'd3-scale';
+import { axisBottom } from 'd3-axis';
+import type { ScaleBand } from 'd3-scale';
+import { scaleBand } from 'd3-scale';
 import type { Selection } from 'd3-selection';
 import { select } from 'd3-selection';
 import { useRouter } from 'next/navigation';
-import { useEffect, useRef } from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 
-import { formatDate, getShortMonthName } from '@/lib/dates';
+import { formatDate, getNarrowMonthName, getShortMonthName } from '@/lib/dates';
 import { type PlayerFormType } from '@/types';
 
 import styles from './PlayerHeatmap.module.css';
@@ -33,8 +31,8 @@ export interface Props {
      *
      * - When `year > 0` the chart renders a single panel with months (Jan–Dec)
      *   on the X axis and game-number-within-month on the Y axis.
-     * - When `year === 0` a vertically scrollable stack of per-year panels is
-     *   rendered, most recent year first, showing 3–4 panels by default.
+     * - When `year === 0` year panels are laid out side by side, wrapping to
+     *   the next row when the viewport width is exhausted, most recent year first.
      */
     year: number;
 }
@@ -67,8 +65,11 @@ const resultLabel = new Map<number | null | undefined, string>([
     [3, 'Won'],
 ]);
 
-// Pre-computed short month names in calendar order.
+// Short names are the unique domain keys; narrow names are used for axis display.
 const MONTH_COLS = Array.from({ length: 12 }, (_, i) => getShortMonthName(2000, i + 1));
+const SHORT_TO_NARROW = new Map(
+    MONTH_COLS.map((short, i) => [short, getNarrowMonthName(2000, i + 1)]),
+);
 
 /** Builds the flat cell list for a single year's data (always month columns). */
 export function buildGrid(data: PlayerFormType[]): { cells: Cell[]; maxRow: number } {
@@ -126,10 +127,9 @@ export function buildYearGroups(data: PlayerFormType[]): { year: string; cells: 
 }
 
 const GAP = 2;
-const M = { top: 4, right: 10, bottom: 24, left: 28 };
+const CELL_SIZE = 10;
+const M = { top: 4, right: 10, bottom: 24, left: 4 };
 const YEAR_LABEL_HEIGHT = 22;
-const PANEL_GAP = 16;
-const VISIBLE_PANELS = 3.5;
 
 interface TooltipContent {
     date: string;
@@ -140,18 +140,26 @@ interface TooltipContent {
 type ShowTooltip = (event: globalThis.MouseEvent, content: TooltipContent) => void;
 
 /**
- * Builds a scaleBand for the 12 month columns. The paddingInner is derived by
- * solving the D3 step formula so the inter-band gap equals GAP pixels at normal
- * widths. The result is clamped to [0, 0.5] for stability, so at very small
- * widths the gap is best-effort rather than exact.
+ * Returns an X scale for the month columns, along with the calculated inner
+ * width (excluding margins) needed to fit the columns at the specified cell
+ * size and gap. The scale's domain is the short month names (e.g., "Jan",
+ * "Feb") and its range is [0, innerWidth]. The scale's bandwidth is the cell
+ * size, and its paddingInner is set to create the specified gap between cells.
+ * The caller can use the returned inner width to set the SVG width and the
+ * scale to position cells and axis ticks.
+ *
+ * @returns An object containing the configured X scale and the calculated inner
+ * width.
  */
-function makeXScale(iw: number): ScaleBand<string> {
+function makeXScale(): { scale: ScaleBand<string>; iw: number } {
     const n = MONTH_COLS.length;
-    const paddingInner = (n * GAP) / (iw - (n - 1) * GAP);
-    return scaleBand()
+    const iw = n * CELL_SIZE + (n - 1) * GAP;
+    const paddingInner = GAP / (CELL_SIZE + GAP);
+    const scale = scaleBand()
         .domain(MONTH_COLS)
         .range([0, iw])
-        .paddingInner(Math.max(0, Math.min(paddingInner, 0.5)));
+        .paddingInner(paddingInner);
+    return { scale, iw };
 }
 
 function drawPanel(
@@ -166,20 +174,10 @@ function drawPanel(
     const cellSize = xScale.bandwidth();
     const ih = maxRow * cellSize + Math.max(0, maxRow - 1) * GAP;
 
-    // X axis — same scale instance drives both ticks and cell positions
+    // X axis — domain keys are short names; labels are rendered as narrow single letters
     g.append('g')
         .attr('transform', `translate(0,${ih + 4})`)
-        .call(axisBottom(xScale).tickSize(0))
-        .call(ax => { ax.select('.domain').remove(); });
-
-    // Y axis
-    const yStep = Math.max(1, Math.ceil(maxRow / 10));
-    const yTicks = range(1, maxRow + 1).filter(n => n === 1 || n % yStep === 0);
-    const yScale: ScaleLinear<number, number> = scaleLinear()
-        .domain([1, Math.max(maxRow, 2)])
-        .range([cellSize / 2, ih - cellSize / 2]);
-    g.append('g')
-        .call(axisLeft(yScale).tickValues(yTicks).tickSize(0).tickFormat(format('d')))
+        .call(axisBottom(xScale).tickSize(0).tickFormat(d => SHORT_TO_NARROW.get(d) ?? d))
         .call(ax => { ax.select('.domain').remove(); });
 
     // Cells
@@ -221,6 +219,51 @@ function drawPanel(
         });
 }
 
+interface YearPanelProps {
+    label: string;
+    cells: Cell[];
+    globalMaxRow: number;
+    showTooltip: ShowTooltip;
+    hideTooltip: () => void;
+}
+
+/**
+ * Renders a panel for a single year in the player's heatmap.
+ *
+ * @param props - See {@link YearPanelProps}.
+ */
+const YearPanel = ({ label, cells, globalMaxRow, showTooltip, hideTooltip }: YearPanelProps) => {
+    const svgRef = useRef<SVGSVGElement>(null);
+    const router = useRouter();
+
+    useEffect(() => {
+        if (!svgRef.current) return;
+        const onCellClick = (gameId: number) => router.push(`/footy/game/${gameId}`);
+        const { scale: xScale, iw } = makeXScale();
+        const cellSize = xScale.bandwidth();
+        const ih = globalMaxRow * cellSize + Math.max(0, globalMaxRow - 1) * GAP;
+        const w = iw + M.left + M.right;
+        const h = YEAR_LABEL_HEIGHT + M.top + ih + M.bottom;
+
+        const svg = select(svgRef.current);
+        svg.selectAll('*').remove();
+        svg.attr('width', w).attr('height', h);
+
+        svg.append('text')
+            .attr('x', M.left)
+            .attr('y', YEAR_LABEL_HEIGHT - 4)
+            .style('font-size', '14px')
+            .style('font-weight', '600')
+            .style('fill', 'currentColor')
+            .text(label);
+
+        const g = svg.append('g').attr('transform', `translate(${M.left},${YEAR_LABEL_HEIGHT + M.top})`);
+        drawPanel(g, cells, globalMaxRow, xScale, showTooltip, hideTooltip, onCellClick);
+    }, [cells, globalMaxRow, hideTooltip, label, router, showTooltip]);
+
+    return <svg ref={svgRef} />;
+};
+
 /**
  * Renders a D3 heatmap of a player's game history.
  *
@@ -235,24 +278,23 @@ function drawPanel(
  * game page (`/footy/game/[id]`). No-game cells show the game day comment in
  * the tooltip when one is available.
  *
- * The chart is responsive: it redraws whenever the wrapper is resized and
- * sets its own height based on the data. In the all-time view (`year === 0`)
- * the wrapper becomes vertically scrollable, capped to show ~3.5 year panels.
+ * In the all-time view (`year === 0`) year panels are arranged side by side,
+ * wrapping to the next row when the available width is exhausted. In a
+ * single-year view (`year > 0`) one panel is rendered inline.
  *
  * @param props - See {@link Props}.
  */
 export const PlayerHeatmap = ({ data, year }: Props) => {
-    const svgRef = useRef<SVGSVGElement>(null);
     const wrapperRef = useRef<HTMLDivElement>(null);
     const tooltipRef = useRef<HTMLDivElement>(null);
+    const svgRef = useRef<SVGSVGElement>(null);
     const router = useRouter();
 
-    useEffect(() => {
-        if (!svgRef.current || !wrapperRef.current || !tooltipRef.current) return;
-
-        const showTooltip: ShowTooltip = (event, { date, label, comment }) => {
-            const el = tooltipRef.current!;
-            const wrapper = wrapperRef.current!;
+    const showTooltip = useCallback(
+        (event: globalThis.MouseEvent, { date, label, comment }: TooltipContent) => {
+            const el = tooltipRef.current;
+            const wrapper = wrapperRef.current;
+            if (!el || !wrapper) return;
             const wrapperRect = wrapper.getBoundingClientRect();
 
             // Build content with text nodes — avoids innerHTML / XSS risk.
@@ -267,76 +309,63 @@ export const PlayerHeatmap = ({ data, year }: Props) => {
                 el.appendChild(document.createTextNode(comment));
             }
 
-            el.style.left = `${event.clientX - wrapperRect.left + wrapper.scrollLeft}px`;
-            el.style.top = `${event.clientY - wrapperRect.top + wrapper.scrollTop + 16}px`;
+            el.style.left = `${event.clientX - wrapperRect.left}px`;
+            el.style.top = `${event.clientY - wrapperRect.top + 16}px`;
             el.style.opacity = '1';
-        };
-        const hideTooltip = () => { tooltipRef.current!.style.opacity = '0'; };
+        },
+        [],
+    );
+
+    const hideTooltip = useCallback(() => {
+        if (tooltipRef.current) tooltipRef.current.style.opacity = '0';
+    }, []);
+
+    // Single-year drawing
+    useEffect(() => {
+        if (year === 0 || !svgRef.current) return;
         const onCellClick = (gameId: number) => router.push(`/footy/game/${gameId}`);
+        const { cells, maxRow } = buildGrid(data);
+        if (maxRow === 0) return;
+        const { scale: xScale, iw } = makeXScale();
+        const cellSize = xScale.bandwidth();
+        const ih = maxRow * cellSize + Math.max(0, maxRow - 1) * GAP;
+        const w = iw + M.left + M.right;
+        const svg = select(svgRef.current);
+        svg.selectAll('*').remove();
+        svg.attr('width', w).attr('height', ih + M.top + M.bottom);
+        const g = svg.append('g').attr('transform', `translate(${M.left},${M.top})`);
+        drawPanel(g, cells, maxRow, xScale, showTooltip, hideTooltip, onCellClick);
+    }, [data, hideTooltip, router, showTooltip, year]);
 
-        const draw = (w: number) => {
-            if (!svgRef.current || !wrapperRef.current) return;
-
-            const svg = select(svgRef.current);
-            svg.selectAll('*').remove();
-
-            const iw = w - M.left - M.right;
-            if (iw <= 0) return;
-            const xScale = makeXScale(iw);
-            const cellSize = xScale.bandwidth();
-
-            if (year > 0) {
-                const { cells, maxRow } = buildGrid(data);
-                if (maxRow === 0) return;
-
-                const ih = maxRow * cellSize + Math.max(0, maxRow - 1) * GAP;
-                svg.attr('width', w).attr('height', ih + M.top + M.bottom);
-                wrapperRef.current.style.maxHeight = '';
-
-                const g = svg.append('g').attr('transform', `translate(${M.left},${M.top})`);
-                drawPanel(g, cells, maxRow, xScale, showTooltip, hideTooltip, onCellClick);
-            } else {
-                const yearGroups = buildYearGroups(data);
-                if (yearGroups.length === 0) return;
-
-                const globalMaxRow = Math.max(...yearGroups.map(yg => yg.maxRow));
-                const panelContentH = globalMaxRow * cellSize + Math.max(0, globalMaxRow - 1) * GAP;
-                const panelH = YEAR_LABEL_HEIGHT + M.top + panelContentH + M.bottom;
-                const totalH = yearGroups.length * panelH + Math.max(0, yearGroups.length - 1) * PANEL_GAP;
-
-                svg.attr('width', w).attr('height', totalH);
-                wrapperRef.current.style.maxHeight =
-                    `${Math.min(totalH, Math.round(VISIBLE_PANELS * (panelH + PANEL_GAP)))}px`;
-
-                yearGroups.forEach(({ year: yr, cells }, i) => {
-                    const yOffset = i * (panelH + PANEL_GAP);
-                    const panelG = svg.append('g').attr('transform', `translate(0,${yOffset})`);
-
-                    panelG.append('text')
-                        .attr('x', M.left)
-                        .attr('y', YEAR_LABEL_HEIGHT - 4)
-                        .style('font-size', '14px')
-                        .style('font-weight', '600')
-                        .style('fill', 'currentColor')
-                        .text(yr);
-
-                    const gridG = panelG.append('g')
-                        .attr('transform', `translate(${M.left},${YEAR_LABEL_HEIGHT + M.top})`);
-                    drawPanel(gridG, cells, globalMaxRow, xScale, showTooltip, hideTooltip, onCellClick);
-                });
-            }
-        };
-
-        const observer = new ResizeObserver(entries => {
-            const { width } = entries[0].contentRect;
-            draw(width);
-        });
-        observer.observe(wrapperRef.current);
-        return () => observer.disconnect();
-    }, [data, year, router]);
+    const yearGroups = useMemo(
+        () => year === 0 ? buildYearGroups(data) : null,
+        [data, year],
+    );
+    const globalMaxRow = useMemo(
+        () => yearGroups ? Math.max(0, ...yearGroups.map(yg => yg.maxRow)) : 0,
+        [yearGroups],
+    );
 
     if (data.length === 0) {
         return <Text c="dimmed" ta="center" py="xl">No game data available.</Text>;
+    }
+
+    if (year === 0) {
+        return (
+            <div ref={wrapperRef} className={styles.allTimeWrapper}>
+                {yearGroups!.map(({ year: yr, cells }) => (
+                    <YearPanel
+                        key={yr}
+                        label={yr}
+                        cells={cells}
+                        globalMaxRow={globalMaxRow}
+                        showTooltip={showTooltip}
+                        hideTooltip={hideTooltip}
+                    />
+                ))}
+                <div ref={tooltipRef} className={styles.tooltip} />
+            </div>
+        );
     }
 
     return (

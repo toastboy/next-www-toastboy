@@ -1,4 +1,4 @@
-import { Flex, Group, SimpleGrid, Stack } from '@mantine/core';
+import { Flex, Group, Paper, SimpleGrid, Stack } from '@mantine/core';
 import type { TableName } from 'prisma/generated//browser';
 import type { ArseType } from 'prisma/zod/schemas/models/Arse.schema';
 import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
@@ -41,31 +41,37 @@ export const PlayerProfile = ({
 }: Props) => {
     return (
         <Flex direction="column" gap="sm">
-            <Group justify="center" gap="xs">
-                <TitleWithYearDropdown order={1} title={player.name} year={year} validYears={activeYears} />
-            </Group>
-            <SimpleGrid cols={{ base: 1, lg: 2, xl: 3 }} spacing="md">
-                <Stack gap="sm">
-                    <PlayerCard
-                        player={player}
-                        clubs={clubs}
-                        countries={countries}
-                        trophies={trophies}
-                    />
-                    <PlayerLastPlayed lastPlayed={lastPlayed} />
-                    <PlayerBorn player={player} />
-                </Stack>
-                <Stack gap="sm">
-                    <SimpleGrid spacing="xs">
-                        <PlayerResults player={player} year={year} record={record} />
-                        <PlayerPositions player={player} year={year} record={record} />
-                    </SimpleGrid>
-                </Stack>
-                <Stack gap="sm">
-                    <PlayerArse arse={arse} />
+            <Flex direction="column" gap="sm">
+                <Group justify="center" gap="xs">
+                    <TitleWithYearDropdown order={1} title={player.name} year={year} validYears={activeYears} />
+                </Group>
+                <SimpleGrid cols={{ base: 1, lg: 2, xl: 3 }} spacing="md">
+                    <Stack gap="sm">
+                        <PlayerCard
+                            player={player}
+                            clubs={clubs}
+                            countries={countries}
+                            trophies={trophies}
+                        />
+                        <PlayerLastPlayed lastPlayed={lastPlayed} />
+                        <PlayerBorn player={player} />
+                    </Stack>
+                    <Stack gap="sm">
+                        <SimpleGrid spacing="xs">
+                            <PlayerResults player={player} year={year} record={record} />
+                            <PlayerPositions player={player} year={year} record={record} />
+                        </SimpleGrid>
+                    </Stack>
+                    <Stack gap="sm">
+                        <PlayerArse arse={arse} />
+                    </Stack>
+                </SimpleGrid>
+            </Flex>
+            <Flex>
+                <Paper shadow="xs" p="sm" w="auto" withBorder>
                     <PlayerHeatmap data={history} year={year} />
-                </Stack>
-            </SimpleGrid>
+                </Paper>
+            </Flex>
         </Flex>
     );
 };

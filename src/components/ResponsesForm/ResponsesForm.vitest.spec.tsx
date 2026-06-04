@@ -232,6 +232,39 @@ describe('Responses', () => {
         });
     });
 
+    it('syncs a newly-added player when responses re-renders with an extra row', async () => {
+        const initialResponses = defaultResponsesAdminData.slice(0, 2);
+
+        const { rerender } = render(
+            <Wrapper>
+                <ResponsesForm
+                    gameId={1249}
+                    gameDate="3rd February 2026"
+                    responses={initialResponses}
+                    submitResponse={mockSave}
+                />
+            </Wrapper>,
+        );
+
+        // Confirm the new player is not yet present
+        expect(screen.queryByRole('group', { name: 'Casey Mid' })).toBeNull();
+
+        // Re-render with a third player that was absent from the initial prop —
+        // exercises the `?? newBaseline` branch on the prevBaselineById lookup.
+        rerender(
+            <Wrapper>
+                <ResponsesForm
+                    gameId={1249}
+                    gameDate="3rd February 2026"
+                    responses={defaultResponsesAdminData.slice(0, 3)}
+                    submitResponse={mockSave}
+                />
+            </Wrapper>,
+        );
+
+        expect(screen.getByRole('group', { name: 'Casey Mid' })).toBeInTheDocument();
+    });
+
     it('updates a player response and calls onSave', async () => {
         const user = userEvent.setup();
 

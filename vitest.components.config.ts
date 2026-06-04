@@ -34,7 +34,6 @@ export default defineConfig({
                 '**/*.test.ts',
                 '**/*.test.tsx',
                 '**/*Skeleton*',
-                '**/AutoRefresh/AutoRefresh.tsx',
             ],
         },
     },

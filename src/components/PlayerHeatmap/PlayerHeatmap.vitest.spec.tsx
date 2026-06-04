@@ -160,8 +160,8 @@ describe('PlayerHeatmap', () => {
             </Wrapper>,
         );
         const labels = Array.from(container.querySelectorAll('svg text')).map(el => el.textContent);
-        expect(labels).toContain('Jan');
-        expect(labels).toContain('Dec');
+        expect(labels).toContain('J');
+        expect(labels).toContain('D');
     });
 
     it('renders a year label for each year in the all-time view', () => {
@@ -183,8 +183,8 @@ describe('PlayerHeatmap', () => {
             </Wrapper>,
         );
         const labels = Array.from(container.querySelectorAll('svg text')).map(el => el.textContent);
-        expect(labels).toContain('Jan');
-        expect(labels).toContain('Dec');
+        expect(labels).toContain('F');
+        expect(labels).toContain('D');
     });
 
     it('shows tooltip with date and result on mousemove', () => {

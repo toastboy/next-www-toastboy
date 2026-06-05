@@ -232,7 +232,7 @@ describe('Responses', () => {
         });
     });
 
-    it('syncs a newly-added player when responses re-renders with an extra row', async () => {
+    it('syncs a newly-added player when responses re-renders with an extra row', () => {
         const initialResponses = defaultResponsesAdminData.slice(0, 2);
 
         const { rerender } = render(

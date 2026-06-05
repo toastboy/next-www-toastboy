@@ -22,15 +22,35 @@ const config: StorybookConfig = {
     // TODO: I had managed to get rid of these aliases in the app code, but
     // Storybook still needs them. Perhaps I need to rethink my aliases
     // altogether - maybe even get rid.
-    "viteFinal": async (viteConfig) =>
-        mergeConfig(viteConfig, {
+    "viteFinal": async (viteConfig) => {
+        const projectRoot = path.resolve(storybookDir, '..');
+        let config = mergeConfig(viteConfig, {
             resolve: {
                 alias: {
-                    '@': path.resolve(storybookDir, '../src'),
-                    prisma: path.resolve(storybookDir, '../prisma'),
+                    '@': path.resolve(projectRoot, 'src'),
+                    prisma: path.resolve(projectRoot, 'prisma'),
                 },
             },
-        }),
+        });
+        // On macOS volume mounts (e.g. /Volumes/…) the Storybook UI's vitest
+        // runner constructs module fetch URLs from the full absolute filesystem
+        // path instead of a path relative to the server root, causing 404s.
+        // Restricting fs.allow to src/ fixes this without exposing the rest of
+        // the repo through the dev server. Skipped in NODE_ENV=test (CLI vitest
+        // / CI) because the CLI runner resolves paths correctly on its own.
+        if (process.env.NODE_ENV !== 'test') {
+            config = mergeConfig(config, {
+                server: {
+                    fs: {
+                        allow: [
+                            path.resolve(projectRoot, 'src'),
+                        ],
+                    },
+                },
+            });
+        }
+        return config;
+    },
 };
 
 export default config;

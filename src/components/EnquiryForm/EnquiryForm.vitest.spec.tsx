@@ -107,6 +107,18 @@ describe('EnquiryForm', () => {
         expect(replace).toHaveBeenCalledWith('/footy/contact');
     });
 
+    it('preserves remaining search params when cleaning up enquiry status', async () => {
+        const replace = vi.fn();
+        vi.mocked(useRouter).mockReturnValue({ replace, push: vi.fn(), back: vi.fn(), forward: vi.fn(), refresh: vi.fn(), prefetch: vi.fn() });
+        vi.mocked(useSearchParams).mockReturnValue(mockParams('enquiry=verified&tab=info'));
+
+        render(<Wrapper><EnquiryForm redirectUrl="redirect-url" onSendEnquiry={mockSendEnquiry} /></Wrapper>);
+
+        await waitFor(() => {
+            expect(replace).toHaveBeenCalledWith('/footy/contact?tab=info');
+        });
+    });
+
     it('shows error notification when submit throws', async () => {
         const user = userEvent.setup();
         const submitError = new Error('Server error');

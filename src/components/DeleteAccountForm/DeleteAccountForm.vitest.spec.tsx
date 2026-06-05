@@ -95,6 +95,27 @@ describe('DeleteAccountForm', () => {
         consoleErrorSpy.mockRestore();
     });
 
+    it('shows the generic fallback message when a non-Error value is thrown', async () => {
+        const user = userEvent.setup();
+        const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
+        const failingMock: DeletePlayerProxy = vi.fn().mockRejectedValueOnce('plain string error');
+
+        render(
+            <Wrapper>
+                <DeleteAccountForm onDeletePlayer={failingMock} />
+            </Wrapper>,
+        );
+
+        await user.type(screen.getByRole('textbox', { name: /type delete to confirm/i }), 'DELETE');
+        await user.click(screen.getByRole('checkbox', { name: /i understand.*personal data/i }));
+        await user.click(screen.getByRole('button', { name: 'Delete my data' }));
+
+        const errorNotification = await screen.findByRole('alert');
+        expect(errorNotification.textContent ?? '').toContain('Unable to delete your account data.');
+
+        consoleErrorSpy.mockRestore();
+    });
+
     it('dismisses the error notification when its close button is clicked', async () => {
         const user = userEvent.setup();
         const consoleErrorSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);

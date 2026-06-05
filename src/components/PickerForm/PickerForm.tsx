@@ -64,6 +64,7 @@ export const PickerForm = ({
                     return compareNullableNumber(a.responseInterval, b.responseInterval, sortDirection);
                 case 'gamesPlayed':
                     return compareNullableNumber(a.gamesPlayed, b.gamesPlayed, sortDirection);
+                /* v8 ignore next 2 -- SortKey is a union type; default is unreachable */
                 default:
                     return 0;
             }
@@ -134,6 +135,7 @@ export const PickerForm = ({
     );
 
     const handleSubmit = async () => {
+        /* v8 ignore next 7 -- Pick sides button is disabled when !hasSelection; guard is a defensive backstop */
         if (!hasSelection) {
             notifications.show({
                 color: 'yellow',

@@ -196,6 +196,25 @@ describe('InvoiceForm', () => {
         });
     });
 
+    it('shows a generic error message when submission fails with a non-Error value', async () => {
+        const user = userEvent.setup();
+        const onUpdateGameDays = vi.fn().mockRejectedValue('unexpected string error');
+        renderForm({ onUpdateGameDays });
+
+        await user.click(screen.getByRole('button', { name: /Record invoice/i }));
+
+        await waitFor(() => {
+            expect(notificationsUpdateMock).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    id: 'invoice-form',
+                    color: 'red',
+                    title: 'Error',
+                    message: 'Failed to save invoice.',
+                }),
+            );
+        });
+    });
+
     it('shows an error notification when submission fails', async () => {
         const user = userEvent.setup();
         const onUpdateGameDays = vi.fn().mockRejectedValue(new Error('Network error'));

@@ -90,6 +90,17 @@ describe('AdminUpdatePlayerRecords', () => {
         );
     });
 
+    it('renders nothing when getProgress resolves to null', async () => {
+        const getProgress: GetProgressProxy = vi.fn().mockResolvedValue(null);
+
+        render(<Wrapper><AdminUpdatePlayerRecords onUpdatePlayerRecords={mockUpdatePlayerRecords} getProgress={getProgress} /></Wrapper>);
+
+        await act(async () => { await Promise.resolve(); });
+
+        expect(screen.queryByText('Update Player Records')).not.toBeInTheDocument();
+        expect(screen.queryByText(/%/)).not.toBeInTheDocument();
+    });
+
     it('renders with data == 100% and polls on interval', async () => {
         const getProgress: GetProgressProxy = vi.fn().mockResolvedValue([2000, 2000]);
 

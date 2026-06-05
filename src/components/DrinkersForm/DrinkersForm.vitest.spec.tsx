@@ -7,6 +7,7 @@ import { DrinkersForm } from '@/components/DrinkersForm/DrinkersForm';
 import { Wrapper } from '@/tests/components/lib/common';
 import { defaultDrinkersData } from '@/tests/mocks/data/drinkers';
 import type { SetDrinkersProxy } from '@/types/actions/SetDrinkers';
+import type { OutcomePlayerType } from '@/types/OutcomePlayerType';
 
 const { refreshMock, notificationsShowMock, notificationsUpdateMock } = vi.hoisted(() => ({
     refreshMock: vi.fn(),
@@ -143,6 +144,41 @@ describe('DrinkersForm', () => {
 
         expect(screen.getByLabelText('Pub Alex Keeper')).not.toBeChecked();
         expect(screen.getByLabelText('Pub Britt Winger')).not.toBeChecked();
+    });
+
+    it('resets selection when players prop changes to a new reference', () => {
+        const setDrinkers = vi.fn<SetDrinkersProxy>();
+        const { rerender } = render(
+            <Wrapper>
+                <DrinkersForm
+                    gameId={1249}
+                    gameDate="2026-02-03"
+                    players={defaultDrinkersData}
+                    setDrinkers={setDrinkers}
+                />
+            </Wrapper>,
+        );
+
+        expect(screen.getByText('Selected: 2')).toBeInTheDocument();
+
+        // New reference with only one player having pub > 0
+        const updatedPlayers: OutcomePlayerType[] = [
+            { ...defaultDrinkersData[0], pub: null },
+            ...defaultDrinkersData.slice(1),
+        ];
+        rerender(
+            <Wrapper>
+                <DrinkersForm
+                    gameId={1249}
+                    gameDate="2026-02-03"
+                    players={updatedPlayers}
+                    setDrinkers={setDrinkers}
+                />
+            </Wrapper>,
+        );
+
+        // Only Casey Mid (pub=2) remains selected
+        expect(screen.getByText('Selected: 1')).toBeInTheDocument();
     });
 
     it('shows an error notification when save fails', async () => {

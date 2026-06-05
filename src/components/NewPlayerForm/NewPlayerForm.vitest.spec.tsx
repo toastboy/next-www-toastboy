@@ -151,6 +151,36 @@ describe('NewPlayerForm', () => {
         });
     });
 
+    it('shows generic error message when creation fails with a non-Error value', async () => {
+        const notificationUpdateSpy = vi.spyOn(notifications, 'update');
+        mockCreatePlayer.mockRejectedValueOnce('string error');
+
+        const user = userEvent.setup();
+        render(
+            <Wrapper>
+                <NewPlayerForm
+                    players={players}
+                    onCreatePlayer={mockCreatePlayer}
+                    onSendEmail={mockSendEmail}
+                />
+            </Wrapper>,
+        );
+
+        await user.type(screen.getByLabelText(/Name/i), 'Pat Smith');
+        await user.type(screen.getByLabelText(/Email address/i), 'test@example.com');
+        await user.click(screen.getByRole('button', { name: /Add player/i }));
+
+        await waitFor(() => {
+            expect(notificationUpdateSpy).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    color: 'red',
+                    title: 'Error',
+                    message: 'Failed to create player.',
+                }),
+            );
+        });
+    });
+
     it('shows error notification on creation failure', async () => {
         const notificationUpdateSpy = vi.spyOn(notifications, 'update');
         mockCreatePlayer.mockRejectedValueOnce(new Error('Network error'));
@@ -310,6 +340,41 @@ describe('NewPlayerForm', () => {
             expect(mockSendEmail).toHaveBeenCalledWith(
                 expect.objectContaining({
                     cc: expect.stringContaining('sam@example.com') as string,
+                }),
+            );
+        });
+    });
+
+    it('sends no introducer cc when introducer has no accountEmail and no extra emails', async () => {
+        const user = userEvent.setup();
+        const introducerWithNoEmail = [
+            createMockPlayerData({
+                id: 1,
+                name: 'Sam Smith',
+                accountEmail: null,
+                extraEmails: [],
+            }),
+        ];
+
+        render(
+            <Wrapper>
+                <NewPlayerForm
+                    players={introducerWithNoEmail}
+                    onCreatePlayer={mockCreatePlayer}
+                    onSendEmail={mockSendEmail}
+                />
+            </Wrapper>,
+        );
+
+        await user.type(screen.getByLabelText(/Name/i), 'New Player');
+        await user.type(screen.getByLabelText(/Email address/i), 'new@example.com');
+        await user.selectOptions(screen.getByLabelText(/Introduced by/i), '1');
+        await user.click(screen.getByRole('button', { name: /Add player/i }));
+
+        await waitFor(() => {
+            expect(mockSendEmail).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    cc: 'footy@toastboy.co.uk',
                 }),
             );
         });

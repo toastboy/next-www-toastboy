@@ -1,4 +1,3 @@
-
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { usePathname, useRouter } from 'next/navigation';
@@ -11,14 +10,15 @@ import { Wrapper } from '@/tests/components/lib/common';
 
 describe('SignIn', () => {
     beforeEach(() => {
-        (useRouter as Mock).mockReturnValue({
+        vi.mocked(useRouter).mockReturnValue({
             push: vi.fn(),
             replace: vi.fn(),
             back: vi.fn(),
+            forward: vi.fn(),
             refresh: vi.fn(),
             prefetch: vi.fn(),
         });
-        (usePathname as Mock).mockReturnValue('/footy/auth/signin');
+        vi.mocked(usePathname).mockReturnValue('/footy/auth/signin');
     });
 
     it('renders sign in form', () => {

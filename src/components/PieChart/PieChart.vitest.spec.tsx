@@ -53,6 +53,34 @@ describe('PieChart', () => {
         expect(labels).toContain('Category B');
     });
 
+    it('does not throw when ResizeObserver fires after the component unmounts', () => {
+        let capturedCallback: ResizeObserverCallback | undefined;
+
+        class ControlledResizeObserver {
+            constructor(cb: ResizeObserverCallback) { capturedCallback = cb; }
+            observe() { /* empty */ }
+            unobserve() { /* empty */ }
+            disconnect() { /* empty */ }
+        }
+        vi.stubGlobal('ResizeObserver', ControlledResizeObserver);
+
+        try {
+            const { unmount } = render(
+                <Wrapper>
+                    <PieChart data={data} />
+                </Wrapper>,
+            );
+
+            expect(capturedCallback).toBeDefined();
+            unmount(); // clears wrapperRef.current and svgRef.current
+
+            const entry = { contentRect: { width: 400, height: 400 } } as unknown as ResizeObserverEntry;
+            expect(() => capturedCallback!([entry], {} as ResizeObserver)).not.toThrow();
+        } finally {
+            vi.unstubAllGlobals();
+        }
+    });
+
     it('skips draw when ResizeObserver fires with empty entries', () => {
         class EmptyEntriesObserver {
             private callback: ResizeObserverCallback;
@@ -65,13 +93,17 @@ describe('PieChart', () => {
         }
         vi.stubGlobal('ResizeObserver', EmptyEntriesObserver);
 
-        const { container } = render(
-            <Wrapper>
-                <PieChart data={data} />
-            </Wrapper>,
-        );
+        try {
+            const { container } = render(
+                <Wrapper>
+                    <PieChart data={data} />
+                </Wrapper>,
+            );
 
-        // No slices drawn when entries are empty
-        expect(container.querySelectorAll('svg path')).toHaveLength(0);
+            // No slices drawn when entries are empty
+            expect(container.querySelectorAll('svg path')).toHaveLength(0);
+        } finally {
+            vi.unstubAllGlobals();
+        }
     });
 });

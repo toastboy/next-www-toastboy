@@ -1,4 +1,5 @@
 import { fireEvent, render, screen } from '@testing-library/react';
+import { useRouter } from 'next/navigation';
 import { vi } from 'vitest';
 
 import { MoneyChart } from '@/components/MoneyChart/MoneyChart';
@@ -29,6 +30,7 @@ const N = defaultMoneyChartData.length; // 6
 
 describe('MoneyChart', () => {
     beforeEach(() => {
+        vi.clearAllMocks();
         vi.stubGlobal('ResizeObserver', ImmediateResizeObserver);
     });
 
@@ -140,6 +142,37 @@ describe('MoneyChart', () => {
         expect(tooltipDiv.innerHTML).toContain(interval);
         expect(tooltipDiv.innerHTML).toContain('Balance');
         expect(tooltipDiv.innerHTML).toContain(`£${expectedBalance}`);
+    });
+
+    it('navigates when clicking a bar with linkBase provided', () => {
+        const mockPush = vi.fn();
+        vi.mocked(useRouter).mockReturnValue({ push: mockPush, replace: vi.fn(), back: vi.fn(), forward: vi.fn(), refresh: vi.fn(), prefetch: vi.fn() });
+
+        const { container } = render(
+            <Wrapper>
+                <MoneyChart data={defaultMoneyChartData} linkBase="/footy/books/" />
+            </Wrapper>,
+        );
+
+        const { interval } = defaultMoneyChartData[0];
+        fireEvent.click(container.querySelectorAll('svg rect')[0]);
+
+        expect(mockPush).toHaveBeenCalledWith(`/footy/books/${interval}`);
+    });
+
+    it('does not navigate when clicking a bar without linkBase', () => {
+        const mockPush = vi.fn();
+        vi.mocked(useRouter).mockReturnValue({ push: mockPush, replace: vi.fn(), back: vi.fn(), forward: vi.fn(), refresh: vi.fn(), prefetch: vi.fn() });
+
+        const { container } = render(
+            <Wrapper>
+                <MoneyChart data={defaultMoneyChartData} />
+            </Wrapper>,
+        );
+
+        fireEvent.click(container.querySelectorAll('svg rect')[0]);
+
+        expect(mockPush).not.toHaveBeenCalled();
     });
 
     it('hides tooltip on mouseleave', () => {

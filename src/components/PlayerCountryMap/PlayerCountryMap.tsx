@@ -127,6 +127,7 @@ export const PlayerCountryMap = ({
      */
     const hoveredGroups = useMemo(() => {
         if (!hoveredCountry) return [];
+        /* v8 ignore next -- only countries in supportersByAtlasName trigger hover; get() always returns an array */
         const supporters = supportersByAtlasName.get(hoveredCountry) ?? [];
         const grouped = new Map<string, CountrySupporterWithPlayerDataType[]>();
         for (const s of supporters) {
@@ -166,6 +167,7 @@ export const PlayerCountryMap = ({
             cancelClose();
             const lowerName = atlasName.toLowerCase();
             const centroid = centroidsRef.current.get(lowerName);
+            /* v8 ignore next -- centroid is always pre-computed before a D3 mouseenter can fire */
             if (centroid) {
                 setPopoverPos(centroid);
             }

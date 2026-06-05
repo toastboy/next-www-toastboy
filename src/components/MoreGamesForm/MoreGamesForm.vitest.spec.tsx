@@ -10,12 +10,31 @@ import type {
     CreateMoreGameDaysInput,
     CreateMoreGameDaysProxy,
 } from '@/types/actions/CreateMoreGameDays';
+
+const { notificationsShowMock, notificationsUpdateMock, captureUnexpectedErrorMock } = vi.hoisted(() => ({
+    notificationsShowMock: vi.fn(),
+    notificationsUpdateMock: vi.fn(),
+    captureUnexpectedErrorMock: vi.fn(),
+}));
+
+vi.mock('@mantine/notifications', () => ({
+    notifications: {
+        show: notificationsShowMock,
+        update: notificationsUpdateMock,
+    },
+}));
+
+vi.mock('@/lib/observability/sentry', () => ({
+    captureUnexpectedError: captureUnexpectedErrorMock,
+}));
+
 const mockCreateMoreGameDays = vi.fn();
 
 describe('MoreGamesForm', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         mockCreateMoreGameDays.mockResolvedValue([] as Awaited<ReturnType<CreateMoreGameDaysProxy>>);
+        captureUnexpectedErrorMock.mockResolvedValue(undefined);
     });
 
     it('renders a row for each game day', () => {
@@ -32,6 +51,33 @@ describe('MoreGamesForm', () => {
 
         expect(screen.getAllByRole('checkbox')).toHaveLength(defaultMoreGamesFormData.rows.length);
         expect(screen.getByText(defaultMoreGamesFormData.rows[0].date)).toBeInTheDocument();
+    });
+
+    it('shows an error notification when creation fails', async () => {
+        const user = userEvent.setup();
+        mockCreateMoreGameDays.mockRejectedValueOnce(new Error('Server error'));
+
+        render(
+            <Wrapper>
+                <MoreGamesForm
+                    cost={defaultMoreGamesFormData.cost}
+                    hallCost={defaultMoreGamesFormData.hallCost}
+                    rows={defaultMoreGamesFormData.rows}
+                    onCreateMoreGameDays={mockCreateMoreGameDays}
+                />
+            </Wrapper>,
+        );
+
+        await user.click(screen.getByRole('button', { name: /Create game days/i }));
+
+        await waitFor(() => {
+            expect(notificationsUpdateMock).toHaveBeenCalledWith(expect.objectContaining({
+                color: 'red',
+                title: 'Error',
+                message: 'Failed to create game days.',
+            }));
+        });
+        expect(captureUnexpectedErrorMock).toHaveBeenCalled();
     });
 
     it('submits updated rows', async () => {

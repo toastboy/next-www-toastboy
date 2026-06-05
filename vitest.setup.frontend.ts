@@ -3,6 +3,10 @@ import '@testing-library/jest-dom/vitest';
 import * as React from 'react';
 import { vi } from 'vitest';
 
+// next/navigation is aliased to src/tests/__mocks__/next/navigation.ts in
+// vitest.components.config.ts, so its exports (useRouter, usePathname, etc.)
+// are already vi.fn() instances for every component test without a per-file
+// vi.mock('next/navigation') call.
 vi.mock('@/lib/auth.client');
 vi.mock('@/lib/urls', () => ({
     getPublicBaseUrl: () => 'http://localhost',

@@ -142,6 +142,24 @@ describe('GameResultForm', () => {
         expect(screen.getByRole('button', { name: 'Save' })).not.toBeDisabled();
     });
 
+    it('shows a generic error message when save fails with a non-Error value', async () => {
+        const user = userEvent.setup();
+        const setGameResult = vi.fn<SetGameResultProxy>().mockRejectedValue('string error');
+
+        renderForm(setGameResult);
+
+        await user.selectOptions(screen.getByLabelText('Result'), 'draw');
+        await user.click(screen.getByRole('button', { name: 'Save' }));
+
+        await waitFor(() => {
+            expect(notificationsUpdateMock).toHaveBeenCalledWith(expect.objectContaining({
+                id: 'game-result-update',
+                color: 'red',
+                message: 'Failed to update game',
+            }));
+        });
+    });
+
     it('shows an error notification when save fails', async () => {
         const user = userEvent.setup();
         const setGameResult = vi.fn<SetGameResultProxy>().mockRejectedValue(new Error('Boom'));

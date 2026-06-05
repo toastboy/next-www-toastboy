@@ -24,6 +24,19 @@ describe('GameDayList', () => {
         expect(props[2].gameDay.id).toBe(gameDays[2].id);
     });
 
+    it('includes year in month label when year prop is 0', () => {
+        const gameDays = defaultGameDayList.slice(0, 1);
+
+        const { container } = render(
+            <Wrapper>
+                <GameDayList gameDays={gameDays} year={0} />
+            </Wrapper>,
+        );
+
+        // When year=0, the month label includes the numeric year
+        expect(container.textContent).toMatch(/\d{4}/);
+    });
+
     it('renders an empty state when no game days exist', () => {
         render(
             <Wrapper>

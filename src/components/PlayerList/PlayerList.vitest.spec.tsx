@@ -312,6 +312,42 @@ describe('PlayerList', () => {
         expect(screen.getByRole('heading', { level: 1, name: '0 Active Players' })).toBeInTheDocument();
     });
 
+    it('narrows the reply range when the min slider thumb is moved right', async () => {
+        const user = userEvent.setup();
+        render(
+            <Wrapper>
+                <PlayerList players={players} gameDay={gameDay} sendEmail={sendEmailMock} />
+            </Wrapper>,
+        );
+
+        // gameDay.id = 20; initial range is [0, 20]
+        expect(screen.getByRole('heading', { level: 3, name: /who last responded between/i })).toHaveTextContent('0 and 20 weeks ago');
+
+        const [minThumb] = screen.getAllByRole('slider');
+        minThumb.focus();
+        await user.keyboard('{ArrowRight}');
+
+        // After one ArrowRight step the min bound becomes 1
+        expect(screen.getByRole('heading', { level: 3, name: /who last responded between/i })).toHaveTextContent('1 and 20 weeks ago');
+    });
+
+    it('closes the email modal when SendEmailForm fires onClose', async () => {
+        const user = userEvent.setup();
+        render(
+            <Wrapper>
+                <PlayerList players={players} gameDay={gameDay} sendEmail={sendEmailMock} />
+            </Wrapper>,
+        );
+
+        await user.click(screen.getByRole('checkbox', { name: 'Select All' }));
+        await user.click(screen.getByRole('button', { name: /send email/i }));
+
+        const closeButton = screen.getByRole('button', { name: 'Close SendEmailForm' });
+        await user.click(closeButton);
+
+        expect(screen.queryByRole('button', { name: 'Close SendEmailForm' })).not.toBeInTheDocument();
+    });
+
     it('hides null lastResponded entries when reply-range max is below the current game day', async () => {
         const playersWithNullResponse = [
             ...players,

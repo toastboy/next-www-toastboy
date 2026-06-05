@@ -31,10 +31,11 @@ describe('ClaimSignup', () => {
         vi.clearAllMocks();
         captureUnexpectedErrorMock.mockResolvedValue(undefined);
         mockPush = vi.fn();
-        (useRouter as Mock).mockReturnValue({
+        vi.mocked(useRouter).mockReturnValue({
             push: mockPush,
             replace: vi.fn(),
             back: vi.fn(),
+            forward: vi.fn(),
             refresh: vi.fn(),
             prefetch: vi.fn(),
         });
@@ -88,6 +89,35 @@ describe('ClaimSignup', () => {
         const alert = screen.getByRole('alert');
         await user.click(within(alert).getByRole('button'));
         expect(screen.queryByRole('alert')).not.toBeInTheDocument();
+    });
+
+    it('calls alert when signUp onError callback fires', async () => {
+        const user = userEvent.setup();
+        const mockSignUpEmail = authClient.signUp.email as Mock;
+        mockSignUpEmail.mockResolvedValueOnce({});
+        const alertFn = vi.fn();
+        vi.stubGlobal('alert', alertFn);
+
+        render(
+            <Wrapper>
+                <ClaimSignup {...props} />
+            </Wrapper>,
+        );
+
+        await user.type(screen.getByPlaceholderText(/^Enter your password$/i), 'Password123');
+        await user.type(screen.getByLabelText(/Confirm password/i), 'Password123');
+        await user.click(screen.getByRole('button', { name: /Create login/i }));
+
+        await waitFor(() => expect(mockSignUpEmail).toHaveBeenCalled());
+
+        const [, options] = (mockSignUpEmail.mock.calls[0] ?? []) as [
+            unknown,
+            { onError?: (ctx: { error: { message: string } }) => void },
+        ];
+        options?.onError?.({ error: { message: 'Auth error' } });
+
+        expect(alertFn).toHaveBeenCalledWith('Auth error');
+        vi.unstubAllGlobals();
     });
 
     it('submits valid credentials and redirects on success', async () => {

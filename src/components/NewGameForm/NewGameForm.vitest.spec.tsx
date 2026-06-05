@@ -88,6 +88,30 @@ describe('NewGameForm', () => {
         });
     });
 
+    it('shows a generic error message when the request fails with a non-Error value', async () => {
+        const user = userEvent.setup();
+        const notificationUpdateSpy = vi.spyOn(notifications, 'update');
+        mockTriggerInvitations.mockRejectedValue('not an error object');
+
+        render(
+            <Wrapper>
+                <NewGameForm onTriggerInvitations={mockTriggerInvitations} />
+            </Wrapper>,
+        );
+
+        await user.click(screen.getByRole('button', { name: /Send invitations/i }));
+
+        await waitFor(() => {
+            expect(notificationUpdateSpy).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    title: 'Error',
+                    color: 'red',
+                    message: 'Failed to check invitations.',
+                }),
+            );
+        });
+    });
+
     it('shows an error notification when the request fails', async () => {
         const user = userEvent.setup();
         const notificationUpdateSpy = vi.spyOn(notifications, 'update');

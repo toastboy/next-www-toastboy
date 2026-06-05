@@ -59,16 +59,12 @@ export const AdminUserList = ({ users, setAdminRole }: Props) => {
     const sortedUsers = filteredUsers ? [...filteredUsers].sort((a, b) => {
         if (!sortBy) return 0;
 
-        const aValue = a[sortBy]?.toString().toLowerCase() ?? '';
-        const bValue = b[sortBy]?.toString().toLowerCase() ?? '';
+        const aValue = String(a[sortBy] ?? '').toLowerCase();
+        const bValue = String(b[sortBy] ?? '').toLowerCase();
 
-        if (typeof aValue === 'string' && typeof bValue === 'string') {
-            return sortOrder === 'asc' ?
-                aValue.localeCompare(bValue) :
-                bValue.localeCompare(aValue);
-        }
-
-        return 0;
+        return sortOrder === 'asc' ?
+            aValue.localeCompare(bValue) :
+            bValue.localeCompare(aValue);
     }) : [];
 
     if (errorMessage) {

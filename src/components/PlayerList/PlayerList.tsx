@@ -116,6 +116,18 @@ export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
      */
     const activeStatusLabel = active ? 'Active Players' : 'Active and Former Players';
 
+    /** Formats a RangeSlider thumb value as a human-readable week count label. */
+    const rangeSliderLabel = (value: number) => `${value} weeks`;
+    /**
+     * Updates the reply-range filter from the RangeSlider.
+     * @param range - A [min, max] tuple of weeks-ago values matching the heading text.
+     */
+    const handleRangeChange = (range: [number, number]) => setReplyRange(range);
+    /** Opens the send-email modal for the currently selected players. */
+    const handleOpenEmailModal = () => setModalOpened(true);
+    /** Closes the send-email modal. */
+    const handleCloseEmailModal = () => setModalOpened(false);
+
     return (
         <Box>
             <Title order={1}>{sortedPlayers.length} {activeStatusLabel}</Title>
@@ -137,12 +149,12 @@ export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
             />
             <Text size="sm">Last Response Range</Text>
             <RangeSlider
-                label={(value) => `${value} weeks`}
+                label={rangeSliderLabel}
                 min={0}
                 max={gameDay.id}
                 step={1}
                 value={replyRange}
-                onChange={(event) => setReplyRange(event)}
+                onChange={handleRangeChange}
             />
             <Checkbox
                 mt={20}
@@ -161,7 +173,7 @@ export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
             <Tooltip label="Send an email to the selected players">
                 <Button
                     disabled={selectedPlayers.length === 0}
-                    onClick={() => setModalOpened(true)}
+                    onClick={handleOpenEmailModal}
                 >
                     Send Email...
                 </Button>
@@ -169,7 +181,7 @@ export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
             <SendEmailForm
                 players={selectedPlayers}
                 opened={modalOpened}
-                onClose={() => setModalOpened(false)}
+                onClose={handleCloseEmailModal}
                 onSendEmail={sendEmail}
             />
 

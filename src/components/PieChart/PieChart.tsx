@@ -19,11 +19,9 @@ export const PieChart = ({ data }: Props) => {
     const wrapperRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        if (!svgRef.current || !wrapperRef.current) return;
-
         const draw = (w: number, h: number) => {
-            if (!svgRef.current) return;
-            const svg = d3.select(svgRef.current);
+            // svgRef.current is non-null here: the callback guards both refs before calling draw.
+            const svg = d3.select(svgRef.current!);
             svg.selectAll('*').remove();
 
             const radius = Math.min(w, h) / 2;
@@ -58,13 +56,16 @@ export const PieChart = ({ data }: Props) => {
                 .text((d) => d.data.label);
         };
 
+        // Guards both refs and the empty-entries case. Both refs are cleared on unmount,
+        // so this also handles stale callbacks that fire after the component is removed.
         const observer = new ResizeObserver((entries) => {
-            if (entries.length === 0) return;
+            if (!svgRef.current || !wrapperRef.current || entries.length === 0) return;
             const { width, height } = entries[0].contentRect;
             draw(width, height);
         });
 
-        observer.observe(wrapperRef.current);
+        // Both refs are non-null at effect time: the elements are unconditionally rendered.
+        observer.observe(wrapperRef.current!);
         return () => observer.disconnect();
     }, [data]);
 

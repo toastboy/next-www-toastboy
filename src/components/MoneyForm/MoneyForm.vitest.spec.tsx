@@ -134,6 +134,37 @@ describe('MoneyForm', () => {
         expect(screen.getAllByRole('button', { name: 'Paid' })[0]).toBeDisabled();
     });
 
+    it('re-enables Pay button after unchecking then re-checking a debt', async () => {
+        const user = userEvent.setup();
+        renderForm(vi.fn<PayDebtProxy>());
+
+        const checkboxes = screen.getAllByRole('checkbox');
+        // Uncheck the first debt for Alex Current
+        await user.click(checkboxes[0]);
+        // Re-check it — this takes the "add to list" branch in toggleDebt
+        await user.click(checkboxes[0]);
+
+        // Both debts are checked again so Pay is enabled
+        expect(screen.getAllByRole('button', { name: 'Paid' })[0]).not.toBeDisabled();
+    });
+
+    it('shows generic error message when payment fails with a non-Error value', async () => {
+        const user = userEvent.setup();
+        const payDebt = vi.fn<PayDebtProxy>().mockRejectedValue('plain string');
+
+        renderForm(payDebt);
+
+        await user.click(screen.getAllByRole('button', { name: 'Paid' })[0]);
+
+        await waitFor(() => {
+            expect(notificationsUpdateMock).toHaveBeenCalledWith(expect.objectContaining({
+                id: 'money-paid-11',
+                color: 'red',
+                message: 'Failed to record payment',
+            }));
+        });
+    });
+
     it('shows error notification and does not refresh when payment fails', async () => {
         const user = userEvent.setup();
         const payDebt = vi.fn<PayDebtProxy>().mockRejectedValue(new Error('Boom'));

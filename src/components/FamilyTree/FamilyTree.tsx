@@ -88,6 +88,7 @@ export const FamilyTree = ({ data }: Props) => {
     useEffect(() => {
         updateSize();
         const ro = new ResizeObserver(updateSize);
+        /* v8 ignore next -- containerRef.current is always set after mount; null branch is unreachable */
         if (containerRef.current) ro.observe(containerRef.current);
         return () => ro.disconnect();
     }, [updateSize]);

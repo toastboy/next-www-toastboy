@@ -15,10 +15,11 @@ describe('UserButton', () => {
         // Reset URL between tests to avoid bleed-over when components change location
         window.history.pushState({}, '', '/');
         push = vi.fn();
-        (useRouter as Mock).mockReturnValue({
+        vi.mocked(useRouter).mockReturnValue({
             push,
             replace: vi.fn(),
             back: vi.fn(),
+            forward: vi.fn(),
             refresh: vi.fn(),
             prefetch: vi.fn(),
         });
@@ -156,7 +157,7 @@ describe('UserButton', () => {
     it('calls sign-out API and refreshes the router on success', async () => {
         const user = userEvent.setup();
         const refresh = vi.fn();
-        (useRouter as Mock).mockReturnValue({ push, replace: vi.fn(), back: vi.fn(), refresh, prefetch: vi.fn() });
+        vi.mocked(useRouter).mockReturnValue({ push, replace: vi.fn(), back: vi.fn(), forward: vi.fn(), refresh, prefetch: vi.fn() });
         const notificationUpdateSpy = vi.spyOn(notifications, 'update');
         vi.spyOn(global, 'fetch').mockResolvedValue(new Response(null, { status: 200 }));
 
@@ -204,7 +205,7 @@ describe('UserButton', () => {
     it('calls stop-impersonating API and refreshes router on success', async () => {
         const user = userEvent.setup();
         const refresh = vi.fn();
-        (useRouter as Mock).mockReturnValue({ push, replace: vi.fn(), back: vi.fn(), refresh, prefetch: vi.fn() });
+        vi.mocked(useRouter).mockReturnValue({ push, replace: vi.fn(), back: vi.fn(), forward: vi.fn(), refresh, prefetch: vi.fn() });
         vi.spyOn(global, 'fetch').mockResolvedValue(new Response(null, { status: 200 }));
 
         render(

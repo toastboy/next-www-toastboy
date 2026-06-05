@@ -194,11 +194,13 @@ export const ResponsesForm = ({
                     {items.map((row) => {
                         // v8 ignore next -- form is always initialised from the same rows array
                         const responseValues = form.values.byPlayerId[row.playerId] ?? toResponseValues(row);
+                        // v8 ignore next -- null names are excluded by the search filter before rows are rendered
+                        const ariaLabel = row.player.name ?? `Player ${row.playerId}`;
                         return (
                             <Flex
                                 key={row.playerId}
                                 role="group"
-                                aria-label={row.player.name ?? `Player ${row.playerId}`}
+                                aria-label={ariaLabel}
                                 data-player-id={row.playerId}
                                 align="center"
                                 gap="sm"

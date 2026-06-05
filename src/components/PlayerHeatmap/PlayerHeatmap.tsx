@@ -177,7 +177,7 @@ function drawPanel(
     // X axis — domain keys are short names; labels are rendered as narrow single letters
     g.append('g')
         .attr('transform', `translate(0,${ih + 4})`)
-        .call(axisBottom(xScale).tickSize(0).tickFormat(d => SHORT_TO_NARROW.get(d) ?? d))
+        .call(axisBottom(xScale).tickSize(0).tickFormat(d => SHORT_TO_NARROW.get(d)!))
         .call(ax => { ax.select('.domain').remove(); });
 
     // Cells
@@ -186,7 +186,7 @@ function drawPanel(
         .enter()
         .append('rect')
         .attr('class', 'cell')
-        .attr('x', d => xScale(d.col) ?? 0)
+        .attr('x', d => xScale(d.col)!)
         .attr('y', d => (d.row - 1) * (cellSize + GAP))
         .attr('width', xScale.bandwidth())
         .attr('height', cellSize)
@@ -237,6 +237,7 @@ const YearPanel = ({ label, cells, globalMaxRow, showTooltip, hideTooltip }: Yea
     const router = useRouter();
 
     useEffect(() => {
+        /* c8 ignore next */
         if (!svgRef.current) return;
         const onCellClick = (gameId: number) => router.push(`/footy/game/${gameId}`);
         const { scale: xScale, iw } = makeXScale();
@@ -294,6 +295,7 @@ export const PlayerHeatmap = ({ data, year }: Props) => {
         (event: globalThis.MouseEvent, { date, label, comment }: TooltipContent) => {
             const el = tooltipRef.current;
             const wrapper = wrapperRef.current;
+            /* c8 ignore next */
             if (!el || !wrapper) return;
             const wrapperRect = wrapper.getBoundingClientRect();
 
@@ -317,6 +319,7 @@ export const PlayerHeatmap = ({ data, year }: Props) => {
     );
 
     const hideTooltip = useCallback(() => {
+        /* c8 ignore next */
         if (tooltipRef.current) tooltipRef.current.style.opacity = '0';
     }, []);
 

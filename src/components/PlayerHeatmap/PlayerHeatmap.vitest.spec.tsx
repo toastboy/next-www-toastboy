@@ -38,6 +38,27 @@ const buildAllTimeData = (): PlayerFormType[] =>
         })),
     );
 
+/** One game + one no-game day (with no comment) in January 2024. */
+const buildWithNoGameNoCommentData = (): PlayerFormType[] => [
+    {
+        ...createMockOutcome({ gameDayId: 1, points: 3 }),
+        gameDay: createMockGameDay({ id: 1, date: new Date(2024, 0, 7), game: true }),
+    },
+    {
+        id: -2,
+        gameDayId: 2,
+        playerId: 1,
+        response: null,
+        responseInterval: null,
+        points: null,
+        team: null,
+        comment: null,
+        pub: null,
+        goalie: null,
+        gameDay: createMockGameDay({ id: 2, date: new Date(2024, 0, 14), game: false, comment: null }),
+    },
+];
+
 /** One game + one no-game day in January 2024. */
 const buildWithNoGameData = (): PlayerFormType[] => [
     {
@@ -58,6 +79,12 @@ const buildWithNoGameData = (): PlayerFormType[] => [
         gameDay: createMockGameDay({ id: 2, date: new Date(2024, 0, 14), game: false }),
     },
 ];
+
+/** One game with points=2 (not in colorMap or resultLabel) to exercise ?? fallbacks. */
+const buildUnknownPointsData = (): PlayerFormType[] => [{
+    ...createMockOutcome({ gameDayId: 1, points: 2 }),
+    gameDay: createMockGameDay({ id: 1, date: new Date(2024, 0, 7) }),
+}];
 
 describe('buildGrid', () => {
     it('always produces 12 month columns', () => {
@@ -92,6 +119,12 @@ describe('buildGrid', () => {
         expect(janCells.find(c => c.noGame)).toBeDefined();
         expect(janCells.find(c => !c.noGame)).toBeDefined();
     });
+
+    it('skips entries without a gameDay', () => {
+        const { cells, maxRow } = buildGrid([{ ...createMockOutcome(), gameDay: undefined }]);
+        expect(cells).toHaveLength(0);
+        expect(maxRow).toBe(0);
+    });
 });
 
 describe('buildYearGroups', () => {
@@ -110,6 +143,10 @@ describe('buildYearGroups', () => {
 
     it('returns an empty array for empty input', () => {
         expect(buildYearGroups([])).toHaveLength(0);
+    });
+
+    it('skips entries without a gameDay', () => {
+        expect(buildYearGroups([{ ...createMockOutcome(), gameDay: undefined }])).toHaveLength(0);
     });
 });
 
@@ -246,5 +283,95 @@ describe('PlayerHeatmap', () => {
         // Second cell is the no-game day with gameDayId = 2
         fireEvent.click(cells[1]);
         expect(push).toHaveBeenCalledWith('/footy/game/2');
+    });
+
+    it('navigates to the game page when Enter is pressed on a cell', () => {
+        const push = useRouter().push as ReturnType<typeof vi.fn>;
+        push.mockClear();
+
+        const { container } = render(
+            <Wrapper>
+                <PlayerHeatmap data={buildYearData()} year={2024} />
+            </Wrapper>,
+        );
+        const cell = container.querySelector('rect.cell')!;
+        fireEvent.keyDown(cell, { key: 'Enter' });
+        expect(push).toHaveBeenCalledWith('/footy/game/1');
+    });
+
+    it('navigates to the game page when Space is pressed on a cell', () => {
+        const push = useRouter().push as ReturnType<typeof vi.fn>;
+        push.mockClear();
+
+        const { container } = render(
+            <Wrapper>
+                <PlayerHeatmap data={buildYearData()} year={2024} />
+            </Wrapper>,
+        );
+        const cell = container.querySelector('rect.cell')!;
+        fireEvent.keyDown(cell, { key: ' ' });
+        expect(push).toHaveBeenCalledWith('/footy/game/1');
+    });
+
+    it('does not navigate when an unrelated key is pressed on a cell', () => {
+        const push = useRouter().push as ReturnType<typeof vi.fn>;
+        push.mockClear();
+
+        const { container } = render(
+            <Wrapper>
+                <PlayerHeatmap data={buildYearData()} year={2024} />
+            </Wrapper>,
+        );
+        const cell = container.querySelector('rect.cell')!;
+        fireEvent.keyDown(cell, { key: 'Tab' });
+        expect(push).not.toHaveBeenCalled();
+    });
+
+    it('shows plain "No game" aria-label for a no-game day with no comment', () => {
+        const { container } = render(
+            <Wrapper>
+                <PlayerHeatmap data={buildWithNoGameNoCommentData()} year={2024} />
+            </Wrapper>,
+        );
+        const cells = container.querySelectorAll('rect.cell');
+        const label = cells[1].getAttribute('aria-label') ?? '';
+        expect(label).toContain('No game');
+        expect(label).not.toContain('—');
+    });
+
+    it('renders no cells when all entries lack a gameDay', () => {
+        const { container } = render(
+            <Wrapper>
+                <PlayerHeatmap data={[{ ...createMockOutcome(), gameDay: undefined }]} year={2024} />
+            </Wrapper>,
+        );
+        expect(container.querySelectorAll('rect.cell')).toHaveLength(0);
+    });
+
+    it('renders cell and shows tooltip with fallback for unknown points value', () => {
+        const { container } = render(
+            <Wrapper>
+                <PlayerHeatmap data={buildUnknownPointsData()} year={2024} />
+            </Wrapper>,
+        );
+        const cell = container.querySelector('rect.cell')!;
+        expect(cell).toBeDefined();
+        const tooltipDiv = container.querySelector('svg')!.nextElementSibling as HTMLElement;
+        fireEvent.mouseMove(cell);
+        expect(tooltipDiv.style.opacity).toBe('1');
+    });
+
+    it('navigates to game page on cell click in all-time view', () => {
+        const push = useRouter().push as ReturnType<typeof vi.fn>;
+        push.mockClear();
+
+        const { container } = render(
+            <Wrapper>
+                <PlayerHeatmap data={buildAllTimeData()} year={0} />
+            </Wrapper>,
+        );
+        const cells = container.querySelectorAll('rect.cell');
+        fireEvent.click(cells[0]);
+        expect(push).toHaveBeenCalledWith(expect.stringMatching(/^\/footy\/game\/\d+$/));
     });
 });

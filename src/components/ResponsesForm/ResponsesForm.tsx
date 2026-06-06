@@ -20,7 +20,6 @@ import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { PlayerResponse } from 'prisma/generated/enums';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import { useAutoRefresh } from '@/hooks/useAutoRefresh';
 import { config } from '@/lib/config';
 import { SubmitResponseProxy } from '@/types/actions/SubmitResponse';
 import { OutcomePlayerType } from '@/types/OutcomePlayerType';
@@ -259,8 +258,6 @@ export const ResponsesForm = ({
             </Card>
         );
     };
-
-    useAutoRefresh('responses');
 
     return (
         <Stack gap="md">

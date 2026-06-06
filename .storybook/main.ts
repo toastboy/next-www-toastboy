@@ -24,7 +24,7 @@ const config: StorybookConfig = {
     // altogether - maybe even get rid.
     "viteFinal": async (viteConfig) => {
         const projectRoot = path.resolve(storybookDir, '..');
-        let config = mergeConfig(viteConfig, {
+        const baseConfig = mergeConfig(viteConfig, {
             resolve: {
                 alias: {
                     '@': path.resolve(projectRoot, 'src'),
@@ -38,8 +38,8 @@ const config: StorybookConfig = {
         // Restricting fs.allow to src/ fixes this without exposing the rest of
         // the repo through the dev server. Skipped in NODE_ENV=test (CLI vitest
         // / CI) because the CLI runner resolves paths correctly on its own.
-        if (process.env.NODE_ENV !== 'test') {
-            config = mergeConfig(config, {
+        const config = process.env.NODE_ENV !== 'test'
+            ? mergeConfig(baseConfig, {
                 server: {
                     fs: {
                         allow: [
@@ -47,8 +47,8 @@ const config: StorybookConfig = {
                         ],
                     },
                 },
-            });
-        }
+            })
+            : baseConfig;
         return config;
     },
 };

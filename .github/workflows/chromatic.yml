@@ -24,16 +24,8 @@ jobs:
             - name: Generate prisma client and zod schemas
               run: npm run generate
 
-            - name: Load secrets from 1Password and export to environment
-              uses: 1password/load-secrets-action@v4
-              with:
-                  export-env: true
-              env:
-                  OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
-                  CHROMATIC_PROJECT_TOKEN: op://next-www-toastboy/Chromatic/credential
-
             - name: Run Chromatic
               uses: chromaui/action@latest
               with:
-                  projectToken: ${{ env.CHROMATIC_PROJECT_TOKEN }}
+                  projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
                   exitOnceUploaded: true

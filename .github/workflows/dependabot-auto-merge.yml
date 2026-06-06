@@ -1,9 +1,5 @@
 name: Dependabot Auto Merge
 
-permissions:
-    contents: read
-    pull-requests: write
-
 on:
     pull_request:
         types:
@@ -11,36 +7,81 @@ on:
             - synchronize
             - reopened
 
+permissions:
+    contents: write
+    pull-requests: write
+
 jobs:
-    test-and-merge:
+    auto-merge:
         if: github.actor == 'dependabot[bot]'
         runs-on: ubuntu-latest
         steps:
-            # Step 1: Check out the code
-            - name: Checkout code
-              uses: actions/checkout@v6
-
-            # Step 2: Set up Node.js environment (if needed for testing)
-            - name: Set up Node.js
-              uses: actions/setup-node@v6
+            - name: Fetch Dependabot metadata
+              id: metadata
+              uses: dependabot/fetch-metadata@v2
               with:
-                  node-version: 24
+                  github-token: ${{ secrets.GITHUB_TOKEN }}
 
-            # Step 3: Install dependencies
-            - name: Install dependencies
-              run: npm install
+            - name: Check minimum package age
+              id: age-check
+              env:
+                  DEPS_JSON: ${{ steps.metadata.outputs.updated-dependencies-json }}
+              run: |
+                  MIN_AGE_DAYS=7
+                  NOW=$(date -u +%s)
+                  TOO_YOUNG_LIST=""
 
-            # Step 4: Run tests
-            - name: Run tests
-              run: npm test
+                  while IFS=$'\t' read -r pkg version; do
+                      # Encode package name for URL: keep @ but encode / (handles scoped packages)
+                      encoded=$(python3 -c "import urllib.parse, sys; print(urllib.parse.quote(sys.argv[1], safe='@'))" "$pkg")
+                      publish_time=$(curl -sf "https://registry.npmjs.org/${encoded}" | jq -r --arg v "$version" '.time[$v] // empty')
 
-            # Step 5: Check for PR status and merge
-            - name: Merge Dependabot PR if tests pass
-              if: success()
+                      if [ -z "$publish_time" ]; then
+                          echo "::warning::Cannot determine publish time for $pkg@$version — skipping age check for this package"
+                          continue
+                      fi
+
+                      publish_epoch=$(date -d "$publish_time" +%s)
+                      age_days=$(( (NOW - publish_epoch) / 86400 ))
+                      echo "$pkg@$version published $age_days day(s) ago"
+
+                      if [ "$age_days" -lt "$MIN_AGE_DAYS" ]; then
+                          TOO_YOUNG_LIST="${TOO_YOUNG_LIST}"$'\n'"- \`${pkg}@${version}\` (${age_days} day(s) old)"
+                      fi
+                  done < <(echo "$DEPS_JSON" | jq -r '.[] | select(.packageEcosystem == "npm_and_yarn") | "\(.dependencyName)\t\(.newVersion)"')
+
+                  if [ -n "$TOO_YOUNG_LIST" ]; then
+                      echo "too_young=true" >> "$GITHUB_OUTPUT"
+                      {
+                          echo "too_young_list<<ENDOFLIST"
+                          echo "$TOO_YOUNG_LIST"
+                          echo "ENDOFLIST"
+                      } >> "$GITHUB_OUTPUT"
+                  else
+                      echo "too_young=false" >> "$GITHUB_OUTPUT"
+                  fi
+
+            # Comment only on open/reopen to avoid spam on rebases
+            - name: Comment if packages are too young
+              if: steps.age-check.outputs.too_young == 'true' && github.event.action != 'synchronize'
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  TOO_YOUNG_LIST: ${{ steps.age-check.outputs.too_young_list }}
               run: |
-                  # Get the PR number
-                  PR_NUMBER=$(echo ${{ github.event.number }})
-                  # Merge the PR using fast-forward
-                  gh pr merge $PR_NUMBER --merge --admin
+                  {
+                      echo "**Auto-merge withheld — packages too new**"
+                      echo ""
+                      echo "The following npm packages were published less than 7 days ago."
+                      echo "Auto-merge is withheld to allow time for the community to spot supply-chain issues:"
+                      echo ""
+                      echo "$TOO_YOUNG_LIST"
+                      echo ""
+                      echo "This check runs again on each push. Once all packages are at least 7 days old, auto-merge will be enabled automatically."
+                  } > /tmp/comment.md
+                  gh pr comment "${{ github.event.pull_request.html_url }}" --body-file /tmp/comment.md
+
+            - name: Enable auto-merge
+              if: steps.age-check.outputs.too_young != 'true'
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+              run: gh pr merge --auto --merge "${{ github.event.pull_request.html_url }}"

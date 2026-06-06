@@ -2,10 +2,8 @@
 
 import { Text } from '@mantine/core';
 import { axisBottom } from 'd3-axis';
-import type { ScaleBand } from 'd3-scale';
-import { scaleBand } from 'd3-scale';
-import type { Selection } from 'd3-selection';
-import { select } from 'd3-selection';
+import { type ScaleBand, scaleBand } from 'd3-scale';
+import { select, type Selection } from 'd3-selection';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useMemo, useRef } from 'react';
 
@@ -61,7 +59,7 @@ const resultLabel = new Map<number | null | undefined, string>([
     [null, 'Did not play'],
     [undefined, 'Did not play'],
     [0, 'Lost'],
-    [1, 'Draw'],
+    [1, 'Drew'],
     [3, 'Won'],
 ]);
 

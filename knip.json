@@ -22,6 +22,7 @@
         "vitest.setup.*.ts"
     ],
     "ignoreDependencies": [
+        "@types/d3",
         "mariadb",
         "@eslint/config-array",
         "@eslint/object-schema",
@@ -29,8 +30,5 @@
         "@playwright/browser-chromium",
         "@playwright/browser-firefox",
         "@playwright/browser-webkit"
-    ],
-    "ignoreBinaries": [
-        "chromatic"
     ]
 }

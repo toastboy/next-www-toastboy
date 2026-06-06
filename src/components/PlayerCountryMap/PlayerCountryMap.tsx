@@ -10,7 +10,9 @@ import {
     Stack,
     Text,
 } from '@mantine/core';
-import * as d3 from 'd3';
+import { json } from 'd3-fetch';
+import { geoMercator, geoPath } from 'd3-geo';
+import { select } from 'd3-selection';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import * as topojson from 'topojson-client';
 import type { GeometryCollection, Topology } from 'topojson-specification';
@@ -185,21 +187,21 @@ export const PlayerCountryMap = ({
     useEffect(() => {
         if (!svgRef.current) return;
 
-        const svg = d3.select(svgRef.current);
+        const svg = select(svgRef.current);
         svg.selectAll('*').remove();
 
-        const projection = d3.geoMercator()
+        const projection = geoMercator()
             .center([0, 20])
             .scale(width / 6.5)
             .translate([width / 2, height / 2]);
 
-        const path = d3.geoPath().projection(projection);
+        const path = geoPath().projection(projection);
 
         const g = svg.append('g');
 
         const supportedNames = new Set(supportersByAtlasName.keys());
 
-        void d3.json<Topology>('/countries-110m.json').then((topology) => {
+        void json<Topology>('/countries-110m.json').then((topology) => {
             if (!topology) return undefined;
 
             const geojson = topojson.feature(

@@ -61,6 +61,10 @@ npx vitest run --config vitest.services.config.ts path/to/test.ts
 
 ## Key Conventions
 
+### Dependencies
+
+- `@types/d3` is listed in `devDependencies` and `ignoreDependencies` in `knip.json` even though no code imports from `d3` directly. It is kept because it pulls in all the individual `@types/d3-*` sub-packages (e.g. `@types/d3-array`, `@types/d3-axis`) as transitive npm dependencies — removing it silently removes all those type declarations.
+
 ### Imports
 
 - **Always** use `@/` alias instead of `../../` relative imports

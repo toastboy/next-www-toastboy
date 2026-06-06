@@ -1,6 +1,9 @@
 "use client";
 
-import * as d3 from 'd3';
+import { scaleOrdinal } from 'd3-scale';
+import { schemeCategory10 } from 'd3-scale-chromatic';
+import { select } from 'd3-selection';
+import { arc, pie, type PieArcDatum } from 'd3-shape';
 import { useEffect, useRef } from 'react';
 
 import styles from './PieChart.module.css';
@@ -21,14 +24,14 @@ export const PieChart = ({ data }: Props) => {
     useEffect(() => {
         const draw = (w: number, h: number) => {
             // svgRef.current is non-null here: the callback guards both refs before calling draw.
-            const svg = d3.select(svgRef.current!);
+            const svg = select(svgRef.current!);
             svg.selectAll('*').remove();
 
             const radius = Math.min(w, h) / 2;
-            const color = d3.scaleOrdinal(d3.schemeCategory10);
+            const color = scaleOrdinal(schemeCategory10);
 
-            const pie = d3.pie<PieChartDatum>().value((d) => d.value);
-            const arc = d3.arc<d3.PieArcDatum<PieChartDatum>>()
+            const pieLayout = pie<PieChartDatum>().value((d) => d.value);
+            const arcPath = arc<PieArcDatum<PieChartDatum>>()
                 .innerRadius(0)
                 .outerRadius(radius);
 
@@ -36,19 +39,19 @@ export const PieChart = ({ data }: Props) => {
                 .attr('transform', `translate(${w / 2},${h / 2})`);
 
             g.selectAll('path')
-                .data(pie(data))
+                .data(pieLayout(data))
                 .enter()
                 .append('path')
-                .attr('d', arc)
+                .attr('d', arcPath)
                 .attr('fill', (_, i) => color(i.toString()))
                 .attr('stroke', '#fff')
                 .style('stroke-width', '2px');
 
             g.selectAll('text')
-                .data(pie(data))
+                .data(pieLayout(data))
                 .enter()
                 .append('text')
-                .attr('transform', (d) => `translate(${arc.centroid(d).join(',')})`)
+                .attr('transform', (d) => `translate(${arcPath.centroid(d).join(',')})`)
                 .attr('text-anchor', 'middle')
                 .attr('dy', '0.35em')
                 .style('fill', 'white')

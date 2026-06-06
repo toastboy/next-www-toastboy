@@ -1,7 +1,11 @@
 'use client';
 
 import { Text } from '@mantine/core';
-import * as d3 from 'd3';
+import { max, min } from 'd3-array';
+import { axisBottom, axisLeft } from 'd3-axis';
+import { type ScaleBand, scaleBand, type ScaleLinear, scaleLinear } from 'd3-scale';
+import { select, type Selection } from 'd3-selection';
+import { line } from 'd3-shape';
 import { useRouter } from 'next/navigation';
 import { useEffect, useRef } from 'react';
 
@@ -23,7 +27,7 @@ export const MoneyChart = ({ data: raw, linkBase }: Props) => {
     useEffect(() => {
         if (!svgRef.current || !tooltipRef.current || !wrapperRef.current) return;
 
-        const tooltip = d3.select(tooltipRef.current);
+        const tooltip = select(tooltipRef.current);
 
         const showTooltip = (event: globalThis.MouseEvent, html: string) => {
             const svgRect = svgRef.current!.getBoundingClientRect();
@@ -46,18 +50,18 @@ export const MoneyChart = ({ data: raw, linkBase }: Props) => {
             const iw = w - M.left - M.right;
             const ih = h - M.top - M.bottom;
 
-            const svg = d3.select(svgRef.current);
+            const svg = select(svgRef.current);
             svg.attr('width', w).attr('height', h);
             svg.selectAll('*').remove();
 
-            const x = d3.scaleBand()
+            const x = scaleBand()
                 .domain(data.map(d => d.interval))
                 .range([0, iw]).padding(0.3);
 
-            const yMin = d3.min(data, d => d.balance - d.debits) ?? 0;
-            const yMax = d3.max(data, d => d.balance + d.credits) ?? 0;
+            const yMin = min(data, d => d.balance - d.debits) ?? 0;
+            const yMax = max(data, d => d.balance + d.credits) ?? 0;
             const pad = (yMax - yMin) * 0.12;
-            const y = d3.scaleLinear().domain([yMin - pad, yMax + pad]).range([ih, 0]);
+            const y = scaleLinear().domain([yMin - pad, yMax + pad]).range([ih, 0]);
 
             const g = svg.append('g').attr('transform', `translate(${M.left},${M.top})`);
             const minLabelSpacing = 40;
@@ -142,18 +146,18 @@ const M = { top: 20, right: 20, bottom: 30, left: 55 };
 type Datum = MoneyChartDatum & { balance: number };
 
 function axes(
-    g: d3.Selection<SVGGElement, unknown, null, undefined>,
-    x: d3.ScaleBand<string>,
-    y: d3.ScaleLinear<number, number>,
+    g: Selection<SVGGElement, unknown, null, undefined>,
+    x: ScaleBand<string>,
+    y: ScaleLinear<number, number>,
     iw: number,
     ih: number,
     tickValues: string[],
 ) {
     g.append('g')
         .attr('transform', `translate(0,${ih})`)
-        .call(d3.axisBottom(x).tickValues(tickValues));
+        .call(axisBottom(x).tickValues(tickValues));
     g.append('g')
-        .call(d3.axisLeft(y).tickFormat(v => `£${String(v)}`).ticks(6));
+        .call(axisLeft(y).tickFormat(v => `£${String(v)}`).ticks(6));
     g.append('line')
         .attr('x1', 0).attr('x2', iw)
         .attr('y1', y(0)).attr('y2', y(0))
@@ -161,12 +165,12 @@ function axes(
 }
 
 function balanceLine(
-    g: d3.Selection<SVGGElement, unknown, null, undefined>,
+    g: Selection<SVGGElement, unknown, null, undefined>,
     data: Datum[],
-    x: d3.ScaleBand<string>,
-    y: d3.ScaleLinear<number, number>,
+    x: ScaleBand<string>,
+    y: ScaleLinear<number, number>,
 ) {
-    const line = d3.line<Datum>()
+    const linePath = line<Datum>()
         .x(d => (x(d.interval) ?? 0) + x.bandwidth() / 2)
         .y(d => y(d.balance));
     g.append('path')
@@ -174,7 +178,7 @@ function balanceLine(
         .attr('fill', 'none')
         .attr('stroke', '#228be6')
         .attr('stroke-width', 2.5)
-        .attr('d', line);
+        .attr('d', linePath);
     g.selectAll('.dot')
         .data(data)
         .enter().append('circle')
@@ -185,7 +189,7 @@ function balanceLine(
 }
 
 function legend(
-    svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
+    svg: Selection<SVGSVGElement, unknown, null, undefined>,
     items: { label: string; color: string; dash?: boolean }[],
 ) {
     const lg = svg.append('g').attr('transform', `translate(${M.left + 4},${M.bottom - 30})`);

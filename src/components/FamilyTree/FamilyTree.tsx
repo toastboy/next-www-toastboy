@@ -1,7 +1,11 @@
 'use client';
 
 import { Box, Paper, Tooltip } from '@mantine/core';
-import * as d3 from 'd3';
+import { ascending, groups } from 'd3-array';
+import { hierarchy, type HierarchyPointLink, type HierarchyPointNode, tree } from 'd3-hierarchy';
+import { select } from 'd3-selection';
+import { linkRadial } from 'd3-shape';
+import { type D3ZoomEvent, zoom, zoomIdentity } from 'd3-zoom';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { FamilyTreeNodeType } from '@/types';
@@ -96,11 +100,10 @@ export const FamilyTree = ({ data }: Props) => {
     useEffect(() => {
         if (!svgRef.current || !containerRef.current) return;
 
-        const hierarchy = d3
-            .hierarchy(data)
-            .sort((a, b) => d3.ascending(a.data.name, b.data.name));
+        const hierarchyRoot = hierarchy(data)
+            .sort((a, b) => ascending(a.data.name, b.data.name));
 
-        const maxDepth = hierarchy.height;
+        const maxDepth = hierarchyRoot.height;
 
         /*
          * Pass 1 — lay out with outerRadius = 1 so every node's x is its
@@ -108,12 +111,11 @@ export const FamilyTree = ({ data }: Props) => {
          * The x-coordinates are independent of the radius and will not change
          * when we re-scale y in Pass 2.
          */
-        const treeLayout = d3
-            .tree<FamilyTreeNodeType>()
+        const treeLayout = tree<FamilyTreeNodeType>()
             .size([2 * Math.PI, 1])
             .separation((a, b) => (a.parent === b.parent ? 1 : 2) / Math.max(1, a.depth));
 
-        const root = treeLayout(hierarchy);
+        const root = treeLayout(hierarchyRoot);
 
         /*
          * Pass 2 — derive the smallest outer radius that prevents mugshot
@@ -126,7 +128,7 @@ export const FamilyTree = ({ data }: Props) => {
          */
         const radius = Math.min(
             computeTreeRadius(
-                d3.groups(root.descendants(), (d) => d.depth),
+                groups(root.descendants(), (d) => d.depth),
                 maxDepth,
                 Math.max(0, (width - RADIUS_FLOOR_PADDING) / 2),
                 MUGSHOT_SIZE,
@@ -142,7 +144,7 @@ export const FamilyTree = ({ data }: Props) => {
 
         const availableHeight = Math.max(MIN_HEIGHT, height);
 
-        const svg = d3.select(svgRef.current);
+        const svg = select(svgRef.current);
         svg.selectAll('*').remove();
 
         svg
@@ -153,14 +155,13 @@ export const FamilyTree = ({ data }: Props) => {
         /* All content lives in this group; zoom transforms it as a unit. */
         const g = svg.append('g');
 
-        const zoom = d3
-            .zoom<SVGSVGElement, unknown>()
+        const zoomBehaviour = zoom<SVGSVGElement, unknown>()
             .scaleExtent([0.1, 4])
-            .on('zoom', (event: d3.D3ZoomEvent<SVGSVGElement, unknown>) => {
+            .on('zoom', (event: D3ZoomEvent<SVGSVGElement, unknown>) => {
                 g.attr('transform', event.transform.toString());
             });
 
-        svg.call(zoom);
+        svg.call(zoomBehaviour);
 
         /* Defs: circular clip path for mugshots */
         const defs = svg.append('defs');
@@ -183,11 +184,10 @@ export const FamilyTree = ({ data }: Props) => {
             .join('path')
             .attr(
                 'd',
-                d3
-                    .linkRadial<
-                        d3.HierarchyPointLink<FamilyTreeNodeType>,
-                        d3.HierarchyPointNode<FamilyTreeNodeType>
-                    >()
+                linkRadial<
+                    HierarchyPointLink<FamilyTreeNodeType>,
+                    HierarchyPointNode<FamilyTreeNodeType>
+                >()
                     .angle((d) => d.x)
                     .radius((d) => d.y),
             );
@@ -195,7 +195,7 @@ export const FamilyTree = ({ data }: Props) => {
         /* Nodes */
         const node = g
             .append('g')
-            .selectAll<SVGGElement, d3.HierarchyPointNode<FamilyTreeNodeType>>(
+            .selectAll<SVGGElement, HierarchyPointNode<FamilyTreeNodeType>>(
                 'g',
             )
             .data(root.descendants())
@@ -257,8 +257,8 @@ export const FamilyTree = ({ data }: Props) => {
                 const ty =
                     (availableHeight - b.height * scale) / 2 - b.y * scale;
                 svg.call(
-                    zoom.transform,
-                    d3.zoomIdentity.translate(tx, ty).scale(scale),
+                    zoomBehaviour.transform,
+                    zoomIdentity.translate(tx, ty).scale(scale),
                 );
             }
         }

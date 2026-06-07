@@ -4,7 +4,7 @@
 
 ## Steps
 
-1. Gather the diff — run `git diff HEAD` to capture all staged and unstaged changes since the last commit. If the working tree is clean, run `git diff HEAD~1 HEAD` to inspect the most recent commit instead.
+1. Gather the diff — run `git diff HEAD` to capture all staged and unstaged changes since the last commit. If the working tree is clean, run `git show -p HEAD` to inspect the most recent commit instead (this works even in shallow clones or repos with a single commit, unlike `git diff HEAD~1 HEAD`).
 
 2. Identify README-worthy content. The README covers things a developer needs to understand *before touching the repo* — infrastructure, CI/CD decisions, secrets management, external services, and non-obvious operational constraints. Changes worth documenting include:
    - New or removed external services, integrations, or dependencies (Azure, Sentry, Chromatic, Codecov, etc.)

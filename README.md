@@ -54,7 +54,7 @@ The split between secret stores reflects this:
 | `OP_SERVICE_ACCOUNT_TOKEN` | GitHub Actions secret | Terraform apply and 1Password sync (main only) |
 | `CHROMATIC_PROJECT_TOKEN` | GitHub Actions secret | Chromatic visual regression (all pushes) |
 | `CODECOV_TOKEN` | GitHub Actions secret | Unit test coverage upload (all pushes) |
-| `TF_API_TOKEN` | GitHub Actions secret | Terraform plan on PRs (read-only) |
+| `TF_API_TOKEN` | GitHub Actions secret | Terraform plan & apply on main only. No Terraform runs on other branches or PRs. |
 | `CLAUDE_CODE_OAUTH_TOKEN` | GitHub Actions secret | Claude code review and `@claude` mentions |
 | All production app secrets | 1Password vault `next-www-toastboy` | Terraform apply + 1Password sync (main only) |
 

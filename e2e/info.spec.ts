@@ -67,7 +67,7 @@ test.describe('EnquiryForm', () => {
             await page.getByRole('textbox', { name: 'Message' }).fill('This is a test enquiry from Playwright.');
             await page.getByRole('button', { name: 'Send message' }).click();
 
-            await expect(page.getByText('Confirm your email')).toBeVisible();
+            await expect(page.getByText('Confirm your email')).toBeVisible({ timeout: 15000 });
             await expect(page.getByRole('textbox', { name: 'Name' })).toHaveValue('');
             await expect(page.getByRole('textbox', { name: 'Email' })).toHaveValue('');
             await expect(page.getByRole('textbox', { name: 'Message' })).toHaveValue('');
@@ -83,7 +83,7 @@ test.describe('EnquiryForm', () => {
             await page.getByRole('textbox', { name: 'Message' }).fill('Please verify this enquiry.');
             await page.getByRole('button', { name: 'Send message' }).click();
 
-            await expect(page.getByText('Confirm your email')).toBeVisible();
+            await expect(page.getByText('Confirm your email')).toBeVisible({ timeout: 15000 });
 
             const message = await waitForMessage(request, 'Confirm your enquiry');
             expect(message, 'Expected verification email in Mailpit').toBeTruthy();

@@ -16,7 +16,7 @@ op run --env-file ./.env -- npm run dev     # Starts Prisma generate + Docker Co
 
 # Build & validation (must pass with zero errors/warnings)
 npm run typecheck
-npm run lint:fix
+npm run lint                                # If lint fails, run lint:fix then re-run lint
 op run --env-file ./.env -- npm run build
 
 # Database
@@ -39,14 +39,19 @@ npx playwright test                         # E2E tests (auto-starts dev server,
 npx vitest run --config vitest.services.config.ts path/to/test.ts
 ```
 
-**Policy:** Zero errors/warnings from `typecheck`, `lint`, and `build` before any deployment. Test coverage ≥ 90%.
+**Policy:** `typecheck`, `lint`, and `build` must all exit with code 0 and report no errors or warnings before any deployment. Test coverage ≥ 90%.
 
 **Required finalisation checklist — must complete before reporting any task done:**
 
-1. Run `npm run typecheck` and `npm run lint:fix`.
-2. If there are errors or warnings, fix them all — do not skip or dismiss any output.
-3. If you are unsure whether a problem is pre-existing, run `git stash` and repeat the checks on the clean tree to establish a baseline, then `git stash pop` and fix only the new ones.
-4. Never report work as done while typecheck or lint produce any output.
+1. Run `npm run typecheck` and `npm run lint`.
+2. If there are errors or warnings, fix them all — run `npm run lint:fix` first
+   to auto-fix what lint can, then re-run `npm run lint` to confirm. Do not skip
+   or dismiss any output.
+3. If you are unsure whether a problem is pre-existing, run `git stash` and
+   repeat the checks on the clean tree to establish a baseline, then `git stash
+   pop` and fix only the new ones.
+4. Never report work as done while either typecheck or lint exit with a non-zero
+   code or report any errors or warnings.
 
 ## Architecture & Layers
 

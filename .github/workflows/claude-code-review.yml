@@ -1,8 +1,12 @@
 name: Claude Code Review
 
 on:
-  pull_request:
-    types: [opened, synchronize, ready_for_review, reopened]
+  # Only run on manual trigger for now, but I could also enable on pull request
+  # events once there's a good reason (PRs are typically from Dependabot or
+  # Copilot AI recommendations, everything else is trunk-based)
+  workflow_dispatch:
+#   pull_request:
+#     types: [opened, synchronize, ready_for_review, reopened]
     # Optional: Only run on specific file changes
     # paths:
     #   - "src/**/*.ts"

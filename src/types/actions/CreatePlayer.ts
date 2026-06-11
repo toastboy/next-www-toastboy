@@ -1,5 +1,5 @@
 import type { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
-import { z } from 'zod';
+import z from 'zod';
 
 export const CreatePlayerSchema = z.object({
     name: z.string().min(1, { message: 'Name is required' }),

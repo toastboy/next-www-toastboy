@@ -1,7 +1,7 @@
 import 'server-only';
 
 import { ClientSecretCredential } from '@azure/identity';
-import { z } from 'zod';
+import z from 'zod';
 
 import { ExternalServiceError } from '@/lib/errors';
 

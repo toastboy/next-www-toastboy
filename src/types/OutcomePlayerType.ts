@@ -1,5 +1,5 @@
 import { OutcomeSchema, PlayerSchema } from 'prisma/zod/schemas';
-import { z } from 'zod';
+import z from 'zod';
 
 export const OutcomePlayerType = OutcomeSchema.extend({
     player: PlayerSchema,

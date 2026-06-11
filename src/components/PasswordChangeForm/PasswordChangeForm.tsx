@@ -15,7 +15,7 @@ import { useForm } from '@mantine/form';
 import { IconCheck, IconLock, IconX } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useState } from 'react';
-import { z } from 'zod';
+import z from 'zod';
 
 import { PasswordFields } from '@/components/PasswordFields/PasswordFields';
 import { authClient } from '@/lib/auth.client';

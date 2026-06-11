@@ -1,7 +1,7 @@
 import type { TeamName } from 'prisma/zod/schemas';
 import { TeamNameSchema } from 'prisma/zod/schemas/enums/TeamName.schema';
 import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
-import { z } from 'zod';
+import z from 'zod';
 
 export const SetGameResultInputSchema = z.object({
     gameDayId: z.number().int().min(1),

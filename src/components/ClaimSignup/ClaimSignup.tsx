@@ -15,7 +15,7 @@ import { IconX } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { z } from 'zod';
+import z from 'zod';
 
 import { PasswordFields } from '@/components/PasswordFields/PasswordFields';
 import { authClient, signInWithGoogle, signInWithMicrosoft } from '@/lib/auth.client';

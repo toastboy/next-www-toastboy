@@ -20,7 +20,7 @@ import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { PlayerResponse } from 'prisma/generated/enums';
 import { useState } from 'react';
-import { z } from 'zod';
+import z from 'zod';
 
 import { config } from '@/lib/config';
 import { captureUnexpectedError } from '@/lib/observability/sentry';

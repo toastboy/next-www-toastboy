@@ -2,7 +2,7 @@ import prisma from 'prisma/prisma';
 import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import { PlayerLoginWhereUniqueInputObjectSchema } from 'prisma/zod/schemas/objects/PlayerLoginWhereUniqueInput.schema';
 import { PlayerWhereUniqueInputObjectSchema } from 'prisma/zod/schemas/objects/PlayerWhereUniqueInput.schema';
-import { z } from 'zod';
+import z from 'zod';
 
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import { FamilyTreeNodeType, PlayerDataType, PlayerFormType } from '@/types';

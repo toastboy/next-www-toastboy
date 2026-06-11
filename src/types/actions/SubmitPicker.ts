@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import z from 'zod';
 
 const SubmitPickerPlayerSchema = z.object({
     playerId: z.number().min(1),

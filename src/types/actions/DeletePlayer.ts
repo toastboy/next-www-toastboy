@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import z from 'zod';
 
 export const DeleteAccountSchema = z.object({
     confirmPhrase: z.string().min(1, { message: 'Please type DELETE to confirm' }),

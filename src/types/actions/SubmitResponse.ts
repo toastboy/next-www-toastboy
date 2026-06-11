@@ -1,6 +1,6 @@
 import { PlayerResponseSchema } from 'prisma/zod/schemas';
 import { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
-import { z } from 'zod';
+import z from 'zod';
 
 export const SubmitResponseInputSchema = z.object({
     gameDayId: z.number().min(1),

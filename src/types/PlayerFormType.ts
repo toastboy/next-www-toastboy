@@ -1,5 +1,5 @@
 import { GameDaySchema, OutcomeSchema } from 'prisma/zod/schemas';
-import { z } from 'zod';
+import z from 'zod';
 
 export const PlayerFormSchema = OutcomeSchema.extend({
     gameDay: GameDaySchema.optional(),

@@ -1,5 +1,5 @@
 import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
-import { z } from 'zod';
+import z from 'zod';
 
 export const SetGameEnabledInputSchema = z.object({
     gameDayId: z.number().int().min(1),

@@ -1,5 +1,5 @@
 import * as Sentry from '@sentry/nextjs';
-import { z } from 'zod';
+import z from 'zod';
 
 import { ValidationError } from '@/lib/errors';
 import { captureUnexpectedError, isSensitiveKey } from '@/lib/observability/sentry';

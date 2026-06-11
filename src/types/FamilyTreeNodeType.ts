@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import z from 'zod';
 
 /**
  * Schema for a single node in the player family tree. Each node represents

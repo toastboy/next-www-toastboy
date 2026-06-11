@@ -1,6 +1,6 @@
 import 'server-only';
 
-import { z } from 'zod';
+import z from 'zod';
 
 import { sendEmailVerification } from '@/actions/verifyEmail';
 import { AuthError } from '@/lib/errors';

@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import z from 'zod';
 
 export const EnquirySchema = z.object({
     name: z.string().trim().min(1, { message: 'Name is required' }),

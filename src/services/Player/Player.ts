@@ -2,6 +2,7 @@ import prisma from 'prisma/prisma';
 import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import { PlayerLoginWhereUniqueInputObjectSchema } from 'prisma/zod/schemas/objects/PlayerLoginWhereUniqueInput.schema';
 import { PlayerWhereUniqueInputObjectSchema } from 'prisma/zod/schemas/objects/PlayerWhereUniqueInput.schema';
+import { z } from 'zod';
 
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
 import { FamilyTreeNodeType, PlayerDataType, PlayerFormType } from '@/types';
@@ -155,6 +156,52 @@ class PlayerService {
     }
 
     /**
+     * Retrieves the player with the next-lowest ID (i.e. the previous player by
+     * ID).
+     * @param playerId - The ID of the current player.
+     * @returns A promise that resolves to the previous player if found, or null
+     * if not found.
+     */
+    async getPrevious(playerId: number): Promise<PlayerDisplayType | null> {
+        const id = z.coerce.number().int().min(1).parse(playerId);
+
+        const player = await prisma.player.findFirst({
+            where: {
+                id: {
+                    lt: id,
+                },
+            },
+            orderBy: {
+                id: 'desc',
+            },
+        });
+        return player ? this.sanitizePlayerName(player) : null;
+    }
+
+    /**
+     * Retrieves the player with the next-highest ID (i.e. the next player by
+     * ID).
+     * @param playerId - The ID of the current player.
+     * @returns A promise that resolves to the next player if found, or null
+     * if not found.
+     */
+    async getNext(playerId: number): Promise<PlayerDisplayType | null> {
+        const id = z.coerce.number().int().min(1).parse(playerId);
+
+        const player = await prisma.player.findFirst({
+            where: {
+                id: {
+                    gt: id,
+                },
+            },
+            orderBy: {
+                id: 'asc',
+            },
+        });
+        return player ? this.sanitizePlayerName(player) : null;
+    }
+
+    /**
      * Retrieves all players from the database with their outcomes and extra
      * emails.
      *
@@ -297,8 +344,8 @@ class PlayerService {
                 },
                 gameDay: {
                     date: {
-                        gte: year ? new Date(year, 0, 1) : undefined,
-                        lt: year ? new Date(year + 1, 0, 1) : undefined,
+                        gte: year ? new Date(Date.UTC(year, 0, 1)) : undefined,
+                        lt: year ? new Date(Date.UTC(year + 1, 0, 1)) : undefined,
                     },
                 },
             },

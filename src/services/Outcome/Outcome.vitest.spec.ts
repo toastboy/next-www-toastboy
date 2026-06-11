@@ -96,7 +96,7 @@ describe('OutcomeService', () => {
             expect(prisma.outcome.findMany).toHaveBeenCalledWith({
                 where: {
                     gameDay: {
-                        date: { gte: new Date(2021, 0, 1), lt: new Date(2022, 0, 1) },
+                        date: { gte: new Date(Date.UTC(2021, 0, 1)), lt: new Date(Date.UTC(2022, 0, 1)) },
                         id: {},
                     },
                 },
@@ -112,7 +112,7 @@ describe('OutcomeService', () => {
             expect(prisma.outcome.findMany).toHaveBeenCalledWith({
                 where: {
                     gameDay: {
-                        date: { gte: new Date(2021, 0, 1), lt: new Date(2022, 0, 1) },
+                        date: { gte: new Date(Date.UTC(2021, 0, 1)), lt: new Date(Date.UTC(2022, 0, 1)) },
                         id: { lte: 7 },
                     },
                 },
@@ -1116,7 +1116,7 @@ describe('OutcomeService', () => {
                     playerId: 1,
                     points: { not: null },
                     gameDay: {
-                        date: { gte: new Date(2021, 0, 1), lt: new Date(2022, 0, 1) },
+                        date: { gte: new Date(Date.UTC(2021, 0, 1)), lt: new Date(Date.UTC(2022, 0, 1)) },
                     },
                 },
             });
@@ -1187,8 +1187,8 @@ describe('OutcomeService', () => {
                     },
                     gameDay: {
                         date: {
-                            gte: new Date('2021-01-01'),
-                            lt: new Date('2022-01-01'),
+                            gte: new Date(Date.UTC(2021, 0, 1)),
+                            lt: new Date(Date.UTC(2022, 0, 1)),
                         },
                     },
                 },

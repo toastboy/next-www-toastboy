@@ -45,6 +45,8 @@ export const Comparison: Story = {
                     activeYears={[2020, 2021, 2022, 2023]}
                     record={defaultPlayerRecord}
                     trophies={defaultTrophiesList}
+                    prevPlayer={null}
+                    nextPlayer={null}
                 />
             </Stack>
         </Group>

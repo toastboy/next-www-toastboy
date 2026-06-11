@@ -177,6 +177,72 @@ describe('PlayerService', () => {
         });
     });
 
+    describe('getPrevious', () => {
+        it('should return the player with the next-lower ID', async () => {
+            (prisma.player.findFirst as Mock).mockResolvedValueOnce({ ...defaultPlayer, id: 4 });
+            const result = await playerService.getPrevious(5);
+            expect(prisma.player.findFirst).toHaveBeenCalledWith({
+                where: { id: { lt: 5 } },
+                orderBy: { id: 'desc' },
+            });
+            expect(result?.id).toBe(4);
+        });
+
+        it('should return null when no player with a lower ID exists', async () => {
+            (prisma.player.findFirst as Mock).mockResolvedValueOnce(null);
+            const result = await playerService.getPrevious(1);
+            expect(prisma.player.findFirst).toHaveBeenCalledWith({
+                where: { id: { lt: 1 } },
+                orderBy: { id: 'desc' },
+            });
+            expect(result).toBeNull();
+        });
+
+        it('should anonymise the name when the previous player is anonymous', async () => {
+            (prisma.player.findFirst as Mock).mockResolvedValueOnce({
+                ...defaultPlayer,
+                id: 4,
+                name: 'Hidden',
+                anonymous: true,
+            });
+            const result = await playerService.getPrevious(5);
+            expect(result?.name).toBe('Player 4');
+        });
+    });
+
+    describe('getNext', () => {
+        it('should return the player with the next-higher ID', async () => {
+            (prisma.player.findFirst as Mock).mockResolvedValueOnce({ ...defaultPlayer, id: 6 });
+            const result = await playerService.getNext(5);
+            expect(prisma.player.findFirst).toHaveBeenCalledWith({
+                where: { id: { gt: 5 } },
+                orderBy: { id: 'asc' },
+            });
+            expect(result?.id).toBe(6);
+        });
+
+        it('should return null when no player with a higher ID exists', async () => {
+            (prisma.player.findFirst as Mock).mockResolvedValueOnce(null);
+            const result = await playerService.getNext(100);
+            expect(prisma.player.findFirst).toHaveBeenCalledWith({
+                where: { id: { gt: 100 } },
+                orderBy: { id: 'asc' },
+            });
+            expect(result).toBeNull();
+        });
+
+        it('should anonymise the name when the next player is anonymous', async () => {
+            (prisma.player.findFirst as Mock).mockResolvedValueOnce({
+                ...defaultPlayer,
+                id: 6,
+                name: 'Hidden',
+                anonymous: true,
+            });
+            const result = await playerService.getNext(5);
+            expect(result?.name).toBe('Player 6');
+        });
+    });
+
     describe('getAll', () => {
         it('should return all players', async () => {
             const fixture: (PlayerType & { outcomes: OutcomeType[]; extraEmails: PlayerExtraEmailType[] })[] = [
@@ -408,8 +474,8 @@ describe('PlayerService', () => {
                         points: { not: null },
                         gameDay: {
                             date: {
-                                gte: new Date(2022, 0, 1),
-                                lt: new Date(2023, 0, 1),
+                                gte: new Date(Date.UTC(2022, 0, 1)),
+                                lt: new Date(Date.UTC(2023, 0, 1)),
                             },
                         },
                     },

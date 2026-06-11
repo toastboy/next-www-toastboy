@@ -92,22 +92,22 @@ describe('GameDayService', () => {
         });
 
         it('should filter by fromDate', async () => {
-            const from = new Date(2024, 5, 1);
+            const from = new Date(Date.UTC(2024, 5, 1));
             (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([defaultGameDay]);
             await gameDayService.getAll({ fromDate: from });
             expect(prisma.gameDay.findMany).toHaveBeenCalledWith({ where: { date: { gte: from } }, ...ORDER });
         });
 
         it('should filter by beforeDate', async () => {
-            const to = new Date(2025, 0, 1);
+            const to = new Date(Date.UTC(2025, 0, 1));
             (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([defaultGameDay]);
             await gameDayService.getAll({ beforeDate: to });
             expect(prisma.gameDay.findMany).toHaveBeenCalledWith({ where: { date: { lt: to } }, ...ORDER });
         });
 
         it('should combine fromDate, beforeDate, and game filters', async () => {
-            const from = new Date(2024, 0, 1);
-            const to = new Date(2025, 0, 1);
+            const from = new Date(Date.UTC(2024, 0, 1));
+            const to = new Date(Date.UTC(2025, 0, 1));
             (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([]);
             await gameDayService.getAll({ game: false, fromDate: from, beforeDate: to });
             expect(prisma.gameDay.findMany).toHaveBeenCalledWith({
@@ -129,8 +129,8 @@ describe('GameDayService', () => {
             expect(prisma.gameDay.aggregate).toHaveBeenCalledWith({
                 where: {
                     date: {
-                        gte: new Date(2025, 0, 1),
-                        lt: new Date(2026, 0, 1),
+                        gte: new Date(Date.UTC(2025, 0, 1)),
+                        lt: new Date(Date.UTC(2026, 0, 1)),
                     },
                 },
                 _min: { id: true },
@@ -150,8 +150,8 @@ describe('GameDayService', () => {
             expect(prisma.gameDay.aggregate).toHaveBeenCalledWith({
                 where: {
                     date: {
-                        gte: new Date(2035, 0, 1),
-                        lt: new Date(2036, 0, 1),
+                        gte: new Date(Date.UTC(2035, 0, 1)),
+                        lt: new Date(Date.UTC(2036, 0, 1)),
                     },
                 },
                 _min: { id: true },
@@ -345,7 +345,7 @@ describe('GameDayService', () => {
             expect(prisma.gameDay.count).toHaveBeenCalledWith({
                 where: {
                     game: true,
-                    date: { gte: new Date(2021, 0, 1), lt: new Date(2022, 0, 1) },
+                    date: { gte: new Date(Date.UTC(2021, 0, 1)), lt: new Date(Date.UTC(2022, 0, 1)) },
                 },
             });
             expect(result).toBe(52);
@@ -366,7 +366,7 @@ describe('GameDayService', () => {
             expect(prisma.gameDay.count).toHaveBeenCalledWith({
                 where: {
                     game: true,
-                    date: { gte: new Date(9999, 0, 1), lt: new Date(10000, 0, 1) },
+                    date: { gte: new Date(Date.UTC(9999, 0, 1)), lt: new Date(Date.UTC(10000, 0, 1)) },
                 },
             });
             expect(result).toBe(0);
@@ -395,8 +395,8 @@ describe('GameDayService', () => {
                     AND: [
                         {
                             date: {
-                                gte: new Date(2021, 0, 1),
-                                lt: new Date(2022, 0, 1),
+                                gte: new Date(Date.UTC(2021, 0, 1)),
+                                lt: new Date(Date.UTC(2022, 0, 1)),
                             },
                         },
                         {
@@ -438,8 +438,8 @@ describe('GameDayService', () => {
                     AND: [
                         {
                             date: {
-                                gte: new Date(9999, 0, 1),
-                                lt: new Date(10000, 0, 1),
+                                gte: new Date(Date.UTC(9999, 0, 1)),
+                                lt: new Date(Date.UTC(10000, 0, 1)),
                             },
                         },
                         {
@@ -464,8 +464,8 @@ describe('GameDayService', () => {
                     game: false,
                     mailSent: { not: null },
                     date: {
-                        gte: new Date(2021, 0, 1),
-                        lt: new Date(2022, 0, 1),
+                        gte: new Date(Date.UTC(2021, 0, 1)),
+                        lt: new Date(Date.UTC(2022, 0, 1)),
                     },
                 },
             });
@@ -492,8 +492,8 @@ describe('GameDayService', () => {
                     game: false,
                     mailSent: { not: null },
                     date: {
-                        gte: new Date(2021, 0, 1),
-                        lt: new Date(2022, 0, 1),
+                        gte: new Date(Date.UTC(2021, 0, 1)),
+                        lt: new Date(Date.UTC(2022, 0, 1)),
                     },
                     id: { lte: 50 },
                 },
@@ -762,8 +762,8 @@ describe('GameDayService', () => {
             expect(prisma.gameDay.findMany).toHaveBeenCalledWith({
                 where: {
                     date: {
-                        gte: new Date(2021, 0, 1),
-                        lt: new Date(2021, 1, 1),
+                        gte: new Date(Date.UTC(2021, 0, 1)),
+                        lt: new Date(Date.UTC(2021, 1, 1)),
                     },
                 },
                 orderBy: { date: 'asc' },

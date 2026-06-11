@@ -106,8 +106,8 @@ class OutcomeService {
             where: {
                 gameDay: {
                     date: year !== 0 ? {
-                        gte: new Date(year, 0, 1),
-                        lt: new Date(year + 1, 0, 1),
+                        gte: new Date(Date.UTC(year, 0, 1)),
+                        lt: new Date(Date.UTC(year + 1, 0, 1)),
                     } : {},
                     id: untilGameDay ? {
                         lte: untilGameDay,
@@ -673,8 +673,8 @@ class OutcomeService {
                 gameDay: {
                     ...(year !== 0 ? {
                         date: {
-                            gte: new Date(year, 0, 1),
-                            lt: new Date(year + 1, 0, 1),
+                            gte: new Date(Date.UTC(year, 0, 1)),
+                            lt: new Date(Date.UTC(year + 1, 0, 1)),
                         },
                     } : {}),
                     ...(untilGameDayId ? {
@@ -703,8 +703,8 @@ class OutcomeService {
                 ...(year != 0 ? {
                     gameDay: {
                         date: {
-                            gte: new Date(year, 0, 1),
-                            lt: new Date(year + 1, 0, 1),
+                            gte: new Date(Date.UTC(year, 0, 1)),
+                            lt: new Date(Date.UTC(year + 1, 0, 1)),
                         },
                     },
                 } : {}),

@@ -92,14 +92,18 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
 const PlayerPage = async (props: PageProps) => {
     const { player, year, activeYears } = await unpackParams(props.params, props.searchParams);
 
-    const lastPlayed = await playerService.getLastPlayed(player.id, year);
-    const history = await outcomeService.getHistoryByPlayer(player.id, year, player.joined ?? undefined, player.finished ?? undefined);
-    const clubs = await clubSupporterService.getByPlayer(player.id);
-    const countries = await countrySupporterService.getByPlayer(player.id);
-    const arse = (await getUserRole() === 'admin') ?
-        await arseService.getByPlayer(player.id) :
-        null;
-    const record = await playerRecordService.getForYearByPlayer(year, player.id);
+    const isAdmin = await getUserRole() === 'admin';
+    const [lastPlayed, history, clubs, countries, arse, record, prevPlayer, nextPlayer] = await Promise.all([
+        playerService.getLastPlayed(player.id, year),
+        outcomeService.getHistoryByPlayer(player.id, year, player.joined ?? undefined, player.finished ?? undefined),
+        clubSupporterService.getByPlayer(player.id),
+        countrySupporterService.getByPlayer(player.id),
+        isAdmin ? arseService.getByPlayer(player.id) : Promise.resolve(null),
+        playerRecordService.getForYearByPlayer(year, player.id),
+        playerService.getPrevious(player.id),
+        playerService.getNext(player.id),
+    ]);
+
     const trophies = new Map<TableName, PlayerRecordType[]>();
     await Promise.all(TableNameSchema.options.map(async (table) => {
         const winners = await playerRecordService.getWinners(table, year, player.id);
@@ -120,6 +124,8 @@ const PlayerPage = async (props: PageProps) => {
                 arse={arse}
                 activeYears={activeYears}
                 record={record}
+                prevPlayer={prevPlayer}
+                nextPlayer={nextPlayer}
                 trophies={trophies}
             />
         </>

@@ -84,8 +84,8 @@ class GameDayService {
             where: {
                 ...(year > 0 ? {
                     date: {
-                        gte: new Date(year, 0, 1),
-                        lt: new Date(year + 1, 0, 1),
+                        gte: new Date(Date.UTC(year, 0, 1)),
+                        lt: new Date(Date.UTC(year + 1, 0, 1)),
                     },
                 } : undefined),
             },
@@ -194,8 +194,8 @@ class GameDayService {
                 game: true,
                 ...(year !== 0 ? {
                     date: {
-                        gte: new Date(year, 0, 1),
-                        lt: new Date(year + 1, 0, 1),
+                        gte: new Date(Date.UTC(year, 0, 1)),
+                        lt: new Date(Date.UTC(year + 1, 0, 1)),
                     },
                 } : {}),
                 ...(untilGameDayId ? {
@@ -226,8 +226,8 @@ class GameDayService {
                 mailSent: { not: null },
                 ...(year !== 0 ? {
                     date: {
-                        gte: new Date(year, 0, 1),
-                        lt: new Date(year + 1, 0, 1),
+                        gte: new Date(Date.UTC(year, 0, 1)),
+                        lt: new Date(Date.UTC(year + 1, 0, 1)),
                     },
                 } : {}),
                 ...(untilGameDayId ? {
@@ -252,8 +252,8 @@ class GameDayService {
                     {
                         ...(year !== 0 ? {
                             date: {
-                                gte: new Date(year, 0, 1),
-                                lt: new Date(year + 1, 0, 1),
+                                gte: new Date(Date.UTC(year, 0, 1)),
+                                lt: new Date(Date.UTC(year + 1, 0, 1)),
                             },
                         } : {}),
                     },
@@ -429,8 +429,8 @@ class GameDayService {
      * that month, ascending by date.
      */
     async getForMonth(year: number, month: number): Promise<GameDayType[]> {
-        const from = new Date(year, month - 1, 1);
-        const to = new Date(year, month, 1);
+        const from = new Date(Date.UTC(year, month - 1, 1));
+        const to = new Date(Date.UTC(year, month, 1));
 
         return prisma.gameDay.findMany({
             where: {

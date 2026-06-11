@@ -1,5 +1,5 @@
-import { Flex, Group, Paper, SimpleGrid, Stack } from '@mantine/core';
-import type { TableName } from 'prisma/generated//browser';
+import { Box, Flex, Group, Paper, SimpleGrid, Stack } from '@mantine/core';
+import type { TableName } from 'prisma/generated/browser';
 import type { ArseType } from 'prisma/zod/schemas/models/Arse.schema';
 import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 
@@ -8,6 +8,7 @@ import { PlayerBorn } from '@/components/PlayerBorn/PlayerBorn';
 import { PlayerCard } from '@/components/PlayerCard/PlayerCard';
 import { PlayerHeatmap } from '@/components/PlayerHeatmap/PlayerHeatmap';
 import { PlayerLastPlayed } from '@/components/PlayerLastPlayed/PlayerLastPlayed';
+import { PlayerLink } from '@/components/PlayerLink/PlayerLink';
 import { PlayerPositions } from '@/components/PlayerPositions/PlayerPositions';
 import { PlayerResults } from '@/components/PlayerResults/PlayerResults';
 import { TitleWithYearDropdown } from '@/components/TitleWithYearDropdown/TitleWithYearDropdown';
@@ -25,6 +26,8 @@ export interface Props {
     activeYears: number[];
     record: PlayerRecordType | null;
     trophies: Map<TableName, PlayerRecordType[]>;
+    prevPlayer: PlayerDisplayType | null;
+    nextPlayer: PlayerDisplayType | null;
 }
 
 export const PlayerProfile = ({
@@ -38,12 +41,28 @@ export const PlayerProfile = ({
     activeYears,
     record,
     trophies,
+    prevPlayer,
+    nextPlayer,
 }: Props) => {
+    // TODO: Refactor to use GameDayLink and PlayerLink with a common interface
+    // for prev/next navigation
+    const navSlotWidth = '2rem';
+
     return (
         <Flex direction="column" gap="sm">
             <Flex direction="column" gap="sm">
-                <Group justify="center" gap="xs">
+                <Group justify="space-between" gap="xs">
+                    <Box w={navSlotWidth} ta="center">
+                        {prevPlayer ?
+                            <PlayerLink player={prevPlayer} year={year} format="left-arrow" /> :
+                            <Box data-testid="player-prev-placeholder" aria-hidden="true" w={navSlotWidth} />}
+                    </Box>
                     <TitleWithYearDropdown order={1} title={player.name} year={year} validYears={activeYears} />
+                    <Box w={navSlotWidth} ta="center">
+                        {nextPlayer ?
+                            <PlayerLink player={nextPlayer} year={year} format="right-arrow" /> :
+                            <Box data-testid="player-next-placeholder" aria-hidden="true" w={navSlotWidth} />}
+                    </Box>
                 </Group>
                 <SimpleGrid cols={{ base: 1, lg: 2, xl: 3 }} spacing="md">
                     <Stack gap="sm">

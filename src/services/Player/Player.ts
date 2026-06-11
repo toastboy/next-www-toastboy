@@ -14,6 +14,7 @@ import {
     type PlayerUpdateWriteInput,
     PlayerUpdateWriteInputSchema,
 } from '@/types/PlayerStrictSchema';
+import { PointsSchema, type PointsValue } from '@/types/Points';
 
 export type PlayerDisplayType = Omit<PlayerType, 'name'> & { name: string };
 export type PlayerDataDisplayType = Omit<PlayerDataType, 'name'> & { name: string };
@@ -328,20 +329,27 @@ class PlayerService {
     }
 
     /**
-     * Retrieves the most recent outcome for a player, optionally filtered by year.
+     * Retrieves the most recent outcome for a player, optionally filtered by
+     * year and/or points value.
      *
      * @param playerId - The unique identifier of the player.
      * @param year - An optional year to limit the search range.
-     * @returns A promise that resolves to the player's latest outcome including its game day, or `null` if none is found.
-     * @throws Will propagate any errors encountered during the retrieval process.
+     * @param points - An optional points filter: if provided, only outcomes
+     * with this points value will be returned. If not, the most recent outcome
+     * with any non-null points value will be returned.
+     * @returns A promise that resolves to the player's latest outcome including
+     * its game day, or `null` if none is found.
+     * @throws Will propagate any errors encountered during the retrieval
+     * process.
      */
-    async getLastPlayed(playerId: number, year?: number): Promise<PlayerFormType | null> {
+    async getLastResult(playerId: number, year?: number, points?: PointsValue): Promise<PlayerFormType | null> {
+        const id = z.coerce.number().int().min(1).parse(playerId);
+        const validatedPoints = PointsSchema.optional().parse(points);
+
         return prisma.outcome.findFirst({
             where: {
-                playerId: playerId,
-                points: {
-                    not: null,
-                },
+                playerId: id,
+                points: validatedPoints ?? { not: null },
                 gameDay: {
                     date: {
                         gte: year ? new Date(Date.UTC(year, 0, 1)) : undefined,
@@ -368,9 +376,11 @@ class PlayerService {
      * @throws An error if there is a failure.
      */
     async getYearsActive(playerId: number): Promise<number[]> {
+        const id = z.coerce.number().int().min(1).parse(playerId);
+
         const outcomes = await prisma.outcome.findMany({
             where: {
-                playerId: playerId,
+                playerId: id,
             },
             include: {
                 gameDay: true,

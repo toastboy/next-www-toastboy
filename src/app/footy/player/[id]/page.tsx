@@ -92,9 +92,24 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
 const PlayerPage = async (props: PageProps) => {
     const { player, year, activeYears } = await unpackParams(props.params, props.searchParams);
 
-    const isAdmin = await getUserRole() === 'admin';
-    const [lastPlayed, history, clubs, countries, arse, record, prevPlayer, nextPlayer] = await Promise.all([
-        playerService.getLastPlayed(player.id, year),
+    const role = await getUserRole();
+    const isAuthenticated = Boolean(role);
+    const isAdmin = role === 'admin';
+    const [
+        introducedBy,
+        lastPlayed,
+        lastWon,
+        history,
+        clubs,
+        countries,
+        arse,
+        record,
+        prevPlayer,
+        nextPlayer,
+    ] = await Promise.all([
+        player.introducedBy != null ? playerService.getById(player.introducedBy) : Promise.resolve(null),
+        playerService.getLastResult(player.id, year),
+        playerService.getLastResult(player.id, year, 3),
         outcomeService.getHistoryByPlayer(player.id, year, player.joined ?? undefined, player.finished ?? undefined),
         clubSupporterService.getByPlayer(player.id),
         countrySupporterService.getByPlayer(player.id),
@@ -116,9 +131,11 @@ const PlayerPage = async (props: PageProps) => {
             <PlayerProfile
                 key={player.id}
                 player={player}
+                introducedBy={introducedBy}
                 year={year}
                 history={history}
                 lastPlayed={lastPlayed}
+                lastWon={lastWon}
                 clubs={clubs}
                 countries={countries}
                 arse={arse}
@@ -127,6 +144,8 @@ const PlayerPage = async (props: PageProps) => {
                 prevPlayer={prevPlayer}
                 nextPlayer={nextPlayer}
                 trophies={trophies}
+                isAuthenticated={isAuthenticated}
+                isAdmin={isAdmin}
             />
         </>
     );

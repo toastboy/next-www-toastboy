@@ -20,8 +20,8 @@ describe('GameDayList', () => {
 
         const props = extractMockProps<GameDayLinkProps>('GameDayLink');
         expect(props).toHaveLength(gameDays.length);
-        expect(props[0].gameDay.id).toBe(gameDays[0].id);
-        expect(props[2].gameDay.id).toBe(gameDays[2].id);
+        expect(props[0].gameDay?.id).toBe(gameDays[0].id);
+        expect(props[2].gameDay?.id).toBe(gameDays[2].id);
     });
 
     it('includes year in month label when year prop is 0', () => {

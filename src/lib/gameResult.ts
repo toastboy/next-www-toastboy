@@ -1,6 +1,7 @@
 import type { TeamName } from 'prisma/zod/schemas';
 
 import type { TeamPlayerType } from '@/types';
+import type { PointsValue } from '@/types/Points';
 
 export type GameWinner = TeamName | 'draw' | null;
 export type TeamResultState = 'win' | 'loss' | 'draw' | 'unset';
@@ -37,9 +38,9 @@ export type TeamResultState = 'win' | 'loss' | 'draw' | 'unset';
  * pickTeamPoints(team); // returns null (different points)
  * ```
  */
-const pickTeamPoints = (team: TeamPlayerType[]): 0 | 1 | 3 | null => {
+const pickTeamPoints = (team: TeamPlayerType[]): PointsValue | null => {
     if (team.length === 0) return null;
-    const distinctPoints = new Set<0 | 1 | 3>();
+    const distinctPoints = new Set<PointsValue>();
 
     // TODO: Run this check across history since it shouldn't happen
     for (const player of team) {

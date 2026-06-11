@@ -36,9 +36,11 @@ export const Comparison: Story = {
                 <Text fw={700} c="dimmed" ta="center">Loaded</Text>
                 <PlayerProfile
                     player={defaultPlayer}
+                    introducedBy={null}
                     year={2023}
                     history={defaultPlayerFormList}
                     lastPlayed={defaultPlayerFormList[9]}
+                    lastWon={defaultPlayerFormList[0]}
                     clubs={defaultClubSupporterDataList}
                     countries={defaultCountrySupporterDataList}
                     arse={defaultArse}

@@ -208,6 +208,21 @@ describe('PlayerService', () => {
             const result = await playerService.getPrevious(5);
             expect(result?.name).toBe('Player 4');
         });
+
+        it('should reject playerId 0 before hitting Prisma', async () => {
+            await expect(playerService.getPrevious(0)).rejects.toThrow();
+            expect(prisma.player.findFirst).not.toHaveBeenCalled();
+        });
+
+        it('should reject a negative playerId before hitting Prisma', async () => {
+            await expect(playerService.getPrevious(-1)).rejects.toThrow();
+            expect(prisma.player.findFirst).not.toHaveBeenCalled();
+        });
+
+        it('should reject a non-integer playerId before hitting Prisma', async () => {
+            await expect(playerService.getPrevious(1.5)).rejects.toThrow();
+            expect(prisma.player.findFirst).not.toHaveBeenCalled();
+        });
     });
 
     describe('getNext', () => {
@@ -240,6 +255,21 @@ describe('PlayerService', () => {
             });
             const result = await playerService.getNext(5);
             expect(result?.name).toBe('Player 6');
+        });
+
+        it('should reject playerId 0 before hitting Prisma', async () => {
+            await expect(playerService.getNext(0)).rejects.toThrow();
+            expect(prisma.player.findFirst).not.toHaveBeenCalled();
+        });
+
+        it('should reject a negative playerId before hitting Prisma', async () => {
+            await expect(playerService.getNext(-1)).rejects.toThrow();
+            expect(prisma.player.findFirst).not.toHaveBeenCalled();
+        });
+
+        it('should reject a non-integer playerId before hitting Prisma', async () => {
+            await expect(playerService.getNext(1.5)).rejects.toThrow();
+            expect(prisma.player.findFirst).not.toHaveBeenCalled();
         });
     });
 
@@ -460,13 +490,13 @@ describe('PlayerService', () => {
                     game: 1,
                 },
             });
-            const result = await playerService.getLastPlayed(1);
+            const result = await playerService.getLastResult(1);
             expect(result?.gameDayId).toBe(10);
         });
 
         it('should pass year bounds when a year is provided', async () => {
             (prisma.outcome.findFirst as Mock).mockResolvedValueOnce(null);
-            await playerService.getLastPlayed(1, 2022);
+            await playerService.getLastResult(1, 2022);
             expect(prisma.outcome.findFirst).toHaveBeenCalledWith(
                 expect.objectContaining({
                     where: {
@@ -481,6 +511,40 @@ describe('PlayerService', () => {
                     },
                 }),
             );
+        });
+
+        it('should use an exact match filter when points is provided', async () => {
+            (prisma.outcome.findFirst as Mock).mockResolvedValueOnce(null);
+            await playerService.getLastResult(1, undefined, 3);
+            expect(prisma.outcome.findFirst).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    where: {
+                        playerId: 1,
+                        points: 3,
+                        gameDay: {
+                            date: {
+                                gte: undefined,
+                                lt: undefined,
+                            },
+                        },
+                    },
+                }),
+            );
+        });
+
+        it('should reject playerId 0 before hitting Prisma', async () => {
+            await expect(playerService.getLastResult(0)).rejects.toThrow();
+            expect(prisma.outcome.findFirst).not.toHaveBeenCalled();
+        });
+
+        it('should reject a negative playerId before hitting Prisma', async () => {
+            await expect(playerService.getLastResult(-1)).rejects.toThrow();
+            expect(prisma.outcome.findFirst).not.toHaveBeenCalled();
+        });
+
+        it('should reject a non-integer playerId before hitting Prisma', async () => {
+            await expect(playerService.getLastResult(1.5)).rejects.toThrow();
+            expect(prisma.outcome.findFirst).not.toHaveBeenCalled();
         });
     });
 
@@ -532,6 +596,21 @@ describe('PlayerService', () => {
             (prisma.outcome.findMany as Mock).mockResolvedValueOnce([]);
             const result = await playerService.getYearsActive(1);
             expect(result).toEqual([]);
+        });
+
+        it('should reject playerId 0 before hitting Prisma', async () => {
+            await expect(playerService.getYearsActive(0)).rejects.toThrow();
+            expect(prisma.outcome.findMany).not.toHaveBeenCalled();
+        });
+
+        it('should reject a negative playerId before hitting Prisma', async () => {
+            await expect(playerService.getYearsActive(-1)).rejects.toThrow();
+            expect(prisma.outcome.findMany).not.toHaveBeenCalled();
+        });
+
+        it('should reject a non-integer playerId before hitting Prisma', async () => {
+            await expect(playerService.getYearsActive(1.5)).rejects.toThrow();
+            expect(prisma.outcome.findMany).not.toHaveBeenCalled();
         });
     });
 

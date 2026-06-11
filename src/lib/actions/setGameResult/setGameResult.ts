@@ -8,6 +8,7 @@ import gameDayService from '@/services/GameDay';
 import transactionService from '@/services/Money';
 import outcomeService from '@/services/Outcome';
 import type { SetGameResultInput } from '@/types/actions/SetGameResult';
+import type { PointsValue } from '@/types/Points';
 
 interface SetGameResultDeps {
     gameDayService: Pick<typeof gameDayService, 'get' | 'update'>;
@@ -40,7 +41,7 @@ const defaultDeps: SetGameResultDeps = {
  */
 const mapWinnerToPoints = (
     winner: SetGameResultInput['winner'],
-): { A: 0 | 1 | 3 | null; B: 0 | 1 | 3 | null; } => {
+): { A: PointsValue | null; B: PointsValue | null; } => {
     switch (winner) {
         case 'A':
             return { A: 3, B: 0 };
@@ -68,7 +69,7 @@ const mapWinnerToPoints = (
 const updateTeamOutcomes = async (
     gameDay: GameDayType,
     team: TeamName,
-    points: 0 | 1 | 3 | null,
+    points: PointsValue | null,
     deps: SetGameResultDeps,
 ) => {
     const outcomes = await deps.outcomeService.getByGameDay(gameDay.id, team);

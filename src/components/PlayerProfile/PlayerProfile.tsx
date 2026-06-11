@@ -1,25 +1,39 @@
-import { Box, Flex, Group, Paper, SimpleGrid, Stack } from '@mantine/core';
+import {
+    Box,
+    Flex,
+    Group,
+    Paper,
+    SimpleGrid,
+    Stack,
+    Table,
+    TableTbody,
+    TableTd,
+    TableTh,
+    TableTr,
+} from '@mantine/core';
 import type { TableName } from 'prisma/generated/browser';
 import type { ArseType } from 'prisma/zod/schemas/models/Arse.schema';
 import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 
+import { GameDayLink } from '@/components/GameDayLink/GameDayLink';
 import { PlayerArse } from '@/components/PlayerArse/PlayerArse';
-import { PlayerBorn } from '@/components/PlayerBorn/PlayerBorn';
 import { PlayerCard } from '@/components/PlayerCard/PlayerCard';
 import { PlayerHeatmap } from '@/components/PlayerHeatmap/PlayerHeatmap';
-import { PlayerLastPlayed } from '@/components/PlayerLastPlayed/PlayerLastPlayed';
 import { PlayerLink } from '@/components/PlayerLink/PlayerLink';
 import { PlayerPositions } from '@/components/PlayerPositions/PlayerPositions';
 import { PlayerResults } from '@/components/PlayerResults/PlayerResults';
 import { TitleWithYearDropdown } from '@/components/TitleWithYearDropdown/TitleWithYearDropdown';
+import { formatDate } from '@/lib/dates';
 import { PlayerDisplayType } from '@/services/Player';
 import { ClubSupporterDataType, CountrySupporterDataType, PlayerFormType } from '@/types';
 
 export interface Props {
     player: PlayerDisplayType;
+    introducedBy: PlayerDisplayType | null;
     year: number;
     history: PlayerFormType[];
     lastPlayed: PlayerFormType | null;
+    lastWon: PlayerFormType | null;
     clubs: ClubSupporterDataType[];
     countries: CountrySupporterDataType[];
     arse: Partial<ArseType> | null;
@@ -28,13 +42,17 @@ export interface Props {
     trophies: Map<TableName, PlayerRecordType[]>;
     prevPlayer: PlayerDisplayType | null;
     nextPlayer: PlayerDisplayType | null;
+    isAuthenticated?: boolean;
+    isAdmin?: boolean;
 }
 
 export const PlayerProfile = ({
     player,
     year,
+    introducedBy,
     history,
     lastPlayed,
+    lastWon,
     clubs,
     countries,
     arse,
@@ -43,10 +61,13 @@ export const PlayerProfile = ({
     trophies,
     prevPlayer,
     nextPlayer,
+    isAuthenticated = false,
+    isAdmin = false,
 }: Props) => {
-    // TODO: Refactor to use GameDayLink and PlayerLink with a common interface
-    // for prev/next navigation
+    // TODO: Look at how to make global quantities like these more consistent
+    // across the app - e.g. using a context or CSS variable
     const navSlotWidth = '2rem';
+    const valueCellWidth = '14rem';
 
     return (
         <Flex direction="column" gap="sm">
@@ -65,16 +86,53 @@ export const PlayerProfile = ({
                     </Box>
                 </Group>
                 <SimpleGrid cols={{ base: 1, lg: 2, xl: 3 }} spacing="md">
-                    <Stack gap="sm">
-                        <PlayerCard
-                            player={player}
-                            clubs={clubs}
-                            countries={countries}
-                            trophies={trophies}
-                        />
-                        <PlayerLastPlayed lastPlayed={lastPlayed} />
-                        <PlayerBorn player={player} />
-                    </Stack>
+                    <Paper shadow="xs" p="sm" withBorder>
+                        <Stack gap="sm">
+                            <PlayerCard
+                                player={player}
+                                clubs={clubs}
+                                countries={countries}
+                                trophies={trophies}
+                            />
+                            <Table
+                                layout="fixed"
+                                variant="vertical"
+                            >
+                                <TableTbody>
+                                    {!!introducedBy && (
+                                        <TableTr>
+                                            <TableTh>Introduced by</TableTh>
+                                            <TableTd w={valueCellWidth}><PlayerLink player={introducedBy} year={year} /></TableTd>
+                                        </TableTr>
+                                    )}
+                                    <TableTr>
+                                        <TableTh>Joined</TableTh>
+                                        <TableTd w={valueCellWidth}>{player.joined ? formatDate(player.joined) : 'N/A'}</TableTd>
+                                    </TableTr>
+                                    {!!isAdmin && (
+                                        <TableTr>
+                                            <TableTh>Email</TableTh>
+                                            <TableTd w={valueCellWidth}>{player.accountEmail}</TableTd>
+                                        </TableTr>
+                                    )}
+                                    <TableTr>
+                                        <TableTh>Last played</TableTh>
+                                        <TableTd w={valueCellWidth}><GameDayLink gameDay={lastPlayed?.gameDay} /></TableTd>
+                                    </TableTr>
+                                    <TableTr>
+                                        <TableTh>Last won</TableTh>
+                                        <TableTd w={valueCellWidth}><GameDayLink gameDay={lastWon?.gameDay} /></TableTd>
+                                    </TableTr>
+                                    {!!isAuthenticated && (
+                                        <TableTr>
+                                            <TableTh>Born</TableTh>
+                                            <TableTd w={valueCellWidth}>{player.born}</TableTd>
+                                        </TableTr>
+                                    )}
+                                </TableTbody>
+                            </Table>
+                        </Stack>
+                    </Paper>
                     <Stack gap="sm">
                         <SimpleGrid spacing="xs">
                             <PlayerResults player={player} year={year} record={record} />

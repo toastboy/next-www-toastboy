@@ -72,7 +72,7 @@ export const PlayerProfile = ({
     return (
         <Flex direction="column" gap="sm">
             <Flex direction="column" gap="sm">
-                <Group justify="space-between" gap="xs">
+                <Group justify="space-between" gap="xs" mb="lg">
                     <Box w={navSlotWidth} ta="center">
                         {prevPlayer ?
                             <PlayerLink player={prevPlayer} year={year} format="left-arrow" /> :

@@ -93,7 +93,7 @@ const PlayerPage = async (props: PageProps) => {
     const { player, year, activeYears } = await unpackParams(props.params, props.searchParams);
 
     const role = await getUserRole();
-    const isAuthenticated = Boolean(role);
+    const isAuthenticated = role !== 'none';
     const isAdmin = role === 'admin';
     const [
         introducedBy,

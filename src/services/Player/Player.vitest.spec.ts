@@ -268,7 +268,7 @@ describe('PlayerService', () => {
     });
 
     describe('getId with id', () => {
-        it('should retrieve the correct player login with id 1', async () => {
+        it('should retrieve the correct player id with id 1', async () => {
             (prisma.player.findUnique as Mock).mockResolvedValueOnce({ ...defaultPlayer, id: 1 });
             const result = await playerService.getId("1");
             expect(prisma.player.findUnique).toHaveBeenCalledWith({ where: { id: 1 } });
@@ -283,7 +283,7 @@ describe('PlayerService', () => {
     });
 
     describe('getId with login', () => {
-        it('should retrieve the correct player login with login "garyp"', async () => {
+        it('should retrieve the correct player id with login "garyp"', async () => {
             (prisma.playerLogin.findUnique as Mock).mockResolvedValueOnce({ playerId: 1, login: 'garyp' });
             const result = await playerService.getId("garyp");
             expect(prisma.playerLogin.findUnique).toHaveBeenCalledWith({ where: { login: 'garyp' } });
@@ -679,7 +679,7 @@ describe('PlayerService', () => {
         });
     });
 
-    describe('getLastPlayed', () => {
+    describe('getLastResult', () => {
         it('should retrieve the correct last played GameDay for Player ID 1', async () => {
             (prisma.outcome.findFirst as Mock).mockResolvedValueOnce({
                 gameDayId: 10,

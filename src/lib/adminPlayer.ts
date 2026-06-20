@@ -1,3 +1,4 @@
+import { normalizeEmail } from '@/lib/email/normalizeEmail';
 import { PlayerDataType } from '@/types';
 
 export type SortKey = 'id' | 'name' | 'joined' | 'finished' | 'auth' | 'extraEmails';
@@ -40,16 +41,6 @@ export function compareNullableString(
     if (b == null) return -1;
     const result = a.localeCompare(b);
     return direction === 'asc' ? result : -result;
-}
-
-/**
- * Normalizes email addresses for consistent comparisons.
- *
- * @param email - The email address to normalize.
- * @returns The normalized email, or an empty string when missing.
- */
-export function normalizeEmail(email?: string | null) {
-    return (email ?? '').trim().toLowerCase();
 }
 
 /**
@@ -106,8 +97,8 @@ export function comparePlayers(
             );
         case 'extraEmails':
             return compareNullableNumber(
-                a.extraEmails.length > 0 ? (a.extraEmails.every((email) => email.verifiedAt) ? 1 : 0) : null,
-                b.extraEmails.length > 0 ? (b.extraEmails.every((email) => email.verifiedAt) ? 1 : 0) : null,
+                a.extraEmails.length > 0 ? (a.extraEmails.every((email) => email.verified) ? 1 : 0) : null,
+                b.extraEmails.length > 0 ? (b.extraEmails.every((email) => email.verified) ? 1 : 0) : null,
                 direction,
             );
         default:
@@ -126,7 +117,7 @@ export function getPreferredEmail(player: PlayerDataType) {
         return player.accountEmail;
     }
     if (!player.extraEmails.length) return '';
-    const verifiedEmail = player.extraEmails.find((playerEmail) => playerEmail.verifiedAt);
+    const verifiedEmail = player.extraEmails.find((playerEmail) => playerEmail.verified);
     return (verifiedEmail ?? player.extraEmails[0])?.email ?? '';
 }
 

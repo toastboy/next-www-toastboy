@@ -16,30 +16,30 @@ import {
 } from '@mantine/core';
 import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
 import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 import { PlayerTimeline } from '@/components/PlayerTimeline/PlayerTimeline';
 import { PlayerWDLChart } from '@/components/PlayerWDLChart/PlayerWDLChart';
 import { SendEmailForm } from '@/components/SendEmailForm/SendEmailForm';
-import type { PlayerDataType } from '@/types';
+import type { PlayerDataDisplayType } from '@/types';
 import type { SendEmailProxy } from '@/types/actions/SendEmail';
 
 export interface Props {
-    players: PlayerDataType[];
+    players: PlayerDataDisplayType[];
     gameDay: GameDayType;
     sendEmail: SendEmailProxy;
 }
 
 export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
-    const [sortBy, setSortBy] = useState<keyof PlayerDataType | null>('name');
+    const [sortBy, setSortBy] = useState<keyof PlayerDataDisplayType | null>('name');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     const [filter, setFilter] = useState('');
     const [active, setActive] = useState(true);
     const [replyRange, setReplyRange] = useState<[number, number]>([0, gameDay.id]);
-    const [selectedPlayers, setSelectedPlayers] = useState<PlayerDataType[]>([]);
+    const [selectedPlayers, setSelectedPlayers] = useState<PlayerDataDisplayType[]>([]);
     const [modalOpened, setModalOpened] = useState(false);
 
-    const handleSort = (key: keyof PlayerDataType) => {
+    const handleSort = (key: keyof PlayerDataDisplayType) => {
         if (sortBy === key) {
             setSortOrder((prev) => (prev === 'asc' ? 'desc' : 'asc'));
         } else {
@@ -48,7 +48,7 @@ export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
         }
     };
 
-    const handleSelectPlayer = (player: PlayerDataType) => {
+    const handleSelectPlayer = (player: PlayerDataDisplayType) => {
         if (selectedPlayers.includes(player)) {
             setSelectedPlayers((prev) => prev.filter((p) => player !== p));
         } else {
@@ -123,6 +123,11 @@ export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
      * @param range - A [min, max] tuple of weeks-ago values matching the heading text.
      */
     const handleRangeChange = (range: [number, number]) => setReplyRange(range);
+    const selectedEmailPlayers = useMemo(
+        () => selectedPlayers.map(({ id, name, accountEmail, extraEmails }) => ({ id, name, accountEmail, extraEmails })),
+        [selectedPlayers],
+    );
+
     /** Opens the send-email modal for the currently selected players. */
     const handleOpenEmailModal = () => setModalOpened(true);
     /** Closes the send-email modal. */
@@ -179,7 +184,7 @@ export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
                 </Button>
             </Tooltip>
             <SendEmailForm
-                players={selectedPlayers}
+                players={selectedEmailPlayers}
                 opened={modalOpened}
                 onClose={handleCloseEmailModal}
                 onSendEmail={sendEmail}

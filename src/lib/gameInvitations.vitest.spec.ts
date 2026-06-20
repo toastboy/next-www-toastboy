@@ -11,12 +11,13 @@ import { getPublicBaseUrl } from '@/lib/urls';
 import gameDayService from '@/services/GameDay';
 import gameInvitationService from '@/services/GameInvitation';
 import outcomeService from '@/services/Outcome';
-import type { PlayerDataDisplayType, PlayerDisplayType } from '@/services/Player';
+import type { PlayerDisplayType } from '@/services/Player';
 import playerService from '@/services/Player';
 import { createMockGameDay } from '@/tests/mocks/data/gameDay';
 import { createMockGameInvitation } from '@/tests/mocks/data/gameInvitation';
 import { createMockOutcome } from '@/tests/mocks/data/outcome';
 import { createMockPlayerData } from '@/tests/mocks/data/playerData';
+import type { PlayerDataDisplayType } from '@/types';
 
 vi.mock('@/actions/sendEmail', () => ({
     sendEmail: vi.fn(),
@@ -114,20 +115,8 @@ describe('sendGameInvitations', () => {
                 finished: null,
                 accountEmail: ' Alice@example.com ',
                 extraEmails: [
-                    {
-                        id: 1,
-                        playerId: 1,
-                        email: 'ALICE@example.com',
-                        verifiedAt: null,
-                        createdAt: new Date('2025-12-01'),
-                    },
-                    {
-                        id: 2,
-                        playerId: 1,
-                        email: 'alice+kit@example.com',
-                        verifiedAt: null,
-                        createdAt: new Date('2025-12-02'),
-                    },
+                    { email: 'ALICE@example.com', verified: false },
+                    { email: 'alice+kit@example.com', verified: false },
                 ],
             }),
             createMockPlayerData({

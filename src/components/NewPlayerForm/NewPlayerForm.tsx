@@ -57,7 +57,7 @@ export const NewPlayerForm = ({
             return player.accountEmail;
         }
         if (!player?.extraEmails.length) return '';
-        const verifiedEmail = player.extraEmails.find((playerEmail) => playerEmail.verifiedAt);
+        const verifiedEmail = player.extraEmails.find((playerEmail) => playerEmail.verified);
         return (verifiedEmail ?? player.extraEmails[0])?.email ?? '';
     };
 

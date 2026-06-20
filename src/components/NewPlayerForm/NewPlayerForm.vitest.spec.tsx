@@ -387,13 +387,7 @@ describe('NewPlayerForm', () => {
                 id: 1,
                 name: 'Sam Smith',
                 accountEmail: null,
-                extraEmails: [{
-                    id: 1,
-                    playerId: 1,
-                    email: 'sam-extra@example.com',
-                    verifiedAt: null,
-                    createdAt: new Date('2021-01-01'),
-                }],
+                extraEmails: [{ email: 'sam-extra@example.com', verified: false }],
             }),
         ];
 

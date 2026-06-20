@@ -61,6 +61,126 @@ describe('PlayerService', () => {
         });
     });
 
+    describe('getEmailDataById', () => {
+        it('returns null when the player does not exist', async () => {
+            (prisma.player.findUnique as Mock).mockResolvedValueOnce(null);
+            const result = await playerService.getEmailDataById(99);
+            expect(result).toBeNull();
+        });
+
+        it('passes the correct select and orderBy to Prisma', async () => {
+            (prisma.player.findUnique as Mock).mockResolvedValueOnce({
+                id: 1, name: 'Alice', anonymous: false, accountEmail: 'alice@example.com', extraEmails: [],
+            });
+            await playerService.getEmailDataById(1);
+            expect(prisma.player.findUnique).toHaveBeenCalledWith({
+                where: { id: 1 },
+                select: {
+                    id: true,
+                    name: true,
+                    anonymous: true,
+                    accountEmail: true,
+                    extraEmails: {
+                        select: { email: true, verifiedAt: true },
+                        orderBy: [
+                            { verifiedAt: 'desc' },
+                            { createdAt: 'desc' },
+                        ],
+                    },
+                },
+            });
+        });
+
+        it('maps a non-null verifiedAt to verified: true', async () => {
+            (prisma.player.findUnique as Mock).mockResolvedValueOnce({
+                id: 1, name: 'Alice', anonymous: false, accountEmail: 'alice@example.com',
+                extraEmails: [
+                    { id: 1, playerId: 1, email: 'alice+extra@example.com', verifiedAt: new Date('2024-01-01'), createdAt: new Date('2024-01-01') },
+                ],
+            });
+            const result = await playerService.getEmailDataById(1);
+            expect(result?.extraEmails).toEqual([{ email: 'alice+extra@example.com', verified: true }]);
+        });
+
+        it('maps a null verifiedAt to verified: false', async () => {
+            (prisma.player.findUnique as Mock).mockResolvedValueOnce({
+                id: 1, name: 'Alice', anonymous: false, accountEmail: 'alice@example.com',
+                extraEmails: [
+                    { id: 1, playerId: 1, email: 'alice+pending@example.com', verifiedAt: null, createdAt: new Date('2024-01-01') },
+                ],
+            });
+            const result = await playerService.getEmailDataById(1);
+            expect(result?.extraEmails).toEqual([{ email: 'alice+pending@example.com', verified: false }]);
+        });
+
+        it('maps an undefined verifiedAt to verified: false', async () => {
+            (prisma.player.findUnique as Mock).mockResolvedValueOnce({
+                id: 1, name: 'Alice', anonymous: false, accountEmail: 'alice@example.com',
+                extraEmails: [
+                    { id: 1, playerId: 1, email: 'alice+extra@example.com', verifiedAt: undefined, createdAt: new Date('2024-01-01') },
+                ],
+            });
+            const result = await playerService.getEmailDataById(1);
+            expect(result?.extraEmails).toEqual([{ email: 'alice+extra@example.com', verified: false }]);
+        });
+
+        it('returns empty extraEmails when extraEmails is undefined', async () => {
+            (prisma.player.findUnique as Mock).mockResolvedValueOnce({
+                id: 1, name: 'Alice', anonymous: false, accountEmail: 'alice@example.com',
+                extraEmails: undefined,
+            });
+            const result = await playerService.getEmailDataById(1);
+            expect(result?.extraEmails).toEqual([]);
+        });
+
+        it('preserves the order of extraEmails as returned by Prisma', async () => {
+            (prisma.player.findUnique as Mock).mockResolvedValueOnce({
+                id: 1, name: 'Alice', anonymous: false, accountEmail: 'alice@example.com',
+                extraEmails: [
+                    { id: 2, playerId: 1, email: 'verified@example.com', verifiedAt: new Date('2024-06-01'), createdAt: new Date('2024-01-01') },
+                    { id: 1, playerId: 1, email: 'unverified@example.com', verifiedAt: null, createdAt: new Date('2024-05-01') },
+                ],
+            });
+            const result = await playerService.getEmailDataById(1);
+            expect(result?.extraEmails).toEqual([
+                { email: 'verified@example.com', verified: true },
+                { email: 'unverified@example.com', verified: false },
+            ]);
+        });
+
+        it('replaces the name with Player ${id} when the player is anonymous', async () => {
+            (prisma.player.findUnique as Mock).mockResolvedValueOnce({
+                id: 5, name: 'Hidden Name', anonymous: true, accountEmail: 'hidden@example.com', extraEmails: [],
+            });
+            const result = await playerService.getEmailDataById(5);
+            expect(result?.name).toBe('Player 5');
+        });
+
+        it('returns Player ${id} as name when the player has a null name', async () => {
+            (prisma.player.findUnique as Mock).mockResolvedValueOnce({
+                id: 7, name: null, anonymous: false, accountEmail: null, extraEmails: [],
+            });
+            const result = await playerService.getEmailDataById(7);
+            expect(result?.name).toBe('Player 7');
+        });
+
+        it('trims whitespace from the player name', async () => {
+            (prisma.player.findUnique as Mock).mockResolvedValueOnce({
+                id: 2, name: '  Bob  ', anonymous: false, accountEmail: 'bob@example.com', extraEmails: [],
+            });
+            const result = await playerService.getEmailDataById(2);
+            expect(result?.name).toBe('Bob');
+        });
+
+        it('normalises a missing accountEmail to null rather than undefined', async () => {
+            (prisma.player.findUnique as Mock).mockResolvedValueOnce({
+                id: 3, name: 'Carol', anonymous: false, accountEmail: undefined, extraEmails: [],
+            });
+            const result = await playerService.getEmailDataById(3);
+            expect(result?.accountEmail).toBeNull();
+        });
+    });
+
     describe('getByLogin', () => {
         it('should retrieve the correct player with login', async () => {
             (prisma.playerLogin.findUnique as Mock).mockResolvedValueOnce({
@@ -394,6 +514,88 @@ describe('PlayerService', () => {
             expect(prisma.player.findMany).toHaveBeenCalledWith(
                 expect.objectContaining({ where: { finished: null } }),
             );
+        });
+
+        it('normalises a missing accountEmail to null', async () => {
+            (prisma.player.findMany as Mock).mockResolvedValueOnce([{
+                ...defaultPlayer,
+                id: 3,
+                accountEmail: undefined,
+                extraEmails: [],
+                outcomes: [],
+            }]);
+            const result = await playerService.getAll();
+            expect(result[0].accountEmail).toBeNull();
+        });
+
+        it('maps a non-null verifiedAt to verified: true', async () => {
+            (prisma.player.findMany as Mock).mockResolvedValueOnce([{
+                ...defaultPlayer,
+                id: 1,
+                extraEmails: [
+                    { id: 1, playerId: 1, email: 'extra@example.com', verifiedAt: new Date('2024-01-01'), createdAt: new Date('2024-01-01') },
+                ],
+                outcomes: [],
+            }]);
+            const result = await playerService.getAll();
+            expect(result[0].extraEmails).toEqual([{ email: 'extra@example.com', verified: true }]);
+        });
+
+        it('maps a null verifiedAt to verified: false', async () => {
+            (prisma.player.findMany as Mock).mockResolvedValueOnce([{
+                ...defaultPlayer,
+                id: 1,
+                extraEmails: [
+                    { id: 1, playerId: 1, email: 'pending@example.com', verifiedAt: null, createdAt: new Date('2024-01-01') },
+                ],
+                outcomes: [],
+            }]);
+            const result = await playerService.getAll();
+            expect(result[0].extraEmails).toEqual([{ email: 'pending@example.com', verified: false }]);
+        });
+
+        it('preserves the order of extraEmails as returned by Prisma', async () => {
+            (prisma.player.findMany as Mock).mockResolvedValueOnce([{
+                ...defaultPlayer,
+                id: 1,
+                extraEmails: [
+                    { id: 2, playerId: 1, email: 'verified@example.com', verifiedAt: new Date('2024-06-01'), createdAt: new Date('2024-01-01') },
+                    { id: 1, playerId: 1, email: 'unverified@example.com', verifiedAt: null, createdAt: new Date('2024-05-01') },
+                ],
+                outcomes: [],
+            }]);
+            const result = await playerService.getAll();
+            expect(result[0].extraEmails).toEqual([
+                { email: 'verified@example.com', verified: true },
+                { email: 'unverified@example.com', verified: false },
+            ]);
+        });
+
+        it('returns empty extraEmails when extraEmails is undefined', async () => {
+            (prisma.player.findMany as Mock).mockResolvedValueOnce([{
+                ...defaultPlayer,
+                id: 1,
+                extraEmails: undefined,
+                outcomes: [],
+            }]);
+            const result = await playerService.getAll();
+            expect(result[0].extraEmails).toEqual([]);
+        });
+
+        it('passes the correct include with extraEmails select and orderBy to Prisma', async () => {
+            (prisma.player.findMany as Mock).mockResolvedValueOnce([]);
+            await playerService.getAll();
+            expect(prisma.player.findMany).toHaveBeenCalledWith(expect.objectContaining({
+                include: expect.objectContaining({
+                    extraEmails: {
+                        select: { email: true, verifiedAt: true },
+                        orderBy: [
+                            { verifiedAt: 'desc' },
+                            { createdAt: 'desc' },
+                        ],
+                    },
+                }),
+            }));
         });
     });
 

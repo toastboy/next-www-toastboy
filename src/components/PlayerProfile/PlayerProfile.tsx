@@ -15,6 +15,7 @@ import type { TableName } from 'prisma/generated/browser';
 import type { ArseType } from 'prisma/zod/schemas/models/Arse.schema';
 import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 
+import { EmailPlayerButton } from '@/components/EmailPlayerButton/EmailPlayerButton';
 import { GameDayLink } from '@/components/GameDayLink/GameDayLink';
 import { PlayerArse } from '@/components/PlayerArse/PlayerArse';
 import { PlayerCard } from '@/components/PlayerCard/PlayerCard';
@@ -25,7 +26,9 @@ import { PlayerResults } from '@/components/PlayerResults/PlayerResults';
 import { TitleWithYearDropdown } from '@/components/TitleWithYearDropdown/TitleWithYearDropdown';
 import { formatDate } from '@/lib/dates';
 import { PlayerDisplayType } from '@/services/Player';
-import { ClubSupporterDataType, CountrySupporterDataType, PlayerFormType } from '@/types';
+import { ClubSupporterDataType, CountrySupporterDataType, PlayerDataEmailDisplayType, PlayerFormType } from '@/types';
+import type { SendEmailProxy } from '@/types/actions/SendEmail';
+
 
 export interface Props {
     player: PlayerDisplayType;
@@ -44,6 +47,8 @@ export interface Props {
     nextPlayer: PlayerDisplayType | null;
     isAuthenticated?: boolean;
     isAdmin?: boolean;
+    playerData?: PlayerDataEmailDisplayType | null;
+    onSendEmail?: SendEmailProxy;
 }
 
 export const PlayerProfile = ({
@@ -63,6 +68,8 @@ export const PlayerProfile = ({
     nextPlayer,
     isAuthenticated = false,
     isAdmin = false,
+    playerData,
+    onSendEmail,
 }: Props) => {
     // TODO: Look at how to make global quantities like these more consistent
     // across the app - e.g. using a context or CSS variable
@@ -109,10 +116,12 @@ export const PlayerProfile = ({
                                         <TableTh>Joined</TableTh>
                                         <TableTd w={valueCellWidth}>{player.joined ? formatDate(player.joined) : 'N/A'}</TableTd>
                                     </TableTr>
-                                    {!!isAdmin && (
+                                    {!!isAdmin && !!playerData && !!onSendEmail && (
                                         <TableTr>
                                             <TableTh>Email</TableTh>
-                                            <TableTd w={valueCellWidth}>{player.accountEmail}</TableTd>
+                                            <TableTd w={valueCellWidth}>
+                                                <EmailPlayerButton player={playerData} onSendEmail={onSendEmail} />
+                                            </TableTd>
                                         </TableTr>
                                     )}
                                     <TableTr>

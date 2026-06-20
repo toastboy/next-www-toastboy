@@ -15,7 +15,7 @@ import { captureUnexpectedError } from '@/lib/observability/sentry';
 import { Wrapper } from '@/tests/components/lib/common';
 import { createMockPlayerData } from '@/tests/mocks/data/playerData';
 import { AddPlayerInviteProxy } from '@/types/actions/CreatePlayer';
-import { SendEmailProxy } from '@/types/actions/SendEmail';
+import type { SendEmailProxy } from '@/types/actions/SendEmail';
 
 const { mockRefresh } = vi.hoisted(() => ({
     mockRefresh: vi.fn(),
@@ -71,13 +71,7 @@ describe('AdminPlayerList', () => {
                 name: 'Pat Player',
                 accountEmail: null,
                 extraEmails: [
-                    {
-                        id: 2,
-                        playerId: 2,
-                        email: 'pat@example.com',
-                        verifiedAt: null,
-                        createdAt: new Date('2021-01-01'),
-                    },
+                    { email: 'pat@example.com', verified: false },
                 ],
             }),
         ];
@@ -526,22 +520,12 @@ describe('AdminPlayerList', () => {
                 createMockPlayerData({
                     id: 1,
                     name: 'Bob',
-                    extraEmails: [{
-                        id: 1, playerId: 1,
-                        email: 'bob@example.com',
-                        verifiedAt: new Date('2021-01-01'),
-                        createdAt: new Date('2021-01-01'),
-                    }],
+                    extraEmails: [{ email: 'bob@example.com', verified: true }],
                 }),
                 createMockPlayerData({
                     id: 2,
                     name: 'Alice',
-                    extraEmails: [{
-                        id: 2, playerId: 2,
-                        email: 'alice@example.com',
-                        verifiedAt: null,
-                        createdAt: new Date('2021-01-01'),
-                    }],
+                    extraEmails: [{ email: 'alice@example.com', verified: false }],
                 }),
             ];
 
@@ -570,12 +554,7 @@ describe('AdminPlayerList', () => {
                 createMockPlayerData({
                     id: 1,
                     name: 'Alice',
-                    extraEmails: [{
-                        id: 1, playerId: 1,
-                        email: 'alice@example.com',
-                        verifiedAt: new Date('2021-01-01'),
-                        createdAt: new Date('2021-01-01'),
-                    }],
+                    extraEmails: [{ email: 'alice@example.com', verified: true }],
                 }),
             ];
 
@@ -648,13 +627,7 @@ describe('AdminPlayerList', () => {
                     id: 1,
                     name: 'Alex Admin',
                     accountEmail: null,
-                    extraEmails: [{
-                        id: 1,
-                        playerId: 1,
-                        email: 'alex@example.com',
-                        verifiedAt: new Date('2021-01-01'),
-                        createdAt: new Date('2021-01-01'),
-                    }],
+                    extraEmails: [{ email: 'alex@example.com', verified: true }],
                 }),
             ];
 
@@ -680,13 +653,7 @@ describe('AdminPlayerList', () => {
                     id: 1,
                     name: 'Pat Player',
                     accountEmail: 'pat@example.com',
-                    extraEmails: [{
-                        id: 1,
-                        playerId: 1,
-                        email: 'pat@example.com',
-                        verifiedAt: null,
-                        createdAt: new Date('2021-01-01'),
-                    }],
+                    extraEmails: [{ email: 'pat@example.com', verified: false }],
                 }),
             ];
 
@@ -832,13 +799,7 @@ describe('AdminPlayerList', () => {
                     id: 1,
                     name: 'Pat Player',
                     accountEmail: null,
-                    extraEmails: [{
-                        id: 1,
-                        playerId: 1,
-                        email: 'pat-unverified@example.com',
-                        verifiedAt: null,
-                        createdAt: new Date('2021-01-01'),
-                    }],
+                    extraEmails: [{ email: 'pat-unverified@example.com', verified: false }],
                 }),
             ];
 
@@ -870,13 +831,7 @@ describe('AdminPlayerList', () => {
                     id: 1,
                     name: 'Pat Player',
                     accountEmail: null,
-                    extraEmails: [{
-                        id: 1,
-                        playerId: 1,
-                        email: 'pat@example.com',
-                        verifiedAt: new Date('2021-01-01'),
-                        createdAt: new Date('2021-01-01'),
-                    }],
+                    extraEmails: [{ email: 'pat@example.com', verified: true }],
                 }),
             ];
 
@@ -1113,13 +1068,7 @@ describe('AdminPlayerList', () => {
                     id: 1,
                     name: 'Pat Player',
                     accountEmail: null,
-                    extraEmails: [{
-                        id: 1,
-                        playerId: 1,
-                        email: 'verified@example.com',
-                        verifiedAt: new Date('2021-01-01'),
-                        createdAt: new Date('2021-01-01'),
-                    }],
+                    extraEmails: [{ email: 'verified@example.com', verified: true }],
                 }),
             ];
 
@@ -1537,12 +1486,7 @@ describe('AdminPlayerList', () => {
                 createMockPlayerData({
                     id: 1,
                     name: 'Unverified',
-                    extraEmails: [{
-                        id: 1, playerId: 1,
-                        email: 'unverified@example.com',
-                        verifiedAt: null,
-                        createdAt: new Date('2021-01-01'),
-                    }],
+                    extraEmails: [{ email: 'unverified@example.com', verified: false }],
                 }),
                 createMockPlayerData({
                     id: 2,
@@ -1574,22 +1518,12 @@ describe('AdminPlayerList', () => {
                 createMockPlayerData({
                     id: 1,
                     name: 'Unverified',
-                    extraEmails: [{
-                        id: 1, playerId: 1,
-                        email: 'unverified@example.com',
-                        verifiedAt: null,
-                        createdAt: new Date('2021-01-01'),
-                    }],
+                    extraEmails: [{ email: 'unverified@example.com', verified: false }],
                 }),
                 createMockPlayerData({
                     id: 2,
                     name: 'Verified',
-                    extraEmails: [{
-                        id: 2, playerId: 2,
-                        email: 'verified@example.com',
-                        verifiedAt: new Date('2021-01-01'),
-                        createdAt: new Date('2021-01-01'),
-                    }],
+                    extraEmails: [{ email: 'verified@example.com', verified: true }],
                 }),
             ];
 
@@ -1902,13 +1836,7 @@ describe('AdminPlayerList', () => {
         it('falls back to an empty preferred email for malformed extra-email data', () => {
             const player = createMockPlayerData({
                 accountEmail: null,
-                extraEmails: [{
-                    id: 1,
-                    playerId: 1,
-                    email: undefined as unknown as string,
-                    verifiedAt: null,
-                    createdAt: new Date('2021-01-01'),
-                }],
+                extraEmails: [{ email: undefined as unknown as string, verified: false }],
             });
 
             expect(getPreferredEmail(player)).toBe('');

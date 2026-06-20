@@ -1,6 +1,6 @@
 'use client';
 
-import { Button, Group, Modal, Text, TextInput, Tooltip } from '@mantine/core';
+import { Box, Button, Group, Modal, Text, TextInput, Tooltip } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import { Link, RichTextEditor } from '@mantine/tiptap';
 import { IconAlertTriangle, IconCheck, IconUser } from '@tabler/icons-react';
@@ -13,17 +13,18 @@ import StarterKit from '@tiptap/starter-kit';
 import { useState } from 'react';
 
 import { config } from '@/lib/config';
+import { normalizeEmail } from '@/lib/email/normalizeEmail';
 import { toPublicMessage } from '@/lib/errors';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
-import { PlayerDataType } from '@/types';
-import { SendEmailProxy } from '@/types/actions/SendEmail';
+import { PlayerDataEmailDisplayType } from '@/types';
+import type { SendEmailProxy } from '@/types/actions/SendEmail';
 
 import classes from './SendEmailForm.module.css';
 
 export interface Props {
     opened: boolean;
     onClose: () => void;
-    players: PlayerDataType[];
+    players: PlayerDataEmailDisplayType[];
     onSendEmail: SendEmailProxy;
     withinPortal?: boolean;
     withOverlay?: boolean;
@@ -38,12 +39,12 @@ export const SendEmailForm = ({
     withOverlay,
 }: Props) => {
     const [subject, setSubject] = useState('');
-    const names = players.map((player) => player.name).join(', ');
+    const names = players.map(({ name }) => name).join(', ');
     const emails = Array.from(new Set(players.flatMap((player) => {
-        const verifiedExtraEmails = player.extraEmails.filter((playerEmail) => playerEmail.verifiedAt);
+        const verifiedExtraEmails = player.extraEmails.filter((playerEmail) => playerEmail.verified);
         const preferredExtraEmails = verifiedExtraEmails.length > 0 ? verifiedExtraEmails : player.extraEmails;
         return [player.accountEmail, ...preferredExtraEmails.map((playerEmail) => playerEmail.email)];
-    }).filter((email): email is string => !!email && email.length > 0))).join(',');
+    }).map(normalizeEmail).filter((email) => email.length > 0))).join(',');
 
     const editor = useEditor({
         extensions: [
@@ -175,7 +176,11 @@ export const SendEmailForm = ({
                 </RichTextEditor>
 
                 <Group justify="flex-end" mt="md">
-                    <Button type="submit">Send Mail</Button>
+                    <Tooltip label="No valid email addresses for the selected players" disabled={!!emails}>
+                        <Box component="span">
+                            <Button type="submit" disabled={!emails}>Send Mail</Button>
+                        </Box>
+                    </Tooltip>
                 </Group>
             </form>
         </Modal>

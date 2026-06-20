@@ -399,9 +399,12 @@ class PlayerRecordService {
     /**
      * Rebuilds PlayerRecords from the provided game day onward.
      *
-     * This is intentionally simple: look up the game day's date, find all game
-     * days on or after that date, and call `upsertForGameDay` for each in
-     * ascending order. Returns an empty array if the game day does not exist.
+     * Bootstraps the running per-year and all-time player-record state from
+     * the most-recent database snapshot per player before `gameDayId`, then
+     * replays all game days from that point in chronological order. This
+     * ensures rankings at each rebuilt game day are computed across all known
+     * players — not only those who happened to play on the specific day being
+     * processed.
      *
      * Future game days are excluded because records/standings should only
      * reflect completed time periods. Fixtures in the future may already have
@@ -426,10 +429,41 @@ class PlayerRecordService {
             return [];
         }
 
+        const allTimeOutcomes = await outcomeService.getAllForYear(0);
+        const allTimePlayerRecords = await loadLatestPlayerRecordsBefore(0, gameDayId);
+
+        const years = [...new Set(gameDays.map(gd => gd.date.getFullYear()))];
         const playerRecords: PlayerRecordType[] = [];
-        for (const gameDay of gameDays) {
-            const upserted = await this.upsertForGameDay(gameDay.id);
-            playerRecords.push(...upserted);
+
+        for (const year of years) {
+            const yearPlayerRecords = await loadLatestPlayerRecordsBefore(year, gameDayId);
+
+            const yearOutcomes = await outcomeService.getAllForYear(year);
+
+            for (const gameDay of gameDays) {
+                if (gameDay.date.getFullYear() !== year || gameDay.date > today) {
+                    continue;
+                }
+
+                const gameDayOutcomes = await outcomeService.getByGameDay(gameDay.id);
+
+                await calculateYearPlayerRecords(
+                    year,
+                    yearOutcomes,
+                    yearPlayerRecords,
+                    gameDay,
+                    gameDayOutcomes,
+                    playerRecords,
+                );
+                await calculateYearPlayerRecords(
+                    0,
+                    allTimeOutcomes,
+                    allTimePlayerRecords,
+                    gameDay,
+                    gameDayOutcomes,
+                    playerRecords,
+                );
+            }
         }
 
         return playerRecords;
@@ -470,6 +504,40 @@ class PlayerRecordService {
 
 const playerRecordService = new PlayerRecordService();
 export default playerRecordService;
+
+/**
+ * Returns a player-records map seeded from the most-recent DB row per player
+ * for the given year before `beforeGameDayId`. Only writable fields are kept
+ * (i.e. `id` is stripped via `PlayerRecordWriteInputSchema`) so the map is
+ * safe to pass directly to `calculateYearPlayerRecords`.
+ */
+async function loadLatestPlayerRecordsBefore(
+    year: number,
+    beforeGameDayId: number,
+): Promise<Record<number, Partial<PlayerRecordType>>> {
+    const map: Record<number, Partial<PlayerRecordType>> = {};
+
+    const groups = await prisma.playerRecord.groupBy({
+        by: ['playerId'],
+        where: { year, gameDayId: { lt: beforeGameDayId } },
+        _max: { gameDayId: true },
+    });
+
+    const conditions = groups
+        .filter(g => g._max.gameDayId !== null)
+        .map(g => ({ playerId: g.playerId, gameDayId: g._max.gameDayId! }));
+
+    if (conditions.length > 0) {
+        const records = await prisma.playerRecord.findMany({
+            where: { year, OR: conditions },
+        });
+        for (const record of records) {
+            map[record.playerId] = PlayerRecordWriteInputSchema.parse(record);
+        }
+    }
+
+    return map;
+}
 
 /**
  * Calculates the player records for a specific year and game day.

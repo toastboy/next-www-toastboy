@@ -105,8 +105,10 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
 const TablePage = async (props: PageProps) => {
     const { table, year, allYears } = await unpackParams(props.params, props.searchParams);
 
-    const RecordsTable = await playerRecordService.getTable(table, year, true);
-    const tableUnqualified = await playerRecordService.getTable(table, year, false);
+    const [tableQualified, tableUnqualified] = await Promise.all([
+        playerRecordService.getTable(table, year, true),
+        playerRecordService.getTable(table, year, false),
+    ]);
 
     return (
         <>
@@ -117,7 +119,7 @@ const TablePage = async (props: PageProps) => {
             <YearTable
                 table={table}
                 year={year}
-                qualified={RecordsTable}
+                qualified={tableQualified}
                 unqualified={tableUnqualified}
             />
         </>

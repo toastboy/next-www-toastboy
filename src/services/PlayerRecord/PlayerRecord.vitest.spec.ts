@@ -883,68 +883,126 @@ describe('PlayerRecordService', () => {
     });
 
     describe('upsertFromGameDay', () => {
-        it('rebuilds player records by iterating game days from the changed game onward', async () => {
+        it('bootstraps state from DB and processes game days from the changed game onward', async () => {
             const fromDate = new Date('2024-01-10T00:00:00Z');
             const getSpy = vi.spyOn(gameDayService, 'get').mockResolvedValueOnce({
                 id: 2, year: 2024, date: fromDate, game: true,
                 mailSent: new Date('2024-01-08T09:00:00Z'),
                 comment: null, bibs: 'A', pickerGamesHistory: 10, cost: 450, hallCost: 5000,
             });
-            const getAllSpy = vi.spyOn(gameDayService, 'getAll').mockResolvedValue([
+            const getAllSpy = vi.spyOn(gameDayService, 'getAll').mockResolvedValue([{
+                id: 2, year: 2024, date: fromDate, game: true,
+                mailSent: new Date('2024-01-08T09:00:00Z'),
+                comment: null, bibs: 'A', pickerGamesHistory: 10, cost: 450, hallCost: 5000,
+            }]);
+
+            // Player 99 has history before game day 2; player 1 plays on game day 2.
+            const player99AllTime = createMockPlayerRecord({ playerId: 99, year: 0, gameDayId: 1, played: 5, averages: 1.5 });
+            const player99Year = createMockPlayerRecord({ playerId: 99, year: 2024, gameDayId: 1, played: 5, averages: 1.5 });
+
+            (prisma.playerRecord.groupBy as Mock)
+                .mockResolvedValueOnce([{ playerId: 99, _max: { gameDayId: 1 } }])
+                .mockResolvedValueOnce([{ playerId: 99, _max: { gameDayId: 1 } }]);
+            (prisma.playerRecord.findMany as Mock)
+                .mockResolvedValueOnce([player99AllTime])
+                .mockResolvedValueOnce([player99Year]);
+
+            (prisma.outcome.findMany as Mock).mockResolvedValue([
                 {
-                    id: 2, year: 2024, date: fromDate, game: true,
-                    mailSent: new Date('2024-01-08T09:00:00Z'),
-                    comment: null, bibs: 'A', pickerGamesHistory: 10, cost: 450, hallCost: 5000,
+                    gameDayId: 1, playerId: 99, response: 'Yes', responseInterval: 1000,
+                    points: 3, team: 'A', pub: null, paid: false, goalie: false,
                 },
                 {
-                    id: 3, year: 2024, date: new Date('2024-01-17T00:00:00Z'), game: true,
-                    mailSent: new Date('2024-01-15T09:00:00Z'),
-                    comment: null, bibs: 'B', pickerGamesHistory: 10, cost: 450, hallCost: 5000,
+                    gameDayId: 2, playerId: 1, response: 'Yes', responseInterval: 2000,
+                    points: 1, team: 'B', pub: null, paid: false, goalie: false,
                 },
             ]);
-            const upsertForGameDaySpy = vi
-                .spyOn(playerRecordService, 'upsertForGameDay')
-                .mockImplementation((gameDayId?: number) => {
-                    if (!gameDayId) return Promise.resolve([]);
-                    return Promise.resolve([
-                        createMockPlayerRecord({
-                            id: gameDayId,
-                            playerId: 1,
-                            year: gameDayId === 2 ? 2024 : 0,
-                            gameDayId,
-                        }),
-                    ]);
-                });
+            (prisma.gameDay.count as Mock).mockResolvedValue(2);
+            (prisma.playerRecord.upsert as Mock).mockImplementation((args: { create: unknown }) =>
+                Promise.resolve(args.create));
 
             const result = await playerRecordService.upsertFromGameDay(2);
 
             expect(getSpy).toHaveBeenCalledWith(2);
             expect(getAllSpy).toHaveBeenCalledWith({ fromDate });
-            expect(upsertForGameDaySpy).toHaveBeenCalledTimes(2);
-            expect(upsertForGameDaySpy).toHaveBeenNthCalledWith(1, 2);
-            expect(upsertForGameDaySpy).toHaveBeenNthCalledWith(2, 3);
-            expect(result).toHaveLength(2);
+            // Both the all-time and per-year bootstrap queries must run.
+            expect(prisma.playerRecord.groupBy).toHaveBeenCalledWith(
+                expect.objectContaining({ where: { year: 0, gameDayId: { lt: 2 } } }),
+            );
+            expect(prisma.playerRecord.groupBy).toHaveBeenCalledWith(
+                expect.objectContaining({ where: { year: 2024, gameDayId: { lt: 2 } } }),
+            );
+            // Both the bootstrapped historical player and the player who played
+            // on game day 2 should appear in the result.
+            expect(result).toEqual(expect.arrayContaining([
+                expect.objectContaining({ playerId: 99 }),
+                expect.objectContaining({ playerId: 1 }),
+            ]));
             expect(prisma.playerRecord.deleteMany).not.toHaveBeenCalled();
 
             getSpy.mockRestore();
             getAllSpy.mockRestore();
-            upsertForGameDaySpy.mockRestore();
+        });
+
+        it('excludes future game days from processing', async () => {
+            const pastDate = new Date('2024-01-10T00:00:00Z');
+            const futureDate = new Date('2099-12-31T00:00:00Z');
+
+            const getSpy = vi.spyOn(gameDayService, 'get').mockResolvedValueOnce({
+                id: 2, year: 2024, date: pastDate, game: true,
+                mailSent: new Date('2024-01-08T09:00:00Z'),
+                comment: null, bibs: 'A', pickerGamesHistory: 10, cost: 450, hallCost: 5000,
+            });
+            const getAllSpy = vi.spyOn(gameDayService, 'getAll').mockResolvedValue([
+                {
+                    id: 2, year: 2024, date: pastDate, game: true,
+                    mailSent: new Date('2024-01-08T09:00:00Z'),
+                    comment: null, bibs: 'A', pickerGamesHistory: 10, cost: 450, hallCost: 5000,
+                },
+                {
+                    id: 3, year: 2024, date: futureDate, game: true,
+                    mailSent: new Date('2099-12-29T09:00:00Z'),
+                    comment: null, bibs: 'B', pickerGamesHistory: 10, cost: 450, hallCost: 5000,
+                },
+            ]);
+
+            (prisma.playerRecord.groupBy as Mock).mockResolvedValue([]);
+            (prisma.outcome.findMany as Mock).mockResolvedValue([{
+                gameDayId: 2, playerId: 1, response: 'Yes', responseInterval: 1000,
+                points: 3, team: 'A', pub: null, paid: false, goalie: false,
+            }]);
+            (prisma.gameDay.count as Mock).mockResolvedValue(1);
+            (prisma.playerRecord.upsert as Mock).mockImplementation((args: { create: unknown }) =>
+                Promise.resolve(args.create));
+
+            const result = await playerRecordService.upsertFromGameDay(2);
+
+            // getAllForYear(0) + getAllForYear(2024) + getByGameDay(2) = 3 calls.
+            // A fourth call would mean getByGameDay(3) ran, i.e. the future day
+            // was processed.
+            expect(prisma.outcome.findMany).toHaveBeenCalledTimes(3);
+            // Game day 2 was still processed — result is non-empty.
+            expect(result.length).toBeGreaterThan(0);
+            // No record should be pinned to the future game day.
+            expect(result).not.toEqual(expect.arrayContaining([
+                expect.objectContaining({ gameDayId: 3 }),
+            ]));
+
+            getSpy.mockRestore();
+            getAllSpy.mockRestore();
         });
 
         it('returns no records when the game day does not exist', async () => {
             const getSpy = vi.spyOn(gameDayService, 'get').mockResolvedValueOnce(null);
             const getAllSpy = vi.spyOn(gameDayService, 'getAll');
-            const upsertForGameDaySpy = vi.spyOn(playerRecordService, 'upsertForGameDay');
 
             const result = await playerRecordService.upsertFromGameDay(9999);
 
             expect(result).toEqual([]);
             expect(getSpy).toHaveBeenCalledWith(9999);
             expect(getAllSpy).not.toHaveBeenCalled();
-            expect(upsertForGameDaySpy).not.toHaveBeenCalled();
             getSpy.mockRestore();
             getAllSpy.mockRestore();
-            upsertForGameDaySpy.mockRestore();
         });
 
         it('returns no records when getAll returns no game days', async () => {
@@ -955,17 +1013,14 @@ describe('PlayerRecordService', () => {
                 comment: null, bibs: 'A', pickerGamesHistory: 10, cost: 450, hallCost: 5000,
             });
             const getAllSpy = vi.spyOn(gameDayService, 'getAll').mockResolvedValueOnce([]);
-            const upsertForGameDaySpy = vi.spyOn(playerRecordService, 'upsertForGameDay');
 
             const result = await playerRecordService.upsertFromGameDay(2);
 
             expect(result).toEqual([]);
             expect(getSpy).toHaveBeenCalledWith(2);
             expect(getAllSpy).toHaveBeenCalledWith({ fromDate });
-            expect(upsertForGameDaySpy).not.toHaveBeenCalled();
             getSpy.mockRestore();
             getAllSpy.mockRestore();
-            upsertForGameDaySpy.mockRestore();
         });
     });
 

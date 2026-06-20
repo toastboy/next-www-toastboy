@@ -30,7 +30,7 @@ Include as many or as few comments as you like — the subagent will decide whic
    > - If it identifies a genuine bug, correctness issue, or clear improvement: apply the fix by editing the relevant file. Follow all conventions in CLAUDE.md (imports, services pattern, Zod validation, British English, etc.). In particular: avoid redundant inline comments, but preserve and update any JSDoc block on a function or declaration you change — description, `@param`, `@returns`, and `@throws` must all reflect the new implementation.
    > - If it is a false positive, a style preference the codebase already overrides, or otherwise not worth acting on: skip it and give a one-line reason.
    >
-   > After applying all valid fixes, run `npm run typecheck` and `npm run lint`. If either reports errors or warnings, run `npm run lint:fix` then re-run both `npm run typecheck` and `npm run lint`, and fix any remaining issues before finishing.
+   > After applying all valid fixes, run `npm run lint:fix`, then run `npm run typecheck` and `npm run lint`. If either still reports errors or warnings, fix the remaining issues and re-run both `npm run typecheck` and `npm run lint` before finishing.
    >
    > Return a short report: what was applied (with file and line references) and what was skipped (with rationales).
 

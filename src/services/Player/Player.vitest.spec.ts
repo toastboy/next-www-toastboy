@@ -585,8 +585,8 @@ describe('PlayerService', () => {
         it('passes the correct include with extraEmails select and orderBy to Prisma', async () => {
             (prisma.player.findMany as Mock).mockResolvedValueOnce([]);
             await playerService.getAll();
-            expect(prisma.player.findMany).toHaveBeenCalledWith(expect.objectContaining({
-                include: expect.objectContaining({
+            expect(prisma.player.findMany).toHaveBeenCalledWith({
+                include: {
                     extraEmails: {
                         select: { email: true, verifiedAt: true },
                         orderBy: [
@@ -594,8 +594,14 @@ describe('PlayerService', () => {
                             { createdAt: 'desc' },
                         ],
                     },
-                }),
-            }));
+                    outcomes: {
+                        orderBy: {
+                            gameDayId: 'desc',
+                        },
+                    },
+                },
+                where: undefined,
+            });
         });
     });
 

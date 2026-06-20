@@ -4,6 +4,7 @@ import crypto from 'crypto';
 import escapeHtml from 'escape-html';
 
 import { sendEmail } from '@/actions/sendEmail';
+import { normalizeEmail } from '@/lib/email/normalizeEmail';
 import { NotFoundError } from '@/lib/errors';
 import { getPublicBaseUrl } from '@/lib/urls';
 import gameDayService from '@/services/GameDay';
@@ -13,8 +14,6 @@ import playerService from '@/services/Player';
 import { GameInvitationResponseDetails } from '@/types/GameInvitationResponseDetails';
 
 const buildInvitationToken = () => crypto.randomUUID();
-
-const normalizeEmail = (email?: string | null) => (email ?? '').trim().toLowerCase();
 
 /**
  * Builds an HTML email invitation for a game.

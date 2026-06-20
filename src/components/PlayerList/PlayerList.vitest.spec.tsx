@@ -9,7 +9,7 @@ import type { Props as SendEmailFormProps } from '@/components/SendEmailForm/Sen
 import { extractMockProps, Wrapper } from '@/tests/components/lib/common';
 import { createMockGameDay } from '@/tests/mocks/data/gameDay';
 import { createMockPlayerData } from '@/tests/mocks/data/playerData';
-import type { PlayerDataType } from '@/types';
+import type { PlayerDataDisplayType } from '@/types';
 import type { SendEmailProxy } from '@/types/actions/SendEmail';
 
 vi.mock('@/components/PlayerTimeline/PlayerTimeline');
@@ -46,7 +46,7 @@ const sendEmailMock = vi.fn<SendEmailProxy>();
 
 const renderWithInitialState = async (
     initialState: unknown[],
-    localPlayers: PlayerDataType[],
+    localPlayers: PlayerDataDisplayType[],
 ) => {
     vi.resetModules();
     vi.doMock('react', async () => {

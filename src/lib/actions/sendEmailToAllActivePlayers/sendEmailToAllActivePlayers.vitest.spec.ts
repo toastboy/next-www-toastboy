@@ -12,20 +12,8 @@ describe('sendEmailToAllActivePlayersCore', () => {
                     finished: null,
                     accountEmail: '  ONE@example.com ',
                     extraEmails: [
-                        {
-                            id: 11,
-                            playerId: 1,
-                            email: 'one@example.com',
-                            verifiedAt: new Date('2026-01-01T00:00:00Z'),
-                            createdAt: new Date('2026-01-01T00:00:00Z'),
-                        },
-                        {
-                            id: 12,
-                            playerId: 1,
-                            email: 'two@example.com',
-                            verifiedAt: null,
-                            createdAt: new Date('2026-01-02T00:00:00Z'),
-                        },
+                        { email: 'one@example.com', verified: true },
+                        { email: 'two@example.com', verified: false },
                     ],
                 }),
                 createMockPlayerData({
@@ -33,13 +21,7 @@ describe('sendEmailToAllActivePlayersCore', () => {
                     finished: null,
                     accountEmail: null,
                     extraEmails: [
-                        {
-                            id: 21,
-                            playerId: 2,
-                            email: 'THREE@example.com',
-                            verifiedAt: null,
-                            createdAt: new Date('2026-01-03T00:00:00Z'),
-                        },
+                        { email: 'THREE@example.com', verified: false },
                     ],
                 }),
                 createMockPlayerData({
@@ -74,6 +56,50 @@ describe('sendEmailToAllActivePlayersCore', () => {
             },
         );
         expect(result).toEqual({ recipientCount: 2 });
+    });
+
+    it('skips verified extra emails that normalise to an empty string', async () => {
+        const playerService = {
+            getAll: vi.fn().mockResolvedValue([
+                createMockPlayerData({
+                    id: 1,
+                    finished: null,
+                    accountEmail: null,
+                    extraEmails: [{ email: '   ', verified: true }],
+                }),
+            ]),
+        };
+        const sendEmail = vi.fn();
+
+        const result = await sendEmailToAllActivePlayersCore(
+            { subject: 'Test', html: '<p>Hi</p>' },
+            { playerService, sendEmail },
+        );
+
+        expect(sendEmail).not.toHaveBeenCalled();
+        expect(result).toEqual({ recipientCount: 0 });
+    });
+
+    it('skips accountEmail that normalises to an empty string', async () => {
+        const playerService = {
+            getAll: vi.fn().mockResolvedValue([
+                createMockPlayerData({
+                    id: 1,
+                    finished: null,
+                    accountEmail: ' ',
+                    extraEmails: [],
+                }),
+            ]),
+        };
+        const sendEmail = vi.fn();
+
+        const result = await sendEmailToAllActivePlayersCore(
+            { subject: 'Test', html: '<p>Hi</p>' },
+            { playerService, sendEmail },
+        );
+
+        expect(sendEmail).not.toHaveBeenCalled();
+        expect(result).toEqual({ recipientCount: 0 });
     });
 
     it('returns zero recipients when no active player has an email', async () => {

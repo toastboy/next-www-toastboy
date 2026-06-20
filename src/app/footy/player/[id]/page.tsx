@@ -6,6 +6,7 @@ import { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema'
 import { cache } from 'react';
 import z from 'zod';
 
+import { sendEmail } from '@/actions/sendEmail';
 import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
 import { PlayerProfile } from '@/components/PlayerProfile/PlayerProfile';
 import { getUserRole } from '@/lib/auth.server';
@@ -106,6 +107,7 @@ const PlayerPage = async (props: PageProps) => {
         record,
         prevPlayer,
         nextPlayer,
+        playerData,
     ] = await Promise.all([
         player.introducedBy != null ? playerService.getById(player.introducedBy) : Promise.resolve(null),
         playerService.getLastResult(player.id, year),
@@ -117,6 +119,7 @@ const PlayerPage = async (props: PageProps) => {
         playerRecordService.getForYearByPlayer(year, player.id),
         playerService.getPrevious(player.id),
         playerService.getNext(player.id),
+        isAdmin ? playerService.getEmailDataById(player.id) : Promise.resolve(null),
     ]);
 
     const trophies = new Map<TableName, PlayerRecordType[]>();
@@ -146,6 +149,8 @@ const PlayerPage = async (props: PageProps) => {
                 trophies={trophies}
                 isAuthenticated={isAuthenticated}
                 isAdmin={isAdmin}
+                playerData={playerData}
+                onSendEmail={isAdmin ? sendEmail : undefined}
             />
         </>
     );

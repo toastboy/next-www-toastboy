@@ -3,6 +3,7 @@ import 'server-only';
 import type { SendMailOptions } from 'nodemailer';
 
 import { sendEmailCore } from '@/lib/actions/sendEmail';
+import { normalizeEmail } from '@/lib/email/normalizeEmail';
 import playerService from '@/services/Player';
 import type { SendEmailProxy } from '@/types/actions/SendEmail';
 import type {
@@ -18,20 +19,6 @@ const defaultDeps: SendEmailToAllActivePlayersDeps = {
     playerService,
     sendEmail: sendEmailCore,
 };
-
-/**
- * Normalises an email address by trimming whitespace and converting to lower case.
- *
- * Accepts `string`, `null`, or `undefined` and returns an empty string when the
- * input is not provided. This helper does not validate that the result is a
- * syntactically valid email address.
- *
- * @param email - The email address to normalise.
- * @returns The normalised email address, or an empty string when not provided.
- */
-function normalizeEmail(email: string) {
-    return email.trim().toLowerCase();
-}
 
 /**
  * Sends one email to all active players with de-duplicated recipients.
@@ -53,13 +40,13 @@ export async function sendEmailToAllActivePlayersCore(
     for (const player of players) {
         if (player.accountEmail) {
             const normalizedEmail = normalizeEmail(player.accountEmail);
-            recipients.add(normalizedEmail);
+            if (normalizedEmail) recipients.add(normalizedEmail);
         }
 
         for (const extraEmail of player.extraEmails) {
-            if (extraEmail.verifiedAt) {
+            if (extraEmail.verified) {
                 const normalizedEmail = normalizeEmail(extraEmail.email);
-                recipients.add(normalizedEmail);
+                if (normalizedEmail) recipients.add(normalizedEmail);
             }
         }
     }

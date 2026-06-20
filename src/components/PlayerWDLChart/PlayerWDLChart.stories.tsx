@@ -13,13 +13,7 @@ const samplePlayer = {
     introducedBy: 1,
     accountEmail: 'frank@example.com',
     extraEmails: [
-        {
-            id: 1,
-            playerId: 2,
-            email: 'frank+cc@example.com',
-            verifiedAt: new Date('2019-08-12'),
-            createdAt: new Date('2019-08-12'),
-        },
+        { email: 'frank+cc@example.com', verified: true },
     ],
     firstResponded: 1,
     lastResponded: 30,

@@ -8,9 +8,11 @@ import { defaultArse } from '@/tests/mocks/data/arse';
 import { defaultClubSupporterDataList } from '@/tests/mocks/data/clubSupporterData';
 import { defaultCountrySupporterDataList } from '@/tests/mocks/data/countrySupporterData';
 import { createMockPlayer, defaultPlayer } from '@/tests/mocks/data/player';
+import { defaultPlayerEmailData } from '@/tests/mocks/data/playerData';
 import { defaultPlayerFormList } from '@/tests/mocks/data/playerForm';
 import { defaultPlayerRecord, defaultTrophiesList } from '@/tests/mocks/data/playerRecord';
 
+vi.mock('@/components/EmailPlayerButton/EmailPlayerButton');
 vi.mock('@/components/GameDayLink/GameDayLink');
 vi.mock('@/components/PlayerArse/PlayerArse');
 vi.mock('@/components/PlayerCard/PlayerCard');
@@ -167,13 +169,26 @@ describe('PlayerProfile', () => {
         };
 
         describe('email row', () => {
-            it('shows when isAdmin is true', () => {
-                render(<Wrapper><PlayerProfile {...rowBaseProps} isAdmin={true} /></Wrapper>);
+            const onSendEmail = vi.fn();
+
+            it('shows when isAdmin, playerData, and onSendEmail are all provided', () => {
+                render(<Wrapper><PlayerProfile {...rowBaseProps} isAdmin={true} playerData={defaultPlayerEmailData} onSendEmail={onSendEmail} /></Wrapper>);
                 expect(screen.getByText('Email')).toBeInTheDocument();
+                expect(screen.getByText(/EmailPlayerButton:/)).toBeInTheDocument();
             });
 
             it('is hidden when isAdmin is false', () => {
-                render(<Wrapper><PlayerProfile {...rowBaseProps} isAdmin={false} /></Wrapper>);
+                render(<Wrapper><PlayerProfile {...rowBaseProps} isAdmin={false} playerData={defaultPlayerEmailData} onSendEmail={onSendEmail} /></Wrapper>);
+                expect(screen.queryByText('Email')).not.toBeInTheDocument();
+            });
+
+            it('is hidden when playerData is not provided', () => {
+                render(<Wrapper><PlayerProfile {...rowBaseProps} isAdmin={true} onSendEmail={onSendEmail} /></Wrapper>);
+                expect(screen.queryByText('Email')).not.toBeInTheDocument();
+            });
+
+            it('is hidden when onSendEmail is not provided', () => {
+                render(<Wrapper><PlayerProfile {...rowBaseProps} isAdmin={true} playerData={defaultPlayerEmailData} /></Wrapper>);
                 expect(screen.queryByText('Email')).not.toBeInTheDocument();
             });
 

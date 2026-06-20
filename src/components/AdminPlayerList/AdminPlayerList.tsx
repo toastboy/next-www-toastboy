@@ -29,17 +29,17 @@ import {
     getImpersonationLabel,
     getPreferredEmail,
     isOnboarded,
-    normalizeEmail,
     type SortDirection,
     type SortKey,
 } from '@/lib/adminPlayer';
 import { config } from '@/lib/config';
 import { formatDate } from '@/lib/dates';
+import { normalizeEmail } from '@/lib/email/normalizeEmail';
 import { assertOkResponse, toPublicMessage } from '@/lib/errors';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 import { PlayerDataType } from '@/types';
 import { AddPlayerInviteProxy } from '@/types/actions/CreatePlayer';
-import { SendEmailProxy } from '@/types/actions/SendEmail';
+import type { SendEmailProxy } from '@/types/actions/SendEmail';
 
 export interface Props {
     players: PlayerDataType[];
@@ -314,7 +314,7 @@ export const AdminPlayerList = ({
         const playerHref = `/footy/player/${encodeURIComponent(player.id || '')}`;
         const hasAuthAccount = isOnboarded(player, userEmailSet);
         const hasExtraEmails = player.extraEmails.length > 0;
-        const extraEmailsVerified = hasExtraEmails && player.extraEmails.every((email) => email.verifiedAt);
+        const extraEmailsVerified = hasExtraEmails && player.extraEmails.every((email) => email.verified);
         const userId = getUserIdForPlayer(player);
 
         return (

@@ -1,11 +1,12 @@
 import prisma from 'prisma/prisma';
 import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
+import type { PlayerExtraEmailType as PrismaPlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
 import { PlayerLoginWhereUniqueInputObjectSchema } from 'prisma/zod/schemas/objects/PlayerLoginWhereUniqueInput.schema';
 import { PlayerWhereUniqueInputObjectSchema } from 'prisma/zod/schemas/objects/PlayerWhereUniqueInput.schema';
 import z from 'zod';
 
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
-import { FamilyTreeNodeType, PlayerDataType, PlayerFormType } from '@/types';
+import { FamilyTreeNodeType, PlayerDataDisplayType, PlayerDataEmailDisplayType, PlayerDataType, PlayerFormType } from '@/types';
 import {
     PlayerCreateOneStrictSchema,
     type PlayerCreateWriteInput,
@@ -17,7 +18,9 @@ import {
 import { PointsSchema, type PointsValue } from '@/types/Points';
 
 export type PlayerDisplayType = Omit<PlayerType, 'name'> & { name: string };
-export type PlayerDataDisplayType = Omit<PlayerDataType, 'name'> & { name: string };
+
+const mapExtraEmails = (extraEmails: Pick<PrismaPlayerExtraEmailType, 'email' | 'verifiedAt'>[] | undefined) =>
+    (extraEmails ?? []).map(({ email, verifiedAt }) => ({ email, verified: verifiedAt != null }));
 
 class PlayerService {
     /**
@@ -74,6 +77,39 @@ class PlayerService {
         const where = PlayerWhereUniqueInputObjectSchema.parse({ id });
         const player = await prisma.player.findUnique({ where });
         return player ? this.sanitizePlayerName(player) : null;
+    }
+
+    /**
+     * Get a single player's email contact data by id.
+     * @param id The numeric ID for the player
+     * @returns A promise that resolves to the player's email data, or null if not found
+     */
+    async getEmailDataById(id: number): Promise<PlayerDataEmailDisplayType | null> {
+        const where = PlayerWhereUniqueInputObjectSchema.parse({ id });
+        const player = await prisma.player.findUnique({
+            where,
+            select: {
+                id: true,
+                name: true,
+                anonymous: true,
+                accountEmail: true,
+                extraEmails: {
+                    select: { email: true, verifiedAt: true },
+                    orderBy: [
+                        { verifiedAt: 'desc' },
+                        { createdAt: 'desc' },
+                    ],
+                },
+            },
+        });
+        if (!player) return null;
+
+        return {
+            id: player.id,
+            name: this.getDisplayName(player),
+            accountEmail: player.accountEmail ?? null,
+            extraEmails: mapExtraEmails(player.extraEmails),
+        };
     }
 
     /**
@@ -232,6 +268,7 @@ class PlayerService {
                     },
                 },
                 extraEmails: {
+                    select: { email: true, verifiedAt: true },
                     orderBy: [
                         { verifiedAt: 'desc' },
                         { createdAt: 'desc' },
@@ -240,18 +277,17 @@ class PlayerService {
             },
         });
 
-        return players.map(({ outcomes, ...player }) => {
+        return players.map(({ outcomes, extraEmails, accountEmail, ...player }) => {
             const gamesResponded = outcomes.filter(outcome => outcome.response !== null);
             const gamesPlayed = outcomes.filter(outcome => outcome.points !== null);
 
             const respondedGameDays = gamesResponded.map(outcome => outcome.gameDayId);
             const playedGameDays = gamesPlayed.map(outcome => outcome.gameDayId);
 
-            const accountEmail = (player as { accountEmail?: string | null }).accountEmail ?? null;
-
             const playerWithComputedFields = {
                 ...player,
-                accountEmail,
+                accountEmail: accountEmail ?? null,
+                extraEmails: mapExtraEmails(extraEmails),
                 firstResponded: respondedGameDays.length > 0 ? Math.min(...respondedGameDays) : null,
                 lastResponded: respondedGameDays.length > 0 ? Math.max(...respondedGameDays) : null,
                 firstPlayed: playedGameDays.length > 0 ? Math.min(...playedGameDays) : null,

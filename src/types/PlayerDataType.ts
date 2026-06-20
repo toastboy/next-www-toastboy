@@ -2,9 +2,9 @@ import type { PlayerSchema } from 'prisma/zod/schemas';
 import type { PlayerExtraEmailType as PrismaPlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
 import type { z } from 'zod';
 
-export type PlayerDataExtraEmailType = Pick<PrismaPlayerExtraEmailType, 'email'> & { verified: boolean };
+type PlayerDataExtraEmailType = Pick<PrismaPlayerExtraEmailType, 'email'> & { verified: boolean };
 
-export interface PlayerDataEmailType {
+interface PlayerDataEmailType {
     id: number;
     name: string | null;
     accountEmail: string | null;

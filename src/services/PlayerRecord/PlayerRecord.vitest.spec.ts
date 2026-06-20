@@ -882,6 +882,36 @@ describe('PlayerRecordService', () => {
         });
     });
 
+    /**
+     * Asserts that rank values in `records` are consistent with the corresponding
+     * score values: sorting by rank ascending must produce scores in non-increasing
+     * order (for highScoreWins=true) or non-decreasing order (for speedy tables
+     * where a lower response time is better). Tied ranks are only allowed when
+     * the tied players share the same score.
+     */
+    function expectRankMatchesOrder(
+        records: PlayerRecordType[],
+        scoreField: keyof PlayerRecordType,
+        rankField: keyof PlayerRecordType,
+        highScoreWins = true,
+    ) {
+        const ranked = records
+            .filter(r => r[rankField] != null && r[scoreField] != null)
+            .sort((a, b) => (a[rankField]!) - (b[rankField]!));
+
+        for (let i = 0; i < ranked.length - 1; i++) {
+            const scoreA = ranked[i][scoreField]!;
+            const scoreB = ranked[i + 1][scoreField]!;
+            if ((ranked[i][rankField]!) === (ranked[i + 1][rankField]!)) {
+                expect(scoreA).toBe(scoreB);
+            } else if (highScoreWins) {
+                expect(scoreA).toBeGreaterThanOrEqual(scoreB);
+            } else {
+                expect(scoreA).toBeLessThanOrEqual(scoreB);
+            }
+        }
+    }
+
     describe('upsertFromGameDay', () => {
         it('bootstraps state from DB and processes game days from the changed game onward', async () => {
             const fromDate = new Date('2024-01-10T00:00:00Z');
@@ -907,16 +937,21 @@ describe('PlayerRecordService', () => {
                 .mockResolvedValueOnce([player99AllTime])
                 .mockResolvedValueOnce([player99Year]);
 
-            (prisma.outcome.findMany as Mock).mockResolvedValue([
-                {
-                    gameDayId: 1, playerId: 99, response: 'Yes', responseInterval: 1000,
-                    points: 3, team: 'A', pub: null, paid: false, goalie: false,
-                },
-                {
-                    gameDayId: 2, playerId: 1, response: 'Yes', responseInterval: 2000,
-                    points: 1, team: 'B', pub: null, paid: false, goalie: false,
-                },
-            ]);
+            // Each outcome.findMany call receives only the data it would see in
+            // production: getAllForYear(0) and getAllForYear(2024) return all
+            // outcomes for the year; getByGameDay(2) returns only the outcomes
+            // for players who actually played on game day 2 (player 1). Player
+            // 99 played game day 1, not game day 2, so they must reach the
+            // result exclusively via the bootstrap — the core invariant this test
+            // protects.
+            const allOutcomes = [
+                { gameDayId: 1, playerId: 99, response: 'Yes', responseInterval: 1000, points: 3, team: 'A', pub: null, paid: false, goalie: false },
+                { gameDayId: 2, playerId: 1, response: 'Yes', responseInterval: 2000, points: 1, team: 'B', pub: null, paid: false, goalie: false },
+            ];
+            (prisma.outcome.findMany as Mock)
+                .mockResolvedValueOnce(allOutcomes)   // getAllForYear(0)
+                .mockResolvedValueOnce(allOutcomes)   // getAllForYear(2024)
+                .mockResolvedValueOnce([allOutcomes[1]]);  // getByGameDay(2): only player 1
             (prisma.gameDay.count as Mock).mockResolvedValue(2);
             (prisma.playerRecord.upsert as Mock).mockImplementation((args: { create: unknown }) =>
                 Promise.resolve(args.create));
@@ -938,6 +973,13 @@ describe('PlayerRecordService', () => {
                 expect.objectContaining({ playerId: 99 }),
                 expect.objectContaining({ playerId: 1 }),
             ]));
+            // Player 99 (bootstrapped: points=18, averages=1.5) must rank above
+            // player 1 (computed: points=1, averages=1.0). Without a proper
+            // bootstrap these checks would also fail because player 99 would not
+            // appear in the result at all.
+            const year2024 = result.filter(r => r.year === 2024);
+            expectRankMatchesOrder(year2024, 'points', 'rankPoints');
+            expectRankMatchesOrder(year2024, 'averages', 'rankAveragesUnqualified');
             expect(prisma.playerRecord.deleteMany).not.toHaveBeenCalled();
 
             getSpy.mockRestore();

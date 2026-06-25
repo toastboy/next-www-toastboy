@@ -234,6 +234,14 @@ describe('InvoiceForm', () => {
         });
     });
 
+    it('shows £0.00 total for a scheduled game day with zero hall cost', () => {
+        renderForm({
+            gameDays: [{ id: 1, date: '2026-01-06', gameScheduled: true, hallCost: 0 }],
+        });
+
+        expect(screen.getByText('Total: £0.00')).toBeInTheDocument();
+    });
+
     it('updates the total when a checkbox is toggled off', async () => {
         const user = userEvent.setup();
         renderForm();

@@ -98,6 +98,7 @@ export const FamilyTree = ({ data }: Props) => {
     }, [updateSize]);
 
     useEffect(() => {
+        /* c8 ignore next — both refs are always attached before effects run; the null check is a defensive guard only */
         if (!svgRef.current || !containerRef.current) return;
 
         const hierarchyRoot = hierarchy(data)

@@ -107,6 +107,23 @@ describe('EnquiryForm', () => {
         expect(replace).toHaveBeenCalledWith('/footy/contact');
     });
 
+    it('shows fallback error message when enquiry=error but no error param', async () => {
+        const replace = vi.fn();
+        vi.mocked(useRouter).mockReturnValue({ replace, push: vi.fn(), back: vi.fn(), forward: vi.fn(), refresh: vi.fn(), prefetch: vi.fn() });
+        vi.mocked(useSearchParams).mockReturnValue(mockParams('enquiry=error'));
+        const showSpy = vi.spyOn(notifications, 'show');
+
+        render(<Wrapper><EnquiryForm redirectUrl="redirect-url" onSendEnquiry={mockSendEnquiry} /></Wrapper>);
+
+        await waitFor(() => {
+            expect(showSpy).toHaveBeenCalledWith(expect.objectContaining({
+                color: 'red',
+                title: 'Verification failed',
+                message: 'We could not verify your email.',
+            }));
+        });
+    });
+
     it('preserves remaining search params when cleaning up enquiry status', async () => {
         const replace = vi.fn();
         vi.mocked(useRouter).mockReturnValue({ replace, push: vi.fn(), back: vi.fn(), forward: vi.fn(), refresh: vi.fn(), prefetch: vi.fn() });

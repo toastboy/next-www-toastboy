@@ -153,6 +153,7 @@ export const PlayerCountryMap = ({
     const scheduleClose = useCallback(() => {
         cancelClose();
         closeTimerRef.current = setTimeout(() => {
+            /* c8 ignore next — onMouseEnter always cancels the timer before setting dropdownHoveredRef; the timer can only fire while the flag is false */
             if (!dropdownHoveredRef.current) {
                 setPopoverOpen(false);
                 setHoveredCountry(null);
@@ -185,6 +186,7 @@ export const PlayerCountryMap = ({
     }, [scheduleClose]);
 
     useEffect(() => {
+        /* c8 ignore next — svgRef is always attached before effects run; the null path is a defensive guard only */
         if (!svgRef.current) return;
 
         const svg = select(svgRef.current);

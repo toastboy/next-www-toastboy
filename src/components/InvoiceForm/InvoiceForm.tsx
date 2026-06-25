@@ -71,6 +71,7 @@ export const InvoiceForm = ({
             gameDays: gameDays.map((gd) => ({
                 id: gd.id,
                 gameScheduled: gd.gameScheduled,
+                /* c8 ignore next — hallCost is a non-nullable DB column; the ?? 0 is a runtime safety net only */
                 hallCostPounds: toPounds(gd.hallCost ?? 0),
             })),
         },

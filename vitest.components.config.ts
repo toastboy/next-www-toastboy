@@ -21,7 +21,7 @@ export default defineConfig({
         name: 'components-vitest',
         environment: 'happy-dom',
         globals: true,
-        include: ['src/components/**/*.vitest.spec.{ts,tsx}', 'src/hooks/**/*.vitest.spec.ts'],
+        include: ['src/components/**/*.vitest.spec.{ts,tsx}', 'src/docs/**/*.vitest.spec.{ts,tsx}', 'src/hooks/**/*.vitest.spec.ts'],
         exclude: ['**/src/services/**'],
         setupFiles: ['vitest.setup.frontend.ts'],
         coverage: {

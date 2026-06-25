@@ -1,0 +1,50 @@
+# Migrating to the New Footy Site
+
+Welcome to the new toastboy.co.uk footy site. This document covers what has changed
+from the old site and what you need to do to get started.
+
+## Signing in
+
+The old site used a simple email-based login. The new site uses **OAuth via Google
+or Microsoft**, so you sign in with whichever of those accounts matches the email
+address we already have on record for you.
+
+If neither of those options suits you, you can request a magic-link sign-in by
+email instead. Use the **Sign in** button on the home page and choose
+**Continue with email**.
+
+## Your player profile
+
+Your stats, history, and league records have all been carried over automatically.
+Your player page is at `/footy/player/<your-name>`.
+
+If anything looks wrong — missing games, incorrect scores, or a name that is not
+quite right — let Jon know and he will fix it.
+
+## Responding to game invitations
+
+The process is the same as before: you will receive an email before each game and
+can click the link to say whether you are in or out.
+
+On the new site you can also respond directly from your player page or from the
+[next game](/footy/game) page without needing the email link.
+
+## Ratings
+
+You still rate other players after each game. The ratings page is linked from the
+[results](/footy/results) page once the game record is published.
+
+## What is gone
+
+- The old `/footy/mailout` URL redirects to `/footy/players`.
+- The old `/footy/nextgame` URL redirects to `/footy/game`.
+- The old points/pub/stalwart/speedy table URLs all redirect to their new
+  equivalents under `/footy/table/`.
+- The admin pages (picker, new game, new player, responses) have moved under
+  `/footy/admin/` and are only visible if you have admin access.
+
+## Known issues
+
+This section will be updated as issues are identified and resolved.
+
+- None currently.

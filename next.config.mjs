@@ -1,5 +1,16 @@
+import createMDX from '@next/mdx';
+
+const withMDX = createMDX({
+    extension: /\.mdx$/,
+    options: {
+        remarkPlugins: [],
+        rehypePlugins: [],
+    },
+});
+
 // @type {import('next').NextConfig}
 const nextConfig = {
+    pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
     reactStrictMode: true,
     ...(process.env.ALLOWED_DEV_ORIGINS && {
         allowedDevOrigins: process.env.ALLOWED_DEV_ORIGINS.split(',').map(s => s.trim()),
@@ -207,6 +218,8 @@ const sentryConfig = {
 // and fails with 401. Bypassing withSentryConfig avoids all CLI operations
 // while keeping runtime error tracking intact (sentry.server.config.ts etc.
 // are still loaded at runtime regardless).
+const mdxNextConfig = withMDX(nextConfig);
+
 export default process.env.SENTRY_AUTH_TOKEN ?
-    withSentryConfig(nextConfig, sentryConfig) :
-    nextConfig;
+    withSentryConfig(mdxNextConfig, sentryConfig) :
+    mdxNextConfig;

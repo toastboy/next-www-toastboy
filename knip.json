@@ -11,7 +11,8 @@
         "src/app/**/not-found.tsx",
         "src/app/**/route.ts",
         "vitest.*.config.ts",
-        "vitest.setup.*.ts"
+        "vitest.setup.*.ts",
+        "e2e/*.setup.ts"
     ],
     "project": [
         "src/**/*.{ts,tsx}",

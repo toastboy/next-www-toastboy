@@ -13,6 +13,13 @@ const { refreshMock, notificationsShowMock, notificationsUpdateMock } = vi.hoist
     notificationsUpdateMock: vi.fn(),
 }));
 
+interface MockButtonProps {
+    children: React.ReactNode;
+    disabled?: boolean;
+    loading?: boolean;
+    type?: 'button' | 'submit' | 'reset';
+}
+
 interface MockSelectOption {
     value: string;
     label: string;
@@ -41,6 +48,14 @@ vi.mock('@mantine/notifications', () => ({
 vi.mock('@mantine/core', async () => {
     const actual = await vi.importActual<typeof import('@mantine/core')>('@mantine/core');
 
+    // Plain button avoids Mantine's Transition timer (use-transition.mjs) which
+    // fires after jsdom teardown in CI when the loading prop changes.
+    const Button = ({ children, disabled, loading, type }: MockButtonProps) => (
+        <button type={type} disabled={disabled || loading}>
+            {children}
+        </button>
+    );
+
     const Select = ({ label, value, onChange, data }: MockSelectProps) => (
         <label>
             {label}
@@ -60,6 +75,7 @@ vi.mock('@mantine/core', async () => {
 
     return {
         ...actual,
+        Button,
         Select,
     };
 });

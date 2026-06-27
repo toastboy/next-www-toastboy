@@ -165,8 +165,13 @@
         {
             "label": "Storybook",
             "type": "shell",
-            "command": "npm",
+            "command": "op",
             "args": [
+                "run",
+                "--env-file",
+                "./.env",
+                "--",
+                "npm",
                 "run",
                 "storybook"
             ],

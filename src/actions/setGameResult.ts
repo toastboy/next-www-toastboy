@@ -4,9 +4,7 @@ import { revalidatePath } from 'next/cache';
 
 import { setGameResultCore } from '@/lib/actions/setGameResult';
 import { requireAdmin } from '@/lib/auth.server';
-import { InternalError, normalizeUnknownError } from '@/lib/errors';
 import { broadcast } from '@/lib/events';
-import playerRecordService from '@/services/PlayerRecord';
 import { SetGameResultInputSchema } from '@/types/actions/SetGameResult';
 import { FootyChannel } from '@/types/FootyChannel';
 
@@ -18,6 +16,7 @@ import { FootyChannel } from '@/types/FootyChannel';
  * @returns A promise that resolves to the updated game day after the result has
  * been set.
  * @throws {AuthError} When the user is not an admin.
+ * @throws {InternalError} When updating player records fails.
  * @throws Will throw a validation error if `rawData` does not conform to
  * `SetGameResultInputSchema`.
  */
@@ -30,23 +29,6 @@ export async function setGameResult(rawData: unknown) {
     const data = SetGameResultInputSchema.parse(rawData);
     const gameDay = await setGameResultCore(data);
 
-    try {
-        await playerRecordService.upsertFromGameDay(data.gameDayId);
-    } catch (error) {
-        const normalizedError = normalizeUnknownError(error);
-        throw new InternalError(
-            `Failed to update player records for game day ${data.gameDayId}.`,
-            {
-                cause: normalizedError,
-                details: {
-                    gameDayId: data.gameDayId,
-                    operation: 'upsertFromGameDay',
-                    upstreamCode: normalizedError.code,
-                },
-                publicMessage: 'Failed to update player records.',
-            },
-        );
-    }
     revalidatePath(`/footy/game/${data.gameDayId}`);
     revalidatePath('/footy/table');
     revalidatePath('/footy/pub');

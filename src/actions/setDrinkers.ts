@@ -4,9 +4,7 @@ import { revalidatePath } from 'next/cache';
 
 import { setDrinkersCore } from '@/lib/actions/setDrinkers';
 import { requireAdmin } from '@/lib/auth.server';
-import { InternalError, normalizeUnknownError } from '@/lib/errors';
 import { broadcast } from '@/lib/events';
-import playerRecordService from '@/services/PlayerRecord';
 import { SetDrinkersInputSchema } from '@/types/actions/SetDrinkers';
 import { FootyChannel } from '@/types/FootyChannel';
 
@@ -16,7 +14,7 @@ import { FootyChannel } from '@/types/FootyChannel';
  * @param rawData - Unvalidated input data for the set drinkers operation.
  * @returns The result of the core setDrinkers operation.
  * @throws {AuthError} When the user is not an admin.
- * @throws Error if updating player records from the game day fails.
+ * @throws {InternalError} When updating player records fails.
  */
 export async function setDrinkers(rawData: unknown) {
     await requireAdmin();
@@ -24,23 +22,6 @@ export async function setDrinkers(rawData: unknown) {
     const data = SetDrinkersInputSchema.parse(rawData);
     const result = await setDrinkersCore(data);
 
-    try {
-        await playerRecordService.upsertFromGameDay(data.gameDayId);
-    } catch (error) {
-        const normalizedError = normalizeUnknownError(error);
-        throw new InternalError(
-            `Failed to update player records for game day ${data.gameDayId}.`,
-            {
-                cause: normalizedError,
-                details: {
-                    gameDayId: data.gameDayId,
-                    operation: 'upsertFromGameDay',
-                    upstreamCode: normalizedError.code,
-                },
-                publicMessage: 'Failed to update player records.',
-            },
-        );
-    }
     revalidatePath('/footy/admin/drinkers');
     revalidatePath(`/footy/admin/drinkers/${data.gameDayId}`);
     revalidatePath('/footy/pub');

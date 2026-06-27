@@ -1,11 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { APP_ERROR_CODE, InternalError, ValidationError } from '@/lib/errors';
-
-const { revalidatePathMock, setDrinkersCoreMock, upsertFromGameDayMock, requireAdminMock } = vi.hoisted(() => ({
+const { revalidatePathMock, setDrinkersCoreMock, requireAdminMock } = vi.hoisted(() => ({
     revalidatePathMock: vi.fn(),
     setDrinkersCoreMock: vi.fn(),
-    upsertFromGameDayMock: vi.fn(),
     requireAdminMock: vi.fn().mockResolvedValue(undefined),
 }));
 
@@ -19,12 +16,6 @@ vi.mock('@/lib/auth.server', () => ({
 
 vi.mock('@/lib/actions/setDrinkers', () => ({
     setDrinkersCore: setDrinkersCoreMock,
-}));
-
-vi.mock('@/services/PlayerRecord', () => ({
-    default: {
-        upsertFromGameDay: upsertFromGameDayMock,
-    },
 }));
 
 import { setDrinkers } from '@/actions/setDrinkers';
@@ -41,7 +32,6 @@ describe('setDrinkers action wrapper', () => {
             drinkers: 2,
         };
         setDrinkersCoreMock.mockResolvedValue(coreResult);
-        upsertFromGameDayMock.mockResolvedValue(undefined);
 
         const result = await setDrinkers({
             gameDayId: 1249,
@@ -58,7 +48,6 @@ describe('setDrinkers action wrapper', () => {
                 { playerId: 2, drinker: false },
             ],
         });
-        expect(upsertFromGameDayMock).toHaveBeenCalledWith(1249);
         expect(revalidatePathMock).toHaveBeenCalledTimes(5);
         expect(revalidatePathMock).toHaveBeenCalledWith('/footy/admin/drinkers');
         expect(revalidatePathMock).toHaveBeenCalledWith('/footy/admin/drinkers/1249');
@@ -68,81 +57,13 @@ describe('setDrinkers action wrapper', () => {
         expect(result).toEqual(coreResult);
     });
 
-    it('throws typed InternalError with validation upstreamCode when player-record update fails', async () => {
-        setDrinkersCoreMock.mockResolvedValue({
-            gameDayId: 1249,
-            updated: 4,
-            drinkers: 2,
-        });
-        upsertFromGameDayMock.mockRejectedValue(new ValidationError('Nope'));
+    it('propagates errors thrown by the core without calling revalidatePath', async () => {
+        const coreError = new Error('core failed');
+        setDrinkersCoreMock.mockRejectedValue(coreError);
 
-        let thrown: unknown;
-        try {
-            await setDrinkers({
-                gameDayId: 1249,
-                players: [
-                    { playerId: 1, drinker: true },
-                ],
-            });
-        } catch (error) {
-            thrown = error;
-        }
-
-        expect(thrown).toBeInstanceOf(InternalError);
-        const appError = thrown as InternalError<{
-            gameDayId: number;
-            operation: string;
-            upstreamCode: string;
-        }>;
-        expect(appError.code).toBe(APP_ERROR_CODE.Internal);
-        expect(appError.publicMessage).toBe('Failed to update player records.');
-        expect(appError.details).toEqual({
-            gameDayId: 1249,
-            operation: 'upsertFromGameDay',
-            upstreamCode: APP_ERROR_CODE.Validation,
-        });
-        expect(appError.cause).toBeInstanceOf(ValidationError);
-
-        expect(revalidatePathMock).not.toHaveBeenCalled();
-    });
-
-    it('throws typed InternalError with internal upstreamCode when player-record update fails unexpectedly', async () => {
-        setDrinkersCoreMock.mockResolvedValue({
-            gameDayId: 1249,
-            updated: 4,
-            drinkers: 2,
-        });
-        const sourceError = new Error('Database timeout');
-        upsertFromGameDayMock.mockRejectedValue(sourceError);
-
-        let thrown: unknown;
-        try {
-            await setDrinkers({
-                gameDayId: 1249,
-                players: [
-                    { playerId: 1, drinker: true },
-                ],
-            });
-        } catch (error) {
-            thrown = error;
-        }
-
-        expect(thrown).toBeInstanceOf(InternalError);
-        const appError = thrown as InternalError<{
-            gameDayId: number;
-            operation: string;
-            upstreamCode: string;
-        }>;
-        expect(appError.code).toBe(APP_ERROR_CODE.Internal);
-        expect(appError.publicMessage).toBe('Failed to update player records.');
-        expect(appError.details).toEqual({
-            gameDayId: 1249,
-            operation: 'upsertFromGameDay',
-            upstreamCode: APP_ERROR_CODE.Internal,
-        });
-        expect(appError.cause).toBeInstanceOf(InternalError);
-        const normalizedCause = appError.cause as InternalError;
-        expect(normalizedCause.cause).toBe(sourceError);
+        await expect(
+            setDrinkers({ gameDayId: 1249, players: [{ playerId: 1, drinker: true }] }),
+        ).rejects.toBe(coreError);
 
         expect(revalidatePathMock).not.toHaveBeenCalled();
     });

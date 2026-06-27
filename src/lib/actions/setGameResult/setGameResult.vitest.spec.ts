@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { setGameResultCore } from '@/lib/actions/setGameResult';
-import { NotFoundError } from '@/lib/errors';
+import { APP_ERROR_CODE, InternalError, NotFoundError, ValidationError } from '@/lib/errors';
 import { SetGameResultInputSchema } from '@/types/actions/SetGameResult';
 
 describe('setGameResultCore', () => {
@@ -29,6 +29,11 @@ describe('setGameResultCore', () => {
     const transactionService = {
         charge: vi.fn(),
     };
+    const playerRecordService = {
+        upsertFromGameDay: vi.fn(),
+    };
+
+    const deps = () => ({ gameDayService, outcomeService, transactionService, playerRecordService });
 
     beforeEach(() => {
         vi.clearAllMocks();
@@ -41,6 +46,7 @@ describe('setGameResultCore', () => {
             )));
         outcomeService.upsert.mockResolvedValue(undefined);
         transactionService.charge.mockResolvedValue(undefined);
+        playerRecordService.upsertFromGameDay.mockResolvedValue(undefined);
     });
 
     it('updates bibs and applies win/loss points', async () => {
@@ -50,7 +56,7 @@ describe('setGameResultCore', () => {
             winner: 'A',
         });
 
-        await setGameResultCore(data, { gameDayService, outcomeService, transactionService });
+        await setGameResultCore(data, deps());
 
         expect(gameDayService.update).toHaveBeenCalledWith({
             id: 1249,
@@ -76,7 +82,7 @@ describe('setGameResultCore', () => {
             winner: 'draw',
         });
 
-        await setGameResultCore(data, { gameDayService, outcomeService, transactionService });
+        await setGameResultCore(data, deps());
 
         expect(outcomeService.upsert).toHaveBeenCalledWith({
             gameDayId: 1249,
@@ -97,7 +103,7 @@ describe('setGameResultCore', () => {
             winner: 'B',
         });
 
-        await setGameResultCore(data, { gameDayService, outcomeService, transactionService });
+        await setGameResultCore(data, deps());
 
         expect(outcomeService.upsert).toHaveBeenCalledWith({
             gameDayId: 1249,
@@ -118,7 +124,7 @@ describe('setGameResultCore', () => {
             winner: null,
         });
 
-        await setGameResultCore(data, { gameDayService, outcomeService, transactionService });
+        await setGameResultCore(data, deps());
 
         expect(outcomeService.upsert).toHaveBeenCalledWith({
             gameDayId: 1249,
@@ -141,10 +147,72 @@ describe('setGameResultCore', () => {
                 bibs: null,
                 winner: null,
             },
-            { gameDayService, outcomeService, transactionService },
+            deps(),
         )).rejects.toBeInstanceOf(NotFoundError);
 
         expect(gameDayService.update).not.toHaveBeenCalled();
         expect(outcomeService.upsert).not.toHaveBeenCalled();
+    });
+
+    it('calls upsertFromGameDay with the gameDayId after updating outcomes', async () => {
+        await setGameResultCore(
+            SetGameResultInputSchema.parse({ gameDayId: 1249, bibs: 'A', winner: 'A' }),
+            deps(),
+        );
+
+        expect(playerRecordService.upsertFromGameDay).toHaveBeenCalledWith(1249);
+    });
+
+    it('throws InternalError with typed details when player-record update fails with a known error', async () => {
+        playerRecordService.upsertFromGameDay.mockRejectedValue(new ValidationError('Nope'));
+
+        let thrown: unknown;
+        try {
+            await setGameResultCore(
+                SetGameResultInputSchema.parse({ gameDayId: 1249, bibs: 'A', winner: 'A' }),
+                deps(),
+            );
+        } catch (error) {
+            thrown = error;
+        }
+
+        expect(thrown).toBeInstanceOf(InternalError);
+        const appError = thrown as InternalError<{ gameDayId: number; operation: string; upstreamCode: string }>;
+        expect(appError.code).toBe(APP_ERROR_CODE.Internal);
+        expect(appError.publicMessage).toBe('Failed to update player records.');
+        expect(appError.details).toEqual({
+            gameDayId: 1249,
+            operation: 'upsertFromGameDay',
+            upstreamCode: APP_ERROR_CODE.Validation,
+        });
+        expect(appError.cause).toBeInstanceOf(ValidationError);
+    });
+
+    it('throws InternalError wrapping a plain error when player-record update fails unexpectedly', async () => {
+        const sourceError = new Error('Database timeout');
+        playerRecordService.upsertFromGameDay.mockRejectedValue(sourceError);
+
+        let thrown: unknown;
+        try {
+            await setGameResultCore(
+                SetGameResultInputSchema.parse({ gameDayId: 1249, bibs: 'A', winner: 'A' }),
+                deps(),
+            );
+        } catch (error) {
+            thrown = error;
+        }
+
+        expect(thrown).toBeInstanceOf(InternalError);
+        const appError = thrown as InternalError<{ gameDayId: number; operation: string; upstreamCode: string }>;
+        expect(appError.code).toBe(APP_ERROR_CODE.Internal);
+        expect(appError.publicMessage).toBe('Failed to update player records.');
+        expect(appError.details).toEqual({
+            gameDayId: 1249,
+            operation: 'upsertFromGameDay',
+            upstreamCode: APP_ERROR_CODE.Internal,
+        });
+        expect(appError.cause).toBeInstanceOf(InternalError);
+        const normalizedCause = appError.cause as InternalError;
+        expect(normalizedCause.cause).toBe(sourceError);
     });
 });

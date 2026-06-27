@@ -1,14 +1,18 @@
 import 'server-only';
 
+import { InternalError, normalizeUnknownError } from '@/lib/errors';
 import outcomeService from '@/services/Outcome';
+import playerRecordService from '@/services/PlayerRecord';
 import type { SetDrinkersInput, SetDrinkersResult } from '@/types/actions/SetDrinkers';
 
 interface SetDrinkersDeps {
     outcomeService: Pick<typeof outcomeService, 'getByGameDay' | 'upsert'>;
+    playerRecordService: Pick<typeof playerRecordService, 'upsertFromGameDay'>;
 }
 
 const defaultDeps: SetDrinkersDeps = {
     outcomeService,
+    playerRecordService,
 };
 
 /**
@@ -48,6 +52,24 @@ export async function setDrinkersCore(
             (existingOutcomeByPlayerId.get(player.playerId)?.team ? 1 : 2) :
             null,
     })));
+
+    try {
+        await deps.playerRecordService.upsertFromGameDay(data.gameDayId);
+    } catch (error) {
+        const normalizedError = normalizeUnknownError(error);
+        throw new InternalError(
+            `Failed to update player records for game day ${data.gameDayId}.`,
+            {
+                cause: normalizedError,
+                details: {
+                    gameDayId: data.gameDayId,
+                    operation: 'upsertFromGameDay',
+                    upstreamCode: normalizedError.code,
+                },
+                publicMessage: 'Failed to update player records.',
+            },
+        );
+    }
 
     return {
         gameDayId: data.gameDayId,

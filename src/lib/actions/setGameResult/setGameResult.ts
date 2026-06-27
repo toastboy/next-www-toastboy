@@ -3,10 +3,11 @@ import 'server-only';
 import type { TeamName } from 'prisma/zod/schemas';
 import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 
-import { NotFoundError } from '@/lib/errors';
+import { InternalError, normalizeUnknownError,NotFoundError } from '@/lib/errors';
 import gameDayService from '@/services/GameDay';
 import transactionService from '@/services/Money';
 import outcomeService from '@/services/Outcome';
+import playerRecordService from '@/services/PlayerRecord';
 import type { SetGameResultInput } from '@/types/actions/SetGameResult';
 import type { PointsValue } from '@/types/Points';
 
@@ -14,12 +15,14 @@ interface SetGameResultDeps {
     gameDayService: Pick<typeof gameDayService, 'get' | 'update'>;
     outcomeService: Pick<typeof outcomeService, 'getByGameDay' | 'upsert'>;
     transactionService: Pick<typeof transactionService, 'charge'>;
+    playerRecordService: Pick<typeof playerRecordService, 'upsertFromGameDay'>;
 }
 
 const defaultDeps: SetGameResultDeps = {
     gameDayService,
     outcomeService,
     transactionService,
+    playerRecordService,
 };
 
 /**
@@ -93,13 +96,14 @@ const updateTeamOutcomes = async (
 
 /**
  * Sets the result of a game by updating the game day with team information and
- * calculating points.
+ * calculating points, then recomputes player records.
  *
  * @param data - The game result input containing gameDayId, bibs, and winner
  * information
  * @param deps - Optional dependencies for services (defaults to defaultDeps)
  * @returns A promise that resolves to the updated GameDay object
  * @throws {NotFoundError} If the game day with the specified ID is not found.
+ * @throws {InternalError} If recomputing player records fails after a successful update.
  *
  * @remarks
  * This function performs the following operations:
@@ -107,6 +111,7 @@ const updateTeamOutcomes = async (
  * 2. Updates the game day with bibs information
  * 3. Calculates points based on the winner
  * 4. Updates points for both teams (A and B) in parallel
+ * 5. Recomputes player records for the game day
  */
 export async function setGameResultCore(
     data: SetGameResultInput,
@@ -128,6 +133,24 @@ export async function setGameResultCore(
         updateTeamOutcomes(gameDay, 'A', pointsByTeam.A, deps),
         updateTeamOutcomes(gameDay, 'B', pointsByTeam.B, deps),
     ]);
+
+    try {
+        await deps.playerRecordService.upsertFromGameDay(data.gameDayId);
+    } catch (error) {
+        const normalizedError = normalizeUnknownError(error);
+        throw new InternalError(
+            `Failed to update player records for game day ${data.gameDayId}.`,
+            {
+                cause: normalizedError,
+                details: {
+                    gameDayId: data.gameDayId,
+                    operation: 'upsertFromGameDay',
+                    upstreamCode: normalizedError.code,
+                },
+                publicMessage: 'Failed to update player records.',
+            },
+        );
+    }
 
     return updatedGameDay;
 }

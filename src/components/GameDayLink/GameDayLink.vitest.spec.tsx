@@ -127,4 +127,10 @@ describe('GameDayLink', () => {
         // No stray comment text beyond the date.
         expect(tooltip.textContent?.trim()).toBe(formatDate(gameDayNoComment.date));
     });
+
+    it('renders "N/A" text when gameDay is null', () => {
+        render(<Wrapper><GameDayLink gameDay={null} /></Wrapper>);
+        expect(screen.getByText('N/A')).toBeInTheDocument();
+        expect(screen.queryByRole('link')).not.toBeInTheDocument();
+    });
 });

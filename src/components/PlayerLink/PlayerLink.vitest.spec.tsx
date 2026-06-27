@@ -84,4 +84,26 @@ describe('PlayerLink', () => {
             });
         });
     });
+
+    describe('null player name fallback', () => {
+        it('uses "Unknown" in left-arrow aria-label when player name is null', () => {
+            const namelessPlayer = { ...defaultPlayer, name: null as unknown as string };
+            render(
+                <Wrapper>
+                    <PlayerLink player={namelessPlayer} year={2024} format="left-arrow" />
+                </Wrapper>,
+            );
+            expect(screen.getByRole('link', { name: 'Previous player: Unknown' })).toBeInTheDocument();
+        });
+
+        it('uses "Unknown" in right-arrow aria-label when player name is null', () => {
+            const namelessPlayer = { ...defaultPlayer, name: null as unknown as string };
+            render(
+                <Wrapper>
+                    <PlayerLink player={namelessPlayer} year={2024} format="right-arrow" />
+                </Wrapper>,
+            );
+            expect(screen.getByRole('link', { name: 'Next player: Unknown' })).toBeInTheDocument();
+        });
+    });
 });

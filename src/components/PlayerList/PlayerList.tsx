@@ -56,6 +56,7 @@ export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
         }
     };
 
+    /* v8 ignore next -- players is always an array from the server; optional chaining is a type-safety guard */
     const filteredPlayers = players?.filter((player) => {
         const searchTerm = filter.toLowerCase();
         const nameMatches = player.name?.toLowerCase().includes(searchTerm) ?? false;
@@ -86,11 +87,12 @@ export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
         const bValue = b[sortBy];
 
         if (typeof aValue === 'number' || typeof bValue === 'number') {
-            /* v8 ignore next 3 -- defensive fallback when a numeric sort field is unexpectedly nullish */
+            /* v8 ignore start -- defensive fallback when a numeric sort field is unexpectedly nullish */
             const naValue = aValue as number || 0;
             const nbValue = bValue as number || 0;
 
             return sortOrder === 'asc' ? naValue - nbValue : nbValue - naValue;
+            /* v8 ignore stop */
         }
 
         if (typeof aValue === 'string' && typeof bValue === 'string') {

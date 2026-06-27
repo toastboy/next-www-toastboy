@@ -77,6 +77,7 @@ export const DrinkersForm = ({
     const togglePlayer = (playerId: number, checked: boolean) => {
         setSelectedIds((current) => {
             if (checked) {
+                /* v8 ignore next -- defensive guard against duplicate adds; normal checkbox behaviour never fires checked=true when already selected */
                 return current.includes(playerId) ? current : [...current, playerId];
             }
 

@@ -56,6 +56,7 @@ export const AdminUserList = ({ users, setAdminRole }: Props) => {
         );
     }) ?? [];
 
+    /* v8 ignore next -- filteredUsers is always an array via the nullish coalescing above; this fallback is a defensive backstop */
     const sortedUsers = filteredUsers ? [...filteredUsers].sort((a, b) => {
         if (!sortBy) return 0;
 

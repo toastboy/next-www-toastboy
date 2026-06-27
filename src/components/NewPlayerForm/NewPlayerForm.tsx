@@ -58,6 +58,7 @@ export const NewPlayerForm = ({
         }
         if (!player?.extraEmails.length) return '';
         const verifiedEmail = player.extraEmails.find((playerEmail) => playerEmail.verified);
+        /* v8 ignore next -- extraEmails[0] always exists (length > 0 checked above) and always has an email property */
         return (verifiedEmail ?? player.extraEmails[0])?.email ?? '';
     };
 

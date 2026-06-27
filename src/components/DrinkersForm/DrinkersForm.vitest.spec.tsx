@@ -181,6 +181,83 @@ describe('DrinkersForm', () => {
         expect(screen.getByText('Selected: 1')).toBeInTheDocument();
     });
 
+    it('shows "No active players found" when players array is empty', () => {
+        render(
+            <Wrapper>
+                <DrinkersForm
+                    gameId={1249}
+                    gameDate="2026-02-03"
+                    players={[]}
+                    setDrinkers={vi.fn<SetDrinkersProxy>()}
+                />
+            </Wrapper>,
+        );
+
+        expect(screen.getByText('No active players found')).toBeInTheDocument();
+    });
+
+    it('shows generic error message when drinkers save fails with non-Error value', async () => {
+        const user = userEvent.setup();
+        const setDrinkers = vi.fn<SetDrinkersProxy>().mockRejectedValue('plain string error');
+
+        renderForm(setDrinkers);
+
+        await user.click(screen.getByLabelText('Pub Britt Winger'));
+        await user.click(screen.getByRole('button', { name: 'Save drinkers' }));
+
+        await waitFor(() => {
+            expect(notificationsUpdateMock).toHaveBeenCalledWith(expect.objectContaining({
+                id: 'drinkers-save',
+                color: 'red',
+                message: 'Failed to update drinkers',
+            }));
+        });
+    });
+
+    it('shows a dash when player response is null', () => {
+        const noResponsePlayers: OutcomePlayerType[] = [
+            { ...defaultDrinkersData[0], response: null },
+        ];
+
+        render(
+            <Wrapper>
+                <DrinkersForm
+                    gameId={1249}
+                    gameDate="2026-02-03"
+                    players={noResponsePlayers}
+                    setDrinkers={vi.fn<SetDrinkersProxy>()}
+                />
+            </Wrapper>,
+        );
+
+        // The response cell falls back to '-'
+        const cells = screen.getAllByRole('cell');
+        expect(cells.some((cell) => cell.textContent === '-')).toBe(true);
+    });
+
+    it('uses "Player N" fallback when a player name is null', () => {
+        const nullNamePlayers: OutcomePlayerType[] = [
+            {
+                ...defaultDrinkersData[0],
+                playerId: 42,
+                player: { ...defaultDrinkersData[0].player, id: 42, name: null },
+            },
+        ];
+
+        render(
+            <Wrapper>
+                <DrinkersForm
+                    gameId={1249}
+                    gameDate="2026-02-03"
+                    players={nullNamePlayers}
+                    setDrinkers={vi.fn<SetDrinkersProxy>()}
+                />
+            </Wrapper>,
+        );
+
+        expect(screen.getByText('Player 42')).toBeInTheDocument();
+    });
+
     it('shows an error notification when save fails', async () => {
         const user = userEvent.setup();
         const setDrinkers = vi.fn<SetDrinkersProxy>().mockRejectedValue(new Error('Boom'));

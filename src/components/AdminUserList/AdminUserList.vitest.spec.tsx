@@ -227,6 +227,55 @@ describe('AdminUserList', () => {
         });
     });
 
+    it('reverses sort direction when clicking the same column header twice', async () => {
+        const user = userEvent.setup();
+        render(
+            <Wrapper>
+                <AdminUserList users={users} setAdminRole={setAdminRoleMock} />
+            </Wrapper>,
+        );
+
+        const getFirstDataRow = () => screen.getAllByRole('row')[1];
+
+        // First click: switch from default (name asc) to name desc
+        await user.click(screen.getByRole('columnheader', { name: /Name/ }));
+        expect(within(getFirstDataRow()).getByRole('link', { name: 'Victoria User' })).toBeInTheDocument();
+
+        // Second click on same header: toggle back to name asc
+        await user.click(screen.getByRole('columnheader', { name: /Name/ }));
+        expect(within(getFirstDataRow()).getByRole('link', { name: 'Adam Admin' })).toBeInTheDocument();
+    });
+
+    it('renders an empty table when users is null', () => {
+        render(
+            <Wrapper>
+                <AdminUserList users={null as unknown as UserWithRolePayload[]} setAdminRole={setAdminRoleMock} />
+            </Wrapper>,
+        );
+
+        // Header row only — no data rows
+        expect(screen.getAllByRole('row')).toHaveLength(1);
+    });
+
+    it('uses email in aria-label when user name is an empty string', () => {
+        const namelessUser: UserWithRolePayload = {
+            ...defaultAdminUserDataPayload,
+            id: 'nameless-user-id',
+            name: '',
+            email: 'nameless@example.com',
+            role: 'user',
+        };
+        render(
+            <Wrapper>
+                <AdminUserList users={[namelessUser]} setAdminRole={setAdminRoleMock} />
+            </Wrapper>,
+        );
+
+        expect(screen.getByRole('switch', {
+            name: 'Toggle admin status for nameless@example.com',
+        })).toBeInTheDocument();
+    });
+
     it('shows an error and captures unexpected errors when role update fails', async () => {
         const user = userEvent.setup();
         const error = new Error('set role failed');

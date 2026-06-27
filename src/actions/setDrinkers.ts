@@ -2,8 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 
-import { setDrinkersCore } from '@/lib/actions/setDrinkers';
 import { requireAdmin } from '@/lib/auth.server';
+import { setDrinkersCore } from '@/lib/core/setDrinkers';
 import { broadcast } from '@/lib/events';
 import { SetDrinkersInputSchema } from '@/types/actions/SetDrinkers';
 import { FootyChannel } from '@/types/FootyChannel';

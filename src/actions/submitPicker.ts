@@ -2,8 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 
-import { SubmitPickerCore } from '@/lib/actions/submitPicker';
 import { requireAdmin } from '@/lib/auth.server';
+import { SubmitPickerCore } from '@/lib/core/submitPicker';
 import { broadcast } from '@/lib/events';
 import { SubmitPickerInputSchema } from '@/types/actions/SubmitPicker';
 import { FootyChannel } from '@/types/FootyChannel';

@@ -1,4 +1,4 @@
-import type { UserWithRolePayload } from '@/lib/actions/auth';
+import type { UserWithRolePayload } from '@/lib/core/auth';
 
 export const defaultAdminUserDataPayload = {
     id: 'user_1',

@@ -57,7 +57,8 @@ npx vitest run --config vitest.services.config.ts path/to/test.ts
 
 - **Pages:** `src/app/footy/**` — Next.js App Router feature pages
 - **API routes:** `src/app/api/**` — Next.js route handlers; importable via `api/*` alias
-- **Server actions:** `src/actions/` — mutations only; injected into components as required props
+- **Server actions:** `src/actions/` — thin `"use server"` wrappers: auth guard + call core + revalidate + broadcast; mutations only; injected into components as required props
+- **Action cores:** `src/lib/core/` — pure business logic called by server actions; injectable deps for testing; no Next.js boundary concerns
 - **Services:** `src/services/` — all Prisma queries live here exclusively, one service per model
 - **Library:** `src/lib/` — utilities, auth, config, email, Azure, dates, URLs, observability
 - **Types:** `src/types/` — custom TypeScript types and Zod schema extensions

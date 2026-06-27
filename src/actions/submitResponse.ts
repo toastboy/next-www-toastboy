@@ -2,8 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 
-import { SubmitResponseCore } from '@/lib/actions/submitResponse';
 import { requireAdmin } from '@/lib/auth.server';
+import { SubmitResponseCore } from '@/lib/core/submitResponse';
 import { broadcast } from '@/lib/events';
 import { SubmitResponseInputSchema } from '@/types/actions/SubmitResponse';
 import { FootyChannel } from '@/types/FootyChannel';

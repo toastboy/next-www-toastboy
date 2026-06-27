@@ -2,8 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 
-import { updatePlayerRecordsCore } from '@/lib/actions/updatePlayerRecords';
 import { requireAdmin } from '@/lib/auth.server';
+import { updatePlayerRecordsCore } from '@/lib/core/updatePlayerRecords';
 import { broadcast } from '@/lib/events';
 import { FootyChannel } from '@/types/FootyChannel';
 

@@ -2,8 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 
-import { listUsersActionCore, setAdminRoleActionCore } from '@/lib/actions/auth';
 import { requireAdmin } from '@/lib/auth.server';
+import { listUsersActionCore, setAdminRoleActionCore } from '@/lib/core/auth';
 import { broadcast } from '@/lib/events';
 import { FootyChannel } from '@/types/FootyChannel';
 

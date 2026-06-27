@@ -2,8 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 
-import { payDebtCore } from '@/lib/actions/payDebt';
 import { requireAdmin } from '@/lib/auth.server';
+import { payDebtCore } from '@/lib/core/payDebt';
 import { broadcast } from '@/lib/events';
 import { PayDebtInputSchema } from '@/types/actions/PayDebt';
 import { FootyChannel } from '@/types/FootyChannel';

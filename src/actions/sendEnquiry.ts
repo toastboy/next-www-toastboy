@@ -1,6 +1,6 @@
 'use server';
 
-import { deliverContactEnquiryCore, sendEnquiryCore } from '@/lib/actions/sendEnquiry';
+import { deliverContactEnquiryCore, sendEnquiryCore } from '@/lib/core/sendEnquiry';
 import { EnquirySchema } from '@/types/actions/SendEnquiry';
 
 /**

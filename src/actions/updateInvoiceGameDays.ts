@@ -2,8 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 
-import { updateInvoiceGameDaysCore } from '@/lib/actions/updateInvoiceGameDays';
 import { requireAdmin } from '@/lib/auth.server';
+import { updateInvoiceGameDaysCore } from '@/lib/core/updateInvoiceGameDays';
 import { broadcast } from '@/lib/events';
 import { UpdateInvoiceGameDaysInputSchema } from '@/types/actions/UpdateInvoiceGameDays';
 import { FootyChannel } from '@/types/FootyChannel';

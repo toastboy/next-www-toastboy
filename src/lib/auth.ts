@@ -7,7 +7,7 @@ import escapeHtml from 'escape-html';
 import prisma from 'prisma/prisma';
 
 import { beforeDeletePlayer } from '@/actions/deletePlayer';
-import { sendEmailCore } from '@/lib/actions/sendEmail';
+import { sendEmailCore } from '@/lib/core/sendEmail';
 import { getSecrets } from '@/lib/secrets';
 import { getPublicBaseUrl } from '@/lib/urls';
 import { AuthUserSummary } from '@/types/AuthUser';

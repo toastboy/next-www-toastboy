@@ -47,7 +47,7 @@ vi.mock('@/actions/deletePlayer', () => ({
     beforeDeletePlayer: beforeDeletePlayerMock,
 }));
 
-vi.mock('@/lib/actions/sendEmail', () => ({
+vi.mock('@/lib/core/sendEmail', () => ({
     sendEmailCore: sendEmailCoreMock,
 }));
 

@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { AdminUserList } from '@/components/AdminUserList/AdminUserList';
-import type { UserWithRolePayload } from '@/lib/actions/auth';
+import type { UserWithRolePayload } from '@/lib/core/auth';
 import { Wrapper } from '@/tests/components/lib/common';
 import { defaultAdminUserDataPayload } from '@/tests/mocks/data/adminUserData';
 import type { SetAdminRoleProxy } from '@/types/actions/SetAdminRole';

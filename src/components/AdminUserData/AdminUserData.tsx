@@ -3,7 +3,7 @@
 import { CodeHighlight } from '@mantine/code-highlight';
 import { Center, Container, Title } from '@mantine/core';
 
-import type { UserWithRolePayload } from '@/lib/actions/auth';
+import type { UserWithRolePayload } from '@/lib/core/auth';
 
 export interface Props {
     user: UserWithRolePayload;

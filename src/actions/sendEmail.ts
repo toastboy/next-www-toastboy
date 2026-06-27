@@ -2,8 +2,8 @@
 
 import type { SendMailOptions } from 'nodemailer';
 
-import { sendEmailCore } from '@/lib/actions/sendEmail';
 import { requireUser } from '@/lib/auth.server';
+import { sendEmailCore } from '@/lib/core/sendEmail';
 
 /**
  * Sends an email using the appropriate SMTP server configuration based on the environment.

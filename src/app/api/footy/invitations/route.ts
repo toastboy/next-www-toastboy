@@ -2,8 +2,8 @@ import { timingSafeEqual } from 'crypto';
 import { revalidatePath } from 'next/cache';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { triggerInvitationsCore } from '@/lib/actions/triggerInvitations';
 import { buildJsonErrorResponse } from '@/lib/api';
+import { triggerInvitationsCore } from '@/lib/core/triggerInvitations';
 import { broadcast } from '@/lib/events';
 import { getSecrets } from '@/lib/secrets';
 import { NewGameInputSchema } from '@/types/actions/TriggerInvitations';

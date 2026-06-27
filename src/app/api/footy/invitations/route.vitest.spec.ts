@@ -2,7 +2,7 @@ import { NextRequest } from 'next/server';
 import type { Mock } from 'vitest';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('@/lib/actions/triggerInvitations', () => ({
+vi.mock('@/lib/core/triggerInvitations', () => ({
     triggerInvitationsCore: vi.fn(),
 }));
 
@@ -21,7 +21,7 @@ vi.mock('@/lib/events', () => ({
 import { revalidatePath } from 'next/cache';
 
 import { POST } from '@/app/api/footy/invitations/route';
-import { triggerInvitationsCore } from '@/lib/actions/triggerInvitations';
+import { triggerInvitationsCore } from '@/lib/core/triggerInvitations';
 import { broadcast } from '@/lib/events';
 import { getSecrets } from '@/lib/secrets';
 

@@ -6,7 +6,7 @@ import { UserWithRole } from 'better-auth/plugins/admin';
 import { useState } from 'react';
 
 import { RelativeTime } from '@/components/RelativeTime/RelativeTime';
-import type { UserWithRolePayload } from '@/lib/actions/auth';
+import type { UserWithRolePayload } from '@/lib/core/auth';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 import type { SetAdminRoleProxy } from '@/types/actions/SetAdminRole';
 

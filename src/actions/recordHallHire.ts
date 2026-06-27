@@ -2,8 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 
-import { recordHallHireCore } from '@/lib/actions/recordHallHire';
 import { requireAdmin } from '@/lib/auth.server';
+import { recordHallHireCore } from '@/lib/core/recordHallHire';
 import { broadcast } from '@/lib/events';
 import { RecordHallHireInputSchema } from '@/types/actions/RecordHallHire';
 import { FootyChannel } from '@/types/FootyChannel';

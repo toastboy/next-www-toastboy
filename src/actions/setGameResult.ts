@@ -2,8 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 
-import { setGameResultCore } from '@/lib/actions/setGameResult';
 import { requireAdmin } from '@/lib/auth.server';
+import { setGameResultCore } from '@/lib/core/setGameResult';
 import { broadcast } from '@/lib/events';
 import { SetGameResultInputSchema } from '@/types/actions/SetGameResult';
 import { FootyChannel } from '@/types/FootyChannel';

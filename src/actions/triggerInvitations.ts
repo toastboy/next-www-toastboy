@@ -2,8 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 
-import { triggerInvitationsCore } from '@/lib/actions/triggerInvitations';
 import { requireAdmin } from '@/lib/auth.server';
+import { triggerInvitationsCore } from '@/lib/core/triggerInvitations';
 import { broadcast } from '@/lib/events';
 import { NewGameInputSchema } from '@/types/actions/TriggerInvitations';
 import { FootyChannel } from '@/types/FootyChannel';

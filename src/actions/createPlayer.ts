@@ -2,8 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 
-import { addPlayerInviteCore, createPlayerCore } from '@/lib/actions/createPlayer';
 import { requireAdmin } from '@/lib/auth.server';
+import { addPlayerInviteCore, createPlayerCore } from '@/lib/core/createPlayer';
 import { broadcast } from '@/lib/events';
 import { CreatePlayerSchema } from '@/types/actions/CreatePlayer';
 import { FootyChannel } from '@/types/FootyChannel';

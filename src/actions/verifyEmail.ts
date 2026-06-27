@@ -2,7 +2,7 @@
 
 import type { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 
-import { sendEmailVerificationCore, verifyEmailCore } from '@/lib/actions/verifyEmail';
+import { sendEmailVerificationCore, verifyEmailCore } from '@/lib/core/verifyEmail';
 
 /**
  * Verifies an email token by ensuring the verification record is valid and

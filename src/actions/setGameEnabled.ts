@@ -3,8 +3,8 @@
 import { revalidatePath } from 'next/cache';
 
 import { sendEmailToAllActivePlayers } from '@/actions/sendEmailToAllActivePlayers';
-import { setGameEnabledCore } from '@/lib/actions/setGameEnabled';
 import { requireAdmin } from '@/lib/auth.server';
+import { setGameEnabledCore } from '@/lib/core/setGameEnabled';
 import { broadcast } from '@/lib/events';
 import { SetGameEnabledInputSchema } from '@/types/actions/SetGameEnabled';
 import { FootyChannel } from '@/types/FootyChannel';

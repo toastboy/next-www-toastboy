@@ -2,8 +2,8 @@
 
 import { SendMailOptions } from 'nodemailer';
 
-import { sendEmailToAllActivePlayersCore } from '@/lib/actions/sendEmailToAllActivePlayers';
 import { requireAdmin } from '@/lib/auth.server';
+import { sendEmailToAllActivePlayersCore } from '@/lib/core/sendEmailToAllActivePlayers';
 
 /**
  * Sends an email to all active players.

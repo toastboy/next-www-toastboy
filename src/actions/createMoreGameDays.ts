@@ -2,8 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 
-import { createMoreGameDaysCore } from '@/lib/actions/createMoreGameDays';
 import { requireAdmin } from '@/lib/auth.server';
+import { createMoreGameDaysCore } from '@/lib/core/createMoreGameDays';
 import { broadcast } from '@/lib/events';
 import { CreateMoreGameDaysSchema } from '@/types/actions/CreateMoreGameDays';
 import { FootyChannel } from '@/types/FootyChannel';

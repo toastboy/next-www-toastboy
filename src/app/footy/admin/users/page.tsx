@@ -3,7 +3,7 @@ import { Container, Text } from '@mantine/core';
 import { listUsersAction, setAdminRoleAction } from '@/actions/auth';
 import { AdminUserList } from '@/components/AdminUserList/AdminUserList';
 import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
-import { UserWithRolePayload } from '@/lib/actions/auth';
+import { UserWithRolePayload } from '@/lib/core/auth';
 import { toPublicMessage } from '@/lib/errors/AppError';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 import { FootyChannel } from '@/types/FootyChannel';

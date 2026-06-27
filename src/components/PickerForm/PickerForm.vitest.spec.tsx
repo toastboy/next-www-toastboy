@@ -601,7 +601,7 @@ describe('PickerForm', () => {
         // Second click: toggle to games played descending
         await user.click(screen.getByRole('button', { name: /sort by total games played/i }));
 
-        const gamesHeader = screen.getAllByRole('columnheader').find((h) => h.getAttribute('aria-sort') !== null && h.textContent?.includes('Total'));
+        const gamesHeader = screen.getByRole('columnheader', { name: /Total games played/ });
         expect(gamesHeader).toHaveAttribute('aria-sort', 'descending');
     });
 

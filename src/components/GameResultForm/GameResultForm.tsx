@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Button, Group, Paper, Select, Stack } from '@mantine/core';
+import { Box, Button, Group, NativeSelect, Paper, Stack } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
@@ -88,7 +88,7 @@ export const GameResultForm = ({
             <Paper withBorder p="md" shadow="xs" radius="md">
                 <Stack gap="sm">
                     <Group grow>
-                        <Select
+                        <NativeSelect
                             label="Bibs"
                             data={[
                                 { value: 'none', label: 'Not set' },
@@ -97,7 +97,7 @@ export const GameResultForm = ({
                             ]}
                             {...form.getInputProps('bibs')}
                         />
-                        <Select
+                        <NativeSelect
                             label="Result"
                             data={[
                                 { value: 'none', label: 'Not set' },

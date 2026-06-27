@@ -578,7 +578,7 @@ describe('PickerForm', () => {
         // Second click: toggle to name descending
         await user.click(screen.getByRole('button', { name: /sort by player/i }));
 
-        const nameHeader = screen.getAllByRole('columnheader').find((h) => h.getAttribute('aria-sort') !== null && h.textContent?.includes('Player'));
+        const nameHeader = screen.getByRole('columnheader', { name: /Player/ });
         expect(nameHeader).toHaveAttribute('aria-sort', 'descending');
     });
 

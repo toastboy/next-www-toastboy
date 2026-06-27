@@ -244,6 +244,7 @@ describe('PlayerProfile', () => {
             it('shows the formatted join date when player.joined is set', () => {
                 render(<Wrapper><PlayerProfile {...rowBaseProps} /></Wrapper>);
                 expect(screen.getByText('Joined')).toBeInTheDocument();
+                expect(screen.getByText('2021-01-01')).toBeInTheDocument();
             });
 
             it('shows "N/A" when player.joined is null', () => {

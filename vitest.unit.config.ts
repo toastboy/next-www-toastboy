@@ -14,9 +14,11 @@ export default defineConfig({
         ],
         coverage: {
             include: [
+                'src/actions/**/*.{ts,tsx}',
                 'src/app/api/**/*.{ts,tsx}',
+                'src/app/footy/**/*.{ts,tsx}',
                 'src/components/**/*.{ts,tsx}',
-                'src/lib/actions/**/*.{ts,tsx}',
+                'src/lib/**/*.{ts,tsx}',
                 'src/services/**/*.{ts,tsx}',
             ],
             exclude: [
@@ -31,8 +33,9 @@ export default defineConfig({
                 '**/prisma/**',
                 '.storybook/**',
                 'public/**',
-                'src/actions/**',
                 'src/app/api/auth/**', // Better Auth handler — nothing to unit test here
+                'src/app/footy/docs/**', // MDX-only pages, nothing to unit test
+                'src/lib/importlivedb/**', // dev-only utility
                 'src/stories/**',
                 'src/tests/**',
                 'src/types/**',

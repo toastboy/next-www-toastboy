@@ -54,28 +54,41 @@ export default defineConfig({
 
     /* Configure projects for major browsers */
     projects: [
+        /* Teardown project: reseeds the database after each browser project so
+         * the next browser always starts from a known state. globalSetup seeds
+         * before the first browser; this handles every subsequent one. */
+        {
+            name: 'seed',
+            testMatch: 'e2e/seed.setup.ts',
+        },
+
         {
             name: 'chromium',
             use: { ...devices['Desktop Chrome'] },
+            teardown: 'seed',
         },
 
         {
             name: 'firefox',
             use: { ...devices['Desktop Firefox'] },
+            teardown: 'seed',
         },
 
         {
             name: 'webkit',
             use: { ...devices['Desktop Safari'] },
+            teardown: 'seed',
         },
 
         {
             name: 'mobile',
             use: { viewport: { width: 375, height: 667 } },
+            teardown: 'seed',
         },
         {
             name: 'tablet',
             use: { viewport: { width: 768, height: 1024 } },
+            teardown: 'seed',
         },
 
         /* Test against branded browsers. */

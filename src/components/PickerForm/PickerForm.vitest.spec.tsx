@@ -252,6 +252,30 @@ describe('PickerForm', () => {
         });
     });
 
+    it('shows generic error message when submitPicker rejects with non-Error value', async () => {
+        const user = userEvent.setup();
+        mockSave.mockRejectedValueOnce('plain string');
+
+        render(
+            <Wrapper>
+                <PickerForm
+                    gameDay={defaultGameDay}
+                    players={defaultPickerAdminData}
+                    submitPicker={mockSave}
+                    setGameEnabled={mockSetGameEnabled}
+                />
+            </Wrapper>,
+        );
+
+        await user.click(screen.getByRole('button', { name: /pick sides/i }));
+
+        await waitFor(() => {
+            expect(notificationsUpdateMock).toHaveBeenCalledWith(
+                expect.objectContaining({ color: 'red', message: 'Failed to submit selection' }),
+            );
+        });
+    });
+
     it('shows an error notification when setGameEnabled rejects', async () => {
         const user = userEvent.setup();
         mockSetGameEnabled.mockRejectedValueOnce(new Error('Status error'));
@@ -272,6 +296,30 @@ describe('PickerForm', () => {
         await waitFor(() => {
             expect(notificationsUpdateMock).toHaveBeenCalledWith(
                 expect.objectContaining({ color: 'red', message: 'Status error' }),
+            );
+        });
+    });
+
+    it('shows generic error message when setGameEnabled rejects with non-Error value', async () => {
+        const user = userEvent.setup();
+        mockSetGameEnabled.mockRejectedValueOnce('plain string');
+
+        render(
+            <Wrapper>
+                <PickerForm
+                    gameDay={defaultGameDay}
+                    players={defaultPickerAdminData}
+                    submitPicker={mockSave}
+                    setGameEnabled={mockSetGameEnabled}
+                />
+            </Wrapper>,
+        );
+
+        await user.click(screen.getByRole('button', { name: 'Cancel game' }));
+
+        await waitFor(() => {
+            expect(notificationsUpdateMock).toHaveBeenCalledWith(
+                expect.objectContaining({ color: 'red', message: 'Failed to set game status' }),
             );
         });
     });
@@ -509,6 +557,180 @@ describe('PickerForm', () => {
         rows.forEach((row) => {
             expect(within(row).getByRole('checkbox')).toBeChecked();
         });
+    });
+
+    it('sets aria-sort to "descending" on name column after two name-sort clicks', async () => {
+        const user = userEvent.setup();
+
+        render(
+            <Wrapper>
+                <PickerForm
+                    gameDay={defaultGameDay}
+                    players={defaultPickerAdminData}
+                    submitPicker={mockSave}
+                    setGameEnabled={mockSetGameEnabled}
+                />
+            </Wrapper>,
+        );
+
+        // First click: sort by name ascending
+        await user.click(screen.getByRole('button', { name: /sort by player/i }));
+        // Second click: toggle to name descending
+        await user.click(screen.getByRole('button', { name: /sort by player/i }));
+
+        const nameHeader = screen.getByRole('columnheader', { name: /Player/ });
+        expect(nameHeader).toHaveAttribute('aria-sort', 'descending');
+    });
+
+    it('sets aria-sort to "descending" on games-played column after two gamesPlayed-sort clicks', async () => {
+        const user = userEvent.setup();
+
+        render(
+            <Wrapper>
+                <PickerForm
+                    gameDay={defaultGameDay}
+                    players={defaultPickerAdminData}
+                    submitPicker={mockSave}
+                    setGameEnabled={mockSetGameEnabled}
+                />
+            </Wrapper>,
+        );
+
+        // First click: sort by games played ascending
+        await user.click(screen.getByRole('button', { name: /sort by total games played/i }));
+        // Second click: toggle to games played descending
+        await user.click(screen.getByRole('button', { name: /sort by total games played/i }));
+
+        const gamesHeader = screen.getByRole('columnheader', { name: /Total games played/ });
+        expect(gamesHeader).toHaveAttribute('aria-sort', 'descending');
+    });
+
+    it('renders with no eligible players when all responses are non-Yes (exercises empty buildDefaultSelection)', () => {
+        const noYesPlayers = defaultPickerAdminData.map((p) => ({ ...p, response: 'No' as const }));
+
+        render(
+            <Wrapper>
+                <PickerForm
+                    gameDay={defaultGameDay}
+                    players={noYesPlayers}
+                    submitPicker={mockSave}
+                    setGameEnabled={mockSetGameEnabled}
+                />
+            </Wrapper>,
+        );
+
+        // No data rows — header row only
+        expect(screen.getAllByRole('row')).toHaveLength(1);
+    });
+
+    it('sorts null-name players after named players when sorting by name ascending (exercises one-null paths in compareNullableString)', async () => {
+        const user = userEvent.setup();
+        const nullNamePlayer = (id: number): PickerPlayerType => ({
+            ...createPickerPlayer(id, 'Placeholder', id * 10, 5),
+            player: { ...createPickerPlayer(id, 'Placeholder', id * 10, 5).player, name: null },
+        });
+        const players = [
+            createPickerPlayer(3, 'Zeta', 100, 5),
+            createPickerPlayer(4, 'Alpha', 200, 5),
+            nullNamePlayer(1),
+            nullNamePlayer(2),
+        ];
+
+        render(
+            <Wrapper>
+                <PickerForm
+                    gameDay={defaultGameDay}
+                    players={players}
+                    submitPicker={mockSave}
+                    setGameEnabled={mockSetGameEnabled}
+                />
+            </Wrapper>,
+        );
+
+        // Sort by name to trigger compareNullableString with both a-null and b-null paths
+        await user.click(screen.getByRole('button', { name: /sort by player/i }));
+
+        const rows = screen.getAllByRole('row').slice(1);
+        // Named players (Alpha, Zeta) sort before null-named (Player 1, Player 2)
+        expect(within(rows[0]).getByText('Alpha')).toBeInTheDocument();
+        expect(within(rows[1]).getByText('Zeta')).toBeInTheDocument();
+        expect(within(rows[2]).getByText('Player 1')).toBeInTheDocument();
+        expect(within(rows[3]).getByText('Player 2')).toBeInTheDocument();
+    });
+
+    it('sorts a named player before a null-named player when null-named appears first in input (exercises b==null path in compareNullableString)', async () => {
+        const user = userEvent.setup();
+        const nullNamePlayer: PickerPlayerType = {
+            ...createPickerPlayer(1, 'Placeholder', 50, 5),
+            player: { ...createPickerPlayer(1, 'Placeholder', 50, 5).player, name: null },
+        };
+        // null-named player appears BEFORE the named player in the input array so that
+        // when InsertionSort inserts 'Alpha' it calls compareNullableString('Alpha', null, 'asc'),
+        // hitting the `if (b == null) return -1` branch.
+        const players = [nullNamePlayer, createPickerPlayer(2, 'Alpha', 100, 5)];
+
+        render(
+            <Wrapper>
+                <PickerForm
+                    gameDay={defaultGameDay}
+                    players={players}
+                    submitPicker={mockSave}
+                    setGameEnabled={mockSetGameEnabled}
+                />
+            </Wrapper>,
+        );
+
+        await user.click(screen.getByRole('button', { name: /sort by player/i }));
+
+        const rows = screen.getAllByRole('row').slice(1);
+        expect(within(rows[0]).getByText('Alpha')).toBeInTheDocument();
+        expect(within(rows[1]).getByText('Player 1')).toBeInTheDocument();
+    });
+
+    it('renders all players when both have null responseInterval (exercises both-null path in compareNullableNumber)', () => {
+        // Both null responseIntervals → compareNullableNumber returns 0 for both-null case
+        const players = [
+            createPickerPlayer(2, 'Zeta Null', null, 5),
+            createPickerPlayer(1, 'Alpha Null', null, 5),
+        ];
+
+        render(
+            <Wrapper>
+                <PickerForm
+                    gameDay={defaultGameDay}
+                    players={players}
+                    submitPicker={mockSave}
+                    setGameEnabled={mockSetGameEnabled}
+                />
+            </Wrapper>,
+        );
+
+        expect(screen.getByText('Alpha Null')).toBeInTheDocument();
+        expect(screen.getByText('Zeta Null')).toBeInTheDocument();
+    });
+
+    it('renders players with null names using fallback and sorts by playerId (exercises both-null path in compareNullableString)', () => {
+        // Both null names → compareNullableString returns 0 for both-null case; ties broken by playerId
+        const nullNamePlayer = (id: number): PickerPlayerType => ({
+            ...createPickerPlayer(id, 'Placeholder', null, 5),
+            player: { ...createPickerPlayer(id, 'Placeholder', null, 5).player, name: null },
+        });
+
+        const players = [nullNamePlayer(5), nullNamePlayer(3)];
+
+        render(
+            <Wrapper>
+                <PickerForm
+                    gameDay={defaultGameDay}
+                    players={players}
+                    submitPicker={mockSave}
+                    setGameEnabled={mockSetGameEnabled}
+                />
+            </Wrapper>,
+        );
+
+        expect(screen.getByText('Player 3')).toBeInTheDocument();
+        expect(screen.getByText('Player 5')).toBeInTheDocument();
     });
 
     it('deselects all players when select-all is unchecked', async () => {

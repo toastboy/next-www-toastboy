@@ -446,4 +446,61 @@ describe('NewPlayerForm', () => {
         expect(screen.getByRole('option', { name: 'Alex Doe' })).toBeInTheDocument();
         expect(screen.getByRole('option', { name: 'Sam Smith' })).toBeInTheDocument();
     });
+
+    it('renders an introducer with null name as an empty-label option', () => {
+        const nullNamePlayer = [
+            createMockPlayerData({ id: 5, name: null as unknown as string, accountEmail: 'nameless@example.com', extraEmails: [] }),
+        ];
+
+        render(
+            <Wrapper>
+                <NewPlayerForm
+                    players={nullNamePlayer}
+                    onCreatePlayer={mockCreatePlayer}
+                    onSendEmail={mockSendEmail}
+                />
+            </Wrapper>,
+        );
+
+        // The option is rendered with an empty label
+        expect(screen.getByRole('option', { name: '' })).toBeInTheDocument();
+    });
+
+    it('uses verified extra email as introducer cc when no accountEmail and a verified extra email exists', async () => {
+        const user = userEvent.setup();
+        const introducerWithVerifiedExtra = [
+            createMockPlayerData({
+                id: 1,
+                name: 'Sam Smith',
+                accountEmail: null,
+                extraEmails: [
+                    { email: 'unverified@example.com', verified: false },
+                    { email: 'verified@example.com', verified: true },
+                ],
+            }),
+        ];
+
+        render(
+            <Wrapper>
+                <NewPlayerForm
+                    players={introducerWithVerifiedExtra}
+                    onCreatePlayer={mockCreatePlayer}
+                    onSendEmail={mockSendEmail}
+                />
+            </Wrapper>,
+        );
+
+        await user.type(screen.getByLabelText(/Name/i), 'New Player');
+        await user.type(screen.getByLabelText(/Email address/i), 'new@example.com');
+        await user.selectOptions(screen.getByLabelText(/Introduced by/i), '1');
+        await user.click(screen.getByRole('button', { name: /Add player/i }));
+
+        await waitFor(() => {
+            expect(mockSendEmail).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    cc: expect.stringContaining('verified@example.com') as string,
+                }),
+            );
+        });
+    });
 });

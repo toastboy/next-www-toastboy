@@ -239,5 +239,19 @@ describe('PlayerProfile', () => {
                 )).toBeInTheDocument();
             });
         });
+
+        describe('joined row', () => {
+            it('shows the formatted join date when player.joined is set', () => {
+                render(<Wrapper><PlayerProfile {...rowBaseProps} /></Wrapper>);
+                expect(screen.getByText('Joined')).toBeInTheDocument();
+                expect(screen.getByText('2021-01-01')).toBeInTheDocument();
+            });
+
+            it('shows "N/A" when player.joined is null', () => {
+                const playerNoJoined = createMockPlayer({ joined: null });
+                render(<Wrapper><PlayerProfile {...rowBaseProps} player={playerNoJoined} /></Wrapper>);
+                expect(screen.getByText('N/A')).toBeInTheDocument();
+            });
+        });
     });
 });

@@ -6,7 +6,8 @@ import { vi } from 'vitest';
 import { MoneyForm } from '@/components/MoneyForm/MoneyForm';
 import { Wrapper } from '@/tests/components/lib/common';
 import { createMockGameDay } from '@/tests/mocks/data/gameDay';
-import { defaultDebtsSummary } from '@/tests/mocks/data/money';
+import { createMockDebtsSummary, defaultDebtsSummary } from '@/tests/mocks/data/money';
+import { createMockPlayer } from '@/tests/mocks/data/player';
 import type { PayDebtProxy } from '@/types/actions/PayDebt';
 
 const { refreshMock, notificationsShowMock, notificationsUpdateMock, captureUnexpectedErrorMock } = vi.hoisted(() => ({
@@ -146,6 +147,30 @@ describe('MoneyForm', () => {
 
         // Both debts are checked again so Pay is enabled
         expect(screen.getAllByRole('button', { name: 'Paid' })[0]).not.toBeDisabled();
+    });
+
+    it('uses "player" in the loading notification when player name is null', async () => {
+        const user = userEvent.setup();
+        const payDebt = vi.fn<PayDebtProxy>().mockResolvedValue({ playerId: 50, transactionIds: [1], amount: 300, resultingBalance: 0 });
+        const nullNameDebts = createMockDebtsSummary({
+            players: [{
+                player: createMockPlayer({ id: 50, name: null as unknown as string }),
+                debts: [{ gameDay: createMockGameDay({ id: 9 }), amount: 300 }],
+            }],
+        });
+
+        render(
+            <Wrapper>
+                <MoneyForm playerDebts={nullNameDebts.players} payDebt={payDebt} />
+            </Wrapper>,
+        );
+
+        await user.click(screen.getAllByRole('button', { name: 'Paid' })[0]);
+
+        await waitFor(() => {
+            const calls: { message?: string }[] = notificationsShowMock.mock.calls.map((c: unknown[]) => c[0] as { message?: string });
+            expect(calls.some((c) => c.message?.includes('for player across'))).toBe(true);
+        });
     });
 
     it('shows generic error message when payment fails with a non-Error value', async () => {

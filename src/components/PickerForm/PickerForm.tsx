@@ -101,6 +101,7 @@ export const PickerForm = ({
     const toggleSelectPlayer = (playerId: number, checked: boolean) => {
         setSelectedIds((prev) => {
             if (checked) {
+                /* v8 ignore next -- defensive guard against duplicate adds; normal checkbox behaviour never fires checked=true when already selected */
                 return prev.includes(playerId) ? prev : [...prev, playerId];
             }
             return prev.filter((id) => id !== playerId);

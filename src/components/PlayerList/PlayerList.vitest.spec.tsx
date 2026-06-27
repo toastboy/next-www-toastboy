@@ -302,6 +302,45 @@ describe('PlayerList', () => {
         expect(screen.getByRole('heading', { level: 1, name: '1 Active Players' })).toBeInTheDocument();
     });
 
+    it('matches player by email when name is null and email matches search term', async () => {
+        const user = userEvent.setup();
+        const nullNamePlayer = createMockPlayerData({
+            id: 99,
+            name: null as unknown as string,
+            accountEmail: 'null-name@example.com',
+            finished: null,
+            lastResponded: 20,
+        });
+
+        render(
+            <Wrapper>
+                <PlayerList players={[nullNamePlayer]} gameDay={gameDay} sendEmail={sendEmailMock} />
+            </Wrapper>,
+        );
+
+        await user.type(screen.getByPlaceholderText('Search players'), 'null-name@example.com');
+        expect(screen.getByRole('heading', { level: 1, name: '1 Active Players' })).toBeInTheDocument();
+    });
+
+    it('encodes a falsy player id as empty string in the player link href', () => {
+        const zeroIdPlayer = createMockPlayerData({
+            id: 0,
+            name: 'Zero Id Player',
+            accountEmail: null,
+            finished: null,
+            lastResponded: 20,
+        });
+
+        render(
+            <Wrapper>
+                <PlayerList players={[zeroIdPlayer]} gameDay={gameDay} sendEmail={sendEmailMock} />
+            </Wrapper>,
+        );
+
+        const link = screen.getByRole('link', { name: 'Zero Id Player' });
+        expect(link).toHaveAttribute('href', '/footy/player/');
+    });
+
     it('renders with no players when the players array is empty', () => {
         render(
             <Wrapper>

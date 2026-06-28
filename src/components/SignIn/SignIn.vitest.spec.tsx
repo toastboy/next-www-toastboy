@@ -10,6 +10,7 @@ import { Wrapper } from '@/tests/components/lib/common';
 
 describe('SignIn', () => {
     beforeEach(() => {
+        vi.useFakeTimers({ shouldAdvanceTime: true });
         vi.mocked(useRouter).mockReturnValue({
             push: vi.fn(),
             replace: vi.fn(),
@@ -19,6 +20,11 @@ describe('SignIn', () => {
             prefetch: vi.fn(),
         });
         vi.mocked(usePathname).mockReturnValue('/footy/auth/signin');
+    });
+
+    afterEach(() => {
+        vi.clearAllTimers();
+        vi.useRealTimers();
     });
 
     it('renders sign in form', () => {

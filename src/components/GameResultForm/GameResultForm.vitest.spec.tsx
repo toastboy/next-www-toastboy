@@ -41,7 +41,13 @@ const renderForm = (setGameResult: SetGameResultProxy) => {
 
 describe('GameResultForm', () => {
     beforeEach(() => {
+        vi.useFakeTimers({ shouldAdvanceTime: true });
         vi.clearAllMocks();
+    });
+
+    afterEach(() => {
+        vi.clearAllTimers();
+        vi.useRealTimers();
     });
 
     it('renders with Save disabled when nothing changed', () => {

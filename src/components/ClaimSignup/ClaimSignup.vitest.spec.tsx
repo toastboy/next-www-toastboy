@@ -28,6 +28,7 @@ describe('ClaimSignup', () => {
     const redirect = new URL(redirectPath, 'http://localhost').toString();
 
     beforeEach(() => {
+        vi.useFakeTimers({ shouldAdvanceTime: true });
         vi.clearAllMocks();
         captureUnexpectedErrorMock.mockResolvedValue(undefined);
         mockPush = vi.fn();
@@ -39,6 +40,11 @@ describe('ClaimSignup', () => {
             refresh: vi.fn(),
             prefetch: vi.fn(),
         });
+    });
+
+    afterEach(() => {
+        vi.clearAllTimers();
+        vi.useRealTimers();
     });
 
     it('renders the form with the provided name and email', () => {

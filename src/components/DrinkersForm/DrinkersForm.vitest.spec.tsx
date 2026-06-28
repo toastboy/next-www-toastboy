@@ -37,6 +37,7 @@ const renderForm = (setDrinkers: SetDrinkersProxy) => {
 
 describe('DrinkersForm', () => {
     beforeEach(() => {
+        vi.useFakeTimers({ shouldAdvanceTime: true });
         vi.clearAllMocks();
         vi.mocked(useRouter).mockReturnValue({
             push: vi.fn(),
@@ -46,6 +47,11 @@ describe('DrinkersForm', () => {
             replace: vi.fn(),
             prefetch: vi.fn(),
         });
+    });
+
+    afterEach(() => {
+        vi.clearAllTimers();
+        vi.useRealTimers();
     });
 
     it('renders drinkers for a game with existing pub selections', () => {

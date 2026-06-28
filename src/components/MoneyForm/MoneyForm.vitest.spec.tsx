@@ -41,6 +41,7 @@ const renderForm = (payDebt: PayDebtProxy) => {
 
 describe('MoneyForm', () => {
     beforeEach(() => {
+        vi.useFakeTimers({ shouldAdvanceTime: true });
         vi.clearAllMocks();
         vi.mocked(useRouter).mockReturnValue({
             push: vi.fn(),
@@ -50,6 +51,11 @@ describe('MoneyForm', () => {
             replace: vi.fn(),
             prefetch: vi.fn(),
         });
+    });
+
+    afterEach(() => {
+        vi.clearAllTimers();
+        vi.useRealTimers();
     });
 
     it('renders unpaid player charges', () => {

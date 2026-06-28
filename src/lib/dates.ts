@@ -45,6 +45,7 @@ const suffixes = new Map([
 export function getOrdinal(n: number): string {
     const rule = rules.select(n);
     const suffix = suffixes.get(rule);
+    /* v8 ignore next -- The suffix is guaranteed to be defined for all plural rules, but TypeScript doesn't know that. */
     return `${n}${suffix ?? "th"}`;
 }
 

@@ -50,6 +50,19 @@ describe('resolveSentrySampleRate', () => {
         expect(value).toBe(1);
     });
 
+    it('clamps negative environment overrides to 0', () => {
+        vi.stubEnv('SENTRY_TRACES_SAMPLE_RATE', '-0.5');
+        vi.stubEnv('NODE_ENV', 'production');
+
+        const value = resolveSentrySampleRate({
+            envVarName: 'SENTRY_TRACES_SAMPLE_RATE',
+            productionDefault: 0.05,
+            nonProductionDefault: 0,
+        });
+
+        expect(value).toBe(0);
+    });
+
     it('falls back to environment-aware defaults when override is invalid', () => {
         vi.stubEnv('SENTRY_TRACES_SAMPLE_RATE', 'not-a-number');
         vi.stubEnv('NODE_ENV', 'production');
@@ -228,6 +241,59 @@ describe('scrubSentryEvent', () => {
             .toBe('[REDACTED]');
         expect(scrubbed.extra.level1.level2.level3.level4.level5.level6.level7.level8.token)
             .toBe('deep-secret');
+    });
+
+    it('returns a non-object event unchanged', () => {
+        expect(scrubSentryEvent(null)).toBeNull();
+        expect(scrubSentryEvent('raw string')).toBe('raw string');
+        expect(scrubSentryEvent(42)).toBe(42);
+    });
+
+    it('sanitizes sensitive fields from the user object', () => {
+        const event = {
+            user: {
+                email: 'player@example.com',
+                sessionToken: 'secret-session',
+            },
+        };
+
+        const scrubbed = scrubSentryEvent(event);
+
+        expect(scrubbed.user).toEqual({
+            email: 'player@example.com',
+            sessionToken: '[REDACTED]',
+        });
+    });
+
+    it('redacts sensitive query params from absolute request URLs', () => {
+        const event = {
+            request: {
+                url: 'https://www.toastboy.co.uk/api/auth/verify?token=abc123&purpose=invite',
+            },
+        };
+
+        const scrubbed = scrubSentryEvent(event);
+
+        expect(scrubbed.request.url).toContain('token=%5BREDACTED%5D');
+        expect(scrubbed.request.url).toContain('purpose=invite');
+        expect(scrubbed.request.url).toMatch(/^https:\/\/www\.toastboy\.co\.uk/);
+    });
+
+    it('redacts sensitive query params from from/to navigation fields in breadcrumbs', () => {
+        const event = {
+            breadcrumbs: [
+                {
+                    type: 'navigation',
+                    from: '/old?token=abc',
+                    to: '/new?session=xyz',
+                },
+            ],
+        };
+
+        const scrubbed = scrubSentryEvent(event);
+
+        expect(scrubbed.breadcrumbs[0].from).toContain('token=%5BREDACTED%5D');
+        expect(scrubbed.breadcrumbs[0].to).toContain('session=%5BREDACTED%5D');
     });
 });
 

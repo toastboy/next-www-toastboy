@@ -18,8 +18,14 @@ const mockSave = vi.fn();
 
 describe('Responses', () => {
     beforeEach(() => {
+        vi.useFakeTimers({ shouldAdvanceTime: true });
         vi.clearAllMocks();
         mockSave.mockResolvedValue(undefined);
+    });
+
+    afterEach(() => {
+        vi.clearAllTimers();
+        vi.useRealTimers();
     });
 
     it('filters safely when a player name is missing', async () => {

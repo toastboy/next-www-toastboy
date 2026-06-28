@@ -55,6 +55,7 @@ const createPickerPlayer = (
 
 describe('PickerForm', () => {
     beforeEach(() => {
+        vi.useFakeTimers({ shouldAdvanceTime: true });
         vi.clearAllMocks();
         mockSave.mockResolvedValue(undefined);
         mockSetGameEnabled.mockResolvedValue({
@@ -67,6 +68,11 @@ describe('PickerForm', () => {
             bibs: null,
             pickerGamesHistory: 10,
         });
+    });
+
+    afterEach(() => {
+        vi.clearAllTimers();
+        vi.useRealTimers();
     });
 
     it('selects all players by default when under the limit', () => {

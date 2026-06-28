@@ -179,4 +179,46 @@ describe('sendViaGraphApi', () => {
         expect(clientSecretCredentialMock).not.toHaveBeenCalled();
         expect(fetch).not.toHaveBeenCalled();
     });
+
+    it('includes String(error) in the message when getToken rejects with a non-Error value', async () => {
+        getTokenMock.mockRejectedValue('network timeout');
+
+        await expect(
+            sendViaGraphApi(
+                { to: 'player@example.com', subject: 'Fail', html: '<p>No</p>' },
+                defaultConfig,
+            ),
+        ).rejects.toBeInstanceOf(ExternalServiceError);
+
+        await expect(
+            sendViaGraphApi(
+                { to: 'player@example.com', subject: 'Fail', html: '<p>No</p>' },
+                defaultConfig,
+            ),
+        ).rejects.toThrow('Graph API authentication failed: network timeout');
+    });
+
+    it('falls back to placeholder text when the error response body cannot be read', async () => {
+        const unreadableResponse = {
+            ok: false,
+            status: 500,
+            text: () => Promise.reject(new Error('stream already consumed')),
+        } as unknown as Response;
+
+        vi.spyOn(global, 'fetch').mockResolvedValue(unreadableResponse);
+
+        await expect(
+            sendViaGraphApi(
+                { to: 'player@example.com', subject: 'Fail', html: '<p>No</p>' },
+                defaultConfig,
+            ),
+        ).rejects.toBeInstanceOf(ExternalServiceError);
+
+        await expect(
+            sendViaGraphApi(
+                { to: 'player@example.com', subject: 'Fail', html: '<p>No</p>' },
+                defaultConfig,
+            ),
+        ).rejects.toThrow('Graph API sendMail failed (500): (unable to read response body)');
+    });
 });

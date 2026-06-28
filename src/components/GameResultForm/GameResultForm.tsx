@@ -96,6 +96,7 @@ export const GameResultForm = ({
                                 { value: 'B', label: 'Team B wore bibs' },
                             ]}
                             value={form.values.bibs}
+                            /* v8 ignore next -- allowDeselect={false} means value is never null */
                             onChange={(value) => form.setFieldValue('bibs', (value ?? 'none'))}
                             allowDeselect={false}
                         />
@@ -108,6 +109,7 @@ export const GameResultForm = ({
                                 { value: 'B', label: 'Team B won' },
                             ]}
                             value={form.values.winner}
+                            /* v8 ignore next -- allowDeselect={false} means value is never null */
                             onChange={(value) => form.setFieldValue('winner', (value ?? 'none'))}
                             allowDeselect={false}
                         />

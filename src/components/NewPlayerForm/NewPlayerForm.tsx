@@ -190,6 +190,7 @@ export const NewPlayerForm = ({
                 label="Introduced by"
                 data={introducers}
                 value={form.values.introducedBy}
+                /* v8 ignore next -- allowDeselect={false} means value is never null */
                 onChange={(value) => form.setFieldValue('introducedBy', value ?? '')}
                 allowDeselect={false}
             />

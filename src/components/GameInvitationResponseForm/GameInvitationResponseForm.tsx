@@ -200,6 +200,7 @@ export const GameInvitationResponseForm = ({
                     label="Response"
                     data={responseOptions}
                     value={form.values.response}
+                    /* v8 ignore next -- allowDeselect={false} means value is never null */
                     onChange={(value) => form.setFieldValue('response', (value ?? PlayerResponse.Yes))}
                     allowDeselect={false}
                 />

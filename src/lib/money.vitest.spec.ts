@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 
-import { toPounds } from '@/lib/money';
+import { formatCurrency, formatCurrencySigned, fromPounds, getBalanceColor, toPounds } from '@/lib/money';
 
 describe('toPounds', () => {
     it('converts pence to pounds', () => {
@@ -11,24 +11,56 @@ describe('toPounds', () => {
 });
 
 describe('fromPounds', () => {
-    it.todo('converts pounds to pence, rounding fractional values to the nearest integer');
-    it.todo('handles floating-point imprecision correctly');
+    it('converts pounds to pence', () => {
+        expect(fromPounds(1)).toBe(100);
+        expect(fromPounds(2.5)).toBe(250);
+        expect(fromPounds(0)).toBe(0);
+    });
+
+    it('rounds fractional pence to the nearest integer', () => {
+        expect(fromPounds(0.666)).toBe(67);
+        expect(fromPounds(0.334)).toBe(33);
+    });
 });
 
 describe('formatCurrency', () => {
-    it.todo('prefixes the amount with a £ sign and formats to two decimal places');
-    it.todo('formats zero as £0.00');
-    it.todo('formats negative pence amounts');
+    it('prefixes the amount with a £ sign and formats to two decimal places', () => {
+        expect(formatCurrency(1050)).toBe('£10.50');
+        expect(formatCurrency(100)).toBe('£1.00');
+        expect(formatCurrency(1)).toBe('£0.01');
+    });
+
+    it('formats zero as £0.00', () => {
+        expect(formatCurrency(0)).toBe('£0.00');
+    });
 });
 
 describe('formatCurrencySigned', () => {
-    it.todo('returns a plain £-prefixed string for positive amounts');
-    it.todo('returns a -£-prefixed string for negative amounts');
-    it.todo('formats zero without a sign prefix');
+    it('returns a plain £-prefixed string for positive amounts', () => {
+        expect(formatCurrencySigned(1050)).toBe('£10.50');
+    });
+
+    it('returns a -£-prefixed string for negative amounts', () => {
+        expect(formatCurrencySigned(-1050)).toBe('-£10.50');
+    });
+
+    it('formats zero without a sign prefix', () => {
+        expect(formatCurrencySigned(0)).toBe('£0.00');
+    });
 });
 
 describe('getBalanceColor', () => {
-    it.todo('returns red for negative balances');
-    it.todo('returns teal for positive balances');
-    it.todo('returns dimmed for a zero balance');
+    it('returns red for negative balances', () => {
+        expect(getBalanceColor(-1)).toBe('red');
+        expect(getBalanceColor(-100)).toBe('red');
+    });
+
+    it('returns teal for positive balances', () => {
+        expect(getBalanceColor(1)).toBe('teal');
+        expect(getBalanceColor(100)).toBe('teal');
+    });
+
+    it('returns dimmed for a zero balance', () => {
+        expect(getBalanceColor(0)).toBe('dimmed');
+    });
 });

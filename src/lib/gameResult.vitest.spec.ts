@@ -42,6 +42,10 @@ describe('gameResult helpers', () => {
         expect(getGameWinnersFromTeams(teamA, teamB)).toBeNull();
     });
 
+    it('returns null for a valid but unrecognised points combination (e.g. both teams on 0)', () => {
+        expect(getGameWinnersFromTeams(withPoints(0), withPoints(0))).toBeNull();
+    });
+
     it('returns per-team result state', () => {
         expect(getTeamResultState('A', 'A')).toBe('win');
         expect(getTeamResultState('B', 'A')).toBe('loss');

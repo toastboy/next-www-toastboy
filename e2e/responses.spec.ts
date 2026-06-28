@@ -66,6 +66,11 @@ test.describe('Responses admin page', () => {
             }
             await playerRow.getByPlaceholder('Comment').fill(comment);
             await playerRow.getByRole('button', { name: 'Update' }).click();
+            // Wait for handleSubmit to fully resolve before the next update.
+            // The server broadcasts before returning its RPC response, so the
+            // SSE-triggered page refresh can arrive while the button is still
+            // loading. Clicking Update on a loading Mantine button is a no-op.
+            await expect(page.getByText('Response updated successfully')).toBeVisible({ timeout: 15000 });
         };
 
         await updatePlayer('Yes', true, 'Can play and cover goal first half');

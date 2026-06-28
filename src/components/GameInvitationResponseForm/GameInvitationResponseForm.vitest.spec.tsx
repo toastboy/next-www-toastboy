@@ -30,17 +30,12 @@ vi.mock('@mantine/form', async (importOriginal) => {
             }
 
             return {
+                values: { response: PlayerResponse.No, goalie: false, comment: '' },
+                setFieldValue: vi.fn(),
                 getInputProps: (field: string, config?: { type?: string }) => {
                     if (config?.type === 'checkbox') {
                         return {
                             checked: false,
-                            onChange: vi.fn(),
-                        };
-                    }
-
-                    if (field === 'response') {
-                        return {
-                            value: 'No',
                             onChange: vi.fn(),
                         };
                     }
@@ -74,8 +69,14 @@ describe('GameInvitationResponseForm', () => {
     const mockSubmitGameInvitationResponse: SubmitGameInvitationResponseProxy = vi.fn().mockResolvedValue(undefined);
 
     beforeEach(() => {
+        vi.useFakeTimers({ shouldAdvanceTime: true });
         vi.clearAllMocks();
         formMockState.submitUndefinedComment = false;
+    });
+
+    afterEach(() => {
+        vi.clearAllTimers();
+        vi.useRealTimers();
     });
 
     it('renders the response form', () => {
@@ -89,7 +90,7 @@ describe('GameInvitationResponseForm', () => {
         );
 
         expect(screen.getByText('Thanks for Your Response')).toBeInTheDocument();
-        expect(screen.getByLabelText(/Response/i)).toBeInTheDocument();
+        expect(screen.getByRole('combobox', { name: /Response/i })).toBeInTheDocument();
         expect(screen.getByLabelText(/Goalie/i)).toBeInTheDocument();
         expect(screen.getByLabelText(/Optional comment/i)).toBeInTheDocument();
         expect(screen.getByRole('button', { name: /Save Response/i })).toBeInTheDocument();
@@ -120,7 +121,7 @@ describe('GameInvitationResponseForm', () => {
             `/footy/player/${detailsWithNoResponse.playerId}`,
         );
         expect(screen.getByText((content) => content.includes('No response yet'))).toBeInTheDocument();
-        expect(screen.getByLabelText(/Response/i)).toHaveValue('Yes');
+        expect(screen.getByRole('combobox', { name: /Response/i })).toHaveValue('Yes');
         expect(screen.getByLabelText(/Goalie/i)).not.toBeChecked();
         expect(screen.getByRole('button', { name: /Save Response/i })).not.toBeDisabled();
     });
@@ -141,7 +142,7 @@ describe('GameInvitationResponseForm', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByLabelText(/Response/i)).toHaveValue('Yes');
+        expect(screen.getByRole('combobox', { name: /Response/i })).toHaveValue('Yes');
         expect(screen.getByRole('button', { name: /Save Response/i })).not.toBeDisabled();
 
         await user.click(screen.getByRole('button', { name: /Save Response/i }));
@@ -171,7 +172,7 @@ describe('GameInvitationResponseForm', () => {
         );
 
         expect(screen.getByText((content) => content.includes('Excused'))).toBeInTheDocument();
-        expect(screen.getByLabelText(/Response/i)).toHaveValue('Yes');
+        expect(screen.getByRole('combobox', { name: /Response/i })).toHaveValue('Yes');
         expect(screen.getByRole('button', { name: /Save Response/i })).toBeDisabled();
     });
 
@@ -188,7 +189,8 @@ describe('GameInvitationResponseForm', () => {
             </Wrapper>,
         );
 
-        await user.selectOptions(screen.getByLabelText(/Response/i), 'Yes');
+        await user.click(screen.getByRole('combobox', { name: /Response/i }));
+        await user.click(await screen.findByRole('option', { name: 'Yes', hidden: true }));
         await user.click(screen.getByLabelText(/Goalie/i));
         await user.type(screen.getByLabelText(/Optional comment/i), 'Looking forward to it.');
         await user.click(screen.getByRole('button', { name: /Save Response/i }));
@@ -227,7 +229,8 @@ describe('GameInvitationResponseForm', () => {
             </Wrapper>,
         );
 
-        await user.selectOptions(screen.getByLabelText(/Response/i), 'Yes');
+        await user.click(screen.getByRole('combobox', { name: /Response/i }));
+        await user.click(await screen.findByRole('option', { name: 'Yes', hidden: true }));
         await user.click(screen.getByRole('button', { name: /Save Response/i }));
 
         await waitFor(() => {
@@ -270,7 +273,8 @@ describe('GameInvitationResponseForm', () => {
             </Wrapper>,
         );
 
-        await user.selectOptions(screen.getByLabelText(/Response/i), 'No');
+        await user.click(screen.getByRole('combobox', { name: /Response/i }));
+        await user.click(await screen.findByRole('option', { name: 'No', hidden: true }));
         await user.click(screen.getByRole('button', { name: /Save Response/i }));
 
         await waitFor(() => {

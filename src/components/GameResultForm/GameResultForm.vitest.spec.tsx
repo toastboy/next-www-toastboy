@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 import { vi } from 'vitest';
@@ -62,7 +62,8 @@ describe('GameResultForm', () => {
 
         renderForm(setGameResult);
 
-        await user.selectOptions(screen.getByLabelText('Bibs'), 'A');
+        await user.click(screen.getByRole('combobox', { name: 'Bibs' }));
+        await user.click(await screen.findByRole('option', { name: 'Team A wore bibs', hidden: true }));
         await user.click(screen.getByRole('button', { name: 'Save' }));
 
         await waitFor(() => {
@@ -91,7 +92,8 @@ describe('GameResultForm', () => {
         renderForm(setGameResult);
 
         // Change winner to A and save.
-        await user.selectOptions(screen.getByLabelText('Result'), 'A');
+        await user.click(screen.getByRole('combobox', { name: 'Result' }));
+        await user.click(await screen.findByRole('option', { name: 'Team A won', hidden: true }));
         await user.click(screen.getByRole('button', { name: 'Save' }));
 
         await waitFor(() => {
@@ -101,8 +103,14 @@ describe('GameResultForm', () => {
         // Button should be disabled again — no unsaved changes.
         expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled();
 
-        // Change winner back to 'none' (the original value before the first save).
-        await user.selectOptions(screen.getByLabelText('Result'), 'none');
+        // Change winner back to 'none'. Both Selects render "Not set" in their
+        // portals; scope the option lookup to the Result combobox's own listbox
+        // via its aria-controls attribute to avoid ambiguity.
+        const resultCombobox = screen.getByRole('combobox', { name: 'Result' });
+        await user.click(resultCombobox);
+        const resultListboxId = resultCombobox.getAttribute('aria-controls');
+        const resultListbox = document.getElementById(resultListboxId!);
+        await user.click(within(resultListbox!).getByRole('option', { name: 'Not set', hidden: true }));
 
         // The form is now dirty relative to the saved state (A), so Save must
         // be enabled. Before the fix this would remain disabled because
@@ -116,7 +124,8 @@ describe('GameResultForm', () => {
 
         renderForm(setGameResult);
 
-        await user.selectOptions(screen.getByLabelText('Result'), 'draw');
+        await user.click(screen.getByRole('combobox', { name: 'Result' }));
+        await user.click(await screen.findByRole('option', { name: 'Draw', hidden: true }));
         await user.click(screen.getByRole('button', { name: 'Save' }));
 
         await waitFor(() => {
@@ -134,7 +143,8 @@ describe('GameResultForm', () => {
 
         renderForm(setGameResult);
 
-        await user.selectOptions(screen.getByLabelText('Result'), 'draw');
+        await user.click(screen.getByRole('combobox', { name: 'Result' }));
+        await user.click(await screen.findByRole('option', { name: 'Draw', hidden: true }));
         await user.click(screen.getByRole('button', { name: 'Save' }));
 
         await waitFor(() => {

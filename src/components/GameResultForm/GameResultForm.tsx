@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Button, Group, NativeSelect, Paper, Stack } from '@mantine/core';
+import { Box, Button, Group, Paper, Select, Stack } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
@@ -88,16 +88,18 @@ export const GameResultForm = ({
             <Paper withBorder p="md" shadow="xs" radius="md">
                 <Stack gap="sm">
                     <Group grow>
-                        <NativeSelect
+                        <Select
                             label="Bibs"
                             data={[
                                 { value: 'none', label: 'Not set' },
                                 { value: 'A', label: 'Team A wore bibs' },
                                 { value: 'B', label: 'Team B wore bibs' },
                             ]}
-                            {...form.getInputProps('bibs')}
+                            value={form.values.bibs}
+                            onChange={(value) => form.setFieldValue('bibs', (value ?? 'none'))}
+                            allowDeselect={false}
                         />
-                        <NativeSelect
+                        <Select
                             label="Result"
                             data={[
                                 { value: 'none', label: 'Not set' },
@@ -105,7 +107,9 @@ export const GameResultForm = ({
                                 { value: 'draw', label: 'Draw' },
                                 { value: 'B', label: 'Team B won' },
                             ]}
-                            {...form.getInputProps('winner')}
+                            value={form.values.winner}
+                            onChange={(value) => form.setFieldValue('winner', (value ?? 'none'))}
+                            allowDeselect={false}
                         />
                     </Group>
                     <Group justify="flex-end">

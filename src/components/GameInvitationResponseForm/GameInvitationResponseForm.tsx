@@ -8,7 +8,7 @@ import {
     Button,
     Checkbox,
     Flex,
-    NativeSelect,
+    Select,
     Stack,
     Text,
     TextInput,
@@ -196,10 +196,12 @@ export const GameInvitationResponseForm = ({
                 </Text>
                 <Text>Cheers,</Text>
                 <Text>Jon</Text>
-                <NativeSelect
+                <Select
                     label="Response"
                     data={responseOptions}
-                    {...form.getInputProps('response')}
+                    value={form.values.response}
+                    onChange={(value) => form.setFieldValue('response', (value ?? PlayerResponse.Yes))}
+                    allowDeselect={false}
                 />
                 <Checkbox
                     label="Goalie"

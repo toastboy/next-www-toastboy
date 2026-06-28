@@ -6,7 +6,7 @@ import {
     Button,
     Flex,
     MantineProvider,
-    NativeSelect,
+    Select,
     Text,
     TextInput,
 } from '@mantine/core';
@@ -186,10 +186,12 @@ export const NewPlayerForm = ({
                 description="If no email is provided, the player will not be able to log in but the profile will still be created."
                 {...form.getInputProps('email')}
             />
-            <NativeSelect
+            <Select
                 label="Introduced by"
                 data={introducers}
-                {...form.getInputProps('introducedBy')}
+                value={form.values.introducedBy}
+                onChange={(value) => form.setFieldValue('introducedBy', value ?? '')}
+                allowDeselect={false}
             />
 
             <Button type="submit" mt="md">

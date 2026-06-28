@@ -21,7 +21,13 @@ describe('NewPlayerForm', () => {
     const mockSendEmail = vi.fn(async () => Promise.resolve());
 
     beforeEach(() => {
+        vi.useFakeTimers({ shouldAdvanceTime: true });
         vi.clearAllMocks();
+    });
+
+    afterEach(() => {
+        vi.clearAllTimers();
+        vi.useRealTimers();
     });
 
     it('renders form with inputs and submit button', () => {
@@ -37,7 +43,7 @@ describe('NewPlayerForm', () => {
 
         expect(screen.getByLabelText(/Name/i)).toBeInTheDocument();
         expect(screen.getByLabelText(/Email address/i)).toBeInTheDocument();
-        expect(screen.getByLabelText(/Introduced by/i)).toBeInTheDocument();
+        expect(screen.getByRole('combobox', { name: /Introduced by/i })).toBeInTheDocument();
         expect(screen.getByRole('button', { name: /Add player/i })).toBeInTheDocument();
     });
 
@@ -333,7 +339,8 @@ describe('NewPlayerForm', () => {
 
         await user.type(screen.getByLabelText(/Name/i), 'New Player');
         await user.type(screen.getByLabelText(/Email address/i), 'new@example.com');
-        await user.selectOptions(screen.getByLabelText(/Introduced by/i), '1');
+        await user.click(screen.getByRole('combobox', { name: /Introduced by/i }));
+        await user.click(await screen.findByRole('option', { name: 'Sam Smith', hidden: true }));
         await user.click(screen.getByRole('button', { name: /Add player/i }));
 
         await waitFor(() => {
@@ -368,7 +375,8 @@ describe('NewPlayerForm', () => {
 
         await user.type(screen.getByLabelText(/Name/i), 'New Player');
         await user.type(screen.getByLabelText(/Email address/i), 'new@example.com');
-        await user.selectOptions(screen.getByLabelText(/Introduced by/i), '1');
+        await user.click(screen.getByRole('combobox', { name: /Introduced by/i }));
+        await user.click(await screen.findByRole('option', { name: 'Sam Smith', hidden: true }));
         await user.click(screen.getByRole('button', { name: /Add player/i }));
 
         await waitFor(() => {
@@ -403,7 +411,8 @@ describe('NewPlayerForm', () => {
 
         await user.type(screen.getByLabelText(/Name/i), 'New Player');
         await user.type(screen.getByLabelText(/Email address/i), 'new@example.com');
-        await user.selectOptions(screen.getByLabelText(/Introduced by/i), '1');
+        await user.click(screen.getByRole('combobox', { name: /Introduced by/i }));
+        await user.click(await screen.findByRole('option', { name: 'Sam Smith', hidden: true }));
         await user.click(screen.getByRole('button', { name: /Add player/i }));
 
         await waitFor(() => {
@@ -441,10 +450,9 @@ describe('NewPlayerForm', () => {
             </Wrapper>,
         );
 
-        const introducerSelect = screen.getByLabelText(/Introduced by/i);
-        expect(introducerSelect).toHaveDisplayValue('(Nobody)');
-        expect(screen.getByRole('option', { name: 'Alex Doe' })).toBeInTheDocument();
-        expect(screen.getByRole('option', { name: 'Sam Smith' })).toBeInTheDocument();
+        expect(screen.getByRole('combobox', { name: /Introduced by/i })).toHaveValue('(Nobody)');
+        expect(screen.getByRole('option', { name: 'Alex Doe', hidden: true })).toBeInTheDocument();
+        expect(screen.getByRole('option', { name: 'Sam Smith', hidden: true })).toBeInTheDocument();
     });
 
     it('renders an introducer with null name as an empty-label option', () => {
@@ -463,7 +471,7 @@ describe('NewPlayerForm', () => {
         );
 
         // The option is rendered with an empty label
-        expect(screen.getByRole('option', { name: '' })).toBeInTheDocument();
+        expect(screen.getByRole('option', { name: '', hidden: true })).toBeInTheDocument();
     });
 
     it('uses verified extra email as introducer cc when no accountEmail and a verified extra email exists', async () => {
@@ -492,7 +500,8 @@ describe('NewPlayerForm', () => {
 
         await user.type(screen.getByLabelText(/Name/i), 'New Player');
         await user.type(screen.getByLabelText(/Email address/i), 'new@example.com');
-        await user.selectOptions(screen.getByLabelText(/Introduced by/i), '1');
+        await user.click(screen.getByRole('combobox', { name: /Introduced by/i }));
+        await user.click(await screen.findByRole('option', { name: 'Sam Smith', hidden: true }));
         await user.click(screen.getByRole('button', { name: /Add player/i }));
 
         await waitFor(() => {

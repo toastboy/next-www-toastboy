@@ -207,6 +207,22 @@ describe('captureUnexpectedError', () => {
         interface Nested { l2: { l3: { l4: { l5: { l6: unknown } } } } }
         expect(((deep.l1 as Nested).l2.l3.l4.l5).l6).toBe('[TRUNCATED]');
     });
+
+    it('replaces circular references in extra with [CIRCULAR]', () => {
+        const circular: Record<string, unknown> = { label: 'root' };
+        circular.self = circular;
+
+        captureUnexpectedError(new Error('circular'), { extra: { circular } });
+
+        const [, options] = vi.mocked(Sentry.captureException).mock.calls[0] as [Error, {
+            extra?: Record<string, unknown>;
+        }];
+
+        expect(options.extra?.circular).toEqual({
+            label: 'root',
+            self: '[CIRCULAR]',
+        });
+    });
 });
 
 describe('isSensitiveKey', () => {

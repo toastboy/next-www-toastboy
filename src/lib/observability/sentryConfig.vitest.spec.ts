@@ -63,6 +63,19 @@ describe('resolveSentrySampleRate', () => {
         expect(value).toBe(0);
     });
 
+    it('falls back to defaults when the environment variable is absent', () => {
+        delete process.env.SENTRY_TRACES_SAMPLE_RATE;
+        vi.stubEnv('NODE_ENV', 'production');
+
+        const value = resolveSentrySampleRate({
+            envVarName: 'SENTRY_TRACES_SAMPLE_RATE',
+            productionDefault: 0.1,
+            nonProductionDefault: 0,
+        });
+
+        expect(value).toBe(0.1);
+    });
+
     it('falls back to environment-aware defaults when override is invalid', () => {
         vi.stubEnv('SENTRY_TRACES_SAMPLE_RATE', 'not-a-number');
         vi.stubEnv('NODE_ENV', 'production');
@@ -294,6 +307,19 @@ describe('scrubSentryEvent', () => {
 
         expect(scrubbed.breadcrumbs[0].from).toContain('token=%5BREDACTED%5D');
         expect(scrubbed.breadcrumbs[0].to).toContain('session=%5BREDACTED%5D');
+    });
+
+    it('returns a malformed URL string unchanged when it cannot be parsed', () => {
+        const malformedUrl = 'http://[unclosed-ipv6';
+        const event = {
+            breadcrumbs: [
+                { category: 'fetch', data: { url: malformedUrl } },
+            ],
+        };
+
+        const scrubbed = scrubSentryEvent(event);
+
+        expect(scrubbed.breadcrumbs[0].data.url).toBe(malformedUrl);
     });
 });
 

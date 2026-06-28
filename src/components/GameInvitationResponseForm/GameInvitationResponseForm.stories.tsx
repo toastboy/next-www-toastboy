@@ -53,7 +53,10 @@ export const SubmitResponse: Story = {
         if (viewMode === 'docs') return;
 
         const canvas = within(canvasElement);
-        await userEvent.selectOptions(await canvas.findByLabelText(/Response/i), 'Yes');
+        const responseSelect = await canvas.findByRole('combobox', { name: /Response/i });
+        await userEvent.click(responseSelect);
+        const dropdown = await within(canvasElement.ownerDocument.body).findByRole('listbox');
+        await userEvent.click(await within(dropdown).findByRole('option', { name: 'Yes', hidden: true }));
         await userEvent.click(await canvas.findByLabelText(/Goalie/i));
         await userEvent.type(await canvas.findByLabelText(/Optional comment/i), 'Count me in.');
         await userEvent.click(await canvas.findByRole('button', { name: /Save Response/i }));

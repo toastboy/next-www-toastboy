@@ -57,7 +57,10 @@ export const Render: Story = {
 
         await userEvent.type(nameInput, 'Pat Example');
         await userEvent.type(emailInput, 'pat@example.com');
-        await userEvent.selectOptions(introducedBySelect, '1');
+        await userEvent.click(introducedBySelect);
+        const dropdown = await within(canvasElement.ownerDocument.body).findByRole('listbox');
+        const options = await within(dropdown).findAllByRole('option', { hidden: true });
+        await userEvent.click(options[1]);
         await userEvent.click(submitButton);
 
         const body = canvasElement.ownerDocument.body;

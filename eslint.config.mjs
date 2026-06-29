@@ -274,6 +274,7 @@ const config = [
             "**/*.stories.*",
             "**/__mocks__/**",
             "src/tests/**",
+            "src/lib/exportdb/**",
             "src/lib/importlivedb/**",
             "src/lib/crawllivesite/**",
             "src/lib/observability/sentry.ts",

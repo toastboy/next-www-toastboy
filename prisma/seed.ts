@@ -3,20 +3,8 @@ import 'dotenv/config';
 import { ClientSecretCredential } from '@azure/identity';
 import { BlobServiceClient, ContainerClient } from '@azure/storage-blob';
 import { PrismaMariaDb } from '@prisma/adapter-mariadb';
-import { Account, Prisma, PrismaClient, User, Verification } from 'prisma/generated/client';
-import { ArseType } from 'prisma/zod/schemas/models/Arse.schema';
-import { ClubType } from 'prisma/zod/schemas/models/Club.schema';
-import { ClubSupporterType } from 'prisma/zod/schemas/models/ClubSupporter.schema';
-import { CountryType } from 'prisma/zod/schemas/models/Country.schema';
-import { CountrySupporterType } from 'prisma/zod/schemas/models/CountrySupporter.schema';
-import { GameChatType } from 'prisma/zod/schemas/models/GameChat.schema';
-import { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
-import { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
-import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
-import { PlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
-import { PlayerLoginType } from 'prisma/zod/schemas/models/PlayerLogin.schema';
-import playerRecordService from '@/services/PlayerRecord';
-import { TransactionType } from 'prisma/zod/schemas/models/Transaction.schema';
+import { Prisma, PrismaClient } from 'prisma/generated/client';
+import { AUTH_TABLES, GAME_DATA_TABLES } from './table-manifest';
 
 const adapter = new PrismaMariaDb(process.env.DATABASE_URL!);
 const prisma = new PrismaClient({ adapter });
@@ -52,16 +40,26 @@ async function downloadAndParseJson(containerClient: ContainerClient, blobName: 
     }
 }
 
-async function processJsonData<T>(
+// Chunks per INSERT to stay within MariaDB's max_allowed_packet limit.
+const CHUNK_SIZE = 500;
+
+async function seedTable(
     containerClient: ContainerClient,
     fileName: string,
-    prismaModel: {
-        createMany: (data: { data: T[] }) => Prisma.PrismaPromise<{ count: number }>;
-    },
-) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    model: { createMany: (args: { data: any[] }) => Prisma.PrismaPromise<Prisma.BatchPayload> },
+): Promise<void> {
     console.log(`Starting: ${fileName}`);
-    const dataItems: T[] = await downloadAndParseJson(containerClient, fileName) as T[];
-    await prismaModel.createMany({ data: dataItems });
+    const parsed = await downloadAndParseJson(containerClient, fileName);
+    if (!Array.isArray(parsed)) {
+        throw new Error(`Expected ${fileName} to contain a JSON array, got ${typeof parsed}`);
+    }
+    const dataItems: unknown[] = parsed;
+    const chunks: Prisma.PrismaPromise<Prisma.BatchPayload>[] = [];
+    for (let i = 0; i < dataItems.length; i += CHUNK_SIZE) {
+        chunks.push(model.createMany({ data: dataItems.slice(i, i + CHUNK_SIZE) }));
+    }
+    await prisma.$transaction(chunks, { timeout: 120_000 });
     console.log(`Complete:  ${fileName}`);
 }
 
@@ -89,53 +87,28 @@ async function main() {
 
     const containerClient = blobServiceClient.getContainerClient(containerName);
 
-    // We have to be careful to empty existing tables in the right order for the
-    // foreign key constraints
-    await prisma.arse.deleteMany();
-    await prisma.clubSupporter.deleteMany();
-    await prisma.club.deleteMany();
-    await prisma.countrySupporter.deleteMany();
-    await prisma.country.deleteMany();
-    await prisma.gameChat.deleteMany();
-    await prisma.gameInvitation.deleteMany();
-    await prisma.transaction.deleteMany();
-    await prisma.outcome.deleteMany();
-    await prisma.playerRecord.deleteMany();
-    await prisma.gameDay.deleteMany();
-    await prisma.playerExtraEmail.deleteMany();
-    await prisma.playerLogin.deleteMany();
+    // Delete non-seeded tables that reference seeded rows before wiping the seeded tables.
+    // contactEnquiry must precede emailVerification (FK reference).
+    await prisma.contactEnquiry.deleteMany();
     await prisma.emailVerification.deleteMany();
-    await prisma.player.deleteMany();
+    await prisma.gameInvitation.deleteMany();
+    for (const { getModel } of [...GAME_DATA_TABLES].reverse()) {
+        await getModel(prisma).deleteMany();
+    }
 
-    // Now we must populate the tables in the reverse of the order above, minus
-    // the ones that are short-lived or generated as part of the picker process
-    await processJsonData<PlayerType>(containerClient, "Player.json", prisma.player);
-    await processJsonData<PlayerLoginType>(containerClient, "PlayerLogin.json", prisma.playerLogin);
-    await processJsonData<PlayerExtraEmailType>(containerClient, "PlayerEmail.json", prisma.playerExtraEmail);
-    await processJsonData<GameDayType>(containerClient, "GameDay.json", prisma.gameDay);
-    await processJsonData<OutcomeType>(containerClient, "Outcome.json", prisma.outcome);
-    await processJsonData<TransactionType>(containerClient, "Transaction.json", prisma.transaction);
-    await processJsonData<GameChatType>(containerClient, "GameChat.json", prisma.gameChat);
-    await processJsonData<CountryType>(containerClient, "Country.json", prisma.country);
-    await processJsonData<CountrySupporterType>(containerClient, "CountrySupporter.json", prisma.countrySupporter);
-    await processJsonData<ClubType>(containerClient, "Club.json", prisma.club);
-    await processJsonData<ClubSupporterType>(containerClient, "ClubSupporter.json", prisma.clubSupporter);
-    await processJsonData<ArseType>(containerClient, "Arse.json", prisma.arse);
+    for (const { fileName, getModel } of GAME_DATA_TABLES) {
+        await seedTable(containerClient, fileName, getModel(prisma));
+    }
 
-    // Finally, the auth tables
-    await prisma.verification.deleteMany();
-    await prisma.account.deleteMany();
-    await prisma.user.deleteMany();
-
-    await processJsonData<User>(containerClient, "user.json", prisma.user);
-    await processJsonData<Account>(containerClient, "account.json", prisma.account);
-    await processJsonData<Verification>(containerClient, "verification.json", prisma.verification);
-
-    // Now calculate all the player records to ensure they are up to date:
-    // they're derived from the outcomes and are effectively a cache.
-    console.log('Calculating player records...');
-    await playerRecordService.deleteAll();
-    await playerRecordService.upsertForGameDay();
+    // session references user; deleteMany does not trigger the onDelete:Cascade
+    // emulated by relationMode=prisma, so it must be cleared explicitly.
+    await prisma.session.deleteMany();
+    for (const { getModel } of [...AUTH_TABLES].reverse()) {
+        await getModel(prisma).deleteMany();
+    }
+    for (const { fileName, getModel } of AUTH_TABLES) {
+        await seedTable(containerClient, fileName, getModel(prisma));
+    }
 
     console.log('🌱 Database seeding complete.');
 }
@@ -147,8 +120,5 @@ main()
     })
     .finally(async () => {
         await prisma.$disconnect();
-        // Force exit: playerRecordService uses a shared Prisma singleton
-        // (prisma/prisma) whose connection pool is not disconnected here,
-        // which would otherwise keep the process alive indefinitely.
         process.exit(0);
     });

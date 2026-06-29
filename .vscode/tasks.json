@@ -147,6 +147,22 @@
             "problemMatcher": []
         },
         {
+            "label": "Export DB (1Password env)",
+            "type": "shell",
+            "command": "op",
+            "args": [
+                "run",
+                "--env-file",
+                "./.env",
+                "--",
+                "sh",
+                "-c",
+                "npm run exportdb"
+            ],
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
             "label": "Prisma seed (1Password env)",
             "type": "shell",
             "command": "op",
@@ -163,7 +179,7 @@
             "problemMatcher": []
         },
         {
-            "label": "Storybook",
+            "label": "Storybook (1Password env)",
             "type": "shell",
             "command": "op",
             "args": [

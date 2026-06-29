@@ -161,7 +161,7 @@
         "knip": "^6.21.0",
         "msw": "^2.14.6",
         "msw-storybook-addon": "^2.0.7",
-        "npm-check-updates": "^22.2.7",
+        "npm-check-updates": "^22.2.9",
         "playwright": "^1.61.1",
         "storybook": "^10.4.6",
         "supertest": "^7.2.2",

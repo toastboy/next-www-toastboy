@@ -15,6 +15,7 @@ import {
     Title,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { useMounted } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
@@ -76,6 +77,7 @@ export const GameInvitationResponseForm = ({
     details,
     onSubmitGameInvitationResponse,
 }: Props) => {
+    const mounted = useMounted();
     const response = getInitialPlayerResponse(details.response);
     const [currentResponse, setCurrentResponse] = useState(details.response);
     const [currentComment, setCurrentComment] = useState(details.comment);
@@ -213,7 +215,7 @@ export const GameInvitationResponseForm = ({
                     maxLength={127}
                     {...form.getInputProps('comment')}
                 />
-                <Button type="submit" w="fit-content" disabled={!isFormDirty}>
+                <Button type="submit" w="fit-content" loading={!mounted} disabled={!isFormDirty}>
                     Save Response
                 </Button>
             </Stack>

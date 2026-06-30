@@ -43,10 +43,10 @@ test.describe('New game flow', () => {
         expect(invitationLink).toBeTruthy();
 
         await page.goto(invitationLink ?? '');
-        await page.waitForLoadState('networkidle');
+        await expect(page.getByRole('button', { name: 'Save Response' })).toBeEnabled();
 
-        await expect(page.getByLabel('Response')).toBeVisible();
-        await page.getByLabel('Response').selectOption('Yes');
+        await page.getByRole('combobox', { name: 'Response' }).click();
+        await page.getByRole('option', { name: 'Yes' }).click();
         await page.getByLabel('Goalie').check();
         await page.getByLabel('Optional comment/excuse').fill(responseComment);
         await page.getByRole('button', { name: 'Save Response' }).click();

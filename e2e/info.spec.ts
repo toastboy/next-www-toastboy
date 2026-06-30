@@ -1,6 +1,13 @@
-import { expect, test } from '@playwright/test';
-
+import { expect, test } from './utils/base';
 import { deleteAllMessages, getMessageDetail, waitForMessage } from './utils/mailpit';
+
+const extractVerificationLink = (content: string) => {
+    const hrefMatch = /href=["']([^"']*\/api\/footy\/auth\/verify\/enquiry\/[^"']*)["']/i.exec(content);
+    if (hrefMatch?.[1]) return hrefMatch[1];
+
+    const textMatch = /(https?:\/\/[^\s"']*\/api\/footy\/auth\/verify\/enquiry\/[^\s"']+)/i.exec(content);
+    return textMatch?.[1] ?? null;
+};
 
 test('info page', async ({ page }) => {
     const response = await page.goto('/footy/info');
@@ -40,13 +47,13 @@ test.describe('EnquiryForm', () => {
     test('shows verified notification and cleans up URL', async ({ page }) => {
         await page.goto('/footy/info?enquiry=verified');
         await expect(page.getByText('Email verified')).toBeVisible();
-        await expect(page).toHaveURL(/\/footy\/info$/);
+        await expect(page).toHaveURL(/\/footy\/info\/?$/);
     });
 
     test('shows error notification and cleans up URL', async ({ page }) => {
         await page.goto('/footy/info?enquiry=error');
         await expect(page.getByText('Verification failed')).toBeVisible();
-        await expect(page).toHaveURL(/\/footy\/info$/);
+        await expect(page).toHaveURL(/\/footy\/info\/?$/);
     });
 
     test.describe('email flow', () => {
@@ -86,14 +93,14 @@ test.describe('EnquiryForm', () => {
             await expect(page.getByText('Confirm your email')).toBeVisible({ timeout: 15000 });
 
             const message = await waitForMessage(request, 'Confirm your enquiry');
-            expect(message, 'Expected verification email in Mailpit').toBeTruthy();
+            if (!message) throw new Error('Verification email not found in Mailpit');
 
-            const detail = await getMessageDetail(request, message!.ID);
+            const detail = await getMessageDetail(request, message.ID);
             const body = detail.HTML ?? detail.Text ?? '';
-            const linkMatch = /href="([^"]*\/api\/footy\/auth\/verify\/enquiry\/[^"]*)"/.exec(body);
-            expect(linkMatch, 'Expected verification link in email body').toBeTruthy();
+            const verificationLink = extractVerificationLink(body);
+            if (!verificationLink) throw new Error(`Verification link not found in email body:\n${body}`);
 
-            await page.goto(linkMatch![1]);
+            await page.goto(verificationLink);
             await expect(page).toHaveURL(/\/footy\/info/);
             await expect(page.getByText('Email verified')).toBeVisible();
         });

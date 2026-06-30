@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './utils/base';
 
 test('footy page renders crest, info link, and copyright', async ({ page }) => {
     const response = await page.goto('/footy');

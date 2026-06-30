@@ -1,6 +1,5 @@
-import { expect, test } from '@playwright/test';
-
 import { asAdmin, asGuest, asUser, mustBeLoggedInAsAdmin } from './utils/auth';
+import { expect, test } from './utils/base';
 
 test.describe('Money admin page', () => {
     test('denies access to guest users', async ({ page }) => {

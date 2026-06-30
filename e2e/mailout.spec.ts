@@ -1,6 +1,5 @@
-import { expect, test } from '@playwright/test';
-
 import { asGuest, asUser, mustBeLoggedIn } from './utils/auth';
+import { expect, test } from './utils/base';
 import { deleteAllMessages, getMessageDetail, waitForMessage } from './utils/mailpit';
 
 test.describe('Mail active players', () => {

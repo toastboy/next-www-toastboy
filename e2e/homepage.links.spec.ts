@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './utils/base';
 
 test('enumerate homepage links', async ({ page }) => {
     await page.goto('/');

@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './utils/base';
 
 test('tables page', async ({ page }) => {
     const response = await page.goto('/footy/tables');

@@ -56,11 +56,19 @@ export default defineConfig({
     projects: [
         /* Teardown projects: reseed the database after each browser project so
          * the next browser always starts from a known state. globalSetup seeds
-         * before the first browser; these handle every subsequent one. Each
-         * browser project needs its own uniquely-named teardown project -
-         * Playwright only runs a teardown once all projects referencing it have
-         * finished, so sharing a single teardown across every browser project
-         * would reseed just once at the very end instead of between each one. */
+         * before the first browser; these handle every subsequent one.
+         *
+         * Each browser project needs its own uniquely-named teardown project -
+         * sharing one teardown across every browser project would only run it
+         * once all of them reference it. But uniquely naming them is not
+         * enough on its own: Playwright schedules projects in phases, and every
+         * project with no unmet `dependencies` lands in the same phase as its
+         * siblings - so chromium/firefox/webkit/mobile/tablet would all run
+         * back-to-back in one phase, with all five teardowns only running
+         * afterwards as the next phase, instead of interleaved between them.
+         * Chaining each browser project's `dependencies` to the previous
+         * browser's teardown forces a strict phase per browser, so the reseed
+         * genuinely runs between each one. */
         {
             name: 'seed-chromium',
             testMatch: 'e2e/seed.setup.ts',
@@ -91,23 +99,27 @@ export default defineConfig({
         {
             name: 'firefox',
             use: { ...devices['Desktop Firefox'] },
+            dependencies: ['seed-chromium'],
             teardown: 'seed-firefox',
         },
 
         {
             name: 'webkit',
             use: { ...devices['Desktop Safari'] },
+            dependencies: ['seed-firefox'],
             teardown: 'seed-webkit',
         },
 
         {
             name: 'mobile',
             use: { viewport: { width: 375, height: 667 } },
+            dependencies: ['seed-webkit'],
             teardown: 'seed-mobile',
         },
         {
             name: 'tablet',
             use: { viewport: { width: 768, height: 1024 } },
+            dependencies: ['seed-mobile'],
             teardown: 'seed-tablet',
         },
 

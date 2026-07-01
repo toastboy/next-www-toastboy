@@ -8,6 +8,7 @@
             "Bash(gh issue view *)",
             "Bash(gh pr list *)",
             "Bash(gh pr view *)",
+            "Bash(gh run *)",
             "Bash(git blame *)",
             "Bash(git diff *)",
             "Bash(git log *)",

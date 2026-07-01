@@ -54,41 +54,61 @@ export default defineConfig({
 
     /* Configure projects for major browsers */
     projects: [
-        /* Teardown project: reseeds the database after each browser project so
+        /* Teardown projects: reseed the database after each browser project so
          * the next browser always starts from a known state. globalSetup seeds
-         * before the first browser; this handles every subsequent one. */
+         * before the first browser; these handle every subsequent one. Each
+         * browser project needs its own uniquely-named teardown project -
+         * Playwright only runs a teardown once all projects referencing it have
+         * finished, so sharing a single teardown across every browser project
+         * would reseed just once at the very end instead of between each one. */
         {
-            name: 'seed',
+            name: 'seed-chromium',
+            testMatch: 'e2e/seed.setup.ts',
+        },
+        {
+            name: 'seed-firefox',
+            testMatch: 'e2e/seed.setup.ts',
+        },
+        {
+            name: 'seed-webkit',
+            testMatch: 'e2e/seed.setup.ts',
+        },
+        {
+            name: 'seed-mobile',
+            testMatch: 'e2e/seed.setup.ts',
+        },
+        {
+            name: 'seed-tablet',
             testMatch: 'e2e/seed.setup.ts',
         },
 
         {
             name: 'chromium',
             use: { ...devices['Desktop Chrome'] },
-            teardown: 'seed',
+            teardown: 'seed-chromium',
         },
 
         {
             name: 'firefox',
             use: { ...devices['Desktop Firefox'] },
-            teardown: 'seed',
+            teardown: 'seed-firefox',
         },
 
         {
             name: 'webkit',
             use: { ...devices['Desktop Safari'] },
-            teardown: 'seed',
+            teardown: 'seed-webkit',
         },
 
         {
             name: 'mobile',
             use: { viewport: { width: 375, height: 667 } },
-            teardown: 'seed',
+            teardown: 'seed-mobile',
         },
         {
             name: 'tablet',
             use: { viewport: { width: 768, height: 1024 } },
-            teardown: 'seed',
+            teardown: 'seed-tablet',
         },
 
         /* Test against branded browsers. */

@@ -3,6 +3,14 @@ import { expect, test } from './utils/base';
 import { deleteAllMessages, getMessageDetail, waitForMessage } from './utils/mailpit';
 
 test.describe('New game flow', () => {
+    test.beforeEach(async ({ request }) => {
+        await deleteAllMessages(request);
+    });
+
+    test.afterEach(async ({ request }) => {
+        await deleteAllMessages(request);
+    });
+
     test('denies access to guest users', async ({ page }) => {
         await asGuest(page, '/footy/admin/newgame');
 
@@ -31,18 +39,18 @@ test.describe('New game flow', () => {
         await expect(page.getByText('Invitations can be sent now.')).toBeVisible({ timeout: 15000 });
 
         const message = await waitForMessage(request, 'Toastboy FC invitation');
-        expect(message, 'Expected invitation email in Mailpit').toBeTruthy();
+        if (!message) throw new Error('Invitation email not found in Mailpit');
 
-        const detail = await getMessageDetail(request, message!.ID);
+        const detail = await getMessageDetail(request, message.ID);
         const html = detail.HTML ?? '';
         expect(html).toContain(customMessage);
 
         const linkMatch = /href="([^"]*footy\/response[^"]*)"/i.exec(html);
         const invitationLink = linkMatch?.[1];
-        expect(invitationLink).toBeTruthy();
+        if (!invitationLink) throw new Error(`Invitation link not found in email body:\n${html}`);
 
-        await page.goto(invitationLink ?? '');
-        await expect(page.getByRole('button', { name: 'Save Response' })).toBeEnabled();
+        await page.goto(invitationLink);
+        await expect(page.getByRole('button', { name: 'Save Response' })).toBeEnabled({ timeout: 15000 });
 
         await page.getByRole('combobox', { name: 'Response' }).click();
         await page.getByRole('option', { name: 'Yes' }).click();
@@ -52,7 +60,5 @@ test.describe('New game flow', () => {
 
         await expect(page.getByText('Response saved')).toBeVisible({ timeout: 15000 });
         await expect(page.getByText(responseComment)).toBeVisible({ timeout: 15000 });
-
-        await deleteAllMessages(request);
     });
 });

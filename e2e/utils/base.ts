@@ -27,9 +27,14 @@ export const test = baseTest.extend({
         const allowedHost = baseURL ? parseHost(baseURL) : null;
         const onPageError = (err: Error) => console.error('Page JS error:', err);
         const onRequestFailed = (req: Request) => {
+            const errorText = req.failure()?.errorText ?? '';
+            // Navigation-initiated cancellations are expected (e.g. SSE connections
+            // dropped on page change) and vary by browser:
+            // Chromium: net::ERR_ABORTED, Firefox: NS_BINDING_ABORTED, WebKit: Load request cancelled
+            if (/cancel|ABORTED/i.test(errorText)) return;
             const reqHost = parseHost(req.url());
             if (!allowedHost || !reqHost || reqHost === allowedHost) {
-                console.error('Request failed:', req.url(), req.failure()?.errorText);
+                console.error('Request failed:', req.url(), errorText);
             }
         };
         page.on('pageerror', onPageError);

@@ -1,0 +1,18 @@
+# CI override for docker-compose.yml: replaces the bare `db` image with one
+# pre-loaded with the current schema and seed data (built by
+# .github/workflows/publish-seeded-db-image.yml), so Playwright matrix jobs
+# don't each have to regenerate the same fixture data from scratch. Not used
+# locally - local dev needs the plain mariadb:lts image so `npm run migrate`
+# and schema iteration work normally.
+#
+# Usage: docker compose -f docker-compose.yml -f docker-compose.ci.yml up -d
+services:
+  db:
+    image: ${SEEDED_DB_IMAGE}
+    # The base file mounts a named volume over /var/lib/mysql for durability
+    # across `docker compose down`/`up` on a dev machine. In CI that would
+    # shadow the data already baked into the image with an empty volume on
+    # every fresh runner, silently discarding the seed - so it must be
+    # dropped here, not just left empty (Compose merges list fields across
+    # files by default; `!reset` is required to actually remove one).
+    volumes: !reset []

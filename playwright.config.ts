@@ -52,75 +52,43 @@ export default defineConfig({
         video: 'retain-on-failure',
     },
 
-    /* Configure projects for major browsers */
+    /* Configure projects for major browsers.
+     *
+     * There is deliberately no per-project database reseeding here. An
+     * earlier attempt reseeded via a project `teardown` between each browser,
+     * but Playwright schedules all zero-dependency projects into the same
+     * phase and only runs their teardowns afterwards as the next phase - so
+     * the reseed landed once at the very end of the run, not between browsers.
+     * Chaining browsers together with `dependencies` to force separate phases
+     * doesn't work either: Playwright rejects a project depending on another
+     * project's teardown. Rather than fight the scheduler, tests that mutate
+     * shared fixture data (e.g. e2e/newgame.spec.ts) are responsible for not
+     * assuming a pristine starting state - see that file for how it avoids
+     * depending on whether a given player has already responded to the
+     * current game. globalSetup seeds once before the whole run. */
     projects: [
-        /* Teardown projects: reseed the database after each browser project so
-         * the next browser always starts from a known state. globalSetup seeds
-         * before the first browser; these handle every subsequent one.
-         *
-         * Each browser project needs its own uniquely-named teardown project -
-         * sharing one teardown across every browser project would only run it
-         * once all of them reference it. But uniquely naming them is not
-         * enough on its own: Playwright schedules projects in phases, and every
-         * project with no unmet `dependencies` lands in the same phase as its
-         * siblings - so chromium/firefox/webkit/mobile/tablet would all run
-         * back-to-back in one phase, with all five teardowns only running
-         * afterwards as the next phase, instead of interleaved between them.
-         * Chaining each browser project's `dependencies` to the previous
-         * browser's teardown forces a strict phase per browser, so the reseed
-         * genuinely runs between each one. */
-        {
-            name: 'seed-chromium',
-            testMatch: 'e2e/seed.setup.ts',
-        },
-        {
-            name: 'seed-firefox',
-            testMatch: 'e2e/seed.setup.ts',
-        },
-        {
-            name: 'seed-webkit',
-            testMatch: 'e2e/seed.setup.ts',
-        },
-        {
-            name: 'seed-mobile',
-            testMatch: 'e2e/seed.setup.ts',
-        },
-        {
-            name: 'seed-tablet',
-            testMatch: 'e2e/seed.setup.ts',
-        },
-
         {
             name: 'chromium',
             use: { ...devices['Desktop Chrome'] },
-            teardown: 'seed-chromium',
         },
 
         {
             name: 'firefox',
             use: { ...devices['Desktop Firefox'] },
-            dependencies: ['seed-chromium'],
-            teardown: 'seed-firefox',
         },
 
         {
             name: 'webkit',
             use: { ...devices['Desktop Safari'] },
-            dependencies: ['seed-firefox'],
-            teardown: 'seed-webkit',
         },
 
         {
             name: 'mobile',
             use: { viewport: { width: 375, height: 667 } },
-            dependencies: ['seed-webkit'],
-            teardown: 'seed-mobile',
         },
         {
             name: 'tablet',
             use: { viewport: { width: 768, height: 1024 } },
-            dependencies: ['seed-mobile'],
-            teardown: 'seed-tablet',
         },
 
         /* Test against branded browsers. */

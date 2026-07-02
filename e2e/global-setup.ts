@@ -13,8 +13,20 @@ import { execSync } from 'node:child_process';
  *
  * This function only inserts/replaces data, which is safe while the server
  * is running.
+ *
+ * When SKIP_DB_SEED is set, seeding is skipped entirely - used by CI when the
+ * `db` container was started from a pre-seeded image (see
+ * .github/workflows/publish-seeded-db-image.yml) rather than a bare
+ * `mariadb:lts`, so the data is already there. `prisma db push` still runs as
+ * a separate CI step regardless, so schema changes on a branch not yet
+ * baked into that image are still applied correctly.
  */
 export default function globalSetup() {
+    if (process.env.SKIP_DB_SEED) {
+        console.log('⚙️  Skipping database seed - using pre-seeded image');
+        return;
+    }
+
     console.log('⚙️  Seeding test database...');
     if (process.env.CI) {
         execSync('npm run seed:ci', { stdio: 'inherit' });

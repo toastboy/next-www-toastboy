@@ -48,11 +48,27 @@ jobs:
                     -e MARIADB_ROOT_PASSWORD="$DATABASE_PASSWORD" \
                     -p 33306:3306 \
                     mariadb:lts
+            # MariaDB's official image initialises the data directory with a
+            # *temporary* server started with --skip-networking (socket only),
+            # then shuts it down and starts the real network-facing server.
+            # Probing over the unix socket (-h localhost) gives a false positive
+            # against that temporary server, so the next step connects over TCP
+            # mid-restart and gets "P1017: Server has closed the connection".
+            # Force the probe over TCP (which the temporary server can't answer)
+            # and require several consecutive successes so we don't catch the
+            # brief window while the temporary server is swapped for the real one
+            # - this matches how Prisma connects.
             - name: Wait for database
               run: |
-                  for i in {1..30}; do
-                    if docker exec seed-db mariadb-admin ping -h localhost -u root -p"$DATABASE_PASSWORD" 2>/dev/null; then
-                      exit 0
+                  ok=0
+                  for i in {1..60}; do
+                    if docker exec seed-db mariadb-admin ping --protocol=tcp -h 127.0.0.1 -u root -p"$DATABASE_PASSWORD" 2>/dev/null; then
+                      ok=$((ok + 1))
+                      if [ "$ok" -ge 3 ]; then
+                        exit 0
+                      fi
+                    else
+                      ok=0
                     fi
                     sleep 2
                   done

@@ -31,6 +31,14 @@ jobs:
             - name: Install dependencies
               run: npm ci
 
+            # seed.ci.ts imports the generated client from prisma/generated/client.
+            # `npm ci` doesn't produce it (no postinstall hook) - only `npm run
+            # build`/`dev` do, via their own explicit `npm run generate` prefix -
+            # so it must be generated explicitly here too, before anything tries
+            # to import it.
+            - name: Generate Prisma client
+              run: npm run generate
+
             # A bare `docker run`, not `docker compose up`: docker-compose.yml's
             # healthcheck isn't available outside compose, so readiness is
             # polled directly below instead.

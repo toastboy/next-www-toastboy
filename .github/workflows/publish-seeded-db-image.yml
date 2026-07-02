@@ -61,15 +61,23 @@ jobs:
             - name: Stop database cleanly
               run: docker stop seed-db
 
+            # Copied out and rebuilt via Dockerfile.seeded-db rather than
+            # `docker commit`: commit bakes the source container's full
+            # runtime config - including the -e MARIADB_ROOT_PASSWORD set
+            # above - into the new image's metadata, readable by anyone who
+            # later pulls it. A plain COPY only bakes in what the Dockerfile
+            # declares, so the password never reaches the published image.
+            - name: Copy seeded data directory out of the container
+              run: docker cp seed-db:/var/lib/mysql ./seeded-datadir
+
             - name: Log in to GHCR
               uses: docker/login-action@v3
               with:
                   registry: ghcr.io
                   username: ${{ github.actor }}
                   password: ${{ secrets.GITHUB_TOKEN }}
-            - name: Commit and push image
+            - name: Build and push image
               run: |
-                  docker commit seed-db "$IMAGE:${{ github.sha }}"
-                  docker tag "$IMAGE:${{ github.sha }}" "$IMAGE:latest"
+                  docker build -f Dockerfile.seeded-db -t "$IMAGE:${{ github.sha }}" -t "$IMAGE:latest" .
                   docker push "$IMAGE:${{ github.sha }}"
                   docker push "$IMAGE:latest"

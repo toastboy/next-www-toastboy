@@ -1,0 +1,16 @@
+# syntax=docker/dockerfile:1.7
+
+# Base image for the pre-seeded test database published by
+# .github/workflows/publish-seeded-db-image.yml.
+#
+# The seeded data directory is copied in as a build context directory
+# (produced by that workflow via `docker cp` from a container that ran
+# `prisma db push` + the seed script) rather than baked in with
+# `docker commit`. `docker commit` captures the source container's full
+# runtime config into the new image's metadata - including any `-e` env vars
+# it was started with, e.g. MARIADB_ROOT_PASSWORD - which would then be
+# readable by anyone who pulls the published image. A plain COPY only bakes
+# in what's explicitly declared here, so nothing from the seeding container's
+# environment carries over.
+FROM mariadb:lts
+COPY --chown=mysql:mysql seeded-datadir /var/lib/mysql

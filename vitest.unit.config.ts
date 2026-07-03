@@ -22,19 +22,20 @@ export default defineConfig({
                 'src/services/**/*.{ts,tsx}',
             ],
             exclude: [
+                '.storybook/**',
                 '**/__mocks__/**',
                 '**/*.stories.*',
-                '**/*.vitest.spec.ts',
-                '**/*.vitest.spec.tsx',
                 '**/*.test.ts',
                 '**/*.test.tsx',
+                '**/*.vitest.spec.ts',
+                '**/*.vitest.spec.tsx',
                 '**/*Skeleton*',
                 '**/index.ts',
                 '**/prisma/**',
-                '.storybook/**',
                 'public/**',
                 'src/app/api/auth/**', // Better Auth handler — nothing to unit test here
                 'src/app/footy/docs/**', // MDX-only pages, nothing to unit test
+                'src/lib/exportdb/**', // dev-only utility
                 'src/lib/importlivedb/**', // dev-only utility
                 'src/stories/**',
                 'src/tests/**',

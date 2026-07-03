@@ -184,6 +184,27 @@ describe('sendGameInvitations', () => {
         expect(mockInvitationService.deleteAll).not.toHaveBeenCalled();
         expect(mockSendEmail).not.toHaveBeenCalled();
     });
+
+    it('does not create invitations when no active player has a valid email address', async () => {
+        mockPlayerService.getAll.mockResolvedValueOnce([
+            createMockPlayerData({
+                id: 5,
+                name: 'NoEmail',
+                finished: null,
+                accountEmail: null,
+                extraEmails: [],
+            }),
+        ].map((player) => ({
+            ...player,
+            name: player.name ?? `Player ${player.id}`,
+        })));
+
+        await sendGameInvitations(99);
+
+        expect(mockInvitationService.createMany).not.toHaveBeenCalled();
+        expect(mockSendEmail).not.toHaveBeenCalled();
+        expect(mockGameDayService.markMailSent).toHaveBeenCalledWith(99, expect.any(Date));
+    });
 });
 
 describe('getGameInvitationResponseDetails', () => {
@@ -234,6 +255,39 @@ describe('getGameInvitationResponseDetails', () => {
 
         const result = await getGameInvitationResponseDetails('missing');
         expect(result).toBeNull();
+    });
+
+    it('returns null when the player cannot be found', async () => {
+        mockPlayerService.getById.mockResolvedValueOnce(null);
+
+        const result = await getGameInvitationResponseDetails('token-abc');
+        expect(result).toBeNull();
+    });
+
+    it('falls back to player.goalie and nulls when there is no outcome', async () => {
+        mockOutcomeService.get.mockResolvedValueOnce(null);
+        mockPlayerService.getById.mockResolvedValueOnce({ ...player, goalie: true });
+
+        const result = await getGameInvitationResponseDetails('token-abc');
+
+        expect(result).toEqual({
+            token: 'token-abc',
+            playerId: 7,
+            playerName: 'Dana',
+            playerLogin: 'dana',
+            gameDayId: 42,
+            response: null,
+            goalie: true,
+            comment: null,
+        });
+    });
+
+    it('falls back to false for goalie when neither outcome nor player specify it', async () => {
+        mockOutcomeService.get.mockResolvedValueOnce(null);
+
+        const result = await getGameInvitationResponseDetails('token-abc');
+
+        expect(result?.goalie).toBe(false);
     });
 
     it('returns assembled details when everything is found', async () => {

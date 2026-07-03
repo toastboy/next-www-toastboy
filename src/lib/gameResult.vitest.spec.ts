@@ -63,6 +63,16 @@ describe('gameResult helpers', () => {
         expect(getGameWinnersFromTeams(teamA, withPoints(0))).toBeNull();
     });
 
+    it('falls back to null if the sole distinct points value is somehow missing (defensive guard)', () => {
+        const arrayFromSpy = vi.spyOn(Array, 'from').mockReturnValueOnce([]);
+
+        try {
+            expect(getGameWinnersFromTeams(withPoints(3), withPoints(0))).toBeNull();
+        } finally {
+            arrayFromSpy.mockRestore();
+        }
+    });
+
     it('returns per-team result state', () => {
         expect(getTeamResultState('A', 'A')).toBe('win');
         expect(getTeamResultState('B', 'A')).toBe('loss');

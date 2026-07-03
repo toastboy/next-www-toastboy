@@ -19,7 +19,7 @@ export default defineConfig({
         name: 'lib-vitest',
         environment: 'node',
         globals: true,
-        include: ['src/lib/**/*.vitest.spec.ts'],
+        include: ['src/lib/**/*.vitest.spec.ts', 'src/tests/shared/**/*.vitest.spec.ts'],
         exclude: ['src/lib/actions/**/*.vitest.spec.ts'],
         setupFiles: ['vitest.setup.backend.ts'],
         coverage: {

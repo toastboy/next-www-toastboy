@@ -39,6 +39,7 @@ const Page = async ({ searchParams: sp }: PageProps) => {
         );
     }
 
+    /* v8 ignore next -- token is always truthy here; the guards above already redirect/return for the falsy cases */
     const details = await getGameInvitationResponseDetails(token ?? '');
 
     if (!details) {

@@ -10,6 +10,8 @@ const outcomeService = {
     getByBibs: vi.fn(),
     getPlayerGamesPlayed: vi.fn(),
     getPlayerGamesPlayedBeforeGameDay: vi.fn(),
+    getGamesPlayedByPlayer: vi.fn(),
+    getTeamPlayersByGameDay: vi.fn(),
     upsert: vi.fn(),
 };
 

@@ -73,6 +73,7 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
 const CurseOfTheBibsPage = async (props: PageProps) => {
     const { year, allYears } = await unpackParams(props.searchParams);
 
+    /* v8 ignore next -- defensive redundant check: unpackParams already calls notFound() for this case */
     if (!allYears.includes(year)) return notFound();
 
     const bibsData = await outcomeService.getByBibs({ year });

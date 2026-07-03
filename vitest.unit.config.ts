@@ -31,10 +31,12 @@ export default defineConfig({
                 '**/*.vitest.spec.tsx',
                 '**/*Skeleton*',
                 '**/index.ts',
+                '**/loading.tsx',
                 '**/prisma/**',
                 'public/**',
                 'src/app/api/auth/**', // Better Auth handler — nothing to unit test here
                 'src/app/footy/docs/**', // MDX-only pages, nothing to unit test
+                'src/app/footy/layout.tsx', // passthrough wrapper, nothing to unit test here
                 'src/lib/auth.client.ts', // thin glue layer to Better Auth, nothing to unit test here
                 'src/lib/exportdb/**', // dev-only utility
                 'src/lib/importlivedb/**', // dev-only utility

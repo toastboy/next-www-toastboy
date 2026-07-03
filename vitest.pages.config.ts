@@ -27,6 +27,7 @@ export default defineConfig({
         globals: true,
         include: [
             'src/app/*.vitest.spec.ts',
+            'src/app/*.vitest.spec.tsx',
             'src/app/footy/**/*.vitest.spec.ts',
             'src/app/footy/**/*.vitest.spec.tsx',
         ],
@@ -43,6 +44,7 @@ export default defineConfig({
                 '**/*.vitest.spec.tsx',
                 '**/*.test.ts',
                 '**/*.test.tsx',
+                '**/loading.tsx',
             ],
         },
     },

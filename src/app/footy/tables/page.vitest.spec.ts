@@ -1,4 +1,14 @@
-// This page is purely static. Meaningful coverage lives in Storybook.
+import { renderToStaticMarkup } from 'react-dom/server';
+
+import TablesPage from '@/app/footy/tables/page';
+
 describe('Tables page', () => {
-    it.todo('renders links to all league tables');
+    it('renders links to all league tables', () => {
+        const html = renderToStaticMarkup(TablesPage());
+
+        expect(html).toContain('href="/footy/table/points"');
+        expect(html).toContain('href="/footy/table/averages"');
+        expect(html).toContain('href="/footy/table/stalwart"');
+        expect(html).toContain('href="/footy/table/speedy"');
+    });
 });

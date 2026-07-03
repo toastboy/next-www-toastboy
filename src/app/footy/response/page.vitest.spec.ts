@@ -57,6 +57,12 @@ describe('Game Invitation Response page', () => {
         expect(redirect).toHaveBeenCalledWith('/footy/game');
     });
 
+    it('redirects to /footy/game when searchParams is not provided at all', async () => {
+        await expect(Page({})).rejects.toThrow('redirected');
+
+        expect(redirect).toHaveBeenCalledWith('/footy/game');
+    });
+
     it('renders an error message when an error param is present', async () => {
         const element = await Page({ searchParams: Promise.resolve({ error: 'Invitation expired.' }) });
 

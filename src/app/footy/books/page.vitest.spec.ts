@@ -27,30 +27,11 @@ vi.mock('@/components/TitleWithYearDropdown/TitleWithYearDropdown', () => ({
     TitleWithYearDropdown: function TitleWithYearDropdown() { return null; },
 }));
 
-import BooksPage from '@/app/footy/books/page';
+import BooksPage, { generateMetadata } from '@/app/footy/books/page';
 import gameDayService from '@/services/GameDay';
 import moneyService from '@/services/Money';
 import { defaultMoneyChartData } from '@/tests/mocks/data/money';
-
-interface AnyElement { type: unknown; props: Record<string, unknown> }
-
-const findElement = (node: unknown, name: string): AnyElement | null => {
-    if (!node || typeof node !== 'object') return null;
-    const el = node as AnyElement;
-    if (typeof el.type === 'function') {
-        const fn = el.type as { displayName?: string; name?: string };
-        const elName = fn.displayName ?? fn.name;
-        if (elName === name) return el;
-    }
-    const children = (el.props as { children?: unknown }).children;
-    if (Array.isArray(children)) {
-        for (const child of children) {
-            const found = findElement(child, name);
-            if (found) return found;
-        }
-    }
-    return findElement(children, name);
-};
+import { findElement } from '@/tests/shared/reactTree';
 
 describe('Books page', () => {
     beforeEach(() => {
@@ -130,5 +111,11 @@ describe('Books page', () => {
         await expect(
             BooksPage({ searchParams: Promise.resolve({ year: '2024' }) }),
         ).rejects.toThrow('Chart data failed');
+    });
+
+    it('generates metadata with the year-specific title', async () => {
+        const metadata = await generateMetadata({ searchParams: Promise.resolve({ year: '2024' }) });
+
+        expect(metadata.title).toBe('2024 Books');
     });
 });

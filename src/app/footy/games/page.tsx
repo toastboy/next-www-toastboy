@@ -60,6 +60,7 @@ const unpackParams = cache(async (
         gameDayService.getGamesRemaining(year),
     ]);
 
+    /* v8 ignore next -- year is always defined here; the notFound() guard above already excludes undefined */
     const canonicalSearch = year !== undefined ? `?year=${year}` : '';
     const canonicalUrl = `/footy/games/${canonicalSearch}`;
     const currentSearch = resolvedSearchParams?.year !== undefined ?

@@ -4,6 +4,7 @@ import {
     AuthError,
     ConflictError,
     ExternalServiceError,
+    InternalError,
     NotFoundError,
     ValidationError,
 } from '@/lib/errors';
@@ -75,6 +76,91 @@ describe('toRequestError', () => {
 
         expect(error).toBeInstanceOf(ValidationError);
         expect(error.publicMessage).toBe('Request rejected.');
+    });
+
+    it('maps unknown 5xx statuses to InternalError', async () => {
+        const response = new Response('', {
+            status: 500,
+            statusText: 'Internal Server Error',
+        });
+
+        const error = await toRequestError(response);
+
+        expect(error).toBeInstanceOf(InternalError);
+    });
+
+    it('maps a 502 bad gateway status to ExternalServiceError', async () => {
+        const response = new Response('', {
+            status: 502,
+            statusText: 'Bad Gateway',
+        });
+
+        const error = await toRequestError(response);
+
+        expect(error).toBeInstanceOf(ExternalServiceError);
+    });
+
+    it('extracts message from an "error" json field when "message" is absent', async () => {
+        const response = new Response(JSON.stringify({ error: 'Something broke.' }), {
+            status: 400,
+            statusText: 'Bad Request',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const error = await toRequestError(response);
+
+        expect(error.publicMessage).toBe('Something broke.');
+    });
+
+    it('falls back to the trimmed body text when json has neither "message" nor "error" fields', async () => {
+        const response = new Response(JSON.stringify({ code: 'ERR_UNKNOWN' }), {
+            status: 400,
+            statusText: 'Bad Request',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        const error = await toRequestError(response);
+
+        expect(error.publicMessage).toBe(JSON.stringify({ code: 'ERR_UNKNOWN' }));
+    });
+
+    it('falls back to raw text when JSON.parse yields a non-object value (defensive guard)', async () => {
+        const parseSpy = vi.spyOn(JSON, 'parse').mockReturnValueOnce(null);
+
+        try {
+            const response = new Response('{"message":"hidden"}', {
+                status: 400,
+                statusText: 'Bad Request',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            const error = await toRequestError(response);
+
+            expect(error.publicMessage).toBe('{"message":"hidden"}');
+        } finally {
+            parseSpy.mockRestore();
+        }
+    });
+
+    it('falls back to an empty body and includes the URL when response.text() rejects', async () => {
+        const response = {
+            text: () => Promise.reject(new Error('stream error')),
+            status: 500,
+            statusText: 'Internal Server Error',
+            url: 'https://api.toastboy.co.uk/footy/games',
+        } as unknown as Response;
+
+        const error = await toRequestError(response);
+
+        expect(error).toBeInstanceOf(InternalError);
+        expect(error.publicMessage).toBe('Request failed.');
+        expect(error.message).toBe('HTTP 500 Internal Server Error for https://api.toastboy.co.uk/footy/games');
     });
 });
 

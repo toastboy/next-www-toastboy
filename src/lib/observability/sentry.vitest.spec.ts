@@ -12,6 +12,38 @@ vi.mock('@sentry/nextjs', () => ({
     captureException: vi.fn(),
 }));
 
+/**
+ * Shape of the second argument passed to `Sentry.captureException` by
+ * {@link captureUnexpectedError}.
+ */
+interface CaptureOptions {
+    tags?: Record<string, string>;
+    extra?: Record<string, unknown>;
+    fingerprint?: string[];
+}
+
+/**
+ * Asserts that `Sentry.captureException` was called exactly once and returns
+ * its arguments defensively, so a regression that skips the call or changes
+ * its shape fails with a clear assertion message rather than a confusing
+ * `undefined` destructuring error.
+ */
+const getCaptureCall = (): { error?: Error; options?: CaptureOptions } => {
+    expect(Sentry.captureException).toHaveBeenCalledTimes(1);
+    const call = vi.mocked(Sentry.captureException).mock.calls[0];
+
+    return {
+        error: call?.[0] as Error | undefined,
+        options: call?.[1] as CaptureOptions | undefined,
+    };
+};
+
+/**
+ * Convenience wrapper around {@link getCaptureCall} for tests that only care
+ * about the capture options.
+ */
+const getCaptureOptions = (): CaptureOptions | undefined => getCaptureCall().options;
+
 describe('captureUnexpectedError', () => {
     beforeEach(() => {
         vi.clearAllMocks();
@@ -43,14 +75,10 @@ describe('captureUnexpectedError', () => {
         });
 
         expect(captured).toBe(true);
-        expect(Sentry.captureException).toHaveBeenCalledTimes(1);
 
-        const [, options] = vi.mocked(Sentry.captureException).mock.calls[0] as [Error, {
-            tags?: Record<string, string>;
-            extra?: Record<string, unknown>;
-        }];
+        const options = getCaptureOptions();
 
-        expect(options.tags).toEqual(expect.objectContaining({
+        expect(options?.tags).toEqual(expect.objectContaining({
             layer: 'client',
             component: 'MoneyForm',
             action: 'payDebt',
@@ -59,7 +87,7 @@ describe('captureUnexpectedError', () => {
             retry: 'false',
         }));
 
-        expect(options.extra).toMatchObject({
+        expect(options?.extra).toMatchObject({
             playerId: 42,
             token: '[REDACTED]',
             nested: {
@@ -99,15 +127,12 @@ describe('captureUnexpectedError', () => {
         const captured = captureUnexpectedError('boom');
 
         expect(captured).toBe(true);
-        expect(Sentry.captureException).toHaveBeenCalledTimes(1);
 
-        const [capturedError, options] = vi.mocked(Sentry.captureException).mock.calls[0] as [Error, {
-            extra?: Record<string, unknown>;
-        }];
+        const { error: capturedError, options } = getCaptureCall();
 
         expect(capturedError).toBeInstanceOf(Error);
-        expect(capturedError.message).toBe('Non-Error value thrown.');
-        expect(options.extra).toMatchObject({
+        expect(capturedError?.message).toBe('Non-Error value thrown.');
+        expect(options?.extra).toMatchObject({
             thrownValue: 'boom',
         });
     });
@@ -116,11 +141,9 @@ describe('captureUnexpectedError', () => {
         const error = new ExternalServiceError('Graph API call failed');
         captureUnexpectedError(error);
 
-        const [, options] = vi.mocked(Sentry.captureException).mock.calls[0] as [Error, {
-            tags?: Record<string, string>;
-        }];
+        const options = getCaptureOptions();
 
-        expect(options.tags).toMatchObject({
+        expect(options?.tags).toMatchObject({
             app_error_code: 'EXTERNAL_SERVICE_ERROR',
         });
     });
@@ -128,15 +151,11 @@ describe('captureUnexpectedError', () => {
     it('omits tags and extra from the Sentry call when context is empty', () => {
         captureUnexpectedError(new Error('bare error'));
 
-        const [, options] = vi.mocked(Sentry.captureException).mock.calls[0] as [Error, {
-            tags?: Record<string, string>;
-            extra?: Record<string, unknown>;
-            fingerprint?: string[];
-        }];
+        const options = getCaptureOptions();
 
-        expect(options.tags).toBeUndefined();
-        expect(options.extra).toBeUndefined();
-        expect(options.fingerprint).toBeUndefined();
+        expect(options?.tags).toBeUndefined();
+        expect(options?.extra).toBeUndefined();
+        expect(options?.fingerprint).toBeUndefined();
     });
 
     it('passes fingerprint override through to Sentry', () => {
@@ -144,11 +163,9 @@ describe('captureUnexpectedError', () => {
             fingerprint: ['custom-group', 'route:/footy/games'],
         });
 
-        const [, options] = vi.mocked(Sentry.captureException).mock.calls[0] as [Error, {
-            fingerprint?: string[];
-        }];
+        const options = getCaptureOptions();
 
-        expect(options.fingerprint).toEqual(['custom-group', 'route:/footy/games']);
+        expect(options?.fingerprint).toEqual(['custom-group', 'route:/footy/games']);
     });
 
     it('omits tag entries whose values are null or undefined', () => {
@@ -160,36 +177,30 @@ describe('captureUnexpectedError', () => {
             },
         });
 
-        const [, options] = vi.mocked(Sentry.captureException).mock.calls[0] as [Error, {
-            tags?: Record<string, string>;
-        }];
+        const options = getCaptureOptions();
 
-        expect(options.tags).toHaveProperty('present', 'yes');
-        expect(options.tags).not.toHaveProperty('absent');
-        expect(options.tags).not.toHaveProperty('alsoAbsent');
+        expect(options?.tags).toHaveProperty('present', 'yes');
+        expect(options?.tags).not.toHaveProperty('absent');
+        expect(options?.tags).not.toHaveProperty('alsoAbsent');
     });
 
     it('converts Date values in extra to ISO strings', () => {
         const createdAt = new Date('2026-02-22T10:30:45.123Z');
         captureUnexpectedError(new Error('dated'), { extra: { createdAt } });
 
-        const [, options] = vi.mocked(Sentry.captureException).mock.calls[0] as [Error, {
-            extra?: Record<string, unknown>;
-        }];
+        const options = getCaptureOptions();
 
-        expect(options.extra?.createdAt).toBe('2026-02-22T10:30:45.123Z');
+        expect(options?.extra?.createdAt).toBe('2026-02-22T10:30:45.123Z');
     });
 
     it('sanitizes Error objects in extra to name and message only', () => {
         const cause = new TypeError('inner failure');
         captureUnexpectedError(new Error('outer'), { extra: { cause } });
 
-        const [, options] = vi.mocked(Sentry.captureException).mock.calls[0] as [Error, {
-            extra?: Record<string, unknown>;
-        }];
+        const options = getCaptureOptions();
 
-        expect(options.extra?.cause).toEqual({ name: 'TypeError', message: 'inner failure' });
-        expect(options.extra?.cause).not.toHaveProperty('stack');
+        expect(options?.extra?.cause).toEqual({ name: 'TypeError', message: 'inner failure' });
+        expect(options?.extra?.cause).not.toHaveProperty('stack');
     });
 
     it('truncates extra values that exceed the maximum nesting depth', () => {
@@ -199,13 +210,21 @@ describe('captureUnexpectedError', () => {
             },
         });
 
-        const [, options] = vi.mocked(Sentry.captureException).mock.calls[0] as [Error, {
-            extra?: Record<string, unknown>;
-        }];
+        const options = getCaptureOptions();
 
-        const deep = (options.extra!);
+        const deep = options?.extra;
         interface Nested { l2: { l3: { l4: { l5: { l6: unknown } } } } }
-        expect(((deep.l1 as Nested).l2.l3.l4.l5).l6).toBe('[TRUNCATED]');
+        expect(((deep?.l1 as Nested).l2.l3.l4.l5).l6).toBe('[TRUNCATED]');
+    });
+
+    it('discards a non-object extra value at runtime instead of spreading it', () => {
+        captureUnexpectedError(new Error('bad extra'), {
+            extra: 'not-an-object' as unknown as Record<string, unknown>,
+        });
+
+        const options = getCaptureOptions();
+
+        expect(options?.extra).toBeUndefined();
     });
 
     it('replaces circular references in extra with [CIRCULAR]', () => {
@@ -214,11 +233,9 @@ describe('captureUnexpectedError', () => {
 
         captureUnexpectedError(new Error('circular'), { extra: { circular } });
 
-        const [, options] = vi.mocked(Sentry.captureException).mock.calls[0] as [Error, {
-            extra?: Record<string, unknown>;
-        }];
+        const options = getCaptureOptions();
 
-        expect(options.extra?.circular).toEqual({
+        expect(options?.extra?.circular).toEqual({
             label: 'root',
             self: '[CIRCULAR]',
         });

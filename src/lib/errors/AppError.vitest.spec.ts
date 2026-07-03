@@ -3,6 +3,7 @@ import z from 'zod';
 import {
     APP_ERROR_CODE,
     AuthError,
+    ConflictError,
     ExternalServiceError,
     InternalError,
     isAppError,
@@ -12,6 +13,7 @@ import {
     toPublicMessage,
     ValidationError,
 } from '@/lib/errors';
+import { AppError, DEFAULT_PUBLIC_ERROR_MESSAGE } from '@/lib/errors/AppError';
 
 describe('AppError types', () => {
     it('creates expected validation errors with default public message', () => {
@@ -39,6 +41,33 @@ describe('AppError types', () => {
         expect(new AuthError().expected).toBe(true);
         expect(new NotFoundError().expected).toBe(true);
         expect(new ExternalServiceError().expected).toBe(false);
+    });
+
+    it('creates conflict errors with default public message', () => {
+        const error = new ConflictError();
+
+        expect(error.code).toBe(APP_ERROR_CODE.Conflict);
+        expect(error.expected).toBe(true);
+        expect(error.publicMessage).toBe('The request conflicts with existing data.');
+    });
+
+    it('applies custom public message overrides for domain-style errors', () => {
+        expect(new ValidationError('bad', { publicMessage: 'Custom validation' }).publicMessage).toBe('Custom validation');
+        expect(new NotFoundError('missing', { publicMessage: 'Custom not found' }).publicMessage).toBe('Custom not found');
+        expect(new AuthError('denied', { publicMessage: 'Custom auth' }).publicMessage).toBe('Custom auth');
+        expect(new ConflictError('conflict', { publicMessage: 'Custom conflict' }).publicMessage).toBe('Custom conflict');
+        expect(new ExternalServiceError('down', { publicMessage: 'Custom service' }).publicMessage).toBe('Custom service');
+    });
+
+    it('defaults expected and publicMessage when omitted from a raw AppError init', () => {
+        const error = new AppError({
+            code: APP_ERROR_CODE.Internal,
+            message: 'raw init',
+        });
+
+        expect(error.expected).toBe(true);
+        expect(error.publicMessage).toBe(DEFAULT_PUBLIC_ERROR_MESSAGE);
+        expect(error.name).toBe('AppError');
     });
 });
 

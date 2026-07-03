@@ -9,6 +9,8 @@ import {
     toHttpErrorResponse,
     ValidationError,
 } from '@/lib/errors';
+import { AppError } from '@/lib/errors/AppError';
+import type { AppErrorCode } from '@/lib/errors/ErrorCode';
 
 describe('toHttpErrorResponse', () => {
     it('maps AppError subclasses to expected status codes', () => {
@@ -34,5 +36,14 @@ describe('toHttpErrorResponse', () => {
             status: 500,
             message: 'Fallback',
         });
+    });
+
+    it('falls back to 500 for an AppError code outside the known union', () => {
+        const error = new AppError({
+            code: 'SOME_FUTURE_ERROR' as AppErrorCode,
+            message: 'unmapped code',
+        });
+
+        expect(toHttpErrorResponse(error).status).toBe(500);
     });
 });

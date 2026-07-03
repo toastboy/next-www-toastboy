@@ -46,6 +46,23 @@ describe('gameResult helpers', () => {
         expect(getGameWinnersFromTeams(withPoints(0), withPoints(0))).toBeNull();
     });
 
+    it('returns null when a team has no players', () => {
+        expect(getGameWinnersFromTeams([], withPoints(3))).toBeNull();
+    });
+
+    it('returns null when a team has differing valid points values', () => {
+        const teamA = withPoints(3);
+        teamA[0] = {
+            ...teamA[0],
+            outcome: createMockOutcome({
+                ...teamA[0].outcome,
+                points: 1,
+            }),
+        };
+
+        expect(getGameWinnersFromTeams(teamA, withPoints(0))).toBeNull();
+    });
+
     it('returns per-team result state', () => {
         expect(getTeamResultState('A', 'A')).toBe('win');
         expect(getTeamResultState('B', 'A')).toBe('loss');

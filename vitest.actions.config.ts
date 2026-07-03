@@ -19,10 +19,10 @@ export default defineConfig({
         name: 'actions-vitest',
         environment: 'node',
         globals: true,
-        include: ['src/lib/actions/**/*.vitest.spec.ts'],
+        include: ['src/actions/**/*.vitest.spec.ts'],
         setupFiles: ['vitest.setup.backend.ts'],
         coverage: {
-            include: ['src/lib/actions/**/*.{ts,tsx}'],
+            include: ['src/actions/**/*.{ts,tsx}'],
             exclude: [
                 '**/__mocks__/**',
                 '**/*.stories.*',

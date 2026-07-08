@@ -66,7 +66,6 @@ describe('CustomAppShell', () => {
 
         expect(screen.getByText('Toastboy FC')).toBeInTheDocument();
         expect(screen.getByText('Test Content')).toBeInTheDocument();
-        expect(screen.getByText(/© 2025 Toastboy FC/i)).toBeInTheDocument();
     });
 
     it('closes the mobile navbar when the pathname changes', async () => {

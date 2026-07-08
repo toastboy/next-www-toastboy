@@ -11,8 +11,7 @@
         "src/app/**/not-found.tsx",
         "src/app/**/route.ts",
         "vitest.*.config.ts",
-        "vitest.setup.*.ts",
-        "e2e/*.setup.ts"
+        "vitest.setup.*.ts"
     ],
     "project": [
         "src/**/*.{ts,tsx}",
@@ -21,6 +20,10 @@
         ".storybook/**/*.{ts,tsx}",
         "vitest.*.config.ts",
         "vitest.setup.*.ts"
+    ],
+    "ignore": [
+        "src/components/DebugBreakpoints/DebugBreakpoints.tsx",
+        "src/components/DebugSizeOverlay/DebugSizeOverlay.tsx"
     ],
     "ignoreDependencies": [
         "@types/d3",

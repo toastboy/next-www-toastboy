@@ -10,7 +10,6 @@ import { sendEmail } from '@/actions/sendEmail';
 import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
 import { PlayerProfile } from '@/components/PlayerProfile/PlayerProfile';
 import { getUserRole } from '@/lib/auth.server';
-import arseService from '@/services/Arse';
 import clubSupporterService from '@/services/ClubSupporter';
 import countrySupporterService from '@/services/CountrySupporter';
 import outcomeService from '@/services/Outcome';
@@ -103,7 +102,6 @@ const PlayerPage = async (props: PageProps) => {
         history,
         clubs,
         countries,
-        arse,
         record,
         prevPlayer,
         nextPlayer,
@@ -115,7 +113,6 @@ const PlayerPage = async (props: PageProps) => {
         outcomeService.getHistoryByPlayer(player.id, year, player.joined ?? undefined, player.finished ?? undefined),
         clubSupporterService.getByPlayer(player.id),
         countrySupporterService.getByPlayer(player.id),
-        isAdmin ? arseService.getByPlayer(player.id) : Promise.resolve(null),
         playerRecordService.getForYearByPlayer(year, player.id),
         playerService.getPrevious(player.id),
         playerService.getNext(player.id),
@@ -141,7 +138,6 @@ const PlayerPage = async (props: PageProps) => {
                 lastWon={lastWon}
                 clubs={clubs}
                 countries={countries}
-                arse={arse}
                 activeYears={activeYears}
                 record={record}
                 prevPlayer={prevPlayer}

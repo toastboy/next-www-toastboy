@@ -5,7 +5,6 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('services/Player');
 vi.mock('services/PlayerRecord');
-vi.mock('services/Arse');
 vi.mock('services/ClubSupporter');
 vi.mock('services/CountrySupporter');
 vi.mock('services/Outcome');
@@ -33,7 +32,6 @@ import { permanentRedirect } from 'next/navigation';
 import PlayerPage, { generateMetadata } from '@/app/footy/player/[id]/page';
 import { PlayerProfile } from '@/components/PlayerProfile/PlayerProfile';
 import { getUserRole } from '@/lib/auth.server';
-import arseService from '@/services/Arse';
 import clubSupporterService from '@/services/ClubSupporter';
 import countrySupporterService from '@/services/CountrySupporter';
 import outcomeService from '@/services/Outcome';
@@ -65,7 +63,6 @@ describe('Player [id] page', () => {
         (outcomeService.getHistoryByPlayer as Mock).mockResolvedValue([]);
         (clubSupporterService.getByPlayer as Mock).mockResolvedValue([]);
         (countrySupporterService.getByPlayer as Mock).mockResolvedValue([]);
-        (arseService.getByPlayer as Mock).mockResolvedValue(null);
         (playerRecordService.getForYearByPlayer as Mock).mockResolvedValue(null);
         (playerRecordService.getWinners as Mock).mockResolvedValue([]);
         (getUserRole as Mock).mockResolvedValue('none');
@@ -175,25 +172,6 @@ describe('Player [id] page', () => {
             expect(clubSupporterService.getByPlayer).toHaveBeenCalledWith(player.id);
             expect(countrySupporterService.getByPlayer).toHaveBeenCalledWith(player.id);
             expect(playerRecordService.getForYearByPlayer).toHaveBeenCalledWith(0, player.id);
-        });
-
-        it('includes arse data only when the user role is admin', async () => {
-            (getUserRole as Mock).mockResolvedValue('admin');
-            (arseService.getByPlayer as Mock).mockResolvedValue({ arse: 1 });
-
-            renderToStaticMarkup(await call());
-
-            expect(arseService.getByPlayer).toHaveBeenCalledWith(player.id);
-            const [[props]] = (PlayerProfile as Mock).mock.calls as [{ arse: unknown }][];
-            expect(props.arse).toEqual({ arse: 1 });
-        });
-
-        it('passes null for arse when the user role is not admin', async () => {
-            renderToStaticMarkup(await call());
-
-            expect(arseService.getByPlayer).not.toHaveBeenCalled();
-            const [[props]] = (PlayerProfile as Mock).mock.calls as [{ arse: unknown }][];
-            expect(props.arse).toBeNull();
         });
 
         it('passes trophies Map to PlayerProfile', async () => {

@@ -1,30 +1,19 @@
 import {
     Box,
-    Flex,
     Group,
     Paper,
-    SimpleGrid,
     Stack,
-    Table,
-    TableTbody,
-    TableTd,
-    TableTh,
-    TableTr,
 } from '@mantine/core';
 import type { TableName } from 'prisma/generated/browser';
-import type { ArseType } from 'prisma/zod/schemas/models/Arse.schema';
 import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 
-import { EmailPlayerButton } from '@/components/EmailPlayerButton/EmailPlayerButton';
-import { GameDayLink } from '@/components/GameDayLink/GameDayLink';
-import { PlayerArse } from '@/components/PlayerArse/PlayerArse';
 import { PlayerCard } from '@/components/PlayerCard/PlayerCard';
 import { PlayerHeatmap } from '@/components/PlayerHeatmap/PlayerHeatmap';
+import { PlayerInfo } from '@/components/PlayerInfo/PlayerInfo';
 import { PlayerLink } from '@/components/PlayerLink/PlayerLink';
 import { PlayerPositions } from '@/components/PlayerPositions/PlayerPositions';
 import { PlayerResults } from '@/components/PlayerResults/PlayerResults';
 import { TitleWithYearDropdown } from '@/components/TitleWithYearDropdown/TitleWithYearDropdown';
-import { formatDate } from '@/lib/dates';
 import { PlayerDisplayType } from '@/services/Player';
 import { ClubSupporterDataType, CountrySupporterDataType, PlayerDataEmailDisplayType, PlayerFormType } from '@/types';
 import type { SendEmailProxy } from '@/types/actions/SendEmail';
@@ -39,7 +28,6 @@ export interface Props {
     lastWon: PlayerFormType | null;
     clubs: ClubSupporterDataType[];
     countries: CountrySupporterDataType[];
-    arse: Partial<ArseType> | null;
     activeYears: number[];
     record: PlayerRecordType | null;
     trophies: Map<TableName, PlayerRecordType[]>;
@@ -60,7 +48,6 @@ export const PlayerProfile = ({
     lastWon,
     clubs,
     countries,
-    arse,
     activeYears,
     record,
     trophies,
@@ -71,93 +58,66 @@ export const PlayerProfile = ({
     playerData,
     onSendEmail,
 }: Props) => {
-    // TODO: Look at how to make global quantities like these more consistent
-    // across the app - e.g. using a context or CSS variable
-    const navSlotWidth = '2rem';
-    const valueCellWidth = '14rem';
-
     return (
-        <Flex direction="column" gap="sm">
-            <Flex direction="column" gap="sm">
-                <Group justify="space-between" gap="xs" mb="lg">
-                    <Box w={navSlotWidth} ta="center">
-                        {prevPlayer ?
-                            <PlayerLink player={prevPlayer} year={year} format="left-arrow" /> :
-                            <Box data-testid="player-prev-placeholder" aria-hidden="true" w={navSlotWidth} />}
-                    </Box>
-                    <TitleWithYearDropdown order={1} title={player.name} year={year} validYears={activeYears} />
-                    <Box w={navSlotWidth} ta="center">
-                        {nextPlayer ?
-                            <PlayerLink player={nextPlayer} year={year} format="right-arrow" /> :
-                            <Box data-testid="player-next-placeholder" aria-hidden="true" w={navSlotWidth} />}
-                    </Box>
-                </Group>
-                <SimpleGrid cols={{ base: 1, lg: 2, xl: 3 }} spacing="md">
-                    <Paper shadow="xs" p="sm" withBorder>
-                        <Stack gap="sm">
-                            <PlayerCard
-                                player={player}
-                                clubs={clubs}
-                                countries={countries}
-                                trophies={trophies}
-                            />
-                            <Table
-                                layout="fixed"
-                                variant="vertical"
-                            >
-                                <TableTbody>
-                                    {!!introducedBy && (
-                                        <TableTr>
-                                            <TableTh>Introduced by</TableTh>
-                                            <TableTd w={valueCellWidth}><PlayerLink player={introducedBy} year={year} /></TableTd>
-                                        </TableTr>
-                                    )}
-                                    <TableTr>
-                                        <TableTh>Joined</TableTh>
-                                        <TableTd w={valueCellWidth}>{player.joined ? formatDate(player.joined) : 'N/A'}</TableTd>
-                                    </TableTr>
-                                    {!!isAdmin && !!playerData && !!onSendEmail && (
-                                        <TableTr>
-                                            <TableTh>Email</TableTh>
-                                            <TableTd w={valueCellWidth}>
-                                                <EmailPlayerButton player={playerData} onSendEmail={onSendEmail} />
-                                            </TableTd>
-                                        </TableTr>
-                                    )}
-                                    <TableTr>
-                                        <TableTh>Last played</TableTh>
-                                        <TableTd w={valueCellWidth}><GameDayLink gameDay={lastPlayed?.gameDay} /></TableTd>
-                                    </TableTr>
-                                    <TableTr>
-                                        <TableTh>Last won</TableTh>
-                                        <TableTd w={valueCellWidth}><GameDayLink gameDay={lastWon?.gameDay} /></TableTd>
-                                    </TableTr>
-                                    {!!isAuthenticated && (
-                                        <TableTr>
-                                            <TableTh>Born</TableTh>
-                                            <TableTd w={valueCellWidth}>{player.born}</TableTd>
-                                        </TableTr>
-                                    )}
-                                </TableTbody>
-                            </Table>
-                        </Stack>
-                    </Paper>
-                    <Stack gap="sm">
-                        <SimpleGrid spacing="xs">
-                            <PlayerResults player={player} year={year} record={record} />
-                            <PlayerPositions player={player} year={year} record={record} />
-                        </SimpleGrid>
-                    </Stack>
-                    <Stack gap="sm">
-                        <PlayerArse arse={arse} />
-                    </Stack>
-                </SimpleGrid>
-            </Flex>
-            <Flex>
-                <Paper shadow="xs" p="sm" w="auto" withBorder>
+        <Stack gap="sm" w="100%">
+            {/* Equal 1fr side tracks always stay the same width as each other, so the
+                title stays centred whether or not a nav link is present - no fixed
+                width needed. */}
+            <Box
+                mb="lg"
+                style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'minmax(0, 1fr) auto minmax(0, 1fr)',
+                    alignItems: 'center',
+                    gap: 'var(--mantine-spacing-xs)',
+                }}
+            >
+                <Box ta="center">
+                    {prevPlayer ?
+                        <PlayerLink player={prevPlayer} year={year} format="left-arrow" /> :
+                        <Box data-testid="player-prev-placeholder" aria-hidden="true" />}
+                </Box>
+                <TitleWithYearDropdown order={1} title={player.name} year={year} validYears={activeYears} />
+                <Box ta="center">
+                    {nextPlayer ?
+                        <PlayerLink player={nextPlayer} year={year} format="right-arrow" /> :
+                        <Box data-testid="player-next-placeholder" aria-hidden="true" />}
+                </Box>
+            </Box>
+            <Group align="stretch" gap="md" wrap="wrap">
+                <Box style={{ flex: '1 1 0' }}>
+                    <PlayerCard
+                        player={player}
+                        clubs={clubs}
+                        countries={countries}
+                        trophies={trophies}
+                    />
+                </Box>
+                <Box style={{ flex: '1 1 0' }}>
+                    <PlayerInfo
+                        player={player}
+                        year={year}
+                        introducedBy={introducedBy}
+                        lastPlayed={lastPlayed}
+                        lastWon={lastWon}
+                        isAuthenticated={isAuthenticated}
+                        isAdmin={isAdmin}
+                        playerData={playerData}
+                        onSendEmail={onSendEmail}
+                    />
+                </Box>
+                <Box style={{ flex: '1 1 0' }}>
+                    <PlayerResults player={player} year={year} record={record} />
+                </Box>
+                <Box style={{ flex: '1 1 0' }}>
+                    <PlayerPositions player={player} year={year} record={record} />
+                </Box>
+            </Group>
+            <Group>
+                <Paper shadow="xs" p="sm" w="auto" withBorder style={{ flex: '1' }}>
                     <PlayerHeatmap data={history} year={year} />
                 </Paper>
-            </Flex>
-        </Flex>
+            </Group>
+        </Stack>
     );
 };

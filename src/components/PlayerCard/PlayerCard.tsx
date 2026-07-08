@@ -1,4 +1,4 @@
-import { Box } from '@mantine/core';
+import { Box, Paper } from '@mantine/core';
 import type { TableName } from 'prisma/generated/browser';
 import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 
@@ -20,17 +20,19 @@ export interface Props {
 
 export const PlayerCard = ({ player, clubs, countries, trophies }: Props) => {
     return (
-        <Box w="100%" pos="relative">
-            <PlayerMugshot player={player} />
-            <Box className={classes.trophies} left="0.5em" top="0.5em">
-                <PlayerTrophies trophies={trophies} />
+        <Paper shadow="xs" p="sm" miw="280px" h="100%" withBorder>
+            <Box w="100%" pos="relative">
+                <PlayerMugshot player={player} />
+                <Box className={classes.trophies} left="0.5em" top="0.5em">
+                    <PlayerTrophies trophies={trophies} />
+                </Box>
+                <Box className={classes.badges} right="0.5em" bottom="0.5em">
+                    <PlayerClubs clubs={clubs} />
+                </Box>
+                <Box className={classes.badges} left="0.5em" bottom="0.5em">
+                    <PlayerCountries countries={countries} />
+                </Box>
             </Box>
-            <Box className={classes.badges} right="0.5em" bottom="0.5em">
-                <PlayerClubs clubs={clubs} />
-            </Box>
-            <Box className={classes.badges} left="0.5em" bottom="0.5em">
-                <PlayerCountries countries={countries} />
-            </Box>
-        </Box>
+        </Paper>
     );
 };

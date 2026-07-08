@@ -4,19 +4,15 @@ import { vi } from 'vitest';
 
 import { PlayerProfile } from '@/components/PlayerProfile/PlayerProfile';
 import { Wrapper } from '@/tests/components/lib/common';
-import { defaultArse } from '@/tests/mocks/data/arse';
 import { defaultClubSupporterDataList } from '@/tests/mocks/data/clubSupporterData';
 import { defaultCountrySupporterDataList } from '@/tests/mocks/data/countrySupporterData';
 import { createMockPlayer, defaultPlayer } from '@/tests/mocks/data/player';
-import { defaultPlayerEmailData } from '@/tests/mocks/data/playerData';
 import { defaultPlayerFormList } from '@/tests/mocks/data/playerForm';
 import { defaultPlayerRecord, defaultTrophiesList } from '@/tests/mocks/data/playerRecord';
 
-vi.mock('@/components/EmailPlayerButton/EmailPlayerButton');
-vi.mock('@/components/GameDayLink/GameDayLink');
-vi.mock('@/components/PlayerArse/PlayerArse');
 vi.mock('@/components/PlayerCard/PlayerCard');
 vi.mock('@/components/PlayerHeatmap/PlayerHeatmap');
+vi.mock('@/components/PlayerInfo/PlayerInfo');
 vi.mock('@/components/PlayerLink/PlayerLink');
 vi.mock('@/components/PlayerPositions/PlayerPositions');
 vi.mock('@/components/PlayerResults/PlayerResults');
@@ -35,7 +31,6 @@ describe('PlayerProfile', () => {
                     lastWon={defaultPlayerFormList[0]}
                     clubs={defaultClubSupporterDataList}
                     countries={defaultCountrySupporterDataList}
-                    arse={defaultArse}
                     activeYears={[2023, 2024]}
                     record={defaultPlayerRecord}
                     trophies={defaultTrophiesList}
@@ -64,7 +59,6 @@ describe('PlayerProfile', () => {
                     lastWon={defaultPlayerFormList[0]}
                     clubs={defaultClubSupporterDataList}
                     countries={defaultCountrySupporterDataList}
-                    arse={defaultArse}
                     activeYears={[2023, 2024]}
                     record={defaultPlayerRecord}
                     trophies={defaultTrophiesList}
@@ -77,6 +71,39 @@ describe('PlayerProfile', () => {
         );
 
         expect(screen.getByText(/PlayerCard:/)).toBeInTheDocument();
+    });
+
+    it('renders PlayerInfo with the expected props', () => {
+        const introducedBy = createMockPlayer({ id: 4, name: 'Introducer' });
+
+        render(
+            <Wrapper>
+                <PlayerProfile
+                    player={defaultPlayer}
+                    introducedBy={introducedBy}
+                    year={2024}
+                    history={defaultPlayerFormList}
+                    lastPlayed={defaultPlayerFormList[0]}
+                    lastWon={defaultPlayerFormList[0]}
+                    clubs={defaultClubSupporterDataList}
+                    countries={defaultCountrySupporterDataList}
+                    activeYears={[2023, 2024]}
+                    record={defaultPlayerRecord}
+                    trophies={defaultTrophiesList}
+                    prevPlayer={null}
+                    nextPlayer={null}
+                    isAuthenticated={true}
+                    isAdmin={true}
+                />
+            </Wrapper>,
+        );
+
+        expect(screen.getByText((content) =>
+            content.startsWith('PlayerInfo:') &&
+            content.includes('"name":"Introducer"') &&
+            content.includes('"isAuthenticated":true') &&
+            content.includes('"isAdmin":true'),
+        )).toBeInTheDocument();
     });
 
     describe('prev/next navigation', () => {
@@ -93,7 +120,6 @@ describe('PlayerProfile', () => {
             lastWon: defaultPlayerFormList[0],
             clubs: defaultClubSupporterDataList,
             countries: defaultCountrySupporterDataList,
-            arse: defaultArse,
             activeYears: [2023, 2024],
             record: defaultPlayerRecord,
             trophies: defaultTrophiesList,
@@ -147,111 +173,6 @@ describe('PlayerProfile', () => {
             );
 
             expect(screen.getByTestId('player-next-placeholder')).toBeInTheDocument();
-        });
-    });
-
-    describe('table rows', () => {
-        const rowBaseProps = {
-            player: defaultPlayer,
-            year: 2024,
-            introducedBy: null,
-            history: defaultPlayerFormList,
-            lastPlayed: null,
-            lastWon: null,
-            clubs: defaultClubSupporterDataList,
-            countries: defaultCountrySupporterDataList,
-            arse: defaultArse,
-            activeYears: [2023, 2024],
-            record: defaultPlayerRecord,
-            trophies: defaultTrophiesList,
-            prevPlayer: null,
-            nextPlayer: null,
-        };
-
-        describe('email row', () => {
-            const onSendEmail = vi.fn();
-
-            it('shows when isAdmin, playerData, and onSendEmail are all provided', () => {
-                render(<Wrapper><PlayerProfile {...rowBaseProps} isAdmin={true} playerData={defaultPlayerEmailData} onSendEmail={onSendEmail} /></Wrapper>);
-                expect(screen.getByText('Email')).toBeInTheDocument();
-                expect(screen.getByText(/EmailPlayerButton:/)).toBeInTheDocument();
-            });
-
-            it('is hidden when isAdmin is false', () => {
-                render(<Wrapper><PlayerProfile {...rowBaseProps} isAdmin={false} playerData={defaultPlayerEmailData} onSendEmail={onSendEmail} /></Wrapper>);
-                expect(screen.queryByText('Email')).not.toBeInTheDocument();
-            });
-
-            it('is hidden when playerData is not provided', () => {
-                render(<Wrapper><PlayerProfile {...rowBaseProps} isAdmin={true} onSendEmail={onSendEmail} /></Wrapper>);
-                expect(screen.queryByText('Email')).not.toBeInTheDocument();
-            });
-
-            it('is hidden when onSendEmail is not provided', () => {
-                render(<Wrapper><PlayerProfile {...rowBaseProps} isAdmin={true} playerData={defaultPlayerEmailData} /></Wrapper>);
-                expect(screen.queryByText('Email')).not.toBeInTheDocument();
-            });
-
-            it('is hidden by default', () => {
-                render(<Wrapper><PlayerProfile {...rowBaseProps} /></Wrapper>);
-                expect(screen.queryByText('Email')).not.toBeInTheDocument();
-            });
-        });
-
-        describe('born row', () => {
-            it('shows when isAuthenticated is true', () => {
-                render(<Wrapper><PlayerProfile {...rowBaseProps} isAuthenticated={true} /></Wrapper>);
-                expect(screen.getByText('Born')).toBeInTheDocument();
-            });
-
-            it('is hidden when isAuthenticated is false', () => {
-                render(<Wrapper><PlayerProfile {...rowBaseProps} isAuthenticated={false} /></Wrapper>);
-                expect(screen.queryByText('Born')).not.toBeInTheDocument();
-            });
-        });
-
-        describe('introducedBy row', () => {
-            it('shows when introducedBy is provided', () => {
-                const introducer = createMockPlayer({ id: 2, name: 'Introducer' });
-                render(<Wrapper><PlayerProfile {...rowBaseProps} introducedBy={introducer} /></Wrapper>);
-                expect(screen.getByText('Introduced by')).toBeInTheDocument();
-                expect(screen.getByText((content) =>
-                    content.startsWith('PlayerLink:') && content.includes('"name":"Introducer"'),
-                )).toBeInTheDocument();
-            });
-
-            it('is hidden when introducedBy is null', () => {
-                render(<Wrapper><PlayerProfile {...rowBaseProps} introducedBy={null} /></Wrapper>);
-                expect(screen.queryByText('Introduced by')).not.toBeInTheDocument();
-            });
-        });
-
-        describe('lastWon row', () => {
-            it('is always present regardless of lastWon value', () => {
-                render(<Wrapper><PlayerProfile {...rowBaseProps} lastWon={null} /></Wrapper>);
-                expect(screen.getByText('Last won')).toBeInTheDocument();
-            });
-
-            it('passes the game day through to GameDayLink when lastWon is provided', () => {
-                render(<Wrapper><PlayerProfile {...rowBaseProps} lastWon={defaultPlayerFormList[0]} /></Wrapper>);
-                expect(screen.getByText((content) =>
-                    content.startsWith('GameDayLink:') && content.includes('"gameDay"'),
-                )).toBeInTheDocument();
-            });
-        });
-
-        describe('joined row', () => {
-            it('shows the formatted join date when player.joined is set', () => {
-                render(<Wrapper><PlayerProfile {...rowBaseProps} /></Wrapper>);
-                expect(screen.getByText('Joined')).toBeInTheDocument();
-                expect(screen.getByText('2021-01-01')).toBeInTheDocument();
-            });
-
-            it('shows "N/A" when player.joined is null', () => {
-                const playerNoJoined = createMockPlayer({ joined: null });
-                render(<Wrapper><PlayerProfile {...rowBaseProps} player={playerNoJoined} /></Wrapper>);
-                expect(screen.getByText('N/A')).toBeInTheDocument();
-            });
         });
     });
 });

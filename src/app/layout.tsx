@@ -49,7 +49,7 @@ export default async function RootLayout({
             <body>
                 <MantineProvider defaultColorScheme="light">
                     <Notifications />
-                    {/* <BreakpointDebugger /> */}
+                    {/* <DebugBreakpoints /> */}
                     <CustomAppShell user={user} devMode={devMode}>
                         {children}
                     </CustomAppShell>

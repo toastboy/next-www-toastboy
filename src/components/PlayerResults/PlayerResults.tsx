@@ -1,4 +1,14 @@
-import { Divider, Paper, Table, TableTbody, TableTd, TableTh, TableTr, Title } from '@mantine/core';
+import type { TitleOrder } from '@mantine/core';
+import {
+    Divider,
+    Paper,
+    Table,
+    TableTbody,
+    TableTd,
+    TableTh,
+    TableTr,
+    Title,
+} from '@mantine/core';
 import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 
 import { getYearName } from '@/lib/tables';
@@ -9,12 +19,13 @@ export interface Props {
     player: PlayerDisplayType;
     year: number;
     record: PlayerRecordType | null;
+    titleOrder?: TitleOrder;
 }
 
-export const PlayerResults = ({ player, year, record }: Props) => {
+export const PlayerResults = ({ player, year, record, titleOrder = 3 }: Props) => {
     return (
-        <Paper shadow="xs" p="sm" w="14rem" withBorder>
-            <Title order={3} mb="xs" w="100%" ta="center">Results</Title>
+        <Paper shadow="xs" p="sm" miw="14rem" h="100%" withBorder>
+            <Title order={titleOrder} mb="xs" w="100%" ta="center">Results</Title>
             <Divider mb="xs" />
             <Table
                 summary={`${player.name}'s ${getYearName(year)} results record`}

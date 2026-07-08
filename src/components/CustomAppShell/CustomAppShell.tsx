@@ -85,12 +85,6 @@ export const CustomAppShell = ({ children, user, devMode }: Props) => {
                 </Container>
             </AppShell.Main>
 
-            <AppShell.Footer>
-                <Container ta="center">
-                    <Text>© 2025 Toastboy FC</Text>
-                </Container>
-            </AppShell.Footer>
-
         </AppShell>
     );
 };

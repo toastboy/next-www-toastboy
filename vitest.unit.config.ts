@@ -36,10 +36,10 @@ export default defineConfig({
                 'public/**',
                 'src/app/api/auth/**', // Better Auth handler — nothing to unit test here
                 'src/app/footy/docs/**', // MDX-only pages, nothing to unit test
-                'src/app/footy/layout.tsx', // passthrough wrapper, nothing to unit test here
-                'src/lib/auth.client.ts', // thin glue layer to Better Auth, nothing to unit test here
-                'src/lib/exportdb/**', // dev-only utility
-                'src/lib/importlivedb/**', // dev-only utility
+                'src/app/footy/layout.tsx', // Passthrough wrapper, nothing to unit test here
+                'src/lib/auth.client.ts', // Thin glue layer to Better Auth, nothing to unit test here
+                'src/lib/exportdb/**', // Dev-only utility
+                'src/lib/importlivedb/**', // Dev-only utility
                 'src/stories/**',
                 'src/tests/**',
                 'src/types/**',

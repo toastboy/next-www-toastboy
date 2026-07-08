@@ -4,13 +4,13 @@ import { Container, Text, useMantineTheme } from '@mantine/core';
 import { useMediaQuery } from '@mantine/hooks';
 import { useEffect, useMemo } from 'react';
 
-import classes from './BreakpointDebugger.module.css';
+import classes from './DebugBreakpoints.module.css';
 
-export const BreakpointDebugger = () => {
+export const DebugBreakpoints = () => {
     const theme = useMantineTheme();
 
     // Define media queries for each breakpoint
-    const isXs = useMediaQuery(`(max-width: ${theme.breakpoints.sm})`);
+    const isXs = useMediaQuery(`(max-width: calc(${theme.breakpoints.sm} - 1px))`);
     const isSm = useMediaQuery(`(min-width: ${theme.breakpoints.sm}) and (max-width: calc(${theme.breakpoints.md} - 1px))`);
     const isMd = useMediaQuery(`(min-width: ${theme.breakpoints.md}) and (max-width: calc(${theme.breakpoints.lg} - 1px))`);
     const isLg = useMediaQuery(`(min-width: ${theme.breakpoints.lg}) and (max-width: calc(${theme.breakpoints.xl} - 1px))`);

@@ -29,6 +29,7 @@ vi.mock('@/components/AutoRefresh/AutoRefresh', () => ({
 
 import { permanentRedirect } from 'next/navigation';
 
+import { sendEmail } from '@/actions/sendEmail';
 import PlayerPage, { generateMetadata } from '@/app/footy/player/[id]/page';
 import { PlayerProfile } from '@/components/PlayerProfile/PlayerProfile';
 import { getUserRole } from '@/lib/auth.server';
@@ -220,6 +221,17 @@ describe('Player [id] page', () => {
             await call();
 
             expect(outcomeService.getHistoryByPlayer).toHaveBeenCalledWith(player.id, 0, undefined, undefined);
+        });
+
+        it('calls getEmailDataById and passes sendEmail to PlayerProfile when role is admin', async () => {
+            (getUserRole as Mock).mockResolvedValue('admin');
+
+            renderToStaticMarkup(await call());
+
+            expect(playerService.getEmailDataById).toHaveBeenCalledWith(player.id);
+            const [[props]] = (PlayerProfile as Mock).mock.calls as [{ isAdmin: boolean; onSendEmail: unknown }][];
+            expect(props.isAdmin).toBe(true);
+            expect(props.onSendEmail).toBe(sendEmail);
         });
     });
 

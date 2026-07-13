@@ -1,7 +1,7 @@
 'use client';
 
 import type { TitleOrder } from '@mantine/core';
-import { Group, Menu, SimpleGrid, Title, UnstyledButton } from '@mantine/core';
+import { Group, Menu, Title, UnstyledButton } from '@mantine/core';
 import { IconCheck, IconChevronDown } from '@tabler/icons-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback } from 'react';
@@ -33,11 +33,7 @@ export function TitleWithYearDropdown({ title, order, year, validYears }: Props)
     }, [pathname, searchParams]);
 
     return (
-        <SimpleGrid
-            cols={{ base: 1, md: 2 }}
-            spacing={{ base: 'xs', lg: 'sm' }}
-            style={{ alignItems: 'baseline' }}
-        >
+        <Group justify="center" align="baseline" gap="xs" wrap="wrap">
             <Title order={order}>{title}</Title>
 
             <Menu shadow="md" styles={{ dropdown: { maxHeight: '60vh', overflowY: 'auto' } }}>
@@ -73,6 +69,6 @@ export function TitleWithYearDropdown({ title, order, year, validYears }: Props)
                     ))}
                 </Menu.Dropdown>
             </Menu>
-        </SimpleGrid>
+        </Group>
     );
 }

@@ -1,5 +1,8 @@
 import {
     Box,
+    Center,
+    Grid,
+    GridCol,
     Group,
     Paper,
     Stack,
@@ -17,7 +20,6 @@ import { TitleWithYearDropdown } from '@/components/TitleWithYearDropdown/TitleW
 import { PlayerDisplayType } from '@/services/Player';
 import { ClubSupporterDataType, CountrySupporterDataType, PlayerDataEmailDisplayType, PlayerFormType } from '@/types';
 import type { SendEmailProxy } from '@/types/actions/SendEmail';
-
 
 export interface Props {
     player: PlayerDisplayType;
@@ -58,42 +60,50 @@ export const PlayerProfile = ({
     playerData,
     onSendEmail,
 }: Props) => {
+    const playerCardsGridColSpan = { base: 12, sm: 6, lg: 3 };
+
     return (
         <Stack gap="sm" w="100%">
-            {/* Equal 1fr side tracks always stay the same width as each other, so the
-                title stays centred whether or not a nav link is present - no fixed
-                width needed. */}
-            <Box
+            <Grid
+                type="container"
                 mb="lg"
-                style={{
-                    display: 'grid',
-                    gridTemplateColumns: 'minmax(0, 1fr) auto minmax(0, 1fr)',
-                    alignItems: 'center',
-                    gap: 'var(--mantine-spacing-xs)',
-                }}
+                gap="xs"
+                align="center"
             >
-                <Box ta="center">
+                <GridCol span="content" align="center">
                     {prevPlayer ?
                         <PlayerLink player={prevPlayer} year={year} format="left-arrow" /> :
                         <Box data-testid="player-prev-placeholder" aria-hidden="true" />}
-                </Box>
-                <TitleWithYearDropdown order={1} title={player.name} year={year} validYears={activeYears} />
-                <Box ta="center">
+                </GridCol>
+                <GridCol span="auto" align="center">
+                    <Center>
+                        <TitleWithYearDropdown
+                            order={1}
+                            title={player.name}
+                            year={year}
+                            validYears={activeYears}
+                        />
+                    </Center>
+                </GridCol>
+                <GridCol span="content" align="center">
                     {nextPlayer ?
                         <PlayerLink player={nextPlayer} year={year} format="right-arrow" /> :
                         <Box data-testid="player-next-placeholder" aria-hidden="true" />}
-                </Box>
-            </Box>
-            <Group align="stretch" gap="md" wrap="wrap">
-                <Box style={{ flex: '1 1 0' }}>
+                </GridCol>
+            </Grid>
+            <Grid
+                type="container"
+                breakpoints={{ xs: '24em', sm: '36em', md: '54em', lg: '74em', xl: '88em' }}
+            >
+                <GridCol span={playerCardsGridColSpan}>
                     <PlayerCard
                         player={player}
                         clubs={clubs}
                         countries={countries}
                         trophies={trophies}
                     />
-                </Box>
-                <Box style={{ flex: '1 1 0' }}>
+                </GridCol>
+                <GridCol span={playerCardsGridColSpan}>
                     <PlayerInfo
                         player={player}
                         year={year}
@@ -105,14 +115,14 @@ export const PlayerProfile = ({
                         playerData={playerData}
                         onSendEmail={onSendEmail}
                     />
-                </Box>
-                <Box style={{ flex: '1 1 0' }}>
+                </GridCol>
+                <GridCol span={playerCardsGridColSpan}>
                     <PlayerResults player={player} year={year} record={record} />
-                </Box>
-                <Box style={{ flex: '1 1 0' }}>
+                </GridCol>
+                <GridCol span={playerCardsGridColSpan}>
                     <PlayerPositions player={player} year={year} record={record} />
-                </Box>
-            </Group>
+                </GridCol>
+            </Grid>
             <Group>
                 <Paper shadow="xs" p="sm" w="auto" withBorder style={{ flex: '1' }}>
                     <PlayerHeatmap data={history} year={year} />

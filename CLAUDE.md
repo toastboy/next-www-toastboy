@@ -43,15 +43,16 @@ npx vitest run --config vitest.services.config.ts path/to/test.ts
 
 **Required finalisation checklist — must complete before reporting any task done:**
 
-1. Run `npm run typecheck` and `npm run lint`.
+1. Run `npm run typecheck`, `npm run lint`, and `npx knip`.
 2. If there are errors or warnings, fix them all — run `npm run lint:fix` first
    to auto-fix what lint can, then re-run `npm run lint` to confirm. Do not skip
-   or dismiss any output.
+   or dismiss any output. Remove any unused files, exports, or dependencies
+   reported by `knip`.
 3. If you are unsure whether a problem is pre-existing, run `git stash` and
    repeat the checks on the clean tree to establish a baseline, then `git stash
    pop` and fix only the new ones.
-4. Never report work as done while either typecheck or lint exit with a non-zero
-   code or report any errors or warnings.
+4. Never report work as done while typecheck, lint, or knip exit with a
+   non-zero code or report any errors or warnings.
 
 ## Architecture & Layers
 

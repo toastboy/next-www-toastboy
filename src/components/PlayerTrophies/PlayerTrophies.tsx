@@ -10,20 +10,31 @@ export interface Props {
 }
 
 export const PlayerTrophies = ({ trophies }: Props) => {
-    // If the player has no trophies, render nothing
     const totalTrophies = Array.from(trophies.values())
         .reduce((sum, trophyList) => sum + trophyList.length, 0);
     if (totalTrophies === 0) return null;
 
     return (
-        <Stack gap="0.3em" m="xs">
-            {TableNameSchema.options.map((table) => (
-                <PlayerTrophyTally
-                    key={table}
-                    table={table}
-                    trophies={trophies.get(table) ?? []}
-                />
-            ))}
+        <Stack gap="2cqw" m="1cqw">
+            {TableNameSchema.options.map((table) => {
+                const trophyList = trophies.get(table);
+
+                if (!trophyList || trophyList.length === 0) return null;
+
+                return (
+                    // Icon size is a proportion of the mugshot's own rendered
+                    // width (see the `imageContainer` query container in
+                    // PlayerCard.module.css), so it grows and shrinks
+                    // together with it.
+                    <PlayerTrophyTally
+                        key={table}
+                        table={table}
+                        trophies={trophyList}
+                        w="5cqw"
+                        h="5cqw"
+                    />
+                );
+            })}
         </Stack>
     );
 };

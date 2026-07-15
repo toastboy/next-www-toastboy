@@ -2,6 +2,13 @@
     --card-overlay-opacity: 0.4;
 }
 
+/* Establishes a query container so the badges/trophies below can size
+   themselves as a proportion of the mugshot's own rendered width, rather
+   than a fixed rem value, so they scale together with it. */
+.imageContainer {
+    container-type: inline-size;
+}
+
 .trophies {
     position: absolute;
     background: rgba(0, 0, 0, var(--card-overlay-opacity));
@@ -9,6 +16,6 @@
 
 .badges {
     position: absolute;
-    max-width: 5rem;
+    max-width: 30cqw;
     background: rgba(0, 0, 0, var(--card-overlay-opacity));
 }

@@ -9,11 +9,13 @@ export interface Props {
 
 export const PlayerCountries = ({ countries }: Props) => {
     return countries.length > 0 ? (
-        <Flex gap="xs" p="xs" direction="column">
+        <Flex gap="2cqw" p="1cqw" direction="column">
             {countries.map((item) => (
                 <CountryFlag
                     key={item.countryFIFACode}
                     country={item.country}
+                    w="12cqw"
+                    h="auto"
                 />
             ))}
         </Flex>

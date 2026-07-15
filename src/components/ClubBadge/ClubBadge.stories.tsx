@@ -19,5 +19,7 @@ type Story = StoryObj<typeof meta>;
 export const Primary: Story = {
     args: {
         club: defaultClub,
+        w: '10rem',
+        h: 'auto',
     },
 };

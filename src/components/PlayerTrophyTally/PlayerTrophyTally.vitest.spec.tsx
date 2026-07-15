@@ -12,6 +12,8 @@ describe('PlayerTrophyTally', () => {
                 <PlayerTrophyTally
                     table={TableNameSchema.enum.points}
                     trophies={[]}
+                    w="5cqw"
+                    h="5cqw"
                 />
             </Wrapper>,
         );
@@ -25,6 +27,8 @@ describe('PlayerTrophyTally', () => {
                 <PlayerTrophyTally
                     table={TableNameSchema.enum.points}
                     trophies={defaultPlayerRecordList.slice(0, 3)}
+                    w="5cqw"
+                    h="5cqw"
                 />
             </Wrapper>,
         );
@@ -39,6 +43,8 @@ describe('PlayerTrophyTally', () => {
                 <PlayerTrophyTally
                     table={TableNameSchema.enum.points}
                     trophies={defaultPlayerRecordList.slice(0, 6)}
+                    w="5cqw"
+                    h="5cqw"
                 />
             </Wrapper>,
         );
@@ -54,6 +60,8 @@ describe('PlayerTrophyTally', () => {
                 <PlayerTrophyTally
                     table={TableNameSchema.enum.averages}
                     trophies={defaultPlayerRecordList.slice(0, 1)}
+                    w="5cqw"
+                    h="5cqw"
                 />
             </Wrapper>,
         );
@@ -67,6 +75,8 @@ describe('PlayerTrophyTally', () => {
                 <PlayerTrophyTally
                     table={TableNameSchema.enum.stalwart}
                     trophies={defaultPlayerRecordList.slice(0, 1)}
+                    w="5cqw"
+                    h="5cqw"
                 />
             </Wrapper>,
         );
@@ -80,6 +90,8 @@ describe('PlayerTrophyTally', () => {
                 <PlayerTrophyTally
                     table={TableNameSchema.enum.speedy}
                     trophies={defaultPlayerRecordList.slice(0, 1)}
+                    w="5cqw"
+                    h="5cqw"
                 />
             </Wrapper>,
         );
@@ -93,6 +105,8 @@ describe('PlayerTrophyTally', () => {
                 <PlayerTrophyTally
                     table={TableNameSchema.enum.pub}
                     trophies={defaultPlayerRecordList.slice(0, 1)}
+                    w="5cqw"
+                    h="5cqw"
                 />
             </Wrapper>,
         );

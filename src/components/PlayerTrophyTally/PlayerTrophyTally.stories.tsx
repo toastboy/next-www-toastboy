@@ -20,5 +20,7 @@ export const Primary: Story = {
     args: {
         table: 'averages',
         trophies: [defaultPlayerRecord],
+        w: '3rem',
+        h: '3rem',
     },
 };

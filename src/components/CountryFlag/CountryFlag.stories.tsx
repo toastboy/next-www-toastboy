@@ -19,5 +19,7 @@ type Story = StoryObj<typeof meta>;
 export const Primary: Story = {
     args: {
         country: defaultCountry,
+        w: '10rem',
+        h: 'auto',
     },
 };

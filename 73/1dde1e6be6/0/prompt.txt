@@ -1,0 +1,5 @@
+❯ npx knip
+Analyzing workspace…
+◇ injected env (9) from .env.playwright // tip: ⌘ enable debugging { debug: true }
+Unused files (1)
+e2e/seed.setup.ts

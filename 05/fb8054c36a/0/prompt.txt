@@ -1,0 +1,281 @@
+This session is being continued from a previous conversation that ran out of context. The summary below covers the earlier portion of the conversation.
+
+Summary:
+1. Primary Request and Intent:
+   The session had several sequential requests:
+   - **Refactor 1 (approved at previous session end)**: Move `playerRecordService.upsertFromGameDay` + error handling from `src/actions/setDrinkers.ts` outer wrapper into `src/lib/actions/setDrinkers/setDrinkers.ts` core, making outer wrapper a pure trampoline
+   - **Refactor 2**: Same pattern for `src/actions/setGameResult.ts` → `src/lib/actions/setGameResult/setGameResult.ts`
+   - **Refactor 3**: Create `src/lib/actions/updateInvoiceGameDays/updateInvoiceGameDays.ts` core (extracting business logic from the outer wrapper)
+   - **Barrel export discussion**: User noted inconsistency with barrel exports; audit fork ran; recommendation to delete `src/types/index.ts` was made but not yet actioned
+   - **Rename lib/actions → lib/core**: User asked about naming confusion between `src/actions` and `src/lib/actions`; user approved renaming to `src/lib/core/`
+   - **Test coverage for src/lib**: User asked to start adding tests for missing lines/branches in `src/lib`
+
+2. Key Technical Concepts:
+   - Next.js App Router server actions (`"use server"` boundary)
+   - Deps-injection pattern for testability in lib cores (`SetDrinkersDeps`, `SetGameResultDeps`)
+   - `playerRecordService.upsertFromGameDay` as post-mutation side effect that belongs in the business logic core
+   - `InternalError` + `normalizeUnknownError` pattern for wrapping upstream errors with typed details
+   - Vitest `vi.hoisted()` pattern for mock setup before imports
+   - `vi.fn().mockResolvedValue(...)` vs `vi.fn()` — the former gives TypeScript enough type info to satisfy interface constraints
+   - Barrel export (`index.ts`) pattern — used consistently in `src/services/*/` and `src/lib/core/*/` directories
+   - `vi.stubEnv()` / `vi.unstubAllEnvs()` for testing env-var dependent code
+   - `vi.stubGlobal()` for testing `window`-dependent code
+   - Istanbul/v8 branch coverage — `??` operator creates two branches; the `"th"` fallback in `getOrdinal` is dead code for English ordinals
+   - Floating-point precision: `1.005 * 100 = 100.4999...` in JavaScript
+
+3. Files and Code Sections:
+
+   **`src/lib/core/setDrinkers/setDrinkers.ts`** (formerly `src/lib/actions/setDrinkers/setDrinkers.ts`):
+   - Added `playerRecordService: Pick<typeof playerRecordService, 'upsertFromGameDay'>` to `SetDrinkersDeps` interface and `defaultDeps`
+   - Added try/catch block after outcome updates in `setDrinkersCore`:
+   ```ts
+   try {
+       await deps.playerRecordService.upsertFromGameDay(data.gameDayId);
+   } catch (error) {
+       const normalizedError = normalizeUnknownError(error);
+       throw new InternalError(
+           `Failed to update player records for game day ${data.gameDayId}.`,
+           {
+               cause: normalizedError,
+               details: {
+                   gameDayId: data.gameDayId,
+                   operation: 'upsertFromGameDay',
+                   upstreamCode: normalizedError.code,
+               },
+               publicMessage: 'Failed to update player records.',
+           },
+       );
+   }
+   ```
+
+   **`src/lib/core/setGameResult/setGameResult.ts`** (formerly `src/lib/actions/...`):
+   - Added `playerRecordService` to `SetGameResultDeps` interface and `defaultDeps`
+   - Added same try/catch block after `updateTeamOutcomes` calls and before `return updatedGameDay`
+
+   **`src/lib/core/updateInvoiceGameDays/updateInvoiceGameDays.ts`** (NEW):
+   ```ts
+   import 'server-only';
+   import gameDayService from '@/services/GameDay';
+   import type { UpdateInvoiceGameDaysInputSchema } from '@/types/actions/UpdateInvoiceGameDays';
+   import type z from 'zod';
+
+   type UpdateInvoiceGameDaysInput = z.infer<typeof UpdateInvoiceGameDaysInputSchema>;
+
+   interface UpdateInvoiceGameDaysDeps {
+       gameDayService: Pick<typeof gameDayService, 'update'>;
+   }
+
+   const defaultDeps: UpdateInvoiceGameDaysDeps = { gameDayService };
+
+   export async function updateInvoiceGameDaysCore(
+       data: UpdateInvoiceGameDaysInput,
+       deps: UpdateInvoiceGameDaysDeps = defaultDeps,
+   ): Promise<void> {
+       await Promise.all(
+           data.gameDays.map((gd) => deps.gameDayService.update({ id: gd.id, game: gd.gameScheduled })),
+       );
+   }
+   ```
+
+   **`src/lib/core/updateInvoiceGameDays/index.ts`** (NEW):
+   ```ts
+   export { updateInvoiceGameDaysCore } from './updateInvoiceGameDays';
+   ```
+
+   **`src/actions/setDrinkers.ts`** — simplified to pure trampoline:
+   ```ts
+   'use server';
+   import { revalidatePath } from 'next/cache';
+   import { setDrinkersCore } from '@/lib/core/setDrinkers';
+   import { requireAdmin } from '@/lib/auth.server';
+   import { broadcast } from '@/lib/events';
+   import { SetDrinkersInputSchema } from '@/types/actions/SetDrinkers';
+   import { FootyChannel } from '@/types/FootyChannel';
+
+   export async function setDrinkers(rawData: unknown) {
+       await requireAdmin();
+       const data = SetDrinkersInputSchema.parse(rawData);
+       const result = await setDrinkersCore(data);
+       revalidatePath('/footy/admin/drinkers');
+       revalidatePath(`/footy/admin/drinkers/${data.gameDayId}`);
+       revalidatePath('/footy/pub');
+       revalidatePath('/footy/table/pub');
+       revalidatePath(`/footy/game/${data.gameDayId}`);
+       broadcast(FootyChannel.Games);
+       return result;
+   }
+   ```
+
+   **`src/actions/setGameResult.ts`** — simplified (removed playerRecordService import, InternalError, normalizeUnknownError; kept requireAdmin + parse + core call + revalidate + broadcast)
+
+   **`src/actions/updateInvoiceGameDays.ts`** — simplified:
+   ```ts
+   'use server';
+   import { revalidatePath } from 'next/cache';
+   import { updateInvoiceGameDaysCore } from '@/lib/core/updateInvoiceGameDays';
+   import { requireAdmin } from '@/lib/auth.server';
+   import { broadcast } from '@/lib/events';
+   import { UpdateInvoiceGameDaysInputSchema } from '@/types/actions/UpdateInvoiceGameDays';
+   import { FootyChannel } from '@/types/FootyChannel';
+
+   export async function updateInvoiceGameDays(rawData: unknown) {
+       await requireAdmin();
+       const data = UpdateInvoiceGameDaysInputSchema.parse(rawData);
+       await updateInvoiceGameDaysCore(data);
+       revalidatePath('/footy/admin/invoice');
+       revalidatePath('/footy/fixtures');
+       broadcast([FootyChannel.Money, FootyChannel.Games]);
+   }
+   ```
+
+   **`src/lib/core/setDrinkers/setDrinkersAction.vitest.spec.ts`** — simplified (removed upsertFromGameDayMock and @/services/PlayerRecord mock; removed 2 error tests; added core propagation test):
+   ```ts
+   const { revalidatePathMock, setDrinkersCoreMock, requireAdminMock } = vi.hoisted(() => ({...}));
+   // No longer mocks @/services/PlayerRecord
+   // Two tests: success path + propagates errors from core
+   ```
+
+   **`src/lib/core/setGameResult/setGameResultAction.vitest.spec.ts`** — same simplification pattern
+
+   **`src/lib/core/setDrinkers/setDrinkers.vitest.spec.ts`** — updated to include `playerRecordService` in all deps, added 3 new tests:
+   - `calls upsertFromGameDay with the gameDayId after updating outcomes`
+   - `throws InternalError with typed details when player-record update fails with a known error`
+   - `throws InternalError wrapping a plain error when player-record update fails unexpectedly`
+   - Key: inline deps objects used (not a `makeDeps` helper) because `vi.fn().mockResolvedValue(...)` provides TypeScript type inference
+
+   **`src/lib/core/setGameResult/setGameResult.vitest.spec.ts`** — added `playerRecordService` to shared deps; used `deps()` helper function; added 3 new player-record tests
+
+   **`src/lib/core/updateInvoiceGameDays/updateInvoiceGameDaysAction.vitest.spec.ts`** — converted from todos to real tests mocking `@/lib/core/updateInvoiceGameDays`
+
+   **`src/lib/core/updateInvoiceGameDays/updateInvoiceGameDays.vitest.spec.ts`** (NEW):
+   - Tests: calls update for each game day; empty array; service errors propagate
+
+   **Rename: `src/lib/actions/` → `src/lib/core/`**:
+   - `mv src/lib/actions src/lib/core`
+   - `perl -pi -e 's|lib/actions|lib/core|g'` on ~70 affected files
+   - `npm run lint:fix` to fix 18 import-sort warnings
+
+   **`CLAUDE.md`** — Architecture section updated:
+   ```
+   - **Server actions:** `src/actions/` — thin `"use server"` wrappers: auth guard + call core + revalidate + broadcast; mutations only
+   - **Action cores:** `src/lib/core/` — pure business logic called by server actions; injectable deps for testing; no Next.js boundary concerns
+   ```
+
+   **`src/lib/money.vitest.spec.ts`** — filled in all todos:
+   - `fromPounds`: basic conversion + rounding test (FAILING due to float precision)
+   - `formatCurrency`: £1050 → '£10.50', zero formatting
+   - `formatCurrencySigned`: positive (no minus), negative (-£), zero
+   - `getBalanceColor`: red/teal/dimmed
+
+   **`src/lib/stream.vitest.spec.ts`** — filled in todos + new tests:
+   - Multiple chunks concatenated
+   - Uint8Array chunks converted via `Buffer.from(data)` (covers line 21 branch)
+   - Empty stream → empty Buffer
+   - Error event → rejection
+
+   **`src/lib/tables.vitest.spec.ts`** — added missing function tests:
+   - `getYearName`: 0 → 'All-time', 2025 → '2025'
+   - `TableTitle`: speedy/'Captain Speedy', stalwart/'Stalwart Standings', others/'X Table'
+   - `QualifiedTableName`: year 0 uses 'All-time', otherwise year string
+   - `UnqualifiedTableName`: averages/speedy return regex-matched strings, others return undefined
+
+   **`src/lib/gameResult.vitest.spec.ts`** — added line 77 test:
+   ```ts
+   it('returns null for a valid but unrecognised points combination (e.g. both teams on 0)', () => {
+       expect(getGameWinnersFromTeams(withPoints(0), withPoints(0))).toBeNull();
+   });
+   ```
+
+   **`src/lib/urls.vitest.spec.ts`** (NEW):
+   ```ts
+   describe('getPublicBaseUrl', () => {
+       // Tests: SITE_URL, NEXT_PUBLIC_SITE_URL, BETTER_AUTH_URL, window.location.origin, localhost fallback
+       // Uses vi.stubEnv() and vi.stubGlobal('window', ...)
+       // Uses vi.unstubAllEnvs() and vi.unstubAllGlobals() in afterEach
+   });
+   ```
+
+   **`src/lib/verificationToken.vitest.spec.ts`** (NEW):
+   ```ts
+   describe('hashVerificationToken', () => {
+       // 64-char hex, deterministic, different for different inputs
+   });
+   describe('createVerificationToken', () => {
+       // returns token/tokenHash/expiresAt, default 7-day TTL, custom TTL, unique each call
+       // Uses vi.useFakeTimers() / vi.setSystemTime()
+   });
+   ```
+
+4. Errors and Fixes:
+   - **TypeScript error with `makeDeps` helper in `setDrinkers.vitest.spec.ts`**:
+     - `vi.fn()` without `mockResolvedValue` returns `Mock<Procedure | Constructable>` which TS rejects as incompatible with specific function signatures in `SetDrinkersDeps`
+     - Fix: removed `makeDeps` helper; used inline deps objects where `vi.fn().mockResolvedValue(...)` provides enough type info
+   
+   - **Lint warnings (import sort) after `lib/actions` → `lib/core` rename**:
+     - `perl -pi -e` substitution changed import paths but didn't reorder them
+     - Fix: `npm run lint:fix` auto-fixed all 18 warnings
+   
+   - **`fromPounds` test assertion fails due to floating-point**:
+     - Test: `expect(fromPounds(1.005)).toBe(101)` fails because `1.005 * 100 = 100.4999...` in JS
+     - `Math.round(100.4999...) = 100`, not 101
+     - **NOT YET FIXED** — this is the current failing test
+
+5. Problem Solving:
+   - Successfully moved player-record upsert + error handling from two outer action wrappers into their lib cores, making the architecture consistent: outer wrappers are pure trampolines
+   - Successfully created updateInvoiceGameDays lib core to extract business logic
+   - All 1491 tests passed after refactors
+   - Barrel export audit confirmed `src/lib/core/*/index.ts` pattern is consistently used
+   - Rename from `lib/actions` to `lib/core` was executed cleanly with typecheck passing and lint clean after fix
+
+6. All User Messages:
+   - (Session continued from previous conversation where user had approved three refactors)
+   - "What's the point of 'export { updateInvoiceGameDaysCore } from './updateInvoiceGameDays';'? Surely callers can just import from ./updateInvoiceGameDays themselves?"
+   - "Barrel exports are something else I don't think I'm consistent with at the moment"
+   - "I wonder if src/actions and src/lib/actions are too similarly named, contributing to my fuzziness. What could be a better name for one or the other to make it clearer?"
+   - "Yes" [to renaming `src/lib/actions` to `src/lib/core`]
+   - "Let's start adding test coverage for the missing lines and branches in src/lib"
+
+7. Pending Tasks:
+   - **Fix failing `fromPounds` test**: The assertion `expect(fromPounds(1.005)).toBe(101)` is wrong due to floating-point imprecision — `1.005 * 100 = 100.499...` so `Math.round` gives 100, not 101. Need to fix the test to use values that work correctly with `Math.round`.
+   - **Continue adding test coverage to `src/lib`**: Many files still have gaps:
+     - `secrets.ts` (63.33%) — complex, needs module isolation and fs mocking
+     - `gameInvitations.ts` (73.91% branches, lines 141, 155-168) — `getGameInvitationResponseDetails` untested
+     - `api.ts` (81.81% branches, line 70) — `buildJsonResponse` private function
+     - `lib/errors/request.ts` (79.06% branches, lines 43-44, 113)
+     - `lib/errors/http.ts` (91.66% branches, line 32)
+     - `lib/errors/AppError.ts` (96% branches, lines 131-133)
+     - `lib/observability/sentry.ts` and `sentryConfig.ts`
+     - `lib/email/microsoftGraphApi.ts` (lines 105-107)
+     - `invitations.ts` (lines 155-168 only in the sense of the `...nvitations.ts` file — may be `gameInvitations.ts`)
+     - `dates.ts` line 48 (dead branch — `?? "th"` fallback for `getOrdinal` is unreachable with English ordinals)
+     - `azure.ts` (0% — Azure Blob Storage, likely needs mocking)
+     - `auth.client.ts` (0% — client-side auth)
+   - **Barrel export cleanup**: Potentially delete `src/types/index.ts` and update 46 callers (not yet approved by user)
+
+8. Current Work:
+   Immediately before this summary, the session was running tests for the new lib coverage additions and hit a failing test:
+   
+   ```
+   FAIL src/lib/money.vitest.spec.ts > fromPounds > rounds fractional pence to the nearest integer
+   AssertionError: expected 100 to be 101
+
+   expect(fromPounds(1.005)).toBe(101);  // fails
+   ```
+
+   The test in `src/lib/money.vitest.spec.ts` was:
+   ```ts
+   it('rounds fractional pence to the nearest integer', () => {
+       expect(fromPounds(1.005)).toBe(101);  // WRONG: 1.005 * 100 = 100.4999... → rounds to 100
+       expect(fromPounds(0.994)).toBe(99);   // this one is correct
+   });
+   ```
+
+   5 other test files (stream, tables, gameResult, urls, verificationToken) all passed. Only the `fromPounds` rounding test assertion is wrong.
+
+9. Optional Next Step:
+   Fix the failing `fromPounds` test assertion. The test `expect(fromPounds(1.005)).toBe(101)` is incorrect because JavaScript floating-point arithmetic gives `1.005 * 100 = 100.49999999999999`, so `Math.round` returns 100, not 101. The test should be updated to use a value that truly demonstrates rounding: for example `fromPounds(0.995)` (= 99.5 → rounds to 100) or `fromPounds(1.999)` (= 199.9 → rounds to 200). The second assertion `expect(fromPounds(0.994)).toBe(99)` may also be affected by floating-point (`0.994 * 100 = 99.39999...` which rounds to 99 — this one is fine). The fix is to update the test assertion to use values that genuinely round predictably, or change the assertion to match actual behaviour.
+
+   The user's request was: "Let's start adding test coverage for the missing lines and branches in src/lib" — and this fix is directly needed to complete that work.
+
+If you need specific details from before compaction (like exact code snippets, error messages, or content you generated), read the full transcript at: /Users/toastboy/.claude/projects/-Volumes-Development-next-www-toastboy/1e061506-afc2-4876-b801-69b394716705.jsonl
+Continue the conversation from where it left off without asking the user any further questions. Resume directly — do not acknowledge the summary, do not recap what was happening, do not preface with "I'll continue" or similar. Pick up the last task as if the break never happened.

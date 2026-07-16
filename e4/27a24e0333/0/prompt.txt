@@ -1,0 +1,26 @@
+Help me fix 
+
+    /Volumes/Development/next-www-toastboy  on   main !2 ──────────────────────── took 16s   at 21:27:15  
+❯ npm i            
+npm error code ERESOLVE
+npm error ERESOLVE unable to resolve dependency tree
+npm error
+npm error While resolving: next-www-toastboy@undefined
+npm error Found: typescript@7.0.2
+npm error node_modules/typescript
+npm error   dev typescript@"^7.0.2" from the root project
+npm error
+npm error Could not resolve dependency:
+npm error peer typescript@">=4.8.4 <6.1.0" from @typescript-eslint/parser@8.63.0
+npm error node_modules/@typescript-eslint/parser
+npm error   dev @typescript-eslint/parser@"^8.63.0" from the root project
+npm error   peer @typescript-eslint/parser@"^8.63.0" from @typescript-eslint/eslint-plugin@8.63.0
+npm error   node_modules/@typescript-eslint/eslint-plugin
+npm error     dev @typescript-eslint/eslint-plugin@"^8.63.0" from the root project
+npm error
+npm error Fix the upstream dependency conflict, or retry this command with --force or --legacy-peer-deps to accept an incorrect (and potentially broken) dependency resolution.
+npm error
+npm error
+npm error For a full report see:
+npm error /Users/toastboy/.npm/_logs/2026-07-08T20_27_20_936Z-eresolve-report.txt
+npm error A complete log of this run can be found in: /Users/toastboy/.npm/_logs/2026-07-08T20_27_20_936Z-debug-0.log

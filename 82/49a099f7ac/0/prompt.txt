@@ -1,0 +1,1 @@
+If all addresses normalize to an empty string, emails becomes '', but the form can still be submitted (and onSendEmail will receive an empty to). Add a guard (e.g., disable the submit button / show validation) when emails.length === 0 to prevent attempting to send to an empty recipient list.

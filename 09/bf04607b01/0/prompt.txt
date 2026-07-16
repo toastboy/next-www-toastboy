@@ -1,0 +1,12 @@
+Run npx playwright test
+Error: Project firefox must not depend on a teardown project seed-chromium
+    at resolveProjectDependencies (/home/runner/work/next-www-toastboy/next-www-toastboy/node_modules/playwright/lib/common/index.js:732:15)
+    at new FullConfigInternal (/home/runner/work/next-www-toastboy/next-www-toastboy/node_modules/playwright/lib/common/index.js:615:5)
+    at loadConfig (/home/runner/work/next-www-toastboy/next-www-toastboy/node_modules/playwright/lib/common/index.js:1343:22)
+    at Object.loadConfigFromFile (/home/runner/work/next-www-toastboy/next-www-toastboy/node_modules/playwright/lib/common/index.js:1553:10)
+    at runTests (/home/runner/work/next-www-toastboy/next-www-toastboy/node_modules/playwright/lib/cli/testActions.js:46:18)
+    at _Command.<anonymous> (/home/runner/work/next-www-toastboy/next-www-toastboy/node_modules/playwright/lib/program.js:53:7)
+Error: Process completed with exit code 1.
+
+
+We are going in the wrong direction here. Rather than project by project, shouldn't every _test_ be idempotent?

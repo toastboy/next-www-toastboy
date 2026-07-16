@@ -1,0 +1,1 @@
+Changing players from PlayerDataType[] to PlayerEmailDataType[] makes player.name optional (name?: string | null). In SendEmailForm, names = players.map((player) => player.name).join(', ') can now render undefined/null in the UI/tooltip. Consider normalising names (e.g., filter falsy names, or fall back to a safe placeholder) before joining.

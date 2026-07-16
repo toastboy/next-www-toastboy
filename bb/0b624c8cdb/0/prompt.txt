@@ -1,0 +1,1 @@
+Finally InvitationsSent is the same as mailSent not null and Scheduled, so drop it

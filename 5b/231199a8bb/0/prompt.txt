@@ -1,0 +1,1 @@
+The example code here shows starting a DB container on the fly in the test - https://testcontainers.com/guides/getting-started-with-testcontainers-for-nodejs/ - any reason not to do that?

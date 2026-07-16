@@ -1,0 +1,22 @@
+●  Starting...
+│ ╭────────────────────────────────────────────────────────╮
+│ │   Storybook ready!                                     │
+│ │                                                        │
+│ │   - Local:                http://localhost:6006/       │
+│ │   - On your network:      http://172.16.18.120:6006/   │
+│ │                                                        │
+│ ╰────────────────────────────────────────────────────────╯
+│
+●  109 ms for manager and 522 ms for preview
+│
+■  Vite The request id
+│  "./node_modules/@storybook/addon-docs/dist/_browser-chunks/DocsRenderer-JROSPFPF.js"
+│  is outside of Vite serving allow list.
+│
+▲  Vite
+│  - /Volumes/Development/next-www-toastboy/src
+│  - /Volumes/Development/next-www-toastboy/.storybook
+│  - /Volumes/Development/next-www-toastboy/node_modules/vite/dist/client
+
+│  Refer to docs https://vite.dev/config/server-options.html#server-fs-allow for
+│  configurations and more details.

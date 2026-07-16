@@ -1,0 +1,81 @@
+I added 'op run' to the VS Code task but the auth problem is still there:
+
+ *  Executing task: op run --env-file ./.env -- npm run storybook 
+
+
+> storybook
+> storybook dev -p 6006
+
+
+┌  storybook v10.4.6
+(node:7987) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+│
+●  Starting...
+│ ╭────────────────────────────────────────────────────────╮
+│ │   Storybook ready!                                     │
+│ │                                                        │
+│ │   - Local:                http://localhost:6006/       │
+│ │   - On your network:      http://172.16.18.120:6006/   │
+│ │                                                        │
+│ ╰────────────────────────────────────────────────────────╯
+│
+●  103 ms for manager and 439 ms for preview
+
+Chromatic: Chromatic CLI v16.10.0
+           https://www.chromatic.com/docs/cli
+
+Chromatic: Skipping update check
+Chromatic: Authenticating with Chromatic
+Chromatic:     → Connecting to https://index.chromatic.com
+Chromatic:     → No Access
+
+Chromatic: ✖ Failed to authenticate
+           
+           Error communicating with the Chromatic API. Check if your Chromatic client is up-to-date.
+           Service status updates are provided at https://status.chromatic.com
+           
+           → FORBIDDEN: No Access
+           
+           If you need help, please chat with us at https://www.chromatic.com/docs/cli for the fastest response.
+           You can also email the team at support@chromatic.com if chat is not an option.
+           
+           Please provide us with the above CLI output and the following info:
+           {
+             "timestamp": "2026-06-27T07:40:44.648Z",
+             "sessionId": "deedf0fc-2d72-4fbd-8f08-994275f202b4",
+             "nodePlatform": "darwin",
+             "nodeVersion": "26.0.0",
+             "packageName": "chromatic",
+             "packageVersion": "16.10.0",
+             "flags": {
+               "interactive": false
+             },
+             "extraOptions": {
+               "projectId": "Project:693a94b56f442dc4a074aee9",
+               "autoAcceptChanges": false,
+               "exitOnceUploaded": false,
+               "exitZeroOnChanges": true,
+               "forceRebuild": true,
+               "fromCI": false,
+               "interactive": false,
+               "isLocalBuild": true,
+               "logPrefix": "\u001b[38;5;202mChromatic\u001b[0m:",
+               "skip": false,
+               "skipUpdateCheck": true,
+               "experimental_abortSignal": {}
+             },
+             "configuration": {
+               "configFile": "chromatic.config.json",
+               "projectId": "Project:693a94b56f442dc4a074aee9",
+               "onlyChanged": true,
+               "zip": true,
+               "buildScriptName": "build:storybook"
+             },
+             "isLocalBuild": true,
+             "buildScript": "storybook build",
+             "exitCode": 202,
+             "exitCodeKey": "GRAPHQL_ERROR",
+             "errorType": "GraphQLError",
+             "errorMessage": "✖ Failed to authenticate"
+           }

@@ -1,0 +1,214 @@
+# Instructions
+Following Playwright test failed.
+Explain why, be concise, respect Playwright best practices.
+Provide a snippet of code with the fix, if possible.
+Test info
+Name: newgame.spec.ts >> New game flow >> allows admins to send invitations and players can respond
+Location: e2e/newgame.spec.ts:19:9
+Error details
+Error: locator.click: Error: strict mode violation: getByLabel('Response', { exact: true }) resolved to 2 elements:
+    1) <input readonly value="Yes" role="combobox" autocomplete="off" aria-expanded="false" data-variant="default" id="mantine-qlow1hjss" aria-haspopup="listbox" class="m_8fb7ebe7 mantine-Input-input mantine-Select-input"/> aka getByRole('combobox', { name: 'Response' })
+    2) <div role="listbox" id="mantine-fp8z31xkf" class="m_b2821a6e mantine-Select-options" aria-labelledby="mantine-qlow1hjss-label">…</div> aka locator('#mantine-fp8z31xkf')
+
+Call log:
+  - waiting for getByLabel('Response', { exact: true })
+
+Page snapshot
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e5]:
+        - link "Toastboy FC Crest" [ref=e6] [cursor=pointer]:
+          - /url: /footy
+          - img "Toastboy FC Crest" [ref=e7]
+        - paragraph [ref=e9]: Toastboy FC
+    - navigation [ref=e10]:
+      - navigation [ref=e11]:
+        - region "Navbar header" [ref=e12]
+        - region "Navbar links" [ref=e13]:
+          - generic [ref=e15]:
+            - generic [ref=e16]:
+              - button "Games" [ref=e17] [cursor=pointer]:
+                - generic [ref=e18]:
+                  - generic [ref=e20]: Games
+                  - img [ref=e21]
+              - generic [ref=e23]:
+                - link "Next Game" [ref=e24] [cursor=pointer]:
+                  - /url: /footy/nextgame
+                - link "Results" [ref=e25] [cursor=pointer]:
+                  - /url: /footy/results
+                - link "Fixtures" [ref=e26] [cursor=pointer]:
+                  - /url: /footy/fixtures
+                - link "Books" [ref=e27] [cursor=pointer]:
+                  - /url: /footy/books
+                - link "Curse of the Bibs" [ref=e28] [cursor=pointer]:
+                  - /url: /footy/curse
+              - button "Tables" [ref=e29] [cursor=pointer]:
+                - generic [ref=e30]:
+                  - generic [ref=e32]: Tables
+                  - img [ref=e33]
+              - generic [ref=e35]:
+                - link "Winners" [ref=e36] [cursor=pointer]:
+                  - /url: /footy/winners
+                - link "Points" [ref=e37] [cursor=pointer]:
+                  - /url: /footy/points
+                - link "Averages" [ref=e38] [cursor=pointer]:
+                  - /url: /footy/averages
+                - link "Stalwart Standings" [ref=e39] [cursor=pointer]:
+                  - /url: /footy/stalwart
+                - link "Captain Speedy" [ref=e40] [cursor=pointer]:
+                  - /url: /footy/speedy
+                - link "Pub" [ref=e41] [cursor=pointer]:
+                  - /url: /footy/pub
+              - button "Players" [ref=e42] [cursor=pointer]:
+                - generic [ref=e43]:
+                  - generic [ref=e45]: Players
+                  - img [ref=e46]
+              - generic [ref=e48]:
+                - link "Info" [ref=e49] [cursor=pointer]:
+                  - /url: /footy/info
+                - link "Player List" [ref=e50] [cursor=pointer]:
+                  - /url: /footy/players
+                - link "Turnout" [ref=e51] [cursor=pointer]:
+                  - /url: /footy/turnout
+                - link "Rules" [ref=e52] [cursor=pointer]:
+                  - /url: /footy/rules
+                - link "World Map" [ref=e53] [cursor=pointer]:
+                  - /url: /footy/countrymap
+                - link "Family Tree" [ref=e54] [cursor=pointer]:
+                  - /url: /footy/familytree
+            - generic [ref=e55]:
+              - button "Admin" [ref=e56] [cursor=pointer]:
+                - generic [ref=e57]:
+                  - generic [ref=e59]: Admin
+                  - img [ref=e60]
+              - generic [ref=e62]:
+                - link "Dashboard" [ref=e63] [cursor=pointer]:
+                  - /url: /footy/admin
+                - link "Drinkers" [ref=e64] [cursor=pointer]:
+                  - /url: /footy/admin/drinkers
+                - link "Invoice" [ref=e65] [cursor=pointer]:
+                  - /url: /footy/admin/invoice
+                - link "Money" [ref=e66] [cursor=pointer]:
+                  - /url: /footy/admin/money
+                - link "More Games" [ref=e67] [cursor=pointer]:
+                  - /url: /footy/admin/moregames
+                - link "New Game" [ref=e68] [cursor=pointer]:
+                  - /url: /footy/admin/newgame
+                - link "New Player" [ref=e69] [cursor=pointer]:
+                  - /url: /footy/admin/newplayer
+                - link "Picker" [ref=e70] [cursor=pointer]:
+                  - /url: /footy/admin/picker
+                - link "Players" [ref=e71] [cursor=pointer]:
+                  - /url: /footy/admin/players
+                - link "Responses" [ref=e72] [cursor=pointer]:
+                  - /url: /footy/admin/responses
+                - link "Users" [ref=e73] [cursor=pointer]:
+                  - /url: /footy/admin/users
+        - region "Navbar footer" [ref=e74]:
+          - button "User menu" [ref=e75] [cursor=pointer]:
+            - generic [ref=e76]:
+              - img [ref=e78]
+              - generic [ref=e79]:
+                - paragraph [ref=e80]: Test Admin
+                - paragraph [ref=e81]: testadmin@example.com
+              - img [ref=e82]
+    - main [ref=e84]:
+      - generic [ref=e88]:
+        - heading "Enter Your Response" [level=2] [ref=e89]
+        - generic [ref=e90]:
+          - img "Tonya Jacobson" [ref=e92]
+          - link "Tonya Jacobson" [ref=e93] [cursor=pointer]:
+            - /url: /footy/player/19
+          - text: ":"
+          - generic [ref=e95]: No response yet
+        - paragraph [ref=e96]:
+          - text: You can change it later if you need to, even if the teams have been picked - either by clicking on the link in the email you received, or by logging in to the site at
+          - link "the game page" [ref=e97] [cursor=pointer]:
+            - /url: /footy/game/105
+          - text: . If you can't get to a computer, call my mobile on
+          - strong [ref=e98]: 07802 346128
+          - text: .
+        - paragraph [ref=e99]: Cheers,
+        - paragraph [ref=e100]: Jon
+        - generic [ref=e101]:
+          - generic [ref=e102]: Response
+          - generic [ref=e103]:
+            - combobox "Response" [ref=e104] [cursor=pointer]: "Yes"
+            - generic:
+              - img
+        - generic [ref=e106]:
+          - generic [ref=e107]:
+            - checkbox "Goalie" [ref=e108]
+            - img
+          - generic [ref=e110]: Goalie
+        - generic [ref=e111]:
+          - generic [ref=e112]: Optional comment/excuse
+          - textbox "Optional comment/excuse" [ref=e114]
+        - button "Save Response" [ref=e115] [cursor=pointer]:
+          - generic [ref=e117]: Save Response
+    - contentinfo [ref=e118]:
+      - paragraph [ref=e120]: © 2025 Toastboy FC
+  - alert [ref=e121]
+Test source
+  1  | import { expect, test } from '@playwright/test';
+  2  | 
+  3  | import { asAdmin, asGuest, asUser, mustBeLoggedInAsAdmin } from './utils/auth';
+  4  | import { deleteAllMessages, getMessageDetail, waitForMessage } from './utils/mailpit';
+  5  | 
+  6  | test.describe('New game flow', () => {
+  7  |     test('denies access to guest users', async ({ page }) => {
+  8  |         await asGuest(page, '/footy/admin/newgame');
+  9  | 
+  10 |         await mustBeLoggedInAsAdmin(page);
+  11 |     });
+  12 | 
+  13 |     test('denies access to regular users', async ({ page }) => {
+  14 |         await asUser(page, '/footy/admin/newgame');
+  15 | 
+  16 |         await mustBeLoggedInAsAdmin(page);
+  17 |     });
+  18 | 
+  19 |     test('allows admins to send invitations and players can respond', async ({ page, request }) => {
+  20 |         const customMessage = `Playwright invitation ${Date.now()}`;
+  21 |         const responseComment = `Playwright response ${Date.now()}`;
+  22 | 
+  23 |         await asAdmin(page, '/footy/admin/newgame');
+  24 | 
+  25 |         await expect(page.getByRole('heading', { name: /New game/i })).toBeVisible();
+  26 | 
+  27 |         await page.getByLabel(/Override time check/i).check();
+  28 |         await page.getByLabel(/Custom message/i).fill(customMessage);
+  29 |         await page.getByRole('button', { name: 'Send invitations' }).click();
+  30 | 
+  31 |         await expect(page.getByText('Invitations ready')).toBeVisible({ timeout: 15000 });
+  32 |         await expect(page.getByText('Invitations can be sent now.')).toBeVisible({ timeout: 15000 });
+  33 | 
+  34 |         const message = await waitForMessage(request, 'Toastboy FC invitation');
+  35 |         expect(message, 'Expected invitation email in Mailpit').toBeTruthy();
+  36 | 
+  37 |         const detail = await getMessageDetail(request, message!.ID);
+  38 |         const html = detail.HTML ?? '';
+  39 |         expect(html).toContain(customMessage);
+  40 | 
+  41 |         const linkMatch = /href="([^"]*footy\/response[^"]*)"/i.exec(html);
+  42 |         const invitationLink = linkMatch?.[1];
+  43 |         expect(invitationLink).toBeTruthy();
+  44 | 
+  45 |         await page.goto(invitationLink ?? '');
+  46 |         await expect(page.getByRole('button', { name: 'Save Response' })).toBeEnabled();
+  47 | 
+> 48 |         await page.getByLabel('Response', { exact: true }).click();
+     |                                                            ^ Error: locator.click: Error: strict mode violation: getByLabel('Response', { exact: true }) resolved to 2 elements:
+  49 |         await page.getByRole('option', { name: 'Yes' }).click();
+  50 |         await page.getByLabel('Goalie').check();
+  51 |         await page.getByLabel('Optional comment/excuse').fill(responseComment);
+  52 |         await page.getByRole('button', { name: 'Save Response' }).click();
+  53 | 
+  54 |         await expect(page.getByText('Response saved')).toBeVisible({ timeout: 15000 });
+  55 |         await expect(page.getByText(responseComment)).toBeVisible({ timeout: 15000 });
+  56 | 
+  57 |         await deleteAllMessages(request);
+  58 |     });
+  59 | });
+  60 |

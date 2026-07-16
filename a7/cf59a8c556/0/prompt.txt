@@ -1,0 +1,27 @@
+npm error code ERESOLVE
+npm error ERESOLVE could not resolve
+npm error
+npm error While resolving: next-www-toastboy@undefined
+npm error Found: @typescript-eslint/eslint-plugin@8.61.1
+npm error node_modules/@typescript-eslint/eslint-plugin
+npm error   dev @typescript-eslint/eslint-plugin@"^8.62.0" from the root project
+npm error   peerOptional @typescript-eslint/eslint-plugin@"^8.0.0-0 || ^7.0.0 || ^6.0.0 || ^5.0.0" from eslint-plugin-unused-imports@4.4.1
+npm error   node_modules/eslint-plugin-unused-imports
+npm error     dev eslint-plugin-unused-imports@"^4.4.1" from the root project
+npm error   1 more (typescript-eslint)
+npm error
+npm error Could not resolve dependency:
+npm error dev @typescript-eslint/eslint-plugin@"^8.62.0" from the root project
+npm error
+npm error Conflicting peer dependency: @typescript-eslint/parser@8.62.0
+npm error node_modules/@typescript-eslint/parser
+npm error   peer @typescript-eslint/parser@"^8.62.0" from @typescript-eslint/eslint-plugin@8.62.0
+npm error   node_modules/@typescript-eslint/eslint-plugin
+npm error     dev @typescript-eslint/eslint-plugin@"^8.62.0" from the root project
+npm error
+npm error Fix the upstream dependency conflict, or retry this command with --force or --legacy-peer-deps to accept an incorrect (and potentially broken) dependency resolution.
+npm error
+npm error
+npm error For a full report see:
+npm error /Users/toastboy/.npm/_logs/2026-06-25T16_00_27_539Z-eresolve-report.txt
+npm error A complete log of this run can be found in: /Users/toastboy/.npm/_logs/2026-06-25T16_00_27_539Z-debug-0.log

@@ -1,0 +1,24 @@
+<task-notification>
+<task-id>ab8f005085c6d4e91</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/1a8073c5-beab-481d-b94e-e6e4a9b696ae/tasks/ab8f005085c6d4e91.output</output-file>
+<status>completed</status>
+<summary>Agent "Outsider advisor on DB schema" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>The redundancy isn't actually the core problem. The core problem is that "points" is doing double duty — it encodes *game outcome* (win/draw/loss), not points themselves. Points are just a projection of that outcome through a scoring rule.
+
+So the real question is: what does a game result actually look like in isolation?
+
+A game result is: team A played team B, one of three outcomes happened (A wins, B wins, draw). That's it. Two pieces of information: who played each other, and what happened between them.
+
+Right now that information is scattered across N `Outcome` rows for N players, with each row storing a *derived consequence* (points) rather than the *source fact* (result). That's backwards.
+
+The natural home for this is a standalone `GameResult` table with columns: `gameDayId`, `result` (enum: A_WIN, B_WIN, DRAW). Single row per game. Then `Outcome.points` disappears entirely — you derive it at query time by joining `Outcome.team` against `GameResult.result` and applying the scoring formula.
+
+What jumps out to me as an outsider: why does `GameDay.bibs` exist if the schema already encodes team membership via `Outcome.team`? These feel like two parallel, potentially conflicting representations of the same thing. That's a second inconsistency hiding next to the first.
+
+The trade-off that insiders will argue: denormalized `Outcome.points` makes queries fast. But that trades *read performance* for *write correctness* — you've already admitted you need defensive checks. Defensive checks mean the data can actually be wrong. Wrong data is worse than a slower query.
+
+Historical data migration is real work, but the logical structure is genuinely broken today.</result>
+<usage><subagent_tokens>15040</subagent_tokens><tool_uses>0</tool_uses><duration_ms>11534</duration_ms></usage>
+</task-notification>

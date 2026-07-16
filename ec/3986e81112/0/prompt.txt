@@ -1,0 +1,1 @@
+Do I need https://github.com/toastboy/next-www-toastboy/blob/e23a8fdca3b8bf284041f876f933d45dfc86730c/.github/workflows/dependabot-auto-merge.yml#L11 when it seems GitHub PRs have similar functionality built in?

@@ -1,0 +1,1 @@
+In general, what's the canonical way for tests to wait until React/next.js hydration has successfully completed?

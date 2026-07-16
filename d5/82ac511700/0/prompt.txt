@@ -1,0 +1,1 @@
+React.JSX.Element is referenced without importing the React type/namespace; this can fail type-checking when React isn’t globally available. Import React as a type (e.g., import type * as React from 'react') or switch the return type to JSX.Element if that’s available in your TS setup.

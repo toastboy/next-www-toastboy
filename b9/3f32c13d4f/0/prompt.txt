@@ -1,0 +1,1 @@
+Are there only 4 pages with forms? Should the same fix be applied to other tests?

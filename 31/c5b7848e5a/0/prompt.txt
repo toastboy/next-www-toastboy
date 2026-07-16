@@ -1,0 +1,1 @@
+ResizeObserver isn’t available in some older browsers/environments; constructing it unconditionally can throw. Consider guarding with if (typeof ResizeObserver === 'undefined') return; (or loading a polyfill) to avoid runtime crashes.

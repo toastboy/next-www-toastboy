@@ -1,0 +1,3 @@
+◇ injected env (9) from .env.playwright // tip: ⌘ override existing { override: true }
+Configuration hints (1)
+e2e/global-setup.ts    knip.json  Remove redundant entry pattern

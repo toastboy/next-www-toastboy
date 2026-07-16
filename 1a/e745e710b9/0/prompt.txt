@@ -1,0 +1,146 @@
+This session is being continued from a previous conversation that ran out of context. The summary below covers the earlier portion of the conversation.
+
+Summary:
+1. Primary Request and Intent:
+   The user was trying to fix failing Playwright E2E tests in `e2e/info.spec.ts` for the `EnquiryForm` component. The core problem: tests needed to wait for React hydration before interacting with the form. The journey involved many failed attempts to reliably detect hydration, ultimately landing on `useSyncExternalStore` as the correct approach. The user explicitly objected to double-renders ("So every page with a form has to be rendered twice just so tests will work properly") and wanted a solution that didn't add test-only instrumentation to production components.
+
+2. Key Technical Concepts:
+   - React hydration detection in Next.js App Router (production builds)
+   - `useSyncExternalStore` with different server/client snapshots as hydration signal
+   - Mantine's polymorphic `Box` component and why `ref` forwarding silently fails (despite React 19 handling `ref` as a regular prop)
+   - `react-hooks/set-state-in-effect` lint rule from React Compiler's ESLint plugin
+   - Playwright `locator.waitFor()` default state `'visible'`
+   - Next.js production builds: `check-build` script compares `BUILD_ID` (set to `git rev-parse HEAD`) — doesn't detect uncommitted source changes, causing stale-build confusion
+   - `form[data-hydrated]` CSS attribute selector in Playwright locators
+   - Native form submission (without React hydration) causes page navigation, breaking `toPass()` retry loops
+
+3. Files and Code Sections:
+
+   **`src/lib/useHydrated.ts`** (NEW FILE — the key fix):
+   ```ts
+   import { useSyncExternalStore } from 'react';
+   
+   // useSyncExternalStore requires a subscribe function; since the client snapshot
+   // never changes (always true), no subscriptions are needed.
+   // eslint-disable-next-line @typescript-eslint/no-empty-function
+   const subscribe = () => () => {};
+   
+   /**
+    * Returns true only on the client after React has hydrated.
+    */
+   export function useHydrated(): boolean {
+       return useSyncExternalStore(subscribe, () => true, () => false);
+   }
+   ```
+
+   **`src/components/EnquiryForm/EnquiryForm.tsx`** (key changes):
+   - Removed `useRef<HTMLFormElement>` + `useEffect` hydration pattern
+   - Added `import { useHydrated } from '@/lib/useHydrated'`
+   - Added `const hydrated = useHydrated()` in component body
+   - Added `data-hydrated={hydrated || undefined}` to `Box` props
+   - `useEffect` is retained for the search params / notification logic
+   - Full current state has `import { useEffect } from 'react'` (not `useState` or `useRef`)
+   ```tsx
+   <Box
+       maw={520}
+       component="form"
+       onSubmit={form.onSubmit(handleSubmit)}
+       noValidate
+       data-hydrated={hydrated || undefined}
+   >
+   ```
+
+   **`src/components/NewGameForm/NewGameForm.tsx`** (same pattern):
+   - Removed `useRef<HTMLFormElement>` + `useEffect` hydration
+   - Added `useHydrated()` + `data-hydrated={hydrated || undefined}` on `Box component="form"`
+   - Removed `import { useEffect, useRef }` → now has no `useEffect` at top level
+
+   **`src/components/PlayerList/PlayerList.tsx`** (same pattern):
+   - Removed `containerRef = useRef<HTMLDivElement>` + `useEffect`
+   - Added `useHydrated()` + `data-hydrated={hydrated || undefined}` on `Box`
+   - Kept other `useState` hooks intact
+
+   **`src/components/ResponsesForm/ResponsesForm.tsx`** (same pattern):
+   - Removed `containerRef = useRef<HTMLDivElement>` + `useEffect` for hydration
+   - Added `useHydrated()` + `data-hydrated={hydrated || undefined}` on `Stack`
+   - Kept `prevResponsesRef = useRef(responses)` (legitimate use for tracking previous responses)
+   - Import still has `useRef` for `prevResponsesRef`
+
+   **`e2e/info.spec.ts`** (current state — has diagnostic test that needs removal):
+   - All `EnquiryForm` tests now start with `await page.locator('form[data-hydrated]').waitFor()`
+   - Added DIAG test (temporary, for debugging):
+   ```ts
+   test('DIAG: hydration state after 3s', async ({ page }) => {
+       await page.route(/google\.com\/maps/, (route) => route.abort());
+       await page.goto('/footy/info');
+       await page.waitForTimeout(3000);
+       const info = await page.evaluate(() => {
+           const form = document.querySelector('form');
+           return {
+               formExists: !!form,
+               dataHydrated: form?.getAttribute('data-hydrated') ?? 'MISSING',
+               formAttrs: form ? Array.from(form.attributes).map(a => `${a.name}=${a.value}`) : [],
+               jsRunning: typeof window !== 'undefined',
+               nextData: !!(window as unknown as Record<string, unknown>).__NEXT_DATA__,
+           };
+       });
+       console.log('DIAG hydration info:', JSON.stringify(info, null, 2));
+   });
+   ```
+   - DIAG confirmed `data-hydrated=true` appears after 3 seconds in all 5 browsers
+
+   **`e2e/utils/react.ts`** — created then deleted (failed `__reactFiber` approach)
+
+4. Errors and fixes:
+   - **Test 1 failing (no hydration wait)**: Added `form[data-hydrated]` wait — but build was stale, so all tests then timed out.
+   - **Stale build confusion**: `check-build` compares BUILD_ID to git HEAD; uncommitted source changes aren't detected. Had to rebuild repeatedly.
+   - **`useRef` on Mantine Box silently drops ref**: `formRef.current` always null. Mantine's `Box` with `component="form"` doesn't reliably forward refs even in React 19. Confirmed by extensive source reading.
+   - **`toPass()` infinite loop**: Clicking non-hydrated form submit triggers native page navigation, resetting the page each retry. `toPass()` is wrong pattern here.
+   - **`__reactFiber` check timed out**: `Object.keys(form).some(k => k.startsWith('__reactFiber'))` never resolved — React might not attach fibers to elements in a detectable way in this environment.
+   - **`setState` in `useEffect` lint error**: `react-hooks/set-state-in-effect` rule from React Compiler plugin. Fixed by switching to `useSyncExternalStore`.
+   - **`@typescript-eslint/no-empty-function` error** in `useHydrated.ts`: Fixed with `eslint-disable-next-line` comment.
+   - **Dangling `});`** when adding DIAG test: Fixed by reading file and removing the orphaned closing brace.
+   - **Port 3002 already in use**: Previous playwright run left server process running. Fixed with `lsof -ti:3002 | xargs kill -9`.
+   - **User objection to double renders**: Switched from `useState` (causes re-render) to `useSyncExternalStore` (React-idiomatic, no explicit setState-in-effect).
+
+5. Problem Solving:
+   - The root issue: `data-hydrated` attribute was never appearing in tests. After the DIAG test, confirmed it DOES appear (after ~3 seconds, in all 5 browsers). This means `useSyncExternalStore` is working correctly. The previous test failures were against stale builds.
+   - The DIAG test output confirmed: `formExists: true`, `dataHydrated: "true"`, `data-hydrated=true` in formAttrs, across all 5 browsers (chromium, firefox, webkit, mobile, tablet).
+   - Next step: remove the DIAG test, run full test suite against the current build to see if `form[data-hydrated]` finally works.
+
+6. All user messages:
+   - "In general, what's the canonical way for tests to wait until React/next.js hydration has successfully completed?"
+   - "So change this to await expect? `const submitButton = page.getByRole('button', { name: 'Send message' });`"
+   - "I'm just asking as an example"
+   - "info.spec.ts still failing!" [with test 1 error output]
+   - "So every page with a form has to be rendered twice just so tests will work properly:" [objecting to useState approach]
+   - "Yes" [agreeing to update tests to use toPass() pattern]
+   - [Paste of all 5 tests failing with form[data-hydrated] timeout after useState revert]
+   - "This is so frustrating!" [after __reactFiber approach also failed]
+   - [Paste showing all tests failing with waitForReactHydration timeout]
+   - "Running 7 tests using 1 worker... THEY STILL DON'T WORK!" [after useRef restored + rebuild]
+   - "Guess what? Still failing" [after useSyncExternalStore approach + rebuild]
+   - "Could that have been the problem all along?" [about port 3002 conflict — answer: No]
+   - [DIAG test output showing data-hydrated=true in all browsers — 5 passed]
+   - "What was special about the previous run - why didn't it kill the server itself?"
+
+7. Pending Tasks:
+   - Remove the DIAG test from `e2e/info.spec.ts`
+   - Run full `e2e/info.spec.ts` test suite to confirm `form[data-hydrated]` now works
+   - Verify other e2e specs (`newgame.spec.ts`, `responses.spec.ts`) still pass (they also use `[data-hydrated]`)
+   - Run `npm run typecheck` and `npm run lint` to confirm clean
+
+8. Current Work:
+   The DIAG test just ran and confirmed that `data-hydrated="true"` IS appearing on the form element after 3 seconds in all 5 browsers. The `useSyncExternalStore` approach in `useHydrated.ts` is working correctly. The production build has the correct code (`"data-hydrated":V||void 0` confirmed in bundle). The DIAG test is still in `e2e/info.spec.ts` and needs to be removed before running the full suite.
+
+   The `e2e/info.spec.ts` currently has the DIAG test between the `info page` test and the `EnquiryForm` describe block. All EnquiryForm tests use `await page.locator('form[data-hydrated]').waitFor()`.
+
+9. Optional Next Step:
+   Remove the DIAG test from `e2e/info.spec.ts` and run the full test suite. The DIAG results prove the attribute is being set correctly, so `form[data-hydrated]` should now resolve within the 30-second timeout. The next command to run after removing the DIAG test would be:
+   ```bash
+   npx playwright test e2e/info.spec.ts --reporter=line
+   ```
+   This directly follows from the user's persistent request to fix the failing `info.spec.ts` tests, and the DIAG test having just proven the hydration signal works.
+
+If you need specific details from before compaction (like exact code snippets, error messages, or content you generated), read the full transcript at: /Users/toastboy/.claude/projects/-Volumes-Development-next-www-toastboy/4252b3b0-b91c-4aa3-a9bd-e25b1d89a2d4.jsonl
+Continue the conversation from where it left off without asking the user any further questions. Resume directly — do not acknowledge the summary, do not recap what was happening, do not preface with "I'll continue" or similar. Pick up the last task as if the break never happened.

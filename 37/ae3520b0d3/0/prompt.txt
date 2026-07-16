@@ -1,0 +1,24 @@
+## Error Type
+Runtime Error
+
+## Error Message
+Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+Check the render method of `li`.
+
+
+    at li (mdx-components.tsx:14:31)
+    at _createMdxContent (src/app/footy/docs/migration/migration.mdx:37:4)
+    at MDXContent (src/app/footy/docs/migration/migration.mdx:50:3)
+    at MigrationPage (src/app/footy/docs/migration/page.tsx:10:9)
+
+## Code Frame
+  12 |         ul: ({ children }) => <List mb="sm">{children}</List>,
+  13 |         ol: ({ children }) => <List type="ordered" mb="sm">{children}</List>,
+> 14 |         li: ({ children }) => <List.Item>{children}</List.Item>,
+     |                               ^
+  15 |         code: ({ children }) => <Code>{children}</Code>,
+  16 |         ...components,
+  17 |     };
+
+Next.js version: 16.2.9 (Turbopack)

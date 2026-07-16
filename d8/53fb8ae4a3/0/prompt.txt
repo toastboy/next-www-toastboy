@@ -1,0 +1,64 @@
+Could using Select instead of NativeSelect cause these problems with Playwright in CI?
+Search tests
+Responses admin page
+« previous
+next »
+admin can update responses form through realistic response changes
+responses.spec.ts:20
+11.9s
+tablet
+Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 1
+Received: 0
+
+Call Log:
+- Timeout 10000ms exceeded while waiting on the predicate
+
+  73 |         await expect.poll(async () => groupCount('Yes'), { timeout: 10000 }).toBe(yesAfterFirstUpdate);
+  74 |         await expect.poll(async () => groupCount('No'), { timeout: 10000 }).toBe(initialNo);
+> 75 |         await expect.poll(async () => groupCount('Dunno'), { timeout: 10000 }).toBe(initialDunno);
+     |                                                                                ^
+  76 |         await expect.poll(async () => groupCount('None'), { timeout: 10000 }).toBe(noneAfterFirstUpdate);
+  77 |
+  78 |         await expect(playerRow).toBeVisible({ timeout: 10000 });
+    at /home/runner/work/next-www-toastboy/next-www-toastboy/e2e/responses.spec.ts:75:80
+Filter steps
+Before Hooks
+34ms
+Navigate to "/footy/admin/responses"— utils/auth.ts:104
+144ms
+Expect "toBeVisible" getByRole('heading', { name: /Responses/i })— responses.spec.ts:23
+196ms
+Query count locator('h2').filter({ hasText: /^Yes:\s*/ })— responses.spec.ts:29
+9ms
+Query count locator('h2').filter({ hasText: /^No:\s*/ })— responses.spec.ts:29
+4ms
+Query count locator('h2').filter({ hasText: /^Dunno:\s*/ })— responses.spec.ts:29
+5ms
+Query count locator('h2').filter({ hasText: /^None:\s*/ })— responses.spec.ts:29
+266ms
+Click locator('[data-player-id="1"]').getByRole('combobox', { name: /response/i })— responses.spec.ts:56
+80ms
+Click getByRole('option', { name: 'Yes', exact: true })— responses.spec.ts:57
+130ms
+Check locator('[data-player-id="1"]').getByRole('checkbox', { name: /goalie/i })— responses.spec.ts:63
+176ms
+Fill "Can play and cover goal first half" locator('[data-player-id="1"]').getByPlaceholder('Comment')— responses.spec.ts:67
+100ms
+Click locator('[data-player-id="1"]').getByRole('button', { name: 'Update' })— responses.spec.ts:68
+93ms
+Expect "poll toBe"— responses.spec.ts:73
+186ms
+Expect "poll toBe"— responses.spec.ts:74
+5ms
+Expect "poll toBe"— responses.spec.ts:75
+9.9s
+After Hooks
+441ms
+Worker Cleanup
+21ms
+
+screenshot
+video
+error-context

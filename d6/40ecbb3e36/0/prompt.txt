@@ -1,0 +1,1 @@
+In PlayerList, This creates a new players array (and new objects) on every render, which can cause unnecessary re-renders downstream (e.g., SendEmailForm and its editor). Consider memoizing this mapping with useMemo, or change the selected player type so it already matches PlayerEmailDataType and can be passed through directly.

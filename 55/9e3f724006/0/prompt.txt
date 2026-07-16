@@ -1,0 +1,1 @@
+So every page with a form has to be rendered twice just so tests will work properly:

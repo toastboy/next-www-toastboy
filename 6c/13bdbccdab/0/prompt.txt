@@ -1,0 +1,1 @@
+Is PlayerExtraEmailSchema.verifiedAt ever used for anything other than tests against null? If not, it too can become a boolean 'verified'. Same question for 'createdAt'.

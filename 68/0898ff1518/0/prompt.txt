@@ -1,0 +1,2 @@
+await page.getByLabel('Response').click();
+finds two elements - how can I make it an exact match match (i.e. the whole of the label, not just a match for part of it)?

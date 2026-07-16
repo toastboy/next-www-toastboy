@@ -1,0 +1,1 @@
+The extraEmails transformation ({ email, verified: verifiedAt != null }) is duplicated here and also in the players list mapping. Consider extracting a small helper (e.g., mapExtraEmails(prismaExtraEmails)) to keep the mapping consistent and reduce the chance of future drift (e.g., if you later add normalization or filtering).

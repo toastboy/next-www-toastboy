@@ -1,0 +1,2 @@
+Adding a root-level glob (*.vitest.spec.{ts,tsx}) to the components Vitest config can accidentally pull unrelated specs into this suite (and run them under happy-dom), making failures confusing. Consider either moving the root spec(s) into the existing included folders, or narrowing the glob to an explicit file (e.g. mdx-components.vitest.spec.tsx) or a dedicated folder (e.g. src/docs/**).
+I prefer using the docs folder

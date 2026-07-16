@@ -1,0 +1,157 @@
+This session is being continued from a previous conversation that ran out of context. The summary below covers the earlier portion of the conversation.
+
+Summary:
+1. Primary Request and Intent:
+   The session continued from a previous one that had applied the `useHydrated` pattern to 4 form components (EnquiryForm, NewGameForm, PlayerList, ResponsesForm). The user's explicit request from the previous session was to apply `data-hydrated` to ALL form components to prevent future E2E test failures when new tests are added: "I'd prefer it to be applied everywhere so that if and when the tests are extended to include form interaction they don't start spookily failing." This session applied that pattern to the remaining 14 form components. The session then encountered E2E test failures after the user rebuilt and re-ran, and the user demanded an explanation ("What gives?") and was awaiting a diagnosis when the summary was requested.
+
+2. Key Technical Concepts:
+   - React hydration detection using `useSyncExternalStore` (server snapshot returns `false`, client returns `true`) — avoids `setState-in-effect` lint error from React Compiler's ESLint plugin
+   - `data-hydrated={hydrated || undefined}` — attribute present only after hydration (undefined removes it from DOM)
+   - Playwright `locator.waitFor()` — waits for element visible; `form[data-hydrated]` as CSS attribute selector
+   - Next.js App Router `'use client'` components, `Box component="form"` Mantine polymorphic pattern
+   - `useSyncExternalStore(subscribe, getSnapshot, getServerSnapshot)` React 19 behavior in production builds
+   - `check-build` script compares `BUILD_ID` to `git rev-parse HEAD` — does NOT detect uncommitted source changes
+   - `reuseExistingServer: false` in Playwright config — always starts fresh server
+   - `start:playwright` = `check-build && PLAYWRIGHT_TEST=true next start --hostname 127.0.0.1 --port 3002`
+   - React error boundaries showing "Something went wrong" when client components throw during hydration
+   - `simple-import-sort` ESLint plugin requires alphabetical `@/lib/` import ordering
+
+3. Files and Code Sections:
+
+   - **`src/lib/useHydrated.ts`** (created in previous session, unchanged this session):
+     ```ts
+     import { useSyncExternalStore } from 'react';
+
+     // useSyncExternalStore requires a subscribe function; since the client snapshot
+     // never changes (always true), no subscriptions are needed.
+     // eslint-disable-next-line @typescript-eslint/no-empty-function
+     const subscribe = () => () => {};
+
+     /**
+      * Returns true only on the client after React has hydrated.
+      * Uses useSyncExternalStore so the server snapshot (false) differs from the
+      * client snapshot (true) without triggering a setState-in-effect lint error.
+      */
+     export function useHydrated(): boolean {
+         return useSyncExternalStore(subscribe, () => true, () => false);
+     }
+     ```
+
+   - **`src/components/ClaimSignup/ClaimSignup.tsx`** — Added `import { useHydrated } from '@/lib/useHydrated';` after `@/lib/observability/sentry` import (lint:fix moved it to after `@/lib/urls`), added `const hydrated = useHydrated();` at top of `ClaimSignup` component, added `data-hydrated={hydrated || undefined}` on `<Box component="form" onSubmit={form.onSubmit(handleSignUp)} data-hydrated={hydrated || undefined}>`.
+
+   - **`src/components/DeleteAccountForm/DeleteAccountForm.tsx`** — Added import after `@/lib/observability/sentry`, added `const hydrated = useHydrated();` before `const [errorText, setErrorText] = useState`, added `data-hydrated={hydrated || undefined}` on `<Box component="form" onSubmit={form.onSubmit(handleSubmit)} noValidate mt="lg" data-hydrated={hydrated || undefined}>`.
+
+   - **`src/components/ForgottenPasswordForm/ForgottenPasswordForm.tsx`** — Added import after `@/lib/observability/sentry` (lint:fix moved it to after `@/lib/urls`), added `const hydrated = useHydrated();` before `const form = useForm`, added `data-hydrated={hydrated || undefined}` on the `<Box maw={400} component="form">`.
+
+   - **`src/components/GameInvitationResponseForm/GameInvitationResponseForm.tsx`** — Added import after `@/lib/observability/sentry`, added `const hydrated = useHydrated();` before `const response = getInitialPlayerResponse`, added `data-hydrated={hydrated || undefined}` to `<Box component="form" onSubmit={form.onSubmit(handleSubmit)} data-hydrated={hydrated || undefined}>`.
+
+   - **`src/components/GameResultForm/GameResultForm.tsx`** — Added import after `@/lib/config`, added `const hydrated = useHydrated();` before `const router = useRouter()`, added `data-hydrated={hydrated || undefined}` to `<Box component="form" onSubmit={form.onSubmit(handleSave)} data-hydrated={hydrated || undefined}>`.
+
+   - **`src/components/InvoiceForm/InvoiceForm.tsx`** — Added import after `@/lib/observability/sentry`, added `const hydrated = useHydrated();` before `const router = useRouter()`, added `data-hydrated={hydrated || undefined}` to `<Box component="form" onSubmit={form.onSubmit(handleSubmit)} data-hydrated={hydrated || undefined}>` (the conditionally-rendered form inside `{gameDays.length > 0 && ...}`).
+
+   - **`src/components/MoneyForm/MoneyForm.tsx`** — Added import after `@/lib/observability/sentry`. SPECIAL CASE: `useHydrated` and `data-hydrated` added to the `DebtRow` sub-component (not `MoneyForm`), because `<Box component="form">` is inside `DebtRow`. Added `const hydrated = useHydrated();` before `const router = useRouter()` in `DebtRow`, added `data-hydrated={hydrated || undefined}` to `<Box component="form" onSubmit={form.onSubmit(handlePay)} data-hydrated={hydrated || undefined}>`.
+
+   - **`src/components/MoreGamesForm/MoreGamesForm.tsx`** — Added import after `@/lib/observability/sentry`, added `const hydrated = useHydrated();` before `const form = useForm`, added `data-hydrated={hydrated || undefined}` to `<Box component="form" onSubmit={form.onSubmit(handleSubmit)} data-hydrated={hydrated || undefined}>`.
+
+   - **`src/components/NewPlayerForm/NewPlayerForm.tsx`** — Added import after `@/lib/observability/sentry`, added `const hydrated = useHydrated();` before `const router = useRouter()`, added `data-hydrated={hydrated || undefined}` to `<Box maw={400} component="form" onSubmit={form.onSubmit(handleSubmit)} data-hydrated={hydrated || undefined}>`.
+
+   - **`src/components/PasswordChangeForm/PasswordChangeForm.tsx`** — Added import after `@/lib/config`, added `const hydrated = useHydrated();` before `const [errorText, setErrorText]`, added `data-hydrated={hydrated || undefined}` to `<Box component="form" onSubmit={form.onSubmit(handleSubmit)} noValidate data-hydrated={hydrated || undefined}>`.
+
+   - **`src/components/PasswordResetForm/PasswordResetForm.tsx`** — Added import after `@/lib/errors`, added `const hydrated = useHydrated();` before `const router = useRouter()`. SPECIAL CASE: component has early return for `!token` at line 106 that renders an error notification WITHOUT a form — the `data-hydrated` attribute is only on the form in the main return path: `<Box component="form" onSubmit={form.onSubmit(handleSubmit)} noValidate data-hydrated={hydrated || undefined}>`.
+
+   - **`src/components/PlayerProfileForm/PlayerProfileForm.tsx`** — Added import after `@/lib/observability/sentry`, added `const hydrated = useHydrated();` before `const initialExtraEmails`, added `data-hydrated={hydrated || undefined}` to `<Box maw={400} component="form" onSubmit={form.onSubmit(handleSubmit)} data-hydrated={hydrated || undefined}>`.
+
+   - **`src/components/SendEmailForm/SendEmailForm.tsx`** — Added import after `@/lib/observability/sentry`. SPECIAL CASE: uses native `<form>` (not `<Box component="form">`). Added `const hydrated = useHydrated();` before `const [subject, setSubject]` (must be before the early return `if (!editor) return null`). Added `data-hydrated={hydrated || undefined}` to `<form onSubmit={(e) => { e.preventDefault(); void handleSubmit(); }} data-hydrated={hydrated || undefined}>`.
+
+   - **`src/components/SignIn/SignIn.tsx`** — Added import after `@/lib/observability/sentry` (lint:fix moved to after `@/lib/urls`), added `const hydrated = useHydrated();` as first statement in `SignIn` component (before `const [loading, setLoading]`), added `data-hydrated={hydrated || undefined}` to `<Box component="form" onSubmit={form.onSubmit(handleSignIn)} data-hydrated={hydrated || undefined}>`. The component has an early return when `loading === true` (initial value is `false` so it doesn't fire on first render).
+
+   - **`playwright.config.ts`** (read for diagnosis):
+     - `reuseExistingServer: false` — always starts fresh server
+     - `command: 'npm run start:playwright'` for non-CI
+     - `webServer` starts fresh on every test run
+     - Port 3002 for local, 3000 for CI
+
+   - **`src/app/footy/auth/signin/page.tsx`** (read for diagnosis):
+     ```tsx
+     import { SignIn } from '@/components/SignIn/SignIn';
+     const SignInPage = async ({ searchParams }: PageProps) => {
+         const { redirect, admin } = await searchParams;
+         const adminProp = admin === 'true' ? true : admin === 'false' ? false : undefined;
+         return <SignIn redirect={redirect ?? '/footy/profile'} admin={adminProp} />;
+     };
+     ```
+
+   - **`e2e/utils/auth.ts`** — Read during diagnosis; `git diff HEAD` shows NO changes. Contains `mustBeLoggedInAsAdmin` (looks for `getByRole('heading', { name: /You must be logged in as an administrator/i })`) and `mustBeLoggedIn` (looks for `getByRole('heading', { name: /Sign in to your account/i })`).
+
+4. Errors and fixes:
+   - **`simple-import-sort` warnings after adding imports**: 3 files had import order warnings (ClaimSignup, ForgottenPasswordForm, SignIn) because `useHydrated` was inserted before `urls` but should come after. Fixed by running `npm run lint:fix` which auto-corrected the order.
+
+   - **First test run: 25 failures before rebuild**: Initially diagnosed as stale build (uncommitted source changes not caught by `check-build` script). Told user to rebuild. This was a PARTIAL diagnosis — the actual situation is more complex.
+
+   - **Second test run: 28 failures AFTER rebuild**: 
+     - 25 failures appear to be PRE-EXISTING (present before my current session's changes based on comparing failure lists between first and second run)
+     - 3 NEW failures introduced by my changes: auth-mocking.spec.ts:30, users-admin-mocked.spec.ts:13, users-admin-mocked.spec.ts:36
+     
+     Two distinct failure modes identified from screenshots and ARIA snapshots:
+     
+     **Issue A — `data-hydrated` never appears**: Info page shows form content IS rendered (inputs/button in ARIA tree) but `form[data-hydrated]` never appears. This means `useSyncExternalStore` is not triggering the client-side re-render from `false` to `true`. The form is hydrating (JS runs, content is interactive) but `hydrated` stays `false`.
+     
+     **Issue B — "Something went wrong"**: Signin page shows React error boundary ("Error - Something went wrong - Try again button"). After navigating to admin page as guest, middleware redirects to `/footy/auth/signin?admin=true&redirect=...`, but that page crashes. This is visible in the YAML snapshot: `- main: - alert "Error": - text: Error Something went wrong. - button "Try again"`.
+
+5. Problem Solving:
+   - **Completed**: Applied `useHydrated` + `data-hydrated` to all 14 remaining form components. Typecheck and lint pass clean.
+   - **Ongoing**: Two distinct runtime issues detected:
+     1. `useSyncExternalStore` approach appears not to trigger client re-renders in production Next.js 16 + React 19 environment (explains `data-hydrated` timeouts)
+     2. `SignIn.tsx` (which I modified) may be causing a crash on the signin page (explains "Something went wrong" for auth redirect tests)
+   - **Hypothesis**: The 25 pre-existing failures were already present before my current session's changes (comparing failure lists between first and second run). My changes (adding `useHydrated` to 14 components, particularly `SignIn`) caused 3 additional failures.
+   - **Key diagnostic insight**: The ARIA tree for the info page shows the EnquiryForm IS mounted and rendering, but without `data-hydrated`. This rules out a complete hydration failure and points specifically to `useSyncExternalStore` not updating the value.
+
+6. All user messages:
+   - (Implicit continuation from previous session — apply useHydrated everywhere)
+   - "ARGH!" followed by 25 test failures output (before rebuild). Tests showed `form[data-hydrated]` timeouts and "heading not found" errors.
+   - "I have rebuilt. I have re-run the tests. Still failures. What gives?" followed by 28 test failures output (after rebuild). Same categories of failures, plus 3 new ones.
+   - "CRITICAL: Respond with TEXT ONLY. Do NOT call any tools." — summary request.
+
+7. Pending Tasks:
+   - **CRITICAL**: Diagnose and fix why `useSyncExternalStore` in `useHydrated.ts` is not triggering the client re-render (explaining `data-hydrated` never appearing on info, newgame, responses, mailout pages)
+   - **CRITICAL**: Diagnose and fix why the `SignIn` component (with `useHydrated` added) causes "Something went wrong" React error boundary on the signin page
+   - Determine whether the 25 pre-existing failures were there before this session or caused by the previous session's changes (may require `git stash` to check baseline)
+   - Consider replacing `useSyncExternalStore` with a different hydration detection approach (e.g., `useState` + `useEffect` with lint suppression) if the current implementation is fundamentally broken in production
+   - Run all 67 Playwright tests passing
+
+8. Current Work:
+   The session was in the middle of diagnosing two categories of test failures (28 total) after applying `useHydrated` to 14 more form components and the user rebuilding. The diagnosis had progressed to:
+   
+   1. Reading failure screenshots — saw info page has form content but no `data-hydrated`; signin page shows "Something went wrong"
+   2. Reading error-context YAML — confirmed EnquiryForm IS mounted (heading "Get in touch", inputs, button all present), just `data-hydrated` never set
+   3. Reading `playwright.config.ts` — confirmed `reuseExistingServer: false`, server always fresh
+   4. Running `git diff HEAD -- src/components/EnquiryForm/EnquiryForm.tsx` — confirmed the `useHydrated` changes ARE in the current build
+   5. Reading `src/app/footy/auth/signin/page.tsx` — simple async server component rendering `<SignIn>` with props from searchParams, no obvious issue there
+   
+   The session was interrupted for summary at this point.
+
+9. Optional Next Step:
+   The user is asking "What gives?" and wants to understand why tests are failing after rebuild. The immediate next step is to:
+   
+   **Diagnose the root cause of both failure modes**:
+   
+   For the "Something went wrong" on signin page — my change to `SignIn.tsx` adding `useHydrated` is the most likely culprit for the 3 new failures. The question is whether `useSyncExternalStore` with a server/client mismatch is causing a hydration error that crashes the component in React 19.
+   
+   For the `data-hydrated` timeouts — this was working in the previous session (35/35 info tests passed). Now it doesn't. The `useHydrated.ts` implementation is unchanged. Something about the new build (18 components using `useHydrated` vs 4) may be affecting how the bundle executes.
+   
+   **Proposed fix**: Replace `useSyncExternalStore` with a `useState` + `useEffect` approach in `useHydrated.ts`, accepting the React Compiler lint warning and suppressing it with eslint-disable-next-line. This is the classic, well-understood pattern:
+   ```ts
+   import { useEffect, useState } from 'react';
+
+   export function useHydrated(): boolean {
+       const [hydrated, setHydrated] = useState(false);
+       // eslint-disable-next-line react-compiler/react-compiler
+       useEffect(() => { setHydrated(true); }, []);
+       return hydrated;
+   }
+   ```
+   
+   This definitively triggers a re-render after mount (hydration), is universally understood, and doesn't rely on `useSyncExternalStore`'s server-snapshot behavior which may be not working as expected in this Next.js 16 + React 19 production build.
+
+If you need specific details from before compaction (like exact code snippets, error messages, or content you generated), read the full transcript at: /Users/toastboy/.claude/projects/-Volumes-Development-next-www-toastboy/4252b3b0-b91c-4aa3-a9bd-e25b1d89a2d4.jsonl
+Continue the conversation from where it left off without asking the user any further questions. Resume directly — do not acknowledge the summary, do not recap what was happening, do not preface with "I'll continue" or similar. Pick up the last task as if the break never happened.

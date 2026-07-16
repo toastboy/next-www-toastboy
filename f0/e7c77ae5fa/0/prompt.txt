@@ -1,0 +1,1 @@
+Adding tabIndex={0} to a heading makes it an extra keyboard tab stop, which can be noisy for keyboard and assistive-tech users. Prefer making a non-heading wrapper focusable (or using a dedicated help/info control) and ensure the tooltip content is announced (e.g., via aria-describedby/aria-label) rather than forcing focus onto the heading element.

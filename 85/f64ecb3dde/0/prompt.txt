@@ -1,0 +1,1 @@
+sentryConfig and sentry still have <100% test coverage

@@ -1,0 +1,991 @@
+It still seems that vitest in CI has a problem
+
+2026-06-28T07:20:31.8023169Z Current runner version: '2.335.1'
+2026-06-28T07:20:31.8051575Z ##[group]Runner Image Provisioner
+2026-06-28T07:20:31.8052750Z Hosted Compute Agent
+2026-06-28T07:20:31.8053767Z Version: 20260611.554
+2026-06-28T07:20:31.8054804Z Commit: 5e0782fdc9014723d3be820dd114dd31555c2bd1
+2026-06-28T07:20:31.8056063Z Build Date: 2026-06-11T21:40:46Z
+2026-06-28T07:20:31.8057029Z Worker ID: {10b6ce79-2e13-4360-a97f-faf46b2fb414}
+2026-06-28T07:20:31.8057787Z Azure Region: eastus2
+2026-06-28T07:20:31.8058428Z ##[endgroup]
+2026-06-28T07:20:31.8060040Z ##[group]Operating System
+2026-06-28T07:20:31.8060700Z Ubuntu
+2026-06-28T07:20:31.8061328Z 24.04.4
+2026-06-28T07:20:31.8061873Z LTS
+2026-06-28T07:20:31.8062406Z ##[endgroup]
+2026-06-28T07:20:31.8063139Z ##[group]Runner Image
+2026-06-28T07:20:31.8063760Z Image: ubuntu-24.04
+2026-06-28T07:20:31.8064408Z Version: 20260622.220.1
+2026-06-28T07:20:31.8065757Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260622.220/images/ubuntu/Ubuntu2404-Readme.md
+2026-06-28T07:20:31.8068323Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260622.220
+2026-06-28T07:20:31.8069363Z ##[endgroup]
+2026-06-28T07:20:31.8070590Z ##[group]GITHUB_TOKEN Permissions
+2026-06-28T07:20:31.8072894Z Contents: read
+2026-06-28T07:20:31.8073643Z Metadata: read
+2026-06-28T07:20:31.8074286Z ##[endgroup]
+2026-06-28T07:20:31.8076955Z Secret source: Actions
+2026-06-28T07:20:31.8078004Z Prepare workflow directory
+2026-06-28T07:20:31.8415608Z Prepare all required actions
+2026-06-28T07:20:31.8454885Z Getting action download info
+2026-06-28T07:20:32.0572356Z Download action repository 'actions/checkout@v7' (SHA:9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0)
+2026-06-28T07:20:32.1281039Z Download action repository 'actions/setup-node@v6' (SHA:48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e)
+2026-06-28T07:20:32.2137238Z Download action repository 'codecov/codecov-action@v7' (SHA:fb8b3582c8e4def4969c97caa2f19720cb33a72f)
+2026-06-28T07:20:32.4763895Z Getting action download info
+2026-06-28T07:20:32.5430085Z Download action repository 'actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd' (SHA:ed597411d8f924073f98dfc5c65a23a2325f34cd)
+2026-06-28T07:20:32.7308333Z Complete job name: build-and-test
+2026-06-28T07:20:32.8178281Z ##[group]Run actions/checkout@v7
+2026-06-28T07:20:32.8179702Z with:
+2026-06-28T07:20:32.8180406Z   repository: toastboy/next-www-toastboy
+2026-06-28T07:20:32.8189451Z   token: ***
+2026-06-28T07:20:32.8190128Z   ssh-strict: true
+2026-06-28T07:20:32.8190816Z   ssh-user: git
+2026-06-28T07:20:32.8191506Z   persist-credentials: true
+2026-06-28T07:20:32.8192297Z   clean: true
+2026-06-28T07:20:32.8192995Z   sparse-checkout-cone-mode: true
+2026-06-28T07:20:32.8193819Z   fetch-depth: 1
+2026-06-28T07:20:32.8194503Z   fetch-tags: false
+2026-06-28T07:20:32.8195020Z   show-progress: true
+2026-06-28T07:20:32.8195490Z   lfs: false
+2026-06-28T07:20:32.8196120Z   submodules: false
+2026-06-28T07:20:32.8196589Z   set-safe-directory: true
+2026-06-28T07:20:32.8197114Z   allow-unsafe-pr-checkout: false
+2026-06-28T07:20:32.8198049Z ##[endgroup]
+2026-06-28T07:20:32.9422699Z Syncing repository: toastboy/next-www-toastboy
+2026-06-28T07:20:32.9424545Z ##[group]Getting Git version info
+2026-06-28T07:20:32.9425461Z Working directory is '/home/runner/work/next-www-toastboy/next-www-toastboy'
+2026-06-28T07:20:32.9426815Z [command]/usr/bin/git version
+2026-06-28T07:20:33.1570834Z git version 2.54.0
+2026-06-28T07:20:33.1592352Z ##[endgroup]
+2026-06-28T07:20:33.1604934Z Temporarily overriding HOME='/home/runner/work/_temp/286149a4-1398-4d38-bc40-9e3374e79f6d' before making global git config changes
+2026-06-28T07:20:33.1607704Z Adding repository directory to the temporary git global config as a safe directory
+2026-06-28T07:20:33.1611322Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/next-www-toastboy/next-www-toastboy
+2026-06-28T07:20:33.1659184Z Deleting the contents of '/home/runner/work/next-www-toastboy/next-www-toastboy'
+2026-06-28T07:20:33.1662239Z ##[group]Determining repository object format
+2026-06-28T07:20:33.1663724Z ##[endgroup]
+2026-06-28T07:20:33.1664833Z ##[group]Initializing the repository
+2026-06-28T07:20:33.1669019Z [command]/usr/bin/git init /home/runner/work/next-www-toastboy/next-www-toastboy
+2026-06-28T07:20:33.1740932Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-06-28T07:20:33.1742690Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-06-28T07:20:33.1744865Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-06-28T07:20:33.1747163Z hint: call:
+2026-06-28T07:20:33.1748622Z hint:
+2026-06-28T07:20:33.1750354Z hint:     git config --global init.defaultBranch <name>
+2026-06-28T07:20:33.1752213Z hint:
+2026-06-28T07:20:33.1753816Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-06-28T07:20:33.1756621Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-06-28T07:20:33.1758793Z hint:
+2026-06-28T07:20:33.1760103Z hint:     git branch -m <name>
+2026-06-28T07:20:33.1761470Z hint:
+2026-06-28T07:20:33.1763398Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-06-28T07:20:33.1765696Z Initialized empty Git repository in /home/runner/work/next-www-toastboy/next-www-toastboy/.git/
+2026-06-28T07:20:33.1769994Z [command]/usr/bin/git remote add origin https://github.com/toastboy/next-www-toastboy
+2026-06-28T07:20:33.1799748Z ##[endgroup]
+2026-06-28T07:20:33.1800906Z ##[group]Disabling automatic garbage collection
+2026-06-28T07:20:33.1802571Z [command]/usr/bin/git config --local gc.auto 0
+2026-06-28T07:20:33.1832822Z ##[endgroup]
+2026-06-28T07:20:33.1834036Z ##[group]Setting up auth
+2026-06-28T07:20:33.1834918Z Removing SSH command configuration
+2026-06-28T07:20:33.1838059Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-06-28T07:20:33.1872221Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-06-28T07:20:33.2184210Z Removing HTTP extra header
+2026-06-28T07:20:33.2189972Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-06-28T07:20:33.2222793Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-06-28T07:20:33.2452761Z Removing includeIf entries pointing to credentials config files
+2026-06-28T07:20:33.2457917Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-06-28T07:20:33.2490958Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-06-28T07:20:33.2734129Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-893ae31e-7cd0-4b55-aa17-b574e6ab47c8.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-06-28T07:20:33.2775480Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git.path /home/runner/work/_temp/git-credentials-893ae31e-7cd0-4b55-aa17-b574e6ab47c8.config
+2026-06-28T07:20:33.2808160Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-893ae31e-7cd0-4b55-aa17-b574e6ab47c8.config
+2026-06-28T07:20:33.2842538Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-893ae31e-7cd0-4b55-aa17-b574e6ab47c8.config
+2026-06-28T07:20:33.2879234Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-893ae31e-7cd0-4b55-aa17-b574e6ab47c8.config
+2026-06-28T07:20:33.2908757Z ##[endgroup]
+2026-06-28T07:20:33.2915010Z ##[group]Fetching the repository
+2026-06-28T07:20:33.2917353Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +85422bba4dd1b822d0607c355265bbf48828ba35:refs/remotes/origin/main
+2026-06-28T07:20:33.9120117Z From https://github.com/toastboy/next-www-toastboy
+2026-06-28T07:20:33.9122303Z  * [new ref]         85422bba4dd1b822d0607c355265bbf48828ba35 -> origin/main
+2026-06-28T07:20:33.9158476Z [command]/usr/bin/git branch --list --remote origin/main
+2026-06-28T07:20:33.9187995Z   origin/main
+2026-06-28T07:20:33.9196434Z [command]/usr/bin/git rev-parse refs/remotes/origin/main
+2026-06-28T07:20:33.9221823Z 85422bba4dd1b822d0607c355265bbf48828ba35
+2026-06-28T07:20:33.9226940Z ##[endgroup]
+2026-06-28T07:20:33.9228110Z ##[group]Determining the checkout info
+2026-06-28T07:20:33.9229333Z ##[endgroup]
+2026-06-28T07:20:33.9231833Z [command]/usr/bin/git sparse-checkout disable
+2026-06-28T07:20:33.9277675Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-06-28T07:20:33.9308094Z ##[group]Checking out the ref
+2026-06-28T07:20:33.9310819Z [command]/usr/bin/git checkout --progress --force -B main refs/remotes/origin/main
+2026-06-28T07:20:34.0182058Z Switched to a new branch 'main'
+2026-06-28T07:20:34.0188277Z branch 'main' set up to track 'origin/main'.
+2026-06-28T07:20:34.0196408Z ##[endgroup]
+2026-06-28T07:20:34.0240978Z [command]/usr/bin/git log -1 --format=%H
+2026-06-28T07:20:34.0267573Z 85422bba4dd1b822d0607c355265bbf48828ba35
+2026-06-28T07:20:34.0632506Z ##[group]Run actions/setup-node@v6
+2026-06-28T07:20:34.0633672Z with:
+2026-06-28T07:20:34.0634502Z   node-version: 24
+2026-06-28T07:20:34.0635441Z   check-latest: false
+2026-06-28T07:20:34.0647077Z   token: ***
+2026-06-28T07:20:34.0647983Z   package-manager-cache: true
+2026-06-28T07:20:34.0649033Z ##[endgroup]
+2026-06-28T07:20:34.2237837Z Found in cache @ /opt/hostedtoolcache/node/24.17.0/x64
+2026-06-28T07:20:34.2239982Z ##[group]Environment details
+2026-06-28T07:20:34.5861557Z node: v24.17.0
+2026-06-28T07:20:34.5862063Z npm: 11.13.0
+2026-06-28T07:20:34.5862428Z yarn: 1.22.22
+2026-06-28T07:20:34.5863509Z ##[endgroup]
+2026-06-28T07:20:34.6007536Z ##[group]Run npm ci
+2026-06-28T07:20:34.6007883Z [36;1mnpm ci[0m
+2026-06-28T07:20:34.6144081Z shell: /usr/bin/bash -e {0}
+2026-06-28T07:20:34.6144430Z ##[endgroup]
+2026-06-28T07:20:41.5963330Z npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+2026-06-28T07:20:47.1328043Z npm warn deprecated tsconfck@3.1.6: unmaintained
+2026-06-28T07:21:30.7133775Z 
+2026-06-28T07:21:30.7134831Z added 1333 packages, and audited 1334 packages in 56s
+2026-06-28T07:21:30.7135313Z 
+2026-06-28T07:21:30.7135610Z 414 packages are looking for funding
+2026-06-28T07:21:30.7136281Z   run `npm fund` for details
+2026-06-28T07:21:30.7158528Z 
+2026-06-28T07:21:30.7158864Z found 0 vulnerabilities
+2026-06-28T07:21:30.8167057Z ##[group]Run npm run generate
+2026-06-28T07:21:30.8167376Z [36;1mnpm run generate[0m
+2026-06-28T07:21:30.8216051Z shell: /usr/bin/bash -e {0}
+2026-06-28T07:21:30.8216381Z ##[endgroup]
+2026-06-28T07:21:30.9312398Z 
+2026-06-28T07:21:30.9313057Z > generate
+2026-06-28T07:21:30.9313511Z > prisma generate
+2026-06-28T07:21:30.9313752Z 
+2026-06-28T07:21:31.7822769Z Loaded Prisma config from prisma.config.ts.
+2026-06-28T07:21:31.7823234Z 
+2026-06-28T07:21:31.8964834Z Prisma schema loaded from prisma/schema.prisma.
+2026-06-28T07:21:33.4672804Z ✅ Zod schemas generated successfully with filtering applied
+2026-06-28T07:21:33.4673477Z 
+2026-06-28T07:21:33.4692079Z 
+2026-06-28T07:21:33.4693763Z [36m🚀 prisma-zod-generator has powered 1 runs on this project![0m
+2026-06-28T07:21:33.4694268Z 
+2026-06-28T07:21:33.4694742Z ✨ Level up with PZG Pro (14-day trial, no card needed):
+2026-06-28T07:21:33.4695362Z    - Server actions & policy automation
+2026-06-28T07:21:33.4696256Z    - SDK publisher, API docs, drift guard
+2026-06-28T07:21:33.4696845Z    - Performance tooling for large teams and more!
+2026-06-28T07:21:33.4697731Z    [32mhttps://omar-dulaimi.github.io/prisma-zod-generator/pricing[0m
+2026-06-28T07:21:33.4698670Z 
+2026-06-28T07:21:33.4699093Z 💬 Need help or want to suggest an idea?
+2026-06-28T07:21:33.4699895Z    [32mhttps://github.com/omar-dulaimi/prisma-zod-generator/issues[0m
+2026-06-28T07:21:33.4700369Z 
+2026-06-28T07:21:33.4700903Z 🙌 Sponsorships literally keep the lights (and tests) running:
+2026-06-28T07:21:33.4701785Z    My current Dell Latitude laptop needs 40+ minutes to finish the full test suite.
+2026-06-28T07:21:33.4702641Z    Helping me upgrade means faster fixes and better tooling for everyone.
+2026-06-28T07:21:33.4703517Z    [32mhttps://github.com/sponsors/omar-dulaimi[0m
+2026-06-28T07:21:33.4703872Z 
+2026-06-28T07:21:33.4703895Z 
+2026-06-28T07:21:33.4704421Z ✔ Generated Prisma Client (7.8.0) to ./prisma/generated in 179ms
+2026-06-28T07:21:33.4704863Z 
+2026-06-28T07:21:33.4705336Z ✔ Generated Prisma Zod Generator to ./prisma/zod in 948ms
+2026-06-28T07:21:33.4705740Z 
+2026-06-28T07:21:33.7167669Z ##[group]Run npm run test:coverage
+2026-06-28T07:21:33.7168017Z [36;1mnpm run test:coverage[0m
+2026-06-28T07:21:33.7201805Z shell: /usr/bin/bash -e {0}
+2026-06-28T07:21:33.7202088Z ##[endgroup]
+2026-06-28T07:21:33.8201811Z 
+2026-06-28T07:21:33.8202387Z > test:coverage
+2026-06-28T07:21:33.8203089Z > vitest run --config vitest.unit.config.ts --coverage
+2026-06-28T07:21:33.8203500Z 
+2026-06-28T07:21:34.2432547Z 
+2026-06-28T07:21:34.2436664Z [1m[30m[46m RUN [49m[39m[22m [36mv4.1.9 [39m[90m/home/runner/work/next-www-toastboy/next-www-toastboy[39m
+2026-06-28T07:21:34.2437689Z       [2mCoverage enabled with [22m[33mv8[39m
+2026-06-28T07:21:34.2438043Z 
+2026-06-28T07:21:34.8458800Z  [32m✓[39m [30m[45m api-vitest [49m[39m src/app/api/footy/auth/verify/[purpose]/[token]/route.vitest.spec.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+2026-06-28T07:21:35.2368872Z  [32m✓[39m [30m[45m api-vitest [49m[39m src/app/api/footy/invitations/route.vitest.spec.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 41[2mms[22m[39m
+2026-06-28T07:21:35.5605096Z  [32m✓[39m [30m[45m api-vitest [49m[39m src/app/api/footy/response/[token]/route.vitest.spec.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+2026-06-28T07:21:35.6972889Z  [32m✓[39m [30m[45m api-vitest [49m[39m src/app/api/footy/auth/claim/[token]/route.vitest.spec.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+2026-06-28T07:21:35.9996954Z  [32m✓[39m [30m[45m api-vitest [49m[39m src/app/api/health/route.vitest.spec.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 18[2mms[22m[39m
+2026-06-28T07:21:36.0465387Z  [32m✓[39m [30m[45m api-vitest [49m[39m src/app/api/events/route.vitest.spec.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+2026-06-28T07:21:36.5006823Z  [32m✓[39m [30m[45m api-vitest [49m[39m src/app/api/footy/player/[id]/mugshot/route.vitest.spec.ts [2m([22m[2m8 tests[22m[2m)[22m[33m 1300[2mms[22m[39m
+2026-06-28T07:21:36.5027816Z      [33m[2m✓[22m[39m should return PNG response for a valid club [33m 475[2mms[22m[39m
+2026-06-28T07:21:36.5058061Z      [33m[2m✓[22m[39m should return the manofmystery image for an anonymous player without checking blob existence [33m 389[2mms[22m[39m
+2026-06-28T07:21:36.5067295Z      [33m[2m✓[22m[39m should serve manofmystery directly when a player has no login [33m 422[2mms[22m[39m
+2026-06-28T07:21:36.7938849Z  [32m✓[39m [30m[45m api-vitest [49m[39m src/app/api/auth/[...all]/route.vitest.spec.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+2026-06-28T07:21:37.1490041Z  [32m✓[39m [30m[45m api-vitest [49m[39m src/app/api/footy/country/[fifaCode]/flag/route.vitest.spec.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 449[2mms[22m[39m
+2026-06-28T07:21:37.1493854Z      [33m[2m✓[22m[39m should return PNG response for a valid country [33m 438[2mms[22m[39m
+2026-06-28T07:21:37.2931424Z  [32m✓[39m [30m[45m api-vitest [49m[39m src/app/api/footy/club/[id]/badge/route.vitest.spec.ts [2m([22m[2m4 tests[22m[2m)[22m[33m 418[2mms[22m[39m
+2026-06-28T07:21:37.2934458Z      [33m[2m✓[22m[39m should return PNG response for a valid club [33m 408[2mms[22m[39m
+2026-06-28T07:21:41.3945514Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/PickerForm/PickerForm.vitest.spec.tsx [2m([22m[2m27 tests[22m[2m)[22m[33m 2483[2mms[22m[39m
+2026-06-28T07:21:41.3947266Z      [33m[2m✓[22m[39m cancels the game with a reason [33m 509[2mms[22m[39m
+2026-06-28T07:21:42.5730122Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/NewPlayerForm/NewPlayerForm.vitest.spec.tsx [2m([22m[2m18 tests[22m[2m)[22m[33m 3007[2mms[22m[39m
+2026-06-28T07:21:42.5732423Z      [33m[2m✓[22m[39m submits form with valid email [33m 377[2mms[22m[39m
+2026-06-28T07:21:43.0609624Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/AdminPlayerList/AdminPlayerList.vitest.spec.tsx [2m([22m[2m70 tests[22m[2m)[22m[33m 4319[2mms[22m[39m
+2026-06-28T07:21:44.6754383Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/PlayerHeatmap/PlayerHeatmap.vitest.spec.tsx [2m([22m[2m27 tests[22m[2m)[22m[32m 230[2mms[22m[39m
+2026-06-28T07:21:45.3139286Z [90mstderr[2m | src/components/PlayerList/PlayerList.vitest.spec.tsx[2m > [22m[2mPlayerList[2m > [22m[2mnarrows the reply range when the min slider thumb is moved right
+2026-06-28T07:21:45.3157993Z [22m[39mAn update to @mantine/core/SliderThumb inside a test was not wrapped in act(...).
+2026-06-28T07:21:45.3175417Z 
+2026-06-28T07:21:45.3177043Z When testing, code that causes React state updates should be wrapped into act(...):
+2026-06-28T07:21:45.3177820Z 
+2026-06-28T07:21:45.3178173Z act(() => {
+2026-06-28T07:21:45.3178785Z   /* fire events that update state */
+2026-06-28T07:21:45.3182015Z });
+2026-06-28T07:21:45.3182728Z /* assert on the output */
+2026-06-28T07:21:45.3183281Z 
+2026-06-28T07:21:45.3206699Z This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+2026-06-28T07:21:45.3208548Z An update to @mantine/core/RangeSlider inside a test was not wrapped in act(...).
+2026-06-28T07:21:45.3209327Z 
+2026-06-28T07:21:45.3210107Z When testing, code that causes React state updates should be wrapped into act(...):
+2026-06-28T07:21:45.3210881Z 
+2026-06-28T07:21:45.3211381Z act(() => {
+2026-06-28T07:21:45.3212052Z   /* fire events that update state */
+2026-06-28T07:21:45.3233956Z });
+2026-06-28T07:21:45.3234578Z /* assert on the output */
+2026-06-28T07:21:45.3235082Z 
+2026-06-28T07:21:45.3236457Z This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+2026-06-28T07:21:45.3237750Z 
+2026-06-28T07:21:45.6022844Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/PlayerList/PlayerList.vitest.spec.tsx [2m([22m[2m18 tests[22m[2m)[22m[33m 2525[2mms[22m[39m
+2026-06-28T07:21:45.6026047Z      [33m[2m✓[22m[39m handles players without names when matching by email [33m 361[2mms[22m[39m
+2026-06-28T07:21:46.6462903Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/PlayerCountryMap/PlayerCountryMap.vitest.spec.tsx [2m([22m[2m14 tests[22m[2m)[22m[33m 518[2mms[22m[39m
+2026-06-28T07:21:49.2548708Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/PlayerProfileForm/PlayerProfileForm.vitest.spec.tsx [2m([22m[2m11 tests[22m[2m)[22m[33m 4606[2mms[22m[39m
+2026-06-28T07:21:49.2576465Z      [33m[2m✓[22m[39m renders the profile fields [33m 461[2mms[22m[39m
+2026-06-28T07:21:49.2577751Z      [33m[2m✓[22m[39m submits the form and shows a success notification [33m 1393[2mms[22m[39m
+2026-06-28T07:21:49.2579066Z      [33m[2m✓[22m[39m shows an error notification and captures error when update fails [33m 1114[2mms[22m[39m
+2026-06-28T07:21:49.2580495Z      [33m[2m✓[22m[39m submits with retired toggled on, passing a non-null finished date [33m 372[2mms[22m[39m
+2026-06-28T07:21:50.6802728Z [90mstderr[2m | src/components/ResponsesForm/ResponsesForm.vitest.spec.tsx[2m > [22m[2mResponses[2m > [22m[2msyncs a newly-added player when responses re-renders with an extra row
+2026-06-28T07:21:50.6807225Z [22m[39mA component is changing an uncontrolled input to be controlled. This is likely caused by the value changing from undefined to a defined value, which should not happen. Decide between using a controlled or uncontrolled input element for the lifetime of the component. More info: https://react.dev/link/controlled-components
+2026-06-28T07:21:50.6809794Z 
+2026-06-28T07:21:51.4352255Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/ResponsesForm/ResponsesForm.vitest.spec.tsx [2m([22m[2m9 tests[22m[2m)[22m[33m 2800[2mms[22m[39m
+2026-06-28T07:21:51.4354176Z      [33m[2m✓[22m[39m filters safely when a player name is missing [33m 359[2mms[22m[39m
+2026-06-28T07:21:51.4356874Z      [33m[2m✓[22m[39m returns early without calling submitResponse when response is still null [33m 310[2mms[22m[39m
+2026-06-28T07:21:51.4358451Z      [33m[2m✓[22m[39m shows an error notification when submitResponse rejects [33m 409[2mms[22m[39m
+2026-06-28T07:21:51.4359690Z      [33m[2m✓[22m[39m updates a player response and calls onSave [33m 688[2mms[22m[39m
+2026-06-28T07:21:52.2929136Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/AdminUserList/AdminUserList.vitest.spec.tsx [2m([22m[2m16 tests[22m[2m)[22m[33m 1278[2mms[22m[39m
+2026-06-28T07:21:53.2417470Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/FamilyTree/FamilyTree.vitest.spec.tsx [2m([22m[2m13 tests[22m[2m)[22m[33m 301[2mms[22m[39m
+2026-06-28T07:21:55.0127377Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/docs/mdx-components.vitest.spec.tsx [2m([22m[2m20 tests[22m[2m)[22m[32m 244[2mms[22m[39m
+2026-06-28T07:21:57.7780869Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/DrinkersForm/DrinkersForm.vitest.spec.tsx [2m([22m[2m12 tests[22m[2m)[22m[33m 1038[2mms[22m[39m
+2026-06-28T07:21:59.5175347Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/PlayerProfile/PlayerProfile.vitest.spec.tsx [2m([22m[2m19 tests[22m[2m)[22m[33m 409[2mms[22m[39m
+2026-06-28T07:22:00.1541818Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/GameInvitationResponseForm/GameInvitationResponseForm.vitest.spec.tsx [2m([22m[2m9 tests[22m[2m)[22m[33m 1011[2mms[22m[39m
+2026-06-28T07:22:00.1584834Z      [33m[2m✓[22m[39m submits an updated response [33m 404[2mms[22m[39m
+2026-06-28T07:22:00.3253048Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/UserButton/UserButton.vitest.spec.tsx [2m([22m[2m13 tests[22m[2m)[22m[33m 733[2mms[22m[39m
+2026-06-28T07:22:02.7839362Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/SendEmailForm/SendEmailForm.vitest.spec.tsx [2m([22m[2m9 tests[22m[2m)[22m[33m 1240[2mms[22m[39m
+2026-06-28T07:22:02.7841664Z      [33m[2m✓[22m[39m sends to verified extra emails when available, alongside account email [33m 302[2mms[22m[39m
+2026-06-28T07:22:03.5185109Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/FamilyTree/familyTreeRadius.vitest.spec.ts [2m([22m[2m26 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+2026-06-28T07:22:03.6406631Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/InvoiceForm/InvoiceForm.vitest.spec.tsx [2m([22m[2m16 tests[22m[2m)[22m[33m 1226[2mms[22m[39m
+2026-06-28T07:22:06.2825239Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/PasswordChangeForm/PasswordChangeForm.vitest.spec.tsx [2m([22m[2m10 tests[22m[2m)[22m[33m 4330[2mms[22m[39m
+2026-06-28T07:22:06.2827637Z      [33m[2m✓[22m[39m submits current and new password and shows success notification [33m 647[2mms[22m[39m
+2026-06-28T07:22:06.2894262Z      [33m[2m✓[22m[39m passes revokeOtherSessions prop to changePassword [33m 482[2mms[22m[39m
+2026-06-28T07:22:06.2897599Z      [33m[2m✓[22m[39m shows error notification with error.error.message on API failure [33m 490[2mms[22m[39m
+2026-06-28T07:22:06.2900004Z      [33m[2m✓[22m[39m shows error notification with error.message on API failure [33m 356[2mms[22m[39m
+2026-06-28T07:22:06.2905541Z      [33m[2m✓[22m[39m shows fallback error message when error has no message [33m 469[2mms[22m[39m
+2026-06-28T07:22:06.2907559Z      [33m[2m✓[22m[39m dismisses the error notification when closed [33m 532[2mms[22m[39m
+2026-06-28T07:22:06.2908903Z      [33m[2m✓[22m[39m does not submit when passwords do not match [33m 502[2mms[22m[39m
+2026-06-28T07:22:06.2910116Z      [33m[2m✓[22m[39m does not submit when new password is too short [33m 419[2mms[22m[39m
+2026-06-28T07:22:06.2911588Z      [33m[2m✓[22m[39m does not submit when current password is empty [33m 302[2mms[22m[39m
+2026-06-28T07:22:06.5468605Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/MoneyForm/MoneyForm.vitest.spec.tsx [2m([22m[2m9 tests[22m[2m)[22m[33m 954[2mms[22m[39m
+2026-06-28T07:22:08.3609915Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/GameDaySummary/GameDaySummary.vitest.spec.tsx [2m([22m[2m10 tests[22m[2m)[22m[32m 193[2mms[22m[39m
+2026-06-28T07:22:08.7393446Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/TableScore/TableScore.vitest.spec.tsx [2m([22m[2m13 tests[22m[2m)[22m[33m 381[2mms[22m[39m
+2026-06-28T07:22:09.6449518Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/EnquiryForm/EnquiryForm.vitest.spec.tsx [2m([22m[2m8 tests[22m[2m)[22m[33m 1248[2mms[22m[39m
+2026-06-28T07:22:09.6451299Z      [33m[2m✓[22m[39m submits valid data [33m 501[2mms[22m[39m
+2026-06-28T07:22:09.6452718Z      [33m[2m✓[22m[39m shows error notification when submit throws [33m 384[2mms[22m[39m
+2026-06-28T07:22:10.0065178Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/MoneyChart/MoneyChart.vitest.spec.tsx [2m([22m[2m10 tests[22m[2m)[22m[32m 188[2mms[22m[39m
+2026-06-28T07:22:11.3862374Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/ForgottenPasswordForm/ForgottenPasswordForm.vitest.spec.tsx [2m([22m[2m6 tests[22m[2m)[22m[33m 735[2mms[22m[39m
+2026-06-28T07:22:12.8803290Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/CustomAppShell/CustomAppShell.vitest.spec.tsx [2m([22m[2m7 tests[22m[2m)[22m[32m 109[2mms[22m[39m
+2026-06-28T07:22:13.0072098Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/DeleteAccountForm/DeleteAccountForm.vitest.spec.tsx [2m([22m[2m6 tests[22m[2m)[22m[33m 812[2mms[22m[39m
+2026-06-28T07:22:14.1419722Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/SignIn/SignIn.vitest.spec.tsx [2m([22m[2m10 tests[22m[2m)[22m[33m 2548[2mms[22m[39m
+2026-06-28T07:22:14.1424299Z      [33m[2m✓[22m[39m complains when the email is invalid [33m 492[2mms[22m[39m
+2026-06-28T07:22:14.1429061Z      [33m[2m✓[22m[39m complains when the password is too short [33m 434[2mms[22m[39m
+2026-06-28T07:22:14.1430679Z      [33m[2m✓[22m[39m shows an error when valid input is provided but the login fails [33m 546[2mms[22m[39m
+2026-06-28T07:22:14.1432366Z      [33m[2m✓[22m[39m closes the error notification when its close button is clicked [33m 304[2mms[22m[39m
+2026-06-28T07:22:14.1433972Z      [33m[2m✓[22m[39m succeeds when valid credentials are provided [33m 519[2mms[22m[39m
+2026-06-28T07:22:14.8938629Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/GameDayLink/GameDayLink.vitest.spec.tsx [2m([22m[2m10 tests[22m[2m)[22m[33m 354[2mms[22m[39m
+2026-06-28T07:22:15.9268816Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/ClaimSignup/ClaimSignup.vitest.spec.tsx [2m([22m[2m5 tests[22m[2m)[22m[33m 1340[2mms[22m[39m
+2026-06-28T07:22:15.9288198Z      [33m[2m✓[22m[39m shows an error notification when sign up fails [33m 464[2mms[22m[39m
+2026-06-28T07:22:15.9308128Z      [33m[2m✓[22m[39m calls alert when signUp onError callback fires [33m 358[2mms[22m[39m
+2026-06-28T07:22:17.0214029Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/DownloadMyData/DownloadMyData.vitest.spec.tsx [2m([22m[2m6 tests[22m[2m)[22m[33m 1133[2mms[22m[39m
+2026-06-28T07:22:17.0217731Z      [33m[2m✓[22m[39m removes each remaining section from the JSON when its checkbox is unchecked [33m 506[2mms[22m[39m
+2026-06-28T07:22:17.1183654Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/GameResultForm/GameResultForm.vitest.spec.tsx [2m([22m[2m5 tests[22m[2m)[22m[33m 536[2mms[22m[39m
+2026-06-28T07:22:17.8509557Z [90mstderr[2m | src/components/AdminUpdatePlayerRecords/AdminUpdatePlayerRecords.vitest.spec.tsx[2m > [22m[2mAdminUpdatePlayerRecords[2m > [22m[2mrenders nothing when getProgress resolves to null
+2026-06-28T07:22:17.8516977Z [22m[39mAn update to AdminUpdatePlayerRecords inside a test was not wrapped in act(...).
+2026-06-28T07:22:17.8519293Z 
+2026-06-28T07:22:17.8520214Z When testing, code that causes React state updates should be wrapped into act(...):
+2026-06-28T07:22:17.8521127Z 
+2026-06-28T07:22:17.8521510Z act(() => {
+2026-06-28T07:22:17.8522107Z   /* fire events that update state */
+2026-06-28T07:22:17.8522755Z });
+2026-06-28T07:22:17.8523274Z /* assert on the output */
+2026-06-28T07:22:17.8523717Z 
+2026-06-28T07:22:17.8524882Z This ensures that you're testing the behavior the user would see in the browser. Learn more at https://react.dev/link/wrap-tests-with-act
+2026-06-28T07:22:17.8526223Z 
+2026-06-28T07:22:17.9431850Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/AdminUpdatePlayerRecords/AdminUpdatePlayerRecords.vitest.spec.tsx [2m([22m[2m6 tests[22m[2m)[22m[32m 180[2mms[22m[39m
+2026-06-28T07:22:19.2911236Z [90mstdout[2m | src/components/BreakpointDebugger/BreakpointDebugger.vitest.spec.tsx[2m > [22m[2mBreakpointDebugger[2m > [22m[2mrenders breakpoint information
+2026-06-28T07:22:19.2923247Z [22m[39mActive Breakpoint: Unknown
+2026-06-28T07:22:19.2947003Z 
+2026-06-28T07:22:19.2996821Z [90mstdout[2m | src/components/BreakpointDebugger/BreakpointDebugger.vitest.spec.tsx[2m > [22m[2mBreakpointDebugger[2m > [22m[2mdisplays theme breakpoints as JSON
+2026-06-28T07:22:19.3005473Z [22m[39mActive Breakpoint: Unknown
+2026-06-28T07:22:19.3008222Z 
+2026-06-28T07:22:19.3068399Z [90mstdout[2m | src/components/BreakpointDebugger/BreakpointDebugger.vitest.spec.tsx[2m > [22m[2mBreakpointDebugger[2m > [22m[2mshows XS breakpoint when below sm
+2026-06-28T07:22:19.3070258Z [22m[39mActive Breakpoint: XS (<sm)
+2026-06-28T07:22:19.3070760Z 
+2026-06-28T07:22:19.3130510Z [90mstdout[2m | src/components/BreakpointDebugger/BreakpointDebugger.vitest.spec.tsx[2m > [22m[2mBreakpointDebugger[2m > [22m[2mshows SM breakpoint when between sm and md
+2026-06-28T07:22:19.3141363Z [22m[39mActive Breakpoint: SM (sm)
+2026-06-28T07:22:19.3162065Z 
+2026-06-28T07:22:19.3194645Z [90mstdout[2m | src/components/BreakpointDebugger/BreakpointDebugger.vitest.spec.tsx[2m > [22m[2mBreakpointDebugger[2m > [22m[2mshows MD breakpoint when between md and lg
+2026-06-28T07:22:19.3206636Z [22m[39mActive Breakpoint: MD (md)
+2026-06-28T07:22:19.3207125Z 
+2026-06-28T07:22:19.3264919Z [90mstdout[2m | src/components/BreakpointDebugger/BreakpointDebugger.vitest.spec.tsx[2m > [22m[2mBreakpointDebugger[2m > [22m[2mshows LG breakpoint when between lg and xl
+2026-06-28T07:22:19.3323093Z [22m[39mActive Breakpoint: LG (lg)
+2026-06-28T07:22:19.3323759Z 
+2026-06-28T07:22:19.3330766Z [90mstdout[2m | src/components/BreakpointDebugger/BreakpointDebugger.vitest.spec.tsx[2m > [22m[2mBreakpointDebugger[2m > [22m[2mshows XL+ breakpoint when above xl
+2026-06-28T07:22:19.3332795Z [22m[39mActive Breakpoint: XL+ (xl)
+2026-06-28T07:22:19.3362978Z 
+2026-06-28T07:22:19.3405037Z [90mstdout[2m | src/components/BreakpointDebugger/BreakpointDebugger.vitest.spec.tsx[2m > [22m[2mBreakpointDebugger[2m > [22m[2mshows Unknown when no media query matches
+2026-06-28T07:22:19.3412597Z [22m[39mActive Breakpoint: Unknown
+2026-06-28T07:22:19.3412945Z 
+2026-06-28T07:22:19.4016352Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/BreakpointDebugger/BreakpointDebugger.vitest.spec.tsx [2m([22m[2m9 tests[22m[2m)[22m[32m 109[2mms[22m[39m
+2026-06-28T07:22:19.6818859Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/NewGameForm/NewGameForm.vitest.spec.tsx [2m([22m[2m5 tests[22m[2m)[22m[33m 561[2mms[22m[39m
+2026-06-28T07:22:19.7632587Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/MoreGamesForm/MoreGamesForm.vitest.spec.tsx [2m([22m[2m3 tests[22m[2m)[22m[33m 886[2mms[22m[39m
+2026-06-28T07:22:19.7636694Z      [33m[2m✓[22m[39m submits updated rows [33m 456[2mms[22m[39m
+2026-06-28T07:22:20.6320111Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/hooks/useAutoRefresh.vitest.spec.ts [2m([22m[2m9 tests[22m[2m)[22m[32m 57[2mms[22m[39m
+2026-06-28T07:22:21.2402195Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/PlayerLink/PlayerLink.vitest.spec.tsx [2m([22m[2m8 tests[22m[2m)[22m[32m 221[2mms[22m[39m
+2026-06-28T07:22:21.4120220Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/GameDayIndicator/GameDayIndicator.vitest.spec.tsx [2m([22m[2m9 tests[22m[2m)[22m[32m 159[2mms[22m[39m
+2026-06-28T07:22:22.6379659Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/AdminExportAuth/AdminExportAuth.vitest.spec.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 226[2mms[22m[39m
+2026-06-28T07:22:22.8212554Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/EmailInput/EmailInput.vitest.spec.tsx [2m([22m[2m10 tests[22m[2m)[22m[32m 244[2mms[22m[39m
+2026-06-28T07:22:24.2893198Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/PieChart/PieChart.vitest.spec.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 72[2mms[22m[39m
+2026-06-28T07:22:25.6349936Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/PasswordResetForm/PasswordResetForm.vitest.spec.tsx [2m([22m[2m4 tests[22m[2m)[22m[33m 1018[2mms[22m[39m
+2026-06-28T07:22:25.6377722Z      [33m[2m✓[22m[39m shows an error notification when resetPassword returns status false [33m 506[2mms[22m[39m
+2026-06-28T07:22:25.6379605Z      [33m[2m✓[22m[39m submits a new password and shows success notification [33m 328[2mms[22m[39m
+2026-06-28T07:22:26.7787048Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/TitleWithYearDropdown/TitleWithYearDropdown.vitest.spec.tsx [2m([22m[2m6 tests[22m[2m)[22m[33m 314[2mms[22m[39m
+2026-06-28T07:22:27.2767065Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/Team/Team.vitest.spec.tsx [2m([22m[2m7 tests[22m[2m)[22m[32m 189[2mms[22m[39m
+2026-06-28T07:22:28.5578428Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/PlayerForm/PlayerForm.vitest.spec.tsx [2m([22m[2m5 tests[22m[2m)[22m[32m 126[2mms[22m[39m
+2026-06-28T07:22:29.0758810Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/EmailPlayerButton/EmailPlayerButton.vitest.spec.tsx [2m([22m[2m5 tests[22m[2m)[22m[32m 208[2mms[22m[39m
+2026-06-28T07:22:29.9149039Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/PlayerTrophyTally/PlayerTrophyTally.vitest.spec.tsx [2m([22m[2m7 tests[22m[2m)[22m[32m 216[2mms[22m[39m
+2026-06-28T07:22:30.5368621Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/PlayerWDLChart/PlayerWDLChart.vitest.spec.tsx [2m([22m[2m3 tests[22m[2m)[22m[33m 652[2mms[22m[39m
+2026-06-28T07:22:30.5370604Z      [33m[2m✓[22m[39m shows plural tooltip labels when each count exceeds 1 [33m 307[2mms[22m[39m
+2026-06-28T07:22:30.7116691Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/PasswordFields/PasswordFields.vitest.spec.tsx [2m([22m[2m3 tests[22m[2m)[22m[32m 217[2mms[22m[39m
+2026-06-28T07:22:32.6618982Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/AppErrorPage/AppErrorPage.vitest.spec.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 122[2mms[22m[39m
+2026-06-28T07:22:34.5180677Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/RichTextMailBody/RichTextMailBody.vitest.spec.tsx [2m([22m[2m3 tests[22m[2m)[22m[32m 65[2mms[22m[39m
+2026-06-28T07:22:35.2633191Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/PlayerTrophies/PlayerTrophies.vitest.spec.tsx [2m([22m[2m3 tests[22m[2m)[22m[32m 78[2mms[22m[39m
+2026-06-28T07:22:35.6953994Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/PlayerCard/PlayerCard.vitest.spec.tsx [2m([22m[2m4 tests[22m[2m)[22m[32m 74[2mms[22m[39m
+2026-06-28T07:22:35.9681757Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/PlayerTimeline/PlayerTimeline.vitest.spec.tsx [2m([22m[2m3 tests[22m[2m)[22m[32m 81[2mms[22m[39m
+2026-06-28T07:22:37.3888538Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/NavBarNested/NavBarNested.vitest.spec.tsx [2m([22m[2m5 tests[22m[2m)[22m[33m 327[2mms[22m[39m
+2026-06-28T07:22:41.1925247Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/YearTable/YearTable.vitest.spec.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 72[2mms[22m[39m
+2026-06-28T07:22:41.5550620Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/WinnersTable/WinnersTable.vitest.spec.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 98[2mms[22m[39m
+2026-06-28T07:22:42.6727656Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/PlayerPositions/PlayerPositions.vitest.spec.tsx [2m([22m[2m3 tests[22m[2m)[22m[32m 116[2mms[22m[39m
+2026-06-28T07:22:42.8238790Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/GameDayList/GameDayList.vitest.spec.tsx [2m([22m[2m3 tests[22m[2m)[22m[32m 96[2mms[22m[39m
+2026-06-28T07:22:43.2578866Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/SearchParamErrorNotification/SearchParamErrorNotification.vitest.spec.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 56[2mms[22m[39m
+2026-06-28T07:22:44.1800522Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/PlayerArse/PlayerArse.vitest.spec.tsx [2m([22m[2m3 tests[22m[2m)[22m[32m 140[2mms[22m[39m
+2026-06-28T07:22:44.9823865Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/NavBarLinksGroup/NavBarLinksGroup.vitest.spec.tsx [2m([22m[2m3 tests[22m[2m)[22m[32m 124[2mms[22m[39m
+2026-06-28T07:22:45.6567949Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/PlayerMugshot/PlayerMugshot.vitest.spec.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 78[2mms[22m[39m
+2026-06-28T07:22:47.4939362Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/TeamPlayer/TeamPlayer.vitest.spec.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 75[2mms[22m[39m
+2026-06-28T07:22:47.9448836Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/RecordsTable/RecordsTable.vitest.spec.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 96[2mms[22m[39m
+2026-06-28T07:22:49.0515660Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/Turnout/Turnout.vitest.spec.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 106[2mms[22m[39m
+2026-06-28T07:22:49.6518549Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/AdminUserData/AdminUserData.vitest.spec.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 110[2mms[22m[39m
+2026-06-28T07:22:50.0574716Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/PlayerResults/PlayerResults.vitest.spec.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 80[2mms[22m[39m
+2026-06-28T07:22:50.3568747Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/AutoRefresh/AutoRefresh.vitest.spec.tsx [2m([22m[2m3 tests[22m[2m)[22m[32m 24[2mms[22m[39m
+2026-06-28T07:22:50.4578453Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/PlayerCountries/PlayerCountries.vitest.spec.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 64[2mms[22m[39m
+2026-06-28T07:22:51.4594677Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/CurseOfTheBibs/CurseOfTheBibs.vitest.spec.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 54[2mms[22m[39m
+2026-06-28T07:22:51.7063913Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/PlayerClubs/PlayerClubs.vitest.spec.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 58[2mms[22m[39m
+2026-06-28T07:22:52.1386348Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/GoalieIndicator/GoalieIndicator.vitest.spec.tsx [2m([22m[2m2 tests[22m[2m)[22m[32m 137[2mms[22m[39m
+2026-06-28T07:22:52.7573860Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/CountryFlag/CountryFlag.vitest.spec.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 65[2mms[22m[39m
+2026-06-28T07:22:53.0320874Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/ClubBadge/ClubBadge.vitest.spec.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 54[2mms[22m[39m
+2026-06-28T07:22:53.5012625Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/RelativeTime/RelativeTime.vitest.spec.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 74[2mms[22m[39m
+2026-06-28T07:22:54.1411647Z  [32m✓[39m [30m[42m components-vitest [49m[39m src/components/NYI/NYI.vitest.spec.tsx [2m([22m[2m1 test[22m[2m)[22m[32m 57[2mms[22m[39m
+2026-06-28T07:23:02.2597720Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/core/updatePlayer/updatePlayer.vitest.spec.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+2026-06-28T07:23:02.9060028Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/core/submitPicker/submitPicker.vitest.spec.ts [2m([22m[2m12 tests[22m[2m)[22m[32m 33[2mms[22m[39m
+2026-06-28T07:23:02.9409045Z  [2m[90m↓[39m[22m [30m[43m lib-vitest [49m[39m src/lib/core/submitPicker/submitPicker.integration.vitest.spec.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+2026-06-28T07:23:03.4018869Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/core/sendEmail/sendEmail.vitest.spec.ts [2m([22m[2m14 tests[22m[2m)[22m[32m 28[2mms[22m[39m
+2026-06-28T07:23:03.5095413Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/auth.server.vitest.spec.ts [2m([22m[2m34 tests[22m[2m)[22m[32m 32[2mms[22m[39m
+2026-06-28T07:23:05.0127710Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/core/verifyEmail/verifyEmail.vitest.spec.ts [2m([22m[2m14 tests[22m[2m)[22m[32m 32[2mms[22m[39m
+2026-06-28T07:23:05.4482558Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/invitations.vitest.spec.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 24[2mms[22m[39m
+2026-06-28T07:23:05.8717222Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/gameInvitations.vitest.spec.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 24[2mms[22m[39m
+2026-06-28T07:23:06.1008673Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/auth.vitest.spec.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 18[2mms[22m[39m
+2026-06-28T07:23:08.8287823Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/core/sendEnquiry/sendEnquiry.vitest.spec.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+2026-06-28T07:23:08.8882588Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/core/claimPlayerInvitation/claimPlayerInvitation.vitest.spec.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+2026-06-28T07:23:09.1782299Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/core/auth/auth.vitest.spec.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 18[2mms[22m[39m
+2026-06-28T07:23:09.2709587Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/observability/sentryConfig.vitest.spec.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+2026-06-28T07:23:09.5561409Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/dates.vitest.spec.ts [2m([22m[2m21 tests[22m[2m)[22m[32m 15[2mms[22m[39m
+2026-06-28T07:23:09.6438385Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/core/authExport/authExport.vitest.spec.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+2026-06-28T07:23:09.9491032Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/email/__tests__/sendViaGraphApi.vitest.spec.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 63[2mms[22m[39m
+2026-06-28T07:23:13.2311449Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/core/setGameResult/setGameResult.vitest.spec.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 28[2mms[22m[39m
+2026-06-28T07:23:13.7226723Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/core/setDrinkers/setDrinkers.vitest.spec.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+2026-06-28T07:23:14.0041180Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/core/submitGameInvitationResponse/submitGameInvitationResponse.vitest.spec.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+2026-06-28T07:23:15.8268384Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/core/createPlayer/createPlayer.vitest.spec.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 19[2mms[22m[39m
+2026-06-28T07:23:16.1916785Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/errors/AppError.vitest.spec.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+2026-06-28T07:23:17.8137038Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/core/setGameEnabled/setGameEnabled.vitest.spec.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+2026-06-28T07:23:18.3047013Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/observability/sentry.vitest.spec.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 18[2mms[22m[39m
+2026-06-28T07:23:18.4224446Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/core/deletePlayer/deletePlayer.vitest.spec.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+2026-06-28T07:23:18.7233854Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/errors/request.vitest.spec.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 60[2mms[22m[39m
+2026-06-28T07:23:18.9130660Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/core/sendEmailToAllActivePlayers/sendEmailToAllActivePlayers.vitest.spec.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+2026-06-28T07:23:19.2067702Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/auth.nosocial.vitest.spec.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 5[2mms[22m[39m
+2026-06-28T07:23:22.6934312Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/tables.vitest.spec.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+2026-06-28T07:23:22.8691898Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/core/submitResponse/submitResponse.vitest.spec.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+2026-06-28T07:23:23.1942288Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/core/setDrinkers/setDrinkersAction.vitest.spec.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 16[2mms[22m[39m
+2026-06-28T07:23:23.5187416Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/core/updateInvoiceGameDays/updateInvoiceGameDaysAction.vitest.spec.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+2026-06-28T07:23:23.5651489Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/core/createMoreGameDays/createMoreGameDays.vitest.spec.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+2026-06-28T07:23:23.7079375Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/api.vitest.spec.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+2026-06-28T07:23:23.7817630Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/money.vitest.spec.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+2026-06-28T07:23:23.9335816Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/verificationToken.vitest.spec.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 14[2mms[22m[39m
+2026-06-28T07:23:24.0107503Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/core/setGameResult/setGameResultAction.vitest.spec.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 11[2mms[22m[39m
+2026-06-28T07:23:24.0634480Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/events.vitest.spec.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+2026-06-28T07:23:24.1704037Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/urls.vitest.spec.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+2026-06-28T07:23:24.2767884Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/stream.vitest.spec.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 12[2mms[22m[39m
+2026-06-28T07:23:24.3089222Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/gameResult.vitest.spec.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+2026-06-28T07:23:24.5292269Z  [2m[90m↓[39m[22m [30m[43m lib-vitest [49m[39m src/lib/core/createPlayer/createPlayerAction.vitest.spec.ts [2m([22m[2m7 tests[22m[2m | [22m[90m7 todo[39m[2m)[22m
+2026-06-28T07:23:24.8557210Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/errors/http.vitest.spec.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+2026-06-28T07:23:25.1083505Z  [2m[90m↓[39m[22m [30m[43m lib-vitest [49m[39m src/lib/core/auth/authAction.vitest.spec.ts [2m([22m[2m5 tests[22m[2m | [22m[90m5 todo[39m[2m)[22m
+2026-06-28T07:23:25.3273003Z  [2m[90m↓[39m[22m [30m[43m lib-vitest [49m[39m src/lib/core/setGameEnabled/setGameEnabledAction.vitest.spec.ts [2m([22m[2m5 tests[22m[2m | [22m[90m5 todo[39m[2m)[22m
+2026-06-28T07:23:25.5648843Z  [2m[90m↓[39m[22m [30m[43m lib-vitest [49m[39m src/lib/core/createMoreGameDays/createMoreGameDaysAction.vitest.spec.ts [2m([22m[2m4 tests[22m[2m | [22m[90m4 todo[39m[2m)[22m
+2026-06-28T07:23:25.8078041Z  [2m[90m↓[39m[22m [30m[43m lib-vitest [49m[39m src/lib/core/submitResponse/submitResponseAction.vitest.spec.ts [2m([22m[2m4 tests[22m[2m | [22m[90m4 todo[39m[2m)[22m
+2026-06-28T07:23:26.1120195Z  [2m[90m↓[39m[22m [30m[43m lib-vitest [49m[39m src/lib/core/triggerInvitations/triggerInvitationsAction.vitest.spec.ts [2m([22m[2m4 tests[22m[2m | [22m[90m4 todo[39m[2m)[22m
+2026-06-28T07:23:26.3488444Z  [2m[90m↓[39m[22m [30m[43m lib-vitest [49m[39m src/lib/core/recordHallHire/recordHallHireAction.vitest.spec.ts [2m([22m[2m3 tests[22m[2m | [22m[90m3 todo[39m[2m)[22m
+2026-06-28T07:23:26.5841264Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/email/normalizeEmail.vitest.spec.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+2026-06-28T07:23:26.7979361Z  [2m[90m↓[39m[22m [30m[43m lib-vitest [49m[39m src/lib/core/submitPicker/submitPickerAction.vitest.spec.ts [2m([22m[2m3 tests[22m[2m | [22m[90m3 todo[39m[2m)[22m
+2026-06-28T07:23:27.1859095Z  [2m[90m↓[39m[22m [30m[43m lib-vitest [49m[39m src/lib/core/updatePlayerRecords/updatePlayerRecordsAction.vitest.spec.ts [2m([22m[2m2 tests[22m[2m | [22m[90m2 todo[39m[2m)[22m
+2026-06-28T07:23:28.5050581Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/core/updateInvoiceGameDays/updateInvoiceGameDays.vitest.spec.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+2026-06-28T07:23:29.4419886Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/core/triggerInvitations/triggerInvitations.vitest.spec.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 7[2mms[22m[39m
+2026-06-28T07:23:29.8214307Z  [2m[90m↓[39m[22m [30m[43m lib-vitest [49m[39m src/lib/core/updatePlayer/updatePlayerAction.vitest.spec.ts [2m([22m[2m4 tests[22m[2m | [22m[90m4 todo[39m[2m)[22m
+2026-06-28T07:23:30.0392938Z  [2m[90m↓[39m[22m [30m[43m lib-vitest [49m[39m src/lib/core/submitGameInvitationResponse/submitGameInvitationResponseAction.vitest.spec.ts [2m([22m[2m3 tests[22m[2m | [22m[90m3 todo[39m[2m)[22m
+2026-06-28T07:23:30.2766810Z  [2m[90m↓[39m[22m [30m[43m lib-vitest [49m[39m src/lib/core/deletePlayer/deletePlayerAction.vitest.spec.ts [2m([22m[2m4 tests[22m[2m | [22m[90m4 todo[39m[2m)[22m
+2026-06-28T07:23:30.5439698Z  [2m[90m↓[39m[22m [30m[43m lib-vitest [49m[39m src/lib/core/sendEmailToAllActivePlayers/sendEmailToAllActivePlayersAction.vitest.spec.ts [2m([22m[2m3 tests[22m[2m | [22m[90m3 todo[39m[2m)[22m
+2026-06-28T07:23:30.8516628Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/prismaErrors.vitest.spec.ts [2m([22m[2m5 tests[22m[2m | [22m[90m4 todo[39m[2m)[22m[32m 7[2mms[22m[39m
+2026-06-28T07:23:31.0946769Z  [2m[90m↓[39m[22m [30m[43m lib-vitest [49m[39m src/lib/core/authExport/authExportAction.vitest.spec.ts [2m([22m[2m3 tests[22m[2m | [22m[90m3 todo[39m[2m)[22m
+2026-06-28T07:23:31.3089909Z  [2m[90m↓[39m[22m [30m[43m lib-vitest [49m[39m src/lib/core/getProgress/getProgressAction.vitest.spec.ts [2m([22m[2m3 tests[22m[2m | [22m[90m3 todo[39m[2m)[22m
+2026-06-28T07:23:31.4018591Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/core/recordHallHire/recordHallHire.vitest.spec.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+2026-06-28T07:23:32.6586221Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/core/payDebt/payDebt.vitest.spec.ts [2m([22m[2m1 test[22m[2m)[22m[32m 8[2mms[22m[39m
+2026-06-28T07:23:33.3799872Z  [32m✓[39m [30m[42m pages-vitest [49m[39m src/app/footy/admin/invoice/page.vitest.spec.tsx [2m([22m[2m9 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+2026-06-28T07:23:33.6916858Z  [32m✓[39m [30m[42m pages-vitest [49m[39m src/app/footy/response/page.vitest.spec.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+2026-06-28T07:23:35.3394168Z  [32m✓[39m [30m[43m lib-vitest [49m[39m src/lib/core/updatePlayerRecords/updatePlayerRecords.vitest.spec.ts [2m([22m[2m1 test[22m[2m)[22m[32m 7[2mms[22m[39m
+2026-06-28T07:23:37.0864211Z  [32m✓[39m [30m[42m pages-vitest [49m[39m src/app/footy/admin/money/page.vitest.spec.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 13[2mms[22m[39m
+2026-06-28T07:23:42.2124216Z  [32m✓[39m [30m[42m pages-vitest [49m[39m src/app/footy/page.vitest.spec.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+2026-06-28T07:23:42.2478174Z  [32m✓[39m [30m[42m pages-vitest [49m[39m src/app/footy/books/page.vitest.spec.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+2026-06-28T07:23:42.2698040Z  [32m✓[39m [30m[42m pages-vitest [49m[39m src/app/footy/winners/page.vitest.spec.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+2026-06-28T07:23:42.6077319Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/player/[id]/page.vitest.spec.ts [2m([22m[2m13 tests[22m[2m | [22m[90m13 todo[39m[2m)[22m
+2026-06-28T07:23:42.6082290Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/game/[id]/page.vitest.spec.ts [2m([22m[2m10 tests[22m[2m | [22m[90m10 todo[39m[2m)[22m
+2026-06-28T07:23:42.6713794Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/table/[table]/page.vitest.spec.ts [2m([22m[2m8 tests[22m[2m | [22m[90m8 todo[39m[2m)[22m
+2026-06-28T07:23:42.8108655Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/(authenticated)/downloadmydata/page.vitest.spec.ts [2m([22m[2m8 tests[22m[2m | [22m[90m8 todo[39m[2m)[22m
+2026-06-28T07:23:42.8478801Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/(authenticated)/profile/page.vitest.spec.ts [2m([22m[2m7 tests[22m[2m | [22m[90m7 todo[39m[2m)[22m
+2026-06-28T07:23:42.9031330Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/admin/drinkers/[gameDayId]/page.vitest.spec.ts [2m([22m[2m8 tests[22m[2m | [22m[90m8 todo[39m[2m)[22m
+2026-06-28T07:23:43.0214155Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/admin/moregames/page.vitest.spec.ts [2m([22m[2m8 tests[22m[2m | [22m[90m8 todo[39m[2m)[22m
+2026-06-28T07:23:43.0648507Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/curse/page.vitest.spec.ts [2m([22m[2m6 tests[22m[2m | [22m[90m6 todo[39m[2m)[22m
+2026-06-28T07:23:43.1211471Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/admin/players/page.vitest.spec.ts [2m([22m[2m6 tests[22m[2m | [22m[90m6 todo[39m[2m)[22m
+2026-06-28T07:23:43.2532033Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/admin/picker/page.vitest.spec.ts [2m([22m[2m5 tests[22m[2m | [22m[90m5 todo[39m[2m)[22m
+2026-06-28T07:23:43.2818486Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/admin/user/[email]/page.vitest.spec.ts [2m([22m[2m4 tests[22m[2m | [22m[90m4 todo[39m[2m)[22m
+2026-06-28T07:23:43.3406432Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/admin/responses/page.vitest.spec.ts [2m([22m[2m5 tests[22m[2m | [22m[90m5 todo[39m[2m)[22m
+2026-06-28T07:23:43.4698310Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/admin/page.vitest.spec.ts [2m([22m[2m3 tests[22m[2m | [22m[90m3 todo[39m[2m)[22m
+2026-06-28T07:23:43.5288899Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/auth/claim/page.vitest.spec.ts [2m([22m[2m4 tests[22m[2m | [22m[90m4 todo[39m[2m)[22m
+2026-06-28T07:23:43.5625109Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/(authenticated)/players/page.vitest.spec.ts [2m([22m[2m4 tests[22m[2m | [22m[90m4 todo[39m[2m)[22m
+2026-06-28T07:23:43.6929071Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/admin/users/page.vitest.spec.ts [2m([22m[2m4 tests[22m[2m | [22m[90m4 todo[39m[2m)[22m
+2026-06-28T07:23:43.7821774Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/games/page.vitest.spec.ts [2m([22m[2m4 tests[22m[2m | [22m[90m4 todo[39m[2m)[22m
+2026-06-28T07:23:43.8070828Z  [32m✓[39m [30m[42m pages-vitest [49m[39m src/app/page.vitest.spec.ts [2m([22m[2m1 test[22m[2m)[22m[32m 16[2mms[22m[39m
+2026-06-28T07:23:43.8744668Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/auth/reset-password/page.vitest.spec.ts [2m([22m[2m3 tests[22m[2m | [22m[90m3 todo[39m[2m)[22m
+2026-06-28T07:23:44.0318232Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/countrymap/page.vitest.spec.ts [2m([22m[2m3 tests[22m[2m | [22m[90m3 todo[39m[2m)[22m
+2026-06-28T07:23:44.0582063Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/admin/newplayer/page.vitest.spec.ts [2m([22m[2m3 tests[22m[2m | [22m[90m3 todo[39m[2m)[22m
+2026-06-28T07:23:44.0898244Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/info/page.vitest.spec.ts [2m([22m[2m2 tests[22m[2m | [22m[90m2 todo[39m[2m)[22m
+2026-06-28T07:23:44.2399068Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/admin/drinkers/page.vitest.spec.ts [2m([22m[2m2 tests[22m[2m | [22m[90m2 todo[39m[2m)[22m
+2026-06-28T07:23:44.2868388Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/game/page.vitest.spec.ts [2m([22m[2m2 tests[22m[2m | [22m[90m2 todo[39m[2m)[22m
+2026-06-28T07:23:44.3163686Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/familytree/page.vitest.spec.ts [2m([22m[2m3 tests[22m[2m | [22m[90m3 todo[39m[2m)[22m
+2026-06-28T07:23:44.4681513Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/turnout/page.vitest.spec.ts [2m([22m[2m3 tests[22m[2m | [22m[90m3 todo[39m[2m)[22m
+2026-06-28T07:23:44.5167154Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/player/[id]/[year]/page.vitest.spec.ts [2m([22m[2m2 tests[22m[2m | [22m[90m2 todo[39m[2m)[22m
+2026-06-28T07:23:44.5278222Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/table/[table]/[year]/page.vitest.spec.ts [2m([22m[2m2 tests[22m[2m | [22m[90m2 todo[39m[2m)[22m
+2026-06-28T07:23:44.6903049Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/winners/[year]/page.vitest.spec.ts [2m([22m[2m2 tests[22m[2m | [22m[90m2 todo[39m[2m)[22m
+2026-06-28T07:23:44.7378206Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/(authenticated)/deleteaccount/page.vitest.spec.ts [2m([22m[2m1 test[22m[2m | [22m[90m1 todo[39m[2m)[22m
+2026-06-28T07:23:44.7407725Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/admin/newgame/page.vitest.spec.ts [2m([22m[2m1 test[22m[2m | [22m[90m1 todo[39m[2m)[22m
+2026-06-28T07:23:44.9225225Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/auth/signin/page.vitest.spec.ts [2m([22m[2m1 test[22m[2m | [22m[90m1 todo[39m[2m)[22m
+2026-06-28T07:23:44.9510706Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/auth/accountdeleted/page.vitest.spec.ts [2m([22m[2m1 test[22m[2m | [22m[90m1 todo[39m[2m)[22m
+2026-06-28T07:23:44.9668638Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/forgottenpassword/page.vitest.spec.ts [2m([22m[2m1 test[22m[2m | [22m[90m1 todo[39m[2m)[22m
+2026-06-28T07:23:45.1404820Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/(authenticated)/password/page.vitest.spec.ts [2m([22m[2m1 test[22m[2m | [22m[90m1 todo[39m[2m)[22m
+2026-06-28T07:23:45.1565670Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/tables/page.vitest.spec.ts [2m([22m[2m1 test[22m[2m | [22m[90m1 todo[39m[2m)[22m
+2026-06-28T07:23:45.2037348Z  [2m[90m↓[39m[22m [30m[42m pages-vitest [49m[39m src/app/footy/rules/page.vitest.spec.ts [2m([22m[2m1 test[22m[2m | [22m[90m1 todo[39m[2m)[22m
+2026-06-28T07:23:48.6347069Z  [32m✓[39m [30m[46m services-vitest [49m[39m src/services/Player/Player.vitest.spec.ts [2m([22m[2m90 tests[22m[2m)[22m[32m 89[2mms[22m[39m
+2026-06-28T07:23:54.6223377Z  [32m✓[39m [30m[46m services-vitest [49m[39m src/services/GameDay/GameDay.vitest.spec.ts [2m([22m[2m68 tests[22m[2m)[22m[32m 61[2mms[22m[39m
+2026-06-28T07:23:54.7746592Z  [32m✓[39m [30m[46m services-vitest [49m[39m src/services/Outcome/Outcome.vitest.spec.ts [2m([22m[2m81 tests[22m[2m)[22m[32m 133[2mms[22m[39m
+2026-06-28T07:23:54.9615727Z  [32m✓[39m [30m[46m services-vitest [49m[39m src/services/PlayerRecord/PlayerRecord.vitest.spec.ts [2m([22m[2m58 tests[22m[2m)[22m[32m 292[2mms[22m[39m
+2026-06-28T07:23:59.2132879Z  [32m✓[39m [30m[46m services-vitest [49m[39m src/services/Arse/Arse.vitest.spec.ts [2m([22m[2m18 tests[22m[2m)[22m[32m 40[2mms[22m[39m
+2026-06-28T07:23:59.3328372Z  [32m✓[39m [30m[46m services-vitest [49m[39m src/services/Money/Money.vitest.spec.ts [2m([22m[2m23 tests[22m[2m)[22m[32m 51[2mms[22m[39m
+2026-06-28T07:23:59.4420199Z  [32m✓[39m [30m[46m services-vitest [49m[39m src/services/CountrySupporter/CountrySupporter.vitest.spec.ts [2m([22m[2m21 tests[22m[2m)[22m[32m 33[2mms[22m[39m
+2026-06-28T07:24:01.2644960Z  [32m✓[39m [30m[46m services-vitest [49m[39m src/services/PlayerExtraEmail/PlayerExtraEmail.vitest.spec.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 30[2mms[22m[39m
+2026-06-28T07:24:03.7677612Z  [32m✓[39m [30m[46m services-vitest [49m[39m src/services/ClubSupporter/ClubSupporter.vitest.spec.ts [2m([22m[2m19 tests[22m[2m)[22m[32m 23[2mms[22m[39m
+2026-06-28T07:24:03.8248328Z  [32m✓[39m [30m[46m services-vitest [49m[39m src/services/GameInvitation/GameInvitation.vitest.spec.ts [2m([22m[2m15 tests[22m[2m)[22m[32m 35[2mms[22m[39m
+2026-06-28T07:24:05.6700404Z  [32m✓[39m [30m[46m services-vitest [49m[39m src/services/Club/Club.vitest.spec.ts [2m([22m[2m13 tests[22m[2m)[22m[32m 22[2mms[22m[39m
+2026-06-28T07:24:07.9035158Z  [32m✓[39m [30m[46m services-vitest [49m[39m src/services/EmailVerification/EmailVerification.vitest.spec.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 31[2mms[22m[39m
+2026-06-28T07:24:08.3833667Z  [32m✓[39m [30m[46m services-vitest [49m[39m src/services/GameChat/GameChat.vitest.spec.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 21[2mms[22m[39m
+2026-06-28T07:24:08.4651045Z  [32m✓[39m [30m[46m services-vitest [49m[39m src/services/Country/Country.vitest.spec.ts [2m([22m[2m14 tests[22m[2m)[22m[32m 20[2mms[22m[39m
+2026-06-28T07:24:08.7796122Z  [32m✓[39m [30m[46m services-vitest [49m[39m src/services/Auth/Auth.vitest.spec.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 39[2mms[22m[39m
+2026-06-28T07:24:09.4657201Z  [32m✓[39m [30m[46m services-vitest [49m[39m src/services/ContactEnquiry/ContactEnquiry.vitest.spec.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+2026-06-28T07:24:21.0037672Z [31m⎯⎯⎯⎯⎯⎯[39m[1m[41m Unhandled Errors [49m[22m[31m⎯⎯⎯⎯⎯⎯[39m
+2026-06-28T07:24:21.0038141Z [31m[1m
+2026-06-28T07:24:21.0039002Z Vitest caught 1 unhandled error during the test run.
+2026-06-28T07:24:21.0039862Z This might cause false positive tests. Resolve unhandled errors to make sure your tests are not affected.[22m[39m
+2026-06-28T07:24:21.0050775Z 
+2026-06-28T07:24:21.0051383Z [31m⎯⎯⎯⎯⎯[39m[1m[41m Uncaught Exception [49m[22m[31m⎯⎯⎯⎯⎯[39m
+2026-06-28T07:24:21.0052204Z [31m[1mReferenceError[22m: window is not defined[39m
+2026-06-28T07:24:21.0053933Z [90m [2m❯[22m resolveUpdatePriority node_modules/react-dom/cjs/react-dom-client.development.js:[2m1308:7[22m[39m
+2026-06-28T07:24:21.0055544Z [90m [2m❯[22m requestUpdateLane node_modules/react-dom/cjs/react-dom-client.development.js:[2m16345:11[22m[39m
+2026-06-28T07:24:21.0057190Z [90m [2m❯[22m dispatchSetState node_modules/react-dom/cjs/react-dom-client.development.js:[2m9126:14[22m[39m
+2026-06-28T07:24:21.0058217Z [90m [2m❯[22m Timeout._onTimeout node_modules/@mantine/core/esm/components/Transition/use-transition.mjs:[2m40:6[22m[39m
+2026-06-28T07:24:21.0059403Z [90m [2m❯[22m listOnTimeout node:internal/timers:[2m605:17[22m[39m
+2026-06-28T07:24:21.0060340Z [90m [2m❯[22m processTimers node:internal/timers:[2m541:7[22m[39m
+2026-06-28T07:24:21.0060776Z 
+2026-06-28T07:24:21.0062022Z [31mThis error originated in "[1msrc/components/GameResultForm/GameResultForm.vitest.spec.tsx[22m" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.[39m
+2026-06-28T07:24:21.0062931Z [31m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[39m
+2026-06-28T07:24:21.0063114Z 
+2026-06-28T07:24:21.0064065Z 
+2026-06-28T07:24:21.0077245Z [2m Test Files [22m [1m[32m158 passed[39m[22m[2m | [22m[33m52 skipped[39m[90m (210)[39m
+2026-06-28T07:24:21.0088134Z [2m      Tests [22m [1m[32m1529 passed[39m[22m[2m | [22m[33m1 skipped[39m[2m | [22m[90m203 todo[39m[90m (1733)[39m
+2026-06-28T07:24:21.0088972Z [2m     Errors [22m [1m[31m1 error[39m[22m
+2026-06-28T07:24:21.0089381Z [2m   Start at [22m 07:21:34
+2026-06-28T07:24:21.0092346Z [2m   Duration [22m 166.73s[2m (transform 57.97s, setup 11.01s, import 307.73s, tests 55.28s, environment 26.97s)[22m
+2026-06-28T07:24:21.0094022Z 
+2026-06-28T07:24:21.0166975Z [34m % [39m[2mCoverage report from [22m[33mv8[39m
+2026-06-28T07:24:21.0279356Z -------------------|---------|----------|---------|---------|-------------------
+2026-06-28T07:24:21.0280338Z File               | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+2026-06-28T07:24:21.0281204Z -------------------|---------|----------|---------|---------|-------------------
+2026-06-28T07:24:21.0298954Z All files          |   86.79 |    88.94 |   88.37 |   86.68 |                   
+2026-06-28T07:24:21.0299851Z  actions           |   20.91 |      100 |   10.34 |   20.91 |                   
+2026-06-28T07:24:21.0300751Z   auth-export.ts   |       0 |      100 |       0 |       0 | 1-14              
+2026-06-28T07:24:21.0301477Z   auth.ts          |       0 |      100 |       0 |       0 | 1-36              
+2026-06-28T07:24:21.0302201Z   ...Invitation.ts |       0 |      100 |       0 |       0 | 1-27              
+2026-06-28T07:24:21.0303294Z   ...reGameDays.ts |       0 |      100 |       0 |       0 | 1-28              
+2026-06-28T07:24:21.0303946Z   createPlayer.ts  |       0 |      100 |       0 |       0 | 1-64              
+2026-06-28T07:24:21.0304435Z   deletePlayer.ts  |   33.33 |      100 |       0 |   33.33 | 25-41             
+2026-06-28T07:24:21.0305595Z   getProgress.ts   |       0 |      100 |       0 |       0 | 1-6               
+2026-06-28T07:24:21.0306269Z   payDebt.ts       |       0 |      100 |       0 |       0 | 1-36              
+2026-06-28T07:24:21.0307127Z   ...rdHallHire.ts |       0 |      100 |       0 |       0 | 1-26              
+2026-06-28T07:24:21.0307741Z   sendEmail.ts     |   33.33 |      100 |       0 |   33.33 | 19-21             
+2026-06-28T07:24:21.0308223Z   ...ivePlayers.ts |   33.33 |      100 |       0 |   33.33 | 19-21             
+2026-06-28T07:24:21.0308943Z   sendEnquiry.ts   |       0 |      100 |       0 |       0 | 1-52              
+2026-06-28T07:24:21.0309448Z   setDrinkers.ts   |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0309961Z   ...ameEnabled.ts |       0 |      100 |       0 |       0 | 1-34              
+2026-06-28T07:24:21.0310454Z   setGameResult.ts |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0310952Z   ...onResponse.ts |       0 |      100 |       0 |       0 | 1-19              
+2026-06-28T07:24:21.0311442Z   submitPicker.ts  |       0 |      100 |       0 |       0 | 1-24              
+2026-06-28T07:24:21.0311928Z   ...itResponse.ts |       0 |      100 |       0 |       0 | 1-29              
+2026-06-28T07:24:21.0312403Z   ...nvitations.ts |       0 |      100 |       0 |       0 | 1-30              
+2026-06-28T07:24:21.0312904Z   ...ceGameDays.ts |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0313392Z   updatePlayer.ts  |       0 |      100 |       0 |       0 | 1-19              
+2026-06-28T07:24:21.0313879Z   ...yerRecords.ts |       0 |      100 |       0 |       0 | 1-21              
+2026-06-28T07:24:21.0314373Z   verifyEmail.ts   |   33.33 |      100 |       0 |   33.33 | 19-36             
+2026-06-28T07:24:21.0314876Z  app/api/events    |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0315352Z   route.ts         |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0316000Z  .../claim/[token] |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0316551Z   route.ts         |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0317003Z  ...rpose]/[token] |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0317806Z   route.ts         |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0318638Z  ...lub/[id]/badge |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0319338Z   route.ts         |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0320194Z  ...fifaCode]/flag |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0321022Z   route.ts         |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0321831Z  ...ty/invitations |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0322690Z   route.ts         |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0323528Z  ...r/[id]/mugshot |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0324395Z   route.ts         |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0325230Z  ...sponse/[token] |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0326525Z   route.ts         |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0327327Z  app/api/health    |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0328329Z   route.ts         |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0329112Z  app/footy         |      90 |      100 |      75 |   88.88 |                   
+2026-06-28T07:24:21.0329656Z   layout.tsx       |       0 |      100 |       0 |       0 | 8                 
+2026-06-28T07:24:21.0330385Z   page.tsx         |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0331097Z  ...authenticated) |       0 |        0 |       0 |       0 |                   
+2026-06-28T07:24:21.0331813Z   layout.tsx       |       0 |        0 |       0 |       0 | 22-30             
+2026-06-28T07:24:21.0332536Z  .../deleteaccount |       0 |      100 |       0 |       0 |                   
+2026-06-28T07:24:21.0333277Z   page.tsx         |       0 |      100 |       0 |       0 | 4-7               
+2026-06-28T07:24:21.0334269Z  ...downloadmydata |       0 |        0 |       0 |       0 |                   
+2026-06-28T07:24:21.0335036Z   loading.tsx      |       0 |      100 |       0 |       0 | 4-5               
+2026-06-28T07:24:21.0335787Z   page.tsx         |       0 |        0 |       0 |       0 | 14-78             
+2026-06-28T07:24:21.0336673Z  ...ated)/password |       0 |      100 |       0 |       0 |                   
+2026-06-28T07:24:21.0337385Z   page.tsx         |       0 |      100 |       0 |       0 | 3-6               
+2026-06-28T07:24:21.0338107Z  ...cated)/players |       0 |        0 |       0 |       0 |                   
+2026-06-28T07:24:21.0338835Z   loading.tsx      |       0 |      100 |       0 |       0 | 4-5               
+2026-06-28T07:24:21.0339549Z   page.tsx         |       0 |        0 |       0 |       0 | 10-20             
+2026-06-28T07:24:21.0340246Z  ...cated)/profile |       0 |        0 |       0 |       0 |                   
+2026-06-28T07:24:21.0340962Z   loading.tsx      |       0 |      100 |       0 |       0 | 4-5               
+2026-06-28T07:24:21.0341677Z   page.tsx         |       0 |        0 |       0 |       0 | 25-60             
+2026-06-28T07:24:21.0342390Z  app/footy/admin   |       0 |        0 |       0 |       0 |                   
+2026-06-28T07:24:21.0343084Z   layout.tsx       |       0 |        0 |       0 |       0 | 22-30             
+2026-06-28T07:24:21.0343768Z   page.tsx         |       0 |      100 |       0 |       0 | 9-10              
+2026-06-28T07:24:21.0344461Z  ...admin/drinkers |       0 |        0 |       0 |       0 |                   
+2026-06-28T07:24:21.0345159Z   page.tsx         |       0 |        0 |       0 |       0 | 5-11              
+2026-06-28T07:24:21.0346006Z  ...rs/[gameDayId] |       0 |        0 |       0 |       0 |                   
+2026-06-28T07:24:21.0346729Z   loading.tsx      |       0 |      100 |       0 |       0 | 6-7               
+2026-06-28T07:24:21.0347415Z   page.tsx         |       0 |        0 |       0 |       0 | 18-35             
+2026-06-28T07:24:21.0348132Z  .../admin/invoice |   84.61 |      100 |   66.66 |   83.33 |                   
+2026-06-28T07:24:21.0348862Z   loading.tsx      |       0 |      100 |       0 |       0 | 6-7               
+2026-06-28T07:24:21.0349570Z   page.tsx         |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0350287Z  ...ty/admin/money |   66.66 |      100 |      50 |   66.66 |                   
+2026-06-28T07:24:21.0351006Z   loading.tsx      |       0 |      100 |       0 |       0 | 6-7               
+2026-06-28T07:24:21.0351702Z   page.tsx         |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0352426Z  ...dmin/moregames |       0 |        0 |       0 |       0 |                   
+2026-06-28T07:24:21.0353180Z   loading.tsx      |       0 |      100 |       0 |       0 | 4-5               
+2026-06-28T07:24:21.0353859Z   page.tsx         |       0 |        0 |       0 |       0 | 23-116            
+2026-06-28T07:24:21.0354569Z  .../admin/newgame |       0 |      100 |       0 |       0 |                   
+2026-06-28T07:24:21.0355273Z   page.tsx         |       0 |      100 |       0 |       0 | 8-11              
+2026-06-28T07:24:21.0356507Z  ...dmin/newplayer |       0 |      100 |       0 |       0 |                   
+2026-06-28T07:24:21.0357227Z   loading.tsx      |       0 |      100 |       0 |       0 | 4-5               
+2026-06-28T07:24:21.0357941Z   page.tsx         |       0 |      100 |       0 |       0 | 8-13              
+2026-06-28T07:24:21.0358665Z  ...y/admin/picker |       0 |        0 |       0 |       0 |                   
+2026-06-28T07:24:21.0359385Z   loading.tsx      |       0 |      100 |       0 |       0 | 6-7               
+2026-06-28T07:24:21.0360068Z   page.tsx         |       0 |        0 |       0 |       0 | 12-25             
+2026-06-28T07:24:21.0360780Z  .../admin/players |       0 |        0 |       0 |       0 |                   
+2026-06-28T07:24:21.0361566Z   loading.tsx      |       0 |      100 |       0 |       0 | 6-7               
+2026-06-28T07:24:21.0362560Z   page.tsx         |       0 |        0 |       0 |       0 | 12-32             
+2026-06-28T07:24:21.0363343Z  ...dmin/responses |       0 |        0 |       0 |       0 |                   
+2026-06-28T07:24:21.0364145Z   loading.tsx      |       0 |      100 |       0 |       0 | 6-7               
+2026-06-28T07:24:21.0364866Z   page.tsx         |       0 |        0 |       0 |       0 | 12-19             
+2026-06-28T07:24:21.0365572Z  ...n/user/[email] |       0 |        0 |       0 |       0 |                   
+2026-06-28T07:24:21.0366419Z   loading.tsx      |       0 |      100 |       0 |       0 | 4-5               
+2026-06-28T07:24:21.0367115Z   page.tsx         |       0 |        0 |       0 |       0 | 13-37             
+2026-06-28T07:24:21.0367891Z  ...ty/admin/users |       0 |      100 |       0 |       0 |                   
+2026-06-28T07:24:21.0368646Z   loading.tsx      |       0 |      100 |       0 |       0 | 4-5               
+2026-06-28T07:24:21.0369442Z   page.tsx         |       0 |      100 |       0 |       0 | 11-32             
+2026-06-28T07:24:21.0370219Z  ...accountdeleted |       0 |      100 |       0 |       0 |                   
+2026-06-28T07:24:21.0370829Z   page.tsx         |       0 |      100 |       0 |       0 | 6-9               
+2026-06-28T07:24:21.0371362Z  ...oty/auth/claim |       0 |        0 |       0 |       0 |                   
+2026-06-28T07:24:21.0372122Z   page.tsx         |       0 |        0 |       0 |       0 | 14-31             
+2026-06-28T07:24:21.0372871Z  ...reset-password |       0 |        0 |       0 |       0 |                   
+2026-06-28T07:24:21.0373683Z   page.tsx         |       0 |        0 |       0 |       0 | 13-27             
+2026-06-28T07:24:21.0374335Z  ...ty/auth/signin |       0 |        0 |       0 |       0 |                   
+2026-06-28T07:24:21.0375019Z   page.tsx         |       0 |        0 |       0 |       0 | 3-13              
+2026-06-28T07:24:21.0375625Z  app/footy/books   |   81.81 |      100 |      50 |      80 |                   
+2026-06-28T07:24:21.0376477Z   loading.tsx      |       0 |      100 |       0 |       0 | 7-8               
+2026-06-28T07:24:21.0377170Z   page.tsx         |      90 |      100 |   66.66 |   88.88 | 41-42             
+2026-06-28T07:24:21.0377844Z  ...oty/countrymap |       0 |      100 |       0 |       0 |                   
+2026-06-28T07:24:21.0378298Z   loading.tsx      |       0 |      100 |       0 |       0 | 6-7               
+2026-06-28T07:24:21.0378710Z   page.tsx         |       0 |      100 |       0 |       0 | 6-18              
+2026-06-28T07:24:21.0379136Z  app/footy/curse   |       0 |        0 |       0 |       0 |                   
+2026-06-28T07:24:21.0379557Z   loading.tsx      |       0 |      100 |       0 |       0 | 7-8               
+2026-06-28T07:24:21.0379966Z   page.tsx         |       0 |        0 |       0 |       0 | 36-80             
+2026-06-28T07:24:21.0380382Z  ...oty/familytree |       0 |      100 |       0 |       0 |                   
+2026-06-28T07:24:21.0380813Z   loading.tsx      |       0 |      100 |       0 |       0 | 6-7               
+2026-06-28T07:24:21.0381385Z   page.tsx         |       0 |      100 |       0 |       0 | 6-16              
+2026-06-28T07:24:21.0381810Z  ...footy/fixtures |       0 |        0 |       0 |       0 |                   
+2026-06-28T07:24:21.0382225Z   page.tsx         |       0 |        0 |       0 |       0 | 6-9               
+2026-06-28T07:24:21.0382640Z  ...ixtures/[year] |       0 |      100 |       0 |       0 |                   
+2026-06-28T07:24:21.0383054Z   page.tsx         |       0 |      100 |       0 |       0 | 10-12             
+2026-06-28T07:24:21.0383477Z  ...gottenpassword |       0 |      100 |       0 |       0 |                   
+2026-06-28T07:24:21.0383899Z   page.tsx         |       0 |      100 |       0 |       0 | 4-7               
+2026-06-28T07:24:21.0384309Z  app/footy/game    |       0 |        0 |       0 |       0 |                   
+2026-06-28T07:24:21.0384849Z   page.tsx         |       0 |        0 |       0 |       0 | 5-8               
+2026-06-28T07:24:21.0385265Z  ...ooty/game/[id] |       0 |        0 |       0 |       0 |                   
+2026-06-28T07:24:21.0385678Z   loading.tsx      |       0 |      100 |       0 |       0 | 7-8               
+2026-06-28T07:24:21.0386283Z   page.tsx         |       0 |        0 |       0 |       0 | 36-106            
+2026-06-28T07:24:21.0386701Z  app/footy/games   |       0 |        0 |       0 |       0 |                   
+2026-06-28T07:24:21.0387127Z   loading.tsx      |       0 |      100 |       0 |       0 | 7-8               
+2026-06-28T07:24:21.0387663Z   page.tsx         |       0 |        0 |       0 |       0 | 42-116            
+2026-06-28T07:24:21.0388076Z  app/footy/info    |       0 |      100 |       0 |       0 |                   
+2026-06-28T07:24:21.0388487Z   page.tsx         |       0 |      100 |       0 |       0 | 13-16             
+2026-06-28T07:24:21.0388900Z  ...ty/player/[id] |       0 |        0 |       0 |       0 |                   
+2026-06-28T07:24:21.0389319Z   loading.tsx      |       0 |      100 |       0 |       0 | 3-4               
+2026-06-28T07:24:21.0389784Z   page.tsx         |       0 |        0 |       0 |       0 | 51-131            
+2026-06-28T07:24:21.0390184Z  ...er/[id]/[year] |       0 |      100 |       0 |       0 |                   
+2026-06-28T07:24:21.0390585Z   page.tsx         |       0 |      100 |       0 |       0 | 24-26             
+2026-06-28T07:24:21.0391008Z  ...footy/response |     100 |    85.71 |     100 |     100 |                   
+2026-06-28T07:24:21.0391437Z   page.tsx         |     100 |    85.71 |     100 |     100 | 26,42             
+2026-06-28T07:24:21.0391865Z  app/footy/results |       0 |        0 |       0 |       0 |                   
+2026-06-28T07:24:21.0392306Z   page.tsx         |       0 |        0 |       0 |       0 | 6-9               
+2026-06-28T07:24:21.0392724Z  ...results/[year] |       0 |      100 |       0 |       0 |                   
+2026-06-28T07:24:21.0393163Z   page.tsx         |       0 |      100 |       0 |       0 | 10-12             
+2026-06-28T07:24:21.0393596Z  app/footy/rules   |       0 |      100 |       0 |       0 |                   
+2026-06-28T07:24:21.0394022Z   page.tsx         |       0 |      100 |       0 |       0 | 3-6               
+2026-06-28T07:24:21.0394434Z  .../table/[table] |       0 |        0 |       0 |       0 |                   
+2026-06-28T07:24:21.0394853Z   loading.tsx      |       0 |      100 |       0 |       0 | 4-5               
+2026-06-28T07:24:21.0395258Z   page.tsx         |       0 |        0 |       0 |       0 | 47-113            
+2026-06-28T07:24:21.0395662Z  ...[table]/[year] |       0 |      100 |       0 |       0 |                   
+2026-06-28T07:24:21.0396241Z   page.tsx         |       0 |      100 |       0 |       0 | 27-29             
+2026-06-28T07:24:21.0396664Z  app/footy/tables  |       0 |      100 |       0 |       0 |                   
+2026-06-28T07:24:21.0397089Z   page.tsx         |       0 |      100 |       0 |       0 | 3-6               
+2026-06-28T07:24:21.0397682Z  app/footy/turnout |       0 |      100 |       0 |       0 |                   
+2026-06-28T07:24:21.0398112Z   loading.tsx      |       0 |      100 |       0 |       0 | 5-6               
+2026-06-28T07:24:21.0398512Z   page.tsx         |       0 |      100 |       0 |       0 | 8-13              
+2026-06-28T07:24:21.0398936Z  app/footy/winners |   74.07 |    57.14 |   57.14 |      80 |                   
+2026-06-28T07:24:21.0399365Z   loading.tsx      |       0 |      100 |       0 |       0 | 6-13              
+2026-06-28T07:24:21.0399789Z   page.tsx         |   83.33 |    57.14 |      80 |    90.9 | 69-71             
+2026-06-28T07:24:21.0400231Z  ...winners/[year] |       0 |      100 |       0 |       0 |                   
+2026-06-28T07:24:21.0400651Z   page.tsx         |       0 |      100 |       0 |       0 | 25-27             
+2026-06-28T07:24:21.0401202Z  ...dminExportAuth |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0401693Z   ...xportAuth.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0402136Z  ...dminPlayerList |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0402574Z   ...layerList.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0403013Z  ...ePlayerRecords |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0403452Z   ...erRecords.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0403888Z  .../AdminUserData |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0404322Z   ...nUserData.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0404776Z  .../AdminUserList |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0405209Z   ...nUserList.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0405649Z  ...ts/AutoRefresh |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0406348Z   AutoRefresh.tsx  |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0406807Z  ...kpointDebugger |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0407247Z   ...tDebugger.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0407678Z  ...ts/ClaimSignup |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0408130Z   ClaimSignup.tsx  |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0408574Z  ...ents/ClubBadge |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0409009Z   ClubBadge.tsx    |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0409442Z  ...ts/CountryFlag |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0409888Z   CountryFlag.tsx  |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0410330Z  ...CurseOfTheBibs |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0410765Z   ...OfTheBibs.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0411200Z  ...CustomAppShell |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0411645Z   ...mAppShell.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0412083Z  ...eteAccountForm |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0412516Z   ...countForm.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0412949Z  ...DownloadMyData |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0413386Z   ...oadMyData.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0413822Z  ...s/DrinkersForm |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0414449Z   DrinkersForm.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0414895Z  ...nts/EmailInput |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0415342Z   EmailInput.tsx   |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0415785Z  ...ilPlayerButton |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0416350Z   ...yerButton.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0416787Z  ...ts/EnquiryForm |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0417235Z   EnquiryForm.tsx  |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0417678Z  ...nts/FamilyTree |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0418260Z   FamilyTree.tsx   |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0418727Z   ...TreeRadius.ts |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0419190Z  ...enPasswordForm |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0419633Z   ...swordForm.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0420071Z  ...meDayIndicator |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0420506Z   ...Indicator.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0420943Z  ...ts/GameDayLink |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0421386Z   GameDayLink.tsx  |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0421822Z  ...ts/GameDayList |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0422527Z   GameDayList.tsx  |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0423308Z  ...GameDaySummary |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0424084Z   ...aySummary.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0424847Z  ...onResponseForm |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0425620Z   ...ponseForm.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0426656Z  ...GameResultForm |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0427418Z   ...esultForm.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0428251Z  ...oalieIndicator |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0428726Z   ...Indicator.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0429421Z  ...ts/InvoiceForm |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0430211Z   InvoiceForm.tsx  |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0430723Z  ...nts/MoneyChart |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0431170Z   MoneyChart.tsx   |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0431618Z  ...ents/MoneyForm |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0432061Z   MoneyForm.tsx    |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0432502Z  .../MoreGamesForm |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0432938Z   ...GamesForm.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0433383Z  components/NYI    |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0433809Z   NYI.tsx          |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0434244Z  ...vBarLinksGroup |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0434688Z   ...inksGroup.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0435371Z  ...s/NavBarNested |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0435819Z   NavBarNested.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0436670Z  ...ts/NewGameForm |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0437259Z   NewGameForm.tsx  |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0437906Z  .../NewPlayerForm |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0438640Z   ...layerForm.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0439269Z  ...wordChangeForm |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0439897Z   ...hangeForm.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0440637Z  ...PasswordFields |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0441235Z   ...ordFields.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0441944Z  ...swordResetForm |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0442605Z   ...ResetForm.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0443631Z  ...nts/PickerForm |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0444251Z   PickerForm.tsx   |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0444989Z  ...nents/PieChart |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0457378Z   PieChart.tsx     |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0457993Z  ...nts/PlayerArse |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0458517Z   PlayerArse.tsx   |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0458976Z  ...nts/PlayerCard |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0459424Z   PlayerCard.tsx   |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0459884Z  ...ts/PlayerClubs |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0460356Z   PlayerClubs.tsx  |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0460808Z  ...layerCountries |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0461249Z   ...Countries.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0461697Z  ...ayerCountryMap |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0462134Z   ...ountryMap.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0462572Z  ...nts/PlayerForm |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0463012Z   PlayerForm.tsx   |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0463465Z  .../PlayerHeatmap |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0463903Z   ...erHeatmap.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0464338Z  ...nts/PlayerLink |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0464773Z   PlayerLink.tsx   |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0465212Z  ...nts/PlayerList |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0465641Z   PlayerList.tsx   |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0466236Z  .../PlayerMugshot |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0466699Z   ...erMugshot.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0467171Z  ...layerPositions |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0467833Z   ...Positions.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0468275Z  .../PlayerProfile |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0468709Z   ...erProfile.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0469150Z  ...yerProfileForm |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0469588Z   ...ofileForm.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0470023Z  .../PlayerResults |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0470458Z   ...erResults.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0470899Z  ...PlayerTimeline |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0471462Z   ...rTimeline.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0471913Z  ...PlayerTrophies |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0472353Z   ...rTrophies.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0472791Z  ...yerTrophyTally |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0473227Z   ...ophyTally.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0473677Z  ...PlayerWDLChart |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0474121Z   ...rWDLChart.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0474567Z  ...s/RecordsTable |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0475024Z   RecordsTable.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0475492Z  ...s/RelativeTime |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0476090Z   RelativeTime.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0476574Z  .../ResponsesForm |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0477027Z   ...onsesForm.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0477465Z  ...chTextMailBody |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0477900Z   ...tMailBody.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0478377Z  ...orNotification |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0479004Z   ...ification.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0479550Z  .../SendEmailForm |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0480346Z   ...EmailForm.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0481143Z  components/SignIn |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0481942Z   SignIn.tsx       |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0482694Z  ...nts/TableScore |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0483468Z   TableScore.tsx   |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0484250Z  components/Team   |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0484988Z   Team.tsx         |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0485426Z  ...nts/TeamPlayer |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0486092Z   TeamPlayer.tsx   |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0486604Z  ...thYearDropdown |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0487065Z   ...rDropdown.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0487727Z  ...onents/Turnout |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0488398Z   Turnout.tsx      |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0488990Z  ...nts/UserButton |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0489440Z   UserButton.tsx   |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0489881Z  ...s/WinnersTable |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0490334Z   WinnersTable.tsx |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0490781Z  ...ents/YearTable |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0491230Z   YearTable.tsx    |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0491801Z  lib               |   89.58 |    90.69 |   90.32 |   89.31 |                   
+2026-06-28T07:24:21.0492232Z   adminPlayer.ts   |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0492655Z   api.ts           |   92.59 |    81.81 |   85.71 |   95.83 | 70                
+2026-06-28T07:24:21.0493071Z   auth.client.ts   |       0 |      100 |       0 |       0 | 4-30              
+2026-06-28T07:24:21.0493662Z   auth.server.ts   |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0494118Z   auth.ts          |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0494528Z   azure.ts         |       0 |        0 |       0 |       0 | 14-72             
+2026-06-28T07:24:21.0494961Z   azureConfig.ts   |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0495403Z   bankHolidays.ts  |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0495942Z   config.ts        |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0496362Z   dates.ts         |     100 |     87.5 |     100 |     100 | 48                
+2026-06-28T07:24:21.0496780Z   events.ts        |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0497209Z   ...nvitations.ts |   97.82 |    73.91 |     100 |     100 | 141,155-168       
+2026-06-28T07:24:21.0497660Z   gameResult.ts    |   96.87 |    93.93 |     100 |     100 | 54-56             
+2026-06-28T07:24:21.0498086Z   health.ts        |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0498514Z   invitations.ts   |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0498930Z   money.ts         |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0499358Z   prismaErrors.ts  |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0499792Z   secrets.ts       |   63.33 |    65.62 |      75 |   62.06 | ...6,70,77-81,103 
+2026-06-28T07:24:21.0500215Z   stream.ts        |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0500624Z   tables.ts        |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0501247Z   urls.ts          |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0501972Z   ...ationToken.ts |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0502673Z  lib/core/auth     |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0503095Z   auth.ts          |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0503515Z  ...ore/authExport |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0503950Z   authExport.ts    |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0504391Z  ...ayerInvitation |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0504839Z   ...Invitation.ts |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0505494Z  ...teMoreGameDays |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0506088Z   ...reGameDays.ts |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0506541Z  ...e/createPlayer |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0506981Z   createPlayer.ts  |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0507421Z  ...e/deletePlayer |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0507862Z   deletePlayer.ts  |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0508310Z  lib/core/payDebt  |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0508740Z   payDebt.ts       |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0509479Z  ...recordHallHire |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0510157Z   ...rdHallHire.ts |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0510619Z  ...core/sendEmail |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0511226Z   sendEmail.ts     |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0512006Z  ...lActivePlayers |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0512793Z   ...ivePlayers.ts |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0513372Z  ...re/sendEnquiry |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0513816Z   sendEnquiry.ts   |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0514254Z  ...re/setDrinkers |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0514688Z   setDrinkers.ts   |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0515143Z  ...setGameEnabled |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0515587Z   ...ameEnabled.ts |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0516216Z  .../setGameResult |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0516666Z   setGameResult.ts |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0517115Z  ...tationResponse |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0517556Z   ...onResponse.ts |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0517993Z  ...e/submitPicker |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0518437Z   submitPicker.ts  |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0518884Z  ...submitResponse |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0519328Z   ...itResponse.ts |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0519771Z  ...gerInvitations |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0520211Z   ...nvitations.ts |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0520649Z  ...nvoiceGameDays |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0521081Z   ...ceGameDays.ts |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0521511Z  ...e/updatePlayer |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0521950Z   updatePlayer.ts  |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0522395Z  ...ePlayerRecords |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0522831Z   ...yerRecords.ts |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0523266Z  ...re/verifyEmail |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0523703Z   verifyEmail.ts   |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0524708Z  lib/email         |     100 |    85.71 |     100 |     100 |                   
+2026-06-28T07:24:21.0525333Z   ...alizeEmail.ts |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0526087Z   ...iaGraphApi.ts |     100 |    83.33 |     100 |     100 | 105-107           
+2026-06-28T07:24:21.0526854Z  lib/errors        |   94.25 |    88.57 |   94.11 |   95.34 |                   
+2026-06-28T07:24:21.0527592Z   AppError.ts      |     100 |       96 |     100 |     100 | 131-133           
+2026-06-28T07:24:21.0528349Z   ErrorCode.ts     |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0529068Z   http.ts          |   93.75 |    91.66 |     100 |   93.75 | 32                
+2026-06-28T07:24:21.0529799Z   request.ts       |   88.23 |    79.06 |      75 |    90.9 | 43-44,113         
+2026-06-28T07:24:21.0530542Z  lib/observability |   93.57 |    88.04 |     100 |   93.52 |                   
+2026-06-28T07:24:21.0531036Z   sentry.ts        |   93.54 |    85.36 |     100 |   93.54 | 108,116,120,127   
+2026-06-28T07:24:21.0531745Z   sentryConfig.ts  |   93.58 |    90.19 |     100 |    93.5 | ...39-141,222,249 
+2026-06-28T07:24:21.0532519Z  services/Arse     |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0533263Z   Arse.ts          |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0534003Z  services/Auth     |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0534728Z   Auth.ts          |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0535447Z  services/Club     |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0536265Z   Club.ts          |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0536838Z  .../ClubSupporter |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0537639Z   ClubSupporter.ts |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0538436Z  ...ContactEnquiry |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0539229Z   ...actEnquiry.ts |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0540017Z  services/Country  |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0540738Z   Country.ts       |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0541338Z  ...untrySupporter |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0541858Z   ...ySupporter.ts |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0542317Z  ...ilVerification |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0542775Z   ...rification.ts |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0543224Z  services/GameChat |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0543671Z   GameChat.ts      |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0544118Z  services/GameDay  |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0544548Z   GameDay.ts       |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0544977Z  ...GameInvitation |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0545417Z   ...Invitation.ts |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0546030Z  services/Money    |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0546463Z   Money.ts         |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0546888Z  services/Outcome  |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0547347Z   Outcome.ts       |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0548084Z  services/Player   |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0548519Z   Player.ts        |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0548948Z  ...ayerExtraEmail |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0549385Z   ...ExtraEmail.ts |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0549828Z  ...s/PlayerRecord |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0550276Z   PlayerRecord.ts  |     100 |      100 |     100 |     100 |                   
+2026-06-28T07:24:21.0550760Z -------------------|---------|----------|---------|---------|-------------------
+2026-06-28T07:24:21.5488076Z ##[error]Process completed with exit code 1.
+2026-06-28T07:24:21.5643325Z Post job cleanup.
+2026-06-28T07:24:21.6488021Z [command]/usr/bin/git version
+2026-06-28T07:24:21.6526068Z git version 2.54.0
+2026-06-28T07:24:21.6560119Z Temporarily overriding HOME='/home/runner/work/_temp/c9589cdf-ce63-4407-934d-e5b72c5f8276' before making global git config changes
+2026-06-28T07:24:21.6561599Z Adding repository directory to the temporary git global config as a safe directory
+2026-06-28T07:24:21.6566421Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/next-www-toastboy/next-www-toastboy
+2026-06-28T07:24:21.6600453Z Removing SSH command configuration
+2026-06-28T07:24:21.6606495Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-06-28T07:24:21.6641568Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-06-28T07:24:21.6886918Z Removing HTTP extra header
+2026-06-28T07:24:21.6892518Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-06-28T07:24:21.6927713Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-06-28T07:24:21.7164814Z Removing includeIf entries pointing to credentials config files
+2026-06-28T07:24:21.7171725Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-06-28T07:24:21.7199969Z includeif.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git.path
+2026-06-28T07:24:21.7201202Z includeif.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git/worktrees/*.path
+2026-06-28T07:24:21.7202113Z includeif.gitdir:/github/workspace/.git.path
+2026-06-28T07:24:21.7202811Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-06-28T07:24:21.7209751Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git.path
+2026-06-28T07:24:21.7233902Z /home/runner/work/_temp/git-credentials-893ae31e-7cd0-4b55-aa17-b574e6ab47c8.config
+2026-06-28T07:24:21.7244759Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git.path /home/runner/work/_temp/git-credentials-893ae31e-7cd0-4b55-aa17-b574e6ab47c8.config
+2026-06-28T07:24:21.7279861Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git/worktrees/*.path
+2026-06-28T07:24:21.7302934Z /home/runner/work/_temp/git-credentials-893ae31e-7cd0-4b55-aa17-b574e6ab47c8.config
+2026-06-28T07:24:21.7311654Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-893ae31e-7cd0-4b55-aa17-b574e6ab47c8.config
+2026-06-28T07:24:21.7344352Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-06-28T07:24:21.7368124Z /github/runner_temp/git-credentials-893ae31e-7cd0-4b55-aa17-b574e6ab47c8.config
+2026-06-28T07:24:21.7375369Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-893ae31e-7cd0-4b55-aa17-b574e6ab47c8.config
+2026-06-28T07:24:21.7407553Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-06-28T07:24:21.7429445Z /github/runner_temp/git-credentials-893ae31e-7cd0-4b55-aa17-b574e6ab47c8.config
+2026-06-28T07:24:21.7437085Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-893ae31e-7cd0-4b55-aa17-b574e6ab47c8.config
+2026-06-28T07:24:21.7469328Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-06-28T07:24:21.7724755Z Removing credentials config '/home/runner/work/_temp/git-credentials-893ae31e-7cd0-4b55-aa17-b574e6ab47c8.config'
+2026-06-28T07:24:21.7885276Z Cleaning up orphan processes

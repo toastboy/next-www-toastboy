@@ -1,0 +1,176 @@
+This session is being continued from a previous conversation that ran out of context. The summary below covers the earlier portion of the conversation.
+
+Summary:
+1. Primary Request and Intent:
+   - **CI failure fix**: Investigate and fix a vitest CI failure where an unhandled `ReferenceError: window is not defined` caused exit code 1 despite all 158 test files passing. The error originated in `src/components/GameResultForm/GameResultForm.vitest.spec.tsx`.
+   - **Broader audit**: After fixing GameResultForm, identify other test files with the same latent leaking-timer risk.
+   - **NativeSelect → Select migration**: Switch `GameResultForm.tsx` back from Mantine `NativeSelect` to Mantine `Select`, updating tests accordingly.
+
+2. Key Technical Concepts:
+   - **Mantine `Transition` component**: Used internally by `Button` (when `loading` prop cycles true→false) and by `Select`/`Popover` (when dropdowns open/close). Schedules a `setTimeout` for exit animation. If this timer fires after the test environment (happy-dom) tears down, `window` is undefined → crash.
+   - **`vi.useFakeTimers({ shouldAdvanceTime: true })`**: Intercepts `setTimeout` calls as fake timers while still advancing with real wall-clock time. Allows `waitFor` polling and `userEvent` interactions to work normally. `vi.clearAllTimers()` in `afterEach` cancels any pending Mantine animation timers before environment teardown.
+   - **Plain `vi.useFakeTimers()` (without `shouldAdvanceTime`)**: Does NOT work here — `waitFor`'s internal retry polling uses `setTimeout` which won't fire without explicit timer advancement, causing tests to hang and timeout.
+   - **`userEvent.setup({ advanceTimers: ... })`**: Not needed with `shouldAdvanceTime: true`; plain `userEvent.setup()` works.
+   - **Mantine `Select` vs `NativeSelect`**: `NativeSelect` wraps a plain HTML `<select>` (no animations). `Select` uses `Popover` + `Transition` internally (opens/closes with exit timers). With fake timers in place, `Select` is safe to use.
+   - **`Select` with Mantine `useForm`**: Must use explicit `value={form.values.field}` and `onChange={(value) => form.setFieldValue('field', ...)}` because `Select`'s `onChange` signature is `(value: string | null) => void`, incompatible with event-based `form.getInputProps()` onChange.
+   - **Test interaction pattern for `Select`**: `user.selectOptions()` only works on native `<select>`. Mantine `Select` requires: `await user.click(screen.getByRole('combobox', { name: 'Label' }))` then `await user.click(await screen.findByRole('option', { name: 'Option Label', hidden: true }))`.
+   - **happy-dom environment**: Test environment for component tests (not jsdom). Tears down after all tests in a file complete; any still-pending Node.js timers then crash with `window is not defined`.
+
+3. Files and Code Sections:
+
+   - **`src/components/GameResultForm/GameResultForm.vitest.spec.tsx`** — Primary fix file. Added fake timer lifecycle hooks, updated `userEvent.setup()` calls, and changed all select interactions from `selectOptions` to click-then-option pattern.
+     ```ts
+     describe('GameResultForm', () => {
+         beforeEach(() => {
+             vi.useFakeTimers({ shouldAdvanceTime: true });
+             vi.clearAllMocks();
+         });
+
+         afterEach(() => {
+             vi.clearAllTimers();
+             vi.useRealTimers();
+         });
+
+         it('saves bibs and refreshes the page after success', async () => {
+             const user = userEvent.setup();
+             // ...
+             await user.click(screen.getByRole('combobox', { name: 'Bibs' }));
+             await user.click(await screen.findByRole('option', { name: 'Team A wore bibs', hidden: true }));
+             await user.click(screen.getByRole('button', { name: 'Save' }));
+             // ...
+         });
+
+         it('re-enables Save after a successful save when the value is changed back to the original', async () => {
+             const user = userEvent.setup();
+             // ...
+             await user.click(screen.getByRole('combobox', { name: 'Result' }));
+             await user.click(await screen.findByRole('option', { name: 'Team A won', hidden: true }));
+             await user.click(screen.getByRole('button', { name: 'Save' }));
+             // ... (waitFor) ...
+             await user.click(screen.getByRole('combobox', { name: 'Result' }));
+             await user.click(await screen.findByRole('option', { name: 'Not set', hidden: true }));
+             // ...
+         });
+
+         it('shows a generic error message when save fails with a non-Error value', async () => {
+             const user = userEvent.setup();
+             // ...
+             await user.click(screen.getByRole('combobox', { name: 'Result' }));
+             await user.click(await screen.findByRole('option', { name: 'Draw', hidden: true }));
+             // ...
+         });
+
+         it('shows an error notification when save fails', async () => {
+             const user = userEvent.setup();
+             // ...
+             await user.click(screen.getByRole('combobox', { name: 'Result' }));
+             await user.click(await screen.findByRole('option', { name: 'Draw', hidden: true }));
+             // ...
+         });
+     });
+     ```
+
+   - **`src/components/GameResultForm/GameResultForm.tsx`** — Switched from `NativeSelect` to `Select`. Import changed, components updated with explicit value/onChange, `allowDeselect={false}` added.
+     ```tsx
+     import { Box, Button, Group, Paper, Select, Stack } from '@mantine/core';
+     // ...
+     <Select
+         label="Bibs"
+         data={[
+             { value: 'none', label: 'Not set' },
+             { value: 'A', label: 'Team A wore bibs' },
+             { value: 'B', label: 'Team B wore bibs' },
+         ]}
+         value={form.values.bibs}
+         onChange={(value) => form.setFieldValue('bibs', (value ?? 'none') as 'A' | 'B' | 'none')}
+         allowDeselect={false}
+     />
+     <Select
+         label="Result"
+         data={[
+             { value: 'none', label: 'Not set' },
+             { value: 'A', label: 'Team A won' },
+             { value: 'draw', label: 'Draw' },
+             { value: 'B', label: 'Team B won' },
+         ]}
+         value={form.values.winner}
+         onChange={(value) => form.setFieldValue('winner', (value ?? 'none') as 'A' | 'B' | 'draw' | 'none')}
+         allowDeselect={false}
+     />
+     ```
+
+   - **`src/lib/observability/sentry.vitest.spec.ts`** — Pre-existing lint errors fixed by `npm run lint:fix`. Changed `type Nested` to `interface Nested`, changed `as Record<string, unknown>` to `!`, removed unnecessary `as { l6: unknown }` assertion.
+
+   - **`src/components/SignIn/SignIn.vitest.spec.tsx`** — Added fake timer pattern to `beforeEach`/`afterEach`:
+     ```ts
+     beforeEach(() => {
+         vi.useFakeTimers({ shouldAdvanceTime: true });
+         vi.mocked(useRouter).mockReturnValue({ ... });
+         vi.mocked(usePathname).mockReturnValue('/footy/auth/signin');
+     });
+     afterEach(() => {
+         vi.clearAllTimers();
+         vi.useRealTimers();
+     });
+     ```
+
+   - **`src/components/ClaimSignup/ClaimSignup.vitest.spec.tsx`** — Added `vi.useFakeTimers({ shouldAdvanceTime: true })` as first line in `beforeEach`; added `afterEach` block.
+
+   - **`src/components/ResponsesForm/ResponsesForm.vitest.spec.tsx`** — Added `vi.useFakeTimers({ shouldAdvanceTime: true })` as first line in `beforeEach`; added `afterEach` block. Double exposure risk (loading button + Mantine `Select`).
+
+   - **`src/components/PickerForm/PickerForm.vitest.spec.tsx`** — Added `vi.useFakeTimers({ shouldAdvanceTime: true })` as first line in `beforeEach`; added `afterEach` block.
+
+   - **`src/components/DrinkersForm/DrinkersForm.vitest.spec.tsx`** — Added `vi.useFakeTimers({ shouldAdvanceTime: true })` as first line in `beforeEach`; added `afterEach` block.
+
+   - **`src/components/MoneyForm/MoneyForm.vitest.spec.tsx`** — Added `vi.useFakeTimers({ shouldAdvanceTime: true })` as first line in `beforeEach`; added `afterEach` block.
+
+   - **`vitest.components.config.ts`** — Read to confirm `environment: 'happy-dom'` (explains why `window` becomes undefined after test teardown).
+
+   - **`vitest.unit.config.ts`** — Read to understand project structure (6 sub-configs).
+
+4. Errors and Fixes:
+   - **CI failure: `ReferenceError: window is not defined`**: Mantine `Button`'s loading-state exit animation uses `Transition` which schedules a `setTimeout`. That timer fired after happy-dom teardown. Fixed with `vi.useFakeTimers({ shouldAdvanceTime: true })` + `vi.clearAllTimers()` in `afterEach`.
+   - **First fake timer attempt caused test timeouts**: Using `vi.useFakeTimers()` (without `shouldAdvanceTime`) caused 4 tests to timeout at 5000ms. `waitFor`'s internal `setTimeout(retry, 50)` was faked and never fired. `userEvent.setup({ advanceTimers: (delay) => vi.advanceTimersByTime(delay) })` was tried but didn't advance timers far enough for `waitFor`. Fixed by switching to `vi.useFakeTimers({ shouldAdvanceTime: true })` and removing the `advanceTimers` option from `userEvent.setup()`.
+   - **Pre-existing lint errors in `sentry.vitest.spec.ts`**: Three lint violations present in the working tree before this session. Fixed by running `npm run lint:fix` which auto-resolved all three.
+
+5. Problem Solving:
+   - Identified root cause: Mantine's `Transition` component exit-animation timers outliving the happy-dom environment.
+   - Determined correct `vi.useFakeTimers` variant: `{ shouldAdvanceTime: true }` is required to keep `waitFor` and `userEvent` working while still intercepting timers for cleanup.
+   - Established the standard pattern for this project: `vi.useFakeTimers({ shouldAdvanceTime: true })` in `beforeEach` + `vi.clearAllTimers(); vi.useRealTimers()` in `afterEach`, applied to any component test file where a Mantine loading button or `Select`/`Popover` transition is exercised.
+   - All 6 additionally identified at-risk files were patched and confirmed passing (72 tests).
+
+6. All User Messages:
+   - "It seems that vitest in CI is having an internal problem" [followed by full CI log showing the unhandled `ReferenceError: window is not defined` failure]
+   - "Are there any more cases where this would be a sensible precaution? Can I go back to using Select instead of NativeSelect?"
+   - "Next let's switch from NativeSelect back to Select"
+   - [Summary request - current message]
+
+   **Security/Constraint instructions (preserved verbatim from memory):**
+   - Never run `git add`/`commit`/`push` — only prepare changes for user to review and commit
+   - Never use sed/awk/head/tail/cat to read files — use Read tool with offset/limit
+   - Use `op run --env-file ./.env --` prefix for commands needing secrets
+   - Test coverage ≥ 90%; typecheck, lint, build must exit 0 before deployment
+
+7. Pending Tasks:
+   - Run the `GameResultForm` tests to verify the `NativeSelect` → `Select` migration works correctly (was in progress at summary time; tests not yet executed after the component and test changes).
+   - Run `npm run typecheck` and `npm run lint` to confirm the migration is clean.
+
+8. Current Work:
+   Migrating `GameResultForm` from Mantine `NativeSelect` to `Select`. The component (`GameResultForm.tsx`) has been updated: import changed, both `NativeSelect` elements replaced with `Select` using explicit `value`/`onChange`/`allowDeselect={false}` props. The test file (`GameResultForm.vitest.spec.tsx`) has been updated: all five `user.selectOptions()` calls replaced with the two-step `user.click(combobox)` + `user.click(findByRole option, hidden: true)` pattern. The last edit applied was `replace_all: true` on the two `await user.selectOptions(screen.getByLabelText('Result'), 'draw');` occurrences (in tests 4 and 5), replacing each with:
+   ```ts
+   await user.click(screen.getByRole('combobox', { name: 'Result' }));
+   await user.click(await screen.findByRole('option', { name: 'Draw', hidden: true }));
+   ```
+   Tests have NOT yet been run after these component/test changes.
+
+9. Optional Next Step:
+   Run the `GameResultForm` tests to verify the `NativeSelect` → `Select` migration works end-to-end, then run typecheck and lint:
+   
+   From the user's last explicit request: "Next let's switch from NativeSelect back to Select" — the component and test edits are complete but unverified. The immediate next step is:
+   ```
+   npx vitest run --config vitest.components.config.ts src/components/GameResultForm/GameResultForm.vitest.spec.tsx
+   ```
+   followed by `npm run typecheck && npm run lint` per the project's mandatory finalisation checklist.
+
+If you need specific details from before compaction (like exact code snippets, error messages, or content you generated), read the full transcript at: /Users/toastboy/.claude/projects/-Volumes-Development-next-www-toastboy/1a8073c5-beab-481d-b94e-e6e4a9b696ae.jsonl
+Continue the conversation from where it left off without asking the user any further questions. Resume directly — do not acknowledge the summary, do not recap what was happening, do not preface with "I'll continue" or similar. Pick up the last task as if the break never happened.

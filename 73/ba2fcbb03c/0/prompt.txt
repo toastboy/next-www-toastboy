@@ -1,0 +1,20 @@
+<task-notification>
+<task-id>a0fc3523a2593de23</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/1a8073c5-beab-481d-b94e-e6e4a9b696ae/tasks/a0fc3523a2593de23.output</output-file>
+<status>completed</status>
+<summary>Agent "First Principles advisor on DB schema" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>The question being asked is "where should we store points?" but the actual problem is "we have a fact about a game stored in the wrong place."
+
+A game result is a property of the game, not the player. The outcome of a match — win, draw, or loss from team A's perspective — is a single atomic fact that belongs on `GameDay`. Points are then purely derived: given team A's result and which team a player was on, you compute their points with a two-line function. No storage needed.
+
+The schema you actually want is a `result` field on `GameDay` — something like `GameDay.result: GameResult?` where `GameResult` is an enum `{ A_WIN, DRAW, B_WIN }`. Then `Outcome.points` is dropped entirely and replaced by a computed property.
+
+But here is where I want to challenge the premise more deeply: do you even need `Outcome.points` or a `GameDay.result`? The `bibs` field already tells you which team wore bibs. If you also store goals, you derive everything. If you do not store goals, then a `GameDay.result` enum is the minimal sufficient representation.
+
+The `PlayerRecord` denormalisation is a separate concern. Precomputed stats tables are legitimate for performance. But they should be derived from `GameDay.result` plus `Outcome.team`, not from stored `Outcome.points`. The derivation logic moves to one place — the service that builds `PlayerRecord` — rather than being scattered across every insertion point.
+
+The real question you should be asking: what is the minimal set of facts that need to be stored, versus derived? Store facts once, at the correct level of granularity. Derive everything else.</result>
+<usage><subagent_tokens>15040</subagent_tokens><tool_uses>0</tool_uses><duration_ms>18694</duration_ms></usage>
+</task-notification>

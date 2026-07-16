@@ -1,0 +1,1 @@
+Explain why the PlayerInfo card in the PlayerProfile layout always is 400px wide rather than filling the available width

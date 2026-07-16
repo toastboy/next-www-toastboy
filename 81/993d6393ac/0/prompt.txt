@@ -1,0 +1,1 @@
+OK, so how far off the beaten path is that per-worker fixture approach for Playwright? Would it be even simpler just to have multiple Playwright runs?

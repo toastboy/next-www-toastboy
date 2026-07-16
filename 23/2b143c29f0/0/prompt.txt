@@ -1,0 +1,1 @@
+Do pages really need tests?

@@ -1,0 +1,1 @@
+findElement (and the AnyElement shape) is repeated across multiple new/updated spec files in this diff. Consider extracting it into a shared test utility (e.g., tests/utils/reactTree.ts) so behavior changes (like handling Fragments, strings, or host elements) can be made once and reused consistently.

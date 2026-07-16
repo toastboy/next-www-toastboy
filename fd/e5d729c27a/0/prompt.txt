@@ -1,0 +1,1 @@
+This changes getAll() output by normalizing accountEmail to null and mapping extraEmails to { email, verified }. Consider adding/adjusting unit tests for getAll() to assert these transformations (and ordering expectations), similar to the new getEmailDataById tests.

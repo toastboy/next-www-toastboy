@@ -1,0 +1,1 @@
+The new MDX component mappings for headings/paragraphs/lists aren’t covered by tests (current tests focus on links and code blocks). Add MDX-pipeline tests asserting these elements render correctly (at least one heading level and one ul/ol/li case) so regressions in styling/wrapping are caught.

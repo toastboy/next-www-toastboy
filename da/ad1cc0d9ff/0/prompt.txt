@@ -1,0 +1,1 @@
+game false and mailSent null means a game was never scheduled, and that can happen. Usually the GameDay will have a comment explaining why, but that's not required.

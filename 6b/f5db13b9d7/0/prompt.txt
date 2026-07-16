@@ -1,0 +1,22 @@
+I might be too ambitious, but I want to achieve a responsive layout of the four cards, which I'll denote like this:
+
+A: PlayerCard
+B: PlayerInfo
+C: PlayerResults
+D: PlayerPositions
+
+What I need is, in descending order of container width (or viewport width, but the collapsing of the nav menu on smaller screens complicates things) I want:
+
+widest
+
+A B C D
+
+A B
+C D
+
+A
+B
+C
+D
+
+narrowest

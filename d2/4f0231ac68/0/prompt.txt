@@ -1,0 +1,1 @@
+Defining --profile-overlay-opacity on :global(:root) introduces a global side effect from a CSS module and can create cross-component coupling. Prefer scoping the variable to a local wrapper class (e.g., .statsRow or .identity) or driving this via the theme so it only affects the PlayerProfile surface.

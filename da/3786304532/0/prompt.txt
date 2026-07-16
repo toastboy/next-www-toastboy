@@ -1,0 +1,3 @@
+I keep being asked by Claude for permissions to execute 'xargs' because it wants to run command lines like this: 'find /Volumes/Development/next-www-toastboy/node_modules/@mantine/core/lib/components/Grid -name '*.js' | xargs grep -l "container" 
+
+Is there a way that I can allow this kind of harmless command line without the blunt instrument permission Claude requests, which is the permission to run 'xargs'. The xargs command just pipes arguments, of course, so a line that uses xargs could do literally anything! Is there a way just to allow xargs piping params into grep specifically, for example?'

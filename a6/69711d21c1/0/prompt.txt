@@ -1,0 +1,1 @@
+In Player.ts, that usage of verifiedAt refers to the column in the database, not the type PlayerExtraEmailSchema. I'm not asking about changing the database schema, just the exported type for display.

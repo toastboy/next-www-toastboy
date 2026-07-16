@@ -1,0 +1,1 @@
+The 'Info' table doesn’t include an accessible name/description (in this codebase other tables use a summary string). For screen readers, add a caption or an aria-label/aria-labelledby that references the 'Info' heading so the table’s purpose is announced.

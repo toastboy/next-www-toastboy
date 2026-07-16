@@ -1,0 +1,3 @@
+I have this comment from code review: would it be better to pass in the title order, or to move the title and divider into the parent and just render the table in such components?
+
+This promotes the card heading to an H2 (via Mantine Title order={2}). On PlayerProfile, there is already an H1 (player name) and section H2s (e.g., Info/History), so these stat cards should generally remain H3 to preserve a logical heading hierarchy for screen readers and document outline. Consider reverting to order={3}, or make the heading level configurable via a prop so the parent can choose the appropriate order.

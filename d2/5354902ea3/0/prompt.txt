@@ -1,0 +1,1 @@
+Presumably mixing Flex direction="column" and Group is just confusing if they're directly equivalent?

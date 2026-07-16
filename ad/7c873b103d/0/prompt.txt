@@ -1,0 +1,1 @@
+I would really like the final club badges and country flags to have an even padding of 1cqw even though the aspect ratio can vary (e.g. the Swiss flag is square)

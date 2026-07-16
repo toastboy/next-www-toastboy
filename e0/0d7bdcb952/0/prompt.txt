@@ -1,0 +1,1 @@
+Probably best to disable this workflow for now. Since I use trunk-based development PRs are only for dependabot and small Copilot AI recommendations anyway.

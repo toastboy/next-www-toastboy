@@ -1,0 +1,89 @@
+<task-notification>
+<task-id>a10aba551b9653e8e</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/db50d4fb-08de-45e0-aeb4-6d68bf572aee/tasks/a10aba551b9653e8e.output</output-file>
+<status>completed</status>
+<summary>Agent "Find PlayerProfile layout component" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>No custom theme breakpoints override exists — the app uses Mantine's default breakpoint values (as reflected in `theme.breakpoints` referenced by the dev-only `DebugBreakpoints` component). No CSS module or `@media` query governs the PlayerProfile card row itself; its responsiveness comes purely from Mantine's `Group` `wrap="wrap"` flexbox behavior plus `flex: '1 1 0'` on each child `Box`.
+
+## Summary
+
+**Primary component:** `/Volumes/Development/next-www-toastboy/src/components/PlayerProfile/PlayerProfile.tsx`
+
+This is the current, actively-developed implementation (last touched by commit `e3eddeae` "SYS-537 Next pass of polishing the PlayerProfile layout"). It renders the header nav row, then a `Group` containing PlayerCard / PlayerInfo / PlayerResults / PlayerPositions, then a heatmap `Group`:
+
+```tsx
+// lines 61-123
+return (
+    &lt;Stack gap="sm" w="100%"&gt;
+        {/* Equal 1fr side tracks always stay the same width as each other, so the
+            title stays centred whether or not a nav link is present - no fixed
+            width needed. */}
+        &lt;Box
+            mb="lg"
+            style={{
+                display: 'grid',
+                gridTemplateColumns: 'minmax(0, 1fr) auto minmax(0, 1fr)',
+                alignItems: 'center',
+                gap: 'var(--mantine-spacing-xs)',
+            }}
+        &gt;
+            &lt;Box ta="center"&gt;
+                {prevPlayer ?
+                    &lt;PlayerLink player={prevPlayer} year={year} format="left-arrow" /&gt; :
+                    &lt;Box data-testid="player-prev-placeholder" aria-hidden="true" /&gt;}
+            &lt;/Box&gt;
+            &lt;TitleWithYearDropdown order={1} title={player.name} year={year} validYears={activeYears} /&gt;
+            &lt;Box ta="center"&gt;
+                {nextPlayer ?
+                    &lt;PlayerLink player={nextPlayer} year={year} format="right-arrow" /&gt; :
+                    &lt;Box data-testid="player-next-placeholder" aria-hidden="true" /&gt;}
+            &lt;/Box&gt;
+        &lt;/Box&gt;
+        &lt;Group align="stretch" gap="md" wrap="wrap"&gt;
+            &lt;Box style={{ flex: '1 1 0' }}&gt;
+                &lt;PlayerCard player={player} clubs={clubs} countries={countries} trophies={trophies} /&gt;
+            &lt;/Box&gt;
+            &lt;Box style={{ flex: '1 1 0' }}&gt;
+                &lt;PlayerInfo
+                    player={player} year={year} introducedBy={introducedBy}
+                    lastPlayed={lastPlayed} lastWon={lastWon}
+                    isAuthenticated={isAuthenticated} isAdmin={isAdmin}
+                    playerData={playerData} onSendEmail={onSendEmail}
+                /&gt;
+            &lt;/Box&gt;
+            &lt;Box style={{ flex: '1 1 0' }}&gt;
+                &lt;PlayerResults player={player} year={year} record={record} /&gt;
+            &lt;/Box&gt;
+            &lt;Box style={{ flex: '1 1 0' }}&gt;
+                &lt;PlayerPositions player={player} year={year} record={record} /&gt;
+            &lt;/Box&gt;
+        &lt;/Group&gt;
+        &lt;Group&gt;
+            &lt;Paper shadow="xs" p="sm" w="auto" withBorder style={{ flex: '1' }}&gt;
+                &lt;PlayerHeatmap data={history} year={year} /&gt;
+            &lt;/Paper&gt;
+        &lt;/Group&gt;
+    &lt;/Stack&gt;
+);
+```
+
+Key layout facts:
+- Card row (lines 87-115) uses Mantine `Group` with `align="stretch" gap="md" wrap="wrap"`, and each of the four children (PlayerCard, PlayerInfo, PlayerResults, PlayerPositions) is wrapped in a `Box style={{ flex: '1 1 0' }}` — an equal-flex-basis flexbox row that wraps onto new lines at narrow widths (no explicit breakpoint prop; relies on natural flex-wrap).
+- No `Grid`/`SimpleGrid` and no `PlayerProfile.module.css` exist in the current main tree for this component — there is **no CSS module / `@media` breakpoint file** associated with `PlayerProfile.tsx` in the current codebase (unlike some stale worktree copies described below).
+- Header nav row (lines 66-86) uses CSS Grid (`gridTemplateColumns: 'minmax(0, 1fr) auto minmax(0, 1fr)'`) via inline `style`, not Mantine `Grid`.
+
+Sibling components referenced inside the flex row:
+- `/Volumes/Development/next-www-toastboy/src/components/PlayerCard/PlayerCard.tsx` (has `/Volumes/Development/next-www-toastboy/src/components/PlayerCard/PlayerCard.module.css`, but that CSS only styles absolutely-positioned trophy/badge overlays, no `@media` queries or layout breakpoints)
+- `/Volumes/Development/next-www-toastboy/src/components/PlayerInfo/PlayerInfo.tsx`
+- `/Volumes/Development/next-www-toastboy/src/components/PlayerResults/PlayerResults.tsx`
+- `/Volumes/Development/next-www-toastboy/src/components/PlayerPositions/PlayerPositions.tsx`
+
+None of these sibling files contain `@media`, `Flex`, `Grid`, or `SimpleGrid` usage — the responsive behavior for the row is entirely owned by the `Group`/`Box flex` pattern in `PlayerProfile.tsx`.
+
+There's a dev-only breakpoint helper at `/Volumes/Development/next-www-toastboy/src/components/DebugBreakpoints/DebugBreakpoints.tsx` that reads Mantine's default `theme.breakpoints` (`sm`/`md`/`lg`/`xl`) for on-screen debugging, confirming no custom breakpoint values are configured elsewhere in the app theme.
+
+**Note on other candidates found:** `find`/`grep` also surfaced `PlayerProfile.tsx` + `PlayerProfile.module.css` files inside several `.claude/worktrees/*` directories (e.g. `pensive-mendel-3b7ecc`, `festive-margulis-f51418`, `competent-thompson-f84e8b`, `quizzical-ardinghelli-feb814`, `nostalgic-galileo-b1a19d`). These are stale/alternate agent worktrees with an older, unrelated component structure (Container/Title/PlayerMugshot/PlayerTrophies, no PlayerCard/PlayerInfo/PlayerResults/PlayerPositions flex row, and their `.module.css` only defines absolute-position trophy/badge overlay styles, not layout breakpoints) — they do not match the current "PlayerProfile" layout you're asking about and should be disregarded in favor of the main-tree file above.</result>
+<usage><subagent_tokens>36206</subagent_tokens><tool_uses>10</tool_uses><duration_ms>93822</duration_ms></usage>
+</task-notification>

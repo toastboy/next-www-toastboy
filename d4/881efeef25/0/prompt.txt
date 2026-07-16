@@ -1,0 +1,3 @@
+The test mocks now depend on a type imported from a service module (@/services/Player/Player), which increases coupling and can create awkward dependency direction (types → services). Consider exporting PlayerDataDisplayType from a dedicated types module (e.g. @/types) and importing it from there in tests/mocks.
+
+PlayerDataDisplayType should be in @/types

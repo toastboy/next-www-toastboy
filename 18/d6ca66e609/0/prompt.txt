@@ -1,0 +1,1 @@
+Thinking about solving this problem and enabling parallel tests at the same time: given mariadb can do replication fairly cheaply, could each test use a fresh replica of the seeded database?

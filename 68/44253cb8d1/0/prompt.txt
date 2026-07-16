@@ -1,0 +1,24 @@
+<task-notification>
+<task-id>aa44df7673b99ce6b</task-id>
+<tool-use-id>toolu_019ofoY2BD8ddk7TAEzfjNzh</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/9ed1a5de-07ff-4a77-8240-d4587f1a97e3/tasks/aa44df7673b99ce6b.output</output-file>
+<status>completed</status>
+<summary>Agent "Executor advisor on career move" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>**Monday morning question: go to the interview.**
+
+The interview is not the decision. It's a data-gathering exercise with zero downside cost. You've already cleared two rounds — pulling out now wastes that sunk effort and closes information you actually need.
+
+Here's what you do at the interview, in priority order:
+
+1. **Get the equity answer.** Ask directly: what's the current valuation, what's the vesting schedule, what's the realistic liquidity event timeline? A FinTech scale-up on Cambridge Science Park with no equity answer yet is either disorganised or hiding something. The number and the timeline matter enormously on a 4-year horizon — equity that vests over 4 years with no IPO/acquisition in sight is worth nothing to you.
+
+2. **Map the benefits gap precisely.** Before the interview, run the actual numbers: what does self-funding insurance and pension contributions cost annually? Get a quote. You need a real figure, not a vague "comparable package."
+
+3. **Ask about stability signals.** How long has the current tech leadership been there? What's their runway/funding status? Scale-ups fail. A 4-year window to retirement means one bad redundancy could genuinely hurt.
+
+4. **Trust your read of the culture.** You're good at interviews now — two rounds in, you have data. Does it feel like a place that respects senior technical people, or one that will burn you out chasing growth metrics?
+
+The actionable outcome of the interview is a full offer with equity details. You cannot make this decision without that number. Go get it.</result>
+<usage><subagent_tokens>13777</subagent_tokens><tool_uses>0</tool_uses><duration_ms>10808</duration_ms></usage>
+</task-notification>

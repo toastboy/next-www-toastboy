@@ -1,0 +1,1 @@
+Add test coverage for the missing error cases in sendViaGraphApi

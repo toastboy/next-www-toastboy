@@ -1,0 +1,162 @@
+Guess what? Still failing
+
+
+Running 7 tests using 1 worker
+◇ injected env (9) from .env.playwright // tip: ⌘ suppress logs { quiet: true }
+[2/7] [chromium] › e2e/info.spec.ts:22:9 › EnquiryForm › shows validation errors on empty submi
+  1) [chromium] › e2e/info.spec.ts:22:9 › EnquiryForm › shows validation errors on empty submit ────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.waitFor: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('form[data-hydrated]') to be visible
+
+
+      22 |     test('shows validation errors on empty submit', async ({ page }) => {
+      23 |         await page.goto('/footy/info');
+    > 24 |         await page.locator('form[data-hydrated]').waitFor();
+         |                                                   ^
+      25 |
+      26 |         const submitButton = page.getByRole('button', { name: 'Send message' });
+      27 |         await submitButton.scrollIntoViewIfNeeded();
+        at /Volumes/Development/next-www-toastboy/e2e/info.spec.ts:24:51
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-validation-errors-on-empty-submit-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-validation-errors-on-empty-submit-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/info-EnquiryForm-shows-validation-errors-on-empty-submit-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ enable debugging { debug: true }
+  2) [chromium] › e2e/info.spec.ts:35:9 › EnquiryForm › shows invalid email error on blur ──────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.waitFor: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('form[data-hydrated]') to be visible
+
+
+      35 |     test('shows invalid email error on blur', async ({ page }) => {
+      36 |         await page.goto('/footy/info');
+    > 37 |         await page.locator('form[data-hydrated]').waitFor();
+         |                                                   ^
+      38 |
+      39 |         const emailInput = page.getByRole('textbox', { name: 'Email' });
+      40 |         await page.getByRole('textbox', { name: 'Name' }).fill('Test User');
+        at /Volumes/Development/next-www-toastboy/e2e/info.spec.ts:37:51
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-invalid-email-error-on-blur-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-invalid-email-error-on-blur-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/info-EnquiryForm-shows-invalid-email-error-on-blur-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ◈ secrets for agents [www.dotenvx.com]
+[4/7] [chromium] › e2e/info.spec.ts:47:9 › EnquiryForm › shows verified notification and cleans
+  3) [chromium] › e2e/info.spec.ts:47:9 › EnquiryForm › shows verified notification and cleans up URL 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.waitFor: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('form[data-hydrated]') to be visible
+
+
+      47 |     test('shows verified notification and cleans up URL', async ({ page }) => {
+      48 |         await page.goto('/footy/info?enquiry=verified');
+    > 49 |         await page.locator('form[data-hydrated]').waitFor();
+         |                                                   ^
+      50 |         await expect(page.getByText('Email verified')).toBeVisible();
+      51 |         await expect(page).toHaveURL(/\/footy\/info$/);
+      52 |     });
+        at /Volumes/Development/next-www-toastboy/e2e/info.spec.ts:49:51
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-ver-a33a8-ification-and-cleans-up-URL-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-ver-a33a8-ification-and-cleans-up-URL-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/info-EnquiryForm-shows-ver-a33a8-ification-and-cleans-up-URL-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+[5/7] [chromium] › e2e/info.spec.ts:54:9 › EnquiryForm › shows error notification and cleans up
+  4) [chromium] › e2e/info.spec.ts:54:9 › EnquiryForm › shows error notification and cleans up URL ─
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.waitFor: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('form[data-hydrated]') to be visible
+
+
+      54 |     test('shows error notification and cleans up URL', async ({ page }) => {
+      55 |         await page.goto('/footy/info?enquiry=error');
+    > 56 |         await page.locator('form[data-hydrated]').waitFor();
+         |                                                   ^
+      57 |         await expect(page.getByText('Verification failed')).toBeVisible();
+      58 |         await expect(page).toHaveURL(/\/footy\/info$/);
+      59 |     });
+        at /Volumes/Development/next-www-toastboy/e2e/info.spec.ts:56:51
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-error-notification-and-cleans-up-URL-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-error-notification-and-cleans-up-URL-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/info-EnquiryForm-shows-error-notification-and-cleans-up-URL-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+[6/7] [chromium] › e2e/info.spec.ts:72:13 › EnquiryForm › email flow › submits form and shows c
+  5) [chromium] › e2e/info.spec.ts:72:13 › EnquiryForm › email flow › submits form and shows confirmation notification 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.waitFor: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('form[data-hydrated]') to be visible
+
+
+      72 |         test('submits form and shows confirmation notification', async ({ page, request }) => {
+      73 |             await page.goto('/footy/info');
+    > 74 |             await page.locator('form[data-hydrated]').waitFor();
+         |                                                       ^
+      75 |
+      76 |             await page.getByRole('textbox', { name: 'Name' }).fill('Test User');
+      77 |             await page.getByRole('textbox', { name: 'Email' }).fill('playwright@example.com');
+        at /Volumes/Development/next-www-toastboy/e2e/info.spec.ts:74:55
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-email-flo-d6c65-s-confirmation-notification-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-email-flo-d6c65-s-confirmation-notification-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/info-EnquiryForm-email-flo-d6c65-s-confirmation-notification-chromium/error-context.md
+
+[7/7] [chromium] › e2e/info.spec.ts:90:13 › EnquiryForm › email flow › completes full verificat
+  5 failed
+    [chromium] › e2e/info.spec.ts:22:9 › EnquiryForm › shows validation errors on empty submit ─────
+    [chromium] › e2e/info.spec.ts:35:9 › EnquiryForm › shows invalid email error on blur ───────────
+    [chromium] › e2e/info.spec.ts:47:9 › EnquiryForm › shows verified notification and cleans up URL 
+    [chromium] › e2e/info.spec.ts:54:9 › EnquiryForm › shows error notification and cleans up URL ──
+    [chromium] › e2e/info.spec.ts:72:13 › EnquiryForm › email flow › submits form and shows confirmation notification 
+  1 did not run
+  1 passed (2.6m)

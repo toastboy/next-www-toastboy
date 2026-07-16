@@ -1,0 +1,1 @@
+Wait. I didn't want to harden the test against apparently random prior DB modifications, I want each and every test to start and end with the same known state. Then all I have to control is what's allowed to run in parallel.

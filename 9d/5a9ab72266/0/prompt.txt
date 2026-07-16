@@ -1,0 +1,1 @@
+What other fundamental design decisions are questionable in the codebase in a similar way? Are there any other possibilities for data to exist in a way which is not self-consistent?

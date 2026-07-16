@@ -1,0 +1,1 @@
+Inline styles are duplicated across multiple TableTh elements, which makes future changes error-prone and noisy. Consider moving white-space: nowrap into a CSS module class (e.g., classes.tableHeader) and applying it to each TableTh, or applying it via a parent selector targeting header cells within this table.

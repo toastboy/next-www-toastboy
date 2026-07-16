@@ -1,0 +1,1 @@
+What's the point of 'export { updateInvoiceGameDaysCore } from './updateInvoiceGameDays';'? Surely callers can just import from ./updateInvoiceGameDays themselves?

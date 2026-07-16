@@ -1,0 +1,1 @@
+Which of my components are server-only and which are client?

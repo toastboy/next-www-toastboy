@@ -1,0 +1,260 @@
+This session is being continued from a previous conversation that ran out of context. The summary below covers the earlier portion of the conversation.
+
+Summary:
+1. Primary Request and Intent:
+   The user's goal throughout this session is to achieve comprehensive test coverage for a Next.js + MariaDB football league management system. The session progressed through:
+   - Auditing which source files have no tests at all (beyond what the codecov report shows)
+   - Adding test scaffolding (it.todo) for all genuinely untested files
+   - Implementing real tests for the invoice page (replacing todos)
+   - Expanding the coverage config to actually measure the newly tested files
+   - Discussing and approving a refactor to make `src/actions/` vs `src/lib/actions/` architecturally consistent
+   - The most recent approval: "Yes, go ahead" to execute three specific refactors
+
+2. Key Technical Concepts:
+   - Vitest with multiple config files (`vitest.unit.config.ts` as aggregate, plus `vitest.actions.config.ts`, `vitest.lib.config.ts`, `vitest.pages.config.ts`, etc.)
+   - Coverage `include`/`exclude` in vitest unit config determines what appears in the codecov report
+   - `src/actions/*.ts` — "use server" boundary files (auth guard + call lib core + revalidate + broadcast)
+   - `src/lib/actions/*/` — pure business logic cores, testable without Next.js mocking
+   - Manual mocks in `__mocks__/index.ts` sibling to service directories
+   - `vi.hoisted()` pattern for setting up mocks before imports in Vitest
+   - `vi.mock('services/GameDay')` uses alias from vitest.pages.config.ts (not `@/services/GameDay`)
+   - `findElement` JSX tree walker pattern used in page tests to inspect React element props without rendering
+   - `vi.useFakeTimers()` / `vi.setSystemTime()` for date-sensitive tests
+
+3. Files and Code Sections:
+
+   - **`vitest.unit.config.ts`** — Updated to expand coverage scope:
+     ```ts
+     coverage: {
+         include: [
+             'src/actions/**/*.{ts,tsx}',         // NEW — outer action wrappers
+             'src/app/api/**/*.{ts,tsx}',
+             'src/app/footy/**/*.{ts,tsx}',        // NEW — pages
+             'src/components/**/*.{ts,tsx}',
+             'src/lib/**/*.{ts,tsx}',              // NEW — broader than just lib/actions
+             'src/services/**/*.{ts,tsx}',
+         ],
+         exclude: [
+             '**/__mocks__/**',
+             '**/*.stories.*',
+             '**/*.vitest.spec.ts',
+             '**/*.vitest.spec.tsx',
+             '**/*.test.ts',
+             '**/*.test.tsx',
+             '**/*Skeleton*',
+             '**/index.ts',
+             '**/prisma/**',
+             '.storybook/**',
+             'public/**',
+             // 'src/actions/**' REMOVED — was previously explicitly excluded
+             'src/app/api/auth/**',
+             'src/app/footy/docs/**',              // NEW — MDX-only pages
+             'src/lib/importlivedb/**',            // NEW — dev-only utility
+             'src/stories/**',
+             'src/tests/**',
+             'src/types/**',
+         ],
+         reporter: ['text', 'lcov', 'cobertura'],
+         reportsDirectory: 'coverage',
+     },
+     ```
+
+   - **`src/services/GameDay/__mocks__/index.ts`** — Added 16 missing mock methods:
+     ```ts
+     import { vi } from 'vitest';
+     const gameDayService = {
+         get: vi.fn(),
+         getAll: vi.fn(),
+         getIdRangeForYear: vi.fn(),
+         getByDate: vi.fn(),
+         getCurrent: vi.fn(),
+         getCurrentYear: vi.fn(),
+         getUpcoming: vi.fn(),
+         getPrevious: vi.fn(),
+         getLatest: vi.fn(),
+         getNext: vi.fn(),
+         getGamesPlayed: vi.fn(),
+         getGamesCancelled: vi.fn(),
+         getGamesRemaining: vi.fn(),
+         getSeasonEnders: vi.fn(),
+         getAllYears: vi.fn(),
+         getYear: vi.fn(),
+         getForMonth: vi.fn(),       // KEY — was missing, causing test failure
+         create: vi.fn(),
+         upsert: vi.fn(),
+         update: vi.fn(),
+         markMailSent: vi.fn(),
+         delete: vi.fn(),
+         deleteAll: vi.fn(),
+     };
+     export default gameDayService;
+     ```
+
+   - **`src/app/footy/admin/invoice/page.vitest.spec.tsx`** — Full test implementation (9 passing tests):
+     ```tsx
+     import type { Mock } from 'vitest';
+     import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+     vi.mock('services/GameDay');
+     vi.mock('@/actions/recordHallHire', () => ({ recordHallHire: vi.fn() }));
+     vi.mock('@/actions/updateInvoiceGameDays', () => ({ updateInvoiceGameDays: vi.fn() }));
+
+     import { recordHallHire } from '@/actions/recordHallHire';
+     import { updateInvoiceGameDays } from '@/actions/updateInvoiceGameDays';
+     import InvoicePage from '@/app/footy/admin/invoice/page';
+     import gameDayService from '@/services/GameDay';
+     import { FootyChannel } from '@/types/FootyChannel';
+
+     interface AnyElement { type: unknown; props: Record<string, unknown> }
+
+     const findElement = (node: unknown, displayName: string): AnyElement | null => {
+         if (!node || typeof node !== 'object') return null;
+         const el = node as AnyElement;
+         if (typeof el.type === 'function') {
+             const fn = el.type as { displayName?: string; name?: string };
+             const name = fn.displayName ?? fn.name;
+             if (name === displayName) return el;
+         }
+         const children = (el.props as { children?: unknown }).children;
+         if (Array.isArray(children)) {
+             for (const child of children) {
+                 const found = findElement(child, displayName);
+                 if (found) return found;
+             }
+         }
+         return findElement(children, displayName);
+     };
+
+     const makeGameDay = (overrides = {}) => ({
+         id: 1, date: new Date('2026-01-07'), game: false, mailSent: null, hallCost: null,
+         ...overrides,
+     });
+
+     describe('Admin Invoice page', () => {
+         beforeEach(() => {
+             vi.useFakeTimers();
+             vi.clearAllMocks();
+             (gameDayService.getForMonth as Mock).mockResolvedValue([]);
+         });
+         afterEach(() => { vi.useRealTimers(); });
+
+         it('defaults year and month to next month when search params are absent', ...)
+         it('rolls over to January of the following year when invoked in December', ...)
+         it('uses year and month from search params when provided', ...)
+         it('marks a game day as scheduled when the game flag is true', ...)
+         it('marks a game day as scheduled when mailSent is not null, regardless of the game flag', ...)
+         it('marks a game day as not scheduled when game is false and mailSent is null', ...)
+         it('passes the updateInvoiceGameDays action to InvoiceForm', ...)
+         it('passes the recordHallHire action to InvoiceForm', ...)
+         it('renders AutoRefresh with the Games and Money channels', ...)
+     });
+     ```
+
+   - **`src/lib/money.vitest.spec.ts`** — Scaffolding with 1 live test + 8 todos
+   - **`src/lib/stream.vitest.spec.ts`** — Scaffolding with 1 live test (Readable.from) + 3 todos
+   - **`src/lib/prismaErrors.vitest.spec.ts`** — Scaffolding with 1 live test (P2025 error) + 4 todos
+
+   - **Action wrapper scaffolding files** (all in `src/lib/actions/*/`, all todos):
+     - `authAction.vitest.spec.ts`, `authExportAction.vitest.spec.ts`
+     - `createMoreGameDaysAction.vitest.spec.ts`, `createPlayerAction.vitest.spec.ts`
+     - `deletePlayerAction.vitest.spec.ts`, `recordHallHireAction.vitest.spec.ts`
+     - `sendEmailToAllActivePlayersAction.vitest.spec.ts`, `setGameEnabledAction.vitest.spec.ts`
+     - `submitGameInvitationResponseAction.vitest.spec.ts`, `submitPickerAction.vitest.spec.ts`
+     - `submitResponseAction.vitest.spec.ts`, `triggerInvitationsAction.vitest.spec.ts`
+     - `updatePlayerAction.vitest.spec.ts`, `updatePlayerRecordsAction.vitest.spec.ts`
+     - **New directories created**: `src/lib/actions/getProgress/getProgressAction.vitest.spec.ts`
+     - **New directories created**: `src/lib/actions/updateInvoiceGameDays/updateInvoiceGameDaysAction.vitest.spec.ts`
+
+   - **`src/actions/setDrinkers.ts`** — PENDING REFACTOR. Currently contains:
+     ```ts
+     export async function setDrinkers(rawData: unknown) {
+         await requireAdmin();
+         const data = SetDrinkersInputSchema.parse(rawData);
+         const result = await setDrinkersCore(data);
+         try {
+             await playerRecordService.upsertFromGameDay(data.gameDayId);
+         } catch (error) {
+             const normalizedError = normalizeUnknownError(error);
+             throw new InternalError(`Failed to update player records for game day ${data.gameDayId}.`, {
+                 cause: normalizedError,
+                 details: { gameDayId: data.gameDayId, operation: 'upsertFromGameDay', upstreamCode: normalizedError.code },
+                 publicMessage: 'Failed to update player records.',
+             });
+         }
+         revalidatePath('/footy/admin/drinkers');
+         revalidatePath(`/footy/admin/drinkers/${data.gameDayId}`);
+         revalidatePath('/footy/pub');
+         revalidatePath('/footy/table/pub');
+         revalidatePath(`/footy/game/${data.gameDayId}`);
+         broadcast(FootyChannel.Games);
+         return result;
+     }
+     ```
+     The upsertFromGameDay + error handling block should move to the lib core.
+
+   - **`src/actions/setGameResult.ts`** — PENDING REFACTOR. Identical upsertFromGameDay + error handling pattern as setDrinkers, should move to lib core.
+
+   - **`src/actions/updateInvoiceGameDays.ts`** — PENDING REFACTOR. Has actual business logic (Zod parse + Promise.all over service updates) with no lib counterpart:
+     ```ts
+     export async function updateInvoiceGameDays(rawData: unknown) {
+         await requireAdmin();
+         const data = UpdateInvoiceGameDaysInputSchema.parse(rawData);
+         await Promise.all(
+             data.gameDays.map((gd) => gameDayService.update({ id: gd.id, game: gd.gameScheduled })),
+         );
+         revalidatePath('/footy/admin/invoice');
+         revalidatePath('/footy/fixtures');
+         broadcast([FootyChannel.Money, FootyChannel.Games]);
+     }
+     ```
+
+4. Errors and Fixes:
+   - **`gameDayService.getForMonth` undefined error**: When running invoice page tests, `(gameDayService.getForMonth as Mock).mockResolvedValue([])` threw `Cannot read properties of undefined`. Cause: the manual mock at `src/services/GameDay/__mocks__/index.ts` only had 7 methods and was missing `getForMonth`. Fix: Added all 16 missing methods to the mock file.
+
+5. Problem Solving:
+   - Correctly identified that `src/lib/dates.vitest.spec.ts` was actually testing `bankHolidays.ts` (misleading filename — only imports from bankHolidays)
+   - Correctly identified that `vi.mock('services/GameDay')` uses the `services` alias (resolves to `src/services/`) not `@/services/GameDay`
+   - Confirmed that page tests don't need to mock component imports — React elements in the JSX tree are inspectable via `findElement` without rendering
+   - Identified that the thin redirect pages (fixtures, results) have no logic worth testing, while invoice page does
+   - Diagnosed why coverage stats didn't move: the vitest.unit.config.ts coverage scope was too narrow
+
+6. All user messages:
+   - "Before I call my slightly obsessive quest for 100% test coverage done, are there any remaining files which have no tests at all? All files contributing to the codecov report are at 100%"
+   - "Add scaffolding for all these that need tests."
+   - "Do pages really need tests?"
+   - "Yes" [to deleting 4 redirect page scaffolding files]
+   - "OK, let's start adding tests in place of the todos, starting with that page."
+   - "Why has the coverage stats not changed? Am I missing gathering coverage stats on some of these tests?"
+   - "Ye" [to expanding coverage config]
+   - "I wonder if I'm being inconsistent with how the split between src/actions and src/lib/actions works. Not all src/actions code is a simple trampoline so that the core action in src/lib can be mocked. What do you recommend?"
+   - "Yes, go ahead" [to the three refactors]
+
+7. Pending Tasks:
+   - **Refactor 1**: Move `playerRecordService.upsertFromGameDay` + error handling block from `src/actions/setDrinkers.ts` into `src/lib/actions/setDrinkers/setDrinkers.ts` core, making the outer wrapper a pure trampoline
+   - **Refactor 2**: Same for `src/actions/setGameResult.ts` → `src/lib/actions/setGameResult/setGameResult.ts`
+   - **Refactor 3**: Create `src/lib/actions/updateInvoiceGameDays/updateInvoiceGameDays.ts` with the Zod parse + Promise.all logic, leaving `src/actions/updateInvoiceGameDays.ts` as a pure auth+call+revalidate+broadcast wrapper
+   - After refactors: Update `src/lib/actions/setDrinkers/setDrinkersAction.vitest.spec.ts` and `setGameResultAction.vitest.spec.ts` since those tests currently mock and assert the upsertFromGameDay behavior — that logic moves to the lib core spec files
+   - Fill in remaining `it.todo()` tests across all scaffolded files (money, stream, prismaErrors, all 16+ action wrapper files)
+
+8. Current Work:
+   The conversation ended immediately after user said "Yes, go ahead" to three architectural refactors. I had just read the three source files to understand exactly what needs to move:
+   
+   - `src/actions/setDrinkers.ts`: lines 27-43 (the try/catch with upsertFromGameDay) need to move into setDrinkersCore
+   - `src/actions/setGameResult.ts`: lines 33-49 (identical pattern) need to move into setGameResultCore
+   - `src/actions/updateInvoiceGameDays.ts`: lines 23-27 (parse + Promise.all) need to move into a new lib core
+
+9. Optional Next Step:
+   Execute the three approved refactors, starting with setDrinkers since it has the most test coverage to update. Specifically:
+   
+   From user: "Yes, go ahead" to: "Move the player-record upsert + error handling from `setDrinkers` / `setGameResult` and into their lib cores. Create a `src/lib/actions/updateInvoiceGameDays/` core for the actual work."
+   
+   Steps:
+   1. Read `src/lib/actions/setDrinkers/setDrinkers.ts` and its spec to understand the current core
+   2. Move upsertFromGameDay + error handling into the core's return/post-processing step
+   3. Simplify `src/actions/setDrinkers.ts` to pure trampoline
+   4. Update `setDrinkersAction.vitest.spec.ts` (remove upsertFromGameDay tests, those move to core spec)
+   5. Repeat for setGameResult
+   6. Create `src/lib/actions/updateInvoiceGameDays/updateInvoiceGameDays.ts` and update outer wrapper + scaffolding test
+
+If you need specific details from before compaction (like exact code snippets, error messages, or content you generated), read the full transcript at: /Users/toastboy/.claude/projects/-Volumes-Development-next-www-toastboy/1e061506-afc2-4876-b801-69b394716705.jsonl
+Continue the conversation from where it left off without asking the user any further questions. Resume directly — do not acknowledge the summary, do not recap what was happening, do not preface with "I'll continue" or similar. Pick up the last task as if the break never happened.

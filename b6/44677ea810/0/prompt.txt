@@ -1,0 +1,1 @@
+Given that the badges, flags and trophies are all overlaid on top of the player mugshot, wouldn't the simplest thing be to remove their skeletons and just rely on the overall mugshot skeleton?

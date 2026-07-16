@@ -1,0 +1,1 @@
+I need to start writing documentation about how to use the new site, and separately a note on the migration from the old site to the new one. If I want to have them styled and readable in the repo but eventually suitable for both emailing and putting on the site itself, what format is best?

@@ -1,0 +1,78 @@
+<task-notification>
+<task-id>ab98b4b30cb37b518</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/9ed1a5de-07ff-4a77-8240-d4587f1a97e3/tasks/ab98b4b30cb37b518.output</output-file>
+<status>completed</status>
+<summary>Agent "Chairman synthesis of career move council" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>## Where the Council Agrees
+
+**Go to the interview.** Every advisor — from the most cautious to the most expansionist — reached the same conclusion on this sub-question. The cost is roughly three hours. Two rounds of investment have already been made. The information value is high. There is no serious argument for withdrawing now. This is not the real decision.
+
+**The "comparable package" claim is unexamined and probably false.** Every advisor flagged this. Self-funded private health insurance for a mid-50s professional in the UK is not a rounding error — it is a material annual cost. Voluntary pension contributions on top of that compound the gap over four years. Nobody has run the actual numbers yet, and that is a striking failure of discipline from someone who works in technology. The all-in compensation delta must be calculated precisely before any decision is made.
+
+**The equity question going unanswered is a signal, not an oversight.** Multiple advisors noted this. A FinTech scale-up that hasn't answered the equity question after two interview stages is either disorganised or strategically withholding. Either reading is informative. The equity answer — vesting schedule, strike price, liquidation timeline — is the single most consequential unknown in this decision, and the final interview is the last legitimate moment to extract it cleanly.
+
+**Four years is not a long runway for absorbing a bad outcome.** A redundancy at 57 in a FinTech that hits a funding crunch is not recoverable on a 60-retirement timeline without material damage. The manufacturing company's stability is not a consolation prize — it is a genuine asset that deserves explicit weight, not dismissal.
+
+---
+
+## Where the Council Clashes
+
+**Is this "peak leverage time" for equity, or the worst possible window for risk?**
+
+The Expansionist argued that a mid-50s professional four years from retirement is actually in the ideal position to capture a scale-up equity event — experienced enough to get meaningful grants, close enough to a likely exit horizon for the timing to work. The Contrarian and three of the peer reviewers called this romanticisation. The base rate for scale-up equity producing life-changing returns for a mid-career IC hire is low. Options in a private company that doesn't exit before retirement are illiquid and worthless at the moment they're most needed. The peer reviewers were fairly united in calling out the Expansionist as the weakest voice in the room on this point.
+
+The honest synthesis: equity is *potentially* the most important variable, but only under a narrow set of conditions — Series B or later funding, a credible 3-5 year exit horizon, and grants sized meaningfully for the role. If those conditions are met, the Expansionist is right. If the equity answer is vague, deferred, or small, it's noise. The interview will answer this. Don't decide before you have the number.
+
+**Is the current employer's stability a feature or a trap?**
+
+The Outsider was the only advisor who named the unnamed psychological driver directly: "the anxiety driving this interview process hasn't been named." Why is a person who describes their current employer as a good place to see out their career sitting in a third-round interview at a FinTech? That question was never answered, and the council didn't push hard enough on it. One peer reviewer extended this into the identity dimension — whether he actually wants to be the oldest technical person in a scale-up culture at 56, proving himself again in a new environment, or whether the interview process has been energising or exhausting.
+
+This is a genuine disagreement in framing, not just emphasis. The Expansionist treats the stable employer as a fallback with no cost. The Outsider and Contrarian treat the stability as a genuine signal about revealed preference. Reasonable advisors disagree here because the answer depends entirely on information only the person asking has: what is the thing that's actually driving this?
+
+---
+
+## Blind Spots the Council Caught
+
+**The health insurance gap is not just a cost — it's an asymmetric risk.**
+
+Three of the five peer reviewers flagged this independently, which makes it the council's clearest shared finding. Not one of the five advisors treated health insurance as anything other than a line-item expense. It isn't. A mid-50s professional who develops a health condition after joining the new company could become uninsurable or face dramatically higher renewal premiums with no employer backstop, precisely at the age when health risk rises. The downside scenario isn't "I pay more for insurance" — it's "I lose continuous coverage and cannot replace it affordably." If there is any pre-existing condition or family health complexity in the picture, this transforms from arithmetic into a hard constraint that potentially vetoes the move regardless of equity upside.
+
+**The pension vesting question was missed entirely.**
+
+Two peer reviewers raised this and none of the advisors addressed it. Four years from a 60-target retirement, the state of the current employer's pension arrangements could dwarf every other variable in this decision. Specifically: is the current scheme defined benefit or defined contribution? Has employer vesting on those contributions been running long enough that leaving now forfeits a tranche? Does moving reset a vesting clock? This single question could make the financial comparison trivially obvious in one direction — and it hasn't been asked.
+
+**The psychological/identity dimension went unexamined.**
+
+One peer reviewer named this directly and it's correct. This decision isn't only financial — it's about how this person wants to spend the last four working years of his career. The council spent almost all its energy on compensation arithmetic and equity scenarios. Nobody asked whether the interview process itself has been energising or draining; whether he has the appetite to prove himself again in a new culture; whether being the most senior technical person in a scale-up at 56 is appealing or quietly exhausting. These questions don't override the financial ones, but they belong in the frame.
+
+---
+
+## The Recommendation
+
+Go to the final interview. Make it an interrogation, not a performance.
+
+The interview is not the decision point — it is the data-collection mechanism. But the data you collect there will almost certainly resolve the decision cleanly. Here is what you need to leave with:
+
+**Equity:** Get the actual number, vesting schedule, cliff, and what happens on acquisition. If they still won't answer this after three rounds, you have your answer — and it's no.
+
+**Benefits gap:** Before you walk in, get an actual quote for private health insurance at your age and health status, not an estimate. Add the pension contribution delta. Calculate the real all-in compensation difference. If it's 10-15% worse and the equity answer is vague, the decision is made.
+
+**Exit horizon:** Ask directly. Series B or later? Board composition? Revenue growth trajectory? Investor push for liquidity? A 4-year vesting schedule with no exit in sight is worthless at 60.
+
+**Stability:** How long has the current tech leadership been there? What's the funding runway?
+
+If you leave that interview with a clear equity answer, a real exit timeline, and numbers that show a genuine financial upside — meaning the equity is sized meaningfully, vesting aligns with your retirement window, and the all-in compensation holds up — then proceed seriously. The manufacturing company will still be there as a fallback, and the upside is real.
+
+If the equity answer is still deferred, small, or conditional, or if the all-in compensation is materially worse than your current package, decline politely. The stable employer with high retention four years from retirement is not a consolation — it is an objectively good outcome that the framing of this decision has been quietly undervaluing.
+
+One final thing the council kept circling without naming directly: you described your current employer as a good place to "see out your career" in a tone that suggested faint embarrassment. That framing is worth examining before the interview, not after. If the driving force here is not financial but a feeling of being professionally undervalued or intellectually under-stimulated, a final-round FinTech interview is not the right treatment. Name the actual problem first — then decide whether this job solves it.
+
+---
+
+## The One Thing to Do First
+
+Before the interview: get an actual insurance quote for private health cover at your age and run the true all-in annual compensation comparison — salary minus the real cost of self-funded benefits, against your current package. That number will either settle the financial question before you walk in, or confirm that equity is load-bearing and must be answered at the interview to make any decision possible.</result>
+<usage><subagent_tokens>16936</subagent_tokens><tool_uses>0</tool_uses><duration_ms>45482</duration_ms></usage>
+</task-notification>

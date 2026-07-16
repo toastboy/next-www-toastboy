@@ -1,0 +1,1 @@
+Yes. The mistakes in PlayerProfile are my work in progress for this: extract them and make a new client component with tests and mocks called 'EmailPlayerButton'

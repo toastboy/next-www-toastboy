@@ -1,0 +1,1 @@
+Are there other call sites that could use the new normalise email function?

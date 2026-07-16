@@ -1,0 +1,2 @@
+Now I've got a weird situation where the Playwright test shows the whole page as loading and the test '        await expect(page.getByRole('button', { name: 'Send invitations' })).toBeEnabled({ timeout: 15000 });
+' just times out. Running the prod server using 'npm run start' doesn't show the same behaviour. Why?

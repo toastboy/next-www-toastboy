@@ -1,0 +1,1 @@
+Spreading ...components last allows callers to override the a component and potentially remove the noopener/noreferrer hardening for target=\"_blank\". Consider merging in a way that prevents overriding the secure link behavior (e.g., spread components first and then set a, or use a: components.a ?? (...) while keeping the secure default).

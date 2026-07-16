@@ -1,0 +1,1 @@
+Consider setting an explicit type=\"button\" on this button to avoid unintended form submission if the component is ever rendered inside a <form> (native <button> defaults to submit). This can prevent hard-to-debug accidental submits.

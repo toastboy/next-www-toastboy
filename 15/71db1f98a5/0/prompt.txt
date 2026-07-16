@@ -1,0 +1,1 @@
+Spreading sanitizePlayerName(rest) is likely to include fields like anonymous (since rest contains it) in the returned object, even though PlayerEmailDataDisplayType doesn’t document/require it. If anonymous is only needed for computing the display name, consider omitting it from the returned payload (or explicitly include it in the return type if it’s intended API).

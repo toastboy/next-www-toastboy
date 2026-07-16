@@ -1,0 +1,52 @@
+I have a failure in playwright CI which doesn't happen locally, and it only fires in webkit:
+
+Search tests
+EnquiryForm › email flow
+next »
+completes full verification flow
+info.spec.ts:79
+9.5s
+webkit
+Error: expect(locator).toBeVisible() failed
+
+Locator: getByText('Confirm your email')
+Expected: visible
+Timeout: 5000ms
+Error: element(s) not found
+
+Call log:
+  - Expect "toBeVisible" with timeout 5000ms
+  - waiting for getByText('Confirm your email')
+
+
+  84 |             await page.getByRole('button', { name: 'Send message' }).click();
+  85 |
+> 86 |             await expect(page.getByText('Confirm your email')).toBeVisible();
+     |                                                                ^
+  87 |
+  88 |             const message = await waitForMessage(request, 'Confirm your enquiry');
+  89 |             expect(message, 'Expected verification email in Mailpit').toBeTruthy();
+    at /home/runner/work/next-www-toastboy/next-www-toastboy/e2e/info.spec.ts:86:64
+Filter steps
+Before Hooks
+243ms
+Navigate to "/footy/info"— info.spec.ts:80
+667ms
+Fill "Verification Tester" getByRole('textbox', { name: 'Name' })— info.spec.ts:81
+413ms
+Fill "verify@example.com" getByRole('textbox', { name: 'Email' })— info.spec.ts:82
+188ms
+Fill "Please verify this enquiry." getByRole('textbox', { name: 'Message' })— info.spec.ts:83
+82ms
+Click getByRole('button', { name: 'Send message' })— info.spec.ts:84
+378ms
+Expect "toBeVisible" getByText('Confirm your email')— info.spec.ts:86
+5.0s
+After Hooks
+2.5s
+Worker Cleanup
+11.4s
+
+screenshot
+video
+error-context

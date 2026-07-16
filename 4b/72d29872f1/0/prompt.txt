@@ -1,0 +1,2 @@
+Ignore src/components/DebugBreakpoints/DebugBreakpoints.tsx
+src/components/DebugSizeOverlay/DebugSizeOverlay.tsx for knip. They're only there for temporary layout debugging purposes

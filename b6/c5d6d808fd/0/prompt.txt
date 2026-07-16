@@ -1,0 +1,1 @@
+HTML table summary is obsolete in HTML5 and is inconsistently supported by assistive tech. Prefer an explicit caption (e.g., a visible/visually-hidden <caption>) or an aria-label/aria-labelledby on the table so the accessible name is reliable.

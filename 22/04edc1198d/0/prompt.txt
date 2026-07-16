@@ -1,0 +1,1 @@
+I was rebuilding each time, so the only explanation I can think of for a stale build is that the server on 3002 was an old one that wasn't being replaced with the up to date build

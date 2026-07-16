@@ -1,0 +1,34 @@
+<task-notification>
+<task-id>aab5983d568e05c22</task-id>
+<tool-use-id>toolu_0122sC2vMFEang2cutgcz1mK</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/bda4876a-d839-4537-af27-2756dda751bb/tasks/aab5983d568e05c22.output</output-file>
+<status>completed</status>
+<summary>Agent "Audit barrel export usage in src/" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>Now I have the full picture.
+
+---
+
+**Audit: barrel `index.ts` usage in `src/`**
+
+**Pattern 1 — Fully consistent (all callers use the barrel)**
+
+`src/services/*/index.ts` — all 13 service directories have a barrel (`export { default } from './Foo'; export * from './Foo'`). Every import in the codebase goes to `@/services/GameDay` etc. — zero callers reach into `@/services/GameDay/GameDay`. Perfectly consistent.
+
+`src/lib/actions/*/index.ts` — all 22 action-core directories have a barrel. Every caller (both the outer `src/actions/` wrappers and test mocks) imports from the directory path. Consistent.
+
+**Pattern 2 — Mostly consistent, with a few direct bypasses**
+
+`src/lib/errors/index.ts` — 66 callers use `@/lib/errors`. Six files bypass it: the submodule files themselves (expected), `page.tsx` in `/admin/users` (imports `@/lib/errors/AppError`), `request.vitest.spec.ts` (imports `@/lib/errors/request`). Minor inconsistency.
+
+**Pattern 3 — Barrel mostly ignored**
+
+`src/types/index.ts` — 46 callers use `@/types` (the barrel), but 205 callers import directly from specific subpaths (`@/types/FootyChannel`, `@/types/actions/SetDrinkers`, etc.). The barrel only covers 11 of the ~30 types files; the `actions/` subdirectory, `FootyChannel`, `AuthUser`, `Points` etc. are not in the barrel. So most callers skip it entirely.
+
+**Pattern 4 — No index.ts, no issue**
+
+`src/lib/` flat files (e.g. `dates.ts`, `errors.ts`…) are single files; no barrel needed and none exists.
+
+**Summary of inconsistency:** Services and lib/actions are clean and consistent. `lib/errors` has ~6 stray direct imports. `src/types` is the messiest: the barrel covers a minority of the types and is used by only ~18% of type imports — it's effectively half-abandoned.</result>
+<usage><subagent_tokens>107985</subagent_tokens><tool_uses>9</tool_uses><duration_ms>83503</duration_ms></usage>
+</task-notification>

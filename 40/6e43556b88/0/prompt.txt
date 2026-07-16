@@ -1,0 +1,1 @@
+Looks to me that verifiedAt doesn't need to be a date (causing type worries between server and client because it might need serialising) - it can just be a boolean 'verified' can't it?

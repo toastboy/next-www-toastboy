@@ -1,0 +1,1 @@
+Recipient emails are deduplicated using raw strings but not normalized (trim/lowercase). This can result in duplicates and invalid addresses like ' Alice@example.com ' being sent as-is. Normalize emails before inserting into the Set (e.g., via the existing normalizeEmail) and filter on the normalized value.

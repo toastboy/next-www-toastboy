@@ -1,0 +1,7 @@
+A new code review comment:
+
+This updates state during render (setTrackedSrc, setLoaded inside the render body), which can trigger React warnings/errors and can cause render loops in Strict Mode. Move the src change handling into a useEffect that depends on imageProps.src (or derive trackedSrc differently) so state changes happen after render.
+
+
+
+I'm not sure about this: I don't know that useEffect should have such an impact

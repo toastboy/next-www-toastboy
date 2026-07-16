@@ -1,0 +1,1 @@
+Now I want the '<Paper shadow="xs" p="sm" withBorder>' element to grow horizontally to fill the available space not taken up by the other two

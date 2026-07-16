@@ -1,0 +1,1 @@
+Now I've added a Group containing both the PlayerResults and PlayerPositions - I would like that to be wide enough for both on the same row if all the minimum widths allow, then to wrap into 2 rows if the container is too narrow.

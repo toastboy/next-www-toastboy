@@ -1,0 +1,38 @@
+I asked another AI about my persistent flaky Playwright tests and here is the exchange: let's modify the new game form to disable the submit button until the page is hydrated:
+
+What's the canonical way for a next.js app router page test in Playwright to wait until the page is fully hydrated? I have flaky tests which sometimes work and sometimes don't which seem to show that a form is being submitted and the follow-on actions after that are being run before the resulting page has all its hooks in place.
+Completed 3 steps
+The canonical approach is not to wait for a generic “hydrated” state in Playwright; instead, make the page expose a user-observable ready state, or have controls stay disabled until hydration completes. Playwright’s own docs say there is no universal “page is loaded” signal and that hydration problems happen when it interacts before event handlers are attached.
+
+What to do
+Prefer page.goto() followed by assertions on a real condition, such as the specific form/button becoming enabled or a post-hydration marker appearing in the DOM.
+
+If you control the app, add a tiny test-only or production-safe hydration marker in a client component, then wait for it with page.waitForFunction() or locator.waitFor().
+
+If the submit action causes a route change, wait for the destination with await page.waitForURL(...) after the click instead of relying on timing.
+
+Best practice in Next App Router
+For Next.js App Router, the cleanest pattern is to have interactive elements remain disabled until the client has mounted, or to render a small client-side “ready” flag near the root and wait on that in tests. A common pattern is a client component that sets window.__HYDRATED__ = true in useEffect, then tests do await page.waitForFunction(() => window.__HYDRATED__ === true).
+
+Example
+ts
+await page.goto('/form');
+await page.waitForFunction(() => window.__HYDRATED__ === true);
+await page.getByRole('button', { name: 'Submit' }).click();
+await page.waitForURL('**/success');
+That said, if your form can be clicked before hydration and the click is supposed to work, the stronger fix is in the app itself: disable or defer the control until it is actually wired up, because Playwright is already waiting for actionability but cannot wait for your framework’s event handlers to bind.
+
+Recommendation
+If you want the most robust setup, I’d implement a small app-level hydration marker or mounted state and use that in your Playwright base test, then assert the post-submit URL or UI state change. That gives you deterministic tests without depending on arbitrary sleeps or networkidle, which Playwright does not recommend as a general solution.
+
+Follow-ups
+
+How to implement a global hydration marker in App Router layout
+
+Why does Playwright recommend against using networkidle for tests
+
+Handling loading states in Playwright with locator assertions
+
+Best practices for testing Next.js interactive form components
+
+Using component tests vs E2E tests for hydration issues

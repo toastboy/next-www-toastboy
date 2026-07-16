@@ -1,0 +1,1 @@
+isXs and isSm overlap at exactly theme.breakpoints.sm because max-width and min-width are both inclusive. Since currentBreakpoint checks isXs first, the breakpoint will be labeled XS at the SM boundary. Consider making isXs use max-width: calc(sm - 1px) (or switching to <sm semantics consistently) to avoid overlaps.

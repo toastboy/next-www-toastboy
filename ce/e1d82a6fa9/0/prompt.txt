@@ -1,0 +1,3 @@
+From code review: Disabling the submit button until the component mounts can be confusing for users (especially keyboard/screen-reader users) because there’s no indication why the primary action is unavailable. Consider adding a visible hint (e.g., helper text) while !mounted, or using a loading state (if supported by your Button component) and/or an aria-describedby explanation so the temporary disabled state is understandable.
+
+Maybe I can make the 'mounted' state available in a way that the playwright tests can pick up

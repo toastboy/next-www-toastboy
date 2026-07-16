@@ -1,0 +1,1 @@
+Good. For tidiness I don't like mixing uppercase with underscores and CamelCase, so harmonise on CamelCase

@@ -1,0 +1,1 @@
+Check status of the batch D page-spec-implementation fork (tasks #44-#50, covering info/player/table/turnout/winners pages). If completed, run the finalisation checklist (typecheck, lint, test:pages:coverage) and report results. If still running, reschedule.

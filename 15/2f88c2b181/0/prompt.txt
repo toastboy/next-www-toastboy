@@ -1,0 +1,1 @@
+I've been using 'mailSent not null and game = false' to signify a cancelled game

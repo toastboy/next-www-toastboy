@@ -1,0 +1,1 @@
+OK, I needed to restart VS Code to get Playwright tests to pass in the Test Explorer. Now go back over this whole session and think about removing whatever changes turned out not to be the ones needed to fix these test failures.

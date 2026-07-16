@@ -1,0 +1,1 @@
+Before I call my slightly obsessive quest for 100% test coverage done, are there any remaining files which have no tests at all? All files contributing to the codecov report are at 100%

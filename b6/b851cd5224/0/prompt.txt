@@ -1,0 +1,50 @@
+Search tests
+EnquiryForm
+shows validation errors on empty submit
+info.spec.ts:22
+5.9s
+chromium
+Copy prompt
+Error: expect(locator).toBeVisible() failed
+
+Locator: getByText('Name is required')
+Expected: visible
+Timeout: 5000ms
+Error: element(s) not found
+
+Call log:
+  - Expect "toBeVisible" with timeout 5000ms
+  - waiting for getByText('Name is required')
+
+
+  29 |         await submitButton.click();
+  30 |         await submitButton.scrollIntoViewIfNeeded();
+> 31 |         await expect(page.getByText('Name is required')).toBeVisible();
+     |                                                          ^
+  32 |         await expect(page.getByText('Invalid email')).toBeVisible();
+  33 |         await expect(page.getByText('Message is required')).toBeVisible();
+  34 |     });
+    at /Volumes/Development/next-www-toastboy/e2e/info.spec.ts:31:58
+Filter steps
+Before Hooks
+483ms
+Navigate to "/footy/info"— info.spec.ts:23
+147ms
+Expect "toBeVisible" getByRole('button', { name: 'Send message' })— info.spec.ts:26
+32ms
+Scroll into view getByRole('button', { name: 'Send message' })— info.spec.ts:27
+14ms
+Click getByRole('button', { name: 'Send message' })— info.spec.ts:29
+74ms
+Scroll into view getByRole('button', { name: 'Send message' })— info.spec.ts:30
+65ms
+Expect "toBeVisible" getByText('Name is required')— info.spec.ts:31
+5.0s
+After Hooks
+279ms
+Worker Cleanup
+19ms
+
+screenshot
+video
+error-context

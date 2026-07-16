@@ -1,0 +1,1 @@
+src/app/footy/layout.tsx is uncovered. Add tests or exclude it?

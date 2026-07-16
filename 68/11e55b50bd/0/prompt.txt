@@ -1,0 +1,391 @@
+```
+2026-06-07T08:26:57.8856803Z Current runner version: '2.334.0'
+2026-06-07T08:26:57.8888325Z ##[group]Runner Image Provisioner
+2026-06-07T08:26:57.8889811Z Hosted Compute Agent
+2026-06-07T08:26:57.8890854Z Version: 20260520.533
+2026-06-07T08:26:57.8891985Z Commit: 189110e25284a9812c124fd27b339e2fb4f2f9db
+2026-06-07T08:26:57.8893448Z Build Date: 2026-05-20T17:44:04Z
+2026-06-07T08:26:57.8894733Z Worker ID: {f75efc61-742c-4c8b-aba2-3cd454958e72}
+2026-06-07T08:26:57.8896435Z Azure Region: northcentralus
+2026-06-07T08:26:57.8897536Z ##[endgroup]
+2026-06-07T08:26:57.8899959Z ##[group]Operating System
+2026-06-07T08:26:57.8901263Z Ubuntu
+2026-06-07T08:26:57.8902166Z 24.04.4
+2026-06-07T08:26:57.8903116Z LTS
+2026-06-07T08:26:57.8904044Z ##[endgroup]
+2026-06-07T08:26:57.8905248Z ##[group]Runner Image
+2026-06-07T08:26:57.8906499Z Image: ubuntu-24.04
+2026-06-07T08:26:57.8907500Z Version: 20260525.161.1
+2026-06-07T08:26:57.8909791Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260525.161/images/ubuntu/Ubuntu2404-Readme.md
+2026-06-07T08:26:57.8912697Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260525.161
+2026-06-07T08:26:57.8914578Z ##[endgroup]
+2026-06-07T08:26:57.8917189Z ##[group]GITHUB_TOKEN Permissions
+2026-06-07T08:26:57.8920285Z Contents: read
+2026-06-07T08:26:57.8921345Z Issues: read
+2026-06-07T08:26:57.8922433Z Metadata: read
+2026-06-07T08:26:57.8923426Z PullRequests: write
+2026-06-07T08:26:57.8924402Z ##[endgroup]
+2026-06-07T08:26:57.8927921Z Secret source: Actions
+2026-06-07T08:26:57.8929508Z Prepare workflow directory
+2026-06-07T08:26:57.9342099Z Prepare all required actions
+2026-06-07T08:26:57.9397888Z Getting action download info
+2026-06-07T08:26:58.2692577Z Download action repository 'actions/checkout@v6' (SHA:df4cb1c069e1874edd31b4311f1884172cec0e10)
+2026-06-07T08:26:58.6442029Z Download action repository 'anthropics/claude-code-action@v1' (SHA:fbda2eb1bdc90d319b8d853f5deb53bca199a7c1)
+2026-06-07T08:26:59.0209852Z Getting action download info
+2026-06-07T08:26:59.1614449Z Download action repository 'oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6' (SHA:0c5077e51419868618aeaa5fe8019c62421857d6)
+2026-06-07T08:26:59.5413666Z Complete job name: claude-review
+2026-06-07T08:26:59.6267622Z ##[group]Run actions/checkout@v6
+2026-06-07T08:26:59.6269026Z with:
+2026-06-07T08:26:59.6269875Z   fetch-depth: 1
+2026-06-07T08:26:59.6270848Z   repository: toastboy/next-www-toastboy
+2026-06-07T08:26:59.6281304Z   token: ***
+2026-06-07T08:26:59.6282190Z   ssh-strict: true
+2026-06-07T08:26:59.6283092Z   ssh-user: git
+2026-06-07T08:26:59.6284019Z   persist-credentials: true
+2026-06-07T08:26:59.6285176Z   clean: true
+2026-06-07T08:26:59.6286107Z   sparse-checkout-cone-mode: true
+2026-06-07T08:26:59.6287185Z   fetch-tags: false
+2026-06-07T08:26:59.6288125Z   show-progress: true
+2026-06-07T08:26:59.6289044Z   lfs: false
+2026-06-07T08:26:59.6289932Z   submodules: false
+2026-06-07T08:26:59.6290859Z   set-safe-directory: true
+2026-06-07T08:26:59.6292131Z ##[endgroup]
+2026-06-07T08:26:59.7313481Z Syncing repository: toastboy/next-www-toastboy
+2026-06-07T08:26:59.7316812Z ##[group]Getting Git version info
+2026-06-07T08:26:59.7318472Z Working directory is '/home/runner/work/next-www-toastboy/next-www-toastboy'
+2026-06-07T08:26:59.7320859Z [command]/usr/bin/git version
+2026-06-07T08:26:59.7381269Z git version 2.54.0
+2026-06-07T08:26:59.7405121Z ##[endgroup]
+2026-06-07T08:26:59.7419920Z Temporarily overriding HOME='/home/runner/work/_temp/c4acd86f-1b3c-4110-83b3-4e6d06358444' before making global git config changes
+2026-06-07T08:26:59.7423468Z Adding repository directory to the temporary git global config as a safe directory
+2026-06-07T08:26:59.7426577Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/next-www-toastboy/next-www-toastboy
+2026-06-07T08:26:59.7472731Z Deleting the contents of '/home/runner/work/next-www-toastboy/next-www-toastboy'
+2026-06-07T08:26:59.7476923Z ##[group]Determining repository object format
+2026-06-07T08:26:59.7479270Z ##[endgroup]
+2026-06-07T08:26:59.7481542Z ##[group]Initializing the repository
+2026-06-07T08:26:59.7484455Z [command]/usr/bin/git init /home/runner/work/next-www-toastboy/next-www-toastboy
+2026-06-07T08:26:59.7591304Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-06-07T08:26:59.7594588Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-06-07T08:26:59.7597945Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-06-07T08:26:59.7600024Z hint: call:
+2026-06-07T08:26:59.7600860Z hint:
+2026-06-07T08:26:59.7601861Z hint: 	git config --global init.defaultBranch <name>
+2026-06-07T08:26:59.7603082Z hint:
+2026-06-07T08:26:59.7604230Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-06-07T08:26:59.7606262Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-06-07T08:26:59.7607752Z hint:
+2026-06-07T08:26:59.7609022Z hint: 	git branch -m <name>
+2026-06-07T08:26:59.7610643Z hint:
+2026-06-07T08:26:59.7612809Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-06-07T08:26:59.7616762Z Initialized empty Git repository in /home/runner/work/next-www-toastboy/next-www-toastboy/.git/
+2026-06-07T08:26:59.7628183Z [command]/usr/bin/git remote add origin https://github.com/toastboy/next-www-toastboy
+2026-06-07T08:26:59.7670465Z ##[endgroup]
+2026-06-07T08:26:59.7672014Z ##[group]Disabling automatic garbage collection
+2026-06-07T08:26:59.7675032Z [command]/usr/bin/git config --local gc.auto 0
+2026-06-07T08:26:59.7705424Z ##[endgroup]
+2026-06-07T08:26:59.7707322Z ##[group]Setting up auth
+2026-06-07T08:26:59.7708413Z Removing SSH command configuration
+2026-06-07T08:26:59.7711830Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-06-07T08:26:59.7746860Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-06-07T08:26:59.8084192Z Removing HTTP extra header
+2026-06-07T08:26:59.8091279Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-06-07T08:26:59.8125722Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-06-07T08:26:59.8338004Z Removing includeIf entries pointing to credentials config files
+2026-06-07T08:26:59.8342159Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-06-07T08:26:59.8372316Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-06-07T08:26:59.8598139Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-162b6630-3f5d-402a-ab30-07d57c8aca7e.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-06-07T08:26:59.8651590Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git.path /home/runner/work/_temp/git-credentials-162b6630-3f5d-402a-ab30-07d57c8aca7e.config
+2026-06-07T08:26:59.8680710Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-162b6630-3f5d-402a-ab30-07d57c8aca7e.config
+2026-06-07T08:26:59.8713643Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-162b6630-3f5d-402a-ab30-07d57c8aca7e.config
+2026-06-07T08:26:59.8745999Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-162b6630-3f5d-402a-ab30-07d57c8aca7e.config
+2026-06-07T08:26:59.8771776Z ##[endgroup]
+2026-06-07T08:26:59.8773351Z ##[group]Fetching the repository
+2026-06-07T08:26:59.8780810Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +0faacdce9b68df4137732983f66a2c1c3fc08ba7:refs/remotes/pull/399/merge
+2026-06-07T08:27:00.6326055Z From https://github.com/toastboy/next-www-toastboy
+2026-06-07T08:27:00.6330091Z  * [new ref]         0faacdce9b68df4137732983f66a2c1c3fc08ba7 -> pull/399/merge
+2026-06-07T08:27:00.6366120Z ##[endgroup]
+2026-06-07T08:27:00.6368440Z ##[group]Determining the checkout info
+2026-06-07T08:27:00.6370531Z ##[endgroup]
+2026-06-07T08:27:00.6372137Z [command]/usr/bin/git sparse-checkout disable
+2026-06-07T08:27:00.6415867Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-06-07T08:27:00.6445647Z ##[group]Checking out the ref
+2026-06-07T08:27:00.6447929Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/399/merge
+2026-06-07T08:27:00.7280985Z Note: switching to 'refs/remotes/pull/399/merge'.
+2026-06-07T08:27:00.7282360Z 
+2026-06-07T08:27:00.7283473Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-06-07T08:27:00.7286438Z changes and commit them, and you can discard any commits you make in this
+2026-06-07T08:27:00.7288136Z state without impacting any branches by switching back to a branch.
+2026-06-07T08:27:00.7289599Z 
+2026-06-07T08:27:00.7290563Z If you want to create a new branch to retain commits you create, you may
+2026-06-07T08:27:00.7292105Z do so (now or later) by using -c with the switch command. Example:
+2026-06-07T08:27:00.7292944Z 
+2026-06-07T08:27:00.7293367Z   git switch -c <new-branch-name>
+2026-06-07T08:27:00.7294198Z 
+2026-06-07T08:27:00.7295050Z Or undo this operation with:
+2026-06-07T08:27:00.7295684Z 
+2026-06-07T08:27:00.7296068Z   git switch -
+2026-06-07T08:27:00.7296542Z 
+2026-06-07T08:27:00.7297263Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-06-07T08:27:00.7298287Z 
+2026-06-07T08:27:00.7299357Z HEAD is now at 0faacdc Merge 27a5d6493eb7d2cbc9be38b376f2788201f907ae into 85f155b7706f2a0989535e311e8281a102f55693
+2026-06-07T08:27:00.7303202Z ##[endgroup]
+2026-06-07T08:27:00.7334620Z [command]/usr/bin/git log -1 --format=%H
+2026-06-07T08:27:00.7358496Z 0faacdce9b68df4137732983f66a2c1c3fc08ba7
+2026-06-07T08:27:00.8601071Z ##[group]Run anthropics/claude-code-action@v1
+2026-06-07T08:27:00.8602166Z with:
+2026-06-07T08:27:00.8603963Z   claude_code_oauth_token: ***
+2026-06-07T08:27:00.8605433Z   plugin_marketplaces: https://github.com/anthropics/claude-code.git
+2026-06-07T08:27:00.8606783Z   plugins: code-review@claude-code-plugins
+2026-06-07T08:27:00.8608076Z   prompt: /code-review:code-review toastboy/next-www-toastboy/pull/399
+2026-06-07T08:27:00.8609345Z   trigger_phrase: @claude
+2026-06-07T08:27:00.8610218Z   label_trigger: claude
+2026-06-07T08:27:00.8611072Z   branch_prefix: claude/
+2026-06-07T08:27:00.8611936Z   use_bedrock: false
+2026-06-07T08:27:00.8612764Z   use_vertex: false
+2026-06-07T08:27:00.8613563Z   use_foundry: false
+2026-06-07T08:27:00.8614417Z   use_sticky_comment: false
+2026-06-07T08:27:00.8615464Z   classify_inline_comments: true
+2026-06-07T08:27:00.8616426Z   use_commit_signing: false
+2026-06-07T08:27:00.8617293Z   bot_id: 41898282
+2026-06-07T08:27:00.8618139Z   bot_name: claude[bot]
+2026-06-07T08:27:00.8618989Z   track_progress: false
+2026-06-07T08:27:00.8619856Z   include_fix_links: true
+2026-06-07T08:27:00.8620731Z   display_report: false
+2026-06-07T08:27:00.8621593Z   show_full_output: false
+2026-06-07T08:27:00.8622454Z ##[endgroup]
+2026-06-07T08:27:00.8827547Z ##[group]Run oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6
+2026-06-07T08:27:00.8828778Z with:
+2026-06-07T08:27:00.8829534Z   bun-version: 1.3.14
+2026-06-07T08:27:00.8838740Z   token: ***
+2026-06-07T08:27:00.8839541Z   no-cache: false
+2026-06-07T08:27:00.8840328Z ##[endgroup]
+2026-06-07T08:27:01.1578968Z Cache hit for: bun-fR4r1tsFeXfPQkusQwkKD2kGnsE=
+2026-06-07T08:27:01.8632711Z Received 33843768 of 33843768 (100.0%), 55.4 MBs/sec
+2026-06-07T08:27:01.8633374Z Cache Size: ~32 MB (33843768 B)
+2026-06-07T08:27:01.8673061Z [command]/usr/bin/tar -xf /home/runner/work/_temp/631b24bf-39b3-4b00-b20a-fbd3a16cef35/cache.tzst -P -C /home/runner/work/next-www-toastboy/next-www-toastboy --use-compress-program unzstd
+2026-06-07T08:27:02.0227160Z Cache restored successfully
+2026-06-07T08:27:02.0265640Z [command]/home/runner/.bun/bin/bun --revision
+2026-06-07T08:27:02.0305716Z 1.3.14+0d9b296af
+2026-06-07T08:27:02.0306659Z Using a cached version of Bun: 1.3.14+0d9b296af
+2026-06-07T08:27:02.0464290Z ##[group]Run cd ${GITHUB_ACTION_PATH}
+2026-06-07T08:27:02.0464675Z [36;1mcd ${GITHUB_ACTION_PATH}[0m
+2026-06-07T08:27:02.0465337Z [36;1mbun install --production[0m
+2026-06-07T08:27:02.0496802Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-06-07T08:27:02.0497187Z ##[endgroup]
+2026-06-07T08:27:02.0589727Z bun install v1.3.14 (0d9b296a)
+2026-06-07T08:27:03.0987443Z 
+2026-06-07T08:27:03.0988450Z + @actions/core@1.11.1
+2026-06-07T08:27:03.1015665Z + @actions/github@6.0.1
+2026-06-07T08:27:03.1037886Z + @anthropic-ai/claude-agent-sdk@0.3.168
+2026-06-07T08:27:03.1042896Z + @modelcontextprotocol/sdk@1.16.0
+2026-06-07T08:27:03.1043544Z + @octokit/graphql@8.2.2
+2026-06-07T08:27:03.1044095Z + @octokit/rest@21.1.1
+2026-06-07T08:27:03.1044632Z + @octokit/webhooks-types@7.6.1
+2026-06-07T08:27:03.1045462Z + node-fetch@3.3.2
+2026-06-07T08:27:03.1045939Z + shell-quote@1.8.3
+2026-06-07T08:27:03.1046466Z + zod@3.25.76
+2026-06-07T08:27:03.1046776Z 
+2026-06-07T08:27:03.1047054Z 140 packages installed [1040.00ms]
+2026-06-07T08:27:03.1168344Z ##[group]Run bun --no-env-file \
+2026-06-07T08:27:03.1168839Z [36;1mbun --no-env-file \[0m
+2026-06-07T08:27:03.1169352Z [36;1m  --config="${GITHUB_ACTION_PATH}/bunfig.toml" \[0m
+2026-06-07T08:27:03.1170134Z [36;1m  --tsconfig-override="${GITHUB_ACTION_PATH}/tsconfig.json" \[0m
+2026-06-07T08:27:03.1170880Z [36;1m  run ${GITHUB_ACTION_PATH}/src/entrypoints/run.ts[0m
+2026-06-07T08:27:03.1204640Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-06-07T08:27:03.1205451Z env:
+2026-06-07T08:27:03.1205749Z   MODE: 
+2026-06-07T08:27:03.1206254Z   PROMPT: /code-review:code-review toastboy/next-www-toastboy/pull/399
+2026-06-07T08:27:03.1206887Z   TRIGGER_PHRASE: @claude
+2026-06-07T08:27:03.1207519Z   ASSIGNEE_TRIGGER: 
+2026-06-07T08:27:03.1207883Z   LABEL_TRIGGER: claude
+2026-06-07T08:27:03.1208240Z   BASE_BRANCH: 
+2026-06-07T08:27:03.1208586Z   BRANCH_PREFIX: claude/
+2026-06-07T08:27:03.1208969Z   BRANCH_NAME_TEMPLATE: 
+2026-06-07T08:27:03.1209341Z   OVERRIDE_GITHUB_TOKEN: 
+2026-06-07T08:27:03.1209709Z   ALLOWED_BOTS: 
+2026-06-07T08:27:03.1210050Z   ALLOWED_NON_WRITE_USERS: 
+2026-06-07T08:27:03.1210465Z   CLAUDE_CODE_SUBPROCESS_ENV_SCRUB: 
+2026-06-07T08:27:03.1210911Z   CLAUDE_CODE_SCRIPT_CAPS: 
+2026-06-07T08:27:03.1211302Z   INCLUDE_COMMENTS_BY_ACTOR: 
+2026-06-07T08:27:03.1211711Z   EXCLUDE_COMMENTS_BY_ACTOR: 
+2026-06-07T08:27:03.1212100Z   GITHUB_RUN_ID: 27087255542
+2026-06-07T08:27:03.1212482Z   USE_STICKY_COMMENT: false
+2026-06-07T08:27:03.1212871Z   CLASSIFY_INLINE_COMMENTS: true
+2026-06-07T08:27:03.1219384Z   DEFAULT_WORKFLOW_TOKEN: ***
+2026-06-07T08:27:03.1219829Z   USE_COMMIT_SIGNING: false
+2026-06-07T08:27:03.1220230Z   SSH_SIGNING_KEY: 
+2026-06-07T08:27:03.1220565Z   BOT_ID: 41898282
+2026-06-07T08:27:03.1220909Z   BOT_NAME: claude[bot]
+2026-06-07T08:27:03.1221278Z   TRACK_PROGRESS: false
+2026-06-07T08:27:03.1221652Z   INCLUDE_FIX_LINKS: true
+2026-06-07T08:27:03.1222043Z   ADDITIONAL_PERMISSIONS: 
+2026-06-07T08:27:03.1222419Z   CLAUDE_ARGS: 
+2026-06-07T08:27:03.1230005Z   ALL_INPUTS: {
+  "claude_code_oauth_token": "***",
+  "plugin_marketplaces": "https://github.com/anthropics/claude-code.git",
+  "plugins": "code-review@claude-code-plugins",
+  "prompt": "/code-review:code-review toastboy/next-www-toastboy/pull/399",
+  "trigger_phrase": "@claude",
+  "assignee_trigger": "",
+  "label_trigger": "claude",
+  "base_branch": "",
+  "branch_prefix": "claude/",
+  "branch_name_template": "",
+  "allowed_bots": "",
+  "allowed_non_write_users": "",
+  "include_comments_by_actor": "",
+  "exclude_comments_by_actor": "",
+  "settings": "",
+  "anthropic_api_key": "",
+  "anthropic_federation_rule_id": "",
+  "anthropic_organization_id": "",
+  "anthropic_service_account_id": "",
+  "anthropic_workspace_id": "",
+  "anthropic_oidc_audience": "",
+  "github_token": "",
+  "use_bedrock": "false",
+  "use_vertex": "false",
+  "use_foundry": "false",
+  "claude_args": "",
+  "additional_permissions": "",
+  "use_sticky_comment": "false",
+  "classify_inline_comments": "true",
+  "use_commit_signing": "false",
+  "ssh_signing_key": "",
+  "bot_id": "41898282",
+  "bot_name": "claude[bot]",
+  "track_progress": "false",
+  "include_fix_links": "true",
+  "path_to_claude_code_executable": "",
+  "path_to_bun_executable": "",
+  "display_report": "false",
+  "show_full_output": "false"
+}
+2026-06-07T08:27:03.1237664Z   INPUT_PROMPT_FILE: /home/runner/work/_temp/claude-prompts/claude-prompt.txt
+2026-06-07T08:27:03.1238330Z   INPUT_SETTINGS: 
+2026-06-07T08:27:03.1239110Z   INPUT_EXPERIMENTAL_SLASH_COMMANDS_DIR: /home/runner/work/_actions/anthropics/claude-code-action/v1/slash-commands
+2026-06-07T08:27:03.1240038Z   INPUT_PATH_TO_CLAUDE_CODE_EXECUTABLE: 
+2026-06-07T08:27:03.1240508Z   INPUT_PATH_TO_BUN_EXECUTABLE: 
+2026-06-07T08:27:03.1240944Z   INPUT_SHOW_FULL_OUTPUT: false
+2026-06-07T08:27:03.1241350Z   DISPLAY_REPORT: false
+2026-06-07T08:27:03.1241778Z   INPUT_PLUGINS: code-review@claude-code-plugins
+2026-06-07T08:27:03.1242479Z   INPUT_PLUGIN_MARKETPLACES: https://github.com/anthropics/claude-code.git
+2026-06-07T08:27:03.1243159Z   PATH_TO_CLAUDE_CODE_EXECUTABLE: 
+2026-06-07T08:27:03.1243575Z   NODE_VERSION: 
+2026-06-07T08:27:03.1243906Z   ANTHROPIC_API_KEY: 
+2026-06-07T08:27:03.1245095Z   CLAUDE_CODE_OAUTH_TOKEN: ***
+2026-06-07T08:27:03.1245447Z   ANTHROPIC_FEDERATION_RULE_ID: 
+2026-06-07T08:27:03.1245707Z   ANTHROPIC_ORGANIZATION_ID: 
+2026-06-07T08:27:03.1245973Z   ANTHROPIC_SERVICE_ACCOUNT_ID: 
+2026-06-07T08:27:03.1246233Z   ANTHROPIC_WORKSPACE_ID: 
+2026-06-07T08:27:03.1246474Z   ANTHROPIC_OIDC_AUDIENCE: 
+2026-06-07T08:27:03.1246721Z   ANTHROPIC_BASE_URL: 
+2026-06-07T08:27:03.1246981Z   ANTHROPIC_CUSTOM_HEADERS: 
+2026-06-07T08:27:03.1247262Z   CLAUDE_CODE_USE_BEDROCK: 
+2026-06-07T08:27:03.1247493Z   CLAUDE_CODE_USE_VERTEX: 
+2026-06-07T08:27:03.1247897Z   CLAUDE_CODE_USE_FOUNDRY: 
+2026-06-07T08:27:03.1248139Z   AWS_REGION: 
+2026-06-07T08:27:03.1248339Z   AWS_ACCESS_KEY_ID: 
+2026-06-07T08:27:03.1248557Z   AWS_SECRET_ACCESS_KEY: 
+2026-06-07T08:27:03.1248796Z   AWS_SESSION_TOKEN: 
+2026-06-07T08:27:03.1249013Z   AWS_BEARER_TOKEN_BEDROCK: 
+2026-06-07T08:27:03.1249257Z   ANTHROPIC_BEDROCK_BASE_URL: 
+2026-06-07T08:27:03.1249506Z   ANTHROPIC_VERTEX_PROJECT_ID: 
+2026-06-07T08:27:03.1249752Z   CLOUD_ML_REGION: 
+2026-06-07T08:27:03.1249973Z   GOOGLE_APPLICATION_CREDENTIALS: 
+2026-06-07T08:27:03.1250234Z   ANTHROPIC_VERTEX_BASE_URL: 
+2026-06-07T08:27:03.1250484Z   VERTEX_REGION_CLAUDE_3_5_HAIKU: 
+2026-06-07T08:27:03.1250751Z   VERTEX_REGION_CLAUDE_3_5_SONNET: 
+2026-06-07T08:27:03.1251011Z   VERTEX_REGION_CLAUDE_3_7_SONNET: 
+2026-06-07T08:27:03.1251265Z   ANTHROPIC_FOUNDRY_RESOURCE: 
+2026-06-07T08:27:03.1251521Z   ANTHROPIC_FOUNDRY_BASE_URL: 
+2026-06-07T08:27:03.1251766Z   ANTHROPIC_DEFAULT_SONNET_MODEL: 
+2026-06-07T08:27:03.1252033Z   ANTHROPIC_DEFAULT_HAIKU_MODEL: 
+2026-06-07T08:27:03.1252298Z   ANTHROPIC_DEFAULT_OPUS_MODEL: 
+2026-06-07T08:27:03.1252551Z   MCP_TIMEOUT: 
+2026-06-07T08:27:03.1252753Z   MCP_TOOL_TIMEOUT: 
+2026-06-07T08:27:03.1252971Z   MAX_MCP_OUTPUT_TOKENS: 
+2026-06-07T08:27:03.1253211Z   CLAUDE_CODE_ENABLE_TELEMETRY: 
+2026-06-07T08:27:03.1253458Z   OTEL_METRICS_EXPORTER: 
+2026-06-07T08:27:03.1253678Z   OTEL_LOGS_EXPORTER: 
+2026-06-07T08:27:03.1253902Z   OTEL_EXPORTER_OTLP_PROTOCOL: 
+2026-06-07T08:27:03.1254153Z   OTEL_EXPORTER_OTLP_ENDPOINT: 
+2026-06-07T08:27:03.1254391Z   OTEL_EXPORTER_OTLP_HEADERS: 
+2026-06-07T08:27:03.1254634Z   OTEL_METRIC_EXPORT_INTERVAL: 
+2026-06-07T08:27:03.1255131Z   OTEL_LOGS_EXPORT_INTERVAL: 
+2026-06-07T08:27:03.1255386Z   OTEL_RESOURCE_ATTRIBUTES: 
+2026-06-07T08:27:03.1255614Z ##[endgroup]
+2026-06-07T08:27:03.4023092Z Auto-detected mode: agent for event: pull_request
+2026-06-07T08:27:03.4029893Z Requesting OIDC token...
+2026-06-07T08:27:03.4046076Z Attempt 1 of 3...
+2026-06-07T08:27:03.5242345Z OIDC token successfully obtained
+2026-06-07T08:27:03.5249836Z Exchanging OIDC token for app token...
+2026-06-07T08:27:03.5250451Z Attempt 1 of 3...
+2026-06-07T08:27:04.1869951Z App token exchange failed: 401 Unauthorized - User does not have write access on this repository
+2026-06-07T08:27:04.1872478Z Retrying in 5 seconds...
+2026-06-07T08:27:04.1924121Z Attempt 1 failed: User does not have write access on this repository
+2026-06-07T08:27:09.1882948Z Attempt 2 of 3...
+2026-06-07T08:27:09.7255960Z App token exchange failed: 401 Unauthorized - User does not have write access on this repository
+2026-06-07T08:27:09.7256875Z Retrying in 10 seconds...
+2026-06-07T08:27:09.7257574Z Attempt 2 failed: User does not have write access on this repository
+2026-06-07T08:27:19.7264103Z Attempt 3 of 3...
+2026-06-07T08:27:20.2702105Z App token exchange failed: 401 Unauthorized - User does not have write access on this repository
+2026-06-07T08:27:20.2703528Z Attempt 3 failed: User does not have write access on this repository
+2026-06-07T08:27:20.2704450Z Operation failed after 3 attempts
+2026-06-07T08:27:20.2734527Z ##[error]Action failed with error: User does not have write access on this repository
+2026-06-07T08:27:20.2736412Z Internal error: directory mismatch for directory "/home/runner/work/_actions/anthropics/claude-code-action/v1/tsconfig.json", fd 4. You don't need to do anything, but this indicates a bug.
+2026-06-07T08:27:20.2785226Z ##[error]Process completed with exit code 1.
+2026-06-07T08:27:20.2840189Z ##[group]Run BUN_BIN="${GITHUB_ACTION_PATH}/bin/bun"
+2026-06-07T08:27:20.2840575Z [36;1mBUN_BIN="${GITHUB_ACTION_PATH}/bin/bun"[0m
+2026-06-07T08:27:20.2840899Z [36;1m[ -x "$BUN_BIN" ] || BUN_BIN="bun"[0m
+2026-06-07T08:27:20.2841211Z [36;1m"$BUN_BIN" --no-env-file \[0m
+2026-06-07T08:27:20.2841541Z [36;1m  --config="${GITHUB_ACTION_PATH}/bunfig.toml" \[0m
+2026-06-07T08:27:20.2841967Z [36;1m  --tsconfig-override="${GITHUB_ACTION_PATH}/tsconfig.json" \[0m
+2026-06-07T08:27:20.2842681Z [36;1m  run ${GITHUB_ACTION_PATH}/src/entrypoints/post-buffered-inline-comments.ts[0m
+2026-06-07T08:27:20.2868213Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-06-07T08:27:20.2868559Z env:
+2026-06-07T08:27:20.2872184Z   GITHUB_TOKEN: ***
+2026-06-07T08:27:20.2872448Z   REPO_OWNER: toastboy
+2026-06-07T08:27:20.2872696Z   REPO_NAME: next-www-toastboy
+2026-06-07T08:27:20.2872956Z   PR_NUMBER: 399
+2026-06-07T08:27:20.2873195Z   ANTHROPIC_API_KEY: 
+2026-06-07T08:27:20.2873421Z ##[endgroup]
+2026-06-07T08:27:20.3251016Z No buffered inline comments
+2026-06-07T08:27:20.3252588Z Internal error: directory mismatch for directory "/home/runner/work/_actions/anthropics/claude-code-action/v1/tsconfig.json", fd 4. You don't need to do anything, but this indicates a bug.
+2026-06-07T08:27:20.3775493Z Post job cleanup.
+2026-06-07T08:27:20.3858719Z Post job cleanup.
+2026-06-07T08:27:20.4675444Z [command]/usr/bin/git version
+2026-06-07T08:27:20.4713222Z git version 2.54.0
+2026-06-07T08:27:20.4753443Z Temporarily overriding HOME='/home/runner/work/_temp/d2cf1112-11d8-41ef-aadc-9eeb97851cf7' before making global git config changes
+2026-06-07T08:27:20.4754313Z Adding repository directory to the temporary git global config as a safe directory
+2026-06-07T08:27:20.4759274Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/next-www-toastboy/next-www-toastboy
+2026-06-07T08:27:20.4789493Z Removing SSH command configuration
+2026-06-07T08:27:20.4795726Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-06-07T08:27:20.4828629Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-06-07T08:27:20.5049560Z Removing HTTP extra header
+2026-06-07T08:27:20.5054218Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-06-07T08:27:20.5087900Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-06-07T08:27:20.5304222Z Removing includeIf entries pointing to credentials config files
+2026-06-07T08:27:20.5311275Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-06-07T08:27:20.5373091Z includeif.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git.path
+2026-06-07T08:27:20.5374417Z includeif.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git/worktrees/*.path
+2026-06-07T08:27:20.5375622Z includeif.gitdir:/github/workspace/.git.path
+2026-06-07T08:27:20.5376290Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-06-07T08:27:20.5383671Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git.path
+2026-06-07T08:27:20.5406164Z /home/runner/work/_temp/git-credentials-162b6630-3f5d-402a-ab30-07d57c8aca7e.config
+2026-06-07T08:27:20.5417674Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git.path /home/runner/work/_temp/git-credentials-162b6630-3f5d-402a-ab30-07d57c8aca7e.config
+2026-06-07T08:27:20.5452127Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git/worktrees/*.path
+2026-06-07T08:27:20.5474173Z /home/runner/work/_temp/git-credentials-162b6630-3f5d-402a-ab30-07d57c8aca7e.config
+2026-06-07T08:27:20.5483697Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-162b6630-3f5d-402a-ab30-07d57c8aca7e.config
+2026-06-07T08:27:20.5514531Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-06-07T08:27:20.5535404Z /github/runner_temp/git-credentials-162b6630-3f5d-402a-ab30-07d57c8aca7e.config
+2026-06-07T08:27:20.5544549Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-162b6630-3f5d-402a-ab30-07d57c8aca7e.config
+2026-06-07T08:27:20.5581963Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-06-07T08:27:20.5602490Z /github/runner_temp/git-credentials-162b6630-3f5d-402a-ab30-07d57c8aca7e.config
+2026-06-07T08:27:20.5612813Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-162b6630-3f5d-402a-ab30-07d57c8aca7e.config
+2026-06-07T08:27:20.5643168Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-06-07T08:27:20.5861166Z Removing credentials config '/home/runner/work/_temp/git-credentials-162b6630-3f5d-402a-ab30-07d57c8aca7e.config'
+2026-06-07T08:27:20.6007248Z Cleaning up orphan processes
+
+I made the change but it's still failing. Commit any further edits to this PR https://github.com/toastboy/next-www-toastboy/actions/runs/27087255542/job/79944290762?pr=399
+```

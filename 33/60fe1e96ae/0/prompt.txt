@@ -1,0 +1,1 @@
+Now Playwright tests in CI are more or less stable I want to concentrate on getting the auto rebase and merge for PRs working seamlessly. I don't need Chromatic or

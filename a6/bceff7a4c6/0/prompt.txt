@@ -1,0 +1,1 @@
+mapExtraEmails(extraEmails) will throw if extraEmails is ever undefined (e.g., if the Prisma query used to fetch players doesn't select/include extraEmails). Either ensure the upstream Prisma query always selects extraEmails (and accountEmail) or defensively default with something like mapExtraEmails(extraEmails ?? []).

@@ -1,0 +1,1 @@
+PlayerTrophy and PlayerTrophyTally need the same treatment where w and h are passed in so that the decision to use cqw is alongside the definition of the container. While we're about it, is there an industry standard way of doing this: making sure cqw has a clearly-defined container associated with it in different components?

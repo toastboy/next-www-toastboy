@@ -1,0 +1,1 @@
+Look at this: https://testcontainers.com/guides/getting-started-with-testcontainers-for-nodejs/ it strikes me that perhaps the best way forward is for me to put together a test database image together with the seed data preinstalled, and to use testcontainers to use this fresh image as often as necessary

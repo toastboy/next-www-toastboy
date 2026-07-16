@@ -1,0 +1,1 @@
+When the player profile page is loading, the flags and crests move around while the mugshot comes into view. How can I make it so the layout is much more stable as the page loads, and provide meaningful placeholders? What's the industry term for this sort of polishing?

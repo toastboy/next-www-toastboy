@@ -1,0 +1,1 @@
+Not all badges or flags have the same aspect ratio - what to do about that?

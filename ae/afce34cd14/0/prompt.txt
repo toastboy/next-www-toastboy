@@ -1,0 +1,162 @@
+This is so frustrating!
+
+
+Running 7 tests using 1 worker
+◇ injected env (9) from .env.playwright // tip: ◈ encrypted .env [www.dotenvx.com]
+[2/7] [chromium] › e2e/info.spec.ts:23:9 › EnquiryForm › shows validation errors on empty submi
+  1) [chromium] › e2e/info.spec.ts:23:9 › EnquiryForm › shows validation errors on empty submit ────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForFunction: Test timeout of 30000ms exceeded.
+
+       at utils/react.ts:9
+
+       7 |  */
+       8 | export async function waitForReactHydration(page: Page, selector = 'form'): Promise<void> {
+    >  9 |     await page.waitForFunction((sel: string) => {
+         |                ^
+      10 |         const el = document.querySelector(sel);
+      11 |         if (!el) return false;
+      12 |         return Object.keys(el).some((k) => k.startsWith('__reactFiber'));
+        at waitForReactHydration (/Volumes/Development/next-www-toastboy/e2e/utils/react.ts:9:16)
+        at /Volumes/Development/next-www-toastboy/e2e/info.spec.ts:25:36
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-validation-errors-on-empty-submit-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-validation-errors-on-empty-submit-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/info-EnquiryForm-shows-validation-errors-on-empty-submit-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ◈ secrets for agents [www.dotenvx.com]
+  2) [chromium] › e2e/info.spec.ts:36:9 › EnquiryForm › shows invalid email error on blur ──────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForFunction: Test timeout of 30000ms exceeded.
+
+       at utils/react.ts:9
+
+       7 |  */
+       8 | export async function waitForReactHydration(page: Page, selector = 'form'): Promise<void> {
+    >  9 |     await page.waitForFunction((sel: string) => {
+         |                ^
+      10 |         const el = document.querySelector(sel);
+      11 |         if (!el) return false;
+      12 |         return Object.keys(el).some((k) => k.startsWith('__reactFiber'));
+        at waitForReactHydration (/Volumes/Development/next-www-toastboy/e2e/utils/react.ts:9:16)
+        at /Volumes/Development/next-www-toastboy/e2e/info.spec.ts:38:36
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-invalid-email-error-on-blur-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-invalid-email-error-on-blur-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/info-EnquiryForm-shows-invalid-email-error-on-blur-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ enable debugging { debug: true }
+[4/7] [chromium] › e2e/info.spec.ts:48:9 › EnquiryForm › shows verified notification and cleans
+  3) [chromium] › e2e/info.spec.ts:48:9 › EnquiryForm › shows verified notification and cleans up URL 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForFunction: Test timeout of 30000ms exceeded.
+
+       at utils/react.ts:9
+
+       7 |  */
+       8 | export async function waitForReactHydration(page: Page, selector = 'form'): Promise<void> {
+    >  9 |     await page.waitForFunction((sel: string) => {
+         |                ^
+      10 |         const el = document.querySelector(sel);
+      11 |         if (!el) return false;
+      12 |         return Object.keys(el).some((k) => k.startsWith('__reactFiber'));
+        at waitForReactHydration (/Volumes/Development/next-www-toastboy/e2e/utils/react.ts:9:16)
+        at /Volumes/Development/next-www-toastboy/e2e/info.spec.ts:50:36
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-ver-a33a8-ification-and-cleans-up-URL-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-ver-a33a8-ification-and-cleans-up-URL-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/info-EnquiryForm-shows-ver-a33a8-ification-and-cleans-up-URL-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ enable debugging { debug: true }
+[5/7] [chromium] › e2e/info.spec.ts:55:9 › EnquiryForm › shows error notification and cleans up
+  4) [chromium] › e2e/info.spec.ts:55:9 › EnquiryForm › shows error notification and cleans up URL ─
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForFunction: Test timeout of 30000ms exceeded.
+
+       at utils/react.ts:9
+
+       7 |  */
+       8 | export async function waitForReactHydration(page: Page, selector = 'form'): Promise<void> {
+    >  9 |     await page.waitForFunction((sel: string) => {
+         |                ^
+      10 |         const el = document.querySelector(sel);
+      11 |         if (!el) return false;
+      12 |         return Object.keys(el).some((k) => k.startsWith('__reactFiber'));
+        at waitForReactHydration (/Volumes/Development/next-www-toastboy/e2e/utils/react.ts:9:16)
+        at /Volumes/Development/next-www-toastboy/e2e/info.spec.ts:57:36
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-error-notification-and-cleans-up-URL-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-error-notification-and-cleans-up-URL-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/info-EnquiryForm-shows-error-notification-and-cleans-up-URL-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌁ auth for agents [www.vestauth.com]
+[6/7] [chromium] › e2e/info.spec.ts:73:13 › EnquiryForm › email flow › submits form and shows c
+  5) [chromium] › e2e/info.spec.ts:73:13 › EnquiryForm › email flow › submits form and shows confirmation notification 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: page.waitForFunction: Test timeout of 30000ms exceeded.
+
+       at utils/react.ts:9
+
+       7 |  */
+       8 | export async function waitForReactHydration(page: Page, selector = 'form'): Promise<void> {
+    >  9 |     await page.waitForFunction((sel: string) => {
+         |                ^
+      10 |         const el = document.querySelector(sel);
+      11 |         if (!el) return false;
+      12 |         return Object.keys(el).some((k) => k.startsWith('__reactFiber'));
+        at waitForReactHydration (/Volumes/Development/next-www-toastboy/e2e/utils/react.ts:9:16)
+        at /Volumes/Development/next-www-toastboy/e2e/info.spec.ts:75:40
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-email-flo-d6c65-s-confirmation-notification-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-email-flo-d6c65-s-confirmation-notification-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/info-EnquiryForm-email-flo-d6c65-s-confirmation-notification-chromium/error-context.md
+
+[7/7] [chromium] › e2e/info.spec.ts:91:13 › EnquiryForm › email flow › completes full verificat
+  5 failed
+    [chromium] › e2e/info.spec.ts:23:9 › EnquiryForm › shows validation errors on empty submit ─────
+    [chromium] › e2e/info.spec.ts:36:9 › EnquiryForm › shows invalid email error on blur ───────────
+    [chromium] › e2e/info.spec.ts:48:9 › EnquiryForm › shows verified notification and cleans up URL 
+    [chromium] › e2e/info.spec.ts:55:9 › EnquiryForm › shows error notification and cleans up URL ──
+    [chromium] › e2e/info.spec.ts:73:13 › EnquiryForm › email flow › submits form and shows confirmation notification 
+  1 did not run
+  1 passed (2.6m)

@@ -1,0 +1,1 @@
+Does Prisma have a way of doing simple snapshots so the reset can be a stateless "restore to the last snapshot"?

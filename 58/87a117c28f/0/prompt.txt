@@ -1,0 +1,1003 @@
+ARGH!
+
+
+Running 67 tests using 1 worker
+◇ injected env (9) from .env.playwright // tip: ◈ encrypted .env [www.dotenvx.com]
+[1/67] [chromium] › e2e/auth-mocking.spec.ts:6:9 › Auth Mocking System › should show different 
+  1) [chromium] › e2e/auth-mocking.spec.ts:6:9 › Auth Mocking System › should show different content for different auth states 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: /You must be logged in as an administrator/i })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByRole('heading', { name: /You must be logged in as an administrator/i })
+
+
+       at utils/auth.ts:117
+
+      115 |     await expect(page.getByRole('heading', {
+      116 |         name: /You must be logged in as an administrator/i,
+    > 117 |     })).toBeVisible();
+          |         ^
+      118 | }
+      119 |
+      120 | /**
+        at mustBeLoggedInAsAdmin (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:117:9)
+        at /Volumes/Development/next-www-toastboy/e2e/auth-mocking.spec.ts:19:36
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/auth-mocking-Auth-Mocking--7bb0d-t-for-different-auth-states-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/auth-mocking-Auth-Mocking--7bb0d-t-for-different-auth-states-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/auth-mocking-Auth-Mocking--7bb0d-t-for-different-auth-states-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ override existing { override: true }
+[2/67] [chromium] › e2e/auth-mocking.spec.ts:30:9 › Auth Mocking System › should allow switchin
+[3/67] [chromium] › e2e/badpage.spec.ts:3:5 › check what happens when a nonexistent page is req
+[4/67] [chromium] › e2e/drinkers.spec.ts:6:9 › drinkers admin page › denies access to guest use
+  2) [chromium] › e2e/drinkers.spec.ts:6:9 › drinkers admin page › denies access to guest users ────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: /You must be logged in as an administrator/i })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByRole('heading', { name: /You must be logged in as an administrator/i })
+
+
+       at utils/auth.ts:117
+
+      115 |     await expect(page.getByRole('heading', {
+      116 |         name: /You must be logged in as an administrator/i,
+    > 117 |     })).toBeVisible();
+          |         ^
+      118 | }
+      119 |
+      120 | /**
+        at mustBeLoggedInAsAdmin (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:117:9)
+        at /Volumes/Development/next-www-toastboy/e2e/drinkers.spec.ts:9:36
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/drinkers-drinkers-admin-page-denies-access-to-guest-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/drinkers-drinkers-admin-page-denies-access-to-guest-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/drinkers-drinkers-admin-page-denies-access-to-guest-users-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌁ auth for agents [www.vestauth.com]
+[5/67] [chromium] › e2e/drinkers.spec.ts:12:9 › drinkers admin page › denies access to regular 
+  3) [chromium] › e2e/drinkers.spec.ts:12:9 › drinkers admin page › denies access to regular users ─
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: /You must be logged in as an administrator/i })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByRole('heading', { name: /You must be logged in as an administrator/i })
+
+
+       at utils/auth.ts:117
+
+      115 |     await expect(page.getByRole('heading', {
+      116 |         name: /You must be logged in as an administrator/i,
+    > 117 |     })).toBeVisible();
+          |         ^
+      118 | }
+      119 |
+      120 | /**
+        at mustBeLoggedInAsAdmin (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:117:9)
+        at /Volumes/Development/next-www-toastboy/e2e/drinkers.spec.ts:15:36
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/drinkers-drinkers-admin-page-denies-access-to-regular-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/drinkers-drinkers-admin-page-denies-access-to-regular-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/drinkers-drinkers-admin-page-denies-access-to-regular-users-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌁ auth for agents [www.vestauth.com]
+[6/67] [chromium] › e2e/drinkers.spec.ts:18:9 › drinkers admin page › allows access to admin us
+[11/67] [chromium] › e2e/health.spec.ts:9:9 › /api/health endpoint › should return healthy stat
+[12/67] [chromium] › e2e/health.spec.ts:24:9 › /api/health endpoint › should respond quickly (w
+[13/67] [chromium] › e2e/health.spec.ts:35:9 › /api/health endpoint › should be accessible with
+[chromium] › e2e/homepage.links.spec.ts:3:5 › enumerate homepage links
+[
+  '/footy',
+  '/footy/nextgame',
+  'Next Game',
+  '/footy/results',
+  'Results',
+  '/footy/fixtures',
+  'Fixtures',
+  '/footy/books',
+  'Books',
+  '/footy/curse',
+  'Curse of the Bibs',
+  '/footy/winners',
+  'Winners',
+  '/footy/points',
+  'Points',
+  '/footy/averages',
+  'Averages',
+  '/footy/stalwart',
+  'Stalwart Standings',
+  '/footy/speedy',
+  'Captain Speedy',
+  '/footy/pub',
+  'Pub',
+  '/footy/info',
+  'Info',
+  '/footy/players',
+  'Player List',
+  '/footy/turnout',
+  'Turnout',
+  '/footy/rules',
+  'Rules',
+  '/footy/countrymap',
+  'World Map',
+  '/footy/familytree',
+  'Family Tree',
+  '/footy/player/10/2026',
+  'Dr. Rick Gislason DDS',
+  '/footy/player/19/2026',
+  'Tonya Jacobson',
+  '/footy/player/8/2026',
+  'Melyna Jerde',
+  '/footy/player/10/2026',
+  'Dr. Rick Gislason DDS',
+  '/footy/player/8/2026',
+  'Melyna Jerde',
+  '/footy/player/19/2026',
+  'Tonya Jacobson',
+  '/footy/player/4/2026',
+  'Talon Halvorson',
+  '/footy/player/19/2026',
+  'Tonya Jacobson',
+  '/footy/player/1/2026',
+  'Clinton Mante',
+  '/footy/info',
+  'Information about Toastboy FC'
+]
+[]
+[chromium] › e2e/homepage.spec.ts:3:5 › homepage has title and correct links
+Set(12) {
+  '/footy/nextgame',
+  '/footy/results',
+  '/footy/fixtures',
+  '/footy/points',
+  '/footy/averages',
+  '/footy/stalwart',
+  '/footy/speedy',
+  '/footy/pub',
+  '/footy/winners',
+  '/footy/turnout',
+  '/footy/rules',
+  '/footy/info'
+}
+[18/67] [chromium] › e2e/info.spec.ts:20:9 › EnquiryForm › shows validation errors on empty sub
+  4) [chromium] › e2e/info.spec.ts:20:9 › EnquiryForm › shows validation errors on empty submit ────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.waitFor: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('form[data-hydrated]') to be visible
+
+
+      20 |     test('shows validation errors on empty submit', async ({ page }) => {
+      21 |         await page.goto('/footy/info');
+    > 22 |         await page.locator('form[data-hydrated]').waitFor();
+         |                                                   ^
+      23 |
+      24 |         const submitButton = page.getByRole('button', { name: 'Send message' });
+      25 |         await submitButton.scrollIntoViewIfNeeded();
+        at /Volumes/Development/next-www-toastboy/e2e/info.spec.ts:22:51
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-validation-errors-on-empty-submit-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-validation-errors-on-empty-submit-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/info-EnquiryForm-shows-validation-errors-on-empty-submit-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ enable debugging { debug: true }
+  5) [chromium] › e2e/info.spec.ts:33:9 › EnquiryForm › shows invalid email error on blur ──────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.waitFor: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('form[data-hydrated]') to be visible
+
+
+      33 |     test('shows invalid email error on blur', async ({ page }) => {
+      34 |         await page.goto('/footy/info');
+    > 35 |         await page.locator('form[data-hydrated]').waitFor();
+         |                                                   ^
+      36 |
+      37 |         const emailInput = page.getByRole('textbox', { name: 'Email' });
+      38 |         await page.getByRole('textbox', { name: 'Name' }).fill('Test User');
+        at /Volumes/Development/next-www-toastboy/e2e/info.spec.ts:35:51
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-invalid-email-error-on-blur-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-invalid-email-error-on-blur-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/info-EnquiryForm-shows-invalid-email-error-on-blur-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ◈ secrets for agents [www.dotenvx.com]
+[20/67] [chromium] › e2e/info.spec.ts:45:9 › EnquiryForm › shows verified notification and clea
+  6) [chromium] › e2e/info.spec.ts:45:9 › EnquiryForm › shows verified notification and cleans up URL 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.waitFor: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('form[data-hydrated]') to be visible
+
+
+      45 |     test('shows verified notification and cleans up URL', async ({ page }) => {
+      46 |         await page.goto('/footy/info?enquiry=verified');
+    > 47 |         await page.locator('form[data-hydrated]').waitFor();
+         |                                                   ^
+      48 |         await expect(page.getByText('Email verified')).toBeVisible();
+      49 |         await expect(page).toHaveURL(/\/footy\/info$/);
+      50 |     });
+        at /Volumes/Development/next-www-toastboy/e2e/info.spec.ts:47:51
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-ver-a33a8-ification-and-cleans-up-URL-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-ver-a33a8-ification-and-cleans-up-URL-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/info-EnquiryForm-shows-ver-a33a8-ification-and-cleans-up-URL-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ enable debugging { debug: true }
+[21/67] [chromium] › e2e/info.spec.ts:52:9 › EnquiryForm › shows error notification and cleans 
+  7) [chromium] › e2e/info.spec.ts:52:9 › EnquiryForm › shows error notification and cleans up URL ─
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.waitFor: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('form[data-hydrated]') to be visible
+
+
+      52 |     test('shows error notification and cleans up URL', async ({ page }) => {
+      53 |         await page.goto('/footy/info?enquiry=error');
+    > 54 |         await page.locator('form[data-hydrated]').waitFor();
+         |                                                   ^
+      55 |         await expect(page.getByText('Verification failed')).toBeVisible();
+      56 |         await expect(page).toHaveURL(/\/footy\/info$/);
+      57 |     });
+        at /Volumes/Development/next-www-toastboy/e2e/info.spec.ts:54:51
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-error-notification-and-cleans-up-URL-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-error-notification-and-cleans-up-URL-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/info-EnquiryForm-shows-error-notification-and-cleans-up-URL-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ◈ encrypted .env [www.dotenvx.com]
+[22/67] [chromium] › e2e/info.spec.ts:70:13 › EnquiryForm › email flow › submits form and shows
+  8) [chromium] › e2e/info.spec.ts:70:13 › EnquiryForm › email flow › submits form and shows confirmation notification 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.waitFor: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('form[data-hydrated]') to be visible
+
+
+      70 |         test('submits form and shows confirmation notification', async ({ page, request }) => {
+      71 |             await page.goto('/footy/info');
+    > 72 |             await page.locator('form[data-hydrated]').waitFor();
+         |                                                       ^
+      73 |
+      74 |             await page.getByRole('textbox', { name: 'Name' }).fill('Test User');
+      75 |             await page.getByRole('textbox', { name: 'Email' }).fill('playwright@example.com');
+        at /Volumes/Development/next-www-toastboy/e2e/info.spec.ts:72:55
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-email-flo-d6c65-s-confirmation-notification-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-email-flo-d6c65-s-confirmation-notification-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/info-EnquiryForm-email-flo-d6c65-s-confirmation-notification-chromium/error-context.md
+
+[23/67] [chromium] › e2e/info.spec.ts:88:13 › EnquiryForm › email flow › completes full verific
+◇ injected env (9) from .env.playwright // tip: ⌘ enable debugging { debug: true }
+[24/67] [chromium] › e2e/layout.spec.ts:36:9 › Shell nav — structure › burger is visible only b
+[25/67] [chromium] › e2e/layout.spec.ts:45:9 › Shell nav — structure › sidebar nav is in the vi
+[26/67] [chromium] › e2e/layout.spec.ts:55:9 › Shell nav — burger interaction › burger toggles 
+[27/67] [chromium] › e2e/layout.spec.ts:72:9 › Shell nav — burger interaction › sidebar closes 
+[32/67] [chromium] › e2e/mailout.spec.ts:7:9 › Mail active players › denies access to guest use
+  9) [chromium] › e2e/mailout.spec.ts:7:9 › Mail active players › denies access to guest users ─────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: /Sign in to your account/i })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByRole('heading', { name: /Sign in to your account/i })
+
+
+       at utils/auth.ts:129
+
+      127 |     await expect(page.getByRole('heading', {
+      128 |         name: /Sign in to your account/i,
+    > 129 |     })).toBeVisible();
+          |         ^
+      130 | }
+      131 |
+        at mustBeLoggedIn (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:129:9)
+        at /Volumes/Development/next-www-toastboy/e2e/mailout.spec.ts:10:29
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/mailout-Mail-active-players-denies-access-to-guest-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/mailout-Mail-active-players-denies-access-to-guest-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/mailout-Mail-active-players-denies-access-to-guest-users-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+  10) [chromium] › e2e/mailout.spec.ts:13:9 › Mail active players › mail active players ────────────
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.waitFor: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-hydrated]') to be visible
+
+
+      20 |         await expect(page.getByRole('table').locator('tbody tr').first()).toBeVisible();
+      21 |         // Wait for React to finish hydrating the PlayerList before clicking.
+    > 22 |         await page.locator('[data-hydrated]').waitFor();
+         |                                               ^
+      23 |
+      24 |         await expect(page.getByRole('checkbox', { name: 'Select All' })).toBeVisible();
+      25 |         await page.getByRole('checkbox', { name: 'Select All' }).click();
+        at /Volumes/Development/next-www-toastboy/e2e/mailout.spec.ts:22:47
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/mailout-Mail-active-players-mail-active-players-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/mailout-Mail-active-players-mail-active-players-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/mailout-Mail-active-players-mail-active-players-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+  11) [chromium] › e2e/money.spec.ts:6:9 › Money admin page › denies access to guest users ─────────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: /You must be logged in as an administrator/i })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByRole('heading', { name: /You must be logged in as an administrator/i })
+
+
+       at utils/auth.ts:117
+
+      115 |     await expect(page.getByRole('heading', {
+      116 |         name: /You must be logged in as an administrator/i,
+    > 117 |     })).toBeVisible();
+          |         ^
+      118 | }
+      119 |
+      120 | /**
+        at mustBeLoggedInAsAdmin (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:117:9)
+        at /Volumes/Development/next-www-toastboy/e2e/money.spec.ts:8:36
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/money-Money-admin-page-denies-access-to-guest-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/money-Money-admin-page-denies-access-to-guest-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/money-Money-admin-page-denies-access-to-guest-users-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ◈ encrypted .env [www.dotenvx.com]
+  12) [chromium] › e2e/money.spec.ts:11:9 › Money admin page › denies access to regular users ──────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: /You must be logged in as an administrator/i })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByRole('heading', { name: /You must be logged in as an administrator/i })
+
+
+       at utils/auth.ts:117
+
+      115 |     await expect(page.getByRole('heading', {
+      116 |         name: /You must be logged in as an administrator/i,
+    > 117 |     })).toBeVisible();
+          |         ^
+      118 | }
+      119 |
+      120 | /**
+        at mustBeLoggedInAsAdmin (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:117:9)
+        at /Volumes/Development/next-www-toastboy/e2e/money.spec.ts:13:36
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/money-Money-admin-page-denies-access-to-regular-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/money-Money-admin-page-denies-access-to-regular-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/money-Money-admin-page-denies-access-to-regular-users-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ suppress logs { quiet: true }
+[36/67] [chromium] › e2e/money.spec.ts:16:9 › Money admin page › allows access to admin users a
+[37/67] [chromium] › e2e/moregames.spec.ts:6:9 › More Games admin page › denies access to guest
+  13) [chromium] › e2e/moregames.spec.ts:6:9 › More Games admin page › denies access to guest users 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: /must be logged in as an administrator/i })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByRole('heading', { name: /must be logged in as an administrator/i })
+
+
+       7 |         await asGuest(page, '/footy/moregames');
+       8 |
+    >  9 |         await expect(page.getByRole('heading', { name: /must be logged in as an administrator/i })).toBeVisible();
+         |                                                                                                     ^
+      10 |     });
+      11 |
+      12 |     test('denies access to regular users', async ({ page }) => {
+        at /Volumes/Development/next-www-toastboy/e2e/moregames.spec.ts:9:101
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/moregames-More-Games-admin-page-denies-access-to-guest-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/moregames-More-Games-admin-page-denies-access-to-guest-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/moregames-More-Games-admin-page-denies-access-to-guest-users-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ override existing { override: true }
+[38/67] [chromium] › e2e/moregames.spec.ts:12:9 › More Games admin page › denies access to regu
+  14) [chromium] › e2e/moregames.spec.ts:12:9 › More Games admin page › denies access to regular users 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: /must be logged in as an administrator/i })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByRole('heading', { name: /must be logged in as an administrator/i })
+
+
+      13 |         await asUser(page, '/footy/moregames');
+      14 |
+    > 15 |         await expect(page.getByRole('heading', { name: /must be logged in as an administrator/i })).toBeVisible();
+         |                                                                                                     ^
+      16 |     });
+      17 |
+      18 |     test('allows access to admin users and shows moregames admin interface', async ({ page }) => {
+        at /Volumes/Development/next-www-toastboy/e2e/moregames.spec.ts:15:101
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/moregames-More-Games-admin-89835-ies-access-to-regular-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/moregames-More-Games-admin-89835-ies-access-to-regular-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/moregames-More-Games-admin-89835-ies-access-to-regular-users-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ suppress logs { quiet: true }
+[39/67] [chromium] › e2e/moregames.spec.ts:18:9 › More Games admin page › allows access to admi
+  15) [chromium] › e2e/moregames.spec.ts:18:9 › More Games admin page › allows access to admin users and shows moregames admin interface 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('button', { name: 'Create game days' })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByRole('button', { name: 'Create game days' })
+
+
+      23 |         const rowCount = await page.getByRole('table').locator('tbody tr').count();
+      24 |         expect(rowCount).toBeGreaterThan(0);
+    > 25 |         await expect(page.getByRole('button', { name: 'Create game days' })).toBeVisible();
+         |                                                                              ^
+      26 |     });
+      27 | });
+      28 |
+        at /Volumes/Development/next-www-toastboy/e2e/moregames.spec.ts:25:78
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/moregames-More-Games-admin-91933-s-moregames-admin-interface-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/moregames-More-Games-admin-91933-s-moregames-admin-interface-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/moregames-More-Games-admin-91933-s-moregames-admin-interface-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ suppress logs { quiet: true }
+  16) [chromium] › e2e/newgame.spec.ts:7:9 › New game flow › denies access to guest users ──────────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: /You must be logged in as an administrator/i })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByRole('heading', { name: /You must be logged in as an administrator/i })
+
+
+       at utils/auth.ts:117
+
+      115 |     await expect(page.getByRole('heading', {
+      116 |         name: /You must be logged in as an administrator/i,
+    > 117 |     })).toBeVisible();
+          |         ^
+      118 | }
+      119 |
+      120 | /**
+        at mustBeLoggedInAsAdmin (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:117:9)
+        at /Volumes/Development/next-www-toastboy/e2e/newgame.spec.ts:10:36
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/newgame-New-game-flow-denies-access-to-guest-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/newgame-New-game-flow-denies-access-to-guest-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/newgame-New-game-flow-denies-access-to-guest-users-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ enable debugging { debug: true }
+  17) [chromium] › e2e/newgame.spec.ts:13:9 › New game flow › denies access to regular users ───────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: /You must be logged in as an administrator/i })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByRole('heading', { name: /You must be logged in as an administrator/i })
+
+
+       at utils/auth.ts:117
+
+      115 |     await expect(page.getByRole('heading', {
+      116 |         name: /You must be logged in as an administrator/i,
+    > 117 |     })).toBeVisible();
+          |         ^
+      118 | }
+      119 |
+      120 | /**
+        at mustBeLoggedInAsAdmin (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:117:9)
+        at /Volumes/Development/next-www-toastboy/e2e/newgame.spec.ts:16:36
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/newgame-New-game-flow-denies-access-to-regular-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/newgame-New-game-flow-denies-access-to-regular-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/newgame-New-game-flow-denies-access-to-regular-users-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+[42/67] [chromium] › e2e/newgame.spec.ts:19:9 › New game flow › allows admins to send invitatio
+  18) [chromium] › e2e/newgame.spec.ts:19:9 › New game flow › allows admins to send invitations and players can respond 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.waitFor: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('form[data-hydrated]') to be visible
+
+
+      25 |         await expect(page.getByRole('heading', { name: /New game/i })).toBeVisible();
+      26 |         // Wait for React to finish hydrating the form before interacting.
+    > 27 |         await page.locator('form[data-hydrated]').waitFor();
+         |                                                   ^
+      28 |
+      29 |         // Fill the textarea before checking the checkbox so that the React
+      30 |         // re-render triggered by fill() sees overrideTimeCheck: true.
+        at /Volumes/Development/next-www-toastboy/e2e/newgame.spec.ts:27:51
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/newgame-New-game-flow-allo-28a32-ons-and-players-can-respond-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/newgame-New-game-flow-allo-28a32-ons-and-players-can-respond-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/newgame-New-game-flow-allo-28a32-ons-and-players-can-respond-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌁ auth for agents [www.vestauth.com]
+[43/67] [chromium] › e2e/newplayer.spec.ts:17:9 › New Player admin page › denies access to gues
+  19) [chromium] › e2e/newplayer.spec.ts:17:9 › New Player admin page › denies access to guest users 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: /You must be logged in as an administrator/i })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByRole('heading', { name: /You must be logged in as an administrator/i })
+
+
+       at utils/auth.ts:117
+
+      115 |     await expect(page.getByRole('heading', {
+      116 |         name: /You must be logged in as an administrator/i,
+    > 117 |     })).toBeVisible();
+          |         ^
+      118 | }
+      119 |
+      120 | /**
+        at mustBeLoggedInAsAdmin (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:117:9)
+        at /Volumes/Development/next-www-toastboy/e2e/newplayer.spec.ts:20:36
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/newplayer-New-Player-admin-page-denies-access-to-guest-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/newplayer-New-Player-admin-page-denies-access-to-guest-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/newplayer-New-Player-admin-page-denies-access-to-guest-users-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ suppress logs { quiet: true }
+[44/67] [chromium] › e2e/newplayer.spec.ts:23:9 › New Player admin page › denies access to regu
+  20) [chromium] › e2e/newplayer.spec.ts:23:9 › New Player admin page › denies access to regular users 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: /You must be logged in as an administrator/i })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByRole('heading', { name: /You must be logged in as an administrator/i })
+
+
+       at utils/auth.ts:117
+
+      115 |     await expect(page.getByRole('heading', {
+      116 |         name: /You must be logged in as an administrator/i,
+    > 117 |     })).toBeVisible();
+          |         ^
+      118 | }
+      119 |
+      120 | /**
+        at mustBeLoggedInAsAdmin (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:117:9)
+        at /Volumes/Development/next-www-toastboy/e2e/newplayer.spec.ts:26:36
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/newplayer-New-Player-admin-e629f-ies-access-to-regular-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/newplayer-New-Player-admin-e629f-ies-access-to-regular-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/newplayer-New-Player-admin-e629f-ies-access-to-regular-users-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ enable debugging { debug: true }
+[45/67] [chromium] › e2e/newplayer.spec.ts:29:9 › New Player admin page › allows access to admi
+[46/67] [chromium] › e2e/nextgame.spec.ts:6:9 › Next Game page › forwards to the next game for 
+[47/67] [chromium] › e2e/profile.spec.ts:6:9 › Player Profile page › denies access to guest use
+  21) [chromium] › e2e/profile.spec.ts:6:9 › Player Profile page › denies access to guest users ────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: /Sign in to your account/i })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByRole('heading', { name: /Sign in to your account/i })
+
+
+       at utils/auth.ts:129
+
+      127 |     await expect(page.getByRole('heading', {
+      128 |         name: /Sign in to your account/i,
+    > 129 |     })).toBeVisible();
+          |         ^
+      130 | }
+      131 |
+        at mustBeLoggedIn (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:129:9)
+        at /Volumes/Development/next-www-toastboy/e2e/profile.spec.ts:9:29
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/profile-Player-Profile-page-denies-access-to-guest-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/profile-Player-Profile-page-denies-access-to-guest-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/profile-Player-Profile-page-denies-access-to-guest-users-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌁ auth for agents [www.vestauth.com]
+[48/67] [chromium] › e2e/profile.spec.ts:12:9 › Player Profile page › profile access for regula
+[49/67] [chromium] › e2e/responses.spec.ts:8:9 › Responses admin page › denies access to guest 
+  22) [chromium] › e2e/responses.spec.ts:8:9 › Responses admin page › denies access to guest users ─
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: /You must be logged in as an administrator/i })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByRole('heading', { name: /You must be logged in as an administrator/i })
+
+
+       at utils/auth.ts:117
+
+      115 |     await expect(page.getByRole('heading', {
+      116 |         name: /You must be logged in as an administrator/i,
+    > 117 |     })).toBeVisible();
+          |         ^
+      118 | }
+      119 |
+      120 | /**
+        at mustBeLoggedInAsAdmin (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:117:9)
+        at /Volumes/Development/next-www-toastboy/e2e/responses.spec.ts:11:36
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/responses-Responses-admin-page-denies-access-to-guest-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/responses-Responses-admin-page-denies-access-to-guest-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/responses-Responses-admin-page-denies-access-to-guest-users-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ◈ secrets for agents [www.dotenvx.com]
+[50/67] [chromium] › e2e/responses.spec.ts:14:9 › Responses admin page › denies access to regul
+  23) [chromium] › e2e/responses.spec.ts:14:9 › Responses admin page › denies access to regular users 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: /You must be logged in as an administrator/i })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByRole('heading', { name: /You must be logged in as an administrator/i })
+
+
+       at utils/auth.ts:117
+
+      115 |     await expect(page.getByRole('heading', {
+      116 |         name: /You must be logged in as an administrator/i,
+    > 117 |     })).toBeVisible();
+          |         ^
+      118 | }
+      119 |
+      120 | /**
+        at mustBeLoggedInAsAdmin (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:117:9)
+        at /Volumes/Development/next-www-toastboy/e2e/responses.spec.ts:17:36
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/responses-Responses-admin--c7d31-ies-access-to-regular-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/responses-Responses-admin--c7d31-ies-access-to-regular-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/responses-Responses-admin--c7d31-ies-access-to-regular-users-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+[51/67] [chromium] › e2e/responses.spec.ts:20:9 › Responses admin page › admin can update respo
+  24) [chromium] › e2e/responses.spec.ts:20:9 › Responses admin page › admin can update responses form through realistic response changes 
+
+    Test timeout of 30000ms exceeded.
+
+    Error: locator.waitFor: Test timeout of 30000ms exceeded.
+    Call log:
+      - waiting for locator('[data-hydrated]') to be visible
+
+
+      23 |         await expect(page.getByRole('heading', { name: /Responses/i })).toBeVisible();
+      24 |         // Wait for React to finish hydrating the ResponsesForm before interacting.
+    > 25 |         await page.locator('[data-hydrated]').waitFor();
+         |                                               ^
+      26 |
+      27 |         // Read a group's player count from its h2 heading ("Yes: 15").
+      28 |         // CSS + text filter works regardless of whether the card has an explicit ARIA role.
+        at /Volumes/Development/next-www-toastboy/e2e/responses.spec.ts:25:47
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/responses-Responses-admin--fe6a9--realistic-response-changes-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/responses-Responses-admin--fe6a9--realistic-response-changes-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/responses-Responses-admin--fe6a9--realistic-response-changes-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ override existing { override: true }
+[chromium] › e2e/tables.spec.ts:3:5 › tables page
+Set(4) {
+  '/footy/points',
+  '/footy/averages',
+  '/footy/stalwart',
+  '/footy/speedy'
+}
+[63/67] [chromium] › e2e/users-admin-mocked.spec.ts:6:9 › Users Admin Page with Auth Mocking › 
+  25) [chromium] › e2e/users-admin-mocked.spec.ts:6:9 › Users Admin Page with Auth Mocking › denies access to guest users 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByRole('heading', { name: /You must be logged in as an administrator/i })
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByRole('heading', { name: /You must be logged in as an administrator/i })
+
+
+       at utils/auth.ts:117
+
+      115 |     await expect(page.getByRole('heading', {
+      116 |         name: /You must be logged in as an administrator/i,
+    > 117 |     })).toBeVisible();
+          |         ^
+      118 | }
+      119 |
+      120 | /**
+        at mustBeLoggedInAsAdmin (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:117:9)
+        at /Volumes/Development/next-www-toastboy/e2e/users-admin-mocked.spec.ts:10:36
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/users-admin-mocked-Users-A-0d074-enies-access-to-guest-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/users-admin-mocked-Users-A-0d074-enies-access-to-guest-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/users-admin-mocked-Users-A-0d074-enies-access-to-guest-users-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌁ auth for agents [www.vestauth.com]
+[64/67] [chromium] › e2e/users-admin-mocked.spec.ts:13:9 › Users Admin Page with Auth Mocking ›
+[65/67] [chromium] › e2e/users-admin-mocked.spec.ts:20:9 › Users Admin Page with Auth Mocking ›
+[66/67] [chromium] › e2e/users-admin-mocked.spec.ts:36:9 › Profile Page with Auth Mocking › req
+[67/67] [chromium] › e2e/users-admin-mocked.spec.ts:43:9 › Profile Page with Auth Mocking › all
+  25 failed
+    [chromium] › e2e/auth-mocking.spec.ts:6:9 › Auth Mocking System › should show different content for different auth states 
+    [chromium] › e2e/drinkers.spec.ts:6:9 › drinkers admin page › denies access to guest users ─────
+    [chromium] › e2e/drinkers.spec.ts:12:9 › drinkers admin page › denies access to regular users ──
+    [chromium] › e2e/info.spec.ts:20:9 › EnquiryForm › shows validation errors on empty submit ─────
+    [chromium] › e2e/info.spec.ts:33:9 › EnquiryForm › shows invalid email error on blur ───────────
+    [chromium] › e2e/info.spec.ts:45:9 › EnquiryForm › shows verified notification and cleans up URL 
+    [chromium] › e2e/info.spec.ts:52:9 › EnquiryForm › shows error notification and cleans up URL ──
+    [chromium] › e2e/info.spec.ts:70:13 › EnquiryForm › email flow › submits form and shows confirmation notification 
+    [chromium] › e2e/mailout.spec.ts:7:9 › Mail active players › denies access to guest users ──────
+    [chromium] › e2e/mailout.spec.ts:13:9 › Mail active players › mail active players ──────────────
+    [chromium] › e2e/money.spec.ts:6:9 › Money admin page › denies access to guest users ───────────
+    [chromium] › e2e/money.spec.ts:11:9 › Money admin page › denies access to regular users ────────
+    [chromium] › e2e/moregames.spec.ts:6:9 › More Games admin page › denies access to guest users ──
+    [chromium] › e2e/moregames.spec.ts:12:9 › More Games admin page › denies access to regular users 
+    [chromium] › e2e/moregames.spec.ts:18:9 › More Games admin page › allows access to admin users and shows moregames admin interface 
+    [chromium] › e2e/newgame.spec.ts:7:9 › New game flow › denies access to guest users ────────────
+    [chromium] › e2e/newgame.spec.ts:13:9 › New game flow › denies access to regular users ─────────
+    [chromium] › e2e/newgame.spec.ts:19:9 › New game flow › allows admins to send invitations and players can respond 
+    [chromium] › e2e/newplayer.spec.ts:17:9 › New Player admin page › denies access to guest users ─
+    [chromium] › e2e/newplayer.spec.ts:23:9 › New Player admin page › denies access to regular users 
+    [chromium] › e2e/profile.spec.ts:6:9 › Player Profile page › denies access to guest users ──────
+    [chromium] › e2e/responses.spec.ts:8:9 › Responses admin page › denies access to guest users ───
+    [chromium] › e2e/responses.spec.ts:14:9 › Responses admin page › denies access to regular users 
+    [chromium] › e2e/responses.spec.ts:20:9 › Responses admin page › admin can update responses form through realistic response changes 
+    [chromium] › e2e/users-admin-mocked.spec.ts:6:9 › Users Admin Page with Auth Mocking › denies access to guest users 
+  2 skipped
+  1 did not run
+  39 passed (6.1m)

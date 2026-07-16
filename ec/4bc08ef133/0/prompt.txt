@@ -1,0 +1,1 @@
+Is auth.client.ts something that needs special treatment, or is it just missing tests?

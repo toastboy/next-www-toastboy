@@ -1,0 +1,1 @@
+Good. Now that all forms use Select instead of NativeSelect, the test needs updating to click the select and then separately choose the option.

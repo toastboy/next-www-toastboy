@@ -1,0 +1,2 @@
+Explain Configuration hints (1)
+e2e/*.setup.ts    knip.json  Refine entry pattern (no matches)

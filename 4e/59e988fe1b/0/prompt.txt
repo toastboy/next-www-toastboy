@@ -1,0 +1,1 @@
+@mdx-js/loader (and often @next/mdx) are build-time dependencies in Next.js setups, not runtime dependencies. Consider moving build-only MDX packages to devDependencies (keeping @mdx-js/react if it’s required at runtime) to reduce production install surface area and make dependency intent clearer.

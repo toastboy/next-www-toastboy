@@ -1,0 +1,1 @@
+The ARSE help text is only available via a Tooltip on a non-focusable element, which can make it inaccessible to keyboard and touch users. Consider adding a dedicated focusable trigger (e.g., an info icon/button with appropriate aria-label) or making the tooltip target focusable (e.g., tabIndex={0}) so the content is reachable without hover.

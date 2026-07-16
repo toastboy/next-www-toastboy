@@ -1,0 +1,2 @@
+The prev/next placeholder boxes no longer reserve space (previously navSlotWidth), so the title can shift horizontally depending on whether prevPlayer/nextPlayer exist. Restore a fixed width (or flex-basis) for the nav slots/placeholders to keep the header layout stable.
+Don't use a fixed static width like before.

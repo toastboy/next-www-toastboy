@@ -1,0 +1,1 @@
+buildSafeRel lowercases all existing rel tokens, which is a subtle behavior change for callers supplying rel (even if the semantics are equivalent). If you want to dedupe case-insensitively while preserving original token casing for non-security tokens, consider keeping the original tokens and only using a lowercased set for comparisons.

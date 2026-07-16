@@ -1,0 +1,62 @@
+<task-notification>
+<task-id>ac39557a51a7e41cd</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/1a8073c5-beab-481d-b94e-e6e4a9b696ae/tasks/ac39557a51a7e41cd.output</output-file>
+<status>completed</status>
+<summary>Agent "Chairman synthesis of council" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>## Where the Council Agrees
+
+The root problem is a modelling error, not merely a normalisation smell. A game result is a fact about a game, not a fact about a player. Storing it as `Outcome.points` is storing a derived consequence in the wrong entity — every advisor who was worth listening to said this. The correct home is `GameDay` (or a 1:1 satellite of it), expressed as an enum: `A_WIN`, `DRAW`, `B_WIN`. `Outcome.points` is then fully derivable at query time from two inputs: `GameDay.result` and `Outcome.team`. No storage needed.
+
+The second point of agreement: do this in two phases. Add the new field first while the old one still works. Remove the old one only after every consumer — including `PlayerRecord` recalculation — has been rewritten and verified.
+
+The third: `Response E`'s `scoreA`/`scoreB` proposal was unanimously rejected by peer review. The system does not store scores. Introducing fields that require fabricating historical data is feature creep, not schema design.
+
+## Where the Council Clashes
+
+The one genuine disagreement is whether to add `result` directly to `GameDay` (Responses A, D) or to a separate `GameResult` table (Responses B, E). This is not a major split — `GameResult` as a 1:1 satellite of `GameDay` is architecturally equivalent to a field on `GameDay` itself. The only meaningful case for a separate table is if `GameDay` rows can exist without a result (unplayed games, postponements). If that's real, the satellite table is cleaner — absent row means no result yet, no nullable field needed. If every `GameDay` has a result, put it directly on `GameDay`. The data tells you which is true.
+
+The Contrarian's warning about edge cases (walkovers, voids, abandoned games) deserves acknowledgement, not dismissal. The current `Outcome.points` field handles these by storing arbitrary values per player. A centralised `GameDay.result` enum must enumerate all valid states. Check whether the actual data contains anything other than 0, 1, and 3 in `Outcome.points` before assuming a three-value enum suffices.
+
+## Blind Spots the Council Caught
+
+Three things no individual advisor named that only emerged through peer review:
+
+**1. `Outcome.team` reliability is the gating question.** The entire migration depends on deriving points from `GameDay.result + Outcome.team`. If any historical `Outcome` row has `team = NULL` — absent players, late additions, data entry gaps — those rows produce wrong derived points silently. Before designing anything, run `SELECT COUNT(*) FROM Outcome WHERE team IS NULL`. If the count is non-zero, you need a policy for those rows before you can proceed.
+
+**2. Dirty data in the backfill creates an undefined migration state.** When backfilling `GameDay.result` from `Outcome.points`, what does the migration script do if, for a given `gameDayId`, some rows on team A show 3 and others show 0? The `pickTeamPoints` defensive check exists because this already happens. The migration script must either refuse to proceed on inconsistency (safest), pick a majority, or flag for manual resolution. "Just backfill" is not a complete instruction.
+
+**3. The `PlayerRecord` rebuild is the acceptance test for the entire migration**, not just a downstream concern. Run the rebuild script against the new schema (`GameDay.result + Outcome.team`) before dropping `Outcome.points`, and compare the output leaderboard row-by-row against the current one. Discrepancies expose dirty data. Agreement means you can safely drop the old column. This rebuild script should be idempotent and runnable on demand — it becomes the canonical correctness check for all historical data.
+
+## The Recommendation
+
+Add `result GameResult?` (enum `A_WIN | DRAW | B_WIN`) directly to `GameDay`. Drop `Outcome.points` entirely. Derive player points at query time with a two-line function.
+
+Do not create a separate `GameResult` table unless unplayed `GameDay` rows are a real concern in your data model — if they are, the satellite table is cleaner, but check first.
+
+Do not lift scores. There are no scores. `Outcome.points` encodes three discrete states; a three-value enum on `GameDay` is the minimal sufficient representation.
+
+`PlayerRecord` stays as a precomputed aggregate — that denormalisation is legitimate for performance — but it must be rebuilt from `GameDay.result + Outcome.team`, not from `Outcome.points`. The rebuild logic must live in one place, be idempotent, and be the acceptance gate before the old column is dropped.
+
+The Contrarian is right that the data may be dirty, but wrong to conclude "do nothing." Dirty data is an argument for auditing before migrating, not for preserving the schema that allowed the data to become dirty.
+
+## The One Thing to Do First
+
+Run this query against production:
+
+```sql
+SELECT
+    o.gameDayId,
+    o.team,
+    COUNT(DISTINCT o.points) AS distinct_point_values,
+    GROUP_CONCAT(DISTINCT o.points) AS values_seen
+FROM Outcome o
+WHERE o.team IS NOT NULL
+GROUP BY o.gameDayId, o.team
+HAVING COUNT(DISTINCT o.points) &gt; 1;
+```
+
+This tells you exactly how many games have internally inconsistent `Outcome.points` values within the same team — the dirty data the `pickTeamPoints` check is defending against. The row count from this query determines everything else: whether you can backfill mechanically, whether you need manual remediation, and whether the historical data is clean enough to trust as the source of truth for a `GameDay.result` enum. Until you know that number, all schema design is speculation.</result>
+<usage><subagent_tokens>17273</subagent_tokens><tool_uses>0</tool_uses><duration_ms>31258</duration_ms></usage>
+</task-notification>

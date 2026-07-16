@@ -1,0 +1,27 @@
+<task-notification>
+<task-id>ad90574edd7797037</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/db50d4fb-08de-45e0-aeb4-6d68bf572aee/tasks/ad90574edd7797037.output</output-file>
+<status>completed</status>
+<summary>Agent "Implement page spec stubs batch C" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>All 8 files, 38 tests, all passing. Task complete — reporting back.
+
+## Summary (Batch C: task IDs #36-#43)
+
+All 8 files done, 38 tests total, all passing:
+
+| File | Tests | Notes |
+|---|---|---|
+| `auth/claim/page.vitest.spec.ts` | 4 | Clean match to todos |
+| `auth/reset-password/page.vitest.spec.ts` | 3 | Clean match; dropped an unneeded `vi.mock('next/navigation')` from the stub — page doesn't use it |
+| `countrymap/page.vitest.spec.ts` | 3 | **Fixed a real gap**: `src/services/CountrySupporter/__mocks__/index.ts` was missing `getAllWithCountryAndPlayer` entirely — the page would have thrown "not a function" under test. Added the mock fn. |
+| `curse/page.vitest.spec.ts` | 7 | Todo #5 ("parses the year from the first element of the catch-all param") doesn't match the code — `year` is a plain string search param, not a catch-all route param. Renamed to "parses the year search param into a number." Also added a `permanentRedirect` canonical-URL test (year=0 explicit) that wasn't in the todos but is a real branch in the source. |
+| `familytree/page.vitest.spec.ts` | 3 | Clean match |
+| `game/[id]/page.vitest.spec.ts` | 12 | **Fixed a real gap**: `src/services/Outcome/__mocks__/index.ts` was missing `getTeamPlayersByGameDay`. Also, 3 todos ("renders the previous/next game navigation link", "omits navigation links...") describe behavior that actually lives inside the mocked `GameDaySummary` child component, not this page — the page only *passes* `prevGameDay`/`nextGameDay` as props. Rewrote those as prop-passing assertions instead of literal link-rendering assertions, and split "admin + game enabled" into two separate tests since both conditions gate `GameResultForm`. |
+| `game/page.vitest.spec.ts` | 2 | Clean match |
+| `games/page.vitest.spec.ts` | 4 | Note: `unpackParams`'s canonical-URL check (`year !== undefined` vs. `curse`/`books` pages' `year ?` truthy check) means the default no-year-param request likely always triggers `permanentRedirect` in production — looks like a possible inconsistency with the sibling pages, but out of scope to fix; I avoided the default-year-param case in tests to sidestep asserting on what might be a latent bug. |
+
+Two shared `__mocks__` files were touched (`CountrySupporter`, `Outcome`) — both were strictly additive (new mock fn added, nothing removed/changed), so should be safe regardless of what the other concurrent forks touch, but flagging in case of a merge surprise.</result>
+<usage><subagent_tokens>404685</subagent_tokens><tool_uses>61</tool_uses><duration_ms>433459</duration_ms></usage>
+</task-notification>

@@ -1,0 +1,1 @@
+Typing positionStyles as Record<string, CSSProperties> loses type-safety for position and can hide missing keys. Prefer Record<NonNullable<DebugSizeOverlayProps['position']>, CSSProperties> (or a dedicated union type) so positionStyles[position] is guaranteed to exist at compile time.

@@ -1,0 +1,7 @@
+Now remove the lines
+
+        await page.waitForLoadState('networkidle');
+
+        await expect(page.getByLabel('Response')).toBeVisible();
+
+and replace them with a check that the 'submit response' button is enabled

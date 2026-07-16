@@ -1,0 +1,96 @@
+<task-notification>
+<task-id>a8353575d6de77aa5</task-id>
+<tool-use-id>toolu_01DyXeuHm4MRYsi5Hy4mrr6K</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/1a8073c5-beab-481d-b94e-e6e4a9b696ae/tasks/a8353575d6de77aa5.output</output-file>
+<status>completed</status>
+<summary>Agent "Schema consistency audit" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>Here are the findings:
+
+---
+
+**1. `GameDay.year` is derivable from `GameDay.date`**
+
+`year` is stored as an `Int` column but it's always `date.getFullYear()`. Every query that filters by year constructs a date range (`gte: new Date(Date.UTC(year, 0, 1))`), making the stored `year` redundant. A row with `date = 2025-03-15` and `year = 2024` is currently possible — and silently wrong. Better design: drop `year`, derive it from `date` in queries.
+
+---
+
+**2. `GameChat.gameDay` and `GameChat.player` are bare `Int` fields with no FK relation**
+
+```prisma
+model GameChat {
+    gameDay Int
+    player  Int
+```
+
+No Prisma `@relation` is defined. These are plain integers with no referential integrity. A `GameChat` row can reference a deleted `Player` or `GameDay` and the database won't object. They should have proper `@relation` fields and `@index` annotations like every other join in the schema.
+
+---
+
+**3. `User.playerId` has no FK relation**
+
+```prisma
+model User {
+    playerId Int?
+```
+
+`playerId` references `Player.id` in intent but no Prisma `@relation` is declared. A `User` can point to a non-existent player, and deleting a `Player` will leave stale `User.playerId` values. Since `User` is managed by Better Auth this requires care, but a relation can still be declared read-only.
+
+---
+
+**4. `Transaction` nullability has no per-type constraints**
+
+`playerId` and `gameDayId` are both `Int?` on `Transaction`. The `TransactionType` enum (`PlayerGameCharge`, `HallHire`, `PlayerPayment`, etc.) implicitly determines which combination of nulls is valid — a `HallHire` row probably requires `gameDayId` and forbids `playerId`, while `PlayerPayment` is the reverse — but no constraint enforces this. The schema allows a `PlayerGameCharge` with `playerId = null`, which is logically impossible. A DB-level check constraint (or at minimum Zod validation at write time) should enforce the valid (type, nullable-combo) pairings.
+
+---
+
+**5. `Outcome.goalie` vs `Player.goalie` — two sources of truth for goalie status**
+
+```prisma
+model Player  { goalie Boolean? }
+model Outcome { goalie Boolean? }
+```
+
+`Player.goalie` is a permanent designation; `Outcome.goalie` is per-game. The team display query sorts by `Outcome.goalie` (`orderBy: [{ goalie: 'desc' }]`), which is the right level — but nothing prevents them diverging, and it's unclear which is consulted when, or whether `Outcome.goalie` is ever derived from `Player.goalie` on write.
+
+---
+
+**6. `Outcome.responseInterval` is derived but stored**
+
+`responseInterval` is computed as the time between `GameDay.mailSent` and the player's response. It's stored as `Int?` on `Outcome`. If `GameDay.mailSent` were ever corrected, all `responseInterval` values for that game day would be stale without a recompute. This is less severe than `Outcome.points` because `mailSent` rarely changes, but the field is a derived value stored at the wrong level. The speedy calculation could instead work from the raw response timestamp minus `mailSent` if the response timestamp were stored instead.
+
+---
+
+**7. `PlayerRecord.averages` and `PlayerRecord.stalwart` are stored derivations**
+
+`averages = points / played` and `stalwart = round(100 * played / gamesPlayed)` are both computed and stored. They are always recalculated in `calculateYearPlayerRecords`, but if that function is interrupted or a bug changes the formula, the stored values silently diverge from what the formula would produce. These are lower-risk than `Outcome.points` because `PlayerRecord` is already understood to be a precomputed aggregate — but the distinction between "canonical stored value" and "derivable value" inside `PlayerRecord` is currently invisible.
+
+---
+
+**8. `Player.anonymous` and `Player.goalie` are nullable booleans where `null === false`**
+
+```prisma
+anonymous Boolean?
+goalie    Boolean?
+```
+
+The code treats `null` as "not anonymous" / "not a goalie". That's a tristate boolean where two of the three states have the same meaning. These should be `Boolean @default(false)` — null should not be a valid runtime state, and the schema should enforce it. Any query filtering on `goalie = true` currently silently excludes null rows, which is correct, but a future query filtering on `goalie != true` would incorrectly exclude null rows.
+
+---
+
+**9. `Player.joined`/`Player.finished` have no ordering constraint**
+
+No constraint prevents `finished &lt; joined`, or a player being active (`finished = null`) without ever having a `joined` date. The active-player query (`where: { finished: null }`) would include a brand-new `Player` row with no `joined` set, which may or may not be intended. A check constraint `joined IS NULL OR finished IS NULL OR finished &gt;= joined` would catch bad data at write time.
+
+---
+
+**10. `ContactEnquiry` state machine has no ordering constraint**
+
+```prisma
+verifiedAt  DateTime?
+deliveredAt DateTime?
+```
+
+The implicit state machine is: created → email verified → enquiry delivered. Nothing prevents `deliveredAt` being set before `verifiedAt`, which would mean a message was delivered before the sender's email was confirmed. A check constraint `deliveredAt IS NULL OR verifiedAt IS NOT NULL` would enforce the ordering.</result>
+<usage><subagent_tokens>117116</subagent_tokens><tool_uses>18</tool_uses><duration_ms>92303</duration_ms></usage>
+</task-notification>

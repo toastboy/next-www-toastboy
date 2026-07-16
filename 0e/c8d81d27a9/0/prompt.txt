@@ -1,0 +1,1 @@
+This assertion doesn't match the implementation: getEmailDataById passes extraEmails: { select: { email: true, verifiedAt: true }, orderBy: ... }. toHaveBeenCalledWith requires an exact deep match, so this test will fail unless you include the nested select (or switch to expect.objectContaining for less brittle matching).

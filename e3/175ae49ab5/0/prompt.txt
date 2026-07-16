@@ -1,0 +1,1 @@
+Show the trophies at the same time as the flags and badges, and revert the padding change

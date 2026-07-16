@@ -1,0 +1,1 @@
+TypeScript will fail if the project doesn’t provide the mdx/types declarations (commonly via the mdx package and/or @types/mdx, depending on your setup). Since only @mdx-js/* packages were added, double-check that mdx/types actually resolves in CI, and add the correct dependency or adjust the type import to a module that is guaranteed to exist in your dependency graph.

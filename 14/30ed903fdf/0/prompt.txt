@@ -1,0 +1,1 @@
+I see this warning: ''container-type' is not supported by Safari on iOS < 16.' How can I specify that I'm happy to forego that compatibility so that the warning no longer appears?

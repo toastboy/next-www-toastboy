@@ -1,0 +1,57 @@
+❯ npx chromatic --project-token=REDACTED
+
+Chromatic CLI v17.7.0
+https://www.chromatic.com/docs/cli
+
+  ✔ Authenticated with Chromatic
+    → Using project token '****************909e'
+  ✔ Retrieved git information
+    → Commit '1846740' on branch 'main'; found 1 parent build and 2 changed files
+  ✔ Collected Storybook metadata
+    → Build metadata gathered
+  ✔ Initialized build
+    → Build 793 initialized
+  ✔ Storybook built in 14 seconds
+    → View build log at /Volumes/Development/next-www-toastboy/build-storybook.log
+  ✔ Preparation complete
+    → Storybook files validated and prepared for upload
+  ✔ Publish complete in 3 seconds
+    → Uploaded 1 file (824 B), skipped 257 files
+  ✖ Verifying your Storybook
+    → Failed to publish build
+    Test your stories
+
+⚠ TurboSnap disabled due to file change
+Found a Storybook config change in .storybook/preview.tsx
+This was triggered by a change to node_modules/@floating-ui/react/dist/floating-ui.react.utils.mjs, which is imported by .storybook/preview.tsx:
+→ node_modules/@floating-ui/react/dist/floating-ui.react.utils.mjs
+→ node_modules/@floating-ui/react/dist/floating-ui.react.mjs
+→ node_modules/@mantine/core/esm/components/Tooltip/TooltipFloating/use-floating-tooltip.mjs
+→ node_modules/@mantine/core/esm/components/Tooltip/TooltipFloating/TooltipFloating.mjs
+→ node_modules/@mantine/core/esm/components/Tooltip/Tooltip.mjs
+→ node_modules/@mantine/core/esm/components/RingProgress/Curve/Curve.mjs
+→ node_modules/@mantine/core/esm/components/RingProgress/RingProgress.mjs
+→ node_modules/@mantine/core/esm/index.mjs
+→ .storybook/preview.tsx
+A full build is required because this file cannot be linked to any specific stories.
+ℹ Read more at https://www.chromatic.com/docs/turbosnap#how-it-works
+
+✖ Failed to extract stories from your Storybook
+This is usually a problem with your published Storybook, not with Chromatic.
+
+Build and open your Storybook locally and check the browser console for errors.
+Visit your published Storybook at https://69411119226a9bd347a172cd-vzbbbhcbtq.chromatic.com/
+The following error was encountered while running your Storybook:
+
+Error: checkGlobals is not defined
+ℹ Wrote Chromatic diagnostics report to chromatic-diagnostics.json
+Uploading metadata files automatically because TurboSnap was enabled
+Wrote /private/var/folders/cg/mbfc9_fj70l7dj4vgwty51tr0000gn/T/chromatic--75534-3wuUCgjZ2NWq/preview-stats.trimmed.json
+ℹ Uploading 7 metadata files to undefined.chromatic/
+- build-storybook.log
+- chromatic-diagnostics.json
+- chromatic.log
+- main.ts
+- preview-stats.trimmed.json
+- preview.tsx
+- index.html

@@ -1,0 +1,1 @@
+The exported useMDXComponents requires an argument, but some MDX runtimes/types expect it to be callable with no args (this is also why the test needs a bridge wrapper). To be compatible with both conventions, make the parameter optional with a default (e.g. components: MDXComponents = {}), so both useMDXComponents() and useMDXComponents(existing) work.

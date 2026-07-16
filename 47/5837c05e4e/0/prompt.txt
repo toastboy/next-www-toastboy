@@ -1,0 +1,1 @@
+Yes, but move the tests and rename them so they live alongside the files they're testing, as is done everywhere else in the repo.

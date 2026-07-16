@@ -1,0 +1,3 @@
+I've seen this code review comment: what's an /exhaustive assertion?
+
+The switch has no default/exhaustive assertion, so icon can become undefined if table ever includes a new value. Consider making the switch exhaustive (e.g. default that throws, or an assertNever(table)), so future schema additions fail loudly.

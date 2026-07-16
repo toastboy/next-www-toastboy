@@ -1,0 +1,1909 @@
+Sigh
+
+
+Running 67 tests using 1 worker
+◇ injected env (9) from .env.playwright // tip: ◈ secrets for agents [www.dotenvx.com]
+[1/67] [chromium] › e2e/auth-mocking.spec.ts:6:9 › Auth Mocking System › should show different 
+  1) [chromium] › e2e/auth-mocking.spec.ts:6:9 › Auth Mocking System › should show different content for different auth states 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/admin/users
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/admin/users", waiting until "load"
+
+
+       7 |         // Test as guest (no auth)
+       8 |         await asGuest(page);
+    >  9 |         await page.goto('/footy/admin/users');
+         |                    ^
+      10 |
+      11 |         // Should be redirected or show login form
+      12 |         await mustBeLoggedInAsAdmin(page);
+        at /Volumes/Development/next-www-toastboy/e2e/auth-mocking.spec.ts:9:20
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/auth-mocking-Auth-Mocking--7bb0d-t-for-different-auth-states-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/auth-mocking-Auth-Mocking--7bb0d-t-for-different-auth-states-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/auth-mocking-Auth-Mocking--7bb0d-t-for-different-auth-states-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ◈ secrets for agents [www.dotenvx.com]
+[2/67] [chromium] › e2e/auth-mocking.spec.ts:30:9 › Auth Mocking System › should allow switchin
+  2) [chromium] › e2e/auth-mocking.spec.ts:30:9 › Auth Mocking System › should allow switching between auth states 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/profile
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/profile", waiting until "load"
+
+
+      31 |         // Start as guest
+      32 |         await asGuest(page);
+    > 33 |         await page.goto('/footy/profile');
+         |                    ^
+      34 |         await mustBeLoggedIn(page);
+      35 |
+      36 |         // Switch to user
+        at /Volumes/Development/next-www-toastboy/e2e/auth-mocking.spec.ts:33:20
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/auth-mocking-Auth-Mocking--224dc-itching-between-auth-states-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/auth-mocking-Auth-Mocking--224dc-itching-between-auth-states-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/auth-mocking-Auth-Mocking--224dc-itching-between-auth-states-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+[3/67] [chromium] › e2e/badpage.spec.ts:3:5 › check what happens when a nonexistent page is req
+  3) [chromium] › e2e/badpage.spec.ts:3:5 › check what happens when a nonexistent page is requested 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/nonexistentpage
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/nonexistentpage", waiting until "load"
+
+
+      2 |
+      3 | test('check what happens when a nonexistent page is requested', async ({ page }) => {
+    > 4 |     const response = await page.goto('/footy/nonexistentpage');
+        |                                 ^
+      5 |     expect(response?.ok()).toBeFalsy();
+      6 | });
+      7 |
+        at /Volumes/Development/next-www-toastboy/e2e/badpage.spec.ts:4:33
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/badpage-check-what-happens-0782e-nexistent-page-is-requested-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/badpage-check-what-happens-0782e-nexistent-page-is-requested-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/badpage-check-what-happens-0782e-nexistent-page-is-requested-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+[4/67] [chromium] › e2e/drinkers.spec.ts:6:9 › drinkers admin page › denies access to guest use
+  4) [chromium] › e2e/drinkers.spec.ts:6:9 › drinkers admin page › denies access to guest users ────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/admin/drinkers
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/admin/drinkers", waiting until "domcontentloaded"
+
+
+       at utils/auth.ts:69
+
+      67 |     await setAuthState(page, 'none');
+      68 |     if (uri) {
+    > 69 |         await page.goto(uri, { waitUntil: 'domcontentloaded' });
+         |                    ^
+      70 |     }
+      71 | }
+      72 |
+        at asGuest (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:69:20)
+        at /Volumes/Development/next-www-toastboy/e2e/drinkers.spec.ts:7:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/drinkers-drinkers-admin-page-denies-access-to-guest-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/drinkers-drinkers-admin-page-denies-access-to-guest-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/drinkers-drinkers-admin-page-denies-access-to-guest-users-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+[5/67] [chromium] › e2e/drinkers.spec.ts:12:9 › drinkers admin page › denies access to regular 
+  5) [chromium] › e2e/drinkers.spec.ts:12:9 › drinkers admin page › denies access to regular users ─
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/admin/drinkers
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/admin/drinkers", waiting until "domcontentloaded"
+
+
+       at utils/auth.ts:85
+
+      83 |     await setAuthState(page, 'user', user);
+      84 |     if (uri) {
+    > 85 |         await page.goto(uri, { waitUntil: 'domcontentloaded' });
+         |                    ^
+      86 |     }
+      87 | }
+      88 |
+        at asUser (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:85:20)
+        at /Volumes/Development/next-www-toastboy/e2e/drinkers.spec.ts:13:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/drinkers-drinkers-admin-page-denies-access-to-regular-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/drinkers-drinkers-admin-page-denies-access-to-regular-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/drinkers-drinkers-admin-page-denies-access-to-regular-users-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ enable debugging { debug: true }
+[6/67] [chromium] › e2e/drinkers.spec.ts:18:9 › drinkers admin page › allows access to admin us
+  6) [chromium] › e2e/drinkers.spec.ts:18:9 › drinkers admin page › allows access to admin users and shows drinkers admin interface 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/admin/drinkers
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/admin/drinkers", waiting until "domcontentloaded"
+
+
+       at utils/auth.ts:101
+
+       99 |     await setAuthState(page, 'admin', user);
+      100 |     if (uri) {
+    > 101 |         await page.goto(uri, { waitUntil: 'domcontentloaded' });
+          |                    ^
+      102 |     }
+      103 | }
+      104 |
+        at asAdmin (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:101:20)
+        at /Volumes/Development/next-www-toastboy/e2e/drinkers.spec.ts:19:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/drinkers-drinkers-admin-pa-50672-ws-drinkers-admin-interface-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/drinkers-drinkers-admin-pa-50672-ws-drinkers-admin-interface-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/drinkers-drinkers-admin-pa-50672-ws-drinkers-admin-interface-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌁ auth for agents [www.vestauth.com]
+  7) [chromium] › e2e/fixtures.spec.ts:3:5 › fixtures page ─────────────────────────────────────────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/fixtures
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/fixtures", waiting until "load"
+
+
+      2 |
+      3 | test('fixtures page', async ({ page }) => {
+    > 4 |     const response = await page.goto('/footy/fixtures');
+        |                                 ^
+      5 |     await expect(page).toHaveURL(/.*games.*/);
+      6 |     expect(response?.ok()).toBeTruthy();
+      7 | });
+        at /Volumes/Development/next-www-toastboy/e2e/fixtures.spec.ts:4:33
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/fixtures-fixtures-page-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/fixtures-fixtures-page-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/fixtures-fixtures-page-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌁ auth for agents [www.vestauth.com]
+  8) [chromium] › e2e/footy.spec.ts:3:5 › footy page renders crest, info link, and copyright ───────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy", waiting until "load"
+
+
+      2 |
+      3 | test('footy page renders crest, info link, and copyright', async ({ page }) => {
+    > 4 |     const response = await page.goto('/footy');
+        |                                 ^
+      5 |     expect(response?.ok()).toBeTruthy();
+      6 |     await expect(page).toHaveTitle(/Toastboy FC/);
+      7 |
+        at /Volumes/Development/next-www-toastboy/e2e/footy.spec.ts:4:33
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/footy-footy-page-renders-crest-info-link-and-copyright-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/footy-footy-page-renders-crest-info-link-and-copyright-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/footy-footy-page-renders-crest-info-link-and-copyright-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+  9) [chromium] › e2e/footy.spec.ts:21:5 › footy info link navigates to /footy/info ────────────────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy", waiting until "load"
+
+
+      20 |
+      21 | test('footy info link navigates to /footy/info', async ({ page }) => {
+    > 22 |     await page.goto('/footy');
+         |                ^
+      23 |     await page.getByRole('link', { name: 'Information about Toastboy FC' }).click();
+      24 |     await expect(page).toHaveURL(/\/footy\/info$/);
+      25 | });
+        at /Volumes/Development/next-www-toastboy/e2e/footy.spec.ts:22:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/footy-footy-info-link-navigates-to-footy-info-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/footy-footy-info-link-navigates-to-footy-info-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/footy-footy-info-link-navigates-to-footy-info-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ enable debugging { debug: true }
+  10) [chromium] › e2e/games.spec.ts:3:5 › games list page ─────────────────────────────────────────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/games
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/games", waiting until "load"
+
+
+      2 |
+      3 | test('games list page', async ({ page }) => {
+    > 4 |     await page.goto('/footy/games');
+        |                ^
+      5 |
+      6 |
+      7 |     await expect(page).toHaveURL(/.*games/);
+        at /Volumes/Development/next-www-toastboy/e2e/games.spec.ts:4:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/games-games-list-page-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/games-games-list-page-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/games-games-list-page-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ◈ encrypted .env [www.dotenvx.com]
+[11/67] [chromium] › e2e/health.spec.ts:9:9 › /api/health endpoint › should return healthy stat
+  11) [chromium] › e2e/health.spec.ts:9:9 › /api/health endpoint › should return healthy status with 200 when application and database are running 
+
+    Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3002
+    Call log:
+      - → GET http://127.0.0.1:3002/api/health
+        - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.7778.96 Safari/537.36
+        - accept: */*
+        - accept-encoding: gzip,deflate,br
+
+
+      10 |         request,
+      11 |     }) => {
+    > 12 |         const response = await request.get('/api/health');
+         |                                        ^
+      13 |         const json = HealthResponseSchema.parse(await response.json());
+      14 |
+      15 |         expect(response.status()).toBe(200);
+        at /Volumes/Development/next-www-toastboy/e2e/health.spec.ts:12:40
+
+    Error Context: test-results/health--api-health-endpoin-13a30-on-and-database-are-running-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+[12/67] [chromium] › e2e/health.spec.ts:24:9 › /api/health endpoint › should respond quickly (w
+  12) [chromium] › e2e/health.spec.ts:24:9 › /api/health endpoint › should respond quickly (within reasonable time) 
+
+    Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3002
+    Call log:
+      - → GET http://127.0.0.1:3002/api/health
+        - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.7778.96 Safari/537.36
+        - accept: */*
+        - accept-encoding: gzip,deflate,br
+
+
+      24 |     test('should respond quickly (within reasonable time)', async ({ request }) => {
+      25 |         const startTime = Date.now();
+    > 26 |         const response = await request.get('/api/health');
+         |                                        ^
+      27 |         const endTime = Date.now();
+      28 |         const duration = endTime - startTime;
+      29 |
+        at /Volumes/Development/next-www-toastboy/e2e/health.spec.ts:26:40
+
+    Error Context: test-results/health--api-health-endpoin-36a9c-kly-within-reasonable-time--chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ◈ secrets for agents [www.dotenvx.com]
+[13/67] [chromium] › e2e/health.spec.ts:35:9 › /api/health endpoint › should be accessible with
+  13) [chromium] › e2e/health.spec.ts:35:9 › /api/health endpoint › should be accessible without authentication 
+
+    Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:3002
+    Call log:
+      - → GET http://127.0.0.1:3002/api/health
+        - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/148.0.7778.96 Safari/537.36
+        - accept: */*
+        - accept-encoding: gzip,deflate,br
+
+
+      35 |     test('should be accessible without authentication', async ({ request }) => {
+      36 |         // Health check should not require authentication
+    > 37 |         const response = await request.get('/api/health');
+         |                                        ^
+      38 |
+      39 |         // Should not redirect or return 401/403
+      40 |         expect(response.status()).not.toBe(401);
+        at /Volumes/Development/next-www-toastboy/e2e/health.spec.ts:37:40
+
+    Error Context: test-results/health--api-health-endpoin-8627e-ible-without-authentication-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+  14) [chromium] › e2e/homepage.links.spec.ts:3:5 › enumerate homepage links ───────────────────────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/
+    Call log:
+      - navigating to "http://127.0.0.1:3002/", waiting until "load"
+
+
+      2 |
+      3 | test('enumerate homepage links', async ({ page }) => {
+    > 4 |     await page.goto('/');
+        |                ^
+      5 |     await page.waitForURL('**/footy');
+      6 |
+      7 |     await expect(page).toHaveTitle(/Toastboy FC/);
+        at /Volumes/Development/next-www-toastboy/e2e/homepage.links.spec.ts:4:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/homepage.links-enumerate-homepage-links-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/homepage.links-enumerate-homepage-links-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/homepage.links-enumerate-homepage-links-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ◈ secrets for agents [www.dotenvx.com]
+  15) [chromium] › e2e/homepage.spec.ts:3:5 › homepage has title and correct links ─────────────────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/
+    Call log:
+      - navigating to "http://127.0.0.1:3002/", waiting until "load"
+
+
+      2 |
+      3 | test('homepage has title and correct links', async ({ page }) => {
+    > 4 |     await page.goto('/');
+        |                ^
+      5 |     await page.waitForURL('**/footy');
+      6 |
+      7 |     await expect(page).toHaveTitle(/Toastboy FC/);
+        at /Volumes/Development/next-www-toastboy/e2e/homepage.spec.ts:4:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/homepage-homepage-has-title-and-correct-links-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/homepage-homepage-has-title-and-correct-links-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/homepage-homepage-has-title-and-correct-links-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+  16) [chromium] › e2e/homepage.spec.ts:36:5 › homepage shows table leaders ────────────────────────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/
+    Call log:
+      - navigating to "http://127.0.0.1:3002/", waiting until "load"
+
+
+      35 |
+      36 | test('homepage shows table leaders', async ({ page }) => {
+    > 37 |     await page.goto('/');
+         |                ^
+      38 |     await page.waitForURL('**/footy');
+      39 |
+      40 |     await expect(page.getByRole('heading', { name: 'Table Leaders' })).toBeVisible();
+        at /Volumes/Development/next-www-toastboy/e2e/homepage.spec.ts:37:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/homepage-homepage-shows-table-leaders-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/homepage-homepage-shows-table-leaders-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/homepage-homepage-shows-table-leaders-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ override existing { override: true }
+  17) [chromium] › e2e/info.spec.ts:5:5 › info page ────────────────────────────────────────────────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/info
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/info", waiting until "load"
+
+
+      4 |
+      5 | test('info page', async ({ page }) => {
+    > 6 |     const response = await page.goto('/footy/info');
+        |                                 ^
+      7 |     expect(response?.ok()).toBeTruthy();
+      8 |     await expect(page).toHaveURL(/.*info/);
+      9 |     await expect(page).toHaveTitle(/Toastboy FC/);
+        at /Volumes/Development/next-www-toastboy/e2e/info.spec.ts:6:33
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/info-info-page-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/info-info-page-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/info-info-page-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ◈ encrypted .env [www.dotenvx.com]
+[18/67] [chromium] › e2e/info.spec.ts:20:9 › EnquiryForm › shows validation errors on empty sub
+  18) [chromium] › e2e/info.spec.ts:20:9 › EnquiryForm › shows validation errors on empty submit ───
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/info
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/info", waiting until "load"
+
+
+      19 |
+      20 |     test('shows validation errors on empty submit', async ({ page }) => {
+    > 21 |         await page.goto('/footy/info');
+         |                    ^
+      22 |         await page.locator('form[data-hydrated]').waitFor();
+      23 |
+      24 |         const submitButton = page.getByRole('button', { name: 'Send message' });
+        at /Volumes/Development/next-www-toastboy/e2e/info.spec.ts:21:20
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-validation-errors-on-empty-submit-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-validation-errors-on-empty-submit-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/info-EnquiryForm-shows-validation-errors-on-empty-submit-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ◈ secrets for agents [www.dotenvx.com]
+  19) [chromium] › e2e/info.spec.ts:33:9 › EnquiryForm › shows invalid email error on blur ─────────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/info
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/info", waiting until "load"
+
+
+      32 |
+      33 |     test('shows invalid email error on blur', async ({ page }) => {
+    > 34 |         await page.goto('/footy/info');
+         |                    ^
+      35 |         await page.locator('form[data-hydrated]').waitFor();
+      36 |
+      37 |         const emailInput = page.getByRole('textbox', { name: 'Email' });
+        at /Volumes/Development/next-www-toastboy/e2e/info.spec.ts:34:20
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-invalid-email-error-on-blur-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-invalid-email-error-on-blur-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/info-EnquiryForm-shows-invalid-email-error-on-blur-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+[20/67] [chromium] › e2e/info.spec.ts:45:9 › EnquiryForm › shows verified notification and clea
+  20) [chromium] › e2e/info.spec.ts:45:9 › EnquiryForm › shows verified notification and cleans up URL 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/info?enquiry=verified
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/info?enquiry=verified", waiting until "load"
+
+
+      44 |
+      45 |     test('shows verified notification and cleans up URL', async ({ page }) => {
+    > 46 |         await page.goto('/footy/info?enquiry=verified');
+         |                    ^
+      47 |         await page.locator('form[data-hydrated]').waitFor();
+      48 |         await expect(page.getByText('Email verified')).toBeVisible();
+      49 |         await expect(page).toHaveURL(/\/footy\/info$/);
+        at /Volumes/Development/next-www-toastboy/e2e/info.spec.ts:46:20
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-ver-a33a8-ification-and-cleans-up-URL-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-ver-a33a8-ification-and-cleans-up-URL-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/info-EnquiryForm-shows-ver-a33a8-ification-and-cleans-up-URL-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌁ auth for agents [www.vestauth.com]
+[21/67] [chromium] › e2e/info.spec.ts:52:9 › EnquiryForm › shows error notification and cleans 
+  21) [chromium] › e2e/info.spec.ts:52:9 › EnquiryForm › shows error notification and cleans up URL 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/info?enquiry=error
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/info?enquiry=error", waiting until "load"
+
+
+      51 |
+      52 |     test('shows error notification and cleans up URL', async ({ page }) => {
+    > 53 |         await page.goto('/footy/info?enquiry=error');
+         |                    ^
+      54 |         await page.locator('form[data-hydrated]').waitFor();
+      55 |         await expect(page.getByText('Verification failed')).toBeVisible();
+      56 |         await expect(page).toHaveURL(/\/footy\/info$/);
+        at /Volumes/Development/next-www-toastboy/e2e/info.spec.ts:53:20
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-error-notification-and-cleans-up-URL-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-error-notification-and-cleans-up-URL-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/info-EnquiryForm-shows-error-notification-and-cleans-up-URL-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ◈ secrets for agents [www.dotenvx.com]
+[22/67] [chromium] › e2e/info.spec.ts:70:13 › EnquiryForm › email flow › submits form and shows
+  22) [chromium] › e2e/info.spec.ts:70:13 › EnquiryForm › email flow › submits form and shows confirmation notification 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/info
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/info", waiting until "load"
+
+
+      69 |
+      70 |         test('submits form and shows confirmation notification', async ({ page, request }) => {
+    > 71 |             await page.goto('/footy/info');
+         |                        ^
+      72 |             await page.locator('form[data-hydrated]').waitFor();
+      73 |
+      74 |             await page.getByRole('textbox', { name: 'Name' }).fill('Test User');
+        at /Volumes/Development/next-www-toastboy/e2e/info.spec.ts:71:24
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-email-flo-d6c65-s-confirmation-notification-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-email-flo-d6c65-s-confirmation-notification-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/info-EnquiryForm-email-flo-d6c65-s-confirmation-notification-chromium/error-context.md
+
+[23/67] [chromium] › e2e/info.spec.ts:88:13 › EnquiryForm › email flow › completes full verific
+◇ injected env (9) from .env.playwright // tip: ⌘ override existing { override: true }
+[24/67] [chromium] › e2e/layout.spec.ts:36:9 › Shell nav — structure › burger is visible only b
+  23) [chromium] › e2e/layout.spec.ts:36:9 › Shell nav — structure › burger is visible only below the sm breakpoint 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/info
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/info", waiting until "domcontentloaded"
+
+
+       at utils/auth.ts:69
+
+      67 |     await setAuthState(page, 'none');
+      68 |     if (uri) {
+    > 69 |         await page.goto(uri, { waitUntil: 'domcontentloaded' });
+         |                    ^
+      70 |     }
+      71 | }
+      72 |
+        at asGuest (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:69:20)
+        at /Volumes/Development/next-www-toastboy/e2e/layout.spec.ts:33:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/layout-Shell-nav-—-structu-59817-nly-below-the-sm-breakpoint-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/layout-Shell-nav-—-structu-59817-nly-below-the-sm-breakpoint-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/layout-Shell-nav-—-structu-59817-nly-below-the-sm-breakpoint-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌁ auth for agents [www.vestauth.com]
+[25/67] [chromium] › e2e/layout.spec.ts:45:9 › Shell nav — structure › sidebar nav is in the vi
+  24) [chromium] › e2e/layout.spec.ts:45:9 › Shell nav — structure › sidebar nav is in the viewport by default only at sm and above 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/info
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/info", waiting until "domcontentloaded"
+
+
+       at utils/auth.ts:69
+
+      67 |     await setAuthState(page, 'none');
+      68 |     if (uri) {
+    > 69 |         await page.goto(uri, { waitUntil: 'domcontentloaded' });
+         |                    ^
+      70 |     }
+      71 | }
+      72 |
+        at asGuest (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:69:20)
+        at /Volumes/Development/next-www-toastboy/e2e/layout.spec.ts:33:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/layout-Shell-nav-—-structu-e1a70-efault-only-at-sm-and-above-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/layout-Shell-nav-—-structu-e1a70-efault-only-at-sm-and-above-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/layout-Shell-nav-—-structu-e1a70-efault-only-at-sm-and-above-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ◈ encrypted .env [www.dotenvx.com]
+[26/67] [chromium] › e2e/layout.spec.ts:55:9 › Shell nav — burger interaction › burger toggles 
+[27/67] [chromium] › e2e/layout.spec.ts:72:9 › Shell nav — burger interaction › sidebar closes 
+  25) [chromium] › e2e/layout.spec.ts:89:13 › No horizontal overflow › /footy/info ─────────────────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/info
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/info", waiting until "domcontentloaded"
+
+
+       at utils/auth.ts:69
+
+      67 |     await setAuthState(page, 'none');
+      68 |     if (uri) {
+    > 69 |         await page.goto(uri, { waitUntil: 'domcontentloaded' });
+         |                    ^
+      70 |     }
+      71 | }
+      72 |
+        at asGuest (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:69:20)
+        at /Volumes/Development/next-www-toastboy/e2e/layout.spec.ts:97:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/layout-No-horizontal-overflow-footy-info-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/layout-No-horizontal-overflow-footy-info-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/layout-No-horizontal-overflow-footy-info-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌁ auth for agents [www.vestauth.com]
+  26) [chromium] › e2e/layout.spec.ts:89:13 › No horizontal overflow › /footy/games ────────────────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/games
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/games", waiting until "domcontentloaded"
+
+
+       at utils/auth.ts:69
+
+      67 |     await setAuthState(page, 'none');
+      68 |     if (uri) {
+    > 69 |         await page.goto(uri, { waitUntil: 'domcontentloaded' });
+         |                    ^
+      70 |     }
+      71 | }
+      72 |
+        at asGuest (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:69:20)
+        at /Volumes/Development/next-www-toastboy/e2e/layout.spec.ts:97:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/layout-No-horizontal-overflow-footy-games-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/layout-No-horizontal-overflow-footy-games-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/layout-No-horizontal-overflow-footy-games-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ suppress logs { quiet: true }
+  27) [chromium] › e2e/layout.spec.ts:89:13 › No horizontal overflow › /footy/table/points ─────────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/table/points
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/table/points", waiting until "domcontentloaded"
+
+
+       at utils/auth.ts:69
+
+      67 |     await setAuthState(page, 'none');
+      68 |     if (uri) {
+    > 69 |         await page.goto(uri, { waitUntil: 'domcontentloaded' });
+         |                    ^
+      70 |     }
+      71 | }
+      72 |
+        at asGuest (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:69:20)
+        at /Volumes/Development/next-www-toastboy/e2e/layout.spec.ts:97:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/layout-No-horizontal-overflow-footy-table-points-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/layout-No-horizontal-overflow-footy-table-points-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/layout-No-horizontal-overflow-footy-table-points-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ enable debugging { debug: true }
+  28) [chromium] › e2e/layout.spec.ts:89:13 › No horizontal overflow › /footy/turnout ──────────────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/turnout
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/turnout", waiting until "domcontentloaded"
+
+
+       at utils/auth.ts:69
+
+      67 |     await setAuthState(page, 'none');
+      68 |     if (uri) {
+    > 69 |         await page.goto(uri, { waitUntil: 'domcontentloaded' });
+         |                    ^
+      70 |     }
+      71 | }
+      72 |
+        at asGuest (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:69:20)
+        at /Volumes/Development/next-www-toastboy/e2e/layout.spec.ts:97:13
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/layout-No-horizontal-overflow-footy-turnout-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/layout-No-horizontal-overflow-footy-turnout-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/layout-No-horizontal-overflow-footy-turnout-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ enable debugging { debug: true }
+[32/67] [chromium] › e2e/mailout.spec.ts:7:9 › Mail active players › denies access to guest use
+  29) [chromium] › e2e/mailout.spec.ts:7:9 › Mail active players › denies access to guest users ────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/mailout
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/mailout", waiting until "domcontentloaded"
+
+
+       at utils/auth.ts:69
+
+      67 |     await setAuthState(page, 'none');
+      68 |     if (uri) {
+    > 69 |         await page.goto(uri, { waitUntil: 'domcontentloaded' });
+         |                    ^
+      70 |     }
+      71 | }
+      72 |
+        at asGuest (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:69:20)
+        at /Volumes/Development/next-www-toastboy/e2e/mailout.spec.ts:8:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/mailout-Mail-active-players-denies-access-to-guest-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/mailout-Mail-active-players-denies-access-to-guest-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/mailout-Mail-active-players-denies-access-to-guest-users-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ override existing { override: true }
+  30) [chromium] › e2e/mailout.spec.ts:13:9 › Mail active players › mail active players ────────────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/mailout
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/mailout", waiting until "domcontentloaded"
+
+
+       at utils/auth.ts:85
+
+      83 |     await setAuthState(page, 'user', user);
+      84 |     if (uri) {
+    > 85 |         await page.goto(uri, { waitUntil: 'domcontentloaded' });
+         |                    ^
+      86 |     }
+      87 | }
+      88 |
+        at asUser (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:85:20)
+        at /Volumes/Development/next-www-toastboy/e2e/mailout.spec.ts:17:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/mailout-Mail-active-players-mail-active-players-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/mailout-Mail-active-players-mail-active-players-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/mailout-Mail-active-players-mail-active-players-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+  31) [chromium] › e2e/money.spec.ts:6:9 › Money admin page › denies access to guest users ─────────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/admin/money
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/admin/money", waiting until "domcontentloaded"
+
+
+       at utils/auth.ts:69
+
+      67 |     await setAuthState(page, 'none');
+      68 |     if (uri) {
+    > 69 |         await page.goto(uri, { waitUntil: 'domcontentloaded' });
+         |                    ^
+      70 |     }
+      71 | }
+      72 |
+        at asGuest (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:69:20)
+        at /Volumes/Development/next-www-toastboy/e2e/money.spec.ts:7:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/money-Money-admin-page-denies-access-to-guest-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/money-Money-admin-page-denies-access-to-guest-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/money-Money-admin-page-denies-access-to-guest-users-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+  32) [chromium] › e2e/money.spec.ts:11:9 › Money admin page › denies access to regular users ──────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/admin/money
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/admin/money", waiting until "domcontentloaded"
+
+
+       at utils/auth.ts:85
+
+      83 |     await setAuthState(page, 'user', user);
+      84 |     if (uri) {
+    > 85 |         await page.goto(uri, { waitUntil: 'domcontentloaded' });
+         |                    ^
+      86 |     }
+      87 | }
+      88 |
+        at asUser (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:85:20)
+        at /Volumes/Development/next-www-toastboy/e2e/money.spec.ts:12:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/money-Money-admin-page-denies-access-to-regular-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/money-Money-admin-page-denies-access-to-regular-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/money-Money-admin-page-denies-access-to-regular-users-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ enable debugging { debug: true }
+[36/67] [chromium] › e2e/money.spec.ts:16:9 › Money admin page › allows access to admin users a
+  33) [chromium] › e2e/money.spec.ts:16:9 › Money admin page › allows access to admin users and shows money admin interface 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/admin/money
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/admin/money", waiting until "domcontentloaded"
+
+
+       at utils/auth.ts:101
+
+       99 |     await setAuthState(page, 'admin', user);
+      100 |     if (uri) {
+    > 101 |         await page.goto(uri, { waitUntil: 'domcontentloaded' });
+          |                    ^
+      102 |     }
+      103 | }
+      104 |
+        at asAdmin (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:101:20)
+        at /Volumes/Development/next-www-toastboy/e2e/money.spec.ts:17:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/money-Money-admin-page-all-72262-shows-money-admin-interface-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/money-Money-admin-page-all-72262-shows-money-admin-interface-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/money-Money-admin-page-all-72262-shows-money-admin-interface-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ◈ encrypted .env [www.dotenvx.com]
+[37/67] [chromium] › e2e/moregames.spec.ts:6:9 › More Games admin page › denies access to guest
+  34) [chromium] › e2e/moregames.spec.ts:6:9 › More Games admin page › denies access to guest users 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/moregames
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/moregames", waiting until "domcontentloaded"
+
+
+       at utils/auth.ts:69
+
+      67 |     await setAuthState(page, 'none');
+      68 |     if (uri) {
+    > 69 |         await page.goto(uri, { waitUntil: 'domcontentloaded' });
+         |                    ^
+      70 |     }
+      71 | }
+      72 |
+        at asGuest (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:69:20)
+        at /Volumes/Development/next-www-toastboy/e2e/moregames.spec.ts:7:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/moregames-More-Games-admin-page-denies-access-to-guest-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/moregames-More-Games-admin-page-denies-access-to-guest-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/moregames-More-Games-admin-page-denies-access-to-guest-users-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ suppress logs { quiet: true }
+[38/67] [chromium] › e2e/moregames.spec.ts:12:9 › More Games admin page › denies access to regu
+  35) [chromium] › e2e/moregames.spec.ts:12:9 › More Games admin page › denies access to regular users 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/moregames
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/moregames", waiting until "domcontentloaded"
+
+
+       at utils/auth.ts:85
+
+      83 |     await setAuthState(page, 'user', user);
+      84 |     if (uri) {
+    > 85 |         await page.goto(uri, { waitUntil: 'domcontentloaded' });
+         |                    ^
+      86 |     }
+      87 | }
+      88 |
+        at asUser (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:85:20)
+        at /Volumes/Development/next-www-toastboy/e2e/moregames.spec.ts:13:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/moregames-More-Games-admin-89835-ies-access-to-regular-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/moregames-More-Games-admin-89835-ies-access-to-regular-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/moregames-More-Games-admin-89835-ies-access-to-regular-users-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌁ auth for agents [www.vestauth.com]
+[39/67] [chromium] › e2e/moregames.spec.ts:18:9 › More Games admin page › allows access to admi
+  36) [chromium] › e2e/moregames.spec.ts:18:9 › More Games admin page › allows access to admin users and shows moregames admin interface 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/moregames
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/moregames", waiting until "domcontentloaded"
+
+
+       at utils/auth.ts:101
+
+       99 |     await setAuthState(page, 'admin', user);
+      100 |     if (uri) {
+    > 101 |         await page.goto(uri, { waitUntil: 'domcontentloaded' });
+          |                    ^
+      102 |     }
+      103 | }
+      104 |
+        at asAdmin (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:101:20)
+        at /Volumes/Development/next-www-toastboy/e2e/moregames.spec.ts:19:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/moregames-More-Games-admin-91933-s-moregames-admin-interface-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/moregames-More-Games-admin-91933-s-moregames-admin-interface-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/moregames-More-Games-admin-91933-s-moregames-admin-interface-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ override existing { override: true }
+  37) [chromium] › e2e/newgame.spec.ts:7:9 › New game flow › denies access to guest users ──────────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/admin/newgame
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/admin/newgame", waiting until "domcontentloaded"
+
+
+       at utils/auth.ts:69
+
+      67 |     await setAuthState(page, 'none');
+      68 |     if (uri) {
+    > 69 |         await page.goto(uri, { waitUntil: 'domcontentloaded' });
+         |                    ^
+      70 |     }
+      71 | }
+      72 |
+        at asGuest (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:69:20)
+        at /Volumes/Development/next-www-toastboy/e2e/newgame.spec.ts:8:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/newgame-New-game-flow-denies-access-to-guest-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/newgame-New-game-flow-denies-access-to-guest-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/newgame-New-game-flow-denies-access-to-guest-users-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ enable debugging { debug: true }
+  38) [chromium] › e2e/newgame.spec.ts:13:9 › New game flow › denies access to regular users ───────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/admin/newgame
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/admin/newgame", waiting until "domcontentloaded"
+
+
+       at utils/auth.ts:85
+
+      83 |     await setAuthState(page, 'user', user);
+      84 |     if (uri) {
+    > 85 |         await page.goto(uri, { waitUntil: 'domcontentloaded' });
+         |                    ^
+      86 |     }
+      87 | }
+      88 |
+        at asUser (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:85:20)
+        at /Volumes/Development/next-www-toastboy/e2e/newgame.spec.ts:14:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/newgame-New-game-flow-denies-access-to-regular-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/newgame-New-game-flow-denies-access-to-regular-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/newgame-New-game-flow-denies-access-to-regular-users-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ enable debugging { debug: true }
+[42/67] [chromium] › e2e/newgame.spec.ts:19:9 › New game flow › allows admins to send invitatio
+  39) [chromium] › e2e/newgame.spec.ts:19:9 › New game flow › allows admins to send invitations and players can respond 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/admin/newgame
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/admin/newgame", waiting until "domcontentloaded"
+
+
+       at utils/auth.ts:101
+
+       99 |     await setAuthState(page, 'admin', user);
+      100 |     if (uri) {
+    > 101 |         await page.goto(uri, { waitUntil: 'domcontentloaded' });
+          |                    ^
+      102 |     }
+      103 | }
+      104 |
+        at asAdmin (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:101:20)
+        at /Volumes/Development/next-www-toastboy/e2e/newgame.spec.ts:23:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/newgame-New-game-flow-allo-28a32-ons-and-players-can-respond-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/newgame-New-game-flow-allo-28a32-ons-and-players-can-respond-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/newgame-New-game-flow-allo-28a32-ons-and-players-can-respond-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ◈ secrets for agents [www.dotenvx.com]
+[43/67] [chromium] › e2e/newplayer.spec.ts:17:9 › New Player admin page › denies access to gues
+  40) [chromium] › e2e/newplayer.spec.ts:17:9 › New Player admin page › denies access to guest users 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/newplayer
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/newplayer", waiting until "domcontentloaded"
+
+
+       at utils/auth.ts:69
+
+      67 |     await setAuthState(page, 'none');
+      68 |     if (uri) {
+    > 69 |         await page.goto(uri, { waitUntil: 'domcontentloaded' });
+         |                    ^
+      70 |     }
+      71 | }
+      72 |
+        at asGuest (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:69:20)
+        at /Volumes/Development/next-www-toastboy/e2e/newplayer.spec.ts:18:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/newplayer-New-Player-admin-page-denies-access-to-guest-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/newplayer-New-Player-admin-page-denies-access-to-guest-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/newplayer-New-Player-admin-page-denies-access-to-guest-users-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+[44/67] [chromium] › e2e/newplayer.spec.ts:23:9 › New Player admin page › denies access to regu
+  41) [chromium] › e2e/newplayer.spec.ts:23:9 › New Player admin page › denies access to regular users 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/newplayer
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/newplayer", waiting until "domcontentloaded"
+
+
+       at utils/auth.ts:85
+
+      83 |     await setAuthState(page, 'user', user);
+      84 |     if (uri) {
+    > 85 |         await page.goto(uri, { waitUntil: 'domcontentloaded' });
+         |                    ^
+      86 |     }
+      87 | }
+      88 |
+        at asUser (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:85:20)
+        at /Volumes/Development/next-www-toastboy/e2e/newplayer.spec.ts:24:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/newplayer-New-Player-admin-e629f-ies-access-to-regular-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/newplayer-New-Player-admin-e629f-ies-access-to-regular-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/newplayer-New-Player-admin-e629f-ies-access-to-regular-users-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+[45/67] [chromium] › e2e/newplayer.spec.ts:29:9 › New Player admin page › allows access to admi
+  42) [chromium] › e2e/newplayer.spec.ts:29:9 › New Player admin page › allows access to admin users and shows newplayer admin interface 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/newplayer
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/newplayer", waiting until "domcontentloaded"
+
+
+       at utils/auth.ts:101
+
+       99 |     await setAuthState(page, 'admin', user);
+      100 |     if (uri) {
+    > 101 |         await page.goto(uri, { waitUntil: 'domcontentloaded' });
+          |                    ^
+      102 |     }
+      103 | }
+      104 |
+        at asAdmin (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:101:20)
+        at /Volumes/Development/next-www-toastboy/e2e/newplayer.spec.ts:30:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/newplayer-New-Player-admin-0809b-s-newplayer-admin-interface-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/newplayer-New-Player-admin-0809b-s-newplayer-admin-interface-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/newplayer-New-Player-admin-0809b-s-newplayer-admin-interface-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+[46/67] [chromium] › e2e/nextgame.spec.ts:6:9 › Next Game page › forwards to the next game for 
+  43) [chromium] › e2e/nextgame.spec.ts:6:9 › Next Game page › forwards to the next game for guest users 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/nextgame
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/nextgame", waiting until "domcontentloaded"
+
+
+       at utils/auth.ts:69
+
+      67 |     await setAuthState(page, 'none');
+      68 |     if (uri) {
+    > 69 |         await page.goto(uri, { waitUntil: 'domcontentloaded' });
+         |                    ^
+      70 |     }
+      71 | }
+      72 |
+        at asGuest (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:69:20)
+        at /Volumes/Development/next-www-toastboy/e2e/nextgame.spec.ts:7:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/nextgame-Next-Game-page-fo-e8ee4-e-next-game-for-guest-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/nextgame-Next-Game-page-fo-e8ee4-e-next-game-for-guest-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/nextgame-Next-Game-page-fo-e8ee4-e-next-game-for-guest-users-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌁ auth for agents [www.vestauth.com]
+[47/67] [chromium] › e2e/profile.spec.ts:6:9 › Player Profile page › denies access to guest use
+  44) [chromium] › e2e/profile.spec.ts:6:9 › Player Profile page › denies access to guest users ────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/profile
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/profile", waiting until "domcontentloaded"
+
+
+       at utils/auth.ts:69
+
+      67 |     await setAuthState(page, 'none');
+      68 |     if (uri) {
+    > 69 |         await page.goto(uri, { waitUntil: 'domcontentloaded' });
+         |                    ^
+      70 |     }
+      71 | }
+      72 |
+        at asGuest (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:69:20)
+        at /Volumes/Development/next-www-toastboy/e2e/profile.spec.ts:7:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/profile-Player-Profile-page-denies-access-to-guest-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/profile-Player-Profile-page-denies-access-to-guest-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/profile-Player-Profile-page-denies-access-to-guest-users-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌁ auth for agents [www.vestauth.com]
+[48/67] [chromium] › e2e/profile.spec.ts:12:9 › Player Profile page › profile access for regula
+  45) [chromium] › e2e/profile.spec.ts:12:9 › Player Profile page › profile access for regular users 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/profile
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/profile", waiting until "domcontentloaded"
+
+
+       at utils/auth.ts:85
+
+      83 |     await setAuthState(page, 'user', user);
+      84 |     if (uri) {
+    > 85 |         await page.goto(uri, { waitUntil: 'domcontentloaded' });
+         |                    ^
+      86 |     }
+      87 | }
+      88 |
+        at asUser (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:85:20)
+        at /Volumes/Development/next-www-toastboy/e2e/profile.spec.ts:13:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/profile-Player-Profile-page-profile-access-for-regular-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/profile-Player-Profile-page-profile-access-for-regular-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/profile-Player-Profile-page-profile-access-for-regular-users-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ◈ secrets for agents [www.dotenvx.com]
+[49/67] [chromium] › e2e/responses.spec.ts:8:9 › Responses admin page › denies access to guest 
+  46) [chromium] › e2e/responses.spec.ts:8:9 › Responses admin page › denies access to guest users ─
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/admin/responses
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/admin/responses", waiting until "domcontentloaded"
+
+
+       at utils/auth.ts:69
+
+      67 |     await setAuthState(page, 'none');
+      68 |     if (uri) {
+    > 69 |         await page.goto(uri, { waitUntil: 'domcontentloaded' });
+         |                    ^
+      70 |     }
+      71 | }
+      72 |
+        at asGuest (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:69:20)
+        at /Volumes/Development/next-www-toastboy/e2e/responses.spec.ts:9:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/responses-Responses-admin-page-denies-access-to-guest-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/responses-Responses-admin-page-denies-access-to-guest-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/responses-Responses-admin-page-denies-access-to-guest-users-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ◈ encrypted .env [www.dotenvx.com]
+[50/67] [chromium] › e2e/responses.spec.ts:14:9 › Responses admin page › denies access to regul
+  47) [chromium] › e2e/responses.spec.ts:14:9 › Responses admin page › denies access to regular users 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/admin/responses
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/admin/responses", waiting until "domcontentloaded"
+
+
+       at utils/auth.ts:85
+
+      83 |     await setAuthState(page, 'user', user);
+      84 |     if (uri) {
+    > 85 |         await page.goto(uri, { waitUntil: 'domcontentloaded' });
+         |                    ^
+      86 |     }
+      87 | }
+      88 |
+        at asUser (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:85:20)
+        at /Volumes/Development/next-www-toastboy/e2e/responses.spec.ts:15:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/responses-Responses-admin--c7d31-ies-access-to-regular-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/responses-Responses-admin--c7d31-ies-access-to-regular-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/responses-Responses-admin--c7d31-ies-access-to-regular-users-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+[51/67] [chromium] › e2e/responses.spec.ts:20:9 › Responses admin page › admin can update respo
+  48) [chromium] › e2e/responses.spec.ts:20:9 › Responses admin page › admin can update responses form through realistic response changes 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/admin/responses
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/admin/responses", waiting until "domcontentloaded"
+
+
+       at utils/auth.ts:101
+
+       99 |     await setAuthState(page, 'admin', user);
+      100 |     if (uri) {
+    > 101 |         await page.goto(uri, { waitUntil: 'domcontentloaded' });
+          |                    ^
+      102 |     }
+      103 | }
+      104 |
+        at asAdmin (/Volumes/Development/next-www-toastboy/e2e/utils/auth.ts:101:20)
+        at /Volumes/Development/next-www-toastboy/e2e/responses.spec.ts:21:9
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/responses-Responses-admin--fe6a9--realistic-response-changes-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/responses-Responses-admin--fe6a9--realistic-response-changes-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/responses-Responses-admin--fe6a9--realistic-response-changes-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ suppress logs { quiet: true }
+  49) [chromium] › e2e/results.spec.ts:3:5 › results page ──────────────────────────────────────────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/results
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/results", waiting until "load"
+
+
+      2 |
+      3 | test('results page', async ({ page }) => {
+    > 4 |     const response = await page.goto('/footy/results');
+        |                                 ^
+      5 |     await expect(page).toHaveURL(/.*games.*/);
+      6 |     expect(response?.ok()).toBeTruthy();
+      7 | });
+        at /Volumes/Development/next-www-toastboy/e2e/results.spec.ts:4:33
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/results-results-page-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/results-results-page-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/results-results-page-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌁ auth for agents [www.vestauth.com]
+  50) [chromium] › e2e/root.spec.ts:3:5 › root page redirects to /footy ────────────────────────────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/
+    Call log:
+      - navigating to "http://127.0.0.1:3002/", waiting until "load"
+
+
+      2 |
+      3 | test('root page redirects to /footy', async ({ page }) => {
+    > 4 |     await page.goto('/');
+        |                ^
+      5 |     await expect(page).toHaveURL(/\/footy$/);
+      6 | });
+      7 |
+        at /Volumes/Development/next-www-toastboy/e2e/root.spec.ts:4:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/root-root-page-redirects-to-footy-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/root-root-page-redirects-to-footy-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/root-root-page-redirects-to-footy-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+  51) [chromium] › e2e/rules.spec.ts:3:5 › rules page ──────────────────────────────────────────────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/rules
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/rules", waiting until "load"
+
+
+      2 |
+      3 | test('rules page', async ({ page }) => {
+    > 4 |     const response = await page.goto('/footy/rules');
+        |                                 ^
+      5 |     expect(response?.ok()).toBeTruthy();
+      6 |     await expect(page).toHaveURL(/.*rules/);
+      7 |     await expect(page).toHaveTitle(/Rules \| Toastboy FC/);
+        at /Volumes/Development/next-www-toastboy/e2e/rules.spec.ts:4:33
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/rules-rules-page-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/rules-rules-page-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/rules-rules-page-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ enable debugging { debug: true }
+  52) [chromium] › e2e/table.spec.ts:22:5 › points table ───────────────────────────────────────────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/points
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/points", waiting until "load"
+
+
+      21 |
+      22 | test('points table', async ({ page }) => {
+    > 23 |     const response = await page.goto('/footy/points');
+         |                                 ^
+      24 |     expect(response?.ok()).toBeTruthy();
+      25 |     await expect(page).toHaveURL(/.*points/);
+      26 |     await expect(page).toHaveTitle(/All-time Points Table/);
+        at /Volumes/Development/next-www-toastboy/e2e/table.spec.ts:23:33
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/table-points-table-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/table-points-table-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/table-points-table-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ enable debugging { debug: true }
+  53) [chromium] › e2e/table.spec.ts:30:5 › averages table ─────────────────────────────────────────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/averages
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/averages", waiting until "load"
+
+
+      29 |
+      30 | test('averages table', async ({ page }) => {
+    > 31 |     const response = await page.goto('/footy/averages');
+         |                                 ^
+      32 |     expect(response?.ok()).toBeTruthy();
+      33 |     await expect(page).toHaveURL(/.*averages/);
+      34 |     await expect(page).toHaveTitle(/All-time Averages Table/);
+        at /Volumes/Development/next-www-toastboy/e2e/table.spec.ts:31:33
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/table-averages-table-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/table-averages-table-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/table-averages-table-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌁ auth for agents [www.vestauth.com]
+  54) [chromium] › e2e/table.spec.ts:38:5 › stalwart table ─────────────────────────────────────────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/stalwart
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/stalwart", waiting until "load"
+
+
+      37 |
+      38 | test('stalwart table', async ({ page }) => {
+    > 39 |     const response = await page.goto('/footy/stalwart');
+         |                                 ^
+      40 |     expect(response?.ok()).toBeTruthy();
+      41 |     await expect(page).toHaveURL(/.*stalwart/);
+      42 |     await expect(page).toHaveTitle(/All-time Stalwart Standings/);
+        at /Volumes/Development/next-www-toastboy/e2e/table.spec.ts:39:33
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/table-stalwart-table-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/table-stalwart-table-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/table-stalwart-table-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ◈ secrets for agents [www.dotenvx.com]
+  55) [chromium] › e2e/table.spec.ts:46:5 › speedy table ───────────────────────────────────────────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/speedy
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/speedy", waiting until "load"
+
+
+      45 |
+      46 | test('speedy table', async ({ page }) => {
+    > 47 |     const response = await page.goto('/footy/speedy');
+         |                                 ^
+      48 |     expect(response?.ok()).toBeTruthy();
+      49 |     await expect(page).toHaveURL(/.*speedy/);
+      50 |     await expect(page).toHaveTitle(/All-time Captain Speedy/);
+        at /Volumes/Development/next-www-toastboy/e2e/table.spec.ts:47:33
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/table-speedy-table-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/table-speedy-table-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/table-speedy-table-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ suppress logs { quiet: true }
+  56) [chromium] › e2e/table.spec.ts:54:5 › pub table ──────────────────────────────────────────────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/pub
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/pub", waiting until "load"
+
+
+      53 |
+      54 | test('pub table', async ({ page }) => {
+    > 55 |     const response = await page.goto('/footy/pub');
+         |                                 ^
+      56 |     expect(response?.ok()).toBeTruthy();
+      57 |     await expect(page).toHaveURL(/.*pub/);
+      58 |     await expect(page).toHaveTitle(/All-time Pub Table/);
+        at /Volumes/Development/next-www-toastboy/e2e/table.spec.ts:55:33
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/table-pub-table-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/table-pub-table-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/table-pub-table-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+  57) [chromium] › e2e/table.spec.ts:62:5 › winners table ──────────────────────────────────────────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/winners
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/winners", waiting until "load"
+
+
+      61 |
+      62 | test('winners table', async ({ page }) => {
+    > 63 |     const response = await page.goto('/footy/winners');
+         |                                 ^
+      64 |     expect(response?.ok()).toBeTruthy();
+      65 |     await expect(page).toHaveURL(/.*winners/);
+      66 |     await expect(page).toHaveTitle(/All-time Winners/);
+        at /Volumes/Development/next-www-toastboy/e2e/table.spec.ts:63:33
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/table-winners-table-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/table-winners-table-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/table-winners-table-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+  58) [chromium] › e2e/tables.spec.ts:3:5 › tables page ────────────────────────────────────────────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/tables
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/tables", waiting until "load"
+
+
+      2 |
+      3 | test('tables page', async ({ page }) => {
+    > 4 |     const response = await page.goto('/footy/tables');
+        |                                 ^
+      5 |     expect(response?.ok()).toBeTruthy();
+      6 |     await expect(page).toHaveURL(/.*tables/);
+      7 |     await expect(page).toHaveTitle(/Tables \| Toastboy FC/);
+        at /Volumes/Development/next-www-toastboy/e2e/tables.spec.ts:4:33
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/tables-tables-page-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/tables-tables-page-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/tables-tables-page-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+  59) [chromium] › e2e/turnout.spec.ts:3:5 › turnout page ──────────────────────────────────────────
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/turnout
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/turnout", waiting until "load"
+
+
+      2 |
+      3 | test('turnout page', async ({ page }) => {
+    > 4 |     const response = await page.goto('/footy/turnout');
+        |                                 ^
+      5 |     expect(response?.ok()).toBeTruthy();
+      6 |     await expect(page).toHaveURL(/.*turnout/);
+      7 |     await expect(page).toHaveTitle(/Turnout/);
+        at /Volumes/Development/next-www-toastboy/e2e/turnout.spec.ts:4:33
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/turnout-turnout-page-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/turnout-turnout-page-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/turnout-turnout-page-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ suppress logs { quiet: true }
+[63/67] [chromium] › e2e/users-admin-mocked.spec.ts:6:9 › Users Admin Page with Auth Mocking › 
+  60) [chromium] › e2e/users-admin-mocked.spec.ts:6:9 › Users Admin Page with Auth Mocking › denies access to guest users 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/admin/users
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/admin/users", waiting until "load"
+
+
+       6 |     test('denies access to guest users', async ({ page }) => {
+       7 |         await asGuest(page);
+    >  8 |         await page.goto('/footy/admin/users');
+         |                    ^
+       9 |
+      10 |         await mustBeLoggedInAsAdmin(page);
+      11 |     });
+        at /Volumes/Development/next-www-toastboy/e2e/users-admin-mocked.spec.ts:8:20
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/users-admin-mocked-Users-A-0d074-enies-access-to-guest-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/users-admin-mocked-Users-A-0d074-enies-access-to-guest-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/users-admin-mocked-Users-A-0d074-enies-access-to-guest-users-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ suppress logs { quiet: true }
+[64/67] [chromium] › e2e/users-admin-mocked.spec.ts:13:9 › Users Admin Page with Auth Mocking ›
+  61) [chromium] › e2e/users-admin-mocked.spec.ts:13:9 › Users Admin Page with Auth Mocking › denies access to regular users 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/admin/users
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/admin/users", waiting until "load"
+
+
+      13 |     test('denies access to regular users', async ({ page }) => {
+      14 |         await asUser(page);
+    > 15 |         await page.goto('/footy/admin/users');
+         |                    ^
+      16 |
+      17 |         await mustBeLoggedInAsAdmin(page);
+      18 |     });
+        at /Volumes/Development/next-www-toastboy/e2e/users-admin-mocked.spec.ts:15:20
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/users-admin-mocked-Users-A-1d955-ies-access-to-regular-users-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/users-admin-mocked-Users-A-1d955-ies-access-to-regular-users-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/users-admin-mocked-Users-A-1d955-ies-access-to-regular-users-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+[65/67] [chromium] › e2e/users-admin-mocked.spec.ts:20:9 › Users Admin Page with Auth Mocking ›
+  62) [chromium] › e2e/users-admin-mocked.spec.ts:20:9 › Users Admin Page with Auth Mocking › allows access to admin users and shows user list 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/admin/users
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/admin/users", waiting until "load"
+
+
+      20 |     test('allows access to admin users and shows user list', async ({ page }) => {
+      21 |         await asAdmin(page);
+    > 22 |         await page.goto('/footy/admin/users');
+         |                    ^
+      23 |
+      24 |         // Should show the users table
+      25 |         await expect(page.locator('table')).toBeVisible();
+        at /Volumes/Development/next-www-toastboy/e2e/users-admin-mocked.spec.ts:22:20
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/users-admin-mocked-Users-A-58d91-n-users-and-shows-user-list-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/users-admin-mocked-Users-A-58d91-n-users-and-shows-user-list-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/users-admin-mocked-Users-A-58d91-n-users-and-shows-user-list-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ◈ secrets for agents [www.dotenvx.com]
+[66/67] [chromium] › e2e/users-admin-mocked.spec.ts:36:9 › Profile Page with Auth Mocking › req
+  63) [chromium] › e2e/users-admin-mocked.spec.ts:36:9 › Profile Page with Auth Mocking › requires authentication 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/profile
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/profile", waiting until "load"
+
+
+      36 |     test('requires authentication', async ({ page }) => {
+      37 |         await asGuest(page);
+    > 38 |         await page.goto('/footy/profile');
+         |                    ^
+      39 |
+      40 |         await mustBeLoggedIn(page);
+      41 |     });
+        at /Volumes/Development/next-www-toastboy/e2e/users-admin-mocked.spec.ts:38:20
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/users-admin-mocked-Profile-43273-ing-requires-authentication-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/users-admin-mocked-Profile-43273-ing-requires-authentication-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/users-admin-mocked-Profile-43273-ing-requires-authentication-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌁ auth for agents [www.vestauth.com]
+[67/67] [chromium] › e2e/users-admin-mocked.spec.ts:43:9 › Profile Page with Auth Mocking › all
+  64) [chromium] › e2e/users-admin-mocked.spec.ts:43:9 › Profile Page with Auth Mocking › allows authenticated users to access profile 
+
+    Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/footy/profile
+    Call log:
+      - navigating to "http://127.0.0.1:3002/footy/profile", waiting until "load"
+
+
+      43 |     test('allows authenticated users to access profile', async ({ page }) => {
+      44 |         await asUser(page);
+    > 45 |         await page.goto('/footy/profile');
+         |                    ^
+      46 |
+      47 |         // Should not show login requirement
+      48 |         await expect(page.getByText('You must be logged in to use this page.')).not.toBeVisible();
+        at /Volumes/Development/next-www-toastboy/e2e/users-admin-mocked.spec.ts:45:20
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/users-admin-mocked-Profile-84072-ted-users-to-access-profile-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/users-admin-mocked-Profile-84072-ted-users-to-access-profile-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/users-admin-mocked-Profile-84072-ted-users-to-access-profile-chromium/error-context.md
+
+  64 failed
+    [chromium] › e2e/auth-mocking.spec.ts:6:9 › Auth Mocking System › should show different content for different auth states 
+    [chromium] › e2e/auth-mocking.spec.ts:30:9 › Auth Mocking System › should allow switching between auth states 
+    [chromium] › e2e/badpage.spec.ts:3:5 › check what happens when a nonexistent page is requested ─
+    [chromium] › e2e/drinkers.spec.ts:6:9 › drinkers admin page › denies access to guest users ─────
+    [chromium] › e2e/drinkers.spec.ts:12:9 › drinkers admin page › denies access to regular users ──
+    [chromium] › e2e/drinkers.spec.ts:18:9 › drinkers admin page › allows access to admin users and shows drinkers admin interface 
+    [chromium] › e2e/fixtures.spec.ts:3:5 › fixtures page ──────────────────────────────────────────
+    [chromium] › e2e/footy.spec.ts:3:5 › footy page renders crest, info link, and copyright ────────
+    [chromium] › e2e/footy.spec.ts:21:5 › footy info link navigates to /footy/info ─────────────────
+    [chromium] › e2e/games.spec.ts:3:5 › games list page ───────────────────────────────────────────
+    [chromium] › e2e/health.spec.ts:9:9 › /api/health endpoint › should return healthy status with 200 when application and database are running 
+    [chromium] › e2e/health.spec.ts:24:9 › /api/health endpoint › should respond quickly (within reasonable time) 
+    [chromium] › e2e/health.spec.ts:35:9 › /api/health endpoint › should be accessible without authentication 
+    [chromium] › e2e/homepage.links.spec.ts:3:5 › enumerate homepage links ─────────────────────────
+    [chromium] › e2e/homepage.spec.ts:3:5 › homepage has title and correct links ───────────────────
+    [chromium] › e2e/homepage.spec.ts:36:5 › homepage shows table leaders ──────────────────────────
+    [chromium] › e2e/info.spec.ts:5:5 › info page ──────────────────────────────────────────────────
+    [chromium] › e2e/info.spec.ts:20:9 › EnquiryForm › shows validation errors on empty submit ─────
+    [chromium] › e2e/info.spec.ts:33:9 › EnquiryForm › shows invalid email error on blur ───────────
+    [chromium] › e2e/info.spec.ts:45:9 › EnquiryForm › shows verified notification and cleans up URL 
+    [chromium] › e2e/info.spec.ts:52:9 › EnquiryForm › shows error notification and cleans up URL ──
+    [chromium] › e2e/info.spec.ts:70:13 › EnquiryForm › email flow › submits form and shows confirmation notification 
+    [chromium] › e2e/layout.spec.ts:36:9 › Shell nav — structure › burger is visible only below the sm breakpoint 
+    [chromium] › e2e/layout.spec.ts:45:9 › Shell nav — structure › sidebar nav is in the viewport by default only at sm and above 
+    [chromium] › e2e/layout.spec.ts:89:13 › No horizontal overflow › /footy/info ───────────────────
+    [chromium] › e2e/layout.spec.ts:89:13 › No horizontal overflow › /footy/games ──────────────────
+    [chromium] › e2e/layout.spec.ts:89:13 › No horizontal overflow › /footy/table/points ───────────
+    [chromium] › e2e/layout.spec.ts:89:13 › No horizontal overflow › /footy/turnout ────────────────
+    [chromium] › e2e/mailout.spec.ts:7:9 › Mail active players › denies access to guest users ──────
+    [chromium] › e2e/mailout.spec.ts:13:9 › Mail active players › mail active players ──────────────
+    [chromium] › e2e/money.spec.ts:6:9 › Money admin page › denies access to guest users ───────────
+    [chromium] › e2e/money.spec.ts:11:9 › Money admin page › denies access to regular users ────────
+    [chromium] › e2e/money.spec.ts:16:9 › Money admin page › allows access to admin users and shows money admin interface 
+    [chromium] › e2e/moregames.spec.ts:6:9 › More Games admin page › denies access to guest users ──
+    [chromium] › e2e/moregames.spec.ts:12:9 › More Games admin page › denies access to regular users 
+    [chromium] › e2e/moregames.spec.ts:18:9 › More Games admin page › allows access to admin users and shows moregames admin interface 
+    [chromium] › e2e/newgame.spec.ts:7:9 › New game flow › denies access to guest users ────────────
+    [chromium] › e2e/newgame.spec.ts:13:9 › New game flow › denies access to regular users ─────────
+    [chromium] › e2e/newgame.spec.ts:19:9 › New game flow › allows admins to send invitations and players can respond 
+    [chromium] › e2e/newplayer.spec.ts:17:9 › New Player admin page › denies access to guest users ─
+    [chromium] › e2e/newplayer.spec.ts:23:9 › New Player admin page › denies access to regular users 
+    [chromium] › e2e/newplayer.spec.ts:29:9 › New Player admin page › allows access to admin users and shows newplayer admin interface 
+    [chromium] › e2e/nextgame.spec.ts:6:9 › Next Game page › forwards to the next game for guest users 
+    [chromium] › e2e/profile.spec.ts:6:9 › Player Profile page › denies access to guest users ──────
+    [chromium] › e2e/profile.spec.ts:12:9 › Player Profile page › profile access for regular users ─
+    [chromium] › e2e/responses.spec.ts:8:9 › Responses admin page › denies access to guest users ───
+    [chromium] › e2e/responses.spec.ts:14:9 › Responses admin page › denies access to regular users 
+    [chromium] › e2e/responses.spec.ts:20:9 › Responses admin page › admin can update responses form through realistic response changes 
+    [chromium] › e2e/results.spec.ts:3:5 › results page ────────────────────────────────────────────
+    [chromium] › e2e/root.spec.ts:3:5 › root page redirects to /footy ──────────────────────────────
+    [chromium] › e2e/rules.spec.ts:3:5 › rules page ────────────────────────────────────────────────
+    [chromium] › e2e/table.spec.ts:22:5 › points table ─────────────────────────────────────────────
+    [chromium] › e2e/table.spec.ts:30:5 › averages table ───────────────────────────────────────────
+    [chromium] › e2e/table.spec.ts:38:5 › stalwart table ───────────────────────────────────────────
+    [chromium] › e2e/table.spec.ts:46:5 › speedy table ─────────────────────────────────────────────
+    [chromium] › e2e/table.spec.ts:54:5 › pub table ────────────────────────────────────────────────
+    [chromium] › e2e/table.spec.ts:62:5 › winners table ────────────────────────────────────────────
+    [chromium] › e2e/tables.spec.ts:3:5 › tables page ──────────────────────────────────────────────
+    [chromium] › e2e/turnout.spec.ts:3:5 › turnout page ────────────────────────────────────────────
+    [chromium] › e2e/users-admin-mocked.spec.ts:6:9 › Users Admin Page with Auth Mocking › denies access to guest users 
+    [chromium] › e2e/users-admin-mocked.spec.ts:13:9 › Users Admin Page with Auth Mocking › denies access to regular users 
+    [chromium] › e2e/users-admin-mocked.spec.ts:20:9 › Users Admin Page with Auth Mocking › allows access to admin users and shows user list 
+    [chromium] › e2e/users-admin-mocked.spec.ts:36:9 › Profile Page with Auth Mocking › requires authentication 
+    [chromium] › e2e/users-admin-mocked.spec.ts:43:9 › Profile Page with Auth Mocking › allows authenticated users to access profile 
+  2 skipped
+  1 did not run

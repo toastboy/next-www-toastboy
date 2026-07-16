@@ -1,0 +1,97 @@
+I still have problems with my Storybook tests:
+
+ *  Executing task: npm run storybook 
+
+
+> storybook
+> storybook dev -p 6006
+
+
+┌  storybook v10.4.6
+(node:2458) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+│
+●  Starting...
+│  Vite Re-optimizing dependencies because lockfile has changed
+│ ╭────────────────────────────────────────────────────────╮
+│ │   Storybook ready!                                     │
+│ │                                                        │
+│ │   - Local:                http://localhost:6006/       │
+│ │   - On your network:      http://172.16.18.120:6006/   │
+│ │                                                        │
+│ ╰────────────────────────────────────────────────────────╯
+│
+●  303 ms for manager and 1.53 s for preview
+│  Vite [optimizer] scanning dependencies...
+│  Vite [optimizer] bundling dependencies...
+│
+■  Vite The request id
+│  "./node_modules/@storybook/addon-docs/dist/_browser-chunks/DocsRenderer-JROSPFPF.js"
+│  is outside of Vite serving allow list.
+│
+▲  Vite
+│  - /Volumes/Development/next-www-toastboy/src
+│  - /Volumes/Development/next-www-toastboy/.storybook
+│  - /Volumes/Development/next-www-toastboy/node_modules/vite/dist/client
+
+│  Refer to docs https://vite.dev/config/server-options.html#server-fs-allow for
+│  configurations and more details.
+
+
+Chromatic: Chromatic CLI v16.10.0
+           https://www.chromatic.com/docs/cli
+
+Chromatic: Skipping update check
+Chromatic: Authenticating with Chromatic
+Chromatic:     → Connecting to https://index.chromatic.com
+Chromatic:     → No Access
+
+Chromatic: ✖ Failed to authenticate
+           
+           Error communicating with the Chromatic API. Check if your Chromatic client is up-to-date.
+           Service status updates are provided at https://status.chromatic.com
+           
+           → FORBIDDEN: No Access
+           
+           If you need help, please chat with us at https://www.chromatic.com/docs/cli for the fastest response.
+           You can also email the team at support@chromatic.com if chat is not an option.
+           
+           Please provide us with the above CLI output and the following info:
+           {
+             "timestamp": "2026-06-27T07:29:35.399Z",
+             "sessionId": "3681823d-a710-43bd-bdcf-df273ba0b8d4",
+             "nodePlatform": "darwin",
+             "nodeVersion": "26.0.0",
+             "packageName": "chromatic",
+             "packageVersion": "16.10.0",
+             "flags": {
+               "interactive": false
+             },
+             "extraOptions": {
+               "projectId": "Project:693a94b56f442dc4a074aee9",
+               "autoAcceptChanges": false,
+               "exitOnceUploaded": false,
+               "exitZeroOnChanges": true,
+               "forceRebuild": true,
+               "fromCI": false,
+               "interactive": false,
+               "isLocalBuild": true,
+               "logPrefix": "\u001b[38;5;202mChromatic\u001b[0m:",
+               "skip": false,
+               "skipUpdateCheck": true,
+               "experimental_abortSignal": {}
+             },
+             "configuration": {
+               "configFile": "chromatic.config.json",
+               "projectId": "Project:693a94b56f442dc4a074aee9",
+               "onlyChanged": true,
+               "zip": true,
+               "buildScriptName": "build:storybook"
+             },
+             "isLocalBuild": true,
+             "buildScript": "storybook build",
+             "exitCode": 202,
+             "exitCodeKey": "GRAPHQL_ERROR",
+             "errorType": "GraphQLError",
+             "errorMessage": "✖ Failed to authenticate"
+           }

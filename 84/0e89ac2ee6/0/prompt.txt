@@ -1,0 +1,1 @@
+I can't be the first to encounter this problem of how do design e2e tests in a web app with a database back end: what do other people do?

@@ -1,0 +1,1 @@
+Let's start adding test coverage for the missing lines and branches in src/lib

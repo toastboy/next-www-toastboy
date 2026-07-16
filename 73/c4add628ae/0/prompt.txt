@@ -1,0 +1,1 @@
+The pre renderer drops all incoming <pre> props (e.g. data-*, id, style, and sometimes className coming from MDX/rehype pipelines). Consider accepting ...props and forwarding the relevant attributes onto the rendered element (or explicitly documenting that they are intentionally ignored) to avoid surprising behavior and improve interoperability with MDX plugins.

@@ -1,0 +1,7 @@
+<task-notification>
+<task-id>bzyw0pyeb</task-id>
+<tool-use-id>toolu_01MCqWhQ1aX8JjP15a8b5uEL</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/702da7e9-2883-42fd-861f-f86759bbc027/tasks/bzyw0pyeb.output</output-file>
+<status>completed</status>
+<summary>Background command "Run Storybook play tests" completed (exit code 0)</summary>
+</task-notification>

@@ -1,0 +1,1 @@
+When rel already contains noopener/noreferrer, this logic can produce duplicates in the computed rel string. Consider normalizing via a set-based merge (split on whitespace, add required tokens, then re-join) to keep the output stable and easier to reason about.

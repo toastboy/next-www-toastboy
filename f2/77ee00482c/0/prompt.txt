@@ -1,0 +1,1 @@
+New behavior introduced via getDataById (including ordering and mapping verifiedAt -> verified, plus name sanitization) doesn’t appear to have direct test coverage. Add unit/integration tests to confirm: (1) verified emails are mapped correctly, (2) ordering preference is respected, and (3) anonymous/name sanitization matches expectations.

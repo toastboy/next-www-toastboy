@@ -1,0 +1,30 @@
+<task-notification>
+<task-id>a66dced5a2939f144</task-id>
+<tool-use-id>toolu_01UGwVB9e7uK6PsmtnUKuhdF</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/1a8073c5-beab-481d-b94e-e6e4a9b696ae/tasks/a66dced5a2939f144.output</output-file>
+<status>completed</status>
+<summary>Agent "Executor advisor on DB schema" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>The fastest path is a two-phase migration.
+
+**Phase 1 — add the new field, keep the old one.**
+
+Add `result` (`WIN`/`DRAW`/`LOSS` enum) to `GameDay`. Populate it from existing `Outcome.points` data: find the winning team by checking any player on team A — if their points are 3, team A won, etc. Write a Prisma migration with a raw SQL `UPDATE` to backfill `GameDay.result` from existing `Outcome.points`. Ship this. Production is now storing the truth in the right place while old code still works.
+
+**Phase 2 — remove `Outcome.points`.**
+
+Rewrite every query that reads `Outcome.points` to instead join `GameDay` and derive points inline: `CASE WHEN gameDay.result = 'WIN' AND outcome.team = gameDay.winningSide THEN 3 ...`. Update `PlayerRecord` recalculation jobs. Then drop the column.
+
+**What Monday looks like concretely:**
+
+1. `npm run migrate` to add `GameDay.result` enum column (nullable initially)
+2. Raw SQL backfill script — scan every `GameDay`, look at any one `Outcome` row for team A to get their points, derive result, write it back
+3. Verify row counts and spot-check a dozen game days manually
+4. Update service layer queries to read from `GameDay.result`
+5. Verify `PlayerRecord` totals still match before dropping `Outcome.points`
+
+**The one trap:** `Outcome.points` is nullable and some historical rows may be null (players who didn't show up have no result). Your derivation logic must only set `GameDay.result` from rows where `outcome.team IS NOT NULL` — i.e. players who actually played.
+
+Don't try to do both phases in one migration. The rollback story on a single-phase change touching historical data is a nightmare.</result>
+<usage><subagent_tokens>15077</subagent_tokens><tool_uses>0</tool_uses><duration_ms>13184</duration_ms></usage>
+</task-notification>

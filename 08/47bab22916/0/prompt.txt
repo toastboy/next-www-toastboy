@@ -1,0 +1,6 @@
+❯ npx knip
+Analyzing workspace…
+◇ injected env (9) from .env.playwright // tip: ⌁ auth for agents [www.vestauth.com]
+Unused exported types (2)
+PlayerDataExtraEmailType  type       src/types/PlayerDataType.ts:5:13
+PlayerDataEmailType       interface  src/types/PlayerDataType.ts:7:18

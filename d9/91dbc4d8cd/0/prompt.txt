@@ -1,0 +1,1 @@
+Make the club badges, country flags and trophies icons scale along with the player mugshot

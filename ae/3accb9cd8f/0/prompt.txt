@@ -1,0 +1,1 @@
+In ImageWithPlaceholder, rather than having its own 'loaded' logic and directly including a Skeleton, could it not just use Mantine's loading.tsx logic and perhaps the useMounted() hook?

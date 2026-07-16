@@ -1,0 +1,193 @@
+Running 7 tests using 1 worker
+◇ injected env (9) from .env.playwright // tip: ⌘ enable debugging { debug: true }
+[2/7] [chromium] › e2e/info.spec.ts:22:9 › EnquiryForm › shows validation errors on empty submi
+  1) [chromium] › e2e/info.spec.ts:22:9 › EnquiryForm › shows validation errors on empty submit ────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText('Name is required')
+    Expected: visible
+    Timeout: 1000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 1000ms
+      - waiting for getByText('Name is required')
+
+
+    Call Log:
+    - Test timeout of 30000ms exceeded
+
+      29 |             await submitButton.click();
+      30 |             await expect(page.getByText('Name is required')).toBeVisible({ timeout: 1000 });
+    > 31 |         }).toPass();
+         |            ^
+      32 |         await expect(page.getByText('Invalid email')).toBeVisible();
+      33 |         await expect(page.getByText('Message is required')).toBeVisible();
+      34 |     });
+        at /Volumes/Development/next-www-toastboy/e2e/info.spec.ts:31:12
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-validation-errors-on-empty-submit-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-validation-errors-on-empty-submit-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/info-EnquiryForm-shows-validation-errors-on-empty-submit-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ multiple files { path: ['.env.local', '.env'] }
+  2) [chromium] › e2e/info.spec.ts:36:9 › EnquiryForm › shows invalid email error on blur ──────────
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText('Invalid email')
+    Expected: visible
+    Timeout: 1000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 1000ms
+      - waiting for getByText('Invalid email')
+
+
+    Call Log:
+    - Test timeout of 30000ms exceeded
+
+      44 |             await page.getByRole('textbox', { name: 'Message' }).click();
+      45 |             await expect(page.getByText('Invalid email')).toBeVisible({ timeout: 1000 });
+    > 46 |         }).toPass();
+         |            ^
+      47 |     });
+      48 |
+      49 |     test('shows verified notification and cleans up URL', async ({ page }) => {
+        at /Volumes/Development/next-www-toastboy/e2e/info.spec.ts:46:12
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-invalid-email-error-on-blur-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-invalid-email-error-on-blur-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/info-EnquiryForm-shows-invalid-email-error-on-blur-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ suppress logs { quiet: true }
+[4/7] [chromium] › e2e/info.spec.ts:49:9 › EnquiryForm › shows verified notification and cleans
+  3) [chromium] › e2e/info.spec.ts:49:9 › EnquiryForm › shows verified notification and cleans up URL 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText('Email verified')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByText('Email verified')
+
+
+      49 |     test('shows verified notification and cleans up URL', async ({ page }) => {
+      50 |         await page.goto('/footy/info?enquiry=verified');
+    > 51 |         await expect(page.getByText('Email verified')).toBeVisible();
+         |                                                        ^
+      52 |         await expect(page).toHaveURL(/\/footy\/info$/);
+      53 |     });
+      54 |
+        at /Volumes/Development/next-www-toastboy/e2e/info.spec.ts:51:56
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-ver-a33a8-ification-and-cleans-up-URL-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-ver-a33a8-ification-and-cleans-up-URL-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/info-EnquiryForm-shows-ver-a33a8-ification-and-cleans-up-URL-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ suppress logs { quiet: true }
+[5/7] [chromium] › e2e/info.spec.ts:55:9 › EnquiryForm › shows error notification and cleans up
+  4) [chromium] › e2e/info.spec.ts:55:9 › EnquiryForm › shows error notification and cleans up URL ─
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText('Verification failed')
+    Expected: visible
+    Timeout: 5000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByText('Verification failed')
+
+
+      55 |     test('shows error notification and cleans up URL', async ({ page }) => {
+      56 |         await page.goto('/footy/info?enquiry=error');
+    > 57 |         await expect(page.getByText('Verification failed')).toBeVisible();
+         |                                                             ^
+      58 |         await expect(page).toHaveURL(/\/footy\/info$/);
+      59 |     });
+      60 |
+        at /Volumes/Development/next-www-toastboy/e2e/info.spec.ts:57:61
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-error-notification-and-cleans-up-URL-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-shows-error-notification-and-cleans-up-URL-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/info-EnquiryForm-shows-error-notification-and-cleans-up-URL-chromium/error-context.md
+
+◇ injected env (9) from .env.playwright // tip: ⌘ override existing { override: true }
+[6/7] [chromium] › e2e/info.spec.ts:72:13 › EnquiryForm › email flow › submits form and shows c
+  5) [chromium] › e2e/info.spec.ts:72:13 › EnquiryForm › email flow › submits form and shows confirmation notification 
+
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText('Confirm your email')
+    Expected: visible
+    Timeout: 15000ms
+    Error: element(s) not found
+
+    Call log:
+      - Expect "toBeVisible" with timeout 15000ms
+      - waiting for getByText('Confirm your email')
+
+
+    Call Log:
+    - Test timeout of 30000ms exceeded
+
+      79 |                 await page.getByRole('button', { name: 'Send message' }).click();
+      80 |                 await expect(page.getByText('Confirm your email')).toBeVisible({ timeout: 15000 });
+    > 81 |             }).toPass();
+         |                ^
+      82 |
+      83 |             await expect(page.getByRole('textbox', { name: 'Name' })).toHaveValue('');
+      84 |             await expect(page.getByRole('textbox', { name: 'Email' })).toHaveValue('');
+        at /Volumes/Development/next-www-toastboy/e2e/info.spec.ts:81:16
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-email-flo-d6c65-s-confirmation-notification-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/info-EnquiryForm-email-flo-d6c65-s-confirmation-notification-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/info-EnquiryForm-email-flo-d6c65-s-confirmation-notification-chromium/error-context.md
+
+[7/7] [chromium] › e2e/info.spec.ts:91:13 › EnquiryForm › email flow › completes full verificat
+  5 failed
+    [chromium] › e2e/info.spec.ts:22:9 › EnquiryForm › shows validation errors on empty submit ─────
+    [chromium] › e2e/info.spec.ts:36:9 › EnquiryForm › shows invalid email error on blur ───────────
+    [chromium] › e2e/info.spec.ts:49:9 › EnquiryForm › shows verified notification and cleans up URL 
+    [chromium] › e2e/info.spec.ts:55:9 › EnquiryForm › shows error notification and cleans up URL ──
+    [chromium] › e2e/info.spec.ts:72:13 › EnquiryForm › email flow › submits form and shows confirmation notification 
+  1 did not run
+  1 passed (1.7m)

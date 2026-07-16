@@ -1,0 +1,1 @@
+Sometimes on navigating to a new player profile page, such as http://localhost:3000/footy/player/7, the grey placeholder is never replaced with the real mugshot image. There are no errors in the console and sometimes multiple reloads are required to make the image load.

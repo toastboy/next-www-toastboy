@@ -1,0 +1,1 @@
+The name PlayerExtraEmailDisplayType is a bit confusing now that it’s also used inside PlayerDataType (not just UI/display). Consider renaming to something more general like PlayerExtraEmailType and reserving *DisplayType for shapes that are specifically UI-ready (e.g., sanitized name, derived fields).

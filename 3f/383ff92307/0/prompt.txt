@@ -1,0 +1,1 @@
+Yes. Let's do that! My approach has always been that local Playwright runs only do the single Chromium run, with a single viewport size. I'm happy for the rest to be covered by CI, and the matrix feature is ideal in combinatorial situations like this.

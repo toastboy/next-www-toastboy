@@ -1,0 +1,1 @@
+Good. Now add coverage for PlayerCountryMap. Don't forget as you did just now, in well-defined cases where a branch is a defensive backstop which is not expected to be exercised in real life, adding a small-scope c8 ignore next comment is acceptable.

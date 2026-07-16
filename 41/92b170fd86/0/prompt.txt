@@ -1,0 +1,2 @@
+UI gating with isAdmin is good, but passing a server action for sending emails makes it important that the sendEmail action itself enforces authorization server-side (not just in the UI). Ensure the action validates the caller's role/permissions before sending any email.
+A user must be validated to send email, but they don't need to be an admin.

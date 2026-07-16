@@ -1,0 +1,1 @@
+rel?.split(/\\s+/) can introduce empty tokens (e.g., when rel is an empty string or has trailing whitespace), which can produce extra spaces in the final rel. Consider trimming/filtering tokens before building the Set (e.g., split then filter(Boolean)), and optionally normalizing case.

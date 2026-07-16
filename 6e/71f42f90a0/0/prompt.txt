@@ -1,0 +1,1 @@
+Right, but I was assuming that I don't want to make PlayerProfile a client component. Is there any advantage either way?

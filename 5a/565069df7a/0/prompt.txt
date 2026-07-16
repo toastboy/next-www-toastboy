@@ -1,0 +1,1 @@
+Add running 'npx knip' to the final checks for every task

@@ -1,0 +1,111 @@
+I'm getting so sick of these flaky tests in playwright in CI!
+
+
+Search tests
+Responses admin page
+next »
+admin can update responses form through realistic response changes
+responses.spec.ts:20
+12.7s
+chromium
+Error: expect(received).toBe(expected) // Object.is equality
+
+Expected: 0
+Received: 1
+
+Call Log:
+- Timeout 10000ms exceeded while waiting on the predicate
+
+  94 |
+  95 |         await expect.poll(async () => groupCount('Yes'), { timeout: 10000 }).toBe(yesAfterFirstUpdate - 1);
+> 96 |         await expect.poll(async () => groupCount('No'), { timeout: 10000 }).toBe(initialNo);
+     |                                                                             ^
+  97 |         await expect.poll(async () => groupCount('Dunno'), { timeout: 10000 }).toBe(initialDunno + 1);
+  98 |         await expect.poll(async () => groupCount('None'), { timeout: 10000 }).toBe(noneAfterFirstUpdate);
+  99 |
+    at /home/runner/work/next-www-toastboy/next-www-toastboy/e2e/responses.spec.ts:96:77
+Filter steps
+Before Hooks
+34ms
+Navigate to "/footy/admin/responses"— utils/auth.ts:104
+153ms
+Expect "toBeVisible" getByRole('heading', { name: /Responses/i })— responses.spec.ts:23
+187ms
+Query count locator('h2').filter({ hasText: /^Yes:\s*/ })— responses.spec.ts:29
+35ms
+Query count locator('h2').filter({ hasText: /^No:\s*/ })— responses.spec.ts:29
+6ms
+Query count locator('h2').filter({ hasText: /^Dunno:\s*/ })— responses.spec.ts:29
+5ms
+Query count locator('h2').filter({ hasText: /^None:\s*/ })— responses.spec.ts:29
+248ms
+Click locator('[data-player-id="11"]').getByRole('combobox', { name: /response/i })— responses.spec.ts:56
+109ms
+Click getByRole('option', { name: 'Yes', exact: true })— responses.spec.ts:57
+141ms
+Check locator('[data-player-id="11"]').getByRole('checkbox', { name: /goalie/i })— responses.spec.ts:63
+87ms
+Fill "Can play and cover goal first half" locator('[data-player-id="11"]').getByPlaceholder('Comment')— responses.spec.ts:67
+90ms
+Click locator('[data-player-id="11"]').getByRole('button', { name: 'Update' })— responses.spec.ts:68
+92ms
+Expect "poll toBe"— responses.spec.ts:73
+188ms
+Expect "poll toBe"— responses.spec.ts:74
+6ms
+Expect "poll toBe"— responses.spec.ts:75
+3ms
+Expect "poll toBe"— responses.spec.ts:76
+5ms
+Expect "toBeVisible" locator('[data-player-id="11"]')— responses.spec.ts:78
+3ms
+Expect "toBeChecked" locator('[data-player-id="11"]').getByRole('checkbox', { name: /goalie/i })— responses.spec.ts:79
+2ms
+Expect "toHaveValue" locator('[data-player-id="11"]').getByPlaceholder('Comment')— responses.spec.ts:80
+2ms
+Click locator('[data-player-id="11"]').getByRole('combobox', { name: /response/i })— responses.spec.ts:56
+44ms
+Click getByRole('option', { name: 'No', exact: true })— responses.spec.ts:57
+86ms
+Uncheck locator('[data-player-id="11"]').getByRole('checkbox', { name: /goalie/i })— responses.spec.ts:65
+96ms
+Fill "Out of town this week" locator('[data-player-id="11"]').getByPlaceholder('Comment')— responses.spec.ts:67
+63ms
+Click locator('[data-player-id="11"]').getByRole('button', { name: 'Update' })— responses.spec.ts:68
+89ms
+Expect "poll toBe"— responses.spec.ts:84
+163ms
+Expect "poll toBe"— responses.spec.ts:85
+5ms
+Expect "poll toBe"— responses.spec.ts:86
+2ms
+Expect "poll toBe"— responses.spec.ts:87
+4ms
+Expect "toBeVisible" locator('[data-player-id="11"]')— responses.spec.ts:89
+1ms
+Expect "not toBeChecked" locator('[data-player-id="11"]').getByRole('checkbox', { name: /goalie/i })— responses.spec.ts:90
+2ms
+Expect "toHaveValue" locator('[data-player-id="11"]').getByPlaceholder('Comment')— responses.spec.ts:91
+2ms
+Click locator('[data-player-id="11"]').getByRole('combobox', { name: /response/i })— responses.spec.ts:56
+40ms
+Click getByRole('option', { name: 'Dunno', exact: true })— responses.spec.ts:57
+82ms
+Uncheck locator('[data-player-id="11"]').getByRole('checkbox', { name: /goalie/i })— responses.spec.ts:65
+5ms
+Fill "Could make it if meeting ends early" locator('[data-player-id="11"]').getByPlaceholder('Comment')— responses.spec.ts:67
+51ms
+Click locator('[data-player-id="11"]').getByRole('button', { name: 'Update' })— responses.spec.ts:68
+93ms
+Expect "poll toBe"— responses.spec.ts:95
+15ms
+Expect "poll toBe"— responses.spec.ts:96
+10.0s
+After Hooks
+419ms
+Worker Cleanup
+29ms
+
+screenshot
+video
+error-context

@@ -1,0 +1,144 @@
+This session is being continued from a previous conversation that ran out of context. The summary below covers the earlier portion of the conversation.
+
+Summary:
+1. Primary Request and Intent:
+   The session continued fixing failing Playwright E2E tests in `e2e/info.spec.ts` for the `EnquiryForm` component. The root cause was tests interacting with forms before React hydration completed, causing native form submission (page navigation) which broke test assertions. The fix uses `useSyncExternalStore` to detect hydration and exposes a `data-hydrated` attribute on form elements that tests wait for. The session also addressed: (a) a stale-server infrastructure concern, (b) a cleanup of unnecessary changes, and (c) applying the `data-hydrated` pattern to ALL form components proactively so future tests don't fail spookily.
+
+2. Key Technical Concepts:
+   - React hydration detection using `useSyncExternalStore` (server snapshot returns `false`, client returns `true`) — avoids `setState-in-effect` lint error from React Compiler's ESLint plugin
+   - `data-hydrated={hydrated || undefined}` — attribute present only after hydration (undefined removes it from DOM)
+   - Playwright `locator.waitFor()` — waits for element to be visible; `form[data-hydrated]` as CSS attribute selector
+   - Playwright `webServer.reuseExistingServer: false` — throws hard error if port already occupied
+   - Orphaned `next-server` processes — Playwright kills the npm wrapper on teardown but leaves `next-server` child processes alive; subsequent runs find the stale server on port 3002
+   - `check-build` script — compares `BUILD_ID` to `git rev-parse HEAD`; doesn't detect uncommitted source changes
+   - Mantine `Box` with `component="form"` — polymorphic form pattern used throughout the codebase
+   - `useSyncExternalStore` subscribe function with no-op (since client snapshot never changes)
+   - `@typescript-eslint/no-empty-function` lint rule — suppressed with `eslint-disable-next-line` for the subscribe no-op
+
+3. Files and Code Sections:
+   - **`src/lib/useHydrated.ts`** (NEW FILE — the core fix):
+     ```ts
+     import { useSyncExternalStore } from 'react';
+
+     // useSyncExternalStore requires a subscribe function; since the client snapshot
+     // never changes (always true), no subscriptions are needed.
+     // eslint-disable-next-line @typescript-eslint/no-empty-function
+     const subscribe = () => () => {};
+
+     /**
+      * Returns true only on the client after React has hydrated.
+      * Uses useSyncExternalStore so the server snapshot (false) differs from the
+      * client snapshot (true) without triggering a setState-in-effect lint error.
+      */
+     export function useHydrated(): boolean {
+         return useSyncExternalStore(subscribe, () => true, () => false);
+     }
+     ```
+
+   - **`src/components/EnquiryForm/EnquiryForm.tsx`** — Added `useHydrated` import, `const hydrated = useHydrated();`, and `data-hydrated={hydrated || undefined}` on `<Box component="form">`. Retains `useEffect` for search params / notification logic.
+
+   - **`src/components/NewGameForm/NewGameForm.tsx`** — Same pattern: `useHydrated` + `data-hydrated` on `<Box component="form">`.
+
+   - **`src/components/PlayerList/PlayerList.tsx`** — Same pattern: `useHydrated` + `data-hydrated` on `<Box>` (not a form itself, but wraps interactive elements tested via mailout.spec.ts).
+
+   - **`src/components/ResponsesForm/ResponsesForm.tsx`** — Same pattern: `useHydrated` + `data-hydrated` on `<Stack>`. Retains `prevResponsesRef` for tracking previous responses.
+
+   - **`e2e/info.spec.ts`** — All EnquiryForm tests start with `await page.locator('form[data-hydrated]').waitFor();`. DIAG test removed in this session.
+
+   - **`e2e/newgame.spec.ts`** — Tests wait for `[data-hydrated]` before form interaction.
+
+   - **`e2e/responses.spec.ts`** — Tests wait for `[data-hydrated]` before form interaction.
+
+   - **`e2e/mailout.spec.ts`** — Added `await page.locator('[data-hydrated]').waitFor();` before checkbox interaction with PlayerList.
+
+   - **`package.json`** — `kill-port-3002` script was added then reverted (see errors section). Currently back to original `start:playwright` without port-kill.
+
+   - **`e2e/utils/auth.ts`** — Only JSDoc line-wrapping changes were made then reverted.
+
+   - **Form components NOT YET UPDATED** (14 remaining):
+     - `src/components/ClaimSignup/ClaimSignup.tsx` — last `@/lib/` import: `@/lib/urls` (line 24); component at line 40; `<Box component="form">` at line 126
+     - `src/components/DeleteAccountForm/DeleteAccountForm.tsx` — last `@/lib/`: `@/lib/observability/sentry` (line 22); component at line 33; `<Box component="form">` at line 115
+     - `src/components/ForgottenPasswordForm/ForgottenPasswordForm.tsx` — last `@/lib/`: `@/lib/urls` (line 18); component at line 20; `<Box component="form">` at line 81
+     - `src/components/GameInvitationResponseForm/GameInvitationResponseForm.tsx` — last `@/lib/`: `@/lib/observability/sentry` (line 26); `<Box component="form">` at line 177
+     - `src/components/GameResultForm/GameResultForm.tsx` — last `@/lib/`: `@/lib/config` (line 10); component at line 20; `<Box component="form">` at line 87
+     - `src/components/InvoiceForm/InvoiceForm.tsx` — last `@/lib/`: `@/lib/observability/sentry` (line 31); component at line 60; `<Box component="form">` at line 190 (conditionally rendered)
+     - `src/components/MoneyForm/MoneyForm.tsx` — form is in `DebtRow` sub-component (starts line 76); last `@/lib/`: `@/lib/observability/sentry` (line 30); `<Box component="form">` at line 172
+     - `src/components/MoreGamesForm/MoreGamesForm.tsx` — last `@/lib/`: `@/lib/observability/sentry` (line 31); component at line 47; `<Box component="form">` at line 138
+     - `src/components/NewPlayerForm/NewPlayerForm.tsx` — last `@/lib/`: `@/lib/observability/sentry` (line 23); component at line 49; `<Box component="form">` at line 173
+     - `src/components/PasswordChangeForm/PasswordChangeForm.tsx` — last `@/lib/`: `@/lib/config` (line 22); `<Box component="form">` at line 109
+     - `src/components/PasswordResetForm/PasswordResetForm.tsx` — last `@/lib/`: `@/lib/errors` (line 22); has early return for invalid token at line 107; `<Box component="form">` at line 127 (in main return only)
+     - `src/components/PlayerProfileForm/PlayerProfileForm.tsx` — last `@/lib/`: `@/lib/observability/sentry` (line 33); component at line 56; `<Box component="form">` at line 199
+     - `src/components/SendEmailForm/SendEmailForm.tsx` — last `@/lib/`: `@/lib/observability/sentry` (line 17); component at line 32; **native `<form>`** at line 126 (not Box)
+     - `src/components/SignIn/SignIn.tsx` — last `@/lib/`: `@/lib/urls` (line 27); component at line 34; `<Box component="form">` at line 139; has early return at line 84
+
+4. Errors and fixes:
+   - **`{ ...; true; }` brace grouping in npm script failed**: The first attempt to add a port-kill inline in `start:playwright` used shell brace grouping which npm's shell doesn't parse correctly. Fix: extracted to a separate named script `kill-port-3002`.
+   - **`kill-port-3002` caused all 67 tests to fail**: Even after extracting to a named script, all tests got ERR_CONNECTION_REFUSED. Root cause: I had run `npm run start:playwright &` manually in the same session, killed only the npm wrapper with `kill %1`, leaving a `next-server` orphan process on port 3002. The `kill-port-3002` script correctly killed this orphan, then `next start` started fresh, but by this time the user had already run tests against the stale server in the previous run.
+   - **Orphaned next-server from manual testing**: I ran `npm run start:playwright` in background to test, killed it with `kill %1` which only kills the npm process, not `next-server` child. Found and killed PID 18524. Lesson: Playwright teardown has the same issue.
+   - **`kill-port-3002` reverted**: User asked to remove changes that weren't needed to fix the test failures. The port-kill script was correctly reverted along with the `e2e/utils/auth.ts` whitespace-only changes.
+
+5. Problem Solving:
+   - **Core fix confirmed**: `useSyncExternalStore` in `useHydrated.ts` correctly sets `data-hydrated="true"` after hydration in all 5 browsers. DIAG test from previous session proved this; once the DIAG test was removed and tests ran against current build, 35/35 passed for info.spec.ts and 30/30 for newgame+responses.
+   - **Root cause of historical stale-build confusion**: Playwright kills the npm wrapper process on teardown but leaves `next-server` as an orphan. New test runs find the stale server on port 3002 and either throw (with `reuseExistingServer: false`) or reuse it. The stale server serves the old `.next` build.
+   - **Scope of fix**: The `data-hydrated` pattern needs to be on all form components, not just those currently tested with interactions. The user explicitly requested this to prevent future test failures.
+
+6. All user messages:
+   - (Continuation from previous session — user had already approved the `useSyncExternalStore` approach)
+   - "I was rebuilding each time, so the only explanation I can think of for a stale build is that the server on 3002 was an old one that wasn't being replaced with the up to date build"
+   - "I remember setting that to 'false' - how come it was back to !process.env.CI?"
+   - "So I need something that guarantees the check for a new build and killing any old process as necessary always happens - it SHOULD NEVER just silently re-use the old stale server"
+   - "Sigh" [paste of all 67 tests failing with ERR_CONNECTION_REFUSED — first time, after kill-port-3002 script added]
+   - "Sigh" [paste of all 67 tests failing with ERR_CONNECTION_REFUSED — second time, same error]
+   - "OK, I needed to restart VS Code to get Playwright tests to pass in the Test Explorer. Now go back over this whole session and think about removing whatever changes turned out not to be the ones needed to fix these test failures."
+   - "Are there only 4 pages with forms? Should the same fix be applied to other tests?"
+   - "I'd prefer it to be applied everywhere so that if and when the tests are extended to include form interaction they don't start spookily failing"
+   - [CRITICAL tool-restriction message — text only, no tools, summarize conversation]
+
+7. Pending Tasks:
+   - Apply the `useHydrated` + `data-hydrated` pattern to ALL 14 remaining form components:
+     1. `ClaimSignup` — add import after `@/lib/urls` (line 24), `const hydrated = useHydrated();` in component body, `data-hydrated={hydrated || undefined}` on `<Box component="form">` at line 126
+     2. `DeleteAccountForm` — add after `@/lib/observability/sentry` (line 22), component at line 33, form at line 115
+     3. `ForgottenPasswordForm` — add after `@/lib/urls` (line 18), component at line 20, form at line 81
+     4. `GameInvitationResponseForm` — add after `@/lib/observability/sentry` (line 26), form at line 177
+     5. `GameResultForm` — add after `@/lib/config` (line 10), component closes at line 25, form at line 87
+     6. `InvoiceForm` — add after `@/lib/observability/sentry` (line 31), component at line 60, form at line 190
+     7. `MoneyForm` — add to `DebtRow` sub-component (starts line 76), form at line 172
+     8. `MoreGamesForm` — add after `@/lib/observability/sentry` (line 31), component at line 47, form at line 138
+     9. `NewPlayerForm` — add after `@/lib/observability/sentry` (line 23), component at line 49, form at line 173
+     10. `PasswordChangeForm` — add after `@/lib/config` (line 22), form at line 109
+     11. `PasswordResetForm` — add after `@/lib/errors` (line 22), form at line 127 (main return only, not early return at line 107)
+     12. `PlayerProfileForm` — add after `@/lib/observability/sentry` (line 33), component at line 56, form at line 199
+     13. `SendEmailForm` — add after `@/lib/observability/sentry` (line 17), component at line 32, **native `<form>` at line 126** (not Box — needs `data-hydrated` on the `<form>` element itself)
+     14. `SignIn` — add after `@/lib/urls` (line 27), component at line 34, form at line 139
+   - Run `npm run typecheck` and `npm run lint` after all edits (run `lint:fix` first if needed)
+
+8. Current Work:
+   The session was mid-way through reading all 14 remaining form components to gather the information needed to apply the `useHydrated` fix. All reads had been completed for the import positions and component/form element locations. The task was interrupted by this summary request before any edits were made to the 14 remaining components.
+
+   The pattern to apply to each component is:
+   ```tsx
+   // 1. Add import (alphabetically sorted with other @/lib/ imports):
+   import { useHydrated } from '@/lib/useHydrated';
+
+   // 2. Add at top of component function body:
+   const hydrated = useHydrated();
+
+   // 3. Add to Box component="form":
+   <Box component="form" ... data-hydrated={hydrated || undefined}>
+
+   // OR for SendEmailForm's native form:
+   <form onSubmit={...} data-hydrated={hydrated || undefined}>
+   ```
+
+   Special case for `MoneyForm`: the `useHydrated` hook and `data-hydrated` attribute must be added to the `DebtRow` sub-component (defined at line 76 in MoneyForm.tsx), not to the outer `MoneyForm` component, because that's where the `<Box component="form">` lives.
+
+9. Optional Next Step:
+   Apply `useHydrated` + `data-hydrated` to all 14 remaining form components as the user explicitly requested: "I'd prefer it to be applied everywhere so that if and when the tests are extended to include form interaction they don't start spookily failing."
+
+   Starting with the components where the import position and form element are clearly known from the reads already done:
+   - `ForgottenPasswordForm`: insert `import { useHydrated } from '@/lib/useHydrated';` after line 18 (`@/lib/urls`), add `const hydrated = useHydrated();` after line 20 component opening, add `data-hydrated={hydrated || undefined}` to `<Box` at line 81
+   - `GameResultForm`: insert import after line 10 (`@/lib/config`), add hook to component body, add attribute to `<Box component="form">` at line 87
+   - Continue for all 14 remaining components, then run `npm run typecheck` and `npm run lint`.
+
+If you need specific details from before compaction (like exact code snippets, error messages, or content you generated), read the full transcript at: /Users/toastboy/.claude/projects/-Volumes-Development-next-www-toastboy/4252b3b0-b91c-4aa3-a9bd-e25b1d89a2d4.jsonl
+Continue the conversation from where it left off without asking the user any further questions. Resume directly — do not acknowledge the summary, do not recap what was happening, do not preface with "I'll continue" or similar. Pick up the last task as if the break never happened.

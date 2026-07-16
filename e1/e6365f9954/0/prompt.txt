@@ -1,0 +1,1 @@
+The secrets.ts is missing quite a lot of coverage, mainly it seems for the case where it loads them from the filesystem instead of the env

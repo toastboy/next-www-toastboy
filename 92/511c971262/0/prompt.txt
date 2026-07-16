@@ -1,0 +1,1 @@
+I wonder if I'm being inconsistent with how the split between src/actions and src/lib/actions works. Not all src/actions code is a simple trampoline so that the core action in src/lib can be mocked. What do you recommend?

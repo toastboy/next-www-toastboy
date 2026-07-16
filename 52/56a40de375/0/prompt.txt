@@ -1,0 +1,1 @@
+Now, how could this bug have been caught in the first place? Presumably it's possible to notice that table ranks don't match the relative scores. How can we address that?

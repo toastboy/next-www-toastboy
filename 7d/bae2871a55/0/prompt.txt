@@ -1,0 +1,42 @@
+Some player profiles fail to load. I need to find out why. For example, while http://localhost:3000/footy/player/89 works fine, http://localhost:3000/footy/player/88 fails. Also what off-the-shelf tools exist for a next.js project to enumerate all internal site links and test them all?
+
+---
+
+yes
+
+---
+
+decodeURIComponent(email) can throw a URIError if the input contains malformed percent-encoding (e.g. user-supplied query params). To avoid a hard crash, wrap decoding in a try/catch (fall back to the raw string) or validate/sanitize the input before decoding.
+
+---
+
+queue.includes(pathname) is an O(n) scan inside the crawl loop. Even with MAX_PAGES capped, this can add unnecessary overhead; consider tracking an enqueued Set (add when pushing, delete when shifting) to make membership checks O(1).
+
+---
+
+Error: Broken pages found:
+/ -> navigation failed: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/
+Call log:
+  - navigating to "http://127.0.0.1:3002/", waiting until "load"
+
+
+
+expect(received).toEqual(expected) // deep equality
+
+- Expected  - 1
++ Received  + 6
+
+- Array []
++ Array [
++   "/ -> navigation failed: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:3002/
++ Call log:
++   - navigating to \"http://127.0.0.1:3002/\", waiting until \"load\"
++ ",
++ ]
+    at e2e/site-crawl.spec.ts:104:69
+
+Context for AI
+
+---
+
+If MAX_PAGES is an overall limit for the site crawl, that's too low. There are more than 250 players, more or less, and more than 1000 games

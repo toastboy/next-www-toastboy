@@ -1,0 +1,31 @@
+It looks like the recent changes from NativeSelect to Select have broken some Storybook tests: within(<div#storybook-root>).findByLabelText(/Response/i)
+
+userEvent.selectOptions(<input#mantine-d7ro5ljqc>, "Yes")
+Value "Yes" not found in options
+See the full stack trace in the browser console.
+
+Caught exception in play function
+TestingLibraryElementError: Value "Yes" not found in options
+
+Ignored nodes: comments, script, style
+<input
+  aria-expanded="false"
+  aria-haspopup="listbox"
+  autocomplete="off"
+  class="m_8fb7ebe7 mantine-Input-input mantine-Select-input"
+  data-variant="default"
+  id="mantine-d7ro5ljqc"
+  readonly=""
+  role="combobox"
+  value="Dunno"
+/>
+    at Object.getElementError (http://localhost:6006/node_modules/.cache/storybook/10.4.6/1c3385a5d25e538d10b518b310c74d3ca2690b6aaffeadccd74da79736171f86/sb-vite/deps/storybook_internal_preview_runtime.js?v=07e75e9d:24677:53)
+    at http://localhost:6006/node_modules/.cache/storybook/10.4.6/1c3385a5d25e538d10b518b310c74d3ca2690b6aaffeadccd74da79736171f86/sb-vite/deps/storybook_internal_preview_runtime.js?v=07e75e9d:28718:23
+    at Array.map (<anonymous>)
+    at Object.selectOptionsBase (http://localhost:6006/node_modules/.cache/storybook/10.4.6/1c3385a5d25e538d10b518b310c74d3ca2690b6aaffeadccd74da79736171f86/sb-vite/deps/storybook_internal_preview_runtime.js?v=07e75e9d:28713:166)
+    at Object.selectOptions (http://localhost:6006/node_modules/.cache/storybook/10.4.6/1c3385a5d25e538d10b518b310c74d3ca2690b6aaffeadccd74da79736171f86/sb-vite/deps/storybook_internal_preview_runtime.js?v=07e75e9d:28706:27)
+    at http://localhost:6006/node_modules/.cache/storybook/10.4.6/1c3385a5d25e538d10b518b310c74d3ca2690b6aaffeadccd74da79736171f86/sb-vite/deps/storybook_internal_preview_runtime.js?v=07e75e9d:28876:69
+    at Object.asyncWrapper (http://localhost:6006/node_modules/@storybook/react/dist/_browser-chunks/chunk-3HUEQMBJ.js?v=07e75e9d:144:25)
+    at wrapAsync (http://localhost:6006/node_modules/.cache/storybook/10.4.6/1c3385a5d25e538d10b518b310c74d3ca2690b6aaffeadccd74da79736171f86/sb-vite/deps/storybook_internal_preview_runtime.js?v=07e75e9d:28823:22)
+    at Object.method [as selectOptions] (http://localhost:6006/node_modules/.cache/storybook/10.4.6/1c3385a5d25e538d10b518b310c74d3ca2690b6aaffeadccd74da79736171f86/sb-vite/deps/storybook_internal_preview_runtime.js?v=07e75e9d:28876:48)
+    at Instrumenter.invoke (http://localhost:6006/node_modules/.cache/storybook/10.4.6/1c3385a5d25e538d10b518b310c74d3ca2690b6aaffeadccd74da79736171f86/sb-vite/deps/storybook_internal_preview_runtime.js?v=07e75e9d:17708:21)

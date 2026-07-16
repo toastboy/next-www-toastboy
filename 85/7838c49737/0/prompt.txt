@@ -1,0 +1,1 @@
+I'd prefer it to be applied everywhere so that if and when the tests are extended to include form interaction they don't start spookily failing

@@ -1,0 +1,1 @@
+Does GitHub Actions have a built-in function to rebase and merge PRs automatically if all checks pass?

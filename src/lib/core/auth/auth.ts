@@ -6,6 +6,7 @@ import { headers } from 'next/headers';
 import { auth } from '@/lib/auth';
 import { getMockAuthState, getMockUsersList } from '@/lib/auth.server';
 import { AuthError } from '@/lib/errors';
+import { safeDecodeURIComponent } from '@/lib/urls';
 
 export type UserWithRolePayload = Omit<UserWithRole, 'createdAt' | 'updatedAt' | 'banExpires'> & {
     createdAt: string;
@@ -57,19 +58,22 @@ const serializeUserDates = (user: UserWithRole): UserWithRolePayload => ({
  *
  * @param email - Optional email address to filter users by (supports partial
  * matches)
+ * @param limit - Maximum number of users to fetch when `email` is absent
+ * (ignored when searching by email). Defaults to 10.
  * @param deps - Authentication dependencies including auth API and mock state
  * handlers
  * @returns Promise resolving to an array of users with serialized dates
  */
 export async function listUsersActionCore(
     email?: string,
+    limit = 10,
     deps: AuthDeps = defaultDeps,
 ): Promise<UserWithRolePayload[]> {
     const mockState = await deps.getMockAuthState();
     if (mockState === 'admin') {
         const users = deps.getMockUsersList();
         if (!email) return users.map(serializeUserDates);
-        const decodedEmail = decodeURIComponent(email);
+        const decodedEmail = safeDecodeURIComponent(email);
         return users
             .filter((user) => user.email.toLowerCase().includes(decodedEmail.toLowerCase()))
             .map(serializeUserDates);
@@ -84,10 +88,10 @@ export async function listUsersActionCore(
             {
                 searchField: 'email',
                 searchOperator: 'contains',
-                searchValue: decodeURIComponent(email),
+                searchValue: safeDecodeURIComponent(email),
             } :
             {
-                limit: 10,
+                limit,
             },
     });
 

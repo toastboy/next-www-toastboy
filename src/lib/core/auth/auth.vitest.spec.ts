@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { listUsersActionCore, setAdminRoleActionCore } from '@/lib/core/auth';
 import { AuthError } from '@/lib/errors';
 
-type AuthDeps = NonNullable<Parameters<typeof listUsersActionCore>[1]>;
+type AuthDeps = NonNullable<Parameters<typeof listUsersActionCore>[2]>;
 
 const createDeps = (overrides: Partial<AuthDeps> = {}): AuthDeps => {
     const baseDeps = {
@@ -62,9 +62,10 @@ describe('listUsersActionCore', () => {
             getMockAuthState: vi.fn().mockResolvedValue('admin'),
         });
 
-        const allUsers = await listUsersActionCore(undefined, deps);
+        const allUsers = await listUsersActionCore(undefined, 10, deps);
         const filteredUsers = await listUsersActionCore(
             encodeURIComponent('ADMIN@EXAMPLE.COM'),
+            10,
             deps,
         );
 
@@ -82,10 +83,32 @@ describe('listUsersActionCore', () => {
             getMockAuthState: vi.fn().mockResolvedValue('user'),
         });
 
-        const users = await listUsersActionCore(undefined, deps);
+        const users = await listUsersActionCore(undefined, 10, deps);
 
         expect(users).toEqual([]);
         expect(deps.auth.api.listUsers).not.toHaveBeenCalled();
+    });
+
+    it('does not throw on malformed percent-encoding when filtering in mock admin mode', async () => {
+        const deps = createDeps({
+            getMockAuthState: vi.fn().mockResolvedValue('admin'),
+        });
+
+        // '%' not followed by two hex digits is malformed and would make a bare
+        // decodeURIComponent() throw a URIError.
+        await expect(listUsersActionCore('50%off', 10, deps)).resolves.toEqual([]);
+    });
+
+    it('does not throw on malformed percent-encoding when searching in live mode', async () => {
+        const deps = createDeps({
+            getMockAuthState: vi.fn().mockResolvedValue('none'),
+        });
+
+        await expect(listUsersActionCore('50%off', 10, deps)).resolves.toEqual([]);
+        const [listUsersPayload] = vi.mocked(deps.auth.api.listUsers).mock.calls[0] as [{
+            query: { searchValue: string };
+        }];
+        expect(listUsersPayload.query.searchValue).toBe('50%off');
     });
 
     it('calls auth api listUsers in live mode with decoded email query', async () => {
@@ -113,6 +136,7 @@ describe('listUsersActionCore', () => {
 
         const users = await listUsersActionCore(
             encodeURIComponent('real.user@example.com'),
+            10,
             deps,
         );
 
@@ -140,10 +164,21 @@ describe('listUsersActionCore', () => {
             getMockAuthState: vi.fn().mockResolvedValue('none'),
         });
 
-        await listUsersActionCore(undefined, deps);
+        await listUsersActionCore(undefined, 10, deps);
 
         const [listUsersPayload] = vi.mocked(deps.auth.api.listUsers).mock.calls[0] as [{ query: unknown }];
         expect(listUsersPayload.query).toEqual({ limit: 10 });
+    });
+
+    it('passes a custom limit through to the auth api when email is absent', async () => {
+        const deps = createDeps({
+            getMockAuthState: vi.fn().mockResolvedValue('none'),
+        });
+
+        await listUsersActionCore(undefined, 1000, deps);
+
+        const [listUsersPayload] = vi.mocked(deps.auth.api.listUsers).mock.calls[0] as [{ query: unknown }];
+        expect(listUsersPayload.query).toEqual({ limit: 1000 });
     });
 
     it('returns an empty array when the API response has no users', async () => {
@@ -152,7 +187,7 @@ describe('listUsersActionCore', () => {
         });
         vi.mocked(deps.auth.api.listUsers).mockResolvedValue(null as unknown as { users: []; total: number });
 
-        const users = await listUsersActionCore(undefined, deps);
+        const users = await listUsersActionCore(undefined, 10, deps);
 
         expect(users).toEqual([]);
     });
@@ -180,7 +215,7 @@ describe('listUsersActionCore', () => {
             total: 1,
         });
 
-        const users = await listUsersActionCore(undefined, deps);
+        const users = await listUsersActionCore(undefined, 10, deps);
 
         expect(users[0]?.createdAt).toBe('2025-06-01T00:00:00.000Z');
         expect(users[0]?.updatedAt).toBe('2025-06-02T00:00:00.000Z');
@@ -210,7 +245,7 @@ describe('listUsersActionCore', () => {
             total: 1,
         });
 
-        const users = await listUsersActionCore(undefined, deps);
+        const users = await listUsersActionCore(undefined, 10, deps);
 
         expect(users[0]?.banExpires).toBe('2025-06-30T00:00:00.000Z');
     });

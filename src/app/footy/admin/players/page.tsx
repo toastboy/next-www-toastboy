@@ -1,11 +1,10 @@
 import { Center, Container, Stack, Title } from '@mantine/core';
-import { headers } from 'next/headers';
 
+import { listUsersAction } from '@/actions/auth';
 import { addPlayerInvite } from '@/actions/createPlayer';
 import { sendEmail } from '@/actions/sendEmail';
 import { AdminPlayerList } from '@/components/AdminPlayerList/AdminPlayerList';
 import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
-import { auth } from '@/lib/auth';
 import playerService from '@/services/Player';
 import { FootyChannel } from '@/types/FootyChannel';
 
@@ -13,12 +12,7 @@ export const metadata = { title: 'Players Admin' };
 
 const AdminPlayersPage = async () => {
     const players = await playerService.getAll();
-    const users = (await auth.api.listUsers({
-        headers: await headers(),
-        query: {
-            limit: 1000,
-        },
-    }))?.users ?? [];
+    const users = await listUsersAction(undefined, 1000);
     const userEmails = users
         .map((user) => user.email)
         .filter((email): email is string => !!email);

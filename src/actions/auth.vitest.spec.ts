@@ -32,10 +32,10 @@ describe('listUsersAction wrapper', () => {
         expect(result).toBe(users);
     });
 
-    it('passes the optional email argument to listUsersActionCore', async () => {
-        await listUsersAction('alice@example.com');
+    it('passes the optional email and limit arguments to listUsersActionCore', async () => {
+        await listUsersAction('alice@example.com', 1000);
 
-        expect(listUsersActionCoreMock).toHaveBeenCalledWith('alice@example.com');
+        expect(listUsersActionCoreMock).toHaveBeenCalledWith('alice@example.com', 1000);
     });
 
     it('propagates AuthError when requireAdmin throws', async () => {

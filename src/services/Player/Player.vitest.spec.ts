@@ -800,10 +800,10 @@ describe('PlayerService', () => {
             expect(result).toEqual([2021, 2022, 2023, 0]);
         });
 
-        it('should return an empty array when the player has no outcomes', async () => {
+        it('should return [0] when the player has no outcomes, so All-time is still valid', async () => {
             (prisma.outcome.findMany as Mock).mockResolvedValueOnce([]);
             const result = await playerService.getYearsActive(1);
-            expect(result).toEqual([]);
+            expect(result).toEqual([0]);
         });
 
         it('should reject playerId 0 before hitting Prisma', async () => {

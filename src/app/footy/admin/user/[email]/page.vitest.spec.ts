@@ -42,6 +42,19 @@ describe('Admin User [email] page', () => {
         expect(listUsersAction).toHaveBeenCalledWith('alice@example.com');
     });
 
+    it('falls back to the raw email param, without capturing an unexpected error, when it is malformed percent-encoding', async () => {
+        (listUsersAction as Mock).mockResolvedValue([]);
+
+        // '%' not followed by two hex digits is malformed and would make a bare
+        // decodeURIComponent() throw a URIError.
+        await expect(
+            AdminUserPage({ params: Promise.resolve({ email: '50%off' }) }),
+        ).rejects.toThrow('not_found');
+
+        expect(listUsersAction).toHaveBeenCalledWith('50%off');
+        expect(captureUnexpectedError).not.toHaveBeenCalled();
+    });
+
     it('renders AdminUserData and AutoRefresh (Users channel) when the user is found', async () => {
         (listUsersAction as Mock).mockResolvedValue([user]);
 

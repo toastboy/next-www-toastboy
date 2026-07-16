@@ -408,7 +408,8 @@ class PlayerService {
      * way. That could be just responding to an invitation, going to the pub, or
      * playing a game of course.
      * @returns A promise that resolves to an array of distinct years: this will
-     * always include 0 for 'all time' if there's at least one active year.
+     * always include 0 for 'all time', even if the player has no active years,
+     * so that every player has a valid profile view.
      * @throws An error if there is a failure.
      */
     async getYearsActive(playerId: number): Promise<number[]> {
@@ -424,9 +425,7 @@ class PlayerService {
         });
         const years = outcomes.map(o => o.gameDay.date.getFullYear());
         const distinctYears = Array.from(new Set(years));
-        if (distinctYears.length) {
-            distinctYears.push(0);
-        }
+        distinctYears.push(0);
 
         return distinctYears;
     }

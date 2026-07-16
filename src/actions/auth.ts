@@ -11,12 +11,14 @@ import { FootyChannel } from '@/types/FootyChannel';
  * Lists auth users, optionally filtered by email.
  *
  * @param email - Optional email filter.
+ * @param limit - Maximum number of users to fetch when `email` is absent.
+ * Defaults to 10.
  * @throws {AuthError} When the user is not an admin.
  */
-export async function listUsersAction(email?: string) {
+export async function listUsersAction(email?: string, limit?: number) {
     await requireAdmin();
 
-    return await listUsersActionCore(email);
+    return await listUsersActionCore(email, limit);
 }
 
 /**

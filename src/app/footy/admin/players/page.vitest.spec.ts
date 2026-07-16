@@ -3,16 +3,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('services/Player');
 
-vi.mock('@/lib/auth', () => ({
-    auth: {
-        api: {
-            listUsers: vi.fn(),
-        },
-    },
-}));
-
-vi.mock('next/headers', () => ({
-    headers: vi.fn().mockResolvedValue(new Headers()),
+vi.mock('@/actions/auth', () => ({
+    listUsersAction: vi.fn(),
 }));
 
 vi.mock('@mantine/core', () => ({
@@ -30,10 +22,10 @@ vi.mock('@/components/AutoRefresh/AutoRefresh', () => ({
     AutoRefresh: function AutoRefresh() { return null; },
 }));
 
+import { listUsersAction } from '@/actions/auth';
 import { addPlayerInvite } from '@/actions/createPlayer';
 import { sendEmail } from '@/actions/sendEmail';
 import AdminPlayersPage from '@/app/footy/admin/players/page';
-import { auth } from '@/lib/auth';
 import playerService from '@/services/Player';
 import { findElement } from '@/tests/shared/reactTree';
 
@@ -47,7 +39,7 @@ describe('Admin Players page', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         (playerService.getAll as Mock).mockResolvedValue(players);
-        (auth.api.listUsers as unknown as Mock).mockResolvedValue({ users });
+        (listUsersAction as Mock).mockResolvedValue(users);
     });
 
     it('fetches all players from playerService', async () => {
@@ -56,12 +48,10 @@ describe('Admin Players page', () => {
         expect(playerService.getAll).toHaveBeenCalledTimes(1);
     });
 
-    it('fetches the user list from auth.api.listUsers', async () => {
+    it('fetches the user list via listUsersAction with a high limit', async () => {
         await AdminPlayersPage();
 
-        expect(auth.api.listUsers).toHaveBeenCalledWith(
-            expect.objectContaining({ query: { limit: 1000 } }),
-        );
+        expect(listUsersAction).toHaveBeenCalledWith(undefined, 1000);
     });
 
     it('builds the userEmails array from the user list, filtering out missing emails, preserving raw casing/whitespace', async () => {
@@ -81,8 +71,8 @@ describe('Admin Players page', () => {
         expect(list?.props.userIdByEmail).toEqual({ 'alice@example.com': 'user-1' });
     });
 
-    it('defaults to an empty user list when listUsers resolves nullish', async () => {
-        (auth.api.listUsers as unknown as Mock).mockResolvedValue(null);
+    it('defaults to an empty user list when listUsersAction resolves an empty array', async () => {
+        (listUsersAction as Mock).mockResolvedValue([]);
 
         const result = await AdminPlayersPage();
 

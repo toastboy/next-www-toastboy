@@ -1,6 +1,20 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
-import { getPublicBaseUrl } from '@/lib/urls';
+import { getPublicBaseUrl, safeDecodeURIComponent } from '@/lib/urls';
+
+describe('safeDecodeURIComponent', () => {
+    it('decodes a valid percent-encoded string', () => {
+        expect(safeDecodeURIComponent('alice%40example.com')).toBe('alice@example.com');
+    });
+
+    it('returns the input unchanged when it contains no percent-encoding', () => {
+        expect(safeDecodeURIComponent('alice@example.com')).toBe('alice@example.com');
+    });
+
+    it('returns the input unchanged when percent-encoding is malformed', () => {
+        expect(safeDecodeURIComponent('50%off@example.com')).toBe('50%off@example.com');
+    });
+});
 
 describe('getPublicBaseUrl', () => {
     afterEach(() => {

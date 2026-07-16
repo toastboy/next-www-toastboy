@@ -1,4 +1,17 @@
 /**
+ * Decodes a URI-encoded string, falling back to the original value unchanged
+ * if it contains malformed percent-encoding (which makes decodeURIComponent
+ * throw a URIError) rather than letting that crash the caller.
+ */
+export function safeDecodeURIComponent(value: string): string {
+    try {
+        return decodeURIComponent(value);
+    } catch {
+        return value;
+    }
+}
+
+/**
  * Returns the normalized public base URL for the application.
  *
  * Checks SITE_URL first (server-only, read at runtime — not baked in at build

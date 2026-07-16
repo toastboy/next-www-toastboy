@@ -4,6 +4,7 @@ import { listUsersAction } from '@/actions/auth';
 import { AdminUserData } from '@/components/AdminUserData/AdminUserData';
 import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
+import { safeDecodeURIComponent } from '@/lib/urls';
 import { FootyChannel } from '@/types/FootyChannel';
 
 interface PageProps {
@@ -17,7 +18,7 @@ const AdminUserPage = async (props: PageProps) => {
     let user;
 
     try {
-        const response = await listUsersAction(decodeURIComponent(email));
+        const response = await listUsersAction(safeDecodeURIComponent(email));
         user = response?.[0];
     }
     catch (error) {

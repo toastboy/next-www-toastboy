@@ -1,0 +1,1 @@
+Assuming 16px = 1em can produce incorrect breakpoint bucketing when the root font size is not 16px (user settings, browser zoom behavior, app CSS). Consider computing the current root font size via getComputedStyle(document.documentElement).fontSize and using that instead of a constant.

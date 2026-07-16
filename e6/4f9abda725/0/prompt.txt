@@ -1,0 +1,1 @@
+mugshotReady never resets if PlayerCard is reused for a different player (e.g., list virtualization or prop changes). That can leave overlays visible while the next mugshot is still loading. Consider resetting state when player.id changes (e.g., via an effect) and/or keying the mugshot by player.id so readiness is per-player.

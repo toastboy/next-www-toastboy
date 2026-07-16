@@ -1,0 +1,1 @@
+Using inert={!mugshotReady} relies on React correctly removing the attribute when false. To avoid any risk of rendering inert=\"false\" (which some browsers may still treat as inert because the attribute exists), consider conditionally adding/removing the attribute (e.g., only set inert when hidden). This also makes the intent clearer and avoids cross-browser quirks.

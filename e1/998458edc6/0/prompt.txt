@@ -1,0 +1,1 @@
+Switching extraEmails from a Zod-inferred type to a hand-maintained interface risks silent drift from the actual Prisma/Zod schema over time. Consider deriving PlayerExtraEmailType from the Prisma/Zod schema (or Prisma client types) and mapping to the { email, verified } display shape at the boundary layer instead.

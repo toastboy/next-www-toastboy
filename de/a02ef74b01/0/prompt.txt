@@ -1,0 +1,320 @@
+I started a free trial at Crunchbase but it's still not showing anything about previous funding rounds:
+
+
+Tokenovate Limited Logo
+Tokenovate Limited
+Growth Score
+70
+CB Rank
+225562
+Heat Score
+63
+Post-trade automation for derivatives and SFTs.
+Founded Feb 4, 2022
+Private
+Cambridge, Cambridgeshire, United Kingdom
+11-50
+www.tokenovate.com
+Blockchain
+Financial Services
+FinTech
+Software
+Overview
+ Predictions & Insights
+Growth Outlook
+Market Intelligence
+ People
+Profiles & Contacts
+ News
+News & Analysis
+ Technology
+Tech Details
+Lists Featuring This Company
+Frequently Asked Questions
+Overview
+Growth Score
+70
+-11 pts
+in past quarter
+Heat Score
+63
+-7 pts
+in past quarter
+Company Performance Metrics
+
+
+
+
+
+Score
+Apr 2024
+Heat Score
+59
+Growth Score
+4
++2
+About These Metrics
+Key People
+Photo of Andy Roberts
+Andy Roberts: Head of Engineering
+Past Role: RS Components, Head of API Engineering / Engineering Manager
+Photo of Jack Anderson
+Jack Anderson: Head of QA
+Past Role: Secondmind, Head of Quality
+Details
+Legal Name 
+Tokenovate Limited
+Also Known As 
+Tokenovate
+Operating Status 
+Active
+Company Type 
+For Profit
+Estimated Revenue Range 
+Less than $1M
+Founders 
+Gerard Banaszkiewicz, Richard Baker
+About the Company
+Tokenovate is a post-trade automation platform for derivatives and SFTs. Our unified, data-agnostic solution ensures seamless transaction processing across all asset classes, products and market infrastructures — no matter what you trade or where your assets are held.
+
+By operationalising and embedding CDM directly into our tech stack, we harness
+
+Contact Email 
+info@tokenovate.com
+Predictions & Insights
+Growth Prediction
+updated Jun 21, 2026
+96
+Future Growth
+Very Likely
+Top Contributing Factors
+Lorem ipsum dolor
+Funding Prediction
+updated Jun 19, 2026
+It is 
+lorem ipsum
+ that Tokenovate Limited will raise another funding round.
+Top Contributing Factors
+Key Employee Change
+Acquisition Prediction
+Lorem ipsum
+Top Contributing Factors
+Key Employee Change
+IPO Prediction
+Lorem ipsum
+Top Contributing Factors
+Key Employee Change
+Notable Events
+Key Employee Change
+Tokenovate Strengthens Team With Four Strategic Hires to Power Next Stage of Growth
+Nov 20, 2025
+lorem ipsum
+Unlock the complete set of predictions on funding, acquisitions, IPOs, and more 
+Research and Development Insight
+Tokenovate Limited is engaged in developing methods for creating digital tokens linked to physical assets, as described in 'Geo-linked token,' which details generating digital tokens for land parcels with associated attributes, and in 'Rateable token,' which outlines applying ratings to digital tokens representing assets, including metadata such as location and asset type. These activities focus on digital representation and evaluation of real-world assets.
+Products and Services
+This information is generated using AI and may include errors or omissions.
+Learn more.
+Product Name
+ 
+Product Description
+ 
+Tokenovate Platform    A cloud-based platform automating post-trade lifecycle events for derivatives and securities financing transactions using blockchain and smart contracts.
+Unified Trade Record    A standardized, immutable on-chain record consolidating all trade data into a single authoritative source for transaction accuracy.
+Tokenisation & Custody    A tokenisation engine and custody platform for digital assets that enhances collateral mobility and capital efficiency.
+Collateral Mobility    A service enabling rapid transfer of collateral between custodians to reduce risk and optimize capital returns.
+Digital Asset Tokenisation Framework    A framework for tokenising various asset workflows, including real-world assets and derivatives, using a common standard.
+Market Intelligence
+Competitors
+Company Name
+Competitive Products
+Shared Markets
+Shared Industries
+Feedback
+1.
+ION Logo
+ION
+Tokenovate Platform and Carbon Zero
+—
+Financial Services
+Software
+2.
+Murex Logo
+Murex
+Tokenovate Platform and MX.3 Platform
+Europe
+Software
+3.
+Finastra Logo
+Finastra
+Tokenisation & Custody and CloudMargin
+Europe, United Kingdom
+Financial Services
+FinTech
+4.
+ION Logo
+ION
+Tokenovate Platform and Carbon Zero
+—
+Financial Services
+Software
+5.
+Murex Logo
+Murex
+Tokenovate Platform and MX.3 Platform
+Europe
+Software
+Competitive Landscape
+Growth Score 
+high
+med
+low
+ION Logo
+ION
+N/A
+Murex Logo
+Murex
+N/A
+Finastra Logo
+Finastra
+$5.3B
+Broadridge Logo
+Broadridge
+$3.6B
+DTCC Logo
+DTCC
+N/A
+SmartStream Technologies Logo
+SmartStream Technologies
+N/A
+State Street Logo
+State Street
+$13.6B
+Tokenovate Limited Logo
+Tokenovate Limited
+N/A
+0
+15
+30
+45
+60
+75
+90
+105
+120
+135
+150
+165
+180
+195
+210
+225
+240
+255
+270
+Years Active
+People
+Headcount
+11-50
+Employee Profiles
+6
+Contacts
+6
+Employee Profiles
+Photo of Andy Roberts
+Andy Roberts
+Head of Engineering
+Photo of Jack Anderson
+Jack Anderson
+Head of QA
+Gerard Banaszkiewicz Logo
+Gerard Banaszkiewicz
+COO
+Photo of Ciaran McGonagle
+Ciaran McGonagle
+Chief Legal & Product Officer
+News
+News and Press
+News
+•
+Jun 18, 2026
+Crowdfund Insider — Stablecoins and Tokenized Deposits: European Banking Association Says Transition Needs Time, Tokenovate CEO Says Real Opportunity is with Settlements
+News
+•
+May 18, 2026
+Crowdfund Insider — Coinbase Europe, Tokenovate Comment on BoE, FCA Statement on Tokenization
+News
+•
+Apr 22, 2026
+Crowdfund Insider — City Minister Touts Measures to Advance Tokenization at UK Fintech Week
+News
+•
+Apr 15, 2026
+Crowdfund Insider — European Central Bank (ECB) Says Tokenization Adoption Will Take Time, Tokenovate CEO Says Changing the Asset Without Changing the Process Does Little
+Technology
+Monthly Web Visits
+53
+-91.05%
+in past month
+Data source:
+IT Spend
+$109.3K
+This year, Tokenovate Limited is projected to spend $109.3K on IT, according to Aberdeen.
+Data source:
+Active Website Tech Count
+61
+Tokenovate Limited is actively using 61 technologies for its website, according to BuiltWith. These include Viewport Meta, IPhone / Mobile Compatible, and  SSL by Default.
+Data source:
+Lists Featuring This Company
+Lists Featuring This Company
+
+Blockchain Companies With Fewer Than 100 Employees (Top 10K)
+9,955 Number of Organizations  •  $77.4B Total Funding Amount  •  35,214 Number of Investors
+
+United Kingdom Companies With More Than 10 Employees (Top 10K)
+9,956 Number of Organizations  •  $776.8B Total Funding Amount  •  34,919 Number of Investors
+
+FinTech Companies With Less Than $10M in Revenue (Top 10K)
+9,986 Number of Organizations  •  $129.9B Total Funding Amount  •  33,489 Number of Investors
+
+United Kingdom Blockchain Companies
+2,551 Number of Organizations  •  $6.6B Total Funding Amount  •  2,084 Number of Investors
+Frequently Asked Questions
+Where is Tokenovate Limited's headquarters? Tokenovate Limited is located in Cambridge, Cambridgeshire, United Kingdom.
+Who are Tokenovate Limited's competitors? Alternatives and possible competitors to Tokenovate Limited may include Finastra, State Street, and  Broadridge.
+
+Browse By: Organizations, People, Events
+Stay Connected
+Crunchbase Blog
+Crunchbase News
+Subscribe to the Crunchbase Daily
+Who We Are
+Company
+Careers
+Partners
+Press
+Contact Us
+Talk With Sales
+What We Do
+Crunchbase Pro
+Crunchbase Business
+Marketplace
+Data Licensing
+Customer Stories
+Pricing
+Helpful Links
+Create Profile
+Featured Lists and Searches
+Knowledge Center
+Privacy
+Do Not Sell My Info
+AI Content may contain mistakes and is not legal, financial or investment advice. Learn more.
+Terms of Service | Privacy Policy | Sitemap | © 2026 Crunchbase Inc. All Rights Reserved. (8fe006b 1)
+Cookie Settings | Do Not Sell or Share My Personal Info
+
+
+
+
+
+Search Crunchbase or Send Message
+Ask me about Crunchbase data

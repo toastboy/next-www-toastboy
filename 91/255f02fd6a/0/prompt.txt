@@ -1,0 +1,1 @@
+I just refactored to split out PlayerInfo from PlayerProfile which was getting too leggy. Update the storybook and tests in for PlayerInfo to match

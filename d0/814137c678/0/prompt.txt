@@ -1,0 +1,1 @@
+Consider explicitly configuring the MDX plugin (e.g., extension: /\\.mdx$/ and any remark/rehype plugins) rather than relying on defaults, to avoid unexpected behavior across Next/@next/mdx version changes and to make supported extensions clear.

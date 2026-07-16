@@ -1,0 +1,22 @@
+<task-notification>
+<task-id>a3eb937d72205243b</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/9ed1a5de-07ff-4a77-8240-d4587f1a97e3/tasks/a3eb937d72205243b.output</output-file>
+<status>completed</status>
+<summary>Agent "Outsider advisor on career move" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>The person asking this question has framed it as a career decision. It isn't. It's a retirement financing decision wearing a career costume.
+
+Four years to target retirement. That's the only number that matters here, and I notice it's barely in the frame.
+
+Fresh eyes immediately see: the "comparable package" claim is doing enormous hidden work. Self-funding insurance and pension contributions on a "comparable" gross salary means a materially lower net position. Nobody has quantified this. That's a red flag in a person who works in technology and presumably lives by data.
+
+The equity question went unanswered. For a scale-up FinTech, equity is either the main reason to take the risk or it's worthless — there's no middle. The fact that it was asked about and not answered, and the candidate is still proceeding, suggests motivated reasoning is already active.
+
+The framing "good place to see out your career" is being treated as a negative. Why? A stable employer four years from retirement is objectively valuable. The anxiety driving this interview process hasn't been named, and that unnamed thing is the real decision — not the job.
+
+What data to prioritise: Quantify the actual total compensation difference net of self-funded benefits. Get a concrete equity answer with vesting schedule and liquidation outlook. Ask directly: what does exit look like for this company in 4 years?
+
+But the prior question is: what problem is this solving? If the answer is "I'm bored" or "I feel undervalued," a final-stage technical interview at a FinTech is not the correct treatment. Name the actual problem first.</result>
+<usage><subagent_tokens>13772</subagent_tokens><tool_uses>0</tool_uses><duration_ms>11088</duration_ms></usage>
+</task-notification>

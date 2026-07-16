@@ -1,0 +1,1 @@
+Recipient deduplication is performed on raw email strings without normalization (trim/lowercase). This can result in duplicates like ' Alice@example.com ' vs 'alice@example.com', and may also send to whitespace-padded addresses. Consider normalizing (e.g., via the existing normalizeEmail) before inserting into the Set, and filter out empty strings after normalization.

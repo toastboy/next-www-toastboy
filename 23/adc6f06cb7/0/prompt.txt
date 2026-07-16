@@ -1,0 +1,1 @@
+Are there any more cases where this would be a sensible precaution? Can I go back to using Select instead of NativeSelect?

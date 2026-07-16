@@ -1,0 +1,1 @@
+I suppose the Cancelled state is not really needed either: if I'm keeping the mailSent date field then I can use the same inference as before: mailSent not null together with NoGame means cancelled

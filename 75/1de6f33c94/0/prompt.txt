@@ -1,0 +1,1 @@
+There’s coverage for skipping empty normalised extra emails, but not for whitespace-only (or otherwise normalising-to-empty) accountEmail. Add a similar test case with accountEmail: ' ' to prevent regressions and to catch the empty-string recipient bug on the accountEmail path.

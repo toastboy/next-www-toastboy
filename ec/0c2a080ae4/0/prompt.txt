@@ -1,0 +1,1 @@
+Refactor ClubBadge and CountryFlag so that the width and height are passed in because using cqw should always be used in components which define the container which references them.

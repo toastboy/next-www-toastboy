@@ -1,0 +1,1 @@
+So I need something that guarantees the check for a new build and killing any old process as necessary always happens - it SHOULD NEVER just silently re-use the old stale server

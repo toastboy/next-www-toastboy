@@ -1,0 +1,50 @@
+❯ npx playwright test e2e/info.spec.ts --grep "DIAG" --reporter=line                                           
+[WebServer] 
+[WebServer] > start:playwright
+[WebServer] > npm run check-build && PLAYWRIGHT_TEST=true SITE_URL=http://localhost:3002 next start --hostname 127.0.0.1 --port 3002
+[WebServer] 
+[WebServer] 
+[WebServer] > check-build
+[WebServer] > node -e "const fs=require('fs'),{execSync}=require('child_process');try{const b=fs.readFileSync('.next/BUILD_ID','utf8').trim(),h=execSync('git rev-parse HEAD').toString().trim();if(b!==h){console.error('Stale build ('+b.slice(0,8)+'), HEAD is '+h.slice(0,8)+'. Run: npm run build');process.exit(1);}}catch{console.error('No build found. Run: npm run build');process.exit(1);}"
+[WebServer] 
+[WebServer] ▲ Next.js 16.2.7
+[WebServer] - Local:         http://127.0.0.1:3002
+[WebServer] - Network:       http://127.0.0.1:3002
+[WebServer] ✓ Ready in 120ms
+
+⚙️  Seeding test database...
+
+> seed:playwright
+> DOTENV_CONFIG_PATH=.env.playwright npx tsx --tsconfig tsconfig.scripts.json -r tsconfig-paths/register prisma/seed.ci.ts
+
+🌱 CI seed script started
+  Created 20 players
+  Created 105 game days (104 historical + 1 upcoming)
+  Created 1352 outcomes
+  Created 1456 transactions
+  Calculating player records...
+  Player records done
+🌱 CI seed complete
+✅ Test database ready
+SyntaxError: /Volumes/Development/next-www-toastboy/e2e/info.spec.ts: Unexpected token (33:0)
+
+  31 |     //     mask: [page.locator('iframe[src*="google.com/maps"]')],
+  32 |     // });
+> 33 | });
+     | ^
+  34 |
+  35 | test.describe('EnquiryForm', () => {
+  36 |     test.beforeEach(async ({ page }) => {
+
+   at info.spec.ts:33
+
+  31 |     //     mask: [page.locator('iframe[src*="google.com/maps"]')],
+  32 |     // });
+> 33 | });
+  34 |
+  35 | test.describe('EnquiryForm', () => {
+  36 |     test.beforeEach(async ({ page }) => {
+
+Error: No tests found.
+Make sure that arguments are regular expressions matching test files.
+You may need to escape symbols like "$" or "*" and quote the arguments.

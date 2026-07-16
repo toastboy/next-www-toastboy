@@ -1,0 +1,1 @@
+So to add a button to email a specific player based on SendEmailForm I should make a new client component to include from PlayerProfile?

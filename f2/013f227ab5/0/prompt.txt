@@ -1,0 +1,1 @@
+loaded never resets when the image src changes (or when other props cause Mantine to render a new underlying <img>). This can leave the skeleton permanently hidden and can also prevent onReady from reflecting the new image lifecycle. Consider resetting loaded when imageProps.src changes (and/or tracking a readyCalled flag per src to avoid duplicate onReady calls).

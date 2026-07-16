@@ -1,0 +1,1 @@
+The component UI depends on having a usable display name (it shows a To: line), but PlayerEmailDataType allows name to be missing/null. Consider changing the prop type to PlayerEmailDataDisplayType[] (or documenting/enforcing a fallback like Player ${id} at the component boundary) so the UI doesn't silently render an empty recipient label.

@@ -1,0 +1,1 @@
+getDataById is ambiguous in a service that already has multiple 'get*' methods (e.g., getById). Consider renaming to something more specific like getEmailDataById / getContactDataById to make call sites and logs clearer.

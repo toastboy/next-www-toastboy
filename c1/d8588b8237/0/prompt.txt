@@ -1,0 +1,1 @@
+Now let's move on the to src/app folder. There are lots of actions files which are not covered but they're so simple I'm not sure it's worth bothering - unless they're covered in passing and the core files they're calling are the ones that are mocked

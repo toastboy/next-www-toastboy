@@ -50,6 +50,7 @@ export default async function RootLayout({
                 <MantineProvider defaultColorScheme="light">
                     <Notifications />
                     {/* <DebugBreakpoints /> */}
+                    {/* <DebugFontSizes targets={[{ label: 'PlayerLink', selector: '[class*="PlayerLink-module"]' }]} /> */}
                     <CustomAppShell user={user} devMode={devMode}>
                         {children}
                     </CustomAppShell>

@@ -23,7 +23,8 @@
     ],
     "ignore": [
         "src/components/DebugBreakpoints/DebugBreakpoints.tsx",
-        "src/components/DebugSizeOverlay/DebugSizeOverlay.tsx"
+        "src/components/DebugSizeOverlay/DebugSizeOverlay.tsx",
+        "src/components/DebugFontSizes/DebugFontSizes.tsx"
     ],
     "ignoreDependencies": [
         "@types/d3",

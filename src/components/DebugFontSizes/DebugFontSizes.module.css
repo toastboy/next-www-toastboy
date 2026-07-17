@@ -1,0 +1,28 @@
+.div {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    background-color: var(--mantine-color-black);
+    color: var(--mantine-color-white);
+    padding: var(--mantine-spacing-sm);
+    font-size: var(--mantine-font-size-xs);
+    z-index: 1000;
+    border-radius: var(--mantine-radius-md);
+    font-family: var(--mantine-font-family-monospace);
+    opacity: 0.6;
+}
+
+.p {
+    margin: 0px;
+}
+
+.table {
+    margin-top: var(--mantine-spacing-xs);
+}
+
+.td {
+    padding: 2px var(--mantine-spacing-xs) 2px 0px;
+    color: var(--mantine-color-white);
+    font-size: var(--mantine-font-size-xs);
+    border: none;
+}

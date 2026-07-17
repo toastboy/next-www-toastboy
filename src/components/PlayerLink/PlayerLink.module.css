@@ -1,0 +1,5 @@
+.link {
+    /* Fluid scaling between a 12px mobile floor and a 20px desktop ceiling,
+       reached at a ~1280px viewport width and held flat beyond it. */
+    font-size: clamp(0.75rem, 0.5rem + 0.5vw, 1.25rem);
+}

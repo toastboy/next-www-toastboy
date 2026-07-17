@@ -3,6 +3,7 @@ import 'dotenv/config';
 import { faker } from '@faker-js/faker';
 import { PrismaMariaDb } from '@prisma/adapter-mariadb';
 import { PlayerResponse, PrismaClient, TeamName, TransactionType } from 'prisma/generated/client';
+import { nextFriday } from 'prisma/seedDates';
 import playerRecordService from '@/services/PlayerRecord';
 
 // Fixed seed for reproducible test data
@@ -17,15 +18,6 @@ const prisma = new PrismaClient({ adapter });
 const PLAYER_COUNT = 20;
 const COST_PENCE = 500;       // £5 per player per game
 const HALL_COST_PENCE = 2000; // £20 hall hire per game
-
-/** Next Friday at 19:00 from a given date */
-function nextFriday(from: Date): Date {
-    const d = new Date(from);
-    const daysUntilFriday = ((5 - d.getDay()) + 7) % 7 || 7;
-    d.setDate(d.getDate() + daysUntilFriday);
-    d.setHours(19, 0, 0, 0);
-    return d;
-}
 
 async function main() {
     console.log('🌱 CI seed script started');

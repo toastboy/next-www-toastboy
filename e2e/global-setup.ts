@@ -14,16 +14,29 @@ import { execSync } from 'node:child_process';
  * This function only inserts/replaces data, which is safe while the server
  * is running.
  *
- * When SKIP_DB_SEED is set, seeding is skipped entirely - used by CI when the
+ * When SKIP_DB_SEED is set, the full seed is skipped - used by CI when the
  * `db` container was started from a pre-seeded image (see
  * .github/workflows/publish-seeded-db-image.yml) rather than a bare
  * `mariadb:lts`, so the data is already there. `prisma db push` still runs as
  * a separate CI step regardless, so schema changes on a branch not yet
  * baked into that image are still applied correctly.
+ *
+ * That image is only rebuilt when prisma/schema.prisma or prisma/seed.ci.ts
+ * change, so the single "upcoming" game day it bakes in goes stale as real
+ * time passes it - once its date is in the past, gameDayService.getUpcoming()
+ * finds no game at all and invitation-sending is skipped regardless of the
+ * override flag. So even when the full seed is skipped, that one row's date
+ * is still re-pointed at the next Friday from now.
  */
 export default function globalSetup() {
     if (process.env.SKIP_DB_SEED) {
-        console.log('⚙️  Skipping database seed - using pre-seeded image');
+        console.log('⚙️  Refreshing upcoming game day on pre-seeded image...');
+        if (process.env.CI) {
+            execSync('npm run refresh:upcoming-gameday:ci', { stdio: 'inherit' });
+        } else {
+            execSync('npm run refresh:upcoming-gameday:playwright', { stdio: 'inherit' });
+        }
+        console.log('✅ Upcoming game day refreshed');
         return;
     }
 

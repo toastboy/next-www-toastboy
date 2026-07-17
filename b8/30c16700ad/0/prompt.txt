@@ -1,0 +1,24 @@
+Players who've only played one game seem to show an off by one or similar in the player heat map, for example http://localhost:3000/footy/player/75 shows one game played, but all grey dots on the heat map.
+
+---
+
+<task-notification>
+<task-id>a5700de08de346355</task-id>
+<tool-use-id>toolu_01WMouhb9UwgCWhP8aQwpasX</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/db50d4fb-08de-45e0-aeb4-6d68bf572aee/tasks/a5700de08de346355.output</output-file>
+<status>completed</status>
+<summary>Agent "Find player heat map code" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>Note: claude-sonnet-5 (the safety classifier) was unavailable when reviewing this subagent's work. Please carefully verify the subagent's actions and output before acting on them.
+
+API Error: 529 Overloaded. This is a server-side issue, usually temporary — try again in a moment. If it persists, check https://status.claude.com.</result>
+<usage><subagent_tokens>254</subagent_tokens><tool_uses>14</tool_uses><duration_ms>343778</duration_ms></usage>
+</task-notification>
+
+---
+
+Never mind. That player has a start date after their first game for some reason.
+
+---
+
+I'm thinking it would be good to have either a migration or a cleanup step in the importlivedb script to spot bad data like this.

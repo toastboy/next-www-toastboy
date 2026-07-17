@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "b830c16700ad",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 3,
+  "files_touched": [
+    "src/lib/importlivedb/importlivedb.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/b8/30c16700ad/0/metadata.json",
+      "transcript": "/b8/30c16700ad/0/full.jsonl",
+      "compact_transcript": "/b8/30c16700ad/0/transcript.jsonl",
+      "content_hash": "/b8/30c16700ad/0/content_hash.txt",
+      "prompt": "/b8/30c16700ad/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 4306,
+    "cache_creation_tokens": 54259,
+    "cache_read_tokens": 1832241,
+    "output_tokens": 14068,
+    "api_call_count": 33
+  }
+}

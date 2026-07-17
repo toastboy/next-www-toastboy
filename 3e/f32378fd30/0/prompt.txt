@@ -1,0 +1,17 @@
+Look at PlayerLink. I just removed a line for 'fz' because it seems like a clumsy way of making text fix different viewport sizes and zoom levels. What's the cleanest way using Mantine to have responsive text sizes which scale appropriately for different scales: large desktop monitors (likely limited to 1280 pixels, following influential examples like the BBC website) on one extreme and small mobile phone screens at the other - more container queries?
+
+---
+
+Yes
+
+---
+
+OK, I think now what I need is another debug component alongside debugbreakpoints etc. to debug the font sizes. At some viewport widths they're not quite right and I need to tweak them
+
+---
+
+Uncommented it but when I run it the debug for PlayerLink says 'no match'
+
+---
+
+Explain how clamp works so I can tune the params

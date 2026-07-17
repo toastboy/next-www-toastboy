@@ -1,0 +1,142 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "3ef32378fd30",
+  "session_id": "62c678ac-d2ab-40f9-9955-1756de6671a0",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-17T12:19:08.270506Z",
+  "branch": "main",
+  "checkpoints_count": 5,
+  "save_step_count": 5,
+  "files_touched": [
+    "knip.json",
+    "src/app/layout.tsx",
+    "src/components/DebugFontSizes/DebugFontSizes.module.css",
+    "src/components/DebugFontSizes/DebugFontSizes.tsx",
+    "src/components/PlayerLink/PlayerLink.module.css",
+    "src/components/PlayerLink/PlayerLink.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "d41dd6f2cc3b",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 5945,
+    "cache_creation_tokens": 83609,
+    "cache_read_tokens": 2606221,
+    "output_tokens": 19699,
+    "api_call_count": 53
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_01GvPX4Kk23ieaFTU7cM3uKW",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "finalise"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "d41dd6f2cc3b",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 58,
+        "end": 59,
+        "entry_ids": [
+          "75541148-8226-4fe4-b814-79ecf0e2b9ba"
+        ],
+        "tool_use_id": "toolu_01GvPX4Kk23ieaFTU7cM3uKW"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01GvPX4Kk23ieaFTU7cM3uKW"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: finalise",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 5
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-07-17T12:19:08.251635Z",
+    "agent_lines": 126,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 5,
+    "human_removed": 2,
+    "total_committed": 129,
+    "total_lines_changed": 133,
+    "agent_percentage": 94.73684210526315,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 42,
+      "user_lines_removed": 1,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 41
+      },
+      "user_removed_per_file": {
+        "src/components/PlayerLink/PlayerLink.tsx": 1
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 42,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 1,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 41
+      }
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 42,
+      "user_lines_removed": 0,
+      "agent_lines_added": 8,
+      "agent_lines_removed": 1,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 41
+      }
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 44,
+      "user_lines_removed": 2,
+      "agent_lines_added": 133,
+      "agent_lines_removed": 2,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 41,
+        "src/app/layout.tsx": 2
+      },
+      "user_removed_per_file": {
+        "src/app/layout.tsx": 2
+      }
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 42,
+      "user_lines_removed": 0,
+      "agent_lines_added": 133,
+      "agent_lines_removed": 2,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 41
+      }
+    }
+  ]
+}

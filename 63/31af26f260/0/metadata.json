@@ -1,0 +1,55 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "6331af26f260",
+  "session_id": "a69109d2-1394-4097-8ede-c4ea15ef9657",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-17T19:43:12.422648Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "save_step_count": 1,
+  "files_touched": [
+    "e2e/newgame.spec.ts",
+    "src/components/NewGameForm/NewGameForm.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "e9988ca7d6a6",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 8384,
+    "cache_creation_tokens": 84969,
+    "cache_read_tokens": 3941891,
+    "output_tokens": 27913,
+    "api_call_count": 57
+  },
+  "session_metrics": {
+    "turn_count": 1
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-07-17T19:43:12.393576Z",
+    "agent_lines": 4,
+    "agent_removed": 1,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 4,
+    "total_lines_changed": 5,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 323,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 41,
+        "playwright-report-chromium/data/76d09d7c82e46282dcffba0fbe8f1c47dacac157.md": 191,
+        "playwright-report-chromium/index.html": 90
+      }
+    }
+  ]
+}

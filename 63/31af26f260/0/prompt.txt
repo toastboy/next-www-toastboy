@@ -1,0 +1,1 @@
+Look at playwright-report-chromium. The failure is that the game invitations are skipped, despite the override checkbox being ticked

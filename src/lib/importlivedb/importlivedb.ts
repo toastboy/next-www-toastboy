@@ -119,6 +119,65 @@ function buildPlayerEmailSeeds(
     return { accountEmailByPlayerId, extraEmailRows };
 }
 
+/**
+ * Corrects `player.joined`/`player.finished` dates that are inconsistent with
+ * the player's actual game history, e.g. a `joined` date that falls after the
+ * date of a game the player has an outcome for. Such inconsistencies have been
+ * seen in the legacy data (manually entered by league admins over many years)
+ * and cause players to be silently excluded from parts of their own game
+ * history — for example the profile heatmap, which bounds its date range by
+ * `joined`/`finished`.
+ *
+ * Widens `joined` back to (or `finished` forward to) the earliest/latest game
+ * day the player has an outcome for, logging a warning for every correction
+ * made so it can be reviewed.
+ *
+ * @returns A promise that resolves once all inconsistent players have been
+ * corrected.
+ */
+async function reconcilePlayerJoinedFinishedDates(): Promise<void> {
+    console.log('Reconciling player joined/finished dates against actual game history...');
+
+    const outcomes = await prisma.outcome.findMany({
+        where: { gameDay: { game: true } },
+        select: { playerId: true, gameDay: { select: { date: true } } },
+    });
+
+    const rangeByPlayer = new Map<number, { min: Date; max: Date }>();
+    for (const { playerId, gameDay: { date } } of outcomes) {
+        const existing = rangeByPlayer.get(playerId);
+        if (!existing) {
+            rangeByPlayer.set(playerId, { min: date, max: date });
+        } else {
+            if (date < existing.min) existing.min = date;
+            if (date > existing.max) existing.max = date;
+        }
+    }
+
+    const players = await prisma.player.findMany({
+        where: { id: { in: Array.from(rangeByPlayer.keys()) } },
+        select: { id: true, joined: true, finished: true },
+    });
+
+    for (const player of players) {
+        const range = rangeByPlayer.get(player.id)!;
+        const data: { joined?: Date; finished?: Date } = {};
+
+        if (player.joined && player.joined > range.min) {
+            console.warn(`Player ${player.id}: joined date ${player.joined.toISOString()} is after their earliest recorded game (${range.min.toISOString()}); correcting.`);
+            data.joined = range.min;
+        }
+        if (player.finished && player.finished < range.max) {
+            console.warn(`Player ${player.id}: finished date ${player.finished.toISOString()} is before their latest recorded game (${range.max.toISOString()}); correcting.`);
+            data.finished = range.max;
+        }
+
+        if (Object.keys(data).length > 0) {
+            await prisma.player.update({ where: { id: player.id }, data });
+        }
+    }
+}
+
 async function fetchLegacyPlayerEmailSources(): Promise<{ playerId: number; email: string | null }[]> {
     // The raw query here is OK because this is a temporary script and there is no user input
     const rows = await prisma.$queryRawUnsafe<{ id: number; email: string | null }[]>(
@@ -261,6 +320,8 @@ async function importBackup(): Promise<void> {
                 data: { accountEmail },
             });
         }
+
+        await reconcilePlayerJoinedFinishedDates();
 
         // Calculate player records from the migrated outcome data before the
         // reset so they can be included in the blob export and restored by

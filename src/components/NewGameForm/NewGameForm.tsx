@@ -2,6 +2,7 @@
 
 import { Box, Button, Checkbox, Stack, Textarea } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import { useMounted } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
@@ -17,6 +18,7 @@ interface Props {
 }
 
 export const NewGameForm = ({ onTriggerInvitations }: Props) => {
+    const mounted = useMounted();
     const form = useForm<NewGameInput>({
         initialValues: {
             overrideTimeCheck: false,
@@ -88,7 +90,7 @@ export const NewGameForm = ({ onTriggerInvitations }: Props) => {
                     minRows={6}
                     {...form.getInputProps('customMessage')}
                 />
-                <Button type="submit" w="fit-content">
+                <Button type="submit" w="fit-content" loading={!mounted}>
                     Send invitations
                 </Button>
             </Stack>

@@ -33,6 +33,7 @@ test.describe('New game flow', () => {
 
         await page.getByLabel(/Override time check/i).check();
         await page.getByLabel(/Custom message/i).fill(customMessage);
+        await expect(page.getByRole('button', { name: 'Send invitations' })).toBeEnabled();
         await page.getByRole('button', { name: 'Send invitations' }).click();
 
         await expect(page.getByText('Invitations ready')).toBeVisible({ timeout: 15000 });

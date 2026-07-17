@@ -1,0 +1,55 @@
+That didn't fix it:
+
+
+Search tests
+New game flow
+next »
+allows admins to send invitations and players can respond
+newgame.spec.ts:26
+16.3s
+chromium
+Error: expect(locator).toBeVisible() failed
+
+Locator: getByText('Invitations ready')
+Expected: visible
+Timeout: 15000ms
+Error: element(s) not found
+
+Call log:
+  - Expect "toBeVisible" with timeout 15000ms
+  - waiting for getByText('Invitations ready')
+
+
+  37 |         await page.getByRole('button', { name: 'Send invitations' }).click();
+  38 |
+> 39 |         await expect(page.getByText('Invitations ready')).toBeVisible({ timeout: 15000 });
+     |                                                           ^
+  40 |         await expect(page.getByText('Invitations can be sent now.')).toBeVisible({ timeout: 15000 });
+  41 |
+  42 |         const message = await waitForMessage(request, 'Toastboy FC invitation');
+    at /home/runner/work/next-www-toastboy/next-www-toastboy/e2e/newgame.spec.ts:39:59
+Filter steps
+Before Hooks
+40ms
+Navigate to "/footy/admin/newgame"— utils/auth.ts:104
+99ms
+Expect "toBeVisible" getByRole('heading', { name: /New game/i })— newgame.spec.ts:32
+199ms
+Check getByLabel(/Override time check/i)— newgame.spec.ts:34
+202ms
+Fill "Playwright invitation 1784317612703" getByLabel(/Custom message/i)— newgame.spec.ts:35
+31ms
+Expect "toBeEnabled" getByRole('button', { name: 'Send invitations' })— newgame.spec.ts:36
+8ms
+Click getByRole('button', { name: 'Send invitations' })— newgame.spec.ts:37
+94ms
+Expect "toBeVisible" getByText('Invitations ready')— newgame.spec.ts:39
+15.0s
+After Hooks
+656ms
+Worker Cleanup
+19ms
+
+screenshot
+video
+error-context

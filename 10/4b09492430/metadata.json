@@ -1,0 +1,30 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "104b09492430",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "e2e/global-setup.ts",
+    "package.json",
+    "prisma/refresh-upcoming-gameday.ts",
+    "prisma/seed.ci.ts",
+    "prisma/seedDates.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/10/4b09492430/0/metadata.json",
+      "transcript": "/10/4b09492430/0/full.jsonl",
+      "compact_transcript": "/10/4b09492430/0/transcript.jsonl",
+      "content_hash": "/10/4b09492430/0/content_hash.txt",
+      "prompt": "/10/4b09492430/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 725,
+    "cache_creation_tokens": 122431,
+    "cache_read_tokens": 4955666,
+    "output_tokens": 23916,
+    "api_call_count": 40
+  }
+}

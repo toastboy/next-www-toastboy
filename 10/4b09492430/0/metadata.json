@@ -1,0 +1,58 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "104b09492430",
+  "session_id": "a69109d2-1394-4097-8ede-c4ea15ef9657",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-17T20:14:55.244138Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "save_step_count": 1,
+  "files_touched": [
+    "e2e/global-setup.ts",
+    "package.json",
+    "prisma/refresh-upcoming-gameday.ts",
+    "prisma/seed.ci.ts",
+    "prisma/seedDates.ts"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "ea08107d5d6d",
+  "checkpoint_transcript_start": 222,
+  "transcript_lines_at_start": 222,
+  "compact_transcript_start": 60,
+  "token_usage": {
+    "input_tokens": 725,
+    "cache_creation_tokens": 122431,
+    "cache_read_tokens": 4955666,
+    "output_tokens": 23916,
+    "api_call_count": 40
+  },
+  "session_metrics": {
+    "turn_count": 2
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-07-17T20:14:55.192976Z",
+    "agent_lines": 88,
+    "agent_removed": 11,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 88,
+    "total_lines_changed": 99,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 42,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 41
+      }
+    }
+  ]
+}

@@ -1,0 +1,97 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "93d8ef952ad1",
+  "session_id": "3c4b4e8a-734e-4dad-848d-a0be6724d1f8",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-18T19:34:26.240442Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "save_step_count": 1,
+  "files_touched": [
+    "src/components/PlayerCard/PlayerCard.stories.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "3632740a61e6",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 104,
+    "cache_creation_tokens": 90162,
+    "cache_read_tokens": 2948825,
+    "output_tokens": 20605,
+    "api_call_count": 52
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_016bfGux33hkgvzsn2bvTaeE",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "finalise"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "3632740a61e6",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 53,
+        "end": 54,
+        "entry_ids": [
+          "7c03a877-8982-457b-a944-ae7c819e8420"
+        ],
+        "tool_use_id": "toolu_016bfGux33hkgvzsn2bvTaeE"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_016bfGux33hkgvzsn2bvTaeE"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: finalise",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 1
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-07-18T19:34:26.173772Z",
+    "agent_lines": 4,
+    "agent_removed": 3,
+    "human_added": 24,
+    "human_modified": 1,
+    "human_removed": 0,
+    "total_committed": 29,
+    "total_lines_changed": 32,
+    "agent_percentage": 21.875,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 42,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 41
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 42,
+      "user_lines_removed": 0,
+      "agent_lines_added": 5,
+      "agent_lines_removed": 3,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 41
+      }
+    }
+  ]
+}

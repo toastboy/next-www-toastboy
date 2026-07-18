@@ -1,0 +1,24 @@
+<ide_opened_file>The user opened the file /Volumes/Development/next-www-toastboy/src/components/RecordsTable/RecordsTable.tsx in the IDE. This may or may not be related to the current task.</ide_opened_file>
+The rank field selection logic is new and table-dependent. Add tests to verify each table value maps to the correct rank* property and that the UI renders '-' when the selected rank field is missing/undefined.
+
+---
+
+This test expects expectedRank, but the created record doesn’t set the ${rankField} value. If createMockPlayerRecordData() defaults change (or are randomized), the assertion can become flaky/incorrect. Make the test deterministic by passing { [rankField]: expectedRank } into createMockPlayerRecordData(...) for the first test case as well.
+
+---
+
+<ide_opened_file>The user opened the file /Volumes/Development/next-www-toastboy/src/components/RecordsTable/RecordsTable.tsx in the IDE. This may or may not be related to the current task.</ide_opened_file>
+This assumes table is always a valid key in rankFieldByTable at runtime. If an unexpected value slips through (e.g., from URL params or API payload), rankField becomes undefined, leading to record[rankField] reading record['undefined'] and scoreHeadingByTable[table] rendering blank. Consider adding a defensive fallback (and/or throwing a clear error) when no mapping exists.
+
+---
+
+<ide_selection>The user selected the lines 63 to 63 from /Volumes/Development/next-www-toastboy/src/components/RecordsTable/RecordsTable.vitest.spec.tsx:
+expect(rankCell).toHaveTextContent(String(expectedRank));
+
+This may or may not be related to the current task.</ide_selection>
+Selecting the first cell via getAllByRole('cell') is brittle because it depends on DOM order and table structure (additional columns/hidden cells could break it). Prefer scoping to the first data row and then selecting its first cell (e.g., query row and use within(row).getAllByRole('cell')[0]), or query by accessible name/heading association when possible.
+
+---
+
+<ide_opened_file>The user opened the file /Volumes/Development/next-www-toastboy/src/components/ImageWithPlaceholder/ImageWithPlaceholder.tsx in the IDE. This may or may not be related to the current task.</ide_opened_file>
+Add missing test coverage for ImageWithPlaceholder

@@ -31,6 +31,7 @@ export default defineConfig({
                 '**/*.vitest.spec.tsx',
                 '**/*Skeleton*',
                 'src/components/DebugBreakpoints/*.{ts,tsx}',
+                'src/components/DebugFontSizes/*.{ts,tsx}',
                 'src/components/DebugSizeOverlay/*.{ts,tsx}',
                 '**/index.ts',
                 '**/loading.tsx',

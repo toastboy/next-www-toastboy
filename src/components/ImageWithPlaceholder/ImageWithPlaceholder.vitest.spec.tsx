@@ -113,6 +113,39 @@ describe('ImageWithPlaceholder', () => {
         expect(onReady).toHaveBeenCalledTimes(2);
     });
 
+    it('does not call onReady twice if load fires more than once for the same src', () => {
+        const onReady = vi.fn();
+        render(
+            <Wrapper>
+                <ImageWithPlaceholder ratio={1} src="/example.png" alt="Example" onReady={onReady} />
+            </Wrapper>,
+        );
+
+        const img = screen.getByRole('img', { name: 'Example' });
+        fireEvent.load(img);
+        fireEvent.load(img);
+
+        expect(onReady).toHaveBeenCalledOnce();
+    });
+
+    it('does not call onReady again for the mount-time complete check when load also fires for the same src', () => {
+        // The race the mount-time `.complete` check guards against: the image
+        // is already resolved when the ref attaches, then the browser still
+        // fires a `load` event afterwards for the same src.
+        completeSpy.mockReturnValue(true);
+        const onReady = vi.fn();
+
+        render(
+            <Wrapper>
+                <ImageWithPlaceholder ratio={1} src="/example.png" alt="Example" onReady={onReady} />
+            </Wrapper>,
+        );
+
+        fireEvent.load(screen.getByRole('img', { name: 'Example' }));
+
+        expect(onReady).toHaveBeenCalledOnce();
+    });
+
     it('reveals immediately if the browser already resolved the image before mount (e.g. cache hit)', () => {
         // Simulates the race where the browser serves the image from cache so
         // fast that `.complete` is already true by the time React attaches

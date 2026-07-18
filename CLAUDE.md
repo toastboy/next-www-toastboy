@@ -116,6 +116,7 @@ export class SomeModelService {
 ### UI & Forms
 
 - Use Mantine components and hooks everywhere; avoid native HTML/CSS unless no Mantine equivalent exists. Never fall back to raw `<div>`, `<section>`, `<article>` etc. just to attach ARIA attributes — use Mantine's polymorphic `component` prop (e.g. `<Card component="section">`) or `role`/`aria-*` props on the Mantine element instead
+- Prefer Mantine style props (`bd`, `bg`, `c`, `w`, `h`, `m*`, `p*`, etc.) over the `style` prop or a CSS file/module. Only fall back to raw CSS/inline `style` when no Mantine style prop covers the property needed — CSS is the escape hatch, not the default
 - **Always** use Mantine `useForm` for form state — never write bespoke form handlers
 - Use `@tabler/icons-react` for icons
 - Notifications: use Mantine `notifications` with `autoClose` from `lib/config.ts`

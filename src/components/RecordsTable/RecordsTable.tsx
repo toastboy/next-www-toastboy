@@ -1,5 +1,6 @@
-import { Flex, Table, TableTbody, TableTd, TableTh, TableThead, TableTr } from '@mantine/core';
+import { Flex, Table, TableTbody, TableTd, TableTh, TableThead, TableTr, VisuallyHidden } from '@mantine/core';
 import { type TableName, TableNameSchema } from 'prisma/zod/schemas';
+import { useMemo } from 'react';
 
 import { PlayerLink } from '@/components/PlayerLink/PlayerLink';
 import { TableScore } from '@/components/TableScore/TableScore';
@@ -19,6 +20,8 @@ const rankFieldByTable = {
     [TableNameSchema.enum.pub]: 'rankPub',
 } satisfies Record<TableName, keyof PlayerRecordDataType>;
 
+type RankField = (typeof rankFieldByTable)[TableName];
+
 const scoreHeadingByTable = {
     [TableNameSchema.enum.points]: 'Points',
     [TableNameSchema.enum.averages]: 'Average',
@@ -27,9 +30,34 @@ const scoreHeadingByTable = {
     [TableNameSchema.enum.pub]: 'Pub Score',
 } satisfies Record<TableName, string>;
 
+interface RankDisplay {
+    text: string;
+    visible: boolean;
+}
+
+const rankDisplays = (records: PlayerRecordDataType[], rankField: RankField): RankDisplay[] => {
+    const displays: RankDisplay[] = [];
+    let prevRank: number | null | undefined;
+
+    for (const record of records) {
+        const rank = record[rankField];
+        const isMissing = rank === null || rank === undefined;
+
+        displays.push({
+            text: isMissing ? '-' : `${rank}`,
+            visible: isMissing || rank !== prevRank,
+        });
+
+        prevRank = rank;
+    }
+
+    return displays;
+};
+
 export const RecordsTable = ({ table, year, records }: Props) => {
     const rankField = rankFieldByTable[table];
     const scoreHeading = scoreHeadingByTable[table];
+    const ranks = useMemo(() => rankDisplays(records, rankField), [records, rankField]);
 
     return (
         <Flex direction="column" gap="md">
@@ -42,10 +70,15 @@ export const RecordsTable = ({ table, year, records }: Props) => {
                     </TableTr>
                 </TableThead>
                 <TableTbody>
-                    {records.map((record) => (
-                        <TableTr key={record.id}>
+                    {records.map((record, index) => (
+                        <TableTr
+                            key={record.id}
+                            bd={ranks[index + 1]?.visible === false ? '0' : undefined}
+                        >
                             <TableTd>
-                                {record[rankField] ?? '-'}
+                                {ranks[index].visible ?
+                                    ranks[index].text :
+                                    <VisuallyHidden>{ranks[index].text}</VisuallyHidden>}
                             </TableTd>
                             <TableTd>
                                 <PlayerLink player={record.player} year={year} />

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
-import { expect } from 'storybook/test';
+import { expect, waitFor } from 'storybook/test';
 
 import { defaultClubSupporterDataList } from '@/tests/mocks/data/clubSupporterData';
 import { defaultCountrySupporterDataList } from '@/tests/mocks/data/countrySupporterData';
@@ -33,9 +33,11 @@ export const NoClubsOrCountries: Story = {
         countries: [],
     },
     play: async ({ canvas }) => {
-        // Mugshot image should render for the player
+        // Mugshot image should render for the player. It stays at opacity 0
+        // behind a Skeleton until ImageWithPlaceholder's load/error handler
+        // fires, so wait for that rather than asserting immediately.
         const img = await canvas.findByRole('img', { name: /gary player/i });
-        await expect(img).toBeVisible();
+        await waitFor(() => expect(img).toBeVisible(), { timeout: 5000 });
     },
 };
 

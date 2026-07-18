@@ -1,0 +1,28 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "3d07369aefe6",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 14,
+  "files_touched": [
+    "CLAUDE.md",
+    "src/components/RecordsTable/RecordsTable.tsx",
+    "src/components/RecordsTable/RecordsTable.vitest.spec.tsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/3d/07369aefe6/0/metadata.json",
+      "transcript": "/3d/07369aefe6/0/full.jsonl",
+      "compact_transcript": "/3d/07369aefe6/0/transcript.jsonl",
+      "content_hash": "/3d/07369aefe6/0/content_hash.txt",
+      "prompt": "/3d/07369aefe6/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 227,
+    "cache_creation_tokens": 182286,
+    "cache_read_tokens": 9267746,
+    "output_tokens": 45679,
+    "api_call_count": 114
+  }
+}

@@ -1,0 +1,90 @@
+<ide_opened_file>The user opened the file /Volumes/Development/next-www-toastboy/vitest.unit.config.ts in the IDE. This may or may not be related to the current task.</ide_opened_file>
+Next - I want to treat equal ranks in tables specially. They should be displayed as, for example "2=" instead of "2" on the first row where they appear, and then not at all on the next one (assuming this is acceptable for accessibility).
+
+---
+
+<ide_opened_file>The user opened the file /Volumes/Development/next-www-toastboy/src/components/RecordsTable/RecordsTable.tsx in the IDE. This may or may not be related to the current task.</ide_opened_file>
+How does this look from an accessibility point of view?
+
+---
+
+Yes
+
+---
+
+<ide_opened_file>The user opened the file /Volumes/Development/next-www-toastboy/src/components/RecordsTable/RecordsTable.tsx in the IDE. This may or may not be related to the current task.</ide_opened_file>
+Actually I don't want the '=' in tied ranks. Update the tests
+
+---
+
+<ide_selection>The user selected the lines 112 to 112 from /Volumes/Development/next-www-toastboy/src/components/RecordsTable/RecordsTable.vitest.spec.tsx:
+it('blanks out subsequent tied rows visually, while keeping the rank in the accessible text', () => {
+
+This may or may not be related to the current task.</ide_selection>
+These tests verify the accessible text includes the rank for tied rows, but they don’t assert the 'visually blank' behavior described in the test name/comment. Add an assertion that the tied cell’s visible content is empty (e.g., check the rendered DOM structure for an empty visible text node alongside a VisuallyHidden element), so regressions don’t slip in.
+
+---
+
+<ide_selection>The user selected the lines 14 to 14 from /Volumes/Development/next-www-toastboy/src/components/RecordsTable/RecordsTable.tsx:
+type RankField = 'rankPoints' | 'rankAverages' | 'rankStalwart' | 'rankSpeedy' | 'rankPub';
+
+This may or may not be related to the current task.</ide_selection>
+RankField duplicates a subset of PlayerRecordDataType keys and can drift if the data type changes (e.g., rename/add/remove rank fields). Consider deriving this type from PlayerRecordDataType (e.g., keyof Pick<...>) or from the values of rankFieldByTable so the mapping and the type stay in sync.
+
+---
+
+<ide_selection>The user selected the lines 50 to 50 from /Volumes/Development/next-www-toastboy/src/components/RecordsTable/RecordsTable.tsx:
+const ranks = rankDisplays(records, rankField);
+
+This may or may not be related to the current task.</ide_selection>
+rankDisplays recomputes on every render even when records/rankField are unchanged. Consider memoizing with useMemo keyed by records and rankField (or computing inline during map) to avoid unnecessary work on rerenders, especially if records can be large.
+
+---
+
+<ide_selection>The user selected the lines 23 to 23 from /Volumes/Development/next-www-toastboy/src/components/RecordsTable/RecordsTable.tsx:
+type RankField = typeof rankFieldByTable[TableName];
+
+This may or may not be related to the current task.</ide_selection>
+The new rank display behavior adds branching for null/undefined ('-') and tie-handling. Current tests cover ties, but not the null/undefined path (and the interaction where multiple consecutive null/undefined ranks should not be treated as ties). Add a test case exercising records with missing rank values to lock in expected visible and accessible output.
+
+---
+
+<ide_selection>The user selected the lines 26 to 26 from /Volumes/Development/next-www-toastboy/src/components/RecordsTable/RecordsTable.vitest.spec.tsx:
+};
+
+This may or may not be related to the current task.</ide_selection>
+Using textContent directly will often include whitespace text nodes produced by JSX formatting/newlines, which can make these assertions flaky (e.g., '2\\n ' instead of '2'). Consider normalizing by trimming (and possibly collapsing whitespace) and defaulting null to an empty string.
+
+---
+
+<ide_selection>The user selected the lines 46 to 46 from /Volumes/Development/next-www-toastboy/src/components/RecordsTable/RecordsTable.tsx:
+};
+
+This may or may not be related to the current task.</ide_selection>
+This does two passes (build ranks, then map again) and relies on index - 1 lookups. Consider a single-pass implementation that tracks prevRank as you iterate records, which is simpler to read and slightly more efficient (and avoids any edge-case reasoning around index - 1).
+
+---
+
+<ide_opened_file>The user opened the file /Volumes/Development/next-www-toastboy/src/components/RecordsTable/RecordsTable.tsx in the IDE. This may or may not be related to the current task.</ide_opened_file>
+Now I'm using the same text for rank (dropped the '=') then RecordsTable can be much simpler, can't it? Just set the ranks string and a separate 'visible' flag?
+
+---
+
+<ide_selection>The user selected the lines 74 to 74 from /Volumes/Development/next-www-toastboy/src/components/RecordsTable/RecordsTable.tsx:
+TableTr
+
+This may or may not be related to the current task.</ide_selection>
+What's the neatest way of removing the bottom border from rows which have non-visible ranks below them?
+
+---
+
+Yes
+
+---
+
+Is it not possible just to use 'bd=0' in Mantine?
+
+---
+
+<ide_opened_file>The user opened the file /Volumes/Development/next-www-toastboy/src/components/RecordsTable/RecordsTable.tsx in the IDE. This may or may not be related to the current task.</ide_opened_file>
+Add to Claude.md that I always want to use Mantine style attributes over resorting to CSS wherever possible. CSS is the escape hatch.

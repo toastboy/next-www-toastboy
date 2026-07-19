@@ -1,0 +1,1 @@
+When I run the 'Storybook' task, the previous Storybook server isn't being killed despite choosing the extant Storybook in 'select instance to terminate'

@@ -34,13 +34,17 @@ export const NoClubsOrCountries: Story = {
     },
     play: async ({ canvas }) => {
         // ImageWithPlaceholder marks its <img> aria-busy until the real
-        // load/error event fires. Wait on that explicit signal rather than
-        // polling the CSS opacity it also drives, which is subject to
-        // transition-timing noise and forces a much longer timeout.
+        // load/error event fires — wait on that explicit signal rather than
+        // the CSS opacity it also drives, which depends on transition timing
+        // and getComputedStyle semantics. The 10s budget isn't about that
+        // ambiguity though: it's real headroom for when the whole Storybook
+        // suite runs and dozens of images across other stories are decoding
+        // under CPU contention at the same time (see testTimeout in
+        // vitest.config.ts, which must exceed this).
         await waitFor(() => {
             const img = canvas.getByRole('img', { name: /gary player/i, busy: false });
             return expect(img).toBeVisible();
-        }, { timeout: 6000 });
+        }, { timeout: 10000 });
     },
 };
 

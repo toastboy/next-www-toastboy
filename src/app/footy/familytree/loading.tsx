@@ -4,7 +4,7 @@ import { FamilyTreeSkeleton } from '@/components/FamilyTree/FamilyTreeSkeleton';
 
 /** Loading state for the family tree page. */
 const Loading = () => (
-    <Paper shadow="xl" p="xl">
+    <Paper p="xl">
         <FamilyTreeSkeleton />
     </Paper>
 );

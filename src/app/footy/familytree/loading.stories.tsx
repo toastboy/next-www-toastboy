@@ -31,7 +31,7 @@ export const Comparison: Story = {
             </Stack>
             <Stack flex={1}>
                 <Text fw={700} c="dimmed" ta="center">Loaded</Text>
-                <Paper shadow="xl" p="xl">
+                <Paper p="xl">
                     <FamilyTree data={defaultFamilyTree} />
                 </Paper>
             </Stack>

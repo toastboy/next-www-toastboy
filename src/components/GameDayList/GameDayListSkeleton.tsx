@@ -5,7 +5,7 @@ export const GameDayListSkeleton = () => (
     <Stack data-testid="skeleton-game-day-list" align="stretch" justify="center" w="100%">
         <SimpleGrid minColWidth="11rem" autoFlow="auto-fit">
             {Array.from({ length: 10 }).map((_, i) => (
-                <Paper key={i} shadow="xl" p="xl" w="10rem">
+                <Paper key={i} p="xl" w="10rem">
                     <Skeleton height={24} width="60%" mb="sm" />
                     <SimpleGrid cols={2}>
                         {Array.from({ length: 4 }).map((_, j) => (

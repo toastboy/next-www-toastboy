@@ -4,7 +4,7 @@ import { PlayerCountryMapSkeleton } from '@/components/PlayerCountryMap/PlayerCo
 
 /** Loading state for the country map page. */
 const Loading = () => (
-    <Paper shadow="xl" p="xl">
+    <Paper p="xl">
         <PlayerCountryMapSkeleton />
     </Paper>
 );

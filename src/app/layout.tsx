@@ -15,6 +15,7 @@ import type { Metadata } from 'next';
 
 import { CustomAppShell } from '@/components/CustomAppShell/CustomAppShell';
 import { getCurrentUser } from '@/lib/auth.server';
+import { theme } from '@/theme';
 
 // We used to force dynamic rendering for all pages here:
 // https://nextjs.org/docs/app/building-your-application/rendering/static-and-dynamic-rendering
@@ -47,7 +48,7 @@ export default async function RootLayout({
                 <ColorSchemeScript defaultColorScheme="light" />
             </head>
             <body>
-                <MantineProvider defaultColorScheme="light">
+                <MantineProvider theme={theme} defaultColorScheme="light">
                     <Notifications />
                     {/* <DebugBreakpoints /> */}
                     {/* <DebugFontSizes targets={[{ label: 'PlayerLink', selector: '[class*="PlayerLink-module"]' }]} /> */}

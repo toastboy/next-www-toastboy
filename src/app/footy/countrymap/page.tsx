@@ -16,7 +16,7 @@ const CountryMapPage = async () => {
     const uniqueCountryFifaCodes = new Set(countries.map((c) => c.country.fifaCode));
 
     return (
-        <Paper shadow="xl" p="xl">
+        <Paper p="xl">
             <Title order={2} mb="md">Toastboy FC World Map</Title>
             <Text mb="md">
                 This map highlights the {uniqueCountryFifaCodes.size} different countries supported by players. Hover over a country to see player details (scrollable).

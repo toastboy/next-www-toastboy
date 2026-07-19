@@ -282,7 +282,6 @@ export const FamilyTree = ({ data }: Props) => {
 
     return (
         <Paper
-            shadow="xl"
             ref={containerRef}
             pos="relative"
             data-testid="family-tree"

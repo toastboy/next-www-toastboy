@@ -85,7 +85,7 @@ export const GameResultForm = ({
 
     return (
         <Box component="form" onSubmit={form.onSubmit(handleSave)}>
-            <Paper withBorder p="md" shadow="xs" radius="md">
+            <Paper withBorder p="md" radius="md">
                 <Stack gap="sm">
                     <Group grow>
                         <Select

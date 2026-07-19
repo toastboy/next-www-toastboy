@@ -23,7 +23,7 @@ export const PlayerArse = ({ arse, titleOrder = 3 }: Props) => {
     if (!arse) return null;
 
     return (
-        <Paper shadow="xs" p="sm" w="14rem" withBorder>
+        <Paper p="sm" w="14rem" withBorder>
             <Group justify="center" gap="xs" wrap="nowrap" mb="xs">
                 <Title order={titleOrder} ta="center">ARSE</Title>
                 <Tooltip

@@ -3,7 +3,7 @@ import { Paper } from '@mantine/core';
 import { TurnoutSkeleton } from '@/components/Turnout/TurnoutSkeleton';
 
 const Loading = () => (
-    <Paper shadow="xl" p="xl">
+    <Paper p="xl">
         <TurnoutSkeleton />
     </Paper>
 );

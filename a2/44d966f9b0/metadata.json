@@ -1,0 +1,30 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "a244d966f9b0",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "src/components/GameDaySummary/GameDaySummary.stories.tsx",
+    "src/components/PlayerCard/PlayerCard.stories.tsx",
+    "src/components/Team/Team.stories.tsx",
+    "src/components/TeamPlayer/TeamPlayer.stories.tsx",
+    "vitest.config.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/a2/44d966f9b0/0/metadata.json",
+      "transcript": "/a2/44d966f9b0/0/full.jsonl",
+      "compact_transcript": "/a2/44d966f9b0/0/transcript.jsonl",
+      "content_hash": "/a2/44d966f9b0/0/content_hash.txt",
+      "prompt": "/a2/44d966f9b0/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 128,
+    "cache_creation_tokens": 159399,
+    "cache_read_tokens": 7803447,
+    "output_tokens": 41414,
+    "api_call_count": 64
+  }
+}

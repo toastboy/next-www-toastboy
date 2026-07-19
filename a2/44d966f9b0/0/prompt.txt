@@ -1,0 +1,21 @@
+[storybook (chromium)] src/components/Team/Team.stories.tsx > Primary: node_modules/storybook/dist/instrumenter/index.js#L322
+Error: 
+Click to debug the error directly in Storybook: http://localhost:6006/?path=/story/player-team--primary&addonPanel=storybook/interactions/panel
+
+expect(element).toBeVisible()
+
+Received element is not visible:
+  <img
+  alt="Gary Player"
+  class="m_9e117634 mantine-Image-root"
+  src="/api/footy/player/1/mugshot"
+  style="--image-radius: 100%; opacity: 1; transition: opacity 150ms;"
+  title="Gary Player"
+/>
+
+Ignored nodes: comments, script, style
+<html
+  data-mantine-color-scheme="light"
+  lang="en"
+>
+  <head>

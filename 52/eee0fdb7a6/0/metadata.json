@@ -1,0 +1,109 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "52eee0fdb7a6",
+  "session_id": "7f0de6e6-cb7b-4c2d-a328-a0e09c575a12",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-19T08:28:12.084874Z",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "save_step_count": 1,
+  "files_touched": [
+    "src/app/footy/countrymap/loading.stories.tsx",
+    "src/app/footy/countrymap/loading.tsx",
+    "src/app/footy/countrymap/page.tsx",
+    "src/app/footy/familytree/loading.stories.tsx",
+    "src/app/footy/familytree/loading.tsx",
+    "src/app/footy/turnout/loading.stories.tsx",
+    "src/app/footy/turnout/loading.tsx",
+    "src/app/footy/turnout/page.tsx",
+    "src/app/layout.tsx",
+    "src/components/FamilyTree/FamilyTree.tsx",
+    "src/components/GameDayList/GameDayList.tsx",
+    "src/components/GameDayList/GameDayListSkeleton.tsx",
+    "src/components/GameResultForm/GameResultForm.tsx",
+    "src/components/GameResultForm/GameResultFormSkeleton.tsx",
+    "src/components/PlayerArse/PlayerArse.tsx",
+    "src/components/PlayerCard/PlayerCard.tsx",
+    "src/components/PlayerInfo/PlayerInfo.tsx",
+    "src/components/PlayerPositions/PlayerPositions.tsx",
+    "src/components/PlayerProfile/PlayerProfile.tsx",
+    "src/components/PlayerResults/PlayerResults.tsx",
+    "src/components/Team/Team.tsx",
+    "src/components/WinnersTable/WinnersTable.tsx",
+    "src/components/WinnersTable/WinnersTableSkeleton.tsx",
+    "src/theme.ts"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "e41353f94d40",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 51,
+    "cache_creation_tokens": 96376,
+    "cache_read_tokens": 1218034,
+    "output_tokens": 15305,
+    "api_call_count": 26
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_01CkswzNxviuiGX6jfAC1KbK",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "finalise"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "e41353f94d40",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 203,
+        "end": 204,
+        "entry_ids": [
+          "50fb9d8d-1d94-4887-b71c-fc846b6ba9ad"
+        ],
+        "tool_use_id": "toolu_01CkswzNxviuiGX6jfAC1KbK"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01CkswzNxviuiGX6jfAC1KbK"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: finalise",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 2
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-07-19T08:28:12.062511Z",
+    "agent_lines": 34,
+    "agent_removed": 23,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 34,
+    "total_lines_changed": 57,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 42,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 41
+      }
+    }
+  ]
+}

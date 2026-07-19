@@ -1,0 +1,5 @@
+I want to standardise things like Paper shadows across the project. Should that go in config.ts, is there a Mantine standard way of doing things like that, or what? Do I need my first deliberate foray into Mantine themes?
+
+---
+
+Yes

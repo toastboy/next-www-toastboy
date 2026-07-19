@@ -1,0 +1,49 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "52eee0fdb7a6",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "src/app/footy/countrymap/loading.stories.tsx",
+    "src/app/footy/countrymap/loading.tsx",
+    "src/app/footy/countrymap/page.tsx",
+    "src/app/footy/familytree/loading.stories.tsx",
+    "src/app/footy/familytree/loading.tsx",
+    "src/app/footy/turnout/loading.stories.tsx",
+    "src/app/footy/turnout/loading.tsx",
+    "src/app/footy/turnout/page.tsx",
+    "src/app/layout.tsx",
+    "src/components/FamilyTree/FamilyTree.tsx",
+    "src/components/GameDayList/GameDayList.tsx",
+    "src/components/GameDayList/GameDayListSkeleton.tsx",
+    "src/components/GameResultForm/GameResultForm.tsx",
+    "src/components/GameResultForm/GameResultFormSkeleton.tsx",
+    "src/components/PlayerArse/PlayerArse.tsx",
+    "src/components/PlayerCard/PlayerCard.tsx",
+    "src/components/PlayerInfo/PlayerInfo.tsx",
+    "src/components/PlayerPositions/PlayerPositions.tsx",
+    "src/components/PlayerProfile/PlayerProfile.tsx",
+    "src/components/PlayerResults/PlayerResults.tsx",
+    "src/components/Team/Team.tsx",
+    "src/components/WinnersTable/WinnersTable.tsx",
+    "src/components/WinnersTable/WinnersTableSkeleton.tsx",
+    "src/theme.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/52/eee0fdb7a6/0/metadata.json",
+      "transcript": "/52/eee0fdb7a6/0/full.jsonl",
+      "compact_transcript": "/52/eee0fdb7a6/0/transcript.jsonl",
+      "content_hash": "/52/eee0fdb7a6/0/content_hash.txt",
+      "prompt": "/52/eee0fdb7a6/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 51,
+    "cache_creation_tokens": 96376,
+    "cache_read_tokens": 1218034,
+    "output_tokens": 15305,
+    "api_call_count": 26
+  }
+}

@@ -187,9 +187,9 @@
                 "--env-file",
                 "./.env",
                 "--",
-                "npm",
-                "run",
-                "storybook"
+                "sh",
+                "-c",
+                "lsof -ti:6006 | xargs kill -9 2>/dev/null; npm run storybook"
             ],
             "group": "test",
             "problemMatcher": []

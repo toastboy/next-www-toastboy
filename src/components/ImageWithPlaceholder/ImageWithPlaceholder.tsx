@@ -78,6 +78,7 @@ export const ImageWithPlaceholder = ({ ratio, radius, w = '100%', alt, onReady, 
                 radius={radius}
                 onLoad={handleReady}
                 onError={handleReady}
+                aria-busy={!loaded}
                 style={{ opacity: loaded ? 1 : 0, transition: 'opacity 150ms ease' }}
             />
         </AspectRatio>

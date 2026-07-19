@@ -27,10 +27,15 @@ export const Primary: Story = {
         teamB: defaultTeamPlayerList,
     },
     play: async ({ canvas }) => {
-        // Every player's mugshot, across both teams, stays at opacity 0
-        // behind a Skeleton until ImageWithPlaceholder's load/error handler
-        // fires, so wait for that rather than asserting immediately.
-        const imgs = await canvas.findAllByRole('img', { name: /gary player/i });
-        await waitFor(() => imgs.forEach((img) => expect(img).toBeVisible()), { timeout: 5000 });
+        // Each PlayerMugshot's <img>, across both teams, is aria-busy until
+        // ImageWithPlaceholder's load/error handler fires. Wait on that
+        // explicit signal for every image rather than polling the CSS
+        // opacity it also drives, which is subject to transition-timing
+        // noise and forces a much longer timeout.
+        const total = (await canvas.findAllByRole('img', { name: /gary player/i })).length;
+        await waitFor(() => {
+            const ready = canvas.getAllByRole('img', { name: /gary player/i, busy: false });
+            return expect(ready).toHaveLength(total);
+        }, { timeout: 6000 });
     },
 };

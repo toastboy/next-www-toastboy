@@ -21,6 +21,15 @@ export default defineConfig({
                 ],
                 test: {
                     name: 'storybook',
+                    // Must exceed the longest inner `waitFor` timeout used by
+                    // any story (currently 6000ms, in PlayerCard/TeamPlayer/
+                    // Team/GameDaySummary — they wait for a real ImageWithPlaceholder
+                    // load event, which can take several seconds when the
+                    // whole suite runs and many images decode under CPU
+                    // contention at once) — otherwise this default (5000ms)
+                    // kills the test before that waitFor gets to time out
+                    // itself.
+                    testTimeout: 10000,
                     browser: {
                         enabled: true,
                         headless: true,

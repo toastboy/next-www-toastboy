@@ -22,10 +22,13 @@ export const Primary: Story = {
         teamPlayer: defaultTeamPlayer,
     },
     play: async ({ canvas }) => {
-        // Mugshot image should render for the player. It stays at opacity 0
-        // behind a Skeleton until ImageWithPlaceholder's load/error handler
-        // fires, so wait for that rather than asserting immediately.
-        const img = await canvas.findByRole('img', { name: /gary player/i });
-        await waitFor(() => expect(img).toBeVisible(), { timeout: 5000 });
+        // ImageWithPlaceholder marks its <img> aria-busy until the real
+        // load/error event fires. Wait on that explicit signal rather than
+        // polling the CSS opacity it also drives, which is subject to
+        // transition-timing noise and forces a much longer timeout.
+        await waitFor(() => {
+            const img = canvas.getByRole('img', { name: /gary player/i, busy: false });
+            return expect(img).toBeVisible();
+        }, { timeout: 6000 });
     },
 };

@@ -40,10 +40,12 @@ describe('ImageWithPlaceholder', () => {
 
         const img = screen.getByRole('img', { name: 'Example' });
         expect(img).toHaveStyle({ opacity: '0' });
+        expect(img).toHaveAttribute('aria-busy', 'true');
 
         fireEvent.load(img);
 
         expect(img).toHaveStyle({ opacity: '1' });
+        expect(img).toHaveAttribute('aria-busy', 'false');
     });
 
     it('hides the skeleton if the image fails to load', () => {

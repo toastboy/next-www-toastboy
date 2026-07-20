@@ -1,0 +1,29 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "7e3b960f0b33",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "src/app/footy/table/[table]/page.tsx",
+    "src/components/RecordsTable/RecordsTable.tsx",
+    "src/components/RecordsTable/RecordsTable.vitest.spec.tsx",
+    "src/components/YearTable/YearTable.tsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/7e/3b960f0b33/0/metadata.json",
+      "transcript": "/7e/3b960f0b33/0/full.jsonl",
+      "compact_transcript": "/7e/3b960f0b33/0/transcript.jsonl",
+      "content_hash": "/7e/3b960f0b33/0/content_hash.txt",
+      "prompt": "/7e/3b960f0b33/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 10,
+    "cache_creation_tokens": 111575,
+    "cache_read_tokens": 542514,
+    "output_tokens": 1781,
+    "api_call_count": 5
+  }
+}

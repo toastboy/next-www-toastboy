@@ -1,0 +1,2 @@
+<ide_opened_file>The user opened the file /Volumes/Development/next-www-toastboy/src/components/RecordsTable/RecordsTable.tsx in the IDE. This may or may not be related to the current task.</ide_opened_file>
+The new optional title / titleOrder rendering path changes the component output. Add/adjust tests to cover: (1) rendering with no title (no Title/Divider), (2) rendering with title and default titleOrder, and (3) rendering with an explicit titleOrder value.

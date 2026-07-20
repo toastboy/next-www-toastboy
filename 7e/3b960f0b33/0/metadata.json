@@ -1,0 +1,65 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "7e3b960f0b33",
+  "session_id": "aad31982-315d-4d4a-94f8-fc10b7facc8d",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-20T17:29:07.925217Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "save_step_count": 1,
+  "files_touched": [
+    "src/app/footy/table/[table]/page.tsx",
+    "src/components/RecordsTable/RecordsTable.tsx",
+    "src/components/RecordsTable/RecordsTable.vitest.spec.tsx",
+    "src/components/YearTable/YearTable.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "0e538e719828",
+  "checkpoint_transcript_start": 361,
+  "transcript_lines_at_start": 361,
+  "compact_transcript_start": 98,
+  "token_usage": {
+    "input_tokens": 10,
+    "cache_creation_tokens": 111575,
+    "cache_read_tokens": 542514,
+    "output_tokens": 1781,
+    "api_call_count": 5
+  },
+  "session_metrics": {
+    "turn_count": 14
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-07-20T17:29:07.876722Z",
+    "agent_lines": 32,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 18,
+    "total_committed": 32,
+    "total_lines_changed": 50,
+    "agent_percentage": 64,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 80,
+      "user_lines_removed": 18,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 41,
+        "src/app/footy/table/[table]/page.tsx": 11,
+        "src/components/RecordsTable/RecordsTable.tsx": 23,
+        "src/components/YearTable/YearTable.tsx": 4
+      },
+      "user_removed_per_file": {
+        "src/app/footy/table/[table]/page.tsx": 13,
+        "src/components/RecordsTable/RecordsTable.tsx": 2,
+        "src/components/YearTable/YearTable.tsx": 3
+      }
+    }
+  ]
+}

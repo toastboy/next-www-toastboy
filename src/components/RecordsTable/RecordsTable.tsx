@@ -1,6 +1,19 @@
 'use client';
 
-import { Button, Paper, Table, TableTbody, TableTd, TableTh, TableThead, TableTr, VisuallyHidden } from '@mantine/core';
+import {
+    Button,
+    Divider,
+    Paper,
+    Table,
+    TableTbody,
+    TableTd,
+    TableTh,
+    TableThead,
+    TableTr,
+    Title,
+    type TitleOrder,
+    VisuallyHidden,
+} from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 import { type TableName, TableNameSchema } from 'prisma/zod/schemas';
@@ -15,6 +28,8 @@ export interface Props {
     table: TableName;
     year: number;
     records: PlayerRecordDataType[];
+    title?: string;
+    titleOrder?: TitleOrder;
 }
 
 const rankFieldByTable = {
@@ -71,7 +86,7 @@ const visibleRowCount = (ranks: RankDisplay[], initial: number): number => {
     return count;
 };
 
-export const RecordsTable = ({ table, year, records }: Props) => {
+export const RecordsTable = ({ table, year, records, title, titleOrder = 2 }: Props) => {
     const rankField = rankFieldByTable[table];
     const scoreHeading = scoreHeadingByTable[table];
     const ranks = useMemo(() => rankDisplays(records, rankField), [records, rankField]);
@@ -86,6 +101,12 @@ export const RecordsTable = ({ table, year, records }: Props) => {
 
     return (
         <Paper p="sm" miw="14rem" maw="24rem" withBorder>
+            {title ? (
+                <>
+                    <Title order={titleOrder} mb="xs" w="100%" ta="center">{title}</Title>
+                    <Divider mb="xs" />
+                </>
+            ) : null}
             <Table stickyHeader stickyHeaderOffset={0}>
                 <TableThead>
                     <TableTr>

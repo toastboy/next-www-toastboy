@@ -111,20 +111,18 @@ const TablePage = async (props: PageProps) => {
     ]);
 
     return (
-        <>
+        <Stack w="100%" p="xl" align="center">
             <AutoRefresh channels={[FootyChannel.Results, FootyChannel.Players]} />
-            <Stack w="100%" p="xl" align="center">
-                <Group justify="center" w="100%">
-                    <TitleWithYearDropdown order={1} title={`${TableTitle(table)}: `} year={year} validYears={allYears} />
-                </Group>
-                <YearTable
-                    table={table}
-                    year={year}
-                    qualified={tableQualified}
-                    unqualified={tableUnqualified}
-                />
-            </Stack>
-        </>
+            <Group justify="center" w="100%" mb="xl">
+                <TitleWithYearDropdown order={1} title={`${TableTitle(table)}: `} year={year} validYears={allYears} />
+            </Group>
+            <YearTable
+                table={table}
+                year={year}
+                qualified={tableQualified}
+                unqualified={tableUnqualified}
+            />
+        </Stack>
     );
 };
 

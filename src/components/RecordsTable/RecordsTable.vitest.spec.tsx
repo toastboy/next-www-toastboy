@@ -310,4 +310,54 @@ describe('RecordsTable', () => {
             expect(screen.getByRole('button', { name: 'Show 4 more' })).toBeInTheDocument();
         });
     });
+
+    describe('title', () => {
+        it('renders no heading or divider when no title is given', () => {
+            render(
+                <Wrapper>
+                    <RecordsTable
+                        table={TableNameSchema.enum.points}
+                        year={2024}
+                        records={[createMockPlayerRecordData()]}
+                    />
+                </Wrapper>,
+            );
+
+            expect(screen.queryByRole('heading')).not.toBeInTheDocument();
+            expect(screen.queryByRole('separator')).not.toBeInTheDocument();
+        });
+
+        it('renders the title as a level 2 heading by default', () => {
+            render(
+                <Wrapper>
+                    <RecordsTable
+                        table={TableNameSchema.enum.points}
+                        year={2024}
+                        records={[createMockPlayerRecordData()]}
+                        title="Unqualified"
+                    />
+                </Wrapper>,
+            );
+
+            const heading = screen.getByRole('heading', { level: 2, name: 'Unqualified' });
+            expect(heading).toBeInTheDocument();
+            expect(screen.getByRole('separator')).toBeInTheDocument();
+        });
+
+        it('renders the title at an explicit heading level', () => {
+            render(
+                <Wrapper>
+                    <RecordsTable
+                        table={TableNameSchema.enum.points}
+                        year={2024}
+                        records={[createMockPlayerRecordData()]}
+                        title="Unqualified"
+                        titleOrder={4}
+                    />
+                </Wrapper>,
+            );
+
+            expect(screen.getByRole('heading', { level: 4, name: 'Unqualified' })).toBeInTheDocument();
+        });
+    });
 });

@@ -3,7 +3,7 @@
   "checkpoint_id": "db13b4ff542f",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 13,
+  "checkpoints_count": 22,
   "files_touched": [
     "src/app/footy/page.tsx",
     "src/app/footy/table/[table]/page.tsx",
@@ -20,13 +20,20 @@
       "compact_transcript": "/db/13b4ff542f/0/transcript.jsonl",
       "content_hash": "/db/13b4ff542f/0/content_hash.txt",
       "prompt": "/db/13b4ff542f/0/prompt.txt"
+    },
+    {
+      "metadata": "/db/13b4ff542f/1/metadata.json",
+      "transcript": "/db/13b4ff542f/1/full.jsonl",
+      "compact_transcript": "/db/13b4ff542f/1/transcript.jsonl",
+      "content_hash": "/db/13b4ff542f/1/content_hash.txt",
+      "prompt": "/db/13b4ff542f/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 158,
-    "cache_creation_tokens": 250104,
-    "cache_read_tokens": 6796199,
-    "output_tokens": 51064,
-    "api_call_count": 79
+    "input_tokens": 216,
+    "cache_creation_tokens": 318165,
+    "cache_read_tokens": 8549840,
+    "output_tokens": 68081,
+    "api_call_count": 108
   }
 }

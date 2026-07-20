@@ -1,0 +1,34 @@
+Does Mantine have a way of using CSS clamp() in its themes?
+
+---
+
+So am I barking up the wrong tree? Is the Mantine-native way of making text fit smaller layouts to us fz breakpoints?
+
+---
+
+That suggests that I'm fighting against Mantine's way of doing things by using container queries and having a nav bar which gets hidden on narrower viewports
+
+---
+
+I have widths based on cqw in many places
+
+---
+
+Right, but given the Mantine breakpoints are always based on viewport widths, it makes it hard to be consistent because the _container_ widths can vary wildly depending on whether the nav is visible: the font sizes and the container widths can jump at different points in the viewport width spectrum.
+
+---
+
+So then I'd have cqw font sizes in the theme?
+
+---
+
+Add an Obsidian note for this: I need to keep thinking about it.
+
+---
+
+f
+
+---
+
+Is there a Mantine way to express             style={{ overflow: 'hidden' }}
+?

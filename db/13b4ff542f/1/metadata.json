@@ -1,0 +1,151 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "db13b4ff542f",
+  "session_id": "dfca0a0f-ad0d-41f4-9880-546d77ebc436",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-20T13:45:44.769738Z",
+  "branch": "main",
+  "checkpoints_count": 9,
+  "save_step_count": 9,
+  "files_touched": [
+    "src/app/footy/table/[table]/page.tsx",
+    "src/components/RecordsTable/RecordsTable.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "8ba8c4e50469",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 58,
+    "cache_creation_tokens": 68061,
+    "cache_read_tokens": 1753641,
+    "output_tokens": 17017,
+    "api_call_count": 29
+  },
+  "session_metrics": {
+    "turn_count": 9
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-07-20T13:45:44.749221Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 62,
+    "human_modified": 74,
+    "human_removed": 0,
+    "total_committed": 62,
+    "total_lines_changed": 136,
+    "agent_percentage": 0,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 76,
+      "user_lines_removed": 31,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 41,
+        "src/components/RecordsTable/RecordsTable.tsx": 34
+      },
+      "user_removed_per_file": {
+        "src/components/RecordsTable/RecordsTable.tsx": 31
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 42,
+      "user_lines_removed": 0,
+      "agent_lines_added": 34,
+      "agent_lines_removed": 31,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 41
+      }
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 42,
+      "user_lines_removed": 0,
+      "agent_lines_added": 34,
+      "agent_lines_removed": 31,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 41
+      }
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 42,
+      "user_lines_removed": 0,
+      "agent_lines_added": 34,
+      "agent_lines_removed": 31,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 41
+      }
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 42,
+      "user_lines_removed": 0,
+      "agent_lines_added": 34,
+      "agent_lines_removed": 31,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 41
+      }
+    },
+    {
+      "checkpoint_number": 6,
+      "user_lines_added": 42,
+      "user_lines_removed": 0,
+      "agent_lines_added": 34,
+      "agent_lines_removed": 31,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 41
+      }
+    },
+    {
+      "checkpoint_number": 7,
+      "user_lines_added": 42,
+      "user_lines_removed": 0,
+      "agent_lines_added": 34,
+      "agent_lines_removed": 31,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 41
+      }
+    },
+    {
+      "checkpoint_number": 8,
+      "user_lines_added": 42,
+      "user_lines_removed": 0,
+      "agent_lines_added": 34,
+      "agent_lines_removed": 31,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 41
+      }
+    },
+    {
+      "checkpoint_number": 9,
+      "user_lines_added": 84,
+      "user_lines_removed": 43,
+      "agent_lines_added": 34,
+      "agent_lines_removed": 31,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 41,
+        "src/app/footy/table/[table]/page.tsx": 12,
+        "src/components/RecordsTable/RecordsTable.tsx": 30
+      },
+      "user_removed_per_file": {
+        "src/app/footy/table/[table]/page.tsx": 10,
+        "src/components/RecordsTable/RecordsTable.tsx": 33
+      }
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+What is the effect of setting 'role' on a ScrollArea?
+
+---
+
+I think I want some combination of overflow and ScrollArea so that the Paper containing the table is a fixed size based on viewport height but with the rows in the table scrollable inside it
+
+---
+
+What's the best UX in this circumstance? The tables can be very long, especially for the 'all-time' ones, so it feels to me like the page shouldn't grow to accommodate that - but is making the table scrollable within a Paper container counter-intuitive?
+
+---
+
+Ah, Mantine does have a 'Collapse' or something similar for 'more...' semantics, right?
+
+---
+
+That sounds good. Let's do that.
+
+---
+
+</ScrollArea>
+
+---
+
+⨯ Error: Attempted to call useDisclosure() from the server but useDisclosure is on the client. It's not possible to invoke a client function from the server, it can only be rendered as a Component or passed to props of a Client Component.
+    at /Volumes/Development/next-www-toastboy/node_modules/@mantine/hooks/esm/use-disclosure/use-disclosure.mjs/__nextjs-internal-proxy.mjs:4:24
+    at RecordsTable (/Volumes/Development/next-www-toastboy/.next/dev/server/chunks/ssr/[root-of-the-server]__0qs721g._.js:398:236)
+    at Object.react_stack_bottom_frame (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:53:268077)
+    at AsyncLocalStorage.run (/Volumes/Development/next-www-toastboy/lib/internal/async_local_storage/async_context_frame.js:63:14)
+    at renderFunctionComponent (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:53:159664)
+    at renderElement (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:53:178263)
+    at renderModelDestructive (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:53:182086)
+    at retryTask (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:53:221052)
+    at outlineTask (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:53:164857)
+    at renderFunctionComponent (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:53:158663)
+    at renderElement (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:53:178263)
+    at renderModelDestructive (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:53:182086)
+    at /Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:53:170748
+    at Array.toJSON (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:53:172065)
+    at stringify (<anonymous>)
+    at emitChunk (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:53:220399)
+    at retryTask (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:53:221542)
+    at outlineTask (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:53:164857)
+    at renderFunctionComponent (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:53:158663)
+    at renderElement (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:53:178263)
+    at renderModelDestructive (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:53:182086)
+    at /Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:53:170748
+    at Array.toJSON (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:53:172065)
+    at stringify (<anonymous>)
+    at emitChunk (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:53:220399)
+    at retryTask (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:53:221542)
+    at performWork (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:53:223062)
+    at Immediate._onImmediate (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:53:169123)
+    at process.processImmediate (/Volumes/Development/next-www-toastboy/lib/internal/timers.js:504:21)
+    at process.callbackTrampoline (node:internal/async_hooks:130:17) {digest: '588707659', stack: 'Error: Attempted to call useDisclosure() from…Trampoline (node:internal/async_hooks:130:17)', message: 'Attempted to call useDisclosure() from the s…nt or passed to props of a Client Component.'}
+
+---
+
+Unsafe argument of type error typed assigned to a parameter of type `number`.eslint@typescript-eslint/no-unsafe-argument
+
+---
+
+The useMemo for cutoff uses config.recordsTableVisibleRows but it is not included in the dependency list. This can trip React hooks linting and can also lead to stale values if the config were ever to change at runtime (or in tests via module mocking). Consider including config.recordsTableVisibleRows (or a local const visibleRows = config.recordsTableVisibleRows) in the dependency array.
+
+---
+
+The expanded/collapsed state (opened) persists even when records, table, or year changes. This can cause a newly-rendered table to start in an unexpected expanded state. Consider resetting opened when inputs change (e.g., close on table/year/records changes, or key the component by those props) so the initial view is consistent.
+
+---
+
+The toggle button changes visibility of additional rows, but it doesn’t expose expanded state to assistive tech. Consider adding aria-expanded={opened} and (optionally) aria-controls pointing at an id on the controlled table/body region so screen readers can understand the relationship.
+
+---
+
+This assertion is very broad: queryByRole('button') will fail if Wrapper (or any nested component) renders any other button unrelated to the show more/less toggle. To avoid flakiness, query the specific toggle by accessible name (e.g. queryByRole('button', { name: /show/i })) or scope the query to the RecordsTable container with within(...).
+
+---
+
+These assertions may be flaky/incorrect if extractMockProps returns accumulated mock calls across re-renders (initial render + after each click), which is common for mocked components. In that case, the lengths will grow over time rather than reflect the currently visible rows. Prefer asserting against the rendered DOM (e.g., number of table rows) or clear/re-scope mock call history between interactions (e.g., vi.clearAllMocks() after the first assertion) so you’re checking only the latest render.

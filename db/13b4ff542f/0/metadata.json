@@ -1,0 +1,214 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "db13b4ff542f",
+  "session_id": "aad31982-315d-4d4a-94f8-fc10b7facc8d",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-20T13:45:44.48184Z",
+  "branch": "main",
+  "checkpoints_count": 13,
+  "save_step_count": 13,
+  "files_touched": [
+    "src/app/footy/page.tsx",
+    "src/app/footy/table/[table]/page.tsx",
+    "src/components/RecordsTable/RecordsTable.tsx",
+    "src/components/RecordsTable/RecordsTable.vitest.spec.tsx",
+    "src/components/YearTable/YearTable.tsx",
+    "src/lib/config.ts",
+    "src/types/config.ts"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "779741a9daa6",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 158,
+    "cache_creation_tokens": 250104,
+    "cache_read_tokens": 6796199,
+    "output_tokens": 51064,
+    "api_call_count": 79
+  },
+  "session_metrics": {
+    "turn_count": 13
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-07-20T13:45:44.441895Z",
+    "agent_lines": 36,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 43,
+    "human_removed": 13,
+    "total_committed": 79,
+    "total_lines_changed": 92,
+    "agent_percentage": 39.130434782608695,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 59,
+      "user_lines_removed": 13,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 41,
+        "src/app/footy/table/[table]/page.tsx": 14,
+        "src/components/RecordsTable/RecordsTable.tsx": 3
+      },
+      "user_removed_per_file": {
+        "src/app/footy/table/[table]/page.tsx": 10,
+        "src/components/RecordsTable/RecordsTable.tsx": 3
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 81,
+      "user_lines_removed": 39,
+      "agent_lines_added": 17,
+      "agent_lines_removed": 13,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 41,
+        "src/app/footy/table/[table]/page.tsx": 8,
+        "src/components/RecordsTable/RecordsTable.tsx": 31
+      },
+      "user_removed_per_file": {
+        "src/app/footy/table/[table]/page.tsx": 10,
+        "src/components/RecordsTable/RecordsTable.tsx": 29
+      }
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 45,
+      "user_lines_removed": 3,
+      "agent_lines_added": 45,
+      "agent_lines_removed": 41,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 41,
+        "src/app/footy/page.tsx": 1,
+        "src/app/footy/table/[table]/page.tsx": 1,
+        "src/components/RecordsTable/RecordsTable.tsx": 1
+      },
+      "user_removed_per_file": {
+        "src/app/footy/page.tsx": 1,
+        "src/app/footy/table/[table]/page.tsx": 1,
+        "src/components/RecordsTable/RecordsTable.tsx": 1
+      }
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 42,
+      "user_lines_removed": 0,
+      "agent_lines_added": 46,
+      "agent_lines_removed": 42,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 41
+      }
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 42,
+      "user_lines_removed": 0,
+      "agent_lines_added": 46,
+      "agent_lines_removed": 42,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 41
+      }
+    },
+    {
+      "checkpoint_number": 6,
+      "user_lines_added": 42,
+      "user_lines_removed": 0,
+      "agent_lines_added": 143,
+      "agent_lines_removed": 16,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 41
+      }
+    },
+    {
+      "checkpoint_number": 7,
+      "user_lines_added": 42,
+      "user_lines_removed": 0,
+      "agent_lines_added": 143,
+      "agent_lines_removed": 16,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 41
+      }
+    },
+    {
+      "checkpoint_number": 8,
+      "user_lines_added": 43,
+      "user_lines_removed": 1,
+      "agent_lines_added": 145,
+      "agent_lines_removed": 16,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 41,
+        "src/app/footy/table/[table]/page.tsx": 1
+      },
+      "user_removed_per_file": {
+        "src/app/footy/table/[table]/page.tsx": 1
+      }
+    },
+    {
+      "checkpoint_number": 9,
+      "user_lines_added": 42,
+      "user_lines_removed": 0,
+      "agent_lines_added": 145,
+      "agent_lines_removed": 16,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 41
+      }
+    },
+    {
+      "checkpoint_number": 10,
+      "user_lines_added": 42,
+      "user_lines_removed": 0,
+      "agent_lines_added": 145,
+      "agent_lines_removed": 16,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 41
+      }
+    },
+    {
+      "checkpoint_number": 11,
+      "user_lines_added": 42,
+      "user_lines_removed": 0,
+      "agent_lines_added": 147,
+      "agent_lines_removed": 16,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 41
+      }
+    },
+    {
+      "checkpoint_number": 12,
+      "user_lines_added": 42,
+      "user_lines_removed": 0,
+      "agent_lines_added": 152,
+      "agent_lines_removed": 18,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 41
+      }
+    },
+    {
+      "checkpoint_number": 13,
+      "user_lines_added": 42,
+      "user_lines_removed": 0,
+      "agent_lines_added": 152,
+      "agent_lines_removed": 18,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 41
+      }
+    }
+  ]
+}

@@ -68,7 +68,7 @@ jobs:
             - name: Get Terraform Outputs
               if: github.event_name == 'push' && github.ref == 'refs/heads/main'
               id: tf_output
-              uses: dflook/terraform-output@v2
+              uses: dflook/terraform-output@v3
               with:
                   path: terraform
                   workspace: next-www-toastboy

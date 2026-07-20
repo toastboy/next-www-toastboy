@@ -11,6 +11,7 @@ const rawConfig: ConfigType = {
     defaultGameCostPence: 500,
     defaultHallCostPence: 4700,
     trophyDisplayThreshold: 5,
+    recordsTableVisibleRows: 15,
 };
 
 // App-wide configuration object which is runtime-validated using zod. If this

@@ -1,9 +1,14 @@
-import { Flex, Table, TableTbody, TableTd, TableTh, TableThead, TableTr, VisuallyHidden } from '@mantine/core';
+'use client';
+
+import { Button, Paper, Table, TableTbody, TableTd, TableTh, TableThead, TableTr, VisuallyHidden } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 import { type TableName, TableNameSchema } from 'prisma/zod/schemas';
-import { useMemo } from 'react';
+import { useId, useMemo } from 'react';
 
 import { PlayerLink } from '@/components/PlayerLink/PlayerLink';
 import { TableScore } from '@/components/TableScore/TableScore';
+import { config } from '@/lib/config';
 import { PlayerRecordDataType } from '@/types';
 
 export interface Props {
@@ -54,14 +59,34 @@ const rankDisplays = (records: PlayerRecordDataType[], rankField: RankField): Ra
     return displays;
 };
 
+// Extends the initial page of rows forward past any tie straddling the cutoff,
+// so a group of equally-ranked players is never split across the toggle.
+const visibleRowCount = (ranks: RankDisplay[], initial: number): number => {
+    let count = Math.min(initial, ranks.length);
+
+    while (count < ranks.length && !ranks[count].visible) {
+        count++;
+    }
+
+    return count;
+};
+
 export const RecordsTable = ({ table, year, records }: Props) => {
     const rankField = rankFieldByTable[table];
     const scoreHeading = scoreHeadingByTable[table];
     const ranks = useMemo(() => rankDisplays(records, rankField), [records, rankField]);
+    const cutoff = useMemo(
+        () => visibleRowCount(ranks, config.recordsTableVisibleRows),
+        [ranks],
+    );
+    const [opened, { toggle }] = useDisclosure(false);
+    const hiddenCount = records.length - cutoff;
+    const visibleRecords = opened ? records : records.slice(0, cutoff);
+    const tbodyId = useId();
 
     return (
-        <Flex direction="column" gap="md">
-            <Table>
+        <Paper p="sm" miw="14rem" maw="24rem" withBorder>
+            <Table stickyHeader stickyHeaderOffset={0}>
                 <TableThead>
                     <TableTr>
                         <TableTh>Position</TableTh>
@@ -69,8 +94,8 @@ export const RecordsTable = ({ table, year, records }: Props) => {
                         <TableTh>{scoreHeading}</TableTh>
                     </TableTr>
                 </TableThead>
-                <TableTbody>
-                    {records.map((record, index) => (
+                <TableTbody id={tbodyId}>
+                    {visibleRecords.map((record, index) => (
                         <TableTr
                             key={record.id}
                             bd={ranks[index + 1]?.visible === false ? '0' : undefined}
@@ -90,6 +115,19 @@ export const RecordsTable = ({ table, year, records }: Props) => {
                     ))}
                 </TableTbody>
             </Table>
-        </Flex>
+            {hiddenCount > 0 &&
+                <Button
+                    onClick={toggle}
+                    variant="subtle"
+                    fullWidth
+                    mt="xs"
+                    aria-expanded={opened}
+                    aria-controls={tbodyId}
+                    rightSection={opened ? <IconChevronUp size={16} /> : <IconChevronDown size={16} />}
+                >
+                    {opened ? 'Show less' : `Show ${hiddenCount} more`}
+                </Button>
+            }
+        </Paper>
     );
 };

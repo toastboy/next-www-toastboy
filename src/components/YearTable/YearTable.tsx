@@ -18,6 +18,7 @@ export const YearTable = ({ table, year, qualified, unqualified }: Props) => {
     return (
         <Flex direction="column" gap="md">
             <RecordsTable
+                key={`${table}-${year}-qualified`}
                 table={table}
                 year={year}
                 records={qualified}
@@ -26,6 +27,7 @@ export const YearTable = ({ table, year, qualified, unqualified }: Props) => {
                 <Group>
                     <Title order={1}>{utn}</Title>
                     <RecordsTable
+                        key={`${table}-${year}-unqualified`}
                         table={table}
                         year={year}
                         records={unqualified}

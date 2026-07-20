@@ -25,6 +25,9 @@ export interface ConfigType {
     /** Maximum number of trophies to display individually in a player's trophy
      * section before resorting to a count. */
     trophyDisplayThreshold: number;
+    /** Number of rows shown in a records table before the rest are hidden
+     * behind a "show more" toggle. */
+    recordsTableVisibleRows: number;
 }
 
 export const ConfigSchema: z.ZodType<ConfigType> = z.object({
@@ -38,4 +41,5 @@ export const ConfigSchema: z.ZodType<ConfigType> = z.object({
     defaultGameCostPence: z.number().int().min(1),
     defaultHallCostPence: z.number().int().min(1),
     trophyDisplayThreshold: z.number().int().min(1),
+    recordsTableVisibleRows: z.number().int().min(1),
 });

@@ -1,4 +1,4 @@
-import { Group } from '@mantine/core';
+import { Group, Stack } from '@mantine/core';
 import { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { TableNameSchema } from 'prisma/zod/schemas';
@@ -113,15 +113,17 @@ const TablePage = async (props: PageProps) => {
     return (
         <>
             <AutoRefresh channels={[FootyChannel.Results, FootyChannel.Players]} />
-            <Group justify="center" w="100%">
-                <TitleWithYearDropdown order={1} title={`${TableTitle(table)}: `} year={year} validYears={allYears} />
-            </Group>
-            <YearTable
-                table={table}
-                year={year}
-                qualified={tableQualified}
-                unqualified={tableUnqualified}
-            />
+            <Stack w="100%" p="xl" align="center">
+                <Group justify="center" w="100%">
+                    <TitleWithYearDropdown order={1} title={`${TableTitle(table)}: `} year={year} validYears={allYears} />
+                </Group>
+                <YearTable
+                    table={table}
+                    year={year}
+                    qualified={tableQualified}
+                    unqualified={tableUnqualified}
+                />
+            </Stack>
         </>
     );
 };

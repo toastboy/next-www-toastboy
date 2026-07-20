@@ -1,11 +1,13 @@
 
 import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { TableName, TableNameSchema } from 'prisma/zod/schemas';
 import { vi } from 'vitest';
 
 import { Props as PlayerLinkProps } from '@/components/PlayerLink/PlayerLink';
 import { RecordsTable } from '@/components/RecordsTable/RecordsTable';
 import { Props as TableScoreProps } from '@/components/TableScore/TableScore';
+import { config } from '@/lib/config';
 import { extractMockProps, Wrapper } from '@/tests/components/lib/common';
 import { createMockPlayerRecordData, defaultPlayerRecordDataList } from '@/tests/mocks/data/playerRecordData';
 import { PlayerRecordDataType } from '@/types';
@@ -221,6 +223,91 @@ describe('RecordsTable', () => {
             expect(getRankColumnValues()).toEqual(['-', '2', '2']);
             expect(getRankCellVisibleText(getRankCell(1))).toBe('2');
             expect(getRankCellVisibleText(getRankCell(2))).toBe('');
+        });
+    });
+
+    describe('show more / show less', () => {
+        const untiedRecords = Array.from(
+            { length: config.recordsTableVisibleRows + 5 },
+            (_, index) => createMockPlayerRecordData({ id: index + 1, rankPoints: index + 1 }),
+        );
+
+        it('renders only the configured number of rows, with a "show more" toggle', () => {
+            render(
+                <Wrapper>
+                    <RecordsTable
+                        table={TableNameSchema.enum.points}
+                        year={2024}
+                        records={untiedRecords}
+                    />
+                </Wrapper>,
+            );
+
+            expect(extractMockProps<PlayerLinkProps>('PlayerLink')).toHaveLength(
+                config.recordsTableVisibleRows,
+            );
+            expect(screen.getByRole('button', { name: 'Show 5 more' })).toBeInTheDocument();
+        });
+
+        it('reveals the remaining rows when the toggle is clicked, then hides them again', async () => {
+            const user = userEvent.setup();
+            render(
+                <Wrapper>
+                    <RecordsTable
+                        table={TableNameSchema.enum.points}
+                        year={2024}
+                        records={untiedRecords}
+                    />
+                </Wrapper>,
+            );
+
+            await user.click(screen.getByRole('button', { name: 'Show 5 more' }));
+
+            expect(extractMockProps<PlayerLinkProps>('PlayerLink')).toHaveLength(untiedRecords.length);
+            const showLess = screen.getByRole('button', { name: 'Show less' });
+
+            await user.click(showLess);
+
+            expect(extractMockProps<PlayerLinkProps>('PlayerLink')).toHaveLength(
+                config.recordsTableVisibleRows,
+            );
+        });
+
+        it('does not render a toggle when all rows already fit', () => {
+            render(
+                <Wrapper>
+                    <RecordsTable
+                        table={TableNameSchema.enum.points}
+                        year={2024}
+                        records={defaultPlayerRecordDataList}
+                    />
+                </Wrapper>,
+            );
+
+            expect(screen.queryByRole('button', { name: /show/i })).not.toBeInTheDocument();
+        });
+
+        it('does not split a tie straddling the cutoff', () => {
+            const tiedAcrossCutoff = untiedRecords.map((record, index) =>
+                index === config.recordsTableVisibleRows ?
+                    { ...record, rankPoints: config.recordsTableVisibleRows } :
+                    record,
+            );
+
+            render(
+                <Wrapper>
+                    <RecordsTable
+                        table={TableNameSchema.enum.points}
+                        year={2024}
+                        records={tiedAcrossCutoff}
+                    />
+                </Wrapper>,
+            );
+
+            expect(extractMockProps<PlayerLinkProps>('PlayerLink')).toHaveLength(
+                config.recordsTableVisibleRows + 1,
+            );
+            expect(screen.getByRole('button', { name: 'Show 4 more' })).toBeInTheDocument();
         });
     });
 });

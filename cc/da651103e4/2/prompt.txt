@@ -1,0 +1,13 @@
+Let's do the same treatment for the turnout table as we already did for points: put it in a Paper with the same visual treatment, collapse after a sensible number of historic rows etc. I think the headers need to stay visible though.
+
+---
+
+Is there a way to make the column widths equal without specifying exact widths?
+
+---
+
+Can the headers be vertical to save horizontal space?
+
+---
+
+hiddenCount can be negative when sortedTurnout.length < config.turnoutTableVisibleRows. While the button is currently guarded by hiddenCount > 0, clamping this to Math.max(0, …) makes the intent clearer and prevents accidental negative values if this variable is reused later (e.g., in labels/logic).

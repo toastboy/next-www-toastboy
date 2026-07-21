@@ -1,0 +1,23 @@
+npm error code ERESOLVE
+npm error ERESOLVE could not resolve
+npm error
+npm error While resolving: next-www-toastboy@undefined
+npm error Found: @tiptap/extension-highlight@3.27.3
+npm error node_modules/@tiptap/extension-highlight
+npm error   @tiptap/extension-highlight@"^3.28.0" from the root project
+npm error
+npm error Could not resolve dependency:
+npm error @tiptap/extension-highlight@"^3.28.0" from the root project
+npm error
+npm error Conflicting peer dependency: @tiptap/core@3.28.0
+npm error node_modules/@tiptap/core
+npm error   peer @tiptap/core@"3.28.0" from @tiptap/extension-highlight@3.28.0
+npm error   node_modules/@tiptap/extension-highlight
+npm error     @tiptap/extension-highlight@"^3.28.0" from the root project
+npm error
+npm error Fix the upstream dependency conflict, or retry this command with --force or --legacy-peer-deps to accept an incorrect (and potentially broken) dependency resolution.
+npm error
+npm error
+npm error For a full report see:
+npm error /Users/toastboy/.npm/_logs/2026-07-21T11_50_28_172Z-eresolve-report.txt
+npm error A complete log of this run can be found in: /Users/toastboy/.npm/_logs/2026-07-21T11_50_28_172Z-debug-0.log

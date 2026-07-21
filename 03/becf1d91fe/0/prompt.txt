@@ -1,0 +1,14 @@
+<ide_opened_file>The user opened the file /Volumes/Development/next-www-toastboy/src/app/footy/admin/drinkers/[gameDayId]/page.vitest.spec.ts in the IDE. This may or may not be related to the current task.</ide_opened_file>
+I have this error:
+
+Test: page.vitest.spec.ts [pages-vitest] > Table [table] page > Page > fetches the qualified table data
+File: file:///Volumes/Development/next-www-toastboy/src/app/footy/table/%5Btable%5D/page.vitest.spec.ts
+
+Error: [vitest] No "Stack" export is defined on the "@mantine/core" mock. Did you forget to return it from "vi.mock"?
+If you need to partially mock a module, you can use "importOriginal" helper inside:
+
+  at Module.TablePage (/Volumes/Development/next-www-toastboy/src/app/footy/table/[table]/page.tsx:114:10)
+  at /Volumes/Development/next-www-toastboy/src/app/footy/table/[table]/page.vitest.spec.ts:99:13
+
+
+Shouldn't mocks like this be declared centrally, once, rather than in each test?

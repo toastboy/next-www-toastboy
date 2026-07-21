@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "909697ef3679",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "src/components/RecordsTable/RecordsTable.tsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/90/9697ef3679/0/metadata.json",
+      "transcript": "/90/9697ef3679/0/full.jsonl",
+      "compact_transcript": "/90/9697ef3679/0/transcript.jsonl",
+      "content_hash": "/90/9697ef3679/0/content_hash.txt",
+      "prompt": "/90/9697ef3679/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 81,
+    "cache_creation_tokens": 48548,
+    "cache_read_tokens": 2174182,
+    "output_tokens": 12066,
+    "api_call_count": 41
+  }
+}

@@ -1,0 +1,5 @@
+It looks like Playwright is leaving chromium helper processes around and consuming lots of memory, for example /Users/toastboy/Library/Caches/ms-playwright/chromium_headless_shell-1228/chrome-headless-shell-mac-arm64/chrome-headless-shell. What can I do to make sure that doesn't happen in the future?
+
+---
+
+Yes

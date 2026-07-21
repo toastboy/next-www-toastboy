@@ -1,0 +1,40 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "11bf867c9265",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 7,
+  "files_touched": [
+    "knip.json",
+    "src/app/footy/tables/page.vitest.spec.ts",
+    "src/app/footy/winners/page.tsx",
+    "src/app/footy/winners/page.vitest.spec.ts",
+    "src/components/RecordsTable/RecordsTable.tsx",
+    "src/components/RecordsTable/RecordsTable.vitest.spec.tsx",
+    "src/components/Turnout/Turnout.tsx",
+    "src/components/Turnout/Turnout.vitest.spec.tsx",
+    "src/components/Turnout/TurnoutSkeleton.tsx",
+    "src/components/WinnersTable/WinnersTable.tsx",
+    "src/components/WinnersTable/WinnersTable.vitest.spec.tsx",
+    "src/lib/collapsibleGroups.ts",
+    "src/lib/collapsibleGroups.vitest.spec.ts",
+    "src/lib/config.ts",
+    "src/types/config.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/11/bf867c9265/0/metadata.json",
+      "transcript": "/11/bf867c9265/0/full.jsonl",
+      "compact_transcript": "/11/bf867c9265/0/transcript.jsonl",
+      "content_hash": "/11/bf867c9265/0/content_hash.txt",
+      "prompt": "/11/bf867c9265/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 211,
+    "cache_creation_tokens": 193611,
+    "cache_read_tokens": 10166164,
+    "output_tokens": 41421,
+    "api_call_count": 106
+  }
+}

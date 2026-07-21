@@ -1,0 +1,41 @@
+Now the Winners table should be treated the same way as the RecordTable components: skip the border for rows where two or more winners exist in a year, and collapse the tables beyond a certain length. In fact that length should be a single config item for records tables, turnout and winners.
+
+---
+
+I want the rendering of the table winners to be in the predictable order (same as the schema enum) rather than whatever semi-random order the Promise.All() returns them in
+
+---
+
+Also let's make the table header visibly hidden the same way as recordstable
+
+---
+
+<ide_selection>The user selected the lines 33 to 33 from /Volumes/Development/next-www-toastboy/src/lib/collapsibleGroups.ts:
+};
+
+This may or may not be related to the current task.</ide_selection>
+initial is not clamped to a non-negative value. If a caller passes a negative number, count becomes negative and groups[count] will be undefined, causing a runtime error when reading .visible. Clamp with Math.max(0, ...) (and consider validating non-integer inputs if this is a public utility).
+
+---
+
+<ide_selection>The user selected the lines 1 to 1 from /18d17fed-9cdb-44a6-bcfe-4517a80616e3/message/1/0/TestFailureMessage:
+Error: @mantine/core: MantineProvider was not found in component tree, make sure you have it in your app
+
+This may or may not be related to the current task.</ide_selection>
+Error: @mantine/core: MantineProvider was not found in component tree, make sure you have it in your app
+
+---
+
+<ide_selection>The user selected the lines 22 to 22 from /Volumes/Development/next-www-toastboy/src/components/WinnersTable/WinnersTable.tsx:
+gr
+
+This may or may not be related to the current task.</ide_selection>
+Yes, fix it
+
+---
+
+❯ npx knip
+Analyzing workspace…
+◇ injected env (9) from .env.playwright // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+Unlisted binaries (1)
+pkill  package.json

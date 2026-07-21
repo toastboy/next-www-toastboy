@@ -21,6 +21,7 @@ import { useId, useMemo } from 'react';
 
 import { PlayerLink } from '@/components/PlayerLink/PlayerLink';
 import { TableScore } from '@/components/TableScore/TableScore';
+import { groupDisplays, visibleRowCount } from '@/lib/collapsibleGroups';
 import { config } from '@/lib/config';
 import { PlayerRecordDataType } from '@/types';
 
@@ -56,34 +57,21 @@ interface RankDisplay {
 }
 
 const rankDisplays = (records: PlayerRecordDataType[], rankField: RankField): RankDisplay[] => {
-    const displays: RankDisplay[] = [];
-    let prevRank: number | null | undefined;
+    const groups = groupDisplays(records, (record) => {
+        const rank = record[rankField];
+        // A missing rank is never tied with another missing rank.
+        return rank ?? Symbol();
+    });
 
-    for (const record of records) {
+    return records.map((record, index) => {
         const rank = record[rankField];
         const isMissing = rank === null || rank === undefined;
 
-        displays.push({
+        return {
             text: isMissing ? '-' : `${rank}`,
-            visible: isMissing || rank !== prevRank,
-        });
-
-        prevRank = rank;
-    }
-
-    return displays;
-};
-
-// Extends the initial page of rows forward past any tie straddling the cutoff,
-// so a group of equally-ranked players is never split across the toggle.
-const visibleRowCount = (ranks: RankDisplay[], initial: number): number => {
-    let count = Math.min(initial, ranks.length);
-
-    while (count < ranks.length && !ranks[count].visible) {
-        count++;
-    }
-
-    return count;
+            visible: groups[index].visible,
+        };
+    });
 };
 
 export const RecordsTable = ({ table, year, records, title, titleOrder = 2 }: Props) => {
@@ -91,7 +79,7 @@ export const RecordsTable = ({ table, year, records, title, titleOrder = 2 }: Pr
     const scoreHeading = scoreHeadingByTable[table];
     const ranks = useMemo(() => rankDisplays(records, rankField), [records, rankField]);
     const cutoff = useMemo(
-        () => visibleRowCount(ranks, config.recordsTableVisibleRows),
+        () => visibleRowCount(ranks, config.tableVisibleRows),
         [ranks],
     );
     const [opened, { toggle }] = useDisclosure(false);

@@ -16,7 +16,7 @@ export const TurnoutSkeleton = () => (
                 </TableTr>
             </TableThead>
             <TableTbody>
-                {Array.from({ length: config.turnoutTableVisibleRows }).map((_, i) => (
+                {Array.from({ length: config.tableVisibleRows }).map((_, i) => (
                     <TableTr key={i}>
                         {Array.from({ length: 6 }).map((_, j) => (
                             <TableTd key={j}>

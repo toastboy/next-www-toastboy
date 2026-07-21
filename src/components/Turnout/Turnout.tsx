@@ -26,10 +26,10 @@ export interface Props {
 export const Turnout = ({ turnout }: Props) => {
     const sortedTurnout = [...turnout].sort((a, b) => b.year - a.year);
     const [opened, { toggle }] = useDisclosure(false);
-    const hiddenCount = Math.max(0, sortedTurnout.length - config.turnoutTableVisibleRows);
+    const hiddenCount = Math.max(0, sortedTurnout.length - config.tableVisibleRows);
     const visibleTurnout = opened ?
         sortedTurnout :
-        sortedTurnout.slice(0, config.turnoutTableVisibleRows);
+        sortedTurnout.slice(0, config.tableVisibleRows);
     const tbodyId = useId();
 
     const rows = visibleTurnout.map((t) => (

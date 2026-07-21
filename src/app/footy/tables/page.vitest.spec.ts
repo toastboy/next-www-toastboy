@@ -1,4 +1,13 @@
 import { renderToStaticMarkup } from 'react-dom/server';
+import { vi } from 'vitest';
+
+vi.mock('@mantine/core', () => ({
+    List: ({ children }: { children?: unknown }) => children,
+    ListItem: ({ children }: { children?: unknown }) => children,
+    Paper: ({ children }: { children?: unknown }) => children,
+    Stack: ({ children }: { children?: unknown }) => children,
+    Title: ({ children }: { children?: unknown }) => children,
+}));
 
 import TablesPage from '@/app/footy/tables/page';
 

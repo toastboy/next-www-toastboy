@@ -228,7 +228,7 @@ describe('RecordsTable', () => {
 
     describe('show more / show less', () => {
         const untiedRecords = Array.from(
-            { length: config.recordsTableVisibleRows + 5 },
+            { length: config.tableVisibleRows + 5 },
             (_, index) => createMockPlayerRecordData({ id: index + 1, rankPoints: index + 1 }),
         );
 
@@ -244,7 +244,7 @@ describe('RecordsTable', () => {
             );
 
             expect(extractMockProps<PlayerLinkProps>('PlayerLink')).toHaveLength(
-                config.recordsTableVisibleRows,
+                config.tableVisibleRows,
             );
             expect(screen.getByRole('button', { name: 'Show 5 more' })).toBeInTheDocument();
         });
@@ -269,7 +269,7 @@ describe('RecordsTable', () => {
             await user.click(showLess);
 
             expect(extractMockProps<PlayerLinkProps>('PlayerLink')).toHaveLength(
-                config.recordsTableVisibleRows,
+                config.tableVisibleRows,
             );
         });
 
@@ -289,8 +289,8 @@ describe('RecordsTable', () => {
 
         it('does not split a tie straddling the cutoff', () => {
             const tiedAcrossCutoff = untiedRecords.map((record, index) =>
-                index === config.recordsTableVisibleRows ?
-                    { ...record, rankPoints: config.recordsTableVisibleRows } :
+                index === config.tableVisibleRows ?
+                    { ...record, rankPoints: config.tableVisibleRows } :
                     record,
             );
 
@@ -305,7 +305,7 @@ describe('RecordsTable', () => {
             );
 
             expect(extractMockProps<PlayerLinkProps>('PlayerLink')).toHaveLength(
-                config.recordsTableVisibleRows + 1,
+                config.tableVisibleRows + 1,
             );
             expect(screen.getByRole('button', { name: 'Show 4 more' })).toBeInTheDocument();
         });

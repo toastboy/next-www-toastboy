@@ -1,7 +1,7 @@
-import { Grid, GridCol, Group, Stack } from '@mantine/core';
+import { Flex, Group, Stack } from '@mantine/core';
 import { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
-import { TableName, TableNameSchema } from 'prisma/zod/schemas';
+import { TableNameSchema } from 'prisma/zod/schemas';
 import { cache } from 'react';
 import z from 'zod';
 
@@ -10,7 +10,6 @@ import { TitleWithYearDropdown } from '@/components/TitleWithYearDropdown/TitleW
 import { WinnersTable } from '@/components/WinnersTable/WinnersTable';
 import { getYearName } from '@/lib/tables';
 import playerRecordService from '@/services/PlayerRecord';
-import { PlayerRecordDataType } from '@/types';
 import { FootyChannel } from '@/types/FootyChannel';
 
 interface PageProps {
@@ -75,17 +74,16 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
 
 const WinnersPage = async (props: PageProps) => {
     const { year, allYears } = await unpackParams(props.searchParams);
-    const winners = new Map<TableName, PlayerRecordDataType[]>();
 
-    await Promise.all(TableNameSchema.options.map(async (table) => {
-        const record = await playerRecordService.getWinners(table, year);
-        winners.set(table, record);
+    const winners = await Promise.all(TableNameSchema.options.map(async (table) => {
+        const records = await playerRecordService.getWinners(table, year);
+        return { table, records };
     }));
 
     return (
         <Stack align="stretch" justify="center" gap="md">
             <AutoRefresh channels={FootyChannel.Results} />
-            <Group justify="center" w="100%">
+            <Group justify="center" w="100%" mb="xl">
                 <TitleWithYearDropdown
                     order={1}
                     title="Winners: "
@@ -93,17 +91,15 @@ const WinnersPage = async (props: PageProps) => {
                     validYears={allYears}
                 />
             </Group>
-            <Grid>
+            <Flex wrap="wrap" gap="md" justify="center" align="stretch" w="100%">
                 {
-                    Array.from(winners.entries()).map(([table, records]) => {
+                    winners.map(({ table, records }) => {
                         return (
-                            <GridCol span={{ base: 12, sm: 8, md: 6, lg: 4, xl: 3 }} key={table}>
-                                <WinnersTable table={table} records={records} />
-                            </GridCol>
+                            <WinnersTable table={table} records={records} key={table} />
                         );
                     })
                 }
-            </Grid>
+            </Flex>
         </Stack>
     );
 };

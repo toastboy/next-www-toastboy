@@ -17,8 +17,7 @@ vi.mock('react', async () => {
 });
 
 vi.mock('@mantine/core', () => ({
-    Grid: () => null,
-    GridCol: () => null,
+    Flex: () => null,
     Group: () => null,
     Stack: () => null,
     Title: () => null,

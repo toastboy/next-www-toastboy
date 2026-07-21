@@ -51,7 +51,7 @@ describe('Turnout', () => {
 
     describe('show more / show less', () => {
         const manyYears = Array.from(
-            { length: config.turnoutTableVisibleRows + 5 },
+            { length: config.tableVisibleRows + 5 },
             (_, index) => createMockTurnoutByYear({ year: 2000 + index }),
         );
 
@@ -63,7 +63,7 @@ describe('Turnout', () => {
             );
 
             const [, tbody] = screen.getAllByRole('rowgroup');
-            expect(within(tbody).getAllByRole('row')).toHaveLength(config.turnoutTableVisibleRows);
+            expect(within(tbody).getAllByRole('row')).toHaveLength(config.tableVisibleRows);
             expect(screen.getByRole('button', { name: 'Show 5 more' })).toBeInTheDocument();
         });
 
@@ -83,7 +83,7 @@ describe('Turnout', () => {
 
             await user.click(showLess);
 
-            expect(within(tbody).getAllByRole('row')).toHaveLength(config.turnoutTableVisibleRows);
+            expect(within(tbody).getAllByRole('row')).toHaveLength(config.tableVisibleRows);
         });
 
         it('does not render a toggle when all rows already fit', () => {

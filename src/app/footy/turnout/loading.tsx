@@ -1,11 +1,11 @@
-import { Paper } from '@mantine/core';
+import { Stack } from '@mantine/core';
 
 import { TurnoutSkeleton } from '@/components/Turnout/TurnoutSkeleton';
 
 const Loading = () => (
-    <Paper p="xl">
+    <Stack w="100%" p="xl" align="center">
         <TurnoutSkeleton />
-    </Paper>
+    </Stack>
 );
 
 export default Loading;

@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('services/Outcome');
 vi.mock('@mantine/core', () => ({
-    Paper: ({ children }: { children?: unknown }) => children,
+    Stack: ({ children }: { children?: unknown }) => children,
 }));
 vi.mock('@/components/AutoRefresh/AutoRefresh', () => ({
     AutoRefresh: vi.fn(() => null),

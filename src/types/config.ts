@@ -28,6 +28,9 @@ export interface ConfigType {
     /** Number of rows shown in a records table before the rest are hidden
      * behind a "show more" toggle. */
     recordsTableVisibleRows: number;
+    /** Number of rows shown in the turnout-by-year table before older years
+     * are hidden behind a "show more" toggle. */
+    turnoutTableVisibleRows: number;
 }
 
 export const ConfigSchema: z.ZodType<ConfigType> = z.object({
@@ -42,4 +45,5 @@ export const ConfigSchema: z.ZodType<ConfigType> = z.object({
     defaultHallCostPence: z.number().int().min(1),
     trophyDisplayThreshold: z.number().int().min(1),
     recordsTableVisibleRows: z.number().int().min(1),
+    turnoutTableVisibleRows: z.number().int().min(1),
 });

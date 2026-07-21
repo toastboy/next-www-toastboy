@@ -1,4 +1,4 @@
-import { Group, Paper, Stack, Text } from '@mantine/core';
+import { Group, Stack, Text } from '@mantine/core';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import { Turnout } from '@/components/Turnout/Turnout';
@@ -29,9 +29,7 @@ export const Comparison: Story = {
             </Stack>
             <Stack flex={1}>
                 <Text fw={700} c="dimmed" ta="center">Loaded</Text>
-                <Paper p="xl">
-                    <Turnout turnout={defaultTurnoutByYearList} />
-                </Paper>
+                <Turnout turnout={defaultTurnoutByYearList} />
             </Stack>
         </Group>
     ),

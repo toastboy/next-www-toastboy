@@ -1,0 +1,10 @@
+.verticalHeader {
+    vertical-align: bottom;
+}
+
+.verticalHeaderText {
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    white-space: nowrap;
+    display: inline-block;
+}

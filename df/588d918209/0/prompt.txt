@@ -1,0 +1,13 @@
+/llm-council  I use 1Password with ssh agent a lot, and I like the way I can authorize it using TouchID on my MacBook Pro. On my Mac Mini, though, at the moment I have a Keychron mechanical keyboard which I like but of course that doesn't have TouchID. Instead I use double-clicks on my Apple Watch to do a similar thing. The problem is that's laggy and has been unreliable in the past so it gets frustrating. I'm considering getting a Magic Keyboard with TouchID. There's an attraction to getting the non-extended one so that it's not so far to reach to the trackball on the right of it (I have multiple keyboards on my desk) but I don't like the idea of losing the full-height arrow keys that are there on the extended version of the magic keyboard. What should I do?
+
+---
+
+I do have YubiKeys as well as a watch and Touch ID on my MacBook pro: so can 1Password be configured to use a YubiKey instead of Apple Watch to authorize access to its ssh agent?
+
+---
+
+Do the magic keyboards have a USB hub to connect the YubiKey to?
+
+---
+
+OK, how can I troubleshoot the watch flakiness?

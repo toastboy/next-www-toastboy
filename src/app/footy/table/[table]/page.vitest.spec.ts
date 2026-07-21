@@ -12,6 +12,7 @@ vi.mock('next/navigation', () => ({
 }));
 vi.mock('@mantine/core', () => ({
     Group: ({ children }: { children?: unknown }) => children,
+    Stack: ({ children }: { children?: unknown }) => children,
 }));
 vi.mock('@/components/AutoRefresh/AutoRefresh', () => ({
     AutoRefresh: vi.fn(() => null),

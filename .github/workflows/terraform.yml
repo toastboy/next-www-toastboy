@@ -52,14 +52,14 @@ jobs:
 
             - name: Terraform Plan (Internal PRs)
               if: ${{ github.event_name == 'pull_request' && !github.event.pull_request.head.repo.fork }}
-              uses: dflook/terraform-plan@v2
+              uses: dflook/terraform-plan@v3
               with:
                   path: terraform
                   workspace: next-www-toastboy
 
             - name: Terraform Apply (main)
               if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-              uses: dflook/terraform-apply@v2
+              uses: dflook/terraform-apply@v3
               with:
                   path: terraform
                   workspace: next-www-toastboy
@@ -68,7 +68,7 @@ jobs:
             - name: Get Terraform Outputs
               if: github.event_name == 'push' && github.ref == 'refs/heads/main'
               id: tf_output
-              uses: dflook/terraform-output@v2
+              uses: dflook/terraform-output@v3
               with:
                   path: terraform
                   workspace: next-www-toastboy

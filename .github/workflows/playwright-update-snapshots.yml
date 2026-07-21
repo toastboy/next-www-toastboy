@@ -20,7 +20,7 @@ jobs:
 
         steps:
             - uses: actions/checkout@v7
-            - uses: actions/setup-node@v6
+            - uses: actions/setup-node@v7
               with:
                   node-version: 24
             - name: Install dependencies
@@ -45,7 +45,7 @@ jobs:
               run: npx playwright install --with-deps
             - name: Update snapshots
               env:
-                  PLAYWRIGHT_TEST: 'true'
+                  PLAYWRIGHT_TEST: "true"
               run: npx playwright test --update-snapshots
             - uses: actions/upload-artifact@v7
               if: always()

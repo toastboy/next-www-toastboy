@@ -109,10 +109,10 @@ export const RecordsTable = ({ table, year, records, title, titleOrder = 2 }: Pr
             ) : null}
             <Table stickyHeader stickyHeaderOffset={0}>
                 <TableThead>
-                    <TableTr>
-                        <TableTh>Position</TableTh>
-                        <TableTh>Player</TableTh>
-                        <TableTh>{scoreHeading}</TableTh>
+                    <TableTr bd="0">
+                        <TableTh p={0}><VisuallyHidden>Position</VisuallyHidden></TableTh>
+                        <TableTh p={0}><VisuallyHidden>Player</VisuallyHidden></TableTh>
+                        <TableTh p={0}><VisuallyHidden>{scoreHeading}</VisuallyHidden></TableTh>
                     </TableTr>
                 </TableThead>
                 <TableTbody id={tbodyId}>

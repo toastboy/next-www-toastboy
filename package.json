@@ -103,7 +103,7 @@
     "devDependencies": {
         "@chromatic-com/storybook": "^5.2.1",
         "@eslint/config-array": "^0.23.5",
-        "@eslint/js": "^9.39.4",
+        "@eslint/js": "^9.39.5",
         "@eslint/object-schema": "^3.0.5",
         "@faker-js/faker": "^10.5.0",
         "@mdx-js/loader": "^3.1.1",
@@ -143,7 +143,7 @@
         "chromatic": "^18.0.1",
         "debug": "^4.4.3",
         "dotenv": "^17.4.2",
-        "eslint": "^9.39.4",
+        "eslint": "^9.39.5",
         "eslint-config-next": "^16.2.10",
         "eslint-plugin-eslint-comments": "^3.2.0",
         "eslint-plugin-import-x": "^4.17.1",

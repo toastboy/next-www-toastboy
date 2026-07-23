@@ -1,0 +1,22 @@
+Code review says:
+
+The hard-coded sizing strings (\"1280px\", \"320px\") are magic numbers and may be inconsistent with the design system. Consider using Mantine theme tokens/breakpoints (e.g., Container size, responsive maw/px) or centralizing these values in a shared constant to make future layout tweaks safer and more consistent.
+
+
+Would that be best in theme.other, in config.js or somewhere else?
+
+---
+
+But isn't theme.other for things that are layout related, and not covered by existing Mantine conventions?
+
+---
+
+Yes
+
+---
+
+Invalid type "any" of template literal expression. - do I need to export the custom type and coerce?
+
+---
+
+CustomAppShell now imports useMantineTheme from @mantine/core, but this test mock does not provide it. If this file mocks @mantine/core for the test suite, the component will likely crash with useMantineTheme is not a function (or return an unexpected shape). Add a useMantineTheme mock that returns an object including other.appShellMaxWidth/appShellMinWidth.

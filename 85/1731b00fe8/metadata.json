@@ -3,7 +3,7 @@
   "checkpoint_id": "851731b00fe8",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 2,
+  "checkpoints_count": 7,
   "files_touched": [
     "playwright.config.ts",
     "src/app/footy/response/page.tsx",
@@ -27,13 +27,20 @@
       "compact_transcript": "/85/1731b00fe8/1/transcript.jsonl",
       "content_hash": "/85/1731b00fe8/1/content_hash.txt",
       "prompt": "/85/1731b00fe8/1/prompt.txt"
+    },
+    {
+      "metadata": "/85/1731b00fe8/2/metadata.json",
+      "transcript": "/85/1731b00fe8/2/full.jsonl",
+      "compact_transcript": "/85/1731b00fe8/2/transcript.jsonl",
+      "content_hash": "/85/1731b00fe8/2/content_hash.txt",
+      "prompt": "/85/1731b00fe8/2/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 24,
-    "cache_creation_tokens": 42624,
-    "cache_read_tokens": 462305,
-    "output_tokens": 3587,
-    "api_call_count": 12
+    "input_tokens": 82,
+    "cache_creation_tokens": 104723,
+    "cache_read_tokens": 1679596,
+    "output_tokens": 13402,
+    "api_call_count": 41
   }
 }

@@ -1,0 +1,174 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "851731b00fe8",
+  "session_id": "f33f126f-083b-4e9f-b763-e2123487d6db",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-23T12:09:19.153174Z",
+  "branch": "main",
+  "checkpoints_count": 10,
+  "save_step_count": 10,
+  "files_touched": [
+    "src/app/footy/response/page.tsx",
+    "src/app/footy/response/page.vitest.spec.ts",
+    "src/components/CustomAppShell/CustomAppShell.tsx",
+    "src/components/CustomAppShell/CustomAppShell.vitest.spec.tsx",
+    "src/components/GameInvitationResponseForm/GameInvitationResponseForm.tsx",
+    "src/theme.ts",
+    "src/types/mantine.d.ts"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "88329fd173a8",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 274,
+    "cache_creation_tokens": 281298,
+    "cache_read_tokens": 14876122,
+    "output_tokens": 74725,
+    "api_call_count": 137
+  },
+  "session_metrics": {
+    "turn_count": 10
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-07-23T12:09:19.099414Z",
+    "agent_lines": 100,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 12,
+    "human_removed": 6,
+    "total_committed": 112,
+    "total_lines_changed": 118,
+    "agent_percentage": 84.7457627118644,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 64,
+      "user_lines_removed": 15,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 47,
+        "src/app/footy/response/page.tsx": 3,
+        "src/app/footy/response/page.vitest.spec.ts": 1,
+        "src/components/CustomAppShell/CustomAppShell.tsx": 3,
+        "src/components/GameInvitationResponseForm/GameInvitationResponseForm.tsx": 9
+      },
+      "user_removed_per_file": {
+        "src/app/footy/response/page.tsx": 3,
+        "src/components/CustomAppShell/CustomAppShell.tsx": 3,
+        "src/components/GameInvitationResponseForm/GameInvitationResponseForm.tsx": 9
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 48,
+      "user_lines_removed": 0,
+      "agent_lines_added": 17,
+      "agent_lines_removed": 15,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 47
+      }
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 58,
+      "user_lines_removed": 1,
+      "agent_lines_added": 17,
+      "agent_lines_removed": 15,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 47,
+        "src/components/CustomAppShell/CustomAppShell.tsx": 10
+      },
+      "user_removed_per_file": {
+        "src/components/CustomAppShell/CustomAppShell.tsx": 1
+      }
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 48,
+      "user_lines_removed": 0,
+      "agent_lines_added": 26,
+      "agent_lines_removed": 15,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 47
+      }
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 48,
+      "user_lines_removed": 0,
+      "agent_lines_added": 54,
+      "agent_lines_removed": 15,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 47
+      }
+    },
+    {
+      "checkpoint_number": 6,
+      "user_lines_added": 48,
+      "user_lines_removed": 0,
+      "agent_lines_added": 108,
+      "agent_lines_removed": 16,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 47
+      }
+    },
+    {
+      "checkpoint_number": 7,
+      "user_lines_added": 48,
+      "user_lines_removed": 0,
+      "agent_lines_added": 109,
+      "agent_lines_removed": 16,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 47
+      }
+    },
+    {
+      "checkpoint_number": 8,
+      "user_lines_added": 48,
+      "user_lines_removed": 0,
+      "agent_lines_added": 131,
+      "agent_lines_removed": 16,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 47
+      }
+    },
+    {
+      "checkpoint_number": 9,
+      "user_lines_added": 50,
+      "user_lines_removed": 2,
+      "agent_lines_added": 128,
+      "agent_lines_removed": 16,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 47,
+        "src/components/CustomAppShell/CustomAppShell.tsx": 2
+      },
+      "user_removed_per_file": {
+        "src/components/CustomAppShell/CustomAppShell.tsx": 2
+      }
+    },
+    {
+      "checkpoint_number": 10,
+      "user_lines_added": 48,
+      "user_lines_removed": 0,
+      "agent_lines_added": 141,
+      "agent_lines_removed": 16,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 47
+      }
+    }
+  ]
+}

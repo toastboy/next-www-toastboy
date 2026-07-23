@@ -1,0 +1,63 @@
+<ide_opened_file>The user opened the file /Volumes/Development/next-www-toastboy/src/components/CustomAppShell/CustomAppShell.vitest.spec.tsx in the IDE. This may or may not be related to the current task.</ide_opened_file>
+I see this error: given the tests don't have <Wrapper>, how did they ever pass and why are they failing with my current edits?
+
+Test: CustomAppShell.vitest.spec.tsx [components-vitest] > CustomAppShell > renders app shell with header, navbar, and footer
+File: file:///Volumes/Development/next-www-toastboy/src/components/CustomAppShell/CustomAppShell.vitest.spec.tsx
+
+Error: @mantine/core: MantineProvider was not found in component tree, make sure you have it in your app
+  at useMantineTheme (/Volumes/Development/next-www-toastboy/node_modules/@mantine/core/src/core/MantineProvider/MantineThemeProvider/MantineThemeProvider.tsx:13:10)
+  at useProps (/Volumes/Development/next-www-toastboy/node_modules/@mantine/core/src/core/MantineProvider/use-props/use-props.ts:14:16)
+  at /Volumes/Development/next-www-toastboy/node_modules/@mantine/core/src/components/Stack/Stack.tsx:54:16
+  at Object.react_stack_bottom_frame (/Volumes/Development/next-www-toastboy/node_modules/react-dom/cjs/react-dom-client.development.js:25904:20)
+  at renderWithHooks (/Volumes/Development/next-www-toastboy/node_modules/react-dom/cjs/react-dom-client.development.js:7662:22)
+  at updateFunctionComponent (/Volumes/Development/next-www-toastboy/node_modules/react-dom/cjs/react-dom-client.development.js:10166:19)
+  at beginWork (/Volumes/Development/next-www-toastboy/node_modules/react-dom/cjs/react-dom-client.development.js:11778:18)
+  at runWithFiberInDEV (/Volumes/Development/next-www-toastboy/node_modules/react-dom/cjs/react-dom-client.development.js:874:13)
+  at performUnitOfWork (/Volumes/Development/next-www-toastboy/node_modules/react-dom/cjs/react-dom-client.development.js:17641:22)
+  at workLoopSync (/Volumes/Development/next-www-toastboy/node_modules/react-dom/cjs/react-dom-client.development.js:17469:41)
+
+---
+
+What's the best approach here? Components are tested individually so is it most straightforward to have a global, universal way to mock all of Mantine?
+
+---
+
+Which Mantine components can have 'type="container"'?
+
+---
+
+Maybe I'm asking the wrong question. How do I specify that an element should be a CSS container for the purposes of using cqw widths?
+
+---
+
+Code review:
+
+theme.other.appShellMaxWidth / appShellMinWidth can be undefined at runtime if this component is rendered without your custom MantineProvider theme (Mantine default theme has other: {}), producing invalid CSS values like undefinedpx. Consider providing fallbacks (e.g., nullish coalescing to defaults), or ensure CustomAppShell is only rendered under a provider that sets these other values.
+
+
+I think I'd prefer to throw an error if an appropriate theme isn't in place.
+
+---
+
+<ide_selection>The user selected the lines 10 to 10 from /Volumes/Development/next-www-toastboy/src/theme.ts:
+}
+
+This may or may not be related to the current task.</ide_selection>
+Module augmentation is usually better placed in a dedicated *.d.ts file (e.g., src/mantine.d.ts) rather than a runtime module like theme.ts. This avoids relying on theme.ts being imported for types to take effect, and prevents the augmentation file from being treated as runtime code in bundling/test setups.
+
+---
+
+This assumes theme.other is always defined; if it is ever undefined at runtime, theme.other.appShellMaxWidth will throw a TypeError before your typeof checks run. Consider guarding theme.other first (e.g., const other = theme.other ?? {}) and validating against other.
+
+---
+
+If the test fails before the cleanup lines run, console.error and the mocked useMantineTheme return value can leak into other tests. Prefer restoring in a try/finally block or afterEach, and consider using mockReset()/mockRestore() consistently for the useMantineTheme mock.
+
+---
+
+<ide_opened_file>The user opened the file /Volumes/Development/next-www-toastboy/src/components/CustomAppShell/CustomAppShell.tsx in the IDE. This may or may not be related to the current task.</ide_opened_file>
+This error message is quite long and includes internal file paths/config details. If it can surface to end users (client component), consider a shorter user-facing message (e.g., "App theme is not configured") and move the detailed diagnostics to logs/cause metadata.
+
+---
+
+useMantineTheme is given a default implementation in the module mock and then overridden again in beforeEach. Consolidating to a single default (and using mockReturnValueOnce only in the tests that need different values) will reduce duplication and make it clearer which tests depend on which theme shape.

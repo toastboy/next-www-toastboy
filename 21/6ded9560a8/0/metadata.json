@@ -1,0 +1,148 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "216ded9560a8",
+  "session_id": "f2edab1a-5d16-4bcf-8c4c-bcf3616edf96",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-23T19:41:05.196384Z",
+  "branch": "main",
+  "checkpoints_count": 6,
+  "save_step_count": 7,
+  "files_touched": [
+    "public/microsoft-signin-button-dark.svg",
+    "public/microsoft-signin-button-light.svg",
+    "src/components/SignIn/SignIn.tsx",
+    "src/components/SignIn/SignIn.vitest.spec.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "7562c4f4a12c",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 161,
+    "cache_creation_tokens": 173864,
+    "cache_read_tokens": 10070327,
+    "output_tokens": 63285,
+    "api_call_count": 81
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_012fQDRj6RdzZReHnVuDpp11",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "finalise"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "7562c4f4a12c",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 83,
+        "end": 84,
+        "entry_ids": [
+          "381bcb49-1a0d-4633-85b3-361c14eaf633"
+        ],
+        "tool_use_id": "toolu_012fQDRj6RdzZReHnVuDpp11"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_012fQDRj6RdzZReHnVuDpp11"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: finalise",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 8
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-07-23T19:41:05.145945Z",
+    "agent_lines": 16,
+    "agent_removed": 18,
+    "human_added": 0,
+    "human_modified": 17,
+    "human_removed": 1,
+    "total_committed": 33,
+    "total_lines_changed": 52,
+    "agent_percentage": 65.38461538461539,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 48,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 47
+      }
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 65,
+      "user_lines_removed": 18,
+      "agent_lines_added": 8,
+      "agent_lines_removed": 3,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 47,
+        "src/components/SignIn/SignIn.tsx": 17
+      },
+      "user_removed_per_file": {
+        "src/components/SignIn/SignIn.tsx": 18
+      }
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 48,
+      "user_lines_removed": 0,
+      "agent_lines_added": 19,
+      "agent_lines_removed": 15,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 47
+      }
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 48,
+      "user_lines_removed": 0,
+      "agent_lines_added": 22,
+      "agent_lines_removed": 31,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 47
+      }
+    },
+    {
+      "checkpoint_number": 6,
+      "user_lines_added": 48,
+      "user_lines_removed": 0,
+      "agent_lines_added": 48,
+      "agent_lines_removed": 38,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 47
+      }
+    },
+    {
+      "checkpoint_number": 7,
+      "user_lines_added": 48,
+      "user_lines_removed": 0,
+      "agent_lines_added": 48,
+      "agent_lines_removed": 38,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 47
+      }
+    }
+  ]
+}

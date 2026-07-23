@@ -1,0 +1,33 @@
+Let's adopt the official sign in with Google button code and guidelines from here into the SignIn component: https://developers.google.com/identity/branding-guidelines
+
+---
+
+I'd prefer to use the ready-to-use SVG images
+
+---
+
+Now let's do the equivalent for the Sign in with Microsoft one: complete SVGs with themable options are preferred - https://learn.microsoft.com/en-us/entra/identity-platform/howto-add-branding-in-apps
+
+---
+
+<ide_selection>The user selected the lines 125 to 125 from /Volumes/Development/next-www-toastboy/src/components/SignIn/SignIn.tsx:
+Title
+
+This may or may not be related to the current task.</ide_selection>
+I changed the title to use <Title> but for some reason inspecting with the Edge DevTools shows the wrong text size and the role as 'paragraph' rather than 'header'. Why?
+
+---
+
+Yes
+
+---
+
+One last thing: the u/pw signin button should only be enabled if there's viable input in both boxes.
+
+---
+
+Is it better UX the original way, with field validation and an always-enabled submit button?
+
+---
+
+Let's try inline validation first

@@ -1,0 +1,29 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "216ded9560a8",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 6,
+  "files_touched": [
+    "public/microsoft-signin-button-dark.svg",
+    "public/microsoft-signin-button-light.svg",
+    "src/components/SignIn/SignIn.tsx",
+    "src/components/SignIn/SignIn.vitest.spec.tsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/21/6ded9560a8/0/metadata.json",
+      "transcript": "/21/6ded9560a8/0/full.jsonl",
+      "compact_transcript": "/21/6ded9560a8/0/transcript.jsonl",
+      "content_hash": "/21/6ded9560a8/0/content_hash.txt",
+      "prompt": "/21/6ded9560a8/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 161,
+    "cache_creation_tokens": 173864,
+    "cache_read_tokens": 10070327,
+    "output_tokens": 63285,
+    "api_call_count": 81
+  }
+}

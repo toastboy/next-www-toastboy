@@ -1,0 +1,5 @@
+I think I need a consistent design language - look at the forgotten password page. Should the header be inside the paper as it is now, or outside as it is on other pages such as the table page?
+
+---
+
+yes

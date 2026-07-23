@@ -1,0 +1,28 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "a873753b4d76",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "src/app/footy/forgottenpassword/page.tsx",
+    "src/app/footy/forgottenpassword/page.vitest.spec.ts",
+    "src/components/ForgottenPasswordForm/ForgottenPasswordForm.tsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/a8/73753b4d76/0/metadata.json",
+      "transcript": "/a8/73753b4d76/0/full.jsonl",
+      "compact_transcript": "/a8/73753b4d76/0/transcript.jsonl",
+      "content_hash": "/a8/73753b4d76/0/content_hash.txt",
+      "prompt": "/a8/73753b4d76/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 77,
+    "cache_creation_tokens": 55197,
+    "cache_read_tokens": 2250786,
+    "output_tokens": 12860,
+    "api_call_count": 40
+  }
+}

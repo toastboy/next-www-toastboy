@@ -1,0 +1,66 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "851731b00fe8",
+  "session_id": "d8ffa8e5-bd2c-49e7-b5d5-6d91668e1eb0",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-23T12:09:18.681619Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "save_step_count": 1,
+  "files_touched": [
+    "src/app/footy/response/page.tsx",
+    "src/app/footy/response/page.vitest.spec.ts",
+    "src/components/CustomAppShell/CustomAppShell.tsx",
+    "src/components/CustomAppShell/CustomAppShell.vitest.spec.tsx",
+    "src/components/GameInvitationResponseForm/GameInvitationResponseForm.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "f24628f3e438",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 2,
+    "cache_creation_tokens": 20667,
+    "cache_read_tokens": 28220,
+    "output_tokens": 175,
+    "api_call_count": 1
+  },
+  "session_metrics": {
+    "turn_count": 1
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-07-23T12:09:18.673854Z",
+    "agent_lines": 84,
+    "agent_removed": 1,
+    "human_added": 0,
+    "human_modified": 14,
+    "human_removed": 1,
+    "total_committed": 98,
+    "total_lines_changed": 100,
+    "agent_percentage": 85,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 81,
+      "user_lines_removed": 15,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 47,
+        "src/app/footy/response/page.tsx": 3,
+        "src/app/footy/response/page.vitest.spec.ts": 1,
+        "src/components/CustomAppShell/CustomAppShell.tsx": 19,
+        "src/components/CustomAppShell/CustomAppShell.vitest.spec.tsx": 1,
+        "src/components/GameInvitationResponseForm/GameInvitationResponseForm.tsx": 9
+      },
+      "user_removed_per_file": {
+        "src/app/footy/response/page.tsx": 3,
+        "src/components/CustomAppShell/CustomAppShell.tsx": 3,
+        "src/components/GameInvitationResponseForm/GameInvitationResponseForm.tsx": 9
+      }
+    }
+  ]
+}

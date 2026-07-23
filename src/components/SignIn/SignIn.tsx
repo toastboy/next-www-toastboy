@@ -8,6 +8,7 @@ import {
     Container,
     Divider,
     Group,
+    Image,
     Loader,
     Notification,
     PasswordInput,
@@ -15,6 +16,7 @@ import {
     Text,
     TextInput,
     Title,
+    UnstyledButton,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { IconAt, IconLock, IconX } from '@tabler/icons-react';
@@ -127,9 +129,12 @@ export const SignIn = ({ admin, redirect }: Props) => {
             </Center>
 
             <Stack mb="lg">
-                <Button variant="default" onClick={() => signInWithGoogle(socialRedirect)}>
-                    Sign in with Google
-                </Button>
+                <UnstyledButton
+                    onClick={() => signInWithGoogle(socialRedirect)}
+                    w="fit-content"
+                >
+                    <Image src="/google-signin-button-light.svg" alt="Sign in with Google" w={180} h={40} />
+                </UnstyledButton>
                 <Button variant="default" onClick={() => signInWithMicrosoft(socialRedirect)}>
                     Sign in with Microsoft
                 </Button>

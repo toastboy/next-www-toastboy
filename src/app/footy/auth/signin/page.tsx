@@ -1,3 +1,5 @@
+import { Paper } from '@mantine/core';
+
 import { SignIn } from '@/components/SignIn/SignIn';
 
 export const metadata = { title: 'Sign In' };
@@ -11,7 +13,9 @@ const SignInPage = async ({ searchParams }: PageProps) => {
     const adminProp = admin === 'true' ? true : admin === 'false' ? false : undefined;
 
     return (
-        <SignIn redirect={redirect ?? '/footy/profile'} admin={adminProp} />
+        <Paper w="100%" maw="35rem" p="xl">
+            <SignIn redirect={redirect ?? '/footy/profile'} admin={adminProp} />
+        </Paper>
     );
 };
 

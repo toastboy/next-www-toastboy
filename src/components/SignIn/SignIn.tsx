@@ -4,7 +4,6 @@ import {
     Anchor,
     Box,
     Button,
-    Center,
     Container,
     Divider,
     Group,
@@ -13,7 +12,6 @@ import {
     Notification,
     PasswordInput,
     Stack,
-    Text,
     TextInput,
     Title,
     UnstyledButton,
@@ -45,6 +43,8 @@ export const SignIn = ({ admin, redirect }: Props) => {
             email: '',
             password: '',
         },
+
+        validateInputOnBlur: true,
 
         validate: {
             email: (value) =>
@@ -90,24 +90,12 @@ export const SignIn = ({ admin, redirect }: Props) => {
         );
     }
 
-    let title = (
-        <Text>
-            Sign in to your account
-        </Text>
-    );
+    let title = 'Sign in to your account';
 
     if (admin === true) {
-        title = (
-            <Text>
-                You must be logged in as an administrator to use this page.
-            </Text>
-        );
+        title = 'You must be logged in as an administrator to use this page.';
     } else if (admin === false) {
-        title = (
-            <Text>
-                You must be logged in to use this page.
-            </Text>
-        );
+        title = 'You must be logged in to use this page.';
     }
 
     const errorNotification = loginError ? (
@@ -122,22 +110,25 @@ export const SignIn = ({ admin, redirect }: Props) => {
 
     return (
         <Container size="xs" mt="xl" >
-            <Center>
-                <Title order={2} mb="md" >
+            <Stack mb="lg">
+                <Title order={2} mb="xs" w="100%" ta="center">
                     {title}
                 </Title>
-            </Center>
-
-            <Stack mb="lg">
-                <UnstyledButton
-                    onClick={() => signInWithGoogle(socialRedirect)}
-                    w="fit-content"
-                >
-                    <Image src="/google-signin-button-light.svg" alt="Sign in with Google" w={180} h={40} />
-                </UnstyledButton>
-                <Button variant="default" onClick={() => signInWithMicrosoft(socialRedirect)}>
-                    Sign in with Microsoft
-                </Button>
+                <Divider mb="xs" />
+                <Group justify="center" w="100%" mb="md">
+                    <UnstyledButton
+                        onClick={() => signInWithGoogle(socialRedirect)}
+                        w="fit-content"
+                    >
+                        <Image src="/google-signin-button-light.svg" alt="Sign in with Google" w={180} h={40} />
+                    </UnstyledButton>
+                    <UnstyledButton
+                        onClick={() => signInWithMicrosoft(socialRedirect)}
+                        w="fit-content"
+                    >
+                        <Image src="/microsoft-signin-button-light.svg" alt="Sign in with Microsoft" w={215} h={41} />
+                    </UnstyledButton>
+                </Group>
                 <Divider label="or" labelPosition="center" />
             </Stack>
 
@@ -170,7 +161,7 @@ export const SignIn = ({ admin, redirect }: Props) => {
                             Forgot your password ?
                         </Anchor>
                     </Group>
-                    <Button type="submit" fullWidth loading={loading} >
+                    <Button type="submit" fullWidth loading={loading} disabled={!form.isValid()}>
                         Sign In
                     </Button>
                 </Stack>

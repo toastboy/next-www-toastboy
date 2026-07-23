@@ -59,7 +59,7 @@ describe('SignIn', () => {
         expect(screen.getByRole('heading', { name: /must be logged in as an administrator/i })).toBeInTheDocument();
     });
 
-    it('complains when the email is invalid', async () => {
+    it('disables the Sign In button when the email is invalid', async () => {
         const user = userEvent.setup();
 
         render(
@@ -74,12 +74,12 @@ describe('SignIn', () => {
 
         await user.type(emailInput, 'invalid-email');
         await user.type(passwordInput, 'validPassword123');
-        await user.click(submitButton);
 
+        expect(submitButton).toBeDisabled();
         expect(await screen.findByText(/Invalid email format/i)).toBeInTheDocument();
     });
 
-    it('complains when the password is too short', async () => {
+    it('disables the Sign In button when the password is too short', async () => {
         const user = userEvent.setup();
 
         render(
@@ -94,9 +94,31 @@ describe('SignIn', () => {
 
         await user.type(emailInput, 'valid.email@example.com');
         await user.type(passwordInput, 'short');
-        await user.click(submitButton);
+        await user.tab();
 
+        expect(submitButton).toBeDisabled();
         expect(await screen.findByText(/Password must be at least 8 characters/i)).toBeInTheDocument();
+    });
+
+    it('enables the Sign In button once both fields are valid', async () => {
+        const user = userEvent.setup();
+
+        render(
+            <Wrapper>
+                <SignIn />
+            </Wrapper>,
+        );
+
+        const emailInput = screen.getByLabelText(/Email/i);
+        const passwordInput = screen.getByLabelText(/Password/i);
+        const submitButton = screen.getByRole('button', { name: /Sign In$/i });
+
+        expect(submitButton).toBeDisabled();
+
+        await user.type(emailInput, 'valid.email@example.com');
+        await user.type(passwordInput, 'validPassword123');
+
+        expect(submitButton).toBeEnabled();
     });
 
     it('shows an error when valid input is provided but the login fails', async () => {

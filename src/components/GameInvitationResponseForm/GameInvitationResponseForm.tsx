@@ -7,6 +7,7 @@ import {
     Box,
     Button,
     Checkbox,
+    Divider,
     Flex,
     Select,
     Stack,
@@ -178,9 +179,10 @@ export const GameInvitationResponseForm = ({
     return (
         <Box component="form" onSubmit={form.onSubmit(handleSubmit)}>
             <Stack gap="md">
-                <Title order={2}>
+                <Title order={2} mb="xs" w="100%" ta="center">
                     {currentResponse ? 'Thanks for Your Response' : 'Enter Your Response'}
                 </Title>
+                <Divider mb="xs" />
                 <Flex align="center" gap="md" wrap="wrap">
                     <Avatar
                         src={`/api/footy/player/${details.playerId}/mugshot`}
@@ -190,14 +192,6 @@ export const GameInvitationResponseForm = ({
                     />
                     <Anchor href={playerLink}>{details.playerName}</Anchor>: {displayResponse} {displayComment}
                 </Flex>
-                <Text>
-                    You can change it later if you need to, even if the teams have been picked - either by clicking
-                    on the link in the email you received, or by logging in to the site at{' '}
-                    <Anchor href={`/footy/game/${details.gameDayId}`}>the game page</Anchor>. If you can&apos;t get to
-                    a computer, call my mobile on <strong>{config.organiserPhoneNumber}</strong>.
-                </Text>
-                <Text>Cheers,</Text>
-                <Text>Jon</Text>
                 <Select
                     label="Response"
                     data={responseOptions}
@@ -218,6 +212,12 @@ export const GameInvitationResponseForm = ({
                 <Button type="submit" w="fit-content" loading={!mounted} disabled={!isFormDirty}>
                     Save Response
                 </Button>
+                <Text mt="xl">
+                    You can change it later if you need to, even if the teams have been picked - either by clicking
+                    on the link in the email you received, or by logging in to the site at{' '}
+                    <Anchor href={`/footy/game/${details.gameDayId}`}>the game page</Anchor>. If you can&apos;t get to
+                    a computer, message Jon on <strong>{config.organiserPhoneNumber}</strong>.
+                </Text>
             </Stack>
         </Box>
     );

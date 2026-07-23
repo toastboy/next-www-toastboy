@@ -10,7 +10,7 @@ const BASE_URL = process.env.CI ? 'http://127.0.0.1:3000' : 'http://127.0.0.1:30
 /* Load playwright-specific env vars for local runs (no 1Password needed). CI
    sets its own env vars directly; we don't want to override them. */
 if (!process.env.CI) {
-    dotenv.config({ path: path.join(__dirname, '.env.playwright'), override: true });
+    dotenv.config({ path: path.join(__dirname, '.env.playwright'), override: true, quiet: true });
 }
 
 /**

@@ -1,10 +1,39 @@
-import { Text } from '@mantine/core';
+import { Text, useMantineTheme } from '@mantine/core';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { usePathname } from 'next/navigation';
+import { Component, ReactNode } from 'react';
 import { vi } from 'vitest';
 
 import { CustomAppShell } from '@/components/CustomAppShell/CustomAppShell';
+import { isAppError } from '@/lib/errors';
 import type { AuthUserSummary } from '@/types/AuthUser';
+
+interface ErrorBoundaryState {
+    error: Error | null;
+}
+
+class TestErrorBoundary extends Component<{ children: ReactNode }, ErrorBoundaryState> {
+    state: ErrorBoundaryState = { error: null };
+
+    static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+        return { error };
+    }
+
+    render() {
+        const { error } = this.state;
+
+        if (error) {
+            return (
+                <div role="alert">
+                    <p>{error.message}</p>
+                    {isAppError(error) ? <p>Public message: {error.publicMessage}</p> : null}
+                </div>
+            );
+        }
+
+        return this.props.children;
+    }
+}
 
 type MockBurgerProps = {
     opened?: boolean;
@@ -45,7 +74,9 @@ vi.mock('@mantine/core', async (importOriginal) => {
         Container: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
         Group: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
         Image: ({ alt, src }: { alt?: string; src?: string }) => <div aria-label={alt} data-src={src} role="img" />,
+        Stack: ({ children }: { children?: React.ReactNode }) => <div>{children}</div>,
         Text: ({ children }: { children?: React.ReactNode }) => <span>{children}</span>,
+        useMantineTheme: vi.fn(),
     };
 });
 
@@ -55,6 +86,13 @@ describe('CustomAppShell', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         vi.mocked(usePathname).mockReturnValue('/footy/results');
+        vi.mocked(useMantineTheme).mockReturnValue({
+            other: { appShellMaxWidth: 1280, appShellMinWidth: 320 },
+        } as ReturnType<typeof useMantineTheme>);
+    });
+
+    afterEach(() => {
+        vi.restoreAllMocks();
     });
 
     it('renders app shell with header, navbar, and footer', () => {
@@ -152,5 +190,47 @@ describe('CustomAppShell', () => {
 
         const crest = screen.getByRole('img', { name: 'Toastboy FC Crest' });
         expect(crest.closest('a')).toHaveAttribute('href', '/footy');
+    });
+
+    it('throws when the theme is missing appShellMaxWidth/appShellMinWidth', () => {
+        vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
+        // React retries a failed render synchronously before giving up, so the
+        // broken theme must be queued for both attempts.
+        vi.mocked(useMantineTheme)
+            .mockReturnValueOnce({ other: {} } as ReturnType<typeof useMantineTheme>)
+            .mockReturnValueOnce({ other: {} } as ReturnType<typeof useMantineTheme>);
+
+        render(
+            <TestErrorBoundary>
+                <CustomAppShell>
+                    <Text>Content</Text>
+                </CustomAppShell>
+            </TestErrorBoundary>,
+        );
+
+        expect(screen.getByRole('alert')).toHaveTextContent('CustomAppShell requires the app theme');
+        expect(screen.getByText('Public message: App theme is not configured.')).toBeInTheDocument();
+    });
+
+    it('throws (rather than crashing with a TypeError) when the theme has no "other" at all', () => {
+        vi.spyOn(console, 'error').mockImplementation(() => undefined);
+
+        // React retries a failed render synchronously before giving up, so the
+        // broken theme must be queued for both attempts.
+        vi.mocked(useMantineTheme)
+            .mockReturnValueOnce({} as ReturnType<typeof useMantineTheme>)
+            .mockReturnValueOnce({} as ReturnType<typeof useMantineTheme>);
+
+        render(
+            <TestErrorBoundary>
+                <CustomAppShell>
+                    <Text>Content</Text>
+                </CustomAppShell>
+            </TestErrorBoundary>,
+        );
+
+        expect(screen.getByRole('alert')).toHaveTextContent('CustomAppShell requires the app theme');
+        expect(screen.getByText('Public message: App theme is not configured.')).toBeInTheDocument();
     });
 });

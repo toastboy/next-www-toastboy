@@ -1,0 +1,6 @@
+When I run Claude I see this: how do I stop it pulling in any .env? That message is a nuisance and nothing in the knip tests needs it.
+
+❯ npx knip
+Analyzing workspace…
+◇ injected env (9) from .env.playwright // tip: ◈ encrypted .env [www.dotenvx.com]
+✂️  Excellent, Knip found no issues.

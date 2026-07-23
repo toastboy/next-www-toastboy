@@ -3,6 +3,9 @@
 import {
     Box,
     Button,
+    Divider,
+    Stack,
+    Title,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
@@ -79,24 +82,29 @@ export const ForgottenPasswordForm = () => {
 
     return (
         <Box
-            maw={400}
             component="form"
             onSubmit={form.onSubmit(handleSubmit)}
             noValidate
         >
-            <EmailInput
-                label="Email"
-                description={[
-                    "If the email is associated with an account, you'll receive a reset link.",
-                    "Note that if you use Google or Microsoft sign-in, you won't have a password to reset.",
-                ].join(' ')}
-                required
-                {...form.getInputProps(`email`)}
-            />
+            <Stack gap="md">
+                <Title order={2} mb="xs" w="100%" ta="center">
+                    Forgotten Password
+                </Title>
+                <Divider mb="xs" />
+                <EmailInput
+                    label="Email"
+                    description={[
+                        "If the email is associated with an account, you'll receive a reset link.",
+                        "Note that if you use Google or Microsoft sign-in, you won't have a password to reset.",
+                    ].join(' ')}
+                    required
+                    {...form.getInputProps(`email`)}
+                />
 
-            <Button type="submit" mt="md">
-                Send reset link
-            </Button>
+                <Button type="submit" w="fit-content">
+                    Send reset link
+                </Button>
+            </Stack>
         </Box>
     );
 };

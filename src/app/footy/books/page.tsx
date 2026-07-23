@@ -16,6 +16,15 @@ interface PageProps {
     }>;
 }
 
+/**
+ * Resolves and validates page search parameters for the Books page.
+ * @param searchParams - The incoming search params promise from Next.js page
+ * props.
+ * @throws {notFound} If the year parameter is missing, invalid, or not in the
+ * list of valid years.
+ * @throws {permanentRedirect} If the current URL does not match the canonical
+ * URL for the given year.
+ */
 const unpackParams = cache(async (
     searchParams: PageProps['searchParams'],
 ) => {
@@ -37,17 +46,33 @@ const unpackParams = cache(async (
     return { year, allYears };
 });
 
+/**
+ * Generates metadata for the Books page.
+ * @param props - The page props containing search parameters.
+ * @throws {notFound} If the year parameter is missing, invalid, or not in the
+ * list of valid years.
+ * @throws {permanentRedirect} If the current URL does not match the canonical
+ * URL for the given year.
+ */
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
     const { year } = await unpackParams(props.searchParams);
     return { title: `${getYearName(year)} Books` };
 }
 
+/**
+ * Renders the Books page for the selected year.
+ * @param props - The page props containing search parameters.
+ * @throws {notFound} If the year parameter is missing, invalid, or not in the
+ * list of valid years.
+ * @throws {permanentRedirect} If the current URL does not match the canonical
+ * URL for the given year.
+ */
 const BooksPage = async (props: PageProps) => {
     const { year, allYears } = await unpackParams(props.searchParams);
     const chartData = await moneyService.getChartData(year);
 
     return (
-        <Stack align="stretch" justify="center" gap="md">
+        <Stack w="100%">
             <Group justify="center" w="100%">
                 <TitleWithYearDropdown order={1} title="Books: " year={year} validYears={allYears} />
             </Group>

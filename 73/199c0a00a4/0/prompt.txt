@@ -1,0 +1,5 @@
+Let's adopt the official sign in with Google button code and guidelines from here into the SignIn component: https://developers.google.com/identity/branding-guidelines
+
+---
+
+I'd prefer to use the ready-to-use SVG images

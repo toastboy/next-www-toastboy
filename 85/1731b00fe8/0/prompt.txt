@@ -1,0 +1,1 @@
+Does https://mantine.dev/core/container/  have the attribute 'type="container"'?

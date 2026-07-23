@@ -1,0 +1,56 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "851731b00fe8",
+  "session_id": "488afcc3-14f1-4118-bf69-7f2f3f32d29f",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-23T12:09:17.884306Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "save_step_count": 1,
+  "files_touched": [
+    "src/app/footy/response/page.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "3e2543bfe343",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 6,
+    "cache_creation_tokens": 21833,
+    "cache_read_tokens": 126676,
+    "output_tokens": 390,
+    "api_call_count": 3
+  },
+  "session_metrics": {
+    "turn_count": 1
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-07-23T12:09:17.877766Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 140,
+    "human_modified": 3,
+    "human_removed": 0,
+    "total_committed": 140,
+    "total_lines_changed": 156,
+    "agent_percentage": 0,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 50,
+      "user_lines_removed": 3,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 46,
+        "src/app/footy/response/page.tsx": 3
+      },
+      "user_removed_per_file": {
+        "src/app/footy/response/page.tsx": 3
+      }
+    }
+  ]
+}

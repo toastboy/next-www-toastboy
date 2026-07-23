@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "851731b00fe8",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "src/app/footy/response/page.tsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/85/1731b00fe8/0/metadata.json",
+      "transcript": "/85/1731b00fe8/0/full.jsonl",
+      "compact_transcript": "/85/1731b00fe8/0/transcript.jsonl",
+      "content_hash": "/85/1731b00fe8/0/content_hash.txt",
+      "prompt": "/85/1731b00fe8/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 6,
+    "cache_creation_tokens": 21833,
+    "cache_read_tokens": 126676,
+    "output_tokens": 390,
+    "api_call_count": 3
+  }
+}

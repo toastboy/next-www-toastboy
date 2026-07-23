@@ -1,0 +1,8 @@
+<ide_opened_file>The user opened the file /Volumes/Development/next-www-toastboy/src/components/CustomAppShell/CustomAppShell.tsx in the IDE. This may or may not be related to the current task.</ide_opened_file>
+I saw this code review and made the change, but where would I have seen any error complaining that the CSS was invalid?
+
+maw/miw are being passed as unitless strings (e.g. "1280"), which becomes invalid CSS (max-width: 1280;). Pass the numbers directly (Mantine will convert to rem) or append units (e.g. "1280px"). If you choose string values with units, update the runtime type-check accordingly.
+
+---
+
+Is there any tool I can add to local dev or to CI that would spot it?

@@ -1,7 +1,6 @@
 'use client';
 
 import {
-    Anchor,
     Box,
     Button,
     Container,
@@ -88,29 +87,6 @@ export const ClaimSignup = ({ name, email, token }: Props) => {
             setLoading(false);
         }
     };
-
-    const validatedEmail = z.email().safeParse(email);
-    const invitationError = !email || !name || !token || !validatedEmail.success ?
-        'Missing or invalid invitation details.' : undefined;
-
-    if (invitationError) {
-        return (
-            <Container size="xs" mt="xl">
-                <Stack>
-                    <Notification
-                        icon={<IconX size={config.notificationIconSize} />}
-                        color="red"
-                        withCloseButton={false}
-                    >
-                        {invitationError}
-                    </Notification>
-                    <Text ta="center">
-                        <Anchor href="/footy">Return to the home page</Anchor>
-                    </Text>
-                </Stack>
-            </Container>
-        );
-    }
 
     const errorNotification = signupError ? (
         <Notification

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { claimPlayerInvitation } from '@/actions/claimPlayerInvitation';
 import { deliverContactEnquiry } from '@/actions/sendEnquiry';
 import { verifyEmail } from '@/actions/verifyEmail';
 import { buildURLWithParams } from '@/lib/api';
@@ -19,9 +18,6 @@ export const GET = async (request: NextRequest, props: { params: Promise<Record<
         let data = {};
 
         switch (purpose) {
-            case 'player-invite':
-                data = await claimPlayerInvitation(token);
-                break;
             case 'extra-email':
                 data = await verifyEmail(token);
                 break;
@@ -30,7 +26,7 @@ export const GET = async (request: NextRequest, props: { params: Promise<Record<
                 break;
             default:
                 throw new ValidationError(
-                    `Invalid verification purpose "${purpose}". Must be one of: player-invite, extra-email, enquiry.`,
+                    `Invalid verification purpose "${purpose}". Must be one of: extra-email, enquiry.`,
                 );
         }
 

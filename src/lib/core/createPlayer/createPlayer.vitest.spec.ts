@@ -64,7 +64,7 @@ describe('createPlayerCore', () => {
                 id: 55,
                 name: 'Alex Example',
             },
-            inviteLink: 'https://example.test/api/footy/auth/verify/player-invite/invite-token?redirect=/footy/auth/claim',
+            inviteLink: 'https://example.test/footy/auth/claim/invite-token',
         });
     });
 
@@ -136,7 +136,7 @@ describe('addPlayerInviteCore', () => {
             expiresAt: new Date('2026-03-01T12:00:00.000Z'),
         });
         expect(inviteLink).toBe(
-            'https://example.test/api/footy/auth/verify/player-invite/invite-token?redirect=/footy/auth/claim',
+            'https://example.test/footy/auth/claim/invite-token',
         );
     });
 
@@ -156,7 +156,33 @@ describe('addPlayerInviteCore', () => {
 
         expect(emailVerificationService.create).not.toHaveBeenCalled();
         expect(inviteLink).toBe(
-            'https://example.test/api/footy/auth/verify/player-invite/invite-token?redirect=/footy/auth/claim',
+            'https://example.test/footy/auth/claim/invite-token',
+        );
+    });
+
+    it('percent-encodes the token when building the claim URL', async () => {
+        createVerificationTokenMock.mockReturnValueOnce({
+            token: 'weird/token?with#reserved%chars',
+            expiresAt: new Date('2026-03-01T12:00:00.000Z'),
+        });
+        const playerService = {
+            create: vi.fn(),
+        };
+        const emailVerificationService = {
+            create: vi.fn().mockResolvedValue(undefined),
+        };
+
+        const inviteLink = await addPlayerInviteCore(
+            101,
+            'invitee@example.com',
+            { playerService, emailVerificationService },
+        );
+
+        expect(emailVerificationService.create).toHaveBeenCalledWith(
+            expect.objectContaining({ token: 'weird/token?with#reserved%chars' }),
+        );
+        expect(inviteLink).toBe(
+            'https://example.test/footy/auth/claim/weird%2Ftoken%3Fwith%23reserved%25chars',
         );
     });
 });

@@ -44,7 +44,7 @@ export async function addPlayerInviteCore(
     }
 
     return new URL(
-        `/api/footy/auth/verify/player-invite/${token}?redirect=/footy/auth/claim`,
+        `/footy/auth/claim/${encodeURIComponent(token)}`,
         getPublicBaseUrl(),
     ).toString();
 }

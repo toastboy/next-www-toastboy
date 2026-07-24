@@ -40,30 +40,44 @@ const defaultDeps: ClaimPlayerInvitationDeps = {
  * with a different player.
  */
 async function getValidInvitation(token: string, deps: ClaimPlayerInvitationDeps) {
+    const now = new Date();
+
     if (!token) {
-        throw new ValidationError('Missing invitation token.');
+        throw new ValidationError('Missing invitation token.', {
+            publicMessage: 'This invitation link is invalid.',
+        });
     }
 
     const invitation = await deps.emailVerificationService.getByToken(token);
 
     if (!invitation) {
-        throw new NotFoundError('Invitation not found or expired.');
+        throw new NotFoundError('Invitation not found or expired.', {
+            publicMessage: 'This invitation link is invalid or has expired.',
+        });
     }
 
     if (invitation.usedAt) {
-        throw new ConflictError('Invitation has already been used.');
+        throw new ConflictError('Invitation has already been used.', {
+            publicMessage: 'This invitation has already been used.',
+        });
     }
-    if (invitation.expiresAt <= new Date()) {
-        throw new ConflictError('Invitation has expired.');
+    if (invitation.expiresAt <= now) {
+        throw new ConflictError('Invitation has expired.', {
+            publicMessage: 'This invitation has expired.',
+        });
     }
 
     if (!invitation.playerId) {
-        throw new ValidationError('Invitation is missing a player reference.');
+        throw new ValidationError('Invitation is missing a player reference.', {
+            publicMessage: 'This invitation link is invalid.',
+        });
     }
 
     const existingExtraEmail = await deps.playerExtraEmailService.getByEmail(invitation.email);
     if (existingExtraEmail && existingExtraEmail.playerId !== invitation.playerId) {
-        throw new ConflictError('Email address already belongs to another player.');
+        throw new ConflictError('Email address already belongs to another player.', {
+            publicMessage: 'This email address is already associated with a different player.',
+        });
     }
 
     return invitation;
@@ -98,7 +112,9 @@ export async function claimPlayerInvitationCore(
     const player = await deps.playerService.getById(invitation.playerId!);
 
     if (!player) {
-        throw new NotFoundError('Player not found.');
+        throw new NotFoundError('Player not found.', {
+            publicMessage: 'This invitation link is invalid.',
+        });
     }
 
     return {

@@ -9,10 +9,6 @@ vi.mock('@sentry/nextjs', () => ({
     captureException: vi.fn(),
 }));
 
-vi.mock('@/actions/claimPlayerInvitation', () => ({
-    claimPlayerInvitation: vi.fn(),
-}));
-
 vi.mock('@/actions/sendEnquiry', () => ({
     deliverContactEnquiry: vi.fn(),
 }));
@@ -21,7 +17,6 @@ vi.mock('@/actions/verifyEmail', () => ({
     verifyEmail: vi.fn(),
 }));
 
-import { claimPlayerInvitation } from '@/actions/claimPlayerInvitation';
 import { deliverContactEnquiry } from '@/actions/sendEnquiry';
 import { verifyEmail } from '@/actions/verifyEmail';
 import { GET } from '@/app/api/footy/auth/verify/[purpose]/[token]/route';
@@ -36,7 +31,6 @@ const redirectPath = '/footy/profile';
  * so the parameterised tests can select the right mock to configure.
  */
 const purposeCases = [
-    { purpose: 'player-invite', getMock: () => claimPlayerInvitation as Mock },
     { purpose: 'extra-email', getMock: () => verifyEmail as Mock },
     { purpose: 'enquiry', getMock: () => deliverContactEnquiry as Mock },
 ] as const;
@@ -44,7 +38,6 @@ const purposeCases = [
 describe('GET /api/footy/auth/verify/[purpose]/[token]', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        (claimPlayerInvitation as Mock).mockResolvedValue({});
         (verifyEmail as Mock).mockResolvedValue({});
         (deliverContactEnquiry as Mock).mockResolvedValue({});
     });

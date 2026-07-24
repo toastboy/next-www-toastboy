@@ -1,0 +1,36 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "dc2faaf521f0",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 8,
+  "files_touched": [
+    "src/app/api/footy/auth/verify/[purpose]/[token]/route.ts",
+    "src/app/api/footy/auth/verify/[purpose]/[token]/route.vitest.spec.ts",
+    "src/app/footy/auth/claim/[token]/page.tsx",
+    "src/app/footy/auth/claim/[token]/page.vitest.spec.tsx",
+    "src/app/footy/auth/claim/page.tsx",
+    "src/app/footy/auth/claim/page.vitest.spec.ts",
+    "src/components/ClaimSignup/ClaimSignup.tsx",
+    "src/components/ClaimSignup/ClaimSignup.vitest.spec.tsx",
+    "src/lib/core/claimPlayerInvitation/claimPlayerInvitation.ts",
+    "src/lib/core/createPlayer/createPlayer.ts",
+    "src/lib/core/createPlayer/createPlayer.vitest.spec.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/dc/2faaf521f0/0/metadata.json",
+      "transcript": "/dc/2faaf521f0/0/full.jsonl",
+      "compact_transcript": "/dc/2faaf521f0/0/transcript.jsonl",
+      "content_hash": "/dc/2faaf521f0/0/content_hash.txt",
+      "prompt": "/dc/2faaf521f0/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 3087,
+    "cache_creation_tokens": 115654,
+    "cache_read_tokens": 8142953,
+    "output_tokens": 46943,
+    "api_call_count": 77
+  }
+}

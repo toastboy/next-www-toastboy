@@ -1,0 +1,31 @@
+This is an architectural question. I'm wondering if I made the right choice in the way the claimPlayerInvitation flow works. What, if anything, is the utility in having player invitations indirect through the api route src/app/api/footy/auth/verify/[purpose]/[token]/route.ts rather than have the invitation emails just have the direct URI of src/app/footy/auth/claim/page.tsx look up the token and pass the email and name into the component? Still seems like a decent separation of concerns to me, since the page will do the unpacking securely on the server. It means the params of the component can be required and saves a lot of faff too.
+
+---
+
+If the shared plumbing is the only benefit then I don't care because if I'm changing this call path I will also change the other ones to be self-contained. I don't really like the ?error= method for showing errors anyway since any arbitrary text can be injected by something manipulating the URI. If removing this route and delegating the checks to each page means repeating the Sentry error capture code, then so be it.
+
+---
+
+Just player-invite and give me User Story text for doing the rest later.
+
+---
+
+Are these the only remaining uses of the ?error= free text route?
+
+---
+
+Another user story please
+
+---
+
+The token is interpolated directly into the URL path without encoding. If tokens ever contain reserved characters (e.g., /, ?, #, %), this can break the generated link or allow path/query injection. Encode the token (e.g., encodeURIComponent(token)) before constructing the pathname, and update related tests accordingly.
+
+---
+
+Code review says this, but I don't think it's true for next 16
+
+In Next.js App Router, params is typically a plain object, not a Promise. Typing it as Promise<{ token: string }> can cause confusing/inaccurate types and make it easier to misuse the component. Prefer params: { token: string } and drop the await.
+
+---
+
+captureUnexpectedError is called for all failures, including expected/handled domain errors (e.g., ValidationError, NotFoundError, ConflictError) that are already mapped to a public message. This can create noisy alerts and hide real incidents. Consider only capturing errors that are truly unexpected (e.g., not your known app error types), or only when the fallback message is used.

@@ -1,0 +1,23 @@
+This test file now relies on Vitest globals (describe, it, beforeEach, expect) but only imports vi. If the repo’s Vitest config doesn’t enable globals (or changes in the future), this will break. Consider importing the needed functions from vitest for consistency and portability, or ensure the project explicitly standardizes on globals.
+
+---
+
+Using disabled={!form.isValid()} can be unreliable depending on Mantine useForm semantics: in some versions isValid() does not reflect validity until validation is triggered (which would keep the button enabled initially), and in others it may trigger validation work on every render. To make the disabled state deterministic (and align with the test), consider validating on change (e.g., validateInputOnChange) and deriving the disabled state from current form.errors + required-field presence, or explicitly calling form.validate() in an effect/on input change and using form.isValid() only after validation has run.
+
+---
+
+The component computes an invitation-level error message when name/email/token is missing or email is invalid, but it still renders the normal "verified" header, social sign-in options, and the password form. This conflicts with the new tests expecting no form/buttons for invalid invitation details and also risks showing misleading verified copy with an empty/invalid email. Consider splitting errors into (1) invitation/parameter validation errors vs (2) runtime signup errors, and conditionally render an error-only state (message + maybe a link to restart flow) when invitation details are invalid.
+
+---
+
+Error: @mantine/core: MantineProvider was not found in component tree, make sure you have it in your app
+
+---
+
+<task-notification>
+<task-id>bj5jg3uli</task-id>
+<tool-use-id>toolu_01LRqDG8CHWvtHqk4ojgMxAH</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/0e994861-b4d5-46f3-9ba2-510d913641fd/tasks/bj5jg3uli.output</output-file>
+<status>completed</status>
+<summary>Background command "npm run test:storybook -- --project=storybook 2&gt;&amp;1 | grep -i "claimsignup" -A 30 | head -150" completed (exit code 0)</summary>
+</task-notification>

@@ -57,6 +57,50 @@ describe('ClaimSignup', () => {
         expect(screen.getByRole('button', { name: /Create login/i })).toBeInTheDocument();
     });
 
+    it('shows an invitation error and no form when the token is missing', () => {
+        render(
+            <Wrapper>
+                <ClaimSignup {...props} token="" />
+            </Wrapper>,
+        );
+
+        expect(screen.getByText(/Missing or invalid invitation details\./i)).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: /Create login/i })).not.toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: /Sign in with Google/i })).not.toBeInTheDocument();
+    });
+
+    it('shows an invitation error and no form when the email is not a valid email address', () => {
+        render(
+            <Wrapper>
+                <ClaimSignup {...props} email="not-an-email" />
+            </Wrapper>,
+        );
+
+        expect(screen.getByText(/Missing or invalid invitation details\./i)).toBeInTheDocument();
+        expect(screen.queryByRole('button', { name: /Create login/i })).not.toBeInTheDocument();
+    });
+
+    it('disables the Create login button until the passwords are valid and match', async () => {
+        const user = userEvent.setup();
+
+        render(
+            <Wrapper>
+                <ClaimSignup {...props} />
+            </Wrapper>,
+        );
+
+        const submitButton = screen.getByRole('button', { name: /Create login/i });
+        expect(submitButton).toBeDisabled();
+
+        await user.type(screen.getByPlaceholderText(/^Enter your password$/i), 'Password123');
+        await user.type(screen.getByLabelText(/Confirm password/i), 'somethingElse');
+        expect(submitButton).toBeDisabled();
+
+        await user.clear(screen.getByLabelText(/Confirm password/i));
+        await user.type(screen.getByLabelText(/Confirm password/i), 'Password123');
+        expect(submitButton).toBeEnabled();
+    });
+
     it('triggers social sign in with the claim redirect', async () => {
         const user = userEvent.setup();
 
@@ -66,8 +110,8 @@ describe('ClaimSignup', () => {
             </Wrapper>,
         );
 
-        await user.click(screen.getByRole('button', { name: /Continue with Google/i }));
-        await user.click(screen.getByRole('button', { name: /Continue with Microsoft/i }));
+        await user.click(screen.getByRole('button', { name: /Sign in with Google/i }));
+        await user.click(screen.getByRole('button', { name: /Sign in with Microsoft/i }));
 
         expect(signInWithGoogle).toHaveBeenCalledWith(redirect);
         expect(signInWithMicrosoft).toHaveBeenCalledWith(redirect);

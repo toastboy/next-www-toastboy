@@ -2,6 +2,10 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
+vi.mock('@mantine/core', () => ({
+    Paper: ({ children }: { children?: unknown }) => children,
+}));
+
 vi.mock('@/components/SignIn/SignIn', () => ({
     SignIn: vi.fn(() => null),
 }));

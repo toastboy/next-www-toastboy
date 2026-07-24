@@ -1,4 +1,4 @@
-import { redirect } from 'next/navigation';
+import { Paper } from '@mantine/core';
 
 import { ClaimSignup } from '@/components/ClaimSignup/ClaimSignup';
 
@@ -7,7 +7,6 @@ interface PageProps {
         name?: string;
         email?: string;
         token?: string;
-        error?: string;
     }>;
 }
 
@@ -15,25 +14,21 @@ export const metadata = { title: 'Sign Up' };
 
 const Page = async ({ searchParams: sp }: PageProps) => {
     const searchParams = await sp;
-    const { name, email, token, error } = searchParams ?? {};
-    let errorMessage: string | undefined;
+    const { name, email, token } = searchParams ?? {};
 
-    if (!errorMessage && (!email || !name || !token)) {
-        errorMessage = 'Missing required invitation details.';
-    }
-
-    if (errorMessage && !error) {
-        const params = new URLSearchParams(searchParams ?? {});
-        params.set('error', errorMessage);
-        redirect(`/footy/auth/claim?${params.toString()}`);
-    }
+    // TODO: Work out whether things like this <Paper> should be in the page or
+    // in the component. This will probably best be done when I work on using
+    // <Container> where appropriate, and then I can see if it makes sense to
+    // have the <Paper> in the page or in the component.
 
     return (
-        <ClaimSignup
-            name={name ?? ''}
-            email={email ?? ''}
-            token={token ?? ''}
-        />
+        <Paper w="100%" maw="35rem" p="xl">
+            <ClaimSignup
+                name={name ?? ''}
+                email={email ?? ''}
+                token={token ?? ''}
+            />
+        </Paper>
     );
 };
 

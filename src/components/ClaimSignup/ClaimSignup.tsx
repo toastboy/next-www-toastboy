@@ -1,14 +1,18 @@
 'use client';
 
 import {
+    Anchor,
     Box,
     Button,
     Container,
     Divider,
+    Group,
+    Image,
     Notification,
     Stack,
     Text,
     Title,
+    UnstyledButton,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { IconX } from '@tabler/icons-react';
@@ -39,7 +43,7 @@ const ClaimSignupSchema = z.object({
 
 export const ClaimSignup = ({ name, email, token }: Props) => {
     const [loading, setLoading] = useState(false);
-    const [signupError, setSignupError] = useState<boolean>(false);
+    const [signupError, setSignupError] = useState<string | undefined>(undefined);
     const router = useRouter();
     const redirectPath = `/api/footy/auth/claim/${encodeURIComponent(token)}?redirect=/footy/profile`;
     const socialRedirect = new URL(redirectPath, getPublicBaseUrl()).toString();
@@ -55,7 +59,7 @@ export const ClaimSignup = ({ name, email, token }: Props) => {
 
     const handleSignUp = async (values: z.infer<typeof ClaimSignupSchema>) => {
         setLoading(true);
-        setSignupError(false);
+        setSignupError(undefined);
 
         try {
             await authClient.signUp.email({
@@ -69,8 +73,8 @@ export const ClaimSignup = ({ name, email, token }: Props) => {
             });
 
             router.push(redirectPath);
-        } catch (error) {
-            captureUnexpectedError(error, {
+        } catch (err) {
+            captureUnexpectedError(err, {
                 layer: 'client',
                 action: 'signUpWithEmail',
                 component: 'ClaimSignup',
@@ -79,48 +83,72 @@ export const ClaimSignup = ({ name, email, token }: Props) => {
                     redirectPath,
                 },
             });
-            setSignupError(true);
+            setSignupError('Something went wrong. Please try again.');
         } finally {
             setLoading(false);
         }
     };
 
+    const validatedEmail = z.email().safeParse(email);
+    const invitationError = !email || !name || !token || !validatedEmail.success ?
+        'Missing or invalid invitation details.' : undefined;
+
+    if (invitationError) {
+        return (
+            <Container size="xs" mt="xl">
+                <Stack>
+                    <Notification
+                        icon={<IconX size={config.notificationIconSize} />}
+                        color="red"
+                        withCloseButton={false}
+                    >
+                        {invitationError}
+                    </Notification>
+                    <Text ta="center">
+                        <Anchor href="/footy">Return to the home page</Anchor>
+                    </Text>
+                </Stack>
+            </Container>
+        );
+    }
+
     const errorNotification = signupError ? (
         <Notification
             icon={<IconX size={config.notificationIconSize} />}
             color="red"
-            onClose={() => setSignupError(false)}
+            onClose={() => setSignupError(undefined)}
         >
-            Something went wrong. Please try again.
+            {signupError}
         </Notification>
     ) : null;
 
     return (
         <Container size="xs" mt="xl" >
-            <Stack>
-                <Title order={2} mb="md" >
+            <Stack mb="lg">
+                <Title order={2} mb="xs" w="100%" ta="center">
                     Finish creating your login
                 </Title>
-                <Text mb="lg">
+                <Text ta="center">
                     Your email address &quot;{email}&quot; has been verified. Choose how you want to sign in.
                 </Text>
-            </Stack>
-
-            <Stack mb="lg">
-                <Button
-                    variant="default" onClick={() => signInWithGoogle(socialRedirect)}
-                >
-                    Continue with Google
-                </Button>
-                <Button
-                    variant="default" onClick={() => signInWithMicrosoft(socialRedirect)}
-                >
-                    Continue with Microsoft
-                </Button>
-                <Divider
-                    label="or"
-                    labelPosition="center"
-                />
+                <Divider mb="xs" />
+                <Group justify="center" w="100%" mb="md">
+                    <UnstyledButton
+                        onClick={() => signInWithGoogle(socialRedirect)}
+                        w="fit-content"
+                        type="button"
+                    >
+                        <Image src="/google-signin-button-light.svg" alt="Sign in with Google" w={180} h={40} />
+                    </UnstyledButton>
+                    <UnstyledButton
+                        onClick={() => signInWithMicrosoft(socialRedirect)}
+                        w="fit-content"
+                        type="button"
+                    >
+                        <Image src="/microsoft-signin-button-light.svg" alt="Sign in with Microsoft" w={215} h={41} />
+                    </UnstyledButton>
+                </Group>
+                <Divider label="or" labelPosition="center" />
             </Stack>
 
             <Box
@@ -137,6 +165,7 @@ export const ClaimSignup = ({ name, email, token }: Props) => {
                         type="submit"
                         fullWidth
                         loading={loading}
+                        disabled={!form.isValid()}
                     >
                         Create login
                     </Button>

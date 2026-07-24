@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "679a5378ca43",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "src/components/PasswordResetForm/PasswordResetForm.tsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/67/9a5378ca43/0/metadata.json",
+      "transcript": "/67/9a5378ca43/0/full.jsonl",
+      "compact_transcript": "/67/9a5378ca43/0/transcript.jsonl",
+      "content_hash": "/67/9a5378ca43/0/content_hash.txt",
+      "prompt": "/67/9a5378ca43/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 14,
+    "cache_creation_tokens": 29417,
+    "cache_read_tokens": 353539,
+    "output_tokens": 5452,
+    "api_call_count": 7
+  }
+}

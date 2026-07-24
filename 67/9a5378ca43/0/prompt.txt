@@ -1,0 +1,1 @@
+Write me a user story to add proper loading feedback to all forms. Some already have 'loading={loading}' on their submit buttons like ClaimSignup - extend that feedback to all forms where it's appropriate

@@ -1,4 +1,4 @@
-import { Anchor, Notification, Paper, Stack, Text } from '@mantine/core';
+import { Notification, Paper } from '@mantine/core';
 import { IconX } from '@tabler/icons-react';
 
 import { claimPlayerInvitation } from '@/actions/claimPlayerInvitation';
@@ -36,24 +36,21 @@ const Page = async ({ params }: PageProps) => {
         errorMessage = toPublicMessage(error, 'This invitation link is invalid.');
     }
 
+    if (!invitation) {
+        return (
+            <Notification
+                icon={<IconX size={config.notificationIconSize} />}
+                color="red"
+                withCloseButton={false}
+            >
+                {errorMessage}
+            </Notification>
+        );
+    }
+
     return (
         <Paper w="100%" maw="35rem" p="xl">
-            {invitation ? (
-                <ClaimSignup name={invitation.name} email={invitation.email} token={token} />
-            ) : (
-                <Stack>
-                    <Notification
-                        icon={<IconX size={config.notificationIconSize} />}
-                        color="red"
-                        withCloseButton={false}
-                    >
-                        {errorMessage}
-                    </Notification>
-                    <Text ta="center">
-                        <Anchor href="/footy">Return to the home page</Anchor>
-                    </Text>
-                </Stack>
-            )}
+            <ClaimSignup name={invitation.name} email={invitation.email} token={token} />
         </Paper>
     );
 };

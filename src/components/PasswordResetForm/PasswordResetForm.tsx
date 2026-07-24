@@ -3,8 +3,9 @@
 import {
     Box,
     Button,
-    Container,
+    Divider,
     Notification,
+    Paper,
     Stack,
     Text,
     Title,
@@ -105,23 +106,19 @@ export const PasswordResetForm = ({ token }: Props) => {
 
     if (!token) {
         return (
-            <Container size="xs" mt="xl">
-                <Notification icon={<IconX size={config.notificationIconSize} />} color="red">
-                    <Text>Password reset link is missing or invalid.</Text>
-                </Notification>
-            </Container>
+            <Notification icon={<IconX size={config.notificationIconSize} />} color="red">
+                <Text>Password reset link is missing or invalid.</Text>
+            </Notification>
         );
     }
 
     return (
-        <Container size="xs" mt="xl">
+        <Paper w="100%" maw="35rem" p="xl">
             <Stack>
-                <Title order={2} mb="md">
+                <Title order={2} mb="xs" w="100%" ta="center">
                     Reset your password
                 </Title>
-                <Text mb="lg">
-                    Enter a new password for your account.
-                </Text>
+                <Divider mb="xs" />
             </Stack>
 
             <Box
@@ -138,11 +135,11 @@ export const PasswordResetForm = ({ token }: Props) => {
                         passwordProps={form.getInputProps('password')}
                         confirmPasswordProps={form.getInputProps('confirmPassword')}
                     />
-                    <Button type="submit" fullWidth>
+                    <Button type="submit" fullWidth disabled={!form.isValid()}>
                         Reset password
                     </Button>
                 </Stack>
             </Box>
-        </Container>
+        </Paper>
     );
 };

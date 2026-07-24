@@ -7,6 +7,7 @@ import {
     Checkbox,
     Container,
     Notification,
+    Paper,
     Stack,
     Text,
     TextInput,
@@ -85,65 +86,67 @@ export const DeleteAccountForm = ({ onDeletePlayer }: Props) => {
 
     return (
         <Container size="xs" mt="xl">
-            <Stack>
-                <Title order={2}>
-                    Delete your account data
-                </Title>
-                <Text>
-                    This will permanently remove your personal information and any extra emails
-                    linked to your account. If instead you would like to simply stop receiving
-                    emails from us, you can select &lsquo;retired&rsquo;
-                    in <Anchor href="/footy/profile">your profile</Anchor>.
-                </Text>
-                <Text>
-                    By deleting your account data:
-                </Text>
-                <Box component="ul" pl="md" m={0}>
-                    <Text component="li">
-                        Your profile details will be erased.
-                    </Text>
-                    <Text component="li">
-                        Any extra emails will be removed from the system.
-                    </Text>
-                    <Text component="li">
-                        Your game statistics will be retained in an anonymized form
-                        for overall site statistics.
-                    </Text>
-                </Box>
-            </Stack>
-
-            <Box
-                component="form"
-                onSubmit={form.onSubmit(handleSubmit)}
-                noValidate
-                mt="lg"
-            >
+            <Paper w="100%" p="xl">
                 <Stack>
-                    <TextInput
-                        withAsterisk
-                        label="Type DELETE to confirm"
-                        placeholder="DELETE"
-                        {...form.getInputProps('confirmPhrase')}
-                    />
-                    <Checkbox
-                        label="I understand that all of my personal data will be deleted."
-                        {...form.getInputProps('confirmPii', { type: 'checkbox' })}
-                    />
+                    <Title order={2}>
+                        Delete your account data
+                    </Title>
                     <Text>
-                        Before you delete your account data, you may wish to download your personal
-                        information first. You can do this by going to
-                        the <Anchor href="/footy/downloadmydata">data download page</Anchor>.
+                        This will permanently remove your personal information and any extra emails
+                        linked to your account. If instead you would like to simply stop receiving
+                        emails from us, you can select &lsquo;retired&rsquo;
+                        in <Anchor href="/footy/profile">your profile</Anchor>.
                     </Text>
-                    {notification}
-                    <Button
-                        type="submit"
-                        color="red"
-                        fullWidth
-                    >
-                        Delete my data
-                    </Button>
+                    <Text>
+                        By deleting your account data:
+                    </Text>
+                    <Box component="ul" pl="md" m={0}>
+                        <Text component="li">
+                            Your profile details will be erased.
+                        </Text>
+                        <Text component="li">
+                            Any extra emails will be removed from the system.
+                        </Text>
+                        <Text component="li">
+                            Your game statistics will be retained in an anonymized form
+                            for overall site statistics.
+                        </Text>
+                    </Box>
                 </Stack>
-            </Box>
+
+                <Box
+                    component="form"
+                    onSubmit={form.onSubmit(handleSubmit)}
+                    noValidate
+                    mt="lg"
+                >
+                    <Stack>
+                        <TextInput
+                            withAsterisk
+                            label="Type DELETE to confirm"
+                            placeholder="DELETE"
+                            {...form.getInputProps('confirmPhrase')}
+                        />
+                        <Checkbox
+                            label="I understand that all of my personal data will be deleted."
+                            {...form.getInputProps('confirmPii', { type: 'checkbox' })}
+                        />
+                        <Text>
+                            Before you delete your account data, you may wish to download your personal
+                            information first. You can do this by going to
+                            the <Anchor href="/footy/downloadmydata">data download page</Anchor>.
+                        </Text>
+                        {notification}
+                        <Button
+                            type="submit"
+                            color="red"
+                            fullWidth
+                        >
+                            Delete my data
+                        </Button>
+                    </Stack>
+                </Box>
+            </Paper>
         </Container>
     );
 };

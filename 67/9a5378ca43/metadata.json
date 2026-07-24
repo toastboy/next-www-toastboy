@@ -3,7 +3,7 @@
   "checkpoint_id": "679a5378ca43",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 1,
+  "checkpoints_count": 2,
   "files_touched": [
     "src/components/PasswordResetForm/PasswordResetForm.tsx"
   ],
@@ -14,13 +14,20 @@
       "compact_transcript": "/67/9a5378ca43/0/transcript.jsonl",
       "content_hash": "/67/9a5378ca43/0/content_hash.txt",
       "prompt": "/67/9a5378ca43/0/prompt.txt"
+    },
+    {
+      "metadata": "/67/9a5378ca43/1/metadata.json",
+      "transcript": "/67/9a5378ca43/1/full.jsonl",
+      "compact_transcript": "/67/9a5378ca43/1/transcript.jsonl",
+      "content_hash": "/67/9a5378ca43/1/content_hash.txt",
+      "prompt": "/67/9a5378ca43/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 14,
-    "cache_creation_tokens": 29417,
-    "cache_read_tokens": 353539,
-    "output_tokens": 5452,
-    "api_call_count": 7
+    "input_tokens": 35,
+    "cache_creation_tokens": 49440,
+    "cache_read_tokens": 764619,
+    "output_tokens": 6876,
+    "api_call_count": 18
   }
 }

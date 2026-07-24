@@ -1,0 +1,2 @@
+<ide_opened_file>The user opened the file /Volumes/Development/next-www-toastboy/src/components/PasswordResetForm/PasswordResetForm.tsx in the IDE. This may or may not be related to the current task.</ide_opened_file>
+Same change to passwordresetform as the other recent ones: only enable the submit button when the form is properly validated.

@@ -1,0 +1,5 @@
+Using new Date() directly inside validation makes the 'now' instant implicit and harder to test deterministically (and can slightly differ across checks if more are added). Consider capturing const now = new Date() once near the start of validation and comparing against now.
+
+---
+
+This test doesn’t assert whether captureUnexpectedError is (or is not) called for expected/handled invitation errors with a publicMessage. Add an assertion for captureUnexpectedErrorMock here to lock in the intended observability behavior (likely: not capturing these expected errors).

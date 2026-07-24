@@ -1,0 +1,67 @@
+I want the ClaimSignup form to be very similar to the SignIn form we just completed. Check with Microsoft and Google, but I think the official SVG "Sign In with" buttons are the right thing to have instead of the "Continue with" buttons I have now. Also style the component in the same way as SignIn.
+
+---
+
+The submit button and validation need wiring up too
+
+---
+
+In hindsight, the choice to handle some input validation in src/app/footy/auth/claim/page.tsx and some in the component seems odd. Should I just do it all in the component?
+
+---
+
+Yes
+
+---
+
+⨯ Error: Too many re-renders. React limits the number of renders to prevent an infinite loop.
+    at dispatchAction (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:86869)
+    at ClaimSignup (/Volumes/Development/next-www-toastboy/src/components/ClaimSignup/ClaimSignup.tsx:94:9)
+    at renderWithHooks (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:118587)
+    at renderElement (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:133011)
+    at renderElement (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:194974)
+    at retryNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201940)
+    at renderNodeDestructive (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at retryNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:202325)
+    at renderNodeDestructive (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at renderNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:213093)
+    at renderElement (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:181773)
+    at retryNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201940)
+    at renderNodeDestructive (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at renderNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:213093)
+    at renderChildrenArray (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:207654)
+    at retryNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:202417)
+    at renderNodeDestructive (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at renderElement (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:182673)
+    at retryNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201940)
+    at renderNodeDestructive (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at renderNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:213093)
+    at finishFunctionComponent (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:119223)
+    at renderElement (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:134520)
+    at retryNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201940)
+    at renderNodeDestructive (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at finishFunctionComponent (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:119349)
+    at renderElement (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:134520)
+    at renderElement (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:194974)
+    at retryNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201940)
+    at renderNodeDestructive (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at retryNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:202325)
+    at renderNodeDestructive (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at retryNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:202325)
+    at renderNodeDestructive (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at renderNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:213093)
+    at renderChildrenArray (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:207654)
+    at retryNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:202417)
+    at renderNodeDestructive (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at renderElement (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:182673)
+    at retryNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201940)
+    at renderNodeDestructive (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at finishFunctionComponent (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:119349)
+    at renderElement (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:134520)
+    at renderElement (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:194974)
+    at retryNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201940)
+    at renderNodeDestructive (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at renderNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:213093)
+    at renderChildrenArray (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:207654)
+    at retryNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:202417)
+    at renderNodeDestructive (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175) {digest: '2694818428', stack: 'Error: Too many re-renders. React limits the …erver/app-page-turbo.runtime.dev.js:2:201175)', message: 'Too many re-renders. React limits the number of renders to prevent an infinite loop.'}

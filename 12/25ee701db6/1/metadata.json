@@ -1,0 +1,143 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "1225ee701db6",
+  "session_id": "c5ceaf75-2039-49cb-951b-8d76c4c3a3a9",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-24T06:08:18.834227Z",
+  "branch": "main",
+  "checkpoints_count": 5,
+  "save_step_count": 5,
+  "files_touched": [
+    "src/app/footy/auth/claim/page.tsx",
+    "src/app/footy/auth/claim/page.vitest.spec.ts",
+    "src/components/ClaimSignup/ClaimSignup.tsx",
+    "src/components/ClaimSignup/ClaimSignup.vitest.spec.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "fd301611ac38",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 157,
+    "cache_creation_tokens": 185239,
+    "cache_read_tokens": 6305814,
+    "output_tokens": 41370,
+    "api_call_count": 79
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_01N5rEvAje8BVXUiWmjqgqg1",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "finalise"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "fd301611ac38",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 53,
+        "end": 54,
+        "entry_ids": [
+          "0c1ff941-7d0c-4dbc-8a42-acc97c72d7ed"
+        ],
+        "tool_use_id": "toolu_01N5rEvAje8BVXUiWmjqgqg1"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01N5rEvAje8BVXUiWmjqgqg1"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: finalise",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 5
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-07-24T06:08:18.79464Z",
+    "agent_lines": 65,
+    "agent_removed": 42,
+    "human_added": 0,
+    "human_modified": 29,
+    "human_removed": 11,
+    "total_committed": 94,
+    "total_lines_changed": 147,
+    "agent_percentage": 72.78911564625851,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 48,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 47
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 48,
+      "user_lines_removed": 0,
+      "agent_lines_added": 24,
+      "agent_lines_removed": 22,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 47
+      }
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 60,
+      "user_lines_removed": 7,
+      "agent_lines_added": 46,
+      "agent_lines_removed": 22,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 47,
+        "src/app/footy/auth/claim/page.tsx": 12
+      },
+      "user_removed_per_file": {
+        "src/app/footy/auth/claim/page.tsx": 7
+      }
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 48,
+      "user_lines_removed": 0,
+      "agent_lines_added": 58,
+      "agent_lines_removed": 29,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 47
+      }
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 59,
+      "user_lines_removed": 33,
+      "agent_lines_added": 117,
+      "agent_lines_removed": 45,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 47,
+        "src/app/footy/auth/claim/page.tsx": 1,
+        "src/components/ClaimSignup/ClaimSignup.tsx": 10
+      },
+      "user_removed_per_file": {
+        "src/app/footy/auth/claim/page.tsx": 9,
+        "src/components/ClaimSignup/ClaimSignup.tsx": 24
+      }
+    }
+  ]
+}

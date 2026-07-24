@@ -1,0 +1,16 @@
+Fix this please: FAIL   pages-vitest  src/app/footy/auth/signin/page.vitest.spec.ts:17:5 > Sign In page > renders the SignIn component with a default redirect to /footy/profile
+ FAIL   pages-vitest  src/app/footy/auth/signin/page.vitest.spec.ts:26:5 > Sign In page > passes through a custom redirect param
+ FAIL   pages-vitest  src/app/footy/auth/signin/page.vitest.spec.ts:33:5 > Sign In page > parses admin=true into a boolean true
+ FAIL   pages-vitest  src/app/footy/auth/signin/page.vitest.spec.ts:40:5 > Sign In page > parses admin=false into a boolean false
+ FAIL   pages-vitest  src/app/footy/auth/signin/page.vitest.spec.ts:47:5 > Sign In page > leaves admin undefined when the param is absent or unrecognised
+Error: @mantine/core: MantineProvider was not found in component tree, make sure you have it in your app
+ ❯ useMantineTheme node_modules/@mantine/core/src/core/MantineProvider/MantineThemeProvider/MantineThemeProvider.tsx:13:10
+ ❯ useProps node_modules/@mantine/core/src/core/MantineProvider/use-props/use-props.ts:14:16
+ ❯ node_modules/@mantine/core/src/components/Paper/Paper.tsx:51:16
+ ❯ Object.react_stack_bottom_frame node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:9808:18
+ ❯ renderWithHooks node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5062:19
+ ❯ renderElement node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:5497:23
+ ❯ retryNode node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:6428:21
+ ❯ performWork node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:7435:17
+ ❯ startWork node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:8270:7
+ ❯ renderToStringImpl node_modules/react-dom/cjs/react-dom-server-legacy.node.development.js:8380:7

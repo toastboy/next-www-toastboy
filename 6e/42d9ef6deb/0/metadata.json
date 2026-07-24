@@ -1,0 +1,92 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "6e42d9ef6deb",
+  "session_id": "34dcfad2-3291-4c01-a2fa-cfc9d34e1274",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-24T12:31:20.049545Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "save_step_count": 1,
+  "files_touched": [
+    "src/components/DeleteAccountForm/DeleteAccountForm.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "37388f58f75b",
+  "checkpoint_transcript_start": 393,
+  "transcript_lines_at_start": 393,
+  "compact_transcript_start": 107,
+  "token_usage": {
+    "input_tokens": 10,
+    "cache_creation_tokens": 132763,
+    "cache_read_tokens": 630022,
+    "output_tokens": 4014,
+    "api_call_count": 5
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_01NK9b8B6YN3k9vSCT9xj9Xy",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "finalise"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "37388f58f75b",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 239,
+        "end": 240,
+        "entry_ids": [
+          "5c578c52-0232-4c97-8f56-7a19276cf1d7"
+        ],
+        "tool_use_id": "toolu_01NK9b8B6YN3k9vSCT9xj9Xy"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01NK9b8B6YN3k9vSCT9xj9Xy"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: finalise",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 9
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-07-24T12:31:19.998037Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 55,
+    "total_committed": 0,
+    "total_lines_changed": 55,
+    "agent_percentage": 0,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 106,
+      "user_lines_removed": 55,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 47,
+        "src/components/DeleteAccountForm/DeleteAccountForm.tsx": 58
+      },
+      "user_removed_per_file": {
+        "src/components/DeleteAccountForm/DeleteAccountForm.tsx": 55
+      }
+    }
+  ]
+}

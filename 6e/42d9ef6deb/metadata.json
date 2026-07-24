@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "6e42d9ef6deb",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "src/components/DeleteAccountForm/DeleteAccountForm.tsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/6e/42d9ef6deb/0/metadata.json",
+      "transcript": "/6e/42d9ef6deb/0/full.jsonl",
+      "compact_transcript": "/6e/42d9ef6deb/0/transcript.jsonl",
+      "content_hash": "/6e/42d9ef6deb/0/content_hash.txt",
+      "prompt": "/6e/42d9ef6deb/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 10,
+    "cache_creation_tokens": 132763,
+    "cache_read_tokens": 630022,
+    "output_tokens": 4014,
+    "api_call_count": 5
+  }
+}

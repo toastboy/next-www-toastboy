@@ -1,0 +1,1 @@
+Another UX consistency user story please: I want all forms to be consistent with respect to the disabling of the submit button based on validation - I need to decide what the standard behaviour should be and apply it everywhere. Should I disable the submit button until everything validates or should I rely on the validation messages when 'submit' is clicked?

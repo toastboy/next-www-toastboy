@@ -6,6 +6,7 @@ import {
     Button,
     Container,
     Notification,
+    Paper,
     PasswordInput,
     Stack,
     Text,
@@ -97,45 +98,47 @@ export const PasswordChangeForm = ({ revokeOtherSessions }: Props) => {
 
     return (
         <Container size="xs" mt="xl">
-            <Stack>
-                <Title order={2} mb="md">
-                    Change your password
-                </Title>
-                <Text mb="lg">
-                    Enter your current password and choose a new one.
-                </Text>
-            </Stack>
-
-            <Box
-                component="form"
-                onSubmit={form.onSubmit(handleSubmit)}
-                noValidate
-            >
+            <Paper w="100%" p="xl">
                 <Stack>
-                    <PasswordInput
-                        withAsterisk
-                        label="Current password"
-                        placeholder="Enter your current password"
-                        rightSection={<IconLock size={16} />}
-                        {...form.getInputProps('currentPassword')}
-                    />
-                    <PasswordFields
-                        passwordLabel="New password"
-                        confirmPasswordLabel="Confirm new password"
-                        passwordPlaceholder="Enter a new password"
-                        confirmPasswordPlaceholder="Re-enter your new password"
-                        passwordProps={form.getInputProps('password')}
-                        confirmPasswordProps={form.getInputProps('confirmPassword')}
-                    />
-                    {notification}
-                    <Button
-                        type="submit"
-                        fullWidth
-                    >
-                        Update password
-                    </Button>
+                    <Title order={2} mb="md">
+                        Change your password
+                    </Title>
+                    <Text mb="lg">
+                        Enter your current password and choose a new one.
+                    </Text>
                 </Stack>
-            </Box>
-        </Container>
+
+                <Box
+                    component="form"
+                    onSubmit={form.onSubmit(handleSubmit)}
+                    noValidate
+                >
+                    <Stack>
+                        <PasswordInput
+                            withAsterisk
+                            label="Current password"
+                            placeholder="Enter your current password"
+                            rightSection={<IconLock size={16} />}
+                            {...form.getInputProps('currentPassword')}
+                        />
+                        <PasswordFields
+                            passwordLabel="New password"
+                            confirmPasswordLabel="Confirm new password"
+                            passwordPlaceholder="Enter a new password"
+                            confirmPasswordPlaceholder="Re-enter your new password"
+                            passwordProps={form.getInputProps('password')}
+                            confirmPasswordProps={form.getInputProps('confirmPassword')}
+                        />
+                        {notification}
+                        <Button
+                            type="submit"
+                            fullWidth
+                        >
+                            Update password
+                        </Button>
+                    </Stack>
+                </Box>
+            </Paper>
+        </Container >
     );
 };

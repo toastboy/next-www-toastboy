@@ -2,11 +2,13 @@
 
 import {
     Anchor,
-    Box,
     Button,
     Checkbox,
+    Container,
     Flex,
+    Paper,
     RangeSlider,
+    Stack,
     Switch,
     Table,
     Text,
@@ -136,106 +138,110 @@ export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
     const handleCloseEmailModal = () => setModalOpened(false);
 
     return (
-        <Box>
-            <Title order={1}>{sortedPlayers.length} {activeStatusLabel}</Title>
-            <Title order={3}>who last responded between {replyRange[0]} and {replyRange[1]} weeks ago</Title>
-            <TextInput
-                mt={20}
-                mb={20}
-                placeholder="Search players"
-                value={filter}
-                onChange={(event) => setFilter(event.currentTarget.value)}
-            />
-            <Switch
-                mt={20}
-                mb={20}
-                checked={active}
-                onChange={(event) => setActive(event.currentTarget.checked)}
-                color="blue"
-                label="Active"
-            />
-            <Text size="sm">Last Response Range</Text>
-            <RangeSlider
-                label={rangeSliderLabel}
-                min={0}
-                max={gameDay.id}
-                step={1}
-                value={replyRange}
-                onChange={handleRangeChange}
-            />
-            <Checkbox
-                mt={20}
-                mb={20}
-                label="Select All"
-                checked={selectedPlayers.length === sortedPlayers.length && sortedPlayers.length > 0}
-                onChange={(event) => {
-                    if (event.currentTarget.checked) {
-                        setSelectedPlayers(sortedPlayers);
-                    } else {
-                        setSelectedPlayers([]);
-                    }
-                }}
-            />
-            <Text size="sm">Selected: {selectedPlayers.length}</Text>
-            <Tooltip label="Send an email to the selected players">
-                <Button
-                    disabled={selectedPlayers.length === 0}
-                    onClick={handleOpenEmailModal}
-                >
-                    Send Email...
-                </Button>
-            </Tooltip>
-            <SendEmailForm
-                players={selectedEmailPlayers}
-                opened={modalOpened}
-                onClose={handleCloseEmailModal}
-                onSendEmail={sendEmail}
-            />
+        <Container size="xl" mt="xl">
+            <Paper w="100%" p="xl">
+                <Stack mb="lg">
+                    <Title order={1}>{sortedPlayers.length} {activeStatusLabel}</Title>
+                    <Title order={3}>who last responded between {replyRange[0]} and {replyRange[1]} weeks ago</Title>
+                    <TextInput
+                        mt={20}
+                        mb={20}
+                        placeholder="Search players"
+                        value={filter}
+                        onChange={(event) => setFilter(event.currentTarget.value)}
+                    />
+                    <Switch
+                        mt={20}
+                        mb={20}
+                        checked={active}
+                        onChange={(event) => setActive(event.currentTarget.checked)}
+                        color="blue"
+                        label="Active"
+                    />
+                    <Text size="sm">Last Response Range</Text>
+                    <RangeSlider
+                        label={rangeSliderLabel}
+                        min={0}
+                        max={gameDay.id}
+                        step={1}
+                        value={replyRange}
+                        onChange={handleRangeChange}
+                    />
+                    <Checkbox
+                        mt={20}
+                        mb={20}
+                        label="Select All"
+                        checked={selectedPlayers.length === sortedPlayers.length && sortedPlayers.length > 0}
+                        onChange={(event) => {
+                            if (event.currentTarget.checked) {
+                                setSelectedPlayers(sortedPlayers);
+                            } else {
+                                setSelectedPlayers([]);
+                            }
+                        }}
+                    />
+                    <Text size="sm">Selected: {selectedPlayers.length}</Text>
+                    <Tooltip label="Send an email to the selected players">
+                        <Button
+                            disabled={selectedPlayers.length === 0}
+                            onClick={handleOpenEmailModal}
+                        >
+                            Send Email...
+                        </Button>
+                    </Tooltip>
+                    <SendEmailForm
+                        players={selectedEmailPlayers}
+                        opened={modalOpened}
+                        onClose={handleCloseEmailModal}
+                        onSendEmail={sendEmail}
+                    />
 
-            <Table mt={20}>
-                <Table.Thead>
-                    <Table.Tr>
-                        <Table.Th>
-                            Select
-                        </Table.Th>
-                        <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('name')}>
-                            <Flex align="center" gap="xs">
-                                Name
-                                {sortBy === 'name' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
-                            </Flex>
-                        </Table.Th>
-                        <Table.Th>
-                            W-D-L
-                        </Table.Th>
-                        <Table.Th>
-                            Timeline
-                        </Table.Th>
-                    </Table.Tr>
-                </Table.Thead>
-                <Table.Tbody>
-                    {sortedPlayers.map((player) => (
-                        <Table.Tr key={player.id}>
-                            <Table.Td>
-                                <Checkbox
-                                    checked={selectedPlayers.includes(player)}
-                                    onChange={() => handleSelectPlayer(player)}
-                                />
-                            </Table.Td>
-                            <Table.Td>
-                                <Anchor href={`/footy/player/${encodeURIComponent(player.id || "")}`}>
-                                    {player.name}
-                                </Anchor>
-                            </Table.Td>
-                            <Table.Td>
-                                <PlayerWDLChart player={player} />
-                            </Table.Td>
-                            <Table.Td>
-                                <PlayerTimeline player={player} currentGameId={gameDay.id} />
-                            </Table.Td>
-                        </Table.Tr>
-                    ))}
-                </Table.Tbody>
-            </Table>
-        </Box>
+                    <Table mt={20}>
+                        <Table.Thead>
+                            <Table.Tr>
+                                <Table.Th>
+                                    Select
+                                </Table.Th>
+                                <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('name')}>
+                                    <Flex align="center" gap="xs">
+                                        Name
+                                        {sortBy === 'name' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
+                                    </Flex>
+                                </Table.Th>
+                                <Table.Th>
+                                    W-D-L
+                                </Table.Th>
+                                <Table.Th>
+                                    Timeline
+                                </Table.Th>
+                            </Table.Tr>
+                        </Table.Thead>
+                        <Table.Tbody>
+                            {sortedPlayers.map((player) => (
+                                <Table.Tr key={player.id}>
+                                    <Table.Td>
+                                        <Checkbox
+                                            checked={selectedPlayers.includes(player)}
+                                            onChange={() => handleSelectPlayer(player)}
+                                        />
+                                    </Table.Td>
+                                    <Table.Td>
+                                        <Anchor href={`/footy/player/${encodeURIComponent(player.id || "")}`}>
+                                            {player.name}
+                                        </Anchor>
+                                    </Table.Td>
+                                    <Table.Td>
+                                        <PlayerWDLChart player={player} />
+                                    </Table.Td>
+                                    <Table.Td>
+                                        <PlayerTimeline player={player} currentGameId={gameDay.id} />
+                                    </Table.Td>
+                                </Table.Tr>
+                            ))}
+                        </Table.Tbody>
+                    </Table>
+                </Stack>
+            </Paper>
+        </Container>
     );
 };

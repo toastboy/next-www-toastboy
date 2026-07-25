@@ -10,6 +10,7 @@ import {
     Flex,
     MultiSelect,
     NumberInput,
+    Paper,
     Switch,
     Textarea,
     TextInput,
@@ -195,218 +196,221 @@ export const PlayerProfileForm = ({
     );
 
     return (
-        <Container size="xs" mt="xl">
-            <Box
-                maw={400}
-                component="form"
-                onSubmit={form.onSubmit(handleSubmit)}
-            >
-                <TextInput
-                    label="Name"
-                    required
-                    {...form.getInputProps('name')}
-                />
-                <Flex
-                    align="center"
-                    gap="md"
-                    justify="space-between"
-                    mb="md"
-                    mt="sm"
-                    wrap="wrap"
-                    w="100%"
-                >
-                    <Tooltip
-                        label={[
-                            `If selected, the goalie flag will be set by default in game responses. `,
-                            `You can always change the goalie flag for individual games.`,
-                        ].join('')}
-                        withArrow
-                        multiline
-                        w={220}
-                    >
-                        <Box>
-                            <Switch
-                                label="Goalie"
-                                {...form.getInputProps('goalie', { type: 'checkbox' })}
-                            />
-                        </Box>
-                    </Tooltip>
-                    <Tooltip
-                        label={[
-                            `If selected, you will appear as 'Player ${player.id.toString()}' `,
-                            `on the public site, with no picture or other identifying information.`,
-                        ].join('')}
-                        withArrow
-                        multiline
-                        w={220}
-                    >
-                        <Box>
-                            <Switch
-                                label="Anonymous"
-                                {...form.getInputProps('anonymous', { type: 'checkbox' })}
-                            />
-                        </Box>
-                    </Tooltip>
-                    <Tooltip
-                        label={[
-                            `When selected, you will no longer receive match invitations. `,
-                            `You can always change this later. If instead you want to `,
-                            `delete your account permanently, please use the 'Delete Account' `,
-                            `button below.`,
-                        ].join('')}
-                        withArrow
-                        multiline
-                        w={220}
-                    >
-                        <Box>
-                            <Switch
-                                label="Retired"
-                                {...form.getInputProps('retired', { type: 'checkbox' })}
-                            />
-                        </Box>
-                    </Tooltip>
-                </Flex>
-                <TextInput
-                    label="Account email"
-                    description="This is the email address you use to log in."
-                    required
-                    {...form.getInputProps('accountEmail')}
-                />
+        <Container size="xl" mt="xl">
+            <Paper w="100%" p="xl">
                 <Box
-                    mt="md"
-                    p="md"
-                    style={{
-                        border: '1px solid var(--mantine-color-gray-3)',
-                        borderRadius: 'var(--mantine-radius-md)',
-                    }}
+                    miw="16rem"
+                    maw="32rem"
+                    component="form"
+                    onSubmit={form.onSubmit(handleSubmit)}
                 >
-                    {form.values.extraEmails.map((email, index) => {
-                        const address = `address ${index + 1}`;
-                        const isVerified = extraEmails.some(
-                            (value) => (value.email === email && value.verifiedAt !== null),
-                        );
-                        const verificationPending = extraEmails.some(
-                            (value) => (value.email === email && value.verifiedAt === null),
-                        );
-                        const verificationMessage = isVerified ?
-                            `Extra email ${address} is verified` :
-                            (verificationPending ?
-                                `Verification email has been sent to ${email}` :
-                                `Verification email will be sent to ${email} upon submission`);
-
-                        return (
-                            <Flex
-                                key={index}
-                                mb="md"
-                                gap="sm"
-                                align="flex-end"
-                            >
-                                <EmailInput
-                                    label={`Extra email ${address}`}
-                                    flex={1}
-                                    rightSection={
-                                        email?.trim().length ? (
-                                            <Tooltip
-                                                label={verificationMessage}
-                                                withArrow
-                                            >
-                                                {isVerified ?
-                                                    <IconCheck
-                                                        size={16}
-                                                        aria-label={verificationMessage}
-                                                    /> :
-                                                    <IconQuestionMark
-                                                        size={16}
-                                                        aria-label={verificationMessage}
-                                                    />
-                                                }
-                                            </Tooltip>
-                                        ) : null
-                                    }
-                                    {...form.getInputProps(`extraEmails.${index}`)}
+                    <TextInput
+                        label="Name"
+                        required
+                        {...form.getInputProps('name')}
+                    />
+                    <Flex
+                        align="center"
+                        gap="md"
+                        justify="space-between"
+                        mb="md"
+                        mt="sm"
+                        wrap="wrap"
+                        w="100%"
+                    >
+                        <Tooltip
+                            label={[
+                                `If selected, the goalie flag will be set by default in game responses. `,
+                                `You can always change the goalie flag for individual games.`,
+                            ].join('')}
+                            withArrow
+                            multiline
+                            w={220}
+                        >
+                            <Box>
+                                <Switch
+                                    label="Goalie"
+                                    {...form.getInputProps('goalie', { type: 'checkbox' })}
                                 />
-                                <Tooltip
-                                    label={`Delete extra email ${address}`}
-                                    withArrow
+                            </Box>
+                        </Tooltip>
+                        <Tooltip
+                            label={[
+                                `If selected, you will appear as 'Player ${player.id.toString()}' `,
+                                `on the public site, with no picture or other identifying information.`,
+                            ].join('')}
+                            withArrow
+                            multiline
+                            w={220}
+                        >
+                            <Box>
+                                <Switch
+                                    label="Anonymous"
+                                    {...form.getInputProps('anonymous', { type: 'checkbox' })}
+                                />
+                            </Box>
+                        </Tooltip>
+                        <Tooltip
+                            label={[
+                                `When selected, you will no longer receive match invitations. `,
+                                `You can always change this later. If instead you want to `,
+                                `delete your account permanently, please use the 'Delete Account' `,
+                                `button below.`,
+                            ].join('')}
+                            withArrow
+                            multiline
+                            w={220}
+                        >
+                            <Box>
+                                <Switch
+                                    label="Retired"
+                                    {...form.getInputProps('retired', { type: 'checkbox' })}
+                                />
+                            </Box>
+                        </Tooltip>
+                    </Flex>
+                    <TextInput
+                        label="Account email"
+                        description="This is the email address you use to log in."
+                        required
+                        {...form.getInputProps('accountEmail')}
+                    />
+                    <Box
+                        mt="md"
+                        p="md"
+                        style={{
+                            border: '1px solid var(--mantine-color-gray-3)',
+                            borderRadius: 'var(--mantine-radius-md)',
+                        }}
+                    >
+                        {form.values.extraEmails.map((email, index) => {
+                            const address = `address ${index + 1}`;
+                            const isVerified = extraEmails.some(
+                                (value) => (value.email === email && value.verifiedAt !== null),
+                            );
+                            const verificationPending = extraEmails.some(
+                                (value) => (value.email === email && value.verifiedAt === null),
+                            );
+                            const verificationMessage = isVerified ?
+                                `Extra email ${address} is verified` :
+                                (verificationPending ?
+                                    `Verification email has been sent to ${email}` :
+                                    `Verification email will be sent to ${email} upon submission`);
+
+                            return (
+                                <Flex
+                                    key={index}
+                                    mb="md"
+                                    gap="sm"
+                                    align="flex-end"
                                 >
-                                    <Button
-                                        variant="subtle"
-                                        color="red"
-                                        aria-label={`Delete extra email ${address}`}
-                                        onClick={() => form.removeListItem('extraEmails', index)}
+                                    <EmailInput
+                                        label={`Extra email ${address}`}
+                                        flex={1}
+                                        rightSection={
+                                            email?.trim().length ? (
+                                                <Tooltip
+                                                    label={verificationMessage}
+                                                    withArrow
+                                                >
+                                                    {isVerified ?
+                                                        <IconCheck
+                                                            size={16}
+                                                            aria-label={verificationMessage}
+                                                        /> :
+                                                        <IconQuestionMark
+                                                            size={16}
+                                                            aria-label={verificationMessage}
+                                                        />
+                                                    }
+                                                </Tooltip>
+                                            ) : null
+                                        }
+                                        {...form.getInputProps(`extraEmails.${index}`)}
+                                    />
+                                    <Tooltip
+                                        label={`Delete extra email ${address}`}
+                                        withArrow
                                     >
-                                        <IconTrash size={16} />
-                                    </Button>
-                                </Tooltip>
-                            </Flex>
-                        );
-                    })}
+                                        <Button
+                                            variant="subtle"
+                                            color="red"
+                                            aria-label={`Delete extra email ${address}`}
+                                            onClick={() => form.removeListItem('extraEmails', index)}
+                                        >
+                                            <IconTrash size={16} />
+                                        </Button>
+                                    </Tooltip>
+                                </Flex>
+                            );
+                        })}
 
-                    <Button
-                        type="button"
-                        variant="light"
-                        onClick={() => form.insertListItem('extraEmails', '')}
+                        <Button
+                            type="button"
+                            variant="light"
+                            onClick={() => form.insertListItem('extraEmails', '')}
+                        >
+                            Add another email
+                        </Button>
+                    </Box>
+
+                    <NumberInput
+                        label="Year of Birth"
+                        description="Helps pick balanced sides"
+                        placeholder="Not shown on the public site"
+                        {...form.getInputProps('born')}
+                    />
+
+                    <MultiSelect
+                        label="National Team(s)"
+                        placeholder="What national team(s) do you support?"
+                        data={countryData}
+                        searchable
+                        {...form.getInputProps('countries')}
+                    />
+
+                    <MultiSelect
+                        label="Club(s)"
+                        placeholder="What club(s) do you support?"
+                        data={clubData}
+                        searchable
+                        {...form.getInputProps('clubs')}
+                    />
+
+                    <Textarea
+                        label="Comment"
+                        placeholder="Add a comment"
+                        {...form.getInputProps('comment')}
+                    />
+
+                    <Flex
+                        align="center"
+                        gap="md"
+                        justify="space-between"
+                        mb="md"
+                        mt="sm"
+                        wrap="wrap"
+                        w="100%"
                     >
-                        Add another email
-                    </Button>
+                        <Button
+                            disabled={!form.isDirty()}
+                            mt="md"
+                            type="submit"
+                        >
+                            Save Changes
+                        </Button>
+                        <Button
+                            color="red"
+                            component={Link}
+                            href="/footy/deleteaccount"
+                            mt="md"
+                            type="button"
+                        >
+                            Delete Account
+                        </Button>
+                    </Flex>
                 </Box>
-
-                <NumberInput
-                    label="Year of Birth"
-                    description="Helps pick balanced sides"
-                    placeholder="Not shown on the public site"
-                    {...form.getInputProps('born')}
-                />
-
-                <MultiSelect
-                    label="National Team(s)"
-                    placeholder="What national team(s) do you support?"
-                    data={countryData}
-                    searchable
-                    {...form.getInputProps('countries')}
-                />
-
-                <MultiSelect
-                    label="Club(s)"
-                    placeholder="What club(s) do you support?"
-                    data={clubData}
-                    searchable
-                    {...form.getInputProps('clubs')}
-                />
-
-                <Textarea
-                    label="Comment"
-                    placeholder="Add a comment"
-                    {...form.getInputProps('comment')}
-                />
-
-                <Flex
-                    align="center"
-                    gap="md"
-                    justify="space-between"
-                    mb="md"
-                    mt="sm"
-                    wrap="wrap"
-                    w="100%"
-                >
-                    <Button
-                        disabled={!form.isDirty()}
-                        mt="md"
-                        type="submit"
-                    >
-                        Save Changes
-                    </Button>
-                    <Button
-                        color="red"
-                        component={Link}
-                        href="/footy/deleteaccount"
-                        mt="md"
-                        type="button"
-                    >
-                        Delete Account
-                    </Button>
-                </Flex>
-            </Box>
+            </Paper>
         </Container>
     );
 };

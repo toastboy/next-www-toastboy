@@ -1,0 +1,13 @@
+I want to add more filters to the admin players list component. Alongside filtering by name I want to filter by finished (checkbox) auth (checkbox) and emails verified (checkbox)
+
+---
+
+Actually I got this wrong. Checkboxes aren't right here - it's a tri-state. 'Finished' should be 'All/Finished/Active' and so on. 'Auth' should be 'All/Invited/Claimed' and 'Emails Verified' should be 'All/Verified/Unverified'
+
+---
+
+The SegmentedControl elements need labels. Also 'Unverified' should not include players with no extra emails - only those with extra emails which have not all been verified.
+
+---
+
+Add a label to the name filter too, and make the bottom of the name filter and the tri state filters line up.

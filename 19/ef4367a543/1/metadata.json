@@ -1,0 +1,137 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "19ef4367a543",
+  "session_id": "94993320-5971-47cc-bddc-9b295b7976f6",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-26T08:00:00.618115Z",
+  "branch": "main",
+  "checkpoints_count": 4,
+  "save_step_count": 4,
+  "files_touched": [
+    "src/app/footy/admin/page.tsx",
+    "src/components/AdminExportAuth/AdminExportAuth.tsx",
+    "src/components/AdminUpdatePlayerRecords/AdminUpdatePlayerRecords.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "a65b9e34497d",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 53,
+    "cache_creation_tokens": 53793,
+    "cache_read_tokens": 1179781,
+    "output_tokens": 8417,
+    "api_call_count": 27
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_01JwJRjmpRXVjhWLskVkFXZ9",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "finalise"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "a65b9e34497d",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 29,
+        "end": 30,
+        "entry_ids": [
+          "76c9c2ef-5ae6-4e48-adcb-3dd3983fa9b9"
+        ],
+        "tool_use_id": "toolu_01JwJRjmpRXVjhWLskVkFXZ9"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01JwJRjmpRXVjhWLskVkFXZ9"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: finalise",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 4
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-07-26T08:00:00.60624Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 3,
+    "human_removed": 97,
+    "total_committed": 27,
+    "total_lines_changed": 100,
+    "agent_percentage": 0,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 143,
+      "user_lines_removed": 97,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 47,
+        "src/app/footy/admin/page.tsx": 8,
+        "src/components/AdminExportAuth/AdminExportAuth.tsx": 40,
+        "src/components/AdminUpdatePlayerRecords/AdminUpdatePlayerRecords.tsx": 47
+      },
+      "user_removed_per_file": {
+        "src/app/footy/admin/page.tsx": 6,
+        "src/components/AdminExportAuth/AdminExportAuth.tsx": 42,
+        "src/components/AdminUpdatePlayerRecords/AdminUpdatePlayerRecords.tsx": 49
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 48,
+      "user_lines_removed": 0,
+      "agent_lines_added": 98,
+      "agent_lines_removed": 98,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 47
+      }
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 48,
+      "user_lines_removed": 0,
+      "agent_lines_added": 106,
+      "agent_lines_removed": 98,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 47
+      }
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 51,
+      "user_lines_removed": 3,
+      "agent_lines_added": 114,
+      "agent_lines_removed": 98,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 47,
+        "src/app/footy/admin/page.tsx": 1,
+        "src/components/AdminExportAuth/AdminExportAuth.tsx": 1,
+        "src/components/AdminUpdatePlayerRecords/AdminUpdatePlayerRecords.tsx": 1
+      },
+      "user_removed_per_file": {
+        "src/app/footy/admin/page.tsx": 1,
+        "src/components/AdminExportAuth/AdminExportAuth.tsx": 1,
+        "src/components/AdminUpdatePlayerRecords/AdminUpdatePlayerRecords.tsx": 1
+      }
+    }
+  ]
+}

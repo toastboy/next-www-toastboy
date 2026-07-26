@@ -88,7 +88,7 @@ describe('AdminPlayerList', () => {
         );
 
         const table = screen.getByRole('table');
-        expect(screen.getByText('Players (2)')).toBeInTheDocument();
+        expect(screen.getByText('2 of 2 visible, 0 selected')).toBeInTheDocument();
         expect(within(table).getAllByRole('checkbox').length).toBeGreaterThan(0);
         expect(within(table).getByText('Alex Admin')).toBeInTheDocument();
         expect(within(table).getByText('Pat Player')).toBeInTheDocument();
@@ -176,7 +176,7 @@ describe('AdminPlayerList', () => {
         );
 
         fireEvent.click(screen.getByRole('checkbox', { name: 'Select Alex Admin' }));
-        fireEvent.click(screen.getByRole('button', { name: 'Onboard player' }));
+        fireEvent.click(screen.getByRole('button', { name: /^Onboard \d+ player\(s\)$/ }));
 
         await waitFor(() => {
             expect(onAddPlayerInvite).toHaveBeenCalledWith(1, 'alex@example.com');
@@ -744,7 +744,7 @@ describe('AdminPlayerList', () => {
             );
 
             fireEvent.click(screen.getByRole('checkbox', { name: 'Select No Email Player' }));
-            fireEvent.click(screen.getByRole('button', { name: 'Onboard player' }));
+            fireEvent.click(screen.getByRole('button', { name: /^Onboard \d+ player\(s\)$/ }));
 
             await waitFor(() => {
                 expect(onAddPlayerInvite).not.toHaveBeenCalled();
@@ -769,7 +769,7 @@ describe('AdminPlayerList', () => {
                 </Wrapper>,
             );
 
-            expect(screen.getByRole('button', { name: 'Onboard player' })).toBeDisabled();
+            expect(screen.getByRole('button', { name: /^Onboard \d+ player\(s\)$/ })).toBeDisabled();
         });
 
         it('remains enabled after a player is selected', () => {
@@ -786,7 +786,7 @@ describe('AdminPlayerList', () => {
 
             fireEvent.click(screen.getByRole('checkbox', { name: 'Select Alex Admin' }));
 
-            expect(screen.getByRole('button', { name: 'Onboard player' })).toBeEnabled();
+            expect(screen.getByRole('button', { name: /^Onboard \d+ player\(s\)$/ })).toBeEnabled();
         });
 
         it('uses unverified extra email as fallback when no verified email exists', async () => {
@@ -815,7 +815,7 @@ describe('AdminPlayerList', () => {
             );
 
             fireEvent.click(screen.getByRole('checkbox', { name: 'Select Pat Player' }));
-            fireEvent.click(screen.getByRole('button', { name: 'Onboard player' }));
+            fireEvent.click(screen.getByRole('button', { name: /^Onboard \d+ player\(s\)$/ }));
 
             await waitFor(() => {
                 expect(onAddPlayerInvite).toHaveBeenCalledWith(1, 'pat-unverified@example.com');
@@ -847,7 +847,7 @@ describe('AdminPlayerList', () => {
             );
 
             fireEvent.click(screen.getByRole('checkbox', { name: 'Select Pat Player' }));
-            fireEvent.click(screen.getByRole('button', { name: 'Onboard player' }));
+            fireEvent.click(screen.getByRole('button', { name: /^Onboard \d+ player\(s\)$/ }));
 
             await waitFor(() => {
                 expect(onAddPlayerInvite).toHaveBeenCalledWith(1, 'pat@example.com');
@@ -923,7 +923,7 @@ describe('AdminPlayerList', () => {
             );
 
             fireEvent.click(screen.getByRole('checkbox', { name: 'Select Alex Admin' }));
-            fireEvent.click(screen.getByRole('button', { name: 'Onboard player' }));
+            fireEvent.click(screen.getByRole('button', { name: /^Onboard \d+ player\(s\)$/ }));
 
             await waitFor(() => {
                 expect(notifications.update).toHaveBeenCalledWith(expect.objectContaining({
@@ -957,7 +957,7 @@ describe('AdminPlayerList', () => {
             );
 
             fireEvent.click(screen.getByRole('checkbox', { name: 'Select Alex Admin' }));
-            fireEvent.click(screen.getByRole('button', { name: 'Onboard player' }));
+            fireEvent.click(screen.getByRole('button', { name: /^Onboard \d+ player\(s\)$/ }));
 
             await waitFor(() => {
                 expect(notifications.update).toHaveBeenCalledWith(expect.objectContaining({
@@ -990,7 +990,7 @@ describe('AdminPlayerList', () => {
                 </Wrapper>,
             );
 
-            expect(screen.getByRole('button', { name: 'Onboard player' })).toBeDisabled();
+            expect(screen.getByRole('button', { name: /^Onboard \d+ player\(s\)$/ })).toBeDisabled();
             expect(onAddPlayerInvite).not.toHaveBeenCalled();
             expect(onSendEmail).not.toHaveBeenCalled();
         });
@@ -1016,7 +1016,7 @@ describe('AdminPlayerList', () => {
             );
 
             fireEvent.click(screen.getByRole('checkbox', { name: 'Select all players' }));
-            fireEvent.click(screen.getByRole('button', { name: 'Onboard player' }));
+            fireEvent.click(screen.getByRole('button', { name: /^Onboard \d+ player\(s\)$/ }));
 
             await waitFor(() => {
                 expect(notifications.update).toHaveBeenCalledWith(expect.objectContaining({
@@ -1048,7 +1048,7 @@ describe('AdminPlayerList', () => {
             );
 
             fireEvent.click(screen.getByRole('checkbox', { name: 'Select all players' }));
-            fireEvent.click(screen.getByRole('button', { name: 'Onboard player' }));
+            fireEvent.click(screen.getByRole('button', { name: /^Onboard \d+ player\(s\)$/ }));
 
             await waitFor(() => {
                 expect(notifications.update).toHaveBeenCalledWith(expect.objectContaining({
@@ -1084,7 +1084,7 @@ describe('AdminPlayerList', () => {
             );
 
             fireEvent.click(screen.getByRole('checkbox', { name: 'Select Pat Player' }));
-            fireEvent.click(screen.getByRole('button', { name: 'Onboard player' }));
+            fireEvent.click(screen.getByRole('button', { name: /^Onboard \d+ player\(s\)$/ }));
 
             await waitFor(() => {
                 expect(onAddPlayerInvite).toHaveBeenCalledWith(1, 'verified@example.com');
@@ -1359,6 +1359,236 @@ describe('AdminPlayerList', () => {
 
             expect(screen.getByText('Alex Admin')).toBeInTheDocument();
             expect(screen.getByText('Pat Player')).toBeInTheDocument();
+        });
+    });
+
+    describe('tri-state filters', () => {
+        it('filters to only finished players when Finished is selected', () => {
+            const players = [
+                createMockPlayerData({ id: 1, name: 'Active Alex', finished: null }),
+                createMockPlayerData({ id: 2, name: 'Finished Fiona', finished: new Date('2020-01-01') }),
+            ];
+
+            render(
+                <Wrapper>
+                    <AdminPlayerList
+                        players={players}
+                        userEmails={[]}
+                        onAddPlayerInvite={defaultAddPlayerProxy}
+                        onSendEmail={stubSendEmail}
+                    />
+                </Wrapper>,
+            );
+
+            const finishedGroup = screen.getByRole('radiogroup', { name: 'Finished' });
+            fireEvent.click(within(finishedGroup).getByRole('radio', { name: 'Finished' }));
+
+            expect(screen.getByText('Finished Fiona')).toBeInTheDocument();
+            expect(screen.queryByText('Active Alex')).not.toBeInTheDocument();
+        });
+
+        it('filters to only active players when Active is selected', () => {
+            const players = [
+                createMockPlayerData({ id: 1, name: 'Active Alex', finished: null }),
+                createMockPlayerData({ id: 2, name: 'Finished Fiona', finished: new Date('2020-01-01') }),
+            ];
+
+            render(
+                <Wrapper>
+                    <AdminPlayerList
+                        players={players}
+                        userEmails={[]}
+                        onAddPlayerInvite={defaultAddPlayerProxy}
+                        onSendEmail={stubSendEmail}
+                    />
+                </Wrapper>,
+            );
+
+            const finishedGroup = screen.getByRole('radiogroup', { name: 'Finished' });
+            fireEvent.click(within(finishedGroup).getByRole('radio', { name: 'Active' }));
+
+            expect(screen.getByText('Active Alex')).toBeInTheDocument();
+            expect(screen.queryByText('Finished Fiona')).not.toBeInTheDocument();
+        });
+
+        it('filters to only claimed players when Claimed is selected', () => {
+            const players = [
+                createMockPlayerData({ id: 1, name: 'Anonymous', accountEmail: null, extraEmails: [] }),
+                createMockPlayerData({ id: 2, name: 'Authed', accountEmail: 'authed@example.com', extraEmails: [] }),
+            ];
+
+            render(
+                <Wrapper>
+                    <AdminPlayerList
+                        players={players}
+                        userEmails={['authed@example.com']}
+                        onAddPlayerInvite={defaultAddPlayerProxy}
+                        onSendEmail={stubSendEmail}
+                    />
+                </Wrapper>,
+            );
+
+            const authGroup = screen.getByRole('radiogroup', { name: 'Auth' });
+            fireEvent.click(within(authGroup).getByRole('radio', { name: 'Claimed' }));
+
+            expect(screen.getByText('Authed')).toBeInTheDocument();
+            expect(screen.queryByText('Anonymous')).not.toBeInTheDocument();
+        });
+
+        it('filters to only invited players when Invited is selected', () => {
+            const players = [
+                createMockPlayerData({ id: 1, name: 'Anonymous', accountEmail: null, extraEmails: [] }),
+                createMockPlayerData({ id: 2, name: 'Authed', accountEmail: 'authed@example.com', extraEmails: [] }),
+            ];
+
+            render(
+                <Wrapper>
+                    <AdminPlayerList
+                        players={players}
+                        userEmails={['authed@example.com']}
+                        onAddPlayerInvite={defaultAddPlayerProxy}
+                        onSendEmail={stubSendEmail}
+                    />
+                </Wrapper>,
+            );
+
+            const authGroup = screen.getByRole('radiogroup', { name: 'Auth' });
+            fireEvent.click(within(authGroup).getByRole('radio', { name: 'Invited' }));
+
+            expect(screen.getByText('Anonymous')).toBeInTheDocument();
+            expect(screen.queryByText('Authed')).not.toBeInTheDocument();
+        });
+
+        it('filters to only players with verified emails when Verified is selected', () => {
+            const players = [
+                createMockPlayerData({
+                    id: 1,
+                    name: 'Unverified Pat',
+                    extraEmails: [{ email: 'pat@example.com', verified: false }],
+                }),
+                createMockPlayerData({
+                    id: 2,
+                    name: 'Verified Vic',
+                    extraEmails: [{ email: 'vic@example.com', verified: true }],
+                }),
+                createMockPlayerData({ id: 3, name: 'No Extras Nia', extraEmails: [] }),
+            ];
+
+            render(
+                <Wrapper>
+                    <AdminPlayerList
+                        players={players}
+                        userEmails={[]}
+                        onAddPlayerInvite={defaultAddPlayerProxy}
+                        onSendEmail={stubSendEmail}
+                    />
+                </Wrapper>,
+            );
+
+            const emailsGroup = screen.getByRole('radiogroup', { name: 'Emails Verified' });
+            fireEvent.click(within(emailsGroup).getByRole('radio', { name: 'Verified' }));
+
+            expect(screen.getByText('Verified Vic')).toBeInTheDocument();
+            expect(screen.queryByText('Unverified Pat')).not.toBeInTheDocument();
+            expect(screen.queryByText('No Extras Nia')).not.toBeInTheDocument();
+        });
+
+        it('excludes players with no extra emails when Unverified is selected', () => {
+            const players = [
+                createMockPlayerData({
+                    id: 1,
+                    name: 'Unverified Pat',
+                    extraEmails: [{ email: 'pat@example.com', verified: false }],
+                }),
+                createMockPlayerData({
+                    id: 2,
+                    name: 'Verified Vic',
+                    extraEmails: [{ email: 'vic@example.com', verified: true }],
+                }),
+                createMockPlayerData({ id: 3, name: 'No Extras Nia', extraEmails: [] }),
+            ];
+
+            render(
+                <Wrapper>
+                    <AdminPlayerList
+                        players={players}
+                        userEmails={[]}
+                        onAddPlayerInvite={defaultAddPlayerProxy}
+                        onSendEmail={stubSendEmail}
+                    />
+                </Wrapper>,
+            );
+
+            const emailsGroup = screen.getByRole('radiogroup', { name: 'Emails Verified' });
+            fireEvent.click(within(emailsGroup).getByRole('radio', { name: 'Unverified' }));
+
+            expect(screen.getByText('Unverified Pat')).toBeInTheDocument();
+            expect(screen.queryByText('No Extras Nia')).not.toBeInTheDocument();
+            expect(screen.queryByText('Verified Vic')).not.toBeInTheDocument();
+        });
+
+        it('combines multiple active filters', () => {
+            const players = [
+                createMockPlayerData({
+                    id: 1,
+                    name: 'Match Match',
+                    finished: new Date('2020-01-01'),
+                    accountEmail: 'match@example.com',
+                    extraEmails: [],
+                }),
+                createMockPlayerData({
+                    id: 2,
+                    name: 'Match Unfinished',
+                    finished: null,
+                    accountEmail: 'match2@example.com',
+                    extraEmails: [],
+                }),
+            ];
+
+            render(
+                <Wrapper>
+                    <AdminPlayerList
+                        players={players}
+                        userEmails={['match@example.com', 'match2@example.com']}
+                        onAddPlayerInvite={defaultAddPlayerProxy}
+                        onSendEmail={stubSendEmail}
+                    />
+                </Wrapper>,
+            );
+
+            const finishedGroup = screen.getByRole('radiogroup', { name: 'Finished' });
+            const authGroup = screen.getByRole('radiogroup', { name: 'Auth' });
+            fireEvent.click(within(finishedGroup).getByRole('radio', { name: 'Finished' }));
+            fireEvent.click(within(authGroup).getByRole('radio', { name: 'Claimed' }));
+
+            expect(screen.getByText('Match Match')).toBeInTheDocument();
+            expect(screen.queryByText('Match Unfinished')).not.toBeInTheDocument();
+        });
+
+        it('resetting a filter to All restores previously hidden players', () => {
+            const players = [
+                createMockPlayerData({ id: 1, name: 'Active Alex', finished: null }),
+                createMockPlayerData({ id: 2, name: 'Finished Fiona', finished: new Date('2020-01-01') }),
+            ];
+
+            render(
+                <Wrapper>
+                    <AdminPlayerList
+                        players={players}
+                        userEmails={[]}
+                        onAddPlayerInvite={defaultAddPlayerProxy}
+                        onSendEmail={stubSendEmail}
+                    />
+                </Wrapper>,
+            );
+
+            const finishedGroup = screen.getByRole('radiogroup', { name: 'Finished' });
+            fireEvent.click(within(finishedGroup).getByRole('radio', { name: 'Finished' }));
+            expect(screen.queryByText('Active Alex')).not.toBeInTheDocument();
+
+            fireEvent.click(within(finishedGroup).getByRole('radio', { name: 'All' }));
+            expect(screen.getByText('Active Alex')).toBeInTheDocument();
+            expect(screen.getByText('Finished Fiona')).toBeInTheDocument();
         });
     });
 

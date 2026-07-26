@@ -1,0 +1,92 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "a4b2f3e7a9d1",
+  "session_id": "bc93c5f9-6161-466e-8b4e-aafd2fe02503",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-26T14:57:16.228717Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "save_step_count": 1,
+  "files_touched": [
+    "src/components/AdminPlayerList/AdminPlayerList.tsx",
+    "src/components/AdminPlayerList/AdminPlayerList.vitest.spec.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "bee4a4ae9ed3",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 49,
+    "cache_creation_tokens": 78874,
+    "cache_read_tokens": 2118771,
+    "output_tokens": 7700,
+    "api_call_count": 25
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_01NXZ2M16TorH7yqKyTfwJGJ",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "finalise"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "bee4a4ae9ed3",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 91,
+        "end": 92,
+        "entry_ids": [
+          "88a67143-9578-4054-b539-4420cb4d89c7"
+        ],
+        "tool_use_id": "toolu_01NXZ2M16TorH7yqKyTfwJGJ"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01NXZ2M16TorH7yqKyTfwJGJ"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: finalise",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 1
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-07-26T14:57:16.202303Z",
+    "agent_lines": 0,
+    "agent_removed": 13,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 71,
+    "total_committed": 8,
+    "total_lines_changed": 84,
+    "agent_percentage": 15.476190476190476,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 428,
+      "user_lines_removed": 71,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 47,
+        "src/components/AdminPlayerList/AdminPlayerList.tsx": 145,
+        "src/components/AdminPlayerList/AdminPlayerList.vitest.spec.tsx": 235
+      },
+      "user_removed_per_file": {
+        "src/components/AdminPlayerList/AdminPlayerList.tsx": 71
+      }
+    }
+  ]
+}

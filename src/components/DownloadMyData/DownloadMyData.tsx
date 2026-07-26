@@ -1,7 +1,7 @@
 'use client';
 
 import { CodeHighlight } from '@mantine/code-highlight';
-import { Button, Checkbox, Group, Paper, Stack, Text, Title } from '@mantine/core';
+import { Box, Button, Checkbox, Group, Paper, Stack, Text, Title } from '@mantine/core';
 import { IconDownload } from '@tabler/icons-react';
 import { useMemo, useState } from 'react';
 
@@ -82,78 +82,80 @@ export const DownloadMyData = ({ data }: Props) => {
     };
 
     return (
-        <Stack gap="lg">
-            <Title order={1}>Download my data</Title>
-            <Text size="sm" c="dimmed">
-                Choose which sections to include, then download or copy the JSON.
-            </Text>
+        <Paper w="100%" p="xl">
+            <Stack gap="lg">
+                <Title order={1}>Download my data</Title>
+                <Text size="sm" c="dimmed">
+                    Choose which sections to include, then download or copy the JSON.
+                </Text>
 
-            <Group justify="space-between" align="center">
-                <Button leftSection={<IconDownload size={16} />} onClick={handleDownload}>
-                    Download JSON
-                </Button>
-            </Group>
+                <Group justify="space-between" align="center">
+                    <Button leftSection={<IconDownload size={16} />} onClick={handleDownload}>
+                        Download JSON
+                    </Button>
+                </Group>
 
-            <Paper withBorder p="md" radius="md">
-                <Stack gap="md">
-                    <Group justify="space-between" align="center">
-                        <Text fw={600}>Include in export</Text>
-                        <Checkbox
-                            label="Select all"
-                            checked={allSelected}
-                            onChange={(event) => setAllSections(event.currentTarget.checked)}
-                        />
-                    </Group>
+                <Box bd="1px solid var(--mantine-color-gray-3)" p="md">
+                    <Stack gap="md">
+                        <Group justify="space-between" align="center">
+                            <Text fw={600}>Include in export</Text>
+                            <Checkbox
+                                label="Select all"
+                                checked={allSelected}
+                                onChange={(event) => setAllSections(event.currentTarget.checked)}
+                            />
+                        </Group>
 
-                    <Group gap="md" wrap="wrap">
-                        <Checkbox
-                            label="Meta"
-                            checked={sections.meta}
-                            onChange={(event) => toggleSection('meta', event.currentTarget.checked)}
-                        />
-                        <Checkbox
-                            label="Profile"
-                            checked={sections.profile}
-                            onChange={(event) => toggleSection('profile', event.currentTarget.checked)}
-                        />
-                        <Checkbox
-                            label="Extra emails"
-                            checked={sections.extraEmails}
-                            onChange={(event) => toggleSection('extraEmails', event.currentTarget.checked)}
-                        />
-                        <Checkbox
-                            label="Countries"
-                            checked={sections.countries}
-                            onChange={(event) => toggleSection('countries', event.currentTarget.checked)}
-                        />
-                        <Checkbox
-                            label="Clubs"
-                            checked={sections.clubs}
-                            onChange={(event) => toggleSection('clubs', event.currentTarget.checked)}
-                        />
-                        <Checkbox
-                            label="Totals"
-                            checked={sections.totals}
-                            onChange={(event) => toggleSection('totals', event.currentTarget.checked)}
-                        />
-                        <Checkbox
-                            label="Games played"
-                            checked={sections.outcomes}
-                            onChange={(event) => toggleSection('outcomes', event.currentTarget.checked)}
-                        />
-                    </Group>
+                        <Group gap="md" wrap="wrap">
+                            <Checkbox
+                                label="Meta"
+                                checked={sections.meta}
+                                onChange={(event) => toggleSection('meta', event.currentTarget.checked)}
+                            />
+                            <Checkbox
+                                label="Profile"
+                                checked={sections.profile}
+                                onChange={(event) => toggleSection('profile', event.currentTarget.checked)}
+                            />
+                            <Checkbox
+                                label="Extra emails"
+                                checked={sections.extraEmails}
+                                onChange={(event) => toggleSection('extraEmails', event.currentTarget.checked)}
+                            />
+                            <Checkbox
+                                label="Countries"
+                                checked={sections.countries}
+                                onChange={(event) => toggleSection('countries', event.currentTarget.checked)}
+                            />
+                            <Checkbox
+                                label="Clubs"
+                                checked={sections.clubs}
+                                onChange={(event) => toggleSection('clubs', event.currentTarget.checked)}
+                            />
+                            <Checkbox
+                                label="Totals"
+                                checked={sections.totals}
+                                onChange={(event) => toggleSection('totals', event.currentTarget.checked)}
+                            />
+                            <Checkbox
+                                label="Games played"
+                                checked={sections.outcomes}
+                                onChange={(event) => toggleSection('outcomes', event.currentTarget.checked)}
+                            />
+                        </Group>
 
-                    <section aria-label="JSON preview">
-                        <CodeHighlight
-                            // withExpandButton
-                            // defaultExpanded={false}
-                            code={json}
-                            language="json"
-                        />
-                    </section>
-                </Stack>
-            </Paper>
-        </Stack>
+                        <section aria-label="JSON preview">
+                            <CodeHighlight
+                                // withExpandButton
+                                // defaultExpanded={false}
+                                code={json}
+                                language="json"
+                            />
+                        </section>
+                    </Stack>
+                </Box>
+            </Stack>
+        </Paper>
     );
 };
 

@@ -1,4 +1,4 @@
-import { Center, Container, Stack, Title } from '@mantine/core';
+import { Center, Container, Flex, Paper, Title } from '@mantine/core';
 
 import { authExport } from '@/actions/auth-export';
 import { getProgress } from '@/actions/getProgress';
@@ -10,15 +10,17 @@ const AdminPage = () => {
     return (
         <Container size="xs" mt="xl" >
             <Center>
-                <Title order={2} mb="md" >
+                <Title order={1} mb="md">
                     Admin Dashboard
                 </Title>
             </Center>
 
-            <Stack mb="lg">
-                <AdminUpdatePlayerRecords onUpdatePlayerRecords={updatePlayerRecords} getProgress={getProgress} />
-                <AdminExportAuth onExportAuth={authExport} />
-            </Stack>
+            <Paper w="100%" p="xl">
+                <Flex mb="lg" gap="md" wrap="wrap" justify="center">
+                    <AdminUpdatePlayerRecords onUpdatePlayerRecords={updatePlayerRecords} getProgress={getProgress} />
+                    <AdminExportAuth onExportAuth={authExport} />
+                </Flex>
+            </Paper>
         </Container >
     );
 };

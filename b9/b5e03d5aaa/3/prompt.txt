@@ -1,0 +1,754 @@
+I often see errors like this when tryiing to run Storybook visual tests locally. I'm not prompted in the browser interface to authenticate. How to fix?
+
+ *  Executing task: op run --env-file ./.env -- sh -c 'lsof -ti:6006 | xargs kill -9 2>/dev/null; npm run storybook' 
+
+
+> storybook
+> storybook dev -p 6006
+
+
+┌  storybook v10.5.3
+(node:71422) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+│
+●  Starting...
+│ ╭────────────────────────────────────────────────────────────────────────────╮
+│ │   Storybook ready!                                                         │
+│ │                                                                            │
+│ │   - Local:                http://localhost:6006/                           │
+│ │   - On your network:      http://172.16.18.120:6006/                       │
+│ │                                                                            │
+│ │                                                                            │
+│ │   A new version (10.5.4) is available!                                     │
+│ │                                                                            │
+│ │   Upgrade now: npx storybook@latest upgrade                                │
+│ │                                                                            │
+│ │   Read full changelog:                                                     │
+│ │   https://github.com/storybookjs/storybook/blob/main/CHANGELOG.md          │
+│ ╰────────────────────────────────────────────────────────────────────────────╯
+│
+●  206 ms for manager and 576 ms for preview
+
+Chromatic: Chromatic CLI v16.10.0
+           https://www.chromatic.com/docs/cli
+
+Chromatic: Skipping update check
+Chromatic: Authenticating with Chromatic
+Chromatic:     → Connecting to https://index.chromatic.com
+Chromatic:     → No Access
+
+Chromatic: ✖ Failed to authenticate
+           
+           Error communicating with the Chromatic API. Check if your Chromatic client is up-to-date.
+           Service status updates are provided at https://status.chromatic.com
+           
+           → FORBIDDEN: No Access
+           
+           If you need help, please chat with us at https://www.chromatic.com/docs/cli for the fastest response.
+           You can also email the team at support@chromatic.com if chat is not an option.
+           
+           Please provide us with the above CLI output and the following info:
+           {
+             "timestamp": "2026-07-26T14:53:37.078Z",
+             "sessionId": "334e4c3d-6ebc-49ce-9d9e-d3ed2549d679",
+             "nodePlatform": "darwin",
+             "nodeVersion": "26.5.0",
+             "packageName": "chromatic",
+             "packageVersion": "16.10.0",
+             "flags": {
+               "interactive": false
+             },
+             "extraOptions": {
+               "projectId": "Project:693a94b56f442dc4a074aee9",
+               "autoAcceptChanges": false,
+               "exitOnceUploaded": false,
+               "exitZeroOnChanges": true,
+               "forceRebuild": true,
+               "fromCI": false,
+               "interactive": false,
+               "isLocalBuild": true,
+               "logPrefix": "\u001b[38;5;202mChromatic\u001b[0m:",
+               "skip": false,
+               "skipUpdateCheck": true,
+               "experimental_abortSignal": {}
+             },
+             "configuration": {
+               "configFile": "chromatic.config.json",
+               "projectId": "Project:693a94b56f442dc4a074aee9",
+               "onlyChanged": true,
+               "zip": true,
+               "buildScriptName": "build:storybook"
+             },
+             "isLocalBuild": true,
+             "buildScript": "storybook build",
+             "exitCode": 202,
+             "exitCodeKey": "GRAPHQL_ERROR",
+             "errorType": "GraphQLError",
+             "errorMessage": "✖ Failed to authenticate"
+           }
+           
+
+Chromatic: Chromatic CLI v16.10.0
+           https://www.chromatic.com/docs/cli
+
+Chromatic: Skipping update check
+Chromatic: Authenticating with Chromatic
+Chromatic:     → Connecting to https://index.chromatic.com
+Chromatic:     → No Access
+
+Chromatic: ✖ Failed to authenticate
+           
+           Error communicating with the Chromatic API. Check if your Chromatic client is up-to-date.
+           Service status updates are provided at https://status.chromatic.com
+           
+           → FORBIDDEN: No Access
+           
+           If you need help, please chat with us at https://www.chromatic.com/docs/cli for the fastest response.
+           You can also email the team at support@chromatic.com if chat is not an option.
+           
+           Please provide us with the above CLI output and the following info:
+           {
+             "timestamp": "2026-07-26T14:55:45.311Z",
+             "sessionId": "10287c31-33f1-4c28-84eb-a7495aa3888c",
+             "nodePlatform": "darwin",
+             "nodeVersion": "26.5.0",
+             "packageName": "chromatic",
+             "packageVersion": "16.10.0",
+             "flags": {
+               "interactive": false
+             },
+             "extraOptions": {
+               "projectId": "Project:693a94b56f442dc4a074aee9",
+               "autoAcceptChanges": false,
+               "exitOnceUploaded": false,
+               "exitZeroOnChanges": true,
+               "forceRebuild": true,
+               "fromCI": false,
+               "interactive": false,
+               "isLocalBuild": true,
+               "logPrefix": "\u001b[38;5;202mChromatic\u001b[0m:",
+               "skip": false,
+               "skipUpdateCheck": true,
+               "experimental_abortSignal": {}
+             },
+             "configuration": {
+               "configFile": "chromatic.config.json",
+               "projectId": "Project:693a94b56f442dc4a074aee9",
+               "onlyChanged": true,
+               "zip": true,
+               "buildScriptName": "build:storybook"
+             },
+             "isLocalBuild": true,
+             "buildScript": "storybook build",
+             "exitCode": 202,
+             "exitCodeKey": "GRAPHQL_ERROR",
+             "errorType": "GraphQLError",
+             "errorMessage": "✖ Failed to authenticate"
+           }
+
+---
+
+No. Going to Chromatic configure the project token is exactly 20 characters.
+
+---
+
+There isn't a project ID but the URI is https://www.chromatic.com/manage?appId=69411119226a9bd347a172cd&view=configure
+
+---
+
+*  Executing task: op run --env-file ./.env -- sh -c 'lsof -ti:6006 | xargs kill -9 2>/dev/null; npm run storybook' 
+
+
+> storybook
+> storybook dev -p 6006
+
+
+┌  storybook v10.5.3
+(node:33707) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+│
+●  Starting...
+│ ╭────────────────────────────────────────────────────────────────────────────╮
+│ │   Storybook ready!                                                         │
+│ │                                                                            │
+│ │   - Local:                http://localhost:6006/                           │
+│ │   - On your network:      http://172.16.18.120:6006/                       │
+│ │                                                                            │
+│ │                                                                            │
+│ │   A new version (10.5.4) is available!                                     │
+│ │                                                                            │
+│ │   Upgrade now: npx storybook@latest upgrade                                │
+│ │                                                                            │
+│ │   Read full changelog:                                                     │
+│ │   https://github.com/storybookjs/storybook/blob/main/CHANGELOG.md          │
+│ ╰────────────────────────────────────────────────────────────────────────────╯
+│
+●  147 ms for manager and 570 ms for preview
+
+Chromatic: Chromatic CLI v16.10.0
+           https://www.chromatic.com/docs/cli
+
+Chromatic: Skipping update check
+Chromatic: Authenticating with Chromatic
+Chromatic:     → Connecting to https://index.chromatic.com
+Chromatic:     → No Access
+
+Chromatic: ✖ Failed to authenticate
+           
+           Error communicating with the Chromatic API. Check if your Chromatic client is up-to-date.
+           Service status updates are provided at https://status.chromatic.com
+           
+           → FORBIDDEN: No Access
+           
+           If you need help, please chat with us at https://www.chromatic.com/docs/cli for the fastest response.
+           You can also email the team at support@chromatic.com if chat is not an option.
+           
+           Please provide us with the above CLI output and the following info:
+           {
+             "timestamp": "2026-07-26T19:32:15.810Z",
+             "sessionId": "56f864fa-d957-42b4-b8de-57b4b5a39b42",
+             "nodePlatform": "darwin",
+             "nodeVersion": "26.5.0",
+             "packageName": "chromatic",
+             "packageVersion": "16.10.0",
+             "flags": {
+               "interactive": false
+             },
+             "extraOptions": {
+               "projectId": "Project:69411119226a9bd347a172cd",
+               "autoAcceptChanges": false,
+               "exitOnceUploaded": false,
+               "exitZeroOnChanges": true,
+               "forceRebuild": true,
+               "fromCI": false,
+               "interactive": false,
+               "isLocalBuild": true,
+               "logPrefix": "\u001b[38;5;202mChromatic\u001b[0m:",
+               "skip": false,
+               "skipUpdateCheck": true,
+               "experimental_abortSignal": {}
+             },
+             "configuration": {
+               "configFile": "chromatic.config.json",
+               "projectId": "Project:69411119226a9bd347a172cd",
+               "onlyChanged": true,
+               "zip": true,
+               "buildScriptName": "build:storybook"
+             },
+             "isLocalBuild": true,
+             "buildScript": "storybook build",
+             "exitCode": 202,
+             "exitCodeKey": "GRAPHQL_ERROR",
+             "errorType": "GraphQLError",
+             "errorMessage": "✖ Failed to authenticate"
+           }
+
+---
+
+*  Executing task: op run --env-file ./.env -- sh -c 'lsof -ti:6006 | xargs kill -9 2>/dev/null; npm run storybook' 
+
+
+> storybook
+> storybook dev -p 6006
+
+
+┌  storybook v10.5.3
+(node:80734) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+│
+●  Starting...
+│  Vite Re-optimizing dependencies because vite config has changed
+│  Vite [optimizer] scanning dependencies...
+│ ╭────────────────────────────────────────────────────────────────────────────╮
+│ │   Storybook ready!                                                         │
+│ │                                                                            │
+│ │   - Local:                http://localhost:6006/                           │
+│ │   - On your network:      http://172.16.18.120:6006/                       │
+│ │                                                                            │
+│ │                                                                            │
+│ │   A new version (10.5.4) is available!                                     │
+│ │                                                                            │
+│ │   Upgrade now: npx storybook@latest upgrade                                │
+│ │                                                                            │
+│ │   Read full changelog:                                                     │
+│ │   https://github.com/storybookjs/storybook/blob/main/CHANGELOG.md          │
+│ ╰────────────────────────────────────────────────────────────────────────────╯
+│
+●  143 ms for manager and 534 ms for preview
+│  Vite [optimizer] bundling dependencies...
+Chromatic: Chromatic CLI v18.0.1
+           https://www.chromatic.com/docs/cli
+Chromatic: Authenticating with Chromatic
+Chromatic:     → Connecting to https://index.chromatic.com
+Chromatic: Skipping update check
+Chromatic: Authenticating with Chromatic failed
+Chromatic:     → No Access
+
+Chromatic: ✖ Failed to authenticate
+           
+           Error communicating with the Chromatic API. Check if your Chromatic client is up-to-date.
+           Service status updates are provided at https://status.chromatic.com
+           
+           → FORBIDDEN: No Access
+           
+           If you need help, please chat with us at https://www.chromatic.com/docs/cli for the fastest response.
+           You can also email the team at support@chromatic.com if chat is not an option.
+           
+           Please provide us with the above CLI output and the following info:
+           {
+             "timestamp": "2026-07-26T19:51:34.587Z",
+             "sessionId": "05aed9ae-4c73-4f39-9aeb-d4aad641f8d8",
+             "nodePlatform": "darwin",
+             "nodeVersion": "26.5.0",
+             "packageName": "chromatic",
+             "packageVersion": "18.0.1",
+             "flags": {
+               "interactive": false
+             },
+             "extraOptions": {
+               "projectId": "Project:69411119226a9bd347a172cd",
+               "autoAcceptChanges": false,
+               "exitOnceUploaded": false,
+               "exitZeroOnChanges": true,
+               "forceRebuild": true,
+               "fromCI": false,
+               "interactive": false,
+               "isLocalBuild": true,
+               "logPrefix": "\u001b[38;5;202mChromatic\u001b[0m:",
+               "skip": false,
+               "skipUpdateCheck": true,
+               "experimental_abortSignal": {}
+             },
+             "configuration": {
+               "configFile": "chromatic.config.json",
+               "projectId": "Project:69411119226a9bd347a172cd",
+               "onlyChanged": true,
+               "zip": true,
+               "buildScriptName": "build:storybook"
+             },
+             "isLocalBuild": true,
+             "buildScript": "storybook build",
+             "exitCode": 202,
+             "exitCodeKey": "GRAPHQL_ERROR",
+             "errorType": "GraphQLError",
+             "errorMessage": "✖ Failed to authenticate"
+           }
+           
+Chromatic: Unhandled promise rejection: {"sanitizedErr":{}}
+Error: Command timed out after 20000ms
+    at Timeout.<anonymous> (/Volumes/Development/next-www-toastboy/node_modules/@chromatic-com/storybook/node_modules/chromatic/dist/turbosnap-B8yyYIGt.cjs:19:427)
+    at listOnTimeout (node:internal/timers:635:17)
+    at process.processTimers (node:internal/timers:571:7)
+
+ *  The terminal process "/opt/homebrew/bin/zsh '-l', '-c', 'op run --env-file ./.env -- sh -c 'lsof -ti:6006 | xargs kill -9 2>/dev/null; npm run storybook''" terminated with exit code: 1. 
+ *  Terminal will be reused by tasks, press any key to close it.
+
+---
+
+I haven't deliberately changed anything, and in particular I wasn't expecting the project ID to have changed.
+
+---
+
+By the way it would be fine if I had to authenticate interactively each time: what seems to be happeninig is there's a stale or otherwise invalid session
+
+---
+
+Let's run their new AI agent setup prompt:
+
+Set up Storybook for me with npm create storybook@latest and follow its instructions precisely
+
+---
+
+Might be related: I'm currently running a Storybook session and it often seems to forget that I've been through all the onboarding: several tasks in the Storybook onboarding are marked as unread when I launch it, plus I'm prompted to look at what's new in Storybook 10.4 which has been installed for a long time. Is the local storage corrupted beyond just the auth?
+
+---
+
+The Browser is Edge. So we have more data: when I open http://localhost:6006/ on Edge I see 'Visual tests not run' in the bottom left, whereas inside VS Code's built-in browser (which I guess is just another instance of Edge) I see 'Visual tests login required'
+
+---
+
+No, the build failures I pasted before are from the logged in Edge! Plus, what I just tried is I authenticated in the built-in browser at chromatic.com and ran the tests, and I see exactly the same 'build error' there too
+
+---
+
+this shows the config
+
+---
+
+*  Executing task: op run --env-file ./.env -- sh -c 'lsof -ti:6006 | xargs kill -9 2>/dev/null; npm run storybook' 
+
+
+> storybook
+> storybook dev -p 6006
+
+
+┌  storybook v10.5.3
+(node:80699) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+│
+●  Starting...
+│ ╭────────────────────────────────────────────────────────────────────────────╮
+│ │   Storybook ready!                                                         │
+│ │                                                                            │
+│ │   - Local:                http://localhost:6006/                           │
+│ │   - On your network:      http://172.16.18.120:6006/                       │
+│ │                                                                            │
+│ │                                                                            │
+│ │   A new version (10.5.4) is available!                                     │
+│ │                                                                            │
+│ │   Upgrade now: npx storybook@latest upgrade                                │
+│ │                                                                            │
+│ │   Read full changelog:                                                     │
+│ │   https://github.com/storybookjs/storybook/blob/main/CHANGELOG.md          │
+│ ╰────────────────────────────────────────────────────────────────────────────╯
+│
+●  134 ms for manager and 549 ms for preview
+
+Chromatic: Chromatic CLI v16.10.0
+           https://www.chromatic.com/docs/cli
+
+Chromatic: Skipping update check
+Chromatic: Authenticating with Chromatic
+Chromatic:     → Connecting to https://index.chromatic.com
+Chromatic:     → No Access
+
+Chromatic: ✖ Failed to authenticate
+           
+           Error communicating with the Chromatic API. Check if your Chromatic client is up-to-date.
+           Service status updates are provided at https://status.chromatic.com
+           
+           → FORBIDDEN: No Access
+           
+           If you need help, please chat with us at https://www.chromatic.com/docs/cli for the fastest response.
+           You can also email the team at support@chromatic.com if chat is not an option.
+           
+           Please provide us with the above CLI output and the following info:
+           {
+             "timestamp": "2026-07-27T07:01:37.268Z",
+             "sessionId": "57721363-a894-42a2-a210-412435569f8f",
+             "nodePlatform": "darwin",
+             "nodeVersion": "26.5.0",
+             "packageName": "chromatic",
+             "packageVersion": "16.10.0",
+             "flags": {
+               "interactive": false
+             },
+             "extraOptions": {
+               "projectId": "Project:69411119226a9bd347a172cd",
+               "autoAcceptChanges": false,
+               "exitOnceUploaded": false,
+               "exitZeroOnChanges": true,
+               "forceRebuild": true,
+               "fromCI": false,
+               "interactive": false,
+               "isLocalBuild": true,
+               "logPrefix": "\u001b[38;5;202mChromatic\u001b[0m:",
+               "skip": false,
+               "skipUpdateCheck": true,
+               "experimental_abortSignal": {}
+             },
+             "configuration": {
+               "configFile": "chromatic.config.json",
+               "projectId": "Project:69411119226a9bd347a172cd",
+               "onlyChanged": true,
+               "zip": true,
+               "buildScriptName": "build:storybook"
+             },
+             "isLocalBuild": true,
+             "buildScript": "storybook build",
+             "exitCode": 202,
+             "exitCodeKey": "GRAPHQL_ERROR",
+             "errorType": "GraphQLError",
+             "errorMessage": "✖ Failed to authenticate"
+           }
+
+---
+
+*  Executing task: op run --env-file ./.env -- sh -c 'lsof -ti:6006 | xargs kill -9 2>/dev/null; npm run storybook' 
+
+
+> storybook
+> storybook dev -p 6006
+
+
+┌  storybook v10.5.3
+(node:14891) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+│
+●  Starting...
+│  Vite Re-optimizing dependencies because lockfile has changed
+│  Vite [optimizer] scanning dependencies...
+│ ╭────────────────────────────────────────────────────────────────────────────╮
+│ │   Storybook ready!                                                         │
+│ │                                                                            │
+│ │   - Local:                http://localhost:6006/                           │
+│ │   - On your network:      http://172.16.18.120:6006/                       │
+│ │                                                                            │
+│ │                                                                            │
+│ │   A new version (10.5.4) is available!                                     │
+│ │                                                                            │
+│ │   Upgrade now: npx storybook@latest upgrade                                │
+│ │                                                                            │
+│ │   Read full changelog:                                                     │
+│ │   https://github.com/storybookjs/storybook/blob/main/CHANGELOG.md          │
+│ ╰────────────────────────────────────────────────────────────────────────────╯
+│
+●  207 ms for manager and 1 s for preview
+│  Vite [optimizer] bundling dependencies...
+Chromatic: Chromatic CLI v18.1.0
+           https://www.chromatic.com/docs/cli
+Chromatic: Authenticating with Chromatic
+Chromatic:     → Connecting to https://index.chromatic.com
+Chromatic: Skipping update check
+Chromatic: Authenticating with Chromatic failed
+Chromatic:     → No Access
+Chromatic: ✖ Failed to authenticate
+           
+           Error communicating with the Chromatic API. Check if your Chromatic client is up-to-date.
+           Service status updates are provided at https://status.chromatic.com
+           
+           → FORBIDDEN: No Access
+           
+           If you need help, please chat with us at https://www.chromatic.com/docs/cli for the fastest response.
+           You can also email the team at support@chromatic.com if chat is not an option.
+           
+           Please provide us with the above CLI output and the following info:
+           {
+             "timestamp": "2026-07-27T07:04:04.032Z",
+             "sessionId": "e54aaa17-c968-449a-9cd1-07228666821b",
+             "nodePlatform": "darwin",
+             "nodeVersion": "26.5.0",
+             "packageName": "chromatic",
+             "packageVersion": "18.1.0",
+             "flags": {
+               "interactive": false
+             },
+             "extraOptions": {
+               "projectId": "Project:69411119226a9bd347a172cd",
+               "autoAcceptChanges": false,
+               "exitOnceUploaded": false,
+               "exitZeroOnChanges": true,
+               "forceRebuild": true,
+               "fromCI": false,
+               "interactive": false,
+               "isLocalBuild": true,
+               "logPrefix": "\u001b[38;5;202mChromatic\u001b[0m:",
+               "skip": false,
+               "skipUpdateCheck": true,
+               "experimental_abortSignal": {}
+             },
+             "configuration": {
+               "configFile": "chromatic.config.json",
+               "projectId": "Project:69411119226a9bd347a172cd",
+               "onlyChanged": true,
+               "zip": true,
+               "buildScriptName": "build:storybook"
+             },
+             "isLocalBuild": true,
+             "buildScript": "storybook build",
+             "exitCode": 202,
+             "exitCodeKey": "GRAPHQL_ERROR",
+             "errorType": "GraphQLError",
+             "errorMessage": "✖ Failed to authenticate"
+           }
+
+---
+
+*  Executing task: op run --env-file ./.env -- sh -c 'lsof -ti:6006 | xargs kill -9 2>/dev/null; npm run storybook' 
+
+
+> storybook
+> storybook dev -p 6006
+
+
+┌  storybook v10.5.3
+(node:14891) [DEP0205] DeprecationWarning: `module.register()` is deprecated. Use `module.registerHooks()` instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+│
+●  Starting...
+│  Vite Re-optimizing dependencies because lockfile has changed
+│  Vite [optimizer] scanning dependencies...
+│ ╭────────────────────────────────────────────────────────────────────────────╮
+│ │   Storybook ready!                                                         │
+│ │                                                                            │
+│ │   - Local:                http://localhost:6006/                           │
+│ │   - On your network:      http://172.16.18.120:6006/                       │
+│ │                                                                            │
+│ │                                                                            │
+│ │   A new version (10.5.4) is available!                                     │
+│ │                                                                            │
+│ │   Upgrade now: npx storybook@latest upgrade                                │
+│ │                                                                            │
+│ │   Read full changelog:                                                     │
+│ │   https://github.com/storybookjs/storybook/blob/main/CHANGELOG.md          │
+│ ╰────────────────────────────────────────────────────────────────────────────╯
+│
+●  207 ms for manager and 1 s for preview
+│  Vite [optimizer] bundling dependencies...
+Chromatic: Chromatic CLI v18.1.0
+           https://www.chromatic.com/docs/cli
+Chromatic: Authenticating with Chromatic
+Chromatic:     → Connecting to https://index.chromatic.com
+Chromatic: Skipping update check
+Chromatic: Authenticating with Chromatic failed
+Chromatic:     → No Access
+Chromatic: ✖ Failed to authenticate
+           
+           Error communicating with the Chromatic API. Check if your Chromatic client is up-to-date.
+           Service status updates are provided at https://status.chromatic.com
+           
+           → FORBIDDEN: No Access
+           
+           If you need help, please chat with us at https://www.chromatic.com/docs/cli for the fastest response.
+           You can also email the team at support@chromatic.com if chat is not an option.
+           
+           Please provide us with the above CLI output and the following info:
+           {
+             "timestamp": "2026-07-27T07:04:04.032Z",
+             "sessionId": "e54aaa17-c968-449a-9cd1-07228666821b",
+             "nodePlatform": "darwin",
+             "nodeVersion": "26.5.0",
+             "packageName": "chromatic",
+             "packageVersion": "18.1.0",
+             "flags": {
+               "interactive": false
+             },
+             "extraOptions": {
+               "projectId": "Project:69411119226a9bd347a172cd",
+               "autoAcceptChanges": false,
+               "exitOnceUploaded": false,
+               "exitZeroOnChanges": true,
+               "forceRebuild": true,
+               "fromCI": false,
+               "interactive": false,
+               "isLocalBuild": true,
+               "logPrefix": "\u001b[38;5;202mChromatic\u001b[0m:",
+               "skip": false,
+               "skipUpdateCheck": true,
+               "experimental_abortSignal": {}
+             },
+             "configuration": {
+               "configFile": "chromatic.config.json",
+               "projectId": "Project:69411119226a9bd347a172cd",
+               "onlyChanged": true,
+               "zip": true,
+               "buildScriptName": "build:storybook"
+             },
+             "isLocalBuild": true,
+             "buildScript": "storybook build",
+             "exitCode": 202,
+             "exitCodeKey": "GRAPHQL_ERROR",
+             "errorType": "GraphQLError",
+             "errorMessage": "✖ Failed to authenticate"
+           }
+           
+
+Chromatic: Unhandled promise rejection: {"sanitizedErr":{"shortMessage":"Command failed with exit code 128: git hash-object --stdin-paths","command":"git hash-object --stdin-paths","escapedCommand":"git hash-object --stdin-paths","cwd":"/Volumes/Development/next-www-toastboy","durationMs":5889.081083,"failed":true,"timedOut":false,"isCanceled":false,"isGracefullyCanceled":false,"isTerminated":false,"isMaxBuffer":false,"isForcefullyTerminated":false,"exitCode":128,"stdout":"cafec02c656bd5bcd7269af8080b5699fcfdc11f\nb180baddfd0ebf6c7e373a34e8899c0a58cc0731\n2d034026fbf2822b811eea444ac776a1e454d7d8","stderr":"fatal: could not open 'chromatic.log' for reading: No such file or directory","all":"cafec02c656bd5bcd7269af8080b5699fcfdc11f\nb180baddfd0ebf6c7e373a34e8899c0a58cc0731\n2d034026fbf2822b811eea444ac776a1e454d7d8\nfatal: could not open 'chromatic.log' for reading: No such file or directory","stdio":[null,"cafec02c656bd5bcd7269af8080b5699fcfdc11f\nb180baddfd0ebf6c7e373a34e8899c0a58cc0731\n2d034026fbf2822b811eea444ac776a1e454d7d8","fatal: could not open 'chromatic.log' for reading: No such file or directory"],"ipcOutput":[],"pipedFrom":[]}}
+gn: Command failed with exit code 128: git hash-object --stdin-paths
+
+cafec02c656bd5bcd7269af8080b5699fcfdc11f
+b180baddfd0ebf6c7e373a34e8899c0a58cc0731
+2d034026fbf2822b811eea444ac776a1e454d7d8
+fatal: could not open 'chromatic.log' for reading: No such file or directory
+    at dn (/Volumes/Development/next-www-toastboy/node_modules/chromatic/dist/execa-B9cO2acC.cjs:11:1972)
+    at Za (/Volumes/Development/next-www-toastboy/node_modules/chromatic/dist/execa-B9cO2acC.cjs:30:1339)
+    at uf (/Volumes/Development/next-www-toastboy/node_modules/chromatic/dist/execa-B9cO2acC.cjs:37:33527)
+    at lf (/Volumes/Development/next-www-toastboy/node_modules/chromatic/dist/execa-B9cO2acC.cjs:37:33229)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async execGitCommand (/Volumes/Development/next-www-toastboy/node_modules/chromatic/dist/v1-DhgUVRSf.cjs:39:235)
+    at async Object.getUncommittedHash (/Volumes/Development/next-www-toastboy/node_modules/chromatic/dist/v1-DhgUVRSf.cjs:41:82)
+    at async Module.aN [as getGitInfo] (/Volumes/Development/next-www-toastboy/node_modules/chromatic/dist/node-src-GKNCmmlA.cjs:1676:5667)
+    at async ge (/Volumes/Development/next-www-toastboy/node_modules/@chromatic-com/storybook/dist/preset.js:14:9264)
+    at async /Volumes/Development/next-www-toastboy/node_modules/@chromatic-com/storybook/dist/preset.js:18:1249
+    at async FSWatcher.<anonymous> (/Volumes/Development/next-www-toastboy/node_modules/@chromatic-com/storybook/dist/preset.js:15:200)
+
+ *  The terminal process "/opt/homebrew/bin/zsh '-l', '-c', 'op run --env-file ./.env -- sh -c 'lsof -ti:6006 | xargs kill -9 2>/dev/null; npm run storybook''" terminated with exit code: 1. 
+ *  Terminal will be reused by tasks, press any key to close it.
+
+---
+
+I tried it in a guest window in Edge and it worked perfectly
+
+---
+
+Also worked in InPrivate
+
+---
+
+Weird. In a regular tab having deleted all the chromatic.com cookies etc. AND unchecking 'Allow extensions on localhost:6006' it still fails in the same way
+
+---
+
+All extensions turned off - still fails
+
+Chromatic: Authenticating with Chromatic
+Chromatic:     → Connecting to https://index.chromatic.com
+Chromatic: Skipping update check
+Chromatic: Authenticating with Chromatic failed
+Chromatic:     → No Access
+
+Chromatic: ✖ Failed to authenticate
+           
+           Error communicating with the Chromatic API. Check if your Chromatic client is up-to-date.
+           Service status updates are provided at https://status.chromatic.com
+           
+           → FORBIDDEN: No Access
+           
+           If you need help, please chat with us at https://www.chromatic.com/docs/cli for the fastest response.
+           You can also email the team at support@chromatic.com if chat is not an option.
+           
+           Please provide us with the above CLI output and the following info:
+           {
+             "timestamp": "2026-07-27T11:57:44.807Z",
+             "sessionId": "7a807681-1c27-4f4b-9933-5a887bcefc15",
+             "nodePlatform": "darwin",
+             "nodeVersion": "26.5.0",
+             "packageName": "chromatic",
+             "packageVersion": "18.1.0",
+             "flags": {
+               "interactive": false
+             },
+             "extraOptions": {
+               "projectId": "Project:693a94b56f442dc4a074aee9",
+               "autoAcceptChanges": false,
+               "exitOnceUploaded": false,
+               "exitZeroOnChanges": true,
+               "forceRebuild": true,
+               "fromCI": false,
+               "interactive": false,
+               "isLocalBuild": true,
+               "logPrefix": "\u001b[38;5;202mChromatic\u001b[0m:",
+               "skip": false,
+               "skipUpdateCheck": true,
+               "experimental_abortSignal": {}
+             },
+             "configuration": {
+               "configFile": "chromatic.config.json",
+               "projectId": "Project:693a94b56f442dc4a074aee9",
+               "onlyChanged": true,
+               "zip": true,
+               "buildScriptName": "build:storybook"
+             },
+             "isLocalBuild": true,
+             "buildScript": "storybook build",
+             "exitCode": 202,
+             "exitCodeKey": "GRAPHQL_ERROR",
+             "errorType": "GraphQLError",
+             "errorMessage": "✖ Failed to authenticate"
+           }
+
+---
+
+The project ID is not the problem given that this exact config works in an InPrivate window
+
+---
+
+The project ID is not the problem given that this exact config works in an InPrivate window
+
+---
+
+That fixed it! Something was wrong in what was stored there under localhost:6006 (there was nothing for any other URI)
+
+---
+
+Add a markdown note somewhere appropriate documenting this gotcha

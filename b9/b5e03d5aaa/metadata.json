@@ -3,8 +3,9 @@
   "checkpoint_id": "b9b5e03d5aaa",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 5,
+  "checkpoints_count": 23,
   "files_touched": [
+    "docs/STORYBOOK_TROUBLESHOOTING.md",
     "src/app/footy/admin/page.vitest.spec.ts",
     "src/app/footy/auth/claim/[token]/page.vitest.spec.tsx",
     "src/components/CustomAppShell/CustomAppShell.tsx",
@@ -33,13 +34,20 @@
       "compact_transcript": "/b9/b5e03d5aaa/2/transcript.jsonl",
       "content_hash": "/b9/b5e03d5aaa/2/content_hash.txt",
       "prompt": "/b9/b5e03d5aaa/2/prompt.txt"
+    },
+    {
+      "metadata": "/b9/b5e03d5aaa/3/metadata.json",
+      "transcript": "/b9/b5e03d5aaa/3/full.jsonl",
+      "compact_transcript": "/b9/b5e03d5aaa/3/transcript.jsonl",
+      "content_hash": "/b9/b5e03d5aaa/3/content_hash.txt",
+      "prompt": "/b9/b5e03d5aaa/3/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 166,
-    "cache_creation_tokens": 115422,
-    "cache_read_tokens": 4248817,
-    "output_tokens": 24585,
-    "api_call_count": 85
+    "input_tokens": 316,
+    "cache_creation_tokens": 588044,
+    "cache_read_tokens": 10061246,
+    "output_tokens": 99445,
+    "api_call_count": 161
   }
 }

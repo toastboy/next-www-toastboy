@@ -1,0 +1,5 @@
+The AdminUpdatePlayer and AdminExportAuth components are now missing test coverage
+
+---
+
+AdminExportAuth id still < 100%

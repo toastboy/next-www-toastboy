@@ -23,7 +23,6 @@ export const AdminExportAuth = ({ onExportAuth }: Props) => {
                 loading={exporting}
                 disabled={exporting}
                 onClick={async () => {
-                    if (exporting) return;
                     setExporting(true);
 
                     const id = notifications.show({

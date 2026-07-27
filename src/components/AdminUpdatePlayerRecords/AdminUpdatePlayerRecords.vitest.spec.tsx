@@ -50,6 +50,16 @@ describe('AdminUpdatePlayerRecords', () => {
         expect(screen.getByText('40%')).toBeInTheDocument();
     });
 
+    it('renders as complete when the total is zero', async () => {
+        const getProgress: GetProgressProxy = vi.fn().mockResolvedValue([0, 0]);
+
+        render(<Wrapper><AdminUpdatePlayerRecords onUpdatePlayerRecords={mockUpdatePlayerRecords} getProgress={getProgress} /></Wrapper>);
+
+        await act(async () => { await Promise.resolve(); });
+
+        expect(screen.getByRole('button', { name: 'Progress complete' })).toBeInTheDocument();
+    });
+
     it('captures unexpected error when getProgress rejects', async () => {
         const error = new Error('Poll failed');
         const getProgress: GetProgressProxy = vi.fn().mockRejectedValue(error);

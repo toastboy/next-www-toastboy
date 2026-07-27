@@ -88,6 +88,30 @@ describe('AdminExportAuth', () => {
         expect(mockExportAuth).toHaveBeenCalledTimes(1);
     });
 
+    it('ignores a second click while an export is already in progress', async () => {
+        vi.mocked(notifications.show).mockReturnValue('notification-id-2');
+        mockExportAuth.mockImplementation(
+            () =>
+                new Promise(() => {
+                    // Never resolves
+                }),
+        );
+
+        render(
+            <Wrapper>
+                <AdminExportAuth onExportAuth={mockExportAuth} />
+            </Wrapper>,
+        );
+
+        const button = screen.getByRole('button', { name: /export auth data/i });
+        fireEvent.click(button);
+        fireEvent.click(button);
+
+        await waitFor(() => {
+            expect(mockExportAuth).toHaveBeenCalledTimes(1);
+        });
+    });
+
     it('shows error notification when export fails', async () => {
         const notificationId = 'notification-id-error';
         const errorMessage = 'Database connection failed';

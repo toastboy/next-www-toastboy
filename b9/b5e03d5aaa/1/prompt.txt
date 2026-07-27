@@ -1,0 +1,1 @@
+I've switched back to Container in the app shell, so remove all uses and references to appShellMaxWidth and appShellMinWidth

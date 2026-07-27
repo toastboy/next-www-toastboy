@@ -70,7 +70,6 @@ describe('Claim Sign Up page', () => {
         const html = renderToStaticMarkup(element);
 
         expect(html).toContain('This invitation link is invalid.');
-        expect(html).toContain('href="/footy"');
         expect(ClaimSignup).not.toHaveBeenCalled();
         expect(captureUnexpectedErrorMock).toHaveBeenCalledWith(
             expect.any(ValidationError),

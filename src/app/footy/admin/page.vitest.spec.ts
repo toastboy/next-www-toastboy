@@ -15,6 +15,8 @@ vi.mock('@/actions/updatePlayerRecords', () => ({
 vi.mock('@mantine/core', () => ({
     Center: ({ children }: { children?: unknown }) => children,
     Container: ({ children }: { children?: unknown }) => children,
+    Flex: ({ children }: { children?: unknown }) => children,
+    Paper: ({ children }: { children?: unknown }) => children,
     Stack: ({ children }: { children?: unknown }) => children,
     Title: ({ children }: { children?: unknown }) => children,
 }));

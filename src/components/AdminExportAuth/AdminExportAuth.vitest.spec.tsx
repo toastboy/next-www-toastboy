@@ -109,7 +109,7 @@ describe('AdminExportAuth', () => {
                     id: notificationId,
                     color: 'red',
                     title: 'Error',
-                    message: `Failed to export auth data: Error: ${errorMessage}`,
+                    message: `Failed to export auth data.`,
                     loading: false,
                 }),
             );

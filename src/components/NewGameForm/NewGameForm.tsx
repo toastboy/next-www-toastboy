@@ -13,6 +13,10 @@ import { captureUnexpectedError } from '@/lib/observability/sentry';
 import type { TriggerInvitationsProxy } from '@/types/actions/TriggerInvitations';
 import { NewGameInput, NewGameInputSchema } from '@/types/actions/TriggerInvitations';
 
+// Breakpoint at which the submit button switches from a full-width mobile
+// touch target to an inline fit-content button.
+const actionsBreakpoint = 'sm';
+
 interface Props {
     onTriggerInvitations: TriggerInvitationsProxy;
 }
@@ -90,7 +94,11 @@ export const NewGameForm = ({ onTriggerInvitations }: Props) => {
                     minRows={6}
                     {...form.getInputProps('customMessage')}
                 />
-                <Button type="submit" w="fit-content" loading={!mounted}>
+                <Button
+                    type="submit"
+                    w={{ base: '100%', [actionsBreakpoint]: 'fit-content' }}
+                    loading={!mounted}
+                >
                     Send invitations
                 </Button>
             </Stack>

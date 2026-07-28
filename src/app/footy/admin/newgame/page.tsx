@@ -1,4 +1,4 @@
-import { Container, Title } from '@mantine/core';
+import { Container, Paper, Title } from '@mantine/core';
 
 import { triggerInvitations } from '@/actions/triggerInvitations';
 import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
@@ -11,10 +11,12 @@ const NewGamePage = () => {
     return (
         <Container size="sm">
             <AutoRefresh channels={FootyChannel.Invitations} />
-            <Title order={2} mb="md">
-                New game
-            </Title>
-            <NewGameForm onTriggerInvitations={triggerInvitations} />
+            <Paper p="xl">
+                <Title order={2} mb="md">
+                    New game
+                </Title>
+                <NewGameForm onTriggerInvitations={triggerInvitations} />
+            </Paper>
         </Container>
     );
 };

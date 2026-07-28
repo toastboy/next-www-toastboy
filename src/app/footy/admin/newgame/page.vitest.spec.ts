@@ -3,6 +3,7 @@ import { vi } from 'vitest';
 
 vi.mock('@mantine/core', () => ({
     Container: ({ children }: { children?: unknown }) => children,
+    Paper: ({ children }: { children?: unknown }) => children,
     Title: ({ children }: { children?: unknown }) => children,
 }));
 

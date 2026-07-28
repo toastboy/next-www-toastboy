@@ -1,0 +1,17 @@
+When a viewport gets too narrow for a table wrapped in Table.ScrollContainer such as the current AdminUserList, the content starts to disappear without a scroll indicator appearing, seemingly consistent with 'type="hover"'. I'd like to change that to "auto" - how can I do that?
+
+---
+
+⚠ Error (TS2322) | | | 
+
+
+Type 
+ "auto" 
+ is not assignable to type 
+ "native" | "scrollarea" | undefined 
+ .
+The type of SCrollCOntainer is something different - it's not the same as ScrollArea. That's why I asked the question
+
+---
+
+Is scrollareaprops documented?

@@ -1,0 +1,1 @@
+I want to write a new skill that's tailored to this repo which makes sure that uncommitted changes are matched by the appropriate additions or modifications to mocks, unit tests, Storybook tests and Playwright test according to what has been updated in the code. The 'done' criterion is that all tests pass with 100% coverage in the case of unit tests.

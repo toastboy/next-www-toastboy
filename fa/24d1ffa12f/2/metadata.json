@@ -1,0 +1,82 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "fa24d1ffa12f",
+  "session_id": "f263ef42-e649-4551-b37d-a59635130815",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-28T10:59:59.967001Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "save_step_count": 1,
+  "files_touched": [
+    "src/components/AdminUserList/AdminUserList.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "3e678fdc18a1",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 44,
+    "cache_creation_tokens": 47454,
+    "cache_read_tokens": 1208463,
+    "output_tokens": 8689,
+    "api_call_count": 22
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "prompt-skill-claude-code-test-sync-2026-07-28T07:33:09.40934Z",
+      "event_type": "prompt_invocation",
+      "skill": {
+        "name": "test-sync"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "prompt_slash_command",
+        "confidence": "explicit"
+      },
+      "turn_id": "3e678fdc18a1",
+      "timestamp": "2026-07-28T07:33:09.40934Z",
+      "native": {
+        "command": "/test-sync"
+      },
+      "collapse": {
+        "target": "user_message",
+        "label": "/test-sync",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 1
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-07-28T10:59:59.951378Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 5,
+    "human_removed": 63,
+    "total_committed": 0,
+    "total_lines_changed": 71,
+    "agent_percentage": 0,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 214,
+      "user_lines_removed": 68,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/commands/test-sync.md": 76,
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 47,
+        "src/components/AdminUserList/AdminUserList.tsx": 90
+      },
+      "user_removed_per_file": {
+        "src/components/AdminUserList/AdminUserList.tsx": 68
+      }
+    }
+  ]
+}

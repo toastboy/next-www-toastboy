@@ -1,0 +1,17 @@
+What would be the best way to allow Claude to know which Jira tickets I have in progress
+
+---
+
+The project key is 'SYS'
+
+---
+
+What ticket is in progress right now?
+
+---
+
+Try again
+
+---
+
+Check my edits against the Story description: am I missing anything?

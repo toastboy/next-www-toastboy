@@ -3,10 +3,13 @@
 import {
     Button,
     Checkbox,
+    Container,
     Divider,
     Group,
+    Paper,
     Stack,
     Table,
+    TableScrollContainer,
     TableTbody,
     TableTd,
     TableTh,
@@ -28,6 +31,10 @@ import { formatDate } from '@/lib/dates';
 import type { SetGameEnabledProxy } from '@/types/actions/SetGameEnabled';
 import type { SubmitPickerProxy } from '@/types/actions/SubmitPicker';
 import type { PickerPlayerType } from '@/types/PickerPlayerType';
+
+// Breakpoint at which the cancel/reinstate controls switch from a stacked
+// mobile layout to a single-line row; kept as one constant so every field agrees.
+const actionsBreakpoint = 'sm';
 
 interface PickerFormProps {
     gameDay: GameDayType;
@@ -265,42 +272,44 @@ export const PickerForm = ({
                     onClick={handleSubmit}
                     disabled={!hasSelection || isSettingEnabled}
                     loading={isSubmitting}
-                    w={150}
+                    w={{ base: '100%', [actionsBreakpoint]: 150 }}
                 >
                     Pick sides
                 </Button>
             </Group>
-            <Table
-                striped
-                highlightOnHover
-                withTableBorder
-                withColumnBorders
-                w="100%"
-                style={{ tableLayout: 'fixed' }}
-            >
-                <TableThead>
-                    <TableTr>
-                        <TableTh w="2.5rem">
-                            <Checkbox
-                                checked={allSelected}
-                                indeterminate={someSelected}
-                                onChange={(event) => toggleSelectAll(event.currentTarget.checked)}
-                                aria-label="Select all players"
-                            />
-                        </TableTh>
-                        <TableTh aria-sort={sortKey === 'name' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
-                            {renderSortHeader('Player', 'name')}
-                        </TableTh>
-                        <TableTh aria-sort={sortKey === 'responseTime' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
-                            {renderSortHeader('Response time', 'responseTime')}
-                        </TableTh>
-                        <TableTh aria-sort={sortKey === 'gamesPlayed' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
-                            {renderSortHeader('Total games played', 'gamesPlayed')}
-                        </TableTh>
-                    </TableTr>
-                </TableThead>
-                <TableTbody>{rows}</TableTbody>
-            </Table>
+            <TableScrollContainer minWidth={480} scrollAreaProps={{ type: 'auto' }}>
+                <Table
+                    striped
+                    highlightOnHover
+                    withTableBorder
+                    withColumnBorders
+                    w="100%"
+                    layout="fixed"
+                >
+                    <TableThead>
+                        <TableTr>
+                            <TableTh w="2.5rem">
+                                <Checkbox
+                                    checked={allSelected}
+                                    indeterminate={someSelected}
+                                    onChange={(event) => toggleSelectAll(event.currentTarget.checked)}
+                                    aria-label="Select all players"
+                                />
+                            </TableTh>
+                            <TableTh aria-sort={sortKey === 'name' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                                {renderSortHeader('Player', 'name')}
+                            </TableTh>
+                            <TableTh aria-sort={sortKey === 'responseTime' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                                {renderSortHeader('Response time', 'responseTime')}
+                            </TableTh>
+                            <TableTh aria-sort={sortKey === 'gamesPlayed' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                                {renderSortHeader('Total games played', 'gamesPlayed')}
+                            </TableTh>
+                        </TableTr>
+                    </TableThead>
+                    <TableTbody>{rows}</TableTbody>
+                </Table>
+            </TableScrollContainer>
             <Divider
                 label="or"
                 labelPosition="center"
@@ -310,33 +319,41 @@ export const PickerForm = ({
 
     // TODO: New game date component?
     return (
-        <Stack gap="md">
-            <Stack align="left" gap="xs">
-                <Title order={2}>Picker</Title>
-                <Text c="dimmed">Game {gameDay.id}: {formatDate(gameDay.date)}</Text>
-            </Stack>
-            {gameDay.game ? picker : null}
-            <Group justify="space-between" align="center" wrap="wrap">
-                <TextInput
-                    aria-label={gameDay.game ? "Cancellation reason" : "Reinstatement reason"}
-                    placeholder={gameDay.game ? "not enough players" : ""}
-                    value={reason}
-                    onChange={(event) => setReason(event.currentTarget.value)}
-                    disabled={isSubmitting || isSettingEnabled}
-                    flex={1}
-                />
-                <Button
-                    type="button"
-                    color={gameDay.game ? "red" : "green"}
-                    onClick={handleSetGameEnabled}
-                    loading={isSettingEnabled}
-                    disabled={isSubmitting || isSettingEnabled}
-                    w={150}
-                >
-                    {gameDay.game ? 'Cancel game' : 'Reinstate game'}
-                </Button>
-            </Group>
-        </Stack>
+        <Container fluid>
+            <Paper w="100%" p="xl">
+                <Stack gap="md">
+                    <Stack align="flex-start" gap="xs">
+                        <Title order={2}>Picker</Title>
+                        <Text c="dimmed">Game {gameDay.id}: {formatDate(gameDay.date)}</Text>
+                    </Stack>
+                    {gameDay.game ? picker : null}
+                    <Group
+                        justify="space-between"
+                        align="center"
+                        wrap="wrap"
+                    >
+                        <TextInput
+                            aria-label={gameDay.game ? "Cancellation reason" : "Reinstatement reason"}
+                            placeholder={gameDay.game ? "not enough players" : ""}
+                            value={reason}
+                            onChange={(event) => setReason(event.currentTarget.value)}
+                            disabled={isSubmitting || isSettingEnabled}
+                            flex={1}
+                        />
+                        <Button
+                            type="button"
+                            color={gameDay.game ? "red" : "green"}
+                            onClick={handleSetGameEnabled}
+                            loading={isSettingEnabled}
+                            disabled={isSubmitting || isSettingEnabled}
+                            w={{ base: '100%', [actionsBreakpoint]: 150 }}
+                        >
+                            {gameDay.game ? 'Cancel game' : 'Reinstate game'}
+                        </Button>
+                    </Group>
+                </Stack>
+            </Paper>
+        </Container>
     );
 };
 

@@ -3,7 +3,7 @@ import { Skeleton, Stack, Table, TableTbody, TableTd, TableTh, TableThead, Table
 /** Skeleton placeholder matching the PickerForm component layout (title + date + picker table + buttons). */
 export const PickerFormSkeleton = () => (
     <Stack gap="md">
-        <Stack align="left" gap="xs">
+        <Stack align="flex-start" gap="xs">
             <Skeleton height={28} width={120} />
             <Skeleton height={18} width={200} />
         </Stack>

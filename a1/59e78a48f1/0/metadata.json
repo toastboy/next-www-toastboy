@@ -1,0 +1,128 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "a159e78a48f1",
+  "session_id": "96cd0b92-d427-47ac-bfe1-51a2b7e00d49",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-28T18:11:05.194342Z",
+  "branch": "main",
+  "checkpoints_count": 5,
+  "save_step_count": 5,
+  "files_touched": [
+    "src/components/AdminPlayerList/AdminPlayerList.tsx",
+    "src/components/AdminPlayerList/AdminPlayerList.vitest.spec.tsx",
+    "src/components/AdminUserList/AdminUserList.tsx",
+    "src/lib/adminPlayer.ts"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "ca76d70a0083",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 159,
+    "cache_creation_tokens": 118474,
+    "cache_read_tokens": 7238705,
+    "output_tokens": 28898,
+    "api_call_count": 80
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "prompt-skill-claude-code-test-sync-2026-07-28T17:23:58.541633Z",
+      "event_type": "prompt_invocation",
+      "skill": {
+        "name": "test-sync"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "prompt_slash_command",
+        "confidence": "explicit"
+      },
+      "turn_id": "5bda6a3c4fdf",
+      "timestamp": "2026-07-28T17:23:58.541633Z",
+      "native": {
+        "command": "/test-sync"
+      },
+      "collapse": {
+        "target": "user_message",
+        "label": "/test-sync",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 5
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-07-28T18:11:05.138875Z",
+    "agent_lines": 0,
+    "agent_removed": 302,
+    "human_added": 0,
+    "human_modified": 1,
+    "human_removed": 73,
+    "total_committed": 11,
+    "total_lines_changed": 376,
+    "agent_percentage": 80.31914893617021,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 107,
+      "user_lines_removed": 73,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 49,
+        "src/components/AdminPlayerList/AdminPlayerList.tsx": 57
+      },
+      "user_removed_per_file": {
+        "src/components/AdminPlayerList/AdminPlayerList.tsx": 73
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 50,
+      "user_lines_removed": 0,
+      "agent_lines_added": 64,
+      "agent_lines_removed": 77,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 49
+      }
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 50,
+      "user_lines_removed": 0,
+      "agent_lines_added": 61,
+      "agent_lines_removed": 86,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 49
+      }
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 50,
+      "user_lines_removed": 0,
+      "agent_lines_added": 66,
+      "agent_lines_removed": 87,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 49
+      }
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 50,
+      "user_lines_removed": 0,
+      "agent_lines_added": 67,
+      "agent_lines_removed": 368,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 49
+      }
+    }
+  ]
+}

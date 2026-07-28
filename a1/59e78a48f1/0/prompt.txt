@@ -1,0 +1,26 @@
+<ide_selection>The user selected the lines 114 to 114 from /Volumes/Development/next-www-toastboy/src/components/AdminUserList/AdminUserList.tsx:
+renderSortHeader
+
+This may or may not be related to the current task.</ide_selection>
+Apply the same aria and renderSortHeader logic that's in adminplayerlist to adminuserlist.
+
+---
+
+I got that the wrong way round! Revert adminuserlist and use that as the model for adminplayerlist
+
+---
+
+<ide_selection>The user selected the lines 186 to 186 from /Volumes/Development/next-www-toastboy/src/components/AdminPlayerList/AdminPlayerList.tsx:
+</UnstyledButton>
+
+This may or may not be related to the current task.</ide_selection>
+The sort direction icons appear to be decorative; ensure they don't get announced by assistive tech. Consider adding aria-hidden (and focusable={false} if needed) to the icon components so screen readers only rely on aria-sort/button labels.
+
+---
+
+/test-sync
+
+---
+
+<ide_opened_file>The user opened the file /Volumes/Development/next-www-toastboy/src/components/AdminPlayerList/AdminPlayerList.tsx in the IDE. This may or may not be related to the current task.</ide_opened_file>
+The 'Emails Verified' column/filter was removed; make sure the sort model was updated accordingly (e.g., SortKey union, default sortKey, and the comparator/switch that handles 'extraEmails'). Otherwise you can end up with dead branches or a persisted sortKey pointing at a non-existent column.

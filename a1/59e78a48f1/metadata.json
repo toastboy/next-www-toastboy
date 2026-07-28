@@ -1,0 +1,29 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "a159e78a48f1",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 5,
+  "files_touched": [
+    "src/components/AdminPlayerList/AdminPlayerList.tsx",
+    "src/components/AdminPlayerList/AdminPlayerList.vitest.spec.tsx",
+    "src/components/AdminUserList/AdminUserList.tsx",
+    "src/lib/adminPlayer.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/a1/59e78a48f1/0/metadata.json",
+      "transcript": "/a1/59e78a48f1/0/full.jsonl",
+      "compact_transcript": "/a1/59e78a48f1/0/transcript.jsonl",
+      "content_hash": "/a1/59e78a48f1/0/content_hash.txt",
+      "prompt": "/a1/59e78a48f1/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 159,
+    "cache_creation_tokens": 118474,
+    "cache_read_tokens": 7238705,
+    "output_tokens": 28898,
+    "api_call_count": 80
+  }
+}

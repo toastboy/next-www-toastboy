@@ -6,8 +6,10 @@ import {
     Card,
     CardSection,
     Checkbox,
+    Container,
     Flex,
     Group,
+    Paper,
     Select,
     Stack,
     Text,
@@ -48,6 +50,10 @@ const toResponseValues = (row: OutcomePlayerType): ResponseValues => ({
     // v8 ignore next -- comment is always a string in practice (Prisma default '')
     comment: row.comment ?? '',
 });
+
+// Breakpoint at which each response row switches from a stacked mobile
+// layout to a single-line row; kept as one constant so every field agrees.
+const rowBreakpoint = 'lg';
 
 const responseGroupBarColor: Record<ResponseOption, MantineColor> = {
     [ResponseOption.Yes]: 'green.6',
@@ -201,11 +207,14 @@ export const ResponsesForm = ({
                                 role="group"
                                 aria-label={ariaLabel}
                                 data-player-id={row.playerId}
-                                align="center"
+                                direction={{ base: 'column', [rowBreakpoint]: 'row' }}
+                                align={{ base: 'stretch', [rowBreakpoint]: 'center' }}
                                 gap="sm"
-                                wrap="nowrap"
+                                bd="1px solid var(--mantine-color-gray-3)"
+                                p="sm"
+                                bdrs="sm"
                             >
-                                <Text fw={600} w={180}>
+                                <Text fw={600} w={{ base: '100%', [rowBreakpoint]: 180 }}>
                                     {row.player.name}
                                 </Text>
                                 <Select
@@ -224,7 +233,7 @@ export const ResponsesForm = ({
                                         );
                                     }}
                                     size="sm"
-                                    w={160}
+                                    w={{ base: '100%', [rowBreakpoint]: 160 }}
                                 />
                                 <Checkbox
                                     label="Goalie"
@@ -239,7 +248,8 @@ export const ResponsesForm = ({
                                     maxLength={127}
                                     {...form.getInputProps(`byPlayerId.${row.playerId}.comment`)}
                                     size="sm"
-                                    style={{ flex: 1, minWidth: 220 }}
+                                    flex={{ [rowBreakpoint]: 1 }}
+                                    miw={{ [rowBreakpoint]: 220 }}
                                 />
                                 <Button
                                     variant="filled"
@@ -247,11 +257,11 @@ export const ResponsesForm = ({
                                     disabled={!isRowDirty(row)}
                                     loading={savingId === row.playerId}
                                     onClick={() => handleSubmit(row)}
+                                    w={{ base: '100%', [rowBreakpoint]: 'auto' }}
                                 >
                                     Update
                                 </Button>
                             </Flex>
-
                         );
                     })}
                 </Stack>
@@ -260,22 +270,28 @@ export const ResponsesForm = ({
     };
 
     return (
-        <Stack gap="md">
-            <Stack align="left" gap="xs">
-                <Title order={2}>Responses</Title>
-                <Text c="dimmed">Game {gameId}: {gameDate}</Text>
-                <TextInput
-                    placeholder="Search players"
-                    value={filter}
-                    onChange={(event) => setFilter(event.currentTarget.value)}
-                />
-            </Stack>
-            {Object.values(ResponseOption).map((option) => (
-                renderGroup(
-                    option,
-                    grouped[option.toLowerCase() as keyof typeof grouped],
-                )
-            ))}
-        </Stack>
+        <Container fluid>
+            <Paper w="100%" p="xl">
+                <Stack gap="md">
+                    <Stack align="flex-start" gap="xs">
+                        <Title order={2}>Responses</Title>
+                        <Text c="dimmed">Game {gameId}: {gameDate}</Text>
+                        <TextInput
+                            label="Search players"
+                            placeholder="Search players"
+                            value={filter}
+                            onChange={(event) => setFilter(event.currentTarget.value)}
+                            w="100%"
+                        />
+                    </Stack>
+                    {Object.values(ResponseOption).map((option) => (
+                        renderGroup(
+                            option,
+                            grouped[option.toLowerCase() as keyof typeof grouped],
+                        )
+                    ))}
+                </Stack>
+            </Paper>
+        </Container>
     );
 };

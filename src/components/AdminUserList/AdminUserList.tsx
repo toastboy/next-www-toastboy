@@ -45,7 +45,9 @@ export const AdminUserList = ({ users, setAdminRole }: Props) => {
             <Group gap={6} wrap="nowrap">
                 <Text span>{label}</Text>
                 {sortBy === key ? (
-                    sortOrder === 'asc' ? <IconSortAscending size={16} /> : <IconSortDescending size={16} />
+                    sortOrder === 'asc' ?
+                        <IconSortAscending size={16} aria-hidden="true" focusable={false} /> :
+                        <IconSortDescending size={16} aria-hidden="true" focusable={false} />
                 ) : null}
             </Group>
         </UnstyledButton>

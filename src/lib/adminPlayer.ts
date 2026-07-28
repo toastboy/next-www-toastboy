@@ -1,7 +1,7 @@
 import { normalizeEmail } from '@/lib/email/normalizeEmail';
 import { PlayerDataType } from '@/types';
 
-export type SortKey = 'id' | 'name' | 'joined' | 'finished' | 'auth' | 'extraEmails';
+export type SortKey = 'id' | 'name' | 'joined' | 'finished' | 'auth';
 export type SortDirection = 'asc' | 'desc';
 
 /**
@@ -93,12 +93,6 @@ export function comparePlayers(
             return compareNullableNumber(
                 isOnboarded(a, userEmailSet) ? 1 : 0,
                 isOnboarded(b, userEmailSet) ? 1 : 0,
-                direction,
-            );
-        case 'extraEmails':
-            return compareNullableNumber(
-                a.extraEmails.length > 0 ? (a.extraEmails.every((email) => email.verified) ? 1 : 0) : null,
-                b.extraEmails.length > 0 ? (b.extraEmails.every((email) => email.verified) ? 1 : 0) : null,
                 direction,
             );
         default:

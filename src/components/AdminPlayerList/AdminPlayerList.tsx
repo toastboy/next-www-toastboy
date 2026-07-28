@@ -21,7 +21,7 @@ import {
     UnstyledButton,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { IconChevronDown, IconChevronUp, IconSelector } from '@tabler/icons-react';
+import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
@@ -45,7 +45,6 @@ import type { SendEmailProxy } from '@/types/actions/SendEmail';
 
 type FinishedFilter = 'all' | 'finished' | 'active';
 type AuthFilter = 'all' | 'invited' | 'claimed';
-type EmailsVerifiedFilter = 'all' | 'verified' | 'unverified';
 
 const finishedFilterOptions = [
     { label: 'All', value: 'all' },
@@ -57,12 +56,6 @@ const authFilterOptions = [
     { label: 'All', value: 'all' },
     { label: 'Invited', value: 'invited' },
     { label: 'Claimed', value: 'claimed' },
-];
-
-const emailsVerifiedFilterOptions = [
-    { label: 'All', value: 'all' },
-    { label: 'Verified', value: 'verified' },
-    { label: 'Unverified', value: 'unverified' },
 ];
 
 export interface Props {
@@ -100,7 +93,6 @@ export const AdminPlayerList = ({
     const [filter, setFilter] = useState('');
     const [filterFinished, setFilterFinished] = useState<FinishedFilter>('all');
     const [filterAuth, setFilterAuth] = useState<AuthFilter>('all');
-    const [filterEmailsVerified, setFilterEmailsVerified] = useState<EmailsVerifiedFilter>('all');
 
     /**
      * Filters players by name and the active tri-state filters.
@@ -117,15 +109,9 @@ export const AdminPlayerList = ({
             const claimed = isOnboarded(player, userEmailSet);
             if (filterAuth === 'claimed' && !claimed) return false;
             if (filterAuth === 'invited' && claimed) return false;
-            if (filterEmailsVerified !== 'all') {
-                const hasExtraEmails = player.extraEmails.length > 0;
-                const extraEmailsVerified = hasExtraEmails && player.extraEmails.every((email) => email.verified);
-                if (filterEmailsVerified === 'verified' && !extraEmailsVerified) return false;
-                if (filterEmailsVerified === 'unverified' && (!hasExtraEmails || extraEmailsVerified)) return false;
-            }
             return true;
         });
-    }, [players, filter, filterFinished, filterAuth, filterEmailsVerified, userEmailSet]);
+    }, [players, filter, filterFinished, filterAuth, userEmailSet]);
 
     /**
      * Applies sorting to the filtered players.
@@ -179,17 +165,6 @@ export const AdminPlayerList = ({
     const selectedPlayers = players.filter((player) => selectedIds.includes(player.id));
 
     /**
-     * Returns the sort icon for the provided column key.
-     *
-     * @param key - Column sort key.
-     * @returns The appropriate sort icon element.
-     */
-    const getSortIcon = (key: SortKey) => {
-        if (key !== sortKey) return <IconSelector size={14} />;
-        return sortDirection === 'asc' ? <IconChevronUp size={14} /> : <IconChevronDown size={14} />;
-    };
-
-    /**
      * Renders a sortable header label with the current sort icon.
      *
      * @param label - Column display label.
@@ -204,7 +179,11 @@ export const AdminPlayerList = ({
         >
             <Group gap={6} wrap="nowrap">
                 <Text span>{label}</Text>
-                {getSortIcon(key)}
+                {sortKey === key ? (
+                    sortDirection === 'asc' ?
+                        <IconSortAscending size={16} aria-hidden="true" focusable={false} /> :
+                        <IconSortDescending size={16} aria-hidden="true" focusable={false} />
+                ) : null}
             </Group>
         </UnstyledButton>
     );
@@ -351,8 +330,6 @@ export const AdminPlayerList = ({
     const rows = sortedPlayers.map((player: PlayerDataType) => {
         const playerHref = `/footy/player/${encodeURIComponent(player.id || '')}`;
         const hasAuthAccount = isOnboarded(player, userEmailSet);
-        const hasExtraEmails = player.extraEmails.length > 0;
-        const extraEmailsVerified = hasExtraEmails && player.extraEmails.every((email) => email.verified);
         const userId = getUserIdForPlayer(player);
 
         return (
@@ -373,7 +350,6 @@ export const AdminPlayerList = ({
                 <TableTd>{formatDate(player.joined)}</TableTd>
                 <TableTd>{formatDate(player.finished)}</TableTd>
                 <TableTd>{hasAuthAccount ? 'Yes' : 'No'}</TableTd>
-                <TableTd>{hasExtraEmails ? (extraEmailsVerified ? 'Yes' : 'No') : ''}</TableTd>
                 <TableTd>
                     <Button
                         size="xs"
@@ -424,16 +400,6 @@ export const AdminPlayerList = ({
                                     onChange={(value) => setFilterAuth(value as AuthFilter)}
                                 />
                             </Stack>
-                            <Stack gap={2}>
-                                <Text id="emails-verified-filter-label" size="xs" fw={500}>Emails Verified</Text>
-                                <SegmentedControl
-                                    aria-labelledby="emails-verified-filter-label"
-                                    size="xs"
-                                    data={emailsVerifiedFilterOptions}
-                                    value={filterEmailsVerified}
-                                    onChange={(value) => setFilterEmailsVerified(value as EmailsVerifiedFilter)}
-                                />
-                            </Stack>
                         </Group>
                         <Group gap="xs">
                             <Button
@@ -446,51 +412,62 @@ export const AdminPlayerList = ({
                             </Button>
                         </Group>
                     </Group>
-                    <Table
-                        striped
-                        highlightOnHover
-                        withTableBorder
-                        withColumnBorders
-                        w="100%"
-                        style={{ tableLayout: 'fixed' }}
-                    >
-                        <TableCaption>Registered players</TableCaption>
-                        <TableThead>
-                            <TableTr>
-                                <TableTh w="2.5rem">
-                                    <Checkbox
-                                        checked={allSelected}
-                                        indeterminate={someSelected}
-                                        onChange={(event) => toggleSelectAll(event.currentTarget.checked)}
-                                        aria-label="Select all players"
-                                    />
-                                </TableTh>
-                                <TableTh
-                                    w="4rem"
-                                    aria-sort={sortKey === 'id' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
-                                >
-                                    {renderSortHeader('ID', 'id')}
-                                </TableTh>
-                                <TableTh aria-sort={sortKey === 'name' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
-                                    {renderSortHeader('Name', 'name')}
-                                </TableTh>
-                                <TableTh aria-sort={sortKey === 'joined' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
-                                    {renderSortHeader('Joined', 'joined')}
-                                </TableTh>
-                                <TableTh aria-sort={sortKey === 'finished' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
-                                    {renderSortHeader('Finished', 'finished')}
-                                </TableTh>
-                                <TableTh aria-sort={sortKey === 'auth' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
-                                    {renderSortHeader('Auth', 'auth')}
-                                </TableTh>
-                                <TableTh aria-sort={sortKey === 'extraEmails' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
-                                    {renderSortHeader('Emails Verified', 'extraEmails')}
-                                </TableTh>
-                                <TableTh w="7rem">Impersonate</TableTh>
-                            </TableTr>
-                        </TableThead>
-                        <TableTbody>{rows}</TableTbody>
-                    </Table>
+                    <Table.ScrollContainer minWidth="100%" scrollAreaProps={{ type: 'auto' }}>
+                        <Table
+                            striped
+                            highlightOnHover
+                            withTableBorder
+                            withColumnBorders
+                            w="100%"
+                            layout="fixed"
+                        >
+                            <TableCaption>Registered players</TableCaption>
+                            <TableThead>
+                                <TableTr>
+                                    <TableTh w="2.5rem">
+                                        <Checkbox
+                                            checked={allSelected}
+                                            indeterminate={someSelected}
+                                            onChange={(event) => toggleSelectAll(event.currentTarget.checked)}
+                                            aria-label="Select all players"
+                                        />
+                                    </TableTh>
+                                    <TableTh
+                                        w="3rem"
+                                        aria-sort={sortKey === 'id' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
+                                    >
+                                        {renderSortHeader('ID', 'id')}
+                                    </TableTh>
+                                    <TableTh
+                                        w="10rem"
+                                        aria-sort={sortKey === 'name' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
+                                    >
+                                        {renderSortHeader('Name', 'name')}
+                                    </TableTh>
+                                    <TableTh
+                                        w="7rem"
+                                        aria-sort={sortKey === 'joined' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
+                                    >
+                                        {renderSortHeader('Joined', 'joined')}
+                                    </TableTh>
+                                    <TableTh
+                                        w="7rem"
+                                        aria-sort={sortKey === 'finished' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
+                                    >
+                                        {renderSortHeader('Finished', 'finished')}
+                                    </TableTh>
+                                    <TableTh
+                                        w="4rem"
+                                        aria-sort={sortKey === 'auth' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
+                                    >
+                                        {renderSortHeader('Auth', 'auth')}
+                                    </TableTh>
+                                    <TableTh w="7rem">Impersonate</TableTh>
+                                </TableTr>
+                            </TableThead>
+                            <TableTbody>{rows}</TableTbody>
+                        </Table>
+                    </Table.ScrollContainer>
                 </Stack>
             </Paper>
         </Container>

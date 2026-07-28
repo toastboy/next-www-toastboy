@@ -512,70 +512,6 @@ describe('AdminPlayerList', () => {
             expect(within(rows[1]).getByText('Authed')).toBeInTheDocument();
         });
 
-        it('sorts by Emails Verified with both players having extra emails (one verified, one not)', () => {
-            // Both players have extraEmails → covers b.extraEmails.length > 0 truthy (line 539)
-            // a has unverified → covers a.extraEmails.every falsy (line 538 inner)
-            // b has verified → covers b.extraEmails.every truthy (line 539 inner)
-            const players = [
-                createMockPlayerData({
-                    id: 1,
-                    name: 'Bob',
-                    extraEmails: [{ email: 'bob@example.com', verified: true }],
-                }),
-                createMockPlayerData({
-                    id: 2,
-                    name: 'Alice',
-                    extraEmails: [{ email: 'alice@example.com', verified: false }],
-                }),
-            ];
-
-            render(
-                <Wrapper>
-                    <AdminPlayerList
-                        players={players}
-                        userEmails={[]}
-                        onAddPlayerInvite={defaultAddPlayerProxy}
-                        onSendEmail={stubSendEmail}
-                    />
-                </Wrapper>,
-            );
-
-            fireEvent.click(screen.getByRole('button', { name: 'Sort by Emails Verified' }));
-
-            const rows = screen.getAllByRole('row').slice(1);
-            // Ascending: unverified (0) before verified (1) → Alice first
-            expect(within(rows[0]).getByText('Alice')).toBeInTheDocument();
-            expect(within(rows[1]).getByText('Bob')).toBeInTheDocument();
-        });
-
-        it('sorts by Emails Verified — null (no extra emails) sorts last', () => {
-            const players = [
-                createMockPlayerData({ id: 2, name: 'Bob', extraEmails: [] }),
-                createMockPlayerData({
-                    id: 1,
-                    name: 'Alice',
-                    extraEmails: [{ email: 'alice@example.com', verified: true }],
-                }),
-            ];
-
-            render(
-                <Wrapper>
-                    <AdminPlayerList
-                        players={players}
-                        userEmails={[]}
-                        onAddPlayerInvite={defaultAddPlayerProxy}
-                        onSendEmail={stubSendEmail}
-                    />
-                </Wrapper>,
-            );
-
-            fireEvent.click(screen.getByRole('button', { name: 'Sort by Emails Verified' }));
-
-            const rows = screen.getAllByRole('row').slice(1);
-            // null (Bob, no emails) sorts last; Alice (verified) sorts first
-            expect(within(rows[0]).getByText('Alice')).toBeInTheDocument();
-            expect(within(rows[1]).getByText('Bob')).toBeInTheDocument();
-        });
     });
 
     describe('impersonate button', () => {
@@ -617,87 +553,6 @@ describe('AdminPlayerList', () => {
             );
 
             expect(screen.getByRole('button', { name: 'Impersonate' })).toBeEnabled();
-        });
-    });
-
-    describe('emails verified column', () => {
-        it('shows "Yes" when all extra emails are verified', () => {
-            const players = [
-                createMockPlayerData({
-                    id: 1,
-                    name: 'Alex Admin',
-                    accountEmail: null,
-                    extraEmails: [{ email: 'alex@example.com', verified: true }],
-                }),
-            ];
-
-            render(
-                <Wrapper>
-                    <AdminPlayerList
-                        players={players}
-                        userEmails={[]}
-                        onAddPlayerInvite={defaultAddPlayerProxy}
-                        onSendEmail={stubSendEmail}
-                    />
-                </Wrapper>,
-            );
-
-            const table = screen.getByRole('table');
-            expect(within(table).getByText('Yes')).toBeInTheDocument();
-        });
-
-        it('shows "No" when an extra email is unverified', () => {
-            // accountEmail is in userEmails so Auth = "Yes"; unverified extra email → Emails Verified = "No"
-            const players = [
-                createMockPlayerData({
-                    id: 1,
-                    name: 'Pat Player',
-                    accountEmail: 'pat@example.com',
-                    extraEmails: [{ email: 'pat@example.com', verified: false }],
-                }),
-            ];
-
-            render(
-                <Wrapper>
-                    <AdminPlayerList
-                        players={players}
-                        userEmails={['pat@example.com']}
-                        onAddPlayerInvite={defaultAddPlayerProxy}
-                        onSendEmail={stubSendEmail}
-                    />
-                </Wrapper>,
-            );
-
-            const table = screen.getByRole('table');
-            expect(within(table).getByText('Yes')).toBeInTheDocument(); // Auth
-            expect(within(table).getByText('No')).toBeInTheDocument(); // Emails Verified
-        });
-
-        it('shows empty cell when player has no extra emails', () => {
-            const players = [
-                createMockPlayerData({
-                    id: 1,
-                    name: 'Sam Support',
-                    accountEmail: 'sam@example.com',
-                    extraEmails: [],
-                }),
-            ];
-
-            render(
-                <Wrapper>
-                    <AdminPlayerList
-                        players={players}
-                        userEmails={['sam@example.com']}
-                        onAddPlayerInvite={defaultAddPlayerProxy}
-                        onSendEmail={stubSendEmail}
-                    />
-                </Wrapper>,
-            );
-
-            const table = screen.getByRole('table');
-            // Auth column shows "Yes"; emails-verified cell should be empty (no Yes/No for it)
-            const yesCells = within(table).getAllByText('Yes');
-            expect(yesCells).toHaveLength(1); // only the Auth column
         });
     });
 
@@ -1459,74 +1314,6 @@ describe('AdminPlayerList', () => {
             expect(screen.queryByText('Authed')).not.toBeInTheDocument();
         });
 
-        it('filters to only players with verified emails when Verified is selected', () => {
-            const players = [
-                createMockPlayerData({
-                    id: 1,
-                    name: 'Unverified Pat',
-                    extraEmails: [{ email: 'pat@example.com', verified: false }],
-                }),
-                createMockPlayerData({
-                    id: 2,
-                    name: 'Verified Vic',
-                    extraEmails: [{ email: 'vic@example.com', verified: true }],
-                }),
-                createMockPlayerData({ id: 3, name: 'No Extras Nia', extraEmails: [] }),
-            ];
-
-            render(
-                <Wrapper>
-                    <AdminPlayerList
-                        players={players}
-                        userEmails={[]}
-                        onAddPlayerInvite={defaultAddPlayerProxy}
-                        onSendEmail={stubSendEmail}
-                    />
-                </Wrapper>,
-            );
-
-            const emailsGroup = screen.getByRole('radiogroup', { name: 'Emails Verified' });
-            fireEvent.click(within(emailsGroup).getByRole('radio', { name: 'Verified' }));
-
-            expect(screen.getByText('Verified Vic')).toBeInTheDocument();
-            expect(screen.queryByText('Unverified Pat')).not.toBeInTheDocument();
-            expect(screen.queryByText('No Extras Nia')).not.toBeInTheDocument();
-        });
-
-        it('excludes players with no extra emails when Unverified is selected', () => {
-            const players = [
-                createMockPlayerData({
-                    id: 1,
-                    name: 'Unverified Pat',
-                    extraEmails: [{ email: 'pat@example.com', verified: false }],
-                }),
-                createMockPlayerData({
-                    id: 2,
-                    name: 'Verified Vic',
-                    extraEmails: [{ email: 'vic@example.com', verified: true }],
-                }),
-                createMockPlayerData({ id: 3, name: 'No Extras Nia', extraEmails: [] }),
-            ];
-
-            render(
-                <Wrapper>
-                    <AdminPlayerList
-                        players={players}
-                        userEmails={[]}
-                        onAddPlayerInvite={defaultAddPlayerProxy}
-                        onSendEmail={stubSendEmail}
-                    />
-                </Wrapper>,
-            );
-
-            const emailsGroup = screen.getByRole('radiogroup', { name: 'Emails Verified' });
-            fireEvent.click(within(emailsGroup).getByRole('radio', { name: 'Unverified' }));
-
-            expect(screen.getByText('Unverified Pat')).toBeInTheDocument();
-            expect(screen.queryByText('No Extras Nia')).not.toBeInTheDocument();
-            expect(screen.queryByText('Verified Vic')).not.toBeInTheDocument();
-        });
-
         it('combines multiple active filters', () => {
             const players = [
                 createMockPlayerData({
@@ -1707,73 +1494,6 @@ describe('AdminPlayerList', () => {
             expect(within(rows[0]).getByText('Alice')).toBeInTheDocument();
             expect(within(rows[1]).getByText('Bob')).toBeInTheDocument();
             expect(within(rows[2]).getByText('Charlie')).toBeInTheDocument();
-        });
-    });
-
-    describe('sort by Emails Verified', () => {
-        it('sorts by emails verified with one player having unverified extras', () => {
-            const players = [
-                createMockPlayerData({
-                    id: 1,
-                    name: 'Unverified',
-                    extraEmails: [{ email: 'unverified@example.com', verified: false }],
-                }),
-                createMockPlayerData({
-                    id: 2,
-                    name: 'No Extra',
-                    extraEmails: [],
-                }),
-            ];
-
-            render(
-                <Wrapper>
-                    <AdminPlayerList
-                        players={players}
-                        userEmails={[]}
-                        onAddPlayerInvite={defaultAddPlayerProxy}
-                        onSendEmail={stubSendEmail}
-                    />
-                </Wrapper>,
-            );
-
-            fireEvent.click(screen.getByRole('button', { name: 'Sort by Emails Verified' }));
-
-            const rows = screen.getAllByRole('row').slice(1);
-            expect(within(rows[0]).getByText('Unverified')).toBeInTheDocument();
-            expect(within(rows[1]).getByText('No Extra')).toBeInTheDocument();
-        });
-
-        it('sorts by emails verified descending', () => {
-            const players = [
-                createMockPlayerData({
-                    id: 1,
-                    name: 'Unverified',
-                    extraEmails: [{ email: 'unverified@example.com', verified: false }],
-                }),
-                createMockPlayerData({
-                    id: 2,
-                    name: 'Verified',
-                    extraEmails: [{ email: 'verified@example.com', verified: true }],
-                }),
-            ];
-
-            render(
-                <Wrapper>
-                    <AdminPlayerList
-                        players={players}
-                        userEmails={[]}
-                        onAddPlayerInvite={defaultAddPlayerProxy}
-                        onSendEmail={stubSendEmail}
-                    />
-                </Wrapper>,
-            );
-
-            fireEvent.click(screen.getByRole('button', { name: 'Sort by Emails Verified' }));
-            fireEvent.click(screen.getByRole('button', { name: 'Sort by Emails Verified' }));
-
-            const rows = screen.getAllByRole('row').slice(1);
-            expect(within(rows[0]).getByText('Verified')).toBeInTheDocument();
-            expect(within(rows[1]).getByText('Unverified')).toBeInTheDocument();
         });
     });
 
@@ -2019,7 +1739,7 @@ describe('AdminPlayerList', () => {
             );
 
             const table = screen.getByRole('table');
-            expect(within(table).getAllByText('Yes')).toHaveLength(2);
+            expect(within(table).getAllByText('Yes')).toHaveLength(1);
         });
 
         it('handles empty string emails gracefully', () => {

@@ -83,7 +83,7 @@ describe('AdminUserList', () => {
 
         expect(within(getFirstDataRow()).getByRole('link', { name: 'Adam Admin' })).toBeInTheDocument();
 
-        await user.click(screen.getByRole('columnheader', { name: /Name/ }));
+        await user.click(screen.getByRole('button', { name: 'Sort by Name' }));
 
         expect(within(getFirstDataRow()).getByRole('link', { name: 'Victoria User' })).toBeInTheDocument();
     });
@@ -167,11 +167,11 @@ describe('AdminUserList', () => {
         );
 
         // Click once: ascending by role ('admin' < 'user' → Adam Admin first)
-        await user.click(screen.getByRole('columnheader', { name: /Admin/ }));
+        await user.click(screen.getByRole('button', { name: 'Sort by Admin' }));
         expect(within(screen.getAllByRole('row')[1]).getByRole('link', { name: 'Adam Admin' })).toBeInTheDocument();
 
         // Click again: descending → Victoria (user) first
-        await user.click(screen.getByRole('columnheader', { name: /Admin/ }));
+        await user.click(screen.getByRole('button', { name: 'Sort by Admin' }));
         expect(within(screen.getAllByRole('row')[1]).getByRole('link', { name: 'Victoria User' })).toBeInTheDocument();
     });
 
@@ -184,11 +184,11 @@ describe('AdminUserList', () => {
         );
 
         // Click once: ascending createdAt ('2024-01-10' < '2024-02-14' → Adam first)
-        await user.click(screen.getByRole('columnheader', { name: /Created/ }));
+        await user.click(screen.getByRole('button', { name: 'Sort by Created' }));
         expect(within(screen.getAllByRole('row')[1]).getByRole('link', { name: 'Adam Admin' })).toBeInTheDocument();
 
         // Click again: descending → Victoria first
-        await user.click(screen.getByRole('columnheader', { name: /Created/ }));
+        await user.click(screen.getByRole('button', { name: 'Sort by Created' }));
         expect(within(screen.getAllByRole('row')[1]).getByRole('link', { name: 'Victoria User' })).toBeInTheDocument();
     });
 
@@ -201,13 +201,13 @@ describe('AdminUserList', () => {
         );
 
         // Default sort is name asc → Adam first; switch to email sort
-        await user.click(screen.getByRole('columnheader', { name: /Email/ }));
+        await user.click(screen.getByRole('button', { name: 'Sort by Email' }));
 
         // adam.admin@... < victoria.user@... alphabetically → Adam still first
         expect(within(screen.getAllByRole('row')[1]).getByRole('link', { name: 'Adam Admin' })).toBeInTheDocument();
 
         // Click again to reverse → Victoria first
-        await user.click(screen.getByRole('columnheader', { name: /Email/ }));
+        await user.click(screen.getByRole('button', { name: 'Sort by Email' }));
         expect(within(screen.getAllByRole('row')[1]).getByRole('link', { name: 'Victoria User' })).toBeInTheDocument();
     });
 
@@ -238,11 +238,11 @@ describe('AdminUserList', () => {
         const getFirstDataRow = () => screen.getAllByRole('row')[1];
 
         // First click: switch from default (name asc) to name desc
-        await user.click(screen.getByRole('columnheader', { name: /Name/ }));
+        await user.click(screen.getByRole('button', { name: 'Sort by Name' }));
         expect(within(getFirstDataRow()).getByRole('link', { name: 'Victoria User' })).toBeInTheDocument();
 
         // Second click on same header: toggle back to name asc
-        await user.click(screen.getByRole('columnheader', { name: /Name/ }));
+        await user.click(screen.getByRole('button', { name: 'Sort by Name' }));
         expect(within(getFirstDataRow()).getByRole('link', { name: 'Adam Admin' })).toBeInTheDocument();
     });
 

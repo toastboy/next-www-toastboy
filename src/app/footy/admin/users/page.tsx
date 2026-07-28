@@ -1,4 +1,4 @@
-import { Container, Text } from '@mantine/core';
+import { Center, Container, Text, Title } from '@mantine/core';
 
 import { listUsersAction, setAdminRoleAction } from '@/actions/auth';
 import { AdminUserList } from '@/components/AdminUserList/AdminUserList';
@@ -30,8 +30,13 @@ export default async function Page() {
     }
 
     return (
-        <Container>
+        <Container size="md" mt="xl">
             <AutoRefresh channels={FootyChannel.Users} />
+            <Center>
+                <Title order={2} mb="md">
+                    Admin: Users
+                </Title>
+            </Center>
             <AdminUserList users={users} setAdminRole={setAdminRoleAction} />
         </Container>
     );

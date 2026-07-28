@@ -12,8 +12,10 @@ vi.mock('@/lib/observability/sentry', () => ({
 }));
 
 vi.mock('@mantine/core', () => ({
+    Center: ({ children }: { children?: unknown }) => children,
     Container: ({ children }: { children?: unknown }) => children,
     Text: ({ children }: { children?: unknown }) => children,
+    Title: ({ children }: { children?: unknown }) => children,
 }));
 
 vi.mock('@/components/AdminUserList/AdminUserList', () => ({

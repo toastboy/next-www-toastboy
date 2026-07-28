@@ -1,0 +1,28 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "d4d48ea9eba0",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "src/app/footy/admin/newgame/page.tsx",
+    "src/app/footy/admin/newgame/page.vitest.spec.ts",
+    "src/components/NewGameForm/NewGameForm.tsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/d4/d48ea9eba0/0/metadata.json",
+      "transcript": "/d4/d48ea9eba0/0/full.jsonl",
+      "compact_transcript": "/d4/d48ea9eba0/0/transcript.jsonl",
+      "content_hash": "/d4/d48ea9eba0/0/content_hash.txt",
+      "prompt": "/d4/d48ea9eba0/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 78,
+    "cache_creation_tokens": 53422,
+    "cache_read_tokens": 2227051,
+    "output_tokens": 9325,
+    "api_call_count": 40
+  }
+}

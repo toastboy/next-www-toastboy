@@ -1,0 +1,1 @@
+Update tests to match the changes in the new player form and make sure coverage is 100%

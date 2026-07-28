@@ -1,0 +1,29 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "32a66ba9bbc3",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 4,
+  "files_touched": [
+    "src/app/footy/admin/users/page.tsx",
+    "src/app/footy/admin/users/page.vitest.spec.ts",
+    "src/components/AdminUserList/AdminUserList.tsx",
+    "src/components/AdminUserList/AdminUserList.vitest.spec.tsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/32/a66ba9bbc3/0/metadata.json",
+      "transcript": "/32/a66ba9bbc3/0/full.jsonl",
+      "compact_transcript": "/32/a66ba9bbc3/0/transcript.jsonl",
+      "content_hash": "/32/a66ba9bbc3/0/content_hash.txt",
+      "prompt": "/32/a66ba9bbc3/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 24,
+    "cache_creation_tokens": 40405,
+    "cache_read_tokens": 726830,
+    "output_tokens": 9468,
+    "api_call_count": 12
+  }
+}

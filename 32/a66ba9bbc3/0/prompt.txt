@@ -1,0 +1,13 @@
+What's the difference between using 'TableTbody' from Mantine and 'Table.Tbody'? My project currently has a mix of both
+
+---
+
+I remember reading something about tree-shaking behaviour being different in the 2 cases
+
+---
+
+OK, since the Mantine docs all use the dot notation, write me a user story to harmonise on that.
+
+---
+
+File the story in SYS

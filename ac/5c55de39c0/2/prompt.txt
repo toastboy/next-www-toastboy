@@ -1,0 +1,17 @@
+Warning: The command "https://mcp.atlassian.com/v1/mcp" looks like a URL, but is being interpreted as a stdio server as --transport was not specified.
+If this is an HTTP server, use: claude mcp add --transport http atlassian https://mcp.atlassian.com/v1/mcp
+If this is an SSE server, use: claude mcp add --transport sse atlassian https://mcp.atlassian.com/v1/mcp
+Added stdio MCP server atlassian with command: https://mcp.atlassian.com/v1/mcp  to local config
+File modified: /Users/toastboy/.claude.json [project: /Volumes/Development/next-www-toastboy]
+
+---
+
+I'm trying to install the newer MCP server recommended by Atlassian
+
+❯ claude mcp add atlassian https://mcp.atlassian.com/v1/mcp
+
+Warning: The command "https://mcp.atlassian.com/v1/mcp" looks like a URL, but is being interpreted as a stdio server as --transport was not specified.
+If this is an HTTP server, use: claude mcp add --transport http atlassian https://mcp.atlassian.com/v1/mcp
+If this is an SSE server, use: claude mcp add --transport sse atlassian https://mcp.atlassian.com/v1/mcp
+Added stdio MCP server atlassian with command: https://mcp.atlassian.com/v1/mcp  to local config
+File modified: /Users/toastboy/.claude.json [project: /Volumes/Development/next-www-toastboy]

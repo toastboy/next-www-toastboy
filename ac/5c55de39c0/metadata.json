@@ -3,7 +3,7 @@
   "checkpoint_id": "ac5c55de39c0",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 2,
+  "checkpoints_count": 4,
   "files_touched": [
     "src/components/PickerForm/PickerForm.tsx",
     "src/components/PickerForm/PickerFormSkeleton.tsx"
@@ -22,13 +22,20 @@
       "compact_transcript": "/ac/5c55de39c0/1/transcript.jsonl",
       "content_hash": "/ac/5c55de39c0/1/content_hash.txt",
       "prompt": "/ac/5c55de39c0/1/prompt.txt"
+    },
+    {
+      "metadata": "/ac/5c55de39c0/2/metadata.json",
+      "transcript": "/ac/5c55de39c0/2/full.jsonl",
+      "compact_transcript": "/ac/5c55de39c0/2/transcript.jsonl",
+      "content_hash": "/ac/5c55de39c0/2/content_hash.txt",
+      "prompt": "/ac/5c55de39c0/2/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 140,
-    "cache_creation_tokens": 113249,
-    "cache_read_tokens": 5349179,
-    "output_tokens": 20910,
-    "api_call_count": 71
+    "input_tokens": 150,
+    "cache_creation_tokens": 136595,
+    "cache_read_tokens": 5592031,
+    "output_tokens": 22149,
+    "api_call_count": 76
   }
 }

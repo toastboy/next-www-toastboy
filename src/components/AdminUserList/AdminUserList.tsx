@@ -1,6 +1,18 @@
 'use client';
 
-import { Anchor, Container, Flex, Switch, Table, Text, TextInput } from '@mantine/core';
+import {
+    Anchor,
+    Container,
+    Divider,
+    Flex,
+    Paper,
+    Stack,
+    Switch,
+    Table,
+    Text,
+    TextInput,
+    Title,
+} from '@mantine/core';
 import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
 import { UserWithRole } from 'better-auth/plugins/admin';
 import { useState } from 'react';
@@ -77,74 +89,84 @@ export const AdminUserList = ({ users, setAdminRole }: Props) => {
     }
 
     return (
-        <Container>
-            <TextInput
-                label="Search users"
-                placeholder="Search users"
-                value={filter}
-                onChange={(event) => setFilter(event.currentTarget.value)}
-            />
-            <Table mt={20}>
-                <Table.Thead>
-                    <Table.Tr>
-                        <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('name')}>
-                            <Flex align="center" gap="xs">
-                                Name
-                                {sortBy === 'name' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
-                            </Flex>
-                        </Table.Th>
-                        <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('email')}>
-                            <Flex align="center" gap="xs">
-                                Email
-                                {sortBy === 'email' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
-                            </Flex>
-                        </Table.Th>
-                        <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('role')}>
-                            <Flex align="center" gap="xs">
-                                Admin
-                                {sortBy === 'role' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
-                            </Flex>
-                        </Table.Th>
-                        <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('createdAt')}>
-                            <Flex align="center" gap="xs">
-                                Created
-                                {sortBy === 'createdAt' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
-                            </Flex>
-                        </Table.Th>
-                    </Table.Tr>
-                </Table.Thead>
-                <Table.Tbody>
-                    {sortedUsers.map((user) => (
-                        <Table.Tr key={user.email}>
-                            <Table.Td>
-                                <Anchor href={`/footy/admin/user/${encodeURIComponent(user.email)}`}>
-                                    {user.name}
-                                </Anchor>
-                            </Table.Td>
-                            <Table.Td>
-                                <Anchor href={`/footy/admin/user/${encodeURIComponent(user.email)}`}>
-                                    {user.email}
-                                </Anchor>
-                            </Table.Td>
-                            <Table.Td>
-                                <Switch
-                                    checked={user.role === 'admin'}
-                                    onChange={(event) => toggleAdmin(user.id, event.currentTarget.checked)}
-                                    aria-label={
-                                        user.name ?
-                                            `Toggle admin status for ${user.name}` :
-                                            `Toggle admin status for ${user.email}`
-                                    }
-                                    color="blue"
-                                />
-                            </Table.Td>
-                            <Table.Td>
-                                <RelativeTime date={user.createdAt} />
-                            </Table.Td>
+        <Container size="md" mt="xl">
+            <Paper w="100%" p="xl">
+                <Stack>
+                    <Title order={2} mb="xs" w="100%" ta="center">
+                        Auth Users
+                    </Title>
+                    {/* TODO: Do I want these dividers? They look a bit weird in the middle of a form, but they do help separate the title from the form. */}
+                    <Divider mb="xs" />
+                </Stack>
+
+                <TextInput
+                    label="Search users"
+                    placeholder="Search users"
+                    value={filter}
+                    onChange={(event) => setFilter(event.currentTarget.value)}
+                />
+                <Table mt={20}>
+                    <Table.Thead>
+                        <Table.Tr>
+                            <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('name')}>
+                                <Flex align="center" gap="xs">
+                                    Name
+                                    {sortBy === 'name' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
+                                </Flex>
+                            </Table.Th>
+                            <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('email')}>
+                                <Flex align="center" gap="xs">
+                                    Email
+                                    {sortBy === 'email' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
+                                </Flex>
+                            </Table.Th>
+                            <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('role')}>
+                                <Flex align="center" gap="xs">
+                                    Admin
+                                    {sortBy === 'role' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
+                                </Flex>
+                            </Table.Th>
+                            <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('createdAt')}>
+                                <Flex align="center" gap="xs">
+                                    Created
+                                    {sortBy === 'createdAt' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
+                                </Flex>
+                            </Table.Th>
                         </Table.Tr>
-                    ))}
-                </Table.Tbody>
-            </Table>
+                    </Table.Thead>
+                    <Table.Tbody>
+                        {sortedUsers.map((user) => (
+                            <Table.Tr key={user.email}>
+                                <Table.Td>
+                                    <Anchor href={`/footy/admin/user/${encodeURIComponent(user.email)}`}>
+                                        {user.name}
+                                    </Anchor>
+                                </Table.Td>
+                                <Table.Td>
+                                    <Anchor href={`/footy/admin/user/${encodeURIComponent(user.email)}`}>
+                                        {user.email}
+                                    </Anchor>
+                                </Table.Td>
+                                <Table.Td>
+                                    <Switch
+                                        checked={user.role === 'admin'}
+                                        onChange={(event) => toggleAdmin(user.id, event.currentTarget.checked)}
+                                        aria-label={
+                                            user.name ?
+                                                `Toggle admin status for ${user.name}` :
+                                                `Toggle admin status for ${user.email}`
+                                        }
+                                        color="blue"
+                                    />
+                                </Table.Td>
+                                <Table.Td>
+                                    <RelativeTime date={user.createdAt} />
+                                </Table.Td>
+                            </Table.Tr>
+                        ))}
+                    </Table.Tbody>
+                </Table>
+            </Paper>
         </Container>
     );
 };

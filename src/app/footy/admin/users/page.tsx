@@ -8,7 +8,7 @@ import { toPublicMessage } from '@/lib/errors/AppError';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 import { FootyChannel } from '@/types/FootyChannel';
 
-export const metadata = { title: 'Users' };
+export const metadata = { title: 'Admin: Users' };
 
 export default async function Page() {
     let users: UserWithRolePayload[] = [];
@@ -30,9 +30,9 @@ export default async function Page() {
     }
 
     return (
-        <>
+        <Container>
             <AutoRefresh channels={FootyChannel.Users} />
             <AdminUserList users={users} setAdminRole={setAdminRoleAction} />
-        </>
+        </Container>
     );
 }

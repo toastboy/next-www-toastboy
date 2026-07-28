@@ -1,0 +1,30 @@
+<ide_opened_file>The user opened the file /Volumes/Development/next-www-toastboy/src/components/ResponsesForm/ResponsesForm.tsx in the IDE. This may or may not be related to the current task.</ide_opened_file>
+Start work on SYS-561
+
+---
+
+I tweaked some things: review and update the changes as necessary.
+
+---
+
+Is there mileage in defining a constant for the choice of breakpoint (e.g. when I changed it from "md" to "lg" I missed some)
+
+---
+
+Yes
+
+---
+
+<ide_selection>The user selected the lines 210 to 210 from /Volumes/Development/next-www-toastboy/src/components/ResponsesForm/ResponsesForm.tsx:
+rowBreakpoint
+
+This may or may not be related to the current task.</ide_selection>
+Explain the square bracket syntax for dereferencing that
+
+---
+
+/test-sync
+
+---
+
+Tell me more about the flaky test

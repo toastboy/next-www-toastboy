@@ -1,0 +1,27 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "2ad24a2d1b75",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 7,
+  "files_touched": [
+    "src/components/ResponsesForm/ResponsesForm.tsx",
+    "src/components/ResponsesForm/ResponsesFormSkeleton.tsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/2a/d24a2d1b75/0/metadata.json",
+      "transcript": "/2a/d24a2d1b75/0/full.jsonl",
+      "compact_transcript": "/2a/d24a2d1b75/0/transcript.jsonl",
+      "content_hash": "/2a/d24a2d1b75/0/content_hash.txt",
+      "prompt": "/2a/d24a2d1b75/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 212,
+    "cache_creation_tokens": 241582,
+    "cache_read_tokens": 11618192,
+    "output_tokens": 47875,
+    "api_call_count": 107
+  }
+}

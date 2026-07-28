@@ -1,0 +1,114 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "ac5c55de39c0",
+  "session_id": "9cef106a-28d4-4a58-9fd2-a89738274ad0",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-28T20:07:57.233912Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "src/components/PickerForm/PickerForm.tsx",
+    "src/components/PickerForm/PickerFormSkeleton.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "837cc276d4b3",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 130,
+    "cache_creation_tokens": 90526,
+    "cache_read_tokens": 5179234,
+    "output_tokens": 20266,
+    "api_call_count": 66
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_01YDnGEjdmZCAw2gVB8dmNCz",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "finalise"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "837cc276d4b3",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 114,
+        "end": 115,
+        "entry_ids": [
+          "1bc5d71d-3bc2-4e02-9e4f-7705867fc83f"
+        ],
+        "tool_use_id": "toolu_01YDnGEjdmZCAw2gVB8dmNCz"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01YDnGEjdmZCAw2gVB8dmNCz"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: finalise",
+        "default_collapsed": true
+      }
+    },
+    {
+      "id": "claude-skill-toolu_012ayrBfCjhXniEjjBXqMp13",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "run"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "837cc276d4b3",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 147,
+        "end": 148,
+        "entry_ids": [
+          "1688306d-c3af-4d80-aae7-aeb560e8a63e"
+        ],
+        "tool_use_id": "toolu_012ayrBfCjhXniEjjBXqMp13"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_012ayrBfCjhXniEjjBXqMp13"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: run",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "initial_attribution": {
+    "calculated_at": "2026-07-28T20:07:57.196136Z",
+    "agent_lines": 77,
+    "agent_removed": 60,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 77,
+    "total_lines_changed": 137,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 50,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 49
+      }
+    }
+  ]
+}

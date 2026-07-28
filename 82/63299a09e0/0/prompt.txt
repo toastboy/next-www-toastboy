@@ -1,0 +1,5 @@
+Check I've done everything necessary for ticket SYS-560
+
+---
+
+I used atlassian MCP a couple of hours ago!

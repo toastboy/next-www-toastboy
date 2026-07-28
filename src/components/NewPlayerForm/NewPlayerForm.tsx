@@ -4,11 +4,16 @@ import {
     Anchor,
     Box,
     Button,
+    Container,
+    Divider,
     Flex,
     MantineProvider,
+    Paper,
     Select,
+    Stack,
     Text,
     TextInput,
+    Title,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
@@ -163,7 +168,6 @@ export const NewPlayerForm = ({
     };
 
     const introducers = [
-        { label: '(Nobody)', value: '' },
         ...players.map((player) => ({
             label: player.name ?? '',
             value: player.id.toString(),
@@ -171,33 +175,48 @@ export const NewPlayerForm = ({
     ];
 
     return (
-        <Box
-            maw={400}
-            component="form"
-            onSubmit={form.onSubmit(handleSubmit)}
-        >
-            <TextInput
-                label="Name"
-                required
-                {...form.getInputProps('name')}
-            />
-            <EmailInput
-                label="Email address"
-                description="If no email is provided, the player will not be able to log in but the profile will still be created."
-                {...form.getInputProps('email')}
-            />
-            <Select
-                label="Introduced by"
-                data={introducers}
-                value={form.values.introducedBy}
-                /* v8 ignore next -- allowDeselect={false} means value is never null */
-                onChange={(value) => form.setFieldValue('introducedBy', value ?? '')}
-                allowDeselect={false}
-            />
+        <Container size="xs" mt="xl">
+            <Paper w="100%" p="xl">
+                <Stack mb="lg">
+                    <Stack>
+                        <Title order={2} mb="xs" w="100%" ta="center">
+                            New Player
+                        </Title>
+                        {/* TODO: Do I want these dividers? They look a bit weird in the middle of a form, but they do help separate the title from the form. */}
+                        <Divider mb="xs" />
+                    </Stack>
 
-            <Button type="submit" mt="md">
-                Add player
-            </Button>
-        </Box>
+                    <Box
+                        component="form"
+                        onSubmit={form.onSubmit(handleSubmit)}
+                    >
+                        <TextInput
+                            label="Name"
+                            required
+                            {...form.getInputProps('name')}
+                        />
+                        <EmailInput
+                            label="Email address"
+                            description="If no email is provided, the player will not be able to log in but the profile will still be created."
+                            {...form.getInputProps('email')}
+                        />
+                        <Select
+                            label="Introduced by"
+                            data={introducers}
+                            value={form.values.introducedBy || null}
+                            placeholder="(Nobody)"
+                            searchable
+                            clearable
+                            nothingFoundMessage="No matching player"
+                            onChange={(value) => form.setFieldValue('introducedBy', value ?? '')}
+                        />
+
+                        <Button type="submit" mt="md">
+                            Add player
+                        </Button>
+                    </Box>
+                </Stack>
+            </Paper>
+        </Container>
     );
 };

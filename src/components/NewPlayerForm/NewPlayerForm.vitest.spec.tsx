@@ -424,6 +424,35 @@ describe('NewPlayerForm', () => {
         });
     });
 
+    it('resets introducedBy to empty when the introducer selection is cleared', async () => {
+        const user = userEvent.setup();
+
+        render(
+            <Wrapper>
+                <NewPlayerForm
+                    players={players}
+                    onCreatePlayer={mockCreatePlayer}
+                    onSendEmail={mockSendEmail}
+                />
+            </Wrapper>,
+        );
+
+        await user.type(screen.getByLabelText(/Name/i), 'Pat Smith');
+        await user.click(screen.getByRole('combobox', { name: /Introduced by/i }));
+        await user.click(await screen.findByRole('option', { name: 'Sam Smith', hidden: true }));
+
+        await user.click(screen.getByRole('button', { name: '', hidden: true }));
+        await user.click(screen.getByRole('button', { name: /Add player/i }));
+
+        await waitFor(() => {
+            expect(mockCreatePlayer).toHaveBeenCalledWith({
+                name: 'Pat Smith',
+                email: '',
+                introducedBy: '',
+            });
+        });
+    });
+
     it('requires name input', () => {
         render(
             <Wrapper>
@@ -450,7 +479,9 @@ describe('NewPlayerForm', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByRole('combobox', { name: /Introduced by/i })).toHaveValue('(Nobody)');
+        const introducerInput = screen.getByRole('combobox', { name: /Introduced by/i });
+        expect(introducerInput).toHaveValue('');
+        expect(introducerInput).toHaveAttribute('placeholder', '(Nobody)');
         expect(screen.getByRole('option', { name: 'Alex Doe', hidden: true })).toBeInTheDocument();
         expect(screen.getByRole('option', { name: 'Sam Smith', hidden: true })).toBeInTheDocument();
     });

@@ -49,31 +49,80 @@ ontology:
 # Each class lists only the attributes whose MEANING isn't obvious from its
 # name/type in schema.prisma. Full column lists live in the schema.
 classes:
-
     Player:
         description: >
             A person known to the league. This is the domain identity — distinct
             from a Better Auth `User`, which is a login credential (see the
-            Player-vs-User note under `relations`). A Player can exist for years
-            before anyone ever logs in as them, and can keep playing after their
-            login access lapses.
+            Player-vs-User note under `relations`). A Player can exist before
+            anyone ever logs in as them, and can keep existing on the site after
+            their login access lapses.
         identity: "id (integer, autoincrement)"
         keyAttributes:
-            anonymous: "True for a placeholder/guest Player who has no confirmed real-world identity yet (e.g. a stand-in used before someone claims their profile)."
+            anonymous: "True for a Player who wishes not to be personally identified on the site."
             goalie: "Whether this player is a recognised goalkeeper — read by the picker to balance goalie count across teams."
             finished: "Set when a player has stopped playing; distinct from simply having no recent Outcomes."
             introducedBy: "Self-referential: the Player who brought this one into the league. Social/referral lineage, not an org-chart."
             born: "Birth year (not full date) — used only to compute an approximate age for picker balancing."
         relationships:
-            - {predicate: introducedBy, range: Player, cardinality: "0..1 -> 1", inverse: introduced, description: "Referral lineage."}
-            - {predicate: rates, range: Player, via: Arse, cardinality: "*..* ", inverse: ratedBy, description: "Peer skill assessment; see Arse."}
-            - {predicate: supports, range: Club, via: ClubSupporter, cardinality: "*..*"}
-            - {predicate: supports, range: Country, via: CountrySupporter, cardinality: "*..*"}
-            - {predicate: invitedTo, range: GameDay, via: GameInvitation, cardinality: "*..*", description: "One invitation token per (player, game day)."}
-            - {predicate: respondsTo, range: GameDay, via: Outcome, cardinality: "*..*", description: "See Outcome — the RSVP-and-result join entity."}
-            - {predicate: hasSeasonRecord, range: PlayerRecord, cardinality: "1..*", description: "One snapshot per (player, year, game day)."}
-            - {predicate: partyTo, range: Transaction, cardinality: "0..*", description: "Financial ledger entries charged to or paid by this player."}
-            - {predicate: claimedBy, range: User, cardinality: "0..1", description: "The Better Auth login (if any) currently linked to this Player."}
+            - {
+                  predicate: introducedBy,
+                  range: Player,
+                  cardinality: "0..1 -> 1",
+                  inverse: introduced,
+                  description: "Referral lineage.",
+              }
+            - {
+                  predicate: rates,
+                  range: Player,
+                  via: Arse,
+                  cardinality: "*..* ",
+                  inverse: ratedBy,
+                  description: "Peer skill assessment; see Arse.",
+              }
+            - {
+                  predicate: supports,
+                  range: Club,
+                  via: ClubSupporter,
+                  cardinality: "*..*",
+              }
+            - {
+                  predicate: supports,
+                  range: Country,
+                  via: CountrySupporter,
+                  cardinality: "*..*",
+              }
+            - {
+                  predicate: invitedTo,
+                  range: GameDay,
+                  via: GameInvitation,
+                  cardinality: "*..*",
+                  description: "One invitation token per (player, game day).",
+              }
+            - {
+                  predicate: respondsTo,
+                  range: GameDay,
+                  via: Outcome,
+                  cardinality: "*..*",
+                  description: "See Outcome — the RSVP-and-result join entity.",
+              }
+            - {
+                  predicate: hasSeasonRecord,
+                  range: PlayerRecord,
+                  cardinality: "1..*",
+                  description: "One snapshot per (player, year, game day).",
+              }
+            - {
+                  predicate: partyTo,
+                  range: Transaction,
+                  cardinality: "0..*",
+                  description: "Financial ledger entries charged to or paid by this player.",
+              }
+            - {
+                  predicate: claimedBy,
+                  range: User,
+                  cardinality: "0..1",
+                  description: "The Better Auth login (if any) currently linked to this Player.",
+              }
 
     GameDay:
         description: >
@@ -89,10 +138,10 @@ classes:
             pickerGamesHistory: "How many of each candidate's most recent games the picker's skill average should look back over (defaults to 10 — see processes.pickerAlgorithm)."
             cost / hallCost: "Per-player game cost and hall-hire cost in pence, the basis for Transaction amounts that week."
         relationships:
-            - {predicate: has, range: GameInvitation, cardinality: "0..*"}
-            - {predicate: has, range: Outcome, cardinality: "0..*"}
-            - {predicate: has, range: PlayerRecord, cardinality: "0..*"}
-            - {predicate: has, range: Transaction, cardinality: "0..*"}
+            - { predicate: has, range: GameInvitation, cardinality: "0..*" }
+            - { predicate: has, range: Outcome, cardinality: "0..*" }
+            - { predicate: has, range: PlayerRecord, cardinality: "0..*" }
+            - { predicate: has, range: Transaction, cardinality: "0..*" }
 
     Outcome:
         description: >
@@ -110,8 +159,8 @@ classes:
             goalie: "Whether this player played in goal for THIS game specifically (independent of Player.goalie, which is a general capability flag)."
             pub: "Informal count/flag of pub attendance after this game; summed across a season to rank the Pub table."
         relationships:
-            - {predicate: outcomeOf, range: Player, cardinality: "1"}
-            - {predicate: occursOn, range: GameDay, cardinality: "1"}
+            - { predicate: outcomeOf, range: Player, cardinality: "1" }
+            - { predicate: occursOn, range: GameDay, cardinality: "1" }
 
     Arse:
         description: >
@@ -126,20 +175,40 @@ classes:
         keyAttributes:
             categories: "inGoal, running, shooting, passing, ballSkill, attacking, defending — each an independent nullable rating."
         relationships:
-            - {predicate: ratingOf, range: Player, roleName: player, cardinality: "1"}
-            - {predicate: ratingBy, range: Player, roleName: rater, cardinality: "1"}
+            - {
+                  predicate: ratingOf,
+                  range: Player,
+                  roleName: player,
+                  cardinality: "1",
+              }
+            - {
+                  predicate: ratingBy,
+                  range: Player,
+                  roleName: rater,
+                  cardinality: "1",
+              }
 
     Club:
         description: "A real-world football club that a Player can declare support for. External identity (soccerwayId) links it to the Soccerway database."
         identity: "id (integer, autoincrement)"
         relationships:
-            - {predicate: supportedBy, range: Player, via: ClubSupporter, cardinality: "*..*"}
+            - {
+                  predicate: supportedBy,
+                  range: Player,
+                  via: ClubSupporter,
+                  cardinality: "*..*",
+              }
 
     Country:
         description: "A national team a Player can declare support for."
         identity: "fifaCode (3-letter FIFA code, natural key)"
         relationships:
-            - {predicate: supportedBy, range: Player, via: CountrySupporter, cardinality: "*..*"}
+            - {
+                  predicate: supportedBy,
+                  range: Player,
+                  via: CountrySupporter,
+                  cardinality: "*..*",
+              }
 
     GameInvitation:
         description: >
@@ -149,8 +218,8 @@ classes:
             submitGameInvitationResponse.
         identity: "uuid"
         relationships:
-            - {predicate: issuedTo, range: Player, cardinality: "1"}
-            - {predicate: issuedFor, range: GameDay, cardinality: "1"}
+            - { predicate: issuedTo, range: Player, cardinality: "1" }
+            - { predicate: issuedFor, range: GameDay, cardinality: "1" }
 
     GameChat:
         description: >
@@ -174,8 +243,13 @@ classes:
             pub: "Sum of Outcome.pub across the season."
             rank*: "Precomputed rank within that season/table, one column per rankable table — see enumerations.TableName and lib/tables.ts."
         relationships:
-            - {predicate: recordOf, range: Player, cardinality: "1"}
-            - {predicate: asOf, range: GameDay, cardinality: "1", description: "Which game day this snapshot was computed after."}
+            - { predicate: recordOf, range: Player, cardinality: "1" }
+            - {
+                  predicate: asOf,
+                  range: GameDay,
+                  cardinality: "1",
+                  description: "Which game day this snapshot was computed after.",
+              }
 
     Transaction:
         description: >
@@ -187,8 +261,18 @@ classes:
             type: "See enumerations.TransactionType — determines whether playerId/gameDayId are expected to be set."
             amountPence: "Signed pence amount; sign convention follows type (a charge is a debit against the player, a payment reduces their debt)."
         relationships:
-            - {predicate: chargedTo, range: Player, cardinality: "0..1", description: "Null for ledger entries not tied to an individual, e.g. HallHire."}
-            - {predicate: relatesTo, range: GameDay, cardinality: "0..1", description: "Null for entries not tied to a specific game, e.g. a standalone Adjustment."}
+            - {
+                  predicate: chargedTo,
+                  range: Player,
+                  cardinality: "0..1",
+                  description: "Null for ledger entries not tied to an individual, e.g. HallHire.",
+              }
+            - {
+                  predicate: relatesTo,
+                  range: GameDay,
+                  cardinality: "0..1",
+                  description: "Null for entries not tied to a specific game, e.g. a standalone Adjustment.",
+              }
 
     PlayerExtraEmail:
         description: "An additional, independently-verifiable email address for a Player beyond their primary accountEmail — e.g. so invitations can reach a secondary inbox."
@@ -202,8 +286,12 @@ classes:
             before it's delivered — see relationships below.
         identity: "id (integer, autoincrement), unique tokenHash"
         relationships:
-            - {predicate: verifies, range: Player, cardinality: "0..1"}
-            - {predicate: verifies, range: ContactEnquiry, cardinality: "0..1"}
+            - { predicate: verifies, range: Player, cardinality: "0..1" }
+            - {
+                  predicate: verifies,
+                  range: ContactEnquiry,
+                  cardinality: "0..1",
+              }
 
     ContactEnquiry:
         description: >
@@ -212,7 +300,11 @@ classes:
             has been verified (verifiedAt) — an anti-spam gate.
         identity: "id (integer, autoincrement)"
         relationships:
-            - {predicate: verifiedBy, range: EmailVerification, cardinality: "1"}
+            - {
+                  predicate: verifiedBy,
+                  range: EmailVerification,
+                  cardinality: "1",
+              }
 
     PlayerLogin:
         description: "A short (<=16 char) login code bound to a Player — a legacy/lightweight authentication path distinct from the Better Auth User/Session/Account tables."
@@ -226,13 +318,12 @@ classes:
             `playerId` once claimed.
         identity: "id (string, Better Auth managed)"
         relationships:
-            - {predicate: claims, range: Player, cardinality: "0..1"}
+            - { predicate: claims, range: Player, cardinality: "0..1" }
 
 # ------------------------------------------------------------------------------
 # Enumerations — controlled vocabularies
 # ------------------------------------------------------------------------------
 enumerations:
-
     TeamName:
         values: [A, B]
         description: "The two sides a Player is assigned to for a given GameDay. Arbitrary labels — 'A' carries no seniority or home/away meaning."
@@ -288,7 +379,6 @@ relations:
 # touching the related code
 # ------------------------------------------------------------------------------
 processes:
-
     invitationAndResponse:
         description: "How a Player gets asked about a GameDay and how their answer is captured."
         steps:

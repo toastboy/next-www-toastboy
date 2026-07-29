@@ -1,0 +1,28 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "062de28f7887",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 4,
+  "files_touched": [
+    "src/components/DrinkersForm/DrinkersForm.tsx",
+    "src/components/DrinkersForm/DrinkersForm.vitest.spec.tsx",
+    "src/components/DrinkersForm/DrinkersFormSkeleton.tsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/06/2de28f7887/0/metadata.json",
+      "transcript": "/06/2de28f7887/0/full.jsonl",
+      "compact_transcript": "/06/2de28f7887/0/transcript.jsonl",
+      "content_hash": "/06/2de28f7887/0/content_hash.txt",
+      "prompt": "/06/2de28f7887/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 2117,
+    "cache_creation_tokens": 73645,
+    "cache_read_tokens": 1859449,
+    "output_tokens": 23168,
+    "api_call_count": 23
+  }
+}

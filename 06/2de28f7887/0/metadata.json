@@ -1,0 +1,41 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "062de28f7887",
+  "session_id": "81cc4dff-b083-4d2c-9415-0001c79824d8",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-29T06:39:04.637947Z",
+  "branch": "main",
+  "checkpoints_count": 4,
+  "save_step_count": 1,
+  "files_touched": [
+    "src/components/DrinkersForm/DrinkersForm.tsx",
+    "src/components/DrinkersForm/DrinkersForm.vitest.spec.tsx",
+    "src/components/DrinkersForm/DrinkersFormSkeleton.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "dbf7e8484ea7",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 2117,
+    "cache_creation_tokens": 73645,
+    "cache_read_tokens": 1859449,
+    "output_tokens": 23168,
+    "api_call_count": 23
+  },
+  "session_metrics": {
+    "turn_count": 4
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-07-29T06:39:04.614018Z",
+    "agent_lines": 287,
+    "agent_removed": 103,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 287,
+    "total_lines_changed": 390,
+    "agent_percentage": 100,
+    "metric_version": 2
+  }
+}

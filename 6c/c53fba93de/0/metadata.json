@@ -1,0 +1,119 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "6cc53fba93de",
+  "session_id": "a37c1e07-2b3a-420d-84ad-d1693e27d45c",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-29T07:16:28.741478Z",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "save_step_count": 2,
+  "files_touched": [
+    "src/components/MoneyForm/MoneyForm.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "5a114bd96f35",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 4815,
+    "cache_creation_tokens": 95783,
+    "cache_read_tokens": 5444539,
+    "output_tokens": 22003,
+    "api_call_count": 65
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "prompt-skill-claude-code-test-sync-2026-07-29T07:06:29.002615Z",
+      "event_type": "prompt_invocation",
+      "skill": {
+        "name": "test-sync"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "prompt_slash_command",
+        "confidence": "explicit"
+      },
+      "turn_id": "5a114bd96f35",
+      "timestamp": "2026-07-29T07:06:29.002615Z",
+      "native": {
+        "command": "/test-sync"
+      },
+      "collapse": {
+        "target": "user_message",
+        "label": "/test-sync",
+        "default_collapsed": true
+      }
+    },
+    {
+      "id": "claude-skill-toolu_016knByVV837PAVCFmpN2uJu",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "run"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "5a114bd96f35",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 116,
+        "end": 117,
+        "entry_ids": [
+          "a3d5bad0-2b7e-4af3-bf80-6e469274e1fa"
+        ],
+        "tool_use_id": "toolu_016knByVV837PAVCFmpN2uJu"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_016knByVV837PAVCFmpN2uJu"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: run",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 2
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-07-29T07:16:28.702029Z",
+    "agent_lines": 73,
+    "agent_removed": 66,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 73,
+    "total_lines_changed": 139,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 52,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 51
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 52,
+      "user_lines_removed": 0,
+      "agent_lines_added": 73,
+      "agent_lines_removed": 66,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 51
+      }
+    }
+  ]
+}

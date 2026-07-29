@@ -1,0 +1,5 @@
+Start work on SYS-567. I want each player to be surrounded by a border similar to the Responses form rather than a Paper - and then a Paper overall like the admin player list.
+
+---
+
+/test-sync

@@ -22,6 +22,9 @@ vi.mock('@mantine/notifications', () => ({
     },
 }));
 
+const getRowOrder = () => screen.getAllByRole('checkbox', { name: /^Pub / })
+    .map((checkbox) => checkbox.getAttribute('aria-label'));
+
 const renderForm = (setDrinkers: SetDrinkersProxy) => {
     render(
         <Wrapper>
@@ -58,7 +61,7 @@ describe('DrinkersForm', () => {
         renderForm(vi.fn<SetDrinkersProxy>());
 
         expect(screen.getByRole('heading', { name: 'Game 1249 Drinkers' })).toBeInTheDocument();
-        expect(screen.getByText('Selected: 2')).toBeInTheDocument();
+        expect(screen.getByText('4 of 4 visible, 2 selected')).toBeInTheDocument();
         expect(screen.getByLabelText('Pub Alex Keeper')).toBeChecked();
         expect(screen.getByLabelText('Pub Casey Mid')).toBeChecked();
         expect(screen.getByLabelText('Pub Britt Winger')).not.toBeChecked();
@@ -109,7 +112,7 @@ describe('DrinkersForm', () => {
         await user.click(screen.getByLabelText('Pub Alex Keeper'));
 
         expect(screen.getByLabelText('Pub Alex Keeper')).not.toBeChecked();
-        expect(screen.getByText('Selected: 1')).toBeInTheDocument();
+        expect(screen.getByText('4 of 4 visible, 1 selected')).toBeInTheDocument();
     });
 
     it('filters visible players by name', async () => {
@@ -152,6 +155,104 @@ describe('DrinkersForm', () => {
         expect(screen.getByLabelText('Pub Britt Winger')).not.toBeChecked();
     });
 
+    it('defaults to sorting by team ascending', () => {
+        renderForm(vi.fn<SetDrinkersProxy>());
+
+        expect(getRowOrder()).toEqual([
+            'Pub Alex Keeper',
+            'Pub Britt Winger',
+            'Pub Casey Mid',
+            'Pub Dev Striker',
+        ]);
+
+        expect(screen.getByRole('button', { name: 'Sort by Team' }).closest('th'))
+            .toHaveAttribute('aria-sort', 'ascending');
+        expect(screen.getByRole('button', { name: 'Sort by Player' }).closest('th'))
+            .toHaveAttribute('aria-sort', 'none');
+        expect(screen.getByRole('button', { name: 'Sort by Response' }).closest('th'))
+            .toHaveAttribute('aria-sort', 'none');
+    });
+
+    it('toggles sort direction on the already-active Team header when clicked', async () => {
+        const user = userEvent.setup();
+        renderForm(vi.fn<SetDrinkersProxy>());
+
+        const teamSortButton = screen.getByRole('button', { name: 'Sort by Team' });
+
+        await user.click(teamSortButton);
+
+        expect(teamSortButton.closest('th')).toHaveAttribute('aria-sort', 'descending');
+        expect(getRowOrder()).toEqual([
+            'Pub Britt Winger',
+            'Pub Alex Keeper',
+            'Pub Casey Mid',
+            'Pub Dev Striker',
+        ]);
+
+        // Click again to toggle back to ascending
+        await user.click(teamSortButton);
+
+        expect(teamSortButton.closest('th')).toHaveAttribute('aria-sort', 'ascending');
+        expect(getRowOrder()).toEqual([
+            'Pub Alex Keeper',
+            'Pub Britt Winger',
+            'Pub Casey Mid',
+            'Pub Dev Striker',
+        ]);
+    });
+
+    it('switches to sorting by name when the Player header is clicked, and toggles direction', async () => {
+        const user = userEvent.setup();
+        renderForm(vi.fn<SetDrinkersProxy>());
+
+        const playerSortButton = screen.getByRole('button', { name: 'Sort by Player' });
+        await user.click(playerSortButton);
+
+        expect(playerSortButton.closest('th')).toHaveAttribute('aria-sort', 'ascending');
+        expect(screen.getByRole('button', { name: 'Sort by Team' }).closest('th'))
+            .toHaveAttribute('aria-sort', 'none');
+
+        await user.click(playerSortButton);
+
+        expect(playerSortButton.closest('th')).toHaveAttribute('aria-sort', 'descending');
+    });
+
+    it('sorts a non-null team ahead of a null team when a null team sorts earlier', async () => {
+        const user = userEvent.setup();
+        const teamOrderedPlayers: OutcomePlayerType[] = [
+            { ...defaultDrinkersData[2], team: null },
+            { ...defaultDrinkersData[0], team: 'A' },
+        ];
+
+        render(
+            <Wrapper>
+                <DrinkersForm
+                    gameId={1249}
+                    gameDate="2026-02-03"
+                    players={teamOrderedPlayers}
+                    setDrinkers={vi.fn<SetDrinkersProxy>()}
+                />
+            </Wrapper>,
+        );
+
+        // Already sorted by team by default; toggling direction shouldn't move the null team
+        await user.click(screen.getByRole('button', { name: 'Sort by Team' }));
+
+        expect(getRowOrder()).toEqual(['Pub Alex Keeper', 'Pub Casey Mid']);
+    });
+
+    it('sorts by response when the Response header is clicked, and toggles direction', async () => {
+        const user = userEvent.setup();
+        renderForm(vi.fn<SetDrinkersProxy>());
+
+        const responseSortButton = screen.getByRole('button', { name: 'Sort by Response' });
+        await user.click(responseSortButton);
+        expect(responseSortButton.closest('th')).toHaveAttribute('aria-sort', 'ascending');
+
+        await user.click(responseSortButton);
+        expect(responseSortButton.closest('th')).toHaveAttribute('aria-sort', 'descending');
+    });
+
     it('resets selection when players prop changes to a new reference', () => {
         const setDrinkers = vi.fn<SetDrinkersProxy>();
         const { rerender } = render(
@@ -165,7 +266,7 @@ describe('DrinkersForm', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByText('Selected: 2')).toBeInTheDocument();
+        expect(screen.getByText('4 of 4 visible, 2 selected')).toBeInTheDocument();
 
         // New reference with only one player having pub > 0
         const updatedPlayers: OutcomePlayerType[] = [
@@ -184,7 +285,7 @@ describe('DrinkersForm', () => {
         );
 
         // Only Casey Mid (pub=2) remains selected
-        expect(screen.getByText('Selected: 1')).toBeInTheDocument();
+        expect(screen.getByText('4 of 4 visible, 1 selected')).toBeInTheDocument();
     });
 
     it('shows "No active players found" when players array is empty', () => {

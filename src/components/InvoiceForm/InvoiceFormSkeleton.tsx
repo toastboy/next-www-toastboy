@@ -1,30 +1,25 @@
-import { Paper, Skeleton, Stack, Table, TableTbody, TableTd, TableTh, TableThead, TableTr } from '@mantine/core';
+import { Flex, Group, Skeleton, Stack } from '@mantine/core';
 
-/** Skeleton placeholder matching the InvoiceForm component layout (month nav + summary + game table). */
+/** Skeleton placeholder matching the InvoiceForm component layout (title + month nav + game day rows). */
 export const InvoiceFormSkeleton = () => (
-    <Stack data-testid="skeleton-invoice-form" gap="xl" w="60%" mx="auto" my="xl">
-        <Skeleton height={28} width={200} mx="auto" />
-        <Skeleton height={36} width="100%" />
-        <Paper withBorder p="md">
-            <Skeleton height={20} width="60%" />
-        </Paper>
-        <Table>
-            <TableThead>
-                <TableTr>
-                    <TableTh><Skeleton height={14} width={60} /></TableTh>
-                    <TableTh><Skeleton height={14} width={80} /></TableTh>
-                    <TableTh><Skeleton height={14} width={60} /></TableTh>
-                </TableTr>
-            </TableThead>
-            <TableTbody>
-                {Array.from({ length: 5 }).map((_, i) => (
-                    <TableTr key={i}>
-                        <TableTd><Skeleton height={14} /></TableTd>
-                        <TableTd><Skeleton height={14} width={40} /></TableTd>
-                        <TableTd><Skeleton height={14} /></TableTd>
-                    </TableTr>
-                ))}
-            </TableTbody>
-        </Table>
+    <Stack data-testid="skeleton-invoice-form" gap="md">
+        <Stack align="flex-start" gap="xs">
+            <Skeleton height={28} width={160} />
+            <Skeleton height={18} width={320} />
+        </Stack>
+        <Group justify="space-between" wrap="wrap">
+            <Skeleton height={36} width={110} />
+            <Skeleton height={28} width={160} />
+            <Skeleton height={36} width={110} />
+        </Group>
+        <Stack gap="sm">
+            {Array.from({ length: 5 }).map((_, i) => (
+                <Flex key={i} align="center" gap="sm" bd="1px solid var(--mantine-color-gray-3)" p="sm" bdrs="sm">
+                    <Skeleton height={14} width={100} />
+                    <Skeleton height={20} width={20} />
+                    <Skeleton height={36} width="8em" />
+                </Flex>
+            ))}
+        </Stack>
     </Stack>
 );

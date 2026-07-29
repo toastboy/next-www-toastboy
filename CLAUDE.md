@@ -64,6 +64,8 @@ npx vitest run --config vitest.services.config.ts path/to/test.ts
 - **Library:** `src/lib/` — utilities, auth, config, email, Azure, dates, URLs, observability
 - **Types:** `src/types/` — custom TypeScript types and Zod schema extensions
 
+**Domain ontology:** [`docs/ontology.yaml`](docs/ontology.yaml) — the meaning layer on top of `prisma/schema.prisma`: what each entity represents, how they relate, controlled vocabularies, business workflows (invitations, picker, results, money), and invariants the code enforces that the schema doesn't. Consult it before making non-trivial changes to domain logic (game days, outcomes, picker, ratings, tables, transactions) — read `prisma/schema.prisma` for structure and this file for meaning. While changes to the ontology are possible they are likley to be rare and each should be considered very carefully: the business logic and the ontology should always be kept in sync.
+
 **Data flow rule:** Components call services (read) or server actions (write). Never write direct Prisma calls in API routes, pages, or components — refactor into a service method. If you filter/sort service results in calling code, move that logic into the service.
 
 ## Key Conventions

@@ -1,0 +1,386 @@
+# ==============================================================================
+# next-www-toastboy — Domain Ontology
+# ==============================================================================
+# What this file is:
+#   A semantic model of the footy league domain — the concepts (classes), the
+#   meaningful relationships between them, the controlled vocabularies
+#   (enumerations), the workflows (processes) that move entities through
+#   states, and the business rules that hold true but are NOT expressed in
+#   prisma/schema.prisma (which only encodes structure: columns, FKs, types).
+#
+#   Read this alongside prisma/schema.prisma, not instead of it:
+#     - schema.prisma is authoritative for STRUCTURE (field names, types,
+#       nullability, indexes). Do not duplicate that here.
+#     - This file is authoritative for MEANING (what a concept represents,
+#       why two records are related, what a value implies, what invariant
+#       the code enforces that the database does not).
+#   If the two ever disagree, schema.prisma has won and this file is stale —
+#   fix this file, not your understanding of the code.
+#
+# Why YAML: fully structured (reliable for machine parsing) while staying
+#   diff-friendly and readable without tooling, consistent with how the rest
+#   of this repo documents config (src/lib/config.ts) and guidance
+#   (CLAUDE.md).
+#
+# Status: v0.1.0, hand-built from prisma/schema.prisma, src/lib, src/services
+#   and src/actions on 2026-07-29. Treat as a living document — update it in
+#   the same PR whenever a schema change, new action, or new business rule
+#   changes what's true here.
+# ==============================================================================
+
+ontology:
+    title: "Toastboy Footy Domain Ontology"
+    domain: "Five-a-side football league management for www.toastboy.co.uk"
+    version: "0.1.0"
+    lastReviewed: "2026-07-29"
+    groundedIn:
+        - prisma/schema.prisma
+        - src/lib/gameResult.ts
+        - src/lib/tables.ts
+        - src/lib/money.ts
+        - src/lib/core/submitPicker/submitPicker.ts
+        - src/services/PlayerRecord/PlayerRecord.ts
+        - src/services/Outcome/Outcome.ts
+        - src/types/FootyChannel.ts
+
+# ------------------------------------------------------------------------------
+# Classes — the concepts (entities) of the domain
+# ------------------------------------------------------------------------------
+# Each class lists only the attributes whose MEANING isn't obvious from its
+# name/type in schema.prisma. Full column lists live in the schema.
+classes:
+
+    Player:
+        description: >
+            A person known to the league. This is the domain identity — distinct
+            from a Better Auth `User`, which is a login credential (see the
+            Player-vs-User note under `relations`). A Player can exist for years
+            before anyone ever logs in as them, and can keep playing after their
+            login access lapses.
+        identity: "id (integer, autoincrement)"
+        keyAttributes:
+            anonymous: "True for a placeholder/guest Player who has no confirmed real-world identity yet (e.g. a stand-in used before someone claims their profile)."
+            goalie: "Whether this player is a recognised goalkeeper — read by the picker to balance goalie count across teams."
+            finished: "Set when a player has stopped playing; distinct from simply having no recent Outcomes."
+            introducedBy: "Self-referential: the Player who brought this one into the league. Social/referral lineage, not an org-chart."
+            born: "Birth year (not full date) — used only to compute an approximate age for picker balancing."
+        relationships:
+            - {predicate: introducedBy, range: Player, cardinality: "0..1 -> 1", inverse: introduced, description: "Referral lineage."}
+            - {predicate: rates, range: Player, via: Arse, cardinality: "*..* ", inverse: ratedBy, description: "Peer skill assessment; see Arse."}
+            - {predicate: supports, range: Club, via: ClubSupporter, cardinality: "*..*"}
+            - {predicate: supports, range: Country, via: CountrySupporter, cardinality: "*..*"}
+            - {predicate: invitedTo, range: GameDay, via: GameInvitation, cardinality: "*..*", description: "One invitation token per (player, game day)."}
+            - {predicate: respondsTo, range: GameDay, via: Outcome, cardinality: "*..*", description: "See Outcome — the RSVP-and-result join entity."}
+            - {predicate: hasSeasonRecord, range: PlayerRecord, cardinality: "1..*", description: "One snapshot per (player, year, game day)."}
+            - {predicate: partyTo, range: Transaction, cardinality: "0..*", description: "Financial ledger entries charged to or paid by this player."}
+            - {predicate: claimedBy, range: User, cardinality: "0..1", description: "The Better Auth login (if any) currently linked to this Player."}
+
+    GameDay:
+        description: >
+            A single calendar fixture. Despite the name, not every GameDay is an
+            actual match — `game: false` marks a non-game entry on the calendar
+            (e.g. a week deliberately skipped) that still needs a row so
+            invitations/history stay contiguous.
+        identity: "id (integer, autoincrement)"
+        keyAttributes:
+            game: "False = this calendar slot is not an actual match (see description)."
+            mailSent: "Timestamp invitations went out; the zero-point that Outcome.responseInterval is measured from."
+            bibs: "Which team (A or B) wears bibs, purely a pitch-side courtesy, not a result field."
+            pickerGamesHistory: "How many of each candidate's most recent games the picker's skill average should look back over (defaults to 10 — see processes.pickerAlgorithm)."
+            cost / hallCost: "Per-player game cost and hall-hire cost in pence, the basis for Transaction amounts that week."
+        relationships:
+            - {predicate: has, range: GameInvitation, cardinality: "0..*"}
+            - {predicate: has, range: Outcome, cardinality: "0..*"}
+            - {predicate: has, range: PlayerRecord, cardinality: "0..*"}
+            - {predicate: has, range: Transaction, cardinality: "0..*"}
+
+    Outcome:
+        description: >
+            The single join entity between Player and GameDay. It is deliberately
+            overloaded: the SAME row carries both the RSVP (before the game) and
+            the result (after it). There is no separate "attendance" or "result"
+            entity — code that needs "did this player actually play" has to read
+            `response === 'Yes' AND team is not null`, not just one field.
+        identity: "unique (gameDayId, playerId)"
+        keyAttributes:
+            response: "RSVP state — see enumerations.PlayerResponse. Set by the player (or on their behalf) before the game."
+            responseInterval: "Seconds between GameDay.mailSent and when this response was recorded. Lower is 'speedier' — feeds the Speedy table (rankSpeedy), lower value wins."
+            points: "This player's match points for the day: 0 = their team lost, 1 = draw, 3 = won. Only meaningful once the game has been played; see processes.matchResult and rules.unanimous-team-points."
+            team: "'A' or 'B' once teams are picked; null before picking or if the player isn't playing."
+            goalie: "Whether this player played in goal for THIS game specifically (independent of Player.goalie, which is a general capability flag)."
+            pub: "Informal count/flag of pub attendance after this game; summed across a season to rank the Pub table."
+        relationships:
+            - {predicate: outcomeOf, range: Player, cardinality: "1"}
+            - {predicate: occursOn, range: GameDay, cardinality: "1"}
+
+    Arse:
+        description: >
+            A peer skill rating: one Player (the rater) scores another Player
+            (the ratee) across seven categories. "Arse" is the project's
+            long-standing informal name for this rating system — treat it as a
+            proper noun, not a typo. Ratings are unmoderated peer opinion, not a
+            computed statistic, and are NOT currently an input to the picker
+            algorithm (which uses recent match points instead — see
+            processes.pickerAlgorithm).
+        identity: "unique (playerId, raterId)"
+        keyAttributes:
+            categories: "inGoal, running, shooting, passing, ballSkill, attacking, defending — each an independent nullable rating."
+        relationships:
+            - {predicate: ratingOf, range: Player, roleName: player, cardinality: "1"}
+            - {predicate: ratingBy, range: Player, roleName: rater, cardinality: "1"}
+
+    Club:
+        description: "A real-world football club that a Player can declare support for. External identity (soccerwayId) links it to the Soccerway database."
+        identity: "id (integer, autoincrement)"
+        relationships:
+            - {predicate: supportedBy, range: Player, via: ClubSupporter, cardinality: "*..*"}
+
+    Country:
+        description: "A national team a Player can declare support for."
+        identity: "fifaCode (3-letter FIFA code, natural key)"
+        relationships:
+            - {predicate: supportedBy, range: Player, via: CountrySupporter, cardinality: "*..*"}
+
+    GameInvitation:
+        description: >
+            A single-use UUID token issued to one Player for one GameDay,
+            allowing them to RSVP via a direct link without being logged in.
+            Created in bulk by the triggerInvitations action; consumed by
+            submitGameInvitationResponse.
+        identity: "uuid"
+        relationships:
+            - {predicate: issuedTo, range: Player, cardinality: "1"}
+            - {predicate: issuedFor, range: GameDay, cardinality: "1"}
+
+    GameChat:
+        description: >
+            A free-text message posted against a game day. Deliberately NOT
+            foreign-keyed to Player/GameDay in the schema (plain int columns) —
+            treat referential integrity here as advisory only, not guaranteed.
+        identity: "id (integer, autoincrement)"
+
+    PlayerRecord:
+        description: >
+            A derived, materialized snapshot of one Player's aggregate
+            statistics for one season (year), recomputed as of a given GameDay
+            by the updatePlayerRecords action — NOT something a user edits
+            directly. `year = 0` conventionally means "all-time" (see
+            lib/tables.ts getYearName).
+        identity: "unique (playerId, year, gameDayId)"
+        keyAttributes:
+            stalwart: "Percentage of the SEASON's games that this player played in — attendance/commitment metric, not skill."
+            speedy: "This player's average response interval for the season, in the same units as Outcome.responseInterval; lower ranks better. Only shown once responses >= config.minRepliesForSpeedyTable, otherwise the player appears in the 'Unqualified' variant."
+            averages: "Mean match points per game for the season; qualification gated by config.minGamesForAveragesTable."
+            pub: "Sum of Outcome.pub across the season."
+            rank*: "Precomputed rank within that season/table, one column per rankable table — see enumerations.TableName and lib/tables.ts."
+        relationships:
+            - {predicate: recordOf, range: Player, cardinality: "1"}
+            - {predicate: asOf, range: GameDay, cardinality: "1", description: "Which game day this snapshot was computed after."}
+
+    Transaction:
+        description: >
+            A single entry in the financial ledger. Amounts are always pence
+            (integer), never floating-point pounds — see lib/money.ts for the
+            only sanctioned pence<->pounds conversion.
+        identity: "id (integer, autoincrement)"
+        keyAttributes:
+            type: "See enumerations.TransactionType — determines whether playerId/gameDayId are expected to be set."
+            amountPence: "Signed pence amount; sign convention follows type (a charge is a debit against the player, a payment reduces their debt)."
+        relationships:
+            - {predicate: chargedTo, range: Player, cardinality: "0..1", description: "Null for ledger entries not tied to an individual, e.g. HallHire."}
+            - {predicate: relatesTo, range: GameDay, cardinality: "0..1", description: "Null for entries not tied to a specific game, e.g. a standalone Adjustment."}
+
+    PlayerExtraEmail:
+        description: "An additional, independently-verifiable email address for a Player beyond their primary accountEmail — e.g. so invitations can reach a secondary inbox."
+        identity: "id (integer, autoincrement), unique email"
+
+    EmailVerification:
+        description: >
+            A single-use, expiring, hashed token proving control of an email
+            address. Shared plumbing for two otherwise-unrelated flows: linking
+            a new email to a Player, and verifying a public ContactEnquiry
+            before it's delivered — see relationships below.
+        identity: "id (integer, autoincrement), unique tokenHash"
+        relationships:
+            - {predicate: verifies, range: Player, cardinality: "0..1"}
+            - {predicate: verifies, range: ContactEnquiry, cardinality: "0..1"}
+
+    ContactEnquiry:
+        description: >
+            A message submitted through the public contact form. Held back and
+            only emailed to the league (deliveredAt) once its sender's address
+            has been verified (verifiedAt) — an anti-spam gate.
+        identity: "id (integer, autoincrement)"
+        relationships:
+            - {predicate: verifiedBy, range: EmailVerification, cardinality: "1"}
+
+    PlayerLogin:
+        description: "A short (<=16 char) login code bound to a Player — a legacy/lightweight authentication path distinct from the Better Auth User/Session/Account tables."
+        identity: "unique (playerId, login)"
+
+    User:
+        description: >
+            A Better Auth login identity (email/OAuth via Google or Microsoft).
+            This is infrastructure, not domain data — see the Player-vs-User
+            note under `relations`. Optionally linked to exactly one Player via
+            `playerId` once claimed.
+        identity: "id (string, Better Auth managed)"
+        relationships:
+            - {predicate: claims, range: Player, cardinality: "0..1"}
+
+# ------------------------------------------------------------------------------
+# Enumerations — controlled vocabularies
+# ------------------------------------------------------------------------------
+enumerations:
+
+    TeamName:
+        values: [A, B]
+        description: "The two sides a Player is assigned to for a given GameDay. Arbitrary labels — 'A' carries no seniority or home/away meaning."
+
+    PlayerResponse:
+        values:
+            Yes: "Committed to play."
+            No: "Not playing, and said so."
+            Dunno: "Undecided — the initial default before a real response."
+            Excused: "Not playing, with a pre-agreed excuse (e.g. away, known conflict)."
+            Flaked: "Said Yes (or didn't respond) but didn't show up — recorded after the fact."
+            Injured: "Not playing due to injury."
+        notes: >
+            Only `response === 'Yes'` makes a player eligible for team selection
+            (see processes.pickerAlgorithm). The others are all "not playing" in
+            different flavours, distinguished for reporting/history, not for
+            picker eligibility.
+
+    TableName:
+        values: [points, averages, stalwart, speedy, pub]
+        description: >
+            The five leaderboard tables the site publishes. Each maps to a
+            ranking column on PlayerRecord via lib/tables.ts `rankMap`; averages
+            and speedy additionally have an "Unqualified" variant for players
+            below the games/responses threshold in lib/config.ts.
+
+    TransactionType:
+        values:
+            PlayerGameCharge: "A player's share of a game's cost — debit."
+            PlayerPayment: "A payment received from a player — credit, reduces their debt."
+            HallHire: "The venue cost for a game day — not tied to any one player."
+            Adjustment: "A manual correction to a player's balance."
+            Refund: "Money returned to a player."
+
+# ------------------------------------------------------------------------------
+# Relations — cross-cutting notes that don't belong to a single class
+# ------------------------------------------------------------------------------
+relations:
+    - subject: Player
+      note: >
+          Player vs. User: Player is "who this person is in the league"
+          (stats, history, ratings, money owed) and predates and outlives
+          login access. User is "how someone proves who they are right now"
+          (Better Auth session/OAuth identity). The link is optional and
+          one-directional in practice — many Players (especially historical
+          or anonymous ones) have no User at all. The join happens via the
+          claimPlayerInvitation action, not by editing User.playerId
+          directly (see CLAUDE.md: Better Auth tables are never modified
+          directly via Prisma).
+
+# ------------------------------------------------------------------------------
+# Processes — workflows/state machines an agent should understand before
+# touching the related code
+# ------------------------------------------------------------------------------
+processes:
+
+    invitationAndResponse:
+        description: "How a Player gets asked about a GameDay and how their answer is captured."
+        steps:
+            - "triggerInvitations action creates a GameInvitation (UUID) per active Player for the upcoming GameDay and emails a direct RSVP link."
+            - "Player responds either via that link (submitGameInvitationResponse action, no login required) or logged-in (submitResponse action)."
+            - "Either path upserts the Player's Outcome row for that GameDay, setting `response` and, on first response, `responseInterval` measured from GameDay.mailSent."
+
+    pickerAlgorithm:
+        description: >
+            How teams are balanced for a GameDay (src/lib/core/submitPicker).
+            Not skill-rating (Arse) based — it is recent-results based.
+        steps:
+            - "Candidates = every selected player whose Outcome.response is 'Yes' for the current GameDay."
+            - "Each candidate's skill proxy is a recency-weighted average of their last `GameDay.pickerGamesHistory` match points (Outcome.points; win=3/draw=1/loss=0), via Outcome.getRecentAverage. Missing history games are backfilled with a neutral 1.45."
+            - "Age is approximate, derived from Player.born, only for players born before 1995 (older data is treated as unreliable/unknown and excluded from the age balance)."
+            - "If the candidate count is odd, one non-goalie 'middle' player is set aside first (selectMiddleOutfieldPlayer) so the remaining pool is even."
+            - "findBestSplit exhaustively evaluates every even split and picks the one minimising, in priority order: |difference in goalie count|, |difference in total skill average|, |difference in count of unknown-age players|, |difference in total age|."
+            - "The set-aside middle player (if any) joins whichever team has the lower total skill average."
+            - "Outcome.team is set to 'A'/'B' for every selected player, and an email announcing both line-ups is sent to all active players."
+        invariant: "Re-running the picker for the same GameDay first clears every existing team assignment for that day, so it is always safe to re-pick (e.g. after a late withdrawal)."
+
+    matchResult:
+        description: "How a final score becomes each player's Outcome.points."
+        steps:
+            - "setGameResult action records the match outcome, which is written per-player as Outcome.points (see rules.unanimous-team-points for the constraint this must satisfy)."
+            - "getGameWinnersFromTeams (src/lib/gameResult.ts) derives a GameWinner ('A' | 'B' | 'draw' | null) purely by reading each team's unanimous points value — it does not store the winner separately."
+            - "updatePlayerRecords action then recomputes PlayerRecord aggregates and every table's ranks for the affected year(s)."
+
+    money:
+        description: "How a game day's cost becomes debt and how debt is settled."
+        steps:
+            - "Each GameDay carries `cost` (per-player) and `hallCost` (venue), both in pence."
+            - "A PlayerGameCharge Transaction is created per playing Player; a HallHire Transaction (no playerId) covers the venue."
+            - "payDebt / recordHallHire / updateInvoiceGameDays actions create PlayerPayment, HallHire and Adjustment/Refund Transactions respectively; a Player's outstanding balance is the signed sum of their Transactions."
+
+    liveUpdates:
+        description: >
+            Every mutating server action must revalidate the Next.js routes it
+            affects AND broadcast on the matching FootyChannel(s) (see
+            src/types/FootyChannel.ts and CLAUDE.md "Live updates") so pages
+            rendering <AutoRefresh> pick up the change without polling. This is
+            infrastructure plumbing, not domain meaning, but it's a hard
+            constraint on how every write path above must be implemented.
+
+# ------------------------------------------------------------------------------
+# Rules — invariants and inferences that hold in this domain but are NOT
+# enforced by the database schema itself
+# ------------------------------------------------------------------------------
+rules:
+    - id: unanimous-team-points
+      statement: >
+          For a GameDay's result to be considered determined, every Outcome on
+          a given team must carry the SAME points value (all 0, or all 1, or
+          all 3), and the two teams' values must be a valid pairing
+          (3&0 = decisive win/loss, 1&1 = draw). Any other combination — mixed
+          values within a team, or an invalid pairing — means the result is
+          treated as unset/undetermined, not as an error.
+      source: src/lib/gameResult.ts (pickTeamPoints, getGameWinnersFromTeams)
+
+    - id: played-requires-yes-and-team
+      statement: >
+          "Did this player actually play a given GameDay" is not a stored
+          field — it is inferred as response === 'Yes' AND team is not null.
+          A 'Yes' with no team means they were selected-in but not yet
+          (or no longer) placed on a side.
+      source: src/services/Outcome, src/services/PlayerRecord/PlayerRecord.ts
+
+    - id: qualification-thresholds
+      statement: >
+          The Averages and Speedy tables both hide players below a minimum
+          sample size (config.minGamesForAveragesTable,
+          config.minRepliesForSpeedyTable) from the main ranking and place
+          them in a separate "Unqualified" ranking instead, so a player who
+          has played once and won can't top the season averages table.
+      source: src/lib/config.ts, src/lib/tables.ts, src/services/PlayerRecord/PlayerRecord.ts
+
+    - id: all-time-year-zero
+      statement: "year = 0 on a PlayerRecord/table is the sentinel for an all-time (not season-scoped) aggregate, not a real calendar year."
+      source: src/lib/tables.ts (getYearName)
+
+    - id: picker-idempotent-repick
+      statement: >
+          Submitting the picker again for the same GameDay always clears every
+          existing team assignment first, so re-picking after a late
+          withdrawal or addition is always safe and never leaves a stale
+          assignment behind.
+      source: src/lib/core/submitPicker/submitPicker.ts
+
+    - id: better-auth-tables-opaque
+      statement: >
+          User, Session, Account and Verification are Better Auth-owned; the
+          domain model treats them as an opaque identity provider and only
+          ever reads/writes them through Better Auth's own APIs, never via
+          direct Prisma calls.
+      source: CLAUDE.md "Prisma / Database"

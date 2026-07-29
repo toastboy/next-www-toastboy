@@ -1,4 +1,8 @@
-import { Paper, Skeleton, Table, TableTbody, TableTd, TableTh, TableThead, TableTr } from '@mantine/core';
+import {
+    Paper,
+    Skeleton,
+    Table,
+} from '@mantine/core';
 
 import { config } from '@/lib/config';
 
@@ -6,26 +10,26 @@ import { config } from '@/lib/config';
 export const TurnoutSkeleton = () => (
     <Paper p="sm" withBorder data-testid="skeleton-turnout">
         <Table layout="fixed">
-            <TableThead>
-                <TableTr>
+            <Table.Thead>
+                <Table.Tr>
                     {Array.from({ length: 6 }).map((_, i) => (
-                        <TableTh key={i}>
+                        <Table.Th key={i}>
                             <Skeleton height={14} width={60} />
-                        </TableTh>
+                        </Table.Th>
                     ))}
-                </TableTr>
-            </TableThead>
-            <TableTbody>
+                </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
                 {Array.from({ length: config.tableVisibleRows }).map((_, i) => (
-                    <TableTr key={i}>
+                    <Table.Tr key={i}>
                         {Array.from({ length: 6 }).map((_, j) => (
-                            <TableTd key={j}>
+                            <Table.Td key={j}>
                                 <Skeleton height={14} />
-                            </TableTd>
+                            </Table.Td>
                         ))}
-                    </TableTr>
+                    </Table.Tr>
                 ))}
-            </TableTbody>
+            </Table.Tbody>
         </Table>
     </Paper>
 );

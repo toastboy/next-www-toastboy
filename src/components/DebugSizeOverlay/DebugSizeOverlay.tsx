@@ -1,7 +1,12 @@
 'use client';
 
-import { Badge, Box } from '@mantine/core';
-import { useElementSize } from '@mantine/hooks';
+import {
+    Badge,
+    Box,
+} from '@mantine/core';
+import {
+    useElementSize,
+} from '@mantine/hooks';
 import { CSSProperties, ReactNode } from 'react';
 
 /**

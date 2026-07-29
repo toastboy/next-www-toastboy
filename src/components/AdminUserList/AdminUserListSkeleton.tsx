@@ -1,28 +1,32 @@
-import { Container, Skeleton, Table, TableTbody, TableTd, TableTh, TableThead, TableTr } from '@mantine/core';
+import {
+    Container,
+    Skeleton,
+    Table,
+} from '@mantine/core';
 
 /** Skeleton placeholder matching the AdminUserList component layout (search input + user table). */
 export const AdminUserListSkeleton = () => (
     <Container>
         <Skeleton height={36} width="100%" mb="md" />
         <Table mt={20}>
-            <TableThead>
-                <TableTr>
-                    <TableTh><Skeleton height={14} width={80} /></TableTh>
-                    <TableTh><Skeleton height={14} width={120} /></TableTh>
-                    <TableTh><Skeleton height={14} width={50} /></TableTh>
-                    <TableTh><Skeleton height={14} width={80} /></TableTh>
-                </TableTr>
-            </TableThead>
-            <TableTbody>
+            <Table.Thead>
+                <Table.Tr>
+                    <Table.Th><Skeleton height={14} width={80} /></Table.Th>
+                    <Table.Th><Skeleton height={14} width={120} /></Table.Th>
+                    <Table.Th><Skeleton height={14} width={50} /></Table.Th>
+                    <Table.Th><Skeleton height={14} width={80} /></Table.Th>
+                </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
                 {Array.from({ length: 10 }).map((_, i) => (
-                    <TableTr key={i}>
-                        <TableTd><Skeleton height={14} /></TableTd>
-                        <TableTd><Skeleton height={14} /></TableTd>
-                        <TableTd><Skeleton height={14} width={40} /></TableTd>
-                        <TableTd><Skeleton height={14} /></TableTd>
-                    </TableTr>
+                    <Table.Tr key={i}>
+                        <Table.Td><Skeleton height={14} /></Table.Td>
+                        <Table.Td><Skeleton height={14} /></Table.Td>
+                        <Table.Td><Skeleton height={14} width={40} /></Table.Td>
+                        <Table.Td><Skeleton height={14} /></Table.Td>
+                    </Table.Tr>
                 ))}
-            </TableTbody>
+            </Table.Tbody>
         </Table>
     </Container>
 );

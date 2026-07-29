@@ -1,4 +1,10 @@
-import { Center, Container, Flex, Paper, Title } from '@mantine/core';
+import {
+    Center,
+    Container,
+    Flex,
+    Paper,
+    Title,
+} from '@mantine/core';
 
 import { authExport } from '@/actions/auth-export';
 import { getProgress } from '@/actions/getProgress';

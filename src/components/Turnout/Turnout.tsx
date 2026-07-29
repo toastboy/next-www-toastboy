@@ -4,13 +4,10 @@ import {
     Button,
     Paper,
     Table,
-    TableTbody,
-    TableTd,
-    TableTh,
-    TableThead,
-    TableTr,
 } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import {
+    useDisclosure,
+} from '@mantine/hooks';
 import { IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 import { useId } from 'react';
 
@@ -33,30 +30,30 @@ export const Turnout = ({ turnout }: Props) => {
     const tbodyId = useId();
 
     const rows = visibleTurnout.map((t) => (
-        <TableTr key={t.year}>
-            <TableTd>{t.year}</TableTd>
-            <TableTd>{t.gamesPlayed}</TableTd>
-            <TableTd>{t.gamesCancelled}</TableTd>
-            <TableTd>{t.responsesPerGameInitiated.toFixed(1)}</TableTd>
-            <TableTd>{t.yessesPerGameInitiated.toFixed(1)}</TableTd>
-            <TableTd>{t.playersPerGamePlayed.toFixed(1)}</TableTd>
-        </TableTr>
+        <Table.Tr key={t.year}>
+            <Table.Td>{t.year}</Table.Td>
+            <Table.Td>{t.gamesPlayed}</Table.Td>
+            <Table.Td>{t.gamesCancelled}</Table.Td>
+            <Table.Td>{t.responsesPerGameInitiated.toFixed(1)}</Table.Td>
+            <Table.Td>{t.yessesPerGameInitiated.toFixed(1)}</Table.Td>
+            <Table.Td>{t.playersPerGamePlayed.toFixed(1)}</Table.Td>
+        </Table.Tr>
     ));
 
     return (
         <Paper p="sm" maw="24rem" withBorder>
             <Table stickyHeader stickyHeaderOffset={0} layout="fixed">
-                <TableThead>
-                    <TableTr>
-                        <TableTh className={styles.verticalHeader}><span className={styles.verticalHeaderText}>Year</span></TableTh>
-                        <TableTh className={styles.verticalHeader}><span className={styles.verticalHeaderText}>Played</span></TableTh>
-                        <TableTh className={styles.verticalHeader}><span className={styles.verticalHeaderText}>Cancelled</span></TableTh>
-                        <TableTh className={styles.verticalHeader}><span className={styles.verticalHeaderText}>Response Rate</span></TableTh>
-                        <TableTh className={styles.verticalHeader}><span className={styles.verticalHeaderText}>Yes Rate</span></TableTh>
-                        <TableTh className={styles.verticalHeader}><span className={styles.verticalHeaderText}>Turnout Rate</span></TableTh>
-                    </TableTr>
-                </TableThead>
-                <TableTbody id={tbodyId}>{rows}</TableTbody>
+                <Table.Thead>
+                    <Table.Tr>
+                        <Table.Th className={styles.verticalHeader}><span className={styles.verticalHeaderText}>Year</span></Table.Th>
+                        <Table.Th className={styles.verticalHeader}><span className={styles.verticalHeaderText}>Played</span></Table.Th>
+                        <Table.Th className={styles.verticalHeader}><span className={styles.verticalHeaderText}>Cancelled</span></Table.Th>
+                        <Table.Th className={styles.verticalHeader}><span className={styles.verticalHeaderText}>Response Rate</span></Table.Th>
+                        <Table.Th className={styles.verticalHeader}><span className={styles.verticalHeaderText}>Yes Rate</span></Table.Th>
+                        <Table.Th className={styles.verticalHeader}><span className={styles.verticalHeaderText}>Turnout Rate</span></Table.Th>
+                    </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody id={tbodyId}>{rows}</Table.Tbody>
             </Table>
             {hiddenCount > 0 &&
                 <Button

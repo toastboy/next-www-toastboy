@@ -1,6 +1,8 @@
 'use client';
 
-import { notifications } from '@mantine/notifications';
+import {
+    notifications,
+} from '@mantine/notifications';
 import { IconX } from '@tabler/icons-react';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useRef } from 'react';

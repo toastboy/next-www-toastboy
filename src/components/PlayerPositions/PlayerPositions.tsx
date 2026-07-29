@@ -1,13 +1,11 @@
-import type { TitleOrder } from '@mantine/core';
+import type {
+    TitleOrder,
+} from '@mantine/core';
 import {
     Anchor,
     Divider,
     Paper,
     Table,
-    TableTbody,
-    TableTd,
-    TableTh,
-    TableTr,
     Title,
 } from '@mantine/core';
 import { TableNameSchema } from 'prisma/zod/schemas';
@@ -32,7 +30,7 @@ export const PlayerPositions = ({ player, year, record, titleOrder = 3 }: Props)
                 summary={`${player.name}'s ${getYearName(year)} table positions`}
                 layout="fixed"
             >
-                <TableTbody>
+                <Table.Tbody>
                     {TableNameSchema.options.map((table) => {
                         const position = record ?
                             record[rankMap[table][0] as keyof typeof record] ?? null :
@@ -40,21 +38,21 @@ export const PlayerPositions = ({ player, year, record, titleOrder = 3 }: Props)
                         const href = `/footy/table/${table}?year=${year}`;
 
                         return (
-                            <TableTr key={table}>
-                                <TableTh>
+                            <Table.Tr key={table}>
+                                <Table.Th>
                                     <Anchor href={href}>
                                         {table.charAt(0).toUpperCase() + table.slice(1)}
                                     </Anchor>
-                                </TableTh>
-                                <TableTd w="3rem">
+                                </Table.Th>
+                                <Table.Td w="3rem">
                                     {position !== null ?
                                         <Anchor href={href}>{position}</Anchor> :
                                         '-'}
-                                </TableTd>
-                            </TableTr>
+                                </Table.Td>
+                            </Table.Tr>
                         );
                     })}
-                </TableTbody>
+                </Table.Tbody>
             </Table>
         </Paper>
     );

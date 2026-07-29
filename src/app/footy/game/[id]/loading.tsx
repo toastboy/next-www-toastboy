@@ -1,4 +1,7 @@
-import { Flex, Skeleton } from '@mantine/core';
+import {
+    Flex,
+    Skeleton,
+} from '@mantine/core';
 
 import { GameDaySummarySkeleton } from '@/components/GameDaySummary/GameDaySummarySkeleton';
 import { GameResultFormSkeleton } from '@/components/GameResultForm/GameResultFormSkeleton';

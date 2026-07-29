@@ -1,4 +1,8 @@
-import { Anchor, Container, Group } from '@mantine/core';
+import {
+    Anchor,
+    Container,
+    Group,
+} from '@mantine/core';
 import { notFound } from 'next/navigation';
 
 import { setDrinkers } from '@/actions/setDrinkers';

@@ -9,7 +9,9 @@ import {
     Image,
     Text,
 } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import {
+    useDisclosure,
+} from '@mantine/hooks';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';

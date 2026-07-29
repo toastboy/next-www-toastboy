@@ -1,4 +1,6 @@
-import { Stack } from '@mantine/core';
+import {
+    Stack,
+} from '@mantine/core';
 
 import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
 import { Turnout } from '@/components/Turnout/Turnout';

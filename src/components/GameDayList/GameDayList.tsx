@@ -1,4 +1,8 @@
-import { Paper, SimpleGrid, Text } from '@mantine/core';
+import {
+    Paper,
+    SimpleGrid,
+    Text,
+} from '@mantine/core';
 import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 
 import { GameDayIndicator } from '../GameDayIndicator/GameDayIndicator';

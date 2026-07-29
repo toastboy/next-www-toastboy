@@ -5,16 +5,13 @@ import {
     Divider,
     Paper,
     Table,
-    TableTbody,
-    TableTd,
-    TableTh,
-    TableThead,
-    TableTr,
     Title,
     type TitleOrder,
     VisuallyHidden,
 } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
+import {
+    useDisclosure,
+} from '@mantine/hooks';
 import { IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 import { type TableName, TableNameSchema } from 'prisma/zod/schemas';
 import { useId, useMemo } from 'react';
@@ -96,33 +93,33 @@ export const RecordsTable = ({ table, year, records, title, titleOrder = 2 }: Pr
                 </>
             ) : null}
             <Table stickyHeader stickyHeaderOffset={0}>
-                <TableThead>
-                    <TableTr bd="0">
-                        <TableTh p={0}><VisuallyHidden>Position</VisuallyHidden></TableTh>
-                        <TableTh p={0}><VisuallyHidden>Player</VisuallyHidden></TableTh>
-                        <TableTh p={0}><VisuallyHidden>{scoreHeading}</VisuallyHidden></TableTh>
-                    </TableTr>
-                </TableThead>
-                <TableTbody id={tbodyId}>
+                <Table.Thead>
+                    <Table.Tr bd="0">
+                        <Table.Th p={0}><VisuallyHidden>Position</VisuallyHidden></Table.Th>
+                        <Table.Th p={0}><VisuallyHidden>Player</VisuallyHidden></Table.Th>
+                        <Table.Th p={0}><VisuallyHidden>{scoreHeading}</VisuallyHidden></Table.Th>
+                    </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody id={tbodyId}>
                     {visibleRecords.map((record, index) => (
-                        <TableTr
+                        <Table.Tr
                             key={record.id}
                             bd={ranks[index + 1]?.visible === false ? '0' : undefined}
                         >
-                            <TableTd>
+                            <Table.Td>
                                 {ranks[index].visible ?
                                     ranks[index].text :
                                     <VisuallyHidden>{ranks[index].text}</VisuallyHidden>}
-                            </TableTd>
-                            <TableTd>
+                            </Table.Td>
+                            <Table.Td>
                                 <PlayerLink player={record.player} year={year} />
-                            </TableTd>
-                            <TableTd>
+                            </Table.Td>
+                            <Table.Td>
                                 <TableScore table={table} playerRecord={record} />
-                            </TableTd>
-                        </TableTr>
+                            </Table.Td>
+                        </Table.Tr>
                     ))}
-                </TableTbody>
+                </Table.Tbody>
             </Table>
             {hiddenCount > 0 &&
                 <Button

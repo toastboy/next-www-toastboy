@@ -1,4 +1,6 @@
-import { notifications } from '@mantine/notifications';
+import {
+    notifications,
+} from '@mantine/notifications';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 

@@ -1,4 +1,8 @@
-import { Anchor, Text, Tooltip } from '@mantine/core';
+import {
+    Anchor,
+    Text,
+    Tooltip,
+} from '@mantine/core';
 import { IconArrowBigLeftLine, IconArrowBigRightLine } from '@tabler/icons-react';
 import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 

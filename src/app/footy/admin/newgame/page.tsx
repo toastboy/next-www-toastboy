@@ -1,4 +1,8 @@
-import { Container, Paper, Title } from '@mantine/core';
+import {
+    Container,
+    Paper,
+    Title,
+} from '@mantine/core';
 
 import { triggerInvitations } from '@/actions/triggerInvitations';
 import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';

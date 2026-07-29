@@ -1,7 +1,18 @@
 'use client';
 
-import { CodeHighlight } from '@mantine/code-highlight';
-import { Box, Button, Checkbox, Group, Paper, Stack, Text, Title } from '@mantine/core';
+import {
+    CodeHighlight,
+} from '@mantine/code-highlight';
+import {
+    Box,
+    Button,
+    Checkbox,
+    Group,
+    Paper,
+    Stack,
+    Text,
+    Title,
+} from '@mantine/core';
 import { IconDownload } from '@tabler/icons-react';
 import { useMemo, useState } from 'react';
 

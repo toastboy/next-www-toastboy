@@ -1,4 +1,6 @@
-import { Flex } from '@mantine/core';
+import {
+    Flex,
+} from '@mantine/core';
 
 import { CurseOfTheBibsSkeleton } from '@/components/CurseOfTheBibs/CurseOfTheBibsSkeleton';
 import { TitleWithYearDropdownSkeleton } from '@/components/TitleWithYearDropdown/TitleWithYearDropdownSkeleton';

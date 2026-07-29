@@ -1,4 +1,7 @@
-import { Text, Tooltip } from '@mantine/core';
+import {
+    Text,
+    Tooltip,
+} from '@mantine/core';
 import type { TableName } from 'prisma/zod/schemas';
 import { TableNameSchema } from 'prisma/zod/schemas';
 import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';

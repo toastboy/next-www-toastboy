@@ -1,4 +1,7 @@
-import { Paper, Skeleton } from '@mantine/core';
+import {
+    Paper,
+    Skeleton,
+} from '@mantine/core';
 
 import { SkeletonTableRows } from '@/components/Skeletons/Skeletons';
 

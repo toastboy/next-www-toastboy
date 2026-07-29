@@ -1,4 +1,9 @@
-import { Center, Container, Stack, Title } from '@mantine/core';
+import {
+    Center,
+    Container,
+    Stack,
+    Title,
+} from '@mantine/core';
 
 import { listUsersAction } from '@/actions/auth';
 import { addPlayerInvite } from '@/actions/createPlayer';

@@ -1,4 +1,10 @@
-import { List, ListItem, Paper, Stack, Title } from '@mantine/core';
+import {
+    List,
+    ListItem,
+    Paper,
+    Stack,
+    Title,
+} from '@mantine/core';
 import Link from 'next/link';
 
 export const metadata = { title: 'Tables' };

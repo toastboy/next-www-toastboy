@@ -1,4 +1,7 @@
-import { Progress, Tooltip } from '@mantine/core';
+import {
+    Progress,
+    Tooltip,
+} from '@mantine/core';
 
 import { PlayerDataType } from '@/types';
 

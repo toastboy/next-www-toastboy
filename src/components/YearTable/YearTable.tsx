@@ -1,4 +1,7 @@
-import { Flex, Group } from '@mantine/core';
+import {
+    Flex,
+    Group,
+} from '@mantine/core';
 import type { TableName } from 'prisma/zod/schemas';
 
 import { RecordsTable } from '@/components/RecordsTable/RecordsTable';

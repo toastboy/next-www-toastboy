@@ -1,4 +1,8 @@
-import { Paper, Text, Title } from '@mantine/core';
+import {
+    Paper,
+    Text,
+    Title,
+} from '@mantine/core';
 
 import { PlayerCountryMap } from '@/components/PlayerCountryMap/PlayerCountryMap';
 import countrySupporterService from '@/services/CountrySupporter';

@@ -1,4 +1,6 @@
-import { Container } from '@mantine/core';
+import {
+    Container,
+} from '@mantine/core';
 
 import { recordHallHire } from '@/actions/recordHallHire';
 import { updateInvoiceGameDays } from '@/actions/updateInvoiceGameDays';

@@ -16,7 +16,9 @@ import {
     Title,
     UnstyledButton,
 } from '@mantine/core';
-import { useForm } from '@mantine/form';
+import {
+    useForm,
+} from '@mantine/form';
 import { IconAt, IconLock, IconX } from '@tabler/icons-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';

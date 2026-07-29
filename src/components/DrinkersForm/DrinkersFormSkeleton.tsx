@@ -1,4 +1,9 @@
-import { Group, Skeleton, Stack, Table, TableTbody, TableTd, TableTh, TableThead, TableTr } from '@mantine/core';
+import {
+    Group,
+    Skeleton,
+    Stack,
+    Table,
+} from '@mantine/core';
 
 /** Skeleton placeholder matching the DrinkersForm component layout (title + search/save + drinkers table). */
 export const DrinkersFormSkeleton = () => (
@@ -13,24 +18,24 @@ export const DrinkersFormSkeleton = () => (
             <Skeleton height={30} width={110} />
         </Group>
         <Table striped highlightOnHover withTableBorder withColumnBorders>
-            <TableThead>
-                <TableTr>
-                    <TableTh><Skeleton height={14} width={20} /></TableTh>
-                    <TableTh><Skeleton height={14} width={100} /></TableTh>
-                    <TableTh><Skeleton height={14} width={60} /></TableTh>
-                    <TableTh><Skeleton height={14} width={80} /></TableTh>
-                </TableTr>
-            </TableThead>
-            <TableTbody>
+            <Table.Thead>
+                <Table.Tr>
+                    <Table.Th><Skeleton height={14} width={20} /></Table.Th>
+                    <Table.Th><Skeleton height={14} width={100} /></Table.Th>
+                    <Table.Th><Skeleton height={14} width={60} /></Table.Th>
+                    <Table.Th><Skeleton height={14} width={80} /></Table.Th>
+                </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
                 {Array.from({ length: 10 }).map((_, i) => (
-                    <TableTr key={i}>
-                        <TableTd><Skeleton height={14} width={20} /></TableTd>
-                        <TableTd><Skeleton height={14} /></TableTd>
-                        <TableTd><Skeleton height={14} width={40} /></TableTd>
-                        <TableTd><Skeleton height={14} width={60} /></TableTd>
-                    </TableTr>
+                    <Table.Tr key={i}>
+                        <Table.Td><Skeleton height={14} width={20} /></Table.Td>
+                        <Table.Td><Skeleton height={14} /></Table.Td>
+                        <Table.Td><Skeleton height={14} width={40} /></Table.Td>
+                        <Table.Td><Skeleton height={14} width={60} /></Table.Td>
+                    </Table.Tr>
                 ))}
-            </TableTbody>
+            </Table.Tbody>
         </Table>
     </Stack>
 );

@@ -1,6 +1,8 @@
 'use client';
 
-import { Text } from '@mantine/core';
+import {
+    Text,
+} from '@mantine/core';
 import { max, min } from 'd3-array';
 import { axisBottom, axisLeft } from 'd3-axis';
 import { type ScaleBand, scaleBand, type ScaleLinear, scaleLinear } from 'd3-scale';

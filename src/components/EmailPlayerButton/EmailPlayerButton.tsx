@@ -1,6 +1,8 @@
 'use client';
 
-import { Button } from '@mantine/core';
+import {
+    Button,
+} from '@mantine/core';
 import { useState } from 'react';
 
 import { SendEmailForm } from '@/components/SendEmailForm/SendEmailForm';

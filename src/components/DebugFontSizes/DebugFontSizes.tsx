@@ -1,6 +1,10 @@
 'use client';
 
-import { Container, Table, Text } from '@mantine/core';
+import {
+    Container,
+    Table,
+    Text,
+} from '@mantine/core';
 import { useEffect, useState } from 'react';
 
 import classes from './DebugFontSizes.module.css';

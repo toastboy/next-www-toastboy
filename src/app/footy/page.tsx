@@ -1,4 +1,13 @@
-import { Anchor, Divider, Flex, Group, Image, Stack, Text, Title } from '@mantine/core';
+import {
+    Anchor,
+    Divider,
+    Flex,
+    Group,
+    Image,
+    Stack,
+    Text,
+    Title,
+} from '@mantine/core';
 import { notFound } from 'next/navigation';
 import { TableNameSchema } from 'prisma/zod/schemas';
 

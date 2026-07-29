@@ -1,4 +1,9 @@
-import { Paper, Skeleton, Stack, Table, TableTbody, TableTd, TableTh, TableThead, TableTr } from '@mantine/core';
+import {
+    Paper,
+    Skeleton,
+    Stack,
+    Table,
+} from '@mantine/core';
 
 /** Skeleton placeholder matching the MoreGamesForm component layout (title + cost input + game table). */
 export const MoreGamesFormSkeleton = () => (
@@ -11,22 +16,22 @@ export const MoreGamesFormSkeleton = () => (
             <Skeleton height={36} width="100%" />
         </Paper>
         <Table highlightOnHover withTableBorder>
-            <TableThead>
-                <TableTr>
-                    <TableTh><Skeleton height={14} width={60} /></TableTh>
-                    <TableTh><Skeleton height={14} width={40} /></TableTh>
-                    <TableTh><Skeleton height={14} width={40} /></TableTh>
-                </TableTr>
-            </TableThead>
-            <TableTbody>
+            <Table.Thead>
+                <Table.Tr>
+                    <Table.Th><Skeleton height={14} width={60} /></Table.Th>
+                    <Table.Th><Skeleton height={14} width={40} /></Table.Th>
+                    <Table.Th><Skeleton height={14} width={40} /></Table.Th>
+                </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
                 {Array.from({ length: 20 }).map((_, i) => (
-                    <TableTr key={i}>
-                        <TableTd><Skeleton height={14} /></TableTd>
-                        <TableTd><Skeleton height={14} /></TableTd>
-                        <TableTd><Skeleton height={14} /></TableTd>
-                    </TableTr>
+                    <Table.Tr key={i}>
+                        <Table.Td><Skeleton height={14} /></Table.Td>
+                        <Table.Td><Skeleton height={14} /></Table.Td>
+                        <Table.Td><Skeleton height={14} /></Table.Td>
+                    </Table.Tr>
                 ))}
-            </TableTbody>
+            </Table.Tbody>
         </Table>
     </Stack>
 );

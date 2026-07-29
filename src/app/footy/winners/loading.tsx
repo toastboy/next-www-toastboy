@@ -1,4 +1,9 @@
-import { Grid, GridCol, Skeleton, Stack } from '@mantine/core';
+import {
+    Grid,
+    GridCol,
+    Skeleton,
+    Stack,
+} from '@mantine/core';
 
 import { TitleWithYearDropdownSkeleton } from '@/components/TitleWithYearDropdown/TitleWithYearDropdownSkeleton';
 import { WinnersTableSkeleton } from '@/components/WinnersTable/WinnersTableSkeleton';

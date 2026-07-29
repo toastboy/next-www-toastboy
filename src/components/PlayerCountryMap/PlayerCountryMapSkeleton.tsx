@@ -1,4 +1,6 @@
-import { Skeleton } from '@mantine/core';
+import {
+    Skeleton,
+} from '@mantine/core';
 
 /** Skeleton placeholder matching the PlayerCountryMap component layout. */
 export const PlayerCountryMapSkeleton = () => (

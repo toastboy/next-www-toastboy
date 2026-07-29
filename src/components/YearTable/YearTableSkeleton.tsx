@@ -1,4 +1,7 @@
-import { Flex, Skeleton } from '@mantine/core';
+import {
+    Flex,
+    Skeleton,
+} from '@mantine/core';
 
 import { SkeletonTableRows } from '@/components/Skeletons/Skeletons';
 

@@ -1,4 +1,9 @@
-import { Center, Container, Skeleton, Stack } from '@mantine/core';
+import {
+    Center,
+    Container,
+    Skeleton,
+    Stack,
+} from '@mantine/core';
 
 import { AdminPlayerListSkeleton } from '@/components/AdminPlayerList/AdminPlayerListSkeleton';
 

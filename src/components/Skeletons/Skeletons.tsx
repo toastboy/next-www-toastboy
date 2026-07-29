@@ -1,4 +1,8 @@
-import { Container, Skeleton, Table, TableTbody, TableTd, TableTr } from '@mantine/core';
+import {
+    Container,
+    Skeleton,
+    Table,
+} from '@mantine/core';
 
 /**
  * Generic skeleton for a data table body — rows x cols cells, each with a
@@ -6,17 +10,17 @@ import { Container, Skeleton, Table, TableTbody, TableTd, TableTr } from '@manti
  */
 export const SkeletonTableRows = ({ rows = 10, cols = 2 }: { rows?: number; cols?: number }) => (
     <Table>
-        <TableTbody>
+        <Table.Tbody>
             {Array.from({ length: rows }).map((_, i) => (
-                <TableTr key={`row-${i}`}>
+                <Table.Tr key={`row-${i}`}>
                     {Array.from({ length: cols }).map((_, j) => (
-                        <TableTd key={`cell-${i}-${j}`}>
+                        <Table.Td key={`cell-${i}-${j}`}>
                             <Skeleton height={14} />
-                        </TableTd>
+                        </Table.Td>
                     ))}
-                </TableTr>
+                </Table.Tr>
             ))}
-        </TableTbody>
+        </Table.Tbody>
     </Table>
 );
 

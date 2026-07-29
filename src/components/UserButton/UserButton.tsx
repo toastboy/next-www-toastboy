@@ -1,7 +1,17 @@
 'use client';
 
-import { Avatar, Flex, Group, Menu, rem, Text, UnstyledButton } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
+import {
+    Avatar,
+    Flex,
+    Group,
+    Menu,
+    rem,
+    Text,
+    UnstyledButton,
+} from '@mantine/core';
+import {
+    notifications,
+} from '@mantine/notifications';
 import { IconAlertTriangle, IconArrowsLeftRight, IconCheck, IconChevronRight, IconLogout, IconPassword, IconTrash, IconUserOff, IconUserScan } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';

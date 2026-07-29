@@ -1,4 +1,7 @@
-import { Box, Flex } from '@mantine/core';
+import {
+    Box,
+    Flex,
+} from '@mantine/core';
 import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 
 import { GameDayLink } from '../GameDayLink/GameDayLink';

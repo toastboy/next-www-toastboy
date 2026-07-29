@@ -1,4 +1,9 @@
-import { Group, Stack, Text, Title } from '@mantine/core';
+import {
+    Group,
+    Stack,
+    Text,
+    Title,
+} from '@mantine/core';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import { MoneyChart } from '@/components/MoneyChart/MoneyChart';

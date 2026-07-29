@@ -1,4 +1,8 @@
-import { Flex, Group, Stack } from '@mantine/core';
+import {
+    Flex,
+    Group,
+    Stack,
+} from '@mantine/core';
 import { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { TableNameSchema } from 'prisma/zod/schemas';

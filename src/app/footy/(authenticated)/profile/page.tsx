@@ -1,5 +1,7 @@
 
-import { Notification } from '@mantine/core';
+import {
+    Notification,
+} from '@mantine/core';
 import { IconX } from '@tabler/icons-react';
 
 import { updatePlayer } from '@/actions/updatePlayer';

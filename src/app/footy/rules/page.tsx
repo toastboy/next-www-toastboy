@@ -1,4 +1,8 @@
-import { Flex, Text, Title } from '@mantine/core';
+import {
+    Flex,
+    Text,
+    Title,
+} from '@mantine/core';
 
 export const metadata = { title: 'Rules' };
 

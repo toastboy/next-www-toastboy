@@ -1,5 +1,12 @@
-import { Container, Group, Stack, Text } from '@mantine/core';
-import { Notifications } from '@mantine/notifications';
+import {
+    Container,
+    Group,
+    Stack,
+    Text,
+} from '@mantine/core';
+import {
+    Notifications,
+} from '@mantine/notifications';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import { MoneyForm } from '@/components/MoneyForm/MoneyForm';

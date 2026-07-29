@@ -1,4 +1,6 @@
-import { Text } from '@mantine/core';
+import {
+    Text,
+} from '@mantine/core';
 
 export const NYI = () => {
     return (

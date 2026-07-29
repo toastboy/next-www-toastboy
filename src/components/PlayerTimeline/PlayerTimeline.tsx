@@ -1,4 +1,7 @@
-import { ProgressRoot, ProgressSection } from '@mantine/core';
+import {
+    ProgressRoot,
+    ProgressSection,
+} from '@mantine/core';
 
 import { PlayerDataType } from '@/types';
 

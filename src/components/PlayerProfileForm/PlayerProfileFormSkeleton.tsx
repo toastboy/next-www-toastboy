@@ -1,4 +1,10 @@
-import { Box, Container, Flex, Skeleton, Stack } from '@mantine/core';
+import {
+    Box,
+    Container,
+    Flex,
+    Skeleton,
+    Stack,
+} from '@mantine/core';
 
 /** Skeleton placeholder matching the PlayerProfileForm component layout (inputs + switches + selects + button). */
 export const PlayerProfileFormSkeleton = () => (

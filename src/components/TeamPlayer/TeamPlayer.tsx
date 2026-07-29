@@ -1,4 +1,7 @@
-import { Box, Flex } from '@mantine/core';
+import {
+    Box,
+    Flex,
+} from '@mantine/core';
 
 import { GoalieIndicator } from '@/components/GoalieIndicator/GoalieIndicator';
 import { PlayerForm } from '@/components/PlayerForm/PlayerForm';

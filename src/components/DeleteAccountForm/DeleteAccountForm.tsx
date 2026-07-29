@@ -13,7 +13,9 @@ import {
     TextInput,
     Title,
 } from '@mantine/core';
-import { useForm } from '@mantine/form';
+import {
+    useForm,
+} from '@mantine/form';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useState } from 'react';

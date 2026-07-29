@@ -1,4 +1,7 @@
-import { Anchor, Tooltip } from '@mantine/core';
+import {
+    Anchor,
+    Tooltip,
+} from '@mantine/core';
 import { IconArrowBigLeftLine, IconArrowBigRightLine } from '@tabler/icons-react';
 import type { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 

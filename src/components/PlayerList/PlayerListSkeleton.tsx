@@ -1,4 +1,8 @@
-import { Box, Skeleton, Table, TableTbody, TableTd, TableTh, TableThead, TableTr } from '@mantine/core';
+import {
+    Box,
+    Skeleton,
+    Table,
+} from '@mantine/core';
 
 /** Skeleton placeholder matching the PlayerList component layout (title + filters + player table). */
 export const PlayerListSkeleton = () => (
@@ -9,24 +13,24 @@ export const PlayerListSkeleton = () => (
         <Skeleton height={24} width={120} mb="sm" />
         <Skeleton height={36} width="100%" mb="md" />
         <Table mt={20}>
-            <TableThead>
-                <TableTr>
-                    <TableTh><Skeleton height={14} width={30} /></TableTh>
-                    <TableTh><Skeleton height={14} width={100} /></TableTh>
-                    <TableTh><Skeleton height={14} width={80} /></TableTh>
-                    <TableTh><Skeleton height={14} width={100} /></TableTh>
-                </TableTr>
-            </TableThead>
-            <TableTbody>
+            <Table.Thead>
+                <Table.Tr>
+                    <Table.Th><Skeleton height={14} width={30} /></Table.Th>
+                    <Table.Th><Skeleton height={14} width={100} /></Table.Th>
+                    <Table.Th><Skeleton height={14} width={80} /></Table.Th>
+                    <Table.Th><Skeleton height={14} width={100} /></Table.Th>
+                </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
                 {Array.from({ length: 15 }).map((_, i) => (
-                    <TableTr key={i}>
-                        <TableTd><Skeleton height={14} width={20} /></TableTd>
-                        <TableTd><Skeleton height={14} /></TableTd>
-                        <TableTd><Skeleton height={14} /></TableTd>
-                        <TableTd><Skeleton height={14} /></TableTd>
-                    </TableTr>
+                    <Table.Tr key={i}>
+                        <Table.Td><Skeleton height={14} width={20} /></Table.Td>
+                        <Table.Td><Skeleton height={14} /></Table.Td>
+                        <Table.Td><Skeleton height={14} /></Table.Td>
+                        <Table.Td><Skeleton height={14} /></Table.Td>
+                    </Table.Tr>
                 ))}
-            </TableTbody>
+            </Table.Tbody>
         </Table>
     </Box>
 );

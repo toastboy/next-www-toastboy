@@ -1,4 +1,9 @@
-import { Paper, SimpleGrid, Skeleton, Stack } from '@mantine/core';
+import {
+    Paper,
+    SimpleGrid,
+    Skeleton,
+    Stack,
+} from '@mantine/core';
 
 /** Skeleton placeholder matching the GameDayList component layout (grid of game day cards). */
 export const GameDayListSkeleton = () => (

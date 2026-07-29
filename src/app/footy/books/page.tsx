@@ -1,4 +1,7 @@
-import { Group, Stack } from '@mantine/core';
+import {
+    Group,
+    Stack,
+} from '@mantine/core';
 import { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { cache } from 'react';

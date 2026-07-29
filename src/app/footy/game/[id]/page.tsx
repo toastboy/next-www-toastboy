@@ -1,4 +1,6 @@
-import { Flex } from '@mantine/core';
+import {
+    Flex,
+} from '@mantine/core';
 import type { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { cache } from 'react';

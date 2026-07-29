@@ -1,4 +1,6 @@
-import { Text } from '@mantine/core';
+import {
+    Text,
+} from '@mantine/core';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';

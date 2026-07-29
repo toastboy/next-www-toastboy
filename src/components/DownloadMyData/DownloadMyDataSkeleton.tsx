@@ -1,4 +1,8 @@
-import { Paper, Skeleton, Stack } from '@mantine/core';
+import {
+    Paper,
+    Skeleton,
+    Stack,
+} from '@mantine/core';
 
 /** Skeleton placeholder matching the DownloadMyData component layout (title + button + code block). */
 export const DownloadMyDataSkeleton = () => (

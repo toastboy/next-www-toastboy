@@ -1,4 +1,6 @@
-import { Skeleton } from '@mantine/core';
+import {
+    Skeleton,
+} from '@mantine/core';
 
 /** Skeleton placeholder matching the TitleWithYearDropdown component layout. */
 export const TitleWithYearDropdownSkeleton = () => (

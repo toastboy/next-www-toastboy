@@ -1,4 +1,6 @@
-import { notifications } from '@mantine/notifications';
+import {
+    notifications,
+} from '@mantine/notifications';
 import { render, waitFor } from '@testing-library/react';
 import { useSearchParams } from 'next/navigation';
 import type { Mock } from 'vitest';

@@ -1,4 +1,6 @@
-import { Flex } from '@mantine/core';
+import {
+    Flex,
+} from '@mantine/core';
 
 import { CountryFlag } from '@/components/CountryFlag/CountryFlag';
 import { CountrySupporterDataType } from '@/types';

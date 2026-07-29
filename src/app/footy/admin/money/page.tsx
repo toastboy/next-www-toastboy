@@ -1,4 +1,6 @@
-import { Container } from '@mantine/core';
+import {
+    Container,
+} from '@mantine/core';
 
 import { payDebt } from '@/actions/payDebt';
 import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';

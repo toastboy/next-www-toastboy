@@ -1,4 +1,8 @@
-import { Center, Container, Skeleton } from '@mantine/core';
+import {
+    Center,
+    Container,
+    Skeleton,
+} from '@mantine/core';
 
 /** Skeleton placeholder matching the AdminUserData component layout (title + JSON data block). */
 export const AdminUserDataSkeleton = () => (

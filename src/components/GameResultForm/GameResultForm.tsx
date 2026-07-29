@@ -1,9 +1,22 @@
 'use client';
 
-import { Box, Button, Group, Paper, Select, Stack } from '@mantine/core';
-import { useForm } from '@mantine/form';
-import { useDisclosure } from '@mantine/hooks';
-import { notifications } from '@mantine/notifications';
+import {
+    Box,
+    Button,
+    Group,
+    Paper,
+    Select,
+    Stack,
+} from '@mantine/core';
+import {
+    useForm,
+} from '@mantine/form';
+import {
+    useDisclosure,
+} from '@mantine/hooks';
+import {
+    notifications,
+} from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 

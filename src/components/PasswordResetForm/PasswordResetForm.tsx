@@ -10,8 +10,12 @@ import {
     Text,
     Title,
 } from '@mantine/core';
-import { useForm } from '@mantine/form';
-import { notifications } from '@mantine/notifications';
+import {
+    useForm,
+} from '@mantine/form';
+import {
+    notifications,
+} from '@mantine/notifications';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useRouter } from 'next/navigation';

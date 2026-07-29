@@ -1,4 +1,8 @@
-import { Skeleton, Stack, Table, TableTbody, TableTd, TableTh, TableThead, TableTr } from '@mantine/core';
+import {
+    Skeleton,
+    Stack,
+    Table,
+} from '@mantine/core';
 
 /** Skeleton placeholder matching the PickerForm component layout (title + date + picker table + buttons). */
 export const PickerFormSkeleton = () => (
@@ -9,24 +13,24 @@ export const PickerFormSkeleton = () => (
         </Stack>
         <Skeleton height={20} width={180} />
         <Table striped highlightOnHover withTableBorder>
-            <TableThead>
-                <TableTr>
-                    <TableTh><Skeleton height={14} width={20} /></TableTh>
-                    <TableTh><Skeleton height={14} width={100} /></TableTh>
-                    <TableTh><Skeleton height={14} width={100} /></TableTh>
-                    <TableTh><Skeleton height={14} width={80} /></TableTh>
-                </TableTr>
-            </TableThead>
-            <TableTbody>
+            <Table.Thead>
+                <Table.Tr>
+                    <Table.Th><Skeleton height={14} width={20} /></Table.Th>
+                    <Table.Th><Skeleton height={14} width={100} /></Table.Th>
+                    <Table.Th><Skeleton height={14} width={100} /></Table.Th>
+                    <Table.Th><Skeleton height={14} width={80} /></Table.Th>
+                </Table.Tr>
+            </Table.Thead>
+            <Table.Tbody>
                 {Array.from({ length: 12 }).map((_, i) => (
-                    <TableTr key={i}>
-                        <TableTd><Skeleton height={14} width={20} /></TableTd>
-                        <TableTd><Skeleton height={14} /></TableTd>
-                        <TableTd><Skeleton height={14} /></TableTd>
-                        <TableTd><Skeleton height={14} /></TableTd>
-                    </TableTr>
+                    <Table.Tr key={i}>
+                        <Table.Td><Skeleton height={14} width={20} /></Table.Td>
+                        <Table.Td><Skeleton height={14} /></Table.Td>
+                        <Table.Td><Skeleton height={14} /></Table.Td>
+                        <Table.Td><Skeleton height={14} /></Table.Td>
+                    </Table.Tr>
                 ))}
-            </TableTbody>
+            </Table.Tbody>
         </Table>
         <Skeleton height={36} width="100%" />
         <Skeleton height={36} width={160} />

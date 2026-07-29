@@ -8,9 +8,15 @@ import '@mantine/notifications/styles.css';
 import '@mantine/tiptap/styles.css';
 /* eslint-enable simple-import-sort/imports */
 
-import { ColorSchemeScript, mantineHtmlProps, MantineProvider } from '@mantine/core';
+import {
+    ColorSchemeScript,
+    mantineHtmlProps,
+    MantineProvider,
+} from '@mantine/core';
 
-import { Notifications } from '@mantine/notifications';
+import {
+    Notifications,
+} from '@mantine/notifications';
 import type { Metadata } from 'next';
 
 import { CustomAppShell } from '@/components/CustomAppShell/CustomAppShell';

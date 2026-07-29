@@ -1,4 +1,6 @@
-import { Flex } from '@mantine/core';
+import {
+    Flex,
+} from '@mantine/core';
 
 import { ClubBadge } from '@/components/ClubBadge/ClubBadge';
 import { ClubSupporterDataType } from '@/types';

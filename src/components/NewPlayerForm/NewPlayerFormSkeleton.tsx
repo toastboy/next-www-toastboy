@@ -1,4 +1,8 @@
-import { Box, Skeleton, Stack } from '@mantine/core';
+import {
+    Box,
+    Skeleton,
+    Stack,
+} from '@mantine/core';
 
 /** Skeleton placeholder matching the NewPlayerForm component layout (name + email + select + button). */
 export const NewPlayerFormSkeleton = () => (

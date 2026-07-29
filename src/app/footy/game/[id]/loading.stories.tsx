@@ -1,4 +1,9 @@
-import { Flex, Group, Stack, Text } from '@mantine/core';
+import {
+    Flex,
+    Group,
+    Stack,
+    Text,
+} from '@mantine/core';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import { GameDaySummary } from '@/components/GameDaySummary/GameDaySummary';

@@ -1,6 +1,9 @@
 // See: https://nextjs.org/docs/app/api-reference/file-conventions/loading
 
-import { Flex, Loader } from '@mantine/core';
+import {
+    Flex,
+    Loader,
+} from '@mantine/core';
 
 const Loading = () => {
     return (

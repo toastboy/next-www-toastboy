@@ -1,4 +1,9 @@
-import { Anchor, Box, Paper, Text } from '@mantine/core';
+import {
+    Anchor,
+    Box,
+    Paper,
+    Text,
+} from '@mantine/core';
 import { redirect } from 'next/navigation';
 
 import { submitGameInvitationResponse } from '@/actions/submitGameInvitationResponse';

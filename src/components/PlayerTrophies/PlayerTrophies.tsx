@@ -1,4 +1,6 @@
-import { Stack } from '@mantine/core';
+import {
+    Stack,
+} from '@mantine/core';
 import type { TableName } from 'prisma/generated/browser';
 import { TableNameSchema } from 'prisma/zod/schemas';
 import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';

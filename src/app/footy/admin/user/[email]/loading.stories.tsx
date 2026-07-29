@@ -1,4 +1,8 @@
-import { Group, Stack, Text } from '@mantine/core';
+import {
+    Group,
+    Stack,
+    Text,
+} from '@mantine/core';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import { AdminUserData } from '@/components/AdminUserData/AdminUserData';

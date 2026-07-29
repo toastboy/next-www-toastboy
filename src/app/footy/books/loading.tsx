@@ -1,4 +1,7 @@
-import { Skeleton, Stack } from '@mantine/core';
+import {
+    Skeleton,
+    Stack,
+} from '@mantine/core';
 
 import { MoneyChartSkeleton } from '@/components/MoneyChart/MoneyChartSkeleton';
 import { TitleWithYearDropdownSkeleton } from '@/components/TitleWithYearDropdown/TitleWithYearDropdownSkeleton';

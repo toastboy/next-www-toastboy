@@ -1,4 +1,6 @@
-import { Tooltip } from '@mantine/core';
+import {
+    Tooltip,
+} from '@mantine/core';
 
 import { formatDate } from '@/lib/dates';
 import { PlayerFormType } from '@/types';

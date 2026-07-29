@@ -1,4 +1,6 @@
-import { Container } from '@mantine/core';
+import {
+    Container,
+} from '@mantine/core';
 
 import { InvoiceFormSkeleton } from '@/components/InvoiceForm/InvoiceFormSkeleton';
 

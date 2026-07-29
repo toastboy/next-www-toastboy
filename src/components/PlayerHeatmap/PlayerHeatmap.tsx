@@ -1,6 +1,8 @@
 'use client';
 
-import { Text } from '@mantine/core';
+import {
+    Text,
+} from '@mantine/core';
 import { axisBottom } from 'd3-axis';
 import { type ScaleBand, scaleBand } from 'd3-scale';
 import { select, type Selection } from 'd3-selection';

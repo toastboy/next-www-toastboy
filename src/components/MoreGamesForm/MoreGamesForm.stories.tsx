@@ -1,4 +1,6 @@
-import { Notifications } from '@mantine/notifications';
+import {
+    Notifications,
+} from '@mantine/notifications';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { within } from 'storybook/test';
 

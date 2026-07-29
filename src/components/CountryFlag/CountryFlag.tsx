@@ -1,4 +1,7 @@
-import { Image, type ImageProps } from '@mantine/core';
+import {
+    Image,
+    type ImageProps,
+} from '@mantine/core';
 import type { CountryType } from 'prisma/zod/schemas/models/Country.schema';
 
 export interface Props {

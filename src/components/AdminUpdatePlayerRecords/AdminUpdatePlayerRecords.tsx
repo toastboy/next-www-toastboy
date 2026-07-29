@@ -1,7 +1,16 @@
 'use client';
 
-import { ActionIcon, Button, Center, Flex, RingProgress, Text } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
+import {
+    ActionIcon,
+    Button,
+    Center,
+    Flex,
+    RingProgress,
+    Text,
+} from '@mantine/core';
+import {
+    notifications,
+} from '@mantine/notifications';
 import { IconCheck } from '@tabler/icons-react';
 import { useEffect, useRef, useState } from 'react';
 

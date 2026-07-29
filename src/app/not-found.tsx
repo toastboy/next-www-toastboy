@@ -1,4 +1,10 @@
-import { Button, Group, Stack, Text, Title } from '@mantine/core';
+import {
+    Button,
+    Group,
+    Stack,
+    Text,
+    Title,
+} from '@mantine/core';
 
 /**
  * Renders a not-found message with navigation options back to informational or

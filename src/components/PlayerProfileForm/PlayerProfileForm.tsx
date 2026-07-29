@@ -16,8 +16,12 @@ import {
     TextInput,
     Tooltip,
 } from '@mantine/core';
-import { useForm } from '@mantine/form';
-import { notifications } from '@mantine/notifications';
+import {
+    useForm,
+} from '@mantine/form';
+import {
+    notifications,
+} from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck, IconQuestionMark, IconTrash } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import Link from 'next/link';

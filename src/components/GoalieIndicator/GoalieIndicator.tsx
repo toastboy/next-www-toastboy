@@ -1,4 +1,8 @@
-import { Box, Flex, Tooltip } from '@mantine/core';
+import {
+    Box,
+    Flex,
+    Tooltip,
+} from '@mantine/core';
 import { IconHandStop } from '@tabler/icons-react';
 
 import { CX, CY, RING_RADIUS } from '@/components/PlayerForm/PlayerForm';

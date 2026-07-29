@@ -1,4 +1,8 @@
-import { Container, Group, Skeleton } from '@mantine/core';
+import {
+    Container,
+    Group,
+    Skeleton,
+} from '@mantine/core';
 
 import { DrinkersFormSkeleton } from '@/components/DrinkersForm/DrinkersFormSkeleton';
 

@@ -1,4 +1,6 @@
-import { Notification } from '@mantine/core';
+import {
+    Notification,
+} from '@mantine/core';
 import { IconX } from '@tabler/icons-react';
 
 import type { DownloadMyDataPayload } from '@/components/DownloadMyData/DownloadMyData';

@@ -1,6 +1,10 @@
 'use client';
 
-import { Box, Paper, Tooltip } from '@mantine/core';
+import {
+    Box,
+    Paper,
+    Tooltip,
+} from '@mantine/core';
 import { ascending, groups } from 'd3-array';
 import { hierarchy, type HierarchyPointLink, type HierarchyPointNode, tree } from 'd3-hierarchy';
 import { select } from 'd3-selection';

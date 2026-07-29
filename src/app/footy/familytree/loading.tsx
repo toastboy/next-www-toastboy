@@ -1,4 +1,6 @@
-import { Paper } from '@mantine/core';
+import {
+    Paper,
+} from '@mantine/core';
 
 import { FamilyTreeSkeleton } from '@/components/FamilyTree/FamilyTreeSkeleton';
 

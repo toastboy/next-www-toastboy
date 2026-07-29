@@ -1,4 +1,6 @@
-import { Text } from '@mantine/core';
+import {
+    Text,
+} from '@mantine/core';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import { CustomAppShell } from './CustomAppShell';

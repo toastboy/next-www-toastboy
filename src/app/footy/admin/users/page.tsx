@@ -1,4 +1,9 @@
-import { Center, Container, Text, Title } from '@mantine/core';
+import {
+    Center,
+    Container,
+    Text,
+    Title,
+} from '@mantine/core';
 
 import { listUsersAction, setAdminRoleAction } from '@/actions/auth';
 import { AdminUserList } from '@/components/AdminUserList/AdminUserList';

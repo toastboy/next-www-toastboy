@@ -1,5 +1,7 @@
 
-import { Paper } from '@mantine/core';
+import {
+    Paper,
+} from '@mantine/core';
 
 import { ForgottenPasswordForm } from '@/components/ForgottenPasswordForm/ForgottenPasswordForm';
 

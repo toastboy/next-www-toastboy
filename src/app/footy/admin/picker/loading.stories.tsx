@@ -1,4 +1,9 @@
-import { Container, Group, Stack, Text } from '@mantine/core';
+import {
+    Container,
+    Group,
+    Stack,
+    Text,
+} from '@mantine/core';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import { PickerForm } from '@/components/PickerForm/PickerForm';

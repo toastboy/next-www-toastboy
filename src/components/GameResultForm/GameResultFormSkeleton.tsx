@@ -1,4 +1,8 @@
-import { Paper, Skeleton, Stack } from '@mantine/core';
+import {
+    Paper,
+    Skeleton,
+    Stack,
+} from '@mantine/core';
 
 /** Skeleton placeholder matching the GameResultForm component layout (bibs/winners inputs + submit). */
 export const GameResultFormSkeleton = () => (

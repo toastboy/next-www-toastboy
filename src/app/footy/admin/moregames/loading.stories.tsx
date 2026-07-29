@@ -1,5 +1,11 @@
-import { Group, Stack, Text } from '@mantine/core';
-import { Notifications } from '@mantine/notifications';
+import {
+    Group,
+    Stack,
+    Text,
+} from '@mantine/core';
+import {
+    Notifications,
+} from '@mantine/notifications';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import { MoreGamesForm } from '@/components/MoreGamesForm/MoreGamesForm';

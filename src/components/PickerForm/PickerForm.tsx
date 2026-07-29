@@ -9,18 +9,14 @@ import {
     Paper,
     Stack,
     Table,
-    TableScrollContainer,
-    TableTbody,
-    TableTd,
-    TableTh,
-    TableThead,
-    TableTr,
     Text,
     TextInput,
     Title,
     UnstyledButton,
 } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
+import {
+    notifications,
+} from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck, IconChevronDown, IconChevronUp, IconSelector } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
@@ -248,18 +244,18 @@ export const PickerForm = ({
         const playerName = getPlayerName(player);
 
         return (
-            <TableTr key={player.playerId}>
-                <TableTd w="2.5rem">
+            <Table.Tr key={player.playerId}>
+                <Table.Td w="2.5rem">
                     <Checkbox
                         checked={selectedIdSet.has(player.playerId)}
                         onChange={(event) => toggleSelectPlayer(player.playerId, event.currentTarget.checked)}
                         aria-label={`Select ${playerName}`}
                     />
-                </TableTd>
-                <TableTd>{playerName}</TableTd>
-                <TableTd>{formatResponseInterval(player.responseInterval ?? null)}</TableTd>
-                <TableTd>{player.gamesPlayed}</TableTd>
-            </TableTr>
+                </Table.Td>
+                <Table.Td>{playerName}</Table.Td>
+                <Table.Td>{formatResponseInterval(player.responseInterval ?? null)}</Table.Td>
+                <Table.Td>{player.gamesPlayed}</Table.Td>
+            </Table.Tr>
         );
     });
 
@@ -277,7 +273,7 @@ export const PickerForm = ({
                     Pick sides
                 </Button>
             </Group>
-            <TableScrollContainer minWidth={480} scrollAreaProps={{ type: 'auto' }}>
+            <Table.ScrollContainer minWidth={480} scrollAreaProps={{ type: 'auto' }}>
                 <Table
                     striped
                     highlightOnHover
@@ -286,30 +282,30 @@ export const PickerForm = ({
                     w="100%"
                     layout="fixed"
                 >
-                    <TableThead>
-                        <TableTr>
-                            <TableTh w="2.5rem">
+                    <Table.Thead>
+                        <Table.Tr>
+                            <Table.Th w="2.5rem">
                                 <Checkbox
                                     checked={allSelected}
                                     indeterminate={someSelected}
                                     onChange={(event) => toggleSelectAll(event.currentTarget.checked)}
                                     aria-label="Select all players"
                                 />
-                            </TableTh>
-                            <TableTh aria-sort={sortKey === 'name' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                            </Table.Th>
+                            <Table.Th aria-sort={sortKey === 'name' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
                                 {renderSortHeader('Player', 'name')}
-                            </TableTh>
-                            <TableTh aria-sort={sortKey === 'responseTime' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                            </Table.Th>
+                            <Table.Th aria-sort={sortKey === 'responseTime' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
                                 {renderSortHeader('Response time', 'responseTime')}
-                            </TableTh>
-                            <TableTh aria-sort={sortKey === 'gamesPlayed' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                            </Table.Th>
+                            <Table.Th aria-sort={sortKey === 'gamesPlayed' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
                                 {renderSortHeader('Total games played', 'gamesPlayed')}
-                            </TableTh>
-                        </TableTr>
-                    </TableThead>
-                    <TableTbody>{rows}</TableTbody>
+                            </Table.Th>
+                        </Table.Tr>
+                    </Table.Thead>
+                    <Table.Tbody>{rows}</Table.Tbody>
                 </Table>
-            </TableScrollContainer>
+            </Table.ScrollContainer>
             <Divider
                 label="or"
                 labelPosition="center"

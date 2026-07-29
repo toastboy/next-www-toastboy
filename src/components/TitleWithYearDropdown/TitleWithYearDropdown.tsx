@@ -1,7 +1,14 @@
 'use client';
 
-import type { TitleOrder } from '@mantine/core';
-import { Group, Menu, Title, UnstyledButton } from '@mantine/core';
+import type {
+    TitleOrder,
+} from '@mantine/core';
+import {
+    Group,
+    Menu,
+    Title,
+    UnstyledButton,
+} from '@mantine/core';
 import { IconCheck, IconChevronDown } from '@tabler/icons-react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback } from 'react';

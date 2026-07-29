@@ -1,8 +1,21 @@
 'use client';
 
-import { Box, Button, Group, Modal, Text, TextInput, Tooltip } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
-import { Link, RichTextEditor } from '@mantine/tiptap';
+import {
+    Box,
+    Button,
+    Group,
+    Modal,
+    Text,
+    TextInput,
+    Tooltip,
+} from '@mantine/core';
+import {
+    notifications,
+} from '@mantine/notifications';
+import {
+    Link,
+    RichTextEditor,
+} from '@mantine/tiptap';
 import { IconAlertTriangle, IconCheck, IconUser } from '@tabler/icons-react';
 import Highlight from '@tiptap/extension-highlight';
 import Placeholder from '@tiptap/extension-placeholder';

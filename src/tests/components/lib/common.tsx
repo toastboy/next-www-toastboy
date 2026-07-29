@@ -1,4 +1,6 @@
-import { MantineProvider } from '@mantine/core';
+import {
+    MantineProvider,
+} from '@mantine/core';
 import { screen } from '@testing-library/react';
 import { ReactNode } from 'react';
 

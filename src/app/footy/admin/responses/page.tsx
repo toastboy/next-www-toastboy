@@ -1,4 +1,6 @@
-import { Container } from '@mantine/core';
+import {
+    Container,
+} from '@mantine/core';
 import { notFound } from 'next/navigation';
 
 import { SubmitResponse } from '@/actions/submitResponse';

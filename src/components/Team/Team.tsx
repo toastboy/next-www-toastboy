@@ -1,4 +1,12 @@
-import { Badge, Flex, Group, Paper, SimpleGrid, Text, Title } from '@mantine/core';
+import {
+    Badge,
+    Flex,
+    Group,
+    Paper,
+    SimpleGrid,
+    Text,
+    Title,
+} from '@mantine/core';
 
 import { TeamPlayer } from '@/components/TeamPlayer/TeamPlayer';
 import type { TeamResultState } from '@/lib/gameResult';

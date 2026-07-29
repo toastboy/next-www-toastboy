@@ -1,4 +1,8 @@
-import { Flex, Text, Title } from '@mantine/core';
+import {
+    Flex,
+    Text,
+    Title,
+} from '@mantine/core';
 
 import { FamilyTree } from '@/components/FamilyTree/FamilyTree';
 import playerService from '@/services/Player';

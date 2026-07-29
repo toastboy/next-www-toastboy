@@ -1,4 +1,11 @@
-import { Box, Collapse, Flex, Group, rem, UnstyledButton } from '@mantine/core';
+import {
+    Box,
+    Collapse,
+    Flex,
+    Group,
+    rem,
+    UnstyledButton,
+} from '@mantine/core';
 import { IconChevronRight } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useState } from 'react';

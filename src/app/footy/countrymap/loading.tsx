@@ -1,4 +1,6 @@
-import { Paper } from '@mantine/core';
+import {
+    Paper,
+} from '@mantine/core';
 
 import { PlayerCountryMapSkeleton } from '@/components/PlayerCountryMap/PlayerCountryMapSkeleton';
 

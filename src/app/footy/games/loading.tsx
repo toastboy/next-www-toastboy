@@ -1,4 +1,7 @@
-import { Flex, Skeleton } from '@mantine/core';
+import {
+    Flex,
+    Skeleton,
+} from '@mantine/core';
 
 import { GameDayListSkeleton } from '@/components/GameDayList/GameDayListSkeleton';
 import { TitleWithYearDropdownSkeleton } from '@/components/TitleWithYearDropdown/TitleWithYearDropdownSkeleton';

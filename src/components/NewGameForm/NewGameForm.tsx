@@ -1,9 +1,21 @@
 'use client';
 
-import { Box, Button, Checkbox, Stack, Textarea } from '@mantine/core';
-import { useForm } from '@mantine/form';
-import { useMounted } from '@mantine/hooks';
-import { notifications } from '@mantine/notifications';
+import {
+    Box,
+    Button,
+    Checkbox,
+    Stack,
+    Textarea,
+} from '@mantine/core';
+import {
+    useForm,
+} from '@mantine/form';
+import {
+    useMounted,
+} from '@mantine/hooks';
+import {
+    notifications,
+} from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 

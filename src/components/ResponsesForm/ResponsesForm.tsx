@@ -1,6 +1,8 @@
 'use client';
 
-import type { MantineColor } from '@mantine/core';
+import type {
+    MantineColor,
+} from '@mantine/core';
 import {
     Button,
     Card,
@@ -16,8 +18,12 @@ import {
     TextInput,
     Title,
 } from '@mantine/core';
-import { useForm } from '@mantine/form';
-import { notifications } from '@mantine/notifications';
+import {
+    useForm,
+} from '@mantine/form';
+import {
+    notifications,
+} from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { PlayerResponse } from 'prisma/generated/enums';
 import { useEffect, useMemo, useRef, useState } from 'react';

@@ -1,4 +1,11 @@
-import { Box, Flex, Group, SimpleGrid, Text, Title } from '@mantine/core';
+import {
+    Box,
+    Flex,
+    Group,
+    SimpleGrid,
+    Text,
+    Title,
+} from '@mantine/core';
 import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 
 import { GameDayLink } from '@/components/GameDayLink/GameDayLink';

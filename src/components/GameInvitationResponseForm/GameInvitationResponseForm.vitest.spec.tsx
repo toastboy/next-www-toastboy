@@ -1,5 +1,9 @@
-import type { useForm as useFormType } from '@mantine/form';
-import { notifications } from '@mantine/notifications';
+import type {
+    useForm as useFormType,
+} from '@mantine/form';
+import {
+    notifications,
+} from '@mantine/notifications';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { PlayerResponse } from 'prisma/generated/enums';

@@ -1,4 +1,9 @@
-import { Card, CardSection, Skeleton, Stack } from '@mantine/core';
+import {
+    Card,
+    CardSection,
+    Skeleton,
+    Stack,
+} from '@mantine/core';
 
 import { SkeletonTableRows } from '@/components/Skeletons/Skeletons';
 

@@ -1,4 +1,11 @@
-import { Anchor, Code, List, ListItem, Text, Title } from '@mantine/core';
+import {
+    Anchor,
+    Code,
+    List,
+    ListItem,
+    Text,
+    Title,
+} from '@mantine/core';
 import type { MDXComponents } from 'mdx/types';
 import React from 'react';
 

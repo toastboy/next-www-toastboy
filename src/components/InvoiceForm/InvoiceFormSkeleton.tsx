@@ -1,4 +1,9 @@
-import { Flex, Group, Skeleton, Stack } from '@mantine/core';
+import {
+    Flex,
+    Group,
+    Skeleton,
+    Stack,
+} from '@mantine/core';
 
 /** Skeleton placeholder matching the InvoiceForm component layout (title + month nav + game day rows). */
 export const InvoiceFormSkeleton = () => (

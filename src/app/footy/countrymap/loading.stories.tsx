@@ -1,4 +1,9 @@
-import { Group, Paper, Stack, Text } from '@mantine/core';
+import {
+    Group,
+    Paper,
+    Stack,
+    Text,
+} from '@mantine/core';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
 import { PlayerCountryMap } from '@/components/PlayerCountryMap/PlayerCountryMap';

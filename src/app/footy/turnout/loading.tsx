@@ -1,4 +1,6 @@
-import { Stack } from '@mantine/core';
+import {
+    Stack,
+} from '@mantine/core';
 
 import { TurnoutSkeleton } from '@/components/Turnout/TurnoutSkeleton';
 

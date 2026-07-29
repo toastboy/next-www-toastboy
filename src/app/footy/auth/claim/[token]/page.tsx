@@ -1,4 +1,7 @@
-import { Notification, Paper } from '@mantine/core';
+import {
+    Notification,
+    Paper,
+} from '@mantine/core';
 import { IconX } from '@tabler/icons-react';
 
 import { claimPlayerInvitation } from '@/actions/claimPlayerInvitation';

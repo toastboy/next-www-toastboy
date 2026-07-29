@@ -10,17 +10,13 @@ import {
     SegmentedControl,
     Stack,
     Table,
-    TableCaption,
-    TableTbody,
-    TableTd,
-    TableTh,
-    TableThead,
-    TableTr,
     Text,
     TextInput,
     UnstyledButton,
 } from '@mantine/core';
-import { notifications } from '@mantine/notifications';
+import {
+    notifications,
+} from '@mantine/notifications';
 import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
@@ -333,24 +329,24 @@ export const AdminPlayerList = ({
         const userId = getUserIdForPlayer(player);
 
         return (
-            <TableTr key={player.id}>
-                <TableTd w="2.5rem">
+            <Table.Tr key={player.id}>
+                <Table.Td w="2.5rem">
                     <Checkbox
                         checked={selectedIds.includes(player.id)}
                         onChange={(event) => toggleSelectPlayer(player.id, event.currentTarget.checked)}
                         aria-label={`Select ${player.name ?? ''}`}
                     />
-                </TableTd>
-                <TableTd w="4rem">
+                </Table.Td>
+                <Table.Td w="4rem">
                     <Anchor href={playerHref}>{player.id}</Anchor>
-                </TableTd>
-                <TableTd>
+                </Table.Td>
+                <Table.Td>
                     <Anchor href={playerHref}>{player.name}</Anchor>
-                </TableTd>
-                <TableTd>{formatDate(player.joined)}</TableTd>
-                <TableTd>{formatDate(player.finished)}</TableTd>
-                <TableTd>{hasAuthAccount ? 'Yes' : 'No'}</TableTd>
-                <TableTd>
+                </Table.Td>
+                <Table.Td>{formatDate(player.joined)}</Table.Td>
+                <Table.Td>{formatDate(player.finished)}</Table.Td>
+                <Table.Td>{hasAuthAccount ? 'Yes' : 'No'}</Table.Td>
+                <Table.Td>
                     <Button
                         size="xs"
                         variant="light"
@@ -359,8 +355,8 @@ export const AdminPlayerList = ({
                     >
                         Impersonate
                     </Button>
-                </TableTd>
-            </TableTr>
+                </Table.Td>
+            </Table.Tr>
         );
     });
 
@@ -421,51 +417,51 @@ export const AdminPlayerList = ({
                             w="100%"
                             layout="fixed"
                         >
-                            <TableCaption>Registered players</TableCaption>
-                            <TableThead>
-                                <TableTr>
-                                    <TableTh w="2.5rem">
+                            <Table.Caption>Registered players</Table.Caption>
+                            <Table.Thead>
+                                <Table.Tr>
+                                    <Table.Th w="2.5rem">
                                         <Checkbox
                                             checked={allSelected}
                                             indeterminate={someSelected}
                                             onChange={(event) => toggleSelectAll(event.currentTarget.checked)}
                                             aria-label="Select all players"
                                         />
-                                    </TableTh>
-                                    <TableTh
+                                    </Table.Th>
+                                    <Table.Th
                                         w="3rem"
                                         aria-sort={sortKey === 'id' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
                                     >
                                         {renderSortHeader('ID', 'id')}
-                                    </TableTh>
-                                    <TableTh
+                                    </Table.Th>
+                                    <Table.Th
                                         w="10rem"
                                         aria-sort={sortKey === 'name' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
                                     >
                                         {renderSortHeader('Name', 'name')}
-                                    </TableTh>
-                                    <TableTh
+                                    </Table.Th>
+                                    <Table.Th
                                         w="7rem"
                                         aria-sort={sortKey === 'joined' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
                                     >
                                         {renderSortHeader('Joined', 'joined')}
-                                    </TableTh>
-                                    <TableTh
+                                    </Table.Th>
+                                    <Table.Th
                                         w="7rem"
                                         aria-sort={sortKey === 'finished' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
                                     >
                                         {renderSortHeader('Finished', 'finished')}
-                                    </TableTh>
-                                    <TableTh
+                                    </Table.Th>
+                                    <Table.Th
                                         w="4rem"
                                         aria-sort={sortKey === 'auth' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
                                     >
                                         {renderSortHeader('Auth', 'auth')}
-                                    </TableTh>
-                                    <TableTh w="7rem">Impersonate</TableTh>
-                                </TableTr>
-                            </TableThead>
-                            <TableTbody>{rows}</TableTbody>
+                                    </Table.Th>
+                                    <Table.Th w="7rem">Impersonate</Table.Th>
+                                </Table.Tr>
+                            </Table.Thead>
+                            <Table.Tbody>{rows}</Table.Tbody>
                         </Table>
                     </Table.ScrollContainer>
                 </Stack>

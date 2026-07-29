@@ -1,4 +1,7 @@
-import { Flex, Skeleton } from '@mantine/core';
+import {
+    Flex,
+    Skeleton,
+} from '@mantine/core';
 
 /** Skeleton placeholder matching the GameDaySummary component layout (title + teams + score). */
 export const GameDaySummarySkeleton = () => (

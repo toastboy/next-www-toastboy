@@ -1,4 +1,6 @@
-import { Anchor } from '@mantine/core';
+import {
+    Anchor,
+} from '@mantine/core';
 import type { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 
 import { ImageWithPlaceholder } from '@/components/ImageWithPlaceholder/ImageWithPlaceholder';

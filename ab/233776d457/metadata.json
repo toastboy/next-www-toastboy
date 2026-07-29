@@ -3,7 +3,7 @@
   "checkpoint_id": "ab233776d457",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 4,
+  "checkpoints_count": 7,
   "files_touched": [
     "CLAUDE.md",
     "docs/ontology.yaml"
@@ -15,13 +15,20 @@
       "compact_transcript": "/ab/233776d457/0/transcript.jsonl",
       "content_hash": "/ab/233776d457/0/content_hash.txt",
       "prompt": "/ab/233776d457/0/prompt.txt"
+    },
+    {
+      "metadata": "/ab/233776d457/1/metadata.json",
+      "transcript": "/ab/233776d457/1/full.jsonl",
+      "compact_transcript": "/ab/233776d457/1/transcript.jsonl",
+      "content_hash": "/ab/233776d457/1/content_hash.txt",
+      "prompt": "/ab/233776d457/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 2117,
-    "cache_creation_tokens": 73645,
-    "cache_read_tokens": 1859449,
-    "output_tokens": 23168,
-    "api_call_count": 23
+    "input_tokens": 2329,
+    "cache_creation_tokens": 357554,
+    "cache_read_tokens": 14959900,
+    "output_tokens": 88781,
+    "api_call_count": 130
   }
 }

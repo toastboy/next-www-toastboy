@@ -1,0 +1,9 @@
+Start work on SYS-566 - I want the table to behave roughly the same as the admin players list
+
+---
+
+I want the default state for a drinkers form for a given game day to be sorted by team, since it's by far most likely that drinkers will be among those who played that day
+
+---
+
+/test-sync

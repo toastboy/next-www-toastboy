@@ -4,10 +4,13 @@ import {
     Box,
     Button,
     Checkbox,
+    Container,
     Group,
     NumberInput,
     Paper,
+    Stack,
     Table,
+    TableScrollContainer,
     TableTbody,
     TableTd,
     TableTh,
@@ -15,6 +18,7 @@ import {
     TableTr,
     Text,
     TextInput,
+    Title,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
@@ -36,6 +40,10 @@ import type {
 import {
     CreateMoreGameDaysSchema,
 } from '@/types/actions/CreateMoreGameDays';
+
+// Breakpoint at which the submit button switches from a full-width mobile
+// touch target to an inline fit-content button.
+const actionsBreakpoint = 'sm';
 
 interface Props {
     cost: CreateMoreGameDaysInput['cost'];
@@ -135,87 +143,111 @@ export const MoreGamesForm = ({
     );
 
     return (
-        <Box
-            component="form"
-            onSubmit={form.onSubmit(handleSubmit)}
-        >
-            <Paper withBorder p="sm" mb="md">
-                <Group justify="space-between">
-                    <NumberInput
-                        label="Player charge per game"
-                        aria-label="Player charge per game"
-                        decimalScale={2}
-                        fixedDecimalScale
-                        allowNegative={false}
-                        hideControls
-                        min={1}
-                        thousandSeparator=","
-                        w="10em"
-                        {...form.getInputProps('cost')}
-                    />
-                    <NumberInput
-                        label="Hall cost per game"
-                        aria-label="Hall cost per game"
-                        decimalScale={2}
-                        fixedDecimalScale
-                        allowNegative={false}
-                        hideControls
-                        min={1}
-                        thousandSeparator=","
-                        w="10em"
-                        {...form.getInputProps('hallCost')}
-                    />
-                </Group>
-            </Paper>
-            <Table
-                highlightOnHover
-                withTableBorder
-            >
-                <TableThead>
-                    <TableTr>
-                        <TableTh>Date</TableTh>
-                        <TableTh>Game</TableTh>
-                        <TableTh>Comment</TableTh>
-                    </TableTr>
-                </TableThead>
-                <TableTbody>
-                    {groupedRows.map((group, groupIndex) => (
-                        <Fragment key={`${group.label}-${groupIndex}`}>
-                            <TableTr>
-                                <TableTh colSpan={3}>
-                                    <Text fw={600} c="gray">{group.label}</Text>
-                                </TableTh>
-                            </TableTr>
-                            {group.rows.map(({ row, index }) => {
-                                return (
-                                    <TableTr key={row.date}>
-                                        <TableTd>
-                                            <Text fw={500}>{row.date}</Text>
-                                        </TableTd>
-                                        <TableTd>
-                                            <Checkbox
-                                                aria-label={`Game scheduled for ${row.date}`}
-                                                {...form.getInputProps(`rows.${index}.game`, { type: 'checkbox' })}
-                                            />
-                                        </TableTd>
-                                        <TableTd>
-                                            <TextInput
-                                                aria-label={`Comment for ${row.date}`}
-                                                placeholder="Optional note"
-                                                {...form.getInputProps(`rows.${index}.comment`)}
-                                            />
-                                        </TableTd>
+        <Container fluid>
+            <Paper w="100%" p="xl">
+                <Box
+                    component="form"
+                    onSubmit={form.onSubmit(handleSubmit)}
+                >
+                    <Stack gap="md">
+                        <Stack align="flex-start" gap="xs">
+                            <Title order={2}>More games</Title>
+                            <Text c="dimmed">
+                                Schedule game days from the next available date through to the end of the booking year.
+                            </Text>
+                        </Stack>
+                        <Group justify="space-between" mb="lg">
+                            <NumberInput
+                                label="Player charge per game"
+                                aria-label="Player charge per game"
+                                decimalScale={2}
+                                fixedDecimalScale
+                                allowNegative={false}
+                                hideControls
+                                min={1}
+                                thousandSeparator=","
+                                w="10em"
+                                {...form.getInputProps('cost')}
+                            />
+                            <NumberInput
+                                label="Hall cost per game"
+                                aria-label="Hall cost per game"
+                                decimalScale={2}
+                                fixedDecimalScale
+                                allowNegative={false}
+                                hideControls
+                                min={1}
+                                thousandSeparator=","
+                                w="10em"
+                                {...form.getInputProps('hallCost')}
+                            />
+                        </Group>
+                        <TableScrollContainer minWidth={480} scrollAreaProps={{ type: 'auto' }}>
+                            <Table
+                                highlightOnHover
+                                withTableBorder
+                            >
+                                <TableThead>
+                                    <TableTr>
+                                        <TableTh>Date</TableTh>
+                                        <TableTh>Game</TableTh>
+                                        <TableTh>Comment</TableTh>
                                     </TableTr>
-                                );
-                            })}
-                        </Fragment>
-                    ))}
-                </TableTbody>
-            </Table>
+                                </TableThead>
+                                <TableTbody>
+                                    {groupedRows.map((group, groupIndex) => (
+                                        <Fragment key={`${group.label}-${groupIndex}`}>
+                                            <TableTr>
+                                                <TableTh
+                                                    colSpan={3}
+                                                    bg="var(--mantine-color-gray-light)"
+                                                    py="xs"
+                                                    style={groupIndex > 0 ?
+                                                        { borderTop: '2px solid var(--mantine-color-gray-4)' } :
+                                                        undefined}
+                                                >
+                                                    <Text fw={700} tt="uppercase" fz="sm" lts={0.5} c="dimmed">
+                                                        {group.label}
+                                                    </Text>
+                                                </TableTh>
+                                            </TableTr>
+                                            {group.rows.map(({ row, index }) => {
+                                                return (
+                                                    <TableTr key={row.date}>
+                                                        <TableTd>
+                                                            <Text fw={500}>{row.date}</Text>
+                                                        </TableTd>
+                                                        <TableTd>
+                                                            <Checkbox
+                                                                aria-label={`Game scheduled for ${row.date}`}
+                                                                {...form.getInputProps(`rows.${index}.game`, { type: 'checkbox' })}
+                                                            />
+                                                        </TableTd>
+                                                        <TableTd>
+                                                            <TextInput
+                                                                aria-label={`Comment for ${row.date}`}
+                                                                placeholder="Optional note"
+                                                                {...form.getInputProps(`rows.${index}.comment`)}
+                                                            />
+                                                        </TableTd>
+                                                    </TableTr>
+                                                );
+                                            })}
+                                        </Fragment>
+                                    ))}
+                                </TableTbody>
+                            </Table>
+                        </TableScrollContainer>
 
-            <Button type="submit" mt="md">
-                Create game days
-            </Button>
-        </Box>
+                        <Button
+                            type="submit"
+                            w={{ base: '100%', [actionsBreakpoint]: 'fit-content' }}
+                        >
+                            Create game days
+                        </Button>
+                    </Stack>
+                </Box>
+            </Paper>
+        </Container>
     );
 };

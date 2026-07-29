@@ -1,9 +1,13 @@
 import { Paper, Skeleton, Stack, Table, TableTbody, TableTd, TableTh, TableThead, TableTr } from '@mantine/core';
 
-/** Skeleton placeholder matching the MoreGamesForm component layout (cost input + game table). */
+/** Skeleton placeholder matching the MoreGamesForm component layout (title + cost input + game table). */
 export const MoreGamesFormSkeleton = () => (
-    <Stack>
-        <Paper withBorder p="sm" mb="md">
+    <Stack gap="md">
+        <Stack align="flex-start" gap="xs">
+            <Skeleton height={28} width={160} />
+            <Skeleton height={18} width={320} />
+        </Stack>
+        <Paper withBorder p="sm">
             <Skeleton height={36} width="100%" />
         </Paper>
         <Table highlightOnHover withTableBorder>

@@ -53,6 +53,30 @@ describe('MoreGamesForm', () => {
         expect(screen.getByText(defaultMoreGamesFormData.rows[0].date)).toBeInTheDocument();
     });
 
+    it('separates month groups with a border, but not before the first group', () => {
+        const rows = [
+            { date: '2024-01-30', game: true, comment: '' },
+            { date: '2024-02-06', game: true, comment: '' },
+        ];
+
+        render(
+            <Wrapper>
+                <MoreGamesForm
+                    cost={defaultMoreGamesFormData.cost}
+                    hallCost={defaultMoreGamesFormData.hallCost}
+                    rows={rows}
+                    onCreateMoreGameDays={mockCreateMoreGameDays}
+                />
+            </Wrapper>,
+        );
+
+        const firstMonthHeader = screen.getByText('January 2024').closest('th');
+        const secondMonthHeader = screen.getByText('February 2024').closest('th');
+
+        expect(firstMonthHeader?.style.borderTop).toBe('');
+        expect(secondMonthHeader?.style.borderTop).not.toBe('');
+    });
+
     it('shows an error notification when creation fails', async () => {
         const user = userEvent.setup();
         mockCreateMoreGameDays.mockRejectedValueOnce(new Error('Server error'));

@@ -1,11 +1,9 @@
 'use client';
 
 import {
-    Anchor,
     Box,
     Button,
     Checkbox,
-    Container,
     Divider,
     Flex,
     Group,
@@ -28,6 +26,7 @@ import { toPounds } from '@/lib/money';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 import type { RecordHallHireProxy } from '@/types/actions/RecordHallHire';
 import type { UpdateInvoiceGameDaysProxy } from '@/types/actions/UpdateInvoiceGameDays';
+
 
 const InvoiceFormSchema = z.object({
     gameDays: z.array(z.object({
@@ -167,93 +166,102 @@ export const InvoiceForm = ({
         .reduce((sum, gd) => sum + (gd.hallCostPounds || 0), 0);
 
     return (
-        <Container fluid>
-            <Paper w="100%" p="xl">
-                <Stack gap="md">
-                    <Stack align="flex-start" gap="xs">
-                        <Title order={2}>Invoice Check</Title>
-                        <Text c="dimmed">
-                            Confirm which game days ran this month, then record the Kelsey Kerridge hall hire invoice.
-                        </Text>
-                    </Stack>
+        <Paper
+            maw="30rem"
+            mx="auto"
+            p="xl"
+        >
+            <Stack
+                gap="md"
+            >
+                <Title order={2}>Invoice Check</Title>
 
-                    <Group justify="space-between" wrap="wrap">
-                        <Button
-                            variant="subtle"
-                            leftSection={<IconChevronLeft size={16} />}
-                            onClick={() => navigateMonth(-1)}
-                        >
-                            {getFullMonthName(year, month - 1)}
-                        </Button>
-                        <Title order={3} flex={1} ta="center">
-                            {getFullMonthName(year, month)} {year}
-                        </Title>
-                        <Button
-                            variant="subtle"
-                            rightSection={<IconChevronRight size={16} />}
-                            onClick={() => navigateMonth(1)}
-                        >
-                            {getFullMonthName(year, month + 1)}
-                        </Button>
-                    </Group>
+                <Group justify="space-between" wrap="wrap">
+                    <Button
+                        variant="subtle"
+                        leftSection={<IconChevronLeft size={16} />}
+                        onClick={() => navigateMonth(-1)}
+                    >
+                        {getFullMonthName(year, month - 1)}
+                    </Button>
+                    <Title
+                        order={3}
+                        flex={1}
+                        ta="center"
+                    >
+                        {getFullMonthName(year, month)} {year}
+                    </Title>
+                    <Button
+                        variant="subtle"
+                        rightSection={<IconChevronRight size={16} />}
+                        onClick={() => navigateMonth(1)}
+                    >
+                        {getFullMonthName(year, month + 1)}
+                    </Button>
+                </Group>
 
-                    {gameDays.length === 0 ? (
-                        <Text c="dimmed">No game days found for this month.</Text>
-                    ) : (
-                        <Box component="form" onSubmit={form.onSubmit(handleSubmit)}>
-                            <Stack gap="sm">
-                                {gameDays.map((gd, index) => (
-                                    <Flex
-                                        key={gd.id}
-                                        direction={{ base: 'column', [rowBreakpoint]: 'row' }}
-                                        align={{ base: 'stretch', [rowBreakpoint]: 'center' }}
-                                        gap="sm"
-                                        bd="1px solid var(--mantine-color-gray-3)"
-                                        p="sm"
-                                        bdrs="sm"
+                {gameDays.length === 0 ? (
+                    <Text
+                        c="dimmed"
+                    >
+                        No game days found for this month.
+                    </Text>
+                ) : (
+                    <Box
+                        component="form"
+                        onSubmit={form.onSubmit(handleSubmit)}
+                    >
+                        <Stack gap="sm">
+                            {gameDays.map((gd, index) => (
+                                <Flex
+                                    key={gd.id}
+                                    direction={{ base: 'column', [rowBreakpoint]: 'row' }}
+                                    align="center"
+                                    gap="sm"
+                                    bd="1px solid var(--mantine-color-gray-3)"
+                                    p="sm"
+                                    bdrs="sm"
+                                >
+                                    <Text
+                                        fw={600}
+                                        w="10rem"
+                                        ta={{ base: 'center', [rowBreakpoint]: 'left' }}
                                     >
-                                        <Text fw={600} w={{ base: '100%', [rowBreakpoint]: 140 }}>
-                                            {formatDate(gd.date)}
-                                        </Text>
-                                        <Checkbox
-                                            label="Game scheduled"
-                                            aria-label={`Game scheduled for ${formatDate(gd.date)}`}
-                                            {...form.getInputProps(`gameDays.${index}.gameScheduled`, { type: 'checkbox' })}
-                                        />
-                                        <NumberInput
-                                            label="Hall cost"
-                                            aria-label={`Hall cost for ${formatDate(gd.date)}`}
-                                            prefix="£"
-                                            decimalScale={2}
-                                            disabled
-                                            fixedDecimalScale
-                                            allowNegative={false}
-                                            hideControls
-                                            min={0}
-                                            w={{ base: '100%', [rowBreakpoint]: '6em' }}
-                                            {...form.getInputProps(`gameDays.${index}.hallCostPounds`)}
-                                        />
-                                    </Flex>
-                                ))}
+                                        {formatDate(gd.date)}
+                                    </Text>
+                                    <Checkbox
+                                        label="Game"
+                                        aria-label={`Game scheduled for ${formatDate(gd.date)}`}
+                                        {...form.getInputProps(`gameDays.${index}.gameScheduled`, { type: 'checkbox' })}
+                                    />
+                                    <NumberInput
+                                        aria-label={`Hall cost for ${formatDate(gd.date)}`}
+                                        prefix="£"
+                                        decimalScale={2}
+                                        disabled
+                                        fixedDecimalScale
+                                        allowNegative={false}
+                                        hideControls
+                                        min={0}
+                                        w="6rem"
+                                        ml={{ base: 0, [rowBreakpoint]: 'auto' }}
+                                        {...form.getInputProps(`gameDays.${index}.hallCostPounds`)}
+                                    />
+                                </Flex>
+                            ))}
 
-                                <Divider />
+                            <Divider />
 
-                                <Group justify="space-between" align="center" wrap="wrap">
-                                    <Text fw={600}>Total: £{total.toFixed(2)}</Text>
-                                    <Button type="submit" w={{ base: '100%', [actionsBreakpoint]: 'fit-content' }}>
-                                        Record invoice
-                                    </Button>
-                                </Group>
-
-                                <Text size="xs" c="dimmed">
-                                    Current club balance can be viewed on the{' '}
-                                    <Anchor href="/footy/books">Books</Anchor> page.
-                                </Text>
-                            </Stack>
-                        </Box>
-                    )}
-                </Stack>
-            </Paper>
-        </Container>
+                            <Group justify="space-between" align="center" wrap="wrap">
+                                <Text fw={600}>Total: £{total.toFixed(2)}</Text>
+                                <Button type="submit" w={{ base: '100%', [actionsBreakpoint]: 'fit-content' }}>
+                                    Record invoice
+                                </Button>
+                            </Group>
+                        </Stack>
+                    </Box>
+                )}
+            </Stack>
+        </Paper>
     );
 };

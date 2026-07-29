@@ -8,7 +8,7 @@ import { CSSProperties, ReactNode } from 'react';
  * DebugSizeOverlay
  *
  * Wraps any container and shows a live badge with its current
- * width/height in both px and em (based on the root font-size),
+ * width/height in both px and rem (based on the root font-size),
  * so you can eyeball breakpoint behaviour while resizing.
  *
  * Usage:
@@ -22,7 +22,7 @@ import { CSSProperties, ReactNode } from 'react';
 
 interface DebugSizeOverlayProps {
     children: ReactNode;
-    /** root font-size in px used to convert to em, defaults to 16 */
+    /** root font-size in px used to convert to rem, defaults to 16 */
     rootFontSize?: number;
     /** corner to pin the badge to */
     position?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right';
@@ -44,8 +44,8 @@ export function DebugSizeOverlay({
 }: DebugSizeOverlayProps) {
     const { ref, width, height } = useElementSize();
 
-    const widthEm = (width / rootFontSize).toFixed(2);
-    const heightEm = (height / rootFontSize).toFixed(2);
+    const widthRem = (width / rootFontSize).toFixed(2);
+    const heightRem = (height / rootFontSize).toFixed(2);
 
     return (
         <Box ref={ref} pos="relative" style={{ ...style }}>
@@ -61,7 +61,7 @@ export function DebugSizeOverlay({
                     ...positionStyles[position],
                 }}
             >
-                {Math.round(width)}px × {Math.round(height)}px ({widthEm}em × {heightEm}em)
+                {Math.round(width)}px × {Math.round(height)}px ({widthRem}rem × {heightRem}rem)
             </Badge>
             {children}
         </Box>

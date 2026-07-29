@@ -1,0 +1,44 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "79028a1b158b",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "src/components/AdminPlayerList/AdminPlayerList.tsx",
+    "src/components/AdminPlayerList/AdminPlayerListSkeleton.tsx",
+    "src/components/AdminUserList/AdminUserListSkeleton.tsx",
+    "src/components/DrinkersForm/DrinkersForm.tsx",
+    "src/components/DrinkersForm/DrinkersFormSkeleton.tsx",
+    "src/components/MoreGamesForm/MoreGamesForm.tsx",
+    "src/components/MoreGamesForm/MoreGamesFormSkeleton.tsx",
+    "src/components/PickerForm/PickerForm.tsx",
+    "src/components/PickerForm/PickerFormSkeleton.tsx",
+    "src/components/PlayerArse/PlayerArse.tsx",
+    "src/components/PlayerInfo/PlayerInfo.tsx",
+    "src/components/PlayerList/PlayerListSkeleton.tsx",
+    "src/components/PlayerPositions/PlayerPositions.tsx",
+    "src/components/PlayerResults/PlayerResults.tsx",
+    "src/components/RecordsTable/RecordsTable.tsx",
+    "src/components/Skeletons/Skeletons.tsx",
+    "src/components/Turnout/Turnout.tsx",
+    "src/components/Turnout/TurnoutSkeleton.tsx",
+    "src/components/WinnersTable/WinnersTable.tsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/79/028a1b158b/0/metadata.json",
+      "transcript": "/79/028a1b158b/0/full.jsonl",
+      "compact_transcript": "/79/028a1b158b/0/transcript.jsonl",
+      "content_hash": "/79/028a1b158b/0/content_hash.txt",
+      "prompt": "/79/028a1b158b/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 111,
+    "cache_creation_tokens": 198680,
+    "cache_read_tokens": 3727646,
+    "output_tokens": 25047,
+    "api_call_count": 57
+  }
+}

@@ -1,0 +1,126 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "79028a1b158b",
+  "session_id": "5efe173a-3c4b-4ba1-bdcf-b91ebe6ebb06",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-29T20:26:55.951355Z",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "save_step_count": 2,
+  "files_touched": [
+    "src/components/AdminPlayerList/AdminPlayerList.tsx",
+    "src/components/AdminPlayerList/AdminPlayerListSkeleton.tsx",
+    "src/components/AdminUserList/AdminUserListSkeleton.tsx",
+    "src/components/DrinkersForm/DrinkersForm.tsx",
+    "src/components/DrinkersForm/DrinkersFormSkeleton.tsx",
+    "src/components/MoreGamesForm/MoreGamesForm.tsx",
+    "src/components/MoreGamesForm/MoreGamesFormSkeleton.tsx",
+    "src/components/PickerForm/PickerForm.tsx",
+    "src/components/PickerForm/PickerFormSkeleton.tsx",
+    "src/components/PlayerArse/PlayerArse.tsx",
+    "src/components/PlayerInfo/PlayerInfo.tsx",
+    "src/components/PlayerList/PlayerListSkeleton.tsx",
+    "src/components/PlayerPositions/PlayerPositions.tsx",
+    "src/components/PlayerResults/PlayerResults.tsx",
+    "src/components/RecordsTable/RecordsTable.tsx",
+    "src/components/Skeletons/Skeletons.tsx",
+    "src/components/Turnout/Turnout.tsx",
+    "src/components/Turnout/TurnoutSkeleton.tsx",
+    "src/components/WinnersTable/WinnersTable.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "6e14f2f41731",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 111,
+    "cache_creation_tokens": 198680,
+    "cache_read_tokens": 3727646,
+    "output_tokens": 25047,
+    "api_call_count": 57
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_015NcErh7hQ42jg9ScKXjXfu",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "finalise"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "6e14f2f41731",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 81,
+        "end": 82,
+        "entry_ids": [
+          "733dc903-5895-4e8e-8c69-4a46a607ac34"
+        ],
+        "tool_use_id": "toolu_015NcErh7hQ42jg9ScKXjXfu"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_015NcErh7hQ42jg9ScKXjXfu"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: finalise",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 2
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-07-29T20:26:55.929387Z",
+    "agent_lines": 293,
+    "agent_removed": 366,
+    "human_added": 918,
+    "human_modified": 19,
+    "human_removed": 0,
+    "total_committed": 1230,
+    "total_lines_changed": 1805,
+    "agent_percentage": 36.50969529085872,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 52,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 51
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 52,
+      "user_lines_removed": 0,
+      "agent_lines_added": 323,
+      "agent_lines_removed": 474,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 51
+      }
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 52,
+      "user_lines_removed": 0,
+      "agent_lines_added": 312,
+      "agent_lines_removed": 366,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 51
+      }
+    }
+  ]
+}

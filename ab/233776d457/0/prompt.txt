@@ -1,0 +1,13 @@
+I am still vague on the difference in Data Science between ontologies, taxonomies and schemas. They seem to be used at least partially interchangeably by some people
+
+---
+
+I've read lots of articles that say developing an ontology for your company or domain is very useful. Let's start developing an ontology for next-www: use whatever format makes most sense particularly for use by AI models but with at least passable human-readability
+
+---
+
+What is OWL in this context? Frank Coyle recommends it
+
+---
+
+Good summary. No, I'm good :->

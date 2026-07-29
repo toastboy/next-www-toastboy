@@ -1,0 +1,21 @@
+mcp
+
+---
+
+I need to understand the way the width is calculated of each of the hierarchy of Mantine components on this page
+
+---
+
+The empty size to the right was my first concern. Let's simplify
+
+---
+
+Leave it. What's the minimum viewport size that would comfortably fit the single-line rows?
+
+---
+
+Either add 'rem' to DebugSizeOverlay or replace 'em': your call
+
+---
+
+Aside: does that mean that I should be specifying my sizes in em not rem if I want to take account of user zoom or font size changes?

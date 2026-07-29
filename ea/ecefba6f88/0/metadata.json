@@ -1,0 +1,110 @@
+{
+  "cli_version": "0.9.0",
+  "checkpoint_id": "eaecefba6f88",
+  "session_id": "e3284b8a-d09a-4ccb-a54a-82eaf4c7aef4",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-29T17:05:49.711344Z",
+  "branch": "main",
+  "checkpoints_count": 6,
+  "save_step_count": 6,
+  "files_touched": [
+    "src/components/DebugSizeOverlay/DebugSizeOverlay.tsx",
+    "src/components/InvoiceForm/InvoiceForm.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-4-8",
+  "turn_id": "e15ad357ee46",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 71,
+    "cache_creation_tokens": 126200,
+    "cache_read_tokens": 2042010,
+    "output_tokens": 34158,
+    "api_call_count": 38
+  },
+  "session_metrics": {
+    "turn_count": 6
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-07-29T17:05:49.694215Z",
+    "agent_lines": 41,
+    "agent_removed": 70,
+    "human_added": 0,
+    "human_modified": 4,
+    "human_removed": 17,
+    "total_committed": 44,
+    "total_lines_changed": 132,
+    "agent_percentage": 84.0909090909091,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 47,
+      "user_lines_removed": 19,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 13,
+        "src/components/InvoiceForm/InvoiceForm.tsx": 34
+      },
+      "user_removed_per_file": {
+        "src/components/InvoiceForm/InvoiceForm.tsx": 19
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 13,
+      "user_lines_removed": 0,
+      "agent_lines_added": 34,
+      "agent_lines_removed": 19,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 13
+      }
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 13,
+      "user_lines_removed": 0,
+      "agent_lines_added": 34,
+      "agent_lines_removed": 19,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 13
+      }
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 13,
+      "user_lines_removed": 0,
+      "agent_lines_added": 91,
+      "agent_lines_removed": 85,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 13
+      }
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 14,
+      "user_lines_removed": 1,
+      "agent_lines_added": 91,
+      "agent_lines_removed": 85,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 13,
+        "src/components/InvoiceForm/InvoiceForm.tsx": 1
+      },
+      "user_removed_per_file": {
+        "src/components/InvoiceForm/InvoiceForm.tsx": 1
+      }
+    },
+    {
+      "checkpoint_number": 6,
+      "user_lines_added": 13,
+      "user_lines_removed": 0,
+      "agent_lines_added": 96,
+      "agent_lines_removed": 90,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 13
+      }
+    }
+  ]
+}

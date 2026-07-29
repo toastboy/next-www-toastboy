@@ -1,0 +1,10 @@
+<ide_opened_file>The user opened the file /Volumes/Development/next-www-toastboy/src/app/footy/auth/claim/[token]/page.vitest.spec.tsx in the IDE. This may or may not be related to the current task.</ide_opened_file>
+Test: page.vitest.spec.tsx [pages-vitest] > Claim Sign Up page > renders the public error message and does not render ClaimSignup when the invitation is invalid
+File: file:///Volumes/Development/next-www-toastboy/src/app/footy/auth/claim/%5Btoken%5D/page.vitest.spec.tsx
+
+AssertionError: expected '<div>This invitation link is invalid.…' to contain 'href="/footy"'
+  at /Volumes/Development/next-www-toastboy/src/app/footy/auth/claim/[token]/page.vitest.spec.tsx:73:22
+
+---
+
+No, removing those was deliberate. Modify the test to match

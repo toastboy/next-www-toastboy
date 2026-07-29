@@ -1,0 +1,73 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "79028a1b158b",
+  "session_id": "800ec919-4c56-4c0c-9d7d-d0cf5543a955",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-29T20:26:56.212488Z",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "save_step_count": 1,
+  "files_touched": [
+    "src/app/footy/auth/claim/[token]/page.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "9b2bbce1fa23",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 53,
+    "cache_creation_tokens": 32724,
+    "cache_read_tokens": 1227568,
+    "output_tokens": 5590,
+    "api_call_count": 27
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_01XH4bMufDbVMSEj4d4NAEv7",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "finalise"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "9b2bbce1fa23",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 49,
+        "end": 50,
+        "entry_ids": [
+          "c7fdbb9d-ced9-4df2-9245-8a921c172073"
+        ],
+        "tool_use_id": "toolu_01XH4bMufDbVMSEj4d4NAEv7"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01XH4bMufDbVMSEj4d4NAEv7"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: finalise",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 2
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-07-29T20:26:56.198936Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 1209,
+    "human_modified": 1,
+    "human_removed": 0,
+    "total_committed": 1209,
+    "total_lines_changed": 1757,
+    "agent_percentage": 0,
+    "metric_version": 2
+  }
+}

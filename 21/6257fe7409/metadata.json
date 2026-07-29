@@ -3,7 +3,7 @@
   "checkpoint_id": "216257fe7409",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 2,
+  "checkpoints_count": 3,
   "files_touched": [
     "src/components/MoreGamesForm/MoreGamesForm.tsx",
     "src/components/MoreGamesForm/MoreGamesForm.vitest.spec.tsx",
@@ -16,13 +16,20 @@
       "compact_transcript": "/21/6257fe7409/0/transcript.jsonl",
       "content_hash": "/21/6257fe7409/0/content_hash.txt",
       "prompt": "/21/6257fe7409/0/prompt.txt"
+    },
+    {
+      "metadata": "/21/6257fe7409/1/metadata.json",
+      "transcript": "/21/6257fe7409/1/full.jsonl",
+      "compact_transcript": "/21/6257fe7409/1/transcript.jsonl",
+      "content_hash": "/21/6257fe7409/1/content_hash.txt",
+      "prompt": "/21/6257fe7409/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 268,
-    "cache_creation_tokens": 296307,
-    "cache_read_tokens": 15844914,
-    "output_tokens": 53932,
-    "api_call_count": 135
+    "input_tokens": 276,
+    "cache_creation_tokens": 320368,
+    "cache_read_tokens": 16035418,
+    "output_tokens": 55522,
+    "api_call_count": 139
   }
 }

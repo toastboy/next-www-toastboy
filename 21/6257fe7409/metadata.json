@@ -1,0 +1,28 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "216257fe7409",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "src/components/MoreGamesForm/MoreGamesForm.tsx",
+    "src/components/MoreGamesForm/MoreGamesForm.vitest.spec.tsx",
+    "src/components/MoreGamesForm/MoreGamesFormSkeleton.tsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/21/6257fe7409/0/metadata.json",
+      "transcript": "/21/6257fe7409/0/full.jsonl",
+      "compact_transcript": "/21/6257fe7409/0/transcript.jsonl",
+      "content_hash": "/21/6257fe7409/0/content_hash.txt",
+      "prompt": "/21/6257fe7409/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 268,
+    "cache_creation_tokens": 296307,
+    "cache_read_tokens": 15844914,
+    "output_tokens": 53932,
+    "api_call_count": 135
+  }
+}

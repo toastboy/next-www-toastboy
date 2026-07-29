@@ -5,6 +5,7 @@ import {
     Box,
     Button,
     Checkbox,
+    Container,
     Group,
     Image,
     Paper,
@@ -43,20 +44,22 @@ export const MoneyForm = ({
     const [submittingPlayerId, setSubmittingPlayerId] = useState<number | null>(null);
 
     return (
-        <Stack gap="md">
-            <Stack gap="xs">
-                <Title order={1}>Unpaid Player Charges</Title>
-                {playerDebts.map((row) => (
-                    <DebtRow
-                        key={row.player.id}
-                        row={row}
-                        payDebt={payDebt}
-                        submittingPlayerId={submittingPlayerId}
-                        setSubmittingPlayerId={setSubmittingPlayerId}
-                    />
-                ))}
-            </Stack>
-        </Stack>
+        <Container fluid>
+            <Paper w="100%" p="xl">
+                <Stack gap="md">
+                    <Title order={1}>Unpaid Player Charges</Title>
+                    {playerDebts.map((row) => (
+                        <DebtRow
+                            key={row.player.id}
+                            row={row}
+                            payDebt={payDebt}
+                            submittingPlayerId={submittingPlayerId}
+                            setSubmittingPlayerId={setSubmittingPlayerId}
+                        />
+                    ))}
+                </Stack>
+            </Paper>
+        </Container>
     );
 };
 
@@ -168,61 +171,65 @@ const DebtRow = ({
     };
 
     return (
-        <Paper withBorder p="sm">
-            <Box component="form" onSubmit={form.onSubmit(handlePay)}>
-                <Stack gap="sm">
-                    <Group wrap="nowrap">
+        <Box
+            component="form"
+            onSubmit={form.onSubmit(handlePay)}
+            bd="1px solid var(--mantine-color-gray-3)"
+            p="sm"
+            bdrs="sm"
+        >
+            <Stack gap="sm">
+                <Group wrap="nowrap">
+                    <Anchor href={`/footy/player/${row.player.id}`}>
+                        <Image
+                            w={48}
+                            h={48}
+                            radius="xl"
+                            src={`/api/footy/player/${row.player.id}/mugshot`}
+                            alt={row.player.name ?? `Player ${row.player.id}`}
+                        />
+                    </Anchor>
+                    <Stack gap={0} style={{ flex: 1, minWidth: 0 }}>
                         <Anchor href={`/footy/player/${row.player.id}`}>
-                            <Image
-                                w={48}
-                                h={48}
-                                radius="xl"
-                                src={`/api/footy/player/${row.player.id}/mugshot`}
-                                alt={row.player.name ?? `Player ${row.player.id}`}
-                            />
+                            {row.player.name ?? `Player ${row.player.id}`}
                         </Anchor>
-                        <Stack gap={0} style={{ flex: 1, minWidth: 0 }}>
-                            <Anchor href={`/footy/player/${row.player.id}`}>
-                                {row.player.name ?? `Player ${row.player.id}`}
-                            </Anchor>
-                            <Text size="sm" c={getBalanceColor(-totalDebt)}>
-                                Total debt: {formatCurrencySigned(-totalDebt)} ({row.debts.length} game{row.debts.length === 1 ? '' : 's'})
-                            </Text>
-                        </Stack>
-                    </Group>
-
-                    {row.debts.length > 0 && (
-                        <Stack gap="xs">
-                            {row.debts.map((debt) => (
-                                <Checkbox
-                                    key={debt.gameDay.id}
-                                    checked={form.values.checkedIds.includes(debt.gameDay.id)}
-                                    onChange={() => toggleDebt(debt.gameDay.id)}
-                                    label={
-                                        <Group gap="xs">
-                                            <GameDayLink gameDay={debt.gameDay} />
-                                            <Text size="sm">{formatCurrency(debt.amount)}</Text>
-                                        </Group>
-                                    }
-                                />
-                            ))}
-                        </Stack>
-                    )}
-
-                    <Group wrap="nowrap" justify="flex-end">
-                        <Text size="sm" fw={500}>
-                            {formatCurrency(totalAmount)}
+                        <Text size="sm" c={getBalanceColor(-totalDebt)}>
+                            Total debt: {formatCurrencySigned(-totalDebt)} ({row.debts.length} game{row.debts.length === 1 ? '' : 's'})
                         </Text>
-                        <Button
-                            type="submit"
-                            disabled={form.values.checkedIds.length === 0 || submittingPlayerId === row.player.id}
-                            loading={submittingPlayerId === row.player.id}
-                        >
-                            Paid
-                        </Button>
-                    </Group>
-                </Stack>
-            </Box>
-        </Paper>
+                    </Stack>
+                </Group>
+
+                {row.debts.length > 0 && (
+                    <Stack gap="xs">
+                        {row.debts.map((debt) => (
+                            <Checkbox
+                                key={debt.gameDay.id}
+                                checked={form.values.checkedIds.includes(debt.gameDay.id)}
+                                onChange={() => toggleDebt(debt.gameDay.id)}
+                                label={
+                                    <Group gap="xs">
+                                        <GameDayLink gameDay={debt.gameDay} />
+                                        <Text size="sm">{formatCurrency(debt.amount)}</Text>
+                                    </Group>
+                                }
+                            />
+                        ))}
+                    </Stack>
+                )}
+
+                <Group wrap="nowrap" justify="flex-end">
+                    <Text size="sm" fw={500}>
+                        {formatCurrency(totalAmount)}
+                    </Text>
+                    <Button
+                        type="submit"
+                        disabled={form.values.checkedIds.length === 0 || submittingPlayerId === row.player.id}
+                        loading={submittingPlayerId === row.player.id}
+                    >
+                        Paid
+                    </Button>
+                </Group>
+            </Stack>
+        </Box>
     );
 };

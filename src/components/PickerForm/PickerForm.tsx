@@ -15,6 +15,9 @@ import {
     UnstyledButton,
 } from '@mantine/core';
 import {
+    useForm,
+} from '@mantine/form';
+import {
     notifications,
 } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck, IconChevronDown, IconChevronUp, IconSelector } from '@tabler/icons-react';
@@ -52,10 +55,14 @@ export const PickerForm = ({
     );
     const [sortKey, setSortKey] = useState<SortKey>('responseTime');
     const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
-    const [selectedIds, setSelectedIds] = useState<number[]>(() => buildDefaultSelection(eligiblePlayers));
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [reason, setReason] = useState('');
     const [isSettingEnabled, setIsSettingEnabled] = useState(false);
+    const form = useForm({
+        initialValues: {
+            selectedIds: buildDefaultSelection(eligiblePlayers),
+            reason: '',
+        },
+    });
 
     const sortedPlayers = useMemo(() => {
         const data = [...eligiblePlayers];
@@ -75,7 +82,7 @@ export const PickerForm = ({
         return data;
     }, [eligiblePlayers, sortKey, sortDirection]);
 
-    const selectedIdSet = useMemo(() => new Set(selectedIds), [selectedIds]);
+    const selectedIdSet = useMemo(() => new Set(form.values.selectedIds), [form.values.selectedIds]);
     const filteredSelectedCount = useMemo(() => (
         eligiblePlayers.reduce((acc, row) => (selectedIdSet.has(row.playerId) ? acc + 1 : acc), 0)
     ), [eligiblePlayers, selectedIdSet]);
@@ -90,25 +97,26 @@ export const PickerForm = ({
 
     const toggleSelectAll = (checked: boolean) => {
         if (checked) {
-            setSelectedIds((prev) => Array.from(new Set([
-                ...prev,
+            form.setFieldValue('selectedIds', Array.from(new Set([
+                ...form.values.selectedIds,
                 ...eligiblePlayers.map((player) => player.playerId),
             ])));
             return;
         }
 
         const eligibleIdSet = new Set(eligiblePlayers.map((player) => player.playerId));
-        setSelectedIds((prev) => prev.filter((id) => !eligibleIdSet.has(id)));
+        form.setFieldValue('selectedIds', form.values.selectedIds.filter((id) => !eligibleIdSet.has(id)));
     };
 
     const toggleSelectPlayer = (playerId: number, checked: boolean) => {
-        setSelectedIds((prev) => {
-            if (checked) {
-                /* v8 ignore next -- defensive guard against duplicate adds; normal checkbox behaviour never fires checked=true when already selected */
-                return prev.includes(playerId) ? prev : [...prev, playerId];
-            }
-            return prev.filter((id) => id !== playerId);
-        });
+        if (checked) {
+            /* v8 ignore next -- defensive guard against duplicate adds; normal checkbox behaviour never fires checked=true when already selected */
+            form.setFieldValue('selectedIds', form.values.selectedIds.includes(playerId) ?
+                form.values.selectedIds :
+                [...form.values.selectedIds, playerId]);
+            return;
+        }
+        form.setFieldValue('selectedIds', form.values.selectedIds.filter((id) => id !== playerId));
     };
 
     const handleSort = (key: SortKey) => {
@@ -211,7 +219,7 @@ export const PickerForm = ({
                 {
                     gameDayId: gameDay.id,
                     game: !gameDay.game,
-                    reason: reason,
+                    reason: form.values.reason,
                 },
             );
             notifications.update({
@@ -331,8 +339,7 @@ export const PickerForm = ({
                         <TextInput
                             aria-label={gameDay.game ? "Cancellation reason" : "Reinstatement reason"}
                             placeholder={gameDay.game ? "not enough players" : ""}
-                            value={reason}
-                            onChange={(event) => setReason(event.currentTarget.value)}
+                            {...form.getInputProps('reason')}
                             disabled={isSubmitting || isSettingEnabled}
                             flex={1}
                         />

@@ -10,6 +10,9 @@ import {
     Tooltip,
 } from '@mantine/core';
 import {
+    useForm,
+} from '@mantine/form';
+import {
     notifications,
 } from '@mantine/notifications';
 import {
@@ -23,7 +26,6 @@ import TextAlign from '@tiptap/extension-text-align';
 import Underline from '@tiptap/extension-underline';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import { useState } from 'react';
 
 import { config } from '@/lib/config';
 import { normalizeEmail } from '@/lib/email/normalizeEmail';
@@ -51,7 +53,11 @@ export const SendEmailForm = ({
     withinPortal,
     withOverlay,
 }: Props) => {
-    const [subject, setSubject] = useState('');
+    const form = useForm({
+        initialValues: {
+            subject: '',
+        },
+    });
     const names = players.map(({ name }) => name).join(', ');
     const emails = Array.from(new Set(players.flatMap((player) => {
         const verifiedExtraEmails = player.extraEmails.filter((playerEmail) => playerEmail.verified);
@@ -74,7 +80,7 @@ export const SendEmailForm = ({
 
     if (!editor) return null;
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (values: { subject: string }, body: string) => {
         const id = notifications.show({
             loading: true,
             title: 'Sending email',
@@ -86,8 +92,8 @@ export const SendEmailForm = ({
         try {
             await onSendEmail({
                 to: emails,
-                subject,
-                html: editor.getHTML(),
+                subject: values.subject,
+                html: body,
             });
 
             onClose();
@@ -137,11 +143,10 @@ export const SendEmailForm = ({
                     <strong>To:</strong> {names}
                 </Text>
             </Tooltip>
-            <form onSubmit={(e) => { e.preventDefault(); void handleSubmit(); }}>
+            <Box component="form" onSubmit={form.onSubmit((values) => void handleSubmit(values, editor.getHTML()))}>
                 <TextInput
                     label="Subject"
-                    value={subject}
-                    onChange={(event) => setSubject(event.currentTarget.value)}
+                    {...form.getInputProps('subject')}
                     required
                     mt="md"
                 />
@@ -195,7 +200,7 @@ export const SendEmailForm = ({
                         </Box>
                     </Tooltip>
                 </Group>
-            </form>
+            </Box>
         </Modal>
     );
 };

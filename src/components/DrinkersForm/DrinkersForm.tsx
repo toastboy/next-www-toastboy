@@ -16,6 +16,9 @@ import {
     UnstyledButton,
 } from '@mantine/core';
 import {
+    useForm,
+} from '@mantine/form';
+import {
     notifications,
 } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck, IconChevronDown, IconChevronUp, IconSelector } from '@tabler/icons-react';
@@ -41,23 +44,26 @@ export const DrinkersForm = ({
 }: DrinkersFormProps) => {
     const router = useRouter();
     const [rows, setRows] = useState<OutcomePlayerType[]>(players);
-    const [selectedIds, setSelectedIds] = useState<number[]>(() => toSelectedIds(players));
-    const [savedSelectedIds, setSavedSelectedIds] = useState<number[]>(() => toSelectedIds(players));
     const [filter, setFilter] = useState('');
     const [sortKey, setSortKey] = useState<SortKey>('team');
     const [sortDirection, setSortDirection] = useState<SortDirection>('asc');
     const [isSaving, setIsSaving] = useState(false);
     const [prevPlayers, setPrevPlayers] = useState(players);
+    const form = useForm({
+        initialValues: {
+            selectedIds: toSelectedIds(players),
+        },
+    });
 
     if (prevPlayers !== players) {
         setPrevPlayers(players);
         setRows(players);
         const selected = toSelectedIds(players);
-        setSelectedIds(selected);
-        setSavedSelectedIds(selected);
+        form.setFieldValue('selectedIds', selected);
+        form.resetDirty({ selectedIds: selected });
     }
 
-    const selectedIdSet = useMemo(() => new Set(selectedIds), [selectedIds]);
+    const selectedIdSet = useMemo(() => new Set(form.values.selectedIds), [form.values.selectedIds]);
 
     const filteredRows = useMemo(() => {
         const searchTerm = filter.trim().toLowerCase();
@@ -91,30 +97,30 @@ export const DrinkersForm = ({
     const someVisibleSelected =
         visibleRows.some((row) => selectedIdSet.has(row.playerId)) && !allVisibleSelected;
 
-    const hasChanges = !isSameSelection(selectedIds, savedSelectedIds);
+    const hasChanges = form.isDirty();
 
     const togglePlayer = (playerId: number, checked: boolean) => {
-        setSelectedIds((current) => {
-            if (checked) {
-                /* v8 ignore next -- defensive guard against duplicate adds; normal checkbox behaviour never fires checked=true when already selected */
-                return current.includes(playerId) ? current : [...current, playerId];
-            }
+        if (checked) {
+            /* v8 ignore next -- defensive guard against duplicate adds; normal checkbox behaviour never fires checked=true when already selected */
+            form.setFieldValue('selectedIds', form.values.selectedIds.includes(playerId) ?
+                form.values.selectedIds :
+                [...form.values.selectedIds, playerId]);
+            return;
+        }
 
-            return current.filter((id) => id !== playerId);
-        });
+        form.setFieldValue('selectedIds', form.values.selectedIds.filter((id) => id !== playerId));
     };
 
     const toggleVisible = (checked: boolean) => {
         const visibleIds = visibleRows.map((row) => row.playerId);
         const visibleIdSet = new Set(visibleIds);
 
-        setSelectedIds((current) => {
-            if (checked) {
-                return Array.from(new Set([...current, ...visibleIds]));
-            }
+        if (checked) {
+            form.setFieldValue('selectedIds', Array.from(new Set([...form.values.selectedIds, ...visibleIds])));
+            return;
+        }
 
-            return current.filter((id) => !visibleIdSet.has(id));
-        });
+        form.setFieldValue('selectedIds', form.values.selectedIds.filter((id) => !visibleIdSet.has(id)));
     };
 
     const handleSort = (key: SortKey) => {
@@ -174,7 +180,7 @@ export const DrinkersForm = ({
 
                 return { ...row, pub: row.team ? 1 : 2 };
             }));
-            setSavedSelectedIds(selectedIds);
+            form.resetDirty(form.values);
 
             notifications.update({
                 id: notificationId,
@@ -245,7 +251,7 @@ export const DrinkersForm = ({
                         <Title order={2}>Game {gameId} Drinkers</Title>
                         <Text c="dimmed">{gameDate}</Text>
                         <Text fw={700}>
-                            {visibleRows.length} of {rows.length} visible, {selectedIds.length} selected
+                            {visibleRows.length} of {rows.length} visible, {form.values.selectedIds.length} selected
                         </Text>
                     </Stack>
 
@@ -333,9 +339,3 @@ const normaliseName = (row: OutcomePlayerType) => row.player.name ?? `Player ${r
 const toSelectedIds = (rows: OutcomePlayerType[]) => rows
     .filter((row) => (row.pub ?? 0) > 0)
     .map((row) => row.playerId);
-
-const isSameSelection = (left: number[], right: number[]) => {
-    if (left.length !== right.length) return false;
-    const rightSet = new Set(right);
-    return left.every((id) => rightSet.has(id));
-};

@@ -1,0 +1,27 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "f297faec9945",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 3,
+  "files_touched": [
+    "src/components/AdminUpdatePlayerRecords/AdminUpdatePlayerRecords.tsx",
+    "src/components/AdminUpdatePlayerRecords/AdminUpdatePlayerRecords.vitest.spec.tsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/f2/97faec9945/0/metadata.json",
+      "transcript": "/f2/97faec9945/0/full.jsonl",
+      "compact_transcript": "/f2/97faec9945/0/transcript.jsonl",
+      "content_hash": "/f2/97faec9945/0/content_hash.txt",
+      "prompt": "/f2/97faec9945/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 67,
+    "cache_creation_tokens": 47824,
+    "cache_read_tokens": 1993542,
+    "output_tokens": 18486,
+    "api_call_count": 34
+  }
+}

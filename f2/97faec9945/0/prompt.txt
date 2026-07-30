@@ -1,0 +1,9 @@
+I'm back to working on SYS-585 and I'm minded just to delete all the skeletons. I've never been all that happy with them. The one thing I will say is that I'm not sure how many per-component Suspense boundaries really work for my project given that in nearly all cases the data is fetched by the page and passed down as props into the components so that they can be client components where required witout risky exposure of data logic by keeping all that on the server.
+
+---
+
+Can't the individual loading.tsx files go too, given there's a site-wide default?
+
+---
+
+Yes

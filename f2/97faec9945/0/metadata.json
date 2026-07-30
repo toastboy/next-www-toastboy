@@ -1,0 +1,74 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "f297faec9945",
+  "session_id": "c7ea7a30-9375-47fb-8806-efd9d243e77b",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-30T12:03:43.67597Z",
+  "branch": "main",
+  "checkpoints_count": 3,
+  "save_step_count": 1,
+  "files_touched": [
+    "src/components/AdminUpdatePlayerRecords/AdminUpdatePlayerRecords.tsx",
+    "src/components/AdminUpdatePlayerRecords/AdminUpdatePlayerRecords.vitest.spec.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "864ff31ecbd1",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 67,
+    "cache_creation_tokens": 47824,
+    "cache_read_tokens": 1993542,
+    "output_tokens": 18486,
+    "api_call_count": 34
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_01D2YZAVkg9E5ciSyWNYnSLi",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "finalise"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "864ff31ecbd1",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 124,
+        "end": 125,
+        "entry_ids": [
+          "04f952ec-e7f3-4962-9f52-8f67b5aef4ec"
+        ],
+        "tool_use_id": "toolu_01D2YZAVkg9E5ciSyWNYnSLi"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01D2YZAVkg9E5ciSyWNYnSLi"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: finalise",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 3
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-07-30T12:03:43.659988Z",
+    "agent_lines": 9,
+    "agent_removed": 3,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 9,
+    "total_lines_changed": 12,
+    "agent_percentage": 100,
+    "metric_version": 2
+  }
+}

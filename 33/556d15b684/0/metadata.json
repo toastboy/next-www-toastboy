@@ -1,0 +1,143 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "33556d15b684",
+  "session_id": "032544d6-fb94-4933-89c8-0ff380aba656",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-30T08:04:03.137402Z",
+  "branch": "main",
+  "checkpoints_count": 6,
+  "save_step_count": 6,
+  "files_touched": [
+    "src/components/DrinkersForm/DrinkersForm.tsx",
+    "src/components/PickerForm/PickerForm.tsx",
+    "src/components/SendEmailForm/SendEmailForm.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "01cb44dfea0e",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 260,
+    "cache_creation_tokens": 214941,
+    "cache_read_tokens": 19156377,
+    "output_tokens": 67898,
+    "api_call_count": 131
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_01XYd5Bm4arwFBZwyYxj8QCT",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "finalise"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "01cb44dfea0e",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 146,
+        "end": 147,
+        "entry_ids": [
+          "01305970-93b7-4c5b-85e7-7b62dbb722ff"
+        ],
+        "tool_use_id": "toolu_01XYd5Bm4arwFBZwyYxj8QCT"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01XYd5Bm4arwFBZwyYxj8QCT"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: finalise",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 6
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-07-30T08:04:03.03804Z",
+    "agent_lines": 64,
+    "agent_removed": 52,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 64,
+    "total_lines_changed": 116,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 52,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 51
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 52,
+      "user_lines_removed": 0,
+      "agent_lines_added": 64,
+      "agent_lines_removed": 52,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 51
+      }
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 52,
+      "user_lines_removed": 0,
+      "agent_lines_added": 64,
+      "agent_lines_removed": 52,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 51
+      }
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 53,
+      "user_lines_removed": 0,
+      "agent_lines_added": 64,
+      "agent_lines_removed": 52,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 52
+      }
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 53,
+      "user_lines_removed": 0,
+      "agent_lines_added": 64,
+      "agent_lines_removed": 52,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 52
+      }
+    },
+    {
+      "checkpoint_number": 6,
+      "user_lines_added": 55,
+      "user_lines_removed": 0,
+      "agent_lines_added": 64,
+      "agent_lines_removed": 52,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 54
+      }
+    }
+  ]
+}

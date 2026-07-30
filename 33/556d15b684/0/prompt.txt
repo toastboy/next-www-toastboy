@@ -1,0 +1,88 @@
+Now start work on SYS-580
+
+---
+
+In testing DrinkersForm: Switched to client rendering because the server rendering errored:
+
+Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+
+---
+
+This is on page http://localhost:3000/footy/admin/drinkers/1273
+
+---
+
+New separate Bug ticket please
+
+---
+
+Are SSR fallbacks like this logged on the server anywhere?
+
+---
+
+Waiting for the debugger to disconnect...
+ GET /api/events?channel=games 200 in 4.7s (next.js: 51ms, proxy.ts: 12ms, application-code: 4.6s)
+⨯ Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+    at ignore-listed frames {
+  digest: '1866297620'
+}
+⨯ Error: Aborted, errored or already flushed boundaries should not be flushed again. This is a bug in React.
+    at ignore-listed frames {
+  digest: '1419538228'
+}
+⨯ Error: failed to pipe response
+    at ignore-listed frames {
+  [cause]: Error: Aborted, errored or already flushed boundaries should not be flushed again. This is a bug in React.
+      at ignore-listed frames {
+    digest: '1419538228'
+  }
+}
+⨯ Error: failed to pipe response
+    at ignore-listed frames {
+  page: '/footy/admin/picker',
+  [cause]: Error: Aborted, errored or already flushed boundaries should not be flushed again. This is a bug in React.
+      at ignore-listed frames {
+    digest: '1419538228'
+  }
+}
+Error: Aborted, errored or already flushed boundaries should not be flushed again. This is a bug in React.
+    at ignore-listed frames {
+  digest: '1419538228'
+}
+This error originated either by throwing inside of an async function without a catch block, or by rejecting a promise which was not handled with .catch(). The promise rejected with the reason:
+Error: Aborted, errored or already flushed boundaries should not be flushed again. This is a bug in React.
+    at flushSubtree (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:229951)
+    at flushSegment (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:231980)
+    at flushSubtree (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:229695)
+    at flushSegment (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:230183)
+    at flushSegmentContainer (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:234952)
+    at flushPartiallyCompletedSegment (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:241361)
+    at flushCompletedQueues (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:250775)
+    at performWork (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:226721)
+    at Immediate._onImmediate (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:103267)
+    at process.processImmediate (node:internal/timers:504:21)
+    at process.callbackTrampoline (node:internal/async_hooks:130:17)
+⨯ unhandledRejection: Error: Aborted, errored or already flushed boundaries should not be flushed again. This is a bug in React.
+    at ignore-listed frames {
+  digest: '1419538228'
+}
+⨯ unhandledRejection:  Error: Aborted, errored or already flushed boundaries should not be flushed again. This is a bug in React.
+    at ignore-listed frames {
+  digest: '1419538228'
+}
+ GET /footy/admin/picker 500 in 3.5s (next.js: 27ms, proxy.ts: 15ms, application-code: 3.5s)
+⨯ Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+    at ignore-listed frames {
+  digest: '2377063172'
+}
+ GET /footy/admin/picker 200 in 2.8s (next.js: 8ms, proxy.ts: 940ms, application-code: 1818ms)
+[browser] Uncaught Error: Switched to client rendering because the server rendering errored:
+
+Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+Debugger attached.
+ GET /api/footy/player/12/mugshot 200 in 2.3s (next.js: 118ms, proxy.ts: 48ms, application-code: 2.1s)
+Waiting for the debugger to disconnect...
+
+---
+
+This error makes me suspect the recent change to use dot notation throughout for Table sub-components: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.

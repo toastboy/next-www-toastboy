@@ -1,0 +1,28 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "33556d15b684",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 6,
+  "files_touched": [
+    "src/components/DrinkersForm/DrinkersForm.tsx",
+    "src/components/PickerForm/PickerForm.tsx",
+    "src/components/SendEmailForm/SendEmailForm.tsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/33/556d15b684/0/metadata.json",
+      "transcript": "/33/556d15b684/0/full.jsonl",
+      "compact_transcript": "/33/556d15b684/0/transcript.jsonl",
+      "content_hash": "/33/556d15b684/0/content_hash.txt",
+      "prompt": "/33/556d15b684/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 260,
+    "cache_creation_tokens": 214941,
+    "cache_read_tokens": 19156377,
+    "output_tokens": 67898,
+    "api_call_count": 131
+  }
+}

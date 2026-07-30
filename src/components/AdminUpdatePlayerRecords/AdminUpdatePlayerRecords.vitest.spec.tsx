@@ -29,7 +29,7 @@ describe('AdminUpdatePlayerRecords', () => {
         vi.clearAllMocks();
     });
 
-    it('shows skeleton before first poll resolves', () => {
+    it('shows a loader before first poll resolves', () => {
         const getProgress: GetProgressProxy = vi.fn((): Promise<[number, number] | null> => new Promise(() => { /* never resolves */ }));
 
         render(<Wrapper><AdminUpdatePlayerRecords onUpdatePlayerRecords={mockUpdatePlayerRecords} getProgress={getProgress} /></Wrapper>);

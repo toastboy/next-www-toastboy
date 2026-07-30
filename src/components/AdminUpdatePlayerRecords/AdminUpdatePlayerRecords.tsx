@@ -5,6 +5,7 @@ import {
     Button,
     Center,
     Flex,
+    Loader,
     RingProgress,
     Text,
 } from '@mantine/core';
@@ -14,7 +15,6 @@ import {
 import { IconCheck } from '@tabler/icons-react';
 import { useEffect, useRef, useState } from 'react';
 
-import { SkeletonRecordsProgress } from '@/components/Skeletons/Skeletons';
 import { toPublicMessage } from '@/lib/errors';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 import { GetProgressProxy } from '@/types/actions/GetProgress';
@@ -51,7 +51,13 @@ export const AdminUpdatePlayerRecords = ({ onUpdatePlayerRecords, getProgress }:
         return () => clearInterval(intervalId);
     }, []);
 
-    if (progress === undefined) return <SkeletonRecordsProgress />;
+    if (progress === undefined) {
+        return (
+            <Center p="md" role="status" aria-label="Loading player records progress">
+                <Loader color="gray" type="dots" />
+            </Center>
+        );
+    }
     if (progress?.length !== 2) return null;
 
     const pct = progress[1] === 0 ?

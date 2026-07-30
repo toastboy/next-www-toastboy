@@ -1,0 +1,57 @@
+{
+  "cli_version": "0.9.0",
+  "checkpoint_id": "56d0b8823b3a",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 6,
+  "files_touched": [
+    "src/app/footy/(authenticated)/players/loading.stories.tsx",
+    "src/app/footy/(authenticated)/players/loading.tsx",
+    "src/app/footy/admin/drinkers/[gameDayId]/loading.stories.tsx",
+    "src/app/footy/admin/drinkers/[gameDayId]/loading.tsx",
+    "src/app/footy/admin/moregames/loading.stories.tsx",
+    "src/app/footy/admin/moregames/loading.tsx",
+    "src/app/footy/admin/picker/loading.stories.tsx",
+    "src/app/footy/admin/picker/loading.tsx",
+    "src/app/footy/admin/players/loading.stories.tsx",
+    "src/app/footy/admin/players/loading.tsx",
+    "src/app/footy/admin/responses/loading.stories.tsx",
+    "src/app/footy/admin/responses/loading.tsx",
+    "src/app/footy/admin/users/loading.stories.tsx",
+    "src/app/footy/admin/users/loading.tsx",
+    "src/app/footy/table/[table]/loading.stories.tsx",
+    "src/app/footy/table/[table]/loading.tsx",
+    "src/app/footy/turnout/loading.stories.tsx",
+    "src/app/footy/turnout/loading.tsx",
+    "src/app/footy/winners/loading.stories.tsx",
+    "src/app/footy/winners/loading.tsx",
+    "src/components/AdminPlayerList/AdminPlayerListSkeleton.tsx",
+    "src/components/AdminUserList/AdminUserListSkeleton.tsx",
+    "src/components/DrinkersForm/DrinkersFormSkeleton.tsx",
+    "src/components/MoreGamesForm/MoreGamesFormSkeleton.tsx",
+    "src/components/PickerForm/PickerFormSkeleton.tsx",
+    "src/components/PlayerList/PlayerListSkeleton.tsx",
+    "src/components/ResponsesForm/ResponsesFormSkeleton.tsx",
+    "src/components/Skeletons/Skeletons.stories.tsx",
+    "src/components/Skeletons/Skeletons.tsx",
+    "src/components/Turnout/TurnoutSkeleton.tsx",
+    "src/components/WinnersTable/WinnersTableSkeleton.tsx",
+    "src/components/YearTable/YearTableSkeleton.tsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/56/d0b8823b3a/0/metadata.json",
+      "transcript": "/56/d0b8823b3a/0/full.jsonl",
+      "compact_transcript": "/56/d0b8823b3a/0/transcript.jsonl",
+      "content_hash": "/56/d0b8823b3a/0/content_hash.txt",
+      "prompt": "/56/d0b8823b3a/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 91,
+    "cache_creation_tokens": 99173,
+    "cache_read_tokens": 3484015,
+    "output_tokens": 53843,
+    "api_call_count": 49
+  }
+}

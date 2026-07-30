@@ -1,0 +1,28 @@
+Start work on SYS-597
+
+---
+
+I do have SYS-585 pending which is meant to be a good look at all the Skeletons and their usefulness. Before going to lengths to fix them I should consider whether they're a distraction altogether. Some pages just have the standard three-dot loading indicator, and maybe that would be OK for everything
+
+---
+
+Presumably if I'm to persevere with Skeletons then I need to put in the work to make them representative of the content once it loads, otherwise there'll be shifts on rendering anyway?
+
+---
+
+Are loading placeholders only for routes or can they exist at the component level?
+
+---
+
+OK, add notes from this chat to 585 and delete all the table-based skeletons for now
+
+---
+
+<task-notification>
+<task-id>kq70xk2m8</task-id>
+<status>failed</status>
+<summary>MCP task kq70xk2m (claude.ai Atlassian/addCommentToJiraIssue) failed.</summary>
+<result>
+Task failed: MCP server "claude.ai Atlassian" tool "addCommentToJiraIssue" sent no response or progress for 300s; aborting. If this server is configured in your MCP settings, set a per-server "timeout" (ms) to allow longer silent runs for just this server; otherwise set CLAUDE_CODE_MCP_TOOL_IDLE_TIMEOUT (ms) globally (0 disables).
+</result>
+</task-notification>

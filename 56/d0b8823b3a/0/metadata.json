@@ -1,0 +1,92 @@
+{
+  "cli_version": "0.9.0",
+  "checkpoint_id": "56d0b8823b3a",
+  "session_id": "93531dbc-4151-4f4d-9c76-92b7c176ef01",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-30T11:17:07.105989Z",
+  "branch": "main",
+  "checkpoints_count": 6,
+  "save_step_count": 2,
+  "files_touched": [
+    "src/app/footy/(authenticated)/players/loading.stories.tsx",
+    "src/app/footy/(authenticated)/players/loading.tsx",
+    "src/app/footy/admin/drinkers/[gameDayId]/loading.stories.tsx",
+    "src/app/footy/admin/drinkers/[gameDayId]/loading.tsx",
+    "src/app/footy/admin/moregames/loading.stories.tsx",
+    "src/app/footy/admin/moregames/loading.tsx",
+    "src/app/footy/admin/picker/loading.stories.tsx",
+    "src/app/footy/admin/picker/loading.tsx",
+    "src/app/footy/admin/players/loading.stories.tsx",
+    "src/app/footy/admin/players/loading.tsx",
+    "src/app/footy/admin/responses/loading.stories.tsx",
+    "src/app/footy/admin/responses/loading.tsx",
+    "src/app/footy/admin/users/loading.stories.tsx",
+    "src/app/footy/admin/users/loading.tsx",
+    "src/app/footy/table/[table]/loading.stories.tsx",
+    "src/app/footy/table/[table]/loading.tsx",
+    "src/app/footy/turnout/loading.stories.tsx",
+    "src/app/footy/turnout/loading.tsx",
+    "src/app/footy/winners/loading.stories.tsx",
+    "src/app/footy/winners/loading.tsx",
+    "src/components/AdminPlayerList/AdminPlayerListSkeleton.tsx",
+    "src/components/AdminUserList/AdminUserListSkeleton.tsx",
+    "src/components/DrinkersForm/DrinkersFormSkeleton.tsx",
+    "src/components/MoreGamesForm/MoreGamesFormSkeleton.tsx",
+    "src/components/PickerForm/PickerFormSkeleton.tsx",
+    "src/components/PlayerList/PlayerListSkeleton.tsx",
+    "src/components/ResponsesForm/ResponsesFormSkeleton.tsx",
+    "src/components/Skeletons/Skeletons.stories.tsx",
+    "src/components/Skeletons/Skeletons.tsx",
+    "src/components/Turnout/TurnoutSkeleton.tsx",
+    "src/components/WinnersTable/WinnersTableSkeleton.tsx",
+    "src/components/YearTable/YearTableSkeleton.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-4-8",
+  "turn_id": "9c7d7fff9097",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 91,
+    "cache_creation_tokens": 99173,
+    "cache_read_tokens": 3484015,
+    "output_tokens": 53843,
+    "api_call_count": 49
+  },
+  "session_metrics": {
+    "turn_count": 6
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-07-30T11:17:07.084589Z",
+    "agent_lines": 12,
+    "agent_removed": 958,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 12,
+    "total_lines_changed": 970,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 16,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 16
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 17,
+      "user_lines_removed": 0,
+      "agent_lines_added": 12,
+      "agent_lines_removed": 958,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 17
+      }
+    }
+  ]
+}

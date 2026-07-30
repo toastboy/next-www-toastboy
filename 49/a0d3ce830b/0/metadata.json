@@ -1,0 +1,125 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "49a0d3ce830b",
+  "session_id": "c7ea7a30-9375-47fb-8806-efd9d243e77b",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-30T12:00:19.509523Z",
+  "branch": "main",
+  "checkpoints_count": 3,
+  "save_step_count": 1,
+  "files_touched": [
+    "src/app/footy/(authenticated)/downloadmydata/loading.stories.tsx",
+    "src/app/footy/(authenticated)/downloadmydata/loading.tsx",
+    "src/app/footy/(authenticated)/profile/loading.stories.tsx",
+    "src/app/footy/(authenticated)/profile/loading.tsx",
+    "src/app/footy/admin/invoice/loading.stories.tsx",
+    "src/app/footy/admin/invoice/loading.tsx",
+    "src/app/footy/admin/money/loading.stories.tsx",
+    "src/app/footy/admin/money/loading.tsx",
+    "src/app/footy/admin/newplayer/loading.stories.tsx",
+    "src/app/footy/admin/newplayer/loading.tsx",
+    "src/app/footy/admin/user/[email]/loading.stories.tsx",
+    "src/app/footy/admin/user/[email]/loading.tsx",
+    "src/app/footy/books/loading.stories.tsx",
+    "src/app/footy/books/loading.tsx",
+    "src/app/footy/countrymap/loading.stories.tsx",
+    "src/app/footy/countrymap/loading.tsx",
+    "src/app/footy/curse/loading.stories.tsx",
+    "src/app/footy/curse/loading.tsx",
+    "src/app/footy/familytree/loading.stories.tsx",
+    "src/app/footy/familytree/loading.tsx",
+    "src/app/footy/game/[id]/loading.stories.tsx",
+    "src/app/footy/game/[id]/loading.tsx",
+    "src/app/footy/games/loading.stories.tsx",
+    "src/app/footy/games/loading.tsx",
+    "src/components/AdminUserData/AdminUserDataSkeleton.tsx",
+    "src/components/CurseOfTheBibs/CurseOfTheBibsSkeleton.tsx",
+    "src/components/DownloadMyData/DownloadMyDataSkeleton.tsx",
+    "src/components/FamilyTree/FamilyTreeSkeleton.tsx",
+    "src/components/GameDayList/GameDayListSkeleton.tsx",
+    "src/components/GameDaySummary/GameDaySummarySkeleton.tsx",
+    "src/components/GameResultForm/GameResultFormSkeleton.tsx",
+    "src/components/InvoiceForm/InvoiceFormSkeleton.tsx",
+    "src/components/MoneyChart/MoneyChartSkeleton.tsx",
+    "src/components/MoneyForm/MoneyFormSkeleton.tsx",
+    "src/components/NewPlayerForm/NewPlayerFormSkeleton.tsx",
+    "src/components/PlayerCountryMap/PlayerCountryMapSkeleton.tsx",
+    "src/components/PlayerProfileForm/PlayerProfileFormSkeleton.tsx",
+    "src/components/Skeletons/Skeletons.stories.tsx",
+    "src/components/Skeletons/Skeletons.tsx",
+    "src/components/TitleWithYearDropdown/TitleWithYearDropdownSkeleton.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "864ff31ecbd1",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 67,
+    "cache_creation_tokens": 47824,
+    "cache_read_tokens": 1993542,
+    "output_tokens": 18486,
+    "api_call_count": 34
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_01D2YZAVkg9E5ciSyWNYnSLi",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "finalise"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "864ff31ecbd1",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 124,
+        "end": 125,
+        "entry_ids": [
+          "04f952ec-e7f3-4962-9f52-8f67b5aef4ec"
+        ],
+        "tool_use_id": "toolu_01D2YZAVkg9E5ciSyWNYnSLi"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01D2YZAVkg9E5ciSyWNYnSLi"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: finalise",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 3
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-07-30T12:00:19.492901Z",
+    "agent_lines": 0,
+    "agent_removed": 980,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 0,
+    "total_lines_changed": 980,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 55,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 54
+      }
+    }
+  ]
+}

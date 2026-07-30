@@ -1,0 +1,2 @@
+{"v":1,"agent":"claude-code","cli_version":"0.9.0","type":"user","ts":"2026-07-30T10:33:26.322Z","content":[{"text":"I want to kill the process listening on port 3000"}]}
+{"v":1,"agent":"claude-code","cli_version":"0.9.0","type":"assistant","ts":"2026-07-30T10:33:32.307Z","id":"33a12ddc-c8a7-4b14-a432-0cbb6c7ca261","content":[{"text":"```sh\nkill -9 $(lsof -ti :3000)\n```\n\n- None.","type":"text"}]}

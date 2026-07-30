@@ -80,6 +80,7 @@ npx vitest run --config vitest.services.config.ts path/to/test.ts
 - Same-directory `./` imports are acceptable
 - Always use single quotes for import paths
 - Prepend all backend-only modules with `import 'server-only';`
+- All imports from any `@mantine/*` package must be written multi-line, one specifier per line with a trailing comma, regardless of specifier count or line length (this applies even to a single-specifier import, e.g. `import {\n    Table,\n} from '@mantine/core';`)
 
 ### Services Pattern
 

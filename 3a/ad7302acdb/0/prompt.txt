@@ -1,0 +1,11 @@
+The Mac host ran out of memory so badly I had to force a shut down
+
+---
+
+<task-notification>
+<task-id>box0yl1cx</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/aaef6eec-764f-40eb-a4dc-9d304775ba16/tasks/box0yl1cx.output</output-file>
+<status>completed</status>
+<summary>Background command "Run component tests" completed (exit code 0)</summary>
+</task-notification>

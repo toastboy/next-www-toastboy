@@ -5,13 +5,16 @@ import {
     Divider,
     Paper,
     Table,
+    TableTbody,
+    TableTd,
+    TableTh,
+    TableTr,
     Title,
 } from '@mantine/core';
 import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 
 import { getYearName } from '@/lib/tables';
 import { PlayerDisplayType } from '@/services/Player';
-
 
 export interface Props {
     player: PlayerDisplayType;
@@ -29,12 +32,12 @@ export const PlayerResults = ({ player, year, record, titleOrder = 3 }: Props) =
                 summary={`${player.name}'s ${getYearName(year)} results record`}
                 layout="fixed"
             >
-                <Table.Tbody>
-                    <Table.Tr><Table.Th>Played</Table.Th><Table.Td w="3rem">{record?.played ?? '-'}</Table.Td></Table.Tr>
-                    <Table.Tr><Table.Th>Won</Table.Th><Table.Td w="3rem">{record?.won ?? '-'}</Table.Td></Table.Tr>
-                    <Table.Tr><Table.Th>Drawn</Table.Th><Table.Td w="3rem">{record?.drawn ?? '-'}</Table.Td></Table.Tr>
-                    <Table.Tr><Table.Th>Lost</Table.Th><Table.Td w="3rem">{record?.lost ?? '-'}</Table.Td></Table.Tr>
-                </Table.Tbody>
+                <TableTbody>
+                    <TableTr><TableTh>Played</TableTh><TableTd w="3rem">{record?.played ?? '-'}</TableTd></TableTr>
+                    <TableTr><TableTh>Won</TableTh><TableTd w="3rem">{record?.won ?? '-'}</TableTd></TableTr>
+                    <TableTr><TableTh>Drawn</TableTh><TableTd w="3rem">{record?.drawn ?? '-'}</TableTd></TableTr>
+                    <TableTr><TableTh>Lost</TableTh><TableTd w="3rem">{record?.lost ?? '-'}</TableTd></TableTr>
+                </TableTbody>
             </Table>
         </Paper>
     );

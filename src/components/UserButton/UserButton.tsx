@@ -5,6 +5,11 @@ import {
     Flex,
     Group,
     Menu,
+    MenuDivider,
+    MenuDropdown,
+    MenuItem,
+    MenuLabel,
+    MenuTarget,
     rem,
     Text,
     UnstyledButton,
@@ -126,51 +131,51 @@ export const UserButton = ({ user }: Props) => {
     }
 
     const userMenu = user ? (
-        <Menu.Dropdown>
-            <Menu.Label>Account</Menu.Label>
-            <Menu.Item leftSection={<IconUserScan size={14} />}>
+        <MenuDropdown>
+            <MenuLabel>Account</MenuLabel>
+            <MenuItem leftSection={<IconUserScan size={14} />}>
                 <Link className={classes.link} href="/footy/profile">
                     My Profile
                 </Link>
-            </Menu.Item>
-            <Menu.Item leftSection={<IconPassword size={14} />}>
+            </MenuItem>
+            <MenuItem leftSection={<IconPassword size={14} />}>
                 <Link className={classes.link} href="/footy/password">
                     Change Password
                 </Link>
-            </Menu.Item>
+            </MenuItem>
             {user.impersonatedBy ? (
-                <Menu.Item leftSection={<IconUserOff size={14} />} onClick={async () => { await stopImpersonating(); }}>
+                <MenuItem leftSection={<IconUserOff size={14} />} onClick={async () => { await stopImpersonating(); }}>
                     End impersonation
-                </Menu.Item>
+                </MenuItem>
             ) : null}
-            <Menu.Item leftSection={<IconLogout size={14} />} onClick={async () => { await signOut(); }}>
+            <MenuItem leftSection={<IconLogout size={14} />} onClick={async () => { await signOut(); }}>
                 Sign Out
-            </Menu.Item>
+            </MenuItem>
 
-            <Menu.Divider />
+            <MenuDivider />
 
-            <Menu.Label>My Data</Menu.Label>
-            <Menu.Item
+            <MenuLabel>My Data</MenuLabel>
+            <MenuItem
                 leftSection={<IconArrowsLeftRight size={14} />}
             >
                 <Link className={classes.link} href="/footy/downloadmydata">
                     Download my data
                 </Link>
-            </Menu.Item>
-            <Menu.Item
+            </MenuItem>
+            <MenuItem
                 color="red"
                 leftSection={<IconTrash size={14} />}
             >
                 <Link className={classes.link} href="/footy/deleteaccount">
                     Delete account
                 </Link>
-            </Menu.Item>
-        </Menu.Dropdown>
+            </MenuItem>
+        </MenuDropdown>
     ) : null;
 
     return (
         <Menu shadow="md" width={200} position="right-end">
-            <Menu.Target>
+            <MenuTarget>
                 <UnstyledButton
                     aria-label="User menu"
                     className={classes.user}
@@ -205,7 +210,7 @@ export const UserButton = ({ user }: Props) => {
                         />
                     </Group>
                 </UnstyledButton>
-            </Menu.Target>
+            </MenuTarget>
             {userMenu}
         </Menu>
     );

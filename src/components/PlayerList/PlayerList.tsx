@@ -11,6 +11,11 @@ import {
     Stack,
     Switch,
     Table,
+    TableTbody,
+    TableTd,
+    TableTh,
+    TableThead,
+    TableTr,
     Text,
     TextInput,
     Title,
@@ -197,48 +202,48 @@ export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
                     />
 
                     <Table mt={20}>
-                        <Table.Thead>
-                            <Table.Tr>
-                                <Table.Th>
+                        <TableThead>
+                            <TableTr>
+                                <TableTh>
                                     Select
-                                </Table.Th>
-                                <Table.Th style={{ cursor: 'pointer' }} onClick={() => handleSort('name')}>
+                                </TableTh>
+                                <TableTh style={{ cursor: 'pointer' }} onClick={() => handleSort('name')}>
                                     <Flex align="center" gap="xs">
                                         Name
                                         {sortBy === 'name' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
                                     </Flex>
-                                </Table.Th>
-                                <Table.Th>
+                                </TableTh>
+                                <TableTh>
                                     W-D-L
-                                </Table.Th>
-                                <Table.Th>
+                                </TableTh>
+                                <TableTh>
                                     Timeline
-                                </Table.Th>
-                            </Table.Tr>
-                        </Table.Thead>
-                        <Table.Tbody>
+                                </TableTh>
+                            </TableTr>
+                        </TableThead>
+                        <TableTbody>
                             {sortedPlayers.map((player) => (
-                                <Table.Tr key={player.id}>
-                                    <Table.Td>
+                                <TableTr key={player.id}>
+                                    <TableTd>
                                         <Checkbox
                                             checked={selectedPlayers.includes(player)}
                                             onChange={() => handleSelectPlayer(player)}
                                         />
-                                    </Table.Td>
-                                    <Table.Td>
+                                    </TableTd>
+                                    <TableTd>
                                         <Anchor href={`/footy/player/${encodeURIComponent(player.id || "")}`}>
                                             {player.name}
                                         </Anchor>
-                                    </Table.Td>
-                                    <Table.Td>
+                                    </TableTd>
+                                    <TableTd>
                                         <PlayerWDLChart player={player} />
-                                    </Table.Td>
-                                    <Table.Td>
+                                    </TableTd>
+                                    <TableTd>
                                         <PlayerTimeline player={player} currentGameId={gameDay.id} />
-                                    </Table.Td>
-                                </Table.Tr>
+                                    </TableTd>
+                                </TableTr>
                             ))}
-                        </Table.Tbody>
+                        </TableTbody>
                     </Table>
                 </Stack>
             </Paper>

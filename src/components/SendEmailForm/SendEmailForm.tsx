@@ -16,8 +16,31 @@ import {
     notifications,
 } from '@mantine/notifications';
 import {
+    AlignCenterControl,
+    AlignJustifyControl,
+    AlignLeftControl,
+    AlignRightControl,
+    BlockquoteControl,
+    BoldControl,
+    BulletListControl,
+    ClearFormattingControl,
+    CodeControl,
+    H1Control,
+    H2Control,
+    H3Control,
+    H4Control,
+    HighlightControl,
+    HrControl,
+    ItalicControl,
     Link,
+    OrderedListControl,
     RichTextEditor,
+    RichTextEditorContent,
+    RichTextEditorControlsGroup,
+    RichTextEditorLinkControl,
+    StrikeThroughControl,
+    UnderlineControl,
+    UnlinkControl,
 } from '@mantine/tiptap';
 import { IconAlertTriangle, IconCheck, IconUser } from '@tabler/icons-react';
 import Highlight from '@tiptap/extension-highlight';
@@ -152,45 +175,48 @@ export const SendEmailForm = ({
                 />
 
                 <RichTextEditor editor={editor} mt="md">
+                    {/* RichTextEditor.Toolbar has no standalone named export in @mantine/tiptap,
+                        so this is the one dot-notation exception to the no-dot-notation rule.
+                        Safe here since this file is 'use client'. See CLAUDE.md. */}
                     <RichTextEditor.Toolbar sticky stickyOffset={60}>
-                        <RichTextEditor.ControlsGroup>
-                            <RichTextEditor.Bold />
-                            <RichTextEditor.Italic />
-                            <RichTextEditor.Underline />
-                            <RichTextEditor.Strikethrough />
-                            <RichTextEditor.ClearFormatting />
-                            <RichTextEditor.Highlight />
-                            <RichTextEditor.Code />
-                        </RichTextEditor.ControlsGroup>
+                        <RichTextEditorControlsGroup>
+                            <BoldControl />
+                            <ItalicControl />
+                            <UnderlineControl />
+                            <StrikeThroughControl />
+                            <ClearFormattingControl />
+                            <HighlightControl />
+                            <CodeControl />
+                        </RichTextEditorControlsGroup>
 
-                        <RichTextEditor.ControlsGroup>
-                            <RichTextEditor.H1 />
-                            <RichTextEditor.H2 />
-                            <RichTextEditor.H3 />
-                            <RichTextEditor.H4 />
-                        </RichTextEditor.ControlsGroup>
+                        <RichTextEditorControlsGroup>
+                            <H1Control />
+                            <H2Control />
+                            <H3Control />
+                            <H4Control />
+                        </RichTextEditorControlsGroup>
 
-                        <RichTextEditor.ControlsGroup>
-                            <RichTextEditor.Blockquote />
-                            <RichTextEditor.Hr />
-                            <RichTextEditor.BulletList />
-                            <RichTextEditor.OrderedList />
-                        </RichTextEditor.ControlsGroup>
+                        <RichTextEditorControlsGroup>
+                            <BlockquoteControl />
+                            <HrControl />
+                            <BulletListControl />
+                            <OrderedListControl />
+                        </RichTextEditorControlsGroup>
 
-                        <RichTextEditor.ControlsGroup>
-                            <RichTextEditor.Link />
-                            <RichTextEditor.Unlink />
-                        </RichTextEditor.ControlsGroup>
+                        <RichTextEditorControlsGroup>
+                            <RichTextEditorLinkControl />
+                            <UnlinkControl />
+                        </RichTextEditorControlsGroup>
 
-                        <RichTextEditor.ControlsGroup>
-                            <RichTextEditor.AlignLeft />
-                            <RichTextEditor.AlignCenter />
-                            <RichTextEditor.AlignJustify />
-                            <RichTextEditor.AlignRight />
-                        </RichTextEditor.ControlsGroup>
+                        <RichTextEditorControlsGroup>
+                            <AlignLeftControl />
+                            <AlignCenterControl />
+                            <AlignJustifyControl />
+                            <AlignRightControl />
+                        </RichTextEditorControlsGroup>
                     </RichTextEditor.Toolbar>
 
-                    <RichTextEditor.Content />
+                    <RichTextEditorContent />
                 </RichTextEditor>
 
                 <Group justify="flex-end" mt="md">

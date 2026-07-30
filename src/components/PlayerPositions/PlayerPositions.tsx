@@ -6,6 +6,10 @@ import {
     Divider,
     Paper,
     Table,
+    TableTbody,
+    TableTd,
+    TableTh,
+    TableTr,
     Title,
 } from '@mantine/core';
 import { TableNameSchema } from 'prisma/zod/schemas';
@@ -30,7 +34,7 @@ export const PlayerPositions = ({ player, year, record, titleOrder = 3 }: Props)
                 summary={`${player.name}'s ${getYearName(year)} table positions`}
                 layout="fixed"
             >
-                <Table.Tbody>
+                <TableTbody>
                     {TableNameSchema.options.map((table) => {
                         const position = record ?
                             record[rankMap[table][0] as keyof typeof record] ?? null :
@@ -38,21 +42,21 @@ export const PlayerPositions = ({ player, year, record, titleOrder = 3 }: Props)
                         const href = `/footy/table/${table}?year=${year}`;
 
                         return (
-                            <Table.Tr key={table}>
-                                <Table.Th>
+                            <TableTr key={table}>
+                                <TableTh>
                                     <Anchor href={href}>
                                         {table.charAt(0).toUpperCase() + table.slice(1)}
                                     </Anchor>
-                                </Table.Th>
-                                <Table.Td w="3rem">
+                                </TableTh>
+                                <TableTd w="3rem">
                                     {position !== null ?
                                         <Anchor href={href}>{position}</Anchor> :
                                         '-'}
-                                </Table.Td>
-                            </Table.Tr>
+                                </TableTd>
+                            </TableTr>
                         );
                     })}
-                </Table.Tbody>
+                </TableTbody>
             </Table>
         </Paper>
     );

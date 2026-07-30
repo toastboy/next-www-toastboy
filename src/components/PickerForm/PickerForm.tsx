@@ -9,6 +9,12 @@ import {
     Paper,
     Stack,
     Table,
+    TableScrollContainer,
+    TableTbody,
+    TableTd,
+    TableTh,
+    TableThead,
+    TableTr,
     Text,
     TextInput,
     Title,
@@ -252,18 +258,18 @@ export const PickerForm = ({
         const playerName = getPlayerName(player);
 
         return (
-            <Table.Tr key={player.playerId}>
-                <Table.Td w="2.5rem">
+            <TableTr key={player.playerId}>
+                <TableTd w="2.5rem">
                     <Checkbox
                         checked={selectedIdSet.has(player.playerId)}
                         onChange={(event) => toggleSelectPlayer(player.playerId, event.currentTarget.checked)}
                         aria-label={`Select ${playerName}`}
                     />
-                </Table.Td>
-                <Table.Td>{playerName}</Table.Td>
-                <Table.Td>{formatResponseInterval(player.responseInterval ?? null)}</Table.Td>
-                <Table.Td>{player.gamesPlayed}</Table.Td>
-            </Table.Tr>
+                </TableTd>
+                <TableTd>{playerName}</TableTd>
+                <TableTd>{formatResponseInterval(player.responseInterval ?? null)}</TableTd>
+                <TableTd>{player.gamesPlayed}</TableTd>
+            </TableTr>
         );
     });
 
@@ -281,7 +287,7 @@ export const PickerForm = ({
                     Pick sides
                 </Button>
             </Group>
-            <Table.ScrollContainer minWidth={480} scrollAreaProps={{ type: 'auto' }}>
+            <TableScrollContainer minWidth={480} scrollAreaProps={{ type: 'auto' }}>
                 <Table
                     striped
                     highlightOnHover
@@ -290,30 +296,30 @@ export const PickerForm = ({
                     w="100%"
                     layout="fixed"
                 >
-                    <Table.Thead>
-                        <Table.Tr>
-                            <Table.Th w="2.5rem">
+                    <TableThead>
+                        <TableTr>
+                            <TableTh w="2.5rem">
                                 <Checkbox
                                     checked={allSelected}
                                     indeterminate={someSelected}
                                     onChange={(event) => toggleSelectAll(event.currentTarget.checked)}
                                     aria-label="Select all players"
                                 />
-                            </Table.Th>
-                            <Table.Th aria-sort={sortKey === 'name' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                            </TableTh>
+                            <TableTh aria-sort={sortKey === 'name' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
                                 {renderSortHeader('Player', 'name')}
-                            </Table.Th>
-                            <Table.Th aria-sort={sortKey === 'responseTime' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                            </TableTh>
+                            <TableTh aria-sort={sortKey === 'responseTime' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
                                 {renderSortHeader('Response time', 'responseTime')}
-                            </Table.Th>
-                            <Table.Th aria-sort={sortKey === 'gamesPlayed' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                            </TableTh>
+                            <TableTh aria-sort={sortKey === 'gamesPlayed' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
                                 {renderSortHeader('Total games played', 'gamesPlayed')}
-                            </Table.Th>
-                        </Table.Tr>
-                    </Table.Thead>
-                    <Table.Tbody>{rows}</Table.Tbody>
+                            </TableTh>
+                        </TableTr>
+                    </TableThead>
+                    <TableTbody>{rows}</TableTbody>
                 </Table>
-            </Table.ScrollContainer>
+            </TableScrollContainer>
             <Divider
                 label="or"
                 labelPosition="center"

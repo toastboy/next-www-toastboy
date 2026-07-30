@@ -6,7 +6,9 @@ import {
     Group,
     Image,
     Popover,
-    ScrollArea,
+    PopoverDropdown,
+    PopoverTarget,
+    ScrollAreaAutosize,
     Stack,
     Text,
 } from '@mantine/core';
@@ -267,7 +269,7 @@ export const PlayerCountryMap = ({
                 shadow="md"
                 withinPortal={false}
             >
-                <Popover.Target>
+                <PopoverTarget>
                     <Box
                         pos="absolute"
                         left={popoverPos.x}
@@ -276,8 +278,8 @@ export const PlayerCountryMap = ({
                         h={1}
                         pe="none"
                     />
-                </Popover.Target>
-                <Popover.Dropdown
+                </PopoverTarget>
+                <PopoverDropdown
                     data-testid="country-popover-dropdown"
                     onMouseEnter={() => {
                         dropdownHoveredRef.current = true;
@@ -289,7 +291,7 @@ export const PlayerCountryMap = ({
                     }}
                     pe="auto"
                 >
-                    <ScrollArea.Autosize mah={POPOVER_MAX_HEIGHT}>
+                    <ScrollAreaAutosize mah={POPOVER_MAX_HEIGHT}>
                         <Stack gap="xs">
                             {hoveredGroups.map(([countryName, supporters]) => (
                                 <Stack key={countryName} gap={4}>
@@ -317,8 +319,8 @@ export const PlayerCountryMap = ({
                                 </Stack>
                             ))}
                         </Stack>
-                    </ScrollArea.Autosize>
-                </Popover.Dropdown>
+                    </ScrollAreaAutosize>
+                </PopoverDropdown>
             </Popover>
         </Box>
     );

@@ -2,6 +2,9 @@
 
 import {
     AppShell,
+    AppShellHeader,
+    AppShellMain,
+    AppShellNavbar,
     Badge,
     Burger,
     Container,
@@ -54,7 +57,7 @@ export const CustomAppShell = ({ children, user, devMode }: Props) => {
             }}
             padding="md"
         >
-            <AppShell.Header>
+            <AppShellHeader>
                 <Container>
                     <Group justify="space-between" className="px-6">
                         <Burger
@@ -83,17 +86,17 @@ export const CustomAppShell = ({ children, user, devMode }: Props) => {
                         </Group>
                     </Group>
                 </Container>
-            </AppShell.Header>
+            </AppShellHeader>
 
-            <AppShell.Navbar p="md">
+            <AppShellNavbar p="md">
                 <NavBarNested user={user} />
-            </AppShell.Navbar>
+            </AppShellNavbar>
 
-            <AppShell.Main>
+            <AppShellMain>
                 <Container fluid p="xl">
                     {children}
                 </Container>
-            </AppShell.Main>
+            </AppShellMain>
 
         </AppShell>
     );

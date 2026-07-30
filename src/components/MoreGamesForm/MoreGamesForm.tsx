@@ -10,6 +10,12 @@ import {
     Paper,
     Stack,
     Table,
+    TableScrollContainer,
+    TableTbody,
+    TableTd,
+    TableTh,
+    TableThead,
+    TableTr,
     Text,
     TextInput,
     Title,
@@ -180,23 +186,23 @@ export const MoreGamesForm = ({
                                 {...form.getInputProps('hallCost')}
                             />
                         </Group>
-                        <Table.ScrollContainer minWidth={480} scrollAreaProps={{ type: 'auto' }}>
+                        <TableScrollContainer minWidth={480} scrollAreaProps={{ type: 'auto' }}>
                             <Table
                                 highlightOnHover
                                 withTableBorder
                             >
-                                <Table.Thead>
-                                    <Table.Tr>
-                                        <Table.Th>Date</Table.Th>
-                                        <Table.Th>Game</Table.Th>
-                                        <Table.Th>Comment</Table.Th>
-                                    </Table.Tr>
-                                </Table.Thead>
-                                <Table.Tbody>
+                                <TableThead>
+                                    <TableTr>
+                                        <TableTh>Date</TableTh>
+                                        <TableTh>Game</TableTh>
+                                        <TableTh>Comment</TableTh>
+                                    </TableTr>
+                                </TableThead>
+                                <TableTbody>
                                     {groupedRows.map((group, groupIndex) => (
                                         <Fragment key={`${group.label}-${groupIndex}`}>
-                                            <Table.Tr>
-                                                <Table.Th
+                                            <TableTr>
+                                                <TableTh
                                                     colSpan={3}
                                                     bg="var(--mantine-color-gray-light)"
                                                     py="xs"
@@ -207,35 +213,35 @@ export const MoreGamesForm = ({
                                                     <Text fw={700} tt="uppercase" fz="sm" lts={0.5} c="dimmed">
                                                         {group.label}
                                                     </Text>
-                                                </Table.Th>
-                                            </Table.Tr>
+                                                </TableTh>
+                                            </TableTr>
                                             {group.rows.map(({ row, index }) => {
                                                 return (
-                                                    <Table.Tr key={row.date}>
-                                                        <Table.Td>
+                                                    <TableTr key={row.date}>
+                                                        <TableTd>
                                                             <Text fw={500}>{row.date}</Text>
-                                                        </Table.Td>
-                                                        <Table.Td>
+                                                        </TableTd>
+                                                        <TableTd>
                                                             <Checkbox
                                                                 aria-label={`Game scheduled for ${row.date}`}
                                                                 {...form.getInputProps(`rows.${index}.game`, { type: 'checkbox' })}
                                                             />
-                                                        </Table.Td>
-                                                        <Table.Td>
+                                                        </TableTd>
+                                                        <TableTd>
                                                             <TextInput
                                                                 aria-label={`Comment for ${row.date}`}
                                                                 placeholder="Optional note"
                                                                 {...form.getInputProps(`rows.${index}.comment`)}
                                                             />
-                                                        </Table.Td>
-                                                    </Table.Tr>
+                                                        </TableTd>
+                                                    </TableTr>
                                                 );
                                             })}
                                         </Fragment>
                                     ))}
-                                </Table.Tbody>
+                                </TableTbody>
                             </Table>
-                        </Table.ScrollContainer>
+                        </TableScrollContainer>
 
                         <Button
                             type="submit"

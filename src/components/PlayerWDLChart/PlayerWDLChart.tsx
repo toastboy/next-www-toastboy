@@ -1,5 +1,6 @@
 import {
-    Progress,
+    ProgressRoot,
+    ProgressSection,
     Tooltip,
 } from '@mantine/core';
 
@@ -11,13 +12,13 @@ export interface Props {
 
 export const PlayerWDLChart = ({ player }: Props) => {
     return (
-        <Progress.Root size="xl">
+        <ProgressRoot size="xl">
             <Tooltip
                 label={`${player.gamesWon}
                 win${player.gamesWon > 1 ? 's' : ''}`}
                 position="top"
             >
-                <Progress.Section
+                <ProgressSection
                     value={100.0 * player.gamesWon / player.gamesPlayed}
                     color="green"
                 />
@@ -26,7 +27,7 @@ export const PlayerWDLChart = ({ player }: Props) => {
                 label={`${player.gamesDrawn} draw${player.gamesDrawn > 1 ? 's' : ''}`}
                 position="top"
             >
-                <Progress.Section
+                <ProgressSection
                     value={100.0 * player.gamesDrawn / player.gamesPlayed}
                     color="yellow"
                 />
@@ -35,11 +36,11 @@ export const PlayerWDLChart = ({ player }: Props) => {
                 label={`${player.gamesLost} loss${player.gamesLost > 1 ? 'es' : ''}`}
                 position="top"
             >
-                <Progress.Section
+                <ProgressSection
                     value={100.0 * player.gamesLost / player.gamesPlayed}
                     color="red"
                 />
             </Tooltip>
-        </Progress.Root>
+        </ProgressRoot>
     );
 };

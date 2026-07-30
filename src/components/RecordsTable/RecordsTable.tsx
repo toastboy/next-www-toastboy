@@ -5,6 +5,11 @@ import {
     Divider,
     Paper,
     Table,
+    TableTbody,
+    TableTd,
+    TableTh,
+    TableThead,
+    TableTr,
     Title,
     type TitleOrder,
     VisuallyHidden,
@@ -93,33 +98,33 @@ export const RecordsTable = ({ table, year, records, title, titleOrder = 2 }: Pr
                 </>
             ) : null}
             <Table stickyHeader stickyHeaderOffset={0}>
-                <Table.Thead>
-                    <Table.Tr bd="0">
-                        <Table.Th p={0}><VisuallyHidden>Position</VisuallyHidden></Table.Th>
-                        <Table.Th p={0}><VisuallyHidden>Player</VisuallyHidden></Table.Th>
-                        <Table.Th p={0}><VisuallyHidden>{scoreHeading}</VisuallyHidden></Table.Th>
-                    </Table.Tr>
-                </Table.Thead>
-                <Table.Tbody id={tbodyId}>
+                <TableThead>
+                    <TableTr bd="0">
+                        <TableTh p={0}><VisuallyHidden>Position</VisuallyHidden></TableTh>
+                        <TableTh p={0}><VisuallyHidden>Player</VisuallyHidden></TableTh>
+                        <TableTh p={0}><VisuallyHidden>{scoreHeading}</VisuallyHidden></TableTh>
+                    </TableTr>
+                </TableThead>
+                <TableTbody id={tbodyId}>
                     {visibleRecords.map((record, index) => (
-                        <Table.Tr
+                        <TableTr
                             key={record.id}
                             bd={ranks[index + 1]?.visible === false ? '0' : undefined}
                         >
-                            <Table.Td>
+                            <TableTd>
                                 {ranks[index].visible ?
                                     ranks[index].text :
                                     <VisuallyHidden>{ranks[index].text}</VisuallyHidden>}
-                            </Table.Td>
-                            <Table.Td>
+                            </TableTd>
+                            <TableTd>
                                 <PlayerLink player={record.player} year={year} />
-                            </Table.Td>
-                            <Table.Td>
+                            </TableTd>
+                            <TableTd>
                                 <TableScore table={table} playerRecord={record} />
-                            </Table.Td>
-                        </Table.Tr>
+                            </TableTd>
+                        </TableTr>
                     ))}
-                </Table.Tbody>
+                </TableTbody>
             </Table>
             {hiddenCount > 0 &&
                 <Button

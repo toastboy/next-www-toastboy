@@ -55,38 +55,64 @@ const createRichTextNode = (name: string, props?: Record<string, unknown>, child
 const RichTextEditor = ({ children, ...props }: { children?: React.ReactNode }) =>
     createRichTextNode('editor', props, children);
 
+// RichTextEditor.Toolbar has no standalone named export in the real
+// @mantine/tiptap package, so it stays as the one dot-notation exception
+// mirrored here. See CLAUDE.md.
 RichTextEditor.Toolbar = ({ children }: { children?: React.ReactNode }) =>
     createRichTextNode('toolbar', undefined, children);
 
-RichTextEditor.ControlsGroup = ({ children }: { children?: React.ReactNode }) =>
+const RichTextEditorControlsGroup = ({ children }: { children?: React.ReactNode }) =>
     createRichTextNode('controls', undefined, children);
 
-RichTextEditor.Content = () => createRichTextNode('content', undefined, 'Hello, this is a test!');
-RichTextEditor.Bold = () => createRichTextNode('bold');
-RichTextEditor.Italic = () => createRichTextNode('italic');
-RichTextEditor.Underline = () => createRichTextNode('underline');
-RichTextEditor.Strikethrough = () => createRichTextNode('strikethrough');
-RichTextEditor.ClearFormatting = () => createRichTextNode('clear-formatting');
-RichTextEditor.Highlight = () => createRichTextNode('highlight');
-RichTextEditor.Code = () => createRichTextNode('code');
-RichTextEditor.H1 = () => createRichTextNode('h1');
-RichTextEditor.H2 = () => createRichTextNode('h2');
-RichTextEditor.H3 = () => createRichTextNode('h3');
-RichTextEditor.H4 = () => createRichTextNode('h4');
-RichTextEditor.Blockquote = () => createRichTextNode('blockquote');
-RichTextEditor.Hr = () => createRichTextNode('hr');
-RichTextEditor.BulletList = () => createRichTextNode('bullet-list');
-RichTextEditor.OrderedList = () => createRichTextNode('ordered-list');
-RichTextEditor.Link = () => createRichTextNode('link');
-RichTextEditor.Unlink = () => createRichTextNode('unlink');
-RichTextEditor.AlignLeft = () => createRichTextNode('align-left');
-RichTextEditor.AlignCenter = () => createRichTextNode('align-center');
-RichTextEditor.AlignJustify = () => createRichTextNode('align-justify');
-RichTextEditor.AlignRight = () => createRichTextNode('align-right');
+const RichTextEditorContent = () => createRichTextNode('content', undefined, 'Hello, this is a test!');
+const BoldControl = () => createRichTextNode('bold');
+const ItalicControl = () => createRichTextNode('italic');
+const UnderlineControl = () => createRichTextNode('underline');
+const StrikeThroughControl = () => createRichTextNode('strikethrough');
+const ClearFormattingControl = () => createRichTextNode('clear-formatting');
+const HighlightControl = () => createRichTextNode('highlight');
+const CodeControl = () => createRichTextNode('code');
+const H1Control = () => createRichTextNode('h1');
+const H2Control = () => createRichTextNode('h2');
+const H3Control = () => createRichTextNode('h3');
+const H4Control = () => createRichTextNode('h4');
+const BlockquoteControl = () => createRichTextNode('blockquote');
+const HrControl = () => createRichTextNode('hr');
+const BulletListControl = () => createRichTextNode('bullet-list');
+const OrderedListControl = () => createRichTextNode('ordered-list');
+const RichTextEditorLinkControl = () => createRichTextNode('link');
+const UnlinkControl = () => createRichTextNode('unlink');
+const AlignLeftControl = () => createRichTextNode('align-left');
+const AlignCenterControl = () => createRichTextNode('align-center');
+const AlignJustifyControl = () => createRichTextNode('align-justify');
+const AlignRightControl = () => createRichTextNode('align-right');
 
 vi.mock('@mantine/tiptap', () => ({
+    AlignCenterControl,
+    AlignJustifyControl,
+    AlignLeftControl,
+    AlignRightControl,
+    BlockquoteControl,
+    BoldControl,
+    BulletListControl,
+    ClearFormattingControl,
+    CodeControl,
+    H1Control,
+    H2Control,
+    H3Control,
+    H4Control,
+    HighlightControl,
+    HrControl,
+    ItalicControl,
     Link: {},
+    OrderedListControl,
     RichTextEditor,
+    RichTextEditorContent,
+    RichTextEditorControlsGroup,
+    RichTextEditorLinkControl,
+    StrikeThroughControl,
+    UnderlineControl,
+    UnlinkControl,
 }));
 
 vi.mock('next/cache', () => ({

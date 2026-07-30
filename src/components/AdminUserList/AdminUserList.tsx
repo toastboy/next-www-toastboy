@@ -7,6 +7,12 @@ import {
     Paper,
     Switch,
     Table,
+    TableScrollContainer,
+    TableTbody,
+    TableTd,
+    TableTh,
+    TableThead,
+    TableTr,
     Text,
     TextInput,
     UnstyledButton,
@@ -108,38 +114,38 @@ export const AdminUserList = ({ users, setAdminRole }: Props) => {
                     value={filter}
                     onChange={(event) => setFilter(event.currentTarget.value)}
                 />
-                <Table.ScrollContainer minWidth="100%" scrollAreaProps={{ type: 'auto' }}>
+                <TableScrollContainer minWidth="100%" scrollAreaProps={{ type: 'auto' }}>
                     <Table mt={20} layout="fixed">
-                        <Table.Thead>
-                            <Table.Tr>
-                                <Table.Th w="10rem" aria-sort={sortBy === 'name' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                        <TableThead>
+                            <TableTr>
+                                <TableTh w="10rem" aria-sort={sortBy === 'name' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : 'none'}>
                                     {renderSortHeader('Name', 'name')}
-                                </Table.Th>
-                                <Table.Th w="16rem" aria-sort={sortBy === 'email' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                                </TableTh>
+                                <TableTh w="16rem" aria-sort={sortBy === 'email' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : 'none'}>
                                     {renderSortHeader('Email', 'email')}
-                                </Table.Th>
-                                <Table.Th w="6rem" aria-sort={sortBy === 'role' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                                </TableTh>
+                                <TableTh w="6rem" aria-sort={sortBy === 'role' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : 'none'}>
                                     {renderSortHeader('Admin', 'role')}
-                                </Table.Th>
-                                <Table.Th w="10rem" aria-sort={sortBy === 'createdAt' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                                </TableTh>
+                                <TableTh w="10rem" aria-sort={sortBy === 'createdAt' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : 'none'}>
                                     {renderSortHeader('Created', 'createdAt')}
-                                </Table.Th>
-                            </Table.Tr>
-                        </Table.Thead>
-                        <Table.Tbody>
+                                </TableTh>
+                            </TableTr>
+                        </TableThead>
+                        <TableTbody>
                             {sortedUsers.map((user) => (
-                                <Table.Tr key={user.email}>
-                                    <Table.Td>
+                                <TableTr key={user.email}>
+                                    <TableTd>
                                         <Anchor href={`/footy/admin/user/${encodeURIComponent(user.email)}`}>
                                             {user.name}
                                         </Anchor>
-                                    </Table.Td>
-                                    <Table.Td>
+                                    </TableTd>
+                                    <TableTd>
                                         <Anchor href={`/footy/admin/user/${encodeURIComponent(user.email)}`}>
                                             {user.email}
                                         </Anchor>
-                                    </Table.Td>
-                                    <Table.Td>
+                                    </TableTd>
+                                    <TableTd>
                                         <Switch
                                             checked={user.role === 'admin'}
                                             onChange={(event) => toggleAdmin(user.id, event.currentTarget.checked)}
@@ -150,15 +156,15 @@ export const AdminUserList = ({ users, setAdminRole }: Props) => {
                                             }
                                             color="blue"
                                         />
-                                    </Table.Td>
-                                    <Table.Td>
+                                    </TableTd>
+                                    <TableTd>
                                         <RelativeTime date={user.createdAt} />
-                                    </Table.Td>
-                                </Table.Tr>
+                                    </TableTd>
+                                </TableTr>
                             ))}
-                        </Table.Tbody>
+                        </TableTbody>
                     </Table>
-                </Table.ScrollContainer>
+                </TableScrollContainer>
             </Paper>
         </Container>
     );

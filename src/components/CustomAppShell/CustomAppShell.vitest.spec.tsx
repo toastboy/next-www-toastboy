@@ -22,25 +22,20 @@ vi.mock('next/navigation', () => ({
 vi.mock('@mantine/core', async (importOriginal) => {
     const actual = await importOriginal<typeof import('@mantine/core')>();
 
-    const MockAppShellRoot = ({ children, navbar }: { children?: ReactNode; navbar?: { collapsed?: { mobile?: boolean } } }) => (
+    const AppShell = ({ children, navbar }: { children?: ReactNode; navbar?: { collapsed?: { mobile?: boolean } } }) => (
         <div data-testid="app-shell" data-navbar-collapsed-mobile={String(navbar?.collapsed?.mobile ?? false)}>{children}</div>
     );
 
-    const Header = ({ children }: { children?: ReactNode }) => <div data-testid="app-shell-header">{children}</div>;
-    const Navbar = ({ children }: { children?: ReactNode }) => <div data-testid="app-shell-navbar">{children}</div>;
-    const Main = ({ children }: { children?: ReactNode }) => <main>{children}</main>;
-    const Footer = ({ children }: { children?: ReactNode }) => <footer>{children}</footer>;
-
-    const AppShell = Object.assign(MockAppShellRoot, {
-        Header,
-        Navbar,
-        Main,
-        Footer,
-    });
+    const AppShellHeader = ({ children }: { children?: ReactNode }) => <div data-testid="app-shell-header">{children}</div>;
+    const AppShellNavbar = ({ children }: { children?: ReactNode }) => <div data-testid="app-shell-navbar">{children}</div>;
+    const AppShellMain = ({ children }: { children?: ReactNode }) => <main>{children}</main>;
 
     return {
         ...actual,
         AppShell,
+        AppShellHeader,
+        AppShellNavbar,
+        AppShellMain,
         Badge: ({ children }: { children?: ReactNode }) => <span>{children}</span>,
         Burger: ({ opened, onClick, hiddenFrom, ...props }: MockBurgerProps) => (
             <button {...props} data-hidden-from={hiddenFrom} data-opened={opened ? 'true' : undefined} onClick={onClick} type="button" />

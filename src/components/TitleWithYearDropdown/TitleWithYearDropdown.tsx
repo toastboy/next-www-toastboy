@@ -6,6 +6,9 @@ import type {
 import {
     Group,
     Menu,
+    MenuDropdown,
+    MenuItem,
+    MenuTarget,
     Title,
     UnstyledButton,
 } from '@mantine/core';
@@ -44,7 +47,7 @@ export function TitleWithYearDropdown({ title, order, year, validYears }: Props)
             <Title order={order}>{title}</Title>
 
             <Menu shadow="md" styles={{ dropdown: { maxHeight: '60vh', overflowY: 'auto' } }}>
-                <Menu.Target>
+                <MenuTarget>
                     <UnstyledButton
                         style={{
                             fontSize: `var(--mantine-h${order as number}-font-size)`,
@@ -62,19 +65,19 @@ export function TitleWithYearDropdown({ title, order, year, validYears }: Props)
                             <IconChevronDown size={14} />
                         </Group>
                     </UnstyledButton>
-                </Menu.Target>
+                </MenuTarget>
 
-                <Menu.Dropdown>
+                <MenuDropdown>
                     {validYears.map(r => (
-                        <Menu.Item
+                        <MenuItem
                             key={r}
                             leftSection={r === year ? <IconCheck size={14} /> : null}
                             onClick={() => router.push(createYearHref(r))}
                         >
                             {getYearName(r)}
-                        </Menu.Item>
+                        </MenuItem>
                     ))}
-                </Menu.Dropdown>
+                </MenuDropdown>
             </Menu>
         </Group>
     );

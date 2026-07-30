@@ -1,0 +1,222 @@
+I want to start work on SYS-586 next, but I think this goes wider. What's best practice when it comes to component versus page layout design? How much responsibility should rest with the page to lay out components - presumably the idea should be that components should be easily re-usable in different contexts as appropriate and also Storybook's involvement means the components need to be testable and snapshottable sensibly on their own.
+
+---
+
+Yes. I guess that really I need to take SYS-584 together with this, since I'm almost certainly going the wrong way by not using Container for layout on the player profile page. Possibly I can get rid of any lingering use of container queries
+
+---
+
+<task-notification>
+<task-id>a0e52e73b8e4a319a</task-id>
+<tool-use-id>toolu_018rzuZnBrvg3ey92B2MZt5G</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/aaef6eec-764f-40eb-a4dc-9d304775ba16/tasks/a0e52e73b8e4a319a.output</output-file>
+<status>completed</status>
+<summary>Agent "Survey layout patterns in codebase" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result># Research Report: SYS-586 / SYS-584 — Container / Width-Constraint Refactor
+
+## 1. `maw=` usages (pages under `src/app/footy/**` + all of `src/components/**`)
+
+**12 usages found**, grouped by distinct value:
+
+**`maw="35rem"` (4 occurrences — clearly an informal standard for narrow single-form pages)**
+- `src/app/footy/response/page.tsx:60` — `&lt;Paper w="100%" maw="35rem" p="xl"&gt;`
+- `src/app/footy/auth/signin/page.tsx:18` — `&lt;Paper w="100%" maw="35rem" p="xl"&gt;`
+- `src/app/footy/auth/claim/[token]/page.tsx:55` — `&lt;Paper w="100%" maw="35rem" p="xl"&gt;`
+- `src/app/footy/forgottenpassword/page.tsx:12` — `&lt;Paper w="100%" maw="35rem" p="xl"&gt;`
+- `src/components/PasswordResetForm/PasswordResetForm.tsx:120` — `&lt;Paper w="100%" maw="35rem" p="xl"&gt;` (component-level, same pattern)
+
+**Other rem-based values (each used once)**
+- `src/components/Turnout/Turnout.tsx:44` — `maw="24rem"` (`&lt;Paper p="sm" maw="24rem" withBorder&gt;`)
+- `src/components/PlayerProfileForm/PlayerProfileForm.tsx:207` — `maw="32rem"`
+- `src/components/InvoiceForm/InvoiceForm.tsx:174` — `maw="30rem"`
+- `src/components/WinnersTable/WinnersTable.tsx:48` — `maw="18rem"` (paired with `miw="14rem"`)
+- `src/components/RecordsTable/RecordsTable.tsx:88` — `maw="24rem"` (paired with `miw="14rem"`)
+
+**Pixel/number values**
+- `src/components/EnquiryForm/EnquiryForm.tsx:134` — `maw={520}`
+- `src/components/FamilyTree/FamilyTree.stories.tsx:43` — `maw={480}` (Storybook only, on a `&lt;Box&gt;`)
+
+Observed informal "standard sizes": `35rem` (dominant, form-card width, 5 uses), then one-off `18/24/30/32rem` and two px-based numbers (`480`, `520`) that don't fit the rem scale at all. No single canonical scale currently exists outside the `35rem` cluster.
+
+## 2. Existing `&lt;Container&gt;` usage
+
+**35 usages**, `size` prop distribution:
+
+| size | Locations |
+|---|---|
+| `fluid` | `src/app/footy/info/page.tsx:38`, `src/app/footy/admin/players/page.tsx:32`, `src/components/AdminPlayerList/AdminPlayerList.tsx:364`, `src/components/MoreGamesForm/MoreGamesForm.tsx:144`, `src/components/ResponsesForm/ResponsesForm.tsx:279`, `src/components/PickerForm/PickerForm.tsx:326`, `src/components/DrinkersForm/DrinkersForm.tsx:247`, `src/components/MoneyForm/MoneyForm.tsx:51`, **and the global app shell**: `src/components/CustomAppShell/CustomAppShell.tsx:93` (`&lt;Container fluid p="xl"&gt;` wraps `AppShell.Main`'s `children` — i.e. **every** footy page) |
+| `xs` | `src/app/footy/admin/page.tsx:17`, `src/components/AdminUserData/AdminUserData.tsx:21`, `src/components/DeleteAccountForm/DeleteAccountForm.tsx:90`, `src/components/NewPlayerForm/NewPlayerForm.tsx:182`, `src/components/SignIn/SignIn.tsx:114`, `src/components/PasswordChangeForm/PasswordChangeForm.tsx:102`, `src/components/ClaimSignup/ClaimSignup.tsx:104` |
+| `sm` | `src/app/footy/admin/newgame/page.tsx:16` |
+| `md` | `src/app/footy/admin/users/page.tsx:38`, `src/components/AdminUserList/AdminUserList.tsx:103` |
+| `lg` | `src/app/footy/admin/picker/page.tsx:28`, `src/app/footy/admin/responses/page.tsx:22`, `src/app/footy/admin/drinkers/[gameDayId]/page.tsx:40`, `src/app/footy/admin/money/page.tsx:24`, `src/app/footy/admin/invoice/page.tsx:41` |
+| `xl` | `src/components/PlayerList/PlayerList.tsx:141`, `src/components/PlayerProfileForm/PlayerProfileForm.tsx:203` |
+| none (default) | `src/app/footy/admin/user/[email]/page.tsx:42`, `src/app/footy/admin/users/page.tsx:31`, `src/app/footy/docs/admin/page.tsx:11`, `src/app/footy/docs/migration/page.tsx:11`, `src/components/AdminUserList/AdminUserList.tsx:96`, `src/components/SignIn/SignIn.tsx:89`, `src/components/DebugBreakpoints/DebugBreakpoints.tsx:91`, `src/components/DebugFontSizes/DebugFontSizes.tsx:74`, `src/components/CustomAppShell/CustomAppShell.tsx:58` (header logo bar) |
+
+**Important structural note**: `CustomAppShell.tsx:93` already wraps *every* page's content in `&lt;Container fluid p="xl"&gt;`. Because it's `fluid` (no max-width), it imposes no width constraint — individual pages/components then layer their own `Container size="..."` or `Paper maw="..."` on top, sometimes nested two `Container`s deep (e.g. `admin/page.tsx` has `Container size="xs"` inside the shell's `Container fluid`).
+
+There's also a self-aware TODO already in the code at `src/app/footy/auth/claim/[token]/page.tsx:19-22`:
+```
+// TODO: Work out whether things like this &lt;Paper&gt; should be in the page or
+// in the component. This will probably best be done when I work on using
+// &lt;Container&gt; where appropriate, and then I can see if it makes sense to
+// have the &lt;Paper&gt; in the page or in the component.
+```
+This is almost certainly the origin of SYS-586's ticket text.
+
+## 3. `page.tsx` files with `&lt;Paper`/`&lt;Card` used directly (not delegated to a component)
+
+8 page.tsx files:
+
+- `src/app/footy/tables/page.tsx:16` — `&lt;Paper p="xl" withBorder&gt;` wraps a static `&lt;List&gt;` of table links (no sub-component; markup lives entirely in the page).
+- `src/app/footy/response/page.tsx:60` — `&lt;Paper w="100%" maw="35rem" p="xl"&gt;` wraps `&lt;GameInvitationResponseForm&gt;`.
+- `src/app/footy/admin/page.tsx:24` — `&lt;Paper w="100%" p="xl"&gt;` (inside `Container size="xs"`) wraps a `&lt;Flex&gt;` of two admin widgets (`AdminUpdatePlayerRecords`, `AdminExportAuth`).
+- `src/app/footy/countrymap/page.tsx:23` — `&lt;Paper p="xl"&gt;` wraps a `&lt;Title&gt;`, descriptive `&lt;Text&gt;`, and `&lt;PlayerCountryMap&gt;`.
+- `src/app/footy/forgottenpassword/page.tsx:12` — `&lt;Paper w="100%" maw="35rem" p="xl"&gt;` wraps `&lt;ForgottenPasswordForm&gt;`.
+- `src/app/footy/auth/signin/page.tsx:18` — `&lt;Paper w="100%" maw="35rem" p="xl"&gt;` wraps `&lt;SignIn&gt;`.
+- `src/app/footy/auth/claim/[token]/page.tsx:55` — `&lt;Paper w="100%" maw="35rem" p="xl"&gt;` wraps `&lt;ClaimSignup&gt;` (has the TODO noted above).
+- `src/app/footy/admin/newgame/page.tsx:16-18` — `&lt;Container size="sm"&gt;` wraps `&lt;Paper p="xl"&gt;` which wraps `&lt;Title&gt;` + `&lt;NewGameForm&gt;`.
+
+No `&lt;Card` usage was found at page level anywhere; the only `&lt;Card` usage in the whole codebase is inside a component: `src/components/ResponsesForm/ResponsesForm.tsx:199-200`.
+
+Pattern: the `maw="35rem"` + `Paper` combo is repeated identically across 4 page files (signin, forgottenpassword, claim, response) purely to wrap a single form component — a strong candidate for either a shared page-level layout wrapper or moving the `Paper`/width constraint inside each form component (mirroring `PasswordResetForm.tsx`, which already puts the same `Paper maw="35rem"` chrome *inside* the component rather than the page).
+
+## 4. CSS container queries (`@container`, `container-type`, `containerType`, `useContainerQuery`)
+
+- **`src/components/PlayerCard/PlayerCard.module.css:9`** — `.imageContainer { container-type: inline-size; }`, explicitly commented (lines 5-7) as establishing "a query container so the badges/trophies below can size themselves as a proportion of the mugshot's own rendered width."
+- **`src/components/PlayerCard/PlayerCard.module.css:19`** — `.badges { max-width: 30cqw; ... }` — consumes the container query unit.
+- No literal `@container` at-rule, no `containerType` (camelCase JS), and no `useContainerQuery` hook exist anywhere in the codebase.
+- **However**, the `cqw` (container-query-width) unit is used extensively downstream, all sized relative to the `.imageContainer` established in PlayerCard:
+  - `src/components/CountryFlag/CountryFlag.tsx:9` (doc comment) / `CountryFlag.vitest.spec.tsx:9`
+  - `src/components/ClubBadge/ClubBadge.tsx:9` (doc comment) / `ClubBadge.vitest.spec.tsx:11`
+  - `src/components/PlayerCountries/PlayerCountries.tsx:14,19`
+  - `src/components/PlayerClubs/PlayerClubs.tsx:14,19`
+  - `src/components/PlayerTrophies/PlayerTrophies.tsx:20,35-36`
+  - `src/components/PlayerTrophyTally/PlayerTrophyTally.tsx:17 (doc), 46` and its spec file (many instances)
+- Also worth noting separately: **Mantine's `&lt;Grid type="container"&gt;`** in `src/components/PlayerProfile/PlayerProfile.tsx:68` and `:95` uses Mantine's own container-query-based responsive grid (with custom `breakpoints={{ xs: '24em', sm: '36em', md: '54em', lg: '74em', xl: '88em' }}` at line 96) — this is a distinct mechanism from the CSS `container-type` above, but conceptually related (container-relative responsiveness rather than viewport-relative). Not found used anywhere else in the codebase.
+
+These two container-query systems (PlayerCard's CSS `container-type`/`cqw` chain, and PlayerProfile's Mantine `Grid type="container"`) are self-contained/local sizing mechanisms for element-relative responsiveness within cards — distinct from the page-level `maw`/`Container` width-constraint concern SYS-586 targets, but they do sit inside the exact component tree (PlayerProfile → PlayerCard → PlayerCountries/PlayerClubs/PlayerTrophies) that SYS-584 is about, so worth being aware of so the refactor doesn't disturb them.
+
+## 5. Player profile page — current top-level layout structure
+
+Route: `src/app/footy/player/[id]/page.tsx` (there's also a legacy redirect shim at `src/app/footy/player/[id]/[year]/page.tsx` that 301s `/player/[id]/[year]` → `/player/[id]?year=[year]`).
+
+Structure, outside-in:
+
+1. **`CustomAppShell.tsx`** (global, applies to every page) → `AppShell.Main` → `&lt;Container fluid p="xl"&gt;` (no max-width, just padding).
+2. **`src/app/footy/layout.tsx`** — segment layout, adds only `&lt;SearchParamErrorNotification /&gt;`, no layout/width markup.
+3. **`page.tsx`** (`PlayerPage`, server component) — does data-fetching only; renders `&lt;AutoRefresh&gt;` + `&lt;PlayerProfile ...&gt;` inside a bare fragment (`&lt;&gt;...&lt;/&gt;`). **No `Container`, `Paper`, or width constraint at the page level at all.**
+4. **`src/components/PlayerProfile/PlayerProfile.tsx`** — the actual layout lives here:
+   - Root: `&lt;Stack gap="sm" w="100%"&gt;` — full width, no max-width, no wrapping `Paper`/`Container`.
+   - Row 1: `&lt;Grid type="container" mb="lg" gap="xs" align="center"&gt;` with 3 `GridCol`s — prev-player arrow (`span="content"`), centered `&lt;TitleWithYearDropdown&gt;` (`span="auto"`), next-player arrow (`span="content"`).
+   - Row 2: `&lt;Grid type="container" breakpoints={{...}}&gt;` with 4 `GridCol`s (`span={{ base: 12, sm: 6, lg: 3 }}`) each containing one card-style component: `PlayerCard`, `PlayerInfo`, `PlayerResults`, `PlayerPositions`.
+   - Row 3: `&lt;Group&gt;` wrapping a single `&lt;Paper p="sm" w="auto" withBorder style={{ flex: '1' }}&gt;` containing `&lt;PlayerHeatmap&gt;`.
+
+So the "wrong way" this ticket likely refers to: the page renders **full-bleed** (only constrained by the app-shell's `fluid` container plus its own `padding` prop), with **no `&lt;Container size="..."&gt;`** anywhere in the profile's own tree to cap line-length/card-grid width on ultra-wide screens, while several *other, simpler* pages (signin, forgottenpassword, response, claim, tables, countrymap, admin) instead hard-code ad hoc `maw="35rem"` Paper wrappers directly in the page file rather than using `Container`. The player profile page is essentially the "no constraint" case; the auth/form pages are the "informal maw constraint in the page" case — SYS-586 appears aimed at reconciling both onto `&lt;Container size="..."&gt;`, and SYS-584 at deciding whether the `Paper`/chrome (`PlayerHeatmap`'s wrapping `Paper`, or the grid-of-cards on the profile) belongs in `PlayerProfile.tsx` (page-adjacent) vs. pushed down into the leaf components themselves.
+
+## 6. Mantine theme file (`src/theme.ts`)
+
+Full contents (13 lines):
+```ts
+import {
+    createTheme,
+} from '@mantine/core';
+
+export const theme = createTheme({
+    components: {
+        Paper: {
+            defaultProps: {
+                shadow: 'xl',
+            },
+        },
+    },
+});
+```
+
+- No `Container` size overrides, no custom breakpoints, no spacing/width scale defined — only a single `Paper` default prop (`shadow: 'xl'`) is customized.
+- **No existing "standard sizes" constants** (no `theme.other`, no exported width/size tokens) anywhere in `theme.ts` or elsewhere that a refactor could reuse — any `Container` size standardization (e.g. mapping the informal `35rem` to a Mantine size token, or adding custom `Container` sizes via `createTheme`) would be new work, not an extension of something already there.</result>
+<usage><subagent_tokens>33650</subagent_tokens><tool_uses>25</tool_uses><duration_ms>197081</duration_ms></usage>
+</task-notification>
+
+---
+
+Yes
+
+---
+
+Check whether the EnquiryForm page-lookup fork/agent has returned; if so, finish the SYS-586 maw audit (decide whether EnquiryForm needs the same Paper+Container treatment) and report back to the user. If not yet returned, reschedule.
+
+---
+
+Could not read source map for file:///Volumes/Development/next-www-toastboy/.next/dev/server/chunks/turbopack%3A/%5Bturbopack%5D/nodejs/dev/hmr-client.ts: Unexpected token '�', "���" is not valid JSON
+⨯ Error: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: undefined. You likely forgot to export your component from the file it's defined in, or you might have mixed up default and named imports.
+    at renderElement (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:195276)
+    at retryNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201940)
+    at renderNodeDestructive (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at retryNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:202325)
+    at renderNodeDestructive (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at renderNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:213093)
+    at renderElement (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:181773)
+    at retryNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201940)
+    at renderNodeDestructive (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at renderNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:213093)
+    at renderChildrenArray (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:207654)
+    at retryNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:202417)
+    at renderNodeDestructive (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at renderElement (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:182673)
+    at retryNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201940)
+    at renderNodeDestructive (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at renderNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:213093)
+    at finishFunctionComponent (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:119223)
+    at renderElement (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:134520)
+    at retryNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201940)
+    at renderNodeDestructive (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at renderElement (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:193338)
+    at retryNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201940)
+    at renderNodeDestructive (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at finishFunctionComponent (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:119349)
+    at renderElement (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:134520)
+    at renderElement (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:194974)
+    at retryNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201940)
+    at renderNodeDestructive (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at retryNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:202325)
+    at renderNodeDestructive (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at renderNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:213093)
+    at renderChildrenArray (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:207654)
+    at retryNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:202417)
+    at renderNodeDestructive (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at renderNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:213093)
+    at renderElement (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:181773)
+    at retryNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201940)
+    at renderNodeDestructive (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at renderNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:213093)
+    at renderChildrenArray (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:207654)
+    at retryNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:202417)
+    at renderNodeDestructive (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at renderElement (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:182673)
+    at retryNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201940)
+    at renderNodeDestructive (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201175)
+    at renderNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:213093)
+    at finishFunctionComponent (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:119223)
+    at renderElement (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:134520)
+    at retryNode (/Volumes/Development/next-www-toastboy/node_modules/next/dist/compiled/next-server/app-page-turbo.runtime.dev.js:2:201940) {digest: '631664634', stack: 'Error: Element type is invalid: expected a st…erver/app-page-turbo.runtime.dev.js:2:201940)', message: 'Element type is invalid: expected a string (…ght have mixed up default and named imports.'}
+
+---
+
+That was my debug session in VS Code. I've stopped it. By the way, I took the precaution of running 'npm run deepclean' and then 'npm ci' before trying it again: the same thing happens
+
+---
+
+This is loading http://localhost:3000/footy/player/201 in Edge using the 'npm run dev' task in VS Code
+
+---
+
+Is there a Mantine or next.js or Turbopack bug filed for this?
+
+---
+
+Stash the changes which are not related to this fix: I'll come back to them
+
+---
+
+Good. Now given that this issue exists and isn't likely to be fixed any time soon, I want to standardise on _never_ using dot notation. Make sure all uses of dot notation - tables or otherwise - are instead done via explicit imports of the subcomponents. Also add a Claude.md entry to that effect, mentioning the known next.js issue as the reason for the rule.

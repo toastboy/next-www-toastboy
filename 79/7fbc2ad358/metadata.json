@@ -1,0 +1,49 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "797fbc2ad358",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 11,
+  "files_touched": [
+    "CLAUDE.md",
+    "src/components/AdminPlayerList/AdminPlayerList.tsx",
+    "src/components/AdminUserList/AdminUserList.tsx",
+    "src/components/CustomAppShell/CustomAppShell.tsx",
+    "src/components/CustomAppShell/CustomAppShell.vitest.spec.tsx",
+    "src/components/DebugFontSizes/DebugFontSizes.tsx",
+    "src/components/DrinkersForm/DrinkersForm.tsx",
+    "src/components/MoreGamesForm/MoreGamesForm.tsx",
+    "src/components/PickerForm/PickerForm.tsx",
+    "src/components/PlayerArse/PlayerArse.tsx",
+    "src/components/PlayerCountryMap/PlayerCountryMap.tsx",
+    "src/components/PlayerInfo/PlayerInfo.tsx",
+    "src/components/PlayerList/PlayerList.tsx",
+    "src/components/PlayerPositions/PlayerPositions.tsx",
+    "src/components/PlayerResults/PlayerResults.tsx",
+    "src/components/PlayerWDLChart/PlayerWDLChart.tsx",
+    "src/components/RecordsTable/RecordsTable.tsx",
+    "src/components/RichTextMailBody/RichTextMailBody.tsx",
+    "src/components/SendEmailForm/SendEmailForm.tsx",
+    "src/components/TitleWithYearDropdown/TitleWithYearDropdown.tsx",
+    "src/components/Turnout/Turnout.tsx",
+    "src/components/UserButton/UserButton.tsx",
+    "src/components/WinnersTable/WinnersTable.tsx",
+    "vitest.setup.frontend.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/79/7fbc2ad358/0/metadata.json",
+      "transcript": "/79/7fbc2ad358/0/full.jsonl",
+      "compact_transcript": "/79/7fbc2ad358/0/transcript.jsonl",
+      "content_hash": "/79/7fbc2ad358/0/content_hash.txt",
+      "prompt": "/79/7fbc2ad358/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 500,
+    "cache_creation_tokens": 385747,
+    "cache_read_tokens": 61790352,
+    "output_tokens": 163611,
+    "api_call_count": 250
+  }
+}

@@ -4,6 +4,7 @@ import {
     Box,
     Button,
     Divider,
+    Paper,
     Stack,
     Title,
 } from '@mantine/core';
@@ -85,31 +86,33 @@ export const ForgottenPasswordForm = () => {
     };
 
     return (
-        <Box
-            component="form"
-            onSubmit={form.onSubmit(handleSubmit)}
-            noValidate
-        >
-            <Stack gap="md">
-                <Title order={2} mb="xs" w="100%" ta="center">
-                    Forgotten Password
-                </Title>
-                <Divider mb="xs" />
-                <EmailInput
-                    label="Email"
-                    description={[
-                        "If the email is associated with an account, you'll receive a reset link.",
-                        "Note that if you use Google or Microsoft sign-in, you won't have a password to reset.",
-                    ].join(' ')}
-                    required
-                    {...form.getInputProps(`email`)}
-                />
+        <Paper w="100%" maw="35rem" mx="auto" p="xl">
+            <Box
+                component="form"
+                onSubmit={form.onSubmit(handleSubmit)}
+                noValidate
+            >
+                <Stack gap="md">
+                    <Title order={2} mb="xs" w="100%" ta="center">
+                        Forgotten Password
+                    </Title>
+                    <Divider mb="xs" />
+                    <EmailInput
+                        label="Email"
+                        description={[
+                            "If the email is associated with an account, you'll receive a reset link.",
+                            "Note that if you use Google or Microsoft sign-in, you won't have a password to reset.",
+                        ].join(' ')}
+                        required
+                        {...form.getInputProps(`email`)}
+                    />
 
-                <Button type="submit" w="fit-content">
-                    Send reset link
-                </Button>
-            </Stack>
-        </Box>
+                    <Button type="submit" w="fit-content">
+                        Send reset link
+                    </Button>
+                </Stack>
+            </Box>
+        </Paper>
     );
 };
 

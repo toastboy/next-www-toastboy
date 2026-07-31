@@ -1,6 +1,3 @@
-import {
-    Container,
-} from '@mantine/core';
 import { notFound } from 'next/navigation';
 
 import { setGameEnabled } from '@/actions/setGameEnabled';
@@ -25,7 +22,7 @@ const PickerPage = async () => {
     );
 
     return (
-        <Container size="lg" py="lg">
+        <>
             <AutoRefresh channels={[FootyChannel.Games, FootyChannel.Responses]} />
             <PickerForm
                 gameDay={currentGame}
@@ -33,7 +30,7 @@ const PickerPage = async () => {
                 submitPicker={SubmitPicker}
                 setGameEnabled={setGameEnabled}
             />
-        </Container>
+        </>
     );
 };
 

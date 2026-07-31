@@ -3,6 +3,7 @@
 import {
     Anchor,
     Button,
+    Center,
     Checkbox,
     Container,
     Group,
@@ -19,6 +20,7 @@ import {
     TableTr,
     Text,
     TextInput,
+    Title,
     UnstyledButton,
 } from '@mantine/core';
 import {
@@ -368,9 +370,14 @@ export const AdminPlayerList = ({
     });
 
     return (
-        <Container fluid>
+        <Container fluid mt="xl">
             <Paper w="100%" p="xl">
                 <Stack gap="sm">
+                    <Center>
+                        <Title order={2} mb="md">
+                            Admin: Players
+                        </Title>
+                    </Center>
                     <Text fw={700}>
                         {sortedPlayers.length} of {players.length} visible, {selectedIds.length} selected
                     </Text>

@@ -7,13 +7,6 @@ vi.mock('@/actions/auth', () => ({
     listUsersAction: vi.fn(),
 }));
 
-vi.mock('@mantine/core', () => ({
-    Center: ({ children }: { children?: unknown }) => children,
-    Container: ({ children }: { children?: unknown }) => children,
-    Stack: ({ children }: { children?: unknown }) => children,
-    Title: ({ children }: { children?: unknown }) => children,
-}));
-
 vi.mock('@/components/AdminPlayerList/AdminPlayerList', () => ({
     AdminPlayerList: function AdminPlayerList() { return null; },
 }));

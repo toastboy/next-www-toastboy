@@ -1,7 +1,6 @@
 import {
     Anchor,
     Box,
-    Paper,
     Text,
 } from '@mantine/core';
 import { redirect } from 'next/navigation';
@@ -57,12 +56,10 @@ const Page = async ({ searchParams: sp }: PageProps) => {
     }
 
     return (
-        <Paper w="100%" maw="35rem" p="xl">
-            <GameInvitationResponseForm
-                details={details}
-                onSubmitGameInvitationResponse={submitGameInvitationResponse}
-            />
-        </Paper>
+        <GameInvitationResponseForm
+            details={details}
+            onSubmitGameInvitationResponse={submitGameInvitationResponse}
+        />
     );
 };
 

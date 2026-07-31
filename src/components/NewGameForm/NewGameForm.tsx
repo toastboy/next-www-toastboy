@@ -4,8 +4,11 @@ import {
     Box,
     Button,
     Checkbox,
+    Container,
+    Paper,
     Stack,
     Textarea,
+    Title,
 } from '@mantine/core';
 import {
     useForm,
@@ -94,26 +97,33 @@ export const NewGameForm = ({ onTriggerInvitations }: Props) => {
     };
 
     return (
-        <Box component="form" onSubmit={form.onSubmit(handleSubmit)}>
-            <Stack gap="md">
-                <Checkbox
-                    label="Override time check (normally invitations are sent 9am the working day before the game)"
-                    {...form.getInputProps('overrideTimeCheck', { type: 'checkbox' })}
-                />
-                <Textarea
-                    label='Custom message (e.g. "You are getting this email early because...")'
-                    autosize
-                    minRows={6}
-                    {...form.getInputProps('customMessage')}
-                />
-                <Button
-                    type="submit"
-                    w={{ base: '100%', [actionsBreakpoint]: 'fit-content' }}
-                    loading={!mounted}
-                >
-                    Send invitations
-                </Button>
-            </Stack>
-        </Box>
+        <Container size="sm">
+            <Paper p="xl">
+                <Title order={2} mb="md">
+                    New game
+                </Title>
+                <Box component="form" onSubmit={form.onSubmit(handleSubmit)}>
+                    <Stack gap="md">
+                        <Checkbox
+                            label="Override time check (normally invitations are sent 9am the working day before the game)"
+                            {...form.getInputProps('overrideTimeCheck', { type: 'checkbox' })}
+                        />
+                        <Textarea
+                            label='Custom message (e.g. "You are getting this email early because...")'
+                            autosize
+                            minRows={6}
+                            {...form.getInputProps('customMessage')}
+                        />
+                        <Button
+                            type="submit"
+                            w={{ base: '100%', [actionsBreakpoint]: 'fit-content' }}
+                            loading={!mounted}
+                        >
+                            Send invitations
+                        </Button>
+                    </Stack>
+                </Box>
+            </Paper>
+        </Container>
     );
 };

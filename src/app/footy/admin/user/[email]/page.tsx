@@ -1,6 +1,3 @@
-import {
-    Container,
-} from '@mantine/core';
 import { notFound } from 'next/navigation';
 
 import { listUsersAction } from '@/actions/auth';
@@ -39,10 +36,10 @@ const AdminUserPage = async (props: PageProps) => {
     if (!user) return notFound();
 
     return (
-        <Container>
+        <>
             <AutoRefresh channels={FootyChannel.Users} />
             <AdminUserData user={user} />
-        </Container>
+        </>
     );
 };
 

@@ -7,10 +7,6 @@ vi.mock('next/navigation', () => ({
     notFound: vi.fn(() => { throw new Error('not_found'); }),
 }));
 
-vi.mock('@mantine/core', () => ({
-    Container: ({ children }: { children?: unknown }) => children,
-}));
-
 vi.mock('@/components/AutoRefresh/AutoRefresh', () => ({
     AutoRefresh: function AutoRefresh() { return null; },
 }));

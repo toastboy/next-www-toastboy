@@ -48,7 +48,7 @@ export const MoneyForm = ({
     const [submittingPlayerId, setSubmittingPlayerId] = useState<number | null>(null);
 
     return (
-        <Container fluid>
+        <Container size="lg" py="lg">
             <Paper w="100%" p="xl">
                 <Stack gap="md">
                     <Title order={1}>Unpaid Player Charges</Title>

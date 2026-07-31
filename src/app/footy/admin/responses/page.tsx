@@ -1,6 +1,3 @@
-import {
-    Container,
-} from '@mantine/core';
 import { notFound } from 'next/navigation';
 
 import { SubmitResponse } from '@/actions/submitResponse';
@@ -19,7 +16,7 @@ const ResponsesPage = async () => {
     const responses = await outcomeService.getAdminByGameDay(currentGame.id);
 
     return (
-        <Container size="lg" py="lg">
+        <>
             <AutoRefresh channels={FootyChannel.Responses} />
             <ResponsesForm
                 gameId={currentGame.id}
@@ -27,7 +24,7 @@ const ResponsesPage = async () => {
                 responses={responses}
                 submitResponse={SubmitResponse}
             />
-        </Container>
+        </>
     );
 };
 

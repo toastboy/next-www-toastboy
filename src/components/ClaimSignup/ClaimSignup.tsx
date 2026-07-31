@@ -3,11 +3,11 @@
 import {
     Box,
     Button,
-    Container,
     Divider,
     Group,
     Image,
     Notification,
+    Paper,
     Stack,
     Text,
     Title,
@@ -101,7 +101,7 @@ export const ClaimSignup = ({ name, email, token }: Props) => {
     ) : null;
 
     return (
-        <Container size="xs" mt="xl" >
+        <Paper w="100%" maw="35rem" mx="auto" p="xl" mt="xl">
             <Stack mb="lg">
                 <Title order={2} mb="xs" w="100%" ta="center">
                     Finish creating your login
@@ -149,6 +149,6 @@ export const ClaimSignup = ({ name, email, token }: Props) => {
                     </Button>
                 </Stack>
             </Box>
-        </Container>
+        </Paper>
     );
 };

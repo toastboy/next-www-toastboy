@@ -1,6 +1,5 @@
 import {
     Notification,
-    Paper,
 } from '@mantine/core';
 import { IconX } from '@tabler/icons-react';
 
@@ -15,11 +14,6 @@ interface PageProps {
 }
 
 export const metadata = { title: 'Sign Up' };
-
-// TODO: Work out whether things like this <Paper> should be in the page or
-// in the component. This will probably best be done when I work on using
-// <Container> where appropriate, and then I can see if it makes sense to
-// have the <Paper> in the page or in the component.
 
 const Page = async ({ params }: PageProps) => {
     const { token } = await params;
@@ -51,11 +45,7 @@ const Page = async ({ params }: PageProps) => {
         );
     }
 
-    return (
-        <Paper w="100%" maw="35rem" p="xl">
-            <ClaimSignup name={invitation.name} email={invitation.email} token={token} />
-        </Paper>
-    );
+    return <ClaimSignup name={invitation.name} email={invitation.email} token={token} />;
 };
 
 export default Page;

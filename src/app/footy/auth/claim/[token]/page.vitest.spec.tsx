@@ -15,10 +15,6 @@ vi.mock('@/lib/observability/sentry', () => ({
 }));
 
 vi.mock('@mantine/core', () => ({
-    Paper: ({ children }: { children?: ReactNode }) => children,
-    Stack: ({ children }: { children?: ReactNode }) => children,
-    Text: ({ children }: { children?: ReactNode }) => <p>{children}</p>,
-    Anchor: ({ children, href }: { children?: ReactNode; href?: string }) => <a href={href}>{children}</a>,
     Notification: ({ children }: { children?: ReactNode }) => <div>{children}</div>,
 }));
 

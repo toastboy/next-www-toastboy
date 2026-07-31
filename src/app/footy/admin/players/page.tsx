@@ -1,10 +1,3 @@
-import {
-    Center,
-    Container,
-    Stack,
-    Title,
-} from '@mantine/core';
-
 import { listUsersAction } from '@/actions/auth';
 import { addPlayerInvite } from '@/actions/createPlayer';
 import { sendEmail } from '@/actions/sendEmail';
@@ -29,24 +22,16 @@ const AdminPlayersPage = async () => {
     }, {});
 
     return (
-        <Container fluid mt="xl">
+        <>
             <AutoRefresh channels={FootyChannel.Players} />
-            <Center>
-                <Title order={2} mb="md" >
-                    Admin: Players
-                </Title>
-            </Center>
-
-            <Stack mb="lg">
-                <AdminPlayerList
-                    players={players}
-                    userEmails={userEmails}
-                    userIdByEmail={userIdByEmail}
-                    onAddPlayerInvite={addPlayerInvite}
-                    onSendEmail={sendEmail}
-                />
-            </Stack>
-        </Container >
+            <AdminPlayerList
+                players={players}
+                userEmails={userEmails}
+                userIdByEmail={userIdByEmail}
+                onAddPlayerInvite={addPlayerInvite}
+                onSendEmail={sendEmail}
+            />
+        </>
     );
 };
 

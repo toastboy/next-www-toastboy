@@ -329,7 +329,7 @@ export const PickerForm = ({
 
     // TODO: New game date component?
     return (
-        <Container fluid>
+        <Container size="lg" py="lg">
             <Paper w="100%" p="xl">
                 <Stack gap="md">
                     <Stack align="flex-start" gap="xs">

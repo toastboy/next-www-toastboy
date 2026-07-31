@@ -18,7 +18,6 @@ vi.mock('@/actions/submitGameInvitationResponse', () => ({
 vi.mock('@mantine/core', () => ({
     Anchor: ({ children }: { children?: unknown }) => children,
     Box: ({ children }: { children?: unknown }) => children,
-    Paper: ({ children }: { children?: unknown }) => children,
     Text: ({ children }: { children?: unknown }) => children,
 }));
 

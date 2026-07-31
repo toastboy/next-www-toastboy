@@ -1,12 +1,6 @@
 import { renderToStaticMarkup } from 'react-dom/server';
 import { vi } from 'vitest';
 
-vi.mock('@mantine/core', () => ({
-    Container: ({ children }: { children?: unknown }) => children,
-    Paper: ({ children }: { children?: unknown }) => children,
-    Title: ({ children }: { children?: unknown }) => children,
-}));
-
 vi.mock('@/actions/triggerInvitations', () => ({
     triggerInvitations: vi.fn(),
 }));

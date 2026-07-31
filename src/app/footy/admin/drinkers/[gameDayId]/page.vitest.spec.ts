@@ -7,12 +7,6 @@ vi.mock('next/navigation', () => ({
     notFound: vi.fn(() => { throw new Error('not_found'); }),
 }));
 
-vi.mock('@mantine/core', () => ({
-    Anchor: ({ children }: { children?: unknown }) => children,
-    Container: ({ children }: { children?: unknown }) => children,
-    Group: ({ children }: { children?: unknown }) => children,
-}));
-
 vi.mock('@/components/AutoRefresh/AutoRefresh', () => ({
     AutoRefresh: function AutoRefresh() { return null; },
 }));
@@ -25,7 +19,7 @@ import { setDrinkers } from '@/actions/setDrinkers';
 import DrinkersPage from '@/app/footy/admin/drinkers/[gameDayId]/page';
 import gameDayService from '@/services/GameDay';
 import outcomeService from '@/services/Outcome';
-import { type AnyElement, findElement } from '@/tests/shared/reactTree';
+import { findElement } from '@/tests/shared/reactTree';
 import { FootyChannel } from '@/types/FootyChannel';
 
 const gameDay = { id: 1249, date: new Date('2026-02-14T18:00:00Z') };
@@ -68,57 +62,26 @@ describe('Admin Drinkers [gameDayId] page', () => {
         expect(gameDayService.getNext).toHaveBeenCalledWith(1249);
     });
 
-    it('renders navigation links when previous and next games exist', async () => {
+    it('passes previousGameId and nextGameId to DrinkersForm when adjacent games exist', async () => {
         (gameDayService.getPrevious as Mock).mockResolvedValue({ id: 1248 });
         (gameDayService.getNext as Mock).mockResolvedValue({ id: 1250 });
 
         const result = await DrinkersPage({ params: Promise.resolve({ gameDayId: '1249' }) });
 
-        const anchors: AnyElement[] = [];
-        const collectAnchors = (node: unknown) => {
-            if (!node || typeof node !== 'object') return;
-            const el = node as AnyElement;
-            if (el.type === 'a' || (el.type as { name?: string })?.name === 'Anchor') {
-                anchors.push(el);
-            }
-            const children = (el.props as { children?: unknown })?.children;
-            if (Array.isArray(children)) {
-                children.forEach(collectAnchors);
-            } else if (children) {
-                collectAnchors(children);
-            }
-        };
-        collectAnchors(result);
-
-        const hrefs = anchors.map((a) => a.props.href);
-        expect(hrefs).toContain('/footy/admin/drinkers/1248');
-        expect(hrefs).toContain('/footy/admin/drinkers/1250');
+        const form = findElement(result, 'DrinkersForm');
+        expect(form?.props.previousGameId).toBe(1248);
+        expect(form?.props.nextGameId).toBe(1250);
     });
 
-    it('omits previous navigation link when there is no previous game', async () => {
+    it('passes undefined previousGameId/nextGameId when there is no adjacent game', async () => {
         (gameDayService.getPrevious as Mock).mockResolvedValue(null);
-        (gameDayService.getNext as Mock).mockResolvedValue({ id: 1250 });
-
-        const result = await DrinkersPage({ params: Promise.resolve({ gameDayId: '1249' }) });
-
-        const json = JSON.stringify(result, (_key, value: unknown) => {
-            if (typeof value === 'function') return value.name;
-            return value;
-        });
-        expect(json).not.toContain('/footy/admin/drinkers/1248');
-    });
-
-    it('omits next navigation link when there is no next game', async () => {
-        (gameDayService.getPrevious as Mock).mockResolvedValue({ id: 1248 });
         (gameDayService.getNext as Mock).mockResolvedValue(null);
 
         const result = await DrinkersPage({ params: Promise.resolve({ gameDayId: '1249' }) });
 
-        const json = JSON.stringify(result, (_key, value: unknown) => {
-            if (typeof value === 'function') return value.name;
-            return value;
-        });
-        expect(json).not.toContain('/footy/admin/drinkers/1250');
+        const form = findElement(result, 'DrinkersForm');
+        expect(form?.props.previousGameId).toBeUndefined();
+        expect(form?.props.nextGameId).toBeUndefined();
     });
 
     it('passes the gameDay date as an ISO date string to DrinkersForm', async () => {

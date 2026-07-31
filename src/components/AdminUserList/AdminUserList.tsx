@@ -2,6 +2,7 @@
 
 import {
     Anchor,
+    Center,
     Container,
     Group,
     Paper,
@@ -15,6 +16,7 @@ import {
     TableTr,
     Text,
     TextInput,
+    Title,
     UnstyledButton,
 } from '@mantine/core';
 import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
@@ -106,8 +108,13 @@ export const AdminUserList = ({ users, setAdminRole }: Props) => {
     }
 
     return (
-        <Container size="md">
+        <Container size="md" mt="xl">
             <Paper w="100%" p="xl">
+                <Center>
+                    <Title order={2} mb="md">
+                        Admin: Users
+                    </Title>
+                </Center>
                 <TextInput
                     label="Search users"
                     placeholder="Search users"

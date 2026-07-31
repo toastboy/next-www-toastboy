@@ -1,7 +1,3 @@
-import {
-    Container,
-} from '@mantine/core';
-
 import { recordHallHire } from '@/actions/recordHallHire';
 import { updateInvoiceGameDays } from '@/actions/updateInvoiceGameDays';
 import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
@@ -38,7 +34,7 @@ const InvoicePage = async ({ searchParams }: InvoicePageProps) => {
     }));
 
     return (
-        <Container size="lg" py="lg">
+        <>
             <AutoRefresh channels={[FootyChannel.Games, FootyChannel.Money]} />
             <InvoiceForm
                 year={year}
@@ -47,7 +43,7 @@ const InvoicePage = async ({ searchParams }: InvoicePageProps) => {
                 onUpdateGameDays={updateInvoiceGameDays}
                 onRecordHallHire={recordHallHire}
             />
-        </Container>
+        </>
     );
 };
 

@@ -1,6 +1,7 @@
 import {
     Box,
     Center,
+    Container,
     Grid,
     GridCol,
     Group,
@@ -63,71 +64,73 @@ export const PlayerProfile = ({
     const playerCardsGridColSpan = { base: 12, sm: 6, lg: 3 };
 
     return (
-        <Stack gap="sm" w="100%">
-            <Grid
-                type="container"
-                mb="lg"
-                gap="xs"
-                align="center"
-            >
-                <GridCol span="content" align="center">
-                    {prevPlayer ?
-                        <PlayerLink player={prevPlayer} year={year} format="left-arrow" /> :
-                        <Box data-testid="player-prev-placeholder" aria-hidden="true" />}
-                </GridCol>
-                <GridCol span="auto" align="center">
-                    <Center>
-                        <TitleWithYearDropdown
-                            order={1}
-                            title={player.name}
-                            year={year}
-                            validYears={activeYears}
+        <Container size="xl">
+            <Stack gap="sm" w="100%">
+                <Grid
+                    type="container"
+                    mb="lg"
+                    gap="xs"
+                    align="center"
+                >
+                    <GridCol span="content" align="center">
+                        {prevPlayer ?
+                            <PlayerLink player={prevPlayer} year={year} format="left-arrow" /> :
+                            <Box data-testid="player-prev-placeholder" aria-hidden="true" />}
+                    </GridCol>
+                    <GridCol span="auto" align="center">
+                        <Center>
+                            <TitleWithYearDropdown
+                                order={1}
+                                title={player.name}
+                                year={year}
+                                validYears={activeYears}
+                            />
+                        </Center>
+                    </GridCol>
+                    <GridCol span="content" align="center">
+                        {nextPlayer ?
+                            <PlayerLink player={nextPlayer} year={year} format="right-arrow" /> :
+                            <Box data-testid="player-next-placeholder" aria-hidden="true" />}
+                    </GridCol>
+                </Grid>
+                <Grid
+                    type="container"
+                    breakpoints={{ xs: '24em', sm: '36em', md: '54em', lg: '74em', xl: '88em' }}
+                >
+                    <GridCol span={playerCardsGridColSpan}>
+                        <PlayerCard
+                            player={player}
+                            clubs={clubs}
+                            countries={countries}
+                            trophies={trophies}
                         />
-                    </Center>
-                </GridCol>
-                <GridCol span="content" align="center">
-                    {nextPlayer ?
-                        <PlayerLink player={nextPlayer} year={year} format="right-arrow" /> :
-                        <Box data-testid="player-next-placeholder" aria-hidden="true" />}
-                </GridCol>
-            </Grid>
-            <Grid
-                type="container"
-                breakpoints={{ xs: '24em', sm: '36em', md: '54em', lg: '74em', xl: '88em' }}
-            >
-                <GridCol span={playerCardsGridColSpan}>
-                    <PlayerCard
-                        player={player}
-                        clubs={clubs}
-                        countries={countries}
-                        trophies={trophies}
-                    />
-                </GridCol>
-                <GridCol span={playerCardsGridColSpan}>
-                    <PlayerInfo
-                        player={player}
-                        year={year}
-                        introducedBy={introducedBy}
-                        lastPlayed={lastPlayed}
-                        lastWon={lastWon}
-                        isAuthenticated={isAuthenticated}
-                        isAdmin={isAdmin}
-                        playerData={playerData}
-                        onSendEmail={onSendEmail}
-                    />
-                </GridCol>
-                <GridCol span={playerCardsGridColSpan}>
-                    <PlayerResults player={player} year={year} record={record} />
-                </GridCol>
-                <GridCol span={playerCardsGridColSpan}>
-                    <PlayerPositions player={player} year={year} record={record} />
-                </GridCol>
-            </Grid>
-            <Group>
-                <Paper p="sm" w="auto" withBorder style={{ flex: '1' }}>
-                    <PlayerHeatmap data={history} year={year} />
-                </Paper>
-            </Group>
-        </Stack>
+                    </GridCol>
+                    <GridCol span={playerCardsGridColSpan}>
+                        <PlayerInfo
+                            player={player}
+                            year={year}
+                            introducedBy={introducedBy}
+                            lastPlayed={lastPlayed}
+                            lastWon={lastWon}
+                            isAuthenticated={isAuthenticated}
+                            isAdmin={isAdmin}
+                            playerData={playerData}
+                            onSendEmail={onSendEmail}
+                        />
+                    </GridCol>
+                    <GridCol span={playerCardsGridColSpan}>
+                        <PlayerResults player={player} year={year} record={record} />
+                    </GridCol>
+                    <GridCol span={playerCardsGridColSpan}>
+                        <PlayerPositions player={player} year={year} record={record} />
+                    </GridCol>
+                </Grid>
+                <Group>
+                    <Paper p="sm" w="auto" withBorder style={{ flex: '1' }}>
+                        <PlayerHeatmap data={history} year={year} />
+                    </Paper>
+                </Group>
+            </Stack>
+        </Container>
     );
 };

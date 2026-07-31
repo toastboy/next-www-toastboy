@@ -365,6 +365,31 @@ describe('DrinkersForm', () => {
         expect(screen.getByText('Player 42')).toBeInTheDocument();
     });
 
+    it('renders previous and next navigation links when both game ids are provided', () => {
+        render(
+            <Wrapper>
+                <DrinkersForm
+                    gameId={1249}
+                    gameDate="2026-02-03"
+                    players={defaultDrinkersData}
+                    setDrinkers={vi.fn<SetDrinkersProxy>()}
+                    previousGameId={1248}
+                    nextGameId={1250}
+                />
+            </Wrapper>,
+        );
+
+        expect(screen.getByRole('link', { name: 'Previous' })).toHaveAttribute('href', '/footy/admin/drinkers/1248');
+        expect(screen.getByRole('link', { name: 'Next' })).toHaveAttribute('href', '/footy/admin/drinkers/1250');
+    });
+
+    it('omits navigation links when no adjacent game ids are provided', () => {
+        renderForm(vi.fn<SetDrinkersProxy>());
+
+        expect(screen.queryByRole('link', { name: 'Previous' })).not.toBeInTheDocument();
+        expect(screen.queryByRole('link', { name: 'Next' })).not.toBeInTheDocument();
+    });
+
     it('shows an error notification when save fails', async () => {
         const user = userEvent.setup();
         const setDrinkers = vi.fn<SetDrinkersProxy>().mockRejectedValue(new Error('Boom'));

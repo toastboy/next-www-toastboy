@@ -40,6 +40,8 @@ interface DrinkersFormProps {
     gameDate: string;
     players: OutcomePlayerType[];
     setDrinkers: SetDrinkersProxy;
+    previousGameId?: number;
+    nextGameId?: number;
 }
 
 export const DrinkersForm = ({
@@ -47,6 +49,8 @@ export const DrinkersForm = ({
     gameDate,
     players,
     setDrinkers,
+    previousGameId,
+    nextGameId,
 }: DrinkersFormProps) => {
     const router = useRouter();
     const [rows, setRows] = useState<OutcomePlayerType[]>(players);
@@ -250,7 +254,15 @@ export const DrinkersForm = ({
     });
 
     return (
-        <Container fluid>
+        <Container size="lg" py="lg">
+            <Group justify="space-between" mb="md">
+                {previousGameId ?
+                    <Anchor href={`/footy/admin/drinkers/${previousGameId}`}>Previous</Anchor> :
+                    <span />}
+                {nextGameId ?
+                    <Anchor href={`/footy/admin/drinkers/${nextGameId}`}>Next</Anchor> :
+                    <span />}
+            </Group>
             <Paper w="100%" p="xl">
                 <Stack gap="md">
                     <Stack gap={4}>

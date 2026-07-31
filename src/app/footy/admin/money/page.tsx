@@ -1,7 +1,3 @@
-import {
-    Container,
-} from '@mantine/core';
-
 import { payDebt } from '@/actions/payDebt';
 import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
 import { MoneyForm } from '@/components/MoneyForm/MoneyForm';
@@ -21,13 +17,13 @@ const MoneyPage = async () => {
     const debts = await moneyService.getDebts();
 
     return (
-        <Container size="lg" py="lg">
+        <>
             <AutoRefresh channels={FootyChannel.Money} />
             <MoneyForm
                 playerDebts={debts.players}
                 payDebt={payDebt}
             />
-        </Container>
+        </>
     );
 };
 

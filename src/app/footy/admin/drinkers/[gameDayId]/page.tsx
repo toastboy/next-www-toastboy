@@ -1,8 +1,3 @@
-import {
-    Anchor,
-    Container,
-    Group,
-} from '@mantine/core';
 import { notFound } from 'next/navigation';
 
 import { setDrinkers } from '@/actions/setDrinkers';
@@ -37,27 +32,17 @@ const DrinkersPage = async (props: PageProps) => {
     ]);
 
     return (
-        <Container size="lg" py="lg">
+        <>
             <AutoRefresh channels={FootyChannel.Games} />
-            <Group justify="space-between" mb="md">
-                {
-                    previousGame ?
-                        <Anchor href={`/footy/admin/drinkers/${previousGame.id}`}>Previous</Anchor> :
-                        <span />
-                }
-                {
-                    nextGame ?
-                        <Anchor href={`/footy/admin/drinkers/${nextGame.id}`}>Next</Anchor> :
-                        <span />
-                }
-            </Group>
             <DrinkersForm
                 gameId={gameDay.id}
                 gameDate={formatDate(gameDay.date)}
                 players={players}
                 setDrinkers={setDrinkers}
+                previousGameId={previousGame?.id}
+                nextGameId={nextGame?.id}
             />
-        </Container>
+        </>
     );
 };
 

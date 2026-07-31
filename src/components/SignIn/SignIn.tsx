@@ -4,12 +4,13 @@ import {
     Anchor,
     Box,
     Button,
-    Container,
+    Center,
     Divider,
     Group,
     Image,
     Loader,
     Notification,
+    Paper,
     PasswordInput,
     Stack,
     TextInput,
@@ -86,9 +87,9 @@ export const SignIn = ({ admin, redirect }: Props) => {
 
     if (loading) {
         return (
-            <Container>
+            <Center>
                 <Loader />
-            </Container>
+            </Center>
         );
     }
 
@@ -111,7 +112,7 @@ export const SignIn = ({ admin, redirect }: Props) => {
     ) : null;
 
     return (
-        <Container size="xs" mt="xl" >
+        <Paper w="100%" maw="35rem" mx="auto" p="xl" mt="xl">
             <Stack mb="lg">
                 <Title order={2} mb="xs" w="100%" ta="center">
                     {title}
@@ -168,6 +169,6 @@ export const SignIn = ({ admin, redirect }: Props) => {
                     </Button>
                 </Stack>
             </Box>
-        </Container >
+        </Paper>
     );
 };

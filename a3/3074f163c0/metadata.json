@@ -3,8 +3,23 @@
   "checkpoint_id": "a33074f163c0",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 7,
+  "checkpoints_count": 20,
   "files_touched": [
+    "src/app/footy/admin/drinkers/[gameDayId]/page.tsx",
+    "src/app/footy/admin/drinkers/[gameDayId]/page.vitest.spec.ts",
+    "src/app/footy/admin/invoice/page.tsx",
+    "src/app/footy/admin/money/page.tsx",
+    "src/app/footy/admin/newgame/page.tsx",
+    "src/app/footy/admin/newgame/page.vitest.spec.ts",
+    "src/app/footy/admin/picker/page.tsx",
+    "src/app/footy/admin/picker/page.vitest.spec.ts",
+    "src/app/footy/admin/players/page.tsx",
+    "src/app/footy/admin/players/page.vitest.spec.ts",
+    "src/app/footy/admin/responses/page.tsx",
+    "src/app/footy/admin/responses/page.vitest.spec.ts",
+    "src/app/footy/admin/user/[email]/page.tsx",
+    "src/app/footy/admin/users/page.tsx",
+    "src/app/footy/admin/users/page.vitest.spec.ts",
     "src/app/footy/auth/claim/[token]/page.tsx",
     "src/app/footy/auth/claim/[token]/page.vitest.spec.tsx",
     "src/app/footy/auth/signin/page.tsx",
@@ -13,10 +28,19 @@
     "src/app/footy/forgottenpassword/page.vitest.spec.ts",
     "src/app/footy/response/page.tsx",
     "src/app/footy/response/page.vitest.spec.ts",
+    "src/components/AdminPlayerList/AdminPlayerList.tsx",
+    "src/components/AdminUserList/AdminUserList.tsx",
     "src/components/ClaimSignup/ClaimSignup.tsx",
+    "src/components/DrinkersForm/DrinkersForm.tsx",
+    "src/components/DrinkersForm/DrinkersForm.vitest.spec.tsx",
     "src/components/ForgottenPasswordForm/ForgottenPasswordForm.tsx",
     "src/components/GameInvitationResponseForm/GameInvitationResponseForm.tsx",
+    "src/components/InvoiceForm/InvoiceForm.tsx",
+    "src/components/MoneyForm/MoneyForm.tsx",
+    "src/components/NewGameForm/NewGameForm.tsx",
+    "src/components/PickerForm/PickerForm.tsx",
     "src/components/PlayerProfile/PlayerProfile.tsx",
+    "src/components/ResponsesForm/ResponsesForm.tsx",
     "src/components/SignIn/SignIn.tsx"
   ],
   "sessions": [
@@ -26,13 +50,20 @@
       "compact_transcript": "/a3/3074f163c0/0/transcript.jsonl",
       "content_hash": "/a3/3074f163c0/0/content_hash.txt",
       "prompt": "/a3/3074f163c0/0/prompt.txt"
+    },
+    {
+      "metadata": "/a3/3074f163c0/1/metadata.json",
+      "transcript": "/a3/3074f163c0/1/full.jsonl",
+      "compact_transcript": "/a3/3074f163c0/1/transcript.jsonl",
+      "content_hash": "/a3/3074f163c0/1/content_hash.txt",
+      "prompt": "/a3/3074f163c0/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 44,
-    "cache_creation_tokens": 51207,
-    "cache_read_tokens": 1080351,
-    "output_tokens": 13489,
-    "api_call_count": 22
+    "input_tokens": 781,
+    "cache_creation_tokens": 1836443,
+    "cache_read_tokens": 86641227,
+    "output_tokens": 316415,
+    "api_call_count": 391
   }
 }

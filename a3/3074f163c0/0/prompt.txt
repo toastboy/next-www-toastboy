@@ -1,0 +1,25 @@
+How common is the multi-line import pattern I have experimented with here in EnquiryForm? Do most people just have all imports, no matter how long, on a single line? What's the approach in general to continuation lines in JavaScript/TypeScript by convention?
+
+---
+
+I want this repo to act as a showcase for my skills and my approach - though in a wider context than TypeScript development. Really it's about keeping up with current approaches and tools and TypeScript was just an obvious vehicle for that. Therefore it probably makes sense not to use any style that comes across as too quirky or avant-garde, not because they're offensive per se but because they distract from that message I'm trying to send.
+
+---
+
+Write a new Jira ticket to apply the standard Prettier formatting to everything.
+
+---
+
+Is my current VS Code formatter set to Prettier or something else?
+
+---
+
+No, because I'm likely to adopt Prettier anyway - unless it clashes with ESLint, which I doubt
+
+---
+
+What would be exampkles of the changes made in this codebase if eslint-config-prettier were to be set?
+
+---
+
+Update the ticket

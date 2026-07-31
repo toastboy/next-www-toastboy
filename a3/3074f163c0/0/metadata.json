@@ -1,0 +1,156 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "a33074f163c0",
+  "session_id": "1d7f8413-ea1e-4cc8-8000-ee2e195faf81",
+  "strategy": "manual-commit",
+  "created_at": "2026-07-31T18:50:44.195478Z",
+  "branch": "main",
+  "checkpoints_count": 7,
+  "save_step_count": 7,
+  "files_touched": [
+    "src/app/footy/auth/claim/[token]/page.tsx",
+    "src/app/footy/auth/claim/[token]/page.vitest.spec.tsx",
+    "src/app/footy/auth/signin/page.tsx",
+    "src/app/footy/auth/signin/page.vitest.spec.ts",
+    "src/app/footy/forgottenpassword/page.tsx",
+    "src/app/footy/forgottenpassword/page.vitest.spec.ts",
+    "src/app/footy/response/page.tsx",
+    "src/app/footy/response/page.vitest.spec.ts",
+    "src/components/ClaimSignup/ClaimSignup.tsx",
+    "src/components/ForgottenPasswordForm/ForgottenPasswordForm.tsx",
+    "src/components/GameInvitationResponseForm/GameInvitationResponseForm.tsx",
+    "src/components/PlayerProfile/PlayerProfile.tsx",
+    "src/components/SignIn/SignIn.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "1fe0d03f248d",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 44,
+    "cache_creation_tokens": 51207,
+    "cache_read_tokens": 1080351,
+    "output_tokens": 13489,
+    "api_call_count": 22
+  },
+  "session_metrics": {
+    "turn_count": 7
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-07-31T18:50:44.181469Z",
+    "agent_lines": 0,
+    "agent_removed": 3,
+    "human_added": 0,
+    "human_modified": 123,
+    "human_removed": 62,
+    "total_committed": 3,
+    "total_lines_changed": 365,
+    "agent_percentage": 0.821917808219178,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 236,
+      "user_lines_removed": 194,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 54,
+        "src/app/footy/auth/claim/[token]/page.tsx": 1,
+        "src/app/footy/auth/signin/page.tsx": 1,
+        "src/app/footy/forgottenpassword/page.tsx": 1,
+        "src/app/footy/response/page.tsx": 4,
+        "src/components/ClaimSignup/ClaimSignup.tsx": 3,
+        "src/components/EnquiryForm/EnquiryForm.tsx": 28,
+        "src/components/ForgottenPasswordForm/ForgottenPasswordForm.tsx": 27,
+        "src/components/GameInvitationResponseForm/GameInvitationResponseForm.tsx": 46,
+        "src/components/PlayerProfile/PlayerProfile.tsx": 67,
+        "src/components/SignIn/SignIn.tsx": 3
+      },
+      "user_removed_per_file": {
+        "src/app/footy/auth/claim/[token]/page.tsx": 11,
+        "src/app/footy/auth/claim/[token]/page.vitest.spec.tsx": 4,
+        "src/app/footy/auth/signin/page.tsx": 9,
+        "src/app/footy/auth/signin/page.vitest.spec.ts": 4,
+        "src/app/footy/forgottenpassword/page.tsx": 10,
+        "src/app/footy/forgottenpassword/page.vitest.spec.ts": 4,
+        "src/app/footy/response/page.tsx": 7,
+        "src/app/footy/response/page.vitest.spec.ts": 1,
+        "src/components/ClaimSignup/ClaimSignup.tsx": 3,
+        "src/components/EnquiryForm/EnquiryForm.tsx": 9,
+        "src/components/ForgottenPasswordForm/ForgottenPasswordForm.tsx": 24,
+        "src/components/GameInvitationResponseForm/GameInvitationResponseForm.tsx": 42,
+        "src/components/PlayerProfile/PlayerProfile.tsx": 64,
+        "src/components/SignIn/SignIn.tsx": 2
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 55,
+      "user_lines_removed": 0,
+      "agent_lines_added": 181,
+      "agent_lines_removed": 194,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 54
+      }
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 55,
+      "user_lines_removed": 0,
+      "agent_lines_added": 181,
+      "agent_lines_removed": 194,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 54
+      }
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 56,
+      "user_lines_removed": 0,
+      "agent_lines_added": 181,
+      "agent_lines_removed": 194,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 55
+      }
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 56,
+      "user_lines_removed": 0,
+      "agent_lines_added": 181,
+      "agent_lines_removed": 194,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 55
+      }
+    },
+    {
+      "checkpoint_number": 6,
+      "user_lines_added": 56,
+      "user_lines_removed": 0,
+      "agent_lines_added": 181,
+      "agent_lines_removed": 194,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 55
+      }
+    },
+    {
+      "checkpoint_number": 7,
+      "user_lines_added": 56,
+      "user_lines_removed": 0,
+      "agent_lines_added": 181,
+      "agent_lines_removed": 194,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 55
+      }
+    }
+  ]
+}

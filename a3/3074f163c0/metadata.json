@@ -1,0 +1,38 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "a33074f163c0",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 7,
+  "files_touched": [
+    "src/app/footy/auth/claim/[token]/page.tsx",
+    "src/app/footy/auth/claim/[token]/page.vitest.spec.tsx",
+    "src/app/footy/auth/signin/page.tsx",
+    "src/app/footy/auth/signin/page.vitest.spec.ts",
+    "src/app/footy/forgottenpassword/page.tsx",
+    "src/app/footy/forgottenpassword/page.vitest.spec.ts",
+    "src/app/footy/response/page.tsx",
+    "src/app/footy/response/page.vitest.spec.ts",
+    "src/components/ClaimSignup/ClaimSignup.tsx",
+    "src/components/ForgottenPasswordForm/ForgottenPasswordForm.tsx",
+    "src/components/GameInvitationResponseForm/GameInvitationResponseForm.tsx",
+    "src/components/PlayerProfile/PlayerProfile.tsx",
+    "src/components/SignIn/SignIn.tsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/a3/3074f163c0/0/metadata.json",
+      "transcript": "/a3/3074f163c0/0/full.jsonl",
+      "compact_transcript": "/a3/3074f163c0/0/transcript.jsonl",
+      "content_hash": "/a3/3074f163c0/0/content_hash.txt",
+      "prompt": "/a3/3074f163c0/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 44,
+    "cache_creation_tokens": 51207,
+    "cache_read_tokens": 1080351,
+    "output_tokens": 13489,
+    "api_call_count": 22
+  }
+}

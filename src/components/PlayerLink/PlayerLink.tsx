@@ -5,8 +5,6 @@ import {
 import { IconArrowBigLeftLine, IconArrowBigRightLine } from '@tabler/icons-react';
 import type { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 
-import classes from './PlayerLink.module.css';
-
 /**
  * Component for rendering a link to a player's profile with various formatting options.
  *
@@ -52,7 +50,6 @@ export const PlayerLink = ({ player, year, format = 'name' }: Props) => {
         <Anchor
             href={`/footy/player/${player.id}${year ? `/${year}` : ''}`}
             ta="center"
-            className={classes.link}
             aria-label={ariaLabel}
         >
             {(() => {

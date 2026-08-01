@@ -93,7 +93,7 @@ export const CustomAppShell = ({ children, user, devMode }: Props) => {
             </AppShellNavbar>
 
             <AppShellMain>
-                <Container fluid p="xl">
+                <Container size="xl" p="xl">
                     {children}
                 </Container>
             </AppShellMain>

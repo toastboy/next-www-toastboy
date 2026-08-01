@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "e0912a8f113f",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "src/components/InvoiceForm/InvoiceForm.tsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/e0/912a8f113f/0/metadata.json",
+      "transcript": "/e0/912a8f113f/0/full.jsonl",
+      "compact_transcript": "/e0/912a8f113f/0/transcript.jsonl",
+      "content_hash": "/e0/912a8f113f/0/content_hash.txt",
+      "prompt": "/e0/912a8f113f/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 12,
+    "cache_creation_tokens": 33360,
+    "cache_read_tokens": 333595,
+    "output_tokens": 2478,
+    "api_call_count": 6
+  }
+}

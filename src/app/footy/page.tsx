@@ -44,7 +44,7 @@ const HomePage = async () => {
             <Group justify="center" w="100%">
                 <Title order={2}>Table Leaders</Title>
             </Group>
-            <Flex direction={{ base: 'column', md: 'row' }} gap="md" justify="center">
+            <Flex wrap="wrap" gap="md" justify="center">
                 {tables.map((table, i) => (
                     <Stack key={table} align="center">
                         <Title order={3}>{ShortTableTitle(table)}</Title>

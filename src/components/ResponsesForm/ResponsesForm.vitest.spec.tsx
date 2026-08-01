@@ -270,7 +270,9 @@ describe('Responses', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByRole('group', { name: 'Casey Mid' })).toBeInTheDocument();
+        // hidden: true — this assertion is about the sync-on-rerender behaviour,
+        // not the group's default-collapsed display state.
+        expect(screen.getByRole('group', { name: 'Casey Mid', hidden: true })).toBeInTheDocument();
     });
 
     it('updates a player response and calls onSave', async () => {

@@ -91,6 +91,7 @@ export const SimpleUpdate: Story = {
         const filterInput = await canvas.findByPlaceholderText('Search players');
         await userEvent.clear(filterInput);
         const noneGroup = await canvas.findByRole('region', { name: 'None' });
+        await userEvent.click(within(noneGroup).getByRole('button', { name: /None: \d+/ }));
         const row = (await within(noneGroup).findAllByRole('group'))[0];
         if (!row) throw new Error('Missing none-group row');
         const playerId = Number(row.getAttribute('data-player-id'));
@@ -115,9 +116,47 @@ export const SimpleUpdate: Story = {
         await within(canvasElement.ownerDocument.body).findByText('Response updated', {}, { timeout: 6000 });
 
         const yesGroup = await canvas.findByRole('region', { name: 'Yes' });
+        await userEvent.click(within(yesGroup).getByRole('button', { name: /Yes: \d+/ }));
         const movedRow = (await within(yesGroup).findAllByRole('group'))
             .find((r) => Number(r.getAttribute('data-player-id')) === playerId);
         if (!movedRow) throw new Error('Missing moved row in yes-group after update');
+    },
+};
+
+export const Collapsible: Story = {
+    ...Render,
+    parameters: {
+        docs: {
+            description: {
+                story: 'Response groups render collapsed to just their header and count by default. Expand manually via the toggle, or type a search filter to auto-expand any group with matching rows, even one that was never manually toggled open.',
+            },
+        },
+    },
+    play: async ({ canvasElement, viewMode }) => {
+        if (viewMode === 'docs') return;
+
+        const canvas = within(canvasElement);
+        const filterInput = await canvas.findByPlaceholderText('Search players');
+        await userEvent.clear(filterInput);
+
+        const noneRegion = await canvas.findByRole('region', { name: 'None' });
+        const noneToggle = within(noneRegion).getByRole('button', { name: /None: \d+/ });
+
+        await expect(noneToggle).toHaveAttribute('aria-expanded', 'false');
+        await expect(within(noneRegion).queryByRole('group')).toBeNull();
+
+        await userEvent.click(noneToggle);
+        await expect(noneToggle).toHaveAttribute('aria-expanded', 'true');
+        await within(noneRegion).findAllByRole('group');
+
+        await userEvent.click(noneToggle);
+        await expect(noneToggle).toHaveAttribute('aria-expanded', 'false');
+
+        await userEvent.type(filterInput, 'Britt');
+        const noRegion = await canvas.findByRole('region', { name: 'No' });
+        const noToggle = within(noRegion).getByRole('button', { name: /No: \d+/ });
+        await expect(noToggle).toHaveAttribute('aria-expanded', 'true');
+        await within(noRegion).findByText('Britt Winger');
     },
 };
 
@@ -141,7 +180,7 @@ export const Filtering: Story = {
         const noneGroup = await canvas.findByRole('region', { name: 'None' });
 
         await Promise.all([
-            expect(within(noneGroup).getByText('None: 1')).toBeInTheDocument(),
+            expect(within(noneGroup).getByRole('button', { name: 'None: 1' })).toBeInTheDocument(),
             expect(canvas.queryByRole('region', { name: 'Yes' })).toBeNull(),
             expect(canvas.queryByRole('region', { name: 'No' })).toBeNull(),
             expect(canvas.queryByRole('region', { name: 'Dunno' })).toBeNull(),
@@ -171,6 +210,7 @@ export const InvalidInput: Story = {
         const filterInput = await canvas.findByPlaceholderText('Search players');
         await userEvent.clear(filterInput);
         const noneGroup = await canvas.findByRole('region', { name: 'None' });
+        await userEvent.click(within(noneGroup).getByRole('button', { name: /None: \d+/ }));
         const row = (await within(noneGroup).findAllByRole('group'))[0];
         if (!row) throw new Error('Missing none-group row');
 

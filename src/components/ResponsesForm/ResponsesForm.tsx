@@ -8,6 +8,7 @@ import {
     Card,
     CardSection,
     Checkbox,
+    Collapse,
     Container,
     Flex,
     Group,
@@ -18,6 +19,8 @@ import {
     Textarea,
     TextInput,
     Title,
+    Tooltip,
+    UnstyledButton,
 } from '@mantine/core';
 import {
     useForm,
@@ -25,7 +28,7 @@ import {
 import {
     notifications,
 } from '@mantine/notifications';
-import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
+import { IconAlertTriangle, IconCheck, IconChevronDown } from '@tabler/icons-react';
 import { PlayerResponse } from 'prisma/generated/enums';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
@@ -81,6 +84,20 @@ export const ResponsesForm = ({
     });
     const [savingId, setSavingId] = useState<number | null>(null);
     const [filter, setFilter] = useState('');
+    const [expandedGroups, setExpandedGroups] = useState<Set<ResponseOption>>(new Set());
+    const isFiltering = filter.trim().length > 0;
+
+    const toggleGroup = (title: ResponseOption) => {
+        setExpandedGroups((prev) => {
+            const next = new Set(prev);
+            if (next.has(title)) {
+                next.delete(title);
+            } else {
+                next.add(title);
+            }
+            return next;
+        });
+    };
 
     // Re-sync form values when the responses prop changes (e.g. after
     // revalidate / SSE refresh). Preserve any in-progress edits by only
@@ -192,88 +209,111 @@ export const ResponsesForm = ({
     const renderGroup = (title: ResponseOption, items: OutcomePlayerType[]) => {
         if (items.length === 0) return null;
 
+        const opened = expandedGroups.has(title) || isFiltering;
+
         return (
             <Card key={title} withBorder shadow="xs" p="md" role="region" aria-label={title}>
                 <CardSection h={6} bg={responseGroupBarColor[title]} />
-                <Group justify="space-between" mb="lg" mt="md">
-                    <Title order={2}>{title}: {items.length}</Title>
-                </Group>
-                <Stack gap="sm">
-                    {items.map((row) => {
-                        // v8 ignore next -- form is always initialised from the same rows array
-                        const responseValues = form.values.byPlayerId[row.playerId] ?? toResponseValues(row);
-                        // v8 ignore next -- null names are excluded by the search filter before rows are rendered
-                        const ariaLabel = row.player.name ?? `Player ${row.playerId}`;
-                        return (
-                            <Flex
-                                key={row.playerId}
-                                role="group"
-                                aria-label={ariaLabel}
-                                data-player-id={row.playerId}
-                                wrap="wrap"
-                                align="center"
-                                gap="sm"
-                                bd="1px solid var(--mantine-color-gray-3)"
-                                p="sm"
-                                bdrs="sm"
+                <UnstyledButton onClick={() => toggleGroup(title)} aria-expanded={opened} w="100%" mt="md">
+                    <Group justify="space-between">
+                        <Title
+                            order={2}
+                        >
+                            {title}:{' '}
+                            <Tooltip
+                                multiline
+                                label={items.map((item) => item.player.name).join(', ')}
                             >
-                                <Text
-                                    fw={600}
-                                    miw="15rem"
+                                <Text span inherit>{items.length}</Text>
+                            </Tooltip>
+                        </Title>
+                        <IconChevronDown
+                            size={20}
+                            style={{
+                                transform: opened ? 'rotate(180deg)' : 'rotate(0deg)',
+                                transition: 'transform 150ms ease',
+                            }}
+                        />
+                    </Group>
+                </UnstyledButton>
+                <Collapse expanded={opened}>
+                    <Stack gap="sm" mt="lg">
+                        {items.map((row) => {
+                            // v8 ignore next -- form is always initialised from the same rows array
+                            const responseValues = form.values.byPlayerId[row.playerId] ?? toResponseValues(row);
+                            // v8 ignore next -- null names are excluded by the search filter before rows are rendered
+                            const ariaLabel = row.player.name ?? `Player ${row.playerId}`;
+                            return (
+                                <Flex
+                                    key={row.playerId}
+                                    role="group"
+                                    aria-label={ariaLabel}
+                                    data-player-id={row.playerId}
+                                    wrap="wrap"
+                                    align="center"
+                                    gap="sm"
+                                    bd="1px solid var(--mantine-color-gray-3)"
+                                    p="sm"
+                                    bdrs="sm"
                                 >
-                                    {row.player.name}
-                                </Text>
-                                <Select
-                                    aria-label="Response"
-                                    data={Object.values(PlayerResponse).map((option) => ({
-                                        value: option,
-                                        label: option,
-                                    }))}
-                                    value={responseValues.response ?? ResponseOption.None}
-                                    onChange={(value) => {
-                                        const nextValue = value;
-                                        form.setFieldValue(
-                                            `byPlayerId.${row.playerId}.response`,
-                                            // v8 ignore next -- 'None' never appears in the Select data array
-                                            nextValue === ResponseOption.None ? null : nextValue,
-                                        );
-                                    }}
-                                    size="sm"
-                                    w="7rem"
-                                />
-                                <Checkbox
-                                    label="Goalie"
-                                    size="sm"
-                                    {...form.getInputProps(
-                                        `byPlayerId.${row.playerId}.goalie`,
-                                        { type: 'checkbox' },
-                                    )}
-                                />
-                                <Textarea
-                                    autosize
-                                    minRows={1}
-                                    aria-label="Comment"
-                                    placeholder="Comment"
-                                    maxLength={127}
-                                    {...form.getInputProps(`byPlayerId.${row.playerId}.comment`)}
-                                    size="sm"
-                                    flex={1}
-                                    miw={{ base: "9rem", sm: "16rem" }}
-                                />
-                                <Button
-                                    variant="filled"
-                                    size="sm"
-                                    disabled={!isRowDirty(row)}
-                                    loading={savingId === row.playerId}
-                                    onClick={() => handleSubmit(row)}
-                                    w="6rem"
-                                >
-                                    Update
-                                </Button>
-                            </Flex>
-                        );
-                    })}
-                </Stack>
+                                    <Text
+                                        fw={600}
+                                        miw="15rem"
+                                    >
+                                        {row.player.name}
+                                    </Text>
+                                    <Select
+                                        aria-label="Response"
+                                        data={Object.values(PlayerResponse).map((option) => ({
+                                            value: option,
+                                            label: option,
+                                        }))}
+                                        value={responseValues.response ?? ResponseOption.None}
+                                        onChange={(value) => {
+                                            const nextValue = value;
+                                            form.setFieldValue(
+                                                `byPlayerId.${row.playerId}.response`,
+                                                // v8 ignore next -- 'None' never appears in the Select data array
+                                                nextValue === ResponseOption.None ? null : nextValue,
+                                            );
+                                        }}
+                                        size="sm"
+                                        w="7rem"
+                                    />
+                                    <Checkbox
+                                        label="Goalie"
+                                        size="sm"
+                                        {...form.getInputProps(
+                                            `byPlayerId.${row.playerId}.goalie`,
+                                            { type: 'checkbox' },
+                                        )}
+                                    />
+                                    <Textarea
+                                        autosize
+                                        minRows={1}
+                                        aria-label="Comment"
+                                        placeholder="Comment"
+                                        maxLength={127}
+                                        {...form.getInputProps(`byPlayerId.${row.playerId}.comment`)}
+                                        size="sm"
+                                        flex={1}
+                                        miw={{ base: "9rem", sm: "16rem" }}
+                                    />
+                                    <Button
+                                        variant="filled"
+                                        size="sm"
+                                        disabled={!isRowDirty(row)}
+                                        loading={savingId === row.playerId}
+                                        onClick={() => handleSubmit(row)}
+                                        w="6rem"
+                                    >
+                                        Update
+                                    </Button>
+                                </Flex>
+                            );
+                        })}
+                    </Stack>
+                </Collapse>
             </Card>
         );
     };

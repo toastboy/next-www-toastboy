@@ -1,0 +1,7 @@
+Next part of SYS-584 is this, although I must say I like the idea of all the tables being in a row or a column rather than 1 and 2 or 2 and 1:
+
+src/app/footy/page.tsx:47-56 — MEDIUM. Same shape: Flex direction={{ base: 'column', md: 'row' }} laying out multiple RecordsTables side by side, no wrap. Lower risk than #1 since those tables are narrow.
+
+---
+
+You introduced the 2 and 1 layout I said I didn't want! BUT looking at it in a browser, actually I like it so I've just removed the breakpoint altogether

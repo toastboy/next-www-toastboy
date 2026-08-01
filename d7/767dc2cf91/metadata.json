@@ -3,7 +3,7 @@
   "checkpoint_id": "d7767dc2cf91",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 9,
+  "checkpoints_count": 22,
   "files_touched": [
     "src/app/footy/game/[id]/page.tsx",
     "src/app/footy/games/page.tsx",
@@ -18,6 +18,13 @@
       "compact_transcript": "/d7/767dc2cf91/0/transcript.jsonl",
       "content_hash": "/d7/767dc2cf91/0/content_hash.txt",
       "prompt": "/d7/767dc2cf91/0/prompt.txt"
+    },
+    {
+      "metadata": "/d7/767dc2cf91/1/metadata.json",
+      "transcript": "/d7/767dc2cf91/1/full.jsonl",
+      "compact_transcript": "/d7/767dc2cf91/1/transcript.jsonl",
+      "content_hash": "/d7/767dc2cf91/1/content_hash.txt",
+      "prompt": "/d7/767dc2cf91/1/prompt.txt"
     }
   ],
   "token_usage": {

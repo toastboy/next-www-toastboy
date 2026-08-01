@@ -1,0 +1,61 @@
+I'm working on this one: already changed the widths to 'rem' - what else do you suggest?
+
+src/components/ResponsesForm/ResponsesForm.tsx:211-260 — HIGH. Row Flex (direction={{ base: 'column', lg: 'row' }}) with fixed-width children (w={180}, w={160}, miw={220}, plus checkbox/button) and no wrap. At lg those minimums sum to ~770px that can't shrink. Since the breakpoint switch to row layout is viewport-width-based and browser zoom shrinks the effective viewport, there's a zoom range just past lg where row layout is chosen but the content doesn't fit — real horizontal overflow. Likely fix: add wrap="wrap", or replace with a wrapping SimpleGrid/Group.
+
+---
+
+Yes
+
+---
+
+The storybook isn't up to date. I'll look myself
+
+---
+
+I'm trying just relying on wrap and not having a breakpoint at all - how does that seem?
+
+---
+
+The build is up to date and Storybook is running on 6006: take a look. There's a right-hand gutter at full width now, and of course the subcomponent widths don't expand at smaller widths now.
+
+---
+
+I guess it would be helpful to build multiple widths into the Storybook tests themselves
+
+---
+
+Actually I'm thinking of rewriting my nav to be more similar to the BBC as well: progressive disclosure from the top rather than the appearing/disappearing sidebar. So the storybook shouldn't guess at the effects of the sidebar
+
+---
+
+Caught exception in play function
+Error: vitest/browser can be imported only inside the Browser Mode. Instead, it was imported outside of Vitest.
+    at http://localhost:6006/node_modules/.cache/storybook/10.5.3/1c3385a5d25e538d10b518b310c74d3ca2690b6aaffeadccd74da79736171f86/sb-vite/deps/vitest_browser.js?v=fcd4ec4d:10:7
+
+---
+
+Error stack trace
+Error: vitest/browser can be imported only inside the Browser Mode. Instead, it was imported outside of Vitest.
+    at https://693a94b56f442dc4a074aee9-euhhbndiyh.capture-loopback.chromatic.com/assets/context-DHc5uDwF.js:1:123
+    at https://693a94b56f442dc4a074aee9-euhhbndiyh.capture-loopback.chromatic.com/assets/rolldown-runtime-PE7_xIU0.js:1:215
+    at https://693a94b56f442dc4a074aee9-euhhbndiyh.capture-loopback.chromatic.com/assets/context-DHc5uDwF.js:1:363
+
+---
+
+Which Mantine components take notice of the prop 'flex'?
+
+---
+
+Does Mantine have a standard 'twist-down' reveal UX or is it up to me to build one?
+
+---
+
+Write a new Story to add a Collapse mechanism in ResponsesForm so the default view is just the tops of the cards with the totals, and if they're manually expanded or a filter value needs to make some rows visible then they get expanded.
+
+---
+
+[@mantine/core] Tooltip component children should be an element or a component that accepts ref, fragments, strings, numbers and other primitive values are not supported
+
+---
+
+Now I just need the items.length text style to match the {title}

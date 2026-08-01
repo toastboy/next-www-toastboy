@@ -3,10 +3,19 @@
   "checkpoint_id": "42e565fe4249",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 11,
+  "checkpoints_count": 24,
   "files_touched": [
     "src/components/CustomAppShell/CustomAppShell.tsx",
+    "src/components/MoreGamesForm/MoreGamesForm.tsx",
+    "src/components/PlayerArse/PlayerArse.tsx",
+    "src/components/PlayerInfo/PlayerInfo.tsx",
+    "src/components/PlayerList/PlayerList.tsx",
+    "src/components/PlayerPositions/PlayerPositions.tsx",
+    "src/components/PlayerResults/PlayerResults.tsx",
+    "src/components/RecordsTable/RecordsTable.tsx",
     "src/components/ResponsesForm/ResponsesForm.tsx",
+    "src/components/Turnout/Turnout.tsx",
+    "src/components/WinnersTable/WinnersTable.tsx",
     "src/theme.ts"
   ],
   "sessions": [
@@ -23,13 +32,20 @@
       "compact_transcript": "/42/e565fe4249/1/transcript.jsonl",
       "content_hash": "/42/e565fe4249/1/content_hash.txt",
       "prompt": "/42/e565fe4249/1/prompt.txt"
+    },
+    {
+      "metadata": "/42/e565fe4249/2/metadata.json",
+      "transcript": "/42/e565fe4249/2/full.jsonl",
+      "compact_transcript": "/42/e565fe4249/2/transcript.jsonl",
+      "content_hash": "/42/e565fe4249/2/content_hash.txt",
+      "prompt": "/42/e565fe4249/2/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 197,
-    "cache_creation_tokens": 237885,
-    "cache_read_tokens": 12342048,
-    "output_tokens": 62494,
-    "api_call_count": 99
+    "input_tokens": 934,
+    "cache_creation_tokens": 2023121,
+    "cache_read_tokens": 97902924,
+    "output_tokens": 365420,
+    "api_call_count": 468
   }
 }

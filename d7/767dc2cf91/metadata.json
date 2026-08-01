@@ -1,0 +1,30 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "d7767dc2cf91",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 9,
+  "files_touched": [
+    "src/app/footy/game/[id]/page.tsx",
+    "src/app/footy/games/page.tsx",
+    "src/components/CustomAppShell/CustomAppShell.tsx",
+    "src/components/PlayerLink/PlayerLink.module.css",
+    "src/components/PlayerLink/PlayerLink.tsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/d7/767dc2cf91/0/metadata.json",
+      "transcript": "/d7/767dc2cf91/0/full.jsonl",
+      "compact_transcript": "/d7/767dc2cf91/0/transcript.jsonl",
+      "content_hash": "/d7/767dc2cf91/0/content_hash.txt",
+      "prompt": "/d7/767dc2cf91/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 79,
+    "cache_creation_tokens": 49371,
+    "cache_read_tokens": 2244804,
+    "output_tokens": 16945,
+    "api_call_count": 40
+  }
+}

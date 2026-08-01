@@ -1,0 +1,104 @@
+Look at the way src/app/footy/game/[id]/page.tsx handles layout. I think the top level Flex means zooming gets broken because it forces 100% width no matter what.
+
+---
+
+It might be a lot to ask, but what I want to mimic is the zoom behaviour of well-known sites such as https://www.bbc.co.uk/
+
+---
+
+Yes, start that scan.
+
+---
+
+<task-notification>
+<task-id>a374b8fda273a95b9</task-id>
+<tool-use-id>toolu_01DgNAg1L8E4sky5EH5cqy1M</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/aaef6eec-764f-40eb-a4dc-9d304775ba16/tasks/a374b8fda273a95b9.output</output-file>
+<status>completed</status>
+<summary>Agent "Audit zoom-reflow anti-patterns" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>## Zoom-reflow audit (read-only)
+
+**1. `src/components/ResponsesForm/ResponsesForm.tsx:211-260`** — HIGH
+```tsx
+&lt;Flex direction={{ base: 'column', lg: 'row' }} align={...} gap="sm" ...&gt;
+  &lt;Text w={{ base: '100%', lg: 180 }}&gt;{name}&lt;/Text&gt;
+  &lt;Select w={{ base: '100%', lg: 160 }} .../&gt;
+  &lt;Checkbox label="Goalie" .../&gt;
+  &lt;TextInput flex={{ lg: 1 }} miw={{ lg: 220 }} .../&gt;
+  &lt;Button .../&gt;
+```
+No `wrap`. At the `lg` breakpoint the row's fixed min-widths sum to 180+160+~110(checkbox)+220+~100(button) ≈ 770px, none of which can shrink. Since Mantine breakpoints are viewport-relative and browser zoom shrinks the effective viewport, there's a zoom range just above `lg` where the row layout is chosen but the content genuinely doesn't fit — forced horizontal overflow. Same bug class as the one already fixed, but here it's content-driven, not a redundant `w="100%"`.
+
+**2. `src/app/footy/page.tsx:47-56`** — MEDIUM
+```tsx
+&lt;Flex direction={{ base: 'column', md: 'row' }} gap="md" justify="center"&gt;
+  {tables.map(...) =&gt; &lt;Stack key={table} align="center"&gt;&lt;Title/&gt;&lt;RecordsTable/&gt;&lt;/Stack&gt;)}
+&lt;/Flex&gt;
+```
+No `wrap`. With 2+ `RecordsTable`s (table leaders) side-by-side at `md`+ and no wrap, high zoom near the `md` threshold can force overflow instead of stacking/wrapping. Lower severity than #1 since `RecordsTable` columns are narrow (`w="4em"`/`auto`, `VisuallyHidden` headers).
+
+**3. `src/components/InvoiceForm/InvoiceForm.tsx:221-247`** — LOW-MEDIUM
+Same unwrapped-row-with-fixed-widths pattern (`w="10rem"` + `w="6rem"`), but only 3 children and narrower total (~300px+checkbox) — much less likely to actually exceed a `lg`/`sm`-width row than #1.
+
+**4. `src/app/footy/curse/page.tsx:85` / `src/app/footy/books/page.tsx:78` / `src/app/footy/table/[table]/page.tsx:117` / `src/app/footy/tables/page.tsx:14` / `src/app/footy/turnout/page.tsx:16` / `src/app/footy/page.tsx:35` / `src/app/footy/admin/page.tsx:24`** — LOW, likely vestigial
+All are `Stack`/`Flex`/`Paper` with `w="100%"` as the root element directly inside `CustomAppShell`'s `Container fluid` — same redundancy as the two files already fixed. Most pair it with `align="center"`, where `w="100%"` is actually load-bearing (needed so children can center within the parent instead of shrink-wrapping to content). Worth a pass, but functionally harmless (unlike #1/#2, these didn't come up as a live bug report) — bundle as a follow-up cleanup, not urgent.
+
+**5. `src/components/PlayerList/PlayerList.tsx:204`** — LOW, verified not a real risk
+`&lt;Table mt={20}&gt;` with no `TableScrollContainer`, one column (`Timeline`) rendering `PlayerTimeline`. Checked `PlayerTimeline.tsx` — it's a Mantine `ProgressRoot`/`ProgressSection` (percentage-based), not a fixed-px SVG, so it shrinks fine. Not a real finding, listed only to rule it out.
+
+**6. `src/components/Turnout/Turnout.tsx:50`** — LOW
+`&lt;Table layout="fixed"&gt;`, 6 columns with `writing-mode: vertical-rl` headers, no scroll container. CSS module widths are unset (no fixed px), so this degrades gracefully; only worth revisiting if real users report it.
+
+**Checked and clean:** `GameDayIndicator`, `GoalieIndicator`, `PlayerTrophyTally` (all fixed-size decorative elements, correctly small); `FamilyTree` (SVG sized from a measured container width via ResizeObserver — genuinely responsive); `GameDayList` (`SimpleGrid minColWidth="11rem" autoFlow="auto-fit"` — exactly the BBC-style pattern, nothing to fix); `PickerForm`/`DrinkersForm`/`AdminPlayerList`/`AdminUserList`/`MoreGamesForm` (already wrapped in `TableScrollContainer`); `AdminExportAuth`, `Team.tsx` (row Flexes with only 2 short children — negligible risk).
+
+---
+
+Recommend tackling **#1 (ResponsesForm)** first since it's the clearest real bug — likely fix is adding `wrap="wrap"` to that `Flex` (or dropping the fixed widths in favour of a `SimpleGrid`/`Group` that wraps). Want me to fix that one now, or go through the list in order?</result>
+<usage><subagent_tokens>78263</subagent_tokens><tool_uses>15</tool_uses><duration_ms>1095899</duration_ms></usage>
+</task-notification>
+
+---
+
+Add all these details to SYS-584
+
+---
+
+Fundamental question: is fluid the right choice for the container in the custom app shell?
+
+---
+
+Yes
+
+---
+
+<task-notification>
+<task-id>aafde82c8505a2c12</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/aaef6eec-764f-40eb-a4dc-9d304775ba16/tasks/aafde82c8505a2c12.output</output-file>
+<status>completed</status>
+<summary>Agent "Check for full-viewport-width dependencies" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>Investigation of whether bounding `CustomAppShell.tsx:96`'s `Container` (currently `fluid`) to ~1200-1400px would hurt any page.
+
+**1. `FamilyTree.tsx:74-311`** — `Paper w="100%" h="70vh"` sized via `ResizeObserver`, but the D3 tree self-fits to its bounding box and is pannable/zoomable (`d3-zoom`, `scaleExtent [0.1, 4]`). Verdict: **fine bounded** — narrower initial render, but users can already zoom/pan, so no legibility loss.
+
+**2. `PlayerCountryMap.tsx:98-99,262-264`** (rendered by `countrymap/page.tsx:28`) — fixed `width={960} height={500}` SVG, no `viewBox`, not container-responsive at all today. Verdict: **fine bounded** — 960px is already less than the proposed bound; container width is currently irrelevant to it either way (pre-existing narrow-viewport overflow risk is out of scope here).
+
+**3. `table/[table]/page.tsx:117` → `YearTable.tsx` → `RecordsTable.tsx:93`** — `Paper miw="14rem" maw="24rem"` (≤384px), only 3 columns, `VisuallyHidden` headers. Verdict: **fine bounded**, nowhere near 1200-1400px.
+
+**4. `AdminPlayerList.tsx:425` / `AdminUserList.tsx:124`** — both already wrapped in `TableScrollContainer minWidth="100%"`. Verdict: **doesn't care**, self-scrolling regardless of outer container.
+
+**5. `Turnout.tsx:49`** — `Paper maw="24rem"`, 6 narrow columns, `layout="fixed"`. Verdict: **fine bounded**, already capped far below the proposed bound.
+
+**6. `GameDayList.tsx:41`** — `SimpleGrid minColWidth="11rem" autoFlow="auto-fit" w="100%"`. Verdict: **fine bounded but changes column count** — on an ultra-wide monitor, bounding to ~1300px means fewer cards per row (e.g. ~7 vs ~14 at 2560px) versus more vertical scroll. Not broken, just a density trade-off — arguably more BBC-like (readable card width) than a regression.
+
+**7. Other chart components found:** `PieChart.tsx:66-67` and `MoneyChart.tsx:132-133` both use `ResizeObserver` on `contentRect` the same way `FamilyTree` does — container-responsive, **fine bounded**. `PlayerHeatmap.tsx` draws a fixed-size calendar-grid SVG (52 weeks max) that never reads container width at all — **doesn't care** either way.
+
+**Overall recommendation:** No page or component under `src/app/footy/**` requires full viewport width — everything either self-scrolls, self-fits via zoom/pan, is already capped well under 1200-1400px, or is container-responsive and degrades gracefully narrower. Safe to bound the shell's `Container` globally (e.g. `size="xl"` ~1400px); no page needs an opt-out. Only externally-visible effect: `GameDayList`'s auto-fit grid will show fewer columns on very wide monitors, which is an intentional density trade-off, not a bug.</result>
+<usage><subagent_tokens>91240</subagent_tokens><tool_uses>19</tool_uses><duration_ms>96558</duration_ms></usage>
+</task-notification>
+
+---
+
+Yes

@@ -1,0 +1,1 @@
+Is there an ESLint or Prettier rule that would enable me to insist that every React component has each prop on its own line rather than inline?

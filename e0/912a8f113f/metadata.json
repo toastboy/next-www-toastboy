@@ -3,7 +3,7 @@
   "checkpoint_id": "e0912a8f113f",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 1,
+  "checkpoints_count": 2,
   "files_touched": [
     "src/components/InvoiceForm/InvoiceForm.tsx"
   ],
@@ -14,13 +14,20 @@
       "compact_transcript": "/e0/912a8f113f/0/transcript.jsonl",
       "content_hash": "/e0/912a8f113f/0/content_hash.txt",
       "prompt": "/e0/912a8f113f/0/prompt.txt"
+    },
+    {
+      "metadata": "/e0/912a8f113f/1/metadata.json",
+      "transcript": "/e0/912a8f113f/1/full.jsonl",
+      "compact_transcript": "/e0/912a8f113f/1/transcript.jsonl",
+      "content_hash": "/e0/912a8f113f/1/content_hash.txt",
+      "prompt": "/e0/912a8f113f/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 12,
-    "cache_creation_tokens": 33360,
-    "cache_read_tokens": 333595,
-    "output_tokens": 2478,
-    "api_call_count": 6
+    "input_tokens": 36,
+    "cache_creation_tokens": 40326,
+    "cache_read_tokens": 936235,
+    "output_tokens": 6389,
+    "api_call_count": 18
   }
 }

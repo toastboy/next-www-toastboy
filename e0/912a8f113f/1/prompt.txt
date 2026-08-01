@@ -1,0 +1,3 @@
+Next is this:
+
+src/components/InvoiceForm/InvoiceForm.tsx:221-247 — LOW-MEDIUM. Same unwrapped-row-with-fixed-widths pattern (w="10rem" + w="6rem"), but only 3 children and a smaller total width — less likely to actually overflow.

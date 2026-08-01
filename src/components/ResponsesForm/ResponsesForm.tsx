@@ -15,6 +15,7 @@ import {
     Select,
     Stack,
     Text,
+    Textarea,
     TextInput,
     Title,
 } from '@mantine/core';
@@ -56,10 +57,6 @@ const toResponseValues = (row: OutcomePlayerType): ResponseValues => ({
     // v8 ignore next -- comment is always a string in practice (Prisma default '')
     comment: row.comment ?? '',
 });
-
-// Breakpoint at which each response row switches from a stacked mobile
-// layout to a single-line row; kept as one constant so every field agrees.
-const rowBreakpoint = 'lg';
 
 const responseGroupBarColor: Record<ResponseOption, MantineColor> = {
     [ResponseOption.Yes]: 'green.6',
@@ -213,14 +210,17 @@ export const ResponsesForm = ({
                                 role="group"
                                 aria-label={ariaLabel}
                                 data-player-id={row.playerId}
-                                direction={{ base: 'column', [rowBreakpoint]: 'row' }}
-                                align={{ base: 'stretch', [rowBreakpoint]: 'center' }}
+                                wrap="wrap"
+                                align="center"
                                 gap="sm"
                                 bd="1px solid var(--mantine-color-gray-3)"
                                 p="sm"
                                 bdrs="sm"
                             >
-                                <Text fw={600} w={{ base: '100%', [rowBreakpoint]: 180 }}>
+                                <Text
+                                    fw={600}
+                                    miw="15rem"
+                                >
                                     {row.player.name}
                                 </Text>
                                 <Select
@@ -239,7 +239,7 @@ export const ResponsesForm = ({
                                         );
                                     }}
                                     size="sm"
-                                    w={{ base: '100%', [rowBreakpoint]: 160 }}
+                                    w="7rem"
                                 />
                                 <Checkbox
                                     label="Goalie"
@@ -249,13 +249,16 @@ export const ResponsesForm = ({
                                         { type: 'checkbox' },
                                     )}
                                 />
-                                <TextInput
+                                <Textarea
+                                    autosize
+                                    minRows={1}
+                                    aria-label="Comment"
                                     placeholder="Comment"
                                     maxLength={127}
                                     {...form.getInputProps(`byPlayerId.${row.playerId}.comment`)}
                                     size="sm"
-                                    flex={{ [rowBreakpoint]: 1 }}
-                                    miw={{ [rowBreakpoint]: 220 }}
+                                    flex={1}
+                                    miw={{ base: "9rem", sm: "16rem" }}
                                 />
                                 <Button
                                     variant="filled"
@@ -263,7 +266,7 @@ export const ResponsesForm = ({
                                     disabled={!isRowDirty(row)}
                                     loading={savingId === row.playerId}
                                     onClick={() => handleSubmit(row)}
-                                    w={{ base: '100%', [rowBreakpoint]: 'auto' }}
+                                    w="6rem"
                                 >
                                     Update
                                 </Button>
@@ -276,8 +279,8 @@ export const ResponsesForm = ({
     };
 
     return (
-        <Container size="lg" py="lg">
-            <Paper w="100%" p="xl">
+        <Container size="lg" p={0}>
+            <Paper w="100%">
                 <Stack gap="md">
                     <Stack align="flex-start" gap="xs">
                         <Title order={2}>Responses</Title>

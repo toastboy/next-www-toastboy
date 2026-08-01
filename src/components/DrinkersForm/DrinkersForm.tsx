@@ -263,7 +263,7 @@ export const DrinkersForm = ({
                     <Anchor href={`/footy/admin/drinkers/${nextGameId}`}>Next</Anchor> :
                     <span />}
             </Group>
-            <Paper w="100%" p="xl">
+            <Paper w="100%">
                 <Stack gap="md">
                     <Stack gap={4}>
                         <Title order={2}>Game {gameId} Drinkers</Title>

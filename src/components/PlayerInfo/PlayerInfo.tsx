@@ -45,7 +45,7 @@ export const PlayerInfo = ({
     titleOrder = 3,
 }: Props) => {
     return (
-        <Paper p="sm" miw="18rem" h="100%" withBorder>
+        <Paper p="sm" miw="18rem" h="100%">
             <Title order={titleOrder} mb="xs" w="100%" ta="center">Info</Title>
             <Divider mb="xs" />
             <Table

@@ -184,7 +184,7 @@ export const GameInvitationResponseForm = ({
     const playerLink = details.playerLogin ? `/footy/player/${details.playerLogin}` : `/footy/player/${details.playerId}`;
 
     return (
-        <Paper w="100%" maw="35rem" mx="auto" p="xl">
+        <Paper w="100%" maw="35rem" mx="auto">
             <Box component="form" onSubmit={form.onSubmit(handleSubmit)}>
                 <Stack gap="md">
                     <Title order={2} mb="xs" w="100%" ta="center">

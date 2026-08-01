@@ -26,7 +26,7 @@ export interface Props {
 
 export const PlayerCard = ({ player, clubs, countries, trophies }: Props) => {
     return (
-        <Paper p="sm" miw="280px" h="100%" withBorder>
+        <Paper p="sm" miw="280px" h="100%">
             {/* Keyed by player.id: if this PlayerCard instance is reused for a
                 different player (e.g. prev/next navigation re-rendering in
                 place rather than remounting), React discards and recreates

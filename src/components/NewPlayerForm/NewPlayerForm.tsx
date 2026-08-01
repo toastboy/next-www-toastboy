@@ -180,7 +180,7 @@ export const NewPlayerForm = ({
 
     return (
         <Container size="xs" mt="xl">
-            <Paper w="100%" p="xl">
+            <Paper w="100%">
                 <Stack mb="lg">
                     <Stack>
                         <Title order={2} mb="xs" w="100%" ta="center">

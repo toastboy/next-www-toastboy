@@ -50,7 +50,7 @@ export const WinnersTable = ({ table, records }: Props) => {
     ));
 
     return records.length > 0 ? (
-        <Paper p="sm" miw="14rem" maw="18rem" withBorder>
+        <Paper p="sm" miw="14rem" maw="18rem">
             <Title order={3} mb="xs" w="100%" ta="center">
                 {table.charAt(0).toUpperCase() + table.slice(1)}
             </Title>

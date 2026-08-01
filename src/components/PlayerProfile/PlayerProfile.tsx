@@ -126,7 +126,7 @@ export const PlayerProfile = ({
                     </GridCol>
                 </Grid>
                 <Group>
-                    <Paper p="sm" w="auto" withBorder style={{ flex: '1' }}>
+                    <Paper p="sm" w="auto" style={{ flex: '1' }}>
                         <PlayerHeatmap data={history} year={year} />
                     </Paper>
                 </Group>

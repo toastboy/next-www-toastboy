@@ -98,7 +98,7 @@ export const NewGameForm = ({ onTriggerInvitations }: Props) => {
 
     return (
         <Container size="sm">
-            <Paper p="xl">
+            <Paper>
                 <Title order={2} mb="md">
                     New game
                 </Title>

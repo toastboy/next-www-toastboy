@@ -371,7 +371,7 @@ export const AdminPlayerList = ({
 
     return (
         <Container fluid mt="xl">
-            <Paper w="100%" p="xl">
+            <Paper w="100%">
                 <Stack gap="sm">
                     <Center>
                         <Title order={2} mb="md">

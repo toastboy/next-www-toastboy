@@ -144,7 +144,7 @@ export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
 
     return (
         <Container size="xl" mt="xl">
-            <Paper w="100%" p="xl">
+            <Paper w="100%">
                 <Stack mb="lg">
                     <Title order={1}>{sortedPlayers.length} {activeStatusLabel}</Title>
                     <Title order={3}>who last responded between {replyRange[0]} and {replyRange[1]} weeks ago</Title>

@@ -86,7 +86,7 @@ export const ForgottenPasswordForm = () => {
     };
 
     return (
-        <Paper w="100%" maw="35rem" mx="auto" p="xl">
+        <Paper w="100%" maw="35rem" mx="auto">
             <Box
                 component="form"
                 onSubmit={form.onSubmit(handleSubmit)}

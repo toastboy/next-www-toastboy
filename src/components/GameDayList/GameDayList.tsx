@@ -40,7 +40,7 @@ export const GameDayList = ({ gameDays, year }: Props) => {
     return (
         <SimpleGrid minColWidth="11rem" autoFlow="auto-fit" spacing="md" w="100%">
             {Object.entries(gameDaysByMonth).map(([month, gameDays]) => (
-                <Paper p="xl" key={month} w="10rem">
+                <Paper key={month} w="10rem">
                     <Text size="lg" mb="sm">
                         {month}
                     </Text>

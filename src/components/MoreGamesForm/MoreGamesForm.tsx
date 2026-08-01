@@ -148,7 +148,7 @@ export const MoreGamesForm = ({
 
     return (
         <Container fluid>
-            <Paper w="100%" p="xl">
+            <Paper w="100%">
                 <Box
                     component="form"
                     onSubmit={form.onSubmit(handleSubmit)}

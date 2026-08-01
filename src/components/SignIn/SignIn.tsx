@@ -112,7 +112,7 @@ export const SignIn = ({ admin, redirect }: Props) => {
     ) : null;
 
     return (
-        <Paper w="100%" maw="35rem" mx="auto" p="xl" mt="xl">
+        <Paper w="100%" maw="35rem" mx="auto" mt="xl">
             <Stack mb="lg">
                 <Title order={2} mb="xs" w="100%" ta="center">
                     {title}

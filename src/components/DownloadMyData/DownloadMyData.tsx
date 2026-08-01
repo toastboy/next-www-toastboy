@@ -93,7 +93,7 @@ export const DownloadMyData = ({ data }: Props) => {
     };
 
     return (
-        <Paper w="100%" p="xl">
+        <Paper w="100%">
             <Stack gap="lg">
                 <Title order={1}>Download my data</Title>
                 <Text size="sm" c="dimmed">

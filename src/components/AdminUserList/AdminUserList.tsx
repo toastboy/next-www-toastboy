@@ -109,7 +109,7 @@ export const AdminUserList = ({ users, setAdminRole }: Props) => {
 
     return (
         <Container size="md" mt="xl">
-            <Paper w="100%" p="xl">
+            <Paper w="100%">
                 <Center>
                     <Title order={2} mb="md">
                         Admin: Users

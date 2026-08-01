@@ -100,7 +100,7 @@ export const PasswordChangeForm = ({ revokeOtherSessions }: Props) => {
 
     return (
         <Container size="xs" mt="xl">
-            <Paper w="100%" p="xl">
+            <Paper w="100%">
                 <Stack>
                     <Title order={2} mb="md">
                         Change your password

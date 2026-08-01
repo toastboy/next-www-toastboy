@@ -13,7 +13,7 @@ const TablesPage = () => {
     return (
         <Stack w="100%" p="xl" align="center">
             <Title order={2} mb="xs" w="100%" ta="center">The League Tables</Title>
-            <Paper p="xl" withBorder>
+            <Paper>
                 <List>
                     <ListItem>
                         <Link href="/footy/table/points">Points</Link>{' '}

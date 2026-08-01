@@ -330,7 +330,7 @@ export const PickerForm = ({
     // TODO: New game date component?
     return (
         <Container size="lg" py="lg">
-            <Paper w="100%" p="xl">
+            <Paper w="100%">
                 <Stack gap="md">
                     <Stack align="flex-start" gap="xs">
                         <Title order={2}>Picker</Title>

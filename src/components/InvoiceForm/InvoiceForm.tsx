@@ -174,7 +174,6 @@ export const InvoiceForm = ({
             maw="30rem"
             mx="auto"
             my="lg"
-            p="xl"
         >
             <Stack
                 gap="md"

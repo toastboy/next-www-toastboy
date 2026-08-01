@@ -46,7 +46,7 @@ export const Turnout = ({ turnout }: Props) => {
     ));
 
     return (
-        <Paper p="sm" maw="24rem" withBorder>
+        <Paper p="sm" maw="24rem">
             <Table stickyHeader stickyHeaderOffset={0} layout="fixed">
                 <TableThead>
                     <TableTr>

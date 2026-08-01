@@ -117,7 +117,7 @@ export const PasswordResetForm = ({ token }: Props) => {
     }
 
     return (
-        <Paper w="100%" maw="35rem" p="xl">
+        <Paper w="100%" maw="35rem">
             <Stack>
                 <Title order={2} mb="xs" w="100%" ta="center">
                     Reset your password

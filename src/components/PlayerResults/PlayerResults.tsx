@@ -25,7 +25,7 @@ export interface Props {
 
 export const PlayerResults = ({ player, year, record, titleOrder = 3 }: Props) => {
     return (
-        <Paper p="sm" miw="14rem" h="100%" withBorder>
+        <Paper p="sm" miw="14rem" h="100%">
             <Title order={titleOrder} mb="xs" w="100%" ta="center">Results</Title>
             <Divider mb="xs" />
             <Table

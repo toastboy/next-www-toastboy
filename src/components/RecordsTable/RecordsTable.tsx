@@ -90,7 +90,7 @@ export const RecordsTable = ({ table, year, records, title, titleOrder = 2 }: Pr
     const tbodyId = useId();
 
     return (
-        <Paper p="sm" miw="14rem" maw="24rem" withBorder>
+        <Paper p="sm" miw="14rem" maw="24rem">
             {title ? (
                 <>
                     <Title order={titleOrder} mb="xs" w="100%" ta="center">{title}</Title>

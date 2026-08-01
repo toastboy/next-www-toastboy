@@ -49,7 +49,7 @@ export const MoneyForm = ({
 
     return (
         <Container size="lg" py="lg">
-            <Paper w="100%" p="xl">
+            <Paper w="100%">
                 <Stack gap="md">
                     <Title order={1}>Unpaid Player Charges</Title>
                     {playerDebts.map((row) => (

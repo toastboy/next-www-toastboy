@@ -35,7 +35,7 @@ export const Team = ({
     maxTeamSize,
 }: Props) => {
     return (
-        <Paper p="md" withBorder>
+        <Paper p="md">
             <Flex
                 direction={{ base: 'column', md: 'row' }}
                 justify="space-between"

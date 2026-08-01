@@ -21,7 +21,7 @@ const AdminPage = () => {
                 </Title>
             </Center>
 
-            <Paper w="100%">
+            <Paper>
                 <Flex mb="lg" gap="md" wrap="wrap" justify="center">
                     <AdminUpdatePlayerRecords onUpdatePlayerRecords={updatePlayerRecords} getProgress={getProgress} />
                     <AdminExportAuth onExportAuth={authExport} />

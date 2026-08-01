@@ -114,7 +114,7 @@ const TablePage = async (props: PageProps) => {
     ]);
 
     return (
-        <Stack w="100%" p="xl" align="center">
+        <Stack p="xl" align="center">
             <AutoRefresh channels={[FootyChannel.Results, FootyChannel.Players]} />
             <Group justify="center" w="100%" mb="xl">
                 <TitleWithYearDropdown order={1} title={`${TableTitle(table)}: `} year={year} validYears={allYears} />

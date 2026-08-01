@@ -75,7 +75,7 @@ const BooksPage = async (props: PageProps) => {
     const chartData = await moneyService.getChartData(year);
 
     return (
-        <Stack w="100%">
+        <Stack>
             <Group justify="center" w="100%">
                 <TitleWithYearDropdown order={1} title="Books: " year={year} validYears={allYears} />
             </Group>

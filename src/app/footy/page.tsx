@@ -32,7 +32,7 @@ const HomePage = async () => {
     );
 
     return (
-        <Stack w="100%" p="xl" align="center">
+        <Stack p="xl" align="center">
             <AutoRefresh channels={[FootyChannel.Results, FootyChannel.Players]} />
             <Image
                 src="/crest.jpg"

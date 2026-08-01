@@ -25,7 +25,7 @@ import { useRouter } from 'next/navigation';
 import z from 'zod';
 
 import { config } from '@/lib/config';
-import { formatDate, getFullMonthName } from '@/lib/dates';
+import { formatDate, getFullMonthName, getShortMonthName } from '@/lib/dates';
 import { toPounds } from '@/lib/money';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 import type { RecordHallHireProxy } from '@/types/actions/RecordHallHire';
@@ -45,10 +45,6 @@ type InvoiceFormValues = z.infer<typeof InvoiceFormSchema>;
 // Breakpoint at which the submit button switches from a full-width mobile
 // touch target to an inline fit-content button.
 const actionsBreakpoint = 'sm';
-
-// Breakpoint at which each game-day row switches from a stacked mobile
-// layout to a single-line row; kept as one constant so every field agrees.
-const rowBreakpoint = 'sm';
 
 interface GameDayRow {
     id: number;
@@ -186,21 +182,21 @@ export const InvoiceForm = ({
                         leftSection={<IconChevronLeft size={16} />}
                         onClick={() => navigateMonth(-1)}
                     >
-                        {getFullMonthName(year, month - 1)}
+                        {getShortMonthName(year, month - 1)}
                     </Button>
                     <Title
                         order={3}
                         flex={1}
                         ta="center"
                     >
-                        {getFullMonthName(year, month)} {year}
+                        {getShortMonthName(year, month)} {year}
                     </Title>
                     <Button
                         variant="subtle"
                         rightSection={<IconChevronRight size={16} />}
                         onClick={() => navigateMonth(1)}
                     >
-                        {getFullMonthName(year, month + 1)}
+                        {getShortMonthName(year, month + 1)}
                     </Button>
                 </Group>
 
@@ -219,7 +215,7 @@ export const InvoiceForm = ({
                             {gameDays.map((gd, index) => (
                                 <Flex
                                     key={gd.id}
-                                    direction={{ base: 'column', [rowBreakpoint]: 'row' }}
+                                    wrap="wrap"
                                     align="center"
                                     gap="sm"
                                     bd="1px solid var(--mantine-color-gray-3)"
@@ -228,8 +224,7 @@ export const InvoiceForm = ({
                                 >
                                     <Text
                                         fw={600}
-                                        w="10rem"
-                                        ta={{ base: 'center', [rowBreakpoint]: 'left' }}
+                                        miw="7rem"
                                     >
                                         {formatDate(gd.date)}
                                     </Text>
@@ -248,7 +243,7 @@ export const InvoiceForm = ({
                                         hideControls
                                         min={0}
                                         w="6rem"
-                                        ml={{ base: 0, [rowBreakpoint]: 'auto' }}
+                                        ml="auto"
                                         {...form.getInputProps(`gameDays.${index}.hallCostPounds`)}
                                     />
                                 </Flex>

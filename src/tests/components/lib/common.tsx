@@ -4,6 +4,8 @@ import {
 import { screen } from '@testing-library/react';
 import { ReactNode } from 'react';
 
+import { theme } from '@/theme';
+
 interface WrapperProps {
     children?: ReactNode;
 }
@@ -22,7 +24,10 @@ const testColorSchemeManager = {
 
 /**
  * Test wrapper component that provides Mantine theming context.
- * Wraps children with MantineProvider configured for light color scheme.
+ * Wraps children with MantineProvider configured for light color scheme,
+ * using the app's actual theme (`@/theme`) so tests see the same
+ * `theme.other.*` tokens and component defaults as production, rather than
+ * Mantine's bare default theme.
  *
  * @param props - The component props
  * @param props.children - React nodes to be wrapped with Mantine provider
@@ -30,7 +35,7 @@ const testColorSchemeManager = {
  */
 export const Wrapper = ({ children }: WrapperProps) => {
     return (
-        <MantineProvider colorSchemeManager={testColorSchemeManager} defaultColorScheme="light">
+        <MantineProvider theme={theme} colorSchemeManager={testColorSchemeManager} defaultColorScheme="light">
             {children}
         </MantineProvider>
     );

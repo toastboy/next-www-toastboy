@@ -68,6 +68,8 @@ npx vitest run --config vitest.services.config.ts path/to/test.ts
 
 **Data flow rule:** Components call services (read) or server actions (write). Never write direct Prisma calls in API routes, pages, or components — refactor into a service method. If you filter/sort service results in calling code, move that logic into the service.
 
+**Client/server split:** Every file under `src/components/**/*.tsx` must start with `'use client';` — the presentation layer is always Client Components, full stop, regardless of whether a given component happens to need interactivity today. Every `src/app/**/page.tsx` (and `layout.tsx`) must stay a Server Component — that's where data fetching happens; pass the results down as props. Both rules are enforced by ESLint (`local/require-use-client` and the existing `no-restricted-syntax` block for pages, in `eslint.config.mjs`) and `eslint --fix` will insert/remove the directive automatically. Rationale: it keeps the "fetch on the server, render from props" split unambiguous with no per-component judgment call, and it categorically avoids the Mantine dot-notation Server Component bug described below (that bug requires the *accessing* file to be a Server Component, which can no longer happen inside `src/components`). At this project's scale the cost — losing zero-JS server rendering for otherwise-static presentational leaves — is negligible.
+
 ## Key Conventions
 
 ### Dependencies

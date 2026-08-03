@@ -3,6 +3,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { PlayerLink } from '@/components/PlayerLink/PlayerLink';
 import { Wrapper } from '@/tests/components/lib/common';
 import { defaultPlayer } from '@/tests/mocks/data/player';
+import { theme } from '@/theme';
 
 describe('PlayerLink', () => {
     describe('format="name" (default)', () => {
@@ -26,6 +27,29 @@ describe('PlayerLink', () => {
 
             const link = screen.getByRole('link', { name: defaultPlayer.name });
             expect(link).toHaveAttribute('href', `/footy/player/${defaultPlayer.id}`);
+        });
+
+        it('uses the single-line min-width by default', () => {
+            render(
+                <Wrapper>
+                    <PlayerLink player={defaultPlayer} year={2024} />
+                </Wrapper>,
+            );
+
+            const link = screen.getByRole<HTMLAnchorElement>('link', { name: defaultPlayer.name });
+            expect(link.style.minWidth).toBe(theme.other?.playerNameMinWidthSingleLine);
+        });
+
+        it('uses the multi-line min-width when wrap is enabled', () => {
+            render(
+                <Wrapper>
+                    <PlayerLink player={defaultPlayer} year={2024} wrap />
+                </Wrapper>,
+            );
+
+            const link = screen.getByRole<HTMLAnchorElement>('link', { name: defaultPlayer.name });
+            expect(link).toHaveAttribute('href', `/footy/player/${defaultPlayer.id}/2024`);
+            expect(link.style.minWidth).toBe(theme.other?.playerNameMinWidthMultiLine);
         });
     });
 

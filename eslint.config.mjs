@@ -22,6 +22,8 @@ import testingLibrary from "eslint-plugin-testing-library";
 import unusedImports from "eslint-plugin-unused-imports";
 import globals from "globals";
 
+import { requireUseClient } from "./eslint-rules/require-use-client.mjs";
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const tsconfigPath = path.resolve(__dirname, "./tsconfig.json");
@@ -47,6 +49,14 @@ const tsProjectConfig = {
             project: tsconfigPath,
             tsconfigRootDir: __dirname,
         },
+    },
+};
+
+// Local, project-only rules — not worth publishing as a separate package.
+// See eslint-rules/require-use-client.mjs (and its .test.mjs) for the rule itself.
+const localRules = {
+    rules: {
+        "require-use-client": requireUseClient,
     },
 };
 
@@ -306,6 +316,25 @@ const config = [
                     message: "App Router pages must be server pages. Move client logic into child components.",
                 },
             ],
+        },
+    },
+    // Presentation-layer components are always Client Components. This keeps
+    // the data layer (pages, actions, services) cleanly separated from
+    // rendering, and sidesteps the RSC/Mantine dot-notation subcomponent bug
+    // documented above (it only bites when a Server Component touches a
+    // 'use client' export's dot-notation subcomponent).
+    {
+        files: ["src/components/**/*.tsx"],
+        ignores: [
+            "**/*.vitest.spec.*",
+            "**/*.stories.*",
+            "**/__mocks__/**",
+        ],
+        plugins: {
+            local: localRules,
+        },
+        rules: {
+            "local/require-use-client": "error",
         },
     },
     ...storybook.configs["flat/recommended"],

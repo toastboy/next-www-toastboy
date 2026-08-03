@@ -1,9 +1,13 @@
+'use client';
+
 import {
     Anchor,
     Tooltip,
+    useMantineTheme,
 } from '@mantine/core';
 import { IconArrowBigLeftLine, IconArrowBigRightLine } from '@tabler/icons-react';
 import type { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
+import { CSSProperties } from 'react';
 
 /**
  * Component for rendering a link to a player's profile with various formatting options.
@@ -14,6 +18,8 @@ import type { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
  *   - 'name': Displays the player's name as the link label
  *   - 'left-arrow': Displays a left arrow icon, indicating a link to the previous player
  *   - 'right-arrow': Displays a right arrow icon, indicating a link to the next player
+ * @param wrap - Whether the player's name may wrap onto multiple lines (default: false,
+ *   i.e. the link gets enough min-width to keep a typical name on one line)
  * @returns A React element representing the formatted player link
  * @example
  * <PlayerLink player={player} year={2024} format="name" />
@@ -29,14 +35,25 @@ export interface Props {
     player: PlayerType;
     year: number;
     format?: 'name' | 'left-arrow' | 'right-arrow';
+    wrap?: boolean;
 }
 
-export const PlayerLink = ({ player, year, format = 'name' }: Props) => {
-    let ariaLabel;
+export const PlayerLink = ({
+    player,
+    year,
+    format = 'name',
+    wrap = false,
+}: Props) => {
+    const theme = useMantineTheme();
+    let ariaLabel: string | undefined;
+    let miw: CSSProperties['minWidth'];
 
     switch (format) {
         case 'name':
-            ariaLabel = undefined;
+            ariaLabel = `${player.name ?? 'Unknown'}`;
+            miw = wrap ?
+                theme.other.playerNameMinWidthMultiLine :
+                theme.other.playerNameMinWidthSingleLine;
             break;
         case 'left-arrow':
             ariaLabel = `Previous player: ${player.name ?? 'Unknown'}`;
@@ -51,6 +68,7 @@ export const PlayerLink = ({ player, year, format = 'name' }: Props) => {
             href={`/footy/player/${player.id}${year ? `/${year}` : ''}`}
             ta="center"
             aria-label={ariaLabel}
+            miw={miw}
         >
             {(() => {
                 switch (format) {

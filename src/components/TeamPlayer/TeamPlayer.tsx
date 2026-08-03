@@ -1,3 +1,5 @@
+'use client';
+
 import {
     Box,
     Flex,
@@ -20,6 +22,6 @@ export const TeamPlayer = ({ teamPlayer }: Props) => (
             <PlayerForm form={teamPlayer.form} />
             {teamPlayer.outcome.goalie ? <GoalieIndicator /> : null}
         </Box>
-        <PlayerLink player={teamPlayer} year={0} />
+        <PlayerLink player={teamPlayer} year={0} wrap />
     </Flex>
 );

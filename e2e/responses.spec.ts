@@ -41,6 +41,8 @@ test.describe('Responses admin page', () => {
         const noneAfterFirstUpdate = startsFromNone ? initialNone - 1 : initialNone;
 
         // Yes group renders before None; skip past Yes rows to reach the first None player.
+        // Group cards are collapsed by default, but data-player-id attributes are readable
+        // on hidden elements without needing the group expanded first.
         const targetRow = page.locator('[data-player-id]').nth(startsFromNone ? initialYes : 0);
         const playerId = await targetRow.getAttribute('data-player-id');
 
@@ -51,9 +53,33 @@ test.describe('Responses admin page', () => {
         // Tracks the player by ID across group changes — they appear in exactly one group at a time.
         const playerRow = page.locator(`[data-player-id="${playerId}"]`);
 
+        // Groups render collapsed; expand the one containing the player before interacting
+        // with its row. A group heading's accessible name is "<Title>: <count>".
+        const expandGroup = async (title: string) => {
+            const button = page.getByRole('button', { name: new RegExp(`^${title}:`) });
+            await expect(button.first()).toBeVisible({ timeout: 10000 });
+            if (await button.first().getAttribute('aria-expanded') !== 'true') {
+                await button.first().click();
+            }
+        };
+
+        await expandGroup(startsFromNone ? 'None' : 'Yes');
+
         const setResponseValue = async (response: ResponseOption) => {
-            await playerRow.getByRole('combobox', { name: /response/i }).click();
-            await page.getByRole('option', { name: response, exact: true }).click();
+            const combobox = playerRow.getByRole('combobox', { name: /response/i });
+
+            // Shared fixture data means the target player's response may already match
+            // (e.g. carried over from an earlier project in the same suite run); re-selecting
+            // an already-selected option is unreliable, so skip the interaction entirely.
+            if (await combobox.inputValue() === response) return;
+
+            // The SSE-triggered refresh (see the comment in updatePlayer below) can land
+            // mid-interaction and remount the row, closing the dropdown before the option
+            // is clicked. Retry the open-then-select sequence rather than failing outright.
+            await expect(async () => {
+                await combobox.click();
+                await page.getByRole('option', { name: response, exact: true }).click({ timeout: 3000 });
+            }).toPass({ timeout: 20000 });
         };
 
         const updatePlayer = async (response: ResponseOption, goalie: boolean, comment: string) => {
@@ -79,6 +105,7 @@ test.describe('Responses admin page', () => {
         await expect.poll(async () => groupCount('Dunno'), { timeout: 10000 }).toBe(initialDunno);
         await expect.poll(async () => groupCount('None'), { timeout: 10000 }).toBe(noneAfterFirstUpdate);
 
+        await expandGroup('Yes');
         await expect(playerRow).toBeVisible({ timeout: 10000 });
         await expect(playerRow.getByRole('checkbox', { name: /goalie/i })).toBeChecked();
         await expect(playerRow.getByPlaceholder('Comment')).toHaveValue('Can play and cover goal first half');
@@ -90,6 +117,7 @@ test.describe('Responses admin page', () => {
         await expect.poll(async () => groupCount('Dunno'), { timeout: 10000 }).toBe(initialDunno);
         await expect.poll(async () => groupCount('None'), { timeout: 10000 }).toBe(noneAfterFirstUpdate);
 
+        await expandGroup('No');
         await expect(playerRow).toBeVisible({ timeout: 10000 });
         await expect(playerRow.getByRole('checkbox', { name: /goalie/i })).not.toBeChecked();
         await expect(playerRow.getByPlaceholder('Comment')).toHaveValue('Out of town this week');
@@ -101,6 +129,7 @@ test.describe('Responses admin page', () => {
         await expect.poll(async () => groupCount('Dunno'), { timeout: 10000 }).toBe(initialDunno + 1);
         await expect.poll(async () => groupCount('None'), { timeout: 10000 }).toBe(noneAfterFirstUpdate);
 
+        await expandGroup('Dunno');
         await expect(playerRow).toBeVisible({ timeout: 10000 });
         await expect(playerRow.getByRole('checkbox', { name: /goalie/i })).not.toBeChecked();
         await expect(playerRow.getByPlaceholder('Comment')).toHaveValue('Could make it if meeting ends early');

@@ -1,0 +1,5 @@
+The responses playwright test needs updating, presumably to account for the collapse/expand behaviour which wasn't there before.
+
+---
+
+Write a new ticket for that observatiopn

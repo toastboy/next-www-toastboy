@@ -98,6 +98,22 @@ describe('PlayerList', () => {
         expect(timelineProps.currentGameId).toBe(20);
     });
 
+    it('exposes the Select column heading to screen readers only', () => {
+        render(
+            <Wrapper>
+                <PlayerList players={players} gameDay={gameDay} sendEmail={sendEmailMock} />
+            </Wrapper>,
+        );
+
+        const selectHeader = screen.getByRole('columnheader', { name: 'Select' });
+        const directText = Array.from(selectHeader.childNodes)
+            .filter((node) => node.nodeType === Node.TEXT_NODE)
+            .map((node) => node.textContent)
+            .join('');
+
+        expect(directText.trim()).toBe('');
+    });
+
     it('includes former players when active filter is turned off and supports name sorting', async () => {
         const user = userEvent.setup();
         render(

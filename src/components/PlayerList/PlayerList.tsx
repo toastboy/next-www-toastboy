@@ -11,6 +11,7 @@ import {
     Stack,
     Switch,
     Table,
+    TableScrollContainer,
     TableTbody,
     TableTd,
     TableTh,
@@ -20,6 +21,8 @@ import {
     TextInput,
     Title,
     Tooltip,
+    useMantineTheme,
+    VisuallyHidden,
 } from '@mantine/core';
 import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
 import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
@@ -38,6 +41,7 @@ export interface Props {
 }
 
 export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
+    const theme = useMantineTheme();
     const [sortBy, setSortBy] = useState<keyof PlayerDataDisplayType | null>('name');
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     const [filter, setFilter] = useState('');
@@ -201,50 +205,66 @@ export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
                         onSendEmail={sendEmail}
                     />
 
-                    <Table mt={20}>
-                        <TableThead>
-                            <TableTr>
-                                <TableTh>
-                                    Select
-                                </TableTh>
-                                <TableTh style={{ cursor: 'pointer' }} onClick={() => handleSort('name')}>
-                                    <Flex align="center" gap="xs">
-                                        Name
-                                        {sortBy === 'name' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
-                                    </Flex>
-                                </TableTh>
-                                <TableTh>
-                                    W-D-L
-                                </TableTh>
-                                <TableTh>
-                                    Timeline
-                                </TableTh>
-                            </TableTr>
-                        </TableThead>
-                        <TableTbody>
-                            {sortedPlayers.map((player) => (
-                                <TableTr key={player.id}>
-                                    <TableTd>
-                                        <Checkbox
-                                            checked={selectedPlayers.includes(player)}
-                                            onChange={() => handleSelectPlayer(player)}
-                                        />
-                                    </TableTd>
-                                    <TableTd>
-                                        <Anchor href={`/footy/player/${encodeURIComponent(player.id || "")}`}>
-                                            {player.name}
-                                        </Anchor>
-                                    </TableTd>
-                                    <TableTd>
-                                        <PlayerWDLChart player={player} />
-                                    </TableTd>
-                                    <TableTd>
-                                        <PlayerTimeline player={player} currentGameId={gameDay.id} />
-                                    </TableTd>
+                    <TableScrollContainer minWidth="100%" scrollAreaProps={{ type: 'auto' }}>
+                        <Table
+                            layout="fixed"
+                            mt={20}
+                        >
+                            <TableThead>
+                                <TableTr>
+                                    <TableTh
+                                        w="2rem"
+                                    >
+                                        <VisuallyHidden>Select</VisuallyHidden>
+                                    </TableTh>
+                                    <TableTh
+                                        w={theme.other.playerNameMinWidthMultiLine}
+                                        style={{ cursor: 'pointer' }}
+                                        onClick={() => handleSort('name')}
+                                    >
+                                        <Flex align="center" gap="xs">
+                                            Name
+                                            {sortBy === 'name' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
+                                        </Flex>
+                                    </TableTh>
+                                    <TableTh
+                                        w="5rem"
+                                    >
+                                        W-D-L
+                                    </TableTh>
+                                    <TableTh
+                                        w="5rem"
+                                    >
+                                        Timeline
+                                    </TableTh>
                                 </TableTr>
-                            ))}
-                        </TableTbody>
-                    </Table>
+                            </TableThead>
+                            <TableTbody>
+                                {sortedPlayers.map((player) => (
+                                    <TableTr key={player.id}>
+                                        <TableTd>
+                                            <Checkbox
+                                                aria-label={`Select ${player.name}`}
+                                                checked={selectedPlayers.includes(player)}
+                                                onChange={() => handleSelectPlayer(player)}
+                                            />
+                                        </TableTd>
+                                        <TableTd>
+                                            <Anchor href={`/footy/player/${encodeURIComponent(player.id || "")}`}>
+                                                {player.name}
+                                            </Anchor>
+                                        </TableTd>
+                                        <TableTd>
+                                            <PlayerWDLChart player={player} />
+                                        </TableTd>
+                                        <TableTd>
+                                            <PlayerTimeline player={player} currentGameId={gameDay.id} />
+                                        </TableTd>
+                                    </TableTr>
+                                ))}
+                            </TableTbody>
+                        </Table>
+                    </TableScrollContainer>
                 </Stack>
             </Paper>
         </Container>

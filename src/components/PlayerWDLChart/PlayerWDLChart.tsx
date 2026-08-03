@@ -11,36 +11,29 @@ export interface Props {
 }
 
 export const PlayerWDLChart = ({ player }: Props) => {
+    // A player who hasn't played yet has gamesPlayed === 0; fall back to 1 so the
+    // percentages below compute to 0 instead of NaN/Infinity (0/0 or n/0).
+    const gamesPlayed = player.gamesPlayed || 1;
+
     return (
-        <ProgressRoot size="xl">
-            <Tooltip
-                label={`${player.gamesWon}
-                win${player.gamesWon > 1 ? 's' : ''}`}
-                position="top"
-            >
+        <Tooltip
+            label={`P${player.gamesPlayed} W${player.gamesWon} D${player.gamesDrawn} L${player.gamesLost}`}
+            position="top"
+        >
+            <ProgressRoot size="xl">
                 <ProgressSection
-                    value={100.0 * player.gamesWon / player.gamesPlayed}
+                    value={100.0 * player.gamesWon / gamesPlayed}
                     color="green"
                 />
-            </Tooltip>
-            <Tooltip
-                label={`${player.gamesDrawn} draw${player.gamesDrawn > 1 ? 's' : ''}`}
-                position="top"
-            >
                 <ProgressSection
-                    value={100.0 * player.gamesDrawn / player.gamesPlayed}
+                    value={100.0 * player.gamesDrawn / gamesPlayed}
                     color="yellow"
                 />
-            </Tooltip>
-            <Tooltip
-                label={`${player.gamesLost} loss${player.gamesLost > 1 ? 'es' : ''}`}
-                position="top"
-            >
                 <ProgressSection
-                    value={100.0 * player.gamesLost / player.gamesPlayed}
+                    value={100.0 * player.gamesLost / gamesPlayed}
                     color="red"
                 />
-            </Tooltip>
-        </ProgressRoot>
+            </ProgressRoot>
+        </Tooltip>
     );
 };

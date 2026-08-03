@@ -63,7 +63,7 @@ describe('InvoiceForm', () => {
         renderForm();
 
         expect(screen.getByRole('heading', { name: 'Invoice Check' })).toBeInTheDocument();
-        expect(screen.getByRole('heading', { name: 'January 2026' })).toBeInTheDocument();
+        expect(screen.getByRole('heading', { name: 'Jan 2026' })).toBeInTheDocument();
     });
 
     it('renders a row for each game day', () => {
@@ -100,7 +100,7 @@ describe('InvoiceForm', () => {
         const user = userEvent.setup();
         renderForm();
 
-        await user.click(screen.getByRole('button', { name: /December/i }));
+        await user.click(screen.getByRole('button', { name: /Dec/i }));
 
         expect(mockPush).toHaveBeenCalledWith('/footy/admin/invoice?year=2025&month=12');
     });
@@ -109,7 +109,7 @@ describe('InvoiceForm', () => {
         const user = userEvent.setup();
         renderForm();
 
-        await user.click(screen.getByRole('button', { name: /February/i }));
+        await user.click(screen.getByRole('button', { name: /Feb/i }));
 
         expect(mockPush).toHaveBeenCalledWith('/footy/admin/invoice?year=2026&month=2');
     });
@@ -118,7 +118,7 @@ describe('InvoiceForm', () => {
         const user = userEvent.setup();
         renderForm({ year: 2026, month: 12 });
 
-        await user.click(screen.getByRole('button', { name: /January/i }));
+        await user.click(screen.getByRole('button', { name: /Jan/i }));
 
         expect(mockPush).toHaveBeenCalledWith('/footy/admin/invoice?year=2027&month=1');
     });

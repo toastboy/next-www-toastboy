@@ -1,0 +1,62 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "d70e4162d683",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 25,
+  "files_touched": [
+    "CLAUDE.md",
+    "eslint-rules/require-use-client.mjs",
+    "eslint-rules/require-use-client.test.mjs",
+    "eslint.config.mjs",
+    "package.json",
+    "src/components/ClubBadge/ClubBadge.tsx",
+    "src/components/CountryFlag/CountryFlag.tsx",
+    "src/components/GameDayIndicator/GameDayIndicator.tsx",
+    "src/components/GameDayLink/GameDayLink.tsx",
+    "src/components/GameDayList/GameDayList.tsx",
+    "src/components/GameDaySummary/GameDaySummary.tsx",
+    "src/components/GoalieIndicator/GoalieIndicator.tsx",
+    "src/components/NYI/NYI.tsx",
+    "src/components/NavBarLinksGroup/NavBarLinksGroup.tsx",
+    "src/components/PlayerArse/PlayerArse.tsx",
+    "src/components/PlayerClubs/PlayerClubs.tsx",
+    "src/components/PlayerCountries/PlayerCountries.tsx",
+    "src/components/PlayerForm/PlayerForm.tsx",
+    "src/components/PlayerInfo/PlayerInfo.tsx",
+    "src/components/PlayerLink/PlayerLink.tsx",
+    "src/components/PlayerLink/PlayerLink.vitest.spec.tsx",
+    "src/components/PlayerMugshot/PlayerMugshot.tsx",
+    "src/components/PlayerPositions/PlayerPositions.tsx",
+    "src/components/PlayerProfile/PlayerProfile.tsx",
+    "src/components/PlayerResults/PlayerResults.tsx",
+    "src/components/PlayerTimeline/PlayerTimeline.tsx",
+    "src/components/PlayerTrophies/PlayerTrophies.tsx",
+    "src/components/PlayerTrophyTally/PlayerTrophyTally.tsx",
+    "src/components/PlayerWDLChart/PlayerWDLChart.tsx",
+    "src/components/RelativeTime/RelativeTime.tsx",
+    "src/components/TableScore/TableScore.tsx",
+    "src/components/Team/Team.tsx",
+    "src/components/TeamPlayer/TeamPlayer.tsx",
+    "src/components/YearTable/YearTable.tsx",
+    "src/tests/components/lib/common.tsx",
+    "src/theme.ts",
+    "src/types/mantine.d.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/d7/0e4162d683/0/metadata.json",
+      "transcript": "/d7/0e4162d683/0/full.jsonl",
+      "compact_transcript": "/d7/0e4162d683/0/transcript.jsonl",
+      "content_hash": "/d7/0e4162d683/0/content_hash.txt",
+      "prompt": "/d7/0e4162d683/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 439,
+    "cache_creation_tokens": 195582,
+    "cache_read_tokens": 63645131,
+    "output_tokens": 113422,
+    "api_call_count": 220
+  }
+}

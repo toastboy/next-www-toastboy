@@ -1,0 +1,190 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "ba3e46400ea8",
+  "session_id": "06d44289-0b0e-43f6-a362-1e5d4f792bf0",
+  "strategy": "manual-commit",
+  "created_at": "2026-08-03T06:37:43.56928Z",
+  "branch": "main",
+  "checkpoints_count": 9,
+  "save_step_count": 9,
+  "files_touched": [
+    "src/components/InvoiceForm/InvoiceForm.vitest.spec.tsx",
+    "src/components/PlayerList/PlayerList.tsx",
+    "src/components/PlayerList/PlayerList.vitest.spec.tsx",
+    "src/components/PlayerWDLChart/PlayerWDLChart.tsx",
+    "src/components/PlayerWDLChart/PlayerWDLChart.vitest.spec.tsx",
+    "src/theme.ts",
+    "src/types/mantine.d.ts"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5",
+  "turn_id": "219a89b477d6",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 275,
+    "cache_creation_tokens": 154123,
+    "cache_read_tokens": 15769943,
+    "output_tokens": 51170,
+    "api_call_count": 138
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "prompt-skill-claude-code-test-sync-2026-08-03T06:02:04.960207Z",
+      "event_type": "prompt_invocation",
+      "skill": {
+        "name": "test-sync"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "prompt_slash_command",
+        "confidence": "explicit"
+      },
+      "turn_id": "c3a42a60c0fb",
+      "timestamp": "2026-08-03T06:02:04.960207Z",
+      "native": {
+        "command": "/test-sync"
+      },
+      "collapse": {
+        "target": "user_message",
+        "label": "/test-sync",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 9
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-08-03T06:37:43.518048Z",
+    "agent_lines": 0,
+    "agent_removed": 15,
+    "human_added": 0,
+    "human_modified": 9,
+    "human_removed": 57,
+    "total_committed": 56,
+    "total_lines_changed": 81,
+    "agent_percentage": 18.51851851851852,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 124,
+      "user_lines_removed": 61,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 57,
+        "src/components/PlayerList/PlayerList.tsx": 56,
+        "src/components/PlayerWDLChart/PlayerWDLChart.tsx": 7,
+        "src/theme.ts": 3
+      },
+      "user_removed_per_file": {
+        "src/components/PlayerList/PlayerList.tsx": 43,
+        "src/components/PlayerWDLChart/PlayerWDLChart.tsx": 18
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 58,
+      "user_lines_removed": 0,
+      "agent_lines_added": 66,
+      "agent_lines_removed": 61,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 57
+      }
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 58,
+      "user_lines_removed": 0,
+      "agent_lines_added": 74,
+      "agent_lines_removed": 61,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 57
+      }
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 58,
+      "user_lines_removed": 0,
+      "agent_lines_added": 74,
+      "agent_lines_removed": 61,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 57
+      }
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 62,
+      "user_lines_removed": 2,
+      "agent_lines_added": 77,
+      "agent_lines_removed": 61,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 57,
+        "src/components/PlayerList/PlayerList.tsx": 4
+      },
+      "user_removed_per_file": {
+        "src/components/PlayerList/PlayerList.tsx": 2
+      }
+    },
+    {
+      "checkpoint_number": 6,
+      "user_lines_added": 59,
+      "user_lines_removed": 1,
+      "agent_lines_added": 80,
+      "agent_lines_removed": 61,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 57,
+        "src/theme.ts": 1
+      },
+      "user_removed_per_file": {
+        "src/theme.ts": 1
+      }
+    },
+    {
+      "checkpoint_number": 7,
+      "user_lines_added": 62,
+      "user_lines_removed": 2,
+      "agent_lines_added": 109,
+      "agent_lines_removed": 80,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 57,
+        "src/types/mantine.d.ts": 4
+      },
+      "user_removed_per_file": {
+        "src/types/mantine.d.ts": 2
+      }
+    },
+    {
+      "checkpoint_number": 8,
+      "user_lines_added": 58,
+      "user_lines_removed": 0,
+      "agent_lines_added": 113,
+      "agent_lines_removed": 80,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 57
+      }
+    },
+    {
+      "checkpoint_number": 9,
+      "user_lines_added": 58,
+      "user_lines_removed": 0,
+      "agent_lines_added": 131,
+      "agent_lines_removed": 81,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 57
+      }
+    }
+  ]
+}

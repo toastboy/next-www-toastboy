@@ -1,0 +1,33 @@
+Look at theme.ts. I'm thinking of adding other.playerNameMinWidth like this to have a central place to define quantities like this - in this case the minimum width a text item must be to fit a player's name on one line. Is this architecture a good idea?
+
+---
+
+I did use theme.other previously for an abortive app shell quantity so I did have the formal type before too. Please add that.
+
+---
+
+Do I need to reference that new type explicitly in theme.ts?
+
+---
+
+Now I want to use that new playerNameMinWidth in playerList to define the width of the column
+
+---
+
+Make the 'select' column heading visible only to screen readers
+
+---
+
+/test-sync
+
+---
+
+Ensure this module augmentation file is included by TypeScript (e.g., via tsconfig.json include/files) so theme.other.* is typed everywhere; otherwise consumers may still see other as unknown/missing. If it’s intended to accept any CSS length, consider typing these as React.CSSProperties['minWidth'] (or similar) instead of plain string.
+
+---
+
+These percentage calculations will produce Infinity/NaN when player.gamesPlayed is 0, which can break rendering (and the tooltip would still show P0 ...). Consider guarding for gamesPlayed === 0 (e.g., render 0% sections, or compute with a safe denominator and/or conditionally render the chart).
+
+---
+
+This assertion is likely to be flaky because JSX formatting/newlines can create whitespace TEXT_NODEs, so directText may be \"\\n \" even when there is no visible label. Consider asserting on directText.trim() being empty (or otherwise checking it contains only whitespace) to avoid false failures.

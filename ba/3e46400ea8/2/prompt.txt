@@ -1,0 +1,87 @@
+Good. Now the next cleanup from SYS-584:
+
+Vestigial w="100%" on root elements, same class as the two already fixed: src/app/footy/curse/page.tsx:85, src/app/footy/books/page.tsx:78, src/app/footy/table/[table]/page.tsx:117, src/app/footy/tables/page.tsx:14, src/app/footy/turnout/page.tsx:16, src/app/footy/page.tsx:35, src/app/footy/admin/page.tsx:24. Most pair it with align="center", where w="100%" is actually load-bearing (needed for children to center). Harmless, not urgent — a cleanup pass rather than a bug fix.
+
+---
+
+<task-notification>
+<task-id>a8291a1ee59b61b79</task-id>
+<tool-use-id>toolu_01KBnARqHSQVGPn1ETKggTSW</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/aaef6eec-764f-40eb-a4dc-9d304775ba16/tasks/a8291a1ee59b61b79.output</output-file>
+<status>completed</status>
+<summary>Agent "Survey w=100% usages across 7 pages" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>**Task:** Investigate whether `w="100%"` on 7 page root elements is vestigial (safe to remove) or load-bearing for `align="center"` centering. Read-only, no edits made.
+
+**Structural context:** In every case, the element sits directly inside `CustomAppShell`'s `AppShellMain &gt; Container size="xl" p="xl"`, both plain block-level boxes (not flex/grid parents). A block-level box (including a `display:flex` div like Mantine's `Stack`/`Flex`) defaults to `width:auto`, which already fills 100% of its containing block. So `w="100%"` is redundant for width purposes regardless of whether `align="center"` is present — `align-items:center` centers children against the container's own box, and that box is already full-width by default block behavior.
+
+**Empirical precedent:** commit `85a78eb0` already removed `w="100%"` from `games/page.tsx`'s `&lt;Flex direction="column" align="center" gap="lg"&gt;` — same shape as several below — and that was accepted as a clean fix, confirming removal doesn't break centering.
+
+| # | File:line | Root element &amp; props | align="center"? | Children (approx width) | Recommendation |
+|---|---|---|---|---|---|
+| 1 | `curse/page.tsx:85` | `Flex direction="column" w="100%" align="center"` | yes | `Group` (full-width), `CurseOfTheBibs` | REMOVE — exact match to the already-fixed `games/page.tsx` pattern |
+| 2 | `books/page.tsx:78` | `Stack w="100%"` | **no** | `Group` (full-width), `MoneyChart` | REMOVE — no centering dependency at all, purely vestigial |
+| 3 | `table/[table]/page.tsx:117` | `Stack w="100%" p="xl" align="center"` | yes | `AutoRefresh`, `Group` (full-width), `YearTable` (likely narrower than page) | REMOVE — same shape as precedent |
+| 4 | `tables/page.tsx:14` | `Stack w="100%" p="xl" align="center"` | yes | `Title` (has its own `w="100%" ta="center"`, unaffected), `Paper` &gt; `List` (shrink-wrap, narrower) | REMOVE — Stack still fills block width by default, `Paper` still centers under `align="center"` |
+| 5 | `turnout/page.tsx:16` | `Stack w="100%" p="xl" align="center"` | yes | `AutoRefresh`, `Turnout` (likely a chart, narrower than page) | REMOVE — same shape as precedent |
+| 6 | `page.tsx:35` (footy home) | `Stack w="100%" p="xl" align="center"` | yes | `AutoRefresh`, `Image`, `Divider` (full), `Group`, `Flex` of tables, `Divider`, `Text`×2 | REMOVE — same shape as precedent |
+| 7 | `admin/page.tsx:24` | `Paper w="100%"` — **note: not the page root**, it's nested inside `Container size="xs"` as a sibling below a `Center`/`Title` | no (`Flex` child has `justify="center"`, not `align`) | `Flex` with 2 admin widgets, `wrap="wrap" justify="center"` | REMOVE — same default-block-width reasoning; also flag to caller that this isn't a page-root element like the other 6, in case that matters for the cleanup's scope |
+
+**Final verdict: all 7 are REMOVE**, not a mix of keep/remove as the parent's framing suggested. The "load-bearing for centering" concern doesn't hold under normal block layout — it was already disproven by the accepted `games/page.tsx` fix. One flag: item 7 (`admin/page.tsx:24`) is a nested `Paper`, not the page's root layout element, unlike the other six.</result>
+<usage><subagent_tokens>64125</subagent_tokens><tool_uses>6</tool_uses><duration_ms>74889</duration_ms></usage>
+</task-notification>
+
+---
+
+<task-notification>
+<task-id>a58b41601ff2233ac</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/aaef6eec-764f-40eb-a4dc-9d304775ba16/tasks/a58b41601ff2233ac.output</output-file>
+<status>completed</status>
+<summary>Agent "Visual check of 7 pages after w=100% removal" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>Verified all 7 pages with Playwright (Chromium, 1400×900 viewport), screenshots + DOM layout checks. No files modified (temp script removed).
+
+- `/footy` — PASS. Crest image and "Table Leaders" cards centered, sidebar and content proportions normal.
+- `/footy/curse` — PASS. Title/dropdown row and pie chart centered.
+- `/footy/books` — PASS. Header centered, bar chart spans full content width.
+- `/footy/table/points` — PASS. Title centered, ranking table centered, not collapsed.
+- `/footy/tables` — PASS. Title and list card centered.
+- `/footy/turnout` — PASS. Table centered, full column layout intact.
+- `/footy/admin` — PASS (partial verification). Not logged in as admin, so only the sign-in Paper renders (centered correctly); the `Paper` with `w="100%"` removed (containing `AdminUpdatePlayerRecords`/`AdminExportAuth` etc.) is gated behind auth and wasn't visible to check directly. Diff confirms it's `&lt;Paper&gt;` with a `Flex justify="center" wrap="wrap"&gt;` child, same pattern as the others that verified fine.
+
+Diff reviewed for all 7 files: each removed `w="100%"` was on a root `Stack`/`Flex`/`Paper` that already sits inside a Mantine `Container` (block-level, fills width by default), with `align="center"`/`justify="center"` preserved. Nothing visually collapsed or mis-centered in any screenshot.</result>
+<usage><subagent_tokens>49129</subagent_tokens><tool_uses>17</tool_uses><duration_ms>1177844</duration_ms></usage>
+</task-notification>
+
+---
+
+In the Player List I'm confused why the WDL charts shrink as the viewport narrows, but the PlayerTimeline doesn't
+
+---
+
+<task-notification>
+<task-id>afb9b0f0220e4d027</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/aaef6eec-764f-40eb-a4dc-9d304775ba16/tasks/afb9b0f0220e4d027.output</output-file>
+<status>completed</status>
+<summary>Agent "Investigate WDL chart vs PlayerTimeline sizing" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>Task: compare why PlayerWDLChart shrinks with viewport but PlayerTimeline doesn't, in the Player List table.
+
+**Files:**
+- `src/components/PlayerWDLChart/PlayerWDLChart.tsx` — `ProgressRoot size="xl"` with 3 `ProgressSection`s (won/drawn/lost), no explicit width.
+- `src/components/PlayerTimeline/PlayerTimeline.tsx` — `ProgressRoot size="xl"` with 5 `ProgressSection`s, no explicit width.
+- Both are rendered in `src/components/PlayerList/PlayerList.tsx:242-247`, inside structurally identical `TableTd` cells, under `TableTh` headers that both carry `w="5rem"` (lines 216-225).
+
+**Finding:** there is no prop/CSS difference between the two components or their table cells — neither sets an explicit width, `miw`, or `maw`, and both parent cells are configured identically. So this isn't a case of one having a fixed width and the other being responsive by design; the code is symmetric.
+
+The likely cause is the browser's default table layout algorithm (`table-layout: auto`, which Mantine's `Table` uses unless overridden): column width is driven by each column's min-content size. PlayerTimeline has 5 sections vs PlayerWDL's 3, and each `ProgressSection` boundary/border-radius has a small non-zero minimum render width, so the Timeline column's min-content width is larger. As the table narrows, the browser gives the Timeline column more of the "must-keep" width and compresses the WDL column more readily — an artifact of auto table layout reacting to section count, not an intentional responsive/non-responsive design choice.
+
+**Recommendation for the parent:** if consistent shrink behavior is wanted, either set `tableLayout="fixed"` on the `Table` (so both `5rem` columns are enforced equally regardless of content) or give both `ProgressRoot`s an explicit `maw`/`w` to match. Not applied — investigation only.</result>
+<usage><subagent_tokens>79164</subagent_tokens><tool_uses>8</tool_uses><duration_ms>89580</duration_ms></usage>
+</task-notification>
+
+---
+
+So effectively 'w' can be overridden? Would adding 'miw' make a difference?

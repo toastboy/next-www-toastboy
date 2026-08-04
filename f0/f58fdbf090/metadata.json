@@ -1,0 +1,60 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "f0f58fdbf090",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 21,
+  "files_touched": [
+    "CLAUDE.md",
+    "src/app/footy/tables/page.tsx",
+    "src/app/footy/tables/page.vitest.spec.ts",
+    "src/components/AdminPlayerList/AdminPlayerList.tsx",
+    "src/components/AdminUserList/AdminUserList.tsx",
+    "src/components/CustomAppShell/CustomAppShell.tsx",
+    "src/components/CustomAppShell/CustomAppShell.vitest.spec.tsx",
+    "src/components/DebugFontSizes/DebugFontSizes.tsx",
+    "src/components/DrinkersForm/DrinkersForm.tsx",
+    "src/components/MoreGamesForm/MoreGamesForm.tsx",
+    "src/components/PickerForm/PickerForm.tsx",
+    "src/components/PlayerArse/PlayerArse.tsx",
+    "src/components/PlayerCountryMap/PlayerCountryMap.tsx",
+    "src/components/PlayerInfo/PlayerInfo.tsx",
+    "src/components/PlayerLink/PlayerLink.vitest.spec.tsx",
+    "src/components/PlayerList/PlayerList.tsx",
+    "src/components/PlayerPositions/PlayerPositions.tsx",
+    "src/components/PlayerProfile/PlayerProfile.tsx",
+    "src/components/PlayerResults/PlayerResults.tsx",
+    "src/components/PlayerTimeline/PlayerTimeline.tsx",
+    "src/components/PlayerWDLChart/PlayerWDLChart.tsx",
+    "src/components/RecordsTable/RecordsTable.tsx",
+    "src/components/ResponsesForm/ResponsesForm.tsx",
+    "src/components/ResponsesForm/ResponsesForm.vitest.spec.tsx",
+    "src/components/RichTextMailBody/RichTextMailBody.tsx",
+    "src/components/SendEmailForm/SendEmailForm.tsx",
+    "src/components/TableIndexList/TableIndexList.stories.tsx",
+    "src/components/TableIndexList/TableIndexList.tsx",
+    "src/components/TableIndexList/TableIndexList.vitest.spec.tsx",
+    "src/components/TableIndexList/__mocks__/TableIndexList.tsx",
+    "src/components/TitleWithYearDropdown/TitleWithYearDropdown.tsx",
+    "src/components/Turnout/Turnout.tsx",
+    "src/components/UserButton/UserButton.tsx",
+    "src/components/WinnersTable/WinnersTable.tsx",
+    "vitest.setup.frontend.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/f0/f58fdbf090/0/metadata.json",
+      "transcript": "/f0/f58fdbf090/0/full.jsonl",
+      "compact_transcript": "/f0/f58fdbf090/0/transcript.jsonl",
+      "content_hash": "/f0/f58fdbf090/0/content_hash.txt",
+      "prompt": "/f0/f58fdbf090/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 714,
+    "cache_creation_tokens": 686230,
+    "cache_read_tokens": 57547503,
+    "output_tokens": 166225,
+    "api_call_count": 361
+  }
+}

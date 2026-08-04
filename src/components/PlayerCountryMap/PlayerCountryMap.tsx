@@ -6,8 +6,6 @@ import {
     Group,
     Image,
     Popover,
-    PopoverDropdown,
-    PopoverTarget,
     ScrollAreaAutosize,
     Stack,
     Text,
@@ -269,7 +267,7 @@ export const PlayerCountryMap = ({
                 shadow="md"
                 withinPortal={false}
             >
-                <PopoverTarget>
+                <Popover.Target>
                     <Box
                         pos="absolute"
                         left={popoverPos.x}
@@ -278,8 +276,8 @@ export const PlayerCountryMap = ({
                         h={1}
                         pe="none"
                     />
-                </PopoverTarget>
-                <PopoverDropdown
+                </Popover.Target>
+                <Popover.Dropdown
                     data-testid="country-popover-dropdown"
                     onMouseEnter={() => {
                         dropdownHoveredRef.current = true;
@@ -320,7 +318,7 @@ export const PlayerCountryMap = ({
                             ))}
                         </Stack>
                     </ScrollAreaAutosize>
-                </PopoverDropdown>
+                </Popover.Dropdown>
             </Popover>
         </Box>
     );

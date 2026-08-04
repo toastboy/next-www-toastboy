@@ -11,12 +11,6 @@ import {
     Stack,
     Switch,
     Table,
-    TableScrollContainer,
-    TableTbody,
-    TableTd,
-    TableTh,
-    TableThead,
-    TableTr,
     Text,
     TextInput,
     Title,
@@ -205,19 +199,19 @@ export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
                         onSendEmail={sendEmail}
                     />
 
-                    <TableScrollContainer minWidth="100%" scrollAreaProps={{ type: 'auto' }}>
+                    <Table.ScrollContainer minWidth="100%" scrollAreaProps={{ type: 'auto' }}>
                         <Table
                             layout="fixed"
                             mt={20}
                         >
-                            <TableThead>
-                                <TableTr>
-                                    <TableTh
+                            <Table.Thead>
+                                <Table.Tr>
+                                    <Table.Th
                                         w="2rem"
                                     >
                                         <VisuallyHidden>Select</VisuallyHidden>
-                                    </TableTh>
-                                    <TableTh
+                                    </Table.Th>
+                                    <Table.Th
                                         w={theme.other.playerNameMinWidthMultiLine}
                                         style={{ cursor: 'pointer' }}
                                         onClick={() => handleSort('name')}
@@ -226,45 +220,45 @@ export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
                                             Name
                                             {sortBy === 'name' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
                                         </Flex>
-                                    </TableTh>
-                                    <TableTh
+                                    </Table.Th>
+                                    <Table.Th
                                         w="5rem"
                                     >
                                         W-D-L
-                                    </TableTh>
-                                    <TableTh
+                                    </Table.Th>
+                                    <Table.Th
                                         w="5rem"
                                     >
                                         Timeline
-                                    </TableTh>
-                                </TableTr>
-                            </TableThead>
-                            <TableTbody>
+                                    </Table.Th>
+                                </Table.Tr>
+                            </Table.Thead>
+                            <Table.Tbody>
                                 {sortedPlayers.map((player) => (
-                                    <TableTr key={player.id}>
-                                        <TableTd>
+                                    <Table.Tr key={player.id}>
+                                        <Table.Td>
                                             <Checkbox
                                                 aria-label={`Select ${player.name}`}
                                                 checked={selectedPlayers.includes(player)}
                                                 onChange={() => handleSelectPlayer(player)}
                                             />
-                                        </TableTd>
-                                        <TableTd>
+                                        </Table.Td>
+                                        <Table.Td>
                                             <Anchor href={`/footy/player/${encodeURIComponent(player.id || "")}`}>
                                                 {player.name}
                                             </Anchor>
-                                        </TableTd>
-                                        <TableTd>
+                                        </Table.Td>
+                                        <Table.Td>
                                             <PlayerWDLChart player={player} />
-                                        </TableTd>
-                                        <TableTd>
+                                        </Table.Td>
+                                        <Table.Td>
                                             <PlayerTimeline player={player} currentGameId={gameDay.id} />
-                                        </TableTd>
-                                    </TableTr>
+                                        </Table.Td>
+                                    </Table.Tr>
                                 ))}
-                            </TableTbody>
+                            </Table.Tbody>
                         </Table>
-                    </TableScrollContainer>
+                    </Table.ScrollContainer>
                 </Stack>
             </Paper>
         </Container>

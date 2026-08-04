@@ -110,6 +110,16 @@ describe('PlayerLink', () => {
     });
 
     describe('null player name fallback', () => {
+        it('uses "Unknown" in the name-format aria-label when player name is null', () => {
+            const namelessPlayer = { ...defaultPlayer, name: null as unknown as string };
+            render(
+                <Wrapper>
+                    <PlayerLink player={namelessPlayer} year={2024} />
+                </Wrapper>,
+            );
+            expect(screen.getByRole('link', { name: 'Unknown' })).toBeInTheDocument();
+        });
+
         it('uses "Unknown" in left-arrow aria-label when player name is null', () => {
             const namelessPlayer = { ...defaultPlayer, name: null as unknown as string };
             render(

@@ -9,9 +9,6 @@ import {
     Group,
     Paper,
     Table,
-    TableTbody,
-    TableTd,
-    TableTr,
     Title,
     Tooltip,
 } from '@mantine/core';
@@ -44,15 +41,15 @@ export const PlayerArse = ({ arse, titleOrder = 3 }: Props) => {
                 summary={`Anonymous Ratings System Exponent`}
                 layout="fixed"
             >
-                <TableTbody>
-                    <TableTr><TableTd>In Goal</TableTd><TableTd w="3rem">{arse.inGoal ?? '-'}</TableTd></TableTr>
-                    <TableTr><TableTd>Running</TableTd><TableTd w="3rem">{arse.running ?? '-'}</TableTd></TableTr>
-                    <TableTr><TableTd>Shooting</TableTd><TableTd w="3rem">{arse.shooting ?? '-'}</TableTd></TableTr>
-                    <TableTr><TableTd>Passing</TableTd><TableTd w="3rem">{arse.passing ?? '-'}</TableTd></TableTr>
-                    <TableTr><TableTd>Ball Skill</TableTd><TableTd w="3rem">{arse.ballSkill ?? '-'}</TableTd></TableTr>
-                    <TableTr><TableTd>Attacking</TableTd><TableTd w="3rem">{arse.attacking ?? '-'}</TableTd></TableTr>
-                    <TableTr><TableTd>Defending</TableTd><TableTd w="3rem">{arse.defending ?? '-'}</TableTd></TableTr>
-                </TableTbody>
+                <Table.Tbody>
+                    <Table.Tr><Table.Td>In Goal</Table.Td><Table.Td w="3rem">{arse.inGoal ?? '-'}</Table.Td></Table.Tr>
+                    <Table.Tr><Table.Td>Running</Table.Td><Table.Td w="3rem">{arse.running ?? '-'}</Table.Td></Table.Tr>
+                    <Table.Tr><Table.Td>Shooting</Table.Td><Table.Td w="3rem">{arse.shooting ?? '-'}</Table.Td></Table.Tr>
+                    <Table.Tr><Table.Td>Passing</Table.Td><Table.Td w="3rem">{arse.passing ?? '-'}</Table.Td></Table.Tr>
+                    <Table.Tr><Table.Td>Ball Skill</Table.Td><Table.Td w="3rem">{arse.ballSkill ?? '-'}</Table.Td></Table.Tr>
+                    <Table.Tr><Table.Td>Attacking</Table.Td><Table.Td w="3rem">{arse.attacking ?? '-'}</Table.Td></Table.Tr>
+                    <Table.Tr><Table.Td>Defending</Table.Td><Table.Td w="3rem">{arse.defending ?? '-'}</Table.Td></Table.Tr>
+                </Table.Tbody>
             </Table>
         </Paper>
     );

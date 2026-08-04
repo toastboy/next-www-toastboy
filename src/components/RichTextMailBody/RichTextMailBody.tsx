@@ -1,14 +1,8 @@
 'use client';
 
 import {
-    BoldControl,
-    ItalicControl,
     Link,
     RichTextEditor,
-    RichTextEditorContent,
-    RichTextEditorControlsGroup,
-    RichTextEditorLinkControl,
-    UnderlineControl,
 } from '@mantine/tiptap';
 import { useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
@@ -23,19 +17,16 @@ export const RichTextMailBody = () => {
 
     return (
         <RichTextEditor editor={editor}>
-            {/* RichTextEditor.Toolbar has no standalone named export in @mantine/tiptap,
-                so this is the one dot-notation exception to the no-dot-notation rule.
-                Safe here since this file is 'use client'. See CLAUDE.md. */}
             <RichTextEditor.Toolbar sticky>
-                <RichTextEditorControlsGroup>
-                    <BoldControl />
-                    <ItalicControl />
-                    <UnderlineControl />
-                    <RichTextEditorLinkControl />
-                </RichTextEditorControlsGroup>
+                <RichTextEditor.ControlsGroup>
+                    <RichTextEditor.Bold />
+                    <RichTextEditor.Italic />
+                    <RichTextEditor.Underline />
+                    <RichTextEditor.Link />
+                </RichTextEditor.ControlsGroup>
             </RichTextEditor.Toolbar>
 
-            <RichTextEditorContent />
+            <RichTextEditor.Content />
         </RichTextEditor>
     );
 };

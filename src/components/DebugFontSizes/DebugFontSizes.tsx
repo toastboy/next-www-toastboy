@@ -3,9 +3,6 @@
 import {
     Container,
     Table,
-    TableTbody,
-    TableTd,
-    TableTr,
     Text,
 } from '@mantine/core';
 import { useEffect, useState } from 'react';
@@ -79,21 +76,21 @@ export const DebugFontSizes = ({ targets }: DebugFontSizesProps) => {
                 🔤 <strong>Font sizes</strong> — viewport: {viewportWidth}px / {(viewportWidth / pxPerEm).toFixed(2)}em
             </Text>
             <Table className={classes.table}>
-                <TableTbody>
+                <Table.Tbody>
                     {samples.map((sample) => (
-                        <TableTr key={sample.selector}>
-                            <TableTd className={classes.td}>{sample.label}</TableTd>
-                            <TableTd className={classes.td}>
+                        <Table.Tr key={sample.selector}>
+                            <Table.Td className={classes.td}>{sample.label}</Table.Td>
+                            <Table.Td className={classes.td}>
                                 {sample.fontSizePx === null ?
                                     'no match' :
                                     `${sample.fontSizePx.toFixed(2)}px / ${(sample.fontSizePx / pxPerEm).toFixed(3)}rem`}
-                            </TableTd>
-                            <TableTd className={classes.td}>
+                            </Table.Td>
+                            <Table.Td className={classes.td}>
                                 {sample.matches > 1 ? `(${sample.matches} matches)` : null}
-                            </TableTd>
-                        </TableTr>
+                            </Table.Td>
+                        </Table.Tr>
                     ))}
-                </TableTbody>
+                </Table.Tbody>
             </Table>
         </Container>
     );

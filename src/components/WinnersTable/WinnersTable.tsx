@@ -5,11 +5,6 @@ import {
     Divider,
     Paper,
     Table,
-    TableTbody,
-    TableTd,
-    TableTh,
-    TableThead,
-    TableTr,
     Title,
     VisuallyHidden,
 } from '@mantine/core';
@@ -40,13 +35,13 @@ export const WinnersTable = ({ table, records }: Props) => {
     const tbodyId = useId();
 
     const rows = visibleRecords.map((winner, index) => (
-        <TableTr
+        <Table.Tr
             key={winner.id}
             bd={years[index + 1]?.visible === false ? '0' : undefined}
         >
-            <TableTd>{years[index].visible ? winner.year : ''}</TableTd>
-            <TableTd><PlayerLink player={winner.player} year={winner.year} /></TableTd>
-        </TableTr>
+            <Table.Td>{years[index].visible ? winner.year : ''}</Table.Td>
+            <Table.Td><PlayerLink player={winner.player} year={winner.year} /></Table.Td>
+        </Table.Tr>
     ));
 
     return records.length > 0 ? (
@@ -57,15 +52,15 @@ export const WinnersTable = ({ table, records }: Props) => {
             <Divider mb="xs" />
 
             <Table>
-                <TableThead>
-                    <TableTr bd="0">
-                        <TableTh w="4em" p={0}><VisuallyHidden>Year</VisuallyHidden></TableTh>
-                        <TableTh w="auto" p={0}><VisuallyHidden>Winner(s)</VisuallyHidden></TableTh>
-                    </TableTr>
-                </TableThead>
-                <TableTbody id={tbodyId}>
+                <Table.Thead>
+                    <Table.Tr bd="0">
+                        <Table.Th w="4em" p={0}><VisuallyHidden>Year</VisuallyHidden></Table.Th>
+                        <Table.Th w="auto" p={0}><VisuallyHidden>Winner(s)</VisuallyHidden></Table.Th>
+                    </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody id={tbodyId}>
                     {rows}
-                </TableTbody>
+                </Table.Tbody>
             </Table>
             {hiddenCount > 0 &&
                 <Button

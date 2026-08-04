@@ -5,7 +5,6 @@ import {
     Center,
     Container,
     Grid,
-    GridCol,
     Group,
     Paper,
     Stack,
@@ -74,12 +73,12 @@ export const PlayerProfile = ({
                     gap="xs"
                     align="center"
                 >
-                    <GridCol span="content" align="center">
+                    <Grid.Col span="content" align="center">
                         {prevPlayer ?
                             <PlayerLink player={prevPlayer} year={year} format="left-arrow" /> :
                             <Box data-testid="player-prev-placeholder" aria-hidden="true" />}
-                    </GridCol>
-                    <GridCol span="auto" align="center">
+                    </Grid.Col>
+                    <Grid.Col span="auto" align="center">
                         <Center>
                             <TitleWithYearDropdown
                                 order={1}
@@ -88,26 +87,26 @@ export const PlayerProfile = ({
                                 validYears={activeYears}
                             />
                         </Center>
-                    </GridCol>
-                    <GridCol span="content" align="center">
+                    </Grid.Col>
+                    <Grid.Col span="content" align="center">
                         {nextPlayer ?
                             <PlayerLink player={nextPlayer} year={year} format="right-arrow" /> :
                             <Box data-testid="player-next-placeholder" aria-hidden="true" />}
-                    </GridCol>
+                    </Grid.Col>
                 </Grid>
                 <Grid
                     type="container"
                     breakpoints={{ xs: '24em', sm: '36em', md: '54em', lg: '74em', xl: '88em' }}
                 >
-                    <GridCol span={playerCardsGridColSpan}>
+                    <Grid.Col span={playerCardsGridColSpan}>
                         <PlayerCard
                             player={player}
                             clubs={clubs}
                             countries={countries}
                             trophies={trophies}
                         />
-                    </GridCol>
-                    <GridCol span={playerCardsGridColSpan}>
+                    </Grid.Col>
+                    <Grid.Col span={playerCardsGridColSpan}>
                         <PlayerInfo
                             player={player}
                             year={year}
@@ -119,13 +118,13 @@ export const PlayerProfile = ({
                             playerData={playerData}
                             onSendEmail={onSendEmail}
                         />
-                    </GridCol>
-                    <GridCol span={playerCardsGridColSpan}>
+                    </Grid.Col>
+                    <Grid.Col span={playerCardsGridColSpan}>
                         <PlayerResults player={player} year={year} record={record} />
-                    </GridCol>
-                    <GridCol span={playerCardsGridColSpan}>
+                    </Grid.Col>
+                    <Grid.Col span={playerCardsGridColSpan}>
                         <PlayerPositions player={player} year={year} record={record} />
-                    </GridCol>
+                    </Grid.Col>
                 </Grid>
                 <Group>
                     <Paper p="sm" w="auto" style={{ flex: '1' }}>

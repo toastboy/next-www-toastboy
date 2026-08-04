@@ -10,12 +10,6 @@ import {
     Paper,
     Stack,
     Table,
-    TableScrollContainer,
-    TableTbody,
-    TableTd,
-    TableTh,
-    TableThead,
-    TableTr,
     Text,
     TextInput,
     Title,
@@ -223,15 +217,15 @@ export const DrinkersForm = ({
     const renderedRows = visibleRows.map((row) => {
         const playerName = normaliseName(row);
         return (
-            <TableTr key={row.playerId}>
-                <TableTd w="2.5rem">
+            <Table.Tr key={row.playerId}>
+                <Table.Td w="2.5rem">
                     <Checkbox
                         checked={selectedIdSet.has(row.playerId)}
                         onChange={(event) => togglePlayer(row.playerId, event.currentTarget.checked)}
                         aria-label={`Pub ${playerName}`}
                     />
-                </TableTd>
-                <TableTd>
+                </Table.Td>
+                <Table.Td>
                     <Group wrap="nowrap" gap="sm">
                         <Anchor href={`/footy/player/${row.playerId}`}>
                             <Image
@@ -246,10 +240,10 @@ export const DrinkersForm = ({
                             {playerName}
                         </Anchor>
                     </Group>
-                </TableTd>
-                <TableTd>{row.team ?? '-'}</TableTd>
-                <TableTd>{row.response ?? '-'}</TableTd>
-            </TableTr>
+                </Table.Td>
+                <Table.Td>{row.team ?? '-'}</Table.Td>
+                <Table.Td>{row.response ?? '-'}</Table.Td>
+            </Table.Tr>
         );
     });
 
@@ -294,7 +288,7 @@ export const DrinkersForm = ({
                                 </Button>
                             </Group>
 
-                            <TableScrollContainer minWidth={480} scrollAreaProps={{ type: 'auto' }}>
+                            <Table.ScrollContainer minWidth={480} scrollAreaProps={{ type: 'auto' }}>
                                 <Table
                                     striped
                                     highlightOnHover
@@ -303,30 +297,30 @@ export const DrinkersForm = ({
                                     w="100%"
                                     layout="fixed"
                                 >
-                                    <TableThead>
-                                        <TableTr>
-                                            <TableTh w="2.5rem">
+                                    <Table.Thead>
+                                        <Table.Tr>
+                                            <Table.Th w="2.5rem">
                                                 <Checkbox
                                                     checked={allVisibleSelected}
                                                     indeterminate={someVisibleSelected}
                                                     onChange={(event) => toggleVisible(event.currentTarget.checked)}
                                                     aria-label="Select all visible players"
                                                 />
-                                            </TableTh>
-                                            <TableTh aria-sort={sortKey === 'name' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                                            </Table.Th>
+                                            <Table.Th aria-sort={sortKey === 'name' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
                                                 {renderSortHeader('Player', 'name')}
-                                            </TableTh>
-                                            <TableTh w="6rem" aria-sort={sortKey === 'team' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                                            </Table.Th>
+                                            <Table.Th w="6rem" aria-sort={sortKey === 'team' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
                                                 {renderSortHeader('Team', 'team')}
-                                            </TableTh>
-                                            <TableTh w="8rem" aria-sort={sortKey === 'response' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                                            </Table.Th>
+                                            <Table.Th w="8rem" aria-sort={sortKey === 'response' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
                                                 {renderSortHeader('Response', 'response')}
-                                            </TableTh>
-                                        </TableTr>
-                                    </TableThead>
-                                    <TableTbody>{renderedRows}</TableTbody>
+                                            </Table.Th>
+                                        </Table.Tr>
+                                    </Table.Thead>
+                                    <Table.Tbody>{renderedRows}</Table.Tbody>
                                 </Table>
-                            </TableScrollContainer>
+                            </Table.ScrollContainer>
                         </>
                     ) : (
                         <Text>No active players found</Text>

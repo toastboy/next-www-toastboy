@@ -104,6 +104,30 @@ describe('Responses', () => {
         expect(firstCommentInput).toHaveAttribute('maxlength', '127');
     });
 
+    it('toggles a group open and closed when its header is clicked', async () => {
+        const user = userEvent.setup();
+
+        render(
+            <Wrapper>
+                <ResponsesForm
+                    gameId={1249}
+                    gameDate="3rd February 2026"
+                    responses={defaultResponsesAdminData}
+                    submitResponse={mockSave}
+                />
+            </Wrapper>,
+        );
+
+        const toggle = screen.getByRole('button', { name: /^Yes:\s*1$/ });
+        expect(toggle).toHaveAttribute('aria-expanded', 'false');
+
+        await user.click(toggle);
+        expect(toggle).toHaveAttribute('aria-expanded', 'true');
+
+        await user.click(toggle);
+        expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    });
+
     it('filters players before grouping', async () => {
         const user = userEvent.setup();
 

@@ -6,7 +6,6 @@ import type {
 import {
     Button,
     Card,
-    CardSection,
     Checkbox,
     Collapse,
     Container,
@@ -213,7 +212,7 @@ export const ResponsesForm = ({
 
         return (
             <Card key={title} withBorder shadow="xs" p="md" role="region" aria-label={title}>
-                <CardSection h={6} bg={responseGroupBarColor[title]} />
+                <Card.Section h={6} bg={responseGroupBarColor[title]} />
                 <UnstyledButton onClick={() => toggleGroup(title)} aria-expanded={opened} w="100%" mt="md">
                     <Group justify="space-between">
                         <Title

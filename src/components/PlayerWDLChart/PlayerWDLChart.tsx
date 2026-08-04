@@ -1,8 +1,7 @@
 'use client';
 
 import {
-    ProgressRoot,
-    ProgressSection,
+    Progress,
     Tooltip,
 } from '@mantine/core';
 
@@ -22,20 +21,20 @@ export const PlayerWDLChart = ({ player }: Props) => {
             label={`P${player.gamesPlayed} W${player.gamesWon} D${player.gamesDrawn} L${player.gamesLost}`}
             position="top"
         >
-            <ProgressRoot size="xl">
-                <ProgressSection
+            <Progress.Root size="xl">
+                <Progress.Section
                     value={100.0 * player.gamesWon / gamesPlayed}
                     color="green"
                 />
-                <ProgressSection
+                <Progress.Section
                     value={100.0 * player.gamesDrawn / gamesPlayed}
                     color="yellow"
                 />
-                <ProgressSection
+                <Progress.Section
                     value={100.0 * player.gamesLost / gamesPlayed}
                     color="red"
                 />
-            </ProgressRoot>
+            </Progress.Root>
         </Tooltip>
     );
 };

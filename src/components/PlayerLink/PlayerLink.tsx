@@ -9,6 +9,8 @@ import { IconArrowBigLeftLine, IconArrowBigRightLine } from '@tabler/icons-react
 import type { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import { CSSProperties } from 'react';
 
+import { GoalieIndicator } from '@/components/GoalieIndicator/GoalieIndicator';
+
 /**
  * Component for rendering a link to a player's profile with various formatting options.
  *
@@ -36,6 +38,7 @@ export interface Props {
     year: number;
     format?: 'name' | 'left-arrow' | 'right-arrow';
     wrap?: boolean;
+    goalie?: boolean | null | undefined;
 }
 
 export const PlayerLink = ({
@@ -43,6 +46,7 @@ export const PlayerLink = ({
     year,
     format = 'name',
     wrap = false,
+    goalie = false,
 }: Props) => {
     const theme = useMantineTheme();
     let ariaLabel: string | undefined;
@@ -66,7 +70,6 @@ export const PlayerLink = ({
     const link = (
         <Anchor
             href={`/footy/player/${player.id}${year ? `/${year}` : ''}`}
-            ta="center"
             aria-label={ariaLabel}
             miw={miw}
         >
@@ -80,6 +83,7 @@ export const PlayerLink = ({
                         return <IconArrowBigRightLine aria-hidden />;
                 }
             })()}
+            {goalie ? <GoalieIndicator /> : null}
         </Anchor>
     );
 

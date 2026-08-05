@@ -5,7 +5,6 @@ import {
     Flex,
     Group,
     Paper,
-    SimpleGrid,
     Text,
     Title,
 } from '@mantine/core';
@@ -17,7 +16,6 @@ import { TeamPlayerType } from '@/types';
 export interface Props {
     team: TeamPlayerType[];
     teamName: 'A' | 'B';
-    maxTeamSize: number;
     result?: TeamResultState;
     hasBibs?: boolean;
 }
@@ -34,19 +32,18 @@ export const Team = ({
     teamName,
     result = 'unset',
     hasBibs = false,
-    maxTeamSize,
 }: Props) => {
     return (
-        <Paper p="md">
+        <Paper p="xs">
             <Flex
-                direction={{ base: 'column', md: 'row' }}
+                align="center"
                 justify="space-between"
                 gap="xs"
                 p={0}
-                mb="md"
+                mb="xs"
                 mt={0}
             >
-                <Title order={3} fw={700}>Team {teamName}</Title>
+                <Title order={3} size="h4" fw={700}>Team {teamName}</Title>
                 <Group gap="xs">
                     {hasBibs ? <Badge color="orange">Bibs</Badge> : null}
                     <Badge color={resultStyles[result].color}>
@@ -56,19 +53,16 @@ export const Team = ({
             </Flex>
             {
                 team.length > 0 ?
-                    (
-                        <SimpleGrid
-                            cols={{ base: 2, sm: 3, md: 4, xl: Math.max(4, maxTeamSize) }}
-                            spacing={{ base: 'xs', lg: 'sm' }}
-                        >
+                    ((
+                        <Flex direction="column" gap="xs">
                             {team.map((p) => (
                                 <TeamPlayer
                                     key={p.id}
                                     teamPlayer={p}
                                 />
                             ))}
-                        </SimpleGrid>
-                    ) :
+                        </Flex>
+                    )) :
                     <Text c="dimmed">No players selected.</Text>
             }
         </Paper>

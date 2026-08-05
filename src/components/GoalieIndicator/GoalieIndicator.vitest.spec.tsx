@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 
-import { CX, CY, RING_RADIUS } from '@/components/PlayerForm/PlayerForm';
 import { Wrapper } from '@/tests/components/lib/common';
 
 import { GoalieIndicator } from './GoalieIndicator';
@@ -13,20 +13,43 @@ describe('GoalieIndicator', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByRole('img', { name: /goalie/i })).toBeInTheDocument();
+        expect(screen.getByRole('img', { name: /goalie indicator/i })).toBeInTheDocument();
     });
 
-    it('is positioned at the bottom centre of the arc ring', () => {
+    it('shows a "Goalie" tooltip on hover', async () => {
         render(
             <Wrapper>
                 <GoalieIndicator />
             </Wrapper>,
         );
 
-        const indicator = screen.getByRole('img', { name: /goalie/i });
-        expect(indicator).toHaveStyle({
-            left: `${CX}%`,
-            top: `${CY + RING_RADIUS}%`,
-        });
+        const user = userEvent.setup();
+        await user.hover(screen.getByRole('img', { name: /goalie indicator/i }));
+
+        const tooltip = await screen.findByRole('tooltip');
+        expect(tooltip).toHaveTextContent('Goalie');
+    });
+
+    it('renders exactly two mirrored hand icons', () => {
+        render(
+            <Wrapper>
+                <GoalieIndicator />
+            </Wrapper>,
+        );
+
+        const indicator = screen.getByRole('img', { name: /goalie indicator/i });
+        expect(indicator.querySelectorAll('svg')).toHaveLength(2);
+    });
+
+    it('does not introduce its own focus stop, so it stays safe to render inline inside a link', () => {
+        render(
+            <Wrapper>
+                <GoalieIndicator />
+            </Wrapper>,
+        );
+
+        const indicator = screen.getByRole('img', { name: /goalie indicator/i });
+        expect(indicator).not.toHaveAttribute('tabindex');
+        expect(['A', 'BUTTON', 'INPUT']).not.toContain(indicator.tagName);
     });
 });

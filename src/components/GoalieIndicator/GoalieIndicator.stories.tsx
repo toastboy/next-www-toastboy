@@ -9,13 +9,6 @@ const meta = {
     parameters: {
         layout: 'centered',
     },
-    decorators: [
-        (Story) => (
-            <div style={{ position: 'relative', width: 200, height: 200 }}>
-                <Story />
-            </div>
-        ),
-    ],
 } satisfies Meta<typeof GoalieIndicator>;
 
 export default meta;

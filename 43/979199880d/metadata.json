@@ -3,7 +3,7 @@
   "checkpoint_id": "43979199880d",
   "strategy": "manual-commit",
   "branch": "main",
-  "checkpoints_count": 4,
+  "checkpoints_count": 25,
   "files_touched": [
     "src/components/DebugBreakpoints/DebugBreakpoints.module.css",
     "src/components/GameDaySummary/GameDaySummary.tsx",
@@ -24,13 +24,20 @@
       "compact_transcript": "/43/979199880d/0/transcript.jsonl",
       "content_hash": "/43/979199880d/0/content_hash.txt",
       "prompt": "/43/979199880d/0/prompt.txt"
+    },
+    {
+      "metadata": "/43/979199880d/1/metadata.json",
+      "transcript": "/43/979199880d/1/full.jsonl",
+      "compact_transcript": "/43/979199880d/1/transcript.jsonl",
+      "content_hash": "/43/979199880d/1/content_hash.txt",
+      "prompt": "/43/979199880d/1/prompt.txt"
     }
   ],
   "token_usage": {
-    "input_tokens": 421,
-    "cache_creation_tokens": 709722,
-    "cache_read_tokens": 29872491,
-    "output_tokens": 100118,
-    "api_call_count": 211
+    "input_tokens": 1135,
+    "cache_creation_tokens": 1395952,
+    "cache_read_tokens": 87419994,
+    "output_tokens": 266343,
+    "api_call_count": 572
   }
 }

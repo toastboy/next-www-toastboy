@@ -1,0 +1,192 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "43979199880d",
+  "session_id": "a86654cd-940d-468b-8d0f-161de842c8aa",
+  "strategy": "manual-commit",
+  "created_at": "2026-08-05T14:36:43.300009Z",
+  "branch": "main",
+  "checkpoints_count": 4,
+  "save_step_count": 4,
+  "files_touched": [
+    "src/components/DebugBreakpoints/DebugBreakpoints.module.css",
+    "src/components/GameDaySummary/GameDaySummary.tsx",
+    "src/components/GoalieIndicator/GoalieIndicator.stories.tsx",
+    "src/components/GoalieIndicator/GoalieIndicator.tsx",
+    "src/components/GoalieIndicator/GoalieIndicator.vitest.spec.tsx",
+    "src/components/PlayerCard/PlayerCard.tsx",
+    "src/components/PlayerForm/PlayerForm.tsx",
+    "src/components/PlayerForm/PlayerForm.vitest.spec.tsx",
+    "src/components/PlayerLink/PlayerLink.tsx",
+    "src/components/Team/Team.tsx",
+    "src/components/TeamPlayer/TeamPlayer.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "50b312950b9f",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 421,
+    "cache_creation_tokens": 709722,
+    "cache_read_tokens": 29872491,
+    "output_tokens": 100118,
+    "api_call_count": 211
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_0132TKfR2Q1CjdayNMvfHcvs",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "run"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "50b312950b9f",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 235,
+        "end": 236,
+        "entry_ids": [
+          "830dcef2-efcb-48a1-8abd-2256a45cab14"
+        ],
+        "tool_use_id": "toolu_0132TKfR2Q1CjdayNMvfHcvs"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_0132TKfR2Q1CjdayNMvfHcvs"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: run",
+        "default_collapsed": true
+      }
+    },
+    {
+      "id": "claude-skill-toolu_01WGSNFKyHDPM7gFirCXWbhx",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "claude-in-chrome"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "50b312950b9f",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 253,
+        "end": 254,
+        "entry_ids": [
+          "26bb1ef9-00cd-4839-bc41-ccb5edfab02a"
+        ],
+        "tool_use_id": "toolu_01WGSNFKyHDPM7gFirCXWbhx"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01WGSNFKyHDPM7gFirCXWbhx"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: claude-in-chrome",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 4
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-08-05T14:36:43.037359Z",
+    "agent_lines": 0,
+    "agent_removed": 49,
+    "human_added": 0,
+    "human_modified": 45,
+    "human_removed": 86,
+    "total_committed": 48,
+    "total_lines_changed": 180,
+    "agent_percentage": 27.22222222222222,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 101,
+      "user_lines_removed": 100,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 58,
+        "src/components/GameDaySummary/GameDaySummary.tsx": 2,
+        "src/components/PlayerForm/PlayerForm.tsx": 19,
+        "src/components/PlayerLink/PlayerLink.tsx": 1,
+        "src/components/Team/Team.tsx": 1,
+        "src/components/TeamPlayer/TeamPlayer.tsx": 19
+      },
+      "user_removed_per_file": {
+        "src/components/GameDaySummary/GameDaySummary.tsx": 1,
+        "src/components/PlayerCard/PlayerCard.tsx": 6,
+        "src/components/PlayerForm/PlayerForm.tsx": 80,
+        "src/components/Team/Team.tsx": 1,
+        "src/components/TeamPlayer/TeamPlayer.tsx": 12
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 99,
+      "user_lines_removed": 24,
+      "agent_lines_added": 78,
+      "agent_lines_removed": 178,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 58,
+        "src/components/DebugBreakpoints/DebugBreakpoints.module.css": 2,
+        "src/components/GameDaySummary/GameDaySummary.tsx": 2,
+        "src/components/GoalieIndicator/GoalieIndicator.tsx": 18,
+        "src/components/PlayerForm/PlayerForm.tsx": 1,
+        "src/components/PlayerLink/PlayerLink.tsx": 5,
+        "src/components/Team/Team.tsx": 4,
+        "src/components/TeamPlayer/TeamPlayer.tsx": 8
+      },
+      "user_removed_per_file": {
+        "src/components/DebugBreakpoints/DebugBreakpoints.module.css": 1,
+        "src/components/GameDaySummary/GameDaySummary.tsx": 1,
+        "src/components/GoalieIndicator/GoalieIndicator.tsx": 4,
+        "src/components/PlayerForm/PlayerForm.tsx": 1,
+        "src/components/PlayerLink/PlayerLink.tsx": 1,
+        "src/components/Team/Team.tsx": 8,
+        "src/components/TeamPlayer/TeamPlayer.tsx": 8
+      }
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 63,
+      "user_lines_removed": 1,
+      "agent_lines_added": 98,
+      "agent_lines_removed": 181,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 58,
+        "src/components/GoalieIndicator/GoalieIndicator.tsx": 4
+      },
+      "user_removed_per_file": {
+        "src/components/GoalieIndicator/GoalieIndicator.tsx": 1
+      }
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 59,
+      "user_lines_removed": 0,
+      "agent_lines_added": 132,
+      "agent_lines_removed": 174,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 58
+      }
+    }
+  ]
+}

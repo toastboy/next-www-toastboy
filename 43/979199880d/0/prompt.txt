@@ -1,0 +1,17 @@
+Now I've popped the stash and I'm back on revising and hopefully simplifying the game day summary layout. I want it to fit on one screen on an iPhone 15 so it might mean having more 'nice to have' content such as the form only visible on larger screens.
+
+---
+
+On a phone screen viewport, there's more space below the player name than above and I'm having trouble working out why
+
+---
+
+How do I make the goalie indicator appear on the same line as the player name, appearing appended to the name directly to its right?
+
+---
+
+The updated test only verifies presence. Since the component behavior changed (inline indicator + tooltip), consider adding coverage for at least one of: tooltip text ('Goalie') on hover/focus, ensuring it doesn’t introduce an extra focus stop inside links, or verifying the expected number of hand icons renders. This will better protect the new inline rendering behavior from regressions.
+
+---
+
+There’s redundant/competing padding configuration here: p={0} and padding={0} do the same job, and inheritPadding is used on sections even though the parent padding is zero (and the second section also sets px/py). Consider removing duplication and using a single, consistent approach (either parent padding + inheritPadding, or explicit section padding without inheritPadding) to avoid confusing layout bugs later.

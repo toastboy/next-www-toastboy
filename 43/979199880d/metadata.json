@@ -1,0 +1,36 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "43979199880d",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 4,
+  "files_touched": [
+    "src/components/DebugBreakpoints/DebugBreakpoints.module.css",
+    "src/components/GameDaySummary/GameDaySummary.tsx",
+    "src/components/GoalieIndicator/GoalieIndicator.stories.tsx",
+    "src/components/GoalieIndicator/GoalieIndicator.tsx",
+    "src/components/GoalieIndicator/GoalieIndicator.vitest.spec.tsx",
+    "src/components/PlayerCard/PlayerCard.tsx",
+    "src/components/PlayerForm/PlayerForm.tsx",
+    "src/components/PlayerForm/PlayerForm.vitest.spec.tsx",
+    "src/components/PlayerLink/PlayerLink.tsx",
+    "src/components/Team/Team.tsx",
+    "src/components/TeamPlayer/TeamPlayer.tsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/43/979199880d/0/metadata.json",
+      "transcript": "/43/979199880d/0/full.jsonl",
+      "compact_transcript": "/43/979199880d/0/transcript.jsonl",
+      "content_hash": "/43/979199880d/0/content_hash.txt",
+      "prompt": "/43/979199880d/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 421,
+    "cache_creation_tokens": 709722,
+    "cache_read_tokens": 29872491,
+    "output_tokens": 100118,
+    "api_call_count": 211
+  }
+}

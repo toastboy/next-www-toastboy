@@ -21,7 +21,6 @@ export const Primary: Story = {
     args: {
         teamName: 'B',
         team: defaultTeamPlayerList,
-        maxTeamSize: defaultTeamPlayerList.length,
     },
     play: async ({ canvas }) => {
         // Each PlayerMugshot's <img> is aria-busy until ImageWithPlaceholder's

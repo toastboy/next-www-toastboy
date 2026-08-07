@@ -13,7 +13,7 @@ describe('Team', () => {
     it('renders team players', () => {
         render(
             <Wrapper>
-                <Team team={defaultTeamPlayerList} teamName="A" maxTeamSize={defaultTeamPlayerList.length} />
+                <Team team={defaultTeamPlayerList} teamName="A" />
             </Wrapper>,
         );
 
@@ -25,7 +25,7 @@ describe('Team', () => {
     it('renders a heading with accessible team name when teamName is provided', () => {
         render(
             <Wrapper>
-                <Team team={defaultTeamPlayerList} teamName="A" maxTeamSize={defaultTeamPlayerList.length} />
+                <Team team={defaultTeamPlayerList} teamName="A" />
             </Wrapper>,
         );
 
@@ -39,7 +39,6 @@ describe('Team', () => {
                 <Team
                     team={defaultTeamPlayerList}
                     teamName="A"
-                    maxTeamSize={defaultTeamPlayerList.length}
                     hasBibs={true}
                 />
             </Wrapper>,
@@ -54,7 +53,6 @@ describe('Team', () => {
                 <Team
                     team={defaultTeamPlayerList}
                     teamName="A"
-                    maxTeamSize={defaultTeamPlayerList.length}
                     result="win"
                 />
             </Wrapper>,
@@ -69,7 +67,6 @@ describe('Team', () => {
                 <Team
                     team={defaultTeamPlayerList}
                     teamName="A"
-                    maxTeamSize={defaultTeamPlayerList.length}
                     result="loss"
                 />
             </Wrapper>,
@@ -84,7 +81,6 @@ describe('Team', () => {
                 <Team
                     team={defaultTeamPlayerList}
                     teamName="A"
-                    maxTeamSize={defaultTeamPlayerList.length}
                     result="draw"
                 />
             </Wrapper>,
@@ -96,7 +92,7 @@ describe('Team', () => {
     it('shows "No players selected." when team is empty', () => {
         render(
             <Wrapper>
-                <Team team={[]} teamName="A" maxTeamSize={0} />
+                <Team team={[]} teamName="A" />
             </Wrapper>,
         );
 

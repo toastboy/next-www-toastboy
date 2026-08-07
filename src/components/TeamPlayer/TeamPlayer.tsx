@@ -22,20 +22,42 @@ export const TeamPlayer = ({ teamPlayer }: Props) => (
     // sections collapse to a few px tall. `p` (the generic style prop) is
     // needed too: `padding` is stripped before Card forwards its remaining
     // props to the underlying Paper, whose project-wide default is p="xl".
-    <Card p={0} padding={0} withBorder orientation="horizontal">
-        <Card.Section w={{ base: "2.0rem", xs: "5.5rem" }}>
+    <Card
+        p={0}
+        padding={0}
+        withBorder
+        orientation="horizontal"
+    >
+        <Card.Section
+            w={{ base: "2.0rem", xs: "5.5rem" }}
+        >
             <PlayerMugshot
                 player={teamPlayer}
             />
         </Card.Section>
 
-        <Card.Section px="md" py={2}>
-            <Flex direction={{ base: "row", xs: "column" }} justify="center" h="100%">
+        <Card.Section
+            px="md"
+            py={2}
+            flex={1}
+        >
+            <Flex
+                align="center"
+                direction={{ base: "row", xs: "column" }}
+                justify={{ base: "space-between", xs: "center" }}
+                h="100%"
+            >
                 <Group align="center" gap="xs">
-                    <PlayerLink player={teamPlayer} year={0} wrap goalie={teamPlayer.outcome.goalie} />
-                    {/* {teamPlayer.outcome.goalie ? <GoalieIndicator /> : null} */}
+                    <PlayerLink
+                        player={teamPlayer}
+                        year={0}
+                        wrap
+                        goalie={teamPlayer.outcome.goalie}
+                    />
                 </Group>
-                <PlayerForm form={teamPlayer.form} />
+                <PlayerForm
+                    form={teamPlayer.form}
+                />
             </Flex>
         </Card.Section>
     </Card>

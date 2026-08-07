@@ -39,7 +39,13 @@ export const PlayerForm = ({ form }: Props) => {
     if (form.length === 0) return null;
 
     return (
-        <Flex gap="0.2rem" justify="center" wrap="wrap" mt="sm">
+        <Flex
+            align="center"
+            gap="0.2rem"
+            justify="center"
+            wrap="wrap"
+            mt={{ base: 0, xs: "sm" }}
+        >
             {form.map((data, i) => {
                 // Padding entry: no associated game day, just a grey placeholder.
                 if (!data.gameDay) {

@@ -1,0 +1,129 @@
+Check that you can use Claude in Chrome successfully
+
+---
+
+Back to my next-www-toastboy work. When in single-line mode on small viewport widths, I want the game day summary page to put the player names on the left of the card section (including any goalie indicator as if it were part of the name text) and put the form indicators on the right.
+
+---
+
+<task-notification>
+<task-id>adc8f9dc32ea45eef</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/36068b2a-2922-4c10-93ef-d352aacef560/tasks/adc8f9dc32ea45eef.output</output-file>
+<status>completed</status>
+<summary>Agent "Find game day summary card layout code" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>I now have everything needed for a focused report.
+
+## Summary
+
+**1. Game day summary page**
+`/Volumes/Development/next-www-toastboy/src/app/footy/game/[id]/page.tsx` (server component) renders `&lt;GameDaySummary .../&gt;` (lines 108–127) with `teamA`/`teamB` roster data.
+
+**2. Component chain for a single player's row/card**
+
+`GameDaySummary` → `Team` (one per side) → `TeamPlayer` (one per player) → `PlayerLink` + `PlayerForm` + `GoalieIndicator`.
+
+- `/Volumes/Development/next-www-toastboy/src/components/GameDaySummary/GameDaySummary.tsx` — renders two `&lt;Team&gt;` in a `Flex direction={{ base: "column", xs: "row" }}` (line ~59).
+- `/Volumes/Development/next-www-toastboy/src/components/Team/Team.tsx` — maps `team` array to `&lt;TeamPlayer key={p.id} teamPlayer={p} /&gt;` inside a `Flex direction="column" gap="xs"` (~line 55–63).
+- `/Volumes/Development/next-www-toastboy/src/components/TeamPlayer/TeamPlayer.tsx` — **the player card itself**, full file:
+
+```tsx
+export const TeamPlayer = ({ teamPlayer }: Props) =&gt; (
+    &lt;Card p={0} padding={0} withBorder orientation="horizontal"&gt;
+        &lt;Card.Section w={{ base: "2.0rem", xs: "5.5rem" }}&gt;
+            &lt;PlayerMugshot player={teamPlayer} /&gt;
+        &lt;/Card.Section&gt;
+
+        &lt;Card.Section px="md" py={2} flex={1}&gt;
+            &lt;Flex
+                align="center"
+                direction={{ base: "row", xs: "column" }}
+                justify={{ base: "flex-end", xs: "center" }}
+                h="100%"
+            &gt;
+                &lt;Group align="center" gap="xs"&gt;
+                    &lt;PlayerLink
+                        player={teamPlayer}
+                        year={0}
+                        wrap
+                        goalie={teamPlayer.outcome.goalie}
+                    /&gt;
+                &lt;/Group&gt;
+                &lt;PlayerForm form={teamPlayer.form} /&gt;
+            &lt;/Flex&gt;
+        &lt;/Card.Section&gt;
+    &lt;/Card&gt;
+);
+```
+
+This is the layout to modify. Structure: `Card` (horizontal) → mugshot section (width breakpoint 2rem/5.5rem) + content section containing a `Flex` whose `direction` flips `row` at `base` (narrow) vs `column` at `xs`+ (wider) — i.e. name+form sit side-by-side on narrow screens and stacked on wider screens. Inside that `Flex` is a `Group` wrapping `PlayerLink` (name+goalie), then sibling `PlayerForm` (WDL badges).
+
+**3. Responsive/"single-line mode" logic**
+
+- `TeamPlayer.tsx` line ~34: `direction={{ base: "row", xs: "column" }}` and `justify={{ base: "flex-end", xs: "center" }}` — Mantine responsive props object (no `useMediaQuery` hook used; it's CSS-breakpoint driven via Mantine's style props).
+- `Team.tsx`/`GameDaySummary.tsx` also use `{ base: ..., xs: ... }` responsive prop objects for stacking teams (column on mobile, row from `xs` up).
+- `PlayerLink.tsx` has a `wrap` prop controlling `miw` (min-width): `wrap` (multi-line, used here by `TeamPlayer`) → `theme.other.playerNameMinWidthMultiLine` = `"9em"`; non-wrap (single-line) → `theme.other.playerNameMinWidthSingleLine` = `"18em"`. These tokens are declared in `/Volumes/Development/next-www-toastboy/src/theme.ts` (lines 11–12). Note: `TeamPlayer` currently always passes `wrap` (true) to `PlayerLink`, i.e. it always uses the multi-line/narrower min-width regardless of card layout direction — worth checking if that's intended when you add true single-line-mode behavior.
+- No `useMediaQuery` hook is used anywhere in this card chain; all responsiveness is via Mantine's `{ base, xs, ... }` prop objects (default Mantine breakpoints, `xs` = 36em/576px unless overridden — no custom breakpoints found in `theme.ts`).
+- `PlayerForm.tsx` uses `Flex gap="0.2rem" justify="center" wrap="wrap" mt="sm"` for its badges — the badges themselves can wrap onto multiple lines if the row gets crowded (no breakpoint-specific logic here, just flex-wrap).
+
+**4. Goalie indicator**
+
+`/Volumes/Development/next-www-toastboy/src/components/GoalieIndicator/GoalieIndicator.tsx` — a `Tooltip` wrapping a `Flex` (`display="inline-flex"`, `ms="0.25rem"`) with two `IconHandStop` icons (one mirrored) rendered as clapping hands.
+
+It's rendered **inside** the `PlayerLink` `&lt;Anchor&gt;`, immediately after the player name text, at `/Volumes/Development/next-www-toastboy/src/components/PlayerLink/PlayerLink.tsx` lines 70–88:
+
+```tsx
+const link = (
+    &lt;Anchor href={...} aria-label={ariaLabel} miw={miw}&gt;
+        {(() =&gt; { ... return player.name; ... })()}
+        {goalie ? &lt;GoalieIndicator /&gt; : null}
+    &lt;/Anchor&gt;
+);
+```
+
+So goalie indicator is a sibling node right after the name text node, inside the same `Anchor`, spaced via its own `ms="0.25rem"` (margin-inline-start). `TeamPlayer.tsx` passes `goalie={teamPlayer.outcome.goalie}` into `PlayerLink`, which conditionally renders `GoalieIndicator`.
+
+**Key files/lines to touch for narrow-viewport layout changes:**
+- `src/components/TeamPlayer/TeamPlayer.tsx` (lines ~30–46) — outer `Flex` direction/justify breakpoints and the `Group`/`PlayerForm` siblings.
+- `src/components/PlayerLink/PlayerLink.tsx` (lines 44–88, esp. `wrap` prop usage at 58–60 and goalie render at 86).
+- `src/components/GoalieIndicator/GoalieIndicator.tsx` (whole file, ~35 lines) if the indicator itself needs restyling for narrow widths.
+- `src/components/PlayerForm/PlayerForm.tsx` (whole file, ~78 lines) for the WDL badge row.
+- `src/theme.ts` (lines 10–13) for the min-width tokens if you need a third "true single-line" width tier.</result>
+<usage><subagent_tokens>30604</subagent_tokens><tool_uses>11</tool_uses><duration_ms>52029</duration_ms></usage>
+</task-notification>
+
+---
+
+Check with Claude in Chrome that the layout works as expected
+
+---
+
+Next, I want the player form as a whole to be centered vertically (lined up with the name) on <xs layouts (one line cards) AND for each badge in the player form series to be centered vertically on all layouts, i.e. for the dots to be aligned so their vertical centers are in a line.
+
+---
+
+/code-review
+
+---
+
+<task-notification>
+<task-id>a876649494a41fbaf</task-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/36068b2a-2922-4c10-93ef-d352aacef560/tasks/a876649494a41fbaf.output</output-file>
+<status>completed</status>
+<summary>Agent "/code-review" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>All 8 finder angles have reported back. They converged unanimously on a single finding — every angle independently confirmed the same issue via static analysis, `tsc`/`eslint` checks, and `git log -p` verification that the comment was deliberately authored (not boilerplate). No other correctness, cross-file, reuse, simplification, efficiency, altitude, or CLAUDE.md-conventions issues survived verification. This is Phase 2-verified: CONFIRMED (props themselves are unchanged and correct in the diff; only the explanatory documentation was dropped).
+
+```json
+[
+  {
+    "file": "src/components/TeamPlayer/TeamPlayer.tsx",
+    "line": 20,
+    "summary": "The diff deletes the only comment explaining why `Card` needs both `p={0}` and `padding={0}` simultaneously, losing documentation of a non-obvious Mantine workaround while leaving the two seemingly-redundant props in place.",
+    "failure_scenario": "A future editor sees `p={0} padding={0}` as an apparent duplicate and drops one during a cleanup. Removing `padding` stops `--card-padding` being zeroed, so `Card.Section`'s horizontal-orientation negative-margin layout collapses to a few px tall; removing `p` lets `Paper`'s project-wide default `p=\"xl\"` leak back in (since `padding` is stripped before `Card` forwards remaining props to `Paper`). This is the same category of hard-won Mantine footgun this codebase has already been bitten by once (the dot-notation Server Component bug documented in CLAUDE.md) — the only warning against repeating the mistake is now gone."
+  }
+]
+```</result>
+<usage><subagent_tokens>76222</subagent_tokens><tool_uses>76</tool_uses><duration_ms>238183</duration_ms></usage>
+</task-notification>

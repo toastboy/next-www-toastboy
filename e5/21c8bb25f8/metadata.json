@@ -1,0 +1,27 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "e521c8bb25f8",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 6,
+  "files_touched": [
+    "src/components/PlayerForm/PlayerForm.tsx",
+    "src/components/TeamPlayer/TeamPlayer.tsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/e5/21c8bb25f8/0/metadata.json",
+      "transcript": "/e5/21c8bb25f8/0/full.jsonl",
+      "compact_transcript": "/e5/21c8bb25f8/0/transcript.jsonl",
+      "content_hash": "/e5/21c8bb25f8/0/content_hash.txt",
+      "prompt": "/e5/21c8bb25f8/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 147,
+    "cache_creation_tokens": 170237,
+    "cache_read_tokens": 5379428,
+    "output_tokens": 19983,
+    "api_call_count": 74
+  }
+}

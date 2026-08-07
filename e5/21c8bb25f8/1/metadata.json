@@ -1,0 +1,179 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "e521c8bb25f8",
+  "session_id": "a86654cd-940d-468b-8d0f-161de842c8aa",
+  "strategy": "manual-commit",
+  "created_at": "2026-08-07T06:59:32.939617Z",
+  "branch": "main",
+  "checkpoints_count": 3,
+  "save_step_count": 3,
+  "files_touched": [
+    "src/components/TeamPlayer/TeamPlayer.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "737d973dcbbe",
+  "checkpoint_transcript_start": 819,
+  "transcript_lines_at_start": 819,
+  "compact_transcript_start": 224,
+  "token_usage": {
+    "input_tokens": 58,
+    "cache_creation_tokens": 278440,
+    "cache_read_tokens": 7800901,
+    "output_tokens": 28358,
+    "api_call_count": 29
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_0132TKfR2Q1CjdayNMvfHcvs",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "run"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "737d973dcbbe",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 235,
+        "end": 236,
+        "entry_ids": [
+          "830dcef2-efcb-48a1-8abd-2256a45cab14"
+        ],
+        "tool_use_id": "toolu_0132TKfR2Q1CjdayNMvfHcvs"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_0132TKfR2Q1CjdayNMvfHcvs"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: run",
+        "default_collapsed": true
+      }
+    },
+    {
+      "id": "claude-skill-toolu_01WGSNFKyHDPM7gFirCXWbhx",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "claude-in-chrome"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "737d973dcbbe",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 253,
+        "end": 254,
+        "entry_ids": [
+          "26bb1ef9-00cd-4839-bc41-ccb5edfab02a"
+        ],
+        "tool_use_id": "toolu_01WGSNFKyHDPM7gFirCXWbhx"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01WGSNFKyHDPM7gFirCXWbhx"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: claude-in-chrome",
+        "default_collapsed": true
+      }
+    },
+    {
+      "id": "claude-skill-toolu_01Ski29b968Q5zFV6w2NZCBu",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "claude-in-chrome"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "737d973dcbbe",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 928,
+        "end": 929,
+        "entry_ids": [
+          "fad195b7-6d28-4eb0-9330-c1186bf06895"
+        ],
+        "tool_use_id": "toolu_01Ski29b968Q5zFV6w2NZCBu"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01Ski29b968Q5zFV6w2NZCBu"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: claude-in-chrome",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 7
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-08-07T06:59:32.583685Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 14,
+    "total_committed": 0,
+    "total_lines_changed": 14,
+    "agent_percentage": 0,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 89,
+      "user_lines_removed": 12,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 58,
+        "src/components/TeamPlayer/TeamPlayer.tsx": 30
+      },
+      "user_removed_per_file": {
+        "src/components/TeamPlayer/TeamPlayer.tsx": 12
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 59,
+      "user_lines_removed": 0,
+      "agent_lines_added": 30,
+      "agent_lines_removed": 12,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 58
+      }
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 59,
+      "user_lines_removed": 2,
+      "agent_lines_added": 31,
+      "agent_lines_removed": 12,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 58
+      },
+      "user_removed_per_file": {
+        "src/components/TeamPlayer/TeamPlayer.tsx": 2
+      }
+    }
+  ]
+}

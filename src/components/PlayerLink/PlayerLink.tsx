@@ -2,6 +2,8 @@
 
 import {
     Anchor,
+    MantineBreakpoint,
+    MantineStyleProps,
     Tooltip,
     useMantineTheme,
 } from '@mantine/core';
@@ -22,6 +24,12 @@ import { GoalieIndicator } from '@/components/GoalieIndicator/GoalieIndicator';
  *   - 'right-arrow': Displays a right arrow icon, indicating a link to the next player
  * @param wrap - Whether the player's name may wrap onto multiple lines (default: false,
  *   i.e. the link gets enough min-width to keep a typical name on one line)
+ * @param ta - Text alignment for the name (and goalie indicator, which shares its line),
+ *   forwarded to the underlying Anchor (optional, supports Mantine responsive values)
+ * @param w - Width forwarded to the underlying Anchor (optional, supports Mantine
+ *   responsive values); combine with `ta` to centre the name within a wider container
+ * @param goalieHiddenFrom - Breakpoint above which the inline goalie indicator is hidden
+ *   (optional); use when the goalie indicator is shown elsewhere at that breakpoint instead
  * @returns A React element representing the formatted player link
  * @example
  * <PlayerLink player={player} year={2024} format="name" />
@@ -39,6 +47,9 @@ export interface Props {
     format?: 'name' | 'left-arrow' | 'right-arrow';
     wrap?: boolean;
     goalie?: boolean | null | undefined;
+    ta?: MantineStyleProps['ta'];
+    w?: MantineStyleProps['w'];
+    goalieHiddenFrom?: MantineBreakpoint;
 }
 
 export const PlayerLink = ({
@@ -47,6 +58,9 @@ export const PlayerLink = ({
     format = 'name',
     wrap = false,
     goalie = false,
+    ta,
+    w,
+    goalieHiddenFrom,
 }: Props) => {
     const theme = useMantineTheme();
     let ariaLabel: string | undefined;
@@ -72,6 +86,8 @@ export const PlayerLink = ({
             href={`/footy/player/${player.id}${year ? `/${year}` : ''}`}
             aria-label={ariaLabel}
             miw={miw}
+            ta={ta}
+            w={w}
         >
             {(() => {
                 switch (format) {
@@ -83,7 +99,7 @@ export const PlayerLink = ({
                         return <IconArrowBigRightLine aria-hidden />;
                 }
             })()}
-            {goalie ? <GoalieIndicator /> : null}
+            {goalie ? <GoalieIndicator hiddenFrom={goalieHiddenFrom} /> : null}
         </Anchor>
     );
 

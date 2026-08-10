@@ -2,10 +2,12 @@
 
 import {
     Card,
+    Divider,
     Flex,
     Group,
 } from '@mantine/core';
 
+import { GoalieIndicator } from '@/components/GoalieIndicator/GoalieIndicator';
 import { PlayerForm } from '@/components/PlayerForm/PlayerForm';
 import { PlayerLink } from '@/components/PlayerLink/PlayerLink';
 import { PlayerMugshot } from '@/components/PlayerMugshot/PlayerMugshot';
@@ -47,14 +49,28 @@ export const TeamPlayer = ({ teamPlayer }: Props) => (
                 justify={{ base: "space-between", xs: "center" }}
                 h="100%"
             >
-                <Group align="center" gap="xs">
+                <Group
+                    align="center"
+                    gap="xs"
+                    w={{ base: "auto", xs: "100%" }}
+                >
                     <PlayerLink
                         player={teamPlayer}
                         year={0}
                         wrap
                         goalie={teamPlayer.outcome.goalie}
+                        goalieHiddenFrom="xs"
+                        ta={{ base: "left", xs: "center" }}
+                        w={{ base: "auto", xs: "100%" }}
                     />
                 </Group>
+                <Divider
+                    visibleFrom="xs"
+                    w="75%"
+                    mt="xs"
+                    mb={0}
+                    label={teamPlayer.outcome.goalie ? <GoalieIndicator inline={false} /> : undefined}
+                />
                 <PlayerForm
                     form={teamPlayer.form}
                 />

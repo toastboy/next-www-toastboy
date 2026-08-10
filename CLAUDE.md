@@ -76,6 +76,10 @@ npx vitest run --config vitest.services.config.ts path/to/test.ts
 
 - `@types/d3` is listed in `devDependencies` and `ignoreDependencies` in `knip.json` even though no code imports from `d3` directly. It is kept because it pulls in all the individual `@types/d3-*` sub-packages (e.g. `@types/d3-array`, `@types/d3-axis`) as transitive npm dependencies — removing it silently removes all those type declarations.
 
+### Library usage
+
+When figuring out how to call a library (Mantine, Prisma, Next.js, etc.) — API shape, available props, intended usage pattern — prefer the public documentation over reading the source in `node_modules`. Relying on the source risks depending on undocumented behaviour or implementation details that can change without notice in a patch release. This doesn't apply when actually debugging a concrete issue (e.g. tracing an unexpected error or runtime behaviour) — reading the installed source is often the fastest way to find the real cause there, as with the Mantine Server Component bug documented below.
+
 ### Imports
 
 - **Always** use `@/` alias instead of `../../` relative imports

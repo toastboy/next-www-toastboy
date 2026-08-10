@@ -1,0 +1,5 @@
+Start work on SYS-598
+
+---
+
+I think it would be simpler to drop the Mantine-specific rule and just let Prettier format the imports like any other.

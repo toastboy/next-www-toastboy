@@ -6,7 +6,7 @@ import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
 import { UserButton } from '@/components/UserButton/UserButton';
-import { Wrapper } from '@/tests/components/lib/common';
+import { mockRouter, Wrapper } from '@/tests/components/lib/common';
 
 describe('UserButton', () => {
     let push: Mock;
@@ -15,14 +15,7 @@ describe('UserButton', () => {
         // Reset URL between tests to avoid bleed-over when components change location
         window.history.pushState({}, '', '/');
         push = vi.fn();
-        vi.mocked(useRouter).mockReturnValue({
-            push,
-            replace: vi.fn(),
-            back: vi.fn(),
-            forward: vi.fn(),
-            refresh: vi.fn(),
-            prefetch: vi.fn(),
-        });
+        vi.mocked(useRouter).mockReturnValue(mockRouter({ push }));
     });
 
     it('renders sign in button with no session present', async () => {
@@ -209,14 +202,7 @@ describe('UserButton', () => {
     it('calls sign-out API and refreshes the router on success', async () => {
         const user = userEvent.setup();
         const refresh = vi.fn();
-        vi.mocked(useRouter).mockReturnValue({
-            push,
-            replace: vi.fn(),
-            back: vi.fn(),
-            forward: vi.fn(),
-            refresh,
-            prefetch: vi.fn(),
-        });
+        vi.mocked(useRouter).mockReturnValue(mockRouter({ push, refresh }));
         const notificationUpdateSpy = vi.spyOn(notifications, 'update');
         vi.spyOn(global, 'fetch').mockResolvedValue(
             new Response(null, { status: 200 }),
@@ -289,14 +275,7 @@ describe('UserButton', () => {
     it('calls stop-impersonating API and refreshes router on success', async () => {
         const user = userEvent.setup();
         const refresh = vi.fn();
-        vi.mocked(useRouter).mockReturnValue({
-            push,
-            replace: vi.fn(),
-            back: vi.fn(),
-            forward: vi.fn(),
-            refresh,
-            prefetch: vi.fn(),
-        });
+        vi.mocked(useRouter).mockReturnValue(mockRouter({ push, refresh }));
         vi.spyOn(global, 'fetch').mockResolvedValue(
             new Response(null, { status: 200 }),
         );

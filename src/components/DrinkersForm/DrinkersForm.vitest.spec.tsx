@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { vi } from 'vitest';
 
 import { DrinkersForm } from '@/components/DrinkersForm/DrinkersForm';
-import { Wrapper } from '@/tests/components/lib/common';
+import { mockRouter, Wrapper } from '@/tests/components/lib/common';
 import { defaultDrinkersData } from '@/tests/mocks/data/drinkers';
 import type { SetDrinkersProxy } from '@/types/actions/SetDrinkers';
 import type { OutcomePlayerType } from '@/types/OutcomePlayerType';
@@ -45,14 +45,9 @@ describe('DrinkersForm', () => {
     beforeEach(() => {
         vi.useFakeTimers({ shouldAdvanceTime: true });
         vi.clearAllMocks();
-        vi.mocked(useRouter).mockReturnValue({
-            push: vi.fn(),
-            back: vi.fn(),
-            forward: vi.fn(),
-            refresh: refreshMock,
-            replace: vi.fn(),
-            prefetch: vi.fn(),
-        });
+        vi.mocked(useRouter).mockReturnValue(
+            mockRouter({ refresh: refreshMock }),
+        );
     });
 
     afterEach(() => {

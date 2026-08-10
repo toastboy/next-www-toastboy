@@ -169,6 +169,18 @@ const config = [
             'eol-last': ['error', 'always'],
             'operator-linebreak': ['error', 'after'],
             // Import hygiene
+            'no-restricted-imports': [
+                'error',
+                {
+                    patterns: [
+                        {
+                            group: ['../*'],
+                            message:
+                                "Use the '@/' alias (or 'prisma/', '@root/') rather than a parent-relative import. Same-directory './' imports are fine.",
+                        },
+                    ],
+                },
+            ],
             'import-x/no-unresolved': 'error',
             'import-x/no-duplicates': 'error',
             'import-x/namespace': 'error',
@@ -374,6 +386,15 @@ const config = [
         },
         rules: {
             'local/require-use-client': 'error',
+        },
+    },
+    // A mock lives inside the directory of the module it mocks and imports that
+    // module's types from one level up ('../Foo'). That is the same-directory
+    // case in spirit, so the parent-relative import ban does not apply here.
+    {
+        files: ['**/__mocks__/**'],
+        rules: {
+            'no-restricted-imports': 'off',
         },
     },
     ...storybook.configs['flat/recommended'],

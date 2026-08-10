@@ -3,7 +3,7 @@
 import { Box, Flex } from '@mantine/core';
 import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 
-import { GameDayLink } from '../GameDayLink/GameDayLink';
+import { GameDayLink } from '@/components/GameDayLink/GameDayLink';
 
 export interface Props {
     gameDay: GameDayType;

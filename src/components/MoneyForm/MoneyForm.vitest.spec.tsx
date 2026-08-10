@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { vi } from 'vitest';
 
 import { MoneyForm } from '@/components/MoneyForm/MoneyForm';
-import { Wrapper } from '@/tests/components/lib/common';
+import { mockRouter, Wrapper } from '@/tests/components/lib/common';
 import { createMockGameDay } from '@/tests/mocks/data/gameDay';
 import {
     createMockDebtsSummary,
@@ -51,14 +51,9 @@ describe('MoneyForm', () => {
     beforeEach(() => {
         vi.useFakeTimers({ shouldAdvanceTime: true });
         vi.clearAllMocks();
-        vi.mocked(useRouter).mockReturnValue({
-            push: vi.fn(),
-            back: vi.fn(),
-            forward: vi.fn(),
-            refresh: refreshMock,
-            replace: vi.fn(),
-            prefetch: vi.fn(),
-        });
+        vi.mocked(useRouter).mockReturnValue(
+            mockRouter({ refresh: refreshMock }),
+        );
     });
 
     afterEach(() => {

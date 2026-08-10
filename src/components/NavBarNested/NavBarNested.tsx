@@ -2,10 +2,10 @@
 
 import { Box, ScrollArea } from '@mantine/core';
 
+import { NavBarLinksGroup } from '@/components/NavBarLinksGroup/NavBarLinksGroup';
 import { UserButton } from '@/components/UserButton/UserButton';
 import { AuthUserSummary } from '@/types/AuthUser';
 
-import { NavBarLinksGroup } from '../NavBarLinksGroup/NavBarLinksGroup';
 import classes from './NavBarNested.module.css';
 
 export interface Props {

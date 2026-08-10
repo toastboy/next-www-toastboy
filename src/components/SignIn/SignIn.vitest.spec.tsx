@@ -10,19 +10,12 @@ import {
     signInWithGoogle,
     signInWithMicrosoft,
 } from '@/lib/auth.client';
-import { Wrapper } from '@/tests/components/lib/common';
+import { mockRouter, Wrapper } from '@/tests/components/lib/common';
 
 describe('SignIn', () => {
     beforeEach(() => {
         vi.useFakeTimers({ shouldAdvanceTime: true });
-        vi.mocked(useRouter).mockReturnValue({
-            push: vi.fn(),
-            replace: vi.fn(),
-            back: vi.fn(),
-            forward: vi.fn(),
-            refresh: vi.fn(),
-            prefetch: vi.fn(),
-        });
+        vi.mocked(useRouter).mockReturnValue(mockRouter());
         vi.mocked(usePathname).mockReturnValue('/footy/auth/signin');
     });
 

@@ -1,8 +1,13 @@
 import { MantineProvider } from '@mantine/core';
 import { screen } from '@testing-library/react';
+import type { useRouter } from 'next/navigation';
 import { ReactNode } from 'react';
+import { vi } from 'vitest';
 
 import { theme } from '@/theme';
+
+/** The App Router instance returned by `useRouter`. */
+type AppRouter = ReturnType<typeof useRouter>;
 
 interface WrapperProps {
     children?: ReactNode;
@@ -42,6 +47,31 @@ export const Wrapper = ({ children }: WrapperProps) => {
         </MantineProvider>
     );
 };
+
+/**
+ * Builds a complete mock App Router for `vi.mocked(useRouter).mockReturnValue`.
+ * Every method is a fresh `vi.fn()` so tests only need to name the ones they
+ * assert on. Centralising the shape here means a Next.js release that adds a
+ * member to the router interface is a one-line fix rather than an edit to every
+ * spec that mocks it.
+ *
+ * @param overrides - Router members to replace, typically the spy under test.
+ * @returns A router object satisfying the full `useRouter` return type.
+ *
+ * @example
+ * const push = vi.fn();
+ * vi.mocked(useRouter).mockReturnValue(mockRouter({ push }));
+ */
+export const mockRouter = (overrides: Partial<AppRouter> = {}): AppRouter => ({
+    push: vi.fn(),
+    replace: vi.fn(),
+    back: vi.fn(),
+    forward: vi.fn(),
+    refresh: vi.fn(),
+    prefetch: vi.fn(),
+    bfcacheId: '',
+    ...overrides,
+});
 
 /**
  * Extracts and parses props from a rendered element's text content. Each

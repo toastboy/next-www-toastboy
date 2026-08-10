@@ -6,7 +6,7 @@ import { vi } from 'vitest';
 
 import { EnquiryForm } from '@/components/EnquiryForm/EnquiryForm';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
-import { Wrapper } from '@/tests/components/lib/common';
+import { mockRouter, Wrapper } from '@/tests/components/lib/common';
 import { SendEnquiryProxy } from '@/types/actions/SendEnquiry';
 
 vi.mock('@/lib/observability/sentry', () => ({
@@ -25,14 +25,7 @@ describe('EnquiryForm', () => {
         vi.clearAllMocks();
         vi.mocked(useSearchParams).mockReturnValue(mockParams());
         vi.mocked(usePathname).mockReturnValue('/footy/contact');
-        vi.mocked(useRouter).mockReturnValue({
-            push: vi.fn(),
-            replace: vi.fn(),
-            back: vi.fn(),
-            forward: vi.fn(),
-            refresh: vi.fn(),
-            prefetch: vi.fn(),
-        });
+        vi.mocked(useRouter).mockReturnValue(mockRouter());
     });
 
     it('renders the form fields', async () => {
@@ -119,14 +112,7 @@ describe('EnquiryForm', () => {
 
     it('shows success notification and cleans URL when enquiry=verified in params', async () => {
         const replace = vi.fn();
-        vi.mocked(useRouter).mockReturnValue({
-            replace,
-            push: vi.fn(),
-            back: vi.fn(),
-            forward: vi.fn(),
-            refresh: vi.fn(),
-            prefetch: vi.fn(),
-        });
+        vi.mocked(useRouter).mockReturnValue(mockRouter({ replace }));
         vi.mocked(useSearchParams).mockReturnValue(
             mockParams('enquiry=verified'),
         );
@@ -154,14 +140,7 @@ describe('EnquiryForm', () => {
 
     it('shows error notification and cleans URL when enquiry=error in params', async () => {
         const replace = vi.fn();
-        vi.mocked(useRouter).mockReturnValue({
-            replace,
-            push: vi.fn(),
-            back: vi.fn(),
-            forward: vi.fn(),
-            refresh: vi.fn(),
-            prefetch: vi.fn(),
-        });
+        vi.mocked(useRouter).mockReturnValue(mockRouter({ replace }));
         vi.mocked(useSearchParams).mockReturnValue(
             mockParams('enquiry=error&error=Could+not+verify'),
         );
@@ -190,14 +169,7 @@ describe('EnquiryForm', () => {
 
     it('shows fallback error message when enquiry=error but no error param', async () => {
         const replace = vi.fn();
-        vi.mocked(useRouter).mockReturnValue({
-            replace,
-            push: vi.fn(),
-            back: vi.fn(),
-            forward: vi.fn(),
-            refresh: vi.fn(),
-            prefetch: vi.fn(),
-        });
+        vi.mocked(useRouter).mockReturnValue(mockRouter({ replace }));
         vi.mocked(useSearchParams).mockReturnValue(mockParams('enquiry=error'));
         const showSpy = vi.spyOn(notifications, 'show');
 
@@ -223,14 +195,7 @@ describe('EnquiryForm', () => {
 
     it('preserves remaining search params when cleaning up enquiry status', async () => {
         const replace = vi.fn();
-        vi.mocked(useRouter).mockReturnValue({
-            replace,
-            push: vi.fn(),
-            back: vi.fn(),
-            forward: vi.fn(),
-            refresh: vi.fn(),
-            prefetch: vi.fn(),
-        });
+        vi.mocked(useRouter).mockReturnValue(mockRouter({ replace }));
         vi.mocked(useSearchParams).mockReturnValue(
             mockParams('enquiry=verified&tab=info'),
         );

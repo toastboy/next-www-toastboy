@@ -14,7 +14,8 @@
         "target": "es2022",
         "paths": {
             "@/*": ["./src/*"],
-            "prisma/*": ["./prisma/*"]
+            "prisma/*": ["./prisma/*"],
+            "@root/*": ["./*"]
         },
         "plugins": [
             {

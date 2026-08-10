@@ -3,7 +3,7 @@
 import { Paper, SimpleGrid, Text } from '@mantine/core';
 import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 
-import { GameDayIndicator } from '../GameDayIndicator/GameDayIndicator';
+import { GameDayIndicator } from '@/components/GameDayIndicator/GameDayIndicator';
 
 export interface Props {
     gameDays: GameDayType[];

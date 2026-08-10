@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { vi } from 'vitest';
 
 import { InvoiceForm } from '@/components/InvoiceForm/InvoiceForm';
-import { Wrapper } from '@/tests/components/lib/common';
+import { mockRouter, Wrapper } from '@/tests/components/lib/common';
 
 const { notificationsShowMock, notificationsUpdateMock } = vi.hoisted(() => ({
     notificationsShowMock: vi.fn(),
@@ -49,14 +49,7 @@ const renderForm = ({
 describe('InvoiceForm', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(useRouter).mockReturnValue({
-            push: mockPush,
-            back: vi.fn(),
-            forward: vi.fn(),
-            refresh: vi.fn(),
-            replace: vi.fn(),
-            prefetch: vi.fn(),
-        });
+        vi.mocked(useRouter).mockReturnValue(mockRouter({ push: mockPush }));
     });
 
     it('renders the heading and current month', () => {

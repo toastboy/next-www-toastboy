@@ -11,6 +11,7 @@ import {
 import { select } from 'd3-selection';
 import { linkRadial } from 'd3-shape';
 import { type D3ZoomEvent, zoom, zoomIdentity } from 'd3-zoom';
+import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { FamilyTreeNodeType } from '@/types';
@@ -73,6 +74,7 @@ const RADIUS_MAX_MULTIPLIER = 4;
  * @see https://observablehq.com/@d3/radial-tree/2
  */
 export const FamilyTree = ({ data }: Props) => {
+    const router = useRouter();
     const containerRef = useRef<HTMLDivElement>(null);
     const svgRef = useRef<SVGSVGElement>(null);
     /** Currently hovered node position + name for the Mantine Tooltip. */
@@ -277,9 +279,9 @@ export const FamilyTree = ({ data }: Props) => {
         })
             .on('mouseleave', () => setTooltip(null))
             .on('click', (_event, d) => {
-                window.location.href = `/footy/player/${d.data.id}`;
+                router.push(`/footy/player/${d.data.id}`);
             });
-    }, [data, width, height]);
+    }, [data, width, height, router]);
 
     return (
         <Paper

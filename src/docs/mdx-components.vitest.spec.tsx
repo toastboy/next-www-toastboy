@@ -1,12 +1,11 @@
 import { evaluate } from '@mdx-js/mdx';
+// mdx-components.tsx is a Next.js root-level convention file; @/ only covers src/
+import { useMDXComponents } from '@root/mdx-components';
 import { render, screen } from '@testing-library/react';
 import React from 'react';
 import { Fragment, jsx, jsxs } from 'react/jsx-runtime';
 
 import { Wrapper } from '@/tests/components/lib/common';
-
-// mdx-components.tsx is a Next.js root-level convention file; @/ only covers src/
-import { useMDXComponents } from '../../mdx-components';
 
 // MDX compiles markdown links to _jsx(_components.a, ...) which routes through
 // our override. Inline JSX <a> compiles to _jsx("a", ...) — a literal element

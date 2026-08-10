@@ -18,7 +18,7 @@ import {
     signInWithGoogle,
     signInWithMicrosoft,
 } from '@/lib/auth.client';
-import { Wrapper } from '@/tests/components/lib/common';
+import { mockRouter, Wrapper } from '@/tests/components/lib/common';
 
 let mockPush: Mock;
 
@@ -36,14 +36,7 @@ describe('ClaimSignup', () => {
         vi.clearAllMocks();
         captureUnexpectedErrorMock.mockResolvedValue(undefined);
         mockPush = vi.fn();
-        vi.mocked(useRouter).mockReturnValue({
-            push: mockPush,
-            replace: vi.fn(),
-            back: vi.fn(),
-            forward: vi.fn(),
-            refresh: vi.fn(),
-            prefetch: vi.fn(),
-        });
+        vi.mocked(useRouter).mockReturnValue(mockRouter({ push: mockPush }));
     });
 
     afterEach(() => {

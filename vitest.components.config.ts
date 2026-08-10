@@ -14,6 +14,7 @@ export default defineConfig({
     resolve: {
         alias: {
             '@': path.join(dirname, 'src'),
+            '@root': dirname,
             prisma: path.join(dirname, 'prisma'),
             'next/navigation': path.join(
                 dirname,

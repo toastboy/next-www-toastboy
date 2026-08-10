@@ -7,6 +7,16 @@ import { Wrapper } from '@/tests/components/lib/common';
 import { defaultFamilyTree } from '@/tests/mocks/data/familyTree';
 import type { FamilyTreeNodeType } from '@/types';
 
+const { pushMock } = vi.hoisted(() => ({
+    pushMock: vi.fn(),
+}));
+
+vi.mock('next/navigation', () => ({
+    useRouter: () => ({
+        push: pushMock,
+    }),
+}));
+
 /*
  * A three-level tree used in tests that need more than one depth ring so the
  * two-pass radius computation and zoom-fitting code both exercise real paths.
@@ -125,7 +135,6 @@ describe('FamilyTree', () => {
     });
 
     it('navigates to the player page on node click', () => {
-        vi.stubGlobal('location', { href: '' });
         const { container } = render(
             <Wrapper>
                 <FamilyTree data={defaultFamilyTree} />
@@ -136,7 +145,7 @@ describe('FamilyTree', () => {
         const nodes = container.querySelectorAll('[style*="cursor: pointer"]');
         fireEvent.click(nodes[0]);
 
-        expect(window.location.href).toBe('/footy/player/1');
+        expect(pushMock).toHaveBeenCalledWith('/footy/player/1');
     });
 
     // -------------------------------------------------------------------------

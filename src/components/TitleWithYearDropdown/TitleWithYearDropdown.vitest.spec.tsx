@@ -3,7 +3,8 @@ import userEvent from '@testing-library/user-event';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { vi } from 'vitest';
 
-import { Wrapper } from '../../tests/components/lib/common';
+import { mockRouter, Wrapper } from '@/tests/components/lib/common';
+
 import { TitleWithYearDropdown } from './TitleWithYearDropdown';
 
 const mockParams = (init = '') =>
@@ -13,14 +14,7 @@ describe('TitleWithYearDropdown', () => {
     const push = vi.fn();
 
     beforeEach(() => {
-        vi.mocked(useRouter).mockReturnValue({
-            push,
-            back: vi.fn(),
-            forward: vi.fn(),
-            refresh: vi.fn(),
-            replace: vi.fn(),
-            prefetch: vi.fn(),
-        });
+        vi.mocked(useRouter).mockReturnValue(mockRouter({ push }));
         vi.mocked(usePathname).mockReturnValue('/footy/year/2024');
         vi.mocked(useSearchParams).mockReturnValue(mockParams());
     });

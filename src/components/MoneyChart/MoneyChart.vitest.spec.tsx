@@ -3,7 +3,7 @@ import { useRouter } from 'next/navigation';
 import { vi } from 'vitest';
 
 import { MoneyChart } from '@/components/MoneyChart/MoneyChart';
-import { Wrapper } from '@/tests/components/lib/common';
+import { mockRouter, Wrapper } from '@/tests/components/lib/common';
 import { defaultMoneyChartData } from '@/tests/mocks/data/money';
 
 class ImmediateResizeObserver {
@@ -161,14 +161,7 @@ describe('MoneyChart', () => {
 
     it('navigates when clicking a bar with linkBase provided', () => {
         const mockPush = vi.fn();
-        vi.mocked(useRouter).mockReturnValue({
-            push: mockPush,
-            replace: vi.fn(),
-            back: vi.fn(),
-            forward: vi.fn(),
-            refresh: vi.fn(),
-            prefetch: vi.fn(),
-        });
+        vi.mocked(useRouter).mockReturnValue(mockRouter({ push: mockPush }));
 
         const { container } = render(
             <Wrapper>
@@ -187,14 +180,7 @@ describe('MoneyChart', () => {
 
     it('does not navigate when clicking a bar without linkBase', () => {
         const mockPush = vi.fn();
-        vi.mocked(useRouter).mockReturnValue({
-            push: mockPush,
-            replace: vi.fn(),
-            back: vi.fn(),
-            forward: vi.fn(),
-            refresh: vi.fn(),
-            prefetch: vi.fn(),
-        });
+        vi.mocked(useRouter).mockReturnValue(mockRouter({ push: mockPush }));
 
         const { container } = render(
             <Wrapper>

@@ -91,8 +91,10 @@ When figuring out how to call a library (Mantine, Prisma, Next.js, etc.) — API
 
 ### Imports
 
-- **Always** use `@/` alias instead of `../../` relative imports
+- **Always** use `@/` alias instead of `../../` relative imports. Enforced by `no-restricted-imports` (pattern `../*`) in `eslint.config.mjs`; not auto-fixable, so `eslint --fix` will flag but not rewrite these
 - Same-directory `./` imports are acceptable
+- `@root/*` maps to the repo root, for the handful of root-level convention files (`mdx-components.tsx`) that sit outside `src/`. Declared in `tsconfig.json` and mirrored in `vitest.components.config.ts`, which lists its aliases explicitly — add it to any other Vitest config whose tests reach a root-level file
+- Files under `**/__mocks__/**` are exempt from the parent-relative ban: a mock lives inside the directory of the module it mocks and imports it as `'../Foo'`, which is the same-directory case in spirit
 - Always use single quotes for import paths
 - Prepend all backend-only modules with `import 'server-only';`
 - Import formatting (including `@mantine/*` imports) follows plain Prettier output — no special-casing; see [Formatting](#formatting) below

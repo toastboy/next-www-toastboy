@@ -48,7 +48,10 @@ describe('PlayerTimeline', () => {
 
         const { container } = render(
             <Wrapper>
-                <PlayerTimeline player={player} currentGameId={100} />
+                <PlayerTimeline
+                    player={player}
+                    currentGameId={100}
+                />
             </Wrapper>,
         );
 

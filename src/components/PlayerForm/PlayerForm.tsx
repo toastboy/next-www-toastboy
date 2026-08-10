@@ -60,7 +60,11 @@ export const PlayerForm = ({ form }: Props) => {
                 const linkText = `${formatDate(data.gameDay.date)} – ${resultLabel.get(data.points) ?? ''}`;
 
                 return (
-                    <Tooltip key={i} label={linkText} withArrow>
+                    <Tooltip
+                        key={i}
+                        label={linkText}
+                        withArrow
+                    >
                         <Badge
                             component={Link}
                             href={`/footy/game/${data.gameDay.id}`}

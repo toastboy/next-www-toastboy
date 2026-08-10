@@ -95,16 +95,28 @@ export const RecordsTable = ({
     const tbodyId = useId();
 
     return (
-        <Paper p="sm" miw="14rem" maw="24rem">
+        <Paper
+            p="sm"
+            miw="14rem"
+            maw="24rem"
+        >
             {title ? (
                 <>
-                    <Title order={titleOrder} mb="xs" w="100%" ta="center">
+                    <Title
+                        order={titleOrder}
+                        mb="xs"
+                        w="100%"
+                        ta="center"
+                    >
                         {title}
                     </Title>
                     <Divider mb="xs" />
                 </>
             ) : null}
-            <Table stickyHeader stickyHeaderOffset={0}>
+            <Table
+                stickyHeader
+                stickyHeaderOffset={0}
+            >
                 <Table.Thead>
                     <Table.Tr bd="0">
                         <Table.Th p={0}>

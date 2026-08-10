@@ -156,7 +156,10 @@ export const NavBarNested = ({ user }: Props) => {
     ];
 
     return (
-        <Box role="navigation" className={classes.navbar}>
+        <Box
+            role="navigation"
+            className={classes.navbar}
+        >
             <Box
                 className={classes.header}
                 role="region"
@@ -170,13 +173,19 @@ export const NavBarNested = ({ user }: Props) => {
             >
                 <Box className={classes.linksInner}>
                     {links.map((item) => (
-                        <NavBarLinksGroup {...item} key={item.label} />
+                        <NavBarLinksGroup
+                            {...item}
+                            key={item.label}
+                        />
                     ))}
                 </Box>
                 {user?.role === 'admin' && (
                     <Box className={classes.linksInner}>
                         {adminLinks.map((item) => (
-                            <NavBarLinksGroup {...item} key={item.label} />
+                            <NavBarLinksGroup
+                                {...item}
+                                key={item.label}
+                            />
                         ))}
                     </Box>
                 )}

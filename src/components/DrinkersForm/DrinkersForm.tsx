@@ -184,7 +184,10 @@ export const DrinkersForm = ({
             onClick={() => handleSort(key)}
             aria-label={`Sort by ${label}`}
         >
-            <Group gap={6} wrap="nowrap">
+            <Group
+                gap={6}
+                wrap="nowrap"
+            >
                 <Text span>{label}</Text>
                 {getSortIcon(key)}
             </Group>
@@ -273,7 +276,10 @@ export const DrinkersForm = ({
                     />
                 </Table.Td>
                 <Table.Td>
-                    <Group wrap="nowrap" gap="sm">
+                    <Group
+                        wrap="nowrap"
+                        gap="sm"
+                    >
                         <Anchor href={`/footy/player/${row.playerId}`}>
                             <Image
                                 w={40}
@@ -295,8 +301,14 @@ export const DrinkersForm = ({
     });
 
     return (
-        <Container size="lg" py="lg">
-            <Group justify="space-between" mb="md">
+        <Container
+            size="lg"
+            py="lg"
+        >
+            <Group
+                justify="space-between"
+                mb="md"
+            >
                 {previousGameId ? (
                     <Anchor href={`/footy/admin/drinkers/${previousGameId}`}>
                         Previous

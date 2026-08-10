@@ -171,11 +171,18 @@ export const InvoiceForm = ({
         .reduce((sum, gd) => sum + (gd.hallCostPounds || 0), 0);
 
     return (
-        <Paper maw="30rem" mx="auto" my="lg">
+        <Paper
+            maw="30rem"
+            mx="auto"
+            my="lg"
+        >
             <Stack gap="md">
                 <Title order={2}>Invoice Check</Title>
 
-                <Group justify="space-between" wrap="wrap">
+                <Group
+                    justify="space-between"
+                    wrap="wrap"
+                >
                     <Button
                         variant="subtle"
                         leftSection={<IconChevronLeft size={16} />}
@@ -183,7 +190,11 @@ export const InvoiceForm = ({
                     >
                         {getShortMonthName(year, month - 1)}
                     </Button>
-                    <Title order={3} flex={1} ta="center">
+                    <Title
+                        order={3}
+                        flex={1}
+                        ta="center"
+                    >
                         {getShortMonthName(year, month)} {year}
                     </Title>
                     <Button
@@ -213,7 +224,10 @@ export const InvoiceForm = ({
                                     p="sm"
                                     bdrs="sm"
                                 >
-                                    <Text fw={600} miw="7rem">
+                                    <Text
+                                        fw={600}
+                                        miw="7rem"
+                                    >
                                         {formatDate(gd.date)}
                                     </Text>
                                     <Checkbox

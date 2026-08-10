@@ -69,7 +69,10 @@ describe('EmailInput', () => {
     it('renders with required attribute', () => {
         render(
             <Wrapper>
-                <EmailInput required label="Email" />
+                <EmailInput
+                    required
+                    label="Email"
+                />
             </Wrapper>,
         );
 

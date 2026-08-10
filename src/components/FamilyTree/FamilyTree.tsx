@@ -292,7 +292,11 @@ export const FamilyTree = ({ data }: Props) => {
         >
             <svg ref={svgRef} />
             {tooltip ? (
-                <Tooltip label={tooltip.name} opened withArrow>
+                <Tooltip
+                    label={tooltip.name}
+                    opened
+                    withArrow
+                >
                     <Box
                         pos="absolute"
                         left={tooltip.x}

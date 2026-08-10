@@ -19,32 +19,56 @@ export function useMDXComponents(
 ): MDXComponents {
     return {
         h1: ({ children, ...props }) => (
-            <Title order={1} mb="md" {...props}>
+            <Title
+                order={1}
+                mb="md"
+                {...props}
+            >
                 {children}
             </Title>
         ),
         h2: ({ children, ...props }) => (
-            <Title order={2} mt="xl" mb="sm" {...props}>
+            <Title
+                order={2}
+                mt="xl"
+                mb="sm"
+                {...props}
+            >
                 {children}
             </Title>
         ),
         h3: ({ children, ...props }) => (
-            <Title order={3} mt="lg" mb="xs" {...props}>
+            <Title
+                order={3}
+                mt="lg"
+                mb="xs"
+                {...props}
+            >
                 {children}
             </Title>
         ),
         p: ({ children, ...props }) => (
-            <Text mb="sm" {...props}>
+            <Text
+                mb="sm"
+                {...props}
+            >
                 {children}
             </Text>
         ),
         ul: ({ children, ...props }) => (
-            <List mb="sm" {...props}>
+            <List
+                mb="sm"
+                {...props}
+            >
                 {children}
             </List>
         ),
         ol: ({ children, ...props }) => (
-            <List type="ordered" mb="sm" {...props}>
+            <List
+                type="ordered"
+                mb="sm"
+                {...props}
+            >
                 {children}
             </List>
         ),
@@ -69,7 +93,11 @@ export function useMDXComponents(
                     .filter(Boolean)
                     .join(' ') || undefined;
             return (
-                <Code block className={className} {...preProps}>
+                <Code
+                    block
+                    className={className}
+                    {...preProps}
+                >
                     {child?.props.children ?? children}
                 </Code>
             );
@@ -86,13 +114,19 @@ export function useMDXComponents(
                 className?.split(/\s+/).some((c) => c.startsWith('language-'))
             ) {
                 return (
-                    <code className={className} {...props}>
+                    <code
+                        className={className}
+                        {...props}
+                    >
                         {children}
                     </code>
                 );
             }
             return (
-                <Code className={className} {...props}>
+                <Code
+                    className={className}
+                    {...props}
+                >
                     {children}
                 </Code>
             );

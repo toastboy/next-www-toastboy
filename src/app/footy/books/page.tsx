@@ -77,7 +77,10 @@ const BooksPage = async (props: PageProps) => {
 
     return (
         <Stack>
-            <Group justify="center" w="100%">
+            <Group
+                justify="center"
+                w="100%"
+            >
                 <TitleWithYearDropdown
                     order={1}
                     title="Books: "

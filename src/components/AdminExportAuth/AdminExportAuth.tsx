@@ -17,7 +17,13 @@ export const AdminExportAuth = ({ onExportAuth }: Props) => {
     const [exporting, setExporting] = useState(false);
 
     return (
-        <Flex direction="row" align="flex-end" justify="center" gap="md" p="md">
+        <Flex
+            direction="row"
+            align="flex-end"
+            justify="center"
+            gap="md"
+            p="md"
+        >
             <Button
                 type="button"
                 loading={exporting}

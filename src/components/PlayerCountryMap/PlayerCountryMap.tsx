@@ -269,8 +269,15 @@ export const PlayerCountryMap = ({
     ]);
 
     return (
-        <Box pos="relative" data-testid="player-country-map">
-            <svg ref={svgRef} width={width} height={height} />
+        <Box
+            pos="relative"
+            data-testid="player-country-map"
+        >
+            <svg
+                ref={svgRef}
+                width={width}
+                height={height}
+            />
             <Popover
                 opened={popoverOpen}
                 position="bottom"
@@ -303,8 +310,14 @@ export const PlayerCountryMap = ({
                     <ScrollAreaAutosize mah={POPOVER_MAX_HEIGHT}>
                         <Stack gap="xs">
                             {hoveredGroups.map(([countryName, supporters]) => (
-                                <Stack key={countryName} gap={4}>
-                                    <Text size="xs" fw={700}>
+                                <Stack
+                                    key={countryName}
+                                    gap={4}
+                                >
+                                    <Text
+                                        size="xs"
+                                        fw={700}
+                                    >
                                         {countryName}
                                     </Text>
                                     {supporters.map((s) => (
@@ -313,7 +326,10 @@ export const PlayerCountryMap = ({
                                             href={`/footy/player/${s.playerId}`}
                                             underline="never"
                                         >
-                                            <Group gap="xs" wrap="nowrap">
+                                            <Group
+                                                gap="xs"
+                                                wrap="nowrap"
+                                            >
                                                 <Image
                                                     src={`/api/footy/player/${s.playerId}/mugshot`}
                                                     alt={

@@ -80,14 +80,23 @@ export const ForgottenPasswordForm = () => {
     };
 
     return (
-        <Paper w="100%" maw="35rem" mx="auto">
+        <Paper
+            w="100%"
+            maw="35rem"
+            mx="auto"
+        >
             <Box
                 component="form"
                 onSubmit={form.onSubmit(handleSubmit)}
                 noValidate
             >
                 <Stack gap="md">
-                    <Title order={2} mb="xs" w="100%" ta="center">
+                    <Title
+                        order={2}
+                        mb="xs"
+                        w="100%"
+                        ta="center"
+                    >
                         Forgotten Password
                     </Title>
                     <Divider mb="xs" />
@@ -101,7 +110,10 @@ export const ForgottenPasswordForm = () => {
                         {...form.getInputProps(`email`)}
                     />
 
-                    <Button type="submit" w="fit-content">
+                    <Button
+                        type="submit"
+                        w="fit-content"
+                    >
                         Send reset link
                     </Button>
                 </Stack>

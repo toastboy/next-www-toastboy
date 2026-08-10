@@ -8,7 +8,11 @@ describe('ClubBadge', () => {
     it('renders badge image', () => {
         render(
             <Wrapper>
-                <ClubBadge club={defaultClub} w="12cqw" h="auto" />
+                <ClubBadge
+                    club={defaultClub}
+                    w="12cqw"
+                    h="auto"
+                />
             </Wrapper>,
         );
 

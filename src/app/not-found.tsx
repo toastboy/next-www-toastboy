@@ -13,10 +13,17 @@ export default function NotFound() {
                 moved.
             </Text>
             <Group>
-                <Button component="a" href="/footy/info">
+                <Button
+                    component="a"
+                    href="/footy/info"
+                >
                     Go to info
                 </Button>
-                <Button variant="subtle" component="a" href="/footy">
+                <Button
+                    variant="subtle"
+                    component="a"
+                    href="/footy"
+                >
                     Go to home
                 </Button>
             </Group>

@@ -79,7 +79,10 @@ describe('MoneyForm', () => {
     it('renders empty state when there are no debts', () => {
         render(
             <Wrapper>
-                <MoneyForm playerDebts={[]} payDebt={vi.fn<PayDebtProxy>()} />
+                <MoneyForm
+                    playerDebts={[]}
+                    payDebt={vi.fn<PayDebtProxy>()}
+                />
             </Wrapper>,
         );
 

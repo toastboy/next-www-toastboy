@@ -187,7 +187,10 @@ export const PickerForm = ({
             onClick={() => handleSort(key)}
             aria-label={`Sort by ${label}`}
         >
-            <Group gap={6} wrap="nowrap">
+            <Group
+                gap={6}
+                wrap="nowrap"
+            >
                 <Text span>{label}</Text>
                 {getSortIcon(key)}
             </Group>
@@ -330,7 +333,11 @@ export const PickerForm = ({
 
     const picker = (
         <>
-            <Group justify="space-between" align="center" wrap="wrap">
+            <Group
+                justify="space-between"
+                align="center"
+                wrap="wrap"
+            >
                 <Text fw={700}>Players selected ({filteredSelectedCount})</Text>
                 <Button
                     type="button"
@@ -412,23 +419,36 @@ export const PickerForm = ({
                     <Table.Tbody>{rows}</Table.Tbody>
                 </Table>
             </Table.ScrollContainer>
-            <Divider label="or" labelPosition="center" />
+            <Divider
+                label="or"
+                labelPosition="center"
+            />
         </>
     );
 
     // TODO: New game date component?
     return (
-        <Container size="lg" py="lg">
+        <Container
+            size="lg"
+            py="lg"
+        >
             <Paper w="100%">
                 <Stack gap="md">
-                    <Stack align="flex-start" gap="xs">
+                    <Stack
+                        align="flex-start"
+                        gap="xs"
+                    >
                         <Title order={2}>Picker</Title>
                         <Text c="dimmed">
                             Game {gameDay.id}: {formatDate(gameDay.date)}
                         </Text>
                     </Stack>
                     {gameDay.game ? picker : null}
-                    <Group justify="space-between" align="center" wrap="wrap">
+                    <Group
+                        justify="space-between"
+                        align="center"
+                        wrap="wrap"
+                    >
                         <TextInput
                             aria-label={
                                 gameDay.game

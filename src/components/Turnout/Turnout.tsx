@@ -38,8 +38,15 @@ export const Turnout = ({ turnout }: Props) => {
     ));
 
     return (
-        <Paper p="sm" maw="24rem">
-            <Table stickyHeader stickyHeaderOffset={0} layout="fixed">
+        <Paper
+            p="sm"
+            maw="24rem"
+        >
+            <Table
+                stickyHeader
+                stickyHeaderOffset={0}
+                layout="fixed"
+            >
                 <Table.Thead>
                     <Table.Tr>
                         <Table.Th className={styles.verticalHeader}>

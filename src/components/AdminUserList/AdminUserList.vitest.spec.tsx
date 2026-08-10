@@ -48,7 +48,10 @@ describe('AdminUserList', () => {
     it('renders users in the table with search input', () => {
         render(
             <Wrapper>
-                <AdminUserList users={users} setAdminRole={setAdminRoleMock} />
+                <AdminUserList
+                    users={users}
+                    setAdminRole={setAdminRoleMock}
+                />
             </Wrapper>,
         );
 
@@ -65,7 +68,10 @@ describe('AdminUserList', () => {
         const user = userEvent.setup();
         render(
             <Wrapper>
-                <AdminUserList users={users} setAdminRole={setAdminRoleMock} />
+                <AdminUserList
+                    users={users}
+                    setAdminRole={setAdminRoleMock}
+                />
             </Wrapper>,
         );
 
@@ -86,7 +92,10 @@ describe('AdminUserList', () => {
         const user = userEvent.setup();
         render(
             <Wrapper>
-                <AdminUserList users={users} setAdminRole={setAdminRoleMock} />
+                <AdminUserList
+                    users={users}
+                    setAdminRole={setAdminRoleMock}
+                />
             </Wrapper>,
         );
 
@@ -109,7 +118,10 @@ describe('AdminUserList', () => {
         const user = userEvent.setup();
         render(
             <Wrapper>
-                <AdminUserList users={users} setAdminRole={setAdminRoleMock} />
+                <AdminUserList
+                    users={users}
+                    setAdminRole={setAdminRoleMock}
+                />
             </Wrapper>,
         );
 
@@ -130,7 +142,10 @@ describe('AdminUserList', () => {
     it('renders no data rows for an empty users list', () => {
         render(
             <Wrapper>
-                <AdminUserList users={[]} setAdminRole={setAdminRoleMock} />
+                <AdminUserList
+                    users={[]}
+                    setAdminRole={setAdminRoleMock}
+                />
             </Wrapper>,
         );
 
@@ -141,7 +156,10 @@ describe('AdminUserList', () => {
     it('admin switch is checked for admin users and unchecked for non-admin users', () => {
         render(
             <Wrapper>
-                <AdminUserList users={users} setAdminRole={setAdminRoleMock} />
+                <AdminUserList
+                    users={users}
+                    setAdminRole={setAdminRoleMock}
+                />
             </Wrapper>,
         );
 
@@ -159,7 +177,10 @@ describe('AdminUserList', () => {
     it('links point to the correct user admin page', () => {
         render(
             <Wrapper>
-                <AdminUserList users={users} setAdminRole={setAdminRoleMock} />
+                <AdminUserList
+                    users={users}
+                    setAdminRole={setAdminRoleMock}
+                />
             </Wrapper>,
         );
 
@@ -174,7 +195,10 @@ describe('AdminUserList', () => {
         const user = userEvent.setup();
         render(
             <Wrapper>
-                <AdminUserList users={users} setAdminRole={setAdminRoleMock} />
+                <AdminUserList
+                    users={users}
+                    setAdminRole={setAdminRoleMock}
+                />
             </Wrapper>,
         );
 
@@ -195,7 +219,10 @@ describe('AdminUserList', () => {
         const user = userEvent.setup();
         render(
             <Wrapper>
-                <AdminUserList users={users} setAdminRole={setAdminRoleMock} />
+                <AdminUserList
+                    users={users}
+                    setAdminRole={setAdminRoleMock}
+                />
             </Wrapper>,
         );
 
@@ -220,7 +247,10 @@ describe('AdminUserList', () => {
         const user = userEvent.setup();
         render(
             <Wrapper>
-                <AdminUserList users={users} setAdminRole={setAdminRoleMock} />
+                <AdminUserList
+                    users={users}
+                    setAdminRole={setAdminRoleMock}
+                />
             </Wrapper>,
         );
 
@@ -249,7 +279,10 @@ describe('AdminUserList', () => {
         const user = userEvent.setup();
         render(
             <Wrapper>
-                <AdminUserList users={users} setAdminRole={setAdminRoleMock} />
+                <AdminUserList
+                    users={users}
+                    setAdminRole={setAdminRoleMock}
+                />
             </Wrapper>,
         );
 
@@ -276,7 +309,10 @@ describe('AdminUserList', () => {
         const user = userEvent.setup();
         render(
             <Wrapper>
-                <AdminUserList users={users} setAdminRole={setAdminRoleMock} />
+                <AdminUserList
+                    users={users}
+                    setAdminRole={setAdminRoleMock}
+                />
             </Wrapper>,
         );
 
@@ -297,7 +333,10 @@ describe('AdminUserList', () => {
         const user = userEvent.setup();
         render(
             <Wrapper>
-                <AdminUserList users={users} setAdminRole={setAdminRoleMock} />
+                <AdminUserList
+                    users={users}
+                    setAdminRole={setAdminRoleMock}
+                />
             </Wrapper>,
         );
 
@@ -363,7 +402,10 @@ describe('AdminUserList', () => {
 
         render(
             <Wrapper>
-                <AdminUserList users={users} setAdminRole={setAdminRoleMock} />
+                <AdminUserList
+                    users={users}
+                    setAdminRole={setAdminRoleMock}
+                />
             </Wrapper>,
         );
 

@@ -117,7 +117,10 @@ describe('PlayerCard', () => {
         const otherPlayer = createMockPlayer({ id: defaultPlayer.id + 1 });
         rerender(
             <Wrapper>
-                <PlayerCard {...defaultProps} player={otherPlayer} />
+                <PlayerCard
+                    {...defaultProps}
+                    player={otherPlayer}
+                />
             </Wrapper>,
         );
 

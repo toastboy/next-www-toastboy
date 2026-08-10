@@ -92,7 +92,10 @@ describe('PlayerInfo', () => {
         it('shows when isAuthenticated is true', () => {
             render(
                 <Wrapper>
-                    <PlayerInfo {...baseProps} isAuthenticated={true} />
+                    <PlayerInfo
+                        {...baseProps}
+                        isAuthenticated={true}
+                    />
                 </Wrapper>,
             );
             expect(screen.getByText('Born')).toBeInTheDocument();
@@ -101,7 +104,10 @@ describe('PlayerInfo', () => {
         it('is hidden when isAuthenticated is false', () => {
             render(
                 <Wrapper>
-                    <PlayerInfo {...baseProps} isAuthenticated={false} />
+                    <PlayerInfo
+                        {...baseProps}
+                        isAuthenticated={false}
+                    />
                 </Wrapper>,
             );
             expect(screen.queryByText('Born')).not.toBeInTheDocument();
@@ -113,7 +119,10 @@ describe('PlayerInfo', () => {
             const introducer = createMockPlayer({ id: 2, name: 'Introducer' });
             render(
                 <Wrapper>
-                    <PlayerInfo {...baseProps} introducedBy={introducer} />
+                    <PlayerInfo
+                        {...baseProps}
+                        introducedBy={introducer}
+                    />
                 </Wrapper>,
             );
             expect(screen.getByText('Introduced by')).toBeInTheDocument();
@@ -129,7 +138,10 @@ describe('PlayerInfo', () => {
         it('is hidden when introducedBy is null', () => {
             render(
                 <Wrapper>
-                    <PlayerInfo {...baseProps} introducedBy={null} />
+                    <PlayerInfo
+                        {...baseProps}
+                        introducedBy={null}
+                    />
                 </Wrapper>,
             );
             expect(screen.queryByText('Introduced by')).not.toBeInTheDocument();
@@ -140,7 +152,10 @@ describe('PlayerInfo', () => {
         it('is always present regardless of lastPlayed value', () => {
             render(
                 <Wrapper>
-                    <PlayerInfo {...baseProps} lastPlayed={null} />
+                    <PlayerInfo
+                        {...baseProps}
+                        lastPlayed={null}
+                    />
                 </Wrapper>,
             );
             expect(screen.getByText('Last played')).toBeInTheDocument();
@@ -169,7 +184,10 @@ describe('PlayerInfo', () => {
         it('is always present regardless of lastWon value', () => {
             render(
                 <Wrapper>
-                    <PlayerInfo {...baseProps} lastWon={null} />
+                    <PlayerInfo
+                        {...baseProps}
+                        lastWon={null}
+                    />
                 </Wrapper>,
             );
             expect(screen.getByText('Last won')).toBeInTheDocument();
@@ -209,7 +227,10 @@ describe('PlayerInfo', () => {
             const playerNoJoined = createMockPlayer({ joined: null });
             render(
                 <Wrapper>
-                    <PlayerInfo {...baseProps} player={playerNoJoined} />
+                    <PlayerInfo
+                        {...baseProps}
+                        player={playerNoJoined}
+                    />
                 </Wrapper>,
             );
             expect(screen.getByText('N/A')).toBeInTheDocument();

@@ -73,7 +73,11 @@ export const ImageWithPlaceholder = ({
     );
 
     return (
-        <AspectRatio ratio={ratio} w={w} pos="relative">
+        <AspectRatio
+            ratio={ratio}
+            w={w}
+            pos="relative"
+        >
             <Skeleton
                 visible={!loaded}
                 radius={radius}

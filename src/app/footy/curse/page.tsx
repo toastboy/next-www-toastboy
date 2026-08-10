@@ -83,8 +83,14 @@ const CurseOfTheBibsPage = async (props: PageProps) => {
     const bibsData = await outcomeService.getByBibs({ year });
 
     return (
-        <Flex direction="column" align="center">
-            <Group justify="center" w="100%">
+        <Flex
+            direction="column"
+            align="center"
+        >
+            <Group
+                justify="center"
+                w="100%"
+            >
                 <TitleWithYearDropdown
                     order={1}
                     title="Curse of the Bibs: "

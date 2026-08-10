@@ -81,7 +81,7 @@ npx vitest run --config vitest.services.config.ts path/to/test.ts
 ### Formatting
 
 - Formatting is enforced by Prettier (`.prettierrc`), not ESLint — `eslint-config-prettier` is the last entry in `eslint.config.mjs` and disables the handful of ESLint rules that would otherwise conflict with it (`semi`, `comma-dangle`, `eol-last`, `operator-linebreak`, `react/jsx-wrap-multilines`). ESLint still owns everything else: import sorting, SonarJS, promise rules, type-aware `@typescript-eslint/*` rules, etc.
-- `.prettierrc`: single quotes, 4-space indent, semicolons, trailing commas wherever valid — otherwise plain Prettier defaults (printWidth 80, double-quoted JSX attributes, etc.). No per-package or per-directory exceptions.
+- `.prettierrc`: single quotes, 4-space indent, semicolons, trailing commas wherever valid, `singleAttributePerLine: true` (any JSX/HTML element with 2+ attributes that wraps onto multiple lines gets one attribute per line, rather than packing attributes onto the opening-tag line) — otherwise plain Prettier defaults (printWidth 80, double-quoted JSX attributes, etc.). No per-package or per-directory exceptions.
 - `npm run format` to apply, `npm run format:check` to verify (part of the finalisation checklist above).
 - `.prettierignore` excludes generated/vendored files that shouldn't be hand-formatted (`prisma/generated`, `prisma/zod`, `public/mockServiceWorker.js`, `public/countries-110m.json`, `package-lock.json`) and YAML/Markdown, which are out of scope for this tooling and stay hand-maintained.
 

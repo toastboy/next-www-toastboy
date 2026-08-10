@@ -12,7 +12,10 @@ describe('Team', () => {
     it('renders team players', () => {
         render(
             <Wrapper>
-                <Team team={defaultTeamPlayerList} teamName="A" />
+                <Team
+                    team={defaultTeamPlayerList}
+                    teamName="A"
+                />
             </Wrapper>,
         );
 
@@ -24,7 +27,10 @@ describe('Team', () => {
     it('renders a heading with accessible team name when teamName is provided', () => {
         render(
             <Wrapper>
-                <Team team={defaultTeamPlayerList} teamName="A" />
+                <Team
+                    team={defaultTeamPlayerList}
+                    teamName="A"
+                />
             </Wrapper>,
         );
 
@@ -49,7 +55,11 @@ describe('Team', () => {
     it('shows "Won" badge for result="win"', () => {
         render(
             <Wrapper>
-                <Team team={defaultTeamPlayerList} teamName="A" result="win" />
+                <Team
+                    team={defaultTeamPlayerList}
+                    teamName="A"
+                    result="win"
+                />
             </Wrapper>,
         );
 
@@ -59,7 +69,11 @@ describe('Team', () => {
     it('shows "Lost" badge for result="loss"', () => {
         render(
             <Wrapper>
-                <Team team={defaultTeamPlayerList} teamName="A" result="loss" />
+                <Team
+                    team={defaultTeamPlayerList}
+                    teamName="A"
+                    result="loss"
+                />
             </Wrapper>,
         );
 
@@ -69,7 +83,11 @@ describe('Team', () => {
     it('shows "Draw" badge for result="draw"', () => {
         render(
             <Wrapper>
-                <Team team={defaultTeamPlayerList} teamName="A" result="draw" />
+                <Team
+                    team={defaultTeamPlayerList}
+                    teamName="A"
+                    result="draw"
+                />
             </Wrapper>,
         );
 
@@ -79,7 +97,10 @@ describe('Team', () => {
     it('shows "No players selected." when team is empty', () => {
         render(
             <Wrapper>
-                <Team team={[]} teamName="A" />
+                <Team
+                    team={[]}
+                    teamName="A"
+                />
             </Wrapper>,
         );
 

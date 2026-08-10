@@ -71,9 +71,20 @@ export const PlayerProfile = ({
 
     return (
         <Container size="xl">
-            <Stack gap="sm" w="100%">
-                <Grid type="container" mb="lg" gap="xs" align="center">
-                    <Grid.Col span="content" align="center">
+            <Stack
+                gap="sm"
+                w="100%"
+            >
+                <Grid
+                    type="container"
+                    mb="lg"
+                    gap="xs"
+                    align="center"
+                >
+                    <Grid.Col
+                        span="content"
+                        align="center"
+                    >
                         {prevPlayer ? (
                             <PlayerLink
                                 player={prevPlayer}
@@ -87,7 +98,10 @@ export const PlayerProfile = ({
                             />
                         )}
                     </Grid.Col>
-                    <Grid.Col span="auto" align="center">
+                    <Grid.Col
+                        span="auto"
+                        align="center"
+                    >
                         <Center>
                             <TitleWithYearDropdown
                                 order={1}
@@ -97,7 +111,10 @@ export const PlayerProfile = ({
                             />
                         </Center>
                     </Grid.Col>
-                    <Grid.Col span="content" align="center">
+                    <Grid.Col
+                        span="content"
+                        align="center"
+                    >
                         {nextPlayer ? (
                             <PlayerLink
                                 player={nextPlayer}
@@ -159,8 +176,15 @@ export const PlayerProfile = ({
                     </Grid.Col>
                 </Grid>
                 <Group>
-                    <Paper p="sm" w="auto" style={{ flex: '1' }}>
-                        <PlayerHeatmap data={history} year={year} />
+                    <Paper
+                        p="sm"
+                        w="auto"
+                        style={{ flex: '1' }}
+                    >
+                        <PlayerHeatmap
+                            data={history}
+                            year={year}
+                        />
                     </Paper>
                 </Group>
             </Stack>

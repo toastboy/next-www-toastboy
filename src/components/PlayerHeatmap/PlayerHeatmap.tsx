@@ -409,7 +409,11 @@ export const PlayerHeatmap = ({ data, year }: Props) => {
 
     if (data.length === 0) {
         return (
-            <Text c="dimmed" ta="center" py="xl">
+            <Text
+                c="dimmed"
+                ta="center"
+                py="xl"
+            >
                 No game data available.
             </Text>
         );
@@ -417,7 +421,10 @@ export const PlayerHeatmap = ({ data, year }: Props) => {
 
     if (year === 0) {
         return (
-            <div ref={wrapperRef} className={styles.allTimeWrapper}>
+            <div
+                ref={wrapperRef}
+                className={styles.allTimeWrapper}
+            >
                 {yearGroups!.map(({ year: yr, cells }) => (
                     <YearPanel
                         key={yr}
@@ -428,15 +435,24 @@ export const PlayerHeatmap = ({ data, year }: Props) => {
                         hideTooltip={hideTooltip}
                     />
                 ))}
-                <div ref={tooltipRef} className={styles.tooltip} />
+                <div
+                    ref={tooltipRef}
+                    className={styles.tooltip}
+                />
             </div>
         );
     }
 
     return (
-        <div ref={wrapperRef} className={styles.wrapper}>
+        <div
+            ref={wrapperRef}
+            className={styles.wrapper}
+        >
             <svg ref={svgRef} />
-            <div ref={tooltipRef} className={styles.tooltip} />
+            <div
+                ref={tooltipRef}
+                className={styles.tooltip}
+            />
         </div>
     );
 };

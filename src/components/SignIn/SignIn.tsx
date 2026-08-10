@@ -117,13 +117,27 @@ export const SignIn = ({ admin, redirect }: Props) => {
     ) : null;
 
     return (
-        <Paper w="100%" maw="35rem" mx="auto" mt="xl">
+        <Paper
+            w="100%"
+            maw="35rem"
+            mx="auto"
+            mt="xl"
+        >
             <Stack mb="lg">
-                <Title order={2} mb="xs" w="100%" ta="center">
+                <Title
+                    order={2}
+                    mb="xs"
+                    w="100%"
+                    ta="center"
+                >
                     {title}
                 </Title>
                 <Divider mb="xs" />
-                <Group justify="center" w="100%" mb="md">
+                <Group
+                    justify="center"
+                    w="100%"
+                    mb="md"
+                >
                     <UnstyledButton
                         onClick={() => signInWithGoogle(socialRedirect)}
                         w="fit-content"
@@ -147,10 +161,16 @@ export const SignIn = ({ admin, redirect }: Props) => {
                         />
                     </UnstyledButton>
                 </Group>
-                <Divider label="or" labelPosition="center" />
+                <Divider
+                    label="or"
+                    labelPosition="center"
+                />
             </Stack>
 
-            <Box component="form" onSubmit={form.onSubmit(handleSignIn)}>
+            <Box
+                component="form"
+                onSubmit={form.onSubmit(handleSignIn)}
+            >
                 <Stack>
                     <TextInput
                         withAsterisk
@@ -170,7 +190,10 @@ export const SignIn = ({ admin, redirect }: Props) => {
                     />
                     {errorNotification}
                     <Group mt="sm">
-                        <Anchor href="/footy/forgottenpassword" size="sm">
+                        <Anchor
+                            href="/footy/forgottenpassword"
+                            size="sm"
+                        >
                             Forgot your password ?
                         </Anchor>
                     </Group>

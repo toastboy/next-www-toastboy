@@ -54,7 +54,10 @@ export const CustomAppShell = ({ children, user, devMode }: Props) => {
         >
             <AppShell.Header>
                 <Container>
-                    <Group justify="space-between" className="px-6">
+                    <Group
+                        justify="space-between"
+                        className="px-6"
+                    >
                         <Burger
                             aria-label="Toggle navigation"
                             opened={opened}
@@ -92,7 +95,10 @@ export const CustomAppShell = ({ children, user, devMode }: Props) => {
             </AppShell.Navbar>
 
             <AppShell.Main>
-                <Container size="xl" p="md">
+                <Container
+                    size="xl"
+                    p="md"
+                >
                     {children}
                 </Container>
             </AppShell.Main>

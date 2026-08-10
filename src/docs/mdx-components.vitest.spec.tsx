@@ -215,7 +215,10 @@ describe('useMDXComponents', () => {
             >;
             render(
                 <Wrapper>
-                    <AnchorOverride href="https://example.com" target="_blank">
+                    <AnchorOverride
+                        href="https://example.com"
+                        target="_blank"
+                    >
                         Visit
                     </AnchorOverride>
                 </Wrapper>,

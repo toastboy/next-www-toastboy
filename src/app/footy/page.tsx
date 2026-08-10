@@ -34,7 +34,10 @@ const HomePage = async () => {
     );
 
     return (
-        <Stack p="xl" align="center">
+        <Stack
+            p="xl"
+            align="center"
+        >
             <AutoRefresh
                 channels={[FootyChannel.Results, FootyChannel.Players]}
             />
@@ -45,13 +48,26 @@ const HomePage = async () => {
                 alt="Toastboy FC Crest"
                 fit="contain"
             />
-            <Divider my="md" w="100%" />
-            <Group justify="center" w="100%">
+            <Divider
+                my="md"
+                w="100%"
+            />
+            <Group
+                justify="center"
+                w="100%"
+            >
                 <Title order={2}>Table Leaders</Title>
             </Group>
-            <Flex wrap="wrap" gap="md" justify="center">
+            <Flex
+                wrap="wrap"
+                gap="md"
+                justify="center"
+            >
                 {tables.map((table, i) => (
-                    <Stack key={table} align="center">
+                    <Stack
+                        key={table}
+                        align="center"
+                    >
                         <Title order={3}>{ShortTableTitle(table)}</Title>
                         <RecordsTable
                             table={table}
@@ -61,7 +77,10 @@ const HomePage = async () => {
                     </Stack>
                 ))}
             </Flex>
-            <Divider my="md" w="100%" />
+            <Divider
+                my="md"
+                w="100%"
+            />
             <Text mt="md">
                 Who are we?{' '}
                 <Anchor href="/footy/info">

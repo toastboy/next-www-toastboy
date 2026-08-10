@@ -30,9 +30,18 @@ export const GameDaySummary = ({
     const navSlotWidth = '2rem';
 
     return (
-        <Flex direction="column" gap="sm">
-            <Group justify="space-between" gap="xs">
-                <Box w={navSlotWidth} ta="center">
+        <Flex
+            direction="column"
+            gap="sm"
+        >
+            <Group
+                justify="space-between"
+                gap="xs"
+            >
+                <Box
+                    w={navSlotWidth}
+                    ta="center"
+                >
                     {prevGameDay ? (
                         <GameDayLink
                             gameDay={prevGameDay}
@@ -46,10 +55,16 @@ export const GameDaySummary = ({
                         />
                     )}
                 </Box>
-                <Title order={1} size="h3">
+                <Title
+                    order={1}
+                    size="h3"
+                >
                     {formatDate(gameDay.date)}
                 </Title>
-                <Box w={navSlotWidth} ta="center">
+                <Box
+                    w={navSlotWidth}
+                    ta="center"
+                >
                     {nextGameDay ? (
                         <GameDayLink
                             gameDay={nextGameDay}
@@ -68,7 +83,10 @@ export const GameDaySummary = ({
                 <Text ta="center">{[noGame, comment].join(' ').trim()}</Text>
             ) : null}
             {gameDay.game ? (
-                <Flex direction={{ base: 'column', xs: 'row' }} gap="xs">
+                <Flex
+                    direction={{ base: 'column', xs: 'row' }}
+                    gap="xs"
+                >
                     <Team
                         team={teamA}
                         teamName="A"

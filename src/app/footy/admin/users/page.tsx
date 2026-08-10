@@ -32,7 +32,10 @@ export default async function Page() {
     return (
         <>
             <AutoRefresh channels={FootyChannel.Users} />
-            <AdminUserList users={users} setAdminRole={setAdminRoleAction} />
+            <AdminUserList
+                users={users}
+                setAdminRole={setAdminRoleAction}
+            />
         </>
     );
 }

@@ -88,7 +88,10 @@ export const DeleteAccountForm = ({ onDeletePlayer }: Props) => {
     ) : null;
 
     return (
-        <Container size="xs" mt="xl">
+        <Container
+            size="xs"
+            mt="xl"
+        >
             <Paper w="100%">
                 <Stack>
                     <Title order={2}>Delete your account data</Title>
@@ -100,7 +103,11 @@ export const DeleteAccountForm = ({ onDeletePlayer }: Props) => {
                         <Anchor href="/footy/profile">your profile</Anchor>.
                     </Text>
                     <Text>By deleting your account data:</Text>
-                    <Box component="ul" pl="md" m={0}>
+                    <Box
+                        component="ul"
+                        pl="md"
+                        m={0}
+                    >
                         <Text component="li">
                             Your profile details will be erased.
                         </Text>
@@ -143,7 +150,11 @@ export const DeleteAccountForm = ({ onDeletePlayer }: Props) => {
                             .
                         </Text>
                         {notification}
-                        <Button type="submit" color="red" fullWidth>
+                        <Button
+                            type="submit"
+                            color="red"
+                            fullWidth
+                        >
                             Delete my data
                         </Button>
                     </Stack>

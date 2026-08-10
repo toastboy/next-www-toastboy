@@ -21,7 +21,11 @@ export const NavBarLinksGroup = ({
     const hasLinks = Array.isArray(links);
     const [opened, setOpened] = useState(initiallyOpened ?? false);
     const items = (hasLinks ? links : []).map((link) => (
-        <Link className={classes.link} href={link.link} key={link.label}>
+        <Link
+            className={classes.link}
+            href={link.link}
+            key={link.label}
+        >
             {link.label}
         </Link>
     ));
@@ -43,7 +47,10 @@ export const NavBarLinksGroup = ({
                 onClick={() => setOpened((o) => !o)}
                 className={classes.control}
             >
-                <Group justify="space-between" gap={0}>
+                <Group
+                    justify="space-between"
+                    gap={0}
+                >
                     <Flex align="center">
                         <Box ml="md">{label}</Box>
                     </Flex>

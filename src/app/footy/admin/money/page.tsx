@@ -19,7 +19,10 @@ const MoneyPage = async () => {
     return (
         <>
             <AutoRefresh channels={FootyChannel.Money} />
-            <MoneyForm playerDebts={debts.players} payDebt={payDebt} />
+            <MoneyForm
+                playerDebts={debts.players}
+                payDebt={payDebt}
+            />
         </>
     );
 };

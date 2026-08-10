@@ -27,7 +27,10 @@ describe('GameDayLink', () => {
     it('renders link with ordinal-formatted label', () => {
         render(
             <Wrapper>
-                <GameDayLink gameDay={defaultGameDay} format="ordinal" />
+                <GameDayLink
+                    gameDay={defaultGameDay}
+                    format="ordinal"
+                />
             </Wrapper>,
         );
 
@@ -43,7 +46,10 @@ describe('GameDayLink', () => {
     it('renders link with numeric day label', () => {
         render(
             <Wrapper>
-                <GameDayLink gameDay={defaultGameDay} format="numeric" />
+                <GameDayLink
+                    gameDay={defaultGameDay}
+                    format="numeric"
+                />
             </Wrapper>,
         );
 
@@ -61,7 +67,10 @@ describe('GameDayLink', () => {
     it('renders left-arrow format as an icon inside a link', () => {
         render(
             <Wrapper>
-                <GameDayLink gameDay={defaultGameDay} format="left-arrow" />
+                <GameDayLink
+                    gameDay={defaultGameDay}
+                    format="left-arrow"
+                />
             </Wrapper>,
         );
 
@@ -78,7 +87,10 @@ describe('GameDayLink', () => {
     it('renders right-arrow format as an icon inside a link', () => {
         render(
             <Wrapper>
-                <GameDayLink gameDay={defaultGameDay} format="right-arrow" />
+                <GameDayLink
+                    gameDay={defaultGameDay}
+                    format="right-arrow"
+                />
             </Wrapper>,
         );
 
@@ -95,7 +107,10 @@ describe('GameDayLink', () => {
     it('exposes icon-only left-arrow link description via tooltip on hover', async () => {
         render(
             <Wrapper>
-                <GameDayLink gameDay={defaultGameDay} format="left-arrow" />
+                <GameDayLink
+                    gameDay={defaultGameDay}
+                    format="left-arrow"
+                />
             </Wrapper>,
         );
 
@@ -110,7 +125,10 @@ describe('GameDayLink', () => {
     it('exposes icon-only right-arrow link description via tooltip on hover', async () => {
         render(
             <Wrapper>
-                <GameDayLink gameDay={defaultGameDay} format="right-arrow" />
+                <GameDayLink
+                    gameDay={defaultGameDay}
+                    format="right-arrow"
+                />
             </Wrapper>,
         );
 

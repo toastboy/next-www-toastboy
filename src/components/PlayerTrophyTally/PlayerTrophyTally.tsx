@@ -83,9 +83,17 @@ export const PlayerTrophyTally = ({ table, trophies, w, h }: Props) => {
             .join(', ')
             .replace(/, ([^,]*)$/, ' & $1');
         return (
-            <Flex direction="row" gap="sm" align="center">
+            <Flex
+                direction="row"
+                gap="sm"
+                align="center"
+            >
                 <Tooltip label={`${table} ${years}`}>
-                    <Flex direction="row" gap="1cqw" align="center">
+                    <Flex
+                        direction="row"
+                        gap="1cqw"
+                        align="center"
+                    >
                         {icon}
                         <Text c="white"> x {trophies.length}</Text>
                     </Flex>
@@ -95,9 +103,15 @@ export const PlayerTrophyTally = ({ table, trophies, w, h }: Props) => {
     }
 
     return (
-        <Flex direction="row" gap="0">
+        <Flex
+            direction="row"
+            gap="0"
+        >
             {trophies.map((winner, index) => (
-                <Tooltip key={index} label={`${table} ${winner.year}`}>
+                <Tooltip
+                    key={index}
+                    label={`${table} ${winner.year}`}
+                >
                     {icon}
                 </Tooltip>
             ))}

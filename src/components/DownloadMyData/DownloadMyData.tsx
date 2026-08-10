@@ -107,12 +107,18 @@ export const DownloadMyData = ({ data }: Props) => {
         <Paper w="100%">
             <Stack gap="lg">
                 <Title order={1}>Download my data</Title>
-                <Text size="sm" c="dimmed">
+                <Text
+                    size="sm"
+                    c="dimmed"
+                >
                     Choose which sections to include, then download or copy the
                     JSON.
                 </Text>
 
-                <Group justify="space-between" align="center">
+                <Group
+                    justify="space-between"
+                    align="center"
+                >
                     <Button
                         leftSection={<IconDownload size={16} />}
                         onClick={handleDownload}
@@ -121,9 +127,15 @@ export const DownloadMyData = ({ data }: Props) => {
                     </Button>
                 </Group>
 
-                <Box bd="1px solid var(--mantine-color-gray-3)" p="md">
+                <Box
+                    bd="1px solid var(--mantine-color-gray-3)"
+                    p="md"
+                >
                     <Stack gap="md">
-                        <Group justify="space-between" align="center">
+                        <Group
+                            justify="space-between"
+                            align="center"
+                        >
                             <Text fw={600}>Include in export</Text>
                             <Checkbox
                                 label="Select all"
@@ -134,7 +146,10 @@ export const DownloadMyData = ({ data }: Props) => {
                             />
                         </Group>
 
-                        <Group gap="md" wrap="wrap">
+                        <Group
+                            gap="md"
+                            wrap="wrap"
+                        >
                             <Checkbox
                                 label="Meta"
                                 checked={sections.meta}

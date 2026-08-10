@@ -77,7 +77,11 @@ vi.mock('@mantine/core', async (importOriginal) => {
             <div>{children}</div>
         ),
         Image: ({ alt, src }: { alt?: string; src?: string }) => (
-            <div aria-label={alt} data-src={src} role="img" />
+            <div
+                aria-label={alt}
+                data-src={src}
+                role="img"
+            />
         ),
         Stack: ({ children }: { children?: ReactNode }) => (
             <div>{children}</div>

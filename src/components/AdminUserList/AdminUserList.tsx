@@ -48,7 +48,10 @@ export const AdminUserList = ({ users, setAdminRole }: Props) => {
             onClick={() => handleSort(key)}
             aria-label={`Sort by ${label}`}
         >
-            <Group gap={6} wrap="nowrap">
+            <Group
+                gap={6}
+                wrap="nowrap"
+            >
                 <Text span>{label}</Text>
                 {sortBy === key ? (
                     sortOrder === 'asc' ? (
@@ -119,10 +122,16 @@ export const AdminUserList = ({ users, setAdminRole }: Props) => {
     }
 
     return (
-        <Container size="md" mt="xl">
+        <Container
+            size="md"
+            mt="xl"
+        >
             <Paper w="100%">
                 <Center>
-                    <Title order={2} mb="md">
+                    <Title
+                        order={2}
+                        mb="md"
+                    >
                         Admin: Users
                     </Title>
                 </Center>
@@ -136,7 +145,10 @@ export const AdminUserList = ({ users, setAdminRole }: Props) => {
                     minWidth="100%"
                     scrollAreaProps={{ type: 'auto' }}
                 >
-                    <Table mt={20} layout="fixed">
+                    <Table
+                        mt={20}
+                        layout="fixed"
+                    >
                         <Table.Thead>
                             <Table.Tr>
                                 <Table.Th

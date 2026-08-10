@@ -239,7 +239,10 @@ export const ResponsesForm = ({
                 role="region"
                 aria-label={title}
             >
-                <Card.Section h={6} bg={responseGroupBarColor[title]} />
+                <Card.Section
+                    h={6}
+                    bg={responseGroupBarColor[title]}
+                />
                 <UnstyledButton
                     onClick={() => toggleGroup(title)}
                     aria-expanded={opened}
@@ -255,7 +258,10 @@ export const ResponsesForm = ({
                                     .map((item) => item.player.name)
                                     .join(', ')}
                             >
-                                <Text span inherit>
+                                <Text
+                                    span
+                                    inherit
+                                >
                                     {items.length}
                                 </Text>
                             </Tooltip>
@@ -272,7 +278,10 @@ export const ResponsesForm = ({
                     </Group>
                 </UnstyledButton>
                 <Collapse expanded={opened}>
-                    <Stack gap="sm" mt="lg">
+                    <Stack
+                        gap="sm"
+                        mt="lg"
+                    >
                         {items.map((row) => {
                             // v8 ignore next -- form is always initialised from the same rows array
                             const responseValues =
@@ -294,7 +303,10 @@ export const ResponsesForm = ({
                                     p="sm"
                                     bdrs="sm"
                                 >
-                                    <Text fw={600} miw="15rem">
+                                    <Text
+                                        fw={600}
+                                        miw="15rem"
+                                    >
                                         {row.player.name}
                                     </Text>
                                     <Select
@@ -364,10 +376,16 @@ export const ResponsesForm = ({
     };
 
     return (
-        <Container size="lg" p={0}>
+        <Container
+            size="lg"
+            p={0}
+        >
             <Paper w="100%">
                 <Stack gap="md">
-                    <Stack align="flex-start" gap="xs">
+                    <Stack
+                        align="flex-start"
+                        gap="xs"
+                    >
                         <Title order={2}>Responses</Title>
                         <Text c="dimmed">
                             Game {gameId}: {gameDate}

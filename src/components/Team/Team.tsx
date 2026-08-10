@@ -37,7 +37,11 @@ export const Team = ({
                 mb="xs"
                 mt={0}
             >
-                <Title order={3} size="h4" fw={700}>
+                <Title
+                    order={3}
+                    size="h4"
+                    fw={700}
+                >
                     Team {teamName}
                 </Title>
                 <Group gap="xs">
@@ -48,9 +52,15 @@ export const Team = ({
                 </Group>
             </Flex>
             {team.length > 0 ? (
-                <Flex direction="column" gap="xs">
+                <Flex
+                    direction="column"
+                    gap="xs"
+                >
                     {team.map((p) => (
-                        <TeamPlayer key={p.id} teamPlayer={p} />
+                        <TeamPlayer
+                            key={p.id}
+                            teamPlayer={p}
+                        />
                     ))}
                 </Flex>
             ) : (

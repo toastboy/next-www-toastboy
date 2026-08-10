@@ -20,7 +20,10 @@ const CountryMapPage = async () => {
 
     return (
         <Paper>
-            <Title order={2} mb="md">
+            <Title
+                order={2}
+                mb="md"
+            >
                 Toastboy FC World Map
             </Title>
             <Text mb="md">

@@ -208,7 +208,10 @@ export const PlayerProfileForm = ({
     );
 
     return (
-        <Container size="xl" mt="xl">
+        <Container
+            size="xl"
+            mt="xl"
+        >
             <Paper w="100%">
                 <Box
                     miw="16rem"

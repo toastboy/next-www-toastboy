@@ -167,7 +167,10 @@ export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
     const handleCloseEmailModal = () => setModalOpened(false);
 
     return (
-        <Container size="xl" mt="xl">
+        <Container
+            size="xl"
+            mt="xl"
+        >
             <Paper w="100%">
                 <Stack mb="lg">
                     <Title order={1}>
@@ -241,7 +244,10 @@ export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
                         minWidth="100%"
                         scrollAreaProps={{ type: 'auto' }}
                     >
-                        <Table layout="fixed" mt={20}>
+                        <Table
+                            layout="fixed"
+                            mt={20}
+                        >
                             <Table.Thead>
                                 <Table.Tr>
                                     <Table.Th w="2rem">
@@ -255,7 +261,10 @@ export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
                                         style={{ cursor: 'pointer' }}
                                         onClick={() => handleSort('name')}
                                     >
-                                        <Flex align="center" gap="xs">
+                                        <Flex
+                                            align="center"
+                                            gap="xs"
+                                        >
                                             Name
                                             {sortBy === 'name' ? (
                                                 sortOrder === 'asc' ? (

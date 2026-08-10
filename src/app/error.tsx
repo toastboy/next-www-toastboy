@@ -24,10 +24,18 @@ const ErrorPage = ({ error, reset }: { error: Error; reset: () => void }) => {
     }, [error]);
 
     return (
-        <Alert title="Error" icon={<IconAlertTriangle />} color="red">
+        <Alert
+            title="Error"
+            icon={<IconAlertTriangle />}
+            color="red"
+        >
             <Flex direction="column">
                 {toPublicMessage(error)}
-                <Button w="10rem" onClick={() => reset()} mt="sm">
+                <Button
+                    w="10rem"
+                    onClick={() => reset()}
+                    mt="sm"
+                >
                     Try again
                 </Button>
             </Flex>

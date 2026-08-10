@@ -176,16 +176,26 @@ export const MoneyChart = ({ data: raw, linkBase }: Props) => {
 
     if (raw.length === 0) {
         return (
-            <Text c="dimmed" ta="center" py="xl">
+            <Text
+                c="dimmed"
+                ta="center"
+                py="xl"
+            >
                 No transaction data available.
             </Text>
         );
     }
 
     return (
-        <div ref={wrapperRef} className={styles.wrapper}>
+        <div
+            ref={wrapperRef}
+            className={styles.wrapper}
+        >
             <svg ref={svgRef} />
-            <div ref={tooltipRef} className={styles.tooltip} />
+            <div
+                ref={tooltipRef}
+                className={styles.tooltip}
+            />
         </div>
     );
 };

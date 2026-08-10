@@ -40,7 +40,12 @@ export function TitleWithYearDropdown({
     );
 
     return (
-        <Group justify="center" align="baseline" gap="xs" wrap="wrap">
+        <Group
+            justify="center"
+            align="baseline"
+            gap="xs"
+            wrap="wrap"
+        >
             <Title order={order}>{title}</Title>
 
             <Menu

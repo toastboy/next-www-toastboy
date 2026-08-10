@@ -118,11 +118,18 @@ const GamesPage = async (props: PageProps) => {
     const gameDays = await gameDayService.getAll({ year });
 
     return (
-        <Flex direction="column" align="center" gap="lg">
+        <Flex
+            direction="column"
+            align="center"
+            gap="lg"
+        >
             <AutoRefresh
                 channels={[FootyChannel.Games, FootyChannel.Results]}
             />
-            <Group justify="center" w="100%">
+            <Group
+                justify="center"
+                w="100%"
+            >
                 <TitleWithYearDropdown
                     order={1}
                     title="Games: "
@@ -130,10 +137,16 @@ const GamesPage = async (props: PageProps) => {
                     validYears={allYears}
                 />
             </Group>
-            <Title order={2} mb="xl">
+            <Title
+                order={2}
+                mb="xl"
+            >
                 {subhead}
             </Title>
-            <GameDayList gameDays={gameDays} year={year} />
+            <GameDayList
+                gameDays={gameDays}
+                year={year}
+            />
         </Flex>
     );
 };

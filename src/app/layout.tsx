@@ -48,16 +48,25 @@ export default async function RootLayout({
     const devMode = !(process.env.NODE_ENV === 'production' && !process.env.CI);
 
     return (
-        <html lang="en" {...mantineHtmlProps}>
+        <html
+            lang="en"
+            {...mantineHtmlProps}
+        >
             <head>
                 <ColorSchemeScript defaultColorScheme="light" />
             </head>
             <body>
-                <MantineProvider theme={theme} defaultColorScheme="light">
+                <MantineProvider
+                    theme={theme}
+                    defaultColorScheme="light"
+                >
                     <Notifications />
                     {/* <DebugBreakpoints /> */}
                     {/* <DebugFontSizes targets={[{ label: 'PlayerLink', selector: '[class*="PlayerLink-module"]' }]} /> */}
-                    <CustomAppShell user={user} devMode={devMode}>
+                    <CustomAppShell
+                        user={user}
+                        devMode={devMode}
+                    >
                         {children}
                     </CustomAppShell>
                 </MantineProvider>

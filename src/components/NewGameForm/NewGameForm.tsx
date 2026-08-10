@@ -102,10 +102,16 @@ export const NewGameForm = ({ onTriggerInvitations }: Props) => {
     return (
         <Container size="sm">
             <Paper>
-                <Title order={2} mb="md">
+                <Title
+                    order={2}
+                    mb="md"
+                >
                     New game
                 </Title>
-                <Box component="form" onSubmit={form.onSubmit(handleSubmit)}>
+                <Box
+                    component="form"
+                    onSubmit={form.onSubmit(handleSubmit)}
+                >
                     <Stack gap="md">
                         <Checkbox
                             label="Override time check (normally invitations are sent 9am the working day before the game)"

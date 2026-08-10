@@ -18,7 +18,10 @@ export const YearTable = ({ table, year, qualified, unqualified }: Props) => {
     const utn = UnqualifiedTableName(table) ?? null;
 
     return (
-        <Flex direction="column" gap="md">
+        <Flex
+            direction="column"
+            gap="md"
+        >
             <RecordsTable
                 key={`${table}-${year}-qualified`}
                 table={table}

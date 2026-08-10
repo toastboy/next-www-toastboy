@@ -100,7 +100,10 @@ export const PlayerLink = ({
         return link;
     } else {
         return (
-            <Tooltip label={player.name} withArrow>
+            <Tooltip
+                label={player.name}
+                withArrow
+            >
                 {link}
             </Tooltip>
         );

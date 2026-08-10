@@ -43,7 +43,10 @@ export const MoneyForm = ({ playerDebts, payDebt }: MoneyFormProps) => {
     );
 
     return (
-        <Container size="lg" py="lg">
+        <Container
+            size="lg"
+            py="lg"
+        >
             <Paper w="100%">
                 <Stack gap="md">
                     <Title order={1}>Unpaid Player Charges</Title>
@@ -193,11 +196,17 @@ const DebtRow = ({
                             alt={row.player.name ?? `Player ${row.player.id}`}
                         />
                     </Anchor>
-                    <Stack gap={0} style={{ flex: 1, minWidth: 0 }}>
+                    <Stack
+                        gap={0}
+                        style={{ flex: 1, minWidth: 0 }}
+                    >
                         <Anchor href={`/footy/player/${row.player.id}`}>
                             {row.player.name ?? `Player ${row.player.id}`}
                         </Anchor>
-                        <Text size="sm" c={getBalanceColor(-totalDebt)}>
+                        <Text
+                            size="sm"
+                            c={getBalanceColor(-totalDebt)}
+                        >
                             Total debt: {formatCurrencySigned(-totalDebt)} (
                             {row.debts.length} game
                             {row.debts.length === 1 ? '' : 's'})
@@ -227,8 +236,14 @@ const DebtRow = ({
                     </Stack>
                 )}
 
-                <Group wrap="nowrap" justify="flex-end">
-                    <Text size="sm" fw={500}>
+                <Group
+                    wrap="nowrap"
+                    justify="flex-end"
+                >
+                    <Text
+                        size="sm"
+                        fw={500}
+                    >
                         {formatCurrency(totalAmount)}
                     </Text>
                     <Button

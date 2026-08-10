@@ -191,7 +191,11 @@ export const UserButton = ({ user }: Props) => {
     ) : null;
 
     return (
-        <Menu shadow="md" width={200} position="right-end">
+        <Menu
+            shadow="md"
+            width={200}
+            position="right-end"
+        >
             <Menu.Target>
                 <UnstyledButton
                     aria-label="User menu"
@@ -211,11 +215,17 @@ export const UserButton = ({ user }: Props) => {
                         />
 
                         <Flex direction={'column'}>
-                            <Text size="sm" fw={500}>
+                            <Text
+                                size="sm"
+                                fw={500}
+                            >
                                 {name}
                             </Text>
 
-                            <Text c="dimmed" size="xs">
+                            <Text
+                                c="dimmed"
+                                size="xs"
+                            >
                                 {email}
                             </Text>
                         </Flex>

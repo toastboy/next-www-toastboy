@@ -104,7 +104,10 @@ const GamePage = async (props: PageProps) => {
     const winners = getGameWinnersFromTeams(teamA, teamB);
 
     return (
-        <Flex direction="column" gap="md">
+        <Flex
+            direction="column"
+            gap="md"
+        >
             <AutoRefresh
                 channels={[FootyChannel.Games, FootyChannel.Results]}
             />

@@ -9,7 +9,12 @@ export const metadata = { title: 'Info' };
 const Page = () => {
     return (
         <>
-            <Flex gap="md" align="flex-start" direction="column" p="xl">
+            <Flex
+                gap="md"
+                align="flex-start"
+                direction="column"
+                p="xl"
+            >
                 <Title order={1}>Toastboy FC: Tuesday Night Football</Title>
                 <Text>
                     We play a friendly five-a-side footy game amongst ourselves

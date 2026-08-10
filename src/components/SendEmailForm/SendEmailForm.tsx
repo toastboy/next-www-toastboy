@@ -147,9 +147,19 @@ export const SendEmailForm = ({
             withinPortal={withinPortal}
             withOverlay={withOverlay}
         >
-            <Tooltip label={names} multiline>
-                <Text size="sm" mt="sm" lineClamp={1}>
-                    <IconUser size={16} className={classes.users} />
+            <Tooltip
+                label={names}
+                multiline
+            >
+                <Text
+                    size="sm"
+                    mt="sm"
+                    lineClamp={1}
+                >
+                    <IconUser
+                        size={16}
+                        className={classes.users}
+                    />
                     <strong>To:</strong> {names}
                 </Text>
             </Tooltip>
@@ -166,8 +176,14 @@ export const SendEmailForm = ({
                     mt="md"
                 />
 
-                <RichTextEditor editor={editor} mt="md">
-                    <RichTextEditor.Toolbar sticky stickyOffset={60}>
+                <RichTextEditor
+                    editor={editor}
+                    mt="md"
+                >
+                    <RichTextEditor.Toolbar
+                        sticky
+                        stickyOffset={60}
+                    >
                         <RichTextEditor.ControlsGroup>
                             <RichTextEditor.Bold />
                             <RichTextEditor.Italic />
@@ -208,13 +224,19 @@ export const SendEmailForm = ({
                     <RichTextEditor.Content />
                 </RichTextEditor>
 
-                <Group justify="flex-end" mt="md">
+                <Group
+                    justify="flex-end"
+                    mt="md"
+                >
                     <Tooltip
                         label="No valid email addresses for the selected players"
                         disabled={!!emails}
                     >
                         <Box component="span">
-                            <Button type="submit" disabled={!emails}>
+                            <Button
+                                type="submit"
+                                disabled={!emails}
+                            >
                                 Send Mail
                             </Button>
                         </Box>

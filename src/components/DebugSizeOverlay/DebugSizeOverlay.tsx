@@ -51,7 +51,11 @@ export function DebugSizeOverlay({
     const heightRem = (height / rootFontSize).toFixed(2);
 
     return (
-        <Box ref={ref} pos="relative" style={{ ...style }}>
+        <Box
+            ref={ref}
+            pos="relative"
+            style={{ ...style }}
+        >
             <Badge
                 variant="filled"
                 color="dark"

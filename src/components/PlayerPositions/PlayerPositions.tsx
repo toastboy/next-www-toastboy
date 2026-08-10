@@ -22,8 +22,17 @@ export const PlayerPositions = ({
     titleOrder = 3,
 }: Props) => {
     return (
-        <Paper p="sm" miw="14rem" h="100%">
-            <Title order={titleOrder} mb="xs" w="100%" ta="center">
+        <Paper
+            p="sm"
+            miw="14rem"
+            h="100%"
+        >
+            <Title
+                order={titleOrder}
+                mb="xs"
+                w="100%"
+                ta="center"
+            >
                 Positions
             </Title>
             <Divider mb="xs" />

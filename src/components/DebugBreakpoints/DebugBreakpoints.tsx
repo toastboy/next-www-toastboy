@@ -96,7 +96,11 @@ export const DebugBreakpoints = () => {
 
     return (
         <>
-            <Box component="span" ref={markerRef} style={{ display: 'none' }} />
+            <Box
+                component="span"
+                ref={markerRef}
+                style={{ display: 'none' }}
+            />
             <Container className={classes.div}>
                 <Text className={classes.p}>
                     📏 <strong>Breakpoints</strong>:{' '}

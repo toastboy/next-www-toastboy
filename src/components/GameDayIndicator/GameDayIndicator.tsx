@@ -49,7 +49,10 @@ export const GameDayIndicator = ({ gameDay }: Props) => {
                 }}
                 data-testid={`gameday-indicator-${gameDay.id}`}
             />
-            <GameDayLink gameDay={gameDay} format="numeric" />
+            <GameDayLink
+                gameDay={gameDay}
+                format="numeric"
+            />
         </Flex>
     );
 };

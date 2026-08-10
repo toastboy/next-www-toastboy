@@ -10,7 +10,10 @@ describe('PlayerLink', () => {
         it('renders link to player page', () => {
             render(
                 <Wrapper>
-                    <PlayerLink player={defaultPlayer} year={2024} />
+                    <PlayerLink
+                        player={defaultPlayer}
+                        year={2024}
+                    />
                 </Wrapper>,
             );
 
@@ -24,7 +27,10 @@ describe('PlayerLink', () => {
         it('renders link without year when year is 0', () => {
             render(
                 <Wrapper>
-                    <PlayerLink player={defaultPlayer} year={0} />
+                    <PlayerLink
+                        player={defaultPlayer}
+                        year={0}
+                    />
                 </Wrapper>,
             );
 
@@ -38,7 +44,10 @@ describe('PlayerLink', () => {
         it('uses the single-line min-width by default', () => {
             render(
                 <Wrapper>
-                    <PlayerLink player={defaultPlayer} year={2024} />
+                    <PlayerLink
+                        player={defaultPlayer}
+                        year={2024}
+                    />
                 </Wrapper>,
             );
 
@@ -53,7 +62,11 @@ describe('PlayerLink', () => {
         it('uses the multi-line min-width when wrap is enabled', () => {
             render(
                 <Wrapper>
-                    <PlayerLink player={defaultPlayer} year={2024} wrap />
+                    <PlayerLink
+                        player={defaultPlayer}
+                        year={2024}
+                        wrap
+                    />
                 </Wrapper>,
             );
 
@@ -170,7 +183,10 @@ describe('PlayerLink', () => {
             };
             render(
                 <Wrapper>
-                    <PlayerLink player={namelessPlayer} year={2024} />
+                    <PlayerLink
+                        player={namelessPlayer}
+                        year={2024}
+                    />
                 </Wrapper>,
             );
             expect(

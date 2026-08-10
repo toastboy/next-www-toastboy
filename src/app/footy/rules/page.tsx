@@ -5,7 +5,12 @@ export const metadata = { title: 'Rules' };
 const RulesPage = () => {
     return (
         <>
-            <Flex gap="md" align="flex-start" direction="column" p="xl">
+            <Flex
+                gap="md"
+                align="flex-start"
+                direction="column"
+                p="xl"
+            >
                 <Title order={1}>Toastboy FC: Rules</Title>
 
                 <Text>

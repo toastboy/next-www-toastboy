@@ -8,7 +8,11 @@ describe('CountryFlag', () => {
     it('renders flag image when country exists', () => {
         render(
             <Wrapper>
-                <CountryFlag country={defaultCountry} w="12cqw" h="auto" />
+                <CountryFlag
+                    country={defaultCountry}
+                    w="12cqw"
+                    h="auto"
+                />
             </Wrapper>,
         );
 

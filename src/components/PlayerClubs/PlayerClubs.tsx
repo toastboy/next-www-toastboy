@@ -11,7 +11,11 @@ export interface Props {
 
 export const PlayerClubs = ({ clubs }: Props) => {
     return clubs.length > 0 ? (
-        <Flex gap="2cqw" p="1cqw" direction="column">
+        <Flex
+            gap="2cqw"
+            p="1cqw"
+            direction="column"
+        >
             {clubs.map((item) => (
                 <ClubBadge
                     key={item.clubId}

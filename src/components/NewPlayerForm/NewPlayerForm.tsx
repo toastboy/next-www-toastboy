@@ -108,7 +108,10 @@ export const NewPlayerForm = ({
                     .join(', ');
                 const html = ReactDOMServer.renderToStaticMarkup(
                     <MantineProvider>
-                        <Flex direction="column" gap="md">
+                        <Flex
+                            direction="column"
+                            gap="md"
+                        >
                             <Text>Welcome to Toastboy FC!</Text>
                             <Text>
                                 Follow this link to get started:
@@ -191,11 +194,19 @@ export const NewPlayerForm = ({
     ];
 
     return (
-        <Container size="xs" mt="xl">
+        <Container
+            size="xs"
+            mt="xl"
+        >
             <Paper w="100%">
                 <Stack mb="lg">
                     <Stack>
-                        <Title order={2} mb="xs" w="100%" ta="center">
+                        <Title
+                            order={2}
+                            mb="xs"
+                            w="100%"
+                            ta="center"
+                        >
                             New Player
                         </Title>
                         {/* TODO: Do I want these dividers? They look a bit weird in the middle of a form, but they do help separate the title from the form. */}
@@ -229,7 +240,10 @@ export const NewPlayerForm = ({
                             }
                         />
 
-                        <Button type="submit" mt="md">
+                        <Button
+                            type="submit"
+                            mt="md"
+                        >
                             Add player
                         </Button>
                     </Box>

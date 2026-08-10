@@ -112,10 +112,16 @@ export const PasswordChangeForm = ({ revokeOtherSessions }: Props) => {
     ) : null;
 
     return (
-        <Container size="xs" mt="xl">
+        <Container
+            size="xs"
+            mt="xl"
+        >
             <Paper w="100%">
                 <Stack>
-                    <Title order={2} mb="md">
+                    <Title
+                        order={2}
+                        mb="md"
+                    >
                         Change your password
                     </Title>
                     <Text mb="lg">
@@ -147,7 +153,10 @@ export const PasswordChangeForm = ({ revokeOtherSessions }: Props) => {
                             )}
                         />
                         {notification}
-                        <Button type="submit" fullWidth>
+                        <Button
+                            type="submit"
+                            fullWidth
+                        >
                             Update password
                         </Button>
                     </Stack>

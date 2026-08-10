@@ -14,8 +14,15 @@ const FamilyTreePage = async () => {
     const tree = await playerService.getFamilyTree();
 
     return (
-        <Flex direction="column" align="center" gap="lg">
-            <Title order={2} mb="md">
+        <Flex
+            direction="column"
+            align="center"
+            gap="lg"
+        >
+            <Title
+                order={2}
+                mb="md"
+            >
                 Toastboy FC Family Tree
             </Title>
             <Text mb="md">

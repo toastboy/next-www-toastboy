@@ -23,7 +23,11 @@ export interface Props {
 
 export const PlayerCard = ({ player, clubs, countries, trophies }: Props) => {
     return (
-        <Paper p="sm" miw="280px" h="100%">
+        <Paper
+            p="sm"
+            miw="280px"
+            h="100%"
+        >
             <PlayerCardImage
                 key={player.id}
                 player={player}
@@ -54,7 +58,11 @@ const PlayerCardImage = ({ player, clubs, countries, trophies }: Props) => {
     } as const;
 
     return (
-        <Box w="100%" pos="relative" className={classes.imageContainer}>
+        <Box
+            w="100%"
+            pos="relative"
+            className={classes.imageContainer}
+        >
             <PlayerMugshot
                 player={player}
                 onReady={() => setMugshotReady(true)}

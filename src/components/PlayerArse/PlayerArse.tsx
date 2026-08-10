@@ -22,9 +22,20 @@ export const PlayerArse = ({ arse, titleOrder = 3 }: Props) => {
     if (!arse) return null;
 
     return (
-        <Paper p="sm" w="14rem">
-            <Group justify="center" gap="xs" wrap="nowrap" mb="xs">
-                <Title order={titleOrder} ta="center">
+        <Paper
+            p="sm"
+            w="14rem"
+        >
+            <Group
+                justify="center"
+                gap="xs"
+                wrap="nowrap"
+                mb="xs"
+            >
+                <Title
+                    order={titleOrder}
+                    ta="center"
+                >
                     ARSE
                 </Title>
                 <Tooltip
@@ -42,7 +53,10 @@ export const PlayerArse = ({ arse, titleOrder = 3 }: Props) => {
                 </Tooltip>
             </Group>
             <Divider mb="xs" />
-            <Table summary={`Anonymous Ratings System Exponent`} layout="fixed">
+            <Table
+                summary={`Anonymous Ratings System Exponent`}
+                layout="fixed"
+            >
                 <Table.Tbody>
                     <Table.Tr>
                         <Table.Td>In Goal</Table.Td>

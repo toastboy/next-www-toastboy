@@ -37,18 +37,33 @@ export const PlayerInfo = ({
     titleOrder = 3,
 }: Props) => {
     return (
-        <Paper p="sm" miw="18rem" h="100%">
-            <Title order={titleOrder} mb="xs" w="100%" ta="center">
+        <Paper
+            p="sm"
+            miw="18rem"
+            h="100%"
+        >
+            <Title
+                order={titleOrder}
+                mb="xs"
+                w="100%"
+                ta="center"
+            >
                 Info
             </Title>
             <Divider mb="xs" />
-            <Table layout="fixed" variant="vertical">
+            <Table
+                layout="fixed"
+                variant="vertical"
+            >
                 <Table.Tbody>
                     {!!introducedBy && (
                         <Table.Tr>
                             <Table.Th>Introduced by</Table.Th>
                             <Table.Td>
-                                <PlayerLink player={introducedBy} year={year} />
+                                <PlayerLink
+                                    player={introducedBy}
+                                    year={year}
+                                />
                             </Table.Td>
                         </Table.Tr>
                     )}

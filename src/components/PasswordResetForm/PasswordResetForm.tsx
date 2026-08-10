@@ -127,9 +127,17 @@ export const PasswordResetForm = ({ token }: Props) => {
     }
 
     return (
-        <Paper w="100%" maw="35rem">
+        <Paper
+            w="100%"
+            maw="35rem"
+        >
             <Stack>
-                <Title order={2} mb="xs" w="100%" ta="center">
+                <Title
+                    order={2}
+                    mb="xs"
+                    w="100%"
+                    ta="center"
+                >
                     Reset your password
                 </Title>
                 <Divider mb="xs" />
@@ -151,7 +159,11 @@ export const PasswordResetForm = ({ token }: Props) => {
                             'confirmPassword',
                         )}
                     />
-                    <Button type="submit" fullWidth disabled={!form.isValid()}>
+                    <Button
+                        type="submit"
+                        fullWidth
+                        disabled={!form.isValid()}
+                    >
                         Reset password
                     </Button>
                 </Stack>

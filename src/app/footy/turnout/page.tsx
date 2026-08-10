@@ -11,7 +11,10 @@ const TurnoutPage = async () => {
     const turnout = await outcomeService.getTurnoutByYear();
 
     return (
-        <Stack p="xl" align="center">
+        <Stack
+            p="xl"
+            align="center"
+        >
             <AutoRefresh
                 channels={[FootyChannel.Games, FootyChannel.Results]}
             />

@@ -134,16 +134,25 @@ export const MoreGamesForm = ({
     return (
         <Container fluid>
             <Paper w="100%">
-                <Box component="form" onSubmit={form.onSubmit(handleSubmit)}>
+                <Box
+                    component="form"
+                    onSubmit={form.onSubmit(handleSubmit)}
+                >
                     <Stack gap="md">
-                        <Stack align="flex-start" gap="xs">
+                        <Stack
+                            align="flex-start"
+                            gap="xs"
+                        >
                             <Title order={2}>More games</Title>
                             <Text c="dimmed">
                                 Schedule game days from the next available date
                                 through to the end of the booking year.
                             </Text>
                         </Stack>
-                        <Group justify="space-between" mb="lg">
+                        <Group
+                            justify="space-between"
+                            mb="lg"
+                        >
                             <NumberInput
                                 label="Player charge per game"
                                 aria-label="Player charge per game"
@@ -173,7 +182,10 @@ export const MoreGamesForm = ({
                             minWidth={480}
                             scrollAreaProps={{ type: 'auto' }}
                         >
-                            <Table highlightOnHover withTableBorder>
+                            <Table
+                                highlightOnHover
+                                withTableBorder
+                            >
                                 <Table.Thead>
                                     <Table.Tr>
                                         <Table.Th>Date</Table.Th>

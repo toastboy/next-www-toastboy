@@ -185,7 +185,10 @@ export const AdminPlayerList = ({
             onClick={() => handleSort(key)}
             aria-label={`Sort by ${label}`}
         >
-            <Group gap={6} wrap="nowrap">
+            <Group
+                gap={6}
+                wrap="nowrap"
+            >
                 <Text span>{label}</Text>
                 {sortKey === key ? (
                     sortDirection === 'asc' ? (
@@ -394,11 +397,17 @@ export const AdminPlayerList = ({
     });
 
     return (
-        <Container fluid mt="xl">
+        <Container
+            fluid
+            mt="xl"
+        >
             <Paper w="100%">
                 <Stack gap="sm">
                     <Center>
-                        <Title order={2} mb="md">
+                        <Title
+                            order={2}
+                            mb="md"
+                        >
                             Admin: Players
                         </Title>
                     </Center>
@@ -412,7 +421,11 @@ export const AdminPlayerList = ({
                         wrap="wrap"
                         mb="md"
                     >
-                        <Group gap="md" wrap="wrap" align="flex-end">
+                        <Group
+                            gap="md"
+                            wrap="wrap"
+                            align="flex-end"
+                        >
                             <TextInput
                                 label="Name"
                                 size="xs"
@@ -443,7 +456,11 @@ export const AdminPlayerList = ({
                                 />
                             </Stack>
                             <Stack gap={2}>
-                                <Text id="auth-filter-label" size="xs" fw={500}>
+                                <Text
+                                    id="auth-filter-label"
+                                    size="xs"
+                                    fw={500}
+                                >
                                     Auth
                                 </Text>
                                 <SegmentedControl

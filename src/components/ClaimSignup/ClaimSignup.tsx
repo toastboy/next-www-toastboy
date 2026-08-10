@@ -114,9 +114,19 @@ export const ClaimSignup = ({ name, email, token }: Props) => {
     ) : null;
 
     return (
-        <Paper w="100%" maw="35rem" mx="auto" mt="xl">
+        <Paper
+            w="100%"
+            maw="35rem"
+            mx="auto"
+            mt="xl"
+        >
             <Stack mb="lg">
-                <Title order={2} mb="xs" w="100%" ta="center">
+                <Title
+                    order={2}
+                    mb="xs"
+                    w="100%"
+                    ta="center"
+                >
                     Finish creating your login
                 </Title>
                 <Text ta="center">
@@ -124,7 +134,11 @@ export const ClaimSignup = ({ name, email, token }: Props) => {
                     Choose how you want to sign in.
                 </Text>
                 <Divider mb="xs" />
-                <Group justify="center" w="100%" mb="md">
+                <Group
+                    justify="center"
+                    w="100%"
+                    mb="md"
+                >
                     <UnstyledButton
                         onClick={() => signInWithGoogle(socialRedirect)}
                         w="fit-content"
@@ -150,10 +164,16 @@ export const ClaimSignup = ({ name, email, token }: Props) => {
                         />
                     </UnstyledButton>
                 </Group>
-                <Divider label="or" labelPosition="center" />
+                <Divider
+                    label="or"
+                    labelPosition="center"
+                />
             </Stack>
 
-            <Box component="form" onSubmit={form.onSubmit(handleSignUp)}>
+            <Box
+                component="form"
+                onSubmit={form.onSubmit(handleSignUp)}
+            >
                 <Stack>
                     <PasswordFields
                         passwordProps={form.getInputProps('password')}

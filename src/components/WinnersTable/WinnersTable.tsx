@@ -44,14 +44,26 @@ export const WinnersTable = ({ table, records }: Props) => {
         >
             <Table.Td>{years[index].visible ? winner.year : ''}</Table.Td>
             <Table.Td>
-                <PlayerLink player={winner.player} year={winner.year} />
+                <PlayerLink
+                    player={winner.player}
+                    year={winner.year}
+                />
             </Table.Td>
         </Table.Tr>
     ));
 
     return records.length > 0 ? (
-        <Paper p="sm" miw="14rem" maw="18rem">
-            <Title order={3} mb="xs" w="100%" ta="center">
+        <Paper
+            p="sm"
+            miw="14rem"
+            maw="18rem"
+        >
+            <Title
+                order={3}
+                mb="xs"
+                w="100%"
+                ta="center"
+            >
                 {table.charAt(0).toUpperCase() + table.slice(1)}
             </Title>
             <Divider mb="xs" />
@@ -59,10 +71,16 @@ export const WinnersTable = ({ table, records }: Props) => {
             <Table>
                 <Table.Thead>
                     <Table.Tr bd="0">
-                        <Table.Th w="4em" p={0}>
+                        <Table.Th
+                            w="4em"
+                            p={0}
+                        >
                             <VisuallyHidden>Year</VisuallyHidden>
                         </Table.Th>
-                        <Table.Th w="auto" p={0}>
+                        <Table.Th
+                            w="auto"
+                            p={0}
+                        >
                             <VisuallyHidden>Winner(s)</VisuallyHidden>
                         </Table.Th>
                     </Table.Tr>

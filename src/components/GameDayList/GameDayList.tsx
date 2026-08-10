@@ -49,11 +49,20 @@ export const GameDayList = ({ gameDays, year }: Props) => {
             w="100%"
         >
             {Object.entries(gameDaysByMonth).map(([month, gameDays]) => (
-                <Paper key={month} w="10rem">
-                    <Text size="lg" mb="sm">
+                <Paper
+                    key={month}
+                    w="10rem"
+                >
+                    <Text
+                        size="lg"
+                        mb="sm"
+                    >
                         {month}
                     </Text>
-                    <SimpleGrid cols={2} spacing="md">
+                    <SimpleGrid
+                        cols={2}
+                        spacing="md"
+                    >
                         {gameDays.map((gameDay) => (
                             <GameDayIndicator
                                 key={gameDay.id}

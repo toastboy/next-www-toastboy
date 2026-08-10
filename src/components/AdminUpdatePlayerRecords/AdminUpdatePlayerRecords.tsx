@@ -64,7 +64,10 @@ export const AdminUpdatePlayerRecords = ({
                 role="status"
                 aria-label="Loading player records progress"
             >
-                <Loader color="gray" type="dots" />
+                <Loader
+                    color="gray"
+                    type="dots"
+                />
             </Center>
         );
     }
@@ -79,7 +82,12 @@ export const AdminUpdatePlayerRecords = ({
               );
 
     return (
-        <Flex direction="column" align="center" gap="md" p="md">
+        <Flex
+            direction="column"
+            align="center"
+            gap="md"
+            p="md"
+        >
             <RingProgress
                 label={
                     pct === 100 ? (
@@ -95,7 +103,12 @@ export const AdminUpdatePlayerRecords = ({
                             </ActionIcon>
                         </Center>
                     ) : (
-                        <Text c="blue" fw={700} ta="center" size="xl">
+                        <Text
+                            c="blue"
+                            fw={700}
+                            ta="center"
+                            size="xl"
+                        >
                             {pct}%
                         </Text>
                     )

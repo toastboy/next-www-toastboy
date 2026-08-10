@@ -11,7 +11,10 @@ export interface Props {
 }
 
 export const GoalieIndicator = ({ hiddenFrom, visibleFrom }: Props) => (
-    <Tooltip label="Goalie" withArrow>
+    <Tooltip
+        label="Goalie"
+        withArrow
+    >
         <Flex
             role="img"
             aria-label="Goalie indicator"

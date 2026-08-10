@@ -19,7 +19,10 @@ export const PlayerTrophies = ({ trophies }: Props) => {
     if (totalTrophies === 0) return null;
 
     return (
-        <Stack gap="2cqw" m="1cqw">
+        <Stack
+            gap="2cqw"
+            m="1cqw"
+        >
             {TableNameSchema.options.map((table) => {
                 const trophyList = trophies.get(table);
 

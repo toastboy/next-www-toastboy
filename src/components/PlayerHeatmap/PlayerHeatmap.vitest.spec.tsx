@@ -198,7 +198,10 @@ describe('PlayerHeatmap', () => {
     it('shows empty state when data is empty', () => {
         render(
             <Wrapper>
-                <PlayerHeatmap data={[]} year={2024} />
+                <PlayerHeatmap
+                    data={[]}
+                    year={2024}
+                />
             </Wrapper>,
         );
         expect(screen.getByText('No game data available.')).toBeInTheDocument();
@@ -208,7 +211,10 @@ describe('PlayerHeatmap', () => {
         const data = buildYearData();
         const { container } = render(
             <Wrapper>
-                <PlayerHeatmap data={data} year={2024} />
+                <PlayerHeatmap
+                    data={data}
+                    year={2024}
+                />
             </Wrapper>,
         );
         const cells = container.querySelectorAll('rect.cell');
@@ -219,7 +225,10 @@ describe('PlayerHeatmap', () => {
         const data = buildAllTimeData();
         const { container } = render(
             <Wrapper>
-                <PlayerHeatmap data={data} year={0} />
+                <PlayerHeatmap
+                    data={data}
+                    year={0}
+                />
             </Wrapper>,
         );
         const cells = container.querySelectorAll('rect.cell');
@@ -229,7 +238,10 @@ describe('PlayerHeatmap', () => {
     it('renders month labels on the X axis for yearly view', () => {
         const { container } = render(
             <Wrapper>
-                <PlayerHeatmap data={buildYearData()} year={2024} />
+                <PlayerHeatmap
+                    data={buildYearData()}
+                    year={2024}
+                />
             </Wrapper>,
         );
         const labels = Array.from(container.querySelectorAll('svg text')).map(
@@ -242,7 +254,10 @@ describe('PlayerHeatmap', () => {
     it('renders a year label for each year in the all-time view', () => {
         const { container } = render(
             <Wrapper>
-                <PlayerHeatmap data={buildAllTimeData()} year={0} />
+                <PlayerHeatmap
+                    data={buildAllTimeData()}
+                    year={0}
+                />
             </Wrapper>,
         );
         const labels = Array.from(container.querySelectorAll('svg text')).map(
@@ -256,7 +271,10 @@ describe('PlayerHeatmap', () => {
     it('renders month labels inside each year panel in the all-time view', () => {
         const { container } = render(
             <Wrapper>
-                <PlayerHeatmap data={buildAllTimeData()} year={0} />
+                <PlayerHeatmap
+                    data={buildAllTimeData()}
+                    year={0}
+                />
             </Wrapper>,
         );
         const labels = Array.from(container.querySelectorAll('svg text')).map(
@@ -270,7 +288,10 @@ describe('PlayerHeatmap', () => {
         const data = buildYearData();
         const { container } = render(
             <Wrapper>
-                <PlayerHeatmap data={data} year={2024} />
+                <PlayerHeatmap
+                    data={data}
+                    year={2024}
+                />
             </Wrapper>,
         );
         const cell = container.querySelector('rect.cell')!;
@@ -285,7 +306,10 @@ describe('PlayerHeatmap', () => {
     it('hides tooltip on mouseleave', () => {
         const { container } = render(
             <Wrapper>
-                <PlayerHeatmap data={buildYearData()} year={2024} />
+                <PlayerHeatmap
+                    data={buildYearData()}
+                    year={2024}
+                />
             </Wrapper>,
         );
         const cell = container.querySelector('rect.cell')!;
@@ -302,7 +326,10 @@ describe('PlayerHeatmap', () => {
     it('shows "No game" and the game day comment in tooltip for a no-game day cell', () => {
         const { container } = render(
             <Wrapper>
-                <PlayerHeatmap data={buildWithNoGameData()} year={2024} />
+                <PlayerHeatmap
+                    data={buildWithNoGameData()}
+                    year={2024}
+                />
             </Wrapper>,
         );
         const cells = container.querySelectorAll('rect.cell');
@@ -321,7 +348,10 @@ describe('PlayerHeatmap', () => {
 
         const { container } = render(
             <Wrapper>
-                <PlayerHeatmap data={buildWithNoGameData()} year={2024} />
+                <PlayerHeatmap
+                    data={buildWithNoGameData()}
+                    year={2024}
+                />
             </Wrapper>,
         );
         const cells = container.querySelectorAll('rect.cell');
@@ -336,7 +366,10 @@ describe('PlayerHeatmap', () => {
 
         const { container } = render(
             <Wrapper>
-                <PlayerHeatmap data={buildYearData()} year={2024} />
+                <PlayerHeatmap
+                    data={buildYearData()}
+                    year={2024}
+                />
             </Wrapper>,
         );
         const cell = container.querySelector('rect.cell')!;
@@ -350,7 +383,10 @@ describe('PlayerHeatmap', () => {
 
         const { container } = render(
             <Wrapper>
-                <PlayerHeatmap data={buildYearData()} year={2024} />
+                <PlayerHeatmap
+                    data={buildYearData()}
+                    year={2024}
+                />
             </Wrapper>,
         );
         const cell = container.querySelector('rect.cell')!;
@@ -364,7 +400,10 @@ describe('PlayerHeatmap', () => {
 
         const { container } = render(
             <Wrapper>
-                <PlayerHeatmap data={buildYearData()} year={2024} />
+                <PlayerHeatmap
+                    data={buildYearData()}
+                    year={2024}
+                />
             </Wrapper>,
         );
         const cell = container.querySelector('rect.cell')!;
@@ -402,7 +441,10 @@ describe('PlayerHeatmap', () => {
     it('renders cell and shows tooltip with fallback for unknown points value', () => {
         const { container } = render(
             <Wrapper>
-                <PlayerHeatmap data={buildUnknownPointsData()} year={2024} />
+                <PlayerHeatmap
+                    data={buildUnknownPointsData()}
+                    year={2024}
+                />
             </Wrapper>,
         );
         const cell = container.querySelector('rect.cell')!;
@@ -419,7 +461,10 @@ describe('PlayerHeatmap', () => {
 
         const { container } = render(
             <Wrapper>
-                <PlayerHeatmap data={buildAllTimeData()} year={0} />
+                <PlayerHeatmap
+                    data={buildAllTimeData()}
+                    year={0}
+                />
             </Wrapper>,
         );
         const cells = container.querySelectorAll('rect.cell');

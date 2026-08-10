@@ -78,8 +78,14 @@ export const PieChart = ({ data }: Props) => {
     }, [data]);
 
     return (
-        <div ref={wrapperRef} className={styles.wrapper}>
-            <svg ref={svgRef} className={styles.svg} />
+        <div
+            ref={wrapperRef}
+            className={styles.wrapper}
+        >
+            <svg
+                ref={svgRef}
+                className={styles.svg}
+            />
         </div>
     );
 };

@@ -183,7 +183,11 @@ export const GameInvitationResponseForm = ({
             {currentResponse}
         </Badge>
     ) : (
-        <Badge color="grey" variant="filled" size="sm">
+        <Badge
+            color="grey"
+            variant="filled"
+            size="sm"
+        >
             No response yet
         </Badge>
     );
@@ -193,16 +197,32 @@ export const GameInvitationResponseForm = ({
         : `/footy/player/${details.playerId}`;
 
     return (
-        <Paper w="100%" maw="35rem" mx="auto">
-            <Box component="form" onSubmit={form.onSubmit(handleSubmit)}>
+        <Paper
+            w="100%"
+            maw="35rem"
+            mx="auto"
+        >
+            <Box
+                component="form"
+                onSubmit={form.onSubmit(handleSubmit)}
+            >
                 <Stack gap="md">
-                    <Title order={2} mb="xs" w="100%" ta="center">
+                    <Title
+                        order={2}
+                        mb="xs"
+                        w="100%"
+                        ta="center"
+                    >
                         {currentResponse
                             ? 'Thanks for Your Response'
                             : 'Enter Your Response'}
                     </Title>
                     <Divider mb="xs" />
-                    <Flex align="center" gap="md" wrap="wrap">
+                    <Flex
+                        align="center"
+                        gap="md"
+                        wrap="wrap"
+                    >
                         <Avatar
                             src={`/api/footy/player/${details.playerId}/mugshot`}
                             alt={details.playerName}

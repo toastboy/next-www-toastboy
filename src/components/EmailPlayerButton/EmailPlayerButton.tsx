@@ -30,7 +30,10 @@ export const EmailPlayerButton = ({ player, onSendEmail }: Props) => {
 
     return (
         <>
-            <Button type="button" onClick={() => setOpened(true)}>
+            <Button
+                type="button"
+                onClick={() => setOpened(true)}
+            >
                 Send Email...
             </Button>
             <SendEmailForm

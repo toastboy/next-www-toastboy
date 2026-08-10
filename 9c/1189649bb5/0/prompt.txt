@@ -1,0 +1,29 @@
+Is Prettier set up to auto-format on save in VS Code?
+
+---
+
+Yes
+
+---
+
+I just made a change to GoalieIndicator and saved, and nothing reformatted it
+
+---
+
+This is after quitting and restarting VS Code
+
+---
+
+Ah, it was disabled
+
+---
+
+Look at RecordsTable.tsx. It has a multi-line Mantine import, one module per line. Is that what you'd expect from Prettier, and could/should it be configured to just use multiple imports per line up to  80 columnds?
+
+---
+
+How about considering a rule where every React component gets each prop on its own line - is that a different case?
+
+---
+
+Enable it

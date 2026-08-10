@@ -1,0 +1,28 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "86e5c8ac107f",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "src/components/GoalieIndicator/GoalieIndicator.tsx",
+    "src/components/PlayerLink/PlayerLink.tsx",
+    "src/components/TeamPlayer/TeamPlayer.tsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/86/e5c8ac107f/0/metadata.json",
+      "transcript": "/86/e5c8ac107f/0/full.jsonl",
+      "compact_transcript": "/86/e5c8ac107f/0/transcript.jsonl",
+      "content_hash": "/86/e5c8ac107f/0/content_hash.txt",
+      "prompt": "/86/e5c8ac107f/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 76,
+    "cache_creation_tokens": 26082,
+    "cache_read_tokens": 5155827,
+    "output_tokens": 12661,
+    "api_call_count": 38
+  }
+}

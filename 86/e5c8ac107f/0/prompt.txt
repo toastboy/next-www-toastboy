@@ -1,0 +1,1 @@
+It strikes me that it would be much simpler if GoalieIndicator was standalone and aligned, when visible, just to the left of the PlayerForm in the small-screen layout. That would mean not complicating PlayerLink with all the props needed for the selective responsive rendering

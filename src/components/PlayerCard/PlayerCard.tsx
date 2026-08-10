@@ -1,9 +1,6 @@
 'use client';
 
-import {
-    Box,
-    Paper,
-} from '@mantine/core';
+import { Box, Paper } from '@mantine/core';
 import type { TableName } from 'prisma/generated/browser';
 import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 import { useState } from 'react';
@@ -26,13 +23,11 @@ export interface Props {
 
 export const PlayerCard = ({ player, clubs, countries, trophies }: Props) => {
     return (
-        <Paper p="sm" miw="280px" h="100%">
-            {/* Keyed by player.id: if this PlayerCard instance is reused for a
-                different player (e.g. prev/next navigation re-rendering in
-                place rather than remounting), React discards and recreates
-                this subtree from scratch, so its "is the mugshot ready" state
-                — and the mugshot's own internal loaded state — start fresh
-                rather than instantly showing the previous player's overlays. */}
+        <Paper
+            p="sm"
+            miw="280px"
+            h="100%"
+        >
             <PlayerCardImage
                 key={player.id}
                 player={player}
@@ -63,8 +58,15 @@ const PlayerCardImage = ({ player, clubs, countries, trophies }: Props) => {
     } as const;
 
     return (
-        <Box w="100%" pos="relative" className={classes.imageContainer}>
-            <PlayerMugshot player={player} onReady={() => setMugshotReady(true)} />
+        <Box
+            w="100%"
+            pos="relative"
+            className={classes.imageContainer}
+        >
+            <PlayerMugshot
+                player={player}
+                onReady={() => setMugshotReady(true)}
+            />
             <Box
                 className={classes.trophies}
                 left="0.5em"

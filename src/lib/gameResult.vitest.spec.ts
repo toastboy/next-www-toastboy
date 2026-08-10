@@ -4,7 +4,7 @@ import { getGameWinnersFromTeams, getTeamResultState } from '@/lib/gameResult';
 import { createMockOutcome } from '@/tests/mocks/data/outcome';
 import { defaultTeamPlayerList } from '@/tests/mocks/data/teamPlayer';
 
-const withPoints = (points: 0 | 1 | 3) => (
+const withPoints = (points: 0 | 1 | 3) =>
     defaultTeamPlayerList.map((player) => ({
         ...player,
         outcome: createMockOutcome({
@@ -12,8 +12,7 @@ const withPoints = (points: 0 | 1 | 3) => (
             team: player.outcome.team ?? 'A',
             points,
         }),
-    }))
-);
+    }));
 
 describe('gameResult helpers', () => {
     it('infers team A as winner from points', () => {
@@ -25,7 +24,9 @@ describe('gameResult helpers', () => {
     });
 
     it('infers draw from points', () => {
-        expect(getGameWinnersFromTeams(withPoints(1), withPoints(1))).toBe('draw');
+        expect(getGameWinnersFromTeams(withPoints(1), withPoints(1))).toBe(
+            'draw',
+        );
     });
 
     it('returns null when points are not set consistently', () => {
@@ -43,7 +44,9 @@ describe('gameResult helpers', () => {
     });
 
     it('returns null for a valid but unrecognised points combination (e.g. both teams on 0)', () => {
-        expect(getGameWinnersFromTeams(withPoints(0), withPoints(0))).toBeNull();
+        expect(
+            getGameWinnersFromTeams(withPoints(0), withPoints(0)),
+        ).toBeNull();
     });
 
     it('returns null when a team has no players', () => {
@@ -67,7 +70,9 @@ describe('gameResult helpers', () => {
         const arrayFromSpy = vi.spyOn(Array, 'from').mockReturnValueOnce([]);
 
         try {
-            expect(getGameWinnersFromTeams(withPoints(3), withPoints(0))).toBeNull();
+            expect(
+                getGameWinnersFromTeams(withPoints(3), withPoints(0)),
+            ).toBeNull();
         } finally {
             arrayFromSpy.mockRestore();
         }

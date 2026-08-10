@@ -39,9 +39,11 @@ const OutcomeUpdateStrictFields = {
     ...OutcomeStrictFields,
 };
 
-export const OutcomeWriteInputSchema = z.object({
-    ...OutcomeCreateStrictFields,
-}).strip();
+export const OutcomeWriteInputSchema = z
+    .object({
+        ...OutcomeCreateStrictFields,
+    })
+    .strip();
 
 export type OutcomeWriteInput = z.infer<typeof OutcomeWriteInputSchema>;
 
@@ -53,7 +55,9 @@ const OutcomeUncheckedUpdateInputWithoutIdSchema =
 
 const OutcomeCreateDataStrictUnionSchema = z.union([
     OutcomeCreateInputObjectZodSchema.extend(OutcomeCreateStrictFields),
-    OutcomeUncheckedCreateInputWithoutIdSchema.extend(OutcomeCreateStrictFields),
+    OutcomeUncheckedCreateInputWithoutIdSchema.extend(
+        OutcomeCreateStrictFields,
+    ),
 ]);
 
 const OutcomeCreateOneStrictZodSchema = OutcomeCreateOneZodSchema.extend({
@@ -65,7 +69,9 @@ export const OutcomeCreateOneStrictSchema: z.ZodType<Prisma.OutcomeCreateArgs> =
 
 const OutcomeUpdateDataStrictSchema = z.union([
     OutcomeUpdateInputObjectZodSchema.extend(OutcomeUpdateStrictFields),
-    OutcomeUncheckedUpdateInputWithoutIdSchema.extend(OutcomeUpdateStrictFields),
+    OutcomeUncheckedUpdateInputWithoutIdSchema.extend(
+        OutcomeUpdateStrictFields,
+    ),
 ]);
 
 const OutcomeUpsertOneStrictZodSchema = OutcomeUpsertOneZodSchema.extend({

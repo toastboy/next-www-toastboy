@@ -6,7 +6,13 @@ import { PlayerWhereUniqueInputObjectSchema } from 'prisma/zod/schemas/objects/P
 import z from 'zod';
 
 import { isPrismaNotFoundError } from '@/lib/prismaErrors';
-import { FamilyTreeNodeType, PlayerDataDisplayType, PlayerDataEmailDisplayType, PlayerDataType, PlayerFormType } from '@/types';
+import {
+    FamilyTreeNodeType,
+    PlayerDataDisplayType,
+    PlayerDataEmailDisplayType,
+    PlayerDataType,
+    PlayerFormType,
+} from '@/types';
 import {
     PlayerCreateOneStrictSchema,
     type PlayerCreateWriteInput,
@@ -19,8 +25,14 @@ import { PointsSchema, type PointsValue } from '@/types/Points';
 
 export type PlayerDisplayType = Omit<PlayerType, 'name'> & { name: string };
 
-const mapExtraEmails = (extraEmails: Pick<PrismaPlayerExtraEmailType, 'email' | 'verifiedAt'>[] | undefined) =>
-    (extraEmails ?? []).map(({ email, verifiedAt }) => ({ email, verified: verifiedAt != null }));
+const mapExtraEmails = (
+    extraEmails:
+        Pick<PrismaPlayerExtraEmailType, 'email' | 'verifiedAt'>[] | undefined,
+) =>
+    (extraEmails ?? []).map(({ email, verifiedAt }) => ({
+        email,
+        verified: verifiedAt != null,
+    }));
 
 class PlayerService {
     /**
@@ -40,7 +52,11 @@ class PlayerService {
      * not anonymous
      * @returns The display name for the player
      */
-    private getDisplayName(player: { id: number; name: string | null; anonymous: boolean | null }) {
+    private getDisplayName(player: {
+        id: number;
+        name: string | null;
+        anonymous: boolean | null;
+    }) {
         if (player.anonymous) {
             return `Player ${player.id}`;
         }
@@ -49,18 +65,22 @@ class PlayerService {
     }
 
     /**
-    * Sanitizes a player object by replacing its name with a display name.
-    *
-    * @template T - The player object type extending an object with `id`,
-    * `name`, and `anonymous` properties.
-    * @param player - The player object to sanitize.
-    * @returns A new object with the same properties as the input player, but
-    * with the `name` property replaced by the display name (guaranteed to be a
-    * string, not null).
-    */
-    private sanitizePlayerName<T extends { id: number; name: string | null; anonymous: boolean | null }>(
-        player: T,
-    ): Omit<T, 'name'> & { name: string } {
+     * Sanitizes a player object by replacing its name with a display name.
+     *
+     * @template T - The player object type extending an object with `id`,
+     * `name`, and `anonymous` properties.
+     * @param player - The player object to sanitize.
+     * @returns A new object with the same properties as the input player, but
+     * with the `name` property replaced by the display name (guaranteed to be a
+     * string, not null).
+     */
+    private sanitizePlayerName<
+        T extends {
+            id: number;
+            name: string | null;
+            anonymous: boolean | null;
+        },
+    >(player: T): Omit<T, 'name'> & { name: string } {
         return {
             ...player,
             name: this.getDisplayName(player),
@@ -84,7 +104,9 @@ class PlayerService {
      * @param id The numeric ID for the player
      * @returns A promise that resolves to the player's email data, or null if not found
      */
-    async getEmailDataById(id: number): Promise<PlayerDataEmailDisplayType | null> {
+    async getEmailDataById(
+        id: number,
+    ): Promise<PlayerDataEmailDisplayType | null> {
         const where = PlayerWhereUniqueInputObjectSchema.parse({ id });
         const player = await prisma.player.findUnique({
             where,
@@ -95,10 +117,7 @@ class PlayerService {
                 accountEmail: true,
                 extraEmails: {
                     select: { email: true, verifiedAt: true },
-                    orderBy: [
-                        { verifiedAt: 'desc' },
-                        { createdAt: 'desc' },
-                    ],
+                    orderBy: [{ verifiedAt: 'desc' }, { createdAt: 'desc' }],
                 },
             },
         });
@@ -127,7 +146,9 @@ class PlayerService {
             },
         });
 
-        return playerLogin?.player ? this.sanitizePlayerName(playerLogin.player) : null;
+        return playerLogin?.player
+            ? this.sanitizePlayerName(playerLogin.player)
+            : null;
     }
 
     /**
@@ -167,7 +188,9 @@ class PlayerService {
             return playerLogin ? playerLogin.login : null;
         }
 
-        const where = PlayerLoginWhereUniqueInputObjectSchema.parse({ login: idOrLogin });
+        const where = PlayerLoginWhereUniqueInputObjectSchema.parse({
+            login: idOrLogin,
+        });
         const playerLogin = await prisma.playerLogin.findUnique({ where });
         return playerLogin ? playerLogin.login : null;
     }
@@ -186,7 +209,9 @@ class PlayerService {
             const player = await this.getById(Number(idOrLogin));
             return player ? player.id : null;
         } else {
-            const where = PlayerLoginWhereUniqueInputObjectSchema.parse({ login: idOrLogin });
+            const where = PlayerLoginWhereUniqueInputObjectSchema.parse({
+                login: idOrLogin,
+            });
             const playerLogin = await prisma.playerLogin.findUnique({ where });
             return playerLogin ? playerLogin.playerId : null;
         }
@@ -258,7 +283,9 @@ class PlayerService {
      * @throws Logs and re-throws any errors that occur during the database
      * query
      */
-    async getAll(options?: { activeOnly?: boolean }): Promise<PlayerDataDisplayType[]> {
+    async getAll(options?: {
+        activeOnly?: boolean;
+    }): Promise<PlayerDataDisplayType[]> {
         const players = await prisma.player.findMany({
             where: options?.activeOnly ? { finished: null } : undefined,
             include: {
@@ -269,37 +296,62 @@ class PlayerService {
                 },
                 extraEmails: {
                     select: { email: true, verifiedAt: true },
-                    orderBy: [
-                        { verifiedAt: 'desc' },
-                        { createdAt: 'desc' },
-                    ],
+                    orderBy: [{ verifiedAt: 'desc' }, { createdAt: 'desc' }],
                 },
             },
         });
 
-        return players.map(({ outcomes, extraEmails, accountEmail, ...player }) => {
-            const gamesResponded = outcomes.filter(outcome => outcome.response !== null);
-            const gamesPlayed = outcomes.filter(outcome => outcome.points !== null);
+        return players.map(
+            ({ outcomes, extraEmails, accountEmail, ...player }) => {
+                const gamesResponded = outcomes.filter(
+                    (outcome) => outcome.response !== null,
+                );
+                const gamesPlayed = outcomes.filter(
+                    (outcome) => outcome.points !== null,
+                );
 
-            const respondedGameDays = gamesResponded.map(outcome => outcome.gameDayId);
-            const playedGameDays = gamesPlayed.map(outcome => outcome.gameDayId);
+                const respondedGameDays = gamesResponded.map(
+                    (outcome) => outcome.gameDayId,
+                );
+                const playedGameDays = gamesPlayed.map(
+                    (outcome) => outcome.gameDayId,
+                );
 
-            const playerWithComputedFields = {
-                ...player,
-                accountEmail: accountEmail ?? null,
-                extraEmails: mapExtraEmails(extraEmails),
-                firstResponded: respondedGameDays.length > 0 ? Math.min(...respondedGameDays) : null,
-                lastResponded: respondedGameDays.length > 0 ? Math.max(...respondedGameDays) : null,
-                firstPlayed: playedGameDays.length > 0 ? Math.min(...playedGameDays) : null,
-                lastPlayed: playedGameDays.length > 0 ? Math.max(...playedGameDays) : null,
-                gamesPlayed: gamesPlayed.length,
-                gamesWon: gamesPlayed.filter(outcome => outcome.points === 3).length,
-                gamesDrawn: gamesPlayed.filter(outcome => outcome.points === 1).length,
-                gamesLost: gamesPlayed.filter(outcome => outcome.points === 0).length,
-            } satisfies PlayerDataType;
+                const playerWithComputedFields = {
+                    ...player,
+                    accountEmail: accountEmail ?? null,
+                    extraEmails: mapExtraEmails(extraEmails),
+                    firstResponded:
+                        respondedGameDays.length > 0
+                            ? Math.min(...respondedGameDays)
+                            : null,
+                    lastResponded:
+                        respondedGameDays.length > 0
+                            ? Math.max(...respondedGameDays)
+                            : null,
+                    firstPlayed:
+                        playedGameDays.length > 0
+                            ? Math.min(...playedGameDays)
+                            : null,
+                    lastPlayed:
+                        playedGameDays.length > 0
+                            ? Math.max(...playedGameDays)
+                            : null,
+                    gamesPlayed: gamesPlayed.length,
+                    gamesWon: gamesPlayed.filter(
+                        (outcome) => outcome.points === 3,
+                    ).length,
+                    gamesDrawn: gamesPlayed.filter(
+                        (outcome) => outcome.points === 1,
+                    ).length,
+                    gamesLost: gamesPlayed.filter(
+                        (outcome) => outcome.points === 0,
+                    ).length,
+                } satisfies PlayerDataType;
 
-            return this.sanitizePlayerName(playerWithComputedFields);
-        });
+                return this.sanitizePlayerName(playerWithComputedFields);
+            },
+        );
     }
 
     /**
@@ -378,7 +430,11 @@ class PlayerService {
      * @throws Will propagate any errors encountered during the retrieval
      * process.
      */
-    async getLastResult(playerId: number, year?: number, points?: PointsValue): Promise<PlayerFormType | null> {
+    async getLastResult(
+        playerId: number,
+        year?: number,
+        points?: PointsValue,
+    ): Promise<PlayerFormType | null> {
         const id = z.coerce.number().int().min(1).parse(playerId);
         const validatedPoints = PointsSchema.optional().parse(points);
 
@@ -389,7 +445,9 @@ class PlayerService {
                 gameDay: {
                     date: {
                         gte: year ? new Date(Date.UTC(year, 0, 1)) : undefined,
-                        lt: year ? new Date(Date.UTC(year + 1, 0, 1)) : undefined,
+                        lt: year
+                            ? new Date(Date.UTC(year + 1, 0, 1))
+                            : undefined,
                     },
                 },
             },
@@ -423,7 +481,7 @@ class PlayerService {
                 gameDay: true,
             },
         });
-        const years = outcomes.map(o => o.gameDay.date.getFullYear());
+        const years = outcomes.map((o) => o.gameDay.date.getFullYear());
         const distinctYears = Array.from(new Set(years));
         distinctYears.push(0);
 
@@ -494,8 +552,13 @@ class PlayerService {
      * @returns A Promise that resolves to the updated PlayerType.
      * @throws Will throw if input validation or the database update fails.
      */
-    async setFinished(playerId: number, finished = true): Promise<PlayerDisplayType> {
-        const where = PlayerWhereUniqueInputObjectSchema.parse({ id: playerId });
+    async setFinished(
+        playerId: number,
+        finished = true,
+    ): Promise<PlayerDisplayType> {
+        const where = PlayerWhereUniqueInputObjectSchema.parse({
+            id: playerId,
+        });
         const data = {
             finished: finished ? new Date() : null,
         };
@@ -621,8 +684,7 @@ class PlayerService {
          */
         const players = playedPlayers.filter(
             (p) =>
-                effectiveParent.get(p.id) !== null ||
-                introducerIds.has(p.id),
+                effectiveParent.get(p.id) !== null || introducerIds.has(p.id),
         );
 
         /** Map from player id to their tree node. */

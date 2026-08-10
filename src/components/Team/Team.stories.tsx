@@ -21,7 +21,6 @@ export const Primary: Story = {
     args: {
         teamName: 'B',
         team: defaultTeamPlayerList,
-        maxTeamSize: defaultTeamPlayerList.length,
     },
     play: async ({ canvas }) => {
         // Each PlayerMugshot's <img> is aria-busy until ImageWithPlaceholder's
@@ -32,10 +31,18 @@ export const Primary: Story = {
         // whole Storybook suite runs and dozens of images across other
         // stories are decoding under CPU contention at the same time (see
         // testTimeout in vitest.config.ts, which must exceed this).
-        const total = (await canvas.findAllByRole('img', { name: /gary player/i })).length;
-        await waitFor(() => {
-            const ready = canvas.getAllByRole('img', { name: /gary player/i, busy: false });
-            return expect(ready).toHaveLength(total);
-        }, { timeout: 10000 });
+        const total = (
+            await canvas.findAllByRole('img', { name: /gary player/i })
+        ).length;
+        await waitFor(
+            () => {
+                const ready = canvas.getAllByRole('img', {
+                    name: /gary player/i,
+                    busy: false,
+                });
+                return expect(ready).toHaveLength(total);
+            },
+            { timeout: 10000 },
+        );
     },
 };

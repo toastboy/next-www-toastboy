@@ -14,9 +14,7 @@ import {
     MantineProvider,
 } from '@mantine/core';
 
-import {
-    Notifications,
-} from '@mantine/notifications';
+import { Notifications } from '@mantine/notifications';
 import type { Metadata } from 'next';
 
 import { CustomAppShell } from '@/components/CustomAppShell/CustomAppShell';
@@ -34,9 +32,10 @@ export const metadata: Metadata = {
         default: 'Toastboy FC',
         template: '%s | Toastboy FC',
     },
-    description: "Toastboy FC: five-a-side footy on Tuesdays at Kelsey Kerridge, Cambridge",
+    description:
+        'Toastboy FC: five-a-side footy on Tuesdays at Kelsey Kerridge, Cambridge',
     icons: {
-        icon: "/favicon.ico",
+        icon: '/favicon.ico',
     },
 };
 
@@ -49,16 +48,25 @@ export default async function RootLayout({
     const devMode = !(process.env.NODE_ENV === 'production' && !process.env.CI);
 
     return (
-        <html lang="en" {...mantineHtmlProps}>
+        <html
+            lang="en"
+            {...mantineHtmlProps}
+        >
             <head>
                 <ColorSchemeScript defaultColorScheme="light" />
             </head>
             <body>
-                <MantineProvider theme={theme} defaultColorScheme="light">
+                <MantineProvider
+                    theme={theme}
+                    defaultColorScheme="light"
+                >
                     <Notifications />
                     {/* <DebugBreakpoints /> */}
                     {/* <DebugFontSizes targets={[{ label: 'PlayerLink', selector: '[class*="PlayerLink-module"]' }]} /> */}
-                    <CustomAppShell user={user} devMode={devMode}>
+                    <CustomAppShell
+                        user={user}
+                        devMode={devMode}
+                    >
                         {children}
                     </CustomAppShell>
                 </MantineProvider>

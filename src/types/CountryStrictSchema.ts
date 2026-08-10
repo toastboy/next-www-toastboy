@@ -12,25 +12,34 @@ import z from 'zod';
 const COUNTRY_FIFA_CODE_REGEX = /^[A-Z]{3}$/;
 
 const CountryCreateStrictFields = {
-    fifaCode: z.string().regex(COUNTRY_FIFA_CODE_REGEX, 'Invalid FIFA code format'),
+    fifaCode: z
+        .string()
+        .regex(COUNTRY_FIFA_CODE_REGEX, 'Invalid FIFA code format'),
     name: z.string().trim().min(1).max(255),
 };
 
 const CountryUpdateStrictFields = {
-    fifaCode: z.string().regex(COUNTRY_FIFA_CODE_REGEX, 'Invalid FIFA code format').optional(),
+    fifaCode: z
+        .string()
+        .regex(COUNTRY_FIFA_CODE_REGEX, 'Invalid FIFA code format')
+        .optional(),
     name: z.string().trim().min(1).max(255).optional(),
 };
 
-export const CountryWriteInputSchema = z.object({
-    fifaCode: CountryCreateStrictFields.fifaCode,
-    name: CountryCreateStrictFields.name,
-}).strip();
+export const CountryWriteInputSchema = z
+    .object({
+        fifaCode: CountryCreateStrictFields.fifaCode,
+        name: CountryCreateStrictFields.name,
+    })
+    .strip();
 
 export type CountryWriteInput = z.infer<typeof CountryWriteInputSchema>;
 
 const CountryCreateDataStrictSchema = z.union([
     CountryCreateInputObjectZodSchema.extend(CountryCreateStrictFields),
-    CountryUncheckedCreateInputObjectZodSchema.extend(CountryCreateStrictFields),
+    CountryUncheckedCreateInputObjectZodSchema.extend(
+        CountryCreateStrictFields,
+    ),
 ]);
 
 const CountryCreateOneStrictZodSchema = CountryCreateOneZodSchema.extend({
@@ -42,7 +51,9 @@ export const CountryCreateOneStrictSchema: z.ZodType<Prisma.CountryCreateArgs> =
 
 const CountryUpdateDataStrictSchema = z.union([
     CountryUpdateInputObjectZodSchema.extend(CountryUpdateStrictFields),
-    CountryUncheckedUpdateInputObjectZodSchema.extend(CountryUpdateStrictFields),
+    CountryUncheckedUpdateInputObjectZodSchema.extend(
+        CountryUpdateStrictFields,
+    ),
 ]);
 
 const CountryUpsertOneStrictZodSchema = CountryUpsertOneZodSchema.extend({

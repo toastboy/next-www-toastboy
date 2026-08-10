@@ -16,9 +16,11 @@ const GameChatWriteFields = {
     body: z.string().nullish(),
 };
 
-export const GameChatWriteInputSchema = z.object({
-    ...GameChatWriteFields,
-}).strip();
+export const GameChatWriteInputSchema = z
+    .object({
+        ...GameChatWriteFields,
+    })
+    .strip();
 
 export type GameChatWriteInput = z.infer<typeof GameChatWriteInputSchema>;
 

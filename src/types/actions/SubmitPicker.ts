@@ -18,6 +18,4 @@ export type SubmitPickerInput = z.infer<typeof SubmitPickerInputSchema>;
  * @param data - Validated picker input including the selected player list.
  * @returns A promise that resolves when the selection payload is accepted.
  */
-export type SubmitPickerProxy = (
-    data: SubmitPickerInput,
-) => Promise<void>;
+export type SubmitPickerProxy = (data: SubmitPickerInput) => Promise<void>;

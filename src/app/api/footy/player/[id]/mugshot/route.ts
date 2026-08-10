@@ -17,21 +17,25 @@ import playerService from '@/services/Player';
  *
  * @throws {Error} Throws an error if the image body download fails.
  */
-async function getPlayerMugshot(
-    { params }: { params: Record<string, string> },
-): Promise<Buffer | null> {
+async function getPlayerMugshot({
+    params,
+}: {
+    params: Record<string, string>;
+}): Promise<Buffer | null> {
     try {
         const playerId = Number(params.id);
         if (Number.isNaN(playerId)) return null;
 
         const player = await playerService.getById(playerId);
         if (!player) return null;
-        const containerClient = azureCache.getContainerClient(CONTAINER_MUGSHOTS);
+        const containerClient =
+            azureCache.getContainerClient(CONTAINER_MUGSHOTS);
         const playerLogin = await playerService.getLogin(params.id);
-        let blobClient = containerClient.getBlobClient(playerLogin ? `${playerLogin}.jpg` : 'manofmystery.jpg');
+        let blobClient = containerClient.getBlobClient(
+            playerLogin ? `${playerLogin}.jpg` : 'manofmystery.jpg',
+        );
 
-        if (player.anonymous ||
-            (playerLogin && !(await blobClient.exists()))) {
+        if (player.anonymous || (playerLogin && !(await blobClient.exists()))) {
             blobClient = containerClient.getBlobClient('manofmystery.jpg');
         }
 
@@ -44,9 +48,10 @@ async function getPlayerMugshot(
                 },
             });
         }
-        return await streamToBuffer(downloadBlockBlobResponse.readableStreamBody);
-    }
-    catch (error) {
+        return await streamToBuffer(
+            downloadBlockBlobResponse.readableStreamBody,
+        );
+    } catch (error) {
         throw normalizeUnknownError(error, {
             details: {
                 resource: 'player-mugshot',
@@ -64,7 +69,10 @@ async function getPlayerMugshot(
  * @param props.params - A promise resolving to a record of route parameters, including `id`.
  * @returns A response containing the player's mugshot in PNG format.
  */
-export const GET = async (request: NextRequest, props: { params: Promise<Record<string, string>> }) => {
+export const GET = async (
+    request: NextRequest,
+    props: { params: Promise<Record<string, string>> },
+) => {
     const params = await props.params;
     return handleGET(
         () => getPlayerMugshot({ params }),

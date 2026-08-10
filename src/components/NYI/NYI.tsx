@@ -1,9 +1,7 @@
-import {
-    Text,
-} from '@mantine/core';
+'use client';
+
+import { Text } from '@mantine/core';
 
 export const NYI = () => {
-    return (
-        <Text data-testid="not-implemented">(Not yet implemented)</Text>
-    );
+    return <Text data-testid="not-implemented">(Not yet implemented)</Text>;
 };

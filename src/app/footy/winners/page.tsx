@@ -1,8 +1,4 @@
-import {
-    Flex,
-    Group,
-    Stack,
-} from '@mantine/core';
+import { Flex, Group, Stack } from '@mantine/core';
 import { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { TableNameSchema } from 'prisma/zod/schemas';
@@ -39,21 +35,25 @@ interface PageProps {
  * @throws Triggers `permanentRedirect()` if the current URL does not match the
  * canonical URL.
  */
-const unpackParams = cache(async (
-    searchParams: PageProps['searchParams'],
-) => {
+const unpackParams = cache(async (searchParams: PageProps['searchParams']) => {
     const resolvedSearchParams = await searchParams;
     const allYears = await playerRecordService.getAllYears({
         completed: true,
         mostRecentFirst: true,
     });
-    const yearResult = z.coerce.number().int().min(0).safeParse(resolvedSearchParams?.year ?? 0);
+    const yearResult = z.coerce
+        .number()
+        .int()
+        .min(0)
+        .safeParse(resolvedSearchParams?.year ?? 0);
     const year = yearResult.success ? yearResult.data : undefined;
     if (year === undefined || !allYears.includes(year)) notFound();
 
     const canonicalSearch = year ? `?year=${year}` : '';
     const canonicalUrl = `/footy/winners${canonicalSearch}`;
-    const currentSearch = resolvedSearchParams?.year ? `?year=${resolvedSearchParams.year}` : '';
+    const currentSearch = resolvedSearchParams?.year
+        ? `?year=${resolvedSearchParams.year}`
+        : '';
     const currentUrl = `/footy/winners${currentSearch}`;
     if (currentUrl !== canonicalUrl) permanentRedirect(canonicalUrl);
 
@@ -79,15 +79,25 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
 const WinnersPage = async (props: PageProps) => {
     const { year, allYears } = await unpackParams(props.searchParams);
 
-    const winners = await Promise.all(TableNameSchema.options.map(async (table) => {
-        const records = await playerRecordService.getWinners(table, year);
-        return { table, records };
-    }));
+    const winners = await Promise.all(
+        TableNameSchema.options.map(async (table) => {
+            const records = await playerRecordService.getWinners(table, year);
+            return { table, records };
+        }),
+    );
 
     return (
-        <Stack align="stretch" justify="center" gap="md">
+        <Stack
+            align="stretch"
+            justify="center"
+            gap="md"
+        >
             <AutoRefresh channels={FootyChannel.Results} />
-            <Group justify="center" w="100%" mb="xl">
+            <Group
+                justify="center"
+                w="100%"
+                mb="xl"
+            >
                 <TitleWithYearDropdown
                     order={1}
                     title="Winners: "
@@ -95,14 +105,22 @@ const WinnersPage = async (props: PageProps) => {
                     validYears={allYears}
                 />
             </Group>
-            <Flex wrap="wrap" gap="md" justify="center" align="stretch" w="100%">
-                {
-                    winners.map(({ table, records }) => {
-                        return (
-                            <WinnersTable table={table} records={records} key={table} />
-                        );
-                    })
-                }
+            <Flex
+                wrap="wrap"
+                gap="md"
+                justify="center"
+                align="stretch"
+                w="100%"
+            >
+                {winners.map(({ table, records }) => {
+                    return (
+                        <WinnersTable
+                            table={table}
+                            records={records}
+                            key={table}
+                        />
+                    );
+                })}
             </Flex>
         </Stack>
     );

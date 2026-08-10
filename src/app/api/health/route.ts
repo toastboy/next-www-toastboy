@@ -29,7 +29,7 @@ export async function GET() {
             {
                 status: 200,
                 headers: {
-                    'Connection': 'close',
+                    Connection: 'close',
                     'Cache-Control': 'no-store, no-cache, must-revalidate',
                 },
             },
@@ -60,7 +60,10 @@ export async function GET() {
          * normalisation.
          */
 
-        const { status, message } = toHttpErrorResponse(normalizedError, 'Health check failed');
+        const { status, message } = toHttpErrorResponse(
+            normalizedError,
+            'Health check failed',
+        );
 
         return NextResponse.json(
             {
@@ -72,7 +75,7 @@ export async function GET() {
             {
                 status: status === 500 ? 503 : status,
                 headers: {
-                    'Connection': 'close',
+                    Connection: 'close',
                     'Cache-Control': 'no-store, no-cache, must-revalidate',
                 },
             },

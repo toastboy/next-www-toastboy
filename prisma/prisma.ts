@@ -11,18 +11,22 @@ const databaseUrl =
 const adapter = new PrismaMariaDb(databaseUrl);
 
 function createPrismaClient() {
-    const enableQueryLogging = process.env.PRISMA_LOG_QUERIES === "true";
+    const enableQueryLogging = process.env.PRISMA_LOG_QUERIES === 'true';
 
     return new PrismaClient({
         adapter,
-        log: enableQueryLogging ? ['query', 'error', 'warn'] : ['error', 'warn'],
+        log: enableQueryLogging
+            ? ['query', 'error', 'warn']
+            : ['error', 'warn'],
     });
 }
 
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV === 'production') {
     prisma = createPrismaClient();
 } else {
-    const globalWithPrisma = global as typeof globalThis & { prisma: PrismaClient; };
+    const globalWithPrisma = global as typeof globalThis & {
+        prisma: PrismaClient;
+    };
     if (!globalWithPrisma.prisma) {
         globalWithPrisma.prisma = createPrismaClient();
     }

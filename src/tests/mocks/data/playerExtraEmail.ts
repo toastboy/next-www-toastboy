@@ -8,7 +8,9 @@ export const defaultPlayerExtraEmail = {
     createdAt: new Date('2021-01-01'),
 } satisfies PlayerExtraEmailType;
 
-export const createMockPlayerExtraEmail = (overrides: Partial<PlayerExtraEmailType> = {}): PlayerExtraEmailType => ({
+export const createMockPlayerExtraEmail = (
+    overrides: Partial<PlayerExtraEmailType> = {},
+): PlayerExtraEmailType => ({
     ...defaultPlayerExtraEmail,
     ...overrides,
 });

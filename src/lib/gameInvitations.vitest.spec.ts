@@ -6,7 +6,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { sendEmail } from '@/actions/sendEmail';
 import { NotFoundError } from '@/lib/errors';
-import { buildInvitationEmail, getGameInvitationResponseDetails, sendGameInvitations } from '@/lib/gameInvitations';
+import {
+    buildInvitationEmail,
+    getGameInvitationResponseDetails,
+    sendGameInvitations,
+} from '@/lib/gameInvitations';
 import { getPublicBaseUrl } from '@/lib/urls';
 import gameDayService from '@/services/GameDay';
 import gameInvitationService from '@/services/GameInvitation';
@@ -146,7 +150,9 @@ describe('sendGameInvitations', () => {
     });
 
     it('sends invitations to active players with deduped emails', async () => {
-        vi.spyOn(crypto, 'randomUUID').mockReturnValueOnce('123e4567-e89b-12d3-a456-426614174000');
+        vi.spyOn(crypto, 'randomUUID').mockReturnValueOnce(
+            '123e4567-e89b-12d3-a456-426614174000',
+        );
 
         await sendGameInvitations(99, 'Heads up');
 
@@ -154,7 +160,11 @@ describe('sendGameInvitations', () => {
         expect(mockInvitationService.deleteAll).toHaveBeenCalledTimes(1);
 
         expect(mockInvitationService.createMany).toHaveBeenCalledWith([
-            { uuid: '123e4567-e89b-12d3-a456-426614174000', playerId: 1, gameDayId: 99 },
+            {
+                uuid: '123e4567-e89b-12d3-a456-426614174000',
+                playerId: 1,
+                gameDayId: 99,
+            },
         ]);
 
         expect(mockSendEmail).toHaveBeenCalledTimes(1);
@@ -172,7 +182,7 @@ describe('sendGameInvitations', () => {
 
         const mailSentCall = mockGameDayService.markMailSent.mock.calls[0];
         expect(mailSentCall[0]).toBe(99);
-        expect((mailSentCall[1]!).toISOString()).toBe(fixedNow.toISOString());
+        expect(mailSentCall[1]!.toISOString()).toBe(fixedNow.toISOString());
     });
 
     it('throws when the game day cannot be found', async () => {
@@ -186,24 +196,29 @@ describe('sendGameInvitations', () => {
     });
 
     it('does not create invitations when no active player has a valid email address', async () => {
-        mockPlayerService.getAll.mockResolvedValueOnce([
-            createMockPlayerData({
-                id: 5,
-                name: 'NoEmail',
-                finished: null,
-                accountEmail: null,
-                extraEmails: [],
-            }),
-        ].map((player) => ({
-            ...player,
-            name: player.name ?? `Player ${player.id}`,
-        })));
+        mockPlayerService.getAll.mockResolvedValueOnce(
+            [
+                createMockPlayerData({
+                    id: 5,
+                    name: 'NoEmail',
+                    finished: null,
+                    accountEmail: null,
+                    extraEmails: [],
+                }),
+            ].map((player) => ({
+                ...player,
+                name: player.name ?? `Player ${player.id}`,
+            })),
+        );
 
         await sendGameInvitations(99);
 
         expect(mockInvitationService.createMany).not.toHaveBeenCalled();
         expect(mockSendEmail).not.toHaveBeenCalled();
-        expect(mockGameDayService.markMailSent).toHaveBeenCalledWith(99, expect.any(Date));
+        expect(mockGameDayService.markMailSent).toHaveBeenCalledWith(
+            99,
+            expect.any(Date),
+        );
     });
 });
 
@@ -266,7 +281,10 @@ describe('getGameInvitationResponseDetails', () => {
 
     it('falls back to player.goalie and nulls when there is no outcome', async () => {
         mockOutcomeService.get.mockResolvedValueOnce(null);
-        mockPlayerService.getById.mockResolvedValueOnce({ ...player, goalie: true });
+        mockPlayerService.getById.mockResolvedValueOnce({
+            ...player,
+            goalie: true,
+        });
 
         const result = await getGameInvitationResponseDetails('token-abc');
 

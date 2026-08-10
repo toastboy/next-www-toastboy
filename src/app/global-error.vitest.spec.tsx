@@ -36,7 +36,9 @@ describe('GlobalError', () => {
     });
 
     it('captures the error with client layer context on mount', () => {
-        const error = new Error('catastrophic failure') as Error & { digest?: string };
+        const error = new Error('catastrophic failure') as Error & {
+            digest?: string;
+        };
 
         act(() => {
             root = createRoot(container);

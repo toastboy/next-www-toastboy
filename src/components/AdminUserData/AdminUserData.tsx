@@ -1,14 +1,7 @@
 'use client';
 
-import {
-    CodeHighlight,
-} from '@mantine/code-highlight';
-import {
-    Center,
-    Container,
-    Paper,
-    Title,
-} from '@mantine/core';
+import { CodeHighlight } from '@mantine/code-highlight';
+import { Center, Container, Paper, Title } from '@mantine/core';
 
 import type { UserWithRolePayload } from '@/lib/core/auth';
 
@@ -18,10 +11,16 @@ export interface Props {
 
 export const AdminUserData = ({ user }: Props) => {
     return (
-        <Container size="xs" mt="xl">
+        <Container
+            size="xs"
+            mt="xl"
+        >
             <Paper p="xl">
                 <Center>
-                    <Title order={2} mb="md">
+                    <Title
+                        order={2}
+                        mb="md"
+                    >
                         {user.name}
                     </Title>
                 </Center>

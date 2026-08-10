@@ -2,7 +2,9 @@ import type { PlayerSchema } from 'prisma/zod/schemas';
 import type { PlayerExtraEmailType as PrismaPlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
 import type { z } from 'zod';
 
-type PlayerDataExtraEmailType = Pick<PrismaPlayerExtraEmailType, 'email'> & { verified: boolean };
+type PlayerDataExtraEmailType = Pick<PrismaPlayerExtraEmailType, 'email'> & {
+    verified: boolean;
+};
 
 interface PlayerDataEmailType {
     id: number;
@@ -11,9 +13,14 @@ interface PlayerDataEmailType {
     extraEmails: PlayerDataExtraEmailType[];
 }
 
-export type PlayerDataEmailDisplayType = Omit<PlayerDataEmailType, 'name'> & { name: string };
+export type PlayerDataEmailDisplayType = Omit<PlayerDataEmailType, 'name'> & {
+    name: string;
+};
 
-export type PlayerDataType = Omit<z.infer<typeof PlayerSchema>, 'accountEmail'> & {
+export type PlayerDataType = Omit<
+    z.infer<typeof PlayerSchema>,
+    'accountEmail'
+> & {
     accountEmail: string | null;
     extraEmails: PlayerDataExtraEmailType[];
     firstResponded: number | null;
@@ -26,4 +33,6 @@ export type PlayerDataType = Omit<z.infer<typeof PlayerSchema>, 'accountEmail'> 
     gamesLost: number;
 };
 
-export type PlayerDataDisplayType = Omit<PlayerDataType, 'name'> & { name: string };
+export type PlayerDataDisplayType = Omit<PlayerDataType, 'name'> & {
+    name: string;
+};

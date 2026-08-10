@@ -10,15 +10,21 @@ vi.mock('@/lib/observability/sentry', () => ({
 }));
 
 vi.mock('next/navigation', () => ({
-    notFound: vi.fn(() => { throw new Error('not_found'); }),
+    notFound: vi.fn(() => {
+        throw new Error('not_found');
+    }),
 }));
 
 vi.mock('@/components/AdminUserData/AdminUserData', () => ({
-    AdminUserData: function AdminUserData() { return null; },
+    AdminUserData: function AdminUserData() {
+        return null;
+    },
 }));
 
 vi.mock('@/components/AutoRefresh/AutoRefresh', () => ({
-    AutoRefresh: function AutoRefresh() { return null; },
+    AutoRefresh: function AutoRefresh() {
+        return null;
+    },
 }));
 
 import { listUsersAction } from '@/actions/auth';
@@ -37,7 +43,9 @@ describe('Admin User [email] page', () => {
     it('URL-decodes the email param before passing it to listUsersAction', async () => {
         (listUsersAction as Mock).mockResolvedValue([user]);
 
-        await AdminUserPage({ params: Promise.resolve({ email: 'alice%40example.com' }) });
+        await AdminUserPage({
+            params: Promise.resolve({ email: 'alice%40example.com' }),
+        });
 
         expect(listUsersAction).toHaveBeenCalledWith('alice@example.com');
     });
@@ -58,7 +66,9 @@ describe('Admin User [email] page', () => {
     it('renders AdminUserData and AutoRefresh (Users channel) when the user is found', async () => {
         (listUsersAction as Mock).mockResolvedValue([user]);
 
-        const result = await AdminUserPage({ params: Promise.resolve({ email: 'alice@example.com' }) });
+        const result = await AdminUserPage({
+            params: Promise.resolve({ email: 'alice@example.com' }),
+        });
 
         const userData = findElement(result, 'AdminUserData');
         expect(userData?.props.user).toBe(user);
@@ -70,7 +80,9 @@ describe('Admin User [email] page', () => {
         (listUsersAction as Mock).mockResolvedValue([]);
 
         await expect(
-            AdminUserPage({ params: Promise.resolve({ email: 'alice@example.com' }) }),
+            AdminUserPage({
+                params: Promise.resolve({ email: 'alice@example.com' }),
+            }),
         ).rejects.toThrow('not_found');
     });
 
@@ -79,7 +91,9 @@ describe('Admin User [email] page', () => {
         (listUsersAction as Mock).mockRejectedValue(coreError);
 
         await expect(
-            AdminUserPage({ params: Promise.resolve({ email: 'alice@example.com' }) }),
+            AdminUserPage({
+                params: Promise.resolve({ email: 'alice@example.com' }),
+            }),
         ).rejects.toThrow('not_found');
 
         expect(captureUnexpectedError).toHaveBeenCalledWith(coreError, {

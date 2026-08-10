@@ -17,7 +17,9 @@ const encoder = new TextEncoder();
  * router.refresh() on receipt to re-render server components with fresh data.
  */
 export function GET(request: NextRequest): Response {
-    const channel = request.nextUrl.searchParams.get('channel') as FootyChannel | null;
+    const channel = request.nextUrl.searchParams.get(
+        'channel',
+    ) as FootyChannel | null;
 
     if (!channel) {
         return new Response('Missing channel parameter', { status: 400 });
@@ -26,7 +28,9 @@ export function GET(request: NextRequest): Response {
     const stream = new ReadableStream({
         start(controller) {
             const listener = () => {
-                controller.enqueue(encoder.encode('event: update\ndata: {}\n\n'));
+                controller.enqueue(
+                    encoder.encode('event: update\ndata: {}\n\n'),
+                );
             };
 
             emitter.on(channel, listener);
@@ -42,7 +46,7 @@ export function GET(request: NextRequest): Response {
         headers: {
             'Content-Type': 'text/event-stream',
             'Cache-Control': 'no-cache',
-            'Connection': 'keep-alive',
+            Connection: 'keep-alive',
         },
     });
 }

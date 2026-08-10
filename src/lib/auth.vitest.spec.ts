@@ -1,8 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const capturedConfigRef = vi.hoisted(() => ({ value: null as Record<string, unknown> | null }));
+const capturedConfigRef = vi.hoisted(() => ({
+    value: null as Record<string, unknown> | null,
+}));
 
-const { sendEmailCoreMock, beforeDeletePlayerMock, getSecretsMock, getPublicBaseUrlMock } = vi.hoisted(() => ({
+const {
+    sendEmailCoreMock,
+    beforeDeletePlayerMock,
+    getSecretsMock,
+    getPublicBaseUrlMock,
+} = vi.hoisted(() => ({
     sendEmailCoreMock: vi.fn().mockResolvedValue(undefined),
     beforeDeletePlayerMock: vi.fn().mockResolvedValue(undefined),
     getSecretsMock: vi.fn().mockReturnValue({
@@ -78,7 +85,12 @@ describe('auth config callbacks', () => {
     });
 
     describe('user.changeEmail.sendChangeEmailConfirmation', () => {
-        const getCallback_ = () => getCallback<AnyFn>('user', 'changeEmail', 'sendChangeEmailConfirmation');
+        const getCallback_ = () =>
+            getCallback<AnyFn>(
+                'user',
+                'changeEmail',
+                'sendChangeEmailConfirmation',
+            );
 
         it('sends a confirmation email when user.email is set', async () => {
             await getCallback_()({
@@ -108,7 +120,12 @@ describe('auth config callbacks', () => {
     });
 
     describe('user.deleteUser.sendDeleteAccountVerification', () => {
-        const getCallback_ = () => getCallback<AnyFn>('user', 'deleteUser', 'sendDeleteAccountVerification');
+        const getCallback_ = () =>
+            getCallback<AnyFn>(
+                'user',
+                'deleteUser',
+                'sendDeleteAccountVerification',
+            );
 
         it('sends a delete account email', async () => {
             await getCallback_()({
@@ -130,7 +147,12 @@ describe('auth config callbacks', () => {
     describe('user.deleteUser.beforeDelete', () => {
         it('calls beforeDeletePlayer with the user object', async () => {
             const cb = getCallback<AnyFn>('user', 'deleteUser', 'beforeDelete');
-            const user = { id: '1', name: 'Alex', email: 'alex@example.com', playerId: 42 };
+            const user = {
+                id: '1',
+                name: 'Alex',
+                email: 'alex@example.com',
+                playerId: 42,
+            };
 
             await cb(user);
 
@@ -140,9 +162,15 @@ describe('auth config callbacks', () => {
 
     describe('emailAndPassword.sendResetPassword', () => {
         it('fires sendEmailCore (void, not awaited) with password reset email', async () => {
-            const cb = getCallback<AnyFn>('emailAndPassword', 'sendResetPassword');
+            const cb = getCallback<AnyFn>(
+                'emailAndPassword',
+                'sendResetPassword',
+            );
 
-            await cb({ user: { email: 'user@example.com' }, url: 'https://example.test/reset' });
+            await cb({
+                user: { email: 'user@example.com' },
+                url: 'https://example.test/reset',
+            });
 
             expect(sendEmailCoreMock).toHaveBeenCalledWith(
                 expect.objectContaining({
@@ -156,7 +184,10 @@ describe('auth config callbacks', () => {
 
     describe('emailAndPassword.onPasswordReset', () => {
         it('resolves without calling any email service', async () => {
-            const cb = getCallback<AnyFn>('emailAndPassword', 'onPasswordReset');
+            const cb = getCallback<AnyFn>(
+                'emailAndPassword',
+                'onPasswordReset',
+            );
 
             await expect(cb()).resolves.toBeUndefined();
             expect(sendEmailCoreMock).not.toHaveBeenCalled();
@@ -164,7 +195,8 @@ describe('auth config callbacks', () => {
     });
 
     describe('emailVerification.sendVerificationEmail', () => {
-        const getCallback_ = () => getCallback<AnyFn>('emailVerification', 'sendVerificationEmail');
+        const getCallback_ = () =>
+            getCallback<AnyFn>('emailVerification', 'sendVerificationEmail');
 
         it('sends a verification email when user.email is set', async () => {
             await getCallback_()({
@@ -194,7 +226,8 @@ describe('auth config callbacks', () => {
     });
 
     describe('deleteUser.sendDeleteAccountVerification', () => {
-        const getCallback_ = () => getCallback<AnyFn>('deleteUser', 'sendDeleteAccountVerification');
+        const getCallback_ = () =>
+            getCallback<AnyFn>('deleteUser', 'sendDeleteAccountVerification');
 
         it('fires sendEmailCore when user.email is set', async () => {
             await getCallback_()({

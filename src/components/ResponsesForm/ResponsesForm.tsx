@@ -1,12 +1,9 @@
 'use client';
 
-import type {
-    MantineColor,
-} from '@mantine/core';
+import type { MantineColor } from '@mantine/core';
 import {
     Button,
     Card,
-    CardSection,
     Checkbox,
     Collapse,
     Container,
@@ -22,13 +19,13 @@ import {
     Tooltip,
     UnstyledButton,
 } from '@mantine/core';
+import { useForm } from '@mantine/form';
+import { notifications } from '@mantine/notifications';
 import {
-    useForm,
-} from '@mantine/form';
-import {
-    notifications,
-} from '@mantine/notifications';
-import { IconAlertTriangle, IconCheck, IconChevronDown } from '@tabler/icons-react';
+    IconAlertTriangle,
+    IconCheck,
+    IconChevronDown,
+} from '@tabler/icons-react';
 import { PlayerResponse } from 'prisma/generated/enums';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
@@ -49,7 +46,10 @@ const ResponseOption = {
     None: 'None' as const,
 };
 
-type ResponseValues = Pick<OutcomePlayerType, 'response' | 'goalie' | 'comment'>;
+type ResponseValues = Pick<
+    OutcomePlayerType,
+    'response' | 'goalie' | 'comment'
+>;
 interface ResponsesFormValues {
     byPlayerId: Record<number, ResponseValues>;
 }
@@ -79,12 +79,16 @@ export const ResponsesForm = ({
 }: ResponsesFormProps) => {
     const form = useForm<ResponsesFormValues>({
         initialValues: {
-            byPlayerId: Object.fromEntries(responses.map((row) => [row.playerId, toResponseValues(row)])),
+            byPlayerId: Object.fromEntries(
+                responses.map((row) => [row.playerId, toResponseValues(row)]),
+            ),
         },
     });
     const [savingId, setSavingId] = useState<number | null>(null);
     const [filter, setFilter] = useState('');
-    const [expandedGroups, setExpandedGroups] = useState<Set<ResponseOption>>(new Set());
+    const [expandedGroups, setExpandedGroups] = useState<Set<ResponseOption>>(
+        new Set(),
+    );
     const isFiltering = filter.trim().length > 0;
 
     const toggleGroup = (title: ResponseOption) => {
@@ -105,18 +109,21 @@ export const ResponsesForm = ({
     const prevResponsesRef = useRef(responses);
     useEffect(() => {
         const prevBaselineById = new Map(
-            prevResponsesRef.current.map((row) => [row.playerId, toResponseValues(row)]),
+            prevResponsesRef.current.map((row) => [
+                row.playerId,
+                toResponseValues(row),
+            ]),
         );
         for (const row of responses) {
             const newBaseline = toResponseValues(row);
-            const oldBaseline = prevBaselineById.get(row.playerId) ?? newBaseline;
+            const oldBaseline =
+                prevBaselineById.get(row.playerId) ?? newBaseline;
             const current = form.values.byPlayerId[row.playerId];
             const userEdited =
-                !!current && (
-                    current.response !== oldBaseline.response ||
+                !!current &&
+                (current.response !== oldBaseline.response ||
                     current.goalie !== oldBaseline.goalie ||
-                    current.comment !== oldBaseline.comment
-                );
+                    current.comment !== oldBaseline.comment);
             if (!userEdited) {
                 form.setFieldValue(`byPlayerId.${row.playerId}`, newBaseline);
             }
@@ -141,23 +148,32 @@ export const ResponsesForm = ({
         const filteredRows = responses.filter((row) => {
             const searchTerm = filter.toLowerCase();
             // v8 ignore next -- optional chaining on name is a type-safety guard
-            return (row.player.name?.toLowerCase().includes(searchTerm));
+            return row.player.name?.toLowerCase().includes(searchTerm);
         });
 
         return {
             yes: filteredRows.filter((r) => r.response === ResponseOption.Yes),
             no: filteredRows.filter((r) => r.response === ResponseOption.No),
-            dunno: filteredRows.filter((r) => r.response === ResponseOption.Dunno),
-            excused: filteredRows.filter((r) => r.response === ResponseOption.Excused),
-            flaked: filteredRows.filter((r) => r.response === ResponseOption.Flaked),
-            injured: filteredRows.filter((r) => r.response === ResponseOption.Injured),
+            dunno: filteredRows.filter(
+                (r) => r.response === ResponseOption.Dunno,
+            ),
+            excused: filteredRows.filter(
+                (r) => r.response === ResponseOption.Excused,
+            ),
+            flaked: filteredRows.filter(
+                (r) => r.response === ResponseOption.Flaked,
+            ),
+            injured: filteredRows.filter(
+                (r) => r.response === ResponseOption.Injured,
+            ),
             none: filteredRows.filter((r) => r.response == null),
         };
     }, [responses, filter]);
 
     const handleSubmit = async (row: OutcomePlayerType) => {
         // v8 ignore next -- form is always initialised from the same rows array
-        const responseValues = form.values.byPlayerId[row.playerId] ?? toResponseValues(row);
+        const responseValues =
+            form.values.byPlayerId[row.playerId] ?? toResponseValues(row);
         if (!responseValues.response) return;
 
         const notificationId = `response-${row.playerId}`;
@@ -190,7 +206,10 @@ export const ResponsesForm = ({
                 autoClose: config.notificationAutoClose,
             });
         } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : 'Failed to update response';
+            const errorMessage =
+                err instanceof Error
+                    ? err.message
+                    : 'Failed to update response';
             notifications.update({
                 id: notificationId,
                 color: 'red',
@@ -212,37 +231,65 @@ export const ResponsesForm = ({
         const opened = expandedGroups.has(title) || isFiltering;
 
         return (
-            <Card key={title} withBorder shadow="xs" p="md" role="region" aria-label={title}>
-                <CardSection h={6} bg={responseGroupBarColor[title]} />
-                <UnstyledButton onClick={() => toggleGroup(title)} aria-expanded={opened} w="100%" mt="md">
+            <Card
+                key={title}
+                withBorder
+                shadow="xs"
+                p="md"
+                role="region"
+                aria-label={title}
+            >
+                <Card.Section
+                    h={6}
+                    bg={responseGroupBarColor[title]}
+                />
+                <UnstyledButton
+                    onClick={() => toggleGroup(title)}
+                    aria-expanded={opened}
+                    w="100%"
+                    mt="md"
+                >
                     <Group justify="space-between">
-                        <Title
-                            order={2}
-                        >
+                        <Title order={2}>
                             {title}:{' '}
                             <Tooltip
                                 multiline
-                                label={items.map((item) => item.player.name).join(', ')}
+                                label={items
+                                    .map((item) => item.player.name)
+                                    .join(', ')}
                             >
-                                <Text span inherit>{items.length}</Text>
+                                <Text
+                                    span
+                                    inherit
+                                >
+                                    {items.length}
+                                </Text>
                             </Tooltip>
                         </Title>
                         <IconChevronDown
                             size={20}
                             style={{
-                                transform: opened ? 'rotate(180deg)' : 'rotate(0deg)',
+                                transform: opened
+                                    ? 'rotate(180deg)'
+                                    : 'rotate(0deg)',
                                 transition: 'transform 150ms ease',
                             }}
                         />
                     </Group>
                 </UnstyledButton>
                 <Collapse expanded={opened}>
-                    <Stack gap="sm" mt="lg">
+                    <Stack
+                        gap="sm"
+                        mt="lg"
+                    >
                         {items.map((row) => {
                             // v8 ignore next -- form is always initialised from the same rows array
-                            const responseValues = form.values.byPlayerId[row.playerId] ?? toResponseValues(row);
+                            const responseValues =
+                                form.values.byPlayerId[row.playerId] ??
+                                toResponseValues(row);
                             // v8 ignore next -- null names are excluded by the search filter before rows are rendered
-                            const ariaLabel = row.player.name ?? `Player ${row.playerId}`;
+                            const ariaLabel =
+                                row.player.name ?? `Player ${row.playerId}`;
                             return (
                                 <Flex
                                     key={row.playerId}
@@ -264,17 +311,25 @@ export const ResponsesForm = ({
                                     </Text>
                                     <Select
                                         aria-label="Response"
-                                        data={Object.values(PlayerResponse).map((option) => ({
-                                            value: option,
-                                            label: option,
-                                        }))}
-                                        value={responseValues.response ?? ResponseOption.None}
+                                        data={Object.values(PlayerResponse).map(
+                                            (option) => ({
+                                                value: option,
+                                                label: option,
+                                            }),
+                                        )}
+                                        value={
+                                            responseValues.response ??
+                                            ResponseOption.None
+                                        }
                                         onChange={(value) => {
                                             const nextValue = value;
                                             form.setFieldValue(
                                                 `byPlayerId.${row.playerId}.response`,
                                                 // v8 ignore next -- 'None' never appears in the Select data array
-                                                nextValue === ResponseOption.None ? null : nextValue,
+                                                nextValue ===
+                                                    ResponseOption.None
+                                                    ? null
+                                                    : nextValue,
                                             );
                                         }}
                                         size="sm"
@@ -294,10 +349,12 @@ export const ResponsesForm = ({
                                         aria-label="Comment"
                                         placeholder="Comment"
                                         maxLength={127}
-                                        {...form.getInputProps(`byPlayerId.${row.playerId}.comment`)}
+                                        {...form.getInputProps(
+                                            `byPlayerId.${row.playerId}.comment`,
+                                        )}
                                         size="sm"
                                         flex={1}
-                                        miw={{ base: "9rem", sm: "16rem" }}
+                                        miw={{ base: '9rem', sm: '16rem' }}
                                     />
                                     <Button
                                         variant="filled"
@@ -319,26 +376,38 @@ export const ResponsesForm = ({
     };
 
     return (
-        <Container size="lg" p={0}>
+        <Container
+            size="lg"
+            p={0}
+        >
             <Paper w="100%">
                 <Stack gap="md">
-                    <Stack align="flex-start" gap="xs">
+                    <Stack
+                        align="flex-start"
+                        gap="xs"
+                    >
                         <Title order={2}>Responses</Title>
-                        <Text c="dimmed">Game {gameId}: {gameDate}</Text>
+                        <Text c="dimmed">
+                            Game {gameId}: {gameDate}
+                        </Text>
                         <TextInput
                             label="Search players"
                             placeholder="Search players"
                             value={filter}
-                            onChange={(event) => setFilter(event.currentTarget.value)}
+                            onChange={(event) =>
+                                setFilter(event.currentTarget.value)
+                            }
                             w="100%"
                         />
                     </Stack>
-                    {Object.values(ResponseOption).map((option) => (
+                    {Object.values(ResponseOption).map((option) =>
                         renderGroup(
                             option,
-                            grouped[option.toLowerCase() as keyof typeof grouped],
-                        )
-                    ))}
+                            grouped[
+                                option.toLowerCase() as keyof typeof grouped
+                            ],
+                        ),
+                    )}
                 </Stack>
             </Paper>
         </Container>

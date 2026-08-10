@@ -3,7 +3,7 @@ import { useRouter } from 'next/navigation';
 import { vi } from 'vitest';
 
 import { MoneyChart } from '@/components/MoneyChart/MoneyChart';
-import { Wrapper } from '@/tests/components/lib/common';
+import { mockRouter, Wrapper } from '@/tests/components/lib/common';
 import { defaultMoneyChartData } from '@/tests/mocks/data/money';
 
 class ImmediateResizeObserver {
@@ -15,8 +15,12 @@ class ImmediateResizeObserver {
         const entry = { contentRect: { width: 600, height: 300 } };
         this.callback([entry as unknown as ResizeObserverEntry], this);
     }
-    unobserve() { /* empty */ }
-    disconnect() { /* empty */ }
+    unobserve() {
+        /* empty */
+    }
+    disconnect() {
+        /* empty */
+    }
 }
 
 // D3 axes produce only <path> and <line> elements (no <rect>), so:
@@ -45,7 +49,9 @@ describe('MoneyChart', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByText('No transaction data available.')).toBeInTheDocument();
+        expect(
+            screen.getByText('No transaction data available.'),
+        ).toBeInTheDocument();
     });
 
     it('renders chart with bars and balance line for each data interval', () => {
@@ -69,7 +75,9 @@ describe('MoneyChart', () => {
             </Wrapper>,
         );
 
-        const svgTexts = Array.from(container.querySelectorAll('svg text')).map(el => el.textContent);
+        const svgTexts = Array.from(container.querySelectorAll('svg text')).map(
+            (el) => el.textContent,
+        );
         expect(svgTexts).toContain('Credits');
         expect(svgTexts).toContain('Debits');
         expect(svgTexts).toContain('Balance');
@@ -82,7 +90,9 @@ describe('MoneyChart', () => {
             </Wrapper>,
         );
 
-        const svgTexts = Array.from(container.querySelectorAll('svg text')).map(el => el.textContent);
+        const svgTexts = Array.from(container.querySelectorAll('svg text')).map(
+            (el) => el.textContent,
+        );
         for (const { interval } of defaultMoneyChartData) {
             expect(svgTexts).toContain(interval);
         }
@@ -96,7 +106,8 @@ describe('MoneyChart', () => {
         );
 
         const { interval, debits } = defaultMoneyChartData[0];
-        const tooltipDiv = container.querySelector('svg')!.nextElementSibling as HTMLElement;
+        const tooltipDiv = container.querySelector('svg')!
+            .nextElementSibling as HTMLElement;
 
         fireEvent.mouseMove(container.querySelectorAll('svg rect')[0]);
 
@@ -114,7 +125,8 @@ describe('MoneyChart', () => {
         );
 
         const { interval, credits } = defaultMoneyChartData[0];
-        const tooltipDiv = container.querySelector('svg')!.nextElementSibling as HTMLElement;
+        const tooltipDiv = container.querySelector('svg')!
+            .nextElementSibling as HTMLElement;
 
         fireEvent.mouseMove(container.querySelectorAll('svg rect')[N]);
 
@@ -133,8 +145,11 @@ describe('MoneyChart', () => {
 
         // Jan: credits(120) - debits(80) = running balance of 40
         const { interval } = defaultMoneyChartData[0];
-        const expectedBalance = (defaultMoneyChartData[0].credits - defaultMoneyChartData[0].debits).toFixed(2);
-        const tooltipDiv = container.querySelector('svg')!.nextElementSibling as HTMLElement;
+        const expectedBalance = (
+            defaultMoneyChartData[0].credits - defaultMoneyChartData[0].debits
+        ).toFixed(2);
+        const tooltipDiv = container.querySelector('svg')!
+            .nextElementSibling as HTMLElement;
 
         fireEvent.mouseMove(container.querySelectorAll('svg circle')[N]);
 
@@ -146,11 +161,14 @@ describe('MoneyChart', () => {
 
     it('navigates when clicking a bar with linkBase provided', () => {
         const mockPush = vi.fn();
-        vi.mocked(useRouter).mockReturnValue({ push: mockPush, replace: vi.fn(), back: vi.fn(), forward: vi.fn(), refresh: vi.fn(), prefetch: vi.fn() });
+        vi.mocked(useRouter).mockReturnValue(mockRouter({ push: mockPush }));
 
         const { container } = render(
             <Wrapper>
-                <MoneyChart data={defaultMoneyChartData} linkBase="/footy/books/" />
+                <MoneyChart
+                    data={defaultMoneyChartData}
+                    linkBase="/footy/books/"
+                />
             </Wrapper>,
         );
 
@@ -162,7 +180,7 @@ describe('MoneyChart', () => {
 
     it('does not navigate when clicking a bar without linkBase', () => {
         const mockPush = vi.fn();
-        vi.mocked(useRouter).mockReturnValue({ push: mockPush, replace: vi.fn(), back: vi.fn(), forward: vi.fn(), refresh: vi.fn(), prefetch: vi.fn() });
+        vi.mocked(useRouter).mockReturnValue(mockRouter({ push: mockPush }));
 
         const { container } = render(
             <Wrapper>
@@ -183,7 +201,8 @@ describe('MoneyChart', () => {
         );
 
         const debitBar = container.querySelectorAll('svg rect')[0];
-        const tooltipDiv = container.querySelector('svg')!.nextElementSibling as HTMLElement;
+        const tooltipDiv = container.querySelector('svg')!
+            .nextElementSibling as HTMLElement;
 
         fireEvent.mouseMove(debitBar);
         expect(tooltipDiv.style.opacity).toBe('1');

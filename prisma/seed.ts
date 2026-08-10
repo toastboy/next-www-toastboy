@@ -9,7 +9,9 @@ import { AUTH_TABLES, GAME_DATA_TABLES } from './table-manifest';
 const adapter = new PrismaMariaDb(process.env.DATABASE_URL!);
 const prisma = new PrismaClient({ adapter });
 
-async function streamToBuffer(readableStream: NodeJS.ReadableStream): Promise<Buffer> {
+async function streamToBuffer(
+    readableStream: NodeJS.ReadableStream,
+): Promise<Buffer> {
     return new Promise((resolve, reject) => {
         const chunks: Uint8Array[] = [];
         readableStream.on('data', (data) => {
@@ -22,7 +24,10 @@ async function streamToBuffer(readableStream: NodeJS.ReadableStream): Promise<Bu
     });
 }
 
-async function downloadAndParseJson(containerClient: ContainerClient, blobName: string): Promise<unknown> {
+async function downloadAndParseJson(
+    containerClient: ContainerClient,
+    blobName: string,
+): Promise<unknown> {
     try {
         const blobClient = containerClient.getBlobClient(blobName);
         const downloadBlockBlobResponse = await blobClient.download(0);
@@ -31,11 +36,15 @@ async function downloadAndParseJson(containerClient: ContainerClient, blobName: 
             throw new Error(`Reading  ${blobName} failed`);
         }
 
-        const downloadedContent = (await streamToBuffer(downloadBlockBlobResponse.readableStreamBody)).toString();
+        const downloadedContent = (
+            await streamToBuffer(downloadBlockBlobResponse.readableStreamBody)
+        ).toString();
 
         return JSON.parse(downloadedContent);
     } catch (error) {
-        console.error(`An error occurred during ${blobName} download: ${error}`);
+        console.error(
+            `An error occurred during ${blobName} download: ${error}`,
+        );
         throw error;
     }
 }
@@ -47,17 +56,25 @@ async function seedTable(
     containerClient: ContainerClient,
     fileName: string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    model: { createMany: (args: { data: any[] }) => Prisma.PrismaPromise<Prisma.BatchPayload> },
+    model: {
+        createMany: (args: {
+            data: any[];
+        }) => Prisma.PrismaPromise<Prisma.BatchPayload>;
+    },
 ): Promise<void> {
     console.log(`Starting: ${fileName}`);
     const parsed = await downloadAndParseJson(containerClient, fileName);
     if (!Array.isArray(parsed)) {
-        throw new Error(`Expected ${fileName} to contain a JSON array, got ${typeof parsed}`);
+        throw new Error(
+            `Expected ${fileName} to contain a JSON array, got ${typeof parsed}`,
+        );
     }
     const dataItems: unknown[] = parsed;
     const chunks: Prisma.PrismaPromise<Prisma.BatchPayload>[] = [];
     for (let i = 0; i < dataItems.length; i += CHUNK_SIZE) {
-        chunks.push(model.createMany({ data: dataItems.slice(i, i + CHUNK_SIZE) }));
+        chunks.push(
+            model.createMany({ data: dataItems.slice(i, i + CHUNK_SIZE) }),
+        );
     }
     await prisma.$transaction(chunks, { timeout: 120_000 });
     console.log(`Complete:  ${fileName}`);
@@ -79,7 +96,11 @@ async function main() {
     const storageAccountName = 'nextwwwtoastboy';
     const containerName = 'dbseeddata';
 
-    const credentials = new ClientSecretCredential(tenantId, clientId, clientSecret);
+    const credentials = new ClientSecretCredential(
+        tenantId,
+        clientId,
+        clientSecret,
+    );
     const blobServiceClient = new BlobServiceClient(
         `https://${storageAccountName}.blob.core.windows.net`,
         credentials,
@@ -114,7 +135,7 @@ async function main() {
 }
 
 main()
-    .catch(e => {
+    .catch((e) => {
         console.error(e);
         process.exit(1);
     })

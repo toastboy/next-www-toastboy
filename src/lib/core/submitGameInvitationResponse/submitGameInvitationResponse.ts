@@ -51,6 +51,9 @@ export async function submitGameInvitationResponseCore(
             goalie: data.goalie,
             comment: data.comment ?? null,
         },
-        { gameDayService: deps.gameDayService, outcomeService: deps.outcomeService },
+        {
+            gameDayService: deps.gameDayService,
+            outcomeService: deps.outcomeService,
+        },
     );
 }

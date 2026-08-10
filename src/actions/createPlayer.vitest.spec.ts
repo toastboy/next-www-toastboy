@@ -1,6 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { revalidatePathMock, broadcastMock, requireAdminMock, createPlayerCoreMock, addPlayerInviteCoreMock } = vi.hoisted(() => ({
+const {
+    revalidatePathMock,
+    broadcastMock,
+    requireAdminMock,
+    createPlayerCoreMock,
+    addPlayerInviteCoreMock,
+} = vi.hoisted(() => ({
     revalidatePathMock: vi.fn(),
     broadcastMock: vi.fn(),
     requireAdminMock: vi.fn().mockResolvedValue(undefined),
@@ -26,20 +32,27 @@ const validInput = {
 };
 
 describe('createPlayer action wrapper', () => {
-    beforeEach(() => { vi.clearAllMocks(); });
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
 
     it('calls requireAdmin, validates input, delegates to core, revalidates newplayer and players, and broadcasts Players channel', async () => {
         await createPlayer(validInput);
 
         expect(requireAdminMock).toHaveBeenCalledTimes(1);
         expect(createPlayerCoreMock).toHaveBeenCalledWith(validInput);
-        expect(revalidatePathMock).toHaveBeenCalledWith('/footy/admin/newplayer');
+        expect(revalidatePathMock).toHaveBeenCalledWith(
+            '/footy/admin/newplayer',
+        );
         expect(revalidatePathMock).toHaveBeenCalledWith('/footy/players');
         expect(broadcastMock).toHaveBeenCalledWith(FootyChannel.Players);
     });
 
     it('returns the created player from core', async () => {
-        const result = { player: { id: 1 }, inviteLink: 'https://example.com/invite' };
+        const result = {
+            player: { id: 1 },
+            inviteLink: 'https://example.com/invite',
+        };
         createPlayerCoreMock.mockResolvedValueOnce(result);
 
         const returned = await createPlayer(validInput);
@@ -58,26 +71,37 @@ describe('createPlayer action wrapper', () => {
     });
 
     it('propagates ZodError when input validation fails', async () => {
-        await expect(createPlayer({ ...validInput, name: '' })).rejects.toThrow();
+        await expect(
+            createPlayer({ ...validInput, name: '' }),
+        ).rejects.toThrow();
         expect(createPlayerCoreMock).not.toHaveBeenCalled();
     });
 });
 
 describe('addPlayerInvite action wrapper', () => {
-    beforeEach(() => { vi.clearAllMocks(); });
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
 
     it('calls requireAdmin, delegates to addPlayerInviteCore, revalidates affected paths, and broadcasts Players channel', async () => {
         await addPlayerInvite(7, 'bob@example.com');
 
         expect(requireAdminMock).toHaveBeenCalledTimes(1);
-        expect(addPlayerInviteCoreMock).toHaveBeenCalledWith(7, 'bob@example.com');
-        expect(revalidatePathMock).toHaveBeenCalledWith('/footy/admin/newplayer');
+        expect(addPlayerInviteCoreMock).toHaveBeenCalledWith(
+            7,
+            'bob@example.com',
+        );
+        expect(revalidatePathMock).toHaveBeenCalledWith(
+            '/footy/admin/newplayer',
+        );
         expect(revalidatePathMock).toHaveBeenCalledWith('/footy/players');
         expect(broadcastMock).toHaveBeenCalledWith(FootyChannel.Players);
     });
 
     it('returns the invite link from core', async () => {
-        addPlayerInviteCoreMock.mockResolvedValueOnce('https://example.com/invite/abc');
+        addPlayerInviteCoreMock.mockResolvedValueOnce(
+            'https://example.com/invite/abc',
+        );
 
         const result = await addPlayerInvite(7);
 

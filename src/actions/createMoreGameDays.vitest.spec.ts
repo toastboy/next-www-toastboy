@@ -1,6 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { revalidatePathMock, broadcastMock, requireAdminMock, createMoreGameDaysCoreMock } = vi.hoisted(() => ({
+const {
+    revalidatePathMock,
+    broadcastMock,
+    requireAdminMock,
+    createMoreGameDaysCoreMock,
+} = vi.hoisted(() => ({
     revalidatePathMock: vi.fn(),
     broadcastMock: vi.fn(),
     requireAdminMock: vi.fn().mockResolvedValue(undefined),
@@ -20,20 +25,22 @@ import { FootyChannel } from '@/types/FootyChannel';
 const validInput = {
     cost: 5,
     hallCost: 20,
-    rows: [
-        { date: '2026-03-01', game: true, comment: 'Season opener' },
-    ],
+    rows: [{ date: '2026-03-01', game: true, comment: 'Season opener' }],
 };
 
 describe('createMoreGameDays action wrapper', () => {
-    beforeEach(() => { vi.clearAllMocks(); });
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
 
     it('calls requireAdmin, validates input, delegates to core, revalidates affected paths, and broadcasts Games channel', async () => {
         await createMoreGameDays(validInput);
 
         expect(requireAdminMock).toHaveBeenCalledTimes(1);
         expect(createMoreGameDaysCoreMock).toHaveBeenCalledWith(validInput);
-        expect(revalidatePathMock).toHaveBeenCalledWith('/footy/admin/moregames');
+        expect(revalidatePathMock).toHaveBeenCalledWith(
+            '/footy/admin/moregames',
+        );
         expect(revalidatePathMock).toHaveBeenCalledWith('/footy/fixtures');
         expect(broadcastMock).toHaveBeenCalledWith(FootyChannel.Games);
     });
@@ -58,7 +65,9 @@ describe('createMoreGameDays action wrapper', () => {
     });
 
     it('propagates ZodError when input validation fails', async () => {
-        await expect(createMoreGameDays({ ...validInput, rows: [] })).rejects.toThrow();
+        await expect(
+            createMoreGameDays({ ...validInput, rows: [] }),
+        ).rejects.toThrow();
         expect(createMoreGameDaysCoreMock).not.toHaveBeenCalled();
     });
 });

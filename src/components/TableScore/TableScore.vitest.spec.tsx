@@ -4,7 +4,10 @@ import { TableNameSchema } from 'prisma/zod/schemas';
 
 import { TableScore } from '@/components/TableScore/TableScore';
 import { Wrapper } from '@/tests/components/lib/common';
-import { defaultPlayerRecord, minimalPlayerRecord } from '@/tests/mocks/data/playerRecord';
+import {
+    defaultPlayerRecord,
+    minimalPlayerRecord,
+} from '@/tests/mocks/data/playerRecord';
 
 describe('TableScore', () => {
     it('renders points score', () => {
@@ -17,7 +20,9 @@ describe('TableScore', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByText(String(defaultPlayerRecord.points))).toBeInTheDocument();
+        expect(
+            screen.getByText(String(defaultPlayerRecord.points)),
+        ).toBeInTheDocument();
     });
 
     it('shows points tooltip with W/D/L breakdown on hover', async () => {
@@ -33,7 +38,9 @@ describe('TableScore', () => {
         const user = userEvent.setup();
         await user.hover(screen.getByText(String(defaultPlayerRecord.points)));
         const tooltip = await screen.findByRole('tooltip');
-        expect(tooltip).toHaveTextContent(`P${defaultPlayerRecord.played ?? 0}`);
+        expect(tooltip).toHaveTextContent(
+            `P${defaultPlayerRecord.played ?? 0}`,
+        );
         expect(tooltip).toHaveTextContent(`W${defaultPlayerRecord.won ?? 0}`);
         expect(tooltip).toHaveTextContent(`D${defaultPlayerRecord.drawn ?? 0}`);
         expect(tooltip).toHaveTextContent(`L${defaultPlayerRecord.lost ?? 0}`);
@@ -73,9 +80,13 @@ describe('TableScore', () => {
         expect(screen.getByText(expectedAverage)).toBeInTheDocument();
 
         const user = userEvent.setup();
-        await user.hover(screen.getByText(String(defaultPlayerRecord.averages.toFixed(3))));
+        await user.hover(
+            screen.getByText(String(defaultPlayerRecord.averages.toFixed(3))),
+        );
         const tooltip = await screen.findByRole('tooltip');
-        expect(tooltip).toHaveTextContent(`P${defaultPlayerRecord.played ?? 0}`);
+        expect(tooltip).toHaveTextContent(
+            `P${defaultPlayerRecord.played ?? 0}`,
+        );
         expect(tooltip).toHaveTextContent(`W${defaultPlayerRecord.won ?? 0}`);
         expect(tooltip).toHaveTextContent(`D${defaultPlayerRecord.drawn ?? 0}`);
         expect(tooltip).toHaveTextContent(`L${defaultPlayerRecord.lost ?? 0}`);
@@ -92,9 +103,13 @@ describe('TableScore', () => {
         );
 
         const user = userEvent.setup();
-        await user.hover(screen.getByText(defaultPlayerRecord.averages.toFixed(3)));
+        await user.hover(
+            screen.getByText(defaultPlayerRecord.averages.toFixed(3)),
+        );
         const tooltip = await screen.findByRole('tooltip');
-        expect(tooltip).toHaveTextContent(`P${defaultPlayerRecord.played ?? 0}`);
+        expect(tooltip).toHaveTextContent(
+            `P${defaultPlayerRecord.played ?? 0}`,
+        );
         expect(tooltip).toHaveTextContent(`W${defaultPlayerRecord.won ?? 0}`);
         expect(tooltip).toHaveTextContent(`D${defaultPlayerRecord.drawn ?? 0}`);
         expect(tooltip).toHaveTextContent(`L${defaultPlayerRecord.lost ?? 0}`);
@@ -129,7 +144,9 @@ describe('TableScore', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByText(`${defaultPlayerRecord.stalwart}%`)).toBeInTheDocument();
+        expect(
+            screen.getByText(`${defaultPlayerRecord.stalwart}%`),
+        ).toBeInTheDocument();
     });
 
     it('shows stalwart tooltip with played/games breakdown on hover', async () => {
@@ -178,7 +195,9 @@ describe('TableScore', () => {
 
         const date = new Date(0);
         date.setSeconds(defaultPlayerRecord.speedy);
-        expect(screen.getByText(date.toISOString().substring(11, 19))).toBeInTheDocument();
+        expect(
+            screen.getByText(date.toISOString().substring(11, 19)),
+        ).toBeInTheDocument();
     });
 
     it('shows speedy tooltip with response count on hover', async () => {
@@ -194,9 +213,13 @@ describe('TableScore', () => {
         const date = new Date(0);
         date.setSeconds(defaultPlayerRecord.speedy);
         const user = userEvent.setup();
-        await user.hover(screen.getByText(date.toISOString().substring(11, 19)));
+        await user.hover(
+            screen.getByText(date.toISOString().substring(11, 19)),
+        );
         const tooltip = await screen.findByRole('tooltip');
-        expect(tooltip).toHaveTextContent(`${defaultPlayerRecord.responses} responses`);
+        expect(tooltip).toHaveTextContent(
+            `${defaultPlayerRecord.responses} responses`,
+        );
     });
 
     it('shows speedy tooltip with zeros when stats are missing', async () => {
@@ -225,6 +248,8 @@ describe('TableScore', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByText(String(defaultPlayerRecord.pub))).toBeInTheDocument();
+        expect(
+            screen.getByText(String(defaultPlayerRecord.pub)),
+        ).toBeInTheDocument();
     });
 });

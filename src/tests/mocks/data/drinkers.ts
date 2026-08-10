@@ -1,6 +1,9 @@
 import type { OutcomePlayerType } from '@/types/OutcomePlayerType';
 
-const createPlayer = (id: number, name: string): OutcomePlayerType['player'] => ({
+const createPlayer = (
+    id: number,
+    name: string,
+): OutcomePlayerType['player'] => ({
     id,
     name,
     accountEmail: null,
@@ -12,7 +15,9 @@ const createPlayer = (id: number, name: string): OutcomePlayerType['player'] => 
     introducedBy: null,
 });
 
-const createOutcome = (overrides: Partial<OutcomePlayerType>): OutcomePlayerType => ({
+const createOutcome = (
+    overrides: Partial<OutcomePlayerType>,
+): OutcomePlayerType => ({
     id: 1,
     gameDayId: 1249,
     playerId: 1,

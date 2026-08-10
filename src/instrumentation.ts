@@ -6,10 +6,20 @@ export async function register() {
             // Turbopack emits binary source maps for hmr-client.ts, causing a noisy
             // JSON parse warning on every request. Filter it out at source.
             const origEmitWarning = process.emitWarning;
-            process.emitWarning = ((warning: string | Error, ...rest: unknown[]) => {
-                if (typeof warning === 'string' && warning.includes('hmr-client')) return;
-                (origEmitWarning as (...args: unknown[]) => void)(warning, ...rest);
-            });
+            process.emitWarning = (
+                warning: string | Error,
+                ...rest: unknown[]
+            ) => {
+                if (
+                    typeof warning === 'string' &&
+                    warning.includes('hmr-client')
+                )
+                    return;
+                (origEmitWarning as (...args: unknown[]) => void)(
+                    warning,
+                    ...rest,
+                );
+            };
         }
 
         await import('../sentry.server.config');

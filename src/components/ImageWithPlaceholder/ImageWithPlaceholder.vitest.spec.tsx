@@ -12,7 +12,9 @@ describe('ImageWithPlaceholder', () => {
     let completeSpy: MockInstance<() => boolean>;
 
     beforeEach(() => {
-        completeSpy = vi.spyOn(HTMLImageElement.prototype, 'complete', 'get').mockReturnValue(false);
+        completeSpy = vi
+            .spyOn(HTMLImageElement.prototype, 'complete', 'get')
+            .mockReturnValue(false);
     });
 
     afterEach(() => {
@@ -22,7 +24,12 @@ describe('ImageWithPlaceholder', () => {
     it('renders the image with the given src, alt and title', () => {
         render(
             <Wrapper>
-                <ImageWithPlaceholder ratio={1} src="/example.png" alt="Example" title="Example" />
+                <ImageWithPlaceholder
+                    ratio={1}
+                    src="/example.png"
+                    alt="Example"
+                    title="Example"
+                />
             </Wrapper>,
         );
 
@@ -34,7 +41,11 @@ describe('ImageWithPlaceholder', () => {
     it('hides the skeleton once the image has loaded', () => {
         render(
             <Wrapper>
-                <ImageWithPlaceholder ratio={1} src="/example.png" alt="Example" />
+                <ImageWithPlaceholder
+                    ratio={1}
+                    src="/example.png"
+                    alt="Example"
+                />
             </Wrapper>,
         );
 
@@ -51,7 +62,11 @@ describe('ImageWithPlaceholder', () => {
     it('hides the skeleton if the image fails to load', () => {
         render(
             <Wrapper>
-                <ImageWithPlaceholder ratio={1} src="/broken.png" alt="Example" />
+                <ImageWithPlaceholder
+                    ratio={1}
+                    src="/broken.png"
+                    alt="Example"
+                />
             </Wrapper>,
         );
 
@@ -65,7 +80,12 @@ describe('ImageWithPlaceholder', () => {
         const onReady = vi.fn();
         render(
             <Wrapper>
-                <ImageWithPlaceholder ratio={1} src="/example.png" alt="Example" onReady={onReady} />
+                <ImageWithPlaceholder
+                    ratio={1}
+                    src="/example.png"
+                    alt="Example"
+                    onReady={onReady}
+                />
             </Wrapper>,
         );
 
@@ -78,7 +98,12 @@ describe('ImageWithPlaceholder', () => {
         const onReady = vi.fn();
         render(
             <Wrapper>
-                <ImageWithPlaceholder ratio={1} src="/broken.png" alt="Example" onReady={onReady} />
+                <ImageWithPlaceholder
+                    ratio={1}
+                    src="/broken.png"
+                    alt="Example"
+                    onReady={onReady}
+                />
             </Wrapper>,
         );
 
@@ -91,17 +116,29 @@ describe('ImageWithPlaceholder', () => {
         const onReady = vi.fn();
         const { rerender } = render(
             <Wrapper>
-                <ImageWithPlaceholder ratio={1} src="/example.png" alt="Example" onReady={onReady} />
+                <ImageWithPlaceholder
+                    ratio={1}
+                    src="/example.png"
+                    alt="Example"
+                    onReady={onReady}
+                />
             </Wrapper>,
         );
 
         fireEvent.load(screen.getByRole('img', { name: 'Example' }));
-        expect(screen.getByRole('img', { name: 'Example' })).toHaveStyle({ opacity: '1' });
+        expect(screen.getByRole('img', { name: 'Example' })).toHaveStyle({
+            opacity: '1',
+        });
         expect(onReady).toHaveBeenCalledOnce();
 
         rerender(
             <Wrapper>
-                <ImageWithPlaceholder ratio={1} src="/other.png" alt="Example" onReady={onReady} />
+                <ImageWithPlaceholder
+                    ratio={1}
+                    src="/other.png"
+                    alt="Example"
+                    onReady={onReady}
+                />
             </Wrapper>,
         );
 
@@ -119,7 +156,12 @@ describe('ImageWithPlaceholder', () => {
         const onReady = vi.fn();
         render(
             <Wrapper>
-                <ImageWithPlaceholder ratio={1} src="/example.png" alt="Example" onReady={onReady} />
+                <ImageWithPlaceholder
+                    ratio={1}
+                    src="/example.png"
+                    alt="Example"
+                    onReady={onReady}
+                />
             </Wrapper>,
         );
 
@@ -139,7 +181,12 @@ describe('ImageWithPlaceholder', () => {
 
         render(
             <Wrapper>
-                <ImageWithPlaceholder ratio={1} src="/example.png" alt="Example" onReady={onReady} />
+                <ImageWithPlaceholder
+                    ratio={1}
+                    src="/example.png"
+                    alt="Example"
+                    onReady={onReady}
+                />
             </Wrapper>,
         );
 
@@ -157,11 +204,18 @@ describe('ImageWithPlaceholder', () => {
 
         render(
             <Wrapper>
-                <ImageWithPlaceholder ratio={1} src="/example.png" alt="Example" onReady={onReady} />
+                <ImageWithPlaceholder
+                    ratio={1}
+                    src="/example.png"
+                    alt="Example"
+                    onReady={onReady}
+                />
             </Wrapper>,
         );
 
-        expect(screen.getByRole('img', { name: 'Example' })).toHaveStyle({ opacity: '1' });
+        expect(screen.getByRole('img', { name: 'Example' })).toHaveStyle({
+            opacity: '1',
+        });
         expect(onReady).toHaveBeenCalledOnce();
     });
 });

@@ -1,9 +1,10 @@
+'use client';
+
+import { Anchor, Text, Tooltip } from '@mantine/core';
 import {
-    Anchor,
-    Text,
-    Tooltip,
-} from '@mantine/core';
-import { IconArrowBigLeftLine, IconArrowBigRightLine } from '@tabler/icons-react';
+    IconArrowBigLeftLine,
+    IconArrowBigRightLine,
+} from '@tabler/icons-react';
 import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 
 import { formatDate, getOrdinal } from '@/lib/dates';
@@ -65,7 +66,7 @@ export const GameDayLink = ({ gameDay, format = 'iso' }: Props) => {
     const link = (
         <Anchor
             href={`/footy/game/${gameDay.id}`}
-            ta='center'
+            ta="center"
             aria-label={formattedDate}
         >
             {(() => {

@@ -27,15 +27,26 @@ export const Render: Story = {
             .filter((email): email is string => !!email)
             .slice(0, 3),
         onAddPlayerInvite: async (playerId, email) => {
-            return Promise.resolve(`https://example.com/invite/${playerId}?email=${encodeURIComponent(email)}`);
+            return Promise.resolve(
+                `https://example.com/invite/${playerId}?email=${encodeURIComponent(email)}`,
+            );
         },
         onSendEmail: async (mailOptions: SendMailOptions) => {
-            const htmlContent = typeof mailOptions.html === 'string' ?
-                mailOptions.html :
-                '[non-string content]';
-            const toAddress = typeof mailOptions.to === 'string' ? mailOptions.to : JSON.stringify(mailOptions.to);
-            const ccAddress = typeof mailOptions.cc === 'string' ? mailOptions.cc : JSON.stringify(mailOptions.cc ?? '');
-            console.log(`Sending email to ${toAddress}, cc ${ccAddress} with subject "${mailOptions.subject ?? ''}": ${htmlContent}`);
+            const htmlContent =
+                typeof mailOptions.html === 'string'
+                    ? mailOptions.html
+                    : '[non-string content]';
+            const toAddress =
+                typeof mailOptions.to === 'string'
+                    ? mailOptions.to
+                    : JSON.stringify(mailOptions.to);
+            const ccAddress =
+                typeof mailOptions.cc === 'string'
+                    ? mailOptions.cc
+                    : JSON.stringify(mailOptions.cc ?? '');
+            console.log(
+                `Sending email to ${toAddress}, cc ${ccAddress} with subject "${mailOptions.subject ?? ''}": ${htmlContent}`,
+            );
             return Promise.resolve();
         },
     },

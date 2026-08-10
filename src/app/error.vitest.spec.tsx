@@ -21,9 +21,13 @@ vi.mock('@mantine/core', () => ({
             {children}
         </div>
     ),
-    Button: ({ children, onClick }: { children?: ReactNode; onClick?: () => void }) => (
-        <button onClick={onClick}>{children}</button>
-    ),
+    Button: ({
+        children,
+        onClick,
+    }: {
+        children?: ReactNode;
+        onClick?: () => void;
+    }) => <button onClick={onClick}>{children}</button>,
     Flex: ({ children }: { children?: ReactNode }) => <div>{children}</div>,
 }));
 
@@ -40,7 +44,12 @@ describe('ErrorPage', () => {
 
     it('captures the error with client layer context on mount', () => {
         const error = new Error('boom');
-        render(<ErrorPage error={error} reset={vi.fn()} />);
+        render(
+            <ErrorPage
+                error={error}
+                reset={vi.fn()}
+            />,
+        );
 
         expect(captureUnexpectedErrorMock).toHaveBeenCalledWith(error, {
             layer: 'client',
@@ -50,7 +59,12 @@ describe('ErrorPage', () => {
     });
 
     it('renders the public-facing error message', () => {
-        render(<ErrorPage error={new Error('boom')} reset={vi.fn()} />);
+        render(
+            <ErrorPage
+                error={new Error('boom')}
+                reset={vi.fn()}
+            />,
+        );
 
         expect(screen.getByRole('alert')).toBeInTheDocument();
         expect(screen.getByText('Something went wrong.')).toBeInTheDocument();
@@ -59,7 +73,12 @@ describe('ErrorPage', () => {
     it('calls reset when the Try again button is clicked', async () => {
         const reset = vi.fn();
         const user = userEvent.setup();
-        render(<ErrorPage error={new Error('boom')} reset={reset} />);
+        render(
+            <ErrorPage
+                error={new Error('boom')}
+                reset={reset}
+            />,
+        );
 
         await user.click(screen.getByRole('button', { name: /try again/i }));
 

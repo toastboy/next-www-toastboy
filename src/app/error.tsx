@@ -1,10 +1,6 @@
 'use client';
 
-import {
-    Alert,
-    Button,
-    Flex,
-} from '@mantine/core';
+import { Alert, Button, Flex } from '@mantine/core';
 import { IconAlertTriangle } from '@tabler/icons-react';
 import { useEffect } from 'react';
 
@@ -28,10 +24,18 @@ const ErrorPage = ({ error, reset }: { error: Error; reset: () => void }) => {
     }, [error]);
 
     return (
-        <Alert title="Error" icon={<IconAlertTriangle />} color="red">
+        <Alert
+            title="Error"
+            icon={<IconAlertTriangle />}
+            color="red"
+        >
             <Flex direction="column">
                 {toPublicMessage(error)}
-                <Button w="10rem" onClick={() => reset()} mt="sm">
+                <Button
+                    w="10rem"
+                    onClick={() => reset()}
+                    mt="sm"
+                >
                     Try again
                 </Button>
             </Flex>

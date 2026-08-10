@@ -4,16 +4,17 @@ import { useRouter } from 'next/navigation';
 import { vi } from 'vitest';
 
 import { DrinkersForm } from '@/components/DrinkersForm/DrinkersForm';
-import { Wrapper } from '@/tests/components/lib/common';
+import { mockRouter, Wrapper } from '@/tests/components/lib/common';
 import { defaultDrinkersData } from '@/tests/mocks/data/drinkers';
 import type { SetDrinkersProxy } from '@/types/actions/SetDrinkers';
 import type { OutcomePlayerType } from '@/types/OutcomePlayerType';
 
-const { refreshMock, notificationsShowMock, notificationsUpdateMock } = vi.hoisted(() => ({
-    refreshMock: vi.fn(),
-    notificationsShowMock: vi.fn(),
-    notificationsUpdateMock: vi.fn(),
-}));
+const { refreshMock, notificationsShowMock, notificationsUpdateMock } =
+    vi.hoisted(() => ({
+        refreshMock: vi.fn(),
+        notificationsShowMock: vi.fn(),
+        notificationsUpdateMock: vi.fn(),
+    }));
 
 vi.mock('@mantine/notifications', () => ({
     notifications: {
@@ -22,8 +23,10 @@ vi.mock('@mantine/notifications', () => ({
     },
 }));
 
-const getRowOrder = () => screen.getAllByRole('checkbox', { name: /^Pub / })
-    .map((checkbox) => checkbox.getAttribute('aria-label'));
+const getRowOrder = () =>
+    screen
+        .getAllByRole('checkbox', { name: /^Pub / })
+        .map((checkbox) => checkbox.getAttribute('aria-label'));
 
 const renderForm = (setDrinkers: SetDrinkersProxy) => {
     render(
@@ -42,14 +45,9 @@ describe('DrinkersForm', () => {
     beforeEach(() => {
         vi.useFakeTimers({ shouldAdvanceTime: true });
         vi.clearAllMocks();
-        vi.mocked(useRouter).mockReturnValue({
-            push: vi.fn(),
-            back: vi.fn(),
-            forward: vi.fn(),
-            refresh: refreshMock,
-            replace: vi.fn(),
-            prefetch: vi.fn(),
-        });
+        vi.mocked(useRouter).mockReturnValue(
+            mockRouter({ refresh: refreshMock }),
+        );
     });
 
     afterEach(() => {
@@ -60,8 +58,12 @@ describe('DrinkersForm', () => {
     it('renders drinkers for a game with existing pub selections', () => {
         renderForm(vi.fn<SetDrinkersProxy>());
 
-        expect(screen.getByRole('heading', { name: 'Game 1249 Drinkers' })).toBeInTheDocument();
-        expect(screen.getByText('4 of 4 visible, 2 selected')).toBeInTheDocument();
+        expect(
+            screen.getByRole('heading', { name: 'Game 1249 Drinkers' }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByText('4 of 4 visible, 2 selected'),
+        ).toBeInTheDocument();
         expect(screen.getByLabelText('Pub Alex Keeper')).toBeChecked();
         expect(screen.getByLabelText('Pub Casey Mid')).toBeChecked();
         expect(screen.getByLabelText('Pub Britt Winger')).not.toBeChecked();
@@ -92,15 +94,19 @@ describe('DrinkersForm', () => {
             });
         });
 
-        expect(notificationsShowMock).toHaveBeenCalledWith(expect.objectContaining({
-            id: 'drinkers-save',
-            loading: true,
-        }));
-        expect(notificationsUpdateMock).toHaveBeenCalledWith(expect.objectContaining({
-            id: 'drinkers-save',
-            color: 'teal',
-            title: 'Drinkers updated',
-        }));
+        expect(notificationsShowMock).toHaveBeenCalledWith(
+            expect.objectContaining({
+                id: 'drinkers-save',
+                loading: true,
+            }),
+        );
+        expect(notificationsUpdateMock).toHaveBeenCalledWith(
+            expect.objectContaining({
+                id: 'drinkers-save',
+                color: 'teal',
+                title: 'Drinkers updated',
+            }),
+        );
         expect(refreshMock).toHaveBeenCalledTimes(1);
     });
 
@@ -112,7 +118,9 @@ describe('DrinkersForm', () => {
         await user.click(screen.getByLabelText('Pub Alex Keeper'));
 
         expect(screen.getByLabelText('Pub Alex Keeper')).not.toBeChecked();
-        expect(screen.getByText('4 of 4 visible, 1 selected')).toBeInTheDocument();
+        expect(
+            screen.getByText('4 of 4 visible, 1 selected'),
+        ).toBeInTheDocument();
     });
 
     it('filters visible players by name', async () => {
@@ -122,7 +130,9 @@ describe('DrinkersForm', () => {
         await user.type(screen.getByPlaceholderText('Search players'), 'Alex');
 
         expect(screen.getByLabelText('Pub Alex Keeper')).toBeInTheDocument();
-        expect(screen.queryByLabelText('Pub Britt Winger')).not.toBeInTheDocument();
+        expect(
+            screen.queryByLabelText('Pub Britt Winger'),
+        ).not.toBeInTheDocument();
     });
 
     it('select-all adds all visible players when clicked from indeterminate state', async () => {
@@ -165,23 +175,35 @@ describe('DrinkersForm', () => {
             'Pub Dev Striker',
         ]);
 
-        expect(screen.getByRole('button', { name: 'Sort by Team' }).closest('th'))
-            .toHaveAttribute('aria-sort', 'ascending');
-        expect(screen.getByRole('button', { name: 'Sort by Player' }).closest('th'))
-            .toHaveAttribute('aria-sort', 'none');
-        expect(screen.getByRole('button', { name: 'Sort by Response' }).closest('th'))
-            .toHaveAttribute('aria-sort', 'none');
+        expect(
+            screen.getByRole('button', { name: 'Sort by Team' }).closest('th'),
+        ).toHaveAttribute('aria-sort', 'ascending');
+        expect(
+            screen
+                .getByRole('button', { name: 'Sort by Player' })
+                .closest('th'),
+        ).toHaveAttribute('aria-sort', 'none');
+        expect(
+            screen
+                .getByRole('button', { name: 'Sort by Response' })
+                .closest('th'),
+        ).toHaveAttribute('aria-sort', 'none');
     });
 
     it('toggles sort direction on the already-active Team header when clicked', async () => {
         const user = userEvent.setup();
         renderForm(vi.fn<SetDrinkersProxy>());
 
-        const teamSortButton = screen.getByRole('button', { name: 'Sort by Team' });
+        const teamSortButton = screen.getByRole('button', {
+            name: 'Sort by Team',
+        });
 
         await user.click(teamSortButton);
 
-        expect(teamSortButton.closest('th')).toHaveAttribute('aria-sort', 'descending');
+        expect(teamSortButton.closest('th')).toHaveAttribute(
+            'aria-sort',
+            'descending',
+        );
         expect(getRowOrder()).toEqual([
             'Pub Britt Winger',
             'Pub Alex Keeper',
@@ -192,7 +214,10 @@ describe('DrinkersForm', () => {
         // Click again to toggle back to ascending
         await user.click(teamSortButton);
 
-        expect(teamSortButton.closest('th')).toHaveAttribute('aria-sort', 'ascending');
+        expect(teamSortButton.closest('th')).toHaveAttribute(
+            'aria-sort',
+            'ascending',
+        );
         expect(getRowOrder()).toEqual([
             'Pub Alex Keeper',
             'Pub Britt Winger',
@@ -205,16 +230,25 @@ describe('DrinkersForm', () => {
         const user = userEvent.setup();
         renderForm(vi.fn<SetDrinkersProxy>());
 
-        const playerSortButton = screen.getByRole('button', { name: 'Sort by Player' });
+        const playerSortButton = screen.getByRole('button', {
+            name: 'Sort by Player',
+        });
         await user.click(playerSortButton);
 
-        expect(playerSortButton.closest('th')).toHaveAttribute('aria-sort', 'ascending');
-        expect(screen.getByRole('button', { name: 'Sort by Team' }).closest('th'))
-            .toHaveAttribute('aria-sort', 'none');
+        expect(playerSortButton.closest('th')).toHaveAttribute(
+            'aria-sort',
+            'ascending',
+        );
+        expect(
+            screen.getByRole('button', { name: 'Sort by Team' }).closest('th'),
+        ).toHaveAttribute('aria-sort', 'none');
 
         await user.click(playerSortButton);
 
-        expect(playerSortButton.closest('th')).toHaveAttribute('aria-sort', 'descending');
+        expect(playerSortButton.closest('th')).toHaveAttribute(
+            'aria-sort',
+            'descending',
+        );
     });
 
     it('sorts a non-null team ahead of a null team when a null team sorts earlier', async () => {
@@ -245,12 +279,20 @@ describe('DrinkersForm', () => {
         const user = userEvent.setup();
         renderForm(vi.fn<SetDrinkersProxy>());
 
-        const responseSortButton = screen.getByRole('button', { name: 'Sort by Response' });
+        const responseSortButton = screen.getByRole('button', {
+            name: 'Sort by Response',
+        });
         await user.click(responseSortButton);
-        expect(responseSortButton.closest('th')).toHaveAttribute('aria-sort', 'ascending');
+        expect(responseSortButton.closest('th')).toHaveAttribute(
+            'aria-sort',
+            'ascending',
+        );
 
         await user.click(responseSortButton);
-        expect(responseSortButton.closest('th')).toHaveAttribute('aria-sort', 'descending');
+        expect(responseSortButton.closest('th')).toHaveAttribute(
+            'aria-sort',
+            'descending',
+        );
     });
 
     it('resets selection when players prop changes to a new reference', () => {
@@ -266,7 +308,9 @@ describe('DrinkersForm', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByText('4 of 4 visible, 2 selected')).toBeInTheDocument();
+        expect(
+            screen.getByText('4 of 4 visible, 2 selected'),
+        ).toBeInTheDocument();
 
         // New reference with only one player having pub > 0
         const updatedPlayers: OutcomePlayerType[] = [
@@ -285,7 +329,9 @@ describe('DrinkersForm', () => {
         );
 
         // Only Casey Mid (pub=2) remains selected
-        expect(screen.getByText('4 of 4 visible, 1 selected')).toBeInTheDocument();
+        expect(
+            screen.getByText('4 of 4 visible, 1 selected'),
+        ).toBeInTheDocument();
     });
 
     it('shows "No active players found" when players array is empty', () => {
@@ -305,7 +351,9 @@ describe('DrinkersForm', () => {
 
     it('shows generic error message when drinkers save fails with non-Error value', async () => {
         const user = userEvent.setup();
-        const setDrinkers = vi.fn<SetDrinkersProxy>().mockRejectedValue('plain string error');
+        const setDrinkers = vi
+            .fn<SetDrinkersProxy>()
+            .mockRejectedValue('plain string error');
 
         renderForm(setDrinkers);
 
@@ -313,11 +361,13 @@ describe('DrinkersForm', () => {
         await user.click(screen.getByRole('button', { name: 'Save drinkers' }));
 
         await waitFor(() => {
-            expect(notificationsUpdateMock).toHaveBeenCalledWith(expect.objectContaining({
-                id: 'drinkers-save',
-                color: 'red',
-                message: 'Failed to update drinkers',
-            }));
+            expect(notificationsUpdateMock).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    id: 'drinkers-save',
+                    color: 'red',
+                    message: 'Failed to update drinkers',
+                }),
+            );
         });
     });
 
@@ -347,7 +397,11 @@ describe('DrinkersForm', () => {
             {
                 ...defaultDrinkersData[0],
                 playerId: 42,
-                player: { ...defaultDrinkersData[0].player, id: 42, name: null },
+                player: {
+                    ...defaultDrinkersData[0].player,
+                    id: 42,
+                    name: null,
+                },
             },
         ];
 
@@ -379,20 +433,32 @@ describe('DrinkersForm', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByRole('link', { name: 'Previous' })).toHaveAttribute('href', '/footy/admin/drinkers/1248');
-        expect(screen.getByRole('link', { name: 'Next' })).toHaveAttribute('href', '/footy/admin/drinkers/1250');
+        expect(screen.getByRole('link', { name: 'Previous' })).toHaveAttribute(
+            'href',
+            '/footy/admin/drinkers/1248',
+        );
+        expect(screen.getByRole('link', { name: 'Next' })).toHaveAttribute(
+            'href',
+            '/footy/admin/drinkers/1250',
+        );
     });
 
     it('omits navigation links when no adjacent game ids are provided', () => {
         renderForm(vi.fn<SetDrinkersProxy>());
 
-        expect(screen.queryByRole('link', { name: 'Previous' })).not.toBeInTheDocument();
-        expect(screen.queryByRole('link', { name: 'Next' })).not.toBeInTheDocument();
+        expect(
+            screen.queryByRole('link', { name: 'Previous' }),
+        ).not.toBeInTheDocument();
+        expect(
+            screen.queryByRole('link', { name: 'Next' }),
+        ).not.toBeInTheDocument();
     });
 
     it('shows an error notification when save fails', async () => {
         const user = userEvent.setup();
-        const setDrinkers = vi.fn<SetDrinkersProxy>().mockRejectedValue(new Error('Boom'));
+        const setDrinkers = vi
+            .fn<SetDrinkersProxy>()
+            .mockRejectedValue(new Error('Boom'));
 
         renderForm(setDrinkers);
 
@@ -400,11 +466,13 @@ describe('DrinkersForm', () => {
         await user.click(screen.getByRole('button', { name: 'Save drinkers' }));
 
         await waitFor(() => {
-            expect(notificationsUpdateMock).toHaveBeenCalledWith(expect.objectContaining({
-                id: 'drinkers-save',
-                color: 'red',
-                message: 'Boom',
-            }));
+            expect(notificationsUpdateMock).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    id: 'drinkers-save',
+                    color: 'red',
+                    message: 'Boom',
+                }),
+            );
         });
 
         expect(refreshMock).not.toHaveBeenCalled();

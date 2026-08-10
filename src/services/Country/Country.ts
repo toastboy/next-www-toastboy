@@ -10,7 +10,6 @@ import {
     CountryWriteInputSchema,
 } from '@/types/CountryStrictSchema';
 
-
 class CountryService {
     /**
      * Fetches a country by FIFA code.
@@ -67,7 +66,9 @@ class CountryService {
      */
     async delete(fifaCode: string): Promise<void> {
         try {
-            const where = CountryWhereUniqueInputObjectSchema.parse({ fifaCode });
+            const where = CountryWhereUniqueInputObjectSchema.parse({
+                fifaCode,
+            });
             await prisma.country.delete({ where });
         } catch (error) {
             if (isPrismaNotFoundError(error)) return;

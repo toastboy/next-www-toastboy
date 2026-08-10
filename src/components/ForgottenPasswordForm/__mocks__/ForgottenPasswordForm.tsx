@@ -1,4 +1,2 @@
-export const ForgottenPasswordForm = () => (
-    <div>ForgottenPasswordForm</div>
-);
+export const ForgottenPasswordForm = () => <div>ForgottenPasswordForm</div>;
 ForgottenPasswordForm.displayName = 'ForgottenPasswordForm';

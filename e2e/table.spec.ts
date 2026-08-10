@@ -3,7 +3,7 @@ import { expect, test } from './utils/base';
 
 async function checkTable(page: Page) {
     const table = await page.$$eval('.bodytable tbody tr', (table) => {
-        return table.map(row => {
+        return table.map((row) => {
             const player = row.querySelector('td:nth-child(1) a');
             const score = row.querySelector('td:nth-child(2)');
             return {

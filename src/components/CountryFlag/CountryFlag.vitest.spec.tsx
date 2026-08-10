@@ -6,11 +6,22 @@ import { defaultCountry } from '@/tests/mocks/data/country';
 
 describe('CountryFlag', () => {
     it('renders flag image when country exists', () => {
-        render(<Wrapper><CountryFlag country={defaultCountry} w="12cqw" h="auto" /></Wrapper>);
+        render(
+            <Wrapper>
+                <CountryFlag
+                    country={defaultCountry}
+                    w="12cqw"
+                    h="auto"
+                />
+            </Wrapper>,
+        );
 
         const img = screen.getByRole('img', { name: defaultCountry.name });
         expect(img).toBeInTheDocument();
-        expect(img).toHaveAttribute('src', `/api/footy/country/${defaultCountry.fifaCode.toLowerCase()}/flag`);
+        expect(img).toHaveAttribute(
+            'src',
+            `/api/footy/country/${defaultCountry.fifaCode.toLowerCase()}/flag`,
+        );
         expect(img).toHaveAttribute('alt', defaultCountry.name);
         expect(img).toHaveAttribute('title', defaultCountry.name);
     });

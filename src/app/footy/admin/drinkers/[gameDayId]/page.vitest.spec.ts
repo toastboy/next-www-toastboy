@@ -4,15 +4,21 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 vi.mock('services/GameDay');
 vi.mock('services/Outcome');
 vi.mock('next/navigation', () => ({
-    notFound: vi.fn(() => { throw new Error('not_found'); }),
+    notFound: vi.fn(() => {
+        throw new Error('not_found');
+    }),
 }));
 
 vi.mock('@/components/AutoRefresh/AutoRefresh', () => ({
-    AutoRefresh: function AutoRefresh() { return null; },
+    AutoRefresh: function AutoRefresh() {
+        return null;
+    },
 }));
 
 vi.mock('@/components/DrinkersForm/DrinkersForm', () => ({
-    DrinkersForm: function DrinkersForm() { return null; },
+    DrinkersForm: function DrinkersForm() {
+        return null;
+    },
 }));
 
 import { setDrinkers } from '@/actions/setDrinkers';
@@ -36,7 +42,9 @@ describe('Admin Drinkers [gameDayId] page', () => {
 
     it('calls notFound when gameDayId is not a valid positive integer', async () => {
         await expect(
-            DrinkersPage({ params: Promise.resolve({ gameDayId: 'not-a-number' }) }),
+            DrinkersPage({
+                params: Promise.resolve({ gameDayId: 'not-a-number' }),
+            }),
         ).rejects.toThrow('not_found');
 
         await expect(
@@ -66,7 +74,9 @@ describe('Admin Drinkers [gameDayId] page', () => {
         (gameDayService.getPrevious as Mock).mockResolvedValue({ id: 1248 });
         (gameDayService.getNext as Mock).mockResolvedValue({ id: 1250 });
 
-        const result = await DrinkersPage({ params: Promise.resolve({ gameDayId: '1249' }) });
+        const result = await DrinkersPage({
+            params: Promise.resolve({ gameDayId: '1249' }),
+        });
 
         const form = findElement(result, 'DrinkersForm');
         expect(form?.props.previousGameId).toBe(1248);
@@ -77,7 +87,9 @@ describe('Admin Drinkers [gameDayId] page', () => {
         (gameDayService.getPrevious as Mock).mockResolvedValue(null);
         (gameDayService.getNext as Mock).mockResolvedValue(null);
 
-        const result = await DrinkersPage({ params: Promise.resolve({ gameDayId: '1249' }) });
+        const result = await DrinkersPage({
+            params: Promise.resolve({ gameDayId: '1249' }),
+        });
 
         const form = findElement(result, 'DrinkersForm');
         expect(form?.props.previousGameId).toBeUndefined();
@@ -85,7 +97,9 @@ describe('Admin Drinkers [gameDayId] page', () => {
     });
 
     it('passes the gameDay date as an ISO date string to DrinkersForm', async () => {
-        const result = await DrinkersPage({ params: Promise.resolve({ gameDayId: '1249' }) });
+        const result = await DrinkersPage({
+            params: Promise.resolve({ gameDayId: '1249' }),
+        });
 
         const form = findElement(result, 'DrinkersForm');
         expect(form?.props.gameDate).toBe('2026-02-14');
@@ -95,7 +109,9 @@ describe('Admin Drinkers [gameDayId] page', () => {
     });
 
     it('renders AutoRefresh subscribed to the Games channel', async () => {
-        const result = await DrinkersPage({ params: Promise.resolve({ gameDayId: '1249' }) });
+        const result = await DrinkersPage({
+            params: Promise.resolve({ gameDayId: '1249' }),
+        });
 
         const autoRefresh = findElement(result, 'AutoRefresh');
         expect(autoRefresh?.props.channels).toBe(FootyChannel.Games);

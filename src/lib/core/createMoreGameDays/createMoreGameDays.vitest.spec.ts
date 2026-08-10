@@ -6,7 +6,8 @@ import { ValidationError } from '@/lib/errors';
 describe('createMoreGameDaysCore', () => {
     it('creates game days with parsed local-evening dates and trimmed comments', async () => {
         const gameDayService = {
-            create: vi.fn()
+            create: vi
+                .fn()
                 .mockResolvedValueOnce({ id: 1 })
                 .mockResolvedValueOnce({ id: 2 }),
         };
@@ -56,7 +57,11 @@ describe('createMoreGameDaysCore', () => {
 
         await expect(
             createMoreGameDaysCore(
-                { cost: 450, hallCost: 4500, rows: [{ date: 'bad-date', game: true, comment: 'hello' }] },
+                {
+                    cost: 450,
+                    hallCost: 4500,
+                    rows: [{ date: 'bad-date', game: true, comment: 'hello' }],
+                },
                 { gameDayService },
             ),
         ).rejects.toBeInstanceOf(ValidationError);
@@ -69,7 +74,13 @@ describe('createMoreGameDaysCore', () => {
 
         await expect(
             createMoreGameDaysCore(
-                { cost: 450, hallCost: 4500, rows: [{ date: '2026-XX-01', game: true, comment: undefined }] },
+                {
+                    cost: 450,
+                    hallCost: 4500,
+                    rows: [
+                        { date: '2026-XX-01', game: true, comment: undefined },
+                    ],
+                },
                 { gameDayService },
             ),
         ).rejects.toBeInstanceOf(ValidationError);

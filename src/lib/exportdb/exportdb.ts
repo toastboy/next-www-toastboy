@@ -21,14 +21,19 @@ async function writeTableToJSONFile<T>(
 ) {
     console.log(`Exporting ${fileName}...`);
     const data = await prismaModel.findMany();
-    fs.writeFileSync(path.join(tmpDir, fileName), JSON.stringify(data, null, 2));
+    fs.writeFileSync(
+        path.join(tmpDir, fileName),
+        JSON.stringify(data, null, 2),
+    );
 }
 
 async function uploadDir(containerClient: ContainerClient, tmpDir: string) {
     const files = await readdir(tmpDir);
     for (const file of files) {
         console.log(`Uploading ${file}...`);
-        await containerClient.getBlockBlobClient(file).uploadFile(path.join(tmpDir, file));
+        await containerClient
+            .getBlockBlobClient(file)
+            .uploadFile(path.join(tmpDir, file));
     }
 }
 
@@ -37,11 +42,19 @@ async function uploadDir(containerClient: ContainerClient, tmpDir: string) {
  * storage. Called by importlivedb before its database reset so that any player
  * accounts claimed since the previous run are preserved across the wipe.
  */
-export async function exportAuthTables(containerClient: ContainerClient): Promise<void> {
+export async function exportAuthTables(
+    containerClient: ContainerClient,
+): Promise<void> {
     const tmpDir = await mkdtemp(path.join(os.tmpdir(), 'exportdb-auth-'));
     try {
         for (const { fileName, getModel } of AUTH_TABLES) {
-            await writeTableToJSONFile(tmpDir, fileName, getModel(prisma) as { findMany: () => Prisma.PrismaPromise<object[]> });
+            await writeTableToJSONFile(
+                tmpDir,
+                fileName,
+                getModel(prisma) as {
+                    findMany: () => Prisma.PrismaPromise<object[]>;
+                },
+            );
         }
         await uploadDir(containerClient, tmpDir);
     } finally {
@@ -58,11 +71,22 @@ export async function exportAuthTables(containerClient: ContainerClient): Promis
  * run it periodically against the live database to keep blob storage current
  * for backups and container-upgrade reseeds.
  */
-export async function exportAllTables(containerClient: ContainerClient): Promise<void> {
+export async function exportAllTables(
+    containerClient: ContainerClient,
+): Promise<void> {
     const tmpDir = await mkdtemp(path.join(os.tmpdir(), 'exportdb-'));
     try {
-        for (const { fileName, getModel } of [...GAME_DATA_TABLES, ...AUTH_TABLES]) {
-            await writeTableToJSONFile(tmpDir, fileName, getModel(prisma) as { findMany: () => Prisma.PrismaPromise<object[]> });
+        for (const { fileName, getModel } of [
+            ...GAME_DATA_TABLES,
+            ...AUTH_TABLES,
+        ]) {
+            await writeTableToJSONFile(
+                tmpDir,
+                fileName,
+                getModel(prisma) as {
+                    findMany: () => Prisma.PrismaPromise<object[]>;
+                },
+            );
         }
         await uploadDir(containerClient, tmpDir);
     } finally {
@@ -80,7 +104,11 @@ function createContainerClient(): ContainerClient {
     const clientSecret = process.env.STORAGE_CLIENT_SECRET;
     if (!clientSecret) throw new Error('STORAGE_CLIENT_SECRET undefined');
 
-    const credentials = new ClientSecretCredential(tenantId, clientId, clientSecret);
+    const credentials = new ClientSecretCredential(
+        tenantId,
+        clientId,
+        clientSecret,
+    );
     const blobServiceClient = new BlobServiceClient(
         `https://${STORAGE_ACCOUNT}.blob.core.windows.net`,
         credentials,

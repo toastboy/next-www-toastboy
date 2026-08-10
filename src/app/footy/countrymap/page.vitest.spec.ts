@@ -22,15 +22,17 @@ import { defaultCountrySupporterWithPlayerDataList } from '@/tests/mocks/data/co
 describe('CountryMap page', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        (countrySupporterService.getAllWithCountryAndPlayer as Mock).mockResolvedValue(
-            defaultCountrySupporterWithPlayerDataList,
-        );
+        (
+            countrySupporterService.getAllWithCountryAndPlayer as Mock
+        ).mockResolvedValue(defaultCountrySupporterWithPlayerDataList);
     });
 
     it('calls countrySupporterService.getAllWithCountryAndPlayer', async () => {
         await CountryMapPage();
 
-        expect(countrySupporterService.getAllWithCountryAndPlayer).toHaveBeenCalledTimes(1);
+        expect(
+            countrySupporterService.getAllWithCountryAndPlayer,
+        ).toHaveBeenCalledTimes(1);
     });
 
     it('passes the countries data to the PlayerCountryMap component', async () => {
@@ -44,7 +46,9 @@ describe('CountryMap page', () => {
     });
 
     it('handles service errors gracefully', async () => {
-        (countrySupporterService.getAllWithCountryAndPlayer as Mock).mockRejectedValue(new Error('DB failed'));
+        (
+            countrySupporterService.getAllWithCountryAndPlayer as Mock
+        ).mockRejectedValue(new Error('DB failed'));
 
         await expect(CountryMapPage()).rejects.toThrow('DB failed');
     });

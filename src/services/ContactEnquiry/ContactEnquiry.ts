@@ -11,7 +11,6 @@ import {
     ContactEnquiryWriteInputSchema,
 } from '@/types/ContactEnquiryStrictSchema';
 
-
 class ContactEnquiryService {
     /**
      * Hashes a verification token for lookup and persistence.
@@ -53,7 +52,9 @@ class ContactEnquiryService {
      */
     async getByToken(token: string): Promise<ContactEnquiryType | null> {
         const tokenHash = this.getTokenHash(token);
-        const where = ContactEnquiryWhereUniqueInputObjectSchema.parse({ tokenHash });
+        const where = ContactEnquiryWhereUniqueInputObjectSchema.parse({
+            tokenHash,
+        });
         return prisma.contactEnquiry.findUnique({ where });
     }
 
@@ -66,7 +67,9 @@ class ContactEnquiryService {
      * @returns The updated contact enquiry row.
      */
     async markDelivered(id: number): Promise<ContactEnquiryType> {
-        const validatedInput = ContactEnquiryMarkDeliveredInputSchema.parse({ id });
+        const validatedInput = ContactEnquiryMarkDeliveredInputSchema.parse({
+            id,
+        });
         const now = new Date();
         const args = ContactEnquiryUpdateOneStrictSchema.parse({
             where: { id: validatedInput.id },

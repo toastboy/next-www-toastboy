@@ -3,7 +3,9 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { findElement } from '@/tests/shared/reactTree';
 
-function NamedFunction() { return null; }
+function NamedFunction() {
+    return null;
+}
 
 describe('findElement', () => {
     it('matches a plain named function component', () => {
@@ -59,7 +61,9 @@ describe('findElement', () => {
     });
 
     it('matches a React.forwardRef-wrapped component by its render function name', () => {
-        function InnerRender() { return null; }
+        function InnerRender() {
+            return null;
+        }
         const Wrapped = forwardRef(InnerRender);
         const tree = { type: Wrapped, props: { children: null } };
 
@@ -74,7 +78,10 @@ describe('findElement', () => {
     });
 
     it('matches a vi.fn() mock once a displayName is assigned', () => {
-        const MockedComponent = Object.assign(vi.fn(() => null), { displayName: 'MockedComponent' });
+        const MockedComponent = Object.assign(
+            vi.fn(() => null),
+            { displayName: 'MockedComponent' },
+        );
         const tree = { type: MockedComponent, props: { children: null } };
 
         expect(findElement(tree, 'MockedComponent')).toBe(tree);

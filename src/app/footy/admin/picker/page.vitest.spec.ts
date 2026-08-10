@@ -4,15 +4,21 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 vi.mock('services/GameDay');
 vi.mock('services/Outcome');
 vi.mock('next/navigation', () => ({
-    notFound: vi.fn(() => { throw new Error('not_found'); }),
+    notFound: vi.fn(() => {
+        throw new Error('not_found');
+    }),
 }));
 
 vi.mock('@/components/AutoRefresh/AutoRefresh', () => ({
-    AutoRefresh: function AutoRefresh() { return null; },
+    AutoRefresh: function AutoRefresh() {
+        return null;
+    },
 }));
 
 vi.mock('@/components/PickerForm/PickerForm', () => ({
-    PickerForm: function PickerForm() { return null; },
+    PickerForm: function PickerForm() {
+        return null;
+    },
 }));
 
 import { setGameEnabled } from '@/actions/setGameEnabled';
@@ -34,8 +40,9 @@ describe('Admin Picker page', () => {
         vi.clearAllMocks();
         (gameDayService.getCurrent as Mock).mockResolvedValue(currentGame);
         (outcomeService.getAdminByGameDay as Mock).mockResolvedValue(players);
-        (outcomeService.getGamesPlayedByPlayer as Mock).mockImplementation((playerId: number) =>
-            Promise.resolve(playerId * 10));
+        (outcomeService.getGamesPlayedByPlayer as Mock).mockImplementation(
+            (playerId: number) => Promise.resolve(playerId * 10),
+        );
     });
 
     it('calls notFound when there is no current game', async () => {
@@ -54,11 +61,20 @@ describe('Admin Picker page', () => {
     it('enriches each player with their all-time games played count via parallel Promise.all', async () => {
         const result = await PickerPage();
 
-        expect(outcomeService.getGamesPlayedByPlayer).toHaveBeenCalledWith(1, 0);
-        expect(outcomeService.getGamesPlayedByPlayer).toHaveBeenCalledWith(2, 0);
+        expect(outcomeService.getGamesPlayedByPlayer).toHaveBeenCalledWith(
+            1,
+            0,
+        );
+        expect(outcomeService.getGamesPlayedByPlayer).toHaveBeenCalledWith(
+            2,
+            0,
+        );
 
         const form = findElement(result, 'PickerForm');
-        const enrichedPlayers = form?.props.players as { playerId: number; gamesPlayed: number }[];
+        const enrichedPlayers = form?.props.players as {
+            playerId: number;
+            gamesPlayed: number;
+        }[];
         expect(enrichedPlayers).toEqual([
             { playerId: 1, name: 'Alice', gamesPlayed: 10 },
             { playerId: 2, name: 'Bob', gamesPlayed: 20 },
@@ -78,11 +94,16 @@ describe('Admin Picker page', () => {
         const result = await PickerPage();
 
         const autoRefresh = findElement(result, 'AutoRefresh');
-        expect(autoRefresh?.props.channels).toEqual([FootyChannel.Games, FootyChannel.Responses]);
+        expect(autoRefresh?.props.channels).toEqual([
+            FootyChannel.Games,
+            FootyChannel.Responses,
+        ]);
     });
 
     it('handles service errors gracefully by propagating them', async () => {
-        (outcomeService.getAdminByGameDay as Mock).mockRejectedValue(new Error('DB failed'));
+        (outcomeService.getAdminByGameDay as Mock).mockRejectedValue(
+            new Error('DB failed'),
+        );
 
         await expect(PickerPage()).rejects.toThrow('DB failed');
     });

@@ -21,23 +21,19 @@ const mswCheckGlobalsPlugin: Plugin = {
 };
 
 const config: StorybookConfig = {
-    "stories": [
-        "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"
+    stories: ['../src/**/*.stories.@(js|jsx|mjs|ts|tsx)'],
+    addons: [
+        '@chromatic-com/storybook',
+        '@storybook/addon-vitest',
+        '@storybook/addon-a11y',
+        '@storybook/addon-docs',
     ],
-    "addons": [
-        "@chromatic-com/storybook",
-        "@storybook/addon-vitest",
-        "@storybook/addon-a11y",
-        "@storybook/addon-docs"
-    ],
-    "framework": "@storybook/nextjs-vite",
-    "staticDirs": [
-        "../public"
-    ],
+    framework: '@storybook/nextjs-vite',
+    staticDirs: ['../public'],
     // TODO: I had managed to get rid of these aliases in the app code, but
     // Storybook still needs them. Perhaps I need to rethink my aliases
     // altogether - maybe even get rid.
-    "viteFinal": async (viteConfig) => {
+    viteFinal: async (viteConfig) => {
         const projectRoot = path.resolve(storybookDir, '..');
         const baseConfig = mergeConfig(viteConfig, {
             plugins: [mswCheckGlobalsPlugin],
@@ -54,18 +50,19 @@ const config: StorybookConfig = {
         // Restricting fs.allow to src/ fixes this without exposing the rest of
         // the repo through the dev server. Skipped in NODE_ENV=test (CLI vitest
         // / CI) because the CLI runner resolves paths correctly on its own.
-        const config = process.env.NODE_ENV !== 'test'
-            ? mergeConfig(baseConfig, {
-                server: {
-                    fs: {
-                        allow: [
-                            path.resolve(projectRoot, 'src'),
-                            path.resolve(projectRoot, 'node_modules'),
-                        ],
-                    },
-                },
-            })
-            : baseConfig;
+        const config =
+            process.env.NODE_ENV !== 'test'
+                ? mergeConfig(baseConfig, {
+                      server: {
+                          fs: {
+                              allow: [
+                                  path.resolve(projectRoot, 'src'),
+                                  path.resolve(projectRoot, 'node_modules'),
+                              ],
+                          },
+                      },
+                  })
+                : baseConfig;
         return config;
     },
 };

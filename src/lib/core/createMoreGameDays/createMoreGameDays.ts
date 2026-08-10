@@ -58,7 +58,10 @@ export async function createMoreGameDaysCore(
         data.rows.map((row) => {
             const date = parseDateString(row.date);
             const trimmedComment = row.comment?.trim();
-            const comment = trimmedComment && trimmedComment.length > 0 ? trimmedComment : null;
+            const comment =
+                trimmedComment && trimmedComment.length > 0
+                    ? trimmedComment
+                    : null;
 
             return deps.gameDayService.create({
                 year: date.getFullYear(),

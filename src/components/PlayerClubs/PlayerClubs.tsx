@@ -1,6 +1,6 @@
-import {
-    Flex,
-} from '@mantine/core';
+'use client';
+
+import { Flex } from '@mantine/core';
 
 import { ClubBadge } from '@/components/ClubBadge/ClubBadge';
 import { ClubSupporterDataType } from '@/types';
@@ -11,7 +11,11 @@ export interface Props {
 
 export const PlayerClubs = ({ clubs }: Props) => {
     return clubs.length > 0 ? (
-        <Flex gap="2cqw" p="1cqw" direction="column">
+        <Flex
+            gap="2cqw"
+            p="1cqw"
+            direction="column"
+        >
             {clubs.map((item) => (
                 <ClubBadge
                     key={item.clubId}

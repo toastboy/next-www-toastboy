@@ -14,10 +14,16 @@ describe('PlayerMugshot', () => {
         );
 
         const link = screen.getByRole('link');
-        expect(link).toHaveAttribute('href', `/footy/player/${defaultPlayer.id}`);
+        expect(link).toHaveAttribute(
+            'href',
+            `/footy/player/${defaultPlayer.id}`,
+        );
 
         const img = screen.getByRole('img');
-        expect(img).toHaveAttribute('src', `/api/footy/player/${defaultPlayer.id}/mugshot`);
+        expect(img).toHaveAttribute(
+            'src',
+            `/api/footy/player/${defaultPlayer.id}/mugshot`,
+        );
         expect(img).toHaveAttribute('alt', defaultPlayer.name);
         expect(img).toHaveAttribute('title', defaultPlayer.name);
     });

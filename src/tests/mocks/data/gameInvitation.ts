@@ -6,7 +6,9 @@ export const defaultGameInvitation = {
     gameDayId: 1,
 } satisfies GameInvitationType;
 
-export const createMockGameInvitation = (overrides: Partial<GameInvitationType> = {}): GameInvitationType => ({
+export const createMockGameInvitation = (
+    overrides: Partial<GameInvitationType> = {},
+): GameInvitationType => ({
     ...defaultGameInvitation,
     ...overrides,
 });
@@ -18,8 +20,10 @@ export const buildUuidFromIndex = (i: number): string => {
     return uuid;
 };
 
-export const defaultGameInvitationList: GameInvitationType[] = Array.from({ length: 100 }, (_, index) =>
-    createMockGameInvitation({
-        uuid: buildUuidFromIndex(index + 1),
-    }),
+export const defaultGameInvitationList: GameInvitationType[] = Array.from(
+    { length: 100 },
+    (_, index) =>
+        createMockGameInvitation({
+            uuid: buildUuidFromIndex(index + 1),
+        }),
 );

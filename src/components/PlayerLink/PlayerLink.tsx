@@ -1,9 +1,17 @@
+'use client';
+
 import {
     Anchor,
+    MantineStyleProps,
     Tooltip,
+    useMantineTheme,
 } from '@mantine/core';
-import { IconArrowBigLeftLine, IconArrowBigRightLine } from '@tabler/icons-react';
+import {
+    IconArrowBigLeftLine,
+    IconArrowBigRightLine,
+} from '@tabler/icons-react';
 import type { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
+import { CSSProperties } from 'react';
 
 /**
  * Component for rendering a link to a player's profile with various formatting options.
@@ -14,6 +22,12 @@ import type { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
  *   - 'name': Displays the player's name as the link label
  *   - 'left-arrow': Displays a left arrow icon, indicating a link to the previous player
  *   - 'right-arrow': Displays a right arrow icon, indicating a link to the next player
+ * @param wrap - Whether the player's name may wrap onto multiple lines (default: false,
+ *   i.e. the link gets enough min-width to keep a typical name on one line)
+ * @param ta - Text alignment for the name, forwarded to the underlying Anchor (optional,
+ *   supports Mantine responsive values)
+ * @param w - Width forwarded to the underlying Anchor (optional, supports Mantine
+ *   responsive values); combine with `ta` to centre the name within a wider container
  * @returns A React element representing the formatted player link
  * @example
  * <PlayerLink player={player} year={2024} format="name" />
@@ -29,14 +43,29 @@ export interface Props {
     player: PlayerType;
     year: number;
     format?: 'name' | 'left-arrow' | 'right-arrow';
+    wrap?: boolean;
+    ta?: MantineStyleProps['ta'];
+    w?: MantineStyleProps['w'];
 }
 
-export const PlayerLink = ({ player, year, format = 'name' }: Props) => {
-    let ariaLabel;
+export const PlayerLink = ({
+    player,
+    year,
+    format = 'name',
+    wrap = false,
+    ta,
+    w,
+}: Props) => {
+    const theme = useMantineTheme();
+    let ariaLabel: string | undefined;
+    let miw: CSSProperties['minWidth'];
 
     switch (format) {
         case 'name':
-            ariaLabel = undefined;
+            ariaLabel = `${player.name ?? 'Unknown'}`;
+            miw = wrap
+                ? theme.other.playerNameMinWidthMultiLine
+                : theme.other.playerNameMinWidthSingleLine;
             break;
         case 'left-arrow':
             ariaLabel = `Previous player: ${player.name ?? 'Unknown'}`;
@@ -49,8 +78,10 @@ export const PlayerLink = ({ player, year, format = 'name' }: Props) => {
     const link = (
         <Anchor
             href={`/footy/player/${player.id}${year ? `/${year}` : ''}`}
-            ta="center"
             aria-label={ariaLabel}
+            miw={miw}
+            ta={ta}
+            w={w}
         >
             {(() => {
                 switch (format) {
@@ -67,10 +98,12 @@ export const PlayerLink = ({ player, year, format = 'name' }: Props) => {
 
     if (format === 'name') {
         return link;
-    }
-    else {
+    } else {
         return (
-            <Tooltip label={player.name} withArrow>
+            <Tooltip
+                label={player.name}
+                withArrow
+            >
                 {link}
             </Tooltip>
         );

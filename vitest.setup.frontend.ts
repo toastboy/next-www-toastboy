@@ -49,70 +49,81 @@ vi.mock('@tiptap/react', () => ({
     EditorContent,
 }));
 
-const createRichTextNode = (name: string, props?: Record<string, unknown>, children?: React.ReactNode) =>
-    React.createElement('div', { 'data-testid': `rich-text-${name}`, ...props }, children);
+// Component props (editor instances, Mantine style props like `mt`, etc.) aren't
+// valid DOM attributes — spreading them onto the mock's <div> would trigger React
+// warnings and stringify objects into attributes. Only pass through props a real
+// DOM element accepts, including standard attributes and event handlers, so
+// interaction/accessibility-focused tests against the mock keep working.
+const DOM_SAFE_PROP_NAMES = new Set(['id', 'role', 'tabIndex', 'title']);
+const isDomSafeProp = (key: string) =>
+    key === 'className' ||
+    key === 'style' ||
+    key.startsWith('data-') ||
+    key.startsWith('aria-') ||
+    /^on[A-Z]/.test(key) ||
+    DOM_SAFE_PROP_NAMES.has(key);
 
-const RichTextEditor = ({ children, ...props }: { children?: React.ReactNode }) =>
-    createRichTextNode('editor', props, children);
+const pickDomSafeProps = (props: Record<string, unknown> = {}) =>
+    Object.fromEntries(
+        Object.entries(props).filter(([key]) => isDomSafeProp(key)),
+    );
 
-// RichTextEditor.Toolbar has no standalone named export in the real
-// @mantine/tiptap package, so it stays as the one dot-notation exception
-// mirrored here. See CLAUDE.md.
-RichTextEditor.Toolbar = ({ children }: { children?: React.ReactNode }) =>
-    createRichTextNode('toolbar', undefined, children);
+const createRichTextNode = (
+    name: string,
+    props?: Record<string, unknown>,
+    children?: React.ReactNode,
+) =>
+    React.createElement(
+        'div',
+        { 'data-testid': `rich-text-${name}`, ...pickDomSafeProps(props) },
+        children,
+    );
 
-const RichTextEditorControlsGroup = ({ children }: { children?: React.ReactNode }) =>
-    createRichTextNode('controls', undefined, children);
+// Widened to accept arbitrary props (editor instances, Mantine style props,
+// control-specific props like `sticky`/`stickyOffset`, etc.) so the mock's own
+// type doesn't drift from what real `@mantine/tiptap` consumers pass — only
+// pickDomSafeProps above decides what actually reaches the DOM.
+type MockRichTextProps = React.PropsWithChildren<Record<string, unknown>>;
+const mockControl = (name: string) => (_props?: MockRichTextProps) =>
+    createRichTextNode(name);
 
-const RichTextEditorContent = () => createRichTextNode('content', undefined, 'Hello, this is a test!');
-const BoldControl = () => createRichTextNode('bold');
-const ItalicControl = () => createRichTextNode('italic');
-const UnderlineControl = () => createRichTextNode('underline');
-const StrikeThroughControl = () => createRichTextNode('strikethrough');
-const ClearFormattingControl = () => createRichTextNode('clear-formatting');
-const HighlightControl = () => createRichTextNode('highlight');
-const CodeControl = () => createRichTextNode('code');
-const H1Control = () => createRichTextNode('h1');
-const H2Control = () => createRichTextNode('h2');
-const H3Control = () => createRichTextNode('h3');
-const H4Control = () => createRichTextNode('h4');
-const BlockquoteControl = () => createRichTextNode('blockquote');
-const HrControl = () => createRichTextNode('hr');
-const BulletListControl = () => createRichTextNode('bullet-list');
-const OrderedListControl = () => createRichTextNode('ordered-list');
-const RichTextEditorLinkControl = () => createRichTextNode('link');
-const UnlinkControl = () => createRichTextNode('unlink');
-const AlignLeftControl = () => createRichTextNode('align-left');
-const AlignCenterControl = () => createRichTextNode('align-center');
-const AlignJustifyControl = () => createRichTextNode('align-justify');
-const AlignRightControl = () => createRichTextNode('align-right');
+const RichTextEditor = Object.assign(
+    ({ children, ...props }: MockRichTextProps) =>
+        createRichTextNode('editor', props, children),
+    {
+        Toolbar: ({ children }: MockRichTextProps) =>
+            createRichTextNode('toolbar', undefined, children),
+        ControlsGroup: ({ children }: MockRichTextProps) =>
+            createRichTextNode('controls', undefined, children),
+        Content: (_props?: MockRichTextProps) =>
+            createRichTextNode('content', undefined, 'Hello, this is a test!'),
+        Bold: mockControl('bold'),
+        Italic: mockControl('italic'),
+        Underline: mockControl('underline'),
+        Strikethrough: mockControl('strikethrough'),
+        ClearFormatting: mockControl('clear-formatting'),
+        Highlight: mockControl('highlight'),
+        Code: mockControl('code'),
+        H1: mockControl('h1'),
+        H2: mockControl('h2'),
+        H3: mockControl('h3'),
+        H4: mockControl('h4'),
+        Blockquote: mockControl('blockquote'),
+        Hr: mockControl('hr'),
+        BulletList: mockControl('bullet-list'),
+        OrderedList: mockControl('ordered-list'),
+        Link: mockControl('link'),
+        Unlink: mockControl('unlink'),
+        AlignLeft: mockControl('align-left'),
+        AlignCenter: mockControl('align-center'),
+        AlignJustify: mockControl('align-justify'),
+        AlignRight: mockControl('align-right'),
+    },
+);
 
 vi.mock('@mantine/tiptap', () => ({
-    AlignCenterControl,
-    AlignJustifyControl,
-    AlignLeftControl,
-    AlignRightControl,
-    BlockquoteControl,
-    BoldControl,
-    BulletListControl,
-    ClearFormattingControl,
-    CodeControl,
-    H1Control,
-    H2Control,
-    H3Control,
-    H4Control,
-    HighlightControl,
-    HrControl,
-    ItalicControl,
     Link: {},
-    OrderedListControl,
     RichTextEditor,
-    RichTextEditorContent,
-    RichTextEditorControlsGroup,
-    RichTextEditorLinkControl,
-    StrikeThroughControl,
-    UnderlineControl,
-    UnlinkControl,
 }));
 
 vi.mock('next/cache', () => ({
@@ -179,7 +190,10 @@ const mockMatchMedia = (query: string) => ({
 });
 
 if (!('matchMedia' in globalThis)) {
-    Object.defineProperty(globalThis, 'matchMedia', { value: mockMatchMedia, writable: true });
+    Object.defineProperty(globalThis, 'matchMedia', {
+        value: mockMatchMedia,
+        writable: true,
+    });
 }
 
 if (typeof window !== 'undefined' && !window.matchMedia) {
@@ -188,9 +202,15 @@ if (typeof window !== 'undefined' && !window.matchMedia) {
 
 if (!('ResizeObserver' in globalThis)) {
     class MockResizeObserver {
-        observe() { /* empty */ }
-        unobserve() { /* empty */ }
-        disconnect() { /* empty */ }
+        observe() {
+            /* empty */
+        }
+        unobserve() {
+            /* empty */
+        }
+        disconnect() {
+            /* empty */
+        }
     }
 
     Object.defineProperty(globalThis, 'ResizeObserver', {
@@ -207,9 +227,15 @@ if (!('EventSource' in globalThis)) {
             this.url = String(url);
         }
 
-        addEventListener() { /* empty */ }
-        removeEventListener() { /* empty */ }
-        close() { /* empty */ }
+        addEventListener() {
+            /* empty */
+        }
+        removeEventListener() {
+            /* empty */
+        }
+        close() {
+            /* empty */
+        }
     }
 
     Object.defineProperty(globalThis, 'EventSource', {
@@ -225,7 +251,8 @@ interface HTMLElementLike {
     };
 }
 
-const HTMLElementRef = (globalThis as { HTMLElement?: HTMLElementLike }).HTMLElement;
+const HTMLElementRef = (globalThis as { HTMLElement?: HTMLElementLike })
+    .HTMLElement;
 if (HTMLElementRef && !('scrollIntoView' in HTMLElementRef.prototype)) {
     HTMLElementRef.prototype.scrollIntoView = () => undefined;
 }
@@ -234,8 +261,12 @@ if (HTMLElementRef && !('scrollIntoView' in HTMLElementRef.prototype)) {
 if (typeof document !== 'undefined' && !document.fonts) {
     Object.defineProperty(document, 'fonts', {
         value: {
-            addEventListener: () => { /* empty */ },
-            removeEventListener: () => { /* empty */ },
+            addEventListener: () => {
+                /* empty */
+            },
+            removeEventListener: () => {
+                /* empty */
+            },
         },
         writable: true,
     });

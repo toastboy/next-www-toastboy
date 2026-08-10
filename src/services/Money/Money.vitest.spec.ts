@@ -18,7 +18,10 @@ describe('MoneyService', () => {
 
     describe('getChartData', () => {
         it('returns data grouped by month when year > 0 and transactions exist', async () => {
-            (gameDayService.getIdRangeForYear as Mock).mockResolvedValue({ minId: 10, maxId: 12 });
+            (gameDayService.getIdRangeForYear as Mock).mockResolvedValue({
+                minId: 10,
+                maxId: 12,
+            });
 
             // PlayerPayment: -500 pence (credit), gameDayId 10
             // HallHire: 1000 pence (debit), gameDayId 11
@@ -41,12 +44,16 @@ describe('MoneyService', () => {
             expect(gameDayService.getIdRangeForYear).toHaveBeenCalledWith(2024);
             expect(prisma.transaction.groupBy).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    where: expect.objectContaining({ type: 'PlayerPayment' }) as unknown,
+                    where: expect.objectContaining({
+                        type: 'PlayerPayment',
+                    }) as unknown,
                 }),
             );
             expect(prisma.transaction.groupBy).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    where: expect.objectContaining({ type: 'HallHire' }) as unknown,
+                    where: expect.objectContaining({
+                        type: 'HallHire',
+                    }) as unknown,
                 }),
             );
             expect(result).toEqual([
@@ -56,7 +63,10 @@ describe('MoneyService', () => {
         });
 
         it('returns empty array when year > 0 and getIdRangeForYear returns nulls', async () => {
-            (gameDayService.getIdRangeForYear as Mock).mockResolvedValue({ minId: null, maxId: null });
+            (gameDayService.getIdRangeForYear as Mock).mockResolvedValue({
+                minId: null,
+                maxId: null,
+            });
 
             const result = await moneyService.getChartData(2024);
 
@@ -66,7 +76,10 @@ describe('MoneyService', () => {
         });
 
         it('returns data grouped by year when year === 0 and transactions exist', async () => {
-            (gameDayService.getIdRangeForYear as Mock).mockResolvedValue({ minId: 1, maxId: 20 });
+            (gameDayService.getIdRangeForYear as Mock).mockResolvedValue({
+                minId: 1,
+                maxId: 20,
+            });
 
             (prisma.transaction.groupBy as Mock)
                 .mockResolvedValueOnce([
@@ -92,7 +105,10 @@ describe('MoneyService', () => {
         });
 
         it('returns empty array when year === 0 and getIdRangeForYear returns nulls', async () => {
-            (gameDayService.getIdRangeForYear as Mock).mockResolvedValue({ minId: null, maxId: null });
+            (gameDayService.getIdRangeForYear as Mock).mockResolvedValue({
+                minId: null,
+                maxId: null,
+            });
 
             const result = await moneyService.getChartData(0);
 
@@ -102,14 +118,21 @@ describe('MoneyService', () => {
 
         it('throws when getIdRangeForYear rejects', async () => {
             const dbError = new Error('DB connection failed');
-            (gameDayService.getIdRangeForYear as Mock).mockRejectedValue(dbError);
+            (gameDayService.getIdRangeForYear as Mock).mockRejectedValue(
+                dbError,
+            );
 
-            await expect(moneyService.getChartData(2024)).rejects.toThrow('DB connection failed');
+            await expect(moneyService.getChartData(2024)).rejects.toThrow(
+                'DB connection failed',
+            );
             expect(prisma.transaction.groupBy).not.toHaveBeenCalled();
         });
 
         it('skips transactions with null gameDayId', async () => {
-            (gameDayService.getIdRangeForYear as Mock).mockResolvedValue({ minId: 10, maxId: 10 });
+            (gameDayService.getIdRangeForYear as Mock).mockResolvedValue({
+                minId: 10,
+                maxId: 10,
+            });
 
             (prisma.transaction.groupBy as Mock)
                 .mockResolvedValueOnce([
@@ -127,7 +150,10 @@ describe('MoneyService', () => {
         });
 
         it('treats null amountPence from groupBy as zero', async () => {
-            (gameDayService.getIdRangeForYear as Mock).mockResolvedValue({ minId: 10, maxId: 10 });
+            (gameDayService.getIdRangeForYear as Mock).mockResolvedValue({
+                minId: 10,
+                maxId: 10,
+            });
 
             (prisma.transaction.groupBy as Mock)
                 .mockResolvedValueOnce([
@@ -142,11 +168,16 @@ describe('MoneyService', () => {
             const result = await moneyService.getChartData(2024);
 
             // null amountPence is treated as 0: neither credit nor debit, but interval still emitted
-            expect(result).toEqual([{ interval: 'Mar', credits: 0, debits: 0 }]);
+            expect(result).toEqual([
+                { interval: 'Mar', credits: 0, debits: 0 },
+            ]);
         });
 
         it('skips transactions whose gameDayId is not in the interval map', async () => {
-            (gameDayService.getIdRangeForYear as Mock).mockResolvedValue({ minId: 10, maxId: 10 });
+            (gameDayService.getIdRangeForYear as Mock).mockResolvedValue({
+                minId: 10,
+                maxId: 10,
+            });
 
             (prisma.transaction.groupBy as Mock)
                 .mockResolvedValueOnce([
@@ -193,14 +224,20 @@ describe('MoneyService', () => {
         });
 
         it('rethrows errors from the database', async () => {
-            (prisma.transaction.upsert as Mock).mockRejectedValue(new Error('DB error'));
-            await expect(moneyService.charge(14, 3, 1250)).rejects.toThrow('DB error');
+            (prisma.transaction.upsert as Mock).mockRejectedValue(
+                new Error('DB error'),
+            );
+            await expect(moneyService.charge(14, 3, 1250)).rejects.toThrow(
+                'DB error',
+            );
         });
     });
 
     describe('recordHallHire', () => {
         it('creates a new HallHire transaction when none exists for the gameDay', async () => {
-            (prisma.transaction.updateMany as Mock).mockResolvedValue({ count: 0 });
+            (prisma.transaction.updateMany as Mock).mockResolvedValue({
+                count: 0,
+            });
             (prisma.transaction.create as Mock).mockResolvedValue({});
 
             await moneyService.recordHallHire(5000, 42, 'Weekly hall hire');
@@ -228,7 +265,9 @@ describe('MoneyService', () => {
         });
 
         it('updates an existing HallHire transaction when one already exists for the gameDay', async () => {
-            (prisma.transaction.updateMany as Mock).mockResolvedValue({ count: 1 });
+            (prisma.transaction.updateMany as Mock).mockResolvedValue({
+                count: 1,
+            });
 
             await moneyService.recordHallHire(7500, 10);
 
@@ -247,7 +286,9 @@ describe('MoneyService', () => {
         });
 
         it('throws when amountPence exceeds the maximum allowed value', async () => {
-            await expect(moneyService.recordHallHire(1000000, 42)).rejects.toThrow();
+            await expect(
+                moneyService.recordHallHire(1000000, 42),
+            ).rejects.toThrow();
         });
     });
 
@@ -355,15 +396,11 @@ describe('MoneyService', () => {
                 players: [
                     {
                         player: player11,
-                        debts: [
-                            { gameDay: gameDay8, amount: 350 },
-                        ],
+                        debts: [{ gameDay: gameDay8, amount: 350 }],
                     },
                     {
                         player: player21,
-                        debts: [
-                            { gameDay: gameDay15, amount: 600 },
-                        ],
+                        debts: [{ gameDay: gameDay15, amount: 600 }],
                     },
                 ],
             });
@@ -414,13 +451,15 @@ describe('MoneyService', () => {
             const result = await moneyService.getDebts();
 
             expect(result).toEqual({
-                players: [{
-                    player: player11,
-                    debts: [
-                        { gameDay: gameDay8, amount: 300 },
-                        { gameDay: gameDay9, amount: 400 },
-                    ],
-                }],
+                players: [
+                    {
+                        player: player11,
+                        debts: [
+                            { gameDay: gameDay8, amount: 300 },
+                            { gameDay: gameDay9, amount: 400 },
+                        ],
+                    },
+                ],
             });
         });
 
@@ -453,18 +492,23 @@ describe('MoneyService', () => {
             const result = await moneyService.getDebts();
 
             // Player entry is created before the game day lookup, so they appear with no debts
-            expect(result).toEqual({ players: [{ player: player99, debts: [] }] });
+            expect(result).toEqual({
+                players: [{ player: player99, debts: [] }],
+            });
         });
 
         it('rethrows database errors', async () => {
-            (prisma.transaction.findMany as Mock).mockRejectedValue(new Error('DB error'));
+            (prisma.transaction.findMany as Mock).mockRejectedValue(
+                new Error('DB error'),
+            );
             await expect(moneyService.getDebts()).rejects.toThrow('DB error');
         });
     });
 
     describe('payMultiple', () => {
         it('records payments as negative transactions for each gameDayId and distributes amount evenly', async () => {
-            const create = vi.fn()
+            const create = vi
+                .fn()
                 .mockResolvedValueOnce({ id: 101 })
                 .mockResolvedValueOnce({ id: 102 })
                 .mockResolvedValueOnce({ id: 103 });
@@ -474,19 +518,28 @@ describe('MoneyService', () => {
                 },
             });
 
-            (prisma.$transaction as Mock).mockImplementation(async (callback: (tx: {
-                transaction: {
-                    create: typeof create,
-                    aggregate: typeof aggregate,
-                }
-            }) => Promise<unknown>) => callback({
-                transaction: {
-                    create,
-                    aggregate,
-                },
-            }));
+            (prisma.$transaction as Mock).mockImplementation(
+                async (
+                    callback: (tx: {
+                        transaction: {
+                            create: typeof create;
+                            aggregate: typeof aggregate;
+                        };
+                    }) => Promise<unknown>,
+                ) =>
+                    callback({
+                        transaction: {
+                            create,
+                            aggregate,
+                        },
+                    }),
+            );
 
-            const result = await moneyService.payMultiple(42, 1200, [8, 10, 15]);
+            const result = await moneyService.payMultiple(
+                42,
+                1200,
+                [8, 10, 15],
+            );
 
             expect(create).toHaveBeenCalledTimes(3);
             // 1200 / 3 = 400 each, remainder 0, so first gets 400 + 0 = 400
@@ -543,7 +596,8 @@ describe('MoneyService', () => {
         });
 
         it('distributes remainder amount to first transaction when amount does not divide evenly', async () => {
-            const create = vi.fn()
+            const create = vi
+                .fn()
                 .mockResolvedValueOnce({ id: 201 })
                 .mockResolvedValueOnce({ id: 202 })
                 .mockResolvedValueOnce({ id: 203 })
@@ -554,20 +608,29 @@ describe('MoneyService', () => {
                 },
             });
 
-            (prisma.$transaction as Mock).mockImplementation(async (callback: (tx: {
-                transaction: {
-                    create: typeof create,
-                    aggregate: typeof aggregate,
-                }
-            }) => Promise<unknown>) => callback({
-                transaction: {
-                    create,
-                    aggregate,
-                },
-            }));
+            (prisma.$transaction as Mock).mockImplementation(
+                async (
+                    callback: (tx: {
+                        transaction: {
+                            create: typeof create;
+                            aggregate: typeof aggregate;
+                        };
+                    }) => Promise<unknown>,
+                ) =>
+                    callback({
+                        transaction: {
+                            create,
+                            aggregate,
+                        },
+                    }),
+            );
 
             // 1003 / 4 = 250 each, remainder 3, so first gets 250 + 3 = 253
-            const result = await moneyService.payMultiple(42, 1003, [1, 2, 3, 4]);
+            const result = await moneyService.payMultiple(
+                42,
+                1003,
+                [1, 2, 3, 4],
+            );
 
             expect(create).toHaveBeenCalledTimes(4);
             expect(create).toHaveBeenNthCalledWith(1, {
@@ -632,14 +695,19 @@ describe('MoneyService', () => {
                 _sum: { amountPence: null },
             });
 
-            (prisma.$transaction as Mock).mockImplementation(async (callback: (tx: {
-                transaction: {
-                    create: typeof create,
-                    aggregate: typeof aggregate,
-                }
-            }) => Promise<unknown>) => callback({
-                transaction: { create, aggregate },
-            }));
+            (prisma.$transaction as Mock).mockImplementation(
+                async (
+                    callback: (tx: {
+                        transaction: {
+                            create: typeof create;
+                            aggregate: typeof aggregate;
+                        };
+                    }) => Promise<unknown>,
+                ) =>
+                    callback({
+                        transaction: { create, aggregate },
+                    }),
+            );
 
             const result = await moneyService.payMultiple(42, 500, [8]);
 
@@ -651,8 +719,12 @@ describe('MoneyService', () => {
         });
 
         it('rethrows errors from the database transaction', async () => {
-            (prisma.$transaction as Mock).mockRejectedValue(new Error('DB error'));
-            await expect(moneyService.payMultiple(42, 1200, [8])).rejects.toThrow('DB error');
+            (prisma.$transaction as Mock).mockRejectedValue(
+                new Error('DB error'),
+            );
+            await expect(
+                moneyService.payMultiple(42, 1200, [8]),
+            ).rejects.toThrow('DB error');
         });
     });
 });

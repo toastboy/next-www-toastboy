@@ -3,7 +3,10 @@ import { fileURLToPath } from 'node:url';
 
 import { defineConfig } from 'vitest/config';
 
-const dirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
+const dirname =
+    typeof __dirname !== 'undefined'
+        ? __dirname
+        : path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
     resolve: {
@@ -12,9 +15,15 @@ export default defineConfig({
             lib: path.join(dirname, 'src/lib'),
             prisma: path.join(dirname, 'prisma'),
             'prisma/prisma': path.join(dirname, 'prisma/__mocks__/prisma.ts'),
-            'server-only': path.join(dirname, 'src/tests/__mocks__/server-only.ts'),
+            'server-only': path.join(
+                dirname,
+                'src/tests/__mocks__/server-only.ts',
+            ),
             services: path.join(dirname, 'src/services'),
-            supertest: path.join(dirname, 'src/tests/lib/api/supertest-mock.ts'),
+            supertest: path.join(
+                dirname,
+                'src/tests/lib/api/supertest-mock.ts',
+            ),
             types: path.join(dirname, 'src/types'),
         },
     },

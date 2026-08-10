@@ -3,7 +3,10 @@ import { NextRequest, NextResponse } from 'next/server';
 import { buildURLWithParams } from '@/lib/api';
 import { getGameInvitationResponseDetails } from '@/lib/gameInvitations';
 
-export const GET = async (request: NextRequest, props: { params: Promise<Record<string, string>> }) => {
+export const GET = async (
+    request: NextRequest,
+    props: { params: Promise<Record<string, string>> },
+) => {
     const { token } = await props.params;
     if (!token) {
         const redirect = buildURLWithParams('/footy/response', {

@@ -1,7 +1,4 @@
-import {
-    Notification,
-    Text,
-} from '@mantine/core';
+import { Notification, Text } from '@mantine/core';
 import { IconX } from '@tabler/icons-react';
 
 import { PasswordResetForm } from '@/components/PasswordResetForm/PasswordResetForm';
@@ -21,7 +18,10 @@ const Page = async ({ searchParams: sp }: PageProps) => {
 
     if (!token) {
         return (
-            <Notification icon={<IconX size={config.notificationIconSize} />} color="red">
+            <Notification
+                icon={<IconX size={config.notificationIconSize} />}
+                color="red"
+            >
                 <Text>Password reset link is missing or invalid.</Text>
             </Notification>
         );

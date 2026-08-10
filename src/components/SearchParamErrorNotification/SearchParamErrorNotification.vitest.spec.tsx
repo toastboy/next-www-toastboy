@@ -1,6 +1,4 @@
-import {
-    notifications,
-} from '@mantine/notifications';
+import { notifications } from '@mantine/notifications';
 import { render, waitFor } from '@testing-library/react';
 import { useSearchParams } from 'next/navigation';
 import type { Mock } from 'vitest';
@@ -15,7 +13,9 @@ describe('SearchParamErrorNotification', () => {
     });
 
     it('shows a notification when an error search param exists', async () => {
-        (useSearchParams as Mock).mockReturnValue(new URLSearchParams('error=Something%20bad'));
+        (useSearchParams as Mock).mockReturnValue(
+            new URLSearchParams('error=Something%20bad'),
+        );
         const showSpy = vi.spyOn(notifications, 'show');
 
         render(
@@ -25,10 +25,12 @@ describe('SearchParamErrorNotification', () => {
         );
 
         await waitFor(() => {
-            expect(showSpy).toHaveBeenCalledWith(expect.objectContaining({
-                title: 'Error',
-                message: 'Something bad',
-            }));
+            expect(showSpy).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    title: 'Error',
+                    message: 'Something bad',
+                }),
+            );
         });
     });
 

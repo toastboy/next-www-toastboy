@@ -17,13 +17,18 @@ const PickerPage = async () => {
     const playersWithGames = await Promise.all(
         players.map(async (player) => ({
             ...player,
-            gamesPlayed: await outcomeService.getGamesPlayedByPlayer(player.playerId, 0),
+            gamesPlayed: await outcomeService.getGamesPlayedByPlayer(
+                player.playerId,
+                0,
+            ),
         })),
     );
 
     return (
         <>
-            <AutoRefresh channels={[FootyChannel.Games, FootyChannel.Responses]} />
+            <AutoRefresh
+                channels={[FootyChannel.Games, FootyChannel.Responses]}
+            />
             <PickerForm
                 gameDay={currentGame}
                 players={playersWithGames}

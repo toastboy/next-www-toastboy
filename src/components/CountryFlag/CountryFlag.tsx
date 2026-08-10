@@ -1,11 +1,10 @@
-import {
-    Image,
-    type ImageProps,
-} from '@mantine/core';
+'use client';
+
+import { Image, type ImageProps } from '@mantine/core';
 import type { CountryType } from 'prisma/zod/schemas/models/Country.schema';
 
 export interface Props {
-    country: CountryType,
+    country: CountryType;
     /** Sizing is the caller's concern — e.g. `cqw` units only make sense in a
         component that knows about the query container they're relative to. */
     w: ImageProps['w'];

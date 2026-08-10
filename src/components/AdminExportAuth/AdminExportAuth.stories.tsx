@@ -16,7 +16,6 @@ type Story = StoryObj<typeof meta>;
 
 export const Render: Story = {
     args: {
-        onExportAuth: async () =>
-            Promise.resolve(),
+        onExportAuth: async () => Promise.resolve(),
     },
 };

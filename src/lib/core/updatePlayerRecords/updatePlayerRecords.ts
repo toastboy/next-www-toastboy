@@ -3,7 +3,10 @@ import 'server-only';
 import playerRecordService from '@/services/PlayerRecord';
 
 interface UpdatePlayerRecordsDeps {
-    playerRecordService: Pick<typeof playerRecordService, 'deleteAll' | 'upsertForGameDay'>;
+    playerRecordService: Pick<
+        typeof playerRecordService,
+        'deleteAll' | 'upsertForGameDay'
+    >;
 }
 
 const defaultDeps: UpdatePlayerRecordsDeps = {
@@ -18,7 +21,9 @@ const defaultDeps: UpdatePlayerRecordsDeps = {
  * to `defaultDeps` if not provided.
  * @returns A promise that resolves when the player records have been updated.
  */
-export async function updatePlayerRecordsCore(deps: UpdatePlayerRecordsDeps = defaultDeps) {
+export async function updatePlayerRecordsCore(
+    deps: UpdatePlayerRecordsDeps = defaultDeps,
+) {
     await deps.playerRecordService.deleteAll();
     await deps.playerRecordService.upsertForGameDay();
 }

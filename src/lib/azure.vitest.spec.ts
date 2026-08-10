@@ -57,10 +57,14 @@ beforeEach(() => {
     getContainerClientMock.mockReset();
 
     getSecretsMock.mockReturnValue(baselineSecrets);
-    (blobServiceClientMock as Mock).mockImplementation(function BlobServiceClientMock() {
-        return { getContainerClient: getContainerClientMock };
-    });
-    getContainerClientMock.mockImplementation((containerName: string) => ({ containerName }));
+    (blobServiceClientMock as Mock).mockImplementation(
+        function BlobServiceClientMock() {
+            return { getContainerClient: getContainerClientMock };
+        },
+    );
+    getContainerClientMock.mockImplementation((containerName: string) => ({
+        containerName,
+    }));
 });
 
 afterEach(() => {
@@ -73,7 +77,11 @@ describe('AzureCache', () => {
 
         azureCache.getContainerClient('mugshots');
 
-        expect(clientSecretCredentialMock).toHaveBeenCalledWith('tenant-id', 'client-id', 'client-secret');
+        expect(clientSecretCredentialMock).toHaveBeenCalledWith(
+            'tenant-id',
+            'client-id',
+            'client-secret',
+        );
         expect(blobServiceClientMock).toHaveBeenCalledWith(
             'https://test-storage-account.blob.core.windows.net',
             expect.anything(),
@@ -84,7 +92,9 @@ describe('AzureCache', () => {
     it('returns the already-initialized instance on a second getInstance() call', async () => {
         const { default: azureCache } = await import('@/lib/azure');
 
-        const AzureCacheClass = azureCache.constructor as unknown as { getInstance: () => unknown };
+        const AzureCacheClass = azureCache.constructor as unknown as {
+            getInstance: () => unknown;
+        };
         const second = AzureCacheClass.getInstance();
 
         expect(second).toBe(azureCache);
@@ -114,7 +124,10 @@ describe('AzureCache', () => {
     });
 
     it('throws when AZURE_TENANT_ID is missing', async () => {
-        getSecretsMock.mockReturnValue({ ...baselineSecrets, AZURE_TENANT_ID: undefined });
+        getSecretsMock.mockReturnValue({
+            ...baselineSecrets,
+            AZURE_TENANT_ID: undefined,
+        });
 
         let thrown: unknown;
         try {
@@ -124,11 +137,16 @@ describe('AzureCache', () => {
         }
 
         expect((thrown as ThrownInternalErrorLike).name).toBe('InternalError');
-        expect((thrown as ThrownInternalErrorLike).message).toBe('Missing required Azure secret: AZURE_TENANT_ID.');
+        expect((thrown as ThrownInternalErrorLike).message).toBe(
+            'Missing required Azure secret: AZURE_TENANT_ID.',
+        );
     });
 
     it('throws when STORAGE_CLIENT_ID is missing', async () => {
-        getSecretsMock.mockReturnValue({ ...baselineSecrets, STORAGE_CLIENT_ID: undefined });
+        getSecretsMock.mockReturnValue({
+            ...baselineSecrets,
+            STORAGE_CLIENT_ID: undefined,
+        });
 
         let thrown: unknown;
         try {
@@ -138,11 +156,16 @@ describe('AzureCache', () => {
         }
 
         expect((thrown as ThrownInternalErrorLike).name).toBe('InternalError');
-        expect((thrown as ThrownInternalErrorLike).message).toBe('Missing required Azure secret: STORAGE_CLIENT_ID.');
+        expect((thrown as ThrownInternalErrorLike).message).toBe(
+            'Missing required Azure secret: STORAGE_CLIENT_ID.',
+        );
     });
 
     it('throws when STORAGE_CLIENT_SECRET is missing', async () => {
-        getSecretsMock.mockReturnValue({ ...baselineSecrets, STORAGE_CLIENT_SECRET: undefined });
+        getSecretsMock.mockReturnValue({
+            ...baselineSecrets,
+            STORAGE_CLIENT_SECRET: undefined,
+        });
 
         let thrown: unknown;
         try {
@@ -152,13 +175,17 @@ describe('AzureCache', () => {
         }
 
         expect((thrown as ThrownInternalErrorLike).name).toBe('InternalError');
-        expect((thrown as ThrownInternalErrorLike).message).toBe('Missing required Azure secret: STORAGE_CLIENT_SECRET.');
+        expect((thrown as ThrownInternalErrorLike).message).toBe(
+            'Missing required Azure secret: STORAGE_CLIENT_SECRET.',
+        );
     });
 
     it('wraps and rethrows unexpected errors from client construction', async () => {
-        (blobServiceClientMock as Mock).mockImplementation(function BlobServiceClientMock() {
-            throw new Error('network unreachable');
-        });
+        (blobServiceClientMock as Mock).mockImplementation(
+            function BlobServiceClientMock() {
+                throw new Error('network unreachable');
+            },
+        );
 
         const { default: azureCache } = await import('@/lib/azure');
 
@@ -170,7 +197,11 @@ describe('AzureCache', () => {
         }
 
         expect((thrown as ThrownInternalErrorLike).name).toBe('InternalError');
-        expect((thrown as ThrownInternalErrorLike).message).toBe('Failed to create Azure container client "mugshots".');
-        expect((thrown as ThrownInternalErrorLike).details).toEqual({ containerName: 'mugshots' });
+        expect((thrown as ThrownInternalErrorLike).message).toBe(
+            'Failed to create Azure container client "mugshots".',
+        );
+        expect((thrown as ThrownInternalErrorLike).details).toEqual({
+            containerName: 'mugshots',
+        });
     });
 });

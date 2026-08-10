@@ -5,18 +5,11 @@ import {
     Divider,
     Paper,
     Table,
-    TableTbody,
-    TableTd,
-    TableTh,
-    TableThead,
-    TableTr,
     Title,
     type TitleOrder,
     VisuallyHidden,
 } from '@mantine/core';
-import {
-    useDisclosure,
-} from '@mantine/hooks';
+import { useDisclosure } from '@mantine/hooks';
 import { IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 import { type TableName, TableNameSchema } from 'prisma/zod/schemas';
 import { useId, useMemo } from 'react';
@@ -58,7 +51,10 @@ interface RankDisplay {
     visible: boolean;
 }
 
-const rankDisplays = (records: PlayerRecordDataType[], rankField: RankField): RankDisplay[] => {
+const rankDisplays = (
+    records: PlayerRecordDataType[],
+    rankField: RankField,
+): RankDisplay[] => {
     const groups = groupDisplays(records, (record) => {
         const rank = record[rankField];
         // A missing rank is never tied with another missing rank.
@@ -76,10 +72,19 @@ const rankDisplays = (records: PlayerRecordDataType[], rankField: RankField): Ra
     });
 };
 
-export const RecordsTable = ({ table, year, records, title, titleOrder = 2 }: Props) => {
+export const RecordsTable = ({
+    table,
+    year,
+    records,
+    title,
+    titleOrder = 2,
+}: Props) => {
     const rankField = rankFieldByTable[table];
     const scoreHeading = scoreHeadingByTable[table];
-    const ranks = useMemo(() => rankDisplays(records, rankField), [records, rankField]);
+    const ranks = useMemo(
+        () => rankDisplays(records, rankField),
+        [records, rankField],
+    );
     const cutoff = useMemo(
         () => visibleRowCount(ranks, config.tableVisibleRows),
         [ranks],
@@ -90,43 +95,77 @@ export const RecordsTable = ({ table, year, records, title, titleOrder = 2 }: Pr
     const tbodyId = useId();
 
     return (
-        <Paper p="sm" miw="14rem" maw="24rem">
+        <Paper
+            p="sm"
+            miw="14rem"
+            maw="24rem"
+        >
             {title ? (
                 <>
-                    <Title order={titleOrder} mb="xs" w="100%" ta="center">{title}</Title>
+                    <Title
+                        order={titleOrder}
+                        mb="xs"
+                        w="100%"
+                        ta="center"
+                    >
+                        {title}
+                    </Title>
                     <Divider mb="xs" />
                 </>
             ) : null}
-            <Table stickyHeader stickyHeaderOffset={0}>
-                <TableThead>
-                    <TableTr bd="0">
-                        <TableTh p={0}><VisuallyHidden>Position</VisuallyHidden></TableTh>
-                        <TableTh p={0}><VisuallyHidden>Player</VisuallyHidden></TableTh>
-                        <TableTh p={0}><VisuallyHidden>{scoreHeading}</VisuallyHidden></TableTh>
-                    </TableTr>
-                </TableThead>
-                <TableTbody id={tbodyId}>
+            <Table
+                stickyHeader
+                stickyHeaderOffset={0}
+            >
+                <Table.Thead>
+                    <Table.Tr bd="0">
+                        <Table.Th p={0}>
+                            <VisuallyHidden>Position</VisuallyHidden>
+                        </Table.Th>
+                        <Table.Th p={0}>
+                            <VisuallyHidden>Player</VisuallyHidden>
+                        </Table.Th>
+                        <Table.Th p={0}>
+                            <VisuallyHidden>{scoreHeading}</VisuallyHidden>
+                        </Table.Th>
+                    </Table.Tr>
+                </Table.Thead>
+                <Table.Tbody id={tbodyId}>
                     {visibleRecords.map((record, index) => (
-                        <TableTr
+                        <Table.Tr
                             key={record.id}
-                            bd={ranks[index + 1]?.visible === false ? '0' : undefined}
+                            bd={
+                                ranks[index + 1]?.visible === false
+                                    ? '0'
+                                    : undefined
+                            }
                         >
-                            <TableTd>
-                                {ranks[index].visible ?
-                                    ranks[index].text :
-                                    <VisuallyHidden>{ranks[index].text}</VisuallyHidden>}
-                            </TableTd>
-                            <TableTd>
-                                <PlayerLink player={record.player} year={year} />
-                            </TableTd>
-                            <TableTd>
-                                <TableScore table={table} playerRecord={record} />
-                            </TableTd>
-                        </TableTr>
+                            <Table.Td>
+                                {ranks[index].visible ? (
+                                    ranks[index].text
+                                ) : (
+                                    <VisuallyHidden>
+                                        {ranks[index].text}
+                                    </VisuallyHidden>
+                                )}
+                            </Table.Td>
+                            <Table.Td>
+                                <PlayerLink
+                                    player={record.player}
+                                    year={year}
+                                />
+                            </Table.Td>
+                            <Table.Td>
+                                <TableScore
+                                    table={table}
+                                    playerRecord={record}
+                                />
+                            </Table.Td>
+                        </Table.Tr>
                     ))}
-                </TableTbody>
+                </Table.Tbody>
             </Table>
-            {hiddenCount > 0 &&
+            {hiddenCount > 0 && (
                 <Button
                     onClick={toggle}
                     variant="subtle"
@@ -134,11 +173,17 @@ export const RecordsTable = ({ table, year, records, title, titleOrder = 2 }: Pr
                     mt="xs"
                     aria-expanded={opened}
                     aria-controls={tbodyId}
-                    rightSection={opened ? <IconChevronUp size={16} /> : <IconChevronDown size={16} />}
+                    rightSection={
+                        opened ? (
+                            <IconChevronUp size={16} />
+                        ) : (
+                            <IconChevronDown size={16} />
+                        )
+                    }
                 >
                     {opened ? 'Show less' : `Show ${hiddenCount} more`}
                 </Button>
-            }
+            )}
         </Paper>
     );
 };

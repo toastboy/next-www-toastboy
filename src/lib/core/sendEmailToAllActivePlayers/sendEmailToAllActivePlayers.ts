@@ -6,9 +6,7 @@ import { sendEmailCore } from '@/lib/core/sendEmail';
 import { normalizeEmail } from '@/lib/email/normalizeEmail';
 import playerService from '@/services/Player';
 import type { SendEmailProxy } from '@/types/actions/SendEmail';
-import type {
-    SendEmailToAllActivePlayersResult,
-} from '@/types/actions/SendEmailToAllActivePlayers';
+import type { SendEmailToAllActivePlayersResult } from '@/types/actions/SendEmailToAllActivePlayers';
 
 interface SendEmailToAllActivePlayersDeps {
     playerService: Pick<typeof playerService, 'getAll'>;

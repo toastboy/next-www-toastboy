@@ -3,7 +3,9 @@ import type { Mock } from 'vitest';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('next/navigation', () => ({
-    notFound: vi.fn(() => { throw new Error('not_found'); }),
+    notFound: vi.fn(() => {
+        throw new Error('not_found');
+    }),
 }));
 
 vi.mock('@/services/GameDay');
@@ -50,8 +52,23 @@ describe('Footy home page', () => {
         await renderPage();
         expect(gameDayService.getCurrentYear).toHaveBeenCalledTimes(1);
         expect(playerRecordService.getTable).toHaveBeenCalledTimes(3);
-        expect(playerRecordService.getTable).toHaveBeenCalledWith('points', 2024, true, 3);
-        expect(playerRecordService.getTable).toHaveBeenCalledWith('averages', 2024, true, 3);
-        expect(playerRecordService.getTable).toHaveBeenCalledWith('stalwart', 2024, true, 3);
+        expect(playerRecordService.getTable).toHaveBeenCalledWith(
+            'points',
+            2024,
+            true,
+            3,
+        );
+        expect(playerRecordService.getTable).toHaveBeenCalledWith(
+            'averages',
+            2024,
+            true,
+            3,
+        );
+        expect(playerRecordService.getTable).toHaveBeenCalledWith(
+            'stalwart',
+            2024,
+            true,
+            3,
+        );
     });
 });

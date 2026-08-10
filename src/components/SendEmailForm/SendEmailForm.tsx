@@ -9,39 +9,9 @@ import {
     TextInput,
     Tooltip,
 } from '@mantine/core';
-import {
-    useForm,
-} from '@mantine/form';
-import {
-    notifications,
-} from '@mantine/notifications';
-import {
-    AlignCenterControl,
-    AlignJustifyControl,
-    AlignLeftControl,
-    AlignRightControl,
-    BlockquoteControl,
-    BoldControl,
-    BulletListControl,
-    ClearFormattingControl,
-    CodeControl,
-    H1Control,
-    H2Control,
-    H3Control,
-    H4Control,
-    HighlightControl,
-    HrControl,
-    ItalicControl,
-    Link,
-    OrderedListControl,
-    RichTextEditor,
-    RichTextEditorContent,
-    RichTextEditorControlsGroup,
-    RichTextEditorLinkControl,
-    StrikeThroughControl,
-    UnderlineControl,
-    UnlinkControl,
-} from '@mantine/tiptap';
+import { useForm } from '@mantine/form';
+import { notifications } from '@mantine/notifications';
+import { Link, RichTextEditor } from '@mantine/tiptap';
 import { IconAlertTriangle, IconCheck, IconUser } from '@tabler/icons-react';
 import Highlight from '@tiptap/extension-highlight';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -82,11 +52,28 @@ export const SendEmailForm = ({
         },
     });
     const names = players.map(({ name }) => name).join(', ');
-    const emails = Array.from(new Set(players.flatMap((player) => {
-        const verifiedExtraEmails = player.extraEmails.filter((playerEmail) => playerEmail.verified);
-        const preferredExtraEmails = verifiedExtraEmails.length > 0 ? verifiedExtraEmails : player.extraEmails;
-        return [player.accountEmail, ...preferredExtraEmails.map((playerEmail) => playerEmail.email)];
-    }).map(normalizeEmail).filter((email) => email.length > 0))).join(',');
+    const emails = Array.from(
+        new Set(
+            players
+                .flatMap((player) => {
+                    const verifiedExtraEmails = player.extraEmails.filter(
+                        (playerEmail) => playerEmail.verified,
+                    );
+                    const preferredExtraEmails =
+                        verifiedExtraEmails.length > 0
+                            ? verifiedExtraEmails
+                            : player.extraEmails;
+                    return [
+                        player.accountEmail,
+                        ...preferredExtraEmails.map(
+                            (playerEmail) => playerEmail.email,
+                        ),
+                    ];
+                })
+                .map(normalizeEmail)
+                .filter((email) => email.length > 0),
+        ),
+    ).join(',');
 
     const editor = useEditor({
         extensions: [
@@ -160,13 +147,28 @@ export const SendEmailForm = ({
             withinPortal={withinPortal}
             withOverlay={withOverlay}
         >
-            <Tooltip label={names} multiline>
-                <Text size="sm" mt="sm" lineClamp={1}>
-                    <IconUser size={16} className={classes.users} />
+            <Tooltip
+                label={names}
+                multiline
+            >
+                <Text
+                    size="sm"
+                    mt="sm"
+                    lineClamp={1}
+                >
+                    <IconUser
+                        size={16}
+                        className={classes.users}
+                    />
                     <strong>To:</strong> {names}
                 </Text>
             </Tooltip>
-            <Box component="form" onSubmit={form.onSubmit((values) => void handleSubmit(values, editor.getHTML()))}>
+            <Box
+                component="form"
+                onSubmit={form.onSubmit(
+                    (values) => void handleSubmit(values, editor.getHTML()),
+                )}
+            >
                 <TextInput
                     label="Subject"
                     {...form.getInputProps('subject')}
@@ -174,55 +176,69 @@ export const SendEmailForm = ({
                     mt="md"
                 />
 
-                <RichTextEditor editor={editor} mt="md">
-                    {/* RichTextEditor.Toolbar has no standalone named export in @mantine/tiptap,
-                        so this is the one dot-notation exception to the no-dot-notation rule.
-                        Safe here since this file is 'use client'. See CLAUDE.md. */}
-                    <RichTextEditor.Toolbar sticky stickyOffset={60}>
-                        <RichTextEditorControlsGroup>
-                            <BoldControl />
-                            <ItalicControl />
-                            <UnderlineControl />
-                            <StrikeThroughControl />
-                            <ClearFormattingControl />
-                            <HighlightControl />
-                            <CodeControl />
-                        </RichTextEditorControlsGroup>
+                <RichTextEditor
+                    editor={editor}
+                    mt="md"
+                >
+                    <RichTextEditor.Toolbar
+                        sticky
+                        stickyOffset={60}
+                    >
+                        <RichTextEditor.ControlsGroup>
+                            <RichTextEditor.Bold />
+                            <RichTextEditor.Italic />
+                            <RichTextEditor.Underline />
+                            <RichTextEditor.Strikethrough />
+                            <RichTextEditor.ClearFormatting />
+                            <RichTextEditor.Highlight />
+                            <RichTextEditor.Code />
+                        </RichTextEditor.ControlsGroup>
 
-                        <RichTextEditorControlsGroup>
-                            <H1Control />
-                            <H2Control />
-                            <H3Control />
-                            <H4Control />
-                        </RichTextEditorControlsGroup>
+                        <RichTextEditor.ControlsGroup>
+                            <RichTextEditor.H1 />
+                            <RichTextEditor.H2 />
+                            <RichTextEditor.H3 />
+                            <RichTextEditor.H4 />
+                        </RichTextEditor.ControlsGroup>
 
-                        <RichTextEditorControlsGroup>
-                            <BlockquoteControl />
-                            <HrControl />
-                            <BulletListControl />
-                            <OrderedListControl />
-                        </RichTextEditorControlsGroup>
+                        <RichTextEditor.ControlsGroup>
+                            <RichTextEditor.Blockquote />
+                            <RichTextEditor.Hr />
+                            <RichTextEditor.BulletList />
+                            <RichTextEditor.OrderedList />
+                        </RichTextEditor.ControlsGroup>
 
-                        <RichTextEditorControlsGroup>
-                            <RichTextEditorLinkControl />
-                            <UnlinkControl />
-                        </RichTextEditorControlsGroup>
+                        <RichTextEditor.ControlsGroup>
+                            <RichTextEditor.Link />
+                            <RichTextEditor.Unlink />
+                        </RichTextEditor.ControlsGroup>
 
-                        <RichTextEditorControlsGroup>
-                            <AlignLeftControl />
-                            <AlignCenterControl />
-                            <AlignJustifyControl />
-                            <AlignRightControl />
-                        </RichTextEditorControlsGroup>
+                        <RichTextEditor.ControlsGroup>
+                            <RichTextEditor.AlignLeft />
+                            <RichTextEditor.AlignCenter />
+                            <RichTextEditor.AlignJustify />
+                            <RichTextEditor.AlignRight />
+                        </RichTextEditor.ControlsGroup>
                     </RichTextEditor.Toolbar>
 
-                    <RichTextEditorContent />
+                    <RichTextEditor.Content />
                 </RichTextEditor>
 
-                <Group justify="flex-end" mt="md">
-                    <Tooltip label="No valid email addresses for the selected players" disabled={!!emails}>
+                <Group
+                    justify="flex-end"
+                    mt="md"
+                >
+                    <Tooltip
+                        label="No valid email addresses for the selected players"
+                        disabled={!!emails}
+                    >
                         <Box component="span">
-                            <Button type="submit" disabled={!emails}>Send Mail</Button>
+                            <Button
+                                type="submit"
+                                disabled={!emails}
+                            >
+                                Send Mail
+                            </Button>
                         </Box>
                     </Tooltip>
                 </Group>

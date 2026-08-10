@@ -10,8 +10,14 @@ import emailVerificationService from '@/services/EmailVerification';
 import type { EnquiryInput } from '@/types/actions/SendEnquiry';
 
 interface SendEnquiryDeps {
-    contactEnquiryService: Pick<typeof contactEnquiryService, 'create' | 'getByToken' | 'markDelivered'>;
-    emailVerificationService: Pick<typeof emailVerificationService, 'create' | 'markUsed'>;
+    contactEnquiryService: Pick<
+        typeof contactEnquiryService,
+        'create' | 'getByToken' | 'markDelivered'
+    >;
+    emailVerificationService: Pick<
+        typeof emailVerificationService,
+        'create' | 'markUsed'
+    >;
     sendEmailCore: typeof sendEmailCore;
 }
 

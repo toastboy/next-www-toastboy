@@ -9,7 +9,7 @@
  */
 export function nextFriday(from: Date): Date {
     const d = new Date(from);
-    const daysUntilFriday = ((5 - d.getDay()) + 7) % 7 || 7;
+    const daysUntilFriday = (5 - d.getDay() + 7) % 7 || 7;
     d.setDate(d.getDate() + daysUntilFriday);
     d.setHours(19, 0, 0, 0);
     return d;

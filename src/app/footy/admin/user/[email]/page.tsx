@@ -8,7 +8,7 @@ import { safeDecodeURIComponent } from '@/lib/urls';
 import { FootyChannel } from '@/types/FootyChannel';
 
 interface PageProps {
-    params: Promise<{ email: string }>,
+    params: Promise<{ email: string }>;
 }
 
 export const metadata = { title: 'User' };
@@ -20,8 +20,7 @@ const AdminUserPage = async (props: PageProps) => {
     try {
         const response = await listUsersAction(safeDecodeURIComponent(email));
         user = response?.[0];
-    }
-    catch (error) {
+    } catch (error) {
         captureUnexpectedError(error, {
             layer: 'server',
             action: 'listUsersAction',

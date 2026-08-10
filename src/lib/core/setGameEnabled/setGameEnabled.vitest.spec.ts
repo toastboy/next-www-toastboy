@@ -9,7 +9,9 @@ describe('setGameEnabledCore', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
-        mockSendEmailToAllActivePlayers.mockResolvedValue({ recipientCount: 0 });
+        mockSendEmailToAllActivePlayers.mockResolvedValue({
+            recipientCount: 0,
+        });
     });
 
     it('marks a game day as cancelled with a trimmed reason', async () => {
@@ -38,7 +40,11 @@ describe('setGameEnabledCore', () => {
             reason: '  Not enough players  ',
         });
 
-        const result = await setGameEnabledCore(data, mockSendEmailToAllActivePlayers, { gameDayService });
+        const result = await setGameEnabledCore(
+            data,
+            mockSendEmailToAllActivePlayers,
+            { gameDayService },
+        );
 
         expect(gameDayService.update).toHaveBeenCalledWith({
             id: 1249,
@@ -46,11 +52,14 @@ describe('setGameEnabledCore', () => {
             comment: 'Not enough players',
         });
         expect(mockSendEmailToAllActivePlayers).toHaveBeenCalledTimes(1);
-        const [firstPayload] = mockSendEmailToAllActivePlayers.mock.calls[0] as [{
-            cc: string;
-            subject: string;
-            html: string;
-        }];
+        const [firstPayload] = mockSendEmailToAllActivePlayers.mock
+            .calls[0] as [
+            {
+                cc: string;
+                subject: string;
+                html: string;
+            },
+        ];
         expect(firstPayload.subject).toContain('Game Cancelled:');
         expect(firstPayload.html).toContain('Reason: Not enough players');
         expect(result.game).toBe(false);
@@ -83,7 +92,9 @@ describe('setGameEnabledCore', () => {
             reason: '   ',
         });
 
-        await setGameEnabledCore(data, mockSendEmailToAllActivePlayers, { gameDayService });
+        await setGameEnabledCore(data, mockSendEmailToAllActivePlayers, {
+            gameDayService,
+        });
 
         expect(gameDayService.update).toHaveBeenCalledWith({
             id: 1249,
@@ -91,11 +102,14 @@ describe('setGameEnabledCore', () => {
             comment: null,
         });
         expect(mockSendEmailToAllActivePlayers).toHaveBeenCalledTimes(1);
-        const [secondPayload] = mockSendEmailToAllActivePlayers.mock.calls[0] as [{
-            cc: string;
-            subject: string;
-            html: string;
-        }];
+        const [secondPayload] = mockSendEmailToAllActivePlayers.mock
+            .calls[0] as [
+            {
+                cc: string;
+                subject: string;
+                html: string;
+            },
+        ];
         expect(secondPayload.html).not.toContain('Reason:');
     });
 
@@ -125,17 +139,23 @@ describe('setGameEnabledCore', () => {
             reason: '',
         });
 
-        const result = await setGameEnabledCore(data, mockSendEmailToAllActivePlayers, { gameDayService });
+        const result = await setGameEnabledCore(
+            data,
+            mockSendEmailToAllActivePlayers,
+            { gameDayService },
+        );
 
         expect(gameDayService.update).toHaveBeenCalledWith({
             id: 1250,
             game: true,
             comment: null,
         });
-        const [payload] = mockSendEmailToAllActivePlayers.mock.calls[0] as [{
-            subject: string;
-            html: string;
-        }];
+        const [payload] = mockSendEmailToAllActivePlayers.mock.calls[0] as [
+            {
+                subject: string;
+                html: string;
+            },
+        ];
         expect(payload.subject).toContain('Game Reinstated:');
         expect(payload.html).toContain('has been reinstated');
         expect(result.game).toBe(true);
@@ -147,15 +167,17 @@ describe('setGameEnabledCore', () => {
             update: vi.fn(),
         };
 
-        await expect(setGameEnabledCore(
-            {
-                gameDayId: 9999,
-                game: false,
-                reason: 'weather indoors',
-            },
-            mockSendEmailToAllActivePlayers,
-            { gameDayService },
-        )).rejects.toBeInstanceOf(NotFoundError);
+        await expect(
+            setGameEnabledCore(
+                {
+                    gameDayId: 9999,
+                    game: false,
+                    reason: 'weather indoors',
+                },
+                mockSendEmailToAllActivePlayers,
+                { gameDayService },
+            ),
+        ).rejects.toBeInstanceOf(NotFoundError);
 
         expect(gameDayService.update).not.toHaveBeenCalled();
         expect(mockSendEmailToAllActivePlayers).not.toHaveBeenCalled();

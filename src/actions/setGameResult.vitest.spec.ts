@@ -1,10 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { revalidatePathMock, setGameResultCoreMock, requireAdminMock } = vi.hoisted(() => ({
-    revalidatePathMock: vi.fn(),
-    setGameResultCoreMock: vi.fn(),
-    requireAdminMock: vi.fn().mockResolvedValue(undefined),
-}));
+const { revalidatePathMock, setGameResultCoreMock, requireAdminMock } =
+    vi.hoisted(() => ({
+        revalidatePathMock: vi.fn(),
+        setGameResultCoreMock: vi.fn(),
+        requireAdminMock: vi.fn().mockResolvedValue(undefined),
+    }));
 
 vi.mock('next/cache', () => ({
     revalidatePath: revalidatePathMock,

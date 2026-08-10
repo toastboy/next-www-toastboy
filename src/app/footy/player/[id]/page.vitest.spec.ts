@@ -14,8 +14,12 @@ vi.mock('react', async () => {
     return { ...actual, cache: (fn: unknown) => fn };
 });
 vi.mock('next/navigation', () => ({
-    notFound: vi.fn(() => { throw new Error('not_found'); }),
-    permanentRedirect: vi.fn(() => { throw new Error('permanent_redirect'); }),
+    notFound: vi.fn(() => {
+        throw new Error('not_found');
+    }),
+    permanentRedirect: vi.fn(() => {
+        throw new Error('permanent_redirect');
+    }),
 }));
 vi.mock('@/actions/sendEmail', () => ({
     sendEmail: vi.fn(),
@@ -64,7 +68,9 @@ describe('Player [id] page', () => {
         (outcomeService.getHistoryByPlayer as Mock).mockResolvedValue([]);
         (clubSupporterService.getByPlayer as Mock).mockResolvedValue([]);
         (countrySupporterService.getByPlayer as Mock).mockResolvedValue([]);
-        (playerRecordService.getForYearByPlayer as Mock).mockResolvedValue(null);
+        (playerRecordService.getForYearByPlayer as Mock).mockResolvedValue(
+            null,
+        );
         (playerRecordService.getWinners as Mock).mockResolvedValue([]);
         (getUserRole as Mock).mockResolvedValue('none');
     });
@@ -103,7 +109,7 @@ describe('Player [id] page', () => {
             ).rejects.toThrow('not_found');
         });
 
-        it('calls notFound when the year is not in the player\'s active years', async () => {
+        it("calls notFound when the year is not in the player's active years", async () => {
             await expect(
                 PlayerPage({
                     params: Promise.resolve({ id: '7' }),
@@ -146,41 +152,66 @@ describe('Player [id] page', () => {
     });
 
     describe('Page', () => {
-        const call = () => PlayerPage({
-            params: Promise.resolve({ id: '7' }),
-            searchParams: Promise.resolve({}),
-        });
+        const call = () =>
+            PlayerPage({
+                params: Promise.resolve({ id: '7' }),
+                searchParams: Promise.resolve({}),
+            });
 
         it('fetches trophies for all tables in parallel via Promise.all', async () => {
             await call();
 
-            expect(playerRecordService.getWinners).toHaveBeenCalledTimes(TableNameSchema.options.length);
+            expect(playerRecordService.getWinners).toHaveBeenCalledTimes(
+                TableNameSchema.options.length,
+            );
         });
 
         it('calls getWinners with the player id for each table', async () => {
             await call();
 
             for (const table of TableNameSchema.options) {
-                expect(playerRecordService.getWinners).toHaveBeenCalledWith(table, 0, player.id);
+                expect(playerRecordService.getWinners).toHaveBeenCalledWith(
+                    table,
+                    0,
+                    player.id,
+                );
             }
         });
 
         it('fetches lastPlayed, form, clubs, countries, and record data for the player', async () => {
             await call();
 
-            expect(playerService.getLastResult).toHaveBeenCalledWith(player.id, 0);
-            expect(playerService.getLastResult).toHaveBeenCalledWith(player.id, 0, 3);
-            expect(clubSupporterService.getByPlayer).toHaveBeenCalledWith(player.id);
-            expect(countrySupporterService.getByPlayer).toHaveBeenCalledWith(player.id);
-            expect(playerRecordService.getForYearByPlayer).toHaveBeenCalledWith(0, player.id);
+            expect(playerService.getLastResult).toHaveBeenCalledWith(
+                player.id,
+                0,
+            );
+            expect(playerService.getLastResult).toHaveBeenCalledWith(
+                player.id,
+                0,
+                3,
+            );
+            expect(clubSupporterService.getByPlayer).toHaveBeenCalledWith(
+                player.id,
+            );
+            expect(countrySupporterService.getByPlayer).toHaveBeenCalledWith(
+                player.id,
+            );
+            expect(playerRecordService.getForYearByPlayer).toHaveBeenCalledWith(
+                0,
+                player.id,
+            );
         });
 
         it('passes trophies Map to PlayerProfile', async () => {
-            (playerRecordService.getWinners as Mock).mockImplementation(() => [{ id: 1 }]);
+            (playerRecordService.getWinners as Mock).mockImplementation(() => [
+                { id: 1 },
+            ]);
 
             renderToStaticMarkup(await call());
 
-            const [[props]] = (PlayerProfile as Mock).mock.calls as [{ trophies: Map<string, unknown[]> }][];
+            const [[props]] = (PlayerProfile as Mock).mock.calls as [
+                { trophies: Map<string, unknown[]> },
+            ][];
             expect(props.trophies).toBeInstanceOf(Map);
             for (const table of TableNameSchema.options) {
                 expect(props.trophies.get(table)).toEqual([{ id: 1 }]);
@@ -188,7 +219,9 @@ describe('Player [id] page', () => {
         });
 
         it('propagates errors from a service call', async () => {
-            (outcomeService.getHistoryByPlayer as Mock).mockRejectedValue(new Error('DB failed'));
+            (outcomeService.getHistoryByPlayer as Mock).mockRejectedValue(
+                new Error('DB failed'),
+            );
 
             await expect(call()).rejects.toThrow('DB failed');
         });
@@ -196,7 +229,10 @@ describe('Player [id] page', () => {
         it('fetches the introducedBy player when the player has one', async () => {
             const playerWithIntroducer = { ...player, introducedBy: 23 };
             (playerService.getById as Mock).mockImplementation((id: number) =>
-                (id === player.id ? playerWithIntroducer : { ...player, id, name: 'Introducer' }));
+                id === player.id
+                    ? playerWithIntroducer
+                    : { ...player, id, name: 'Introducer' },
+            );
 
             await PlayerPage({
                 params: Promise.resolve({ id: '7' }),
@@ -206,21 +242,37 @@ describe('Player [id] page', () => {
             expect(playerService.getById).toHaveBeenCalledWith(23);
         });
 
-        it('passes the player\'s finished date to outcomeService.getHistoryByPlayer when set', async () => {
+        it("passes the player's finished date to outcomeService.getHistoryByPlayer when set", async () => {
             const finished = new Date('2022-06-01');
-            (playerService.getById as Mock).mockResolvedValue({ ...player, finished });
+            (playerService.getById as Mock).mockResolvedValue({
+                ...player,
+                finished,
+            });
 
             await call();
 
-            expect(outcomeService.getHistoryByPlayer).toHaveBeenCalledWith(player.id, 0, player.joined, finished);
+            expect(outcomeService.getHistoryByPlayer).toHaveBeenCalledWith(
+                player.id,
+                0,
+                player.joined,
+                finished,
+            );
         });
 
         it('passes undefined to outcomeService.getHistoryByPlayer when the player has no joined date', async () => {
-            (playerService.getById as Mock).mockResolvedValue({ ...player, joined: null });
+            (playerService.getById as Mock).mockResolvedValue({
+                ...player,
+                joined: null,
+            });
 
             await call();
 
-            expect(outcomeService.getHistoryByPlayer).toHaveBeenCalledWith(player.id, 0, undefined, undefined);
+            expect(outcomeService.getHistoryByPlayer).toHaveBeenCalledWith(
+                player.id,
+                0,
+                undefined,
+                undefined,
+            );
         });
 
         it('calls getEmailDataById and passes sendEmail to PlayerProfile when role is admin', async () => {
@@ -228,8 +280,12 @@ describe('Player [id] page', () => {
 
             renderToStaticMarkup(await call());
 
-            expect(playerService.getEmailDataById).toHaveBeenCalledWith(player.id);
-            const [[props]] = (PlayerProfile as Mock).mock.calls as [{ isAdmin: boolean; onSendEmail: unknown }][];
+            expect(playerService.getEmailDataById).toHaveBeenCalledWith(
+                player.id,
+            );
+            const [[props]] = (PlayerProfile as Mock).mock.calls as [
+                { isAdmin: boolean; onSendEmail: unknown },
+            ][];
             expect(props.isAdmin).toBe(true);
             expect(props.onSendEmail).toBe(sendEmail);
         });

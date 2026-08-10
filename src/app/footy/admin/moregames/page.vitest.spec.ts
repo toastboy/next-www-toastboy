@@ -4,11 +4,15 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 vi.mock('services/GameDay');
 
 vi.mock('@/components/AutoRefresh/AutoRefresh', () => ({
-    AutoRefresh: function AutoRefresh() { return null; },
+    AutoRefresh: function AutoRefresh() {
+        return null;
+    },
 }));
 
 vi.mock('@/components/MoreGamesForm/MoreGamesForm', () => ({
-    MoreGamesForm: function MoreGamesForm() { return null; },
+    MoreGamesForm: function MoreGamesForm() {
+        return null;
+    },
 }));
 
 import { createMoreGameDays } from '@/actions/createMoreGameDays';
@@ -143,7 +147,9 @@ describe('Admin More Games page', () => {
     });
 
     it('handles service errors gracefully by propagating them', async () => {
-        (gameDayService.getLatest as Mock).mockRejectedValue(new Error('DB failed'));
+        (gameDayService.getLatest as Mock).mockRejectedValue(
+            new Error('DB failed'),
+        );
 
         await expect(MoreGamesPage()).rejects.toThrow('DB failed');
     });

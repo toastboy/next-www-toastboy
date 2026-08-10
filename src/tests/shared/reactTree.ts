@@ -47,9 +47,11 @@ const resolveComponentName = (type: unknown): string | undefined => {
 
     if (type && typeof type === 'object') {
         const wrapper = type as ComponentTypeLike;
-        return wrapper.displayName ??
+        return (
+            wrapper.displayName ??
             resolveComponentName(wrapper.type) ??
-            resolveComponentName(wrapper.render);
+            resolveComponentName(wrapper.render)
+        );
     }
 
     return undefined;

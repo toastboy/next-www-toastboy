@@ -8,12 +8,6 @@ import {
     Paper,
     Switch,
     Table,
-    TableScrollContainer,
-    TableTbody,
-    TableTd,
-    TableTh,
-    TableThead,
-    TableTr,
     Text,
     TextInput,
     Title,
@@ -49,13 +43,30 @@ export const AdminUserList = ({ users, setAdminRole }: Props) => {
     };
 
     const renderSortHeader = (label: string, key: keyof UserWithRole) => (
-        <UnstyledButton type="button" onClick={() => handleSort(key)} aria-label={`Sort by ${label}`}>
-            <Group gap={6} wrap="nowrap">
+        <UnstyledButton
+            type="button"
+            onClick={() => handleSort(key)}
+            aria-label={`Sort by ${label}`}
+        >
+            <Group
+                gap={6}
+                wrap="nowrap"
+            >
                 <Text span>{label}</Text>
                 {sortBy === key ? (
-                    sortOrder === 'asc' ?
-                        <IconSortAscending size={16} aria-hidden="true" focusable={false} /> :
-                        <IconSortDescending size={16} aria-hidden="true" focusable={false} />
+                    sortOrder === 'asc' ? (
+                        <IconSortAscending
+                            size={16}
+                            aria-hidden="true"
+                            focusable={false}
+                        />
+                    ) : (
+                        <IconSortDescending
+                            size={16}
+                            aria-hidden="true"
+                            focusable={false}
+                        />
+                    )
                 ) : null}
             </Group>
         </UnstyledButton>
@@ -79,25 +90,28 @@ export const AdminUserList = ({ users, setAdminRole }: Props) => {
         }
     };
 
-    const filteredUsers = users?.filter((user) => {
-        const searchTerm = filter.toLowerCase();
-        return (
-            user.name.toLowerCase().includes(searchTerm) ||
-            user.email.toLowerCase().includes(searchTerm)
-        );
-    }) ?? [];
+    const filteredUsers =
+        users?.filter((user) => {
+            const searchTerm = filter.toLowerCase();
+            return (
+                user.name.toLowerCase().includes(searchTerm) ||
+                user.email.toLowerCase().includes(searchTerm)
+            );
+        }) ?? [];
 
     /* v8 ignore next -- filteredUsers is always an array via the nullish coalescing above; this fallback is a defensive backstop */
-    const sortedUsers = filteredUsers ? [...filteredUsers].sort((a, b) => {
-        if (!sortBy) return 0;
+    const sortedUsers = filteredUsers
+        ? [...filteredUsers].sort((a, b) => {
+              if (!sortBy) return 0;
 
-        const aValue = String(a[sortBy] ?? '').toLowerCase();
-        const bValue = String(b[sortBy] ?? '').toLowerCase();
+              const aValue = String(a[sortBy] ?? '').toLowerCase();
+              const bValue = String(b[sortBy] ?? '').toLowerCase();
 
-        return sortOrder === 'asc' ?
-            aValue.localeCompare(bValue) :
-            bValue.localeCompare(aValue);
-    }) : [];
+              return sortOrder === 'asc'
+                  ? aValue.localeCompare(bValue)
+                  : bValue.localeCompare(aValue);
+          })
+        : [];
 
     if (errorMessage) {
         return (
@@ -108,10 +122,16 @@ export const AdminUserList = ({ users, setAdminRole }: Props) => {
     }
 
     return (
-        <Container size="md" mt="xl">
+        <Container
+            size="md"
+            mt="xl"
+        >
             <Paper w="100%">
                 <Center>
-                    <Title order={2} mb="md">
+                    <Title
+                        order={2}
+                        mb="md"
+                    >
                         Admin: Users
                     </Title>
                 </Center>
@@ -121,57 +141,108 @@ export const AdminUserList = ({ users, setAdminRole }: Props) => {
                     value={filter}
                     onChange={(event) => setFilter(event.currentTarget.value)}
                 />
-                <TableScrollContainer minWidth="100%" scrollAreaProps={{ type: 'auto' }}>
-                    <Table mt={20} layout="fixed">
-                        <TableThead>
-                            <TableTr>
-                                <TableTh w="10rem" aria-sort={sortBy === 'name' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                <Table.ScrollContainer
+                    minWidth="100%"
+                    scrollAreaProps={{ type: 'auto' }}
+                >
+                    <Table
+                        mt={20}
+                        layout="fixed"
+                    >
+                        <Table.Thead>
+                            <Table.Tr>
+                                <Table.Th
+                                    w="10rem"
+                                    aria-sort={
+                                        sortBy === 'name'
+                                            ? sortOrder === 'asc'
+                                                ? 'ascending'
+                                                : 'descending'
+                                            : 'none'
+                                    }
+                                >
                                     {renderSortHeader('Name', 'name')}
-                                </TableTh>
-                                <TableTh w="16rem" aria-sort={sortBy === 'email' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                                </Table.Th>
+                                <Table.Th
+                                    w="16rem"
+                                    aria-sort={
+                                        sortBy === 'email'
+                                            ? sortOrder === 'asc'
+                                                ? 'ascending'
+                                                : 'descending'
+                                            : 'none'
+                                    }
+                                >
                                     {renderSortHeader('Email', 'email')}
-                                </TableTh>
-                                <TableTh w="6rem" aria-sort={sortBy === 'role' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                                </Table.Th>
+                                <Table.Th
+                                    w="6rem"
+                                    aria-sort={
+                                        sortBy === 'role'
+                                            ? sortOrder === 'asc'
+                                                ? 'ascending'
+                                                : 'descending'
+                                            : 'none'
+                                    }
+                                >
                                     {renderSortHeader('Admin', 'role')}
-                                </TableTh>
-                                <TableTh w="10rem" aria-sort={sortBy === 'createdAt' ? (sortOrder === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                                </Table.Th>
+                                <Table.Th
+                                    w="10rem"
+                                    aria-sort={
+                                        sortBy === 'createdAt'
+                                            ? sortOrder === 'asc'
+                                                ? 'ascending'
+                                                : 'descending'
+                                            : 'none'
+                                    }
+                                >
                                     {renderSortHeader('Created', 'createdAt')}
-                                </TableTh>
-                            </TableTr>
-                        </TableThead>
-                        <TableTbody>
+                                </Table.Th>
+                            </Table.Tr>
+                        </Table.Thead>
+                        <Table.Tbody>
                             {sortedUsers.map((user) => (
-                                <TableTr key={user.email}>
-                                    <TableTd>
-                                        <Anchor href={`/footy/admin/user/${encodeURIComponent(user.email)}`}>
+                                <Table.Tr key={user.email}>
+                                    <Table.Td>
+                                        <Anchor
+                                            href={`/footy/admin/user/${encodeURIComponent(user.email)}`}
+                                        >
                                             {user.name}
                                         </Anchor>
-                                    </TableTd>
-                                    <TableTd>
-                                        <Anchor href={`/footy/admin/user/${encodeURIComponent(user.email)}`}>
+                                    </Table.Td>
+                                    <Table.Td>
+                                        <Anchor
+                                            href={`/footy/admin/user/${encodeURIComponent(user.email)}`}
+                                        >
                                             {user.email}
                                         </Anchor>
-                                    </TableTd>
-                                    <TableTd>
+                                    </Table.Td>
+                                    <Table.Td>
                                         <Switch
                                             checked={user.role === 'admin'}
-                                            onChange={(event) => toggleAdmin(user.id, event.currentTarget.checked)}
+                                            onChange={(event) =>
+                                                toggleAdmin(
+                                                    user.id,
+                                                    event.currentTarget.checked,
+                                                )
+                                            }
                                             aria-label={
-                                                user.name ?
-                                                    `Toggle admin status for ${user.name}` :
-                                                    `Toggle admin status for ${user.email}`
+                                                user.name
+                                                    ? `Toggle admin status for ${user.name}`
+                                                    : `Toggle admin status for ${user.email}`
                                             }
                                             color="blue"
                                         />
-                                    </TableTd>
-                                    <TableTd>
+                                    </Table.Td>
+                                    <Table.Td>
                                         <RelativeTime date={user.createdAt} />
-                                    </TableTd>
-                                </TableTr>
+                                    </Table.Td>
+                                </Table.Tr>
                             ))}
-                        </TableTbody>
+                        </Table.Tbody>
                     </Table>
-                </TableScrollContainer>
+                </Table.ScrollContainer>
             </Paper>
         </Container>
     );

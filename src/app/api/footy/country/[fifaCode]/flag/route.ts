@@ -6,7 +6,6 @@ import { CONTAINER_COUNTRIES } from '@/lib/azureConfig';
 import { InternalError, normalizeUnknownError } from '@/lib/errors';
 import { streamToBuffer } from '@/lib/stream';
 
-
 /**
  * Retrieves the flag image of a country as a Buffer based on the provided FIFA code.
  *
@@ -14,12 +13,15 @@ import { streamToBuffer } from '@/lib/stream';
  * @returns A promise that resolves to a Buffer containing the flag image if it exists, or `null` if the flag is not found.
  * @throws An error if the image body download fails.
  */
-async function getCountryFlag(
-    { params }: { params: Record<string, string> },
-): Promise<Buffer | null> {
+async function getCountryFlag({
+    params,
+}: {
+    params: Record<string, string>;
+}): Promise<Buffer | null> {
     try {
         const fifaCode = params.fifaCode.toUpperCase();
-        const containerClient = azureCache.getContainerClient(CONTAINER_COUNTRIES);
+        const containerClient =
+            azureCache.getContainerClient(CONTAINER_COUNTRIES);
         const blobClient = containerClient.getBlobClient(`${fifaCode}.png`);
 
         if (!(await blobClient.exists())) {
@@ -35,7 +37,9 @@ async function getCountryFlag(
                 },
             });
         }
-        return await streamToBuffer(downloadBlockBlobResponse.readableStreamBody);
+        return await streamToBuffer(
+            downloadBlockBlobResponse.readableStreamBody,
+        );
     } catch (error) {
         throw normalizeUnknownError(error, {
             details: {
@@ -54,7 +58,10 @@ async function getCountryFlag(
  * @param props.params - A promise resolving to a record of route parameters, including the `fifaCode` of the country.
  * @returns A response containing the country's flag in PNG format.
  */
-export const GET = async (request: NextRequest, props: { params: Promise<Record<string, string>> }) => {
+export const GET = async (
+    request: NextRequest,
+    props: { params: Promise<Record<string, string>> },
+) => {
     const params = await props.params;
     return handleGET(
         () => getCountryFlag({ params }),

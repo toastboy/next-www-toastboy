@@ -27,7 +27,10 @@ export const dynamic = 'force-dynamic';
  * @returns A NextResponse that performs a redirect to the target URL,
  * optionally including an `error` query param.
  */
-export const GET = async (request: NextRequest, props: { params: Promise<Record<string, string>> }) => {
+export const GET = async (
+    request: NextRequest,
+    props: { params: Promise<Record<string, string>> },
+) => {
     const { token } = await props.params;
     const searchParams = request.nextUrl.searchParams;
     const redirectParam = searchParams.get('redirect') ?? '/';
@@ -46,7 +49,10 @@ export const GET = async (request: NextRequest, props: { params: Promise<Record<
                 redirectParam,
             },
         });
-        const { message: errorMessage } = toHttpErrorResponse(error, 'Unable to finalize invitation.');
+        const { message: errorMessage } = toHttpErrorResponse(
+            error,
+            'Unable to finalize invitation.',
+        );
 
         redirect = buildURLWithParams(redirectParam, { error: errorMessage });
     }

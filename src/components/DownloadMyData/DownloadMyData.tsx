@@ -1,8 +1,6 @@
 'use client';
 
-import {
-    CodeHighlight,
-} from '@mantine/code-highlight';
+import { CodeHighlight } from '@mantine/code-highlight';
 import {
     Box,
     Button,
@@ -30,7 +28,14 @@ export interface DownloadMyDataPayload {
     outcomes: unknown[];
 }
 
-type SectionKey = 'meta' | 'profile' | 'extraEmails' | 'countries' | 'clubs' | 'totals' | 'outcomes';
+type SectionKey =
+    | 'meta'
+    | 'profile'
+    | 'extraEmails'
+    | 'countries'
+    | 'clubs'
+    | 'totals'
+    | 'outcomes';
 
 const sectionDefaults: Record<SectionKey, boolean> = {
     meta: true,
@@ -49,7 +54,10 @@ export interface Props {
 export const DownloadMyData = ({ data }: Props) => {
     const [sections, setSections] = useState(sectionDefaults);
 
-    const allSelected = useMemo(() => Object.values(sections).every(Boolean), [sections]);
+    const allSelected = useMemo(
+        () => Object.values(sections).every(Boolean),
+        [sections],
+    );
 
     const filteredData = useMemo(() => {
         const payload: Record<string, unknown> = {};
@@ -63,7 +71,10 @@ export const DownloadMyData = ({ data }: Props) => {
         return payload;
     }, [data, sections]);
 
-    const json = useMemo(() => JSON.stringify(filteredData, null, 2), [filteredData]);
+    const json = useMemo(
+        () => JSON.stringify(filteredData, null, 2),
+        [filteredData],
+    );
 
     const handleDownload = () => {
         const blob = new Blob([json], { type: 'application/json' });
@@ -96,62 +107,118 @@ export const DownloadMyData = ({ data }: Props) => {
         <Paper w="100%">
             <Stack gap="lg">
                 <Title order={1}>Download my data</Title>
-                <Text size="sm" c="dimmed">
-                    Choose which sections to include, then download or copy the JSON.
+                <Text
+                    size="sm"
+                    c="dimmed"
+                >
+                    Choose which sections to include, then download or copy the
+                    JSON.
                 </Text>
 
-                <Group justify="space-between" align="center">
-                    <Button leftSection={<IconDownload size={16} />} onClick={handleDownload}>
+                <Group
+                    justify="space-between"
+                    align="center"
+                >
+                    <Button
+                        leftSection={<IconDownload size={16} />}
+                        onClick={handleDownload}
+                    >
                         Download JSON
                     </Button>
                 </Group>
 
-                <Box bd="1px solid var(--mantine-color-gray-3)" p="md">
+                <Box
+                    bd="1px solid var(--mantine-color-gray-3)"
+                    p="md"
+                >
                     <Stack gap="md">
-                        <Group justify="space-between" align="center">
+                        <Group
+                            justify="space-between"
+                            align="center"
+                        >
                             <Text fw={600}>Include in export</Text>
                             <Checkbox
                                 label="Select all"
                                 checked={allSelected}
-                                onChange={(event) => setAllSections(event.currentTarget.checked)}
+                                onChange={(event) =>
+                                    setAllSections(event.currentTarget.checked)
+                                }
                             />
                         </Group>
 
-                        <Group gap="md" wrap="wrap">
+                        <Group
+                            gap="md"
+                            wrap="wrap"
+                        >
                             <Checkbox
                                 label="Meta"
                                 checked={sections.meta}
-                                onChange={(event) => toggleSection('meta', event.currentTarget.checked)}
+                                onChange={(event) =>
+                                    toggleSection(
+                                        'meta',
+                                        event.currentTarget.checked,
+                                    )
+                                }
                             />
                             <Checkbox
                                 label="Profile"
                                 checked={sections.profile}
-                                onChange={(event) => toggleSection('profile', event.currentTarget.checked)}
+                                onChange={(event) =>
+                                    toggleSection(
+                                        'profile',
+                                        event.currentTarget.checked,
+                                    )
+                                }
                             />
                             <Checkbox
                                 label="Extra emails"
                                 checked={sections.extraEmails}
-                                onChange={(event) => toggleSection('extraEmails', event.currentTarget.checked)}
+                                onChange={(event) =>
+                                    toggleSection(
+                                        'extraEmails',
+                                        event.currentTarget.checked,
+                                    )
+                                }
                             />
                             <Checkbox
                                 label="Countries"
                                 checked={sections.countries}
-                                onChange={(event) => toggleSection('countries', event.currentTarget.checked)}
+                                onChange={(event) =>
+                                    toggleSection(
+                                        'countries',
+                                        event.currentTarget.checked,
+                                    )
+                                }
                             />
                             <Checkbox
                                 label="Clubs"
                                 checked={sections.clubs}
-                                onChange={(event) => toggleSection('clubs', event.currentTarget.checked)}
+                                onChange={(event) =>
+                                    toggleSection(
+                                        'clubs',
+                                        event.currentTarget.checked,
+                                    )
+                                }
                             />
                             <Checkbox
                                 label="Totals"
                                 checked={sections.totals}
-                                onChange={(event) => toggleSection('totals', event.currentTarget.checked)}
+                                onChange={(event) =>
+                                    toggleSection(
+                                        'totals',
+                                        event.currentTarget.checked,
+                                    )
+                                }
                             />
                             <Checkbox
                                 label="Games played"
                                 checked={sections.outcomes}
-                                onChange={(event) => toggleSection('outcomes', event.currentTarget.checked)}
+                                onChange={(event) =>
+                                    toggleSection(
+                                        'outcomes',
+                                        event.currentTarget.checked,
+                                    )
+                                }
                             />
                         </Group>
 
@@ -169,4 +236,3 @@ export const DownloadMyData = ({ data }: Props) => {
         </Paper>
     );
 };
-

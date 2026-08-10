@@ -56,7 +56,9 @@ export const buildInvitationEmail = ({
         'on the link in the email you received, or by logging in to the site at the game page.</p>',
         '<p>Cheers,<br />Jon</p>',
         '</div>',
-    ].filter(Boolean).join('');
+    ]
+        .filter(Boolean)
+        .join('');
 };
 
 /**
@@ -101,7 +103,8 @@ export async function sendGameInvitations(
     const baseUrl = getPublicBaseUrl();
     const sendAt = new Date();
 
-    const invitations: { uuid: string; playerId: number; gameDayId: number }[] = [];
+    const invitations: { uuid: string; playerId: number; gameDayId: number }[] =
+        [];
     const emailTasks = activePlayers.map(async (player) => {
         const emails = [
             player.accountEmail,
@@ -145,7 +148,9 @@ export async function sendGameInvitations(
     await gameDayService.markMailSent(gameDayId, sendAt);
 }
 
-export async function getGameInvitationResponseDetails(token: string): Promise<GameInvitationResponseDetails | null> {
+export async function getGameInvitationResponseDetails(
+    token: string,
+): Promise<GameInvitationResponseDetails | null> {
     if (!token) return null;
 
     const invitation = await gameInvitationService.get(token);
@@ -155,7 +160,10 @@ export async function getGameInvitationResponseDetails(token: string): Promise<G
     if (!player) return null;
 
     const playerLogin = await playerService.getLogin(player.id.toString());
-    const outcome = await outcomeService.get(invitation.gameDayId, invitation.playerId);
+    const outcome = await outcomeService.get(
+        invitation.gameDayId,
+        invitation.playerId,
+    );
 
     return {
         token,

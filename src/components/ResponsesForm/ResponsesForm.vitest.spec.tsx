@@ -1,6 +1,4 @@
-import {
-    notifications,
-} from '@mantine/notifications';
+import { notifications } from '@mantine/notifications';
 import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
@@ -32,17 +30,17 @@ describe('Responses', () => {
 
     it('filters safely when a player name is missing', async () => {
         const user = userEvent.setup();
-        const namelessResponses = defaultResponsesAdminData.map((response) => (
-            response.playerId === 4 ?
-                {
-                    ...response,
-                    player: {
-                        ...response.player,
-                        name: null,
-                    },
-                } :
-                response
-        ));
+        const namelessResponses = defaultResponsesAdminData.map((response) =>
+            response.playerId === 4
+                ? {
+                      ...response,
+                      player: {
+                          ...response.player,
+                          name: null,
+                      },
+                  }
+                : response,
+        );
 
         render(
             <Wrapper>
@@ -79,7 +77,9 @@ describe('Responses', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByPlaceholderText('Search players')).toBeInTheDocument();
+        expect(
+            screen.getByPlaceholderText('Search players'),
+        ).toBeInTheDocument();
     });
 
     it('groups responses and shows counts', () => {
@@ -94,14 +94,55 @@ describe('Responses', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByRole('heading', { name: /Responses/i })).toBeInTheDocument();
-        expect(within(screen.getByRole('region', { name: 'Yes' })).getByRole('heading', { name: 'Yes: 1' })).toBeInTheDocument();
-        expect(within(screen.getByRole('region', { name: 'No' })).getByRole('heading', { name: 'No: 1' })).toBeInTheDocument();
+        expect(
+            screen.getByRole('heading', { name: /Responses/i }),
+        ).toBeInTheDocument();
+        expect(
+            within(screen.getByRole('region', { name: 'Yes' })).getByRole(
+                'heading',
+                { name: 'Yes: 1' },
+            ),
+        ).toBeInTheDocument();
+        expect(
+            within(screen.getByRole('region', { name: 'No' })).getByRole(
+                'heading',
+                { name: 'No: 1' },
+            ),
+        ).toBeInTheDocument();
         expect(screen.queryByRole('region', { name: 'Dunno' })).toBeNull();
-        expect(within(screen.getByRole('region', { name: 'None' })).getByRole('heading', { name: 'None: 2' })).toBeInTheDocument();
+        expect(
+            within(screen.getByRole('region', { name: 'None' })).getByRole(
+                'heading',
+                { name: 'None: 2' },
+            ),
+        ).toBeInTheDocument();
 
         const firstCommentInput = screen.getAllByPlaceholderText('Comment')[0];
         expect(firstCommentInput).toHaveAttribute('maxlength', '127');
+    });
+
+    it('toggles a group open and closed when its header is clicked', async () => {
+        const user = userEvent.setup();
+
+        render(
+            <Wrapper>
+                <ResponsesForm
+                    gameId={1249}
+                    gameDate="3rd February 2026"
+                    responses={defaultResponsesAdminData}
+                    submitResponse={mockSave}
+                />
+            </Wrapper>,
+        );
+
+        const toggle = screen.getByRole('button', { name: /^Yes:\s*1$/ });
+        expect(toggle).toHaveAttribute('aria-expanded', 'false');
+
+        await user.click(toggle);
+        expect(toggle).toHaveAttribute('aria-expanded', 'true');
+
+        await user.click(toggle);
+        expect(toggle).toHaveAttribute('aria-expanded', 'false');
     });
 
     it('filters players before grouping', async () => {
@@ -124,7 +165,12 @@ describe('Responses', () => {
         expect(screen.queryByRole('region', { name: 'Yes' })).toBeNull();
         expect(screen.queryByRole('region', { name: 'No' })).toBeNull();
         expect(screen.queryByRole('region', { name: 'Dunno' })).toBeNull();
-        expect(within(screen.getByRole('region', { name: 'None' })).getByRole('heading', { name: 'None: 1' })).toBeInTheDocument();
+        expect(
+            within(screen.getByRole('region', { name: 'None' })).getByRole(
+                'heading',
+                { name: 'None: 1' },
+            ),
+        ).toBeInTheDocument();
     });
 
     it('returns early without calling submitResponse when response is still null', async () => {
@@ -181,7 +227,9 @@ describe('Responses', () => {
 
         const select = within(row).getByRole('combobox', { name: /response/i });
         await user.click(select);
-        await user.click(await screen.findByRole('option', { name: 'Yes', hidden: true }));
+        await user.click(
+            await screen.findByRole('option', { name: 'Yes', hidden: true }),
+        );
 
         const submit = within(row).getByRole('button', { name: 'Update' });
         await user.click(submit);
@@ -198,15 +246,17 @@ describe('Responses', () => {
             autoClose: false,
             withCloseButton: false,
         });
-        expect(notifications.update).toHaveBeenCalledWith(expect.objectContaining({
-            id: 'response-3',
-            color: 'red',
-            title: 'Error',
-            message: 'network error',
-            loading: false,
-            autoClose: false,
-            withCloseButton: true,
-        }));
+        expect(notifications.update).toHaveBeenCalledWith(
+            expect.objectContaining({
+                id: 'response-3',
+                color: 'red',
+                title: 'Error',
+                message: 'network error',
+                loading: false,
+                autoClose: false,
+                withCloseButton: true,
+            }),
+        );
     });
 
     it('falls back to a generic error notification for non-Error rejections', async () => {
@@ -226,17 +276,25 @@ describe('Responses', () => {
 
         const filterInput = screen.getByPlaceholderText('Search players');
         await user.type(filterInput, 'Casey');
-        const row = within(screen.getByRole('region', { name: 'None' })).getByRole('group', { name: 'Casey Mid' });
+        const row = within(
+            screen.getByRole('region', { name: 'None' }),
+        ).getByRole('group', { name: 'Casey Mid' });
 
-        await user.click(within(row).getByRole('combobox', { name: /response/i }));
-        await user.click(await screen.findByRole('option', { name: 'Yes', hidden: true }));
+        await user.click(
+            within(row).getByRole('combobox', { name: /response/i }),
+        );
+        await user.click(
+            await screen.findByRole('option', { name: 'Yes', hidden: true }),
+        );
         await user.click(within(row).getByRole('button', { name: 'Update' }));
 
         await waitFor(() => {
-            expect(notifications.update).toHaveBeenCalledWith(expect.objectContaining({
-                id: 'response-3',
-                message: 'Failed to update response',
-            }));
+            expect(notifications.update).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    id: 'response-3',
+                    message: 'Failed to update response',
+                }),
+            );
         });
     });
 
@@ -272,7 +330,9 @@ describe('Responses', () => {
 
         // hidden: true — this assertion is about the sync-on-rerender behaviour,
         // not the group's default-collapsed display state.
-        expect(screen.getByRole('group', { name: 'Casey Mid', hidden: true })).toBeInTheDocument();
+        expect(
+            screen.getByRole('group', { name: 'Casey Mid', hidden: true }),
+        ).toBeInTheDocument();
     });
 
     it('updates a player response and calls onSave', async () => {
@@ -301,8 +361,15 @@ describe('Responses', () => {
         await user.click(goalie);
         await user.type(comment, 'See you there');
         await user.click(select);
-        await user.click(await screen.findByRole('option', { name: 'Yes', hidden: true }));
-        expect(within(screen.getByRole('region', { name: 'None' })).getByRole('heading', { name: 'None: 1' })).toBeInTheDocument();
+        await user.click(
+            await screen.findByRole('option', { name: 'Yes', hidden: true }),
+        );
+        expect(
+            within(screen.getByRole('region', { name: 'None' })).getByRole(
+                'heading',
+                { name: 'None: 1' },
+            ),
+        ).toBeInTheDocument();
         expect(screen.queryByRole('region', { name: 'Yes' })).toBeNull();
         const submit = within(row).getByRole('button', { name: 'Update' });
         await user.click(submit);
@@ -320,9 +387,14 @@ describe('Responses', () => {
         // Simulate revalidate / SSE: parent re-renders with the saved response now
         // present in the server data. The row should move to the "yes" group.
         const updatedResponses = defaultResponsesAdminData.map((r) =>
-            r.playerId === playerId ?
-                { ...r, response: 'Yes' as const, goalie: true, comment: 'See you there' } :
-                r,
+            r.playerId === playerId
+                ? {
+                      ...r,
+                      response: 'Yes' as const,
+                      goalie: true,
+                      comment: 'See you there',
+                  }
+                : r,
         );
         rerender(
             <Wrapper>
@@ -336,7 +408,11 @@ describe('Responses', () => {
         );
 
         expect(screen.queryByRole('region', { name: 'None' })).toBeNull();
-        expect(within(screen.getByRole('region', { name: 'Yes' })).getByRole('heading', { name: 'Yes: 1' })).toBeInTheDocument();
+        expect(
+            within(screen.getByRole('region', { name: 'Yes' })).getByRole(
+                'heading',
+                { name: 'Yes: 1' },
+            ),
+        ).toBeInTheDocument();
     });
-
 });

@@ -10,6 +10,7 @@
     border-radius: var(--mantine-radius-md);
     font-family: var(--mantine-font-family-monospace);
     opacity: 0.6;
+    text-align: right;
 }
 
 .p {

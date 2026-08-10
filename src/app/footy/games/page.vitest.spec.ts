@@ -5,8 +5,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 vi.mock('services/GameDay');
 
 vi.mock('next/navigation', () => ({
-    notFound: vi.fn(() => { throw new Error('not_found'); }),
-    permanentRedirect: vi.fn(() => { throw new Error('permanent_redirect'); }),
+    notFound: vi.fn(() => {
+        throw new Error('not_found');
+    }),
+    permanentRedirect: vi.fn(() => {
+        throw new Error('permanent_redirect');
+    }),
 }));
 
 vi.mock('react', async () => {
@@ -70,14 +74,20 @@ describe('Games page', () => {
 
         await GamesPage({ searchParams: Promise.resolve({ year: '2024' }) });
 
-        expect(callOrder.sort()).toEqual(['cancelled-start', 'played-start', 'remaining-start']);
+        expect(callOrder.sort()).toEqual([
+            'cancelled-start',
+            'played-start',
+            'remaining-start',
+        ]);
         expect(gameDayService.getGamesPlayed).toHaveBeenCalledTimes(1);
         expect(gameDayService.getGamesCancelled).toHaveBeenCalledTimes(1);
         expect(gameDayService.getGamesRemaining).toHaveBeenCalledTimes(1);
     });
 
     it('passes gamesPlayed and gamesRemaining to the rendered output', async () => {
-        const element = await GamesPage({ searchParams: Promise.resolve({ year: '2024' }) });
+        const element = await GamesPage({
+            searchParams: Promise.resolve({ year: '2024' }),
+        });
         const html = renderToStaticMarkup(element);
 
         expect(html).toContain('5 played');
@@ -86,7 +96,9 @@ describe('Games page', () => {
     });
 
     it('handles service errors gracefully', async () => {
-        (gameDayService.getGamesPlayed as Mock).mockRejectedValue(new Error('DB failed'));
+        (gameDayService.getGamesPlayed as Mock).mockRejectedValue(
+            new Error('DB failed'),
+        );
 
         await expect(
             GamesPage({ searchParams: Promise.resolve({ year: '2024' }) }),
@@ -101,7 +113,9 @@ describe('Games page', () => {
 
     it('calls notFound when the year param is not a valid integer', async () => {
         await expect(
-            GamesPage({ searchParams: Promise.resolve({ year: 'notanumber' }) }),
+            GamesPage({
+                searchParams: Promise.resolve({ year: 'notanumber' }),
+            }),
         ).rejects.toThrow('not_found');
     });
 
@@ -118,13 +132,17 @@ describe('Games page', () => {
     });
 
     it('generates metadata with the year-specific title', async () => {
-        const metadata = await generateMetadata({ searchParams: Promise.resolve({ year: '2024' }) });
+        const metadata = await generateMetadata({
+            searchParams: Promise.resolve({ year: '2024' }),
+        });
 
         expect(metadata.title).toBe('2024 Games');
     });
 
     it('does not redirect when year=0 is already explicit in the query, and omits the year prefix from the subhead title', async () => {
-        const element = await GamesPage({ searchParams: Promise.resolve({ year: '0' }) });
+        const element = await GamesPage({
+            searchParams: Promise.resolve({ year: '0' }),
+        });
         const html = renderToStaticMarkup(element);
 
         expect(html).not.toContain('0 Games');
@@ -135,7 +153,9 @@ describe('Games page', () => {
         (gameDayService.getGamesCancelled as Mock).mockResolvedValue(0);
         (gameDayService.getGamesRemaining as Mock).mockResolvedValue(0);
 
-        const element = await GamesPage({ searchParams: Promise.resolve({ year: '2024' }) });
+        const element = await GamesPage({
+            searchParams: Promise.resolve({ year: '2024' }),
+        });
         const html = renderToStaticMarkup(element);
 
         expect(html).not.toContain('played');

@@ -1,6 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { beforeDeletePlayerCore, deletePlayerCore } from '@/lib/core/deletePlayer';
+import {
+    beforeDeletePlayerCore,
+    deletePlayerCore,
+} from '@/lib/core/deletePlayer';
 import { AuthError } from '@/lib/errors';
 import type { AuthUserSummary } from '@/types/AuthUser';
 
@@ -59,7 +62,9 @@ describe('beforeDeletePlayerCore', () => {
 
         expect(deps.playerService.setFinished).toHaveBeenCalledWith(42);
         expect(deps.playerExtraEmailService.deleteAll).toHaveBeenCalledWith(42);
-        expect(deps.emailVerificationService.deleteAll).toHaveBeenCalledWith(42);
+        expect(deps.emailVerificationService.deleteAll).toHaveBeenCalledWith(
+            42,
+        );
         expect(deps.clubSupporterService.deleteAll).toHaveBeenCalledWith(42);
         expect(deps.countrySupporterService.deleteAll).toHaveBeenCalledWith(42);
         expect(deps.playerService.anonymise).toHaveBeenCalledWith(42);
@@ -76,7 +81,11 @@ describe('deletePlayerCore', () => {
                     deleteUser: vi.fn().mockResolvedValue(undefined),
                 },
             },
-            headers: vi.fn().mockResolvedValue(new Headers({ cookie: 'mock-auth-state=user' })),
+            headers: vi
+                .fn()
+                .mockResolvedValue(
+                    new Headers({ cookie: 'mock-auth-state=user' }),
+                ),
             getCurrentUser: vi.fn().mockResolvedValue(user),
             playerService: {
                 setFinished: vi.fn(),
@@ -134,12 +143,15 @@ describe('deletePlayerCore', () => {
         await deletePlayerCore(deps);
 
         expect(deps.headers).toHaveBeenCalledTimes(1);
-        const [deleteUserPayload] = vi.mocked(deps.auth.api.deleteUser).mock.calls[0] as [{
-            body: {
-                callbackURL: string;
-            };
-            headers: Headers;
-        }];
+        const [deleteUserPayload] = vi.mocked(deps.auth.api.deleteUser).mock
+            .calls[0] as [
+            {
+                body: {
+                    callbackURL: string;
+                };
+                headers: Headers;
+            },
+        ];
         expect(deleteUserPayload.headers).toBeInstanceOf(Headers);
         expect(deleteUserPayload.body).toEqual({
             callbackURL: '/footy/auth/accountdeleted',

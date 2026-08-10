@@ -1,6 +1,4 @@
-import {
-    notifications,
-} from '@mantine/notifications';
+import { notifications } from '@mantine/notifications';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { MockedFunction } from 'vitest';
@@ -10,8 +8,9 @@ import { PasswordResetForm } from '@/components/PasswordResetForm/PasswordResetF
 import { authClient } from '@/lib/auth.client';
 import { Wrapper } from '@/tests/components/lib/common';
 
-const mockResetPassword =
-    authClient.resetPassword as MockedFunction<typeof authClient.resetPassword>;
+const mockResetPassword = authClient.resetPassword as MockedFunction<
+    typeof authClient.resetPassword
+>;
 
 describe('PasswordResetForm', () => {
     beforeEach(() => {
@@ -27,8 +26,12 @@ describe('PasswordResetForm', () => {
         );
 
         expect(screen.getByLabelText(/^New password/i)).toBeInTheDocument();
-        expect(screen.getByLabelText(/Confirm new password/i)).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /Reset password/i })).toBeInTheDocument();
+        expect(
+            screen.getByLabelText(/Confirm new password/i),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', { name: /Reset password/i }),
+        ).toBeInTheDocument();
     });
 
     it('shows a notification when the token is missing', () => {
@@ -38,7 +41,9 @@ describe('PasswordResetForm', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByText(/Password reset link is missing or invalid/i)).toBeInTheDocument();
+        expect(
+            screen.getByText(/Password reset link is missing or invalid/i),
+        ).toBeInTheDocument();
     });
 
     it('shows an error notification when resetPassword returns status false', async () => {
@@ -53,8 +58,13 @@ describe('PasswordResetForm', () => {
         );
 
         await user.type(screen.getByLabelText(/^New password/i), 'Password123');
-        await user.type(screen.getByLabelText(/Confirm new password/i), 'Password123');
-        await user.click(screen.getByRole('button', { name: /Reset password/i }));
+        await user.type(
+            screen.getByLabelText(/Confirm new password/i),
+            'Password123',
+        );
+        await user.click(
+            screen.getByRole('button', { name: /Reset password/i }),
+        );
 
         await waitFor(() => {
             expect(notificationUpdateSpy).toHaveBeenCalledWith(
@@ -74,8 +84,13 @@ describe('PasswordResetForm', () => {
         );
 
         await user.type(screen.getByLabelText(/^New password/i), 'Password123');
-        await user.type(screen.getByLabelText(/Confirm new password/i), 'Password123');
-        await user.click(screen.getByRole('button', { name: /Reset password/i }));
+        await user.type(
+            screen.getByLabelText(/Confirm new password/i),
+            'Password123',
+        );
+        await user.click(
+            screen.getByRole('button', { name: /Reset password/i }),
+        );
 
         await waitFor(() => {
             expect(mockResetPassword).toHaveBeenCalledWith({

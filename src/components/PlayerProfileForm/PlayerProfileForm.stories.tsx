@@ -1,6 +1,4 @@
-import {
-    Notifications,
-} from '@mantine/notifications';
+import { Notifications } from '@mantine/notifications';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { within } from 'storybook/test';
 
@@ -35,7 +33,10 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const defaultUpdatePlayerProxy: UpdatePlayerProxy = async (_playerId, _data) => {
+const defaultUpdatePlayerProxy: UpdatePlayerProxy = async (
+    _playerId,
+    _data,
+) => {
     return Promise.resolve(defaultPlayer);
 };
 
@@ -59,8 +60,12 @@ export const ValidFill: Story = {
 
         const canvas = within(canvasElement);
         const nameInput = await canvas.findByRole('textbox', { name: /^Name/ });
-        const emailInput = await canvas.findByRole('textbox', { name: /extra email address 1/i });
-        const submitButton = await canvas.findByRole('button', { name: 'Save Changes' });
+        const emailInput = await canvas.findByRole('textbox', {
+            name: /extra email address 1/i,
+        });
+        const submitButton = await canvas.findByRole('button', {
+            name: 'Save Changes',
+        });
 
         await userEvent.clear(nameInput);
         await userEvent.type(nameInput, 'Gazza Playa');
@@ -69,7 +74,11 @@ export const ValidFill: Story = {
         await userEvent.click(submitButton);
 
         const body = canvasElement.ownerDocument.body;
-        await within(body).findByText('Profile updated successfully', {}, { timeout: 6000 });
+        await within(body).findByText(
+            'Profile updated successfully',
+            {},
+            { timeout: 6000 },
+        );
     },
 };
 
@@ -80,8 +89,12 @@ export const BlankName: Story = {
 
         const canvas = within(canvasElement);
         const nameInput = await canvas.findByRole('textbox', { name: /^Name/ });
-        const emailInput = await canvas.findByRole('textbox', { name: /extra email address 1/i });
-        const submitButton = await canvas.findByRole('button', { name: 'Save Changes' });
+        const emailInput = await canvas.findByRole('textbox', {
+            name: /extra email address 1/i,
+        });
+        const submitButton = await canvas.findByRole('button', {
+            name: 'Save Changes',
+        });
 
         await userEvent.clear(nameInput);
         await userEvent.clear(emailInput);
@@ -89,6 +102,10 @@ export const BlankName: Story = {
         await userEvent.click(submitButton);
 
         const body = canvasElement.ownerDocument.body;
-        await within(body).findByText('Name is required', {}, { timeout: 6000 });
+        await within(body).findByText(
+            'Name is required',
+            {},
+            { timeout: 6000 },
+        );
     },
 };

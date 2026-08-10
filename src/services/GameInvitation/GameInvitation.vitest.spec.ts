@@ -26,7 +26,9 @@ describe('GameInvitationService', () => {
                 ...defaultGameInvitation,
                 uuid: defaultGameInvitationList[5].uuid,
             });
-            const result = await gameInvitationService.get(defaultGameInvitationList[5].uuid);
+            const result = await gameInvitationService.get(
+                defaultGameInvitationList[5].uuid,
+            );
             expect(result).toEqual({
                 ...defaultGameInvitation,
                 uuid: defaultGameInvitationList[5].uuid,
@@ -34,7 +36,9 @@ describe('GameInvitationService', () => {
         });
 
         it('should return null for uuid "6789"', async () => {
-            (prisma.gameInvitation.findUnique as Mock).mockResolvedValueOnce(null);
+            (prisma.gameInvitation.findUnique as Mock).mockResolvedValueOnce(
+                null,
+            );
             const result = await gameInvitationService.get('6789');
             expect(result).toBeNull();
         });
@@ -42,7 +46,9 @@ describe('GameInvitationService', () => {
 
     describe('getAll', () => {
         beforeEach(() => {
-            (prisma.gameInvitation.findMany as Mock).mockResolvedValueOnce(defaultGameInvitationList);
+            (prisma.gameInvitation.findMany as Mock).mockResolvedValueOnce(
+                defaultGameInvitationList,
+            );
         });
 
         it('should return the correct, complete list of 100 game invitations', async () => {
@@ -57,38 +63,52 @@ describe('GameInvitationService', () => {
             const newInvitation: GameInvitationType = {
                 ...defaultGameInvitation,
             };
-            (prisma.gameInvitation.create as Mock).mockResolvedValueOnce(newInvitation);
+            (prisma.gameInvitation.create as Mock).mockResolvedValueOnce(
+                newInvitation,
+            );
             const result = await gameInvitationService.create(newInvitation);
             expect(result).toEqual(newInvitation);
         });
 
         it('should refuse to create a game invitation with invalid data', async () => {
-            await expect(gameInvitationService.create({
-                ...defaultGameInvitation,
-                uuid: '',
-            })).rejects.toThrow();
-            await expect(gameInvitationService.create({
-                ...defaultGameInvitation,
-                playerId: -1,
-            })).rejects.toThrow();
-            await expect(gameInvitationService.create({
-                ...defaultGameInvitation,
-                gameDayId: -1,
-            })).rejects.toThrow();
+            await expect(
+                gameInvitationService.create({
+                    ...defaultGameInvitation,
+                    uuid: '',
+                }),
+            ).rejects.toThrow();
+            await expect(
+                gameInvitationService.create({
+                    ...defaultGameInvitation,
+                    playerId: -1,
+                }),
+            ).rejects.toThrow();
+            await expect(
+                gameInvitationService.create({
+                    ...defaultGameInvitation,
+                    gameDayId: -1,
+                }),
+            ).rejects.toThrow();
         });
 
         it('should refuse to create a game invitation that has the same uuid as an existing one', async () => {
-            (prisma.gameInvitation.create as Mock).mockRejectedValueOnce(new Error('invitation already exists'));
-            await expect(gameInvitationService.create({
-                ...defaultGameInvitation,
-                uuid: buildUuidFromIndex(1),
-            })).rejects.toThrow();
+            (prisma.gameInvitation.create as Mock).mockRejectedValueOnce(
+                new Error('invitation already exists'),
+            );
+            await expect(
+                gameInvitationService.create({
+                    ...defaultGameInvitation,
+                    uuid: buildUuidFromIndex(1),
+                }),
+            ).rejects.toThrow();
         });
     });
 
     describe('createMany', () => {
         it('should create many game invitations and return the count', async () => {
-            (prisma.gameInvitation.createMany as Mock).mockResolvedValueOnce({ count: 2 });
+            (prisma.gameInvitation.createMany as Mock).mockResolvedValueOnce({
+                count: 2,
+            });
 
             const count = await gameInvitationService.createMany([
                 {
@@ -117,19 +137,25 @@ describe('GameInvitationService', () => {
         });
 
         it('should reject createMany when uuid is invalid', async () => {
-            await expect(gameInvitationService.createMany([
-                {
-                    ...defaultGameInvitation,
-                    uuid: 'short',
-                },
-            ])).rejects.toThrow();
+            await expect(
+                gameInvitationService.createMany([
+                    {
+                        ...defaultGameInvitation,
+                        uuid: 'short',
+                    },
+                ]),
+            ).rejects.toThrow();
         });
     });
 
     describe('upsert', () => {
         it('should create a game invitation', async () => {
-            (prisma.gameInvitation.upsert as Mock).mockResolvedValueOnce(defaultGameInvitation);
-            const result = await gameInvitationService.upsert(defaultGameInvitation);
+            (prisma.gameInvitation.upsert as Mock).mockResolvedValueOnce(
+                defaultGameInvitation,
+            );
+            const result = await gameInvitationService.upsert(
+                defaultGameInvitation,
+            );
             expect(result).toEqual(defaultGameInvitation);
         });
 
@@ -138,22 +164,29 @@ describe('GameInvitationService', () => {
                 ...defaultGameInvitation,
                 uuid: buildUuidFromIndex(1),
             };
-            (prisma.gameInvitation.upsert as Mock).mockResolvedValueOnce(updatedInvitation);
-            const result = await gameInvitationService.upsert(updatedInvitation);
+            (prisma.gameInvitation.upsert as Mock).mockResolvedValueOnce(
+                updatedInvitation,
+            );
+            const result =
+                await gameInvitationService.upsert(updatedInvitation);
             expect(result).toEqual(updatedInvitation);
         });
 
         it('should reject upsert when uuid is not exactly 36 characters', async () => {
-            await expect(gameInvitationService.upsert({
-                ...defaultGameInvitation,
-                uuid: '1234',
-            })).rejects.toThrow();
+            await expect(
+                gameInvitationService.upsert({
+                    ...defaultGameInvitation,
+                    uuid: '1234',
+                }),
+            ).rejects.toThrow();
         });
     });
 
     describe('delete', () => {
         it('should delete an existing game invitation', async () => {
-            (prisma.gameInvitation.delete as Mock).mockResolvedValueOnce(defaultGameInvitation);
+            (prisma.gameInvitation.delete as Mock).mockResolvedValueOnce(
+                defaultGameInvitation,
+            );
             await gameInvitationService.delete('1234');
             expect(prisma.gameInvitation.delete).toHaveBeenCalledTimes(1);
         });
@@ -167,20 +200,28 @@ describe('GameInvitationService', () => {
                 notFoundError,
                 Prisma.PrismaClientKnownRequestError.prototype,
             );
-            (prisma.gameInvitation.delete as Mock).mockRejectedValueOnce(notFoundError);
+            (prisma.gameInvitation.delete as Mock).mockRejectedValueOnce(
+                notFoundError,
+            );
             await gameInvitationService.delete('6789');
             expect(prisma.gameInvitation.delete).toHaveBeenCalledTimes(1);
         });
 
         it('should rethrow delete errors that are not P2025', async () => {
-            (prisma.gameInvitation.delete as Mock).mockRejectedValueOnce(new Error('db exploded'));
-            await expect(gameInvitationService.delete(buildUuidFromIndex(3))).rejects.toThrow('db exploded');
+            (prisma.gameInvitation.delete as Mock).mockRejectedValueOnce(
+                new Error('db exploded'),
+            );
+            await expect(
+                gameInvitationService.delete(buildUuidFromIndex(3)),
+            ).rejects.toThrow('db exploded');
         });
     });
 
     describe('deleteAll', () => {
         it('should delete all game invitations', async () => {
-            (prisma.gameInvitation.deleteMany as Mock).mockResolvedValueOnce({ count: 100 });
+            (prisma.gameInvitation.deleteMany as Mock).mockResolvedValueOnce({
+                count: 100,
+            });
             await gameInvitationService.deleteAll();
             expect(prisma.gameInvitation.deleteMany).toHaveBeenCalledTimes(1);
         });

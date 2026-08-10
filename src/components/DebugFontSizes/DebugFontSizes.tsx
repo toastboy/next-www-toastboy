@@ -1,13 +1,6 @@
 'use client';
 
-import {
-    Container,
-    Table,
-    TableTbody,
-    TableTd,
-    TableTr,
-    Text,
-} from '@mantine/core';
+import { Container, Table, Text } from '@mantine/core';
 import { useEffect, useState } from 'react';
 
 import classes from './DebugFontSizes.module.css';
@@ -42,7 +35,9 @@ function measure(targets: FontSizeTarget[]): Sample[] {
         return {
             label,
             selector,
-            fontSizePx: first ? parseFloat(getComputedStyle(first).fontSize) : null,
+            fontSizePx: first
+                ? parseFloat(getComputedStyle(first).fontSize)
+                : null,
             matches: elements.length,
         };
     });
@@ -76,24 +71,29 @@ export const DebugFontSizes = ({ targets }: DebugFontSizesProps) => {
     return (
         <Container className={classes.div}>
             <Text className={classes.p}>
-                🔤 <strong>Font sizes</strong> — viewport: {viewportWidth}px / {(viewportWidth / pxPerEm).toFixed(2)}em
+                🔤 <strong>Font sizes</strong> — viewport: {viewportWidth}px /{' '}
+                {(viewportWidth / pxPerEm).toFixed(2)}em
             </Text>
             <Table className={classes.table}>
-                <TableTbody>
+                <Table.Tbody>
                     {samples.map((sample) => (
-                        <TableTr key={sample.selector}>
-                            <TableTd className={classes.td}>{sample.label}</TableTd>
-                            <TableTd className={classes.td}>
-                                {sample.fontSizePx === null ?
-                                    'no match' :
-                                    `${sample.fontSizePx.toFixed(2)}px / ${(sample.fontSizePx / pxPerEm).toFixed(3)}rem`}
-                            </TableTd>
-                            <TableTd className={classes.td}>
-                                {sample.matches > 1 ? `(${sample.matches} matches)` : null}
-                            </TableTd>
-                        </TableTr>
+                        <Table.Tr key={sample.selector}>
+                            <Table.Td className={classes.td}>
+                                {sample.label}
+                            </Table.Td>
+                            <Table.Td className={classes.td}>
+                                {sample.fontSizePx === null
+                                    ? 'no match'
+                                    : `${sample.fontSizePx.toFixed(2)}px / ${(sample.fontSizePx / pxPerEm).toFixed(3)}rem`}
+                            </Table.Td>
+                            <Table.Td className={classes.td}>
+                                {sample.matches > 1
+                                    ? `(${sample.matches} matches)`
+                                    : null}
+                            </Table.Td>
+                        </Table.Tr>
                     ))}
-                </TableTbody>
+                </Table.Tbody>
             </Table>
         </Container>
     );

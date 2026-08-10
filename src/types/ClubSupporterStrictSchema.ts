@@ -14,33 +14,43 @@ const ClubSupporterStrictFields = {
     clubId: z.number().int().min(1),
 };
 
-export const ClubSupporterWriteInputSchema = z.object({
-    ...ClubSupporterStrictFields,
-}).strip();
+export const ClubSupporterWriteInputSchema = z
+    .object({
+        ...ClubSupporterStrictFields,
+    })
+    .strip();
 
-export type ClubSupporterWriteInput = z.infer<typeof ClubSupporterWriteInputSchema>;
+export type ClubSupporterWriteInput = z.infer<
+    typeof ClubSupporterWriteInputSchema
+>;
 
 const ClubSupporterCreateDataStrictSchema = z.union([
     ClubSupporterCreateInputObjectZodSchema.extend(ClubSupporterStrictFields),
-    ClubSupporterUncheckedCreateInputObjectZodSchema.extend(ClubSupporterStrictFields),
+    ClubSupporterUncheckedCreateInputObjectZodSchema.extend(
+        ClubSupporterStrictFields,
+    ),
 ]);
 
-const ClubSupporterCreateOneStrictZodSchema = ClubSupporterCreateOneZodSchema.extend({
-    data: ClubSupporterCreateDataStrictSchema,
-});
+const ClubSupporterCreateOneStrictZodSchema =
+    ClubSupporterCreateOneZodSchema.extend({
+        data: ClubSupporterCreateDataStrictSchema,
+    });
 
 export const ClubSupporterCreateOneStrictSchema: z.ZodType<Prisma.ClubSupporterCreateArgs> =
     ClubSupporterCreateOneStrictZodSchema as unknown as z.ZodType<Prisma.ClubSupporterCreateArgs>;
 
 const ClubSupporterUpdateDataStrictSchema = z.union([
     ClubSupporterUpdateInputObjectZodSchema.extend(ClubSupporterStrictFields),
-    ClubSupporterUncheckedUpdateInputObjectZodSchema.extend(ClubSupporterStrictFields),
+    ClubSupporterUncheckedUpdateInputObjectZodSchema.extend(
+        ClubSupporterStrictFields,
+    ),
 ]);
 
-const ClubSupporterUpsertOneStrictZodSchema = ClubSupporterUpsertOneZodSchema.extend({
-    create: ClubSupporterCreateDataStrictSchema,
-    update: ClubSupporterUpdateDataStrictSchema,
-});
+const ClubSupporterUpsertOneStrictZodSchema =
+    ClubSupporterUpsertOneZodSchema.extend({
+        create: ClubSupporterCreateDataStrictSchema,
+        update: ClubSupporterUpdateDataStrictSchema,
+    });
 
 export const ClubSupporterUpsertOneStrictSchema: z.ZodType<Prisma.ClubSupporterUpsertArgs> =
     ClubSupporterUpsertOneStrictZodSchema as unknown as z.ZodType<Prisma.ClubSupporterUpsertArgs>;

@@ -27,7 +27,9 @@ describe('updatePlayerCore', () => {
                     email: 'account@example.com',
                     playerId: 7,
                 }),
-                changeCurrentUserEmail: vi.fn().mockResolvedValue({ status: true }),
+                changeCurrentUserEmail: vi
+                    .fn()
+                    .mockResolvedValue({ status: true }),
             },
             playerService: {
                 update: vi.fn().mockResolvedValue(updatedPlayer),
@@ -83,11 +85,24 @@ describe('updatePlayerCore', () => {
             'new@example.com',
             updatedPlayer,
         );
-        expect(deps.playerExtraEmailService.delete).toHaveBeenCalledWith('old@example.com');
-        expect(deps.clubSupporterService.deleteExcept).toHaveBeenCalledWith(7, [10, 12]);
-        expect(deps.clubSupporterService.upsertAll).toHaveBeenCalledWith(7, [10, 12]);
-        expect(deps.countrySupporterService.deleteExcept).toHaveBeenCalledWith(7, ['GB-ENG']);
-        expect(deps.countrySupporterService.upsertAll).toHaveBeenCalledWith(7, ['GB-ENG']);
+        expect(deps.playerExtraEmailService.delete).toHaveBeenCalledWith(
+            'old@example.com',
+        );
+        expect(deps.clubSupporterService.deleteExcept).toHaveBeenCalledWith(
+            7,
+            [10, 12],
+        );
+        expect(deps.clubSupporterService.upsertAll).toHaveBeenCalledWith(
+            7,
+            [10, 12],
+        );
+        expect(deps.countrySupporterService.deleteExcept).toHaveBeenCalledWith(
+            7,
+            ['GB-ENG'],
+        );
+        expect(deps.countrySupporterService.upsertAll).toHaveBeenCalledWith(7, [
+            'GB-ENG',
+        ]);
         expect(result).toEqual(updatedPlayer);
     });
 
@@ -110,17 +125,21 @@ describe('updatePlayerCore', () => {
                         email: 'new@example.com',
                         playerId: 7,
                     }),
-                changeCurrentUserEmail: vi.fn().mockResolvedValue({ status: true }),
+                changeCurrentUserEmail: vi
+                    .fn()
+                    .mockResolvedValue({ status: true }),
             },
             playerService: {
                 update: vi.fn().mockResolvedValue(updatedPlayer),
             },
             playerExtraEmailService: {
-                create: vi.fn().mockImplementation(({ email }: { email: string }) => {
-                    if (email === 'bad-add@example.com') {
-                        throw new Error('cannot create email');
-                    }
-                }),
+                create: vi
+                    .fn()
+                    .mockImplementation(({ email }: { email: string }) => {
+                        if (email === 'bad-add@example.com') {
+                            throw new Error('cannot create email');
+                        }
+                    }),
                 delete: vi.fn().mockImplementation((email: string) => {
                     if (email === 'bad-remove@example.com') {
                         throw new Error('cannot delete email');
@@ -146,8 +165,14 @@ describe('updatePlayerCore', () => {
                 finished: null,
                 born: 1990,
                 extraEmails: [],
-                addedExtraEmails: ['bad-add@example.com', 'good-add@example.com'],
-                removedExtraEmails: ['bad-remove@example.com', 'good-remove@example.com'],
+                addedExtraEmails: [
+                    'bad-add@example.com',
+                    'good-add@example.com',
+                ],
+                removedExtraEmails: [
+                    'bad-remove@example.com',
+                    'good-remove@example.com',
+                ],
                 countries: ['GB-ENG'],
                 clubs: [10],
                 comment: 'Updated profile',
@@ -189,8 +214,13 @@ describe('updatePlayerCore', () => {
                 layer: 'server-action',
             }),
         );
-        expect(deps.clubSupporterService.upsertAll).toHaveBeenCalledWith(7, [10]);
-        expect(deps.countrySupporterService.upsertAll).toHaveBeenCalledWith(7, ['GB-ENG']);
+        expect(deps.clubSupporterService.upsertAll).toHaveBeenCalledWith(
+            7,
+            [10],
+        );
+        expect(deps.countrySupporterService.upsertAll).toHaveBeenCalledWith(7, [
+            'GB-ENG',
+        ]);
         expect(result).toEqual(updatedPlayer);
     });
 
@@ -212,7 +242,9 @@ describe('updatePlayerCore', () => {
                         id: 'user-1',
                         playerId: 7,
                     }),
-                changeCurrentUserEmail: vi.fn().mockResolvedValue({ status: true }),
+                changeCurrentUserEmail: vi
+                    .fn()
+                    .mockResolvedValue({ status: true }),
             },
             playerService: {
                 update: vi.fn().mockResolvedValue(updatedPlayer),
@@ -254,10 +286,12 @@ describe('updatePlayerCore', () => {
             newEmail: 'new@example.com',
             callbackURL: '/footy/profile',
         });
-        expect(deps.playerService.update).toHaveBeenCalledWith(expect.objectContaining({
-            id: 7,
-            accountEmail: 'old@example.com',
-        }));
+        expect(deps.playerService.update).toHaveBeenCalledWith(
+            expect.objectContaining({
+                id: 7,
+                accountEmail: 'old@example.com',
+            }),
+        );
         expect(result).toEqual(updatedPlayer);
     });
 
@@ -289,23 +323,27 @@ describe('updatePlayerCore', () => {
             sendEmailVerification: vi.fn(),
         };
 
-        await expect(updatePlayerCore(
-            7,
-            {
-                name: 'Alex Updated',
-                accountEmail: 'account@example.com',
-                anonymous: false,
-                finished: null,
-                born: 1990,
-                extraEmails: [],
-                addedExtraEmails: [],
-                removedExtraEmails: [],
-                countries: ['GB-ENG'],
-                clubs: [10],
-                comment: 'Updated profile',
-            },
-            deps,
-        )).rejects.toThrow('You are not authorized to edit this player profile.');
+        await expect(
+            updatePlayerCore(
+                7,
+                {
+                    name: 'Alex Updated',
+                    accountEmail: 'account@example.com',
+                    anonymous: false,
+                    finished: null,
+                    born: 1990,
+                    extraEmails: [],
+                    addedExtraEmails: [],
+                    removedExtraEmails: [],
+                    countries: ['GB-ENG'],
+                    clubs: [10],
+                    comment: 'Updated profile',
+                },
+                deps,
+            ),
+        ).rejects.toThrow(
+            'You are not authorized to edit this player profile.',
+        );
 
         expect(deps.playerService.update).not.toHaveBeenCalled();
         expect(deps.authService.changeCurrentUserEmail).not.toHaveBeenCalled();
@@ -347,23 +385,25 @@ describe('updatePlayerCore', () => {
             sendEmailVerification: vi.fn(),
         };
 
-        await expect(updatePlayerCore(
-            7,
-            {
-                name: 'Alex Updated',
-                accountEmail: 'account@example.com',
-                anonymous: false,
-                finished: null,
-                born: 1990,
-                extraEmails: [],
-                addedExtraEmails: [],
-                removedExtraEmails: [],
-                countries: ['GB-ENG'],
-                clubs: [10],
-                comment: 'Updated profile',
-            },
-            deps,
-        )).rejects.toThrow('Login account not found for profile update.');
+        await expect(
+            updatePlayerCore(
+                7,
+                {
+                    name: 'Alex Updated',
+                    accountEmail: 'account@example.com',
+                    anonymous: false,
+                    finished: null,
+                    born: 1990,
+                    extraEmails: [],
+                    addedExtraEmails: [],
+                    removedExtraEmails: [],
+                    countries: ['GB-ENG'],
+                    clubs: [10],
+                    comment: 'Updated profile',
+                },
+                deps,
+            ),
+        ).rejects.toThrow('Login account not found for profile update.');
 
         expect(deps.playerService.update).not.toHaveBeenCalled();
         expect(deps.authService.changeCurrentUserEmail).not.toHaveBeenCalled();

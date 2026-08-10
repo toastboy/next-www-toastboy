@@ -1,4 +1,10 @@
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import {
+    act,
+    fireEvent,
+    render,
+    screen,
+    waitFor,
+} from '@testing-library/react';
 import type { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import { vi } from 'vitest';
 
@@ -32,15 +38,24 @@ const ukTopology = {
     objects: {
         countries: {
             type: 'GeometryCollection',
-            geometries: [{
-                type: 'Polygon',
-                arcs: [[0]],
-                properties: { name: 'United Kingdom' },
-            }],
+            geometries: [
+                {
+                    type: 'Polygon',
+                    arcs: [[0]],
+                    properties: { name: 'United Kingdom' },
+                },
+            ],
         },
     },
     // Non-quantised arc (no transform): coordinates are absolute lon/lat
-    arcs: [[[-5, 50], [1, 50], [1, 59], [-5, 59]]],
+    arcs: [
+        [
+            [-5, 50],
+            [1, 50],
+            [1, 59],
+            [-5, 59],
+        ],
+    ],
 };
 
 // Two-country topology: UK (supported) + France (not supported).
@@ -50,12 +65,31 @@ const ukAndFranceTopology = {
         countries: {
             type: 'GeometryCollection',
             geometries: [
-                { type: 'Polygon', arcs: [[0]], properties: { name: 'United Kingdom' } },
-                { type: 'Polygon', arcs: [[1]], properties: { name: 'France' } },
+                {
+                    type: 'Polygon',
+                    arcs: [[0]],
+                    properties: { name: 'United Kingdom' },
+                },
+                {
+                    type: 'Polygon',
+                    arcs: [[1]],
+                    properties: { name: 'France' },
+                },
             ],
         },
     },
-    arcs: [[[-5, 50], [1, 50], [1, 59]], [[2, 43], [8, 43], [8, 50]]],
+    arcs: [
+        [
+            [-5, 50],
+            [1, 50],
+            [1, 59],
+        ],
+        [
+            [2, 43],
+            [8, 43],
+            [8, 50],
+        ],
+    ],
 };
 
 // Topology whose single feature has null properties.
@@ -67,7 +101,14 @@ const nullPropsTopology = {
             geometries: [{ type: 'Polygon', arcs: [[0]], properties: null }],
         },
     },
-    arcs: [[[-5, 50], [1, 50], [1, 59], [-5, 59]]],
+    arcs: [
+        [
+            [-5, 50],
+            [1, 50],
+            [1, 59],
+            [-5, 59],
+        ],
+    ],
 };
 
 // Topology for a country whose name has no entry in COUNTRY_NAME_MAP.
@@ -76,10 +117,23 @@ const germanyTopology = {
     objects: {
         countries: {
             type: 'GeometryCollection',
-            geometries: [{ type: 'Polygon', arcs: [[0]], properties: { name: 'Germany' } }],
+            geometries: [
+                {
+                    type: 'Polygon',
+                    arcs: [[0]],
+                    properties: { name: 'Germany' },
+                },
+            ],
         },
     },
-    arcs: [[[6, 47], [15, 47], [15, 55], [6, 55]]],
+    arcs: [
+        [
+            [6, 47],
+            [15, 47],
+            [15, 55],
+            [6, 55],
+        ],
+    ],
 };
 
 const germanySupporterList = [
@@ -102,7 +156,9 @@ const nullNameSupporterList = [
 
 describe('PlayerCountryMap', () => {
     beforeEach(() => {
-        global.fetch = vi.fn().mockResolvedValue(makeTopologyResponse(emptyTopology));
+        global.fetch = vi
+            .fn()
+            .mockResolvedValue(makeTopologyResponse(emptyTopology));
     });
 
     afterEach(() => {
@@ -113,7 +169,9 @@ describe('PlayerCountryMap', () => {
     it('renders svg element', () => {
         const { container } = render(
             <Wrapper>
-                <PlayerCountryMap countries={defaultCountrySupporterWithPlayerDataList} />
+                <PlayerCountryMap
+                    countries={defaultCountrySupporterWithPlayerDataList}
+                />
             </Wrapper>,
         );
 
@@ -124,7 +182,9 @@ describe('PlayerCountryMap', () => {
     it('renders with data-testid', () => {
         const { getByTestId } = render(
             <Wrapper>
-                <PlayerCountryMap countries={defaultCountrySupporterWithPlayerDataList} />
+                <PlayerCountryMap
+                    countries={defaultCountrySupporterWithPlayerDataList}
+                />
             </Wrapper>,
         );
 
@@ -163,39 +223,58 @@ describe('PlayerCountryMap', () => {
 
         const { container } = render(
             <Wrapper>
-                <PlayerCountryMap countries={defaultCountrySupporterWithPlayerDataList} />
+                <PlayerCountryMap
+                    countries={defaultCountrySupporterWithPlayerDataList}
+                />
             </Wrapper>,
         );
 
         // No paths should be drawn, but the SVG itself must still render
-        await waitFor(() => expect(container.querySelector('svg')).toBeInTheDocument());
+        await waitFor(() =>
+            expect(container.querySelector('svg')).toBeInTheDocument(),
+        );
         expect(container.querySelectorAll('svg path')).toHaveLength(0);
     });
 
     it('highlights supporter countries in blue and leaves others grey', async () => {
-        global.fetch = vi.fn().mockResolvedValue(makeTopologyResponse(ukTopology));
+        global.fetch = vi
+            .fn()
+            .mockResolvedValue(makeTopologyResponse(ukTopology));
 
         const { container } = render(
             <Wrapper>
-                <PlayerCountryMap countries={defaultCountrySupporterWithPlayerDataList} />
+                <PlayerCountryMap
+                    countries={defaultCountrySupporterWithPlayerDataList}
+                />
             </Wrapper>,
         );
 
-        await waitFor(() => expect(container.querySelectorAll('svg path')).toHaveLength(1));
+        await waitFor(() =>
+            expect(container.querySelectorAll('svg path')).toHaveLength(1),
+        );
 
-        expect(container.querySelector('svg path')).toHaveAttribute('fill', '#228be6');
+        expect(container.querySelector('svg path')).toHaveAttribute(
+            'fill',
+            '#228be6',
+        );
     });
 
     it('colours unsupported country grey and does not open popover on hover', async () => {
-        global.fetch = vi.fn().mockResolvedValue(makeTopologyResponse(ukAndFranceTopology));
+        global.fetch = vi
+            .fn()
+            .mockResolvedValue(makeTopologyResponse(ukAndFranceTopology));
 
         const { container } = render(
             <Wrapper>
-                <PlayerCountryMap countries={defaultCountrySupporterWithPlayerDataList} />
+                <PlayerCountryMap
+                    countries={defaultCountrySupporterWithPlayerDataList}
+                />
             </Wrapper>,
         );
 
-        await waitFor(() => expect(container.querySelectorAll('svg path')).toHaveLength(2));
+        await waitFor(() =>
+            expect(container.querySelectorAll('svg path')).toHaveLength(2),
+        );
 
         const paths = container.querySelectorAll('svg path');
         const fills = Array.from(paths).map((p) => p.getAttribute('fill'));
@@ -203,21 +282,31 @@ describe('PlayerCountryMap', () => {
         expect(fills).toContain('#ccc');
 
         // Hovering the grey (unsupported) country must not open a popover
-        const greyPath = Array.from(paths).find((p) => p.getAttribute('fill') === '#ccc')!;
+        const greyPath = Array.from(paths).find(
+            (p) => p.getAttribute('fill') === '#ccc',
+        )!;
         fireEvent.mouseEnter(greyPath);
-        expect(screen.queryByTestId('country-popover-dropdown')).not.toBeInTheDocument();
+        expect(
+            screen.queryByTestId('country-popover-dropdown'),
+        ).not.toBeInTheDocument();
     });
 
     it('handles topology features with null properties', async () => {
-        global.fetch = vi.fn().mockResolvedValue(makeTopologyResponse(nullPropsTopology));
+        global.fetch = vi
+            .fn()
+            .mockResolvedValue(makeTopologyResponse(nullPropsTopology));
 
         const { container } = render(
             <Wrapper>
-                <PlayerCountryMap countries={defaultCountrySupporterWithPlayerDataList} />
+                <PlayerCountryMap
+                    countries={defaultCountrySupporterWithPlayerDataList}
+                />
             </Wrapper>,
         );
 
-        await waitFor(() => expect(container.querySelectorAll('svg path')).toHaveLength(1));
+        await waitFor(() =>
+            expect(container.querySelectorAll('svg path')).toHaveLength(1),
+        );
 
         // The feature has null properties, so it gets the default grey fill
         const path = container.querySelector('svg path')!;
@@ -225,11 +314,15 @@ describe('PlayerCountryMap', () => {
 
         // Hovering a null-properties path should not open the popover
         fireEvent.mouseEnter(path);
-        expect(screen.queryByTestId('country-popover-dropdown')).not.toBeInTheDocument();
+        expect(
+            screen.queryByTestId('country-popover-dropdown'),
+        ).not.toBeInTheDocument();
     });
 
     it('maps unmapped country name to itself via toAtlasName fallback', async () => {
-        global.fetch = vi.fn().mockResolvedValue(makeTopologyResponse(germanyTopology));
+        global.fetch = vi
+            .fn()
+            .mockResolvedValue(makeTopologyResponse(germanyTopology));
 
         const { container } = render(
             <Wrapper>
@@ -237,31 +330,46 @@ describe('PlayerCountryMap', () => {
             </Wrapper>,
         );
 
-        await waitFor(() => expect(container.querySelectorAll('svg path')).toHaveLength(1));
+        await waitFor(() =>
+            expect(container.querySelectorAll('svg path')).toHaveLength(1),
+        );
 
         // Germany is not in COUNTRY_NAME_MAP so the atlas key stays "Germany"
-        expect(container.querySelector('svg path')).toHaveAttribute('fill', '#228be6');
+        expect(container.querySelector('svg path')).toHaveAttribute(
+            'fill',
+            '#228be6',
+        );
 
         fireEvent.mouseEnter(container.querySelector('svg path')!);
-        await waitFor(() => expect(screen.getByText('Germany')).toBeInTheDocument());
+        await waitFor(() =>
+            expect(screen.getByText('Germany')).toBeInTheDocument(),
+        );
         expect(screen.getByText('German Player')).toBeInTheDocument();
     });
 
     it('shows popover with all UK home nations grouped under one atlas entry', async () => {
-        global.fetch = vi.fn().mockResolvedValue(makeTopologyResponse(ukTopology));
+        global.fetch = vi
+            .fn()
+            .mockResolvedValue(makeTopologyResponse(ukTopology));
 
         const { container } = render(
             <Wrapper>
-                <PlayerCountryMap countries={defaultCountrySupporterWithPlayerDataList} />
+                <PlayerCountryMap
+                    countries={defaultCountrySupporterWithPlayerDataList}
+                />
             </Wrapper>,
         );
 
-        await waitFor(() => expect(container.querySelectorAll('svg path')).toHaveLength(1));
+        await waitFor(() =>
+            expect(container.querySelectorAll('svg path')).toHaveLength(1),
+        );
 
         fireEvent.mouseEnter(container.querySelector('svg path')!);
 
         // All four home nations appear as group headers in the popover
-        await waitFor(() => expect(screen.getByText('England')).toBeInTheDocument());
+        await waitFor(() =>
+            expect(screen.getByText('England')).toBeInTheDocument(),
+        );
         expect(screen.getByText('Northern Ireland')).toBeInTheDocument();
         expect(screen.getByText('Scotland')).toBeInTheDocument();
         expect(screen.getByText('Wales')).toBeInTheDocument();
@@ -274,7 +382,9 @@ describe('PlayerCountryMap', () => {
     });
 
     it('shows fallback player name when player.name is null', async () => {
-        global.fetch = vi.fn().mockResolvedValue(makeTopologyResponse(ukTopology));
+        global.fetch = vi
+            .fn()
+            .mockResolvedValue(makeTopologyResponse(ukTopology));
 
         const { container } = render(
             <Wrapper>
@@ -282,51 +392,75 @@ describe('PlayerCountryMap', () => {
             </Wrapper>,
         );
 
-        await waitFor(() => expect(container.querySelectorAll('svg path')).toHaveLength(1));
+        await waitFor(() =>
+            expect(container.querySelectorAll('svg path')).toHaveLength(1),
+        );
 
         fireEvent.mouseEnter(container.querySelector('svg path')!);
-        await waitFor(() => expect(screen.getByText('Player 42')).toBeInTheDocument());
+        await waitFor(() =>
+            expect(screen.getByText('Player 42')).toBeInTheDocument(),
+        );
     });
 
     it('closes popover after mouseleave delay', async () => {
-        global.fetch = vi.fn().mockResolvedValue(makeTopologyResponse(ukTopology));
+        global.fetch = vi
+            .fn()
+            .mockResolvedValue(makeTopologyResponse(ukTopology));
 
         const { container } = render(
             <Wrapper>
-                <PlayerCountryMap countries={defaultCountrySupporterWithPlayerDataList} />
+                <PlayerCountryMap
+                    countries={defaultCountrySupporterWithPlayerDataList}
+                />
             </Wrapper>,
         );
 
-        await waitFor(() => expect(container.querySelectorAll('svg path')).toHaveLength(1));
+        await waitFor(() =>
+            expect(container.querySelectorAll('svg path')).toHaveLength(1),
+        );
 
         const path = container.querySelector('svg path')!;
         fireEvent.mouseEnter(path);
-        await waitFor(() => expect(screen.getByText('England')).toBeInTheDocument());
+        await waitFor(() =>
+            expect(screen.getByText('England')).toBeInTheDocument(),
+        );
 
         // Switch to fake timers after the async setup is complete so we can
         // advance time without waiting 200 ms of real time.
         vi.useFakeTimers();
         fireEvent.mouseLeave(path);
-        act(() => { vi.advanceTimersByTime(200); });
+        act(() => {
+            vi.advanceTimersByTime(200);
+        });
         vi.useRealTimers();
 
-        await waitFor(() => expect(screen.queryByText('England')).not.toBeInTheDocument());
+        await waitFor(() =>
+            expect(screen.queryByText('England')).not.toBeInTheDocument(),
+        );
     });
 
     it('keeps popover open while the dropdown is hovered', async () => {
-        global.fetch = vi.fn().mockResolvedValue(makeTopologyResponse(ukTopology));
+        global.fetch = vi
+            .fn()
+            .mockResolvedValue(makeTopologyResponse(ukTopology));
 
         const { container } = render(
             <Wrapper>
-                <PlayerCountryMap countries={defaultCountrySupporterWithPlayerDataList} />
+                <PlayerCountryMap
+                    countries={defaultCountrySupporterWithPlayerDataList}
+                />
             </Wrapper>,
         );
 
-        await waitFor(() => expect(container.querySelectorAll('svg path')).toHaveLength(1));
+        await waitFor(() =>
+            expect(container.querySelectorAll('svg path')).toHaveLength(1),
+        );
 
         const path = container.querySelector('svg path')!;
         fireEvent.mouseEnter(path);
-        await waitFor(() => expect(screen.getByText('England')).toBeInTheDocument());
+        await waitFor(() =>
+            expect(screen.getByText('England')).toBeInTheDocument(),
+        );
 
         vi.useFakeTimers();
         fireEvent.mouseLeave(path);
@@ -335,34 +469,48 @@ describe('PlayerCountryMap', () => {
         fireEvent.mouseEnter(screen.getByTestId('country-popover-dropdown'));
 
         // Advancing past the delay should NOT close the popover
-        act(() => { vi.advanceTimersByTime(200); });
+        act(() => {
+            vi.advanceTimersByTime(200);
+        });
         vi.useRealTimers();
 
         expect(screen.getByText('England')).toBeInTheDocument();
     });
 
     it('closes popover when mouse leaves dropdown', async () => {
-        global.fetch = vi.fn().mockResolvedValue(makeTopologyResponse(ukTopology));
+        global.fetch = vi
+            .fn()
+            .mockResolvedValue(makeTopologyResponse(ukTopology));
 
         const { container } = render(
             <Wrapper>
-                <PlayerCountryMap countries={defaultCountrySupporterWithPlayerDataList} />
+                <PlayerCountryMap
+                    countries={defaultCountrySupporterWithPlayerDataList}
+                />
             </Wrapper>,
         );
 
-        await waitFor(() => expect(container.querySelectorAll('svg path')).toHaveLength(1));
+        await waitFor(() =>
+            expect(container.querySelectorAll('svg path')).toHaveLength(1),
+        );
 
         fireEvent.mouseEnter(container.querySelector('svg path')!);
-        await waitFor(() => expect(screen.getByText('England')).toBeInTheDocument());
+        await waitFor(() =>
+            expect(screen.getByText('England')).toBeInTheDocument(),
+        );
 
         const dropdown = screen.getByTestId('country-popover-dropdown');
         fireEvent.mouseEnter(dropdown);
 
         vi.useFakeTimers();
         fireEvent.mouseLeave(dropdown);
-        act(() => { vi.advanceTimersByTime(200); });
+        act(() => {
+            vi.advanceTimersByTime(200);
+        });
         vi.useRealTimers();
 
-        await waitFor(() => expect(screen.queryByText('England')).not.toBeInTheDocument());
+        await waitFor(() =>
+            expect(screen.queryByText('England')).not.toBeInTheDocument(),
+        );
     });
 });

@@ -19,7 +19,10 @@ vi.mock('@/lib/observability/sentry', () => ({
 const renderErrorPage = (error: Error, reset: () => void) => {
     render(
         <Wrapper>
-            <ErrorPage error={error} reset={reset} />
+            <ErrorPage
+                error={error}
+                reset={reset}
+            />
         </Wrapper>,
     );
 };

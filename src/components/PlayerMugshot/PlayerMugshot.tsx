@@ -1,17 +1,21 @@
-import {
-    Anchor,
-} from '@mantine/core';
+'use client';
+
+import { Anchor } from '@mantine/core';
 import type { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 
 import { ImageWithPlaceholder } from '@/components/ImageWithPlaceholder/ImageWithPlaceholder';
 
 export interface Props {
-    player: PlayerType,
+    player: PlayerType;
     radius?: number | string | undefined;
     onReady?: () => void;
 }
 
-export const PlayerMugshot = ({ player, radius = undefined, onReady }: Props) => {
+export const PlayerMugshot = ({
+    player,
+    radius = undefined,
+    onReady,
+}: Props) => {
     return (
         <Anchor href={`/footy/player/${player.id}`}>
             <ImageWithPlaceholder

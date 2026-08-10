@@ -20,9 +20,24 @@ type Story = StoryObj<typeof meta>;
 const sendEmail: SendEmailProxy = async () => Promise.resolve();
 
 const storyPlayers: PlayerDataEmailDisplayType[] = [
-    { id: 1, name: 'Gary Player', accountEmail: 'gary@example.com', extraEmails: [{ email: 'gary.alt@example.com', verified: true }] },
-    { id: 2, name: 'Alice Smith', accountEmail: 'alice@example.com', extraEmails: [] },
-    { id: 3, name: 'Bob Jones', accountEmail: null, extraEmails: [{ email: 'bob@example.com', verified: false }] },
+    {
+        id: 1,
+        name: 'Gary Player',
+        accountEmail: 'gary@example.com',
+        extraEmails: [{ email: 'gary.alt@example.com', verified: true }],
+    },
+    {
+        id: 2,
+        name: 'Alice Smith',
+        accountEmail: 'alice@example.com',
+        extraEmails: [],
+    },
+    {
+        id: 3,
+        name: 'Bob Jones',
+        accountEmail: null,
+        extraEmails: [{ email: 'bob@example.com', verified: false }],
+    },
 ];
 
 export const Primary: Story = {

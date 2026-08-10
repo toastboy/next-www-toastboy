@@ -1,6 +1,7 @@
-import {
-    Tooltip,
-} from '@mantine/core';
+'use client';
+
+import { Badge, Flex, Tooltip } from '@mantine/core';
+import Link from 'next/link';
 
 import { formatDate } from '@/lib/dates';
 import { PlayerFormType } from '@/types';
@@ -8,19 +9,6 @@ import { PlayerFormType } from '@/types';
 export interface Props {
     form: PlayerFormType[];
 }
-
-const TOTAL_ARC = 280;
-// The Box wrapping the mugshot has 12% padding on each side, so the image
-// circle has radius 38 in the 0–100 viewBox space (half of 100 − 24).
-// The ring sits 4.5 units outside the image edge; outer stroke edge reaches
-// 47.5, which fits within the viewBox without overflow.
-export const RING_RADIUS = 45;
-const STROKE_WIDTH = 5;
-// Rounded linecaps extend the visual stroke by ~3° per end at this
-// radius/strokeWidth, so 10° of arc gap leaves ~4° visible between dashes.
-const GAP_DEG = 10;
-export const CX = 50;
-export const CY = 50;
 
 const colorMap = new Map<number | null | undefined, string>([
     [null, 'var(--mantine-color-gray-5)'],
@@ -34,84 +22,62 @@ const resultLabel = new Map<number | null | undefined, string>([
     [null, 'Did not play'],
     [undefined, 'Did not play'],
     [0, 'Lost'],
-    [1, 'Draw'],
+    [1, 'Drew'],
     [3, 'Won'],
 ]);
 
-function arcPoint(clockDeg: number, r: number): { x: number; y: number } {
-    const rad = (clockDeg * Math.PI) / 180;
-    return { x: CX + r * Math.sin(rad), y: CY - r * Math.cos(rad) };
-}
+const badgeColor = (points: number | null | undefined) =>
+    colorMap.get(points) ?? 'var(--mantine-color-gray-5)';
 
-function buildArcPath(clockStart: number, clockEnd: number, r: number): string {
-    const { x: x1, y: y1 } = arcPoint(clockStart, r);
-    const { x: x2, y: y2 } = arcPoint(clockEnd, r);
-    const largeArc = clockEnd - clockStart > 180 ? 1 : 0;
-    return `M ${x1.toFixed(3)} ${y1.toFixed(3)} A ${r} ${r} 0 ${largeArc} 1 ${x2.toFixed(3)} ${y2.toFixed(3)}`;
-}
+const badgeSize = (i: number) => `${(i + 1) * 0.025 + 0.5}rem`;
 
 export const PlayerForm = ({ form }: Props) => {
     if (form.length === 0) return null;
 
-    const n = form.length;
-    const segmentDeg = TOTAL_ARC / n;
-    const dashDeg = Math.max(segmentDeg - GAP_DEG, 1);
-    const arcStart = -TOTAL_ARC / 2;
-
     return (
-        <svg
-            viewBox="0 0 100 100"
-            style={{
-                position: 'absolute',
-                inset: 0,
-                width: '100%',
-                height: '100%',
-                pointerEvents: 'none',
-            }}
+        <Flex
+            align="center"
+            gap="0.2rem"
+            justify="center"
+            wrap="wrap"
+            mt={{ base: 0, xs: 'sm' }}
         >
             {form.map((data, i) => {
-                const segStart = arcStart + i * segmentDeg + GAP_DEG / 2;
-                const segEnd = segStart + dashDeg;
-                const color = colorMap.get(data.points) ?? 'var(--mantine-color-gray-5)';
-                const d = buildArcPath(segStart, segEnd, RING_RADIUS);
-
                 // Padding entry: no associated game day, just a grey placeholder.
                 if (!data.gameDay) {
                     return (
-                        <path
+                        <Badge
                             key={i}
-                            d={d}
-                            fill="none"
-                            stroke={color}
-                            strokeWidth={STROKE_WIDTH}
-                            strokeLinecap="round"
+                            aria-hidden="true"
+                            color={badgeColor(data.points)}
+                            variant="filled"
+                            size={badgeSize(i)}
+                            circle
                         />
                     );
                 }
 
-                const href = `/footy/game/${data.gameDay.id}`;
-                const label = `${formatDate(data.gameDay.date)} – ${resultLabel.get(data.points) ?? ''}`;
+                const linkText = `${formatDate(data.gameDay.date)} – ${resultLabel.get(data.points) ?? ''}`;
 
                 return (
-                    <a
+                    <Tooltip
                         key={i}
-                        href={href}
-                        aria-label={label}
-                        style={{ pointerEvents: 'auto' }}
+                        label={linkText}
+                        withArrow
                     >
-                        <Tooltip label={label} withinPortal>
-                            <path
-                                d={d}
-                                fill="none"
-                                stroke={color}
-                                strokeWidth={STROKE_WIDTH}
-                                strokeLinecap="round"
-                                style={{ cursor: 'pointer' }}
-                            />
-                        </Tooltip>
-                    </a>
+                        <Badge
+                            component={Link}
+                            href={`/footy/game/${data.gameDay.id}`}
+                            style={{ cursor: 'pointer' }}
+                            aria-label={linkText}
+                            color={badgeColor(data.points)}
+                            variant="filled"
+                            size={badgeSize(i)}
+                            circle
+                        />
+                    </Tooltip>
                 );
             })}
-        </svg>
+        </Flex>
     );
 };

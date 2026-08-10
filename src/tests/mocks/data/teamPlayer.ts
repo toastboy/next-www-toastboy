@@ -10,12 +10,11 @@ export const defaultTeamPlayer = {
     form: [defaultPlayerFormList[0]],
 } satisfies TeamPlayerType;
 
-export const defaultTeamPlayerList: TeamPlayerType[] = defaultPlayerFormList.map(
-    (playerForm, index) => ({
+export const defaultTeamPlayerList: TeamPlayerType[] =
+    defaultPlayerFormList.map((playerForm, index) => ({
         ...defaultPlayer,
         ...playerForm,
         id: index + 1,
         outcome: createMockOutcome(),
         form: [playerForm],
-    }),
-);
+    }));

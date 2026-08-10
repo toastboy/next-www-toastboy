@@ -13,11 +13,23 @@ import playerExtraEmailService from '@/services/PlayerExtraEmail';
 import type { UpdatePlayerInput } from '@/types/actions/UpdatePlayer';
 
 interface UpdatePlayerDeps {
-    authService: Pick<typeof authService, 'getSessionUser' | 'changeCurrentUserEmail'>;
+    authService: Pick<
+        typeof authService,
+        'getSessionUser' | 'changeCurrentUserEmail'
+    >;
     playerService: Pick<typeof playerService, 'update'>;
-    playerExtraEmailService: Pick<typeof playerExtraEmailService, 'create' | 'delete'>;
-    clubSupporterService: Pick<typeof clubSupporterService, 'deleteExcept' | 'upsertAll'>;
-    countrySupporterService: Pick<typeof countrySupporterService, 'deleteExcept' | 'upsertAll'>;
+    playerExtraEmailService: Pick<
+        typeof playerExtraEmailService,
+        'create' | 'delete'
+    >;
+    clubSupporterService: Pick<
+        typeof clubSupporterService,
+        'deleteExcept' | 'upsertAll'
+    >;
+    countrySupporterService: Pick<
+        typeof countrySupporterService,
+        'deleteExcept' | 'upsertAll'
+    >;
     sendEmailVerification: typeof sendEmailVerification;
 }
 
@@ -65,7 +77,9 @@ export async function updatePlayerCore(
     }
 
     if (!sessionUser.playerId || sessionUser.playerId !== playerId) {
-        throw new AuthError('You are not authorized to edit this player profile.');
+        throw new AuthError(
+            'You are not authorized to edit this player profile.',
+        );
     }
 
     const sessionEmail = sessionUser.email.trim().toLowerCase();
@@ -78,10 +92,12 @@ export async function updatePlayerCore(
         });
     }
 
-    const refreshedSessionUser = requestedAccountEmail !== sessionEmail ?
-        await deps.authService.getSessionUser() :
-        sessionUser;
-    const accountEmail = refreshedSessionUser?.email?.trim().toLowerCase() ?? sessionEmail;
+    const refreshedSessionUser =
+        requestedAccountEmail !== sessionEmail
+            ? await deps.authService.getSessionUser()
+            : sessionUser;
+    const accountEmail =
+        refreshedSessionUser?.email?.trim().toLowerCase() ?? sessionEmail;
 
     const player = await deps.playerService.update({
         id: playerId,

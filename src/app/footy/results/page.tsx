@@ -7,6 +7,6 @@ async function ResultsPage() {
     if (!year) notFound();
 
     permanentRedirect(`/footy/games?year=${year}`);
-};
+}
 
 export default ResultsPage;

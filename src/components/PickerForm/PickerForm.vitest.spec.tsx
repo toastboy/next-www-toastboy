@@ -96,12 +96,7 @@ describe('PickerForm', () => {
     it('defaults to selecting the earliest 12 responses', () => {
         const players = Array.from({ length: 14 }, (_, index) => {
             const id = index + 1;
-            return createPickerPlayer(
-                id,
-                `Player ${id}`,
-                id * 10,
-                id,
-            );
+            return createPickerPlayer(id, `Player ${id}`, id * 10, id);
         });
 
         render(
@@ -163,17 +158,18 @@ describe('PickerForm', () => {
             </Wrapper>,
         );
 
-        await user.type(screen.getByRole('textbox', { name: /cancellation reason/i }), 'Not enough players');
+        await user.type(
+            screen.getByRole('textbox', { name: /cancellation reason/i }),
+            'Not enough players',
+        );
         await user.click(screen.getByRole('button', { name: 'Cancel game' }));
 
         await waitFor(() => {
-            expect(mockSetGameEnabled).toHaveBeenCalledWith(
-                {
-                    gameDayId: 1,
-                    game: false,
-                    reason: 'Not enough players',
-                },
-            );
+            expect(mockSetGameEnabled).toHaveBeenCalledWith({
+                gameDayId: 1,
+                game: false,
+                reason: 'Not enough players',
+            });
         });
     });
 
@@ -192,9 +188,15 @@ describe('PickerForm', () => {
         );
 
         expect(screen.queryByLabelText(/^Select /)).toBeNull();
-        expect(screen.getByRole('button', { name: /reinstate game/i })).toBeInTheDocument();
-        expect(screen.getByRole('textbox', { name: /reinstatement reason/i })).toBeInTheDocument();
-        expect(screen.queryByRole('textbox', { name: /cancellation reason/i })).toBeNull();
+        expect(
+            screen.getByRole('button', { name: /reinstate game/i }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('textbox', { name: /reinstatement reason/i }),
+        ).toBeInTheDocument();
+        expect(
+            screen.queryByRole('textbox', { name: /cancellation reason/i }),
+        ).toBeNull();
     });
 
     it('formats responseInterval values correctly in the response-time column', () => {
@@ -253,7 +255,10 @@ describe('PickerForm', () => {
 
         await waitFor(() => {
             expect(notificationsUpdateMock).toHaveBeenCalledWith(
-                expect.objectContaining({ color: 'red', message: 'Network error' }),
+                expect.objectContaining({
+                    color: 'red',
+                    message: 'Network error',
+                }),
             );
         });
     });
@@ -277,7 +282,10 @@ describe('PickerForm', () => {
 
         await waitFor(() => {
             expect(notificationsUpdateMock).toHaveBeenCalledWith(
-                expect.objectContaining({ color: 'red', message: 'Failed to submit selection' }),
+                expect.objectContaining({
+                    color: 'red',
+                    message: 'Failed to submit selection',
+                }),
             );
         });
     });
@@ -301,7 +309,10 @@ describe('PickerForm', () => {
 
         await waitFor(() => {
             expect(notificationsUpdateMock).toHaveBeenCalledWith(
-                expect.objectContaining({ color: 'red', message: 'Status error' }),
+                expect.objectContaining({
+                    color: 'red',
+                    message: 'Status error',
+                }),
             );
         });
     });
@@ -325,7 +336,10 @@ describe('PickerForm', () => {
 
         await waitFor(() => {
             expect(notificationsUpdateMock).toHaveBeenCalledWith(
-                expect.objectContaining({ color: 'red', message: 'Failed to set game status' }),
+                expect.objectContaining({
+                    color: 'red',
+                    message: 'Failed to set game status',
+                }),
             );
         });
     });
@@ -353,7 +367,9 @@ describe('PickerForm', () => {
         expect(within(getFirstRow()).getByText('Bob')).toBeInTheDocument();
 
         // Click the active 'Response time' header → toggles to descending → Alice (100) first
-        await user.click(screen.getByRole('button', { name: /sort by response time/i }));
+        await user.click(
+            screen.getByRole('button', { name: /sort by response time/i }),
+        );
 
         expect(within(getFirstRow()).getByText('Alice')).toBeInTheDocument();
     });
@@ -377,9 +393,13 @@ describe('PickerForm', () => {
             </Wrapper>,
         );
 
-        await user.click(screen.getByRole('button', { name: /sort by player/i }));
+        await user.click(
+            screen.getByRole('button', { name: /sort by player/i }),
+        );
 
-        expect(within(screen.getAllByRole('row').slice(1)[0]).getByText('Alice')).toBeInTheDocument();
+        expect(
+            within(screen.getAllByRole('row').slice(1)[0]).getByText('Alice'),
+        ).toBeInTheDocument();
     });
 
     it('reorders rows when sorted by Total games played', async () => {
@@ -401,9 +421,13 @@ describe('PickerForm', () => {
             </Wrapper>,
         );
 
-        await user.click(screen.getByRole('button', { name: /sort by total games played/i }));
+        await user.click(
+            screen.getByRole('button', { name: /sort by total games played/i }),
+        );
 
-        expect(within(screen.getAllByRole('row').slice(1)[0]).getByText('Alice')).toBeInTheDocument();
+        expect(
+            within(screen.getAllByRole('row').slice(1)[0]).getByText('Alice'),
+        ).toBeInTheDocument();
     });
 
     it('shows fallback name "Player {id}" when player.name is null', () => {
@@ -501,15 +525,21 @@ describe('PickerForm', () => {
             </Wrapper>,
         );
 
-        const responseTimeHeader = screen.getByRole('button', { name: /sort by response time/i });
+        const responseTimeHeader = screen.getByRole('button', {
+            name: /sort by response time/i,
+        });
 
         // Default asc: Bob (50) first; click toggles to desc: Alice (100) first
         await user.click(responseTimeHeader);
-        expect(within(screen.getAllByRole('row').slice(1)[0]).getByText('Alice')).toBeInTheDocument();
+        expect(
+            within(screen.getAllByRole('row').slice(1)[0]).getByText('Alice'),
+        ).toBeInTheDocument();
 
         // Click again: desc → asc: Bob (50) first again
         await user.click(responseTimeHeader);
-        expect(within(screen.getAllByRole('row').slice(1)[0]).getByText('Bob')).toBeInTheDocument();
+        expect(
+            within(screen.getAllByRole('row').slice(1)[0]).getByText('Bob'),
+        ).toBeInTheDocument();
     });
 
     it('shows "Game reinstated" notification when game is reinstated', async () => {
@@ -527,7 +557,9 @@ describe('PickerForm', () => {
             </Wrapper>,
         );
 
-        await user.click(screen.getByRole('button', { name: 'Reinstate game' }));
+        await user.click(
+            screen.getByRole('button', { name: 'Reinstate game' }),
+        );
 
         await waitFor(() => {
             expect(notificationsUpdateMock).toHaveBeenCalledWith(
@@ -580,9 +612,13 @@ describe('PickerForm', () => {
         );
 
         // First click: sort by name ascending
-        await user.click(screen.getByRole('button', { name: /sort by player/i }));
+        await user.click(
+            screen.getByRole('button', { name: /sort by player/i }),
+        );
         // Second click: toggle to name descending
-        await user.click(screen.getByRole('button', { name: /sort by player/i }));
+        await user.click(
+            screen.getByRole('button', { name: /sort by player/i }),
+        );
 
         const nameHeader = screen.getByRole('columnheader', { name: /Player/ });
         expect(nameHeader).toHaveAttribute('aria-sort', 'descending');
@@ -603,16 +639,25 @@ describe('PickerForm', () => {
         );
 
         // First click: sort by games played ascending
-        await user.click(screen.getByRole('button', { name: /sort by total games played/i }));
+        await user.click(
+            screen.getByRole('button', { name: /sort by total games played/i }),
+        );
         // Second click: toggle to games played descending
-        await user.click(screen.getByRole('button', { name: /sort by total games played/i }));
+        await user.click(
+            screen.getByRole('button', { name: /sort by total games played/i }),
+        );
 
-        const gamesHeader = screen.getByRole('columnheader', { name: /Total games played/ });
+        const gamesHeader = screen.getByRole('columnheader', {
+            name: /Total games played/,
+        });
         expect(gamesHeader).toHaveAttribute('aria-sort', 'descending');
     });
 
     it('renders with no eligible players when all responses are non-Yes (exercises empty buildDefaultSelection)', () => {
-        const noYesPlayers = defaultPickerAdminData.map((p) => ({ ...p, response: 'No' as const }));
+        const noYesPlayers = defaultPickerAdminData.map((p) => ({
+            ...p,
+            response: 'No' as const,
+        }));
 
         render(
             <Wrapper>
@@ -633,7 +678,10 @@ describe('PickerForm', () => {
         const user = userEvent.setup();
         const nullNamePlayer = (id: number): PickerPlayerType => ({
             ...createPickerPlayer(id, 'Placeholder', id * 10, 5),
-            player: { ...createPickerPlayer(id, 'Placeholder', id * 10, 5).player, name: null },
+            player: {
+                ...createPickerPlayer(id, 'Placeholder', id * 10, 5).player,
+                name: null,
+            },
         });
         const players = [
             createPickerPlayer(3, 'Zeta', 100, 5),
@@ -654,7 +702,9 @@ describe('PickerForm', () => {
         );
 
         // Sort by name to trigger compareNullableString with both a-null and b-null paths
-        await user.click(screen.getByRole('button', { name: /sort by player/i }));
+        await user.click(
+            screen.getByRole('button', { name: /sort by player/i }),
+        );
 
         const rows = screen.getAllByRole('row').slice(1);
         // Named players (Alpha, Zeta) sort before null-named (Player 1, Player 2)
@@ -668,12 +718,18 @@ describe('PickerForm', () => {
         const user = userEvent.setup();
         const nullNamePlayer: PickerPlayerType = {
             ...createPickerPlayer(1, 'Placeholder', 50, 5),
-            player: { ...createPickerPlayer(1, 'Placeholder', 50, 5).player, name: null },
+            player: {
+                ...createPickerPlayer(1, 'Placeholder', 50, 5).player,
+                name: null,
+            },
         };
         // null-named player appears BEFORE the named player in the input array so that
         // when InsertionSort inserts 'Alpha' it calls compareNullableString('Alpha', null, 'asc'),
         // hitting the `if (b == null) return -1` branch.
-        const players = [nullNamePlayer, createPickerPlayer(2, 'Alpha', 100, 5)];
+        const players = [
+            nullNamePlayer,
+            createPickerPlayer(2, 'Alpha', 100, 5),
+        ];
 
         render(
             <Wrapper>
@@ -686,7 +742,9 @@ describe('PickerForm', () => {
             </Wrapper>,
         );
 
-        await user.click(screen.getByRole('button', { name: /sort by player/i }));
+        await user.click(
+            screen.getByRole('button', { name: /sort by player/i }),
+        );
 
         const rows = screen.getAllByRole('row').slice(1);
         expect(within(rows[0]).getByText('Alpha')).toBeInTheDocument();
@@ -719,7 +777,10 @@ describe('PickerForm', () => {
         // Both null names → compareNullableString returns 0 for both-null case; ties broken by playerId
         const nullNamePlayer = (id: number): PickerPlayerType => ({
             ...createPickerPlayer(id, 'Placeholder', null, 5),
-            player: { ...createPickerPlayer(id, 'Placeholder', null, 5).player, name: null },
+            player: {
+                ...createPickerPlayer(id, 'Placeholder', null, 5).player,
+                name: null,
+            },
         });
 
         const players = [nullNamePlayer(5), nullNamePlayer(3)];
@@ -757,10 +818,16 @@ describe('PickerForm', () => {
         await user.click(selectAll);
 
         await waitFor(() => {
-            expect(screen.getByLabelText('Select Alex Keeper')).not.toBeChecked();
-            expect(screen.getByLabelText('Select Britt Winger')).not.toBeChecked();
+            expect(
+                screen.getByLabelText('Select Alex Keeper'),
+            ).not.toBeChecked();
+            expect(
+                screen.getByLabelText('Select Britt Winger'),
+            ).not.toBeChecked();
             expect(screen.getByLabelText('Select Casey Mid')).not.toBeChecked();
-            expect(screen.getByLabelText('Select Dev Striker')).not.toBeChecked();
+            expect(
+                screen.getByLabelText('Select Dev Striker'),
+            ).not.toBeChecked();
         });
     });
 });

@@ -1,6 +1,4 @@
-import {
-    notifications,
-} from '@mantine/notifications';
+import { notifications } from '@mantine/notifications';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 
@@ -28,7 +26,9 @@ describe('AdminExportAuth', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByRole('button', { name: /export auth data/i })).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', { name: /export auth data/i }),
+        ).toBeInTheDocument();
     });
 
     it('shows loading notification on button click', async () => {
@@ -46,7 +46,9 @@ describe('AdminExportAuth', () => {
             </Wrapper>,
         );
 
-        const button = screen.getByRole('button', { name: /export auth data/i });
+        const button = screen.getByRole('button', {
+            name: /export auth data/i,
+        });
         fireEvent.click(button);
 
         await waitFor(() => {
@@ -71,7 +73,9 @@ describe('AdminExportAuth', () => {
             </Wrapper>,
         );
 
-        const button = screen.getByRole('button', { name: /export auth data/i });
+        const button = screen.getByRole('button', {
+            name: /export auth data/i,
+        });
         fireEvent.click(button);
 
         await waitFor(() => {
@@ -105,7 +109,9 @@ describe('AdminExportAuth', () => {
             </Wrapper>,
         );
 
-        const button = screen.getByRole('button', { name: /export auth data/i });
+        const button = screen.getByRole('button', {
+            name: /export auth data/i,
+        });
         fireEvent.click(button);
         fireEvent.click(button);
 
@@ -126,7 +132,9 @@ describe('AdminExportAuth', () => {
             </Wrapper>,
         );
 
-        const button = screen.getByRole('button', { name: /export auth data/i });
+        const button = screen.getByRole('button', {
+            name: /export auth data/i,
+        });
         fireEvent.click(button);
 
         await waitFor(() => {

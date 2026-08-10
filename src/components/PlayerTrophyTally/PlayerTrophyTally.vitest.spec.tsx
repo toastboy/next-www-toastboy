@@ -66,7 +66,9 @@ describe('PlayerTrophyTally', () => {
             </Wrapper>,
         );
 
-        expect(await screen.findByRole('img', { name: 'star' })).toBeInTheDocument();
+        expect(
+            await screen.findByRole('img', { name: 'star' }),
+        ).toBeInTheDocument();
     });
 
     it('renders a medal icon for the stalwart table', async () => {
@@ -81,7 +83,9 @@ describe('PlayerTrophyTally', () => {
             </Wrapper>,
         );
 
-        expect(await screen.findByRole('img', { name: 'medal' })).toBeInTheDocument();
+        expect(
+            await screen.findByRole('img', { name: 'medal' }),
+        ).toBeInTheDocument();
     });
 
     it('renders a clock icon for the speedy table', async () => {
@@ -96,7 +100,9 @@ describe('PlayerTrophyTally', () => {
             </Wrapper>,
         );
 
-        expect(await screen.findByRole('img', { name: 'clock' })).toBeInTheDocument();
+        expect(
+            await screen.findByRole('img', { name: 'clock' }),
+        ).toBeInTheDocument();
     });
 
     it('renders a beer icon for the pub table', async () => {
@@ -111,6 +117,8 @@ describe('PlayerTrophyTally', () => {
             </Wrapper>,
         );
 
-        expect(await screen.findByRole('img', { name: 'beer' })).toBeInTheDocument();
+        expect(
+            await screen.findByRole('img', { name: 'beer' }),
+        ).toBeInTheDocument();
     });
 });

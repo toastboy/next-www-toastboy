@@ -36,8 +36,12 @@ describe('GameDaySummary', () => {
             }),
         ).toBeInTheDocument();
         expect(screen.queryByRole('link')).not.toBeInTheDocument();
-        expect(screen.getByTestId('game-day-prev-placeholder')).toBeInTheDocument();
-        expect(screen.getByTestId('game-day-next-placeholder')).toBeInTheDocument();
+        expect(
+            screen.getByTestId('game-day-prev-placeholder'),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByTestId('game-day-next-placeholder'),
+        ).toBeInTheDocument();
     });
 
     it('renders "No game" when game is false', () => {
@@ -58,8 +62,14 @@ describe('GameDaySummary', () => {
 
     describe('previous and next links', () => {
         it('renders both previous and next links when both game days exist', () => {
-            const prevGameDay = createMockGameDay({ id: 10, date: new Date('2020-12-27') });
-            const nextGameDay = createMockGameDay({ id: 12, date: new Date('2021-01-10') });
+            const prevGameDay = createMockGameDay({
+                id: 10,
+                date: new Date('2020-12-27'),
+            });
+            const nextGameDay = createMockGameDay({
+                id: 12,
+                date: new Date('2021-01-10'),
+            });
 
             render(
                 <Wrapper>
@@ -77,12 +87,19 @@ describe('GameDaySummary', () => {
             expect(links).toHaveLength(2);
             expect(links[0]).toHaveAttribute('href', '/footy/game/10');
             expect(links[1]).toHaveAttribute('href', '/footy/game/12');
-            expect(screen.queryByTestId('game-day-prev-placeholder')).not.toBeInTheDocument();
-            expect(screen.queryByTestId('game-day-next-placeholder')).not.toBeInTheDocument();
+            expect(
+                screen.queryByTestId('game-day-prev-placeholder'),
+            ).not.toBeInTheDocument();
+            expect(
+                screen.queryByTestId('game-day-next-placeholder'),
+            ).not.toBeInTheDocument();
         });
 
         it('omits the previous link and renders a left placeholder when there is no previous game day', () => {
-            const nextGameDay = createMockGameDay({ id: 12, date: new Date('2021-01-10') });
+            const nextGameDay = createMockGameDay({
+                id: 12,
+                date: new Date('2021-01-10'),
+            });
 
             render(
                 <Wrapper>
@@ -99,12 +116,19 @@ describe('GameDaySummary', () => {
             const links = screen.getAllByRole('link');
             expect(links).toHaveLength(1);
             expect(links[0]).toHaveAttribute('href', '/footy/game/12');
-            expect(screen.getByTestId('game-day-prev-placeholder')).toBeInTheDocument();
-            expect(screen.queryByTestId('game-day-next-placeholder')).not.toBeInTheDocument();
+            expect(
+                screen.getByTestId('game-day-prev-placeholder'),
+            ).toBeInTheDocument();
+            expect(
+                screen.queryByTestId('game-day-next-placeholder'),
+            ).not.toBeInTheDocument();
         });
 
         it('omits the next link and renders a right placeholder when there is no next game day', () => {
-            const prevGameDay = createMockGameDay({ id: 10, date: new Date('2020-12-27') });
+            const prevGameDay = createMockGameDay({
+                id: 10,
+                date: new Date('2020-12-27'),
+            });
 
             render(
                 <Wrapper>
@@ -121,8 +145,12 @@ describe('GameDaySummary', () => {
             const links = screen.getAllByRole('link');
             expect(links).toHaveLength(1);
             expect(links[0]).toHaveAttribute('href', '/footy/game/10');
-            expect(screen.queryByTestId('game-day-prev-placeholder')).not.toBeInTheDocument();
-            expect(screen.getByTestId('game-day-next-placeholder')).toBeInTheDocument();
+            expect(
+                screen.queryByTestId('game-day-prev-placeholder'),
+            ).not.toBeInTheDocument();
+            expect(
+                screen.getByTestId('game-day-next-placeholder'),
+            ).toBeInTheDocument();
         });
 
         it('renders both placeholders when there are no previous and next game days', () => {
@@ -139,8 +167,12 @@ describe('GameDaySummary', () => {
             );
 
             expect(screen.queryByRole('link')).not.toBeInTheDocument();
-            expect(screen.getByTestId('game-day-prev-placeholder')).toBeInTheDocument();
-            expect(screen.getByTestId('game-day-next-placeholder')).toBeInTheDocument();
+            expect(
+                screen.getByTestId('game-day-prev-placeholder'),
+            ).toBeInTheDocument();
+            expect(
+                screen.getByTestId('game-day-next-placeholder'),
+            ).toBeInTheDocument();
         });
     });
 
@@ -157,7 +189,9 @@ describe('GameDaySummary', () => {
                     />
                 </Wrapper>,
             );
-            expect(screen.getByText(`(${defaultGameDay.comment})`)).toBeInTheDocument();
+            expect(
+                screen.getByText(`(${defaultGameDay.comment})`),
+            ).toBeInTheDocument();
         });
 
         it('shows no comment text when comment is null', () => {
@@ -187,14 +221,19 @@ describe('GameDaySummary', () => {
                     />
                 </Wrapper>,
             );
-            expect(screen.getByText(`No game (${defaultGameDay.comment})`)).toBeInTheDocument();
+            expect(
+                screen.getByText(`No game (${defaultGameDay.comment})`),
+            ).toBeInTheDocument();
         });
 
         it('shows "No game" with no trailing comment when comment is null', () => {
             render(
                 <Wrapper>
                     <GameDaySummary
-                        gameDay={createMockGameDay({ game: false, comment: null })}
+                        gameDay={createMockGameDay({
+                            game: false,
+                            comment: null,
+                        })}
                         prevGameDay={null}
                         nextGameDay={null}
                         teamA={[]}

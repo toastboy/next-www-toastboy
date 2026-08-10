@@ -31,7 +31,9 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
     play: async ({ canvas }) => {
-        await expect(canvas.getByRole('heading', { name: /game 1249 drinkers/i })).toBeVisible();
+        await expect(
+            canvas.getByRole('heading', { name: /game 1249 drinkers/i }),
+        ).toBeVisible();
     },
 };
 
@@ -40,7 +42,9 @@ export const NoPlayers: Story = {
         players: [],
     },
     play: async ({ canvas }) => {
-        await expect(canvas.getByText(/no active players found/i)).toBeVisible();
+        await expect(
+            canvas.getByText(/no active players found/i),
+        ).toBeVisible();
     },
 };
 

@@ -2,15 +2,9 @@
     "extends": "./tsconfig.json",
     "compilerOptions": {
         "paths": {
-            "@/*": [
-                "./*"
-            ],
-            "prisma/*": [
-                "../prisma/*"
-            ],
-            "server-only": [
-                "./src/tests/__mocks__/server-only.ts"
-            ]
+            "@/*": ["./*"],
+            "prisma/*": ["../prisma/*"],
+            "server-only": ["./src/tests/__mocks__/server-only.ts"]
         }
     }
 }

@@ -9,12 +9,8 @@ import {
     TextInput,
     Title,
 } from '@mantine/core';
-import {
-    useForm,
-} from '@mantine/form';
-import {
-    notifications,
-} from '@mantine/notifications';
+import { useForm } from '@mantine/form';
+import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -100,7 +96,8 @@ export const EnquiryForm = ({ redirectUrl, onSendEnquiry }: Props) => {
                 id,
                 color: 'teal',
                 title: 'Confirm your email',
-                message: 'Check your inbox and verify your email to deliver the message.',
+                message:
+                    'Check your inbox and verify your email to deliver the message.',
                 icon: <IconCheck size={config.notificationIconSize} />,
                 loading: false,
                 autoClose: config.notificationAutoClose,
@@ -115,7 +112,10 @@ export const EnquiryForm = ({ redirectUrl, onSendEnquiry }: Props) => {
                     redirectUrl,
                 },
             });
-            const message = toPublicMessage(error, 'Unable to send your message.');
+            const message = toPublicMessage(
+                error,
+                'Unable to send your message.',
+            );
             notifications.update({
                 id,
                 color: 'red',
@@ -139,7 +139,8 @@ export const EnquiryForm = ({ redirectUrl, onSendEnquiry }: Props) => {
             <Stack>
                 <Title order={3}>Get in touch</Title>
                 <Text>
-                    Want to join, have a question, or just say hello? Send us a message and we will reply soon.
+                    Want to join, have a question, or just say hello? Send us a
+                    message and we will reply soon.
                 </Text>
                 <TextInput
                     label="Name"
@@ -158,9 +159,7 @@ export const EnquiryForm = ({ redirectUrl, onSendEnquiry }: Props) => {
                     minRows={4}
                     {...form.getInputProps('message')}
                 />
-                <Button type="submit">
-                    Send message
-                </Button>
+                <Button type="submit">Send message</Button>
             </Stack>
         </Box>
     );

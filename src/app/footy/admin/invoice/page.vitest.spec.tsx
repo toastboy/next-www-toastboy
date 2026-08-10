@@ -3,7 +3,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('services/GameDay');
 vi.mock('@/actions/recordHallHire', () => ({ recordHallHire: vi.fn() }));
-vi.mock('@/actions/updateInvoiceGameDays', () => ({ updateInvoiceGameDays: vi.fn() }));
+vi.mock('@/actions/updateInvoiceGameDays', () => ({
+    updateInvoiceGameDays: vi.fn(),
+}));
 
 import { recordHallHire } from '@/actions/recordHallHire';
 import { updateInvoiceGameDays } from '@/actions/updateInvoiceGameDays';
@@ -11,7 +13,10 @@ import InvoicePage from '@/app/footy/admin/invoice/page';
 import gameDayService from '@/services/GameDay';
 import { FootyChannel } from '@/types/FootyChannel';
 
-interface AnyElement { type: unknown; props: Record<string, unknown> }
+interface AnyElement {
+    type: unknown;
+    props: Record<string, unknown>;
+}
 
 const findElement = (node: unknown, displayName: string): AnyElement | null => {
     if (!node || typeof node !== 'object') return null;
@@ -31,13 +36,15 @@ const findElement = (node: unknown, displayName: string): AnyElement | null => {
     return findElement(children, displayName);
 };
 
-const makeGameDay = (overrides: Partial<{
-    id: number;
-    date: Date;
-    game: boolean;
-    mailSent: Date | null;
-    hallCost: number | null;
-}> = {}) => ({
+const makeGameDay = (
+    overrides: Partial<{
+        id: number;
+        date: Date;
+        game: boolean;
+        mailSent: Date | null;
+        hallCost: number | null;
+    }> = {},
+) => ({
     id: 1,
     date: new Date('2026-01-07'),
     game: false,
@@ -95,9 +102,13 @@ describe('Admin Invoice page', () => {
             makeGameDay({ game: true, mailSent: null }),
         ]);
 
-        const result = await InvoicePage({ searchParams: Promise.resolve({ year: '2026', month: '1' }) });
+        const result = await InvoicePage({
+            searchParams: Promise.resolve({ year: '2026', month: '1' }),
+        });
 
-        const gameDays = findElement(result, 'InvoiceForm')?.props.gameDays as { gameScheduled: boolean }[];
+        const gameDays = findElement(result, 'InvoiceForm')?.props.gameDays as {
+            gameScheduled: boolean;
+        }[];
         expect(gameDays[0]?.gameScheduled).toBe(true);
     });
 
@@ -106,9 +117,13 @@ describe('Admin Invoice page', () => {
             makeGameDay({ game: false, mailSent: new Date('2026-01-01') }),
         ]);
 
-        const result = await InvoicePage({ searchParams: Promise.resolve({ year: '2026', month: '1' }) });
+        const result = await InvoicePage({
+            searchParams: Promise.resolve({ year: '2026', month: '1' }),
+        });
 
-        const gameDays = findElement(result, 'InvoiceForm')?.props.gameDays as { gameScheduled: boolean }[];
+        const gameDays = findElement(result, 'InvoiceForm')?.props.gameDays as {
+            gameScheduled: boolean;
+        }[];
         expect(gameDays[0]?.gameScheduled).toBe(true);
     });
 
@@ -117,30 +132,43 @@ describe('Admin Invoice page', () => {
             makeGameDay({ game: false, mailSent: null }),
         ]);
 
-        const result = await InvoicePage({ searchParams: Promise.resolve({ year: '2026', month: '1' }) });
+        const result = await InvoicePage({
+            searchParams: Promise.resolve({ year: '2026', month: '1' }),
+        });
 
-        const gameDays = findElement(result, 'InvoiceForm')?.props.gameDays as { gameScheduled: boolean }[];
+        const gameDays = findElement(result, 'InvoiceForm')?.props.gameDays as {
+            gameScheduled: boolean;
+        }[];
         expect(gameDays[0]?.gameScheduled).toBe(false);
     });
 
     it('passes the updateInvoiceGameDays action to InvoiceForm', async () => {
-        const result = await InvoicePage({ searchParams: Promise.resolve({ year: '2026', month: '1' }) });
+        const result = await InvoicePage({
+            searchParams: Promise.resolve({ year: '2026', month: '1' }),
+        });
 
         const form = findElement(result, 'InvoiceForm');
         expect(form?.props.onUpdateGameDays).toBe(updateInvoiceGameDays);
     });
 
     it('passes the recordHallHire action to InvoiceForm', async () => {
-        const result = await InvoicePage({ searchParams: Promise.resolve({ year: '2026', month: '1' }) });
+        const result = await InvoicePage({
+            searchParams: Promise.resolve({ year: '2026', month: '1' }),
+        });
 
         const form = findElement(result, 'InvoiceForm');
         expect(form?.props.onRecordHallHire).toBe(recordHallHire);
     });
 
     it('renders AutoRefresh with the Games and Money channels', async () => {
-        const result = await InvoicePage({ searchParams: Promise.resolve({ year: '2026', month: '1' }) });
+        const result = await InvoicePage({
+            searchParams: Promise.resolve({ year: '2026', month: '1' }),
+        });
 
         const autoRefresh = findElement(result, 'AutoRefresh');
-        expect(autoRefresh?.props.channels).toEqual([FootyChannel.Games, FootyChannel.Money]);
+        expect(autoRefresh?.props.channels).toEqual([
+            FootyChannel.Games,
+            FootyChannel.Money,
+        ]);
     });
 });

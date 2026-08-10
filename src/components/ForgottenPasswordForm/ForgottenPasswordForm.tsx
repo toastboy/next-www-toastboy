@@ -1,19 +1,8 @@
 'use client';
 
-import {
-    Box,
-    Button,
-    Divider,
-    Paper,
-    Stack,
-    Title,
-} from '@mantine/core';
-import {
-    useForm,
-} from '@mantine/form';
-import {
-    notifications,
-} from '@mantine/notifications';
+import { Box, Button, Divider, Paper, Stack, Title } from '@mantine/core';
+import { useForm } from '@mantine/form';
+import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import z from 'zod';
@@ -34,9 +23,7 @@ export const ForgottenPasswordForm = () => {
         validateInputOnBlur: true,
     });
 
-    const handleSubmit = async (
-        values: typeof form.values,
-    ) => {
+    const handleSubmit = async (values: typeof form.values) => {
         const normalizedEmail = values.email.trim().toLowerCase();
 
         const id = notifications.show({
@@ -50,14 +37,18 @@ export const ForgottenPasswordForm = () => {
         try {
             await authClient.requestPasswordReset({
                 email: normalizedEmail,
-                redirectTo: new URL('/footy/auth/reset-password', getPublicBaseUrl()).toString(),
+                redirectTo: new URL(
+                    '/footy/auth/reset-password',
+                    getPublicBaseUrl(),
+                ).toString(),
             });
 
             notifications.update({
                 id,
                 color: 'teal',
                 title: 'Check your email',
-                message: 'If that email is linked to an account, a reset link is on the way.',
+                message:
+                    'If that email is linked to an account, a reset link is on the way.',
                 icon: <IconCheck size={config.notificationIconSize} />,
                 loading: false,
                 autoClose: config.notificationAutoClose,
@@ -76,7 +67,10 @@ export const ForgottenPasswordForm = () => {
                 id,
                 color: 'red',
                 title: 'Error',
-                message: toPublicMessage(err, 'Unable to request a password reset right now.'),
+                message: toPublicMessage(
+                    err,
+                    'Unable to request a password reset right now.',
+                ),
                 icon: <IconAlertTriangle size={config.notificationIconSize} />,
                 loading: false,
                 autoClose: false,
@@ -86,14 +80,23 @@ export const ForgottenPasswordForm = () => {
     };
 
     return (
-        <Paper w="100%" maw="35rem" mx="auto">
+        <Paper
+            w="100%"
+            maw="35rem"
+            mx="auto"
+        >
             <Box
                 component="form"
                 onSubmit={form.onSubmit(handleSubmit)}
                 noValidate
             >
                 <Stack gap="md">
-                    <Title order={2} mb="xs" w="100%" ta="center">
+                    <Title
+                        order={2}
+                        mb="xs"
+                        w="100%"
+                        ta="center"
+                    >
                         Forgotten Password
                     </Title>
                     <Divider mb="xs" />
@@ -107,7 +110,10 @@ export const ForgottenPasswordForm = () => {
                         {...form.getInputProps(`email`)}
                     />
 
-                    <Button type="submit" w="fit-content">
+                    <Button
+                        type="submit"
+                        w="fit-content"
+                    >
                         Send reset link
                     </Button>
                 </Stack>
@@ -116,7 +122,10 @@ export const ForgottenPasswordForm = () => {
     );
 };
 
-const validateForgottenPasswordEmail = (value: string, ctx: z.RefinementCtx) => {
+const validateForgottenPasswordEmail = (
+    value: string,
+    ctx: z.RefinementCtx,
+) => {
     if (!value) {
         ctx.addIssue({
             code: 'custom',
@@ -134,7 +143,11 @@ const validateForgottenPasswordEmail = (value: string, ctx: z.RefinementCtx) => 
 };
 
 const ForgottenPasswordSchema = z.object({
-    email: z.string().trim().toLowerCase().superRefine(validateForgottenPasswordEmail),
+    email: z
+        .string()
+        .trim()
+        .toLowerCase()
+        .superRefine(validateForgottenPasswordEmail),
 });
 
 type ForgottenPasswordInput = z.infer<typeof ForgottenPasswordSchema>;

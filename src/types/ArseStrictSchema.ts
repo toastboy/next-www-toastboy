@@ -32,11 +32,13 @@ const ArseUncheckedCreateInputWithoutIdSchema =
 const ArseUncheckedUpdateInputWithoutIdSchema =
     ArseUncheckedUpdateInputObjectZodSchema.omit({ id: true });
 
-export const ArseWriteInputSchema = z.object({
-    ...ArseStrictFields,
-    playerId: ArseStrictIds.playerId,
-    raterId: ArseStrictIds.raterId,
-}).strip();
+export const ArseWriteInputSchema = z
+    .object({
+        ...ArseStrictFields,
+        playerId: ArseStrictIds.playerId,
+        raterId: ArseStrictIds.raterId,
+    })
+    .strip();
 
 export type ArseWriteInput = z.infer<typeof ArseWriteInputSchema>;
 

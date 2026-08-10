@@ -18,8 +18,7 @@ test('tables page', async ({ page }) => {
         const link = page.getByRole('link', { name: key }).first();
         const href = await link.getAttribute('href');
         expect(href).toContain(value);
-        if (href)
-            hrefs.add(href.toString());
+        if (href) hrefs.add(href.toString());
     }
 
     console.log(hrefs);

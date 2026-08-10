@@ -6,7 +6,6 @@ import { vi } from 'vitest';
 import { hashVerificationToken } from '@/lib/verificationToken';
 import contactEnquiryService from '@/services/ContactEnquiry';
 
-
 describe('ContactEnquiryService', () => {
     const token = 'deadbeef'.repeat(8);
     const tokenHash = hashVerificationToken(token);
@@ -37,7 +36,9 @@ describe('ContactEnquiryService', () => {
                 deliveredAt: null,
             };
 
-            (prisma.contactEnquiry.create as Mock).mockResolvedValueOnce(createdEnquiry);
+            (prisma.contactEnquiry.create as Mock).mockResolvedValueOnce(
+                createdEnquiry,
+            );
 
             const result = await contactEnquiryService.create(rawInput);
 
@@ -55,7 +56,9 @@ describe('ContactEnquiryService', () => {
                 token: '',
             };
 
-            await expect(contactEnquiryService.create(invalidInput)).rejects.toThrow();
+            await expect(
+                contactEnquiryService.create(invalidInput),
+            ).rejects.toThrow();
             expect(prisma.contactEnquiry.create).not.toHaveBeenCalled();
         });
 
@@ -68,7 +71,9 @@ describe('ContactEnquiryService', () => {
                 tokenHash,
             };
 
-            await expect(contactEnquiryService.create(invalidInput)).rejects.toThrow();
+            await expect(
+                contactEnquiryService.create(invalidInput),
+            ).rejects.toThrow();
             expect(prisma.contactEnquiry.create).not.toHaveBeenCalled();
         });
     });
@@ -86,7 +91,9 @@ describe('ContactEnquiryService', () => {
                 tokenHash,
             };
 
-            (prisma.contactEnquiry.findUnique as Mock).mockResolvedValueOnce(enquiry);
+            (prisma.contactEnquiry.findUnique as Mock).mockResolvedValueOnce(
+                enquiry,
+            );
 
             const result = await contactEnquiryService.getByToken(token);
             expect(prisma.contactEnquiry.findUnique).toHaveBeenCalledWith({
@@ -109,13 +116,18 @@ describe('ContactEnquiryService', () => {
                 tokenHash,
             };
 
-            (prisma.contactEnquiry.update as Mock).mockResolvedValueOnce(enquiry);
+            (prisma.contactEnquiry.update as Mock).mockResolvedValueOnce(
+                enquiry,
+            );
 
             const result = await contactEnquiryService.markDelivered(3);
 
             expect(prisma.contactEnquiry.update).toHaveBeenCalledTimes(1);
             const [call] = (prisma.contactEnquiry.update as Mock).mock.calls;
-            const callArgs = call[0] as { where: { id: number }; data: { verifiedAt: Date; deliveredAt: Date } };
+            const callArgs = call[0] as {
+                where: { id: number };
+                data: { verifiedAt: Date; deliveredAt: Date };
+            };
             expect(callArgs).toMatchObject({
                 where: { id: 3 },
                 data: {},

@@ -1,6 +1,4 @@
-import {
-    Notifications,
-} from '@mantine/notifications';
+import { Notifications } from '@mantine/notifications';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { within } from 'storybook/test';
 
@@ -29,7 +27,8 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const mockCreateMoreGameDays: CreateMoreGameDaysProxy = async () => Promise.resolve([]);
+const mockCreateMoreGameDays: CreateMoreGameDaysProxy = async () =>
+    Promise.resolve([]);
 
 export const Primary: Story = {
     args: {
@@ -46,13 +45,19 @@ export const Primary: Story = {
         const firstCheckbox = await canvas.findByLabelText(
             `Game scheduled for ${defaultMoreGamesFormData.rows[0].date}`,
         );
-        const submitButton = await canvas.findByRole('button', { name: /Create game days/i });
+        const submitButton = await canvas.findByRole('button', {
+            name: /Create game days/i,
+        });
 
         await userEvent.type(firstComment, 'Bring bibs');
         await userEvent.click(firstCheckbox);
         await userEvent.click(submitButton);
 
         const body = canvasElement.ownerDocument.body;
-        await within(body).findByText('Game days created successfully', {}, { timeout: 6000 });
+        await within(body).findByText(
+            'Game days created successfully',
+            {},
+            { timeout: 6000 },
+        );
     },
 };

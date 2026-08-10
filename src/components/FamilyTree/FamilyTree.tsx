@@ -1,15 +1,17 @@
 'use client';
 
-import {
-    Box,
-    Paper,
-    Tooltip,
-} from '@mantine/core';
+import { Box, Paper, Tooltip } from '@mantine/core';
 import { ascending, groups } from 'd3-array';
-import { hierarchy, type HierarchyPointLink, type HierarchyPointNode, tree } from 'd3-hierarchy';
+import {
+    hierarchy,
+    type HierarchyPointLink,
+    type HierarchyPointNode,
+    tree,
+} from 'd3-hierarchy';
 import { select } from 'd3-selection';
 import { linkRadial } from 'd3-shape';
 import { type D3ZoomEvent, zoom, zoomIdentity } from 'd3-zoom';
+import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { FamilyTreeNodeType } from '@/types';
@@ -72,6 +74,7 @@ const RADIUS_MAX_MULTIPLIER = 4;
  * @see https://observablehq.com/@d3/radial-tree/2
  */
 export const FamilyTree = ({ data }: Props) => {
+    const router = useRouter();
     const containerRef = useRef<HTMLDivElement>(null);
     const svgRef = useRef<SVGSVGElement>(null);
     /** Currently hovered node position + name for the Mantine Tooltip. */
@@ -105,8 +108,9 @@ export const FamilyTree = ({ data }: Props) => {
         /* c8 ignore next — both refs are always attached before effects run; the null check is a defensive guard only */
         if (!svgRef.current || !containerRef.current) return;
 
-        const hierarchyRoot = hierarchy(data)
-            .sort((a, b) => ascending(a.data.name, b.data.name));
+        const hierarchyRoot = hierarchy(data).sort((a, b) =>
+            ascending(a.data.name, b.data.name),
+        );
 
         const maxDepth = hierarchyRoot.height;
 
@@ -118,7 +122,10 @@ export const FamilyTree = ({ data }: Props) => {
          */
         const treeLayout = tree<FamilyTreeNodeType>()
             .size([2 * Math.PI, 1])
-            .separation((a, b) => (a.parent === b.parent ? 1 : 2) / Math.max(1, a.depth));
+            .separation(
+                (a, b) =>
+                    (a.parent === b.parent ? 1 : 2) / Math.max(1, a.depth),
+            );
 
         const root = treeLayout(hierarchyRoot);
 
@@ -152,8 +159,7 @@ export const FamilyTree = ({ data }: Props) => {
         const svg = select(svgRef.current);
         svg.selectAll('*').remove();
 
-        svg
-            .attr('width', width)
+        svg.attr('width', width)
             .attr('height', availableHeight)
             .style('user-select', 'none');
 
@@ -170,8 +176,7 @@ export const FamilyTree = ({ data }: Props) => {
 
         /* Defs: circular clip path for mugshots */
         const defs = svg.append('defs');
-        defs
-            .append('clipPath')
+        defs.append('clipPath')
             .attr('id', 'mugshot-clip')
             .append('circle')
             .attr('r', MUGSHOT_SIZE / 2)
@@ -200,9 +205,7 @@ export const FamilyTree = ({ data }: Props) => {
         /* Nodes */
         const node = g
             .append('g')
-            .selectAll<SVGGElement, HierarchyPointNode<FamilyTreeNodeType>>(
-                'g',
-            )
+            .selectAll<SVGGElement, HierarchyPointNode<FamilyTreeNodeType>>('g')
             .data(root.descendants())
             .join('g')
             .attr(
@@ -215,10 +218,7 @@ export const FamilyTree = ({ data }: Props) => {
         /* Counter-rotated group so mugshots stay upright regardless of angle. */
         const playerG = node
             .append('g')
-            .attr(
-                'transform',
-                (d) => `rotate(${90 - (d.x * 180) / Math.PI})`,
-            );
+            .attr('transform', (d) => `rotate(${90 - (d.x * 180) / Math.PI})`);
 
         playerG
             .append('image')
@@ -269,20 +269,19 @@ export const FamilyTree = ({ data }: Props) => {
         }
 
         /* Hover + click behaviour */
-        node
-            .on('mouseenter', (event: MouseEvent, d) => {
-                const rect = svgRef.current!.getBoundingClientRect();
-                setTooltip({
-                    x: event.clientX - rect.left,
-                    y: event.clientY - rect.top,
-                    name: d.data.name,
-                });
-            })
+        node.on('mouseenter', (event: MouseEvent, d) => {
+            const rect = svgRef.current!.getBoundingClientRect();
+            setTooltip({
+                x: event.clientX - rect.left,
+                y: event.clientY - rect.top,
+                name: d.data.name,
+            });
+        })
             .on('mouseleave', () => setTooltip(null))
             .on('click', (_event, d) => {
-                window.location.href = `/footy/player/${d.data.id}`;
+                router.push(`/footy/player/${d.data.id}`);
             });
-    }, [data, width, height]);
+    }, [data, width, height, router]);
 
     return (
         <Paper
@@ -295,7 +294,11 @@ export const FamilyTree = ({ data }: Props) => {
         >
             <svg ref={svgRef} />
             {tooltip ? (
-                <Tooltip label={tooltip.name} opened withArrow>
+                <Tooltip
+                    label={tooltip.name}
+                    opened
+                    withArrow
+                >
                     <Box
                         pos="absolute"
                         left={tooltip.x}

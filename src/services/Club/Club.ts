@@ -12,7 +12,6 @@ import {
     ClubUpsertOneStrictSchema,
 } from '@/types/ClubStrictSchema';
 
-
 class ClubService {
     /**
      * Retrieves a single club by ID.

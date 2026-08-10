@@ -101,7 +101,10 @@ interface NormalizeUnknownErrorOptions<TDetails = unknown> {
  * @template TCode The specific app-level error code represented by this error.
  * @template TDetails Optional typed payload containing structured context.
  */
-export class AppError<TCode extends AppErrorCode = AppErrorCode, TDetails = unknown> extends Error {
+export class AppError<
+    TCode extends AppErrorCode = AppErrorCode,
+    TDetails = unknown,
+> extends Error {
     /**
      * Stable machine-readable code used for classification and monitoring.
      */
@@ -142,12 +145,18 @@ export class AppError<TCode extends AppErrorCode = AppErrorCode, TDetails = unkn
  *
  * @template TDetails Optional typed payload containing structured context.
  */
-export class ValidationError<TDetails = unknown> extends AppError<typeof APP_ERROR_CODE.Validation, TDetails> {
+export class ValidationError<TDetails = unknown> extends AppError<
+    typeof APP_ERROR_CODE.Validation,
+    TDetails
+> {
     /**
      * @param message Internal developer-oriented message.
      * @param options Optional cause/details/public message metadata.
      */
-    constructor(message = 'Validation failed.', options: ErrorOptionsWithDetails<TDetails> = {}) {
+    constructor(
+        message = 'Validation failed.',
+        options: ErrorOptionsWithDetails<TDetails> = {},
+    ) {
         super({
             code: APP_ERROR_CODE.Validation,
             message,
@@ -166,12 +175,18 @@ export class ValidationError<TDetails = unknown> extends AppError<typeof APP_ERR
  *
  * @template TDetails Optional typed payload containing structured context.
  */
-export class NotFoundError<TDetails = unknown> extends AppError<typeof APP_ERROR_CODE.NotFound, TDetails> {
+export class NotFoundError<TDetails = unknown> extends AppError<
+    typeof APP_ERROR_CODE.NotFound,
+    TDetails
+> {
     /**
      * @param message Internal developer-oriented message.
      * @param options Optional cause/details/public message metadata.
      */
-    constructor(message = 'Resource not found.', options: ErrorOptionsWithDetails<TDetails> = {}) {
+    constructor(
+        message = 'Resource not found.',
+        options: ErrorOptionsWithDetails<TDetails> = {},
+    ) {
         super({
             code: APP_ERROR_CODE.NotFound,
             message,
@@ -190,19 +205,27 @@ export class NotFoundError<TDetails = unknown> extends AppError<typeof APP_ERROR
  *
  * @template TDetails Optional typed payload containing structured context.
  */
-export class AuthError<TDetails = unknown> extends AppError<typeof APP_ERROR_CODE.Auth, TDetails> {
+export class AuthError<TDetails = unknown> extends AppError<
+    typeof APP_ERROR_CODE.Auth,
+    TDetails
+> {
     /**
      * @param message Internal developer-oriented message.
      * @param options Optional cause/details/public message metadata.
      */
-    constructor(message = 'Authorization failed.', options: ErrorOptionsWithDetails<TDetails> = {}) {
+    constructor(
+        message = 'Authorization failed.',
+        options: ErrorOptionsWithDetails<TDetails> = {},
+    ) {
         super({
             code: APP_ERROR_CODE.Auth,
             message,
             expected: true,
             cause: options.cause,
             details: options.details,
-            publicMessage: options.publicMessage ?? 'You are not authorized to perform this action.',
+            publicMessage:
+                options.publicMessage ??
+                'You are not authorized to perform this action.',
         });
     }
 }
@@ -215,19 +238,27 @@ export class AuthError<TDetails = unknown> extends AppError<typeof APP_ERROR_COD
  *
  * @template TDetails Optional typed payload containing structured context.
  */
-export class ConflictError<TDetails = unknown> extends AppError<typeof APP_ERROR_CODE.Conflict, TDetails> {
+export class ConflictError<TDetails = unknown> extends AppError<
+    typeof APP_ERROR_CODE.Conflict,
+    TDetails
+> {
     /**
      * @param message Internal developer-oriented message.
      * @param options Optional cause/details/public message metadata.
      */
-    constructor(message = 'Resource conflict.', options: ErrorOptionsWithDetails<TDetails> = {}) {
+    constructor(
+        message = 'Resource conflict.',
+        options: ErrorOptionsWithDetails<TDetails> = {},
+    ) {
         super({
             code: APP_ERROR_CODE.Conflict,
             message,
             expected: true,
             cause: options.cause,
             details: options.details,
-            publicMessage: options.publicMessage ?? 'The request conflicts with existing data.',
+            publicMessage:
+                options.publicMessage ??
+                'The request conflicts with existing data.',
         });
     }
 }
@@ -240,19 +271,27 @@ export class ConflictError<TDetails = unknown> extends AppError<typeof APP_ERROR
  *
  * @template TDetails Optional typed payload containing structured context.
  */
-export class ExternalServiceError<TDetails = unknown> extends AppError<typeof APP_ERROR_CODE.ExternalService, TDetails> {
+export class ExternalServiceError<TDetails = unknown> extends AppError<
+    typeof APP_ERROR_CODE.ExternalService,
+    TDetails
+> {
     /**
      * @param message Internal developer-oriented message.
      * @param options Optional cause/details/public message metadata.
      */
-    constructor(message = 'External service failed.', options: ErrorOptionsWithDetails<TDetails> = {}) {
+    constructor(
+        message = 'External service failed.',
+        options: ErrorOptionsWithDetails<TDetails> = {},
+    ) {
         super({
             code: APP_ERROR_CODE.ExternalService,
             message,
             expected: false,
             cause: options.cause,
             details: options.details,
-            publicMessage: options.publicMessage ?? 'A required service is currently unavailable.',
+            publicMessage:
+                options.publicMessage ??
+                'A required service is currently unavailable.',
         });
     }
 }
@@ -264,19 +303,26 @@ export class ExternalServiceError<TDetails = unknown> extends AppError<typeof AP
  *
  * @template TDetails Optional typed payload containing structured context.
  */
-export class InternalError<TDetails = unknown> extends AppError<typeof APP_ERROR_CODE.Internal, TDetails> {
+export class InternalError<TDetails = unknown> extends AppError<
+    typeof APP_ERROR_CODE.Internal,
+    TDetails
+> {
     /**
      * @param message Internal developer-oriented message.
      * @param options Optional cause/details/public message metadata.
      */
-    constructor(message = 'Internal application error.', options: ErrorOptionsWithDetails<TDetails> = {}) {
+    constructor(
+        message = 'Internal application error.',
+        options: ErrorOptionsWithDetails<TDetails> = {},
+    ) {
         super({
             code: APP_ERROR_CODE.Internal,
             message,
             expected: false,
             cause: options.cause,
             details: options.details,
-            publicMessage: options.publicMessage ?? DEFAULT_PUBLIC_ERROR_MESSAGE,
+            publicMessage:
+                options.publicMessage ?? DEFAULT_PUBLIC_ERROR_MESSAGE,
         });
     }
 }
@@ -307,35 +353,26 @@ export const normalizeUnknownError = <TDetails = unknown>(
     }
 
     if (error instanceof ZodError) {
-        return new ValidationError(
-            options.message ?? 'Validation failed.',
-            {
-                cause: error,
-                details: options.details,
-                publicMessage: options.publicMessage,
-            },
-        );
-    }
-
-    if (error instanceof Error) {
-        return new InternalError(
-            options.message ?? error.message,
-            {
-                cause: error,
-                details: options.details,
-                publicMessage: options.publicMessage,
-            },
-        );
-    }
-
-    return new InternalError(
-        options.message ?? 'Non-Error value thrown.',
-        {
+        return new ValidationError(options.message ?? 'Validation failed.', {
             cause: error,
             details: options.details,
             publicMessage: options.publicMessage,
-        },
-    );
+        });
+    }
+
+    if (error instanceof Error) {
+        return new InternalError(options.message ?? error.message, {
+            cause: error,
+            details: options.details,
+            publicMessage: options.publicMessage,
+        });
+    }
+
+    return new InternalError(options.message ?? 'Non-Error value thrown.', {
+        cause: error,
+        details: options.details,
+        publicMessage: options.publicMessage,
+    });
 };
 
 /**

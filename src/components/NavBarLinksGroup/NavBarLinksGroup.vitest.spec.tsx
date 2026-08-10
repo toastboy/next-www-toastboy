@@ -11,12 +11,24 @@ describe('NavBarLinksGroup', () => {
     ];
 
     it('renders label', () => {
-        render(<Wrapper><NavBarLinksGroup label="Group Label" /></Wrapper>);
+        render(
+            <Wrapper>
+                <NavBarLinksGroup label="Group Label" />
+            </Wrapper>,
+        );
         expect(screen.getByText('Group Label')).toBeInTheDocument();
     });
 
     it('renders links when opened', () => {
-        render(<Wrapper><NavBarLinksGroup label="Group Label" initiallyOpened links={links} /></Wrapper>);
+        render(
+            <Wrapper>
+                <NavBarLinksGroup
+                    label="Group Label"
+                    initiallyOpened
+                    links={links}
+                />
+            </Wrapper>,
+        );
         fireEvent.click(screen.getByText('Group Label'));
         links.forEach((link) => {
             expect(screen.getByText(link.label)).toBeInTheDocument();
@@ -24,16 +36,28 @@ describe('NavBarLinksGroup', () => {
     });
 
     it('hides when closed', async () => {
-        render(<Wrapper><NavBarLinksGroup label="Group Label" initiallyOpened links={links} /></Wrapper>);
+        render(
+            <Wrapper>
+                <NavBarLinksGroup
+                    label="Group Label"
+                    initiallyOpened
+                    links={links}
+                />
+            </Wrapper>,
+        );
 
         await waitFor(() => {
-            expect(screen.getByRole('link', { name: 'Link 1' })).toBeInTheDocument();
+            expect(
+                screen.getByRole('link', { name: 'Link 1' }),
+            ).toBeInTheDocument();
         });
 
         fireEvent.click(screen.getByText('Group Label'));
 
         await waitFor(() => {
-            expect(screen.queryByRole('link', { name: 'Link 1' })).not.toBeInTheDocument();
+            expect(
+                screen.queryByRole('link', { name: 'Link 1' }),
+            ).not.toBeInTheDocument();
         });
     });
 });

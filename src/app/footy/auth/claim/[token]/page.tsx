@@ -1,6 +1,4 @@
-import {
-    Notification,
-} from '@mantine/core';
+import { Notification } from '@mantine/core';
 import { IconX } from '@tabler/icons-react';
 
 import { claimPlayerInvitation } from '@/actions/claimPlayerInvitation';
@@ -30,7 +28,10 @@ const Page = async ({ params }: PageProps) => {
             route: '/footy/auth/claim/[token]',
         });
 
-        errorMessage = toPublicMessage(error, 'This invitation link is invalid.');
+        errorMessage = toPublicMessage(
+            error,
+            'This invitation link is invalid.',
+        );
     }
 
     if (!invitation) {
@@ -45,7 +46,13 @@ const Page = async ({ params }: PageProps) => {
         );
     }
 
-    return <ClaimSignup name={invitation.name} email={invitation.email} token={token} />;
+    return (
+        <ClaimSignup
+            name={invitation.name}
+            email={invitation.email}
+            token={token}
+        />
+    );
 };
 
 export default Page;

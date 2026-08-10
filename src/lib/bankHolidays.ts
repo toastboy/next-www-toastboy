@@ -60,18 +60,25 @@ const formatDateKey = (date: Date): string => {
  */
 export async function getBankHolidays(): Promise<Set<string>> {
     const now = Date.now();
-    if (bankHolidaysCache && (now - bankHolidaysCacheTime) < BANK_HOLIDAYS_CACHE_TTL_MS) {
+    if (
+        bankHolidaysCache &&
+        now - bankHolidaysCacheTime < BANK_HOLIDAYS_CACHE_TTL_MS
+    ) {
         return bankHolidaysCache;
     }
 
     try {
         const response = await fetch(BANK_HOLIDAYS_API_URL);
         if (!response.ok) {
-            log('Failed to fetch bank holidays: %s %s', response.status, response.statusText);
+            log(
+                'Failed to fetch bank holidays: %s %s',
+                response.status,
+                response.statusText,
+            );
             return bankHolidaysCache ?? new Set();
         }
 
-        const data = await response.json() as BankHolidaysResponse;
+        const data = (await response.json()) as BankHolidaysResponse;
         const dates = new Set(
             data['england-and-wales'].events.map((event) => event.date),
         );

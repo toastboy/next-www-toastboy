@@ -9,7 +9,9 @@ import { useAutoRefresh } from '@/hooks/useAutoRefresh';
 
 describe('AutoRefresh', () => {
     it('renders nothing', () => {
-        const { container } = render(<AutoRefresh channels={FootyChannel.Games} />);
+        const { container } = render(
+            <AutoRefresh channels={FootyChannel.Games} />,
+        );
         expect(container.firstChild).toBeNull();
     });
 
@@ -19,7 +21,14 @@ describe('AutoRefresh', () => {
     });
 
     it('calls useAutoRefresh with multiple channels', () => {
-        render(<AutoRefresh channels={[FootyChannel.Games, FootyChannel.Players]} />);
-        expect(useAutoRefresh).toHaveBeenCalledWith([FootyChannel.Games, FootyChannel.Players]);
+        render(
+            <AutoRefresh
+                channels={[FootyChannel.Games, FootyChannel.Players]}
+            />,
+        );
+        expect(useAutoRefresh).toHaveBeenCalledWith([
+            FootyChannel.Games,
+            FootyChannel.Players,
+        ]);
     });
 });

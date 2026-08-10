@@ -1,8 +1,4 @@
-import {
-    Flex,
-    Group,
-    Title,
-} from '@mantine/core';
+import { Flex, Group, Title } from '@mantine/core';
 import { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { cache } from 'react';
@@ -43,9 +39,7 @@ interface PageProps {
  * @throws Triggers a 404 not found response if the year is invalid or not
  * present in the available years.
  */
-const unpackParams = cache(async (
-    searchParams: PageProps['searchParams'],
-) => {
+const unpackParams = cache(async (searchParams: PageProps['searchParams']) => {
     const [resolvedSearchParams, allYears, currentGameDay] = await Promise.all([
         searchParams,
         gameDayService.getAllYears({
@@ -54,7 +48,11 @@ const unpackParams = cache(async (
         }),
         gameDayService.getCurrent(),
     ]);
-    const yearResult = z.coerce.number().int().min(0).safeParse(resolvedSearchParams?.year ?? 0);
+    const yearResult = z.coerce
+        .number()
+        .int()
+        .min(0)
+        .safeParse(resolvedSearchParams?.year ?? 0);
     const year = yearResult.success ? yearResult.data : undefined;
     if (year === undefined || !allYears.includes(year)) notFound();
 
@@ -67,9 +65,10 @@ const unpackParams = cache(async (
     /* v8 ignore next -- year is always defined here; the notFound() guard above already excludes undefined */
     const canonicalSearch = year !== undefined ? `?year=${year}` : '';
     const canonicalUrl = `/footy/games/${canonicalSearch}`;
-    const currentSearch = resolvedSearchParams?.year !== undefined ?
-        `?year=${resolvedSearchParams.year}` :
-        '';
+    const currentSearch =
+        resolvedSearchParams?.year !== undefined
+            ? `?year=${resolvedSearchParams.year}`
+            : '';
     const currentUrl = `/footy/games/${currentSearch}`;
     if (currentUrl !== canonicalUrl) permanentRedirect(canonicalUrl);
 
@@ -119,13 +118,35 @@ const GamesPage = async (props: PageProps) => {
     const gameDays = await gameDayService.getAll({ year });
 
     return (
-        <Flex direction="column" align="center" gap="lg">
-            <AutoRefresh channels={[FootyChannel.Games, FootyChannel.Results]} />
-            <Group justify="center" w="100%">
-                <TitleWithYearDropdown order={1} title="Games: " year={year} validYears={allYears} />
+        <Flex
+            direction="column"
+            align="center"
+            gap="lg"
+        >
+            <AutoRefresh
+                channels={[FootyChannel.Games, FootyChannel.Results]}
+            />
+            <Group
+                justify="center"
+                w="100%"
+            >
+                <TitleWithYearDropdown
+                    order={1}
+                    title="Games: "
+                    year={year}
+                    validYears={allYears}
+                />
             </Group>
-            <Title order={2} mb="xl">{subhead}</Title>
-            <GameDayList gameDays={gameDays} year={year} />
+            <Title
+                order={2}
+                mb="xl"
+            >
+                {subhead}
+            </Title>
+            <GameDayList
+                gameDays={gameDays}
+                year={year}
+            />
         </Flex>
     );
 };

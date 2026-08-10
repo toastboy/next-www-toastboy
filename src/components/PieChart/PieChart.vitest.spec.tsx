@@ -18,8 +18,12 @@ class ImmediateResizeObserver {
         const entry = { contentRect: { width: 400, height: 400 } };
         this.callback([entry as unknown as ResizeObserverEntry], this);
     }
-    unobserve() { /* empty */ }
-    disconnect() { /* empty */ }
+    unobserve() {
+        /* empty */
+    }
+    disconnect() {
+        /* empty */
+    }
 }
 
 describe('PieChart', () => {
@@ -38,7 +42,9 @@ describe('PieChart', () => {
             </Wrapper>,
         );
 
-        expect(container.querySelectorAll('svg path')).toHaveLength(data.length);
+        expect(container.querySelectorAll('svg path')).toHaveLength(
+            data.length,
+        );
     });
 
     it('renders a label for each data item', () => {
@@ -48,7 +54,9 @@ describe('PieChart', () => {
             </Wrapper>,
         );
 
-        const labels = Array.from(container.querySelectorAll('svg text')).map(el => el.textContent);
+        const labels = Array.from(container.querySelectorAll('svg text')).map(
+            (el) => el.textContent,
+        );
         expect(labels).toContain('Category A');
         expect(labels).toContain('Category B');
     });
@@ -57,10 +65,18 @@ describe('PieChart', () => {
         let capturedCallback: ResizeObserverCallback | undefined;
 
         class ControlledResizeObserver {
-            constructor(cb: ResizeObserverCallback) { capturedCallback = cb; }
-            observe() { /* empty */ }
-            unobserve() { /* empty */ }
-            disconnect() { /* empty */ }
+            constructor(cb: ResizeObserverCallback) {
+                capturedCallback = cb;
+            }
+            observe() {
+                /* empty */
+            }
+            unobserve() {
+                /* empty */
+            }
+            disconnect() {
+                /* empty */
+            }
         }
         vi.stubGlobal('ResizeObserver', ControlledResizeObserver);
 
@@ -74,8 +90,12 @@ describe('PieChart', () => {
             expect(capturedCallback).toBeDefined();
             unmount(); // clears wrapperRef.current and svgRef.current
 
-            const entry = { contentRect: { width: 400, height: 400 } } as unknown as ResizeObserverEntry;
-            expect(() => capturedCallback!([entry], {} as ResizeObserver)).not.toThrow();
+            const entry = {
+                contentRect: { width: 400, height: 400 },
+            } as unknown as ResizeObserverEntry;
+            expect(() =>
+                capturedCallback!([entry], {} as ResizeObserver),
+            ).not.toThrow();
         } finally {
             vi.unstubAllGlobals();
         }
@@ -84,12 +104,18 @@ describe('PieChart', () => {
     it('skips draw when ResizeObserver fires with empty entries', () => {
         class EmptyEntriesObserver {
             private callback: ResizeObserverCallback;
-            constructor(callback: ResizeObserverCallback) { this.callback = callback; }
+            constructor(callback: ResizeObserverCallback) {
+                this.callback = callback;
+            }
             observe() {
                 this.callback([], this);
             }
-            unobserve() { /* empty */ }
-            disconnect() { /* empty */ }
+            unobserve() {
+                /* empty */
+            }
+            disconnect() {
+                /* empty */
+            }
         }
         vi.stubGlobal('ResizeObserver', EmptyEntriesObserver);
 

@@ -6,6 +6,7 @@ const defaultRouter = {
     back: vi.fn(),
     refresh: vi.fn(),
     prefetch: vi.fn(),
+    bfcacheId: '',
 };
 
 export const useRouter = vi.fn(() => defaultRouter);

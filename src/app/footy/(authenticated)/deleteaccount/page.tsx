@@ -4,9 +4,7 @@ import { DeleteAccountForm } from '@/components/DeleteAccountForm/DeleteAccountF
 export const metadata = { title: 'Delete Account' };
 
 const DeleteAccountPage = () => {
-    return (
-        <DeleteAccountForm onDeletePlayer={deletePlayer} />
-    );
+    return <DeleteAccountForm onDeletePlayer={deletePlayer} />;
 };
 
 export default DeleteAccountPage;

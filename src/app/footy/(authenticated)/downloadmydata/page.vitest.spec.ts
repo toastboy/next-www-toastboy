@@ -40,7 +40,10 @@ const mockPlayer = createMockPlayer({ id: 7 });
 describe('Download My Data page', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        (getCurrentUser as Mock).mockResolvedValue({ playerId: 7, email: 'alice@example.com' });
+        (getCurrentUser as Mock).mockResolvedValue({
+            playerId: 7,
+            email: 'alice@example.com',
+        });
         (playerService.getById as Mock).mockResolvedValue(mockPlayer);
         (playerExtraEmailService.getAll as Mock).mockResolvedValue([]);
         (countrySupporterService.getByPlayer as Mock).mockResolvedValue([]);
@@ -49,11 +52,16 @@ describe('Download My Data page', () => {
     });
 
     it('renders an error notification when the user has no playerId', async () => {
-        (getCurrentUser as Mock).mockResolvedValue({ playerId: 0, email: 'alice@example.com' });
+        (getCurrentUser as Mock).mockResolvedValue({
+            playerId: 0,
+            email: 'alice@example.com',
+        });
 
         const html = renderToStaticMarkup(await Page());
 
-        expect(html).toContain('This account is not linked to a player profile yet.');
+        expect(html).toContain(
+            'This account is not linked to a player profile yet.',
+        );
         expect(playerService.getById).not.toHaveBeenCalled();
     });
 
@@ -62,7 +70,9 @@ describe('Download My Data page', () => {
 
         const html = renderToStaticMarkup(await Page());
 
-        expect(html).toContain('This account is not linked to a player profile yet.');
+        expect(html).toContain(
+            'This account is not linked to a player profile yet.',
+        );
     });
 
     it('fetches player, extraEmails, countries, clubs, and outcomes in parallel', async () => {
@@ -92,7 +102,16 @@ describe('Download My Data page', () => {
 
         renderToStaticMarkup(await Page());
 
-        const [[props]] = (DownloadMyData as Mock).mock.calls as [{ data: { totals: { firstResponded: number | null; lastResponded: number | null } } }][];
+        const [[props]] = (DownloadMyData as Mock).mock.calls as [
+            {
+                data: {
+                    totals: {
+                        firstResponded: number | null;
+                        lastResponded: number | null;
+                    };
+                };
+            },
+        ][];
         expect(props.data.totals.firstResponded).toBe(5);
         expect(props.data.totals.lastResponded).toBe(10);
     });
@@ -106,7 +125,16 @@ describe('Download My Data page', () => {
 
         renderToStaticMarkup(await Page());
 
-        const [[props]] = (DownloadMyData as Mock).mock.calls as [{ data: { totals: { firstPlayed: number | null; lastPlayed: number | null } } }][];
+        const [[props]] = (DownloadMyData as Mock).mock.calls as [
+            {
+                data: {
+                    totals: {
+                        firstPlayed: number | null;
+                        lastPlayed: number | null;
+                    };
+                };
+            },
+        ][];
         expect(props.data.totals.firstPlayed).toBe(5);
         expect(props.data.totals.lastPlayed).toBe(10);
     });
@@ -122,9 +150,18 @@ describe('Download My Data page', () => {
 
         renderToStaticMarkup(await Page());
 
-        const [[props]] = (DownloadMyData as Mock).mock.calls as [{
-            data: { totals: { gamesPlayed: number; gamesWon: number; gamesDrawn: number; gamesLost: number } };
-        }][];
+        const [[props]] = (DownloadMyData as Mock).mock.calls as [
+            {
+                data: {
+                    totals: {
+                        gamesPlayed: number;
+                        gamesWon: number;
+                        gamesDrawn: number;
+                        gamesLost: number;
+                    };
+                };
+            },
+        ][];
         expect(props.data.totals.gamesPlayed).toBe(4);
         expect(props.data.totals.gamesWon).toBe(2);
         expect(props.data.totals.gamesDrawn).toBe(1);
@@ -138,24 +175,33 @@ describe('Download My Data page', () => {
 
         renderToStaticMarkup(await Page());
 
-        const [[props]] = (DownloadMyData as Mock).mock.calls as [{ data: { profile: { joined: unknown } } }][];
+        const [[props]] = (DownloadMyData as Mock).mock.calls as [
+            { data: { profile: { joined: unknown } } },
+        ][];
         expect(typeof props.data.profile.joined).toBe('string');
     });
 
     it('defaults userEmail to null when the current user has no email', async () => {
-        (getCurrentUser as Mock).mockResolvedValue({ playerId: 7, email: null });
+        (getCurrentUser as Mock).mockResolvedValue({
+            playerId: 7,
+            email: null,
+        });
         (outcomeService.getByPlayer as Mock).mockResolvedValue([
             createMockOutcome({ gameDayId: 1, points: 3 }),
         ]);
 
         renderToStaticMarkup(await Page());
 
-        const [[props]] = (DownloadMyData as Mock).mock.calls as [{ data: { meta: { userEmail: string | null } } }][];
+        const [[props]] = (DownloadMyData as Mock).mock.calls as [
+            { data: { meta: { userEmail: string | null } } },
+        ][];
         expect(props.data.meta.userEmail).toBeNull();
     });
 
     it('handles service errors gracefully', async () => {
-        (playerService.getById as Mock).mockRejectedValue(new Error('DB failed'));
+        (playerService.getById as Mock).mockRejectedValue(
+            new Error('DB failed'),
+        );
 
         await expect(Page()).rejects.toThrow('DB failed');
     });

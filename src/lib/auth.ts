@@ -1,4 +1,3 @@
-
 import { betterAuth } from 'better-auth';
 import { prismaAdapter } from 'better-auth/adapters/prisma';
 import { nextCookies } from 'better-auth/next-js';
@@ -51,18 +50,22 @@ export const auth = betterAuth({
     baseURL: getPublicBaseUrl(),
     secret: secrets.BETTER_AUTH_SECRET,
     database: prismaAdapter(prisma, {
-        provider: "mysql",
+        provider: 'mysql',
     }),
     user: {
         additionalFields: {
             playerId: {
-                type: "number",
+                type: 'number',
                 required: false,
             },
         },
         changeEmail: {
             enabled: true,
-            sendChangeEmailConfirmation: async ({ user, newEmail, url }: ChangeEmailConfirmationContext) => {
+            sendChangeEmailConfirmation: async ({
+                user,
+                newEmail,
+                url,
+            }: ChangeEmailConfirmationContext) => {
                 if (user.email) {
                     const safeNewEmail = escapeHtml(newEmail);
                     const safeUrl = escapeHtml(url);
@@ -120,7 +123,10 @@ export const auth = betterAuth({
         },
     },
     emailVerification: {
-        sendVerificationEmail: async ({ user, url }: EmailVerificationContext) => {
+        sendVerificationEmail: async ({
+            user,
+            url,
+        }: EmailVerificationContext) => {
             if (user.email) {
                 const safeUrl = escapeHtml(url);
 
@@ -161,7 +167,7 @@ export const auth = betterAuth({
     account: {
         accountLinking: {
             enabled: true,
-            trustedProviders: ["google", "microsoft"],
+            trustedProviders: ['google', 'microsoft'],
         },
     },
     plugins: [
@@ -171,28 +177,35 @@ export const auth = betterAuth({
     ],
     socialProviders: {
         ...{
-            google: secrets.AUTH_GOOGLE_CLIENT_ID && secrets.AUTH_GOOGLE_CLIENT_SECRET ? {
-                clientId: secrets.AUTH_GOOGLE_CLIENT_ID,
-                clientSecret: secrets.AUTH_GOOGLE_CLIENT_SECRET,
-            } : undefined,
+            google:
+                secrets.AUTH_GOOGLE_CLIENT_ID &&
+                secrets.AUTH_GOOGLE_CLIENT_SECRET
+                    ? {
+                          clientId: secrets.AUTH_GOOGLE_CLIENT_ID,
+                          clientSecret: secrets.AUTH_GOOGLE_CLIENT_SECRET,
+                      }
+                    : undefined,
         },
         ...{
-            microsoft: secrets.AUTH_MICROSOFT_CLIENT_ID && secrets.AUTH_MICROSOFT_CLIENT_SECRET ? {
-                clientId: secrets.AUTH_MICROSOFT_CLIENT_ID,
-                clientSecret: secrets.AUTH_MICROSOFT_CLIENT_SECRET,
-                tenantId: secrets.AZURE_TENANT_ID,
-            } : undefined,
+            microsoft:
+                secrets.AUTH_MICROSOFT_CLIENT_ID &&
+                secrets.AUTH_MICROSOFT_CLIENT_SECRET
+                    ? {
+                          clientId: secrets.AUTH_MICROSOFT_CLIENT_ID,
+                          clientSecret: secrets.AUTH_MICROSOFT_CLIENT_SECRET,
+                          tenantId: secrets.AZURE_TENANT_ID,
+                      }
+                    : undefined,
         },
     },
     cookies: {
         sessionToken: {
-            name: "__Secure-authjs.session-token",
+            name: '__Secure-authjs.session-token',
             options: {
                 httpOnly: true,
-                sameSite: "lax", // Important to avoid browser restrictions
-                secure: process.env.NODE_ENV === "production",
+                sameSite: 'lax', // Important to avoid browser restrictions
+                secure: process.env.NODE_ENV === 'production',
             },
         },
     },
 });
-

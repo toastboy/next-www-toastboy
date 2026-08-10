@@ -8,12 +8,19 @@ describe('ClubBadge', () => {
     it('renders badge image', () => {
         render(
             <Wrapper>
-                <ClubBadge club={defaultClub} w="12cqw" h="auto" />
+                <ClubBadge
+                    club={defaultClub}
+                    w="12cqw"
+                    h="auto"
+                />
             </Wrapper>,
         );
 
         const img = screen.getByRole('img', { name: defaultClub.clubName });
         expect(img).toBeInTheDocument();
-        expect(img).toHaveAttribute('src', `/api/footy/club/${defaultClub.id}/badge`);
+        expect(img).toHaveAttribute(
+            'src',
+            `/api/footy/club/${defaultClub.id}/badge`,
+        );
     });
 });

@@ -1,30 +1,33 @@
 // For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-import { FlatCompat } from "@eslint/eslintrc";
-import js from "@eslint/js";
-import typescriptEslint from "@typescript-eslint/eslint-plugin";
-import tsParser from "@typescript-eslint/parser";
-import nextCoreWebVitals from "eslint-config-next/core-web-vitals";
-import eslintComments from "eslint-plugin-eslint-comments";
-import importX from "eslint-plugin-import-x";
-import jestDom from "eslint-plugin-jest-dom";
-import pluginN from "eslint-plugin-n";
-import playwright from "eslint-plugin-playwright";
-import promise from "eslint-plugin-promise";
-import react from "eslint-plugin-react";
-import regexpPlugin from "eslint-plugin-regexp";
-import simpleImportSort from "eslint-plugin-simple-import-sort";
-import sonarjs from "eslint-plugin-sonarjs";
-import storybook from "eslint-plugin-storybook";
-import testingLibrary from "eslint-plugin-testing-library";
-import unusedImports from "eslint-plugin-unused-imports";
-import globals from "globals";
+import { FlatCompat } from '@eslint/eslintrc';
+import js from '@eslint/js';
+import typescriptEslint from '@typescript-eslint/eslint-plugin';
+import tsParser from '@typescript-eslint/parser';
+import nextCoreWebVitals from 'eslint-config-next/core-web-vitals';
+import eslintConfigPrettier from 'eslint-config-prettier';
+import eslintComments from 'eslint-plugin-eslint-comments';
+import importX from 'eslint-plugin-import-x';
+import jestDom from 'eslint-plugin-jest-dom';
+import pluginN from 'eslint-plugin-n';
+import playwright from 'eslint-plugin-playwright';
+import promise from 'eslint-plugin-promise';
+import react from 'eslint-plugin-react';
+import regexpPlugin from 'eslint-plugin-regexp';
+import simpleImportSort from 'eslint-plugin-simple-import-sort';
+import sonarjs from 'eslint-plugin-sonarjs';
+import storybook from 'eslint-plugin-storybook';
+import testingLibrary from 'eslint-plugin-testing-library';
+import unusedImports from 'eslint-plugin-unused-imports';
+import globals from 'globals';
+
+import { requireUseClient } from './eslint-rules/require-use-client.mjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const tsconfigPath = path.resolve(__dirname, "./tsconfig.json");
+const tsconfigPath = path.resolve(__dirname, './tsconfig.json');
 const compat = new FlatCompat({
     baseDirectory: __dirname,
     recommendedConfig: js.configs.recommended,
@@ -32,15 +35,17 @@ const compat = new FlatCompat({
 });
 
 // Precompute type-aware TypeScript rule sets and scope them to TS files only.
-const tsTypeChecked = typescriptEslint.configs["flat/recommended-type-checked"].slice(1);
-const tsStylistic = typescriptEslint.configs["flat/stylistic-type-checked"].slice(1);
+const tsTypeChecked =
+    typescriptEslint.configs['flat/recommended-type-checked'].slice(1);
+const tsStylistic =
+    typescriptEslint.configs['flat/stylistic-type-checked'].slice(1);
 const tsTypeAware = [...tsTypeChecked, ...tsStylistic].map((conf) => ({
     ...conf,
-    files: ["**/*.ts", "**/*.tsx"],
+    files: ['**/*.ts', '**/*.tsx'],
 }));
 
 const tsProjectConfig = {
-    files: ["**/*.ts", "**/*.tsx"],
+    files: ['**/*.ts', '**/*.tsx'],
     languageOptions: {
         parser: tsParser,
         parserOptions: {
@@ -50,35 +55,46 @@ const tsProjectConfig = {
     },
 };
 
+// Local, project-only rules — not worth publishing as a separate package.
+// See eslint-rules/require-use-client.mjs (and its .test.mjs) for the rule itself.
+const localRules = {
+    rules: {
+        'require-use-client': requireUseClient,
+    },
+};
+
 const importResolver = {
     typescript: {
         project: tsconfigPath,
         alwaysTryTypes: true,
     },
     node: {
-        extensions: [".ts", ".tsx", ".js", ".jsx"],
-        paths: [path.resolve(__dirname, "src"), path.resolve(__dirname, "tests")],
+        extensions: ['.ts', '.tsx', '.js', '.jsx'],
+        paths: [
+            path.resolve(__dirname, 'src'),
+            path.resolve(__dirname, 'tests'),
+        ],
     },
 };
 
 const config = [
     ...nextCoreWebVitals,
-    ...compat.extends("eslint:recommended"),
-    ...compat.extends("plugin:react/recommended"),
+    ...compat.extends('eslint:recommended'),
+    ...compat.extends('plugin:react/recommended'),
     {
         plugins: {
             react,
             // New general-purpose plugins
-            "import-x": importX,
-            "simple-import-sort": simpleImportSort,
-            "unused-imports": unusedImports,
+            'import-x': importX,
+            'simple-import-sort': simpleImportSort,
+            'unused-imports': unusedImports,
             promise,
-            "testing-library": testingLibrary,
-            "jest-dom": jestDom,
+            'testing-library': testingLibrary,
+            'jest-dom': jestDom,
             playwright,
             n: pluginN,
             sonarjs,
-            "eslint-comments": eslintComments,
+            'eslint-comments': eslintComments,
             regexp: regexpPlugin,
         },
 
@@ -92,77 +108,107 @@ const config = [
                 ...globals.node,
             },
 
-            ecmaVersion: "latest",
-            sourceType: "module",
+            ecmaVersion: 'latest',
+            sourceType: 'module',
         },
 
         settings: {
             // Support TS path aliases & React version detection for import-x and react plugin
-            "import/resolver": importResolver,
-            "import-x/resolver": importResolver,
-            react: { version: "detect" },
+            'import/resolver': importResolver,
+            'import-x/resolver': importResolver,
+            react: { version: 'detect' },
             // Virtual/core modules provided by Next or environment
-            "import-x/core-modules": ["server-only"],
+            'import-x/core-modules': ['server-only'],
         },
 
         rules: {
-            "react/react-in-jsx-scope": "off",
+            'react/react-in-jsx-scope': 'off',
 
-            "react/jsx-filename-extension": [1, {
-                extensions: [".js", ".jsx", ".ts", ".tsx"],
-            }],
+            'react/jsx-filename-extension': [
+                1,
+                {
+                    extensions: ['.js', '.jsx', '.ts', '.tsx'],
+                },
+            ],
 
-            semi: ["error", "always"],
-            "comma-dangle": ["error", {
-                arrays: "always-multiline",
-                objects: "always-multiline",
-                imports: "always-multiline",
-                exports: "always-multiline",
-                functions: "always-multiline",
-            }],
+            semi: ['error', 'always'],
+            'comma-dangle': [
+                'error',
+                {
+                    arrays: 'always-multiline',
+                    objects: 'always-multiline',
+                    imports: 'always-multiline',
+                    exports: 'always-multiline',
+                    functions: 'always-multiline',
+                },
+            ],
 
-            "react/prop-types": "off",
-            "react/jsx-wrap-multilines": ["error", {
-                declaration: "parens-new-line",
-                assignment: "parens-new-line",
-                return: "parens-new-line",
-                arrow: "parens-new-line",
-                condition: "ignore",
-                logical: "ignore",
-                prop: "ignore",
-            }],
-            "react/jsx-no-leaked-render": ["warn", { validStrategies: ["coerce", "ternary"] }],
-            "react/hook-use-state": "warn",
-            "react/no-unstable-nested-components": ["warn", { allowAsProps: true }],
-            "react/no-unescaped-entities": ["error", { forbid: [">", "}"] }],
-            "eol-last": ["error", "always"],
-            "operator-linebreak": ["error", "after"],
+            'react/prop-types': 'off',
+            'react/jsx-wrap-multilines': [
+                'error',
+                {
+                    declaration: 'parens-new-line',
+                    assignment: 'parens-new-line',
+                    return: 'parens-new-line',
+                    arrow: 'parens-new-line',
+                    condition: 'ignore',
+                    logical: 'ignore',
+                    prop: 'ignore',
+                },
+            ],
+            'react/jsx-no-leaked-render': [
+                'warn',
+                { validStrategies: ['coerce', 'ternary'] },
+            ],
+            'react/hook-use-state': 'warn',
+            'react/no-unstable-nested-components': [
+                'warn',
+                { allowAsProps: true },
+            ],
+            'react/no-unescaped-entities': ['error', { forbid: ['>', '}'] }],
+            'eol-last': ['error', 'always'],
+            'operator-linebreak': ['error', 'after'],
             // Import hygiene
-            "import-x/no-unresolved": "error",
-            "import-x/no-duplicates": "error",
-            "import-x/namespace": "error",
-            "import-x/no-named-default": "error",
-            "import-x/no-cycle": ["warn", { ignoreExternal: true }],
-            "import-x/no-extraneous-dependencies": ["warn", {
-                devDependencies: true,
-                includeTypes: false,
-            }],
-            "simple-import-sort/imports": "warn",
-            "simple-import-sort/exports": "warn",
-            "unused-imports/no-unused-imports": "warn",
+            'no-restricted-imports': [
+                'error',
+                {
+                    patterns: [
+                        {
+                            group: ['../*'],
+                            message:
+                                "Use the '@/' alias (or 'prisma/', '@root/') rather than a parent-relative import. Same-directory './' imports are fine.",
+                        },
+                    ],
+                },
+            ],
+            'import-x/no-unresolved': 'error',
+            'import-x/no-duplicates': 'error',
+            'import-x/namespace': 'error',
+            'import-x/no-named-default': 'error',
+            'import-x/no-cycle': ['warn', { ignoreExternal: true }],
+            'import-x/no-extraneous-dependencies': [
+                'warn',
+                {
+                    devDependencies: true,
+                    includeTypes: false,
+                },
+            ],
+            'simple-import-sort/imports': 'warn',
+            'simple-import-sort/exports': 'warn',
+            'unused-imports/no-unused-imports': 'warn',
             // Promise rules
-            "promise/catch-or-return": "error",
-            "promise/always-return": "warn",
-            "promise/no-multiple-resolved": "error",
-            "promise/no-nesting": "warn",
-            "promise/no-return-in-finally": "warn",
+            'promise/catch-or-return': 'error',
+            'promise/always-return': 'warn',
+            'promise/no-multiple-resolved': 'error',
+            'promise/no-nesting': 'warn',
+            'promise/no-return-in-finally': 'warn',
             // SonarJS examples (keep light to avoid noise)
-            "sonarjs/no-all-duplicated-branches": "warn",
-            "sonarjs/no-identical-functions": "warn",
+            'sonarjs/no-all-duplicated-branches': 'warn',
+            'sonarjs/no-identical-functions': 'warn',
             // eslint-comments hygiene
-            "eslint-comments/no-unused-disable": "error",
+            'eslint-comments/no-unused-disable': 'error',
             // RegExp safety example
-            "regexp/no-dupe-characters-character-class": "error",
+            'regexp/no-dupe-characters-character-class': 'error',
         },
     },
     tsProjectConfig,
@@ -170,145 +216,190 @@ const config = [
     ...tsTypeAware,
     // Additional type-aware rule refinements layered AFTER base TS configs.
     {
-        files: ["**/*.ts", "**/*.tsx"],
+        files: ['**/*.ts', '**/*.tsx'],
         rules: {
-            "@typescript-eslint/await-thenable": "error",
-            "@typescript-eslint/no-unused-vars": ["warn", { argsIgnorePattern: "^_" }],
-            "@typescript-eslint/consistent-type-assertions": ["error", {
-                assertionStyle: "as",
-                objectLiteralTypeAssertions: "allow-as-parameter",
-            }],
-            "@typescript-eslint/no-floating-promises": "error",
-            "@typescript-eslint/no-misused-promises": ["error", { checksVoidReturn: false }],
-            "@typescript-eslint/non-nullable-type-assertion-style": "warn",
-            "@typescript-eslint/no-unnecessary-type-assertion": "warn",
-            "@typescript-eslint/no-unsafe-enum-comparison": "warn",
-            "@typescript-eslint/prefer-nullish-coalescing": "warn",
-            "@typescript-eslint/prefer-regexp-exec": "warn",
-            "@typescript-eslint/restrict-template-expressions": ["warn", {
-                allowAny: false,
-                allowNumber: true,
-                allowBoolean: false,
-                allowNullish: false,
-                allowRegExp: true,
-            }],
-            "@typescript-eslint/unbound-method": "off",
+            '@typescript-eslint/await-thenable': 'error',
+            '@typescript-eslint/no-unused-vars': [
+                'warn',
+                { argsIgnorePattern: '^_' },
+            ],
+            '@typescript-eslint/consistent-type-assertions': [
+                'error',
+                {
+                    assertionStyle: 'as',
+                    objectLiteralTypeAssertions: 'allow-as-parameter',
+                },
+            ],
+            '@typescript-eslint/no-floating-promises': 'error',
+            '@typescript-eslint/no-misused-promises': [
+                'error',
+                { checksVoidReturn: false },
+            ],
+            '@typescript-eslint/non-nullable-type-assertion-style': 'warn',
+            '@typescript-eslint/no-unnecessary-type-assertion': 'warn',
+            '@typescript-eslint/no-unsafe-enum-comparison': 'warn',
+            '@typescript-eslint/prefer-nullish-coalescing': 'warn',
+            '@typescript-eslint/prefer-regexp-exec': 'warn',
+            '@typescript-eslint/restrict-template-expressions': [
+                'warn',
+                {
+                    allowAny: false,
+                    allowNumber: true,
+                    allowBoolean: false,
+                    allowNullish: false,
+                    allowRegExp: true,
+                },
+            ],
+            '@typescript-eslint/unbound-method': 'off',
         },
     },
     // Testing Library / jest-dom overrides (Component tests only)
     {
-        files: ["tests/components/**/*.test.{ts,tsx,js,jsx}"],
+        files: ['tests/components/**/*.test.{ts,tsx,js,jsx}'],
         plugins: {
-            "testing-library": testingLibrary,
-            "jest-dom": jestDom,
+            'testing-library': testingLibrary,
+            'jest-dom': jestDom,
         },
         rules: {
             ...testingLibrary.configs.react.rules,
             ...jestDom.configs.recommended.rules,
             // Correct rule name from plugin (old mistaken name was no-debug)
-            "testing-library/no-debugging-utils": "warn",
+            'testing-library/no-debugging-utils': 'warn',
         },
     },
     // Playwright E2E tests
     {
-        files: ["e2e/**/*.ts"],
+        files: ['e2e/**/*.ts'],
         plugins: {
             playwright,
         },
         rules: {
-            "playwright/no-page-pause": "warn",
-            "playwright/no-force-option": "warn",
+            'playwright/no-page-pause': 'warn',
+            'playwright/no-force-option': 'warn',
             // Playwright fixture callbacks use a parameter named `use` which
             // ESLint's react-hooks plugin misidentifies as a React Hook call.
-            "react-hooks/rules-of-hooks": "off",
+            'react-hooks/rules-of-hooks': 'off',
         },
     },
     // Node / server-only code (API routes, services, scripts)
     {
-        files: ["src/app/api/**", "src/services/**", "scripts/**"],
+        files: ['src/app/api/**', 'src/services/**', 'scripts/**'],
         plugins: {
             n: pluginN,
         },
         rules: {
-            "n/no-process-exit": "warn",
-            "n/no-missing-import": "off", // handled by import-x with TS resolver
+            'n/no-process-exit': 'warn',
+            'n/no-missing-import': 'off', // handled by import-x with TS resolver
         },
     },
     {
         ignores: [
-            ".claude/**",
-            ".next/**",
-            ".storybook/**",
-            ".vscode/**",
-            "build/**",
-            "next-env.d.ts",
-            "node_modules/**",
-            "out/**",
-            "prisma/**",
-            "src/stories/**",
-            "storybook-static/**",
+            '.claude/**',
+            '.next/**',
+            '.storybook/**',
+            '.vscode/**',
+            'build/**',
+            'coverage/**',
+            'next-env.d.ts',
+            'node_modules/**',
+            'out/**',
+            'prisma/**',
+            'public/mockServiceWorker.js',
+            'src/stories/**',
+            'storybook-static/**',
         ],
     },
     // Optional stricter unsafe usage warnings (keep lightweight to avoid noise).
     {
-        files: ["**/*.ts", "**/*.tsx"],
+        files: ['**/*.ts', '**/*.tsx'],
         rules: {
-            "@typescript-eslint/no-unsafe-assignment": "warn",
-            "@typescript-eslint/no-unsafe-member-access": "warn",
+            '@typescript-eslint/no-unsafe-assignment': 'warn',
+            '@typescript-eslint/no-unsafe-member-access': 'warn',
         },
     },
     {
-        files: ["src/tests/**/*.test.ts", "src/tests/**/*.test.tsx"],
+        files: ['src/tests/**/*.test.ts', 'src/tests/**/*.test.tsx'],
         rules: {
-            "@typescript-eslint/no-unsafe-assignment": "off",
+            '@typescript-eslint/no-unsafe-assignment': 'off',
         },
     },
     // Runtime app code guardrails:
     // - ban direct console logging
     // - enforce typed app errors instead of `throw new Error(...)`
     {
-        files: ["src/app/**/*.{ts,tsx}", "src/components/**/*.{ts,tsx}", "src/lib/**/*.{ts,tsx}", "src/services/**/*.{ts,tsx}"],
+        files: [
+            'src/app/**/*.{ts,tsx}',
+            'src/components/**/*.{ts,tsx}',
+            'src/lib/**/*.{ts,tsx}',
+            'src/services/**/*.{ts,tsx}',
+        ],
         ignores: [
-            "**/*.vitest.spec.*",
-            "**/*.test.*",
-            "**/*.stories.*",
-            "**/__mocks__/**",
-            "src/tests/**",
-            "src/lib/exportdb/**",
-            "src/lib/importlivedb/**",
-            "src/lib/crawllivesite/**",
-            "src/lib/observability/sentry.ts",
+            '**/*.vitest.spec.*',
+            '**/*.test.*',
+            '**/*.stories.*',
+            '**/__mocks__/**',
+            'src/tests/**',
+            'src/lib/exportdb/**',
+            'src/lib/importlivedb/**',
+            'src/lib/crawllivesite/**',
+            'src/lib/observability/sentry.ts',
         ],
         rules: {
-            "no-console": "error",
-            "no-restricted-syntax": [
-                "error",
+            'no-console': 'error',
+            'no-restricted-syntax': [
+                'error',
                 {
-                    selector: "ThrowStatement > NewExpression[callee.name='Error']",
-                    message: "Use a typed AppError (or normalizeUnknownError) instead of `throw new Error(...)` in runtime code.",
+                    selector:
+                        "ThrowStatement > NewExpression[callee.name='Error']",
+                    message:
+                        'Use a typed AppError (or normalizeUnknownError) instead of `throw new Error(...)` in runtime code.',
                 },
             ],
         },
     },
     // Next.js App Router pages must be server pages
     {
-        files: ["src/app/**/page.{ts,tsx}"],
-        ignores: [
-            "**/*.vitest.spec.*",
-            "**/*.test.*",
-            "**/*.stories.*",
-        ],
+        files: ['src/app/**/page.{ts,tsx}'],
+        ignores: ['**/*.vitest.spec.*', '**/*.test.*', '**/*.stories.*'],
         rules: {
-            "no-restricted-syntax": [
-                "error",
+            'no-restricted-syntax': [
+                'error',
                 {
-                    selector: "Program > ExpressionStatement[directive='use client']",
-                    message: "App Router pages must be server pages. Move client logic into child components.",
+                    selector:
+                        "Program > ExpressionStatement[directive='use client']",
+                    message:
+                        'App Router pages must be server pages. Move client logic into child components.',
                 },
             ],
         },
     },
-    ...storybook.configs["flat/recommended"],
+    // Presentation-layer components are always Client Components. This keeps
+    // the data layer (pages, actions, services) cleanly separated from
+    // rendering, and sidesteps the RSC/Mantine dot-notation subcomponent bug
+    // documented above (it only bites when a Server Component touches a
+    // 'use client' export's dot-notation subcomponent).
+    {
+        files: ['src/components/**/*.tsx'],
+        ignores: ['**/*.vitest.spec.*', '**/*.stories.*', '**/__mocks__/**'],
+        plugins: {
+            local: localRules,
+        },
+        rules: {
+            'local/require-use-client': 'error',
+        },
+    },
+    // A mock lives inside the directory of the module it mocks and imports that
+    // module's types from one level up ('../Foo'). That is the same-directory
+    // case in spirit, so the parent-relative import ban does not apply here.
+    {
+        files: ['**/__mocks__/**'],
+        rules: {
+            'no-restricted-imports': 'off',
+        },
+    },
+    ...storybook.configs['flat/recommended'],
+    // Must stay last: disables ESLint formatting rules that conflict with Prettier.
+    eslintConfigPrettier,
 ];
 
 export default config;

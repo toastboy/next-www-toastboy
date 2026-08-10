@@ -3,13 +3,18 @@ import z from 'zod';
 
 import { fromPounds } from '@/lib/money';
 
-
 const GameDayRowSchema = z.object({
-    date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date must be in ISO 8601 format (YYYY-MM-DD).'),
+    date: z
+        .string()
+        .regex(
+            /^\d{4}-\d{2}-\d{2}$/,
+            'Date must be in ISO 8601 format (YYYY-MM-DD).',
+        ),
     game: z.boolean(),
     comment: z.string().optional(),
 });
-const PoundsSchema = z.number()
+const PoundsSchema = z
+    .number()
     .positive('Cost must be a positive number.')
     .refine((value) => Number.isInteger(fromPounds(value)), {
         message: 'Cost must have at most 2 decimal places.',
@@ -18,7 +23,9 @@ const PoundsSchema = z.number()
 export const CreateMoreGameDaysSchema = z.object({
     cost: PoundsSchema,
     hallCost: PoundsSchema,
-    rows: z.array(GameDayRowSchema).min(1, 'At least one game day is required.'),
+    rows: z
+        .array(GameDayRowSchema)
+        .min(1, 'At least one game day is required.'),
 });
 
 export type CreateMoreGameDaysInput = z.infer<typeof CreateMoreGameDaysSchema>;

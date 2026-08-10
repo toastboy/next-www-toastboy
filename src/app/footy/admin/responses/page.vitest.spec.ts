@@ -4,15 +4,21 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 vi.mock('services/GameDay');
 vi.mock('services/Outcome');
 vi.mock('next/navigation', () => ({
-    notFound: vi.fn(() => { throw new Error('not_found'); }),
+    notFound: vi.fn(() => {
+        throw new Error('not_found');
+    }),
 }));
 
 vi.mock('@/components/AutoRefresh/AutoRefresh', () => ({
-    AutoRefresh: function AutoRefresh() { return null; },
+    AutoRefresh: function AutoRefresh() {
+        return null;
+    },
 }));
 
 vi.mock('@/components/ResponsesForm/ResponsesForm', () => ({
-    ResponsesForm: function ResponsesForm() { return null; },
+    ResponsesForm: function ResponsesForm() {
+        return null;
+    },
 }));
 
 import { SubmitResponse } from '@/actions/submitResponse';
@@ -69,7 +75,9 @@ describe('Admin Responses page', () => {
     });
 
     it('handles service errors gracefully by propagating them', async () => {
-        (outcomeService.getAdminByGameDay as Mock).mockRejectedValue(new Error('DB failed'));
+        (outcomeService.getAdminByGameDay as Mock).mockRejectedValue(
+            new Error('DB failed'),
+        );
 
         await expect(ResponsesPage()).rejects.toThrow('DB failed');
     });

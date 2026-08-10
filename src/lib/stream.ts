@@ -14,7 +14,9 @@
  * console.log(buffer.toString());
  * ```
  */
-export async function streamToBuffer(readableStream: NodeJS.ReadableStream): Promise<Buffer> {
+export async function streamToBuffer(
+    readableStream: NodeJS.ReadableStream,
+): Promise<Buffer> {
     return new Promise((resolve, reject) => {
         const chunks: Buffer[] = [];
         readableStream.on('data', (data: Buffer | Uint8Array) => {

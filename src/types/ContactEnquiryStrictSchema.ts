@@ -29,18 +29,24 @@ const ContactEnquiryUpdateStrictFields = {
     tokenHash: z.string().length(CONTACT_ENQUIRY_TOKEN_HASH_LENGTH).optional(),
 };
 
-export const ContactEnquiryWriteInputSchema = z.object({
-    name: ContactEnquiryCreateStrictFields.name,
-    email: ContactEnquiryCreateStrictFields.email,
-    message: ContactEnquiryCreateStrictFields.message,
-    token: z.string().trim().min(1),
-}).strict();
+export const ContactEnquiryWriteInputSchema = z
+    .object({
+        name: ContactEnquiryCreateStrictFields.name,
+        email: ContactEnquiryCreateStrictFields.email,
+        message: ContactEnquiryCreateStrictFields.message,
+        token: z.string().trim().min(1),
+    })
+    .strict();
 
-export type ContactEnquiryWriteInput = z.infer<typeof ContactEnquiryWriteInputSchema>;
+export type ContactEnquiryWriteInput = z.infer<
+    typeof ContactEnquiryWriteInputSchema
+>;
 
-export const ContactEnquiryMarkDeliveredInputSchema = z.object({
-    id: z.number().int().min(1),
-}).strict();
+export const ContactEnquiryMarkDeliveredInputSchema = z
+    .object({
+        id: z.number().int().min(1),
+    })
+    .strict();
 
 const ContactEnquiryUncheckedCreateInputWithoutIdSchema =
     ContactEnquiryUncheckedCreateInputObjectZodSchema.omit({ id: true });
@@ -49,26 +55,35 @@ const ContactEnquiryUncheckedUpdateInputWithoutIdSchema =
     ContactEnquiryUncheckedUpdateInputObjectZodSchema.omit({ id: true });
 
 const ContactEnquiryCreateDataStrictSchema = z.union([
-    ContactEnquiryCreateInputObjectZodSchema.extend(ContactEnquiryCreateStrictFields),
-    ContactEnquiryUncheckedCreateInputWithoutIdSchema.extend(ContactEnquiryCreateStrictFields),
+    ContactEnquiryCreateInputObjectZodSchema.extend(
+        ContactEnquiryCreateStrictFields,
+    ),
+    ContactEnquiryUncheckedCreateInputWithoutIdSchema.extend(
+        ContactEnquiryCreateStrictFields,
+    ),
 ]);
 
-const ContactEnquiryCreateOneStrictZodSchema = ContactEnquiryCreateOneZodSchema.extend({
-    data: ContactEnquiryCreateDataStrictSchema,
-});
+const ContactEnquiryCreateOneStrictZodSchema =
+    ContactEnquiryCreateOneZodSchema.extend({
+        data: ContactEnquiryCreateDataStrictSchema,
+    });
 
 export const ContactEnquiryCreateOneStrictSchema: z.ZodType<Prisma.ContactEnquiryCreateArgs> =
     ContactEnquiryCreateOneStrictZodSchema as unknown as z.ZodType<Prisma.ContactEnquiryCreateArgs>;
 
 const ContactEnquiryUpdateDataStrictSchema = z.union([
-    ContactEnquiryUpdateInputObjectZodSchema.extend(ContactEnquiryUpdateStrictFields),
-    ContactEnquiryUncheckedUpdateInputWithoutIdSchema.extend(ContactEnquiryUpdateStrictFields),
+    ContactEnquiryUpdateInputObjectZodSchema.extend(
+        ContactEnquiryUpdateStrictFields,
+    ),
+    ContactEnquiryUncheckedUpdateInputWithoutIdSchema.extend(
+        ContactEnquiryUpdateStrictFields,
+    ),
 ]);
 
-const ContactEnquiryUpdateOneStrictZodSchema = ContactEnquiryUpdateOneZodSchema.extend({
-    data: ContactEnquiryUpdateDataStrictSchema,
-});
+const ContactEnquiryUpdateOneStrictZodSchema =
+    ContactEnquiryUpdateOneZodSchema.extend({
+        data: ContactEnquiryUpdateDataStrictSchema,
+    });
 
 export const ContactEnquiryUpdateOneStrictSchema: z.ZodType<Prisma.ContactEnquiryUpdateArgs> =
     ContactEnquiryUpdateOneStrictZodSchema as unknown as z.ZodType<Prisma.ContactEnquiryUpdateArgs>;
-

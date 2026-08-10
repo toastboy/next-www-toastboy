@@ -5,8 +5,12 @@ vi.mock('services/GameDay');
 vi.mock('services/Money');
 
 vi.mock('next/navigation', () => ({
-    notFound: vi.fn(() => { throw new Error('not_found'); }),
-    permanentRedirect: vi.fn(() => { throw new Error('permanent_redirect'); }),
+    notFound: vi.fn(() => {
+        throw new Error('not_found');
+    }),
+    permanentRedirect: vi.fn(() => {
+        throw new Error('permanent_redirect');
+    }),
 }));
 
 vi.mock('react', async () => {
@@ -20,11 +24,15 @@ vi.mock('@mantine/core', () => ({
 }));
 
 vi.mock('@/components/MoneyChart/MoneyChart', () => ({
-    MoneyChart: function MoneyChart() { return null; },
+    MoneyChart: function MoneyChart() {
+        return null;
+    },
 }));
 
 vi.mock('@/components/TitleWithYearDropdown/TitleWithYearDropdown', () => ({
-    TitleWithYearDropdown: function TitleWithYearDropdown() { return null; },
+    TitleWithYearDropdown: function TitleWithYearDropdown() {
+        return null;
+    },
 }));
 
 import BooksPage, { generateMetadata } from '@/app/footy/books/page';
@@ -37,7 +45,9 @@ describe('Books page', () => {
     beforeEach(() => {
         vi.clearAllMocks();
         (gameDayService.getAllYears as Mock).mockResolvedValue([0, 2023, 2024]);
-        (moneyService.getChartData as Mock).mockResolvedValue(defaultMoneyChartData);
+        (moneyService.getChartData as Mock).mockResolvedValue(
+            defaultMoneyChartData,
+        );
     });
 
     it('calls gameDayService.getAllYears with includeAllTime and mostRecentFirst', async () => {
@@ -58,7 +68,9 @@ describe('Books page', () => {
     });
 
     it('passes chart data to MoneyChart', async () => {
-        const result = await BooksPage({ searchParams: Promise.resolve({ year: '2024' }) });
+        const result = await BooksPage({
+            searchParams: Promise.resolve({ year: '2024' }),
+        });
 
         const chart = findElement(result, 'MoneyChart');
         expect(chart?.props.data).toEqual(defaultMoneyChartData);
@@ -72,7 +84,9 @@ describe('Books page', () => {
     });
 
     it('does not pass linkBase to MoneyChart when year is non-zero', async () => {
-        const result = await BooksPage({ searchParams: Promise.resolve({ year: '2024' }) });
+        const result = await BooksPage({
+            searchParams: Promise.resolve({ year: '2024' }),
+        });
 
         const chart = findElement(result, 'MoneyChart');
         expect(chart?.props.linkBase).toBeUndefined();
@@ -86,7 +100,9 @@ describe('Books page', () => {
 
     it('calls notFound when the year param is not a valid integer', async () => {
         await expect(
-            BooksPage({ searchParams: Promise.resolve({ year: 'notanumber' }) }),
+            BooksPage({
+                searchParams: Promise.resolve({ year: 'notanumber' }),
+            }),
         ).rejects.toThrow('not_found');
     });
 
@@ -98,7 +114,9 @@ describe('Books page', () => {
     });
 
     it('propagates errors from gameDayService.getAllYears', async () => {
-        (gameDayService.getAllYears as Mock).mockRejectedValue(new Error('DB failed'));
+        (gameDayService.getAllYears as Mock).mockRejectedValue(
+            new Error('DB failed'),
+        );
 
         await expect(
             BooksPage({ searchParams: Promise.resolve({ year: '2024' }) }),
@@ -106,7 +124,9 @@ describe('Books page', () => {
     });
 
     it('propagates errors from moneyService.getChartData', async () => {
-        (moneyService.getChartData as Mock).mockRejectedValue(new Error('Chart data failed'));
+        (moneyService.getChartData as Mock).mockRejectedValue(
+            new Error('Chart data failed'),
+        );
 
         await expect(
             BooksPage({ searchParams: Promise.resolve({ year: '2024' }) }),
@@ -114,7 +134,9 @@ describe('Books page', () => {
     });
 
     it('generates metadata with the year-specific title', async () => {
-        const metadata = await generateMetadata({ searchParams: Promise.resolve({ year: '2024' }) });
+        const metadata = await generateMetadata({
+            searchParams: Promise.resolve({ year: '2024' }),
+        });
 
         expect(metadata.title).toBe('2024 Books');
     });

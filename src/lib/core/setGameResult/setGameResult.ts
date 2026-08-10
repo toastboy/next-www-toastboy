@@ -3,7 +3,11 @@ import 'server-only';
 import type { TeamName } from 'prisma/zod/schemas';
 import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 
-import { InternalError, normalizeUnknownError,NotFoundError } from '@/lib/errors';
+import {
+    InternalError,
+    normalizeUnknownError,
+    NotFoundError,
+} from '@/lib/errors';
 import gameDayService from '@/services/GameDay';
 import transactionService from '@/services/Money';
 import outcomeService from '@/services/Outcome';
@@ -44,7 +48,7 @@ const defaultDeps: SetGameResultDeps = {
  */
 const mapWinnerToPoints = (
     winner: SetGameResultInput['winner'],
-): { A: PointsValue | null; B: PointsValue | null; } => {
+): { A: PointsValue | null; B: PointsValue | null } => {
     switch (winner) {
         case 'A':
             return { A: 3, B: 0 };
@@ -56,7 +60,6 @@ const mapWinnerToPoints = (
             return { A: null, B: null };
     }
 };
-
 
 /**
  * Updates all outcomes for a given team on a game day, setting their points and
@@ -77,21 +80,25 @@ const updateTeamOutcomes = async (
 ) => {
     const outcomes = await deps.outcomeService.getByGameDay(gameDay.id, team);
 
-    await Promise.all(outcomes.map((outcome) => (
-        deps.outcomeService.upsert({
-            gameDayId: gameDay.id,
-            playerId: outcome.playerId,
-            points,
-        })
-    )));
+    await Promise.all(
+        outcomes.map((outcome) =>
+            deps.outcomeService.upsert({
+                gameDayId: gameDay.id,
+                playerId: outcome.playerId,
+                points,
+            }),
+        ),
+    );
 
-    await Promise.all(outcomes.map((outcome) => {
-        return (deps.transactionService.charge(
-            outcome.playerId,
-            gameDay.id,
-            gameDay.cost,
-        ));
-    }));
+    await Promise.all(
+        outcomes.map((outcome) => {
+            return deps.transactionService.charge(
+                outcome.playerId,
+                gameDay.id,
+                gameDay.cost,
+            );
+        }),
+    );
 };
 
 /**

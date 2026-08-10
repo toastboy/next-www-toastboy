@@ -1,6 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { revalidatePathMock, broadcastMock, requireAdminMock, recordHallHireCoreMock } = vi.hoisted(() => ({
+const {
+    revalidatePathMock,
+    broadcastMock,
+    requireAdminMock,
+    recordHallHireCoreMock,
+} = vi.hoisted(() => ({
     revalidatePathMock: vi.fn(),
     broadcastMock: vi.fn(),
     requireAdminMock: vi.fn().mockResolvedValue(undefined),
@@ -24,7 +29,9 @@ const validInput = {
 };
 
 describe('recordHallHire action wrapper', () => {
-    beforeEach(() => { vi.clearAllMocks(); });
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
 
     it('calls requireAdmin, validates input, delegates to core, revalidates money and invoice paths, and broadcasts Money channel', async () => {
         await recordHallHire(validInput);
@@ -47,7 +54,9 @@ describe('recordHallHire action wrapper', () => {
     });
 
     it('propagates ZodError when input validation fails', async () => {
-        await expect(recordHallHire({ ...validInput, amountPence: -1 })).rejects.toThrow();
+        await expect(
+            recordHallHire({ ...validInput, amountPence: -1 }),
+        ).rejects.toThrow();
         expect(recordHallHireCoreMock).not.toHaveBeenCalled();
     });
 });

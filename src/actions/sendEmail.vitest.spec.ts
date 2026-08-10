@@ -17,7 +17,9 @@ const mailOptions = {
 };
 
 describe('sendEmail action wrapper', () => {
-    beforeEach(() => { vi.clearAllMocks(); });
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
 
     it('calls requireUser then delegates to sendEmailCore with the mail options', async () => {
         await sendEmail(mailOptions);

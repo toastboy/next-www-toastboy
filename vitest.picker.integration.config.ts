@@ -3,14 +3,20 @@ import { fileURLToPath } from 'node:url';
 
 import { defineConfig } from 'vitest/config';
 
-const currentDirname = typeof __dirname !== 'undefined' ? __dirname : path.dirname(fileURLToPath(import.meta.url));
+const currentDirname =
+    typeof __dirname !== 'undefined'
+        ? __dirname
+        : path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
     resolve: {
         alias: {
             '@': path.join(currentDirname, 'src'),
             prisma: path.join(currentDirname, 'prisma'),
-            'server-only': path.join(currentDirname, 'src/tests/__mocks__/server-only.ts'),
+            'server-only': path.join(
+                currentDirname,
+                'src/tests/__mocks__/server-only.ts',
+            ),
             types: path.join(currentDirname, 'src/types'),
         },
     },
@@ -18,6 +24,8 @@ export default defineConfig({
         name: 'picker-integration-vitest',
         environment: 'node',
         globals: true,
-        include: ['src/lib/actions/submitPicker/**/*.integration.vitest.spec.ts'],
+        include: [
+            'src/lib/actions/submitPicker/**/*.integration.vitest.spec.ts',
+        ],
     },
 });

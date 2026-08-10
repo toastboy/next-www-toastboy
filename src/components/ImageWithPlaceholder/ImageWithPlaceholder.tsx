@@ -1,11 +1,6 @@
 'use client';
 
-import {
-    AspectRatio,
-    Image,
-    type ImageProps,
-    Skeleton,
-} from '@mantine/core';
+import { AspectRatio, Image, type ImageProps, Skeleton } from '@mantine/core';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
 export interface Props extends Omit<ImageProps, 'onLoad' | 'onError' | 'src'> {
@@ -28,7 +23,14 @@ export interface Props extends Omit<ImageProps, 'onLoad' | 'onError' | 'src'> {
  * in flight. `w` sizes the reserved box itself (defaulting to the full width
  * of its container); the image inside always fills that box.
  */
-export const ImageWithPlaceholder = ({ ratio, radius, w = '100%', alt, onReady, ...imageProps }: Props) => {
+export const ImageWithPlaceholder = ({
+    ratio,
+    radius,
+    w = '100%',
+    alt,
+    onReady,
+    ...imageProps
+}: Props) => {
     const [loaded, setLoaded] = useState(false);
 
     // If this instance is reused for a different src (rather than remounted),
@@ -63,12 +65,19 @@ export const ImageWithPlaceholder = ({ ratio, radius, w = '100%', alt, onReady, 
     // A stable ref callback runs exactly once, right as the node mounts, so
     // check `.complete` there rather than waiting for an event that may have
     // already happened.
-    const imgRef = useCallback((node: HTMLImageElement | null) => {
-        if (node?.complete) handleReady();
-    }, [handleReady]);
+    const imgRef = useCallback(
+        (node: HTMLImageElement | null) => {
+            if (node?.complete) handleReady();
+        },
+        [handleReady],
+    );
 
     return (
-        <AspectRatio ratio={ratio} w={w} pos="relative">
+        <AspectRatio
+            ratio={ratio}
+            w={w}
+            pos="relative"
+        >
             <Skeleton
                 visible={!loaded}
                 radius={radius}
@@ -84,7 +93,10 @@ export const ImageWithPlaceholder = ({ ratio, radius, w = '100%', alt, onReady, 
                 onLoad={handleReady}
                 onError={handleReady}
                 aria-busy={!loaded}
-                style={{ opacity: loaded ? 1 : 0, transition: 'opacity 150ms ease' }}
+                style={{
+                    opacity: loaded ? 1 : 0,
+                    transition: 'opacity 150ms ease',
+                }}
             />
         </AspectRatio>
     );

@@ -4,7 +4,9 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 vi.mock('@/lib/auth.server');
 
 vi.mock('next/navigation', () => ({
-    redirect: vi.fn(() => { throw new Error('redirected'); }),
+    redirect: vi.fn(() => {
+        throw new Error('redirected');
+    }),
 }));
 
 const { headersMock } = vi.hoisted(() => ({
@@ -36,13 +38,17 @@ describe('Admin layout', () => {
 
     it('redirects to admin sign-in preserving the current pathname when the user is not an admin', async () => {
         (getUserRole as Mock).mockResolvedValue('user');
-        headersMock.mockResolvedValue(new Headers({ 'x-pathname': '/footy/admin/money' }));
+        headersMock.mockResolvedValue(
+            new Headers({ 'x-pathname': '/footy/admin/money' }),
+        );
 
         await expect(
             AdminLayout({ children: 'admin content' }),
         ).rejects.toThrow('redirected');
 
-        expect(redirect).toHaveBeenCalledWith('/footy/auth/signin?admin=true&redirect=%2Ffooty%2Fadmin%2Fmoney');
+        expect(redirect).toHaveBeenCalledWith(
+            '/footy/auth/signin?admin=true&redirect=%2Ffooty%2Fadmin%2Fmoney',
+        );
     });
 
     it('defaults the redirect target to /footy/admin when no pathname header is present', async () => {
@@ -53,6 +59,8 @@ describe('Admin layout', () => {
             AdminLayout({ children: 'admin content' }),
         ).rejects.toThrow('redirected');
 
-        expect(redirect).toHaveBeenCalledWith('/footy/auth/signin?admin=true&redirect=%2Ffooty%2Fadmin');
+        expect(redirect).toHaveBeenCalledWith(
+            '/footy/auth/signin?admin=true&redirect=%2Ffooty%2Fadmin',
+        );
     });
 });

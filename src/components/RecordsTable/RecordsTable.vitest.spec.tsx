@@ -1,4 +1,3 @@
-
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { TableName, TableNameSchema } from 'prisma/zod/schemas';
@@ -9,7 +8,10 @@ import { RecordsTable } from '@/components/RecordsTable/RecordsTable';
 import { Props as TableScoreProps } from '@/components/TableScore/TableScore';
 import { config } from '@/lib/config';
 import { extractMockProps, Wrapper } from '@/tests/components/lib/common';
-import { createMockPlayerRecordData, defaultPlayerRecordDataList } from '@/tests/mocks/data/playerRecordData';
+import {
+    createMockPlayerRecordData,
+    defaultPlayerRecordDataList,
+} from '@/tests/mocks/data/playerRecordData';
 import { PlayerRecordDataType } from '@/types';
 
 vi.mock('@/components/PlayerLink/PlayerLink');
@@ -23,12 +25,15 @@ const getFirstDataRowCells = () => {
 
 // Collapses JSX-formatting whitespace (newlines/indentation between
 // expressions) so assertions compare against the meaningful text only.
-const normalizeText = (text: string | null) => (text ?? '').replace(/\s+/g, ' ').trim();
+const normalizeText = (text: string | null) =>
+    (text ?? '').replace(/\s+/g, ' ').trim();
 
 const getRankColumnValues = () => {
     const [, tbody] = screen.getAllByRole('rowgroup');
     const rows = within(tbody).getAllByRole('row');
-    return rows.map((row) => normalizeText(within(row).getAllByRole('cell')[0].textContent));
+    return rows.map((row) =>
+        normalizeText(within(row).getAllByRole('cell')[0].textContent),
+    );
 };
 
 const getRankCell = (rowIndex: number) => {
@@ -62,7 +67,7 @@ describe('RecordsTable', () => {
         {
             const props = extractMockProps<PlayerLinkProps>('PlayerLink');
             expect(props.length).toBe(20);
-            expect(props[0].player.name).toEqual("Gary Player");
+            expect(props[0].player.name).toEqual('Gary Player');
         }
 
         {
@@ -77,7 +82,12 @@ describe('RecordsTable', () => {
         [TableNameSchema.enum.points, 'rankPoints', 1, 'Points'],
         [TableNameSchema.enum.averages, 'rankAverages', 2, 'Average'],
         [TableNameSchema.enum.stalwart, 'rankStalwart', 3, 'Games Played'],
-        [TableNameSchema.enum.speedy, 'rankSpeedy', 4, 'Average Response Time (hh:mm:ss)'],
+        [
+            TableNameSchema.enum.speedy,
+            'rankSpeedy',
+            4,
+            'Average Response Time (hh:mm:ss)',
+        ],
         [TableNameSchema.enum.pub, 'rankPub', 5, 'Pub Score'],
     ] satisfies [TableName, keyof PlayerRecordDataType, number, string][])(
         'when table is "%s"',
@@ -88,7 +98,11 @@ describe('RecordsTable', () => {
                         <RecordsTable
                             table={table}
                             year={2024}
-                            records={[createMockPlayerRecordData({ [rankField]: expectedRank })]}
+                            records={[
+                                createMockPlayerRecordData({
+                                    [rankField]: expectedRank,
+                                }),
+                            ]}
                         />
                     </Wrapper>,
                 );
@@ -103,7 +117,11 @@ describe('RecordsTable', () => {
                         <RecordsTable
                             table={table}
                             year={2024}
-                            records={[createMockPlayerRecordData({ [rankField]: undefined })]}
+                            records={[
+                                createMockPlayerRecordData({
+                                    [rankField]: undefined,
+                                }),
+                            ]}
                         />
                     </Wrapper>,
                 );
@@ -138,10 +156,22 @@ describe('RecordsTable', () => {
                         table={TableNameSchema.enum.points}
                         year={2024}
                         records={[
-                            createMockPlayerRecordData({ id: 1, rankPoints: 1 }),
-                            createMockPlayerRecordData({ id: 2, rankPoints: 2 }),
-                            createMockPlayerRecordData({ id: 3, rankPoints: 2 }),
-                            createMockPlayerRecordData({ id: 4, rankPoints: 4 }),
+                            createMockPlayerRecordData({
+                                id: 1,
+                                rankPoints: 1,
+                            }),
+                            createMockPlayerRecordData({
+                                id: 2,
+                                rankPoints: 2,
+                            }),
+                            createMockPlayerRecordData({
+                                id: 3,
+                                rankPoints: 2,
+                            }),
+                            createMockPlayerRecordData({
+                                id: 4,
+                                rankPoints: 4,
+                            }),
                         ]}
                     />
                 </Wrapper>,
@@ -164,9 +194,18 @@ describe('RecordsTable', () => {
                         table={TableNameSchema.enum.points}
                         year={2024}
                         records={[
-                            createMockPlayerRecordData({ id: 1, rankPoints: 1 }),
-                            createMockPlayerRecordData({ id: 2, rankPoints: 1 }),
-                            createMockPlayerRecordData({ id: 3, rankPoints: 1 }),
+                            createMockPlayerRecordData({
+                                id: 1,
+                                rankPoints: 1,
+                            }),
+                            createMockPlayerRecordData({
+                                id: 2,
+                                rankPoints: 1,
+                            }),
+                            createMockPlayerRecordData({
+                                id: 3,
+                                rankPoints: 1,
+                            }),
                         ]}
                     />
                 </Wrapper>,
@@ -188,9 +227,18 @@ describe('RecordsTable', () => {
                         table={TableNameSchema.enum.points}
                         year={2024}
                         records={[
-                            createMockPlayerRecordData({ id: 1, rankPoints: undefined }),
-                            createMockPlayerRecordData({ id: 2, rankPoints: null }),
-                            createMockPlayerRecordData({ id: 3, rankPoints: 1 }),
+                            createMockPlayerRecordData({
+                                id: 1,
+                                rankPoints: undefined,
+                            }),
+                            createMockPlayerRecordData({
+                                id: 2,
+                                rankPoints: null,
+                            }),
+                            createMockPlayerRecordData({
+                                id: 3,
+                                rankPoints: 1,
+                            }),
                         ]}
                     />
                 </Wrapper>,
@@ -212,9 +260,18 @@ describe('RecordsTable', () => {
                         table={TableNameSchema.enum.points}
                         year={2024}
                         records={[
-                            createMockPlayerRecordData({ id: 1, rankPoints: undefined }),
-                            createMockPlayerRecordData({ id: 2, rankPoints: 2 }),
-                            createMockPlayerRecordData({ id: 3, rankPoints: 2 }),
+                            createMockPlayerRecordData({
+                                id: 1,
+                                rankPoints: undefined,
+                            }),
+                            createMockPlayerRecordData({
+                                id: 2,
+                                rankPoints: 2,
+                            }),
+                            createMockPlayerRecordData({
+                                id: 3,
+                                rankPoints: 2,
+                            }),
                         ]}
                     />
                 </Wrapper>,
@@ -229,7 +286,11 @@ describe('RecordsTable', () => {
     describe('show more / show less', () => {
         const untiedRecords = Array.from(
             { length: config.tableVisibleRows + 5 },
-            (_, index) => createMockPlayerRecordData({ id: index + 1, rankPoints: index + 1 }),
+            (_, index) =>
+                createMockPlayerRecordData({
+                    id: index + 1,
+                    rankPoints: index + 1,
+                }),
         );
 
         it('renders only the configured number of rows, with a "show more" toggle', () => {
@@ -243,10 +304,12 @@ describe('RecordsTable', () => {
                 </Wrapper>,
             );
 
-            expect(extractMockProps<PlayerLinkProps>('PlayerLink')).toHaveLength(
-                config.tableVisibleRows,
-            );
-            expect(screen.getByRole('button', { name: 'Show 5 more' })).toBeInTheDocument();
+            expect(
+                extractMockProps<PlayerLinkProps>('PlayerLink'),
+            ).toHaveLength(config.tableVisibleRows);
+            expect(
+                screen.getByRole('button', { name: 'Show 5 more' }),
+            ).toBeInTheDocument();
         });
 
         it('reveals the remaining rows when the toggle is clicked, then hides them again', async () => {
@@ -261,16 +324,20 @@ describe('RecordsTable', () => {
                 </Wrapper>,
             );
 
-            await user.click(screen.getByRole('button', { name: 'Show 5 more' }));
+            await user.click(
+                screen.getByRole('button', { name: 'Show 5 more' }),
+            );
 
-            expect(extractMockProps<PlayerLinkProps>('PlayerLink')).toHaveLength(untiedRecords.length);
+            expect(
+                extractMockProps<PlayerLinkProps>('PlayerLink'),
+            ).toHaveLength(untiedRecords.length);
             const showLess = screen.getByRole('button', { name: 'Show less' });
 
             await user.click(showLess);
 
-            expect(extractMockProps<PlayerLinkProps>('PlayerLink')).toHaveLength(
-                config.tableVisibleRows,
-            );
+            expect(
+                extractMockProps<PlayerLinkProps>('PlayerLink'),
+            ).toHaveLength(config.tableVisibleRows);
         });
 
         it('does not render a toggle when all rows already fit', () => {
@@ -284,14 +351,16 @@ describe('RecordsTable', () => {
                 </Wrapper>,
             );
 
-            expect(screen.queryByRole('button', { name: /show/i })).not.toBeInTheDocument();
+            expect(
+                screen.queryByRole('button', { name: /show/i }),
+            ).not.toBeInTheDocument();
         });
 
         it('does not split a tie straddling the cutoff', () => {
             const tiedAcrossCutoff = untiedRecords.map((record, index) =>
-                index === config.tableVisibleRows ?
-                    { ...record, rankPoints: config.tableVisibleRows } :
-                    record,
+                index === config.tableVisibleRows
+                    ? { ...record, rankPoints: config.tableVisibleRows }
+                    : record,
             );
 
             render(
@@ -304,10 +373,12 @@ describe('RecordsTable', () => {
                 </Wrapper>,
             );
 
-            expect(extractMockProps<PlayerLinkProps>('PlayerLink')).toHaveLength(
-                config.tableVisibleRows + 1,
-            );
-            expect(screen.getByRole('button', { name: 'Show 4 more' })).toBeInTheDocument();
+            expect(
+                extractMockProps<PlayerLinkProps>('PlayerLink'),
+            ).toHaveLength(config.tableVisibleRows + 1);
+            expect(
+                screen.getByRole('button', { name: 'Show 4 more' }),
+            ).toBeInTheDocument();
         });
     });
 
@@ -339,7 +410,10 @@ describe('RecordsTable', () => {
                 </Wrapper>,
             );
 
-            const heading = screen.getByRole('heading', { level: 2, name: 'Unqualified' });
+            const heading = screen.getByRole('heading', {
+                level: 2,
+                name: 'Unqualified',
+            });
             expect(heading).toBeInTheDocument();
             expect(screen.getByRole('separator')).toBeInTheDocument();
         });
@@ -357,7 +431,9 @@ describe('RecordsTable', () => {
                 </Wrapper>,
             );
 
-            expect(screen.getByRole('heading', { level: 4, name: 'Unqualified' })).toBeInTheDocument();
+            expect(
+                screen.getByRole('heading', { level: 4, name: 'Unqualified' }),
+            ).toBeInTheDocument();
         });
     });
 });

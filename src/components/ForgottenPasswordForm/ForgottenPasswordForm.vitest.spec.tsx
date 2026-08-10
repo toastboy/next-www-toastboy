@@ -1,7 +1,4 @@
-
-import {
-    notifications,
-} from '@mantine/notifications';
+import { notifications } from '@mantine/notifications';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { MockedFunction } from 'vitest';
@@ -22,10 +19,15 @@ vi.mock('@/lib/observability/sentry', () => ({
 }));
 
 const mockRequestPasswordReset =
-    authClient.requestPasswordReset as MockedFunction<typeof authClient.requestPasswordReset>;
-const mockToPublicMessage = toPublicMessage as MockedFunction<typeof toPublicMessage>;
-const mockCaptureUnexpectedError =
-    captureUnexpectedError as MockedFunction<typeof captureUnexpectedError>;
+    authClient.requestPasswordReset as MockedFunction<
+        typeof authClient.requestPasswordReset
+    >;
+const mockToPublicMessage = toPublicMessage as MockedFunction<
+    typeof toPublicMessage
+>;
+const mockCaptureUnexpectedError = captureUnexpectedError as MockedFunction<
+    typeof captureUnexpectedError
+>;
 
 describe('ForgottenPasswordForm', () => {
     beforeEach(() => {
@@ -34,7 +36,8 @@ describe('ForgottenPasswordForm', () => {
             status: true,
         } as Awaited<ReturnType<typeof authClient.requestPasswordReset>>);
         mockToPublicMessage.mockImplementation(
-            (_error, fallback) => fallback ?? 'Unable to request a password reset right now.',
+            (_error, fallback) =>
+                fallback ?? 'Unable to request a password reset right now.',
         );
     });
 
@@ -46,7 +49,9 @@ describe('ForgottenPasswordForm', () => {
         );
 
         expect(screen.getByLabelText(/Email/i)).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /Send reset link/i })).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', { name: /Send reset link/i }),
+        ).toBeInTheDocument();
     });
 
     it('shows required validation when submitted empty', async () => {
@@ -58,9 +63,13 @@ describe('ForgottenPasswordForm', () => {
             </Wrapper>,
         );
 
-        await user.click(screen.getByRole('button', { name: /Send reset link/i }));
+        await user.click(
+            screen.getByRole('button', { name: /Send reset link/i }),
+        );
 
-        expect(await screen.findByText('Email is required')).toBeInTheDocument();
+        expect(
+            await screen.findByText('Email is required'),
+        ).toBeInTheDocument();
     });
 
     it('shows invalid email validation for malformed addresses', async () => {
@@ -73,7 +82,9 @@ describe('ForgottenPasswordForm', () => {
         );
 
         await user.type(screen.getByLabelText(/Email/i), 'not-an-email');
-        await user.click(screen.getByRole('button', { name: /Send reset link/i }));
+        await user.click(
+            screen.getByRole('button', { name: /Send reset link/i }),
+        );
 
         expect(await screen.findByText('Invalid email')).toBeInTheDocument();
         expect(mockRequestPasswordReset).not.toHaveBeenCalled();
@@ -90,7 +101,9 @@ describe('ForgottenPasswordForm', () => {
         );
 
         await user.type(screen.getByLabelText(/Email/i), 'test@example.com');
-        await user.click(screen.getByRole('button', { name: /Send reset link/i }));
+        await user.click(
+            screen.getByRole('button', { name: /Send reset link/i }),
+        );
 
         await waitFor(() => {
             expect(mockRequestPasswordReset).toHaveBeenCalledWith({
@@ -103,7 +116,8 @@ describe('ForgottenPasswordForm', () => {
             expect(notificationUpdateSpy).toHaveBeenCalledWith(
                 expect.objectContaining({
                     title: 'Check your email',
-                    message: 'If that email is linked to an account, a reset link is on the way.',
+                    message:
+                        'If that email is linked to an account, a reset link is on the way.',
                 }),
             );
         });
@@ -120,7 +134,9 @@ describe('ForgottenPasswordForm', () => {
         );
 
         await user.type(screen.getByLabelText(/Email/i), 'TEST@Example.COM');
-        await user.click(screen.getByRole('button', { name: /Send reset link/i }));
+        await user.click(
+            screen.getByRole('button', { name: /Send reset link/i }),
+        );
 
         await waitFor(() => {
             expect(mockRequestPasswordReset).toHaveBeenCalledWith({
@@ -133,7 +149,8 @@ describe('ForgottenPasswordForm', () => {
             expect(notificationUpdateSpy).toHaveBeenCalledWith(
                 expect.objectContaining({
                     title: 'Check your email',
-                    message: 'If that email is linked to an account, a reset link is on the way.',
+                    message:
+                        'If that email is linked to an account, a reset link is on the way.',
                 }),
             );
         });
@@ -154,7 +171,9 @@ describe('ForgottenPasswordForm', () => {
         );
 
         await user.type(screen.getByLabelText(/Email/i), 'test@example.com');
-        await user.click(screen.getByRole('button', { name: /Send reset link/i }));
+        await user.click(
+            screen.getByRole('button', { name: /Send reset link/i }),
+        );
 
         await waitFor(() => {
             expect(mockCaptureUnexpectedError).toHaveBeenCalledWith(

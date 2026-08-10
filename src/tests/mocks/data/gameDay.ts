@@ -13,14 +13,20 @@ export const defaultGameDay = {
     pickerGamesHistory: 10,
 } satisfies GameDayType;
 
-export const createMockGameDay = (overrides: Partial<GameDayType> = {}): GameDayType => ({
+export const createMockGameDay = (
+    overrides: Partial<GameDayType> = {},
+): GameDayType => ({
     ...defaultGameDay,
     ...overrides,
 });
 
-export const defaultGameDayList: GameDayType[] = Array.from({ length: 100 }, (_, index) =>
-    createMockGameDay({
-        id: index + 1,
-        date: new Date(defaultGameDay.date.getTime() + index * 7 * 24 * 60 * 60 * 1000),
-    }),
+export const defaultGameDayList: GameDayType[] = Array.from(
+    { length: 100 },
+    (_, index) =>
+        createMockGameDay({
+            id: index + 1,
+            date: new Date(
+                defaultGameDay.date.getTime() + index * 7 * 24 * 60 * 60 * 1000,
+            ),
+        }),
 );

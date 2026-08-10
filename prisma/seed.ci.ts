@@ -2,7 +2,12 @@ import 'dotenv/config';
 
 import { faker } from '@faker-js/faker';
 import { PrismaMariaDb } from '@prisma/adapter-mariadb';
-import { PlayerResponse, PrismaClient, TeamName, TransactionType } from 'prisma/generated/client';
+import {
+    PlayerResponse,
+    PrismaClient,
+    TeamName,
+    TransactionType,
+} from 'prisma/generated/client';
 import { nextFriday } from 'prisma/seedDates';
 import playerRecordService from '@/services/PlayerRecord';
 
@@ -16,7 +21,7 @@ const prisma = new PrismaClient({ adapter });
 //   mockUserDefaults.user.playerId  = 1
 //   mockUserDefaults.admin.playerId = 2
 const PLAYER_COUNT = 20;
-const COST_PENCE = 500;       // £5 per player per game
+const COST_PENCE = 500; // £5 per player per game
 const HALL_COST_PENCE = 2000; // £20 hall hire per game
 
 async function main() {
@@ -54,7 +59,10 @@ async function main() {
         accountEmail: faker.internet.email(),
         anonymous: false,
         goalie: i < 3,
-        joined: faker.date.between({ from: new Date('2020-01-01'), to: new Date('2024-01-01') }),
+        joined: faker.date.between({
+            from: new Date('2020-01-01'),
+            to: new Date('2024-01-01'),
+        }),
         born: faker.number.int({ min: 1970, max: 2000 }),
     }));
 
@@ -89,7 +97,9 @@ async function main() {
 
     let gameDayId = 1;
     // Start from the Friday ~2 years ago
-    let current = nextFriday(new Date(now.getFullYear() - 2, now.getMonth(), now.getDate()));
+    let current = nextFriday(
+        new Date(now.getFullYear() - 2, now.getMonth(), now.getDate()),
+    );
 
     while (current < now) {
         // mailSent is set on historical games (Tuesday before the game) so that
@@ -121,7 +131,9 @@ async function main() {
     gameDays.push(upcomingGame);
 
     await prisma.gameDay.createMany({ data: gameDays });
-    console.log(`  Created ${gameDays.length} game days (${gameDays.length - 1} historical + 1 upcoming)`);
+    console.log(
+        `  Created ${gameDays.length} game days (${gameDays.length - 1} historical + 1 upcoming)`,
+    );
 
     // -------------------------------------------------------------------------
     // Outcomes and transactions for historical games only
@@ -147,7 +159,10 @@ async function main() {
     for (const gameDay of historicalGameDays) {
         // Pick 10–16 players at random for each game
         const shuffled = faker.helpers.shuffle([...players]);
-        const count = faker.number.int({ min: 10, max: Math.min(16, PLAYER_COUNT) });
+        const count = faker.number.int({
+            min: 10,
+            max: Math.min(16, PLAYER_COUNT),
+        });
         const playing = shuffled.slice(0, count);
 
         const half = Math.floor(count / 2);
@@ -211,7 +226,9 @@ async function main() {
     console.log(`  Created ${outcomes.length} outcomes`);
 
     for (let i = 0; i < transactions.length; i += CHUNK) {
-        await prisma.transaction.createMany({ data: transactions.slice(i, i + CHUNK) });
+        await prisma.transaction.createMany({
+            data: transactions.slice(i, i + CHUNK),
+        });
     }
     console.log(`  Created ${transactions.length} transactions`);
 
@@ -227,7 +244,7 @@ async function main() {
 }
 
 main()
-    .catch(e => {
+    .catch((e) => {
         console.error(e);
         process.exit(1);
     })

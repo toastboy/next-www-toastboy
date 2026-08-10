@@ -12,13 +12,19 @@ test.describe('Money admin page', () => {
         await mustBeLoggedInAsAdmin(page);
     });
 
-    test('allows access to admin users and shows money admin interface', async ({ page }) => {
+    test('allows access to admin users and shows money admin interface', async ({
+        page,
+    }) => {
         await asAdmin(page, '/footy/admin/money');
 
         // Check for the money admin interface elements
-        await expect(page.getByRole('heading', { name: 'Unpaid Player Charges' })).toBeVisible();
+        await expect(
+            page.getByRole('heading', { name: 'Unpaid Player Charges' }),
+        ).toBeVisible();
         // Example: check for a Paid button (should be present for each player with debts)
-        await expect(page.getByRole('button', { name: 'Paid' }).first()).toBeVisible();
+        await expect(
+            page.getByRole('button', { name: 'Paid' }).first(),
+        ).toBeVisible();
         // Example: check for a player name from mock data (if seeded)
         // await expect(page.getByText('Alex Current')).toBeVisible();
     });

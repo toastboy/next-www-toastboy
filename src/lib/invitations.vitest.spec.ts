@@ -32,10 +32,13 @@ describe('invitations', () => {
         vi.useFakeTimers();
         resetBankHolidaysCache();
         // Default: bank holidays API returns empty list
-        vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
-            ok: true,
-            json: () => Promise.resolve(createBankHolidaysResponse([])),
-        }));
+        vi.stubGlobal(
+            'fetch',
+            vi.fn().mockResolvedValue({
+                ok: true,
+                json: () => Promise.resolve(createBankHolidaysResponse([])),
+            }),
+        );
     });
 
     afterEach(() => {
@@ -156,9 +159,8 @@ describe('invitations', () => {
             // Should skip to Thursday 2026-04-02
             vi.mocked(fetch).mockResolvedValue({
                 ok: true,
-                json: () => Promise.resolve(
-                    createBankHolidaysResponse(['2026-04-03']),
-                ),
+                json: () =>
+                    Promise.resolve(createBankHolidaysResponse(['2026-04-03'])),
             } as Response);
 
             const gameDay = createMockGameDay({
@@ -183,9 +185,13 @@ describe('invitations', () => {
             // Should skip to Thursday 2026-04-02
             vi.mocked(fetch).mockResolvedValue({
                 ok: true,
-                json: () => Promise.resolve(
-                    createBankHolidaysResponse(['2026-04-03', '2026-04-06']),
-                ),
+                json: () =>
+                    Promise.resolve(
+                        createBankHolidaysResponse([
+                            '2026-04-03',
+                            '2026-04-06',
+                        ]),
+                    ),
             } as Response);
 
             const gameDay = createMockGameDay({

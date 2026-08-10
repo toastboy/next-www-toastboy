@@ -1,11 +1,6 @@
-import {
-    Box,
-    Flex,
-    Group,
-    SimpleGrid,
-    Text,
-    Title,
-} from '@mantine/core';
+'use client';
+
+import { Box, Flex, Group, Text, Title } from '@mantine/core';
 import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 
 import { GameDayLink } from '@/components/GameDayLink/GameDayLink';
@@ -32,46 +27,80 @@ export const GameDaySummary = ({
     const winner = getGameWinnersFromTeams(teamA, teamB);
     const noGame = gameDay.game ? `` : `No game`;
     const comment = gameDay.comment ? `(${gameDay.comment})` : ``;
-    const maxTeamSize = Math.max(teamA.length, teamB.length);
     const navSlotWidth = '2rem';
 
     return (
-        <Flex direction="column" gap="sm">
-            <Group justify="space-between" gap="xs">
-                <Box w={navSlotWidth} ta="center">
-                    {prevGameDay ?
-                        <GameDayLink gameDay={prevGameDay} format="left-arrow" /> :
-                        <Box data-testid="game-day-prev-placeholder" aria-hidden="true" w={navSlotWidth} />}
+        <Flex
+            direction="column"
+            gap="sm"
+        >
+            <Group
+                justify="space-between"
+                gap="xs"
+            >
+                <Box
+                    w={navSlotWidth}
+                    ta="center"
+                >
+                    {prevGameDay ? (
+                        <GameDayLink
+                            gameDay={prevGameDay}
+                            format="left-arrow"
+                        />
+                    ) : (
+                        <Box
+                            data-testid="game-day-prev-placeholder"
+                            aria-hidden="true"
+                            w={navSlotWidth}
+                        />
+                    )}
                 </Box>
-                <Title order={1}>{formatDate(gameDay.date)}</Title>
-                <Box w={navSlotWidth} ta="center">
-                    {nextGameDay ?
-                        <GameDayLink gameDay={nextGameDay} format="right-arrow" /> :
-                        <Box data-testid="game-day-next-placeholder" aria-hidden="true" w={navSlotWidth} />}
+                <Title
+                    order={1}
+                    size="h3"
+                >
+                    {formatDate(gameDay.date)}
+                </Title>
+                <Box
+                    w={navSlotWidth}
+                    ta="center"
+                >
+                    {nextGameDay ? (
+                        <GameDayLink
+                            gameDay={nextGameDay}
+                            format="right-arrow"
+                        />
+                    ) : (
+                        <Box
+                            data-testid="game-day-next-placeholder"
+                            aria-hidden="true"
+                            w={navSlotWidth}
+                        />
+                    )}
                 </Box>
             </Group>
-            {(
-                <Text ta="center">
-                    {[noGame, comment].join(' ').trim()}
-                </Text>
-            )}
-            {gameDay.game ?
-                (<SimpleGrid cols={{ base: 2, lg: 1 }} spacing="md">
+            {noGame || comment ? (
+                <Text ta="center">{[noGame, comment].join(' ').trim()}</Text>
+            ) : null}
+            {gameDay.game ? (
+                <Flex
+                    direction={{ base: 'column', xs: 'row' }}
+                    gap="xs"
+                >
                     <Team
                         team={teamA}
                         teamName="A"
-                        maxTeamSize={maxTeamSize}
                         result={getTeamResultState('A', winner)}
                         hasBibs={gameDay.bibs === 'A'}
                     />
                     <Team
                         team={teamB}
                         teamName="B"
-                        maxTeamSize={maxTeamSize}
                         result={getTeamResultState('B', winner)}
                         hasBibs={gameDay.bibs === 'B'}
                     />
-                </SimpleGrid>) : null}
+                </Flex>
+            ) : null}
         </Flex>
     );
 };

@@ -1,4 +1,2 @@
-export const RichTextMailBody = () => (
-    <div>RichTextMailBody</div>
-);
+export const RichTextMailBody = () => <div>RichTextMailBody</div>;
 RichTextMailBody.displayName = 'RichTextMailBody';

@@ -1,7 +1,6 @@
-import {
-    Text,
-    Tooltip,
-} from '@mantine/core';
+'use client';
+
+import { Text, Tooltip } from '@mantine/core';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 
@@ -18,7 +17,7 @@ export const RelativeTime = ({ date }: Props) => {
     const relativeTime = formattedDate.fromNow();
 
     return (
-        <Tooltip label={formattedDate.format("YYYY-MM-DD HH:mm:ss")}>
+        <Tooltip label={formattedDate.format('YYYY-MM-DD HH:mm:ss')}>
             <Text>{relativeTime}</Text>
         </Tooltip>
     );

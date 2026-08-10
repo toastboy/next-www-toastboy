@@ -24,10 +24,15 @@ describe('Reset Password page', () => {
     });
 
     it('renders PasswordResetForm when a token is present in searchParams', async () => {
-        const element = await Page({ searchParams: Promise.resolve({ token: 'reset-token' }) });
+        const element = await Page({
+            searchParams: Promise.resolve({ token: 'reset-token' }),
+        });
         renderToStaticMarkup(element);
 
-        expect(PasswordResetForm).toHaveBeenCalledWith({ token: 'reset-token' }, undefined);
+        expect(PasswordResetForm).toHaveBeenCalledWith(
+            { token: 'reset-token' },
+            undefined,
+        );
     });
 
     it('renders an error notification when the token is absent', async () => {

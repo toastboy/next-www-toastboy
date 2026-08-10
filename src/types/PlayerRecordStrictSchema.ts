@@ -61,11 +61,15 @@ const PlayerRecordCheckedUpdateStrictFields = {
     ...PlayerRecordStrictFields,
 };
 
-export const PlayerRecordWriteInputSchema = z.object({
-    ...PlayerRecordCreateStrictFields,
-}).strip();
+export const PlayerRecordWriteInputSchema = z
+    .object({
+        ...PlayerRecordCreateStrictFields,
+    })
+    .strip();
 
-export type PlayerRecordWriteInput = z.infer<typeof PlayerRecordWriteInputSchema>;
+export type PlayerRecordWriteInput = z.infer<
+    typeof PlayerRecordWriteInputSchema
+>;
 
 const PlayerRecordUncheckedCreateInputWithoutIdSchema =
     PlayerRecordUncheckedCreateInputObjectZodSchema.omit({ id: true });
@@ -74,26 +78,36 @@ const PlayerRecordUncheckedUpdateInputWithoutIdSchema =
     PlayerRecordUncheckedUpdateInputObjectZodSchema.omit({ id: true });
 
 const PlayerRecordCreateDataStrictSchema = z.union([
-    PlayerRecordCreateInputObjectZodSchema.extend(PlayerRecordCreateStrictFields),
-    PlayerRecordUncheckedCreateInputWithoutIdSchema.extend(PlayerRecordCreateStrictFields),
+    PlayerRecordCreateInputObjectZodSchema.extend(
+        PlayerRecordCreateStrictFields,
+    ),
+    PlayerRecordUncheckedCreateInputWithoutIdSchema.extend(
+        PlayerRecordCreateStrictFields,
+    ),
 ]);
 
-const PlayerRecordCreateOneStrictZodSchema = PlayerRecordCreateOneZodSchema.extend({
-    data: PlayerRecordCreateDataStrictSchema,
-});
+const PlayerRecordCreateOneStrictZodSchema =
+    PlayerRecordCreateOneZodSchema.extend({
+        data: PlayerRecordCreateDataStrictSchema,
+    });
 
 export const PlayerRecordCreateOneStrictSchema: z.ZodType<Prisma.PlayerRecordCreateArgs> =
     PlayerRecordCreateOneStrictZodSchema as unknown as z.ZodType<Prisma.PlayerRecordCreateArgs>;
 
 const PlayerRecordUpdateDataStrictSchema = z.union([
-    PlayerRecordUpdateInputObjectZodSchema.extend(PlayerRecordCheckedUpdateStrictFields),
-    PlayerRecordUncheckedUpdateInputWithoutIdSchema.extend(PlayerRecordUpdateStrictFields),
+    PlayerRecordUpdateInputObjectZodSchema.extend(
+        PlayerRecordCheckedUpdateStrictFields,
+    ),
+    PlayerRecordUncheckedUpdateInputWithoutIdSchema.extend(
+        PlayerRecordUpdateStrictFields,
+    ),
 ]);
 
-const PlayerRecordUpsertOneStrictZodSchema = PlayerRecordUpsertOneZodSchema.extend({
-    create: PlayerRecordCreateDataStrictSchema,
-    update: PlayerRecordUpdateDataStrictSchema,
-});
+const PlayerRecordUpsertOneStrictZodSchema =
+    PlayerRecordUpsertOneZodSchema.extend({
+        create: PlayerRecordCreateDataStrictSchema,
+        update: PlayerRecordUpdateDataStrictSchema,
+    });
 
 export const PlayerRecordUpsertOneStrictSchema: z.ZodType<Prisma.PlayerRecordUpsertArgs> =
     PlayerRecordUpsertOneStrictZodSchema as unknown as z.ZodType<Prisma.PlayerRecordUpsertArgs>;

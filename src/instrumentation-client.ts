@@ -41,9 +41,7 @@ Sentry.init({
     dsn: 'https://718e6154f4da03a99d611d4eba4c5f1e@o4508663413932032.ingest.de.sentry.io/4508663431037008',
 
     // Add optional integrations for additional features
-    integrations: [
-        Sentry.replayIntegration(),
-    ],
+    integrations: [Sentry.replayIntegration()],
 
     // Use conservative defaults for free-tier quota safety and allow environment
     // overrides per deployment.

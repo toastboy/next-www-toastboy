@@ -1,11 +1,6 @@
-import {
-    Box,
-    Collapse,
-    Flex,
-    Group,
-    rem,
-    UnstyledButton,
-} from '@mantine/core';
+'use client';
+
+import { Box, Collapse, Flex, Group, rem, UnstyledButton } from '@mantine/core';
 import { IconChevronRight } from '@tabler/icons-react';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -26,7 +21,11 @@ export const NavBarLinksGroup = ({
     const hasLinks = Array.isArray(links);
     const [opened, setOpened] = useState(initiallyOpened ?? false);
     const items = (hasLinks ? links : []).map((link) => (
-        <Link className={classes.link} href={link.link} key={link.label}>
+        <Link
+            className={classes.link}
+            href={link.link}
+            key={link.label}
+        >
             {link.label}
         </Link>
     ));
@@ -44,8 +43,14 @@ export const NavBarLinksGroup = ({
 
     return (
         <>
-            <UnstyledButton onClick={() => setOpened((o) => !o)} className={classes.control}>
-                <Group justify="space-between" gap={0}>
+            <UnstyledButton
+                onClick={() => setOpened((o) => !o)}
+                className={classes.control}
+            >
+                <Group
+                    justify="space-between"
+                    gap={0}
+                >
                     <Flex align="center">
                         <Box ml="md">{label}</Box>
                     </Flex>

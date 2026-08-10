@@ -32,9 +32,13 @@ export default function globalSetup() {
     if (process.env.SKIP_DB_SEED) {
         console.log('⚙️  Refreshing upcoming game day on pre-seeded image...');
         if (process.env.CI) {
-            execSync('npm run refresh:upcoming-gameday:ci', { stdio: 'inherit' });
+            execSync('npm run refresh:upcoming-gameday:ci', {
+                stdio: 'inherit',
+            });
         } else {
-            execSync('npm run refresh:upcoming-gameday:playwright', { stdio: 'inherit' });
+            execSync('npm run refresh:upcoming-gameday:playwright', {
+                stdio: 'inherit',
+            });
         }
         console.log('✅ Upcoming game day refreshed');
         return;

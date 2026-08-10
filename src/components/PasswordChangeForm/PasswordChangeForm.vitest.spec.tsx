@@ -7,8 +7,9 @@ import { PasswordChangeForm } from '@/components/PasswordChangeForm/PasswordChan
 import { authClient } from '@/lib/auth.client';
 import { Wrapper } from '@/tests/components/lib/common';
 
-const mockChangePassword =
-    authClient.changePassword as MockedFunction<typeof authClient.changePassword>;
+const mockChangePassword = authClient.changePassword as MockedFunction<
+    typeof authClient.changePassword
+>;
 
 describe('PasswordChangeForm', () => {
     beforeEach(() => {
@@ -37,8 +38,12 @@ describe('PasswordChangeForm', () => {
 
         expect(screen.getByLabelText(/Current password/i)).toBeInTheDocument();
         expect(screen.getByLabelText(/^New password/i)).toBeInTheDocument();
-        expect(screen.getByLabelText(/Confirm new password/i)).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /Update password/i })).toBeInTheDocument();
+        expect(
+            screen.getByLabelText(/Confirm new password/i),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', { name: /Update password/i }),
+        ).toBeInTheDocument();
     });
 
     it('submits current and new password and shows success notification', async () => {
@@ -50,10 +55,18 @@ describe('PasswordChangeForm', () => {
             </Wrapper>,
         );
 
-        await user.type(screen.getByLabelText(/Current password/i), 'OldPassword123');
+        await user.type(
+            screen.getByLabelText(/Current password/i),
+            'OldPassword123',
+        );
         await user.type(screen.getByLabelText(/^New password/i), 'Password123');
-        await user.type(screen.getByLabelText(/Confirm new password/i), 'Password123');
-        await user.click(screen.getByRole('button', { name: /Update password/i }));
+        await user.type(
+            screen.getByLabelText(/Confirm new password/i),
+            'Password123',
+        );
+        await user.click(
+            screen.getByRole('button', { name: /Update password/i }),
+        );
 
         await waitFor(() => {
             expect(mockChangePassword).toHaveBeenCalledWith({
@@ -77,10 +90,18 @@ describe('PasswordChangeForm', () => {
             </Wrapper>,
         );
 
-        await user.type(screen.getByLabelText(/Current password/i), 'OldPassword123');
+        await user.type(
+            screen.getByLabelText(/Current password/i),
+            'OldPassword123',
+        );
         await user.type(screen.getByLabelText(/^New password/i), 'Password123');
-        await user.type(screen.getByLabelText(/Confirm new password/i), 'Password123');
-        await user.click(screen.getByRole('button', { name: /Update password/i }));
+        await user.type(
+            screen.getByLabelText(/Confirm new password/i),
+            'Password123',
+        );
+        await user.click(
+            screen.getByRole('button', { name: /Update password/i }),
+        );
 
         await waitFor(() => {
             expect(mockChangePassword).toHaveBeenCalledWith({
@@ -93,7 +114,9 @@ describe('PasswordChangeForm', () => {
 
     it('shows error notification with error.error.message on API failure', async () => {
         const user = userEvent.setup();
-        mockChangePassword.mockRejectedValue({ error: { message: 'Incorrect current password' } });
+        mockChangePassword.mockRejectedValue({
+            error: { message: 'Incorrect current password' },
+        });
 
         render(
             <Wrapper>
@@ -101,16 +124,26 @@ describe('PasswordChangeForm', () => {
             </Wrapper>,
         );
 
-        await user.type(screen.getByLabelText(/Current password/i), 'WrongPassword');
+        await user.type(
+            screen.getByLabelText(/Current password/i),
+            'WrongPassword',
+        );
         await user.type(screen.getByLabelText(/^New password/i), 'Password123');
-        await user.type(screen.getByLabelText(/Confirm new password/i), 'Password123');
-        await user.click(screen.getByRole('button', { name: /Update password/i }));
+        await user.type(
+            screen.getByLabelText(/Confirm new password/i),
+            'Password123',
+        );
+        await user.click(
+            screen.getByRole('button', { name: /Update password/i }),
+        );
 
         await waitFor(() => {
             expect(screen.getByRole('alert')).toBeInTheDocument();
         });
 
-        expect(screen.getByText(/Incorrect current password/)).toBeInTheDocument();
+        expect(
+            screen.getByText(/Incorrect current password/),
+        ).toBeInTheDocument();
     });
 
     it('shows error notification with error.message on API failure', async () => {
@@ -123,10 +156,18 @@ describe('PasswordChangeForm', () => {
             </Wrapper>,
         );
 
-        await user.type(screen.getByLabelText(/Current password/i), 'OldPassword123');
+        await user.type(
+            screen.getByLabelText(/Current password/i),
+            'OldPassword123',
+        );
         await user.type(screen.getByLabelText(/^New password/i), 'Password123');
-        await user.type(screen.getByLabelText(/Confirm new password/i), 'Password123');
-        await user.click(screen.getByRole('button', { name: /Update password/i }));
+        await user.type(
+            screen.getByLabelText(/Confirm new password/i),
+            'Password123',
+        );
+        await user.click(
+            screen.getByRole('button', { name: /Update password/i }),
+        );
 
         await waitFor(() => {
             expect(screen.getByRole('alert')).toBeInTheDocument();
@@ -145,21 +186,33 @@ describe('PasswordChangeForm', () => {
             </Wrapper>,
         );
 
-        await user.type(screen.getByLabelText(/Current password/i), 'OldPassword123');
+        await user.type(
+            screen.getByLabelText(/Current password/i),
+            'OldPassword123',
+        );
         await user.type(screen.getByLabelText(/^New password/i), 'Password123');
-        await user.type(screen.getByLabelText(/Confirm new password/i), 'Password123');
-        await user.click(screen.getByRole('button', { name: /Update password/i }));
+        await user.type(
+            screen.getByLabelText(/Confirm new password/i),
+            'Password123',
+        );
+        await user.click(
+            screen.getByRole('button', { name: /Update password/i }),
+        );
 
         await waitFor(() => {
             expect(screen.getByRole('alert')).toBeInTheDocument();
         });
 
-        expect(screen.getByText(/An unexpected error occurred/)).toBeInTheDocument();
+        expect(
+            screen.getByText(/An unexpected error occurred/),
+        ).toBeInTheDocument();
     });
 
     it('dismisses the error notification when closed', async () => {
         const user = userEvent.setup();
-        mockChangePassword.mockRejectedValue({ error: { message: 'Some error' } });
+        mockChangePassword.mockRejectedValue({
+            error: { message: 'Some error' },
+        });
 
         render(
             <Wrapper>
@@ -167,10 +220,18 @@ describe('PasswordChangeForm', () => {
             </Wrapper>,
         );
 
-        await user.type(screen.getByLabelText(/Current password/i), 'OldPassword123');
+        await user.type(
+            screen.getByLabelText(/Current password/i),
+            'OldPassword123',
+        );
         await user.type(screen.getByLabelText(/^New password/i), 'Password123');
-        await user.type(screen.getByLabelText(/Confirm new password/i), 'Password123');
-        await user.click(screen.getByRole('button', { name: /Update password/i }));
+        await user.type(
+            screen.getByLabelText(/Confirm new password/i),
+            'Password123',
+        );
+        await user.click(
+            screen.getByRole('button', { name: /Update password/i }),
+        );
 
         await waitFor(() => {
             expect(screen.getByRole('alert')).toBeInTheDocument();
@@ -192,13 +253,23 @@ describe('PasswordChangeForm', () => {
             </Wrapper>,
         );
 
-        await user.type(screen.getByLabelText(/Current password/i), 'OldPassword123');
+        await user.type(
+            screen.getByLabelText(/Current password/i),
+            'OldPassword123',
+        );
         await user.type(screen.getByLabelText(/^New password/i), 'Password123');
-        await user.type(screen.getByLabelText(/Confirm new password/i), 'DifferentPassword');
-        await user.click(screen.getByRole('button', { name: /Update password/i }));
+        await user.type(
+            screen.getByLabelText(/Confirm new password/i),
+            'DifferentPassword',
+        );
+        await user.click(
+            screen.getByRole('button', { name: /Update password/i }),
+        );
 
         await waitFor(() => {
-            expect(screen.getByText('Passwords do not match')).toBeInTheDocument();
+            expect(
+                screen.getByText('Passwords do not match'),
+            ).toBeInTheDocument();
         });
 
         expect(mockChangePassword).not.toHaveBeenCalled();
@@ -213,13 +284,23 @@ describe('PasswordChangeForm', () => {
             </Wrapper>,
         );
 
-        await user.type(screen.getByLabelText(/Current password/i), 'OldPassword123');
+        await user.type(
+            screen.getByLabelText(/Current password/i),
+            'OldPassword123',
+        );
         await user.type(screen.getByLabelText(/^New password/i), 'short');
-        await user.type(screen.getByLabelText(/Confirm new password/i), 'short');
-        await user.click(screen.getByRole('button', { name: /Update password/i }));
+        await user.type(
+            screen.getByLabelText(/Confirm new password/i),
+            'short',
+        );
+        await user.click(
+            screen.getByRole('button', { name: /Update password/i }),
+        );
 
         await waitFor(() => {
-            expect(screen.getByText('Password must be at least 8 characters long')).toBeInTheDocument();
+            expect(
+                screen.getByText('Password must be at least 8 characters long'),
+            ).toBeInTheDocument();
         });
 
         expect(mockChangePassword).not.toHaveBeenCalled();
@@ -235,11 +316,18 @@ describe('PasswordChangeForm', () => {
         );
 
         await user.type(screen.getByLabelText(/^New password/i), 'Password123');
-        await user.type(screen.getByLabelText(/Confirm new password/i), 'Password123');
-        await user.click(screen.getByRole('button', { name: /Update password/i }));
+        await user.type(
+            screen.getByLabelText(/Confirm new password/i),
+            'Password123',
+        );
+        await user.click(
+            screen.getByRole('button', { name: /Update password/i }),
+        );
 
         await waitFor(() => {
-            expect(screen.getByText('Current password is required')).toBeInTheDocument();
+            expect(
+                screen.getByText('Current password is required'),
+            ).toBeInTheDocument();
         });
 
         expect(mockChangePassword).not.toHaveBeenCalled();

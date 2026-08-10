@@ -3,9 +3,9 @@ import { ClubType } from 'prisma/zod/schemas/models/Club.schema';
 export const defaultClub = {
     id: 1,
     soccerwayId: 1000,
-    clubName: "Wittering United",
-    uri: "wittering-united",
-    country: "england",
+    clubName: 'Wittering United',
+    uri: 'wittering-united',
+    country: 'england',
 } satisfies ClubType;
 
 export const invalidClub: ClubType = {
@@ -13,14 +13,18 @@ export const invalidClub: ClubType = {
     id: -1,
 };
 
-export const createMockClub = (overrides: Partial<ClubType> = {}): ClubType => ({
+export const createMockClub = (
+    overrides: Partial<ClubType> = {},
+): ClubType => ({
     ...defaultClub,
     ...overrides,
 });
 
-export const defaultClubList: ClubType[] = Array.from({ length: 100 }, (_, index) =>
-    createMockClub({
-        id: index + 1,
-        soccerwayId: 1000 + index,
-    }),
+export const defaultClubList: ClubType[] = Array.from(
+    { length: 100 },
+    (_, index) =>
+        createMockClub({
+            id: index + 1,
+            soccerwayId: 1000 + index,
+        }),
 );

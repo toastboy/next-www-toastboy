@@ -1,7 +1,4 @@
-import {
-    Group,
-    Stack,
-} from '@mantine/core';
+import { Group, Stack } from '@mantine/core';
 import { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { TableNameSchema } from 'prisma/zod/schemas';
@@ -17,8 +14,8 @@ import { FootyChannel } from '@/types/FootyChannel';
 
 interface PageProps {
     params: Promise<{
-        table: string,
-    }>,
+        table: string;
+    }>;
     searchParams?: Promise<{
         year?: string;
     }>;
@@ -47,33 +44,41 @@ interface PageProps {
  * const { table, year, allYears } = await unpackParams(params, searchParams);
  * ```
  */
-const unpackParams = cache(async (
-    params: PageProps['params'],
-    searchParams: PageProps['searchParams'],
-) => {
-    const { table: tableParam } = await params;
+const unpackParams = cache(
+    async (
+        params: PageProps['params'],
+        searchParams: PageProps['searchParams'],
+    ) => {
+        const { table: tableParam } = await params;
 
-    const tableResult = TableNameSchema.safeParse(tableParam);
-    if (!tableResult.success) notFound();
-    const table = tableResult.data;
+        const tableResult = TableNameSchema.safeParse(tableParam);
+        if (!tableResult.success) notFound();
+        const table = tableResult.data;
 
-    const resolvedSearchParams = await searchParams;
-    const allYears = await playerRecordService.getAllYears({
-        completed: false,
-        mostRecentFirst: true,
-    });
-    const yearResult = z.coerce.number().int().min(0).safeParse(resolvedSearchParams?.year ?? 0);
-    const year = yearResult.success ? yearResult.data : undefined;
-    if (year === undefined || !allYears.includes(year)) notFound();
+        const resolvedSearchParams = await searchParams;
+        const allYears = await playerRecordService.getAllYears({
+            completed: false,
+            mostRecentFirst: true,
+        });
+        const yearResult = z.coerce
+            .number()
+            .int()
+            .min(0)
+            .safeParse(resolvedSearchParams?.year ?? 0);
+        const year = yearResult.success ? yearResult.data : undefined;
+        if (year === undefined || !allYears.includes(year)) notFound();
 
-    const canonicalSearch = year ? `?year=${year}` : '';
-    const canonicalUrl = `/footy/table/${table}${canonicalSearch}`;
-    const currentSearch = resolvedSearchParams?.year ? `?year=${resolvedSearchParams.year}` : '';
-    const currentUrl = `/footy/table/${table}${currentSearch}`;
-    if (currentUrl !== canonicalUrl) permanentRedirect(canonicalUrl);
+        const canonicalSearch = year ? `?year=${year}` : '';
+        const canonicalUrl = `/footy/table/${table}${canonicalSearch}`;
+        const currentSearch = resolvedSearchParams?.year
+            ? `?year=${resolvedSearchParams.year}`
+            : '';
+        const currentUrl = `/footy/table/${table}${currentSearch}`;
+        if (currentUrl !== canonicalUrl) permanentRedirect(canonicalUrl);
 
-    return { table, year, allYears };
-});
+        return { table, year, allYears };
+    },
+);
 
 /**
  * Generates metadata for the table page.
@@ -84,7 +89,10 @@ const unpackParams = cache(async (
  * table name as title
  */
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
-    const { table, year } = await unpackParams(props.params, props.searchParams);
+    const { table, year } = await unpackParams(
+        props.params,
+        props.searchParams,
+    );
 
     return {
         title: QualifiedTableName(table, year),
@@ -106,7 +114,10 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
  * @returns A React element with year selection controls and table results.
  */
 const TablePage = async (props: PageProps) => {
-    const { table, year, allYears } = await unpackParams(props.params, props.searchParams);
+    const { table, year, allYears } = await unpackParams(
+        props.params,
+        props.searchParams,
+    );
 
     const [tableQualified, tableUnqualified] = await Promise.all([
         playerRecordService.getTable(table, year, true),
@@ -114,10 +125,24 @@ const TablePage = async (props: PageProps) => {
     ]);
 
     return (
-        <Stack p="xl" align="center">
-            <AutoRefresh channels={[FootyChannel.Results, FootyChannel.Players]} />
-            <Group justify="center" w="100%" mb="xl">
-                <TitleWithYearDropdown order={1} title={`${TableTitle(table)}: `} year={year} validYears={allYears} />
+        <Stack
+            p="xl"
+            align="center"
+        >
+            <AutoRefresh
+                channels={[FootyChannel.Results, FootyChannel.Players]}
+            />
+            <Group
+                justify="center"
+                w="100%"
+                mb="xl"
+            >
+                <TitleWithYearDropdown
+                    order={1}
+                    title={`${TableTitle(table)}: `}
+                    year={year}
+                    validYears={allYears}
+                />
             </Group>
             <YearTable
                 table={table}

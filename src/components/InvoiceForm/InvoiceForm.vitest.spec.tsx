@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { vi } from 'vitest';
 
 import { InvoiceForm } from '@/components/InvoiceForm/InvoiceForm';
-import { Wrapper } from '@/tests/components/lib/common';
+import { mockRouter, Wrapper } from '@/tests/components/lib/common';
 
 const { notificationsShowMock, notificationsUpdateMock } = vi.hoisted(() => ({
     notificationsShowMock: vi.fn(),
@@ -49,21 +49,18 @@ const renderForm = ({
 describe('InvoiceForm', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        vi.mocked(useRouter).mockReturnValue({
-            push: mockPush,
-            back: vi.fn(),
-            forward: vi.fn(),
-            refresh: vi.fn(),
-            replace: vi.fn(),
-            prefetch: vi.fn(),
-        });
+        vi.mocked(useRouter).mockReturnValue(mockRouter({ push: mockPush }));
     });
 
     it('renders the heading and current month', () => {
         renderForm();
 
-        expect(screen.getByRole('heading', { name: 'Invoice Check' })).toBeInTheDocument();
-        expect(screen.getByRole('heading', { name: 'January 2026' })).toBeInTheDocument();
+        expect(
+            screen.getByRole('heading', { name: 'Invoice Check' }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('heading', { name: 'Jan 2026' }),
+        ).toBeInTheDocument();
     });
 
     it('renders a row for each game day', () => {
@@ -77,9 +74,15 @@ describe('InvoiceForm', () => {
     it('shows checkboxes reflecting the initial gameScheduled values', () => {
         renderForm();
 
-        expect(screen.getByLabelText('Game scheduled for 2026-01-06')).toBeChecked();
-        expect(screen.getByLabelText('Game scheduled for 2026-01-13')).not.toBeChecked();
-        expect(screen.getByLabelText('Game scheduled for 2026-01-20')).toBeChecked();
+        expect(
+            screen.getByLabelText('Game scheduled for 2026-01-06'),
+        ).toBeChecked();
+        expect(
+            screen.getByLabelText('Game scheduled for 2026-01-13'),
+        ).not.toBeChecked();
+        expect(
+            screen.getByLabelText('Game scheduled for 2026-01-20'),
+        ).toBeChecked();
     });
 
     it('shows the correct total for scheduled game days', () => {
@@ -92,35 +95,45 @@ describe('InvoiceForm', () => {
     it("shows 'No game days found' when the list is empty", () => {
         renderForm({ gameDays: [] });
 
-        expect(screen.getByText('No game days found for this month.')).toBeInTheDocument();
-        expect(screen.queryByRole('button', { name: /Record invoice/i })).not.toBeInTheDocument();
+        expect(
+            screen.getByText('No game days found for this month.'),
+        ).toBeInTheDocument();
+        expect(
+            screen.queryByRole('button', { name: /Record invoice/i }),
+        ).not.toBeInTheDocument();
     });
 
     it('navigates to the previous month when the prev button is clicked', async () => {
         const user = userEvent.setup();
         renderForm();
 
-        await user.click(screen.getByRole('button', { name: /December/i }));
+        await user.click(screen.getByRole('button', { name: /Dec/i }));
 
-        expect(mockPush).toHaveBeenCalledWith('/footy/admin/invoice?year=2025&month=12');
+        expect(mockPush).toHaveBeenCalledWith(
+            '/footy/admin/invoice?year=2025&month=12',
+        );
     });
 
     it('navigates to the next month when the next button is clicked', async () => {
         const user = userEvent.setup();
         renderForm();
 
-        await user.click(screen.getByRole('button', { name: /February/i }));
+        await user.click(screen.getByRole('button', { name: /Feb/i }));
 
-        expect(mockPush).toHaveBeenCalledWith('/footy/admin/invoice?year=2026&month=2');
+        expect(mockPush).toHaveBeenCalledWith(
+            '/footy/admin/invoice?year=2026&month=2',
+        );
     });
 
     it('wraps from December to January of the next year', async () => {
         const user = userEvent.setup();
         renderForm({ year: 2026, month: 12 });
 
-        await user.click(screen.getByRole('button', { name: /January/i }));
+        await user.click(screen.getByRole('button', { name: /Jan/i }));
 
-        expect(mockPush).toHaveBeenCalledWith('/footy/admin/invoice?year=2027&month=1');
+        expect(mockPush).toHaveBeenCalledWith(
+            '/footy/admin/invoice?year=2027&month=1',
+        );
     });
 
     it('submits the form and calls both action proxies', async () => {
@@ -129,7 +142,9 @@ describe('InvoiceForm', () => {
         const onRecordHallHire = vi.fn().mockResolvedValue(undefined);
         renderForm({ onUpdateGameDays, onRecordHallHire });
 
-        await user.click(screen.getByRole('button', { name: /Record invoice/i }));
+        await user.click(
+            screen.getByRole('button', { name: /Record invoice/i }),
+        );
 
         await waitFor(() => {
             expect(onUpdateGameDays).toHaveBeenCalledWith({
@@ -161,12 +176,21 @@ describe('InvoiceForm', () => {
         const onUpdateGameDays = vi.fn().mockResolvedValue(undefined);
         const onRecordHallHire = vi.fn().mockResolvedValue(undefined);
         renderForm({
-            gameDays: [{ id: 1, date: '2026-01-06', gameScheduled: false, hallCost: 4700 }],
+            gameDays: [
+                {
+                    id: 1,
+                    date: '2026-01-06',
+                    gameScheduled: false,
+                    hallCost: 4700,
+                },
+            ],
             onUpdateGameDays,
             onRecordHallHire,
         });
 
-        await user.click(screen.getByRole('button', { name: /Record invoice/i }));
+        await user.click(
+            screen.getByRole('button', { name: /Record invoice/i }),
+        );
 
         await waitFor(() => {
             expect(onUpdateGameDays).toHaveBeenCalled();
@@ -179,7 +203,9 @@ describe('InvoiceForm', () => {
         const user = userEvent.setup();
         renderForm();
 
-        await user.click(screen.getByRole('button', { name: /Record invoice/i }));
+        await user.click(
+            screen.getByRole('button', { name: /Record invoice/i }),
+        );
 
         await waitFor(() => {
             expect(notificationsShowMock).toHaveBeenCalledWith(
@@ -198,10 +224,14 @@ describe('InvoiceForm', () => {
 
     it('shows a generic error message when submission fails with a non-Error value', async () => {
         const user = userEvent.setup();
-        const onUpdateGameDays = vi.fn().mockRejectedValue('unexpected string error');
+        const onUpdateGameDays = vi
+            .fn()
+            .mockRejectedValue('unexpected string error');
         renderForm({ onUpdateGameDays });
 
-        await user.click(screen.getByRole('button', { name: /Record invoice/i }));
+        await user.click(
+            screen.getByRole('button', { name: /Record invoice/i }),
+        );
 
         await waitFor(() => {
             expect(notificationsUpdateMock).toHaveBeenCalledWith(
@@ -217,10 +247,14 @@ describe('InvoiceForm', () => {
 
     it('shows an error notification when submission fails', async () => {
         const user = userEvent.setup();
-        const onUpdateGameDays = vi.fn().mockRejectedValue(new Error('Network error'));
+        const onUpdateGameDays = vi
+            .fn()
+            .mockRejectedValue(new Error('Network error'));
         renderForm({ onUpdateGameDays });
 
-        await user.click(screen.getByRole('button', { name: /Record invoice/i }));
+        await user.click(
+            screen.getByRole('button', { name: /Record invoice/i }),
+        );
 
         await waitFor(() => {
             expect(notificationsUpdateMock).toHaveBeenCalledWith(
@@ -236,7 +270,9 @@ describe('InvoiceForm', () => {
 
     it('shows £0.00 total for a scheduled game day with zero hall cost', () => {
         renderForm({
-            gameDays: [{ id: 1, date: '2026-01-06', gameScheduled: true, hallCost: 0 }],
+            gameDays: [
+                { id: 1, date: '2026-01-06', gameScheduled: true, hallCost: 0 },
+            ],
         });
 
         expect(screen.getByText('Total: £0.00')).toBeInTheDocument();
@@ -248,7 +284,9 @@ describe('InvoiceForm', () => {
 
         expect(screen.getByText('Total: £94.00')).toBeInTheDocument();
 
-        await user.click(screen.getByLabelText('Game scheduled for 2026-01-06'));
+        await user.click(
+            screen.getByLabelText('Game scheduled for 2026-01-06'),
+        );
 
         expect(screen.getByText('Total: £47.00')).toBeInTheDocument();
     });
@@ -259,7 +297,9 @@ describe('InvoiceForm', () => {
 
         expect(screen.getByText('Total: £94.00')).toBeInTheDocument();
 
-        await user.click(screen.getByLabelText('Game scheduled for 2026-01-13'));
+        await user.click(
+            screen.getByLabelText('Game scheduled for 2026-01-13'),
+        );
 
         expect(screen.getByText('Total: £141.00')).toBeInTheDocument();
     });

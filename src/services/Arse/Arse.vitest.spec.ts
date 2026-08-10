@@ -130,21 +130,28 @@ describe('ArseService', () => {
             const fixture = [{ ...defaultArse, playerId: 3, raterId: 1 }];
             (prisma.arse.findMany as Mock).mockResolvedValueOnce(fixture);
             const result = await arseService.getByRater(1);
-            expect(prisma.arse.findMany).toHaveBeenCalledWith({ where: { raterId: 1 } });
+            expect(prisma.arse.findMany).toHaveBeenCalledWith({
+                where: { raterId: 1 },
+            });
             expect(result).toEqual(fixture);
         });
 
         it('should return an empty list for rater id 101', async () => {
             (prisma.arse.findMany as Mock).mockResolvedValueOnce([]);
             const result = await arseService.getByRater(101);
-            expect(prisma.arse.findMany).toHaveBeenCalledWith({ where: { raterId: 101 } });
+            expect(prisma.arse.findMany).toHaveBeenCalledWith({
+                where: { raterId: 101 },
+            });
             expect(result).toEqual([]);
         });
     });
 
     describe('getAll', () => {
         it('should return all arses', async () => {
-            const fixture = [defaultArse, { ...defaultArse, playerId: 2, raterId: 2 }];
+            const fixture = [
+                defaultArse,
+                { ...defaultArse, playerId: 2, raterId: 2 },
+            ];
             (prisma.arse.findMany as Mock).mockResolvedValueOnce(fixture);
             const result = await arseService.getAll();
             expect(prisma.arse.findMany).toHaveBeenCalledWith({});
@@ -163,52 +170,74 @@ describe('ArseService', () => {
         });
 
         it('should refuse to create an arse with invalid data', async () => {
-            await expect(arseService.create({
-                ...defaultArse,
-                playerId: -1,
-            })).rejects.toThrow();
-            await expect(arseService.create({
-                ...defaultArse,
-                raterId: -1,
-            })).rejects.toThrow();
-            await expect(arseService.create({
-                ...defaultArse,
-                inGoal: 11,
-            })).rejects.toThrow();
-            await expect(arseService.create({
-                ...defaultArse,
-                running: 11,
-            })).rejects.toThrow();
-            await expect(arseService.create({
-                ...defaultArse,
-                shooting: 11,
-            })).rejects.toThrow();
-            await expect(arseService.create({
-                ...defaultArse,
-                passing: 11,
-            })).rejects.toThrow();
-            await expect(arseService.create({
-                ...defaultArse,
-                ballSkill: 11,
-            })).rejects.toThrow();
-            await expect(arseService.create({
-                ...defaultArse,
-                attacking: 11,
-            })).rejects.toThrow();
-            await expect(arseService.create({
-                ...defaultArse,
-                defending: 11,
-            })).rejects.toThrow();
+            await expect(
+                arseService.create({
+                    ...defaultArse,
+                    playerId: -1,
+                }),
+            ).rejects.toThrow();
+            await expect(
+                arseService.create({
+                    ...defaultArse,
+                    raterId: -1,
+                }),
+            ).rejects.toThrow();
+            await expect(
+                arseService.create({
+                    ...defaultArse,
+                    inGoal: 11,
+                }),
+            ).rejects.toThrow();
+            await expect(
+                arseService.create({
+                    ...defaultArse,
+                    running: 11,
+                }),
+            ).rejects.toThrow();
+            await expect(
+                arseService.create({
+                    ...defaultArse,
+                    shooting: 11,
+                }),
+            ).rejects.toThrow();
+            await expect(
+                arseService.create({
+                    ...defaultArse,
+                    passing: 11,
+                }),
+            ).rejects.toThrow();
+            await expect(
+                arseService.create({
+                    ...defaultArse,
+                    ballSkill: 11,
+                }),
+            ).rejects.toThrow();
+            await expect(
+                arseService.create({
+                    ...defaultArse,
+                    attacking: 11,
+                }),
+            ).rejects.toThrow();
+            await expect(
+                arseService.create({
+                    ...defaultArse,
+                    defending: 11,
+                }),
+            ).rejects.toThrow();
             expect(prisma.arse.create).not.toHaveBeenCalled();
         });
 
         it('should refuse to create an arse that has the same player ID and rater ID as an existing one', async () => {
-            (prisma.arse.create as Mock).mockRejectedValueOnce(new Error('Arse already exists'));
-            await expect(arseService.create({
-                ...defaultArse,
-                playerId: 6,
-                raterId: 16,
-            })).rejects.toThrow();
+            (prisma.arse.create as Mock).mockRejectedValueOnce(
+                new Error('Arse already exists'),
+            );
+            await expect(
+                arseService.create({
+                    ...defaultArse,
+                    playerId: 6,
+                    raterId: 16,
+                }),
+            ).rejects.toThrow();
             expect(prisma.arse.create).toHaveBeenCalledWith({
                 data: toArseWriteData({
                     ...defaultArse,
@@ -330,10 +359,13 @@ describe('ArseService', () => {
         });
 
         it('should rethrow a non-not-found Prisma error', async () => {
-            const dbError = new Prisma.PrismaClientKnownRequestError('Connection lost', {
-                code: 'P1001',
-                clientVersion: '0.0.0',
-            });
+            const dbError = new Prisma.PrismaClientKnownRequestError(
+                'Connection lost',
+                {
+                    code: 'P1001',
+                    clientVersion: '0.0.0',
+                },
+            );
             (prisma.arse.delete as Mock).mockRejectedValueOnce(dbError);
             await expect(arseService.delete(6, 16)).rejects.toThrow(dbError);
         });
@@ -347,9 +379,7 @@ describe('ArseService', () => {
                 notFoundError,
                 Prisma.PrismaClientKnownRequestError.prototype,
             );
-            (prisma.arse.delete as Mock).mockRejectedValueOnce(
-                notFoundError,
-            );
+            (prisma.arse.delete as Mock).mockRejectedValueOnce(notFoundError);
             await arseService.delete(7, 16);
             expect(prisma.arse.delete).toHaveBeenCalledWith({
                 where: {
@@ -364,7 +394,9 @@ describe('ArseService', () => {
 
     describe('deleteAll', () => {
         it('should delete all arses', async () => {
-            (prisma.arse.deleteMany as Mock).mockResolvedValueOnce({ count: 1 });
+            (prisma.arse.deleteMany as Mock).mockResolvedValueOnce({
+                count: 1,
+            });
             await arseService.deleteAll();
             expect(prisma.arse.deleteMany).toHaveBeenCalledWith();
         });

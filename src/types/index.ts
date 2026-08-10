@@ -9,4 +9,3 @@ export * from './TeamPlayerType';
 export * from './TurnoutByYearType';
 export * from './TurnoutType';
 export * from './WDLType';
-

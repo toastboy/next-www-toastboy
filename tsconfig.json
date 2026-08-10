@@ -5,11 +5,7 @@
         "incremental": true,
         "isolatedModules": true,
         "jsx": "preserve",
-        "lib": [
-            "dom",
-            "dom.iterable",
-            "esnext"
-        ],
+        "lib": ["dom", "dom.iterable", "esnext"],
         "module": "esnext",
         "moduleResolution": "bundler",
         "esModuleInterop": true,
@@ -17,12 +13,9 @@
         "noEmit": true,
         "target": "es2022",
         "paths": {
-            "@/*": [
-                "./src/*"
-            ],
-            "prisma/*": [
-                "./prisma/*"
-            ],
+            "@/*": ["./src/*"],
+            "prisma/*": ["./prisma/*"],
+            "@root/*": ["./*"]
         },
         "plugins": [
             {
@@ -32,17 +25,9 @@
         "resolveJsonModule": true,
         "sourceMap": true,
         "strictNullChecks": true,
-        "types": [
-            "node",
-            "vitest/globals"
-        ]
+        "types": ["node", "vitest/globals"]
     },
-    "exclude": [
-        ".eslintrc.js",
-        ".next",
-        "node_modules",
-        "www-toastboy"
-    ],
+    "exclude": [".eslintrc.js", ".next", "node_modules", "www-toastboy"],
     "include": [
         ".next/types/**/*.ts",
         "**/*.js",

@@ -18,7 +18,9 @@ const createDeps = (overrides: Partial<AuthDeps> = {}): AuthDeps => {
                 setRole: vi.fn().mockResolvedValue(undefined),
             },
         },
-        headers: vi.fn().mockResolvedValue(new Headers({ cookie: 'mock-auth-state=none' })),
+        headers: vi
+            .fn()
+            .mockResolvedValue(new Headers({ cookie: 'mock-auth-state=none' })),
         getMockAuthState: vi.fn().mockResolvedValue('none'),
         getMockUsersList: vi.fn().mockReturnValue([
             {
@@ -96,7 +98,9 @@ describe('listUsersActionCore', () => {
 
         // '%' not followed by two hex digits is malformed and would make a bare
         // decodeURIComponent() throw a URIError.
-        await expect(listUsersActionCore('50%off', 10, deps)).resolves.toEqual([]);
+        await expect(listUsersActionCore('50%off', 10, deps)).resolves.toEqual(
+            [],
+        );
     });
 
     it('does not throw on malformed percent-encoding when searching in live mode', async () => {
@@ -104,10 +108,15 @@ describe('listUsersActionCore', () => {
             getMockAuthState: vi.fn().mockResolvedValue('none'),
         });
 
-        await expect(listUsersActionCore('50%off', 10, deps)).resolves.toEqual([]);
-        const [listUsersPayload] = vi.mocked(deps.auth.api.listUsers).mock.calls[0] as [{
-            query: { searchValue: string };
-        }];
+        await expect(listUsersActionCore('50%off', 10, deps)).resolves.toEqual(
+            [],
+        );
+        const [listUsersPayload] = vi.mocked(deps.auth.api.listUsers).mock
+            .calls[0] as [
+            {
+                query: { searchValue: string };
+            },
+        ];
         expect(listUsersPayload.query.searchValue).toBe('50%off');
     });
 
@@ -141,14 +150,17 @@ describe('listUsersActionCore', () => {
         );
 
         expect(deps.headers).toHaveBeenCalledTimes(1);
-        const [listUsersPayload] = vi.mocked(deps.auth.api.listUsers).mock.calls[0] as [{
-            headers: Headers;
-            query: {
-                searchField: string;
-                searchOperator: string;
-                searchValue: string;
-            };
-        }];
+        const [listUsersPayload] = vi.mocked(deps.auth.api.listUsers).mock
+            .calls[0] as [
+            {
+                headers: Headers;
+                query: {
+                    searchField: string;
+                    searchOperator: string;
+                    searchValue: string;
+                };
+            },
+        ];
         expect(listUsersPayload.headers).toBeInstanceOf(Headers);
         expect(listUsersPayload.query).toEqual({
             searchField: 'email',
@@ -166,7 +178,8 @@ describe('listUsersActionCore', () => {
 
         await listUsersActionCore(undefined, 10, deps);
 
-        const [listUsersPayload] = vi.mocked(deps.auth.api.listUsers).mock.calls[0] as [{ query: unknown }];
+        const [listUsersPayload] = vi.mocked(deps.auth.api.listUsers).mock
+            .calls[0] as [{ query: unknown }];
         expect(listUsersPayload.query).toEqual({ limit: 10 });
     });
 
@@ -177,7 +190,8 @@ describe('listUsersActionCore', () => {
 
         await listUsersActionCore(undefined, 1000, deps);
 
-        const [listUsersPayload] = vi.mocked(deps.auth.api.listUsers).mock.calls[0] as [{ query: unknown }];
+        const [listUsersPayload] = vi.mocked(deps.auth.api.listUsers).mock
+            .calls[0] as [{ query: unknown }];
         expect(listUsersPayload.query).toEqual({ limit: 1000 });
     });
 
@@ -185,7 +199,9 @@ describe('listUsersActionCore', () => {
         const deps = createDeps({
             getMockAuthState: vi.fn().mockResolvedValue('none'),
         });
-        vi.mocked(deps.auth.api.listUsers).mockResolvedValue(null as unknown as { users: []; total: number });
+        vi.mocked(deps.auth.api.listUsers).mockResolvedValue(
+            null as unknown as { users: []; total: number },
+        );
 
         const users = await listUsersActionCore(undefined, 10, deps);
 
@@ -267,8 +283,9 @@ describe('setAdminRoleActionCore', () => {
             getMockAuthState: vi.fn().mockResolvedValue('user'),
         });
 
-        await expect(setAdminRoleActionCore('abc', true, deps))
-            .rejects.toBeInstanceOf(AuthError);
+        await expect(
+            setAdminRoleActionCore('abc', true, deps),
+        ).rejects.toBeInstanceOf(AuthError);
         expect(deps.auth.api.setRole).not.toHaveBeenCalled();
     });
 
@@ -280,13 +297,16 @@ describe('setAdminRoleActionCore', () => {
         await setAdminRoleActionCore('abc', false, deps);
 
         expect(deps.headers).toHaveBeenCalledTimes(1);
-        const [setRolePayload] = vi.mocked(deps.auth.api.setRole).mock.calls[0] as [{
-            headers: Headers;
-            body: {
-                userId: string;
-                role: string;
-            };
-        }];
+        const [setRolePayload] = vi.mocked(deps.auth.api.setRole).mock
+            .calls[0] as [
+            {
+                headers: Headers;
+                body: {
+                    userId: string;
+                    role: string;
+                };
+            },
+        ];
         expect(setRolePayload.headers).toBeInstanceOf(Headers);
         expect(setRolePayload.body).toEqual({
             userId: 'abc',
@@ -301,9 +321,12 @@ describe('setAdminRoleActionCore', () => {
 
         await setAdminRoleActionCore('abc', true, deps);
 
-        const [setRolePayload] = vi.mocked(deps.auth.api.setRole).mock.calls[0] as unknown as [{
-            body: { role: string };
-        }];
+        const [setRolePayload] = vi.mocked(deps.auth.api.setRole).mock
+            .calls[0] as unknown as [
+            {
+                body: { role: string };
+            },
+        ];
         expect(setRolePayload.body.role).toBe('admin');
     });
 });

@@ -29,6 +29,9 @@ export const defaultCountrySupporterWithPlayerDataList: CountrySupporterWithPlay
             playerId: index + 1,
             countryFIFACode: country.fifaCode,
             country,
-            player: createMockPlayer({ id: index + 1, name: `Player ${index + 1}` }),
+            player: createMockPlayer({
+                id: index + 1,
+                name: `Player ${index + 1}`,
+            }),
         }),
     );

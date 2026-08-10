@@ -1,6 +1,4 @@
-import {
-    notifications,
-} from '@mantine/notifications';
+import { notifications } from '@mantine/notifications';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { type Editor, useEditor } from '@tiptap/react';
@@ -45,7 +43,9 @@ describe('SendEmailForm', () => {
 
         await waitFor(() => {
             expect(screen.getByLabelText(/Subject/i)).toBeInTheDocument();
-            expect(screen.getByRole('button', { name: /Send Mail/i })).toBeInTheDocument();
+            expect(
+                screen.getByRole('button', { name: /Send Mail/i }),
+            ).toBeInTheDocument();
         });
     });
 
@@ -64,8 +64,12 @@ describe('SendEmailForm', () => {
         );
 
         expect(screen.queryByLabelText(/Subject/i)).not.toBeInTheDocument();
-        expect(screen.queryByRole('button', { name: /Send Mail/i })).not.toBeInTheDocument();
-        expect(screen.queryByText(/Send Mail to Players/i)).not.toBeInTheDocument();
+        expect(
+            screen.queryByRole('button', { name: /Send Mail/i }),
+        ).not.toBeInTheDocument();
+        expect(
+            screen.queryByText(/Send Mail to Players/i),
+        ).not.toBeInTheDocument();
     });
 
     it('sends to verified extra emails when available, alongside account email', async () => {
@@ -87,10 +91,12 @@ describe('SendEmailForm', () => {
         await user.click(screen.getByRole('button', { name: /Send Mail/i }));
 
         await waitFor(() => {
-            expect(onSendEmail).toHaveBeenCalledWith(expect.objectContaining({
-                to: 'gary.login@example.com,gary.player@example.com',
-                subject: 'Test Subject',
-            }));
+            expect(onSendEmail).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    to: 'gary.login@example.com,gary.player@example.com',
+                    subject: 'Test Subject',
+                }),
+            );
         });
     });
 
@@ -119,17 +125,29 @@ describe('SendEmailForm', () => {
         await user.click(screen.getByRole('button', { name: /Send Mail/i }));
 
         await waitFor(() => {
-            expect(onSendEmail).toHaveBeenCalledWith(expect.objectContaining({
-                to: 'unverified@example.com',
-            }));
+            expect(onSendEmail).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    to: 'unverified@example.com',
+                }),
+            );
         });
     });
 
     it('deduplicates recipient addresses across players', async () => {
         const user = userEvent.setup();
         const onSendEmail = vi.fn().mockResolvedValue(undefined);
-        const player1: PlayerDataEmailDisplayType = { id: 1, name: 'Player One', accountEmail: 'shared@example.com', extraEmails: [] };
-        const player2: PlayerDataEmailDisplayType = { id: 2, name: 'Player Two', accountEmail: 'shared@example.com', extraEmails: [] };
+        const player1: PlayerDataEmailDisplayType = {
+            id: 1,
+            name: 'Player One',
+            accountEmail: 'shared@example.com',
+            extraEmails: [],
+        };
+        const player2: PlayerDataEmailDisplayType = {
+            id: 2,
+            name: 'Player Two',
+            accountEmail: 'shared@example.com',
+            extraEmails: [],
+        };
 
         render(
             <Wrapper>
@@ -146,17 +164,29 @@ describe('SendEmailForm', () => {
         await user.click(screen.getByRole('button', { name: /Send Mail/i }));
 
         await waitFor(() => {
-            expect(onSendEmail).toHaveBeenCalledWith(expect.objectContaining({
-                to: 'shared@example.com',
-            }));
+            expect(onSendEmail).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    to: 'shared@example.com',
+                }),
+            );
         });
     });
 
     it('deduplicates addresses that differ only by case', async () => {
         const user = userEvent.setup();
         const onSendEmail = vi.fn().mockResolvedValue(undefined);
-        const player1: PlayerDataEmailDisplayType = { id: 1, name: 'Player One', accountEmail: 'Alice@example.com', extraEmails: [] };
-        const player2: PlayerDataEmailDisplayType = { id: 2, name: 'Player Two', accountEmail: 'alice@example.com', extraEmails: [] };
+        const player1: PlayerDataEmailDisplayType = {
+            id: 1,
+            name: 'Player One',
+            accountEmail: 'Alice@example.com',
+            extraEmails: [],
+        };
+        const player2: PlayerDataEmailDisplayType = {
+            id: 2,
+            name: 'Player Two',
+            accountEmail: 'alice@example.com',
+            extraEmails: [],
+        };
 
         render(
             <Wrapper>
@@ -173,16 +203,23 @@ describe('SendEmailForm', () => {
         await user.click(screen.getByRole('button', { name: /Send Mail/i }));
 
         await waitFor(() => {
-            expect(onSendEmail).toHaveBeenCalledWith(expect.objectContaining({
-                to: 'alice@example.com',
-            }));
+            expect(onSendEmail).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    to: 'alice@example.com',
+                }),
+            );
         });
     });
 
     it('trims whitespace from addresses before sending', async () => {
         const user = userEvent.setup();
         const onSendEmail = vi.fn().mockResolvedValue(undefined);
-        const player: PlayerDataEmailDisplayType = { id: 1, name: 'Player One', accountEmail: ' padded@example.com ', extraEmails: [] };
+        const player: PlayerDataEmailDisplayType = {
+            id: 1,
+            name: 'Player One',
+            accountEmail: ' padded@example.com ',
+            extraEmails: [],
+        };
 
         render(
             <Wrapper>
@@ -199,9 +236,11 @@ describe('SendEmailForm', () => {
         await user.click(screen.getByRole('button', { name: /Send Mail/i }));
 
         await waitFor(() => {
-            expect(onSendEmail).toHaveBeenCalledWith(expect.objectContaining({
-                to: 'padded@example.com',
-            }));
+            expect(onSendEmail).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    to: 'padded@example.com',
+                }),
+            );
         });
     });
 
@@ -225,7 +264,9 @@ describe('SendEmailForm', () => {
         );
 
         await waitFor(() => {
-            expect(screen.getByRole('button', { name: /Send Mail/i })).toBeDisabled();
+            expect(
+                screen.getByRole('button', { name: /Send Mail/i }),
+            ).toBeDisabled();
         });
     });
 
@@ -252,13 +293,18 @@ describe('SendEmailForm', () => {
         await waitFor(() => {
             expect(captureUnexpectedError).toHaveBeenCalledWith(
                 sendError,
-                expect.objectContaining({ layer: 'client', component: 'SendEmailForm' }),
+                expect.objectContaining({
+                    layer: 'client',
+                    component: 'SendEmailForm',
+                }),
             );
         });
-        expect(notificationUpdateSpy).toHaveBeenCalledWith(expect.objectContaining({
-            color: 'red',
-            title: 'Error',
-            message: 'Failed to send email.',
-        }));
+        expect(notificationUpdateSpy).toHaveBeenCalledWith(
+            expect.objectContaining({
+                color: 'red',
+                title: 'Error',
+                message: 'Failed to send email.',
+            }),
+        );
     });
 });

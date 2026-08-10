@@ -20,7 +20,10 @@ describe('resolveSentrySampleRate', () => {
         if (savedEnv.SENTRY_TRACES_SAMPLE_RATE === undefined) {
             delete process.env.SENTRY_TRACES_SAMPLE_RATE;
         } else {
-            vi.stubEnv('SENTRY_TRACES_SAMPLE_RATE', savedEnv.SENTRY_TRACES_SAMPLE_RATE);
+            vi.stubEnv(
+                'SENTRY_TRACES_SAMPLE_RATE',
+                savedEnv.SENTRY_TRACES_SAMPLE_RATE,
+            );
         }
     });
 
@@ -250,10 +253,14 @@ describe('scrubSentryEvent', () => {
 
         const scrubbed = scrubSentryEvent(event);
 
-        expect(scrubbed.extra.level1.level2.level3.level4.level5.level6.level7.token)
-            .toBe('[REDACTED]');
-        expect(scrubbed.extra.level1.level2.level3.level4.level5.level6.level7.level8.token)
-            .toBe('deep-secret');
+        expect(
+            scrubbed.extra.level1.level2.level3.level4.level5.level6.level7
+                .token,
+        ).toBe('[REDACTED]');
+        expect(
+            scrubbed.extra.level1.level2.level3.level4.level5.level6.level7
+                .level8.token,
+        ).toBe('deep-secret');
     });
 
     it('returns a non-object event unchanged', () => {
@@ -289,7 +296,9 @@ describe('scrubSentryEvent', () => {
 
         expect(scrubbed.request.url).toContain('token=%5BREDACTED%5D');
         expect(scrubbed.request.url).toContain('purpose=invite');
-        expect(scrubbed.request.url).toMatch(/^https:\/\/www\.toastboy\.co\.uk/);
+        expect(scrubbed.request.url).toMatch(
+            /^https:\/\/www\.toastboy\.co\.uk/,
+        );
     });
 
     it('redacts sensitive query params from from/to navigation fields in breadcrumbs', () => {
@@ -312,9 +321,7 @@ describe('scrubSentryEvent', () => {
     it('returns a malformed URL string unchanged when it cannot be parsed', () => {
         const malformedUrl = 'http://[unclosed-ipv6';
         const event = {
-            breadcrumbs: [
-                { category: 'fetch', data: { url: malformedUrl } },
-            ],
+            breadcrumbs: [{ category: 'fetch', data: { url: malformedUrl } }],
         };
 
         const scrubbed = scrubSentryEvent(event);

@@ -1,10 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { revalidatePathMock, setDrinkersCoreMock, requireAdminMock } = vi.hoisted(() => ({
-    revalidatePathMock: vi.fn(),
-    setDrinkersCoreMock: vi.fn(),
-    requireAdminMock: vi.fn().mockResolvedValue(undefined),
-}));
+const { revalidatePathMock, setDrinkersCoreMock, requireAdminMock } =
+    vi.hoisted(() => ({
+        revalidatePathMock: vi.fn(),
+        setDrinkersCoreMock: vi.fn(),
+        requireAdminMock: vi.fn().mockResolvedValue(undefined),
+    }));
 
 vi.mock('next/cache', () => ({
     revalidatePath: revalidatePathMock,
@@ -49,8 +50,12 @@ describe('setDrinkers action wrapper', () => {
             ],
         });
         expect(revalidatePathMock).toHaveBeenCalledTimes(5);
-        expect(revalidatePathMock).toHaveBeenCalledWith('/footy/admin/drinkers');
-        expect(revalidatePathMock).toHaveBeenCalledWith('/footy/admin/drinkers/1249');
+        expect(revalidatePathMock).toHaveBeenCalledWith(
+            '/footy/admin/drinkers',
+        );
+        expect(revalidatePathMock).toHaveBeenCalledWith(
+            '/footy/admin/drinkers/1249',
+        );
         expect(revalidatePathMock).toHaveBeenCalledWith('/footy/pub');
         expect(revalidatePathMock).toHaveBeenCalledWith('/footy/table/pub');
         expect(revalidatePathMock).toHaveBeenCalledWith('/footy/game/1249');
@@ -62,7 +67,10 @@ describe('setDrinkers action wrapper', () => {
         setDrinkersCoreMock.mockRejectedValue(coreError);
 
         await expect(
-            setDrinkers({ gameDayId: 1249, players: [{ playerId: 1, drinker: true }] }),
+            setDrinkers({
+                gameDayId: 1249,
+                players: [{ playerId: 1, drinker: true }],
+            }),
         ).rejects.toBe(coreError);
 
         expect(revalidatePathMock).not.toHaveBeenCalled();

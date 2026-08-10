@@ -16,13 +16,14 @@ import {
     TextInput,
     Tooltip,
 } from '@mantine/core';
+import { useForm } from '@mantine/form';
+import { notifications } from '@mantine/notifications';
 import {
-    useForm,
-} from '@mantine/form';
-import {
-    notifications,
-} from '@mantine/notifications';
-import { IconAlertTriangle, IconCheck, IconQuestionMark, IconTrash } from '@tabler/icons-react';
+    IconAlertTriangle,
+    IconCheck,
+    IconQuestionMark,
+    IconTrash,
+} from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import Link from 'next/link';
 import type { ClubType } from 'prisma/zod/schemas/models/Club.schema';
@@ -38,7 +39,10 @@ import { toPublicMessage } from '@/lib/errors';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 import { ClubSupporterDataType } from '@/types';
 import type { UpdatePlayerProxy } from '@/types/actions/UpdatePlayer';
-import { UpdatePlayerInput, UpdatePlayerSchema } from '@/types/actions/UpdatePlayer';
+import {
+    UpdatePlayerInput,
+    UpdatePlayerSchema,
+} from '@/types/actions/UpdatePlayer';
 import { CountrySupporterDataType } from '@/types/CountrySupporterDataType';
 
 export interface Props {
@@ -69,7 +73,9 @@ export const PlayerProfileForm = ({
     verifiedEmail,
     onUpdatePlayer,
 }: Props) => {
-    const initialExtraEmails = extraEmails.map((playerEmail) => playerEmail.email);
+    const initialExtraEmails = extraEmails.map(
+        (playerEmail) => playerEmail.email,
+    );
     const bornYear = player.born ?? undefined;
     const hasShownVerifiedNotification = useRef(false);
 
@@ -108,9 +114,7 @@ export const PlayerProfileForm = ({
         validateInputOnBlur: true,
     });
 
-    const handleSubmit = async (
-        values: typeof form.values,
-    ) => {
+    const handleSubmit = async (values: typeof form.values) => {
         const id = notifications.show({
             loading: true,
             title: 'Updating player',
@@ -123,24 +127,23 @@ export const PlayerProfileForm = ({
             const nextExtraEmails = values.extraEmails
                 .map((email) => email.trim())
                 .filter((email) => email.length > 0);
-            const addedExtraEmails = nextExtraEmails
-                .filter((email) => !initialExtraEmails.includes(email));
-            const removedExtraEmails = initialExtraEmails
-                .filter((email) => !nextExtraEmails.includes(email));
+            const addedExtraEmails = nextExtraEmails.filter(
+                (email) => !initialExtraEmails.includes(email),
+            );
+            const removedExtraEmails = initialExtraEmails.filter(
+                (email) => !nextExtraEmails.includes(email),
+            );
             const { retired, clubs, ...rest } = values;
             const finished = retired ? (player.finished ?? new Date()) : null;
 
-            await onUpdatePlayer(
-                player.id,
-                {
-                    ...rest,
-                    clubs: clubs.map((clubId) => Number(clubId)),
-                    finished,
-                    extraEmails: nextExtraEmails,
-                    addedExtraEmails,
-                    removedExtraEmails,
-                },
-            );
+            await onUpdatePlayer(player.id, {
+                ...rest,
+                clubs: clubs.map((clubId) => Number(clubId)),
+                finished,
+                extraEmails: nextExtraEmails,
+                addedExtraEmails,
+                removedExtraEmails,
+            });
 
             notifications.update({
                 id,
@@ -180,27 +183,35 @@ export const PlayerProfileForm = ({
     }));
 
     const clubData: ComboboxData = Object.values(
-        allClubs.reduce<Record<string, ComboboxItemGroup<ComboboxItem>>>((acc, club) => {
-            const country = club.country ?? '';
-            const group =
-                country.length > 0 ?
-                    `${country.charAt(0).toUpperCase()}${country.slice(1)}` :
-                    'Unknown';
+        allClubs.reduce<Record<string, ComboboxItemGroup<ComboboxItem>>>(
+            (acc, club) => {
+                const country = club.country ?? '';
+                const group =
+                    country.length > 0
+                        ? `${country.charAt(0).toUpperCase()}${country.slice(1)}`
+                        : 'Unknown';
 
-            const entry: ComboboxItemGroup<ComboboxItem> =
-                acc[group] ?? { group, items: [] as ComboboxItem[] };
-            entry.items.push({
-                label: club.clubName,
-                value: club.id.toString(),
-            });
+                const entry: ComboboxItemGroup<ComboboxItem> = acc[group] ?? {
+                    group,
+                    items: [] as ComboboxItem[],
+                };
+                entry.items.push({
+                    label: club.clubName,
+                    value: club.id.toString(),
+                });
 
-            acc[group] = entry;
-            return acc;
-        }, {}),
+                acc[group] = entry;
+                return acc;
+            },
+            {},
+        ),
     );
 
     return (
-        <Container size="xl" mt="xl">
+        <Container
+            size="xl"
+            mt="xl"
+        >
             <Paper w="100%">
                 <Box
                     miw="16rem"
@@ -234,7 +245,9 @@ export const PlayerProfileForm = ({
                             <Box>
                                 <Switch
                                     label="Goalie"
-                                    {...form.getInputProps('goalie', { type: 'checkbox' })}
+                                    {...form.getInputProps('goalie', {
+                                        type: 'checkbox',
+                                    })}
                                 />
                             </Box>
                         </Tooltip>
@@ -250,7 +263,9 @@ export const PlayerProfileForm = ({
                             <Box>
                                 <Switch
                                     label="Anonymous"
-                                    {...form.getInputProps('anonymous', { type: 'checkbox' })}
+                                    {...form.getInputProps('anonymous', {
+                                        type: 'checkbox',
+                                    })}
                                 />
                             </Box>
                         </Tooltip>
@@ -268,7 +283,9 @@ export const PlayerProfileForm = ({
                             <Box>
                                 <Switch
                                     label="Retired"
-                                    {...form.getInputProps('retired', { type: 'checkbox' })}
+                                    {...form.getInputProps('retired', {
+                                        type: 'checkbox',
+                                    })}
                                 />
                             </Box>
                         </Tooltip>
@@ -290,16 +307,20 @@ export const PlayerProfileForm = ({
                         {form.values.extraEmails.map((email, index) => {
                             const address = `address ${index + 1}`;
                             const isVerified = extraEmails.some(
-                                (value) => (value.email === email && value.verifiedAt !== null),
+                                (value) =>
+                                    value.email === email &&
+                                    value.verifiedAt !== null,
                             );
                             const verificationPending = extraEmails.some(
-                                (value) => (value.email === email && value.verifiedAt === null),
+                                (value) =>
+                                    value.email === email &&
+                                    value.verifiedAt === null,
                             );
-                            const verificationMessage = isVerified ?
-                                `Extra email ${address} is verified` :
-                                (verificationPending ?
-                                    `Verification email has been sent to ${email}` :
-                                    `Verification email will be sent to ${email} upon submission`);
+                            const verificationMessage = isVerified
+                                ? `Extra email ${address} is verified`
+                                : verificationPending
+                                  ? `Verification email has been sent to ${email}`
+                                  : `Verification email will be sent to ${email} upon submission`;
 
                             return (
                                 <Flex
@@ -317,20 +338,27 @@ export const PlayerProfileForm = ({
                                                     label={verificationMessage}
                                                     withArrow
                                                 >
-                                                    {isVerified ?
+                                                    {isVerified ? (
                                                         <IconCheck
                                                             size={16}
-                                                            aria-label={verificationMessage}
-                                                        /> :
+                                                            aria-label={
+                                                                verificationMessage
+                                                            }
+                                                        />
+                                                    ) : (
                                                         <IconQuestionMark
                                                             size={16}
-                                                            aria-label={verificationMessage}
+                                                            aria-label={
+                                                                verificationMessage
+                                                            }
                                                         />
-                                                    }
+                                                    )}
                                                 </Tooltip>
                                             ) : null
                                         }
-                                        {...form.getInputProps(`extraEmails.${index}`)}
+                                        {...form.getInputProps(
+                                            `extraEmails.${index}`,
+                                        )}
                                     />
                                     <Tooltip
                                         label={`Delete extra email ${address}`}
@@ -340,7 +368,12 @@ export const PlayerProfileForm = ({
                                             variant="subtle"
                                             color="red"
                                             aria-label={`Delete extra email ${address}`}
-                                            onClick={() => form.removeListItem('extraEmails', index)}
+                                            onClick={() =>
+                                                form.removeListItem(
+                                                    'extraEmails',
+                                                    index,
+                                                )
+                                            }
                                         >
                                             <IconTrash size={16} />
                                         </Button>
@@ -352,7 +385,9 @@ export const PlayerProfileForm = ({
                         <Button
                             type="button"
                             variant="light"
-                            onClick={() => form.insertListItem('extraEmails', '')}
+                            onClick={() =>
+                                form.insertListItem('extraEmails', '')
+                            }
                         >
                             Add another email
                         </Button>

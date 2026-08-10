@@ -1,6 +1,4 @@
-import {
-    Text,
-} from '@mantine/core';
+import { Text } from '@mantine/core';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { usePathname } from 'next/navigation';
 import type { ReactNode } from 'react';
@@ -22,29 +20,75 @@ vi.mock('next/navigation', () => ({
 vi.mock('@mantine/core', async (importOriginal) => {
     const actual = await importOriginal<typeof import('@mantine/core')>();
 
-    const AppShell = ({ children, navbar }: { children?: ReactNode; navbar?: { collapsed?: { mobile?: boolean } } }) => (
-        <div data-testid="app-shell" data-navbar-collapsed-mobile={String(navbar?.collapsed?.mobile ?? false)}>{children}</div>
+    const AppShell = Object.assign(
+        ({
+            children,
+            navbar,
+        }: {
+            children?: ReactNode;
+            navbar?: { collapsed?: { mobile?: boolean } };
+        }) => (
+            <div
+                data-testid="app-shell"
+                data-navbar-collapsed-mobile={String(
+                    navbar?.collapsed?.mobile ?? false,
+                )}
+            >
+                {children}
+            </div>
+        ),
+        {
+            Header: ({ children }: { children?: ReactNode }) => (
+                <div data-testid="app-shell-header">{children}</div>
+            ),
+            Navbar: ({ children }: { children?: ReactNode }) => (
+                <div data-testid="app-shell-navbar">{children}</div>
+            ),
+            Main: ({ children }: { children?: ReactNode }) => (
+                <main>{children}</main>
+            ),
+        },
     );
-
-    const AppShellHeader = ({ children }: { children?: ReactNode }) => <div data-testid="app-shell-header">{children}</div>;
-    const AppShellNavbar = ({ children }: { children?: ReactNode }) => <div data-testid="app-shell-navbar">{children}</div>;
-    const AppShellMain = ({ children }: { children?: ReactNode }) => <main>{children}</main>;
 
     return {
         ...actual,
         AppShell,
-        AppShellHeader,
-        AppShellNavbar,
-        AppShellMain,
-        Badge: ({ children }: { children?: ReactNode }) => <span>{children}</span>,
-        Burger: ({ opened, onClick, hiddenFrom, ...props }: MockBurgerProps) => (
-            <button {...props} data-hidden-from={hiddenFrom} data-opened={opened ? 'true' : undefined} onClick={onClick} type="button" />
+        Badge: ({ children }: { children?: ReactNode }) => (
+            <span>{children}</span>
         ),
-        Container: ({ children }: { children?: ReactNode }) => <div>{children}</div>,
-        Group: ({ children }: { children?: ReactNode }) => <div>{children}</div>,
-        Image: ({ alt, src }: { alt?: string; src?: string }) => <div aria-label={alt} data-src={src} role="img" />,
-        Stack: ({ children }: { children?: ReactNode }) => <div>{children}</div>,
-        Text: ({ children }: { children?: ReactNode }) => <span>{children}</span>,
+        Burger: ({
+            opened,
+            onClick,
+            hiddenFrom,
+            ...props
+        }: MockBurgerProps) => (
+            <button
+                {...props}
+                data-hidden-from={hiddenFrom}
+                data-opened={opened ? 'true' : undefined}
+                onClick={onClick}
+                type="button"
+            />
+        ),
+        Container: ({ children }: { children?: ReactNode }) => (
+            <div>{children}</div>
+        ),
+        Group: ({ children }: { children?: ReactNode }) => (
+            <div>{children}</div>
+        ),
+        Image: ({ alt, src }: { alt?: string; src?: string }) => (
+            <div
+                aria-label={alt}
+                data-src={src}
+                role="img"
+            />
+        ),
+        Stack: ({ children }: { children?: ReactNode }) => (
+            <div>{children}</div>
+        ),
+        Text: ({ children }: { children?: ReactNode }) => (
+            <span>{children}</span>
+        ),
     };
 });
 
@@ -78,10 +122,15 @@ describe('CustomAppShell', () => {
             </CustomAppShell>,
         );
 
-        const burgerButton = screen.getByRole('button', { name: 'Toggle navigation' });
+        const burgerButton = screen.getByRole('button', {
+            name: 'Toggle navigation',
+        });
         fireEvent.click(burgerButton);
 
-        expect(screen.getByTestId('app-shell')).toHaveAttribute('data-navbar-collapsed-mobile', 'false');
+        expect(screen.getByTestId('app-shell')).toHaveAttribute(
+            'data-navbar-collapsed-mobile',
+            'false',
+        );
         expect(burgerButton).toHaveAttribute('data-opened', 'true');
 
         vi.mocked(usePathname).mockReturnValue('/footy/fixtures');
@@ -93,8 +142,13 @@ describe('CustomAppShell', () => {
         );
 
         await waitFor(() => {
-            expect(screen.getByTestId('app-shell')).toHaveAttribute('data-navbar-collapsed-mobile', 'true');
-            expect(screen.getByRole('button', { name: 'Toggle navigation' })).not.toHaveAttribute('data-opened');
+            expect(screen.getByTestId('app-shell')).toHaveAttribute(
+                'data-navbar-collapsed-mobile',
+                'true',
+            );
+            expect(
+                screen.getByRole('button', { name: 'Toggle navigation' }),
+            ).not.toHaveAttribute('data-opened');
         });
     });
 
@@ -143,7 +197,9 @@ describe('CustomAppShell', () => {
             </CustomAppShell>,
         );
 
-        expect(screen.getByRole('img', { name: 'Toastboy FC Crest' })).toBeInTheDocument();
+        expect(
+            screen.getByRole('img', { name: 'Toastboy FC Crest' }),
+        ).toBeInTheDocument();
     });
 
     it('wraps the crest image in a link to /footy', () => {

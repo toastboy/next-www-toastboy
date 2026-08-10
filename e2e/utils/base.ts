@@ -25,7 +25,8 @@ const parseHost = (url: string): string | null => {
 export const test = baseTest.extend({
     page: async ({ page, baseURL }, use) => {
         const allowedHost = baseURL ? parseHost(baseURL) : null;
-        const onPageError = (err: Error) => console.error('Page JS error:', err);
+        const onPageError = (err: Error) =>
+            console.error('Page JS error:', err);
         const onRequestFailed = (req: Request) => {
             const errorText = req.failure()?.errorText ?? '';
             // Navigation-initiated cancellations are expected (e.g. SSE connections

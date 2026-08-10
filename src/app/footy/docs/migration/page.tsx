@@ -1,6 +1,4 @@
-import {
-    Container,
-} from '@mantine/core';
+import { Container } from '@mantine/core';
 import type { Metadata } from 'next';
 
 import MigrationContent from './migration.mdx';

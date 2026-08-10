@@ -11,9 +11,15 @@ import { NextRequest, NextResponse } from 'next/server';
  * @returns A mock server instance.
  */
 export function createMockApp(
-    getFunction: (request: NextRequest, { params }: { params: Promise<Record<string, string>> }) => Promise<NextResponse>,
+    getFunction: (
+        request: NextRequest,
+        { params }: { params: Promise<Record<string, string>> },
+    ) => Promise<NextResponse>,
     routeParams: { path: string; params: Promise<Record<string, string>> },
-    responseHandler: (response: NextResponse, res: ServerResponse) => Promise<void>,
+    responseHandler: (
+        response: NextResponse,
+        res: ServerResponse,
+    ) => Promise<void>,
 ) {
     return {
         __handle: async (url: string, method = 'GET') => {
@@ -51,7 +57,9 @@ export function createMockApp(
             } as unknown as ServerResponse;
 
             try {
-                const response = await getFunction(requestObject, { params: routeParams.params });
+                const response = await getFunction(requestObject, {
+                    params: routeParams.params,
+                });
                 await responseHandler(response, res);
             } catch (err) {
                 statusCode = 500;
@@ -68,7 +76,10 @@ export function createMockApp(
             const text = typeof endPayload === 'string' ? endPayload : '';
             let body: unknown = endPayload;
 
-            if (typeof endPayload === 'string' && contentType.includes('application/json')) {
+            if (
+                typeof endPayload === 'string' &&
+                contentType.includes('application/json')
+            ) {
                 body = JSON.parse(endPayload);
             }
 
@@ -94,7 +105,10 @@ export function createMockApp(
  *
  * @returns A promise that resolves when the response has been fully handled.
  */
-export async function jsonResponseHandler(response: NextResponse, res: ServerResponse) {
+export async function jsonResponseHandler(
+    response: NextResponse,
+    res: ServerResponse,
+) {
     res.statusCode = response.status;
     response.headers.forEach((value, key) => {
         res.setHeader(key, value);
@@ -117,7 +131,10 @@ export async function jsonResponseHandler(response: NextResponse, res: ServerRes
  * @param res - The `ServerResponse` object to which the response data will be written.
  * @returns A promise that resolves when the response handling is complete.
  */
-export async function pngResponseHandler(response: NextResponse, res: ServerResponse) {
+export async function pngResponseHandler(
+    response: NextResponse,
+    res: ServerResponse,
+) {
     res.statusCode = response.status;
     response.headers.forEach((value, key) => {
         res.setHeader(key, value);
@@ -125,7 +142,8 @@ export async function pngResponseHandler(response: NextResponse, res: ServerResp
 
     if (response.body) {
         const contentType = response.headers.get('content-type') ?? '';
-        const isPngResponse = response.status === 200 && contentType.includes('image/png');
+        const isPngResponse =
+            response.status === 200 && contentType.includes('image/png');
 
         if (isPngResponse) {
             const buffer = await readableStreamToBuffer(response.body);
@@ -147,7 +165,9 @@ export async function pngResponseHandler(response: NextResponse, res: ServerResp
  * @param stream - The ReadableStream of Uint8Array chunks to be converted.
  * @returns A Promise that resolves to a Buffer containing the concatenated data from the stream.
  */
-export async function readableStreamToBuffer(stream: ReadableStream<Uint8Array>): Promise<Buffer> {
+export async function readableStreamToBuffer(
+    stream: ReadableStream<Uint8Array>,
+): Promise<Buffer> {
     const reader = stream.getReader();
     const chunks = [];
     let done = false;

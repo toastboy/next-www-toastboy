@@ -29,8 +29,12 @@ describe('GET /api/footy/response/[token]', () => {
     });
 
     it('redirects to /footy/response with all invitation details on success', async () => {
-        (getGameInvitationResponseDetails as Mock).mockResolvedValue(sampleDetails);
-        const request = new NextRequest('http://localhost/api/footy/response/test-token');
+        (getGameInvitationResponseDetails as Mock).mockResolvedValue(
+            sampleDetails,
+        );
+        const request = new NextRequest(
+            'http://localhost/api/footy/response/test-token',
+        );
         const response = await GET(request, {
             params: Promise.resolve({ token: 'test-token' }),
         });
@@ -46,7 +50,9 @@ describe('GET /api/footy/response/[token]', () => {
         expect(location.searchParams.get('gameDayId')).toBe('42');
         expect(location.searchParams.get('response')).toBe('Yes');
         expect(location.searchParams.get('goalie')).toBe('false');
-        expect(location.searchParams.get('comment')).toBe('Looking forward to it');
+        expect(location.searchParams.get('comment')).toBe(
+            'Looking forward to it',
+        );
     });
 
     it('omits response when outcome has no response yet', async () => {
@@ -54,12 +60,17 @@ describe('GET /api/footy/response/[token]', () => {
             ...sampleDetails,
             response: null,
         });
-        const request = new NextRequest('http://localhost/api/footy/response/test-token');
+        const request = new NextRequest(
+            'http://localhost/api/footy/response/test-token',
+        );
         const response = await GET(request, {
             params: Promise.resolve({ token: 'test-token' }),
         });
 
-        const location = new URL(response.headers.get('location')!, 'http://localhost');
+        const location = new URL(
+            response.headers.get('location')!,
+            'http://localhost',
+        );
         expect(location.searchParams.get('response')).toBeNull();
     });
 
@@ -68,12 +79,17 @@ describe('GET /api/footy/response/[token]', () => {
             ...sampleDetails,
             comment: null,
         });
-        const request = new NextRequest('http://localhost/api/footy/response/test-token');
+        const request = new NextRequest(
+            'http://localhost/api/footy/response/test-token',
+        );
         const response = await GET(request, {
             params: Promise.resolve({ token: 'test-token' }),
         });
 
-        const location = new URL(response.headers.get('location')!, 'http://localhost');
+        const location = new URL(
+            response.headers.get('location')!,
+            'http://localhost',
+        );
         expect(location.searchParams.get('comment')).toBe('');
     });
 
@@ -82,26 +98,38 @@ describe('GET /api/footy/response/[token]', () => {
             ...sampleDetails,
             goalie: true,
         });
-        const request = new NextRequest('http://localhost/api/footy/response/test-token');
+        const request = new NextRequest(
+            'http://localhost/api/footy/response/test-token',
+        );
         const response = await GET(request, {
             params: Promise.resolve({ token: 'test-token' }),
         });
 
-        const location = new URL(response.headers.get('location')!, 'http://localhost');
+        const location = new URL(
+            response.headers.get('location')!,
+            'http://localhost',
+        );
         expect(location.searchParams.get('goalie')).toBe('true');
     });
 
     it('redirects to /footy/response with an error when the invitation is not found', async () => {
         (getGameInvitationResponseDetails as Mock).mockResolvedValue(null);
-        const request = new NextRequest('http://localhost/api/footy/response/unknown-token');
+        const request = new NextRequest(
+            'http://localhost/api/footy/response/unknown-token',
+        );
         const response = await GET(request, {
             params: Promise.resolve({ token: 'unknown-token' }),
         });
 
         expect(response.status).toBe(307);
-        const location = new URL(response.headers.get('location')!, 'http://localhost');
+        const location = new URL(
+            response.headers.get('location')!,
+            'http://localhost',
+        );
         expect(location.pathname).toBe('/footy/response');
-        expect(location.searchParams.get('error')).toBe('Invitation not found.');
+        expect(location.searchParams.get('error')).toBe(
+            'Invitation not found.',
+        );
     });
 
     it('redirects to /footy/response with an error when the token is empty', async () => {
@@ -111,7 +139,10 @@ describe('GET /api/footy/response/[token]', () => {
         });
 
         expect(response.status).toBe(307);
-        const location = new URL(response.headers.get('location')!, 'http://localhost');
+        const location = new URL(
+            response.headers.get('location')!,
+            'http://localhost',
+        );
         expect(location.pathname).toBe('/footy/response');
         expect(location.searchParams.get('error')).toBe('Missing token.');
     });

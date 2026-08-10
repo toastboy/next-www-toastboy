@@ -12,7 +12,6 @@ import { fileURLToPath } from 'url';
 import { exportAuthTables } from '@/lib/exportdb/exportdb';
 import playerRecordService from '@/services/PlayerRecord';
 
-
 const currentDir = path.dirname(fileURLToPath(import.meta.url));
 
 /**
@@ -65,7 +64,6 @@ function splitEmailList(rawEmail: string | null): string[] {
         .map((email) => email.toLowerCase());
 }
 
-
 /**
  * Builds seed data for `account.email` and `playerExtraEmail` from legacy
  * player email values.
@@ -80,7 +78,10 @@ function splitEmailList(rawEmail: string | null): string[] {
  */
 function buildPlayerEmailSeeds(
     sources: { playerId: number; email: string | null }[],
-): { accountEmailByPlayerId: Map<number, string>; extraEmailRows: PlayerExtraEmailSeed[] } {
+): {
+    accountEmailByPlayerId: Map<number, string>;
+    extraEmailRows: PlayerExtraEmailSeed[];
+} {
     const extraEmailRows: PlayerExtraEmailSeed[] = [];
     const accountEmailByPlayerId = new Map<number, string>();
     const seen = new Map<string, number>();
@@ -94,7 +95,9 @@ function buildPlayerEmailSeeds(
         if (accountEmail) {
             const existing = seen.get(accountEmail);
             if (existing && existing !== source.playerId) {
-                console.warn(`Skipping duplicate account email ${accountEmail} for player ${source.playerId}; already assigned to player ${existing}`);
+                console.warn(
+                    `Skipping duplicate account email ${accountEmail} for player ${source.playerId}; already assigned to player ${existing}`,
+                );
             } else {
                 seen.set(accountEmail, source.playerId);
                 accountEmailByPlayerId.set(source.playerId, accountEmail);
@@ -104,7 +107,9 @@ function buildPlayerEmailSeeds(
         extraEmails.forEach((email) => {
             const existing = seen.get(email);
             if (existing && existing !== source.playerId) {
-                console.warn(`Skipping duplicate extra email ${email} for player ${source.playerId}; already assigned to player ${existing}`);
+                console.warn(
+                    `Skipping duplicate extra email ${email} for player ${source.playerId}; already assigned to player ${existing}`,
+                );
                 return;
             }
 
@@ -136,7 +141,9 @@ function buildPlayerEmailSeeds(
  * corrected.
  */
 async function reconcilePlayerJoinedFinishedDates(): Promise<void> {
-    console.log('Reconciling player joined/finished dates against actual game history...');
+    console.log(
+        'Reconciling player joined/finished dates against actual game history...',
+    );
 
     const outcomes = await prisma.outcome.findMany({
         where: { gameDay: { game: true } },
@@ -144,7 +151,10 @@ async function reconcilePlayerJoinedFinishedDates(): Promise<void> {
     });
 
     const rangeByPlayer = new Map<number, { min: Date; max: Date }>();
-    for (const { playerId, gameDay: { date } } of outcomes) {
+    for (const {
+        playerId,
+        gameDay: { date },
+    } of outcomes) {
         const existing = rangeByPlayer.get(playerId);
         if (!existing) {
             rangeByPlayer.set(playerId, { min: date, max: date });
@@ -164,11 +174,15 @@ async function reconcilePlayerJoinedFinishedDates(): Promise<void> {
         const data: { joined?: Date; finished?: Date } = {};
 
         if (player.joined && player.joined > range.min) {
-            console.warn(`Player ${player.id}: joined date ${player.joined.toISOString()} is after their earliest recorded game (${range.min.toISOString()}); correcting.`);
+            console.warn(
+                `Player ${player.id}: joined date ${player.joined.toISOString()} is after their earliest recorded game (${range.min.toISOString()}); correcting.`,
+            );
             data.joined = range.min;
         }
         if (player.finished && player.finished < range.max) {
-            console.warn(`Player ${player.id}: finished date ${player.finished.toISOString()} is before their latest recorded game (${range.max.toISOString()}); correcting.`);
+            console.warn(
+                `Player ${player.id}: finished date ${player.finished.toISOString()} is before their latest recorded game (${range.max.toISOString()}); correcting.`,
+            );
             data.finished = range.max;
         }
 
@@ -178,11 +192,13 @@ async function reconcilePlayerJoinedFinishedDates(): Promise<void> {
     }
 }
 
-async function fetchLegacyPlayerEmailSources(): Promise<{ playerId: number; email: string | null }[]> {
+async function fetchLegacyPlayerEmailSources(): Promise<
+    { playerId: number; email: string | null }[]
+> {
     // The raw query here is OK because this is a temporary script and there is no user input
-    const rows = await prisma.$queryRawUnsafe<{ id: number; email: string | null }[]>(
-        'SELECT id, email FROM player',
-    );
+    const rows = await prisma.$queryRawUnsafe<
+        { id: number; email: string | null }[]
+    >('SELECT id, email FROM player');
 
     return rows.map((row) => ({
         playerId: row.id,
@@ -260,13 +276,18 @@ async function importBackup(): Promise<void> {
         const storageAccountName = 'nextwwwtoastboy';
         const containerName = 'dbseeddata';
 
-        const credentials = new ClientSecretCredential(tenantId, clientId, clientSecret);
+        const credentials = new ClientSecretCredential(
+            tenantId,
+            clientId,
+            clientSecret,
+        );
         const blobServiceClient = new BlobServiceClient(
             `https://${storageAccountName}.blob.core.windows.net`,
             credentials,
         );
 
-        const containerClient = blobServiceClient.getContainerClient(containerName);
+        const containerClient =
+            blobServiceClient.getContainerClient(containerName);
 
         const shellExec = (cmd: string) => {
             execSync(cmd, { stdio: 'inherit' });
@@ -274,10 +295,19 @@ async function importBackup(): Promise<void> {
 
         // Take a backup of the current live database
         console.log('Taking production mysql backup...');
-        shellExec(`mysqldump --skip-ssl -h ${prodMysqlHost} -P ${prodMysqlPort} -u ${prodMysqlUser} -p${prodMysqlPassword} ${mysqlDatabase} arse club club_supporter country diffs game_chat game_day invitation misc nationality outcome picker picker_teams player > /tmp/${mysqlDatabase}.sql`);
+        shellExec(
+            `mysqldump --skip-ssl -h ${prodMysqlHost} -P ${prodMysqlPort} -u ${prodMysqlUser} -p${prodMysqlPassword} ${mysqlDatabase} arse club club_supporter country diffs game_chat game_day invitation misc nationality outcome picker picker_teams player > /tmp/${mysqlDatabase}.sql`,
+        );
 
         // Get the list of directories in the migrations directory
-        const migrationsDir = path.join(currentDir, '..', '..', '..', 'prisma', 'migrations');
+        const migrationsDir = path.join(
+            currentDir,
+            '..',
+            '..',
+            '..',
+            'prisma',
+            'migrations',
+        );
         const migrations = await readdir(migrationsDir);
 
         // Run prisma generate to ensure the Prisma Client is up to date
@@ -286,13 +316,21 @@ async function importBackup(): Promise<void> {
 
         // Run prisma db push to ensure the database is up to date with the schema
         console.log('Running prisma db push...');
-        shellExec(`mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} -e'DROP DATABASE IF EXISTS footy;'`);
-        shellExec(`mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} -e'CREATE DATABASE footy;'`);
-        shellExec('npx prisma db push --accept-data-loss --schema prisma/schema.prisma');
+        shellExec(
+            `mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} -e'DROP DATABASE IF EXISTS footy;'`,
+        );
+        shellExec(
+            `mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} -e'CREATE DATABASE footy;'`,
+        );
+        shellExec(
+            'npx prisma db push --accept-data-loss --schema prisma/schema.prisma',
+        );
 
         // Import the mysqldump backup created above
         console.log('Importing mysql backup...');
-        shellExec(`cat /tmp/${mysqlDatabase}.sql | mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} ${mysqlDatabase}`);
+        shellExec(
+            `cat /tmp/${mysqlDatabase}.sql | mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} ${mysqlDatabase}`,
+        );
 
         const legacyPlayerEmailSources = await fetchLegacyPlayerEmailSources();
 
@@ -304,17 +342,27 @@ async function importBackup(): Promise<void> {
                 continue;
             }
             console.log(`Running migration ${migrations[i]}...`);
-            const migration = path.join(migrationsDir, migrations[i], 'migration.sql');
-            shellExec(`cat ${migration} | mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} ${mysqlDatabase}`);
+            const migration = path.join(
+                migrationsDir,
+                migrations[i],
+                'migration.sql',
+            );
+            shellExec(
+                `cat ${migration} | mysql --skip-ssl -h ${devMysqlHost} -P ${devMysqlPort} -u ${devMysqlUser} -p${devMysqlPassword} ${mysqlDatabase}`,
+            );
         }
 
         // Run prisma generate again to take account of any schema changes during migrations
         console.log('Running prisma generate again...');
         shellExec('npx prisma generate --schema prisma/schema.prisma');
 
-        const { accountEmailByPlayerId, extraEmailRows } = buildPlayerEmailSeeds(legacyPlayerEmailSources);
+        const { accountEmailByPlayerId, extraEmailRows } =
+            buildPlayerEmailSeeds(legacyPlayerEmailSources);
 
-        for (const [playerId, accountEmail] of accountEmailByPlayerId.entries()) {
+        for (const [
+            playerId,
+            accountEmail,
+        ] of accountEmailByPlayerId.entries()) {
             await prisma.player.update({
                 where: { id: playerId },
                 data: { accountEmail },
@@ -333,8 +381,15 @@ async function importBackup(): Promise<void> {
         // Write each table in ${mysqlDatabase} to a JSON file in /tmp/importlivedb
         console.log('Writing tables to JSON files...');
         shellExec(`mkdir -p /tmp/importlivedb`);
-        for (const { fileName, getModel } of GAME_DATA_TABLES.filter((e) => e.fileName !== 'PlayerEmail.json')) {
-            await writeTableToJSONFile(fileName, getModel(prisma) as { findMany: () => Prisma.PrismaPromise<object[]> });
+        for (const { fileName, getModel } of GAME_DATA_TABLES.filter(
+            (e) => e.fileName !== 'PlayerEmail.json',
+        )) {
+            await writeTableToJSONFile(
+                fileName,
+                getModel(prisma) as {
+                    findMany: () => Prisma.PrismaPromise<object[]>;
+                },
+            );
         }
 
         writeDataToJSONFile('PlayerEmail.json', extraEmailRows);

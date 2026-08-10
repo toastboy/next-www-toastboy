@@ -1,7 +1,6 @@
-import {
-    Flex,
-    Group,
-} from '@mantine/core';
+'use client';
+
+import { Flex, Group } from '@mantine/core';
 import type { TableName } from 'prisma/zod/schemas';
 
 import { RecordsTable } from '@/components/RecordsTable/RecordsTable';
@@ -19,14 +18,17 @@ export const YearTable = ({ table, year, qualified, unqualified }: Props) => {
     const utn = UnqualifiedTableName(table) ?? null;
 
     return (
-        <Flex direction="column" gap="md">
+        <Flex
+            direction="column"
+            gap="md"
+        >
             <RecordsTable
                 key={`${table}-${year}-qualified`}
                 table={table}
                 year={year}
                 records={qualified}
             />
-            {utn ?
+            {utn ? (
                 <Group mt="xl">
                     <RecordsTable
                         key={`${table}-${year}-unqualified`}
@@ -36,11 +38,8 @@ export const YearTable = ({ table, year, qualified, unqualified }: Props) => {
                         title={utn}
                         titleOrder={4}
                     />
-                </Group> :
-                null
-            }
+                </Group>
+            ) : null}
         </Flex>
     );
 };
-
-

@@ -1,4 +1,3 @@
-
 import { render, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 
@@ -8,7 +7,10 @@ import { defaultClubSupporterDataList } from '@/tests/mocks/data/clubSupporterDa
 import { defaultCountrySupporterDataList } from '@/tests/mocks/data/countrySupporterData';
 import { createMockPlayer, defaultPlayer } from '@/tests/mocks/data/player';
 import { defaultPlayerFormList } from '@/tests/mocks/data/playerForm';
-import { defaultPlayerRecord, defaultTrophiesList } from '@/tests/mocks/data/playerRecord';
+import {
+    defaultPlayerRecord,
+    defaultTrophiesList,
+} from '@/tests/mocks/data/playerRecord';
 
 vi.mock('@/components/PlayerCard/PlayerCard');
 vi.mock('@/components/PlayerHeatmap/PlayerHeatmap');
@@ -42,9 +44,13 @@ describe('PlayerProfile', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByText((content) =>
-            content.startsWith('TitleWithYearDropdown:') && content.includes(defaultPlayer.name),
-        )).toBeInTheDocument();
+        expect(
+            screen.getByText(
+                (content) =>
+                    content.startsWith('TitleWithYearDropdown:') &&
+                    content.includes(defaultPlayer.name),
+            ),
+        ).toBeInTheDocument();
     });
 
     it('renders PlayerCard', () => {
@@ -98,12 +104,15 @@ describe('PlayerProfile', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByText((content) =>
-            content.startsWith('PlayerInfo:') &&
-            content.includes('"name":"Introducer"') &&
-            content.includes('"isAuthenticated":true') &&
-            content.includes('"isAdmin":true'),
-        )).toBeInTheDocument();
+        expect(
+            screen.getByText(
+                (content) =>
+                    content.startsWith('PlayerInfo:') &&
+                    content.includes('"name":"Introducer"') &&
+                    content.includes('"isAuthenticated":true') &&
+                    content.includes('"isAdmin":true'),
+            ),
+        ).toBeInTheDocument();
     });
 
     describe('prev/next navigation', () => {
@@ -128,51 +137,81 @@ describe('PlayerProfile', () => {
         it('renders a labelled prev-arrow link when prevPlayer is provided', () => {
             render(
                 <Wrapper>
-                    <PlayerProfile {...baseProps} prevPlayer={prevPlayer} nextPlayer={null} />
+                    <PlayerProfile
+                        {...baseProps}
+                        prevPlayer={prevPlayer}
+                        nextPlayer={null}
+                    />
                 </Wrapper>,
             );
 
-            expect(screen.getByText((content) =>
-                content.startsWith('PlayerLink:') &&
-                content.includes(`"id":${prevPlayer.id}`) &&
-                content.includes('"format":"left-arrow"'),
-            )).toBeInTheDocument();
-            expect(screen.queryByTestId('player-prev-placeholder')).not.toBeInTheDocument();
+            expect(
+                screen.getByText(
+                    (content) =>
+                        content.startsWith('PlayerLink:') &&
+                        content.includes(`"id":${prevPlayer.id}`) &&
+                        content.includes('"format":"left-arrow"'),
+                ),
+            ).toBeInTheDocument();
+            expect(
+                screen.queryByTestId('player-prev-placeholder'),
+            ).not.toBeInTheDocument();
         });
 
         it('renders the prev placeholder when prevPlayer is null', () => {
             render(
                 <Wrapper>
-                    <PlayerProfile {...baseProps} prevPlayer={null} nextPlayer={null} />
+                    <PlayerProfile
+                        {...baseProps}
+                        prevPlayer={null}
+                        nextPlayer={null}
+                    />
                 </Wrapper>,
             );
 
-            expect(screen.getByTestId('player-prev-placeholder')).toBeInTheDocument();
+            expect(
+                screen.getByTestId('player-prev-placeholder'),
+            ).toBeInTheDocument();
         });
 
         it('renders a labelled next-arrow link when nextPlayer is provided', () => {
             render(
                 <Wrapper>
-                    <PlayerProfile {...baseProps} prevPlayer={null} nextPlayer={nextPlayer} />
+                    <PlayerProfile
+                        {...baseProps}
+                        prevPlayer={null}
+                        nextPlayer={nextPlayer}
+                    />
                 </Wrapper>,
             );
 
-            expect(screen.getByText((content) =>
-                content.startsWith('PlayerLink:') &&
-                content.includes(`"id":${nextPlayer.id}`) &&
-                content.includes('"format":"right-arrow"'),
-            )).toBeInTheDocument();
-            expect(screen.queryByTestId('player-next-placeholder')).not.toBeInTheDocument();
+            expect(
+                screen.getByText(
+                    (content) =>
+                        content.startsWith('PlayerLink:') &&
+                        content.includes(`"id":${nextPlayer.id}`) &&
+                        content.includes('"format":"right-arrow"'),
+                ),
+            ).toBeInTheDocument();
+            expect(
+                screen.queryByTestId('player-next-placeholder'),
+            ).not.toBeInTheDocument();
         });
 
         it('renders the next placeholder when nextPlayer is null', () => {
             render(
                 <Wrapper>
-                    <PlayerProfile {...baseProps} prevPlayer={null} nextPlayer={null} />
+                    <PlayerProfile
+                        {...baseProps}
+                        prevPlayer={null}
+                        nextPlayer={null}
+                    />
                 </Wrapper>,
             );
 
-            expect(screen.getByTestId('player-next-placeholder')).toBeInTheDocument();
+            expect(
+                screen.getByTestId('player-next-placeholder'),
+            ).toBeInTheDocument();
         });
     });
 });

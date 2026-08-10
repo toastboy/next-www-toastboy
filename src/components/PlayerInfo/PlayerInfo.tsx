@@ -1,14 +1,6 @@
-import {
-    Divider,
-    Paper,
-    Table,
-    TableTbody,
-    TableTd,
-    TableTh,
-    TableTr,
-    Title,
-    type TitleOrder,
-} from '@mantine/core';
+'use client';
+
+import { Divider, Paper, Table, Title, type TitleOrder } from '@mantine/core';
 
 import { EmailPlayerButton } from '@/components/EmailPlayerButton/EmailPlayerButton';
 import { GameDayLink } from '@/components/GameDayLink/GameDayLink';
@@ -45,47 +37,72 @@ export const PlayerInfo = ({
     titleOrder = 3,
 }: Props) => {
     return (
-        <Paper p="sm" miw="18rem" h="100%">
-            <Title order={titleOrder} mb="xs" w="100%" ta="center">Info</Title>
+        <Paper
+            p="sm"
+            miw="18rem"
+            h="100%"
+        >
+            <Title
+                order={titleOrder}
+                mb="xs"
+                w="100%"
+                ta="center"
+            >
+                Info
+            </Title>
             <Divider mb="xs" />
             <Table
                 layout="fixed"
                 variant="vertical"
             >
-                <TableTbody>
+                <Table.Tbody>
                     {!!introducedBy && (
-                        <TableTr>
-                            <TableTh>Introduced by</TableTh>
-                            <TableTd><PlayerLink player={introducedBy} year={year} /></TableTd>
-                        </TableTr>
+                        <Table.Tr>
+                            <Table.Th>Introduced by</Table.Th>
+                            <Table.Td>
+                                <PlayerLink
+                                    player={introducedBy}
+                                    year={year}
+                                />
+                            </Table.Td>
+                        </Table.Tr>
                     )}
-                    <TableTr>
-                        <TableTh>Joined</TableTh>
-                        <TableTd>{player.joined ? formatDate(player.joined) : 'N/A'}</TableTd>
-                    </TableTr>
+                    <Table.Tr>
+                        <Table.Th>Joined</Table.Th>
+                        <Table.Td>
+                            {player.joined ? formatDate(player.joined) : 'N/A'}
+                        </Table.Td>
+                    </Table.Tr>
                     {!!isAdmin && !!playerData && !!onSendEmail && (
-                        <TableTr>
-                            <TableTh>Email</TableTh>
-                            <TableTd>
-                                <EmailPlayerButton player={playerData} onSendEmail={onSendEmail} />
-                            </TableTd>
-                        </TableTr>
+                        <Table.Tr>
+                            <Table.Th>Email</Table.Th>
+                            <Table.Td>
+                                <EmailPlayerButton
+                                    player={playerData}
+                                    onSendEmail={onSendEmail}
+                                />
+                            </Table.Td>
+                        </Table.Tr>
                     )}
-                    <TableTr>
-                        <TableTh>Last played</TableTh>
-                        <TableTd><GameDayLink gameDay={lastPlayed?.gameDay} /></TableTd>
-                    </TableTr>
-                    <TableTr>
-                        <TableTh>Last won</TableTh>
-                        <TableTd><GameDayLink gameDay={lastWon?.gameDay} /></TableTd>
-                    </TableTr>
+                    <Table.Tr>
+                        <Table.Th>Last played</Table.Th>
+                        <Table.Td>
+                            <GameDayLink gameDay={lastPlayed?.gameDay} />
+                        </Table.Td>
+                    </Table.Tr>
+                    <Table.Tr>
+                        <Table.Th>Last won</Table.Th>
+                        <Table.Td>
+                            <GameDayLink gameDay={lastWon?.gameDay} />
+                        </Table.Td>
+                    </Table.Tr>
                     {!!isAuthenticated && (
-                        <TableTr>
-                            <TableTh>Born</TableTh>
-                            <TableTd>{player.born}</TableTd>
-                        </TableTr>
+                        <Table.Tr>
+                            <Table.Th>Born</Table.Th>
+                            <Table.Td>{player.born}</Table.Td>
+                        </Table.Tr>
                     )}
-                </TableTbody>
+                </Table.Tbody>
             </Table>
         </Paper>
     );

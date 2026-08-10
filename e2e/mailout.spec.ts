@@ -1,6 +1,10 @@
 import { asGuest, asUser, mustBeLoggedIn } from './utils/auth';
 import { expect, test } from './utils/base';
-import { deleteAllMessages, getMessageDetail, waitForMessage } from './utils/mailpit';
+import {
+    deleteAllMessages,
+    getMessageDetail,
+    waitForMessage,
+} from './utils/mailpit';
 
 test.describe('Mail active players', () => {
     test('denies access to guest users', async ({ page }) => {
@@ -16,11 +20,17 @@ test.describe('Mail active players', () => {
         await asUser(page, '/footy/mailout');
 
         await expect(page).toHaveURL(/\/footy\/players/);
-        await expect(page.getByRole('table').locator('tbody tr').first()).toBeVisible();
+        await expect(
+            page.getByRole('table').locator('tbody tr').first(),
+        ).toBeVisible();
 
-        await expect(page.getByRole('checkbox', { name: 'Select All' })).toBeVisible();
+        await expect(
+            page.getByRole('checkbox', { name: 'Select All' }),
+        ).toBeVisible();
         await page.getByRole('checkbox', { name: 'Select All' }).click();
-        await expect(page.getByRole('button', { name: /send email/i })).toBeEnabled();
+        await expect(
+            page.getByRole('button', { name: /send email/i }),
+        ).toBeEnabled();
         await page.getByRole('button', { name: /send email/i }).click();
 
         await page.getByRole('textbox', { name: 'Subject' }).fill(subject);
@@ -31,7 +41,10 @@ test.describe('Mail active players', () => {
         await expect(page.getByText('Email sent successfully')).toBeVisible();
 
         const message = await waitForMessage(request, subject);
-        expect(message, `Expected email with subject "${subject}" in Mailpit`).toBeTruthy();
+        expect(
+            message,
+            `Expected email with subject "${subject}" in Mailpit`,
+        ).toBeTruthy();
 
         const detail = await getMessageDetail(request, message!.ID);
         expect(detail.Text).toContain(body);

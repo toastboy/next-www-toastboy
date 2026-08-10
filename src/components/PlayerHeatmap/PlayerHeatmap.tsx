@@ -1,8 +1,6 @@
 'use client';
 
-import {
-    Text,
-} from '@mantine/core';
+import { Text } from '@mantine/core';
 import { axisBottom } from 'd3-axis';
 import { type ScaleBand, scaleBand } from 'd3-scale';
 import { select, type Selection } from 'd3-selection';
@@ -66,13 +64,18 @@ const resultLabel = new Map<number | null | undefined, string>([
 ]);
 
 // Short names are the unique domain keys; narrow names are used for axis display.
-const MONTH_COLS = Array.from({ length: 12 }, (_, i) => getShortMonthName(2000, i + 1));
+const MONTH_COLS = Array.from({ length: 12 }, (_, i) =>
+    getShortMonthName(2000, i + 1),
+);
 const SHORT_TO_NARROW = new Map(
     MONTH_COLS.map((short, i) => [short, getNarrowMonthName(2000, i + 1)]),
 );
 
 /** Builds the flat cell list for a single year's data (always month columns). */
-export function buildGrid(data: PlayerFormType[]): { cells: Cell[]; maxRow: number } {
+export function buildGrid(data: PlayerFormType[]): {
+    cells: Cell[];
+    maxRow: number;
+} {
     const grouped = new Map<string, PlayerFormType[]>();
 
     for (const entry of data) {
@@ -89,7 +92,9 @@ export function buildGrid(data: PlayerFormType[]): { cells: Cell[]; maxRow: numb
 
     for (const col of MONTH_COLS) {
         const entries = (grouped.get(col) ?? []).sort(
-            (a, b) => new Date(a.gameDay!.date).getTime() - new Date(b.gameDay!.date).getTime(),
+            (a, b) =>
+                new Date(a.gameDay!.date).getTime() -
+                new Date(b.gameDay!.date).getTime(),
         );
         entries.forEach((entry, i) => {
             cells.push({
@@ -112,7 +117,9 @@ export function buildGrid(data: PlayerFormType[]): { cells: Cell[]; maxRow: numb
  * Groups data by year, builds a cell list for each year, and returns an array of year groups
  * sorted in reverse chronological order.
  */
-export function buildYearGroups(data: PlayerFormType[]): { year: string; cells: Cell[]; maxRow: number }[] {
+export function buildYearGroups(
+    data: PlayerFormType[],
+): { year: string; cells: Cell[]; maxRow: number }[] {
     const byYear = new Map<string, PlayerFormType[]>();
     for (const entry of data) {
         if (!entry.gameDay) continue;
@@ -123,7 +130,7 @@ export function buildYearGroups(data: PlayerFormType[]): { year: string; cells: 
     }
     return Array.from(byYear.keys())
         .sort((a, b) => Number(b) - Number(a))
-        .map(yr => ({ year: yr, ...buildGrid(byYear.get(yr)!) }));
+        .map((yr) => ({ year: yr, ...buildGrid(byYear.get(yr)!) }));
 }
 
 const GAP = 2;
@@ -137,7 +144,10 @@ interface TooltipContent {
     comment?: string | null;
 }
 
-type ShowTooltip = (event: globalThis.MouseEvent, content: TooltipContent) => void;
+type ShowTooltip = (
+    event: globalThis.MouseEvent,
+    content: TooltipContent,
+) => void;
 
 /**
  * Returns an X scale for the month columns, along with the calculated inner
@@ -177,8 +187,14 @@ function drawPanel(
     // X axis — domain keys are short names; labels are rendered as narrow single letters
     g.append('g')
         .attr('transform', `translate(0,${ih + 4})`)
-        .call(axisBottom(xScale).tickSize(0).tickFormat(d => SHORT_TO_NARROW.get(d)!))
-        .call(ax => { ax.select('.domain').remove(); });
+        .call(
+            axisBottom(xScale)
+                .tickSize(0)
+                .tickFormat((d) => SHORT_TO_NARROW.get(d)!),
+        )
+        .call((ax) => {
+            ax.select('.domain').remove();
+        });
 
     // Cells
     g.selectAll<SVGRectElement, Cell>('rect.cell')
@@ -186,21 +202,25 @@ function drawPanel(
         .enter()
         .append('rect')
         .attr('class', 'cell')
-        .attr('x', d => xScale(d.col)!)
-        .attr('y', d => (d.row - 1) * (cellSize + GAP))
+        .attr('x', (d) => xScale(d.col)!)
+        .attr('y', (d) => (d.row - 1) * (cellSize + GAP))
         .attr('width', xScale.bandwidth())
         .attr('height', cellSize)
         .attr('rx', 2)
         .attr('role', 'button')
         .attr('tabindex', '0')
-        .attr('aria-label', d => {
+        .attr('aria-label', (d) => {
             if (d.noGame) {
                 const status = d.comment ? `No game — ${d.comment}` : 'No game';
                 return `${formatDate(d.date)} – ${status}`;
             }
             return `${formatDate(d.date)} – ${resultLabel.get(d.points) ?? ''}`;
         })
-        .style('fill', d => d.noGame ? NO_GAME_COLOR : (colorMap.get(d.points) ?? 'var(--mantine-color-gray-5)'))
+        .style('fill', (d) =>
+            d.noGame
+                ? NO_GAME_COLOR
+                : (colorMap.get(d.points) ?? 'var(--mantine-color-gray-5)'),
+        )
         .style('cursor', 'pointer')
         .on('mousemove', (event: globalThis.MouseEvent, d) => {
             showTooltip(event, {
@@ -210,7 +230,9 @@ function drawPanel(
             });
         })
         .on('mouseleave', hideTooltip)
-        .on('click', (_, d) => { onCellClick(d.gameId); })
+        .on('click', (_, d) => {
+            onCellClick(d.gameId);
+        })
         .on('keydown', (event: globalThis.KeyboardEvent, d) => {
             if (event.key === 'Enter' || event.key === ' ') {
                 event.preventDefault();
@@ -232,17 +254,25 @@ interface YearPanelProps {
  *
  * @param props - See {@link YearPanelProps}.
  */
-const YearPanel = ({ label, cells, globalMaxRow, showTooltip, hideTooltip }: YearPanelProps) => {
+const YearPanel = ({
+    label,
+    cells,
+    globalMaxRow,
+    showTooltip,
+    hideTooltip,
+}: YearPanelProps) => {
     const svgRef = useRef<SVGSVGElement>(null);
     const router = useRouter();
 
     useEffect(() => {
         /* c8 ignore next */
         if (!svgRef.current) return;
-        const onCellClick = (gameId: number) => router.push(`/footy/game/${gameId}`);
+        const onCellClick = (gameId: number) =>
+            router.push(`/footy/game/${gameId}`);
         const { scale: xScale, iw } = makeXScale();
         const cellSize = xScale.bandwidth();
-        const ih = globalMaxRow * cellSize + Math.max(0, globalMaxRow - 1) * GAP;
+        const ih =
+            globalMaxRow * cellSize + Math.max(0, globalMaxRow - 1) * GAP;
         const w = iw + M.left + M.right;
         const h = YEAR_LABEL_HEIGHT + M.top + ih + M.bottom;
 
@@ -258,8 +288,21 @@ const YearPanel = ({ label, cells, globalMaxRow, showTooltip, hideTooltip }: Yea
             .style('fill', 'currentColor')
             .text(label);
 
-        const g = svg.append('g').attr('transform', `translate(${M.left},${YEAR_LABEL_HEIGHT + M.top})`);
-        drawPanel(g, cells, globalMaxRow, xScale, showTooltip, hideTooltip, onCellClick);
+        const g = svg
+            .append('g')
+            .attr(
+                'transform',
+                `translate(${M.left},${YEAR_LABEL_HEIGHT + M.top})`,
+            );
+        drawPanel(
+            g,
+            cells,
+            globalMaxRow,
+            xScale,
+            showTooltip,
+            hideTooltip,
+            onCellClick,
+        );
     }, [cells, globalMaxRow, hideTooltip, label, router, showTooltip]);
 
     return <svg ref={svgRef} />;
@@ -292,7 +335,10 @@ export const PlayerHeatmap = ({ data, year }: Props) => {
     const router = useRouter();
 
     const showTooltip = useCallback(
-        (event: globalThis.MouseEvent, { date, label, comment }: TooltipContent) => {
+        (
+            event: globalThis.MouseEvent,
+            { date, label, comment }: TooltipContent,
+        ) => {
             const el = tooltipRef.current;
             const wrapper = wrapperRef.current;
             /* c8 ignore next */
@@ -326,7 +372,8 @@ export const PlayerHeatmap = ({ data, year }: Props) => {
     // Single-year drawing
     useEffect(() => {
         if (year === 0 || !svgRef.current) return;
-        const onCellClick = (gameId: number) => router.push(`/footy/game/${gameId}`);
+        const onCellClick = (gameId: number) =>
+            router.push(`/footy/game/${gameId}`);
         const { cells, maxRow } = buildGrid(data);
         if (maxRow === 0) return;
         const { scale: xScale, iw } = makeXScale();
@@ -336,26 +383,48 @@ export const PlayerHeatmap = ({ data, year }: Props) => {
         const svg = select(svgRef.current);
         svg.selectAll('*').remove();
         svg.attr('width', w).attr('height', ih + M.top + M.bottom);
-        const g = svg.append('g').attr('transform', `translate(${M.left},${M.top})`);
-        drawPanel(g, cells, maxRow, xScale, showTooltip, hideTooltip, onCellClick);
+        const g = svg
+            .append('g')
+            .attr('transform', `translate(${M.left},${M.top})`);
+        drawPanel(
+            g,
+            cells,
+            maxRow,
+            xScale,
+            showTooltip,
+            hideTooltip,
+            onCellClick,
+        );
     }, [data, hideTooltip, router, showTooltip, year]);
 
     const yearGroups = useMemo(
-        () => year === 0 ? buildYearGroups(data) : null,
+        () => (year === 0 ? buildYearGroups(data) : null),
         [data, year],
     );
     const globalMaxRow = useMemo(
-        () => yearGroups ? Math.max(0, ...yearGroups.map(yg => yg.maxRow)) : 0,
+        () =>
+            yearGroups ? Math.max(0, ...yearGroups.map((yg) => yg.maxRow)) : 0,
         [yearGroups],
     );
 
     if (data.length === 0) {
-        return <Text c="dimmed" ta="center" py="xl">No game data available.</Text>;
+        return (
+            <Text
+                c="dimmed"
+                ta="center"
+                py="xl"
+            >
+                No game data available.
+            </Text>
+        );
     }
 
     if (year === 0) {
         return (
-            <div ref={wrapperRef} className={styles.allTimeWrapper}>
+            <div
+                ref={wrapperRef}
+                className={styles.allTimeWrapper}
+            >
                 {yearGroups!.map(({ year: yr, cells }) => (
                     <YearPanel
                         key={yr}
@@ -366,15 +435,24 @@ export const PlayerHeatmap = ({ data, year }: Props) => {
                         hideTooltip={hideTooltip}
                     />
                 ))}
-                <div ref={tooltipRef} className={styles.tooltip} />
+                <div
+                    ref={tooltipRef}
+                    className={styles.tooltip}
+                />
             </div>
         );
     }
 
     return (
-        <div ref={wrapperRef} className={styles.wrapper}>
+        <div
+            ref={wrapperRef}
+            className={styles.wrapper}
+        >
             <svg ref={svgRef} />
-            <div ref={tooltipRef} className={styles.tooltip} />
+            <div
+                ref={tooltipRef}
+                className={styles.tooltip}
+            />
         </div>
     );
 };

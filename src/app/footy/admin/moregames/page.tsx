@@ -33,7 +33,15 @@ const addDays = (date: Date, days: number) => {
  * @returns A new Date object set to 18:00:00.000 on the same day as the input date
  */
 const normalizeGameDayTime = (date: Date) => {
-    return new Date(date.getFullYear(), date.getMonth(), date.getDate(), 18, 0, 0, 0);
+    return new Date(
+        date.getFullYear(),
+        date.getMonth(),
+        date.getDate(),
+        18,
+        0,
+        0,
+        0,
+    );
 };
 
 /**
@@ -90,7 +98,11 @@ const buildRows = (startDate: Date) => {
     const endDate = getBookingYearEnd(startDate);
     const rows = [];
 
-    for (let date = new Date(startDate); date <= endDate; date = addDays(date, 7)) {
+    for (
+        let date = new Date(startDate);
+        date <= endDate;
+        date = addDays(date, 7)
+    ) {
         rows.push({
             date: formatDate(date),
             game: true,
@@ -106,9 +118,9 @@ export const metadata = { title: 'More Games' };
 const MoreGamesPage = async () => {
     const lastGameDay = await gameDayService.getLatest();
 
-    const startDate = lastGameDay ?
-        addDays(normalizeGameDayTime(lastGameDay.date), 7) :
-        normalizeGameDayTime(getNextTuesday(new Date()));
+    const startDate = lastGameDay
+        ? addDays(normalizeGameDayTime(lastGameDay.date), 7)
+        : normalizeGameDayTime(getNextTuesday(new Date()));
     const rows = buildRows(startDate);
     const cost = lastGameDay?.cost ?? config.defaultGameCostPence;
     const hallCost = lastGameDay?.hallCost ?? config.defaultHallCostPence;

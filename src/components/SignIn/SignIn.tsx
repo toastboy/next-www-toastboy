@@ -17,14 +17,16 @@ import {
     Title,
     UnstyledButton,
 } from '@mantine/core';
-import {
-    useForm,
-} from '@mantine/form';
+import { useForm } from '@mantine/form';
 import { IconAt, IconLock, IconX } from '@tabler/icons-react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 
-import { authClient, signInWithGoogle, signInWithMicrosoft } from '@/lib/auth.client';
+import {
+    authClient,
+    signInWithGoogle,
+    signInWithMicrosoft,
+} from '@/lib/auth.client';
 import { config } from '@/lib/config';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 import { getPublicBaseUrl } from '@/lib/urls';
@@ -32,7 +34,7 @@ import { getPublicBaseUrl } from '@/lib/urls';
 export interface Props {
     admin?: boolean;
     redirect?: string;
-};
+}
 
 export const SignIn = ({ admin, redirect }: Props) => {
     const [loading, setLoading] = useState(false);
@@ -53,11 +55,16 @@ export const SignIn = ({ admin, redirect }: Props) => {
             email: (value) =>
                 /^\S+@\S+\.\S+$/.test(value) ? null : 'Invalid email format',
             password: (value) =>
-                value.length >= 8 ? null : 'Password must be at least 8 characters long',
+                value.length >= 8
+                    ? null
+                    : 'Password must be at least 8 characters long',
         },
     });
 
-    const handleSignIn = async (values: { email: string; password: string }) => {
+    const handleSignIn = async (values: {
+        email: string;
+        password: string;
+    }) => {
         setLoading(true);
         setLoginError(false);
 
@@ -67,8 +74,7 @@ export const SignIn = ({ admin, redirect }: Props) => {
                 password: values.password,
             });
             router.push(redirectPath);
-        }
-        catch (error) {
+        } catch (error) {
             captureUnexpectedError(error, {
                 layer: 'client',
                 action: 'signInWithEmail',
@@ -79,8 +85,7 @@ export const SignIn = ({ admin, redirect }: Props) => {
                 },
             });
             setLoginError(true);
-        }
-        finally {
+        } finally {
             setLoading(false);
         }
     };
@@ -112,27 +117,54 @@ export const SignIn = ({ admin, redirect }: Props) => {
     ) : null;
 
     return (
-        <Paper w="100%" maw="35rem" mx="auto" mt="xl">
+        <Paper
+            w="100%"
+            maw="35rem"
+            mx="auto"
+            mt="xl"
+        >
             <Stack mb="lg">
-                <Title order={2} mb="xs" w="100%" ta="center">
+                <Title
+                    order={2}
+                    mb="xs"
+                    w="100%"
+                    ta="center"
+                >
                     {title}
                 </Title>
                 <Divider mb="xs" />
-                <Group justify="center" w="100%" mb="md">
+                <Group
+                    justify="center"
+                    w="100%"
+                    mb="md"
+                >
                     <UnstyledButton
                         onClick={() => signInWithGoogle(socialRedirect)}
                         w="fit-content"
                     >
-                        <Image src="/google-signin-button-light.svg" alt="Sign in with Google" w={180} h={40} />
+                        <Image
+                            src="/google-signin-button-light.svg"
+                            alt="Sign in with Google"
+                            w={180}
+                            h={40}
+                        />
                     </UnstyledButton>
                     <UnstyledButton
                         onClick={() => signInWithMicrosoft(socialRedirect)}
                         w="fit-content"
                     >
-                        <Image src="/microsoft-signin-button-light.svg" alt="Sign in with Microsoft" w={215} h={41} />
+                        <Image
+                            src="/microsoft-signin-button-light.svg"
+                            alt="Sign in with Microsoft"
+                            w={215}
+                            h={41}
+                        />
                     </UnstyledButton>
                 </Group>
-                <Divider label="or" labelPosition="center" />
+                <Divider
+                    label="or"
+                    labelPosition="center"
+                />
             </Stack>
 
             <Box
@@ -147,7 +179,6 @@ export const SignIn = ({ admin, redirect }: Props) => {
                         rightSection={<IconAt size={16} />}
                         {...form.getInputProps('email')}
                         value={form.values.email}
-
                     />
                     <PasswordInput
                         withAsterisk
@@ -156,15 +187,22 @@ export const SignIn = ({ admin, redirect }: Props) => {
                         rightSection={<IconLock size={16} />}
                         {...form.getInputProps('password')}
                         value={form.values.password}
-
                     />
                     {errorNotification}
                     <Group mt="sm">
-                        <Anchor href="/footy/forgottenpassword" size="sm">
+                        <Anchor
+                            href="/footy/forgottenpassword"
+                            size="sm"
+                        >
                             Forgot your password ?
                         </Anchor>
                     </Group>
-                    <Button type="submit" fullWidth loading={loading} disabled={!form.isValid()}>
+                    <Button
+                        type="submit"
+                        fullWidth
+                        loading={loading}
+                        disabled={!form.isValid()}
+                    >
                         Sign In
                     </Button>
                 </Stack>

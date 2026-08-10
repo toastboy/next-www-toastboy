@@ -1,9 +1,10 @@
-import {
-    Box,
-} from '@mantine/core';
+import { Box } from '@mantine/core';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 
-import { createMockFamilyTree, defaultFamilyTree } from '@/tests/mocks/data/familyTree';
+import {
+    createMockFamilyTree,
+    defaultFamilyTree,
+} from '@/tests/mocks/data/familyTree';
 
 import { FamilyTree } from './FamilyTree';
 

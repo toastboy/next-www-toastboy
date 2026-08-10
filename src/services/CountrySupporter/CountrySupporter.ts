@@ -15,7 +15,6 @@ import {
 } from '@/types/CountrySupporterStrictSchema';
 import { CountrySupporterWithPlayerDataType } from '@/types/CountrySupporterWithPlayerDataType';
 
-
 class CountrySupporterService {
     /**
      * Fetches a country-supporter relationship by its composite key.
@@ -23,7 +22,10 @@ class CountrySupporterService {
      * @param countryFIFACode - Country FIFA code in the composite key.
      * @returns The matching row, or `null` when it does not exist.
      */
-    async get(playerId: number, countryFIFACode: string): Promise<CountrySupporterType | null> {
+    async get(
+        playerId: number,
+        countryFIFACode: string,
+    ): Promise<CountrySupporterType | null> {
         const where = CountrySupporterWhereUniqueInputObjectSchema.parse({
             playerId_countryFIFACode: { playerId, countryFIFACode },
         });
@@ -51,8 +53,12 @@ class CountrySupporterService {
      * data included.
      * @returns All country-supporter rows with nested `country` and `player` relations.
      */
-    async getAllWithCountryAndPlayer(): Promise<CountrySupporterWithPlayerDataType[]> {
-        return prisma.countrySupporter.findMany({ include: { country: true, player: true } });
+    async getAllWithCountryAndPlayer(): Promise<
+        CountrySupporterWithPlayerDataType[]
+    > {
+        return prisma.countrySupporter.findMany({
+            include: { country: true, player: true },
+        });
     }
 
     /**
@@ -61,8 +67,13 @@ class CountrySupporterService {
      * @returns Matching relationships with `country` included.
      */
     async getByPlayer(playerId: number): Promise<CountrySupporterDataType[]> {
-        const where = CountrySupporterWhereInputObjectSchema.parse({ playerId });
-        return prisma.countrySupporter.findMany({ where, include: { country: true } });
+        const where = CountrySupporterWhereInputObjectSchema.parse({
+            playerId,
+        });
+        return prisma.countrySupporter.findMany({
+            where,
+            include: { country: true },
+        });
     }
 
     /**
@@ -70,8 +81,12 @@ class CountrySupporterService {
      * @param countryFIFACode - Country FIFA code to filter by.
      * @returns Matching country-supporter rows.
      */
-    async getByCountry(countryFIFACode: string): Promise<CountrySupporterType[]> {
-        const where = CountrySupporterWhereInputObjectSchema.parse({ countryFIFACode });
+    async getByCountry(
+        countryFIFACode: string,
+    ): Promise<CountrySupporterType[]> {
+        const where = CountrySupporterWhereInputObjectSchema.parse({
+            countryFIFACode,
+        });
         return prisma.countrySupporter.findMany({ where });
     }
 
@@ -80,9 +95,13 @@ class CountrySupporterService {
      * @param data - Write payload containing `playerId` and `countryFIFACode`.
      * @returns The created row.
      */
-    async create(data: CountrySupporterWriteInput): Promise<CountrySupporterType> {
+    async create(
+        data: CountrySupporterWriteInput,
+    ): Promise<CountrySupporterType> {
         const writeData = CountrySupporterWriteInputSchema.parse(data);
-        const args = CountrySupporterCreateOneStrictSchema.parse({ data: writeData });
+        const args = CountrySupporterCreateOneStrictSchema.parse({
+            data: writeData,
+        });
         return prisma.countrySupporter.create(args);
     }
 
@@ -91,7 +110,9 @@ class CountrySupporterService {
      * @param data - Write payload containing `playerId` and `countryFIFACode`.
      * @returns The created or updated row.
      */
-    async upsert(data: CountrySupporterWriteInput): Promise<CountrySupporterType> {
+    async upsert(
+        data: CountrySupporterWriteInput,
+    ): Promise<CountrySupporterType> {
         const writeData = CountrySupporterWriteInputSchema.parse(data);
         const args = CountrySupporterUpsertOneStrictSchema.parse({
             where: {
@@ -113,9 +134,11 @@ class CountrySupporterService {
      * @returns Resolves when all upserts complete.
      */
     async upsertAll(playerId: number, countryFIFACodes: string[]) {
-        await Promise.all(countryFIFACodes.map(
-            (countryFIFACode) => this.upsert({ playerId, countryFIFACode }),
-        ));
+        await Promise.all(
+            countryFIFACodes.map((countryFIFACode) =>
+                this.upsert({ playerId, countryFIFACode }),
+            ),
+        );
     }
 
     /**
@@ -126,12 +149,13 @@ class CountrySupporterService {
      */
     async deleteExcept(playerId: number, keep: string[]) {
         const currentCountrySupporters = await this.getByPlayer(playerId);
-        const countrySupportersToDelete = currentCountrySupporters
-            .filter((current) => !keep.some(
-                (cs) => cs === current.countryFIFACode,
-            ));
-        await Promise.all(countrySupportersToDelete.map(
-            (cs) => this.delete(cs.playerId, cs.countryFIFACode)),
+        const countrySupportersToDelete = currentCountrySupporters.filter(
+            (current) => !keep.some((cs) => cs === current.countryFIFACode),
+        );
+        await Promise.all(
+            countrySupportersToDelete.map((cs) =>
+                this.delete(cs.playerId, cs.countryFIFACode),
+            ),
         );
     }
 

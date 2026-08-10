@@ -4,11 +4,15 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 vi.mock('services/Player');
 
 vi.mock('@/components/AutoRefresh/AutoRefresh', () => ({
-    AutoRefresh: function AutoRefresh() { return null; },
+    AutoRefresh: function AutoRefresh() {
+        return null;
+    },
 }));
 
 vi.mock('@/components/NewPlayerForm/NewPlayerForm', () => ({
-    NewPlayerForm: function NewPlayerForm() { return null; },
+    NewPlayerForm: function NewPlayerForm() {
+        return null;
+    },
 }));
 
 import { createPlayer } from '@/actions/createPlayer';
@@ -43,7 +47,9 @@ describe('Admin New Player page', () => {
     });
 
     it('handles service errors gracefully by propagating them', async () => {
-        (playerService.getAll as Mock).mockRejectedValue(new Error('DB failed'));
+        (playerService.getAll as Mock).mockRejectedValue(
+            new Error('DB failed'),
+        );
 
         await expect(NewPlayerPage()).rejects.toThrow('DB failed');
     });

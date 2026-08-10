@@ -4,8 +4,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 vi.mock('services/GameDay');
 
 vi.mock('next/navigation', () => ({
-    notFound: vi.fn(() => { throw new Error('not_found'); }),
-    redirect: vi.fn(() => { throw new Error('redirected'); }),
+    notFound: vi.fn(() => {
+        throw new Error('not_found');
+    }),
+    redirect: vi.fn(() => {
+        throw new Error('redirected');
+    }),
 }));
 
 import { redirect } from 'next/navigation';

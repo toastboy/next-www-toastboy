@@ -2,9 +2,6 @@
 
 import {
     AppShell,
-    AppShellHeader,
-    AppShellMain,
-    AppShellNavbar,
     Badge,
     Burger,
     Container,
@@ -12,9 +9,7 @@ import {
     Image,
     Text,
 } from '@mantine/core';
-import {
-    useDisclosure,
-} from '@mantine/hooks';
+import { useDisclosure } from '@mantine/hooks';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
@@ -57,9 +52,12 @@ export const CustomAppShell = ({ children, user, devMode }: Props) => {
             }}
             padding="md"
         >
-            <AppShellHeader>
+            <AppShell.Header>
                 <Container>
-                    <Group justify="space-between" className="px-6">
+                    <Group
+                        justify="space-between"
+                        className="px-6"
+                    >
                         <Burger
                             aria-label="Toggle navigation"
                             opened={opened}
@@ -79,25 +77,31 @@ export const CustomAppShell = ({ children, user, devMode }: Props) => {
                         <Group gap="xs">
                             <Text>Toastboy FC</Text>
                             {devMode ? (
-                                <Badge color="orange" variant="filled" size="sm">
+                                <Badge
+                                    color="orange"
+                                    variant="filled"
+                                    size="sm"
+                                >
                                     dev mode
                                 </Badge>
                             ) : null}
                         </Group>
                     </Group>
                 </Container>
-            </AppShellHeader>
+            </AppShell.Header>
 
-            <AppShellNavbar p="md">
+            <AppShell.Navbar p="md">
                 <NavBarNested user={user} />
-            </AppShellNavbar>
+            </AppShell.Navbar>
 
-            <AppShellMain>
-                <Container size="xl" p="md">
+            <AppShell.Main>
+                <Container
+                    size="xl"
+                    p="md"
+                >
                     {children}
                 </Container>
-            </AppShellMain>
-
+            </AppShell.Main>
         </AppShell>
     );
 };

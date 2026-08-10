@@ -1,6 +1,4 @@
-import {
-    Notifications,
-} from '@mantine/notifications';
+import { Notifications } from '@mantine/notifications';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { userEvent, within } from 'storybook/test';
 
@@ -43,18 +41,19 @@ export const Render: Story = {
         },
         players: defaultPickerAdminData,
         submitPicker: async () => Promise.resolve(),
-        setGameEnabled: async () => Promise.resolve({
-            id: 1249,
-            year: 2026,
-            date: new Date('2026-02-03T00:00:00Z'),
-            game: true,
-            cost: 500,
-            hallCost: 5000,
-            mailSent: new Date('2026-02-01T09:00:00Z'),
-            comment: null,
-            bibs: null,
-            pickerGamesHistory: 10,
-        }),
+        setGameEnabled: async () =>
+            Promise.resolve({
+                id: 1249,
+                year: 2026,
+                date: new Date('2026-02-03T00:00:00Z'),
+                game: true,
+                cost: 500,
+                hallCost: 5000,
+                mailSent: new Date('2026-02-01T09:00:00Z'),
+                comment: null,
+                bibs: null,
+                pickerGamesHistory: 10,
+            }),
     },
     parameters: {
         docs: {
@@ -81,10 +80,16 @@ export const SimpleUpdate: Story = {
         const devCheckbox = await canvas.findByLabelText('Select Dev Striker');
         await userEvent.click(devCheckbox);
 
-        const submitButton = await canvas.findByRole('button', { name: 'Pick sides' });
+        const submitButton = await canvas.findByRole('button', {
+            name: 'Pick sides',
+        });
         await userEvent.click(submitButton);
 
-        await within(canvasElement.ownerDocument.body).findByText('Selection submitted', {}, { timeout: 6000 });
+        await within(canvasElement.ownerDocument.body).findByText(
+            'Selection submitted',
+            {},
+            { timeout: 6000 },
+        );
     },
 };
 
@@ -106,10 +111,14 @@ export const InvalidInput: Story = {
         if (viewMode === 'docs') return;
 
         const canvas = within(canvasElement);
-        const submitButton = await canvas.findByRole('button', { name: 'Pick sides' });
+        const submitButton = await canvas.findByRole('button', {
+            name: 'Pick sides',
+        });
         await userEvent.click(submitButton);
 
         await within(canvasElement.ownerDocument.body).findByRole('alert');
-        await within(canvasElement.ownerDocument.body).findByText('Invalid picker payload');
+        await within(canvasElement.ownerDocument.body).findByText(
+            'Invalid picker payload',
+        );
     },
 };

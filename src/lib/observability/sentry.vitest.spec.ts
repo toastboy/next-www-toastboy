@@ -2,7 +2,10 @@ import * as Sentry from '@sentry/nextjs';
 import z from 'zod';
 
 import { ExternalServiceError, ValidationError } from '@/lib/errors';
-import { captureUnexpectedError, isSensitiveKey } from '@/lib/observability/sentry';
+import {
+    captureUnexpectedError,
+    isSensitiveKey,
+} from '@/lib/observability/sentry';
 
 /**
  * Test-only mock for the Sentry Next.js SDK that intercepts all Sentry calls
@@ -42,7 +45,8 @@ const getCaptureCall = (): { error?: Error; options?: CaptureOptions } => {
  * Convenience wrapper around {@link getCaptureCall} for tests that only care
  * about the capture options.
  */
-const getCaptureOptions = (): CaptureOptions | undefined => getCaptureCall().options;
+const getCaptureOptions = (): CaptureOptions | undefined =>
+    getCaptureCall().options;
 
 describe('captureUnexpectedError', () => {
     beforeEach(() => {
@@ -67,10 +71,7 @@ describe('captureUnexpectedError', () => {
                     password: 'secret',
                     safe: 'value',
                 },
-                list: [
-                    { authorization: 'Bearer token' },
-                    { count: 2 },
-                ],
+                list: [{ authorization: 'Bearer token' }, { count: 2 }],
             },
         });
 
@@ -78,14 +79,16 @@ describe('captureUnexpectedError', () => {
 
         const options = getCaptureOptions();
 
-        expect(options?.tags).toEqual(expect.objectContaining({
-            layer: 'client',
-            component: 'MoneyForm',
-            action: 'payDebt',
-            route: '/footy/admin/money',
-            attempt: '1',
-            retry: 'false',
-        }));
+        expect(options?.tags).toEqual(
+            expect.objectContaining({
+                layer: 'client',
+                component: 'MoneyForm',
+                action: 'payDebt',
+                route: '/footy/admin/money',
+                attempt: '1',
+                retry: 'false',
+            }),
+        );
 
         expect(options?.extra).toMatchObject({
             playerId: 42,
@@ -94,24 +97,25 @@ describe('captureUnexpectedError', () => {
                 password: '[REDACTED]',
                 safe: 'value',
             },
-            list: [
-                { authorization: '[REDACTED]' },
-                { count: 2 },
-            ],
+            list: [{ authorization: '[REDACTED]' }, { count: 2 }],
         });
     });
 
     it('skips expected AppError instances', () => {
-        const captured = captureUnexpectedError(new ValidationError('Bad input'));
+        const captured = captureUnexpectedError(
+            new ValidationError('Bad input'),
+        );
 
         expect(captured).toBe(false);
         expect(Sentry.captureException).not.toHaveBeenCalled();
     });
 
     it('skips zod validation errors', () => {
-        const result = z.object({
-            id: z.number(),
-        }).safeParse({ id: 'nope' });
+        const result = z
+            .object({
+                id: z.number(),
+            })
+            .safeParse({ id: 'nope' });
 
         if (result.success) {
             throw new Error('Expected parse to fail.');
@@ -165,7 +169,10 @@ describe('captureUnexpectedError', () => {
 
         const options = getCaptureOptions();
 
-        expect(options?.fingerprint).toEqual(['custom-group', 'route:/footy/games']);
+        expect(options?.fingerprint).toEqual([
+            'custom-group',
+            'route:/footy/games',
+        ]);
     });
 
     it('omits tag entries whose values are null or undefined', () => {
@@ -199,22 +206,29 @@ describe('captureUnexpectedError', () => {
 
         const options = getCaptureOptions();
 
-        expect(options?.extra?.cause).toEqual({ name: 'TypeError', message: 'inner failure' });
+        expect(options?.extra?.cause).toEqual({
+            name: 'TypeError',
+            message: 'inner failure',
+        });
         expect(options?.extra?.cause).not.toHaveProperty('stack');
     });
 
     it('truncates extra values that exceed the maximum nesting depth', () => {
         captureUnexpectedError(new Error('deep'), {
             extra: {
-                l1: { l2: { l3: { l4: { l5: { l6: 'should-be-truncated' } } } } },
+                l1: {
+                    l2: { l3: { l4: { l5: { l6: 'should-be-truncated' } } } },
+                },
             },
         });
 
         const options = getCaptureOptions();
 
         const deep = options?.extra;
-        interface Nested { l2: { l3: { l4: { l5: { l6: unknown } } } } }
-        expect(((deep?.l1 as Nested).l2.l3.l4.l5).l6).toBe('[TRUNCATED]');
+        interface Nested {
+            l2: { l3: { l4: { l5: { l6: unknown } } } };
+        }
+        expect((deep?.l1 as Nested).l2.l3.l4.l5.l6).toBe('[TRUNCATED]');
     });
 
     it('discards a non-object extra value at runtime instead of spreading it', () => {

@@ -1,6 +1,9 @@
 'use server';
 
-import { beforeDeletePlayerCore, deletePlayerCore } from '@/lib/core/deletePlayer';
+import {
+    beforeDeletePlayerCore,
+    deletePlayerCore,
+} from '@/lib/core/deletePlayer';
 import { AuthUserSummary } from '@/types/AuthUser';
 
 /**

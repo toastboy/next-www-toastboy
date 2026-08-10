@@ -10,8 +10,8 @@ import { FootyChannel } from '@/types/FootyChannel';
 
 interface PageProps {
     params: Promise<{
-        gameDayId: string,
-    }>,
+        gameDayId: string;
+    }>;
 }
 
 export const metadata = { title: 'Drinkers' };

@@ -7,8 +7,12 @@ vi.mock('react', async () => {
     return { ...actual, cache: (fn: unknown) => fn };
 });
 vi.mock('next/navigation', () => ({
-    notFound: vi.fn(() => { throw new Error('not_found'); }),
-    permanentRedirect: vi.fn(() => { throw new Error('permanent_redirect'); }),
+    notFound: vi.fn(() => {
+        throw new Error('not_found');
+    }),
+    permanentRedirect: vi.fn(() => {
+        throw new Error('permanent_redirect');
+    }),
 }));
 vi.mock('@mantine/core', () => ({
     Group: ({ children }: { children?: unknown }) => children,
@@ -86,44 +90,63 @@ describe('Table [table] page', () => {
                 searchParams: Promise.resolve({}),
             });
 
-            expect(playerRecordService.getTable).toHaveBeenCalledWith('pub', 0, true);
+            expect(playerRecordService.getTable).toHaveBeenCalledWith(
+                'pub',
+                0,
+                true,
+            );
         });
     });
 
     describe('Page', () => {
-        const call = () => TablePage({
-            params: Promise.resolve({ table: 'pub' }),
-            searchParams: Promise.resolve({}),
-        });
+        const call = () =>
+            TablePage({
+                params: Promise.resolve({ table: 'pub' }),
+                searchParams: Promise.resolve({}),
+            });
 
         it('fetches the qualified table data', async () => {
             await call();
 
-            expect(playerRecordService.getTable).toHaveBeenCalledWith('pub', 0, true);
+            expect(playerRecordService.getTable).toHaveBeenCalledWith(
+                'pub',
+                0,
+                true,
+            );
         });
 
         it('fetches the unqualified table data', async () => {
             await call();
 
-            expect(playerRecordService.getTable).toHaveBeenCalledWith('pub', 0, false);
+            expect(playerRecordService.getTable).toHaveBeenCalledWith(
+                'pub',
+                0,
+                false,
+            );
         });
 
         it('passes qualified and unqualified data to YearTable', async () => {
-            (playerRecordService.getTable as Mock).mockImplementation((
-                _table: string, _year: number, qualified: boolean,
-            ) => (qualified ? [{ id: 'q' }] : [{ id: 'u' }]));
+            (playerRecordService.getTable as Mock).mockImplementation(
+                (_table: string, _year: number, qualified: boolean) =>
+                    qualified ? [{ id: 'q' }] : [{ id: 'u' }],
+            );
 
             renderToStaticMarkup(await call());
 
-            const [[props]] = (YearTable as Mock).mock.calls as [{
-                qualified: unknown; unqualified: unknown
-            }][];
+            const [[props]] = (YearTable as Mock).mock.calls as [
+                {
+                    qualified: unknown;
+                    unqualified: unknown;
+                },
+            ][];
             expect(props.qualified).toEqual([{ id: 'q' }]);
             expect(props.unqualified).toEqual([{ id: 'u' }]);
         });
 
         it('propagates errors from a service call', async () => {
-            (playerRecordService.getTable as Mock).mockRejectedValue(new Error('DB failed'));
+            (playerRecordService.getTable as Mock).mockRejectedValue(
+                new Error('DB failed'),
+            );
 
             await expect(call()).rejects.toThrow('DB failed');
         });

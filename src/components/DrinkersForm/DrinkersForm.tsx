@@ -10,29 +10,28 @@ import {
     Paper,
     Stack,
     Table,
-    TableScrollContainer,
-    TableTbody,
-    TableTd,
-    TableTh,
-    TableThead,
-    TableTr,
     Text,
     TextInput,
     Title,
     UnstyledButton,
 } from '@mantine/core';
+import { useForm } from '@mantine/form';
+import { notifications } from '@mantine/notifications';
 import {
-    useForm,
-} from '@mantine/form';
-import {
-    notifications,
-} from '@mantine/notifications';
-import { IconAlertTriangle, IconCheck, IconChevronDown, IconChevronUp, IconSelector } from '@tabler/icons-react';
+    IconAlertTriangle,
+    IconCheck,
+    IconChevronDown,
+    IconChevronUp,
+    IconSelector,
+} from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
 import { config } from '@/lib/config';
-import type { SetDrinkersInput, SetDrinkersProxy } from '@/types/actions/SetDrinkers';
+import type {
+    SetDrinkersInput,
+    SetDrinkersProxy,
+} from '@/types/actions/SetDrinkers';
 import type { OutcomePlayerType } from '@/types/OutcomePlayerType';
 
 interface DrinkersFormProps {
@@ -73,13 +72,18 @@ export const DrinkersForm = ({
         form.resetDirty({ selectedIds: selected });
     }
 
-    const selectedIdSet = useMemo(() => new Set(form.values.selectedIds), [form.values.selectedIds]);
+    const selectedIdSet = useMemo(
+        () => new Set(form.values.selectedIds),
+        [form.values.selectedIds],
+    );
 
     const filteredRows = useMemo(() => {
         const searchTerm = filter.trim().toLowerCase();
         if (!searchTerm) return rows;
 
-        return rows.filter((row) => normaliseName(row).toLowerCase().includes(searchTerm));
+        return rows.filter((row) =>
+            normaliseName(row).toLowerCase().includes(searchTerm),
+        );
     }, [rows, filter]);
 
     const visibleRows = useMemo(() => {
@@ -87,11 +91,19 @@ export const DrinkersForm = ({
         data.sort((a, b) => {
             switch (sortKey) {
                 case 'name':
-                    return compareNullableString(a.player.name, b.player.name, sortDirection);
+                    return compareNullableString(
+                        a.player.name,
+                        b.player.name,
+                        sortDirection,
+                    );
                 case 'team':
                     return compareNullableString(a.team, b.team, sortDirection);
                 case 'response':
-                    return compareNullableString(a.response, b.response, sortDirection);
+                    return compareNullableString(
+                        a.response,
+                        b.response,
+                        sortDirection,
+                    );
                 /* v8 ignore next 2 -- SortKey is a union type; default is unreachable */
                 default:
                     return 0;
@@ -105,20 +117,27 @@ export const DrinkersForm = ({
         visibleRows.every((row) => selectedIdSet.has(row.playerId));
 
     const someVisibleSelected =
-        visibleRows.some((row) => selectedIdSet.has(row.playerId)) && !allVisibleSelected;
+        visibleRows.some((row) => selectedIdSet.has(row.playerId)) &&
+        !allVisibleSelected;
 
     const hasChanges = form.isDirty();
 
     const togglePlayer = (playerId: number, checked: boolean) => {
         if (checked) {
             /* v8 ignore next -- defensive guard against duplicate adds; normal checkbox behaviour never fires checked=true when already selected */
-            form.setFieldValue('selectedIds', form.values.selectedIds.includes(playerId) ?
-                form.values.selectedIds :
-                [...form.values.selectedIds, playerId]);
+            form.setFieldValue(
+                'selectedIds',
+                form.values.selectedIds.includes(playerId)
+                    ? form.values.selectedIds
+                    : [...form.values.selectedIds, playerId],
+            );
             return;
         }
 
-        form.setFieldValue('selectedIds', form.values.selectedIds.filter((id) => id !== playerId));
+        form.setFieldValue(
+            'selectedIds',
+            form.values.selectedIds.filter((id) => id !== playerId),
+        );
     };
 
     const toggleVisible = (checked: boolean) => {
@@ -126,11 +145,19 @@ export const DrinkersForm = ({
         const visibleIdSet = new Set(visibleIds);
 
         if (checked) {
-            form.setFieldValue('selectedIds', Array.from(new Set([...form.values.selectedIds, ...visibleIds])));
+            form.setFieldValue(
+                'selectedIds',
+                Array.from(
+                    new Set([...form.values.selectedIds, ...visibleIds]),
+                ),
+            );
             return;
         }
 
-        form.setFieldValue('selectedIds', form.values.selectedIds.filter((id) => !visibleIdSet.has(id)));
+        form.setFieldValue(
+            'selectedIds',
+            form.values.selectedIds.filter((id) => !visibleIdSet.has(id)),
+        );
     };
 
     const handleSort = (key: SortKey) => {
@@ -144,7 +171,11 @@ export const DrinkersForm = ({
 
     const getSortIcon = (key: SortKey) => {
         if (key !== sortKey) return <IconSelector size={14} />;
-        return sortDirection === 'asc' ? <IconChevronUp size={14} /> : <IconChevronDown size={14} />;
+        return sortDirection === 'asc' ? (
+            <IconChevronUp size={14} />
+        ) : (
+            <IconChevronDown size={14} />
+        );
     };
 
     const renderSortHeader = (label: string, key: SortKey) => (
@@ -153,7 +184,10 @@ export const DrinkersForm = ({
             onClick={() => handleSort(key)}
             aria-label={`Sort by ${label}`}
         >
-            <Group gap={6} wrap="nowrap">
+            <Group
+                gap={6}
+                wrap="nowrap"
+            >
                 <Text span>{label}</Text>
                 {getSortIcon(key)}
             </Group>
@@ -183,13 +217,15 @@ export const DrinkersForm = ({
         try {
             const result = await setDrinkers(payload);
 
-            setRows((current) => current.map((row) => {
-                if (!selectedIdSet.has(row.playerId)) {
-                    return { ...row, pub: null };
-                }
+            setRows((current) =>
+                current.map((row) => {
+                    if (!selectedIdSet.has(row.playerId)) {
+                        return { ...row, pub: null };
+                    }
 
-                return { ...row, pub: row.team ? 1 : 2 };
-            }));
+                    return { ...row, pub: row.team ? 1 : 2 };
+                }),
+            );
             form.resetDirty(form.values);
 
             notifications.update({
@@ -204,7 +240,10 @@ export const DrinkersForm = ({
 
             router.refresh();
         } catch (error) {
-            const message = error instanceof Error ? error.message : 'Failed to update drinkers';
+            const message =
+                error instanceof Error
+                    ? error.message
+                    : 'Failed to update drinkers';
             notifications.update({
                 id: notificationId,
                 color: 'red',
@@ -223,16 +262,24 @@ export const DrinkersForm = ({
     const renderedRows = visibleRows.map((row) => {
         const playerName = normaliseName(row);
         return (
-            <TableTr key={row.playerId}>
-                <TableTd w="2.5rem">
+            <Table.Tr key={row.playerId}>
+                <Table.Td w="2.5rem">
                     <Checkbox
                         checked={selectedIdSet.has(row.playerId)}
-                        onChange={(event) => togglePlayer(row.playerId, event.currentTarget.checked)}
+                        onChange={(event) =>
+                            togglePlayer(
+                                row.playerId,
+                                event.currentTarget.checked,
+                            )
+                        }
                         aria-label={`Pub ${playerName}`}
                     />
-                </TableTd>
-                <TableTd>
-                    <Group wrap="nowrap" gap="sm">
+                </Table.Td>
+                <Table.Td>
+                    <Group
+                        wrap="nowrap"
+                        gap="sm"
+                    >
                         <Anchor href={`/footy/player/${row.playerId}`}>
                             <Image
                                 w={40}
@@ -246,22 +293,36 @@ export const DrinkersForm = ({
                             {playerName}
                         </Anchor>
                     </Group>
-                </TableTd>
-                <TableTd>{row.team ?? '-'}</TableTd>
-                <TableTd>{row.response ?? '-'}</TableTd>
-            </TableTr>
+                </Table.Td>
+                <Table.Td>{row.team ?? '-'}</Table.Td>
+                <Table.Td>{row.response ?? '-'}</Table.Td>
+            </Table.Tr>
         );
     });
 
     return (
-        <Container size="lg" py="lg">
-            <Group justify="space-between" mb="md">
-                {previousGameId ?
-                    <Anchor href={`/footy/admin/drinkers/${previousGameId}`}>Previous</Anchor> :
-                    <span />}
-                {nextGameId ?
-                    <Anchor href={`/footy/admin/drinkers/${nextGameId}`}>Next</Anchor> :
-                    <span />}
+        <Container
+            size="lg"
+            py="lg"
+        >
+            <Group
+                justify="space-between"
+                mb="md"
+            >
+                {previousGameId ? (
+                    <Anchor href={`/footy/admin/drinkers/${previousGameId}`}>
+                        Previous
+                    </Anchor>
+                ) : (
+                    <span />
+                )}
+                {nextGameId ? (
+                    <Anchor href={`/footy/admin/drinkers/${nextGameId}`}>
+                        Next
+                    </Anchor>
+                ) : (
+                    <span />
+                )}
             </Group>
             <Paper w="100%">
                 <Stack gap="md">
@@ -269,19 +330,26 @@ export const DrinkersForm = ({
                         <Title order={2}>Game {gameId} Drinkers</Title>
                         <Text c="dimmed">{gameDate}</Text>
                         <Text fw={700}>
-                            {visibleRows.length} of {rows.length} visible, {form.values.selectedIds.length} selected
+                            {visibleRows.length} of {rows.length} visible,{' '}
+                            {form.values.selectedIds.length} selected
                         </Text>
                     </Stack>
 
                     {rows.length > 0 ? (
                         <>
-                            <Group justify="space-between" align="flex-end" wrap="wrap">
+                            <Group
+                                justify="space-between"
+                                align="flex-end"
+                                wrap="wrap"
+                            >
                                 <TextInput
                                     label="Name"
                                     size="xs"
                                     placeholder="Search players"
                                     value={filter}
-                                    onChange={(event) => setFilter(event.currentTarget.value)}
+                                    onChange={(event) =>
+                                        setFilter(event.currentTarget.value)
+                                    }
                                 />
                                 <Button
                                     type="button"
@@ -294,7 +362,10 @@ export const DrinkersForm = ({
                                 </Button>
                             </Group>
 
-                            <TableScrollContainer minWidth={480} scrollAreaProps={{ type: 'auto' }}>
+                            <Table.ScrollContainer
+                                minWidth={480}
+                                scrollAreaProps={{ type: 'auto' }}
+                            >
                                 <Table
                                     striped
                                     highlightOnHover
@@ -303,30 +374,75 @@ export const DrinkersForm = ({
                                     w="100%"
                                     layout="fixed"
                                 >
-                                    <TableThead>
-                                        <TableTr>
-                                            <TableTh w="2.5rem">
+                                    <Table.Thead>
+                                        <Table.Tr>
+                                            <Table.Th w="2.5rem">
                                                 <Checkbox
                                                     checked={allVisibleSelected}
-                                                    indeterminate={someVisibleSelected}
-                                                    onChange={(event) => toggleVisible(event.currentTarget.checked)}
+                                                    indeterminate={
+                                                        someVisibleSelected
+                                                    }
+                                                    onChange={(event) =>
+                                                        toggleVisible(
+                                                            event.currentTarget
+                                                                .checked,
+                                                        )
+                                                    }
                                                     aria-label="Select all visible players"
                                                 />
-                                            </TableTh>
-                                            <TableTh aria-sort={sortKey === 'name' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
-                                                {renderSortHeader('Player', 'name')}
-                                            </TableTh>
-                                            <TableTh w="6rem" aria-sort={sortKey === 'team' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
-                                                {renderSortHeader('Team', 'team')}
-                                            </TableTh>
-                                            <TableTh w="8rem" aria-sort={sortKey === 'response' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
-                                                {renderSortHeader('Response', 'response')}
-                                            </TableTh>
-                                        </TableTr>
-                                    </TableThead>
-                                    <TableTbody>{renderedRows}</TableTbody>
+                                            </Table.Th>
+                                            <Table.Th
+                                                aria-sort={
+                                                    sortKey === 'name'
+                                                        ? sortDirection ===
+                                                          'asc'
+                                                            ? 'ascending'
+                                                            : 'descending'
+                                                        : 'none'
+                                                }
+                                            >
+                                                {renderSortHeader(
+                                                    'Player',
+                                                    'name',
+                                                )}
+                                            </Table.Th>
+                                            <Table.Th
+                                                w="6rem"
+                                                aria-sort={
+                                                    sortKey === 'team'
+                                                        ? sortDirection ===
+                                                          'asc'
+                                                            ? 'ascending'
+                                                            : 'descending'
+                                                        : 'none'
+                                                }
+                                            >
+                                                {renderSortHeader(
+                                                    'Team',
+                                                    'team',
+                                                )}
+                                            </Table.Th>
+                                            <Table.Th
+                                                w="8rem"
+                                                aria-sort={
+                                                    sortKey === 'response'
+                                                        ? sortDirection ===
+                                                          'asc'
+                                                            ? 'ascending'
+                                                            : 'descending'
+                                                        : 'none'
+                                                }
+                                            >
+                                                {renderSortHeader(
+                                                    'Response',
+                                                    'response',
+                                                )}
+                                            </Table.Th>
+                                        </Table.Tr>
+                                    </Table.Thead>
+                                    <Table.Tbody>{renderedRows}</Table.Tbody>
                                 </Table>
-                            </TableScrollContainer>
+                            </Table.ScrollContainer>
                         </>
                     ) : (
                         <Text>No active players found</Text>
@@ -352,8 +468,8 @@ const compareNullableString = (
     return direction === 'asc' ? result : -result;
 };
 
-const normaliseName = (row: OutcomePlayerType) => row.player.name ?? `Player ${row.playerId}`;
+const normaliseName = (row: OutcomePlayerType) =>
+    row.player.name ?? `Player ${row.playerId}`;
 
-const toSelectedIds = (rows: OutcomePlayerType[]) => rows
-    .filter((row) => (row.pub ?? 0) > 0)
-    .map((row) => row.playerId);
+const toSelectedIds = (rows: OutcomePlayerType[]) =>
+    rows.filter((row) => (row.pub ?? 0) > 0).map((row) => row.playerId);

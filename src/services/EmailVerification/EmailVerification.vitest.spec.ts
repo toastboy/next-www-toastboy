@@ -5,7 +5,6 @@ import type { Mock } from 'vitest';
 import { hashVerificationToken } from '@/lib/verificationToken';
 import emailVerificationService from '@/services/EmailVerification';
 
-
 describe('EmailVerificationService', () => {
     const token = 'deadbeef'.repeat(8);
     const tokenHash = hashVerificationToken(token);
@@ -29,7 +28,9 @@ describe('EmailVerificationService', () => {
                 createdAt: new Date(),
             };
 
-            (prisma.emailVerification.create as Mock).mockResolvedValueOnce(newVerification);
+            (prisma.emailVerification.create as Mock).mockResolvedValueOnce(
+                newVerification,
+            );
 
             const result = await emailVerificationService.create(rawInput);
 
@@ -55,7 +56,9 @@ describe('EmailVerificationService', () => {
                 usedAt: null,
             };
 
-            await expect(emailVerificationService.create(invalidInput)).rejects.toThrow();
+            await expect(
+                emailVerificationService.create(invalidInput),
+            ).rejects.toThrow();
         });
     });
 
@@ -71,7 +74,9 @@ describe('EmailVerificationService', () => {
                 createdAt: new Date(),
             };
 
-            (prisma.emailVerification.findUnique as Mock).mockResolvedValueOnce(verification);
+            (prisma.emailVerification.findUnique as Mock).mockResolvedValueOnce(
+                verification,
+            );
 
             const result = await emailVerificationService.getByToken(token);
 
@@ -94,13 +99,18 @@ describe('EmailVerificationService', () => {
                 createdAt: new Date(),
             };
 
-            (prisma.emailVerification.update as Mock).mockResolvedValueOnce(verification);
+            (prisma.emailVerification.update as Mock).mockResolvedValueOnce(
+                verification,
+            );
 
             const result = await emailVerificationService.markUsed(token);
 
             expect(prisma.emailVerification.update).toHaveBeenCalledTimes(1);
             const [call] = (prisma.emailVerification.update as Mock).mock.calls;
-            const callArg = call[0] as { where: { tokenHash: string }; data: { usedAt: Date } };
+            const callArg = call[0] as {
+                where: { tokenHash: string };
+                data: { usedAt: Date };
+            };
             expect(callArg).toMatchObject({
                 where: { tokenHash },
                 data: {},
@@ -112,7 +122,9 @@ describe('EmailVerificationService', () => {
 
     describe('deleteAll', () => {
         it('should delete all email verifications when no playerId is provided', async () => {
-            (prisma.emailVerification.deleteMany as Mock).mockResolvedValueOnce({ count: 3 });
+            (prisma.emailVerification.deleteMany as Mock).mockResolvedValueOnce(
+                { count: 3 },
+            );
 
             const result = await emailVerificationService.deleteAll();
 
@@ -123,7 +135,9 @@ describe('EmailVerificationService', () => {
         });
 
         it('should delete email verifications for a specific player', async () => {
-            (prisma.emailVerification.deleteMany as Mock).mockResolvedValueOnce({ count: 1 });
+            (prisma.emailVerification.deleteMany as Mock).mockResolvedValueOnce(
+                { count: 1 },
+            );
 
             const result = await emailVerificationService.deleteAll(7);
 

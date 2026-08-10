@@ -1,6 +1,4 @@
-import {
-    Text,
-} from '@mantine/core';
+import { Text } from '@mantine/core';
 
 import { listUsersAction, setAdminRoleAction } from '@/actions/auth';
 import { AdminUserList } from '@/components/AdminUserList/AdminUserList';
@@ -24,13 +22,20 @@ export default async function Page() {
             component: 'AdminUserList',
             route: '/footy/admin/users',
         });
-        return <Text c="red">{toPublicMessage(error, 'Failed to fetch users.')}</Text>;
+        return (
+            <Text c="red">
+                {toPublicMessage(error, 'Failed to fetch users.')}
+            </Text>
+        );
     }
 
     return (
         <>
             <AutoRefresh channels={FootyChannel.Users} />
-            <AdminUserList users={users} setAdminRole={setAdminRoleAction} />
+            <AdminUserList
+                users={users}
+                setAdminRole={setAdminRoleAction}
+            />
         </>
     );
 }

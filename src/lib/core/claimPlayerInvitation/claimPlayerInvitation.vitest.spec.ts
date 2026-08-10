@@ -1,7 +1,15 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { claimPlayerInvitationCore, finalizePlayerInvitationClaimCore } from '@/lib/core/claimPlayerInvitation';
-import { AuthError, ConflictError, NotFoundError, ValidationError } from '@/lib/errors';
+import {
+    claimPlayerInvitationCore,
+    finalizePlayerInvitationClaimCore,
+} from '@/lib/core/claimPlayerInvitation';
+import {
+    AuthError,
+    ConflictError,
+    NotFoundError,
+    ValidationError,
+} from '@/lib/errors';
 
 const futureDate = new Date('2030-01-01T00:00:00.000Z');
 const pastDate = new Date('2020-01-01T00:00:00.000Z');
@@ -44,7 +52,9 @@ describe('claimPlayerInvitationCore', () => {
 
         const result = await claimPlayerInvitationCore('invite-token', deps);
 
-        expect(deps.emailVerificationService.getByToken).toHaveBeenCalledWith('invite-token');
+        expect(deps.emailVerificationService.getByToken).toHaveBeenCalledWith(
+            'invite-token',
+        );
         expect(deps.playerService.getById).toHaveBeenCalledWith(7);
         expect(result).toEqual({
             name: 'Alex Player',
@@ -56,7 +66,9 @@ describe('claimPlayerInvitationCore', () => {
     it('throws ValidationError for an empty token', async () => {
         const deps = makeDeps();
 
-        await expect(claimPlayerInvitationCore('', deps)).rejects.toBeInstanceOf(ValidationError);
+        await expect(
+            claimPlayerInvitationCore('', deps),
+        ).rejects.toBeInstanceOf(ValidationError);
         expect(deps.emailVerificationService.getByToken).not.toHaveBeenCalled();
     });
 
@@ -64,7 +76,9 @@ describe('claimPlayerInvitationCore', () => {
         const deps = makeDeps();
         deps.emailVerificationService.getByToken.mockResolvedValue(null);
 
-        await expect(claimPlayerInvitationCore('bad-token', deps)).rejects.toBeInstanceOf(NotFoundError);
+        await expect(
+            claimPlayerInvitationCore('bad-token', deps),
+        ).rejects.toBeInstanceOf(NotFoundError);
     });
 
     it('throws ConflictError when invitation has already been used', async () => {
@@ -74,7 +88,9 @@ describe('claimPlayerInvitationCore', () => {
             usedAt: new Date('2025-01-01T00:00:00.000Z'),
         });
 
-        await expect(claimPlayerInvitationCore('invite-token', deps)).rejects.toBeInstanceOf(ConflictError);
+        await expect(
+            claimPlayerInvitationCore('invite-token', deps),
+        ).rejects.toBeInstanceOf(ConflictError);
     });
 
     it('throws ConflictError when invitation has expired', async () => {
@@ -84,7 +100,9 @@ describe('claimPlayerInvitationCore', () => {
             expiresAt: pastDate,
         });
 
-        await expect(claimPlayerInvitationCore('invite-token', deps)).rejects.toBeInstanceOf(ConflictError);
+        await expect(
+            claimPlayerInvitationCore('invite-token', deps),
+        ).rejects.toBeInstanceOf(ConflictError);
     });
 
     it('throws ValidationError when invitation has no playerId', async () => {
@@ -94,19 +112,27 @@ describe('claimPlayerInvitationCore', () => {
             playerId: null,
         });
 
-        await expect(claimPlayerInvitationCore('invite-token', deps)).rejects.toBeInstanceOf(ValidationError);
+        await expect(
+            claimPlayerInvitationCore('invite-token', deps),
+        ).rejects.toBeInstanceOf(ValidationError);
     });
 
     it('throws ConflictError when email already belongs to a different player', async () => {
         const deps = makeDeps();
-        deps.playerExtraEmailService.getByEmail.mockResolvedValue({ playerId: 999 });
+        deps.playerExtraEmailService.getByEmail.mockResolvedValue({
+            playerId: 999,
+        });
 
-        await expect(claimPlayerInvitationCore('invite-token', deps)).rejects.toBeInstanceOf(ConflictError);
+        await expect(
+            claimPlayerInvitationCore('invite-token', deps),
+        ).rejects.toBeInstanceOf(ConflictError);
     });
 
     it('allows claim when extra email already belongs to the same player', async () => {
         const deps = makeDeps();
-        deps.playerExtraEmailService.getByEmail.mockResolvedValue({ playerId: 7 });
+        deps.playerExtraEmailService.getByEmail.mockResolvedValue({
+            playerId: 7,
+        });
 
         const result = await claimPlayerInvitationCore('invite-token', deps);
 
@@ -121,7 +147,9 @@ describe('claimPlayerInvitationCore', () => {
         const deps = makeDeps();
         deps.playerService.getById.mockResolvedValue(null);
 
-        await expect(claimPlayerInvitationCore('invite-token', deps)).rejects.toBeInstanceOf(NotFoundError);
+        await expect(
+            claimPlayerInvitationCore('invite-token', deps),
+        ).rejects.toBeInstanceOf(NotFoundError);
     });
 });
 
@@ -135,17 +163,24 @@ describe('finalizePlayerInvitationClaimCore', () => {
         });
         deps.playerExtraEmailService.getAll.mockResolvedValue([
             { email: 'first@example.com', verifiedAt: null },
-            { email: 'second@example.com', verifiedAt: new Date('2029-01-01T00:00:00.000Z') },
+            {
+                email: 'second@example.com',
+                verifiedAt: new Date('2029-01-01T00:00:00.000Z'),
+            },
         ]);
 
         await finalizePlayerInvitationClaimCore('invite-token', deps);
 
-        expect(deps.authService.updateCurrentUser).toHaveBeenCalledWith({ playerId: 7 });
+        expect(deps.authService.updateCurrentUser).toHaveBeenCalledWith({
+            playerId: 7,
+        });
         expect(deps.playerService.update).toHaveBeenCalledWith({
             id: 7,
             accountEmail: 'player@example.com',
         });
-        expect(deps.emailVerificationService.markUsed).toHaveBeenCalledWith('invite-token');
+        expect(deps.emailVerificationService.markUsed).toHaveBeenCalledWith(
+            'invite-token',
+        );
         expect(deps.sendEmailVerification).toHaveBeenCalledTimes(1);
         expect(deps.sendEmailVerification).toHaveBeenCalledWith(
             'first@example.com',
@@ -157,16 +192,24 @@ describe('finalizePlayerInvitationClaimCore', () => {
         const deps = makeDeps();
         deps.authService.getSessionUser.mockResolvedValue(null);
 
-        await expect(finalizePlayerInvitationClaimCore('invite-token', deps)).rejects.toBeInstanceOf(AuthError);
+        await expect(
+            finalizePlayerInvitationClaimCore('invite-token', deps),
+        ).rejects.toBeInstanceOf(AuthError);
         expect(deps.authService.updateCurrentUser).not.toHaveBeenCalled();
         expect(deps.emailVerificationService.markUsed).not.toHaveBeenCalled();
     });
 
     it('throws AuthError when session user has no email', async () => {
         const deps = makeDeps();
-        deps.authService.getSessionUser.mockResolvedValue({ id: 'auth-user-id', email: null, playerId: null });
+        deps.authService.getSessionUser.mockResolvedValue({
+            id: 'auth-user-id',
+            email: null,
+            playerId: null,
+        });
 
-        await expect(finalizePlayerInvitationClaimCore('invite-token', deps)).rejects.toBeInstanceOf(AuthError);
+        await expect(
+            finalizePlayerInvitationClaimCore('invite-token', deps),
+        ).rejects.toBeInstanceOf(AuthError);
         expect(deps.authService.updateCurrentUser).not.toHaveBeenCalled();
     });
 
@@ -178,7 +221,9 @@ describe('finalizePlayerInvitationClaimCore', () => {
             playerId: null,
         });
 
-        await expect(finalizePlayerInvitationClaimCore('invite-token', deps)).rejects.toBeInstanceOf(AuthError);
+        await expect(
+            finalizePlayerInvitationClaimCore('invite-token', deps),
+        ).rejects.toBeInstanceOf(AuthError);
         expect(deps.authService.updateCurrentUser).not.toHaveBeenCalled();
     });
 
@@ -190,7 +235,9 @@ describe('finalizePlayerInvitationClaimCore', () => {
             playerId: 999,
         });
 
-        await expect(finalizePlayerInvitationClaimCore('invite-token', deps)).rejects.toBeInstanceOf(ConflictError);
+        await expect(
+            finalizePlayerInvitationClaimCore('invite-token', deps),
+        ).rejects.toBeInstanceOf(ConflictError);
         expect(deps.authService.updateCurrentUser).not.toHaveBeenCalled();
     });
 
@@ -204,8 +251,12 @@ describe('finalizePlayerInvitationClaimCore', () => {
 
         await finalizePlayerInvitationClaimCore('invite-token', deps);
 
-        expect(deps.authService.updateCurrentUser).toHaveBeenCalledWith({ playerId: 7 });
-        expect(deps.emailVerificationService.markUsed).toHaveBeenCalledWith('invite-token');
+        expect(deps.authService.updateCurrentUser).toHaveBeenCalledWith({
+            playerId: 7,
+        });
+        expect(deps.emailVerificationService.markUsed).toHaveBeenCalledWith(
+            'invite-token',
+        );
     });
 
     it('does not send verification emails when there are no extra emails', async () => {
@@ -229,8 +280,14 @@ describe('finalizePlayerInvitationClaimCore', () => {
             playerId: null,
         });
         deps.playerExtraEmailService.getAll.mockResolvedValue([
-            { email: 'first@example.com', verifiedAt: new Date('2029-01-01T00:00:00.000Z') },
-            { email: 'second@example.com', verifiedAt: new Date('2029-06-01T00:00:00.000Z') },
+            {
+                email: 'first@example.com',
+                verifiedAt: new Date('2029-01-01T00:00:00.000Z'),
+            },
+            {
+                email: 'second@example.com',
+                verifiedAt: new Date('2029-06-01T00:00:00.000Z'),
+            },
         ]);
 
         await finalizePlayerInvitationClaimCore('invite-token', deps);
@@ -252,6 +309,9 @@ describe('finalizePlayerInvitationClaimCore', () => {
 
         await finalizePlayerInvitationClaimCore('invite-token', deps);
 
-        expect(deps.sendEmailVerification).toHaveBeenCalledWith('extra@example.com', undefined);
+        expect(deps.sendEmailVerification).toHaveBeenCalledWith(
+            'extra@example.com',
+            undefined,
+        );
     });
 });

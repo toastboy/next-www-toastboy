@@ -11,7 +11,10 @@ import {
 } from '@/types/PlayerExtraEmailStrictSchema';
 
 class PlayerExtraEmailService {
-    async getByEmail(email: string, verified?: boolean): Promise<PlayerExtraEmailType | null> {
+    async getByEmail(
+        email: string,
+        verified?: boolean,
+    ): Promise<PlayerExtraEmailType | null> {
         return await prisma.playerExtraEmail.findFirst({
             where: {
                 email,
@@ -20,13 +23,21 @@ class PlayerExtraEmailService {
         });
     }
 
-    async create(data: PlayerExtraEmailWriteInput): Promise<PlayerExtraEmailType> {
+    async create(
+        data: PlayerExtraEmailWriteInput,
+    ): Promise<PlayerExtraEmailType> {
         const writeData = PlayerExtraEmailWriteInputSchema.parse(data);
-        const args = PlayerExtraEmailCreateOneStrictSchema.parse({ data: writeData });
+        const args = PlayerExtraEmailCreateOneStrictSchema.parse({
+            data: writeData,
+        });
         return await prisma.playerExtraEmail.create(args);
     }
 
-    async upsert(playerId: number, email: string, verified?: boolean): Promise<PlayerExtraEmailType> {
+    async upsert(
+        playerId: number,
+        email: string,
+        verified?: boolean,
+    ): Promise<PlayerExtraEmailType> {
         const verifiedAt = verified ? new Date() : undefined;
         const writeData = PlayerExtraEmailWriteInputSchema.parse({
             playerId,
@@ -40,20 +51,22 @@ class PlayerExtraEmailService {
             create: {
                 playerId: writeData.playerId,
                 email: writeData.email,
-                ...(writeData.verifiedAt ? { verifiedAt: writeData.verifiedAt } : {}),
+                ...(writeData.verifiedAt
+                    ? { verifiedAt: writeData.verifiedAt }
+                    : {}),
             },
             update: {
                 playerId: writeData.playerId,
-                ...(writeData.verifiedAt ? { verifiedAt: writeData.verifiedAt } : {}),
+                ...(writeData.verifiedAt
+                    ? { verifiedAt: writeData.verifiedAt }
+                    : {}),
             },
         });
         return await prisma.playerExtraEmail.upsert(args);
     }
 
     async upsertAll(playerId: number, emails: string[]) {
-        await Promise.all(emails.map(
-            (email) => this.upsert(playerId, email),
-        ));
+        await Promise.all(emails.map((email) => this.upsert(playerId, email)));
     }
 
     async getAll(playerId?: number): Promise<PlayerExtraEmailType[]> {
@@ -64,7 +77,9 @@ class PlayerExtraEmailService {
 
     async delete(email: string): Promise<void> {
         try {
-            const where = PlayerExtraEmailWhereUniqueInputObjectSchema.parse({ email });
+            const where = PlayerExtraEmailWhereUniqueInputObjectSchema.parse({
+                email,
+            });
             await prisma.playerExtraEmail.delete({ where });
         } catch (error) {
             if (isPrismaNotFoundError(error)) {
@@ -82,11 +97,15 @@ class PlayerExtraEmailService {
 
     async deleteExcept(playerId: number, keep: string[]) {
         const currentEmails = await this.getAll(playerId);
-        const emailsToDelete = currentEmails
-            .filter((current) => !keep.some(
-                (email) => email.trim().toLowerCase() === current.email,
-            ));
-        await Promise.all(emailsToDelete.map((email) => this.delete(email.email)));
+        const emailsToDelete = currentEmails.filter(
+            (current) =>
+                !keep.some(
+                    (email) => email.trim().toLowerCase() === current.email,
+                ),
+        );
+        await Promise.all(
+            emailsToDelete.map((email) => this.delete(email.email)),
+        );
     }
 }
 

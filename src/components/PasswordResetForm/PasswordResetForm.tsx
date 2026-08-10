@@ -10,12 +10,8 @@ import {
     Text,
     Title,
 } from '@mantine/core';
-import {
-    useForm,
-} from '@mantine/form';
-import {
-    notifications,
-} from '@mantine/notifications';
+import { useForm } from '@mantine/form';
+import { notifications } from '@mantine/notifications';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useRouter } from 'next/navigation';
@@ -33,13 +29,19 @@ export interface Props {
 /**
  * Validate the password reset inputs for length and confirmation.
  */
-const resetPasswordSchema = z.object({
-    password: z.string().min(8, { message: 'Password must be at least 8 characters long' }),
-    confirmPassword: z.string().min(1, { message: 'Please confirm your password' }),
-}).refine((data) => data.password === data.confirmPassword, {
-    message: 'Passwords do not match',
-    path: ['confirmPassword'],
-});
+const resetPasswordSchema = z
+    .object({
+        password: z
+            .string()
+            .min(8, { message: 'Password must be at least 8 characters long' }),
+        confirmPassword: z
+            .string()
+            .min(1, { message: 'Please confirm your password' }),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+        message: 'Passwords do not match',
+        path: ['confirmPassword'],
+    });
 
 /**
  * Render the password reset flow for a user who has a reset token.
@@ -58,7 +60,9 @@ export const PasswordResetForm = ({ token }: Props) => {
     /**
      * Submit a new password for the provided reset token and surface status via notifications.
      */
-    const handleSubmit = async (values: z.infer<typeof resetPasswordSchema>) => {
+    const handleSubmit = async (
+        values: z.infer<typeof resetPasswordSchema>,
+    ) => {
         const id = notifications.show({
             loading: true,
             title: 'Resetting password',
@@ -74,12 +78,15 @@ export const PasswordResetForm = ({ token }: Props) => {
             });
 
             if (!status) {
-                throw new ValidationError('Reset password returned an unsuccessful status.', {
-                    publicMessage: 'Unable to reset password.',
-                    details: {
-                        tokenPresent: Boolean(token),
+                throw new ValidationError(
+                    'Reset password returned an unsuccessful status.',
+                    {
+                        publicMessage: 'Unable to reset password.',
+                        details: {
+                            tokenPresent: Boolean(token),
+                        },
                     },
-                });
+                );
             }
 
             notifications.update({
@@ -110,16 +117,27 @@ export const PasswordResetForm = ({ token }: Props) => {
 
     if (!token) {
         return (
-            <Notification icon={<IconX size={config.notificationIconSize} />} color="red">
+            <Notification
+                icon={<IconX size={config.notificationIconSize} />}
+                color="red"
+            >
                 <Text>Password reset link is missing or invalid.</Text>
             </Notification>
         );
     }
 
     return (
-        <Paper w="100%" maw="35rem">
+        <Paper
+            w="100%"
+            maw="35rem"
+        >
             <Stack>
-                <Title order={2} mb="xs" w="100%" ta="center">
+                <Title
+                    order={2}
+                    mb="xs"
+                    w="100%"
+                    ta="center"
+                >
                     Reset your password
                 </Title>
                 <Divider mb="xs" />
@@ -137,9 +155,15 @@ export const PasswordResetForm = ({ token }: Props) => {
                         passwordPlaceholder="Enter a new password"
                         confirmPasswordPlaceholder="Re-enter your new password"
                         passwordProps={form.getInputProps('password')}
-                        confirmPasswordProps={form.getInputProps('confirmPassword')}
+                        confirmPasswordProps={form.getInputProps(
+                            'confirmPassword',
+                        )}
                     />
-                    <Button type="submit" fullWidth disabled={!form.isValid()}>
+                    <Button
+                        type="submit"
+                        fullWidth
+                        disabled={!form.isValid()}
+                    >
                         Reset password
                     </Button>
                 </Stack>

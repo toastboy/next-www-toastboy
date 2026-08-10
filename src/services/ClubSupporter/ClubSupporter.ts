@@ -14,7 +14,6 @@ import {
     ClubSupporterWriteInputSchema,
 } from '@/types/ClubSupporterStrictSchema';
 
-
 class ClubSupporterService {
     /**
      * Fetches a single club-supporter relationship by its composite key.
@@ -23,7 +22,10 @@ class ClubSupporterService {
      * @param clubId - Club identifier in the composite key.
      * @returns The matching record, or `null` when no record exists.
      */
-    async get(playerId: number, clubId: number): Promise<ClubSupporterType | null> {
+    async get(
+        playerId: number,
+        clubId: number,
+    ): Promise<ClubSupporterType | null> {
         const where = ClubSupporterWhereUniqueInputObjectSchema.parse({
             playerId_clubId: { playerId, clubId },
         });
@@ -47,7 +49,10 @@ class ClubSupporterService {
      */
     async getByPlayer(playerId: number): Promise<ClubSupporterDataType[]> {
         const where = ClubSupporterWhereInputObjectSchema.parse({ playerId });
-        return prisma.clubSupporter.findMany({ where, include: { club: true } });
+        return prisma.clubSupporter.findMany({
+            where,
+            include: { club: true },
+        });
     }
 
     /**
@@ -69,7 +74,9 @@ class ClubSupporterService {
      */
     async create(data: ClubSupporterWriteInput): Promise<ClubSupporterType> {
         const writeData = ClubSupporterWriteInputSchema.parse(data);
-        const args = ClubSupporterCreateOneStrictSchema.parse({ data: writeData });
+        const args = ClubSupporterCreateOneStrictSchema.parse({
+            data: writeData,
+        });
         return prisma.clubSupporter.create(args);
     }
 
@@ -105,9 +112,9 @@ class ClubSupporterService {
      * @returns Resolves when all upserts complete.
      */
     async upsertAll(playerId: number, clubIds: number[]) {
-        await Promise.all(clubIds.map(
-            (clubId) => this.upsert({ playerId, clubId }),
-        ));
+        await Promise.all(
+            clubIds.map((clubId) => this.upsert({ playerId, clubId })),
+        );
     }
 
     /**
@@ -141,12 +148,13 @@ class ClubSupporterService {
      */
     async deleteExcept(playerId: number, keep: number[]) {
         const currentClubSupporters = await this.getByPlayer(playerId);
-        const ClubSupportersToDelete = currentClubSupporters
-            .filter((current) => !keep.some(
-                (cs) => cs === current.clubId,
-            ));
-        await Promise.all(ClubSupportersToDelete.map(
-            (cs) => this.delete(cs.playerId, cs.clubId)),
+        const ClubSupportersToDelete = currentClubSupporters.filter(
+            (current) => !keep.some((cs) => cs === current.clubId),
+        );
+        await Promise.all(
+            ClubSupportersToDelete.map((cs) =>
+                this.delete(cs.playerId, cs.clubId),
+            ),
         );
     }
 

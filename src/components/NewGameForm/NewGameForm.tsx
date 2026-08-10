@@ -10,15 +10,9 @@ import {
     Textarea,
     Title,
 } from '@mantine/core';
-import {
-    useForm,
-} from '@mantine/form';
-import {
-    useMounted,
-} from '@mantine/hooks';
-import {
-    notifications,
-} from '@mantine/notifications';
+import { useForm } from '@mantine/form';
+import { useMounted } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 
@@ -26,7 +20,10 @@ import { config } from '@/lib/config';
 import { toPublicMessage } from '@/lib/errors';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 import type { TriggerInvitationsProxy } from '@/types/actions/TriggerInvitations';
-import { NewGameInput, NewGameInputSchema } from '@/types/actions/TriggerInvitations';
+import {
+    NewGameInput,
+    NewGameInputSchema,
+} from '@/types/actions/TriggerInvitations';
 
 // Breakpoint at which the submit button switches from a full-width mobile
 // touch target to an inline fit-content button.
@@ -62,10 +59,14 @@ export const NewGameForm = ({ onTriggerInvitations }: Props) => {
             notifications.update({
                 id,
                 color: decision.status === 'ready' ? 'teal' : 'yellow',
-                title: decision.status === 'ready' ? 'Invitations ready' : 'Invitations skipped',
-                message: decision.reason === 'ready' ?
-                    'Invitations can be sent now.' :
-                    `Skipped: ${decision.reason.replace(/-/g, ' ')}`,
+                title:
+                    decision.status === 'ready'
+                        ? 'Invitations ready'
+                        : 'Invitations skipped',
+                message:
+                    decision.reason === 'ready'
+                        ? 'Invitations can be sent now.'
+                        : `Skipped: ${decision.reason.replace(/-/g, ' ')}`,
                 icon: <IconCheck size={config.notificationIconSize} />,
                 loading: false,
                 autoClose: config.notificationAutoClose,
@@ -86,7 +87,9 @@ export const NewGameForm = ({ onTriggerInvitations }: Props) => {
                 title: 'Error',
                 message: toPublicMessage(
                     error,
-                    error instanceof Error ? String(error) : 'Failed to check invitations.',
+                    error instanceof Error
+                        ? String(error)
+                        : 'Failed to check invitations.',
                 ),
                 icon: <IconAlertTriangle size={config.notificationIconSize} />,
                 loading: false,
@@ -99,14 +102,22 @@ export const NewGameForm = ({ onTriggerInvitations }: Props) => {
     return (
         <Container size="sm">
             <Paper>
-                <Title order={2} mb="md">
+                <Title
+                    order={2}
+                    mb="md"
+                >
                     New game
                 </Title>
-                <Box component="form" onSubmit={form.onSubmit(handleSubmit)}>
+                <Box
+                    component="form"
+                    onSubmit={form.onSubmit(handleSubmit)}
+                >
                     <Stack gap="md">
                         <Checkbox
                             label="Override time check (normally invitations are sent 9am the working day before the game)"
-                            {...form.getInputProps('overrideTimeCheck', { type: 'checkbox' })}
+                            {...form.getInputProps('overrideTimeCheck', {
+                                type: 'checkbox',
+                            })}
                         />
                         <Textarea
                             label='Custom message (e.g. "You are getting this email early because...")'
@@ -116,7 +127,10 @@ export const NewGameForm = ({ onTriggerInvitations }: Props) => {
                         />
                         <Button
                             type="submit"
-                            w={{ base: '100%', [actionsBreakpoint]: 'fit-content' }}
+                            w={{
+                                base: '100%',
+                                [actionsBreakpoint]: 'fit-content',
+                            }}
                             loading={!mounted}
                         >
                             Send invitations

@@ -17,9 +17,12 @@ describe('/api/events', () => {
 
     it('returns a streaming response with SSE headers for a valid channel', () => {
         const controller = new AbortController();
-        const request = new NextRequest('http://localhost/api/events?channel=games', {
-            signal: controller.signal,
-        });
+        const request = new NextRequest(
+            'http://localhost/api/events?channel=games',
+            {
+                signal: controller.signal,
+            },
+        );
         const response = GET(request);
 
         expect(response.status).toBe(200);
@@ -32,9 +35,12 @@ describe('/api/events', () => {
 
     it('streams an SSE event frame when the channel is emitted to', async () => {
         const controller = new AbortController();
-        const request = new NextRequest('http://localhost/api/events?channel=games', {
-            signal: controller.signal,
-        });
+        const request = new NextRequest(
+            'http://localhost/api/events?channel=games',
+            {
+                signal: controller.signal,
+            },
+        );
         const response = GET(request);
 
         broadcast('games');
@@ -50,9 +56,12 @@ describe('/api/events', () => {
 
     it('deregisters the emitter listener when the request is aborted', () => {
         const controller = new AbortController();
-        const request = new NextRequest('http://localhost/api/events?channel=games', {
-            signal: controller.signal,
-        });
+        const request = new NextRequest(
+            'http://localhost/api/events?channel=games',
+            {
+                signal: controller.signal,
+            },
+        );
         GET(request);
 
         expect(emitter.listenerCount('games')).toBe(1);
@@ -62,9 +71,12 @@ describe('/api/events', () => {
 
     it('does not send events for other channels to the stream', async () => {
         const controller = new AbortController();
-        const request = new NextRequest('http://localhost/api/events?channel=games', {
-            signal: controller.signal,
-        });
+        const request = new NextRequest(
+            'http://localhost/api/events?channel=games',
+            {
+                signal: controller.signal,
+            },
+        );
         const response = GET(request);
 
         broadcast('players');

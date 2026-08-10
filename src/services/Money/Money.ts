@@ -7,7 +7,10 @@ import { normalizeUnknownError } from '@/lib/errors';
 import { toPounds } from '@/lib/money';
 import gameDayService from '@/services/GameDay';
 import playerService, { PlayerDisplayType } from '@/services/Player';
-import { type PayDebtResult, PayDebtResultSchema } from '@/types/actions/PayDebt';
+import {
+    type PayDebtResult,
+    PayDebtResultSchema,
+} from '@/types/actions/PayDebt';
 import { RecordHallHireInputSchema } from '@/types/actions/RecordHallHire';
 import type { MoneyChartDatum, PlayerDebtsType } from '@/types/DebtType';
 import { DebtsSummarySchema } from '@/types/DebtType';
@@ -62,28 +65,43 @@ class MoneyService {
 
             const paidChargeKeys = new Set(
                 playerPayments
-                    .filter((payment) => payment.playerId != null && payment.gameDayId != null)
-                    .map((payment) => `${payment.playerId!}:${payment.gameDayId!}`),
+                    .filter(
+                        (payment) =>
+                            payment.playerId != null &&
+                            payment.gameDayId != null,
+                    )
+                    .map(
+                        (payment) =>
+                            `${payment.playerId!}:${payment.gameDayId!}`,
+                    ),
             );
 
             const unpaidCharges = playerGameCharges.filter((charge) => {
                 // Prisma filters these out, but the generated type still includes null
                 /* v8 ignore next */
-                if (charge.playerId == null || charge.gameDayId == null) return false;
+                if (charge.playerId == null || charge.gameDayId == null)
+                    return false;
 
-                return !paidChargeKeys.has(`${charge.playerId}:${charge.gameDayId}`);
+                return !paidChargeKeys.has(
+                    `${charge.playerId}:${charge.gameDayId}`,
+                );
             });
 
             // Group debts (unpaid charges) by playerId
-            const debtsByPlayer = new Map<number, {
-                player: PlayerDisplayType,
-                charges: { gameDay: GameDayType; amount: number; }[],
-            }>();
+            const debtsByPlayer = new Map<
+                number,
+                {
+                    player: PlayerDisplayType;
+                    charges: { gameDay: GameDayType; amount: number }[];
+                }
+            >();
 
             for (const charge of unpaidCharges) {
                 const key = charge.playerId!;
                 if (!debtsByPlayer.has(key)) {
-                    const player = await playerService.getById(charge.playerId!);
+                    const player = await playerService.getById(
+                        charge.playerId!,
+                    );
                     if (player == null) continue;
                     debtsByPlayer.set(key, {
                         player,
@@ -133,7 +151,8 @@ class MoneyService {
      */
     async getChartData(year: number): Promise<MoneyChartDatum[]> {
         try {
-            const { minId, maxId } = await gameDayService.getIdRangeForYear(year);
+            const { minId, maxId } =
+                await gameDayService.getIdRangeForYear(year);
             if (minId === null || maxId === null) {
                 return [];
             }
@@ -179,9 +198,15 @@ class MoneyService {
             });
 
             const accumulateTotals = (
-                transactions: { gameDayId: number | null; _sum: { amountPence: number | null } }[],
+                transactions: {
+                    gameDayId: number | null;
+                    _sum: { amountPence: number | null };
+                }[],
                 intervalByGameDayId: Map<number, number>,
-                totalsByInterval: Map<number, { credits: number; debits: number }>,
+                totalsByInterval: Map<
+                    number,
+                    { credits: number; debits: number }
+                >,
             ) => {
                 for (const row of transactions) {
                     if (row.gameDayId == null) {
@@ -193,7 +218,10 @@ class MoneyService {
                         continue;
                     }
 
-                    const entry = totalsByInterval.get(interval) ?? { credits: 0, debits: 0 };
+                    const entry = totalsByInterval.get(interval) ?? {
+                        credits: 0,
+                        debits: 0,
+                    };
                     const amountPence = row._sum.amountPence ?? 0;
                     if (amountPence > 0) {
                         entry.debits += toPounds(amountPence);
@@ -211,9 +239,16 @@ class MoneyService {
                         gameDay.date.getUTCMonth(),
                     ]),
                 );
-                const totalsByMonth = new Map<number, { credits: number; debits: number }>();
+                const totalsByMonth = new Map<
+                    number,
+                    { credits: number; debits: number }
+                >();
 
-                accumulateTotals(playerPayments, monthByGameDayId, totalsByMonth);
+                accumulateTotals(
+                    playerPayments,
+                    monthByGameDayId,
+                    totalsByMonth,
+                );
                 accumulateTotals(hallHire, monthByGameDayId, totalsByMonth);
 
                 return [...totalsByMonth.entries()]
@@ -230,7 +265,10 @@ class MoneyService {
                         gameDay.date.getUTCFullYear(),
                     ]),
                 );
-                const totalsByYear = new Map<number, { credits: number; debits: number }>();
+                const totalsByYear = new Map<
+                    number,
+                    { credits: number; debits: number }
+                >();
 
                 accumulateTotals(playerPayments, yearByGameDayId, totalsByYear);
                 accumulateTotals(hallHire, yearByGameDayId, totalsByYear);
@@ -265,12 +303,14 @@ class MoneyService {
         note?: string,
     ): Promise<void> {
         try {
-            const parsed = z.object({
-                playerId: z.number().int().min(1),
-                gameDayId: z.number().int().min(1),
-                amount: z.number().int().positive().max(49900),
-                note: z.string().max(255).optional(),
-            }).parse({ playerId, gameDayId, amount, note });
+            const parsed = z
+                .object({
+                    playerId: z.number().int().min(1),
+                    gameDayId: z.number().int().min(1),
+                    amount: z.number().int().positive().max(49900),
+                    note: z.string().max(255).optional(),
+                })
+                .parse({ playerId, gameDayId, amount, note });
 
             await prisma.transaction.upsert({
                 where: {
@@ -300,7 +340,7 @@ class MoneyService {
     /**
      * Records a hall hire (invoice) payment as a club-level transaction.
      *
-      * A HallHire transaction has no playerId. The amount is
+     * A HallHire transaction has no playerId. The amount is
      * stored as a positive value so that the club balance (which is the
      * negation of the sum) becomes negative, representing money paid out.
      *
@@ -315,7 +355,11 @@ class MoneyService {
         note?: string,
     ): Promise<void> {
         try {
-            const parsed = RecordHallHireInputSchema.parse({ amountPence, gameDayId, note });
+            const parsed = RecordHallHireInputSchema.parse({
+                amountPence,
+                gameDayId,
+                note,
+            });
 
             // Prisma upsert cannot be used here because playerId is null and
             // Prisma does not support null fields in compound unique key
@@ -381,21 +425,26 @@ class MoneyService {
         gameDayIds: number[],
     ): Promise<PayDebtResult> {
         try {
-            const parsed = z.object({
-                playerId: z.number().int().min(1),
-                amount: z.number().int().positive().max(49900),
-                gameDayIds: z.array(z.number().int().min(1)).min(1),
-            }).parse({ playerId, amount, gameDayIds });
+            const parsed = z
+                .object({
+                    playerId: z.number().int().min(1),
+                    amount: z.number().int().positive().max(49900),
+                    gameDayIds: z.array(z.number().int().min(1)).min(1),
+                })
+                .parse({ playerId, amount, gameDayIds });
 
             const paymentResult = await prisma.$transaction(async (tx) => {
                 const transactionIds: number[] = [];
 
                 // Distribute payment evenly across all gameDayIds
-                const amountPerDay = Math.floor(parsed.amount / parsed.gameDayIds.length);
+                const amountPerDay = Math.floor(
+                    parsed.amount / parsed.gameDayIds.length,
+                );
                 const remainder = parsed.amount % parsed.gameDayIds.length;
 
                 for (let i = 0; i < parsed.gameDayIds.length; i++) {
-                    const paymentAmount = amountPerDay + (i === 0 ? remainder : 0);
+                    const paymentAmount =
+                        amountPerDay + (i === 0 ? remainder : 0);
 
                     const created = await tx.transaction.create({
                         data: {

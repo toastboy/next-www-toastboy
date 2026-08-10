@@ -1,0 +1,48 @@
+# Dependencies
+node_modules
+
+# Next.js
+.next
+out
+next-env.d.ts
+
+# Build artefacts
+build
+storybook-static
+coverage
+playwright-report
+test-results
+blob-report
+
+# Prisma generated code
+prisma/generated
+prisma/zod
+
+# Tooling / editor
+.claude
+.entire
+.vscode
+
+# Lockfile
+package-lock.json
+
+# MSW-generated service worker
+public/mockServiceWorker.js
+
+# Vendored/generated data (topojson) — reformatting is pure diff noise
+public/countries-110m.json
+
+# Terraform
+terraform
+
+# Misc generated
+prisma/fetch.js
+livesitelinks.json
+footy.sql.gz
+
+# This ticket (SYS-598) scopes Prettier to JS/TS/JSON/CSS source formatting.
+# YAML (CI workflows, docker-compose, ontology) and Markdown (docs) are
+# hand-maintained and out of scope — reformatting them is a separate decision.
+*.yml
+*.yaml
+*.md

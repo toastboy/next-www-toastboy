@@ -2,7 +2,10 @@
 
 import type { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 
-import { sendEmailVerificationCore, verifyEmailCore } from '@/lib/core/verifyEmail';
+import {
+    sendEmailVerificationCore,
+    verifyEmailCore,
+} from '@/lib/core/verifyEmail';
 
 /**
  * Verifies an email token by ensuring the verification record is valid and
@@ -32,6 +35,9 @@ export async function verifyEmail(token: string) {
  * provided), then constructs a simple HTML message and sends it via
  * `sendEmail`.
  */
-export async function sendEmailVerification(email: string, player?: PlayerType) {
+export async function sendEmailVerification(
+    email: string,
+    player?: PlayerType,
+) {
     await sendEmailVerificationCore(email, player);
 }

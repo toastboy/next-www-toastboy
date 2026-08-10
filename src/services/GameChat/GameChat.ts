@@ -12,7 +12,6 @@ import {
     GameChatWriteInputSchema,
 } from '@/types/GameChatStrictSchema';
 
-
 class GameChatService {
     /**
      * Fetches a game-chat record by ID.

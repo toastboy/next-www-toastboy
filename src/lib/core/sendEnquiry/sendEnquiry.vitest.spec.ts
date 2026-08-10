@@ -2,13 +2,15 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { NotFoundError } from '@/lib/errors';
 
-const { createVerificationTokenMock, getPublicBaseUrlMock } = vi.hoisted(() => ({
-    createVerificationTokenMock: vi.fn(() => ({
-        token: 'enquiry-token',
-        expiresAt: new Date('2030-01-01T00:00:00.000Z'),
-    })),
-    getPublicBaseUrlMock: vi.fn(() => 'https://example.test'),
-}));
+const { createVerificationTokenMock, getPublicBaseUrlMock } = vi.hoisted(
+    () => ({
+        createVerificationTokenMock: vi.fn(() => ({
+            token: 'enquiry-token',
+            expiresAt: new Date('2030-01-01T00:00:00.000Z'),
+        })),
+        getPublicBaseUrlMock: vi.fn(() => 'https://example.test'),
+    }),
+);
 
 vi.mock('@/lib/verificationToken', () => ({
     createVerificationToken: createVerificationTokenMock,
@@ -18,7 +20,10 @@ vi.mock('@/lib/urls', () => ({
     getPublicBaseUrl: getPublicBaseUrlMock,
 }));
 
-import { deliverContactEnquiryCore, sendEnquiryCore } from '@/lib/core/sendEnquiry';
+import {
+    deliverContactEnquiryCore,
+    sendEnquiryCore,
+} from '@/lib/core/sendEnquiry';
 
 describe('sendEnquiryCore', () => {
     beforeEach(() => {
@@ -61,11 +66,14 @@ describe('sendEnquiryCore', () => {
             message: 'Need details',
             token: 'enquiry-token',
         });
-        const [verificationEmailPayload] = vi.mocked(deps.sendEmailCore).mock.calls[0] as [{
-            to: string;
-            subject: string;
-            html: string;
-        }];
+        const [verificationEmailPayload] = vi.mocked(deps.sendEmailCore).mock
+            .calls[0] as [
+            {
+                to: string;
+                subject: string;
+                html: string;
+            },
+        ];
         expect(verificationEmailPayload.to).toBe('alex@example.com');
         expect(verificationEmailPayload.subject).toBe('Confirm your enquiry');
         expect(verificationEmailPayload.html).toContain(
@@ -102,16 +110,23 @@ describe('deliverContactEnquiryCore', () => {
         const result = await deliverContactEnquiryCore('enquiry-token', deps);
 
         expect(result).toEqual({ enquiry: 'verified' });
-        const [deliveryEmailPayload] = vi.mocked(deps.sendEmailCore).mock.calls[0] as [{
-            to: string;
-            subject: string;
-            html: string;
-        }];
+        const [deliveryEmailPayload] = vi.mocked(deps.sendEmailCore).mock
+            .calls[0] as [
+            {
+                to: string;
+                subject: string;
+                html: string;
+            },
+        ];
         expect(deliveryEmailPayload.to).toBe('footy@toastboy.co.uk');
         expect(deliveryEmailPayload.subject).toBe('Enquiry from Alex');
         expect(deliveryEmailPayload.html).toContain('Line one<br />Line two');
-        expect(deps.emailVerificationService.markUsed).toHaveBeenCalledWith('enquiry-token');
-        expect(deps.contactEnquiryService.markDelivered).toHaveBeenCalledWith(3);
+        expect(deps.emailVerificationService.markUsed).toHaveBeenCalledWith(
+            'enquiry-token',
+        );
+        expect(deps.contactEnquiryService.markDelivered).toHaveBeenCalledWith(
+            3,
+        );
     });
 
     it('falls back to a dash when formatted enquiry message is empty', async () => {
@@ -136,14 +151,23 @@ describe('deliverContactEnquiryCore', () => {
 
         await deliverContactEnquiryCore('enquiry-token', deps);
 
-        const [deliveryEmailPayload] = vi.mocked(deps.sendEmailCore).mock.calls[0] as [{
-            to: string;
-            subject: string;
-            html: string;
-        }];
-        expect(deliveryEmailPayload.html).toContain('<p><strong>Message:</strong><br />-</p>');
-        expect(deps.emailVerificationService.markUsed).toHaveBeenCalledWith('enquiry-token');
-        expect(deps.contactEnquiryService.markDelivered).toHaveBeenCalledWith(4);
+        const [deliveryEmailPayload] = vi.mocked(deps.sendEmailCore).mock
+            .calls[0] as [
+            {
+                to: string;
+                subject: string;
+                html: string;
+            },
+        ];
+        expect(deliveryEmailPayload.html).toContain(
+            '<p><strong>Message:</strong><br />-</p>',
+        );
+        expect(deps.emailVerificationService.markUsed).toHaveBeenCalledWith(
+            'enquiry-token',
+        );
+        expect(deps.contactEnquiryService.markDelivered).toHaveBeenCalledWith(
+            4,
+        );
     });
 
     it('returns already-delivered without sending when enquiry was already processed', async () => {
@@ -185,8 +209,9 @@ describe('deliverContactEnquiryCore', () => {
             sendEmailCore: vi.fn(),
         };
 
-        await expect(deliverContactEnquiryCore('enquiry-token', deps))
-            .rejects.toBeInstanceOf(NotFoundError);
+        await expect(
+            deliverContactEnquiryCore('enquiry-token', deps),
+        ).rejects.toBeInstanceOf(NotFoundError);
         expect(deps.sendEmailCore).not.toHaveBeenCalled();
         expect(deps.emailVerificationService.markUsed).not.toHaveBeenCalled();
         expect(deps.contactEnquiryService.markDelivered).not.toHaveBeenCalled();

@@ -8,7 +8,10 @@ import { captureUnexpectedError } from '@/lib/observability/sentry';
 
 export const dynamic = 'force-dynamic';
 
-export const GET = async (request: NextRequest, props: { params: Promise<Record<string, string>> }) => {
+export const GET = async (
+    request: NextRequest,
+    props: { params: Promise<Record<string, string>> },
+) => {
     const { purpose, token } = await props.params;
     const searchParams = request.nextUrl.searchParams;
     const redirectParam = searchParams.get('redirect') ?? '/';
@@ -43,7 +46,10 @@ export const GET = async (request: NextRequest, props: { params: Promise<Record<
                 redirectParam,
             },
         });
-        const { message: errorMessage } = toHttpErrorResponse(error, 'Unable to verify email.');
+        const { message: errorMessage } = toHttpErrorResponse(
+            error,
+            'Unable to verify email.',
+        );
 
         redirect = buildURLWithParams(redirectParam, { error: errorMessage });
     }

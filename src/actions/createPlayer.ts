@@ -49,10 +49,7 @@ export async function createPlayer(rawData: unknown) {
  * tokenized verification link.
  * @throws {AuthError} When the user is not an admin.
  */
-export async function addPlayerInvite(
-    playerId: number,
-    email?: string,
-) {
+export async function addPlayerInvite(playerId: number, email?: string) {
     await requireAdmin();
 
     const inviteLink = await addPlayerInviteCore(playerId, email);

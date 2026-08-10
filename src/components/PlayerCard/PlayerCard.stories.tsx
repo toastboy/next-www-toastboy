@@ -41,10 +41,16 @@ export const NoClubsOrCountries: Story = {
         // suite runs and dozens of images across other stories are decoding
         // under CPU contention at the same time (see testTimeout in
         // vitest.config.ts, which must exceed this).
-        await waitFor(() => {
-            const img = canvas.getByRole('img', { name: /gary player/i, busy: false });
-            return expect(img).toBeVisible();
-        }, { timeout: 10000 });
+        await waitFor(
+            () => {
+                const img = canvas.getByRole('img', {
+                    name: /gary player/i,
+                    busy: false,
+                });
+                return expect(img).toBeVisible();
+            },
+            { timeout: 10000 },
+        );
     },
 };
 

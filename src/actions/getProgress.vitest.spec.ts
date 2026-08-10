@@ -13,7 +13,9 @@ vi.mock('@/services/PlayerRecord', () => ({
 import { getProgress } from '@/actions/getProgress';
 
 describe('getProgress action', () => {
-    beforeEach(() => { vi.clearAllMocks(); });
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
 
     it('returns the [processed, total] tuple from playerRecordService.getProgress', async () => {
         getProgressMock.mockResolvedValueOnce([4, 10]);

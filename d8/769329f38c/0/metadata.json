@@ -1,0 +1,109 @@
+{
+  "cli_version": "0.9.0",
+  "checkpoint_id": "d8769329f38c",
+  "session_id": "6a681293-be31-47f7-ab74-a20f094285ce",
+  "strategy": "manual-commit",
+  "created_at": "2026-08-10T17:35:54.264779Z",
+  "branch": "main",
+  "checkpoints_count": 4,
+  "save_step_count": 4,
+  "files_touched": [
+    "CLAUDE.md",
+    "eslint.config.mjs",
+    "package-lock.json",
+    "package.json",
+    "src/components/ClaimSignup/ClaimSignup.vitest.spec.tsx",
+    "src/components/DrinkersForm/DrinkersForm.vitest.spec.tsx",
+    "src/components/EnquiryForm/EnquiryForm.vitest.spec.tsx",
+    "src/components/FamilyTree/FamilyTree.tsx",
+    "src/components/FamilyTree/FamilyTree.vitest.spec.tsx",
+    "src/components/GameDayIndicator/GameDayIndicator.tsx",
+    "src/components/GameDayList/GameDayList.tsx",
+    "src/components/InvoiceForm/InvoiceForm.vitest.spec.tsx",
+    "src/components/MoneyChart/MoneyChart.vitest.spec.tsx",
+    "src/components/MoneyForm/MoneyForm.vitest.spec.tsx",
+    "src/components/NavBarNested/NavBarNested.tsx",
+    "src/components/SignIn/SignIn.vitest.spec.tsx",
+    "src/components/TitleWithYearDropdown/TitleWithYearDropdown.vitest.spec.tsx",
+    "src/components/UserButton/UserButton.vitest.spec.tsx",
+    "src/docs/mdx-components.vitest.spec.tsx",
+    "src/tests/__mocks__/next/navigation.ts",
+    "src/tests/components/lib/common.tsx",
+    "tsconfig.json",
+    "vitest.components.config.ts"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-5",
+  "turn_id": "3c96b8983eba",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 138,
+    "cache_creation_tokens": 121398,
+    "cache_read_tokens": 4908991,
+    "output_tokens": 29004,
+    "api_call_count": 74
+  },
+  "session_metrics": {
+    "turn_count": 4
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-08-10T17:35:54.231075Z",
+    "agent_lines": 0,
+    "agent_removed": 148,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 1816,
+    "total_committed": 107,
+    "total_lines_changed": 1964,
+    "agent_percentage": 7.535641547861507,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 1839,
+      "user_lines_removed": 1816,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 19,
+        "package-lock.json": 1756,
+        "package.json": 64
+      },
+      "user_removed_per_file": {
+        "package-lock.json": 1752,
+        "package.json": 64
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 19,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1835,
+      "agent_lines_removed": 1820,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 19
+      }
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 19,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1851,
+      "agent_lines_removed": 1819,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 19
+      }
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 19,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1895,
+      "agent_lines_removed": 1956,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 19
+      }
+    }
+  ]
+}

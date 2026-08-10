@@ -1,0 +1,48 @@
+{
+  "cli_version": "0.9.0",
+  "checkpoint_id": "d8769329f38c",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 4,
+  "files_touched": [
+    "CLAUDE.md",
+    "eslint.config.mjs",
+    "package-lock.json",
+    "package.json",
+    "src/components/ClaimSignup/ClaimSignup.vitest.spec.tsx",
+    "src/components/DrinkersForm/DrinkersForm.vitest.spec.tsx",
+    "src/components/EnquiryForm/EnquiryForm.vitest.spec.tsx",
+    "src/components/FamilyTree/FamilyTree.tsx",
+    "src/components/FamilyTree/FamilyTree.vitest.spec.tsx",
+    "src/components/GameDayIndicator/GameDayIndicator.tsx",
+    "src/components/GameDayList/GameDayList.tsx",
+    "src/components/InvoiceForm/InvoiceForm.vitest.spec.tsx",
+    "src/components/MoneyChart/MoneyChart.vitest.spec.tsx",
+    "src/components/MoneyForm/MoneyForm.vitest.spec.tsx",
+    "src/components/NavBarNested/NavBarNested.tsx",
+    "src/components/SignIn/SignIn.vitest.spec.tsx",
+    "src/components/TitleWithYearDropdown/TitleWithYearDropdown.vitest.spec.tsx",
+    "src/components/UserButton/UserButton.vitest.spec.tsx",
+    "src/docs/mdx-components.vitest.spec.tsx",
+    "src/tests/__mocks__/next/navigation.ts",
+    "src/tests/components/lib/common.tsx",
+    "tsconfig.json",
+    "vitest.components.config.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/d8/769329f38c/0/metadata.json",
+      "transcript": "/d8/769329f38c/0/full.jsonl",
+      "compact_transcript": "/d8/769329f38c/0/transcript.jsonl",
+      "content_hash": "/d8/769329f38c/0/content_hash.txt",
+      "prompt": "/d8/769329f38c/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 138,
+    "cache_creation_tokens": 121398,
+    "cache_read_tokens": 4908991,
+    "output_tokens": 29004,
+    "api_call_count": 74
+  }
+}

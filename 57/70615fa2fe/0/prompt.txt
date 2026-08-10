@@ -1,0 +1,17 @@
+Before I close the ticket, is there anything else that could be done in the same spirit?
+
+---
+
+No, because it's just me working on this and I use VS Code exclusively
+
+---
+
+Can dependabot be configured only to generate PRs when a version upgrade results in the fixing of a security flaw?
+
+---
+
+It seems I should look at making fewer PRs and possibly on average upgrading to slightly less brand-new dependency versions as a hedge against supply chain attacks
+
+---
+
+I want rebases with a linear history rather than merge commits

@@ -1,0 +1,27 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "5770615fa2fe",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 5,
+  "files_touched": [
+    ".github/dependabot.yml",
+    ".github/workflows/dependabot-auto-merge.yml"
+  ],
+  "sessions": [
+    {
+      "metadata": "/57/70615fa2fe/0/metadata.json",
+      "transcript": "/57/70615fa2fe/0/full.jsonl",
+      "compact_transcript": "/57/70615fa2fe/0/transcript.jsonl",
+      "content_hash": "/57/70615fa2fe/0/content_hash.txt",
+      "prompt": "/57/70615fa2fe/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 58,
+    "cache_creation_tokens": 195594,
+    "cache_read_tokens": 5620847,
+    "output_tokens": 22918,
+    "api_call_count": 29
+  }
+}

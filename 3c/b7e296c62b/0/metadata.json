@@ -1,0 +1,59 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "3cb7e296c62b",
+  "session_id": "10313bb9-d66b-488b-a496-dcb64bb807c0",
+  "strategy": "manual-commit",
+  "created_at": "2026-08-10T06:55:45.044446Z",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "save_step_count": 1,
+  "files_touched": [
+    "src/components/GoalieIndicator/GoalieIndicator.tsx",
+    "src/components/PlayerLink/PlayerLink.tsx",
+    "src/components/TeamPlayer/TeamPlayer.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "2f33ec75b9de",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 174,
+    "cache_creation_tokens": 141837,
+    "cache_read_tokens": 7540685,
+    "output_tokens": 33747,
+    "api_call_count": 87
+  },
+  "session_metrics": {
+    "turn_count": 2
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-08-10T06:55:44.97126Z",
+    "agent_lines": 28,
+    "agent_removed": 3,
+    "human_added": 4,
+    "human_modified": 1,
+    "human_removed": 0,
+    "total_committed": 33,
+    "total_lines_changed": 36,
+    "agent_percentage": 86.11111111111111,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 79,
+      "user_lines_removed": 1,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 58,
+        "src/components/PlayerLink/PlayerLink.tsx": 11,
+        "src/components/TeamPlayer/TeamPlayer.tsx": 9
+      },
+      "user_removed_per_file": {
+        "src/components/TeamPlayer/TeamPlayer.tsx": 1
+      }
+    }
+  ]
+}

@@ -1,0 +1,142 @@
+Back to working on the game day summary page: I want the player names to be central left to right in the wider-screen card layout - and don't forget I want to treat any goalie indicator as part of the name for layout purposes.
+
+---
+
+<task-notification>
+<task-id>a82b57360788743a3</task-id>
+<tool-use-id>toolu_019gtr1VUJaUDVSEZvVpvmh2</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/36068b2a-2922-4c10-93ef-d352aacef560/tasks/a82b57360788743a3.output</output-file>
+<status>completed</status>
+<summary>Agent "Find game day summary card player name layout" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>I now have a complete, thorough picture of the component chain. Here's the report.
+
+## Summary
+
+Component chain (top-down):
+
+```
+src/app/footy/game/[id]/page.tsx
+  └─ src/components/GameDaySummary/GameDaySummary.tsx
+       └─ src/components/Team/Team.tsx
+            └─ src/components/TeamPlayer/TeamPlayer.tsx   ← the "card" component
+                 ├─ src/components/PlayerMugshot/PlayerMugshot.tsx
+                 ├─ src/components/PlayerLink/PlayerLink.tsx   ← renders name + goalie indicator
+                 │    └─ src/components/GoalieIndicator/GoalieIndicator.tsx
+                 └─ src/components/PlayerForm/PlayerForm.tsx
+```
+
+### 1. Main page/entry component
+- `/Volumes/Development/next-www-toastboy/src/app/footy/game/[id]/page.tsx` — route page (`GamePage`), fetches `gameDay`, `teamA`/`teamB` and renders `&lt;GameDaySummary&gt;` (line 111-117).
+- `/Volumes/Development/next-www-toastboy/src/components/GameDaySummary/GameDaySummary.tsx` — top summary component; lines 58-72 render two `&lt;Team&gt;` components side by side in a `Flex direction={{ base: "column", xs: "row" }}` (mobile stacks teams, wider screens go side-by-side).
+
+### 2. Card component that renders each player's name (the "wider-screen card layout")
+`/Volumes/Development/next-www-toastboy/src/components/TeamPlayer/TeamPlayer.tsx` (full file, 65 lines) — this is the per-player card. Key excerpt:
+
+```tsx
+19  export const TeamPlayer = ({ teamPlayer }: Props) =&gt; (
+25      &lt;Card p={0} padding={0} withBorder orientation="horizontal"&gt;
+31          &lt;Card.Section w={{ base: "2.0rem", xs: "5.5rem" }}&gt;
+34              &lt;PlayerMugshot player={teamPlayer} /&gt;
+37          &lt;/Card.Section&gt;
+39          &lt;Card.Section px="md" py={2} flex={1}&gt;
+44              &lt;Flex
+45                  align="center"
+46                  direction={{ base: "row", xs: "column" }}
+47                  justify={{ base: "space-between", xs: "center" }}
+48                  h="100%"
+49              &gt;
+50                  &lt;Group align="center" gap="xs"&gt;
+51                      &lt;PlayerLink
+52                          player={teamPlayer}
+53                          year={0}
+54                          wrap
+55                          goalie={teamPlayer.outcome.goalie}
+56                      /&gt;
+57                  &lt;/Group&gt;
+58                  &lt;PlayerForm form={teamPlayer.form} /&gt;
+61              &lt;/Flex&gt;
+62          &lt;/Card.Section&gt;
+64      &lt;/Card&gt;
+65  );
+```
+
+- The responsive "wide-screen card layout" is the `xs` breakpoint variant of the inner `Flex`: `direction={{ base: "row", xs: "column" }}` and `justify={{ base: "space-between", xs: "center" }}` — on mobile (`base`) it's a row (name left, form right); on wider screens (`xs`+) it stacks into a centered column (name above form).
+- The name + goalie indicator are wrapped together in `&lt;Group align="center" gap="xs"&gt;` (lines 50-57), containing a single `&lt;PlayerLink&gt;` call with `wrap` and `goalie={teamPlayer.outcome.goalie}` props.
+
+### 3. Where the player's name is actually rendered
+`/Volumes/Development/next-www-toastboy/src/components/PlayerLink/PlayerLink.tsx`:
+
+```tsx
+36  export interface Props {
+37      player: PlayerType;
+38      year: number;
+39      format?: 'name' | 'left-arrow' | 'right-arrow';
+40      wrap?: boolean;
+41      goalie?: boolean | null | undefined;
+42  }
+44  export const PlayerLink = ({ player, year, format = 'name', wrap = false, goalie = false }: Props) =&gt; {
+    ...
+70      const link = (
+71          &lt;Anchor
+72              href={`/footy/player/${player.id}${year ? `/${year}` : ''}`}
+73              aria-label={ariaLabel}
+74              miw={miw}
+75          &gt;
+76              {(() =&gt; {
+77                  switch (format) {
+78                      case 'name':
+79                          return player.name;          // &lt;-- player name text
+...
+85              })()}
+86              {goalie ? &lt;GoalieIndicator /&gt; : null}     // &lt;-- goalie indicator, sibling of the name text, inside the same &lt;Anchor&gt;
+87          &lt;/Anchor&gt;
+88      );
+```
+
+- `miw` (min-width) on the `Anchor` comes from `theme.other.playerNameMinWidthMultiLine` (`"9em"`, used when `wrap` is true — this is the case used by `TeamPlayer`) or `playerNameMinWidthSingleLine` (`"18em"`, used elsewhere e.g. `PlayerList`). Defined in `/Volumes/Development/next-www-toastboy/src/theme.ts` lines 10-13, typed in `/Volumes/Development/next-www-toastboy/src/types/mantine.d.ts` lines 8-10.
+- Note: the name text and the `GoalieIndicator` are both children of the same `&lt;Anchor&gt;` — there's no separate flex/group wrapper between them controlling spacing; alignment of the two is instead handled by `GoalieIndicator`'s own `display="inline-flex"`.
+
+### 4. The goalie indicator component itself
+`/Volumes/Development/next-www-toastboy/src/components/GoalieIndicator/GoalieIndicator.tsx` (full file, 36 lines):
+
+```tsx
+9   export const GoalieIndicator = () =&gt; (
+10      &lt;Tooltip label="Goalie" withArrow&gt;
+11          &lt;Flex
+12              role="img"
+13              aria-label="Goalie indicator"
+14              display="inline-flex"
+15              justify="flex-start"
+16              align="center"
+17              ms="0.25rem"
+18          &gt;
+19              &lt;IconHandStop stroke={1.25} color="black" fill="white"
+20                  style={{ height: 'auto', transform: 'scaleX(-1)' }} size="1rem" /&gt;
+26              &lt;IconHandStop stroke={1.25} color="black" fill="white"
+30                  style={{ height: 'auto' }} size="1rem" /&gt;
+33          &lt;/Flex&gt;
+34      &lt;/Tooltip&gt;
+35  );
+```
+
+- Renders two mirrored `IconHandStop` icons (from `@tabler/icons-react`) side by side (a "goalkeeper gloves" visual), wrapped in a Mantine `Tooltip` with label "Goalie", inside an inline-flex `Flex` with `ms="0.25rem"` (margin-start, i.e. left margin in LTR) to space it from the preceding name text.
+- `goalie` boolean prop is sourced from `teamPlayer.outcome.goalie` (see `TeamPlayer.tsx` line 55), which traces back through `src/services/Outcome/Outcome.ts` and `src/types` (`TeamPlayerType`) to the DB `Player`/`Outcome` goalie flag (added in commit `9650f18d SYS-474 Add goalie flag to Player model...`).
+
+### Relevant CSS/Mantine styling summary
+| Element | Prop | Location |
+|---|---|---|
+| Team-vs-team row/column switch | `Flex direction={{ base: "column", xs: "row" }}` | `GameDaySummary.tsx:59` |
+| Card inner layout (name+form) row/column switch | `Flex direction={{ base: "row", xs: "column" }} justify={{ base: "space-between", xs: "center" }} align="center"` | `TeamPlayer.tsx:44-49` |
+| Name+goalie group | `Group align="center" gap="xs"` | `TeamPlayer.tsx:50` |
+| Name min-width (wrap mode, used in cards) | `miw={theme.other.playerNameMinWidthMultiLine}` = `"9em"` | `PlayerLink.tsx:58-59`, `theme.ts:12` |
+| Name min-width (single-line mode, used in `PlayerList`) | `theme.other.playerNameMinWidthSingleLine` = `"18em"` | `PlayerLink.tsx:60`, `theme.ts:11` |
+| Goalie indicator spacing/alignment | `display="inline-flex" justify="flex-start" align="center" ms="0.25rem"` | `GoalieIndicator.tsx:14-17` |
+
+Related test/story files for context if needed: `TeamPlayer.vitest.spec.tsx`, `TeamPlayer.stories.tsx`, `PlayerLink.vitest.spec.tsx`, `GoalieIndicator.vitest.spec.tsx`, `GoalieIndicator.stories.tsx`, `Team.vitest.spec.tsx`, `GameDaySummary.vitest.spec.tsx` (all siblings of the corresponding `.tsx` files above).</result>
+<usage><subagent_tokens>30027</subagent_tokens><tool_uses>15</tool_uses><duration_ms>58051</duration_ms></usage>
+</task-notification>
+
+---
+
+Could the goalie indicator be incorporated into the new Divider as the label? I'd have to do something different in the narrow layout, of course.

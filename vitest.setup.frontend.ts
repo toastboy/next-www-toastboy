@@ -64,17 +64,28 @@ const isDomSafeProp = (key: string) =>
     DOM_SAFE_PROP_NAMES.has(key);
 
 const pickDomSafeProps = (props: Record<string, unknown> = {}) =>
-    Object.fromEntries(Object.entries(props).filter(([key]) => isDomSafeProp(key)));
+    Object.fromEntries(
+        Object.entries(props).filter(([key]) => isDomSafeProp(key)),
+    );
 
-const createRichTextNode = (name: string, props?: Record<string, unknown>, children?: React.ReactNode) =>
-    React.createElement('div', { 'data-testid': `rich-text-${name}`, ...pickDomSafeProps(props) }, children);
+const createRichTextNode = (
+    name: string,
+    props?: Record<string, unknown>,
+    children?: React.ReactNode,
+) =>
+    React.createElement(
+        'div',
+        { 'data-testid': `rich-text-${name}`, ...pickDomSafeProps(props) },
+        children,
+    );
 
 // Widened to accept arbitrary props (editor instances, Mantine style props,
 // control-specific props like `sticky`/`stickyOffset`, etc.) so the mock's own
 // type doesn't drift from what real `@mantine/tiptap` consumers pass — only
 // pickDomSafeProps above decides what actually reaches the DOM.
 type MockRichTextProps = React.PropsWithChildren<Record<string, unknown>>;
-const mockControl = (name: string) => (_props?: MockRichTextProps) => createRichTextNode(name);
+const mockControl = (name: string) => (_props?: MockRichTextProps) =>
+    createRichTextNode(name);
 
 const RichTextEditor = Object.assign(
     ({ children, ...props }: MockRichTextProps) =>
@@ -84,7 +95,8 @@ const RichTextEditor = Object.assign(
             createRichTextNode('toolbar', undefined, children),
         ControlsGroup: ({ children }: MockRichTextProps) =>
             createRichTextNode('controls', undefined, children),
-        Content: (_props?: MockRichTextProps) => createRichTextNode('content', undefined, 'Hello, this is a test!'),
+        Content: (_props?: MockRichTextProps) =>
+            createRichTextNode('content', undefined, 'Hello, this is a test!'),
         Bold: mockControl('bold'),
         Italic: mockControl('italic'),
         Underline: mockControl('underline'),
@@ -178,7 +190,10 @@ const mockMatchMedia = (query: string) => ({
 });
 
 if (!('matchMedia' in globalThis)) {
-    Object.defineProperty(globalThis, 'matchMedia', { value: mockMatchMedia, writable: true });
+    Object.defineProperty(globalThis, 'matchMedia', {
+        value: mockMatchMedia,
+        writable: true,
+    });
 }
 
 if (typeof window !== 'undefined' && !window.matchMedia) {
@@ -187,9 +202,15 @@ if (typeof window !== 'undefined' && !window.matchMedia) {
 
 if (!('ResizeObserver' in globalThis)) {
     class MockResizeObserver {
-        observe() { /* empty */ }
-        unobserve() { /* empty */ }
-        disconnect() { /* empty */ }
+        observe() {
+            /* empty */
+        }
+        unobserve() {
+            /* empty */
+        }
+        disconnect() {
+            /* empty */
+        }
     }
 
     Object.defineProperty(globalThis, 'ResizeObserver', {
@@ -206,9 +227,15 @@ if (!('EventSource' in globalThis)) {
             this.url = String(url);
         }
 
-        addEventListener() { /* empty */ }
-        removeEventListener() { /* empty */ }
-        close() { /* empty */ }
+        addEventListener() {
+            /* empty */
+        }
+        removeEventListener() {
+            /* empty */
+        }
+        close() {
+            /* empty */
+        }
     }
 
     Object.defineProperty(globalThis, 'EventSource', {
@@ -224,7 +251,8 @@ interface HTMLElementLike {
     };
 }
 
-const HTMLElementRef = (globalThis as { HTMLElement?: HTMLElementLike }).HTMLElement;
+const HTMLElementRef = (globalThis as { HTMLElement?: HTMLElementLike })
+    .HTMLElement;
 if (HTMLElementRef && !('scrollIntoView' in HTMLElementRef.prototype)) {
     HTMLElementRef.prototype.scrollIntoView = () => undefined;
 }
@@ -233,8 +261,12 @@ if (HTMLElementRef && !('scrollIntoView' in HTMLElementRef.prototype)) {
 if (typeof document !== 'undefined' && !document.fonts) {
     Object.defineProperty(document, 'fonts', {
         value: {
-            addEventListener: () => { /* empty */ },
-            removeEventListener: () => { /* empty */ },
+            addEventListener: () => {
+                /* empty */
+            },
+            removeEventListener: () => {
+                /* empty */
+            },
         },
         writable: true,
     });

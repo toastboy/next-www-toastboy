@@ -22,7 +22,9 @@ import { defaultFamilyTree } from '@/tests/mocks/data/familyTree';
 describe('FamilyTree page', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        (playerService.getFamilyTree as Mock).mockResolvedValue(defaultFamilyTree);
+        (playerService.getFamilyTree as Mock).mockResolvedValue(
+            defaultFamilyTree,
+        );
     });
 
     it('calls playerService.getFamilyTree', async () => {
@@ -35,11 +37,16 @@ describe('FamilyTree page', () => {
         const element = await FamilyTreePage();
         renderToStaticMarkup(element);
 
-        expect(FamilyTree).toHaveBeenCalledWith({ data: defaultFamilyTree }, undefined);
+        expect(FamilyTree).toHaveBeenCalledWith(
+            { data: defaultFamilyTree },
+            undefined,
+        );
     });
 
     it('handles service errors gracefully', async () => {
-        (playerService.getFamilyTree as Mock).mockRejectedValue(new Error('DB failed'));
+        (playerService.getFamilyTree as Mock).mockRejectedValue(
+            new Error('DB failed'),
+        );
 
         await expect(FamilyTreePage()).rejects.toThrow('DB failed');
     });

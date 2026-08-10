@@ -1,29 +1,33 @@
 import { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import z from 'zod';
 
-const emailListSchema = z.array(z.preprocess(
-    (value: unknown) => {
-        return typeof value === 'string' ? value.trim().toLowerCase() : value;
-    },
-    z.union([
-        z.email({ message: 'Invalid email' }),
-        z.literal(''),
-    ]),
-));
+const emailListSchema = z.array(
+    z.preprocess(
+        (value: unknown) => {
+            return typeof value === 'string'
+                ? value.trim().toLowerCase()
+                : value;
+        },
+        z.union([z.email({ message: 'Invalid email' }), z.literal('')]),
+    ),
+);
 
 export const UpdatePlayerSchema = z.object({
-    name: z.string()
-        .min(1, { message: 'Name is required' }),
+    name: z.string().min(1, { message: 'Name is required' }),
     accountEmail: z.preprocess(
         (value: unknown) => {
-            return typeof value === 'string' ? value.trim().toLowerCase() : value;
+            return typeof value === 'string'
+                ? value.trim().toLowerCase()
+                : value;
         },
-        z.email({ message: 'Invalid account email' }).min(1, { message: 'Account email is required' }),
+        z
+            .email({ message: 'Invalid account email' })
+            .min(1, { message: 'Account email is required' }),
     ),
     anonymous: z.boolean().optional(),
     goalie: z.boolean().optional(),
-    finished: z.preprocess(
-        (value: unknown) => {
+    finished: z
+        .preprocess((value: unknown) => {
             if (value === '' || value === null || value === undefined) {
                 return null;
             }
@@ -31,9 +35,8 @@ export const UpdatePlayerSchema = z.object({
                 return new Date(value);
             }
             return value;
-        },
-        z.date().nullish(),
-    ).optional(),
+        }, z.date().nullish())
+        .optional(),
     born: z.preprocess(
         (value: unknown) => {
             if (value === '' || value === null || value === undefined) {
@@ -50,9 +53,12 @@ export const UpdatePlayerSchema = z.object({
             }
             return value;
         },
-        z.number()
+        z
+            .number()
             .min(1900, { message: 'Year must be 1900 or later' })
-            .max(new Date().getFullYear(), { message: 'Year cannot be in the future' })
+            .max(new Date().getFullYear(), {
+                message: 'Year cannot be in the future',
+            })
             .optional()
             .nullable(),
     ),
@@ -60,8 +66,8 @@ export const UpdatePlayerSchema = z.object({
     addedExtraEmails: emailListSchema,
     removedExtraEmails: emailListSchema,
     countries: z.array(z.string()),
-    clubs: z.array(z.preprocess(
-        (value: unknown) => {
+    clubs: z.array(
+        z.preprocess((value: unknown) => {
             if (typeof value === 'string') {
                 const trimmed = value.trim();
                 if (trimmed === '') {
@@ -71,9 +77,8 @@ export const UpdatePlayerSchema = z.object({
                 return Number(trimmed);
             }
             return value;
-        },
-        z.number(),
-    )),
+        }, z.number()),
+    ),
     comment: z.string().optional(),
 });
 

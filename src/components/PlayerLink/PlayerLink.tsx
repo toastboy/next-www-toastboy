@@ -6,7 +6,10 @@ import {
     Tooltip,
     useMantineTheme,
 } from '@mantine/core';
-import { IconArrowBigLeftLine, IconArrowBigRightLine } from '@tabler/icons-react';
+import {
+    IconArrowBigLeftLine,
+    IconArrowBigRightLine,
+} from '@tabler/icons-react';
 import type { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import { CSSProperties } from 'react';
 
@@ -60,9 +63,9 @@ export const PlayerLink = ({
     switch (format) {
         case 'name':
             ariaLabel = `${player.name ?? 'Unknown'}`;
-            miw = wrap ?
-                theme.other.playerNameMinWidthMultiLine :
-                theme.other.playerNameMinWidthSingleLine;
+            miw = wrap
+                ? theme.other.playerNameMinWidthMultiLine
+                : theme.other.playerNameMinWidthSingleLine;
             break;
         case 'left-arrow':
             ariaLabel = `Previous player: ${player.name ?? 'Unknown'}`;
@@ -95,8 +98,7 @@ export const PlayerLink = ({
 
     if (format === 'name') {
         return link;
-    }
-    else {
+    } else {
         return (
             <Tooltip label={player.name} withArrow>
                 {link}

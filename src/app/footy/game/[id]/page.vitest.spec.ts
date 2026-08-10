@@ -12,8 +12,12 @@ vi.mock('react', async () => {
 });
 
 vi.mock('next/navigation', () => ({
-    notFound: vi.fn(() => { throw new Error('not_found'); }),
-    permanentRedirect: vi.fn(() => { throw new Error('permanent_redirect'); }),
+    notFound: vi.fn(() => {
+        throw new Error('not_found');
+    }),
+    permanentRedirect: vi.fn(() => {
+        throw new Error('permanent_redirect');
+    }),
 }));
 
 vi.mock('@/actions/setGameResult', () => ({
@@ -56,7 +60,9 @@ describe('Game [id] page', () => {
         (gameDayService.get as Mock).mockResolvedValue(gameDay);
         (gameDayService.getPrevious as Mock).mockResolvedValue(null);
         (gameDayService.getNext as Mock).mockResolvedValue(null);
-        (outcomeService.getTeamPlayersByGameDay as Mock).mockResolvedValue(defaultTeamPlayerList);
+        (outcomeService.getTeamPlayersByGameDay as Mock).mockResolvedValue(
+            defaultTeamPlayerList,
+        );
         (getUserRole as Mock).mockResolvedValue('none');
     });
 
@@ -90,7 +96,9 @@ describe('Game [id] page', () => {
 
     describe('generateMetadata', () => {
         it('generates metadata with the formatted game date as the title', async () => {
-            const metadata = await generateMetadata({ params: Promise.resolve({ id: '1249' }) });
+            const metadata = await generateMetadata({
+                params: Promise.resolve({ id: '1249' }),
+            });
 
             expect(metadata.title).toBe(formatDate(gameDay.date));
         });
@@ -103,14 +111,24 @@ describe('Game [id] page', () => {
             expect(getUserRole).toHaveBeenCalledTimes(1);
             expect(gameDayService.getPrevious).toHaveBeenCalledWith(1249);
             expect(gameDayService.getNext).toHaveBeenCalledWith(1249);
-            expect(outcomeService.getTeamPlayersByGameDay).toHaveBeenCalledWith(1249, 'A', 10);
-            expect(outcomeService.getTeamPlayersByGameDay).toHaveBeenCalledWith(1249, 'B', 10);
+            expect(outcomeService.getTeamPlayersByGameDay).toHaveBeenCalledWith(
+                1249,
+                'A',
+                10,
+            );
+            expect(outcomeService.getTeamPlayersByGameDay).toHaveBeenCalledWith(
+                1249,
+                'B',
+                10,
+            );
         });
 
         it('renders the GameResultForm only when the user role is admin', async () => {
             (getUserRole as Mock).mockResolvedValue('admin');
 
-            const element = await GamePage({ params: Promise.resolve({ id: '1249' }) });
+            const element = await GamePage({
+                params: Promise.resolve({ id: '1249' }),
+            });
             renderToStaticMarkup(element);
 
             expect(GameResultForm).toHaveBeenCalledTimes(1);
@@ -119,17 +137,24 @@ describe('Game [id] page', () => {
         it('does not render the GameResultForm when the user role is not admin', async () => {
             (getUserRole as Mock).mockResolvedValue('user');
 
-            const element = await GamePage({ params: Promise.resolve({ id: '1249' }) });
+            const element = await GamePage({
+                params: Promise.resolve({ id: '1249' }),
+            });
             renderToStaticMarkup(element);
 
             expect(GameResultForm).not.toHaveBeenCalled();
         });
 
         it('does not render the GameResultForm when the game is not enabled, even for an admin', async () => {
-            (gameDayService.get as Mock).mockResolvedValue({ ...gameDay, game: false });
+            (gameDayService.get as Mock).mockResolvedValue({
+                ...gameDay,
+                game: false,
+            });
             (getUserRole as Mock).mockResolvedValue('admin');
 
-            const element = await GamePage({ params: Promise.resolve({ id: '1249' }) });
+            const element = await GamePage({
+                params: Promise.resolve({ id: '1249' }),
+            });
             renderToStaticMarkup(element);
 
             expect(GameResultForm).not.toHaveBeenCalled();
@@ -139,10 +164,14 @@ describe('Game [id] page', () => {
             const prevGameDay = createMockGameDay({ id: 1248 });
             (gameDayService.getPrevious as Mock).mockResolvedValue(prevGameDay);
 
-            const element = await GamePage({ params: Promise.resolve({ id: '1249' }) });
+            const element = await GamePage({
+                params: Promise.resolve({ id: '1249' }),
+            });
             renderToStaticMarkup(element);
 
-            const [props] = (GameDaySummary as Mock).mock.calls[0] as [{ prevGameDay: unknown; nextGameDay: unknown }];
+            const [props] = (GameDaySummary as Mock).mock.calls[0] as [
+                { prevGameDay: unknown; nextGameDay: unknown },
+            ];
             expect(props.prevGameDay).toEqual(prevGameDay);
         });
 
@@ -150,30 +179,45 @@ describe('Game [id] page', () => {
             const nextGameDay = createMockGameDay({ id: 1250 });
             (gameDayService.getNext as Mock).mockResolvedValue(nextGameDay);
 
-            const element = await GamePage({ params: Promise.resolve({ id: '1249' }) });
+            const element = await GamePage({
+                params: Promise.resolve({ id: '1249' }),
+            });
             renderToStaticMarkup(element);
 
-            const [props] = (GameDaySummary as Mock).mock.calls[0] as [{ prevGameDay: unknown; nextGameDay: unknown }];
+            const [props] = (GameDaySummary as Mock).mock.calls[0] as [
+                { prevGameDay: unknown; nextGameDay: unknown },
+            ];
             expect(props.nextGameDay).toEqual(nextGameDay);
         });
 
         it('passes null prev/next games to GameDaySummary when there is no previous or next game', async () => {
-            const element = await GamePage({ params: Promise.resolve({ id: '1249' }) });
+            const element = await GamePage({
+                params: Promise.resolve({ id: '1249' }),
+            });
             renderToStaticMarkup(element);
 
-            const [props] = (GameDaySummary as Mock).mock.calls[0] as [{ prevGameDay: unknown; nextGameDay: unknown }];
+            const [props] = (GameDaySummary as Mock).mock.calls[0] as [
+                { prevGameDay: unknown; nextGameDay: unknown },
+            ];
             expect(props.prevGameDay).toBeNull();
             expect(props.nextGameDay).toBeNull();
         });
 
         it('passes null bibs to GameResultForm when the game day has no bibs set', async () => {
-            (gameDayService.get as Mock).mockResolvedValue({ ...gameDay, bibs: null });
+            (gameDayService.get as Mock).mockResolvedValue({
+                ...gameDay,
+                bibs: null,
+            });
             (getUserRole as Mock).mockResolvedValue('admin');
 
-            const element = await GamePage({ params: Promise.resolve({ id: '1249' }) });
+            const element = await GamePage({
+                params: Promise.resolve({ id: '1249' }),
+            });
             renderToStaticMarkup(element);
 
-            const [props] = (GameResultForm as Mock).mock.calls[0] as [{ bibs: unknown }];
+            const [props] = (GameResultForm as Mock).mock.calls[0] as [
+                { bibs: unknown },
+            ];
             expect(props.bibs).toBeNull();
         });
 
@@ -186,19 +230,27 @@ describe('Game [id] page', () => {
                 ...player,
                 outcome: { ...player.outcome, points: 0 as const },
             }));
-            (outcomeService.getTeamPlayersByGameDay as Mock).mockImplementation((_id: number, team: string) =>
-                Promise.resolve(team === 'A' ? winningTeam : losingTeam));
+            (outcomeService.getTeamPlayersByGameDay as Mock).mockImplementation(
+                (_id: number, team: string) =>
+                    Promise.resolve(team === 'A' ? winningTeam : losingTeam),
+            );
             (getUserRole as Mock).mockResolvedValue('admin');
 
-            const element = await GamePage({ params: Promise.resolve({ id: '1249' }) });
+            const element = await GamePage({
+                params: Promise.resolve({ id: '1249' }),
+            });
             renderToStaticMarkup(element);
 
-            const [props] = (GameResultForm as Mock).mock.calls[0] as [{ winners: unknown }];
+            const [props] = (GameResultForm as Mock).mock.calls[0] as [
+                { winners: unknown },
+            ];
             expect(props.winners).toBe('A');
         });
 
         it('handles service errors gracefully', async () => {
-            (outcomeService.getTeamPlayersByGameDay as Mock).mockRejectedValue(new Error('DB failed'));
+            (outcomeService.getTeamPlayersByGameDay as Mock).mockRejectedValue(
+                new Error('DB failed'),
+            );
 
             await expect(
                 GamePage({ params: Promise.resolve({ id: '1249' }) }),

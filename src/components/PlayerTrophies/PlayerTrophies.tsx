@@ -1,8 +1,6 @@
 'use client';
 
-import {
-    Stack,
-} from '@mantine/core';
+import { Stack } from '@mantine/core';
 import type { TableName } from 'prisma/generated/browser';
 import { TableNameSchema } from 'prisma/zod/schemas';
 import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
@@ -14,8 +12,10 @@ export interface Props {
 }
 
 export const PlayerTrophies = ({ trophies }: Props) => {
-    const totalTrophies = Array.from(trophies.values())
-        .reduce((sum, trophyList) => sum + trophyList.length, 0);
+    const totalTrophies = Array.from(trophies.values()).reduce(
+        (sum, trophyList) => sum + trophyList.length,
+        0,
+    );
     if (totalTrophies === 0) return null;
 
     return (

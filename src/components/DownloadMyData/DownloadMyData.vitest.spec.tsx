@@ -18,7 +18,9 @@ describe('DownloadMyData', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByRole('button', { name: /download json/i })).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', { name: /download json/i }),
+        ).toBeInTheDocument();
     });
 
     it('removes a section from the JSON when its checkbox is unchecked', async () => {
@@ -33,24 +35,36 @@ describe('DownloadMyData', () => {
         const preview = screen.getByRole('region', { name: 'JSON preview' });
         expect(preview).toHaveTextContent(/"outcomes"/i);
 
-        await user.click(screen.getByRole('checkbox', { name: 'Games played' }));
+        await user.click(
+            screen.getByRole('checkbox', { name: 'Games played' }),
+        );
 
         expect(preview).not.toHaveTextContent(/"outcomes"/i);
     });
 
     it('triggers a file download with the correct filename on button click', async () => {
         const user = userEvent.setup();
-        const createObjectURL = vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:mock');
-        const revokeObjectURL = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => undefined);
-        vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => undefined);
+        const createObjectURL = vi
+            .spyOn(URL, 'createObjectURL')
+            .mockReturnValue('blob:mock');
+        const revokeObjectURL = vi
+            .spyOn(URL, 'revokeObjectURL')
+            .mockImplementation(() => undefined);
+        vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(
+            () => undefined,
+        );
 
         let capturedAnchor: HTMLAnchorElement | null = null;
         const origCreateElement = document.createElement.bind(document);
-        vi.spyOn(document, 'createElement').mockImplementation((tagName: string, options?: ElementCreationOptions) => {
-            const el = options ? origCreateElement(tagName, options) : origCreateElement(tagName);
-            if (tagName === 'a') capturedAnchor = el as HTMLAnchorElement;
-            return el;
-        });
+        vi.spyOn(document, 'createElement').mockImplementation(
+            (tagName: string, options?: ElementCreationOptions) => {
+                const el = options
+                    ? origCreateElement(tagName, options)
+                    : origCreateElement(tagName);
+                if (tagName === 'a') capturedAnchor = el as HTMLAnchorElement;
+                return el;
+            },
+        );
 
         render(
             <Wrapper>
@@ -58,7 +72,9 @@ describe('DownloadMyData', () => {
             </Wrapper>,
         );
 
-        await user.click(screen.getByRole('button', { name: /download json/i }));
+        await user.click(
+            screen.getByRole('button', { name: /download json/i }),
+        );
 
         expect(createObjectURL).toHaveBeenCalledWith(expect.any(Blob));
         expect(capturedAnchor).not.toBeNull();
@@ -66,7 +82,9 @@ describe('DownloadMyData', () => {
 
         const { playerId, exportedAt } = defaultDownloadMyDataPayload.meta;
         const dateStamp = exportedAt.replace(/[:.]/g, '-');
-        expect(capturedAnchor!.download).toBe(`footy-data-${playerId}-${dateStamp}.json`);
+        expect(capturedAnchor!.download).toBe(
+            `footy-data-${playerId}-${dateStamp}.json`,
+        );
     });
 
     it('removes all sections when Select all is unchecked', async () => {

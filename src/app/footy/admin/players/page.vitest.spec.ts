@@ -8,11 +8,15 @@ vi.mock('@/actions/auth', () => ({
 }));
 
 vi.mock('@/components/AdminPlayerList/AdminPlayerList', () => ({
-    AdminPlayerList: function AdminPlayerList() { return null; },
+    AdminPlayerList: function AdminPlayerList() {
+        return null;
+    },
 }));
 
 vi.mock('@/components/AutoRefresh/AutoRefresh', () => ({
-    AutoRefresh: function AutoRefresh() { return null; },
+    AutoRefresh: function AutoRefresh() {
+        return null;
+    },
 }));
 
 import { listUsersAction } from '@/actions/auth';
@@ -61,7 +65,9 @@ describe('Admin Players page', () => {
         const result = await AdminPlayersPage();
 
         const list = findElement(result, 'AdminPlayerList');
-        expect(list?.props.userIdByEmail).toEqual({ 'alice@example.com': 'user-1' });
+        expect(list?.props.userIdByEmail).toEqual({
+            'alice@example.com': 'user-1',
+        });
     });
 
     it('defaults to an empty user list when listUsersAction resolves an empty array', async () => {
@@ -84,7 +90,9 @@ describe('Admin Players page', () => {
     });
 
     it('handles service errors gracefully by propagating them', async () => {
-        (playerService.getAll as Mock).mockRejectedValue(new Error('DB failed'));
+        (playerService.getAll as Mock).mockRejectedValue(
+            new Error('DB failed'),
+        );
 
         await expect(AdminPlayersPage()).rejects.toThrow('DB failed');
     });

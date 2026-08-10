@@ -13,7 +13,9 @@ describe('GoalieIndicator', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByRole('img', { name: /goalie indicator/i })).toBeInTheDocument();
+        expect(
+            screen.getByRole('img', { name: /goalie indicator/i }),
+        ).toBeInTheDocument();
     });
 
     it('shows a "Goalie" tooltip on hover', async () => {
@@ -24,7 +26,9 @@ describe('GoalieIndicator', () => {
         );
 
         const user = userEvent.setup();
-        await user.hover(screen.getByRole('img', { name: /goalie indicator/i }));
+        await user.hover(
+            screen.getByRole('img', { name: /goalie indicator/i }),
+        );
 
         const tooltip = await screen.findByRole('tooltip');
         expect(tooltip).toHaveTextContent('Goalie');
@@ -37,7 +41,9 @@ describe('GoalieIndicator', () => {
             </Wrapper>,
         );
 
-        const indicator = screen.getByRole('img', { name: /goalie indicator/i });
+        const indicator = screen.getByRole('img', {
+            name: /goalie indicator/i,
+        });
         expect(indicator.querySelectorAll('svg')).toHaveLength(2);
     });
 
@@ -48,7 +54,9 @@ describe('GoalieIndicator', () => {
             </Wrapper>,
         );
 
-        const indicator = screen.getByRole('img', { name: /goalie indicator/i });
+        const indicator = screen.getByRole('img', {
+            name: /goalie indicator/i,
+        });
         expect(indicator).not.toHaveAttribute('tabindex');
         expect(['A', 'BUTTON', 'INPUT']).not.toContain(indicator.tagName);
     });

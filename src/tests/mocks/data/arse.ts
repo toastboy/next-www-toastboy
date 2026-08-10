@@ -2,7 +2,7 @@ import { ArseType } from 'prisma/zod/schemas/models/Arse.schema';
 
 export const defaultArse = {
     id: 1,
-    stamp: new Date("2024-01-01T00:00:00.000Z"),
+    stamp: new Date('2024-01-01T00:00:00.000Z'),
     playerId: 12,
     raterId: 12,
     inGoal: 10,
@@ -14,14 +14,18 @@ export const defaultArse = {
     defending: 10,
 } satisfies ArseType;
 
-export const createMockArse = (overrides: Partial<ArseType> = {}): ArseType => ({
+export const createMockArse = (
+    overrides: Partial<ArseType> = {},
+): ArseType => ({
     ...defaultArse,
     ...overrides,
 });
 
-export const defaultArseList: ArseType[] = Array.from({ length: 100 }, (_, index) =>
-    createMockArse({
-        playerId: index % 10 + 1,
-        raterId: index + 1,
-    }),
+export const defaultArseList: ArseType[] = Array.from(
+    { length: 100 },
+    (_, index) =>
+        createMockArse({
+            playerId: (index % 10) + 1,
+            raterId: index + 1,
+        }),
 );

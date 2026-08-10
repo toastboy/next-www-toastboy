@@ -21,25 +21,34 @@ const EmailVerificationCreateStrictFields = {
 const EmailVerificationUpdateStrictFields = {
     playerId: z.number().int().min(1).nullish(),
     email: z.string().email().max(255).optional(),
-    tokenHash: z.string().length(EMAIL_VERIFICATION_TOKEN_HASH_LENGTH).optional(),
+    tokenHash: z
+        .string()
+        .length(EMAIL_VERIFICATION_TOKEN_HASH_LENGTH)
+        .optional(),
     expiresAt: z.date().optional(),
     usedAt: z.date().nullish(),
     createdAt: z.date().optional(),
 };
 
-export const EmailVerificationWriteInputSchema = z.object({
-    playerId: EmailVerificationCreateStrictFields.playerId,
-    email: EmailVerificationCreateStrictFields.email,
-    token: z.string().trim().min(1),
-    expiresAt: EmailVerificationCreateStrictFields.expiresAt,
-    usedAt: EmailVerificationCreateStrictFields.usedAt,
-}).strict();
+export const EmailVerificationWriteInputSchema = z
+    .object({
+        playerId: EmailVerificationCreateStrictFields.playerId,
+        email: EmailVerificationCreateStrictFields.email,
+        token: z.string().trim().min(1),
+        expiresAt: EmailVerificationCreateStrictFields.expiresAt,
+        usedAt: EmailVerificationCreateStrictFields.usedAt,
+    })
+    .strict();
 
-export type EmailVerificationWriteInput = z.infer<typeof EmailVerificationWriteInputSchema>;
+export type EmailVerificationWriteInput = z.infer<
+    typeof EmailVerificationWriteInputSchema
+>;
 
-export const EmailVerificationMarkUsedInputSchema = z.object({
-    token: z.string().trim().min(1),
-}).strict();
+export const EmailVerificationMarkUsedInputSchema = z
+    .object({
+        token: z.string().trim().min(1),
+    })
+    .strict();
 
 const EmailVerificationUncheckedCreateInputWithoutIdSchema =
     EmailVerificationUncheckedCreateInputObjectZodSchema.omit({ id: true });
@@ -48,26 +57,35 @@ const EmailVerificationUncheckedUpdateInputWithoutIdSchema =
     EmailVerificationUncheckedUpdateInputObjectZodSchema.omit({ id: true });
 
 const EmailVerificationCreateDataStrictSchema = z.union([
-    EmailVerificationCreateInputObjectZodSchema.extend(EmailVerificationCreateStrictFields),
-    EmailVerificationUncheckedCreateInputWithoutIdSchema.extend(EmailVerificationCreateStrictFields),
+    EmailVerificationCreateInputObjectZodSchema.extend(
+        EmailVerificationCreateStrictFields,
+    ),
+    EmailVerificationUncheckedCreateInputWithoutIdSchema.extend(
+        EmailVerificationCreateStrictFields,
+    ),
 ]);
 
-const EmailVerificationCreateOneStrictZodSchema = EmailVerificationCreateOneZodSchema.extend({
-    data: EmailVerificationCreateDataStrictSchema,
-});
+const EmailVerificationCreateOneStrictZodSchema =
+    EmailVerificationCreateOneZodSchema.extend({
+        data: EmailVerificationCreateDataStrictSchema,
+    });
 
 export const EmailVerificationCreateOneStrictSchema: z.ZodType<Prisma.EmailVerificationCreateArgs> =
     EmailVerificationCreateOneStrictZodSchema as unknown as z.ZodType<Prisma.EmailVerificationCreateArgs>;
 
 const EmailVerificationUpdateDataStrictSchema = z.union([
-    EmailVerificationUpdateInputObjectZodSchema.extend(EmailVerificationUpdateStrictFields),
-    EmailVerificationUncheckedUpdateInputWithoutIdSchema.extend(EmailVerificationUpdateStrictFields),
+    EmailVerificationUpdateInputObjectZodSchema.extend(
+        EmailVerificationUpdateStrictFields,
+    ),
+    EmailVerificationUncheckedUpdateInputWithoutIdSchema.extend(
+        EmailVerificationUpdateStrictFields,
+    ),
 ]);
 
-const EmailVerificationUpdateOneStrictZodSchema = EmailVerificationUpdateOneZodSchema.extend({
-    data: EmailVerificationUpdateDataStrictSchema,
-});
+const EmailVerificationUpdateOneStrictZodSchema =
+    EmailVerificationUpdateOneZodSchema.extend({
+        data: EmailVerificationUpdateDataStrictSchema,
+    });
 
 export const EmailVerificationUpdateOneStrictSchema: z.ZodType<Prisma.EmailVerificationUpdateArgs> =
     EmailVerificationUpdateOneStrictZodSchema as unknown as z.ZodType<Prisma.EmailVerificationUpdateArgs>;
-

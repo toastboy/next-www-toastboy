@@ -1,11 +1,13 @@
 'use client';
 
+import { Flex, Text, Tooltip } from '@mantine/core';
 import {
-    Flex,
-    Text,
-    Tooltip,
-} from '@mantine/core';
-import { IconBeer, IconClock, IconMedal, IconStar, IconTrophy } from '@tabler/icons-react';
+    IconBeer,
+    IconClock,
+    IconMedal,
+    IconStar,
+    IconTrophy,
+} from '@tabler/icons-react';
 import type { TableName } from 'prisma/zod/schemas';
 import { TableNameSchema } from 'prisma/zod/schemas';
 import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
@@ -28,20 +30,58 @@ export const PlayerTrophyTally = ({ table, trophies, w, h }: Props) => {
     const icon = (() => {
         switch (table) {
             case TableNameSchema.enum.points:
-                return <IconTrophy role="img" aria-label="trophy" color="white" style={iconStyle} />;
+                return (
+                    <IconTrophy
+                        role="img"
+                        aria-label="trophy"
+                        color="white"
+                        style={iconStyle}
+                    />
+                );
             case TableNameSchema.enum.averages:
-                return <IconStar role="img" aria-label="star" color="white" style={iconStyle} />;
+                return (
+                    <IconStar
+                        role="img"
+                        aria-label="star"
+                        color="white"
+                        style={iconStyle}
+                    />
+                );
             case TableNameSchema.enum.stalwart:
-                return <IconMedal role="img" aria-label="medal" color="white" style={iconStyle} />;
+                return (
+                    <IconMedal
+                        role="img"
+                        aria-label="medal"
+                        color="white"
+                        style={iconStyle}
+                    />
+                );
             case TableNameSchema.enum.speedy:
-                return <IconClock role="img" aria-label="clock" color="white" style={iconStyle} />;
+                return (
+                    <IconClock
+                        role="img"
+                        aria-label="clock"
+                        color="white"
+                        style={iconStyle}
+                    />
+                );
             case TableNameSchema.enum.pub:
-                return <IconBeer role="img" aria-label="beer" color="white" style={iconStyle} />;
+                return (
+                    <IconBeer
+                        role="img"
+                        aria-label="beer"
+                        color="white"
+                        style={iconStyle}
+                    />
+                );
         }
     })();
 
     if (trophies.length > config.trophyDisplayThreshold) {
-        const years = trophies.map((winner) => winner.year).join(', ').replace(/, ([^,]*)$/, ' & $1');
+        const years = trophies
+            .map((winner) => winner.year)
+            .join(', ')
+            .replace(/, ([^,]*)$/, ' & $1');
         return (
             <Flex direction="row" gap="sm" align="center">
                 <Tooltip label={`${table} ${years}`}>

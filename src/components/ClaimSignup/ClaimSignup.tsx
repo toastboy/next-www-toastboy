@@ -13,9 +13,7 @@ import {
     Title,
     UnstyledButton,
 } from '@mantine/core';
-import {
-    useForm,
-} from '@mantine/form';
+import { useForm } from '@mantine/form';
 import { IconX } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useRouter } from 'next/navigation';
@@ -23,28 +21,40 @@ import { useState } from 'react';
 import z from 'zod';
 
 import { PasswordFields } from '@/components/PasswordFields/PasswordFields';
-import { authClient, signInWithGoogle, signInWithMicrosoft } from '@/lib/auth.client';
+import {
+    authClient,
+    signInWithGoogle,
+    signInWithMicrosoft,
+} from '@/lib/auth.client';
 import { config } from '@/lib/config';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 import { getPublicBaseUrl } from '@/lib/urls';
 
 export interface Props {
-    name: string
+    name: string;
     email: string;
     token: string;
 }
 
-const ClaimSignupSchema = z.object({
-    password: z.string().min(8, { message: 'Password must be at least 8 characters long' }),
-    confirmPassword: z.string().min(1, { message: 'Please confirm your password' }),
-}).refine((data) => data.password === data.confirmPassword, {
-    message: 'Passwords do not match',
-    path: ['confirmPassword'],
-});
+const ClaimSignupSchema = z
+    .object({
+        password: z
+            .string()
+            .min(8, { message: 'Password must be at least 8 characters long' }),
+        confirmPassword: z
+            .string()
+            .min(1, { message: 'Please confirm your password' }),
+    })
+    .refine((data) => data.password === data.confirmPassword, {
+        message: 'Passwords do not match',
+        path: ['confirmPassword'],
+    });
 
 export const ClaimSignup = ({ name, email, token }: Props) => {
     const [loading, setLoading] = useState(false);
-    const [signupError, setSignupError] = useState<string | undefined>(undefined);
+    const [signupError, setSignupError] = useState<string | undefined>(
+        undefined,
+    );
     const router = useRouter();
     const redirectPath = `/api/footy/auth/claim/${encodeURIComponent(token)}?redirect=/footy/profile`;
     const socialRedirect = new URL(redirectPath, getPublicBaseUrl()).toString();
@@ -63,15 +73,18 @@ export const ClaimSignup = ({ name, email, token }: Props) => {
         setSignupError(undefined);
 
         try {
-            await authClient.signUp.email({
-                name: name,
-                email: email,
-                password: values.password,
-            }, {
-                onError: (ctx) => {
-                    alert(ctx.error.message);
+            await authClient.signUp.email(
+                {
+                    name: name,
+                    email: email,
+                    password: values.password,
                 },
-            });
+                {
+                    onError: (ctx) => {
+                        alert(ctx.error.message);
+                    },
+                },
+            );
 
             router.push(redirectPath);
         } catch (err) {
@@ -107,7 +120,8 @@ export const ClaimSignup = ({ name, email, token }: Props) => {
                     Finish creating your login
                 </Title>
                 <Text ta="center">
-                    Your email address &quot;{email}&quot; has been verified. Choose how you want to sign in.
+                    Your email address &quot;{email}&quot; has been verified.
+                    Choose how you want to sign in.
                 </Text>
                 <Divider mb="xs" />
                 <Group justify="center" w="100%" mb="md">
@@ -116,27 +130,36 @@ export const ClaimSignup = ({ name, email, token }: Props) => {
                         w="fit-content"
                         type="button"
                     >
-                        <Image src="/google-signin-button-light.svg" alt="Sign in with Google" w={180} h={40} />
+                        <Image
+                            src="/google-signin-button-light.svg"
+                            alt="Sign in with Google"
+                            w={180}
+                            h={40}
+                        />
                     </UnstyledButton>
                     <UnstyledButton
                         onClick={() => signInWithMicrosoft(socialRedirect)}
                         w="fit-content"
                         type="button"
                     >
-                        <Image src="/microsoft-signin-button-light.svg" alt="Sign in with Microsoft" w={215} h={41} />
+                        <Image
+                            src="/microsoft-signin-button-light.svg"
+                            alt="Sign in with Microsoft"
+                            w={215}
+                            h={41}
+                        />
                     </UnstyledButton>
                 </Group>
                 <Divider label="or" labelPosition="center" />
             </Stack>
 
-            <Box
-                component="form"
-                onSubmit={form.onSubmit(handleSignUp)}
-            >
+            <Box component="form" onSubmit={form.onSubmit(handleSignUp)}>
                 <Stack>
                     <PasswordFields
                         passwordProps={form.getInputProps('password')}
-                        confirmPasswordProps={form.getInputProps('confirmPassword')}
+                        confirmPasswordProps={form.getInputProps(
+                            'confirmPassword',
+                        )}
                     />
                     {errorNotification}
                     <Button

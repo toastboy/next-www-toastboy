@@ -81,7 +81,9 @@ describe('/api/health', () => {
         // ValidationError is an expected AppError with code VALIDATION_ERROR,
         // which toHttpErrorResponse maps to 400. normalizeUnknownError returns
         // AppError instances unchanged, so 400 is preserved (not mapped to 503).
-        (prisma.$queryRaw as Mock).mockRejectedValue(new ValidationError('Bad input'));
+        (prisma.$queryRaw as Mock).mockRejectedValue(
+            new ValidationError('Bad input'),
+        );
 
         const response = await GET();
         expect(response.status).toBe(400);

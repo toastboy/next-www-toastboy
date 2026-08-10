@@ -5,8 +5,12 @@ vi.mock('services/PlayerRecord');
 vi.mock('services/Outcome');
 
 vi.mock('next/navigation', () => ({
-    notFound: vi.fn(() => { throw new Error('not_found'); }),
-    permanentRedirect: vi.fn(() => { throw new Error('permanent_redirect'); }),
+    notFound: vi.fn(() => {
+        throw new Error('not_found');
+    }),
+    permanentRedirect: vi.fn(() => {
+        throw new Error('permanent_redirect');
+    }),
 }));
 
 vi.mock('react', async () => {
@@ -38,12 +42,16 @@ const bibsData = { wins: 10, draws: 2, losses: 3 };
 describe('Curse of the Bibs page', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        (playerRecordService.getAllYears as Mock).mockResolvedValue([0, 2023, 2024]);
+        (playerRecordService.getAllYears as Mock).mockResolvedValue([
+            0, 2023, 2024,
+        ]);
         (outcomeService.getByBibs as Mock).mockResolvedValue(bibsData);
     });
 
     it('fetches allYears from playerRecordService', async () => {
-        await CurseOfTheBibsPage({ searchParams: Promise.resolve({ year: '2024' }) });
+        await CurseOfTheBibsPage({
+            searchParams: Promise.resolve({ year: '2024' }),
+        });
 
         expect(playerRecordService.getAllYears).toHaveBeenCalledWith({
             completed: false,
@@ -52,20 +60,26 @@ describe('Curse of the Bibs page', () => {
     });
 
     it('fetches bibs data for the selected year', async () => {
-        await CurseOfTheBibsPage({ searchParams: Promise.resolve({ year: '2024' }) });
+        await CurseOfTheBibsPage({
+            searchParams: Promise.resolve({ year: '2024' }),
+        });
 
         expect(outcomeService.getByBibs).toHaveBeenCalledWith({ year: 2024 });
     });
 
     it('calls notFound when the selected year is not in allYears', async () => {
         await expect(
-            CurseOfTheBibsPage({ searchParams: Promise.resolve({ year: '1999' }) }),
+            CurseOfTheBibsPage({
+                searchParams: Promise.resolve({ year: '1999' }),
+            }),
         ).rejects.toThrow('not_found');
     });
 
     it('calls notFound when the year param is not a valid integer', async () => {
         await expect(
-            CurseOfTheBibsPage({ searchParams: Promise.resolve({ year: 'notanumber' }) }),
+            CurseOfTheBibsPage({
+                searchParams: Promise.resolve({ year: 'notanumber' }),
+            }),
         ).rejects.toThrow('not_found');
     });
 
@@ -77,35 +91,47 @@ describe('Curse of the Bibs page', () => {
     });
 
     it('parses the year search param into a number before querying services', async () => {
-        await CurseOfTheBibsPage({ searchParams: Promise.resolve({ year: '2023' }) });
+        await CurseOfTheBibsPage({
+            searchParams: Promise.resolve({ year: '2023' }),
+        });
 
         expect(outcomeService.getByBibs).toHaveBeenCalledWith({ year: 2023 });
     });
 
     it('permanently redirects to the canonical URL when year=0 is explicit in the query', async () => {
         await expect(
-            CurseOfTheBibsPage({ searchParams: Promise.resolve({ year: '0' }) }),
+            CurseOfTheBibsPage({
+                searchParams: Promise.resolve({ year: '0' }),
+            }),
         ).rejects.toThrow('permanent_redirect');
 
         expect(permanentRedirect).toHaveBeenCalledWith('/footy/curse');
     });
 
     it('handles service errors gracefully', async () => {
-        (playerRecordService.getAllYears as Mock).mockRejectedValue(new Error('DB failed'));
+        (playerRecordService.getAllYears as Mock).mockRejectedValue(
+            new Error('DB failed'),
+        );
 
         await expect(
-            CurseOfTheBibsPage({ searchParams: Promise.resolve({ year: '2024' }) }),
+            CurseOfTheBibsPage({
+                searchParams: Promise.resolve({ year: '2024' }),
+            }),
         ).rejects.toThrow('DB failed');
     });
 
     it('generates metadata with the year-specific title', async () => {
-        const metadata = await generateMetadata({ searchParams: Promise.resolve({ year: '2024' }) });
+        const metadata = await generateMetadata({
+            searchParams: Promise.resolve({ year: '2024' }),
+        });
 
         expect(metadata.title).toBe('2024 Curse of the Bibs');
     });
 
     it('generates metadata with the all-time title when no year is provided', async () => {
-        const metadata = await generateMetadata({ searchParams: Promise.resolve({}) });
+        const metadata = await generateMetadata({
+            searchParams: Promise.resolve({}),
+        });
 
         expect(metadata.title).toBe('All-time Curse of the Bibs');
     });

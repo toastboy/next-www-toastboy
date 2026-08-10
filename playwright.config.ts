@@ -5,12 +5,18 @@ import * as dotenv from 'dotenv';
 
 /* CI uses port 3000 (no dev server conflict); local uses 3002 so playwright and
    the regular dev server can run simultaneously without clashing. */
-const BASE_URL = process.env.CI ? 'http://127.0.0.1:3000' : 'http://127.0.0.1:3002';
+const BASE_URL = process.env.CI
+    ? 'http://127.0.0.1:3000'
+    : 'http://127.0.0.1:3002';
 
 /* Load playwright-specific env vars for local runs (no 1Password needed). CI
    sets its own env vars directly; we don't want to override them. */
 if (!process.env.CI) {
-    dotenv.config({ path: path.join(__dirname, '.env.playwright'), override: true, quiet: true });
+    dotenv.config({
+        path: path.join(__dirname, '.env.playwright'),
+        override: true,
+        quiet: true,
+    });
 }
 
 /**
@@ -27,12 +33,9 @@ export default defineConfig({
     /* Opt out of parallel tests. */
     workers: 1,
     /* Reporter to use. See https://playwright.dev/docs/test-reporters */
-    reporter: process.env.CI ?
-        [
-            ['github'],
-            ['html', { open: 'never' }],
-        ] :
-        [['html', { open: 'on-failure' }]],
+    reporter: process.env.CI
+        ? [['github'], ['html', { open: 'never' }]]
+        : [['html', { open: 'on-failure' }]],
 
     /* Shared settings for all the projects below. See
     https://playwright.dev/docs/api/class-testoptions. */
@@ -104,7 +107,9 @@ export default defineConfig({
 
     /* Start a fresh production server before each test run. */
     webServer: {
-        command: process.env.CI ? 'npm run start:ci' : 'npm run start:playwright',
+        command: process.env.CI
+            ? 'npm run start:ci'
+            : 'npm run start:playwright',
         url: BASE_URL,
         stdout: 'pipe',
         stderr: 'pipe',

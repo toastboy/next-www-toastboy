@@ -1,7 +1,4 @@
-import {
-    Group,
-    Stack,
-} from '@mantine/core';
+import { Group, Stack } from '@mantine/core';
 import { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { cache } from 'react';
@@ -28,21 +25,25 @@ interface PageProps {
  * @throws {permanentRedirect} If the current URL does not match the canonical
  * URL for the given year.
  */
-const unpackParams = cache(async (
-    searchParams: PageProps['searchParams'],
-) => {
+const unpackParams = cache(async (searchParams: PageProps['searchParams']) => {
     const resolvedSearchParams = await searchParams;
     const allYears = await gameDayService.getAllYears({
         includeAllTime: true,
         mostRecentFirst: true,
     });
-    const yearResult = z.coerce.number().int().min(0).safeParse(resolvedSearchParams?.year ?? 0);
+    const yearResult = z.coerce
+        .number()
+        .int()
+        .min(0)
+        .safeParse(resolvedSearchParams?.year ?? 0);
     const year = yearResult.success ? yearResult.data : undefined;
     if (year === undefined || !allYears.includes(year)) notFound();
 
     const canonicalSearch = year ? `?year=${year}` : '';
     const canonicalUrl = `/footy/books${canonicalSearch}`;
-    const currentSearch = resolvedSearchParams?.year ? `?year=${resolvedSearchParams.year}` : '';
+    const currentSearch = resolvedSearchParams?.year
+        ? `?year=${resolvedSearchParams.year}`
+        : '';
     const currentUrl = `/footy/books${currentSearch}`;
     if (currentUrl !== canonicalUrl) permanentRedirect(canonicalUrl);
 
@@ -77,9 +78,17 @@ const BooksPage = async (props: PageProps) => {
     return (
         <Stack>
             <Group justify="center" w="100%">
-                <TitleWithYearDropdown order={1} title="Books: " year={year} validYears={allYears} />
+                <TitleWithYearDropdown
+                    order={1}
+                    title="Books: "
+                    year={year}
+                    validYears={allYears}
+                />
             </Group>
-            <MoneyChart data={chartData} linkBase={year === 0 ? '/footy/books?year=' : undefined} />
+            <MoneyChart
+                data={chartData}
+                linkBase={year === 0 ? '/footy/books?year=' : undefined}
+            />
         </Stack>
     );
 };

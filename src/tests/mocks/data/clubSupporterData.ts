@@ -8,14 +8,18 @@ export const defaultClubSupporterData = {
     club: defaultClub,
 } satisfies ClubSupporterDataType;
 
-export const createMockClubSupporterData = (overrides: Partial<ClubSupporterDataType> = {}): ClubSupporterDataType => ({
+export const createMockClubSupporterData = (
+    overrides: Partial<ClubSupporterDataType> = {},
+): ClubSupporterDataType => ({
     ...defaultClubSupporterData,
     ...overrides,
 });
 
-export const defaultClubSupporterDataList: ClubSupporterDataType[] = Array.from({ length: 2 }, (_, index) =>
-    createMockClubSupporterData({
-        playerId: index % 10 + 1,
-        clubId: index + 1,
-    }),
+export const defaultClubSupporterDataList: ClubSupporterDataType[] = Array.from(
+    { length: 2 },
+    (_, index) =>
+        createMockClubSupporterData({
+            playerId: (index % 10) + 1,
+            clubId: index + 1,
+        }),
 );

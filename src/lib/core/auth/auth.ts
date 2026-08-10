@@ -8,7 +8,10 @@ import { getMockAuthState, getMockUsersList } from '@/lib/auth.server';
 import { AuthError } from '@/lib/errors';
 import { safeDecodeURIComponent } from '@/lib/urls';
 
-export type UserWithRolePayload = Omit<UserWithRole, 'createdAt' | 'updatedAt' | 'banExpires'> & {
+export type UserWithRolePayload = Omit<
+    UserWithRole,
+    'createdAt' | 'updatedAt' | 'banExpires'
+> & {
     createdAt: string;
     updatedAt: string;
     banExpires: string | null;
@@ -40,13 +43,20 @@ const defaultDeps: AuthDeps = {
  */
 const serializeUserDates = (user: UserWithRole): UserWithRolePayload => ({
     ...user,
-    createdAt: user.createdAt instanceof Date ? user.createdAt.toISOString() : new Date(user.createdAt).toISOString(),
-    updatedAt: user.updatedAt instanceof Date ? user.updatedAt.toISOString() : new Date(user.updatedAt).toISOString(),
-    banExpires: user.banExpires instanceof Date ?
-        user.banExpires.toISOString() :
-        user.banExpires ?
-            new Date(user.banExpires).toISOString() :
-            null,
+    createdAt:
+        user.createdAt instanceof Date
+            ? user.createdAt.toISOString()
+            : new Date(user.createdAt).toISOString(),
+    updatedAt:
+        user.updatedAt instanceof Date
+            ? user.updatedAt.toISOString()
+            : new Date(user.updatedAt).toISOString(),
+    banExpires:
+        user.banExpires instanceof Date
+            ? user.banExpires.toISOString()
+            : user.banExpires
+              ? new Date(user.banExpires).toISOString()
+              : null,
 });
 
 /**
@@ -75,7 +85,9 @@ export async function listUsersActionCore(
         if (!email) return users.map(serializeUserDates);
         const decodedEmail = safeDecodeURIComponent(email);
         return users
-            .filter((user) => user.email.toLowerCase().includes(decodedEmail.toLowerCase()))
+            .filter((user) =>
+                user.email.toLowerCase().includes(decodedEmail.toLowerCase()),
+            )
             .map(serializeUserDates);
     }
     if (mockState !== 'none') {
@@ -84,15 +96,15 @@ export async function listUsersActionCore(
 
     const response = await deps.auth.api.listUsers({
         headers: await deps.headers(),
-        query: email ?
-            {
-                searchField: 'email',
-                searchOperator: 'contains',
-                searchValue: safeDecodeURIComponent(email),
-            } :
-            {
-                limit,
-            },
+        query: email
+            ? {
+                  searchField: 'email',
+                  searchOperator: 'contains',
+                  searchValue: safeDecodeURIComponent(email),
+              }
+            : {
+                  limit,
+              },
     });
 
     return (response?.users ?? []).map(serializeUserDates);

@@ -1,4 +1,3 @@
-
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
@@ -11,7 +10,11 @@ import type {
     CreateMoreGameDaysProxy,
 } from '@/types/actions/CreateMoreGameDays';
 
-const { notificationsShowMock, notificationsUpdateMock, captureUnexpectedErrorMock } = vi.hoisted(() => ({
+const {
+    notificationsShowMock,
+    notificationsUpdateMock,
+    captureUnexpectedErrorMock,
+} = vi.hoisted(() => ({
     notificationsShowMock: vi.fn(),
     notificationsUpdateMock: vi.fn(),
     captureUnexpectedErrorMock: vi.fn(),
@@ -33,7 +36,9 @@ const mockCreateMoreGameDays = vi.fn();
 describe('MoreGamesForm', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        mockCreateMoreGameDays.mockResolvedValue([] as Awaited<ReturnType<CreateMoreGameDaysProxy>>);
+        mockCreateMoreGameDays.mockResolvedValue(
+            [] as Awaited<ReturnType<CreateMoreGameDaysProxy>>,
+        );
         captureUnexpectedErrorMock.mockResolvedValue(undefined);
     });
 
@@ -49,8 +54,12 @@ describe('MoreGamesForm', () => {
             </Wrapper>,
         );
 
-        expect(screen.getAllByRole('checkbox')).toHaveLength(defaultMoreGamesFormData.rows.length);
-        expect(screen.getByText(defaultMoreGamesFormData.rows[0].date)).toBeInTheDocument();
+        expect(screen.getAllByRole('checkbox')).toHaveLength(
+            defaultMoreGamesFormData.rows.length,
+        );
+        expect(
+            screen.getByText(defaultMoreGamesFormData.rows[0].date),
+        ).toBeInTheDocument();
     });
 
     it('separates month groups with a border, but not before the first group', () => {
@@ -71,7 +80,9 @@ describe('MoreGamesForm', () => {
         );
 
         const firstMonthHeader = screen.getByText('January 2024').closest('th');
-        const secondMonthHeader = screen.getByText('February 2024').closest('th');
+        const secondMonthHeader = screen
+            .getByText('February 2024')
+            .closest('th');
 
         expect(firstMonthHeader?.style.borderTop).toBe('');
         expect(secondMonthHeader?.style.borderTop).not.toBe('');
@@ -92,14 +103,18 @@ describe('MoreGamesForm', () => {
             </Wrapper>,
         );
 
-        await user.click(screen.getByRole('button', { name: /Create game days/i }));
+        await user.click(
+            screen.getByRole('button', { name: /Create game days/i }),
+        );
 
         await waitFor(() => {
-            expect(notificationsUpdateMock).toHaveBeenCalledWith(expect.objectContaining({
-                color: 'red',
-                title: 'Error',
-                message: 'Failed to create game days.',
-            }));
+            expect(notificationsUpdateMock).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    color: 'red',
+                    title: 'Error',
+                    message: 'Failed to create game days.',
+                }),
+            );
         });
         expect(captureUnexpectedErrorMock).toHaveBeenCalled();
     });
@@ -120,15 +135,20 @@ describe('MoreGamesForm', () => {
 
         const firstDate = defaultMoreGamesFormData.rows[0].date;
         const firstComment = screen.getByLabelText(`Comment for ${firstDate}`);
-        const firstCheckbox = screen.getByLabelText(`Game scheduled for ${firstDate}`);
-        const submitButton = screen.getByRole('button', { name: /Create game days/i });
+        const firstCheckbox = screen.getByLabelText(
+            `Game scheduled for ${firstDate}`,
+        );
+        const submitButton = screen.getByRole('button', {
+            name: /Create game days/i,
+        });
 
         await user.type(firstComment, 'Updated note');
         await user.click(firstCheckbox);
         await user.click(submitButton);
 
         await waitFor(() => {
-            const payload = mockCreateMoreGameDays.mock.calls[0]?.[0] as CreateMoreGameDaysInput;
+            const payload = mockCreateMoreGameDays.mock
+                .calls[0]?.[0] as CreateMoreGameDaysInput;
 
             expect(payload.rows).toEqual(
                 expect.arrayContaining([

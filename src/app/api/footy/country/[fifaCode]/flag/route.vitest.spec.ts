@@ -12,7 +12,11 @@ import { createMockApp, pngResponseHandler } from '@/tests/lib/api/common';
 import { loadBinaryFixture } from '@/tests/shared/fixtures';
 
 const testRoute = '/api/footy/country/NOR/flag';
-const mockApp = createMockApp(GET, { path: testRoute, params: Promise.resolve({ fifaCode: 'NOR' }) }, pngResponseHandler);
+const mockApp = createMockApp(
+    GET,
+    { path: testRoute, params: Promise.resolve({ fifaCode: 'NOR' }) },
+    pngResponseHandler,
+);
 const containerClient = azureCache.getContainerClient('countries');
 const blobClient = containerClient.getBlobClient('NOR.png') as unknown as {
     exists: Mock;
@@ -30,7 +34,8 @@ describe('API tests using HTTP', () => {
 
         const response = await request(mockApp).get(testRoute);
 
-        if (response.status !== 200) console.log('Error response:', response.error);
+        if (response.status !== 200)
+            console.log('Error response:', response.error);
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('image/png');
         expect(response.body).toEqual(mockBuffer);
@@ -57,7 +62,9 @@ describe('API tests using HTTP', () => {
     it('should return 500 if the flag download fails', async () => {
         const errorMessage = 'Something went wrong';
         vi.spyOn(blobClient, 'exists').mockResolvedValue(true);
-        vi.spyOn(blobClient, 'download').mockRejectedValue(new Error(errorMessage));
+        vi.spyOn(blobClient, 'download').mockRejectedValue(
+            new Error(errorMessage),
+        );
 
         const response = await request(mockApp).get(testRoute);
 

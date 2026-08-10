@@ -86,7 +86,9 @@ const getMailDate = async (gameDate: Date): Promise<Date> => {
  * }
  * ```
  */
-export async function getInvitationDecision(override = false): Promise<InvitationDecision> {
+export async function getInvitationDecision(
+    override = false,
+): Promise<InvitationDecision> {
     const upcomingGame = await gameDayService.getUpcoming();
 
     if (!upcomingGame) {

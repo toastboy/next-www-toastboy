@@ -11,4 +11,4 @@ export interface TurnoutByYearType {
     responsesPerGameInitiated: number;
     yessesPerGameInitiated: number;
     playersPerGamePlayed: number;
-};
+}

@@ -21,4 +21,6 @@ export type NewGameInput = z.infer<typeof NewGameInputSchema>;
  * @returns A promise that resolves to an InvitationDecision indicating the status and
  * associated game day ID if applicable.
  */
-export type TriggerInvitationsProxy = (data: NewGameInput) => Promise<InvitationDecision>;
+export type TriggerInvitationsProxy = (
+    data: NewGameInput,
+) => Promise<InvitationDecision>;

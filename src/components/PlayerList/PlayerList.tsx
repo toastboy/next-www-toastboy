@@ -36,12 +36,19 @@ export interface Props {
 
 export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
     const theme = useMantineTheme();
-    const [sortBy, setSortBy] = useState<keyof PlayerDataDisplayType | null>('name');
+    const [sortBy, setSortBy] = useState<keyof PlayerDataDisplayType | null>(
+        'name',
+    );
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
     const [filter, setFilter] = useState('');
     const [active, setActive] = useState(true);
-    const [replyRange, setReplyRange] = useState<[number, number]>([0, gameDay.id]);
-    const [selectedPlayers, setSelectedPlayers] = useState<PlayerDataDisplayType[]>([]);
+    const [replyRange, setReplyRange] = useState<[number, number]>([
+        0,
+        gameDay.id,
+    ]);
+    const [selectedPlayers, setSelectedPlayers] = useState<
+        PlayerDataDisplayType[]
+    >([]);
     const [modalOpened, setModalOpened] = useState(false);
 
     const handleSort = (key: keyof PlayerDataDisplayType) => {
@@ -62,66 +69,79 @@ export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
     };
 
     /* v8 ignore next -- players is always an array from the server; optional chaining is a type-safety guard */
-    const filteredPlayers = players?.filter((player) => {
-        const searchTerm = filter.toLowerCase();
-        const nameMatches = player.name?.toLowerCase().includes(searchTerm) ?? false;
-        const emailMatches = [player.accountEmail, ...player.extraEmails.map((playerEmail) => playerEmail.email)]
-            .filter((playerEmail): playerEmail is string => !!playerEmail)
-            .some((playerEmail) => playerEmail.toLowerCase().includes(searchTerm));
-        const searchResult = nameMatches || emailMatches;
+    const filteredPlayers =
+        players?.filter((player) => {
+            const searchTerm = filter.toLowerCase();
+            const nameMatches =
+                player.name?.toLowerCase().includes(searchTerm) ?? false;
+            const emailMatches = [
+                player.accountEmail,
+                ...player.extraEmails.map((playerEmail) => playerEmail.email),
+            ]
+                .filter((playerEmail): playerEmail is string => !!playerEmail)
+                .some((playerEmail) =>
+                    playerEmail.toLowerCase().includes(searchTerm),
+                );
+            const searchResult = nameMatches || emailMatches;
 
-        return searchResult && (!active || player.finished === null);
-    }) || [];
+            return searchResult && (!active || player.finished === null);
+        }) || [];
 
     const playersRepliedSince = filteredPlayers.filter((player) => {
         if (!player.lastResponded) {
-            return (replyRange[1] === gameDay.id);
-        }
-        else {
-            const repliedAfter = (gameDay.id - player.lastResponded) >= replyRange[0];
-            const repliedBefore = (gameDay.id - player.lastResponded) <= replyRange[1];
+            return replyRange[1] === gameDay.id;
+        } else {
+            const repliedAfter =
+                gameDay.id - player.lastResponded >= replyRange[0];
+            const repliedBefore =
+                gameDay.id - player.lastResponded <= replyRange[1];
 
             return repliedAfter && repliedBefore;
         }
     });
 
-    const sortedPlayers = playersRepliedSince ? [...playersRepliedSince].sort((a, b) => {
-        if (!sortBy) return 0;
+    const sortedPlayers = playersRepliedSince
+        ? [...playersRepliedSince].sort((a, b) => {
+              if (!sortBy) return 0;
 
-        const aValue = a[sortBy];
-        const bValue = b[sortBy];
+              const aValue = a[sortBy];
+              const bValue = b[sortBy];
 
-        if (typeof aValue === 'number' || typeof bValue === 'number') {
-            /* v8 ignore start -- defensive fallback when a numeric sort field is unexpectedly nullish */
-            const naValue = aValue as number || 0;
-            const nbValue = bValue as number || 0;
+              if (typeof aValue === 'number' || typeof bValue === 'number') {
+                  /* v8 ignore start -- defensive fallback when a numeric sort field is unexpectedly nullish */
+                  const naValue = (aValue as number) || 0;
+                  const nbValue = (bValue as number) || 0;
 
-            return sortOrder === 'asc' ? naValue - nbValue : nbValue - naValue;
-            /* v8 ignore stop */
-        }
+                  return sortOrder === 'asc'
+                      ? naValue - nbValue
+                      : nbValue - naValue;
+                  /* v8 ignore stop */
+              }
 
-        if (typeof aValue === 'string' && typeof bValue === 'string') {
-            return sortOrder === 'asc' ?
-                aValue.localeCompare(bValue) :
-                bValue.localeCompare(aValue);
-        }
+              if (typeof aValue === 'string' && typeof bValue === 'string') {
+                  return sortOrder === 'asc'
+                      ? aValue.localeCompare(bValue)
+                      : bValue.localeCompare(aValue);
+              }
 
-        if (aValue instanceof Date && bValue instanceof Date) {
-            return sortOrder === 'asc' ?
-                aValue.getTime() - bValue.getTime() :
-                bValue.getTime() - aValue.getTime();
-        }
+              if (aValue instanceof Date && bValue instanceof Date) {
+                  return sortOrder === 'asc'
+                      ? aValue.getTime() - bValue.getTime()
+                      : bValue.getTime() - aValue.getTime();
+              }
 
-        return 0;
-    }) :
-        /* v8 ignore next -- filter always returns an array, so this fallback is a defensive backstop */
-        [];
+              return 0;
+          })
+        : /* v8 ignore next -- filter always returns an array, so this fallback is a defensive backstop */
+          [];
 
     /**
      * Human-readable label describing whether we are showing only active players
      * or both active and former players, used in the main title text.
      */
-    const activeStatusLabel = active ? 'Active Players' : 'Active and Former Players';
+    const activeStatusLabel = active
+        ? 'Active Players'
+        : 'Active and Former Players';
 
     /** Formats a RangeSlider thumb value as a human-readable week count label. */
     const rangeSliderLabel = (value: number) => `${value} weeks`;
@@ -131,7 +151,13 @@ export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
      */
     const handleRangeChange = (range: [number, number]) => setReplyRange(range);
     const selectedEmailPlayers = useMemo(
-        () => selectedPlayers.map(({ id, name, accountEmail, extraEmails }) => ({ id, name, accountEmail, extraEmails })),
+        () =>
+            selectedPlayers.map(({ id, name, accountEmail, extraEmails }) => ({
+                id,
+                name,
+                accountEmail,
+                extraEmails,
+            })),
         [selectedPlayers],
     );
 
@@ -144,20 +170,29 @@ export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
         <Container size="xl" mt="xl">
             <Paper w="100%">
                 <Stack mb="lg">
-                    <Title order={1}>{sortedPlayers.length} {activeStatusLabel}</Title>
-                    <Title order={3}>who last responded between {replyRange[0]} and {replyRange[1]} weeks ago</Title>
+                    <Title order={1}>
+                        {sortedPlayers.length} {activeStatusLabel}
+                    </Title>
+                    <Title order={3}>
+                        who last responded between {replyRange[0]} and{' '}
+                        {replyRange[1]} weeks ago
+                    </Title>
                     <TextInput
                         mt={20}
                         mb={20}
                         placeholder="Search players"
                         value={filter}
-                        onChange={(event) => setFilter(event.currentTarget.value)}
+                        onChange={(event) =>
+                            setFilter(event.currentTarget.value)
+                        }
                     />
                     <Switch
                         mt={20}
                         mb={20}
                         checked={active}
-                        onChange={(event) => setActive(event.currentTarget.checked)}
+                        onChange={(event) =>
+                            setActive(event.currentTarget.checked)
+                        }
                         color="blue"
                         label="Active"
                     />
@@ -174,7 +209,10 @@ export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
                         mt={20}
                         mb={20}
                         label="Select All"
-                        checked={selectedPlayers.length === sortedPlayers.length && sortedPlayers.length > 0}
+                        checked={
+                            selectedPlayers.length === sortedPlayers.length &&
+                            sortedPlayers.length > 0
+                        }
                         onChange={(event) => {
                             if (event.currentTarget.checked) {
                                 setSelectedPlayers(sortedPlayers);
@@ -199,38 +237,39 @@ export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
                         onSendEmail={sendEmail}
                     />
 
-                    <Table.ScrollContainer minWidth="100%" scrollAreaProps={{ type: 'auto' }}>
-                        <Table
-                            layout="fixed"
-                            mt={20}
-                        >
+                    <Table.ScrollContainer
+                        minWidth="100%"
+                        scrollAreaProps={{ type: 'auto' }}
+                    >
+                        <Table layout="fixed" mt={20}>
                             <Table.Thead>
                                 <Table.Tr>
-                                    <Table.Th
-                                        w="2rem"
-                                    >
+                                    <Table.Th w="2rem">
                                         <VisuallyHidden>Select</VisuallyHidden>
                                     </Table.Th>
                                     <Table.Th
-                                        w={theme.other.playerNameMinWidthMultiLine}
+                                        w={
+                                            theme.other
+                                                .playerNameMinWidthMultiLine
+                                        }
                                         style={{ cursor: 'pointer' }}
                                         onClick={() => handleSort('name')}
                                     >
                                         <Flex align="center" gap="xs">
                                             Name
-                                            {sortBy === 'name' ? (sortOrder === 'asc' ? <IconSortAscending /> : <IconSortDescending />) : ''}
+                                            {sortBy === 'name' ? (
+                                                sortOrder === 'asc' ? (
+                                                    <IconSortAscending />
+                                                ) : (
+                                                    <IconSortDescending />
+                                                )
+                                            ) : (
+                                                ''
+                                            )}
                                         </Flex>
                                     </Table.Th>
-                                    <Table.Th
-                                        w="5rem"
-                                    >
-                                        W-D-L
-                                    </Table.Th>
-                                    <Table.Th
-                                        w="5rem"
-                                    >
-                                        Timeline
-                                    </Table.Th>
+                                    <Table.Th w="5rem">W-D-L</Table.Th>
+                                    <Table.Th w="5rem">Timeline</Table.Th>
                                 </Table.Tr>
                             </Table.Thead>
                             <Table.Tbody>
@@ -239,12 +278,18 @@ export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
                                         <Table.Td>
                                             <Checkbox
                                                 aria-label={`Select ${player.name}`}
-                                                checked={selectedPlayers.includes(player)}
-                                                onChange={() => handleSelectPlayer(player)}
+                                                checked={selectedPlayers.includes(
+                                                    player,
+                                                )}
+                                                onChange={() =>
+                                                    handleSelectPlayer(player)
+                                                }
                                             />
                                         </Table.Td>
                                         <Table.Td>
-                                            <Anchor href={`/footy/player/${encodeURIComponent(player.id || "")}`}>
+                                            <Anchor
+                                                href={`/footy/player/${encodeURIComponent(player.id || '')}`}
+                                            >
                                                 {player.name}
                                             </Anchor>
                                         </Table.Td>
@@ -252,7 +297,10 @@ export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
                                             <PlayerWDLChart player={player} />
                                         </Table.Td>
                                         <Table.Td>
-                                            <PlayerTimeline player={player} currentGameId={gameDay.id} />
+                                            <PlayerTimeline
+                                                player={player}
+                                                currentGameId={gameDay.id}
+                                            />
                                         </Table.Td>
                                     </Table.Tr>
                                 ))}

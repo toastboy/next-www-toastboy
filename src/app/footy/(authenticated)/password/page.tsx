@@ -3,9 +3,7 @@ import { PasswordChangeForm } from '@/components/PasswordChangeForm/PasswordChan
 export const metadata = { title: 'Change Password' };
 
 const ChangePasswordPage = () => {
-    return (
-        <PasswordChangeForm />
-    );
+    return <PasswordChangeForm />;
 };
 
 export default ChangePasswordPage;

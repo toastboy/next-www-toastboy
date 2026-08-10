@@ -7,6 +7,6 @@ async function FixturesPage() {
     if (!year) notFound();
 
     permanentRedirect(`/footy/games?year=${year}`);
-};
+}
 
 export default FixturesPage;

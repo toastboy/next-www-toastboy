@@ -2,9 +2,9 @@ import { permanentRedirect } from 'next/navigation';
 
 interface PageProps {
     params: Promise<{
-        id: string,
-        year: string,
-    }>,
+        id: string;
+        year: string;
+    }>;
 }
 
 /**
@@ -24,6 +24,6 @@ async function Page(props: PageProps) {
     const { id, year } = await props.params;
 
     permanentRedirect(`/footy/player/${id}?year=${year}`);
-};
+}
 
 export default Page;

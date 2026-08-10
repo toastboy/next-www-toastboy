@@ -3,8 +3,12 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('services/GameDay');
 vi.mock('next/navigation', () => ({
-    notFound: vi.fn(() => { throw new Error('not_found'); }),
-    permanentRedirect: vi.fn(() => { throw new Error('permanent_redirect'); }),
+    notFound: vi.fn(() => {
+        throw new Error('not_found');
+    }),
+    permanentRedirect: vi.fn(() => {
+        throw new Error('permanent_redirect');
+    }),
 }));
 
 import { permanentRedirect } from 'next/navigation';
@@ -22,7 +26,9 @@ describe('Fixtures redirect page', () => {
 
         await expect(FixturesPage()).rejects.toThrow('permanent_redirect');
 
-        expect(permanentRedirect).toHaveBeenCalledWith('/footy/games?year=2024');
+        expect(permanentRedirect).toHaveBeenCalledWith(
+            '/footy/games?year=2024',
+        );
     });
 
     it('calls notFound when there is no current year', async () => {

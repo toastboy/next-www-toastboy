@@ -26,7 +26,9 @@ describe('streamToBuffer', () => {
     });
 
     it('handles Uint8Array chunks by converting them to Buffers', async () => {
-        const stream = Readable.from([new Uint8Array([72, 101, 108, 108, 111])]);
+        const stream = Readable.from([
+            new Uint8Array([72, 101, 108, 108, 111]),
+        ]);
 
         const result = await streamToBuffer(stream);
 

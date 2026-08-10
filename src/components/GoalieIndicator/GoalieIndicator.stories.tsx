@@ -16,8 +16,12 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
     play: async ({ canvas }) => {
-        const indicator = canvas.getByRole('img', { name: /goalie indicator/i });
+        const indicator = canvas.getByRole('img', {
+            name: /goalie indicator/i,
+        });
         await expect(indicator).toBeVisible();
-        await expect(indicator.getAttribute('aria-label')).toBe('Goalie indicator');
+        await expect(indicator.getAttribute('aria-label')).toBe(
+            'Goalie indicator',
+        );
     },
 };

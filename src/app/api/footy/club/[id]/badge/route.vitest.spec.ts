@@ -11,7 +11,11 @@ import { createMockApp, pngResponseHandler } from '@/tests/lib/api/common';
 import { loadBinaryFixture } from '@/tests/shared/fixtures';
 
 const testRoute = '/api/footy/club/1/badge';
-const mockApp = createMockApp(GET, { path: testRoute, params: Promise.resolve({ id: '1' }) }, pngResponseHandler);
+const mockApp = createMockApp(
+    GET,
+    { path: testRoute, params: Promise.resolve({ id: '1' }) },
+    pngResponseHandler,
+);
 const containerClient = azureCache.getContainerClient('clubs');
 const blobClient = containerClient.getBlobClient('1.png') as unknown as {
     exists: Mock;
@@ -22,21 +26,22 @@ describe('API tests using HTTP', () => {
     it('should return PNG response for a valid club', async () => {
         const mockBuffer = loadBinaryFixture('mocks/data/football.png');
 
-        (blobClient.exists).mockResolvedValue(true);
-        (blobClient.download).mockResolvedValue({
+        blobClient.exists.mockResolvedValue(true);
+        blobClient.download.mockResolvedValue({
             readableStreamBody: Readable.from([mockBuffer]),
         });
 
         const response = await request(mockApp).get(testRoute);
 
-        if (response.status !== 200) console.log('Error response:', response.error);
+        if (response.status !== 200)
+            console.log('Error response:', response.error);
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('image/png');
         expect(response.body).toEqual(mockBuffer);
     });
 
     it('should return 404 if the badge does not exist', async () => {
-        (blobClient.exists).mockResolvedValue(false);
+        blobClient.exists.mockResolvedValue(false);
 
         const response = await request(mockApp).get(testRoute);
 
@@ -44,8 +49,8 @@ describe('API tests using HTTP', () => {
     });
 
     it('should return 500 if the badge download does not return anything', async () => {
-        (blobClient.exists).mockResolvedValue(true);
-        (blobClient.download).mockResolvedValue({});
+        blobClient.exists.mockResolvedValue(true);
+        blobClient.download.mockResolvedValue({});
 
         const response = await request(mockApp).get(testRoute);
 
@@ -55,8 +60,8 @@ describe('API tests using HTTP', () => {
 
     it('should return 500 if the badge download fails', async () => {
         const errorMessage = 'Something went wrong';
-        (blobClient.exists).mockResolvedValue(true);
-        (blobClient.download).mockRejectedValue(new Error(errorMessage));
+        blobClient.exists.mockResolvedValue(true);
+        blobClient.download.mockRejectedValue(new Error(errorMessage));
 
         const response = await request(mockApp).get(testRoute);
 

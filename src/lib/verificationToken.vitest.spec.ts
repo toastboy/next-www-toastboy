@@ -1,6 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
 
-import { createVerificationToken, hashVerificationToken } from '@/lib/verificationToken';
+import {
+    createVerificationToken,
+    hashVerificationToken,
+} from '@/lib/verificationToken';
 
 describe('hashVerificationToken', () => {
     it('returns a 64-character hex SHA-256 digest', () => {
@@ -13,7 +16,9 @@ describe('hashVerificationToken', () => {
     });
 
     it('produces different hashes for different inputs', () => {
-        expect(hashVerificationToken('abc')).not.toBe(hashVerificationToken('xyz'));
+        expect(hashVerificationToken('abc')).not.toBe(
+            hashVerificationToken('xyz'),
+        );
     });
 });
 
@@ -33,7 +38,9 @@ describe('createVerificationToken', () => {
         const { expiresAt } = createVerificationToken();
 
         const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
-        expect(expiresAt.getTime()).toBe(new Date('2026-01-01T00:00:00Z').getTime() + sevenDaysMs);
+        expect(expiresAt.getTime()).toBe(
+            new Date('2026-01-01T00:00:00Z').getTime() + sevenDaysMs,
+        );
 
         vi.useRealTimers();
     });
@@ -45,7 +52,9 @@ describe('createVerificationToken', () => {
         const oneHourMs = 60 * 60 * 1000;
         const { expiresAt } = createVerificationToken(oneHourMs);
 
-        expect(expiresAt.getTime()).toBe(new Date('2026-01-01T00:00:00Z').getTime() + oneHourMs);
+        expect(expiresAt.getTime()).toBe(
+            new Date('2026-01-01T00:00:00Z').getTime() + oneHourMs,
+        );
 
         vi.useRealTimers();
     });

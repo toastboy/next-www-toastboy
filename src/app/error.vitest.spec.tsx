@@ -21,9 +21,13 @@ vi.mock('@mantine/core', () => ({
             {children}
         </div>
     ),
-    Button: ({ children, onClick }: { children?: ReactNode; onClick?: () => void }) => (
-        <button onClick={onClick}>{children}</button>
-    ),
+    Button: ({
+        children,
+        onClick,
+    }: {
+        children?: ReactNode;
+        onClick?: () => void;
+    }) => <button onClick={onClick}>{children}</button>,
     Flex: ({ children }: { children?: ReactNode }) => <div>{children}</div>,
 }));
 

@@ -1,6 +1,9 @@
 'use server';
 
-import { claimPlayerInvitationCore, finalizePlayerInvitationClaimCore } from '@/lib/core/claimPlayerInvitation';
+import {
+    claimPlayerInvitationCore,
+    finalizePlayerInvitationClaimCore,
+} from '@/lib/core/claimPlayerInvitation';
 
 /**
  * Claims a player invitation using the provided token.

@@ -1,8 +1,6 @@
 'use client';
 
-import {
-    Button,
-} from '@mantine/core';
+import { Button } from '@mantine/core';
 import { useState } from 'react';
 
 import { SendEmailForm } from '@/components/SendEmailForm/SendEmailForm';
@@ -32,7 +30,9 @@ export const EmailPlayerButton = ({ player, onSendEmail }: Props) => {
 
     return (
         <>
-            <Button type="button" onClick={() => setOpened(true)}>Send Email...</Button>
+            <Button type="button" onClick={() => setOpened(true)}>
+                Send Email...
+            </Button>
             <SendEmailForm
                 opened={opened}
                 onClose={() => setOpened(false)}

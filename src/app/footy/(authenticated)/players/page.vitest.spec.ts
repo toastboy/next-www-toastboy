@@ -4,7 +4,9 @@ import { vi } from 'vitest';
 vi.mock('services/GameDay');
 vi.mock('services/Player');
 vi.mock('next/navigation', () => ({
-    notFound: vi.fn(() => { throw new Error('not_found'); }),
+    notFound: vi.fn(() => {
+        throw new Error('not_found');
+    }),
 }));
 
 vi.mock('@/actions/sendEmail', () => ({
@@ -36,7 +38,9 @@ describe('Players page', () => {
     });
 
     it('fetches current game day and all players in parallel via Promise.all', async () => {
-        (gameDayService.getCurrent as Mock).mockResolvedValue(createMockGameDay());
+        (gameDayService.getCurrent as Mock).mockResolvedValue(
+            createMockGameDay(),
+        );
         (playerService.getAll as Mock).mockResolvedValue(defaultPlayerList);
 
         await PlayersPage();
@@ -69,7 +73,9 @@ describe('Players page', () => {
     });
 
     it('handles service errors gracefully', async () => {
-        (gameDayService.getCurrent as Mock).mockRejectedValue(new Error('DB failed'));
+        (gameDayService.getCurrent as Mock).mockRejectedValue(
+            new Error('DB failed'),
+        );
         (playerService.getAll as Mock).mockResolvedValue(defaultPlayerList);
 
         await expect(PlayersPage()).rejects.toThrow('DB failed');

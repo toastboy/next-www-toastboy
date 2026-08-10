@@ -42,11 +42,17 @@ export async function SubmitResponseCore(
     deps: SubmitResponseDeps = defaultDeps,
 ) {
     const gameDay = await deps.gameDayService.get(data.gameDayId);
-    const existingOutcome = await deps.outcomeService.get(data.gameDayId, data.playerId);
+    const existingOutcome = await deps.outcomeService.get(
+        data.gameDayId,
+        data.playerId,
+    );
 
     let responseInterval = existingOutcome?.responseInterval ?? null;
     if (responseInterval === null && gameDay?.mailSent) {
-        responseInterval = Math.max(0, Math.floor((Date.now() - gameDay.mailSent.getTime()) / 1000));
+        responseInterval = Math.max(
+            0,
+            Math.floor((Date.now() - gameDay.mailSent.getTime()) / 1000),
+        );
     }
 
     const comment = data.comment?.trim();

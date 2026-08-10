@@ -29,7 +29,8 @@ const MAX_REDACTION_DEPTH = 6;
  * Regex covering common sensitive key names that should never be sent to
  * Sentry payloads.
  */
-const SENSITIVE_KEY_PATTERN = /(token|password|authorization|cookie|secret|session|api[-_]?key)/i;
+const SENSITIVE_KEY_PATTERN =
+    /(token|password|authorization|cookie|secret|session|api[-_]?key)/i;
 
 /**
  * Primitive input values accepted in dynamic Sentry tag maps.
@@ -129,16 +130,15 @@ const sanitizeExtraValue = (
     seen.add(value);
 
     if (Array.isArray(value)) {
-        return value.map((entry) =>
-            sanitizeExtraValue(entry, depth + 1, seen));
+        return value.map((entry) => sanitizeExtraValue(entry, depth + 1, seen));
     }
 
     const sanitized: Record<string, unknown> = {};
 
     for (const [key, entryValue] of Object.entries(value)) {
-        sanitized[key] = isSensitiveKey(key) ?
-            REDACTED_VALUE :
-            sanitizeExtraValue(entryValue, depth + 1, seen);
+        sanitized[key] = isSensitiveKey(key)
+            ? REDACTED_VALUE
+            : sanitizeExtraValue(entryValue, depth + 1, seen);
     }
 
     return sanitized;

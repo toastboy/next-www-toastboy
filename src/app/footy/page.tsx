@@ -28,18 +28,23 @@ const HomePage = async () => {
     if (!year) return notFound();
 
     const tableRecords = await Promise.all(
-        tables.map((table) => playerRecordService.getTable(table, year, true, 3)),
+        tables.map((table) =>
+            playerRecordService.getTable(table, year, true, 3),
+        ),
     );
 
     return (
         <Stack p="xl" align="center">
-            <AutoRefresh channels={[FootyChannel.Results, FootyChannel.Players]} />
+            <AutoRefresh
+                channels={[FootyChannel.Results, FootyChannel.Players]}
+            />
             <Image
                 src="/crest.jpg"
                 width={283}
                 height={342}
                 alt="Toastboy FC Crest"
-                fit="contain" />
+                fit="contain"
+            />
             <Divider my="md" w="100%" />
             <Group justify="center" w="100%">
                 <Title order={2}>Table Leaders</Title>
@@ -59,11 +64,11 @@ const HomePage = async () => {
             <Divider my="md" w="100%" />
             <Text mt="md">
                 Who are we?{' '}
-                <Anchor href="/footy/info">Information about Toastboy FC</Anchor>
+                <Anchor href="/footy/info">
+                    Information about Toastboy FC
+                </Anchor>
             </Text>
-            <Text mt="md">
-                Crest design ©2003 by Joe Bright
-            </Text>
+            <Text mt="md">Crest design ©2003 by Joe Bright</Text>
         </Stack>
     );
 };

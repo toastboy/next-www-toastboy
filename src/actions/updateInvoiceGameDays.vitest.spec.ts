@@ -1,6 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { revalidatePathMock, broadcastMock, requireAdminMock, updateInvoiceGameDaysCoreMock } = vi.hoisted(() => ({
+const {
+    revalidatePathMock,
+    broadcastMock,
+    requireAdminMock,
+    updateInvoiceGameDaysCoreMock,
+} = vi.hoisted(() => ({
     revalidatePathMock: vi.fn(),
     broadcastMock: vi.fn(),
     requireAdminMock: vi.fn().mockResolvedValue(undefined),
@@ -18,7 +23,9 @@ import { updateInvoiceGameDays } from '@/actions/updateInvoiceGameDays';
 import { FootyChannel } from '@/types/FootyChannel';
 
 describe('updateInvoiceGameDays action wrapper', () => {
-    beforeEach(() => { vi.clearAllMocks(); });
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
 
     it('validates input, calls core, revalidates, and broadcasts on success', async () => {
         await updateInvoiceGameDays({
@@ -36,7 +43,10 @@ describe('updateInvoiceGameDays action wrapper', () => {
         });
         expect(revalidatePathMock).toHaveBeenCalledWith('/footy/admin/invoice');
         expect(revalidatePathMock).toHaveBeenCalledWith('/footy/fixtures');
-        expect(broadcastMock).toHaveBeenCalledWith([FootyChannel.Money, FootyChannel.Games]);
+        expect(broadcastMock).toHaveBeenCalledWith([
+            FootyChannel.Money,
+            FootyChannel.Games,
+        ]);
     });
 
     it('propagates errors thrown by the core without revalidating', async () => {
@@ -44,7 +54,9 @@ describe('updateInvoiceGameDays action wrapper', () => {
         updateInvoiceGameDaysCoreMock.mockRejectedValue(coreError);
 
         await expect(
-            updateInvoiceGameDays({ gameDays: [{ id: 1, gameScheduled: true }] }),
+            updateInvoiceGameDays({
+                gameDays: [{ id: 1, gameScheduled: true }],
+            }),
         ).rejects.toBe(coreError);
 
         expect(revalidatePathMock).not.toHaveBeenCalled();

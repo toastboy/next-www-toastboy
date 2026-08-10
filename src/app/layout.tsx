@@ -14,9 +14,7 @@ import {
     MantineProvider,
 } from '@mantine/core';
 
-import {
-    Notifications,
-} from '@mantine/notifications';
+import { Notifications } from '@mantine/notifications';
 import type { Metadata } from 'next';
 
 import { CustomAppShell } from '@/components/CustomAppShell/CustomAppShell';
@@ -34,9 +32,10 @@ export const metadata: Metadata = {
         default: 'Toastboy FC',
         template: '%s | Toastboy FC',
     },
-    description: "Toastboy FC: five-a-side footy on Tuesdays at Kelsey Kerridge, Cambridge",
+    description:
+        'Toastboy FC: five-a-side footy on Tuesdays at Kelsey Kerridge, Cambridge',
     icons: {
-        icon: "/favicon.ico",
+        icon: '/favicon.ico',
     },
 };
 

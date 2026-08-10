@@ -32,7 +32,9 @@ export const defaultPlayerRecord = {
     speedy: 4,
 } satisfies PlayerRecordType;
 
-export const createMockPlayerRecord = (overrides: Partial<PlayerRecordType> = {}): PlayerRecordType => ({
+export const createMockPlayerRecord = (
+    overrides: Partial<PlayerRecordType> = {},
+): PlayerRecordType => ({
     ...defaultPlayerRecord,
     ...overrides,
 });
@@ -64,7 +66,10 @@ export const defaultPlayerRecordList: PlayerRecordType[] = [
         // Vary stats based on ranking
         const basePlayed = 10 + (index % 5);
         const baseWon = Math.max(0, basePlayed - rankPosition);
-        const baseDrawn = Math.min(3, Math.min(index % 4, basePlayed - baseWon));
+        const baseDrawn = Math.min(
+            3,
+            Math.min(index % 4, basePlayed - baseWon),
+        );
         const baseLost = Math.max(0, basePlayed - baseWon - baseDrawn);
 
         // Points table stats (3 points for win, 1 for draw)

@@ -1,7 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { setGameResultCore } from '@/lib/core/setGameResult';
-import { APP_ERROR_CODE, InternalError, NotFoundError, ValidationError } from '@/lib/errors';
+import {
+    APP_ERROR_CODE,
+    InternalError,
+    NotFoundError,
+    ValidationError,
+} from '@/lib/errors';
 import { SetGameResultInputSchema } from '@/types/actions/SetGameResult';
 
 describe('setGameResultCore', () => {
@@ -33,17 +38,25 @@ describe('setGameResultCore', () => {
         upsertFromGameDay: vi.fn(),
     };
 
-    const deps = () => ({ gameDayService, outcomeService, transactionService, playerRecordService });
+    const deps = () => ({
+        gameDayService,
+        outcomeService,
+        transactionService,
+        playerRecordService,
+    });
 
     beforeEach(() => {
         vi.clearAllMocks();
         gameDayService.get.mockResolvedValue(gameDay);
         gameDayService.update.mockResolvedValue({ ...gameDay, bibs: 'A' });
-        outcomeService.getByGameDay.mockImplementation(async (_gameDayId: number, team: 'A' | 'B') => (
-            Promise.resolve(team === 'A' ?
-                [{ playerId: 1 }, { playerId: 2 }] :
-                [{ playerId: 3 }, { playerId: 4 }],
-            )));
+        outcomeService.getByGameDay.mockImplementation(
+            async (_gameDayId: number, team: 'A' | 'B') =>
+                Promise.resolve(
+                    team === 'A'
+                        ? [{ playerId: 1 }, { playerId: 2 }]
+                        : [{ playerId: 3 }, { playerId: 4 }],
+                ),
+        );
         outcomeService.upsert.mockResolvedValue(undefined);
         transactionService.charge.mockResolvedValue(undefined);
         playerRecordService.upsertFromGameDay.mockResolvedValue(undefined);
@@ -141,14 +154,16 @@ describe('setGameResultCore', () => {
     it('throws when the game day cannot be found', async () => {
         gameDayService.get.mockResolvedValue(null);
 
-        await expect(setGameResultCore(
-            {
-                gameDayId: 9999,
-                bibs: null,
-                winner: null,
-            },
-            deps(),
-        )).rejects.toBeInstanceOf(NotFoundError);
+        await expect(
+            setGameResultCore(
+                {
+                    gameDayId: 9999,
+                    bibs: null,
+                    winner: null,
+                },
+                deps(),
+            ),
+        ).rejects.toBeInstanceOf(NotFoundError);
 
         expect(gameDayService.update).not.toHaveBeenCalled();
         expect(outcomeService.upsert).not.toHaveBeenCalled();
@@ -156,20 +171,32 @@ describe('setGameResultCore', () => {
 
     it('calls upsertFromGameDay with the gameDayId after updating outcomes', async () => {
         await setGameResultCore(
-            SetGameResultInputSchema.parse({ gameDayId: 1249, bibs: 'A', winner: 'A' }),
+            SetGameResultInputSchema.parse({
+                gameDayId: 1249,
+                bibs: 'A',
+                winner: 'A',
+            }),
             deps(),
         );
 
-        expect(playerRecordService.upsertFromGameDay).toHaveBeenCalledWith(1249);
+        expect(playerRecordService.upsertFromGameDay).toHaveBeenCalledWith(
+            1249,
+        );
     });
 
     it('throws InternalError with typed details when player-record update fails with a known error', async () => {
-        playerRecordService.upsertFromGameDay.mockRejectedValue(new ValidationError('Nope'));
+        playerRecordService.upsertFromGameDay.mockRejectedValue(
+            new ValidationError('Nope'),
+        );
 
         let thrown: unknown;
         try {
             await setGameResultCore(
-                SetGameResultInputSchema.parse({ gameDayId: 1249, bibs: 'A', winner: 'A' }),
+                SetGameResultInputSchema.parse({
+                    gameDayId: 1249,
+                    bibs: 'A',
+                    winner: 'A',
+                }),
                 deps(),
             );
         } catch (error) {
@@ -177,7 +204,11 @@ describe('setGameResultCore', () => {
         }
 
         expect(thrown).toBeInstanceOf(InternalError);
-        const appError = thrown as InternalError<{ gameDayId: number; operation: string; upstreamCode: string }>;
+        const appError = thrown as InternalError<{
+            gameDayId: number;
+            operation: string;
+            upstreamCode: string;
+        }>;
         expect(appError.code).toBe(APP_ERROR_CODE.Internal);
         expect(appError.publicMessage).toBe('Failed to update player records.');
         expect(appError.details).toEqual({
@@ -195,7 +226,11 @@ describe('setGameResultCore', () => {
         let thrown: unknown;
         try {
             await setGameResultCore(
-                SetGameResultInputSchema.parse({ gameDayId: 1249, bibs: 'A', winner: 'A' }),
+                SetGameResultInputSchema.parse({
+                    gameDayId: 1249,
+                    bibs: 'A',
+                    winner: 'A',
+                }),
                 deps(),
             );
         } catch (error) {
@@ -203,7 +238,11 @@ describe('setGameResultCore', () => {
         }
 
         expect(thrown).toBeInstanceOf(InternalError);
-        const appError = thrown as InternalError<{ gameDayId: number; operation: string; upstreamCode: string }>;
+        const appError = thrown as InternalError<{
+            gameDayId: number;
+            operation: string;
+            upstreamCode: string;
+        }>;
         expect(appError.code).toBe(APP_ERROR_CODE.Internal);
         expect(appError.publicMessage).toBe('Failed to update player records.');
         expect(appError.details).toEqual({

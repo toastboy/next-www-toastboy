@@ -24,13 +24,16 @@ describe('toRequestError', () => {
     });
 
     it('maps 409 json message to ConflictError', async () => {
-        const response = new Response(JSON.stringify({ message: 'Already exists.' }), {
-            status: 409,
-            statusText: 'Conflict',
-            headers: {
-                'Content-Type': 'application/json',
+        const response = new Response(
+            JSON.stringify({ message: 'Already exists.' }),
+            {
+                status: 409,
+                statusText: 'Conflict',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
             },
-        });
+        );
 
         const error = await toRequestError(response);
 
@@ -101,13 +104,16 @@ describe('toRequestError', () => {
     });
 
     it('extracts message from an "error" json field when "message" is absent', async () => {
-        const response = new Response(JSON.stringify({ error: 'Something broke.' }), {
-            status: 400,
-            statusText: 'Bad Request',
-            headers: {
-                'Content-Type': 'application/json',
+        const response = new Response(
+            JSON.stringify({ error: 'Something broke.' }),
+            {
+                status: 400,
+                statusText: 'Bad Request',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
             },
-        });
+        );
 
         const error = await toRequestError(response);
 
@@ -125,7 +131,9 @@ describe('toRequestError', () => {
 
         const error = await toRequestError(response);
 
-        expect(error.publicMessage).toBe(JSON.stringify({ code: 'ERR_UNKNOWN' }));
+        expect(error.publicMessage).toBe(
+            JSON.stringify({ code: 'ERR_UNKNOWN' }),
+        );
     });
 
     it('falls back to raw text when JSON.parse yields a non-object value (defensive guard)', async () => {
@@ -160,7 +168,9 @@ describe('toRequestError', () => {
 
         expect(error).toBeInstanceOf(InternalError);
         expect(error.publicMessage).toBe('Request failed.');
-        expect(error.message).toBe('HTTP 500 Internal Server Error for https://api.toastboy.co.uk/footy/games');
+        expect(error.message).toBe(
+            'HTTP 500 Internal Server Error for https://api.toastboy.co.uk/footy/games',
+        );
     });
 });
 
@@ -182,6 +192,8 @@ describe('assertOkResponse', () => {
             statusText: 'Bad Request',
         });
 
-        await expect(assertOkResponse(response)).rejects.toBeInstanceOf(ValidationError);
+        await expect(assertOkResponse(response)).rejects.toBeInstanceOf(
+            ValidationError,
+        );
     });
 });

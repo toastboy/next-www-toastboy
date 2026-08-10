@@ -4,17 +4,14 @@ import z from 'zod';
 export const SetGameEnabledInputSchema = z.object({
     gameDayId: z.number().int().min(1),
     game: z.boolean(),
-    reason: z.preprocess(
-        (val) => {
-            if (typeof val !== 'string') {
-                return val;
-            }
+    reason: z.preprocess((val) => {
+        if (typeof val !== 'string') {
+            return val;
+        }
 
-            const trimmed = val.trim();
-            return trimmed === '' ? null : trimmed;
-        },
-        z.string().max(255).nullable(),
-    ),
+        const trimmed = val.trim();
+        return trimmed === '' ? null : trimmed;
+    }, z.string().max(255).nullable()),
 });
 
 export type SetGameEnabledInput = z.infer<typeof SetGameEnabledInputSchema>;

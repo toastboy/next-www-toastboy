@@ -34,16 +34,20 @@ async function setAuthState(
             sameSite: 'Lax' as const,
         };
 
-        const hostCookies = [{
-            name: MOCK_AUTH_COOKIE,
-            value: authState,
-            ...base,
-        }];
+        const hostCookies = [
+            {
+                name: MOCK_AUTH_COOKIE,
+                value: authState,
+                ...base,
+            },
+        ];
 
         if (user) {
             hostCookies.push({
                 name: MOCK_AUTH_USER_COOKIE,
-                value: encodeURIComponent(JSON.stringify(user)) as MockAuthState,
+                value: encodeURIComponent(
+                    JSON.stringify(user),
+                ) as MockAuthState,
                 ...base,
             });
         }
@@ -81,7 +85,11 @@ export async function asGuest(page: Page, uri?: string): Promise<void> {
  *          if a URI is provided, navigation reaches the 'domcontentloaded'
  *          load state.
  */
-export async function asUser(page: Page, uri?: string, user?: MockAuthUser): Promise<void> {
+export async function asUser(
+    page: Page,
+    uri?: string,
+    user?: MockAuthUser,
+): Promise<void> {
     await setAuthState(page, 'user', user);
     if (uri) {
         await page.goto(uri, { waitUntil: 'domcontentloaded' });
@@ -98,7 +106,11 @@ export async function asUser(page: Page, uri?: string, user?: MockAuthUser): Pro
  *          if a URI is provided, navigation reaches the 'domcontentloaded'
  *          load state.
  */
-export async function asAdmin(page: Page, uri?: string, user?: MockAuthUser): Promise<void> {
+export async function asAdmin(
+    page: Page,
+    uri?: string,
+    user?: MockAuthUser,
+): Promise<void> {
     await setAuthState(page, 'admin', user);
     if (uri) {
         await page.goto(uri, { waitUntil: 'domcontentloaded' });
@@ -112,9 +124,11 @@ export async function asAdmin(page: Page, uri?: string, user?: MockAuthUser): Pr
  * @returns A promise that resolves when the heading is visible.
  */
 export async function mustBeLoggedInAsAdmin(page: Page): Promise<void> {
-    await expect(page.getByRole('heading', {
-        name: /You must be logged in as an administrator/i,
-    })).toBeVisible();
+    await expect(
+        page.getByRole('heading', {
+            name: /You must be logged in as an administrator/i,
+        }),
+    ).toBeVisible();
 }
 
 /**
@@ -124,7 +138,9 @@ export async function mustBeLoggedInAsAdmin(page: Page): Promise<void> {
  * @returns A promise that resolves when the heading is visible.
  */
 export async function mustBeLoggedIn(page: Page): Promise<void> {
-    await expect(page.getByRole('heading', {
-        name: /Sign in to your account/i,
-    })).toBeVisible();
+    await expect(
+        page.getByRole('heading', {
+            name: /Sign in to your account/i,
+        }),
+    ).toBeVisible();
 }

@@ -13,7 +13,6 @@ import {
     GameInvitationWriteInputSchema,
 } from '@/types/GameInvitationStrictSchema';
 
-
 class GameInvitationService {
     /**
      * Fetches a game invitation by UUID.
@@ -21,7 +20,9 @@ class GameInvitationService {
      * @returns The matching invitation row, or `null` when no row exists.
      */
     async get(uuid: string): Promise<GameInvitationType | null> {
-        const where = GameInvitationWhereUniqueInputObjectSchema.parse({ uuid });
+        const where = GameInvitationWhereUniqueInputObjectSchema.parse({
+            uuid,
+        });
         return prisma.gameInvitation.findUnique({ where });
     }
 
@@ -40,7 +41,9 @@ class GameInvitationService {
      */
     async create(data: GameInvitationWriteInput): Promise<GameInvitationType> {
         const writeData = GameInvitationWriteInputSchema.parse(data);
-        const args = GameInvitationCreateOneStrictSchema.parse({ data: writeData });
+        const args = GameInvitationCreateOneStrictSchema.parse({
+            data: writeData,
+        });
         return prisma.gameInvitation.create(args);
     }
 
@@ -49,9 +52,13 @@ class GameInvitationService {
      * @param data - Array of write payloads.
      * @returns Number of rows created.
      */
-    async createMany(data: GameInvitationCreateManyWriteInput): Promise<number> {
+    async createMany(
+        data: GameInvitationCreateManyWriteInput,
+    ): Promise<number> {
         const writeData = GameInvitationCreateManyWriteInputSchema.parse(data);
-        const args = GameInvitationCreateManyStrictSchema.parse({ data: writeData });
+        const args = GameInvitationCreateManyStrictSchema.parse({
+            data: writeData,
+        });
         const result = await prisma.gameInvitation.createMany(args);
         return result.count;
     }
@@ -82,7 +89,9 @@ class GameInvitationService {
      */
     async delete(uuid: string): Promise<void> {
         try {
-            const where = GameInvitationWhereUniqueInputObjectSchema.parse({ uuid });
+            const where = GameInvitationWhereUniqueInputObjectSchema.parse({
+                uuid,
+            });
             await prisma.gameInvitation.delete({ where });
         } catch (error) {
             if (isPrismaNotFoundError(error)) {

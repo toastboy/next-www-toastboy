@@ -1,6 +1,4 @@
-import {
-    Notifications,
-} from '@mantine/notifications';
+import { Notifications } from '@mantine/notifications';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { fn, within } from 'storybook/test';
 
@@ -54,18 +52,29 @@ export const Render: Story = {
         const canvas = within(canvasElement);
         const nameInput = await canvas.findByLabelText(/Name/i);
         const emailInput = await canvas.findByLabelText(/Email address/i);
-        const introducedBySelect = await canvas.findByLabelText(/Introduced by/i);
-        const submitButton = await canvas.findByRole('button', { name: /Add player/i });
+        const introducedBySelect =
+            await canvas.findByLabelText(/Introduced by/i);
+        const submitButton = await canvas.findByRole('button', {
+            name: /Add player/i,
+        });
 
         await userEvent.type(nameInput, 'Pat Example');
         await userEvent.type(emailInput, 'pat@example.com');
         await userEvent.click(introducedBySelect);
-        const dropdown = await within(canvasElement.ownerDocument.body).findByRole('listbox');
-        const options = await within(dropdown).findAllByRole('option', { hidden: true });
+        const dropdown = await within(
+            canvasElement.ownerDocument.body,
+        ).findByRole('listbox');
+        const options = await within(dropdown).findAllByRole('option', {
+            hidden: true,
+        });
         await userEvent.click(options[1]);
         await userEvent.click(submitButton);
 
         const body = canvasElement.ownerDocument.body;
-        await within(body).findByText('Player created successfully', {}, { timeout: 6000 });
+        await within(body).findByText(
+            'Player created successfully',
+            {},
+            { timeout: 6000 },
+        );
     },
 };

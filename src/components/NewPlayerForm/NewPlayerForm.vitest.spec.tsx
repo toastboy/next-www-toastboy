@@ -1,6 +1,4 @@
-import {
-    notifications,
-} from '@mantine/notifications';
+import { notifications } from '@mantine/notifications';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
@@ -14,8 +12,8 @@ describe('NewPlayerForm', () => {
         createMockPlayerData({ id: 1, name: 'Sam Smith' }),
         createMockPlayerData({ id: 2, name: 'Alex Doe' }),
     ];
-    const mockCreatePlayer = vi.fn(
-        async () => Promise.resolve({
+    const mockCreatePlayer = vi.fn(async () =>
+        Promise.resolve({
             player: { id: 1 },
             inviteLink: 'http://example.com/footy/auth/claim?token=abc',
         }),
@@ -45,8 +43,12 @@ describe('NewPlayerForm', () => {
 
         expect(screen.getByLabelText(/Name/i)).toBeInTheDocument();
         expect(screen.getByLabelText(/Email address/i)).toBeInTheDocument();
-        expect(screen.getByRole('combobox', { name: /Introduced by/i })).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /Add player/i })).toBeInTheDocument();
+        expect(
+            screen.getByRole('combobox', { name: /Introduced by/i }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', { name: /Add player/i }),
+        ).toBeInTheDocument();
     });
 
     it('submits form with valid email', async () => {
@@ -65,7 +67,9 @@ describe('NewPlayerForm', () => {
 
         const nameInput = screen.getByLabelText(/Name/i);
         const emailInput = screen.getByLabelText(/Email address/i);
-        const submitButton = screen.getByRole('button', { name: /Add player/i });
+        const submitButton = screen.getByRole('button', {
+            name: /Add player/i,
+        });
 
         await user.type(nameInput, 'Pat Smith');
         await user.type(emailInput, 'test@example.com');
@@ -77,14 +81,12 @@ describe('NewPlayerForm', () => {
                 email: 'test@example.com',
                 introducedBy: '',
             });
-            expect(mockSendEmail).toHaveBeenCalledWith(
-                {
-                    to: 'test@example.com',
-                    cc: 'footy@toastboy.co.uk',
-                    subject: 'Welcome to Toastboy FC!',
-                    html: expect.any(String) as string,
-                },
-            );
+            expect(mockSendEmail).toHaveBeenCalledWith({
+                to: 'test@example.com',
+                cc: 'footy@toastboy.co.uk',
+                subject: 'Welcome to Toastboy FC!',
+                html: expect.any(String) as string,
+            });
         });
     });
 
@@ -107,7 +109,9 @@ describe('NewPlayerForm', () => {
 
         const nameInput = screen.getByLabelText(/Name/i);
         const emailInput = screen.getByLabelText(/Email address/i);
-        const submitButton = screen.getByRole('button', { name: /Add player/i });
+        const submitButton = screen.getByRole('button', {
+            name: /Add player/i,
+        });
 
         await user.type(nameInput, 'Pat Smith');
         await user.type(emailInput, 'test@example.com');
@@ -141,7 +145,9 @@ describe('NewPlayerForm', () => {
 
         const nameInput = screen.getByLabelText(/Name/i);
         const emailInput = screen.getByLabelText(/Email address/i);
-        const submitButton = screen.getByRole('button', { name: /Add player/i });
+        const submitButton = screen.getByRole('button', {
+            name: /Add player/i,
+        });
 
         await user.type(nameInput, 'Pat Smith');
         await user.type(emailInput, 'test@example.com');
@@ -175,7 +181,10 @@ describe('NewPlayerForm', () => {
         );
 
         await user.type(screen.getByLabelText(/Name/i), 'Pat Smith');
-        await user.type(screen.getByLabelText(/Email address/i), 'test@example.com');
+        await user.type(
+            screen.getByLabelText(/Email address/i),
+            'test@example.com',
+        );
         await user.click(screen.getByRole('button', { name: /Add player/i }));
 
         await waitFor(() => {
@@ -206,7 +215,9 @@ describe('NewPlayerForm', () => {
 
         const nameInput = screen.getByLabelText(/Name/i);
         const emailInput = screen.getByLabelText(/Email address/i);
-        const submitButton = screen.getByRole('button', { name: /Add player/i });
+        const submitButton = screen.getByRole('button', {
+            name: /Add player/i,
+        });
 
         await user.type(nameInput, 'Pat Smith');
         await user.type(emailInput, 'test@example.com');
@@ -222,7 +233,9 @@ describe('NewPlayerForm', () => {
             );
         });
 
-        const [notification] = (notificationUpdateSpy.mock.calls[0] ?? []) as [{ message?: string }];
+        const [notification] = (notificationUpdateSpy.mock.calls[0] ?? []) as [
+            { message?: string },
+        ];
         expect(notification?.message ?? '').toContain('Error');
     });
 
@@ -238,7 +251,9 @@ describe('NewPlayerForm', () => {
             </Wrapper>,
         );
 
-        const submitButton = screen.getByRole('button', { name: /Add player/i });
+        const submitButton = screen.getByRole('button', {
+            name: /Add player/i,
+        });
         await user.click(submitButton);
 
         // Wait a bit to ensure no async calls happen
@@ -326,7 +341,12 @@ describe('NewPlayerForm', () => {
     it('includes introducer email in cc when an introducer is selected', async () => {
         const user = userEvent.setup();
         const playersWithEmail = [
-            createMockPlayerData({ id: 1, name: 'Sam Smith', accountEmail: 'sam@example.com', extraEmails: [] }),
+            createMockPlayerData({
+                id: 1,
+                name: 'Sam Smith',
+                accountEmail: 'sam@example.com',
+                extraEmails: [],
+            }),
         ];
 
         render(
@@ -340,9 +360,19 @@ describe('NewPlayerForm', () => {
         );
 
         await user.type(screen.getByLabelText(/Name/i), 'New Player');
-        await user.type(screen.getByLabelText(/Email address/i), 'new@example.com');
-        await user.click(screen.getByRole('combobox', { name: /Introduced by/i }));
-        await user.click(await screen.findByRole('option', { name: 'Sam Smith', hidden: true }));
+        await user.type(
+            screen.getByLabelText(/Email address/i),
+            'new@example.com',
+        );
+        await user.click(
+            screen.getByRole('combobox', { name: /Introduced by/i }),
+        );
+        await user.click(
+            await screen.findByRole('option', {
+                name: 'Sam Smith',
+                hidden: true,
+            }),
+        );
         await user.click(screen.getByRole('button', { name: /Add player/i }));
 
         await waitFor(() => {
@@ -376,9 +406,19 @@ describe('NewPlayerForm', () => {
         );
 
         await user.type(screen.getByLabelText(/Name/i), 'New Player');
-        await user.type(screen.getByLabelText(/Email address/i), 'new@example.com');
-        await user.click(screen.getByRole('combobox', { name: /Introduced by/i }));
-        await user.click(await screen.findByRole('option', { name: 'Sam Smith', hidden: true }));
+        await user.type(
+            screen.getByLabelText(/Email address/i),
+            'new@example.com',
+        );
+        await user.click(
+            screen.getByRole('combobox', { name: /Introduced by/i }),
+        );
+        await user.click(
+            await screen.findByRole('option', {
+                name: 'Sam Smith',
+                hidden: true,
+            }),
+        );
         await user.click(screen.getByRole('button', { name: /Add player/i }));
 
         await waitFor(() => {
@@ -397,7 +437,9 @@ describe('NewPlayerForm', () => {
                 id: 1,
                 name: 'Sam Smith',
                 accountEmail: null,
-                extraEmails: [{ email: 'sam-extra@example.com', verified: false }],
+                extraEmails: [
+                    { email: 'sam-extra@example.com', verified: false },
+                ],
             }),
         ];
 
@@ -412,15 +454,27 @@ describe('NewPlayerForm', () => {
         );
 
         await user.type(screen.getByLabelText(/Name/i), 'New Player');
-        await user.type(screen.getByLabelText(/Email address/i), 'new@example.com');
-        await user.click(screen.getByRole('combobox', { name: /Introduced by/i }));
-        await user.click(await screen.findByRole('option', { name: 'Sam Smith', hidden: true }));
+        await user.type(
+            screen.getByLabelText(/Email address/i),
+            'new@example.com',
+        );
+        await user.click(
+            screen.getByRole('combobox', { name: /Introduced by/i }),
+        );
+        await user.click(
+            await screen.findByRole('option', {
+                name: 'Sam Smith',
+                hidden: true,
+            }),
+        );
         await user.click(screen.getByRole('button', { name: /Add player/i }));
 
         await waitFor(() => {
             expect(mockSendEmail).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    cc: expect.stringContaining('sam-extra@example.com') as string,
+                    cc: expect.stringContaining(
+                        'sam-extra@example.com',
+                    ) as string,
                 }),
             );
         });
@@ -440,10 +494,19 @@ describe('NewPlayerForm', () => {
         );
 
         await user.type(screen.getByLabelText(/Name/i), 'Pat Smith');
-        await user.click(screen.getByRole('combobox', { name: /Introduced by/i }));
-        await user.click(await screen.findByRole('option', { name: 'Sam Smith', hidden: true }));
+        await user.click(
+            screen.getByRole('combobox', { name: /Introduced by/i }),
+        );
+        await user.click(
+            await screen.findByRole('option', {
+                name: 'Sam Smith',
+                hidden: true,
+            }),
+        );
 
-        await user.click(screen.getByRole('button', { name: '', hidden: true }));
+        await user.click(
+            screen.getByRole('button', { name: '', hidden: true }),
+        );
         await user.click(screen.getByRole('button', { name: /Add player/i }));
 
         await waitFor(() => {
@@ -481,16 +544,27 @@ describe('NewPlayerForm', () => {
             </Wrapper>,
         );
 
-        const introducerInput = screen.getByRole('combobox', { name: /Introduced by/i });
+        const introducerInput = screen.getByRole('combobox', {
+            name: /Introduced by/i,
+        });
         expect(introducerInput).toHaveValue('');
         expect(introducerInput).toHaveAttribute('placeholder', '(Nobody)');
-        expect(screen.getByRole('option', { name: 'Alex Doe', hidden: true })).toBeInTheDocument();
-        expect(screen.getByRole('option', { name: 'Sam Smith', hidden: true })).toBeInTheDocument();
+        expect(
+            screen.getByRole('option', { name: 'Alex Doe', hidden: true }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('option', { name: 'Sam Smith', hidden: true }),
+        ).toBeInTheDocument();
     });
 
     it('renders an introducer with null name as an empty-label option', () => {
         const nullNamePlayer = [
-            createMockPlayerData({ id: 5, name: null as unknown as string, accountEmail: 'nameless@example.com', extraEmails: [] }),
+            createMockPlayerData({
+                id: 5,
+                name: null as unknown as string,
+                accountEmail: 'nameless@example.com',
+                extraEmails: [],
+            }),
         ];
 
         render(
@@ -504,7 +578,9 @@ describe('NewPlayerForm', () => {
         );
 
         // The option is rendered with an empty label
-        expect(screen.getByRole('option', { name: '', hidden: true })).toBeInTheDocument();
+        expect(
+            screen.getByRole('option', { name: '', hidden: true }),
+        ).toBeInTheDocument();
     });
 
     it('uses verified extra email as introducer cc when no accountEmail and a verified extra email exists', async () => {
@@ -532,15 +608,27 @@ describe('NewPlayerForm', () => {
         );
 
         await user.type(screen.getByLabelText(/Name/i), 'New Player');
-        await user.type(screen.getByLabelText(/Email address/i), 'new@example.com');
-        await user.click(screen.getByRole('combobox', { name: /Introduced by/i }));
-        await user.click(await screen.findByRole('option', { name: 'Sam Smith', hidden: true }));
+        await user.type(
+            screen.getByLabelText(/Email address/i),
+            'new@example.com',
+        );
+        await user.click(
+            screen.getByRole('combobox', { name: /Introduced by/i }),
+        );
+        await user.click(
+            await screen.findByRole('option', {
+                name: 'Sam Smith',
+                hidden: true,
+            }),
+        );
         await user.click(screen.getByRole('button', { name: /Add player/i }));
 
         await waitFor(() => {
             expect(mockSendEmail).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    cc: expect.stringContaining('verified@example.com') as string,
+                    cc: expect.stringContaining(
+                        'verified@example.com',
+                    ) as string,
                 }),
             );
         });

@@ -25,18 +25,26 @@ const PlayerStrictIds = {
     id: z.number().int().min(1),
 };
 
-export const PlayerCreateWriteInputSchema = z.object({
-    ...PlayerStrictFields,
-}).strip();
+export const PlayerCreateWriteInputSchema = z
+    .object({
+        ...PlayerStrictFields,
+    })
+    .strip();
 
-export type PlayerCreateWriteInput = z.infer<typeof PlayerCreateWriteInputSchema>;
+export type PlayerCreateWriteInput = z.infer<
+    typeof PlayerCreateWriteInputSchema
+>;
 
-export const PlayerUpdateWriteInputSchema = z.object({
-    id: PlayerStrictIds.id,
-    ...PlayerStrictFields,
-}).strip();
+export const PlayerUpdateWriteInputSchema = z
+    .object({
+        id: PlayerStrictIds.id,
+        ...PlayerStrictFields,
+    })
+    .strip();
 
-export type PlayerUpdateWriteInput = z.infer<typeof PlayerUpdateWriteInputSchema>;
+export type PlayerUpdateWriteInput = z.infer<
+    typeof PlayerUpdateWriteInputSchema
+>;
 
 const PlayerUncheckedCreateInputWithoutIdSchema =
     PlayerUncheckedCreateInputObjectZodSchema.omit({ id: true });
@@ -67,4 +75,3 @@ const PlayerUpdateOneStrictZodSchema = PlayerUpdateOneZodSchema.extend({
 
 export const PlayerUpdateOneStrictSchema: z.ZodType<Prisma.PlayerUpdateArgs> =
     PlayerUpdateOneStrictZodSchema;
-

@@ -1,14 +1,7 @@
 'use client';
 
-import {
-    CodeHighlight,
-} from '@mantine/code-highlight';
-import {
-    Center,
-    Container,
-    Paper,
-    Title,
-} from '@mantine/core';
+import { CodeHighlight } from '@mantine/code-highlight';
+import { Center, Container, Paper, Title } from '@mantine/core';
 
 import type { UserWithRolePayload } from '@/lib/core/auth';
 

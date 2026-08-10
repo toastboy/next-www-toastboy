@@ -1,27 +1,17 @@
 'use client';
 
-import {
-    Box,
-    Button,
-    Group,
-    Paper,
-    Select,
-    Stack,
-} from '@mantine/core';
-import {
-    useForm,
-} from '@mantine/form';
-import {
-    useDisclosure,
-} from '@mantine/hooks';
-import {
-    notifications,
-} from '@mantine/notifications';
+import { Box, Button, Group, Paper, Select, Stack } from '@mantine/core';
+import { useForm } from '@mantine/form';
+import { useDisclosure } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 
 import { config } from '@/lib/config';
-import type { SetGameResultProxy, SetGameWinner } from '@/types/actions/SetGameResult';
+import type {
+    SetGameResultProxy,
+    SetGameWinner,
+} from '@/types/actions/SetGameResult';
 
 export interface GameResultFormProps {
     gameDayId: number;
@@ -37,7 +27,8 @@ export const GameResultForm = ({
     setGameResult,
 }: GameResultFormProps) => {
     const router = useRouter();
-    const [isSaving, { open: setSaving, close: setSaved }] = useDisclosure(false);
+    const [isSaving, { open: setSaving, close: setSaved }] =
+        useDisclosure(false);
     const form = useForm<{
         bibs: 'A' | 'B' | 'none';
         winner: 'A' | 'B' | 'draw' | 'none';
@@ -48,7 +39,10 @@ export const GameResultForm = ({
         },
     });
 
-    const handleSave = async (values: { bibs: 'A' | 'B' | 'none'; winner: 'A' | 'B' | 'draw' | 'none' }) => {
+    const handleSave = async (values: {
+        bibs: 'A' | 'B' | 'none';
+        winner: 'A' | 'B' | 'draw' | 'none';
+    }) => {
         const notificationId = 'game-result-update';
         notifications.show({
             id: notificationId,
@@ -80,7 +74,8 @@ export const GameResultForm = ({
             form.resetDirty(values);
             router.refresh();
         } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : 'Failed to update game';
+            const errorMessage =
+                err instanceof Error ? err.message : 'Failed to update game';
             notifications.update({
                 id: notificationId,
                 color: 'red',
@@ -110,7 +105,9 @@ export const GameResultForm = ({
                             ]}
                             value={form.values.bibs}
                             /* v8 ignore next -- allowDeselect={false} means value is never null */
-                            onChange={(value) => form.setFieldValue('bibs', (value ?? 'none'))}
+                            onChange={(value) =>
+                                form.setFieldValue('bibs', value ?? 'none')
+                            }
                             allowDeselect={false}
                         />
                         <Select
@@ -123,7 +120,9 @@ export const GameResultForm = ({
                             ]}
                             value={form.values.winner}
                             /* v8 ignore next -- allowDeselect={false} means value is never null */
-                            onChange={(value) => form.setFieldValue('winner', (value ?? 'none'))}
+                            onChange={(value) =>
+                                form.setFieldValue('winner', value ?? 'none')
+                            }
                             allowDeselect={false}
                         />
                     </Group>

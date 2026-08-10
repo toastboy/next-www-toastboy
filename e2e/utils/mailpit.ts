@@ -19,11 +19,16 @@ interface MailpitMessageDetail {
 export async function waitForMessage(
     request: APIRequestContext,
     subject: string,
-    { attempts = 30, intervalMs = 1000 }: { attempts?: number; intervalMs?: number } = {},
+    {
+        attempts = 30,
+        intervalMs = 1000,
+    }: { attempts?: number; intervalMs?: number } = {},
 ): Promise<MailpitMessage | undefined> {
     for (let i = 0; i < attempts; i++) {
-        const res = await request.get(`${MAILPIT_URL}/api/v1/messages?limit=50`);
-        const data = await res.json() as { messages?: MailpitMessage[] };
+        const res = await request.get(
+            `${MAILPIT_URL}/api/v1/messages?limit=50`,
+        );
+        const data = (await res.json()) as { messages?: MailpitMessage[] };
         const match = data.messages?.find((m) => m.Subject === subject);
         if (match) return match;
         await new Promise((resolve) => setTimeout(resolve, intervalMs));
@@ -45,6 +50,8 @@ export async function getMessageDetail(
 /**
  * Deletes all messages from Mailpit.
  */
-export async function deleteAllMessages(request: APIRequestContext): Promise<void> {
+export async function deleteAllMessages(
+    request: APIRequestContext,
+): Promise<void> {
     await request.delete(`${MAILPIT_URL}/api/v1/messages`);
 }

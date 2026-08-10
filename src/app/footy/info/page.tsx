@@ -1,10 +1,4 @@
-import {
-    Anchor,
-    Container,
-    Flex,
-    Text,
-    Title,
-} from '@mantine/core';
+import { Anchor, Container, Flex, Text, Title } from '@mantine/core';
 import { Suspense } from 'react';
 
 import { sendEnquiry } from '@/actions/sendEnquiry';
@@ -15,25 +9,16 @@ export const metadata = { title: 'Info' };
 const Page = () => {
     return (
         <>
-            <Flex
-                gap="md"
-                align="flex-start"
-                direction="column"
-                p="xl"
-            >
-                <Title
-                    order={1}
-                >
-                    Toastboy FC: Tuesday Night Football
-                </Title>
+            <Flex gap="md" align="flex-start" direction="column" p="xl">
+                <Title order={1}>Toastboy FC: Tuesday Night Football</Title>
                 <Text>
-                    We play a friendly five-a-side footy game amongst ourselves every
-                    Tuesday night between 6 and 7pm at the{' '}
-                    <Anchor href='http://www.kelseykerridge.co.uk/'>
+                    We play a friendly five-a-side footy game amongst ourselves
+                    every Tuesday night between 6 and 7pm at the{' '}
+                    <Anchor href="http://www.kelseykerridge.co.uk/">
                         Kelsey Kerridge Sports Centre
                     </Anchor>{' '}
-                    in Cambridge (for our international visitors, that's "soccer",
-                    "center" and "Cambridge, England").
+                    in Cambridge (for our international visitors, that's
+                    "soccer", "center" and "Cambridge, England").
                 </Text>
                 <Container fluid>
                     <iframe
@@ -46,46 +31,51 @@ const Page = () => {
                     />
                 </Container>
                 <Text>
-                    <Anchor
-                        href='/footy/rules'
-                    >
+                    <Anchor href="/footy/rules">
                         Here's an outline of the rules of our games.
-                    </Anchor>
-                    {' '}The standard of play's not too high, although we're not
+                    </Anchor>{' '}
+                    The standard of play's not too high, although we're not
                     complete duffers - but we do play to win. After all, there's
-                    the glory of the trophies which are presented at the sumptuous
-                    end-of-year awards ceremonies at stake. Here's how it works.
-                    Every player who's on the winning team each week gets 3 points,
-                    or 1 for a draw. There are 3 trophies up for grabs:
+                    the glory of the trophies which are presented at the
+                    sumptuous end-of-year awards ceremonies at stake. Here's how
+                    it works. Every player who's on the winning team each week
+                    gets 3 points, or 1 for a draw. There are 3 trophies up for
+                    grabs:
                 </Text>
                 <Text>
-                    <Anchor
-                        href='/footy/points'
-                    >
-                        Points
-                    </Anchor>
-                    . Simple - whoever has the biggest points total at the end of the year wins the Pewterware.
+                    <Anchor href="/footy/points">Points</Anchor>. Simple -
+                    whoever has the biggest points total at the end of the year
+                    wins the Pewterware.
                 </Text>
                 <Text>
-                    <Anchor href='/footy/averages'>Averages</Anchor>. Just the points total divided by the number of games played, but note you have to have played a minimum of 5 games in a year to qualify.
+                    <Anchor href="/footy/averages">Averages</Anchor>. Just the
+                    points total divided by the number of games played, but note
+                    you have to have played a minimum of 5 games in a year to
+                    qualify.
                 </Text>
                 <Text>
-                    <Anchor
-                        href='/footy/stalwart'
-                    >
-                        Stalwart
-                    </Anchor>
-                    . To encourage people to play regularly. The winner is the one
+                    <Anchor href="/footy/stalwart">Stalwart</Anchor>. To
+                    encourage people to play regularly. The winner is the one
                     who's played the most games in a year.
                 </Text>
                 <Text>
-                    Each week an automated email goes out, inviting players to log in to the site and say whether or not they can play. Once we have enough players, we run the picker script which picks the fairest possible teams based on the age and number of wins in the last 10 games played of each player. I ask for four pounds fifty from each player to cover the cost of the hall booking and things like footballs and bibs. We nearly always go for a pint after the game: everyone is welcome. We usually go to the Grain and Hop Store and then often for a bite to eat.
+                    Each week an automated email goes out, inviting players to
+                    log in to the site and say whether or not they can play.
+                    Once we have enough players, we run the picker script which
+                    picks the fairest possible teams based on the age and number
+                    of wins in the last 10 games played of each player. I ask
+                    for four pounds fifty from each player to cover the cost of
+                    the hall booking and things like footballs and bibs. We
+                    nearly always go for a pint after the game: everyone is
+                    welcome. We usually go to the Grain and Hop Store and then
+                    often for a bite to eat.
                 </Text>
                 <Text>
-                    There's an extra little bonus something at the award ceremony
-                    for the person who has the best average response time
-                    throughout the year: keep track of where you stand in the{' '}
-                    <Anchor href='/footy/speedy'>Captain Speedy</Anchor> table.
+                    There's an extra little bonus something at the award
+                    ceremony for the person who has the best average response
+                    time throughout the year: keep track of where you stand in
+                    the <Anchor href="/footy/speedy">Captain Speedy</Anchor>{' '}
+                    table.
                 </Text>
                 <Text>
                     We're always looking for players, so if you want to join the

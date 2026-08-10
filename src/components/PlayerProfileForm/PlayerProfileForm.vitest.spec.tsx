@@ -1,6 +1,4 @@
-import {
-    notifications,
-} from '@mantine/notifications';
+import { notifications } from '@mantine/notifications';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
@@ -20,7 +18,10 @@ import { defaultClubSupporterDataList } from '@/tests/mocks/data/clubSupporterDa
 import { defaultCountryList } from '@/tests/mocks/data/country';
 import { defaultCountrySupporterDataList } from '@/tests/mocks/data/countrySupporterData';
 import { defaultPlayer } from '@/tests/mocks/data/player';
-import { createMockPlayerExtraEmail, defaultPlayerExtraEmails } from '@/tests/mocks/data/playerExtraEmail';
+import {
+    createMockPlayerExtraEmail,
+    defaultPlayerExtraEmails,
+} from '@/tests/mocks/data/playerExtraEmail';
 
 describe('PlayerProfileForm', () => {
     const playerWithAccountEmail = {
@@ -28,9 +29,7 @@ describe('PlayerProfileForm', () => {
         accountEmail: 'player@example.com',
     };
 
-    const mockUpdatePlayer = vi.fn(
-        async () => Promise.resolve(defaultPlayer),
-    );
+    const mockUpdatePlayer = vi.fn(async () => Promise.resolve(defaultPlayer));
 
     beforeEach(() => {
         vi.clearAllMocks();
@@ -52,19 +51,45 @@ describe('PlayerProfileForm', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByRole('textbox', { name: /^Name/ })).toBeInTheDocument();
-        expect(screen.getByRole('switch', { name: /anonymous/i })).toBeInTheDocument();
-        expect(screen.getByRole('switch', { name: /retired/i })).toBeInTheDocument();
-        expect(screen.getByRole('textbox', { name: /account email/i })).toBeInTheDocument();
-        expect(screen.getByRole('textbox', { name: /extra email address 1/i })).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /delete extra email address 1/i })).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: 'Add another email' })).toBeInTheDocument();
+        expect(
+            screen.getByRole('textbox', { name: /^Name/ }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('switch', { name: /anonymous/i }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('switch', { name: /retired/i }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('textbox', { name: /account email/i }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('textbox', { name: /extra email address 1/i }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', {
+                name: /delete extra email address 1/i,
+            }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', { name: 'Add another email' }),
+        ).toBeInTheDocument();
         expect(screen.getByLabelText('Year of Birth')).toBeInTheDocument();
-        expect(screen.getByRole('combobox', { name: 'National Team(s)' })).toBeInTheDocument();
-        expect(screen.getByRole('combobox', { name: 'Club(s)' })).toBeInTheDocument();
-        expect(screen.getByRole('textbox', { name: /^Comment/ })).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: 'Save Changes' })).toBeInTheDocument();
-        expect(screen.getByRole('link', { name: 'Delete Account' })).toBeInTheDocument();
+        expect(
+            screen.getByRole('combobox', { name: 'National Team(s)' }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('combobox', { name: 'Club(s)' }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('textbox', { name: /^Comment/ }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', { name: 'Save Changes' }),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('link', { name: 'Delete Account' }),
+        ).toBeInTheDocument();
     });
 
     it('submits the form and shows a success notification', async () => {
@@ -87,7 +112,9 @@ describe('PlayerProfileForm', () => {
         );
 
         const nameInput = screen.getByRole('textbox', { name: /^Name/ });
-        const submitButton = screen.getByRole('button', { name: 'Save Changes' });
+        const submitButton = screen.getByRole('button', {
+            name: 'Save Changes',
+        });
 
         await user.clear(nameInput);
         await user.type(nameInput, `${defaultPlayer.name ?? ''} Jr`);
@@ -104,10 +131,16 @@ describe('PlayerProfileForm', () => {
                     addedExtraEmails: [],
                     anonymous: playerWithAccountEmail.anonymous,
                     born: playerWithAccountEmail.born,
-                    clubs: defaultClubSupporterDataList.map((entry) => entry.clubId),
-                    comment: "",
-                    countries: defaultCountrySupporterDataList.map((entry) => entry.country.fifaCode),
-                    extraEmails: defaultPlayerExtraEmails.map((entry) => entry.email),
+                    clubs: defaultClubSupporterDataList.map(
+                        (entry) => entry.clubId,
+                    ),
+                    comment: '',
+                    countries: defaultCountrySupporterDataList.map(
+                        (entry) => entry.country.fifaCode,
+                    ),
+                    extraEmails: defaultPlayerExtraEmails.map(
+                        (entry) => entry.email,
+                    ),
                     finished: playerWithAccountEmail.finished,
                     name: `${playerWithAccountEmail.name ?? ''} Jr`,
                     removedExtraEmails: [],
@@ -187,9 +220,15 @@ describe('PlayerProfileForm', () => {
             </Wrapper>,
         );
 
-        await user.click(screen.getByRole('button', { name: /delete extra email address 1/i }));
+        await user.click(
+            screen.getByRole('button', {
+                name: /delete extra email address 1/i,
+            }),
+        );
 
-        expect(screen.queryByDisplayValue('gary.player@example.com')).not.toBeInTheDocument();
+        expect(
+            screen.queryByDisplayValue('gary.player@example.com'),
+        ).not.toBeInTheDocument();
     });
 
     it('adds a new extra email input when the add button is clicked', async () => {
@@ -210,12 +249,20 @@ describe('PlayerProfileForm', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByRole('textbox', { name: /extra email address 2/i })).toBeInTheDocument();
-        expect(screen.queryByRole('textbox', { name: /extra email address 3/i })).not.toBeInTheDocument();
+        expect(
+            screen.getByRole('textbox', { name: /extra email address 2/i }),
+        ).toBeInTheDocument();
+        expect(
+            screen.queryByRole('textbox', { name: /extra email address 3/i }),
+        ).not.toBeInTheDocument();
 
-        await user.click(screen.getByRole('button', { name: 'Add another email' }));
+        await user.click(
+            screen.getByRole('button', { name: 'Add another email' }),
+        );
 
-        expect(screen.getByRole('textbox', { name: /extra email address 3/i })).toBeInTheDocument();
+        expect(
+            screen.getByRole('textbox', { name: /extra email address 3/i }),
+        ).toBeInTheDocument();
     });
 
     it('submits with retired toggled on, passing a non-null finished date', async () => {
@@ -236,7 +283,9 @@ describe('PlayerProfileForm', () => {
             </Wrapper>,
         );
 
-        const submitButton = screen.getByRole('button', { name: 'Save Changes' });
+        const submitButton = screen.getByRole('button', {
+            name: 'Save Changes',
+        });
         await user.click(screen.getByRole('switch', { name: /retired/i }));
         await waitFor(() => {
             expect(submitButton).toBeEnabled();
@@ -246,7 +295,9 @@ describe('PlayerProfileForm', () => {
         await waitFor(() => {
             expect(mockUpdatePlayer).toHaveBeenCalledWith(
                 playerWithAccountEmail.id,
-                expect.objectContaining({ finished: expect.any(Object) as Date }),
+                expect.objectContaining({
+                    finished: expect.any(Object) as Date,
+                }),
             );
         });
     });
@@ -267,8 +318,12 @@ describe('PlayerProfileForm', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByRole('textbox', { name: /extra email address 1/i })).toBeInTheDocument();
-        expect(screen.queryByRole('textbox', { name: /extra email address 2/i })).not.toBeInTheDocument();
+        expect(
+            screen.getByRole('textbox', { name: /extra email address 1/i }),
+        ).toBeInTheDocument();
+        expect(
+            screen.queryByRole('textbox', { name: /extra email address 2/i }),
+        ).not.toBeInTheDocument();
     });
 
     it('shows a question-mark icon for an unverified extra email (verificationPending)', () => {
@@ -294,11 +349,17 @@ describe('PlayerProfileForm', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByLabelText(/Verification email has been sent/i)).toBeInTheDocument();
+        expect(
+            screen.getByLabelText(/Verification email has been sent/i),
+        ).toBeInTheDocument();
     });
 
     it('groups clubs with null country under "Unknown"', () => {
-        const unknownClub = createMockClub({ id: 999, clubName: 'Mystery FC', country: null });
+        const unknownClub = createMockClub({
+            id: 999,
+            clubName: 'Mystery FC',
+            country: null,
+        });
 
         render(
             <Wrapper>
@@ -315,7 +376,9 @@ describe('PlayerProfileForm', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByRole('combobox', { name: 'Club(s)' })).toBeInTheDocument();
+        expect(
+            screen.getByRole('combobox', { name: 'Club(s)' }),
+        ).toBeInTheDocument();
     });
 
     it('shows verified-email notification when verifiedEmail prop is provided', async () => {
@@ -339,7 +402,10 @@ describe('PlayerProfileForm', () => {
 
         await waitFor(() => {
             expect(notificationShowSpy).toHaveBeenCalledWith(
-                expect.objectContaining({ title: 'Email verified', color: 'teal' }),
+                expect.objectContaining({
+                    title: 'Email verified',
+                    color: 'teal',
+                }),
             );
         });
     });
@@ -368,8 +434,12 @@ describe('PlayerProfileForm', () => {
         );
 
         expect(screen.getByRole('textbox', { name: /^Name/ })).toHaveValue('');
-        expect(screen.getByRole('textbox', { name: /account email/i })).toHaveValue('');
-        expect(screen.getByRole('switch', { name: /anonymous/i })).not.toBeChecked();
+        expect(
+            screen.getByRole('textbox', { name: /account email/i }),
+        ).toHaveValue('');
+        expect(
+            screen.getByRole('switch', { name: /anonymous/i }),
+        ).not.toBeChecked();
         expect(screen.getByLabelText('Year of Birth')).toHaveValue('');
     });
 });

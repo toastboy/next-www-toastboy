@@ -41,8 +41,14 @@ describe('RichTextMailBody', () => {
             </Wrapper>,
         );
 
-        expect(screen.queryByTestId('rich-text-editor')).not.toBeInTheDocument();
-        expect(screen.queryByTestId('rich-text-toolbar')).not.toBeInTheDocument();
-        expect(screen.queryByTestId('rich-text-content')).not.toBeInTheDocument();
+        expect(
+            screen.queryByTestId('rich-text-editor'),
+        ).not.toBeInTheDocument();
+        expect(
+            screen.queryByTestId('rich-text-toolbar'),
+        ).not.toBeInTheDocument();
+        expect(
+            screen.queryByTestId('rich-text-content'),
+        ).not.toBeInTheDocument();
     });
 });

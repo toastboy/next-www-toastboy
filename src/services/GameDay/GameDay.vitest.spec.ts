@@ -5,7 +5,10 @@ import { vi } from 'vitest';
 
 import gameDayService from '@/services/GameDay';
 import { defaultGameDay, defaultGameDayList } from '@/tests/mocks/data/gameDay';
-import type { GameDayUpsertInput, GameDayWriteInput } from '@/types/GameDayStrictSchema';
+import type {
+    GameDayUpsertInput,
+    GameDayWriteInput,
+} from '@/types/GameDayStrictSchema';
 
 describe('GameDayService', () => {
     beforeEach(() => {
@@ -14,16 +17,22 @@ describe('GameDayService', () => {
 
     describe('get', () => {
         it('should retrieve the correct GameDay with id 6', async () => {
-            (prisma.gameDay.findUnique as Mock).mockResolvedValueOnce(defaultGameDayList[5]);
+            (prisma.gameDay.findUnique as Mock).mockResolvedValueOnce(
+                defaultGameDayList[5],
+            );
             const result = await gameDayService.get(6);
-            expect(prisma.gameDay.findUnique).toHaveBeenCalledWith({ where: { id: 6 } });
+            expect(prisma.gameDay.findUnique).toHaveBeenCalledWith({
+                where: { id: 6 },
+            });
             expect(result).toEqual(defaultGameDayList[5]);
         });
 
         it('should return null for id 107', async () => {
             (prisma.gameDay.findUnique as Mock).mockResolvedValueOnce(null);
             const result = await gameDayService.get(107);
-            expect(prisma.gameDay.findUnique).toHaveBeenCalledWith({ where: { id: 107 } });
+            expect(prisma.gameDay.findUnique).toHaveBeenCalledWith({
+                where: { id: 107 },
+            });
             expect(result).toBeNull();
         });
     });
@@ -35,7 +44,10 @@ describe('GameDayService', () => {
             const fixture = [defaultGameDay, { ...defaultGameDay, id: 2 }];
             (prisma.gameDay.findMany as Mock).mockResolvedValueOnce(fixture);
             const result = await gameDayService.getAll();
-            expect(prisma.gameDay.findMany).toHaveBeenCalledWith({ where: {}, ...ORDER });
+            expect(prisma.gameDay.findMany).toHaveBeenCalledWith({
+                where: {},
+                ...ORDER,
+            });
             expect(result).toEqual(fixture);
         });
 
@@ -43,14 +55,20 @@ describe('GameDayService', () => {
             const fixture = [defaultGameDay, { ...defaultGameDay, id: 2 }];
             (prisma.gameDay.findMany as Mock).mockResolvedValueOnce(fixture);
             const result = await gameDayService.getAll({ game: true });
-            expect(prisma.gameDay.findMany).toHaveBeenCalledWith({ where: { game: true }, ...ORDER });
+            expect(prisma.gameDay.findMany).toHaveBeenCalledWith({
+                where: { game: true },
+                ...ORDER,
+            });
             expect(result).toEqual(fixture);
         });
 
         it('should filter GameDays by game=false', async () => {
             (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([]);
             const result = await gameDayService.getAll({ game: false });
-            expect(prisma.gameDay.findMany).toHaveBeenCalledWith({ where: { game: false }, ...ORDER });
+            expect(prisma.gameDay.findMany).toHaveBeenCalledWith({
+                where: { game: false },
+                ...ORDER,
+            });
             expect(result).toEqual([]);
         });
 
@@ -58,58 +76,92 @@ describe('GameDayService', () => {
             const fixture = [defaultGameDay, { ...defaultGameDay, id: 2 }];
             (prisma.gameDay.findMany as Mock).mockResolvedValueOnce(fixture);
             const result = await gameDayService.getAll({ year: 2021 });
-            expect(prisma.gameDay.findMany).toHaveBeenCalledWith({ where: { year: 2021 }, ...ORDER });
+            expect(prisma.gameDay.findMany).toHaveBeenCalledWith({
+                where: { year: 2021 },
+                ...ORDER,
+            });
             expect(result).toEqual(fixture);
         });
 
         it('should filter GameDays by year 9999 and return empty array', async () => {
             (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([]);
             const result = await gameDayService.getAll({ year: 9999 });
-            expect(prisma.gameDay.findMany).toHaveBeenCalledWith({ where: { year: 9999 }, ...ORDER });
+            expect(prisma.gameDay.findMany).toHaveBeenCalledWith({
+                where: { year: 9999 },
+                ...ORDER,
+            });
             expect(result).toHaveLength(0);
         });
 
         it('should combine year and game filters', async () => {
             const fixture = [defaultGameDay];
             (prisma.gameDay.findMany as Mock).mockResolvedValueOnce(fixture);
-            const result = await gameDayService.getAll({ year: 2021, game: true });
-            expect(prisma.gameDay.findMany).toHaveBeenCalledWith({ where: { year: 2021, game: true }, ...ORDER });
+            const result = await gameDayService.getAll({
+                year: 2021,
+                game: true,
+            });
+            expect(prisma.gameDay.findMany).toHaveBeenCalledWith({
+                where: { year: 2021, game: true },
+                ...ORDER,
+            });
             expect(result).toEqual(fixture);
         });
 
         it('should filter GameDays where mailSent is not null', async () => {
-            (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([defaultGameDay]);
+            (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([
+                defaultGameDay,
+            ]);
             const result = await gameDayService.getAll({ mailSent: true });
-            expect(prisma.gameDay.findMany).toHaveBeenCalledWith({ where: { mailSent: { not: null } }, ...ORDER });
+            expect(prisma.gameDay.findMany).toHaveBeenCalledWith({
+                where: { mailSent: { not: null } },
+                ...ORDER,
+            });
             expect(result).toHaveLength(1);
         });
 
         it('should filter GameDays where mailSent is null', async () => {
             (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([]);
             const result = await gameDayService.getAll({ mailSent: false });
-            expect(prisma.gameDay.findMany).toHaveBeenCalledWith({ where: { mailSent: null }, ...ORDER });
+            expect(prisma.gameDay.findMany).toHaveBeenCalledWith({
+                where: { mailSent: null },
+                ...ORDER,
+            });
             expect(result).toHaveLength(0);
         });
 
         it('should filter by fromDate', async () => {
             const from = new Date(Date.UTC(2024, 5, 1));
-            (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([defaultGameDay]);
+            (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([
+                defaultGameDay,
+            ]);
             await gameDayService.getAll({ fromDate: from });
-            expect(prisma.gameDay.findMany).toHaveBeenCalledWith({ where: { date: { gte: from } }, ...ORDER });
+            expect(prisma.gameDay.findMany).toHaveBeenCalledWith({
+                where: { date: { gte: from } },
+                ...ORDER,
+            });
         });
 
         it('should filter by beforeDate', async () => {
             const to = new Date(Date.UTC(2025, 0, 1));
-            (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([defaultGameDay]);
+            (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([
+                defaultGameDay,
+            ]);
             await gameDayService.getAll({ beforeDate: to });
-            expect(prisma.gameDay.findMany).toHaveBeenCalledWith({ where: { date: { lt: to } }, ...ORDER });
+            expect(prisma.gameDay.findMany).toHaveBeenCalledWith({
+                where: { date: { lt: to } },
+                ...ORDER,
+            });
         });
 
         it('should combine fromDate, beforeDate, and game filters', async () => {
             const from = new Date(Date.UTC(2024, 0, 1));
             const to = new Date(Date.UTC(2025, 0, 1));
             (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([]);
-            await gameDayService.getAll({ game: false, fromDate: from, beforeDate: to });
+            await gameDayService.getAll({
+                game: false,
+                fromDate: from,
+                beforeDate: to,
+            });
             expect(prisma.gameDay.findMany).toHaveBeenCalledWith({
                 where: { game: false, date: { gte: from, lt: to } },
                 ...ORDER,
@@ -180,16 +232,24 @@ describe('GameDayService', () => {
         });
 
         it('should throw when aggregate fails', async () => {
-            (prisma.gameDay.aggregate as Mock).mockRejectedValue(new Error('Database failure'));
+            (prisma.gameDay.aggregate as Mock).mockRejectedValue(
+                new Error('Database failure'),
+            );
 
-            await expect(gameDayService.getIdRangeForYear(2024)).rejects.toThrow('Database failure');
+            await expect(
+                gameDayService.getIdRangeForYear(2024),
+            ).rejects.toThrow('Database failure');
         });
     });
 
     describe('getByDate', () => {
         it('should retrieve the correct GameDay with date 2021-01-03', async () => {
-            (prisma.gameDay.findFirst as Mock).mockResolvedValue(defaultGameDay);
-            const result = await gameDayService.getByDate(new Date('2021-01-03'));
+            (prisma.gameDay.findFirst as Mock).mockResolvedValue(
+                defaultGameDay,
+            );
+            const result = await gameDayService.getByDate(
+                new Date('2021-01-03'),
+            );
             expect(result).toEqual(defaultGameDay);
             expect(prisma.gameDay.findFirst).toHaveBeenCalledWith({
                 where: {
@@ -201,7 +261,9 @@ describe('GameDayService', () => {
 
     describe('getCurrent', () => {
         it('should return the correct, current GameDay where one exists', async () => {
-            (prisma.gameDay.findFirst as Mock).mockResolvedValue(defaultGameDay);
+            (prisma.gameDay.findFirst as Mock).mockResolvedValue(
+                defaultGameDay,
+            );
             const result = await gameDayService.getCurrent();
             expect(result).toEqual(defaultGameDay);
             expect(prisma.gameDay.findFirst).toHaveBeenCalledWith({
@@ -225,7 +287,9 @@ describe('GameDayService', () => {
 
     describe('getCurrentYear', () => {
         it('returns the year of the current game day', async () => {
-            (prisma.gameDay.findFirst as Mock).mockResolvedValue(defaultGameDay); // date: 2021-01-03
+            (prisma.gameDay.findFirst as Mock).mockResolvedValue(
+                defaultGameDay,
+            ); // date: 2021-01-03
             const result = await gameDayService.getCurrentYear();
             expect(result).toBe(2021);
         });
@@ -239,7 +303,9 @@ describe('GameDayService', () => {
 
     describe('getUpcoming', () => {
         it('should return the next upcoming GameDay with a game scheduled', async () => {
-            (prisma.gameDay.findFirst as Mock).mockResolvedValue(defaultGameDayList[0]);
+            (prisma.gameDay.findFirst as Mock).mockResolvedValue(
+                defaultGameDayList[0],
+            );
             const from = new Date('2021-01-01');
             const result = await gameDayService.getUpcoming(from);
             expect(result).toEqual(defaultGameDayList[0]);
@@ -254,21 +320,29 @@ describe('GameDayService', () => {
 
         it('should return null when no upcoming GameDay exists', async () => {
             (prisma.gameDay.findFirst as Mock).mockResolvedValue(null);
-            const result = await gameDayService.getUpcoming(new Date('2030-01-01'));
+            const result = await gameDayService.getUpcoming(
+                new Date('2030-01-01'),
+            );
             expect(result).toBeNull();
         });
     });
 
     describe('getPrevious', () => {
         it('should return the correct previous GameDay for gameDayId 6', async () => {
-            (prisma.gameDay.findUnique as Mock).mockResolvedValueOnce(defaultGameDayList[5]);
-            (prisma.gameDay.findFirst as Mock).mockResolvedValue(defaultGameDayList[4]);
+            (prisma.gameDay.findUnique as Mock).mockResolvedValueOnce(
+                defaultGameDayList[5],
+            );
+            (prisma.gameDay.findFirst as Mock).mockResolvedValue(
+                defaultGameDayList[4],
+            );
             const result = await gameDayService.getPrevious(6);
             expect(result).toEqual(defaultGameDayList[4]);
         });
 
         it('should return null for gameDayId 1', async () => {
-            (prisma.gameDay.findUnique as Mock).mockResolvedValueOnce(defaultGameDayList[0]);
+            (prisma.gameDay.findUnique as Mock).mockResolvedValueOnce(
+                defaultGameDayList[0],
+            );
             (prisma.gameDay.findFirst as Mock).mockResolvedValue(null);
             const result = await gameDayService.getPrevious(1);
             expect(result).toBeNull();
@@ -284,7 +358,9 @@ describe('GameDayService', () => {
 
     describe('getLatest', () => {
         it('should return the most recent GameDay ordered by date descending', async () => {
-            (prisma.gameDay.findFirst as Mock).mockResolvedValue(defaultGameDayList[99]);
+            (prisma.gameDay.findFirst as Mock).mockResolvedValue(
+                defaultGameDayList[99],
+            );
             const result = await gameDayService.getLatest();
             expect(result).toEqual(defaultGameDayList[99]);
             expect(prisma.gameDay.findFirst).toHaveBeenCalledWith({
@@ -303,14 +379,20 @@ describe('GameDayService', () => {
 
     describe('getNext', () => {
         it('should return the correct next GameDay for gameDayId 6', async () => {
-            (prisma.gameDay.findUnique as Mock).mockResolvedValueOnce(defaultGameDayList[5]);
-            (prisma.gameDay.findFirst as Mock).mockResolvedValue(defaultGameDayList[6]);
+            (prisma.gameDay.findUnique as Mock).mockResolvedValueOnce(
+                defaultGameDayList[5],
+            );
+            (prisma.gameDay.findFirst as Mock).mockResolvedValue(
+                defaultGameDayList[6],
+            );
             const result = await gameDayService.getNext(6);
             expect(result).toEqual(defaultGameDayList[6]);
         });
 
         it('should return null for the last gameDayId 100', async () => {
-            (prisma.gameDay.findUnique as Mock).mockResolvedValueOnce(defaultGameDayList[99]);
+            (prisma.gameDay.findUnique as Mock).mockResolvedValueOnce(
+                defaultGameDayList[99],
+            );
             (prisma.gameDay.findFirst as Mock).mockResolvedValue(null);
             const result = await gameDayService.getNext(100);
             expect(result).toBeNull();
@@ -332,7 +414,9 @@ describe('GameDayService', () => {
             expect(result).toHaveLength(2);
             expect(prisma.gameDay.findMany).toHaveBeenCalledWith(
                 expect.objectContaining({
-                    where: expect.not.objectContaining({ year: expect.anything() as unknown }) as unknown,
+                    where: expect.not.objectContaining({
+                        year: expect.anything() as unknown,
+                    }) as unknown,
                 }),
             );
         });
@@ -345,7 +429,10 @@ describe('GameDayService', () => {
             expect(prisma.gameDay.count).toHaveBeenCalledWith({
                 where: {
                     game: true,
-                    date: { gte: new Date(Date.UTC(2021, 0, 1)), lt: new Date(Date.UTC(2022, 0, 1)) },
+                    date: {
+                        gte: new Date(Date.UTC(2021, 0, 1)),
+                        lt: new Date(Date.UTC(2022, 0, 1)),
+                    },
                 },
             });
             expect(result).toBe(52);
@@ -366,7 +453,10 @@ describe('GameDayService', () => {
             expect(prisma.gameDay.count).toHaveBeenCalledWith({
                 where: {
                     game: true,
-                    date: { gte: new Date(Date.UTC(9999, 0, 1)), lt: new Date(Date.UTC(10000, 0, 1)) },
+                    date: {
+                        gte: new Date(Date.UTC(9999, 0, 1)),
+                        lt: new Date(Date.UTC(10000, 0, 1)),
+                    },
                 },
             });
             expect(result).toBe(0);
@@ -556,26 +646,34 @@ describe('GameDayService', () => {
             ]);
             const result = await gameDayService.getSeasonEnders(until);
             expect(result).toEqual([980]);
-            expect(prisma.gameDay.groupBy).toHaveBeenCalledWith(expect.objectContaining({
-                where: {
-                    game: true,
-                    date: { lte: until },
-                },
-            }));
+            expect(prisma.gameDay.groupBy).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    where: {
+                        game: true,
+                        date: { lte: until },
+                    },
+                }),
+            );
         });
     });
 
     describe('getAllYears', () => {
         it('should return the correct, complete list of a single year, 2021', async () => {
-            (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([{ year: 2021 }]);
+            (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([
+                { year: 2021 },
+            ]);
             const result = await gameDayService.getAllYears({});
             expect(result).toHaveLength(1);
             expect(result[0]).toBe(2021);
         });
 
         it('should return the correct list of two values when includeAllTime is true', async () => {
-            (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([{ year: 2021 }]);
-            const result = await gameDayService.getAllYears({ includeAllTime: true });
+            (prisma.gameDay.findMany as Mock).mockResolvedValueOnce([
+                { year: 2021 },
+            ]);
+            const result = await gameDayService.getAllYears({
+                includeAllTime: true,
+            });
             expect(result).toHaveLength(2);
             expect(result).toContain(2021);
             expect(result).toContain(0);
@@ -593,7 +691,9 @@ describe('GameDayService', () => {
                 { ...defaultGameDay, year: 2021 },
                 { ...defaultGameDay, year: 2022 },
             ]);
-            const result = await gameDayService.getAllYears({ mostRecentFirst: true });
+            const result = await gameDayService.getAllYears({
+                mostRecentFirst: true,
+            });
             expect(result).toEqual([2023, 2022, 2021]);
         });
 
@@ -602,14 +702,19 @@ describe('GameDayService', () => {
                 { ...defaultGameDay, year: 2022 },
                 { ...defaultGameDay, year: 2021 },
             ]);
-            const result = await gameDayService.getAllYears({ mostRecentFirst: true, includeAllTime: true });
+            const result = await gameDayService.getAllYears({
+                mostRecentFirst: true,
+                includeAllTime: true,
+            });
             expect(result).toEqual([0, 2022, 2021]);
         });
     });
 
     describe('getYear', () => {
         it('should return the year when called with a year that has games played or to be played', async () => {
-            (prisma.gameDay.findFirst as Mock).mockResolvedValue(defaultGameDay);
+            (prisma.gameDay.findFirst as Mock).mockResolvedValue(
+                defaultGameDay,
+            );
             const result = await gameDayService.getYear(2021);
             expect(result).toBe(2021);
         });
@@ -627,7 +732,10 @@ describe('GameDayService', () => {
                 ...defaultGameDay,
                 pickerGamesHistory: 10,
             };
-            (prisma.gameDay.create as Mock).mockResolvedValueOnce({ ...newGameDay, id: 101 });
+            (prisma.gameDay.create as Mock).mockResolvedValueOnce({
+                ...newGameDay,
+                id: 101,
+            });
             const result = await gameDayService.create(newGameDay);
             expect(prisma.gameDay.create).toHaveBeenCalledWith({
                 data: {
@@ -642,17 +750,27 @@ describe('GameDayService', () => {
         });
 
         it('should refuse to create a GameDay with invalid data', async () => {
-            await expect(gameDayService.create({
-                ...defaultGameDay,
-                pickerGamesHistory: 7,
-            } as unknown as GameDayWriteInput)).rejects.toThrow();
+            await expect(
+                gameDayService.create({
+                    ...defaultGameDay,
+                    pickerGamesHistory: 7,
+                } as unknown as GameDayWriteInput),
+            ).rejects.toThrow();
         });
     });
 
     describe('upsert', () => {
         it('should create a GameDay with a database-generated id when where.id is missing', async () => {
-            const gameDay: GameDayUpsertInput = { ...defaultGameDay, id: 1001, pickerGamesHistory: 10 };
-            const expected = { ...defaultGameDay, pickerGamesHistory: 10, id: 101 };
+            const gameDay: GameDayUpsertInput = {
+                ...defaultGameDay,
+                id: 1001,
+                pickerGamesHistory: 10,
+            };
+            const expected = {
+                ...defaultGameDay,
+                pickerGamesHistory: 10,
+                id: 101,
+            };
             (prisma.gameDay.upsert as Mock).mockResolvedValueOnce(expected);
             const result = await gameDayService.upsert(gameDay);
             expect(result).toEqual(expected);
@@ -664,7 +782,9 @@ describe('GameDayService', () => {
                 id: 6,
                 pickerGamesHistory: 10,
             };
-            (prisma.gameDay.upsert as Mock).mockResolvedValueOnce(updatedGameDay);
+            (prisma.gameDay.upsert as Mock).mockResolvedValueOnce(
+                updatedGameDay,
+            );
             const result = await gameDayService.upsert(updatedGameDay);
             expect(result).toEqual(updatedGameDay);
         });
@@ -739,24 +859,28 @@ describe('GameDayService', () => {
                     },
                 });
                 expect(result.mailSent).toEqual(now);
-            }
-            finally {
+            } finally {
                 vi.useRealTimers();
             }
         });
 
         it('should surface errors from the update operation', async () => {
-            (prisma.gameDay.update as Mock).mockRejectedValueOnce(new Error('gameDay does not exist'));
-            await expect(gameDayService.markMailSent(-1)).rejects.toThrow('gameDay does not exist');
+            (prisma.gameDay.update as Mock).mockRejectedValueOnce(
+                new Error('gameDay does not exist'),
+            );
+            await expect(gameDayService.markMailSent(-1)).rejects.toThrow(
+                'gameDay does not exist',
+            );
             expect(prisma.gameDay.update).toHaveBeenCalledTimes(1);
         });
     });
 
     describe('getForMonth', () => {
         it('should return game days for the specified month', async () => {
-            (prisma.gameDay.findMany as Mock).mockResolvedValue(
-                [defaultGameDayList[0], defaultGameDayList[1]],
-            );
+            (prisma.gameDay.findMany as Mock).mockResolvedValue([
+                defaultGameDayList[0],
+                defaultGameDayList[1],
+            ]);
             const result = await gameDayService.getForMonth(2021, 1);
             expect(result).toHaveLength(2);
             expect(prisma.gameDay.findMany).toHaveBeenCalledWith({
@@ -779,9 +903,13 @@ describe('GameDayService', () => {
 
     describe('delete', () => {
         it('should delete an existing GameDay', async () => {
-            (prisma.gameDay.delete as Mock).mockResolvedValueOnce(defaultGameDayList[5]);
+            (prisma.gameDay.delete as Mock).mockResolvedValueOnce(
+                defaultGameDayList[5],
+            );
             await gameDayService.delete(6);
-            expect(prisma.gameDay.delete).toHaveBeenCalledWith({ where: { id: 6 } });
+            expect(prisma.gameDay.delete).toHaveBeenCalledWith({
+                where: { id: 6 },
+            });
         });
 
         it('should silently return when asked to delete a GameDay that does not exist', async () => {
@@ -793,20 +921,30 @@ describe('GameDayService', () => {
                 notFoundError,
                 Prisma.PrismaClientKnownRequestError.prototype,
             );
-            (prisma.gameDay.delete as Mock).mockRejectedValueOnce(notFoundError);
+            (prisma.gameDay.delete as Mock).mockRejectedValueOnce(
+                notFoundError,
+            );
             await gameDayService.delete(107);
-            expect(prisma.gameDay.delete).toHaveBeenCalledWith({ where: { id: 107 } });
+            expect(prisma.gameDay.delete).toHaveBeenCalledWith({
+                where: { id: 107 },
+            });
         });
 
         it('should rethrow delete errors that are not P2025', async () => {
-            (prisma.gameDay.delete as Mock).mockRejectedValueOnce(new Error('db exploded'));
-            await expect(gameDayService.delete(6)).rejects.toThrow('db exploded');
+            (prisma.gameDay.delete as Mock).mockRejectedValueOnce(
+                new Error('db exploded'),
+            );
+            await expect(gameDayService.delete(6)).rejects.toThrow(
+                'db exploded',
+            );
         });
     });
 
     describe('deleteAll', () => {
         it('should delete all GameDays', async () => {
-            (prisma.gameDay.deleteMany as Mock).mockResolvedValueOnce({ count: 0 });
+            (prisma.gameDay.deleteMany as Mock).mockResolvedValueOnce({
+                count: 0,
+            });
             await gameDayService.deleteAll();
             expect(prisma.gameDay.deleteMany).toHaveBeenCalledTimes(1);
         });

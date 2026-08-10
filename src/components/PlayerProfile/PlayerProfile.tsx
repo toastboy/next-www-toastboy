@@ -20,7 +20,12 @@ import { PlayerPositions } from '@/components/PlayerPositions/PlayerPositions';
 import { PlayerResults } from '@/components/PlayerResults/PlayerResults';
 import { TitleWithYearDropdown } from '@/components/TitleWithYearDropdown/TitleWithYearDropdown';
 import { PlayerDisplayType } from '@/services/Player';
-import { ClubSupporterDataType, CountrySupporterDataType, PlayerDataEmailDisplayType, PlayerFormType } from '@/types';
+import {
+    ClubSupporterDataType,
+    CountrySupporterDataType,
+    PlayerDataEmailDisplayType,
+    PlayerFormType,
+} from '@/types';
 import type { SendEmailProxy } from '@/types/actions/SendEmail';
 
 export interface Props {
@@ -67,16 +72,20 @@ export const PlayerProfile = ({
     return (
         <Container size="xl">
             <Stack gap="sm" w="100%">
-                <Grid
-                    type="container"
-                    mb="lg"
-                    gap="xs"
-                    align="center"
-                >
+                <Grid type="container" mb="lg" gap="xs" align="center">
                     <Grid.Col span="content" align="center">
-                        {prevPlayer ?
-                            <PlayerLink player={prevPlayer} year={year} format="left-arrow" /> :
-                            <Box data-testid="player-prev-placeholder" aria-hidden="true" />}
+                        {prevPlayer ? (
+                            <PlayerLink
+                                player={prevPlayer}
+                                year={year}
+                                format="left-arrow"
+                            />
+                        ) : (
+                            <Box
+                                data-testid="player-prev-placeholder"
+                                aria-hidden="true"
+                            />
+                        )}
                     </Grid.Col>
                     <Grid.Col span="auto" align="center">
                         <Center>
@@ -89,14 +98,29 @@ export const PlayerProfile = ({
                         </Center>
                     </Grid.Col>
                     <Grid.Col span="content" align="center">
-                        {nextPlayer ?
-                            <PlayerLink player={nextPlayer} year={year} format="right-arrow" /> :
-                            <Box data-testid="player-next-placeholder" aria-hidden="true" />}
+                        {nextPlayer ? (
+                            <PlayerLink
+                                player={nextPlayer}
+                                year={year}
+                                format="right-arrow"
+                            />
+                        ) : (
+                            <Box
+                                data-testid="player-next-placeholder"
+                                aria-hidden="true"
+                            />
+                        )}
                     </Grid.Col>
                 </Grid>
                 <Grid
                     type="container"
-                    breakpoints={{ xs: '24em', sm: '36em', md: '54em', lg: '74em', xl: '88em' }}
+                    breakpoints={{
+                        xs: '24em',
+                        sm: '36em',
+                        md: '54em',
+                        lg: '74em',
+                        xl: '88em',
+                    }}
                 >
                     <Grid.Col span={playerCardsGridColSpan}>
                         <PlayerCard
@@ -120,10 +144,18 @@ export const PlayerProfile = ({
                         />
                     </Grid.Col>
                     <Grid.Col span={playerCardsGridColSpan}>
-                        <PlayerResults player={player} year={year} record={record} />
+                        <PlayerResults
+                            player={player}
+                            year={year}
+                            record={record}
+                        />
                     </Grid.Col>
                     <Grid.Col span={playerCardsGridColSpan}>
-                        <PlayerPositions player={player} year={year} record={record} />
+                        <PlayerPositions
+                            player={player}
+                            year={year}
+                            record={record}
+                        />
                     </Grid.Col>
                 </Grid>
                 <Group>

@@ -5,7 +5,11 @@ import { useEffect } from 'react';
 
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 
-export default function GlobalError({ error }: { error: Error & { digest?: string } }) {
+export default function GlobalError({
+    error,
+}: {
+    error: Error & { digest?: string };
+}) {
     useEffect(() => {
         captureUnexpectedError(error, {
             layer: 'client',

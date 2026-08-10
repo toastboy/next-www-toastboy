@@ -13,11 +13,9 @@ test('enumerate homepage links', async ({ page }) => {
     const linktexts: string[] = [];
     for (let i = 0; i < linksCount; i++) {
         const link = await links.nth(i).getAttribute('href');
-        if (link)
-            hrefs.push(link);
+        if (link) hrefs.push(link);
         const text = (await links.nth(i).allInnerTexts()).join();
-        if (text)
-            hrefs.push(text);
+        if (text) hrefs.push(text);
     }
 
     console.log(hrefs);

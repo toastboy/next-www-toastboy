@@ -21,7 +21,9 @@ const user: AuthUserSummary = {
 };
 
 describe('beforeDeletePlayer action wrapper', () => {
-    beforeEach(() => { vi.clearAllMocks(); });
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
 
     it('delegates to beforeDeletePlayerCore with the provided user summary', async () => {
         await beforeDeletePlayer(user);
@@ -38,7 +40,9 @@ describe('beforeDeletePlayer action wrapper', () => {
 });
 
 describe('deletePlayer action wrapper', () => {
-    beforeEach(() => { vi.clearAllMocks(); });
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
 
     it('delegates to deletePlayerCore', async () => {
         await deletePlayer();

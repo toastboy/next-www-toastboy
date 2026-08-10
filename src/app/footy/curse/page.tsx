@@ -1,7 +1,4 @@
-import {
-    Flex,
-    Group,
-} from '@mantine/core';
+import { Flex, Group } from '@mantine/core';
 import { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { cache } from 'react';
@@ -36,21 +33,25 @@ interface PageProps {
  * @throws Triggers `permanentRedirect()` if the current URL does not match the
  * canonical URL.
  */
-const unpackParams = cache(async (
-    searchParams: PageProps['searchParams'],
-) => {
+const unpackParams = cache(async (searchParams: PageProps['searchParams']) => {
     const resolvedSearchParams = await searchParams;
     const allYears = await playerRecordService.getAllYears({
         completed: false,
         mostRecentFirst: true,
     });
-    const yearResult = z.coerce.number().int().min(0).safeParse(resolvedSearchParams?.year ?? 0);
+    const yearResult = z.coerce
+        .number()
+        .int()
+        .min(0)
+        .safeParse(resolvedSearchParams?.year ?? 0);
     const year = yearResult.success ? yearResult.data : undefined;
     if (year === undefined || !allYears.includes(year)) notFound();
 
     const canonicalSearch = year ? `?year=${year}` : '';
     const canonicalUrl = `/footy/curse${canonicalSearch}`;
-    const currentSearch = resolvedSearchParams?.year ? `?year=${resolvedSearchParams.year}` : '';
+    const currentSearch = resolvedSearchParams?.year
+        ? `?year=${resolvedSearchParams.year}`
+        : '';
     const currentUrl = `/footy/curse${currentSearch}`;
     if (currentUrl !== canonicalUrl) permanentRedirect(canonicalUrl);
 

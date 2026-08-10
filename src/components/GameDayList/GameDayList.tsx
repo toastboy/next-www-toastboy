@@ -1,10 +1,6 @@
 'use client';
 
-import {
-    Paper,
-    SimpleGrid,
-    Text,
-} from '@mantine/core';
+import { Paper, SimpleGrid, Text } from '@mantine/core';
 import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 
 import { GameDayIndicator } from '../GameDayIndicator/GameDayIndicator';
@@ -27,20 +23,31 @@ export const GameDayList = ({ gameDays, year }: Props) => {
         return <Text c="dimmed">{`No games yet.`}</Text>;
     }
 
-    const gameDaysByMonth = gameDays.reduce<Record<string, GameDayType[]>>((acc, gameDay) => {
-        const monthKey = new Date(gameDay.date).toLocaleDateString('en-GB', {
-            year: year === 0 ? 'numeric' : undefined,
-            month: 'long',
-        });
-        if (!acc[monthKey]) {
-            acc[monthKey] = [];
-        }
-        acc[monthKey].push(gameDay);
-        return acc;
-    }, {});
+    const gameDaysByMonth = gameDays.reduce<Record<string, GameDayType[]>>(
+        (acc, gameDay) => {
+            const monthKey = new Date(gameDay.date).toLocaleDateString(
+                'en-GB',
+                {
+                    year: year === 0 ? 'numeric' : undefined,
+                    month: 'long',
+                },
+            );
+            if (!acc[monthKey]) {
+                acc[monthKey] = [];
+            }
+            acc[monthKey].push(gameDay);
+            return acc;
+        },
+        {},
+    );
 
     return (
-        <SimpleGrid minColWidth="11rem" autoFlow="auto-fit" spacing="md" w="100%">
+        <SimpleGrid
+            minColWidth="11rem"
+            autoFlow="auto-fit"
+            spacing="md"
+            w="100%"
+        >
             {Object.entries(gameDaysByMonth).map(([month, gameDays]) => (
                 <Paper key={month} w="10rem">
                     <Text size="lg" mb="sm">
@@ -48,7 +55,10 @@ export const GameDayList = ({ gameDays, year }: Props) => {
                     </Text>
                     <SimpleGrid cols={2} spacing="md">
                         {gameDays.map((gameDay) => (
-                            <GameDayIndicator key={gameDay.id} gameDay={gameDay} />
+                            <GameDayIndicator
+                                key={gameDay.id}
+                                gameDay={gameDay}
+                            />
                         ))}
                     </SimpleGrid>
                 </Paper>

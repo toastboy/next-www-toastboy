@@ -1,9 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { requireAdminMock, sendEmailToAllActivePlayersCoreMock } = vi.hoisted(() => ({
-    requireAdminMock: vi.fn().mockResolvedValue(undefined),
-    sendEmailToAllActivePlayersCoreMock: vi.fn(),
-}));
+const { requireAdminMock, sendEmailToAllActivePlayersCoreMock } = vi.hoisted(
+    () => ({
+        requireAdminMock: vi.fn().mockResolvedValue(undefined),
+        sendEmailToAllActivePlayersCoreMock: vi.fn(),
+    }),
+);
 
 vi.mock('@/lib/auth.server', () => ({ requireAdmin: requireAdminMock }));
 vi.mock('@/lib/core/sendEmailToAllActivePlayers', () => ({
@@ -18,13 +20,17 @@ const mailOptions = {
 };
 
 describe('sendEmailToAllActivePlayers action wrapper', () => {
-    beforeEach(() => { vi.clearAllMocks(); });
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
 
     it('calls requireAdmin then delegates to sendEmailToAllActivePlayersCore with the mail options', async () => {
         await sendEmailToAllActivePlayers(mailOptions);
 
         expect(requireAdminMock).toHaveBeenCalledTimes(1);
-        expect(sendEmailToAllActivePlayersCoreMock).toHaveBeenCalledWith(mailOptions);
+        expect(sendEmailToAllActivePlayersCoreMock).toHaveBeenCalledWith(
+            mailOptions,
+        );
     });
 
     it('returns the recipient summary from core', async () => {
@@ -40,7 +46,9 @@ describe('sendEmailToAllActivePlayers action wrapper', () => {
         const authError = new Error('not an admin');
         requireAdminMock.mockRejectedValueOnce(authError);
 
-        await expect(sendEmailToAllActivePlayers(mailOptions)).rejects.toBe(authError);
+        await expect(sendEmailToAllActivePlayers(mailOptions)).rejects.toBe(
+            authError,
+        );
         expect(sendEmailToAllActivePlayersCoreMock).not.toHaveBeenCalled();
     });
 });

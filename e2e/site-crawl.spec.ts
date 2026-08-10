@@ -5,7 +5,8 @@ import { expect, test } from './utils/base';
 // (chromium/firefox/webkit/mobile/tablet) would 5x the runtime for no extra
 // coverage, since the failures this test looks for (Next.js error/not-found
 // boundaries) render identically regardless of browser engine.
-const CHROMIUM_ONLY = 'full-site crawl is expensive to repeat per-browser; chromium coverage is representative';
+const CHROMIUM_ONLY =
+    'full-site crawl is expensive to repeat per-browser; chromium coverage is representative';
 
 // Not a normal operating limit - the crawl stops on its own once the queue
 // empties, well short of this in the current seed (~150-200 pages). This
@@ -37,7 +38,10 @@ const toSameOriginPathname = (href: string, origin: string): string | null => {
     return url.pathname;
 };
 
-test('crawl every reachable internal page and verify it renders without error', async ({ page, baseURL }, testInfo) => {
+test('crawl every reachable internal page and verify it renders without error', async ({
+    page,
+    baseURL,
+}, testInfo) => {
     test.skip(testInfo.project.name !== 'chromium', CHROMIUM_ONLY);
     test.setTimeout(5 * 60 * 1000);
 
@@ -67,9 +71,14 @@ test('crawl every reachable internal page and verify it renders without error', 
             // app's global Suspense fallback (src/app/loading.tsx) to clear
             // instead, which is a direct signal that streamed content settled.
             response = await page.goto(path);
-            await page.getByTestId('loading').waitFor({ state: 'detached', timeout: 15000 }).catch(() => undefined);
+            await page
+                .getByTestId('loading')
+                .waitFor({ state: 'detached', timeout: 15000 })
+                .catch(() => undefined);
         } catch (err) {
-            failures.push(`${path} -> navigation failed: ${(err as Error).message}`);
+            failures.push(
+                `${path} -> navigation failed: ${(err as Error).message}`,
+            );
             continue;
         }
 
@@ -79,24 +88,34 @@ test('crawl every reachable internal page and verify it renders without error', 
         // rendered not-found/error boundaries too. (Not page.getByRole('alert')
         // - Next's built-in app-router-announcer live region also has
         // role="alert" and is present on every page, error or not.)
-        const notFound = await page.getByRole('heading', { name: 'Page not found' })
-            .isVisible().catch(() => false);
-        const errorBoundary = await page.getByRole('button', { name: 'Try again' })
-            .isVisible().catch(() => false);
+        const notFound = await page
+            .getByRole('heading', { name: 'Page not found' })
+            .isVisible()
+            .catch(() => false);
+        const errorBoundary = await page
+            .getByRole('button', { name: 'Try again' })
+            .isVisible()
+            .catch(() => false);
 
         if (!response?.ok() || notFound || errorBoundary) {
             const reasons = [
                 `status ${response?.status() ?? 'none'}`,
                 notFound && 'not-found boundary rendered',
                 errorBoundary && 'error boundary rendered',
-            ].filter(Boolean).join(', ');
+            ]
+                .filter(Boolean)
+                .join(', ');
             failures.push(`${path} -> ${reasons}`);
             continue;
         }
 
-        const hrefs = await page.locator('a:visible').evaluateAll(
-            (els) => els.map((el) => el.getAttribute('href')).filter((h): h is string => !!h),
-        );
+        const hrefs = await page
+            .locator('a:visible')
+            .evaluateAll((els) =>
+                els
+                    .map((el) => el.getAttribute('href'))
+                    .filter((h): h is string => !!h),
+            );
 
         for (const href of hrefs) {
             const pathname = toSameOriginPathname(href, origin);
@@ -110,7 +129,7 @@ test('crawl every reachable internal page and verify it renders without error', 
     if (queue.length > 0) {
         failures.push(
             `Crawl hit the MAX_PAGES safety valve (${MAX_PAGES}) with ${queue.length} page(s) still queued - ` +
-            'coverage was truncated. Raise MAX_PAGES, or investigate whether a link is generating unbounded URLs.',
+                'coverage was truncated. Raise MAX_PAGES, or investigate whether a link is generating unbounded URLs.',
         );
     }
 

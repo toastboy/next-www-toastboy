@@ -1,6 +1,12 @@
 import { describe, expect, it } from 'vitest';
 
-import { formatCurrency, formatCurrencySigned, fromPounds, getBalanceColor, toPounds } from '@/lib/money';
+import {
+    formatCurrency,
+    formatCurrencySigned,
+    fromPounds,
+    getBalanceColor,
+    toPounds,
+} from '@/lib/money';
 
 describe('toPounds', () => {
     it('converts pence to pounds', () => {

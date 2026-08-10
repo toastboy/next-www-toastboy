@@ -5,7 +5,11 @@ import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
 import countryService from '@/services/Country';
-import { defaultCountry, defaultCountryList, invalidCountry } from '@/tests/mocks/data/country';
+import {
+    defaultCountry,
+    defaultCountryList,
+    invalidCountry,
+} from '@/tests/mocks/data/country';
 
 describe('CountryService', () => {
     beforeEach(() => {
@@ -18,27 +22,31 @@ describe('CountryService', () => {
 
     describe('get', () => {
         it('should retrieve the correct country with fifaCode "SCO"', async () => {
-            (prisma.country.findUnique as Mock).mockResolvedValueOnce(defaultCountryList[2]);
-            const result = await countryService.get("SCO");
+            (prisma.country.findUnique as Mock).mockResolvedValueOnce(
+                defaultCountryList[2],
+            );
+            const result = await countryService.get('SCO');
             expect(result).toEqual(defaultCountryList[2]);
         });
 
         it('should return null for an unknown fifaCode', async () => {
             (prisma.country.findUnique as Mock).mockResolvedValueOnce(null);
-            const result = await countryService.get("XXX");
+            const result = await countryService.get('XXX');
             expect(result).toBeNull();
         });
     });
 
     describe('getAll', () => {
         beforeEach(() => {
-            (prisma.country.findMany as Mock).mockResolvedValueOnce(defaultCountryList);
+            (prisma.country.findMany as Mock).mockResolvedValueOnce(
+                defaultCountryList,
+            );
         });
 
         it('should return the correct, complete list of 4 countries', async () => {
             const result = await countryService.getAll();
             expect(result).toHaveLength(4);
-            expect(result[0].fifaCode).toBe("ENG");
+            expect(result[0].fifaCode).toBe('ENG');
         });
     });
 
@@ -46,8 +54,8 @@ describe('CountryService', () => {
         it('should create a country', async () => {
             const newCountry: CountryType = {
                 ...defaultCountry,
-                fifaCode: "ITA",
-                name: "Italia",
+                fifaCode: 'ITA',
+                name: 'Italia',
             };
             (prisma.country.create as Mock).mockResolvedValueOnce(newCountry);
             const result = await countryService.create(newCountry);
@@ -55,22 +63,30 @@ describe('CountryService', () => {
         });
 
         it('should refuse to create a country with invalid data', async () => {
-            await expect(countryService.create(invalidCountry)).rejects.toThrow();
+            await expect(
+                countryService.create(invalidCountry),
+            ).rejects.toThrow();
         });
 
         it('should refuse to create a country that has the same id as an existing one', async () => {
-            (prisma.country.create as Mock).mockRejectedValueOnce(new Error('country already exists'));
-            await expect(countryService.create({
-                ...defaultCountry,
-                fifaCode: "ENG",
-                name: "Engerland",
-            })).rejects.toThrow();
+            (prisma.country.create as Mock).mockRejectedValueOnce(
+                new Error('country already exists'),
+            );
+            await expect(
+                countryService.create({
+                    ...defaultCountry,
+                    fifaCode: 'ENG',
+                    name: 'Engerland',
+                }),
+            ).rejects.toThrow();
         });
     });
 
     describe('upsert', () => {
         it('should create a country', async () => {
-            (prisma.country.upsert as Mock).mockResolvedValueOnce(defaultCountry);
+            (prisma.country.upsert as Mock).mockResolvedValueOnce(
+                defaultCountry,
+            );
             const result = await countryService.upsert(defaultCountry);
             expect(result).toEqual(defaultCountry);
         });
@@ -78,27 +94,35 @@ describe('CountryService', () => {
         it('should update an existing country where one with the id already existed', async () => {
             const updatedCountry: CountryType = {
                 ...defaultCountry,
-                fifaCode: "ENG",
-                name: "England",
+                fifaCode: 'ENG',
+                name: 'England',
             };
-            (prisma.country.upsert as Mock).mockResolvedValueOnce(updatedCountry);
+            (prisma.country.upsert as Mock).mockResolvedValueOnce(
+                updatedCountry,
+            );
             const result = await countryService.upsert(updatedCountry);
             expect(result).toEqual(updatedCountry);
         });
 
         it('should refuse to create a country with invalid data where one with the id did not exist', async () => {
-            await expect(countryService.upsert(invalidCountry)).rejects.toThrow();
+            await expect(
+                countryService.upsert(invalidCountry),
+            ).rejects.toThrow();
         });
 
         it('should refuse to update a country with invalid data where one with the id already existed', async () => {
-            await expect(countryService.upsert(invalidCountry)).rejects.toThrow();
+            await expect(
+                countryService.upsert(invalidCountry),
+            ).rejects.toThrow();
         });
     });
 
     describe('delete', () => {
         it('should delete an existing country', async () => {
-            (prisma.country.delete as Mock).mockResolvedValueOnce(defaultCountry);
-            await countryService.delete("NIR");
+            (prisma.country.delete as Mock).mockResolvedValueOnce(
+                defaultCountry,
+            );
+            await countryService.delete('NIR');
             expect(prisma.country.delete).toHaveBeenCalledTimes(1);
         });
 
@@ -111,8 +135,10 @@ describe('CountryService', () => {
                 notFoundError,
                 Prisma.PrismaClientKnownRequestError.prototype,
             );
-            (prisma.country.delete as Mock).mockRejectedValueOnce(notFoundError);
-            await countryService.delete("ZIM");
+            (prisma.country.delete as Mock).mockRejectedValueOnce(
+                notFoundError,
+            );
+            await countryService.delete('ZIM');
             expect(prisma.country.delete).toHaveBeenCalledTimes(1);
         });
 
@@ -125,14 +151,20 @@ describe('CountryService', () => {
                 constraintError,
                 Prisma.PrismaClientKnownRequestError.prototype,
             );
-            (prisma.country.delete as Mock).mockRejectedValueOnce(constraintError);
-            await expect(countryService.delete("ENG")).rejects.toThrow('Foreign key constraint failed.');
+            (prisma.country.delete as Mock).mockRejectedValueOnce(
+                constraintError,
+            );
+            await expect(countryService.delete('ENG')).rejects.toThrow(
+                'Foreign key constraint failed.',
+            );
         });
     });
 
     describe('deleteAll', () => {
         it('should delete all countries', async () => {
-            (prisma.country.deleteMany as Mock).mockResolvedValueOnce({ count: 4 });
+            (prisma.country.deleteMany as Mock).mockResolvedValueOnce({
+                count: 4,
+            });
             await countryService.deleteAll();
             expect(prisma.country.deleteMany).toHaveBeenCalledTimes(1);
         });

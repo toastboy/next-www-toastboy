@@ -115,21 +115,31 @@ describe('GET /api/footy/auth/verify/[purpose]/[token]', () => {
             expect(response.status).toBe(307);
             const location = new URL(locationHeader!, 'http://localhost');
             expect(location.pathname).toBe(redirectPath);
-            expect(location.searchParams.get('error')).toBe('Unable to verify email.');
+            expect(location.searchParams.get('error')).toBe(
+                'Unable to verify email.',
+            );
             expect(Sentry.captureException).toHaveBeenCalledTimes(1);
-            const [, options] = vi.mocked(Sentry.captureException).mock.calls[0] as [Error, {
-                tags?: Record<string, string>;
-                extra?: Record<string, unknown>;
-            }];
-            expect(options.tags).toEqual(expect.objectContaining({
-                layer: 'route',
-                action: 'verifyAuthToken',
-                route: '/api/footy/auth/verify/[purpose]/[token]',
-                purpose,
-            }));
-            expect(options.extra).toEqual(expect.objectContaining({
-                redirectParam: redirectPath,
-            }));
+            const [, options] = vi.mocked(Sentry.captureException).mock
+                .calls[0] as [
+                Error,
+                {
+                    tags?: Record<string, string>;
+                    extra?: Record<string, unknown>;
+                },
+            ];
+            expect(options.tags).toEqual(
+                expect.objectContaining({
+                    layer: 'route',
+                    action: 'verifyAuthToken',
+                    route: '/api/footy/auth/verify/[purpose]/[token]',
+                    purpose,
+                }),
+            );
+            expect(options.extra).toEqual(
+                expect.objectContaining({
+                    redirectParam: redirectPath,
+                }),
+            );
             expect(options.extra).not.toHaveProperty('token');
         });
     });
@@ -140,7 +150,10 @@ describe('GET /api/footy/auth/verify/[purpose]/[token]', () => {
             `http://localhost${routePath}?redirect=${encodeURIComponent(redirectPath)}`,
         );
         const response = await GET(request, {
-            params: Promise.resolve({ purpose: 'bogus-purpose', token: 'test-token' }),
+            params: Promise.resolve({
+                purpose: 'bogus-purpose',
+                token: 'test-token',
+            }),
         });
         const locationHeader = response.headers.get('location');
 

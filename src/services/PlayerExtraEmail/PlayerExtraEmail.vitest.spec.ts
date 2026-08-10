@@ -23,7 +23,10 @@ describe('PlayerExtraEmailService', () => {
                 verifiedAt: new Date(),
             });
 
-            const result = await playerExtraEmailService.getByEmail('player@example.com', true);
+            const result = await playerExtraEmailService.getByEmail(
+                'player@example.com',
+                true,
+            );
             expect(result?.playerId).toBe(42);
             expect(prisma.playerExtraEmail.findFirst).toHaveBeenCalledWith({
                 where: {
@@ -42,7 +45,10 @@ describe('PlayerExtraEmailService', () => {
                 verifiedAt: null,
             });
 
-            const result = await playerExtraEmailService.getByEmail('player@example.com', false);
+            const result = await playerExtraEmailService.getByEmail(
+                'player@example.com',
+                false,
+            );
             expect(result?.playerId).toBe(42);
             expect(prisma.playerExtraEmail.findFirst).toHaveBeenCalledWith({
                 where: {
@@ -52,9 +58,14 @@ describe('PlayerExtraEmailService', () => {
         });
 
         it('should return null when no player found with email', async () => {
-            (prisma.playerExtraEmail.findFirst as Mock).mockResolvedValueOnce(null);
+            (prisma.playerExtraEmail.findFirst as Mock).mockResolvedValueOnce(
+                null,
+            );
 
-            const result = await playerExtraEmailService.getByEmail('unknown@example.com', true);
+            const result = await playerExtraEmailService.getByEmail(
+                'unknown@example.com',
+                true,
+            );
             expect(result).toBeNull();
         });
     });
@@ -69,7 +80,9 @@ describe('PlayerExtraEmailService', () => {
                 createdAt: new Date(),
             };
 
-            (prisma.playerExtraEmail.create as Mock).mockResolvedValueOnce(newEmail);
+            (prisma.playerExtraEmail.create as Mock).mockResolvedValueOnce(
+                newEmail,
+            );
 
             const result = await playerExtraEmailService.create({
                 playerId: 7,
@@ -95,9 +108,15 @@ describe('PlayerExtraEmailService', () => {
                 createdAt: new Date(),
             };
 
-            (prisma.playerExtraEmail.upsert as Mock).mockResolvedValueOnce(emailRecord);
+            (prisma.playerExtraEmail.upsert as Mock).mockResolvedValueOnce(
+                emailRecord,
+            );
 
-            const result = await playerExtraEmailService.upsert(7, 'player@example.com', true);
+            const result = await playerExtraEmailService.upsert(
+                7,
+                'player@example.com',
+                true,
+            );
 
             expect(result).toEqual(emailRecord);
             expect(prisma.playerExtraEmail.upsert).toHaveBeenCalledTimes(1);
@@ -113,8 +132,12 @@ describe('PlayerExtraEmailService', () => {
                     playerId: 7,
                 },
             });
-            expect((upsertArgs.create as { verifiedAt?: Date }).verifiedAt).toBeInstanceOf(Date);
-            expect((upsertArgs.update as { verifiedAt?: Date }).verifiedAt).toBeInstanceOf(Date);
+            expect(
+                (upsertArgs.create as { verifiedAt?: Date }).verifiedAt,
+            ).toBeInstanceOf(Date);
+            expect(
+                (upsertArgs.update as { verifiedAt?: Date }).verifiedAt,
+            ).toBeInstanceOf(Date);
         });
 
         it('should upsert an unverified player email record without verifiedAt', async () => {
@@ -126,9 +149,15 @@ describe('PlayerExtraEmailService', () => {
                 createdAt: new Date(),
             };
 
-            (prisma.playerExtraEmail.upsert as Mock).mockResolvedValueOnce(emailRecord);
+            (prisma.playerExtraEmail.upsert as Mock).mockResolvedValueOnce(
+                emailRecord,
+            );
 
-            const result = await playerExtraEmailService.upsert(7, 'new@example.com', false);
+            const result = await playerExtraEmailService.upsert(
+                7,
+                'new@example.com',
+                false,
+            );
 
             expect(result).toEqual(emailRecord);
             const [call] = (prisma.playerExtraEmail.upsert as Mock).mock.calls;
@@ -143,8 +172,12 @@ describe('PlayerExtraEmailService', () => {
                     playerId: 7,
                 },
             });
-            expect((upsertArgs.create as { verifiedAt?: Date }).verifiedAt).toBeUndefined();
-            expect((upsertArgs.update as { verifiedAt?: Date }).verifiedAt).toBeUndefined();
+            expect(
+                (upsertArgs.create as { verifiedAt?: Date }).verifiedAt,
+            ).toBeUndefined();
+            expect(
+                (upsertArgs.update as { verifiedAt?: Date }).verifiedAt,
+            ).toBeUndefined();
         });
     });
 
@@ -183,15 +216,20 @@ describe('PlayerExtraEmailService', () => {
 
     describe('upsertAll', () => {
         it('should upsert all provided email addresses for a player', async () => {
-            const upsertSpy = vi.spyOn(playerExtraEmailService, 'upsert').mockResolvedValue({
-                id: 1,
-                playerId: 7,
-                email: 'placeholder@example.com',
-                verifiedAt: null,
-                createdAt: new Date(),
-            });
+            const upsertSpy = vi
+                .spyOn(playerExtraEmailService, 'upsert')
+                .mockResolvedValue({
+                    id: 1,
+                    playerId: 7,
+                    email: 'placeholder@example.com',
+                    verifiedAt: null,
+                    createdAt: new Date(),
+                });
 
-            await playerExtraEmailService.upsertAll(7, ['a@example.com', 'b@example.com']);
+            await playerExtraEmailService.upsertAll(7, [
+                'a@example.com',
+                'b@example.com',
+            ]);
 
             expect(upsertSpy).toHaveBeenCalledTimes(2);
             expect(upsertSpy).toHaveBeenNthCalledWith(1, 7, 'a@example.com');
@@ -228,7 +266,9 @@ describe('PlayerExtraEmailService', () => {
                 notFoundError,
                 Prisma.PrismaClientKnownRequestError.prototype,
             );
-            (prisma.playerExtraEmail.delete as Mock).mockRejectedValueOnce(notFoundError);
+            (prisma.playerExtraEmail.delete as Mock).mockRejectedValueOnce(
+                notFoundError,
+            );
 
             await playerExtraEmailService.delete('missing@example.com');
 
@@ -236,15 +276,21 @@ describe('PlayerExtraEmailService', () => {
         });
 
         it('should rethrow delete errors that are not P2025', async () => {
-            (prisma.playerExtraEmail.delete as Mock).mockRejectedValueOnce(new Error('db exploded'));
+            (prisma.playerExtraEmail.delete as Mock).mockRejectedValueOnce(
+                new Error('db exploded'),
+            );
 
-            await expect(playerExtraEmailService.delete('broken@example.com')).rejects.toThrow('db exploded');
+            await expect(
+                playerExtraEmailService.delete('broken@example.com'),
+            ).rejects.toThrow('db exploded');
         });
     });
 
     describe('deleteAll', () => {
         it('should delete all player extra emails', async () => {
-            (prisma.playerExtraEmail.deleteMany as Mock).mockResolvedValueOnce({ count: 2 });
+            (prisma.playerExtraEmail.deleteMany as Mock).mockResolvedValueOnce({
+                count: 2,
+            });
 
             await playerExtraEmailService.deleteAll();
 
@@ -254,7 +300,9 @@ describe('PlayerExtraEmailService', () => {
         });
 
         it('should delete all player extra emails for a specific player', async () => {
-            (prisma.playerExtraEmail.deleteMany as Mock).mockResolvedValueOnce({ count: 1 });
+            (prisma.playerExtraEmail.deleteMany as Mock).mockResolvedValueOnce({
+                count: 1,
+            });
 
             await playerExtraEmailService.deleteAll(7);
 
@@ -268,25 +316,31 @@ describe('PlayerExtraEmailService', () => {
 
     describe('deleteExcept', () => {
         it('should delete only emails not present in keep list (trimmed and lowercased)', async () => {
-            const getAllSpy = vi.spyOn(playerExtraEmailService, 'getAll').mockResolvedValueOnce([
-                {
-                    id: 1,
-                    playerId: 7,
-                    email: 'keep@example.com',
-                    verifiedAt: null,
-                    createdAt: new Date(),
-                },
-                {
-                    id: 2,
-                    playerId: 7,
-                    email: 'remove@example.com',
-                    verifiedAt: null,
-                    createdAt: new Date(),
-                },
-            ]);
-            const deleteSpy = vi.spyOn(playerExtraEmailService, 'delete').mockResolvedValue();
+            const getAllSpy = vi
+                .spyOn(playerExtraEmailService, 'getAll')
+                .mockResolvedValueOnce([
+                    {
+                        id: 1,
+                        playerId: 7,
+                        email: 'keep@example.com',
+                        verifiedAt: null,
+                        createdAt: new Date(),
+                    },
+                    {
+                        id: 2,
+                        playerId: 7,
+                        email: 'remove@example.com',
+                        verifiedAt: null,
+                        createdAt: new Date(),
+                    },
+                ]);
+            const deleteSpy = vi
+                .spyOn(playerExtraEmailService, 'delete')
+                .mockResolvedValue();
 
-            await playerExtraEmailService.deleteExcept(7, [' KEEP@example.com ']);
+            await playerExtraEmailService.deleteExcept(7, [
+                ' KEEP@example.com ',
+            ]);
 
             expect(deleteSpy).toHaveBeenCalledTimes(1);
             expect(deleteSpy).toHaveBeenCalledWith('remove@example.com');

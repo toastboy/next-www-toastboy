@@ -13,10 +13,19 @@ import playerService from '@/services/Player';
 import playerExtraEmailService from '@/services/PlayerExtraEmail';
 
 interface ClaimPlayerInvitationDeps {
-    authService: Pick<typeof authService, 'getSessionUser' | 'updateCurrentUser'>;
-    emailVerificationService: Pick<typeof emailVerificationService, 'getByToken' | 'markUsed'>;
+    authService: Pick<
+        typeof authService,
+        'getSessionUser' | 'updateCurrentUser'
+    >;
+    emailVerificationService: Pick<
+        typeof emailVerificationService,
+        'getByToken' | 'markUsed'
+    >;
     playerService: Pick<typeof playerService, 'getById' | 'update'>;
-    playerExtraEmailService: Pick<typeof playerExtraEmailService, 'getAll' | 'getByEmail'>;
+    playerExtraEmailService: Pick<
+        typeof playerExtraEmailService,
+        'getAll' | 'getByEmail'
+    >;
     sendEmailVerification: typeof sendEmailVerification;
 }
 
@@ -39,7 +48,10 @@ const defaultDeps: ClaimPlayerInvitationDeps = {
  * already used, lacks a player reference, or the email is already associated
  * with a different player.
  */
-async function getValidInvitation(token: string, deps: ClaimPlayerInvitationDeps) {
+async function getValidInvitation(
+    token: string,
+    deps: ClaimPlayerInvitationDeps,
+) {
     const now = new Date();
 
     if (!token) {
@@ -73,11 +85,20 @@ async function getValidInvitation(token: string, deps: ClaimPlayerInvitationDeps
         });
     }
 
-    const existingExtraEmail = await deps.playerExtraEmailService.getByEmail(invitation.email);
-    if (existingExtraEmail && existingExtraEmail.playerId !== invitation.playerId) {
-        throw new ConflictError('Email address already belongs to another player.', {
-            publicMessage: 'This email address is already associated with a different player.',
-        });
+    const existingExtraEmail = await deps.playerExtraEmailService.getByEmail(
+        invitation.email,
+    );
+    if (
+        existingExtraEmail &&
+        existingExtraEmail.playerId !== invitation.playerId
+    ) {
+        throw new ConflictError(
+            'Email address already belongs to another player.',
+            {
+                publicMessage:
+                    'This email address is already associated with a different player.',
+            },
+        );
     }
 
     return invitation;
@@ -170,18 +191,26 @@ export async function finalizePlayerInvitationClaimCore(
     }
 
     if (sessionUser.playerId && sessionUser.playerId !== invitation.playerId) {
-        throw new ConflictError('Login account is already linked to another player.');
+        throw new ConflictError(
+            'Login account is already linked to another player.',
+        );
     }
 
-    await deps.authService.updateCurrentUser({ playerId: invitation.playerId! });
+    await deps.authService.updateCurrentUser({
+        playerId: invitation.playerId!,
+    });
     await deps.playerService.update({
         id: invitation.playerId!,
         accountEmail: invitation.email,
     });
     await deps.emailVerificationService.markUsed(token);
 
-    const extraEmails = await deps.playerExtraEmailService.getAll(invitation.playerId!);
-    const unverifiedExtraEmails = extraEmails.filter((extraEmail) => !extraEmail.verifiedAt);
+    const extraEmails = await deps.playerExtraEmailService.getAll(
+        invitation.playerId!,
+    );
+    const unverifiedExtraEmails = extraEmails.filter(
+        (extraEmail) => !extraEmail.verifiedAt,
+    );
     const player = await deps.playerService.getById(invitation.playerId!);
 
     await Promise.all(

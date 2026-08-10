@@ -1,4 +1,2 @@
-export const TableIndexList = () => (
-    <div>TableIndexList</div>
-);
+export const TableIndexList = () => <div>TableIndexList</div>;
 TableIndexList.displayName = 'TableIndexList';

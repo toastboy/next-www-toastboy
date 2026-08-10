@@ -13,9 +13,7 @@ import {
     TextInput,
     Title,
 } from '@mantine/core';
-import {
-    useForm,
-} from '@mantine/form';
+import { useForm } from '@mantine/form';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useState } from 'react';
@@ -63,7 +61,9 @@ export const DeleteAccountForm = ({ onDeletePlayer }: Props) => {
             });
             const message = toPublicMessage(
                 error,
-                error instanceof Error ? String(error) : 'Unable to delete your account data.',
+                error instanceof Error
+                    ? String(error)
+                    : 'Unable to delete your account data.',
             );
             setErrorText(message);
         }
@@ -74,9 +74,10 @@ export const DeleteAccountForm = ({ onDeletePlayer }: Props) => {
             icon={<IconCheck size={config.notificationIconSize} />}
             color="green"
         >
-            An email has been sent containing a link for you to confirm the deletion of your account.
+            An email has been sent containing a link for you to confirm the
+            deletion of your account.
         </Notification>
-    ) : (errorText ? (
+    ) : errorText ? (
         <Notification
             icon={<IconX size={config.notificationIconSize} />}
             color="red"
@@ -84,24 +85,21 @@ export const DeleteAccountForm = ({ onDeletePlayer }: Props) => {
         >
             {errorText}. Please try again.
         </Notification>
-    ) : null);
+    ) : null;
 
     return (
         <Container size="xs" mt="xl">
             <Paper w="100%">
                 <Stack>
-                    <Title order={2}>
-                        Delete your account data
-                    </Title>
+                    <Title order={2}>Delete your account data</Title>
                     <Text>
-                        This will permanently remove your personal information and any extra emails
-                        linked to your account. If instead you would like to simply stop receiving
-                        emails from us, you can select &lsquo;retired&rsquo;
-                        in <Anchor href="/footy/profile">your profile</Anchor>.
+                        This will permanently remove your personal information
+                        and any extra emails linked to your account. If instead
+                        you would like to simply stop receiving emails from us,
+                        you can select &lsquo;retired&rsquo; in{' '}
+                        <Anchor href="/footy/profile">your profile</Anchor>.
                     </Text>
-                    <Text>
-                        By deleting your account data:
-                    </Text>
+                    <Text>By deleting your account data:</Text>
                     <Box component="ul" pl="md" m={0}>
                         <Text component="li">
                             Your profile details will be erased.
@@ -110,8 +108,8 @@ export const DeleteAccountForm = ({ onDeletePlayer }: Props) => {
                             Any extra emails will be removed from the system.
                         </Text>
                         <Text component="li">
-                            Your game statistics will be retained in an anonymized form
-                            for overall site statistics.
+                            Your game statistics will be retained in an
+                            anonymized form for overall site statistics.
                         </Text>
                     </Box>
                 </Stack>
@@ -131,19 +129,21 @@ export const DeleteAccountForm = ({ onDeletePlayer }: Props) => {
                         />
                         <Checkbox
                             label="I understand that all of my personal data will be deleted."
-                            {...form.getInputProps('confirmPii', { type: 'checkbox' })}
+                            {...form.getInputProps('confirmPii', {
+                                type: 'checkbox',
+                            })}
                         />
                         <Text>
-                            Before you delete your account data, you may wish to download your personal
-                            information first. You can do this by going to
-                            the <Anchor href="/footy/downloadmydata">data download page</Anchor>.
+                            Before you delete your account data, you may wish to
+                            download your personal information first. You can do
+                            this by going to the{' '}
+                            <Anchor href="/footy/downloadmydata">
+                                data download page
+                            </Anchor>
+                            .
                         </Text>
                         {notification}
-                        <Button
-                            type="submit"
-                            color="red"
-                            fullWidth
-                        >
+                        <Button type="submit" color="red" fullWidth>
                             Delete my data
                         </Button>
                     </Stack>

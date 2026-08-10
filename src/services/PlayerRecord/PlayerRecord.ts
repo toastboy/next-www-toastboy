@@ -20,7 +20,6 @@ import {
     PlayerRecordWriteInputSchema,
 } from '@/types/PlayerRecordStrictSchema';
 
-
 class PlayerRecordService {
     /**
      * Retrieves a PlayerRecord for the given Player ID, year and PlayerRecord ID.
@@ -30,7 +29,11 @@ class PlayerRecordService {
      * @returns A promise that resolves to the PlayerRecord if found, otherwise null.
      * @throws An error if there is a failure.
      */
-    async get(playerId: number, year: number, gameDayId: number): Promise<PlayerRecordType | null> {
+    async get(
+        playerId: number,
+        year: number,
+        gameDayId: number,
+    ): Promise<PlayerRecordType | null> {
         const where = PlayerRecordWhereUniqueInputObjectSchema.parse({
             playerId_year_gameDayId: { playerId, year, gameDayId },
         });
@@ -113,15 +116,19 @@ class PlayerRecordService {
                 },
             });
 
-            const yearsToRemove = new Set(yearsWithUnplayedGames.map(y => y.year));
-            lastGamesEachYear = lastGamesEachYear.filter(r => !yearsToRemove.has(r.year));
+            const yearsToRemove = new Set(
+                yearsWithUnplayedGames.map((y) => y.year),
+            );
+            lastGamesEachYear = lastGamesEachYear.filter(
+                (r) => !yearsToRemove.has(r.year),
+            );
         }
 
         const years = lastGamesEachYear.map((r) => r.year);
 
-        return mostRecentFirst ?
-            [0, ...years.sort((a, b) => b - a)] :
-            [...years.sort((a, b) => a - b), 0];
+        return mostRecentFirst
+            ? [0, ...years.sort((a, b) => b - a)]
+            : [...years.sort((a, b) => a - b), 0];
     }
 
     /**
@@ -131,7 +138,10 @@ class PlayerRecordService {
      * @returns A promise that resolves to an array of PlayerRecords or null.
      * @throws An error if there is a failure.
      */
-    async getByGameDay(gameDayId: number, year?: number): Promise<PlayerRecordType[]> {
+    async getByGameDay(
+        gameDayId: number,
+        year?: number,
+    ): Promise<PlayerRecordType[]> {
         return prisma.playerRecord.findMany({
             where: {
                 gameDayId: gameDayId,
@@ -209,8 +219,7 @@ class PlayerRecordService {
                 rankPub: null,
                 speedy: 0,
             };
-        }
-        else {
+        } else {
             return result;
         }
     }
@@ -249,7 +258,9 @@ class PlayerRecordService {
             },
         });
 
-        return firstPlaceRecords.filter((record) => seasonEnders.includes(record.gameDayId));
+        return firstPlaceRecords.filter((record) =>
+            seasonEnders.includes(record.gameDayId),
+        );
     }
 
     /**
@@ -314,7 +325,9 @@ class PlayerRecordService {
      */
     async create(data: PlayerRecordWriteInput): Promise<PlayerRecordType> {
         const writeData = PlayerRecordWriteInputSchema.parse(data);
-        const args = PlayerRecordCreateOneStrictSchema.parse({ data: writeData });
+        const args = PlayerRecordCreateOneStrictSchema.parse({
+            data: writeData,
+        });
         return prisma.playerRecord.create(args);
     }
 
@@ -353,26 +366,35 @@ class PlayerRecordService {
 
         let gameDays = await gameDayService.getAll();
         if (gameDayId) {
-            gameDays = gameDays.filter(g => g.id === gameDayId);
+            gameDays = gameDays.filter((g) => g.id === gameDayId);
         }
 
-        const years = gameDays.map(gd => gd.date.getFullYear());
+        const years = gameDays.map((gd) => gd.date.getFullYear());
         const distinctYears = Array.from(new Set(years));
 
         const playerRecords: PlayerRecordType[] = [];
-        const allTimePlayerRecords: Record<number, Partial<PlayerRecordType>> = {};
+        const allTimePlayerRecords: Record<
+            number,
+            Partial<PlayerRecordType>
+        > = {};
         for (const year of distinctYears) {
-            const yearPlayerRecords: Record<number, Partial<PlayerRecordType>> = {};
+            const yearPlayerRecords: Record<
+                number,
+                Partial<PlayerRecordType>
+            > = {};
             const yearOutcomes = await outcomeService.getAllForYear(year);
 
-
             for (const gameDay of gameDays) {
-                if (gameDay.date.getFullYear() !== year || gameDay.date > today) {
+                if (
+                    gameDay.date.getFullYear() !== year ||
+                    gameDay.date > today
+                ) {
                     continue;
                 }
 
-
-                const gameDayOutcomes = await outcomeService.getByGameDay(gameDay.id);
+                const gameDayOutcomes = await outcomeService.getByGameDay(
+                    gameDay.id,
+                );
 
                 await calculateYearPlayerRecords(
                     year,
@@ -420,7 +442,9 @@ class PlayerRecordService {
         if (!fromGameDay) return [];
 
         const today = new Date();
-        const gameDays = (await gameDayService.getAll({ fromDate: fromGameDay.date }))
+        const gameDays = (
+            await gameDayService.getAll({ fromDate: fromGameDay.date })
+        )
             // Keep future fixtures out of PlayerRecord calculations until
             // their date has passed.
             .filter((gameDay) => gameDay.date <= today);
@@ -430,22 +454,33 @@ class PlayerRecordService {
         }
 
         const allTimeOutcomes = await outcomeService.getAllForYear(0);
-        const allTimePlayerRecords = await loadLatestPlayerRecordsBefore(0, gameDayId);
+        const allTimePlayerRecords = await loadLatestPlayerRecordsBefore(
+            0,
+            gameDayId,
+        );
 
-        const years = [...new Set(gameDays.map(gd => gd.date.getFullYear()))];
+        const years = [...new Set(gameDays.map((gd) => gd.date.getFullYear()))];
         const playerRecords: PlayerRecordType[] = [];
 
         for (const year of years) {
-            const yearPlayerRecords = await loadLatestPlayerRecordsBefore(year, gameDayId);
+            const yearPlayerRecords = await loadLatestPlayerRecordsBefore(
+                year,
+                gameDayId,
+            );
 
             const yearOutcomes = await outcomeService.getAllForYear(year);
 
             for (const gameDay of gameDays) {
-                if (gameDay.date.getFullYear() !== year || gameDay.date > today) {
+                if (
+                    gameDay.date.getFullYear() !== year ||
+                    gameDay.date > today
+                ) {
                     continue;
                 }
 
-                const gameDayOutcomes = await outcomeService.getByGameDay(gameDay.id);
+                const gameDayOutcomes = await outcomeService.getByGameDay(
+                    gameDay.id,
+                );
 
                 await calculateYearPlayerRecords(
                     year,
@@ -478,7 +513,11 @@ class PlayerRecordService {
      * @throws {z.ZodError} If key validation fails.
      * @throws {Error} If Prisma delete fails for reasons other than not-found.
      */
-    async delete(playerId: number, year: number, gameDayId: number): Promise<void> {
+    async delete(
+        playerId: number,
+        year: number,
+        gameDayId: number,
+    ): Promise<void> {
         try {
             const where = PlayerRecordWhereUniqueInputObjectSchema.parse({
                 playerId_year_gameDayId: { playerId, year, gameDayId },
@@ -524,8 +563,8 @@ async function loadLatestPlayerRecordsBefore(
     });
 
     const conditions = groups
-        .filter(g => g._max.gameDayId !== null)
-        .map(g => ({ playerId: g.playerId, gameDayId: g._max.gameDayId! }));
+        .filter((g) => g._max.gameDayId !== null)
+        .map((g) => ({ playerId: g.playerId, gameDayId: g._max.gameDayId! }));
 
     if (conditions.length > 0) {
         const records = await prisma.playerRecord.findMany({
@@ -577,43 +616,65 @@ async function calculateYearPlayerRecords(
         recordData.gameDayId = gameDay.id;
         recordData.gamesPlayed = gamesPlayed;
         if (recordData.played && gamesPlayed > 0) {
-            recordData.stalwart = Math.round(100.0 * recordData.played / gamesPlayed);
+            recordData.stalwart = Math.round(
+                (100.0 * recordData.played) / gamesPlayed,
+            );
         }
     }
 
     // Calculate the ranks for the set of PlayerRecords
     const pointsArray = Object.values(yearPlayerRecords)
-        .map(r => r.points)
+        .map((r) => r.points)
         .filter((p): p is number => p !== null);
     pointsArray.sort((a, b) => b - a);
 
     const averagesArray = Object.values(yearPlayerRecords)
-        .map(r => (r.played && r.played > 0 && r.played >= config.minGamesForAveragesTable ? r.averages : null))
+        .map((r) =>
+            r.played &&
+            r.played > 0 &&
+            r.played >= config.minGamesForAveragesTable
+                ? r.averages
+                : null,
+        )
         .filter((a): a is number => a !== null);
     averagesArray.sort((a, b) => b - a);
 
     const averagesArrayUnqualified = Object.values(yearPlayerRecords)
-        .map(r => (r.played && r.played > 0 && r.played < config.minGamesForAveragesTable ? r.averages : null))
+        .map((r) =>
+            r.played &&
+            r.played > 0 &&
+            r.played < config.minGamesForAveragesTable
+                ? r.averages
+                : null,
+        )
         .filter((a): a is number => a !== null);
     averagesArrayUnqualified.sort((a, b) => b - a);
 
     const stalwartArray = Object.values(yearPlayerRecords)
-        .map(r => r.stalwart)
+        .map((r) => r.stalwart)
         .filter((s): s is number => s !== null);
     stalwartArray.sort((a, b) => b - a);
 
     const speedyArray = Object.values(yearPlayerRecords)
-        .map(r => (r.responses && r.responses >= config.minRepliesForSpeedyTable ? r.speedy : null))
+        .map((r) =>
+            r.responses && r.responses >= config.minRepliesForSpeedyTable
+                ? r.speedy
+                : null,
+        )
         .filter((s): s is number => s !== null);
     speedyArray.sort((a, b) => a - b);
 
     const speedyArrayUnqualified = Object.values(yearPlayerRecords)
-        .map(r => (r.responses && r.responses < config.minRepliesForSpeedyTable ? r.speedy : null))
+        .map((r) =>
+            r.responses && r.responses < config.minRepliesForSpeedyTable
+                ? r.speedy
+                : null,
+        )
         .filter((s): s is number => s !== null);
     speedyArrayUnqualified.sort((a, b) => a - b);
 
     const pubArray = Object.values(yearPlayerRecords)
-        .map(r => r.pub)
+        .map((r) => r.pub)
         .filter((p): p is number => p !== null);
     pubArray.sort((a, b) => b - a);
 
@@ -622,23 +683,34 @@ async function calculateYearPlayerRecords(
             recordData.rankPoints = pointsArray.indexOf(recordData.points) + 1;
         }
         if (recordData.averages != null) {
-            if (recordData.played && recordData.played >= config.minGamesForAveragesTable) {
-                recordData.rankAverages = averagesArray.indexOf(recordData.averages) + 1;
+            if (
+                recordData.played &&
+                recordData.played >= config.minGamesForAveragesTable
+            ) {
+                recordData.rankAverages =
+                    averagesArray.indexOf(recordData.averages) + 1;
                 recordData.rankAveragesUnqualified = null;
             } else {
-                recordData.rankAveragesUnqualified = averagesArrayUnqualified.indexOf(recordData.averages) + 1;
+                recordData.rankAveragesUnqualified =
+                    averagesArrayUnqualified.indexOf(recordData.averages) + 1;
                 recordData.rankAverages = null;
             }
         }
         if (recordData.stalwart != null) {
-            recordData.rankStalwart = stalwartArray.indexOf(recordData.stalwart) + 1;
+            recordData.rankStalwart =
+                stalwartArray.indexOf(recordData.stalwart) + 1;
         }
         if (recordData.speedy != null) {
-            if (recordData.responses && recordData.responses >= config.minRepliesForSpeedyTable) {
-                recordData.rankSpeedy = speedyArray.indexOf(recordData.speedy) + 1;
+            if (
+                recordData.responses &&
+                recordData.responses >= config.minRepliesForSpeedyTable
+            ) {
+                recordData.rankSpeedy =
+                    speedyArray.indexOf(recordData.speedy) + 1;
                 recordData.rankSpeedyUnqualified = null;
             } else {
-                recordData.rankSpeedyUnqualified = speedyArrayUnqualified.indexOf(recordData.speedy) + 1;
+                recordData.rankSpeedyUnqualified =
+                    speedyArrayUnqualified.indexOf(recordData.speedy) + 1;
                 recordData.rankSpeedy = null;
             }
         }
@@ -650,7 +722,9 @@ async function calculateYearPlayerRecords(
     // Upsert the PlayerRecords and add them to the overall list
 
     for (const recordData of Object.values(yearPlayerRecords)) {
-        const playerRecord = await playerRecordService.upsert(recordData as PlayerRecordWriteInput);
+        const playerRecord = await playerRecordService.upsert(
+            recordData as PlayerRecordWriteInput,
+        );
         playerRecords.push(playerRecord);
     }
 }
@@ -670,10 +744,15 @@ function calculatePlayerRecord(
     yearOutcomes: OutcomeType[],
     outcome: OutcomeType,
 ): Partial<PlayerRecordType> {
-    const playerYearOutcomes = yearOutcomes.filter(o => o.playerId === outcome.playerId &&
-        o.gameDayId <= gameDay.id);
-    const playerYearRespondedOutcomes = playerYearOutcomes.filter(o => o.response != null);
-    const playerYearPlayedOutcomes = playerYearOutcomes.filter(o => o.points != null);
+    const playerYearOutcomes = yearOutcomes.filter(
+        (o) => o.playerId === outcome.playerId && o.gameDayId <= gameDay.id,
+    );
+    const playerYearRespondedOutcomes = playerYearOutcomes.filter(
+        (o) => o.response != null,
+    );
+    const playerYearPlayedOutcomes = playerYearOutcomes.filter(
+        (o) => o.points != null,
+    );
     const pub = playerYearOutcomes.reduce((acc, o) => acc + (o.pub ?? 0), 0);
     const data: Partial<PlayerRecordType> = {
         playerId: outcome.playerId,
@@ -685,23 +764,32 @@ function calculatePlayerRecord(
 
     if (playerYearPlayedOutcomes.length > 0) {
         data.played = playerYearPlayedOutcomes.length;
-        data.won = playerYearPlayedOutcomes.filter(o => o.points == 3).length;
-        data.drawn = playerYearPlayedOutcomes.filter(o => o.points == 1).length;
-        data.lost = playerYearPlayedOutcomes.filter(o => o.points == 0).length;
+        data.won = playerYearPlayedOutcomes.filter((o) => o.points == 3).length;
+        data.drawn = playerYearPlayedOutcomes.filter(
+            (o) => o.points == 1,
+        ).length;
+        data.lost = playerYearPlayedOutcomes.filter(
+            (o) => o.points == 0,
+        ).length;
     }
 
     if (data.played && data.played > 0) {
-        const totalPoints = playerYearPlayedOutcomes.reduce((acc, o) => acc + (o.points!), 0);
+        const totalPoints = playerYearPlayedOutcomes.reduce(
+            (acc, o) => acc + o.points!,
+            0,
+        );
         data.points = totalPoints;
         data.averages = totalPoints / data.played;
     }
 
     const responseIntervals = playerYearOutcomes
-        .map(o => o.responseInterval)
+        .map((o) => o.responseInterval)
         .filter((num): num is number => num !== null);
 
     if (responseIntervals.length > 0) {
-        data.speedy = responseIntervals.reduce((acc, ri) => acc + ri, 0) / responseIntervals.length;
+        data.speedy =
+            responseIntervals.reduce((acc, ri) => acc + ri, 0) /
+            responseIntervals.length;
     }
 
     return data;

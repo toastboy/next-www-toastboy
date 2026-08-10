@@ -1,4 +1,2 @@
-export const NYI = () => (
-    <div>NYI</div>
-);
+export const NYI = () => <div>NYI</div>;
 NYI.displayName = 'NYI';

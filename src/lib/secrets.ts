@@ -12,7 +12,8 @@ const secrets = {
 
     BETTER_AUTH_SECRET: process.env.BETTER_AUTH_SECRET,
     NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
-    BETTER_AUTH_URL: process.env.BETTER_AUTH_URL ??
+    BETTER_AUTH_URL:
+        process.env.BETTER_AUTH_URL ??
         process.env.NEXT_PUBLIC_SITE_URL ??
         'http://localhost:3000',
 
@@ -43,13 +44,14 @@ let cachedSecrets: typeof secrets | null = null;
 
 function readFileIfExists(filePath: string): string | undefined {
     try {
-        return fs.readFileSync(filePath, "utf8");
-    }
-    catch (error: unknown) {
-        if (typeof error === "object" &&
+        return fs.readFileSync(filePath, 'utf8');
+    } catch (error: unknown) {
+        if (
+            typeof error === 'object' &&
             error !== null &&
-            "code" in error &&
-            (error as { code?: string }).code === "ENOENT") {
+            'code' in error &&
+            (error as { code?: string }).code === 'ENOENT'
+        ) {
             return undefined;
         }
 
@@ -86,12 +88,16 @@ export function getSecrets(): typeof secrets {
     const isProduction = process.env.NODE_ENV === 'production';
     const missingSecrets = Object.entries(result)
         .filter(([key, value]) => {
-            const isMissing = value === undefined || value === null || value === '';
+            const isMissing =
+                value === undefined || value === null || value === '';
             if (!isMissing) return false;
 
             // Production-only secrets (e.g. Graph API email) are allowed to be
             // absent outside production; all other secrets are always required.
-            if (!isProduction && productionOnlySecrets.has(key as keyof typeof secrets)) {
+            if (
+                !isProduction &&
+                productionOnlySecrets.has(key as keyof typeof secrets)
+            ) {
                 return false;
             }
 

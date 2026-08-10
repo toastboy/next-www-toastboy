@@ -12,4 +12,4 @@ export const FootyChannel = {
     Users: 'users',
 } as const;
 
-export type FootyChannel = typeof FootyChannel[keyof typeof FootyChannel];
+export type FootyChannel = (typeof FootyChannel)[keyof typeof FootyChannel];

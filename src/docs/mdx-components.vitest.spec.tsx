@@ -27,9 +27,15 @@ async function renderMDX(source: string) {
 
 // Renders the `a` override in isolation, matching what the MDX runtime does when
 // it calls _components.a with resolved props (href, target, rel, children).
-function AnchorWrapper({ anchorProps }: { anchorProps: React.AnchorHTMLAttributes<HTMLAnchorElement> }) {
+function AnchorWrapper({
+    anchorProps,
+}: {
+    anchorProps: React.AnchorHTMLAttributes<HTMLAnchorElement>;
+}) {
     const components = useMDXComponents();
-    const AnchorOverride = components.a as React.ComponentType<React.AnchorHTMLAttributes<HTMLAnchorElement>>;
+    const AnchorOverride = components.a as React.ComponentType<
+        React.AnchorHTMLAttributes<HTMLAnchorElement>
+    >;
     return <AnchorOverride {...anchorProps} />;
 }
 
@@ -44,19 +50,39 @@ function renderAnchor(props: React.AnchorHTMLAttributes<HTMLAnchorElement>) {
 describe('useMDXComponents', () => {
     describe('a (link)', () => {
         it('adds noopener and noreferrer when target is _blank', () => {
-            renderAnchor({ href: 'https://example.com', target: '_blank', children: 'Visit' });
+            renderAnchor({
+                href: 'https://example.com',
+                target: '_blank',
+                children: 'Visit',
+            });
 
             const link = screen.getByRole('link', { name: 'Visit' });
-            expect(link).toHaveAttribute('rel', expect.stringContaining('noopener'));
-            expect(link).toHaveAttribute('rel', expect.stringContaining('noreferrer'));
+            expect(link).toHaveAttribute(
+                'rel',
+                expect.stringContaining('noopener'),
+            );
+            expect(link).toHaveAttribute(
+                'rel',
+                expect.stringContaining('noreferrer'),
+            );
         });
 
         it('adds noopener and noreferrer for uppercase _BLANK variants', () => {
-            renderAnchor({ href: 'https://example.com', target: '_BLANK', children: 'Visit' });
+            renderAnchor({
+                href: 'https://example.com',
+                target: '_BLANK',
+                children: 'Visit',
+            });
 
             const link = screen.getByRole('link', { name: 'Visit' });
-            expect(link).toHaveAttribute('rel', expect.stringContaining('noopener'));
-            expect(link).toHaveAttribute('rel', expect.stringContaining('noreferrer'));
+            expect(link).toHaveAttribute(
+                'rel',
+                expect.stringContaining('noopener'),
+            );
+            expect(link).toHaveAttribute(
+                'rel',
+                expect.stringContaining('noreferrer'),
+            );
         });
 
         it('does not add security tokens when target is not _blank', () => {
@@ -76,31 +102,60 @@ describe('useMDXComponents', () => {
 
             const link = screen.getByRole('link', { name: 'Visit' });
             const tokens = (link.getAttribute('rel') ?? '').split(/\s+/);
-            expect(tokens.filter(t => t === 'noopener')).toHaveLength(1);
-            expect(tokens.filter(t => t === 'noreferrer')).toHaveLength(1);
+            expect(tokens.filter((t) => t === 'noopener')).toHaveLength(1);
+            expect(tokens.filter((t) => t === 'noreferrer')).toHaveLength(1);
         });
 
         it('produces no empty tokens when rel is an empty string', () => {
-            renderAnchor({ href: 'https://example.com', target: '_blank', rel: '', children: 'Visit' });
+            renderAnchor({
+                href: 'https://example.com',
+                target: '_blank',
+                rel: '',
+                children: 'Visit',
+            });
 
-            const rel = screen.getByRole('link', { name: 'Visit' }).getAttribute('rel') ?? '';
-            expect(rel.split(' ').every(t => t.length > 0)).toBe(true);
+            const rel =
+                screen
+                    .getByRole('link', { name: 'Visit' })
+                    .getAttribute('rel') ?? '';
+            expect(rel.split(' ').every((t) => t.length > 0)).toBe(true);
         });
 
         it('produces no empty tokens when rel has surrounding whitespace', () => {
-            renderAnchor({ href: 'https://example.com', target: '_blank', rel: '  sponsored  ', children: 'Visit' });
+            renderAnchor({
+                href: 'https://example.com',
+                target: '_blank',
+                rel: '  sponsored  ',
+                children: 'Visit',
+            });
 
-            const rel = screen.getByRole('link', { name: 'Visit' }).getAttribute('rel') ?? '';
-            expect(rel.split(' ').every(t => t.length > 0)).toBe(true);
+            const rel =
+                screen
+                    .getByRole('link', { name: 'Visit' })
+                    .getAttribute('rel') ?? '';
+            expect(rel.split(' ').every((t) => t.length > 0)).toBe(true);
             expect(rel).toContain('sponsored');
         });
 
         it('deduplicates tokens that differ only in case', () => {
-            renderAnchor({ href: 'https://example.com', target: '_blank', rel: 'NOOPENER Noreferrer', children: 'Visit' });
+            renderAnchor({
+                href: 'https://example.com',
+                target: '_blank',
+                rel: 'NOOPENER Noreferrer',
+                children: 'Visit',
+            });
 
-            const tokens = (screen.getByRole('link', { name: 'Visit' }).getAttribute('rel') ?? '').split(' ');
-            expect(tokens.filter(t => t.toLowerCase() === 'noopener')).toHaveLength(1);
-            expect(tokens.filter(t => t.toLowerCase() === 'noreferrer')).toHaveLength(1);
+            const tokens = (
+                screen
+                    .getByRole('link', { name: 'Visit' })
+                    .getAttribute('rel') ?? ''
+            ).split(' ');
+            expect(
+                tokens.filter((t) => t.toLowerCase() === 'noopener'),
+            ).toHaveLength(1);
+            expect(
+                tokens.filter((t) => t.toLowerCase() === 'noreferrer'),
+            ).toHaveLength(1);
         });
 
         it('preserves other rel tokens alongside the security tokens', () => {
@@ -126,7 +181,11 @@ describe('useMDXComponents', () => {
                 children: 'Visit',
             });
 
-            const tokens = (screen.getByRole('link', { name: 'Visit' }).getAttribute('rel') ?? '').split(/\s+/);
+            const tokens = (
+                screen
+                    .getByRole('link', { name: 'Visit' })
+                    .getAttribute('rel') ?? ''
+            ).split(/\s+/);
             expect(tokens).toContain('Sponsored');
             expect(tokens).not.toContain('sponsored');
         });
@@ -144,19 +203,33 @@ describe('useMDXComponents', () => {
             // Callers can pass components to useMDXComponents but must not be able to
             // replace the a override and strip the noopener/noreferrer hardening.
             const components = useMDXComponents({
-                a: ({ children, ...props }: React.AnchorHTMLAttributes<HTMLAnchorElement>) =>
-                    <a {...props}>{children}</a>,
+                a: ({
+                    children,
+                    ...props
+                }: React.AnchorHTMLAttributes<HTMLAnchorElement>) => (
+                    <a {...props}>{children}</a>
+                ),
             });
-            const AnchorOverride = components.a as React.ComponentType<React.AnchorHTMLAttributes<HTMLAnchorElement>>;
+            const AnchorOverride = components.a as React.ComponentType<
+                React.AnchorHTMLAttributes<HTMLAnchorElement>
+            >;
             render(
                 <Wrapper>
-                    <AnchorOverride href="https://example.com" target="_blank">Visit</AnchorOverride>
+                    <AnchorOverride href="https://example.com" target="_blank">
+                        Visit
+                    </AnchorOverride>
                 </Wrapper>,
             );
 
             const link = screen.getByRole('link', { name: 'Visit' });
-            expect(link).toHaveAttribute('rel', expect.stringContaining('noopener'));
-            expect(link).toHaveAttribute('rel', expect.stringContaining('noreferrer'));
+            expect(link).toHaveAttribute(
+                'rel',
+                expect.stringContaining('noopener'),
+            );
+            expect(link).toHaveAttribute(
+                'rel',
+                expect.stringContaining('noreferrer'),
+            );
         });
     });
 
@@ -164,19 +237,25 @@ describe('useMDXComponents', () => {
         it('h1 renders as a level-1 heading', async () => {
             await renderMDX('# Hello World');
 
-            expect(screen.getByRole('heading', { level: 1, name: 'Hello World' })).toBeInTheDocument();
+            expect(
+                screen.getByRole('heading', { level: 1, name: 'Hello World' }),
+            ).toBeInTheDocument();
         });
 
         it('h2 renders as a level-2 heading', async () => {
             await renderMDX('## Subtitle');
 
-            expect(screen.getByRole('heading', { level: 2, name: 'Subtitle' })).toBeInTheDocument();
+            expect(
+                screen.getByRole('heading', { level: 2, name: 'Subtitle' }),
+            ).toBeInTheDocument();
         });
 
         it('h3 renders as a level-3 heading', async () => {
             await renderMDX('### Section');
 
-            expect(screen.getByRole('heading', { level: 3, name: 'Section' })).toBeInTheDocument();
+            expect(
+                screen.getByRole('heading', { level: 3, name: 'Section' }),
+            ).toBeInTheDocument();
         });
     });
 
@@ -229,10 +308,14 @@ describe('useMDXComponents', () => {
             // If code wrapped language-tagged content in a Mantine component, a future change
             // that passes children through would produce double-wrapped markup. Render the
             // override directly to assert it stays a plain native element.
-            const CodeOverride = useMDXComponents().code as React.ComponentType<React.HTMLAttributes<HTMLElement>>;
+            const CodeOverride = useMDXComponents().code as React.ComponentType<
+                React.HTMLAttributes<HTMLElement>
+            >;
             render(
                 <Wrapper>
-                    <CodeOverride className="language-js">const x = 1;</CodeOverride>
+                    <CodeOverride className="language-js">
+                        const x = 1;
+                    </CodeOverride>
                 </Wrapper>,
             );
 

@@ -9,9 +9,15 @@ vi.mock('@/actions/payDebt', () => ({
 import { payDebt } from '@/actions/payDebt';
 import MoneyPage from '@/app/footy/admin/money/page';
 import moneyService from '@/services/Money';
-import { createMockDebtsSummary, defaultDebtsSummary } from '@/tests/mocks/data/money';
+import {
+    createMockDebtsSummary,
+    defaultDebtsSummary,
+} from '@/tests/mocks/data/money';
 
-interface AnyElement { type: unknown; props: Record<string, unknown> }
+interface AnyElement {
+    type: unknown;
+    props: Record<string, unknown>;
+}
 
 // Helper to find a named component element anywhere in a JSX tree
 const findElement = (node: unknown, displayName: string): AnyElement | null => {
@@ -62,7 +68,9 @@ describe('Admin Money page', () => {
     });
 
     it('propagates errors from moneyService.getDebts', async () => {
-        (moneyService.getDebts as Mock).mockRejectedValue(new Error('DB failed'));
+        (moneyService.getDebts as Mock).mockRejectedValue(
+            new Error('DB failed'),
+        );
 
         await expect(MoneyPage()).rejects.toThrow('DB failed');
     });

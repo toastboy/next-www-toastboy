@@ -44,16 +44,25 @@ class GameDayService {
      * @param {Date} [filters.beforeDate] - Only return game days before this date (exclusive).
      * @returns {Promise<GameDayType[]>} A promise that resolves to an array of GameDayType objects.
      */
-    async getAll({ bibs, game, mailSent, year, fromDate, beforeDate }: {
-        bibs?: TeamName,
-        game?: boolean,
-        mailSent?: boolean,
-        year?: number,
-        fromDate?: Date,
-        beforeDate?: Date,
+    async getAll({
+        bibs,
+        game,
+        mailSent,
+        year,
+        fromDate,
+        beforeDate,
+    }: {
+        bibs?: TeamName;
+        game?: boolean;
+        mailSent?: boolean;
+        year?: number;
+        fromDate?: Date;
+        beforeDate?: Date;
     } = {}): Promise<GameDayType[]> {
         const where = GameDayWhereInputObjectSchema.parse({
-            bibs, game, year: year === 0 ? undefined : year,
+            bibs,
+            game,
+            year: year === 0 ? undefined : year,
         });
         if (mailSent !== undefined) {
             where.mailSent = mailSent ? { not: null } : null;
@@ -64,7 +73,10 @@ class GameDayService {
                 ...(beforeDate !== undefined ? { lt: beforeDate } : {}),
             };
         }
-        return prisma.gameDay.findMany({ where, orderBy: [{ date: 'asc' }, { id: 'asc' }] });
+        return prisma.gameDay.findMany({
+            where,
+            orderBy: [{ date: 'asc' }, { id: 'asc' }],
+        });
     }
 
     /**
@@ -82,12 +94,14 @@ class GameDayService {
     }> {
         const result = await prisma.gameDay.aggregate({
             where: {
-                ...(year > 0 ? {
-                    date: {
-                        gte: new Date(Date.UTC(year, 0, 1)),
-                        lt: new Date(Date.UTC(year + 1, 0, 1)),
-                    },
-                } : undefined),
+                ...(year > 0
+                    ? {
+                          date: {
+                              gte: new Date(Date.UTC(year, 0, 1)),
+                              lt: new Date(Date.UTC(year + 1, 0, 1)),
+                          },
+                      }
+                    : undefined),
             },
             _min: { id: true },
             _max: { id: true },
@@ -112,7 +126,9 @@ class GameDayService {
      * @returns A promise that resolves to the current GameDayType, or null if not found.
      */
     async getCurrent(): Promise<GameDayType | null> {
-        const where = GameDayWhereInputObjectSchema.parse({ mailSent: { not: null } });
+        const where = GameDayWhereInputObjectSchema.parse({
+            mailSent: { not: null },
+        });
         return prisma.gameDay.findFirst({ where, orderBy: { date: 'desc' } });
     }
 
@@ -188,21 +204,28 @@ class GameDayService {
      * @param untilGameDayId - The gameDay ID to stop at (inclusive), or undefined.
      * @returns A promise that resolves to the number of games.
      */
-    async getGamesPlayed(year: number, untilGameDayId?: number): Promise<number> {
+    async getGamesPlayed(
+        year: number,
+        untilGameDayId?: number,
+    ): Promise<number> {
         return prisma.gameDay.count({
             where: {
                 game: true,
-                ...(year !== 0 ? {
-                    date: {
-                        gte: new Date(Date.UTC(year, 0, 1)),
-                        lt: new Date(Date.UTC(year + 1, 0, 1)),
-                    },
-                } : {}),
-                ...(untilGameDayId ? {
-                    id: {
-                        lte: untilGameDayId,
-                    },
-                } : {}),
+                ...(year !== 0
+                    ? {
+                          date: {
+                              gte: new Date(Date.UTC(year, 0, 1)),
+                              lt: new Date(Date.UTC(year + 1, 0, 1)),
+                          },
+                      }
+                    : {}),
+                ...(untilGameDayId
+                    ? {
+                          id: {
+                              lte: untilGameDayId,
+                          },
+                      }
+                    : {}),
             },
         });
     }
@@ -219,22 +242,29 @@ class GameDayService {
      * @param untilGameDayId - Optional upper bound for game day IDs (inclusive).
      * @returns The number of matching cancelled game days.
      */
-    async getGamesCancelled(year: number, untilGameDayId?: number): Promise<number> {
+    async getGamesCancelled(
+        year: number,
+        untilGameDayId?: number,
+    ): Promise<number> {
         return prisma.gameDay.count({
             where: {
                 game: false,
                 mailSent: { not: null },
-                ...(year !== 0 ? {
-                    date: {
-                        gte: new Date(Date.UTC(year, 0, 1)),
-                        lt: new Date(Date.UTC(year + 1, 0, 1)),
-                    },
-                } : {}),
-                ...(untilGameDayId ? {
-                    id: {
-                        lte: untilGameDayId,
-                    },
-                } : {}),
+                ...(year !== 0
+                    ? {
+                          date: {
+                              gte: new Date(Date.UTC(year, 0, 1)),
+                              lt: new Date(Date.UTC(year + 1, 0, 1)),
+                          },
+                      }
+                    : {}),
+                ...(untilGameDayId
+                    ? {
+                          id: {
+                              lte: untilGameDayId,
+                          },
+                      }
+                    : {}),
             },
         });
     }
@@ -250,12 +280,14 @@ class GameDayService {
                 game: true,
                 AND: [
                     {
-                        ...(year !== 0 ? {
-                            date: {
-                                gte: new Date(Date.UTC(year, 0, 1)),
-                                lt: new Date(Date.UTC(year + 1, 0, 1)),
-                            },
-                        } : {}),
+                        ...(year !== 0
+                            ? {
+                                  date: {
+                                      gte: new Date(Date.UTC(year, 0, 1)),
+                                      lt: new Date(Date.UTC(year + 1, 0, 1)),
+                                  },
+                              }
+                            : {}),
                     },
                     {
                         date: {
@@ -290,11 +322,13 @@ class GameDayService {
             by: ['year'],
             where: {
                 game: true,
-                ...(until ? {
-                    date: {
-                        lte: until,
-                    },
-                } : {}),
+                ...(until
+                    ? {
+                          date: {
+                              lte: until,
+                          },
+                      }
+                    : {}),
             },
             _max: {
                 id: true,
@@ -327,7 +361,7 @@ class GameDayService {
                 year: true,
             },
         });
-        const years = gameDays.map(gd => gd.year);
+        const years = gameDays.map((gd) => gd.year);
         const distinctYears = Array.from(new Set(years));
         if (mostRecentFirst) distinctYears.sort((a, b) => b - a);
         if (includeAllTime) {
@@ -410,8 +444,13 @@ class GameDayService {
      * @param mailSent - The date when the mail was sent. Defaults to current date/time if not provided.
      * @returns A Promise that resolves to the updated GameDay object.
      */
-    async markMailSent(gameDayId: number, mailSent: Date = new Date()): Promise<GameDayType> {
-        const where = GameDayWhereUniqueInputObjectSchema.parse({ id: gameDayId });
+    async markMailSent(
+        gameDayId: number,
+        mailSent: Date = new Date(),
+    ): Promise<GameDayType> {
+        const where = GameDayWhereUniqueInputObjectSchema.parse({
+            id: gameDayId,
+        });
         return prisma.gameDay.update({
             where,
             data: {

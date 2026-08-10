@@ -1,10 +1,6 @@
 'use client';
 
-import {
-    Alert,
-    Button,
-    Flex,
-} from '@mantine/core';
+import { Alert, Button, Flex } from '@mantine/core';
 import { IconAlertTriangle } from '@tabler/icons-react';
 import { useEffect } from 'react';
 

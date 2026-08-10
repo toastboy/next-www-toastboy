@@ -21,7 +21,9 @@ test.describe('/api/health endpoint', () => {
         expect(() => new Date(json.timestamp)).not.toThrow();
     });
 
-    test('should respond quickly (within reasonable time)', async ({ request }) => {
+    test('should respond quickly (within reasonable time)', async ({
+        request,
+    }) => {
         const startTime = Date.now();
         const response = await request.get('/api/health');
         const endTime = Date.now();

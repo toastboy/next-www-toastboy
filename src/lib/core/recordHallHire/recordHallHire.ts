@@ -21,5 +21,9 @@ export async function recordHallHireCore(
     data: RecordHallHireInput,
     deps: RecordHallHireDeps = defaultDeps,
 ): Promise<void> {
-    return deps.moneyService.recordHallHire(data.amountPence, data.gameDayId, data.note);
+    return deps.moneyService.recordHallHire(
+        data.amountPence,
+        data.gameDayId,
+        data.note,
+    );
 }

@@ -18,9 +18,11 @@ const ClubStrictFields = {
     country: z.string().max(255).nullish(),
 };
 
-export const ClubCreateWriteInputSchema = z.object({
-    ...ClubStrictFields,
-}).strip();
+export const ClubCreateWriteInputSchema = z
+    .object({
+        ...ClubStrictFields,
+    })
+    .strip();
 
 export type ClubCreateWriteInput = z.infer<typeof ClubCreateWriteInputSchema>;
 

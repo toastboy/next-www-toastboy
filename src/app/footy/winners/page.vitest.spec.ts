@@ -5,8 +5,12 @@ import { vi } from 'vitest';
 vi.mock('services/PlayerRecord');
 
 vi.mock('next/navigation', () => ({
-    notFound: vi.fn(() => { throw new Error('not_found'); }),
-    permanentRedirect: vi.fn(() => { throw new Error('permanent_redirect'); }),
+    notFound: vi.fn(() => {
+        throw new Error('not_found');
+    }),
+    permanentRedirect: vi.fn(() => {
+        throw new Error('permanent_redirect');
+    }),
 }));
 
 // React is partially mocked so cache becomes a passthrough, preventing result
@@ -31,7 +35,6 @@ vi.mock('components/TitleWithYearDropdown/TitleWithYearDropdown', () => ({
     TitleWithYearDropdown: () => null,
 }));
 
-
 import { permanentRedirect } from 'next/navigation';
 
 import Page, { generateMetadata } from '@/app/footy/winners/page';
@@ -41,7 +44,9 @@ import { defaultPlayerRecordDataList } from '@/tests/mocks/data/playerRecordData
 describe('Winners Page — parallel fetching', () => {
     beforeEach(() => {
         (playerRecordService.getAllYears as Mock).mockResolvedValue([0, 2021]);
-        (playerRecordService.getWinners as Mock).mockResolvedValue(defaultPlayerRecordDataList);
+        (playerRecordService.getWinners as Mock).mockResolvedValue(
+            defaultPlayerRecordDataList,
+        );
     });
 
     afterEach(() => {
@@ -51,38 +56,56 @@ describe('Winners Page — parallel fetching', () => {
     it('calls getWinners for every table in TableNameSchema', async () => {
         await Page({ searchParams: Promise.resolve({ year: '2021' }) });
 
-        expect(playerRecordService.getWinners).toHaveBeenCalledTimes(TableNameSchema.options.length);
+        expect(playerRecordService.getWinners).toHaveBeenCalledTimes(
+            TableNameSchema.options.length,
+        );
         for (const table of TableNameSchema.options) {
-            expect(playerRecordService.getWinners).toHaveBeenCalledWith(table, 2021);
+            expect(playerRecordService.getWinners).toHaveBeenCalledWith(
+                table,
+                2021,
+            );
         }
     });
 
     it('calls getWinners for each table with the resolved year', async () => {
-        (playerRecordService.getAllYears as Mock).mockResolvedValue([0, 2019, 2021]);
+        (playerRecordService.getAllYears as Mock).mockResolvedValue([
+            0, 2019, 2021,
+        ]);
 
         await Page({ searchParams: Promise.resolve({ year: '2019' }) });
 
-        expect(playerRecordService.getWinners).toHaveBeenCalledTimes(TableNameSchema.options.length);
+        expect(playerRecordService.getWinners).toHaveBeenCalledTimes(
+            TableNameSchema.options.length,
+        );
         for (const table of TableNameSchema.options) {
-            expect(playerRecordService.getWinners).toHaveBeenCalledWith(table, 2019);
+            expect(playerRecordService.getWinners).toHaveBeenCalledWith(
+                table,
+                2019,
+            );
         }
     });
 
     it('populates results for all tables before rendering', async () => {
         const fetchedTables: string[] = [];
-        (playerRecordService.getWinners as Mock).mockImplementation(async (table: string) => {
-            fetchedTables.push(table);
-            return Promise.resolve(defaultPlayerRecordDataList);
-        });
+        (playerRecordService.getWinners as Mock).mockImplementation(
+            async (table: string) => {
+                fetchedTables.push(table);
+                return Promise.resolve(defaultPlayerRecordDataList);
+            },
+        );
 
         await Page({ searchParams: Promise.resolve({ year: '2021' }) });
 
         expect(fetchedTables).toHaveLength(TableNameSchema.options.length);
-        expect(fetchedTables.sort()).toEqual([...TableNameSchema.options].sort());
+        expect(fetchedTables.sort()).toEqual(
+            [...TableNameSchema.options].sort(),
+        );
     });
 
     it('propagates an error when one service call rejects', async () => {
-        (playerRecordService.getWinners as Mock).mockRejectedValueOnce(new Error('Service failure'));
+        (playerRecordService.getWinners as Mock).mockRejectedValueOnce(
+            new Error('Service failure'),
+        );
 
         await expect(
             Page({ searchParams: Promise.resolve({ year: '2021' }) }),
@@ -90,7 +113,9 @@ describe('Winners Page — parallel fetching', () => {
     });
 
     it('propagates an error when all service calls reject', async () => {
-        (playerRecordService.getWinners as Mock).mockRejectedValue(new Error('All services down'));
+        (playerRecordService.getWinners as Mock).mockRejectedValue(
+            new Error('All services down'),
+        );
 
         await expect(
             Page({ searchParams: Promise.resolve({ year: '2021' }) }),
@@ -98,7 +123,9 @@ describe('Winners Page — parallel fetching', () => {
     });
 
     it('generates metadata with the year-specific title', async () => {
-        const metadata = await generateMetadata({ searchParams: Promise.resolve({ year: '2021' }) });
+        const metadata = await generateMetadata({
+            searchParams: Promise.resolve({ year: '2021' }),
+        });
 
         expect(metadata.title).toBe('2021 Winners');
     });

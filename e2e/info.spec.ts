@@ -1,11 +1,21 @@
 import { expect, test } from './utils/base';
-import { deleteAllMessages, getMessageDetail, waitForMessage } from './utils/mailpit';
+import {
+    deleteAllMessages,
+    getMessageDetail,
+    waitForMessage,
+} from './utils/mailpit';
 
 const extractVerificationLink = (content: string) => {
-    const hrefMatch = /href=["']([^"']*\/api\/footy\/auth\/verify\/enquiry\/[^"']*)["']/i.exec(content);
+    const hrefMatch =
+        /href=["']([^"']*\/api\/footy\/auth\/verify\/enquiry\/[^"']*)["']/i.exec(
+            content,
+        );
     if (hrefMatch?.[1]) return hrefMatch[1];
 
-    const textMatch = /(https?:\/\/[^\s"']*\/api\/footy\/auth\/verify\/enquiry\/[^\s"']+)/i.exec(content);
+    const textMatch =
+        /(https?:\/\/[^\s"']*\/api\/footy\/auth\/verify\/enquiry\/[^\s"']+)/i.exec(
+            content,
+        );
     return textMatch?.[1] ?? null;
 };
 
@@ -67,38 +77,74 @@ test.describe('EnquiryForm', () => {
             await deleteAllMessages(request);
         });
 
-        test('submits form and shows confirmation notification', async ({ page, request }) => {
+        test('submits form and shows confirmation notification', async ({
+            page,
+            request,
+        }) => {
             await page.goto('/footy/info');
             await page.getByRole('textbox', { name: 'Name' }).fill('Test User');
-            await page.getByRole('textbox', { name: 'Email' }).fill('playwright@example.com');
-            await page.getByRole('textbox', { name: 'Message' }).fill('This is a test enquiry from Playwright.');
+            await page
+                .getByRole('textbox', { name: 'Email' })
+                .fill('playwright@example.com');
+            await page
+                .getByRole('textbox', { name: 'Message' })
+                .fill('This is a test enquiry from Playwright.');
             await page.getByRole('button', { name: 'Send message' }).click();
 
-            await expect(page.getByText('Confirm your email')).toBeVisible({ timeout: 15000 });
-            await expect(page.getByRole('textbox', { name: 'Name' })).toHaveValue('');
-            await expect(page.getByRole('textbox', { name: 'Email' })).toHaveValue('');
-            await expect(page.getByRole('textbox', { name: 'Message' })).toHaveValue('');
+            await expect(page.getByText('Confirm your email')).toBeVisible({
+                timeout: 15000,
+            });
+            await expect(
+                page.getByRole('textbox', { name: 'Name' }),
+            ).toHaveValue('');
+            await expect(
+                page.getByRole('textbox', { name: 'Email' }),
+            ).toHaveValue('');
+            await expect(
+                page.getByRole('textbox', { name: 'Message' }),
+            ).toHaveValue('');
 
-            const message = await waitForMessage(request, 'Confirm your enquiry');
-            expect(message, 'Expected verification email in Mailpit').toBeTruthy();
+            const message = await waitForMessage(
+                request,
+                'Confirm your enquiry',
+            );
+            expect(
+                message,
+                'Expected verification email in Mailpit',
+            ).toBeTruthy();
         });
 
         test('completes full verification flow', async ({ page, request }) => {
             await page.goto('/footy/info');
-            await page.getByRole('textbox', { name: 'Name' }).fill('Verification Tester');
-            await page.getByRole('textbox', { name: 'Email' }).fill('verify@example.com');
-            await page.getByRole('textbox', { name: 'Message' }).fill('Please verify this enquiry.');
+            await page
+                .getByRole('textbox', { name: 'Name' })
+                .fill('Verification Tester');
+            await page
+                .getByRole('textbox', { name: 'Email' })
+                .fill('verify@example.com');
+            await page
+                .getByRole('textbox', { name: 'Message' })
+                .fill('Please verify this enquiry.');
             await page.getByRole('button', { name: 'Send message' }).click();
 
-            await expect(page.getByText('Confirm your email')).toBeVisible({ timeout: 15000 });
+            await expect(page.getByText('Confirm your email')).toBeVisible({
+                timeout: 15000,
+            });
 
-            const message = await waitForMessage(request, 'Confirm your enquiry');
-            if (!message) throw new Error('Verification email not found in Mailpit');
+            const message = await waitForMessage(
+                request,
+                'Confirm your enquiry',
+            );
+            if (!message)
+                throw new Error('Verification email not found in Mailpit');
 
             const detail = await getMessageDetail(request, message.ID);
             const body = detail.HTML ?? detail.Text ?? '';
             const verificationLink = extractVerificationLink(body);
-            if (!verificationLink) throw new Error(`Verification link not found in email body:\n${body}`);
+            if (!verificationLink)
+                throw new Error(
+                    `Verification link not found in email body:\n${body}`,
+                );
 
             await page.goto(verificationLink);
             await expect(page).toHaveURL(/\/footy\/info/);

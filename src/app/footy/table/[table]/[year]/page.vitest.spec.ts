@@ -1,7 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('next/navigation', () => ({
-    permanentRedirect: vi.fn(() => { throw new Error('permanent_redirect'); }),
+    permanentRedirect: vi.fn(() => {
+        throw new Error('permanent_redirect');
+    }),
 }));
 
 import { permanentRedirect } from 'next/navigation';
@@ -18,7 +20,9 @@ describe('Table [table]/[year] redirect page', () => {
             Page({ params: Promise.resolve({ table: 'pub', year: '2021' }) }),
         ).rejects.toThrow('permanent_redirect');
 
-        expect(permanentRedirect).toHaveBeenCalledWith('/footy/table/pub?year=2021');
+        expect(permanentRedirect).toHaveBeenCalledWith(
+            '/footy/table/pub?year=2021',
+        );
     });
 
     it('preserves the exact table and year values from params', async () => {
@@ -26,6 +30,8 @@ describe('Table [table]/[year] redirect page', () => {
             Page({ params: Promise.resolve({ table: 'points', year: '0' }) }),
         ).rejects.toThrow('permanent_redirect');
 
-        expect(permanentRedirect).toHaveBeenCalledWith('/footy/table/points?year=0');
+        expect(permanentRedirect).toHaveBeenCalledWith(
+            '/footy/table/points?year=0',
+        );
     });
 });

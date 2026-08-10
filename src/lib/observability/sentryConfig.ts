@@ -12,7 +12,8 @@ const MAX_SCRUB_DEPTH = 8;
  * Pattern used to identify sensitive parameter and field names that should never
  * be sent to Sentry in clear text.
  */
-const SENSITIVE_KEY_PATTERN = /(token|password|authorization|cookie|secret|session|api[-_]?key)/i;
+const SENSITIVE_KEY_PATTERN =
+    /(token|password|authorization|cookie|secret|session|api[-_]?key)/i;
 
 /**
  * A conservative set of noisy/browser-level errors that generally do not need
@@ -196,7 +197,10 @@ const sanitizeValue = (
             continue;
         }
 
-        if (typeof entry === 'string' && (key === 'url' || key === 'from' || key === 'to')) {
+        if (
+            typeof entry === 'string' &&
+            (key === 'url' || key === 'from' || key === 'to')
+        ) {
             sanitized[key] = redactSensitiveQueryParams(entry);
             continue;
         }
@@ -225,7 +229,10 @@ export const scrubSentryEvent = <TEvent>(event: TEvent): TEvent => {
     const seen = new WeakSet<object>();
     const mutableEvent = event as Record<string, unknown>;
 
-    if (isObjectRecord(mutableEvent.request) && typeof mutableEvent.request.url === 'string') {
+    if (
+        isObjectRecord(mutableEvent.request) &&
+        typeof mutableEvent.request.url === 'string'
+    ) {
         mutableEvent.request = {
             ...mutableEvent.request,
             url: redactSensitiveQueryParams(mutableEvent.request.url),
@@ -234,7 +241,8 @@ export const scrubSentryEvent = <TEvent>(event: TEvent): TEvent => {
 
     if (Array.isArray(mutableEvent.breadcrumbs)) {
         mutableEvent.breadcrumbs = mutableEvent.breadcrumbs.map((breadcrumb) =>
-            sanitizeValue(breadcrumb, 0, seen));
+            sanitizeValue(breadcrumb, 0, seen),
+        );
     }
 
     if (isObjectRecord(mutableEvent.extra)) {

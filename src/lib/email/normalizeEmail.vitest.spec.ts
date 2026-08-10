@@ -12,7 +12,9 @@ describe('normalizeEmail', () => {
     });
 
     it('trims and lowercases together', () => {
-        expect(normalizeEmail('  Alice@Example.Com  ')).toBe('alice@example.com');
+        expect(normalizeEmail('  Alice@Example.Com  ')).toBe(
+            'alice@example.com',
+        );
     });
 
     it('returns empty string for null', () => {

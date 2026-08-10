@@ -5,9 +5,7 @@ import {
     TeamName,
     TeamNameSchema,
 } from 'prisma/zod/schemas';
-import {
-    OutcomeType,
-} from 'prisma/zod/schemas/models/Outcome.schema';
+import { OutcomeType } from 'prisma/zod/schemas/models/Outcome.schema';
 import z from 'zod';
 
 import { InternalError } from '@/lib/errors';
@@ -30,13 +28,20 @@ import {
 } from '@/types/OutcomeStrictSchema';
 
 /** Linear merge of two PlayerFormType arrays already sorted by date then id. */
-function mergeByDate(a: PlayerFormType[], b: PlayerFormType[]): PlayerFormType[] {
+function mergeByDate(
+    a: PlayerFormType[],
+    b: PlayerFormType[],
+): PlayerFormType[] {
     const result: PlayerFormType[] = [];
     let i = 0;
     let j = 0;
     while (i < a.length && j < b.length) {
-        const dateDiff = a[i].gameDay!.date.getTime() - b[j].gameDay!.date.getTime();
-        if (dateDiff < 0 || (dateDiff === 0 && a[i].gameDay!.id <= b[j].gameDay!.id)) {
+        const dateDiff =
+            a[i].gameDay!.date.getTime() - b[j].gameDay!.date.getTime();
+        if (
+            dateDiff < 0 ||
+            (dateDiff === 0 && a[i].gameDay!.id <= b[j].gameDay!.id)
+        ) {
             result.push(a[i++]);
         } else {
             result.push(b[j++]);
@@ -55,7 +60,10 @@ class OutcomeService {
      * @returns A promise that resolves to the Outcome if found, otherwise null.
      * @throws An error if there is a failure.
      */
-    async get(gameDayId: number, playerId: number): Promise<OutcomeType | null> {
+    async get(
+        gameDayId: number,
+        playerId: number,
+    ): Promise<OutcomeType | null> {
         const where = OutcomeWhereUniqueInputObjectSchema.parse({
             gameDayId_playerId: {
                 gameDayId: gameDayId,
@@ -101,17 +109,25 @@ class OutcomeService {
      * gameDay, most recent first.
      * @throws An error if there is a failure.
      */
-    async getAllForYear(year: number, untilGameDay?: number): Promise<OutcomeType[]> {
+    async getAllForYear(
+        year: number,
+        untilGameDay?: number,
+    ): Promise<OutcomeType[]> {
         return prisma.outcome.findMany({
             where: {
                 gameDay: {
-                    date: year !== 0 ? {
-                        gte: new Date(Date.UTC(year, 0, 1)),
-                        lt: new Date(Date.UTC(year + 1, 0, 1)),
-                    } : {},
-                    id: untilGameDay ? {
-                        lte: untilGameDay,
-                    } : {},
+                    date:
+                        year !== 0
+                            ? {
+                                  gte: new Date(Date.UTC(year, 0, 1)),
+                                  lt: new Date(Date.UTC(year + 1, 0, 1)),
+                              }
+                            : {},
+                    id: untilGameDay
+                        ? {
+                              lte: untilGameDay,
+                          }
+                        : {},
                 },
             },
             orderBy: {
@@ -135,10 +151,7 @@ class OutcomeService {
             where: {
                 ...(gameDayId ? { gameDayId: gameDayId } : {}),
             },
-            by: [
-                'response',
-                'gameDayId',
-            ],
+            by: ['response', 'gameDayId'],
             _count: {
                 response: true,
                 team: true,
@@ -159,8 +172,7 @@ class OutcomeService {
         let gameDays = [];
         if (gameDayId === undefined) {
             gameDays = await gameDayService.getAll();
-        }
-        else {
+        } else {
             gameDays.push(await gameDayService.get(gameDayId));
         }
 
@@ -173,15 +185,21 @@ class OutcomeService {
                 ['flaked', 0],
                 ['injured', 0],
             ]);
-            const gameDayResponseCounts = PlayerResponseSchema.options.reduce((map, response) => {
-                const count = responseCounts
-                    .filter((res) =>
-                        res.gameDayId === gameDay?.id &&
-                        res.response === `${response}`)
-                    .map((res) => res._count.response)[0] || 0;
-                map.set(`${response.toLowerCase()}`, count);
-                return map;
-            }, initialResponseCounts);
+            const gameDayResponseCounts = PlayerResponseSchema.options.reduce(
+                (map, response) => {
+                    const count =
+                        responseCounts
+                            .filter(
+                                (res) =>
+                                    res.gameDayId === gameDay?.id &&
+                                    res.response === `${response}`,
+                            )
+                            .map((res) => res._count.response)[0] || 0;
+                    map.set(`${response.toLowerCase()}`, count);
+                    return map;
+                },
+                initialResponseCounts,
+            );
 
             if (gameDay) {
                 return {
@@ -193,11 +211,21 @@ class OutcomeService {
                     flaked: gameDayResponseCounts.get('flaked'),
                     injured: gameDayResponseCounts.get('injured'),
                     responses: responseCounts
-                        .filter((rc) => rc.gameDayId === gameDay.id && rc.response !== null)
+                        .filter(
+                            (rc) =>
+                                rc.gameDayId === gameDay.id &&
+                                rc.response !== null,
+                        )
                         .reduce((acc, rc) => acc + rc._count.response, 0),
-                    players: responseCounts
-                        .filter((rc) => rc.gameDayId === gameDay.id && rc.response === PlayerResponseSchema.enum.Yes)
-                        .map((rc) => rc._count.team)[0] || 0,
+                    players:
+                        responseCounts
+                            .filter(
+                                (rc) =>
+                                    rc.gameDayId === gameDay.id &&
+                                    rc.response ===
+                                        PlayerResponseSchema.enum.Yes,
+                            )
+                            .map((rc) => rc._count.team)[0] || 0,
                     cancelled: gameDay.mailSent !== null && !gameDay.game,
                 };
             }
@@ -220,9 +248,11 @@ class OutcomeService {
             const result: TurnoutByYearType = {
                 year: gameYear,
                 gameDays: yearTurnout.length,
-                gamesScheduled: yearTurnout.filter((t) => t.game || t.mailSent).length,
+                gamesScheduled: yearTurnout.filter((t) => t.game || t.mailSent)
+                    .length,
                 gamesInitiated: yearTurnout.filter((t) => t.mailSent).length,
-                gamesPlayed: yearTurnout.filter((t) => t.game && t.mailSent).length,
+                gamesPlayed: yearTurnout.filter((t) => t.game && t.mailSent)
+                    .length,
                 gamesCancelled: yearTurnout.filter((t) => t.cancelled).length,
                 responses: yearTurnout.reduce((acc, t) => acc + t.responses, 0),
                 yesses: yearTurnout.reduce((acc, t) => acc + t.yes, 0),
@@ -233,11 +263,17 @@ class OutcomeService {
             };
 
             if (result.gamesInitiated > 0) {
-                result.responsesPerGameInitiated = parseFloat((result.responses / result.gamesInitiated).toFixed(1));
-                result.yessesPerGameInitiated = parseFloat((result.yesses / result.gamesInitiated).toFixed(1));
+                result.responsesPerGameInitiated = parseFloat(
+                    (result.responses / result.gamesInitiated).toFixed(1),
+                );
+                result.yessesPerGameInitiated = parseFloat(
+                    (result.yesses / result.gamesInitiated).toFixed(1),
+                );
             }
             if (result.gamesPlayed > 0) {
-                result.playersPerGamePlayed = parseFloat((result.players / result.gamesPlayed).toFixed(1));
+                result.playersPerGamePlayed = parseFloat(
+                    (result.players / result.gamesPlayed).toFixed(1),
+                );
             }
 
             return result;
@@ -251,7 +287,10 @@ class OutcomeService {
      * @returns A promise that resolves to an array of Outcome objects.
      * @throws If there is an error fetching the outcomes.
      */
-    async getByGameDay(gameDayId: number, team?: 'A' | 'B'): Promise<OutcomePlayerType[]> {
+    async getByGameDay(
+        gameDayId: number,
+        team?: 'A' | 'B',
+    ): Promise<OutcomePlayerType[]> {
         return prisma.outcome.findMany({
             where: {
                 gameDayId,
@@ -277,10 +316,7 @@ class OutcomeService {
             where: {
                 finished: null,
             },
-            orderBy: [
-                { name: 'asc' },
-                { id: 'asc' },
-            ],
+            orderBy: [{ name: 'asc' }, { id: 'asc' }],
             include: {
                 outcomes: {
                     where: {
@@ -366,22 +402,22 @@ class OutcomeService {
                     },
                 },
             },
-            orderBy: [
-                { goalie: 'desc' },
-                { player: { name: 'asc' } },
-            ],
+            orderBy: [{ goalie: 'desc' }, { player: { name: 'asc' } }],
         });
 
         return outcomes.map(({ player, ...outcome }) => {
             if (!player) {
-                throw new InternalError(`Outcome ${outcome.id} is missing its player relation.`, {
-                    details: {
-                        outcomeId: outcome.id,
-                        gameDayId: outcome.gameDayId,
-                        playerId: outcome.playerId,
-                        team: outcome.team,
+                throw new InternalError(
+                    `Outcome ${outcome.id} is missing its player relation.`,
+                    {
+                        details: {
+                            outcomeId: outcome.id,
+                            gameDayId: outcome.gameDayId,
+                            playerId: outcome.playerId,
+                            team: outcome.team,
+                        },
                     },
-                });
+                );
             }
             const { outcomes: playerOutcomes = [], ...playerData } = player;
 
@@ -389,7 +425,10 @@ class OutcomeService {
             const actualForm = [...playerOutcomes].reverse();
 
             // Left-pad with unplayed sentinels for players newer than formHistory games.
-            const paddingCount = Math.max(0, validatedHistory - actualForm.length);
+            const paddingCount = Math.max(
+                0,
+                validatedHistory - actualForm.length,
+            );
             const padding = Array.from({ length: paddingCount }, () => ({
                 id: 0,
                 gameDayId: 0,
@@ -443,32 +482,65 @@ class OutcomeService {
      * and uninvited game days are represented as synthetic entries with
      * points = null; no-game days have gameDay.game = false.
      */
-    async getHistoryByPlayer(playerId: number, year: number, fromDate?: Date, toDate?: Date): Promise<PlayerFormType[]> {
-        const { playerId: pid, year: yr, fromDate: from, toDate: to } = z.object({
-            playerId: z.number().int().min(1),
-            year: z.union([z.literal(0), z.number().int().min(1900).max(2100)]),
-            fromDate: z.date().optional(),
-            toDate: z.date().optional(),
-        }).parse({ playerId, year, fromDate, toDate });
+    async getHistoryByPlayer(
+        playerId: number,
+        year: number,
+        fromDate?: Date,
+        toDate?: Date,
+    ): Promise<PlayerFormType[]> {
+        const {
+            playerId: pid,
+            year: yr,
+            fromDate: from,
+            toDate: to,
+        } = z
+            .object({
+                playerId: z.number().int().min(1),
+                year: z.union([
+                    z.literal(0),
+                    z.number().int().min(1900).max(2100),
+                ]),
+                fromDate: z.date().optional(),
+                toDate: z.date().optional(),
+            })
+            .parse({ playerId, year, fromDate, toDate });
 
         // All day-boundary arithmetic uses UTC midnight so results are stable
         // across timezones and DST transitions.
-        const utcDay = (y: number, m: number, d: number) => new Date(Date.UTC(y, m, d));
-        const utcDayOf = (date: Date) => utcDay(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
-        const utcNextDayOf = (date: Date) => utcDay(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + 1);
+        const utcDay = (y: number, m: number, d: number) =>
+            new Date(Date.UTC(y, m, d));
+        const utcDayOf = (date: Date) =>
+            utcDay(
+                date.getUTCFullYear(),
+                date.getUTCMonth(),
+                date.getUTCDate(),
+            );
+        const utcNextDayOf = (date: Date) =>
+            utcDay(
+                date.getUTCFullYear(),
+                date.getUTCMonth(),
+                date.getUTCDate() + 1,
+            );
 
         const yearStart = yr > 0 ? utcDay(yr, 0, 1) : undefined;
         // When both bounds are present, take the later start so neither is silently ignored.
-        const startDate = yearStart && from ?
-            new Date(Math.max(yearStart.getTime(), utcDayOf(from).getTime())) :
-            yearStart ?? (from ? utcDayOf(from) : undefined);
+        const startDate =
+            yearStart && from
+                ? new Date(
+                      Math.max(yearStart.getTime(), utcDayOf(from).getTime()),
+                  )
+                : (yearStart ?? (from ? utcDayOf(from) : undefined));
         const yearEnd = yr > 0 ? utcDay(yr + 1, 0, 1) : undefined;
         // For toDate, convert the inclusive finished date to an exclusive upper bound (next UTC day),
         // then take the earliest of the year end, player finish, and tomorrow (no future game days).
         const finishedEnd = to ? utcNextDayOf(to) : undefined;
         const tomorrow = utcNextDayOf(new Date());
-        const candidates = [yearEnd, finishedEnd, tomorrow].filter((d): d is Date => d !== undefined);
-        const endDate = new Date(Math.min(...candidates.map(d => d.getTime())));
+        const candidates = [yearEnd, finishedEnd, tomorrow].filter(
+            (d): d is Date => d !== undefined,
+        );
+        const endDate = new Date(
+            Math.min(...candidates.map((d) => d.getTime())),
+        );
         // endDate is always defined: candidates always contains tomorrow.
         const dateRange: { gte?: Date; lt: Date } = { lt: endDate };
         if (startDate) dateRange.gte = startDate;
@@ -483,12 +555,22 @@ class OutcomeService {
                 orderBy: [{ gameDay: { date: 'asc' } }, { gameDayId: 'asc' }],
                 include: { gameDay: true },
             }),
-            gameDayService.getAll({ game: false, fromDate: startDate, beforeDate: endDate }),
-            gameDayService.getAll({ game: true, fromDate: startDate, beforeDate: endDate }),
+            gameDayService.getAll({
+                game: false,
+                fromDate: startDate,
+                beforeDate: endDate,
+            }),
+            gameDayService.getAll({
+                game: true,
+                fromDate: startDate,
+                beforeDate: endDate,
+            }),
         ]);
 
-        const playedIds = new Set(outcomes.map(o => o.gameDayId));
-        const makeSynthetic = (gameDay: (typeof noGameDays)[number]): PlayerFormType => ({
+        const playedIds = new Set(outcomes.map((o) => o.gameDayId));
+        const makeSynthetic = (
+            gameDay: (typeof noGameDays)[number],
+        ): PlayerFormType => ({
             id: -gameDay.id,
             gameDayId: gameDay.id,
             playerId: pid,
@@ -504,7 +586,9 @@ class OutcomeService {
 
         const synthetic: PlayerFormType[] = [
             ...noGameDays.map(makeSynthetic),
-            ...allGameDays.filter(gd => !playedIds.has(gd.id)).map(makeSynthetic),
+            ...allGameDays
+                .filter((gd) => !playedIds.has(gd.id))
+                .map(makeSynthetic),
         ];
 
         return mergeByDate(outcomes, synthetic);
@@ -528,10 +612,12 @@ class OutcomeService {
         gameDayId: number,
         playerId: number,
     ): Promise<(number | null)[]> {
-        const parsed = z.object({
-            gameDayId: z.number().int().min(1),
-            playerId: z.number().int().min(1),
-        }).parse({ gameDayId, playerId });
+        const parsed = z
+            .object({
+                gameDayId: z.number().int().min(1),
+                playerId: z.number().int().min(1),
+            })
+            .parse({ gameDayId, playerId });
 
         const outcomes = await prisma.outcome.findMany({
             where: {
@@ -573,11 +659,13 @@ class OutcomeService {
         playerId: number,
         history: number,
     ): Promise<number> {
-        const parsed = z.object({
-            gameDayId: z.number().int().min(1),
-            playerId: z.number().int().min(1),
-            history: z.number().int().min(1),
-        }).parse({ gameDayId, playerId, history });
+        const parsed = z
+            .object({
+                gameDayId: z.number().int().min(1),
+                playerId: z.number().int().min(1),
+                history: z.number().int().min(1),
+            })
+            .parse({ gameDayId, playerId, history });
 
         const points = await this.getRecentGamePoints(
             parsed.gameDayId,
@@ -635,10 +723,12 @@ class OutcomeService {
         playerId: number,
         gameDayId: number,
     ): Promise<number> {
-        const parsed = z.object({
-            playerId: z.number().int().min(1),
-            gameDayId: z.number().int().min(1),
-        }).parse({ playerId, gameDayId });
+        const parsed = z
+            .object({
+                playerId: z.number().int().min(1),
+                gameDayId: z.number().int().min(1),
+            })
+            .parse({ playerId, gameDayId });
 
         return prisma.outcome.count({
             where: {
@@ -663,7 +753,11 @@ class OutcomeService {
      * @returns A promise that resolves to the number of games or null.
      * @throws An error if there is a failure.
      */
-    async getGamesPlayedByPlayer(playerId: number, year: number, untilGameDayId?: number): Promise<number> {
+    async getGamesPlayedByPlayer(
+        playerId: number,
+        year: number,
+        untilGameDayId?: number,
+    ): Promise<number> {
         return prisma.outcome.count({
             where: {
                 playerId: playerId,
@@ -671,17 +765,21 @@ class OutcomeService {
                     not: null,
                 },
                 gameDay: {
-                    ...(year !== 0 ? {
-                        date: {
-                            gte: new Date(Date.UTC(year, 0, 1)),
-                            lt: new Date(Date.UTC(year + 1, 0, 1)),
-                        },
-                    } : {}),
-                    ...(untilGameDayId ? {
-                        id: {
-                            lte: untilGameDayId,
-                        },
-                    } : {}),
+                    ...(year !== 0
+                        ? {
+                              date: {
+                                  gte: new Date(Date.UTC(year, 0, 1)),
+                                  lt: new Date(Date.UTC(year + 1, 0, 1)),
+                              },
+                          }
+                        : {}),
+                    ...(untilGameDayId
+                        ? {
+                              id: {
+                                  lte: untilGameDayId,
+                              },
+                          }
+                        : {}),
                 },
             },
         });
@@ -700,14 +798,16 @@ class OutcomeService {
                 points: {
                     not: null,
                 },
-                ...(year != 0 ? {
-                    gameDay: {
-                        date: {
-                            gte: new Date(Date.UTC(year, 0, 1)),
-                            lt: new Date(Date.UTC(year + 1, 0, 1)),
-                        },
-                    },
-                } : {}),
+                ...(year != 0
+                    ? {
+                          gameDay: {
+                              date: {
+                                  gte: new Date(Date.UTC(year, 0, 1)),
+                                  lt: new Date(Date.UTC(year + 1, 0, 1)),
+                              },
+                          },
+                      }
+                    : {}),
             },
             orderBy: {
                 gameDayId: 'desc',
@@ -734,31 +834,36 @@ class OutcomeService {
             where: {
                 team: 'A',
             },
-            by: [
-                'gameDayId',
-                'team',
-                'points',
-            ],
+            by: ['gameDayId', 'team', 'points'],
         });
 
-        return outcomes.reduce((acc, outcome) => {
-            const gameDay = gameDays.find((gameDay) => gameDay.id === outcome.gameDayId);
-            if (gameDay &&
-                gameDay.bibs !== null &&
-                outcome.points !== null &&
-                (!year || gameDay.year === year)) {
-                if (outcome.points === 1) {
-                    acc.drawn++;
-                } else {
-                    if (gameDay.bibs == "A") {
-                        if (outcome.points === 0) acc.lost++; else acc.won++;
+        return outcomes.reduce(
+            (acc, outcome) => {
+                const gameDay = gameDays.find(
+                    (gameDay) => gameDay.id === outcome.gameDayId,
+                );
+                if (
+                    gameDay &&
+                    gameDay.bibs !== null &&
+                    outcome.points !== null &&
+                    (!year || gameDay.year === year)
+                ) {
+                    if (outcome.points === 1) {
+                        acc.drawn++;
                     } else {
-                        if (outcome.points === 3) acc.lost++; else acc.won++;
+                        if (gameDay.bibs == 'A') {
+                            if (outcome.points === 0) acc.lost++;
+                            else acc.won++;
+                        } else {
+                            if (outcome.points === 3) acc.lost++;
+                            else acc.won++;
+                        }
                     }
                 }
-            }
-            return acc;
-        }, { won: 0, drawn: 0, lost: 0 });
+                return acc;
+            },
+            { won: 0, drawn: 0, lost: 0 },
+        );
     }
 
     /**

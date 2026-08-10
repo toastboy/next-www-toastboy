@@ -1,6 +1,10 @@
 import { createMockGameDay } from '@/tests/mocks/data/gameDay';
 import { createMockPlayer } from '@/tests/mocks/data/player';
-import type { DebtsSummaryType, MoneyChartDatum, PlayerDebtsType } from '@/types/DebtType';
+import type {
+    DebtsSummaryType,
+    MoneyChartDatum,
+    PlayerDebtsType,
+} from '@/types/DebtType';
 
 export const defaultMoneyChartData = [
     { interval: 'Jan', credits: 120, debits: 80 },

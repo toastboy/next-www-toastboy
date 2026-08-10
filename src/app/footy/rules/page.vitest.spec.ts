@@ -14,6 +14,8 @@ describe('Rules page', () => {
         const html = renderToStaticMarkup(RulesPage());
 
         expect(html).toContain('Toastboy FC: Rules');
-        expect(html).toContain('After every game, we retire to a local pub for a few');
+        expect(html).toContain(
+            'After every game, we retire to a local pub for a few',
+        );
     });
 });

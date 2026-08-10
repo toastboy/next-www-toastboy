@@ -73,7 +73,9 @@ async function writeTableToJSONBlob<T>(
  * // Exports account, user, and verification tables to Azure Blob Storage
  * ```
  */
-export async function authExportCore(deps: AuthExportDeps = defaultDeps): Promise<void> {
+export async function authExportCore(
+    deps: AuthExportDeps = defaultDeps,
+): Promise<void> {
     const secrets = getSecrets();
     const tenantId = secrets.AZURE_TENANT_ID;
     const clientId = secrets.STORAGE_CLIENT_ID;
@@ -81,25 +83,45 @@ export async function authExportCore(deps: AuthExportDeps = defaultDeps): Promis
 
     try {
         if (!tenantId || !clientId || !clientSecret) {
-            throw normalizeUnknownError(new Error('Missing Azure credentials in secrets'), {
-                details: {
-                    storageAccountName: STORAGE_ACCOUNT_NAME,
-                    containerName: CONTAINER_DB_SEED,
+            throw normalizeUnknownError(
+                new Error('Missing Azure credentials in secrets'),
+                {
+                    details: {
+                        storageAccountName: STORAGE_ACCOUNT_NAME,
+                        containerName: CONTAINER_DB_SEED,
+                    },
                 },
-            });
+            );
         }
 
-        const credentials = new ClientSecretCredential(tenantId, clientId, clientSecret);
+        const credentials = new ClientSecretCredential(
+            tenantId,
+            clientId,
+            clientSecret,
+        );
         const blobServiceClient = new BlobServiceClient(
             `https://${STORAGE_ACCOUNT_NAME}.blob.core.windows.net`,
             credentials,
         );
 
-        const containerClient = blobServiceClient.getContainerClient(CONTAINER_DB_SEED);
+        const containerClient =
+            blobServiceClient.getContainerClient(CONTAINER_DB_SEED);
 
-        await writeTableToJSONBlob(containerClient, 'account.json', deps.prisma.account);
-        await writeTableToJSONBlob(containerClient, 'user.json', deps.prisma.user);
-        await writeTableToJSONBlob(containerClient, 'verification.json', deps.prisma.verification);
+        await writeTableToJSONBlob(
+            containerClient,
+            'account.json',
+            deps.prisma.account,
+        );
+        await writeTableToJSONBlob(
+            containerClient,
+            'user.json',
+            deps.prisma.user,
+        );
+        await writeTableToJSONBlob(
+            containerClient,
+            'verification.json',
+            deps.prisma.verification,
+        );
     } catch (error) {
         const normalizedError = normalizeUnknownError(error, {
             details: {

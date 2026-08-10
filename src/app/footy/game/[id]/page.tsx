@@ -1,6 +1,4 @@
-import {
-    Flex,
-} from '@mantine/core';
+import { Flex } from '@mantine/core';
 import type { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { cache } from 'react';
@@ -35,13 +33,13 @@ interface PageProps {
  * @throws Calls `permanentRedirect()` if the current URL doesn't match the
  * canonical URL
  */
-const unpackParams = cache(async (
-    params: PageProps['params'],
-) => {
+const unpackParams = cache(async (params: PageProps['params']) => {
     const { id } = await params;
 
     const gameDayId = z.coerce.number().int().min(1).safeParse(id);
-    const gameDay = gameDayId.success ? await gameDayService.get(gameDayId.data) : undefined;
+    const gameDay = gameDayId.success
+        ? await gameDayService.get(gameDayId.data)
+        : undefined;
     if (!gameDay) notFound();
 
     const canonicalUrl = `/footy/game/${gameDay.id}`;
@@ -107,7 +105,9 @@ const GamePage = async (props: PageProps) => {
 
     return (
         <Flex direction="column" gap="md">
-            <AutoRefresh channels={[FootyChannel.Games, FootyChannel.Results]} />
+            <AutoRefresh
+                channels={[FootyChannel.Games, FootyChannel.Results]}
+            />
             <GameDaySummary
                 gameDay={gameDay}
                 prevGameDay={prevGameDay}

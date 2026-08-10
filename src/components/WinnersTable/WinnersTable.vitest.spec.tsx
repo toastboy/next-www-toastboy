@@ -7,7 +7,10 @@ import { Props as PlayerLinkProps } from '@/components/PlayerLink/PlayerLink';
 import { WinnersTable } from '@/components/WinnersTable/WinnersTable';
 import { config } from '@/lib/config';
 import { extractMockProps, Wrapper } from '@/tests/components/lib/common';
-import { createMockPlayerRecordData, defaultPlayerRecordDataList } from '@/tests/mocks/data/playerRecordData';
+import {
+    createMockPlayerRecordData,
+    defaultPlayerRecordDataList,
+} from '@/tests/mocks/data/playerRecordData';
 
 vi.mock('@/components/PlayerLink/PlayerLink');
 
@@ -88,7 +91,11 @@ describe('WinnersTable', () => {
     describe('show more / show less', () => {
         const manyYears = Array.from(
             { length: config.tableVisibleRows + 5 },
-            (_, index) => createMockPlayerRecordData({ id: index + 1, year: 2000 + index }),
+            (_, index) =>
+                createMockPlayerRecordData({
+                    id: index + 1,
+                    year: 2000 + index,
+                }),
         );
 
         it('renders only the configured number of rows, with a "show more" toggle', () => {
@@ -101,10 +108,12 @@ describe('WinnersTable', () => {
                 </Wrapper>,
             );
 
-            expect(extractMockProps<PlayerLinkProps>('PlayerLink')).toHaveLength(
-                config.tableVisibleRows,
-            );
-            expect(screen.getByRole('button', { name: 'Show 5 more' })).toBeInTheDocument();
+            expect(
+                extractMockProps<PlayerLinkProps>('PlayerLink'),
+            ).toHaveLength(config.tableVisibleRows);
+            expect(
+                screen.getByRole('button', { name: 'Show 5 more' }),
+            ).toBeInTheDocument();
         });
 
         it('reveals the remaining rows when the toggle is clicked, then hides them again', async () => {
@@ -118,16 +127,20 @@ describe('WinnersTable', () => {
                 </Wrapper>,
             );
 
-            await user.click(screen.getByRole('button', { name: 'Show 5 more' }));
+            await user.click(
+                screen.getByRole('button', { name: 'Show 5 more' }),
+            );
 
-            expect(extractMockProps<PlayerLinkProps>('PlayerLink')).toHaveLength(manyYears.length);
+            expect(
+                extractMockProps<PlayerLinkProps>('PlayerLink'),
+            ).toHaveLength(manyYears.length);
             const showLess = screen.getByRole('button', { name: 'Show less' });
 
             await user.click(showLess);
 
-            expect(extractMockProps<PlayerLinkProps>('PlayerLink')).toHaveLength(
-                config.tableVisibleRows,
-            );
+            expect(
+                extractMockProps<PlayerLinkProps>('PlayerLink'),
+            ).toHaveLength(config.tableVisibleRows);
         });
 
         it('does not render a toggle when all rows already fit', () => {
@@ -144,14 +157,19 @@ describe('WinnersTable', () => {
                 </Wrapper>,
             );
 
-            expect(screen.queryByRole('button', { name: /show/i })).not.toBeInTheDocument();
+            expect(
+                screen.queryByRole('button', { name: /show/i }),
+            ).not.toBeInTheDocument();
         });
 
         it('does not split a year straddling the cutoff', () => {
             const tiedAcrossCutoff = manyYears.map((record, index) =>
-                index === config.tableVisibleRows ?
-                    { ...record, year: manyYears[config.tableVisibleRows - 1].year } :
-                    record,
+                index === config.tableVisibleRows
+                    ? {
+                          ...record,
+                          year: manyYears[config.tableVisibleRows - 1].year,
+                      }
+                    : record,
             );
 
             render(
@@ -163,10 +181,12 @@ describe('WinnersTable', () => {
                 </Wrapper>,
             );
 
-            expect(extractMockProps<PlayerLinkProps>('PlayerLink')).toHaveLength(
-                config.tableVisibleRows + 1,
-            );
-            expect(screen.getByRole('button', { name: 'Show 4 more' })).toBeInTheDocument();
+            expect(
+                extractMockProps<PlayerLinkProps>('PlayerLink'),
+            ).toHaveLength(config.tableVisibleRows + 1);
+            expect(
+                screen.getByRole('button', { name: 'Show 4 more' }),
+            ).toBeInTheDocument();
         });
     });
 });

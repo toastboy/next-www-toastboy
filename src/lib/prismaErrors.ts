@@ -8,5 +8,4 @@ const isPrismaKnownRequestError = (
     error instanceof Prisma.PrismaClientKnownRequestError;
 
 export const isPrismaNotFoundError = (error: unknown): boolean =>
-    isPrismaKnownRequestError(error) &&
-    error.code === PRISMA_NOT_FOUND_CODE;
+    isPrismaKnownRequestError(error) && error.code === PRISMA_NOT_FOUND_CODE;

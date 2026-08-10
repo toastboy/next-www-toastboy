@@ -2,7 +2,6 @@ import { headers } from 'next/headers';
 
 import { auth } from '@/lib/auth';
 
-
 interface AuthSessionUser {
     id?: string | null;
     email?: string | null;
@@ -23,9 +22,9 @@ class AuthService {
      * @returns A promise that resolves to the current session user or null.
      */
     async getSessionUser() {
-        const session = await auth.api.getSession({
+        const session = (await auth.api.getSession({
             headers: await headers(),
-        }) as { user?: AuthSessionUser | null } | null;
+        })) as { user?: AuthSessionUser | null } | null;
 
         return session?.user ?? null;
     }

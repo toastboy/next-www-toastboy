@@ -68,9 +68,13 @@ describe('PlayerCard', () => {
             </Wrapper>,
         );
 
-        const trophies = screen.getByText(/PlayerTrophies:/).closest('div[style]');
+        const trophies = screen
+            .getByText(/PlayerTrophies:/)
+            .closest('div[style]');
         const clubs = screen.getByText(/PlayerClubs:/).closest('div[style]');
-        const countries = screen.getByText(/PlayerCountries:/).closest('div[style]');
+        const countries = screen
+            .getByText(/PlayerCountries:/)
+            .closest('div[style]');
         expect(trophies).toHaveStyle({ opacity: '0', pointerEvents: 'none' });
         expect(trophies).toHaveAttribute('aria-hidden', 'true');
         expect(trophies).toHaveAttribute('inert', '');
@@ -81,7 +85,9 @@ describe('PlayerCard', () => {
         expect(countries).toHaveAttribute('aria-hidden', 'true');
         expect(countries).toHaveAttribute('inert', '');
 
-        fireEvent.click(screen.getByRole('button', { name: /Mark PlayerMugshot ready/i }));
+        fireEvent.click(
+            screen.getByRole('button', { name: /Mark PlayerMugshot ready/i }),
+        );
 
         expect(trophies).toHaveStyle({ opacity: '1', pointerEvents: 'auto' });
         expect(trophies).toHaveAttribute('aria-hidden', 'false');
@@ -101,8 +107,12 @@ describe('PlayerCard', () => {
             </Wrapper>,
         );
 
-        fireEvent.click(screen.getByRole('button', { name: /Mark PlayerMugshot ready/i }));
-        expect(screen.getByText(/PlayerTrophies:/).closest('div[style]')).toHaveStyle({ opacity: '1' });
+        fireEvent.click(
+            screen.getByRole('button', { name: /Mark PlayerMugshot ready/i }),
+        );
+        expect(
+            screen.getByText(/PlayerTrophies:/).closest('div[style]'),
+        ).toHaveStyle({ opacity: '1' });
 
         const otherPlayer = createMockPlayer({ id: defaultPlayer.id + 1 });
         rerender(
@@ -111,7 +121,9 @@ describe('PlayerCard', () => {
             </Wrapper>,
         );
 
-        const trophies = screen.getByText(/PlayerTrophies:/).closest('div[style]');
+        const trophies = screen
+            .getByText(/PlayerTrophies:/)
+            .closest('div[style]');
         expect(trophies).toHaveStyle({ opacity: '0', pointerEvents: 'none' });
         expect(trophies).toHaveAttribute('aria-hidden', 'true');
         expect(trophies).toHaveAttribute('inert', '');

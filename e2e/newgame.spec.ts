@@ -1,6 +1,10 @@
 import { asAdmin, asGuest, asUser, mustBeLoggedInAsAdmin } from './utils/auth';
 import { expect, test } from './utils/base';
-import { deleteAllMessages, getMessageDetail, waitForMessage } from './utils/mailpit';
+import {
+    deleteAllMessages,
+    getMessageDetail,
+    waitForMessage,
+} from './utils/mailpit';
 
 test.describe('New game flow', () => {
     test.beforeEach(async ({ request }) => {
@@ -23,21 +27,32 @@ test.describe('New game flow', () => {
         await mustBeLoggedInAsAdmin(page);
     });
 
-    test('allows admins to send invitations and players can respond', async ({ page, request }) => {
+    test('allows admins to send invitations and players can respond', async ({
+        page,
+        request,
+    }) => {
         const customMessage = `Playwright invitation ${Date.now()}`;
         const responseComment = `Playwright response ${Date.now()}`;
 
         await asAdmin(page, '/footy/admin/newgame');
 
-        await expect(page.getByRole('heading', { name: /New game/i })).toBeVisible();
+        await expect(
+            page.getByRole('heading', { name: /New game/i }),
+        ).toBeVisible();
 
         await page.getByLabel(/Override time check/i).check();
         await page.getByLabel(/Custom message/i).fill(customMessage);
-        await expect(page.getByRole('button', { name: 'Send invitations' })).toBeEnabled();
+        await expect(
+            page.getByRole('button', { name: 'Send invitations' }),
+        ).toBeEnabled();
         await page.getByRole('button', { name: 'Send invitations' }).click();
 
-        await expect(page.getByText('Invitations ready')).toBeVisible({ timeout: 15000 });
-        await expect(page.getByText('Invitations can be sent now.')).toBeVisible({ timeout: 15000 });
+        await expect(page.getByText('Invitations ready')).toBeVisible({
+            timeout: 15000,
+        });
+        await expect(
+            page.getByText('Invitations can be sent now.'),
+        ).toBeVisible({ timeout: 15000 });
 
         const message = await waitForMessage(request, 'Toastboy FC invitation');
         if (!message) throw new Error('Invitation email not found in Mailpit');
@@ -48,10 +63,15 @@ test.describe('New game flow', () => {
 
         const linkMatch = /href="([^"]*footy\/response[^"]*)"/i.exec(html);
         const invitationLink = linkMatch?.[1];
-        if (!invitationLink) throw new Error(`Invitation link not found in email body:\n${html}`);
+        if (!invitationLink)
+            throw new Error(
+                `Invitation link not found in email body:\n${html}`,
+            );
 
         await page.goto(invitationLink);
-        await expect(page.getByRole('button', { name: 'Save Response' })).toBeEnabled({ timeout: 15000 });
+        await expect(
+            page.getByRole('button', { name: 'Save Response' }),
+        ).toBeEnabled({ timeout: 15000 });
 
         await page.getByRole('combobox', { name: 'Response' }).click();
         await page.getByRole('option', { name: 'Yes' }).click();
@@ -59,7 +79,11 @@ test.describe('New game flow', () => {
         await page.getByLabel('Optional comment/excuse').fill(responseComment);
         await page.getByRole('button', { name: 'Save Response' }).click();
 
-        await expect(page.getByText('Response saved')).toBeVisible({ timeout: 15000 });
-        await expect(page.getByText(responseComment)).toBeVisible({ timeout: 15000 });
+        await expect(page.getByText('Response saved')).toBeVisible({
+            timeout: 15000,
+        });
+        await expect(page.getByText(responseComment)).toBeVisible({
+            timeout: 15000,
+        });
     });
 });

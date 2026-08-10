@@ -13,15 +13,14 @@ import {
     ArseWriteInputSchema,
 } from '@/types/ArseStrictSchema';
 
-
 interface ArseAverageRatings {
-    inGoal: number | null,
-    running: number | null,
-    shooting: number | null,
-    passing: number | null,
-    ballSkill: number | null,
-    attacking: number | null,
-    defending: number | null,
+    inGoal: number | null;
+    running: number | null;
+    shooting: number | null;
+    passing: number | null;
+    ballSkill: number | null;
+    attacking: number | null;
+    defending: number | null;
 }
 
 class ArseService {

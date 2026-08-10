@@ -8,9 +8,7 @@ import {
     Title,
     VisuallyHidden,
 } from '@mantine/core';
-import {
-    useDisclosure,
-} from '@mantine/hooks';
+import { useDisclosure } from '@mantine/hooks';
 import { IconChevronDown, IconChevronUp } from '@tabler/icons-react';
 import type { TableName } from 'prisma/zod/schemas';
 import { useId, useMemo } from 'react';
@@ -20,15 +18,20 @@ import { groupDisplays, visibleRowCount } from '@/lib/collapsibleGroups';
 import { config } from '@/lib/config';
 import { PlayerRecordDataType } from '@/types';
 
-
 export interface Props {
     table: TableName;
     records: PlayerRecordDataType[];
 }
 
 export const WinnersTable = ({ table, records }: Props) => {
-    const years = useMemo(() => groupDisplays(records, (record) => record.year), [records]);
-    const cutoff = useMemo(() => visibleRowCount(years, config.tableVisibleRows), [years]);
+    const years = useMemo(
+        () => groupDisplays(records, (record) => record.year),
+        [records],
+    );
+    const cutoff = useMemo(
+        () => visibleRowCount(years, config.tableVisibleRows),
+        [years],
+    );
     const [opened, { toggle }] = useDisclosure(false);
     const hiddenCount = records.length - cutoff;
     const visibleRecords = opened ? records : records.slice(0, cutoff);
@@ -40,7 +43,9 @@ export const WinnersTable = ({ table, records }: Props) => {
             bd={years[index + 1]?.visible === false ? '0' : undefined}
         >
             <Table.Td>{years[index].visible ? winner.year : ''}</Table.Td>
-            <Table.Td><PlayerLink player={winner.player} year={winner.year} /></Table.Td>
+            <Table.Td>
+                <PlayerLink player={winner.player} year={winner.year} />
+            </Table.Td>
         </Table.Tr>
     ));
 
@@ -54,15 +59,17 @@ export const WinnersTable = ({ table, records }: Props) => {
             <Table>
                 <Table.Thead>
                     <Table.Tr bd="0">
-                        <Table.Th w="4em" p={0}><VisuallyHidden>Year</VisuallyHidden></Table.Th>
-                        <Table.Th w="auto" p={0}><VisuallyHidden>Winner(s)</VisuallyHidden></Table.Th>
+                        <Table.Th w="4em" p={0}>
+                            <VisuallyHidden>Year</VisuallyHidden>
+                        </Table.Th>
+                        <Table.Th w="auto" p={0}>
+                            <VisuallyHidden>Winner(s)</VisuallyHidden>
+                        </Table.Th>
                     </Table.Tr>
                 </Table.Thead>
-                <Table.Tbody id={tbodyId}>
-                    {rows}
-                </Table.Tbody>
+                <Table.Tbody id={tbodyId}>{rows}</Table.Tbody>
             </Table>
-            {hiddenCount > 0 &&
+            {hiddenCount > 0 && (
                 <Button
                     onClick={toggle}
                     variant="subtle"
@@ -70,11 +77,17 @@ export const WinnersTable = ({ table, records }: Props) => {
                     mt="xs"
                     aria-expanded={opened}
                     aria-controls={tbodyId}
-                    rightSection={opened ? <IconChevronUp size={16} /> : <IconChevronDown size={16} />}
+                    rightSection={
+                        opened ? (
+                            <IconChevronUp size={16} />
+                        ) : (
+                            <IconChevronDown size={16} />
+                        )
+                    }
                 >
                     {opened ? 'Show less' : `Show ${hiddenCount} more`}
                 </Button>
-            }
+            )}
         </Paper>
     ) : null;
 };

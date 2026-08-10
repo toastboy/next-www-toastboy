@@ -15,7 +15,9 @@ vi.mock('@/lib/observability/sentry', () => ({
 }));
 
 vi.mock('@mantine/core', () => ({
-    Notification: ({ children }: { children?: ReactNode }) => <div>{children}</div>,
+    Notification: ({ children }: { children?: ReactNode }) => (
+        <div>{children}</div>
+    ),
 }));
 
 vi.mock('@tabler/icons-react', () => ({
@@ -44,7 +46,9 @@ describe('Claim Sign Up page', () => {
             token: 'tok',
         });
 
-        const element = await Page({ params: Promise.resolve({ token: 'tok' }) });
+        const element = await Page({
+            params: Promise.resolve({ token: 'tok' }),
+        });
         renderToStaticMarkup(element);
 
         expect(claimPlayerInvitation).toHaveBeenCalledWith('tok');
@@ -62,7 +66,9 @@ describe('Claim Sign Up page', () => {
             }),
         );
 
-        const element = await Page({ params: Promise.resolve({ token: 'bad-tok' }) });
+        const element = await Page({
+            params: Promise.resolve({ token: 'bad-tok' }),
+        });
         const html = renderToStaticMarkup(element);
 
         expect(html).toContain('This invitation link is invalid.');
@@ -79,9 +85,13 @@ describe('Claim Sign Up page', () => {
     });
 
     it('captures unexpected errors and falls back to a generic message', async () => {
-        vi.mocked(claimPlayerInvitation).mockRejectedValue(new Error('Database timeout'));
+        vi.mocked(claimPlayerInvitation).mockRejectedValue(
+            new Error('Database timeout'),
+        );
 
-        const element = await Page({ params: Promise.resolve({ token: 'bad-tok' }) });
+        const element = await Page({
+            params: Promise.resolve({ token: 'bad-tok' }),
+        });
         const html = renderToStaticMarkup(element);
 
         expect(html).toContain('This invitation link is invalid.');

@@ -9,16 +9,9 @@ import {
     TextInput,
     Tooltip,
 } from '@mantine/core';
-import {
-    useForm,
-} from '@mantine/form';
-import {
-    notifications,
-} from '@mantine/notifications';
-import {
-    Link,
-    RichTextEditor,
-} from '@mantine/tiptap';
+import { useForm } from '@mantine/form';
+import { notifications } from '@mantine/notifications';
+import { Link, RichTextEditor } from '@mantine/tiptap';
 import { IconAlertTriangle, IconCheck, IconUser } from '@tabler/icons-react';
 import Highlight from '@tiptap/extension-highlight';
 import Placeholder from '@tiptap/extension-placeholder';
@@ -59,11 +52,28 @@ export const SendEmailForm = ({
         },
     });
     const names = players.map(({ name }) => name).join(', ');
-    const emails = Array.from(new Set(players.flatMap((player) => {
-        const verifiedExtraEmails = player.extraEmails.filter((playerEmail) => playerEmail.verified);
-        const preferredExtraEmails = verifiedExtraEmails.length > 0 ? verifiedExtraEmails : player.extraEmails;
-        return [player.accountEmail, ...preferredExtraEmails.map((playerEmail) => playerEmail.email)];
-    }).map(normalizeEmail).filter((email) => email.length > 0))).join(',');
+    const emails = Array.from(
+        new Set(
+            players
+                .flatMap((player) => {
+                    const verifiedExtraEmails = player.extraEmails.filter(
+                        (playerEmail) => playerEmail.verified,
+                    );
+                    const preferredExtraEmails =
+                        verifiedExtraEmails.length > 0
+                            ? verifiedExtraEmails
+                            : player.extraEmails;
+                    return [
+                        player.accountEmail,
+                        ...preferredExtraEmails.map(
+                            (playerEmail) => playerEmail.email,
+                        ),
+                    ];
+                })
+                .map(normalizeEmail)
+                .filter((email) => email.length > 0),
+        ),
+    ).join(',');
 
     const editor = useEditor({
         extensions: [
@@ -143,7 +153,12 @@ export const SendEmailForm = ({
                     <strong>To:</strong> {names}
                 </Text>
             </Tooltip>
-            <Box component="form" onSubmit={form.onSubmit((values) => void handleSubmit(values, editor.getHTML()))}>
+            <Box
+                component="form"
+                onSubmit={form.onSubmit(
+                    (values) => void handleSubmit(values, editor.getHTML()),
+                )}
+            >
                 <TextInput
                     label="Subject"
                     {...form.getInputProps('subject')}
@@ -194,9 +209,14 @@ export const SendEmailForm = ({
                 </RichTextEditor>
 
                 <Group justify="flex-end" mt="md">
-                    <Tooltip label="No valid email addresses for the selected players" disabled={!!emails}>
+                    <Tooltip
+                        label="No valid email addresses for the selected players"
+                        disabled={!!emails}
+                    >
                         <Box component="span">
-                            <Button type="submit" disabled={!emails}>Send Mail</Button>
+                            <Button type="submit" disabled={!emails}>
+                                Send Mail
+                            </Button>
                         </Box>
                     </Tooltip>
                 </Group>

@@ -1,14 +1,7 @@
 'use client';
 
-import {
-    Box,
-    Container,
-    Text,
-    useMantineTheme,
-} from '@mantine/core';
-import {
-    useMediaQuery,
-} from '@mantine/hooks';
+import { Box, Container, Text, useMantineTheme } from '@mantine/core';
+import { useMediaQuery } from '@mantine/hooks';
 import { useEffect, useMemo, useRef, useState } from 'react';
 
 import classes from './DebugBreakpoints.module.css';
@@ -19,10 +12,16 @@ function getRootFontSizePx(): number {
 }
 
 function emToPx(value: string, pxPerEm: number): number {
-    return value.endsWith('em') ? parseFloat(value) * pxPerEm : parseFloat(value);
+    return value.endsWith('em')
+        ? parseFloat(value) * pxPerEm
+        : parseFloat(value);
 }
 
-function bucketWidth(width: number, breakpoints: { sm: string; md: string; lg: string; xl: string }, pxPerEm: number): string {
+function bucketWidth(
+    width: number,
+    breakpoints: { sm: string; md: string; lg: string; xl: string },
+    pxPerEm: number,
+): string {
     const { sm, md, lg, xl } = breakpoints;
     if (width < emToPx(sm, pxPerEm)) return `XS (<${sm})`;
     if (width < emToPx(md, pxPerEm)) return `SM (${sm})`;
@@ -59,10 +58,18 @@ export const DebugBreakpoints = () => {
     }, []);
 
     // Define media queries for each breakpoint
-    const isXs = useMediaQuery(`(max-width: calc(${theme.breakpoints.sm} - 1px))`);
-    const isSm = useMediaQuery(`(min-width: ${theme.breakpoints.sm}) and (max-width: calc(${theme.breakpoints.md} - 1px))`);
-    const isMd = useMediaQuery(`(min-width: ${theme.breakpoints.md}) and (max-width: calc(${theme.breakpoints.lg} - 1px))`);
-    const isLg = useMediaQuery(`(min-width: ${theme.breakpoints.lg}) and (max-width: calc(${theme.breakpoints.xl} - 1px))`);
+    const isXs = useMediaQuery(
+        `(max-width: calc(${theme.breakpoints.sm} - 1px))`,
+    );
+    const isSm = useMediaQuery(
+        `(min-width: ${theme.breakpoints.sm}) and (max-width: calc(${theme.breakpoints.md} - 1px))`,
+    );
+    const isMd = useMediaQuery(
+        `(min-width: ${theme.breakpoints.md}) and (max-width: calc(${theme.breakpoints.lg} - 1px))`,
+    );
+    const isLg = useMediaQuery(
+        `(min-width: ${theme.breakpoints.lg}) and (max-width: calc(${theme.breakpoints.xl} - 1px))`,
+    );
     const isXl = useMediaQuery(`(min-width: ${theme.breakpoints.xl})`);
 
     const viewportBreakpoint = useMemo(() => {
@@ -71,7 +78,7 @@ export const DebugBreakpoints = () => {
         if (isMd) return `MD (${theme.breakpoints.md})`;
         if (isLg) return `LG (${theme.breakpoints.lg})`;
         if (isXl) return `XL+ (${theme.breakpoints.xl})`;
-        return "Unknown";
+        return 'Unknown';
     }, [isXs, isSm, isMd, isLg, isXl, theme.breakpoints]);
 
     const containerBreakpoint = useMemo(
@@ -82,16 +89,30 @@ export const DebugBreakpoints = () => {
     useEffect(() => {
         // Pure side-effect (no setState) -> avoids cascading renders
         // eslint-disable-next-line no-console
-        console.log(`Active Breakpoint — viewport: ${viewportBreakpoint}, container: ${containerBreakpoint}`);
+        console.log(
+            `Active Breakpoint — viewport: ${viewportBreakpoint}, container: ${containerBreakpoint}`,
+        );
     }, [viewportBreakpoint, containerBreakpoint]);
 
     return (
         <>
             <Box component="span" ref={markerRef} style={{ display: 'none' }} />
             <Container className={classes.div}>
-                <Text className={classes.p}>📏 <strong>Breakpoints</strong>: {JSON.stringify(theme.breakpoints)}</Text>
-                <Text className={classes.p}>🖥️ <strong>Viewport</strong>: {viewportBreakpoint}</Text>
-                <Text className={classes.p}>📦 <strong>Container ({Math.round(containerWidth)}px/{Math.round(containerWidth / pxPerEm)}em)</strong>: {containerBreakpoint}</Text>
+                <Text className={classes.p}>
+                    📏 <strong>Breakpoints</strong>:{' '}
+                    {JSON.stringify(theme.breakpoints)}
+                </Text>
+                <Text className={classes.p}>
+                    🖥️ <strong>Viewport</strong>: {viewportBreakpoint}
+                </Text>
+                <Text className={classes.p}>
+                    📦{' '}
+                    <strong>
+                        Container ({Math.round(containerWidth)}px/
+                        {Math.round(containerWidth / pxPerEm)}em)
+                    </strong>
+                    : {containerBreakpoint}
+                </Text>
             </Container>
         </>
     );

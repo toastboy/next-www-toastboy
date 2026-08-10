@@ -16,15 +16,9 @@ import {
     TextInput,
     Title,
 } from '@mantine/core';
-import {
-    useForm,
-} from '@mantine/form';
-import {
-    useMounted,
-} from '@mantine/hooks';
-import {
-    notifications,
-} from '@mantine/notifications';
+import { useForm } from '@mantine/form';
+import { useMounted } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { PlayerResponse } from 'prisma/generated/enums';
@@ -69,9 +63,13 @@ const playerEditableResponses = new Set<PlayerResponse>([
  * @param response - Incoming invitation response from query details.
  * @returns The player-editable response value for the form select.
  */
-function getInitialPlayerResponse(responseInput: GameInvitationResponseDetails['response']) {
-    const response = responseInput &&
-        playerEditableResponses.has(responseInput) ? responseInput : PlayerResponse.Yes;
+function getInitialPlayerResponse(
+    responseInput: GameInvitationResponseDetails['response'],
+) {
+    const response =
+        responseInput && playerEditableResponses.has(responseInput)
+            ? responseInput
+            : PlayerResponse.Yes;
 
     return response;
 }
@@ -89,7 +87,9 @@ export const GameInvitationResponseForm = ({
     const response = getInitialPlayerResponse(details.response);
     const [currentResponse, setCurrentResponse] = useState(details.response);
     const [currentComment, setCurrentComment] = useState(details.comment);
-    const [canSubmitWithoutChanges, setCanSubmitWithoutChanges] = useState(!details.response);
+    const [canSubmitWithoutChanges, setCanSubmitWithoutChanges] = useState(
+        !details.response,
+    );
 
     const form = useForm<FormValues>({
         initialValues: {
@@ -152,7 +152,10 @@ export const GameInvitationResponseForm = ({
                     response: values.response,
                 },
             });
-            const message = error instanceof Error ? error.message : 'Failed to save response';
+            const message =
+                error instanceof Error
+                    ? error.message
+                    : 'Failed to save response';
             notifications.update({
                 id,
                 color: 'red',
@@ -172,7 +175,11 @@ export const GameInvitationResponseForm = ({
         [PlayerResponse.Dunno.toString()]: 'grey',
     } as const;
     const displayResponse = currentResponse ? (
-        <Badge color={responseColor[currentResponse.toString()]} variant="filled" size="sm">
+        <Badge
+            color={responseColor[currentResponse.toString()]}
+            variant="filled"
+            size="sm"
+        >
             {currentResponse}
         </Badge>
     ) : (
@@ -181,14 +188,18 @@ export const GameInvitationResponseForm = ({
         </Badge>
     );
     const displayComment = currentComment ? `("${currentComment}")` : '';
-    const playerLink = details.playerLogin ? `/footy/player/${details.playerLogin}` : `/footy/player/${details.playerId}`;
+    const playerLink = details.playerLogin
+        ? `/footy/player/${details.playerLogin}`
+        : `/footy/player/${details.playerId}`;
 
     return (
         <Paper w="100%" maw="35rem" mx="auto">
             <Box component="form" onSubmit={form.onSubmit(handleSubmit)}>
                 <Stack gap="md">
                     <Title order={2} mb="xs" w="100%" ta="center">
-                        {currentResponse ? 'Thanks for Your Response' : 'Enter Your Response'}
+                        {currentResponse
+                            ? 'Thanks for Your Response'
+                            : 'Enter Your Response'}
                     </Title>
                     <Divider mb="xs" />
                     <Flex align="center" gap="md" wrap="wrap">
@@ -198,14 +209,20 @@ export const GameInvitationResponseForm = ({
                             size={48}
                             radius="xl"
                         />
-                        <Anchor href={playerLink}>{details.playerName}</Anchor>: {displayResponse} {displayComment}
+                        <Anchor href={playerLink}>{details.playerName}</Anchor>:{' '}
+                        {displayResponse} {displayComment}
                     </Flex>
                     <Select
                         label="Response"
                         data={responseOptions}
                         value={form.values.response}
                         /* v8 ignore next -- allowDeselect={false} means value is never null */
-                        onChange={(value) => form.setFieldValue('response', (value ?? PlayerResponse.Yes))}
+                        onChange={(value) =>
+                            form.setFieldValue(
+                                'response',
+                                value ?? PlayerResponse.Yes,
+                            )
+                        }
                         allowDeselect={false}
                     />
                     <Checkbox
@@ -217,14 +234,23 @@ export const GameInvitationResponseForm = ({
                         maxLength={127}
                         {...form.getInputProps('comment')}
                     />
-                    <Button type="submit" w="fit-content" loading={!mounted} disabled={!isFormDirty}>
+                    <Button
+                        type="submit"
+                        w="fit-content"
+                        loading={!mounted}
+                        disabled={!isFormDirty}
+                    >
                         Save Response
                     </Button>
                     <Text mt="xl">
-                        You can change it later if you need to, even if the teams have been picked - either by
-                        clicking on the link in the email you received, or by logging in to the site at{' '}
-                        <Anchor href={`/footy/game/${details.gameDayId}`}>the game page</Anchor>. If you
-                        can&apos;t get to a computer, message Jon on{' '}
+                        You can change it later if you need to, even if the
+                        teams have been picked - either by clicking on the link
+                        in the email you received, or by logging in to the site
+                        at{' '}
+                        <Anchor href={`/footy/game/${details.gameDayId}`}>
+                            the game page
+                        </Anchor>
+                        . If you can&apos;t get to a computer, message Jon on{' '}
                         <strong>{config.organiserPhoneNumber}</strong>.
                     </Text>
                 </Stack>

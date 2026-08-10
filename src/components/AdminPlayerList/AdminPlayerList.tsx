@@ -16,9 +16,7 @@ import {
     Title,
     UnstyledButton,
 } from '@mantine/core';
-import {
-    notifications,
-} from '@mantine/notifications';
+import { notifications } from '@mantine/notifications';
 import { IconSortAscending, IconSortDescending } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
@@ -81,8 +79,12 @@ export const AdminPlayerList = ({
 }: Props) => {
     const router = useRouter();
     const userEmailSet = useMemo(
-        () => new Set((userEmails ?? [])
-            .map((email) => normalizeEmail(email)).filter((email) => email.length > 0)),
+        () =>
+            new Set(
+                (userEmails ?? [])
+                    .map((email) => normalizeEmail(email))
+                    .filter((email) => email.length > 0),
+            ),
         [userEmails],
     );
     const [sortKey, setSortKey] = useState<SortKey>('id');
@@ -101,7 +103,11 @@ export const AdminPlayerList = ({
         if (!players) return [];
         const trimmedFilter = filter.trim().toLowerCase();
         return players.filter((player) => {
-            if (trimmedFilter && !player.name?.toLowerCase().includes(trimmedFilter)) return false;
+            if (
+                trimmedFilter &&
+                !player.name?.toLowerCase().includes(trimmedFilter)
+            )
+                return false;
             if (filterFinished === 'finished' && !player.finished) return false;
             if (filterFinished === 'active' && player.finished) return false;
             const claimed = isOnboarded(player, userEmailSet);
@@ -118,20 +124,18 @@ export const AdminPlayerList = ({
      */
     const sortedPlayers = useMemo(() => {
         const data = [...filteredPlayers];
-        data.sort((a, b) => comparePlayers(a, b, sortKey, sortDirection, userEmailSet));
+        data.sort((a, b) =>
+            comparePlayers(a, b, sortKey, sortDirection, userEmailSet),
+        );
         return data;
     }, [filteredPlayers, sortKey, sortDirection, userEmailSet]);
 
     if (!players) {
-        return (
-            <Text>Loading players...</Text>
-        );
+        return <Text>Loading players...</Text>;
     }
 
     if (players.length === 0) {
-        return (
-            <Text>No players found.</Text>
-        );
+        return <Text>No players found.</Text>;
     }
 
     /**
@@ -140,7 +144,9 @@ export const AdminPlayerList = ({
      * @param checked - Whether the select-all checkbox is checked.
      */
     const toggleSelectAll = (checked: boolean) => {
-        setSelectedIds(checked ? filteredPlayers.map((player) => player.id) : []);
+        setSelectedIds(
+            checked ? filteredPlayers.map((player) => player.id) : [],
+        );
     };
 
     /**
@@ -150,17 +156,21 @@ export const AdminPlayerList = ({
      * @param checked - Whether the checkbox is checked.
      */
     const toggleSelectPlayer = (playerId: number, checked: boolean) => {
-        setSelectedIds((prev) => (
-            checked ?
-                [...prev, playerId] :
-                prev.filter((id) => id !== playerId)
-        ));
+        setSelectedIds((prev) =>
+            checked
+                ? [...prev, playerId]
+                : prev.filter((id) => id !== playerId),
+        );
     };
 
-    const allSelected = filteredPlayers.length > 0 && selectedIds.length === filteredPlayers.length;
+    const allSelected =
+        filteredPlayers.length > 0 &&
+        selectedIds.length === filteredPlayers.length;
     const someSelected = selectedIds.length > 0 && !allSelected;
     const hasSelection = selectedIds.length > 0;
-    const selectedPlayers = players.filter((player) => selectedIds.includes(player.id));
+    const selectedPlayers = players.filter((player) =>
+        selectedIds.includes(player.id),
+    );
 
     /**
      * Renders a sortable header label with the current sort icon.
@@ -178,9 +188,19 @@ export const AdminPlayerList = ({
             <Group gap={6} wrap="nowrap">
                 <Text span>{label}</Text>
                 {sortKey === key ? (
-                    sortDirection === 'asc' ?
-                        <IconSortAscending size={16} aria-hidden="true" focusable={false} /> :
-                        <IconSortDescending size={16} aria-hidden="true" focusable={false} />
+                    sortDirection === 'asc' ? (
+                        <IconSortAscending
+                            size={16}
+                            aria-hidden="true"
+                            focusable={false}
+                        />
+                    ) : (
+                        <IconSortDescending
+                            size={16}
+                            aria-hidden="true"
+                            focusable={false}
+                        />
+                    )
                 ) : null}
             </Group>
         </UnstyledButton>
@@ -225,7 +245,10 @@ export const AdminPlayerList = ({
                 if (!email) {
                     inviteSkipped += 1;
                 } else {
-                    const inviteLink = await onAddPlayerInvite(player.id, email);
+                    const inviteLink = await onAddPlayerInvite(
+                        player.id,
+                        email,
+                    );
                     const html = buildInviteEmail(inviteLink);
                     const cc = 'footy@toastboy.co.uk';
                     await onSendEmail({
@@ -242,10 +265,13 @@ export const AdminPlayerList = ({
                 id,
                 color: 'teal',
                 title: 'Onboarding sent',
-                message: [
-                    `Invites: ${inviteSent} sent`,
-                    inviteSkipped ? `${inviteSkipped} skipped` : null,
-                ].filter(Boolean).join('. ') + '.',
+                message:
+                    [
+                        `Invites: ${inviteSent} sent`,
+                        inviteSkipped ? `${inviteSkipped} skipped` : null,
+                    ]
+                        .filter(Boolean)
+                        .join('. ') + '.',
                 loading: false,
                 autoClose: config.notificationAutoClose,
             });
@@ -335,7 +361,12 @@ export const AdminPlayerList = ({
                 <Table.Td w="2.5rem">
                     <Checkbox
                         checked={selectedIds.includes(player.id)}
-                        onChange={(event) => toggleSelectPlayer(player.id, event.currentTarget.checked)}
+                        onChange={(event) =>
+                            toggleSelectPlayer(
+                                player.id,
+                                event.currentTarget.checked,
+                            )
+                        }
                         aria-label={`Select ${player.name ?? ''}`}
                     />
                 </Table.Td>
@@ -372,35 +403,57 @@ export const AdminPlayerList = ({
                         </Title>
                     </Center>
                     <Text fw={700}>
-                        {sortedPlayers.length} of {players.length} visible, {selectedIds.length} selected
+                        {sortedPlayers.length} of {players.length} visible,{' '}
+                        {selectedIds.length} selected
                     </Text>
-                    <Group justify="space-between" align="center" wrap="wrap" mb="md">
+                    <Group
+                        justify="space-between"
+                        align="center"
+                        wrap="wrap"
+                        mb="md"
+                    >
                         <Group gap="md" wrap="wrap" align="flex-end">
                             <TextInput
                                 label="Name"
                                 size="xs"
                                 placeholder="Filter by name"
                                 value={filter}
-                                onChange={(event) => setFilter(event.currentTarget.value)}
+                                onChange={(event) =>
+                                    setFilter(event.currentTarget.value)
+                                }
                             />
                             <Stack gap={2}>
-                                <Text id="finished-filter-label" size="xs" fw={500}>Finished</Text>
+                                <Text
+                                    id="finished-filter-label"
+                                    size="xs"
+                                    fw={500}
+                                >
+                                    Finished
+                                </Text>
                                 <SegmentedControl
                                     aria-labelledby="finished-filter-label"
                                     size="xs"
                                     data={finishedFilterOptions}
                                     value={filterFinished}
-                                    onChange={(value) => setFilterFinished(value as FinishedFilter)}
+                                    onChange={(value) =>
+                                        setFilterFinished(
+                                            value as FinishedFilter,
+                                        )
+                                    }
                                 />
                             </Stack>
                             <Stack gap={2}>
-                                <Text id="auth-filter-label" size="xs" fw={500}>Auth</Text>
+                                <Text id="auth-filter-label" size="xs" fw={500}>
+                                    Auth
+                                </Text>
                                 <SegmentedControl
                                     aria-labelledby="auth-filter-label"
                                     size="xs"
                                     data={authFilterOptions}
                                     value={filterAuth}
-                                    onChange={(value) => setFilterAuth(value as AuthFilter)}
+                                    onChange={(value) =>
+                                        setFilterAuth(value as AuthFilter)
+                                    }
                                 />
                             </Stack>
                         </Group>
@@ -409,13 +462,18 @@ export const AdminPlayerList = ({
                                 size="xs"
                                 type="button"
                                 disabled={!hasSelection}
-                                onClick={() => handleOnboardPlayers(selectedPlayers)}
+                                onClick={() =>
+                                    handleOnboardPlayers(selectedPlayers)
+                                }
                             >
                                 Onboard {selectedPlayers.length} player(s)
                             </Button>
                         </Group>
                     </Group>
-                    <Table.ScrollContainer minWidth="100%" scrollAreaProps={{ type: 'auto' }}>
+                    <Table.ScrollContainer
+                        minWidth="100%"
+                        scrollAreaProps={{ type: 'auto' }}
+                    >
                         <Table
                             striped
                             highlightOnHover
@@ -431,37 +489,74 @@ export const AdminPlayerList = ({
                                         <Checkbox
                                             checked={allSelected}
                                             indeterminate={someSelected}
-                                            onChange={(event) => toggleSelectAll(event.currentTarget.checked)}
+                                            onChange={(event) =>
+                                                toggleSelectAll(
+                                                    event.currentTarget.checked,
+                                                )
+                                            }
                                             aria-label="Select all players"
                                         />
                                     </Table.Th>
                                     <Table.Th
                                         w="3rem"
-                                        aria-sort={sortKey === 'id' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
+                                        aria-sort={
+                                            sortKey === 'id'
+                                                ? sortDirection === 'asc'
+                                                    ? 'ascending'
+                                                    : 'descending'
+                                                : 'none'
+                                        }
                                     >
                                         {renderSortHeader('ID', 'id')}
                                     </Table.Th>
                                     <Table.Th
                                         w="10rem"
-                                        aria-sort={sortKey === 'name' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
+                                        aria-sort={
+                                            sortKey === 'name'
+                                                ? sortDirection === 'asc'
+                                                    ? 'ascending'
+                                                    : 'descending'
+                                                : 'none'
+                                        }
                                     >
                                         {renderSortHeader('Name', 'name')}
                                     </Table.Th>
                                     <Table.Th
                                         w="7rem"
-                                        aria-sort={sortKey === 'joined' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
+                                        aria-sort={
+                                            sortKey === 'joined'
+                                                ? sortDirection === 'asc'
+                                                    ? 'ascending'
+                                                    : 'descending'
+                                                : 'none'
+                                        }
                                     >
                                         {renderSortHeader('Joined', 'joined')}
                                     </Table.Th>
                                     <Table.Th
                                         w="7rem"
-                                        aria-sort={sortKey === 'finished' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
+                                        aria-sort={
+                                            sortKey === 'finished'
+                                                ? sortDirection === 'asc'
+                                                    ? 'ascending'
+                                                    : 'descending'
+                                                : 'none'
+                                        }
                                     >
-                                        {renderSortHeader('Finished', 'finished')}
+                                        {renderSortHeader(
+                                            'Finished',
+                                            'finished',
+                                        )}
                                     </Table.Th>
                                     <Table.Th
                                         w="4rem"
-                                        aria-sort={sortKey === 'auth' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}
+                                        aria-sort={
+                                            sortKey === 'auth'
+                                                ? sortDirection === 'asc'
+                                                    ? 'ascending'
+                                                    : 'descending'
+                                                : 'none'
+                                        }
                                     >
                                         {renderSortHeader('Auth', 'auth')}
                                     </Table.Th>

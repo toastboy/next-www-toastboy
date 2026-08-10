@@ -14,30 +14,21 @@ import {
     TextInput,
     Title,
 } from '@mantine/core';
-import {
-    useForm,
-} from '@mantine/form';
-import {
-    notifications,
-} from '@mantine/notifications';
+import { useForm } from '@mantine/form';
+import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { Fragment } from 'react';
 
 import { config } from '@/lib/config';
 import { toPublicMessage } from '@/lib/errors';
-import {
-    fromPounds,
-    toPounds,
-} from '@/lib/money';
+import { fromPounds, toPounds } from '@/lib/money';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 import type {
     CreateMoreGameDaysInput,
     CreateMoreGameDaysProxy,
 } from '@/types/actions/CreateMoreGameDays';
-import {
-    CreateMoreGameDaysSchema,
-} from '@/types/actions/CreateMoreGameDays';
+import { CreateMoreGameDaysSchema } from '@/types/actions/CreateMoreGameDays';
 
 // Breakpoint at which the submit button switches from a full-width mobile
 // touch target to an inline fit-content button.
@@ -122,36 +113,34 @@ export const MoreGamesForm = ({
     });
 
     const groupedRows = form.values.rows.reduce<
-        { label: string; rows: { row: typeof form.values.rows[number]; index: number }[] }[]
-    >(
-        (acc, row, index) => {
-            const date = new Date(`${row.date}T00:00:00`);
-            const label = monthFormatter.format(date);
-            const lastGroup = acc[acc.length - 1];
+        {
+            label: string;
+            rows: { row: (typeof form.values.rows)[number]; index: number }[];
+        }[]
+    >((acc, row, index) => {
+        const date = new Date(`${row.date}T00:00:00`);
+        const label = monthFormatter.format(date);
+        const lastGroup = acc[acc.length - 1];
 
-            if (lastGroup?.label !== label) {
-                acc.push({ label, rows: [{ row, index }] });
-            } else {
-                lastGroup.rows.push({ row, index });
-            }
+        if (lastGroup?.label !== label) {
+            acc.push({ label, rows: [{ row, index }] });
+        } else {
+            lastGroup.rows.push({ row, index });
+        }
 
-            return acc;
-        },
-        [],
-    );
+        return acc;
+    }, []);
 
     return (
         <Container fluid>
             <Paper w="100%">
-                <Box
-                    component="form"
-                    onSubmit={form.onSubmit(handleSubmit)}
-                >
+                <Box component="form" onSubmit={form.onSubmit(handleSubmit)}>
                     <Stack gap="md">
                         <Stack align="flex-start" gap="xs">
                             <Title order={2}>More games</Title>
                             <Text c="dimmed">
-                                Schedule game days from the next available date through to the end of the booking year.
+                                Schedule game days from the next available date
+                                through to the end of the booking year.
                             </Text>
                         </Stack>
                         <Group justify="space-between" mb="lg">
@@ -180,11 +169,11 @@ export const MoreGamesForm = ({
                                 {...form.getInputProps('hallCost')}
                             />
                         </Group>
-                        <Table.ScrollContainer minWidth={480} scrollAreaProps={{ type: 'auto' }}>
-                            <Table
-                                highlightOnHover
-                                withTableBorder
-                            >
+                        <Table.ScrollContainer
+                            minWidth={480}
+                            scrollAreaProps={{ type: 'auto' }}
+                        >
+                            <Table highlightOnHover withTableBorder>
                                 <Table.Thead>
                                     <Table.Tr>
                                         <Table.Th>Date</Table.Th>
@@ -194,43 +183,69 @@ export const MoreGamesForm = ({
                                 </Table.Thead>
                                 <Table.Tbody>
                                     {groupedRows.map((group, groupIndex) => (
-                                        <Fragment key={`${group.label}-${groupIndex}`}>
+                                        <Fragment
+                                            key={`${group.label}-${groupIndex}`}
+                                        >
                                             <Table.Tr>
                                                 <Table.Th
                                                     colSpan={3}
                                                     bg="var(--mantine-color-gray-light)"
                                                     py="xs"
-                                                    style={groupIndex > 0 ?
-                                                        { borderTop: '2px solid var(--mantine-color-gray-4)' } :
-                                                        undefined}
+                                                    style={
+                                                        groupIndex > 0
+                                                            ? {
+                                                                  borderTop:
+                                                                      '2px solid var(--mantine-color-gray-4)',
+                                                              }
+                                                            : undefined
+                                                    }
                                                 >
-                                                    <Text fw={700} tt="uppercase" fz="sm" lts={0.5} c="dimmed">
+                                                    <Text
+                                                        fw={700}
+                                                        tt="uppercase"
+                                                        fz="sm"
+                                                        lts={0.5}
+                                                        c="dimmed"
+                                                    >
                                                         {group.label}
                                                     </Text>
                                                 </Table.Th>
                                             </Table.Tr>
-                                            {group.rows.map(({ row, index }) => {
-                                                return (
-                                                    <Table.Tr key={row.date}>
-                                                        <Table.Td>
-                                                            <Text fw={500}>{row.date}</Text>
-                                                        </Table.Td>
-                                                        <Table.Td>
-                                                            <Checkbox
-                                                                aria-label={`Game scheduled for ${row.date}`}
-                                                                {...form.getInputProps(`rows.${index}.game`, { type: 'checkbox' })}
-                                                            />
-                                                        </Table.Td>
-                                                        <Table.Td>
-                                                            <TextInput
-                                                                aria-label={`Comment for ${row.date}`}
-                                                                placeholder="Optional note"
-                                                                {...form.getInputProps(`rows.${index}.comment`)}
-                                                            />
-                                                        </Table.Td>
-                                                    </Table.Tr>
-                                                );
-                                            })}
+                                            {group.rows.map(
+                                                ({ row, index }) => {
+                                                    return (
+                                                        <Table.Tr
+                                                            key={row.date}
+                                                        >
+                                                            <Table.Td>
+                                                                <Text fw={500}>
+                                                                    {row.date}
+                                                                </Text>
+                                                            </Table.Td>
+                                                            <Table.Td>
+                                                                <Checkbox
+                                                                    aria-label={`Game scheduled for ${row.date}`}
+                                                                    {...form.getInputProps(
+                                                                        `rows.${index}.game`,
+                                                                        {
+                                                                            type: 'checkbox',
+                                                                        },
+                                                                    )}
+                                                                />
+                                                            </Table.Td>
+                                                            <Table.Td>
+                                                                <TextInput
+                                                                    aria-label={`Comment for ${row.date}`}
+                                                                    placeholder="Optional note"
+                                                                    {...form.getInputProps(
+                                                                        `rows.${index}.comment`,
+                                                                    )}
+                                                                />
+                                                            </Table.Td>
+                                                        </Table.Tr>
+                                                    );
+                                                },
+                                            )}
                                         </Fragment>
                                     ))}
                                 </Table.Tbody>
@@ -239,7 +254,10 @@ export const MoreGamesForm = ({
 
                         <Button
                             type="submit"
-                            w={{ base: '100%', [actionsBreakpoint]: 'fit-content' }}
+                            w={{
+                                base: '100%',
+                                [actionsBreakpoint]: 'fit-content',
+                            }}
                         >
                             Create game days
                         </Button>

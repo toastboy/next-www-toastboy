@@ -36,7 +36,5 @@
         "@playwright/browser-firefox",
         "@playwright/browser-webkit"
     ],
-    "ignoreBinaries": [
-        "pkill"
-    ]
+    "ignoreBinaries": ["pkill"]
 }

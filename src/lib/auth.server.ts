@@ -22,20 +22,26 @@ const mockUserDefaults = {
     },
 };
 
-const parseCookieHeader = (cookieHeader: string | null): Record<string, string> => {
+const parseCookieHeader = (
+    cookieHeader: string | null,
+): Record<string, string> => {
     if (!cookieHeader) return {};
 
-    return cookieHeader.split(';').reduce<Record<string, string>>((acc, cookie) => {
-        const trimmed = cookie.trim();
-        if (!trimmed) return acc;
-        const [name, ...rest] = trimmed.split('=');
-        if (!name) return acc;
-        acc[name] = decodeURIComponent(rest.join('='));
-        return acc;
-    }, {});
+    return cookieHeader
+        .split(';')
+        .reduce<Record<string, string>>((acc, cookie) => {
+            const trimmed = cookie.trim();
+            if (!trimmed) return acc;
+            const [name, ...rest] = trimmed.split('=');
+            if (!name) return acc;
+            acc[name] = decodeURIComponent(rest.join('='));
+            return acc;
+        }, {});
 };
 
-const getMockAuthUserFromCookie = (cookieHeader: string | null): Partial<AuthUserSummary> | null => {
+const getMockAuthUserFromCookie = (
+    cookieHeader: string | null,
+): Partial<AuthUserSummary> | null => {
     const cookies = parseCookieHeader(cookieHeader);
     const rawValue = cookies[MOCK_AUTH_USER_COOKIE];
     if (!rawValue) return null;
@@ -153,7 +159,6 @@ export function getMockUsersList() {
     ];
 }
 
-
 /**
  * Resolves the current user summary from mock state or the auth session.
  *
@@ -165,18 +170,18 @@ export async function getCurrentUser(): Promise<AuthUserSummary | null> {
         return mockUser;
     }
 
-    const session = await auth.api.getSession({
+    const session = (await auth.api.getSession({
         headers: await headers(),
-    }) as {
+    })) as {
         session?: {
             impersonatedBy?: string | null;
         } | null;
         user?: {
-            name?: string | null,
-            email?: string | null,
-            playerId?: number | null,
-            role?: string | null,
-        } | null,
+            name?: string | null;
+            email?: string | null;
+            playerId?: number | null;
+            role?: string | null;
+        } | null;
     } | null;
 
     if (!session?.user) {
@@ -209,9 +214,9 @@ export async function getUserRole(): Promise<AuthRole> {
         return mockState;
     }
 
-    const session = await auth.api.getSession({
+    const session = (await auth.api.getSession({
         headers: await headers(),
-    }) as { user?: { role?: string | null } | null } | null;
+    })) as { user?: { role?: string | null } | null } | null;
 
     if (session?.user?.role === 'admin') {
         return 'admin';

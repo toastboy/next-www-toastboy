@@ -5,8 +5,12 @@ import { Wrapper } from '@/tests/components/lib/common';
 
 describe('NYI', () => {
     it('renders correctly', () => {
-        render(<Wrapper><NYI /></Wrapper>);
+        render(
+            <Wrapper>
+                <NYI />
+            </Wrapper>,
+        );
         expect(screen.queryByRole('status')).not.toBeInTheDocument();
-        expect(screen.getByText("(Not yet implemented)")).toBeInTheDocument();
+        expect(screen.getByText('(Not yet implemented)')).toBeInTheDocument();
     });
 });

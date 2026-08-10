@@ -1,6 +1,4 @@
-import {
-    Notifications,
-} from '@mantine/notifications';
+import { Notifications } from '@mantine/notifications';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { http, HttpResponse } from 'msw';
 import { expect, fn, waitFor, within } from 'storybook/test';
@@ -34,14 +32,18 @@ export const Render: Story = {
     parameters: {
         msw: {
             handlers: [
-                http.post('*/api/auth/request-password-reset', async ({ request }) => {
-                    const payload = await request.json();
-                    requestPasswordResetSpy(payload);
-                    return HttpResponse.json({
-                        status: true,
-                        message: 'If this email exists in our system, check your email for the reset link',
-                    });
-                }),
+                http.post(
+                    '*/api/auth/request-password-reset',
+                    async ({ request }) => {
+                        const payload = await request.json();
+                        requestPasswordResetSpy(payload);
+                        return HttpResponse.json({
+                            status: true,
+                            message:
+                                'If this email exists in our system, check your email for the reset link',
+                        });
+                    },
+                ),
             ],
         },
     },
@@ -56,14 +58,20 @@ export const ValidFill: Story = {
 
         const canvas = within(canvasElement);
         const emailInput = await canvas.findByLabelText(/Email/i);
-        const submitButton = await canvas.findByRole('button', { name: /Send reset link/i });
+        const submitButton = await canvas.findByRole('button', {
+            name: /Send reset link/i,
+        });
 
         await userEvent.clear(emailInput);
         await userEvent.type(emailInput, 'g.player@sacked.com');
         await userEvent.click(submitButton);
 
         const body = canvasElement.ownerDocument.body;
-        await within(body).findByText('Check your email', {}, { timeout: 6000 });
+        await within(body).findByText(
+            'Check your email',
+            {},
+            { timeout: 6000 },
+        );
 
         await waitFor(() => expect(requestPasswordResetSpy).toHaveBeenCalled());
         const firstCallArg = requestPasswordResetSpy.mock.calls[0][0] as {
@@ -71,7 +79,9 @@ export const ValidFill: Story = {
             redirectTo?: string;
         };
         await expect(firstCallArg.email).toBe('g.player@sacked.com');
-        await expect(firstCallArg.redirectTo ?? '').toMatch(/\/footy\/auth\/reset-password$/);
+        await expect(firstCallArg.redirectTo ?? '').toMatch(
+            /\/footy\/auth\/reset-password$/,
+        );
     },
 };
 
@@ -82,13 +92,19 @@ export const BlankFill: Story = {
 
         const canvas = within(canvasElement);
         const emailInput = await canvas.findByLabelText(/Email/i);
-        const submitButton = await canvas.findByRole('button', { name: /Send reset link/i });
+        const submitButton = await canvas.findByRole('button', {
+            name: /Send reset link/i,
+        });
 
         await userEvent.clear(emailInput);
         await userEvent.click(submitButton);
 
         const body = canvasElement.ownerDocument.body;
-        await within(body).findByText('Email is required', {}, { timeout: 6000 });
+        await within(body).findByText(
+            'Email is required',
+            {},
+            { timeout: 6000 },
+        );
     },
 };
 
@@ -99,7 +115,9 @@ export const InvalidFill: Story = {
 
         const canvas = within(canvasElement);
         const emailInput = await canvas.findByLabelText(/Email/i);
-        const submitButton = await canvas.findByRole('button', { name: /Send reset link/i });
+        const submitButton = await canvas.findByRole('button', {
+            name: /Send reset link/i,
+        });
 
         await userEvent.type(emailInput, 'invalid-email');
         await userEvent.click(submitButton);

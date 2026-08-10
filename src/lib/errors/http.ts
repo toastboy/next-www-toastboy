@@ -1,6 +1,10 @@
 import { ZodError } from 'zod';
 
-import { AppError, DEFAULT_PUBLIC_ERROR_MESSAGE, toPublicMessage } from '@/lib/errors/AppError';
+import {
+    AppError,
+    DEFAULT_PUBLIC_ERROR_MESSAGE,
+    toPublicMessage,
+} from '@/lib/errors/AppError';
 import type { AppErrorCode } from '@/lib/errors/ErrorCode';
 
 /**

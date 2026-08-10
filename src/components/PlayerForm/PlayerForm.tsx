@@ -1,10 +1,6 @@
 'use client';
 
-import {
-    Badge,
-    Flex,
-    Tooltip,
-} from '@mantine/core';
+import { Badge, Flex, Tooltip } from '@mantine/core';
 import Link from 'next/link';
 
 import { formatDate } from '@/lib/dates';
@@ -44,7 +40,7 @@ export const PlayerForm = ({ form }: Props) => {
             gap="0.2rem"
             justify="center"
             wrap="wrap"
-            mt={{ base: 0, xs: "sm" }}
+            mt={{ base: 0, xs: 'sm' }}
         >
             {form.map((data, i) => {
                 // Padding entry: no associated game day, just a grey placeholder.

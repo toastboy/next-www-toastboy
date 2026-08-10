@@ -3,7 +3,10 @@ import { render, screen } from '@testing-library/react';
 import { PlayerPositions } from '@/components/PlayerPositions/PlayerPositions';
 import { Wrapper } from '@/tests/components/lib/common';
 import { defaultPlayer } from '@/tests/mocks/data/player';
-import { createMockPlayerRecord, defaultPlayerRecord } from '@/tests/mocks/data/playerRecord';
+import {
+    createMockPlayerRecord,
+    defaultPlayerRecord,
+} from '@/tests/mocks/data/playerRecord';
 
 describe('PlayerPositions', () => {
     it('renders table with position rankings', () => {
@@ -23,7 +26,11 @@ describe('PlayerPositions', () => {
     it('renders dashes when record is null', () => {
         render(
             <Wrapper>
-                <PlayerPositions player={defaultPlayer} year={2024} record={null} />
+                <PlayerPositions
+                    player={defaultPlayer}
+                    year={2024}
+                    record={null}
+                />
             </Wrapper>,
         );
 
@@ -36,11 +43,17 @@ describe('PlayerPositions', () => {
 
         render(
             <Wrapper>
-                <PlayerPositions player={defaultPlayer} year={2024} record={partialRecord} />
+                <PlayerPositions
+                    player={defaultPlayer}
+                    year={2024}
+                    record={partialRecord}
+                />
             </Wrapper>,
         );
 
-        expect(screen.getByRole('columnheader', { name: 'Points' })).toBeInTheDocument();
+        expect(
+            screen.getByRole('columnheader', { name: 'Points' }),
+        ).toBeInTheDocument();
         expect(screen.getAllByText('-').length).toBeGreaterThan(0);
     });
 });

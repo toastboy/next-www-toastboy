@@ -57,8 +57,11 @@ export const ValidSubmit: Story = {
 
         const canvas = within(canvasElement);
         const password = await canvas.findByLabelText(/^Password/i);
-        const confirmPassword = await canvas.findByLabelText(/Confirm password/i);
-        const submitButton = await canvas.findByRole('button', { name: /Create login/i });
+        const confirmPassword =
+            await canvas.findByLabelText(/Confirm password/i);
+        const submitButton = await canvas.findByRole('button', {
+            name: /Create login/i,
+        });
 
         await userEvent.clear(password);
         await userEvent.type(password, 'validPassword123');
@@ -88,8 +91,11 @@ export const InvalidSubmit: Story = {
 
         const canvas = within(canvasElement);
         const password = await canvas.findByLabelText(/^Password/i);
-        const confirmPassword = await canvas.findByLabelText(/Confirm password/i);
-        const submitButton = await canvas.findByRole('button', { name: /Create login/i });
+        const confirmPassword =
+            await canvas.findByLabelText(/Confirm password/i);
+        const submitButton = await canvas.findByRole('button', {
+            name: /Create login/i,
+        });
 
         await userEvent.clear(password);
         await userEvent.type(password, 'validPassword123');
@@ -100,18 +106,26 @@ export const InvalidSubmit: Story = {
         // Mantine duplicates the error text in the label and the error element, so assert via aria-describedby.
         const errorId = confirmPassword.getAttribute('aria-describedby');
         if (!errorId) {
-            throw new Error('Expected confirm password input to have aria-describedby pointing at the error element');
+            throw new Error(
+                'Expected confirm password input to have aria-describedby pointing at the error element',
+            );
         }
 
         // Mantine may render the error element outside the story canvas (portal).
         // Try the canvas first, then fall back to the global document by id.
-        let errorEl = canvasElement.querySelector<HTMLElement>(`#${CSS.escape(errorId)}`);
+        let errorEl = canvasElement.querySelector<HTMLElement>(
+            `#${CSS.escape(errorId)}`,
+        );
         errorEl ??= document.getElementById(errorId);
 
         if (!errorEl) {
-            throw new Error(`Expected to find error element with id "${errorId}"`);
+            throw new Error(
+                `Expected to find error element with id "${errorId}"`,
+            );
         }
 
-        await expect(errorEl.textContent ?? '').toMatch(/passwords do not match/i);
+        await expect(errorEl.textContent ?? '').toMatch(
+            /passwords do not match/i,
+        );
     },
 };

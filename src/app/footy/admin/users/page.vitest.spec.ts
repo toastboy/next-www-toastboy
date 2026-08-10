@@ -16,11 +16,15 @@ vi.mock('@mantine/core', () => ({
 }));
 
 vi.mock('@/components/AdminUserList/AdminUserList', () => ({
-    AdminUserList: function AdminUserList() { return null; },
+    AdminUserList: function AdminUserList() {
+        return null;
+    },
 }));
 
 vi.mock('@/components/AutoRefresh/AutoRefresh', () => ({
-    AutoRefresh: function AutoRefresh() { return null; },
+    AutoRefresh: function AutoRefresh() {
+        return null;
+    },
 }));
 
 import { listUsersAction, setAdminRoleAction } from '@/actions/auth';

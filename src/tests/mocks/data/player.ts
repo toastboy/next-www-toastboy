@@ -4,8 +4,8 @@ import type { PlayerDisplayType } from '@/services/Player';
 
 export const defaultPlayer = {
     id: 1,
-    name: "Gary Player",
-    joined: new Date("2021-01-01"),
+    name: 'Gary Player',
+    joined: new Date('2021-01-01'),
     finished: null,
     born: 1975,
     introducedBy: 23,
@@ -18,16 +18,20 @@ export const invalidPlayer = {
     id: -1,
 } satisfies PlayerDisplayType;
 
-export const createMockPlayer = (overrides: Partial<PlayerDisplayType> = {}): PlayerDisplayType => ({
+export const createMockPlayer = (
+    overrides: Partial<PlayerDisplayType> = {},
+): PlayerDisplayType => ({
     ...defaultPlayer,
     ...overrides,
 });
 
-export const defaultPlayerList: PlayerDisplayType[] = Array.from({ length: 100 }, (_, index) =>
-    createMockPlayer({
-        id: index + 1,
-        finished: index % 2 === 0 ? new Date("2020-01-01") : null,
-    }),
+export const defaultPlayerList: PlayerDisplayType[] = Array.from(
+    { length: 100 },
+    (_, index) =>
+        createMockPlayer({
+            id: index + 1,
+            finished: index % 2 === 0 ? new Date('2020-01-01') : null,
+        }),
 );
 
 export const defaultPlayerLogin = {
@@ -35,7 +39,9 @@ export const defaultPlayerLogin = {
     login: 'garyp',
 } satisfies PlayerLoginType;
 
-export const defaultPlayerLoginList: PlayerLoginType[] = defaultPlayerList.map((player) => ({
-    playerId: player.id,
-    login: player.id === 1 ? 'garyp' : `player${player.id}`,
-}));
+export const defaultPlayerLoginList: PlayerLoginType[] = defaultPlayerList.map(
+    (player) => ({
+        playerId: player.id,
+        login: player.id === 1 ? 'garyp' : `player${player.id}`,
+    }),
+);

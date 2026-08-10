@@ -22,10 +22,10 @@ const navIsOpen = (page: Page) =>
     });
 
 const overflowPages = [
-    '/footy/info',          // static text, Google Maps iframe, enquiry form
-    '/footy/games',         // game day list
-    '/footy/table/points',  // data table — most likely to overflow on mobile
-    '/footy/turnout',       // chart / visualisation
+    '/footy/info', // static text, Google Maps iframe, enquiry form
+    '/footy/games', // game day list
+    '/footy/table/points', // data table — most likely to overflow on mobile
+    '/footy/turnout', // chart / visualisation
 ];
 
 test.describe('Shell nav — structure', () => {
@@ -42,7 +42,9 @@ test.describe('Shell nav — structure', () => {
         }
     });
 
-    test('sidebar nav is in the viewport by default only at sm and above', async ({ page }) => {
+    test('sidebar nav is in the viewport by default only at sm and above', async ({
+        page,
+    }) => {
         if (isMobile(page.viewportSize()?.width ?? 1280)) {
             await expect.poll(() => navIsOpen(page)).toBe(false);
         } else {
@@ -69,7 +71,9 @@ test.describe('Shell nav — burger interaction', () => {
         await expect.poll(() => navIsOpen(page)).toBe(false);
     });
 
-    test('sidebar closes automatically after navigating to a link', async ({ page }) => {
+    test('sidebar closes automatically after navigating to a link', async ({
+        page,
+    }) => {
         test.skip(
             !isMobile(page.viewportSize()?.width ?? 1280),
             'burger is only present below the sm breakpoint',
@@ -91,12 +95,15 @@ test.describe('No horizontal overflow', () => {
             // narrower than ~1000 px. Mark fixme so the suite stays green while
             // responsive polish is pending.
             test.fixme(
-                path === '/footy/turnout' && (page.viewportSize()?.width ?? 1280) <= SM_BREAKPOINT,
+                path === '/footy/turnout' &&
+                    (page.viewportSize()?.width ?? 1280) <= SM_BREAKPOINT,
                 'Turnout chart overflows on narrow viewports — responsive polish pending',
             );
             await asGuest(page, path);
             const hasOverflow = await page.evaluate(
-                () => document.documentElement.scrollWidth > document.documentElement.clientWidth,
+                () =>
+                    document.documentElement.scrollWidth >
+                    document.documentElement.clientWidth,
             );
             expect(hasOverflow, `${path} has horizontal overflow`).toBe(false);
         });

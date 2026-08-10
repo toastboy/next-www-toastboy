@@ -82,7 +82,9 @@ describe('FamilyTree', () => {
         expect(images.length).toBe(4);
 
         const hrefs = Array.from(images).map((img) => img.getAttribute('href'));
-        expect(hrefs.filter((h) => h?.match(/\/api\/footy\/player\/\d+\/mugshot/))).toHaveLength(4);
+        expect(
+            hrefs.filter((h) => h?.match(/\/api\/footy\/player\/\d+\/mugshot/)),
+        ).toHaveLength(4);
     });
 
     it('shows tooltip with player name on node hover', async () => {
@@ -97,7 +99,9 @@ describe('FamilyTree', () => {
         fireEvent.mouseEnter(nodes[0]);
 
         await waitFor(() => {
-            expect(screen.getByRole('tooltip')).toHaveTextContent('Gary Player');
+            expect(screen.getByRole('tooltip')).toHaveTextContent(
+                'Gary Player',
+            );
         });
     });
 
@@ -110,10 +114,14 @@ describe('FamilyTree', () => {
 
         const nodes = container.querySelectorAll('[style*="cursor: pointer"]');
         fireEvent.mouseEnter(nodes[0]);
-        await waitFor(() => expect(screen.getByRole('tooltip')).toBeInTheDocument());
+        await waitFor(() =>
+            expect(screen.getByRole('tooltip')).toBeInTheDocument(),
+        );
 
         fireEvent.mouseLeave(nodes[0]);
-        await waitFor(() => expect(screen.queryByRole('tooltip')).not.toBeInTheDocument());
+        await waitFor(() =>
+            expect(screen.queryByRole('tooltip')).not.toBeInTheDocument(),
+        );
     });
 
     it('navigates to the player page on node click', () => {
@@ -140,10 +148,18 @@ describe('FamilyTree', () => {
             const observeMock = vi.fn<(el: Element) => void>();
 
             class TrackingResizeObserver {
-                constructor(cb: () => void) { void cb; }
-                observe(el: Element) { observeMock(el); }
-                unobserve() { /* empty */ }
-                disconnect() { /* empty */ }
+                constructor(cb: () => void) {
+                    void cb;
+                }
+                observe(el: Element) {
+                    observeMock(el);
+                }
+                unobserve() {
+                    /* empty */
+                }
+                disconnect() {
+                    /* empty */
+                }
             }
             vi.stubGlobal('ResizeObserver', TrackingResizeObserver);
 
@@ -153,7 +169,9 @@ describe('FamilyTree', () => {
                 </Wrapper>,
             );
 
-            expect(observeMock).toHaveBeenCalledWith(getByTestId('family-tree'));
+            expect(observeMock).toHaveBeenCalledWith(
+                getByTestId('family-tree'),
+            );
         });
 
         it('updateSize is a no-op when containerRef is null (fires after unmount)', () => {
@@ -163,9 +181,15 @@ describe('FamilyTree', () => {
                 constructor(cb: () => void) {
                     capturedCallback = cb;
                 }
-                observe() { /* empty */ }
-                unobserve() { /* empty */ }
-                disconnect() { /* empty */ }
+                observe() {
+                    /* empty */
+                }
+                unobserve() {
+                    /* empty */
+                }
+                disconnect() {
+                    /* empty */
+                }
             }
             vi.stubGlobal('ResizeObserver', ControlledResizeObserver);
 
@@ -206,7 +230,11 @@ describe('FamilyTree', () => {
          *    stable 500×500 box centred at the origin.
          */
         beforeEach(() => {
-            vi.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockReturnValue(500);
+            vi.spyOn(
+                HTMLElement.prototype,
+                'clientWidth',
+                'get',
+            ).mockReturnValue(500);
             vi.spyOn(SVGGraphicsElement.prototype, 'getBBox').mockReturnValue({
                 x: -250,
                 y: -250,
@@ -275,7 +303,9 @@ describe('FamilyTree', () => {
              * centred bounding box forces a non-zero translation even before
              * scale is considered.
              */
-            expect(transform).not.toMatch(/translate\(\s*0[\s,]+0\s*\)\s*scale\(1\)/);
+            expect(transform).not.toMatch(
+                /translate\(\s*0[\s,]+0\s*\)\s*scale\(1\)/,
+            );
         });
 
         it('produces no NaN transforms when computeTreeRadius returns Infinity', async () => {
@@ -288,9 +318,10 @@ describe('FamilyTree', () => {
              *
              * This test verifies that the cap prevents NaN from reaching the DOM.
              */
-            vi.spyOn(familyTreeRadiusModule, 'computeTreeRadius').mockReturnValue(
-                Infinity,
-            );
+            vi.spyOn(
+                familyTreeRadiusModule,
+                'computeTreeRadius',
+            ).mockReturnValue(Infinity);
 
             const { container } = render(
                 <Wrapper>

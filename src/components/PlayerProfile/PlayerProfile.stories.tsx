@@ -4,7 +4,10 @@ import { defaultClubSupporterDataList } from '@/tests/mocks/data/clubSupporterDa
 import { defaultCountrySupporterDataList } from '@/tests/mocks/data/countrySupporterData';
 import { defaultPlayer } from '@/tests/mocks/data/player';
 import { defaultPlayerFormList } from '@/tests/mocks/data/playerForm';
-import { defaultPlayerRecord, defaultTrophiesList } from '@/tests/mocks/data/playerRecord';
+import {
+    defaultPlayerRecord,
+    defaultTrophiesList,
+} from '@/tests/mocks/data/playerRecord';
 
 import { PlayerProfile } from './PlayerProfile';
 

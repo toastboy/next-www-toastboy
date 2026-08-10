@@ -21,9 +21,12 @@ vi.mock('@mantine/core', () => ({
     Text: ({ children }: { children?: unknown }) => children,
 }));
 
-vi.mock('@/components/GameInvitationResponseForm/GameInvitationResponseForm', () => ({
-    GameInvitationResponseForm: vi.fn(() => null),
-}));
+vi.mock(
+    '@/components/GameInvitationResponseForm/GameInvitationResponseForm',
+    () => ({
+        GameInvitationResponseForm: vi.fn(() => null),
+    }),
+);
 
 vi.mock('@/lib/gameInvitations', () => ({
     getGameInvitationResponseDetails: vi.fn(),
@@ -52,7 +55,9 @@ describe('Game Invitation Response page', () => {
     });
 
     it('redirects to /footy/game when neither token nor error is present', async () => {
-        await expect(Page({ searchParams: Promise.resolve({}) })).rejects.toThrow('redirected');
+        await expect(
+            Page({ searchParams: Promise.resolve({}) }),
+        ).rejects.toThrow('redirected');
 
         expect(redirect).toHaveBeenCalledWith('/footy/game');
     });
@@ -64,7 +69,9 @@ describe('Game Invitation Response page', () => {
     });
 
     it('renders an error message when an error param is present', async () => {
-        const element = await Page({ searchParams: Promise.resolve({ error: 'Invitation expired.' }) });
+        const element = await Page({
+            searchParams: Promise.resolve({ error: 'Invitation expired.' }),
+        });
 
         const html = renderToStaticMarkup(element);
         expect(html).toContain('Invitation expired.');
@@ -72,7 +79,9 @@ describe('Game Invitation Response page', () => {
     });
 
     it('fetches the latest invitation details for the token and ignores stale query params', async () => {
-        (getGameInvitationResponseDetails as Mock).mockResolvedValue(sampleDetails);
+        (getGameInvitationResponseDetails as Mock).mockResolvedValue(
+            sampleDetails,
+        );
 
         const element = await Page({
             searchParams: Promise.resolve({
@@ -89,9 +98,11 @@ describe('Game Invitation Response page', () => {
 
         renderToStaticMarkup(element);
 
-        expect(getGameInvitationResponseDetails).toHaveBeenCalledWith(sampleDetails.token);
+        expect(getGameInvitationResponseDetails).toHaveBeenCalledWith(
+            sampleDetails.token,
+        );
         const [[props]] = (GameInvitationResponseForm as Mock).mock.calls as [
-            { details: GameInvitationResponseDetails }
+            { details: GameInvitationResponseDetails },
         ][];
         expect(props.details).toEqual(sampleDetails);
     });
@@ -99,7 +110,9 @@ describe('Game Invitation Response page', () => {
     it('renders a missing-details message when the invitation cannot be found', async () => {
         (getGameInvitationResponseDetails as Mock).mockResolvedValue(null);
 
-        const element = await Page({ searchParams: Promise.resolve({ token: 'missing-token' }) });
+        const element = await Page({
+            searchParams: Promise.resolve({ token: 'missing-token' }),
+        });
 
         const html = renderToStaticMarkup(element);
         expect(html).toContain('Invitation details are missing.');

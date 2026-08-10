@@ -1,6 +1,4 @@
-import {
-    Notifications,
-} from '@mantine/notifications';
+import { Notifications } from '@mantine/notifications';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { http, HttpResponse } from 'msw';
 import { expect, fn, waitFor, within } from 'storybook/test';
@@ -65,10 +63,14 @@ export const ValidFill: Story = {
         changePasswordSpy.mockClear();
 
         const canvas = within(canvasElement);
-        const currentPassword = await canvas.findByLabelText(/Current password/i);
+        const currentPassword =
+            await canvas.findByLabelText(/Current password/i);
         const newPassword = await canvas.findByLabelText(/^New password/i);
-        const confirmPassword = await canvas.findByLabelText(/Confirm new password/i);
-        const submitButton = await canvas.findByRole('button', { name: /Update password/i });
+        const confirmPassword =
+            await canvas.findByLabelText(/Confirm new password/i);
+        const submitButton = await canvas.findByRole('button', {
+            name: /Update password/i,
+        });
 
         await userEvent.clear(currentPassword);
         await userEvent.type(currentPassword, 'current-password');
@@ -107,10 +109,14 @@ export const InvalidFill: Story = {
         changePasswordSpy.mockClear();
 
         const canvas = within(canvasElement);
-        const currentPassword = await canvas.findByLabelText(/Current password/i);
+        const currentPassword =
+            await canvas.findByLabelText(/Current password/i);
         const newPassword = await canvas.findByLabelText(/^New password/i);
-        const confirmPassword = await canvas.findByLabelText(/Confirm new password/i);
-        const submitButton = await canvas.findByRole('button', { name: /Update password/i });
+        const confirmPassword =
+            await canvas.findByLabelText(/Confirm new password/i);
+        const submitButton = await canvas.findByRole('button', {
+            name: /Update password/i,
+        });
 
         await userEvent.clear(currentPassword);
         await userEvent.type(currentPassword, 'bad-password');

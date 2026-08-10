@@ -1,13 +1,7 @@
 'use client';
 
-import {
-    Button,
-    Flex,
-    rem,
-} from '@mantine/core';
-import {
-    notifications,
-} from '@mantine/notifications';
+import { Button, Flex, rem } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { useState } from 'react';
 
@@ -16,7 +10,7 @@ import { toPublicMessage } from '@/lib/errors';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 
 export interface Props {
-    onExportAuth: () => Promise<void>,
+    onExportAuth: () => Promise<void>;
 }
 
 export const AdminExportAuth = ({ onExportAuth }: Props) => {
@@ -46,12 +40,15 @@ export const AdminExportAuth = ({ onExportAuth }: Props) => {
                             color: 'green',
                             title: 'Success',
                             message: 'Auth data exported successfully',
-                            icon: <IconCheck style={{ width: rem(18), height: rem(18) }} />,
+                            icon: (
+                                <IconCheck
+                                    style={{ width: rem(18), height: rem(18) }}
+                                />
+                            ),
                             loading: false,
                             autoClose: config.notificationAutoClose,
                         });
-                    }
-                    catch (error) {
+                    } catch (error) {
                         captureUnexpectedError(error, {
                             layer: 'client',
                             component: 'AdminExportAuth',
@@ -62,13 +59,19 @@ export const AdminExportAuth = ({ onExportAuth }: Props) => {
                             id,
                             color: 'red',
                             title: 'Error',
-                            message: toPublicMessage(error, 'Failed to export auth data.'),
-                            icon: <IconX style={{ width: rem(18), height: rem(18) }} />,
+                            message: toPublicMessage(
+                                error,
+                                'Failed to export auth data.',
+                            ),
+                            icon: (
+                                <IconX
+                                    style={{ width: rem(18), height: rem(18) }}
+                                />
+                            ),
                             loading: false,
                             autoClose: config.notificationAutoClose,
                         });
-                    }
-                    finally {
+                    } finally {
                         setExporting(false);
                     }
                 }}

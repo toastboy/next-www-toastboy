@@ -8,13 +8,17 @@ export const defaultPlayerRecordData = {
     player: defaultPlayer,
 } satisfies PlayerRecordDataType;
 
-export const createMockPlayerRecordData = (overrides: Partial<PlayerRecordDataType> = {}): PlayerRecordDataType => ({
+export const createMockPlayerRecordData = (
+    overrides: Partial<PlayerRecordDataType> = {},
+): PlayerRecordDataType => ({
     ...defaultPlayerRecordData,
     ...overrides,
 });
 
-export const defaultPlayerRecordDataList: PlayerRecordDataType[] = Array.from({ length: 20 }, (_, index) =>
-    createMockPlayerRecordData({
-        points: 100 - 3 * index,
-    }),
+export const defaultPlayerRecordDataList: PlayerRecordDataType[] = Array.from(
+    { length: 20 },
+    (_, index) =>
+        createMockPlayerRecordData({
+            points: 100 - 3 * index,
+        }),
 );

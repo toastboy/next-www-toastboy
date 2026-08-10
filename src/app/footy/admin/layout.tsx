@@ -24,7 +24,9 @@ export default async function AdminLayout({ children }: AdminLayoutProps) {
     if (role !== 'admin') {
         const headersList = await headers();
         const pathname = headersList.get('x-pathname') ?? '/footy/admin';
-        redirect(`/footy/auth/signin?admin=true&redirect=${encodeURIComponent(pathname)}`);
+        redirect(
+            `/footy/auth/signin?admin=true&redirect=${encodeURIComponent(pathname)}`,
+        );
     }
 
     return children;

@@ -60,7 +60,8 @@ export async function setGameEnabledCore(
 
     await sendEmailToAllActivePlayers({
         subject: `Game ${data.game ? 'Reinstated' : 'Cancelled'}: ${updatedGameDay.date.toDateString()}`,
-        html: `<p>The game scheduled for ${updatedGameDay.date.toDateString()} has been ${data.game ? 'reinstated' : 'cancelled'}.</p>` +
+        html:
+            `<p>The game scheduled for ${updatedGameDay.date.toDateString()} has been ${data.game ? 'reinstated' : 'cancelled'}.</p>` +
             (data.reason ? `<p>Reason: ${data.reason}</p>` : ''),
     });
 

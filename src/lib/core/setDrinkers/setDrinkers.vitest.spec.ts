@@ -32,10 +32,26 @@ describe('setDrinkersCore', () => {
 
         expect(getByGameDay).toHaveBeenCalledWith(1249);
 
-        expect(upsert).toHaveBeenCalledWith({ gameDayId: 1249, playerId: 1, pub: 1 });
-        expect(upsert).toHaveBeenCalledWith({ gameDayId: 1249, playerId: 2, pub: 2 });
-        expect(upsert).toHaveBeenCalledWith({ gameDayId: 1249, playerId: 3, pub: null });
-        expect(upsert).toHaveBeenCalledWith({ gameDayId: 1249, playerId: 9, pub: null });
+        expect(upsert).toHaveBeenCalledWith({
+            gameDayId: 1249,
+            playerId: 1,
+            pub: 1,
+        });
+        expect(upsert).toHaveBeenCalledWith({
+            gameDayId: 1249,
+            playerId: 2,
+            pub: 2,
+        });
+        expect(upsert).toHaveBeenCalledWith({
+            gameDayId: 1249,
+            playerId: 3,
+            pub: null,
+        });
+        expect(upsert).toHaveBeenCalledWith({
+            gameDayId: 1249,
+            playerId: 9,
+            pub: null,
+        });
 
         expect(result).toEqual({
             gameDayId: 1249,
@@ -64,7 +80,11 @@ describe('setDrinkersCore', () => {
 
         expect(getByGameDay).toHaveBeenCalledWith(1249);
         expect(upsert).toHaveBeenCalledTimes(1);
-        expect(upsert).toHaveBeenCalledWith({ gameDayId: 1249, playerId: 7, pub: null });
+        expect(upsert).toHaveBeenCalledWith({
+            gameDayId: 1249,
+            playerId: 7,
+            pub: null,
+        });
         expect(result).toEqual({
             gameDayId: 1249,
             updated: 1,
@@ -90,7 +110,9 @@ describe('setDrinkersCore', () => {
     });
 
     it('throws InternalError with typed details when player-record update fails with a known error', async () => {
-        const upsertFromGameDay = vi.fn().mockRejectedValue(new ValidationError('Nope'));
+        const upsertFromGameDay = vi
+            .fn()
+            .mockRejectedValue(new ValidationError('Nope'));
 
         let thrown: unknown;
         try {
@@ -109,7 +131,11 @@ describe('setDrinkersCore', () => {
         }
 
         expect(thrown).toBeInstanceOf(InternalError);
-        const appError = thrown as InternalError<{ gameDayId: number; operation: string; upstreamCode: string }>;
+        const appError = thrown as InternalError<{
+            gameDayId: number;
+            operation: string;
+            upstreamCode: string;
+        }>;
         expect(appError.code).toBe(APP_ERROR_CODE.Internal);
         expect(appError.publicMessage).toBe('Failed to update player records.');
         expect(appError.details).toEqual({
@@ -141,7 +167,11 @@ describe('setDrinkersCore', () => {
         }
 
         expect(thrown).toBeInstanceOf(InternalError);
-        const appError = thrown as InternalError<{ gameDayId: number; operation: string; upstreamCode: string }>;
+        const appError = thrown as InternalError<{
+            gameDayId: number;
+            operation: string;
+            upstreamCode: string;
+        }>;
         expect(appError.code).toBe(APP_ERROR_CODE.Internal);
         expect(appError.publicMessage).toBe('Failed to update player records.');
         expect(appError.details).toEqual({

@@ -1,4 +1,3 @@
-
 import { render } from '@testing-library/react';
 import { TableNameSchema } from 'prisma/zod/schemas';
 import { vi } from 'vitest';
@@ -23,7 +22,7 @@ describe('YearTable', () => {
             </Wrapper>,
         );
 
-        const props = extractMockProps<RecordsTableProps>("RecordsTable");
+        const props = extractMockProps<RecordsTableProps>('RecordsTable');
         expect(props.length).toBe(1);
         expect(props[0].year).toBe(2024);
     });
@@ -40,7 +39,7 @@ describe('YearTable', () => {
             </Wrapper>,
         );
 
-        const props = extractMockProps<RecordsTableProps>("RecordsTable");
+        const props = extractMockProps<RecordsTableProps>('RecordsTable');
         expect(props.length).toBe(2);
         expect(props[0].year).toBe(2024);
         expect(props[1].year).toBe(2024);

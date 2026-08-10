@@ -35,9 +35,11 @@ const GameDayUpdateStrictFields = {
     pickerGamesHistory: z.union([z.literal(5), z.literal(10)]).nullish(),
 };
 
-export const GameDayWriteInputSchema = z.object({
-    ...GameDayCreateStrictFields,
-}).strip();
+export const GameDayWriteInputSchema = z
+    .object({
+        ...GameDayCreateStrictFields,
+    })
+    .strip();
 
 export type GameDayWriteInput = z.infer<typeof GameDayWriteInputSchema>;
 
@@ -47,10 +49,12 @@ export const GameDayUpsertInputSchema = GameDayWriteInputSchema.extend({
 
 export type GameDayUpsertInput = z.infer<typeof GameDayUpsertInputSchema>;
 
-export const GameDayUpdateInputSchema = z.object({
-    ...GameDayUpdateStrictFields,
-    id: z.number().int().min(1),
-}).strip();
+export const GameDayUpdateInputSchema = z
+    .object({
+        ...GameDayUpdateStrictFields,
+        id: z.number().int().min(1),
+    })
+    .strip();
 
 export type GameDayUpdateInput = z.infer<typeof GameDayUpdateInputSchema>;
 
@@ -62,7 +66,9 @@ const GameDayUncheckedUpdateInputWithoutIdSchema =
 
 const GameDayCreateDataStrictSchema = z.union([
     GameDayCreateInputObjectZodSchema.extend(GameDayCreateStrictFields),
-    GameDayUncheckedCreateInputWithoutIdSchema.extend(GameDayCreateStrictFields),
+    GameDayUncheckedCreateInputWithoutIdSchema.extend(
+        GameDayCreateStrictFields,
+    ),
 ]);
 
 const GameDayCreateOneStrictZodSchema = GameDayCreateOneZodSchema.extend({
@@ -74,7 +80,9 @@ export const GameDayCreateOneStrictSchema: z.ZodType<Prisma.GameDayCreateArgs> =
 
 const GameDayUpdateDataStrictSchema = z.union([
     GameDayUpdateInputObjectZodSchema.extend(GameDayUpdateStrictFields),
-    GameDayUncheckedUpdateInputWithoutIdSchema.extend(GameDayUpdateStrictFields),
+    GameDayUncheckedUpdateInputWithoutIdSchema.extend(
+        GameDayUpdateStrictFields,
+    ),
 ]);
 
 const GameDayUpdateOneStrictZodSchema = GameDayUpdateOneZodSchema.extend({

@@ -9,9 +9,7 @@ import {
     Image,
     Text,
 } from '@mantine/core';
-import {
-    useDisclosure,
-} from '@mantine/hooks';
+import { useDisclosure } from '@mantine/hooks';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
@@ -76,7 +74,11 @@ export const CustomAppShell = ({ children, user, devMode }: Props) => {
                         <Group gap="xs">
                             <Text>Toastboy FC</Text>
                             {devMode ? (
-                                <Badge color="orange" variant="filled" size="sm">
+                                <Badge
+                                    color="orange"
+                                    variant="filled"
+                                    size="sm"
+                                >
                                     dev mode
                                 </Badge>
                             ) : null}
@@ -94,7 +96,6 @@ export const CustomAppShell = ({ children, user, devMode }: Props) => {
                     {children}
                 </Container>
             </AppShell.Main>
-
         </AppShell>
     );
 };

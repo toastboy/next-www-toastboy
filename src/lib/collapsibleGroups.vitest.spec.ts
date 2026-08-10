@@ -39,7 +39,9 @@ describe('visibleRowCount', () => {
     const hidden = { visible: false };
 
     it('returns the initial count when it lands on a group boundary', () => {
-        expect(visibleRowCount([visible, visible, visible, visible], 2)).toBe(2);
+        expect(visibleRowCount([visible, visible, visible, visible], 2)).toBe(
+            2,
+        );
     });
 
     it('extends past a group that straddles the cutoff', () => {

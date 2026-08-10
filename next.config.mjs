@@ -13,7 +13,9 @@ const nextConfig = {
     pageExtensions: ['js', 'jsx', 'mdx', 'ts', 'tsx'],
     reactStrictMode: true,
     ...(process.env.ALLOWED_DEV_ORIGINS && {
-        allowedDevOrigins: process.env.ALLOWED_DEV_ORIGINS.split(',').map(s => s.trim()),
+        allowedDevOrigins: process.env.ALLOWED_DEV_ORIGINS.split(',').map((s) =>
+            s.trim(),
+        ),
     }),
     generateBuildId: async () => {
         const { execSync } = await import('node:child_process');
@@ -161,14 +163,14 @@ const nextConfig = {
 
 // Injected content via Sentry wizard below
 
-import { withSentryConfig } from "@sentry/nextjs";
+import { withSentryConfig } from '@sentry/nextjs';
 
 const sentryConfig = {
     // For all available options, see:
     // https://github.com/getsentry/sentry-webpack-plugin#options
 
-    org: "toastboycouk",
-    project: "javascript-nextjs",
+    org: 'toastboycouk',
+    project: 'javascript-nextjs',
 
     // Only print logs for uploading source maps in CI
     silent: !process.env.CI,
@@ -183,7 +185,7 @@ const sentryConfig = {
     // This can increase your server load as well as your hosting bill.
     // Note: Check that the configured route will not match with your Next.js middleware, otherwise reporting of client-
     // side errors will fail.
-    tunnelRoute: "/monitoring",
+    tunnelRoute: '/monitoring',
 
     // Hides source maps from generated client bundles
     // hideSourceMaps: true,
@@ -220,6 +222,6 @@ const sentryConfig = {
 // are still loaded at runtime regardless).
 const mdxNextConfig = withMDX(nextConfig);
 
-export default process.env.SENTRY_AUTH_TOKEN ?
-    withSentryConfig(mdxNextConfig, sentryConfig) :
-    mdxNextConfig;
+export default process.env.SENTRY_AUTH_TOKEN
+    ? withSentryConfig(mdxNextConfig, sentryConfig)
+    : mdxNextConfig;

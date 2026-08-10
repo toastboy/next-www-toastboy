@@ -1,7 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 vi.mock('next/navigation', () => ({
-    permanentRedirect: vi.fn(() => { throw new Error('permanent_redirect'); }),
+    permanentRedirect: vi.fn(() => {
+        throw new Error('permanent_redirect');
+    }),
 }));
 
 import { permanentRedirect } from 'next/navigation';
@@ -18,7 +20,9 @@ describe('Winners [year] redirect page', () => {
             Page({ params: Promise.resolve({ year: '2021' }) }),
         ).rejects.toThrow('permanent_redirect');
 
-        expect(permanentRedirect).toHaveBeenCalledWith('/footy/winners?year=2021');
+        expect(permanentRedirect).toHaveBeenCalledWith(
+            '/footy/winners?year=2021',
+        );
     });
 
     it('preserves the exact year value from params', async () => {

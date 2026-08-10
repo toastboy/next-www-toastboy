@@ -19,8 +19,8 @@ import { FootyChannel } from '@/types/FootyChannel';
 
 interface PageProps {
     params: Promise<{
-        id: string,
-    }>,
+        id: string;
+    }>;
     searchParams?: Promise<{
         year?: string;
     }>;
@@ -47,32 +47,40 @@ interface PageProps {
  * @throws {permanentRedirect} When the current URL doesn't match the canonical
  * URL format
  */
-const unpackParams = cache(async (
-    params: PageProps['params'],
-    searchParams: PageProps['searchParams'],
-) => {
-    const { id } = await params;
+const unpackParams = cache(
+    async (
+        params: PageProps['params'],
+        searchParams: PageProps['searchParams'],
+    ) => {
+        const { id } = await params;
 
-    const resolvedSearchParams = await searchParams;
-    const playerId = z.coerce.number().int().min(1).safeParse(id);
-    const player = await (playerId.success ?
-        playerService.getById(playerId.data) :
-        playerService.getByLogin(id));
-    if (!player) notFound();
+        const resolvedSearchParams = await searchParams;
+        const playerId = z.coerce.number().int().min(1).safeParse(id);
+        const player = await (playerId.success
+            ? playerService.getById(playerId.data)
+            : playerService.getByLogin(id));
+        if (!player) notFound();
 
-    const activeYears = await playerService.getYearsActive(player.id);
-    const yearResult = z.coerce.number().int().min(0).safeParse(resolvedSearchParams?.year ?? 0);
-    const year = yearResult.success ? yearResult.data : undefined;
-    if (year === undefined || !activeYears.includes(year)) notFound();
+        const activeYears = await playerService.getYearsActive(player.id);
+        const yearResult = z.coerce
+            .number()
+            .int()
+            .min(0)
+            .safeParse(resolvedSearchParams?.year ?? 0);
+        const year = yearResult.success ? yearResult.data : undefined;
+        if (year === undefined || !activeYears.includes(year)) notFound();
 
-    const canonicalSearch = year ? `?year=${year}` : '';
-    const canonicalUrl = `/footy/player/${player.id}${canonicalSearch}`;
-    const currentSearch = resolvedSearchParams?.year ? `?year=${resolvedSearchParams.year}` : '';
-    const currentUrl = `/footy/player/${id}${currentSearch}`;
-    if (currentUrl !== canonicalUrl) permanentRedirect(canonicalUrl);
+        const canonicalSearch = year ? `?year=${year}` : '';
+        const canonicalUrl = `/footy/player/${player.id}${canonicalSearch}`;
+        const currentSearch = resolvedSearchParams?.year
+            ? `?year=${resolvedSearchParams.year}`
+            : '';
+        const currentUrl = `/footy/player/${id}${currentSearch}`;
+        if (currentUrl !== canonicalUrl) permanentRedirect(canonicalUrl);
 
-    return { player, year, activeYears };
-});
+        return { player, year, activeYears };
+    },
+);
 
 /**
  * Generates metadata for the player page.
@@ -82,7 +90,10 @@ const unpackParams = cache(async (
  * year in the title
  */
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
-    const { player, year } = await unpackParams(props.params, props.searchParams);
+    const { player, year } = await unpackParams(
+        props.params,
+        props.searchParams,
+    );
 
     return {
         title: `${player.name}: ${year || 'All-time'}`,
@@ -90,7 +101,10 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
 }
 
 const PlayerPage = async (props: PageProps) => {
-    const { player, year, activeYears } = await unpackParams(props.params, props.searchParams);
+    const { player, year, activeYears } = await unpackParams(
+        props.params,
+        props.searchParams,
+    );
 
     const role = await getUserRole();
     const isAuthenticated = role !== 'none';
@@ -107,27 +121,44 @@ const PlayerPage = async (props: PageProps) => {
         nextPlayer,
         playerData,
     ] = await Promise.all([
-        player.introducedBy != null ? playerService.getById(player.introducedBy) : Promise.resolve(null),
+        player.introducedBy != null
+            ? playerService.getById(player.introducedBy)
+            : Promise.resolve(null),
         playerService.getLastResult(player.id, year),
         playerService.getLastResult(player.id, year, 3),
-        outcomeService.getHistoryByPlayer(player.id, year, player.joined ?? undefined, player.finished ?? undefined),
+        outcomeService.getHistoryByPlayer(
+            player.id,
+            year,
+            player.joined ?? undefined,
+            player.finished ?? undefined,
+        ),
         clubSupporterService.getByPlayer(player.id),
         countrySupporterService.getByPlayer(player.id),
         playerRecordService.getForYearByPlayer(year, player.id),
         playerService.getPrevious(player.id),
         playerService.getNext(player.id),
-        isAdmin ? playerService.getEmailDataById(player.id) : Promise.resolve(null),
+        isAdmin
+            ? playerService.getEmailDataById(player.id)
+            : Promise.resolve(null),
     ]);
 
     const trophies = new Map<TableName, PlayerRecordType[]>();
-    await Promise.all(TableNameSchema.options.map(async (table) => {
-        const winners = await playerRecordService.getWinners(table, year, player.id);
-        trophies.set(table, winners);
-    }));
+    await Promise.all(
+        TableNameSchema.options.map(async (table) => {
+            const winners = await playerRecordService.getWinners(
+                table,
+                year,
+                player.id,
+            );
+            trophies.set(table, winners);
+        }),
+    );
 
     return (
         <>
-            <AutoRefresh channels={[FootyChannel.Players, FootyChannel.Results]} />
+            <AutoRefresh
+                channels={[FootyChannel.Players, FootyChannel.Results]}
+            />
             <PlayerProfile
                 key={player.id}
                 player={player}

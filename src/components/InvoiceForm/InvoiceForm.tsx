@@ -13,13 +13,14 @@ import {
     Text,
     Title,
 } from '@mantine/core';
+import { useForm } from '@mantine/form';
+import { notifications } from '@mantine/notifications';
 import {
-    useForm,
-} from '@mantine/form';
-import {
-    notifications,
-} from '@mantine/notifications';
-import { IconAlertTriangle, IconCheck, IconChevronLeft, IconChevronRight } from '@tabler/icons-react';
+    IconAlertTriangle,
+    IconCheck,
+    IconChevronLeft,
+    IconChevronRight,
+} from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useRouter } from 'next/navigation';
 import z from 'zod';
@@ -31,13 +32,14 @@ import { captureUnexpectedError } from '@/lib/observability/sentry';
 import type { RecordHallHireProxy } from '@/types/actions/RecordHallHire';
 import type { UpdateInvoiceGameDaysProxy } from '@/types/actions/UpdateInvoiceGameDays';
 
-
 const InvoiceFormSchema = z.object({
-    gameDays: z.array(z.object({
-        id: z.number().int().positive(),
-        gameScheduled: z.boolean(),
-        hallCostPounds: z.number().min(0),
-    })),
+    gameDays: z.array(
+        z.object({
+            id: z.number().int().positive(),
+            gameScheduled: z.boolean(),
+            hallCostPounds: z.number().min(0),
+        }),
+    ),
 });
 
 type InvoiceFormValues = z.infer<typeof InvoiceFormSchema>;
@@ -152,7 +154,10 @@ export const InvoiceForm = ({
                 id: notificationId,
                 color: 'red',
                 title: 'Error',
-                message: err instanceof Error ? err.message : 'Failed to save invoice.',
+                message:
+                    err instanceof Error
+                        ? err.message
+                        : 'Failed to save invoice.',
                 icon: <IconAlertTriangle size={config.notificationIconSize} />,
                 loading: false,
                 autoClose: false,
@@ -166,14 +171,8 @@ export const InvoiceForm = ({
         .reduce((sum, gd) => sum + (gd.hallCostPounds || 0), 0);
 
     return (
-        <Paper
-            maw="30rem"
-            mx="auto"
-            my="lg"
-        >
-            <Stack
-                gap="md"
-            >
+        <Paper maw="30rem" mx="auto" my="lg">
+            <Stack gap="md">
                 <Title order={2}>Invoice Check</Title>
 
                 <Group justify="space-between" wrap="wrap">
@@ -184,11 +183,7 @@ export const InvoiceForm = ({
                     >
                         {getShortMonthName(year, month - 1)}
                     </Button>
-                    <Title
-                        order={3}
-                        flex={1}
-                        ta="center"
-                    >
+                    <Title order={3} flex={1} ta="center">
                         {getShortMonthName(year, month)} {year}
                     </Title>
                     <Button
@@ -201,11 +196,7 @@ export const InvoiceForm = ({
                 </Group>
 
                 {gameDays.length === 0 ? (
-                    <Text
-                        c="dimmed"
-                    >
-                        No game days found for this month.
-                    </Text>
+                    <Text c="dimmed">No game days found for this month.</Text>
                 ) : (
                     <Box
                         component="form"
@@ -222,16 +213,16 @@ export const InvoiceForm = ({
                                     p="sm"
                                     bdrs="sm"
                                 >
-                                    <Text
-                                        fw={600}
-                                        miw="7rem"
-                                    >
+                                    <Text fw={600} miw="7rem">
                                         {formatDate(gd.date)}
                                     </Text>
                                     <Checkbox
                                         label="Game"
                                         aria-label={`Game scheduled for ${formatDate(gd.date)}`}
-                                        {...form.getInputProps(`gameDays.${index}.gameScheduled`, { type: 'checkbox' })}
+                                        {...form.getInputProps(
+                                            `gameDays.${index}.gameScheduled`,
+                                            { type: 'checkbox' },
+                                        )}
                                     />
                                     <NumberInput
                                         aria-label={`Hall cost for ${formatDate(gd.date)}`}
@@ -244,16 +235,28 @@ export const InvoiceForm = ({
                                         min={0}
                                         w="6rem"
                                         ml="auto"
-                                        {...form.getInputProps(`gameDays.${index}.hallCostPounds`)}
+                                        {...form.getInputProps(
+                                            `gameDays.${index}.hallCostPounds`,
+                                        )}
                                     />
                                 </Flex>
                             ))}
 
                             <Divider />
 
-                            <Group justify="space-between" align="center" wrap="wrap">
+                            <Group
+                                justify="space-between"
+                                align="center"
+                                wrap="wrap"
+                            >
                                 <Text fw={600}>Total: £{total.toFixed(2)}</Text>
-                                <Button type="submit" w={{ base: '100%', [actionsBreakpoint]: 'fit-content' }}>
+                                <Button
+                                    type="submit"
+                                    w={{
+                                        base: '100%',
+                                        [actionsBreakpoint]: 'fit-content',
+                                    }}
+                                >
                                     Record invoice
                                 </Button>
                             </Group>

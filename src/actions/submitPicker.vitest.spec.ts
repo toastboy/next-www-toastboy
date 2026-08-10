@@ -1,6 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { revalidatePathMock, broadcastMock, requireAdminMock, submitPickerCoreMock } = vi.hoisted(() => ({
+const {
+    revalidatePathMock,
+    broadcastMock,
+    requireAdminMock,
+    submitPickerCoreMock,
+} = vi.hoisted(() => ({
     revalidatePathMock: vi.fn(),
     broadcastMock: vi.fn(),
     requireAdminMock: vi.fn().mockResolvedValue(undefined),
@@ -20,7 +25,9 @@ import { FootyChannel } from '@/types/FootyChannel';
 const validInput = [{ playerId: 1 }, { playerId: 2 }];
 
 describe('SubmitPicker action wrapper', () => {
-    beforeEach(() => { vi.clearAllMocks(); });
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
 
     it('calls requireAdmin, validates input, delegates to SubmitPickerCore, revalidates the game path, and broadcasts Games channel', async () => {
         await SubmitPicker(validInput);

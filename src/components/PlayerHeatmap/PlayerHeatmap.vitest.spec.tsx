@@ -18,23 +18,36 @@ class ImmediateResizeObserver {
         const entry = { contentRect: { width: 600 } };
         this.callback([entry as unknown as ResizeObserverEntry], this);
     }
-    unobserve() { /* empty */ }
-    disconnect() { /* empty */ }
+    unobserve() {
+        /* empty */
+    }
+    disconnect() {
+        /* empty */
+    }
 }
 
 /** One game per month in 2024, result cycling through win/draw/loss/null. */
 const buildYearData = (): PlayerFormType[] =>
     Array.from({ length: 12 }, (_, i) => ({
-        ...createMockOutcome({ gameDayId: i + 1, points: [3, 1, 0, null][i % 4] }),
+        ...createMockOutcome({
+            gameDayId: i + 1,
+            points: [3, 1, 0, null][i % 4],
+        }),
         gameDay: createMockGameDay({ id: i + 1, date: new Date(2024, i, 7) }),
     }));
 
 /** Two games per year across 3 years, for all-time view. */
 const buildAllTimeData = (): PlayerFormType[] =>
     [2022, 2023, 2024].flatMap((yr, yi) =>
-        [0, 1].map(gi => ({
-            ...createMockOutcome({ gameDayId: yi * 2 + gi + 1, points: gi === 0 ? 3 : 0 }),
-            gameDay: createMockGameDay({ id: yi * 2 + gi + 1, date: new Date(yr, gi * 3, 7) }),
+        [0, 1].map((gi) => ({
+            ...createMockOutcome({
+                gameDayId: yi * 2 + gi + 1,
+                points: gi === 0 ? 3 : 0,
+            }),
+            gameDay: createMockGameDay({
+                id: yi * 2 + gi + 1,
+                date: new Date(yr, gi * 3, 7),
+            }),
         })),
     );
 
@@ -42,7 +55,11 @@ const buildAllTimeData = (): PlayerFormType[] =>
 const buildWithNoGameNoCommentData = (): PlayerFormType[] => [
     {
         ...createMockOutcome({ gameDayId: 1, points: 3 }),
-        gameDay: createMockGameDay({ id: 1, date: new Date(2024, 0, 7), game: true }),
+        gameDay: createMockGameDay({
+            id: 1,
+            date: new Date(2024, 0, 7),
+            game: true,
+        }),
     },
     {
         id: -2,
@@ -55,7 +72,12 @@ const buildWithNoGameNoCommentData = (): PlayerFormType[] => [
         comment: null,
         pub: null,
         goalie: null,
-        gameDay: createMockGameDay({ id: 2, date: new Date(2024, 0, 14), game: false, comment: null }),
+        gameDay: createMockGameDay({
+            id: 2,
+            date: new Date(2024, 0, 14),
+            game: false,
+            comment: null,
+        }),
     },
 ];
 
@@ -63,7 +85,11 @@ const buildWithNoGameNoCommentData = (): PlayerFormType[] => [
 const buildWithNoGameData = (): PlayerFormType[] => [
     {
         ...createMockOutcome({ gameDayId: 1, points: 3 }),
-        gameDay: createMockGameDay({ id: 1, date: new Date(2024, 0, 7), game: true }),
+        gameDay: createMockGameDay({
+            id: 1,
+            date: new Date(2024, 0, 7),
+            game: true,
+        }),
     },
     {
         id: -2,
@@ -76,27 +102,33 @@ const buildWithNoGameData = (): PlayerFormType[] => [
         comment: null,
         pub: null,
         goalie: null,
-        gameDay: createMockGameDay({ id: 2, date: new Date(2024, 0, 14), game: false }),
+        gameDay: createMockGameDay({
+            id: 2,
+            date: new Date(2024, 0, 14),
+            game: false,
+        }),
     },
 ];
 
 /** One game with points=2 (not in colorMap or resultLabel) to exercise ?? fallbacks. */
-const buildUnknownPointsData = (): PlayerFormType[] => [{
-    ...createMockOutcome({ gameDayId: 1, points: 2 }),
-    gameDay: createMockGameDay({ id: 1, date: new Date(2024, 0, 7) }),
-}];
+const buildUnknownPointsData = (): PlayerFormType[] => [
+    {
+        ...createMockOutcome({ gameDayId: 1, points: 2 }),
+        gameDay: createMockGameDay({ id: 1, date: new Date(2024, 0, 7) }),
+    },
+];
 
 describe('buildGrid', () => {
     it('always produces 12 month columns', () => {
         const { cells } = buildGrid(buildYearData());
-        const cols = [...new Set(cells.map(c => c.col))];
+        const cols = [...new Set(cells.map((c) => c.col))];
         expect(cols).toHaveLength(12);
     });
 
     it('assigns row numbers starting at 1 within each column', () => {
         const { cells } = buildGrid(buildYearData());
         for (const col of ['Jan', 'Feb', 'Mar']) {
-            const colCells = cells.filter(c => c.col === col);
+            const colCells = cells.filter((c) => c.col === col);
             expect(colCells[0].row).toBe(1);
         }
     });
@@ -114,14 +146,16 @@ describe('buildGrid', () => {
 
     it('marks cells as noGame when gameDay.game is false', () => {
         const { cells } = buildGrid(buildWithNoGameData());
-        const janCells = cells.filter(c => c.col === 'Jan');
+        const janCells = cells.filter((c) => c.col === 'Jan');
         expect(janCells).toHaveLength(2);
-        expect(janCells.find(c => c.noGame)).toBeDefined();
-        expect(janCells.find(c => !c.noGame)).toBeDefined();
+        expect(janCells.find((c) => c.noGame)).toBeDefined();
+        expect(janCells.find((c) => !c.noGame)).toBeDefined();
     });
 
     it('skips entries without a gameDay', () => {
-        const { cells, maxRow } = buildGrid([{ ...createMockOutcome(), gameDay: undefined }]);
+        const { cells, maxRow } = buildGrid([
+            { ...createMockOutcome(), gameDay: undefined },
+        ]);
         expect(cells).toHaveLength(0);
         expect(maxRow).toBe(0);
     });
@@ -130,7 +164,7 @@ describe('buildGrid', () => {
 describe('buildYearGroups', () => {
     it('returns one group per year, most recent first', () => {
         const groups = buildYearGroups(buildAllTimeData());
-        expect(groups.map(g => g.year)).toEqual(['2024', '2023', '2022']);
+        expect(groups.map((g) => g.year)).toEqual(['2024', '2023', '2022']);
     });
 
     it('each group contains only the cells for that year', () => {
@@ -146,7 +180,9 @@ describe('buildYearGroups', () => {
     });
 
     it('skips entries without a gameDay', () => {
-        expect(buildYearGroups([{ ...createMockOutcome(), gameDay: undefined }])).toHaveLength(0);
+        expect(
+            buildYearGroups([{ ...createMockOutcome(), gameDay: undefined }]),
+        ).toHaveLength(0);
     });
 });
 
@@ -196,7 +232,9 @@ describe('PlayerHeatmap', () => {
                 <PlayerHeatmap data={buildYearData()} year={2024} />
             </Wrapper>,
         );
-        const labels = Array.from(container.querySelectorAll('svg text')).map(el => el.textContent);
+        const labels = Array.from(container.querySelectorAll('svg text')).map(
+            (el) => el.textContent,
+        );
         expect(labels).toContain('J');
         expect(labels).toContain('D');
     });
@@ -207,7 +245,9 @@ describe('PlayerHeatmap', () => {
                 <PlayerHeatmap data={buildAllTimeData()} year={0} />
             </Wrapper>,
         );
-        const labels = Array.from(container.querySelectorAll('svg text')).map(el => el.textContent);
+        const labels = Array.from(container.querySelectorAll('svg text')).map(
+            (el) => el.textContent,
+        );
         expect(labels).toContain('2022');
         expect(labels).toContain('2023');
         expect(labels).toContain('2024');
@@ -219,7 +259,9 @@ describe('PlayerHeatmap', () => {
                 <PlayerHeatmap data={buildAllTimeData()} year={0} />
             </Wrapper>,
         );
-        const labels = Array.from(container.querySelectorAll('svg text')).map(el => el.textContent);
+        const labels = Array.from(container.querySelectorAll('svg text')).map(
+            (el) => el.textContent,
+        );
         expect(labels).toContain('F');
         expect(labels).toContain('D');
     });
@@ -232,7 +274,8 @@ describe('PlayerHeatmap', () => {
             </Wrapper>,
         );
         const cell = container.querySelector('rect.cell')!;
-        const tooltipDiv = container.querySelector('svg')!.nextElementSibling as HTMLElement;
+        const tooltipDiv = container.querySelector('svg')!
+            .nextElementSibling as HTMLElement;
 
         fireEvent.mouseMove(cell);
         expect(tooltipDiv.style.opacity).toBe('1');
@@ -246,7 +289,8 @@ describe('PlayerHeatmap', () => {
             </Wrapper>,
         );
         const cell = container.querySelector('rect.cell')!;
-        const tooltipDiv = container.querySelector('svg')!.nextElementSibling as HTMLElement;
+        const tooltipDiv = container.querySelector('svg')!
+            .nextElementSibling as HTMLElement;
 
         fireEvent.mouseMove(cell);
         expect(tooltipDiv.style.opacity).toBe('1');
@@ -263,7 +307,8 @@ describe('PlayerHeatmap', () => {
         );
         const cells = container.querySelectorAll('rect.cell');
         // Second cell in January is the no-game day (14 Jan)
-        const tooltipDiv = container.querySelector('svg')!.nextElementSibling as HTMLElement;
+        const tooltipDiv = container.querySelector('svg')!
+            .nextElementSibling as HTMLElement;
         fireEvent.mouseMove(cells[1]);
         expect(tooltipDiv.innerHTML).toContain('No game');
         // createMockGameDay defaults comment to 'I heart footy'
@@ -330,7 +375,10 @@ describe('PlayerHeatmap', () => {
     it('shows plain "No game" aria-label for a no-game day with no comment', () => {
         const { container } = render(
             <Wrapper>
-                <PlayerHeatmap data={buildWithNoGameNoCommentData()} year={2024} />
+                <PlayerHeatmap
+                    data={buildWithNoGameNoCommentData()}
+                    year={2024}
+                />
             </Wrapper>,
         );
         const cells = container.querySelectorAll('rect.cell');
@@ -342,7 +390,10 @@ describe('PlayerHeatmap', () => {
     it('renders no cells when all entries lack a gameDay', () => {
         const { container } = render(
             <Wrapper>
-                <PlayerHeatmap data={[{ ...createMockOutcome(), gameDay: undefined }]} year={2024} />
+                <PlayerHeatmap
+                    data={[{ ...createMockOutcome(), gameDay: undefined }]}
+                    year={2024}
+                />
             </Wrapper>,
         );
         expect(container.querySelectorAll('rect.cell')).toHaveLength(0);
@@ -356,7 +407,8 @@ describe('PlayerHeatmap', () => {
         );
         const cell = container.querySelector('rect.cell')!;
         expect(cell).toBeDefined();
-        const tooltipDiv = container.querySelector('svg')!.nextElementSibling as HTMLElement;
+        const tooltipDiv = container.querySelector('svg')!
+            .nextElementSibling as HTMLElement;
         fireEvent.mouseMove(cell);
         expect(tooltipDiv.style.opacity).toBe('1');
     });
@@ -372,6 +424,8 @@ describe('PlayerHeatmap', () => {
         );
         const cells = container.querySelectorAll('rect.cell');
         fireEvent.click(cells[0]);
-        expect(push).toHaveBeenCalledWith(expect.stringMatching(/^\/footy\/game\/\d+$/));
+        expect(push).toHaveBeenCalledWith(
+            expect.stringMatching(/^\/footy\/game\/\d+$/),
+        );
     });
 });

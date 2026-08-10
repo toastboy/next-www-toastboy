@@ -2,7 +2,7 @@ import { CountrySupporterType } from 'prisma/zod/schemas/models/CountrySupporter
 
 export const defaultCountrySupporter = {
     playerId: 12,
-    countryFIFACode: "ENG",
+    countryFIFACode: 'ENG',
 } satisfies CountrySupporterType;
 
 export const invalidCountrySupporter = {
@@ -10,14 +10,18 @@ export const invalidCountrySupporter = {
     countryFIFACode: null as unknown as string,
 } satisfies CountrySupporterType;
 
-export const createMockCountrySupporter = (overrides: Partial<CountrySupporterType> = {}): CountrySupporterType => ({
+export const createMockCountrySupporter = (
+    overrides: Partial<CountrySupporterType> = {},
+): CountrySupporterType => ({
     ...defaultCountrySupporter,
     ...overrides,
 });
 
-export const defaultCountrySupporterList: CountrySupporterType[] = Array.from({ length: 100 }, (_, index) =>
-    createMockCountrySupporter({
-        playerId: index % 10 + 1,
-        countryFIFACode: "ENG",
-    }),
+export const defaultCountrySupporterList: CountrySupporterType[] = Array.from(
+    { length: 100 },
+    (_, index) =>
+        createMockCountrySupporter({
+            playerId: (index % 10) + 1,
+            countryFIFACode: 'ENG',
+        }),
 );

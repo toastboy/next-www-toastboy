@@ -9,10 +9,18 @@ import {
     Text,
     UnstyledButton,
 } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
 import {
-    notifications,
-} from '@mantine/notifications';
-import { IconAlertTriangle, IconArrowsLeftRight, IconCheck, IconChevronRight, IconLogout, IconPassword, IconTrash, IconUserOff, IconUserScan } from '@tabler/icons-react';
+    IconAlertTriangle,
+    IconArrowsLeftRight,
+    IconCheck,
+    IconChevronRight,
+    IconLogout,
+    IconPassword,
+    IconTrash,
+    IconUserOff,
+    IconUserScan,
+} from '@tabler/icons-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
@@ -143,11 +151,21 @@ export const UserButton = ({ user }: Props) => {
                 Change Password
             </Menu.Item>
             {user.impersonatedBy ? (
-                <Menu.Item leftSection={<IconUserOff size={14} />} onClick={async () => { await stopImpersonating(); }}>
+                <Menu.Item
+                    leftSection={<IconUserOff size={14} />}
+                    onClick={async () => {
+                        await stopImpersonating();
+                    }}
+                >
                     End impersonation
                 </Menu.Item>
             ) : null}
-            <Menu.Item leftSection={<IconLogout size={14} />} onClick={async () => { await signOut(); }}>
+            <Menu.Item
+                leftSection={<IconLogout size={14} />}
+                onClick={async () => {
+                    await signOut();
+                }}
+            >
                 Sign Out
             </Menu.Item>
 
@@ -184,28 +202,27 @@ export const UserButton = ({ user }: Props) => {
                 >
                     <Group>
                         <Avatar
-                            src={playerId !== 0 ? `/api/footy/player/${playerId}/mugshot` : undefined}
+                            src={
+                                playerId !== 0
+                                    ? `/api/footy/player/${playerId}/mugshot`
+                                    : undefined
+                            }
                             radius="xl"
                         />
 
                         <Flex direction={'column'}>
-                            <Text
-                                size="sm"
-                                fw={500}
-                            >
+                            <Text size="sm" fw={500}>
                                 {name}
                             </Text>
 
-                            <Text
-                                c="dimmed"
-                                size="xs"
-                            >
+                            <Text c="dimmed" size="xs">
                                 {email}
                             </Text>
                         </Flex>
 
                         <IconChevronRight
-                            style={{ width: rem(14), height: rem(14) }} stroke={1.5}
+                            style={{ width: rem(14), height: rem(14) }}
+                            stroke={1.5}
                         />
                     </Group>
                 </UnstyledButton>

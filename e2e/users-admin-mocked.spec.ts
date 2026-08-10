@@ -1,4 +1,10 @@
-import { asAdmin, asGuest, asUser, mustBeLoggedIn, mustBeLoggedInAsAdmin } from './utils/auth';
+import {
+    asAdmin,
+    asGuest,
+    asUser,
+    mustBeLoggedIn,
+    mustBeLoggedInAsAdmin,
+} from './utils/auth';
 import { expect, test } from './utils/base';
 
 test.describe('Users Admin Page with Auth Mocking', () => {
@@ -16,7 +22,9 @@ test.describe('Users Admin Page with Auth Mocking', () => {
         await mustBeLoggedInAsAdmin(page);
     });
 
-    test('allows access to admin users and shows user list', async ({ page }) => {
+    test('allows access to admin users and shows user list', async ({
+        page,
+    }) => {
         await asAdmin(page);
         await page.goto('/footy/admin/users');
 
@@ -44,7 +52,9 @@ test.describe('Profile Page with Auth Mocking', () => {
         await page.goto('/footy/profile');
 
         // Should not show login requirement
-        await expect(page.getByText('You must be logged in to use this page.')).not.toBeVisible();
+        await expect(
+            page.getByText('You must be logged in to use this page.'),
+        ).not.toBeVisible();
 
         // Should show profile form (this might need adjustment based on actual page structure)
         // await expect(page.getByLabel('First Name:')).toBeVisible();

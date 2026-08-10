@@ -7,7 +7,9 @@ import { Wrapper } from '@/tests/components/lib/common';
 import { defaultTurnoutByYearList } from '@/tests/mocks/data/turnoutByYear';
 import { TurnoutByYearType } from '@/types';
 
-const createMockTurnoutByYear = (overrides: Partial<TurnoutByYearType> = {}): TurnoutByYearType => ({
+const createMockTurnoutByYear = (
+    overrides: Partial<TurnoutByYearType> = {},
+): TurnoutByYearType => ({
     year: 2000,
     gameDays: 50,
     gamesScheduled: 45,
@@ -63,8 +65,12 @@ describe('Turnout', () => {
             );
 
             const [, tbody] = screen.getAllByRole('rowgroup');
-            expect(within(tbody).getAllByRole('row')).toHaveLength(config.tableVisibleRows);
-            expect(screen.getByRole('button', { name: 'Show 5 more' })).toBeInTheDocument();
+            expect(within(tbody).getAllByRole('row')).toHaveLength(
+                config.tableVisibleRows,
+            );
+            expect(
+                screen.getByRole('button', { name: 'Show 5 more' }),
+            ).toBeInTheDocument();
         });
 
         it('reveals the remaining rows when the toggle is clicked, then hides them again', async () => {
@@ -75,15 +81,21 @@ describe('Turnout', () => {
                 </Wrapper>,
             );
 
-            await user.click(screen.getByRole('button', { name: 'Show 5 more' }));
+            await user.click(
+                screen.getByRole('button', { name: 'Show 5 more' }),
+            );
 
             const [, tbody] = screen.getAllByRole('rowgroup');
-            expect(within(tbody).getAllByRole('row')).toHaveLength(manyYears.length);
+            expect(within(tbody).getAllByRole('row')).toHaveLength(
+                manyYears.length,
+            );
             const showLess = screen.getByRole('button', { name: 'Show less' });
 
             await user.click(showLess);
 
-            expect(within(tbody).getAllByRole('row')).toHaveLength(config.tableVisibleRows);
+            expect(within(tbody).getAllByRole('row')).toHaveLength(
+                config.tableVisibleRows,
+            );
         });
 
         it('does not render a toggle when all rows already fit', () => {
@@ -93,7 +105,9 @@ describe('Turnout', () => {
                 </Wrapper>,
             );
 
-            expect(screen.queryByRole('button', { name: /show/i })).not.toBeInTheDocument();
+            expect(
+                screen.queryByRole('button', { name: /show/i }),
+            ).not.toBeInTheDocument();
         });
 
         it('keeps the headers visible', () => {
@@ -103,7 +117,9 @@ describe('Turnout', () => {
                 </Wrapper>,
             );
 
-            expect(screen.getByRole('columnheader', { name: 'Year' })).toBeVisible();
+            expect(
+                screen.getByRole('columnheader', { name: 'Year' }),
+            ).toBeVisible();
         });
     });
 });

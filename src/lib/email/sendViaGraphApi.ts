@@ -45,7 +45,9 @@ interface GraphMailOptions {
  *
  * Used to fail fast before constructing the Graph API URL.
  */
-const userPrincipalNameSchema = z.email('userPrincipalName must be a valid email address');
+const userPrincipalNameSchema = z.email(
+    'userPrincipalName must be a valid email address',
+);
 
 /** Graph API recipient object containing an email address. */
 interface GraphMailRecipient {
@@ -65,9 +67,9 @@ function parseRecipients(value: string | undefined): GraphMailRecipient[] {
 
     return value
         .split(',')
-        .map(addr => addr.trim())
-        .filter(addr => addr.length > 0)
-        .map(address => ({ emailAddress: { address } }));
+        .map((addr) => addr.trim())
+        .filter((addr) => addr.length > 0)
+        .map((address) => ({ emailAddress: { address } }));
 }
 
 /**
@@ -99,8 +101,7 @@ export async function sendViaGraphApi(
             'https://graph.microsoft.com/.default',
         );
         token = tokenResponse.token;
-    }
-    catch (error) {
+    } catch (error) {
         throw new ExternalServiceError(
             `Graph API authentication failed: ${error instanceof Error ? error.message : String(error)}`,
             {
@@ -141,8 +142,7 @@ export async function sendViaGraphApi(
         let errorBody: string;
         try {
             errorBody = await response.text();
-        }
-        catch {
+        } catch {
             errorBody = '(unable to read response body)';
         }
 

@@ -15,7 +15,8 @@ describe('PasswordFields', () => {
             </Wrapper>,
         );
 
-        const [passwordInput, confirmPasswordInput] = screen.getAllByLabelText(/password/i);
+        const [passwordInput, confirmPasswordInput] =
+            screen.getAllByLabelText(/password/i);
         expect(passwordInput).toBeInTheDocument();
         expect(confirmPasswordInput).toBeInTheDocument();
     });
@@ -36,8 +37,12 @@ describe('PasswordFields', () => {
 
         expect(screen.getByLabelText(/New password/i)).toBeInTheDocument();
         expect(screen.getByLabelText(/Repeat password/i)).toBeInTheDocument();
-        expect(screen.getByPlaceholderText(/Choose a password/i)).toBeInTheDocument();
-        expect(screen.getByPlaceholderText(/Repeat your password/i)).toBeInTheDocument();
+        expect(
+            screen.getByPlaceholderText(/Choose a password/i),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByPlaceholderText(/Repeat your password/i),
+        ).toBeInTheDocument();
     });
 
     it('accepts user input for both fields', async () => {
@@ -51,7 +56,8 @@ describe('PasswordFields', () => {
             </Wrapper>,
         );
 
-        const [passwordInput, confirmInput] = screen.getAllByLabelText(/password/i);
+        const [passwordInput, confirmInput] =
+            screen.getAllByLabelText(/password/i);
 
         await user.type(passwordInput, 'Password123');
         await user.type(confirmInput, 'Password123');

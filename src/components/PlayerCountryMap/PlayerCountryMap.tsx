@@ -25,16 +25,16 @@ import { CountrySupporterWithPlayerDataType } from '@/types';
  * (e.g. the four UK home nations all map to "United Kingdom").
  */
 const COUNTRY_NAME_MAP: Record<string, string> = {
-    'England': 'United Kingdom',
+    England: 'United Kingdom',
     'Northern Ireland': 'United Kingdom',
-    'Scotland': 'United Kingdom',
-    'Wales': 'United Kingdom',
+    Scotland: 'United Kingdom',
+    Wales: 'United Kingdom',
     'Russian Federation': 'Russia',
     'Bosnia and Herzegovina': 'Bosnia and Herz.',
     'Central African Republic': 'Central African Rep.',
     'Dominican Republic': 'Dominican Rep.',
     'Equatorial Guinea': 'Eq. Guinea',
-    'Swaziland': 'eSwatini',
+    Swaziland: 'eSwatini',
     'United States': 'United States of America',
 };
 
@@ -98,13 +98,18 @@ export const PlayerCountryMap = ({
 }: Props) => {
     const svgRef = useRef<SVGSVGElement>(null);
     /** Projected centroids for each highlighted atlas country. */
-    const centroidsRef = useRef<Map<string, { x: number; y: number }>>(new Map());
+    const centroidsRef = useRef<Map<string, { x: number; y: number }>>(
+        new Map(),
+    );
     /** Timer handle for the delayed popover close. */
     const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     /** Whether the mouse is currently inside the popover dropdown. */
     const dropdownHoveredRef = useRef(false);
     const [popoverOpen, setPopoverOpen] = useState(false);
-    const [popoverPos, setPopoverPos] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
+    const [popoverPos, setPopoverPos] = useState<{ x: number; y: number }>({
+        x: 0,
+        y: 0,
+    });
     const [hoveredCountry, setHoveredCountry] = useState<string | null>(null);
 
     /**
@@ -211,7 +216,10 @@ export const PlayerCountryMap = ({
                 topology.objects.countries as GeometryCollection,
             );
 
-            type CountryFeature = GeoJSON.Feature<GeoJSON.Geometry, CountryProperties>;
+            type CountryFeature = GeoJSON.Feature<
+                GeoJSON.Geometry,
+                CountryProperties
+            >;
             const features = geojson.features as CountryFeature[];
 
             /* Pre-compute projected centroids for highlighted countries so
@@ -233,9 +241,9 @@ export const PlayerCountryMap = ({
                 .attr('d', path)
                 .attr('fill', (d) => {
                     const name = (d.properties?.name ?? '').toLowerCase();
-                    return supportedNames.has(name) ?
-                        HIGHLIGHT_FILL :
-                        DEFAULT_FILL;
+                    return supportedNames.has(name)
+                        ? HIGHLIGHT_FILL
+                        : DEFAULT_FILL;
                 })
                 .attr('stroke', STROKE_COLOUR)
                 .attr('stroke-width', STROKE_WIDTH)
@@ -251,15 +259,18 @@ export const PlayerCountryMap = ({
 
             return undefined;
         });
-    }, [countries, width, height, supportersByAtlasName, handleMouseEnter, handleMouseLeave]);
+    }, [
+        countries,
+        width,
+        height,
+        supportersByAtlasName,
+        handleMouseEnter,
+        handleMouseLeave,
+    ]);
 
     return (
         <Box pos="relative" data-testid="player-country-map">
-            <svg
-                ref={svgRef}
-                width={width}
-                height={height}
-            />
+            <svg ref={svgRef} width={width} height={height} />
             <Popover
                 opened={popoverOpen}
                 position="bottom"
@@ -293,7 +304,9 @@ export const PlayerCountryMap = ({
                         <Stack gap="xs">
                             {hoveredGroups.map(([countryName, supporters]) => (
                                 <Stack key={countryName} gap={4}>
-                                    <Text size="xs" fw={700}>{countryName}</Text>
+                                    <Text size="xs" fw={700}>
+                                        {countryName}
+                                    </Text>
                                     {supporters.map((s) => (
                                         <Anchor
                                             key={s.playerId}
@@ -303,13 +316,17 @@ export const PlayerCountryMap = ({
                                             <Group gap="xs" wrap="nowrap">
                                                 <Image
                                                     src={`/api/footy/player/${s.playerId}/mugshot`}
-                                                    alt={s.player.name ?? `Player ${s.playerId}`}
+                                                    alt={
+                                                        s.player.name ??
+                                                        `Player ${s.playerId}`
+                                                    }
                                                     w={MUGSHOT_SIZE}
                                                     h={MUGSHOT_SIZE}
                                                     radius="xl"
                                                 />
                                                 <Text size="sm">
-                                                    {s.player.name ?? `Player ${s.playerId}`}
+                                                    {s.player.name ??
+                                                        `Player ${s.playerId}`}
                                                 </Text>
                                             </Group>
                                         </Anchor>

@@ -1,10 +1,6 @@
 'use client';
 
-import {
-    Flex,
-    MantineBreakpoint,
-    Tooltip,
-} from '@mantine/core';
+import { Flex, MantineBreakpoint, Tooltip } from '@mantine/core';
 import { IconHandStop } from '@tabler/icons-react';
 
 export interface Props {

@@ -10,7 +10,13 @@ import type { SubmitPickerInput } from '@/types/actions/SubmitPicker';
 
 interface SubmitPickerDeps {
     gameDayService: Pick<typeof gameDayService, 'getCurrent'>;
-    outcomeService: Pick<typeof outcomeService, 'getAdminByGameDay' | 'getPlayerGamesPlayedBeforeGameDay' | 'getRecentAverage' | 'upsert'>;
+    outcomeService: Pick<
+        typeof outcomeService,
+        | 'getAdminByGameDay'
+        | 'getPlayerGamesPlayedBeforeGameDay'
+        | 'getRecentAverage'
+        | 'upsert'
+    >;
     sendEmailToAllActivePlayers: SendEmailToAllActivePlayersProxy;
     getPublicBaseUrl: () => string;
 }
@@ -69,7 +75,10 @@ const compareNumber = (a: number, b: number, epsilon = 1e-9) => {
  *          number if a comes after b. Null values are always sorted before
  *          non-null values.
  */
-const compareNullableNumberNullsFirst = (a: number | null, b: number | null) => {
+const compareNullableNumberNullsFirst = (
+    a: number | null,
+    b: number | null,
+) => {
     if (a === null && b === null) return 0;
     if (a === null) return -1;
     if (b === null) return 1;
@@ -110,7 +119,12 @@ const sum = (values: number[]) => values.reduce((acc, value) => acc + value, 0);
 const combForeach = <T>(
     k: number,
     items: T[],
-    callback: (included: T[], excluded: T[], includedIndexes: number[], includedMask: bigint) => void,
+    callback: (
+        included: T[],
+        excluded: T[],
+        includedIndexes: number[],
+        includedMask: bigint,
+    ) => void,
     mirror = true,
 ) => {
     const n = items.length;
@@ -185,12 +199,16 @@ const calculateDiffs = (
     teamB: PickerCandidate[],
     unknownAgeValue: number,
 ): TeamDiffs => {
-    const teamAGoalies = sum(teamA.map((player) => player.goalie ? 1 : 0));
-    const teamBGoalies = sum(teamB.map((player) => player.goalie ? 1 : 0));
+    const teamAGoalies = sum(teamA.map((player) => (player.goalie ? 1 : 0)));
+    const teamBGoalies = sum(teamB.map((player) => (player.goalie ? 1 : 0)));
     const teamAAverage = sum(teamA.map((player) => player.average));
     const teamBAverage = sum(teamB.map((player) => player.average));
-    const teamAUnknownAge = sum(teamA.map((player) => player.age === null ? 1 : 0));
-    const teamBUnknownAge = sum(teamB.map((player) => player.age === null ? 1 : 0));
+    const teamAUnknownAge = sum(
+        teamA.map((player) => (player.age === null ? 1 : 0)),
+    );
+    const teamBUnknownAge = sum(
+        teamB.map((player) => (player.age === null ? 1 : 0)),
+    );
     const teamAAge = sum(teamA.map((player) => player.age ?? unknownAgeValue));
     const teamBAge = sum(teamB.map((player) => player.age ?? unknownAgeValue));
 
@@ -209,7 +227,10 @@ const compareDiffs = (left: TeamDiffs, right: TeamDiffs) => {
     const comparisons = [
         compareNumber(Math.abs(left.diffGoalies), Math.abs(right.diffGoalies)),
         compareNumber(Math.abs(left.diffAverage), Math.abs(right.diffAverage)),
-        compareNumber(Math.abs(left.diffUnknownAge), Math.abs(right.diffUnknownAge)),
+        compareNumber(
+            Math.abs(left.diffUnknownAge),
+            Math.abs(right.diffUnknownAge),
+        ),
         compareNumber(Math.abs(left.diffAge), Math.abs(right.diffAge)),
     ];
 
@@ -245,16 +266,17 @@ const compareDiffs = (left: TeamDiffs, right: TeamDiffs) => {
 const findBestSplit = (players: PickerCandidate[]): TeamSplit => {
     /* v8 ignore next -- upstream selection always passes even-sized arrays >= 2 */
     if (players.length < 2 || players.length % 2 !== 0) {
-        throw new ValidationError('Cannot split teams: expected an even number of at least two players.');
+        throw new ValidationError(
+            'Cannot split teams: expected an even number of at least two players.',
+        );
     }
 
     const teamSize = players.length / 2;
     const knownAges = players
         .map((player) => player.age)
         .filter((age): age is number => age !== null);
-    const averageKnownAge = knownAges.length > 0 ?
-        sum(knownAges) / knownAges.length :
-        0;
+    const averageKnownAge =
+        knownAges.length > 0 ? sum(knownAges) / knownAges.length : 0;
 
     let bestSplit: TeamSplit | null = null;
     let bestSplitMask: bigint | null = null;
@@ -268,7 +290,12 @@ const findBestSplit = (players: PickerCandidate[]): TeamSplit => {
         }
 
         const diffComparison = compareDiffs(diffs, bestSplit.diffs);
-        if (diffComparison < 0 || (diffComparison === 0 && bestSplitMask !== null && teamAMask < bestSplitMask)) {
+        if (
+            diffComparison < 0 ||
+            (diffComparison === 0 &&
+                bestSplitMask !== null &&
+                teamAMask < bestSplitMask)
+        ) {
             bestSplit = { teamA, teamB, diffs };
             bestSplitMask = teamAMask;
         }
@@ -299,15 +326,21 @@ const findBestSplit = (players: PickerCandidate[]): TeamSplit => {
  */
 const selectMiddleOutfieldPlayer = (players: PickerCandidate[]) => {
     if (players.length % 2 === 0) {
-        return { playersForSplit: players, middlePlayer: null as PickerCandidate | null };
+        return {
+            playersForSplit: players,
+            middlePlayer: null as PickerCandidate | null,
+        };
     }
 
-    let middle = Math.floor(players.filter((player) => !player.goalie).length / 2);
-    const orderedPlayers = [...players].sort((left, right) =>
-        compareNumber(left.goalie ? 1 : 0, right.goalie ? 1 : 0) ||
-        compareNumber(left.average, right.average) ||
-        compareNullableNumberNullsFirst(left.age, right.age) ||
-        (left.playerId - right.playerId),
+    let middle = Math.floor(
+        players.filter((player) => !player.goalie).length / 2,
+    );
+    const orderedPlayers = [...players].sort(
+        (left, right) =>
+            compareNumber(left.goalie ? 1 : 0, right.goalie ? 1 : 0) ||
+            compareNumber(left.average, right.average) ||
+            compareNullableNumberNullsFirst(left.age, right.age) ||
+            left.playerId - right.playerId,
     );
     let middlePlayer: PickerCandidate | null = null;
     const playersForSplit: PickerCandidate[] = [];
@@ -324,7 +357,9 @@ const selectMiddleOutfieldPlayer = (players: PickerCandidate[]) => {
 
     /* v8 ignore next -- odd-sized iteration always selects exactly one middle player */
     if (!middlePlayer) {
-        throw new InternalError('Unable to select middle player for odd-sized picker list.');
+        throw new InternalError(
+            'Unable to select middle player for odd-sized picker list.',
+        );
     }
 
     return { playersForSplit, middlePlayer };
@@ -357,11 +392,15 @@ const buildTeamEmail = ({
     baseUrl: string;
 }) => {
     const gameUrl = `${baseUrl}/footy/game/${gameDayId}`;
-    const formatPlayerLinks = (players: PickerCandidate[]) => players
-        .slice()
-        .sort((left, right) => left.name.localeCompare(right.name))
-        .map((player) => `<a href="${baseUrl}/footy/player/${player.playerId}">${player.name}</a>`)
-        .join('<br />\n');
+    const formatPlayerLinks = (players: PickerCandidate[]) =>
+        players
+            .slice()
+            .sort((left, right) => left.name.localeCompare(right.name))
+            .map(
+                (player) =>
+                    `<a href="${baseUrl}/footy/player/${player.playerId}">${player.name}</a>`,
+            )
+            .join('<br />\n');
 
     return [
         '<div>',
@@ -406,54 +445,75 @@ export async function SubmitPickerCore(
     data: SubmitPickerInput,
     deps: SubmitPickerDeps = defaultDeps,
 ): Promise<void> {
-    const selectedPlayerIds = Array.from(new Set(data.map((item) => item.playerId)));
+    const selectedPlayerIds = Array.from(
+        new Set(data.map((item) => item.playerId)),
+    );
     if (selectedPlayerIds.length < 2) {
-        throw new ValidationError('At least two players are required to pick teams.');
+        throw new ValidationError(
+            'At least two players are required to pick teams.',
+        );
     }
 
     const gameDay = await deps.gameDayService.getCurrent();
     if (!gameDay) {
-        throw new NotFoundError('No current game day available for picking teams.');
+        throw new NotFoundError(
+            'No current game day available for picking teams.',
+        );
     }
 
     const history = gameDay.pickerGamesHistory ?? 10;
     const outcomes = await deps.outcomeService.getAdminByGameDay(gameDay.id);
 
     // Legacy `game_reset_teams`: clear teams for the whole game before re-picking.
-    await Promise.all(outcomes
-        .filter((outcome) => outcome.id > 0)
-        .map((outcome) =>
-            deps.outcomeService.upsert({
-                gameDayId: gameDay.id,
-                playerId: outcome.playerId,
-                team: null,
-            })));
+    await Promise.all(
+        outcomes
+            .filter((outcome) => outcome.id > 0)
+            .map((outcome) =>
+                deps.outcomeService.upsert({
+                    gameDayId: gameDay.id,
+                    playerId: outcome.playerId,
+                    team: null,
+                }),
+            ),
+    );
 
     const selectedOutcomes = selectedPlayerIds.map((playerId) => {
         const row = outcomes.find((outcome) => outcome.playerId === playerId);
         if (!row) {
-            throw new ValidationError(`Selected player ${playerId} is not available for this game day.`);
+            throw new ValidationError(
+                `Selected player ${playerId} is not available for this game day.`,
+            );
         }
         if (row.response !== 'Yes') {
-            throw new ValidationError(`Selected player ${playerId} does not have a 'Yes' response.`);
+            throw new ValidationError(
+                `Selected player ${playerId} does not have a 'Yes' response.`,
+            );
         }
         return row;
     });
 
-    const candidates = await Promise.all(selectedOutcomes.map(async (row) => {
-        const average = await deps.outcomeService.getRecentAverage(gameDay.id, row.playerId, history);
-        const born = row.player.born ?? null;
-        const age = (born !== null && born < 1995) ? gameDay.year - born : null;
-        return {
-            playerId: row.playerId,
-            name: row.player.name ?? `Player ${row.playerId}`,
-            goalie: row.goalie === true,
-            average,
-            age,
-        } satisfies PickerCandidate;
-    }));
+    const candidates = await Promise.all(
+        selectedOutcomes.map(async (row) => {
+            const average = await deps.outcomeService.getRecentAverage(
+                gameDay.id,
+                row.playerId,
+                history,
+            );
+            const born = row.player.born ?? null;
+            const age =
+                born !== null && born < 1995 ? gameDay.year - born : null;
+            return {
+                playerId: row.playerId,
+                name: row.player.name ?? `Player ${row.playerId}`,
+                goalie: row.goalie === true,
+                average,
+                age,
+            } satisfies PickerCandidate;
+        }),
+    );
 
-    const { playersForSplit, middlePlayer } = selectMiddleOutfieldPlayer(candidates);
+    const { playersForSplit, middlePlayer } =
+        selectMiddleOutfieldPlayer(candidates);
     const split = findBestSplit(playersForSplit);
     let teamA = [...split.teamA];
     let teamB = [...split.teamB];
@@ -483,7 +543,8 @@ export async function SubmitPickerCore(
                 gameDayId: gameDay.id,
                 playerId,
                 team,
-            })),
+            }),
+        ),
     );
 
     const baseUrl = deps.getPublicBaseUrl();

@@ -2,7 +2,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { ExternalServiceError, InternalError } from '@/lib/errors';
 
-const { captureUnexpectedErrorMock, createTransportMock, getSecretsMock, sanitizeHtmlMock, sendMailMock, sendViaGraphApiMock } = vi.hoisted(() => ({
+const {
+    captureUnexpectedErrorMock,
+    createTransportMock,
+    getSecretsMock,
+    sanitizeHtmlMock,
+    sendMailMock,
+    sendViaGraphApiMock,
+} = vi.hoisted(() => ({
     captureUnexpectedErrorMock: vi.fn(),
     createTransportMock: vi.fn(),
     getSecretsMock: vi.fn(),
@@ -48,7 +55,9 @@ describe('sendEmailCore', () => {
             MAIL_GRAPH_CLIENT_ID: 'client-123',
             MAIL_GRAPH_CLIENT_SECRET: 'secret-123',
         });
-        sanitizeHtmlMock.mockImplementation((value: string) => `sanitized:${value}`);
+        sanitizeHtmlMock.mockImplementation(
+            (value: string) => `sanitized:${value}`,
+        );
         sendMailMock.mockResolvedValue(undefined);
         sendViaGraphApiMock.mockResolvedValue(undefined);
         createTransportMock.mockReturnValue({
@@ -68,7 +77,9 @@ describe('sendEmailCore', () => {
             port: 1025,
             secure: false,
         });
-        expect(sanitizeHtmlMock).toHaveBeenCalledWith('<script>bad()</script><p>Hello</p>');
+        expect(sanitizeHtmlMock).toHaveBeenCalledWith(
+            '<script>bad()</script><p>Hello</p>',
+        );
         expect(sendMailMock).toHaveBeenCalledWith({
             to: 'player@example.com',
             subject: 'Subject',
@@ -140,7 +151,9 @@ describe('sendEmailCore', () => {
         vi.stubEnv('NODE_ENV', 'production');
         vi.stubEnv('CI', '');
         sendViaGraphApiMock.mockRejectedValue(
-            new ExternalServiceError('Graph API sendMail failed (403): Forbidden'),
+            new ExternalServiceError(
+                'Graph API sendMail failed (403): Forbidden',
+            ),
         );
 
         await expect(
@@ -271,12 +284,22 @@ describe('sendEmailCore', () => {
             });
 
             await expect(
-                sendEmailCore({ to: 'player@example.com', subject: 'Test', html: '<p>Hi</p>' }),
+                sendEmailCore({
+                    to: 'player@example.com',
+                    subject: 'Test',
+                    html: '<p>Hi</p>',
+                }),
             ).rejects.toBeInstanceOf(InternalError);
 
             await expect(
-                sendEmailCore({ to: 'player@example.com', subject: 'Test', html: '<p>Hi</p>' }),
-            ).rejects.toThrow('Missing required secret for Graph API email: AZURE_TENANT_ID.');
+                sendEmailCore({
+                    to: 'player@example.com',
+                    subject: 'Test',
+                    html: '<p>Hi</p>',
+                }),
+            ).rejects.toThrow(
+                'Missing required secret for Graph API email: AZURE_TENANT_ID.',
+            );
         });
 
         it('throws InternalError when MAIL_GRAPH_CLIENT_ID is empty string', async () => {
@@ -289,12 +312,22 @@ describe('sendEmailCore', () => {
             });
 
             await expect(
-                sendEmailCore({ to: 'player@example.com', subject: 'Test', html: '<p>Hi</p>' }),
+                sendEmailCore({
+                    to: 'player@example.com',
+                    subject: 'Test',
+                    html: '<p>Hi</p>',
+                }),
             ).rejects.toBeInstanceOf(InternalError);
 
             await expect(
-                sendEmailCore({ to: 'player@example.com', subject: 'Test', html: '<p>Hi</p>' }),
-            ).rejects.toThrow('Missing required secret for Graph API email: MAIL_GRAPH_CLIENT_ID.');
+                sendEmailCore({
+                    to: 'player@example.com',
+                    subject: 'Test',
+                    html: '<p>Hi</p>',
+                }),
+            ).rejects.toThrow(
+                'Missing required secret for Graph API email: MAIL_GRAPH_CLIENT_ID.',
+            );
         });
 
         it('throws InternalError when MAIL_GRAPH_CLIENT_SECRET is undefined', async () => {
@@ -307,12 +340,22 @@ describe('sendEmailCore', () => {
             });
 
             await expect(
-                sendEmailCore({ to: 'player@example.com', subject: 'Test', html: '<p>Hi</p>' }),
+                sendEmailCore({
+                    to: 'player@example.com',
+                    subject: 'Test',
+                    html: '<p>Hi</p>',
+                }),
             ).rejects.toBeInstanceOf(InternalError);
 
             await expect(
-                sendEmailCore({ to: 'player@example.com', subject: 'Test', html: '<p>Hi</p>' }),
-            ).rejects.toThrow('Missing required secret for Graph API email: MAIL_GRAPH_CLIENT_SECRET.');
+                sendEmailCore({
+                    to: 'player@example.com',
+                    subject: 'Test',
+                    html: '<p>Hi</p>',
+                }),
+            ).rejects.toThrow(
+                'Missing required secret for Graph API email: MAIL_GRAPH_CLIENT_SECRET.',
+            );
         });
 
         it('passes valid secrets through to Graph API', async () => {

@@ -1,12 +1,7 @@
 'use client';
 
-import {
-    Badge,
-    Box,
-} from '@mantine/core';
-import {
-    useElementSize,
-} from '@mantine/hooks';
+import { Badge, Box } from '@mantine/core';
+import { useElementSize } from '@mantine/hooks';
 import { CSSProperties, ReactNode } from 'react';
 
 /**
@@ -34,7 +29,10 @@ interface DebugSizeOverlayProps {
     style?: CSSProperties;
 }
 
-const positionStyles: Record<NonNullable<DebugSizeOverlayProps['position']>, CSSProperties> = {
+const positionStyles: Record<
+    NonNullable<DebugSizeOverlayProps['position']>,
+    CSSProperties
+> = {
     'top-left': { top: 4, left: 4 },
     'top-right': { top: 4, right: 4 },
     'bottom-left': { bottom: 4, left: 4 },
@@ -66,7 +64,8 @@ export function DebugSizeOverlay({
                     ...positionStyles[position],
                 }}
             >
-                {Math.round(width)}px × {Math.round(height)}px ({widthRem}rem × {heightRem}rem)
+                {Math.round(width)}px × {Math.round(height)}px ({widthRem}rem ×{' '}
+                {heightRem}rem)
             </Badge>
             {children}
         </Box>

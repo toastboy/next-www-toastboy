@@ -37,7 +37,9 @@ describe('EmailInput', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByPlaceholderText('Enter your email')).toBeInTheDocument();
+        expect(
+            screen.getByPlaceholderText('Enter your email'),
+        ).toBeInTheDocument();
     });
 
     it('accepts user input', async () => {
@@ -97,7 +99,9 @@ describe('EmailInput', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByText('Enter your email address')).toBeInTheDocument();
+        expect(
+            screen.getByText('Enter your email address'),
+        ).toBeInTheDocument();
         expect(screen.getByRole('textbox')).toBeInTheDocument();
     });
 

@@ -1,13 +1,14 @@
-import type { PlayerDataDisplayType, PlayerDataEmailDisplayType } from '@/types';
+import type {
+    PlayerDataDisplayType,
+    PlayerDataEmailDisplayType,
+} from '@/types';
 
 import { defaultPlayer } from './player';
 
 export const defaultPlayerData = {
     ...defaultPlayer,
     accountEmail: 'gary.login@example.com',
-    extraEmails: [
-        { email: 'gary.player@example.com', verified: true },
-    ],
+    extraEmails: [{ email: 'gary.player@example.com', verified: true }],
     firstResponded: 1,
     lastResponded: 100,
     firstPlayed: 5,
@@ -25,7 +26,9 @@ export const defaultPlayerEmailData: PlayerDataEmailDisplayType = {
     extraEmails: [{ email: 'gary.player@example.com', verified: true }],
 };
 
-export const createMockPlayerData = (overrides: Partial<PlayerDataDisplayType> = {}): PlayerDataDisplayType => {
+export const createMockPlayerData = (
+    overrides: Partial<PlayerDataDisplayType> = {},
+): PlayerDataDisplayType => {
     const playerData: PlayerDataDisplayType = {
         ...defaultPlayerData,
         ...overrides,
@@ -34,9 +37,11 @@ export const createMockPlayerData = (overrides: Partial<PlayerDataDisplayType> =
     return playerData;
 };
 
-export const defaultPlayerDataList: PlayerDataDisplayType[] = Array.from({ length: 100 }, (_, index) =>
-    createMockPlayerData({
-        id: index + 1,
-        finished: index % 2 === 0 ? new Date("2020-01-01") : null,
-    }),
+export const defaultPlayerDataList: PlayerDataDisplayType[] = Array.from(
+    { length: 100 },
+    (_, index) =>
+        createMockPlayerData({
+            id: index + 1,
+            finished: index % 2 === 0 ? new Date('2020-01-01') : null,
+        }),
 );

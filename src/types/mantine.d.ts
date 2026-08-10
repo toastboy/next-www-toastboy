@@ -1,6 +1,6 @@
 import type { CSSProperties } from 'react';
 
-export { };
+export {};
 
 declare module '@mantine/core' {
     export interface MantineThemeOther {

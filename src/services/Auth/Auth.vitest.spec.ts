@@ -1,12 +1,13 @@
 import type { Mock } from 'vitest';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { mockHeaders, mockGetSession, mockUpdateUser, mockChangeEmail } = vi.hoisted(() => ({
-    mockHeaders: vi.fn(),
-    mockGetSession: vi.fn(),
-    mockUpdateUser: vi.fn(),
-    mockChangeEmail: vi.fn(),
-}));
+const { mockHeaders, mockGetSession, mockUpdateUser, mockChangeEmail } =
+    vi.hoisted(() => ({
+        mockHeaders: vi.fn(),
+        mockGetSession: vi.fn(),
+        mockUpdateUser: vi.fn(),
+        mockChangeEmail: vi.fn(),
+    }));
 
 vi.mock('next/headers', () => ({
     headers: mockHeaders,
@@ -59,9 +60,13 @@ describe('AuthService', () => {
         });
 
         it('should rethrow errors from auth API', async () => {
-            (mockGetSession as Mock).mockRejectedValueOnce(new Error('session failed'));
+            (mockGetSession as Mock).mockRejectedValueOnce(
+                new Error('session failed'),
+            );
 
-            await expect(authService.getSessionUser()).rejects.toThrow('session failed');
+            await expect(authService.getSessionUser()).rejects.toThrow(
+                'session failed',
+            );
         });
     });
 
@@ -70,7 +75,9 @@ describe('AuthService', () => {
             const response = { ok: true };
             (mockUpdateUser as Mock).mockResolvedValueOnce(response);
 
-            await expect(authService.updateCurrentUser({ playerId: 9 })).resolves.toEqual(response);
+            await expect(
+                authService.updateCurrentUser({ playerId: 9 }),
+            ).resolves.toEqual(response);
             expect(mockUpdateUser).toHaveBeenCalledTimes(1);
             expect((mockUpdateUser as Mock).mock.calls[0][0]).toMatchObject({
                 body: {
@@ -80,9 +87,13 @@ describe('AuthService', () => {
         });
 
         it('should rethrow errors from updateUser', async () => {
-            (mockUpdateUser as Mock).mockRejectedValueOnce(new Error('update failed'));
+            (mockUpdateUser as Mock).mockRejectedValueOnce(
+                new Error('update failed'),
+            );
 
-            await expect(authService.updateCurrentUser({ playerId: 9 })).rejects.toThrow('update failed');
+            await expect(
+                authService.updateCurrentUser({ playerId: 9 }),
+            ).rejects.toThrow('update failed');
         });
     });
 
@@ -91,10 +102,12 @@ describe('AuthService', () => {
             const response = { status: true };
             (mockChangeEmail as Mock).mockResolvedValueOnce(response);
 
-            await expect(authService.changeCurrentUserEmail({
-                newEmail: 'new@example.com',
-                callbackURL: '/footy/profile',
-            })).resolves.toEqual(response);
+            await expect(
+                authService.changeCurrentUserEmail({
+                    newEmail: 'new@example.com',
+                    callbackURL: '/footy/profile',
+                }),
+            ).resolves.toEqual(response);
 
             expect(mockChangeEmail).toHaveBeenCalledTimes(1);
             expect((mockChangeEmail as Mock).mock.calls[0][0]).toMatchObject({
@@ -106,11 +119,15 @@ describe('AuthService', () => {
         });
 
         it('should rethrow errors from changeEmail', async () => {
-            (mockChangeEmail as Mock).mockRejectedValueOnce(new Error('change email failed'));
+            (mockChangeEmail as Mock).mockRejectedValueOnce(
+                new Error('change email failed'),
+            );
 
-            await expect(authService.changeCurrentUserEmail({
-                newEmail: 'new@example.com',
-            })).rejects.toThrow('change email failed');
+            await expect(
+                authService.changeCurrentUserEmail({
+                    newEmail: 'new@example.com',
+                }),
+            ).rejects.toThrow('change email failed');
         });
     });
 });

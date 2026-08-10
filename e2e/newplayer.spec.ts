@@ -25,7 +25,9 @@ test.describe('New Player admin page', () => {
         await mustBeLoggedInAsAdmin(page);
     });
 
-    test('allows access to admin users and shows newplayer admin interface', async ({ page }) => {
+    test('allows access to admin users and shows newplayer admin interface', async ({
+        page,
+    }) => {
         await asAdmin(page, '/footy/newplayer');
 
         // TODO: Add checks for the newplayer admin interface elements

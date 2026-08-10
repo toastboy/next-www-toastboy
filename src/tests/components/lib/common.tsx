@@ -1,6 +1,4 @@
-import {
-    MantineProvider,
-} from '@mantine/core';
+import { MantineProvider } from '@mantine/core';
 import { screen } from '@testing-library/react';
 import { ReactNode } from 'react';
 
@@ -35,7 +33,11 @@ const testColorSchemeManager = {
  */
 export const Wrapper = ({ children }: WrapperProps) => {
     return (
-        <MantineProvider theme={theme} colorSchemeManager={testColorSchemeManager} defaultColorScheme="light">
+        <MantineProvider
+            theme={theme}
+            colorSchemeManager={testColorSchemeManager}
+            defaultColorScheme="light"
+        >
             {children}
         </MantineProvider>
     );
@@ -65,7 +67,10 @@ export const extractMockProps = <T,>(id: string) => {
     const mockElements = screen.getAllByText(new RegExp(`^${id}:`));
     const result: T[] = [];
     for (const element of mockElements) {
-        const json = element.textContent?.replace(new RegExp(`^${id}:\\s*`), '');
+        const json = element.textContent?.replace(
+            new RegExp(`^${id}:\\s*`),
+            '',
+        );
         expect(typeof json).toBe('string');
         expect(json.trim()).not.toBe('');
         result.push(JSON.parse(json) as T);

@@ -47,14 +47,12 @@ describe('sendEmailToAllActivePlayersCore', () => {
         );
 
         expect(sendEmail).toHaveBeenCalledTimes(1);
-        expect(sendEmail).toHaveBeenCalledWith(
-            {
-                bcc: "freeman@example.com,one@example.com",
-                cc: 'captain@example.com',
-                subject: 'Game Cancelled',
-                html: '<p>No game this week</p>',
-            },
-        );
+        expect(sendEmail).toHaveBeenCalledWith({
+            bcc: 'freeman@example.com,one@example.com',
+            cc: 'captain@example.com',
+            subject: 'Game Cancelled',
+            html: '<p>No game this week</p>',
+        });
         expect(result).toEqual({ recipientCount: 2 });
     });
 

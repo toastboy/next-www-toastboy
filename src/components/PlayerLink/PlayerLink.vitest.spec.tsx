@@ -15,7 +15,10 @@ describe('PlayerLink', () => {
             );
 
             const link = screen.getByRole('link', { name: defaultPlayer.name });
-            expect(link).toHaveAttribute('href', `/footy/player/${defaultPlayer.id}/2024`);
+            expect(link).toHaveAttribute(
+                'href',
+                `/footy/player/${defaultPlayer.id}/2024`,
+            );
         });
 
         it('renders link without year when year is 0', () => {
@@ -26,7 +29,10 @@ describe('PlayerLink', () => {
             );
 
             const link = screen.getByRole('link', { name: defaultPlayer.name });
-            expect(link).toHaveAttribute('href', `/footy/player/${defaultPlayer.id}`);
+            expect(link).toHaveAttribute(
+                'href',
+                `/footy/player/${defaultPlayer.id}`,
+            );
         });
 
         it('uses the single-line min-width by default', () => {
@@ -36,8 +42,12 @@ describe('PlayerLink', () => {
                 </Wrapper>,
             );
 
-            const link = screen.getByRole<HTMLAnchorElement>('link', { name: defaultPlayer.name });
-            expect(link.style.minWidth).toBe(theme.other?.playerNameMinWidthSingleLine);
+            const link = screen.getByRole<HTMLAnchorElement>('link', {
+                name: defaultPlayer.name,
+            });
+            expect(link.style.minWidth).toBe(
+                theme.other?.playerNameMinWidthSingleLine,
+            );
         });
 
         it('uses the multi-line min-width when wrap is enabled', () => {
@@ -47,9 +57,16 @@ describe('PlayerLink', () => {
                 </Wrapper>,
             );
 
-            const link = screen.getByRole<HTMLAnchorElement>('link', { name: defaultPlayer.name });
-            expect(link).toHaveAttribute('href', `/footy/player/${defaultPlayer.id}/2024`);
-            expect(link.style.minWidth).toBe(theme.other?.playerNameMinWidthMultiLine);
+            const link = screen.getByRole<HTMLAnchorElement>('link', {
+                name: defaultPlayer.name,
+            });
+            expect(link).toHaveAttribute(
+                'href',
+                `/footy/player/${defaultPlayer.id}/2024`,
+            );
+            expect(link.style.minWidth).toBe(
+                theme.other?.playerNameMinWidthMultiLine,
+            );
         });
     });
 
@@ -57,27 +74,44 @@ describe('PlayerLink', () => {
         it('renders a labelled icon link to the player page', () => {
             render(
                 <Wrapper>
-                    <PlayerLink player={defaultPlayer} year={2024} format="left-arrow" />
+                    <PlayerLink
+                        player={defaultPlayer}
+                        year={2024}
+                        format="left-arrow"
+                    />
                 </Wrapper>,
             );
 
             const link = screen.getByRole('link', {
                 name: `Previous player: ${defaultPlayer.name}`,
             });
-            expect(link).toHaveAttribute('href', `/footy/player/${defaultPlayer.id}/2024`);
+            expect(link).toHaveAttribute(
+                'href',
+                `/footy/player/${defaultPlayer.id}/2024`,
+            );
         });
 
         it('shows a tooltip with the player name on hover', async () => {
             render(
                 <Wrapper>
-                    <PlayerLink player={defaultPlayer} year={2024} format="left-arrow" />
+                    <PlayerLink
+                        player={defaultPlayer}
+                        year={2024}
+                        format="left-arrow"
+                    />
                 </Wrapper>,
             );
 
-            fireEvent.mouseEnter(screen.getByRole('link', { name: `Previous player: ${defaultPlayer.name}` }));
+            fireEvent.mouseEnter(
+                screen.getByRole('link', {
+                    name: `Previous player: ${defaultPlayer.name}`,
+                }),
+            );
 
             await waitFor(() => {
-                expect(screen.getByRole('tooltip')).toHaveTextContent(defaultPlayer.name);
+                expect(screen.getByRole('tooltip')).toHaveTextContent(
+                    defaultPlayer.name,
+                );
             });
         });
     });
@@ -86,58 +120,100 @@ describe('PlayerLink', () => {
         it('renders a labelled icon link to the player page', () => {
             render(
                 <Wrapper>
-                    <PlayerLink player={defaultPlayer} year={2024} format="right-arrow" />
+                    <PlayerLink
+                        player={defaultPlayer}
+                        year={2024}
+                        format="right-arrow"
+                    />
                 </Wrapper>,
             );
 
-            const link = screen.getByRole('link', { name: `Next player: ${defaultPlayer.name}` });
-            expect(link).toHaveAttribute('href', `/footy/player/${defaultPlayer.id}/2024`);
+            const link = screen.getByRole('link', {
+                name: `Next player: ${defaultPlayer.name}`,
+            });
+            expect(link).toHaveAttribute(
+                'href',
+                `/footy/player/${defaultPlayer.id}/2024`,
+            );
         });
 
         it('shows a tooltip with the player name on hover', async () => {
             render(
                 <Wrapper>
-                    <PlayerLink player={defaultPlayer} year={2024} format="right-arrow" />
+                    <PlayerLink
+                        player={defaultPlayer}
+                        year={2024}
+                        format="right-arrow"
+                    />
                 </Wrapper>,
             );
 
-            fireEvent.mouseEnter(screen.getByRole('link', { name: `Next player: ${defaultPlayer.name}` }));
+            fireEvent.mouseEnter(
+                screen.getByRole('link', {
+                    name: `Next player: ${defaultPlayer.name}`,
+                }),
+            );
 
             await waitFor(() => {
-                expect(screen.getByRole('tooltip')).toHaveTextContent(defaultPlayer.name);
+                expect(screen.getByRole('tooltip')).toHaveTextContent(
+                    defaultPlayer.name,
+                );
             });
         });
     });
 
     describe('null player name fallback', () => {
         it('uses "Unknown" in the name-format aria-label when player name is null', () => {
-            const namelessPlayer = { ...defaultPlayer, name: null as unknown as string };
+            const namelessPlayer = {
+                ...defaultPlayer,
+                name: null as unknown as string,
+            };
             render(
                 <Wrapper>
                     <PlayerLink player={namelessPlayer} year={2024} />
                 </Wrapper>,
             );
-            expect(screen.getByRole('link', { name: 'Unknown' })).toBeInTheDocument();
+            expect(
+                screen.getByRole('link', { name: 'Unknown' }),
+            ).toBeInTheDocument();
         });
 
         it('uses "Unknown" in left-arrow aria-label when player name is null', () => {
-            const namelessPlayer = { ...defaultPlayer, name: null as unknown as string };
+            const namelessPlayer = {
+                ...defaultPlayer,
+                name: null as unknown as string,
+            };
             render(
                 <Wrapper>
-                    <PlayerLink player={namelessPlayer} year={2024} format="left-arrow" />
+                    <PlayerLink
+                        player={namelessPlayer}
+                        year={2024}
+                        format="left-arrow"
+                    />
                 </Wrapper>,
             );
-            expect(screen.getByRole('link', { name: 'Previous player: Unknown' })).toBeInTheDocument();
+            expect(
+                screen.getByRole('link', { name: 'Previous player: Unknown' }),
+            ).toBeInTheDocument();
         });
 
         it('uses "Unknown" in right-arrow aria-label when player name is null', () => {
-            const namelessPlayer = { ...defaultPlayer, name: null as unknown as string };
+            const namelessPlayer = {
+                ...defaultPlayer,
+                name: null as unknown as string,
+            };
             render(
                 <Wrapper>
-                    <PlayerLink player={namelessPlayer} year={2024} format="right-arrow" />
+                    <PlayerLink
+                        player={namelessPlayer}
+                        year={2024}
+                        format="right-arrow"
+                    />
                 </Wrapper>,
             );
-            expect(screen.getByRole('link', { name: 'Next player: Unknown' })).toBeInTheDocument();
+            expect(
+                screen.getByRole('link', { name: 'Next player: Unknown' }),
+            ).toBeInTheDocument();
         });
     });
 });

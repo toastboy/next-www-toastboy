@@ -24,7 +24,10 @@ describe('updateInvoiceGameDaysCore', () => {
     it('resolves immediately when the game day list is empty', async () => {
         const update = vi.fn().mockResolvedValue(undefined);
 
-        await updateInvoiceGameDaysCore({ gameDays: [] }, { gameDayService: { update } });
+        await updateInvoiceGameDaysCore(
+            { gameDays: [] },
+            { gameDayService: { update } },
+        );
 
         expect(update).not.toHaveBeenCalled();
     });

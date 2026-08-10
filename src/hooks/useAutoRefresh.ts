@@ -15,9 +15,9 @@ import type { FootyChannel } from '@/types/FootyChannel';
  */
 export function useAutoRefresh(channels: FootyChannel | FootyChannel[]): void {
     const router = useRouter();
-    const key = Array.isArray(channels) ?
-        [...channels].sort().join(',') :
-        channels;
+    const key = Array.isArray(channels)
+        ? [...channels].sort().join(',')
+        : channels;
 
     useEffect(() => {
         const list = key.split(',') as FootyChannel[];
@@ -33,12 +33,12 @@ export function useAutoRefresh(channels: FootyChannel | FootyChannel[]): void {
             }
         };
 
-        const sources = list.map(ch => {
+        const sources = list.map((ch) => {
             const es = new EventSource(`/api/events?channel=${ch}`);
             es.addEventListener('update', listener);
             return es;
         });
 
-        return () => sources.forEach(es => es.close());
+        return () => sources.forEach((es) => es.close());
     }, [key, router]);
 }

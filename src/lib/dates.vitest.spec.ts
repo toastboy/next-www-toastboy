@@ -44,17 +44,23 @@ describe('isWorkingDay', () => {
 
     describe('returns false for weekends', () => {
         it('Sunday (day 0)', () => {
-            expect(isWorkingDay(new Date('2025-01-05'), bankHolidays)).toBe(false);
+            expect(isWorkingDay(new Date('2025-01-05'), bankHolidays)).toBe(
+                false,
+            );
         });
 
         it('Saturday (day 6)', () => {
-            expect(isWorkingDay(new Date('2025-01-04'), bankHolidays)).toBe(false);
+            expect(isWorkingDay(new Date('2025-01-04'), bankHolidays)).toBe(
+                false,
+            );
         });
     });
 
     describe('returns false for bank holidays that fall on weekdays', () => {
-        it('New Year\'s Day 2025 (Wednesday)', () => {
-            expect(isWorkingDay(new Date('2025-01-01'), bankHolidays)).toBe(false);
+        it("New Year's Day 2025 (Wednesday)", () => {
+            expect(isWorkingDay(new Date('2025-01-01'), bankHolidays)).toBe(
+                false,
+            );
         });
     });
 
@@ -95,10 +101,13 @@ describe('getBankHolidays', () => {
     beforeEach(() => {
         vi.useFakeTimers();
         resetBankHolidaysCache();
-        vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
-            ok: true,
-            json: () => Promise.resolve(createBankHolidaysResponse([])),
-        }));
+        vi.stubGlobal(
+            'fetch',
+            vi.fn().mockResolvedValue({
+                ok: true,
+                json: () => Promise.resolve(createBankHolidaysResponse([])),
+            }),
+        );
     });
 
     afterEach(() => {

@@ -1,6 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { revalidatePathMock, broadcastMock, requireAdminMock, updatePlayerRecordsCoreMock } = vi.hoisted(() => ({
+const {
+    revalidatePathMock,
+    broadcastMock,
+    requireAdminMock,
+    updatePlayerRecordsCoreMock,
+} = vi.hoisted(() => ({
     revalidatePathMock: vi.fn(),
     broadcastMock: vi.fn(),
     requireAdminMock: vi.fn().mockResolvedValue(undefined),
@@ -18,7 +23,9 @@ import { updatePlayerRecords } from '@/actions/updatePlayerRecords';
 import { FootyChannel } from '@/types/FootyChannel';
 
 describe('updatePlayerRecords action wrapper', () => {
-    beforeEach(() => { vi.clearAllMocks(); });
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
 
     it('calls requireAdmin, delegates to core, revalidates the admin path, and broadcasts Players and Results channels', async () => {
         await updatePlayerRecords();
@@ -26,7 +33,10 @@ describe('updatePlayerRecords action wrapper', () => {
         expect(requireAdminMock).toHaveBeenCalledTimes(1);
         expect(updatePlayerRecordsCoreMock).toHaveBeenCalledTimes(1);
         expect(revalidatePathMock).toHaveBeenCalledWith('/footy/admin');
-        expect(broadcastMock).toHaveBeenCalledWith([FootyChannel.Players, FootyChannel.Results]);
+        expect(broadcastMock).toHaveBeenCalledWith([
+            FootyChannel.Players,
+            FootyChannel.Results,
+        ]);
     });
 
     it('propagates AuthError when requireAdmin throws without revalidating', async () => {

@@ -117,9 +117,9 @@ describe('computeTreeRadius', () => {
     const FLOOR = 200;
 
     it('returns the floor radius for a single-node (root-only) tree', () => {
-        expect(
-            computeTreeRadius([[0, [{ x: 0 }]]], 0, FLOOR, SIZE, GAP),
-        ).toBe(FLOOR);
+        expect(computeTreeRadius([[0, [{ x: 0 }]]], 0, FLOOR, SIZE, GAP)).toBe(
+            FLOOR,
+        );
     });
 
     it('returns the floor when maxDepth is 0 regardless of groups', () => {
@@ -154,7 +154,9 @@ describe('computeTreeRadius', () => {
             [0, [{ x: 0 }]],
             [1, [{ x: 0 }, { x: Math.PI }]],
         ];
-        expect(computeTreeRadius(groups, 1, -100, SIZE, GAP)).toBeGreaterThanOrEqual(0);
+        expect(
+            computeTreeRadius(groups, 1, -100, SIZE, GAP),
+        ).toBeGreaterThanOrEqual(0);
     });
 
     it('exceeds the floor when nodes are packed very tightly', () => {

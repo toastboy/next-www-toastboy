@@ -1,11 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { revalidatePathMock, broadcastMock, requireAdminMock, payDebtCoreMock } = vi.hoisted(() => ({
-    revalidatePathMock: vi.fn(),
-    broadcastMock: vi.fn(),
-    requireAdminMock: vi.fn().mockResolvedValue(undefined),
-    payDebtCoreMock: vi.fn(),
-}));
+const { revalidatePathMock, broadcastMock, requireAdminMock, payDebtCoreMock } =
+    vi.hoisted(() => ({
+        revalidatePathMock: vi.fn(),
+        broadcastMock: vi.fn(),
+        requireAdminMock: vi.fn().mockResolvedValue(undefined),
+        payDebtCoreMock: vi.fn(),
+    }));
 
 vi.mock('next/cache', () => ({ revalidatePath: revalidatePathMock }));
 vi.mock('@/lib/auth.server', () => ({ requireAdmin: requireAdminMock }));
@@ -24,7 +25,9 @@ const validInput = {
 };
 
 describe('payDebt action wrapper', () => {
-    beforeEach(() => { vi.clearAllMocks(); });
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
 
     it('calls requireAdmin, validates input, delegates to core, revalidates money and game paths, and broadcasts Money channel', async () => {
         await payDebt(validInput);
@@ -37,7 +40,12 @@ describe('payDebt action wrapper', () => {
     });
 
     it('returns the result from core', async () => {
-        const result = { playerId: 7, transactionIds: [1, 2], amount: 500, resultingBalance: 0 };
+        const result = {
+            playerId: 7,
+            transactionIds: [1, 2],
+            amount: 500,
+            resultingBalance: 0,
+        };
         payDebtCoreMock.mockResolvedValueOnce(result);
 
         const returned = await payDebt(validInput);
@@ -56,7 +64,9 @@ describe('payDebt action wrapper', () => {
     });
 
     it('propagates ZodError when input validation fails', async () => {
-        await expect(payDebt({ ...validInput, gameDayIds: [] })).rejects.toThrow();
+        await expect(
+            payDebt({ ...validInput, gameDayIds: [] }),
+        ).rejects.toThrow();
         expect(payDebtCoreMock).not.toHaveBeenCalled();
     });
 });

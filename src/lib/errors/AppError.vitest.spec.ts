@@ -48,15 +48,33 @@ describe('AppError types', () => {
 
         expect(error.code).toBe(APP_ERROR_CODE.Conflict);
         expect(error.expected).toBe(true);
-        expect(error.publicMessage).toBe('The request conflicts with existing data.');
+        expect(error.publicMessage).toBe(
+            'The request conflicts with existing data.',
+        );
     });
 
     it('applies custom public message overrides for domain-style errors', () => {
-        expect(new ValidationError('bad', { publicMessage: 'Custom validation' }).publicMessage).toBe('Custom validation');
-        expect(new NotFoundError('missing', { publicMessage: 'Custom not found' }).publicMessage).toBe('Custom not found');
-        expect(new AuthError('denied', { publicMessage: 'Custom auth' }).publicMessage).toBe('Custom auth');
-        expect(new ConflictError('conflict', { publicMessage: 'Custom conflict' }).publicMessage).toBe('Custom conflict');
-        expect(new ExternalServiceError('down', { publicMessage: 'Custom service' }).publicMessage).toBe('Custom service');
+        expect(
+            new ValidationError('bad', { publicMessage: 'Custom validation' })
+                .publicMessage,
+        ).toBe('Custom validation');
+        expect(
+            new NotFoundError('missing', { publicMessage: 'Custom not found' })
+                .publicMessage,
+        ).toBe('Custom not found');
+        expect(
+            new AuthError('denied', { publicMessage: 'Custom auth' })
+                .publicMessage,
+        ).toBe('Custom auth');
+        expect(
+            new ConflictError('conflict', { publicMessage: 'Custom conflict' })
+                .publicMessage,
+        ).toBe('Custom conflict');
+        expect(
+            new ExternalServiceError('down', {
+                publicMessage: 'Custom service',
+            }).publicMessage,
+        ).toBe('Custom service');
     });
 
     it('defaults expected and publicMessage when omitted from a raw AppError init', () => {
@@ -77,17 +95,27 @@ describe('error helpers', () => {
         expect(isExpectedError(new NotFoundError())).toBe(true);
         expect(isExpectedError(new InternalError())).toBe(false);
         expect(isExpectedError(new Error('plain error'))).toBe(false);
-        expect(isExpectedError(z.object({ name: z.string() }).safeParse({}).error)).toBe(true);
+        expect(
+            isExpectedError(z.object({ name: z.string() }).safeParse({}).error),
+        ).toBe(true);
     });
 
     it('returns the correct public message for different error types', () => {
-        expect(toPublicMessage(new AuthError())).toBe('You are not authorized to perform this action.');
-        expect(toPublicMessage(new InternalError())).toBe('Something went wrong.');
+        expect(toPublicMessage(new AuthError())).toBe(
+            'You are not authorized to perform this action.',
+        );
+        expect(toPublicMessage(new InternalError())).toBe(
+            'Something went wrong.',
+        );
 
-        const zodError = z.object({ id: z.number() }).safeParse({ id: 'wrong' }).error;
+        const zodError = z
+            .object({ id: z.number() })
+            .safeParse({ id: 'wrong' }).error;
         expect(toPublicMessage(zodError)).toBe('Invalid request.');
 
-        expect(toPublicMessage(new Error('raw error'), 'Fallback')).toBe('Fallback');
+        expect(toPublicMessage(new Error('raw error'), 'Fallback')).toBe(
+            'Fallback',
+        );
     });
 
     it('returns AppError instances unchanged during normalization', () => {

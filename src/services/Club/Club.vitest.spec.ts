@@ -4,8 +4,15 @@ import type { Mock } from 'vitest';
 import { vi } from 'vitest';
 
 import clubService from '@/services/Club';
-import { createMockClub, defaultClub, invalidClub } from '@/tests/mocks/data/club';
-import type { ClubCreateWriteInput, ClubUpsertInput } from '@/types/ClubStrictSchema';
+import {
+    createMockClub,
+    defaultClub,
+    invalidClub,
+} from '@/tests/mocks/data/club';
+import type {
+    ClubCreateWriteInput,
+    ClubUpsertInput,
+} from '@/types/ClubStrictSchema';
 
 describe('ClubService', () => {
     beforeEach(() => {
@@ -34,7 +41,10 @@ describe('ClubService', () => {
 
     describe('getAll', () => {
         it('should return all clubs', async () => {
-            const fixture = [defaultClub, createMockClub({ id: 2, soccerwayId: 1001 })];
+            const fixture = [
+                defaultClub,
+                createMockClub({ id: 2, soccerwayId: 1001 }),
+            ];
             (prisma.club.findMany as Mock).mockResolvedValueOnce(fixture);
             const result = await clubService.getAll();
             expect(prisma.club.findMany).toHaveBeenCalledWith({});
@@ -62,10 +72,12 @@ describe('ClubService', () => {
         });
 
         it('should refuse to create a club with invalid data', async () => {
-            await expect(clubService.create({
-                ...invalidClub,
-                clubName: 'x'.repeat(256),
-            })).rejects.toThrow();
+            await expect(
+                clubService.create({
+                    ...invalidClub,
+                    clubName: 'x'.repeat(256),
+                }),
+            ).rejects.toThrow();
         });
     });
 
@@ -93,8 +105,8 @@ describe('ClubService', () => {
             const updatedClub: ClubUpsertInput = {
                 id: 6,
                 soccerwayId: 1006,
-                clubName: "Doddington Rovers",
-                uri: "doddington-rovers",
+                clubName: 'Doddington Rovers',
+                uri: 'doddington-rovers',
                 country: defaultClub.country,
             };
             (prisma.club.upsert as Mock).mockResolvedValueOnce({
@@ -109,23 +121,27 @@ describe('ClubService', () => {
         });
 
         it('should refuse to create a club with invalid data where one with the id did not exist', async () => {
-            await expect(clubService.upsert({
-                id: -1,
-                soccerwayId: defaultClub.soccerwayId,
-                clubName: defaultClub.clubName,
-                uri: defaultClub.uri,
-                country: defaultClub.country,
-            })).rejects.toThrow();
+            await expect(
+                clubService.upsert({
+                    id: -1,
+                    soccerwayId: defaultClub.soccerwayId,
+                    clubName: defaultClub.clubName,
+                    uri: defaultClub.uri,
+                    country: defaultClub.country,
+                }),
+            ).rejects.toThrow();
         });
 
         it('should refuse to update a club with invalid data where one with the id already existed', async () => {
-            await expect(clubService.upsert({
-                id: 6,
-                soccerwayId: defaultClub.soccerwayId,
-                clubName: 'x'.repeat(256),
-                uri: defaultClub.uri,
-                country: defaultClub.country,
-            })).rejects.toThrow();
+            await expect(
+                clubService.upsert({
+                    id: 6,
+                    soccerwayId: defaultClub.soccerwayId,
+                    clubName: 'x'.repeat(256),
+                    uri: defaultClub.uri,
+                    country: defaultClub.country,
+                }),
+            ).rejects.toThrow();
         });
     });
 
@@ -160,13 +176,17 @@ describe('ClubService', () => {
                 Prisma.PrismaClientKnownRequestError.prototype,
             );
             (prisma.club.delete as Mock).mockRejectedValueOnce(constraintError);
-            await expect(clubService.delete(6)).rejects.toThrow('Foreign key constraint failed.');
+            await expect(clubService.delete(6)).rejects.toThrow(
+                'Foreign key constraint failed.',
+            );
         });
     });
 
     describe('deleteAll', () => {
         it('should delete all clubs', async () => {
-            (prisma.club.deleteMany as Mock).mockResolvedValueOnce({ count: 100 });
+            (prisma.club.deleteMany as Mock).mockResolvedValueOnce({
+                count: 100,
+            });
             await clubService.deleteAll();
             expect(prisma.club.deleteMany).toHaveBeenCalledTimes(1);
         });

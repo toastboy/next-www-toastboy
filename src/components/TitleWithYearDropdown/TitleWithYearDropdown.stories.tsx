@@ -25,6 +25,8 @@ export const Primary: Story = {
     play: async function ({ canvas }) {
         await userEvent.click(canvas.getByRole('button'));
         const body = within(document.body);
-        await waitFor(() => expect(body.getByRole('menuitem', { name: '2018' })).toBeVisible());
+        await waitFor(() =>
+            expect(body.getByRole('menuitem', { name: '2018' })).toBeVisible(),
+        );
     },
 };

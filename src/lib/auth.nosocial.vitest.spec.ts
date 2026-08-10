@@ -4,7 +4,9 @@ import { describe, expect, it, vi } from 'vitest';
 // This file is intentionally isolated from auth.vitest.spec.ts so that
 // betterAuth is called here with a fresh module registry and different secrets.
 
-const capturedConfigRef = vi.hoisted(() => ({ value: null as Record<string, unknown> | null }));
+const capturedConfigRef = vi.hoisted(() => ({
+    value: null as Record<string, unknown> | null,
+}));
 
 vi.hoisted(() => {
     // Ensure NODE_ENV=production so the cookies.secure branch is also covered.
@@ -66,19 +68,28 @@ import '@/lib/auth';
 describe('auth config — no social providers', () => {
     it('omits google when AUTH_GOOGLE_CLIENT_ID is absent', () => {
         const config = capturedConfigRef.value!;
-        const socialProviders = config.socialProviders as Record<string, unknown>;
+        const socialProviders = config.socialProviders as Record<
+            string,
+            unknown
+        >;
         expect(socialProviders.google).toBeUndefined();
     });
 
     it('omits microsoft when AUTH_MICROSOFT_CLIENT_ID is absent', () => {
         const config = capturedConfigRef.value!;
-        const socialProviders = config.socialProviders as Record<string, unknown>;
+        const socialProviders = config.socialProviders as Record<
+            string,
+            unknown
+        >;
         expect(socialProviders.microsoft).toBeUndefined();
     });
 
     it('sets secure cookie option to true in production', () => {
         const config = capturedConfigRef.value!;
-        const cookies = config.cookies as Record<string, Record<string, Record<string, unknown>>>;
+        const cookies = config.cookies as Record<
+            string,
+            Record<string, Record<string, unknown>>
+        >;
         expect(cookies.sessionToken.options.secure).toBe(true);
     });
 });

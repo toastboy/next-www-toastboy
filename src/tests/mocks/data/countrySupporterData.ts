@@ -8,15 +8,18 @@ export const defaultCountrySupporterData = {
     country: defaultCountry,
 } satisfies CountrySupporterDataType;
 
-export const createMockCountrySupporterData = (overrides: Partial<CountrySupporterDataType> = {}): CountrySupporterDataType => ({
+export const createMockCountrySupporterData = (
+    overrides: Partial<CountrySupporterDataType> = {},
+): CountrySupporterDataType => ({
     ...defaultCountrySupporterData,
     ...overrides,
 });
 
-export const defaultCountrySupporterDataList: CountrySupporterDataType[] = Array.from({ length: 2 }, (_, index) =>
-    createMockCountrySupporterData({
-        playerId: index % 10 + 1,
-        countryFIFACode: defaultCountryList[index].fifaCode,
-        country: defaultCountryList[index],
-    }),
-);
+export const defaultCountrySupporterDataList: CountrySupporterDataType[] =
+    Array.from({ length: 2 }, (_, index) =>
+        createMockCountrySupporterData({
+            playerId: (index % 10) + 1,
+            countryFIFACode: defaultCountryList[index].fifaCode,
+            country: defaultCountryList[index],
+        }),
+    );

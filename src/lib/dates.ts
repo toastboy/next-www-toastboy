@@ -12,7 +12,7 @@
  * `few`, `other`) for numeric values, which is useful when rendering suffixes
  * such as `st`, `nd`, `rd`, and `th`.
  */
-const rules = new Intl.PluralRules("en-GB", { type: "ordinal" });
+const rules = new Intl.PluralRules('en-GB', { type: 'ordinal' });
 
 /**
  * Maps plural rule categories to English ordinal suffixes.
@@ -25,10 +25,10 @@ const rules = new Intl.PluralRules("en-GB", { type: "ordinal" });
  * - `"other"` → `"th"` (all other ordinals)
  */
 const suffixes = new Map([
-    ["one", "st"],
-    ["two", "nd"],
-    ["few", "rd"],
-    ["other", "th"],
+    ['one', 'st'],
+    ['two', 'nd'],
+    ['few', 'rd'],
+    ['other', 'th'],
 ]);
 
 /**
@@ -46,7 +46,7 @@ export function getOrdinal(n: number): string {
     const rule = rules.select(n);
     const suffix = suffixes.get(rule);
     /* v8 ignore next -- The suffix is guaranteed to be defined for all plural rules, but TypeScript doesn't know that. */
-    return `${n}${suffix ?? "th"}`;
+    return `${n}${suffix ?? 'th'}`;
 }
 
 /**
@@ -83,7 +83,9 @@ export const formatDate = (value: Date | string | null | undefined) => {
  * @example
  * fullMonthNameFormatter.format(new Date(2024, 0, 1)); // Returns "January"
  */
-const fullMonthNameFormatter = new Intl.DateTimeFormat('en-GB', { month: 'long' });
+const fullMonthNameFormatter = new Intl.DateTimeFormat('en-GB', {
+    month: 'long',
+});
 
 /**
  * Returns the localized full month name for a given year and 1-based month
@@ -101,7 +103,9 @@ export const getFullMonthName = (year: number, month: number) =>
  * Formats a `Date` into its abbreviated month name using the `en-GB` locale
  * (for example, `"Jan"`, `"Feb"`, `"Mar"`).
  */
-const shortMonthNameFormatter = new Intl.DateTimeFormat('en-GB', { month: 'short' });
+const shortMonthNameFormatter = new Intl.DateTimeFormat('en-GB', {
+    month: 'short',
+});
 
 /**
  * Returns the localized abbreviated month name for a given year and month.
@@ -119,7 +123,9 @@ export const getShortMonthName = (year: number, month: number) =>
  * Formats a `Date` into its narrow month name using the `en-GB` locale (for
  * example, `"J"`, `"F"`, `"M"`).
  */
-const narrowMonthNameFormatter = new Intl.DateTimeFormat('en-GB', { month: 'narrow' });
+const narrowMonthNameFormatter = new Intl.DateTimeFormat('en-GB', {
+    month: 'narrow',
+});
 
 /**
  * Returns the localized narrow month name for a given year and month.

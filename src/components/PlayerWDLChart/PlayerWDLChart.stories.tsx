@@ -12,9 +12,7 @@ const samplePlayer = {
     comment: null,
     introducedBy: 1,
     accountEmail: 'frank@example.com',
-    extraEmails: [
-        { email: 'frank+cc@example.com', verified: true },
-    ],
+    extraEmails: [{ email: 'frank+cc@example.com', verified: true }],
     firstResponded: 1,
     lastResponded: 30,
     firstPlayed: 2,

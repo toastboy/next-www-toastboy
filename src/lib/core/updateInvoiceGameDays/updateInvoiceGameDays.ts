@@ -5,7 +5,9 @@ import type z from 'zod';
 import gameDayService from '@/services/GameDay';
 import type { UpdateInvoiceGameDaysInputSchema } from '@/types/actions/UpdateInvoiceGameDays';
 
-type UpdateInvoiceGameDaysInput = z.infer<typeof UpdateInvoiceGameDaysInputSchema>;
+type UpdateInvoiceGameDaysInput = z.infer<
+    typeof UpdateInvoiceGameDaysInputSchema
+>;
 
 interface UpdateInvoiceGameDaysDeps {
     gameDayService: Pick<typeof gameDayService, 'update'>;
@@ -24,6 +26,8 @@ export async function updateInvoiceGameDaysCore(
     deps: UpdateInvoiceGameDaysDeps = defaultDeps,
 ): Promise<void> {
     await Promise.all(
-        data.gameDays.map((gd) => deps.gameDayService.update({ id: gd.id, game: gd.gameScheduled })),
+        data.gameDays.map((gd) =>
+            deps.gameDayService.update({ id: gd.id, game: gd.gameScheduled }),
+        ),
     );
 }

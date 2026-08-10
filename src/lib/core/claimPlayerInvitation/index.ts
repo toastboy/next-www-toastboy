@@ -1,1 +1,4 @@
-export { claimPlayerInvitationCore, finalizePlayerInvitationClaimCore } from './claimPlayerInvitation';
+export {
+    claimPlayerInvitationCore,
+    finalizePlayerInvitationClaimCore,
+} from './claimPlayerInvitation';

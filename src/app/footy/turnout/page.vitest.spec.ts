@@ -36,12 +36,16 @@ describe('Turnout page', () => {
 
         renderToStaticMarkup(await TurnoutPage());
 
-        const [[props]] = (Turnout as Mock).mock.calls as [{ turnout: unknown }][];
+        const [[props]] = (Turnout as Mock).mock.calls as [
+            { turnout: unknown },
+        ][];
         expect(props.turnout).toEqual(turnout);
     });
 
     it('propagates errors from outcomeService.getTurnoutByYear', async () => {
-        (outcomeService.getTurnoutByYear as Mock).mockRejectedValue(new Error('DB failed'));
+        (outcomeService.getTurnoutByYear as Mock).mockRejectedValue(
+            new Error('DB failed'),
+        );
 
         await expect(TurnoutPage()).rejects.toThrow('DB failed');
     });

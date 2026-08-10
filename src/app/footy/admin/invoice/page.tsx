@@ -19,8 +19,12 @@ const InvoicePage = async ({ searchParams }: InvoicePageProps) => {
     // Default to next month since the invoice covers the coming month's bookings
     const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1);
 
-    const year = params.year ? parseInt(params.year, 10) : nextMonth.getFullYear();
-    const month = params.month ? parseInt(params.month, 10) : nextMonth.getMonth() + 1;
+    const year = params.year
+        ? parseInt(params.year, 10)
+        : nextMonth.getFullYear();
+    const month = params.month
+        ? parseInt(params.month, 10)
+        : nextMonth.getMonth() + 1;
 
     const gameDaysRaw = await gameDayService.getForMonth(year, month);
 
@@ -29,7 +33,7 @@ const InvoicePage = async ({ searchParams }: InvoicePageProps) => {
     const gameDays = gameDaysRaw.map((gd) => ({
         id: gd.id,
         date: formatDate(gd.date),
-        gameScheduled: gd.game || (gd.mailSent !== null),
+        gameScheduled: gd.game || gd.mailSent !== null,
         hallCost: gd.hallCost,
     }));
 

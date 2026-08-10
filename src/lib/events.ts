@@ -16,7 +16,7 @@ g.footyEmitter = emitter;
  */
 export function broadcast(channels: FootyChannel | FootyChannel[]): void {
     const list = Array.isArray(channels) ? channels : [channels];
-    list.forEach(channel => emitter.emit(channel));
+    list.forEach((channel) => emitter.emit(channel));
 }
 
 export { emitter };

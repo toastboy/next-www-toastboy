@@ -1,6 +1,4 @@
-import {
-    Stack,
-} from '@mantine/core';
+import { Stack } from '@mantine/core';
 
 import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
 import { Turnout } from '@/components/Turnout/Turnout';
@@ -14,7 +12,9 @@ const TurnoutPage = async () => {
 
     return (
         <Stack p="xl" align="center">
-            <AutoRefresh channels={[FootyChannel.Games, FootyChannel.Results]} />
+            <AutoRefresh
+                channels={[FootyChannel.Games, FootyChannel.Results]}
+            />
             <Turnout turnout={turnout} />
         </Stack>
     );

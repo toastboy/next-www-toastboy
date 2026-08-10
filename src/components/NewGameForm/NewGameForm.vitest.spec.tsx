@@ -1,7 +1,4 @@
-
-import {
-    notifications,
-} from '@mantine/notifications';
+import { notifications } from '@mantine/notifications';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi } from 'vitest';
@@ -21,15 +18,17 @@ describe('NewGameForm', () => {
     it('renders the form fields', () => {
         render(
             <Wrapper>
-                <NewGameForm
-                    onTriggerInvitations={mockTriggerInvitations}
-                />
+                <NewGameForm onTriggerInvitations={mockTriggerInvitations} />
             </Wrapper>,
         );
 
-        expect(screen.getByLabelText(/Override time check/i)).toBeInTheDocument();
+        expect(
+            screen.getByLabelText(/Override time check/i),
+        ).toBeInTheDocument();
         expect(screen.getByLabelText(/Custom message/i)).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /Send invitations/i })).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', { name: /Send invitations/i }),
+        ).toBeInTheDocument();
     });
 
     it('submits the form and shows a ready notification', async () => {
@@ -38,15 +37,18 @@ describe('NewGameForm', () => {
 
         render(
             <Wrapper>
-                <NewGameForm
-                    onTriggerInvitations={mockTriggerInvitations}
-                />
+                <NewGameForm onTriggerInvitations={mockTriggerInvitations} />
             </Wrapper>,
         );
 
         await user.click(screen.getByLabelText(/Override time check/i));
-        await user.type(screen.getByLabelText(/Custom message/i), 'Let us know early.');
-        await user.click(screen.getByRole('button', { name: /Send invitations/i }));
+        await user.type(
+            screen.getByLabelText(/Custom message/i),
+            'Let us know early.',
+        );
+        await user.click(
+            screen.getByRole('button', { name: /Send invitations/i }),
+        );
 
         await waitFor(() => {
             expect(mockTriggerInvitations).toHaveBeenCalledWith({
@@ -69,7 +71,10 @@ describe('NewGameForm', () => {
     it('shows a skipped notification when status is not ready', async () => {
         const user = userEvent.setup();
         const notificationUpdateSpy = vi.spyOn(notifications, 'update');
-        mockTriggerInvitations.mockResolvedValue({ status: 'skipped', reason: 'too-early' });
+        mockTriggerInvitations.mockResolvedValue({
+            status: 'skipped',
+            reason: 'too-early',
+        });
 
         render(
             <Wrapper>
@@ -77,7 +82,9 @@ describe('NewGameForm', () => {
             </Wrapper>,
         );
 
-        await user.click(screen.getByRole('button', { name: /Send invitations/i }));
+        await user.click(
+            screen.getByRole('button', { name: /Send invitations/i }),
+        );
 
         await waitFor(() => {
             expect(notificationUpdateSpy).toHaveBeenCalledWith(
@@ -101,7 +108,9 @@ describe('NewGameForm', () => {
             </Wrapper>,
         );
 
-        await user.click(screen.getByRole('button', { name: /Send invitations/i }));
+        await user.click(
+            screen.getByRole('button', { name: /Send invitations/i }),
+        );
 
         await waitFor(() => {
             expect(notificationUpdateSpy).toHaveBeenCalledWith(
@@ -121,13 +130,13 @@ describe('NewGameForm', () => {
 
         render(
             <Wrapper>
-                <NewGameForm
-                    onTriggerInvitations={mockTriggerInvitations}
-                />
+                <NewGameForm onTriggerInvitations={mockTriggerInvitations} />
             </Wrapper>,
         );
 
-        await user.click(screen.getByRole('button', { name: /Send invitations/i }));
+        await user.click(
+            screen.getByRole('button', { name: /Send invitations/i }),
+        );
 
         await waitFor(() => {
             expect(notificationUpdateSpy).toHaveBeenCalledWith(

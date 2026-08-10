@@ -18,4 +18,4 @@ export interface Turnout {
     excused: number;
     flaked: number;
     injured: number;
-};
+}

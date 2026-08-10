@@ -13,7 +13,5 @@ export const CurseOfTheBibs = ({ bibsData }: Props) => {
         value: bibsData[key as keyof typeof bibsData],
     }));
 
-    return (
-        <PieChart data={pieData} />
-    );
+    return <PieChart data={pieData} />;
 };

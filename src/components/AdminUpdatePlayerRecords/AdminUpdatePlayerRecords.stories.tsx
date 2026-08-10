@@ -6,7 +6,8 @@ import { UpdatePlayerRecordsProxy } from '@/types/actions/UpdatePlayerRecords';
 
 import { AdminUpdatePlayerRecords } from './AdminUpdatePlayerRecords';
 
-const onUpdatePlayerRecords = fn<UpdatePlayerRecordsProxy>().mockResolvedValue(undefined);
+const onUpdatePlayerRecords =
+    fn<UpdatePlayerRecordsProxy>().mockResolvedValue(undefined);
 const getProgressInProgress = fn<GetProgressProxy>();
 const getProgressCompleted = fn<GetProgressProxy>();
 

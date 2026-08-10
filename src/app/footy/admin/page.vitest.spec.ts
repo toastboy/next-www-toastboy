@@ -22,12 +22,19 @@ vi.mock('@mantine/core', () => ({
 }));
 
 vi.mock('@/components/AdminExportAuth/AdminExportAuth', () => ({
-    AdminExportAuth: function AdminExportAuth() { return null; },
+    AdminExportAuth: function AdminExportAuth() {
+        return null;
+    },
 }));
 
-vi.mock('@/components/AdminUpdatePlayerRecords/AdminUpdatePlayerRecords', () => ({
-    AdminUpdatePlayerRecords: function AdminUpdatePlayerRecords() { return null; },
-}));
+vi.mock(
+    '@/components/AdminUpdatePlayerRecords/AdminUpdatePlayerRecords',
+    () => ({
+        AdminUpdatePlayerRecords: function AdminUpdatePlayerRecords() {
+            return null;
+        },
+    }),
+);
 
 import { authExport } from '@/actions/auth-export';
 import { getProgress } from '@/actions/getProgress';
@@ -46,8 +53,13 @@ describe('Admin Dashboard page', () => {
     it('passes the updatePlayerRecords and getProgress server actions to AdminUpdatePlayerRecords', () => {
         const result = AdminPage();
 
-        const updatePlayerRecordsEl = findElement(result, 'AdminUpdatePlayerRecords');
-        expect(updatePlayerRecordsEl?.props.onUpdatePlayerRecords).toBe(updatePlayerRecords);
+        const updatePlayerRecordsEl = findElement(
+            result,
+            'AdminUpdatePlayerRecords',
+        );
+        expect(updatePlayerRecordsEl?.props.onUpdatePlayerRecords).toBe(
+            updatePlayerRecords,
+        );
         expect(updatePlayerRecordsEl?.props.getProgress).toBe(getProgress);
     });
 

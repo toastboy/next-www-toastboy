@@ -11,7 +11,11 @@ describe('recordHallHireCore', () => {
             { moneyService: { recordHallHire } },
         );
 
-        expect(recordHallHire).toHaveBeenCalledWith(5000, 42, 'Weekly hall hire');
+        expect(recordHallHire).toHaveBeenCalledWith(
+            5000,
+            42,
+            'Weekly hall hire',
+        );
     });
 
     it('delegates to moneyService.recordHallHire without optional note', async () => {

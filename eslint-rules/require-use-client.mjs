@@ -3,12 +3,14 @@
 // documented in CLAUDE.md. See require-use-client.test.mjs for coverage.
 export const requireUseClient = {
     meta: {
-        type: "problem",
-        fixable: "code",
+        type: 'problem',
+        fixable: 'code',
         schema: [],
         messages: {
-            missing: "Presentation components under src/components must start with 'use client';",
-            conflicting: "This file already starts with a '{{directive}}' directive, which conflicts with 'use client' (a module can't be both, e.g. a Server Actions module and a Client Component). Resolve manually.",
+            missing:
+                "Presentation components under src/components must start with 'use client';",
+            conflicting:
+                "This file already starts with a '{{directive}}' directive, which conflicts with 'use client' (a module can't be both, e.g. a Server Actions module and a Client Component). Resolve manually.",
         },
     },
     create(context) {
@@ -24,14 +26,18 @@ export const requireUseClient = {
                 // literal's value is actually a string. A bare `Literal` node
                 // can just as easily be a number, boolean, `null`, or regex
                 // (e.g. `/foo/;` as a statement), none of which are directives.
-                const isDirective = first?.type === "ExpressionStatement" && (
-                    typeof first.directive === "string" ||
-                    (["Literal", "StringLiteral"].includes(first.expression.type) &&
-                        typeof first.expression.value === "string")
-                );
-                const directiveValue = isDirective ? (first.directive ?? first.expression.value) : undefined;
+                const isDirective =
+                    first?.type === 'ExpressionStatement' &&
+                    (typeof first.directive === 'string' ||
+                        (['Literal', 'StringLiteral'].includes(
+                            first.expression.type,
+                        ) &&
+                            typeof first.expression.value === 'string'));
+                const directiveValue = isDirective
+                    ? (first.directive ?? first.expression.value)
+                    : undefined;
 
-                if (directiveValue === "use client") {
+                if (directiveValue === 'use client') {
                     return;
                 }
 
@@ -42,7 +48,7 @@ export const requireUseClient = {
                     // report only and let a human resolve the conflict.
                     context.report({
                         node,
-                        messageId: "conflicting",
+                        messageId: 'conflicting',
                         data: { directive: directiveValue },
                     });
                     return;
@@ -50,26 +56,33 @@ export const requireUseClient = {
 
                 context.report({
                     node,
-                    messageId: "missing",
+                    messageId: 'missing',
                     fix(fixer) {
                         // Insert before the first statement, not the Program
                         // node itself — Program's range includes any leading
                         // comments/shebang, and inserting there would place
                         // the directive ahead of those instead of after them.
                         if (first) {
-                            return fixer.insertTextBefore(first, "'use client';\n\n");
+                            return fixer.insertTextBefore(
+                                first,
+                                "'use client';\n\n",
+                            );
                         }
 
                         // No statements at all (e.g. a comment-only file) —
                         // there's no `first` node to anchor to, so fall back
                         // to inserting after the last leading comment, if any.
-                        const sourceCode = context.sourceCode ?? context.getSourceCode();
+                        const sourceCode =
+                            context.sourceCode ?? context.getSourceCode();
                         const comments = sourceCode.getAllComments();
                         const lastComment = comments[comments.length - 1];
 
-                        return lastComment ?
-                            fixer.insertTextAfter(lastComment, "\n'use client';\n") :
-                            fixer.insertTextBefore(node, "'use client';\n\n");
+                        return lastComment
+                            ? fixer.insertTextAfter(
+                                  lastComment,
+                                  "\n'use client';\n",
+                              )
+                            : fixer.insertTextBefore(node, "'use client';\n\n");
                     },
                 });
             },

@@ -139,7 +139,9 @@ describe('getSecrets', () => {
         it('wraps and rethrows unexpected file read errors', async () => {
             vi.stubEnv('SECRETS_DIR', '/run/secrets');
             mockReadFileSync.mockImplementation(() => {
-                throw Object.assign(new Error('Permission denied'), { code: 'EACCES' });
+                throw Object.assign(new Error('Permission denied'), {
+                    code: 'EACCES',
+                });
             });
 
             const { getSecrets } = await import('@/lib/secrets');
@@ -151,8 +153,12 @@ describe('getSecrets', () => {
                 thrown = error;
             }
 
-            expect((thrown as ThrownInternalErrorLike).name).toBe('InternalError');
-            expect((thrown as ThrownInternalErrorLike).message).toContain('Failed to read secret file at');
+            expect((thrown as ThrownInternalErrorLike).name).toBe(
+                'InternalError',
+            );
+            expect((thrown as ThrownInternalErrorLike).message).toContain(
+                'Failed to read secret file at',
+            );
         });
 
         it('treats a thrown non-object value as an unexpected read error', async () => {
@@ -171,7 +177,9 @@ describe('getSecrets', () => {
                 thrown = error;
             }
 
-            expect((thrown as ThrownInternalErrorLike).name).toBe('InternalError');
+            expect((thrown as ThrownInternalErrorLike).name).toBe(
+                'InternalError',
+            );
         });
 
         it('treats a thrown error object without a code property as an unexpected read error', async () => {
@@ -189,7 +197,9 @@ describe('getSecrets', () => {
                 thrown = error;
             }
 
-            expect((thrown as ThrownInternalErrorLike).name).toBe('InternalError');
+            expect((thrown as ThrownInternalErrorLike).name).toBe(
+                'InternalError',
+            );
         });
     });
 
@@ -215,10 +225,16 @@ describe('getSecrets', () => {
                 thrown = error;
             }
 
-            const details = (thrown as ThrownInternalErrorLike).details as { missingSecrets?: string[] };
+            const details = (thrown as ThrownInternalErrorLike).details as {
+                missingSecrets?: string[];
+            };
 
-            expect((thrown as ThrownInternalErrorLike).name).toBe('InternalError');
-            expect(details.missingSecrets).toEqual(expect.arrayContaining(['CRON_SECRET']));
+            expect((thrown as ThrownInternalErrorLike).name).toBe(
+                'InternalError',
+            );
+            expect(details.missingSecrets).toEqual(
+                expect.arrayContaining(['CRON_SECRET']),
+            );
         });
 
         it('does not require production-only secrets outside production', async () => {
@@ -244,10 +260,16 @@ describe('getSecrets', () => {
                 thrown = error;
             }
 
-            const details = (thrown as ThrownInternalErrorLike).details as { missingSecrets?: string[] };
+            const details = (thrown as ThrownInternalErrorLike).details as {
+                missingSecrets?: string[];
+            };
 
-            expect((thrown as ThrownInternalErrorLike).name).toBe('InternalError');
-            expect(details.missingSecrets).toEqual(expect.arrayContaining(['MAIL_GRAPH_CLIENT_ID']));
+            expect((thrown as ThrownInternalErrorLike).name).toBe(
+                'InternalError',
+            );
+            expect(details.missingSecrets).toEqual(
+                expect.arrayContaining(['MAIL_GRAPH_CLIENT_ID']),
+            );
         });
     });
 });

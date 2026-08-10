@@ -14,11 +14,17 @@ test.describe('drinkers admin page', () => {
         await mustBeLoggedInAsAdmin(page);
     });
 
-    test('allows access to admin users and shows drinkers admin interface', async ({ page }) => {
+    test('allows access to admin users and shows drinkers admin interface', async ({
+        page,
+    }) => {
         await asAdmin(page, '/footy/admin/drinkers');
 
         await expect(page).toHaveURL(/\/footy\/admin\/drinkers\/\d+$/);
-        await expect(page.getByRole('heading', { name: /Game \d+ Drinkers/i })).toBeVisible();
-        await expect(page.getByRole('button', { name: 'Save drinkers' })).toBeVisible();
+        await expect(
+            page.getByRole('heading', { name: /Game \d+ Drinkers/i }),
+        ).toBeVisible();
+        await expect(
+            page.getByRole('button', { name: 'Save drinkers' }),
+        ).toBeVisible();
     });
 });

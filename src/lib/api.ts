@@ -17,7 +17,11 @@ import { getPublicBaseUrl } from './urls';
  *          a 404 response is returned. Otherwise, the response is built using the `buildResponse` function.
  */
 export async function handleGET<T, S = T>(
-    serviceFunction: ({ params }: { params: Record<string, string> }) => Promise<T | null>,
+    serviceFunction: ({
+        params,
+    }: {
+        params: Record<string, string>;
+    }) => Promise<T | null>,
     { params }: { params: Record<string, string> },
     hooks?: {
         sanitize?: (data: T) => Promise<S>;
@@ -26,8 +30,11 @@ export async function handleGET<T, S = T>(
 ): Promise<NextResponse> {
     try {
         // If no sanitize hook provided, pass data through (cast via unknown to satisfy TS when S != T)
-        const sanitize: (data: T) => Promise<S> = hooks?.sanitize ?? (async (data: T) => await Promise.resolve(data as unknown as S));
-        const buildResponse: (data: S) => Promise<NextResponse> = hooks?.buildResponse ?? buildJsonResponse;
+        const sanitize: (data: T) => Promise<S> =
+            hooks?.sanitize ??
+            (async (data: T) => await Promise.resolve(data as unknown as S));
+        const buildResponse: (data: S) => Promise<NextResponse> =
+            hooks?.buildResponse ?? buildJsonResponse;
 
         const data = await serviceFunction({ params });
 
@@ -35,7 +42,8 @@ export async function handleGET<T, S = T>(
 
         const sanitizedData: S = await sanitize(data);
 
-        if (sanitizedData == null) return new NextResponse('Not Found', { status: 404 });
+        if (sanitizedData == null)
+            return new NextResponse('Not Found', { status: 404 });
 
         return buildResponse(sanitizedData);
     } catch (error) {
@@ -67,12 +75,13 @@ export async function handleGET<T, S = T>(
  *          a status code of 200, and a `Content-Type` header set to `application/json`.
  */
 async function buildJsonResponse<T>(data: T): Promise<NextResponse> {
-    return Promise.resolve(NextResponse.json(data, {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-    }));
+    return Promise.resolve(
+        NextResponse.json(data, {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+        }),
+    );
 }
-
 
 /**
  * Builds a JSON error response for HTTP requests.
@@ -92,10 +101,15 @@ export async function buildJsonErrorResponse(
 ): Promise<NextResponse> {
     const { status, message } = toHttpErrorResponse(error, fallbackMessage);
 
-    return Promise.resolve(NextResponse.json({ message }, {
-        status,
-        headers: { 'Content-Type': 'application/json' },
-    }));
+    return Promise.resolve(
+        NextResponse.json(
+            { message },
+            {
+                status,
+                headers: { 'Content-Type': 'application/json' },
+            },
+        ),
+    );
 }
 
 /**
@@ -106,10 +120,12 @@ export async function buildJsonErrorResponse(
  *          as a PNG and the appropriate headers.
  */
 export async function buildPngResponse(data: Buffer): Promise<NextResponse> {
-    return Promise.resolve(new NextResponse(new Uint8Array(data), {
-        status: 200,
-        headers: { 'Content-Type': 'image/png' },
-    }));
+    return Promise.resolve(
+        new NextResponse(new Uint8Array(data), {
+            status: 200,
+            headers: { 'Content-Type': 'image/png' },
+        }),
+    );
 }
 
 /**
@@ -129,7 +145,10 @@ export async function buildPngResponse(data: Buffer): Promise<NextResponse> {
  * @returns A URL instance representing the resolved URL with the appended query
  * parameters.
  */
-export function buildURLWithParams(baseUri: string, params: Record<string, string>) {
+export function buildURLWithParams(
+    baseUri: string,
+    params: Record<string, string>,
+) {
     const base = getPublicBaseUrl().toString();
     const url = new URL(baseUri, base);
     const expectedOrigin = new URL(base).origin;

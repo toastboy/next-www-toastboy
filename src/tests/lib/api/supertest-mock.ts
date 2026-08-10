@@ -21,15 +21,22 @@ enum HttpMethod {
 const request = (app: MockApp) => {
     const handler = app.__handle;
     if (!handler) {
-        throw new Error('supertest mock expects createMockApp to provide __handle');
+        throw new Error(
+            'supertest mock expects createMockApp to provide __handle',
+        );
     }
 
     return {
-        get: async (url: string): Promise<MockResponse> => handler(url, HttpMethod.GET),
-        post: async (url: string): Promise<MockResponse> => handler(url, HttpMethod.POST),
-        put: async (url: string): Promise<MockResponse> => handler(url, HttpMethod.PUT),
-        delete: async (url: string): Promise<MockResponse> => handler(url, HttpMethod.DELETE),
-        patch: async (url: string): Promise<MockResponse> => handler(url, HttpMethod.PATCH),
+        get: async (url: string): Promise<MockResponse> =>
+            handler(url, HttpMethod.GET),
+        post: async (url: string): Promise<MockResponse> =>
+            handler(url, HttpMethod.POST),
+        put: async (url: string): Promise<MockResponse> =>
+            handler(url, HttpMethod.PUT),
+        delete: async (url: string): Promise<MockResponse> =>
+            handler(url, HttpMethod.DELETE),
+        patch: async (url: string): Promise<MockResponse> =>
+            handler(url, HttpMethod.PATCH),
     };
 };
 

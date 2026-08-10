@@ -13,14 +13,18 @@ export const defaultOutcome = {
     goalie: false,
 } satisfies OutcomeType;
 
-export const createMockOutcome = (overrides: Partial<OutcomeType> = {}): OutcomeType => ({
+export const createMockOutcome = (
+    overrides: Partial<OutcomeType> = {},
+): OutcomeType => ({
     ...defaultOutcome,
     ...overrides,
 });
 
-export const defaultOutcomeList: OutcomeType[] = Array.from({ length: 100 }, (_, index) =>
-    createMockOutcome({
-        playerId: index % 10 + 1,
-        gameDayId: Math.floor(index / 10 + 1),
-    }),
+export const defaultOutcomeList: OutcomeType[] = Array.from(
+    { length: 100 },
+    (_, index) =>
+        createMockOutcome({
+            playerId: (index % 10) + 1,
+            gameDayId: Math.floor(index / 10 + 1),
+        }),
 );

@@ -32,47 +32,73 @@ const GameInvitationUpdateStrictFields = {
     gameDayId: GameInvitationStrictIds.gameDayId.optional(),
 };
 
-export const GameInvitationWriteInputSchema = z.object({
-    ...GameInvitationCreateStrictFields,
-}).strip();
+export const GameInvitationWriteInputSchema = z
+    .object({
+        ...GameInvitationCreateStrictFields,
+    })
+    .strip();
 
-export type GameInvitationWriteInput = z.infer<typeof GameInvitationWriteInputSchema>;
+export type GameInvitationWriteInput = z.infer<
+    typeof GameInvitationWriteInputSchema
+>;
 
-export const GameInvitationCreateManyWriteInputSchema = z.array(GameInvitationWriteInputSchema);
+export const GameInvitationCreateManyWriteInputSchema = z.array(
+    GameInvitationWriteInputSchema,
+);
 
-export type GameInvitationCreateManyWriteInput = z.infer<typeof GameInvitationCreateManyWriteInputSchema>;
+export type GameInvitationCreateManyWriteInput = z.infer<
+    typeof GameInvitationCreateManyWriteInputSchema
+>;
 
 const GameInvitationCreateDataStrictSchema = z.union([
-    GameInvitationCreateInputObjectZodSchema.extend(GameInvitationCreateStrictFields),
-    GameInvitationUncheckedCreateInputObjectZodSchema.extend(GameInvitationCreateStrictFields),
+    GameInvitationCreateInputObjectZodSchema.extend(
+        GameInvitationCreateStrictFields,
+    ),
+    GameInvitationUncheckedCreateInputObjectZodSchema.extend(
+        GameInvitationCreateStrictFields,
+    ),
 ]);
 
-const GameInvitationCreateOneStrictZodSchema = GameInvitationCreateOneZodSchema.extend({
-    data: GameInvitationCreateDataStrictSchema,
-});
+const GameInvitationCreateOneStrictZodSchema =
+    GameInvitationCreateOneZodSchema.extend({
+        data: GameInvitationCreateDataStrictSchema,
+    });
 
 export const GameInvitationCreateOneStrictSchema: z.ZodType<Prisma.GameInvitationCreateArgs> =
     GameInvitationCreateOneStrictZodSchema as unknown as z.ZodType<Prisma.GameInvitationCreateArgs>;
 
-const GameInvitationCreateManyStrictZodSchema = z.object({
-    data: z.union([
-        GameInvitationCreateManyInputObjectZodSchema.extend(GameInvitationCreateStrictFields),
-        z.array(GameInvitationCreateManyInputObjectZodSchema.extend(GameInvitationCreateStrictFields)),
-    ]),
-}).strict();
+const GameInvitationCreateManyStrictZodSchema = z
+    .object({
+        data: z.union([
+            GameInvitationCreateManyInputObjectZodSchema.extend(
+                GameInvitationCreateStrictFields,
+            ),
+            z.array(
+                GameInvitationCreateManyInputObjectZodSchema.extend(
+                    GameInvitationCreateStrictFields,
+                ),
+            ),
+        ]),
+    })
+    .strict();
 
 export const GameInvitationCreateManyStrictSchema: z.ZodType<Prisma.GameInvitationCreateManyArgs> =
     GameInvitationCreateManyStrictZodSchema;
 
 const GameInvitationUpdateDataStrictSchema = z.union([
-    GameInvitationUpdateInputObjectZodSchema.extend(GameInvitationUpdateStrictFields),
-    GameInvitationUncheckedUpdateInputObjectZodSchema.extend(GameInvitationUpdateStrictFields),
+    GameInvitationUpdateInputObjectZodSchema.extend(
+        GameInvitationUpdateStrictFields,
+    ),
+    GameInvitationUncheckedUpdateInputObjectZodSchema.extend(
+        GameInvitationUpdateStrictFields,
+    ),
 ]);
 
-const GameInvitationUpsertOneStrictZodSchema = GameInvitationUpsertOneZodSchema.extend({
-    create: GameInvitationCreateDataStrictSchema,
-    update: GameInvitationUpdateDataStrictSchema,
-});
+const GameInvitationUpsertOneStrictZodSchema =
+    GameInvitationUpsertOneZodSchema.extend({
+        create: GameInvitationCreateDataStrictSchema,
+        update: GameInvitationUpdateDataStrictSchema,
+    });
 
 export const GameInvitationUpsertOneStrictSchema: z.ZodType<Prisma.GameInvitationUpsertArgs> =
     GameInvitationUpsertOneStrictZodSchema as unknown as z.ZodType<Prisma.GameInvitationUpsertArgs>;

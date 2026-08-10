@@ -44,14 +44,19 @@ describe('createPlayerCore', () => {
             { playerService, emailVerificationService },
         );
 
-        expect(playerService.create).toHaveBeenCalledWith(expect.objectContaining({
-            name: 'Alex Example',
-            introducedBy: 7,
-            accountEmail: 'alex@example.com',
-        }));
-        const [createPayload] = vi.mocked(playerService.create).mock.calls[0] as [{
-      joined: Date;
-    }];
+        expect(playerService.create).toHaveBeenCalledWith(
+            expect.objectContaining({
+                name: 'Alex Example',
+                introducedBy: 7,
+                accountEmail: 'alex@example.com',
+            }),
+        );
+        const [createPayload] = vi.mocked(playerService.create).mock
+            .calls[0] as [
+            {
+                joined: Date;
+            },
+        ];
         expect(createPayload.joined).toBeInstanceOf(Date);
         expect(emailVerificationService.create).toHaveBeenCalledWith({
             playerId: 55,
@@ -81,10 +86,12 @@ describe('createPlayerCore', () => {
             { playerService, emailVerificationService },
         );
 
-        expect(playerService.create).toHaveBeenCalledWith(expect.objectContaining({
-            introducedBy: null,
-            accountEmail: null,
-        }));
+        expect(playerService.create).toHaveBeenCalledWith(
+            expect.objectContaining({
+                introducedBy: null,
+                accountEmail: null,
+            }),
+        );
         expect(emailVerificationService.create).not.toHaveBeenCalled();
         expect(result.player).toEqual({ id: 56, name: 'New Player' });
     });
@@ -148,11 +155,10 @@ describe('addPlayerInviteCore', () => {
             create: vi.fn(),
         };
 
-        const inviteLink = await addPlayerInviteCore(
-            100,
-            '',
-            { playerService, emailVerificationService },
-        );
+        const inviteLink = await addPlayerInviteCore(100, '', {
+            playerService,
+            emailVerificationService,
+        });
 
         expect(emailVerificationService.create).not.toHaveBeenCalled();
         expect(inviteLink).toBe(
@@ -179,7 +185,9 @@ describe('addPlayerInviteCore', () => {
         );
 
         expect(emailVerificationService.create).toHaveBeenCalledWith(
-            expect.objectContaining({ token: 'weird/token?with#reserved%chars' }),
+            expect.objectContaining({
+                token: 'weird/token?with#reserved%chars',
+            }),
         );
         expect(inviteLink).toBe(
             'https://example.test/footy/auth/claim/weird%2Ftoken%3Fwith%23reserved%25chars',

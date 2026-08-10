@@ -19,7 +19,9 @@ describe('EmailPlayerButton', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByRole('button', { name: /Send Email/i })).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', { name: /Send Email/i }),
+        ).toBeInTheDocument();
     });
 
     it('does not show the modal as open initially', () => {
@@ -32,7 +34,9 @@ describe('EmailPlayerButton', () => {
             </Wrapper>,
         );
 
-        expect(screen.queryByRole('button', { name: /Close SendEmailForm/i })).not.toBeInTheDocument();
+        expect(
+            screen.queryByRole('button', { name: /Close SendEmailForm/i }),
+        ).not.toBeInTheDocument();
     });
 
     it('opens SendEmailForm when the button is clicked', async () => {
@@ -49,7 +53,9 @@ describe('EmailPlayerButton', () => {
 
         await user.click(screen.getByRole('button', { name: /Send Email/i }));
 
-        expect(screen.getByRole('button', { name: /Close SendEmailForm/i })).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', { name: /Close SendEmailForm/i }),
+        ).toBeInTheDocument();
     });
 
     it('closes SendEmailForm when the modal close callback is invoked', async () => {
@@ -65,10 +71,16 @@ describe('EmailPlayerButton', () => {
         );
 
         await user.click(screen.getByRole('button', { name: /Send Email/i }));
-        expect(screen.getByRole('button', { name: /Close SendEmailForm/i })).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', { name: /Close SendEmailForm/i }),
+        ).toBeInTheDocument();
 
-        await user.click(screen.getByRole('button', { name: /Close SendEmailForm/i }));
-        expect(screen.queryByRole('button', { name: /Close SendEmailForm/i })).not.toBeInTheDocument();
+        await user.click(
+            screen.getByRole('button', { name: /Close SendEmailForm/i }),
+        );
+        expect(
+            screen.queryByRole('button', { name: /Close SendEmailForm/i }),
+        ).not.toBeInTheDocument();
     });
 
     it('passes the player to SendEmailForm', async () => {
@@ -85,9 +97,12 @@ describe('EmailPlayerButton', () => {
 
         await user.click(screen.getByRole('button', { name: /Send Email/i }));
 
-        expect(screen.getByText((content) =>
-            content.startsWith('SendEmailForm:') &&
-            content.includes(defaultPlayerEmailData.name),
-        )).toBeInTheDocument();
+        expect(
+            screen.getByText(
+                (content) =>
+                    content.startsWith('SendEmailForm:') &&
+                    content.includes(defaultPlayerEmailData.name),
+            ),
+        ).toBeInTheDocument();
     });
 });

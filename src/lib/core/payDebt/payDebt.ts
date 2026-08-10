@@ -31,5 +31,9 @@ export async function payDebtCore(
     data: PayDebtInput,
     deps: PayDebtDeps = defaultDeps,
 ) {
-    return await deps.moneyService.payMultiple(data.playerId, data.amount, data.gameDayIds);
+    return await deps.moneyService.payMultiple(
+        data.playerId,
+        data.amount,
+        data.gameDayIds,
+    );
 }

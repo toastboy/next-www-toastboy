@@ -32,9 +32,15 @@ export const ValidSubmit: Story = {
         if (viewMode === 'docs') return;
 
         const canvas = within(canvasElement);
-        const confirmPhrase = await canvas.findByRole('textbox', { name: /type delete to confirm/i });
-        const confirmPii = await canvas.findByRole('checkbox', { name: /i understand.*personal data/i });
-        const submitButton = await canvas.findByRole('button', { name: 'Delete my data' });
+        const confirmPhrase = await canvas.findByRole('textbox', {
+            name: /type delete to confirm/i,
+        });
+        const confirmPii = await canvas.findByRole('checkbox', {
+            name: /i understand.*personal data/i,
+        });
+        const submitButton = await canvas.findByRole('button', {
+            name: 'Delete my data',
+        });
 
         await userEvent.clear(confirmPhrase);
         await userEvent.type(confirmPhrase, 'DELETE');
@@ -56,8 +62,12 @@ export const InvalidSubmit: Story = {
         if (viewMode === 'docs') return;
 
         const canvas = within(canvasElement);
-        const confirmPhrase = await canvas.findByRole('textbox', { name: /type delete to confirm/i });
-        const submitButton = await canvas.findByRole('button', { name: 'Delete my data' });
+        const confirmPhrase = await canvas.findByRole('textbox', {
+            name: /type delete to confirm/i,
+        });
+        const submitButton = await canvas.findByRole('button', {
+            name: 'Delete my data',
+        });
 
         await userEvent.click(submitButton);
 
@@ -66,14 +76,22 @@ export const InvalidSubmit: Story = {
 
         const errorId = confirmPhrase.getAttribute('aria-describedby');
         if (!errorId) {
-            throw new Error('Expected confirm phrase input to have aria-describedby pointing at the error element');
+            throw new Error(
+                'Expected confirm phrase input to have aria-describedby pointing at the error element',
+            );
         }
 
-        const errorEl = canvasElement.querySelector<HTMLElement>(`#${CSS.escape(errorId)}`);
+        const errorEl = canvasElement.querySelector<HTMLElement>(
+            `#${CSS.escape(errorId)}`,
+        );
         if (!errorEl) {
-            throw new Error(`Expected to find error element with id "${errorId}"`);
+            throw new Error(
+                `Expected to find error element with id "${errorId}"`,
+            );
         }
 
-        await expect(errorEl.textContent ?? '').toMatch(/type delete to confirm/i);
+        await expect(errorEl.textContent ?? '').toMatch(
+            /type delete to confirm/i,
+        );
     },
 };

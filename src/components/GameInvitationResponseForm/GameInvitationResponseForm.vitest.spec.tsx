@@ -1,9 +1,5 @@
-import type {
-    useForm as useFormType,
-} from '@mantine/form';
-import {
-    notifications,
-} from '@mantine/notifications';
+import type { useForm as useFormType } from '@mantine/form';
+import { notifications } from '@mantine/notifications';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { PlayerResponse } from 'prisma/generated/enums';
@@ -34,7 +30,11 @@ vi.mock('@mantine/form', async (importOriginal) => {
             }
 
             return {
-                values: { response: PlayerResponse.No, goalie: false, comment: '' },
+                values: {
+                    response: PlayerResponse.No,
+                    goalie: false,
+                    comment: '',
+                },
                 setFieldValue: vi.fn(),
                 getInputProps: (field: string, config?: { type?: string }) => {
                     if (config?.type === 'checkbox') {
@@ -51,15 +51,21 @@ vi.mock('@mantine/form', async (importOriginal) => {
                 },
                 isDirty: () => true,
                 onSubmit:
-                    (handler: (values: { response: 'No'; goalie: false; comment: undefined }) => Promise<void>) =>
-                        async (event?: { preventDefault?: () => void }) => {
-                            event?.preventDefault?.();
-                            await handler({
-                                response: 'No',
-                                goalie: false,
-                                comment: undefined,
-                            });
-                        },
+                    (
+                        handler: (values: {
+                            response: 'No';
+                            goalie: false;
+                            comment: undefined;
+                        }) => Promise<void>,
+                    ) =>
+                    async (event?: { preventDefault?: () => void }) => {
+                        event?.preventDefault?.();
+                        await handler({
+                            response: 'No',
+                            goalie: false,
+                            comment: undefined,
+                        });
+                    },
             };
         },
     };
@@ -70,7 +76,8 @@ vi.mock('@/lib/observability/sentry', () => ({
 }));
 
 describe('GameInvitationResponseForm', () => {
-    const mockSubmitGameInvitationResponse: SubmitGameInvitationResponseProxy = vi.fn().mockResolvedValue(undefined);
+    const mockSubmitGameInvitationResponse: SubmitGameInvitationResponseProxy =
+        vi.fn().mockResolvedValue(undefined);
 
     beforeEach(() => {
         vi.useFakeTimers({ shouldAdvanceTime: true });
@@ -88,16 +95,24 @@ describe('GameInvitationResponseForm', () => {
             <Wrapper>
                 <GameInvitationResponseForm
                     details={defaultGameInvitationResponseDetails}
-                    onSubmitGameInvitationResponse={mockSubmitGameInvitationResponse}
+                    onSubmitGameInvitationResponse={
+                        mockSubmitGameInvitationResponse
+                    }
                 />
             </Wrapper>,
         );
 
-        expect(screen.getByText('Thanks for Your Response')).toBeInTheDocument();
-        expect(screen.getByRole('combobox', { name: /Response/i })).toBeInTheDocument();
+        expect(
+            screen.getByText('Thanks for Your Response'),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByRole('combobox', { name: /Response/i }),
+        ).toBeInTheDocument();
         expect(screen.getByLabelText(/Goalie/i)).toBeInTheDocument();
         expect(screen.getByLabelText(/Optional comment/i)).toBeInTheDocument();
-        expect(screen.getByRole('button', { name: /Save Response/i })).toBeInTheDocument();
+        expect(
+            screen.getByRole('button', { name: /Save Response/i }),
+        ).toBeInTheDocument();
     });
 
     it('renders fallback values when invitation has no prior response or player login', () => {
@@ -114,20 +129,32 @@ describe('GameInvitationResponseForm', () => {
             <Wrapper>
                 <GameInvitationResponseForm
                     details={detailsWithNoResponse}
-                    onSubmitGameInvitationResponse={mockSubmitGameInvitationResponse}
+                    onSubmitGameInvitationResponse={
+                        mockSubmitGameInvitationResponse
+                    }
                 />
             </Wrapper>,
         );
 
         expect(screen.getByText('Enter Your Response')).toBeInTheDocument();
-        expect(screen.getByRole('link', { name: detailsWithNoResponse.playerName })).toHaveAttribute(
+        expect(
+            screen.getByRole('link', {
+                name: detailsWithNoResponse.playerName,
+            }),
+        ).toHaveAttribute(
             'href',
             `/footy/player/${detailsWithNoResponse.playerId}`,
         );
-        expect(screen.getByText((content) => content.includes('No response yet'))).toBeInTheDocument();
-        expect(screen.getByRole('combobox', { name: /Response/i })).toHaveValue('Yes');
+        expect(
+            screen.getByText((content) => content.includes('No response yet')),
+        ).toBeInTheDocument();
+        expect(screen.getByRole('combobox', { name: /Response/i })).toHaveValue(
+            'Yes',
+        );
         expect(screen.getByLabelText(/Goalie/i)).not.toBeChecked();
-        expect(screen.getByRole('button', { name: /Save Response/i })).not.toBeDisabled();
+        expect(
+            screen.getByRole('button', { name: /Save Response/i }),
+        ).not.toBeDisabled();
     });
 
     it('defaults an empty incoming response value to Yes for submission', async () => {
@@ -141,15 +168,23 @@ describe('GameInvitationResponseForm', () => {
             <Wrapper>
                 <GameInvitationResponseForm
                     details={detailsWithEmptyResponse}
-                    onSubmitGameInvitationResponse={mockSubmitGameInvitationResponse}
+                    onSubmitGameInvitationResponse={
+                        mockSubmitGameInvitationResponse
+                    }
                 />
             </Wrapper>,
         );
 
-        expect(screen.getByRole('combobox', { name: /Response/i })).toHaveValue('Yes');
-        expect(screen.getByRole('button', { name: /Save Response/i })).not.toBeDisabled();
+        expect(screen.getByRole('combobox', { name: /Response/i })).toHaveValue(
+            'Yes',
+        );
+        expect(
+            screen.getByRole('button', { name: /Save Response/i }),
+        ).not.toBeDisabled();
 
-        await user.click(screen.getByRole('button', { name: /Save Response/i }));
+        await user.click(
+            screen.getByRole('button', { name: /Save Response/i }),
+        );
 
         await waitFor(() => {
             expect(mockSubmitGameInvitationResponse).toHaveBeenCalledWith({
@@ -162,22 +197,31 @@ describe('GameInvitationResponseForm', () => {
     });
 
     it('shows admin-only responses in the summary but keeps the editable value player-safe', () => {
-        const detailsWithAdminResponse = createMockGameInvitationResponseDetails({
-            response: PlayerResponse.Excused,
-        });
+        const detailsWithAdminResponse =
+            createMockGameInvitationResponseDetails({
+                response: PlayerResponse.Excused,
+            });
 
         render(
             <Wrapper>
                 <GameInvitationResponseForm
                     details={detailsWithAdminResponse}
-                    onSubmitGameInvitationResponse={mockSubmitGameInvitationResponse}
+                    onSubmitGameInvitationResponse={
+                        mockSubmitGameInvitationResponse
+                    }
                 />
             </Wrapper>,
         );
 
-        expect(screen.getByText((content) => content.includes('Excused'))).toBeInTheDocument();
-        expect(screen.getByRole('combobox', { name: /Response/i })).toHaveValue('Yes');
-        expect(screen.getByRole('button', { name: /Save Response/i })).toBeDisabled();
+        expect(
+            screen.getByText((content) => content.includes('Excused')),
+        ).toBeInTheDocument();
+        expect(screen.getByRole('combobox', { name: /Response/i })).toHaveValue(
+            'Yes',
+        );
+        expect(
+            screen.getByRole('button', { name: /Save Response/i }),
+        ).toBeDisabled();
     });
 
     it('submits an updated response', async () => {
@@ -188,16 +232,25 @@ describe('GameInvitationResponseForm', () => {
             <Wrapper>
                 <GameInvitationResponseForm
                     details={defaultGameInvitationResponseDetails}
-                    onSubmitGameInvitationResponse={mockSubmitGameInvitationResponse}
+                    onSubmitGameInvitationResponse={
+                        mockSubmitGameInvitationResponse
+                    }
                 />
             </Wrapper>,
         );
 
         await user.click(screen.getByRole('combobox', { name: /Response/i }));
-        await user.click(await screen.findByRole('option', { name: 'Yes', hidden: true }));
+        await user.click(
+            await screen.findByRole('option', { name: 'Yes', hidden: true }),
+        );
         await user.click(screen.getByLabelText(/Goalie/i));
-        await user.type(screen.getByLabelText(/Optional comment/i), 'Looking forward to it.');
-        await user.click(screen.getByRole('button', { name: /Save Response/i }));
+        await user.type(
+            screen.getByLabelText(/Optional comment/i),
+            'Looking forward to it.',
+        );
+        await user.click(
+            screen.getByRole('button', { name: /Save Response/i }),
+        );
 
         await waitFor(() => {
             expect(mockSubmitGameInvitationResponse).toHaveBeenCalledWith({
@@ -222,7 +275,9 @@ describe('GameInvitationResponseForm', () => {
         const user = userEvent.setup();
         const notificationUpdateSpy = vi.spyOn(notifications, 'update');
         const submitFailure = new Error('Save failed');
-        const failingSubmit = vi.fn<SubmitGameInvitationResponseProxy>().mockRejectedValue(submitFailure);
+        const failingSubmit = vi
+            .fn<SubmitGameInvitationResponseProxy>()
+            .mockRejectedValue(submitFailure);
 
         render(
             <Wrapper>
@@ -234,8 +289,12 @@ describe('GameInvitationResponseForm', () => {
         );
 
         await user.click(screen.getByRole('combobox', { name: /Response/i }));
-        await user.click(await screen.findByRole('option', { name: 'Yes', hidden: true }));
-        await user.click(screen.getByRole('button', { name: /Save Response/i }));
+        await user.click(
+            await screen.findByRole('option', { name: 'Yes', hidden: true }),
+        );
+        await user.click(
+            screen.getByRole('button', { name: /Save Response/i }),
+        );
 
         await waitFor(() => {
             expect(captureUnexpectedError).toHaveBeenCalledWith(
@@ -247,7 +306,8 @@ describe('GameInvitationResponseForm', () => {
                     route: '/footy/game/[id]',
                     extra: {
                         playerId: defaultGameInvitationResponseDetails.playerId,
-                        gameDayId: defaultGameInvitationResponseDetails.gameDayId,
+                        gameDayId:
+                            defaultGameInvitationResponseDetails.gameDayId,
                         response: 'Yes',
                     },
                 }),
@@ -255,18 +315,22 @@ describe('GameInvitationResponseForm', () => {
         });
 
         await waitFor(() => {
-            expect(notificationUpdateSpy).toHaveBeenCalledWith(expect.objectContaining({
-                color: 'red',
-                title: 'Error',
-                message: 'Save failed',
-            }));
+            expect(notificationUpdateSpy).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    color: 'red',
+                    title: 'Error',
+                    message: 'Save failed',
+                }),
+            );
         });
     });
 
     it('shows a default error message when submit fails with a non-Error value', async () => {
         const user = userEvent.setup();
         const notificationUpdateSpy = vi.spyOn(notifications, 'update');
-        const failingSubmit = vi.fn<SubmitGameInvitationResponseProxy>().mockRejectedValue('badness');
+        const failingSubmit = vi
+            .fn<SubmitGameInvitationResponseProxy>()
+            .mockRejectedValue('badness');
 
         render(
             <Wrapper>
@@ -278,19 +342,28 @@ describe('GameInvitationResponseForm', () => {
         );
 
         await user.click(screen.getByRole('combobox', { name: /Response/i }));
-        await user.click(await screen.findByRole('option', { name: 'No', hidden: true }));
-        await user.click(screen.getByRole('button', { name: /Save Response/i }));
+        await user.click(
+            await screen.findByRole('option', { name: 'No', hidden: true }),
+        );
+        await user.click(
+            screen.getByRole('button', { name: /Save Response/i }),
+        );
 
         await waitFor(() => {
-            expect(captureUnexpectedError).toHaveBeenCalledWith('badness', expect.any(Object));
+            expect(captureUnexpectedError).toHaveBeenCalledWith(
+                'badness',
+                expect.any(Object),
+            );
         });
 
         await waitFor(() => {
-            expect(notificationUpdateSpy).toHaveBeenCalledWith(expect.objectContaining({
-                color: 'red',
-                title: 'Error',
-                message: 'Failed to save response',
-            }));
+            expect(notificationUpdateSpy).toHaveBeenCalledWith(
+                expect.objectContaining({
+                    color: 'red',
+                    title: 'Error',
+                    message: 'Failed to save response',
+                }),
+            );
         });
     });
 
@@ -302,12 +375,16 @@ describe('GameInvitationResponseForm', () => {
             <Wrapper>
                 <GameInvitationResponseForm
                     details={defaultGameInvitationResponseDetails}
-                    onSubmitGameInvitationResponse={mockSubmitGameInvitationResponse}
+                    onSubmitGameInvitationResponse={
+                        mockSubmitGameInvitationResponse
+                    }
                 />
             </Wrapper>,
         );
 
-        await user.click(screen.getByRole('button', { name: /Save Response/i }));
+        await user.click(
+            screen.getByRole('button', { name: /Save Response/i }),
+        );
 
         await waitFor(() => {
             expect(mockSubmitGameInvitationResponse).toHaveBeenCalledWith({
@@ -330,14 +407,20 @@ describe('GameInvitationResponseForm', () => {
             <Wrapper>
                 <GameInvitationResponseForm
                     details={detailsWithNoResponse}
-                    onSubmitGameInvitationResponse={mockSubmitGameInvitationResponse}
+                    onSubmitGameInvitationResponse={
+                        mockSubmitGameInvitationResponse
+                    }
                 />
             </Wrapper>,
         );
 
-        expect(screen.getByRole('button', { name: /Save Response/i })).not.toBeDisabled();
+        expect(
+            screen.getByRole('button', { name: /Save Response/i }),
+        ).not.toBeDisabled();
 
-        await user.click(screen.getByRole('button', { name: /Save Response/i }));
+        await user.click(
+            screen.getByRole('button', { name: /Save Response/i }),
+        );
 
         await waitFor(() => {
             expect(mockSubmitGameInvitationResponse).toHaveBeenCalledWith({
@@ -349,8 +432,9 @@ describe('GameInvitationResponseForm', () => {
         });
 
         await waitFor(() => {
-            expect(screen.getByRole('button', { name: /Save Response/i })).toBeDisabled();
+            expect(
+                screen.getByRole('button', { name: /Save Response/i }),
+            ).toBeDisabled();
         });
     });
-
 });

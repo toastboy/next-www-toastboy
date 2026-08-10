@@ -1,7 +1,4 @@
-import {
-    Notification,
-    Text,
-} from '@mantine/core';
+import { Notification, Text } from '@mantine/core';
 import { IconX } from '@tabler/icons-react';
 
 import { config } from '@/lib/config';

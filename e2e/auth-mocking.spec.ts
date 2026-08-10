@@ -1,8 +1,16 @@
-import { asAdmin, asGuest, asUser, mustBeLoggedIn, mustBeLoggedInAsAdmin } from './utils/auth';
+import {
+    asAdmin,
+    asGuest,
+    asUser,
+    mustBeLoggedIn,
+    mustBeLoggedInAsAdmin,
+} from './utils/auth';
 import { expect, test } from './utils/base';
 
 test.describe('Auth Mocking System', () => {
-    test('should show different content for different auth states', async ({ page }) => {
+    test('should show different content for different auth states', async ({
+        page,
+    }) => {
         // Test as guest (no auth)
         await asGuest(page);
         await page.goto('/footy/admin/users');
@@ -22,7 +30,9 @@ test.describe('Auth Mocking System', () => {
         await page.goto('/footy/admin/users');
 
         // Admin should see the users table
-        await expect(page.getByRole('columnheader', { name: 'Name' })).toBeVisible();
+        await expect(
+            page.getByRole('columnheader', { name: 'Name' }),
+        ).toBeVisible();
         await expect(page.getByRole('table')).toBeVisible();
     });
 
@@ -41,7 +51,9 @@ test.describe('Auth Mocking System', () => {
         // Switch to admin
         await asAdmin(page);
         await page.goto('/footy/admin/users');
-        await expect(page.getByRole('columnheader', { name: 'Name' })).toBeVisible();
+        await expect(
+            page.getByRole('columnheader', { name: 'Name' }),
+        ).toBeVisible();
         await expect(page.getByRole('table')).toBeVisible();
 
         // Switch back to guest

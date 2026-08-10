@@ -1,7 +1,4 @@
-
-import {
-    Notification,
-} from '@mantine/core';
+import { Notification } from '@mantine/core';
 import { IconX } from '@tabler/icons-react';
 
 import { updatePlayer } from '@/actions/updatePlayer';
@@ -36,24 +33,31 @@ const Page = async ({ searchParams: sp }: PageProps) => {
 
     if (!playerId) {
         return (
-            <Notification icon={<IconX size={config.notificationIconSize} />} color="red">
+            <Notification
+                icon={<IconX size={config.notificationIconSize} />}
+                color="red"
+            >
                 This account is not linked to a player profile yet.
             </Notification>
         );
     }
 
-    const [player, extraEmails, countries, clubs, allCountries, allClubs] = await Promise.all([
-        playerService.getById(playerId),
-        playerExtraEmailService.getAll(playerId),
-        countrySupporterService.getByPlayer(playerId),
-        clubSupporterService.getByPlayer(playerId),
-        countryService.getAll(),
-        clubService.getAll(),
-    ]);
+    const [player, extraEmails, countries, clubs, allCountries, allClubs] =
+        await Promise.all([
+            playerService.getById(playerId),
+            playerExtraEmailService.getAll(playerId),
+            countrySupporterService.getByPlayer(playerId),
+            clubSupporterService.getByPlayer(playerId),
+            countryService.getAll(),
+            clubService.getAll(),
+        ]);
 
     if (!player) {
         return (
-            <Notification icon={<IconX size={config.notificationIconSize} />} color="red">
+            <Notification
+                icon={<IconX size={config.notificationIconSize} />}
+                color="red"
+            >
                 Failed to load player profile.
             </Notification>
         );

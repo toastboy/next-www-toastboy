@@ -16,7 +16,10 @@ type GetCurrentUser = typeof import('@/lib/auth.server').getCurrentUser;
 interface BeforeDeleteDeps {
     playerService: Pick<typeof playerService, 'anonymise' | 'setFinished'>;
     playerExtraEmailService: Pick<typeof playerExtraEmailService, 'deleteAll'>;
-    emailVerificationService: Pick<typeof emailVerificationService, 'deleteAll'>;
+    emailVerificationService: Pick<
+        typeof emailVerificationService,
+        'deleteAll'
+    >;
     clubSupporterService: Pick<typeof clubSupporterService, 'deleteAll'>;
     countrySupporterService: Pick<typeof countrySupporterService, 'deleteAll'>;
 }
@@ -89,7 +92,7 @@ export async function beforeDeletePlayerCore(
  * @returns {Promise<void>} Resolves when the user has been deleted.
  */
 export async function deletePlayerCore(deps?: DeletePlayerDeps) {
-    const resolvedDeps = deps ?? await createDefaultDeleteDeps();
+    const resolvedDeps = deps ?? (await createDefaultDeleteDeps());
     const user = await resolvedDeps.getCurrentUser();
 
     if (!user) {

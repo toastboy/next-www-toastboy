@@ -1,6 +1,4 @@
-import {
-    Notifications,
-} from '@mantine/notifications';
+import { Notifications } from '@mantine/notifications';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { fn, within } from 'storybook/test';
 
@@ -43,7 +41,10 @@ type Story = StoryObj<typeof meta>;
 
 export const EmptyResponse: Story = {
     args: {
-        details: createMockGameInvitationResponseDetails({ response: null, comment: null }),
+        details: createMockGameInvitationResponseDetails({
+            response: null,
+            comment: null,
+        }),
     },
 };
 
@@ -55,13 +56,27 @@ export const SubmitResponse: Story = {
         if (viewMode === 'docs') return;
 
         const canvas = within(canvasElement);
-        const responseSelect = await canvas.findByRole('combobox', { name: /Response/i });
+        const responseSelect = await canvas.findByRole('combobox', {
+            name: /Response/i,
+        });
         await userEvent.click(responseSelect);
-        const dropdown = await within(canvasElement.ownerDocument.body).findByRole('listbox');
-        await userEvent.click(await within(dropdown).findByRole('option', { name: 'Yes', hidden: true }));
+        const dropdown = await within(
+            canvasElement.ownerDocument.body,
+        ).findByRole('listbox');
+        await userEvent.click(
+            await within(dropdown).findByRole('option', {
+                name: 'Yes',
+                hidden: true,
+            }),
+        );
         await userEvent.click(await canvas.findByLabelText(/Goalie/i));
-        await userEvent.type(await canvas.findByLabelText(/Optional comment/i), 'Count me in.');
-        await userEvent.click(await canvas.findByRole('button', { name: /Save Response/i }));
+        await userEvent.type(
+            await canvas.findByLabelText(/Optional comment/i),
+            'Count me in.',
+        );
+        await userEvent.click(
+            await canvas.findByRole('button', { name: /Save Response/i }),
+        );
 
         const body = canvasElement.ownerDocument.body;
         await within(body).findByText('Response saved', {}, { timeout: 6000 });

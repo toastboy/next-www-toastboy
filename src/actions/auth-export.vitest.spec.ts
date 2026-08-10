@@ -6,12 +6,16 @@ const { requireAdminMock, authExportCoreMock } = vi.hoisted(() => ({
 }));
 
 vi.mock('@/lib/auth.server', () => ({ requireAdmin: requireAdminMock }));
-vi.mock('@/lib/core/authExport', () => ({ authExportCore: authExportCoreMock }));
+vi.mock('@/lib/core/authExport', () => ({
+    authExportCore: authExportCoreMock,
+}));
 
 import { authExport } from '@/actions/auth-export';
 
 describe('authExport action wrapper', () => {
-    beforeEach(() => { vi.clearAllMocks(); });
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
 
     it('calls requireAdmin then delegates to authExportCore', async () => {
         await authExport();

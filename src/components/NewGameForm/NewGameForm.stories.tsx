@@ -1,6 +1,4 @@
-import {
-    Notifications,
-} from '@mantine/notifications';
+import { Notifications } from '@mantine/notifications';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
 import { fn, within } from 'storybook/test';
 
@@ -51,12 +49,23 @@ export const ReadySubmit: Story = {
         );
 
         const canvas = within(canvasElement);
-        await userEvent.click(await canvas.findByLabelText(/Override time check/i));
-        await userEvent.type(await canvas.findByLabelText(/Custom message/i), 'See you soon.');
-        await userEvent.click(await canvas.findByRole('button', { name: /Send invitations/i }));
+        await userEvent.click(
+            await canvas.findByLabelText(/Override time check/i),
+        );
+        await userEvent.type(
+            await canvas.findByLabelText(/Custom message/i),
+            'See you soon.',
+        );
+        await userEvent.click(
+            await canvas.findByRole('button', { name: /Send invitations/i }),
+        );
 
         const body = canvasElement.ownerDocument.body;
-        await within(body).findByText('Invitations ready', {}, { timeout: 6000 });
+        await within(body).findByText(
+            'Invitations ready',
+            {},
+            { timeout: 6000 },
+        );
     },
 };
 
@@ -68,13 +77,22 @@ export const SkippedSubmit: Story = {
         if (viewMode === 'docs') return;
 
         mockTriggerInvitations.mockResolvedValue(
-            createMockInvitationDecision({ status: 'skipped', reason: 'too-early' }),
+            createMockInvitationDecision({
+                status: 'skipped',
+                reason: 'too-early',
+            }),
         );
 
         const canvas = within(canvasElement);
-        await userEvent.click(await canvas.findByRole('button', { name: /Send invitations/i }));
+        await userEvent.click(
+            await canvas.findByRole('button', { name: /Send invitations/i }),
+        );
 
         const body = canvasElement.ownerDocument.body;
-        await within(body).findByText('Invitations skipped', {}, { timeout: 6000 });
+        await within(body).findByText(
+            'Invitations skipped',
+            {},
+            { timeout: 6000 },
+        );
     },
 };

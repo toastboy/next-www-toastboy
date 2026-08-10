@@ -17,6 +17,7 @@ op run --env-file ./.env -- npm run dev     # Starts Prisma generate + Docker Co
 # Build & validation (must pass with zero errors/warnings)
 npm run typecheck
 npm run lint                                # If lint fails, run lint:fix then re-run lint
+npm run format:check                        # If it fails, run `npm run format` then re-run format:check
 op run --env-file ./.env -- npm run build
 
 # Database
@@ -39,20 +40,21 @@ npx playwright test                         # E2E tests (auto-starts dev server,
 npx vitest run --config vitest.services.config.ts path/to/test.ts
 ```
 
-**Policy:** `typecheck`, `lint`, and `build` must all exit with code 0 and report no errors or warnings before any deployment. Test coverage ≥ 90%.
+**Policy:** `typecheck`, `lint`, `format:check`, and `build` must all exit with code 0 and report no errors or warnings before any deployment. Test coverage ≥ 90%.
 
 **Required finalisation checklist — must complete before reporting any task done:**
 
-1. Run `npm run typecheck`, `npm run lint`, and `npx knip`.
+1. Run `npm run typecheck`, `npm run lint`, `npm run format:check`, and `npx knip`.
 2. If there are errors or warnings, fix them all — run `npm run lint:fix` first
-   to auto-fix what lint can, then re-run `npm run lint` to confirm. Do not skip
-   or dismiss any output. Remove any unused files, exports, or dependencies
-   reported by `knip`.
+   to auto-fix what lint can, then `npm run format` to normalise formatting,
+   then re-run `npm run lint` and `npm run format:check` to confirm. Do not
+   skip or dismiss any output. Remove any unused files, exports, or
+   dependencies reported by `knip`.
 3. If you are unsure whether a problem is pre-existing, run `git stash` and
    repeat the checks on the clean tree to establish a baseline, then `git stash
    pop` and fix only the new ones.
-4. Never report work as done while typecheck, lint, or knip exit with a
-   non-zero code or report any errors or warnings.
+4. Never report work as done while typecheck, lint, format:check, or knip
+   exit with a non-zero code or report any errors or warnings.
 
 ## Architecture & Layers
 
@@ -76,6 +78,13 @@ npx vitest run --config vitest.services.config.ts path/to/test.ts
 
 - `@types/d3` is listed in `devDependencies` and `ignoreDependencies` in `knip.json` even though no code imports from `d3` directly. It is kept because it pulls in all the individual `@types/d3-*` sub-packages (e.g. `@types/d3-array`, `@types/d3-axis`) as transitive npm dependencies — removing it silently removes all those type declarations.
 
+### Formatting
+
+- Formatting is enforced by Prettier (`.prettierrc`), not ESLint — `eslint-config-prettier` is the last entry in `eslint.config.mjs` and disables the handful of ESLint rules that would otherwise conflict with it (`semi`, `comma-dangle`, `eol-last`, `operator-linebreak`, `react/jsx-wrap-multilines`). ESLint still owns everything else: import sorting, SonarJS, promise rules, type-aware `@typescript-eslint/*` rules, etc.
+- `.prettierrc`: single quotes, 4-space indent, semicolons, trailing commas wherever valid — otherwise plain Prettier defaults (printWidth 80, double-quoted JSX attributes, etc.). No per-package or per-directory exceptions.
+- `npm run format` to apply, `npm run format:check` to verify (part of the finalisation checklist above).
+- `.prettierignore` excludes generated/vendored files that shouldn't be hand-formatted (`prisma/generated`, `prisma/zod`, `public/mockServiceWorker.js`, `public/countries-110m.json`, `package-lock.json`) and YAML/Markdown, which are out of scope for this tooling and stay hand-maintained.
+
 ### Library usage
 
 When figuring out how to call a library (Mantine, Prisma, Next.js, etc.) — API shape, available props, intended usage pattern — prefer the public documentation over reading the source in `node_modules`. Relying on the source risks depending on undocumented behaviour or implementation details that can change without notice in a patch release. This doesn't apply when actually debugging a concrete issue (e.g. tracing an unexpected error or runtime behaviour) — reading the installed source is often the fastest way to find the real cause there, as with the Mantine Server Component bug documented below.
@@ -86,7 +95,7 @@ When figuring out how to call a library (Mantine, Prisma, Next.js, etc.) — API
 - Same-directory `./` imports are acceptable
 - Always use single quotes for import paths
 - Prepend all backend-only modules with `import 'server-only';`
-- All imports from any `@mantine/*` package must be written multi-line, one specifier per line with a trailing comma, regardless of specifier count or line length (this applies even to a single-specifier import, e.g. `import {\n    Table,\n} from '@mantine/core';`)
+- Import formatting (including `@mantine/*` imports) follows plain Prettier output — no special-casing; see [Formatting](#formatting) below
 - **Always** use Mantine's dot-notation compound components (`Table.Tr`, `Menu.Item`, `AppShell.Header`, `RichTextEditor.Bold`, etc.) exactly as shown in the Mantine docs — do not import the standalone named subcomponent (`TableTr`, `MenuItem`, `AppShellHeader`, `BoldControl`, etc.) instead. This was banned until 2026-08 because a Server Component (no `'use client'`) accessing a dot-notation subcomponent of a `'use client'` package export resolves the property to `undefined` at render time — "Element type is invalid: expected a string ... but got: undefined" — because Server Components only receive an opaque client reference for a `'use client'` export, not the real object, so its static properties aren't accessible. This is a confirmed, still-open limitation of the current Next.js/React Server Components architecture, not a bug in Mantine or this codebase (see [vercel/next.js#84961](https://github.com/vercel/next.js/issues/84961) and the root-cause explanation in [vercel/next.js#75192](https://github.com/vercel/next.js/issues/75192)). It bit `PlayerInfo`, `PlayerResults`, `PlayerPositions`, and `PlayerArse` in July 2026. The ban has since been lifted for `src/components/**`: `local/require-use-client` (see below) now guarantees every file there is a Client Component, so the bug can no longer occur on that tree. **Exception:** `src/app/**/page.tsx` and `layout.tsx` files are genuine Server Components and must stay that way — if one needs to render a Mantine compound component, extract the markup into a `src/components` Client Component and pass data down as props, rather than importing the standalone subcomponent directly in the page.
 
 ### Services Pattern

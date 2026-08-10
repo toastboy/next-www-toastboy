@@ -9,7 +9,9 @@ export const InvitationResponseInputSchema = z.object({
     comment: z.string().max(127).nullish(),
 });
 
-export type InvitationResponseInput = z.infer<typeof InvitationResponseInputSchema>;
+export type InvitationResponseInput = z.infer<
+    typeof InvitationResponseInputSchema
+>;
 
 /**
  * Server action proxy type for the submitGameInvitationResponse action.

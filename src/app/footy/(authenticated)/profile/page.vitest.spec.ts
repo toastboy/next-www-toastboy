@@ -50,7 +50,10 @@ const mockPlayer = createMockPlayer({ id: 7 });
 describe('Profile page', () => {
     beforeEach(() => {
         vi.clearAllMocks();
-        (getCurrentUser as Mock).mockResolvedValue({ playerId: 7, email: 'alice@example.com' });
+        (getCurrentUser as Mock).mockResolvedValue({
+            playerId: 7,
+            email: 'alice@example.com',
+        });
         (playerService.getById as Mock).mockResolvedValue(mockPlayer);
         (playerExtraEmailService.getAll as Mock).mockResolvedValue([]);
         (countrySupporterService.getByPlayer as Mock).mockResolvedValue([]);
@@ -60,11 +63,18 @@ describe('Profile page', () => {
     });
 
     it('renders an error notification when the user has no playerId', async () => {
-        (getCurrentUser as Mock).mockResolvedValue({ playerId: undefined, email: 'alice@example.com' });
+        (getCurrentUser as Mock).mockResolvedValue({
+            playerId: undefined,
+            email: 'alice@example.com',
+        });
 
-        const html = renderToStaticMarkup(await Page({ searchParams: Promise.resolve({}) }));
+        const html = renderToStaticMarkup(
+            await Page({ searchParams: Promise.resolve({}) }),
+        );
 
-        expect(html).toContain('This account is not linked to a player profile yet.');
+        expect(html).toContain(
+            'This account is not linked to a player profile yet.',
+        );
         expect(playerService.getById).not.toHaveBeenCalled();
     });
 
@@ -82,7 +92,9 @@ describe('Profile page', () => {
     it('renders an error notification when the player record cannot be found', async () => {
         (playerService.getById as Mock).mockResolvedValue(null);
 
-        const html = renderToStaticMarkup(await Page({ searchParams: Promise.resolve({}) }));
+        const html = renderToStaticMarkup(
+            await Page({ searchParams: Promise.resolve({}) }),
+        );
 
         expect(html).toContain('Failed to load player profile.');
     });
@@ -94,7 +106,9 @@ describe('Profile page', () => {
         const allCountries = [{ fifaCode: 'ENG', name: 'England' }];
         const allClubs = [{ id: 1, name: 'Arsenal' }];
         (playerExtraEmailService.getAll as Mock).mockResolvedValue(extraEmails);
-        (countrySupporterService.getByPlayer as Mock).mockResolvedValue(countries);
+        (countrySupporterService.getByPlayer as Mock).mockResolvedValue(
+            countries,
+        );
         (clubSupporterService.getByPlayer as Mock).mockResolvedValue(clubs);
         (countryService.getAll as Mock).mockResolvedValue(allCountries);
         (clubService.getAll as Mock).mockResolvedValue(allClubs);
@@ -118,33 +132,53 @@ describe('Profile page', () => {
     });
 
     it('passes verifiedEmail when purpose is "player_email" and email is present', async () => {
-        renderToStaticMarkup(await Page({
-            searchParams: Promise.resolve({ purpose: 'player_email', email: 'verified@example.com' }),
-        }));
+        renderToStaticMarkup(
+            await Page({
+                searchParams: Promise.resolve({
+                    purpose: 'player_email',
+                    email: 'verified@example.com',
+                }),
+            }),
+        );
 
-        const [[props]] = (PlayerProfileForm as Mock).mock.calls as [{ verifiedEmail?: string }][];
+        const [[props]] = (PlayerProfileForm as Mock).mock.calls as [
+            { verifiedEmail?: string },
+        ][];
         expect(props.verifiedEmail).toBe('verified@example.com');
     });
 
     it('passes undefined verifiedEmail for any other purpose value', async () => {
-        renderToStaticMarkup(await Page({
-            searchParams: Promise.resolve({ purpose: 'reset_password', email: 'ignored@example.com' }),
-        }));
+        renderToStaticMarkup(
+            await Page({
+                searchParams: Promise.resolve({
+                    purpose: 'reset_password',
+                    email: 'ignored@example.com',
+                }),
+            }),
+        );
 
-        const [[props]] = (PlayerProfileForm as Mock).mock.calls as [{ verifiedEmail?: string }][];
+        const [[props]] = (PlayerProfileForm as Mock).mock.calls as [
+            { verifiedEmail?: string },
+        ][];
         expect(props.verifiedEmail).toBeUndefined();
     });
 
     it('defaults to no purpose/email when searchParams is not provided', async () => {
         renderToStaticMarkup(await Page({}));
 
-        const [[props]] = (PlayerProfileForm as Mock).mock.calls as [{ verifiedEmail?: string }][];
+        const [[props]] = (PlayerProfileForm as Mock).mock.calls as [
+            { verifiedEmail?: string },
+        ][];
         expect(props.verifiedEmail).toBeUndefined();
     });
 
     it('handles service errors gracefully', async () => {
-        (playerService.getById as Mock).mockRejectedValue(new Error('DB failed'));
+        (playerService.getById as Mock).mockRejectedValue(
+            new Error('DB failed'),
+        );
 
-        await expect(Page({ searchParams: Promise.resolve({}) })).rejects.toThrow('DB failed');
+        await expect(
+            Page({ searchParams: Promise.resolve({}) }),
+        ).rejects.toThrow('DB failed');
     });
 });

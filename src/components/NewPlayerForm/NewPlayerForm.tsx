@@ -15,12 +15,8 @@ import {
     TextInput,
     Title,
 } from '@mantine/core';
-import {
-    useForm,
-} from '@mantine/form';
-import {
-    notifications,
-} from '@mantine/notifications';
+import { useForm } from '@mantine/form';
+import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useRouter } from 'next/navigation';
@@ -32,7 +28,10 @@ import { toPublicMessage } from '@/lib/errors';
 import { captureUnexpectedError } from '@/lib/observability/sentry';
 import { PlayerDataType } from '@/types';
 import type { CreatePlayerProxy } from '@/types/actions/CreatePlayer';
-import { CreatePlayerInput, CreatePlayerSchema } from '@/types/actions/CreatePlayer';
+import {
+    CreatePlayerInput,
+    CreatePlayerSchema,
+} from '@/types/actions/CreatePlayer';
 import type { SendEmailProxy } from '@/types/actions/SendEmail';
 
 export interface Props {
@@ -66,7 +65,9 @@ export const NewPlayerForm = ({
             return player.accountEmail;
         }
         if (!player?.extraEmails.length) return '';
-        const verifiedEmail = player.extraEmails.find((playerEmail) => playerEmail.verified);
+        const verifiedEmail = player.extraEmails.find(
+            (playerEmail) => playerEmail.verified,
+        );
         /* v8 ignore next -- extraEmails[0] always exists (length > 0 checked above) and always has an email property */
         return (verifiedEmail ?? player.extraEmails[0])?.email ?? '';
     };
@@ -91,36 +92,43 @@ export const NewPlayerForm = ({
         });
 
         try {
-            const { player: newPlayer, inviteLink } = await onCreatePlayer(values);
+            const { player: newPlayer, inviteLink } =
+                await onCreatePlayer(values);
 
             if (values.email?.length > 0) {
-                const introducerEmail = values.introducedBy ?
-                    getPreferredEmail(players.find((p) => p.id.toString() === values.introducedBy)) :
-                    '';
+                const introducerEmail = values.introducedBy
+                    ? getPreferredEmail(
+                          players.find(
+                              (p) => p.id.toString() === values.introducedBy,
+                          ),
+                      )
+                    : '';
                 const cc = [introducerEmail, 'footy@toastboy.co.uk']
-                    .filter((e): e is string => !!e).join(', ');
+                    .filter((e): e is string => !!e)
+                    .join(', ');
                 const html = ReactDOMServer.renderToStaticMarkup(
                     <MantineProvider>
                         <Flex direction="column" gap="md">
-                            <Text>
-                                Welcome to Toastboy FC!
-                            </Text>
+                            <Text>Welcome to Toastboy FC!</Text>
                             <Text>
                                 Follow this link to get started:
-                                <Anchor href={inviteLink}>confirm your account</Anchor>
+                                <Anchor href={inviteLink}>
+                                    confirm your account
+                                </Anchor>
                             </Text>
                             <Text>
-                                We look forward to seeing you on the pitch! The games are every Tuesday at 18:00 at Kelsey Kerridge in Cambridge. Please arrive a bit early so you&apos;ve got time to park and pay the day membership.
-
-                                All the details are here:
+                                We look forward to seeing you on the pitch! The
+                                games are every Tuesday at 18:00 at Kelsey
+                                Kerridge in Cambridge. Please arrive a bit early
+                                so you&apos;ve got time to park and pay the day
+                                membership. All the details are here:
                             </Text>
-                            <Anchor href={`https://www.toastboy.co.uk/footy/info`}>
+                            <Anchor
+                                href={`https://www.toastboy.co.uk/footy/info`}
+                            >
                                 Toastboy FC info page
                             </Anchor>
-                            <Text>
-                                Cheers,
-                                Jon
-                            </Text>
+                            <Text>Cheers, Jon</Text>
                         </Flex>
                     </MantineProvider>,
                 );
@@ -161,7 +169,9 @@ export const NewPlayerForm = ({
                 title: 'Error',
                 message: toPublicMessage(
                     err,
-                    err instanceof Error ? String(err) : 'Failed to create player.',
+                    err instanceof Error
+                        ? String(err)
+                        : 'Failed to create player.',
                 ),
                 icon: <IconAlertTriangle size={config.notificationIconSize} />,
                 loading: false,
@@ -172,10 +182,12 @@ export const NewPlayerForm = ({
     };
 
     const introducers = [
-        ...players.map((player) => ({
-            label: player.name ?? '',
-            value: player.id.toString(),
-        })).sort((a, b) => a.label.localeCompare(b.label)),
+        ...players
+            .map((player) => ({
+                label: player.name ?? '',
+                value: player.id.toString(),
+            }))
+            .sort((a, b) => a.label.localeCompare(b.label)),
     ];
 
     return (
@@ -212,7 +224,9 @@ export const NewPlayerForm = ({
                             searchable
                             clearable
                             nothingFoundMessage="No matching player"
-                            onChange={(value) => form.setFieldValue('introducedBy', value ?? '')}
+                            onChange={(value) =>
+                                form.setFieldValue('introducedBy', value ?? '')
+                            }
                         />
 
                         <Button type="submit" mt="md">

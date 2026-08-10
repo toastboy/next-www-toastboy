@@ -3,15 +3,15 @@ import { TableName, TableNameSchema } from 'prisma/zod/schemas';
 import { config } from '@/lib/config';
 
 export function getYearName(year: number): string {
-    return year == 0 ? "All-time" : year.toString();
+    return year == 0 ? 'All-time' : year.toString();
 }
 
 export const rankMap: Record<TableName, [string, string | undefined]> = {
-    points: ["rankPoints", undefined],
-    averages: ["rankAverages", "rankAveragesUnqualified"],
-    stalwart: ["rankStalwart", undefined],
-    speedy: ["rankSpeedy", "rankSpeedyUnqualified"],
-    pub: ["rankPub", undefined],
+    points: ['rankPoints', undefined],
+    averages: ['rankAverages', 'rankAveragesUnqualified'],
+    stalwart: ['rankStalwart', undefined],
+    speedy: ['rankSpeedy', 'rankSpeedyUnqualified'],
+    pub: ['rankPub', undefined],
 };
 
 export function ShortTableTitle(table: TableName): string {

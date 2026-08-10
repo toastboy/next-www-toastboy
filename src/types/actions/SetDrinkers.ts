@@ -16,6 +16,8 @@ export interface SetDrinkersResult {
     gameDayId: number;
     updated: number;
     drinkers: number;
-};
+}
 
-export type SetDrinkersProxy = (data: SetDrinkersInput) => Promise<SetDrinkersResult>;
+export type SetDrinkersProxy = (
+    data: SetDrinkersInput,
+) => Promise<SetDrinkersResult>;

@@ -11,7 +11,6 @@ import {
     EmailVerificationWriteInputSchema,
 } from '@/types/EmailVerificationStrictSchema';
 
-
 class EmailVerificationService {
     /**
      * Hashes a verification token for lookup and persistence.
@@ -31,7 +30,9 @@ class EmailVerificationService {
      * @param data - Write payload containing `email`, `token`, and expiry metadata.
      * @returns The created email-verification row.
      */
-    async create(data: EmailVerificationWriteInput): Promise<EmailVerificationType> {
+    async create(
+        data: EmailVerificationWriteInput,
+    ): Promise<EmailVerificationType> {
         const writeData = EmailVerificationWriteInputSchema.parse(data);
         const tokenHash = this.getTokenHash(writeData.token);
         const args = EmailVerificationCreateOneStrictSchema.parse({
@@ -53,7 +54,9 @@ class EmailVerificationService {
      */
     async getByToken(token: string): Promise<EmailVerificationType | null> {
         const tokenHash = this.getTokenHash(token);
-        const where = EmailVerificationWhereUniqueInputObjectSchema.parse({ tokenHash });
+        const where = EmailVerificationWhereUniqueInputObjectSchema.parse({
+            tokenHash,
+        });
         return prisma.emailVerification.findUnique({ where });
     }
 
@@ -67,7 +70,9 @@ class EmailVerificationService {
      * @returns The updated email-verification row.
      */
     async markUsed(token: string): Promise<EmailVerificationType> {
-        const validatedInput = EmailVerificationMarkUsedInputSchema.parse({ token });
+        const validatedInput = EmailVerificationMarkUsedInputSchema.parse({
+            token,
+        });
         const tokenHash = this.getTokenHash(validatedInput.token);
         const args = EmailVerificationUpdateOneStrictSchema.parse({
             where: { tokenHash },

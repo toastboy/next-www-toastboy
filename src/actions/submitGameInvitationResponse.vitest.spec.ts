@@ -1,6 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { revalidatePathMock, broadcastMock, submitGameInvitationResponseCoreMock } = vi.hoisted(() => ({
+const {
+    revalidatePathMock,
+    broadcastMock,
+    submitGameInvitationResponseCoreMock,
+} = vi.hoisted(() => ({
     revalidatePathMock: vi.fn(),
     broadcastMock: vi.fn(),
     submitGameInvitationResponseCoreMock: vi.fn(),
@@ -23,14 +27,20 @@ const validInput = {
 };
 
 describe('submitGameInvitationResponse action wrapper', () => {
-    beforeEach(() => { vi.clearAllMocks(); });
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
 
     it('validates input, delegates to core, revalidates picker/responses/response paths, and broadcasts Responses channel', async () => {
         await submitGameInvitationResponse(validInput);
 
-        expect(submitGameInvitationResponseCoreMock).toHaveBeenCalledWith(validInput);
+        expect(submitGameInvitationResponseCoreMock).toHaveBeenCalledWith(
+            validInput,
+        );
         expect(revalidatePathMock).toHaveBeenCalledWith('/footy/admin/picker');
-        expect(revalidatePathMock).toHaveBeenCalledWith('/footy/admin/responses');
+        expect(revalidatePathMock).toHaveBeenCalledWith(
+            '/footy/admin/responses',
+        );
         expect(revalidatePathMock).toHaveBeenCalledWith('/footy/response');
         expect(broadcastMock).toHaveBeenCalledWith(FootyChannel.Responses);
     });
@@ -45,7 +55,9 @@ describe('submitGameInvitationResponse action wrapper', () => {
     });
 
     it('propagates ZodError when input validation fails without revalidating', async () => {
-        await expect(submitGameInvitationResponse({ ...validInput, token: '' })).rejects.toThrow();
+        await expect(
+            submitGameInvitationResponse({ ...validInput, token: '' }),
+        ).rejects.toThrow();
         expect(submitGameInvitationResponseCoreMock).not.toHaveBeenCalled();
         expect(revalidatePathMock).not.toHaveBeenCalled();
         expect(broadcastMock).not.toHaveBeenCalled();

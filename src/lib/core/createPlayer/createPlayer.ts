@@ -71,7 +71,9 @@ export async function createPlayerCore(
     const name = data.name.trim();
     const introducedBy = data.introducedBy.trim();
     const introducedById = introducedBy ? Number(introducedBy) : null;
-    const accountEmail = data.email?.trim() ? data.email.trim().toLowerCase() : null;
+    const accountEmail = data.email?.trim()
+        ? data.email.trim().toLowerCase()
+        : null;
 
     if (introducedBy && Number.isNaN(introducedById)) {
         throw new ValidationError('Introducer must be a number.');

@@ -14,13 +14,15 @@ import {
     Title,
     UnstyledButton,
 } from '@mantine/core';
+import { useForm } from '@mantine/form';
+import { notifications } from '@mantine/notifications';
 import {
-    useForm,
-} from '@mantine/form';
-import {
-    notifications,
-} from '@mantine/notifications';
-import { IconAlertTriangle, IconCheck, IconChevronDown, IconChevronUp, IconSelector } from '@tabler/icons-react';
+    IconAlertTriangle,
+    IconCheck,
+    IconChevronDown,
+    IconChevronUp,
+    IconSelector,
+} from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
 import { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 import { useMemo, useState } from 'react';
@@ -69,11 +71,23 @@ export const PickerForm = ({
         data.sort((a, b) => {
             switch (sortKey) {
                 case 'name':
-                    return compareNullableString(a.player.name, b.player.name, sortDirection);
+                    return compareNullableString(
+                        a.player.name,
+                        b.player.name,
+                        sortDirection,
+                    );
                 case 'responseTime':
-                    return compareNullableNumber(a.responseInterval, b.responseInterval, sortDirection);
+                    return compareNullableNumber(
+                        a.responseInterval,
+                        b.responseInterval,
+                        sortDirection,
+                    );
                 case 'gamesPlayed':
-                    return compareNullableNumber(a.gamesPlayed, b.gamesPlayed, sortDirection);
+                    return compareNullableNumber(
+                        a.gamesPlayed,
+                        b.gamesPlayed,
+                        sortDirection,
+                    );
                 /* v8 ignore next 2 -- SortKey is a union type; default is unreachable */
                 default:
                     return 0;
@@ -82,41 +96,71 @@ export const PickerForm = ({
         return data;
     }, [eligiblePlayers, sortKey, sortDirection]);
 
-    const selectedIdSet = useMemo(() => new Set(form.values.selectedIds), [form.values.selectedIds]);
-    const filteredSelectedCount = useMemo(() => (
-        eligiblePlayers.reduce((acc, row) => (selectedIdSet.has(row.playerId) ? acc + 1 : acc), 0)
-    ), [eligiblePlayers, selectedIdSet]);
+    const selectedIdSet = useMemo(
+        () => new Set(form.values.selectedIds),
+        [form.values.selectedIds],
+    );
+    const filteredSelectedCount = useMemo(
+        () =>
+            eligiblePlayers.reduce(
+                (acc, row) => (selectedIdSet.has(row.playerId) ? acc + 1 : acc),
+                0,
+            ),
+        [eligiblePlayers, selectedIdSet],
+    );
 
-    const allSelected = eligiblePlayers.length > 0 && filteredSelectedCount === eligiblePlayers.length;
+    const allSelected =
+        eligiblePlayers.length > 0 &&
+        filteredSelectedCount === eligiblePlayers.length;
     const someSelected = filteredSelectedCount > 0 && !allSelected;
     const hasSelection = filteredSelectedCount > 0;
 
-    const selectedPlayers = useMemo(() => (
-        eligiblePlayers.filter((player) => selectedIdSet.has(player.playerId))
-    ), [eligiblePlayers, selectedIdSet]);
+    const selectedPlayers = useMemo(
+        () =>
+            eligiblePlayers.filter((player) =>
+                selectedIdSet.has(player.playerId),
+            ),
+        [eligiblePlayers, selectedIdSet],
+    );
 
     const toggleSelectAll = (checked: boolean) => {
         if (checked) {
-            form.setFieldValue('selectedIds', Array.from(new Set([
-                ...form.values.selectedIds,
-                ...eligiblePlayers.map((player) => player.playerId),
-            ])));
+            form.setFieldValue(
+                'selectedIds',
+                Array.from(
+                    new Set([
+                        ...form.values.selectedIds,
+                        ...eligiblePlayers.map((player) => player.playerId),
+                    ]),
+                ),
+            );
             return;
         }
 
-        const eligibleIdSet = new Set(eligiblePlayers.map((player) => player.playerId));
-        form.setFieldValue('selectedIds', form.values.selectedIds.filter((id) => !eligibleIdSet.has(id)));
+        const eligibleIdSet = new Set(
+            eligiblePlayers.map((player) => player.playerId),
+        );
+        form.setFieldValue(
+            'selectedIds',
+            form.values.selectedIds.filter((id) => !eligibleIdSet.has(id)),
+        );
     };
 
     const toggleSelectPlayer = (playerId: number, checked: boolean) => {
         if (checked) {
             /* v8 ignore next -- defensive guard against duplicate adds; normal checkbox behaviour never fires checked=true when already selected */
-            form.setFieldValue('selectedIds', form.values.selectedIds.includes(playerId) ?
-                form.values.selectedIds :
-                [...form.values.selectedIds, playerId]);
+            form.setFieldValue(
+                'selectedIds',
+                form.values.selectedIds.includes(playerId)
+                    ? form.values.selectedIds
+                    : [...form.values.selectedIds, playerId],
+            );
             return;
         }
-        form.setFieldValue('selectedIds', form.values.selectedIds.filter((id) => id !== playerId));
+        form.setFieldValue(
+            'selectedIds',
+            form.values.selectedIds.filter((id) => id !== playerId),
+        );
     };
 
     const handleSort = (key: SortKey) => {
@@ -130,7 +174,11 @@ export const PickerForm = ({
 
     const getSortIcon = (key: SortKey) => {
         if (key !== sortKey) return <IconSelector size={14} />;
-        return sortDirection === 'asc' ? <IconChevronUp size={14} /> : <IconChevronDown size={14} />;
+        return sortDirection === 'asc' ? (
+            <IconChevronUp size={14} />
+        ) : (
+            <IconChevronDown size={14} />
+        );
     };
 
     const renderSortHeader = (label: string, key: SortKey) => (
@@ -186,7 +234,10 @@ export const PickerForm = ({
 
             router.push(`/footy/game/${gameDay.id}`);
         } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : 'Failed to submit selection';
+            const errorMessage =
+                err instanceof Error
+                    ? err.message
+                    : 'Failed to submit selection';
             notifications.update({
                 id: notificationId,
                 color: 'red',
@@ -215,24 +266,27 @@ export const PickerForm = ({
 
         setIsSettingEnabled(true);
         try {
-            await setGameEnabled(
-                {
-                    gameDayId: gameDay.id,
-                    game: !gameDay.game,
-                    reason: form.values.reason,
-                },
-            );
+            await setGameEnabled({
+                gameDayId: gameDay.id,
+                game: !gameDay.game,
+                reason: form.values.reason,
+            });
             notifications.update({
                 id: notificationId,
                 color: 'teal',
                 title: gameDay.game ? 'Game cancelled' : 'Game reinstated',
-                message: gameDay.game ? 'The game has been marked as cancelled.' : 'The game has been reinstated.',
+                message: gameDay.game
+                    ? 'The game has been marked as cancelled.'
+                    : 'The game has been reinstated.',
                 icon: <IconCheck size={config.notificationIconSize} />,
                 loading: false,
                 autoClose: config.notificationAutoClose,
             });
         } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : 'Failed to set game status';
+            const errorMessage =
+                err instanceof Error
+                    ? err.message
+                    : 'Failed to set game status';
             notifications.update({
                 id: notificationId,
                 color: 'red',
@@ -256,12 +310,19 @@ export const PickerForm = ({
                 <Table.Td w="2.5rem">
                     <Checkbox
                         checked={selectedIdSet.has(player.playerId)}
-                        onChange={(event) => toggleSelectPlayer(player.playerId, event.currentTarget.checked)}
+                        onChange={(event) =>
+                            toggleSelectPlayer(
+                                player.playerId,
+                                event.currentTarget.checked,
+                            )
+                        }
                         aria-label={`Select ${playerName}`}
                     />
                 </Table.Td>
                 <Table.Td>{playerName}</Table.Td>
-                <Table.Td>{formatResponseInterval(player.responseInterval ?? null)}</Table.Td>
+                <Table.Td>
+                    {formatResponseInterval(player.responseInterval ?? null)}
+                </Table.Td>
                 <Table.Td>{player.gamesPlayed}</Table.Td>
             </Table.Tr>
         );
@@ -281,7 +342,10 @@ export const PickerForm = ({
                     Pick sides
                 </Button>
             </Group>
-            <Table.ScrollContainer minWidth={480} scrollAreaProps={{ type: 'auto' }}>
+            <Table.ScrollContainer
+                minWidth={480}
+                scrollAreaProps={{ type: 'auto' }}
+            >
                 <Table
                     striped
                     highlightOnHover
@@ -296,28 +360,59 @@ export const PickerForm = ({
                                 <Checkbox
                                     checked={allSelected}
                                     indeterminate={someSelected}
-                                    onChange={(event) => toggleSelectAll(event.currentTarget.checked)}
+                                    onChange={(event) =>
+                                        toggleSelectAll(
+                                            event.currentTarget.checked,
+                                        )
+                                    }
                                     aria-label="Select all players"
                                 />
                             </Table.Th>
-                            <Table.Th aria-sort={sortKey === 'name' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
+                            <Table.Th
+                                aria-sort={
+                                    sortKey === 'name'
+                                        ? sortDirection === 'asc'
+                                            ? 'ascending'
+                                            : 'descending'
+                                        : 'none'
+                                }
+                            >
                                 {renderSortHeader('Player', 'name')}
                             </Table.Th>
-                            <Table.Th aria-sort={sortKey === 'responseTime' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
-                                {renderSortHeader('Response time', 'responseTime')}
+                            <Table.Th
+                                aria-sort={
+                                    sortKey === 'responseTime'
+                                        ? sortDirection === 'asc'
+                                            ? 'ascending'
+                                            : 'descending'
+                                        : 'none'
+                                }
+                            >
+                                {renderSortHeader(
+                                    'Response time',
+                                    'responseTime',
+                                )}
                             </Table.Th>
-                            <Table.Th aria-sort={sortKey === 'gamesPlayed' ? (sortDirection === 'asc' ? 'ascending' : 'descending') : 'none'}>
-                                {renderSortHeader('Total games played', 'gamesPlayed')}
+                            <Table.Th
+                                aria-sort={
+                                    sortKey === 'gamesPlayed'
+                                        ? sortDirection === 'asc'
+                                            ? 'ascending'
+                                            : 'descending'
+                                        : 'none'
+                                }
+                            >
+                                {renderSortHeader(
+                                    'Total games played',
+                                    'gamesPlayed',
+                                )}
                             </Table.Th>
                         </Table.Tr>
                     </Table.Thead>
                     <Table.Tbody>{rows}</Table.Tbody>
                 </Table>
             </Table.ScrollContainer>
-            <Divider
-                label="or"
-                labelPosition="center"
-            />
+            <Divider label="or" labelPosition="center" />
         </>
     );
 
@@ -328,24 +423,28 @@ export const PickerForm = ({
                 <Stack gap="md">
                     <Stack align="flex-start" gap="xs">
                         <Title order={2}>Picker</Title>
-                        <Text c="dimmed">Game {gameDay.id}: {formatDate(gameDay.date)}</Text>
+                        <Text c="dimmed">
+                            Game {gameDay.id}: {formatDate(gameDay.date)}
+                        </Text>
                     </Stack>
                     {gameDay.game ? picker : null}
-                    <Group
-                        justify="space-between"
-                        align="center"
-                        wrap="wrap"
-                    >
+                    <Group justify="space-between" align="center" wrap="wrap">
                         <TextInput
-                            aria-label={gameDay.game ? "Cancellation reason" : "Reinstatement reason"}
-                            placeholder={gameDay.game ? "not enough players" : ""}
+                            aria-label={
+                                gameDay.game
+                                    ? 'Cancellation reason'
+                                    : 'Reinstatement reason'
+                            }
+                            placeholder={
+                                gameDay.game ? 'not enough players' : ''
+                            }
                             {...form.getInputProps('reason')}
                             disabled={isSubmitting || isSettingEnabled}
                             flex={1}
                         />
                         <Button
                             type="button"
-                            color={gameDay.game ? "red" : "green"}
+                            color={gameDay.game ? 'red' : 'green'}
                             onClick={handleSetGameEnabled}
                             loading={isSettingEnabled}
                             disabled={isSubmitting || isSettingEnabled}
@@ -396,7 +495,9 @@ const formatResponseInterval = (seconds: number | null | undefined) => {
     const hours = Math.floor(minutes / 60);
     const remainingMinutes = minutes % 60;
     if (hours < 24) {
-        return remainingMinutes ? `${hours}h ${remainingMinutes}m` : `${hours}h`;
+        return remainingMinutes
+            ? `${hours}h ${remainingMinutes}m`
+            : `${hours}h`;
     }
 
     const days = Math.floor(hours / 24);
@@ -404,14 +505,23 @@ const formatResponseInterval = (seconds: number | null | undefined) => {
     return remainingHours ? `${days}d ${remainingHours}h` : `${days}d`;
 };
 
-const getPlayerName = (row: PickerPlayerType) => row.player.name ?? `Player ${row.playerId}`;
+const getPlayerName = (row: PickerPlayerType) =>
+    row.player.name ?? `Player ${row.playerId}`;
 
 const buildDefaultSelection = (rows: PickerPlayerType[], maxSelected = 12) => {
     if (!rows.length) return [];
     const sorted = [...rows].sort((a, b) => {
-        const responseCompare = compareNullableNumber(a.responseInterval, b.responseInterval, 'asc');
+        const responseCompare = compareNullableNumber(
+            a.responseInterval,
+            b.responseInterval,
+            'asc',
+        );
         if (responseCompare !== 0) return responseCompare;
-        const nameCompare = compareNullableString(a.player.name, b.player.name, 'asc');
+        const nameCompare = compareNullableString(
+            a.player.name,
+            b.player.name,
+            'asc',
+        );
         if (nameCompare !== 0) return nameCompare;
         return a.playerId - b.playerId;
     });

@@ -15,7 +15,9 @@ describe('Sign In page', () => {
     });
 
     it('renders the SignIn component with a default redirect to /footy/profile', async () => {
-        renderToStaticMarkup(await SignInPage({ searchParams: Promise.resolve({}) }));
+        renderToStaticMarkup(
+            await SignInPage({ searchParams: Promise.resolve({}) }),
+        );
 
         expect(SignIn).toHaveBeenCalledWith(
             { redirect: '/footy/profile', admin: undefined },
@@ -24,30 +26,54 @@ describe('Sign In page', () => {
     });
 
     it('passes through a custom redirect param', async () => {
-        renderToStaticMarkup(await SignInPage({ searchParams: Promise.resolve({ redirect: '/footy/games' }) }));
+        renderToStaticMarkup(
+            await SignInPage({
+                searchParams: Promise.resolve({ redirect: '/footy/games' }),
+            }),
+        );
 
-        const [[props]] = (SignIn as Mock).mock.calls as [{ redirect: string }][];
+        const [[props]] = (SignIn as Mock).mock.calls as [
+            { redirect: string },
+        ][];
         expect(props.redirect).toBe('/footy/games');
     });
 
     it('parses admin=true into a boolean true', async () => {
-        renderToStaticMarkup(await SignInPage({ searchParams: Promise.resolve({ admin: 'true' }) }));
+        renderToStaticMarkup(
+            await SignInPage({
+                searchParams: Promise.resolve({ admin: 'true' }),
+            }),
+        );
 
-        const [[props]] = (SignIn as Mock).mock.calls as [{ admin?: boolean }][];
+        const [[props]] = (SignIn as Mock).mock.calls as [
+            { admin?: boolean },
+        ][];
         expect(props.admin).toBe(true);
     });
 
     it('parses admin=false into a boolean false', async () => {
-        renderToStaticMarkup(await SignInPage({ searchParams: Promise.resolve({ admin: 'false' }) }));
+        renderToStaticMarkup(
+            await SignInPage({
+                searchParams: Promise.resolve({ admin: 'false' }),
+            }),
+        );
 
-        const [[props]] = (SignIn as Mock).mock.calls as [{ admin?: boolean }][];
+        const [[props]] = (SignIn as Mock).mock.calls as [
+            { admin?: boolean },
+        ][];
         expect(props.admin).toBe(false);
     });
 
     it('leaves admin undefined when the param is absent or unrecognised', async () => {
-        renderToStaticMarkup(await SignInPage({ searchParams: Promise.resolve({ admin: 'nonsense' }) }));
+        renderToStaticMarkup(
+            await SignInPage({
+                searchParams: Promise.resolve({ admin: 'nonsense' }),
+            }),
+        );
 
-        const [[props]] = (SignIn as Mock).mock.calls as [{ admin?: boolean }][];
+        const [[props]] = (SignIn as Mock).mock.calls as [
+            { admin?: boolean },
+        ][];
         expect(props.admin).toBeUndefined();
     });
 });

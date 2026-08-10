@@ -14,6 +14,9 @@ describe('ClubBadge', () => {
 
         const img = screen.getByRole('img', { name: defaultClub.clubName });
         expect(img).toBeInTheDocument();
-        expect(img).toHaveAttribute('src', `/api/footy/club/${defaultClub.id}/badge`);
+        expect(img).toHaveAttribute(
+            'src',
+            `/api/footy/club/${defaultClub.id}/badge`,
+        );
     });
 });

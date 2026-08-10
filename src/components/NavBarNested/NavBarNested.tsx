@@ -1,9 +1,6 @@
-"use client";
+'use client';
 
-import {
-    Box,
-    ScrollArea,
-} from '@mantine/core';
+import { Box, ScrollArea } from '@mantine/core';
 
 import { UserButton } from '@/components/UserButton/UserButton';
 import { AuthUserSummary } from '@/types/AuthUser';
@@ -19,140 +16,140 @@ export interface Props {
 export const NavBarNested = ({ user }: Props) => {
     const links = [
         {
-            "label": "Games",
-            "initiallyOpened": true,
-            "links": [
+            label: 'Games',
+            initiallyOpened: true,
+            links: [
                 {
-                    "label": "Next Game",
-                    "link": "/footy/nextgame",
+                    label: 'Next Game',
+                    link: '/footy/nextgame',
                 },
                 {
-                    "label": "Results",
-                    "link": "/footy/results",
+                    label: 'Results',
+                    link: '/footy/results',
                 },
                 {
-                    "label": "Fixtures",
-                    "link": "/footy/fixtures",
+                    label: 'Fixtures',
+                    link: '/footy/fixtures',
                 },
                 {
-                    "label": "Books",
-                    "link": "/footy/books",
+                    label: 'Books',
+                    link: '/footy/books',
                 },
                 {
-                    "label": "Curse of the Bibs",
-                    "link": "/footy/curse",
-                },
-            ],
-        },
-        {
-            "label": "Tables",
-            "initiallyOpened": true,
-            "links": [
-                {
-                    "label": "Winners",
-                    "link": "/footy/winners",
-                },
-                {
-                    "label": "Points",
-                    "link": "/footy/points",
-                },
-                {
-                    "label": "Averages",
-                    "link": "/footy/averages",
-                },
-                {
-                    "label": "Stalwart Standings",
-                    "link": "/footy/stalwart",
-                },
-                {
-                    "label": "Captain Speedy",
-                    "link": "/footy/speedy",
-                },
-                {
-                    "label": "Pub",
-                    "link": "/footy/pub",
+                    label: 'Curse of the Bibs',
+                    link: '/footy/curse',
                 },
             ],
         },
         {
-            "label": "Players",
-            "initiallyOpened": true,
-            "links": [
+            label: 'Tables',
+            initiallyOpened: true,
+            links: [
                 {
-                    "label": "Info",
-                    "link": "/footy/info",
+                    label: 'Winners',
+                    link: '/footy/winners',
                 },
                 {
-                    "label": "Player List",
-                    "link": "/footy/players",
+                    label: 'Points',
+                    link: '/footy/points',
                 },
                 {
-                    "label": "Turnout",
-                    "link": "/footy/turnout",
+                    label: 'Averages',
+                    link: '/footy/averages',
                 },
                 {
-                    "label": "Rules",
-                    "link": "/footy/rules",
+                    label: 'Stalwart Standings',
+                    link: '/footy/stalwart',
                 },
                 {
-                    "label": "World Map",
-                    "link": "/footy/countrymap",
+                    label: 'Captain Speedy',
+                    link: '/footy/speedy',
                 },
                 {
-                    "label": "Family Tree",
-                    "link": "/footy/familytree",
+                    label: 'Pub',
+                    link: '/footy/pub',
+                },
+            ],
+        },
+        {
+            label: 'Players',
+            initiallyOpened: true,
+            links: [
+                {
+                    label: 'Info',
+                    link: '/footy/info',
+                },
+                {
+                    label: 'Player List',
+                    link: '/footy/players',
+                },
+                {
+                    label: 'Turnout',
+                    link: '/footy/turnout',
+                },
+                {
+                    label: 'Rules',
+                    link: '/footy/rules',
+                },
+                {
+                    label: 'World Map',
+                    link: '/footy/countrymap',
+                },
+                {
+                    label: 'Family Tree',
+                    link: '/footy/familytree',
                 },
             ],
         },
     ];
     const adminLinks = [
         {
-            "label": "Admin",
-            "initiallyOpened": true,
-            "links": [
+            label: 'Admin',
+            initiallyOpened: true,
+            links: [
                 {
-                    "label": "Dashboard",
-                    "link": "/footy/admin",
+                    label: 'Dashboard',
+                    link: '/footy/admin',
                 },
                 {
-                    "label": "Drinkers",
-                    "link": "/footy/admin/drinkers",
+                    label: 'Drinkers',
+                    link: '/footy/admin/drinkers',
                 },
                 {
-                    "label": "Invoice",
-                    "link": "/footy/admin/invoice",
+                    label: 'Invoice',
+                    link: '/footy/admin/invoice',
                 },
                 {
-                    "label": "Money",
-                    "link": "/footy/admin/money",
+                    label: 'Money',
+                    link: '/footy/admin/money',
                 },
                 {
-                    "label": "More Games",
-                    "link": "/footy/admin/moregames",
+                    label: 'More Games',
+                    link: '/footy/admin/moregames',
                 },
                 {
-                    "label": "New Game",
-                    "link": "/footy/admin/newgame",
+                    label: 'New Game',
+                    link: '/footy/admin/newgame',
                 },
                 {
-                    "label": "New Player",
-                    "link": "/footy/admin/newplayer",
+                    label: 'New Player',
+                    link: '/footy/admin/newplayer',
                 },
                 {
-                    "label": "Picker",
-                    "link": "/footy/admin/picker",
+                    label: 'Picker',
+                    link: '/footy/admin/picker',
                 },
                 {
-                    "label": "Players",
-                    "link": "/footy/admin/players",
+                    label: 'Players',
+                    link: '/footy/admin/players',
                 },
                 {
-                    "label": "Responses",
-                    "link": "/footy/admin/responses",
+                    label: 'Responses',
+                    link: '/footy/admin/responses',
                 },
                 {
-                    "label": "Users",
-                    "link": "/footy/admin/users",
+                    label: 'Users',
+                    link: '/footy/admin/users',
                 },
             ],
         },
@@ -160,21 +157,36 @@ export const NavBarNested = ({ user }: Props) => {
 
     return (
         <Box role="navigation" className={classes.navbar}>
-            <Box className={classes.header} role="region" aria-label="Navbar header">
-            </Box>
+            <Box
+                className={classes.header}
+                role="region"
+                aria-label="Navbar header"
+            ></Box>
 
-            <ScrollArea className={classes.links} role="region" aria-label="Navbar links">
+            <ScrollArea
+                className={classes.links}
+                role="region"
+                aria-label="Navbar links"
+            >
                 <Box className={classes.linksInner}>
-                    {links.map((item) => <NavBarLinksGroup {...item} key={item.label} />)}
+                    {links.map((item) => (
+                        <NavBarLinksGroup {...item} key={item.label} />
+                    ))}
                 </Box>
                 {user?.role === 'admin' && (
                     <Box className={classes.linksInner}>
-                        {adminLinks.map((item) => <NavBarLinksGroup {...item} key={item.label} />)}
+                        {adminLinks.map((item) => (
+                            <NavBarLinksGroup {...item} key={item.label} />
+                        ))}
                     </Box>
                 )}
             </ScrollArea>
 
-            <Box className={classes.footer} role="region" aria-label="Navbar footer">
+            <Box
+                className={classes.footer}
+                role="region"
+                aria-label="Navbar footer"
+            >
                 <UserButton user={user} />
             </Box>
         </Box>

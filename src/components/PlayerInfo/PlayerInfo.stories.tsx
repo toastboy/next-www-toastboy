@@ -35,7 +35,9 @@ export const Full: Story = {
         isAdmin: true,
         playerData: defaultPlayerEmailData,
         onSendEmail: async (mailOptions) => {
-            console.log(`Sending email with subject "${mailOptions.subject ?? ''}"`);
+            console.log(
+                `Sending email with subject "${mailOptions.subject ?? ''}"`,
+            );
             return Promise.resolve();
         },
     },

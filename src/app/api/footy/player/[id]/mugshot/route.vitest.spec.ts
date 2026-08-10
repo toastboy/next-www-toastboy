@@ -15,9 +15,15 @@ import { defaultPlayer } from '@/tests/mocks/data/player';
 import { loadBinaryFixture } from '@/tests/shared/fixtures';
 
 const testRoute = '/api/footy/player/1/mugshot';
-const mockApp = createMockApp(GET, { path: testRoute, params: Promise.resolve({ id: "1" }) }, pngResponseHandler);
+const mockApp = createMockApp(
+    GET,
+    { path: testRoute, params: Promise.resolve({ id: '1' }) },
+    pngResponseHandler,
+);
 const containerClient = azureCache.getContainerClient('mugshots');
-const blobClient = containerClient.getBlobClient('manofmystery.jpg') as unknown as {
+const blobClient = containerClient.getBlobClient(
+    'manofmystery.jpg',
+) as unknown as {
     exists: Mock;
     download: Mock;
 };
@@ -26,14 +32,15 @@ describe('API tests using HTTP', () => {
     it('should return PNG response for a valid club', async () => {
         const mockBuffer = loadBinaryFixture('mocks/data/football.png');
 
-        (blobClient.exists).mockResolvedValue(true);
-        (blobClient.download).mockResolvedValue({
+        blobClient.exists.mockResolvedValue(true);
+        blobClient.download.mockResolvedValue({
             readableStreamBody: Readable.from([mockBuffer]),
         });
 
         const response = await request(mockApp).get(testRoute);
 
-        if (response.status !== 200) console.log('Error response:', response.error);
+        if (response.status !== 200)
+            console.log('Error response:', response.error);
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('image/png');
         expect(response.body).toEqual(mockBuffer);
@@ -45,14 +52,15 @@ describe('API tests using HTTP', () => {
         mockStream.push(mockBuffer);
         mockStream.push(null);
 
-        (blobClient.exists).mockResolvedValue(false);
-        (blobClient.download).mockResolvedValue({
+        blobClient.exists.mockResolvedValue(false);
+        blobClient.download.mockResolvedValue({
             readableStreamBody: mockStream,
         });
 
         const response = await request(mockApp).get(testRoute);
 
-        if (response.status !== 200) console.log('Error response:', response.error);
+        if (response.status !== 200)
+            console.log('Error response:', response.error);
         expect(response.status).toBe(200);
         expect(response.headers['content-type']).toBe('image/png');
         expect(response.body).toEqual(mockBuffer);
@@ -68,8 +76,11 @@ describe('API tests using HTTP', () => {
 
     it('should return the manofmystery image for an anonymous player without checking blob existence', async () => {
         const mockBuffer = loadBinaryFixture('mocks/data/football.png');
-        (playerService.getById as Mock).mockResolvedValue({ ...defaultPlayer, anonymous: true });
-        (blobClient.download).mockResolvedValue({
+        (playerService.getById as Mock).mockResolvedValue({
+            ...defaultPlayer,
+            anonymous: true,
+        });
+        blobClient.download.mockResolvedValue({
             readableStreamBody: Readable.from([mockBuffer]),
         });
         blobClient.exists.mockClear();
@@ -85,7 +96,7 @@ describe('API tests using HTTP', () => {
     it('should serve manofmystery directly when a player has no login', async () => {
         const mockBuffer = loadBinaryFixture('mocks/data/football.png');
         (playerService.getLogin as Mock).mockResolvedValue(null);
-        (blobClient.download).mockResolvedValue({
+        blobClient.download.mockResolvedValue({
             readableStreamBody: Readable.from([mockBuffer]),
         });
         blobClient.exists.mockClear();
@@ -101,8 +112,8 @@ describe('API tests using HTTP', () => {
     });
 
     it('should return 500 if the mugshot download does not return anything', async () => {
-        (blobClient.exists).mockResolvedValue(true);
-        (blobClient.download).mockResolvedValue({});
+        blobClient.exists.mockResolvedValue(true);
+        blobClient.download.mockResolvedValue({});
 
         const response = await request(mockApp).get(testRoute);
 
@@ -112,8 +123,8 @@ describe('API tests using HTTP', () => {
 
     it('should return 500 if the mugshot download fails', async () => {
         const errorMessage = 'Something went wrong';
-        (blobClient.exists).mockResolvedValue(true);
-        (blobClient.download).mockRejectedValue(new Error(errorMessage));
+        blobClient.exists.mockResolvedValue(true);
+        blobClient.download.mockRejectedValue(new Error(errorMessage));
 
         const response = await request(mockApp).get(testRoute);
 

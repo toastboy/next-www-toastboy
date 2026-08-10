@@ -13,7 +13,10 @@ describe('AdminUserData', () => {
         );
 
         expect(
-            screen.getByRole('heading', { level: 2, name: defaultAdminUserDataPayload.name }),
+            screen.getByRole('heading', {
+                level: 2,
+                name: defaultAdminUserDataPayload.name,
+            }),
         ).toBeInTheDocument();
     });
 
@@ -24,7 +27,11 @@ describe('AdminUserData', () => {
             </Wrapper>,
         );
 
-        expect(screen.getByText(new RegExp(defaultAdminUserDataPayload.email))).toBeInTheDocument();
-        expect(screen.getByText(new RegExp(defaultAdminUserDataPayload.createdAt))).toBeInTheDocument();
+        expect(
+            screen.getByText(new RegExp(defaultAdminUserDataPayload.email)),
+        ).toBeInTheDocument();
+        expect(
+            screen.getByText(new RegExp(defaultAdminUserDataPayload.createdAt)),
+        ).toBeInTheDocument();
     });
 });

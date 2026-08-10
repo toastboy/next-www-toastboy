@@ -1,4 +1,3 @@
-
 import { render } from '@testing-library/react';
 import { vi } from 'vitest';
 
@@ -21,7 +20,7 @@ describe('TeamPlayer', () => {
 
         const props = extractMockProps<PlayerLinkProps>('PlayerLink');
         expect(props.length).toBe(1);
-        expect(props[0].player.name).toEqual("Gary Player");
+        expect(props[0].player.name).toEqual('Gary Player');
     });
 
     it('displays goalie status when applicable', () => {

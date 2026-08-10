@@ -31,7 +31,9 @@ async function main() {
     });
 
     if (!upcoming) {
-        console.log('  No upcoming game day (mailSent: null) found to refresh - skipping.');
+        console.log(
+            '  No upcoming game day (mailSent: null) found to refresh - skipping.',
+        );
         return;
     }
 
@@ -41,7 +43,9 @@ async function main() {
         data: { date, year: date.getFullYear(), mailSent: null },
     });
 
-    console.log(`  Refreshed upcoming game day ${upcoming.id} to ${date.toISOString()}`);
+    console.log(
+        `  Refreshed upcoming game day ${upcoming.id} to ${date.toISOString()}`,
+    );
 }
 
 main()

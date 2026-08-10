@@ -1,6 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { revalidatePathMock, broadcastMock, requireAdminMock, submitResponseCoreMock } = vi.hoisted(() => ({
+const {
+    revalidatePathMock,
+    broadcastMock,
+    requireAdminMock,
+    submitResponseCoreMock,
+} = vi.hoisted(() => ({
     revalidatePathMock: vi.fn(),
     broadcastMock: vi.fn(),
     requireAdminMock: vi.fn().mockResolvedValue(undefined),
@@ -26,7 +31,9 @@ const validInput = {
 };
 
 describe('SubmitResponse action wrapper', () => {
-    beforeEach(() => { vi.clearAllMocks(); });
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
 
     it('calls requireAdmin, validates input, delegates to SubmitResponseCore, revalidates picker/responses/response paths, and broadcasts Responses channel', async () => {
         await SubmitResponse(validInput);
@@ -34,7 +41,9 @@ describe('SubmitResponse action wrapper', () => {
         expect(requireAdminMock).toHaveBeenCalledTimes(1);
         expect(submitResponseCoreMock).toHaveBeenCalledWith(validInput);
         expect(revalidatePathMock).toHaveBeenCalledWith('/footy/admin/picker');
-        expect(revalidatePathMock).toHaveBeenCalledWith('/footy/admin/responses');
+        expect(revalidatePathMock).toHaveBeenCalledWith(
+            '/footy/admin/responses',
+        );
         expect(revalidatePathMock).toHaveBeenCalledWith('/footy/response');
         expect(broadcastMock).toHaveBeenCalledWith(FootyChannel.Responses);
     });
@@ -59,7 +68,9 @@ describe('SubmitResponse action wrapper', () => {
     });
 
     it('propagates ZodError when input validation fails', async () => {
-        await expect(SubmitResponse({ ...validInput, gameDayId: 0 })).rejects.toThrow();
+        await expect(
+            SubmitResponse({ ...validInput, gameDayId: 0 }),
+        ).rejects.toThrow();
         expect(submitResponseCoreMock).not.toHaveBeenCalled();
     });
 });

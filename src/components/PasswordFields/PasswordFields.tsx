@@ -1,9 +1,6 @@
 'use client';
 
-import {
-    PasswordInput,
-    type PasswordInputProps,
-} from '@mantine/core';
+import { PasswordInput, type PasswordInputProps } from '@mantine/core';
 import { IconLock } from '@tabler/icons-react';
 
 export interface PasswordFieldsProps {

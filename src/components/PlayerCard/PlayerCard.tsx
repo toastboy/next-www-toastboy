@@ -1,9 +1,6 @@
 'use client';
 
-import {
-    Box,
-    Paper,
-} from '@mantine/core';
+import { Box, Paper } from '@mantine/core';
 import type { TableName } from 'prisma/generated/browser';
 import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 import { useState } from 'react';
@@ -58,7 +55,10 @@ const PlayerCardImage = ({ player, clubs, countries, trophies }: Props) => {
 
     return (
         <Box w="100%" pos="relative" className={classes.imageContainer}>
-            <PlayerMugshot player={player} onReady={() => setMugshotReady(true)} />
+            <PlayerMugshot
+                player={player}
+                onReady={() => setMugshotReady(true)}
+            />
             <Box
                 className={classes.trophies}
                 left="0.5em"

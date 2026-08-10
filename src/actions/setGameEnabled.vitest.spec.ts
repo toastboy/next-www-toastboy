@@ -1,6 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const { revalidatePathMock, broadcastMock, requireAdminMock, setGameEnabledCoreMock, sendEmailToAllActivePlayersMock } = vi.hoisted(() => ({
+const {
+    revalidatePathMock,
+    broadcastMock,
+    requireAdminMock,
+    setGameEnabledCoreMock,
+    sendEmailToAllActivePlayersMock,
+} = vi.hoisted(() => ({
     revalidatePathMock: vi.fn(),
     broadcastMock: vi.fn(),
     requireAdminMock: vi.fn().mockResolvedValue(undefined),
@@ -28,14 +34,21 @@ const validInput = {
 };
 
 describe('setGameEnabled action wrapper', () => {
-    beforeEach(() => { vi.clearAllMocks(); });
+    beforeEach(() => {
+        vi.clearAllMocks();
+    });
 
     it('calls requireAdmin, validates input, delegates to core (passing the email action), revalidates affected paths, and broadcasts Games channel', async () => {
         await setGameEnabled(validInput);
 
         expect(requireAdminMock).toHaveBeenCalledTimes(1);
-        expect(setGameEnabledCoreMock).toHaveBeenCalledWith(validInput, sendEmailToAllActivePlayersMock);
-        expect(revalidatePathMock).toHaveBeenCalledWith('/footy/admin/responses');
+        expect(setGameEnabledCoreMock).toHaveBeenCalledWith(
+            validInput,
+            sendEmailToAllActivePlayersMock,
+        );
+        expect(revalidatePathMock).toHaveBeenCalledWith(
+            '/footy/admin/responses',
+        );
         expect(revalidatePathMock).toHaveBeenCalledWith('/footy/fixtures');
         expect(revalidatePathMock).toHaveBeenCalledWith('/footy/admin/picker');
         expect(revalidatePathMock).toHaveBeenCalledWith('/footy/game');
@@ -62,7 +75,9 @@ describe('setGameEnabled action wrapper', () => {
     });
 
     it('propagates ZodError when input validation fails', async () => {
-        await expect(setGameEnabled({ ...validInput, gameDayId: 0 })).rejects.toThrow();
+        await expect(
+            setGameEnabled({ ...validInput, gameDayId: 0 }),
+        ).rejects.toThrow();
         expect(setGameEnabledCoreMock).not.toHaveBeenCalled();
     });
 });

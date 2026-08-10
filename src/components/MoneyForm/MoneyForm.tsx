@@ -13,12 +13,8 @@ import {
     Text,
     Title,
 } from '@mantine/core';
-import {
-    useForm,
-} from '@mantine/form';
-import {
-    notifications,
-} from '@mantine/notifications';
+import { useForm } from '@mantine/form';
+import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useRouter } from 'next/navigation';
@@ -41,11 +37,10 @@ export interface MoneyFormProps {
     payDebt: PayDebtProxy;
 }
 
-export const MoneyForm = ({
-    playerDebts,
-    payDebt,
-}: MoneyFormProps) => {
-    const [submittingPlayerId, setSubmittingPlayerId] = useState<number | null>(null);
+export const MoneyForm = ({ playerDebts, payDebt }: MoneyFormProps) => {
+    const [submittingPlayerId, setSubmittingPlayerId] = useState<number | null>(
+        null,
+    );
 
     return (
         <Container size="lg" py="lg">
@@ -96,16 +91,18 @@ const DebtRow = ({
         validate: zod4Resolver(PayDebtFormSchema),
     });
 
-    const checkedDebts = row.debts.filter((d) => form.values.checkedIds.includes(d.gameDay.id));
+    const checkedDebts = row.debts.filter((d) =>
+        form.values.checkedIds.includes(d.gameDay.id),
+    );
     const totalAmount = checkedDebts.reduce((sum, d) => sum + d.amount, 0);
 
     const toggleDebt = (gameDayId: number) => {
         const current = form.values.checkedIds;
         form.setFieldValue(
             'checkedIds',
-            current.includes(gameDayId) ?
-                current.filter((id) => id !== gameDayId) :
-                [...current, gameDayId],
+            current.includes(gameDayId)
+                ? current.filter((id) => id !== gameDayId)
+                : [...current, gameDayId],
         );
     };
 
@@ -158,7 +155,10 @@ const DebtRow = ({
                     gameDayCount: gameDayIds.length,
                 },
             });
-            const message = error instanceof Error ? error.message : 'Failed to record payment';
+            const message =
+                error instanceof Error
+                    ? error.message
+                    : 'Failed to record payment';
             notifications.update({
                 id: notificationId,
                 color: 'red',
@@ -198,7 +198,9 @@ const DebtRow = ({
                             {row.player.name ?? `Player ${row.player.id}`}
                         </Anchor>
                         <Text size="sm" c={getBalanceColor(-totalDebt)}>
-                            Total debt: {formatCurrencySigned(-totalDebt)} ({row.debts.length} game{row.debts.length === 1 ? '' : 's'})
+                            Total debt: {formatCurrencySigned(-totalDebt)} (
+                            {row.debts.length} game
+                            {row.debts.length === 1 ? '' : 's'})
                         </Text>
                     </Stack>
                 </Group>
@@ -208,12 +210,16 @@ const DebtRow = ({
                         {row.debts.map((debt) => (
                             <Checkbox
                                 key={debt.gameDay.id}
-                                checked={form.values.checkedIds.includes(debt.gameDay.id)}
+                                checked={form.values.checkedIds.includes(
+                                    debt.gameDay.id,
+                                )}
                                 onChange={() => toggleDebt(debt.gameDay.id)}
                                 label={
                                     <Group gap="xs">
                                         <GameDayLink gameDay={debt.gameDay} />
-                                        <Text size="sm">{formatCurrency(debt.amount)}</Text>
+                                        <Text size="sm">
+                                            {formatCurrency(debt.amount)}
+                                        </Text>
                                     </Group>
                                 }
                             />
@@ -227,7 +233,10 @@ const DebtRow = ({
                     </Text>
                     <Button
                         type="submit"
-                        disabled={form.values.checkedIds.length === 0 || submittingPlayerId === row.player.id}
+                        disabled={
+                            form.values.checkedIds.length === 0 ||
+                            submittingPlayerId === row.player.id
+                        }
                         loading={submittingPlayerId === row.player.id}
                     >
                         Paid

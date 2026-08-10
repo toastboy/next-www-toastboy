@@ -4,6 +4,15 @@ updates:
       directory: "/"
       schedule:
           interval: "daily"
+      # Hedge against supply-chain attacks by waiting for a version to prove
+      # itself before proposing it — larger bumps carry more risk, so they
+      # wait longer. Security updates are exempt from cooldown and always
+      # land immediately regardless of these thresholds.
+      cooldown:
+          default-days: 7
+          semver-patch-days: 3
+          semver-minor-days: 7
+          semver-major-days: 14
       ignore:
           - dependency-name: "eslint"
             versions:

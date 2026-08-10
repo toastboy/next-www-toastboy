@@ -16,72 +16,13 @@ jobs:
         if: github.actor == 'dependabot[bot]'
         runs-on: ubuntu-latest
         steps:
-            - name: Fetch Dependabot metadata
-              id: metadata
-              uses: dependabot/fetch-metadata@v3
-              with:
-                  github-token: ${{ secrets.GITHUB_TOKEN }}
-
-            - name: Check minimum package age
-              id: age-check
-              env:
-                  DEPS_JSON: ${{ steps.metadata.outputs.updated-dependencies-json }}
-              run: |
-                  MIN_AGE_DAYS=7
-                  NOW=$(date -u +%s)
-                  TOO_YOUNG_LIST=""
-
-                  while IFS=$'\t' read -r pkg version; do
-                      # Encode package name for URL: keep @ but encode / (handles scoped packages)
-                      encoded=$(python3 -c "import urllib.parse, sys; print(urllib.parse.quote(sys.argv[1], safe='@'))" "$pkg")
-                      publish_time=$(curl -sf "https://registry.npmjs.org/${encoded}" | jq -r --arg v "$version" '.time[$v] // empty')
-
-                      if [ -z "$publish_time" ]; then
-                          echo "::warning::Cannot determine publish time for $pkg@$version — skipping age check for this package"
-                          continue
-                      fi
-
-                      publish_epoch=$(date -d "$publish_time" +%s)
-                      age_days=$(( (NOW - publish_epoch) / 86400 ))
-                      echo "$pkg@$version published $age_days day(s) ago"
-
-                      if [ "$age_days" -lt "$MIN_AGE_DAYS" ]; then
-                          TOO_YOUNG_LIST="${TOO_YOUNG_LIST}"$'\n'"- \`${pkg}@${version}\` (${age_days} day(s) old)"
-                      fi
-                  done < <(echo "$DEPS_JSON" | jq -r '.[] | select(.packageEcosystem == "npm_and_yarn") | "\(.dependencyName)\t\(.newVersion)"')
-
-                  if [ -n "$TOO_YOUNG_LIST" ]; then
-                      echo "too_young=true" >> "$GITHUB_OUTPUT"
-                      {
-                          echo "too_young_list<<ENDOFLIST"
-                          echo "$TOO_YOUNG_LIST"
-                          echo "ENDOFLIST"
-                      } >> "$GITHUB_OUTPUT"
-                  else
-                      echo "too_young=false" >> "$GITHUB_OUTPUT"
-                  fi
-
-            # Comment only on open/reopen to avoid spam on rebases
-            - name: Comment if packages are too young
-              if: steps.age-check.outputs.too_young == 'true' && github.event.action != 'synchronize'
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  TOO_YOUNG_LIST: ${{ steps.age-check.outputs.too_young_list }}
-              run: |
-                  {
-                      echo "**Auto-merge withheld — packages too new**"
-                      echo ""
-                      echo "The following npm packages were published less than 7 days ago."
-                      echo "Auto-merge is withheld to allow time for the community to spot supply-chain issues:"
-                      echo ""
-                      echo "$TOO_YOUNG_LIST"
-                      echo ""
-                      echo "This check runs again on each push. Once all packages are at least 7 days old, auto-merge will be enabled automatically."
-                  } > /tmp/comment.md
-                  gh pr comment "${{ github.event.pull_request.html_url }}" --body-file /tmp/comment.md
-
+            # Dependabot's cooldown config (.github/dependabot.yml) already
+            # withholds proposing a version until it's cleared its minimum
+            # age, so every PR here is already eligible — just enable
+            # auto-merge and let required status checks gate the actual merge.
+            # Rebase, not merge commit: the repo only permits rebase merges
+            # (linear history, no merge commits — see repo merge settings).
             - name: Enable auto-merge
-              if: steps.age-check.outputs.too_young != 'true'
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-              run: gh pr merge --auto --merge "${{ github.event.pull_request.html_url }}"
+              run: gh pr merge --auto --rebase "${{ github.event.pull_request.html_url }}"

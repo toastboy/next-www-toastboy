@@ -12,13 +12,9 @@ export interface Props {
     hiddenFrom?: MantineBreakpoint;
     /** Breakpoint below which the indicator is hidden (optional) */
     visibleFrom?: MantineBreakpoint;
-    /** Whether the indicator directly follows a player's name inline, which adds a small
-     * leading margin to space it from that text (default: true). Set to false when the
-     * indicator stands alone, e.g. as a Divider label. */
-    inline?: boolean;
 }
 
-export const GoalieIndicator = ({ hiddenFrom, visibleFrom, inline = true }: Props) => (
+export const GoalieIndicator = ({ hiddenFrom, visibleFrom }: Props) => (
     <Tooltip label="Goalie" withArrow>
         <Flex
             role="img"
@@ -26,7 +22,6 @@ export const GoalieIndicator = ({ hiddenFrom, visibleFrom, inline = true }: Prop
             display="inline-flex"
             justify="flex-start"
             align="center"
-            ms={inline ? "0.25rem" : undefined}
             hiddenFrom={hiddenFrom}
             visibleFrom={visibleFrom}
         >

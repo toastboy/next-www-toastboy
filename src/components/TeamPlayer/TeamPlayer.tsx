@@ -58,8 +58,6 @@ export const TeamPlayer = ({ teamPlayer }: Props) => (
                         player={teamPlayer}
                         year={0}
                         wrap
-                        goalie={teamPlayer.outcome.goalie}
-                        goalieHiddenFrom="xs"
                         ta={{ base: "left", xs: "center" }}
                         w={{ base: "auto", xs: "100%" }}
                     />
@@ -69,11 +67,14 @@ export const TeamPlayer = ({ teamPlayer }: Props) => (
                     w="75%"
                     mt="xs"
                     mb={0}
-                    label={teamPlayer.outcome.goalie ? <GoalieIndicator inline={false} /> : undefined}
+                    label={teamPlayer.outcome.goalie ? <GoalieIndicator /> : undefined}
                 />
-                <PlayerForm
-                    form={teamPlayer.form}
-                />
+                <Group gap="xs" wrap="nowrap">
+                    {teamPlayer.outcome.goalie ? <GoalieIndicator hiddenFrom="xs" /> : null}
+                    <PlayerForm
+                        form={teamPlayer.form}
+                    />
+                </Group>
             </Flex>
         </Card.Section>
     </Card>

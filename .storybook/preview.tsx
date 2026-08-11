@@ -12,7 +12,8 @@ import { MantineProvider } from '@mantine/core';
 import type { Preview } from '@storybook/nextjs-vite';
 import type { Decorator } from '@storybook/react';
 import { http, HttpResponse } from 'msw';
-import { initialize, mswLoader } from 'msw-storybook-addon';
+import { setupWorker } from 'msw/browser';
+import { mswLoader } from 'msw-storybook-addon/csf3';
 import { useEffect } from 'react';
 
 const badgePng = new URL(
@@ -37,8 +38,6 @@ const mantineDecorator: Decorator = (Story) => (
         <Story />
     </MantineProvider>
 );
-
-initialize({ onUnhandledRequest: 'bypass' });
 
 const imageCache = new Map<string, Promise<ArrayBuffer>>();
 
@@ -268,7 +267,13 @@ const authHandlers = [
 
 const preview: Preview = {
     decorators: [mantineDecorator, mockAuthDecorator],
-    loaders: [mswLoader],
+    loaders: [
+        mswLoader(async () => {
+            const worker = setupWorker();
+            await worker.start({ onUnhandledRequest: 'bypass' });
+            return worker;
+        }),
+    ],
     parameters: {
         nextjs: {
             appDirectory: true,

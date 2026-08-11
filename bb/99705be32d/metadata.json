@@ -1,0 +1,31 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "bb99705be32d",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 9,
+  "files_touched": [
+    ".env.terraform",
+    ".vscode/settings.json",
+    "README.md",
+    "terraform/.env",
+    "terraform/main.tf",
+    "terraform/providers.tf"
+  ],
+  "sessions": [
+    {
+      "metadata": "/bb/99705be32d/0/metadata.json",
+      "transcript": "/bb/99705be32d/0/full.jsonl",
+      "compact_transcript": "/bb/99705be32d/0/transcript.jsonl",
+      "content_hash": "/bb/99705be32d/0/content_hash.txt",
+      "prompt": "/bb/99705be32d/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 106,
+    "cache_creation_tokens": 69625,
+    "cache_read_tokens": 3482163,
+    "output_tokens": 22143,
+    "api_call_count": 53
+  }
+}

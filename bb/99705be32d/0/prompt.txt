@@ -1,0 +1,48 @@
+Prettier is selected as the formatter in VS Code for Terraform .tf files and it can't format HCL. How do I configure a more suitable formatter?
+
+---
+
+Yes
+
+---
+
+I'm not sure that helped. How can I tell?
+
+---
+
+Excellent, that worked
+
+---
+
+I want to check the change to azurerm provider locally first: remind me how to run terraform init etc. for this repo and document it if it's not already
+
+---
+
+Is it possible to give terraform init a path? Otherwise it probably makes sense to move .env.terraform into the terraform dir
+
+---
+
+I moved .env.terraform to ./terraform. Can I just rename it to .env and not need to give an explicit path to it?
+
+---
+
+Don't forget `terraform login` and `terraform validate`
+
+---
+
+   /Volumes/Development/next-www-toastboy/terraform  on   main !4 ?1 ─────────────────────────────────────── next-www-toastboy   at 09:11:01  
+❯ op run --env-file ./.env -- terraform validate
+╷
+│ Error: Missing required argument
+│ 
+│   on main.tf line 210, in resource "azurerm_key_vault" "next_www_toastboy":
+│  210: resource "azurerm_key_vault" "next_www_toastboy" {
+│ 
+│ The argument "rbac_authorization_enabled" is required, but no definition
+│ was found.
+
+Am I using RBAC or access policies right now?
+
+---
+
+Yes, and write a new Jira ticket to upgrade to RBAC later.

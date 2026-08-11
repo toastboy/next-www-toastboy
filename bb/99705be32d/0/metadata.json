@@ -1,0 +1,161 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "bb99705be32d",
+  "session_id": "ee223e88-79ae-4988-8b79-7ffe45af8d7a",
+  "strategy": "manual-commit",
+  "created_at": "2026-08-11T08:25:53.114928Z",
+  "branch": "main",
+  "checkpoints_count": 9,
+  "save_step_count": 9,
+  "files_touched": [
+    ".env.terraform",
+    ".vscode/settings.json",
+    "README.md",
+    "terraform/.env",
+    "terraform/main.tf",
+    "terraform/providers.tf"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "5e54133a4c4d",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 106,
+    "cache_creation_tokens": 69625,
+    "cache_read_tokens": 3482163,
+    "output_tokens": 22143,
+    "api_call_count": 53
+  },
+  "session_metrics": {
+    "turn_count": 9
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-08-11T08:25:53.090178Z",
+    "agent_lines": 26,
+    "agent_removed": 4,
+    "human_added": 0,
+    "human_modified": 2,
+    "human_removed": 5,
+    "total_committed": 28,
+    "total_lines_changed": 37,
+    "agent_percentage": 81.08108108108108,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 61,
+      "user_lines_removed": 1,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 59,
+        "terraform/providers.tf": 1
+      },
+      "user_removed_per_file": {
+        "terraform/providers.tf": 1
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 60,
+      "user_lines_removed": 0,
+      "agent_lines_added": 1,
+      "agent_lines_removed": 1,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 59
+      }
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 61,
+      "user_lines_removed": 1,
+      "agent_lines_added": 9,
+      "agent_lines_removed": 1,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 59,
+        "terraform/providers.tf": 1
+      },
+      "user_removed_per_file": {
+        "terraform/providers.tf": 1
+      }
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 64,
+      "user_lines_removed": 1,
+      "agent_lines_added": 10,
+      "agent_lines_removed": 2,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 62,
+        "terraform/providers.tf": 1
+      },
+      "user_removed_per_file": {
+        "terraform/providers.tf": 1
+      }
+    },
+    {
+      "checkpoint_number": 5,
+      "user_lines_added": 63,
+      "user_lines_removed": 0,
+      "agent_lines_added": 9,
+      "agent_lines_removed": 1,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 62
+      }
+    },
+    {
+      "checkpoint_number": 6,
+      "user_lines_added": 67,
+      "user_lines_removed": 4,
+      "agent_lines_added": 23,
+      "agent_lines_removed": 1,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 62,
+        "terraform/.env.terraform": 4
+      },
+      "user_removed_per_file": {
+        ".env.terraform": 4
+      }
+    },
+    {
+      "checkpoint_number": 7,
+      "user_lines_added": 63,
+      "user_lines_removed": 0,
+      "agent_lines_added": 27,
+      "agent_lines_removed": 5,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 62
+      }
+    },
+    {
+      "checkpoint_number": 8,
+      "user_lines_added": 63,
+      "user_lines_removed": 0,
+      "agent_lines_added": 29,
+      "agent_lines_removed": 5,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 62
+      }
+    },
+    {
+      "checkpoint_number": 9,
+      "user_lines_added": 63,
+      "user_lines_removed": 0,
+      "agent_lines_added": 29,
+      "agent_lines_removed": 5,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 62
+      }
+    }
+  ]
+}

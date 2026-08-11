@@ -208,12 +208,13 @@ resource "azurerm_storage_container" "countries" {
 # Key vault to store the deployment secrets
 
 resource "azurerm_key_vault" "next_www_toastboy" {
-  name                     = "next-www-toastboy"
-  location                 = azurerm_resource_group.next_www_toastboy.location
-  resource_group_name      = azurerm_resource_group.next_www_toastboy.name
-  tenant_id                = data.azurerm_client_config.current.tenant_id
-  sku_name                 = "standard"
-  purge_protection_enabled = true
+  name                       = "next-www-toastboy"
+  location                   = azurerm_resource_group.next_www_toastboy.location
+  resource_group_name        = azurerm_resource_group.next_www_toastboy.name
+  tenant_id                  = data.azurerm_client_config.current.tenant_id
+  sku_name                   = "standard"
+  purge_protection_enabled   = true
+  rbac_authorization_enabled = false
 
   # Terraform itself needs to manage the secrets in the vault
   access_policy {

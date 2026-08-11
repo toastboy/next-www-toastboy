@@ -29,6 +29,22 @@ Terraform outputs the client IDs and secrets for each registration, which are sy
 | Storage | `STORAGE_CLIENT_ID` | `STORAGE_CLIENT_SECRET` |
 | Mail | `MAIL_GRAPH_CLIENT_ID` | `MAIL_GRAPH_CLIENT_SECRET` |
 
+### Running Terraform locally
+
+To validate a change (e.g. a provider version bump) before pushing:
+
+```shell
+terraform login   # one-off; opens a browser, stores a personal API token in ~/.terraform.d/credentials.tfrc.json
+cd terraform
+op run --env-file ./.env -- terraform init
+terraform validate
+op run --env-file ./.env -- terraform plan
+```
+
+The `cloud` block in [`providers.tf`](terraform/providers.tf) points at Terraform Cloud (org `toastboy`, workspace `next-www-toastboy`), which holds state and runs `plan`/`apply` remotely — the local CLI just streams the output. `terraform login` is only needed once per machine; CI uses a separate service token (`TF_API_TOKEN`) so there's nothing to share or configure for that.
+
+`terraform apply` is only ever run from CI on push to `main` (see [GitHub Actions Secrets](#github-actions-secrets)) — use `plan` locally to check a change, then let CI apply it once merged.
+
 ## Secrets
 
 All secrets should be managed by 1Password, in the exclusive vault "next-www-toastboy" and referenced from the `.env` file. This file is safe to commit to source control since it only contains references, not values. Preface all commands which might need secret values in the environment with the op cli, like this:

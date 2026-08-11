@@ -18,6 +18,22 @@
             "problemMatcher": []
         },
         {
+            "label": "Clean build (1Password env)",
+            "type": "shell",
+            "command": "op",
+            "args": [
+                "run",
+                "--env-file",
+                "./.env",
+                "--",
+                "sh",
+                "-c",
+                "npm run build:clean"
+            ],
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
             "label": "Dev (1Password env)",
             "type": "shell",
             "command": "op",

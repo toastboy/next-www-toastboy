@@ -1,0 +1,32 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "e05c753ca2e7",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "src/app/footy/game/[id]/page.tsx",
+    "src/app/footy/game/[id]/page.vitest.spec.ts",
+    "src/components/GameDaySummary/GameDaySummary.stories.tsx",
+    "src/components/GameDaySummary/GameDaySummary.tsx",
+    "src/components/GameDaySummary/GameDaySummary.vitest.spec.tsx",
+    "src/components/GameResultForm/GameResultForm.tsx",
+    "src/components/GameResultForm/GameResultForm.vitest.spec.tsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/e0/5c753ca2e7/0/metadata.json",
+      "transcript": "/e0/5c753ca2e7/0/full.jsonl",
+      "compact_transcript": "/e0/5c753ca2e7/0/transcript.jsonl",
+      "content_hash": "/e0/5c753ca2e7/0/content_hash.txt",
+      "prompt": "/e0/5c753ca2e7/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 210,
+    "cache_creation_tokens": 121544,
+    "cache_read_tokens": 8538302,
+    "output_tokens": 37636,
+    "api_call_count": 86
+  }
+}

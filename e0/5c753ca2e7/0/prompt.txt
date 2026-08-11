@@ -1,0 +1,13 @@
+Now I want the GameResultForm elements to appear in a single row when the viewport is wide, and above one another and stretched to the container size in the small regime
+
+---
+
+Now I want the GameResultForm elements to appear in a single row when the viewport is wide, and above one another and stretched to the container size in the small regime
+
+---
+
+Now I want the GameResultForm elements to appear in a single row when the viewport is wide, and above one another and stretched to the container size in the small regime
+
+---
+
+/test-sync

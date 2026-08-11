@@ -1,0 +1,30 @@
+Generated code of PostCSS transform of file content of src/components/UserButton/UserButton.module.css:
+./src/components/UserButton/UserButton.module.css:7:11
+   5 |     color: light-dark(var(--mantine-color-black), var(--mantine-color-dark-0));
+   6 |
+>  7 |     @mixin hover {
+     |           ^
+   8 |         background-color: light-dark(
+   9 |             var(--mantine-color-gray-0),
+  10 |             var(--mantine-color-dark-8)
+
+Import traces:
+  Client Component Browser:
+    ./src/components/UserButton/UserButton.module.css [Client Component Browser]
+    ./src/components/UserButton/UserButton.tsx [Client Component Browser]
+    ./src/components/NavBarNested/NavBarNested.tsx [Client Component Browser]
+    ./src/components/CustomAppShell/CustomAppShell.tsx [Client Component Browser]
+    ./src/components/CustomAppShell/CustomAppShell.tsx [Server Component]
+    ./src/app/layout.tsx [Server Component]
+
+  Client Component SSR:
+    ./src/components/UserButton/UserButton.module.css [Client Component SSR]
+    ./src/components/UserButton/UserButton.tsx [Client Component SSR]
+    ./src/components/NavBarNested/NavBarNested.tsx [Client Component SSR]
+    ./src/components/CustomAppShell/CustomAppShell.tsx [Client Component SSR]
+    ./src/components/CustomAppShell/CustomAppShell.tsx [Server Component]
+    ./src/app/layout.tsx [Server Component]
+
+---
+
+(node:96145) MaxListenersExceededWarning: Possible EventEmitter memory leak detected. 11 close listeners added to [ServerResponse]. MaxListeners is 10. Use emitter.setMaxListeners() to increase limit

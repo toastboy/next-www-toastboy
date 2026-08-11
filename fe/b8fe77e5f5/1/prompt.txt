@@ -1,0 +1,89 @@
+Sometimes AI agents need to dig into the contents of the database for this web app. In development source trees, would it be useful and practical to store up-to-date JSON backups of the current state somewhere the agent can analyse it?
+
+---
+
+The seed files already exist in Azure Storage.
+
+---
+
+<task-notification>
+<task-id>acc8d8a7e481b4532</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/b47664bc-c390-47ac-a426-69b98074eeda/tasks/acc8d8a7e481b4532.output</output-file>
+<status>completed</status>
+<summary>Agent "Find DB seed mechanism and Azure storage usage" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>I now have a complete picture. Here's the report.
+
+## Summary: DB seeding mechanism and Azure Blob Storage relationship
+
+### 1. Prisma seed scripts and config
+
+- **`/Volumes/Development/next-www-toastboy/prisma.config.ts`** — defines `migrations.seed: 'npx tsx -r tsconfig-paths/register prisma/seed.ts'`, so `npx prisma db seed` runs `prisma/seed.ts`. This is the "real" (production/dev) seed.
+- **`/Volumes/Development/next-www-toastboy/prisma/seed.ts`** — the production/dev seed script. **Pulls data from Azure Blob Storage** (see #2).
+- **`/Volumes/Development/next-www-toastboy/prisma/seed.ci.ts`** — a separate, self-contained seed script for CI/Playwright/test use. Uses `@faker-js/faker` (fixed seed `12345`) to generate synthetic players, countries, game days, outcomes, transactions, then computes `PlayerRecord` via `playerRecordService`. **Does not touch Azure at all** — pure fixture generation.
+- **`/Volumes/Development/next-www-toastboy/prisma/table-manifest.ts`** — shared list of `{fileName, getModel}` entries (`GAME_DATA_TABLES`, `AUTH_TABLES`) mapping JSON blob filenames (e.g. `Player.json`, `GameDay.json`, `user.json`) to Prisma model delegates. Used by both `seed.ts` (import) and `exportdb.ts` (export).
+- package.json scripts: `"seed:ci"` runs `seed.ci.ts`; `"seed:playwright"` runs the same `seed.ci.ts` but with `DOTENV_CONFIG_PATH=.env.playwright`. There's no separate `"seed"` npm script name — the real seed is invoked via `npx prisma db seed`, which prisma.config.ts wires to `prisma/seed.ts`.
+
+### 2. Azure Blob Storage references for seed data
+
+- **`prisma/seed.ts`** (production/dev seed, invoked by `npx prisma db seed`): connects to Azure Blob Storage directly using `@azure/identity` (`ClientSecretCredential`) + `@azure/storage-blob` (`BlobServiceClient`). Hardcoded storage account `nextwwwtoastboy`, container `dbseeddata`. Auth via env vars `AZURE_TENANT_ID`, `STORAGE_CLIENT_ID`, `STORAGE_CLIENT_SECRET` (read directly from `process.env`, not via the app's secrets abstraction — deliberately, per comment "works in any environment"). For each table in `GAME_DATA_TABLES` then `AUTH_TABLES`, it downloads `&lt;TableName&gt;.json` from the container, parses it, and `createMany`s it into the DB in chunks of 500 rows (to respect MariaDB's `max_allowed_packet`). Before importing, it deletes existing rows in FK-safe reverse order (plus some non-seeded dependent tables: `contactEnquiry`, `emailVerification`, `gameInvitation`, `session`).
+- **`src/lib/azure.ts`** — app-level singleton (`AzureCache`) wrapping `BlobServiceClient`/`ContainerClient` creation, used elsewhere in the running app (e.g. badge/mugshot/flag image routes) — reads secrets via `src/lib/secrets.ts` rather than raw `process.env`. Not used by `prisma/seed.ts` itself, but same underlying mechanism/credential pattern.
+- **`src/lib/exportdb/exportdb.ts`** — the inverse operation: reads every table (`GAME_DATA_TABLES` + `AUTH_TABLES`) from the live DB via Prisma, writes each to a `&lt;TableName&gt;.json` file in a tmp dir, and uploads the whole directory to the same `nextwwwtoastboy` / `dbseeddata` blob container. This is what actually populates/refreshes the JSON files that `prisma/seed.ts` later downloads. Run via `op run --env-file ./.env -- npm run exportdb` (per trailing comment). Also exposes `exportAuthTables()`, used by `src/lib/importlivedb/importlivedb.ts` to preserve Better Auth tables (`user`/`account`/`verification`) across a live-DB import reset.
+- **`docs/DATABASE_INIT.md`** — documents the whole flow narratively (see below).
+- **`.env`** contains 1Password references (`op://...`) for `AZURE_TENANT_ID`, `STORAGE_CLIENT_ID`, `STORAGE_CLIENT_SECRET` — these are the credentials seed.ts needs.
+
+### 3. Seed data format
+
+Per-model JSON files (one JSON array per Prisma model), not a SQL dump and not a single combined snapshot file. Filenames match table-manifest.ts, e.g. `Player.json`, `PlayerLogin.json`, `PlayerEmail.json`, `GameDay.json`, `Outcome.json`, `Transaction.json`, `GameChat.json`, `Country.json`, `CountrySupporter.json`, `Club.json`, `ClubSupporter.json`, `Arse.json`, `PlayerRecord.json`, plus auth tables `user.json`, `account.json`, `verification.json`. Each file is just the raw output of `findMany()` written via `JSON.stringify`.
+
+### 4. Snapshot vs. fixture data
+
+- The Azure blob JSON files used by `prisma/seed.ts` are a **full production data snapshot** (real player/game history + Better Auth accounts), refreshed periodically by `exportdb.ts` from the live DB. This is used for production seeding/reset and for local dev seeding (`npx prisma db seed`).
+- The CI/Playwright seed (`seed.ci.ts`) is **entirely synthetic fixture data** (faker-generated, fixed seed for reproducibility) — it has no dependency on Azure Blob Storage at all. Player IDs 1 and 2 are deliberately fixed to line up with mock-auth defaults (`mockUserDefaults.user.playerId = 1`, `admin.playerId = 2`).
+
+### 5. `setup:playwright` and how the Playwright test DB gets data
+
+- `"setup:playwright": "npm run generate &amp;&amp; DOTENV_CONFIG_PATH=.env.playwright npx prisma db push"` — this only pushes the schema to the Playwright test DB (`db-test` container on port 33307, defined in `docker-compose.yml`); it does **not** seed data.
+- Actual seeding happens via **`e2e/global-setup.ts`**, which Playwright runs once before the whole test run (`playwright.config.ts` → `globalSetup: './e2e/global-setup.ts'`):
+  - Locally: runs `npm run seed:playwright` → `prisma/seed.ci.ts` with `.env.playwright` (DB at `REDACTED`).
+  - In CI: runs `npm run seed:ci` → same `seed.ci.ts` script, no Azure involvement.
+  - If `SKIP_DB_SEED` is set (CI uses a pre-baked, pre-seeded MariaDB Docker image — see `.github/workflows/publish-seeded-db-image.yml` and `Dockerfile.seeded-db`), the full seed is skipped and only the "upcoming game day" row is refreshed to the next Friday (`refresh:upcoming-gameday:ci`/`:playwright`) so the E2E tests still find a valid upcoming game.
+- So Playwright's data path is entirely **synthetic (faker)** — it never touches Azure Blob Storage.
+
+### 6. Azure config/env references relevant to seeding
+
+- `.env`: `AZURE_TENANT_ID`, `STORAGE_CLIENT_ID`, `STORAGE_CLIENT_SECRET` (1Password `op://` refs).
+- `.env.playwright`: explicitly has no Azure vars ("Playwright-only test database — no real data, no secrets").
+- `docker-compose.prod.yml`: `seeder` service (profile `seed`, not auto-started) passes `AZURE_TENANT_ID`, `STORAGE_CLIENT_ID`, `STORAGE_CLIENT_SECRET` env vars into the container that runs `scripts/docker/seeder.sh` (`prisma generate` → `prisma migrate deploy` → `prisma db seed`, i.e. `prisma/seed.ts`).
+- Hardcoded (not env-configured) in both `prisma/seed.ts` and `src/lib/exportdb/exportdb.ts`: storage account name `nextwwwtoastboy`, container name `dbseeddata`.
+- `src/lib/azureConfig.ts` defines `STORAGE_ACCOUNT_NAME` used by the app-level `src/lib/azure.ts` (likely also `nextwwwtoastboy`, worth checking if you need a single source of truth constant — currently the seed scripts duplicate the literal rather than importing it).
+
+### Overall flow diagram
+
+```
+Live production DB
+      │  exportdb.ts (npm run exportdb / importlivedb)
+      ▼
+Azure Blob Storage: nextwwwtoastboy / dbseeddata container
+      (per-model JSON files: Player.json, GameDay.json, ..., user.json, account.json, verification.json)
+      │  prisma/seed.ts (npx prisma db seed)
+      ▼
+Dev DB or Production DB (via docker-compose.prod.yml "seeder" service)
+
+Playwright/CI test DB ← prisma/seed.ci.ts (faker-generated fixtures, NO Azure involvement)
+```</result>
+<usage><subagent_tokens>42506</subagent_tokens><tool_uses>15</tool_uses><duration_ms>56805</duration_ms></usage>
+</task-notification>
+
+---
+
+You'd need the DB credentials though, which means granting access to run 'op' all the time.
+
+---
+
+Yes, that's what I had in mind
+
+---
+
+Also add this script to VS Code tasks

@@ -1,0 +1,378 @@
+2026-08-10T19:52:26.2199165Z Current runner version: '2.336.0'
+2026-08-10T19:52:26.2226218Z ##[group]Runner Image Provisioner
+2026-08-10T19:52:26.2227254Z Hosted Compute Agent
+2026-08-10T19:52:26.2227812Z Version: 20260707.563
+2026-08-10T19:52:26.2228569Z Commit: 02667638d2b423fbc733a8e32a88b44996a3ba6e
+2026-08-10T19:52:26.2229649Z Build Date: 2026-07-07T19:33:50Z
+2026-08-10T19:52:26.2230365Z Worker ID: {554a2c4f-32e3-4b18-a6c9-0e818857be32}
+2026-08-10T19:52:26.2231190Z Azure Region: eastus
+2026-08-10T19:52:26.2231762Z ##[endgroup]
+2026-08-10T19:52:26.2233381Z ##[group]Operating System
+2026-08-10T19:52:26.2234034Z Ubuntu
+2026-08-10T19:52:26.2234554Z 24.04.4
+2026-08-10T19:52:26.2235119Z LTS
+2026-08-10T19:52:26.2235625Z ##[endgroup]
+2026-08-10T19:52:26.2236196Z ##[group]Runner Image
+2026-08-10T19:52:26.2236836Z Image: ubuntu-24.04
+2026-08-10T19:52:26.2237388Z Version: 20260720.247.2
+2026-08-10T19:52:26.2238630Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20260720.247/images/ubuntu/Ubuntu2404-Readme.md
+2026-08-10T19:52:26.2240356Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20260720.247
+2026-08-10T19:52:26.2241349Z ##[endgroup]
+2026-08-10T19:52:26.2242727Z ##[group]GITHUB_TOKEN Permissions
+2026-08-10T19:52:26.2244959Z Checks: write
+2026-08-10T19:52:26.2245571Z Contents: read
+2026-08-10T19:52:26.2246249Z Metadata: read
+2026-08-10T19:52:26.2246811Z PullRequests: write
+2026-08-10T19:52:26.2247371Z ##[endgroup]
+2026-08-10T19:52:26.2250073Z Secret source: Actions
+2026-08-10T19:52:26.2251186Z Prepare workflow directory
+2026-08-10T19:52:26.2583592Z Prepare all required actions
+2026-08-10T19:52:26.2633200Z Getting action download info
+2026-08-10T19:52:26.4823857Z Download action repository 'actions/checkout@v7' (SHA:3d3c42e5aac5ba805825da76410c181273ba90b1)
+2026-08-10T19:52:26.7016003Z Download action repository 'actions/setup-node@v7' (SHA:820762786026740c76f36085b0efc47a31fe5020)
+2026-08-10T19:52:26.8863798Z Download action repository 'actions/upload-artifact@v7' (SHA:043fb46d1a93c77aae656e7c1c64a875d1fc6a0a)
+2026-08-10T19:52:27.0572289Z Complete job name: test
+2026-08-10T19:52:27.1344652Z ##[group]Run actions/checkout@v7
+2026-08-10T19:52:27.1345554Z with:
+2026-08-10T19:52:27.1346015Z   repository: toastboy/next-www-toastboy
+2026-08-10T19:52:27.1350148Z   token: ***
+2026-08-10T19:52:27.1350586Z   ssh-strict: true
+2026-08-10T19:52:27.1351013Z   ssh-user: git
+2026-08-10T19:52:27.1351448Z   persist-credentials: true
+2026-08-10T19:52:27.1351924Z   clean: true
+2026-08-10T19:52:27.1352361Z   sparse-checkout-cone-mode: true
+2026-08-10T19:52:27.1352873Z   fetch-depth: 1
+2026-08-10T19:52:27.1353288Z   fetch-tags: false
+2026-08-10T19:52:27.1353729Z   show-progress: true
+2026-08-10T19:52:27.1354174Z   lfs: false
+2026-08-10T19:52:27.1354587Z   submodules: false
+2026-08-10T19:52:27.1355058Z   set-safe-directory: true
+2026-08-10T19:52:27.1355561Z   allow-unsafe-pr-checkout: false
+2026-08-10T19:52:27.1356337Z ##[endgroup]
+2026-08-10T19:52:27.2434098Z Syncing repository: toastboy/next-www-toastboy
+2026-08-10T19:52:27.2436240Z ##[group]Getting Git version info
+2026-08-10T19:52:27.2437363Z Working directory is '/home/runner/work/next-www-toastboy/next-www-toastboy'
+2026-08-10T19:52:27.2438851Z [command]/usr/bin/git version
+2026-08-10T19:52:27.2482144Z git version 2.54.0
+2026-08-10T19:52:27.2505009Z ##[endgroup]
+2026-08-10T19:52:27.2521446Z Temporarily overriding HOME='/home/runner/work/_temp/b4ac93c1-1498-465f-b747-a68009771417' before making global git config changes
+2026-08-10T19:52:27.2524372Z Adding repository directory to the temporary git global config as a safe directory
+2026-08-10T19:52:27.2527049Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/next-www-toastboy/next-www-toastboy
+2026-08-10T19:52:27.2570632Z Deleting the contents of '/home/runner/work/next-www-toastboy/next-www-toastboy'
+2026-08-10T19:52:27.2574597Z ##[group]Determining repository object format
+2026-08-10T19:52:27.2576698Z ##[endgroup]
+2026-08-10T19:52:27.2578811Z ##[group]Initializing the repository
+2026-08-10T19:52:27.2581260Z [command]/usr/bin/git init /home/runner/work/next-www-toastboy/next-www-toastboy
+2026-08-10T19:52:27.2676513Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-08-10T19:52:27.2678822Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-08-10T19:52:27.2681444Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-08-10T19:52:27.2683503Z hint: call:
+2026-08-10T19:52:27.2684849Z hint:
+2026-08-10T19:52:27.2686448Z hint:     git config --global init.defaultBranch <name>
+2026-08-10T19:52:27.2688155Z hint:
+2026-08-10T19:52:27.2690447Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-08-10T19:52:27.2692944Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-08-10T19:52:27.2694948Z hint:
+2026-08-10T19:52:27.2696775Z hint:     git branch -m <name>
+2026-08-10T19:52:27.2698249Z hint:
+2026-08-10T19:52:27.2700293Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-08-10T19:52:27.2703025Z Initialized empty Git repository in /home/runner/work/next-www-toastboy/next-www-toastboy/.git/
+2026-08-10T19:52:27.2707666Z [command]/usr/bin/git remote add origin https://github.com/toastboy/next-www-toastboy
+2026-08-10T19:52:27.2732608Z ##[endgroup]
+2026-08-10T19:52:27.2734403Z ##[group]Disabling automatic garbage collection
+2026-08-10T19:52:27.2742512Z [command]/usr/bin/git config --local gc.auto 0
+2026-08-10T19:52:27.2768844Z ##[endgroup]
+2026-08-10T19:52:27.2771236Z ##[group]Setting up auth
+2026-08-10T19:52:27.2772417Z Removing SSH command configuration
+2026-08-10T19:52:27.2776576Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-08-10T19:52:27.2810294Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-08-10T19:52:27.3127896Z Removing HTTP extra header
+2026-08-10T19:52:27.3134286Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-08-10T19:52:27.3167736Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-08-10T19:52:27.3392139Z Removing includeIf entries pointing to credentials config files
+2026-08-10T19:52:27.3397641Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-08-10T19:52:27.3430106Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-08-10T19:52:27.3648485Z [command]/usr/bin/git config --file /home/runner/work/_temp/git-credentials-1ccb6359-8c8e-446a-bd7e-dfb673741c56.config http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-08-10T19:52:27.3684289Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git.path /home/runner/work/_temp/git-credentials-1ccb6359-8c8e-446a-bd7e-dfb673741c56.config
+2026-08-10T19:52:27.3714107Z [command]/usr/bin/git config --local includeIf.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git/worktrees/*.path /home/runner/work/_temp/git-credentials-1ccb6359-8c8e-446a-bd7e-dfb673741c56.config
+2026-08-10T19:52:27.3745607Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git.path /github/runner_temp/git-credentials-1ccb6359-8c8e-446a-bd7e-dfb673741c56.config
+2026-08-10T19:52:27.3777736Z [command]/usr/bin/git config --local includeIf.gitdir:/github/workspace/.git/worktrees/*.path /github/runner_temp/git-credentials-1ccb6359-8c8e-446a-bd7e-dfb673741c56.config
+2026-08-10T19:52:27.3804026Z ##[endgroup]
+2026-08-10T19:52:27.3805712Z ##[group]Fetching the repository
+2026-08-10T19:52:27.3812137Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +b0fe2f0e6c90a8e94a328f7fcbb370b37a93e0bb:refs/remotes/pull/451/merge
+2026-08-10T19:52:28.0185116Z From https://github.com/toastboy/next-www-toastboy
+2026-08-10T19:52:28.0187593Z  * [new ref]         b0fe2f0e6c90a8e94a328f7fcbb370b37a93e0bb -> pull/451/merge
+2026-08-10T19:52:28.0223875Z ##[endgroup]
+2026-08-10T19:52:28.0226038Z ##[group]Determining the checkout info
+2026-08-10T19:52:28.0228102Z ##[endgroup]
+2026-08-10T19:52:28.0231781Z [command]/usr/bin/git sparse-checkout disable
+2026-08-10T19:52:28.0279692Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-08-10T19:52:28.0309675Z ##[group]Checking out the ref
+2026-08-10T19:52:28.0318206Z [command]/usr/bin/git checkout --progress --force refs/remotes/pull/451/merge
+2026-08-10T19:52:28.1205086Z Note: switching to 'refs/remotes/pull/451/merge'.
+2026-08-10T19:52:28.1207330Z 
+2026-08-10T19:52:28.1209140Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-08-10T19:52:28.1211776Z changes and commit them, and you can discard any commits you make in this
+2026-08-10T19:52:28.1213273Z state without impacting any branches by switching back to a branch.
+2026-08-10T19:52:28.1280129Z 
+2026-08-10T19:52:28.1281260Z If you want to create a new branch to retain commits you create, you may
+2026-08-10T19:52:28.1283536Z do so (now or later) by using -c with the switch command. Example:
+2026-08-10T19:52:28.1284647Z 
+2026-08-10T19:52:28.1285195Z   git switch -c <new-branch-name>
+2026-08-10T19:52:28.1286139Z 
+2026-08-10T19:52:28.1286705Z Or undo this operation with:
+2026-08-10T19:52:28.1287540Z 
+2026-08-10T19:52:28.1288045Z   git switch -
+2026-08-10T19:52:28.1288803Z 
+2026-08-10T19:52:28.1290258Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-08-10T19:52:28.1291830Z 
+2026-08-10T19:52:28.1293626Z HEAD is now at b0fe2f0 Merge 6f9d6effd4abaec0e6ef52e741a0daaafa8a4798 into 28e35676b189797384ef0ab44855237716008110
+2026-08-10T19:52:28.1299260Z ##[endgroup]
+2026-08-10T19:52:28.1302349Z [command]/usr/bin/git log -1 --format=%H
+2026-08-10T19:52:28.1303702Z b0fe2f0e6c90a8e94a328f7fcbb370b37a93e0bb
+2026-08-10T19:52:28.1660553Z ##[group]Run actions/setup-node@v7
+2026-08-10T19:52:28.1661774Z with:
+2026-08-10T19:52:28.1662682Z   node-version: 24
+2026-08-10T19:52:28.1663636Z   cache: npm
+2026-08-10T19:52:28.1664547Z   check-latest: false
+2026-08-10T19:52:28.1674028Z   token: ***
+2026-08-10T19:52:28.1674965Z   package-manager-cache: true
+2026-08-10T19:52:28.1676037Z ##[endgroup]
+2026-08-10T19:52:28.2954996Z Found in cache @ /opt/hostedtoolcache/node/24.18.0/x64
+2026-08-10T19:52:28.2957619Z ##[group]Environment details
+2026-08-10T19:52:28.6627174Z node: v24.18.0
+2026-08-10T19:52:28.6651653Z npm: 11.16.0
+2026-08-10T19:52:28.6651994Z yarn: 1.22.22
+2026-08-10T19:52:28.6652791Z ##[endgroup]
+2026-08-10T19:52:28.6653192Z [command]/opt/hostedtoolcache/node/24.18.0/x64/bin/npm config get cache
+2026-08-10T19:52:28.7767993Z /home/runner/.npm
+2026-08-10T19:52:28.8496682Z Cache hit for: node-cache-Linux-x64-npm-338cb33996601fe4027212c9efe42304a14529dd64cd8e1394ce8ecd43b162ce
+2026-08-10T19:52:29.9146575Z Received 234881024 of 296469009 (79.2%), 223.8 MBs/sec
+2026-08-10T19:52:30.1180905Z Received 296469009 of 296469009 (100.0%), 235.0 MBs/sec
+2026-08-10T19:52:30.1210333Z Cache Size: ~283 MB (296469009 B)
+2026-08-10T19:52:30.1273527Z [command]/usr/bin/tar -xf /home/runner/work/_temp/0c30d507-51cb-418e-be59-de1b6b031ef0/cache.tzst -P -C /home/runner/work/next-www-toastboy/next-www-toastboy --use-compress-program unzstd
+2026-08-10T19:52:30.7536430Z Cache restored successfully
+2026-08-10T19:52:30.7670552Z Cache restored from key: node-cache-Linux-x64-npm-338cb33996601fe4027212c9efe42304a14529dd64cd8e1394ce8ecd43b162ce
+2026-08-10T19:52:30.7912368Z ##[group]Run git config --global user.email "ci@github.com"
+2026-08-10T19:52:30.7912918Z [36;1mgit config --global user.email "ci@github.com"[0m
+2026-08-10T19:52:30.7913340Z [36;1mgit config --global user.name "GitHub Actions"[0m
+2026-08-10T19:52:30.8391914Z shell: /usr/bin/bash -e {0}
+2026-08-10T19:52:30.8392604Z ##[endgroup]
+2026-08-10T19:52:30.8556204Z ##[group]Run npm ci
+2026-08-10T19:52:30.8556516Z [36;1mnpm ci[0m
+2026-08-10T19:52:30.8598167Z shell: /usr/bin/bash -e {0}
+2026-08-10T19:52:30.8598441Z ##[endgroup]
+2026-08-10T19:52:40.3175676Z npm warn deprecated tsconfck@3.1.6: unmaintained
+2026-08-10T19:52:41.3847609Z npm warn deprecated node-domexception@1.0.0: Use your platform's native DOMException instead
+2026-08-10T19:53:24.0854683Z 
+2026-08-10T19:53:24.0855916Z added 1361 packages, and audited 1362 packages in 53s
+2026-08-10T19:53:24.0856443Z 
+2026-08-10T19:53:24.0856759Z 420 packages are looking for funding
+2026-08-10T19:53:24.0857395Z   run `npm fund` for details
+2026-08-10T19:53:24.0953711Z 
+2026-08-10T19:53:24.0955187Z 3 high severity vulnerabilities
+2026-08-10T19:53:24.0955609Z 
+2026-08-10T19:53:24.0956025Z Some issues need review, and may require choosing
+2026-08-10T19:53:24.0956655Z a different dependency.
+2026-08-10T19:53:24.0956949Z 
+2026-08-10T19:53:24.0957199Z Run `npm audit` for details.
+2026-08-10T19:53:24.0973850Z npm warn allow-scripts 10 packages have install scripts not yet covered by allowScripts:
+2026-08-10T19:53:24.0975306Z npm warn allow-scripts   @playwright/browser-chromium@1.62.1 (install: node install.js)
+2026-08-10T19:53:24.0976678Z npm warn allow-scripts   @playwright/browser-firefox@1.62.1 (install: node install.js)
+2026-08-10T19:53:24.0978061Z npm warn allow-scripts   @playwright/browser-webkit@1.62.1 (install: node install.js)
+2026-08-10T19:53:24.0979761Z npm warn allow-scripts   @prisma/engines@7.9.1 (postinstall: node scripts/postinstall.js)
+2026-08-10T19:53:24.0981148Z npm warn allow-scripts   @sentry/cli@2.58.6 (postinstall: node ./scripts/install.js)
+2026-08-10T19:53:24.0982298Z npm warn allow-scripts   esbuild@0.28.2 (postinstall: node install.js)
+2026-08-10T19:53:24.0983857Z npm warn allow-scripts   msw@2.15.0 (postinstall: node -e "import('./config/scripts/postinstall.js').catch(() => void 0)")
+2026-08-10T19:53:24.0985449Z npm warn allow-scripts   prisma@7.9.1 (preinstall: node scripts/preinstall-entry.js)
+2026-08-10T19:53:24.0986891Z npm warn allow-scripts   prisma-zod-generator@3.1.0 (postinstall: node scripts/postinstall.js)
+2026-08-10T19:53:24.0988266Z npm warn allow-scripts   unrs-resolver@1.12.2 (postinstall: node postinstall.js)
+2026-08-10T19:53:24.0989246Z npm warn allow-scripts
+2026-08-10T19:53:24.0990860Z npm warn allow-scripts Run `npm approve-scripts --allow-scripts-pending` to review, or `npm approve-scripts <pkg>` to allow.
+2026-08-10T19:53:24.2824675Z ##[group]Run npm run generate
+2026-08-10T19:53:24.2824985Z [36;1mnpm run generate[0m
+2026-08-10T19:53:24.2876383Z shell: /usr/bin/bash -e {0}
+2026-08-10T19:53:24.2876658Z ##[endgroup]
+2026-08-10T19:53:24.3901484Z 
+2026-08-10T19:53:24.3901858Z > generate
+2026-08-10T19:53:24.3902309Z > prisma generate
+2026-08-10T19:53:24.3902562Z 
+2026-08-10T19:53:25.2274844Z Loaded Prisma config from prisma.config.ts.
+2026-08-10T19:53:25.2275327Z 
+2026-08-10T19:53:25.3261458Z Prisma schema loaded from prisma/schema.prisma.
+2026-08-10T19:53:26.8535904Z ✅ Zod schemas generated successfully with filtering applied
+2026-08-10T19:53:26.8536426Z 
+2026-08-10T19:53:26.8564874Z 
+2026-08-10T19:53:26.8565962Z ✔ Generated Prisma Client (7.9.1) to ./prisma/generated in 180ms
+2026-08-10T19:53:26.8566351Z 
+2026-08-10T19:53:26.8566653Z ✔ Generated Prisma Zod Generator to ./prisma/zod in 897ms
+2026-08-10T19:53:26.8566928Z 
+2026-08-10T19:53:27.0984656Z ##[group]Run npm run build:storybook
+2026-08-10T19:53:27.0985004Z [36;1mnpm run build:storybook[0m
+2026-08-10T19:53:27.1030319Z shell: /usr/bin/bash -e {0}
+2026-08-10T19:53:27.1030593Z ##[endgroup]
+2026-08-10T19:53:27.2020920Z 
+2026-08-10T19:53:27.2021322Z > build:storybook
+2026-08-10T19:53:27.2021704Z > storybook build
+2026-08-10T19:53:27.2021853Z 
+2026-08-10T19:53:27.7414273Z 
+2026-08-10T19:53:27.7437557Z [90m┌[39m  Building storybook v10.5.7
+2026-08-10T19:53:27.9192958Z [90m│[39m
+2026-08-10T19:53:27.9193901Z [32m◇[39m  Cleaning outputDir: [36mstorybook-static[39m
+2026-08-10T19:53:27.9374860Z [90m│[39m
+2026-08-10T19:53:27.9375465Z [32m◇[39m  Loading presets
+2026-08-10T19:53:29.2429933Z [90m│[39m
+2026-08-10T19:53:29.2436865Z [32m◇[39m  Building manager..
+2026-08-10T19:53:29.4947838Z [90m│[39m
+2026-08-10T19:53:29.4948471Z [34m●[39m  Building open services..
+2026-08-10T19:53:29.4953111Z [90m│[39m
+2026-08-10T19:53:29.4953641Z [34m●[39m  Building preview..
+2026-08-10T19:53:29.9278175Z [90m│[39m
+2026-08-10T19:53:29.9279882Z [34m●[39m  Copying static files: [36mpublic[39m at [36mstorybook-static[39m
+2026-08-10T19:53:30.1585472Z [90m│[39m  [43mVite[49m [36mvite v8.2.1 [32mbuilding client environment for production...[36m[39m
+2026-08-10T19:53:30.2340465Z [2K
+2026-08-10T19:53:46.5845631Z transforming...✓ 10742 modules transformed.
+2026-08-10T19:53:47.0959299Z [90m│[39m
+2026-08-10T19:53:47.0960423Z [33m▲[39m  [43mVite[49m [33m[lightningcss minify] Unknown at rule: @mixin
+2026-08-10T19:53:47.0961694Z [90m│[39m  5  |      color: light-dark(var(--mantine-color-black),
+2026-08-10T19:53:47.0962582Z [90m│[39m  var(--mantine-color-dark-0));
+2026-08-10T19:53:47.0963217Z [90m│[39m  6  |
+2026-08-10T19:53:47.0989873Z [90m│[39m  7  |      @mixin hover {
+2026-08-10T19:53:47.0990633Z [90m│[39m  |            ^
+2026-08-10T19:53:47.0991429Z [90m│[39m  8  |          background-color: light-dark(
+2026-08-10T19:53:47.0992416Z [90m│[39m  9  |              var(--mantine-color-gray-0),[39m
+2026-08-10T19:53:47.1005006Z [90m│[39m
+2026-08-10T19:53:47.1005555Z [33m▲[39m  [43mVite[49m [33m[lightningcss minify] Unknown at rule: @mixin
+2026-08-10T19:53:47.1006180Z [90m│[39m  7  |      font-size: var(--mantine-font-size-sm);
+2026-08-10T19:53:47.1006564Z [90m│[39m  8  |
+2026-08-10T19:53:47.1006922Z [90m│[39m  9  |      @mixin hover {
+2026-08-10T19:53:47.1007250Z [90m│[39m  |            ^
+2026-08-10T19:53:47.1007660Z [90m│[39m  10 |          background-color: light-dark(
+2026-08-10T19:53:47.1008170Z [90m│[39m  11 |              var(--mantine-color-gray-0),[39m
+2026-08-10T19:53:47.1011892Z [90m│[39m
+2026-08-10T19:53:47.1012524Z [33m▲[39m  [43mVite[49m [33m[lightningcss minify] Unknown at rule: @mixin
+2026-08-10T19:53:47.1013626Z [90m│[39m  31 |          light-dark(var(--mantine-color-gray-3),
+2026-08-10T19:53:47.1014442Z [90m│[39m  var(--mantine-color-dark-4));
+2026-08-10T19:53:47.1014780Z [90m│[39m  32 |
+2026-08-10T19:53:47.1015090Z [90m│[39m  33 |      @mixin hover {
+2026-08-10T19:53:47.1015581Z [90m│[39m  |            ^
+2026-08-10T19:53:47.1016255Z [90m│[39m  34 |          background-color: light-dark(
+2026-08-10T19:53:47.1017165Z [90m│[39m  35 |              var(--mantine-color-gray-0),[39m
+2026-08-10T19:53:47.1420828Z rendering chunks...
+2026-08-10T19:53:47.5255399Z [90m│[39m
+2026-08-10T19:53:47.5256124Z [31m■[39m  [43mVite[49m [31m✗[39m Build failed in 17.36s
+2026-08-10T19:53:47.5303407Z [90m│[39m
+2026-08-10T19:53:47.5304518Z [33m▲[39m  [43mVite[49m [33m[33m[PLUGIN_TIMINGS] [0mYour build spent 88% of 17.3s inside plugin
+2026-08-10T19:53:47.5305494Z [90m│[39m  hooks (15.3s).
+2026-08-10T19:53:47.5306445Z [90m│[39m  Measured inside the callback, so queue time is excluded and time the
+2026-08-10T19:53:47.5307375Z [90m│[39m  callback itself awaited is not:
+2026-08-10T19:53:47.5308392Z [90m│[39m  - storybook:react-docgen-plugin transform (40%, 6.9s, 10742 calls)
+2026-08-10T19:53:47.5309988Z [90m│[39m  - vite:asset-import-meta-url transform (15%, 2.7s, 1 call)
+2026-08-10T19:53:47.5310988Z [90m│[39m  - storybook:rollup-plugin-webpack-stats moduleParsed (8%, 1.4s, 10741
+2026-08-10T19:53:47.5311874Z [90m│[39m  calls)
+2026-08-10T19:53:47.5312354Z [90m│[39m  Those rows are 64% of the build; the rest of the 88% is below.
+2026-08-10T19:53:47.5313037Z [90m│[39m  Not measurable — 2 hooks whose calls overlap, so elapsed time covers
+2026-08-10T19:53:47.5313703Z [90m│[39m  work other calls were doing. Profile with `node --cpu-prof`:
+2026-08-10T19:53:47.5314344Z [90m│[39m  - vite-plugin-storybook-nextjs-swc transform (10742 calls)
+2026-08-10T19:53:47.5315110Z [90m│[39m  - plugin-csf transform (10742 calls)
+2026-08-10T19:53:47.5316158Z [90m│[39m  See ]8;;https://rolldown.rs/reference/InputOptions.checks#plugintimingshttps://rolldown.rs/reference/InputOptions.checks#plugintimings]8;;
+2026-08-10T19:53:47.5316979Z [90m│[39m  for more details.
+2026-08-10T19:53:47.5317274Z [90m│[39m  [39m
+2026-08-10T19:53:47.5317522Z [90m│[39m
+2026-08-10T19:53:47.5317820Z [31m■[39m  Failed to build the preview
+2026-08-10T19:53:47.5352015Z [90m│[39m
+2026-08-10T19:53:47.5352453Z [31m■[39m  [31mBuild failed with 2 errors:
+2026-08-10T19:53:47.5352694Z 
+2026-08-10T19:53:47.5353024Z [90m│[39m  [31m[MISSING_EXPORT] [0m"initialize" is not exported by
+2026-08-10T19:53:47.5353610Z [90m│[39m  "node_modules/msw-storybook-addon/build/index.mjs".
+2026-08-10T19:53:47.5354356Z [90m│[39m  [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m .storybook/preview.tsx:9:10 [38;5;246m][0m
+2026-08-10T19:53:47.5354890Z [90m│[39m  [38;5;246m│[0m
+2026-08-10T19:53:47.5358335Z [90m│[39m  [38;5;246m9 │[0m [38;5;249mi[0m[38;5;249mm[0m[38;5;249mp[0m[38;5;249mo[0m[38;5;249mr[0m[38;5;249mt[0m[38;5;249m [0m[38;5;249m{[0m[38;5;249m [0minitialize[38;5;249m,[0m[38;5;249m [0m[38;5;249mm[0m[38;5;249ms[0m[38;5;249mw[0m[38;5;249mL[0m[38;5;249mo[0m[38;5;249ma[0m[38;5;249md[0m[38;5;249me[0m[38;5;249mr[0m[38;5;249m [0m[38;5;249m}[0m[38;5;249m [0m[38;5;249mf[0m[38;5;249mr[0m[38;5;249mo[0m[38;5;249mm[0m[38;5;249m [0m[38;5;249m"[0m[38;5;249mm[0m[38;5;249ms[0m[38;5;249mw[0m[38;5;249m-[0m[38;5;249ms[0m[38;5;249mt[0m[38;5;249mo[0m[38;5;249mr[0m[38;5;249my[0m[38;5;249mb[0m[38;5;249mo[0m[38;5;249mo[0m[38;5;249mk[0m[38;5;249m-[0m[38;5;249ma[0m[38;5;249md[0m[38;5;249md[0m[38;5;249mo[0m[38;5;249mn[0m[38;5;249m"[0m[38;5;249m;[0m
+2026-08-10T19:53:47.5360728Z [90m│[39m  [38;5;240m│[0m          ─────┬────
+2026-08-10T19:53:47.5361247Z [90m│[39m  [38;5;240m│[0m               ╰────── Missing export
+2026-08-10T19:53:47.5361686Z [90m│[39m  [38;5;246m───╯[0m
+2026-08-10T19:53:47.5361848Z 
+2026-08-10T19:53:47.5362150Z [90m│[39m  [31m[MISSING_EXPORT] [0m"mswLoader" is not exported by
+2026-08-10T19:53:47.5362699Z [90m│[39m  "node_modules/msw-storybook-addon/build/index.mjs".
+2026-08-10T19:53:47.5363424Z [90m│[39m  [38;5;246m╭[0m[38;5;246m─[0m[38;5;246m[[0m .storybook/preview.tsx:9:22 [38;5;246m][0m
+2026-08-10T19:53:47.5364090Z [90m│[39m  [38;5;246m│[0m
+2026-08-10T19:53:47.5370927Z [90m│[39m  [38;5;246m9 │[0m [38;5;249mi[0m[38;5;249mm[0m[38;5;249mp[0m[38;5;249mo[0m[38;5;249mr[0m[38;5;249mt[0m[38;5;249m [0m[38;5;249m{[0m[38;5;249m [0m[38;5;249mi[0m[38;5;249mn[0m[38;5;249mi[0m[38;5;249mt[0m[38;5;249mi[0m[38;5;249ma[0m[38;5;249ml[0m[38;5;249mi[0m[38;5;249mz[0m[38;5;249me[0m[38;5;249m,[0m[38;5;249m [0mmswLoader[38;5;249m [0m[38;5;249m}[0m[38;5;249m [0m[38;5;249mf[0m[38;5;249mr[0m[38;5;249mo[0m[38;5;249mm[0m[38;5;249m [0m[38;5;249m"[0m[38;5;249mm[0m[38;5;249ms[0m[38;5;249mw[0m[38;5;249m-[0m[38;5;249ms[0m[38;5;249mt[0m[38;5;249mo[0m[38;5;249mr[0m[38;5;249my[0m[38;5;249mb[0m[38;5;249mo[0m[38;5;249mo[0m[38;5;249mk[0m[38;5;249m-[0m[38;5;249ma[0m[38;5;249md[0m[38;5;249md[0m[38;5;249mo[0m[38;5;249mn[0m[38;5;249m"[0m[38;5;249m;[0m
+2026-08-10T19:53:47.5375960Z [90m│[39m  [38;5;240m│[0m                      ────┬────
+2026-08-10T19:53:47.5376740Z [90m│[39m  [38;5;240m│[0m                          ╰────── Missing export
+2026-08-10T19:53:47.5377199Z [90m│[39m  [38;5;246m───╯[0m
+2026-08-10T19:53:47.5377488Z [90m│[39m  [39m
+2026-08-10T19:53:47.5377846Z [90m│[39m  at aggregateBindingErrorsIntoJsError
+2026-08-10T19:53:47.5378471Z [90m│[39m  (file://./node_modules/rolldown/dist/shared/error-BzLGqhSQ.mjs:48:18)
+2026-08-10T19:53:47.5378988Z [90m│[39m  at unwrapBindingResult
+2026-08-10T19:53:47.5379938Z [90m│[39m  (file://./node_modules/rolldown/dist/shared/error-BzLGqhSQ.mjs:18:128)
+2026-08-10T19:53:47.5380661Z [90m│[39m  at #build
+2026-08-10T19:53:47.5381213Z [90m│[39m  (file://./node_modules/rolldown/dist/shared/rolldown-I5b6h5Km.mjs:132:34)
+2026-08-10T19:53:47.5381872Z [90m│[39m  at async buildEnvironment
+2026-08-10T19:53:47.5382826Z [90m│[39m  (file://./node_modules/vite/dist/node/chunks/node.js:33730:66)
+2026-08-10T19:53:47.5383678Z [90m│[39m  at async Object.build
+2026-08-10T19:53:47.5384662Z [90m│[39m  (file://./node_modules/vite/dist/node/chunks/node.js:34150:19)
+2026-08-10T19:53:47.5385491Z [90m│[39m  at async build
+2026-08-10T19:53:47.5386510Z [90m│[39m  (file://./node_modules/@storybook/builder-vite/dist/index.js:1531:290)
+2026-08-10T19:53:47.5387515Z [90m│[39m  at async Promise.all (index 0)
+2026-08-10T19:53:47.5388265Z [90m│[39m  at async buildStaticStandalone
+2026-08-10T19:53:47.5389064Z [90m│[39m  (file://./node_modules/storybook/dist/core-server/index.js:10085:7)
+2026-08-10T19:53:47.5389883Z [90m│[39m  at async withTelemetry
+2026-08-10T19:53:47.5390960Z [90m│[39m  (file://./node_modules/storybook/dist/_node-chunks/chunk-XYZ5NBEV.js:1785:12)
+2026-08-10T19:53:47.5391688Z [90m│[39m  at async build
+2026-08-10T19:53:47.5392165Z [90m│[39m  (file://./node_modules/storybook/dist/bin/core.js:3794:3)
+2026-08-10T19:53:47.5392765Z [90m│[39m  at async _Command.<anonymous>
+2026-08-10T19:53:47.5393782Z [90m│[39m  (file://./node_modules/storybook/dist/bin/core.js:3976:7)
+2026-08-10T19:53:47.5424195Z [90m│[39m
+2026-08-10T19:53:47.5425095Z [34m●[39m  Storybook collects completely anonymous usage telemetry. We use it to
+2026-08-10T19:53:47.5426340Z [90m│[39m  shape Storybook's roadmap and prioritize features. You can learn more,
+2026-08-10T19:53:47.5427782Z [90m│[39m  including how to opt out, at ]8;;https://storybook.js.org/telemetryhttps://storybook.js.org/telemetry]8;;
+2026-08-10T19:53:47.8660429Z [90m│[39m
+2026-08-10T19:53:47.8660973Z [90m└[39m  Storybook exited with an error
+2026-08-10T19:53:47.8661488Z 
+2026-08-10T19:53:47.9667454Z ##[error]Process completed with exit code 1.
+2026-08-10T19:53:47.9758497Z ##[group]Run actions/upload-artifact@v7
+2026-08-10T19:53:47.9758810Z with:
+2026-08-10T19:53:47.9759015Z   name: storybook-test-logs
+2026-08-10T19:53:47.9759525Z   path: /tmp/storybook.log
+2026-08-10T19:53:47.9759821Z   if-no-files-found: ignore
+2026-08-10T19:53:47.9760064Z   retention-days: 14
+2026-08-10T19:53:47.9760281Z   compression-level: 6
+2026-08-10T19:53:47.9760492Z   overwrite: false
+2026-08-10T19:53:47.9760710Z   include-hidden-files: false
+2026-08-10T19:53:47.9760959Z   archive: true
+2026-08-10T19:53:47.9761154Z ##[endgroup]
+2026-08-10T19:53:48.1156689Z No files were found with the provided path: /tmp/storybook.log. No artifacts will be uploaded.
+2026-08-10T19:53:48.1355064Z Post job cleanup.
+2026-08-10T19:53:48.2263560Z [command]/usr/bin/git version
+2026-08-10T19:53:48.2299769Z git version 2.54.0
+2026-08-10T19:53:48.2329492Z Copying '/home/runner/.gitconfig' to '/home/runner/work/_temp/30bb8c6e-f538-4561-a1e5-55684e0e7072/.gitconfig'
+2026-08-10T19:53:48.2338417Z Temporarily overriding HOME='/home/runner/work/_temp/30bb8c6e-f538-4561-a1e5-55684e0e7072' before making global git config changes
+2026-08-10T19:53:48.2340229Z Adding repository directory to the temporary git global config as a safe directory
+2026-08-10T19:53:48.2343936Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/next-www-toastboy/next-www-toastboy
+2026-08-10T19:53:48.2373391Z Removing SSH command configuration
+2026-08-10T19:53:48.2378788Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-08-10T19:53:48.2414437Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-08-10T19:53:48.2633513Z Removing HTTP extra header
+2026-08-10T19:53:48.2639173Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-08-10T19:53:48.2680873Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-08-10T19:53:48.2915554Z Removing includeIf entries pointing to credentials config files
+2026-08-10T19:53:48.2924712Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-08-10T19:53:48.2950373Z includeif.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git.path
+2026-08-10T19:53:48.2951907Z includeif.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git/worktrees/*.path
+2026-08-10T19:53:48.2953048Z includeif.gitdir:/github/workspace/.git.path
+2026-08-10T19:53:48.2953956Z includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-08-10T19:53:48.2963299Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git.path
+2026-08-10T19:53:48.2986143Z /home/runner/work/_temp/git-credentials-1ccb6359-8c8e-446a-bd7e-dfb673741c56.config
+2026-08-10T19:53:48.3001042Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-1ccb6359\-8c8e\-446a\-bd7e\-dfb673741c56\.config
+2026-08-10T19:53:48.3036888Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git/worktrees/*.path
+2026-08-10T19:53:48.3060159Z /home/runner/work/_temp/git-credentials-1ccb6359-8c8e-446a-bd7e-dfb673741c56.config
+2026-08-10T19:53:48.3073701Z [command]/usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/next-www-toastboy/next-www-toastboy/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-1ccb6359\-8c8e\-446a\-bd7e\-dfb673741c56\.config
+2026-08-10T19:53:48.3104504Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+2026-08-10T19:53:48.3126019Z /github/runner_temp/git-credentials-1ccb6359-8c8e-446a-bd7e-dfb673741c56.config
+2026-08-10T19:53:48.3133904Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-1ccb6359\-8c8e\-446a\-bd7e\-dfb673741c56\.config
+2026-08-10T19:53:48.3164215Z [command]/usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+2026-08-10T19:53:48.3185723Z /github/runner_temp/git-credentials-1ccb6359-8c8e-446a-bd7e-dfb673741c56.config
+2026-08-10T19:53:48.3194502Z [command]/usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-1ccb6359\-8c8e\-446a\-bd7e\-dfb673741c56\.config
+2026-08-10T19:53:48.3227913Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-08-10T19:53:48.3464984Z Removing credentials config '/home/runner/work/_temp/git-credentials-1ccb6359-8c8e-446a-bd7e-dfb673741c56.config'
+2026-08-10T19:53:48.3637647Z Cleaning up orphan processes

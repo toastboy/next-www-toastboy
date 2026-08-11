@@ -1,0 +1,89 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "ed7795d3bc4b",
+  "session_id": "1a9c8869-0d7b-4379-9b3f-20286592ffef",
+  "strategy": "manual-commit",
+  "created_at": "2026-08-11T06:01:56.638562Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "save_step_count": 1,
+  "files_touched": [
+    ".storybook/main.ts",
+    ".storybook/preview.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "a298d95a98ce",
+  "checkpoint_transcript_start": 751,
+  "transcript_lines_at_start": 751,
+  "compact_transcript_start": 212,
+  "token_usage": {
+    "input_tokens": 58,
+    "cache_creation_tokens": 61353,
+    "cache_read_tokens": 7362346,
+    "output_tokens": 20998,
+    "api_call_count": 29
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_01SD7p6asqvtBmg4ieHNpQwa",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "finalise"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "a298d95a98ce",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 359,
+        "end": 360,
+        "entry_ids": [
+          "58271d4b-5709-424f-84d2-bbcc2d0b7097"
+        ],
+        "tool_use_id": "toolu_01SD7p6asqvtBmg4ieHNpQwa"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01SD7p6asqvtBmg4ieHNpQwa"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: finalise",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 14
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-08-11T06:01:56.524649Z",
+    "agent_lines": 10,
+    "agent_removed": 4,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 10,
+    "total_lines_changed": 14,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 59,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 58
+      }
+    }
+  ]
+}

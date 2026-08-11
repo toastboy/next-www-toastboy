@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 import { vi } from 'vitest';
 
 import { GameDaySummary } from '@/components/GameDaySummary/GameDaySummary';
@@ -10,6 +11,9 @@ import { defaultTeamPlayer } from '@/tests/mocks/data/teamPlayer';
 import { TeamPlayerType } from '@/types';
 
 vi.mock('@/components/Team/Team');
+vi.mock('@/components/GameResultForm/GameResultForm');
+
+const setGameResult = vi.fn(async () => Promise.resolve({} as GameDayType));
 
 /** One-player team with a specific points outcome. */
 const teamWith = (points: 0 | 1 | 3): TeamPlayerType[] => [
@@ -26,6 +30,8 @@ describe('GameDaySummary', () => {
                     nextGameDay={null}
                     teamA={teamWith(3)}
                     teamB={teamWith(0)}
+                    isAdmin={false}
+                    setGameResult={setGameResult}
                 />
             </Wrapper>,
         );
@@ -53,6 +59,8 @@ describe('GameDaySummary', () => {
                     nextGameDay={null}
                     teamA={[]}
                     teamB={[]}
+                    isAdmin={false}
+                    setGameResult={setGameResult}
                 />
             </Wrapper>,
         );
@@ -79,6 +87,8 @@ describe('GameDaySummary', () => {
                         nextGameDay={nextGameDay}
                         teamA={teamWith(3)}
                         teamB={teamWith(0)}
+                        isAdmin={false}
+                        setGameResult={setGameResult}
                     />
                 </Wrapper>,
             );
@@ -109,6 +119,8 @@ describe('GameDaySummary', () => {
                         nextGameDay={nextGameDay}
                         teamA={teamWith(3)}
                         teamB={teamWith(0)}
+                        isAdmin={false}
+                        setGameResult={setGameResult}
                     />
                 </Wrapper>,
             );
@@ -138,6 +150,8 @@ describe('GameDaySummary', () => {
                         nextGameDay={null}
                         teamA={teamWith(3)}
                         teamB={teamWith(0)}
+                        isAdmin={false}
+                        setGameResult={setGameResult}
                     />
                 </Wrapper>,
             );
@@ -162,6 +176,8 @@ describe('GameDaySummary', () => {
                         nextGameDay={null}
                         teamA={teamWith(3)}
                         teamB={teamWith(0)}
+                        isAdmin={false}
+                        setGameResult={setGameResult}
                     />
                 </Wrapper>,
             );
@@ -186,6 +202,8 @@ describe('GameDaySummary', () => {
                         nextGameDay={null}
                         teamA={teamWith(3)}
                         teamB={teamWith(0)}
+                        isAdmin={false}
+                        setGameResult={setGameResult}
                     />
                 </Wrapper>,
             );
@@ -203,6 +221,8 @@ describe('GameDaySummary', () => {
                         nextGameDay={null}
                         teamA={teamWith(3)}
                         teamB={teamWith(0)}
+                        isAdmin={false}
+                        setGameResult={setGameResult}
                     />
                 </Wrapper>,
             );
@@ -218,6 +238,8 @@ describe('GameDaySummary', () => {
                         nextGameDay={null}
                         teamA={[]}
                         teamB={[]}
+                        isAdmin={false}
+                        setGameResult={setGameResult}
                     />
                 </Wrapper>,
             );
@@ -238,10 +260,116 @@ describe('GameDaySummary', () => {
                         nextGameDay={null}
                         teamA={[]}
                         teamB={[]}
+                        isAdmin={false}
+                        setGameResult={setGameResult}
                     />
                 </Wrapper>,
             );
             expect(screen.getByText(/^No game\s*$/)).toBeInTheDocument();
+        });
+    });
+
+    describe('GameResultForm', () => {
+        it('renders the GameResultForm when isAdmin is true and the game is on', () => {
+            render(
+                <Wrapper>
+                    <GameDaySummary
+                        gameDay={defaultGameDay}
+                        prevGameDay={null}
+                        nextGameDay={null}
+                        teamA={teamWith(3)}
+                        teamB={teamWith(0)}
+                        isAdmin={true}
+                        setGameResult={setGameResult}
+                    />
+                </Wrapper>,
+            );
+
+            expect(screen.getByText(/GameResultForm:/)).toBeInTheDocument();
+        });
+
+        it('does not render the GameResultForm when isAdmin is false', () => {
+            render(
+                <Wrapper>
+                    <GameDaySummary
+                        gameDay={defaultGameDay}
+                        prevGameDay={null}
+                        nextGameDay={null}
+                        teamA={teamWith(3)}
+                        teamB={teamWith(0)}
+                        isAdmin={false}
+                        setGameResult={setGameResult}
+                    />
+                </Wrapper>,
+            );
+
+            expect(
+                screen.queryByText(/GameResultForm:/),
+            ).not.toBeInTheDocument();
+        });
+
+        it('does not render the GameResultForm when the game is not on, even for an admin', () => {
+            render(
+                <Wrapper>
+                    <GameDaySummary
+                        gameDay={{ ...defaultGameDay, game: false }}
+                        prevGameDay={null}
+                        nextGameDay={null}
+                        teamA={[]}
+                        teamB={[]}
+                        isAdmin={true}
+                        setGameResult={setGameResult}
+                    />
+                </Wrapper>,
+            );
+
+            expect(
+                screen.queryByText(/GameResultForm:/),
+            ).not.toBeInTheDocument();
+        });
+
+        it('passes gameDayId, bibs, and winner through to the GameResultForm', () => {
+            render(
+                <Wrapper>
+                    <GameDaySummary
+                        gameDay={{
+                            ...defaultGameDay,
+                            id: 1249,
+                            bibs: 'A',
+                        }}
+                        prevGameDay={null}
+                        nextGameDay={null}
+                        teamA={teamWith(3)}
+                        teamB={teamWith(0)}
+                        isAdmin={true}
+                        setGameResult={setGameResult}
+                    />
+                </Wrapper>,
+            );
+
+            const rendered = screen.getByText(/GameResultForm:/).textContent;
+            expect(rendered).toContain('"gameDayId":1249');
+            expect(rendered).toContain('"bibs":"A"');
+            expect(rendered).toContain('"winners":"A"');
+        });
+
+        it('passes null bibs to the GameResultForm when the game day has no bibs set', () => {
+            render(
+                <Wrapper>
+                    <GameDaySummary
+                        gameDay={createMockGameDay({ bibs: null })}
+                        prevGameDay={null}
+                        nextGameDay={null}
+                        teamA={teamWith(3)}
+                        teamB={teamWith(0)}
+                        isAdmin={true}
+                        setGameResult={setGameResult}
+                    />
+                </Wrapper>,
+            );
+
+            const rendered = screen.getByText(/GameResultForm:/).textContent;
+            expect(rendered).toContain('"bibs":null');
         });
     });
 });

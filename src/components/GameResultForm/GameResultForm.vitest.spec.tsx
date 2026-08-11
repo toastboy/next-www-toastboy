@@ -68,7 +68,7 @@ describe('GameResultForm', () => {
         await user.click(screen.getByRole('combobox', { name: 'Bibs' }));
         await user.click(
             await screen.findByRole('option', {
-                name: 'Team A wore bibs',
+                name: 'Team A',
                 hidden: true,
             }),
         );
@@ -109,7 +109,7 @@ describe('GameResultForm', () => {
         await user.click(screen.getByRole('combobox', { name: 'Result' }));
         await user.click(
             await screen.findByRole('option', {
-                name: 'Team A won',
+                name: 'A won',
                 hidden: true,
             }),
         );

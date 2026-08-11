@@ -1,6 +1,6 @@
 'use client';
 
-import { Box, Button, Group, Paper, Select, Stack } from '@mantine/core';
+import { Box, Button, Flex, Paper, Select } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
@@ -100,48 +100,53 @@ export const GameResultForm = ({
                 p="md"
                 radius="md"
             >
-                <Stack gap="sm">
-                    <Group grow>
-                        <Select
-                            label="Bibs"
-                            data={[
-                                { value: 'none', label: 'Not set' },
-                                { value: 'A', label: 'Team A wore bibs' },
-                                { value: 'B', label: 'Team B wore bibs' },
-                            ]}
-                            value={form.values.bibs}
-                            /* v8 ignore next -- allowDeselect={false} means value is never null */
-                            onChange={(value) =>
-                                form.setFieldValue('bibs', value ?? 'none')
-                            }
-                            allowDeselect={false}
-                        />
-                        <Select
-                            label="Result"
-                            data={[
-                                { value: 'none', label: 'Not set' },
-                                { value: 'A', label: 'Team A won' },
-                                { value: 'draw', label: 'Draw' },
-                                { value: 'B', label: 'Team B won' },
-                            ]}
-                            value={form.values.winner}
-                            /* v8 ignore next -- allowDeselect={false} means value is never null */
-                            onChange={(value) =>
-                                form.setFieldValue('winner', value ?? 'none')
-                            }
-                            allowDeselect={false}
-                        />
-                    </Group>
-                    <Group justify="flex-end">
-                        <Button
-                            type="submit"
-                            loading={isSaving}
-                            disabled={!form.isDirty()}
-                        >
-                            Save
-                        </Button>
-                    </Group>
-                </Stack>
+                <Flex
+                    gap="sm"
+                    direction={{ base: 'column', sm: 'row' }}
+                    align={{ base: 'stretch', sm: 'flex-end' }}
+                >
+                    <Select
+                        label="Bibs"
+                        data={[
+                            { value: 'none', label: 'Not set' },
+                            { value: 'A', label: 'Team A' },
+                            { value: 'B', label: 'Team B' },
+                        ]}
+                        value={form.values.bibs}
+                        /* v8 ignore next -- allowDeselect={false} means value is never null */
+                        onChange={(value) =>
+                            form.setFieldValue('bibs', value ?? 'none')
+                        }
+                        allowDeselect={false}
+                        miw="8rem"
+                        w={{ base: '100%', sm: 'auto' }}
+                    />
+                    <Select
+                        label="Result"
+                        data={[
+                            { value: 'none', label: 'Not set' },
+                            { value: 'A', label: 'A won' },
+                            { value: 'draw', label: 'Draw' },
+                            { value: 'B', label: 'B won' },
+                        ]}
+                        value={form.values.winner}
+                        /* v8 ignore next -- allowDeselect={false} means value is never null */
+                        onChange={(value) =>
+                            form.setFieldValue('winner', value ?? 'none')
+                        }
+                        allowDeselect={false}
+                        miw="8rem"
+                        w={{ base: '100%', sm: 'auto' }}
+                    />
+                    <Button
+                        type="submit"
+                        loading={isSaving}
+                        disabled={!form.isDirty()}
+                        w={{ base: '100%', sm: 'auto' }}
+                    >
+                        Save
+                    </Button>
+                </Flex>
             </Paper>
         </Box>
     );

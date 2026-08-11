@@ -1,4 +1,3 @@
-import { Flex } from '@mantine/core';
 import type { Metadata } from 'next';
 import { notFound, permanentRedirect } from 'next/navigation';
 import { cache } from 'react';
@@ -7,10 +6,8 @@ import z from 'zod';
 import { setGameResult } from '@/actions/setGameResult';
 import { AutoRefresh } from '@/components/AutoRefresh/AutoRefresh';
 import { GameDaySummary } from '@/components/GameDaySummary/GameDaySummary';
-import { GameResultForm } from '@/components/GameResultForm/GameResultForm';
 import { getUserRole } from '@/lib/auth.server';
 import { formatDate } from '@/lib/dates';
-import { getGameWinnersFromTeams } from '@/lib/gameResult';
 import gameDayService from '@/services/GameDay';
 import outcomeService from '@/services/Outcome';
 import { FootyChannel } from '@/types/FootyChannel';
@@ -74,14 +71,14 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
  * @component
  * @param {PageProps} props - The page component props
  * @param {object} props.params - Route parameters containing the game ID
- * @returns {Promise<React.ReactElement>} A flex container with game navigation,
- * admin controls, and game summary
+ * @returns {Promise<React.ReactElement>} Game navigation, admin controls, and
+ * game summary, rendered by GameDaySummary
  *
  * @remarks
  * - Fetches previous and next game days for navigation
  * - Retrieves team rosters (up to 10 players per team) for the current game day
- * - Calculates game winners from team data
- * - Only displays the GameResultForm if the user has an 'admin' role
+ * - Passes `isAdmin` through to GameDaySummary, which only displays the
+ *   GameResultForm if the user has an 'admin' role
  * - Navigation links (Previous/Next) are conditionally rendered based on data
  *   availability
  *
@@ -90,7 +87,6 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
  * @requires gameDayService.getPrevious - To fetch previous game
  * @requires gameDayService.getNext - To fetch next game
  * @requires outcomeService.getTeamPlayersByGameDay - To fetch team rosters
- * @requires getGameWinnersFromTeams - To calculate match winners
  */
 const GamePage = async (props: PageProps) => {
     const { gameDay } = await unpackParams(props.params);
@@ -101,13 +97,9 @@ const GamePage = async (props: PageProps) => {
         outcomeService.getTeamPlayersByGameDay(gameDay.id, 'A', 10),
         outcomeService.getTeamPlayersByGameDay(gameDay.id, 'B', 10),
     ]);
-    const winners = getGameWinnersFromTeams(teamA, teamB);
 
     return (
-        <Flex
-            direction="column"
-            gap="md"
-        >
+        <>
             <AutoRefresh
                 channels={[FootyChannel.Games, FootyChannel.Results]}
             />
@@ -117,16 +109,10 @@ const GamePage = async (props: PageProps) => {
                 nextGameDay={nextGameDay}
                 teamA={teamA}
                 teamB={teamB}
+                isAdmin={role === 'admin'}
+                setGameResult={setGameResult}
             />
-            {role === 'admin' && !!gameDay.game && (
-                <GameResultForm
-                    gameDayId={gameDay.id}
-                    bibs={gameDay.bibs ?? null}
-                    winners={winners}
-                    setGameResult={setGameResult}
-                />
-            )}
-        </Flex>
+        </>
     );
 };
 

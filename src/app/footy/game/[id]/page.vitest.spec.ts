@@ -24,10 +24,6 @@ vi.mock('@/actions/setGameResult', () => ({
     setGameResult: vi.fn(),
 }));
 
-vi.mock('@mantine/core', () => ({
-    Flex: ({ children }: { children?: unknown }) => children,
-}));
-
 vi.mock('@/components/AutoRefresh/AutoRefresh', () => ({
     AutoRefresh: () => null,
 }));
@@ -36,15 +32,11 @@ vi.mock('@/components/GameDaySummary/GameDaySummary', () => ({
     GameDaySummary: vi.fn(() => null),
 }));
 
-vi.mock('@/components/GameResultForm/GameResultForm', () => ({
-    GameResultForm: vi.fn(() => null),
-}));
-
 import { notFound, permanentRedirect } from 'next/navigation';
 
+import { setGameResult } from '@/actions/setGameResult';
 import GamePage, { generateMetadata } from '@/app/footy/game/[id]/page';
 import { GameDaySummary } from '@/components/GameDaySummary/GameDaySummary';
-import { GameResultForm } from '@/components/GameResultForm/GameResultForm';
 import { getUserRole } from '@/lib/auth.server';
 import { formatDate } from '@/lib/dates';
 import gameDayService from '@/services/GameDay';
@@ -123,7 +115,7 @@ describe('Game [id] page', () => {
             );
         });
 
-        it('renders the GameResultForm only when the user role is admin', async () => {
+        it('passes isAdmin true to GameDaySummary when the user role is admin', async () => {
             (getUserRole as Mock).mockResolvedValue('admin');
 
             const element = await GamePage({
@@ -131,10 +123,13 @@ describe('Game [id] page', () => {
             });
             renderToStaticMarkup(element);
 
-            expect(GameResultForm).toHaveBeenCalledTimes(1);
+            const [props] = (GameDaySummary as Mock).mock.calls[0] as [
+                { isAdmin: unknown },
+            ];
+            expect(props.isAdmin).toBe(true);
         });
 
-        it('does not render the GameResultForm when the user role is not admin', async () => {
+        it('passes isAdmin false to GameDaySummary when the user role is not admin', async () => {
             (getUserRole as Mock).mockResolvedValue('user');
 
             const element = await GamePage({
@@ -142,22 +137,22 @@ describe('Game [id] page', () => {
             });
             renderToStaticMarkup(element);
 
-            expect(GameResultForm).not.toHaveBeenCalled();
+            const [props] = (GameDaySummary as Mock).mock.calls[0] as [
+                { isAdmin: unknown },
+            ];
+            expect(props.isAdmin).toBe(false);
         });
 
-        it('does not render the GameResultForm when the game is not enabled, even for an admin', async () => {
-            (gameDayService.get as Mock).mockResolvedValue({
-                ...gameDay,
-                game: false,
-            });
-            (getUserRole as Mock).mockResolvedValue('admin');
-
+        it('passes the setGameResult action to GameDaySummary', async () => {
             const element = await GamePage({
                 params: Promise.resolve({ id: '1249' }),
             });
             renderToStaticMarkup(element);
 
-            expect(GameResultForm).not.toHaveBeenCalled();
+            const [props] = (GameDaySummary as Mock).mock.calls[0] as [
+                { setGameResult: unknown },
+            ];
+            expect(props.setGameResult).toBe(setGameResult);
         });
 
         it('passes the previous game to GameDaySummary when one exists', async () => {
@@ -203,48 +198,29 @@ describe('Game [id] page', () => {
             expect(props.nextGameDay).toBeNull();
         });
 
-        it('passes null bibs to GameResultForm when the game day has no bibs set', async () => {
-            (gameDayService.get as Mock).mockResolvedValue({
-                ...gameDay,
-                bibs: null,
-            });
-            (getUserRole as Mock).mockResolvedValue('admin');
-
+        it('passes gameDay through to GameDaySummary', async () => {
             const element = await GamePage({
                 params: Promise.resolve({ id: '1249' }),
             });
             renderToStaticMarkup(element);
 
-            const [props] = (GameResultForm as Mock).mock.calls[0] as [
-                { bibs: unknown },
+            const [props] = (GameDaySummary as Mock).mock.calls[0] as [
+                { gameDay: unknown },
             ];
-            expect(props.bibs).toBeNull();
+            expect(props.gameDay).toEqual(gameDay);
         });
 
-        it('computes game winners from teamA and teamB', async () => {
-            const winningTeam = defaultTeamPlayerList.map((player) => ({
-                ...player,
-                outcome: { ...player.outcome, points: 3 as const },
-            }));
-            const losingTeam = defaultTeamPlayerList.map((player) => ({
-                ...player,
-                outcome: { ...player.outcome, points: 0 as const },
-            }));
-            (outcomeService.getTeamPlayersByGameDay as Mock).mockImplementation(
-                (_id: number, team: string) =>
-                    Promise.resolve(team === 'A' ? winningTeam : losingTeam),
-            );
-            (getUserRole as Mock).mockResolvedValue('admin');
-
+        it('passes teamA and teamB through to GameDaySummary', async () => {
             const element = await GamePage({
                 params: Promise.resolve({ id: '1249' }),
             });
             renderToStaticMarkup(element);
 
-            const [props] = (GameResultForm as Mock).mock.calls[0] as [
-                { winners: unknown },
+            const [props] = (GameDaySummary as Mock).mock.calls[0] as [
+                { teamA: unknown; teamB: unknown },
             ];
-            expect(props.winners).toBe('A');
+            expect(props.teamA).toEqual(defaultTeamPlayerList);
+            expect(props.teamB).toEqual(defaultTeamPlayerList);
         });
 
         it('handles service errors gracefully', async () => {

@@ -1,4 +1,6 @@
+import { Notifications } from '@mantine/notifications';
 import type { Meta, StoryObj } from '@storybook/nextjs-vite';
+import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 import { expect, waitFor } from 'storybook/test';
 
 import { defaultGameDay } from '@/tests/mocks/data/gameDay';
@@ -9,6 +11,14 @@ import { GameDaySummary } from './GameDaySummary';
 const meta = {
     title: 'GameDay/GameDaySummary',
     component: GameDaySummary,
+    decorators: [
+        (Story) => (
+            <>
+                <Notifications />
+                <Story />
+            </>
+        ),
+    ],
     parameters: {
         layout: 'centered',
     },
@@ -25,6 +35,8 @@ export const Primary: Story = {
         nextGameDay: null,
         teamA: defaultTeamPlayerList,
         teamB: defaultTeamPlayerList,
+        isAdmin: false,
+        setGameResult: async () => Promise.resolve({} as GameDayType),
     },
     play: async ({ canvas }) => {
         // Each PlayerMugshot's <img>, across both teams, is aria-busy until
@@ -49,5 +61,15 @@ export const Primary: Story = {
             },
             { timeout: 10000 },
         );
+    },
+};
+
+export const AdminControls: Story = {
+    args: {
+        ...Primary.args,
+        isAdmin: true,
+    },
+    play: async ({ canvas }) => {
+        await canvas.findByRole('button', { name: 'Save' });
     },
 };

@@ -1,13 +1,15 @@
 'use client';
 
-import { Box, Flex, Group, Text, Title } from '@mantine/core';
+import { Box, Flex, Group, Stack, Text, Title } from '@mantine/core';
 import type { GameDayType } from 'prisma/zod/schemas/models/GameDay.schema';
 
 import { GameDayLink } from '@/components/GameDayLink/GameDayLink';
+import { GameResultForm } from '@/components/GameResultForm/GameResultForm';
 import { Team } from '@/components/Team/Team';
 import { formatDate } from '@/lib/dates';
 import { getGameWinnersFromTeams, getTeamResultState } from '@/lib/gameResult';
 import { TeamPlayerType } from '@/types';
+import { SetGameResultProxy } from '@/types/actions/SetGameResult';
 
 export interface Props {
     gameDay: GameDayType;
@@ -15,6 +17,8 @@ export interface Props {
     nextGameDay: GameDayType | null;
     teamA: TeamPlayerType[];
     teamB: TeamPlayerType[];
+    isAdmin: boolean;
+    setGameResult: SetGameResultProxy;
 }
 
 export const GameDaySummary = ({
@@ -23,6 +27,8 @@ export const GameDaySummary = ({
     nextGameDay,
     teamA,
     teamB,
+    isAdmin,
+    setGameResult,
 }: Props) => {
     const winner = getGameWinnersFromTeams(teamA, teamB);
     const noGame = gameDay.game ? `` : `No game`;
@@ -82,25 +88,40 @@ export const GameDaySummary = ({
             {noGame || comment ? (
                 <Text ta="center">{[noGame, comment].join(' ').trim()}</Text>
             ) : null}
-            {gameDay.game ? (
-                <Flex
-                    direction={{ base: 'column', xs: 'row' }}
-                    gap="xs"
-                >
-                    <Team
-                        team={teamA}
-                        teamName="A"
-                        result={getTeamResultState('A', winner)}
-                        hasBibs={gameDay.bibs === 'A'}
+            <Stack
+                maw="fit-content"
+                mx="auto"
+                p="xs"
+            >
+                {gameDay.game ? (
+                    <Flex
+                        direction={{ base: 'column', xs: 'row' }}
+                        justify="center"
+                        gap="xs"
+                    >
+                        <Team
+                            team={teamA}
+                            teamName="A"
+                            result={getTeamResultState('A', winner)}
+                            hasBibs={gameDay.bibs === 'A'}
+                        />
+                        <Team
+                            team={teamB}
+                            teamName="B"
+                            result={getTeamResultState('B', winner)}
+                            hasBibs={gameDay.bibs === 'B'}
+                        />
+                    </Flex>
+                ) : null}
+                {!!isAdmin && !!gameDay.game && (
+                    <GameResultForm
+                        gameDayId={gameDay.id}
+                        bibs={gameDay.bibs ?? null}
+                        winners={winner}
+                        setGameResult={setGameResult}
                     />
-                    <Team
-                        team={teamB}
-                        teamName="B"
-                        result={getTeamResultState('B', winner)}
-                        hasBibs={gameDay.bibs === 'B'}
-                    />
-                </Flex>
-            ) : null}
+                )}
+            </Stack>
         </Flex>
     );
 };

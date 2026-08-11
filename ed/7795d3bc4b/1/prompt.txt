@@ -1,0 +1,5 @@
+Cannot find module or type declarations for side-effect import of '@mantine/code-highlight/styles.css'.
+
+---
+
+I already restarted TS.

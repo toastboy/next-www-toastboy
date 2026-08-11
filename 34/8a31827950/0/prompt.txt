@@ -1,0 +1,1 @@
+I often find myself running `npm run deepclean` then reversing the deletion of package-lock.json then running `npm run build` so that I can be sure my local build doesn't have any cached cruft and is clean. Make me a package.json entry to do this end to end, and a VS code task to run it. It will need wrapping in `op run` of course

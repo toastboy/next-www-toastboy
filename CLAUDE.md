@@ -133,6 +133,7 @@ export class SomeModelService {
 - Use `z.email()` not `z.string().email()` (Zod deprecation)
 - Never create migration files manually — use `npm run migrate`
 - Better Auth tables (`user`, `account`, `session`, `verification`) — never modify directly via Prisma; use Better Auth APIs
+- Local data snapshot for agent inspection: `db-snapshot/*.json` (gitignored), refreshed by the human running `op run --env-file ./.env -- npm run fetchseeddata`. Contains real production game data (players, game days, outcomes, etc.) downloaded from the same Azure blob container `prisma/seed.ts` seeds from — excludes Better Auth tables. This is a human-run, on-demand command, never something an agent should invoke itself, since running it needs standing 1Password access to real secrets.
 
 ### UI & Forms
 

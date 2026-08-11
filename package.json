@@ -20,6 +20,7 @@
         "start:playwright": "npm run check-build && PLAYWRIGHT_TEST=true SITE_URL=http://localhost:3002 next start --hostname 127.0.0.1 --port 3002",
         "importlivedb": "TS_NODE_PROJECT=tsconfig.scripts.json TSX_TSCONFIG=tsconfig.scripts.json tsx -r tsconfig-paths/register src/lib/importlivedb/importlivedb.ts",
         "exportdb": "TS_NODE_PROJECT=tsconfig.scripts.json TSX_TSCONFIG=tsconfig.scripts.json tsx -r tsconfig-paths/register src/lib/exportdb/exportdb.ts",
+        "fetchseeddata": "TS_NODE_PROJECT=tsconfig.scripts.json TSX_TSCONFIG=tsconfig.scripts.json tsx -r tsconfig-paths/register src/lib/fetchseeddata/fetchseeddata.ts",
         "format:check": "prettier --check .",
         "format": "prettier --write .",
         "lint:fix": "eslint . --fix",

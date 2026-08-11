@@ -341,6 +341,7 @@ const config = [
             'src/tests/**',
             'src/lib/exportdb/**',
             'src/lib/importlivedb/**',
+            'src/lib/fetchseeddata/**',
             'src/lib/crawllivesite/**',
             'src/lib/observability/sentry.ts',
         ],

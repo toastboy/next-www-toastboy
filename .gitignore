@@ -52,6 +52,9 @@ prisma/fetch.js
 # The footy live site backup file for importing
 footy.sql.gz
 
+# Local JSON snapshot of seed data, fetched on demand via `npm run fetchseeddata`
+/db-snapshot/
+
 # The live site links script output
 livesitelinks.json
 

@@ -163,6 +163,22 @@
             "problemMatcher": []
         },
         {
+            "label": "Fetch seed data snapshot (1Password env)",
+            "type": "shell",
+            "command": "op",
+            "args": [
+                "run",
+                "--env-file",
+                "./.env",
+                "--",
+                "sh",
+                "-c",
+                "npm run fetchseeddata"
+            ],
+            "group": "build",
+            "problemMatcher": []
+        },
+        {
             "label": "Prisma seed (1Password env)",
             "type": "shell",
             "command": "op",

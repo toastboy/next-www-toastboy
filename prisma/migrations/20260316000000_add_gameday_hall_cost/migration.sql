@@ -30,7 +30,7 @@ SET `hallCost` = CASE
     WHEN `date` < '2024-08-01' THEN 4295
     WHEN `date` < '2025-08-01' THEN 4500
     WHEN `date` < '2026-08-01' THEN 4700
-    ELSE 4700
+    ELSE 4935
 END;
 
 -- Remove the temporary default now that the backfill is done.

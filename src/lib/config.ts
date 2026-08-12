@@ -8,8 +8,8 @@ const rawConfig: ConfigType = {
     notificationAutoClose: 4000,
     notificationIconSize: 18,
     organiserPhoneNumber: '07802 346128',
-    defaultGameCostPence: 500,
-    defaultHallCostPence: 4700,
+    defaultGameCostPence: 600,
+    defaultHallCostPence: 4935,
     trophyDisplayThreshold: 5,
     tableVisibleRows: 15,
 };

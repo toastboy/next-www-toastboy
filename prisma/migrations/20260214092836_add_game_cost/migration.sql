@@ -15,5 +15,6 @@ SET `cost` = CASE
     WHEN `id` < 701 THEN 350
     WHEN `id` < 910 THEN 400
     WHEN `id` < 1088 THEN 450
-    ELSE 500
+    WHEN `id` < 1275 THEN 500
+    ELSE 600
 END;

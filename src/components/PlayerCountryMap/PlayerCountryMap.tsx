@@ -44,9 +44,17 @@ const COUNTRY_NAME_MAP: Record<string, string> = {
 export interface Props {
     /** Array of country supporter entries with player data for highlighting and hover. */
     countries: CountrySupporterWithPlayerDataType[];
-    /** Width of the SVG viewport in pixels. */
+    /**
+     * Width of the SVG viewport in pixels. When omitted, the map measures
+     * its container and fills it, staying responsive to viewport/zoom
+     * changes; passing an explicit value (e.g. in Storybook) fixes the size
+     * instead.
+     */
     width?: number;
-    /** Height of the SVG viewport in pixels. */
+    /**
+     * Height of the SVG viewport in pixels. When omitted, it is derived from
+     * the (possibly measured) width using the default map's aspect ratio.
+     */
     height?: number;
 }
 
@@ -69,6 +77,10 @@ const POPOVER_MAX_HEIGHT = 200;
 const MUGSHOT_SIZE = 32;
 /** Delay in ms before closing the popover after mouse leaves a country path. */
 const CLOSE_DELAY_MS = 200;
+/** Default SVG width in pixels, used until the container has been measured. */
+const DEFAULT_WIDTH = 960;
+/** Default SVG height in pixels, used to derive the map's aspect ratio. */
+const DEFAULT_HEIGHT = 500;
 
 /**
  * Resolves a database country name to its TopoJSON atlas equivalent.
@@ -93,10 +105,15 @@ const toAtlasName = (dbName: string): string =>
  */
 export const PlayerCountryMap = ({
     countries,
-    width = 960,
-    height = 500,
+    width: widthProp,
+    height: heightProp,
 }: Props) => {
+    const wrapperRef = useRef<HTMLDivElement>(null);
     const svgRef = useRef<SVGSVGElement>(null);
+    const [measuredWidth, setMeasuredWidth] = useState(DEFAULT_WIDTH);
+    const width = widthProp ?? measuredWidth;
+    const height =
+        heightProp ?? Math.round((width * DEFAULT_HEIGHT) / DEFAULT_WIDTH);
     /** Projected centroids for each highlighted atlas country. */
     const centroidsRef = useRef<Map<string, { x: number; y: number }>>(
         new Map(),
@@ -190,6 +207,24 @@ export const PlayerCountryMap = ({
         scheduleClose();
     }, [scheduleClose]);
 
+    /* Keeps the map sized to its container so it stays responsive to
+       viewport/zoom changes instead of overflowing at a fixed pixel width.
+       Skipped when the caller pins an explicit width (e.g. Storybook). */
+    useEffect(() => {
+        if (widthProp !== undefined) return undefined;
+        const el = wrapperRef.current;
+        /* c8 ignore next -- wrapperRef is always attached before effects run; the null path is a defensive guard only */
+        if (!el) return undefined;
+
+        const observer = new ResizeObserver((entries) => {
+            if (entries.length === 0) return;
+            const measured = entries[0].contentRect.width;
+            if (measured > 0) setMeasuredWidth(measured);
+        });
+        observer.observe(el);
+        return () => observer.disconnect();
+    }, [widthProp]);
+
     useEffect(() => {
         /* c8 ignore next — svgRef is always attached before effects run; the null path is a defensive guard only */
         if (!svgRef.current) return;
@@ -270,7 +305,9 @@ export const PlayerCountryMap = ({
 
     return (
         <Box
+            ref={wrapperRef}
             pos="relative"
+            w="100%"
             data-testid="player-country-map"
         >
             <svg

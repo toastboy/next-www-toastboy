@@ -1,0 +1,98 @@
+Start work on SYS-599 - some things have already been improved since the ticket was written, I think.
+
+---
+
+<task-notification>
+<task-id>aa03f6a9dfa0b91d2</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/c956c8a8-79eb-45de-95b8-c91bdb4d572d/tasks/aa03f6a9dfa0b91d2.output</output-file>
+<status>completed</status>
+<summary>Agent "Find unnecessary wrapper components" finished</summary>
+<note>A task-notification fires each time this agent stops with no live background children of its own. The user can send it another message and resume it, so the same task-id may notify more than once.</note>
+<result>Based on a full sweep of `src/components/**/*.tsx` and `src/app/**/{page,layout}.tsx`, here are the findings.
+
+## Findings
+
+### src/components/AdminUserList/AdminUserList.tsx:117-121
+```tsx
+return (
+    &lt;Container&gt;
+        &lt;Text c="red"&gt;{errorMessage}&lt;/Text&gt;
+    &lt;/Container&gt;
+);
+```
+- Wrapper: `&lt;Container&gt;` with zero props, wraps a single `&lt;Text&gt;` child (early-return error branch).
+- Recommendation: **Fragment** (`&lt;&gt;...&lt;/&gt;`). No width capping/centering is being used — the child is a single, non-centered text node, so `Container`'s theme sizing is pure noise here.
+
+### src/components/TableIndexList/TableIndexList.tsx:31-41
+```tsx
+export const TableIndexList = () =&gt; (
+    &lt;Paper&gt;
+        &lt;List&gt;...&lt;/List&gt;
+    &lt;/Paper&gt;
+);
+```
+- Wrapper: root return, `&lt;Paper&gt;` with zero props, wraps a single `&lt;List&gt;` child.
+- Recommendation: **Fragment**. `Paper` contributes no shadow/border/padding/background here; it's purely satisfying the single-root requirement.
+
+### src/app/footy/countrymap/page.tsx:21-36
+```tsx
+return (
+    &lt;Paper&gt;
+        &lt;Title order={2} mb="md"&gt;Toastboy FC World Map&lt;/Title&gt;
+        &lt;Text mb="md"&gt;...&lt;/Text&gt;
+        &lt;PlayerCountryMap countries={countries} /&gt;
+    &lt;/Paper&gt;
+);
+```
+- Wrapper: page root, `&lt;Paper&gt;` with zero props, grouping three children.
+- Recommendation: **Fragment**. No padding/shadow/border is applied, so `Paper` isn't providing a card surface — just grouping.
+
+### src/app/footy/response/page.tsx:34-39 and 46-51 (two occurrences)
+```tsx
+return (
+    &lt;Box&gt;
+        &lt;Text&gt;{errorMessage}&lt;/Text&gt;
+        &lt;Anchor href="/footy/game"&gt;Go to the game page&lt;/Anchor&gt;
+    &lt;/Box&gt;
+);
+```
+(and the near-identical block at 46-51 for "Invitation details are missing.")
+- Wrapper: `&lt;Box&gt;` with zero props, grouping a `Text` + `Anchor` pair, in two separate early-return error branches.
+- Recommendation: **Fragment** for both. No styling/layout props at all; `Box` here is only satisfying JSX's single-root rule.
+
+### src/app/footy/admin/page.tsx:24-37 (secondary/nested finding)
+```tsx
+&lt;Paper&gt;
+    &lt;Flex mb="lg" gap="md" wrap="wrap" justify="center"&gt;
+        &lt;AdminUpdatePlayerRecords .../&gt;
+        &lt;AdminExportAuth .../&gt;
+    &lt;/Flex&gt;
+&lt;/Paper&gt;
+```
+- Wrapper: `&lt;Paper&gt;` with zero props, nested inside the (legitimately-styled) root `Container`, wrapping a *single* `&lt;Flex&gt;` child that already does the real layout work (gap/wrap/justify).
+- Recommendation: **Fragment**. Since `Flex` is already a single valid JSX child, `Paper` here isn't even needed for the single-root rule — it does no visual work (no shadow/border/padding) and could be removed entirely.
+- Lower confidence than the above since `Paper` is used elsewhere in the codebase as a deliberate "card" convention, but here it wraps only one child and applies no styling, so it reads as leftover scaffolding.
+
+### src/components/PlayerProfile/PlayerProfile.tsx:178-189 (secondary/nested finding, lower confidence)
+```tsx
+&lt;Group&gt;
+    &lt;Paper p="sm" w="auto" style={{ flex: '1' }}&gt;
+        &lt;PlayerHeatmap data={history} year={year} /&gt;
+    &lt;/Paper&gt;
+&lt;/Group&gt;
+```
+- Wrapper: `&lt;Group&gt;` with zero props, wraps a single `&lt;Paper&gt;` child (which itself has real props).
+- Recommendation: **Fragment**. `Group`'s row-layout/gap behavior is irrelevant with only one child; it's not doing any grouping work. Flag with lower confidence — could be intentional scaffolding for a future second item, worth confirming with the author before removing.
+
+## Not flagged (checked, but legitimate)
+
+For completeness, these were inspected because they use bare/props-light `Container`/`Paper`/`Box`/`Stack`/`Group`, but were judged to be doing real work and are **not** flagged:
+- `CustomAppShell.tsx:56` — bare `&lt;Container&gt;` in the header; Mantine `Container` without `fluid`/`size` still applies a real default max-width + centering, and here it's plausibly matching the width of `AppShell.Main`'s `Container size="xl"` for visual alignment.
+- All the `Stack`/`Group`/`Flex` usages with 2+ children found via the bare-tag grep (`DeleteAccountForm`, `PasswordResetForm`, `EnquiryForm`, `NewPlayerForm`, `PasswordChangeForm`, `SignIn`, `ClaimSignup`, `UserButton`, `PlayerProfileForm`, `not-found.tsx`, `books/page.tsx`) — these rely on `Stack`'s default gap or `Group`'s default row-flow to lay out multiple real children, which is genuine layout work, not single-root padding.
+- `NewGameForm.tsx:104` bare `&lt;Paper&gt;` wrapping `Title` + form `Box` — consistent with the repo-wide "Paper as form card" convention used across dozens of forms (`ClaimSignup`, `ForgottenPasswordForm`, `GameInvitationResponseForm`, `PasswordResetForm`, `SignIn`, etc.), all with multiple children, so treated as intentional design language rather than filler.
+- Every `Container`/`Paper`/`Box`/`Flex`/`Stack` root wrapper elsewhere carries real sizing/spacing/ref/className/`component="form"` props (e.g. `AdminPlayerList`, `DrinkersForm`, `PickerForm`, `MoneyForm`, `ResponsesForm`, `PlayerList`, `PlayerCard`, `PlayerInfo`, `RecordsTable`, `Turnout`, `WinnersTable`, `YearTable`, `GameDaySummary`, `FamilyTree`, `PlayerCountryMap`, `MoneyChart`, `PieChart`, `PlayerHeatmap`, `DebugFontSizes`, `DebugBreakpoints`, `DebugSizeOverlay`, `NavBarNested`, `docs/layout.tsx`).
+- `SignIn.tsx:94-97` — already fixed reference example (`&lt;Center&gt;&lt;Loader/&gt;&lt;/Center&gt;`), confirmed present and correct, not re-flagged.
+- All redirect-only page/layout components (`fixtures/[year]`, `results/[year]`, `table/[table]/[year]`, `winners/[year]`, `game/page.tsx`, `drinkers/page.tsx`, `admin/layout.tsx`, `(authenticated)/layout.tsx`, root `page.tsx`) return `null`/`children`/nothing JSX-wrapper related.</result>
+<usage><subagent_tokens>94501</subagent_tokens><tool_uses>57</tool_uses><duration_ms>390468</duration_ms></usage>
+</task-notification>

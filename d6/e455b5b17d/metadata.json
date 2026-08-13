@@ -1,0 +1,31 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "d6e455b5b17d",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "src/app/footy/admin/page.tsx",
+    "src/app/footy/countrymap/page.tsx",
+    "src/app/footy/response/page.tsx",
+    "src/components/AdminUserList/AdminUserList.tsx",
+    "src/components/PlayerProfile/PlayerProfile.tsx",
+    "src/components/TableIndexList/TableIndexList.tsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/d6/e455b5b17d/0/metadata.json",
+      "transcript": "/d6/e455b5b17d/0/full.jsonl",
+      "compact_transcript": "/d6/e455b5b17d/0/transcript.jsonl",
+      "content_hash": "/d6/e455b5b17d/0/content_hash.txt",
+      "prompt": "/d6/e455b5b17d/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 75,
+    "cache_creation_tokens": 52293,
+    "cache_read_tokens": 2328605,
+    "output_tokens": 8937,
+    "api_call_count": 38
+  }
+}

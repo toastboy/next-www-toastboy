@@ -1,0 +1,88 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "63a4e2f2a513",
+  "session_id": "c956c8a8-79eb-45de-95b8-c91bdb4d572d",
+  "strategy": "manual-commit",
+  "created_at": "2026-08-13T07:46:12.925835Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    ".github/dependabot.yml"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "bae5af5603ee",
+  "checkpoint_transcript_start": 441,
+  "transcript_lines_at_start": 441,
+  "compact_transcript_start": 111,
+  "token_usage": {
+    "input_tokens": 0,
+    "cache_creation_tokens": 0,
+    "cache_read_tokens": 0,
+    "output_tokens": 0,
+    "api_call_count": 0
+  },
+  "skill_events_version": 1,
+  "skill_events": [
+    {
+      "id": "claude-skill-toolu_01YGMz7AMVa8FbYBqZrGSttN",
+      "event_type": "tool_invocation",
+      "skill": {
+        "name": "finalise"
+      },
+      "source": {
+        "agent": "claude-code",
+        "signal": "skill_tool_use",
+        "confidence": "explicit"
+      },
+      "turn_id": "bae5af5603ee",
+      "transcript_anchor": {
+        "unit": "line",
+        "start": 321,
+        "end": 322,
+        "entry_ids": [
+          "a9c5b2cb-cf18-48d7-8bee-1618b759de63"
+        ],
+        "tool_use_id": "toolu_01YGMz7AMVa8FbYBqZrGSttN"
+      },
+      "native": {
+        "tool_name": "Skill",
+        "tool_use_id": "toolu_01YGMz7AMVa8FbYBqZrGSttN"
+      },
+      "collapse": {
+        "target": "tool_pair",
+        "label": "Skill: finalise",
+        "default_collapsed": true
+      }
+    }
+  ],
+  "session_metrics": {
+    "turn_count": 2
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-08-13T07:46:12.844248Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 0,
+    "total_lines_changed": 0,
+    "agent_percentage": 0,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 69,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 64,
+        ".github/dependabot.yml": 4
+      }
+    }
+  ]
+}

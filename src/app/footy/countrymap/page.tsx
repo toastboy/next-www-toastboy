@@ -1,4 +1,4 @@
-import { Paper, Text, Title } from '@mantine/core';
+import { Text, Title } from '@mantine/core';
 
 import { PlayerCountryMap } from '@/components/PlayerCountryMap/PlayerCountryMap';
 import countrySupporterService from '@/services/CountrySupporter';
@@ -19,7 +19,7 @@ const CountryMapPage = async () => {
     );
 
     return (
-        <Paper>
+        <>
             <Title
                 order={2}
                 mb="md"
@@ -32,7 +32,7 @@ const CountryMapPage = async () => {
                 player details (scrollable).
             </Text>
             <PlayerCountryMap countries={countries} />
-        </Paper>
+        </>
     );
 };
 

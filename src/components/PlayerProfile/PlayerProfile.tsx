@@ -1,14 +1,6 @@
 'use client';
 
-import {
-    Box,
-    Center,
-    Container,
-    Grid,
-    Group,
-    Paper,
-    Stack,
-} from '@mantine/core';
+import { Box, Center, Container, Grid, Paper, Stack } from '@mantine/core';
 import type { TableName } from 'prisma/generated/browser';
 import type { PlayerRecordType } from 'prisma/zod/schemas/models/PlayerRecord.schema';
 
@@ -175,18 +167,16 @@ export const PlayerProfile = ({
                         />
                     </Grid.Col>
                 </Grid>
-                <Group>
-                    <Paper
-                        p="sm"
-                        w="auto"
-                        style={{ flex: '1' }}
-                    >
-                        <PlayerHeatmap
-                            data={history}
-                            year={year}
-                        />
-                    </Paper>
-                </Group>
+                <Paper
+                    p="sm"
+                    w="auto"
+                    style={{ flex: '1' }}
+                >
+                    <PlayerHeatmap
+                        data={history}
+                        year={year}
+                    />
+                </Paper>
             </Stack>
         </Container>
     );

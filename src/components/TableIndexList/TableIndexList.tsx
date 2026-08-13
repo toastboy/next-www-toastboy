@@ -1,6 +1,6 @@
 'use client';
 
-import { List, Paper } from '@mantine/core';
+import { List } from '@mantine/core';
 import Link from 'next/link';
 
 const tables = [
@@ -29,13 +29,11 @@ const tables = [
 ];
 
 export const TableIndexList = () => (
-    <Paper>
-        <List>
-            {tables.map(({ href, label, description }) => (
-                <List.Item key={href}>
-                    <Link href={href}>{label}</Link> - {description}
-                </List.Item>
-            ))}
-        </List>
-    </Paper>
+    <List>
+        {tables.map(({ href, label, description }) => (
+            <List.Item key={href}>
+                <Link href={href}>{label}</Link> - {description}
+            </List.Item>
+        ))}
+    </List>
 );

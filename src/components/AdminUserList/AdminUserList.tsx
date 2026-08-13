@@ -114,11 +114,7 @@ export const AdminUserList = ({ users, setAdminRole }: Props) => {
         : [];
 
     if (errorMessage) {
-        return (
-            <Container>
-                <Text c="red">{errorMessage}</Text>
-            </Container>
-        );
+        return <Text c="red">{errorMessage}</Text>;
     }
 
     return (

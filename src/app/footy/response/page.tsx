@@ -1,4 +1,4 @@
-import { Anchor, Box, Text } from '@mantine/core';
+import { Anchor, Text } from '@mantine/core';
 import { redirect } from 'next/navigation';
 
 import { submitGameInvitationResponse } from '@/actions/submitGameInvitationResponse';
@@ -32,10 +32,10 @@ const Page = async ({ searchParams: sp }: PageProps) => {
 
     if (errorMessage) {
         return (
-            <Box>
+            <>
                 <Text>{errorMessage}</Text>
                 <Anchor href="/footy/game">Go to the game page</Anchor>
-            </Box>
+            </>
         );
     }
 
@@ -44,10 +44,10 @@ const Page = async ({ searchParams: sp }: PageProps) => {
 
     if (!details) {
         return (
-            <Box>
+            <>
                 <Text>Invitation details are missing.</Text>
                 <Anchor href="/footy/game">Go to the game page</Anchor>
-            </Box>
+            </>
         );
     }
 

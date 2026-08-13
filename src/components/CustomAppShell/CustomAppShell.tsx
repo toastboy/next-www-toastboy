@@ -56,7 +56,7 @@ export const CustomAppShell = ({ children, user, devMode }: Props) => {
                 <Container>
                     <Group
                         justify="space-between"
-                        className="px-6"
+                        wrap="nowrap"
                     >
                         <Burger
                             aria-label="Toggle navigation"
@@ -74,13 +74,17 @@ export const CustomAppShell = ({ children, user, devMode }: Props) => {
                                 alt="Toastboy FC Crest"
                             />
                         </Link>
-                        <Group gap="xs">
+                        <Group
+                            gap="xs"
+                            wrap="nowrap"
+                        >
                             <Text>Toastboy FC</Text>
                             {devMode ? (
                                 <Badge
                                     color="orange"
                                     variant="filled"
                                     size="sm"
+                                    visibleFrom="xs"
                                 >
                                     dev mode
                                 </Badge>

@@ -1,0 +1,26 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "b49c1461efde",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "src/components/PlayerCountryMap/PlayerCountryMap.tsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/b4/9c1461efde/0/metadata.json",
+      "transcript": "/b4/9c1461efde/0/full.jsonl",
+      "compact_transcript": "/b4/9c1461efde/0/transcript.jsonl",
+      "content_hash": "/b4/9c1461efde/0/content_hash.txt",
+      "prompt": "/b4/9c1461efde/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 213,
+    "cache_creation_tokens": 394976,
+    "cache_read_tokens": 12453224,
+    "output_tokens": 59783,
+    "api_call_count": 107
+  }
+}

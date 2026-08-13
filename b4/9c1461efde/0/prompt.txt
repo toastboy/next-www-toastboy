@@ -1,0 +1,5 @@
+Scan the whole site looking for pages or layouts which may not behave properly when the user zooms in the browser. I think I've covered the cases I could already see such as the game day summary
+
+---
+
+Turnout is fine. Fix PlayerCountryMap

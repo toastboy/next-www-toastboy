@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1.7
 
-FROM --platform=$BUILDPLATFORM node:20.19.5-bookworm-slim AS base
+FROM --platform=$BUILDPLATFORM node:26.7.0-bookworm-slim AS base
 ENV NEXT_TELEMETRY_DISABLED=1 \
     npm_config_update_notifier=false \
     npm_config_fund=false
@@ -64,7 +64,7 @@ RUN chmod +x /usr/local/seeder.sh
 ENV NODE_ENV=development
 CMD ["/usr/local/seeder.sh"]
 
-FROM --platform=$TARGETPLATFORM node:20.19.5-bookworm-slim AS runner
+FROM --platform=$TARGETPLATFORM node:26.7.0-bookworm-slim AS runner
 WORKDIR /app
 ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \

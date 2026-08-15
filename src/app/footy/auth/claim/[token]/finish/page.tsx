@@ -45,7 +45,7 @@ const Page = async ({ params }: PageProps) => {
         );
     }
 
-    redirect('/footy/profile');
+    return redirect('/footy/profile');
 };
 
 export default Page;

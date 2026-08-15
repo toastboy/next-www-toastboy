@@ -24,7 +24,7 @@ export async function triggerInvitations(rawData: unknown) {
     revalidatePath('/footy/admin/newgame');
     revalidatePath('/footy/admin/responses');
     revalidatePath('/footy/admin/picker');
-    revalidatePath('/footy/response');
+    revalidatePath('/footy/response/[token]', 'page');
     broadcast(FootyChannel.Invitations);
 
     return decision;

@@ -43,7 +43,10 @@ describe('triggerInvitations action wrapper', () => {
             '/footy/admin/responses',
         );
         expect(revalidatePathMock).toHaveBeenCalledWith('/footy/admin/picker');
-        expect(revalidatePathMock).toHaveBeenCalledWith('/footy/response');
+        expect(revalidatePathMock).toHaveBeenCalledWith(
+            '/footy/response/[token]',
+            'page',
+        );
         expect(broadcastMock).toHaveBeenCalledWith(FootyChannel.Invitations);
     });
 

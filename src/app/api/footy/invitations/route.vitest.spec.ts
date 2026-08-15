@@ -119,8 +119,7 @@ describe('POST /api/footy/invitations', () => {
                 '/footy/admin/responses',
             );
             expect(revalidatePath).toHaveBeenCalledWith('/footy/admin/picker');
-            expect(revalidatePath).toHaveBeenCalledWith('/footy/response');
-            expect(revalidatePath).toHaveBeenCalledTimes(4);
+            expect(revalidatePath).toHaveBeenCalledTimes(3);
             expect(broadcast).toHaveBeenCalledWith('invitations');
             expect(broadcast).toHaveBeenCalledTimes(1);
             const body = (await response.json()) as {

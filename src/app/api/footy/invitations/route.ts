@@ -87,7 +87,6 @@ export const POST = async (request: NextRequest) => {
         revalidatePath('/footy/admin/newgame');
         revalidatePath('/footy/admin/responses');
         revalidatePath('/footy/admin/picker');
-        revalidatePath('/footy/response');
         broadcast(FootyChannel.Invitations);
 
         return NextResponse.json(decision, { status: 200 });

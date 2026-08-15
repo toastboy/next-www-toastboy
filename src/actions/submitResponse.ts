@@ -23,7 +23,7 @@ export async function SubmitResponse(rawData: unknown) {
 
     revalidatePath('/footy/admin/picker');
     revalidatePath('/footy/admin/responses');
-    revalidatePath('/footy/response');
+    revalidatePath('/footy/response/[token]', 'page');
     broadcast(FootyChannel.Responses);
 
     return result;

@@ -125,7 +125,10 @@ export async function sendGameInvitations(
             gameDayId,
         });
 
-        const inviteLink = `${baseUrl}/footy/response?token=${encodeURIComponent(token)}`;
+        const inviteLink = new URL(
+            `/footy/response/${encodeURIComponent(token)}`,
+            baseUrl,
+        ).toString();
         const html = buildInvitationEmail({
             playerName: player.name,
             inviteLink,

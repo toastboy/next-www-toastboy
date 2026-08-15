@@ -13,6 +13,7 @@ import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
+import { usePathname } from 'next/navigation';
 
 import { EmailInput } from '@/components/EmailInput/EmailInput';
 import { config } from '@/lib/config';
@@ -29,6 +30,7 @@ export interface Props {
 }
 
 export const EnquiryForm = ({ onSendEnquiry }: Props) => {
+    const pathname = usePathname();
     const form = useForm<EnquiryInput>({
         initialValues: {
             name: '',
@@ -67,7 +69,7 @@ export const EnquiryForm = ({ onSendEnquiry }: Props) => {
                 layer: 'client',
                 component: 'EnquiryForm',
                 action: 'sendEnquiry',
-                route: '/footy/contact',
+                route: pathname,
             });
             const message = toPublicMessage(
                 error,

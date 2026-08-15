@@ -70,7 +70,7 @@ export async function sendEnquiryCore(
     });
 
     const verificationLink = new URL(
-        `/footy/auth/verify/enquiry/${token}`,
+        `/footy/auth/verify/enquiry/${encodeURIComponent(token)}`,
         getPublicBaseUrl(),
     ).toString();
 

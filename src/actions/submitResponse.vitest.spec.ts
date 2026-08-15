@@ -44,7 +44,10 @@ describe('SubmitResponse action wrapper', () => {
         expect(revalidatePathMock).toHaveBeenCalledWith(
             '/footy/admin/responses',
         );
-        expect(revalidatePathMock).toHaveBeenCalledWith('/footy/response');
+        expect(revalidatePathMock).toHaveBeenCalledWith(
+            '/footy/response/[token]',
+            'page',
+        );
         expect(broadcastMock).toHaveBeenCalledWith(FootyChannel.Responses);
     });
 

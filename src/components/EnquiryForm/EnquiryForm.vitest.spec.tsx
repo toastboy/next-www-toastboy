@@ -1,6 +1,7 @@
 import { notifications } from '@mantine/notifications';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { usePathname } from 'next/navigation';
 import { vi } from 'vitest';
 
 import { EnquiryForm } from '@/components/EnquiryForm/EnquiryForm';
@@ -19,6 +20,7 @@ describe('EnquiryForm', () => {
 
     beforeEach(() => {
         vi.clearAllMocks();
+        vi.mocked(usePathname).mockReturnValue('/footy/info');
     });
 
     it('renders the form fields', async () => {
@@ -125,6 +127,7 @@ describe('EnquiryForm', () => {
                 expect.objectContaining({
                     layer: 'client',
                     component: 'EnquiryForm',
+                    route: '/footy/info',
                 }),
             );
         });

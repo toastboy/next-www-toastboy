@@ -1,0 +1,46 @@
+Is there a standard pattern for making Playwright testing play nicely with next.js hydration? It seems that this flaky failure might be Playwright finding both the pre- and post- hydration versions of the same element:
+
+1) [firefox] › e2e/info.spec.ts:105:13 › EnquiryForm › email flow › completes full verification flow 
+    Error: expect(locator).toBeVisible() failed
+
+    Locator: getByText('Thanks for your message')
+    Expected: visible
+    Error: strict mode violation: getByText('Thanks for your message') resolved to 2 elements:
+        1) <div class="m_3d733a3a mantine-Notification-description">Thanks for your message. We will get back to you …</div> aka locator('#mantine-adsexff2f').getByText('Thanks for your message. We')
+        2) <div class="m_3d733a3a mantine-Notification-description">Thanks for your message. We will get back to you …</div> aka getByText('Thanks for your message. We').nth(1)
+
+    Call log:
+      - Expect "toBeVisible" with timeout 5000ms
+      - waiting for getByText('Thanks for your message')
+
+
+      139 |             await expect(
+      140 |                 page.getByText('Thanks for your message'),
+    > 141 |             ).toBeVisible();
+          |               ^
+      142 |         });
+      143 |     });
+      144 | });
+        at /home/runner/work/next-www-toastboy/next-www-toastboy/e2e/info.spec.ts:141:15
+
+---
+
+The firefox run with the error is at ./playwright-report-firefox
+
+---
+
+Yes, but my core question is given this happens at different times with all sorts of hydration flakiness, why is there not apparently a way to authoritatively say "I want these assertions to take place after ALL hydration is complete"
+
+---
+
+Just .first and do a sweep for potential other manifestations of the same thing
+
+---
+
+<task-notification>
+<task-id>b08ph4q3y</task-id>
+<tool-use-id>REDACTED</tool-use-id>
+<output-file>/private/tmp/claude-501/-Volumes-Development-next-www-toastboy/c956c8a8-79eb-45de-95b8-c91bdb4d572d/tasks/b08ph4q3y.output</output-file>
+<status>completed</status>
+<summary>Background command "npm run lint 2&gt;&amp;1 | tail -60" completed (exit code 0)</summary>
+</task-notification>

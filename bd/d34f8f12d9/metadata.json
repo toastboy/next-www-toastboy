@@ -1,0 +1,35 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "bdd34f8f12d9",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 4,
+  "files_touched": [
+    "e2e/drinkers.spec.ts",
+    "e2e/footy.spec.ts",
+    "e2e/games.spec.ts",
+    "e2e/homepage.spec.ts",
+    "e2e/info.spec.ts",
+    "e2e/money.spec.ts",
+    "e2e/moregames.spec.ts",
+    "e2e/newgame.spec.ts",
+    "e2e/responses.spec.ts",
+    "e2e/utils/auth.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/bd/d34f8f12d9/0/metadata.json",
+      "transcript": "/bd/d34f8f12d9/0/full.jsonl",
+      "compact_transcript": "/bd/d34f8f12d9/0/transcript.jsonl",
+      "content_hash": "/bd/d34f8f12d9/0/content_hash.txt",
+      "prompt": "/bd/d34f8f12d9/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 126,
+    "cache_creation_tokens": 103123,
+    "cache_read_tokens": 5911581,
+    "output_tokens": 47981,
+    "api_call_count": 63
+  }
+}

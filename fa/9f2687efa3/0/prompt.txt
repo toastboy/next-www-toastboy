@@ -1,0 +1,47 @@
+Start work on SYS-590 - find all the places this idiom is used.
+
+---
+
+Are there genuinely more than one unique value being passed in as redirectParam?
+
+---
+
+So if I decided on a single redirect value for the enquiry then we could use the same server-only approach for each? That's easy then: a new static 'thank you for your message' page with a button to go home is what's needed
+
+---
+
+Why are some changes staged and some not?
+
+---
+
+Putting a bearer-style invitation token into a query string increases the chance it gets leaked via referrer headers, proxy logs, analytics, or screenshots/bookmarks. If feasible, prefer a path segment (e.g. /footy/response/${token}) or a one-time opaque code exchanged server-side, and ensure downstream pages/routes are updated accordingly.
+
+---
+
+String-concatenating URLs can produce double slashes or malformed URLs depending on whether baseUrl ends with /, and it bypasses URL normalization. Consider constructing the link with new URL('/footy/response', baseUrl) and setting searchParams for token to make the result robust.
+
+---
+
+The token is interpolated into a URL path segment without encoding. If the token ever contains reserved URL characters (e.g. /, ?, #, %), the generated link can break or be ambiguous. Consider wrapping the token with encodeURIComponent(token) when building the path (similar to other call sites that already encode tokens).
+
+---
+
+The error telemetry hard-codes route: '/footy/contact', but this component is also rendered on other pages (e.g. /footy/info). This can misattribute client errors in observability. Consider passing the current route in via props (or deriving it where appropriate) so captureUnexpectedError logs the actual page route.
+
+---
+
+This captures all verification failures as 'unexpected', including likely expected domain errors (e.g., already-used/expired token). Consider capturing only truly unexpected errors (or using a different telemetry method/tag for expected failures) to reduce noise and improve alert quality.
+
+---
+
+From code review we have this - but I deliberately removed the revalidatePath on the [token] path since only the player who received the token should be on that specific route so it's not really required
+
+The /footy/response page was removed/redirects, and tests now expect revalidation of the dynamic response page (/footy/response/[token], page). However, the API route no longer revalidates any response route at all. Add a revalidatePath('/footy/response/[token]', 'page') call (or whatever route segment is actually used) so response pages get invalidated when invitations are triggered.
+
+---
+
+In general, what should be the determining factor for using search params rather than path segments? In cases where there are lots of optional params (where the existence of one doesn't necessarily assume the existence of any given other) then I think searchParams are the only way to go, but in cases like password reset where there's only ever one, and it's required, should that be a path segment?
+
+---
+
+OK, so do an audit across the whole codebase to identify searchParams which should be path segments. Make no changes yet.

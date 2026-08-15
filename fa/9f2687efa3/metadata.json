@@ -1,0 +1,44 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "fa9f2687efa3",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 9,
+  "files_touched": [
+    "src/actions/submitGameInvitationResponse.ts",
+    "src/actions/submitGameInvitationResponse.vitest.spec.ts",
+    "src/actions/submitResponse.ts",
+    "src/actions/submitResponse.vitest.spec.ts",
+    "src/actions/triggerInvitations.ts",
+    "src/actions/triggerInvitations.vitest.spec.ts",
+    "src/app/api/footy/invitations/route.ts",
+    "src/app/api/footy/invitations/route.vitest.spec.ts",
+    "src/app/footy/auth/claim/[token]/finish/page.tsx",
+    "src/app/footy/auth/verify/extra-email/[token]/page.tsx",
+    "src/app/footy/response/[token]/page.tsx",
+    "src/app/footy/response/[token]/page.vitest.spec.ts",
+    "src/app/footy/response/page.tsx",
+    "src/app/footy/response/page.vitest.spec.ts",
+    "src/components/EnquiryForm/EnquiryForm.tsx",
+    "src/components/EnquiryForm/EnquiryForm.vitest.spec.tsx",
+    "src/lib/core/sendEnquiry/sendEnquiry.ts",
+    "src/lib/core/verifyEmail/verifyEmail.ts",
+    "src/lib/gameInvitations.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/fa/9f2687efa3/0/metadata.json",
+      "transcript": "/fa/9f2687efa3/0/full.jsonl",
+      "compact_transcript": "/fa/9f2687efa3/0/transcript.jsonl",
+      "content_hash": "/fa/9f2687efa3/0/content_hash.txt",
+      "prompt": "/fa/9f2687efa3/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 588,
+    "cache_creation_tokens": 816477,
+    "cache_read_tokens": 56479704,
+    "output_tokens": 129227,
+    "api_call_count": 294
+  }
+}

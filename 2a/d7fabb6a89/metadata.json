@@ -1,0 +1,50 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "2ad7fabb6a89",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "src/components/DeleteAccountForm/DeleteAccountForm.tsx",
+    "src/components/DeleteAccountForm/DeleteAccountForm.vitest.spec.tsx",
+    "src/components/EnquiryForm/EnquiryForm.tsx",
+    "src/components/EnquiryForm/EnquiryForm.vitest.spec.tsx",
+    "src/components/ForgottenPasswordForm/ForgottenPasswordForm.tsx",
+    "src/components/ForgottenPasswordForm/ForgottenPasswordForm.vitest.spec.tsx",
+    "src/components/GameInvitationResponseForm/GameInvitationResponseForm.tsx",
+    "src/components/GameInvitationResponseForm/GameInvitationResponseForm.vitest.spec.tsx",
+    "src/components/InvoiceForm/InvoiceForm.tsx",
+    "src/components/InvoiceForm/InvoiceForm.vitest.spec.tsx",
+    "src/components/MoreGamesForm/MoreGamesForm.tsx",
+    "src/components/MoreGamesForm/MoreGamesForm.vitest.spec.tsx",
+    "src/components/NewGameForm/NewGameForm.tsx",
+    "src/components/NewGameForm/NewGameForm.vitest.spec.tsx",
+    "src/components/NewPlayerForm/NewPlayerForm.tsx",
+    "src/components/NewPlayerForm/NewPlayerForm.vitest.spec.tsx",
+    "src/components/PasswordChangeForm/PasswordChangeForm.tsx",
+    "src/components/PasswordChangeForm/PasswordChangeForm.vitest.spec.tsx",
+    "src/components/PasswordResetForm/PasswordResetForm.tsx",
+    "src/components/PasswordResetForm/PasswordResetForm.vitest.spec.tsx",
+    "src/components/PlayerCountryMap/PlayerCountryMap.vitest.spec.tsx",
+    "src/components/PlayerList/PlayerList.tsx",
+    "src/components/PlayerProfileForm/PlayerProfileForm.tsx",
+    "src/components/PlayerProfileForm/PlayerProfileForm.vitest.spec.tsx",
+    "vitest.unit.config.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/2a/d7fabb6a89/0/metadata.json",
+      "transcript": "/2a/d7fabb6a89/0/full.jsonl",
+      "compact_transcript": "/2a/d7fabb6a89/0/transcript.jsonl",
+      "content_hash": "/2a/d7fabb6a89/0/content_hash.txt",
+      "prompt": "/2a/d7fabb6a89/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 423,
+    "cache_creation_tokens": 395091,
+    "cache_read_tokens": 36003915,
+    "output_tokens": 81712,
+    "api_call_count": 193
+  }
+}

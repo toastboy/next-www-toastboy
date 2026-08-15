@@ -1,0 +1,32 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "6edcdd536ff2",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "files_touched": [
+    "CLAUDE.md",
+    "src/components/ClaimSignup/ClaimSignup.tsx",
+    "src/components/ClaimSignup/ClaimSignup.vitest.spec.tsx",
+    "src/components/PasswordResetForm/PasswordResetForm.tsx",
+    "src/components/PasswordResetForm/PasswordResetForm.vitest.spec.tsx",
+    "src/components/SignIn/SignIn.tsx",
+    "src/components/SignIn/SignIn.vitest.spec.tsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/6e/dcdd536ff2/0/metadata.json",
+      "transcript": "/6e/dcdd536ff2/0/full.jsonl",
+      "compact_transcript": "/6e/dcdd536ff2/0/transcript.jsonl",
+      "content_hash": "/6e/dcdd536ff2/0/content_hash.txt",
+      "prompt": "/6e/dcdd536ff2/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 8,
+    "cache_creation_tokens": 32627,
+    "cache_read_tokens": 172760,
+    "output_tokens": 2592,
+    "api_call_count": 4
+  }
+}

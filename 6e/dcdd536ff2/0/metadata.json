@@ -1,0 +1,80 @@
+{
+  "cli_version": "0.8.42",
+  "checkpoint_id": "6edcdd536ff2",
+  "session_id": "11debe98-ecb3-45e6-87bd-14a68596fac3",
+  "strategy": "manual-commit",
+  "created_at": "2026-08-15T12:43:26.95621Z",
+  "branch": "main",
+  "checkpoints_count": 1,
+  "save_step_count": 1,
+  "files_touched": [
+    "CLAUDE.md",
+    "src/components/ClaimSignup/ClaimSignup.tsx",
+    "src/components/ClaimSignup/ClaimSignup.vitest.spec.tsx",
+    "src/components/PasswordResetForm/PasswordResetForm.tsx",
+    "src/components/PasswordResetForm/PasswordResetForm.vitest.spec.tsx",
+    "src/components/SignIn/SignIn.tsx",
+    "src/components/SignIn/SignIn.vitest.spec.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-sonnet-5",
+  "turn_id": "7ab1e4ebe72c",
+  "compact_transcript_start": 0,
+  "token_usage": {
+    "input_tokens": 8,
+    "cache_creation_tokens": 32627,
+    "cache_read_tokens": 172760,
+    "output_tokens": 2592,
+    "api_call_count": 4
+  },
+  "session_metrics": {
+    "turn_count": 1
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-08-15T12:43:26.948503Z",
+    "agent_lines": 0,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 23,
+    "total_committed": 0,
+    "total_lines_changed": 23,
+    "agent_percentage": 0,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 122,
+      "user_lines_removed": 23,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 64,
+        "CLAUDE.md": 1,
+        "src/components/ClaimSignup/ClaimSignup.vitest.spec.tsx": 24,
+        "src/components/PasswordResetForm/PasswordResetForm.vitest.spec.tsx": 21,
+        "src/components/SignIn/SignIn.vitest.spec.tsx": 11
+      },
+      "user_removed_per_file": {
+        "src/components/ClaimSignup/ClaimSignup.tsx": 1,
+        "src/components/ClaimSignup/ClaimSignup.vitest.spec.tsx": 8,
+        "src/components/PasswordResetForm/PasswordResetForm.tsx": 1,
+        "src/components/SignIn/SignIn.tsx": 1,
+        "src/components/SignIn/SignIn.vitest.spec.tsx": 12
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 65,
+      "user_lines_removed": 0,
+      "agent_lines_added": 57,
+      "agent_lines_removed": 23,
+      "user_added_per_file": {
+        ".claude/scheduled_tasks.lock": 1,
+        ".claude/settings.local.json": 64
+      }
+    }
+  ]
+}

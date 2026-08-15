@@ -1,0 +1,1 @@
+Let's start looking at SYS-600 - is there really value in restricting page routes only to top-level components, auto-refresh side-effects and fragments or is it harmless (or even better) to allow basic composition Mantine components in page routes?

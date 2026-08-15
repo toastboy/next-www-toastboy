@@ -8,14 +8,6 @@ import { getGameInvitationResponseDetails } from '@/lib/gameInvitations';
 interface PageProps {
     searchParams?: Promise<{
         token?: string;
-        playerId?: string;
-        playerName?: string;
-        playerLogin?: string;
-        gameDayId?: string;
-        response?: string;
-        goalie?: string;
-        comment?: string;
-        error?: string;
     }>;
 }
 
@@ -24,23 +16,12 @@ export const metadata = { title: 'Response' };
 const Page = async ({ searchParams: sp }: PageProps) => {
     const searchParams = await sp;
     const { token } = searchParams ?? {};
-    const errorMessage = searchParams?.error ?? '';
 
-    if (!token && !errorMessage) {
+    if (!token) {
         redirect('/footy/game');
     }
 
-    if (errorMessage) {
-        return (
-            <>
-                <Text>{errorMessage}</Text>
-                <Anchor href="/footy/game">Go to the game page</Anchor>
-            </>
-        );
-    }
-
-    /* v8 ignore next -- token is always truthy here; the guards above already redirect/return for the falsy cases */
-    const details = await getGameInvitationResponseDetails(token ?? '');
+    const details = await getGameInvitationResponseDetails(token);
 
     if (!details) {
         return (

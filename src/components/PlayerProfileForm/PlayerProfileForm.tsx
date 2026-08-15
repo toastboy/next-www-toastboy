@@ -31,7 +31,6 @@ import type { CountryType } from 'prisma/zod/schemas/models/Country.schema';
 import type { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import type { PlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
 import type React from 'react';
-import { useEffect, useRef } from 'react';
 
 import { EmailInput } from '@/components/EmailInput/EmailInput';
 import { config } from '@/lib/config';
@@ -53,7 +52,6 @@ export interface Props {
     clubs: ClubSupporterDataType[];
     allCountries: CountryType[];
     allClubs: ClubType[];
-    verifiedEmail?: string;
     onUpdatePlayer: UpdatePlayerProxy;
 }
 
@@ -70,30 +68,12 @@ export const PlayerProfileForm = ({
     clubs,
     allCountries,
     allClubs,
-    verifiedEmail,
     onUpdatePlayer,
 }: Props) => {
     const initialExtraEmails = extraEmails.map(
         (playerEmail) => playerEmail.email,
     );
     const bornYear = player.born ?? undefined;
-    const hasShownVerifiedNotification = useRef(false);
-
-    useEffect(() => {
-        if (!verifiedEmail || hasShownVerifiedNotification.current) {
-            return;
-        }
-
-        notifications.show({
-            color: 'teal',
-            title: 'Email verified',
-            message: `Email address ${verifiedEmail} has been successfully verified.`,
-            icon: <IconCheck size={config.notificationIconSize} />,
-            loading: false,
-            autoClose: config.notificationAutoClose,
-        });
-        hasShownVerifiedNotification.current = true;
-    }, [verifiedEmail]);
 
     const form = useForm<PlayerProfileFormValues>({
         initialValues: {

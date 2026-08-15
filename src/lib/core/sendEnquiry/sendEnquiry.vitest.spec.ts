@@ -50,7 +50,6 @@ describe('sendEnquiryCore', () => {
                 email: 'alex@example.com',
                 message: 'Need details',
             },
-            '/footy/contact/thanks',
             deps,
         );
 
@@ -77,7 +76,7 @@ describe('sendEnquiryCore', () => {
         expect(verificationEmailPayload.to).toBe('alex@example.com');
         expect(verificationEmailPayload.subject).toBe('Confirm your enquiry');
         expect(verificationEmailPayload.html).toContain(
-            'https://example.test/api/footy/auth/verify/enquiry/enquiry-token?redirect=%2Ffooty%2Fcontact%2Fthanks',
+            'https://example.test/footy/auth/verify/enquiry/enquiry-token',
         );
     });
 });

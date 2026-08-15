@@ -25,9 +25,5 @@ export type EnquiryInput = z.infer<typeof EnquirySchema>;
  * email to the enquirer.
  *
  * @param data - Validated enquiry input including name, email, and message.
- * @param redirectUrl - URL to redirect to after email verification.
  */
-export type SendEnquiryProxy = (
-    data: EnquiryInput,
-    redirectUrl: string,
-) => Promise<void>;
+export type SendEnquiryProxy = (data: EnquiryInput) => Promise<void>;

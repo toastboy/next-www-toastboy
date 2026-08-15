@@ -56,7 +56,7 @@ export const ClaimSignup = ({ name, email, token }: Props) => {
         undefined,
     );
     const router = useRouter();
-    const redirectPath = `/api/footy/auth/claim/${encodeURIComponent(token)}?redirect=/footy/profile`;
+    const redirectPath = `/footy/auth/claim/${encodeURIComponent(token)}/finish`;
     const socialRedirect = new URL(redirectPath, getPublicBaseUrl()).toString();
 
     const form = useForm({

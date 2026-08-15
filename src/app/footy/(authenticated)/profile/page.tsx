@@ -14,20 +14,9 @@ import playerService from '@/services/Player';
 import playerExtraEmailService from '@/services/PlayerExtraEmail';
 import { FootyChannel } from '@/types/FootyChannel';
 
-interface PageProps {
-    searchParams?: Promise<{
-        purpose?: string;
-        email?: string;
-    }>;
-}
-
 export const metadata = { title: 'Profile' };
 
-const Page = async ({ searchParams: sp }: PageProps) => {
-    const searchParams = await sp;
-    const { purpose, email } = searchParams ?? {};
-    const verifiedEmail = purpose === 'player_email' ? email : undefined;
-
+const Page = async () => {
     const user = await getCurrentUser();
     const playerId = user?.playerId;
 
@@ -74,7 +63,6 @@ const Page = async ({ searchParams: sp }: PageProps) => {
                 clubs={clubs}
                 allCountries={allCountries}
                 allClubs={allClubs}
-                verifiedEmail={verifiedEmail}
                 onUpdatePlayer={updatePlayer}
             />
         </>

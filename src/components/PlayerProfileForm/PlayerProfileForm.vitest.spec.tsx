@@ -381,35 +381,6 @@ describe('PlayerProfileForm', () => {
         ).toBeInTheDocument();
     });
 
-    it('shows verified-email notification when verifiedEmail prop is provided', async () => {
-        const notificationShowSpy = vi.spyOn(notifications, 'show');
-
-        render(
-            <Wrapper>
-                <PlayerProfileForm
-                    player={playerWithAccountEmail}
-                    accountEmail={playerWithAccountEmail.accountEmail}
-                    extraEmails={defaultPlayerExtraEmails}
-                    countries={defaultCountrySupporterDataList}
-                    clubs={defaultClubSupporterDataList}
-                    allCountries={defaultCountryList}
-                    allClubs={defaultClubList}
-                    verifiedEmail="player@example.com"
-                    onUpdatePlayer={mockUpdatePlayer}
-                />
-            </Wrapper>,
-        );
-
-        await waitFor(() => {
-            expect(notificationShowSpy).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    title: 'Email verified',
-                    color: 'teal',
-                }),
-            );
-        });
-    });
-
     it('falls back to defaults for nullish player fields when no account email prop is provided', () => {
         const playerWithNullishFields = {
             ...defaultPlayer,

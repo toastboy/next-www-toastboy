@@ -48,7 +48,6 @@ export const Render: Story = {
         clubs: defaultClubSupporterDataList,
         allCountries: defaultCountryList,
         allClubs: defaultClubList,
-        verifiedEmail: 'goalie@toastboy.co.uk',
         onUpdatePlayer: defaultUpdatePlayerProxy,
     },
 };

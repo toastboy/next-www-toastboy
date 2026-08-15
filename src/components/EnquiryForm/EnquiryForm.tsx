@@ -13,8 +13,6 @@ import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
 
 import { EmailInput } from '@/components/EmailInput/EmailInput';
 import { config } from '@/lib/config';
@@ -27,15 +25,10 @@ import {
 } from '@/types/actions/SendEnquiry';
 
 export interface Props {
-    redirectUrl: string;
     onSendEnquiry: SendEnquiryProxy;
 }
 
-export const EnquiryForm = ({ redirectUrl, onSendEnquiry }: Props) => {
-    const router = useRouter();
-    const pathname = usePathname();
-    const searchParams = useSearchParams();
-
+export const EnquiryForm = ({ onSendEnquiry }: Props) => {
     const form = useForm<EnquiryInput>({
         initialValues: {
             name: '',
@@ -45,39 +38,6 @@ export const EnquiryForm = ({ redirectUrl, onSendEnquiry }: Props) => {
         validate: zod4Resolver(EnquirySchema),
         validateInputOnBlur: true,
     });
-
-    useEffect(() => {
-        const enquiryStatus = searchParams.get('enquiry');
-        const errorMessage = searchParams.get('error');
-
-        if (!enquiryStatus) {
-            return;
-        }
-
-        if (enquiryStatus === 'verified') {
-            notifications.show({
-                color: 'teal',
-                title: 'Email verified',
-                message: 'Thanks! Your enquiry has been delivered.',
-                icon: <IconCheck size={config.notificationIconSize} />,
-            });
-        }
-
-        if (enquiryStatus === 'error') {
-            notifications.show({
-                color: 'red',
-                title: 'Verification failed',
-                message: errorMessage ?? 'We could not verify your email.',
-                icon: <IconAlertTriangle size={config.notificationIconSize} />,
-            });
-        }
-
-        const updatedParams = new URLSearchParams(searchParams.toString());
-        updatedParams.delete('enquiry');
-        updatedParams.delete('error');
-        const query = updatedParams.toString();
-        router.replace(query ? `${pathname}?${query}` : pathname);
-    }, [pathname, router, searchParams]);
 
     const handleSubmit = async (values: EnquiryInput) => {
         const id = notifications.show({
@@ -89,7 +49,7 @@ export const EnquiryForm = ({ redirectUrl, onSendEnquiry }: Props) => {
         });
 
         try {
-            await onSendEnquiry(values, redirectUrl);
+            await onSendEnquiry(values);
             form.reset();
 
             notifications.update({
@@ -108,9 +68,6 @@ export const EnquiryForm = ({ redirectUrl, onSendEnquiry }: Props) => {
                 component: 'EnquiryForm',
                 action: 'sendEnquiry',
                 route: '/footy/contact',
-                extra: {
-                    redirectUrl,
-                },
             });
             const message = toPublicMessage(
                 error,

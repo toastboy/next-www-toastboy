@@ -54,7 +54,7 @@ describe('Game Invitation Response page', () => {
         vi.clearAllMocks();
     });
 
-    it('redirects to /footy/game when neither token nor error is present', async () => {
+    it('redirects to /footy/game when no token is present', async () => {
         await expect(
             Page({ searchParams: Promise.resolve({}) }),
         ).rejects.toThrow('redirected');
@@ -68,17 +68,7 @@ describe('Game Invitation Response page', () => {
         expect(redirect).toHaveBeenCalledWith('/footy/game');
     });
 
-    it('renders an error message when an error param is present', async () => {
-        const element = await Page({
-            searchParams: Promise.resolve({ error: 'Invitation expired.' }),
-        });
-
-        const html = renderToStaticMarkup(element);
-        expect(html).toContain('Invitation expired.');
-        expect(html).toContain('Go to the game page');
-    });
-
-    it('fetches the latest invitation details for the token and ignores stale query params', async () => {
+    it('fetches the invitation details for the token', async () => {
         (getGameInvitationResponseDetails as Mock).mockResolvedValue(
             sampleDetails,
         );
@@ -86,13 +76,6 @@ describe('Game Invitation Response page', () => {
         const element = await Page({
             searchParams: Promise.resolve({
                 token: sampleDetails.token,
-                playerId: '1',
-                playerName: 'Stale Name',
-                playerLogin: 'stale-login',
-                gameDayId: '99',
-                response: 'No',
-                goalie: 'false',
-                comment: 'stale comment',
             }),
         });
 

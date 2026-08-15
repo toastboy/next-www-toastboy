@@ -1,5 +1,4 @@
 import { Anchor, Container, Flex, Text, Title } from '@mantine/core';
-import { Suspense } from 'react';
 
 import { sendEnquiry } from '@/actions/sendEnquiry';
 import { EnquiryForm } from '@/components/EnquiryForm/EnquiryForm';
@@ -86,12 +85,7 @@ const Page = () => {
                     We're always looking for players, so if you want to join the
                     list, fill in the form below!
                 </Text>
-                <Suspense>
-                    <EnquiryForm
-                        redirectUrl="/footy/info"
-                        onSendEnquiry={sendEnquiry}
-                    />
-                </Suspense>
+                <EnquiryForm onSendEnquiry={sendEnquiry} />
             </Flex>
         </>
     );

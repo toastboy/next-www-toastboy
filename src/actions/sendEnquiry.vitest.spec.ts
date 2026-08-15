@@ -25,18 +25,15 @@ describe('sendEnquiry action wrapper', () => {
         vi.clearAllMocks();
     });
 
-    it('validates input and delegates to sendEnquiryCore with the redirect URL', async () => {
-        await sendEnquiry(validInput, '/footy/enquiry/thanks');
+    it('validates input and delegates to sendEnquiryCore', async () => {
+        await sendEnquiry(validInput);
 
-        expect(sendEnquiryCoreMock).toHaveBeenCalledWith(
-            validInput,
-            '/footy/enquiry/thanks',
-        );
+        expect(sendEnquiryCoreMock).toHaveBeenCalledWith(validInput);
     });
 
     it('propagates ZodError when input validation fails', async () => {
         await expect(
-            sendEnquiry({ ...validInput, name: '' }, '/footy/enquiry/thanks'),
+            sendEnquiry({ ...validInput, name: '' }),
         ).rejects.toThrow();
         expect(sendEnquiryCoreMock).not.toHaveBeenCalled();
     });
@@ -45,9 +42,7 @@ describe('sendEnquiry action wrapper', () => {
         const coreError = new Error('failed to persist enquiry');
         sendEnquiryCoreMock.mockRejectedValueOnce(coreError);
 
-        await expect(
-            sendEnquiry(validInput, '/footy/enquiry/thanks'),
-        ).rejects.toBe(coreError);
+        await expect(sendEnquiry(validInput)).rejects.toBe(coreError);
     });
 });
 

@@ -7,13 +7,13 @@ import {
 
 const extractVerificationLink = (content: string) => {
     const hrefMatch =
-        /href=["']([^"']*\/api\/footy\/auth\/verify\/enquiry\/[^"']*)["']/i.exec(
+        /href=["']([^"']*\/footy\/auth\/verify\/enquiry\/[^"']*)["']/i.exec(
             content,
         );
     if (hrefMatch?.[1]) return hrefMatch[1];
 
     const textMatch =
-        /(https?:\/\/[^\s"']*\/api\/footy\/auth\/verify\/enquiry\/[^\s"']+)/i.exec(
+        /(https?:\/\/[^\s"']*\/footy\/auth\/verify\/enquiry\/[^\s"']+)/i.exec(
             content,
         );
     return textMatch?.[1] ?? null;
@@ -52,18 +52,6 @@ test.describe('EnquiryForm', () => {
         const invalidEmailError = page.getByText('Invalid email');
         await emailInput.scrollIntoViewIfNeeded();
         await expect(invalidEmailError).toBeVisible();
-    });
-
-    test('shows verified notification and cleans up URL', async ({ page }) => {
-        await page.goto('/footy/info?enquiry=verified');
-        await expect(page.getByText('Email verified')).toBeVisible();
-        await expect(page).toHaveURL(/\/footy\/info\/?$/);
-    });
-
-    test('shows error notification and cleans up URL', async ({ page }) => {
-        await page.goto('/footy/info?enquiry=error');
-        await expect(page.getByText('Verification failed')).toBeVisible();
-        await expect(page).toHaveURL(/\/footy\/info\/?$/);
     });
 
     test.describe('email flow', () => {
@@ -147,8 +135,10 @@ test.describe('EnquiryForm', () => {
                 );
 
             await page.goto(verificationLink);
-            await expect(page).toHaveURL(/\/footy\/info/);
-            await expect(page.getByText('Email verified')).toBeVisible();
+            await expect(page).toHaveURL(/\/footy\/auth\/verify\/enquiry\//);
+            await expect(
+                page.getByText('Thanks for your message'),
+            ).toBeVisible();
         });
     });
 });

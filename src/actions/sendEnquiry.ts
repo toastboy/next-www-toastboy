@@ -11,14 +11,11 @@ import { EnquirySchema } from '@/types/actions/SendEnquiry';
  *
  * Validates the provided rawData against EnquirySchema, creates a verification
  * token, persists an email verification record and a pending contact enquiry
- * tied to that token, constructs a verification URL (including the provided
- * redirectUrl as a URL-encoded `redirect` query parameter), and sends a
- * confirmation email containing the link.
+ * tied to that token, constructs a verification URL, and sends a confirmation
+ * email containing the link.
  *
  * @param rawData - Unvalidated enquiry payload. Expected to match the shape
  * enforced by EnquirySchema; parsing will throw if invalid.
- * @param redirectUrl - Destination URL to redirect the user to after successful
- * verification; will be URL-encoded and appended to the verification endpoint.
  * @returns A Promise that resolves once the verification record and contact
  * enquiry are stored and the confirmation email has been sent.
  * @throws {ZodError|Error} If validation (EnquirySchema.parse) fails.
@@ -28,11 +25,11 @@ import { EnquirySchema } from '@/types/actions/SendEnquiry';
  * - Side effects: persists records via emailVerificationService.create and
  *   contactEnquiryService.create, and sends an email via sendEmail.
  * - The verification link targets:
- *   `${getPublicBaseUrl()}/api/footy/auth/verify/enquiry/{token}?redirect={encodedRedirectUrl}`.
+ *   `${getPublicBaseUrl()}/footy/auth/verify/enquiry/{token}`.
  */
-export async function sendEnquiry(rawData: unknown, redirectUrl: string) {
+export async function sendEnquiry(rawData: unknown) {
     const data = EnquirySchema.parse(rawData);
-    await sendEnquiryCore(data, redirectUrl);
+    await sendEnquiryCore(data);
 }
 
 /**

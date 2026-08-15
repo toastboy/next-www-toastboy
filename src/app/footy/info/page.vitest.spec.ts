@@ -35,7 +35,6 @@ describe('Info page', () => {
 
         expect(EnquiryForm as Mock).toHaveBeenCalledWith(
             expect.objectContaining({
-                redirectUrl: '/footy/info',
                 onSendEnquiry: sendEnquiry,
             }),
             undefined,

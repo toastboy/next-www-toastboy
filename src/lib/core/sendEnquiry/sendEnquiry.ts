@@ -45,8 +45,6 @@ const formatMessage = (message: string) => {
  *
  * @param data - The enquiry input containing the user's name, email, and
  * message.
- * @param redirectUrl - The URL to redirect the user to after successful
- * verification.
  * @param deps - Optional dependencies for email verification, contact enquiry,
  * and email sending services. Defaults to `defaultDeps`.
  *
@@ -54,7 +52,6 @@ const formatMessage = (message: string) => {
  */
 export async function sendEnquiryCore(
     data: EnquiryInput,
-    redirectUrl: string,
     deps: SendEnquiryDeps = defaultDeps,
 ) {
     const { token, expiresAt } = createVerificationToken();
@@ -73,7 +70,7 @@ export async function sendEnquiryCore(
     });
 
     const verificationLink = new URL(
-        `/api/footy/auth/verify/enquiry/${token}?redirect=${encodeURIComponent(redirectUrl)}`,
+        `/footy/auth/verify/enquiry/${token}`,
         getPublicBaseUrl(),
     ).toString();
 

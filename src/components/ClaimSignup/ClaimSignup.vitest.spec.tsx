@@ -28,7 +28,7 @@ describe('ClaimSignup', () => {
         email: 'sam@example.com',
         token: 'token-123',
     };
-    const redirectPath = `/api/footy/auth/claim/${encodeURIComponent(props.token)}?redirect=/footy/profile`;
+    const redirectPath = `/footy/auth/claim/${encodeURIComponent(props.token)}/finish`;
     const redirect = new URL(redirectPath, 'http://localhost').toString();
 
     beforeEach(() => {

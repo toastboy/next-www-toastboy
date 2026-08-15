@@ -117,7 +117,7 @@ async function requestPlayerEmailVerification(
 
     return {
         verificationLink: new URL(
-            `/api/footy/auth/verify/extra-email/${token}?redirect=${encodeURIComponent('/footy/profile')}`,
+            `/footy/auth/verify/extra-email/${token}`,
             getPublicBaseUrl(),
         ).toString(),
     };

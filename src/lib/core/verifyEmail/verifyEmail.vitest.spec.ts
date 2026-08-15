@@ -274,7 +274,7 @@ describe('sendEmailVerificationCore', () => {
             'Verify your email address',
         );
         expect(verificationEmailPayload.html).toContain(
-            'https://example.test/api/footy/auth/verify/extra-email/verify-token?redirect=%2Ffooty%2Fprofile',
+            'https://example.test/footy/auth/verify/extra-email/verify-token',
         );
     });
 

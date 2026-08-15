@@ -37,7 +37,7 @@ test.describe('New game flow', () => {
         await asAdmin(page, '/footy/admin/newgame');
 
         await expect(
-            page.getByRole('heading', { name: /New game/i }),
+            page.getByRole('heading', { name: /New game/i }).first(),
         ).toBeVisible();
 
         await page.getByLabel(/Override time check/i).check();

@@ -21,7 +21,7 @@ test.describe('drinkers admin page', () => {
 
         await expect(page).toHaveURL(/\/footy\/admin\/drinkers\/\d+$/);
         await expect(
-            page.getByRole('heading', { name: /Game \d+ Drinkers/i }),
+            page.getByRole('heading', { name: /Game \d+ Drinkers/i }).first(),
         ).toBeVisible();
         await expect(
             page.getByRole('button', { name: 'Save drinkers' }),

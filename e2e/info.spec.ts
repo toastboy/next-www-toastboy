@@ -136,8 +136,12 @@ test.describe('EnquiryForm', () => {
 
             await page.goto(verificationLink);
             await expect(page).toHaveURL(/\/footy\/auth\/verify\/enquiry\//);
+            // Firefox can briefly double-mount this static server-rendered
+            // Notification during hydration (self-heals within ~1s); .first()
+            // avoids the resulting strict-mode violation without weakening
+            // the assertion, since the content itself never varies.
             await expect(
-                page.getByText('Thanks for your message'),
+                page.getByText('Thanks for your message').first(),
             ).toBeVisible();
         });
     });

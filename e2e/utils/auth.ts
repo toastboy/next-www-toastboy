@@ -125,9 +125,11 @@ export async function asAdmin(
  */
 export async function mustBeLoggedInAsAdmin(page: Page): Promise<void> {
     await expect(
-        page.getByRole('heading', {
-            name: /You must be logged in as an administrator/i,
-        }),
+        page
+            .getByRole('heading', {
+                name: /You must be logged in as an administrator/i,
+            })
+            .first(),
     ).toBeVisible();
 }
 
@@ -139,8 +141,10 @@ export async function mustBeLoggedInAsAdmin(page: Page): Promise<void> {
  */
 export async function mustBeLoggedIn(page: Page): Promise<void> {
     await expect(
-        page.getByRole('heading', {
-            name: /Sign in to your account/i,
-        }),
+        page
+            .getByRole('heading', {
+                name: /Sign in to your account/i,
+            })
+            .first(),
     ).toBeVisible();
 }

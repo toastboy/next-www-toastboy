@@ -22,7 +22,7 @@ test.describe('Responses admin page', () => {
         await asAdmin(page, '/footy/admin/responses');
 
         await expect(
-            page.getByRole('heading', { name: /Responses/i }),
+            page.getByRole('heading', { name: /Responses/i }).first(),
         ).toBeVisible();
 
         // Read a group's player count from its h2 heading ("Yes: 15").

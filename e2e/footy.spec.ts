@@ -16,9 +16,9 @@ test('footy page renders crest, info link, and copyright', async ({ page }) => {
     await expect(infoLink).toBeVisible();
     await expect(infoLink).toHaveAttribute('href', '/footy/info');
 
-    await expect(page.getByText('Who are we?')).toBeVisible();
+    await expect(page.getByText('Who are we?').first()).toBeVisible();
     await expect(
-        page.getByText('Crest design ©2003 by Joe Bright'),
+        page.getByText('Crest design ©2003 by Joe Bright').first(),
     ).toBeVisible();
 
     // await expect(page).toHaveScreenshot('footy.png');

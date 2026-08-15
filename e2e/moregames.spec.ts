@@ -6,9 +6,11 @@ test.describe('More Games admin page', () => {
         await asGuest(page, '/footy/moregames');
 
         await expect(
-            page.getByRole('heading', {
-                name: /must be logged in as an administrator/i,
-            }),
+            page
+                .getByRole('heading', {
+                    name: /must be logged in as an administrator/i,
+                })
+                .first(),
         ).toBeVisible();
     });
 
@@ -16,9 +18,11 @@ test.describe('More Games admin page', () => {
         await asUser(page, '/footy/moregames');
 
         await expect(
-            page.getByRole('heading', {
-                name: /must be logged in as an administrator/i,
-            }),
+            page
+                .getByRole('heading', {
+                    name: /must be logged in as an administrator/i,
+                })
+                .first(),
         ).toBeVisible();
     });
 

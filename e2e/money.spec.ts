@@ -19,7 +19,9 @@ test.describe('Money admin page', () => {
 
         // Check for the money admin interface elements
         await expect(
-            page.getByRole('heading', { name: 'Unpaid Player Charges' }),
+            page
+                .getByRole('heading', { name: 'Unpaid Player Charges' })
+                .first(),
         ).toBeVisible();
         // Example: check for a Paid button (should be present for each player with debts)
         await expect(

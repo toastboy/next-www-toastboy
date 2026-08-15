@@ -37,9 +37,15 @@ test('homepage shows table leaders', async ({ page }) => {
     await page.waitForURL('**/footy');
 
     await expect(
-        page.getByRole('heading', { name: 'Table Leaders' }),
+        page.getByRole('heading', { name: 'Table Leaders' }).first(),
     ).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Points' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Averages' })).toBeVisible();
-    await expect(page.getByRole('heading', { name: 'Stalwart' })).toBeVisible();
+    await expect(
+        page.getByRole('heading', { name: 'Points' }).first(),
+    ).toBeVisible();
+    await expect(
+        page.getByRole('heading', { name: 'Averages' }).first(),
+    ).toBeVisible();
+    await expect(
+        page.getByRole('heading', { name: 'Stalwart' }).first(),
+    ).toBeVisible();
 });

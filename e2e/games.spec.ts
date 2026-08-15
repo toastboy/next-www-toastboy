@@ -6,6 +6,6 @@ test('games list page', async ({ page }) => {
     await expect(page).toHaveURL(/.*games/);
 
     await expect(
-        page.getByRole('heading').filter({ hasText: /Games/ }),
+        page.getByRole('heading').filter({ hasText: /Games/ }).first(),
     ).toBeVisible();
 });

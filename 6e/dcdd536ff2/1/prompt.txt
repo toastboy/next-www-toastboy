@@ -1,0 +1,1 @@
+Look at SYS-600. I'm still not sure whether a few layout related building blocks from Mantine are harmless in page routes or whether going much stricter and disallowing anything except top-level components, auto-refresh elements and fragments really has value.

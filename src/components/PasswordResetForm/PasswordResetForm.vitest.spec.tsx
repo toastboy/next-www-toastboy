@@ -46,6 +46,27 @@ describe('PasswordResetForm', () => {
         ).toBeInTheDocument();
     });
 
+    it('shows an inline error and does not attempt to reset when submitting an invalid form', async () => {
+        const user = userEvent.setup();
+
+        render(
+            <Wrapper>
+                <PasswordResetForm token="token-123" />
+            </Wrapper>,
+        );
+
+        await user.click(
+            screen.getByRole('button', { name: /Reset password/i }),
+        );
+
+        expect(
+            await screen.findByText(
+                /Password must be at least 8 characters long/i,
+            ),
+        ).toBeInTheDocument();
+        expect(mockResetPassword).not.toHaveBeenCalled();
+    });
+
     it('shows an error notification when resetPassword returns status false', async () => {
         const user = userEvent.setup();
         const notificationUpdateSpy = vi.spyOn(notifications, 'update');

@@ -66,7 +66,7 @@ describe('SignIn', () => {
         ).toBeInTheDocument();
     });
 
-    it('disables the Sign In button when the email is invalid', async () => {
+    it('shows an inline error but keeps the Sign In button enabled when the email is invalid', async () => {
         const user = userEvent.setup();
 
         render(
@@ -81,14 +81,15 @@ describe('SignIn', () => {
 
         await user.type(emailInput, 'invalid-email');
         await user.type(passwordInput, 'validPassword123');
+        await user.tab();
 
-        expect(submitButton).toBeDisabled();
         expect(
             await screen.findByText(/Invalid email format/i),
         ).toBeInTheDocument();
+        expect(submitButton).toBeEnabled();
     });
 
-    it('disables the Sign In button when the password is too short', async () => {
+    it('shows an inline error but keeps the Sign In button enabled when the password is too short', async () => {
         const user = userEvent.setup();
 
         render(
@@ -105,13 +106,13 @@ describe('SignIn', () => {
         await user.type(passwordInput, 'short');
         await user.tab();
 
-        expect(submitButton).toBeDisabled();
         expect(
             await screen.findByText(/Password must be at least 8 characters/i),
         ).toBeInTheDocument();
+        expect(submitButton).toBeEnabled();
     });
 
-    it('enables the Sign In button once both fields are valid', async () => {
+    it('does not attempt to sign in when submitting an invalid form', async () => {
         const user = userEvent.setup();
 
         render(
@@ -120,16 +121,14 @@ describe('SignIn', () => {
             </Wrapper>,
         );
 
-        const emailInput = screen.getByLabelText(/Email/i);
-        const passwordInput = screen.getByLabelText(/Password/i);
         const submitButton = screen.getByRole('button', { name: /Sign In$/i });
 
-        expect(submitButton).toBeDisabled();
+        await user.click(submitButton);
 
-        await user.type(emailInput, 'valid.email@example.com');
-        await user.type(passwordInput, 'validPassword123');
-
-        expect(submitButton).toBeEnabled();
+        expect(
+            await screen.findByText(/Invalid email format/i),
+        ).toBeInTheDocument();
+        expect(authClient.signIn.email as Mock).not.toHaveBeenCalled();
     });
 
     it('shows an error when valid input is provided but the login fails', async () => {

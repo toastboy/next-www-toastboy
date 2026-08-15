@@ -201,7 +201,6 @@ export const SignIn = ({ admin, redirect }: Props) => {
                         type="submit"
                         fullWidth
                         loading={loading}
-                        disabled={!form.isValid()}
                     >
                         Sign In
                     </Button>

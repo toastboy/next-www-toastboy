@@ -56,7 +56,7 @@ describe('ClaimSignup', () => {
         ).toBeInTheDocument();
     });
 
-    it('disables the Create login button until the passwords are valid and match', async () => {
+    it('shows an inline error but keeps the Create login button enabled when the passwords do not match', async () => {
         const user = userEvent.setup();
 
         render(
@@ -68,7 +68,6 @@ describe('ClaimSignup', () => {
         const submitButton = screen.getByRole('button', {
             name: /Create login/i,
         });
-        expect(submitButton).toBeDisabled();
 
         await user.type(
             screen.getByPlaceholderText(/^Enter your password$/i),
@@ -78,14 +77,31 @@ describe('ClaimSignup', () => {
             screen.getByLabelText(/Confirm password/i),
             'somethingElse',
         );
-        expect(submitButton).toBeDisabled();
+        await user.tab();
 
-        await user.clear(screen.getByLabelText(/Confirm password/i));
-        await user.type(
-            screen.getByLabelText(/Confirm password/i),
-            'Password123',
-        );
+        expect(
+            await screen.findByText(/Passwords do not match/i),
+        ).toBeInTheDocument();
         expect(submitButton).toBeEnabled();
+    });
+
+    it('does not attempt to sign up when submitting an invalid form', async () => {
+        const user = userEvent.setup();
+
+        render(
+            <Wrapper>
+                <ClaimSignup {...props} />
+            </Wrapper>,
+        );
+
+        await user.click(screen.getByRole('button', { name: /Create login/i }));
+
+        expect(
+            await screen.findByText(
+                /Password must be at least 8 characters long/i,
+            ),
+        ).toBeInTheDocument();
+        expect(authClient.signUp.email as Mock).not.toHaveBeenCalled();
     });
 
     it('triggers social sign in with the claim redirect', async () => {

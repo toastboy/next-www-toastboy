@@ -168,7 +168,6 @@ export const PasswordResetForm = ({ token }: Props) => {
                         type="submit"
                         fullWidth
                         loading={submitting}
-                        disabled={!form.isValid()}
                     >
                         Reset password
                     </Button>

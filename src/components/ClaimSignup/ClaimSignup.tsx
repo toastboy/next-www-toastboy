@@ -186,7 +186,6 @@ export const ClaimSignup = ({ name, email, token }: Props) => {
                         type="submit"
                         fullWidth
                         loading={loading}
-                        disabled={!form.isValid()}
                     >
                         Create login
                     </Button>

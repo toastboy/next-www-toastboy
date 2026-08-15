@@ -65,7 +65,7 @@ export const EnquiryForm = ({ onSendEnquiry }: Props) => {
                     'Check your inbox and verify your email to deliver the message.',
                 icon: <IconCheck size={config.notificationIconSize} />,
                 loading: false,
-                autoClose: config.notificationAutoClose,
+                autoClose: false,
             });
         } catch (error) {
             captureUnexpectedError(error, {

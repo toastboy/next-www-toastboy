@@ -112,6 +112,61 @@ describe('PasswordChangeForm', () => {
         });
     });
 
+    it('shows a loading state on submit and clears it after a successful change', async () => {
+        const user = userEvent.setup();
+        let resolveChange: (
+            value: Awaited<ReturnType<typeof authClient.changePassword>>,
+        ) => void = () => undefined;
+        const pending = new Promise<
+            Awaited<ReturnType<typeof authClient.changePassword>>
+        >((resolve) => {
+            resolveChange = resolve;
+        });
+        mockChangePassword.mockReturnValueOnce(pending);
+
+        render(
+            <Wrapper>
+                <PasswordChangeForm />
+            </Wrapper>,
+        );
+
+        await user.type(
+            screen.getByLabelText(/Current password/i),
+            'OldPassword123',
+        );
+        await user.type(screen.getByLabelText(/^New password/i), 'Password123');
+        await user.type(
+            screen.getByLabelText(/Confirm new password/i),
+            'Password123',
+        );
+        const submitButton = screen.getByRole('button', {
+            name: /Update password/i,
+        });
+        await user.click(submitButton);
+
+        await waitFor(() => {
+            expect(submitButton).toHaveAttribute('data-loading', 'true');
+        });
+
+        resolveChange({
+            token: 'test-token',
+            user: {
+                id: 'test-user',
+                email: 'tester@example.com',
+                name: 'Tester',
+                image: null,
+                emailVerified: true,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+                banned: undefined,
+            },
+        });
+
+        await waitFor(() => {
+            expect(submitButton).not.toHaveAttribute('data-loading', 'true');
+        });
+    });
+
     it('shows error notification with error.error.message on API failure', async () => {
         const user = userEvent.setup();
         mockChangePassword.mockRejectedValue({
@@ -133,9 +188,10 @@ describe('PasswordChangeForm', () => {
             screen.getByLabelText(/Confirm new password/i),
             'Password123',
         );
-        await user.click(
-            screen.getByRole('button', { name: /Update password/i }),
-        );
+        const submitButton = screen.getByRole('button', {
+            name: /Update password/i,
+        });
+        await user.click(submitButton);
 
         await waitFor(() => {
             expect(screen.getByRole('alert')).toBeInTheDocument();
@@ -144,6 +200,7 @@ describe('PasswordChangeForm', () => {
         expect(
             screen.getByText(/Incorrect current password/),
         ).toBeInTheDocument();
+        expect(submitButton).not.toHaveAttribute('data-loading', 'true');
     });
 
     it('shows error notification with error.message on API failure', async () => {

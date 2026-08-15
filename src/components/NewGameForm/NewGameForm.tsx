@@ -15,6 +15,7 @@ import { useMounted } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
+import { useState } from 'react';
 
 import { config } from '@/lib/config';
 import { toPublicMessage } from '@/lib/errors';
@@ -35,6 +36,7 @@ interface Props {
 
 export const NewGameForm = ({ onTriggerInvitations }: Props) => {
     const mounted = useMounted();
+    const [submitting, setSubmitting] = useState(false);
     const form = useForm<NewGameInput>({
         initialValues: {
             overrideTimeCheck: false,
@@ -53,6 +55,7 @@ export const NewGameForm = ({ onTriggerInvitations }: Props) => {
             withCloseButton: false,
         });
 
+        setSubmitting(true);
         try {
             const decision = await onTriggerInvitations(values);
 
@@ -96,6 +99,8 @@ export const NewGameForm = ({ onTriggerInvitations }: Props) => {
                 autoClose: false,
                 withCloseButton: true,
             });
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -131,7 +136,7 @@ export const NewGameForm = ({ onTriggerInvitations }: Props) => {
                                 base: '100%',
                                 [actionsBreakpoint]: 'fit-content',
                             }}
-                            loading={!mounted}
+                            loading={!mounted || submitting}
                         >
                             Send invitations
                         </Button>

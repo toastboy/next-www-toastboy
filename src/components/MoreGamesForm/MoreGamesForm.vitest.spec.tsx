@@ -103,9 +103,10 @@ describe('MoreGamesForm', () => {
             </Wrapper>,
         );
 
-        await user.click(
-            screen.getByRole('button', { name: /Create game days/i }),
-        );
+        const submitButton = screen.getByRole('button', {
+            name: /Create game days/i,
+        });
+        await user.click(submitButton);
 
         await waitFor(() => {
             expect(notificationsUpdateMock).toHaveBeenCalledWith(
@@ -117,6 +118,44 @@ describe('MoreGamesForm', () => {
             );
         });
         expect(captureUnexpectedErrorMock).toHaveBeenCalled();
+        expect(submitButton).not.toHaveAttribute('data-loading', 'true');
+    });
+
+    it('shows a loading state on submit and clears it after a successful creation', async () => {
+        const user = userEvent.setup();
+        let resolveCreate: () => void = () => undefined;
+        const pending = new Promise<
+            Awaited<ReturnType<CreateMoreGameDaysProxy>>
+        >((resolve) => {
+            resolveCreate = () => resolve([]);
+        });
+        mockCreateMoreGameDays.mockReturnValue(pending);
+
+        render(
+            <Wrapper>
+                <MoreGamesForm
+                    cost={defaultMoreGamesFormData.cost}
+                    hallCost={defaultMoreGamesFormData.hallCost}
+                    rows={defaultMoreGamesFormData.rows}
+                    onCreateMoreGameDays={mockCreateMoreGameDays}
+                />
+            </Wrapper>,
+        );
+
+        const submitButton = screen.getByRole('button', {
+            name: /Create game days/i,
+        });
+        await user.click(submitButton);
+
+        await waitFor(() => {
+            expect(submitButton).toHaveAttribute('data-loading', 'true');
+        });
+
+        resolveCreate();
+
+        await waitFor(() => {
+            expect(submitButton).not.toHaveAttribute('data-loading', 'true');
+        });
     });
 
     it('submits updated rows', async () => {

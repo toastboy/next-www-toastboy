@@ -18,7 +18,7 @@ import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 
 import { config } from '@/lib/config';
 import { toPublicMessage } from '@/lib/errors';
@@ -47,6 +47,7 @@ export const MoreGamesForm = ({
     rows,
     onCreateMoreGameDays,
 }: Props) => {
+    const [submitting, setSubmitting] = useState(false);
     const form = useForm<CreateMoreGameDaysInput>({
         initialValues: {
             cost: toPounds(cost),
@@ -66,6 +67,7 @@ export const MoreGamesForm = ({
             withCloseButton: false,
         });
 
+        setSubmitting(true);
         try {
             const transformedValues = {
                 ...values,
@@ -104,6 +106,8 @@ export const MoreGamesForm = ({
                 autoClose: false,
                 withCloseButton: true,
             });
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -270,6 +274,7 @@ export const MoreGamesForm = ({
                                 base: '100%',
                                 [actionsBreakpoint]: 'fit-content',
                             }}
+                            loading={submitting}
                         >
                             Create game days
                         </Button>

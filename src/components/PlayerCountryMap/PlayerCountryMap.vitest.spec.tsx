@@ -477,6 +477,75 @@ describe('PlayerCountryMap', () => {
         expect(screen.getByText('England')).toBeInTheDocument();
     });
 
+    it('measures the wrapper on resize and derives the height from the new width', async () => {
+        // The resize triggers a second topology fetch (width/height are
+        // effect dependencies), so return a fresh Response per call instead
+        // of the shared beforeEach mock, whose single Response body can only
+        // be read once.
+        global.fetch = vi
+            .fn()
+            .mockImplementation(() =>
+                Promise.resolve(makeTopologyResponse(emptyTopology)),
+            );
+
+        let resizeCallback: ResizeObserverCallback = () => undefined;
+        class TestResizeObserver {
+            constructor(callback: ResizeObserverCallback) {
+                resizeCallback = callback;
+            }
+            observe() {
+                /* empty */
+            }
+            unobserve() {
+                /* empty */
+            }
+            disconnect() {
+                /* empty */
+            }
+        }
+        const originalResizeObserver = globalThis.ResizeObserver;
+        globalThis.ResizeObserver = TestResizeObserver;
+
+        const { container } = render(
+            <Wrapper>
+                <PlayerCountryMap
+                    countries={defaultCountrySupporterWithPlayerDataList}
+                />
+            </Wrapper>,
+        );
+
+        const svg = container.querySelector('svg')!;
+        expect(svg).toHaveAttribute('width', '960');
+        expect(svg).toHaveAttribute('height', '500');
+
+        // An empty entries array is a no-op.
+        act(() => {
+            resizeCallback([], {} as ResizeObserver);
+        });
+        expect(svg).toHaveAttribute('width', '960');
+
+        // A measured width of 0 (or less) is ignored.
+        act(() => {
+            resizeCallback(
+                [{ contentRect: { width: 0 } }] as ResizeObserverEntry[],
+                {} as ResizeObserver,
+            );
+        });
+        expect(svg).toHaveAttribute('width', '960');
+
+        // A positive measured width updates both width and derived height.
+        act(() => {
+            resizeCallback(
+                [{ contentRect: { width: 640 } }] as ResizeObserverEntry[],
+                {} as ResizeObserver,
+            );
+        });
+        await waitFor(() => expect(svg).toHaveAttribute('width', '640'));
+        expect(svg).toHaveAttribute('height', '333');
+
+        globalThis.ResizeObserver = originalResizeObserver;
+    });
+
     it('closes popover when mouse leaves dropdown', async () => {
         global.fetch = vi
             .fn()

@@ -68,6 +68,40 @@ describe('NewGameForm', () => {
         });
     });
 
+    it('shows a loading state on submit and clears it after a successful check', async () => {
+        const user = userEvent.setup();
+        let resolveTrigger: (
+            value: typeof defaultInvitationDecision,
+        ) => void = () => undefined;
+        const pending = new Promise<typeof defaultInvitationDecision>(
+            (resolve) => {
+                resolveTrigger = resolve;
+            },
+        );
+        mockTriggerInvitations.mockReturnValueOnce(pending);
+
+        render(
+            <Wrapper>
+                <NewGameForm onTriggerInvitations={mockTriggerInvitations} />
+            </Wrapper>,
+        );
+
+        const submitButton = screen.getByRole('button', {
+            name: /Send invitations/i,
+        });
+        await user.click(submitButton);
+
+        await waitFor(() => {
+            expect(submitButton).toHaveAttribute('data-loading', 'true');
+        });
+
+        resolveTrigger(defaultInvitationDecision);
+
+        await waitFor(() => {
+            expect(submitButton).not.toHaveAttribute('data-loading', 'true');
+        });
+    });
+
     it('shows a skipped notification when status is not ready', async () => {
         const user = userEvent.setup();
         const notificationUpdateSpy = vi.spyOn(notifications, 'update');
@@ -134,9 +168,10 @@ describe('NewGameForm', () => {
             </Wrapper>,
         );
 
-        await user.click(
-            screen.getByRole('button', { name: /Send invitations/i }),
-        );
+        const submitButton = screen.getByRole('button', {
+            name: /Send invitations/i,
+        });
+        await user.click(submitButton);
 
         await waitFor(() => {
             expect(notificationUpdateSpy).toHaveBeenCalledWith(
@@ -147,5 +182,6 @@ describe('NewGameForm', () => {
                 }),
             );
         });
+        expect(submitButton).not.toHaveAttribute('data-loading', 'true');
     });
 });

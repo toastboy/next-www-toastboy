@@ -93,6 +93,48 @@ describe('EnquiryForm', () => {
         });
     });
 
+    it('shows a loading state on submit and clears it after a successful send', async () => {
+        const user = userEvent.setup();
+        let resolveSend: () => void = () => undefined;
+        const pending = new Promise<void>((resolve) => {
+            resolveSend = resolve;
+        });
+        const slowSubmit = vi.fn<SendEnquiryProxy>().mockReturnValue(pending);
+
+        render(
+            <Wrapper>
+                <EnquiryForm onSendEnquiry={slowSubmit} />
+            </Wrapper>,
+        );
+
+        await user.type(
+            screen.getByRole('textbox', { name: /^Name/ }),
+            'Test User',
+        );
+        await user.type(
+            screen.getByRole('textbox', { name: /^Email/ }),
+            'test@example.com',
+        );
+        await user.type(
+            screen.getByRole('textbox', { name: /^Message/ }),
+            'Hello there',
+        );
+        const submitButton = screen.getByRole('button', {
+            name: 'Send message',
+        });
+        await user.click(submitButton);
+
+        await waitFor(() => {
+            expect(submitButton).toHaveAttribute('data-loading', 'true');
+        });
+
+        resolveSend();
+
+        await waitFor(() => {
+            expect(submitButton).not.toHaveAttribute('data-loading', 'true');
+        });
+    });
+
     it('shows error notification when submit throws', async () => {
         const user = userEvent.setup();
         const submitError = new Error('Server error');
@@ -119,7 +161,10 @@ describe('EnquiryForm', () => {
             screen.getByRole('textbox', { name: /^Message/ }),
             'Hello there',
         );
-        await user.click(screen.getByRole('button', { name: 'Send message' }));
+        const submitButton = screen.getByRole('button', {
+            name: 'Send message',
+        });
+        await user.click(submitButton);
 
         await waitFor(() => {
             expect(captureUnexpectedError).toHaveBeenCalledWith(
@@ -138,5 +183,6 @@ describe('EnquiryForm', () => {
                 message: 'Unable to send your message.',
             }),
         );
+        expect(submitButton).not.toHaveAttribute('data-loading', 'true');
     });
 });

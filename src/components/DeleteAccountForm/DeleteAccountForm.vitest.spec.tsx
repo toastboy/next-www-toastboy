@@ -104,6 +104,80 @@ describe('DeleteAccountForm', () => {
         expect(await screen.findByRole('alert')).toBeInTheDocument();
     });
 
+    it('shows a loading state on submit and clears it after a successful deletion', async () => {
+        const user = userEvent.setup();
+        let resolveDelete: () => void = () => undefined;
+        const pending = new Promise<void>((resolve) => {
+            resolveDelete = resolve;
+        });
+        const slowMock: DeletePlayerProxy = vi.fn().mockReturnValue(pending);
+
+        render(
+            <Wrapper>
+                <DeleteAccountForm onDeletePlayer={slowMock} />
+            </Wrapper>,
+        );
+
+        await user.type(
+            screen.getByRole('textbox', { name: /type delete to confirm/i }),
+            'DELETE',
+        );
+        await user.click(
+            screen.getByRole('checkbox', {
+                name: /i understand.*personal data/i,
+            }),
+        );
+        const submitButton = screen.getByRole('button', {
+            name: 'Delete my data',
+        });
+        await user.click(submitButton);
+
+        await waitFor(() => {
+            expect(submitButton).toHaveAttribute('data-loading', 'true');
+        });
+
+        resolveDelete();
+
+        await waitFor(() => {
+            expect(submitButton).not.toHaveAttribute('data-loading', 'true');
+        });
+    });
+
+    it('clears the loading state after a failed deletion', async () => {
+        const user = userEvent.setup();
+        const consoleErrorSpy = vi
+            .spyOn(console, 'error')
+            .mockImplementation(() => undefined);
+        const failingMock: DeletePlayerProxy = vi
+            .fn()
+            .mockRejectedValueOnce(new Error('Delete failed'));
+
+        render(
+            <Wrapper>
+                <DeleteAccountForm onDeletePlayer={failingMock} />
+            </Wrapper>,
+        );
+
+        await user.type(
+            screen.getByRole('textbox', { name: /type delete to confirm/i }),
+            'DELETE',
+        );
+        await user.click(
+            screen.getByRole('checkbox', {
+                name: /i understand.*personal data/i,
+            }),
+        );
+        const submitButton = screen.getByRole('button', {
+            name: 'Delete my data',
+        });
+        await user.click(submitButton);
+
+        await screen.findByRole('alert');
+        expect(submitButton).not.toHaveAttribute('data-loading', 'true');
+
+        consoleErrorSpy.mockRestore();
+    });
+
     it('shows an error message when deletion fails', async () => {
         const user = userEvent.setup();
         const consoleErrorSpy = vi

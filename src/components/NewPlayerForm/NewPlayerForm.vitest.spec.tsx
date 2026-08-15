@@ -128,6 +128,87 @@ describe('NewPlayerForm', () => {
         });
     });
 
+    it('shows a loading state on the submit button while creating a player, then clears it on success', async () => {
+        let resolveCreate: (value: {
+            player: { id: number };
+            inviteLink: string;
+        }) => void = () => undefined;
+        const pending = new Promise<{
+            player: { id: number };
+            inviteLink: string;
+        }>((resolve) => {
+            resolveCreate = resolve;
+        });
+        mockCreatePlayer.mockReturnValueOnce(pending);
+        mockSendEmail.mockResolvedValueOnce(undefined);
+        const user = userEvent.setup();
+
+        render(
+            <Wrapper>
+                <NewPlayerForm
+                    players={players}
+                    onCreatePlayer={mockCreatePlayer}
+                    onSendEmail={mockSendEmail}
+                />
+            </Wrapper>,
+        );
+
+        const nameInput = screen.getByLabelText(/Name/i);
+        const emailInput = screen.getByLabelText(/Email address/i);
+        const submitButton = screen.getByRole('button', {
+            name: /Add player/i,
+        });
+
+        await user.type(nameInput, 'Pat Smith');
+        await user.type(emailInput, 'test@example.com');
+        await user.click(submitButton);
+
+        await waitFor(() => {
+            expect(submitButton).toHaveAttribute('data-loading', 'true');
+        });
+
+        resolveCreate({
+            player: { id: 1 },
+            inviteLink: 'http://example.com/footy/auth/claim?token=abc',
+        });
+
+        await waitFor(() => {
+            expect(submitButton).not.toHaveAttribute('data-loading', 'true');
+        });
+    });
+
+    it('clears the loading state on the submit button after a failed creation', async () => {
+        mockCreatePlayer.mockRejectedValueOnce(new Error('Network error'));
+        const user = userEvent.setup();
+
+        render(
+            <Wrapper>
+                <NewPlayerForm
+                    players={players}
+                    onCreatePlayer={mockCreatePlayer}
+                    onSendEmail={mockSendEmail}
+                />
+            </Wrapper>,
+        );
+
+        const nameInput = screen.getByLabelText(/Name/i);
+        const emailInput = screen.getByLabelText(/Email address/i);
+        const submitButton = screen.getByRole('button', {
+            name: /Add player/i,
+        });
+
+        await user.type(nameInput, 'Pat Smith');
+        await user.type(emailInput, 'test@example.com');
+        await user.click(submitButton);
+
+        await waitFor(() => {
+            expect(mockCreatePlayer).toHaveBeenCalled();
+        });
+        await waitFor(() => {
+            expect(submitButton).not.toHaveAttribute('data-loading', 'true');
+        });
+    });
+
     it('shows success notification on successful creation', async () => {
         const notificationUpdateSpy = vi.spyOn(notifications, 'update');
         mockSendEmail.mockResolvedValueOnce(undefined);

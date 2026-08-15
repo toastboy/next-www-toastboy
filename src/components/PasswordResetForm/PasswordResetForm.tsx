@@ -15,6 +15,7 @@ import { notifications } from '@mantine/notifications';
 import { IconCheck, IconX } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import z from 'zod';
 
 import { PasswordFields } from '@/components/PasswordFields/PasswordFields';
@@ -48,6 +49,7 @@ const resetPasswordSchema = z
  */
 export const PasswordResetForm = ({ token }: Props) => {
     const router = useRouter();
+    const [submitting, setSubmitting] = useState(false);
     const form = useForm<z.infer<typeof resetPasswordSchema>>({
         initialValues: {
             password: '',
@@ -71,6 +73,7 @@ export const PasswordResetForm = ({ token }: Props) => {
             withCloseButton: false,
         });
 
+        setSubmitting(true);
         try {
             const { status } = await authClient.resetPassword({
                 newPassword: values.password,
@@ -112,6 +115,8 @@ export const PasswordResetForm = ({ token }: Props) => {
                 autoClose: false,
                 withCloseButton: true,
             });
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -162,6 +167,7 @@ export const PasswordResetForm = ({ token }: Props) => {
                     <Button
                         type="submit"
                         fullWidth
+                        loading={submitting}
                         disabled={!form.isValid()}
                     >
                         Reset password

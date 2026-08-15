@@ -62,14 +62,52 @@ describe('PasswordResetForm', () => {
             screen.getByLabelText(/Confirm new password/i),
             'Password123',
         );
-        await user.click(
-            screen.getByRole('button', { name: /Reset password/i }),
-        );
+        const submitButton = screen.getByRole('button', {
+            name: /Reset password/i,
+        });
+        await user.click(submitButton);
 
         await waitFor(() => {
             expect(notificationUpdateSpy).toHaveBeenCalledWith(
                 expect.objectContaining({ color: 'red', title: 'Error' }),
             );
+        });
+        expect(submitButton).not.toHaveAttribute('data-loading', 'true');
+    });
+
+    it('shows a loading state on submit and clears it after a successful reset', async () => {
+        const user = userEvent.setup();
+        let resolveReset: (value: { status: boolean }) => void = () =>
+            undefined;
+        const pending = new Promise<{ status: boolean }>((resolve) => {
+            resolveReset = resolve;
+        });
+        mockResetPassword.mockReturnValueOnce(pending);
+
+        render(
+            <Wrapper>
+                <PasswordResetForm token="token-123" />
+            </Wrapper>,
+        );
+
+        await user.type(screen.getByLabelText(/^New password/i), 'Password123');
+        await user.type(
+            screen.getByLabelText(/Confirm new password/i),
+            'Password123',
+        );
+        const submitButton = screen.getByRole('button', {
+            name: /Reset password/i,
+        });
+        await user.click(submitButton);
+
+        await waitFor(() => {
+            expect(submitButton).toHaveAttribute('data-loading', 'true');
+        });
+
+        resolveReset({ status: true });
+
+        await waitFor(() => {
+            expect(submitButton).not.toHaveAttribute('data-loading', 'true');
         });
     });
 

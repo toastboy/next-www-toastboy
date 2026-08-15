@@ -199,6 +199,52 @@ describe('InvoiceForm', () => {
         expect(onRecordHallHire).not.toHaveBeenCalled();
     });
 
+    it('shows a loading state on submit and clears it after a successful save', async () => {
+        const user = userEvent.setup();
+        let resolveUpdate: () => void = () => undefined;
+        const pending = new Promise<void>((resolve) => {
+            resolveUpdate = resolve;
+        });
+        const onUpdateGameDays = vi.fn().mockReturnValue(pending);
+        const onRecordHallHire = vi.fn().mockResolvedValue(undefined);
+        renderForm({ onUpdateGameDays, onRecordHallHire });
+
+        const submitButton = screen.getByRole('button', {
+            name: /Record invoice/i,
+        });
+        await user.click(submitButton);
+
+        await waitFor(() => {
+            expect(submitButton).toHaveAttribute('data-loading', 'true');
+        });
+
+        resolveUpdate();
+
+        await waitFor(() => {
+            expect(submitButton).not.toHaveAttribute('data-loading', 'true');
+        });
+    });
+
+    it('clears the loading state after a failed save', async () => {
+        const user = userEvent.setup();
+        const onUpdateGameDays = vi
+            .fn()
+            .mockRejectedValue(new Error('Network error'));
+        renderForm({ onUpdateGameDays });
+
+        const submitButton = screen.getByRole('button', {
+            name: /Record invoice/i,
+        });
+        await user.click(submitButton);
+
+        await waitFor(() => {
+            expect(notificationsUpdateMock).toHaveBeenCalledWith(
+                expect.objectContaining({ color: 'red' }),
+            );
+        });
+        expect(submitButton).not.toHaveAttribute('data-loading', 'true');
+    });
+
     it('shows a success notification after submitting', async () => {
         const user = userEvent.setup();
         renderForm();

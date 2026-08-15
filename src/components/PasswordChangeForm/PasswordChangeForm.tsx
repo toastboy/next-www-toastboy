@@ -52,6 +52,7 @@ const changePasswordSchema = z
 export const PasswordChangeForm = ({ revokeOtherSessions }: Props) => {
     const [errorText, setErrorText] = useState<string | null>(null);
     const [success, setSuccess] = useState<boolean>(false);
+    const [submitting, setSubmitting] = useState(false);
     const form = useForm<z.infer<typeof changePasswordSchema>>({
         initialValues: {
             currentPassword: '',
@@ -68,6 +69,7 @@ export const PasswordChangeForm = ({ revokeOtherSessions }: Props) => {
     const handleSubmit = async (
         values: z.infer<typeof changePasswordSchema>,
     ) => {
+        setSubmitting(true);
         try {
             setErrorText(null);
             setSuccess(false);
@@ -87,6 +89,8 @@ export const PasswordChangeForm = ({ revokeOtherSessions }: Props) => {
             setErrorText(
                 message ?? 'An unexpected error occurred. Please try again.',
             );
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -156,6 +160,7 @@ export const PasswordChangeForm = ({ revokeOtherSessions }: Props) => {
                         <Button
                             type="submit"
                             fullWidth
+                            loading={submitting}
                         >
                             Update password
                         </Button>

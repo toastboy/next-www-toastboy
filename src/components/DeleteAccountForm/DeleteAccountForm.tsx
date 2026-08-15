@@ -34,6 +34,7 @@ export interface Props {
 export const DeleteAccountForm = ({ onDeletePlayer }: Props) => {
     const [errorText, setErrorText] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
+    const [submitting, setSubmitting] = useState(false);
     const form = useForm<DeleteAccountInput>({
         initialValues: {
             confirmPhrase: '',
@@ -44,6 +45,7 @@ export const DeleteAccountForm = ({ onDeletePlayer }: Props) => {
     });
 
     const handleSubmit = async () => {
+        setSubmitting(true);
         try {
             setErrorText(null);
             setSuccess(false);
@@ -66,6 +68,8 @@ export const DeleteAccountForm = ({ onDeletePlayer }: Props) => {
                     : 'Unable to delete your account data.',
             );
             setErrorText(message);
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -154,6 +158,7 @@ export const DeleteAccountForm = ({ onDeletePlayer }: Props) => {
                             type="submit"
                             color="red"
                             fullWidth
+                            loading={submitting}
                         >
                             Delete my data
                         </Button>

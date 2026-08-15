@@ -31,6 +31,7 @@ import type { CountryType } from 'prisma/zod/schemas/models/Country.schema';
 import type { PlayerType } from 'prisma/zod/schemas/models/Player.schema';
 import type { PlayerExtraEmailType } from 'prisma/zod/schemas/models/PlayerExtraEmail.schema';
 import type React from 'react';
+import { useState } from 'react';
 
 import { EmailInput } from '@/components/EmailInput/EmailInput';
 import { config } from '@/lib/config';
@@ -70,6 +71,7 @@ export const PlayerProfileForm = ({
     allClubs,
     onUpdatePlayer,
 }: Props) => {
+    const [submitting, setSubmitting] = useState(false);
     const initialExtraEmails = extraEmails.map(
         (playerEmail) => playerEmail.email,
     );
@@ -103,6 +105,7 @@ export const PlayerProfileForm = ({
             withCloseButton: false,
         });
 
+        setSubmitting(true);
         try {
             const nextExtraEmails = values.extraEmails
                 .map((email) => email.trim())
@@ -154,6 +157,8 @@ export const PlayerProfileForm = ({
                 autoClose: false,
                 withCloseButton: true,
             });
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -413,6 +418,7 @@ export const PlayerProfileForm = ({
                     >
                         <Button
                             disabled={!form.isDirty()}
+                            loading={submitting}
                             mt="md"
                             type="submit"
                         >

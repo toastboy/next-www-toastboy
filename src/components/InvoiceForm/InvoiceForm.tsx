@@ -23,6 +23,7 @@ import {
 } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import z from 'zod';
 
 import { config } from '@/lib/config';
@@ -71,6 +72,7 @@ export const InvoiceForm = ({
     onRecordHallHire,
 }: InvoiceFormProps) => {
     const router = useRouter();
+    const [submitting, setSubmitting] = useState(false);
 
     const form = useForm<InvoiceFormValues>({
         initialValues: {
@@ -110,6 +112,7 @@ export const InvoiceForm = ({
             withCloseButton: false,
         });
 
+        setSubmitting(true);
         try {
             await onUpdateGameDays({
                 gameDays: values.gameDays.map((gd) => ({
@@ -163,6 +166,8 @@ export const InvoiceForm = ({
                 autoClose: false,
                 withCloseButton: true,
             });
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -270,6 +275,7 @@ export const InvoiceForm = ({
                                         base: '100%',
                                         [actionsBreakpoint]: 'fit-content',
                                     }}
+                                    loading={submitting}
                                 >
                                     Record invoice
                                 </Button>

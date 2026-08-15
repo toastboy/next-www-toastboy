@@ -14,6 +14,7 @@ import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { usePathname } from 'next/navigation';
+import { useState } from 'react';
 
 import { EmailInput } from '@/components/EmailInput/EmailInput';
 import { config } from '@/lib/config';
@@ -31,6 +32,7 @@ export interface Props {
 
 export const EnquiryForm = ({ onSendEnquiry }: Props) => {
     const pathname = usePathname();
+    const [submitting, setSubmitting] = useState(false);
     const form = useForm<EnquiryInput>({
         initialValues: {
             name: '',
@@ -50,6 +52,7 @@ export const EnquiryForm = ({ onSendEnquiry }: Props) => {
             withCloseButton: false,
         });
 
+        setSubmitting(true);
         try {
             await onSendEnquiry(values);
             form.reset();
@@ -85,6 +88,8 @@ export const EnquiryForm = ({ onSendEnquiry }: Props) => {
                 autoClose: false,
                 withCloseButton: true,
             });
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -118,7 +123,12 @@ export const EnquiryForm = ({ onSendEnquiry }: Props) => {
                     minRows={4}
                     {...form.getInputProps('message')}
                 />
-                <Button type="submit">Send message</Button>
+                <Button
+                    type="submit"
+                    loading={submitting}
+                >
+                    Send message
+                </Button>
             </Stack>
         </Box>
     );

@@ -90,6 +90,7 @@ export const GameInvitationResponseForm = ({
     const [canSubmitWithoutChanges, setCanSubmitWithoutChanges] = useState(
         !details.response,
     );
+    const [submitting, setSubmitting] = useState(false);
 
     const form = useForm<FormValues>({
         initialValues: {
@@ -119,6 +120,7 @@ export const GameInvitationResponseForm = ({
             withCloseButton: false,
         });
 
+        setSubmitting(true);
         try {
             await onSubmitGameInvitationResponse({
                 token: details.token,
@@ -166,6 +168,8 @@ export const GameInvitationResponseForm = ({
                 autoClose: false,
                 withCloseButton: true,
             });
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -257,7 +261,7 @@ export const GameInvitationResponseForm = ({
                     <Button
                         type="submit"
                         w="fit-content"
-                        loading={!mounted}
+                        loading={!mounted || submitting}
                         disabled={!isFormDirty}
                     >
                         Save Response

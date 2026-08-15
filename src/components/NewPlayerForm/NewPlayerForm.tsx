@@ -20,6 +20,7 @@ import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import ReactDOMServer from 'react-dom/server';
 
 import { EmailInput } from '@/components/EmailInput/EmailInput';
@@ -60,6 +61,7 @@ export const NewPlayerForm = ({
     onSendEmail,
 }: Props) => {
     const router = useRouter();
+    const [submitting, setSubmitting] = useState(false);
     const getPreferredEmail = (player?: PlayerDataType) => {
         if (player?.accountEmail) {
             return player.accountEmail;
@@ -91,6 +93,7 @@ export const NewPlayerForm = ({
             withCloseButton: false,
         });
 
+        setSubmitting(true);
         try {
             const { player: newPlayer, inviteLink } =
                 await onCreatePlayer(values);
@@ -181,6 +184,8 @@ export const NewPlayerForm = ({
                 autoClose: false,
                 withCloseButton: true,
             });
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -243,6 +248,7 @@ export const NewPlayerForm = ({
                         <Button
                             type="submit"
                             mt="md"
+                            loading={submitting}
                         >
                             Add player
                         </Button>

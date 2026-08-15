@@ -156,6 +156,40 @@ describe('ForgottenPasswordForm', () => {
         });
     });
 
+    it('shows a loading state on submit and clears it after a successful request', async () => {
+        const user = userEvent.setup();
+        let resolveRequest: (value: { status: boolean }) => void = () =>
+            undefined;
+        const pending = new Promise<{ status: boolean }>((resolve) => {
+            resolveRequest = resolve;
+        });
+        mockRequestPasswordReset.mockReturnValue(
+            pending as ReturnType<typeof authClient.requestPasswordReset>,
+        );
+
+        render(
+            <Wrapper>
+                <ForgottenPasswordForm />
+            </Wrapper>,
+        );
+
+        await user.type(screen.getByLabelText(/Email/i), 'test@example.com');
+        const submitButton = screen.getByRole('button', {
+            name: /Send reset link/i,
+        });
+        await user.click(submitButton);
+
+        await waitFor(() => {
+            expect(submitButton).toHaveAttribute('data-loading', 'true');
+        });
+
+        resolveRequest({ status: true });
+
+        await waitFor(() => {
+            expect(submitButton).not.toHaveAttribute('data-loading', 'true');
+        });
+    });
+
     it('captures submit failures and shows a public error notification', async () => {
         const user = userEvent.setup();
         const notificationUpdateSpy = vi.spyOn(notifications, 'update');
@@ -171,9 +205,10 @@ describe('ForgottenPasswordForm', () => {
         );
 
         await user.type(screen.getByLabelText(/Email/i), 'test@example.com');
-        await user.click(
-            screen.getByRole('button', { name: /Send reset link/i }),
-        );
+        const submitButton = screen.getByRole('button', {
+            name: /Send reset link/i,
+        });
+        await user.click(submitButton);
 
         await waitFor(() => {
             expect(mockCaptureUnexpectedError).toHaveBeenCalledWith(
@@ -204,5 +239,6 @@ describe('ForgottenPasswordForm', () => {
                 }),
             );
         });
+        expect(submitButton).not.toHaveAttribute('data-loading', 'true');
     });
 });

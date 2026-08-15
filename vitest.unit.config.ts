@@ -42,6 +42,7 @@ export default defineConfig({
                 'src/app/footy/layout.tsx', // Passthrough wrapper, nothing to unit test here
                 'src/lib/auth.client.ts', // Thin glue layer to Better Auth, nothing to unit test here
                 'src/lib/exportdb/**', // Dev-only utility
+                'src/lib/fetchseeddata/**', // Human-run only, needs standing 1Password access
                 'src/lib/importlivedb/**', // Dev-only utility
                 'src/stories/**',
                 'src/tests/**',

@@ -100,40 +100,35 @@ export const PlayerList = ({ players, gameDay, sendEmail }: Props) => {
         }
     });
 
-    const sortedPlayers = playersRepliedSince
-        ? [...playersRepliedSince].sort((a, b) => {
-              if (!sortBy) return 0;
+    const sortedPlayers = [...playersRepliedSince].sort((a, b) => {
+        if (!sortBy) return 0;
 
-              const aValue = a[sortBy];
-              const bValue = b[sortBy];
+        const aValue = a[sortBy];
+        const bValue = b[sortBy];
 
-              if (typeof aValue === 'number' || typeof bValue === 'number') {
-                  /* v8 ignore start -- defensive fallback when a numeric sort field is unexpectedly nullish */
-                  const naValue = (aValue as number) || 0;
-                  const nbValue = (bValue as number) || 0;
+        if (typeof aValue === 'number' || typeof bValue === 'number') {
+            /* v8 ignore start -- defensive fallback when a numeric sort field is unexpectedly nullish */
+            const naValue = (aValue as number) || 0;
+            const nbValue = (bValue as number) || 0;
 
-                  return sortOrder === 'asc'
-                      ? naValue - nbValue
-                      : nbValue - naValue;
-                  /* v8 ignore stop */
-              }
+            return sortOrder === 'asc' ? naValue - nbValue : nbValue - naValue;
+            /* v8 ignore stop */
+        }
 
-              if (typeof aValue === 'string' && typeof bValue === 'string') {
-                  return sortOrder === 'asc'
-                      ? aValue.localeCompare(bValue)
-                      : bValue.localeCompare(aValue);
-              }
+        if (typeof aValue === 'string' && typeof bValue === 'string') {
+            return sortOrder === 'asc'
+                ? aValue.localeCompare(bValue)
+                : bValue.localeCompare(aValue);
+        }
 
-              if (aValue instanceof Date && bValue instanceof Date) {
-                  return sortOrder === 'asc'
-                      ? aValue.getTime() - bValue.getTime()
-                      : bValue.getTime() - aValue.getTime();
-              }
+        if (aValue instanceof Date && bValue instanceof Date) {
+            return sortOrder === 'asc'
+                ? aValue.getTime() - bValue.getTime()
+                : bValue.getTime() - aValue.getTime();
+        }
 
-              return 0;
-          })
-        : /* v8 ignore next -- filter always returns an array, so this fallback is a defensive backstop */
-          [];
+        return 0;
+    });
 
     /**
      * Human-readable label describing whether we are showing only active players

@@ -5,6 +5,7 @@ import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { zod4Resolver } from 'mantine-form-zod-resolver';
+import { useState } from 'react';
 import z from 'zod';
 
 import { EmailInput } from '@/components/EmailInput/EmailInput';
@@ -15,6 +16,7 @@ import { captureUnexpectedError } from '@/lib/observability/sentry';
 import { getPublicBaseUrl } from '@/lib/urls';
 
 export const ForgottenPasswordForm = () => {
+    const [submitting, setSubmitting] = useState(false);
     const form = useForm<ForgottenPasswordInput>({
         initialValues: {
             email: '',
@@ -34,6 +36,7 @@ export const ForgottenPasswordForm = () => {
             withCloseButton: false,
         });
 
+        setSubmitting(true);
         try {
             await authClient.requestPasswordReset({
                 email: normalizedEmail,
@@ -76,6 +79,8 @@ export const ForgottenPasswordForm = () => {
                 autoClose: false,
                 withCloseButton: true,
             });
+        } finally {
+            setSubmitting(false);
         }
     };
 
@@ -113,6 +118,7 @@ export const ForgottenPasswordForm = () => {
                     <Button
                         type="submit"
                         w="fit-content"
+                        loading={submitting}
                     >
                         Send reset link
                     </Button>

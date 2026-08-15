@@ -271,6 +271,45 @@ describe('GameInvitationResponseForm', () => {
         });
     });
 
+    it('shows a loading state on submit and clears it after a successful save', async () => {
+        const user = userEvent.setup();
+        let resolveSubmit: () => void = () => undefined;
+        const pending = new Promise<null>((resolve) => {
+            resolveSubmit = () => resolve(null);
+        });
+        const slowSubmit = vi
+            .fn<SubmitGameInvitationResponseProxy>()
+            .mockReturnValue(pending);
+
+        render(
+            <Wrapper>
+                <GameInvitationResponseForm
+                    details={defaultGameInvitationResponseDetails}
+                    onSubmitGameInvitationResponse={slowSubmit}
+                />
+            </Wrapper>,
+        );
+
+        await user.click(screen.getByRole('combobox', { name: /Response/i }));
+        await user.click(
+            await screen.findByRole('option', { name: 'No', hidden: true }),
+        );
+        const submitButton = screen.getByRole('button', {
+            name: /Save Response/i,
+        });
+        await user.click(submitButton);
+
+        await waitFor(() => {
+            expect(submitButton).toHaveAttribute('data-loading', 'true');
+        });
+
+        resolveSubmit();
+
+        await waitFor(() => {
+            expect(submitButton).not.toHaveAttribute('data-loading', 'true');
+        });
+    });
+
     it('captures unexpected errors and shows an error notification when submit fails', async () => {
         const user = userEvent.setup();
         const notificationUpdateSpy = vi.spyOn(notifications, 'update');
@@ -292,9 +331,10 @@ describe('GameInvitationResponseForm', () => {
         await user.click(
             await screen.findByRole('option', { name: 'Yes', hidden: true }),
         );
-        await user.click(
-            screen.getByRole('button', { name: /Save Response/i }),
-        );
+        const submitButton = screen.getByRole('button', {
+            name: /Save Response/i,
+        });
+        await user.click(submitButton);
 
         await waitFor(() => {
             expect(captureUnexpectedError).toHaveBeenCalledWith(
@@ -323,6 +363,7 @@ describe('GameInvitationResponseForm', () => {
                 }),
             );
         });
+        expect(submitButton).not.toHaveAttribute('data-loading', 'true');
     });
 
     it('shows a default error message when submit fails with a non-Error value', async () => {

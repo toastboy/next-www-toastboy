@@ -182,7 +182,10 @@ describe('PlayerProfileForm', () => {
         const nameInput = screen.getByRole('textbox', { name: /^Name/ });
         await user.clear(nameInput);
         await user.type(nameInput, `${defaultPlayer.name ?? ''} Jr`);
-        await user.click(screen.getByRole('button', { name: 'Save Changes' }));
+        const submitButton = screen.getByRole('button', {
+            name: 'Save Changes',
+        });
+        await user.click(submitButton);
 
         await waitFor(() => {
             expect(notificationUpdateSpy).toHaveBeenCalledWith(
@@ -200,6 +203,54 @@ describe('PlayerProfileForm', () => {
                 action: 'updateProfile',
             }),
         );
+        expect(submitButton).not.toHaveAttribute('data-loading', 'true');
+    });
+
+    it('shows a loading state on submit and clears it after a successful update', async () => {
+        const user = userEvent.setup();
+        let resolveUpdate: (value: typeof defaultPlayer) => void = () =>
+            undefined;
+        const pending = new Promise<typeof defaultPlayer>((resolve) => {
+            resolveUpdate = resolve;
+        });
+        mockUpdatePlayer.mockReturnValueOnce(pending);
+
+        render(
+            <Wrapper>
+                <PlayerProfileForm
+                    player={playerWithAccountEmail}
+                    accountEmail={playerWithAccountEmail.accountEmail}
+                    extraEmails={defaultPlayerExtraEmails}
+                    countries={defaultCountrySupporterDataList}
+                    clubs={defaultClubSupporterDataList}
+                    allCountries={defaultCountryList}
+                    allClubs={defaultClubList}
+                    onUpdatePlayer={mockUpdatePlayer}
+                />
+            </Wrapper>,
+        );
+
+        const nameInput = screen.getByRole('textbox', { name: /^Name/ });
+        const submitButton = screen.getByRole('button', {
+            name: 'Save Changes',
+        });
+
+        await user.clear(nameInput);
+        await user.type(nameInput, `${defaultPlayer.name ?? ''} Jr`);
+        await waitFor(() => {
+            expect(submitButton).toBeEnabled();
+        });
+        await user.click(submitButton);
+
+        await waitFor(() => {
+            expect(submitButton).toHaveAttribute('data-loading', 'true');
+        });
+
+        resolveUpdate(defaultPlayer);
+
+        await waitFor(() => {
+            expect(submitButton).not.toHaveAttribute('data-loading', 'true');
+        });
     });
 
     it('removes an extra email when its delete button is clicked', async () => {

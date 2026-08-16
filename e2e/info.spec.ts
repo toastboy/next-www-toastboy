@@ -70,13 +70,26 @@ test.describe('EnquiryForm', () => {
             request,
         }) => {
             await page.goto('/footy/info');
-            await page.getByRole('textbox', { name: 'Name' }).fill('Test User');
-            await page
-                .getByRole('textbox', { name: 'Email' })
-                .fill('playwright@example.com');
-            await page
-                .getByRole('textbox', { name: 'Message' })
-                .fill('This is a test enquiry from Playwright.');
+            const nameInput = page.getByRole('textbox', { name: 'Name' });
+            const emailInput = page.getByRole('textbox', { name: 'Email' });
+            const messageInput = page.getByRole('textbox', {
+                name: 'Message',
+            });
+
+            // Assert each value lands in Mantine's controlled form state
+            // before moving on: WebKit can occasionally process fill()'s
+            // synthetic input event slower than React's onChange commit,
+            // and since submit buttons stay enabled while invalid (by
+            // design), a not-yet-committed field fails validation silently
+            // instead of the click being a no-op.
+            await nameInput.fill('Test User');
+            await expect(nameInput).toHaveValue('Test User');
+            await emailInput.fill('playwright@example.com');
+            await expect(emailInput).toHaveValue('playwright@example.com');
+            await messageInput.fill('This is a test enquiry from Playwright.');
+            await expect(messageInput).toHaveValue(
+                'This is a test enquiry from Playwright.',
+            );
             await page.getByRole('button', { name: 'Send message' }).click();
 
             await expect(page.getByText('Confirm your email')).toBeVisible({
@@ -104,15 +117,20 @@ test.describe('EnquiryForm', () => {
 
         test('completes full verification flow', async ({ page, request }) => {
             await page.goto('/footy/info');
-            await page
-                .getByRole('textbox', { name: 'Name' })
-                .fill('Verification Tester');
-            await page
-                .getByRole('textbox', { name: 'Email' })
-                .fill('verify@example.com');
-            await page
-                .getByRole('textbox', { name: 'Message' })
-                .fill('Please verify this enquiry.');
+            const nameInput = page.getByRole('textbox', { name: 'Name' });
+            const emailInput = page.getByRole('textbox', { name: 'Email' });
+            const messageInput = page.getByRole('textbox', {
+                name: 'Message',
+            });
+
+            await nameInput.fill('Verification Tester');
+            await expect(nameInput).toHaveValue('Verification Tester');
+            await emailInput.fill('verify@example.com');
+            await expect(emailInput).toHaveValue('verify@example.com');
+            await messageInput.fill('Please verify this enquiry.');
+            await expect(messageInput).toHaveValue(
+                'Please verify this enquiry.',
+            );
             await page.getByRole('button', { name: 'Send message' }).click();
 
             await expect(page.getByText('Confirm your email')).toBeVisible({
